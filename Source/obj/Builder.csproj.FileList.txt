@@ -1,0 +1,8 @@
+..\Build\Builder.exe
+..\Build\Builder.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Builder.csproj.GenerateResource.Cache
+obj\Debug\Builder.exe
+obj\Debug\Builder.pdb
+obj\Debug\CodeImp.DoomBuilder.Interface.MainForm.resources
+obj\Debug\CodeImp.DoomBuilder.Properties.Resources.resources
