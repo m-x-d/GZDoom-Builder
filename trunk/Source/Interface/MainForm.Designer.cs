@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Interface
             this.menufile});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
-			this.menumain.Size = new System.Drawing.Size(619, 24);
+			this.menumain.Size = new System.Drawing.Size(731, 24);
 			this.menumain.TabIndex = 0;
 			this.menumain.Text = "menuStrip1";
 			// 
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.toolbar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
-			this.toolbar.Size = new System.Drawing.Size(619, 25);
+			this.toolbar.Size = new System.Drawing.Size(731, 25);
 			this.toolbar.TabIndex = 1;
 			this.toolbar.Text = "toolStrip1";
 			// 
@@ -134,16 +134,16 @@ namespace CodeImp.DoomBuilder.Interface
 			this.statusbar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statuslabel});
-			this.statusbar.Location = new System.Drawing.Point(0, 471);
+			this.statusbar.Location = new System.Drawing.Point(0, 523);
 			this.statusbar.Name = "statusbar";
-			this.statusbar.Size = new System.Drawing.Size(619, 22);
+			this.statusbar.Size = new System.Drawing.Size(731, 22);
 			this.statusbar.TabIndex = 2;
 			// 
 			// statuslabel
 			// 
 			this.statuslabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(573, 17);
+			this.statuslabel.Size = new System.Drawing.Size(716, 17);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -151,9 +151,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// panelinfo
 			// 
 			this.panelinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panelinfo.Location = new System.Drawing.Point(0, 370);
+			this.panelinfo.Location = new System.Drawing.Point(0, 422);
 			this.panelinfo.Name = "panelinfo";
-			this.panelinfo.Size = new System.Drawing.Size(619, 101);
+			this.panelinfo.Size = new System.Drawing.Size(731, 101);
 			this.panelinfo.TabIndex = 4;
 			// 
 			// display
@@ -167,14 +167,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.InitialImage = null;
 			this.display.Location = new System.Drawing.Point(0, 49);
 			this.display.Name = "display";
-			this.display.Size = new System.Drawing.Size(619, 321);
+			this.display.Size = new System.Drawing.Size(731, 373);
 			this.display.TabIndex = 5;
 			this.display.TabStop = false;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(619, 493);
+			this.ClientSize = new System.Drawing.Size(731, 545);
 			this.Controls.Add(this.display);
 			this.Controls.Add(this.panelinfo);
 			this.Controls.Add(this.statusbar);
@@ -186,7 +186,12 @@ namespace CodeImp.DoomBuilder.Interface
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menumain;
 			this.Name = "MainForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Doom Builder";
+			this.Move += new System.EventHandler(this.MainForm_Move);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
+			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.menumain.ResumeLayout(false);
 			this.menumain.PerformLayout();
 			this.statusbar.ResumeLayout(false);

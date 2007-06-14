@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constants
 		
 		// Path seperator
-		public const string DEFAULT_SEPERATOR = "/";
+		public const string DEFAULT_SEPERATOR = ".";
 		
 		// Parse mode constants
 		private const int PM_NOTHING = 0;
@@ -1208,6 +1208,7 @@ namespace CodeImp.DoomBuilder.IO
 			string data = OutputConfiguration(newline, whitespace);
 			byte[] baData= Encoding.ASCII.GetBytes(data);
 			fstream.Write(baData, 0, baData.Length);
+			fstream.Flush();
 			fstream.Close();
 			
 			// Return true when done, false when errors occurred

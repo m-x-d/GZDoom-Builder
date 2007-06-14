@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Create main window
 			mainwindow = new MainForm();
-
+			
 			// Show main window
 			mainwindow.Show();
 			mainwindow.Update();
@@ -144,6 +144,23 @@ namespace CodeImp.DoomBuilder
 						Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
+		}
+		
+		#endregion
+		
+		#region ================== Terminate
+		
+		// This terminates the program
+		public static void Terminate()
+		{
+			// Clean up
+			mainwindow.Dispose();
+
+			// Save settings configuration
+			settings.SaveConfiguration(Path.Combine(apppath, SETTINGS_CONFIG_FILE));
+
+			// Application ends here and now
+			Application.Exit();
 		}
 		
 		#endregion
