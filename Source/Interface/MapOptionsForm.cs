@@ -55,6 +55,7 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Select a configuration!
 				MessageBox.Show(this, "Please select a game configuration to use for editing your map.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				config.Focus();
 				return;
 			}
 			
@@ -63,6 +64,7 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Enter a level name!
 				MessageBox.Show(this, "Please enter a level name for your map.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				levelname.Focus();
 				return;
 			}
 
