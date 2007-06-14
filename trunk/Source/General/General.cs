@@ -20,6 +20,7 @@ using System.IO;
 using System.Reflection;
 using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
+using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder
 {
@@ -29,6 +30,7 @@ namespace CodeImp.DoomBuilder
 
 		// Files and Folders
 		private const string SETTINGS_CONFIG_FILE = "Builder.cfg";
+		private const string GAME_CONFIGS_DIR = "Configurations";
 
 		#endregion
 
@@ -37,23 +39,29 @@ namespace CodeImp.DoomBuilder
 		// Files and Folders
 		private static string apppath;
 		private static string temppath;
+		private static string configspath;
 		
 		// Main objects
 		private static MainForm mainwindow;
 		private static Configuration settings;
 
+		// Configurations
+		private static List<string> configfiles;
+		private static List<string> confignames;
+		
 		#endregion
 
 		#region ================== Properties
 
 		public static string AppPath { get { return apppath; } }
 		public static string TempPath { get { return temppath; } }
+		public static string ConfigsPath { get { return configspath; } }
 		public static MainForm MainWindow { get { return mainwindow; } }
 		public static Configuration Settings { get { return settings; } }
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Startup
 
 		// Main program entry
 		public static void Main(string[] args)
@@ -66,6 +74,9 @@ namespace CodeImp.DoomBuilder
 			// Temporary directory
 			temppath = Path.GetTempPath();
 
+			// Configurations directory
+			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
+			
 			// Load configuration
 			if(!File.Exists(Path.Combine(apppath, SETTINGS_CONFIG_FILE))) throw (new FileNotFoundException("Unable to find the program configuration \"" + SETTINGS_CONFIG_FILE + "\"."));
 			settings = new Configuration(Path.Combine(apppath, SETTINGS_CONFIG_FILE), false);
@@ -75,9 +86,64 @@ namespace CodeImp.DoomBuilder
 
 			// Show main window
 			mainwindow.Show();
+			mainwindow.Update();
+			
+			// Load game configurations
+			LoadConfigurations();
 			
 			// Run application from the main window
+			mainwindow.DisplayReady();
 			Application.Run(mainwindow);
+		}
+		
+		// This loads configurations
+		private static void LoadConfigurations()
+		{
+			Configuration cfg;
+			string[] filenames;
+			string fn;
+			
+			// Display status
+			mainwindow.DisplayStatus("Loading game configurations...");
+			
+			// Make arrays
+			configfiles = new List<string>();
+			confignames = new List<string>();
+
+			// Go for all files in the configurations directory
+			filenames = Directory.GetFiles(configspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			foreach(string filepath in filenames)
+			{
+				// Determine filename only
+				fn = Path.GetFileName(filepath);
+				
+				try
+				{
+					// Try loading the configuration
+					cfg = new Configuration(filepath, true);
+
+					// Check for erors
+					if(cfg.ErrorResult != 0)
+					{
+						// Error in configuration
+						MessageBox.Show(mainwindow, "Unable to load the game configuration file \"" + fn + "\".\n" +
+							"Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription,
+							Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+					else
+					{
+						// Add to lists
+						configfiles.Add(fn);
+						confignames.Add(cfg.ReadSetting("game", "<unnamed game>"));
+					}
+				}
+				catch(Exception)
+				{
+					// Unable to load configuration
+					MessageBox.Show(mainwindow, "Unable to load the game configuration file \"" + fn + "\".",
+						Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
 		}
 		
 		#endregion
