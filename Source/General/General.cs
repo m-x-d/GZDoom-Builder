@@ -1,4 +1,6 @@
 
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
 /*
  * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
  * This program is released under GNU General Public License
@@ -10,6 +12,10 @@
  * 
  */
 
+#endregion
+
+#region ================== Namespaces
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,7 +26,9 @@ using System.IO;
 using System.Reflection;
 using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
-using System.Collections.Specialized;
+using CodeImp.DoomBuilder.Map;
+
+#endregion
 
 namespace CodeImp.DoomBuilder
 {
@@ -44,10 +52,10 @@ namespace CodeImp.DoomBuilder
 		// Main objects
 		private static MainForm mainwindow;
 		private static Configuration settings;
-
+		private static MapManager map;
+		
 		// Configurations
-		private static List<string> configfiles;
-		private static List<string> confignames;
+		private static List<ConfigurationInfo> configs;
 		
 		#endregion
 
@@ -58,7 +66,85 @@ namespace CodeImp.DoomBuilder
 		public static string ConfigsPath { get { return configspath; } }
 		public static MainForm MainWindow { get { return mainwindow; } }
 		public static Configuration Settings { get { return settings; } }
+		public static List<ConfigurationInfo> Configs { get { return configs; } }
+		public static MapManager Map { get { return map; } }
+		
+		#endregion
 
+		#region ================== Configurations
+
+		// This loads and returns a game configuration
+		public static Configuration LoadGameConfiguration(string filename)
+		{
+			Configuration cfg;
+			
+			// Make the full filepathname
+			string filepathname = Path.Combine(configspath, filename);
+			
+			// Load configuration
+			try
+			{
+				// Try loading the configuration
+				cfg = new Configuration(filepathname, true);
+
+				// Check for erors
+				if(cfg.ErrorResult != 0)
+				{
+					// Error in configuration
+					MessageBox.Show(mainwindow, "Unable to load the game configuration file \"" + filename + "\".\n" +
+						"Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription,
+						Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return null;
+				}
+				else
+				{
+					// Return config
+					return cfg;
+				}
+			}
+			catch(Exception)
+			{
+				// Unable to load configuration
+				MessageBox.Show(mainwindow, "Unable to load the game configuration file \"" + filename + "\".",
+					Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null;
+			}
+		}
+
+		// This finds all game configurations
+		private static void FindGameConfigurations()
+		{
+			Configuration cfg;
+			string[] filenames;
+			string name, fullfilename;
+			
+			// Display status
+			mainwindow.DisplayStatus("Loading game configurations...");
+
+			// Make array
+			configs = new List<ConfigurationInfo>();
+			
+			// Go for all files in the configurations directory
+			filenames = Directory.GetFiles(configspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			foreach(string filepath in filenames)
+			{
+				// Check if it can be loaded
+				cfg = LoadGameConfiguration(filepath);
+				if(cfg != null)
+				{
+					// Get name and filename
+					name = cfg.ReadSetting("game", "<unnamed game>");
+					fullfilename = Path.GetFileName(filepath);
+					
+					// Add to lists
+					configs.Add(new ConfigurationInfo(name, fullfilename));
+				}
+			}
+
+			// Sort the configurations list
+			configs.Sort();
+		}
+		
 		#endregion
 
 		#region ================== Startup
@@ -89,61 +175,11 @@ namespace CodeImp.DoomBuilder
 			mainwindow.Update();
 			
 			// Load game configurations
-			LoadConfigurations();
+			FindGameConfigurations();
 			
 			// Run application from the main window
 			mainwindow.DisplayReady();
 			Application.Run(mainwindow);
-		}
-		
-		// This loads configurations
-		private static void LoadConfigurations()
-		{
-			Configuration cfg;
-			string[] filenames;
-			string fn;
-			
-			// Display status
-			mainwindow.DisplayStatus("Loading game configurations...");
-			
-			// Make arrays
-			configfiles = new List<string>();
-			confignames = new List<string>();
-
-			// Go for all files in the configurations directory
-			filenames = Directory.GetFiles(configspath, "*.cfg", SearchOption.TopDirectoryOnly);
-			foreach(string filepath in filenames)
-			{
-				// Determine filename only
-				fn = Path.GetFileName(filepath);
-				
-				try
-				{
-					// Try loading the configuration
-					cfg = new Configuration(filepath, true);
-
-					// Check for erors
-					if(cfg.ErrorResult != 0)
-					{
-						// Error in configuration
-						MessageBox.Show(mainwindow, "Unable to load the game configuration file \"" + fn + "\".\n" +
-							"Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription,
-							Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-					}
-					else
-					{
-						// Add to lists
-						configfiles.Add(fn);
-						confignames.Add(cfg.ReadSetting("game", "<unnamed game>"));
-					}
-				}
-				catch(Exception)
-				{
-					// Unable to load configuration
-					MessageBox.Show(mainwindow, "Unable to load the game configuration file \"" + fn + "\".",
-						Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-			}
 		}
 		
 		#endregion
@@ -163,6 +199,58 @@ namespace CodeImp.DoomBuilder
 			Application.Exit();
 		}
 		
+		#endregion
+		
+		#region ================== Management
+
+		// This creates a new map
+		public static bool NewMap()
+		{
+			MapOptions newoptions;
+			MapOptionsForm optionswindow;
+			DialogResult result;
+			
+			// Empty options
+			newoptions = new MapOptions();
+
+			// Open map options dialog
+			optionswindow = new MapOptionsForm(newoptions);
+			if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
+			{
+				// Map open and not saved?
+				if((map != null) && map.IsChanged)
+				{
+					// Ask to save changes
+					result = MessageBox.Show(mainwindow, "Do you want to save changes to " + map.FileTitle + " (" + map.Options.CurrentName + ")?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+					if(result == DialogResult.Yes)
+					{
+						// TODO: Save map
+
+					}
+					else if(result == DialogResult.Cancel)
+					{
+						// Abort
+						return false;
+					}
+				}
+
+				// Display status
+				mainwindow.DisplayStatus("Creating new map...");
+
+				// Create map manager with these options
+				map = new MapManager(newoptions);
+
+				// Done
+				mainwindow.DisplayReady();
+				return true;
+			}
+			else
+			{
+				// Cancelled
+				return false;
+			}
+		}
+
 		#endregion
 	}
 }

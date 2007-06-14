@@ -44,10 +44,24 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="General\ConfigurationInfo.cs" />
+    <Compile Include="General\MapManager.cs" />
     <Compile Include="Geometry\Angle2D.cs" />
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Vector2D.cs" />
     <Compile Include="Geometry\Vector3D.cs" />
+    <Compile Include="Interface\MapOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\MapOptionsForm.Designer.cs">
+      <DependentUpon>MapOptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ResourceOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\ResourceOptionsForm.Designer.cs">
+      <DependentUpon>ResourceOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="IO\Configuration.cs" />
     <Compile Include="General\General.cs" />
     <Compile Include="IO\ClippedStream.cs" />
@@ -61,7 +75,9 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Map\Linedef.cs" />
+    <Compile Include="Map\MapOptions.cs" />
     <Compile Include="Map\MapSet.cs" />
+    <Compile Include="Map\ResourceLocation.cs" />
     <Compile Include="Map\Sector.cs" />
     <Compile Include="Map\Sidedef.cs" />
     <Compile Include="Map\Thing.cs" />
@@ -85,6 +101,14 @@
     <EmbeddedResource Include="Interface\MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\MapOptionsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MapOptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ResourceOptionsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ResourceOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>

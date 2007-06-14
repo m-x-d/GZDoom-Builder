@@ -21,16 +21,38 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using CodeImp.DoomBuilder.Map;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.IO
+namespace CodeImp.DoomBuilder.Map
 {
-	internal interface IMapSetIO : IDisposable
+	internal struct ResourceLocation
 	{
-		// Methods
-		MapSet Read(string mapname);
-		void Write(MapSet map, string mapname);
+		// Constants
+		public const int RESOURCE_WAD = 0;
+		public const int RESOURCE_DIRECTORY = 1;
+		
+		// Members
+		public int type;
+		public string location;
+		public bool textures;
+		public bool flats;
+		
+		// Constructor
+		public ResourceLocation(int type, string location, bool textures, bool flats)
+		{
+			// Initialize
+			this.type = type;
+			this.location = location;
+			this.textures = textures;
+			this.flats = flats;
+		}
+
+		// This displays the struct as string
+		public override string ToString()
+		{
+			// Simply show location
+			return location;
+		}
 	}
 }

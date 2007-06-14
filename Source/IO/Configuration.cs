@@ -1,4 +1,6 @@
 
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
 /*
  * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
  * This program is released under GNU General Public License
@@ -10,7 +12,10 @@
  * 
  */
 
-#region =   CFG file structure syntax   =
+#endregion
+
+#region ================== CFG file structure syntax
+
 /*
 ' ====================================================================================
 '    CONFIGURATION FILE STRUCTURE SYNTAX
@@ -121,8 +126,10 @@
 '                   age = 52;
 '              }
 */
+
 #endregion
 
+#region ================== Namespaces
 
 using System;
 using System.IO;
@@ -130,6 +137,8 @@ using System.Text;
 using System.Globalization;
 using System.Collections;
 using System.Collections.Specialized;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.IO
 {
