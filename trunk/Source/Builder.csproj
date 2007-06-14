@@ -60,7 +60,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Map\Linedef.cs" />
-    <Compile Include="Map\MapManager.cs" />
+    <Compile Include="Map\MapSet.cs" />
     <Compile Include="Map\Sector.cs" />
     <Compile Include="Map\Sidedef.cs" />
     <Compile Include="Map\Thing.cs" />

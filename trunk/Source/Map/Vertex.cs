@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Variables
 
 		// Map
-		private MapManager map;
+		private MapSet map;
 		
 		// List items
 		private LinkedListNode<Vertex> mainlistitem;
@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Vertex(MapManager map, LinkedListNode<Vertex> listitem, Vector2D pos)
+		public Vertex(MapSet map, LinkedListNode<Vertex> listitem, Vector2D pos)
 		{
 			// Initialize
 			this.map = map;
@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Tools
 
 		// This finds the line closest to the specified position
-		public Linedef NearestLinedef(Vector2D pos) { return MapManager.NearestLinedef(linedefs, pos); }
+		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
 
 		#endregion
 	}

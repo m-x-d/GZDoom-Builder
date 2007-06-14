@@ -19,7 +19,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class MapManager : IDisposable
+	internal class MapSet : IDisposable
 	{
 		#region ================== Constants
 
@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor for new empty map
-		public MapManager()
+		public MapSet()
 		{
 			// Initialize
 			vertices = new LinkedList<Vertex>();
@@ -113,6 +113,73 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
+		// This makes a deep copy and returns a new MapSet
+		public MapSet Clone()
+		{
+			Dictionary<Vertex, Vertex> vertexlink = new Dictionary<Vertex,Vertex>(vertices.Count);
+			Dictionary<Linedef, Linedef> linedeflink = new Dictionary<Linedef, Linedef>(linedefs.Count);
+			Dictionary<Sector, Sector> sectorlink = new Dictionary<Sector, Sector>(sectors.Count);
+			
+			// Create the map set
+			MapSet newset = new MapSet();
+
+			// Go for all vertices
+			foreach(Vertex v in vertices)
+			{
+				// Make new vertex
+				Vertex nv = newset.CreateVertex(v.Position);
+				vertexlink.Add(v, nv);
+			}
+
+			// Go for all linedefs
+			foreach(Linedef l in linedefs)
+			{
+				// Make new linedef
+				Linedef nl = newset.CreateLinedef(vertexlink[l.Start], vertexlink[l.End]);
+				linedeflink.Add(l, nl);
+				
+				// Copy properties
+				l.CopyPropertiesTo(nl);
+
+				// Recalculate
+				l.Recalculate();
+			}
+
+			// Go for all sectors
+			foreach(Sector s in sectors)
+			{
+				// Make new sector
+				Sector ns = newset.CreateSector();
+				sectorlink.Add(s, ns);
+				
+				// Copy properties
+				s.CopyPropertiesTo(ns);
+			}
+
+			// Go for all sidedefs
+			foreach(Sidedef d in sidedefs)
+			{
+				// Make new sidedef
+				Sidedef nd = newset.CreateSidedef(linedeflink[d.Line], d.IsFront, sectorlink[d.Sector]);
+				
+				// Copy properties
+				d.CopyPropertiesTo(nd);
+			}
+
+			// Go for all things
+			foreach(Thing t in things)
+			{
+				// Make new thing
+				Thing nt = newset.CreateThing(t.Type, t.Position);
+
+				// Copy properties
+				t.CopyPropertiesTo(nt);
+			}
+
+			// Return the new set
+			return newset;
+		}
+		
 		// This creates a new vertex
 		public Vertex CreateVertex(Vector2D pos)
 		{
@@ -270,11 +337,11 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Tools
 
 		// This finds the line closest to the specified position
-		public Linedef NearestLinedef(Vector2D pos) { return MapManager.NearestLinedef(linedefs, pos); }
+		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
 
 		// This finds the vertex closest to the specified position
-		public Vertex NearestVertex(Vector2D pos) { return MapManager.NearestVertex(vertices, pos); }
-		
+		public Vertex NearestVertex(Vector2D pos) { return MapSet.NearestVertex(vertices, pos); }
+
 		#endregion
 	}
 }

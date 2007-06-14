@@ -16,7 +16,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Variables
 
 		// Map
-		private MapManager map;
+		private MapSet map;
 
 		// Sector
 		private Sector sector = null;
@@ -37,7 +37,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
-		// Disposing
+		public int Type { get { return type; } }
+		public Vector2D Position { get { return pos; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -45,7 +46,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Thing(MapManager map, LinkedListNode<Thing> listitem, int type, Vector2D pos)
+		public Thing(MapSet map, LinkedListNode<Thing> listitem, int type, Vector2D pos)
 		{
 			// Initialize
 			this.map = map;
@@ -134,6 +135,14 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
+		// This copies all properties to another thing
+		public void CopyPropertiesTo(Thing t)
+		{
+			// Copy properties
+			t.type = type;
+			t.angle = angle;
+		}
+		
 		#endregion
 	}
 }

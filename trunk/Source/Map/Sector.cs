@@ -15,7 +15,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Variables
 
 		// Map
-		private MapManager map;
+		private MapSet map;
 
 		// List items
 		private LinkedListNode<Sector> mainlistitem;
@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Sector(MapManager map, LinkedListNode<Sector> listitem)
+		public Sector(MapSet map, LinkedListNode<Sector> listitem)
 		{
 			// Initialize
 			this.map = map;
@@ -118,6 +118,18 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This detaches a thing
 		public void DetachThing(LinkedListNode<Thing> l) { if(!isdisposed) things.Remove(l); }
+		
+		// This copies all properties to another sector
+		public void CopyPropertiesTo(Sector s)
+		{
+			// Copy properties
+			s.ceilheight = ceilheight;
+			s.ceiltexname = ceiltexname;
+			s.floorheight = floorheight;
+			s.floortexname = floortexname;
+			s.special = special;
+			s.tag = tag;
+		}
 		
 		#endregion
 	}

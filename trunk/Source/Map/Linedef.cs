@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Variables
 
 		// Map
-		private MapManager map;
+		private MapSet map;
 
 		// List items
 		private LinkedListNode<Linedef> mainlistitem;
@@ -61,6 +61,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
+		public Vertex Start { get { return start; } }
+		public Vertex End { get { return end; } }
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -70,7 +72,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Linedef(MapManager map, LinkedListNode<Linedef> listitem, Vertex start, Vertex end)
+		public Linedef(MapSet map, LinkedListNode<Linedef> listitem, Vertex start, Vertex end)
 		{
 			// Initialize
 			this.map = map;
@@ -144,6 +146,16 @@ namespace CodeImp.DoomBuilder.Map
 			lengthsq = delta.GetLengthSq();
 			length = (float)Math.Sqrt(lengthsq);
 			//angle = delta.GetAngle();
+		}
+
+		// This copies all properties to another line
+		public void CopyPropertiesTo(Linedef l)
+		{
+			// Copy properties
+			l.action = action;
+			l.args = (byte[])args.Clone();
+			l.flags = flags;
+			l.tag = tag;
 		}
 		
 		#endregion
