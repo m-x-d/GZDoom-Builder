@@ -14,6 +14,26 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Variables
 
+		// Map
+		private MapManager map;
+
+		// List items
+		private LinkedListNode<Sidedef> mainlistitem;
+		private LinkedListNode<Sidedef> sectorlistitem;
+
+		// Owner
+		private Linedef linedef;
+		
+		// Sector
+		private Sector sector;
+
+		// Properties
+		private int offsetx;
+		private int offsety;
+		private string texnamehigh;
+		private string texnamemid;
+		private string texnamelow;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -21,7 +41,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
-		// Disposing
+		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
+		public Sector Sector { get { return sector; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -29,9 +50,19 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Sidedef()
+		public Sidedef(MapManager map, LinkedListNode<Sidedef> listitem, Linedef l, bool front, Sector s)
 		{
 			// Initialize
+			this.map = map;
+			this.mainlistitem = listitem;
+			this.linedef = l;
+			this.sector = s;
+			
+			// Attach to the linedef
+			if(front) l.AttachFront(this); else l.AttachBack(this);
+			
+			// Attach to sector
+			sectorlistitem = s.AttachSidedef(this);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -43,10 +74,24 @@ namespace CodeImp.DoomBuilder.Map
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				// Clean up
-
-				// Done
+				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
+
+				// Remove from main list
+				mainlistitem.List.Remove(mainlistitem);
+
+				// Detach from linedef
+				linedef.DetachSidedef(this);
+				
+				// Detach from sector
+				sector.DetachSidedef(sectorlistitem);
+				
+				// Clean up
+				mainlistitem = null;
+				sectorlistitem = null;
+				linedef = null;
+				map = null;
+				sector = null;
 			}
 		}
 

@@ -15,6 +15,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Map
 {
@@ -26,6 +27,14 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Variables
 
+		// Map
+		private MapManager map;
+
+		// List items
+		private LinkedListNode<Linedef> mainlistitem;
+		private LinkedListNode<Linedef> startvertexlistitem;
+		private LinkedListNode<Linedef> endvertexlistitem;
+		
 		// Vertices
 		private Vertex start;
 		private Vertex end;
@@ -33,6 +42,11 @@ namespace CodeImp.DoomBuilder.Map
 		// Sidedefs
 		private Sidedef front;
 		private Sidedef back;
+
+		// Cache
+		private float lengthsq;
+		private float length;
+		//private float angle;
 
 		// Properties
 		private int flags;
@@ -47,7 +61,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
-		// Disposing
+		public Sidedef Front { get { return front; } }
+		public Sidedef Back { get { return back; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -55,12 +70,21 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Linedef(Vertex start, Vertex end)
+		public Linedef(MapManager map, LinkedListNode<Linedef> listitem, Vertex start, Vertex end)
 		{
 			// Initialize
+			this.map = map;
+			this.mainlistitem = listitem;
 			this.start = start;
 			this.end = end;
 
+			// Attach to vertices
+			startvertexlistitem = start.AttachLinedef(this);
+			endvertexlistitem = end.AttachLinedef(this);
+
+			// Calculate values
+			Recalculate();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -71,29 +95,100 @@ namespace CodeImp.DoomBuilder.Map
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Already set isdisposed so that changes can be prohibited
+				isdisposed = true;
+
+				// Remove from main list
+				mainlistitem.List.Remove(mainlistitem);
+
 				// Detach from vertices
-				start.Detach(this);
-				end.Detach(this);
+				start.DetachLinedef(startvertexlistitem);
+				end.DetachLinedef(endvertexlistitem);
 				
 				// Dispose sidedefs
 				front.Dispose();
 				back.Dispose();
 				
 				// Clean up
+				mainlistitem = null;
+				startvertexlistitem = null;
+				endvertexlistitem = null;
 				start = null;
 				end = null;
 				front = null;
 				back = null;
-
-				// Done
-				isdisposed = true;
+				map = null;
 			}
 		}
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Management
 
+		// This attaches a sidedef on the front
+		public void AttachFront(Sidedef s) { if(front == null) front = s; else throw new Exception("Linedef already has a front Sidedef."); }
+
+		// This attaches a sidedef on the back
+		public void AttachBack(Sidedef s) { if(back == null) back = s; else throw new Exception("Linedef already has a back Sidedef."); }
+
+		// This detaches a sidedef from the front
+		public void DetachSidedef(Sidedef s) { if(front == s) front = null; else if(back == s) back = null; else throw new Exception("Specified Sidedef is not attached to this Linedef."); }
+		
+		// This recalculates cached values
+		public void Recalculate()
+		{
+			// Delta vector
+			Vector2D delta = end.Position - start.Position;
+			
+			// Recalculate values
+			lengthsq = delta.GetLengthSq();
+			length = (float)Math.Sqrt(lengthsq);
+			//angle = delta.GetAngle();
+		}
+		
+		#endregion
+		
+		#region ================== Mathematics
+
+		// This returns the shortest distance from given coordinates to line
+		public float DistanceToSq(Vector2D p, bool bounded)
+		{
+			Vector2D v1 = start.Position;
+			Vector2D v2 = end.Position;
+			
+			// Calculate intersection offset
+			float u = ((p.x - v1.x) * (v2.x - v1.x) + (p.y - v1.y) * (v2.y - v1.y)) / lengthsq;
+
+			// Limit intersection offset to the line
+			if(bounded) if(u < 0f) u = 0f; else if(u > 1f) u = 1f;
+			
+			// Calculate intersection point
+			Vector2D i = v1 + u * (v2 - v1);
+
+			// Return distance between intersection and point
+			// which is the shortest distance to the line
+			float ldx = p.x - i.x;
+			float ldy = p.y - i.y;
+			return ldx * ldx + ldy * ldy;
+		}
+
+		// This returns the shortest distance from given coordinates to line
+		public float DistanceTo(Vector2D p, bool bounded)
+		{
+			return (float)Math.Sqrt(DistanceToSq(p, bounded));
+		}
+
+		// This tests on which side of the line the given coordinates are
+		// returns < 0 for front (right) side, > 0 for back (left) side and 0 if on the line
+		public float SideOfLine(Vector2D p)
+		{
+			Vector2D v1 = start.Position;
+			Vector2D v2 = end.Position;
+			
+			// Calculate and return side information
+			return (p.y - v1.y) * (v2.x - v1.x) - (p.x - v1.x) * (v2.y - v1.y);
+		}
+		
 		#endregion
 	}
 }
