@@ -15,7 +15,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Variables
 
 		// Map
-		private MapManager map;
+		private MapSet map;
 
 		// List items
 		private LinkedListNode<Sidedef> mainlistitem;
@@ -41,6 +41,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
+		public bool IsFront { get { return (this == linedef.Front); } }
+		public Linedef Line { get { return linedef; } }
 		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
 		public Sector Sector { get { return sector; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -50,7 +52,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Sidedef(MapManager map, LinkedListNode<Sidedef> listitem, Linedef l, bool front, Sector s)
+		public Sidedef(MapSet map, LinkedListNode<Sidedef> listitem, Linedef l, bool front, Sector s)
 		{
 			// Initialize
 			this.map = map;
@@ -97,8 +99,19 @@ namespace CodeImp.DoomBuilder.Map
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Management
 
+		// This copies all properties to another sidedef
+		public void CopyPropertiesTo(Sidedef s)
+		{
+			// Copy properties
+			s.offsetx = offsetx;
+			s.offsety = offsety;
+			s.texnamehigh = texnamehigh;
+			s.texnamelow = texnamelow;
+			s.texnamemid = texnamemid;
+		}
+		
 		#endregion
 	}
 }
