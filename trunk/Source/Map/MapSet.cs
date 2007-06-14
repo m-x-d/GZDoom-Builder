@@ -1,4 +1,6 @@
 
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
 /*
  * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
  * This program is released under GNU General Public License
@@ -10,12 +12,18 @@
  * 
  */
 
+#endregion
+
+#region ================== Namespaces
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.Map
 {

@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemnewmap.Name = "itemnewmap";
 			this.itemnewmap.Size = new System.Drawing.Size(167, 22);
 			this.itemnewmap.Text = "New Map...";
+			this.itemnewmap.Click += new System.EventHandler(this.itemnewmap_Click);
 			// 
 			// itemopenmap
 			// 
