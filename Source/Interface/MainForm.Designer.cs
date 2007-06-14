@@ -41,9 +41,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemexit = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
+			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panelinfo = new System.Windows.Forms.Panel();
 			this.display = new System.Windows.Forms.PictureBox();
 			this.menumain.SuspendLayout();
+			this.statusbar.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.display)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -129,10 +131,22 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// statusbar
 			// 
+			this.statusbar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statuslabel});
 			this.statusbar.Location = new System.Drawing.Point(0, 471);
 			this.statusbar.Name = "statusbar";
 			this.statusbar.Size = new System.Drawing.Size(619, 22);
 			this.statusbar.TabIndex = 2;
+			// 
+			// statuslabel
+			// 
+			this.statuslabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.statuslabel.Name = "statuslabel";
+			this.statuslabel.Size = new System.Drawing.Size(573, 17);
+			this.statuslabel.Spring = true;
+			this.statuslabel.Text = "Initializing user interface...";
+			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// panelinfo
 			// 
@@ -175,6 +189,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Text = "Doom Builder";
 			this.menumain.ResumeLayout(false);
 			this.menumain.PerformLayout();
+			this.statusbar.ResumeLayout(false);
+			this.statusbar.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.display)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -197,5 +213,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemsavemapinto;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem itemexit;
+		private System.Windows.Forms.ToolStripStatusLabel statuslabel;
 	}
 }
