@@ -181,6 +181,13 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Size = new System.Drawing.Size(731, 373);
 			this.display.TabIndex = 5;
 			this.display.TabStop = false;
+			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
+			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
+			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
+			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
+			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
+			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
+			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
 			// 
 			// MainForm
 			// 
