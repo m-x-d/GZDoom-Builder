@@ -15,7 +15,7 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		// Properties
 		public MapOptions Options { get { return options; } }
-
+		
 		// Constructor
 		public MapOptionsForm(MapOptions options)
 		{
@@ -85,6 +85,57 @@ namespace CodeImp.DoomBuilder.Interface
 			// Just hide window
 			this.DialogResult = DialogResult.Cancel;
 			this.Hide();
+		}
+
+		// Add Resource clicked
+		private void addresource_Click(object sender, EventArgs e)
+		{
+			ResourceOptionsForm resoptions;
+			
+			// Open resource options dialog
+			resoptions = new ResourceOptionsForm(new ResourceLocation(), "Add Resource");
+			if(resoptions.ShowDialog(this) == DialogResult.OK)
+			{
+				// Add resource
+				resources.Items.Add(resoptions.ResourceLocation);
+			}
+		}
+
+		// Resource Options clicked
+		private void editresource_Click(object sender, EventArgs e)
+		{
+			ResourceOptionsForm resoptions;
+
+			// Anything selected?
+			if(resources.SelectedIndex > -1)
+			{
+				// Open resource options dialog
+				resoptions = new ResourceOptionsForm((ResourceLocation)resources.SelectedItem, "Resource Options");
+				if(resoptions.ShowDialog(this) == DialogResult.OK)
+				{
+					// Replace resource
+					resources.Items[resources.SelectedIndex] = resoptions.ResourceLocation;
+				}
+			}
+		}
+
+		// Remove resource clicked
+		private void deleteresource_Click(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(resources.SelectedIndex > -1)
+			{
+				// Remove it
+				resources.Items.RemoveAt(resources.SelectedIndex);
+			}
+		}
+
+		// Resource selection changes
+		private void resources_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Enable/disable buttons
+			editresource.Enabled = (resources.SelectedIndex > -1);
+			deleteresource.Enabled = (resources.SelectedIndex > -1);
 		}
 	}
 }

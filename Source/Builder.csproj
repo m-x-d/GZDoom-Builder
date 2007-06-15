@@ -148,4 +148,7 @@
       <Isolated>False</Isolated>
     </COMReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Editing\" />
+  </ItemGroup>
 </Project>

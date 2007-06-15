@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemnewmap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemopenmap = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemclosemap = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.itemsavemap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsavemapas = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,6 +65,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menufile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemnewmap,
             this.itemopenmap,
+            this.itemclosemap,
             this.toolStripMenuItem1,
             this.itemsavemap,
             this.itemsavemapas,
@@ -78,7 +80,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemnewmap.Name = "itemnewmap";
 			this.itemnewmap.Size = new System.Drawing.Size(167, 22);
-			this.itemnewmap.Text = "New Map...";
+			this.itemnewmap.Text = "New Map";
 			this.itemnewmap.Click += new System.EventHandler(this.itemnewmap_Click);
 			// 
 			// itemopenmap
@@ -86,6 +88,13 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemopenmap.Name = "itemopenmap";
 			this.itemopenmap.Size = new System.Drawing.Size(167, 22);
 			this.itemopenmap.Text = "Open Map...";
+			// 
+			// itemclosemap
+			// 
+			this.itemclosemap.Name = "itemclosemap";
+			this.itemclosemap.Size = new System.Drawing.Size(167, 22);
+			this.itemclosemap.Text = "Close Map";
+			this.itemclosemap.Click += new System.EventHandler(this.itemclosemap_Click);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -120,6 +129,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemexit.Name = "itemexit";
 			this.itemexit.Size = new System.Drawing.Size(167, 22);
 			this.itemexit.Text = "Exit";
+			this.itemexit.Click += new System.EventHandler(this.itemexit_Click);
 			// 
 			// toolbar
 			// 
@@ -220,5 +230,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem itemexit;
 		private System.Windows.Forms.ToolStripStatusLabel statuslabel;
+		private System.Windows.Forms.ToolStripMenuItem itemclosemap;
 	}
 }
