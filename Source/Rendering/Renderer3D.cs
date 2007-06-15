@@ -40,6 +40,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Variables
 
+		// Owner
+		private Graphics graphics;
+
 		// Disposing
 		private bool isdisposed = false;
 
@@ -55,9 +58,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Renderer3D()
+		public Renderer3D(Graphics graphics)
 		{
 			// Initialize
+			this.graphics = graphics;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);

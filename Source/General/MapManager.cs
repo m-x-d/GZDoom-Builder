@@ -65,10 +65,12 @@ namespace CodeImp.DoomBuilder
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
 		public MapOptions Options { get { return options; } }
+		public MapSet Data { get { return data; } }
 		public EditMode Mode { get { return mode; } }
 		public bool IsChanged { get { return changed; } set { changed = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
-
+		public Graphics Graphics { get { return graphics; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer

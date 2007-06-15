@@ -27,6 +27,7 @@ using System.Reflection;
 using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -39,7 +40,10 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 
 		#region ================== Variables
-
+		
+		// Graphics
+		protected Graphics graphics;
+		
 		// Disposing
 		protected bool isdisposed = false;
 
@@ -58,6 +62,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public EditMode()
 		{
 			// Initialize
+			this.graphics = General.Map.Graphics;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -89,6 +94,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void MouseMove(MouseEventArgs e) { }
 		public virtual void MouseUp(MouseEventArgs e) { }
 		public virtual void Cancel() { }
+		public virtual void RedrawDisplay() { }
 		
 		#endregion
 	}

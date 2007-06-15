@@ -27,6 +27,7 @@ using System.Reflection;
 using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -215,7 +216,7 @@ namespace CodeImp.DoomBuilder
 		{
 			MapOptions newoptions;
 			MapOptionsForm optionswindow;
-			
+
 			// Empty options
 			newoptions = new MapOptions();
 
@@ -252,6 +253,16 @@ namespace CodeImp.DoomBuilder
 						return false;
 					}
 
+					// TEST:
+					Vertex v1 = map.Data.CreateVertex(new Vector2D(20f, 20f));
+					Vertex v2 = map.Data.CreateVertex(new Vector2D(-20f, 20f));
+					Vertex v3 = map.Data.CreateVertex(new Vector2D(-20f, -20f));
+					Vertex v4 = map.Data.CreateVertex(new Vector2D(20f, -20f));
+					map.Data.CreateLinedef(v1, v2);
+					map.Data.CreateLinedef(v2, v3);
+					map.Data.CreateLinedef(v3, v4);
+					map.Data.CreateLinedef(v4, v1);
+					
 					// Done
 					mainwindow.UpdateMenus();
 					mainwindow.DisplayReady();

@@ -27,6 +27,7 @@ using System.Reflection;
 using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -72,6 +73,17 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
+		// This redraws the display
+		public override void RedrawDisplay()
+		{
+			if(renderer.StartRendering())
+			{
+				renderer.RenderLinedefs(General.Map.Data.Linedefs);
+
+				renderer.FinishRendering();
+			}
+		}
+		
 		#endregion
 	}
 }
