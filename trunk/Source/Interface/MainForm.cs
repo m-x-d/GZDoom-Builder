@@ -164,6 +164,7 @@ namespace CodeImp.DoomBuilder.Interface
 			display.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			display.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash2;
 			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.Update();
 		}
 		
 		// This clears the display
@@ -173,7 +174,29 @@ namespace CodeImp.DoomBuilder.Interface
 			display.BackColor = Color.Black;
 			display.BackgroundImage = null;
 			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Tile;
+			this.Update();
 		}
+
+		// Mouse click
+		private void display_MouseClick(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseClick(e); }
+
+		// Mouse doubleclick
+		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseDoubleClick(e); }
+
+		// Mouse down
+		private void display_MouseDown(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseDown(e); }
+
+		// Mouse enters
+		private void display_MouseEnter(object sender, EventArgs e) { if(General.Map != null) General.Map.Mode.MouseEnter(e); }
+
+		// Mouse leaves
+		private void display_MouseLeave(object sender, EventArgs e) { if(General.Map != null) General.Map.Mode.MouseLeave(e); }
+
+		// Mouse moves
+		private void display_MouseMove(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseMove(e); }
+
+		// Mouse up
+		private void display_MouseUp(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseUp(e); }
 		
 		#endregion
 

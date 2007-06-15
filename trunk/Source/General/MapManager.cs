@@ -27,6 +27,9 @@ using System.Reflection;
 using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Editing;
+using System.Diagnostics;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -49,7 +52,9 @@ namespace CodeImp.DoomBuilder
 		private MapSet data;
 		private MapOptions options;
 		private Configuration config;
-
+		private EditMode mode;
+		private Graphics graphics;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -60,6 +65,7 @@ namespace CodeImp.DoomBuilder
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
 		public MapOptions Options { get { return options; } }
+		public EditMode Mode { get { return mode; } }
 		public bool IsChanged { get { return changed; } set { changed = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
@@ -68,16 +74,8 @@ namespace CodeImp.DoomBuilder
 		#region ================== Constructor / Disposer
 
 		// Constructor for new map
-		public MapManager(MapOptions options)
+		public MapManager()
 		{
-			// Initialize
-			this.filetitle = "unnamed.wad";
-			this.filepathname = "";
-			this.changed = false;
-			this.options = options;
-			this.config = General.LoadGameConfiguration(options.ConfigFile);
-			this.data = new MapSet();
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -90,6 +88,8 @@ namespace CodeImp.DoomBuilder
 			{
 				// Dispose
 				data.Dispose();
+				mode.Dispose();
+				graphics.Dispose();
 				
 				// Done
 				isdisposed = true;
@@ -98,7 +98,59 @@ namespace CodeImp.DoomBuilder
 
 		#endregion
 
+		#region ================== Initialize
+		
+		// Initializes for a new map
+		public bool InitializeNewMap(MapOptions options)
+		{
+			// Apply settings
+			this.filetitle = "unnamed.wad";
+			this.filepathname = "";
+			this.changed = false;
+			this.options = options;
+			
+			// Create objects
+			data = new MapSet();
+			graphics = new Graphics(General.MainWindow.Display);
+			config = General.LoadGameConfiguration(options.ConfigFile);
+
+			// Initiate graphics
+			if(!graphics.Initialize()) return false;
+			
+			// Set default mode
+			ChangeMode(typeof(FrozenOverviewMode));
+
+			// Success
+			return true;
+		}
+		
+		#endregion
+
 		#region ================== Methods
+
+		// This changes editing mode
+		public void ChangeMode(Type modetype, params object[] args)
+		{
+			// Dispose current mode
+			if(mode != null) mode.Dispose();
+			
+			try
+			{
+				// Create new mode
+				mode = (EditMode)General.ThisAssembly.CreateInstance(modetype.FullName, false,
+					BindingFlags.Default, null, args, CultureInfo.CurrentCulture, new object[0]);
+			}
+			// Catch errors
+			catch(TargetInvocationException e)
+			{
+				// Throw the actual exception
+				Debug.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
+				Debug.WriteLine(e.InnerException.Source + " throws " + e.InnerException.GetType().Name + ":");
+				Debug.WriteLine(e.InnerException.Message);
+				Debug.WriteLine(e.InnerException.StackTrace);
+				throw e.InnerException;
+			}
+		}
 		
 		#endregion
 	}

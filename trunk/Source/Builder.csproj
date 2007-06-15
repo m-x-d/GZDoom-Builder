@@ -44,6 +44,9 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Editing\EditMode.cs" />
+    <Compile Include="Editing\FrozenOverviewMode.cs" />
+    <Compile Include="Editing\ViewClassicMode.cs" />
     <Compile Include="General\ConfigurationInfo.cs" />
     <Compile Include="General\MapManager.cs" />
     <Compile Include="Geometry\Angle2D.cs" />
@@ -88,11 +91,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Rendering\Graphics.cs" />
+    <Compile Include="Rendering\PTVertex.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="SlimDX, Version=1.0.2721.819, Culture=neutral, processorArchitecture=x86">
-      <Aliases>global</Aliases>
-    </Reference>
+    <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2911.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -147,8 +152,5 @@
       <WrapperTool>primary</WrapperTool>
       <Isolated>False</Isolated>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Editing\" />
   </ItemGroup>
 </Project>

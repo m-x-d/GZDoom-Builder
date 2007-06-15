@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder
 		private static string configspath;
 		
 		// Main objects
+		private static Assembly thisasm;
 		private static MainForm mainwindow;
 		private static Configuration settings;
 		private static MapManager map;
@@ -61,6 +62,7 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Properties
 
+		public static Assembly ThisAssembly { get { return thisasm; } }
 		public static string AppPath { get { return apppath; } }
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }
@@ -153,9 +155,13 @@ namespace CodeImp.DoomBuilder
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			Uri localpath;
+			
+			// Get a reference to this assembly
+			thisasm = Assembly.GetExecutingAssembly();
+			
 			// Find application path
-			string dirpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
-			Uri localpath = new Uri(dirpath);
+			localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
 			apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
 
 			// Temporary directory
@@ -222,7 +228,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Display status
 					mainwindow.DisplayStatus("Creating new map...");
-
+					
 					// Clear the display
 					mainwindow.ClearDisplay();
 					
@@ -230,7 +236,21 @@ namespace CodeImp.DoomBuilder
 					if(map != null) map.Dispose();
 
 					// Create map manager with given options
-					map = new MapManager(newoptions);
+					map = new MapManager();
+					if(!map.InitializeNewMap(newoptions))
+					{
+						// Unable to create map manager
+						map.Dispose();
+						map = null;
+
+						// Show splash logo on display
+						mainwindow.ShowSplashDisplay();
+
+						// Failed
+						mainwindow.UpdateMenus();
+						mainwindow.DisplayReady();
+						return false;
+					}
 
 					// Done
 					mainwindow.UpdateMenus();
