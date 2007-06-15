@@ -93,6 +93,8 @@
     </Compile>
     <Compile Include="Rendering\Graphics.cs" />
     <Compile Include="Rendering\PTVertex.cs" />
+    <Compile Include="Rendering\Renderer2D.cs" />
+    <Compile Include="Rendering\Renderer3D.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
