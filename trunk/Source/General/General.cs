@@ -150,6 +150,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Startup
 
 		// Main program entry
+		[STAThread]
 		public static void Main(string[] args)
 		{
 			// Find application path
@@ -208,7 +209,6 @@ namespace CodeImp.DoomBuilder
 		{
 			MapOptions newoptions;
 			MapOptionsForm optionswindow;
-			DialogResult result;
 			
 			// Empty options
 			newoptions = new MapOptions();
@@ -217,30 +217,50 @@ namespace CodeImp.DoomBuilder
 			optionswindow = new MapOptionsForm(newoptions);
 			if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
 			{
-				// Map open and not saved?
-				if((map != null) && map.IsChanged)
+				// Ask to save the map if not saved yet
+				if(AskSaveMap())
 				{
-					// Ask to save changes
-					result = MessageBox.Show(mainwindow, "Do you want to save changes to " + map.FileTitle + " (" + map.Options.CurrentName + ")?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-					if(result == DialogResult.Yes)
-					{
-						// TODO: Save map
+					// Display status
+					mainwindow.DisplayStatus("Creating new map...");
 
-					}
-					else if(result == DialogResult.Cancel)
-					{
-						// Abort
-						return false;
-					}
+					// Clear the display
+					mainwindow.ClearDisplay();
+					
+					// Trash the current map, if any
+					if(map != null) map.Dispose();
+
+					// Create map manager with given options
+					map = new MapManager(newoptions);
+
+					// Done
+					mainwindow.UpdateMenus();
+					mainwindow.DisplayReady();
+					return true;
 				}
+			}
+			
+			// Cancelled
+			return false;
+		}
 
+		// This closes the current map
+		public static bool CloseMap()
+		{
+			// Ask to save the map if not saved yet
+			if(AskSaveMap())
+			{
 				// Display status
-				mainwindow.DisplayStatus("Creating new map...");
+				mainwindow.DisplayStatus("Closing map...");
 
-				// Create map manager with these options
-				map = new MapManager(newoptions);
+				// Trash the current map
+				if(map != null) map.Dispose();
+				map = null;
 
+				// Show splash logo on display
+				mainwindow.ShowSplashDisplay();
+				
 				// Done
+				mainwindow.UpdateMenus();
 				mainwindow.DisplayReady();
 				return true;
 			}
@@ -250,7 +270,34 @@ namespace CodeImp.DoomBuilder
 				return false;
 			}
 		}
+		
+		// This asks to save the map if needed
+		// Returns false when action was cancelled
+		private static bool AskSaveMap()
+		{
+			DialogResult result;
+			
+			// Map open and not saved?
+			if((map != null) && map.IsChanged)
+			{
+				// Ask to save changes
+				result = MessageBox.Show(mainwindow, "Do you want to save changes to " + map.FileTitle + " (" + map.Options.CurrentName + ")?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+				if(result == DialogResult.Yes)
+				{
+					// TODO: Save map
 
+				}
+				else if(result == DialogResult.Cancel)
+				{
+					// Abort
+					return false;
+				}
+			}
+			
+			// Continue
+			return true;
+		}
+		
 		#endregion
 	}
 }

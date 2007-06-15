@@ -41,6 +41,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.dirlocation = new System.Windows.Forms.TextBox();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.wadfiledialog = new System.Windows.Forms.OpenFileDialog();
+			this.dirdialog = new System.Windows.Forms.FolderBrowserDialog();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
@@ -104,6 +106,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.browsewad.TabIndex = 2;
 			this.browsewad.Text = "...";
 			this.browsewad.UseVisualStyleBackColor = true;
+			this.browsewad.Click += new System.EventHandler(this.browsewad_Click);
 			// 
 			// wadlocation
 			// 
@@ -158,6 +161,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.browsedir.TabIndex = 5;
 			this.browsedir.Text = "...";
 			this.browsedir.UseVisualStyleBackColor = true;
+			this.browsedir.Click += new System.EventHandler(this.browsedir_Click);
 			// 
 			// dirlocation
 			// 
@@ -171,6 +175,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cancel.Location = new System.Drawing.Point(253, 189);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
@@ -190,6 +195,15 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// wadfiledialog
+			// 
+			this.wadfiledialog.Filter = "Doom WAD Files|*.wad";
+			this.wadfiledialog.Title = "Browse WAD File";
+			// 
+			// dirdialog
+			// 
+			this.dirdialog.Description = "Please select a directory from which to load images when editing your map...";
+			// 
 			// ResourceOptionsForm
 			// 
 			this.AcceptButton = this.apply;
@@ -200,6 +214,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
+			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -231,5 +246,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.TextBox dirlocation;
 		private System.Windows.Forms.CheckBox dir_flats;
 		private System.Windows.Forms.CheckBox dir_textures;
+		private System.Windows.Forms.OpenFileDialog wadfiledialog;
+		private System.Windows.Forms.FolderBrowserDialog dirdialog;
 	}
 }

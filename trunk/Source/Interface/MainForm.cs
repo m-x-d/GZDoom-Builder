@@ -42,7 +42,13 @@ namespace CodeImp.DoomBuilder.Interface
 		private Size lastsize;
 
 		#endregion
-		
+
+		#region ================== Properties
+
+		public PictureBox Display { get { return display; } }
+
+		#endregion
+
 		#region ================== Constructor / Disposer
 
 		// Constructor
@@ -149,10 +155,59 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#endregion
 
+		#region ================== Display
+
+		// This shows the splash screen on display
+		public void ShowSplashDisplay()
+		{
+			// Change display to show splash logo
+			display.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			display.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash2;
+			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+		}
+		
+		// This clears the display
+		public void ClearDisplay()
+		{
+			// Clear the display
+			display.BackColor = Color.Black;
+			display.BackgroundImage = null;
+			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Tile;
+		}
+		
+		#endregion
+
+		#region ================== Menus
+
+		// This updates all menus for the current status
+		public void UpdateMenus()
+		{
+			// Update them all
+			UpdateFileMenu();
+		}
+
+		#endregion
+
 		#region ================== File Menu
 
 		// New map clicked
 		private void itemnewmap_Click(object sender, EventArgs e) { General.NewMap(); }
+
+		// Close map clicked
+		private void itemclosemap_Click(object sender, EventArgs e) { General.CloseMap(); }
+
+		// Exit clicked
+		private void itemexit_Click(object sender, EventArgs e) { this.Close(); }
+
+		// This sets up the file menu
+		private void UpdateFileMenu()
+		{
+			// Enable/disable items
+			itemclosemap.Enabled = (General.Map != null);
+			itemsavemap.Enabled = (General.Map != null);
+			itemsavemapas.Enabled = (General.Map != null);
+			itemsavemapinto.Enabled = (General.Map != null);
+		}
 
 		#endregion
 	}

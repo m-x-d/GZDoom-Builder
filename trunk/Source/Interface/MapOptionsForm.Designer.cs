@@ -28,43 +28,27 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label1;
-			System.Windows.Forms.GroupBox groupBox2;
+			System.Windows.Forms.GroupBox panelsettings;
+			System.Windows.Forms.GroupBox panelres;
 			this.levelname = new System.Windows.Forms.TextBox();
 			this.config = new System.Windows.Forms.ComboBox();
-			this.button2 = new System.Windows.Forms.Button();
-			this.button1 = new System.Windows.Forms.Button();
+			this.deleteresource = new System.Windows.Forms.Button();
+			this.editresource = new System.Windows.Forms.Button();
 			this.addresource = new System.Windows.Forms.Button();
 			this.resources = new System.Windows.Forms.ListBox();
 			this.apply = new System.Windows.Forms.Button();
 			this.cancel = new System.Windows.Forms.Button();
-			groupBox1 = new System.Windows.Forms.GroupBox();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
-			groupBox2 = new System.Windows.Forms.GroupBox();
-			groupBox1.SuspendLayout();
-			groupBox2.SuspendLayout();
+			panelsettings = new System.Windows.Forms.GroupBox();
+			panelres = new System.Windows.Forms.GroupBox();
+			panelsettings.SuspendLayout();
+			panelres.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// groupBox1
-			// 
-			groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			groupBox1.Controls.Add(label3);
-			groupBox1.Controls.Add(this.levelname);
-			groupBox1.Controls.Add(label2);
-			groupBox1.Controls.Add(this.config);
-			groupBox1.Controls.Add(label1);
-			groupBox1.Location = new System.Drawing.Point(12, 12);
-			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(365, 118);
-			groupBox1.TabIndex = 10;
-			groupBox1.TabStop = false;
-			groupBox1.Text = " Settings ";
 			// 
 			// label3
 			// 
@@ -75,13 +59,6 @@ namespace CodeImp.DoomBuilder.Interface
 			label3.TabIndex = 9;
 			label3.Text = "example:  MAP01";
 			// 
-			// levelname
-			// 
-			this.levelname.Location = new System.Drawing.Point(129, 73);
-			this.levelname.Name = "levelname";
-			this.levelname.Size = new System.Drawing.Size(94, 20);
-			this.levelname.TabIndex = 8;
-			// 
 			// label2
 			// 
 			label2.AutoSize = true;
@@ -90,15 +67,6 @@ namespace CodeImp.DoomBuilder.Interface
 			label2.Size = new System.Drawing.Size(65, 14);
 			label2.TabIndex = 7;
 			label2.Text = "Level name:";
-			// 
-			// config
-			// 
-			this.config.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.config.FormattingEnabled = true;
-			this.config.Location = new System.Drawing.Point(129, 31);
-			this.config.Name = "config";
-			this.config.Size = new System.Drawing.Size(213, 22);
-			this.config.TabIndex = 6;
 			// 
 			// label1
 			// 
@@ -109,36 +77,72 @@ namespace CodeImp.DoomBuilder.Interface
 			label1.TabIndex = 5;
 			label1.Text = "Game Configuration:";
 			// 
-			// groupBox2
+			// panelsettings
 			// 
-			groupBox2.Controls.Add(this.button2);
-			groupBox2.Controls.Add(this.button1);
-			groupBox2.Controls.Add(this.addresource);
-			groupBox2.Controls.Add(this.resources);
-			groupBox2.Location = new System.Drawing.Point(12, 145);
-			groupBox2.Name = "groupBox2";
-			groupBox2.Size = new System.Drawing.Size(365, 165);
-			groupBox2.TabIndex = 11;
-			groupBox2.TabStop = false;
-			groupBox2.Text = " Custom Resources ";
+			panelsettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			panelsettings.Controls.Add(label3);
+			panelsettings.Controls.Add(this.levelname);
+			panelsettings.Controls.Add(label2);
+			panelsettings.Controls.Add(this.config);
+			panelsettings.Controls.Add(label1);
+			panelsettings.Location = new System.Drawing.Point(12, 12);
+			panelsettings.Name = "panelsettings";
+			panelsettings.Size = new System.Drawing.Size(365, 118);
+			panelsettings.TabIndex = 10;
+			panelsettings.TabStop = false;
+			panelsettings.Text = " Settings ";
 			// 
-			// button2
+			// levelname
 			// 
-			this.button2.Location = new System.Drawing.Point(268, 125);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(74, 25);
-			this.button2.TabIndex = 13;
-			this.button2.Text = "Remove";
-			this.button2.UseVisualStyleBackColor = true;
+			this.levelname.Location = new System.Drawing.Point(129, 73);
+			this.levelname.Name = "levelname";
+			this.levelname.Size = new System.Drawing.Size(94, 20);
+			this.levelname.TabIndex = 8;
 			// 
-			// button1
+			// config
 			// 
-			this.button1.Location = new System.Drawing.Point(139, 125);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(123, 25);
-			this.button1.TabIndex = 12;
-			this.button1.Text = "Resource Options...";
-			this.button1.UseVisualStyleBackColor = true;
+			this.config.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.config.FormattingEnabled = true;
+			this.config.Location = new System.Drawing.Point(129, 31);
+			this.config.Name = "config";
+			this.config.Size = new System.Drawing.Size(213, 22);
+			this.config.TabIndex = 6;
+			// 
+			// panelres
+			// 
+			panelres.Controls.Add(this.deleteresource);
+			panelres.Controls.Add(this.editresource);
+			panelres.Controls.Add(this.addresource);
+			panelres.Controls.Add(this.resources);
+			panelres.Location = new System.Drawing.Point(12, 145);
+			panelres.Name = "panelres";
+			panelres.Size = new System.Drawing.Size(365, 165);
+			panelres.TabIndex = 11;
+			panelres.TabStop = false;
+			panelres.Text = " Custom Resources ";
+			// 
+			// deleteresource
+			// 
+			this.deleteresource.Enabled = false;
+			this.deleteresource.Location = new System.Drawing.Point(268, 125);
+			this.deleteresource.Name = "deleteresource";
+			this.deleteresource.Size = new System.Drawing.Size(74, 25);
+			this.deleteresource.TabIndex = 13;
+			this.deleteresource.Text = "Remove";
+			this.deleteresource.UseVisualStyleBackColor = true;
+			this.deleteresource.Click += new System.EventHandler(this.deleteresource_Click);
+			// 
+			// editresource
+			// 
+			this.editresource.Enabled = false;
+			this.editresource.Location = new System.Drawing.Point(139, 125);
+			this.editresource.Name = "editresource";
+			this.editresource.Size = new System.Drawing.Size(123, 25);
+			this.editresource.TabIndex = 12;
+			this.editresource.Text = "Resource Options...";
+			this.editresource.UseVisualStyleBackColor = true;
+			this.editresource.Click += new System.EventHandler(this.editresource_Click);
 			// 
 			// addresource
 			// 
@@ -148,6 +152,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.addresource.TabIndex = 11;
 			this.addresource.Text = "Add Resource...";
 			this.addresource.UseVisualStyleBackColor = true;
+			this.addresource.Click += new System.EventHandler(this.addresource_Click);
 			// 
 			// resources
 			// 
@@ -159,6 +164,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.resources.Name = "resources";
 			this.resources.Size = new System.Drawing.Size(321, 88);
 			this.resources.TabIndex = 10;
+			this.resources.SelectedIndexChanged += new System.EventHandler(this.resources_SelectedIndexChanged);
 			// 
 			// apply
 			// 
@@ -190,8 +196,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.ClientSize = new System.Drawing.Size(389, 367);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Controls.Add(groupBox2);
-			this.Controls.Add(groupBox1);
+			this.Controls.Add(panelres);
+			this.Controls.Add(panelsettings);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -201,9 +207,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Map Options";
-			groupBox1.ResumeLayout(false);
-			groupBox1.PerformLayout();
-			groupBox2.ResumeLayout(false);
+			panelsettings.ResumeLayout(false);
+			panelsettings.PerformLayout();
+			panelres.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -212,8 +218,8 @@ namespace CodeImp.DoomBuilder.Interface
 
 		private System.Windows.Forms.TextBox levelname;
 		private System.Windows.Forms.ComboBox config;
-		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button deleteresource;
+		private System.Windows.Forms.Button editresource;
 		private System.Windows.Forms.Button addresource;
 		private System.Windows.Forms.ListBox resources;
 		private System.Windows.Forms.Button apply;

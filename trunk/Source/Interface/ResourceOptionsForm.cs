@@ -18,11 +18,14 @@ namespace CodeImp.DoomBuilder.Interface
 		public ResourceLocation ResourceLocation { get { return res; } }
 		
 		// Constructor
-		public ResourceOptionsForm(ResourceLocation settings)
+		public ResourceOptionsForm(ResourceLocation settings, string caption)
 		{
 			// Initialize
 			InitializeComponent();
 
+			// Set caption
+			this.Text = caption;
+			
 			// Apply settings from ResourceLocation
 			this.res = settings;
 			switch(res.type)
@@ -41,6 +44,9 @@ namespace CodeImp.DoomBuilder.Interface
 					dir_flats.Checked = res.flats;
 					break;
 			}
+
+			// Select appropriate tab
+			tabs.SelectedIndex = res.type;
 		}
 
 		// OK clicked
@@ -92,7 +98,7 @@ namespace CodeImp.DoomBuilder.Interface
 					else
 					{
 						// Apply settings
-						res.type = ResourceLocation.RESOURCE_WAD;
+						res.type = ResourceLocation.RESOURCE_DIRECTORY;
 						res.location = dirlocation.Text;
 						res.textures = dir_textures.Checked;
 						res.flats = dir_flats.Checked;
@@ -111,6 +117,28 @@ namespace CodeImp.DoomBuilder.Interface
 			// Just hide
 			this.DialogResult = DialogResult.Cancel;
 			this.Hide();
+		}
+
+		// Browse WAD File clicked
+		private void browsewad_Click(object sender, EventArgs e)
+		{
+			// Browse for WAD File
+			if(wadfiledialog.ShowDialog(this) == DialogResult.OK)
+			{
+				// Use this file
+				wadlocation.Text = wadfiledialog.FileName;
+			}
+		}
+
+		// Browse Directory clicked
+		private void browsedir_Click(object sender, EventArgs e)
+		{
+			// Browse for Directory
+			if(dirdialog.ShowDialog(this) == DialogResult.OK)
+			{
+				// Use this directory
+				dirlocation.Text = dirdialog.SelectedPath;
+			}
 		}
 	}
 }
