@@ -27,6 +27,7 @@ using System.Reflection;
 using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -40,6 +41,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 
+		// Graphics
+		protected Renderer2D renderer;
+		
 		#endregion
 
 		#region ================== Properties
@@ -52,7 +56,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public ViewClassicMode()
 		{
 			// Initialize
-
+			this.renderer = graphics.Renderer2D;
 		}
 
 		// Diposer
@@ -62,7 +66,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(!isdisposed)
 			{
 				// Clean up
-				
+
 				// Dispose base
 				base.Dispose();
 			}

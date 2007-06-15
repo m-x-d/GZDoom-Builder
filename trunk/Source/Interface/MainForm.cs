@@ -177,6 +177,23 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Update();
 		}
 
+		// Display needs repainting
+		private void display_Paint(object sender, PaintEventArgs e)
+		{
+			// Repaint on demand
+			if(General.Map != null) redrawtimer.Enabled = true;
+		}
+
+		// Redraw requested
+		private void redrawtimer_Tick(object sender, EventArgs e)
+		{
+			// Disable timer (only redraw once)
+			redrawtimer.Enabled = false;
+			
+			// Redraw now
+			if(General.Map != null) General.Map.Mode.RedrawDisplay();
+		}
+		
 		// Mouse click
 		private void display_MouseClick(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseClick(e); }
 
@@ -230,6 +247,20 @@ namespace CodeImp.DoomBuilder.Interface
 			itemsavemap.Enabled = (General.Map != null);
 			itemsavemapas.Enabled = (General.Map != null);
 			itemsavemapinto.Enabled = (General.Map != null);
+		}
+
+		#endregion
+
+		#region ================== Help Menu
+
+		// About clicked
+		private void itemhelpabout_Click(object sender, EventArgs e)
+		{
+			AboutForm aboutform;
+			
+			// Show about dialog
+			aboutform = new AboutForm();
+			aboutform.ShowDialog(this);
 		}
 
 		#endregion

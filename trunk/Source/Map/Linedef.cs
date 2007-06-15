@@ -116,8 +116,8 @@ namespace CodeImp.DoomBuilder.Map
 				end.DetachLinedef(endvertexlistitem);
 				
 				// Dispose sidedefs
-				front.Dispose();
-				back.Dispose();
+				if(front != null) front.Dispose();
+				if(back != null) back.Dispose();
 				
 				// Clean up
 				mainlistitem = null;

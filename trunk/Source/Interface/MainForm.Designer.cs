@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.menumain = new System.Windows.Forms.MenuStrip();
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,6 +46,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panelinfo = new System.Windows.Forms.Panel();
 			this.display = new System.Windows.Forms.PictureBox();
+			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
+			this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemhelpabout = new System.Windows.Forms.ToolStripMenuItem();
 			this.menumain.SuspendLayout();
 			this.statusbar.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.display)).BeginInit();
@@ -53,7 +57,8 @@ namespace CodeImp.DoomBuilder.Interface
 			// menumain
 			// 
 			this.menumain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menufile});
+            this.menufile,
+            this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
 			this.menumain.Size = new System.Drawing.Size(731, 24);
@@ -184,10 +189,31 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
 			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
 			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
+			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
 			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
 			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
+			// 
+			// redrawtimer
+			// 
+			this.redrawtimer.Interval = 1;
+			this.redrawtimer.Tick += new System.EventHandler(this.redrawtimer_Tick);
+			// 
+			// menuhelp
+			// 
+			this.menuhelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemhelpabout});
+			this.menuhelp.Name = "menuhelp";
+			this.menuhelp.Size = new System.Drawing.Size(40, 20);
+			this.menuhelp.Text = "Help";
+			// 
+			// itemhelpabout
+			// 
+			this.itemhelpabout.Name = "itemhelpabout";
+			this.itemhelpabout.Size = new System.Drawing.Size(191, 22);
+			this.itemhelpabout.Text = "About Doom Builder...";
+			this.itemhelpabout.Click += new System.EventHandler(this.itemhelpabout_Click);
 			// 
 			// MainForm
 			// 
@@ -238,5 +264,8 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemexit;
 		private System.Windows.Forms.ToolStripStatusLabel statuslabel;
 		private System.Windows.Forms.ToolStripMenuItem itemclosemap;
+		private System.Windows.Forms.Timer redrawtimer;
+		private System.Windows.Forms.ToolStripMenuItem menuhelp;
+		private System.Windows.Forms.ToolStripMenuItem itemhelpabout;
 	}
 }

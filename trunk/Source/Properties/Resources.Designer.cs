@@ -66,5 +66,12 @@ namespace CodeImp.DoomBuilder.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        internal static System.Drawing.Bitmap Splash2small {
+            get {
+                object obj = ResourceManager.GetObject("Splash2small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

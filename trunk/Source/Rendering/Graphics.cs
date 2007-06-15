@@ -50,6 +50,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Control rendertarget;
 		private Caps devicecaps;
 		private Device d3dd;
+		private Renderer2D renderer2d;
+		private Renderer3D renderer3d;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -58,9 +60,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		// Disposing
+		public Device Device { get { return d3dd; } }
 		public bool IsDisposed { get { return isdisposed; } }
-
+		public Renderer2D Renderer2D { get { return renderer2d; } }
+		public Renderer3D Renderer3D { get { return renderer3d; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -82,6 +86,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
+				renderer2d.Dispose();
+				renderer3d.Dispose();
 				d3dd.Dispose();
 				rendertarget = null;
 
@@ -209,6 +215,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Initialize settings
 			SetupSettings();
+			
+			// Create renderers
+			renderer2d = new Renderer2D(this);
+			renderer3d = new Renderer3D(this);
 			
 			// Done
 			return true;
