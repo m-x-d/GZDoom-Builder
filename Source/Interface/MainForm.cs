@@ -41,11 +41,15 @@ namespace CodeImp.DoomBuilder.Interface
 		private Point lastposition;
 		private Size lastsize;
 
+		// Mouse in display
+		private bool mouseinside;
+		
 		#endregion
 
 		#region ================== Properties
 
-		public PictureBox Display { get { return display; } }
+		public bool MouseInDisplay { get { return mouseinside; } }
+		public Panel Display { get { return display; } }
 
 		#endregion
 
@@ -163,7 +167,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Change display to show splash logo
 			display.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			display.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash2;
-			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			//display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.Update();
 		}
 		
@@ -173,7 +177,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Clear the display
 			display.BackColor = Color.Black;
 			display.BackgroundImage = null;
-			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Tile;
+			//display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Tile;
 			this.Update();
 		}
 
@@ -193,6 +197,19 @@ namespace CodeImp.DoomBuilder.Interface
 			// Redraw now
 			if(General.Map != null) General.Map.Mode.RedrawDisplay();
 		}
+
+		// Display size changes
+		private void display_Resize(object sender, EventArgs e)
+		{
+			// Reset graphics to match changes
+			if(General.Map != null) General.Map.Graphics.Reset();
+			
+			// Make sure control is repainted
+			display.Update();
+
+			// Redraw display
+			if(General.Map != null) General.Map.Mode.RedrawDisplay();
+		}
 		
 		// Mouse click
 		private void display_MouseClick(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseClick(e); }
@@ -204,10 +221,18 @@ namespace CodeImp.DoomBuilder.Interface
 		private void display_MouseDown(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseDown(e); }
 
 		// Mouse enters
-		private void display_MouseEnter(object sender, EventArgs e) { if(General.Map != null) General.Map.Mode.MouseEnter(e); }
+		private void display_MouseEnter(object sender, EventArgs e)
+		{
+			mouseinside = true;
+			if(General.Map != null) General.Map.Mode.MouseEnter(e);
+		}
 
 		// Mouse leaves
-		private void display_MouseLeave(object sender, EventArgs e) { if(General.Map != null) General.Map.Mode.MouseLeave(e); }
+		private void display_MouseLeave(object sender, EventArgs e)
+		{
+			mouseinside = false;
+			if(General.Map != null) General.Map.Mode.MouseLeave(e);
+		}
 
 		// Mouse moves
 		private void display_MouseMove(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseMove(e); }
@@ -231,10 +256,13 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== File Menu
 
 		// New map clicked
-		private void itemnewmap_Click(object sender, EventArgs e) { General.NewMap(); }
+		private void itemnewmap_Click(object sender, EventArgs e) { if(General.AskSaveMap()) General.NewMap(); }
+
+		// Open map clicked
+		private void itemopenmap_Click(object sender, EventArgs e) { if(General.AskSaveMap()) General.OpenMap(); }
 
 		// Close map clicked
-		private void itemclosemap_Click(object sender, EventArgs e) { General.CloseMap(); }
+		private void itemclosemap_Click(object sender, EventArgs e) { if(General.AskSaveMap()) General.CloseMap(); }
 
 		// Exit clicked
 		private void itemexit_Click(object sender, EventArgs e) { this.Close(); }

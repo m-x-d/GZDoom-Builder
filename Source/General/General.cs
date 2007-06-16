@@ -99,6 +99,15 @@ namespace CodeImp.DoomBuilder
 						Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return null;
 				}
+				// Check if this is a Doom Builder 1 config
+				else if(cfg.ReadSetting("type", "") != "Doom Builder 2 Game Configuration")
+				{
+					// Old configuration
+					MessageBox.Show(mainwindow, "Unable to load the game configuration file \"" + filename + "\".\n" +
+						"This configuration is not a Doom Builder 2 game configuration.",
+						Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return null;
+				}
 				else
 				{
 					// Return config
@@ -132,7 +141,7 @@ namespace CodeImp.DoomBuilder
 			foreach(string filepath in filenames)
 			{
 				// Check if it can be loaded
-				cfg = LoadGameConfiguration(filepath);
+				cfg = LoadGameConfiguration(Path.GetFileName(filepath));
 				if(cfg != null)
 				{
 					// Get name and filename
@@ -177,6 +186,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Create main window
 			mainwindow = new MainForm();
+			mainwindow.UpdateMenus();
 			
 			// Show main window
 			mainwindow.Show();
@@ -224,21 +234,92 @@ namespace CodeImp.DoomBuilder
 			optionswindow = new MapOptionsForm(newoptions);
 			if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
 			{
-				// Ask to save the map if not saved yet
-				if(AskSaveMap())
+				// Display status
+				mainwindow.DisplayStatus("Creating new map...");
+				
+				// Clear the display
+				mainwindow.ClearDisplay();
+				
+				// Trash the current map, if any
+				if(map != null) map.Dispose();
+
+				// Create map manager with given options
+				map = new MapManager();
+				if(!map.InitializeNewMap(newoptions))
+				{
+					// Unable to create map manager
+					map.Dispose();
+					map = null;
+
+					// Show splash logo on display
+					mainwindow.ShowSplashDisplay();
+
+					// Failed
+					mainwindow.UpdateMenus();
+					mainwindow.DisplayReady();
+					return false;
+				}
+
+				// Done
+				mainwindow.UpdateMenus();
+				mainwindow.DisplayReady();
+				return true;
+			}
+			
+			// Cancelled
+			return false;
+		}
+
+		// This closes the current map
+		public static bool CloseMap()
+		{
+			// Display status
+			mainwindow.DisplayStatus("Closing map...");
+
+			// Trash the current map
+			if(map != null) map.Dispose();
+			map = null;
+
+			// Show splash logo on display
+			mainwindow.ShowSplashDisplay();
+			
+			// Done
+			mainwindow.UpdateMenus();
+			mainwindow.DisplayReady();
+			return true;
+		}
+
+		// This loads a map from file
+		public static bool OpenMap()
+		{
+			OpenFileDialog openfile;
+			OpenMapOptionsForm openmapwindow;
+			
+			// Open map file dialog
+			openfile = new OpenFileDialog();
+			openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
+			openfile.Title = "Open Map";
+			if(openfile.ShowDialog(mainwindow) == DialogResult.OK)
+			{
+				// Update main window
+				mainwindow.Update();
+				
+				// Open map options dialog
+				openmapwindow = new OpenMapOptionsForm(openfile.FileName);
+				if(openmapwindow.ShowDialog(mainwindow) == DialogResult.OK)
 				{
 					// Display status
-					mainwindow.DisplayStatus("Creating new map...");
-					
+					mainwindow.DisplayStatus("Opening map file...");
+
 					// Clear the display
 					mainwindow.ClearDisplay();
-					
+
 					// Trash the current map, if any
 					if(map != null) map.Dispose();
 
 					// Create map manager with given options
 					map = new MapManager();
-					if(!map.InitializeNewMap(newoptions))
+					if(!map.InitializeOpenMap(openfile.FileName, openmapwindow.Options))
 					{
 						// Unable to create map manager
 						map.Dispose();
@@ -253,58 +334,20 @@ namespace CodeImp.DoomBuilder
 						return false;
 					}
 
-					// TEST:
-					Vertex v1 = map.Data.CreateVertex(new Vector2D(20f, 20f));
-					Vertex v2 = map.Data.CreateVertex(new Vector2D(-20f, 20f));
-					Vertex v3 = map.Data.CreateVertex(new Vector2D(-20f, -20f));
-					Vertex v4 = map.Data.CreateVertex(new Vector2D(20f, -20f));
-					map.Data.CreateLinedef(v1, v2);
-					map.Data.CreateLinedef(v2, v3);
-					map.Data.CreateLinedef(v3, v4);
-					map.Data.CreateLinedef(v4, v1);
-					
 					// Done
 					mainwindow.UpdateMenus();
 					mainwindow.DisplayReady();
 					return true;
 				}
 			}
-			
+
 			// Cancelled
 			return false;
-		}
-
-		// This closes the current map
-		public static bool CloseMap()
-		{
-			// Ask to save the map if not saved yet
-			if(AskSaveMap())
-			{
-				// Display status
-				mainwindow.DisplayStatus("Closing map...");
-
-				// Trash the current map
-				if(map != null) map.Dispose();
-				map = null;
-
-				// Show splash logo on display
-				mainwindow.ShowSplashDisplay();
-				
-				// Done
-				mainwindow.UpdateMenus();
-				mainwindow.DisplayReady();
-				return true;
-			}
-			else
-			{
-				// Cancelled
-				return false;
-			}
 		}
 		
 		// This asks to save the map if needed
 		// Returns false when action was cancelled
-		private static bool AskSaveMap()
+		public static bool AskSaveMap()
 		{
 			DialogResult result;
 			

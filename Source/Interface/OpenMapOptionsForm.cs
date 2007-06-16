@@ -1,0 +1,364 @@
+
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
+/*
+ * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
+ * This program is released under GNU General Public License
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+#endregion
+
+#region ================== Namespaces
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
+using System.IO;
+using System.Collections;
+
+#endregion
+
+namespace CodeImp.DoomBuilder.Interface
+{
+	internal partial class OpenMapOptionsForm : Form
+	{
+		// Variables
+		private Configuration mapsettings;
+		private MapOptions options;
+		private WAD wadfile;
+		private string filepathname;
+		
+		// Properties
+		public string FilePathName { get { return filepathname; } }
+		public MapOptions Options { get { return options; } }
+		
+		// Constructor
+		public OpenMapOptionsForm(string filepathname)
+		{
+			// Initialize
+			InitializeComponent();
+			this.filepathname = filepathname;
+			this.options = new MapOptions();
+		}
+
+		// This loads the settings and attempt to find a suitable config
+		private void LoadSettings()
+		{
+			string dbsfile;
+			string gameconfig;
+			
+			// Busy
+			Cursor.Current = Cursors.WaitCursor;
+
+			try
+			{
+				// Open the WAD file
+				wadfile = new WAD(filepathname, true);
+
+				// Open the Map Settings configuration
+				dbsfile = filepathname.Substring(0, filepathname.Length - 4) + ".dbs";
+				if(File.Exists(dbsfile))
+					mapsettings = new Configuration(dbsfile, true);
+				else
+					mapsettings = new Configuration(true);
+			}
+			catch(Exception)
+			{
+				// Unable to open WAD file (or its config)
+				MessageBox.Show(this, "Could not open the WAD file for reading. Please make sure the file you selected is valid and is not in use by any other application.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				if(wadfile != null) wadfile.Dispose();
+				this.DialogResult = DialogResult.Cancel;
+				this.Hide();
+			}
+			
+			// Check what game configuration is preferred
+			gameconfig = mapsettings.ReadSetting("gameconfig", "");
+
+			// Go for all configurations
+			for(int i = 0; i < General.Configs.Count; i++)
+			{
+				// Add config name to list
+				config.Items.Add(General.Configs[i].name);
+
+				// This is the preferred game configuration?
+				if(General.Configs[i].filename == gameconfig)
+				{
+					// Select this item
+					config.SelectedIndex = i;
+				}
+			}
+
+			// Still no configuration selected?
+			if(config.SelectedIndex == -1)
+			{
+				// Then go for all configurations to find a suitable one
+				for(int i = 0; i < General.Configs.Count; i++)
+				{
+					// TODO: Check if an IWAD is set for this configuration
+
+					// Match the wad against this configuration
+					if(MatchConfiguration(General.Configs[i].filename, wadfile))
+					{
+						// Select this item
+						config.SelectedIndex = i;
+						break;
+					}
+				}
+			}
+			
+			// Done
+			Cursor.Current = Cursors.Default;
+		}
+		
+		// This matches a WAD file with the specified game configuration
+		// by checking if the specific lumps are detected
+		private bool MatchConfiguration(string configfile, WAD wadfile)
+		{
+			Configuration cfg;
+			IDictionary detectlumps;
+			Lump lumpresult;
+			bool result = false;
+			
+			// Load the configuration
+			cfg = General.LoadGameConfiguration(configfile);
+
+			// Get the lumps to detect
+			detectlumps = cfg.ReadSetting("gamedetect", new Hashtable());
+
+			// Go for all the lumps
+			foreach(DictionaryEntry lmp in detectlumps)
+			{
+				// Setting not broken?
+				if((lmp.Value is int) && (lmp.Key is string))
+				{
+					// Find the lump in the WAD file
+					lumpresult = wadfile.FindLump((string)lmp.Key);
+					
+					// If one of these lumps must exist, and it is found
+					if(((int)lmp.Value == 1) && (lumpresult != null))
+					{
+						// Good result.
+						result = true;
+					}
+					// If this lumps may not exist, and it is found
+					else if(((int)lmp.Value == 2) && (lumpresult != null))
+					{
+						// Bad result.
+						result = false;
+						break;
+					}
+					// If this lumps must exist, and it is missing
+					else if(((int)lmp.Value == 3) && (lumpresult == null))
+					{
+						// Bad result.
+						result = false;
+						break;
+					}
+				}
+			}
+
+			// Return result
+			return result;
+		}
+
+		// Configuration is selected
+		private void config_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			List<ListViewItem> mapnames;
+			Configuration cfg;
+			IDictionary maplumpnames;
+			int scanindex, checkoffset;
+			int lumpsfound, lumpsrequired = 0;
+			string lumpname, selectedname = "";
+
+			// Keep selected name, if any
+			if(mapslist.SelectedItems.Count > 0)
+				selectedname = mapslist.SelectedItems[0].Text;
+
+			// Make an array for the map names
+			mapnames = new List<ListViewItem>();
+			
+			// Load this configuration
+			cfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].filename);
+			
+			// Get the map lump names
+			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
+			
+			// Count how many required lumps we have to find
+			foreach(DictionaryEntry ml in maplumpnames)
+			{
+				// Read lump setting and count it
+				if(cfg.ReadSetting("maplumpnames." + ml.Key + ".required", false)) lumpsrequired++;
+			}
+			
+			// Go for all the lumps in the wad
+			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++)
+			{
+				// Make sure this lump is not part of the map
+				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name))
+				{
+					// Check the required map lumps
+					lumpsfound = 0;
+					checkoffset = 1;
+					do
+					{
+						// Count the lump when it is marked as required
+						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
+						if(cfg.ReadSetting("maplumpnames." + lumpname + ".required", false)) lumpsfound++;
+
+						// Check the next lump
+						checkoffset++;
+					}
+					// Continue while still within bounds and lumps are still recognized
+					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
+						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name));
+
+					// Map found? Then add it to the list
+					if(lumpsfound >= lumpsrequired)
+						mapnames.Add(new ListViewItem(wadfile.Lumps[scanindex].Name));
+				}
+			}
+			
+			// Clear the list and add the new map names
+			mapslist.Items.Clear();
+			mapslist.Items.AddRange(mapnames.ToArray());
+			mapslist.Sort();
+
+			// Go for all items in the list
+			foreach(ListViewItem item in mapslist.Items)
+			{
+				// Was this item previously selected?
+				if(item.Text == selectedname)
+				{
+					// Select it again
+					item.Selected = true;
+					break;
+				}
+			}
+		}
+		
+		// OK clicked
+		private void apply_Click(object sender, EventArgs e)
+		{
+			// Configuration selected?
+			if(config.SelectedIndex == -1)
+			{
+				// Select a configuration!
+				MessageBox.Show(this, "Please select a game configuration to use for editing your map.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				config.Focus();
+				return;
+			}
+			
+			// No map selected?
+			if(mapslist.SelectedItems.Count == 0)
+			{
+				// Choose a map!
+				MessageBox.Show(this, "Please select a map to load for editing.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				mapslist.Focus();
+				return;
+			}
+
+			// Apply changes
+			options.ClearResources();
+			options.ConfigFile = General.Configs[config.SelectedIndex].filename;
+			options.CurrentName = mapslist.SelectedItems[0].ToString();
+			foreach(ResourceLocation res in resources.Items) options.AddResource(res);
+
+			// Hide window
+			wadfile.Dispose();
+			this.DialogResult = DialogResult.OK;
+			this.Hide();
+		}
+		
+		// Cancel clicked
+		private void cancel_Click(object sender, EventArgs e)
+		{
+			// Just hide window
+			wadfile.Dispose();
+			this.DialogResult = DialogResult.Cancel;
+			this.Hide();
+		}
+
+		// Add Resource clicked
+		private void addresource_Click(object sender, EventArgs e)
+		{
+			ResourceOptionsForm resoptions;
+			Point startposition;
+			
+			// Open resource options dialog
+			resoptions = new ResourceOptionsForm(new ResourceLocation(), "Add Resource");
+			resoptions.StartPosition = FormStartPosition.Manual;
+			startposition = this.Location;
+			startposition.Offset(50, 230);
+			resoptions.Location = startposition;
+			if(resoptions.ShowDialog(this) == DialogResult.OK)
+			{
+				// Add resource
+				resources.Items.Add(resoptions.ResourceLocation);
+			}
+		}
+
+		// Resource Options clicked
+		private void editresource_Click(object sender, EventArgs e)
+		{
+			ResourceOptionsForm resoptions;
+			Point startposition;
+			
+			// Anything selected?
+			if(resources.SelectedIndex > -1)
+			{
+				// Open resource options dialog
+				resoptions = new ResourceOptionsForm((ResourceLocation)resources.SelectedItem, "Resource Options");
+				resoptions.StartPosition = FormStartPosition.Manual;
+				startposition = this.Location;
+				startposition.Offset(50, 230);
+				resoptions.Location = startposition;
+				if(resoptions.ShowDialog(this) == DialogResult.OK)
+				{
+					// Replace resource
+					resources.Items[resources.SelectedIndex] = resoptions.ResourceLocation;
+				}
+			}
+		}
+
+		// Remove resource clicked
+		private void deleteresource_Click(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(resources.SelectedIndex > -1)
+			{
+				// Remove it
+				resources.Items.RemoveAt(resources.SelectedIndex);
+			}
+		}
+
+		// Resource selection changes
+		private void resources_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Enable/disable buttons
+			editresource.Enabled = (resources.SelectedIndex > -1);
+			deleteresource.Enabled = (resources.SelectedIndex > -1);
+		}
+
+		// Window is shown
+		private void OpenMapOptionsForm_Shown(object sender, EventArgs e)
+		{
+			// Update window
+			this.Update();
+			
+			// Load settings
+			LoadSettings();
+		}
+	}
+}

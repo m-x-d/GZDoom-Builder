@@ -102,8 +102,13 @@ namespace CodeImp.DoomBuilder.IO
 		// This makes the normal name from fixed name
 		private static string MakeNormalName(byte[] fixedname, Encoding encoding)
 		{
-			// Return the name as a string
-			return encoding.GetString(fixedname);
+			int length = 0;
+			
+			// Figure out the length of the lump name
+			while((length < fixedname.Length) && (fixedname[length] != 0)) length++;
+			
+			// Make normal name
+			return encoding.GetString(fixedname, 0, length);
 		}
 
 		// This makes the fixed name from normal name

@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Resetting
 
 		// This resets the device and returns true on success
-		private bool Reset()
+		public bool Reset()
 		{
 			PresentParameters displaypp;
 

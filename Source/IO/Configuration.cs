@@ -967,14 +967,14 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						// Output the value with a postfixed f
 						db.Append(leveltabs); db.Append(de.Key); db.Append(spacing); db.Append("=");
-						db.Append(spacing); db.Append(de.Value); db.Append("f;"); db.Append(newline);
+						db.Append(spacing); db.Append(String.Format(CultureInfo.InvariantCulture, "{0}", de.Value)); db.Append("f;"); db.Append(newline);
 					}
 					// Check if value is of other numeric type
 					else if(de.Value.GetType().IsPrimitive)
 					{
 						// Output the value unquoted
 						db.Append(leveltabs); db.Append(de.Key); db.Append(spacing); db.Append("=");
-						db.Append(spacing); db.Append(de.Value); db.Append(";"); db.Append(newline);
+						db.Append(spacing); db.Append(String.Format(CultureInfo.InvariantCulture, "{0}", de.Value)); db.Append(";"); db.Append(newline);
 					}
 					else
 					{
