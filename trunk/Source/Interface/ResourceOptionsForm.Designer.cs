@@ -197,7 +197,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// wadfiledialog
 			// 
-			this.wadfiledialog.Filter = "Doom WAD Files|*.wad";
+			this.wadfiledialog.Filter = "Doom WAD Files (*.wad)|*.wad";
 			this.wadfiledialog.Title = "Browse WAD File";
 			// 
 			// dirdialog

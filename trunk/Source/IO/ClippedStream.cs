@@ -79,14 +79,14 @@ namespace CodeImp.DoomBuilder.IO
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Already set isdisposed to prevent recursion
+				isdisposed = true;
+				
 				// Clean up
 				basestream = null;
 				
 				// Dispose base
 				base.Dispose();
-				
-				// Done
-				isdisposed = true;
 			}
 		}
 
@@ -206,7 +206,7 @@ namespace CodeImp.DoomBuilder.IO
 		// This closes the stream
 		public override void Close()
 		{
-			basestream.Close();
+			basestream = null;
 			base.Close();
 			this.Dispose();
 		}

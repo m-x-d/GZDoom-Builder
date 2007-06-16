@@ -112,13 +112,37 @@ namespace CodeImp.DoomBuilder
 			this.options = options;
 			
 			// Create objects
-			data = new MapSet();
 			graphics = new Graphics(General.MainWindow.Display);
 			config = General.LoadGameConfiguration(options.ConfigFile);
+			data = new MapSet();
 
 			// Initiate graphics
 			if(!graphics.Initialize()) return false;
 			
+			// Set default mode
+			ChangeMode(typeof(FrozenOverviewMode));
+
+			// Success
+			return true;
+		}
+
+		// Initializes for an existing map
+		public bool InitializeOpenMap(string filepathname, MapOptions options)
+		{
+			// Apply settings
+			this.filetitle = Path.GetFileName(filepathname);
+			this.filepathname = filepathname;
+			this.changed = false;
+			this.options = options;
+
+			// Create objects
+			graphics = new Graphics(General.MainWindow.Display);
+			config = General.LoadGameConfiguration(options.ConfigFile);
+			data = new MapSet();
+
+			// Initiate graphics
+			if(!graphics.Initialize()) return false;
+
 			// Set default mode
 			ChangeMode(typeof(FrozenOverviewMode));
 
@@ -152,6 +176,9 @@ namespace CodeImp.DoomBuilder
 				Debug.WriteLine(e.InnerException.StackTrace);
 				throw e.InnerException;
 			}
+			
+			// Redraw the display
+			mode.RedrawDisplay();
 		}
 		
 		#endregion

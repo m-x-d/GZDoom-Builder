@@ -82,6 +82,41 @@ namespace CodeImp.DoomBuilder.Map
 			this.resources = new List<ResourceLocation>();
 		}
 
+		// Constructor to load from Doom Builder Map Settings Configuration
+		public MapOptions(Configuration cfg, string mapname)
+		{
+			IDictionary mapinfo, resinfo;
+			ResourceLocation res;
+			
+			// Initialize
+			this.previousname = "";
+			this.currentname = mapname;
+			this.configfile = cfg.ReadSetting("config", "");
+			this.resources = new List<ResourceLocation>();
+
+			// Go for all items in the map info
+			mapinfo = cfg.ReadSetting(mapname, new Hashtable());
+			foreach(DictionaryEntry mp in mapinfo)
+			{
+				// Item is a structure?
+				if(mp.Value is IDictionary)
+				{
+					// Create resource
+					resinfo = (IDictionary)mp.Value;
+					res = new ResourceLocation();
+					
+					// Copy information from Configuration to ResourceLocation
+					if(resinfo.Contains("type") && (resinfo["type"] is int)) res.type = (int)resinfo["type"];
+					if(resinfo.Contains("location") && (resinfo["location"] is string)) res.location = (string)resinfo["location"];
+					if(resinfo.Contains("textures") && (resinfo["textures"] is bool)) res.textures = (bool)resinfo["textures"];
+					if(resinfo.Contains("flats") && (resinfo["flats"] is bool)) res.flats = (bool)resinfo["flats"];
+
+					// Add resource
+					AddResource(res);
+				}
+			}
+		}
+
 		~MapOptions()
 		{
 			// Clean up
@@ -127,6 +162,12 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Remove the item
 			resources.RemoveAt(index);
+		}
+		
+		// This displays the current map name
+		public override string ToString()
+		{
+			return currentname;
 		}
 		
 		#endregion

@@ -65,6 +65,12 @@
     <Compile Include="Interface\MapOptionsForm.Designer.cs">
       <DependentUpon>MapOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\OpenMapOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\OpenMapOptionsForm.Designer.cs">
+      <DependentUpon>OpenMapOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\ResourceOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -74,6 +80,7 @@
     <Compile Include="IO\Configuration.cs" />
     <Compile Include="General\General.cs" />
     <Compile Include="IO\ClippedStream.cs" />
+    <Compile Include="IO\DoomMapSetIO.cs" />
     <Compile Include="IO\IMapSetIO.cs" />
     <Compile Include="IO\Lump.cs" />
     <Compile Include="IO\WAD.cs" />
@@ -122,6 +129,10 @@
     <EmbeddedResource Include="Interface\MapOptionsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MapOptionsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\OpenMapOptionsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>OpenMapOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\ResourceOptionsForm.resx">
       <SubType>Designer</SubType>

@@ -1,3 +1,21 @@
+
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
+/*
+ * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
+ * This program is released under GNU General Public License
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+#endregion
+
+#region ================== Namespaces
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -5,6 +23,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.Interface
 {
@@ -91,9 +111,14 @@ namespace CodeImp.DoomBuilder.Interface
 		private void addresource_Click(object sender, EventArgs e)
 		{
 			ResourceOptionsForm resoptions;
+			Point startposition;
 			
 			// Open resource options dialog
 			resoptions = new ResourceOptionsForm(new ResourceLocation(), "Add Resource");
+			resoptions.StartPosition = FormStartPosition.Manual;
+			startposition = this.Location;
+			startposition.Offset(50, 160);
+			resoptions.Location = startposition;
 			if(resoptions.ShowDialog(this) == DialogResult.OK)
 			{
 				// Add resource
@@ -105,12 +130,17 @@ namespace CodeImp.DoomBuilder.Interface
 		private void editresource_Click(object sender, EventArgs e)
 		{
 			ResourceOptionsForm resoptions;
-
+			Point startposition;
+			
 			// Anything selected?
 			if(resources.SelectedIndex > -1)
 			{
 				// Open resource options dialog
 				resoptions = new ResourceOptionsForm((ResourceLocation)resources.SelectedItem, "Resource Options");
+				resoptions.StartPosition = FormStartPosition.Manual;
+				startposition = this.Location;
+				startposition.Offset(50, 160);
+				resoptions.Location = startposition;
 				if(resoptions.ShowDialog(this) == DialogResult.OK)
 				{
 					// Replace resource

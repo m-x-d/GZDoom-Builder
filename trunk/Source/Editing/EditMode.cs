@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Initialize
 			this.graphics = General.Map.Graphics;
-
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
