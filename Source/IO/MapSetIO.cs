@@ -21,79 +21,83 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Windows.Forms;
 using System.IO;
-using System.Reflection;
-using CodeImp.DoomBuilder.Interface;
-using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
+using System.Reflection;
 using System.Diagnostics;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.IO
 {
-	internal class EditMode : IDisposable
+	internal abstract class MapSetIO
 	{
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
-		
-		// Graphics
-		protected Graphics graphics;
-		
-		// Disposing
-		protected bool isdisposed = false;
+
+		// WAD File
+		protected WAD wad;
 
 		#endregion
 
 		#region ================== Properties
-
-		// Disposing
-		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public EditMode()
+		public MapSetIO(WAD wad)
 		{
 			// Initialize
-			this.graphics = General.Map.Graphics;
-			
-			// We have no destructor
-			GC.SuppressFinalize(this);
+			this.wad = wad;
 		}
 
-		// Diposer
-		public virtual void Dispose()
+		// Destructor
+		~MapSetIO()
 		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Done
-				isdisposed = true;
-			}
+			// Clean up
+			wad = null;
 		}
 
 		#endregion
 
 		#region ================== Static Methods
 
-		// This creates an instance of a specific mode
-		public static EditMode Create(Type modetype, object[] args)
+		// This returns and instance of the specified IO class
+		public static MapSetIO Create(string classname, WAD wadfile)
 		{
+			object[] args;
+			MapSetIO result;
+			string fullname;
+			
 			try
 			{
-				// Create new mode
-				return (EditMode)General.ThisAssembly.CreateInstance(modetype.FullName, false,
+				// Create arguments
+				args = new object[1];
+				args[0] = wadfile;
+				
+				// Make the full class name
+				fullname = "CodeImp.DoomBuilder.IO." + classname;
+				
+				// Create IO class
+				result = (MapSetIO)General.ThisAssembly.CreateInstance(fullname, false,
 					BindingFlags.Default, null, args, CultureInfo.CurrentCulture, new object[0]);
+
+				// Check result
+				if(result != null)
+				{
+					// Success
+					return result;
+				}
+				else
+				{
+					// No such class
+					throw new ArgumentException("No such map format interface found: \"" + classname + "\"");
+				}
 			}
 			// Catch errors
 			catch(TargetInvocationException e)
@@ -108,19 +112,12 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		#endregion
-
+		
 		#region ================== Methods
 
-		// Optional interface methods
-		public virtual void MouseClick(MouseEventArgs e) { }
-		public virtual void MouseDoubleClick(MouseEventArgs e) { }
-		public virtual void MouseDown(MouseEventArgs e) { }
-		public virtual void MouseEnter(EventArgs e) { }
-		public virtual void MouseLeave(EventArgs e) { }
-		public virtual void MouseMove(MouseEventArgs e) { }
-		public virtual void MouseUp(MouseEventArgs e) { }
-		public virtual void Cancel() { }
-		public virtual void RedrawDisplay() { }
+		// Required implementations
+		public abstract MapSet Read(MapSet map, string mapname);
+		public abstract void Write(MapSet map, string mapname, int position);
 		
 		#endregion
 	}

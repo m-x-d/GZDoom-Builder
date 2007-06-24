@@ -167,5 +167,12 @@ namespace CodeImp.DoomBuilder.Interface
 			editresource.Enabled = (resources.SelectedIndex > -1);
 			deleteresource.Enabled = (resources.SelectedIndex > -1);
 		}
+
+		// Resource doubleclicked
+		private void resources_DoubleClick(object sender, EventArgs e)
+		{
+			// Click Edit Resource
+			if(resources.SelectedIndex > -1) editresource.PerformClick();
+		}
 	}
 }

@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#endregion
 
-		#region ================== Mathematics
+		#region ================== Methods
 
 		// This returns the distance from given coordinates
 		public float DistanceToSq(Vector2D p)
@@ -149,12 +149,20 @@ namespace CodeImp.DoomBuilder.Map
 			return delta.GetLength();
 		}
 
-		#endregion
-
-		#region ================== Tools
-
 		// This finds the line closest to the specified position
 		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
+
+		#endregion
+
+		#region ================== Changes
+
+		// This moves the vertex
+		// NOTE: This does not recalculate lines!
+		public void Move(Vector2D newpos)
+		{
+			// Change position
+			pos = newpos;
+		}
 
 		#endregion
 	}

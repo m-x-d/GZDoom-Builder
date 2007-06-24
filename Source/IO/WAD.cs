@@ -35,17 +35,18 @@ namespace CodeImp.DoomBuilder.IO
 		public const string TYPE_IWAD = "IWAD";
 		public const string TYPE_PWAD = "PWAD";
 		
+		// Encoder
+		public static readonly Encoding ENCODING = Encoding.ASCII;
+		
 		#endregion
 
 		#region ================== Variables
 
 		// File objects
+		private string filename;
 		private FileStream file;
 		private BinaryReader reader;
 		private BinaryWriter writer;
-		
-		// Encoder
-		private readonly Encoding encoding = Encoding.ASCII;
 		
 		// Header
 		private string type;
@@ -63,8 +64,9 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Properties
 
+		public string Filename { get { return filename; } }
 		public string Type { get { return type; } }
-		public Encoding Encoding { get { return encoding; } }
+		public Encoding Encoding { get { return ENCODING; } }
 		public bool IsReadOnly { get { return isreadonly; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public List<Lump> Lumps { get { return lumps; } }
@@ -137,17 +139,43 @@ namespace CodeImp.DoomBuilder.IO
 				share = FileShare.Read;
 			}
 			
+			// Keep filename
+			filename = pathfilename;
+			
 			// Open the file stream
 			file = File.Open(pathfilename, FileMode.OpenOrCreate, access, share);
 
 			// Create file handling tools
-			reader = new BinaryReader(file, encoding);
-			if(!isreadonly) writer = new BinaryWriter(file, encoding);
+			reader = new BinaryReader(file, ENCODING);
+			if(!isreadonly) writer = new BinaryWriter(file, ENCODING);
 
-			// Read information from file
-			ReadHeaders();
+			// Is the WAD file zero length?
+			if(file.Length == 0)
+			{
+				// Create the headers in file
+				CreateHeaders();
+			}
+			else
+			{
+				// Read information from file
+				ReadHeaders();
+			}
 		}
 
+		// This creates new file headers
+		private void CreateHeaders()
+		{
+			// Default settings
+			type = TYPE_PWAD;
+			lumpsoffset = 12;
+
+			// New lumps array
+			lumps = new List<Lump>(numlumps);
+			
+			// Write the headers
+			WriteHeaders();
+		}
+		
 		// This reads the WAD header and lumps table
 		private void ReadHeaders()
 		{
@@ -161,7 +189,7 @@ namespace CodeImp.DoomBuilder.IO
 			file.Seek(0, SeekOrigin.Begin);
 
 			// Read WAD type
-			type = encoding.GetString(reader.ReadBytes(4));
+			type = ENCODING.GetString(reader.ReadBytes(4));
 			
 			// Number of lumps
 			numlumps = reader.ReadInt32();
@@ -196,7 +224,7 @@ namespace CodeImp.DoomBuilder.IO
 			file.Seek(0, SeekOrigin.Begin);
 
 			// Write WAD type
-			writer.Write(encoding.GetBytes(type));
+			writer.Write(ENCODING.GetBytes(type));
 
 			// Number of lumps
 			writer.Write(numlumps);
@@ -245,7 +273,7 @@ namespace CodeImp.DoomBuilder.IO
 			file.SetLength(file.Length + datalength + 16);
 			
 			// Create the lump
-			lump = new Lump(file, this, Lump.MakeFixedName(name, encoding), lumpsoffset, datalength);
+			lump = new Lump(file, this, Lump.MakeFixedName(name, ENCODING), lumpsoffset, datalength);
 			lumps.Insert(position, lump);
 			
 			// Advance lumps table offset
@@ -256,6 +284,20 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Return the new lump
 			return lump;
+		}
+
+		// This removes a lump from the WAD file by index
+		public void RemoveAt(int index)
+		{
+			Lump l;
+			
+			// Remove from list
+			l = lumps[index];
+			lumps.RemoveAt(index);
+			l.Dispose();
+
+			// Write the new headers
+			WriteHeaders();
 		}
 		
 		// This removes a lump from the WAD file
@@ -272,31 +314,61 @@ namespace CodeImp.DoomBuilder.IO
 		// This finds a lump by name, returns null when not found
 		public Lump FindLump(string name)
 		{
-			// Do search
-			return FindLump(name, 0, lumps.Count - 1);
+			int index = FindLumpIndex(name);
+			if(index == -1)
+				return null;
+			else
+				return lumps[index];
 		}
 
 		// This finds a lump by name, returns null when not found
 		public Lump FindLump(string name, int start)
 		{
-			// Do search
-			return FindLump(name, start, lumps.Count - 1);
+			int index = FindLumpIndex(name, start);
+			if(index == -1)
+				return null;
+			else
+				return lumps[index];
 		}
 
 		// This finds a lump by name, returns null when not found
 		public Lump FindLump(string name, int start, int end)
 		{
+			int index = FindLumpIndex(name, start, end);
+			if(index == -1)
+				return null;
+			else
+				return lumps[index];
+		}
+
+		// This finds a lump by name, returns null when not found
+		public int FindLumpIndex(string name)
+		{
+			// Do search
+			return FindLumpIndex(name, 0, lumps.Count - 1);
+		}
+
+		// This finds a lump by name, returns null when not found
+		public int FindLumpIndex(string name, int start)
+		{
+			// Do search
+			return FindLumpIndex(name, start, lumps.Count - 1);
+		}
+		
+		// This finds a lump by name, returns -1 when not found
+		public int FindLumpIndex(string name, int start, int end)
+		{
 			byte[] fixedname;
-			
+
 			// Fix end when it exceeds length
 			if(end > (lumps.Count - 1)) end = lumps.Count - 1;
 
 			// Make sure name is in uppercase
 			name = name.ToUpperInvariant();
-			
+
 			// Make fixed name
-			fixedname = Lump.MakeFixedName(name, encoding);
-			
+			fixedname = Lump.MakeFixedName(name, ENCODING);
+
 			// Loop through the lumps
 			for(int i = start; i <= end; i++)
 			{
@@ -307,13 +379,13 @@ namespace CodeImp.DoomBuilder.IO
 					if(lumps[i].Name.StartsWith(name, false, CultureInfo.InvariantCulture))
 					{
 						// Found the lump!
-						return lumps[i];
+						return i;
 					}
 				}
 			}
 
 			// Nothing found
-			return null;
+			return -1;
 		}
 
 		#endregion

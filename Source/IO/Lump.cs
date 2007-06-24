@@ -73,8 +73,8 @@ namespace CodeImp.DoomBuilder.IO
 			this.length = length;
 
 			// Make uppercase name
-			this.name = MakeNormalName(fixedname, owner.Encoding).ToUpperInvariant();
-			this.fixedname = MakeFixedName(name, owner.Encoding);
+			this.name = MakeNormalName(fixedname, WAD.ENCODING).ToUpperInvariant();
+			this.fixedname = MakeFixedName(name, WAD.ENCODING);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Methods
 		
 		// This makes the normal name from fixed name
-		private static string MakeNormalName(byte[] fixedname, Encoding encoding)
+		public static string MakeNormalName(byte[] fixedname, Encoding encoding)
 		{
 			int length = 0;
 			
@@ -124,6 +124,18 @@ namespace CodeImp.DoomBuilder.IO
 			return fixedname;
 		}
 
+		// This copies lump data to another lump
+		public void CopyTo(Lump lump)
+		{
+			BinaryReader reader;
+
+			// Create a reader
+			reader = new BinaryReader(stream);
+
+			// Copy bytes over
+			lump.Stream.Write(reader.ReadBytes((int)stream.Length), 0, (int)stream.Length);
+		}
+		
 		// String representation
 		public override string ToString()
 		{

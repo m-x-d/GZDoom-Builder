@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override int Read(byte[] buffer, int offset, int count)
 		{
 			// Check if this exceeds limits
-			if((basestream.Position + count) > (this.offset + this.length))
+			if((this.position + count) > (this.length + 1))
 				throw new ArgumentException("Attempted to read outside the range of the stream.");
 			
 			// Seek if needed
@@ -113,6 +113,7 @@ namespace CodeImp.DoomBuilder.IO
 				basestream.Seek(this.offset + this.position, SeekOrigin.Begin);
 			
 			// Read from base stream
+			position += count;
 			return basestream.Read(buffer, offset, count);
 		}
 
@@ -120,7 +121,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override void Write(byte[] buffer, int offset, int count)
 		{
 			// Check if this exceeds limits
-			if((basestream.Position + count) > (this.offset + this.length))
+			if((this.position + count) > (this.length + 1))
 				throw new ArgumentException("Attempted to write outside the range of the stream.");
 
 			// Seek if needed
@@ -128,6 +129,7 @@ namespace CodeImp.DoomBuilder.IO
 				basestream.Seek(this.offset + this.position, SeekOrigin.Begin);
 
 			// Read from base stream
+			position += count;
 			basestream.Write(buffer, offset, count);
 		}
 		
@@ -142,7 +144,7 @@ namespace CodeImp.DoomBuilder.IO
 					throw new ArgumentException("Attempted to seek outside the range of the stream.");
 				
 				// Seek
-				return basestream.Seek(this.offset + offset, SeekOrigin.Begin) - this.offset;
+				position = basestream.Seek(this.offset + offset, SeekOrigin.Begin) - this.offset;
 			}
 			// Seeking from current position
 			else if(origin == SeekOrigin.Current)
@@ -152,7 +154,7 @@ namespace CodeImp.DoomBuilder.IO
 					throw new ArgumentException("Attempted to seek outside the range of the stream.");
 
 				// Seek
-				return basestream.Seek(this.offset + this.position + offset, SeekOrigin.Begin) - this.offset;
+				position = basestream.Seek(this.offset + this.position + offset, SeekOrigin.Begin) - this.offset;
 			}
 			// Seeking from end
 			else
@@ -162,8 +164,11 @@ namespace CodeImp.DoomBuilder.IO
 					throw new ArgumentException("Attempted to seek outside the range of the stream.");
 
 				// Seek
-				return basestream.Seek(this.offset + this.length + offset, SeekOrigin.Begin) - this.offset;
+				position = basestream.Seek(this.offset + this.length + offset, SeekOrigin.Begin) - this.offset;
 			}
+
+			// Return new position
+			return position;
 		}
 
 		// Change the length of the steam
@@ -177,7 +182,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			// Check if this exceeds limits
-			if((basestream.Position + count) > (this.offset + this.length))
+			if((this.position + count) > (this.length + 1))
 				throw new ArgumentException("Attempted to read outside the range of the stream.");
 
 			// Seek if needed
@@ -185,6 +190,7 @@ namespace CodeImp.DoomBuilder.IO
 				basestream.Seek(this.offset + this.position, SeekOrigin.Begin);
 			
 			// Read
+			position += count;
 			return base.BeginRead(buffer, offset, count, callback, state);
 		}
 
@@ -192,7 +198,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 		{
 			// Check if this exceeds limits
-			if((basestream.Position + count) > (this.offset + this.length))
+			if((this.position + count) > (this.length + 1))
 				throw new ArgumentException("Attempted to write outside the range of the stream.");
 
 			// Seek if needed
@@ -200,6 +206,7 @@ namespace CodeImp.DoomBuilder.IO
 				basestream.Seek(this.offset + this.position, SeekOrigin.Begin);
 			
 			// Write
+			position += count;
 			return base.BeginWrite(buffer, offset, count, callback, state);
 		}
 
@@ -215,7 +222,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override int ReadByte()
 		{
 			// Check if this exceeds limits
-			if((basestream.Position + 1) > (this.offset + this.length))
+			if((this.position + 1) > (this.length + 1))
 				throw new ArgumentException("Attempted to read outside the range of the stream.");
 
 			// Seek if needed
@@ -223,6 +230,7 @@ namespace CodeImp.DoomBuilder.IO
 				basestream.Seek(this.offset + this.position, SeekOrigin.Begin);
 
 			// Read from base stream
+			position++;
 			return basestream.ReadByte();
 		}
 
@@ -230,7 +238,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override void WriteByte(byte value)
 		{
 			// Check if this exceeds limits
-			if((basestream.Position + 1) > (this.offset + this.length))
+			if((this.position + 1) > (this.length + 1))
 				throw new ArgumentException("Attempted to write outside the range of the stream.");
 
 			// Seek if needed
@@ -238,7 +246,17 @@ namespace CodeImp.DoomBuilder.IO
 				basestream.Seek(this.offset + this.position, SeekOrigin.Begin);
 
 			// Read from base stream
+			position++;
 			basestream.WriteByte(value);
+		}
+		
+		// This returns all the bytes in the stream
+		public byte[] ReadAllBytes()
+		{
+			byte[] bytes = new byte[length];
+			Seek(0, SeekOrigin.Begin);
+			Read(bytes, 0, length);
+			return bytes;
 		}
 		
 		#endregion

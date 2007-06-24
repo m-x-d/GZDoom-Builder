@@ -133,5 +133,20 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		#endregion
+
+		#region ================== Changes
+
+		// This updates all properties
+		public void Update(int offsetx, int offsety, string thigh, string tmid, string tlow)
+		{
+			// Apply changes
+			this.offsetx = offsetx;
+			this.offsety = offsety;
+			this.texnamehigh = thigh;
+			this.texnamemid = tmid;
+			this.texnamelow = tlow;
+		}
+
+		#endregion
 	}
 }

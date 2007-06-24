@@ -44,10 +44,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Owner
 		private Graphics graphics;
-		
-		// Main objects
-		private Line line;
 
+		// View settings (world coordinates)
+		private float scale;
+		private float offsetx;
+		private float offsety;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -55,7 +57,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		// Disposing
+		public float OffsetX { get { return offsetx; } }
+		public float OffsetY { get { return offsety; } }
+		public float Scale { get { return scale; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -68,11 +72,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize
 			this.graphics = graphics;
 
-			// Create line object
-			line = new Line(graphics.Device);
-			line.Width = 2f;
-			line.Antialias = true;
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -84,7 +83,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
-				line.Dispose();
 				
 				// Done
 				isdisposed = true;
@@ -94,42 +92,43 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 
 		#region ================== Methods
+		
+		// This rebuilds matrices according to view settings
+		private void SetupMatrices()
+		{
+			Matrix proj;
+			float width, height, left, top, right, bottom;
 
+			// Build projection matrix
+			width = (float)graphics.RenderTarget.ClientSize.Width / scale;
+			height = (float)graphics.RenderTarget.ClientSize.Height / scale;
+			left = offsetx - width * 0.5f;
+			top = offsety - height * 0.5f;
+			right = offsetx + width * 0.5f;
+			bottom = offsety + height * 0.5f;
+			proj = Matrix.OrthoOffCenterLH(left, right, top, bottom, -1f, 1f);
+
+			// Apply matrices
+			graphics.Device.Transform.Projection = proj;
+			graphics.Device.Transform.View = Matrix.Identity;
+			graphics.Device.Transform.World = Matrix.Identity;
+		}
+		
 		// This begins a drawing session
 		public bool StartRendering()
 		{
-			int coopresult;
-
-			// When minimized, do not render anything
-			if(General.MainWindow.WindowState != FormWindowState.Minimized)
+			// Can we render?
+			if(graphics.StartRendering())
 			{
-				// Test the cooperative level
-				graphics.Device.CheckCooperativeLevel(out coopresult);
+				// Setup matrices
+				SetupMatrices();
 
-				// Check if device must be reset
-				if(coopresult == (int)ResultCode.DeviceNotReset)
-				{
-					// TODO: Device is lost and must be reset now
-					//return Reset();
-					return false;
-				}
-				// Check if device is lost
-				else if(coopresult == (int)ResultCode.DeviceLost)
-				{
-					// Device is lost and cannot be reset now
-					return false;
-				}
-
-				// Clear the screen
-				graphics.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, 0, 1f, 0);
-				
-				// Ready to render
-				graphics.Device.BeginScene();
+				// Success
 				return true;
 			}
 			else
 			{
-				// Minimized, you cannot see anything
+				// Cannot render
 				return false;
 			}
 		}
@@ -137,39 +136,50 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This ends a drawing session
 		public void FinishRendering()
 		{
-			try
-			{
-				// Done
-				graphics.Device.EndScene();
-				
-				// Display the scene
-				graphics.Device.Present();
-			}
-			// Errors are not a problem here
-			catch(Exception) { }
+			// Finish and present our drawing
+			graphics.FinishRendering();
 		}
 		
-		// This renders a set of Linedefs
-		public void RenderLinedefs(IEnumerable<Linedef> linedefs)
+		// This changes view position
+		public void PositionView(float x, float y)
 		{
-			Vector2[] vertices = new Vector2[2];
+			// Change position in world coordinates
+			offsetx = x;
+			offsety = y;
+		}
+		
+		// This changes zoom
+		public void ScaleView(float scale)
+		{
+			// Change zoom scale
+			this.scale = scale;
+		}
 
-			line.Begin();
+		// This renders a set of Linedefs
+		public void RenderLinedefs(ICollection<Linedef> linedefs)
+		{
+			PTVertex[] verts = new PTVertex[linedefs.Count * 4];
+			int i = 0;
+
+			graphics.Device.RenderState.TextureFactor = -1;
 
 			// Go for all linedefs
 			foreach(Linedef l in linedefs)
 			{
 				// Make vertices
-				vertices[0].X = l.Start.Position.x;
-				vertices[0].Y = l.Start.Position.y;
-				vertices[1].X = l.End.Position.x;
-				vertices[1].Y = l.End.Position.y;
-
-				// Draw line
-				line.Draw(vertices, -1);
+				verts[i++] = l.LineVertices[0];
+				verts[i++] = l.LineVertices[1];
+				verts[i++] = l.LineVertices[2];
+				verts[i++] = l.LineVertices[3];
 			}
+			
+			// Draw lines
+			graphics.Device.DrawUserPrimitives(PrimitiveType.LineList, linedefs.Count * 2, verts);
+		}
 
-			line.End();
+		// This renders a set of Linedefs
+		public void RenderVertices(MapSet map, ICollection<Vertex> vertices)
+		{
 		}
 
 		#endregion

@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using System.IO;
 using System.Collections;
+using System.Diagnostics;
 
 #endregion
 
@@ -208,10 +209,13 @@ namespace CodeImp.DoomBuilder.Interface
 				// Make sure this lump is not part of the map
 				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name))
 				{
-					// Check the required map lumps
+					// Reset check
 					lumpsfound = 0;
 					checkoffset = 1;
-					do
+
+					// Continue while still within bounds and lumps are still recognized
+					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
+						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name))
 					{
 						// Count the lump when it is marked as required
 						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
@@ -220,9 +224,6 @@ namespace CodeImp.DoomBuilder.Interface
 						// Check the next lump
 						checkoffset++;
 					}
-					// Continue while still within bounds and lumps are still recognized
-					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
-						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name));
 
 					// Map found? Then add it to the list
 					if(lumpsfound >= lumpsrequired)
@@ -272,7 +273,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Apply changes
 			options.ClearResources();
 			options.ConfigFile = General.Configs[config.SelectedIndex].filename;
-			options.CurrentName = mapslist.SelectedItems[0].ToString();
+			options.CurrentName = mapslist.SelectedItems[0].Text;
 			foreach(ResourceLocation res in resources.Items) options.AddResource(res);
 
 			// Hide window
@@ -359,6 +360,20 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Load settings
 			LoadSettings();
+		}
+
+		// Map name doubleclicked
+		private void mapslist_DoubleClick(object sender, EventArgs e)
+		{
+			// Click OK
+			if(mapslist.SelectedItems.Count > 0) apply.PerformClick();
+		}
+
+		// Resource doubeclicked
+		private void resources_DoubleClick(object sender, EventArgs e)
+		{
+			// Click Edit Resource
+			if(resources.SelectedIndex > -1) editresource.PerformClick();
 		}
 	}
 }
