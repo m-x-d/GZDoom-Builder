@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -61,7 +62,10 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Setup controls
 			InitializeComponent();
-
+			
+			// Apply shortcut keys
+			ApplyShortcutKeys();
+			
 			// Keep last position and size
 			lastposition = this.Location;
 			lastsize = this.Size;
@@ -274,6 +278,49 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Menus
 
+		// Public method to apply shortcut keys
+		public void ApplyShortcutKeys()
+		{
+			// Apply shortcut keys to menus
+			ApplyShortcutKeys(menumain.Items);
+		}
+		
+		// This sets the shortcut keys on menu items
+		private void ApplyShortcutKeys(ToolStripItemCollection items)
+		{
+			ToolStripMenuItem menuitem;
+			string actionname;
+			
+			// Go for all controls to find menu items
+			foreach(ToolStripItem item in items)
+			{
+				// This is a menu item?
+				if(item is ToolStripMenuItem)
+				{
+					// Get the item in proper type
+					menuitem = (item as ToolStripMenuItem);
+
+					// Tag set for this item?
+					if(menuitem.Tag != null)
+					{
+						// Get the action name
+						actionname = menuitem.Tag.ToString();
+
+						// Action with this name available?
+						if(General.Actions.Exists(actionname))
+						{
+							// Put the action shortcut key on the menu item
+							// TODO: Use a friendly shortcut key description
+							menuitem.ShortcutKeyDisplayString = General.Actions[actionname].ShortcutKey.ToString();
+						}
+					}
+
+					// Recursively apply shortcut keys to child menu items as well
+					ApplyShortcutKeys(menuitem.DropDownItems);
+				}
+			}
+		}
+		
 		// This updates all menus for the current status
 		public void UpdateMenus()
 		{

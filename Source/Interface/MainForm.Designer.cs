@@ -83,7 +83,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// itemnewmap
 			// 
 			this.itemnewmap.Name = "itemnewmap";
+			this.itemnewmap.ShortcutKeyDisplayString = "";
 			this.itemnewmap.Size = new System.Drawing.Size(167, 22);
+			this.itemnewmap.Tag = "newmap";
 			this.itemnewmap.Text = "New Map";
 			this.itemnewmap.Click += new System.EventHandler(this.itemnewmap_Click);
 			// 
@@ -91,6 +93,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemopenmap.Name = "itemopenmap";
 			this.itemopenmap.Size = new System.Drawing.Size(167, 22);
+			this.itemopenmap.Tag = "openmap";
 			this.itemopenmap.Text = "Open Map...";
 			this.itemopenmap.Click += new System.EventHandler(this.itemopenmap_Click);
 			// 
