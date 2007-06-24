@@ -164,6 +164,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.resources.Name = "resources";
 			this.resources.Size = new System.Drawing.Size(321, 88);
 			this.resources.TabIndex = 10;
+			this.resources.DoubleClick += new System.EventHandler(this.resources_DoubleClick);
 			this.resources.SelectedIndexChanged += new System.EventHandler(this.resources_SelectedIndexChanged);
 			// 
 			// apply

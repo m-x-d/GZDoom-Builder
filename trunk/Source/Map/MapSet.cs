@@ -111,6 +111,9 @@ namespace CodeImp.DoomBuilder.Map
 				sidedefs = null;
 				sectors = null;
 				things = null;
+
+				// We may spend some time to clean things up here
+				GC.Collect();
 				
 				// Done
 				isdisposed = true;
@@ -178,7 +181,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Thing t in things)
 			{
 				// Make new thing
-				Thing nt = newset.CreateThing(t.Type, t.Position);
+				Thing nt = newset.CreateThing();
 
 				// Copy properties
 				t.CopyPropertiesTo(nt);
@@ -269,7 +272,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This creates a new thing
-		public Thing CreateThing(int type, Vector2D pos)
+		public Thing CreateThing()
 		{
 			LinkedListNode<Thing> listitem;
 			Thing t;
@@ -278,7 +281,7 @@ namespace CodeImp.DoomBuilder.Map
 			listitem = new LinkedListNode<Thing>(null);
 
 			// Make the thing
-			t = new Thing(this, listitem, type, pos);
+			t = new Thing(this, listitem);
 			listitem.Value = t;
 
 			// Add thing to the list

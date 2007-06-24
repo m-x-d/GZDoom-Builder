@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.Windows.Forms.ColumnHeader columnHeader1;
 			this.panelres = new System.Windows.Forms.GroupBox();
 			this.deleteresource = new System.Windows.Forms.Button();
 			this.editresource = new System.Windows.Forms.Button();
@@ -39,8 +40,13 @@ namespace CodeImp.DoomBuilder.Interface
 			this.cancel = new System.Windows.Forms.Button();
 			this.config = new System.Windows.Forms.ComboBox();
 			this.mapslist = new System.Windows.Forms.ListView();
+			columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			this.panelres.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// columnHeader1
+			// 
+			columnHeader1.Text = "Map name";
 			// 
 			// panelres
 			// 
@@ -98,6 +104,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.resources.Name = "resources";
 			this.resources.Size = new System.Drawing.Size(321, 88);
 			this.resources.TabIndex = 10;
+			this.resources.DoubleClick += new System.EventHandler(this.resources_DoubleClick);
 			this.resources.SelectedIndexChanged += new System.EventHandler(this.resources_SelectedIndexChanged);
 			// 
 			// label1
@@ -153,7 +160,8 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// mapslist
 			// 
-			this.mapslist.AutoArrange = false;
+			this.mapslist.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            columnHeader1});
 			this.mapslist.FullRowSelect = true;
 			this.mapslist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.mapslist.HideSelection = false;
@@ -167,6 +175,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.mapslist.TabIndex = 18;
 			this.mapslist.UseCompatibleStateImageBehavior = false;
 			this.mapslist.View = System.Windows.Forms.View.List;
+			this.mapslist.DoubleClick += new System.EventHandler(this.mapslist_DoubleClick);
 			// 
 			// OpenMapOptionsForm
 			// 

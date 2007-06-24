@@ -36,13 +36,14 @@ namespace CodeImp.DoomBuilder.Rendering
 	public struct PTVertex
 	{
 		// Vertex format
-		public static readonly VertexFormats Format = VertexFormats.Position | VertexFormats.Texture1;
-		public static readonly int Stride = 5 * 4;
+		public static readonly VertexFormats Format = VertexFormats.Position | VertexFormats.Diffuse | VertexFormats.Texture1;
+		public static readonly int Stride = 6 * 4;
 
 		// Members
 		public float x;
 		public float y;
 		public float z;
+		public int c;
 		public float u;
 		public float v;
 	}

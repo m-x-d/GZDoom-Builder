@@ -28,6 +28,7 @@ using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
+using System.Runtime.InteropServices;
 
 #endregion
 
@@ -35,6 +36,13 @@ namespace CodeImp.DoomBuilder
 {
 	internal static class General
 	{
+		#region ================== API Declarations
+
+		[DllImport("user32.dll")]
+		public static extern int LockWindowUpdate(IntPtr hwnd);
+
+		#endregion
+
 		#region ================== Constants
 
 		// Files and Folders
@@ -372,6 +380,32 @@ namespace CodeImp.DoomBuilder
 			return true;
 		}
 		
+		#endregion
+		
+		#region ================== Tools
+
+		// This returns a unique temp filename
+		public static string MakeTempFilename()
+		{
+			string filename;
+			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
+			Random rnd = new Random();
+			int i;
+
+			do
+			{
+				// Generate a filename
+				filename = "";
+				for(i = 0; i < 8; i++) filename += chars[rnd.Next(chars.Length)];
+				filename = Path.Combine(temppath, filename + ".tmp");
+			}
+			// Continue while file is not unique
+			while(File.Exists(filename));
+
+			// Return the filename
+			return filename;
+		}
+
 		#endregion
 	}
 }

@@ -31,6 +31,8 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
+		public static readonly byte[] EMPTY_ARGS = new byte[5];
+
 		#endregion
 
 		#region ================== Variables
@@ -47,8 +49,12 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Properties
 		private int type;
-		private Vector2D pos;
+		private Vector3D pos;
 		private float angle;
+		private int flags;
+		private int tag;
+		private int action;
+		private byte[] args;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -58,7 +64,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public int Type { get { return type; } }
-		public Vector2D Position { get { return pos; } }
+		public Vector3D Position { get { return pos; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -66,16 +72,11 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Thing(MapSet map, LinkedListNode<Thing> listitem, int type, Vector2D pos)
+		public Thing(MapSet map, LinkedListNode<Thing> listitem)
 		{
 			// Initialize
 			this.map = map;
 			this.mainlistitem = listitem;
-			this.type = type;
-			this.pos = pos;
-			
-			// Determine current sector
-			DetermineSector();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -108,6 +109,20 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
+		// This copies all properties to another thing
+		public void CopyPropertiesTo(Thing t)
+		{
+			// Copy properties
+			t.type = type;
+			t.angle = angle;
+			t.pos = pos;
+			t.flags = flags;
+			t.tag = tag;
+			t.action = action;
+			t.args = EMPTY_ARGS;
+			args.CopyTo(t.args, 0);
+		}
+		
 		// This determines which sector the thing is in and links it
 		public void DetermineSector()
 		{
@@ -154,13 +169,39 @@ namespace CodeImp.DoomBuilder.Map
 				sectorlistitem = sector.AttachThing(this);
 			}
 		}
+		
+		#endregion
+		
+		#region ================== Changes
 
-		// This copies all properties to another thing
-		public void CopyPropertiesTo(Thing t)
+		// This moves the thing
+		// NOTE: This does not update sector! (call DetermineSector)
+		public void Move(Vector3D newpos)
 		{
-			// Copy properties
-			t.type = type;
-			t.angle = angle;
+			// Change position
+			pos = newpos;
+		}
+		
+		// This rotates the thing
+		public void Rotate(float newangle)
+		{
+			// Change angle
+			angle = newangle;
+		}
+		
+		// This updates all properties
+		// NOTE: This does not update sector! (call DetermineSector)
+		public void Update(int type, Vector3D pos, float angle,
+						   int flags, int tag, int action, byte[] args)
+		{
+			// Apply changes
+			this.type = type;
+			this.pos = pos;
+			this.angle = angle;
+			this.flags = flags;
+			this.tag = tag;
+			this.action = action;
+			this.args = args;
 		}
 		
 		#endregion

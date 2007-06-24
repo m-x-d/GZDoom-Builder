@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Rendering;
+using Microsoft.DirectX.Direct3D;
 
 #endregion
 
@@ -31,6 +33,8 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
+		public static readonly byte[] EMPTY_ARGS = new byte[5];
+		
 		#endregion
 
 		#region ================== Variables
@@ -55,6 +59,7 @@ namespace CodeImp.DoomBuilder.Map
 		private float lengthsq;
 		private float length;
 		//private float angle;
+		private PTVertex[] lineverts;
 
 		// Properties
 		private int flags;
@@ -69,6 +74,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
+		public PTVertex[] LineVertices { get { return lineverts; } }
 		public Vertex Start { get { return start; } }
 		public Vertex End { get { return end; } }
 		public Sidedef Front { get { return front; } }
@@ -87,6 +93,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.mainlistitem = listitem;
 			this.start = start;
 			this.end = end;
+			this.lineverts = new PTVertex[4];
 
 			// Attach to vertices
 			startvertexlistitem = start.AttachLinedef(this);
@@ -136,10 +143,30 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Management
 
 		// This attaches a sidedef on the front
-		public void AttachFront(Sidedef s) { if(front == null) front = s; else throw new Exception("Linedef already has a front Sidedef."); }
+		public void AttachFront(Sidedef s)
+		{
+			// No sidedef here yet?
+			if(front == null)
+			{
+				// Attach and recalculate
+				front = s;
+				Recalculate();
+			}
+			else throw new Exception("Linedef already has a front Sidedef.");
+		}
 
 		// This attaches a sidedef on the back
-		public void AttachBack(Sidedef s) { if(back == null) back = s; else throw new Exception("Linedef already has a back Sidedef."); }
+		public void AttachBack(Sidedef s)
+		{
+			// No sidedef here yet?
+			if(back == null)
+			{
+				// Attach and recalculate
+				back = s;
+				Recalculate();
+			}
+			else throw new Exception("Linedef already has a back Sidedef.");
+		}
 
 		// This detaches a sidedef from the front
 		public void DetachSidedef(Sidedef s) { if(front == s) front = null; else if(back == s) back = null; else throw new Exception("Specified Sidedef is not attached to this Linedef."); }
@@ -147,13 +174,52 @@ namespace CodeImp.DoomBuilder.Map
 		// This recalculates cached values
 		public void Recalculate()
 		{
+			Vector2D delta;
+			Vector2D normal;
+			int color;
+			
 			// Delta vector
-			Vector2D delta = end.Position - start.Position;
+			delta = end.Position - start.Position;
 			
 			// Recalculate values
 			lengthsq = delta.GetLengthSq();
 			length = (float)Math.Sqrt(lengthsq);
+			normal = new Vector2D(delta.x / length, delta.y / length);
 			//angle = delta.GetAngle();
+
+			// Single sided?
+			if((front == null) || (back == null))
+			{
+				// Line has an action?
+				if(action != 0)
+					color = Graphics.RGB(140, 255, 140);
+				else
+					color = Graphics.RGB(255, 255, 255);
+			}
+			else
+			{
+				// Line has an action?
+				if(action != 0)
+					color = Graphics.RGB(50, 140, 50);
+				else
+					color = Graphics.RGB(140, 140, 140);
+			}
+			
+			// Create line normal
+			lineverts[0].x = start.Position.x + delta.x * 0.5f;
+			lineverts[0].y = start.Position.y + delta.y * 0.5f;
+			lineverts[1].x = lineverts[0].x + normal.y * 100f;
+			lineverts[1].y = lineverts[0].y - normal.x * 100f;
+			lineverts[0].c = color;
+			lineverts[1].c = color;
+			
+			// Create line vertices
+			lineverts[2].x = start.Position.x;
+			lineverts[2].y = start.Position.y;
+			lineverts[3].x = end.Position.x;
+			lineverts[3].y = end.Position.y;
+			lineverts[2].c = color;
+			lineverts[3].c = color;
 		}
 
 		// This copies all properties to another line
@@ -168,7 +234,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#endregion
 		
-		#region ================== Mathematics
+		#region ================== Methods
 
 		// This returns the shortest distance from given coordinates to line
 		public float DistanceToSq(Vector2D p, bool bounded)
@@ -209,6 +275,20 @@ namespace CodeImp.DoomBuilder.Map
 			return (p.y - v1.y) * (v2.x - v1.x) - (p.x - v1.x) * (v2.y - v1.y);
 		}
 		
+		#endregion
+
+		#region ================== Changes
+		
+		// This updates all properties
+		public void Update(int flags, int tag, int action, byte[] args)
+		{
+			// Apply changes
+			this.flags = flags;
+			this.tag = tag;
+			this.action = action;
+			this.args = args;
+		}
+
 		#endregion
 	}
 }

@@ -27,6 +27,8 @@ using System.Reflection;
 using System.Drawing;
 using Microsoft.DirectX.Direct3D;
 using System.ComponentModel;
+using Microsoft.DirectX;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -49,7 +51,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Main objects
 		private Control rendertarget;
 		private Caps devicecaps;
-		private Device d3dd;
+		private Device device;
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
 		
@@ -60,11 +62,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		public Device Device { get { return d3dd; } }
+		public Device Device { get { return device; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public Renderer2D Renderer2D { get { return renderer2d; } }
 		public Renderer3D Renderer3D { get { return renderer3d; } }
-		
+		public Control RenderTarget { get { return rendertarget; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -88,7 +91,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Clean up
 				renderer2d.Dispose();
 				renderer3d.Dispose();
-				d3dd.Dispose();
+				device.Dispose();
 				rendertarget = null;
 
 				// Done
@@ -104,61 +107,61 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void SetupSettings()
 		{
 			// Setup renderstates
-			d3dd.SetRenderState(RenderStates.AntialiasedLineEnable, true);
-			d3dd.SetRenderState(RenderStates.Ambient, Color.White.ToArgb());
-			d3dd.SetRenderState(RenderStates.AmbientMaterialSource, (int)ColorSource.Material);
-			d3dd.SetRenderState(RenderStates.ColorVertex, false);
-			d3dd.SetRenderState(RenderStates.DiffuseMaterialSource, (int)ColorSource.Color1);
-			d3dd.SetRenderState(RenderStates.FillMode, (int)FillMode.Solid);
-			d3dd.SetRenderState(RenderStates.FogEnable, false);
-			d3dd.SetRenderState(RenderStates.Lighting, false);
-			d3dd.SetRenderState(RenderStates.LocalViewer, false);
-			d3dd.SetRenderState(RenderStates.NormalizeNormals, false);
-			d3dd.SetRenderState(RenderStates.SpecularEnable, false);
-			d3dd.SetRenderState(RenderStates.StencilEnable, false);
-			d3dd.SetRenderState(RenderStates.PointSpriteEnable, false);
-			d3dd.SetRenderState(RenderStates.DitherEnable, true);
-			d3dd.SetRenderState(RenderStates.AlphaBlendEnable, false);
-			d3dd.SetRenderState(RenderStates.ZEnable, false);
-			d3dd.SetRenderState(RenderStates.ZBufferWriteEnable, false);
-			d3dd.SetRenderState(RenderStates.Clipping, true);
-			d3dd.SetRenderState(RenderStates.CullMode, (int)Cull.CounterClockwise);
-			d3dd.VertexFormat = PTVertex.Format;
+			device.SetRenderState(RenderStates.AntialiasedLineEnable, false);
+			device.SetRenderState(RenderStates.Ambient, Color.White.ToArgb());
+			device.SetRenderState(RenderStates.AmbientMaterialSource, (int)ColorSource.Material);
+			device.SetRenderState(RenderStates.ColorVertex, false);
+			device.SetRenderState(RenderStates.DiffuseMaterialSource, (int)ColorSource.Color1);
+			device.SetRenderState(RenderStates.FillMode, (int)FillMode.Solid);
+			device.SetRenderState(RenderStates.FogEnable, false);
+			device.SetRenderState(RenderStates.Lighting, false);
+			device.SetRenderState(RenderStates.LocalViewer, false);
+			device.SetRenderState(RenderStates.NormalizeNormals, false);
+			device.SetRenderState(RenderStates.SpecularEnable, false);
+			device.SetRenderState(RenderStates.StencilEnable, false);
+			device.SetRenderState(RenderStates.PointSpriteEnable, false);
+			device.SetRenderState(RenderStates.DitherEnable, true);
+			device.SetRenderState(RenderStates.AlphaBlendEnable, false);
+			device.SetRenderState(RenderStates.ZEnable, false);
+			device.SetRenderState(RenderStates.ZBufferWriteEnable, false);
+			device.SetRenderState(RenderStates.Clipping, true);
+			device.SetRenderState(RenderStates.CullMode, (int)Cull.None);
+			device.VertexFormat = PTVertex.Format;
 
 			// Sampler settings
-			d3dd.SamplerState[0].MagFilter = TextureFilter.Linear;
-			d3dd.SamplerState[0].MinFilter = TextureFilter.Linear;
-			d3dd.SamplerState[0].MipFilter = TextureFilter.Linear;
+			device.SamplerState[0].MagFilter = TextureFilter.Linear;
+			device.SamplerState[0].MinFilter = TextureFilter.Linear;
+			device.SamplerState[0].MipFilter = TextureFilter.Linear;
 
 			// Texture addressing
-			d3dd.SamplerState[0].AddressU = TextureAddress.Wrap;
-			d3dd.SamplerState[0].AddressV = TextureAddress.Wrap;
-			d3dd.SamplerState[0].AddressW = TextureAddress.Wrap;
+			device.SamplerState[0].AddressU = TextureAddress.Wrap;
+			device.SamplerState[0].AddressV = TextureAddress.Wrap;
+			device.SamplerState[0].AddressW = TextureAddress.Wrap;
 
 			// First texture stage
-			d3dd.TextureState[0].ColorOperation = TextureOperation.Modulate;
-			d3dd.TextureState[0].ColorArgument1 = TextureArgument.TextureColor;
-			d3dd.TextureState[0].ColorArgument2 = TextureArgument.TFactor;
-			d3dd.TextureState[0].ResultArgument = TextureArgument.Current;
-			d3dd.TextureState[0].TextureCoordinateIndex = 0;
+			device.TextureState[0].ColorOperation = TextureOperation.Modulate;
+			device.TextureState[0].ColorArgument1 = TextureArgument.Current;
+			device.TextureState[0].ColorArgument2 = TextureArgument.TFactor;
+			device.TextureState[0].ResultArgument = TextureArgument.Current;
+			device.TextureState[0].TextureCoordinateIndex = 0;
 
 			// No more further stages
-			d3dd.TextureState[1].ColorOperation = TextureOperation.Disable;
+			device.TextureState[1].ColorOperation = TextureOperation.Disable;
 			
 			// First alpha stage
-			d3dd.TextureState[0].AlphaOperation = TextureOperation.Modulate;
-			d3dd.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
-			d3dd.TextureState[0].AlphaArgument2 = TextureArgument.TFactor;
+			device.TextureState[0].AlphaOperation = TextureOperation.Modulate;
+			device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
+			device.TextureState[0].AlphaArgument2 = TextureArgument.TFactor;
 
 			// No more further stages
-			d3dd.TextureState[1].AlphaOperation = TextureOperation.Disable;
+			device.TextureState[1].AlphaOperation = TextureOperation.Disable;
 			
 			// Setup material
 			Material material = new Material();
 			material.Ambient = Color.White;
 			material.Diffuse = Color.White;
 			material.Specular = Color.White;
-			d3dd.Material = material;
+			device.Material = material;
 		}
 
 		#endregion
@@ -168,7 +171,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This initializes the graphics
 		public bool Initialize()
 		{
-			AdapterInformation adapterinfo;
 			PresentParameters displaypp;
 			DeviceType devtype;
 
@@ -193,13 +195,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(devicecaps.DeviceCaps.SupportsHardwareTransformAndLight)
 				{
 					// Initialize with hardware TnL
-					d3dd = new Device(adapter, devtype, rendertarget,
+					device = new Device(adapter, devtype, rendertarget,
 								CreateFlags.HardwareVertexProcessing, displaypp);
 				}
 				else
 				{
 					// Initialize with software TnL
-					d3dd = new Device(adapter, devtype, rendertarget,
+					device = new Device(adapter, devtype, rendertarget,
 								CreateFlags.SoftwareVertexProcessing, displaypp);
 				}
 			}
@@ -211,7 +213,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Add event to cancel resize event
-			d3dd.DeviceResizing += new CancelEventHandler(CancelResize);
+			device.DeviceResizing += new CancelEventHandler(CancelResize);
 
 			// Initialize settings
 			SetupSettings();
@@ -273,7 +275,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			try
 			{
 				// Reset the device
-				d3dd.Reset(displaypp);
+				device.Reset(displaypp);
 			}
 			catch(Exception)
 			{
@@ -288,6 +290,91 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Success
 			return true;
+		}
+
+		#endregion
+		
+		#region ================== Rendering
+
+		// This begins a drawing session
+		public bool StartRendering()
+		{
+			int coopresult;
+
+			// When minimized, do not render anything
+			if(General.MainWindow.WindowState != FormWindowState.Minimized)
+			{
+				// Test the cooperative level
+				device.CheckCooperativeLevel(out coopresult);
+
+				// Check if device must be reset
+				if(coopresult == (int)ResultCode.DeviceNotReset)
+				{
+					// Device is lost and must be reset now
+					return Reset();
+				}
+				// Check if device is lost
+				else if(coopresult == (int)ResultCode.DeviceLost)
+				{
+					// Device is lost and cannot be reset now
+					return false;
+				}
+
+				// Clear the screen
+				device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, 0, 1f, 0);
+
+				// Ready to render
+				device.BeginScene();
+				return true;
+			}
+			else
+			{
+				// Minimized, you cannot see anything
+				return false;
+			}
+		}
+
+		// This ends a drawing session
+		public void FinishRendering()
+		{
+			try
+			{
+				// Done
+				device.EndScene();
+
+				// Display the scene
+				device.Present();
+			}
+			// Errors are not a problem here
+			catch(Exception) { }
+		}
+
+		#endregion
+
+		#region ================== Tools
+
+		// Make a color from ARGB
+		public static int ARGB(float a, float r, float g, float b)
+		{
+			return Color.FromArgb((int)(a * 255f), (int)(r * 255f), (int)(g * 255f), (int)(b * 255f)).ToArgb();
+		}
+
+		// Make a color from RGB
+		public static int RGB(int r, int g, int b)
+		{
+			return Color.FromArgb(255, r, g, b).ToArgb();
+		}
+
+		// This makes a Vector3 from Vector3D
+		public static Vector3 V3(Vector3D v3d)
+		{
+			return new Vector3(v3d.x, v3d.y, v3d.z);
+		}
+
+		// This makes a Vector3D from Vector3
+		public static Vector3D V3D(Vector3 v3)
+		{
+			return new Vector3D(v3.X, v3.Y, v3.Z);
 		}
 
 		#endregion

@@ -152,5 +152,21 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		#endregion
+
+		#region ================== Changes
+
+		// This updates all properties
+		public void Update(int hfloor, int hceil, string tfloor, string tceil, int special, int tag)
+		{
+			// Apply changes
+			this.floorheight = hfloor;
+			this.ceilheight = hceil;
+			this.floortexname = tfloor;
+			this.ceiltexname = tceil;
+			this.special = special;
+			this.tag = tag;
+		}
+
+		#endregion
 	}
 }

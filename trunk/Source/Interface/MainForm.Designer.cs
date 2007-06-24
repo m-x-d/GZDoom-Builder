@@ -230,6 +230,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Name = "MainForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Doom Builder";
+			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.Move += new System.EventHandler(this.MainForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);

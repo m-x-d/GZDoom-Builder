@@ -40,7 +40,8 @@ namespace CodeImp.DoomBuilder.Interface
 		// Position/size
 		private Point lastposition;
 		private Size lastsize;
-
+		private bool displayresized = true;
+		
 		// Mouse in display
 		private bool mouseinside;
 		
@@ -60,7 +61,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Setup controls
 			InitializeComponent();
-			
+
 			// Keep last position and size
 			lastposition = this.Location;
 			lastsize = this.Size;
@@ -103,6 +104,14 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 		}
 
+		// Window resizes
+		private void MainForm_Resize(object sender, EventArgs e)
+		{
+			// Resizing
+			//this.SuspendLayout();
+			//resized = true;
+		}
+
 		// Window was resized
 		private void MainForm_ResizeEnd(object sender, EventArgs e)
 		{
@@ -121,7 +130,10 @@ namespace CodeImp.DoomBuilder.Interface
 			int windowstate;
 			
 			// Determine window state to save
-			if(this.WindowState != FormWindowState.Minimized) windowstate = (int)this.WindowState; else windowstate = (int)FormWindowState.Normal;
+			if(this.WindowState != FormWindowState.Minimized)
+				windowstate = (int)this.WindowState;
+			else
+				windowstate = (int)FormWindowState.Normal;
 			
 			// Save settings to configuration
 			General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
@@ -184,8 +196,8 @@ namespace CodeImp.DoomBuilder.Interface
 		// Display needs repainting
 		private void display_Paint(object sender, PaintEventArgs e)
 		{
-			// Repaint on demand
-			if(General.Map != null) redrawtimer.Enabled = true;
+			// Request redraw
+			if(!redrawtimer.Enabled) redrawtimer.Enabled = true;
 		}
 
 		// Redraw requested
@@ -193,22 +205,40 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Disable timer (only redraw once)
 			redrawtimer.Enabled = false;
+
+			// Resume control layouts
+			if(displayresized) General.LockWindowUpdate(IntPtr.Zero);
 			
-			// Redraw now
-			if(General.Map != null) General.Map.Mode.RedrawDisplay();
+			// Map opened?
+			if(General.Map != null)
+			{
+				// Display was resized?
+				if(displayresized)
+				{
+					// Reset graphics to match changes
+					General.Map.Graphics.Reset();
+
+					// Make sure control is repainted
+					display.Update();
+				}
+				
+				// Redraw now
+				General.Map.Mode.RedrawDisplay();
+			}
+
+			// Display resize is done
+			displayresized = false;
 		}
 
 		// Display size changes
 		private void display_Resize(object sender, EventArgs e)
 		{
-			// Reset graphics to match changes
-			if(General.Map != null) General.Map.Graphics.Reset();
+			// Resizing
+			if(!displayresized) General.LockWindowUpdate(display.Handle);
+			displayresized = true;
 			
-			// Make sure control is repainted
-			display.Update();
-
-			// Redraw display
-			if(General.Map != null) General.Map.Mode.RedrawDisplay();
+			// Request redraw
+			if(!redrawtimer.Enabled) redrawtimer.Enabled = true;
 		}
 		
 		// Mouse click
