@@ -29,6 +29,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using System.Runtime.InteropServices;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -63,6 +64,7 @@ namespace CodeImp.DoomBuilder
 		private static MainForm mainwindow;
 		private static Configuration settings;
 		private static MapManager map;
+		private static ActionManager actions;
 		
 		// Configurations
 		private static List<ConfigurationInfo> configs;
@@ -79,6 +81,7 @@ namespace CodeImp.DoomBuilder
 		public static Configuration Settings { get { return settings; } }
 		public static List<ConfigurationInfo> Configs { get { return configs; } }
 		public static MapManager Map { get { return map; } }
+		public static ActionManager Actions { get { return actions; } }
 		
 		#endregion
 
@@ -192,6 +195,9 @@ namespace CodeImp.DoomBuilder
 			if(!File.Exists(Path.Combine(apppath, SETTINGS_CONFIG_FILE))) throw (new FileNotFoundException("Unable to find the program configuration \"" + SETTINGS_CONFIG_FILE + "\"."));
 			settings = new Configuration(Path.Combine(apppath, SETTINGS_CONFIG_FILE), false);
 			
+			// Create action manager
+			actions = new ActionManager();
+			
 			// Create main window
 			mainwindow = new MainForm();
 			mainwindow.UpdateMenus();
@@ -217,6 +223,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// Clean up
 			mainwindow.Dispose();
+			actions.Dispose();
 
 			// Save settings configuration
 			settings.SaveConfiguration(Path.Combine(apppath, SETTINGS_CONFIG_FILE));
