@@ -48,7 +48,7 @@
     <Compile Include="Editing\FrozenOverviewMode.cs" />
     <Compile Include="Editing\ViewClassicMode.cs" />
     <Compile Include="Controls\ActionDelegate.cs" />
-    <Compile Include="Controls\Actions.cs" />
+    <Compile Include="Controls\Action.cs" />
     <Compile Include="Controls\ActionManager.cs" />
     <Compile Include="General\ConfigurationInfo.cs" />
     <Compile Include="General\MapManager.cs" />
