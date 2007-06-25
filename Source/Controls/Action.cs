@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public const string NEWMAP = "newmap";
 		public const string OPENMAP = "openmap";
+		public const string CLOSEMAP = "closemap";
 		public const string SAVEMAP = "savemap";
 		public const string SAVEMAPAS = "savemapas";
 		public const string SHOWOVERVIEW = "showoverview";

@@ -198,6 +198,11 @@ namespace CodeImp.DoomBuilder
 			// Create action manager
 			actions = new ActionManager();
 			
+			// Bind my methods to actions
+			actions[Action.NEWMAP].Bind(new ActionDelegate(NewMap));
+			actions[Action.OPENMAP].Bind(new ActionDelegate(OpenMap));
+			actions[Action.CLOSEMAP].Bind(new ActionDelegate(CloseMap));
+
 			// Create main window
 			mainwindow = new MainForm();
 			mainwindow.UpdateMenus();
@@ -221,6 +226,11 @@ namespace CodeImp.DoomBuilder
 		// This terminates the program
 		public static void Terminate()
 		{
+			// Unbind my methods to actions
+			actions[Action.NEWMAP].Unbind(new ActionDelegate(NewMap));
+			actions[Action.OPENMAP].Unbind(new ActionDelegate(OpenMap));
+			actions[Action.CLOSEMAP].Unbind(new ActionDelegate(CloseMap));
+			
 			// Clean up
 			mainwindow.Dispose();
 			actions.Dispose();
@@ -237,94 +247,20 @@ namespace CodeImp.DoomBuilder
 		#region ================== Management
 
 		// This creates a new map
-		public static bool NewMap()
+		public static void NewMap()
 		{
-			MapOptions newoptions;
+			MapOptions newoptions = new MapOptions();
 			MapOptionsForm optionswindow;
 
-			// Empty options
-			newoptions = new MapOptions();
-
-			// Open map options dialog
-			optionswindow = new MapOptionsForm(newoptions);
-			if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
+			// Ask the user to save changes (if any)
+			if(General.AskSaveMap())
 			{
-				// Display status
-				mainwindow.DisplayStatus("Creating new map...");
-				
-				// Clear the display
-				mainwindow.ClearDisplay();
-				
-				// Trash the current map, if any
-				if(map != null) map.Dispose();
-
-				// Create map manager with given options
-				map = new MapManager();
-				if(!map.InitializeNewMap(newoptions))
-				{
-					// Unable to create map manager
-					map.Dispose();
-					map = null;
-
-					// Show splash logo on display
-					mainwindow.ShowSplashDisplay();
-
-					// Failed
-					mainwindow.UpdateMenus();
-					mainwindow.DisplayReady();
-					return false;
-				}
-
-				// Done
-				mainwindow.UpdateMenus();
-				mainwindow.DisplayReady();
-				return true;
-			}
-			
-			// Cancelled
-			return false;
-		}
-
-		// This closes the current map
-		public static bool CloseMap()
-		{
-			// Display status
-			mainwindow.DisplayStatus("Closing map...");
-
-			// Trash the current map
-			if(map != null) map.Dispose();
-			map = null;
-
-			// Show splash logo on display
-			mainwindow.ShowSplashDisplay();
-			
-			// Done
-			mainwindow.UpdateMenus();
-			mainwindow.DisplayReady();
-			return true;
-		}
-
-		// This loads a map from file
-		public static bool OpenMap()
-		{
-			OpenFileDialog openfile;
-			OpenMapOptionsForm openmapwindow;
-			
-			// Open map file dialog
-			openfile = new OpenFileDialog();
-			openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
-			openfile.Title = "Open Map";
-			if(openfile.ShowDialog(mainwindow) == DialogResult.OK)
-			{
-				// Update main window
-				mainwindow.Update();
-				
 				// Open map options dialog
-				openmapwindow = new OpenMapOptionsForm(openfile.FileName);
-				if(openmapwindow.ShowDialog(mainwindow) == DialogResult.OK)
+				optionswindow = new MapOptionsForm(newoptions);
+				if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
 				{
 					// Display status
-					mainwindow.DisplayStatus("Opening map file...");
+					mainwindow.DisplayStatus("Creating new map...");
 
 					// Clear the display
 					mainwindow.ClearDisplay();
@@ -334,7 +270,13 @@ namespace CodeImp.DoomBuilder
 
 					// Create map manager with given options
 					map = new MapManager();
-					if(!map.InitializeOpenMap(openfile.FileName, openmapwindow.Options))
+					if(map.InitializeNewMap(newoptions))
+					{
+						// Done
+						mainwindow.UpdateMenus();
+						mainwindow.DisplayReady();
+					}
+					else
 					{
 						// Unable to create map manager
 						map.Dispose();
@@ -346,18 +288,88 @@ namespace CodeImp.DoomBuilder
 						// Failed
 						mainwindow.UpdateMenus();
 						mainwindow.DisplayReady();
-						return false;
 					}
-
-					// Done
-					mainwindow.UpdateMenus();
-					mainwindow.DisplayReady();
-					return true;
 				}
 			}
+		}
 
-			// Cancelled
-			return false;
+		// This closes the current map
+		public static void CloseMap()
+		{
+			// Ask the user to save changes (if any)
+			if(General.AskSaveMap())
+			{
+				// Display status
+				mainwindow.DisplayStatus("Closing map...");
+
+				// Trash the current map
+				if(map != null) map.Dispose();
+				map = null;
+
+				// Show splash logo on display
+				mainwindow.ShowSplashDisplay();
+
+				// Done
+				mainwindow.UpdateMenus();
+				mainwindow.DisplayReady();
+			}
+		}
+
+		// This loads a map from file
+		public static void OpenMap()
+		{
+			OpenFileDialog openfile;
+			OpenMapOptionsForm openmapwindow;
+			
+			// Ask the user to save changes (if any)
+			if(General.AskSaveMap())
+			{
+				// Open map file dialog
+				openfile = new OpenFileDialog();
+				openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
+				openfile.Title = "Open Map";
+				if(openfile.ShowDialog(mainwindow) == DialogResult.OK)
+				{
+					// Update main window
+					mainwindow.Update();
+
+					// Open map options dialog
+					openmapwindow = new OpenMapOptionsForm(openfile.FileName);
+					if(openmapwindow.ShowDialog(mainwindow) == DialogResult.OK)
+					{
+						// Display status
+						mainwindow.DisplayStatus("Opening map file...");
+
+						// Clear the display
+						mainwindow.ClearDisplay();
+
+						// Trash the current map, if any
+						if(map != null) map.Dispose();
+
+						// Create map manager with given options
+						map = new MapManager();
+						if(map.InitializeOpenMap(openfile.FileName, openmapwindow.Options))
+						{
+							// Done
+							mainwindow.UpdateMenus();
+							mainwindow.DisplayReady();
+						}
+						else
+						{
+							// Unable to create map manager
+							map.Dispose();
+							map = null;
+
+							// Show splash logo on display
+							mainwindow.ShowSplashDisplay();
+
+							// Failed
+							mainwindow.UpdateMenus();
+							mainwindow.DisplayReady();
+						}
+					}
+				}
+			}
 		}
 		
 		// This asks to save the map if needed

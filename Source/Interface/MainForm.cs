@@ -332,13 +332,13 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== File Menu
 
 		// New map clicked
-		private void itemnewmap_Click(object sender, EventArgs e) { if(General.AskSaveMap()) General.NewMap(); }
+		private void itemnewmap_Click(object sender, EventArgs e) { General.Actions[Action.NEWMAP].Invoke(); }
 
 		// Open map clicked
-		private void itemopenmap_Click(object sender, EventArgs e) { if(General.AskSaveMap()) General.OpenMap(); }
+		private void itemopenmap_Click(object sender, EventArgs e) { General.Actions[Action.OPENMAP].Invoke(); }
 
 		// Close map clicked
-		private void itemclosemap_Click(object sender, EventArgs e) { if(General.AskSaveMap()) General.CloseMap(); }
+		private void itemclosemap_Click(object sender, EventArgs e) { General.Actions[Action.CLOSEMAP].Invoke(); }
 
 		// Exit clicked
 		private void itemexit_Click(object sender, EventArgs e) { this.Close(); }
