@@ -92,7 +92,8 @@ namespace CodeImp.DoomBuilder.Controls
 			StreamReader actionsreader;
 			Configuration cfg;
 			string name, title, desc;
-
+			int key;
+			
 			// Get a stream from the resource
 			actionsdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources.Actions.cfg");
 			actionsreader = new StreamReader(actionsdata, Encoding.ASCII);
@@ -112,9 +113,10 @@ namespace CodeImp.DoomBuilder.Controls
 				name = a.Key.ToString();
 				title = cfg.ReadSetting(name + ".title", "[" + name + "]");
 				desc = cfg.ReadSetting(name + ".description", "");
+				key = General.Settings.ReadSetting("shortcuts." + name, 0);
 				
 				// Create an action
-				actions.Add(name, new Action(title, desc));
+				actions.Add(name, new Action(title, desc, key));
 			}
 		}
 

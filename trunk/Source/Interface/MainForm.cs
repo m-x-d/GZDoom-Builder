@@ -310,8 +310,7 @@ namespace CodeImp.DoomBuilder.Interface
 						if(General.Actions.Exists(actionname))
 						{
 							// Put the action shortcut key on the menu item
-							// TODO: Use a friendly shortcut key description
-							menuitem.ShortcutKeyDisplayString = General.Actions[actionname].ShortcutKey.ToString();
+							menuitem.ShortcutKeyDisplayString = Action.GetShortcutKeyDesc(General.Actions[actionname].ShortcutKey);
 						}
 					}
 
