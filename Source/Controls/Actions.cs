@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
+using System.Windows.Forms;
 
 #endregion
 
@@ -63,12 +64,13 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Action(string title, string description)
+		public Action(string title, string description, int key)
 		{
 			// Initialize
 			this.title = title;
 			this.description = description;
 			this.delegates = new List<ActionDelegate>();
+			this.key = key;
 		}
 
 		// Destructor
@@ -77,6 +79,49 @@ namespace CodeImp.DoomBuilder.Controls
 			// Moo.
 		}
 		
+		#endregion
+
+		#region ================== Static Methods
+
+		// This returns the shortcut key description for a key
+		public static string GetShortcutKeyDesc(int key)
+		{
+			KeysConverter conv = new KeysConverter();
+			int ctrl, button;
+			string ctrlprefix = "";
+			
+			// When key is 0, then return an empty string
+			if(key == 0) return "";
+
+			// Split the key in Control and Button
+			ctrl = key & ((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
+			button = key & ~((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
+
+			// Determine control prefix
+			if(ctrl != 0) ctrlprefix = conv.ConvertToString(key);
+			
+			// Check if button is special
+			switch(button)
+			{
+				// Scroll down
+				case (int)SpecialKeys.MScrollDown:
+					
+					// Make string representation
+					return ctrlprefix + "ScrollDown";
+
+				// Scroll up
+				case (int)SpecialKeys.MScrollUp:
+
+					// Make string representation
+					return ctrlprefix + "ScrollUp";
+
+				default:
+					
+					// Use standard key-string conversion
+					return conv.ConvertToString(key);
+			}
+		}
+
 		#endregion
 
 		#region ================== Methods
