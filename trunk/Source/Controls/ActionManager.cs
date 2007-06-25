@@ -92,6 +92,7 @@ namespace CodeImp.DoomBuilder.Controls
 			StreamReader actionsreader;
 			Configuration cfg;
 			string name, title, desc;
+			bool amouse, akeys, ascroll;
 			int key;
 			
 			// Get a stream from the resource
@@ -114,9 +115,12 @@ namespace CodeImp.DoomBuilder.Controls
 				title = cfg.ReadSetting(name + ".title", "[" + name + "]");
 				desc = cfg.ReadSetting(name + ".description", "");
 				key = General.Settings.ReadSetting("shortcuts." + name, 0);
+				akeys = cfg.ReadSetting(name + ".allowkeys", false);
+				amouse = cfg.ReadSetting(name + ".allowmouse", false);
+				ascroll = cfg.ReadSetting(name + ".allowscroll", false);
 				
 				// Create an action
-				actions.Add(name, new Action(title, desc, key));
+				actions.Add(name, new Action(title, desc, key, akeys, amouse, ascroll));
 			}
 		}
 

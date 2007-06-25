@@ -49,6 +49,11 @@ namespace CodeImp.DoomBuilder.Controls
 		// Shortcut key
 		private int key;
 
+		// Shortcut options
+		private bool allowkeys;
+		private bool allowmouse;
+		private bool allowscroll;
+		
 		// Delegate
 		private List<ActionDelegate> delegates;
 		
@@ -59,18 +64,25 @@ namespace CodeImp.DoomBuilder.Controls
 		public string Title { get { return title; } }
 		public string Description { get { return description; } }
 		public int ShortcutKey { get { return key; } }
+		public bool AllowKeys { get { return allowkeys; } }
+		public bool AllowMouse { get { return allowmouse; } }
+		public bool AllowScroll { get { return allowscroll; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Action(string title, string description, int key)
+		public Action(string title, string description, int key,
+					  bool allowkeys, bool allowmouse, bool allowscroll)
 		{
 			// Initialize
 			this.title = title;
 			this.description = description;
 			this.delegates = new List<ActionDelegate>();
+			this.allowkeys = allowkeys;
+			this.allowmouse = allowmouse;
+			this.allowscroll = allowscroll;
 			this.key = key;
 		}
 

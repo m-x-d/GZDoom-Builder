@@ -276,6 +276,17 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		#endregion
 
+		#region ================== Input
+
+		// When a key is pressed
+		private void MainForm_KeyDown(object sender, KeyEventArgs e)
+		{
+			// Invoke any actions associated with this key
+			General.Actions.InvokeByKey((int)e.KeyData);
+		}
+
+		#endregion
+
 		#region ================== Menus
 
 		// Public method to apply shortcut keys

@@ -236,6 +236,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.Move += new System.EventHandler(this.MainForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
 			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.menumain.ResumeLayout(false);
