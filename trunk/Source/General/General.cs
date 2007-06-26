@@ -198,10 +198,8 @@ namespace CodeImp.DoomBuilder
 			// Create action manager
 			actions = new ActionManager();
 			
-			// Bind my methods to actions
-			actions[Action.NEWMAP].Bind(new ActionDelegate(NewMap));
-			actions[Action.OPENMAP].Bind(new ActionDelegate(OpenMap));
-			actions[Action.CLOSEMAP].Bind(new ActionDelegate(CloseMap));
+			// Bind static methods to actions
+			ActionAttribute.BindMethods(typeof(General));
 
 			// Create main window
 			mainwindow = new MainForm();
@@ -226,10 +224,8 @@ namespace CodeImp.DoomBuilder
 		// This terminates the program
 		public static void Terminate()
 		{
-			// Unbind my methods to actions
-			actions[Action.NEWMAP].Unbind(new ActionDelegate(NewMap));
-			actions[Action.OPENMAP].Unbind(new ActionDelegate(OpenMap));
-			actions[Action.CLOSEMAP].Unbind(new ActionDelegate(CloseMap));
+			// Unbind static methods from actions
+			ActionAttribute.UnbindMethods(typeof(General));
 			
 			// Clean up
 			mainwindow.Dispose();
@@ -247,6 +243,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Management
 
 		// This creates a new map
+		[Action(Action.NEWMAP)]
 		public static void NewMap()
 		{
 			MapOptions newoptions = new MapOptions();
@@ -294,6 +291,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This closes the current map
+		[Action(Action.CLOSEMAP)]
 		public static void CloseMap()
 		{
 			// Ask the user to save changes (if any)
@@ -316,6 +314,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This loads a map from file
+		[Action(Action.OPENMAP)]
 		public static void OpenMap()
 		{
 			OpenFileDialog openfile;
