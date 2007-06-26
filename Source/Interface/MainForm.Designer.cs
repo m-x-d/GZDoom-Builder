@@ -231,7 +231,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menumain;
 			this.Name = "MainForm";
-			this.Opacity = 0;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Doom Builder";
 			this.Resize += new System.EventHandler(this.MainForm_Resize);

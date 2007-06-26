@@ -25,18 +25,17 @@ using System.Windows.Forms;
 
 #endregion
 
+// This Form is a workaround for the slow drawing of the .NET Forms.
+// By showing the Form at 0% Opacity it allows the .NET framework to complete
+// drawing the Form first, then we set it to 100% Opacity to actually show it.
+
 namespace CodeImp.DoomBuilder.Interface
 {
 	public class DelayedForm : Form
 	{
-		#region ================== Variables
-
+		// Variables
 		private Timer formshowtimer;
 		
-		#endregion
-
-		#region ================== Constructor
-
 		// Constructor
 		public DelayedForm()
 		{
@@ -45,11 +44,7 @@ namespace CodeImp.DoomBuilder.Interface
 			formshowtimer.Interval = 1;
 			formshowtimer.Tick += new EventHandler(formshowtimer_Tick);
 		}
-
-		#endregion
-
-		#region ================== Methods
-
+		
 		// When form is shown
 		protected override void OnShown(EventArgs e)
 		{
@@ -61,7 +56,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// When the form is to be shown
-		void formshowtimer_Tick(object sender, EventArgs e)
+		private void formshowtimer_Tick(object sender, EventArgs e)
 		{
 			// Get rid of the timer
 			formshowtimer.Dispose();
@@ -70,7 +65,5 @@ namespace CodeImp.DoomBuilder.Interface
 			// Make the form visible
 			this.Opacity = 100;
 		}
-
-		#endregion
 	}
 }

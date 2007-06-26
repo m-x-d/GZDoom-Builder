@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class MainForm : DelayedForm
+	public partial class MainForm : Form
 	{
 		#region ================== Constants
 
