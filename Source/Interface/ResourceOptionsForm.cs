@@ -29,7 +29,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal partial class ResourceOptionsForm : Form
+	internal partial class ResourceOptionsForm : DelayedForm
 	{
 		// Variables
 		private ResourceLocation res;

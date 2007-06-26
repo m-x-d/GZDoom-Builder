@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class AboutForm : Form
+	public partial class AboutForm : DelayedForm
 	{
 		// Constructor
 		public AboutForm()
