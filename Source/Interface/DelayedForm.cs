@@ -28,6 +28,7 @@ using System.Windows.Forms;
 // This Form is a workaround for the slow drawing of the .NET Forms.
 // By showing the Form at 0% Opacity it allows the .NET framework to complete
 // drawing the Form first, then we set it to 100% Opacity to actually show it.
+// To use this class properly, set the initial Opacity of your Form to 0.
 
 namespace CodeImp.DoomBuilder.Interface
 {
