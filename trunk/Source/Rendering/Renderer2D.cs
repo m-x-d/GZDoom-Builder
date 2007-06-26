@@ -161,20 +161,24 @@ namespace CodeImp.DoomBuilder.Rendering
 			PTVertex[] verts = new PTVertex[linedefs.Count * 4];
 			int i = 0;
 
-			graphics.Device.RenderState.TextureFactor = -1;
-
-			// Go for all linedefs
-			foreach(Linedef l in linedefs)
+			// Any linedefs?
+			if(linedefs.Count > 0)
 			{
-				// Make vertices
-				verts[i++] = l.LineVertices[0];
-				verts[i++] = l.LineVertices[1];
-				verts[i++] = l.LineVertices[2];
-				verts[i++] = l.LineVertices[3];
+				graphics.Device.RenderState.TextureFactor = -1;
+
+				// Go for all linedefs
+				foreach(Linedef l in linedefs)
+				{
+					// Make vertices
+					verts[i++] = l.LineVertices[0];
+					verts[i++] = l.LineVertices[1];
+					verts[i++] = l.LineVertices[2];
+					verts[i++] = l.LineVertices[3];
+				}
+
+				// Draw lines
+				graphics.Device.DrawUserPrimitives(PrimitiveType.LineList, linedefs.Count * 2, verts);
 			}
-			
-			// Draw lines
-			graphics.Device.DrawUserPrimitives(PrimitiveType.LineList, linedefs.Count * 2, verts);
 		}
 
 		// This renders a set of Linedefs
