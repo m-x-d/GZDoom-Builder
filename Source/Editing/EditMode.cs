@@ -29,6 +29,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -65,6 +66,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Initialize
 			this.graphics = General.Map.Graphics;
 			
+			// Bind any methods
+			ActionAttribute.BindMethods(this);
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -75,6 +79,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Unbind any methods
+				ActionAttribute.UnbindMethods(this);
+				
 				// Clean up
 
 				// Done

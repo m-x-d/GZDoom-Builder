@@ -28,6 +28,7 @@ using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -74,8 +75,72 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Scroll / Zoom
 
+		// This scrolls the view north
+		[Action(Action.SCROLLNORTH)]
+		public void ScrollNorth()
+		{
+			// Scroll
+			ScrollBy(0f, 100f / renderer.Scale);
+		}
+
+		// This scrolls the view south
+		[Action(Action.SCROLLSOUTH)]
+		public void ScrollSouth()
+		{
+			// Scroll
+			ScrollBy(0f, -100f / renderer.Scale);
+		}
+
+		// This scrolls the view west
+		[Action(Action.SCROLLWEST)]
+		public void ScrollWest()
+		{
+			// Scroll
+			ScrollBy(-100f / renderer.Scale, 0f);
+		}
+
+		// This scrolls the view east
+		[Action(Action.SCROLLEAST)]
+		public void ScrollEast()
+		{
+			// Scroll
+			ScrollBy(100f / renderer.Scale, 0f);
+		}
+
+		// This zooms in
+		[Action(Action.ZOOMIN)]
+		public void ZoomIn()
+		{
+			// Zoom
+			ZoomBy(0.1f);
+		}
+
+		// This zooms out
+		[Action(Action.ZOOMOUT)]
+		public void ZoomOut()
+		{
+			// Zoom
+			ZoomBy(-0.1f);
+		}
+
+		// This scrolls anywhere
+		private void ScrollBy(float deltax, float deltay)
+		{
+			// Scroll now
+			renderer.PositionView(renderer.OffsetX + deltax, renderer.OffsetY + deltay);
+			RedrawDisplay();
+		}
+
+		// This zooms
+		private void ZoomBy(float deltaz)
+		{
+			// Zoom now
+			renderer.ScaleView(renderer.Scale + deltaz);
+			RedrawDisplay();
+		}
+		
 		#endregion
 	}
 }

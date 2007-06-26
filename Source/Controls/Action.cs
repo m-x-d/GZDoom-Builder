@@ -37,6 +37,12 @@ namespace CodeImp.DoomBuilder.Controls
 		public const string SAVEMAP = "savemap";
 		public const string SAVEMAPAS = "savemapas";
 		public const string SHOWOVERVIEW = "showoverview";
+		public const string SCROLLNORTH = "scrollnorth";
+		public const string SCROLLSOUTH = "scrollsouth";
+		public const string SCROLLWEST = "scrollwest";
+		public const string SCROLLEAST = "scrolleast";
+		public const string ZOOMIN = "zoomin";
+		public const string ZOOMOUT = "zoomout";
 		
 		#endregion
 		
