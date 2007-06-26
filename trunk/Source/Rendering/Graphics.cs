@@ -25,10 +25,10 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
-using Microsoft.DirectX.Direct3D;
+using SlimDX.Direct3D;
 using System.ComponentModel;
-using Microsoft.DirectX;
 using CodeImp.DoomBuilder.Geometry;
+using SlimDX;
 
 #endregion
 
@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Main objects
 		private Control rendertarget;
-		private Caps devicecaps;
+		private Capabilities devicecaps;
 		private Device device;
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
@@ -107,60 +107,61 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void SetupSettings()
 		{
 			// Setup renderstates
-			device.SetRenderState(RenderStates.AntialiasedLineEnable, false);
-			device.SetRenderState(RenderStates.Ambient, Color.White.ToArgb());
-			device.SetRenderState(RenderStates.AmbientMaterialSource, (int)ColorSource.Material);
-			device.SetRenderState(RenderStates.ColorVertex, false);
-			device.SetRenderState(RenderStates.DiffuseMaterialSource, (int)ColorSource.Color1);
-			device.SetRenderState(RenderStates.FillMode, (int)FillMode.Solid);
-			device.SetRenderState(RenderStates.FogEnable, false);
-			device.SetRenderState(RenderStates.Lighting, false);
-			device.SetRenderState(RenderStates.LocalViewer, false);
-			device.SetRenderState(RenderStates.NormalizeNormals, false);
-			device.SetRenderState(RenderStates.SpecularEnable, false);
-			device.SetRenderState(RenderStates.StencilEnable, false);
-			device.SetRenderState(RenderStates.PointSpriteEnable, false);
-			device.SetRenderState(RenderStates.DitherEnable, true);
-			device.SetRenderState(RenderStates.AlphaBlendEnable, false);
-			device.SetRenderState(RenderStates.ZEnable, false);
-			device.SetRenderState(RenderStates.ZBufferWriteEnable, false);
-			device.SetRenderState(RenderStates.Clipping, true);
-			device.SetRenderState(RenderStates.CullMode, (int)Cull.None);
+			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
+			device.SetRenderState(RenderState.Ambient, Color.White.ToArgb());
+			device.SetRenderState(RenderState.AmbientMaterialSource, (int)ColorSource.Material);
+			device.SetRenderState(RenderState.ColorVertex, false);
+			device.SetRenderState(RenderState.DiffuseMaterialSource, (int)ColorSource.Color1);
+			device.SetRenderState(RenderState.FillMode, (int)FillMode.Solid);
+			device.SetRenderState(RenderState.FogEnable, false);
+			device.SetRenderState(RenderState.Lighting, false);
+			device.SetRenderState(RenderState.LocalViewer, false);
+			device.SetRenderState(RenderState.NormalizeNormals, false);
+			device.SetRenderState(RenderState.SpecularEnable, false);
+			device.SetRenderState(RenderState.StencilEnable, false);
+			device.SetRenderState(RenderState.PointSpriteEnable, false);
+			device.SetRenderState(RenderState.DitherEnable, true);
+			device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			device.SetRenderState(RenderState.ZEnable, false);
+			device.SetRenderState(RenderState.ZWriteEnable, false);
+			device.SetRenderState(RenderState.Clipping, true);
+			device.SetRenderState(RenderState.CullMode, (int)Cull.None);
 			device.VertexFormat = PTVertex.Format;
 
 			// Sampler settings
-			device.SamplerState[0].MagFilter = TextureFilter.Linear;
-			device.SamplerState[0].MinFilter = TextureFilter.Linear;
-			device.SamplerState[0].MipFilter = TextureFilter.Linear;
+			device.SetSamplerState(0, SamplerState.MagFilter, (int)TextureFilter.Linear);
+			device.SetSamplerState(0, SamplerState.MinFilter, (int)TextureFilter.Linear);
+			device.SetSamplerState(0, SamplerState.MipFilter, (int)TextureFilter.Linear);
 
 			// Texture addressing
-			device.SamplerState[0].AddressU = TextureAddress.Wrap;
-			device.SamplerState[0].AddressV = TextureAddress.Wrap;
-			device.SamplerState[0].AddressW = TextureAddress.Wrap;
+			// TODO: SlimDX is missing TextureAddress enum
+			//device.SetSamplerState(0, SamplerState.AddressU, (int)TextureAddress.Wrap);
+			//device.SetSamplerState(0, SamplerState.AddressV, (int)TextureAddress.Wrap);
+			//device.SetSamplerState(0, SamplerState.AddressW, (int)TextureAddress.Wrap);
 
 			// First texture stage
-			device.TextureState[0].ColorOperation = TextureOperation.Modulate;
-			device.TextureState[0].ColorArgument1 = TextureArgument.Current;
-			device.TextureState[0].ColorArgument2 = TextureArgument.TFactor;
-			device.TextureState[0].ResultArgument = TextureArgument.Current;
-			device.TextureState[0].TextureCoordinateIndex = 0;
+			device.SetTextureStageState(0, TextureStage.ColorOp, (int)TextureOperation.Modulate);
+			device.SetTextureStageState(0, TextureStage.ColorArg1, (int)TextureArgument.Current);
+			device.SetTextureStageState(0, TextureStage.ColorArg2, (int)TextureArgument.TFactor);
+			device.SetTextureStageState(0, TextureStage.ResultArg, (int)TextureArgument.Current);
+			device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
 
 			// No more further stages
-			device.TextureState[1].ColorOperation = TextureOperation.Disable;
+			device.SetTextureStageState(1, TextureStage.ColorOp, (int)TextureOperation.Disable);
 			
 			// First alpha stage
-			device.TextureState[0].AlphaOperation = TextureOperation.Modulate;
-			device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
-			device.TextureState[0].AlphaArgument2 = TextureArgument.TFactor;
+			device.SetTextureStageState(0, TextureStage.AlphaOp, (int)TextureOperation.Modulate);
+			device.SetTextureStageState(0, TextureStage.AlphaArg1, (int)TextureArgument.Texture);
+			device.SetTextureStageState(0, TextureStage.AlphaArg2, (int)TextureArgument.TFactor);
 
 			// No more further stages
-			device.TextureState[1].AlphaOperation = TextureOperation.Disable;
+			device.SetTextureStageState(1, TextureStage.AlphaOp, (int)TextureOperation.Disable);
 			
 			// Setup material
 			Material material = new Material();
-			material.Ambient = Color.White;
-			material.Diffuse = Color.White;
-			material.Specular = Color.White;
+			material.Ambient = ColorValue.FromColor(Color.White);
+			material.Diffuse = ColorValue.FromColor(Color.White);
+			material.Specular = ColorValue.FromColor(Color.White);
 			device.Material = material;
 		}
 
@@ -175,33 +176,33 @@ namespace CodeImp.DoomBuilder.Rendering
 			DeviceType devtype;
 
 			// Use default adapter
-			this.adapter = Manager.Adapters.Default.Adapter;
+			this.adapter = 0; // Manager.Adapters.Default.Adapter;
 
 			// Make present parameters
 			displaypp = CreatePresentParameters(adapter);
 
 			// Determine device type for compatability with NVPerfHUD
-			if(Manager.Adapters[adapter].Information.Description.EndsWith(NVPERFHUD_ADAPTER))
+			if(Direct3D.Adapters[adapter].Details.Description.EndsWith(NVPERFHUD_ADAPTER))
 				devtype = DeviceType.Reference;
 			else
 				devtype = DeviceType.Hardware;
 
 			// Get the device capabilities
-			devicecaps = Manager.GetDeviceCaps(adapter, devtype);
+			devicecaps = Direct3D.GetDeviceCaps(adapter, devtype);
 
 			try
 			{
 				// Check if this adapter supports TnL
-				if(devicecaps.DeviceCaps.SupportsHardwareTransformAndLight)
+				if((devicecaps.DeviceCaps & DeviceCaps.HWTransformAndLight) != 0)
 				{
 					// Initialize with hardware TnL
-					device = new Device(adapter, devtype, rendertarget,
+					device = new Device(adapter, devtype, rendertarget.Handle,
 								CreateFlags.HardwareVertexProcessing, displaypp);
 				}
 				else
 				{
 					// Initialize with software TnL
-					device = new Device(adapter, devtype, rendertarget,
+					device = new Device(adapter, devtype, rendertarget.Handle,
 								CreateFlags.SoftwareVertexProcessing, displaypp);
 				}
 			}
@@ -213,7 +214,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Add event to cancel resize event
-			device.DeviceResizing += new CancelEventHandler(CancelResize);
+			//device.DeviceResizing += new CancelEventHandler(CancelResize);
 
 			// Initialize settings
 			SetupSettings();
@@ -240,7 +241,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			DisplayMode currentmode;
 			
 			// Get current display mode
-			currentmode = Manager.Adapters[adapter].CurrentDisplayMode;
+			currentmode = Direct3D.Adapters[adapter].CurrentDisplayMode;
 
 			// Make present parameters
 			displaypp.Windowed = true;
@@ -250,7 +251,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			displaypp.BackBufferWidth = rendertarget.ClientSize.Width;
 			displaypp.BackBufferHeight = rendertarget.ClientSize.Height;
 			displaypp.EnableAutoDepthStencil = true;
-			displaypp.AutoDepthStencilFormat = DepthFormat.D16;
+			displaypp.AutoDepthStencilFormat = Format.D16;	// SLimDX is missing DepthFormat enum
 			displaypp.MultiSample = MultiSampleType.None;
 			displaypp.PresentationInterval = PresentInterval.Immediate;
 
@@ -299,22 +300,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public bool StartRendering()
 		{
-			int coopresult;
+			CooperativeLevel coopresult;
 
 			// When minimized, do not render anything
 			if(General.MainWindow.WindowState != FormWindowState.Minimized)
 			{
 				// Test the cooperative level
-				device.CheckCooperativeLevel(out coopresult);
-
+				coopresult = device.CheckCooperativeLevel();
+				
 				// Check if device must be reset
-				if(coopresult == (int)ResultCode.DeviceNotReset)
+				if(coopresult == CooperativeLevel.DeviceNotReset)
 				{
 					// Device is lost and must be reset now
 					return Reset();
 				}
 				// Check if device is lost
-				else if(coopresult == (int)ResultCode.DeviceLost)
+				else if(coopresult == CooperativeLevel.DeviceLost)
 				{
 					// Device is lost and cannot be reset now
 					return false;
