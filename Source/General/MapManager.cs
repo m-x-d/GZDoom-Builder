@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Constructor / Disposer
 
-		// Constructor for new map
+		// Constructor
 		public MapManager()
 		{
 			// We have no destructor
@@ -125,6 +125,9 @@ namespace CodeImp.DoomBuilder
 			graphics = new Graphics(General.MainWindow.Display);
 			config = General.LoadGameConfiguration(options.ConfigFile);
 			data = new MapSet();
+
+			// Create temp wadfile
+			tempwad = new WAD(General.MakeTempFilename());
 
 			// Initiate graphics
 			if(!graphics.Initialize()) return false;
