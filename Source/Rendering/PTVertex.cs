@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
-using Microsoft.DirectX.Direct3D;
+using SlimDX.Direct3D;
 using System.ComponentModel;
 
 #endregion
@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	public struct PTVertex
 	{
 		// Vertex format
-		public static readonly VertexFormats Format = VertexFormats.Position | VertexFormats.Diffuse | VertexFormats.Texture1;
+		public static readonly VertexFormat Format = VertexFormat.Position | VertexFormat.Diffuse | VertexFormat.Texture1;
 		public static readonly int Stride = 6 * 4;
 
 		// Members

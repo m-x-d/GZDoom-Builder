@@ -25,10 +25,10 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
-using Microsoft.DirectX.Direct3D;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Map;
-using Microsoft.DirectX;
+using SlimDX.Direct3D;
+using SlimDX;
 
 #endregion
 
@@ -109,9 +109,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			proj = Matrix.OrthoOffCenterLH(left, right, top, bottom, -1f, 1f);
 
 			// Apply matrices
-			graphics.Device.Transform.Projection = proj;
-			graphics.Device.Transform.View = Matrix.Identity;
-			graphics.Device.Transform.World = Matrix.Identity;
+			graphics.Device.SetTransform(TransformState.Projection, proj);
+			graphics.Device.SetTransform(TransformState.View, Matrix.Identity);
+			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 		}
 		
 		// This begins a drawing session
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Any linedefs?
 			if(linedefs.Count > 0)
 			{
-				graphics.Device.RenderState.TextureFactor = -1;
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 
 				// Go for all linedefs
 				foreach(Linedef l in linedefs)
@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 
 				// Draw lines
-				graphics.Device.DrawUserPrimitives(PrimitiveType.LineList, linedefs.Count * 2, verts);
+				graphics.Device.DrawUserPrimitives<PTVertex>(PrimitiveType.LineList, 0, linedefs.Count * 2, verts);
 			}
 		}
 

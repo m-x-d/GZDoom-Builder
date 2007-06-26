@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
-using Microsoft.DirectX.Direct3D;
+using SlimDX.Direct3D;
 using System.ComponentModel;
 
 #endregion
