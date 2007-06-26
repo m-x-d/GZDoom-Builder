@@ -32,7 +32,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal partial class OpenMapOptionsForm : Form
+	internal partial class OpenMapOptionsForm : DelayedForm
 	{
 		// Variables
 		private Configuration mapsettings;

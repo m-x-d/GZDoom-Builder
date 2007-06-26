@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal partial class MapOptionsForm : Form
+	internal partial class MapOptionsForm : DelayedForm
 	{
 		// Variables
 		private MapOptions options;

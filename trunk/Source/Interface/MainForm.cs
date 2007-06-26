@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class MainForm : Form
+	public partial class MainForm : DelayedForm
 	{
 		#region ================== Constants
 
@@ -45,6 +45,9 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		// Mouse in display
 		private bool mouseinside;
+		
+		// Input
+		private bool shift, ctrl, alt;
 		
 		#endregion
 
@@ -278,11 +281,52 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Input
 
+		// When the mouse wheel is changed
+		protected override void OnMouseWheel(MouseEventArgs e)
+		{
+			int mod = 0;
+
+			// Create modifiers
+			if(alt) mod |= (int)Keys.Alt;
+			if(shift) mod |= (int)Keys.Shift;
+			if(ctrl) mod |= (int)Keys.Control;
+
+			// Scrollwheel up?
+			if(e.Delta > 0)
+			{
+				// Invoke actions for scrollwheel
+				General.Actions.InvokeByKey(mod | (int)SpecialKeys.MScrollUp);
+			}
+			// Scrollwheel down?
+			else if(e.Delta < 0)
+			{
+				// Invoke actions for scrollwheel
+				General.Actions.InvokeByKey(mod | (int)SpecialKeys.MScrollDown);
+			}
+
+			// Let the base know
+			base.OnMouseWheel(e);
+		}
+		
 		// When a key is pressed
 		private void MainForm_KeyDown(object sender, KeyEventArgs e)
 		{
+			// Keep key modifiers
+			alt = e.Alt;
+			shift = e.Shift;
+			ctrl = e.Control;
+			
 			// Invoke any actions associated with this key
 			General.Actions.InvokeByKey((int)e.KeyData);
+		}
+
+		// When a key is released
+		private void MainForm_KeyUp(object sender, KeyEventArgs e)
+		{
+			// Keep key modifiers
+			alt = e.Alt;
+			shift = e.Shift;
+			ctrl = e.Control;
 		}
 
 		#endregion
