@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	internal struct Vector2D
+	public struct Vector2D
 	{
 		#region ================== Constants
 

@@ -248,7 +248,7 @@ namespace CodeImp.DoomBuilder
 		{
 			MapOptions newoptions = new MapOptions();
 			MapOptionsForm optionswindow;
-
+			
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
 			{

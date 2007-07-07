@@ -81,6 +81,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Change the view to see the whole map
 			renderer.ScaleView(scale);
 			renderer.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
+			General.Map.Data.Update();
 		}
 
 		// Diposer
@@ -105,8 +106,8 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			if(renderer.StartRendering())
 			{
-				renderer.RenderLinedefs(General.Map.Data.Linedefs);
-				//renderer.RenderVertices(General.Map.Data.Vertices);
+				renderer.RenderLinedefs(General.Map.Data, General.Map.Data.Linedefs);
+				renderer.RenderVertices(General.Map.Data, General.Map.Data.Vertices);
 				renderer.FinishRendering();
 			}
 		}

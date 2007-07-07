@@ -28,7 +28,9 @@ using System.Drawing;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Map;
 using SlimDX.Direct3D;
+using SlimDX.Direct3D9;
 using SlimDX;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -49,6 +51,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float scale;
 		private float offsetx;
 		private float offsety;
+		
+		// Matrices
+		private Matrix matproj, matview, matworld;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -91,12 +96,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Control
 		
 		// This rebuilds matrices according to view settings
 		private void SetupMatrices()
 		{
-			Matrix proj;
 			float width, height, left, top, right, bottom;
 
 			// Build projection matrix
@@ -106,12 +110,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			top = offsety - height * 0.5f;
 			right = offsetx + width * 0.5f;
 			bottom = offsety + height * 0.5f;
-			proj = Matrix.OrthoOffCenterLH(left, right, top, bottom, -1f, 1f);
+			matproj = Matrix.OrthoOffCenterLH(left, right, top, bottom, -1f, 1f);
 
-			// Apply matrices
-			graphics.Device.SetTransform(TransformState.Projection, proj);
-			graphics.Device.SetTransform(TransformState.View, Matrix.Identity);
-			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			// World and view are fixed
+			matview = Matrix.Identity;
+			matworld = Matrix.Identity;
 		}
 		
 		// This begins a drawing session
@@ -120,8 +123,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Can we render?
 			if(graphics.StartRendering())
 			{
-				// Setup matrices
-				SetupMatrices();
+				// Apply matrices
+				graphics.Device.SetTransform(TransformState.Projection, matproj);
+				graphics.Device.SetTransform(TransformState.View, matview);
+				graphics.Device.SetTransform(TransformState.World, matworld);
 
 				// Success
 				return true;
@@ -146,6 +151,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Change position in world coordinates
 			offsetx = x;
 			offsety = y;
+
+			// Setup new matrices
+			SetupMatrices();
 		}
 		
 		// This changes zoom
@@ -153,31 +161,46 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Change zoom scale
 			this.scale = scale;
+
+			// Setup new matrices
+			SetupMatrices();
+			
+			// Recalculate linedefs (normal lengths must be adjusted)
+			foreach(Linedef l in General.Map.Data.Linedefs) l.NeedUpdate();
 		}
 
-		// This renders a set of Linedefs
-		public void RenderLinedefs(ICollection<Linedef> linedefs)
+		// This unprojects mouse coordinates into map coordinates
+		public Vector2D GetMapCoordinates(Vector2D mousepos)
 		{
-			PTVertex[] verts = new PTVertex[linedefs.Count * 4];
-			int i = 0;
+			Vector3 mp, res;
 
+			// Get mouse position in Vector3
+			mp = new Vector3(mousepos.x, mousepos.y, 1f);
+			
+			// Unproject
+			res = mp.Unproject(graphics.Viewport, matproj, matview, matworld);
+
+			// Return result
+			return new Vector2D(res.X, res.Y);
+		}
+
+		#endregion
+		
+		#region ================== Map Rendering
+
+		// This renders a set of Linedefs
+		public void RenderLinedefs(MapSet map, ICollection<Linedef> linedefs)
+		{
 			// Any linedefs?
 			if(linedefs.Count > 0)
 			{
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				graphics.Device.SetStreamSource(0, map.LinedefsBuffer.VertexBuffer, 0, PTVertex.Stride);
 
-				// Go for all linedefs
 				foreach(Linedef l in linedefs)
 				{
-					// Make vertices
-					verts[i++] = l.LineVertices[0];
-					verts[i++] = l.LineVertices[1];
-					verts[i++] = l.LineVertices[2];
-					verts[i++] = l.LineVertices[3];
+					graphics.Device.DrawPrimitives(PrimitiveType.LineList, l.BufferIndex * Linedef.BUFFERVERTICES, Linedef.RENDERPRIMITIVES);
 				}
-
-				// Draw lines
-				graphics.Device.DrawUserPrimitives<PTVertex>(PrimitiveType.LineList, 0, linedefs.Count * 2, verts);
 			}
 		}
 

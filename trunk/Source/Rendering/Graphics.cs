@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
+using SlimDX.Direct3D9;
 using SlimDX.Direct3D;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Geometry;
@@ -54,6 +55,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Device device;
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
+		private Viewport viewport;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -67,6 +69,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public Renderer2D Renderer2D { get { return renderer2d; } }
 		public Renderer3D Renderer3D { get { return renderer3d; } }
 		public Control RenderTarget { get { return rendertarget; } }
+		public Viewport Viewport { get { return viewport; } }
 
 		#endregion
 
@@ -77,6 +80,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Set render target
 			this.rendertarget = rendertarget;
+
+			// Create renderers
+			renderer2d = new Renderer2D(this);
+			renderer3d = new Renderer3D(this);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -93,7 +100,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				renderer3d.Dispose();
 				device.Dispose();
 				rendertarget = null;
-
+				Direct3D.Terminate();
+				
 				// Done
 				isdisposed = true;
 			}
@@ -109,10 +117,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Setup renderstates
 			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
 			device.SetRenderState(RenderState.Ambient, Color.White.ToArgb());
-			device.SetRenderState(RenderState.AmbientMaterialSource, (int)ColorSource.Material);
+			device.SetRenderState(RenderState.AmbientMaterialSource, ColorSource.Material);
 			device.SetRenderState(RenderState.ColorVertex, false);
-			device.SetRenderState(RenderState.DiffuseMaterialSource, (int)ColorSource.Color1);
-			device.SetRenderState(RenderState.FillMode, (int)FillMode.Solid);
+			device.SetRenderState(RenderState.DiffuseMaterialSource, ColorSource.Color1);
+			device.SetRenderState(RenderState.FillMode, FillMode.Solid);
 			device.SetRenderState(RenderState.FogEnable, false);
 			device.SetRenderState(RenderState.Lighting, false);
 			device.SetRenderState(RenderState.LocalViewer, false);
@@ -125,37 +133,36 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.ZEnable, false);
 			device.SetRenderState(RenderState.ZWriteEnable, false);
 			device.SetRenderState(RenderState.Clipping, true);
-			device.SetRenderState(RenderState.CullMode, (int)Cull.None);
+			device.SetRenderState(RenderState.CullMode, Cull.None);
 			device.VertexFormat = PTVertex.Format;
 
 			// Sampler settings
-			device.SetSamplerState(0, SamplerState.MagFilter, (int)TextureFilter.Linear);
-			device.SetSamplerState(0, SamplerState.MinFilter, (int)TextureFilter.Linear);
-			device.SetSamplerState(0, SamplerState.MipFilter, (int)TextureFilter.Linear);
+			device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
+			device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
+			device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Linear);
 
 			// Texture addressing
-			// TODO: SlimDX is missing TextureAddress enum
-			//device.SetSamplerState(0, SamplerState.AddressU, (int)TextureAddress.Wrap);
-			//device.SetSamplerState(0, SamplerState.AddressV, (int)TextureAddress.Wrap);
-			//device.SetSamplerState(0, SamplerState.AddressW, (int)TextureAddress.Wrap);
+			device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
+			device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+			device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
 
 			// First texture stage
-			device.SetTextureStageState(0, TextureStage.ColorOp, (int)TextureOperation.Modulate);
-			device.SetTextureStageState(0, TextureStage.ColorArg1, (int)TextureArgument.Current);
-			device.SetTextureStageState(0, TextureStage.ColorArg2, (int)TextureArgument.TFactor);
-			device.SetTextureStageState(0, TextureStage.ResultArg, (int)TextureArgument.Current);
+			device.SetTextureStageState(0, TextureStage.ColorOp, TextureOperation.SelectArg1);
+			device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Diffuse);
+			device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.TFactor);
+			device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
 			device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
 
 			// No more further stages
-			device.SetTextureStageState(1, TextureStage.ColorOp, (int)TextureOperation.Disable);
+			device.SetTextureStageState(1, TextureStage.ColorOp, TextureOperation.Disable);
 			
 			// First alpha stage
-			device.SetTextureStageState(0, TextureStage.AlphaOp, (int)TextureOperation.Modulate);
-			device.SetTextureStageState(0, TextureStage.AlphaArg1, (int)TextureArgument.Texture);
-			device.SetTextureStageState(0, TextureStage.AlphaArg2, (int)TextureArgument.TFactor);
+			device.SetTextureStageState(0, TextureStage.AlphaOp, TextureOperation.SelectArg1);
+			device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.TFactor);
+			device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.TFactor);
 
 			// No more further stages
-			device.SetTextureStageState(1, TextureStage.AlphaOp, (int)TextureOperation.Disable);
+			device.SetTextureStageState(1, TextureStage.AlphaOp, TextureOperation.Disable);
 			
 			// Setup material
 			Material material = new Material();
@@ -163,6 +170,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			material.Diffuse = ColorValue.FromColor(Color.White);
 			material.Specular = ColorValue.FromColor(Color.White);
 			device.Material = material;
+
+			// Get the viewport
+			viewport = device.Viewport;
 		}
 
 		#endregion
@@ -175,6 +185,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			PresentParameters displaypp;
 			DeviceType devtype;
 
+			// Start DirectX
+			Direct3D.Initialize();
+			
 			// Use default adapter
 			this.adapter = 0; // Manager.Adapters.Default.Adapter;
 
@@ -219,10 +232,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize settings
 			SetupSettings();
 			
-			// Create renderers
-			renderer2d = new Renderer2D(this);
-			renderer3d = new Renderer3D(this);
-			
 			// Done
 			return true;
 		}
@@ -251,7 +260,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			displaypp.BackBufferWidth = rendertarget.ClientSize.Width;
 			displaypp.BackBufferHeight = rendertarget.ClientSize.Height;
 			displaypp.EnableAutoDepthStencil = true;
-			displaypp.AutoDepthStencilFormat = Format.D16;	// SLimDX is missing DepthFormat enum
+			displaypp.AutoDepthStencilFormat = Format.D16;
 			displaypp.MultiSample = MultiSampleType.None;
 			displaypp.PresentationInterval = PresentInterval.Immediate;
 

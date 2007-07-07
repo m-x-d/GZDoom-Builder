@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
+		public MapSet Map { get { return map; } }
 		public int Type { get { return type; } }
 		public Vector3D Position { get { return pos; } }
 		public bool IsDisposed { get { return isdisposed; } }
