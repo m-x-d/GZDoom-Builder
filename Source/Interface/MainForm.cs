@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -48,6 +49,9 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		// Input
 		private bool shift, ctrl, alt;
+		
+		// Recent files
+		private ToolStripMenuItem[] recentitems;
 		
 		#endregion
 
@@ -176,6 +180,25 @@ namespace CodeImp.DoomBuilder.Interface
 			DisplayStatus(STATUS_READY_TEXT);
 		}
 
+		// This changes coordinates display
+		public void UpdateCoordinates(Vector2D coords)
+		{
+			// X position
+			if(float.IsNaN(coords.x))
+				xposlabel.Text = "--";
+			else
+				xposlabel.Text = coords.x.ToString("####0");
+
+			// Y position
+			if(float.IsNaN(coords.y))
+				yposlabel.Text = "--";
+			else
+				yposlabel.Text = coords.y.ToString("####0");
+			
+			// Update status bar
+			statusbar.Update();
+		}
+		
 		#endregion
 
 		#region ================== Display

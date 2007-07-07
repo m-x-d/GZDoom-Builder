@@ -33,7 +33,10 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
+		public const int BUFFERVERTICES = 4;
+		public const int RENDERPRIMITIVES = 2;
 		public static readonly byte[] EMPTY_ARGS = new byte[5];
+		private const float NORMAL_LENGTH = 6f;
 		
 		#endregion
 
@@ -56,10 +59,10 @@ namespace CodeImp.DoomBuilder.Map
 		private Sidedef back;
 
 		// Cache
+		private bool updateneeded;
 		private float lengthsq;
 		private float length;
 		//private float angle;
-		private PTVertex[] lineverts;
 
 		// Properties
 		private int flags;
@@ -67,6 +70,9 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private byte[] args;
 
+		// Rendering
+		private int bufferindex;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -74,11 +80,12 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
-		public PTVertex[] LineVertices { get { return lineverts; } }
+		public MapSet Map { get { return map; } }
 		public Vertex Start { get { return start; } }
 		public Vertex End { get { return end; } }
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
+		public int BufferIndex { get { return bufferindex; } set { bufferindex = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -93,14 +100,11 @@ namespace CodeImp.DoomBuilder.Map
 			this.mainlistitem = listitem;
 			this.start = start;
 			this.end = end;
-			this.lineverts = new PTVertex[4];
-
+			this.updateneeded = true;
+			
 			// Attach to vertices
 			startvertexlistitem = start.AttachLinedef(this);
 			endvertexlistitem = end.AttachLinedef(this);
-
-			// Calculate values
-			Recalculate();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -118,6 +122,9 @@ namespace CodeImp.DoomBuilder.Map
 				// Remove from main list
 				mainlistitem.List.Remove(mainlistitem);
 
+				// Remove from rendering buffer
+				if(map.IsRenderEnabled) map.LinedefsBuffer.FreeItem(bufferindex);
+				
 				// Detach from vertices
 				start.DetachLinedef(startvertexlistitem);
 				end.DetachLinedef(endvertexlistitem);
@@ -150,7 +157,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Attach and recalculate
 				front = s;
-				Recalculate();
+				updateneeded = true;
 			}
 			else throw new Exception("Linedef already has a front Sidedef.");
 		}
@@ -163,29 +170,93 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Attach and recalculate
 				back = s;
-				Recalculate();
+				updateneeded = true;
 			}
 			else throw new Exception("Linedef already has a back Sidedef.");
 		}
 
 		// This detaches a sidedef from the front
-		public void DetachSidedef(Sidedef s) { if(front == s) front = null; else if(back == s) back = null; else throw new Exception("Specified Sidedef is not attached to this Linedef."); }
-		
-		// This recalculates cached values
-		public void Recalculate()
+		public void DetachSidedef(Sidedef s)
 		{
+			// Sidedef is on the front?
+			if(front == s)
+			{
+				// Remove sidedef reference
+				front = null;
+				updateneeded = true;
+			}
+			// Sidedef is on the back?
+			else if(back == s)
+			{
+				// Remove sidedef reference
+				back = null;
+				updateneeded = true;
+			}
+			else throw new Exception("Specified Sidedef is not attached to this Linedef.");
+		}
+		
+		// This updates the line when changes have been made
+		public void Update()
+		{
+			Vector2D delta;
+			
+			// Update if needed
+			if(updateneeded)
+			{
+				// Delta vector
+				delta = end.Position - start.Position;
+
+				// Recalculate values
+				lengthsq = delta.GetLengthSq();
+				length = (float)Math.Sqrt(lengthsq);
+				//angle = delta.GetAngle();
+
+				// Updated
+				updateneeded = false;
+				
+				// If rendering is enabled, then update to buffer as well
+				if(map.IsRenderEnabled && map.IsUpdating) UpdateToBuffer();
+			}
+		}
+
+		// This flags the line needs an update
+		public void NeedUpdate()
+		{
+			updateneeded = true;
+		}
+
+		// This copies all properties to another line
+		public void CopyPropertiesTo(Linedef l)
+		{
+			// Copy properties
+			l.action = action;
+			l.args = (byte[])args.Clone();
+			l.flags = flags;
+			l.tag = tag;
+			l.updateneeded = true;
+		}
+		
+		#endregion
+
+		#region ================== Rendering
+
+		// This writes the vertex to buffer
+		public void UpdateToBuffer()
+		{
+			PTVertex[] lineverts = new PTVertex[4];
 			Vector2D delta;
 			Vector2D normal;
 			int color;
+			float normallength;
+
+			// Not up to date? Then do that first (Update will call this method again)
+			if(updateneeded) { Update(); return; }
 			
 			// Delta vector
 			delta = end.Position - start.Position;
-			
+
 			// Recalculate values
-			lengthsq = delta.GetLengthSq();
-			length = (float)Math.Sqrt(lengthsq);
 			normal = new Vector2D(delta.x / length, delta.y / length);
-			//angle = delta.GetAngle();
 
 			// Single sided?
 			if((front == null) || (back == null))
@@ -204,15 +275,18 @@ namespace CodeImp.DoomBuilder.Map
 				else
 					color = Graphics.RGB(140, 140, 140);
 			}
-			
+
+			// Calculate normal length
+			normallength = NORMAL_LENGTH / General.Map.Graphics.Renderer2D.Scale;
+
 			// Create line normal
 			lineverts[0].x = start.Position.x + delta.x * 0.5f;
 			lineverts[0].y = start.Position.y + delta.y * 0.5f;
-			lineverts[1].x = lineverts[0].x + normal.y * 100f;
-			lineverts[1].y = lineverts[0].y - normal.x * 100f;
+			lineverts[1].x = lineverts[0].x + normal.y * normallength;
+			lineverts[1].y = lineverts[0].y - normal.x * normallength;
 			lineverts[0].c = color;
 			lineverts[1].c = color;
-			
+
 			// Create line vertices
 			lineverts[2].x = start.Position.x;
 			lineverts[2].y = start.Position.y;
@@ -220,18 +294,14 @@ namespace CodeImp.DoomBuilder.Map
 			lineverts[3].y = end.Position.y;
 			lineverts[2].c = color;
 			lineverts[3].c = color;
+			
+			// Seek to start of item
+			map.LinedefsBuffer.SeekToItem(bufferindex);
+
+			// Write vertices to buffer
+			foreach(PTVertex v in lineverts) map.LinedefsBuffer.WriteItem(v);
 		}
 
-		// This copies all properties to another line
-		public void CopyPropertiesTo(Linedef l)
-		{
-			// Copy properties
-			l.action = action;
-			l.args = (byte[])args.Clone();
-			l.flags = flags;
-			l.tag = tag;
-		}
-		
 		#endregion
 		
 		#region ================== Methods
@@ -287,6 +357,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.tag = tag;
 			this.action = action;
 			this.args = args;
+			this.updateneeded = true;
 		}
 
 		#endregion

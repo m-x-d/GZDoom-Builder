@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
+		public MapSet Map { get { return map; } }
 		public bool IsFront { get { return (this == linedef.Front); } }
 		public Linedef Line { get { return linedef; } }
 		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }

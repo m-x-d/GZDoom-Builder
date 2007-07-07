@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	internal struct Angle2D
+	public struct Angle2D
 	{
 		#region ================== Constants
 

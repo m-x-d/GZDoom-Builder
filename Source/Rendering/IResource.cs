@@ -25,26 +25,21 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
-using SlimDX.Direct3D9;
+using SlimDX.Direct3D;
 using System.ComponentModel;
+using CodeImp.DoomBuilder.Geometry;
+using SlimDX;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	// PTVertex
-	public struct PTVertex
+	internal interface IResource : IDisposable
 	{
-		// Vertex format
-		public static readonly VertexFormat Format = VertexFormat.Position | VertexFormat.Diffuse | VertexFormat.Texture1;
-		public static readonly int Stride = 6 * 4;
-
-		// Members
-		public float x;
-		public float y;
-		public float z;
-		public int c;
-		public float u;
-		public float v;
+		// This is used to unload the resouce
+		void UnloadResource();
+		
+		// This is used to reload the resource
+		void ReloadResource();
 	}
 }

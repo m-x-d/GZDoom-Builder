@@ -121,17 +121,20 @@ namespace CodeImp.DoomBuilder
 			this.changed = false;
 			this.options = options;
 			
-			// Create objects
+			// Initiate graphics
 			graphics = new Graphics(General.MainWindow.Display);
+			if(!graphics.Initialize()) return false;
+			
+			// Load game configuration
 			config = General.LoadGameConfiguration(options.ConfigFile);
-			data = new MapSet();
 
+			// Create map data
+			data = new MapSet();
+			data.EnableRendering();
+			
 			// Create temp wadfile
 			tempwad = new WAD(General.MakeTempFilename());
 
-			// Initiate graphics
-			if(!graphics.Initialize()) return false;
-			
 			// Set default mode
 			ChangeMode(typeof(FrozenOverviewMode));
 
@@ -151,14 +154,20 @@ namespace CodeImp.DoomBuilder
 			this.changed = false;
 			this.options = options;
 
-			// Create objects
+			// Initiate graphics
 			graphics = new Graphics(General.MainWindow.Display);
-			config = General.LoadGameConfiguration(options.ConfigFile);
-			data = new MapSet();
+			if(!graphics.Initialize()) return false;
 
+			// Load game configuration
+			config = General.LoadGameConfiguration(options.ConfigFile);
+
+			// Create map data
+			data = new MapSet();
+			data.EnableRendering();
+			
 			// Create temp wadfile
 			tempwad = new WAD(General.MakeTempFilename());
-
+			
 			// Now open the map file
 			mapwad = new WAD(filepathname, true);
 
@@ -171,11 +180,11 @@ namespace CodeImp.DoomBuilder
 			
 			// Read the map from temp file
 			mapio = MapSetIO.Create(config.ReadSetting("formatinterface", ""), tempwad);
-			data = mapio.Read(new MapSet(), TEMP_MAP_HEADER);
-			
-			// Initiate graphics
-			if(!graphics.Initialize()) return false;
+			data = mapio.Read(data, TEMP_MAP_HEADER);
 
+			// Update structures
+			data.Update();
+			
 			// Set default mode
 			ChangeMode(typeof(FrozenOverviewMode));
 

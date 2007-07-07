@@ -22,6 +22,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
+using SlimDX.Direct3D;
+using CodeImp.DoomBuilder.Rendering;
+using SlimDX;
 
 #endregion
 
@@ -30,6 +33,10 @@ namespace CodeImp.DoomBuilder.Map
 	internal class MapSet : IDisposable
 	{
 		#region ================== Constants
+
+		// Minimum size for primitives in buffers
+		private const int MIN_PRIMITIVE_COUNT = 500;
+		private const int VERTS_PER_LINEDEF = 2;
 
 		#endregion
 
@@ -42,6 +49,12 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Sector> sectors;
 		private LinkedList<Thing> things;
 
+		// Rendering
+		private bool renderenabled = false;
+		private int updating = 0;
+		private ManagedVertexBuffer verts;
+		private ManagedVertexBuffer lines;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -55,7 +68,11 @@ namespace CodeImp.DoomBuilder.Map
 		public ICollection<Sector> Sectors { get { return sectors; } }
 		public ICollection<Thing> Things { get { return things; } }
 		public bool IsDisposed { get { return isdisposed; } }
-
+		public bool IsRenderEnabled { get { return renderenabled; } }
+		public bool IsUpdating { get { return updating > 0; } }
+		public ManagedVertexBuffer VerticesBuffer { get { return verts; } }
+		public ManagedVertexBuffer LinedefsBuffer { get { return lines; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -85,6 +102,10 @@ namespace CodeImp.DoomBuilder.Map
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
 
+				// No more rendering
+				DisableRendering();
+				updating = 0;
+				
 				// Dispose all things
 				list = new ArrayList(things);
 				foreach(Thing t in list) t.Dispose();
@@ -153,7 +174,7 @@ namespace CodeImp.DoomBuilder.Map
 				l.CopyPropertiesTo(nl);
 
 				// Recalculate
-				l.Recalculate();
+				l.Update();
 			}
 
 			// Go for all sectors
@@ -207,6 +228,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Add vertex to the list
 			vertices.AddLast(listitem);
 
+			// Add vertex to rendering bufer
+			if(renderenabled) v.BufferIndex = verts.AddItem();
+			
 			// Return result
 			return v;
 		}
@@ -227,6 +251,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Add linedef to the list
 			linedefs.AddLast(listitem);
 
+			// Add linedef to rendering bufer
+			if(renderenabled) l.BufferIndex = lines.AddItem();
+			
 			// Return result
 			return l;
 		}
@@ -289,6 +316,119 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Return result
 			return t;
+		}
+		
+		#endregion
+
+		#region ================== Resources
+
+		// This reloads vertices into rendering buffer
+		private void ReloadVertices()
+		{
+			// Update all vertices to buffer
+			foreach(Vertex v in vertices) v.UpdateToBuffer();
+		}
+
+		// This reloads linedefs into rendering buffer
+		private void ReloadLinedefs()
+		{
+			// Update all linedefs to buffer
+			foreach(Linedef l in linedefs) l.UpdateToBuffer();
+		}
+
+		#endregion
+		
+		#region ================== Rendering
+
+		// This enables rendering of map structures
+		public void EnableRendering()
+		{
+			// Not already enabled?
+			if(!renderenabled)
+			{
+				// Enable rendering
+				renderenabled = true;
+				
+				// Create buffers
+				verts = new ManagedVertexBuffer(PTVertex.Stride * Vertex.BUFFERVERTICES, vertices.Count);
+				lines = new ManagedVertexBuffer(PTVertex.Stride * Linedef.BUFFERVERTICES, linedefs.Count);
+
+				// Go for all vertices to add to the buffer
+				foreach(Vertex v in vertices) v.BufferIndex = verts.AddItem();
+
+				// Go for all linedefs to add to the buffer
+				foreach(Linedef l in linedefs) l.BufferIndex = lines.AddItem();
+
+				// Attach events
+				verts.ReloadResources += new ReloadResourceDelegate(ReloadVertices);
+				lines.ReloadResources += new ReloadResourceDelegate(ReloadLinedefs);
+			}
+		}
+
+		// This disables rendering of map structures
+		public void DisableRendering()
+		{
+			// Disable rendering
+			renderenabled = false;
+
+			// Stop any updating
+			while(updating > 0) EndUpdate();
+			
+			// Trash buffers
+			if(verts != null) verts.Dispose();
+			if(lines != null) lines.Dispose();
+			verts = null;
+			lines = null;
+		}
+		
+		// This locks the buffers for updates
+		public void BeginUpdate()
+		{
+			// Not already updating
+			if(updating == 0)
+			{
+				// Lock buffers for updating
+				verts.BeginUpdate();
+				lines.BeginUpdate();
+			}
+
+			// Now updating
+			updating++;
+		}
+		
+		// This unlocks the buffers
+		public void EndUpdate()
+		{
+			// Updating?
+			if(updating > 0)
+			{
+				// No longer updating
+				updating--;
+
+				// Done updating?
+				if(updating == 0)
+				{
+					// Unlock buffers
+					verts.EndUpdate();
+					lines.EndUpdate();
+				}
+			}
+		}
+		
+		// This updates all structures if needed
+		public void Update()
+		{
+			// Updating begins now
+			BeginUpdate();
+
+			// Update all vertices
+			foreach(Vertex v in vertices) v.Update();
+
+			// Update all linedefs
+			foreach(Linedef l in linedefs) l.Update();
+
+			// Updating has finished
+			EndUpdate();
 		}
 		
 		#endregion

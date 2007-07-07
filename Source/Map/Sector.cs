@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
-		// Disposing
+		public MapSet Map { get { return map; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
