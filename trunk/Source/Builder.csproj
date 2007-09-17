@@ -22,7 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,7 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -112,9 +112,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Rendering\Graphics.cs" />
+    <Compile Include="Rendering\D3DGraphics.cs" />
     <Compile Include="Rendering\IResource.cs" />
-    <Compile Include="Rendering\ManagedVertexBuffer.cs" />
+    <Compile Include="Rendering\PixelColor.cs" />
     <Compile Include="Rendering\PTVertex.cs" />
     <Compile Include="Rendering\ReloadResourceDelegate.cs" />
     <Compile Include="Rendering\Renderer2D.cs" />
@@ -170,7 +170,7 @@
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>aximp</WrapperTool>
-      <Isolated>False</Isolated>
+      <Isolated>True</Isolated>
     </COMReference>
     <COMReference Include="CodeSense">
       <Guid>{665BF2B8-F41F-4EF4-A8D0-303FBFFC475E}</Guid>
@@ -178,7 +178,7 @@
       <VersionMinor>0</VersionMinor>
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
+      <Isolated>True</Isolated>
     </COMReference>
     <COMReference Include="stdole">
       <Guid>{00020430-0000-0000-C000-000000000046}</Guid>

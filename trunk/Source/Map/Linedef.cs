@@ -69,9 +69,6 @@ namespace CodeImp.DoomBuilder.Map
 		private int action;
 		private int tag;
 		private byte[] args;
-
-		// Rendering
-		private int bufferindex;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -85,7 +82,6 @@ namespace CodeImp.DoomBuilder.Map
 		public Vertex End { get { return end; } }
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
-		public int BufferIndex { get { return bufferindex; } set { bufferindex = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -122,9 +118,6 @@ namespace CodeImp.DoomBuilder.Map
 				// Remove from main list
 				mainlistitem.List.Remove(mainlistitem);
 
-				// Remove from rendering buffer
-				if(map.IsRenderEnabled) map.LinedefsBuffer.FreeItem(bufferindex);
-				
 				// Detach from vertices
 				start.DetachLinedef(startvertexlistitem);
 				end.DetachLinedef(endvertexlistitem);
@@ -213,9 +206,6 @@ namespace CodeImp.DoomBuilder.Map
 
 				// Updated
 				updateneeded = false;
-				
-				// If rendering is enabled, then update to buffer as well
-				if(map.IsRenderEnabled && map.IsUpdating) UpdateToBuffer();
 			}
 		}
 
@@ -236,72 +226,6 @@ namespace CodeImp.DoomBuilder.Map
 			l.updateneeded = true;
 		}
 		
-		#endregion
-
-		#region ================== Rendering
-
-		// This writes the vertex to buffer
-		public void UpdateToBuffer()
-		{
-			PTVertex[] lineverts = new PTVertex[4];
-			Vector2D delta;
-			Vector2D normal;
-			int color;
-			float normallength;
-
-			// Not up to date? Then do that first (Update will call this method again)
-			if(updateneeded) { Update(); return; }
-			
-			// Delta vector
-			delta = end.Position - start.Position;
-
-			// Recalculate values
-			normal = new Vector2D(delta.x / length, delta.y / length);
-
-			// Single sided?
-			if((front == null) || (back == null))
-			{
-				// Line has an action?
-				if(action != 0)
-					color = Graphics.RGB(140, 255, 140);
-				else
-					color = Graphics.RGB(255, 255, 255);
-			}
-			else
-			{
-				// Line has an action?
-				if(action != 0)
-					color = Graphics.RGB(50, 140, 50);
-				else
-					color = Graphics.RGB(140, 140, 140);
-			}
-
-			// Calculate normal length
-			normallength = NORMAL_LENGTH / General.Map.Graphics.Renderer2D.Scale;
-
-			// Create line normal
-			lineverts[0].x = start.Position.x + delta.x * 0.5f;
-			lineverts[0].y = start.Position.y + delta.y * 0.5f;
-			lineverts[1].x = lineverts[0].x + normal.y * normallength;
-			lineverts[1].y = lineverts[0].y - normal.x * normallength;
-			lineverts[0].c = color;
-			lineverts[1].c = color;
-
-			// Create line vertices
-			lineverts[2].x = start.Position.x;
-			lineverts[2].y = start.Position.y;
-			lineverts[3].x = end.Position.x;
-			lineverts[3].y = end.Position.y;
-			lineverts[2].c = color;
-			lineverts[3].c = color;
-			
-			// Seek to start of item
-			map.LinedefsBuffer.SeekToItem(bufferindex);
-
-			// Write vertices to buffer
-			foreach(PTVertex v in lineverts) map.LinedefsBuffer.WriteItem(v);
-		}
-
 		#endregion
 		
 		#region ================== Methods

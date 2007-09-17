@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 		
 		// Graphics
-		protected Graphics graphics;
+		protected D3DGraphics graphics;
 		
 		// Disposing
 		protected bool isdisposed = false;

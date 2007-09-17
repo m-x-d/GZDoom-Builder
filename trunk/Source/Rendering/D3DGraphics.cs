@@ -35,7 +35,7 @@ using SlimDX;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal class Graphics : IDisposable
+	internal class D3DGraphics : IDisposable
 	{
 		#region ================== Constants
 
@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private int adapter;
 		
 		// Main objects
-		private Control rendertarget;
+		private Panel rendertarget;
 		private Capabilities devicecaps;
 		private Device device;
 		private Renderer2D renderer2d;
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public bool IsDisposed { get { return isdisposed; } }
 		public Renderer2D Renderer2D { get { return renderer2d; } }
 		public Renderer3D Renderer3D { get { return renderer3d; } }
-		public Control RenderTarget { get { return rendertarget; } }
+		public Panel RenderTarget { get { return rendertarget; } }
 		public Viewport Viewport { get { return viewport; } }
 
 		#endregion
@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Graphics(Control rendertarget)
+		public D3DGraphics(Panel rendertarget)
 		{
 			// Set render target
 			this.rendertarget = rendertarget;

@@ -48,14 +48,11 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedListNode<Vertex> mainlistitem;
 
 		// Position
+		private int x, y;
 		private Vector2D pos;
 
 		// References
 		private LinkedList<Linedef> linedefs;
-
-		// Rendering
-		private bool updateneeded;
-		private int bufferindex;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -67,7 +64,8 @@ namespace CodeImp.DoomBuilder.Map
 		public MapSet Map { get { return map; } }
 		public ICollection<Linedef> Linedefs { get { return linedefs; } }
 		public Vector2D Position { get { return pos; } }
-		public int BufferIndex { get { return bufferindex; } set { bufferindex = value; } }
+		public int X { get { return x; } }
+		public int Y { get { return y; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -75,14 +73,15 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Vertex(MapSet map, LinkedListNode<Vertex> listitem, Vector2D pos)
+		public Vertex(MapSet map, LinkedListNode<Vertex> listitem, int x, int y)
 		{
 			// Initialize
 			this.map = map;
 			this.linedefs = new LinkedList<Linedef>();
 			this.mainlistitem = listitem;
-			this.pos = pos;
-			this.updateneeded = true;
+			this.pos = new Vector2D(x, y);
+			this.x = x;
+			this.y = y;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -100,9 +99,6 @@ namespace CodeImp.DoomBuilder.Map
 				// Remove from main list
 				mainlistitem.List.Remove(mainlistitem);
 
-				// Remove from rendering buffer
-				if(map.IsRenderEnabled) map.VerticesBuffer.FreeItem(bufferindex);
-				
 				// Dispose the lines that are attached to this vertex
 				// because a linedef cannot exist without 2 vertices.
 				foreach(Linedef l in linedefs) l.Dispose();
@@ -138,55 +134,9 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 		}
-		
-		// This rounds the coordinates to integrals
-		public void Round()
-		{
-			// Round to integrals
-			pos.x = (float)Math.Round(pos.x);
-			pos.y = (float)Math.Round(pos.y);
-			updateneeded = true;
-		}
-		
-		// This updates the vertex when changes have been made
-		public void Update()
-		{
-			// Update if needed
-			if(updateneeded)
-			{
-				// Updated
-				updateneeded = false;
-				
-				// If rendering is enabled, then update to buffer as well
-				if(map.IsRenderEnabled && map.IsUpdating) UpdateToBuffer();
-			}
-		}
 
 		#endregion
 
-		#region ================== Rendering
-
-		// This writes the vertex to buffer
-		public void UpdateToBuffer()
-		{
-			PTVertex v = new PTVertex();
-
-			// Not up to date? Then do that first (Update will call this method again)
-			if(updateneeded) { Update(); return; }
-
-			// Seek to start of item
-			map.VerticesBuffer.SeekToItem(bufferindex);
-
-			// Write vertices to buffer
-			v.x = pos.x;
-			v.y = pos.y;
-			v.z = 0f;
-			v.c = Color.SlateBlue.ToArgb();
-			map.VerticesBuffer.WriteItem(v);
-		}
-		
-		#endregion
-		
 		#region ================== Methods
 
 		// This returns the distance from given coordinates
@@ -211,11 +161,12 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 
 		// This moves the vertex
-		public void Move(Vector2D newpos)
+		public void Move(int newx, int newy)
 		{
 			// Change position
-			pos = newpos;
-			updateneeded = true;
+			x = newx;
+			y = newy;
+			pos = new Vector2D(newx, newy);
 			
 			// Let all lines know they need an update
 			foreach(Linedef l in linedefs) l.NeedUpdate();
