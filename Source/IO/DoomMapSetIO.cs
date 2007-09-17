@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.IO
 				y = reader.ReadInt16();
 
 				// Create new item
-				v = map.CreateVertex(new Vector2D(x, y));
+				v = map.CreateVertex(x, y);
 				
 				// Add it to the lookup table
 				link.Add(i, v);

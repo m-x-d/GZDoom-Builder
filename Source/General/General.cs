@@ -42,6 +42,9 @@ namespace CodeImp.DoomBuilder
 		[DllImport("user32.dll")]
 		public static extern int LockWindowUpdate(IntPtr hwnd);
 
+		[DllImport("kernel32.dll", EntryPoint="RtlZeroMemory", SetLastError=false)]
+		public static extern void ZeroMemory(IntPtr dest, int size);
+		
 		#endregion
 
 		#region ================== Constants

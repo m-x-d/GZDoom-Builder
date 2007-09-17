@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder
 		private MapOptions options;
 		private Configuration config;
 		private EditMode mode;
-		private Graphics graphics;
+		private D3DGraphics graphics;
 		private WAD tempwad;
 		
 		// Disposing
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder
 		public EditMode Mode { get { return mode; } }
 		public bool IsChanged { get { return changed; } set { changed = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public Graphics Graphics { get { return graphics; } }
+		public D3DGraphics Graphics { get { return graphics; } }
 		
 		#endregion
 
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder
 			this.options = options;
 			
 			// Initiate graphics
-			graphics = new Graphics(General.MainWindow.Display);
+			graphics = new D3DGraphics(General.MainWindow.Display);
 			if(!graphics.Initialize()) return false;
 			
 			// Load game configuration
@@ -130,7 +130,6 @@ namespace CodeImp.DoomBuilder
 
 			// Create map data
 			data = new MapSet();
-			data.EnableRendering();
 			
 			// Create temp wadfile
 			tempwad = new WAD(General.MakeTempFilename());
@@ -155,7 +154,7 @@ namespace CodeImp.DoomBuilder
 			this.options = options;
 
 			// Initiate graphics
-			graphics = new Graphics(General.MainWindow.Display);
+			graphics = new D3DGraphics(General.MainWindow.Display);
 			if(!graphics.Initialize()) return false;
 
 			// Load game configuration
@@ -163,7 +162,6 @@ namespace CodeImp.DoomBuilder
 
 			// Create map data
 			data = new MapSet();
-			data.EnableRendering();
 			
 			// Create temp wadfile
 			tempwad = new WAD(General.MakeTempFilename());

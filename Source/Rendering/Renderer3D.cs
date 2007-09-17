@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Variables
 
 		// Owner
-		private Graphics graphics;
+		private D3DGraphics graphics;
 
 		// Disposing
 		private bool isdisposed = false;
@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Renderer3D(Graphics graphics)
+		public Renderer3D(D3DGraphics graphics)
 		{
 			// Initialize
 			this.graphics = graphics;
