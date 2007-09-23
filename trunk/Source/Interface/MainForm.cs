@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -209,7 +210,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Change display to show splash logo
 			display.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			display.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash2;
-			//display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.Update();
 		}
 		
@@ -219,12 +220,12 @@ namespace CodeImp.DoomBuilder.Interface
 			// Clear the display
 			display.BackColor = Color.Black;
 			display.BackgroundImage = null;
-			//display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Tile;
+			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			this.Update();
 		}
 
 		// Display needs repainting
-		private void display_Paint(object sender, PaintEventArgs e)
+		private unsafe void display_Paint(object sender, PaintEventArgs e)
 		{
 			// Request redraw
 			if(!redrawtimer.Enabled) redrawtimer.Enabled = true;
@@ -238,7 +239,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Resume control layouts
 			if(displayresized) General.LockWindowUpdate(IntPtr.Zero);
-			
+
 			// Map opened?
 			if(General.Map != null)
 			{
@@ -251,7 +252,7 @@ namespace CodeImp.DoomBuilder.Interface
 					// Make sure control is repainted
 					display.Update();
 				}
-				
+
 				// Redraw now
 				General.Map.Mode.RedrawDisplay();
 			}
@@ -326,7 +327,7 @@ namespace CodeImp.DoomBuilder.Interface
 				// Invoke actions for scrollwheel
 				General.Actions.InvokeByKey(mod | (int)SpecialKeys.MScrollDown);
 			}
-
+			
 			// Let the base know
 			base.OnMouseWheel(e);
 		}

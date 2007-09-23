@@ -261,11 +261,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// Transform
-		public void Transform(Vector2D offset, Vector2D scale)
+		public Vector2D GetTransformed(Vector2D offset, Vector2D scale)
 		{
-			// Transform
-			x = (x + offset.x) * scale.x;
-			y = (y + offset.y) * scale.y;
+			return new Vector2D((x + offset.x) * scale.x, (y + offset.y) * scale.y);
 		}
 		
 		#endregion

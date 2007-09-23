@@ -224,27 +224,181 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					// Blend with pixel
 					if((int)p->a + (int)c.a > 255) p->a = 255; else p->a += c.a;
-					p->r = (byte)((float)p->r * (1f - c.a) + (float)c.r * c.a);
-					p->g = (byte)((float)p->g * (1f - c.a) + (float)c.g * c.a);
-					p->b = (byte)((float)p->b * (1f - c.a) + (float)c.b * c.a);
+					p->r = (byte)((float)p->r * (1f - (float)c.a) + (float)c.r * (float)c.a);
+					p->g = (byte)((float)p->g * (1f - (float)c.a) + (float)c.g * (float)c.a);
+					p->b = (byte)((float)p->b * (1f - (float)c.a) + (float)c.b * (float)c.a);
+				}
+			}
+		}
+
+		// This draws a line alpha blended
+		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+		private void DrawLineAlpha(int x1, int y1, int x2, int y2, PixelColor c)
+		{
+			int i;
+
+			// Check if the line is outside the screen for sure.
+			// This is quickly done by checking in which area both points are. When this
+			// is above, below, right or left of the screen, then skip drawing the line.
+			if(((x1 < 0) && (x2 < 0)) ||
+			   ((x1 > width) && (x2 > width)) ||
+			   ((y1 < 0) && (y2 < 0)) ||
+			   ((y1 > height) && (y2 > height))) return;
+			
+			// Distance of the line
+			int dx = x2 - x1;
+			int dy = y2 - y1;
+
+			// Positive (absolute) distance
+			int dxabs = Math.Abs(dx);
+			int dyabs = Math.Abs(dy);
+
+			// Half distance
+			int x = dyabs >> 1;
+			int y = dxabs >> 1;
+
+			// Direction
+			int sdx = Math.Sign(dx);
+			int sdy = Math.Sign(dy);
+
+			// Start position
+			int px = x1;
+			int py = y1;
+
+			// Draw first pixel
+			DrawPixelAlpha(px, py, c);
+			
+			// Check if the line is more horizontal than vertical
+			if(dxabs >= dyabs)
+			{
+				for(i = 0; i < dxabs; i++)
+				{
+					y += dyabs;
+					if(y >= dxabs)
+					{
+						y -= dxabs;
+						py += sdy;
+					}
+					px += sdx;
+
+					// Draw pixel
+					DrawPixelAlpha(px, py, c);
+				}
+			}
+			// Else the line is more vertical than horizontal
+			else
+			{
+				for(i = 0; i < dyabs; i++)
+				{
+					x += dxabs;
+					if(x >= dyabs)
+					{
+						x -= dyabs;
+						px += sdx;
+					}
+					py += sdy;
+
+					// Draw pixel
+					DrawPixelAlpha(px, py, c);
+				}
+			}
+		}
+
+		// This draws a line normally
+		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+		private void DrawLineSolid(int x1, int y1, int x2, int y2, PixelColor c)
+		{
+			int i;
+
+			// Check if the line is outside the screen for sure.
+			// This is quickly done by checking in which area both points are. When this
+			// is above, below, right or left of the screen, then skip drawing the line.
+			if(((x1 < 0) && (x2 < 0)) ||
+			   ((x1 > width) && (x2 > width)) ||
+			   ((y1 < 0) && (y2 < 0)) ||
+			   ((y1 > height) && (y2 > height))) return;
+
+			// Distance of the line
+			int dx = x2 - x1;
+			int dy = y2 - y1;
+
+			// Positive (absolute) distance
+			int dxabs = Math.Abs(dx);
+			int dyabs = Math.Abs(dy);
+
+			// Half distance
+			int x = dyabs >> 1;
+			int y = dxabs >> 1;
+
+			// Direction
+			int sdx = Math.Sign(dx);
+			int sdy = Math.Sign(dy);
+
+			// Start position
+			int px = x1;
+			int py = y1;
+
+			// Draw first pixel
+			DrawPixelSolid(px, py, c);
+
+			// Check if the line is more horizontal than vertical
+			if(dxabs >= dyabs)
+			{
+				for(i = 0; i < dxabs; i++)
+				{
+					y += dyabs;
+					if(y >= dxabs)
+					{
+						y -= dxabs;
+						py += sdy;
+					}
+					px += sdx;
+
+					// Draw pixel
+					DrawPixelSolid(px, py, c);
+				}
+			}
+			// Else the line is more vertical than horizontal
+			else
+			{
+				for(i = 0; i < dyabs; i++)
+				{
+					x += dxabs;
+					if(x >= dyabs)
+					{
+						x -= dyabs;
+						px += sdx;
+					}
+					py += sdy;
+
+					// Draw pixel
+					DrawPixelSolid(px, py, c);
 				}
 			}
 		}
 
 		#endregion
 
-		// This draws a line normally
-		private void DrawLineSolid(int x0, int y0, int x1, int y1, PixelColor c)
-		{
-			// TODO: See http://en.wikipedia.org/wiki/Xiaolin_Wu's_line_algorithm
-		}
-		
 		#region ================== Map Rendering
 
 		// This renders a set of Linedefs
 		public unsafe void RenderLinedefs(MapSet map, ICollection<Linedef> linedefs)
 		{
-			// TODO
+			Vector2D voffset = new Vector2D(-offsetx + (width * 0.5f) / scale, -offsety - (height * 0.5f) / scale);
+			Vector2D vscale = new Vector2D(scale, -scale);
+			PixelColor c = PixelColor.FromColor(Color.SkyBlue);
+			Vector2D v1, v2;
+
+			// Go for all linedefs
+			foreach(Linedef l in linedefs)
+			{
+				// Transform vertex coordinates
+				v1 = l.Start.Position.GetTransformed(voffset, vscale);
+				v2 = l.End.Position.GetTransformed(voffset, vscale);
+
+				// Draw line
+				DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+			}
 		}
 
 		// This renders a set of Linedefs
@@ -260,8 +414,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(Vertex v in vertices)
 			{
 				// Transform vertex coordinates
-				nv = v.Position;
-				nv.Transform(voffset, vscale);
+				nv = v.Position.GetTransformed(voffset, vscale);
 				x = (int)nv.x;
 				y = (int)nv.y;
 				

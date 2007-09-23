@@ -31,6 +31,16 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.b = b;
 		}
 
+		// Constructor
+		public PixelColor(PixelColor p, byte a)
+		{
+			// Initialize
+			this.a = a;
+			this.r = p.r;
+			this.g = p.g;
+			this.b = p.b;
+		}
+
 		#endregion
 
 		#region ================== Static Methods

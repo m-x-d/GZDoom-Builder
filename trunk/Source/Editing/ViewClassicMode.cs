@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This scrolls the view north
 		[Action(Action.SCROLLNORTH)]
-		public void ScrollNorth()
+		public virtual void ScrollNorth()
 		{
 			// Scroll
 			ScrollBy(0f, 100f / renderer.Scale);
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This scrolls the view south
 		[Action(Action.SCROLLSOUTH)]
-		public void ScrollSouth()
+		public virtual void ScrollSouth()
 		{
 			// Scroll
 			ScrollBy(0f, -100f / renderer.Scale);
@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This scrolls the view west
 		[Action(Action.SCROLLWEST)]
-		public void ScrollWest()
+		public virtual void ScrollWest()
 		{
 			// Scroll
 			ScrollBy(-100f / renderer.Scale, 0f);
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This scrolls the view east
 		[Action(Action.SCROLLEAST)]
-		public void ScrollEast()
+		public virtual void ScrollEast()
 		{
 			// Scroll
 			ScrollBy(100f / renderer.Scale, 0f);
@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This zooms in
 		[Action(Action.ZOOMIN)]
-		public void ZoomIn()
+		public virtual void ZoomIn()
 		{
 			// Zoom
 			ZoomBy(1.2f);
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This zooms out
 		[Action(Action.ZOOMOUT)]
-		public void ZoomOut()
+		public virtual void ZoomOut()
 		{
 			// Zoom
 			ZoomBy(0.8f);

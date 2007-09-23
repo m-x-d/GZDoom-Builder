@@ -219,7 +219,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.statuslabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(568, 18);
+			this.statuslabel.Size = new System.Drawing.Size(599, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

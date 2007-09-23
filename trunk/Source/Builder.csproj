@@ -113,12 +113,15 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rendering\D3DGraphics.cs" />
+    <Compile Include="Rendering\FileImageResource.cs" />
+    <Compile Include="Rendering\ImageResource.cs" />
     <Compile Include="Rendering\IResource.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
     <Compile Include="Rendering\PTVertex.cs" />
     <Compile Include="Rendering\ReloadResourceDelegate.cs" />
     <Compile Include="Rendering\Renderer2D.cs" />
     <Compile Include="Rendering\Renderer3D.cs" />
+    <Compile Include="Rendering\TextureImageResource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlimDX, Version=1.0.2733.42401, Culture=neutral, processorArchitecture=x86">

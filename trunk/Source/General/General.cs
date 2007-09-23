@@ -44,11 +44,41 @@ namespace CodeImp.DoomBuilder
 
 		[DllImport("kernel32.dll", EntryPoint="RtlZeroMemory", SetLastError=false)]
 		public static extern void ZeroMemory(IntPtr dest, int size);
-		
+
+		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
+		internal static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		internal static unsafe extern void* VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, uint flAllocationType, uint flProtect);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		internal static unsafe extern bool VirtualFree(void* lpAddress, UIntPtr dwSize, uint dwFreeType);
+
 		#endregion
 
 		#region ================== Constants
 
+		// Memory APIs
+		public const uint MEM_COMMIT = 0x1000;
+		public const uint MEM_RESERVE = 0x2000;
+		public const uint MEM_DECOMMIT = 0x4000;
+		public const uint MEM_RELEASE = 0x8000;
+		public const uint MEM_RESET = 0x80000;
+		public const uint MEM_TOP_DOWN = 0x100000;
+		public const uint MEM_PHYSICAL = 0x400000;
+		public const uint PAGE_NOACCESS = 0x01;
+		public const uint PAGE_READONLY = 0x02;
+		public const uint PAGE_READWRITE = 0x04;
+		public const uint PAGE_WRITECOPY = 0x08;
+		public const uint PAGE_EXECUTE = 0x10;
+		public const uint PAGE_EXECUTE_READ = 0x20;
+		public const uint PAGE_EXECUTE_READWRITE = 0x40;
+		public const uint PAGE_EXECUTE_WRITECOPY = 0x80;
+		public const uint PAGE_GUARD = 0x100;
+		public const uint PAGE_NOCACHE = 0x200;
+		public const uint PAGE_WRITECOMBINE = 0x400;
+		
 		// Files and Folders
 		private const string SETTINGS_CONFIG_FILE = "Builder.cfg";
 		private const string GAME_CONFIGS_DIR = "Configurations";
