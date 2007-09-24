@@ -24,6 +24,7 @@ using System.Text;
 using System.Drawing;
 using SlimDX.Direct3D9;
 using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 

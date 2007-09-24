@@ -48,8 +48,21 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpabout = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
+			this.buttonnewmap = new System.Windows.Forms.ToolStripButton();
+			this.buttonopenmap = new System.Windows.Forms.ToolStripButton();
+			this.buttonsavemap = new System.Windows.Forms.ToolStripButton();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.zoomlabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.buttonzoom = new System.Windows.Forms.ToolStripDropDownButton();
+			this.itemzoom200 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemzoom100 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemzoom50 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemzoom25 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemzoom10 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemzoom5 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.itemzoomfittoscreen = new System.Windows.Forms.ToolStripMenuItem();
 			this.xposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.yposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panelinfo = new System.Windows.Forms.Panel();
@@ -61,6 +74,7 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menumain.SuspendLayout();
+			this.toolbar.SuspendLayout();
 			this.statusbar.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -122,6 +136,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// itemnewmap
 			// 
+			this.itemnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.NewMap;
 			this.itemnewmap.Name = "itemnewmap";
 			this.itemnewmap.ShortcutKeyDisplayString = "";
 			this.itemnewmap.Size = new System.Drawing.Size(201, 22);
@@ -131,6 +146,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// itemopenmap
 			// 
+			this.itemopenmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
 			this.itemopenmap.Name = "itemopenmap";
 			this.itemopenmap.Size = new System.Drawing.Size(201, 22);
 			this.itemopenmap.Tag = "openmap";
@@ -146,6 +162,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// itemsavemap
 			// 
+			this.itemsavemap.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
 			this.itemsavemap.Name = "itemsavemap";
 			this.itemsavemap.Size = new System.Drawing.Size(201, 22);
 			this.itemsavemap.Text = "Save Map";
@@ -194,17 +211,52 @@ namespace CodeImp.DoomBuilder.Interface
 			// toolbar
 			// 
 			this.toolbar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.buttonnewmap,
+            this.buttonopenmap,
+            this.buttonsavemap});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(731, 25);
 			this.toolbar.TabIndex = 1;
 			this.toolbar.Text = "toolStrip1";
 			// 
+			// buttonnewmap
+			// 
+			this.buttonnewmap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.NewMap;
+			this.buttonnewmap.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonnewmap.Name = "buttonnewmap";
+			this.buttonnewmap.Size = new System.Drawing.Size(23, 22);
+			this.buttonnewmap.Text = "toolStripButton1";
+			this.buttonnewmap.Click += new System.EventHandler(this.itemnewmap_Click);
+			// 
+			// buttonopenmap
+			// 
+			this.buttonopenmap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonopenmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
+			this.buttonopenmap.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonopenmap.Name = "buttonopenmap";
+			this.buttonopenmap.Size = new System.Drawing.Size(23, 22);
+			this.buttonopenmap.Text = "toolStripButton1";
+			this.buttonopenmap.Click += new System.EventHandler(this.itemopenmap_Click);
+			// 
+			// buttonsavemap
+			// 
+			this.buttonsavemap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonsavemap.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
+			this.buttonsavemap.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonsavemap.Name = "buttonsavemap";
+			this.buttonsavemap.Size = new System.Drawing.Size(23, 22);
+			this.buttonsavemap.Text = "toolStripButton1";
+			// 
 			// statusbar
 			// 
 			this.statusbar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statuslabel,
+            this.zoomlabel,
+            this.buttonzoom,
             toolStripSeparator1,
             this.xposlabel,
             toolStripStatusLabel1,
@@ -219,10 +271,98 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.statuslabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(599, 18);
+			this.statuslabel.Size = new System.Drawing.Size(520, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// zoomlabel
+			// 
+			this.zoomlabel.AutoSize = false;
+			this.zoomlabel.Name = "zoomlabel";
+			this.zoomlabel.Size = new System.Drawing.Size(50, 18);
+			this.zoomlabel.Text = "50%";
+			this.zoomlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.zoomlabel.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
+			// 
+			// buttonzoom
+			// 
+			this.buttonzoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonzoom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemzoom200,
+            this.itemzoom100,
+            this.itemzoom50,
+            this.itemzoom25,
+            this.itemzoom10,
+            this.itemzoom5,
+            this.toolStripSeparator2,
+            this.itemzoomfittoscreen});
+			this.buttonzoom.Image = global::CodeImp.DoomBuilder.Properties.Resources.Zoom;
+			this.buttonzoom.ImageTransparentColor = System.Drawing.Color.Transparent;
+			this.buttonzoom.Name = "buttonzoom";
+			this.buttonzoom.Size = new System.Drawing.Size(29, 21);
+			this.buttonzoom.Text = "Zoom";
+			this.buttonzoom.ToolTipText = "Zoom level";
+			// 
+			// itemzoom200
+			// 
+			this.itemzoom200.Name = "itemzoom200";
+			this.itemzoom200.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom200.Tag = "200";
+			this.itemzoom200.Text = "200%";
+			this.itemzoom200.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom100
+			// 
+			this.itemzoom100.Name = "itemzoom100";
+			this.itemzoom100.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom100.Tag = "100";
+			this.itemzoom100.Text = "100%";
+			this.itemzoom100.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom50
+			// 
+			this.itemzoom50.Name = "itemzoom50";
+			this.itemzoom50.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom50.Tag = "50";
+			this.itemzoom50.Text = "50%";
+			this.itemzoom50.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom25
+			// 
+			this.itemzoom25.Name = "itemzoom25";
+			this.itemzoom25.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom25.Tag = "25";
+			this.itemzoom25.Text = "25%";
+			this.itemzoom25.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom10
+			// 
+			this.itemzoom10.Name = "itemzoom10";
+			this.itemzoom10.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom10.Tag = "10";
+			this.itemzoom10.Text = "10%";
+			this.itemzoom10.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom5
+			// 
+			this.itemzoom5.Name = "itemzoom5";
+			this.itemzoom5.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom5.Tag = "5";
+			this.itemzoom5.Text = "5%";
+			this.itemzoom5.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
+			// 
+			// itemzoomfittoscreen
+			// 
+			this.itemzoomfittoscreen.Name = "itemzoomfittoscreen";
+			this.itemzoomfittoscreen.Size = new System.Drawing.Size(167, 22);
+			this.itemzoomfittoscreen.Text = "Fit to screen";
+			this.itemzoomfittoscreen.Click += new System.EventHandler(this.itemzoomfittoscreen_Click);
 			// 
 			// xposlabel
 			// 
@@ -300,6 +440,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.menumain.ResumeLayout(false);
 			this.menumain.PerformLayout();
+			this.toolbar.ResumeLayout(false);
+			this.toolbar.PerformLayout();
 			this.statusbar.ResumeLayout(false);
 			this.statusbar.PerformLayout();
 			this.ResumeLayout(false);
@@ -329,5 +471,18 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemnorecent;
 		private System.Windows.Forms.ToolStripStatusLabel xposlabel;
 		private System.Windows.Forms.ToolStripStatusLabel yposlabel;
+		private System.Windows.Forms.ToolStripButton buttonnewmap;
+		private System.Windows.Forms.ToolStripButton buttonopenmap;
+		private System.Windows.Forms.ToolStripButton buttonsavemap;
+		private System.Windows.Forms.ToolStripStatusLabel zoomlabel;
+		private System.Windows.Forms.ToolStripDropDownButton buttonzoom;
+		private System.Windows.Forms.ToolStripMenuItem itemzoomfittoscreen;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem itemzoom100;
+		private System.Windows.Forms.ToolStripMenuItem itemzoom200;
+		private System.Windows.Forms.ToolStripMenuItem itemzoom50;
+		private System.Windows.Forms.ToolStripMenuItem itemzoom25;
+		private System.Windows.Forms.ToolStripMenuItem itemzoom10;
+		private System.Windows.Forms.ToolStripMenuItem itemzoom5;
 	}
 }

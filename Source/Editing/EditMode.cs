@@ -35,16 +35,13 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class EditMode : IDisposable
+	internal abstract class EditMode : IDisposable
 	{
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
-		
-		// Graphics
-		protected D3DGraphics graphics;
 		
 		// Disposing
 		protected bool isdisposed = false;
@@ -53,7 +50,6 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		// Disposing
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -63,9 +59,6 @@ namespace CodeImp.DoomBuilder.Editing
 		// Constructor
 		public EditMode()
 		{
-			// Initialize
-			this.graphics = General.Map.Graphics;
-			
 			// Bind any methods
 			ActionAttribute.BindMethods(this);
 			

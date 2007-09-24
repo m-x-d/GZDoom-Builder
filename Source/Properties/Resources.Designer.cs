@@ -60,6 +60,27 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap NewMap {
+            get {
+                object obj = ResourceManager.GetObject("NewMap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap OpenMap {
+            get {
+                object obj = ResourceManager.GetObject("OpenMap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SaveMap {
+            get {
+                object obj = ResourceManager.GetObject("SaveMap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Splash2 {
             get {
                 object obj = ResourceManager.GetObject("Splash2", resourceCulture);
@@ -70,6 +91,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap Splash2small {
             get {
                 object obj = ResourceManager.GetObject("Splash2small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Zoom {
+            get {
+                object obj = ResourceManager.GetObject("Zoom", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
