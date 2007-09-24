@@ -124,9 +124,7 @@
     <Compile Include="Rendering\TextureImageResource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="SlimDX, Version=1.0.2733.42401, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="SlimDX, Version=1.0.2813.30005, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
