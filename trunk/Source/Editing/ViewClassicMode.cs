@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public ViewClassicMode()
 		{
 			// Initialize
-			this.renderer = graphics.Renderer2D;
+			this.renderer = General.Map.Graphics.Renderer2D;
 		}
 
 		// Diposer
@@ -154,8 +154,8 @@ namespace CodeImp.DoomBuilder.Editing
 			newscale = renderer.Scale * deltaz;
 
 			// Get the dimensions of the display
-			clientsize = new Vector2D(graphics.RenderTarget.ClientSize.Width,
-									  graphics.RenderTarget.ClientSize.Height);
+			clientsize = new Vector2D(General.Map.Graphics.RenderTarget.ClientSize.Width,
+									  General.Map.Graphics.RenderTarget.ClientSize.Height);
 			
 			// When mouse is inside display
 			if(mouseinside)
@@ -171,13 +171,66 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Calculate view position difference
 			diff = ((clientsize / newscale) - (clientsize / renderer.Scale)) * zoompos;
-			
+
 			// Zoom now
 			renderer.PositionView(renderer.OffsetX - diff.x, renderer.OffsetY + diff.y);
 			renderer.ScaleView(newscale);
 			General.Map.Data.Update();
 			RedrawDisplay();
+			
+			// Determine new unprojected mouse coordinates
+			mousemappos = renderer.GetMapCoordinates(mousepos);
+			General.MainWindow.UpdateCoordinates(mousemappos);
+		}
 
+		// This zooms to a specific level
+		public void SetZoom(float newscale)
+		{
+			// Zoom now
+			renderer.ScaleView(newscale);
+			General.Map.Data.Update();
+			RedrawDisplay();
+
+			// Determine new unprojected mouse coordinates
+			mousemappos = renderer.GetMapCoordinates(mousepos);
+			General.MainWindow.UpdateCoordinates(mousemappos);
+		}
+		
+		// This zooms and scrolls to fit the map in the window
+		public void CenterInScreen()
+		{
+			float left = float.MaxValue;
+			float top = float.MaxValue;
+			float right = float.MinValue;
+			float bottom = float.MinValue;
+			float scalew, scaleh, scale;
+			float width, height;
+
+			// Go for all vertices
+			foreach(Vertex v in General.Map.Data.Vertices)
+			{
+				// Adjust boundaries by vertices
+				if(v.Position.x < left) left = v.Position.x;
+				if(v.Position.x > right) right = v.Position.x;
+				if(v.Position.y < top) top = v.Position.y;
+				if(v.Position.y > bottom) bottom = v.Position.y;
+			}
+
+			// Calculate width/height
+			width = (right - left);
+			height = (bottom - top);
+
+			// Calculate scale to view map at
+			scalew = (float)General.Map.Graphics.RenderTarget.ClientSize.Width / (width * 1.1f);
+			scaleh = (float)General.Map.Graphics.RenderTarget.ClientSize.Height / (height * 1.1f);
+			if(scalew < scaleh) scale = scalew; else scale = scaleh;
+
+			// Change the view to see the whole map
+			renderer.ScaleView(scale);
+			renderer.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
+			General.Map.Data.Update();
+			RedrawDisplay();
+			
 			// Determine new unprojected mouse coordinates
 			mousemappos = renderer.GetMapCoordinates(mousepos);
 			General.MainWindow.UpdateCoordinates(mousemappos);

@@ -21,10 +21,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -71,6 +73,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// Setup controls
 			InitializeComponent();
 			
+			// Fix things
+			buttonzoom.Font = menufile.Font;
+
 			// Apply shortcut keys
 			ApplyShortcutKeys();
 			
@@ -199,6 +204,54 @@ namespace CodeImp.DoomBuilder.Interface
 			// Update status bar
 			statusbar.Update();
 		}
+
+		// This changes zoom display
+		public void UpdateZoom(float scale)
+		{
+			// Update scale label
+			if(float.IsNaN(scale))
+				zoomlabel.Text = "--";
+			else
+			{
+				scale *= 100;
+				zoomlabel.Text = scale.ToString("##0") + "%";
+			}
+
+			// Update status bar
+			statusbar.Update();
+		}
+
+		// Zoom to a specified level
+		private void itemzoomto_Click(object sender, EventArgs e)
+		{
+			int zoom;
+
+			if(General.Map == null) return;
+
+			// In classic mode?
+			if(General.Map.Mode is ViewClassicMode)
+			{
+				// Requested from menu?
+				if(sender is ToolStripMenuItem)
+				{
+					// Get integral zoom level
+					zoom = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
+
+					// Zoom now
+					(General.Map.Mode as ViewClassicMode).SetZoom((float)zoom / 100f);
+				}
+			}
+		}
+
+		// Zoom to fit in screen
+		private void itemzoomfittoscreen_Click(object sender, EventArgs e)
+		{
+			if(General.Map == null) return;
+			
+			// In classic mode?
+			if(General.Map.Mode is ViewClassicMode)
+				(General.Map.Mode as ViewClassicMode).CenterInScreen();
+		}
 		
 		#endregion
 
@@ -250,7 +303,7 @@ namespace CodeImp.DoomBuilder.Interface
 					General.Map.Graphics.Reset();
 
 					// Make sure control is repainted
-					display.Update();
+					//display.Update();
 				}
 
 				// Redraw now

@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal unsafe class Renderer2D : IDisposable
+	internal unsafe class Renderer2D : Renderer
 	{
 		#region ================== Constants
 
@@ -59,9 +59,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float scale;
 		private float offsetx;
 		private float offsety;
-		
-		// Disposing
-		private bool isdisposed = false;
 
 		#endregion
 
@@ -70,7 +67,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		public float OffsetX { get { return offsetx; } }
 		public float OffsetY { get { return offsety; } }
 		public float Scale { get { return scale; } }
-		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
@@ -90,7 +86,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// Diposer
-		public void Dispose()
+		public override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -101,7 +97,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				pixels = null;
 				
 				// Done
-				isdisposed = true;
+				base.Dispose();
 			}
 		}
 
@@ -111,8 +107,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// This is called resets when the device is reset
 		// (when resized or display adapter was changed)
-		public void Reset()
+		public override void Reset()
 		{
+			// Trash old image
+			graphics.RenderTarget.BackgroundImage = null;
+			if(image != null) image.Dispose();
+
 			// Re-create image memory
 			CreateMemory();
 		}
@@ -170,6 +170,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Change zoom scale
 			this.scale = scale;
+
+			// Show zoom on main window
+			General.MainWindow.UpdateZoom(scale);
 			
 			// Recalculate linedefs (normal lengths must be adjusted)
 			foreach(Linedef l in General.Map.Data.Linedefs) l.NeedUpdate();

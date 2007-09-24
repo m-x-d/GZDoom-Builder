@@ -52,36 +52,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// Constructor
 		public FrozenOverviewMode()
 		{
-			float left = float.MaxValue;
-			float top = float.MaxValue;
-			float right = float.MinValue;
-			float bottom = float.MinValue;
-			float scalew, scaleh, scale;
-			float width, height;
-			
-			// Go for all vertices
-			foreach(Vertex v in General.Map.Data.Vertices)
-			{
-				// Adjust boundaries by vertices
-				if(v.Position.x < left) left = v.Position.x;
-				if(v.Position.x > right) right = v.Position.x;
-				if(v.Position.y < top) top = v.Position.y;
-				if(v.Position.y > bottom) bottom = v.Position.y;
-			}
-
-			// Calculate width/height
-			width = (right - left);
-			height = (bottom - top);
-
-			// Calculate scale to view map at
-			scalew = (float)General.Map.Graphics.RenderTarget.ClientSize.Width / (width * 1.1f);
-			scaleh = (float)General.Map.Graphics.RenderTarget.ClientSize.Height / (height * 1.1f);
-			if(scalew < scaleh) scale = scalew; else scale = scaleh;
-
-			// Change the view to see the whole map
-			renderer.ScaleView(scale);
-			renderer.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
-			General.Map.Data.Update();
+			CenterInScreen();
 		}
 
 		// Diposer

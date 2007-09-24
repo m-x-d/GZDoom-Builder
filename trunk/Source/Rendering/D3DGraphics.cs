@@ -296,6 +296,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize settings
 			SetupSettings();
 
+			// Reset renderers
+			renderer2d.Reset();
+			renderer3d.Reset();
+
 			// TODO: Reload all Direct3D resources
 
 			// Success

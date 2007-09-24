@@ -32,7 +32,7 @@ using System.ComponentModel;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal class Renderer3D : IDisposable
+	internal class Renderer3D : Renderer
 	{
 		#region ================== Constants
 
@@ -43,15 +43,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Owner
 		private D3DGraphics graphics;
 
-		// Disposing
-		private bool isdisposed = false;
-
 		#endregion
 
 		#region ================== Properties
-
-		// Disposing
-		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
@@ -61,14 +55,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		public Renderer3D(D3DGraphics graphics)
 		{
 			// Initialize
-			this.graphics = graphics;
+			this.graphics = General.Map.Graphics;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// Diposer
-		public void Dispose()
+		public override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -76,7 +70,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Clean up
 
 				// Done
-				isdisposed = true;
+				base.Dispose();
 			}
 		}
 
