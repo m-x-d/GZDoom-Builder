@@ -66,5 +66,18 @@ namespace CodeImp.DoomBuilder.Interface
 			// Make the form visible
 			this.Opacity = 100;
 		}
+
+		private void InitializeComponent()
+		{
+			this.SuspendLayout();
+			// 
+			// DelayedForm
+			// 
+			this.ClientSize = new System.Drawing.Size(292, 273);
+			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Name = "DelayedForm";
+			this.ResumeLayout(false);
+
+		}
 	}
 }

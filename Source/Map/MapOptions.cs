@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
+using CodeImp.DoomBuilder.Images;
 
 #endregion
 
