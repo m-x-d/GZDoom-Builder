@@ -58,11 +58,18 @@
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Vector2D.cs" />
     <Compile Include="Geometry\Vector3D.cs" />
+    <Compile Include="Images\ResourceManager.cs" />
     <Compile Include="Interface\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Interface\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ConfigForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\ConfigForm.Designer.cs">
+      <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\DelayedForm.cs">
       <SubType>Form</SubType>
@@ -101,7 +108,7 @@
     <Compile Include="Map\Linedef.cs" />
     <Compile Include="Map\MapOptions.cs" />
     <Compile Include="Map\MapSet.cs" />
-    <Compile Include="Map\ResourceLocation.cs" />
+    <Compile Include="Images\ResourceLocation.cs" />
     <Compile Include="Map\Sector.cs" />
     <Compile Include="Map\Sidedef.cs" />
     <Compile Include="Map\Thing.cs" />
@@ -165,6 +172,14 @@
     <None Include="Resources\Splash2small.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\ConfigForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\DelayedForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DelayedForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Actions.cfg" />
     <None Include="Resources\Splash2.png" />
   </ItemGroup>

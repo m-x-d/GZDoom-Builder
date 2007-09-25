@@ -27,6 +27,7 @@ using CodeImp.DoomBuilder.Map;
 using System.IO;
 using System.Collections;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Images;
 
 #endregion
 

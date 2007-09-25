@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using System.IO;
+using CodeImp.DoomBuilder.Images;
 
 #endregion
 

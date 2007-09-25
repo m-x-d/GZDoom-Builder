@@ -24,7 +24,7 @@ using System.Text;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Map
+namespace CodeImp.DoomBuilder.Images
 {
 	internal struct ResourceLocation
 	{
