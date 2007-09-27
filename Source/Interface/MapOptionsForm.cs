@@ -64,8 +64,7 @@ namespace CodeImp.DoomBuilder.Interface
 			levelname.Text = options.CurrentName;
 
 			// Fill the resources list
-			foreach(ResourceLocation res in options.Resources)
-				resources.Items.Add(res);
+			resourcelocations.EditResourceLocationList(options.Resources);
 		}
 
 		// OK clicked
@@ -93,7 +92,7 @@ namespace CodeImp.DoomBuilder.Interface
 			options.ClearResources();
 			options.ConfigFile = General.Configs[config.SelectedIndex].filename;
 			options.CurrentName = levelname.Text.Trim().ToUpper();
-			foreach(ResourceLocation res in resources.Items) options.AddResource(res);
+			options.CopyResources(resourcelocations.GetResources());
 
 			// Hide window
 			this.DialogResult = DialogResult.OK;
@@ -106,74 +105,6 @@ namespace CodeImp.DoomBuilder.Interface
 			// Just hide window
 			this.DialogResult = DialogResult.Cancel;
 			this.Hide();
-		}
-
-		// Add Resource clicked
-		private void addresource_Click(object sender, EventArgs e)
-		{
-			ResourceOptionsForm resoptions;
-			Point startposition;
-			
-			// Open resource options dialog
-			resoptions = new ResourceOptionsForm(new ResourceLocation(), "Add Resource");
-			resoptions.StartPosition = FormStartPosition.Manual;
-			startposition = this.Location;
-			startposition.Offset(50, 160);
-			resoptions.Location = startposition;
-			if(resoptions.ShowDialog(this) == DialogResult.OK)
-			{
-				// Add resource
-				resources.Items.Add(resoptions.ResourceLocation);
-			}
-		}
-
-		// Resource Options clicked
-		private void editresource_Click(object sender, EventArgs e)
-		{
-			ResourceOptionsForm resoptions;
-			Point startposition;
-			
-			// Anything selected?
-			if(resources.SelectedIndex > -1)
-			{
-				// Open resource options dialog
-				resoptions = new ResourceOptionsForm((ResourceLocation)resources.SelectedItem, "Resource Options");
-				resoptions.StartPosition = FormStartPosition.Manual;
-				startposition = this.Location;
-				startposition.Offset(50, 160);
-				resoptions.Location = startposition;
-				if(resoptions.ShowDialog(this) == DialogResult.OK)
-				{
-					// Replace resource
-					resources.Items[resources.SelectedIndex] = resoptions.ResourceLocation;
-				}
-			}
-		}
-
-		// Remove resource clicked
-		private void deleteresource_Click(object sender, EventArgs e)
-		{
-			// Anything selected?
-			if(resources.SelectedIndex > -1)
-			{
-				// Remove it
-				resources.Items.RemoveAt(resources.SelectedIndex);
-			}
-		}
-
-		// Resource selection changes
-		private void resources_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			// Enable/disable buttons
-			editresource.Enabled = (resources.SelectedIndex > -1);
-			deleteresource.Enabled = (resources.SelectedIndex > -1);
-		}
-
-		// Resource doubleclicked
-		private void resources_DoubleClick(object sender, EventArgs e)
-		{
-			// Click Edit Resource
-			if(resources.SelectedIndex > -1) editresource.PerformClick();
 		}
 	}
 }

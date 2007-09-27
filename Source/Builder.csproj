@@ -58,6 +58,7 @@
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Vector2D.cs" />
     <Compile Include="Geometry\Vector3D.cs" />
+    <Compile Include="Images\ResourceLocationList.cs" />
     <Compile Include="Images\ResourceManager.cs" />
     <Compile Include="Interface\AboutForm.cs">
       <SubType>Form</SubType>
@@ -85,6 +86,15 @@
     </Compile>
     <Compile Include="Interface\OpenMapOptionsForm.Designer.cs">
       <DependentUpon>OpenMapOptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ResourceListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Interface\ResourceListEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ResourceListEditor.Designer.cs">
+      <DependentUpon>ResourceListEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\ResourceOptionsForm.cs">
       <SubType>Form</SubType>
@@ -133,8 +143,10 @@
   <ItemGroup>
     <Reference Include="SlimDX, Version=1.0.2813.30005, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Interface\AboutForm.resx">
@@ -179,6 +191,10 @@
     <EmbeddedResource Include="Interface\DelayedForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DelayedForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ResourceListEditor.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ResourceListEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Actions.cfg" />
     <None Include="Resources\Splash2.png" />

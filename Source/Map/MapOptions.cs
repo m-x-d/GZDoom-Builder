@@ -45,14 +45,14 @@ namespace CodeImp.DoomBuilder.Map
 		private string previousname;
 		
 		// Additional resources
-		private List<ResourceLocation> resources;
+		private ResourceLocationList resources;
 
 		#endregion
 
 		#region ================== Properties
 
 		public string ConfigFile { get { return configfile; } set { configfile = value; } }
-		public ICollection<ResourceLocation> Resources { get { return resources; } }
+		public ResourceLocationList Resources { get { return resources; } }
 		public string PreviousName { get { return previousname; } }
 		public string CurrentName
 		{
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.previousname = "";
 			this.currentname = "";
 			this.configfile = "";
-			this.resources = new List<ResourceLocation>();
+			this.resources = new ResourceLocationList();
 		}
 
 		// Constructor to load from Doom Builder Map Settings Configuration
@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.previousname = "";
 			this.currentname = mapname;
 			this.configfile = cfg.ReadSetting("config", "");
-			this.resources = new List<ResourceLocation>();
+			this.resources = new ResourceLocationList();
 
 			// Go for all items in the map info
 			mapinfo = cfg.ReadSetting(mapname, new Hashtable());
@@ -165,6 +165,14 @@ namespace CodeImp.DoomBuilder.Map
 			resources.RemoveAt(index);
 		}
 		
+		// This copies resources from a list
+		public void CopyResources(ResourceLocationList fromlist)
+		{
+			// Clear this list
+			resources.Clear();
+			resources.AddRange(fromlist);
+		}
+
 		// This displays the current map name
 		public override string ToString()
 		{
