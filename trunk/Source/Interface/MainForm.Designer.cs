@@ -68,6 +68,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.panelinfo = new System.Windows.Forms.Panel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new System.Windows.Forms.Panel();
+			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
+			this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -109,6 +111,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.menumain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menufile,
+            this.menutools,
             this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
@@ -415,6 +418,22 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			// 
+			// menutools
+			// 
+			this.menutools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.configurationToolStripMenuItem});
+			this.menutools.Name = "menutools";
+			this.menutools.Size = new System.Drawing.Size(44, 20);
+			this.menutools.Text = "Tools";
+			// 
+			// configurationToolStripMenuItem
+			// 
+			this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
+			this.configurationToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.configurationToolStripMenuItem.Tag = "configuration";
+			this.configurationToolStripMenuItem.Text = "Configuration...";
+			this.configurationToolStripMenuItem.Click += new System.EventHandler(this.configurationToolStripMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -484,5 +503,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemzoom25;
 		private System.Windows.Forms.ToolStripMenuItem itemzoom10;
 		private System.Windows.Forms.ToolStripMenuItem itemzoom5;
+		private System.Windows.Forms.ToolStripMenuItem menutools;
+		private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
 	}
 }

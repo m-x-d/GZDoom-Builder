@@ -13,6 +13,14 @@ namespace CodeImp.DoomBuilder.Interface
 	{
 		#region ================== Variables
 
+		private Point dialogoffset = new Point(40, 20);
+
+		#endregion
+
+		#region ================== Properties
+
+		public Point DialogOffset { get { return dialogoffset; } set { dialogoffset = value; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -39,7 +47,7 @@ namespace CodeImp.DoomBuilder.Interface
 			resourceitems.BeginUpdate();
 			
 			// Go for all items
-			for(int i = resourceitems.Items.Count; i >= 0; i--)
+			for(int i = resourceitems.Items.Count - 1; i >= 0; i--)
 			{
 				// Remove item if fixed
 				if(resourceitems.Items[i].ForeColor != SystemColors.WindowText)
@@ -74,7 +82,7 @@ namespace CodeImp.DoomBuilder.Interface
 			resourceitems.BeginUpdate();
 
 			// Go for all items
-			for(int i = resourceitems.Items.Count; i >= 0; i--)
+			for(int i = resourceitems.Items.Count - 1; i >= 0; i--)
 			{
 				// Remove item unless fixed
 				if(resourceitems.Items[i].ForeColor == SystemColors.WindowText)
@@ -141,7 +149,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Open resource options dialog
 			resoptions = new ResourceOptionsForm(new ResourceLocation(), "Add Resource");
 			resoptions.StartPosition = FormStartPosition.Manual;
-			startposition = new Rectangle(40, 20, 1, 1);
+			startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 			startposition = this.RectangleToScreen(startposition);
 			resoptions.Location = startposition.Location;
 			if(resoptions.ShowDialog(this) == DialogResult.OK)
@@ -168,7 +176,7 @@ namespace CodeImp.DoomBuilder.Interface
 				// Open resource options dialog
 				resoptions = new ResourceOptionsForm((ResourceLocation)selecteditem.Tag, "Resource Options");
 				resoptions.StartPosition = FormStartPosition.Manual;
-				startposition = new Rectangle(40, 20, 1, 1);
+				startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 				startposition = this.RectangleToScreen(startposition);
 				resoptions.Location = startposition.Location;
 				if(resoptions.ShowDialog(this) == DialogResult.OK)

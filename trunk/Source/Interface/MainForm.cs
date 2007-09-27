@@ -500,5 +500,18 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		#endregion
+
+		#region ================== Tools Menu
+
+		// Configuration clicked
+		private void configurationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			// Show configuration dialog
+			ConfigForm cfgform = new ConfigForm();
+			cfgform.ShowDialog(this);
+			cfgform.Dispose();
+		}
+
+		#endregion
 	}
 }
