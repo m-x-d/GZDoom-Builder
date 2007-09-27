@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder
 		private string filepathname;
 		private MapSet data;
 		private MapOptions options;
+		private ConfigurationInfo configinfo;
 		private Configuration config;
 		private EditMode mode;
 		private D3DGraphics graphics;
@@ -126,6 +127,7 @@ namespace CodeImp.DoomBuilder
 			if(!graphics.Initialize()) return false;
 			
 			// Load game configuration
+			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = General.LoadGameConfiguration(options.ConfigFile);
 
 			// Create map data

@@ -50,10 +50,10 @@ namespace CodeImp.DoomBuilder.Interface
 			for(int i = 0; i < General.Configs.Count; i++)
 			{
 				// Add config name to list
-				config.Items.Add(General.Configs[i].name);
+				config.Items.Add(General.Configs[i].Name);
 
 				// Is this configuration currently selected?
-				if(string.Compare(General.Configs[i].filename, options.ConfigFile, true) == 0)
+				if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0)
 				{
 					// Select this item
 					config.SelectedIndex = config.Items.Count - 1;
@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Apply changes
 			options.ClearResources();
-			options.ConfigFile = General.Configs[config.SelectedIndex].filename;
+			options.ConfigFile = General.Configs[config.SelectedIndex].Filename;
 			options.CurrentName = levelname.Text.Trim().ToUpper();
 			options.CopyResources(resourcelocations.GetResources());
 

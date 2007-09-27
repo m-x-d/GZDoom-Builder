@@ -91,10 +91,10 @@ namespace CodeImp.DoomBuilder.Interface
 			for(int i = 0; i < General.Configs.Count; i++)
 			{
 				// Add config name to list
-				config.Items.Add(General.Configs[i].name);
+				config.Items.Add(General.Configs[i].Name);
 
 				// This is the preferred game configuration?
-				if(General.Configs[i].filename == gameconfig)
+				if(General.Configs[i].Filename == gameconfig)
 				{
 					// Select this item
 					config.SelectedIndex = i;
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Interface
 					// TODO: Check if an IWAD is set for this configuration
 
 					// Match the wad against this configuration
-					if(MatchConfiguration(General.Configs[i].filename, wadfile))
+					if(MatchConfiguration(General.Configs[i].Filename, wadfile))
 					{
 						// Select this item
 						config.SelectedIndex = i;
@@ -192,7 +192,7 @@ namespace CodeImp.DoomBuilder.Interface
 			mapnames = new List<ListViewItem>();
 			
 			// Load this configuration
-			cfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].filename);
+			cfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].Filename);
 			
 			// Get the map lump names
 			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
@@ -273,7 +273,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Apply changes
 			options.ClearResources();
-			options.ConfigFile = General.Configs[config.SelectedIndex].filename;
+			options.ConfigFile = General.Configs[config.SelectedIndex].Filename;
 			options.CurrentName = mapslist.SelectedItems[0].Text;
 			options.CopyResources(resourcelocations.GetResources());
 

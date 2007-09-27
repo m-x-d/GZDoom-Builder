@@ -36,6 +36,13 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Initialize
 			InitializeComponent();
+
+			// Fill list of configurations
+			foreach(ConfigurationInfo ci in General.Configs)
+			{
+				// Add a copy
+				listconfigs.Items.Add(ci.Clone());
+			}
 		}
 	}
 }

@@ -223,6 +223,58 @@ namespace CodeImp.DoomBuilder.IO
 		#endregion
 		
 		#region ================== Private Methods
+
+		// This is called by all the ReadSetting overloads to perform the read
+		private bool CheckSetting(string setting, string pathseperator)
+		{
+			IDictionary cs = null;
+
+			// Split the path in an array
+			string[] keys = setting.Split(pathseperator.ToCharArray());
+
+			// Get the root item
+			object item = root;
+
+			// Go for each item
+			for(int i = 0; i < keys.Length; i++)
+			{
+				// Check if the current item is of ConfigStruct type
+				if(item is IDictionary)
+				{
+					// Check if the key is valid
+					if(ValidateKey(null, keys[i].Trim(), -1) == true)
+					{
+						// Cast to ConfigStruct
+						cs = (IDictionary)item;
+
+						// Check if the requested item exists
+						if(cs.Contains(keys[i]) == true)
+						{
+							// Set the item to the next item
+							item = cs[keys[i]];
+						}
+						else
+						{
+							// Key not found
+							return false;
+						}
+					}
+					else
+					{
+						// Invalid key in path
+						return false;
+					}
+				}
+				else
+				{
+					// Unable to go any further
+					return false;
+				}
+			}
+
+			// Return result
+			return true;
+		}
 		
 		// This is called by all the ReadSetting overloads to perform the read
 		private object ReadAnySetting(string setting, object defaultsetting, string pathseperator)
@@ -1025,6 +1077,9 @@ namespace CodeImp.DoomBuilder.IO
 			if(sorted) root = new ListDictionary(); else root = new Hashtable();
 		}
 		
+		// This checks if a given setting exists (disregards type)
+		public bool SettingExists(string setting) { return CheckSetting(setting, DEFAULT_SEPERATOR); }
+		public bool SettingExists(string setting, string pathseperator) { return CheckSetting(setting, pathseperator); }
 		
 		// This can give a value of a key specified in a path form
 		// also, this does not error when the setting does not exist,

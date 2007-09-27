@@ -120,6 +120,25 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Configurations
 
+		// This returns the game configuration info by filename
+		public static ConfigurationInfo GetConfigurationInfo(string filename)
+		{
+			// Go for all config infos
+			foreach(ConfigurationInfo ci in configs)
+			{
+				// Check if filename matches
+				if(string.Compare(Path.GetFileNameWithoutExtension(ci.Filename),
+								  Path.GetFileNameWithoutExtension(filename), true) == 0)
+				{
+					// Return this info
+					return ci;
+				}
+			}
+
+			// None found
+			return null;
+		}
+
 		// This loads and returns a game configuration
 		public static Configuration LoadGameConfiguration(string filename)
 		{
@@ -143,7 +162,7 @@ namespace CodeImp.DoomBuilder
 						Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return null;
 				}
-				// Check if this is a Doom Builder 1 config
+				// Check if this is a Doom Builder 2 config
 				else if(cfg.ReadSetting("type", "") != "Doom Builder 2 Game Configuration")
 				{
 					// Old configuration
@@ -226,7 +245,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Load configuration
 			if(!File.Exists(Path.Combine(apppath, SETTINGS_CONFIG_FILE))) throw (new FileNotFoundException("Unable to find the program configuration \"" + SETTINGS_CONFIG_FILE + "\"."));
-			settings = new Configuration(Path.Combine(apppath, SETTINGS_CONFIG_FILE), false);
+			settings = new Configuration(Path.Combine(apppath, SETTINGS_CONFIG_FILE), true);
 			
 			// Create action manager
 			actions = new ActionManager();
@@ -264,6 +283,9 @@ namespace CodeImp.DoomBuilder
 			mainwindow.Dispose();
 			actions.Dispose();
 
+			// Save game configuration settings
+			foreach(ConfigurationInfo ci in configs) ci.SaveSettings();
+			
 			// Save settings configuration
 			settings.SaveConfiguration(Path.Combine(apppath, SETTINGS_CONFIG_FILE));
 
