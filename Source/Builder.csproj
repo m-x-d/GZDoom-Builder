@@ -54,6 +54,7 @@
     <Compile Include="General\ConfigurationInfo.cs" />
     <Compile Include="General\MapManager.cs" />
     <Compile Include="Controls\SpecialKeys.cs" />
+    <Compile Include="General\NodebuilderInfo.cs" />
     <Compile Include="Geometry\Angle2D.cs" />
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Vector2D.cs" />

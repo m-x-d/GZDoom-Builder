@@ -205,6 +205,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.listconfigs.Size = new System.Drawing.Size(215, 300);
 			this.listconfigs.Sorted = true;
 			this.listconfigs.TabIndex = 0;
+			this.listconfigs.SelectedIndexChanged += new System.EventHandler(this.listconfigs_SelectedIndexChanged);
 			// 
 			// cancel
 			// 

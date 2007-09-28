@@ -82,6 +82,7 @@ namespace CodeImp.DoomBuilder
 		// Files and Folders
 		private const string SETTINGS_CONFIG_FILE = "Builder.cfg";
 		private const string GAME_CONFIGS_DIR = "Configurations";
+		private const string COMPILERS_DIR = "Compilers";
 
 		#endregion
 
@@ -91,6 +92,7 @@ namespace CodeImp.DoomBuilder
 		private static string apppath;
 		private static string temppath;
 		private static string configspath;
+		private static string compilerspath;
 		
 		// Main objects
 		private static Assembly thisasm;
@@ -101,6 +103,7 @@ namespace CodeImp.DoomBuilder
 		
 		// Configurations
 		private static List<ConfigurationInfo> configs;
+		private static List<NodebuilderInfo> nodebuilders;
 		
 		#endregion
 
@@ -110,9 +113,11 @@ namespace CodeImp.DoomBuilder
 		public static string AppPath { get { return apppath; } }
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }
+		public static string CompilersPath { get { return compilerspath; } }
 		public static MainForm MainWindow { get { return mainwindow; } }
 		public static Configuration Settings { get { return settings; } }
 		public static List<ConfigurationInfo> Configs { get { return configs; } }
+		public static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
 		public static MapManager Map { get { return map; } }
 		public static ActionManager Actions { get { return actions; } }
 		
@@ -198,8 +203,8 @@ namespace CodeImp.DoomBuilder
 
 			// Make array
 			configs = new List<ConfigurationInfo>();
-			
-			// Go for all files in the configurations directory
+
+			// Go for all cfg files in the configurations directory
 			filenames = Directory.GetFiles(configspath, "*.cfg", SearchOption.TopDirectoryOnly);
 			foreach(string filepath in filenames)
 			{
@@ -213,6 +218,53 @@ namespace CodeImp.DoomBuilder
 					
 					// Add to lists
 					configs.Add(new ConfigurationInfo(name, fullfilename));
+				}
+			}
+
+			// Sort the configurations list
+			configs.Sort();
+		}
+		
+		// This finds all nodebuilder configurations
+		private static void FindNodebuilderConfigurations()
+		{
+			Configuration cfg;
+			string[] filenames;
+
+			// Display status
+			mainwindow.DisplayStatus("Loading nodebuilder configurations...");
+
+			// Make array
+			nodebuilders = new List<NodebuilderInfo>();
+
+			// Go for all cfg files in the compilers directory
+			filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			foreach(string filepath in filenames)
+			{
+				try
+				{
+					// Try loading the configuration
+					cfg = new Configuration(filepath, true);
+
+					// Check for erors
+					if(cfg.ErrorResult != 0)
+					{
+						// Error in configuration
+						MessageBox.Show(mainwindow, "Unable to load the nodebuilder configuration file \"" + filepath + "\".\n" +
+							"Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription,
+							Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
+					else
+					{
+						// Make nodebuilder info
+						nodebuilders.Add(new NodebuilderInfo(cfg));
+					}
+				}
+				catch(Exception)
+				{
+					// Unable to load configuration
+					MessageBox.Show(mainwindow, "Unable to load the nodebuilder configuration file \"" + filepath + "\".",
+						Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
 
@@ -237,11 +289,10 @@ namespace CodeImp.DoomBuilder
 			localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
 			apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
 
-			// Temporary directory
+			// Setup directories
 			temppath = Path.GetTempPath();
-
-			// Configurations directory
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
+			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
 			
 			// Load configuration
 			if(!File.Exists(Path.Combine(apppath, SETTINGS_CONFIG_FILE))) throw (new FileNotFoundException("Unable to find the program configuration \"" + SETTINGS_CONFIG_FILE + "\"."));
@@ -263,6 +314,9 @@ namespace CodeImp.DoomBuilder
 			
 			// Load game configurations
 			FindGameConfigurations();
+
+			// Load nodebuilder configurations
+			FindNodebuilderConfigurations();
 			
 			// Run application from the main window
 			mainwindow.DisplayReady();
@@ -482,3 +536,4 @@ namespace CodeImp.DoomBuilder
 		#endregion
 	}
 }
+
