@@ -88,12 +88,6 @@
     <Compile Include="Interface\OpenMapOptionsForm.Designer.cs">
       <DependentUpon>OpenMapOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ParametersForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interface\ParametersForm.Designer.cs">
-      <DependentUpon>ParametersForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Interface\ResourceListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -148,7 +142,6 @@
     <Compile Include="Images\TextureImage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="AxInterop.CodeSense, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="SlimDX, Version=1.0.2813.30005, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -200,10 +193,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>DelayedForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ParametersForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ParametersForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Interface\ResourceListEditor.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ResourceListEditor.cs</DependentUpon>
@@ -212,14 +201,6 @@
     <None Include="Resources\Splash2.png" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="CodeSense">
-      <Guid>{665BF2B8-F41F-4EF4-A8D0-303FBFFC475E}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-    </COMReference>
     <COMReference Include="stdole">
       <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>2</VersionMajor>
