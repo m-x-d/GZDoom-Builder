@@ -32,10 +32,13 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.GroupBox groupBox2;
-			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label4;
+			System.Windows.Forms.Label label1;
 			this.configbuildonsave = new System.Windows.Forms.CheckBox();
 			this.confignodebuilder = new System.Windows.Forms.ComboBox();
+			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.browsewad = new System.Windows.Forms.Button();
+			this.wadlocation = new System.Windows.Forms.TextBox();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
 			this.tabediting = new System.Windows.Forms.TabPage();
@@ -45,21 +48,17 @@ namespace CodeImp.DoomBuilder.Interface
 			this.listconfigs = new System.Windows.Forms.ListBox();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.browsewad = new System.Windows.Forms.Button();
-			this.wadlocation = new System.Windows.Forms.TextBox();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.button1 = new System.Windows.Forms.Button();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			groupBox2 = new System.Windows.Forms.GroupBox();
-			label1 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
+			label1 = new System.Windows.Forms.Label();
 			groupBox1.SuspendLayout();
+			groupBox2.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabconfigs.SuspendLayout();
 			this.panelres.SuspendLayout();
-			groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -113,6 +112,65 @@ namespace CodeImp.DoomBuilder.Interface
 			label3.TabIndex = 17;
 			label3.Text = "Drag items to change order (lower items override higher items).";
 			// 
+			// groupBox2
+			// 
+			groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			groupBox2.Controls.Add(this.textBox1);
+			groupBox2.Controls.Add(label4);
+			groupBox2.Controls.Add(this.browsewad);
+			groupBox2.Controls.Add(this.wadlocation);
+			groupBox2.Controls.Add(label1);
+			groupBox2.Location = new System.Drawing.Point(235, 257);
+			groupBox2.Name = "groupBox2";
+			groupBox2.Size = new System.Drawing.Size(342, 102);
+			groupBox2.TabIndex = 13;
+			groupBox2.TabStop = false;
+			groupBox2.Text = " Testing ";
+			// 
+			// textBox1
+			// 
+			this.textBox1.Location = new System.Drawing.Point(94, 64);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(197, 20);
+			this.textBox1.TabIndex = 8;
+			// 
+			// label4
+			// 
+			label4.AutoSize = true;
+			label4.Location = new System.Drawing.Point(23, 67);
+			label4.Name = "label4";
+			label4.Size = new System.Drawing.Size(65, 14);
+			label4.TabIndex = 7;
+			label4.Text = "Parameters:";
+			// 
+			// browsewad
+			// 
+			this.browsewad.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browsewad.Location = new System.Drawing.Point(297, 28);
+			this.browsewad.Name = "browsewad";
+			this.browsewad.Size = new System.Drawing.Size(30, 23);
+			this.browsewad.TabIndex = 6;
+			this.browsewad.Text = "...";
+			this.browsewad.UseVisualStyleBackColor = true;
+			// 
+			// wadlocation
+			// 
+			this.wadlocation.Location = new System.Drawing.Point(94, 29);
+			this.wadlocation.Name = "wadlocation";
+			this.wadlocation.ReadOnly = true;
+			this.wadlocation.Size = new System.Drawing.Size(197, 20);
+			this.wadlocation.TabIndex = 5;
+			// 
+			// label1
+			// 
+			label1.AutoSize = true;
+			label1.Location = new System.Drawing.Point(25, 32);
+			label1.Name = "label1";
+			label1.Size = new System.Drawing.Size(63, 14);
+			label1.TabIndex = 4;
+			label1.Text = "Application:";
+			// 
 			// tabs
 			// 
 			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -136,7 +194,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabinterface.Location = new System.Drawing.Point(4, 23);
 			this.tabinterface.Name = "tabinterface";
 			this.tabinterface.Padding = new System.Windows.Forms.Padding(3);
-			this.tabinterface.Size = new System.Drawing.Size(587, 324);
+			this.tabinterface.Size = new System.Drawing.Size(587, 372);
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
@@ -147,7 +205,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabediting.Location = new System.Drawing.Point(4, 23);
 			this.tabediting.Name = "tabediting";
 			this.tabediting.Padding = new System.Windows.Forms.Padding(3);
-			this.tabediting.Size = new System.Drawing.Size(587, 324);
+			this.tabediting.Size = new System.Drawing.Size(587, 372);
 			this.tabediting.TabIndex = 1;
 			this.tabediting.Text = "Editing";
 			this.tabediting.UseVisualStyleBackColor = true;
@@ -227,76 +285,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			// 
-			// groupBox2
-			// 
-			groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			groupBox2.Controls.Add(this.button1);
-			groupBox2.Controls.Add(this.textBox1);
-			groupBox2.Controls.Add(label4);
-			groupBox2.Controls.Add(this.browsewad);
-			groupBox2.Controls.Add(this.wadlocation);
-			groupBox2.Controls.Add(label1);
-			groupBox2.Location = new System.Drawing.Point(235, 257);
-			groupBox2.Name = "groupBox2";
-			groupBox2.Size = new System.Drawing.Size(342, 102);
-			groupBox2.TabIndex = 13;
-			groupBox2.TabStop = false;
-			groupBox2.Text = " Testing ";
-			// 
-			// label1
-			// 
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(25, 32);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(63, 14);
-			label1.TabIndex = 4;
-			label1.Text = "Application:";
-			// 
-			// browsewad
-			// 
-			this.browsewad.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browsewad.Location = new System.Drawing.Point(297, 28);
-			this.browsewad.Name = "browsewad";
-			this.browsewad.Size = new System.Drawing.Size(30, 23);
-			this.browsewad.TabIndex = 6;
-			this.browsewad.Text = "...";
-			this.browsewad.UseVisualStyleBackColor = true;
-			// 
-			// wadlocation
-			// 
-			this.wadlocation.Location = new System.Drawing.Point(94, 29);
-			this.wadlocation.Name = "wadlocation";
-			this.wadlocation.ReadOnly = true;
-			this.wadlocation.Size = new System.Drawing.Size(197, 20);
-			this.wadlocation.TabIndex = 5;
-			// 
-			// label4
-			// 
-			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(23, 67);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(65, 14);
-			label4.TabIndex = 7;
-			label4.Text = "Parameters:";
-			// 
-			// textBox1
-			// 
-			this.textBox1.Location = new System.Drawing.Point(94, 64);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(197, 20);
-			this.textBox1.TabIndex = 8;
-			// 
-			// button1
-			// 
-			this.button1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button1.Location = new System.Drawing.Point(297, 63);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(30, 23);
-			this.button1.TabIndex = 9;
-			this.button1.Text = "...";
-			this.button1.UseVisualStyleBackColor = true;
-			// 
 			// ConfigForm
 			// 
 			this.AcceptButton = this.apply;
@@ -317,11 +305,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Text = "Configuration";
 			groupBox1.ResumeLayout(false);
 			groupBox1.PerformLayout();
+			groupBox2.ResumeLayout(false);
+			groupBox2.PerformLayout();
 			this.tabs.ResumeLayout(false);
 			this.tabconfigs.ResumeLayout(false);
 			this.panelres.ResumeLayout(false);
-			groupBox2.ResumeLayout(false);
-			groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -342,6 +330,5 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.Button browsewad;
 		private System.Windows.Forms.TextBox wadlocation;
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Button button1;
 	}
 }
