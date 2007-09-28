@@ -43,6 +43,19 @@ namespace CodeImp.DoomBuilder.Interface
 				// Add a copy
 				listconfigs.Items.Add(ci.Clone());
 			}
+
+			// Fill list of nodebuilders
+			confignodebuilder.Items.AddRange(General.Nodebuilders.ToArray());
 		}
+
+		#region ================== Configuration Panel
+
+		// Configuration item selected
+		private void listconfigs_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			
+		}
+
+		#endregion
 	}
 }
