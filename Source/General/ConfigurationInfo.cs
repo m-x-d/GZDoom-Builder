@@ -39,6 +39,8 @@ namespace CodeImp.DoomBuilder
 		private string nodebuilder;
 		private bool buildonsave;
 		private ResourceLocationList resources;
+		private string testprogram;
+		private string testparameters;
 
 		#endregion
 
@@ -49,6 +51,8 @@ namespace CodeImp.DoomBuilder
 		public string Nodebuilder { get { return nodebuilder; } }
 		public bool BuildOnSave { get { return buildonsave; } }
 		public ResourceLocationList Resources { get { return resources; } }
+		public string TestProgram { get { return testprogram; } }
+		public string TestParameters { get { return testparameters; } }
 
 		#endregion
 
@@ -66,6 +70,8 @@ namespace CodeImp.DoomBuilder
 			this.nodebuilder = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuilder", "");
 			this.buildonsave = General.Settings.ReadSetting("configurations." + settingskey + ".buildonsave", true);
 			this.resources = new ResourceLocationList(General.Settings, "configurations." + settingskey + ".resources");
+			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
+			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
 		}
 
 		// Constructor
@@ -91,6 +97,8 @@ namespace CodeImp.DoomBuilder
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuilder", nodebuilder);
 			General.Settings.WriteSetting("configurations." + settingskey + ".buildonsave", buildonsave);
 			resources.WriteToConfig(General.Settings, "configurations." + settingskey + ".resources");
+			General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
+			General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
 		}
 
 		// String representation
@@ -110,6 +118,8 @@ namespace CodeImp.DoomBuilder
 			ci.buildonsave = this.buildonsave;
 			ci.resources = new ResourceLocationList();
 			ci.resources.AddRange(this.resources);
+			ci.testprogram = this.testprogram;
+			ci.testparameters = this.testparameters;
 			return ci;
 		}
 		
@@ -123,6 +133,8 @@ namespace CodeImp.DoomBuilder
 			this.buildonsave = ci.buildonsave;
 			this.resources = new ResourceLocationList();
 			this.resources.AddRange(ci.resources);
+			this.testprogram = ci.testprogram;
+			this.testparameters = ci.testparameters;
 		}
 		
 		#endregion
