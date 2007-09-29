@@ -76,6 +76,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// Fix things
 			buttonzoom.Font = menufile.Font;
 
+			// Bind any methods
+			ActionAttribute.BindMethods(this);
+			
 			// Apply shortcut keys
 			ApplyShortcutKeys();
 			
@@ -503,13 +506,20 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Tools Menu
 
-		// Configuration clicked
-		private void configurationToolStripMenuItem_Click(object sender, EventArgs e)
+		// Configuration action
+		[Action(Action.CONFIGURATION)]
+		public void ShowConfiguration()
 		{
 			// Show configuration dialog
 			ConfigForm cfgform = new ConfigForm();
 			cfgform.ShowDialog(this);
 			cfgform.Dispose();
+		}
+		
+		// Configuration clicked
+		public void configurationToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ShowConfiguration();
 		}
 
 		#endregion

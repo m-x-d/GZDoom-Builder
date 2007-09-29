@@ -11,6 +11,14 @@ namespace CodeImp.DoomBuilder.Interface
 {
 	internal partial class ResourceListEditor : UserControl
 	{
+		#region ================== Delegates / Events
+
+		public delegate void ContentChanged();
+
+		public event ContentChanged OnContentChanged;
+
+		#endregion
+
 		#region ================== Variables
 
 		private Point dialogoffset = new Point(40, 20);
@@ -81,6 +89,10 @@ namespace CodeImp.DoomBuilder.Interface
 			// Start editing list
 			resourceitems.BeginUpdate();
 
+			// Scroll to top
+			if(resourceitems.Items.Count > 0)
+				resourceitems.TopItem = resourceitems.Items[0];
+			
 			// Go for all items
 			for(int i = resourceitems.Items.Count - 1; i >= 0; i--)
 			{
@@ -98,10 +110,24 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Done
 			resourceitems.EndUpdate();
+			ResizeColumnHeader();
+			
+			// Raise content changed event
+			if(OnContentChanged != null) OnContentChanged();
 		}
 
 		// This adds a normal item
-		public void AddItem(ResourceLocation rl)
+		public void AddResourceLocation(ResourceLocation rl)
+		{
+			// Add it
+			AddItem(rl);
+
+			// Raise content changed event
+			if(OnContentChanged != null) OnContentChanged();
+		}
+
+		// This adds a normal item
+		private void AddItem(ResourceLocation rl)
 		{
 			int index;
 
@@ -130,7 +156,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private void ResizeColumnHeader()
 		{
 			// Resize column header to full extend
-			column.Width = resourceitems.ClientSize.Width - 2;
+			column.Width = resourceitems.ClientSize.Width - SystemInformation.VerticalScrollBarWidth;
 		}
 
 		// When the resources list resizes
@@ -157,6 +183,9 @@ namespace CodeImp.DoomBuilder.Interface
 				// Add resource
 				AddItem(resoptions.ResourceLocation);
 			}
+
+			// Raise content changed event
+			if(OnContentChanged != null) OnContentChanged();
 		}
 
 		// Edit resource
@@ -197,6 +226,9 @@ namespace CodeImp.DoomBuilder.Interface
 
 					// Done
 					resourceitems.EndUpdate();
+					
+					// Raise content changed event
+					if(OnContentChanged != null) OnContentChanged();
 				}
 			}
 		}
@@ -209,6 +241,10 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Remove it
 				resourceitems.Items.Remove(resourceitems.SelectedItems[0]);
+				ResizeColumnHeader();
+
+				// Raise content changed event
+				if(OnContentChanged != null) OnContentChanged();
 			}
 		}
 		
@@ -267,6 +303,27 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Return result
 			return list;
+		}
+
+		// Item dragged
+		private void resourceitems_DragOver(object sender, DragEventArgs e)
+		{
+			// Raise content changed event
+			if(OnContentChanged != null) OnContentChanged();
+		}
+
+		// Item dropped
+		private void resourceitems_DragDrop(object sender, DragEventArgs e)
+		{
+			// Raise content changed event
+			if(OnContentChanged != null) OnContentChanged();
+		}
+
+		// Client size changed
+		private void resourceitems_ClientSizeChanged(object sender, EventArgs e)
+		{
+			// Resize column header
+			ResizeColumnHeader();
 		}
 
 		#endregion

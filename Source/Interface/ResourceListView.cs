@@ -70,6 +70,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// Leave when item is grayed
 			if(insertatitem.ForeColor != SystemColors.WindowText) return;
 			
+			// Begin updating
+			base.BeginUpdate();
+			
 			// Determine index where to insert
 			dropindex = insertatitem.Index;
 			if(dropindex > dragitems[0].Index) dropindex++;
@@ -92,7 +95,8 @@ namespace CodeImp.DoomBuilder.Interface
 				base.Items.Remove(lvi);
 			}
 
-			// Clear the list
+			// Done
+			base.EndUpdate();
 			dragitems.Clear();
 		}
 		
@@ -153,6 +157,9 @@ namespace CodeImp.DoomBuilder.Interface
 				dropindex = insertatitem.Index;
 				if(dropindex > dragitems[0].Index) dropindex++;
 
+				// Begin updating
+				base.BeginUpdate();
+
 				// Deselect items
 				DeselectAll();
 
@@ -174,6 +181,9 @@ namespace CodeImp.DoomBuilder.Interface
 				// Copy selected items to the list
 				dragitems.Clear();
 				foreach(ListViewItem lvi in base.SelectedItems) dragitems.Add(lvi);
+				
+				// Done
+				base.EndUpdate();
 			}
 			else
 			{

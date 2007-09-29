@@ -48,11 +48,11 @@ namespace CodeImp.DoomBuilder
 
 		public string Name { get { return name; } }
 		public string Filename { get { return filename; } }
-		public string Nodebuilder { get { return nodebuilder; } }
-		public bool BuildOnSave { get { return buildonsave; } }
+		public string Nodebuilder { get { return nodebuilder; } set { nodebuilder = value; } }
+		public bool BuildOnSave { get { return buildonsave; } set { buildonsave = value; } }
 		public ResourceLocationList Resources { get { return resources; } }
-		public string TestProgram { get { return testprogram; } }
-		public string TestParameters { get { return testparameters; } }
+		public string TestProgram { get { return testprogram; } set { testprogram = value; } }
+		public string TestParameters { get { return testparameters; } set { testparameters = value; } }
 
 		#endregion
 

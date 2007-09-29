@@ -172,7 +172,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.resourceitems.TabIndex = 20;
 			this.resourceitems.UseCompatibleStateImageBehavior = false;
 			this.resourceitems.View = System.Windows.Forms.View.Details;
+			this.resourceitems.ClientSizeChanged += new System.EventHandler(this.resourceitems_ClientSizeChanged);
+			this.resourceitems.DragDrop += new System.Windows.Forms.DragEventHandler(this.resourceitems_DragDrop);
 			this.resourceitems.DoubleClick += new System.EventHandler(this.resourceitems_DoubleClick);
+			this.resourceitems.DragOver += new System.Windows.Forms.DragEventHandler(this.resourceitems_DragOver);
 			this.resourceitems.SizeChanged += new System.EventHandler(this.resources_SizeChanged);
 			this.resourceitems.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.resourceitems_ItemSelectionChanged);
 			// 

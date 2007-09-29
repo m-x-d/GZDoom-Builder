@@ -43,12 +43,14 @@ namespace CodeImp.DoomBuilder.Controls
 		public const string SCROLLEAST = "scrolleast";
 		public const string ZOOMIN = "zoomin";
 		public const string ZOOMOUT = "zoomout";
+		public const string CONFIGURATION = "configuration";
 		
 		#endregion
 		
 		#region ================== Variables
 
 		// Description
+		private string name;
 		private string title;
 		private string description;
 
@@ -67,6 +69,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Properties
 
+		public string Name { get { return name; } }
 		public string Title { get { return title; } }
 		public string Description { get { return description; } }
 		public int ShortcutKey { get { return key; } }
@@ -79,10 +82,11 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Action(string title, string description, int key,
+		public Action(string name, string title, string description, int key,
 					  bool allowkeys, bool allowmouse, bool allowscroll)
 		{
 			// Initialize
+			this.name = name;
 			this.title = title;
 			this.description = description;
 			this.delegates = new List<ActionDelegate>();
