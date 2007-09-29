@@ -35,10 +35,10 @@ namespace CodeImp.DoomBuilder.Images
 					res = new ResourceLocation();
 
 					// Copy information from Configuration to ResourceLocation
-					if(resinfo.Contains("type") && (resinfo["type"] is int)) res.type = (int)resinfo["type"];
-					if(resinfo.Contains("location") && (resinfo["location"] is string)) res.location = (string)resinfo["location"];
-					if(resinfo.Contains("textures") && (resinfo["textures"] is bool)) res.textures = (bool)resinfo["textures"];
-					if(resinfo.Contains("flats") && (resinfo["flats"] is bool)) res.flats = (bool)resinfo["flats"];
+					if(rlinfo.Contains("type") && (rlinfo["type"] is int)) res.type = (int)rlinfo["type"];
+					if(rlinfo.Contains("location") && (rlinfo["location"] is string)) res.location = (string)rlinfo["location"];
+					if(rlinfo.Contains("textures") && (rlinfo["textures"] is bool)) res.textures = (bool)rlinfo["textures"];
+					if(rlinfo.Contains("flats") && (rlinfo["flats"] is bool)) res.flats = (bool)rlinfo["flats"];
 
 					// Add resource
 					Add(res);

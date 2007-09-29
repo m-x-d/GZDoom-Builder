@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Variables
 
 		private string name;
+		private string filename;
 		private ProcessStartInfo savemapprocess;
 		private ProcessStartInfo testmapprocess;
 		private ProcessStartInfo mode3dbuildprocess;
@@ -48,6 +49,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Properties
 
 		public string Name { get { return name; } }
+		public string Filename { get { return filename; } }
 		public ProcessStartInfo SaveMapProcess { get { return savemapprocess; } }
 		public ProcessStartInfo TestMapProcess { get { return testmapprocess; } }
 		public ProcessStartInfo Mode3DBuildProcess { get { return mode3dbuildprocess; } }
@@ -57,9 +59,10 @@ namespace CodeImp.DoomBuilder
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public NodebuilderInfo(Configuration cfg)
+		public NodebuilderInfo(Configuration cfg, string filename)
 		{
 			// Initialize
+			this.filename = Path.GetFileName(filename);
 			this.name = cfg.ReadSetting("title", "");
 			
 			// Setup save map process

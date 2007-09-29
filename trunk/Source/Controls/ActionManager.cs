@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Controls
 				ascroll = cfg.ReadSetting(name + ".allowscroll", false);
 				
 				// Create an action
-				actions.Add(name, new Action(title, desc, key, akeys, amouse, ascroll));
+				actions.Add(name, new Action(name, title, desc, key, akeys, amouse, ascroll));
 			}
 		}
 
@@ -130,6 +130,14 @@ namespace CodeImp.DoomBuilder.Controls
 			return actions.ContainsKey(action);
 		}
 
+		// This returns a list of all actions
+		public Action[] GetAllActions()
+		{
+			Action[] list = new Action[actions.Count];
+			actions.Values.CopyTo(list, 0);
+			return list;
+		}
+		
 		#endregion
 
 		#region ================== Shortcut Keys

@@ -257,7 +257,7 @@ namespace CodeImp.DoomBuilder
 					else
 					{
 						// Make nodebuilder info
-						nodebuilders.Add(new NodebuilderInfo(cfg));
+						nodebuilders.Add(new NodebuilderInfo(cfg, filepath));
 					}
 				}
 				catch(Exception)
