@@ -45,6 +45,7 @@
   -->
   <ItemGroup>
     <Compile Include="Controls\ActionAttribute.cs" />
+    <Compile Include="Controls\KeyControl.cs" />
     <Compile Include="Editing\EditMode.cs" />
     <Compile Include="Editing\FrozenOverviewMode.cs" />
     <Compile Include="Editing\ViewClassicMode.cs" />

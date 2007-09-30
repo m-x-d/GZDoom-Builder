@@ -120,6 +120,14 @@ namespace CodeImp.DoomBuilder.Controls
 			ctrl = key & ((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
 			button = key & ~((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
 
+			// When the button is a control key, then remove the control itsself
+			if((button == (int)Keys.ControlKey) ||
+			   (button == (int)Keys.ShiftKey))
+			{
+				ctrl = 0;
+				key = key & ~((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
+			}
+			
 			// Determine control prefix
 			if(ctrl != 0) ctrlprefix = conv.ConvertToString(key);
 			

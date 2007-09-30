@@ -273,6 +273,7 @@ namespace CodeImp.DoomBuilder.Interface
             this.columncontrolkey});
 			this.listactions.FullRowSelect = true;
 			this.listactions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.listactions.HideSelection = false;
 			this.listactions.Location = new System.Drawing.Point(11, 11);
 			this.listactions.Margin = new System.Windows.Forms.Padding(8);
 			this.listactions.MultiSelect = false;
@@ -281,6 +282,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.listactions.Size = new System.Drawing.Size(275, 350);
 			this.listactions.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listactions.TabIndex = 0;
+			this.listactions.TabStop = false;
 			this.listactions.UseCompatibleStateImageBehavior = false;
 			this.listactions.View = System.Windows.Forms.View.Details;
 			this.listactions.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listactions_MouseUp);
@@ -322,8 +324,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actioncontrol.FormattingEnabled = true;
 			this.actioncontrol.Location = new System.Drawing.Point(23, 189);
 			this.actioncontrol.Name = "actioncontrol";
-			this.actioncontrol.Size = new System.Drawing.Size(184, 22);
+			this.actioncontrol.Size = new System.Drawing.Size(197, 22);
 			this.actioncontrol.TabIndex = 8;
+			this.actioncontrol.TabStop = false;
+			this.actioncontrol.SelectedIndexChanged += new System.EventHandler(this.actioncontrol_SelectedIndexChanged);
 			// 
 			// actiontitle
 			// 
@@ -340,10 +344,12 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.actioncontrolclear.Location = new System.Drawing.Point(193, 130);
 			this.actioncontrolclear.Name = "actioncontrolclear";
-			this.actioncontrolclear.Size = new System.Drawing.Size(72, 25);
+			this.actioncontrolclear.Size = new System.Drawing.Size(63, 25);
 			this.actioncontrolclear.TabIndex = 6;
+			this.actioncontrolclear.TabStop = false;
 			this.actioncontrolclear.Text = "Clear";
 			this.actioncontrolclear.UseVisualStyleBackColor = true;
+			this.actioncontrolclear.Click += new System.EventHandler(this.actioncontrolclear_Click);
 			// 
 			// actionkey
 			// 
@@ -351,6 +357,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actionkey.Name = "actionkey";
 			this.actionkey.Size = new System.Drawing.Size(163, 20);
 			this.actionkey.TabIndex = 5;
+			this.actionkey.TabStop = false;
+			this.actionkey.TextChanged += new System.EventHandler(this.actionkey_TextChanged);
+			this.actionkey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.actionkey_KeyDown);
 			// 
 			// actiondescription
 			// 

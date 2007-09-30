@@ -512,7 +512,13 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Show configuration dialog
 			ConfigForm cfgform = new ConfigForm();
-			cfgform.ShowDialog(this);
+			if(cfgform.ShowDialog(this) == DialogResult.OK)
+			{
+				// Update shortcut keys in menus
+				ApplyShortcutKeys();
+			}
+
+			// Done
 			cfgform.Dispose();
 		}
 		
