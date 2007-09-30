@@ -337,6 +337,9 @@ namespace CodeImp.DoomBuilder
 			mainwindow.Dispose();
 			actions.Dispose();
 
+			// Save action controls
+			actions.SaveSettings();
+			
 			// Save game configuration settings
 			foreach(ConfigurationInfo ci in configs) ci.SaveSettings();
 			

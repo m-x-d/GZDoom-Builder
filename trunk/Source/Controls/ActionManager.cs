@@ -138,6 +138,17 @@ namespace CodeImp.DoomBuilder.Controls
 			return list;
 		}
 		
+		// This saves the control settings
+		public void SaveSettings()
+		{
+			// Go for all actions
+			foreach(KeyValuePair<string, Action> a in actions)
+			{
+				// Write to configuration
+				General.Settings.WriteSetting("shortcuts." + a.Key, a.Value.ShortcutKey);
+			}
+		}
+		
 		#endregion
 
 		#region ================== Shortcut Keys
