@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// resourcelocations
 			// 
+			this.resourcelocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.resourcelocations.Location = new System.Drawing.Point(14, 26);
 			this.resourcelocations.Name = "resourcelocations";
 			this.resourcelocations.Size = new System.Drawing.Size(336, 127);
@@ -126,6 +127,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.config.Location = new System.Drawing.Point(141, 21);
 			this.config.Name = "config";
 			this.config.Size = new System.Drawing.Size(213, 22);
+			this.config.Sorted = true;
 			this.config.TabIndex = 15;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 

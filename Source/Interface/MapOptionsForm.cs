@@ -40,6 +40,8 @@ namespace CodeImp.DoomBuilder.Interface
 		// Constructor
 		public MapOptionsForm(MapOptions options)
 		{
+			int index;
+			
 			// Initialize
 			InitializeComponent();
 
@@ -50,13 +52,13 @@ namespace CodeImp.DoomBuilder.Interface
 			for(int i = 0; i < General.Configs.Count; i++)
 			{
 				// Add config name to list
-				config.Items.Add(General.Configs[i].Name);
+				index = config.Items.Add(General.Configs[i]);
 
 				// Is this configuration currently selected?
 				if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0)
 				{
 					// Select this item
-					config.SelectedIndex = config.Items.Count - 1;
+					config.SelectedIndex = index;
 				}
 			}
 
@@ -105,6 +107,22 @@ namespace CodeImp.DoomBuilder.Interface
 			// Just hide window
 			this.DialogResult = DialogResult.Cancel;
 			this.Hide();
+		}
+
+		// Game configuration chosen
+		private void config_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			ConfigurationInfo ci;
+			
+			// Anything selected?
+			if(config.SelectedIndex > -1)
+			{
+				// Get the info
+				ci = (ConfigurationInfo)config.SelectedItem;
+
+				// Show resources
+				resourcelocations.FixedResourceLocationList(ci.Resources);
+			}
 		}
 	}
 }

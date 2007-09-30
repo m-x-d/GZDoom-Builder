@@ -105,7 +105,18 @@ namespace CodeImp.DoomBuilder.Interface
 			this.config.Location = new System.Drawing.Point(129, 31);
 			this.config.Name = "config";
 			this.config.Size = new System.Drawing.Size(213, 22);
+			this.config.Sorted = true;
 			this.config.TabIndex = 6;
+			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
+			// 
+			// label4
+			// 
+			label4.Location = new System.Drawing.Point(15, 161);
+			label4.Name = "label4";
+			label4.Size = new System.Drawing.Size(336, 34);
+			label4.TabIndex = 17;
+			label4.Text = "Drag items to change order (lower items override higher items). Grayed items are " +
+				"loaded according to the game configuration.";
 			// 
 			// apply
 			// 
@@ -145,19 +156,11 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// resourcelocations
 			// 
+			this.resourcelocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.resourcelocations.Location = new System.Drawing.Point(15, 28);
 			this.resourcelocations.Name = "resourcelocations";
 			this.resourcelocations.Size = new System.Drawing.Size(336, 130);
 			this.resourcelocations.TabIndex = 18;
-			// 
-			// label4
-			// 
-			label4.Location = new System.Drawing.Point(15, 161);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(336, 34);
-			label4.TabIndex = 17;
-			label4.Text = "Drag items to change order (lower items override higher items). Grayed items are " +
-				"loaded according to the game configuration.";
 			// 
 			// MapOptionsForm
 			// 

@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			string dbsfile;
 			string gameconfig;
+			int index;
 			
 			// Busy
 			Cursor.Current = Cursors.WaitCursor;
@@ -91,13 +92,13 @@ namespace CodeImp.DoomBuilder.Interface
 			for(int i = 0; i < General.Configs.Count; i++)
 			{
 				// Add config name to list
-				config.Items.Add(General.Configs[i].Name);
+				index = config.Items.Add(General.Configs[i]);
 
 				// This is the preferred game configuration?
 				if(General.Configs[i].Filename == gameconfig)
 				{
 					// Select this item
-					config.SelectedIndex = i;
+					config.SelectedIndex = index;
 				}
 			}
 
@@ -178,75 +179,86 @@ namespace CodeImp.DoomBuilder.Interface
 		private void config_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			List<ListViewItem> mapnames;
+			ConfigurationInfo ci;
 			Configuration cfg;
 			IDictionary maplumpnames;
 			int scanindex, checkoffset;
 			int lumpsfound, lumpsrequired = 0;
 			string lumpname, selectedname = "";
 
-			// Keep selected name, if any
-			if(mapslist.SelectedItems.Count > 0)
-				selectedname = mapslist.SelectedItems[0].Text;
+			// Anything selected?
+			if(config.SelectedIndex > -1)
+			{
+				// Keep selected name, if any
+				if(mapslist.SelectedItems.Count > 0)
+					selectedname = mapslist.SelectedItems[0].Text;
 
-			// Make an array for the map names
-			mapnames = new List<ListViewItem>();
-			
-			// Load this configuration
-			cfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].Filename);
-			
-			// Get the map lump names
-			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
-			
-			// Count how many required lumps we have to find
-			foreach(DictionaryEntry ml in maplumpnames)
-			{
-				// Read lump setting and count it
-				if(cfg.ReadSetting("maplumpnames." + ml.Key + ".required", false)) lumpsrequired++;
-			}
-			
-			// Go for all the lumps in the wad
-			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++)
-			{
-				// Make sure this lump is not part of the map
-				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name))
+				// Make an array for the map names
+				mapnames = new List<ListViewItem>();
+
+				// Get selected configuration info
+				ci = (ConfigurationInfo)config.SelectedItem;
+				
+				// Load this configuration
+				cfg = General.LoadGameConfiguration(ci.Filename);
+
+				// Get the map lump names
+				maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
+
+				// Count how many required lumps we have to find
+				foreach(DictionaryEntry ml in maplumpnames)
 				{
-					// Reset check
-					lumpsfound = 0;
-					checkoffset = 1;
+					// Read lump setting and count it
+					if(cfg.ReadSetting("maplumpnames." + ml.Key + ".required", false)) lumpsrequired++;
+				}
 
-					// Continue while still within bounds and lumps are still recognized
-					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
-						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name))
+				// Go for all the lumps in the wad
+				for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++)
+				{
+					// Make sure this lump is not part of the map
+					if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name))
 					{
-						// Count the lump when it is marked as required
-						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
-						if(cfg.ReadSetting("maplumpnames." + lumpname + ".required", false)) lumpsfound++;
+						// Reset check
+						lumpsfound = 0;
+						checkoffset = 1;
 
-						// Check the next lump
-						checkoffset++;
+						// Continue while still within bounds and lumps are still recognized
+						while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
+							  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name))
+						{
+							// Count the lump when it is marked as required
+							lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
+							if(cfg.ReadSetting("maplumpnames." + lumpname + ".required", false)) lumpsfound++;
+
+							// Check the next lump
+							checkoffset++;
+						}
+
+						// Map found? Then add it to the list
+						if(lumpsfound >= lumpsrequired)
+							mapnames.Add(new ListViewItem(wadfile.Lumps[scanindex].Name));
 					}
-
-					// Map found? Then add it to the list
-					if(lumpsfound >= lumpsrequired)
-						mapnames.Add(new ListViewItem(wadfile.Lumps[scanindex].Name));
 				}
-			}
-			
-			// Clear the list and add the new map names
-			mapslist.Items.Clear();
-			mapslist.Items.AddRange(mapnames.ToArray());
-			mapslist.Sort();
 
-			// Go for all items in the list
-			foreach(ListViewItem item in mapslist.Items)
-			{
-				// Was this item previously selected?
-				if(item.Text == selectedname)
+				// Clear the list and add the new map names
+				mapslist.Items.Clear();
+				mapslist.Items.AddRange(mapnames.ToArray());
+				mapslist.Sort();
+
+				// Go for all items in the list
+				foreach(ListViewItem item in mapslist.Items)
 				{
-					// Select it again
-					item.Selected = true;
-					break;
+					// Was this item previously selected?
+					if(item.Text == selectedname)
+					{
+						// Select it again
+						item.Selected = true;
+						break;
+					}
 				}
+
+				// Show configuration resources
+				resourcelocations.FixedResourceLocationList(ci.Resources);
 			}
 		}
 		
