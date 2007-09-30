@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 			
 			// Go for all items
-			for(int i = list.Count; i >= 0; i--)
+			for(int i = list.Count - 1; i >= 0; i--)
 			{
 				// Add item as fixed
 				resourceitems.Items.Insert(0, new ListViewItem(list[i].location));
