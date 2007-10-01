@@ -24,53 +24,35 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Images
 {
-	internal class ResourceManager : IDisposable
+	internal class ImagePatch : IDisposable
 	{
-		#region ================== Constants
-
-		#endregion
-
 		#region ================== Variables
 
-		// Disposing
-		private bool isdisposed = false;
-
+		private int index;
+		private Point position;
+		private Size size;
+		private WAD file; // ?
+		private ImagePatchFormat format;
+		
 		#endregion
 
 		#region ================== Properties
-
-		// Disposing
-		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ResourceManager()
+		public ImagePatch()
 		{
 			// Initialize
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Diposer
-		public void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Done
-				isdisposed = true;
-			}
+			
 		}
 
 		#endregion
