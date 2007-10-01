@@ -60,6 +60,8 @@
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Vector2D.cs" />
     <Compile Include="Geometry\Vector3D.cs" />
+    <Compile Include="Images\ImagePatch.cs" />
+    <Compile Include="Images\ImagePatchFormat.cs" />
     <Compile Include="Images\ResourceLocationList.cs" />
     <Compile Include="Images\ResourceManager.cs" />
     <Compile Include="Interface\AboutForm.cs">
