@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Images;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Interface
 			levelname.Text = options.CurrentName;
 
 			// Fill the resources list
-			resourcelocations.EditResourceLocationList(options.Resources);
+			datalocations.EditResourceLocationList(options.Resources);
 		}
 
 		// OK clicked
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Interface
 			options.ClearResources();
 			options.ConfigFile = General.Configs[config.SelectedIndex].Filename;
 			options.CurrentName = levelname.Text.Trim().ToUpper();
-			options.CopyResources(resourcelocations.GetResources());
+			options.CopyResources(datalocations.GetResources());
 
 			// Hide window
 			this.DialogResult = DialogResult.OK;
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Interface
 				ci = (ConfigurationInfo)config.SelectedItem;
 
 				// Show resources
-				resourcelocations.FixedResourceLocationList(ci.Resources);
+				datalocations.FixedResourceLocationList(ci.Resources);
 			}
 		}
 	}

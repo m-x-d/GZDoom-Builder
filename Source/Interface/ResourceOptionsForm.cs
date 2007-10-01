@@ -24,7 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using System.IO;
-using CodeImp.DoomBuilder.Images;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -33,13 +33,13 @@ namespace CodeImp.DoomBuilder.Interface
 	internal partial class ResourceOptionsForm : DelayedForm
 	{
 		// Variables
-		private ResourceLocation res;
+		private DataLocation res;
 		
 		// Properties
-		public ResourceLocation ResourceLocation { get { return res; } }
+		public DataLocation ResourceLocation { get { return res; } }
 		
 		// Constructor
-		public ResourceOptionsForm(ResourceLocation settings, string caption)
+		public ResourceOptionsForm(DataLocation settings, string caption)
 		{
 			// Initialize
 			InitializeComponent();
@@ -52,13 +52,13 @@ namespace CodeImp.DoomBuilder.Interface
 			switch(res.type)
 			{
 				// Setup for WAD File
-				case ResourceLocation.RESOURCE_WAD:
+				case DataLocation.RESOURCE_WAD:
 					wadfiletab.Select();
 					wadlocation.Text = res.location;
 					break;
 
 				// Setup for Directory
-				case ResourceLocation.RESOURCE_DIRECTORY:
+				case DataLocation.RESOURCE_DIRECTORY:
 					directorytab.Select();
 					dirlocation.Text = res.location;
 					dir_textures.Checked = res.textures;
@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Interface
 			switch(tabs.SelectedIndex)
 			{
 				// Setup WAD File
-				case ResourceLocation.RESOURCE_WAD:
+				case DataLocation.RESOURCE_WAD:
 
 					// Check if directory is specified
 					if((wadlocation.Text.Length == 0) ||
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Interface
 					else
 					{
 						// Apply settings
-						res.type = ResourceLocation.RESOURCE_WAD;
+						res.type = DataLocation.RESOURCE_WAD;
 						res.location = wadlocation.Text;
 						res.textures = false;
 						res.flats = false;
@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.Interface
 					break;
 
 				// Setup Directory
-				case ResourceLocation.RESOURCE_DIRECTORY:
+				case DataLocation.RESOURCE_DIRECTORY:
 
 					// Check if directory is specified
 					if((dirlocation.Text.Length == 0) ||
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Interface
 					else
 					{
 						// Apply settings
-						res.type = ResourceLocation.RESOURCE_DIRECTORY;
+						res.type = DataLocation.RESOURCE_DIRECTORY;
 						res.location = dirlocation.Text;
 						res.textures = dir_textures.Checked;
 						res.flats = dir_flats.Checked;

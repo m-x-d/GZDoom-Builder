@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actiondescription = new System.Windows.Forms.Label();
 			this.tabconfigs = new System.Windows.Forms.TabPage();
 			this.panelresources = new System.Windows.Forms.GroupBox();
-			this.configresources = new CodeImp.DoomBuilder.Interface.ResourceListEditor();
+			this.configdata = new CodeImp.DoomBuilder.Interface.ResourceListEditor();
 			this.listconfigs = new System.Windows.Forms.ListBox();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(11, 112);
+			label3.Location = new System.Drawing.Point(11, 115);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(312, 14);
 			label3.TabIndex = 17;
@@ -148,10 +148,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.panelnodebuilder.Controls.Add(label2);
 			this.panelnodebuilder.Controls.Add(this.confignodebuilder);
 			this.panelnodebuilder.Enabled = false;
-			this.panelnodebuilder.Location = new System.Drawing.Point(237, 151);
+			this.panelnodebuilder.Location = new System.Drawing.Point(237, 154);
 			this.panelnodebuilder.Margin = new System.Windows.Forms.Padding(6);
 			this.panelnodebuilder.Name = "panelnodebuilder";
-			this.panelnodebuilder.Size = new System.Drawing.Size(341, 97);
+			this.panelnodebuilder.Size = new System.Drawing.Size(345, 97);
 			this.panelnodebuilder.TabIndex = 2;
 			this.panelnodebuilder.TabStop = false;
 			this.panelnodebuilder.Text = " Nodebuilder";
@@ -188,10 +188,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.paneltesting.Controls.Add(this.testapplication);
 			this.paneltesting.Controls.Add(label1);
 			this.paneltesting.Enabled = false;
-			this.paneltesting.Location = new System.Drawing.Point(237, 254);
+			this.paneltesting.Location = new System.Drawing.Point(237, 257);
 			this.paneltesting.Margin = new System.Windows.Forms.Padding(6);
 			this.paneltesting.Name = "paneltesting";
-			this.paneltesting.Size = new System.Drawing.Size(341, 107);
+			this.paneltesting.Size = new System.Drawing.Size(345, 107);
 			this.paneltesting.TabIndex = 13;
 			this.paneltesting.TabStop = false;
 			this.paneltesting.Text = " Testing ";
@@ -233,10 +233,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.Controls.Add(this.tabconfigs);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
-			this.tabs.Location = new System.Drawing.Point(12, 12);
+			this.tabs.Location = new System.Drawing.Point(10, 12);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(595, 399);
+			this.tabs.Size = new System.Drawing.Size(599, 402);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabinterface.Location = new System.Drawing.Point(4, 23);
 			this.tabinterface.Name = "tabinterface";
 			this.tabinterface.Padding = new System.Windows.Forms.Padding(3);
-			this.tabinterface.Size = new System.Drawing.Size(587, 372);
+			this.tabinterface.Size = new System.Drawing.Size(591, 375);
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabkeys.Location = new System.Drawing.Point(4, 23);
 			this.tabkeys.Name = "tabkeys";
 			this.tabkeys.Padding = new System.Windows.Forms.Padding(3);
-			this.tabkeys.Size = new System.Drawing.Size(587, 372);
+			this.tabkeys.Size = new System.Drawing.Size(591, 375);
 			this.tabkeys.TabIndex = 1;
 			this.tabkeys.Text = "Controls";
 			this.tabkeys.UseVisualStyleBackColor = true;
@@ -279,7 +279,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.listactions.MultiSelect = false;
 			this.listactions.Name = "listactions";
 			this.listactions.ShowGroups = false;
-			this.listactions.Size = new System.Drawing.Size(275, 350);
+			this.listactions.Size = new System.Drawing.Size(275, 353);
 			this.listactions.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listactions.TabIndex = 0;
 			this.listactions.TabStop = false;
@@ -301,6 +301,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// actioncontrolpanel
 			// 
+			this.actioncontrolpanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.actioncontrolpanel.Controls.Add(this.actioncontrol);
 			this.actioncontrolpanel.Controls.Add(label7);
 			this.actioncontrolpanel.Controls.Add(this.actiontitle);
@@ -313,7 +316,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actioncontrolpanel.Location = new System.Drawing.Point(300, 11);
 			this.actioncontrolpanel.Margin = new System.Windows.Forms.Padding(6);
 			this.actioncontrolpanel.Name = "actioncontrolpanel";
-			this.actioncontrolpanel.Size = new System.Drawing.Size(278, 350);
+			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 353);
 			this.actioncontrolpanel.TabIndex = 9;
 			this.actioncontrolpanel.TabStop = false;
 			this.actioncontrolpanel.Text = " Action control ";
@@ -381,7 +384,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabconfigs.Margin = new System.Windows.Forms.Padding(8);
 			this.tabconfigs.Name = "tabconfigs";
 			this.tabconfigs.Padding = new System.Windows.Forms.Padding(3);
-			this.tabconfigs.Size = new System.Drawing.Size(587, 372);
+			this.tabconfigs.Size = new System.Drawing.Size(591, 375);
 			this.tabconfigs.TabIndex = 2;
 			this.tabconfigs.Text = "Configurations";
 			this.tabconfigs.UseVisualStyleBackColor = true;
@@ -391,28 +394,28 @@ namespace CodeImp.DoomBuilder.Interface
 			this.panelresources.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.panelresources.Controls.Add(this.configresources);
+			this.panelresources.Controls.Add(this.configdata);
 			this.panelresources.Controls.Add(label3);
 			this.panelresources.Enabled = false;
 			this.panelresources.Location = new System.Drawing.Point(237, 11);
 			this.panelresources.Margin = new System.Windows.Forms.Padding(6);
 			this.panelresources.Name = "panelresources";
-			this.panelresources.Size = new System.Drawing.Size(341, 134);
+			this.panelresources.Size = new System.Drawing.Size(345, 137);
 			this.panelresources.TabIndex = 12;
 			this.panelresources.TabStop = false;
 			this.panelresources.Text = " Resources ";
 			// 
-			// configresources
+			// configdata
 			// 
-			this.configresources.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.configdata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.configresources.DialogOffset = new System.Drawing.Point(-120, 10);
-			this.configresources.Location = new System.Drawing.Point(11, 25);
-			this.configresources.Name = "configresources";
-			this.configresources.Size = new System.Drawing.Size(318, 84);
-			this.configresources.TabIndex = 18;
-			this.configresources.OnContentChanged += new CodeImp.DoomBuilder.Interface.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
+			this.configdata.DialogOffset = new System.Drawing.Point(-120, 10);
+			this.configdata.Location = new System.Drawing.Point(11, 25);
+			this.configdata.Name = "configdata";
+			this.configdata.Size = new System.Drawing.Size(322, 87);
+			this.configdata.TabIndex = 18;
+			this.configdata.OnContentChanged += new CodeImp.DoomBuilder.Interface.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
 			// 
 			// listconfigs
 			// 
@@ -425,7 +428,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.listconfigs.Margin = new System.Windows.Forms.Padding(8);
 			this.listconfigs.Name = "listconfigs";
 			this.listconfigs.ScrollAlwaysVisible = true;
-			this.listconfigs.Size = new System.Drawing.Size(212, 350);
+			this.listconfigs.Size = new System.Drawing.Size(212, 353);
 			this.listconfigs.Sorted = true;
 			this.listconfigs.TabIndex = 0;
 			this.listconfigs.SelectedIndexChanged += new System.EventHandler(this.listconfigs_SelectedIndexChanged);
@@ -434,7 +437,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(495, 425);
+			this.cancel.Location = new System.Drawing.Point(497, 426);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 17;
@@ -445,7 +448,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(377, 425);
+			this.apply.Location = new System.Drawing.Point(379, 426);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 16;
@@ -455,10 +458,8 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// ConfigForm
 			// 
-			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(619, 461);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -498,7 +499,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ComboBox confignodebuilder;
 		private System.Windows.Forms.CheckBox configbuildonsave;
 		private System.Windows.Forms.GroupBox panelresources;
-		private ResourceListEditor configresources;
+		private ResourceListEditor configdata;
 		private System.Windows.Forms.Button browsewad;
 		private System.Windows.Forms.TextBox testapplication;
 		private System.Windows.Forms.TextBox testparameters;

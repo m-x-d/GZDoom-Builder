@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Images;
+using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 

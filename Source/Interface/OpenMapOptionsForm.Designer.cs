@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label3;
 			this.panelres = new System.Windows.Forms.GroupBox();
-			this.resourcelocations = new CodeImp.DoomBuilder.Interface.ResourceListEditor();
+			this.datalocations = new CodeImp.DoomBuilder.Interface.ResourceListEditor();
 			this.apply = new System.Windows.Forms.Button();
 			this.cancel = new System.Windows.Forms.Button();
 			this.config = new System.Windows.Forms.ComboBox();
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.panelres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.panelres.Controls.Add(this.resourcelocations);
+			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label3);
 			this.panelres.Location = new System.Drawing.Point(12, 214);
 			this.panelres.Name = "panelres";
@@ -89,13 +89,13 @@ namespace CodeImp.DoomBuilder.Interface
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Custom Resources ";
 			// 
-			// resourcelocations
+			// datalocations
 			// 
-			this.resourcelocations.DialogOffset = new System.Drawing.Point(40, 20);
-			this.resourcelocations.Location = new System.Drawing.Point(14, 26);
-			this.resourcelocations.Name = "resourcelocations";
-			this.resourcelocations.Size = new System.Drawing.Size(336, 127);
-			this.resourcelocations.TabIndex = 18;
+			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
+			this.datalocations.Location = new System.Drawing.Point(14, 26);
+			this.datalocations.Name = "datalocations";
+			this.datalocations.Size = new System.Drawing.Size(336, 127);
+			this.datalocations.TabIndex = 18;
 			// 
 			// apply
 			// 
@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ComboBox config;
 		private System.Windows.Forms.GroupBox panelres;
 		private System.Windows.Forms.ListView mapslist;
-		private ResourceListEditor resourcelocations;
+		private ResourceListEditor datalocations;
 
 
 	}

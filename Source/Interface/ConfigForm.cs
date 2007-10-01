@@ -286,7 +286,7 @@ namespace CodeImp.DoomBuilder.Interface
 				ci = listconfigs.SelectedItem as ConfigurationInfo;
 
 				// Fill resources list
-				configresources.EditResourceLocationList(ci.Resources);
+				configdata.EditResourceLocationList(ci.Resources);
 
 				// Go for all nodebuilder items
 				confignodebuilder.SelectedIndex = -1;
@@ -328,7 +328,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Apply to selected configuration
 			ci = listconfigs.SelectedItem as ConfigurationInfo;
 			ci.Resources.Clear();
-			ci.Resources.AddRange(configresources.GetResources());
+			ci.Resources.AddRange(configdata.GetResources());
 		}
 
 		// Nodebuilder selection changed

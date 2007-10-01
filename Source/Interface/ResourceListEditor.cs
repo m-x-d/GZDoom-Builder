@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Images;
+using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.Interface
 {
@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== Methods
 
 		// This will show a fixed list
-		public void FixedResourceLocationList(ResourceLocationList list)
+		public void FixedResourceLocationList(DataLocationList list)
 		{
 			// Start editing list
 			resourceitems.BeginUpdate();
@@ -70,9 +70,9 @@ namespace CodeImp.DoomBuilder.Interface
 				resourceitems.Items[0].Tag = list[i];
 
 				// Set icon
-				if(list[i].type == ResourceLocation.RESOURCE_DIRECTORY)
+				if(list[i].type == DataLocation.RESOURCE_DIRECTORY)
 					resourceitems.Items[0].ImageIndex = 2;
-				else if(list[i].type == ResourceLocation.RESOURCE_WAD)
+				else if(list[i].type == DataLocation.RESOURCE_WAD)
 					resourceitems.Items[0].ImageIndex = 3;
 
 				// Set disabled
@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This will edit the given list
-		public void EditResourceLocationList(ResourceLocationList list)
+		public void EditResourceLocationList(DataLocationList list)
 		{
 			// Start editing list
 			resourceitems.BeginUpdate();
@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This adds a normal item
-		public void AddResourceLocation(ResourceLocation rl)
+		public void AddResourceLocation(DataLocation rl)
 		{
 			// Add it
 			AddItem(rl);
@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This adds a normal item
-		private void AddItem(ResourceLocation rl)
+		private void AddItem(DataLocation rl)
 		{
 			int index;
 
@@ -140,9 +140,9 @@ namespace CodeImp.DoomBuilder.Interface
 			resourceitems.Items[index].Tag = rl;
 
 			// Set icon
-			if(rl.type == ResourceLocation.RESOURCE_DIRECTORY)
+			if(rl.type == DataLocation.RESOURCE_DIRECTORY)
 				resourceitems.Items[index].ImageIndex = 0;
-			else if(rl.type == ResourceLocation.RESOURCE_WAD)
+			else if(rl.type == DataLocation.RESOURCE_WAD)
 				resourceitems.Items[index].ImageIndex = 1;
 
 			// Set normal color
@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.Interface
 			Rectangle startposition;
 			
 			// Open resource options dialog
-			resoptions = new ResourceOptionsForm(new ResourceLocation(), "Add Resource");
+			resoptions = new ResourceOptionsForm(new DataLocation(), "Add Resource");
 			resoptions.StartPosition = FormStartPosition.Manual;
 			startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 			startposition = this.RectangleToScreen(startposition);
@@ -194,7 +194,7 @@ namespace CodeImp.DoomBuilder.Interface
 			ResourceOptionsForm resoptions;
 			Rectangle startposition;
 			ListViewItem selecteditem;
-			ResourceLocation rl;
+			DataLocation rl;
 
 			// Anything selected?
 			if(resourceitems.SelectedItems.Count > 0)
@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.Interface
 				selecteditem = resourceitems.SelectedItems[0];
 
 				// Open resource options dialog
-				resoptions = new ResourceOptionsForm((ResourceLocation)selecteditem.Tag, "Resource Options");
+				resoptions = new ResourceOptionsForm((DataLocation)selecteditem.Tag, "Resource Options");
 				resoptions.StartPosition = FormStartPosition.Manual;
 				startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 				startposition = this.RectangleToScreen(startposition);
@@ -219,9 +219,9 @@ namespace CodeImp.DoomBuilder.Interface
 					selecteditem.Tag = rl;
 
 					// Set icon
-					if(rl.type == ResourceLocation.RESOURCE_DIRECTORY)
+					if(rl.type == DataLocation.RESOURCE_DIRECTORY)
 						selecteditem.ImageIndex = 0;
-					else if(rl.type == ResourceLocation.RESOURCE_WAD)
+					else if(rl.type == DataLocation.RESOURCE_WAD)
 						selecteditem.ImageIndex = 1;
 
 					// Done
@@ -286,9 +286,9 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Returns a list of the resources
-		public ResourceLocationList GetResources()
+		public DataLocationList GetResources()
 		{
-			ResourceLocationList list = new ResourceLocationList();
+			DataLocationList list = new DataLocationList();
 
 			// Go for all items
 			for(int i = 0; i < resourceitems.Items.Count; i++)
@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.Interface
 				if(resourceitems.Items[i].ForeColor == SystemColors.WindowText)
 				{
 					// Add item to list
-					list.Add((ResourceLocation)resourceitems.Items[i].Tag);
+					list.Add((DataLocation)resourceitems.Items[i].Tag);
 				}
 			}
 
