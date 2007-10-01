@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Images;
+using CodeImp.DoomBuilder.Data;
 using System.IO;
 
 #endregion
@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder
 		private string settingskey;
 		private string nodebuilder;
 		private bool buildonsave;
-		private ResourceLocationList resources;
+		private DataLocationList resources;
 		private string testprogram;
 		private string testparameters;
 
@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder
 		public string Filename { get { return filename; } }
 		public string Nodebuilder { get { return nodebuilder; } set { nodebuilder = value; } }
 		public bool BuildOnSave { get { return buildonsave; } set { buildonsave = value; } }
-		public ResourceLocationList Resources { get { return resources; } }
+		public DataLocationList Resources { get { return resources; } }
 		public string TestProgram { get { return testprogram; } set { testprogram = value; } }
 		public string TestParameters { get { return testparameters; } set { testparameters = value; } }
 
@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder
 			// Load settings from program configuration
 			this.nodebuilder = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuilder", "");
 			this.buildonsave = General.Settings.ReadSetting("configurations." + settingskey + ".buildonsave", true);
-			this.resources = new ResourceLocationList(General.Settings, "configurations." + settingskey + ".resources");
+			this.resources = new DataLocationList(General.Settings, "configurations." + settingskey + ".resources");
 			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
 		}
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder
 			ci.settingskey = this.settingskey;
 			ci.nodebuilder = this.nodebuilder;
 			ci.buildonsave = this.buildonsave;
-			ci.resources = new ResourceLocationList();
+			ci.resources = new DataLocationList();
 			ci.resources.AddRange(this.resources);
 			ci.testprogram = this.testprogram;
 			ci.testparameters = this.testparameters;
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder
 			this.settingskey = ci.settingskey;
 			this.nodebuilder = ci.nodebuilder;
 			this.buildonsave = ci.buildonsave;
-			this.resources = new ResourceLocationList();
+			this.resources = new DataLocationList();
 			this.resources.AddRange(ci.resources);
 			this.testprogram = ci.testprogram;
 			this.testparameters = ci.testparameters;

@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.Map;
 using System.IO;
 using System.Collections;
 using System.Diagnostics;
-using CodeImp.DoomBuilder.Images;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.Interface
 				}
 
 				// Show configuration resources
-				resourcelocations.FixedResourceLocationList(ci.Resources);
+				datalocations.FixedResourceLocationList(ci.Resources);
 			}
 		}
 		
@@ -287,7 +287,7 @@ namespace CodeImp.DoomBuilder.Interface
 			options.ClearResources();
 			options.ConfigFile = General.Configs[config.SelectedIndex].Filename;
 			options.CurrentName = mapslist.SelectedItems[0].Text;
-			options.CopyResources(resourcelocations.GetResources());
+			options.CopyResources(datalocations.GetResources());
 
 			// Hide window
 			wadfile.Dispose();

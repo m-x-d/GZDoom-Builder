@@ -23,7 +23,7 @@ using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
-using CodeImp.DoomBuilder.Images;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -45,14 +45,14 @@ namespace CodeImp.DoomBuilder.Map
 		private string previousname;
 		
 		// Additional resources
-		private ResourceLocationList resources;
+		private DataLocationList resources;
 
 		#endregion
 
 		#region ================== Properties
 
 		public string ConfigFile { get { return configfile; } set { configfile = value; } }
-		public ResourceLocationList Resources { get { return resources; } }
+		public DataLocationList Resources { get { return resources; } }
 		public string PreviousName { get { return previousname; } }
 		public string CurrentName
 		{
@@ -80,20 +80,20 @@ namespace CodeImp.DoomBuilder.Map
 			this.previousname = "";
 			this.currentname = "";
 			this.configfile = "";
-			this.resources = new ResourceLocationList();
+			this.resources = new DataLocationList();
 		}
 
 		// Constructor to load from Doom Builder Map Settings Configuration
 		public MapOptions(Configuration cfg, string mapname)
 		{
 			IDictionary mapinfo, resinfo;
-			ResourceLocation res;
+			DataLocation res;
 			
 			// Initialize
 			this.previousname = "";
 			this.currentname = mapname;
 			this.configfile = cfg.ReadSetting("config", "");
-			this.resources = new ResourceLocationList();
+			this.resources = new DataLocationList();
 
 			// Go for all items in the map info
 			mapinfo = cfg.ReadSetting(mapname, new Hashtable());
@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					// Create resource
 					resinfo = (IDictionary)mp.Value;
-					res = new ResourceLocation();
+					res = new DataLocation();
 					
 					// Copy information from Configuration to ResourceLocation
 					if(resinfo.Contains("type") && (resinfo["type"] is int)) res.type = (int)resinfo["type"];
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Methods
 
 		// This adds a resource location and returns the index where the item was added
-		public int AddResource(ResourceLocation res)
+		public int AddResource(DataLocation res)
 		{
 			// Get a fully qualified path
 			res.location = Path.GetFullPath(res.location);
@@ -166,7 +166,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This copies resources from a list
-		public void CopyResources(ResourceLocationList fromlist)
+		public void CopyResources(DataLocationList fromlist)
 		{
 			// Clear this list
 			resources.Clear();

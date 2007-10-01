@@ -60,10 +60,12 @@
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Vector2D.cs" />
     <Compile Include="Geometry\Vector3D.cs" />
-    <Compile Include="Images\ImagePatch.cs" />
-    <Compile Include="Images\ImagePatchFormat.cs" />
-    <Compile Include="Images\ResourceLocationList.cs" />
-    <Compile Include="Images\ResourceManager.cs" />
+    <Compile Include="Data\ImagePatch.cs" />
+    <Compile Include="Data\ImagePatchFormat.cs" />
+    <Compile Include="Data\IDataContainer.cs" />
+    <Compile Include="Data\DataLocationList.cs" />
+    <Compile Include="Data\DataManager.cs" />
+    <Compile Include="Data\WADContainer.cs" />
     <Compile Include="Interface\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -122,7 +124,7 @@
     <Compile Include="Map\Linedef.cs" />
     <Compile Include="Map\MapOptions.cs" />
     <Compile Include="Map\MapSet.cs" />
-    <Compile Include="Images\ResourceLocation.cs" />
+    <Compile Include="Data\DataLocation.cs" />
     <Compile Include="Map\Sector.cs" />
     <Compile Include="Map\Sidedef.cs" />
     <Compile Include="Map\Thing.cs" />
@@ -134,15 +136,15 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rendering\D3DGraphics.cs" />
-    <Compile Include="Images\FileImage.cs" />
-    <Compile Include="Images\ImageResource.cs" />
+    <Compile Include="Data\FileImage.cs" />
+    <Compile Include="Data\ImageData.cs" />
     <Compile Include="Rendering\IResource.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
     <Compile Include="Rendering\PTVertex.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Renderer2D.cs" />
     <Compile Include="Rendering\Renderer3D.cs" />
-    <Compile Include="Images\TextureImage.cs" />
+    <Compile Include="Data\TextureImage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlimDX, Version=1.0.2813.30005, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
