@@ -81,7 +81,8 @@ namespace CodeImp.DoomBuilder
 		public const uint PAGE_WRITECOMBINE = 0x400;
 		
 		// Files and Folders
-		private const string SETTINGS_CONFIG_FILE = "Builder.cfg";
+		private const string SETTINGS_FILE = "Builder.cfg";
+		private const string SETTINGS_DIR = "Doom Builder";
 		private const string LOG_FILE = "Builder.log";
 		private const string GAME_CONFIGS_DIR = "Configurations";
 		private const string COMPILERS_DIR = "Compilers";
@@ -92,6 +93,7 @@ namespace CodeImp.DoomBuilder
 
 		// Files and Folders
 		private static string apppath;
+		private static string settingspath;
 		private static string logfile;
 		private static string temppath;
 		private static string configspath;
@@ -309,6 +311,7 @@ namespace CodeImp.DoomBuilder
 			// Setup directories
 			logfile = Path.Combine(apppath, LOG_FILE);
 			temppath = Path.GetTempPath();
+			settingspath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR);
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
 
@@ -317,42 +320,107 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
 			General.WriteLogLine("Application path:     " + apppath);
 			General.WriteLogLine("Temporary path:       " + temppath);
+			General.WriteLogLine("Local settings path:  " + settingspath);
 			General.WriteLogLine("Configurations path:  " + configspath);
 			General.WriteLogLine("Compilers path:       " + compilerspath);
 			
 			// Load configuration
 			General.WriteLogLine("Loading program configuration...");
-			if(!File.Exists(Path.Combine(apppath, SETTINGS_CONFIG_FILE))) throw (new FileNotFoundException("Unable to find the program configuration \"" + SETTINGS_CONFIG_FILE + "\"."));
-			settings = new Configuration(Path.Combine(apppath, SETTINGS_CONFIG_FILE), true);
-			
-			// Create action manager
-			actions = new ActionManager();
-			
-			// Bind static methods to actions
-			ActionAttribute.BindMethods(typeof(General));
+			if(LoadProgramConfiguration())
+			{
+				// Create action manager
+				actions = new ActionManager();
 
-			// Create main window
-			General.WriteLogLine("Loading main interface window...");
-			mainwindow = new MainForm();
-			mainwindow.UpdateMenus();
-			
-			// Show main window
-			General.WriteLogLine("Showing main interface window...");
-			mainwindow.Show();
-			mainwindow.Update();
-			
-			// Load game configurations
-			General.WriteLogLine("Loading game configurations...");
-			FindGameConfigurations();
+				// Bind static methods to actions
+				ActionAttribute.BindMethods(typeof(General));
 
-			// Load nodebuilder configurations
-			General.WriteLogLine("Loading nodebuilder configurations...");
-			FindNodebuilderConfigurations();
+				// Create main window
+				General.WriteLogLine("Loading main interface window...");
+				mainwindow = new MainForm();
+				mainwindow.UpdateMenus();
+
+				// Show main window
+				General.WriteLogLine("Showing main interface window...");
+				mainwindow.Show();
+				mainwindow.Update();
+
+				// Load game configurations
+				General.WriteLogLine("Loading game configurations...");
+				FindGameConfigurations();
+
+				// Load nodebuilder configurations
+				General.WriteLogLine("Loading nodebuilder configurations...");
+				FindNodebuilderConfigurations();
+
+				// Run application from the main window
+				General.WriteLogLine("Startup done");
+				mainwindow.DisplayReady();
+				Application.Run(mainwindow);
+			}
+			else
+			{
+				// Terminate
+				Terminate(false);
+			}
+		}
+		
+		// Program configuration
+		private static bool LoadProgramConfiguration()
+		{
+			string message;
+			DialogResult result;
 			
-			// Run application from the main window
-			General.WriteLogLine("Startup done");
-			mainwindow.DisplayReady();
-			Application.Run(mainwindow);
+			// Make program settings directory if missing
+			if(!Directory.Exists(settingspath)) Directory.CreateDirectory(settingspath);
+			
+			// Check if no config for this user exists yet
+			if(!File.Exists(Path.Combine(settingspath, SETTINGS_FILE)))
+			{
+				// Copy new configuration
+				General.WriteLogLine("Local user program configuration is missing!");
+				File.Copy(Path.Combine(apppath, SETTINGS_FILE), Path.Combine(settingspath, SETTINGS_FILE));
+				General.WriteLogLine("New program configuration copied for local user");
+			}
+
+			// Load it
+			settings = new Configuration(Path.Combine(settingspath, SETTINGS_FILE), true);
+			if(settings.ErrorResult != 0)
+			{
+				// Error in configuration
+				message = "Error in program configuration near line " + settings.ErrorLine + ": " + settings.ErrorDescription;
+				General.WriteLogLine(message);
+
+				// Ask user for a new copy
+				result = MessageBox.Show(mainwindow, "Unable to load the program configuration for the local user. The configuration is corrupt and might contain incorrect settings. Would you like to reset the configuration settings?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error);
+				if(result == DialogResult.Yes)
+				{
+					// Remove old configuration and make a new copy
+					General.WriteLogLine("User requested a new copy of the program configuration");
+					File.Delete(Path.Combine(settingspath, SETTINGS_FILE));
+					File.Copy(Path.Combine(apppath, SETTINGS_FILE), Path.Combine(settingspath, SETTINGS_FILE));
+					General.WriteLogLine("New program configuration copied for local user");
+					
+					// Load it
+					settings = new Configuration(Path.Combine(settingspath, SETTINGS_FILE), true);
+					if(settings.ErrorResult != 0)
+					{
+						// Error in configuration
+						message = "Error in program configuration near line " + settings.ErrorLine + ": " + settings.ErrorDescription;
+						General.WriteLogLine(message);
+						MessageBox.Show(mainwindow, "Default program configuration is corrupted. Please re-install Doom Builder.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return false;
+					}
+				}
+				else if(result == DialogResult.Cancel)
+				{
+					// User requested to cancel startup
+					General.WriteLogLine("User cancelled startup");
+					return false;
+				}
+			}
+
+			// Done
+			return true;
 		}
 		
 		#endregion
@@ -360,30 +428,40 @@ namespace CodeImp.DoomBuilder
 		#region ================== Terminate
 		
 		// This terminates the program
-		public static void Terminate()
+		public static void Terminate(bool properexit)
 		{
-			General.WriteLogLine("Termination requested");
+			// Terminate properly?
+			if(properexit)
+			{
+				General.WriteLogLine("Termination requested");
 
-			// Unbind static methods from actions
-			ActionAttribute.UnbindMethods(typeof(General));
-			
-			// Clean up
-			mainwindow.Dispose();
-			actions.Dispose();
+				// Unbind static methods from actions
+				ActionAttribute.UnbindMethods(typeof(General));
 
-			// Save action controls
-			actions.SaveSettings();
-			
-			// Save game configuration settings
-			foreach(ConfigurationInfo ci in configs) ci.SaveSettings();
-			
-			// Save settings configuration
-			General.WriteLogLine("Saving program configuration...");
-			settings.SaveConfiguration(Path.Combine(apppath, SETTINGS_CONFIG_FILE));
+				// Clean up
+				mainwindow.Dispose();
+				actions.Dispose();
 
-			// Application ends here and now
-			General.WriteLogLine("Termination done");
-			Application.Exit();
+				// Save action controls
+				actions.SaveSettings();
+
+				// Save game configuration settings
+				foreach(ConfigurationInfo ci in configs) ci.SaveSettings();
+
+				// Save settings configuration
+				General.WriteLogLine("Saving program configuration...");
+				settings.SaveConfiguration(Path.Combine(settingspath, SETTINGS_FILE));
+
+				// Application ends here and now
+				General.WriteLogLine("Termination done");
+				Application.Exit();
+			}
+			else
+			{
+				// Just end now
+				General.WriteLogLine("Immediate program termination");
+				Application.Exit();
+			}
 		}
 		
 		#endregion
