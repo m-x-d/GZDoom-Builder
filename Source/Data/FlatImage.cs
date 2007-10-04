@@ -1,32 +1,12 @@
-
-#region ================== Copyright (c) 2007 Pascal vd Heiden
-
-/*
- * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
- * This program is released under GNU General Public License
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- */
-
-#endregion
-
-#region ================== Namespaces
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-#endregion
-
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class TextureImage : ImageData
+	internal class FlatImage : ImageData
 	{
 		#region ================== Constants
 
@@ -34,7 +14,8 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Variables
 
-		private List<TexturePatch> patches;
+		private IDataReader source;
+		private int lumpindex;
 
 		#endregion
 
@@ -45,10 +26,11 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public TextureImage(string name)
+		public FlatImage(string name, IDataReader source, int lumpindex)
 		{
 			// Initialize
-			this.patches = new List<TexturePatch>();
+			this.source = source;
+			this.lumpindex = lumpindex;
 			SetName(name);
 			
 			// We have no destructor
@@ -72,13 +54,6 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Methods
 
-		// This adds a patch to the texture
-		public void AddPatch(TexturePatch patch)
-		{
-			// Add it
-			patches.Add(patch);
-		}
-		
 		// This loads the image
 		public override void LoadImage()
 		{

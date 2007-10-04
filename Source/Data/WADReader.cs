@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class WADContainer : IDataContainer
+	internal class WADReader : IDataReader
 	{
 		#region ================== Constants
 
@@ -57,10 +57,10 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public WADContainer(string filename)
+		public WADReader(DataLocation dl)
 		{
 			// Initialize
-			file = new WAD(filename, true);
+			file = new WAD(dl.location, true);
 			managefile = true;
 			
 			// We have no destructor
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// Constructor
-		public WADContainer(WAD wadfile)
+		public WADReader(WAD wadfile)
 		{
 			// Initialize
 			file = wadfile;

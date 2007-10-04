@@ -30,34 +30,61 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class ImagePatch
+	internal class DirectoryReader : IDataReader
 	{
+		#region ================== Constants
+
+		#endregion
+
 		#region ================== Variables
 
-		private int index;
-		private Point position;
-		private Size size;
-		private IDataContainer source;
-		private ImagePatchFormat format;
+		// Source
+		private string path;
+		private bool readtextures;
+		private bool readflats;
 		
+		// Disposing
+		private bool isdisposed = false;
+
 		#endregion
 
 		#region ================== Properties
+
+		// Disposing
+		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ImagePatch()
+		public DirectoryReader(DataLocation dl)
 		{
 			// Initialize
+			this.path = dl.location;
+			this.readtextures = dl.textures;
+			this.readflats = dl.flats;
 			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Disposer
+		public void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Clean up
+
+				// Done
+				isdisposed = true;
+			}
 		}
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Textures
 
 		#endregion
 	}

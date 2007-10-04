@@ -30,16 +30,17 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal unsafe abstract class ImageData : IDisposable
+	internal abstract unsafe class ImageData : IDisposable
 	{
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
-
+		
 		// Properties
-		protected string name;
+		private string name;
+		private long longname;
 
 		// GDI bitmap
 		protected Bitmap bitmap;
@@ -49,7 +50,7 @@ namespace CodeImp.DoomBuilder.Data
 		private uint pixeldatasize;
 		
 		// Direct3D texture
-		protected Texture texture;
+		private Texture texture;
 
 		// Disposing
 		protected bool isdisposed = false;
@@ -72,13 +73,11 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public ImageData()
 		{
-			// Initialize
-
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public virtual void Dispose()
 		{
 			// Not already disposed?
@@ -100,7 +99,14 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Management
 
-		// This loads the image resource
+		// This sets the name
+		protected void SetName(string name)
+		{
+			this.name = name;
+			this.longname = General.GetTextureLongName(name);
+		}
+		
+		// This requests loading the image
 		public virtual void LoadImage()
 		{
 			BitmapData bmpdata;
@@ -108,15 +114,6 @@ namespace CodeImp.DoomBuilder.Data
 			// Check if loading worked
 			if(bitmap != null)
 			{
-				/*
-				// Check if loaded in correct pixel format
-				if(bitmap.PixelFormat != PixelFormat.Format32bppArgb)
-				{
-					// Cannot work with pixel formats any other than A8R8G8B8
-					throw new Exception("Image in unsupported pixel format");
-				}
-				*/
-				
 				// Make a data copy of the bits for the 2D renderer
 				bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 				pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height);

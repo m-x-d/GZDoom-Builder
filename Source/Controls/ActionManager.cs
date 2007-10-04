@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public ActionManager()
 		{
 			// Initialize
+			General.WriteLogLine("Starting action manager...");
 			actions = new Dictionary<string, Action>();
 
 			// Load all actions

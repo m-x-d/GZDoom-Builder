@@ -30,12 +30,11 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal interface IDataContainer : IDisposable
+	internal struct TexturePatch
 	{
-		// Properties
-		bool IsDisposed { get; }
-		
-		// Methods
-		void Dispose();
+		private IDataReader source;
+		private int lumpindex;
+		private Point position;
+		private Size size;
 	}
 }
