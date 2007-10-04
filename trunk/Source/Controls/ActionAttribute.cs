@@ -70,6 +70,11 @@ namespace CodeImp.DoomBuilder.Controls
 			MethodInfo[] methods;
 			ActionAttribute[] attrs;
 			ActionDelegate del;
+
+			if(obj == null)
+				General.WriteLogLine("Binding static action methods for class " + type.Name + "...");
+			else
+				General.WriteLogLine("Binding action methods for " + type.Name + " object...");
 			
 			// Go for all methods on obj
 			methods = type.GetMethods();
@@ -110,6 +115,11 @@ namespace CodeImp.DoomBuilder.Controls
 			MethodInfo[] methods;
 			ActionAttribute[] attrs;
 			ActionDelegate del;
+
+			if(obj == null)
+				General.WriteLogLine("Unbinding static action methods for class " + type.Name + "...");
+			else
+				General.WriteLogLine("Unbinding action methods for " + type.Name + " object...");
 
 			// Go for all methods on obj
 			methods = type.GetMethods();

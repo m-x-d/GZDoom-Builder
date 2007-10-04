@@ -46,6 +46,12 @@
   <ItemGroup>
     <Compile Include="Controls\ActionAttribute.cs" />
     <Compile Include="Controls\KeyControl.cs" />
+    <Compile Include="Data\DirectoryReader.cs" />
+    <Compile Include="Data\FileImage.cs" />
+    <Compile Include="Data\FlatImage.cs" />
+    <Compile Include="Data\Playpal.cs" />
+    <Compile Include="Data\SpriteImage.cs" />
+    <Compile Include="Data\TextureImage.cs" />
     <Compile Include="Editing\EditMode.cs" />
     <Compile Include="Editing\FrozenOverviewMode.cs" />
     <Compile Include="Editing\ViewClassicMode.cs" />
@@ -60,12 +66,12 @@
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Vector2D.cs" />
     <Compile Include="Geometry\Vector3D.cs" />
-    <Compile Include="Data\ImagePatch.cs" />
-    <Compile Include="Data\ImagePatchFormat.cs" />
-    <Compile Include="Data\IDataContainer.cs" />
+    <Compile Include="Data\TexturePatch.cs" />
+    <Compile Include="Data\TexturePatchFormat.cs" />
+    <Compile Include="Data\IDataReader.cs" />
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
-    <Compile Include="Data\WADContainer.cs" />
+    <Compile Include="Data\WADReader.cs" />
     <Compile Include="Interface\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,7 +142,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rendering\D3DGraphics.cs" />
-    <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\ImageData.cs" />
     <Compile Include="Rendering\IResource.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
@@ -144,7 +149,6 @@
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Renderer2D.cs" />
     <Compile Include="Rendering\Renderer3D.cs" />
-    <Compile Include="Data\TextureImage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlimDX, Version=1.0.2813.30005, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />

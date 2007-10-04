@@ -37,6 +37,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Variables
 
+		// Data containers
+		private List<IDataReader> containers;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -55,12 +58,13 @@ namespace CodeImp.DoomBuilder.Data
 		public DataManager()
 		{
 			// Initialize
-
+			containers = new List<IDataReader>();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?
@@ -75,8 +79,52 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Loading / Unloading
 
+		// This loads all data resources
+		public void Load(DataLocationList locations)
+		{
+			IDataReader c;
+			
+			// Go for all locations
+			foreach(DataLocation dl in locations)
+			{
+				// Nothing chosen yet
+				c = null;
+				
+				// Choose container type
+				switch(dl.type)
+				{
+					// WAD file container
+					case DataLocation.RESOURCE_WAD:
+						c = new WADReader(dl);
+						break;
+						
+					// Directory container
+					case DataLocation.RESOURCE_DIRECTORY:
+						c = new DirectoryReader(dl);
+						break;
+				}
+
+				// Container type chosen?
+				if(c != null)
+				{
+					// TODO: Let the container read stuff
+
+					// Keep container reference
+					containers.Add(c);
+				}
+			}
+		}
+
+		// This unloads all data
+		public void Unload()
+		{
+			// Dispose containers
+			foreach(IDataReader c in containers) c.Dispose();
+			containers.Clear();
+		}
+		
 		#endregion
 	}
 }

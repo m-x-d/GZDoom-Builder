@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Initialize
 			this.filepathname = filepathname;
-			this.name = Path.GetFileNameWithoutExtension(filepathname);
+			SetName(Path.GetFileNameWithoutExtension(filepathname));
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -57,15 +57,10 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the image
 		public override void LoadImage()
 		{
-			//Bitmap fileimg;
-			
 			// Leave when already loaded
 			if(this.IsLoaded) return;
 
-			// Load file and convert to the right pixel format
-			//fileimg = (Bitmap)Bitmap.FromFile(filepathname);
-			//bitmap = fileimg.Clone(new Rectangle(new Point(0, 0), fileimg.Size), PixelFormat.Format32bppArgb);
-			//fileimg.Dispose();
+			// Load file
 			bitmap = (Bitmap)Bitmap.FromFile(filepathname);
 
 			// Pass on to base

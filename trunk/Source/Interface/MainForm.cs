@@ -148,6 +148,11 @@ namespace CodeImp.DoomBuilder.Interface
 		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			int windowstate;
+
+			General.WriteLogLine("Closing main interface window...");
+
+			// Unbind methods
+			ActionAttribute.UnbindMethods(this);
 			
 			// Determine window state to save
 			if(this.WindowState != FormWindowState.Minimized)
