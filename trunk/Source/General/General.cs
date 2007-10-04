@@ -391,7 +391,7 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine(message);
 
 				// Ask user for a new copy
-				result = MessageBox.Show(mainwindow, "Unable to load the program configuration for the local user. The configuration is corrupt and might contain incorrect settings. Would you like to reset the configuration settings?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error);
+				result = MessageBox.Show(mainwindow, "Unable to load the program configuration for the local user. The configuration is corrupt and may contain incorrect settings.\nWould you like to reset your program settings?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error);
 				if(result == DialogResult.Yes)
 				{
 					// Remove old configuration and make a new copy
