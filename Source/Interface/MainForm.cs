@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
 
 			// Terminate the program
-			General.Terminate();
+			General.Terminate(true);
 		}
 
 		#endregion
