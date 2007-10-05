@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Scroll now
 			renderer.PositionView(renderer.OffsetX + deltax, renderer.OffsetY + deltay);
-			RedrawDisplay();
+			General.MainWindow.RedrawDisplay();
 
 			// Determine new unprojected mouse coordinates
 			mousemappos = renderer.GetMapCoordinates(mousepos);
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer.PositionView(renderer.OffsetX - diff.x, renderer.OffsetY + diff.y);
 			renderer.ScaleView(newscale);
 			General.Map.Data.Update();
-			RedrawDisplay();
+			General.MainWindow.RedrawDisplay();
 			
 			// Determine new unprojected mouse coordinates
 			mousemappos = renderer.GetMapCoordinates(mousepos);
@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Zoom now
 			renderer.ScaleView(newscale);
 			General.Map.Data.Update();
-			RedrawDisplay();
+			General.MainWindow.RedrawDisplay();
 
 			// Determine new unprojected mouse coordinates
 			mousemappos = renderer.GetMapCoordinates(mousepos);
@@ -229,7 +229,7 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer.ScaleView(scale);
 			renderer.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
 			General.Map.Data.Update();
-			RedrawDisplay();
+			General.MainWindow.RedrawDisplay();
 			
 			// Determine new unprojected mouse coordinates
 			mousemappos = renderer.GetMapCoordinates(mousepos);
