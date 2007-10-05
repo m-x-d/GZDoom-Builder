@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== API Declarations
 
 		[DllImport("user32.dll")]
-		public static extern int LockWindowUpdate(IntPtr hwnd);
+		public static extern bool LockWindowUpdate(IntPtr hwnd);
 
 		[DllImport("kernel32.dll", EntryPoint="RtlZeroMemory", SetLastError=false)]
 		public static extern void ZeroMemory(IntPtr dest, int size);
@@ -309,11 +309,11 @@ namespace CodeImp.DoomBuilder
 			apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
 			
 			// Setup directories
-			logfile = Path.Combine(apppath, LOG_FILE);
 			temppath = Path.GetTempPath();
 			settingspath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR);
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
+			logfile = Path.Combine(settingspath, LOG_FILE);
 
 			// Remove the previous log file and start logging
 			File.Delete(logfile);
