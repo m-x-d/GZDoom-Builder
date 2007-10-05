@@ -34,9 +34,13 @@ namespace CodeImp.DoomBuilder.Data
 	internal unsafe interface IDataReader : IDisposable
 	{
 		// Properties
+		string Location { get; }
 		bool IsDisposed { get; }
+		bool IsSuspended { get; }
 		
 		// Methods
 		void Dispose();
+		void Suspend();
+		void Resume();
 	}
 }

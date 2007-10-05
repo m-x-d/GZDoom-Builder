@@ -77,8 +77,8 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			if(renderer.StartRendering())
 			{
-				renderer.RenderLinedefs(General.Map.Data, General.Map.Data.Linedefs);
-				renderer.RenderVertices(General.Map.Data, General.Map.Data.Vertices);
+				renderer.RenderLinedefs(General.Map.Map, General.Map.Map.Linedefs);
+				renderer.RenderVertices(General.Map.Map, General.Map.Map.Vertices);
 				renderer.FinishRendering();
 			}
 		}

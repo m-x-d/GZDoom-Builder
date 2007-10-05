@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Zoom now
 			renderer.PositionView(renderer.OffsetX - diff.x, renderer.OffsetY + diff.y);
 			renderer.ScaleView(newscale);
-			General.Map.Data.Update();
+			General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 			
 			// Determine new unprojected mouse coordinates
@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Zoom now
 			renderer.ScaleView(newscale);
-			General.Map.Data.Update();
+			General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 
 			// Determine new unprojected mouse coordinates
@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.Editing
 			float width, height;
 
 			// Go for all vertices
-			foreach(Vertex v in General.Map.Data.Vertices)
+			foreach(Vertex v in General.Map.Map.Vertices)
 			{
 				// Adjust boundaries by vertices
 				if(v.Position.x < left) left = v.Position.x;
@@ -228,7 +228,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Change the view to see the whole map
 			renderer.ScaleView(scale);
 			renderer.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
-			General.Map.Data.Update();
+			General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 			
 			// Determine new unprojected mouse coordinates

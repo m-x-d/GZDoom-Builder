@@ -42,16 +42,17 @@ namespace CodeImp.DoomBuilder.Data
 		private string path;
 		private bool readtextures;
 		private bool readflats;
-		
-		// Disposing
+
+		private bool issuspended = false;
 		private bool isdisposed = false;
 
 		#endregion
 
 		#region ================== Properties
 
-		// Disposing
+		public string Location { get { return path; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public bool IsSuspended { get { return issuspended; } }
 
 		#endregion
 
@@ -64,7 +65,9 @@ namespace CodeImp.DoomBuilder.Data
 			this.path = dl.location;
 			this.readtextures = dl.textures;
 			this.readflats = dl.flats;
-			
+
+			General.WriteLogLine("Opening directory resource '" + dl.location + "'");
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -75,11 +78,29 @@ namespace CodeImp.DoomBuilder.Data
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				General.WriteLogLine("Closing directory resource '" + path + "'");
+
 				// Clean up
 
 				// Done
 				isdisposed = true;
 			}
+		}
+
+		#endregion
+
+		#region ================== Management
+
+		// This suspends use of this resource
+		public void Suspend()
+		{
+			issuspended = true;
+		}
+
+		// This resumes use of this resource
+		public void Resume()
+		{
+			issuspended = false;
 		}
 
 		#endregion

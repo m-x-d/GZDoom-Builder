@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.Map
 			resources.Clear();
 			resources.AddRange(fromlist);
 		}
-
+		
 		// This displays the current map name
 		public override string ToString()
 		{
