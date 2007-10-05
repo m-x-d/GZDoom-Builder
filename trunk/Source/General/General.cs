@@ -314,9 +314,12 @@ namespace CodeImp.DoomBuilder
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
 			logfile = Path.Combine(settingspath, LOG_FILE);
-
+			
+			// Make program settings directory if missing
+			if(!Directory.Exists(settingspath)) Directory.CreateDirectory(settingspath);
+			
 			// Remove the previous log file and start logging
-			File.Delete(logfile);
+			if(File.Exists(logfile)) File.Delete(logfile);
 			General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
 			General.WriteLogLine("Application path:     " + apppath);
 			General.WriteLogLine("Temporary path:       " + temppath);
@@ -369,9 +372,6 @@ namespace CodeImp.DoomBuilder
 		{
 			string message;
 			DialogResult result;
-			
-			// Make program settings directory if missing
-			if(!Directory.Exists(settingspath)) Directory.CreateDirectory(settingspath);
 			
 			// Check if no config for this user exists yet
 			if(!File.Exists(Path.Combine(settingspath, SETTINGS_FILE)))
