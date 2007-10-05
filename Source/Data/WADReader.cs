@@ -40,17 +40,19 @@ namespace CodeImp.DoomBuilder.Data
 
 		// Source
 		private WAD file;
+		private string location;
 		private bool managefile;
-		
-		// Disposing
+
+		private bool issuspended = false;
 		private bool isdisposed = false;
 
 		#endregion
 
 		#region ================== Properties
 
-		// Disposing
+		public string Location { get { return location; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public bool IsSuspended { get { return issuspended; } }
 
 		#endregion
 
@@ -60,9 +62,12 @@ namespace CodeImp.DoomBuilder.Data
 		public WADReader(DataLocation dl)
 		{
 			// Initialize
-			file = new WAD(dl.location, true);
+			this.location = dl.location;
+			file = new WAD(location, true);
 			managefile = true;
-			
+
+			General.WriteLogLine("Opening WAD resource '" + file.Filename + "'");
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -74,6 +79,8 @@ namespace CodeImp.DoomBuilder.Data
 			file = wadfile;
 			managefile = false;
 
+			General.WriteLogLine("Opening WAD resource '" + file.Filename + "' (file already open)");
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -84,6 +91,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				General.WriteLogLine("Closing WAD resource '" + file.Filename + "'");
+
 				// Clean up
 				if(managefile) file.Dispose();
 				
@@ -94,7 +103,25 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Management
+
+		// This suspends use of this resource
+		public void Suspend()
+		{
+			issuspended = true;
+			if(managefile) file.Dispose();
+		}
+
+		// This resumes use of this resource
+		public void Resume()
+		{
+			issuspended = false;
+			if(managefile) file = new WAD(location, true);
+		}
+		
+		#endregion
+
+		#region ================== Textures
 
 		#endregion
 	}

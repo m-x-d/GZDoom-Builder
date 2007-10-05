@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			General.MainWindow.UpdateZoom(scale);
 			
 			// Recalculate linedefs (normal lengths must be adjusted)
-			foreach(Linedef l in General.Map.Data.Linedefs) l.NeedUpdate();
+			foreach(Linedef l in General.Map.Map.Linedefs) l.NeedUpdate();
 		}
 
 		// This unprojects mouse coordinates into map coordinates

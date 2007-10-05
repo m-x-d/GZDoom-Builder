@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Data
 	internal struct TexturePatch
 	{
 		private IDataReader source;
-		private int lumpindex;
+		private string lumpname;
 		private Point position;
 		private Size size;
 	}

@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -51,10 +52,11 @@ namespace CodeImp.DoomBuilder
 		// Map information
 		private string filetitle;
 		private string filepathname;
-		private MapSet data;
+		private MapSet map;
 		private MapOptions options;
 		private ConfigurationInfo configinfo;
 		private Configuration config;
+		private DataManager data;
 		private EditMode mode;
 		private D3DGraphics graphics;
 		private WAD tempwad;
@@ -69,7 +71,7 @@ namespace CodeImp.DoomBuilder
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
 		public MapOptions Options { get { return options; } }
-		public MapSet Data { get { return data; } }
+		public MapSet Map { get { return map; } }
 		public EditMode Mode { get { return mode; } }
 		public bool IsChanged { get { return changed; } set { changed = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -93,12 +95,19 @@ namespace CodeImp.DoomBuilder
 			if(!isdisposed)
 			{
 				// Dispose
-				tempwad.Dispose();
+				General.WriteLogLine("Unloading data resources...");
 				data.Dispose();
+				General.WriteLogLine("Closing temporary file...");
+				tempwad.Dispose();
+				General.WriteLogLine("Unloading map data...");
+				map.Dispose();
+				General.WriteLogLine("Stopping edit mode...");
 				mode.Dispose();
+				General.WriteLogLine("Stopping graphics device...");
 				graphics.Dispose();
 
 				// Remove temp file
+				General.WriteLogLine("Removing temporary file...");
 				try { File.Delete(tempwad.Filename); } catch(Exception) { }
 
 				// We may spend some time to clean things up here
@@ -137,12 +146,17 @@ namespace CodeImp.DoomBuilder
 			config = General.LoadGameConfiguration(options.ConfigFile);
 
 			// Create map data
-			data = new MapSet();
+			map = new MapSet();
 			
 			// Create temp wadfile
 			tempfile = General.MakeTempFilename();
 			General.WriteLogLine("Creating temporary file: " + tempfile);
 			tempwad = new WAD(tempfile);
+
+			// Load data manager
+			General.WriteLogLine("Loading data resources...");
+			data = new DataManager();
+			data.Load(configinfo.Resources, options.Resources);
 
 			// Set default mode
 			ChangeMode(typeof(FrozenOverviewMode));
@@ -159,6 +173,7 @@ namespace CodeImp.DoomBuilder
 			MapSetIO mapio;
 			string tempfile;
 			string iointerface;
+			DataLocation maplocation;
 			
 			// Apply settings
 			this.filetitle = Path.GetFileName(filepathname);
@@ -179,7 +194,7 @@ namespace CodeImp.DoomBuilder
 			config = General.LoadGameConfiguration(options.ConfigFile);
 
 			// Create map data
-			data = new MapSet();
+			map = new MapSet();
 			
 			// Create temp wadfile
 			tempfile = General.MakeTempFilename();
@@ -203,10 +218,16 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Initializing map format interface " + iointerface + "...");
 			mapio = MapSetIO.Create(iointerface, tempwad);
 			General.WriteLogLine("Reading map data...");
-			data = mapio.Read(data, TEMP_MAP_HEADER);
+			map = mapio.Read(map, TEMP_MAP_HEADER);
 
 			// Update structures
-			data.Update();
+			map.Update();
+
+			// Load data manager
+			General.WriteLogLine("Loading data resources...");
+			data = new DataManager();
+			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
+			data.Load(configinfo.Resources, options.Resources, maplocation);
 			
 			// Set default mode
 			ChangeMode(typeof(FrozenOverviewMode));
@@ -270,8 +291,13 @@ namespace CodeImp.DoomBuilder
 						if(lump != null)
 						{
 							// Copy the lump to the target
+							General.WriteLogLine(ml.Key.ToString() + " copying");
 							newlump = target.Insert(ml.Key.ToString(), tgtindex++, lump.Length);
 							lump.CopyTo(newlump);
+						}
+						else
+						{
+							General.WriteLogLine("WARNING: " + ml.Key.ToString() + " should be copied but was not found!");
 						}
 					}
 				}
@@ -307,11 +333,12 @@ namespace CodeImp.DoomBuilder
 					lumpnodebuild = config.ReadSetting("maplumpnames." + nextlumpname + ".nodebuild", false);
 					lumpscript = config.ReadSetting("maplumpnames." + nextlumpname + ".script", "");
 
-					// Check if this lump will be copied from source
+					// Check if this lump will be removed from target
 					if((lumprequired && copyrequired) || (lumpblindcopy && copyblindcopy) ||
 					   (lumpnodebuild && copynodebuild) || ((lumpscript != "") && copyscript))
 					{
 						// Then remove it from target
+						General.WriteLogLine(nextlumpname + " removing");
 						source.RemoveAt(index);
 					}
 					else

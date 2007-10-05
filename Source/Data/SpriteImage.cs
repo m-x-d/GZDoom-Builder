@@ -15,7 +15,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private IDataReader source;
-		private int lumpindex;
+		private string lumpname;
 
 		#endregion
 
@@ -26,11 +26,11 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public SpriteImage(string name, IDataReader source, int lumpindex)
+		public SpriteImage(string name, IDataReader source, string lumpname)
 		{
 			// Initialize
 			this.source = source;
-			this.lumpindex = lumpindex;
+			this.lumpname = lumpname;
 			SetName(name);
 
 			// We have no destructor
