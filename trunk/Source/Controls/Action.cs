@@ -179,8 +179,16 @@ namespace CodeImp.DoomBuilder.Controls
 		// This raises events for this action
 		public void Invoke()
 		{
-			// Check if this action exists
-			foreach(ActionDelegate ad in delegates) ad.Invoke();
+			// No method bound?
+			if(delegates.Count == 0)
+			{
+				General.WriteLogLine("Called action '" + name + "' has no methods bound");
+			}
+			else
+			{
+				// Invoke all the delegates
+				foreach(ActionDelegate ad in delegates) ad.Invoke();
+			}
 		}
 
 		#endregion
