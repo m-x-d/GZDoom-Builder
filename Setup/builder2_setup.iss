@@ -48,3 +48,5 @@ Filename: {app}\Builder.exe; Description: {cm:LaunchProgram,Doom Builder}; Flags
 
 [UninstallDelete]
 Name: {app}\Builder.log; Type: files
+[InstallDelete]
+Name: {app}\Builder.pdb; Type: files

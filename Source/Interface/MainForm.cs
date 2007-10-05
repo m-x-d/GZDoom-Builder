@@ -285,11 +285,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Update();
 		}
 
-		// Display needs repainting
-		private unsafe void display_Paint(object sender, PaintEventArgs e)
+		// This redraws the display on the next paint event
+		public void RedrawDisplay()
 		{
-			// Request redraw
-			if(!redrawtimer.Enabled) redrawtimer.Enabled = true;
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.RedrawDisplay();
+			display.Invalidate();
 		}
 
 		// Redraw requested
@@ -309,13 +309,10 @@ namespace CodeImp.DoomBuilder.Interface
 				{
 					// Reset graphics to match changes
 					General.Map.Graphics.Reset();
-
-					// Make sure control is repainted
-					//display.Update();
 				}
 
 				// Redraw now
-				General.Map.Mode.RedrawDisplay();
+				RedrawDisplay();
 			}
 
 			// Display resize is done

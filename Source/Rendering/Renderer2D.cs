@@ -152,9 +152,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Unlock memory
 			image.UnlockBits(pixeldata);
-			
-			// Refresh
-			graphics.RenderTarget.Invalidate();
 		}
 		
 		// This changes view position

@@ -64,7 +64,9 @@ namespace CodeImp.DoomBuilder
 			// Initialize
 			this.filename = Path.GetFileName(filename);
 			this.name = cfg.ReadSetting("title", "");
-			
+
+			General.WriteLogLine("Registered nodebuilder configuration '" + this.name + "' from '" + this.filename + "'");
+
 			// Setup save map process
 			SetupProcess(out savemapprocess,
 				cfg.ReadSetting("savemap.compiler", ""),

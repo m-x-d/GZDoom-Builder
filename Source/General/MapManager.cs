@@ -116,17 +116,23 @@ namespace CodeImp.DoomBuilder
 		// Initializes for a new map
 		public bool InitializeNewMap(MapOptions options)
 		{
+			string tempfile;
+			
 			// Apply settings
 			this.filetitle = "unnamed.wad";
 			this.filepathname = "";
 			this.changed = false;
 			this.options = options;
-			
+
+			General.WriteLogLine("Creating new map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
+
 			// Initiate graphics
+			General.WriteLogLine("Initializing graphics device...");
 			graphics = new D3DGraphics(General.MainWindow.Display);
 			if(!graphics.Initialize()) return false;
 			
 			// Load game configuration
+			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = General.LoadGameConfiguration(options.ConfigFile);
 
@@ -134,12 +140,15 @@ namespace CodeImp.DoomBuilder
 			data = new MapSet();
 			
 			// Create temp wadfile
-			tempwad = new WAD(General.MakeTempFilename());
+			tempfile = General.MakeTempFilename();
+			General.WriteLogLine("Creating temporary file: " + tempfile);
+			tempwad = new WAD(tempfile);
 
 			// Set default mode
 			ChangeMode(typeof(FrozenOverviewMode));
 
 			// Success
+			General.WriteLogLine("Map creation done");
 			return true;
 		}
 
@@ -148,6 +157,8 @@ namespace CodeImp.DoomBuilder
 		{
 			WAD mapwad;
 			MapSetIO mapio;
+			string tempfile;
+			string iointerface;
 			
 			// Apply settings
 			this.filetitle = Path.GetFileName(filepathname);
@@ -155,23 +166,32 @@ namespace CodeImp.DoomBuilder
 			this.changed = false;
 			this.options = options;
 
+			General.WriteLogLine("Opening map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
+			
 			// Initiate graphics
+			General.WriteLogLine("Initializing graphics device...");
 			graphics = new D3DGraphics(General.MainWindow.Display);
 			if(!graphics.Initialize()) return false;
 
 			// Load game configuration
+			General.WriteLogLine("Loading game configuration...");
+			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = General.LoadGameConfiguration(options.ConfigFile);
 
 			// Create map data
 			data = new MapSet();
 			
 			// Create temp wadfile
-			tempwad = new WAD(General.MakeTempFilename());
+			tempfile = General.MakeTempFilename();
+			General.WriteLogLine("Creating temporary file: " + tempfile);
+			tempwad = new WAD(tempfile);
 			
 			// Now open the map file
+			General.WriteLogLine("Opening source file: " + filepathname);
 			mapwad = new WAD(filepathname, true);
 
 			// Copy the map lumps to the temp file
+			General.WriteLogLine("Copying map lumps to temporary file...");
 			CopyLumpsByType(mapwad, options.CurrentName, tempwad, TEMP_MAP_HEADER,
 							true, true, true, true);
 
@@ -179,7 +199,10 @@ namespace CodeImp.DoomBuilder
 			mapwad.Dispose();
 			
 			// Read the map from temp file
-			mapio = MapSetIO.Create(config.ReadSetting("formatinterface", ""), tempwad);
+			iointerface = config.ReadSetting("formatinterface", "");
+			General.WriteLogLine("Initializing map format interface " + iointerface + "...");
+			mapio = MapSetIO.Create(iointerface, tempwad);
+			General.WriteLogLine("Reading map data...");
 			data = mapio.Read(data, TEMP_MAP_HEADER);
 
 			// Update structures
@@ -189,6 +212,7 @@ namespace CodeImp.DoomBuilder
 			ChangeMode(typeof(FrozenOverviewMode));
 
 			// Success
+			General.WriteLogLine("Map loading done");
 			return true;
 		}
 		
@@ -310,10 +334,11 @@ namespace CodeImp.DoomBuilder
 			if(mode != null) mode.Dispose();
 			
 			// Create a new mode
+			General.WriteLogLine("Switching edit mode to " + modetype.Name + "...");
 			mode = EditMode.Create(modetype, args);
 			
 			// Redraw the display
-			mode.RedrawDisplay();
+			General.MainWindow.RedrawDisplay();
 		}
 		
 		#endregion

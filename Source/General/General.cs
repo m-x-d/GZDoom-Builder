@@ -229,6 +229,7 @@ namespace CodeImp.DoomBuilder
 					fullfilename = Path.GetFileName(filepath);
 					
 					// Add to lists
+					General.WriteLogLine("Registered game configuration '" + name + "' from '" + fullfilename + "'");
 					configs.Add(new ConfigurationInfo(name, fullfilename));
 				}
 			}
@@ -525,7 +526,8 @@ namespace CodeImp.DoomBuilder
 			{
 				// Display status
 				mainwindow.DisplayStatus("Closing map...");
-
+				General.WriteLogLine("Unloading map...");
+				
 				// Trash the current map
 				if(map != null) map.Dispose();
 				map = null;
@@ -536,6 +538,7 @@ namespace CodeImp.DoomBuilder
 				// Done
 				mainwindow.UpdateMenus();
 				mainwindow.DisplayReady();
+				General.WriteLogLine("Map unload done");
 			}
 		}
 
