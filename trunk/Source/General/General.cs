@@ -40,8 +40,8 @@ namespace CodeImp.DoomBuilder
 	{
 		#region ================== API Declarations
 
-		[DllImport("user32.dll")]
-		public static extern bool LockWindowUpdate(IntPtr hwnd);
+		//[DllImport("user32.dll")]
+		//public static extern bool LockWindowUpdate(IntPtr hwnd);
 
 		[DllImport("kernel32.dll", EntryPoint="RtlZeroMemory", SetLastError=false)]
 		public static extern void ZeroMemory(IntPtr dest, int size);

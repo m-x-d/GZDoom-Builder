@@ -299,7 +299,7 @@ namespace CodeImp.DoomBuilder.Interface
 			redrawtimer.Enabled = false;
 
 			// Resume control layouts
-			if(displayresized) General.LockWindowUpdate(IntPtr.Zero);
+			//if(displayresized) General.LockWindowUpdate(IntPtr.Zero);
 
 			// Map opened?
 			if(General.Map != null)
@@ -323,7 +323,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private void display_Resize(object sender, EventArgs e)
 		{
 			// Resizing
-			if(!displayresized) General.LockWindowUpdate(display.Handle);
+			//if(!displayresized) General.LockWindowUpdate(display.Handle);
 			displayresized = true;
 			
 			// Request redraw
