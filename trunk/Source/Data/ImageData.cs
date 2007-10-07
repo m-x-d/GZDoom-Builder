@@ -25,6 +25,7 @@ using System.Drawing;
 using SlimDX.Direct3D9;
 using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -41,7 +42,7 @@ namespace CodeImp.DoomBuilder.Data
 		// Properties
 		private string name;
 		private long longname;
-
+		
 		// GDI bitmap
 		protected Bitmap bitmap;
 
@@ -60,6 +61,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		public string Name { get { return name; } }
+		public long LongName { get { return longname; } }
 		public PixelColor* PixelData { get { return pixeldata; } }
 		public Bitmap Bitmap { get { return bitmap; } }
 		public Texture Texture { get { return texture; } }
@@ -103,7 +105,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected void SetName(string name)
 		{
 			this.name = name;
-			this.longname = General.GetTextureLongName(name);
+			this.longname = Lump.MakeLongName(name);
 		}
 		
 		// This requests loading the image
@@ -116,7 +118,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Make a data copy of the bits for the 2D renderer
 				bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-				pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height);
+				pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height * sizeof(PixelColor));
 				pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(pixeldatasize), General.MEM_COMMIT, General.PAGE_READWRITE);
 				General.CopyMemory((void*)pixeldata, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldatasize));
 				bitmap.UnlockBits(bmpdata);

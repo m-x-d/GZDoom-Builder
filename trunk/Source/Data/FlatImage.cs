@@ -14,7 +14,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Variables
 
-		private IDataReader source;
+		private DataReader source;
 		private string lumpname;
 
 		#endregion
@@ -26,7 +26,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public FlatImage(string name, IDataReader source, string lumpname)
+		public FlatImage(string name, DataReader source, string lumpname)
 		{
 			// Initialize
 			this.source = source;

@@ -35,7 +35,11 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private List<TexturePatch> patches;
-
+		private int width;
+		private int height;
+		private float scalex;
+		private float scaley;
+		
 		#endregion
 
 		#region ================== Properties
@@ -45,9 +49,13 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public TextureImage(string name)
+		public TextureImage(string name, int width, int height, float scalex, float scaley)
 		{
 			// Initialize
+			this.width = width;
+			this.height = height;
+			this.scalex = scalex;
+			this.scaley = scaley;
 			this.patches = new List<TexturePatch>();
 			SetName(name);
 			
@@ -84,7 +92,6 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Leave when already loaded
 			if(this.IsLoaded) return;
-			
 			
 			
 			// Pass on to base

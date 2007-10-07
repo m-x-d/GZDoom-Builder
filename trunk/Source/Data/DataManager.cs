@@ -24,6 +24,7 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -38,8 +39,20 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		// Data containers
-		private List<IDataReader> containers;
+		private List<DataReader> containers;
+
+		// Palette
+		private Playpal palette;
 		
+		// Textures
+		private Dictionary<long, ImageData> textures;
+		
+		// Flats
+		private Dictionary<long, ImageData> flats;
+
+		// Sprites
+		private Dictionary<long, ImageData> sprites;
+
 		// Disposing
 		private bool isdisposed = false;
 
@@ -57,9 +70,6 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public DataManager()
 		{
-			// Initialize
-			containers = new List<IDataReader>();
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -85,32 +95,28 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads all data resources
 		public void Load(DataLocationList configlist, DataLocationList maplist, DataLocation maplocation)
 		{
-			DataLocationList all;
-
-			// Create complete list
-			all = DataLocationList.Combined(configlist, maplist);
+			DataLocationList all = DataLocationList.Combined(configlist, maplist);
 			all.Add(maplocation);
-
-			// Load resources
 			Load(all);
 		}
 
 		// This loads all data resources
 		public void Load(DataLocationList configlist, DataLocationList maplist)
 		{
-			DataLocationList all;
-
-			// Create complete list
-			all = DataLocationList.Combined(configlist, maplist);
-
-			// Load resources
+			DataLocationList all = DataLocationList.Combined(configlist, maplist);
 			Load(all);
 		}
 
 		// This loads all data resources
 		public void Load(DataLocationList locations)
 		{
-			IDataReader c;
+			DataReader c;
+			
+			// Create collections
+			containers = new List<DataReader>();
+			textures = new Dictionary<long, ImageData>();
+			flats = new Dictionary<long, ImageData>();
+			sprites = new Dictionary<long, ImageData>();
 			
 			// Go for all locations
 			foreach(DataLocation dl in locations)
@@ -118,6 +124,10 @@ namespace CodeImp.DoomBuilder.Data
 				// Nothing chosen yet
 				c = null;
 
+				// TODO: Make this work more elegant using reflection.
+				// Make DataLocation.type of type Type and assign the
+				// types of the desired reader classes.
+				
 				// Choose container type
 				switch(dl.type)
 				{
@@ -132,33 +142,43 @@ namespace CodeImp.DoomBuilder.Data
 						break;
 				}
 
-				// Container type chosen?
-				if(c != null)
-				{
-					// TODO: Let the container read stuff
-
-					// Keep container reference
-					containers.Add(c);
-				}
+				// Add container
+				if(c != null) containers.Add(c);
 			}
+
+			// Load stuff
+			General.WriteLogLine("Loading PLAYPAL palette...");
+			LoadPalette();
+			General.WriteLogLine("Loading textures...");
+			LoadTextures();
 		}
 
 		// This unloads all data
 		public void Unload()
 		{
+			// Dispose resources
+			foreach(KeyValuePair<long, ImageData> i in textures) i.Value.Dispose();
+			foreach(KeyValuePair<long, ImageData> i in flats) i.Value.Dispose();
+			foreach(KeyValuePair<long, ImageData> i in sprites) i.Value.Dispose();
+			palette = null;
+			
 			// Dispose containers
-			foreach(IDataReader c in containers) c.Dispose();
+			foreach(DataReader c in containers) c.Dispose();
 			containers.Clear();
 		}
+
+		#endregion
 		
+		#region ================== Suspend / Resume
+
 		// This suspends a data resource location
 		public void SuspendLocation(string location)
 		{
 			// Go for all containers
-			foreach(IDataReader d in containers)
+			foreach(DataReader d in containers)
 			{
 				// Check if this is the location to suspend
-				if(string.Compare(d.Location, location, true) == 0)
+				if(string.Compare(d.Location.location, location, true) == 0)
 				{
 					// Suspend
 					General.WriteLogLine("Suspended data resource '" + location + "'");
@@ -174,10 +194,10 @@ namespace CodeImp.DoomBuilder.Data
 		public void ResumeLocation(string location)
 		{
 			// Go for all containers
-			foreach(IDataReader d in containers)
+			foreach(DataReader d in containers)
 			{
 				// Check if this is the location to resume
-				if(string.Compare(d.Location, location, true) == 0)
+				if(string.Compare(d.Location.location, location, true) == 0)
 				{
 					// Resume
 					General.WriteLogLine("Resumed data resource '" + location + "'");
@@ -187,6 +207,75 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			General.WriteLogLine("WARNING: Cannot resume data resource '" + location + "', no such location opened!");
+		}
+		
+		#endregion
+
+		#region ================== Palette
+
+		// This loads the PLAYPAL palette
+		private void LoadPalette()
+		{
+			// Go for all opened containers
+			for(int i = containers.Count - 1; i >= 0; i--)
+			{
+				// Load palette
+				palette = containers[i].LoadPalette();
+				if(palette != null) break;
+			}
+		}
+
+		#endregion
+
+		#region ================== Textures
+		
+		// This loads the textures
+		private void LoadTextures()
+		{
+			PatchNames pnames;
+			ICollection<ImageData> images;
+			
+			// Go for all opened containers
+			foreach(DataReader dr in containers)
+			{
+				// Load PNAMES info
+				// Note that pnames is NOT set to null in the loop
+				// because if a container has no pnames, the pnames
+				// of the previous (higher) container should be used.
+				pnames = dr.LoadPatchNames();
+				if(pnames != null)
+				{
+					// Load textures
+					images = dr.LoadTextures(pnames);
+					if(images != null)
+					{
+						// Go for all textures
+						foreach(ImageData img in images)
+						{
+							// Add or replace in textures list
+							textures.Remove(img.LongName);
+							textures.Add(img.LongName, img);
+						}
+					}
+				}
+			}
+		}
+		
+		// This returns a specific patch stream
+		public Stream GetPatchData(string pname)
+		{
+			Stream patch;
+
+			// Go for all opened containers
+			for(int i = containers.Count - 1; i >= 0; i--)
+			{
+				// This contain provides this patch?
+				patch = containers[i].GetPatchData(pname);
+				if(patch != null) return patch;
+			}
+
+			// No such patch found
+			return null;
 		}
 		
 		#endregion
