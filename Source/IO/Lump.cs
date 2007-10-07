@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// Data info
 		private string name;
+		private long longname;
 		private byte[] fixedname;
 		private int offset;
 		private int length;
@@ -52,6 +53,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		public WAD Owner { get { return owner; } }
 		public string Name { get { return name; } }
+		public long LongName { get { return longname; } }
 		public byte[] FixedName { get { return fixedname; } }
 		public int Offset { get { return offset; } }
 		public int Length { get { return length; } }
@@ -72,9 +74,10 @@ namespace CodeImp.DoomBuilder.IO
 			this.offset = offset;
 			this.length = length;
 
-			// Make uppercase name
+			// Make name
 			this.name = MakeNormalName(fixedname, WAD.ENCODING).ToUpperInvariant();
 			this.fixedname = MakeFixedName(name, WAD.ENCODING);
+			this.longname = MakeLongName(name);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -98,6 +101,22 @@ namespace CodeImp.DoomBuilder.IO
 		#endregion
 
 		#region ================== Methods
+
+		// This returns the long value for a 8 byte texture name
+		public static unsafe long MakeLongName(string name)
+		{
+			long value = 0;
+			byte[] namebytes = Encoding.ASCII.GetBytes(name);
+			uint bytes = (uint)namebytes.Length;
+			if(bytes > 8) bytes = 8;
+
+			fixed(void* bp = namebytes)
+			{
+				General.CopyMemory(&value, bp, new UIntPtr(bytes));
+			}
+
+			return value;
+		}
 		
 		// This makes the normal name from fixed name
 		public static string MakeNormalName(byte[] fixedname, Encoding encoding)
@@ -108,7 +127,7 @@ namespace CodeImp.DoomBuilder.IO
 			while((length < fixedname.Length) && (fixedname[length] != 0)) length++;
 			
 			// Make normal name
-			return encoding.GetString(fixedname, 0, length);
+			return encoding.GetString(fixedname, 0, length).Trim();
 		}
 
 		// This makes the fixed name from normal name
@@ -118,7 +137,7 @@ namespace CodeImp.DoomBuilder.IO
 			byte[] fixedname = new byte[8];
 
 			// Write the name in bytes
-			encoding.GetBytes(name, 0, name.Length, fixedname, 0);
+			encoding.GetBytes(name.Trim(), 0, name.Length, fixedname, 0);
 
 			// Return result
 			return fixedname;

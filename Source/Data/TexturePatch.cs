@@ -32,9 +32,17 @@ namespace CodeImp.DoomBuilder.Data
 {
 	internal struct TexturePatch
 	{
-		private IDataReader source;
 		private string lumpname;
-		private Point position;
-		private Size size;
+		private int x;
+		private int y;
+
+		// Constructor
+		public TexturePatch(string lumpname, int x, int y)
+		{
+			// Initialize
+			this.lumpname = lumpname;
+			this.x = x;
+			this.y = y;
+		}
 	}
 }

@@ -1,9 +1,30 @@
+
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
+/*
+ * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
+ * This program is released under GNU General Public License
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+#endregion
+
+#region ================== Namespaces
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.IO;
 using CodeImp.DoomBuilder.Rendering;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.Data
 {
@@ -21,19 +42,30 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
-		public PixelColor this[int a] { get { return colors[a]; } }
+		public PixelColor this[int index] { get { return colors[index]; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Playpal(IDataReader source, int lumpindex)
+		public Playpal(Stream stream)
 		{
-			// Initialize
+			BinaryReader reader = new BinaryReader(stream);
+			
+			// Create array
+			colors = new PixelColor[256];
 
-			// We have no destructor
-			GC.SuppressFinalize(this);
+			// Read all palette entries
+			stream.Seek(0, SeekOrigin.Begin);
+			for(int i = 0; i < 256; i++)
+			{
+				// Read colors
+				colors[i].r = reader.ReadByte();
+				colors[i].g = reader.ReadByte();
+				colors[i].b = reader.ReadByte();
+				colors[i].a = 255;
+			}
 		}
 
 		#endregion

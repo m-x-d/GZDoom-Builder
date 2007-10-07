@@ -49,6 +49,7 @@
     <Compile Include="Data\DirectoryReader.cs" />
     <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\FlatImage.cs" />
+    <Compile Include="Data\PatchNames.cs" />
     <Compile Include="Data\Playpal.cs" />
     <Compile Include="Data\SpriteImage.cs" />
     <Compile Include="Data\TextureImage.cs" />
@@ -68,7 +69,7 @@
     <Compile Include="Geometry\Vector3D.cs" />
     <Compile Include="Data\TexturePatch.cs" />
     <Compile Include="Data\TexturePatchFormat.cs" />
-    <Compile Include="Data\IDataReader.cs" />
+    <Compile Include="Data\DataReader.cs" />
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\WADReader.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="General\General.cs" />
     <Compile Include="IO\ClippedStream.cs" />
     <Compile Include="IO\DoomMapSetIO.cs" />
+    <Compile Include="IO\DoomPictureReader.cs" />
     <Compile Include="IO\Lump.cs" />
     <Compile Include="IO\MapSetIO.cs" />
     <Compile Include="IO\WAD.cs" />

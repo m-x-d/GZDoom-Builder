@@ -677,22 +677,6 @@ namespace CodeImp.DoomBuilder
 			return filename;
 		}
 
-		// This returns the long value for a 8 byte texture name
-		public static unsafe long GetTextureLongName(string name)
-		{
-			long value = 0;
-			byte[] namebytes = Encoding.ASCII.GetBytes(name);
-			uint bytes = (uint)namebytes.Length;
-			if(bytes > 8) bytes = 8;
-			
-			fixed(void* bp = namebytes)
-			{
-				CopyMemory(&value, bp, new UIntPtr(bytes));
-			}
-			
-			return value;
-		}
-
 		#endregion
 	}
 }

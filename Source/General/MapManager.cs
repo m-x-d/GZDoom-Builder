@@ -73,9 +73,11 @@ namespace CodeImp.DoomBuilder
 		public MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
 		public EditMode Mode { get { return mode; } }
+		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed; } set { changed = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public D3DGraphics Graphics { get { return graphics; } }
+		public Configuration Configuration { get { return config; } }
 		
 		#endregion
 

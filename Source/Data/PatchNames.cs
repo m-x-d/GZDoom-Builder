@@ -21,8 +21,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
 
@@ -30,7 +28,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class DirectoryReader : DataReader
+	internal class PatchNames
 	{
 		#region ================== Constants
 
@@ -38,63 +36,43 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Variables
 
-		// Source
-		private bool readtextures;
-		private bool readflats;
+		private string[] pnames;
 
 		#endregion
 
 		#region ================== Properties
 
+		public string this[int index] { get { return pnames[index]; } }
+		public int Length { get { return pnames.Length; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public DirectoryReader(DataLocation dl) : base(dl)
+		public PatchNames(Stream stream)
 		{
-			// Initialize
-			this.readtextures = dl.textures;
-			this.readflats = dl.flats;
+			BinaryReader reader = new BinaryReader(stream);
+			uint length;
+			
+			// Read length of array
+			stream.Seek(0, SeekOrigin.Begin);
+			length = reader.ReadUInt32();
+			
+			// Create array
+			pnames = new string[length];
 
-			General.WriteLogLine("Opening directory resource '" + location.location + "'");
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Disposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
+			// Read all patch names
+			for(uint i = 0; i < length; i++)
 			{
-				General.WriteLogLine("Closing directory resource '" + location.location + "'");
-
-				// Clean up
-				
-				// Done
-				base.Dispose();
+				byte[] bytes = reader.ReadBytes(8);
+				pnames[i] = Lump.MakeNormalName(bytes, WAD.ENCODING);
 			}
 		}
 
 		#endregion
 
-		#region ================== Palette
-
-		// This loads the PLAYPAL palette
-		public override Playpal LoadPalette()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-			
-			// Not yet implemented
-			return null;
-		}
-
-		#endregion
-		
-		#region ================== Textures
+		#region ================== Methods
 
 		#endregion
 	}
