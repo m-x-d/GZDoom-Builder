@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.IO
 			if(origin == SeekOrigin.Begin)
 			{
 				// Check if this exceeds limits
-				if((offset >= this.length) || (offset < 0))
+				if((offset > this.length) || (offset < 0))
 					throw new ArgumentException("Attempted to seek outside the range of the stream.");
 				
 				// Seek
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.IO
 			else if(origin == SeekOrigin.Current)
 			{
 				// Check if this exceeds limits
-				if((this.position + offset >= this.length) || (this.position + offset < 0))
+				if((this.position + offset > this.length) || (this.position + offset < 0))
 					throw new ArgumentException("Attempted to seek outside the range of the stream.");
 
 				// Seek
