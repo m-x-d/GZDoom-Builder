@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsavemapinto = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemnorecent = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemexit = new System.Windows.Forms.ToolStripMenuItem();
+			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
+			this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpabout = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
@@ -68,8 +70,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.panelinfo = new System.Windows.Forms.Panel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new System.Windows.Forms.Panel();
-			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
-			this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -160,6 +160,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemclosemap.Name = "itemclosemap";
 			this.itemclosemap.Size = new System.Drawing.Size(201, 22);
+			this.itemclosemap.Tag = "closemap";
 			this.itemclosemap.Text = "Close Map";
 			this.itemclosemap.Click += new System.EventHandler(this.itemclosemap_Click);
 			// 
@@ -195,6 +196,22 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemexit.Size = new System.Drawing.Size(201, 22);
 			this.itemexit.Text = "Exit";
 			this.itemexit.Click += new System.EventHandler(this.itemexit_Click);
+			// 
+			// menutools
+			// 
+			this.menutools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.configurationToolStripMenuItem});
+			this.menutools.Name = "menutools";
+			this.menutools.Size = new System.Drawing.Size(44, 20);
+			this.menutools.Text = "Tools";
+			// 
+			// configurationToolStripMenuItem
+			// 
+			this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
+			this.configurationToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.configurationToolStripMenuItem.Tag = "configuration";
+			this.configurationToolStripMenuItem.Text = "Configuration...";
+			this.configurationToolStripMenuItem.Click += new System.EventHandler(this.configurationToolStripMenuItem_Click);
 			// 
 			// menuhelp
 			// 
@@ -416,22 +433,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Resize += new System.EventHandler(this.display_Resize);
 			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
-			// 
-			// menutools
-			// 
-			this.menutools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.configurationToolStripMenuItem});
-			this.menutools.Name = "menutools";
-			this.menutools.Size = new System.Drawing.Size(44, 20);
-			this.menutools.Text = "Tools";
-			// 
-			// configurationToolStripMenuItem
-			// 
-			this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
-			this.configurationToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
-			this.configurationToolStripMenuItem.Tag = "configuration";
-			this.configurationToolStripMenuItem.Text = "Configuration...";
-			this.configurationToolStripMenuItem.Click += new System.EventHandler(this.configurationToolStripMenuItem_Click);
 			// 
 			// MainForm
 			// 
