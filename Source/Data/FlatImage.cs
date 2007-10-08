@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class FlatImage : ImageData
+	internal sealed class FlatImage : ImageData
 	{
 		#region ================== Constants
 

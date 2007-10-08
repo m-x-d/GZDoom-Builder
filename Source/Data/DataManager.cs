@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class DataManager : IDisposable
+	internal sealed class DataManager : IDisposable
 	{
 		#region ================== Constants
 
@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
-		// Disposing
+		public Playpal Palette { get { return palette; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion

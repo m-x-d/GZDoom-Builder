@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class Playpal
+	internal sealed class Playpal
 	{
 		#region ================== Constants
 

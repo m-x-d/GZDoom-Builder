@@ -42,6 +42,10 @@ namespace CodeImp.DoomBuilder.Data
 		// Properties
 		private string name;
 		private long longname;
+		protected int width;
+		protected int height;
+		protected float scaledwidth;
+		protected float scaledheight;
 		
 		// GDI bitmap
 		protected Bitmap bitmap;
@@ -65,8 +69,12 @@ namespace CodeImp.DoomBuilder.Data
 		public PixelColor* PixelData { get { return pixeldata; } }
 		public Bitmap Bitmap { get { return bitmap; } }
 		public Texture Texture { get { return texture; } }
-		public bool IsLoaded { get { return (bitmap == null); } }
+		public bool IsLoaded { get { return (bitmap != null); } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public int Width { get { return width; } }
+		public int Height { get { return height; } }
+		public float ScaledWidth { get { return scaledwidth; } }
+		public float ScaledHeight { get { return scaledheight; } }
 
 		#endregion
 

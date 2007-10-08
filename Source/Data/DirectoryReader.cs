@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class DirectoryReader : DataReader
+	internal sealed class DirectoryReader : DataReader
 	{
 		#region ================== Constants
 
