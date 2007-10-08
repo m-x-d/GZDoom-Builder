@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class SpriteImage : ImageData
+	internal sealed class SpriteImage : ImageData
 	{
 		#region ================== Constants
 

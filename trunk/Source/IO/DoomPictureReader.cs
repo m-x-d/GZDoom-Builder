@@ -27,6 +27,7 @@ using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Rendering;
+using System.Drawing.Imaging;
 
 #endregion
 
@@ -63,45 +64,103 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Methods
 		
 		// This creates a Bitmap from the given data
+		// Returns null on failure
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
-			// TODO: Read as pixel data and copy pixels
-			return null;
+			BitmapData bitmapdata;
+			PixelColor* pixeldata;
+			PixelColor* targetdata;
+			int width, height, x, y;
+			Bitmap bmp;
+
+			// Read pixel data
+			pixeldata = ReadAsPixelData(stream, out width, out height, out x, out y);
+			if(pixeldata != null)
+			{
+				// Create bitmap and lock pixels
+				bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+				bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+				targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
+
+				// Copy the pixels
+				General.CopyMemory((void*)targetdata, (void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))));
+
+				// Done
+				bmp.UnlockBits(bitmapdata);
+				return bmp;
+			}
+			else
+			{
+				// Failed loading picture
+				return null;
+			}
 		}
 		
 		// This draws the picture to the given pixel color data
+		// Throws exception on failure
 		public void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
 		{
-			// TODO: Read as pixel data and copy pixels
+			PixelColor* pixeldata;
+			int width, height, ox, oy, tx, ty;
+
+			// Read pixel data
+			pixeldata = ReadAsPixelData(stream, out width, out height, out ox, out oy);
+			if(pixeldata != null)
+			{
+				// Go for all source pixels
+				// We don't care about the original image offset, so reuse ox/oy
+				for(ox = 0; ox < width; ox++)
+				{
+					for(oy = 0; oy < height; oy++)
+					{
+						// Copy this pixel?
+						if(pixeldata[oy * width + ox].a > 0.5f)
+						{
+							// Calculate target pixel and copy when within bounds
+							tx = x + ox;
+							ty = y + oy;
+							if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
+								target[ty * targetwidth + tx] = pixeldata[oy * width + ox];
+						}
+					}
+				}
+			}
 		}
-		
+
 		// This creates pixel color data from the given data
+		// Returns null on failure
 		public PixelColor* ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
 		{
 			BinaryReader reader = new BinaryReader(stream);
 			PixelColor* pixeldata = null;
 			uint datalength = 0;
 			int y, count, p;
-
+			int[] columns;
+			int dataoffset;
+			
 			// Initialize
 			width = 0;
 			height = 0;
 			offsetx = 0;
 			offsety = 0;
-			
+			dataoffset = (int)stream.Position;
+
 			// Need at least 4 bytes
 			if((stream.Length - stream.Position) < 4) return null;
 			
+			#if !DEBUG
 			try
 			{
+			#endif
 				// Read size and offset
 				width = reader.ReadInt16();
 				height = reader.ReadInt16();
 				offsetx = reader.ReadInt16();
 				offsety = reader.ReadInt16();
 
-				// Skip the column addresses
-				stream.Seek(4 * width, SeekOrigin.Current);
+				// Read the column addresses
+				columns = new int[width];
+				for(int x = 0; x < width; x++) columns[x] = reader.ReadInt32();
 				
 				// Allocate memory
 				datalength = (uint)(sizeof(PixelColor) * width * height);
@@ -111,6 +170,9 @@ namespace CodeImp.DoomBuilder.IO
 				// Go for all columns
 				for(int x = 0; x < width; x++)
 				{
+					// Seek to column start
+					stream.Seek(dataoffset + columns[x], SeekOrigin.Begin);
+					
 					// Read first post start
 					y = reader.ReadByte();
 
@@ -143,6 +205,7 @@ namespace CodeImp.DoomBuilder.IO
 
 				// Return pointer
 				return pixeldata;
+			#if !DEBUG
 			}
 			catch(Exception)
 			{
@@ -152,6 +215,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Return nothing
 				return null;
 			}
+			#endif
 		}
 		
 		#endregion

@@ -21,12 +21,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Drawing;
+using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.IO;
+using System.IO;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class TextureImage : ImageData
+	internal sealed unsafe class TextureImage : ImageData
 	{
 		#region ================== Constants
 
@@ -35,8 +40,6 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private List<TexturePatch> patches;
-		private int width;
-		private int height;
 		private float scalex;
 		private float scaley;
 		
@@ -56,6 +59,8 @@ namespace CodeImp.DoomBuilder.Data
 			this.height = height;
 			this.scalex = scalex;
 			this.scaley = scaley;
+			this.scaledwidth = (float)width * scalex;
+			this.scaledheight = (float)height * scaley;
 			this.patches = new List<TexturePatch>();
 			SetName(name);
 			
@@ -90,9 +95,36 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the image
 		public override void LoadImage()
 		{
+			uint datalength = (uint)(width * height * sizeof(PixelColor));
+			DoomPictureReader reader = new DoomPictureReader(General.Map.Data.Palette);
+			BitmapData bitmapdata;
+			PixelColor* pixels;
+			Stream patchdata;
+			
 			// Leave when already loaded
 			if(this.IsLoaded) return;
 			
+			// Create texture bitmap
+			bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+			bitmapdata = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			pixels = (PixelColor*)bitmapdata.Scan0.ToPointer();
+			General.ZeroMemory(new IntPtr(pixels), width * height * sizeof(PixelColor));
+
+			// Go for all patches
+			foreach(TexturePatch p in patches)
+			{
+				// Get the patch data stream
+				patchdata = General.Map.Data.GetPatchData(p.lumpname);
+				if(patchdata != null)
+				{
+					// Read the patch and draw it onto the memory
+					patchdata.Seek(0, SeekOrigin.Begin);
+					reader.DrawToPixelData(patchdata, pixels, width, height, p.x, p.y);
+				}
+			}
+			
+			// Done
+			bitmap.UnlockBits(bitmapdata);
 			
 			// Pass on to base
 			base.LoadImage();

@@ -8,7 +8,7 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class DataLocationList : List<DataLocation>
+	internal sealed class DataLocationList : List<DataLocation>
 	{
 		#region ================== Constructors
 

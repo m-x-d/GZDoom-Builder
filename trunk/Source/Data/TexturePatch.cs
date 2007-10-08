@@ -32,9 +32,9 @@ namespace CodeImp.DoomBuilder.Data
 {
 	internal struct TexturePatch
 	{
-		private string lumpname;
-		private int x;
-		private int y;
+		public string lumpname;
+		public int x;
+		public int y;
 
 		// Constructor
 		public TexturePatch(string lumpname, int x, int y)

@@ -29,7 +29,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class FileImage : ImageData
+	internal sealed class FileImage : ImageData
 	{
 		#region ================== Variables
 

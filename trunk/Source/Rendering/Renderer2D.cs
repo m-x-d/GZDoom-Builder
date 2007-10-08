@@ -208,6 +208,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This draws a pixel alpha blended
 		private void DrawPixelAlpha(int x, int y, PixelColor c)
 		{
+			float a;
+
 			// Draw only when within range
 			if((x >= 0) && (x < width) && (y >= 0) && (y < height))
 			{
@@ -223,10 +225,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				else
 				{
 					// Blend with pixel
+					a = (float)c.a * 0.003921568627450980392156862745098f;
 					if((int)p->a + (int)c.a > 255) p->a = 255; else p->a += c.a;
-					p->r = (byte)((float)p->r * (1f - (float)c.a) + (float)c.r * (float)c.a);
-					p->g = (byte)((float)p->g * (1f - (float)c.a) + (float)c.g * (float)c.a);
-					p->b = (byte)((float)p->b * (1f - (float)c.a) + (float)c.b * (float)c.a);
+					p->r = (byte)((float)p->r * (1f - a) + (float)c.r * a);
+					p->g = (byte)((float)p->g * (1f - a) + (float)c.g * a);
+					p->b = (byte)((float)p->b * (1f - a) + (float)c.b * a);
 				}
 			}
 		}
