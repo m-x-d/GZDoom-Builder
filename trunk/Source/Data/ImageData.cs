@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected Bitmap bitmap;
 
 		// 2D rendering data
-		private PixelColor* pixeldata;
+		private PixelColor* pixeldata = null;
 		private uint pixeldatasize;
 		
 		// Direct3D texture
@@ -96,9 +96,12 @@ namespace CodeImp.DoomBuilder.Data
 				// Clean up
 				if(bitmap != null) bitmap.Dispose();
 				if(texture != null) texture.Dispose();
-				if(pixeldata != null) General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
-				pixeldata = null;
-				GC.RemoveMemoryPressure(pixeldatasize);
+				if(pixeldata != null)
+				{
+					General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
+					pixeldata = null;
+					GC.RemoveMemoryPressure(pixeldatasize);
+				}
 
 				// Done
 				isdisposed = true;
@@ -119,19 +122,28 @@ namespace CodeImp.DoomBuilder.Data
 		// This requests loading the image
 		public virtual void LoadImage()
 		{
+		}
+		
+		// This creates the 2D pixel data
+		public void CreatePixelData()
+		{
 			BitmapData bmpdata;
-			
-			// Check if loading worked
-			if(bitmap != null)
+
+			// Clean up old memory if reserved
+			if(pixeldata != null)
 			{
-				// Make a data copy of the bits for the 2D renderer
-				bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-				pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height * sizeof(PixelColor));
-				pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(pixeldatasize), General.MEM_COMMIT, General.PAGE_READWRITE);
-				General.CopyMemory((void*)pixeldata, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldatasize));
-				bitmap.UnlockBits(bmpdata);
-				GC.AddMemoryPressure(pixeldatasize);
+				General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
+				pixeldata = null;
+				GC.RemoveMemoryPressure(pixeldatasize);
 			}
+			
+			// Make a data copy of the bits for the 2D renderer
+			bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+			pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height * sizeof(PixelColor));
+			pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(pixeldatasize), General.MEM_COMMIT, General.PAGE_READWRITE);
+			General.CopyMemory((void*)pixeldata, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldatasize));
+			bitmap.UnlockBits(bmpdata);
+			GC.AddMemoryPressure(pixeldatasize);
 		}
 		
 		// This creates the Direct3D texture
