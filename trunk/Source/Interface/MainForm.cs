@@ -508,7 +508,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Tools Menu
 
-		// Configuration action
+		// Game Configuration action
 		[Action(Action.CONFIGURATION)]
 		public void ShowConfiguration()
 		{
@@ -516,18 +516,39 @@ namespace CodeImp.DoomBuilder.Interface
 			ConfigForm cfgform = new ConfigForm();
 			if(cfgform.ShowDialog(this) == DialogResult.OK)
 			{
+				// TODO: Reload resources if a map is open
+			}
+			
+			// Done
+			cfgform.Dispose();
+		}
+
+		// Preferences action
+		[Action(Action.PREFERENCES)]
+		public void ShowPreferences()
+		{
+			// Show preferences dialog
+			PreferencesForm prefform = new PreferencesForm();
+			if(prefform.ShowDialog(this) == DialogResult.OK)
+			{
 				// Update shortcut keys in menus
 				ApplyShortcutKeys();
 			}
 
 			// Done
-			cfgform.Dispose();
+			prefform.Dispose();
 		}
 		
-		// Configuration clicked
+		// Game Configuration clicked
 		public void configurationToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ShowConfiguration();
+		}
+
+		// Preferences clciked
+		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			ShowPreferences();
 		}
 
 		#endregion

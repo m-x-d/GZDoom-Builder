@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemexit = new System.Windows.Forms.ToolStripMenuItem();
 			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
 			this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpabout = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
@@ -200,7 +201,8 @@ namespace CodeImp.DoomBuilder.Interface
 			// menutools
 			// 
 			this.menutools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.configurationToolStripMenuItem});
+            this.configurationToolStripMenuItem,
+            this.preferencesToolStripMenuItem});
 			this.menutools.Name = "menutools";
 			this.menutools.Size = new System.Drawing.Size(44, 20);
 			this.menutools.Text = "Tools";
@@ -208,10 +210,18 @@ namespace CodeImp.DoomBuilder.Interface
 			// configurationToolStripMenuItem
 			// 
 			this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
-			this.configurationToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
+			this.configurationToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
 			this.configurationToolStripMenuItem.Tag = "configuration";
-			this.configurationToolStripMenuItem.Text = "Configuration...";
+			this.configurationToolStripMenuItem.Text = "Game Configurations...";
 			this.configurationToolStripMenuItem.Click += new System.EventHandler(this.configurationToolStripMenuItem_Click);
+			// 
+			// preferencesToolStripMenuItem
+			// 
+			this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+			this.preferencesToolStripMenuItem.Tag = "preferences";
+			this.preferencesToolStripMenuItem.Text = "Preferences...";
+			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
 			// 
 			// menuhelp
 			// 
@@ -505,5 +515,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemzoom5;
 		private System.Windows.Forms.ToolStripMenuItem menutools;
 		private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
 	}
 }

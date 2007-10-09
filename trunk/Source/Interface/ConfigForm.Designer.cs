@@ -28,416 +28,157 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.Label label2;
+			System.Windows.Forms.Label label5;
+			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label3;
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
+			System.Windows.Forms.Label label2;
+			System.Windows.Forms.Label label7;
+			System.Windows.Forms.Label label8;
+			System.Windows.Forms.Label label9;
 			System.Windows.Forms.Label label4;
 			System.Windows.Forms.Label label1;
-			System.Windows.Forms.Label label6;
-			System.Windows.Forms.Label label7;
-			System.Windows.Forms.Label label5;
-			this.panelnodebuilder = new System.Windows.Forms.GroupBox();
-			this.configbuildonsave = new System.Windows.Forms.CheckBox();
-			this.confignodebuilder = new System.Windows.Forms.ComboBox();
-			this.paneltesting = new System.Windows.Forms.GroupBox();
+			System.Windows.Forms.Label label10;
+			this.cancel = new System.Windows.Forms.Button();
+			this.apply = new System.Windows.Forms.Button();
+			this.tabs = new System.Windows.Forms.TabControl();
+			this.tabresources = new System.Windows.Forms.TabPage();
+			this.configdata = new CodeImp.DoomBuilder.Interface.ResourceListEditor();
+			this.tabnodebuilder = new System.Windows.Forms.TabPage();
+			this.nodebuilder3d = new System.Windows.Forms.ComboBox();
+			this.nodebuildertest = new System.Windows.Forms.ComboBox();
+			this.nodebuildersave = new System.Windows.Forms.ComboBox();
+			this.tabtesting = new System.Windows.Forms.TabPage();
+			this.testresult = new System.Windows.Forms.TextBox();
+			this.labelresult = new System.Windows.Forms.Label();
 			this.testparameters = new System.Windows.Forms.TextBox();
 			this.browsewad = new System.Windows.Forms.Button();
 			this.testapplication = new System.Windows.Forms.TextBox();
-			this.tabs = new System.Windows.Forms.TabControl();
-			this.tabinterface = new System.Windows.Forms.TabPage();
-			this.tabkeys = new System.Windows.Forms.TabPage();
-			this.listactions = new System.Windows.Forms.ListView();
-			this.columncontrolaction = new System.Windows.Forms.ColumnHeader();
-			this.columncontrolkey = new System.Windows.Forms.ColumnHeader();
-			this.actioncontrolpanel = new System.Windows.Forms.GroupBox();
-			this.actioncontrol = new System.Windows.Forms.ComboBox();
-			this.actiontitle = new System.Windows.Forms.Label();
-			this.actioncontrolclear = new System.Windows.Forms.Button();
-			this.actionkey = new System.Windows.Forms.TextBox();
-			this.actiondescription = new System.Windows.Forms.Label();
-			this.tabconfigs = new System.Windows.Forms.TabPage();
-			this.panelresources = new System.Windows.Forms.GroupBox();
-			this.configdata = new CodeImp.DoomBuilder.Interface.ResourceListEditor();
-			this.listconfigs = new System.Windows.Forms.ListBox();
-			this.cancel = new System.Windows.Forms.Button();
-			this.apply = new System.Windows.Forms.Button();
-			label2 = new System.Windows.Forms.Label();
+			this.listconfigs = new System.Windows.Forms.ListView();
+			this.columnname = new System.Windows.Forms.ColumnHeader();
+			label5 = new System.Windows.Forms.Label();
+			label6 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
+			label2 = new System.Windows.Forms.Label();
+			label7 = new System.Windows.Forms.Label();
+			label8 = new System.Windows.Forms.Label();
+			label9 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
-			label6 = new System.Windows.Forms.Label();
-			label7 = new System.Windows.Forms.Label();
-			label5 = new System.Windows.Forms.Label();
-			this.panelnodebuilder.SuspendLayout();
-			this.paneltesting.SuspendLayout();
+			label10 = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
-			this.tabkeys.SuspendLayout();
-			this.actioncontrolpanel.SuspendLayout();
-			this.tabconfigs.SuspendLayout();
-			this.panelresources.SuspendLayout();
+			this.tabresources.SuspendLayout();
+			this.tabnodebuilder.SuspendLayout();
+			this.tabtesting.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// label5
+			// 
+			label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			label5.AutoSize = true;
+			label5.Location = new System.Drawing.Point(12, 288);
+			label5.Name = "label5";
+			label5.Size = new System.Drawing.Size(312, 14);
+			label5.TabIndex = 19;
+			label5.Text = "Drag items to change order (lower items override higher items).";
+			// 
+			// label6
+			// 
+			label6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			label6.AutoEllipsis = true;
+			label6.Location = new System.Drawing.Point(12, 15);
+			label6.Name = "label6";
+			label6.Size = new System.Drawing.Size(384, 37);
+			label6.TabIndex = 21;
+			label6.Text = "These are the resources that will be loaded when this configuration is chosen for" +
+				" editing. Usually you add your IWAD (like doom.wad or doom2.wad) here.";
+			// 
+			// label3
+			// 
+			label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			label3.AutoEllipsis = true;
+			label3.Location = new System.Drawing.Point(12, 15);
+			label3.Name = "label3";
+			label3.Size = new System.Drawing.Size(384, 54);
+			label3.TabIndex = 22;
+			label3.Text = resources.GetString("label3.Text");
 			// 
 			// label2
 			// 
 			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(25, 31);
+			label2.Location = new System.Drawing.Point(12, 80);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(74, 14);
-			label2.TabIndex = 3;
-			label2.Text = "Configuration:";
+			label2.Size = new System.Drawing.Size(149, 14);
+			label2.TabIndex = 24;
+			label2.Text = "Configuration for saving map:";
 			// 
-			// label3
+			// label7
 			// 
-			label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(11, 115);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(312, 14);
-			label3.TabIndex = 17;
-			label3.Text = "Drag items to change order (lower items override higher items).";
+			label7.AutoSize = true;
+			label7.Location = new System.Drawing.Point(35, 125);
+			label7.Name = "label7";
+			label7.Size = new System.Drawing.Size(126, 14);
+			label7.TabIndex = 26;
+			label7.Text = "Configuration for testing:";
+			// 
+			// label8
+			// 
+			label8.AutoSize = true;
+			label8.Location = new System.Drawing.Point(25, 170);
+			label8.Name = "label8";
+			label8.Size = new System.Drawing.Size(136, 14);
+			label8.TabIndex = 28;
+			label8.Text = "Configuration for 3D mode:";
+			// 
+			// label9
+			// 
+			label9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			label9.AutoEllipsis = true;
+			label9.Location = new System.Drawing.Point(12, 15);
+			label9.Name = "label9";
+			label9.Size = new System.Drawing.Size(393, 54);
+			label9.TabIndex = 23;
+			label9.Text = "Here you can specify the program settings to use for launching a game engine when" +
+				" testing the map. Use the placeholders as listed below where you want automatic " +
+				"names and numbers inserted.";
 			// 
 			// label4
 			// 
 			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(23, 67);
+			label4.Location = new System.Drawing.Point(15, 121);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(65, 14);
-			label4.TabIndex = 7;
+			label4.TabIndex = 27;
 			label4.Text = "Parameters:";
 			// 
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(25, 32);
+			label1.Location = new System.Drawing.Point(15, 80);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(63, 14);
-			label1.TabIndex = 4;
+			label1.TabIndex = 24;
 			label1.Text = "Application:";
 			// 
-			// label6
+			// label10
 			// 
-			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(20, 28);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(41, 14);
-			label6.TabIndex = 2;
-			label6.Text = "Action:";
-			// 
-			// label7
-			// 
-			label7.AutoSize = true;
-			label7.Location = new System.Drawing.Point(20, 170);
-			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(187, 14);
-			label7.TabIndex = 7;
-			label7.Text = "Or select a special input control here:";
-			// 
-			// label5
-			// 
-			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(20, 113);
-			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(200, 14);
-			label5.TabIndex = 4;
-			label5.Text = "Press the desired key combination here:";
-			// 
-			// panelnodebuilder
-			// 
-			this.panelnodebuilder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+			label10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.panelnodebuilder.Controls.Add(this.configbuildonsave);
-			this.panelnodebuilder.Controls.Add(label2);
-			this.panelnodebuilder.Controls.Add(this.confignodebuilder);
-			this.panelnodebuilder.Enabled = false;
-			this.panelnodebuilder.Location = new System.Drawing.Point(237, 154);
-			this.panelnodebuilder.Margin = new System.Windows.Forms.Padding(6);
-			this.panelnodebuilder.Name = "panelnodebuilder";
-			this.panelnodebuilder.Size = new System.Drawing.Size(345, 97);
-			this.panelnodebuilder.TabIndex = 2;
-			this.panelnodebuilder.TabStop = false;
-			this.panelnodebuilder.Text = " Nodebuilder";
-			// 
-			// configbuildonsave
-			// 
-			this.configbuildonsave.AutoSize = true;
-			this.configbuildonsave.Location = new System.Drawing.Point(49, 62);
-			this.configbuildonsave.Name = "configbuildonsave";
-			this.configbuildonsave.Size = new System.Drawing.Size(242, 18);
-			this.configbuildonsave.TabIndex = 4;
-			this.configbuildonsave.Text = "Build nodes every time when saving the map";
-			this.configbuildonsave.UseVisualStyleBackColor = true;
-			this.configbuildonsave.CheckedChanged += new System.EventHandler(this.configbuildonsave_CheckedChanged);
-			// 
-			// confignodebuilder
-			// 
-			this.confignodebuilder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.confignodebuilder.FormattingEnabled = true;
-			this.confignodebuilder.Location = new System.Drawing.Point(105, 28);
-			this.confignodebuilder.Name = "confignodebuilder";
-			this.confignodebuilder.Size = new System.Drawing.Size(186, 22);
-			this.confignodebuilder.Sorted = true;
-			this.confignodebuilder.TabIndex = 2;
-			this.confignodebuilder.SelectedIndexChanged += new System.EventHandler(this.confignodebuilder_SelectedIndexChanged);
-			// 
-			// paneltesting
-			// 
-			this.paneltesting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.paneltesting.Controls.Add(this.testparameters);
-			this.paneltesting.Controls.Add(label4);
-			this.paneltesting.Controls.Add(this.browsewad);
-			this.paneltesting.Controls.Add(this.testapplication);
-			this.paneltesting.Controls.Add(label1);
-			this.paneltesting.Enabled = false;
-			this.paneltesting.Location = new System.Drawing.Point(237, 257);
-			this.paneltesting.Margin = new System.Windows.Forms.Padding(6);
-			this.paneltesting.Name = "paneltesting";
-			this.paneltesting.Size = new System.Drawing.Size(345, 107);
-			this.paneltesting.TabIndex = 13;
-			this.paneltesting.TabStop = false;
-			this.paneltesting.Text = " Testing ";
-			// 
-			// testparameters
-			// 
-			this.testparameters.Location = new System.Drawing.Point(94, 64);
-			this.testparameters.Name = "testparameters";
-			this.testparameters.Size = new System.Drawing.Size(197, 20);
-			this.testparameters.TabIndex = 8;
-			this.testparameters.TextChanged += new System.EventHandler(this.testparameters_TextChanged);
-			// 
-			// browsewad
-			// 
-			this.browsewad.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browsewad.Location = new System.Drawing.Point(297, 28);
-			this.browsewad.Name = "browsewad";
-			this.browsewad.Size = new System.Drawing.Size(30, 23);
-			this.browsewad.TabIndex = 6;
-			this.browsewad.Text = "...";
-			this.browsewad.UseVisualStyleBackColor = true;
-			// 
-			// testapplication
-			// 
-			this.testapplication.Location = new System.Drawing.Point(94, 29);
-			this.testapplication.Name = "testapplication";
-			this.testapplication.ReadOnly = true;
-			this.testapplication.Size = new System.Drawing.Size(197, 20);
-			this.testapplication.TabIndex = 5;
-			this.testapplication.TextChanged += new System.EventHandler(this.testapplication_TextChanged);
-			// 
-			// tabs
-			// 
-			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabs.Controls.Add(this.tabinterface);
-			this.tabs.Controls.Add(this.tabkeys);
-			this.tabs.Controls.Add(this.tabconfigs);
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
-			this.tabs.Location = new System.Drawing.Point(10, 12);
-			this.tabs.Name = "tabs";
-			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(599, 402);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-			this.tabs.TabIndex = 0;
-			// 
-			// tabinterface
-			// 
-			this.tabinterface.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabinterface.Location = new System.Drawing.Point(4, 23);
-			this.tabinterface.Name = "tabinterface";
-			this.tabinterface.Padding = new System.Windows.Forms.Padding(3);
-			this.tabinterface.Size = new System.Drawing.Size(591, 375);
-			this.tabinterface.TabIndex = 0;
-			this.tabinterface.Text = "Interface";
-			this.tabinterface.UseVisualStyleBackColor = true;
-			// 
-			// tabkeys
-			// 
-			this.tabkeys.Controls.Add(this.listactions);
-			this.tabkeys.Controls.Add(this.actioncontrolpanel);
-			this.tabkeys.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabkeys.Location = new System.Drawing.Point(4, 23);
-			this.tabkeys.Name = "tabkeys";
-			this.tabkeys.Padding = new System.Windows.Forms.Padding(3);
-			this.tabkeys.Size = new System.Drawing.Size(591, 375);
-			this.tabkeys.TabIndex = 1;
-			this.tabkeys.Text = "Controls";
-			this.tabkeys.UseVisualStyleBackColor = true;
-			// 
-			// listactions
-			// 
-			this.listactions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
-			this.listactions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columncontrolaction,
-            this.columncontrolkey});
-			this.listactions.FullRowSelect = true;
-			this.listactions.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.listactions.HideSelection = false;
-			this.listactions.Location = new System.Drawing.Point(11, 11);
-			this.listactions.Margin = new System.Windows.Forms.Padding(8);
-			this.listactions.MultiSelect = false;
-			this.listactions.Name = "listactions";
-			this.listactions.ShowGroups = false;
-			this.listactions.Size = new System.Drawing.Size(275, 353);
-			this.listactions.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listactions.TabIndex = 0;
-			this.listactions.TabStop = false;
-			this.listactions.UseCompatibleStateImageBehavior = false;
-			this.listactions.View = System.Windows.Forms.View.Details;
-			this.listactions.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listactions_MouseUp);
-			this.listactions.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listactions_ItemSelectionChanged);
-			this.listactions.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listactions_KeyUp);
-			// 
-			// columncontrolaction
-			// 
-			this.columncontrolaction.Text = "Action";
-			this.columncontrolaction.Width = 150;
-			// 
-			// columncontrolkey
-			// 
-			this.columncontrolkey.Text = "Key";
-			this.columncontrolkey.Width = 100;
-			// 
-			// actioncontrolpanel
-			// 
-			this.actioncontrolpanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.actioncontrolpanel.Controls.Add(this.actioncontrol);
-			this.actioncontrolpanel.Controls.Add(label7);
-			this.actioncontrolpanel.Controls.Add(this.actiontitle);
-			this.actioncontrolpanel.Controls.Add(this.actioncontrolclear);
-			this.actioncontrolpanel.Controls.Add(label6);
-			this.actioncontrolpanel.Controls.Add(this.actionkey);
-			this.actioncontrolpanel.Controls.Add(this.actiondescription);
-			this.actioncontrolpanel.Controls.Add(label5);
-			this.actioncontrolpanel.Enabled = false;
-			this.actioncontrolpanel.Location = new System.Drawing.Point(300, 11);
-			this.actioncontrolpanel.Margin = new System.Windows.Forms.Padding(6);
-			this.actioncontrolpanel.Name = "actioncontrolpanel";
-			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 353);
-			this.actioncontrolpanel.TabIndex = 9;
-			this.actioncontrolpanel.TabStop = false;
-			this.actioncontrolpanel.Text = " Action control ";
-			// 
-			// actioncontrol
-			// 
-			this.actioncontrol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.actioncontrol.FormattingEnabled = true;
-			this.actioncontrol.Location = new System.Drawing.Point(23, 189);
-			this.actioncontrol.Name = "actioncontrol";
-			this.actioncontrol.Size = new System.Drawing.Size(197, 22);
-			this.actioncontrol.TabIndex = 8;
-			this.actioncontrol.TabStop = false;
-			this.actioncontrol.SelectedIndexChanged += new System.EventHandler(this.actioncontrol_SelectedIndexChanged);
-			// 
-			// actiontitle
-			// 
-			this.actiontitle.AutoSize = true;
-			this.actiontitle.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.actiontitle.Location = new System.Drawing.Point(67, 28);
-			this.actiontitle.Name = "actiontitle";
-			this.actiontitle.Size = new System.Drawing.Size(172, 14);
-			this.actiontitle.TabIndex = 1;
-			this.actiontitle.Text = "(select an action from the list)";
-			this.actiontitle.UseMnemonic = false;
-			// 
-			// actioncontrolclear
-			// 
-			this.actioncontrolclear.Location = new System.Drawing.Point(193, 130);
-			this.actioncontrolclear.Name = "actioncontrolclear";
-			this.actioncontrolclear.Size = new System.Drawing.Size(63, 25);
-			this.actioncontrolclear.TabIndex = 6;
-			this.actioncontrolclear.TabStop = false;
-			this.actioncontrolclear.Text = "Clear";
-			this.actioncontrolclear.UseVisualStyleBackColor = true;
-			this.actioncontrolclear.Click += new System.EventHandler(this.actioncontrolclear_Click);
-			// 
-			// actionkey
-			// 
-			this.actionkey.Location = new System.Drawing.Point(23, 132);
-			this.actionkey.Name = "actionkey";
-			this.actionkey.Size = new System.Drawing.Size(163, 20);
-			this.actionkey.TabIndex = 5;
-			this.actionkey.TabStop = false;
-			this.actionkey.TextChanged += new System.EventHandler(this.actionkey_TextChanged);
-			this.actionkey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.actionkey_KeyDown);
-			// 
-			// actiondescription
-			// 
-			this.actiondescription.AutoEllipsis = true;
-			this.actiondescription.Location = new System.Drawing.Point(20, 48);
-			this.actiondescription.Name = "actiondescription";
-			this.actiondescription.Size = new System.Drawing.Size(245, 65);
-			this.actiondescription.TabIndex = 3;
-			this.actiondescription.UseMnemonic = false;
-			// 
-			// tabconfigs
-			// 
-			this.tabconfigs.Controls.Add(this.paneltesting);
-			this.tabconfigs.Controls.Add(this.panelresources);
-			this.tabconfigs.Controls.Add(this.panelnodebuilder);
-			this.tabconfigs.Controls.Add(this.listconfigs);
-			this.tabconfigs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabconfigs.Location = new System.Drawing.Point(4, 23);
-			this.tabconfigs.Margin = new System.Windows.Forms.Padding(8);
-			this.tabconfigs.Name = "tabconfigs";
-			this.tabconfigs.Padding = new System.Windows.Forms.Padding(3);
-			this.tabconfigs.Size = new System.Drawing.Size(591, 375);
-			this.tabconfigs.TabIndex = 2;
-			this.tabconfigs.Text = "Configurations";
-			this.tabconfigs.UseVisualStyleBackColor = true;
-			// 
-			// panelresources
-			// 
-			this.panelresources.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.panelresources.Controls.Add(this.configdata);
-			this.panelresources.Controls.Add(label3);
-			this.panelresources.Enabled = false;
-			this.panelresources.Location = new System.Drawing.Point(237, 11);
-			this.panelresources.Margin = new System.Windows.Forms.Padding(6);
-			this.panelresources.Name = "panelresources";
-			this.panelresources.Size = new System.Drawing.Size(345, 137);
-			this.panelresources.TabIndex = 12;
-			this.panelresources.TabStop = false;
-			this.panelresources.Text = " Resources ";
-			// 
-			// configdata
-			// 
-			this.configdata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.configdata.DialogOffset = new System.Drawing.Point(-120, 10);
-			this.configdata.Location = new System.Drawing.Point(11, 25);
-			this.configdata.Name = "configdata";
-			this.configdata.Size = new System.Drawing.Size(322, 87);
-			this.configdata.TabIndex = 18;
-			this.configdata.OnContentChanged += new CodeImp.DoomBuilder.Interface.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
-			// 
-			// listconfigs
-			// 
-			this.listconfigs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
-			this.listconfigs.FormattingEnabled = true;
-			this.listconfigs.IntegralHeight = false;
-			this.listconfigs.ItemHeight = 14;
-			this.listconfigs.Location = new System.Drawing.Point(11, 11);
-			this.listconfigs.Margin = new System.Windows.Forms.Padding(8);
-			this.listconfigs.Name = "listconfigs";
-			this.listconfigs.ScrollAlwaysVisible = true;
-			this.listconfigs.Size = new System.Drawing.Size(212, 353);
-			this.listconfigs.Sorted = true;
-			this.listconfigs.TabIndex = 0;
-			this.listconfigs.SelectedIndexChanged += new System.EventHandler(this.listconfigs_SelectedIndexChanged);
+			label10.AutoEllipsis = true;
+			label10.Location = new System.Drawing.Point(41, 151);
+			label10.Name = "label10";
+			label10.Size = new System.Drawing.Size(352, 122);
+			label10.TabIndex = 29;
+			label10.Text = resources.GetString("label10.Text");
 			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(497, 426);
+			this.cancel.Location = new System.Drawing.Point(573, 381);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 17;
@@ -448,7 +189,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(379, 426);
+			this.apply.Location = new System.Drawing.Point(455, 381);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 16;
@@ -456,63 +197,249 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// tabs
+			// 
+			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.tabs.Controls.Add(this.tabresources);
+			this.tabs.Controls.Add(this.tabnodebuilder);
+			this.tabs.Controls.Add(this.tabtesting);
+			this.tabs.Enabled = false;
+			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
+			this.tabs.Location = new System.Drawing.Point(263, 17);
+			this.tabs.Name = "tabs";
+			this.tabs.SelectedIndex = 0;
+			this.tabs.Size = new System.Drawing.Size(422, 345);
+			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+			this.tabs.TabIndex = 18;
+			// 
+			// tabresources
+			// 
+			this.tabresources.Controls.Add(label6);
+			this.tabresources.Controls.Add(this.configdata);
+			this.tabresources.Controls.Add(label5);
+			this.tabresources.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabresources.Location = new System.Drawing.Point(4, 23);
+			this.tabresources.Name = "tabresources";
+			this.tabresources.Padding = new System.Windows.Forms.Padding(6);
+			this.tabresources.Size = new System.Drawing.Size(414, 318);
+			this.tabresources.TabIndex = 0;
+			this.tabresources.Text = "Resources";
+			this.tabresources.UseVisualStyleBackColor = true;
+			// 
+			// configdata
+			// 
+			this.configdata.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.configdata.DialogOffset = new System.Drawing.Point(-120, 10);
+			this.configdata.Location = new System.Drawing.Point(15, 55);
+			this.configdata.Name = "configdata";
+			this.configdata.Size = new System.Drawing.Size(381, 220);
+			this.configdata.TabIndex = 20;
+			this.configdata.OnContentChanged += new CodeImp.DoomBuilder.Interface.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
+			// 
+			// tabnodebuilder
+			// 
+			this.tabnodebuilder.Controls.Add(label8);
+			this.tabnodebuilder.Controls.Add(this.nodebuilder3d);
+			this.tabnodebuilder.Controls.Add(label7);
+			this.tabnodebuilder.Controls.Add(this.nodebuildertest);
+			this.tabnodebuilder.Controls.Add(label2);
+			this.tabnodebuilder.Controls.Add(this.nodebuildersave);
+			this.tabnodebuilder.Controls.Add(label3);
+			this.tabnodebuilder.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabnodebuilder.Location = new System.Drawing.Point(4, 23);
+			this.tabnodebuilder.Name = "tabnodebuilder";
+			this.tabnodebuilder.Padding = new System.Windows.Forms.Padding(6);
+			this.tabnodebuilder.Size = new System.Drawing.Size(414, 318);
+			this.tabnodebuilder.TabIndex = 1;
+			this.tabnodebuilder.Text = "Nodebuilder";
+			this.tabnodebuilder.UseVisualStyleBackColor = true;
+			// 
+			// nodebuilder3d
+			// 
+			this.nodebuilder3d.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.nodebuilder3d.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.nodebuilder3d.FormattingEnabled = true;
+			this.nodebuilder3d.Location = new System.Drawing.Point(167, 167);
+			this.nodebuilder3d.Name = "nodebuilder3d";
+			this.nodebuilder3d.Size = new System.Drawing.Size(229, 22);
+			this.nodebuilder3d.Sorted = true;
+			this.nodebuilder3d.TabIndex = 27;
+			this.nodebuilder3d.SelectedIndexChanged += new System.EventHandler(this.nodebuilder3d_SelectedIndexChanged);
+			// 
+			// nodebuildertest
+			// 
+			this.nodebuildertest.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.nodebuildertest.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.nodebuildertest.FormattingEnabled = true;
+			this.nodebuildertest.Location = new System.Drawing.Point(167, 122);
+			this.nodebuildertest.Name = "nodebuildertest";
+			this.nodebuildertest.Size = new System.Drawing.Size(229, 22);
+			this.nodebuildertest.Sorted = true;
+			this.nodebuildertest.TabIndex = 25;
+			this.nodebuildertest.SelectedIndexChanged += new System.EventHandler(this.nodebuildertest_SelectedIndexChanged);
+			// 
+			// nodebuildersave
+			// 
+			this.nodebuildersave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.nodebuildersave.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.nodebuildersave.FormattingEnabled = true;
+			this.nodebuildersave.Location = new System.Drawing.Point(167, 77);
+			this.nodebuildersave.Name = "nodebuildersave";
+			this.nodebuildersave.Size = new System.Drawing.Size(229, 22);
+			this.nodebuildersave.Sorted = true;
+			this.nodebuildersave.TabIndex = 23;
+			this.nodebuildersave.SelectedIndexChanged += new System.EventHandler(this.nodebuildersave_SelectedIndexChanged);
+			// 
+			// tabtesting
+			// 
+			this.tabtesting.Controls.Add(this.testresult);
+			this.tabtesting.Controls.Add(this.labelresult);
+			this.tabtesting.Controls.Add(label10);
+			this.tabtesting.Controls.Add(this.testparameters);
+			this.tabtesting.Controls.Add(label4);
+			this.tabtesting.Controls.Add(this.browsewad);
+			this.tabtesting.Controls.Add(this.testapplication);
+			this.tabtesting.Controls.Add(label1);
+			this.tabtesting.Controls.Add(label9);
+			this.tabtesting.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabtesting.Location = new System.Drawing.Point(4, 23);
+			this.tabtesting.Name = "tabtesting";
+			this.tabtesting.Padding = new System.Windows.Forms.Padding(6);
+			this.tabtesting.Size = new System.Drawing.Size(414, 318);
+			this.tabtesting.TabIndex = 2;
+			this.tabtesting.Text = "Testing";
+			this.tabtesting.UseVisualStyleBackColor = true;
+			// 
+			// testresult
+			// 
+			this.testresult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.testresult.BackColor = System.Drawing.SystemColors.Control;
+			this.testresult.Location = new System.Drawing.Point(86, 276);
+			this.testresult.Name = "testresult";
+			this.testresult.Size = new System.Drawing.Size(307, 20);
+			this.testresult.TabIndex = 31;
+			// 
+			// labelresult
+			// 
+			this.labelresult.AutoSize = true;
+			this.labelresult.Location = new System.Drawing.Point(38, 279);
+			this.labelresult.Name = "labelresult";
+			this.labelresult.Size = new System.Drawing.Size(40, 14);
+			this.labelresult.TabIndex = 30;
+			this.labelresult.Text = "Result:";
+			// 
+			// testparameters
+			// 
+			this.testparameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.testparameters.Location = new System.Drawing.Point(86, 118);
+			this.testparameters.Name = "testparameters";
+			this.testparameters.Size = new System.Drawing.Size(307, 20);
+			this.testparameters.TabIndex = 28;
+			// 
+			// browsewad
+			// 
+			this.browsewad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.browsewad.Location = new System.Drawing.Point(312, 75);
+			this.browsewad.Name = "browsewad";
+			this.browsewad.Size = new System.Drawing.Size(81, 24);
+			this.browsewad.TabIndex = 26;
+			this.browsewad.Text = "Browse...";
+			this.browsewad.UseVisualStyleBackColor = true;
+			this.browsewad.Click += new System.EventHandler(this.browsewad_Click);
+			// 
+			// testapplication
+			// 
+			this.testapplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.testapplication.Location = new System.Drawing.Point(86, 77);
+			this.testapplication.Name = "testapplication";
+			this.testapplication.ReadOnly = true;
+			this.testapplication.Size = new System.Drawing.Size(220, 20);
+			this.testapplication.TabIndex = 25;
+			// 
+			// listconfigs
+			// 
+			this.listconfigs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnname});
+			this.listconfigs.FullRowSelect = true;
+			this.listconfigs.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.listconfigs.HideSelection = false;
+			this.listconfigs.Location = new System.Drawing.Point(17, 17);
+			this.listconfigs.MultiSelect = false;
+			this.listconfigs.Name = "listconfigs";
+			this.listconfigs.ShowGroups = false;
+			this.listconfigs.Size = new System.Drawing.Size(230, 345);
+			this.listconfigs.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listconfigs.TabIndex = 19;
+			this.listconfigs.UseCompatibleStateImageBehavior = false;
+			this.listconfigs.View = System.Windows.Forms.View.Details;
+			this.listconfigs.SelectedIndexChanged += new System.EventHandler(this.listconfigs_SelectedIndexChanged);
+			this.listconfigs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.listconfigs_MouseUp);
+			this.listconfigs.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listconfigs_KeyUp);
+			// 
+			// columnname
+			// 
+			this.columnname.Text = "Configuration";
+			this.columnname.Width = 200;
+			// 
 			// ConfigForm
 			// 
+			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(619, 461);
+			this.CancelButton = this.cancel;
+			this.ClientSize = new System.Drawing.Size(697, 416);
+			this.Controls.Add(this.listconfigs);
+			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
-			this.Controls.Add(this.tabs);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ConfigForm";
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Configuration";
-			this.panelnodebuilder.ResumeLayout(false);
-			this.panelnodebuilder.PerformLayout();
-			this.paneltesting.ResumeLayout(false);
-			this.paneltesting.PerformLayout();
+			this.Text = "Game Configurations";
 			this.tabs.ResumeLayout(false);
-			this.tabkeys.ResumeLayout(false);
-			this.actioncontrolpanel.ResumeLayout(false);
-			this.actioncontrolpanel.PerformLayout();
-			this.tabconfigs.ResumeLayout(false);
-			this.panelresources.ResumeLayout(false);
-			this.panelresources.PerformLayout();
+			this.tabresources.ResumeLayout(false);
+			this.tabresources.PerformLayout();
+			this.tabnodebuilder.ResumeLayout(false);
+			this.tabnodebuilder.PerformLayout();
+			this.tabtesting.ResumeLayout(false);
+			this.tabtesting.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private System.Windows.Forms.TabControl tabs;
-		private System.Windows.Forms.TabPage tabinterface;
-		private System.Windows.Forms.TabPage tabkeys;
-		private System.Windows.Forms.TabPage tabconfigs;
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
-		private System.Windows.Forms.ListBox listconfigs;
-		private System.Windows.Forms.ComboBox confignodebuilder;
-		private System.Windows.Forms.CheckBox configbuildonsave;
-		private System.Windows.Forms.GroupBox panelresources;
+		private System.Windows.Forms.TabControl tabs;
+		private System.Windows.Forms.TabPage tabresources;
+		private System.Windows.Forms.TabPage tabnodebuilder;
+		private System.Windows.Forms.TabPage tabtesting;
 		private ResourceListEditor configdata;
+		private System.Windows.Forms.ComboBox nodebuildertest;
+		private System.Windows.Forms.ComboBox nodebuildersave;
+		private System.Windows.Forms.ComboBox nodebuilder3d;
+		private System.Windows.Forms.TextBox testparameters;
 		private System.Windows.Forms.Button browsewad;
 		private System.Windows.Forms.TextBox testapplication;
-		private System.Windows.Forms.TextBox testparameters;
-		private System.Windows.Forms.GroupBox panelnodebuilder;
-		private System.Windows.Forms.GroupBox paneltesting;
-		private System.Windows.Forms.ListView listactions;
-		private System.Windows.Forms.ColumnHeader columncontrolaction;
-		private System.Windows.Forms.ColumnHeader columncontrolkey;
-		private System.Windows.Forms.Label actiondescription;
-		private System.Windows.Forms.Label actiontitle;
-		private System.Windows.Forms.ComboBox actioncontrol;
-		private System.Windows.Forms.Button actioncontrolclear;
-		private System.Windows.Forms.TextBox actionkey;
-		private System.Windows.Forms.GroupBox actioncontrolpanel;
+		private System.Windows.Forms.TextBox testresult;
+		private System.Windows.Forms.Label labelresult;
+		private System.Windows.Forms.ListView listconfigs;
+		private System.Windows.Forms.ColumnHeader columnname;
 	}
 }

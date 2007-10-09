@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public const string ZOOMIN = "zoomin";
 		public const string ZOOMOUT = "zoomout";
 		public const string CONFIGURATION = "configuration";
+		public const string PREFERENCES = "preferences";
 		
 		#endregion
 		
