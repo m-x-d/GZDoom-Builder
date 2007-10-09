@@ -36,8 +36,9 @@ namespace CodeImp.DoomBuilder
 		private string name;
 		private string filename;
 		private string settingskey;
-		private string nodebuilder;
-		private bool buildonsave;
+		private string nodebuildersave;
+		private string nodebuildertest;
+		private string nodebuilder3d;
 		private DataLocationList resources;
 		private string testprogram;
 		private string testparameters;
@@ -48,8 +49,9 @@ namespace CodeImp.DoomBuilder
 
 		public string Name { get { return name; } }
 		public string Filename { get { return filename; } }
-		public string Nodebuilder { get { return nodebuilder; } set { nodebuilder = value; } }
-		public bool BuildOnSave { get { return buildonsave; } set { buildonsave = value; } }
+		public string NodebuilderSave { get { return nodebuildersave; } set { nodebuildersave = value; } }
+		public string NodebuilderTest { get { return nodebuildertest; } set { nodebuildertest = value; } }
+		public string Nodebuilder3D { get { return nodebuilder3d; } set { nodebuilder3d = value; } }
 		public DataLocationList Resources { get { return resources; } }
 		public string TestProgram { get { return testprogram; } set { testprogram = value; } }
 		public string TestParameters { get { return testparameters; } set { testparameters = value; } }
@@ -67,11 +69,12 @@ namespace CodeImp.DoomBuilder
 			this.settingskey = Path.GetFileNameWithoutExtension(filename).ToLower();
 			
 			// Load settings from program configuration
-			this.nodebuilder = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuilder", "");
-			this.buildonsave = General.Settings.ReadSetting("configurations." + settingskey + ".buildonsave", true);
-			this.resources = new DataLocationList(General.Settings, "configurations." + settingskey + ".resources");
+			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", "");
+			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", "");
+			this.nodebuilder3d = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuilder3d", "");
 			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
+			this.resources = new DataLocationList(General.Settings, "configurations." + settingskey + ".resources");
 		}
 
 		// Constructor
@@ -94,11 +97,12 @@ namespace CodeImp.DoomBuilder
 		public void SaveSettings()
 		{
 			// Write to configuration
-			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuilder", nodebuilder);
-			General.Settings.WriteSetting("configurations." + settingskey + ".buildonsave", buildonsave);
-			resources.WriteToConfig(General.Settings, "configurations." + settingskey + ".resources");
+			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildersave", nodebuildersave);
+			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildertest", nodebuildertest);
+			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuilder3d", nodebuilder3d);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
+			resources.WriteToConfig(General.Settings, "configurations." + settingskey + ".resources");
 		}
 
 		// String representation
@@ -114,8 +118,9 @@ namespace CodeImp.DoomBuilder
 			ci.name = this.name;
 			ci.filename = this.filename;
 			ci.settingskey = this.settingskey;
-			ci.nodebuilder = this.nodebuilder;
-			ci.buildonsave = this.buildonsave;
+			ci.nodebuildersave = this.nodebuildersave;
+			ci.nodebuildertest = this.nodebuildertest;
+			ci.nodebuilder3d = this.nodebuilder3d;
 			ci.resources = new DataLocationList();
 			ci.resources.AddRange(this.resources);
 			ci.testprogram = this.testprogram;
@@ -129,8 +134,9 @@ namespace CodeImp.DoomBuilder
 			this.name = ci.name;
 			this.filename = ci.filename;
 			this.settingskey = ci.settingskey;
-			this.nodebuilder = ci.nodebuilder;
-			this.buildonsave = ci.buildonsave;
+			this.nodebuildersave = ci.nodebuildersave;
+			this.nodebuildertest = ci.nodebuildertest;
+			this.nodebuilder3d = ci.nodebuilder3d;
 			this.resources = new DataLocationList();
 			this.resources.AddRange(ci.resources);
 			this.testprogram = ci.testprogram;

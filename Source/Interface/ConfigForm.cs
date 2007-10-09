@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -32,241 +33,32 @@ namespace CodeImp.DoomBuilder.Interface
 {
 	public partial class ConfigForm : DelayedForm
 	{
-		#region ================== Variables
-
-		private bool allowapplycontrol = false;
-
-		#endregion
-
-		#region ================== Constructor
-
 		// Constructor
 		public ConfigForm()
 		{
-			Action[] actions;
-			ListViewItem item;
+			ListViewItem lvi;
 			
 			// Initialize
 			InitializeComponent();
 
-			// Fill list of actions
-			actions = General.Actions.GetAllActions();
-			foreach(Action a in actions)
-			{
-				// Create item
-				item = listactions.Items.Add(a.Name, a.Title, 0);
-				item.SubItems.Add(Action.GetShortcutKeyDesc(a.ShortcutKey));
-				item.SubItems[1].Tag = a.ShortcutKey;
-			}
-
-			// Fill combobox with special controls
-			actioncontrol.Items.Add(new KeyControl(Keys.LButton, "LButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.MButton, "MButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.RButton, "RButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton1, "XButton1"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton2, "XButton2"));
-			actioncontrol.Items.Add(new KeyControl(SpecialKeys.MScrollUp, "ScrollUp"));
-			actioncontrol.Items.Add(new KeyControl(SpecialKeys.MScrollDown, "ScrollDown"));
-			actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift, "Shift+LButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift, "Shift+MButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift, "Shift+RButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift, "Shift+XButton1"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift, "Shift+XButton2"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift, "Shift+ScrollUp"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift, "Shift+ScrollDown"));
-			actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Control, "Ctrl+LButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Control, "Ctrl+MButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Control, "Ctrl+RButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Control, "Ctrl+XButton1"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Control, "Ctrl+XButton2"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control, "Ctrl+ScrollUp"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control, "Ctrl+ScrollDown"));
-			actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Control, "Ctrl+Shift+LButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift | Keys.Control, "Ctrl+Shift+MButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift | Keys.Control, "Ctrl+Shift+RButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift | Keys.Control, "Ctrl+Shift+XButton1"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift | Keys.Control, "Ctrl+Shift+XButton2"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollUp"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollDown"));
+			// Make list column header full width
+			columnname.Width = listconfigs.ClientRectangle.Width - SystemInformation.VerticalScrollBarWidth - 2;
 			
 			// Fill list of configurations
 			foreach(ConfigurationInfo ci in General.Configs)
 			{
 				// Add a copy
-				listconfigs.Items.Add(ci.Clone());
+				lvi = listconfigs.Items.Add(ci.Name);
+				lvi.Tag = ci.Clone();
 			}
 
-			// Fill combobox with nodebuilders
-			confignodebuilder.Items.AddRange(General.Nodebuilders.ToArray());
-
-			// Done
-			allowapplycontrol = true;
-		}
-
-		#endregion
-
-		#region ================== Controls Panel
-
-		// Item selected
-		private void listactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-		{
-			Action action;
-			KeyControl keycontrol;
-			int key;
+			// TODO: Save and test nodebuilders are allowed to be empty
 			
-			// Anything selected?
-			if(listactions.SelectedItems.Count > 0)
-			{
-				// Begin updating
-				allowapplycontrol = false;
-				
-				// Get the selected action
-				action = General.Actions[listactions.SelectedItems[0].Name];
-				key = (int)listactions.SelectedItems[0].SubItems[1].Tag;
-				
-				// Enable panel
-				actioncontrolpanel.Enabled = true;
-				actiontitle.Text = action.Title;
-				actiondescription.Text = action.Description;
-				actioncontrol.SelectedIndex = -1;
-				actionkey.Text = "";
-				
-				// See if the key is in the combobox
-				for(int i = 0; i < actioncontrol.Items.Count; i++)
-				{
-					// Select it when the key is found here
-					keycontrol = (KeyControl)actioncontrol.Items[i];
-					if(keycontrol.key == key) actioncontrol.SelectedIndex = i;
-				}
-				
-				// Otherwise display the key in the textbox
-				if(actioncontrol.SelectedIndex == -1)
-					actionkey.Text = Action.GetShortcutKeyDesc(key);
-
-				// Focus to the input box
-				actionkey.Focus();
-				
-				// Done
-				allowapplycontrol = true;
-			}
+			// Fill comboboxes with nodebuilders
+			nodebuildersave.Items.AddRange(General.Nodebuilders.ToArray());
+			nodebuildertest.Items.AddRange(General.Nodebuilders.ToArray());
+			nodebuilder3d.Items.AddRange(General.Nodebuilders.ToArray());
 		}
-
-		// Key released
-		private void listactions_KeyUp(object sender, KeyEventArgs e)
-		{
-			// Nothing selected?
-			if(listactions.SelectedItems.Count == 0)
-			{
-				// Disable panel
-				actioncontrolpanel.Enabled = false;
-				actiontitle.Text = "(select an action from the list)";
-				actiondescription.Text = "";
-				actionkey.Text = "";
-				actioncontrol.SelectedIndex = -1;
-			}
-		}
-
-		// Mouse released
-		private void listactions_MouseUp(object sender, MouseEventArgs e)
-		{
-			listactions_KeyUp(sender, new KeyEventArgs(Keys.None));
-			
-			// Focus to the input box
-			actionkey.Focus();
-		}
-
-		// Key combination pressed
-		private void actionkey_KeyDown(object sender, KeyEventArgs e)
-		{
-			int key = (int)e.KeyData;
-			e.SuppressKeyPress = true;
-
-			// Leave when not allowed to update
-			if(!allowapplycontrol) return;
-
-			// Anything selected?
-			if(listactions.SelectedItems.Count > 0)
-			{
-				// Begin updating
-				allowapplycontrol = false;
-
-				// Deselect anything from the combobox
-				actioncontrol.SelectedIndex = -1;
-				
-				// Apply the key combination
-				listactions.SelectedItems[0].SubItems[1].Text = Action.GetShortcutKeyDesc(key);
-				listactions.SelectedItems[0].SubItems[1].Tag = key;
-				actionkey.Text = Action.GetShortcutKeyDesc(key);
-
-				// Done
-				allowapplycontrol = true;
-			}
-		}
-
-		// Key combination displayed
-		private void actionkey_TextChanged(object sender, EventArgs e)
-		{
-			// Cursor to the end
-			actionkey.SelectionStart = actionkey.Text.Length;
-			actionkey.SelectionLength = 0;
-		}
-
-		// Special key selected
-		private void actioncontrol_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			KeyControl key;
-			
-			// Leave when not allowed to update
-			if(!allowapplycontrol) return;
-			
-			// Anything selected?
-			if((actioncontrol.SelectedIndex > -1) && (listactions.SelectedItems.Count > 0))
-			{
-				// Begin updating
-				allowapplycontrol = false;
-
-				// Remove text from textbox
-				actionkey.Text = "";
-				
-				// Get the key control
-				key = (KeyControl)actioncontrol.SelectedItem;
-				
-				// Apply the key combination
-				listactions.SelectedItems[0].SubItems[1].Text = Action.GetShortcutKeyDesc(key.key);
-				listactions.SelectedItems[0].SubItems[1].Tag = key.key;
-
-				// Focus to the input box
-				actionkey.Focus();
-				
-				// Done
-				allowapplycontrol = true;
-			}
-		}
-
-		// Clear clicked
-		private void actioncontrolclear_Click(object sender, EventArgs e)
-		{
-			// Begin updating
-			allowapplycontrol = false;
-
-			// Clear textbox and combobox
-			actionkey.Text = "";
-			actioncontrol.SelectedIndex = -1;
-			
-			// Apply the key combination
-			listactions.SelectedItems[0].SubItems[1].Text = "";
-			listactions.SelectedItems[0].SubItems[1].Tag = (int)0;
-			
-			// Focus to the input box
-			actionkey.Focus();
-			
-			// Done
-			allowapplycontrol = true;
-		}
-		
-		#endregion
-
-		#region ================== Configuration Panel
 
 		// Configuration item selected
 		private void listconfigs_SelectedIndexChanged(object sender, EventArgs e)
@@ -275,90 +67,161 @@ namespace CodeImp.DoomBuilder.Interface
 			NodebuilderInfo ni;
 			
 			// Item selected?
-			if(listconfigs.SelectedIndex > -1)
+			if(listconfigs.SelectedItems.Count > 0)
 			{
 				// Enable panels
-				panelresources.Enabled = true;
-				panelnodebuilder.Enabled = true;
-				paneltesting.Enabled = true;
-
+				tabs.Enabled = true;
+				
 				// Get config info of selected item
-				ci = listconfigs.SelectedItem as ConfigurationInfo;
+				ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 
 				// Fill resources list
 				configdata.EditResourceLocationList(ci.Resources);
 
-				// Go for all nodebuilder items
-				confignodebuilder.SelectedIndex = -1;
-				for(int i = 0; i < confignodebuilder.Items.Count; i++)
+				// Go for all nodebuilder save items
+				nodebuildersave.SelectedIndex = -1;
+				for(int i = 0; i < nodebuildersave.Items.Count; i++)
 				{
 					// Get item
-					ni = confignodebuilder.Items[i] as NodebuilderInfo;
-
+					ni = nodebuildersave.Items[i] as NodebuilderInfo;
+					
 					// Item matches configuration setting?
-					if(string.Compare(ni.Filename, ci.Nodebuilder, false) == 0)
+					if(string.Compare(ni.Filename, ci.NodebuilderSave, false) == 0)
 					{
 						// Select this item
-						confignodebuilder.SelectedIndex = i;
+						nodebuildersave.SelectedIndex = i;
 						break;
 					}
 				}
-				
-				// Nodebuilder settings
-				configbuildonsave.Checked = ci.BuildOnSave;
+
+				// Go for all nodebuilder save items
+				nodebuildertest.SelectedIndex = -1;
+				for(int i = 0; i < nodebuildertest.Items.Count; i++)
+				{
+					// Get item
+					ni = nodebuildertest.Items[i] as NodebuilderInfo;
+					
+					// Item matches configuration setting?
+					if(string.Compare(ni.Filename, ci.NodebuilderTest, false) == 0)
+					{
+						// Select this item
+						nodebuildertest.SelectedIndex = i;
+						break;
+					}
+				}
+
+				// Go for all nodebuilder 3d items
+				nodebuilder3d.SelectedIndex = -1;
+				for(int i = 0; i < nodebuilder3d.Items.Count; i++)
+				{
+					// Get item
+					ni = nodebuilder3d.Items[i] as NodebuilderInfo;
+					
+					// Item matches configuration setting?
+					if(string.Compare(ni.Filename, ci.Nodebuilder3D, false) == 0)
+					{
+						// Select this item
+						nodebuilder3d.SelectedIndex = i;
+						break;
+					}
+				}
 				
 				// Set test application and parameters
 				testapplication.Text = ci.TestProgram;
 				testparameters.Text = ci.TestParameters;
 			}
-			else
+		}
+
+		// Key released
+		private void listconfigs_KeyUp(object sender, KeyEventArgs e)
+		{
+			// Nothing selected?
+			if(listconfigs.SelectedItems.Count == 0)
 			{
 				// Disable panels
-				panelresources.Enabled = false;
-				panelnodebuilder.Enabled = false;
-				paneltesting.Enabled = false;
+				configdata.FixedResourceLocationList(new DataLocationList());
+				configdata.EditResourceLocationList(new DataLocationList());
+				nodebuildersave.SelectedIndex = -1;
+				nodebuildertest.SelectedIndex = -1;
+				nodebuilder3d.SelectedIndex = -1;
+				testapplication.Text = "";
+				testparameters.Text = "";
+				tabs.Enabled = false;
 			}
 		}
 
+		// Mouse released
+		private void listconfigs_MouseUp(object sender, MouseEventArgs e)
+		{
+			listconfigs_KeyUp(sender, new KeyEventArgs(Keys.None));
+		}
+		
 		// Resource locations changed
 		private void resourcelocations_OnContentChanged()
 		{
 			ConfigurationInfo ci;
 			
+			// Leave when no configuration selected
+			if(listconfigs.SelectedItems.Count == 0) return;
+			
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItem as ConfigurationInfo;
+			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			ci.Resources.Clear();
 			ci.Resources.AddRange(configdata.GetResources());
 		}
 
 		// Nodebuilder selection changed
-		private void confignodebuilder_SelectedIndexChanged(object sender, EventArgs e)
+		private void nodebuildersave_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ConfigurationInfo ci;
 
+			// Leave when no configuration selected
+			if(listconfigs.SelectedItems.Count == 0) return;
+
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItem as ConfigurationInfo;
-			if(confignodebuilder.SelectedItem != null)
-				ci.Nodebuilder = (confignodebuilder.SelectedItem as NodebuilderInfo).Filename;
+			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			if(nodebuildersave.SelectedItem != null)
+				ci.NodebuilderSave = (nodebuildersave.SelectedItem as NodebuilderInfo).Filename;
 		}
 
-		// Build on save selection changed
-		private void configbuildonsave_CheckedChanged(object sender, EventArgs e)
+		// Nodebuilder selection changed
+		private void nodebuildertest_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ConfigurationInfo ci;
 
+			// Leave when no configuration selected
+			if(listconfigs.SelectedItems.Count == 0) return;
+
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItem as ConfigurationInfo;
-			ci.BuildOnSave = configbuildonsave.Checked;
+			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			if(nodebuildertest.SelectedItem != null)
+				ci.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Filename;
 		}
 
+		// Nodebuilder selection changed
+		private void nodebuilder3d_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			ConfigurationInfo ci;
+
+			// Leave when no configuration selected
+			if(listconfigs.SelectedItems.Count == 0) return;
+
+			// Apply to selected configuration
+			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			if(nodebuilder3d.SelectedItem != null)
+				ci.Nodebuilder3D = (nodebuilder3d.SelectedItem as NodebuilderInfo).Filename;
+		}
+		
 		// Test application changed
 		private void testapplication_TextChanged(object sender, EventArgs e)
 		{
 			ConfigurationInfo ci;
 
+			// Leave when no configuration selected
+			if(listconfigs.SelectedItems.Count == 0) return;
+
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItem as ConfigurationInfo;
+			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			ci.TestProgram = testapplication.Text;
 		}
 
@@ -367,25 +230,25 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			ConfigurationInfo ci;
 
+			// Leave when no configuration selected
+			if(listconfigs.SelectedItems.Count == 0) return;
+
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItem as ConfigurationInfo;
+			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			ci.TestParameters = testparameters.Text;
 		}
 		
-		#endregion
-		
-		#region ================== OK / Cancel
-
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
-			// Apply control keys to actions
-			foreach(ListViewItem item in listactions.Items)
-				General.Actions[item.Name].SetShortcutKey((int)item.SubItems[1].Tag);
+			ConfigurationInfo ci;
 			
 			// Apply configuration items
-			foreach(ConfigurationInfo ci in listconfigs.Items)
+			foreach(ListViewItem lvi in listconfigs.Items)
 			{
+				// Get configuration item
+				ci = lvi.Tag as ConfigurationInfo;
+				
 				// Find same configuration info in originals
 				foreach(ConfigurationInfo oci in General.Configs)
 				{
@@ -407,6 +270,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Hide();
 		}
 
-		#endregion
+		// Browse clicked
+		private void browsewad_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

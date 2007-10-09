@@ -100,6 +100,12 @@
     <Compile Include="Interface\OpenMapOptionsForm.Designer.cs">
       <DependentUpon>OpenMapOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\PreferencesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\PreferencesForm.Designer.cs">
+      <DependentUpon>PreferencesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\ResourceListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -201,6 +207,10 @@
     <EmbeddedResource Include="Interface\DelayedForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DelayedForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\PreferencesForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PreferencesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\ResourceListEditor.resx">
       <SubType>Designer</SubType>
