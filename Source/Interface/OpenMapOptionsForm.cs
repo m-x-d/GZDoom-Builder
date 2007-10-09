@@ -108,14 +108,16 @@ namespace CodeImp.DoomBuilder.Interface
 				// Then go for all configurations to find a suitable one
 				for(int i = 0; i < General.Configs.Count; i++)
 				{
-					// TODO: Check if an IWAD is set for this configuration
-
-					// Match the wad against this configuration
-					if(MatchConfiguration(General.Configs[i].Filename, wadfile))
+					// Check if a resource location is set for this configuration
+					if(General.Configs[i].Resources.Count > 0)
 					{
-						// Select this item
-						config.SelectedIndex = i;
-						break;
+						// Match the wad against this configuration
+						if(MatchConfiguration(General.Configs[i].Filename, wadfile))
+						{
+							// Select this item
+							config.SelectedIndex = i;
+							break;
+						}
 					}
 				}
 			}
