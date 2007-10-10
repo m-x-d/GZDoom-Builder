@@ -39,62 +39,41 @@ namespace CodeImp.DoomBuilder
 		#region ================== Variables
 
 		private string name;
-		private string filename;
-		private ProcessStartInfo savemapprocess;
-		private ProcessStartInfo testmapprocess;
-		private ProcessStartInfo mode3dbuildprocess;
+		private string title;
+		private ProcessStartInfo process;
 		
 		#endregion
 
 		#region ================== Properties
 
 		public string Name { get { return name; } }
-		public string Filename { get { return filename; } }
-		public ProcessStartInfo SaveMapProcess { get { return savemapprocess; } }
-		public ProcessStartInfo TestMapProcess { get { return testmapprocess; } }
-		public ProcessStartInfo Mode3DBuildProcess { get { return mode3dbuildprocess; } }
+		public string Title { get { return title; } }
+		public ProcessStartInfo Process { get { return process; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public NodebuilderInfo(Configuration cfg, string filename)
+		public NodebuilderInfo(string filename, string name, Configuration cfg)
 		{
-			// Initialize
-			this.filename = Path.GetFileName(filename);
-			this.name = cfg.ReadSetting("title", "");
+			General.WriteLogLine("Registered nodebuilder configuration '" + name + "' from '" + filename + "'");
 
-			General.WriteLogLine("Registered nodebuilder configuration '" + this.name + "' from '" + this.filename + "'");
+			// Initialize
+			this.name = name;
+			this.title = cfg.ReadSetting(name + ".title", "<untitled configuration>");
 
 			// Setup save map process
-			SetupProcess(out savemapprocess,
-				cfg.ReadSetting("savemap.compiler", ""),
-				cfg.ReadSetting("savemap.parameters", ""));
-
-			// Setup test map process
-			SetupProcess(out testmapprocess,
-				cfg.ReadSetting("testmap.compiler", ""),
-				cfg.ReadSetting("testmap.parameters", ""));
-
-			// Setup 3d build process
-			SetupProcess(out mode3dbuildprocess,
-				cfg.ReadSetting("mode3dbuild.compiler", ""),
-				cfg.ReadSetting("mode3dbuild.parameters", ""));
+			process = new ProcessStartInfo();
+			process.Arguments = cfg.ReadSetting(name + ".parameters", "");
+			process.FileName = Path.Combine(General.CompilersPath, cfg.ReadSetting(name + ".compiler", ""));
+			process.CreateNoWindow = false;
+			process.ErrorDialog = false;
+			process.UseShellExecute = true;
+			process.WindowStyle = ProcessWindowStyle.Hidden;
+			process.WorkingDirectory = General.TempPath;
 		}
 
-		// This sets up a process
-		private void SetupProcess(out ProcessStartInfo processinfo, string compiler, string parameters)
-		{
-			processinfo = new ProcessStartInfo();
-			processinfo.Arguments = parameters;
-			processinfo.FileName = Path.Combine(General.CompilersPath, compiler);
-			processinfo.CreateNoWindow = false;
-			processinfo.ErrorDialog = false;
-			processinfo.UseShellExecute = true;
-			processinfo.WindowStyle = ProcessWindowStyle.Hidden;
-			processinfo.WorkingDirectory = General.TempPath;
-		}
 		
 		#endregion
 
@@ -110,7 +89,7 @@ namespace CodeImp.DoomBuilder
 		// String representation
 		public override string ToString()
 		{
-			return name;
+			return title;
 		}
 		
 		#endregion

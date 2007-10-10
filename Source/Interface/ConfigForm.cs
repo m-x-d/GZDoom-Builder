@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Interface
 					ni = nodebuildersave.Items[i] as NodebuilderInfo;
 					
 					// Item matches configuration setting?
-					if(string.Compare(ni.Filename, ci.NodebuilderSave, false) == 0)
+					if(string.Compare(ni.Name, ci.NodebuilderSave, false) == 0)
 					{
 						// Select this item
 						nodebuildersave.SelectedIndex = i;
@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Interface
 					ni = nodebuildertest.Items[i] as NodebuilderInfo;
 					
 					// Item matches configuration setting?
-					if(string.Compare(ni.Filename, ci.NodebuilderTest, false) == 0)
+					if(string.Compare(ni.Name, ci.NodebuilderTest, false) == 0)
 					{
 						// Select this item
 						nodebuildertest.SelectedIndex = i;
@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.Interface
 					ni = nodebuilder3d.Items[i] as NodebuilderInfo;
 					
 					// Item matches configuration setting?
-					if(string.Compare(ni.Filename, ci.Nodebuilder3D, false) == 0)
+					if(string.Compare(ni.Name, ci.Nodebuilder3D, false) == 0)
 					{
 						// Select this item
 						nodebuilder3d.SelectedIndex = i;
@@ -181,7 +181,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Apply to selected configuration
 			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			if(nodebuildersave.SelectedItem != null)
-				ci.NodebuilderSave = (nodebuildersave.SelectedItem as NodebuilderInfo).Filename;
+				ci.NodebuilderSave = (nodebuildersave.SelectedItem as NodebuilderInfo).Name;
 		}
 
 		// Nodebuilder selection changed
@@ -195,7 +195,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Apply to selected configuration
 			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			if(nodebuildertest.SelectedItem != null)
-				ci.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Filename;
+				ci.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Name;
 		}
 
 		// Nodebuilder selection changed
@@ -209,7 +209,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Apply to selected configuration
 			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			if(nodebuilder3d.SelectedItem != null)
-				ci.Nodebuilder3D = (nodebuilder3d.SelectedItem as NodebuilderInfo).Filename;
+				ci.Nodebuilder3D = (nodebuilder3d.SelectedItem as NodebuilderInfo).Name;
 		}
 		
 		// Test application changed

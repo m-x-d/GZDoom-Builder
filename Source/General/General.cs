@@ -244,7 +244,7 @@ namespace CodeImp.DoomBuilder
 			Configuration cfg;
 			string[] filenames;
 			string message;
-
+			
 			// Display status
 			mainwindow.DisplayStatus("Loading nodebuilder configurations...");
 
@@ -272,8 +272,16 @@ namespace CodeImp.DoomBuilder
 					}
 					else
 					{
-						// Make nodebuilder info
-						nodebuilders.Add(new NodebuilderInfo(cfg, filepath));
+						// Get structures
+						foreach(DictionaryEntry de in cfg.Root)
+						{
+							// Check if this is a structure
+							if(de.Value is IDictionary)
+							{
+								// Make nodebuilder info
+								nodebuilders.Add(new NodebuilderInfo(Path.GetFileName(filepath), de.Key.ToString(), cfg));
+							}
+						}
 					}
 				}
 				catch(Exception)
