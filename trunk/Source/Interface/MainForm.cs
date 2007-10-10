@@ -27,6 +27,8 @@ using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Editing;
+using System.Collections;
+using System.IO;
 
 #endregion
 
@@ -37,6 +39,8 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== Constants
 
 		private const string STATUS_READY_TEXT = "Ready.";
+		private const int MAX_RECENT_FILES = 8;
+		private const int MAX_RECENT_FILES_PIXELS = 250;
 
 		#endregion
 
@@ -72,7 +76,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Setup controls
 			InitializeComponent();
-			
+
 			// Fix things
 			buttonzoom.Font = menufile.Font;
 
@@ -81,6 +85,9 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Apply shortcut keys
 			ApplyShortcutKeys();
+			
+			// Make recent items list
+			CreateRecentFiles();
 			
 			// Keep last position and size
 			lastposition = this.Location;
@@ -160,13 +167,16 @@ namespace CodeImp.DoomBuilder.Interface
 			else
 				windowstate = (int)FormWindowState.Normal;
 			
-			// Save settings to configuration
+			// Save window settings
 			General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
 			General.Settings.WriteSetting("mainwindow.positiony", lastposition.Y);
 			General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
 			General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
 			General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
 
+			// Save recent files
+			SaveRecentFiles();
+			
 			// Terminate the program
 			General.Terminate(true);
 		}
@@ -464,21 +474,15 @@ namespace CodeImp.DoomBuilder.Interface
 			UpdateFileMenu();
 		}
 
+		// Generic event that invokes the tagged action
+		private void InvokeTaggedAction(object sender, EventArgs e)
+		{
+			General.Actions[(sender as ToolStripItem).Tag.ToString()].Invoke();
+		}
+
 		#endregion
 
 		#region ================== File Menu
-
-		// New map clicked
-		private void itemnewmap_Click(object sender, EventArgs e) { General.Actions[Action.NEWMAP].Invoke(); }
-
-		// Open map clicked
-		private void itemopenmap_Click(object sender, EventArgs e) { General.Actions[Action.OPENMAP].Invoke(); }
-
-		// Close map clicked
-		private void itemclosemap_Click(object sender, EventArgs e) { General.Actions[Action.CLOSEMAP].Invoke(); }
-
-		// Exit clicked
-		private void itemexit_Click(object sender, EventArgs e) { this.Close(); }
 
 		// This sets up the file menu
 		private void UpdateFileMenu()
@@ -490,6 +494,141 @@ namespace CodeImp.DoomBuilder.Interface
 			itemsavemapinto.Enabled = (General.Map != null);
 		}
 
+		// This sets the recent files from configuration
+		private void CreateRecentFiles()
+		{
+			int insertindex;
+			bool anyitems = false;
+			string filename;
+			
+			// Where to insert
+			insertindex = menufile.DropDownItems.IndexOf(itemnorecent);
+			
+			// Create all items
+			recentitems = new ToolStripMenuItem[MAX_RECENT_FILES];
+			for(int i = 0; i < MAX_RECENT_FILES; i++)
+			{
+				// Create item
+				recentitems[i] = new ToolStripMenuItem("");
+				recentitems[i].Tag = "";
+				recentitems[i].Click += new EventHandler(recentitem_Click);
+				menufile.DropDownItems.Insert(insertindex + i, recentitems[i]);
+
+				// Get configuration setting
+				filename = General.Settings.ReadSetting("recentfiles.file" + i, "");
+				if(filename != "")
+				{
+					// Set up item
+					recentitems[i].Text = GetDisplayFilename(filename);
+					recentitems[i].Tag = filename;
+					recentitems[i].Visible = true;
+					anyitems = true;
+				}
+				else
+				{
+					// Hide item
+					recentitems[i].Visible = false;
+				}
+			}
+
+			// Hide the no recent item when there are items
+			itemnorecent.Visible = !anyitems;
+		}
+		
+		// This saves the recent files list
+		private void SaveRecentFiles()
+		{
+			// Go for all items
+			for(int i = 0; i < MAX_RECENT_FILES; i++)
+			{
+				// Recent file set?
+				if(recentitems[i].Text != "")
+				{
+					// Save to configuration
+					General.Settings.WriteSetting("recentfiles.file" + i, recentitems[i].Tag.ToString());
+				}
+			}
+		}
+		
+		// This adds a recent file to the list
+		public void AddRecentFile(string filename)
+		{
+			int movedownto = MAX_RECENT_FILES - 1;
+			
+			// Check if this file is already in the list
+			for(int i = 0; i < MAX_RECENT_FILES; i++)
+			{
+				// File same as this item?
+				if(string.Compare(filename, recentitems[i].Tag.ToString(), true) == 0)
+				{
+					// Move down to here so that this item will disappear
+					movedownto = i;
+					break;
+				}
+			}
+			
+			// Go for all items, except the last one, backwards
+			for(int i = movedownto - 1; i >= 0; i--)
+			{
+				// Move recent file down the list
+				recentitems[i + 1].Text = recentitems[i].Text;
+				recentitems[i + 1].Tag = recentitems[i].Tag.ToString();
+				recentitems[i + 1].Visible = (recentitems[i + 1].Text != "");
+			}
+
+			// Add new file at the top
+			recentitems[0].Text = GetDisplayFilename(filename);
+			recentitems[0].Tag = filename;
+			recentitems[0].Visible = true;
+		}
+
+		// This returns the trimmed file/path string
+		private string GetDisplayFilename(string filename)
+		{
+			string newname;
+			
+			// String doesnt fit?
+			if(GetStringWidth(filename) > MAX_RECENT_FILES_PIXELS)
+			{
+				// Start chopping off characters
+				for(int i = filename.Length - 6; i >= 0; i--)
+				{
+					// Does it fit now?
+					newname = filename.Substring(0, 3) + "..." + filename.Substring(filename.Length - i, i);
+					if(GetStringWidth(newname) <= MAX_RECENT_FILES_PIXELS) return newname;
+				}
+
+				// Cant find anything that fits (most unlikely!)
+				return "wtf?!";
+			}
+			else
+			{
+				// The whole string fits
+				return filename;
+			}
+		}
+		
+		// This returns the width of a string
+		private float GetStringWidth(string str)
+		{
+			Graphics g = Graphics.FromHwndInternal(this.Handle);
+			SizeF strsize = g.MeasureString(str, this.Font);
+			return strsize.Width;
+		}
+		
+		// Exit clicked
+		private void itemexit_Click(object sender, EventArgs e) { this.Close(); }
+
+		// Recent item clicked
+		void recentitem_Click(object sender, EventArgs e)
+		{
+			// Get the item that was clicked
+			ToolStripItem item = (sender as ToolStripItem);
+
+			// Open this file
+			General.OpenMapFile(item.Text);
+		}
+		
 		#endregion
 
 		#region ================== Help Menu
@@ -537,18 +676,6 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Done
 			prefform.Dispose();
-		}
-		
-		// Game Configuration clicked
-		public void configurationToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ShowConfiguration();
-		}
-
-		// Preferences clciked
-		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			ShowPreferences();
 		}
 
 		#endregion

@@ -557,52 +557,62 @@ namespace CodeImp.DoomBuilder
 			OpenFileDialog openfile;
 			OpenMapOptionsForm openmapwindow;
 			
+			// Open map file dialog
+			openfile = new OpenFileDialog();
+			openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
+			openfile.Title = "Open Map";
+			if(openfile.ShowDialog(mainwindow) == DialogResult.OK)
+			{
+				// Update main window
+				mainwindow.Update();
+
+				// Open map file
+				OpenMapFile(openfile.FileName);
+			}
+		}
+		
+		// This opens the specified file
+		public static void OpenMapFile(string filename)
+		{
+			OpenMapOptionsForm openmapwindow;
+
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
 			{
-				// Open map file dialog
-				openfile = new OpenFileDialog();
-				openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
-				openfile.Title = "Open Map";
-				if(openfile.ShowDialog(mainwindow) == DialogResult.OK)
+				// Open map options dialog
+				openmapwindow = new OpenMapOptionsForm(filename);
+				if(openmapwindow.ShowDialog(mainwindow) == DialogResult.OK)
 				{
-					// Update main window
-					mainwindow.Update();
+					// Display status
+					mainwindow.DisplayStatus("Opening map file...");
 
-					// Open map options dialog
-					openmapwindow = new OpenMapOptionsForm(openfile.FileName);
-					if(openmapwindow.ShowDialog(mainwindow) == DialogResult.OK)
+					// Clear the display
+					mainwindow.ClearDisplay();
+
+					// Trash the current map, if any
+					if(map != null) map.Dispose();
+
+					// Create map manager with given options
+					map = new MapManager();
+					if(map.InitializeOpenMap(filename, openmapwindow.Options))
 					{
-						// Display status
-						mainwindow.DisplayStatus("Opening map file...");
+						// Done
+						mainwindow.AddRecentFile(filename);
+						mainwindow.UpdateMenus();
+						mainwindow.DisplayReady();
+					}
+					else
+					{
+						// Unable to create map manager
+						map.Dispose();
+						map = null;
 
-						// Clear the display
-						mainwindow.ClearDisplay();
+						// Show splash logo on display
+						mainwindow.ShowSplashDisplay();
 
-						// Trash the current map, if any
-						if(map != null) map.Dispose();
-
-						// Create map manager with given options
-						map = new MapManager();
-						if(map.InitializeOpenMap(openfile.FileName, openmapwindow.Options))
-						{
-							// Done
-							mainwindow.UpdateMenus();
-							mainwindow.DisplayReady();
-						}
-						else
-						{
-							// Unable to create map manager
-							map.Dispose();
-							map = null;
-
-							// Show splash logo on display
-							mainwindow.ShowSplashDisplay();
-
-							// Failed
-							mainwindow.UpdateMenus();
-							mainwindow.DisplayReady();
-						}
+						// Failed
+						mainwindow.UpdateMenus();
+						mainwindow.DisplayReady();
 					}
 				}
 			}

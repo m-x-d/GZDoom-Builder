@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemnewmap.Size = new System.Drawing.Size(201, 22);
 			this.itemnewmap.Tag = "newmap";
 			this.itemnewmap.Text = "New Map";
-			this.itemnewmap.Click += new System.EventHandler(this.itemnewmap_Click);
+			this.itemnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemopenmap
 			// 
@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemopenmap.Size = new System.Drawing.Size(201, 22);
 			this.itemopenmap.Tag = "openmap";
 			this.itemopenmap.Text = "Open Map...";
-			this.itemopenmap.Click += new System.EventHandler(this.itemopenmap_Click);
+			this.itemopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemclosemap
 			// 
@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemclosemap.Size = new System.Drawing.Size(201, 22);
 			this.itemclosemap.Tag = "closemap";
 			this.itemclosemap.Text = "Close Map";
-			this.itemclosemap.Click += new System.EventHandler(this.itemclosemap_Click);
+			this.itemclosemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemsavemap
 			// 
@@ -171,18 +171,21 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsavemap.Name = "itemsavemap";
 			this.itemsavemap.Size = new System.Drawing.Size(201, 22);
 			this.itemsavemap.Text = "Save Map";
+			this.itemsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemsavemapas
 			// 
 			this.itemsavemapas.Name = "itemsavemapas";
 			this.itemsavemapas.Size = new System.Drawing.Size(201, 22);
 			this.itemsavemapas.Text = "Save Map As...";
+			this.itemsavemapas.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemsavemapinto
 			// 
 			this.itemsavemapinto.Name = "itemsavemapinto";
 			this.itemsavemapinto.Size = new System.Drawing.Size(201, 22);
 			this.itemsavemapinto.Text = "Save Map Into...";
+			this.itemsavemapinto.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemnorecent
 			// 
@@ -213,7 +216,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.configurationToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
 			this.configurationToolStripMenuItem.Tag = "configuration";
 			this.configurationToolStripMenuItem.Text = "Game Configurations...";
-			this.configurationToolStripMenuItem.Click += new System.EventHandler(this.configurationToolStripMenuItem_Click);
+			this.configurationToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// preferencesToolStripMenuItem
 			// 
@@ -221,7 +224,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
 			this.preferencesToolStripMenuItem.Tag = "preferences";
 			this.preferencesToolStripMenuItem.Text = "Preferences...";
-			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
+			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// menuhelp
 			// 
@@ -258,8 +261,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonnewmap.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonnewmap.Name = "buttonnewmap";
 			this.buttonnewmap.Size = new System.Drawing.Size(23, 22);
+			this.buttonnewmap.Tag = "newmap";
 			this.buttonnewmap.Text = "toolStripButton1";
-			this.buttonnewmap.Click += new System.EventHandler(this.itemnewmap_Click);
+			this.buttonnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonopenmap
 			// 
@@ -268,8 +272,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonopenmap.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonopenmap.Name = "buttonopenmap";
 			this.buttonopenmap.Size = new System.Drawing.Size(23, 22);
+			this.buttonopenmap.Tag = "openmap";
 			this.buttonopenmap.Text = "toolStripButton1";
-			this.buttonopenmap.Click += new System.EventHandler(this.itemopenmap_Click);
+			this.buttonopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonsavemap
 			// 
@@ -278,7 +283,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonsavemap.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonsavemap.Name = "buttonsavemap";
 			this.buttonsavemap.Size = new System.Drawing.Size(23, 22);
+			this.buttonsavemap.Tag = "savemap";
 			this.buttonsavemap.Text = "toolStripButton1";
+			this.buttonsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// statusbar
 			// 
