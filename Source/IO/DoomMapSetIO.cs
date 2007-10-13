@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public DoomMapSetIO(WAD wad) : base(wad)
+		public DoomMapSetIO(WAD wad, MapManager manager) : base(wad, manager)
 		{
 		}
 
@@ -300,6 +300,202 @@ namespace CodeImp.DoomBuilder.IO
 		// This writes a MapSet to the file
 		public override void Write(MapSet map, string mapname, int position)
 		{
+			Dictionary<Vertex, int> vertexids = new Dictionary<Vertex,int>();
+			Dictionary<Sidedef, int> sidedefids = new Dictionary<Sidedef,int>();
+			Dictionary<Sector, int> sectorids = new Dictionary<Sector,int>();
+			IDictionary maplumps;
+			
+			// First index everything
+			foreach(Vertex v in map.Vertices) vertexids.Add(v, vertexids.Count);
+			foreach(Sidedef sd in map.Sidedefs) sidedefids.Add(sd, sidedefids.Count);
+			foreach(Sector s in map.Sectors) sectorids.Add(s, sectorids.Count);
+
+			// Read map lumps
+			maplumps = manager.Configuration.ReadSetting("maplumpnames", new Hashtable());
+			
+			// Write lumps to wad (note the backwards order because they
+			// are all inserted at position+1 when not found)
+			WriteSectors(map, position, maplumps.Count);
+			WriteVertices(map, position, maplumps.Count);
+			WriteSidedefs(map, position, maplumps.Count, sectorids);
+			WriteLinedefs(map, position, maplumps.Count, sidedefids, vertexids);
+			WriteThings(map, position, maplumps.Count);
+		}
+
+		// This writes the THINGS to WAD file
+		private void WriteThings(MapSet map, int position, int maxlumps)
+		{
+			MemoryStream mem;
+			BinaryWriter writer;
+			Lump lump;
+			int insertpos;
+			
+			// Create memory to write to
+			mem = new MemoryStream();
+			writer = new BinaryWriter(mem, WAD.ENCODING);
+			
+			// Go for all things
+			foreach(Thing t in map.Things)
+			{
+				// Write properties to stream
+				writer.Write((Int16)t.Position.x);
+				writer.Write((Int16)t.Position.y);
+				writer.Write((Int16)0);				// TODO: Fix this!
+				writer.Write((UInt16)t.Type);
+				writer.Write((UInt16)0);			// TODO: Fix this!
+			}
+			
+			// Find insert position and remove old lump
+			insertpos = wad.FindLumpIndex("THINGS", position, position + maxlumps + 1);
+			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+			
+			// Create the lump from memory
+			lump = wad.Insert("THINGS", insertpos, (int)mem.Length);
+			lump.Stream.Seek(0, SeekOrigin.Begin);
+			mem.WriteTo(lump.Stream);
+		}
+
+		// This writes the VERTEXES to WAD file
+		private void WriteVertices(MapSet map, int position, int maxlumps)
+		{
+			MemoryStream mem;
+			BinaryWriter writer;
+			Lump lump;
+			int insertpos;
+
+			// Create memory to write to
+			mem = new MemoryStream();
+			writer = new BinaryWriter(mem, WAD.ENCODING);
+
+			// Go for all vertices
+			foreach(Vertex v in map.Vertices)
+			{
+				// Write properties to stream
+				writer.Write((Int16)v.X);
+				writer.Write((Int16)v.Y);
+			}
+
+			// Find insert position and remove old lump
+			insertpos = wad.FindLumpIndex("VERTEXES", position, position + maxlumps + 1);
+			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+
+			// Create the lump from memory
+			lump = wad.Insert("VERTEXES", insertpos, (int)mem.Length);
+			lump.Stream.Seek(0, SeekOrigin.Begin);
+			mem.WriteTo(lump.Stream);
+		}
+
+		// This writes the LINEDEFS to WAD file
+		private void WriteLinedefs(MapSet map, int position, int maxlumps, IDictionary<Sidedef, int> sidedefids, IDictionary<Vertex, int> vertexids)
+		{
+			MemoryStream mem;
+			BinaryWriter writer;
+			Lump lump;
+			ushort sid;
+			int insertpos;
+			
+			// Create memory to write to
+			mem = new MemoryStream();
+			writer = new BinaryWriter(mem, WAD.ENCODING);
+
+			// Go for all lines
+			foreach(Linedef l in map.Linedefs)
+			{
+				// Write properties to stream
+				writer.Write((UInt16)vertexids[l.Start]);
+				writer.Write((UInt16)vertexids[l.End]);
+				writer.Write((UInt16)0);					// TODO: Fix this!
+				writer.Write((UInt16)0);					// TODO: Fix this!
+				writer.Write((UInt16)0);					// TODO: Fix this!
+
+				// Front sidedef
+				if(l.Front == null) sid = ushort.MaxValue;
+					else sid = (UInt16)sidedefids[l.Front];
+				writer.Write(sid);
+
+				// Back sidedef
+				if(l.Back == null) sid = ushort.MaxValue;
+					else sid = (UInt16)sidedefids[l.Back];
+				writer.Write(sid);
+			}
+
+			// Find insert position and remove old lump
+			insertpos = wad.FindLumpIndex("LINEDEFS", position, position + maxlumps + 1);
+			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+
+			// Create the lump from memory
+			lump = wad.Insert("LINEDEFS", insertpos, (int)mem.Length);
+			lump.Stream.Seek(0, SeekOrigin.Begin);
+			mem.WriteTo(lump.Stream);
+		}
+
+		// This writes the SIDEDEFS to WAD file
+		private void WriteSidedefs(MapSet map, int position, int maxlumps, IDictionary<Sector, int> sectorids)
+		{
+			MemoryStream mem;
+			BinaryWriter writer;
+			Lump lump;
+			int insertpos;
+
+			// Create memory to write to
+			mem = new MemoryStream();
+			writer = new BinaryWriter(mem, WAD.ENCODING);
+
+			// Go for all sidedefs
+			foreach(Sidedef sd in map.Sidedefs)
+			{
+				// Write properties to stream
+				writer.Write((Int16)0);						// TODO: Fix this!
+				writer.Write((Int16)0);						// TODO: Fix this!
+				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
+				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
+				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
+				writer.Write((UInt16)sectorids[sd.Sector]);
+			}
+
+			// Find insert position and remove old lump
+			insertpos = wad.FindLumpIndex("SIDEDEFS", position, position + maxlumps + 1);
+			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+
+			// Create the lump from memory
+			lump = wad.Insert("SIDEDEFS", insertpos, (int)mem.Length);
+			lump.Stream.Seek(0, SeekOrigin.Begin);
+			mem.WriteTo(lump.Stream);
+		}
+
+		// This writes the SECTORS to WAD file
+		private void WriteSectors(MapSet map, int position, int maxlumps)
+		{
+			MemoryStream mem;
+			BinaryWriter writer;
+			Lump lump;
+			int insertpos;
+
+			// Create memory to write to
+			mem = new MemoryStream();
+			writer = new BinaryWriter(mem, WAD.ENCODING);
+
+			// Go for all sectors
+			foreach(Sector s in map.Sectors)
+			{
+				// Write properties to stream
+				writer.Write((Int16)0);						// TODO: Fix this!
+				writer.Write((Int16)0);						// TODO: Fix this!
+				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
+				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
+				writer.Write((Int16)0);						// TODO: Fix this!
+				writer.Write((UInt16)0);					// TODO: Fix this!
+				writer.Write((UInt16)0);					// TODO: Fix this!
+			}
+
+			// Find insert position and remove old lump
+			insertpos = wad.FindLumpIndex("SECTORS", position, position + maxlumps + 1);
+			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+
+			// Create the lump from memory
+			lump = wad.Insert("SECTORS", insertpos, (int)mem.Length);
+			lump.Stream.Seek(0, SeekOrigin.Begin);
+			mem.WriteTo(lump.Stream);
 		}
 		
 		#endregion

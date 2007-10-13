@@ -41,6 +41,9 @@ namespace CodeImp.DoomBuilder.IO
 		// WAD File
 		protected WAD wad;
 
+		// Map manager
+		protected MapManager manager;
+
 		#endregion
 
 		#region ================== Properties
@@ -52,25 +55,19 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public MapSetIO(WAD wad)
+		public MapSetIO(WAD wad, MapManager manager)
 		{
 			// Initialize
 			this.wad = wad;
+			this.manager = manager;
 		}
-
-		// Destructor
-		~MapSetIO()
-		{
-			// Clean up
-			wad = null;
-		}
-
+		
 		#endregion
 
 		#region ================== Static Methods
 
 		// This returns and instance of the specified IO class
-		public static MapSetIO Create(string classname, WAD wadfile)
+		public static MapSetIO Create(string classname, WAD wadfile, MapManager manager)
 		{
 			object[] args;
 			MapSetIO result;
@@ -79,8 +76,9 @@ namespace CodeImp.DoomBuilder.IO
 			try
 			{
 				// Create arguments
-				args = new object[1];
+				args = new object[2];
 				args[0] = wadfile;
+				args[1] = manager;
 				
 				// Make the full class name
 				fullname = "CodeImp.DoomBuilder.IO." + classname;
