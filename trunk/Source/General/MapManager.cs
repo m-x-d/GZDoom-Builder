@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder
 			// Read the map from temp file
 			iointerface = config.ReadSetting("formatinterface", "");
 			General.WriteLogLine("Initializing map format interface " + iointerface + "...");
-			io = MapSetIO.Create(iointerface, tempwad);
+			io = MapSetIO.Create(iointerface, tempwad, this);
 
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
@@ -248,7 +248,7 @@ namespace CodeImp.DoomBuilder
 			// Read the map from temp file
 			iointerface = config.ReadSetting("formatinterface", "");
 			General.WriteLogLine("Initializing map format interface " + iointerface + "...");
-			io = MapSetIO.Create(iointerface, tempwad);
+			io = MapSetIO.Create(iointerface, tempwad, this);
 			General.WriteLogLine("Reading map data structures from file...");
 			map = io.Read(map, TEMP_MAP_HEADER);
 
@@ -504,7 +504,7 @@ namespace CodeImp.DoomBuilder
 						if(lump != null)
 						{
 							// Copy the lump to the target
-							General.WriteLogLine(ml.Key.ToString() + " copying");
+							//General.WriteLogLine(ml.Key.ToString() + " copying");
 							newlump = target.Insert(ml.Key.ToString(), tgtindex++, lump.Length);
 							lump.CopyTo(newlump);
 						}
@@ -551,7 +551,7 @@ namespace CodeImp.DoomBuilder
 					   (lumpnodebuild && removenodebuild) || ((lumpscript != "") && removescript))
 					{
 						// Then remove it from target
-						General.WriteLogLine(nextlumpname + " removing");
+						//General.WriteLogLine(nextlumpname + " removing");
 						source.RemoveAt(index);
 					}
 					else
