@@ -43,7 +43,13 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		#endregion
+
+		#region ================== Properties
+
+		public override int MaxSidedefs { get { return 65534; } }
 		
+		#endregion
+
 		#region ================== Reading
 
 		// This reads a map from the file and returns a MapSet

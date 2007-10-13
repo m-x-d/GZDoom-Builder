@@ -171,42 +171,28 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#region ================== Suspend / Resume
 
-		// This suspends a data resource location
-		public void SuspendLocation(string location)
+		// This suspends data resources
+		public void Suspend()
 		{
 			// Go for all containers
 			foreach(DataReader d in containers)
 			{
-				// Check if this is the location to suspend
-				if(string.Compare(d.Location.location, location, true) == 0)
-				{
-					// Suspend
-					General.WriteLogLine("Suspended data resource '" + location + "'");
-					d.Suspend();
-					return;
-				}
+				// Suspend
+				General.WriteLogLine("Suspended data resource '" + d.Location.location + "'");
+				d.Suspend();
 			}
-			
-			General.WriteLogLine("WARNING: Cannot suspended data resource '" + location + "', no such location opened!");
 		}
 
-		// This resume a data resource location
-		public void ResumeLocation(string location)
+		// This resumes data resources
+		public void Resume()
 		{
 			// Go for all containers
 			foreach(DataReader d in containers)
 			{
-				// Check if this is the location to resume
-				if(string.Compare(d.Location.location, location, true) == 0)
-				{
-					// Resume
-					General.WriteLogLine("Resumed data resource '" + location + "'");
-					d.Resume();
-					return;
-				}
+				// Resume
+				General.WriteLogLine("Resumed data resource '" + d.Location.location + "'");
+				d.Resume();
 			}
-
-			General.WriteLogLine("WARNING: Cannot resume data resource '" + location + "', no such location opened!");
 		}
 		
 		#endregion

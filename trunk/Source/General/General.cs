@@ -108,6 +108,7 @@ namespace CodeImp.DoomBuilder
 		
 		// Configurations
 		private static List<ConfigurationInfo> configs;
+		private static List<CompilerInfo> compilers;
 		private static List<NodebuilderInfo> nodebuilders;
 		
 		#endregion
@@ -123,6 +124,7 @@ namespace CodeImp.DoomBuilder
 		public static Configuration Settings { get { return settings; } }
 		public static List<ConfigurationInfo> Configs { get { return configs; } }
 		public static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
+		public static List<CompilerInfo> Compilers { get { return compilers; } }
 		public static MapManager Map { get { return map; } }
 		public static ActionManager Actions { get { return actions; } }
 		
@@ -153,7 +155,6 @@ namespace CodeImp.DoomBuilder
 		public static Configuration LoadGameConfiguration(string filename)
 		{
 			Configuration cfg;
-			string message;
 			
 			// Make the full filepathname
 			string filepathname = Path.Combine(configspath, filename);
@@ -168,22 +169,16 @@ namespace CodeImp.DoomBuilder
 				if(cfg.ErrorResult != 0)
 				{
 					// Error in configuration
-					message = "Unable to load the game configuration file \"" + filename + "\".\n" +
-							  "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription;
-					
-					General.WriteLogLine(message);
-					MessageBox.Show(mainwindow, message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					ShowErrorMessage("Unable to load the game configuration file \"" + filename + "\".\n" +
+									 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.OK);
 					return null;
 				}
 				// Check if this is a Doom Builder 2 config
 				else if(cfg.ReadSetting("type", "") != "Doom Builder 2 Game Configuration")
 				{
 					// Old configuration
-					message = "Unable to load the game configuration file \"" + filename + "\".\n" +
-							  "This configuration is not a Doom Builder 2 game configuration.";
-					
-					General.WriteLogLine(message);
-					MessageBox.Show(mainwindow, message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					ShowErrorMessage("Unable to load the game configuration file \"" + filename + "\".\n" +
+									 "This configuration is not a Doom Builder 2 game configuration.", MessageBoxButtons.OK);
 					return null;
 				}
 				else
@@ -195,16 +190,13 @@ namespace CodeImp.DoomBuilder
 			catch(Exception)
 			{
 				// Unable to load configuration
-				message = "Unable to load the game configuration file \"" + filename + "\".";
-
-				General.WriteLogLine(message);
-				MessageBox.Show(mainwindow, message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowErrorMessage("Unable to load the game configuration file \"" + filename + "\".", MessageBoxButtons.OK);
 				return null;
 			}
 		}
 
-		// This finds all game configurations
-		private static void FindGameConfigurations()
+		// This loads all game configurations
+		private static void LoadAllGameConfigurations()
 		{
 			Configuration cfg;
 			string[] filenames;
@@ -234,16 +226,16 @@ namespace CodeImp.DoomBuilder
 				}
 			}
 
-			// Sort the configurations list
+			// Sort the list
 			configs.Sort();
 		}
-		
-		// This finds all nodebuilder configurations
-		private static void FindNodebuilderConfigurations()
+
+		// This loads all nodebuilder configurations
+		private static void LoadAllNodebuilderConfigurations()
 		{
 			Configuration cfg;
+			IDictionary builderslist;
 			string[] filenames;
-			string message;
 			
 			// Display status
 			mainwindow.DisplayStatus("Loading nodebuilder configurations...");
@@ -264,22 +256,28 @@ namespace CodeImp.DoomBuilder
 					if(cfg.ErrorResult != 0)
 					{
 						// Error in configuration
-						message = "Unable to load the nodebuilder configuration file \"" + filepath + "\".\n" +
-								  "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription;
-
-						General.WriteLogLine(message);
-						MessageBox.Show(mainwindow, message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						ShowErrorMessage("Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".\n" +
+										 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.OK);
 					}
 					else
 					{
 						// Get structures
-						foreach(DictionaryEntry de in cfg.Root)
+						builderslist = cfg.ReadSetting("nodebuilders", new Hashtable());
+						foreach(DictionaryEntry de in builderslist)
 						{
 							// Check if this is a structure
 							if(de.Value is IDictionary)
 							{
-								// Make nodebuilder info
-								nodebuilders.Add(new NodebuilderInfo(Path.GetFileName(filepath), de.Key.ToString(), cfg));
+								try
+								{
+									// Make nodebuilder info
+									nodebuilders.Add(new NodebuilderInfo(Path.GetFileName(filepath), de.Key.ToString(), cfg));
+								}
+								catch(Exception e)
+								{
+									// Unable to load configuration
+									ShowErrorMessage("Unable to load the nodebuilder configuration '" + de.Key.ToString() + "' from \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message, MessageBoxButtons.OK);
+								}
 							}
 						}
 					}
@@ -287,15 +285,78 @@ namespace CodeImp.DoomBuilder
 				catch(Exception)
 				{
 					// Unable to load configuration
-					message = "Unable to load the nodebuilder configuration file \"" + filepath + "\".";
-					
-					General.WriteLogLine(message);
-					MessageBox.Show(mainwindow, message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					ShowErrorMessage("Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".", MessageBoxButtons.OK);
 				}
 			}
 
-			// Sort the configurations list
-			configs.Sort();
+			// Sort the list
+			nodebuilders.Sort();
+		}
+
+		// This loads all compiler configurations
+		private static void LoadAllCompilerConfigurations()
+		{
+			Configuration cfg;
+			IDictionary compilerslist;
+			string[] filenames;
+
+			// Display status
+			mainwindow.DisplayStatus("Loading compiler configurations...");
+
+			// Make array
+			compilers = new List<CompilerInfo>();
+
+			// Go for all cfg files in the compilers directory
+			filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			foreach(string filepath in filenames)
+			{
+				try
+				{
+					// Try loading the configuration
+					cfg = new Configuration(filepath, true);
+
+					// Check for erors
+					if(cfg.ErrorResult != 0)
+					{
+						// Error in configuration
+						ShowErrorMessage("Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".\n" +
+										 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.OK);
+					}
+					else
+					{
+						// Get structures
+						compilerslist = cfg.ReadSetting("compilers", new Hashtable());
+						foreach(DictionaryEntry de in compilerslist)
+						{
+							// Check if this is a structure
+							if(de.Value is IDictionary)
+							{
+								// Make compiler info
+								compilers.Add(new CompilerInfo(Path.GetFileName(filepath), de.Key.ToString(), cfg));
+							}
+						}
+					}
+				}
+				catch(Exception)
+				{
+					// Unable to load configuration
+					ShowErrorMessage("Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".", MessageBoxButtons.OK);
+				}
+			}
+		}
+		
+		// This returns a nodebuilder by name
+		public static NodebuilderInfo GetNodebuilderByName(string name)
+		{
+			// Go for all nodebuilders
+			foreach(NodebuilderInfo n in nodebuilders)
+			{
+				// Name matches?
+				if(n.Name == name) return n;
+			}
+
+			// Cannot find that nodebuilder
+			return null;
 		}
 		
 		#endregion
@@ -358,11 +419,15 @@ namespace CodeImp.DoomBuilder
 
 				// Load game configurations
 				General.WriteLogLine("Loading game configurations...");
-				FindGameConfigurations();
+				LoadAllGameConfigurations();
+
+				// Load compiler configurations
+				General.WriteLogLine("Loading compiler configurations...");
+				LoadAllCompilerConfigurations();
 
 				// Load nodebuilder configurations
 				General.WriteLogLine("Loading nodebuilder configurations...");
-				FindNodebuilderConfigurations();
+				LoadAllNodebuilderConfigurations();
 
 				// Run application from the main window
 				General.WriteLogLine("Startup done");
@@ -379,7 +444,6 @@ namespace CodeImp.DoomBuilder
 		// Program configuration
 		private static bool LoadProgramConfiguration()
 		{
-			string message;
 			DialogResult result;
 			
 			// Check if no config for this user exists yet
@@ -396,11 +460,8 @@ namespace CodeImp.DoomBuilder
 			if(settings.ErrorResult != 0)
 			{
 				// Error in configuration
-				message = "Error in program configuration near line " + settings.ErrorLine + ": " + settings.ErrorDescription;
-				General.WriteLogLine(message);
-
 				// Ask user for a new copy
-				result = MessageBox.Show(mainwindow, "Unable to load the program configuration for the local user. The configuration is corrupt and may contain incorrect settings.\nWould you like to reset your program settings?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Error);
+				result = ShowErrorMessage("Error in program configuration near line " + settings.ErrorLine + ": " + settings.ErrorDescription, MessageBoxButtons.YesNoCancel);
 				if(result == DialogResult.Yes)
 				{
 					// Remove old configuration and make a new copy
@@ -414,9 +475,8 @@ namespace CodeImp.DoomBuilder
 					if(settings.ErrorResult != 0)
 					{
 						// Error in configuration
-						message = "Error in program configuration near line " + settings.ErrorLine + ": " + settings.ErrorDescription;
-						General.WriteLogLine(message);
-						MessageBox.Show(mainwindow, "Default program configuration is corrupted. Please re-install Doom Builder.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						General.WriteLogLine("Error in program configuration near line " + settings.ErrorLine + ": " + settings.ErrorDescription);
+						ShowErrorMessage("Default program configuration is corrupted. Please re-install Doom Builder.", MessageBoxButtons.OK);
 						return false;
 					}
 				}
@@ -446,8 +506,9 @@ namespace CodeImp.DoomBuilder
 
 				// Unbind static methods from actions
 				ActionAttribute.UnbindMethods(typeof(General));
-
+				
 				// Clean up
+				if(map != null) map.Dispose();
 				mainwindow.Dispose();
 				actions.Dispose();
 
@@ -555,7 +616,6 @@ namespace CodeImp.DoomBuilder
 		public static void OpenMap()
 		{
 			OpenFileDialog openfile;
-			OpenMapOptionsForm openmapwindow;
 			
 			// Open map file dialog
 			openfile = new OpenFileDialog();
@@ -618,6 +678,22 @@ namespace CodeImp.DoomBuilder
 			}
 		}
 		
+		// This saves the current map
+		[Action(Action.SAVEMAP)]
+		public static void SaveMap()
+		{
+			// Check if a wad file is known
+			if(map.FilePathName == "")
+			{
+				// TODO: Call to SaveMapAs!
+			}
+			else
+			{
+				// Save the map
+				map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL);
+			}
+		}
+		
 		// This asks to save the map if needed
 		// Returns false when action was cancelled
 		public static bool AskSaveMap()
@@ -672,9 +748,29 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		#region ================== Tools
+		
+		// This shows a message and logs the message
+		public static DialogResult ShowErrorMessage(string message, MessageBoxButtons buttons)
+		{
+			// Log the message
+			WriteLogLine(message);
+			
+			// Show message
+			return MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Error);
+		}
 
+		// This shows a message and logs the message
+		public static DialogResult ShowWarningMessage(string message, MessageBoxButtons buttons)
+		{
+			// Log the message
+			WriteLogLine(message);
+
+			// Show message
+			return MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Warning);
+		}
+		
 		// This returns a unique temp filename
-		public static string MakeTempFilename()
+		public static string MakeTempFilename(string tempdir)
 		{
 			string filename;
 			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -686,13 +782,35 @@ namespace CodeImp.DoomBuilder
 				// Generate a filename
 				filename = "";
 				for(i = 0; i < 8; i++) filename += chars[rnd.Next(chars.Length)];
-				filename = Path.Combine(temppath, filename + ".tmp");
+				filename = Path.Combine(tempdir, filename + ".tmp");
 			}
 			// Continue while file is not unique
-			while(File.Exists(filename));
+			while(File.Exists(filename) || Directory.Exists(filename));
 
 			// Return the filename
 			return filename;
+		}
+
+		// This returns a unique temp directory name
+		public static string MakeTempDirname()
+		{
+			string dirname;
+			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
+			Random rnd = new Random();
+			int i;
+
+			do
+			{
+				// Generate a filename
+				dirname = "";
+				for(i = 0; i < 8; i++) dirname += chars[rnd.Next(chars.Length)];
+				dirname = Path.Combine(temppath, dirname);
+			}
+			// Continue while file is not unique
+			while(File.Exists(dirname) || Directory.Exists(dirname));
+
+			// Return the filename
+			return dirname;
 		}
 
 		#endregion

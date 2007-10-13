@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Properties
 
+		public abstract int MaxSidedefs { get; }
+
 		#endregion
 
 		#region ================== Constructor / Disposer

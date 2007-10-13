@@ -59,6 +59,7 @@
     <Compile Include="Controls\ActionDelegate.cs" />
     <Compile Include="Controls\Action.cs" />
     <Compile Include="Controls\ActionManager.cs" />
+    <Compile Include="General\CompilerInfo.cs" />
     <Compile Include="General\ConfigurationInfo.cs" />
     <Compile Include="General\MapManager.cs" />
     <Compile Include="Controls\SpecialKeys.cs" />
