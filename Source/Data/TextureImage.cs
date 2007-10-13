@@ -98,8 +98,10 @@ namespace CodeImp.DoomBuilder.Data
 			uint datalength = (uint)(width * height * sizeof(PixelColor));
 			DoomPictureReader reader = new DoomPictureReader(General.Map.Data.Palette);
 			BitmapData bitmapdata;
+			MemoryStream mem;
 			PixelColor* pixels;
 			Stream patchdata;
+			byte[] membytes;
 			
 			// Leave when already loaded
 			if(this.IsLoaded) return;
@@ -117,9 +119,15 @@ namespace CodeImp.DoomBuilder.Data
 				patchdata = General.Map.Data.GetPatchData(p.lumpname);
 				if(patchdata != null)
 				{
-					// Read the patch and draw it onto the memory
+					// Copy patch data to memory
 					patchdata.Seek(0, SeekOrigin.Begin);
-					reader.DrawToPixelData(patchdata, pixels, width, height, p.x, p.y);
+					membytes = new byte[(int)patchdata.Length];
+					patchdata.Read(membytes, 0, (int)patchdata.Length);
+					mem = new MemoryStream(membytes);
+					mem.Seek(0, SeekOrigin.Begin);
+
+					// Draw the patch
+					reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y);
 				}
 			}
 			

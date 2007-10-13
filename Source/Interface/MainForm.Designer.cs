@@ -170,6 +170,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsavemap.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
 			this.itemsavemap.Name = "itemsavemap";
 			this.itemsavemap.Size = new System.Drawing.Size(201, 22);
+			this.itemsavemap.Tag = "savemap";
 			this.itemsavemap.Text = "Save Map";
 			this.itemsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 

@@ -295,7 +295,8 @@ namespace CodeImp.DoomBuilder.IO
 			l = lumps[index];
 			lumps.RemoveAt(index);
 			l.Dispose();
-
+			numlumps--;
+			
 			// Write the new headers
 			WriteHeaders();
 		}
@@ -306,7 +307,8 @@ namespace CodeImp.DoomBuilder.IO
 			// Remove from list
 			lumps.Remove(lump);
 			lump.Dispose();
-
+			numlumps--;
+			
 			// Write the new headers
 			WriteHeaders();
 		}
@@ -341,14 +343,14 @@ namespace CodeImp.DoomBuilder.IO
 				return lumps[index];
 		}
 
-		// This finds a lump by name, returns null when not found
+		// This finds a lump by name, returns -1 when not found
 		public int FindLumpIndex(string name)
 		{
 			// Do search
 			return FindLumpIndex(name, 0, lumps.Count - 1);
 		}
 
-		// This finds a lump by name, returns null when not found
+		// This finds a lump by name, returns -1 when not found
 		public int FindLumpIndex(string name, int start)
 		{
 			// Do search

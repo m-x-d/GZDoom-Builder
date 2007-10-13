@@ -363,6 +363,12 @@ namespace CodeImp.DoomBuilder.Map
 		// This finds the vertex closest to the specified position
 		public Vertex NearestVertex(Vector2D pos) { return MapSet.NearestVertex(vertices, pos); }
 
+		// This performs sidedefs compression
+		public void CompressSidedefs()
+		{
+			// TODO: Make this
+		}
+		
 		#endregion
 	}
 }

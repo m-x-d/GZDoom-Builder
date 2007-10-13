@@ -40,8 +40,16 @@ namespace CodeImp.DoomBuilder
 	{
 		#region ================== Constants
 
+		// Map header name in temporary file
 		private const string TEMP_MAP_HEADER = "TEMPMAP";
+		private const string BUILD_MAP_HEADER = "MAP01";
 
+		// Save modes
+		public const int SAVE_NORMAL = 0;
+		public const int SAVE_AS = 1;
+		public const int SAVE_INTO = 2;
+		public const int SAVE_TEST = 3;
+		
 		#endregion
 
 		#region ================== Variables
@@ -52,7 +60,9 @@ namespace CodeImp.DoomBuilder
 		// Map information
 		private string filetitle;
 		private string filepathname;
+		private string temppath;
 		private MapSet map;
+		private MapSetIO io;
 		private MapOptions options;
 		private ConfigurationInfo configinfo;
 		private Configuration config;
@@ -70,6 +80,7 @@ namespace CodeImp.DoomBuilder
 
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
+		public string TempPath { get { return temppath; } }
 		public MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
 		public EditMode Mode { get { return mode; } }
@@ -109,8 +120,12 @@ namespace CodeImp.DoomBuilder
 				graphics.Dispose();
 
 				// Remove temp file
-				General.WriteLogLine("Removing temporary file...");
-				try { File.Delete(tempwad.Filename); } catch(Exception) { }
+				General.WriteLogLine("Removing temporary directory...");
+				try { Directory.Delete(temppath, true); } catch(Exception e)
+				{
+					General.WriteLogLine(e.GetType().Name + ": " + e.Message);
+					General.WriteLogLine("Failed to remove temporary directory!");
+				}
 
 				// We may spend some time to clean things up here
 				GC.Collect();
@@ -128,6 +143,7 @@ namespace CodeImp.DoomBuilder
 		public bool InitializeNewMap(MapOptions options)
 		{
 			string tempfile;
+			string iointerface;
 			
 			// Apply settings
 			this.filetitle = "unnamed.wad";
@@ -137,6 +153,11 @@ namespace CodeImp.DoomBuilder
 
 			General.WriteLogLine("Creating new map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
 
+			// Create temporary path
+			temppath = General.MakeTempDirname();
+			Directory.CreateDirectory(temppath);
+			General.WriteLogLine("Temporary directory:  " + temppath);
+			
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
 			graphics = new D3DGraphics(General.MainWindow.Display);
@@ -151,9 +172,14 @@ namespace CodeImp.DoomBuilder
 			map = new MapSet();
 			
 			// Create temp wadfile
-			tempfile = General.MakeTempFilename();
+			tempfile = General.MakeTempFilename(temppath);
 			General.WriteLogLine("Creating temporary file: " + tempfile);
 			tempwad = new WAD(tempfile);
+			
+			// Read the map from temp file
+			iointerface = config.ReadSetting("formatinterface", "");
+			General.WriteLogLine("Initializing map format interface " + iointerface + "...");
+			io = MapSetIO.Create(iointerface, tempwad);
 
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
@@ -172,7 +198,6 @@ namespace CodeImp.DoomBuilder
 		public bool InitializeOpenMap(string filepathname, MapOptions options)
 		{
 			WAD mapwad;
-			MapSetIO mapio;
 			string tempfile;
 			string iointerface;
 			DataLocation maplocation;
@@ -184,7 +209,12 @@ namespace CodeImp.DoomBuilder
 			this.options = options;
 
 			General.WriteLogLine("Opening map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
-			
+
+			// Create temporary path
+			temppath = General.MakeTempDirname();
+			Directory.CreateDirectory(temppath);
+			General.WriteLogLine("Temporary directory:  " + temppath);
+
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
 			graphics = new D3DGraphics(General.MainWindow.Display);
@@ -199,7 +229,7 @@ namespace CodeImp.DoomBuilder
 			map = new MapSet();
 			
 			// Create temp wadfile
-			tempfile = General.MakeTempFilename();
+			tempfile = General.MakeTempFilename(temppath);
 			General.WriteLogLine("Creating temporary file: " + tempfile);
 			tempwad = new WAD(tempfile);
 			
@@ -218,9 +248,9 @@ namespace CodeImp.DoomBuilder
 			// Read the map from temp file
 			iointerface = config.ReadSetting("formatinterface", "");
 			General.WriteLogLine("Initializing map format interface " + iointerface + "...");
-			mapio = MapSetIO.Create(iointerface, tempwad);
-			General.WriteLogLine("Reading map data...");
-			map = mapio.Read(map, TEMP_MAP_HEADER);
+			io = MapSetIO.Create(iointerface, tempwad);
+			General.WriteLogLine("Reading map data structures from file...");
+			map = io.Read(map, TEMP_MAP_HEADER);
 
 			// Update structures
 			map.Update();
@@ -241,6 +271,183 @@ namespace CodeImp.DoomBuilder
 		
 		#endregion
 
+		#region ================== Save
+
+		// Initializes for an existing map
+		public bool SaveMap(string filepathname, int savemode)
+		{
+			MapSet outputset;
+			int insertindex;
+			string nodebuildername;
+			
+			// Make a copy of the map data
+			outputset = map.Clone();
+
+			// Do we need sidedefs compression?
+			if(map.Sidedefs.Count > io.MaxSidedefs)
+			{
+				// Compress sidedefs
+				outputset.CompressSidedefs();
+
+				// Check if it still doesnt fit
+				if(map.Sidedefs.Count > io.MaxSidedefs)
+				{
+					// Problem! Can't save the map like this!
+					General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
+					return false;
+				}
+			}
+			
+			// TODO: Check for more limitations
+			
+			// Write to temporary file
+			General.WriteLogLine("Writing map data structures to file...");
+			insertindex = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
+			if(insertindex == -1) insertindex = 0;
+			io.Write(outputset, TEMP_MAP_HEADER, insertindex);
+			
+			// Get the corresponding nodebuilder
+			if(savemode == SAVE_TEST) nodebuildername = configinfo.NodebuilderTest;
+				else nodebuildername = configinfo.NodebuilderSave;
+			
+			// Build the nodes
+			if((nodebuildername != null) && (nodebuildername != ""))
+				BuildNodes(nodebuildername);
+			
+			// Suspend data resources
+			data.Suspend();
+
+
+			// Resume data resources
+			data.Resume();
+
+			// Success!
+			changed = false;
+			return true;
+		}
+		
+		#endregion
+
+		#region ================== Nodebuild
+
+		// This builds the nodes in the temproary file with the given configuration name
+		private bool BuildNodes(string nodebuildername)
+		{
+			NodebuilderInfo nodebuilder;
+			string tempfile1, tempfile2;
+			bool lumpnodebuild, lumpallowempty, lumpscomplete;
+			IDictionary maplumps;
+			WAD buildwad;
+			int srcindex;
+			
+			// Find the nodebuilder
+			nodebuilder = General.GetNodebuilderByName(nodebuildername);
+			if(nodebuilder == null)
+			{
+				// Problem! Can't find that nodebuilder!
+				General.ShowWarningMessage("Unable to build the nodes: The configured nodebuilder cannot be found.", MessageBoxButtons.OK);
+				return false;
+			}
+			else
+			{
+				// Make a temporary file for the nodebuilder
+				tempfile1 = General.MakeTempFilename(temppath);
+				General.WriteLogLine("Creating temporary build file: " + tempfile1);
+				buildwad = new WAD(tempfile1);
+
+				// Copy lumps to buildwad
+				General.WriteLogLine("Copying map lumps to temporary build file...");
+				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
+
+				// Close buildwad
+				buildwad.Dispose();
+
+				// Does the nodebuilder require an output file?
+				if(nodebuilder.HasSpecialOutputFile)
+				{
+					// Make a temporary output file for the nodebuilder
+					tempfile2 = General.MakeTempFilename(temppath);
+					General.WriteLogLine("Creating temporary output file: " + tempfile2);
+				}
+				else
+				{
+					// Output file is same as input file
+					tempfile2 = tempfile1;
+				}
+
+				// Run the nodebuilder
+				if(nodebuilder.Run(temppath, Path.GetFileName(tempfile1), Path.GetFileName(tempfile2)))
+				{
+					// Open the output file
+					buildwad = new WAD(tempfile2);
+
+					// Find the map header in source
+					srcindex = buildwad.FindLumpIndex(BUILD_MAP_HEADER);
+					if(srcindex > -1)
+					{
+						// Go for all the map lump names
+						lumpscomplete = true;
+						maplumps = config.ReadSetting("maplumpnames", new Hashtable());
+						foreach(DictionaryEntry ml in maplumps)
+						{
+							// Read lump settings from map config
+							lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
+							lumpallowempty = config.ReadSetting("maplumpnames." + ml.Key + ".allowempty", false);
+
+							// Check if this lump should exist
+							if(lumpnodebuild && !lumpallowempty)
+							{
+								// Find the lump in the source
+								if(buildwad.FindLump(ml.Key.ToString(), srcindex, srcindex + maplumps.Count + 2) == null)
+								{
+									// Missing a lump!
+									lumpscomplete = false;
+									break;
+								}
+							}
+						}
+					}
+					else
+					{
+						// Cannot find header
+						lumpscomplete = false;
+					}
+					
+					// Output lumps complete?
+					if(lumpscomplete)
+					{
+						// Copy nodebuilder lumps to temp file
+						General.WriteLogLine("Copying nodebuilder lumps to temporary file...");
+						CopyLumpsByType(buildwad, BUILD_MAP_HEADER, tempwad, TEMP_MAP_HEADER, false, false, true, false);
+					}
+					else
+					{
+						// Problem! Nodebuilder did not build the lumps!
+						General.ShowWarningMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures.", MessageBoxButtons.OK);
+					}
+					
+					// Done with the build wad
+					buildwad.Dispose();
+					
+					// Remove temp files
+					General.WriteLogLine("Removing temporary files...");
+					if(File.Exists(tempfile1)) File.Delete(tempfile1);
+					if(File.Exists(tempfile2)) File.Delete(tempfile2);
+					return lumpscomplete;
+				}
+				else
+				{
+					// Remove temp files
+					General.WriteLogLine("Removing temporary files...");
+					if(File.Exists(tempfile1)) File.Delete(tempfile1);
+					if(File.Exists(tempfile2)) File.Delete(tempfile2);
+					return false;
+				}
+			}
+		}
+
+		#endregion
+
 		#region ================== Methods
 
 		// This copies specific map lumps from one WAD to another
@@ -257,15 +464,19 @@ namespace CodeImp.DoomBuilder
 			
 			// Find the map header in target
 			tgtindex = target.FindLumpIndex(targetmapname);
+			if(tgtindex > -1)
+			{
+				// Remove the lumps from target
+				RemoveLumpsByType(target, targetmapname, copyrequired,
+							copyblindcopy, copynodebuild, copyscript);
+			}
+			else
+			{
+				// If this header doesnt exists in the target
+				// then insert at the end of the target
+				tgtindex = target.Lumps.Count;
+			}
 			
-			// If this header doesnt exists in the target
-			// then insert at the end of the target
-			tgtindex = target.Lumps.Count;
-
-			// Remove the lumps from target
-			RemoveLumpsByType(target, targetmapname, copyrequired,
-						copyblindcopy, copynodebuild, copyscript);
-
 			// Find the map header in source
 			srcindex = source.FindLumpIndex(sourcemapname);
 			if(srcindex > -1)
@@ -308,8 +519,8 @@ namespace CodeImp.DoomBuilder
 		
 		// This copies specific map lumps from one WAD to another
 		private void RemoveLumpsByType(WAD source, string sourcemapname,
-									   bool copyrequired, bool copyblindcopy,
-									   bool copynodebuild, bool copyscript)
+									   bool removerequired, bool removeblindcopy,
+									   bool removenodebuild, bool removescript)
 		{
 			bool lumprequired, lumpblindcopy, lumpnodebuild;
 			string nextlumpname, lumpscript;
@@ -336,8 +547,8 @@ namespace CodeImp.DoomBuilder
 					lumpscript = config.ReadSetting("maplumpnames." + nextlumpname + ".script", "");
 
 					// Check if this lump will be removed from target
-					if((lumprequired && copyrequired) || (lumpblindcopy && copyblindcopy) ||
-					   (lumpnodebuild && copynodebuild) || ((lumpscript != "") && copyscript))
+					if((lumprequired && removerequired) || (lumpblindcopy && removeblindcopy) ||
+					   (lumpnodebuild && removenodebuild) || ((lumpscript != "") && removescript))
 					{
 						// Then remove it from target
 						General.WriteLogLine(nextlumpname + " removing");
@@ -355,7 +566,7 @@ namespace CodeImp.DoomBuilder
 				}
 			}
 		}
-		
+
 		// This changes editing mode
 		public void ChangeMode(Type modetype, params object[] args)
 		{
