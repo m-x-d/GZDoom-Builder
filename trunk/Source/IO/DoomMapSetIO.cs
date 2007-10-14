@@ -196,7 +196,7 @@ namespace CodeImp.DoomBuilder.IO
 				
 				// Create new item
 				s = map.CreateSector();
-				s.Update(hfloor, hceil, tfloor, tceil, special, tag);
+				s.Update(hfloor, hceil, tfloor, tceil, special, tag, bright);
 
 				// Add it to the lookup table
 				link.Add(i, s);
@@ -340,9 +340,9 @@ namespace CodeImp.DoomBuilder.IO
 				// Write properties to stream
 				writer.Write((Int16)t.Position.x);
 				writer.Write((Int16)t.Position.y);
-				writer.Write((Int16)0);				// TODO: Fix this!
+				writer.Write((Int16)t.Angle);	    // TODO: Fix this!
 				writer.Write((UInt16)t.Type);
-				writer.Write((UInt16)0);			// TODO: Fix this!
+				writer.Write((UInt16)t.Flags);
 			}
 			
 			// Find insert position and remove old lump
@@ -404,9 +404,9 @@ namespace CodeImp.DoomBuilder.IO
 				// Write properties to stream
 				writer.Write((UInt16)vertexids[l.Start]);
 				writer.Write((UInt16)vertexids[l.End]);
-				writer.Write((UInt16)0);					// TODO: Fix this!
-				writer.Write((UInt16)0);					// TODO: Fix this!
-				writer.Write((UInt16)0);					// TODO: Fix this!
+				writer.Write((UInt16)l.Flags);
+				writer.Write((UInt16)l.Action);
+				writer.Write((UInt16)l.Tag);
 
 				// Front sidedef
 				if(l.Front == null) sid = ushort.MaxValue;
@@ -445,11 +445,11 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(Sidedef sd in map.Sidedefs)
 			{
 				// Write properties to stream
-				writer.Write((Int16)0);						// TODO: Fix this!
-				writer.Write((Int16)0);						// TODO: Fix this!
-				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
-				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
-				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
+				writer.Write((Int16)sd.OffsetX);
+				writer.Write((Int16)sd.OffsetY);
+				writer.Write(Lump.MakeFixedName(sd.HighTexture, WAD.ENCODING));
+				writer.Write(Lump.MakeFixedName(sd.MiddleTexture, WAD.ENCODING));
+				writer.Write(Lump.MakeFixedName(sd.LowTexture, WAD.ENCODING));
 				writer.Write((UInt16)sectorids[sd.Sector]);
 			}
 
@@ -479,13 +479,13 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(Sector s in map.Sectors)
 			{
 				// Write properties to stream
-				writer.Write((Int16)0);						// TODO: Fix this!
-				writer.Write((Int16)0);						// TODO: Fix this!
-				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
-				writer.Write(Lump.MakeFixedName("", WAD.ENCODING));	// TODO: Fix this!
-				writer.Write((Int16)0);						// TODO: Fix this!
-				writer.Write((UInt16)0);					// TODO: Fix this!
-				writer.Write((UInt16)0);					// TODO: Fix this!
+				writer.Write((Int16)s.FloorHeight);
+				writer.Write((Int16)s.CeilHeight);
+				writer.Write(Lump.MakeFixedName(s.FloorTexture, WAD.ENCODING));
+				writer.Write(Lump.MakeFixedName(s.CeilTexture, WAD.ENCODING));
+				writer.Write((Int16)s.Brightness);
+				writer.Write((UInt16)s.Special);
+				writer.Write((UInt16)s.Tag);
 			}
 
 			// Find insert position and remove old lump

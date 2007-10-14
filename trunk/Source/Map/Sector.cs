@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Map
 		private string ceiltexname;
 		private int special;
 		private int tag;
+		private int brightness;
 
 		// Disposing
 		private bool isdisposed = false;
@@ -63,6 +64,13 @@ namespace CodeImp.DoomBuilder.Map
 
 		public MapSet Map { get { return map; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public int FloorHeight { get { return floorheight; } }
+		public int CeilHeight { get { return ceilheight; } }
+		public string FloorTexture { get { return floortexname; } }
+		public string CeilTexture { get { return ceiltexname; } }
+		public int Special { get { return special; } }
+		public int Tag { get { return tag; } }
+		public int Brightness { get { return brightness; } }
 
 		#endregion
 
@@ -156,7 +164,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 
 		// This updates all properties
-		public void Update(int hfloor, int hceil, string tfloor, string tceil, int special, int tag)
+		public void Update(int hfloor, int hceil, string tfloor, string tceil, int special, int tag, int brightness)
 		{
 			// Apply changes
 			this.floorheight = hfloor;
@@ -165,6 +173,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.ceiltexname = tceil;
 			this.special = special;
 			this.tag = tag;
+			this.brightness = brightness;
 		}
 
 		#endregion

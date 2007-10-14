@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder
 		// Map header name in temporary file
 		private const string TEMP_MAP_HEADER = "TEMPMAP";
 		private const string BUILD_MAP_HEADER = "MAP01";
+		public const string CONFIG_MAP_HEADER = "~MAP";
 
 		// Save modes
 		public const int SAVE_NORMAL = 0;
@@ -137,7 +138,7 @@ namespace CodeImp.DoomBuilder
 
 		#endregion
 
-		#region ================== Initialize
+		#region ================== New / Open
 		
 		// Initializes for a new map
 		public bool InitializeNewMap(MapOptions options)
@@ -274,11 +275,12 @@ namespace CodeImp.DoomBuilder
 		#region ================== Save
 
 		// Initializes for an existing map
-		public bool SaveMap(string filepathname, int savemode)
+		public bool SaveMap(string newfilepathname, int savemode)
 		{
 			MapSet outputset;
-			int insertindex;
 			string nodebuildername;
+			WAD targetwad;
+			int index;
 			
 			// Make a copy of the map data
 			outputset = map.Clone();
@@ -302,9 +304,9 @@ namespace CodeImp.DoomBuilder
 			
 			// Write to temporary file
 			General.WriteLogLine("Writing map data structures to file...");
-			insertindex = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
-			if(insertindex == -1) insertindex = 0;
-			io.Write(outputset, TEMP_MAP_HEADER, insertindex);
+			index = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
+			if(index == -1) index = 0;
+			io.Write(outputset, TEMP_MAP_HEADER, index);
 			
 			// Get the corresponding nodebuilder
 			if(savemode == SAVE_TEST) nodebuildername = configinfo.NodebuilderTest;
@@ -317,11 +319,52 @@ namespace CodeImp.DoomBuilder
 			// Suspend data resources
 			data.Suspend();
 
+			// On save AS we have to copy the previous file to the new file
+			if((savemode == SAVE_AS) && (filepathname != ""))
+			{
+				// Copy if oriignal file still exists
+				if(File.Exists(filepathname))
+					File.Copy(filepathname, newfilepathname, true);
+			}
+			
+			// Open the target file
+			targetwad = new WAD(newfilepathname);
+
+			// Copy map lumps to target file
+			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, options.CurrentName, true, true, true, true);
+
+			// Was the map lump name renamed?
+			if((options.PreviousName != options.CurrentName) &&
+			   (options.PreviousName != ""))
+			{
+				General.WriteLogLine("Renaming map lump name from " + options.PreviousName + " to " + options.CurrentName);
+				
+				// Find the map header in target
+				index = targetwad.FindLumpIndex(options.PreviousName);
+				if(index > -1)
+				{
+					// Rename the map lump name
+					targetwad.Lumps[index].Rename(options.CurrentName);
+					options.PreviousName = "";
+				}
+				else
+				{
+					// Houston, we've got a problem!
+					General.ShowErrorMessage("Error renaming map lump name: the original map lump could not be found!", MessageBoxButtons.OK);
+					options.CurrentName = options.PreviousName;
+					options.PreviousName = "";
+				}
+			}
+
+			// Done with the target file
+			targetwad.Dispose();
 
 			// Resume data resources
 			data.Resume();
 
 			// Success!
+			filepathname = newfilepathname;
+			filetitle = Path.GetFileName(filepathname);
 			changed = false;
 			return true;
 		}
@@ -448,7 +491,7 @@ namespace CodeImp.DoomBuilder
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Lumps
 
 		// This copies specific map lumps from one WAD to another
 		private void CopyLumpsByType(WAD source, string sourcemapname,
@@ -457,33 +500,30 @@ namespace CodeImp.DoomBuilder
 									 bool copynodebuild, bool copyscript)
 		{
 			bool lumprequired, lumpblindcopy, lumpnodebuild;
-			string lumpscript;
-			int srcindex, tgtindex;
+			string lumpscript, srclumpname, tgtlumpname;
+			int srcheaderindex, tgtheaderindex, targetindex, sourceindex, lumpindex;
 			IDictionary maplumps;
 			Lump lump, newlump;
 			
 			// Find the map header in target
-			tgtindex = target.FindLumpIndex(targetmapname);
-			if(tgtindex > -1)
-			{
-				// Remove the lumps from target
-				RemoveLumpsByType(target, targetmapname, copyrequired,
-							copyblindcopy, copynodebuild, copyscript);
-			}
-			else
+			tgtheaderindex = target.FindLumpIndex(targetmapname);
+			if(tgtheaderindex == -1)
 			{
 				// If this header doesnt exists in the target
 				// then insert at the end of the target
-				tgtindex = target.Lumps.Count;
+				tgtheaderindex = target.Lumps.Count;
 			}
+
+			// Begin inserting at target header index
+			targetindex = tgtheaderindex;
 			
 			// Find the map header in source
-			srcindex = source.FindLumpIndex(sourcemapname);
-			if(srcindex > -1)
+			srcheaderindex = source.FindLumpIndex(sourcemapname);
+			if(srcheaderindex > -1)
 			{
 				// Copy the map header from source to target
-				newlump = target.Insert(targetmapname, tgtindex++, source.Lumps[srcindex].Length);
-				source.Lumps[srcindex].CopyTo(newlump);
+				//newlump = target.Insert(targetmapname, tgtindex++, source.Lumps[srcindex].Length);
+				//source.Lumps[srcindex].CopyTo(newlump);
 				
 				// Go for all the map lump names
 				maplumps = config.ReadSetting("maplumpnames", new Hashtable());
@@ -499,13 +539,29 @@ namespace CodeImp.DoomBuilder
 					if((lumprequired && copyrequired) || (lumpblindcopy && copyblindcopy) ||
 					   (lumpnodebuild && copynodebuild) || ((lumpscript != "") && copyscript))
 					{
+						// Get the lump name
+						srclumpname = ml.Key.ToString();
+						tgtlumpname = ml.Key.ToString();
+						if(srclumpname == CONFIG_MAP_HEADER) srclumpname = sourcemapname;
+						if(tgtlumpname == CONFIG_MAP_HEADER) tgtlumpname = targetmapname;
+						
 						// Find the lump in the source
-						lump = source.FindLump(ml.Key.ToString(), srcindex, srcindex + maplumps.Count + 2);
-						if(lump != null)
+						sourceindex = FindSpecificLump(source, srclumpname, srcheaderindex, sourcemapname, maplumps);
+						if(sourceindex > -1)
 						{
+							// Remove lump at target
+							lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, maplumps);
+
+							// Determine target index
+							// When original lump was found and removed then insert at that position
+							// otherwise insert after last insertion position
+							if(lumpindex > -1) targetindex = lumpindex; else targetindex++;
+							if(targetindex > target.Lumps.Count) targetindex = target.Lumps.Count;
+							
 							// Copy the lump to the target
-							//General.WriteLogLine(ml.Key.ToString() + " copying");
-							newlump = target.Insert(ml.Key.ToString(), tgtindex++, lump.Length);
+							//General.WriteLogLine(srclumpname + " copying as " + tgtlumpname);
+							lump = source.Lumps[sourceindex];
+							newlump = target.Insert(tgtlumpname, targetindex, lump.Length);
 							lump.CopyTo(newlump);
 						}
 						else
@@ -517,55 +573,69 @@ namespace CodeImp.DoomBuilder
 			}
 		}
 		
-		// This copies specific map lumps from one WAD to another
-		private void RemoveLumpsByType(WAD source, string sourcemapname,
-									   bool removerequired, bool removeblindcopy,
-									   bool removenodebuild, bool removescript)
+		// This finds a lump within the range of known lump names
+		// Returns -1 when the lump cannot be found
+		private int FindSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps)
 		{
-			bool lumprequired, lumpblindcopy, lumpnodebuild;
-			string nextlumpname, lumpscript;
-			int index;
-			
-			// Find the map header in target
-			index = source.FindLumpIndex(sourcemapname);
-			if(index > -1)
+			// Use the configured map lump names to find the specific lump within range,
+			// because when an unknown lump is met, this search must stop.
+
+			// Go for all lumps in order to find the specified lump
+			for(int i = 0; i < maplumps.Count + 1; i++)
 			{
-				// Remove the header from target
-				source.RemoveAt(index);
-
-				// Get the name of the next lump
-				if(index < source.Lumps.Count) nextlumpname = source.Lumps[index].Name;
-				else nextlumpname = "";
-
-				// Do we recognize this lump type?
-				while(config.ReadSetting("maplumpnames." + nextlumpname, (IDictionary)null) != null)
+				// Still within bounds?
+				if((mapheaderindex + i) < source.Lumps.Count)
 				{
-					// Read lump settings from map config
-					lumprequired = config.ReadSetting("maplumpnames." + nextlumpname + ".required", false);
-					lumpblindcopy = config.ReadSetting("maplumpnames." + nextlumpname + ".blindcopy", false);
-					lumpnodebuild = config.ReadSetting("maplumpnames." + nextlumpname + ".nodebuild", false);
-					lumpscript = config.ReadSetting("maplumpnames." + nextlumpname + ".script", "");
-
-					// Check if this lump will be removed from target
-					if((lumprequired && removerequired) || (lumpblindcopy && removeblindcopy) ||
-					   (lumpnodebuild && removenodebuild) || ((lumpscript != "") && removescript))
+					// Check if this is a known lump name
+					if(maplumps.Contains(source.Lumps[mapheaderindex + i].Name) ||
+					   (maplumps.Contains(CONFIG_MAP_HEADER) && (source.Lumps[mapheaderindex + i].Name == mapheadername)))
 					{
-						// Then remove it from target
-						//General.WriteLogLine(nextlumpname + " removing");
-						source.RemoveAt(index);
+						// Is this the lump we are looking for?
+						if(source.Lumps[mapheaderindex + i].Name == lumpname)
+						{
+							// Return this index
+							return mapheaderindex + i;
+						}
 					}
 					else
 					{
-						// Advance to the next lump
-						index++;
+						// Unknown lump hit, abort search
+						break;
 					}
-
-					// Get the name of the next lump
-					if(index < source.Lumps.Count) nextlumpname = source.Lumps[index].Name;
-					else nextlumpname = "";
 				}
 			}
+
+			// Nothing found
+			return -1;
 		}
+		
+		// This removes a specific lump and returns the position where the lump was removed
+		// Returns -1 when the lump could not be found
+		private int RemoveSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps)
+		{
+			int lumpindex;
+			
+			// Find the specific lump index
+			lumpindex = FindSpecificLump(source, lumpname, mapheaderindex, mapheadername, maplumps);
+			if(lumpindex > -1)
+			{
+				// Remove this lump
+				//General.WriteLogLine(lumpname + " removed");
+				source.RemoveAt(lumpindex);
+			}
+			else
+			{
+				// Lump not found
+				General.WriteLogLine("WARNING: " + lumpname + " should be removed but was not found!");
+			}
+			
+			// Return result
+			return lumpindex;
+		}
+		
+		#endregion
+
+		#region ================== Methods
 
 		// This changes editing mode
 		public void ChangeMode(Type modetype, params object[] args)
@@ -580,7 +650,7 @@ namespace CodeImp.DoomBuilder
 			// Redraw the display
 			General.MainWindow.RedrawDisplay();
 		}
-		
+
 		#endregion
 	}
 }

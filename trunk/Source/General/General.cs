@@ -621,6 +621,10 @@ namespace CodeImp.DoomBuilder
 			openfile = new OpenFileDialog();
 			openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
 			openfile.Title = "Open Map";
+			openfile.AddExtension = false;
+			openfile.CheckFileExists = true;
+			openfile.Multiselect = false;
+			openfile.ValidateNames = true;
 			if(openfile.ShowDialog(mainwindow) == DialogResult.OK)
 			{
 				// Update main window
@@ -685,12 +689,34 @@ namespace CodeImp.DoomBuilder
 			// Check if a wad file is known
 			if(map.FilePathName == "")
 			{
-				// TODO: Call to SaveMapAs!
+				// Call to SaveMapAs
+				SaveMapAs();
 			}
 			else
 			{
 				// Save the map
 				map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL);
+			}
+		}
+
+		// This saves the current map as a different file
+		[Action(Action.SAVEMAPAS)]
+		public static void SaveMapAs()
+		{
+			SaveFileDialog savefile;
+			
+			// Show save as dialog
+			savefile = new SaveFileDialog();
+			savefile.Filter = "Doom WAD Files (*.wad)|*.wad";
+			savefile.Title = "Save Map As";
+			savefile.AddExtension = true;
+			savefile.CheckPathExists = true;
+			savefile.OverwritePrompt = true;
+			savefile.ValidateNames = true;
+			if(savefile.ShowDialog(mainwindow) == DialogResult.OK)
+			{
+				// Save the map
+				map.SaveMap(savefile.FileName, MapManager.SAVE_AS);
 			}
 		}
 		

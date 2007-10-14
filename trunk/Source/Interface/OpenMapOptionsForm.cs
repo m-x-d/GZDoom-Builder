@@ -210,8 +210,12 @@ namespace CodeImp.DoomBuilder.Interface
 				// Count how many required lumps we have to find
 				foreach(DictionaryEntry ml in maplumpnames)
 				{
-					// Read lump setting and count it
-					if(cfg.ReadSetting("maplumpnames." + ml.Key + ".required", false)) lumpsrequired++;
+					// Ignore the map header (it will not be found because the name is different)
+					if(ml.Key.ToString() != MapManager.CONFIG_MAP_HEADER)
+					{
+						// Read lump setting and count it
+						if(cfg.ReadSetting("maplumpnames." + ml.Key + ".required", false)) lumpsrequired++;
+					}
 				}
 
 				// Go for all the lumps in the wad

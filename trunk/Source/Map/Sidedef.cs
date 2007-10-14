@@ -67,7 +67,12 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
 		public Sector Sector { get { return sector; } }
 		public bool IsDisposed { get { return isdisposed; } }
-
+		public int OffsetX { get { return offsetx; } }
+		public int OffsetY { get { return offsety; } }
+		public string HighTexture { get { return texnamehigh; } }
+		public string MiddleTexture { get { return texnamemid; } }
+		public string LowTexture { get { return texnamelow; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer

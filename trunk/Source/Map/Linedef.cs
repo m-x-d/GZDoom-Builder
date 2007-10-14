@@ -83,6 +83,9 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public int Flags { get { return flags; } }
+		public int Action { get { return action; } }
+		public int Tag { get { return tag; } }
 
 		#endregion
 

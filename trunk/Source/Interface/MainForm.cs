@@ -492,6 +492,11 @@ namespace CodeImp.DoomBuilder.Interface
 			itemsavemap.Enabled = (General.Map != null);
 			itemsavemapas.Enabled = (General.Map != null);
 			itemsavemapinto.Enabled = (General.Map != null);
+
+			// Toolbar icons
+			buttonnewmap.Enabled = itemnewmap.Enabled;
+			buttonopenmap.Enabled = itemopenmap.Enabled;
+			buttonsavemap.Enabled = itemsavemap.Enabled;
 		}
 
 		// This sets the recent files from configuration
