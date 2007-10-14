@@ -126,10 +126,7 @@ namespace CodeImp.DoomBuilder
 			catch(Exception e)
 			{
 				// Unable to copy files
-				message = "Unable to copy the required files for the compiler (" + compiler.Name + ") . " + e.GetType().Name + ": " + e.Message;
-
-				General.WriteLogLine(message);
-				MessageBox.Show(General.MainWindow, message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				General.ShowErrorMessage("Unable to copy the required files for the compiler (" + compiler.Name + ") . " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 				return false;
 			}
 			
@@ -161,10 +158,7 @@ namespace CodeImp.DoomBuilder
 			catch(Exception e)
 			{
 				// Unable to start the nodebuilder
-				message = "Unable to start the nodebuilder compiler (" + compiler.Name + ") . " + e.GetType().Name + ": " + e.Message;
-
-				General.WriteLogLine(message);
-				MessageBox.Show(General.MainWindow, message, Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				General.ShowErrorMessage("Unable to start the nodebuilder compiler (" + compiler.Name + ") . " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 				return false;
 			}
 			

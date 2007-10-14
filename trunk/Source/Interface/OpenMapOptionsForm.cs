@@ -64,6 +64,16 @@ namespace CodeImp.DoomBuilder.Interface
 			// Busy
 			Cursor.Current = Cursors.WaitCursor;
 
+			// Check if the file exists
+			if(!File.Exists(filepathname))
+			{
+				// WAD file does not exist
+				MessageBox.Show(this, "Could not open the WAD file: The file does not exist.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				this.DialogResult = DialogResult.Cancel;
+				this.Hide();
+				return;
+			}
+			
 			try
 			{
 				// Open the WAD file
@@ -83,6 +93,7 @@ namespace CodeImp.DoomBuilder.Interface
 				if(wadfile != null) wadfile.Dispose();
 				this.DialogResult = DialogResult.Cancel;
 				this.Hide();
+				return;
 			}
 			
 			// Check what game configuration is preferred

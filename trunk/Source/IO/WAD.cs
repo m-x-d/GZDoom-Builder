@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.IO
 				Flush();
 				
 				// Clean up
-				foreach(Lump l in lumps) l.Dispose();
+				if(lumps != null) foreach(Lump l in lumps) l.Dispose();
 				if(writer != null) writer.Close();
 				if(reader != null) reader.Close();
 				if(file != null) file.Dispose();
