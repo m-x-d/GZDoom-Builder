@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 
 			// Level name changed and the map exists in a source wad?
-			if((levelname.Text != options.CurrentName) &&
+			if((levelname.Text != options.CurrentName) && (General.Map != null) &&
 			   (General.Map.FilePathName != "") && File.Exists(General.Map.FilePathName))
 			{
 				// Open the source wad file to check for conflicting name
@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 			
 			// Configuration changed?
-			if(General.Configs[config.SelectedIndex].Filename != options.ConfigFile)
+			if((options.ConfigFile != "") && (General.Configs[config.SelectedIndex].Filename != options.ConfigFile))
 			{
 				// Load the new cfg file
 				newcfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].Filename);
