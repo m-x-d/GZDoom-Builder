@@ -554,6 +554,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Display status
 					mainwindow.DisplayStatus("Creating new map...");
+					Cursor.Current = Cursors.WaitCursor;
 
 					// Clear the display
 					mainwindow.ClearDisplay();
@@ -566,8 +567,6 @@ namespace CodeImp.DoomBuilder
 					if(map.InitializeNewMap(newoptions))
 					{
 						// Done
-						mainwindow.UpdateMenus();
-						mainwindow.DisplayReady();
 					}
 					else
 					{
@@ -577,11 +576,12 @@ namespace CodeImp.DoomBuilder
 
 						// Show splash logo on display
 						mainwindow.ShowSplashDisplay();
-
-						// Failed
-						mainwindow.UpdateMenus();
-						mainwindow.DisplayReady();
 					}
+
+					// All done
+					mainwindow.UpdateMenus();
+					mainwindow.DisplayReady();
+					Cursor.Current = Cursors.Default;
 				}
 			}
 		}
@@ -596,6 +596,7 @@ namespace CodeImp.DoomBuilder
 				// Display status
 				mainwindow.DisplayStatus("Closing map...");
 				General.WriteLogLine("Unloading map...");
+				Cursor.Current = Cursors.WaitCursor;
 				
 				// Trash the current map
 				if(map != null) map.Dispose();
@@ -605,6 +606,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.ShowSplashDisplay();
 
 				// Done
+				Cursor.Current = Cursors.Default;
 				mainwindow.UpdateMenus();
 				mainwindow.DisplayReady();
 				General.WriteLogLine("Map unload done");
@@ -649,7 +651,8 @@ namespace CodeImp.DoomBuilder
 				{
 					// Display status
 					mainwindow.DisplayStatus("Opening map file...");
-
+					Cursor.Current = Cursors.WaitCursor;
+					
 					// Clear the display
 					mainwindow.ClearDisplay();
 
@@ -662,8 +665,6 @@ namespace CodeImp.DoomBuilder
 					{
 						// Done
 						mainwindow.AddRecentFile(filename);
-						mainwindow.UpdateMenus();
-						mainwindow.DisplayReady();
 					}
 					else
 					{
@@ -673,11 +674,12 @@ namespace CodeImp.DoomBuilder
 
 						// Show splash logo on display
 						mainwindow.ShowSplashDisplay();
-
-						// Failed
-						mainwindow.UpdateMenus();
-						mainwindow.DisplayReady();
 					}
+
+					// All done
+					mainwindow.UpdateMenus();
+					mainwindow.DisplayReady();
+					Cursor.Current = Cursors.Default;
 				}
 			}
 		}
@@ -694,8 +696,17 @@ namespace CodeImp.DoomBuilder
 			}
 			else
 			{
+				// Display status
+				mainwindow.DisplayStatus("Saving map file...");
+				Cursor.Current = Cursors.WaitCursor;
+
 				// Save the map
 				map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL);
+
+				// All done
+				mainwindow.UpdateMenus();
+				mainwindow.DisplayReady();
+				Cursor.Current = Cursors.Default;
 			}
 		}
 
@@ -715,8 +726,17 @@ namespace CodeImp.DoomBuilder
 			savefile.ValidateNames = true;
 			if(savefile.ShowDialog(mainwindow) == DialogResult.OK)
 			{
+				// Display status
+				mainwindow.DisplayStatus("Saving map file...");
+				Cursor.Current = Cursors.WaitCursor;
+
 				// Save the map
 				map.SaveMap(savefile.FileName, MapManager.SAVE_AS);
+
+				// All done
+				mainwindow.UpdateMenus();
+				mainwindow.DisplayReady();
+				Cursor.Current = Cursors.Default;
 			}
 		}
 		
@@ -778,21 +798,47 @@ namespace CodeImp.DoomBuilder
 		// This shows a message and logs the message
 		public static DialogResult ShowErrorMessage(string message, MessageBoxButtons buttons)
 		{
+			Cursor oldcursor;
+			DialogResult result;
+			
 			// Log the message
 			WriteLogLine(message);
 			
+			// Use normal cursor
+			oldcursor = Cursor.Current;
+			Cursor.Current = Cursors.Default;
+			
 			// Show message
-			return MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Error);
+			result = MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Error);
+
+			// Restore old cursor
+			Cursor.Current = oldcursor;
+			
+			// Return result
+			return result;
 		}
 
 		// This shows a message and logs the message
 		public static DialogResult ShowWarningMessage(string message, MessageBoxButtons buttons)
 		{
+			Cursor oldcursor;
+			DialogResult result;
+
 			// Log the message
 			WriteLogLine(message);
 
+			// Use normal cursor
+			oldcursor = Cursor.Current;
+			Cursor.Current = Cursors.Default;
+
 			// Show message
-			return MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Warning);
+			result = MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Warning);
+
+			// Restore old cursor
+			Cursor.Current = oldcursor;
+
+			// Return result
+			return result;
 		}
 		
 		// This returns a unique temp filename

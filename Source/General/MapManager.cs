@@ -284,7 +284,7 @@ namespace CodeImp.DoomBuilder
 		public bool SaveMap(string newfilepathname, int savemode)
 		{
 			MapSet outputset;
-			string nodebuildername;
+			string nodebuildername, oldstatus;
 			WAD targetwad;
 			int index;
 			bool includenodes;
@@ -322,10 +322,13 @@ namespace CodeImp.DoomBuilder
 				else nodebuildername = configinfo.NodebuilderSave;
 			
 			// Build the nodes
+			oldstatus = General.MainWindow.GetCurrentSatus();
+			General.MainWindow.DisplayStatus("Building map nodes...");
 			if((nodebuildername != null) && (nodebuildername != ""))
-				includenodes = BuildNodes(nodebuildername);
+				includenodes = BuildNodes(nodebuildername, true);
 			else
 				includenodes = false;
+			General.MainWindow.DisplayStatus(oldstatus);
 			
 			// Suspend data resources
 			data.Suspend();
@@ -393,7 +396,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Nodebuild
 
 		// This builds the nodes in the temproary file with the given configuration name
-		private bool BuildNodes(string nodebuildername)
+		private bool BuildNodes(string nodebuildername, bool failaswarning)
 		{
 			NodebuilderInfo nodebuilder;
 			string tempfile1, tempfile2;
@@ -401,13 +404,13 @@ namespace CodeImp.DoomBuilder
 			IDictionary maplumps;
 			WAD buildwad;
 			int srcindex;
-			
+
 			// Find the nodebuilder
 			nodebuilder = General.GetNodebuilderByName(nodebuildername);
 			if(nodebuilder == null)
 			{
 				// Problem! Can't find that nodebuilder!
-				General.ShowWarningMessage("Unable to build the nodes: The configured nodebuilder cannot be found.", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Unable to build the nodes: The configured nodebuilder cannot be found.\nPlease check your game configuration settings!", MessageBoxButtons.OK);
 				return false;
 			}
 			else
@@ -484,8 +487,11 @@ namespace CodeImp.DoomBuilder
 					}
 					else
 					{
-						// Problem! Nodebuilder did not build the lumps!
-						General.ShowWarningMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures.", MessageBoxButtons.OK);
+						// Nodebuilder did not build the lumps!
+						if(failaswarning)
+							General.ShowWarningMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures.\nThe map will be saved without the nodes.", MessageBoxButtons.OK);
+						else
+							General.ShowErrorMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures.", MessageBoxButtons.OK);
 					}
 					
 					// Done with the build wad

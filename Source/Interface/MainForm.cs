@@ -185,6 +185,12 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Statusbar
 
+		// This returns the current status text
+		public string GetCurrentSatus()
+		{
+			return statuslabel.Text;
+		}
+		
 		// This changes status text
 		public void DisplayStatus(string status)
 		{
