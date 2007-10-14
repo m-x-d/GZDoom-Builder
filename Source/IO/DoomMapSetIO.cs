@@ -315,15 +315,15 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Write lumps to wad (note the backwards order because they
 			// are all inserted at position+1 when not found)
-			WriteSectors(map, position, maplumps.Count);
-			WriteVertices(map, position, maplumps.Count);
-			WriteSidedefs(map, position, maplumps.Count, sectorids);
-			WriteLinedefs(map, position, maplumps.Count, sidedefids, vertexids);
-			WriteThings(map, position, maplumps.Count);
+			WriteSectors(map, position, maplumps);
+			WriteVertices(map, position, maplumps);
+			WriteSidedefs(map, position, maplumps, sectorids);
+			WriteLinedefs(map, position, maplumps, sidedefids, vertexids);
+			WriteThings(map, position, maplumps);
 		}
 
 		// This writes the THINGS to WAD file
-		private void WriteThings(MapSet map, int position, int maxlumps)
+		private void WriteThings(MapSet map, int position, IDictionary maplumps)
 		{
 			MemoryStream mem;
 			BinaryWriter writer;
@@ -346,8 +346,9 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			
 			// Find insert position and remove old lump
-			insertpos = wad.FindLumpIndex("THINGS", position, position + maxlumps + 1);
-			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+			insertpos = MapManager.RemoveSpecificLump(wad, "THINGS", position, "", maplumps);
+			if(insertpos == -1) insertpos = position + 1;
+			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 			
 			// Create the lump from memory
 			lump = wad.Insert("THINGS", insertpos, (int)mem.Length);
@@ -356,7 +357,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This writes the VERTEXES to WAD file
-		private void WriteVertices(MapSet map, int position, int maxlumps)
+		private void WriteVertices(MapSet map, int position, IDictionary maplumps)
 		{
 			MemoryStream mem;
 			BinaryWriter writer;
@@ -376,8 +377,9 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = wad.FindLumpIndex("VERTEXES", position, position + maxlumps + 1);
-			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+			insertpos = MapManager.RemoveSpecificLump(wad, "VERTEXES", position, "", maplumps);
+			if(insertpos == -1) insertpos = position + 1;
+			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
 			// Create the lump from memory
 			lump = wad.Insert("VERTEXES", insertpos, (int)mem.Length);
@@ -386,7 +388,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This writes the LINEDEFS to WAD file
-		private void WriteLinedefs(MapSet map, int position, int maxlumps, IDictionary<Sidedef, int> sidedefids, IDictionary<Vertex, int> vertexids)
+		private void WriteLinedefs(MapSet map, int position, IDictionary maplumps, IDictionary<Sidedef, int> sidedefids, IDictionary<Vertex, int> vertexids)
 		{
 			MemoryStream mem;
 			BinaryWriter writer;
@@ -420,8 +422,9 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = wad.FindLumpIndex("LINEDEFS", position, position + maxlumps + 1);
-			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+			insertpos = MapManager.RemoveSpecificLump(wad, "LINEDEFS", position, "", maplumps);
+			if(insertpos == -1) insertpos = position + 1;
+			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
 			// Create the lump from memory
 			lump = wad.Insert("LINEDEFS", insertpos, (int)mem.Length);
@@ -430,7 +433,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This writes the SIDEDEFS to WAD file
-		private void WriteSidedefs(MapSet map, int position, int maxlumps, IDictionary<Sector, int> sectorids)
+		private void WriteSidedefs(MapSet map, int position, IDictionary maplumps, IDictionary<Sector, int> sectorids)
 		{
 			MemoryStream mem;
 			BinaryWriter writer;
@@ -454,8 +457,9 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = wad.FindLumpIndex("SIDEDEFS", position, position + maxlumps + 1);
-			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+			insertpos = MapManager.RemoveSpecificLump(wad, "SIDEDEFS", position, "", maplumps);
+			if(insertpos == -1) insertpos = position + 1;
+			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
 			// Create the lump from memory
 			lump = wad.Insert("SIDEDEFS", insertpos, (int)mem.Length);
@@ -464,7 +468,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This writes the SECTORS to WAD file
-		private void WriteSectors(MapSet map, int position, int maxlumps)
+		private void WriteSectors(MapSet map, int position, IDictionary maplumps)
 		{
 			MemoryStream mem;
 			BinaryWriter writer;
@@ -489,8 +493,9 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = wad.FindLumpIndex("SECTORS", position, position + maxlumps + 1);
-			if(insertpos == -1) insertpos = position + 1; else wad.RemoveAt(insertpos);
+			insertpos = MapManager.RemoveSpecificLump(wad, "SECTORS", position, "", maplumps);
+			if(insertpos == -1) insertpos = position + 1;
+			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
 			// Create the lump from memory
 			lump = wad.Insert("SECTORS", insertpos, (int)mem.Length);
