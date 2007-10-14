@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal struct DataLocation
+	internal struct DataLocation : IComparable<DataLocation>, IComparable, IEquatable<DataLocation>
 	{
 		// Constants
 		public const int RESOURCE_WAD = 0;
@@ -53,6 +53,24 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Simply show location
 			return location;
+		}
+
+		// This compares two locations
+		public int CompareTo(DataLocation other)
+		{
+			return string.Compare(this.location, other.location, true);
+		}
+		
+		// This compares two locations
+		public int CompareTo(object obj)
+		{
+			return string.Compare(this.location, ((DataLocation)obj).location, true);
+		}
+		
+		// This compares two locations
+		public bool Equals(DataLocation other)
+		{
+			return (this.CompareTo(other) == 0);
 		}
 	}
 }

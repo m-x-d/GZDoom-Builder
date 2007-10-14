@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 			System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+			System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.menumain = new System.Windows.Forms.MenuStrip();
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,6 +46,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsavemapinto = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemnorecent = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemexit = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuedit = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemmapoptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
 			this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,6 +57,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonnewmap = new System.Windows.Forms.ToolStripButton();
 			this.buttonopenmap = new System.Windows.Forms.ToolStripButton();
 			this.buttonsavemap = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonmapoptions = new System.Windows.Forms.ToolStripButton();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.zoomlabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -71,11 +76,13 @@ namespace CodeImp.DoomBuilder.Interface
 			this.panelinfo = new System.Windows.Forms.Panel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new System.Windows.Forms.Panel();
+			this.itemreloadresources = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+			toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.menumain.SuspendLayout();
 			this.toolbar.SuspendLayout();
 			this.statusbar.SuspendLayout();
@@ -112,6 +119,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.menumain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menufile,
+            this.menuedit,
             this.menutools,
             this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
@@ -140,7 +148,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// itemnewmap
 			// 
-			this.itemnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.NewMap;
+			this.itemnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.File;
 			this.itemnewmap.Name = "itemnewmap";
 			this.itemnewmap.ShortcutKeyDisplayString = "";
 			this.itemnewmap.Size = new System.Drawing.Size(201, 22);
@@ -203,9 +211,28 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemexit.Text = "Exit";
 			this.itemexit.Click += new System.EventHandler(this.itemexit_Click);
 			// 
+			// menuedit
+			// 
+			this.menuedit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemmapoptions});
+			this.menuedit.Name = "menuedit";
+			this.menuedit.Size = new System.Drawing.Size(37, 20);
+			this.menuedit.Text = "Edit";
+			// 
+			// itemmapoptions
+			// 
+			this.itemmapoptions.Image = global::CodeImp.DoomBuilder.Properties.Resources.Properties;
+			this.itemmapoptions.Name = "itemmapoptions";
+			this.itemmapoptions.Size = new System.Drawing.Size(161, 22);
+			this.itemmapoptions.Tag = "mapoptions";
+			this.itemmapoptions.Text = "Map Options....";
+			this.itemmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// menutools
 			// 
 			this.menutools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemreloadresources,
+            toolStripSeparator4,
             this.configurationToolStripMenuItem,
             this.preferencesToolStripMenuItem});
 			this.menutools.Name = "menutools";
@@ -249,7 +276,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buttonnewmap,
             this.buttonopenmap,
-            this.buttonsavemap});
+            this.buttonsavemap,
+            this.toolStripSeparator3,
+            this.buttonmapoptions});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(731, 25);
@@ -288,6 +317,23 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonsavemap.Tag = "savemap";
 			this.buttonsavemap.Text = "Save Map";
 			this.buttonsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonmapoptions
+			// 
+			this.buttonmapoptions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonmapoptions.Image = global::CodeImp.DoomBuilder.Properties.Resources.Properties;
+			this.buttonmapoptions.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonmapoptions.Name = "buttonmapoptions";
+			this.buttonmapoptions.Size = new System.Drawing.Size(23, 22);
+			this.buttonmapoptions.Tag = "mapoptions";
+			this.buttonmapoptions.Text = "Map Options";
+			this.buttonmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// statusbar
 			// 
@@ -453,6 +499,19 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			// 
+			// itemreloadresources
+			// 
+			this.itemreloadresources.Name = "itemreloadresources";
+			this.itemreloadresources.Size = new System.Drawing.Size(197, 22);
+			this.itemreloadresources.Tag = "reloadresources";
+			this.itemreloadresources.Text = "Reload Resources";
+			this.itemreloadresources.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator4
+			// 
+			toolStripSeparator4.Name = "toolStripSeparator4";
+			toolStripSeparator4.Size = new System.Drawing.Size(194, 6);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -525,5 +584,10 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem menutools;
 		private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripMenuItem menuedit;
+		private System.Windows.Forms.ToolStripMenuItem itemmapoptions;
+		private System.Windows.Forms.ToolStripButton buttonmapoptions;
+		private System.Windows.Forms.ToolStripMenuItem itemreloadresources;
 	}
 }

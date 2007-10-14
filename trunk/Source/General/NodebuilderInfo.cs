@@ -114,8 +114,8 @@ namespace CodeImp.DoomBuilder
 		{
 			ProcessStartInfo processinfo;
 			Process process;
-			string args, message;
 			TimeSpan deltatime;
+			string args;
 
 			try
 			{
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder
 			catch(Exception e)
 			{
 				// Unable to copy files
-				General.ShowErrorMessage("Unable to copy the required files for the compiler (" + compiler.Name + ") . " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+				General.ShowErrorMessage("Unable to copy the required files for the compiler (" + compiler.Name + "). " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 				return false;
 			}
 			

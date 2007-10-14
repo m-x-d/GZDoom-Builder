@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 						// Done
 						this.DialogResult = DialogResult.OK;
-						this.Hide();
+						this.Close();
 					}
 					break;
 
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 						// Done
 						this.DialogResult = DialogResult.OK;
-						this.Hide();
+						this.Close();
 					}
 					break;
 			}
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Just hide
 			this.DialogResult = DialogResult.Cancel;
-			this.Hide();
+			this.Close();
 		}
 
 		// Browse WAD File clicked

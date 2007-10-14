@@ -24,6 +24,8 @@ using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.IO;
+using System.IO;
 
 #endregion
 
@@ -72,6 +74,11 @@ namespace CodeImp.DoomBuilder.Interface
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			Configuration newcfg;
+			string oldio, newio;
+			WAD sourcewad;
+			bool conflictingname;
+			
 			// Configuration selected?
 			if(config.SelectedIndex == -1)
 			{
@@ -90,6 +97,56 @@ namespace CodeImp.DoomBuilder.Interface
 				return;
 			}
 
+			// Level name changed and the map exists in a source wad?
+			if((levelname.Text != options.CurrentName) &&
+			   (General.Map.FilePathName != "") && File.Exists(General.Map.FilePathName))
+			{
+				// Open the source wad file to check for conflicting name
+				sourcewad = new WAD(General.Map.FilePathName, true);
+				conflictingname = (sourcewad.FindLumpIndex(levelname.Text) > -1);
+				sourcewad.Dispose();
+				
+				// Names conflict?
+				if(conflictingname)
+				{
+					// Show warning!
+					if(General.ShowWarningMessage("The map name \"" + levelname.Text + "\" is already in use by another map or data lump in the source WAD file. Saving your map with this name will cause conflicting data lumps in the WAD file. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)
+					{
+						return;
+					}
+				}
+			}
+			
+			// Configuration changed?
+			if(General.Configs[config.SelectedIndex].Filename != options.ConfigFile)
+			{
+				// Load the new cfg file
+				newcfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].Filename);
+				if(newcfg == null) return;
+				
+				// Check if the config uses a different IO interface
+				oldio = General.Map.Configuration.ReadSetting("formatinterface", "");
+				newio = newcfg.ReadSetting("formatinterface", "");
+				if(oldio != newio)
+				{
+					// Warn the user about IO interface change
+					if(General.ShowWarningMessage("The game configuration you selected uses a different file format than your current map. Because your map was not designed for this format it may cause the map to work incorrectly in the game. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)
+					{
+						// Reset to old configuration
+						for(int i = 0; i < config.Items.Count; i++)
+						{
+							// Is this configuration the old config?
+							if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0)
+							{
+								// Select this item
+								config.SelectedIndex = i;
+							}
+						}
+						return;
+					}
+				}
+			}
+			
 			// Apply changes
 			options.ClearResources();
 			options.ConfigFile = General.Configs[config.SelectedIndex].Filename;
@@ -98,7 +155,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Hide window
 			this.DialogResult = DialogResult.OK;
-			this.Hide();
+			this.Close();
 		}
 
 		// Cancel clicked
@@ -106,7 +163,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Just hide window
 			this.DialogResult = DialogResult.Cancel;
-			this.Hide();
+			this.Close();
 		}
 
 		// Game configuration chosen

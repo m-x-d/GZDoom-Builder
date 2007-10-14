@@ -157,6 +157,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.floortexname = floortexname;
 			s.special = special;
 			s.tag = tag;
+			s.brightness = brightness;
 		}
 		
 		#endregion
