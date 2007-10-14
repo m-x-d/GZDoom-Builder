@@ -104,6 +104,9 @@ namespace CodeImp.DoomBuilder.IO
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Flush all changes
+				Flush();
+				
 				// Clean up
 				foreach(Lump l in lumps) l.Dispose();
 				if(writer != null) writer.Close();
