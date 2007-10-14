@@ -162,6 +162,18 @@ namespace CodeImp.DoomBuilder.IO
 			return name;
 		}
 		
+		// This renames the lump
+		public void Rename(string newname)
+		{
+			// Make name
+			this.fixedname = MakeFixedName(newname, WAD.ENCODING);
+			this.name = MakeNormalName(this.fixedname, WAD.ENCODING).ToUpperInvariant();
+			this.longname = MakeLongName(newname);
+
+			// Write changes
+			owner.WriteHeaders();
+		}
+		
 		#endregion
 	}
 }

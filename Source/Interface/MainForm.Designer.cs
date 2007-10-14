@@ -178,6 +178,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemsavemapas.Name = "itemsavemapas";
 			this.itemsavemapas.Size = new System.Drawing.Size(201, 22);
+			this.itemsavemapas.Tag = "savemapas";
 			this.itemsavemapas.Text = "Save Map As...";
 			this.itemsavemapas.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -263,7 +264,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonnewmap.Name = "buttonnewmap";
 			this.buttonnewmap.Size = new System.Drawing.Size(23, 22);
 			this.buttonnewmap.Tag = "newmap";
-			this.buttonnewmap.Text = "toolStripButton1";
+			this.buttonnewmap.Text = "New Map";
 			this.buttonnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonopenmap
@@ -274,7 +275,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonopenmap.Name = "buttonopenmap";
 			this.buttonopenmap.Size = new System.Drawing.Size(23, 22);
 			this.buttonopenmap.Tag = "openmap";
-			this.buttonopenmap.Text = "toolStripButton1";
+			this.buttonopenmap.Text = "Open Map";
 			this.buttonopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonsavemap
@@ -285,7 +286,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonsavemap.Name = "buttonsavemap";
 			this.buttonsavemap.Size = new System.Drawing.Size(23, 22);
 			this.buttonsavemap.Tag = "savemap";
-			this.buttonsavemap.Text = "toolStripButton1";
+			this.buttonsavemap.Text = "Save Map";
 			this.buttonsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// statusbar

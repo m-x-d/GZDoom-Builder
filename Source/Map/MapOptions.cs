@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Map header name
 		private string currentname;
-		private string previousname;
+		private string previousname;		// When zero length string, map has not renamed
 		
 		// Additional resources
 		private DataLocationList resources;
@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		public string ConfigFile { get { return configfile; } set { configfile = value; } }
 		public DataLocationList Resources { get { return resources; } }
-		public string PreviousName { get { return previousname; } }
+		public string PreviousName { get { return previousname; } set { previousname = value; } }
 		public string CurrentName
 		{
 			get { return currentname; }

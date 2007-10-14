@@ -218,7 +218,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This reads the WAD header and lumps table
-		private void WriteHeaders()
+		public void WriteHeaders()
 		{
 			// Seek to beginning
 			file.Seek(0, SeekOrigin.Begin);
@@ -312,7 +312,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Write the new headers
 			WriteHeaders();
 		}
-
+		
 		// This finds a lump by name, returns null when not found
 		public Lump FindLump(string name)
 		{
