@@ -299,6 +299,7 @@ namespace CodeImp.DoomBuilder
 			WAD targetwad;
 			int index;
 			bool includenodes;
+			string origmapname;
 			
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
 			
@@ -366,8 +367,12 @@ namespace CodeImp.DoomBuilder
 			// Open the target file
 			targetwad = new WAD(newfilepathname);
 
+			// Determine original map name
+			if(options.PreviousName != "") origmapname = options.PreviousName;
+				else origmapname = options.CurrentName;
+
 			// Copy map lumps to target file
-			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, options.CurrentName, true, true, includenodes, true);
+			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
 
 			// Was the map lump name renamed?
 			if((options.PreviousName != options.CurrentName) &&
