@@ -194,6 +194,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\Properties.png" />
+    <None Include="Resources\NewMap2.png" />
     <None Include="Resources\Zoom.png" />
     <None Include="Resources\SaveMap.png" />
     <None Include="Resources\OpenMap.png" />

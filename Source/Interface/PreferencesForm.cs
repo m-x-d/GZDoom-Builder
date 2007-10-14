@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Close
 			this.DialogResult = DialogResult.OK;
-			this.Hide();
+			this.Close();
 		}
 
 		// Cancel clicked
@@ -275,7 +275,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Close
 			this.DialogResult = DialogResult.Cancel;
-			this.Hide();
+			this.Close();
 		}
 
 		#endregion

@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private MapOptions options;
 		private WAD wadfile;
 		private string filepathname;
+		private string selectedmapname;
 		
 		// Properties
 		public string FilePathName { get { return filepathname; } }
@@ -70,7 +71,7 @@ namespace CodeImp.DoomBuilder.Interface
 				// WAD file does not exist
 				MessageBox.Show(this, "Could not open the WAD file: The file does not exist.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				this.DialogResult = DialogResult.Cancel;
-				this.Hide();
+				this.Close();
 				return;
 			}
 			
@@ -78,13 +79,6 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Open the WAD file
 				wadfile = new WAD(filepathname, true);
-
-				// Open the Map Settings configuration
-				dbsfile = filepathname.Substring(0, filepathname.Length - 4) + ".dbs";
-				if(File.Exists(dbsfile))
-					mapsettings = new Configuration(dbsfile, true);
-				else
-					mapsettings = new Configuration(true);
 			}
 			catch(Exception)
 			{
@@ -92,9 +86,17 @@ namespace CodeImp.DoomBuilder.Interface
 				MessageBox.Show(this, "Could not open the WAD file for reading. Please make sure the file you selected is valid and is not in use by any other application.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				if(wadfile != null) wadfile.Dispose();
 				this.DialogResult = DialogResult.Cancel;
-				this.Hide();
+				this.Close();
 				return;
 			}
+
+			// Open the Map Settings configuration
+			dbsfile = filepathname.Substring(0, filepathname.Length - 4) + ".dbs";
+			if(File.Exists(dbsfile))
+				try { mapsettings = new Configuration(dbsfile, true); }
+				catch(Exception) { mapsettings = new Configuration(true); }
+			else
+				mapsettings = new Configuration(true);
 			
 			// Check what game configuration is preferred
 			gameconfig = mapsettings.ReadSetting("gameconfig", "");
@@ -258,6 +260,7 @@ namespace CodeImp.DoomBuilder.Interface
 				}
 
 				// Clear the list and add the new map names
+				mapslist.BeginUpdate();
 				mapslist.Items.Clear();
 				mapslist.Items.AddRange(mapnames.ToArray());
 				mapslist.Sort();
@@ -273,6 +276,8 @@ namespace CodeImp.DoomBuilder.Interface
 						break;
 					}
 				}
+				if((mapslist.SelectedItems.Count == 0) && (mapslist.Items.Count > 0)) mapslist.Items[0].Selected = true;
+				mapslist.EndUpdate();
 
 				// Show configuration resources
 				datalocations.FixedResourceLocationList(ci.Resources);
@@ -309,7 +314,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Hide window
 			wadfile.Dispose();
 			this.DialogResult = DialogResult.OK;
-			this.Hide();
+			this.Close();
 		}
 		
 		// Cancel clicked
@@ -318,7 +323,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Just hide window
 			wadfile.Dispose();
 			this.DialogResult = DialogResult.Cancel;
-			this.Hide();
+			this.Close();
 		}
 
 		// Window is shown
@@ -338,5 +343,47 @@ namespace CodeImp.DoomBuilder.Interface
 			if(mapslist.SelectedItems.Count > 0) apply.PerformClick();
 		}
 
+		// Map name selected
+		private void mapslist_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+		{
+			DataLocationList locations;
+			DataLocationList listedlocations;
+			
+			// Map previously selected?
+			if((selectedmapname != null) && (selectedmapname != ""))
+			{
+				// Get locations from previous selected map settings
+				locations = new DataLocationList(mapsettings, "maps." + selectedmapname + ".resources");
+				listedlocations = datalocations.GetResources();
+				
+				// Remove data locations that this map has in its config
+				foreach(DataLocation dl in locations)
+					listedlocations.Remove(dl);
+
+				// Set new data locations
+				datalocations.EditResourceLocationList(listedlocations);
+
+				// Done
+				selectedmapname = null;
+			}
+			
+			// Anything selected?
+			if(mapslist.SelectedItems.Count > 0)
+			{
+				// Get the map name
+				selectedmapname = mapslist.SelectedItems[0].Text;
+				
+				// Get locations from previous selected map settings
+				locations = new DataLocationList(mapsettings, "maps." + selectedmapname + ".resources");
+				listedlocations = datalocations.GetResources();
+
+				// Add data locations that this map has in its config
+				foreach(DataLocation dl in locations)
+					if(!listedlocations.Contains(dl)) listedlocations.Add(dl);
+
+				// Set new data locations
+				datalocations.EditResourceLocationList(listedlocations);
+			}
+		}
 	}
 }

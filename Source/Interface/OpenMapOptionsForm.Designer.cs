@@ -127,7 +127,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.config.Location = new System.Drawing.Point(141, 21);
 			this.config.Name = "config";
 			this.config.Size = new System.Drawing.Size(213, 22);
-			this.config.Sorted = true;
 			this.config.TabIndex = 15;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 
@@ -151,6 +150,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.mapslist.UseCompatibleStateImageBehavior = false;
 			this.mapslist.View = System.Windows.Forms.View.List;
 			this.mapslist.DoubleClick += new System.EventHandler(this.mapslist_DoubleClick);
+			this.mapslist.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.mapslist_ItemSelectionChanged);
 			// 
 			// OpenMapOptionsForm
 			// 

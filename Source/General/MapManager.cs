@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Editing;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -86,7 +87,7 @@ namespace CodeImp.DoomBuilder
 		public MapSet Map { get { return map; } }
 		public EditMode Mode { get { return mode; } }
 		public DataManager Data { get { return data; } }
-		public bool IsChanged { get { return changed; } set { changed = value; } }
+		public bool IsChanged { get { return changed; } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public D3DGraphics Graphics { get { return graphics; } }
 		public Configuration Configuration { get { return config; } }
@@ -108,6 +109,9 @@ namespace CodeImp.DoomBuilder
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Unbind any methods
+				ActionAttribute.UnbindMethods(this);
+
 				// Dispose
 				General.WriteLogLine("Unloading data resources...");
 				data.Dispose();
@@ -193,6 +197,9 @@ namespace CodeImp.DoomBuilder
 			data = new DataManager();
 			data.Load(configinfo.Resources, options.Resources);
 
+			// Bind any methods
+			ActionAttribute.BindMethods(this);
+
 			// Set default mode
 			ChangeMode(typeof(FrozenOverviewMode));
 
@@ -267,7 +274,10 @@ namespace CodeImp.DoomBuilder
 			data = new DataManager();
 			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
-			
+
+			// Bind any methods
+			ActionAttribute.BindMethods(this);
+
 			// Set default mode
 			ChangeMode(typeof(FrozenOverviewMode));
 
@@ -284,7 +294,8 @@ namespace CodeImp.DoomBuilder
 		public bool SaveMap(string newfilepathname, int savemode)
 		{
 			MapSet outputset;
-			string nodebuildername, oldstatus;
+			string nodebuildername, oldstatus, settingsfile;
+			Configuration mapsettings;
 			WAD targetwad;
 			int index;
 			bool includenodes;
@@ -339,6 +350,10 @@ namespace CodeImp.DoomBuilder
 			{
 				// Kill target file
 				if(File.Exists(newfilepathname)) File.Delete(newfilepathname);
+
+				// Kill .dbs settings file
+				settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
+				if(File.Exists(settingsfile)) File.Delete(settingsfile);
 			}
 			
 			// On Save AS we have to copy the previous file to the new file
@@ -383,11 +398,46 @@ namespace CodeImp.DoomBuilder
 			// Resume data resources
 			data.Resume();
 
+			try
+			{
+				// Open or create the map settings
+				settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
+				if(File.Exists(settingsfile))
+					mapsettings = new Configuration(settingsfile, true);
+				else
+					mapsettings = new Configuration(true);
+
+				// Write settings
+				mapsettings.WriteSetting("type", "Doom Builder Map Settings Configuration");
+				mapsettings.WriteSetting("gameconfig", options.ConfigFile);
+				options.Resources.WriteToConfig(mapsettings, "maps." + options.CurrentName + ".resources");
+
+				// Save settings
+				mapsettings.SaveConfiguration(settingsfile);
+			}
+			catch(Exception e)
+			{
+				// Warning only
+				General.WriteLogLine("WARNING: " + e.GetType().Name + ": " + e.Message);
+				General.WriteLogLine("WARNING: Could not write the map settings configuration file!");
+			}
+			
+			// Was the map saved in a different file? And not for testing purpose?
+			if((savemode != SAVE_TEST) && (newfilepathname != filepathname))
+			{
+				// Keep new filename
+				filepathname = newfilepathname;
+				filetitle = Path.GetFileName(filepathname);
+				
+				// Changes saved
+				changed = false;
+				
+				// Reload resources
+				ReloadResources();
+			}
+			
 			// Success!
 			General.WriteLogLine("Map saving done");
-			filepathname = newfilepathname;
-			filetitle = Path.GetFileName(filepathname);
-			changed = false;
 			return true;
 		}
 		
@@ -717,6 +767,58 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Methods
 
+		// This reloads resources
+		[Action(Action.RELOADRESOURCES)]
+		public void ReloadResources()
+		{
+			DataLocation maplocation;
+			string oldstatus;
+			Cursor oldcursor;
+			
+			// Keep old display info
+			oldstatus = General.MainWindow.GetCurrentSatus();
+			oldcursor = Cursor.Current;
+			
+			// Show status
+			General.MainWindow.DisplayStatus("Reloading data resources...");
+			Cursor.Current = Cursors.WaitCursor;
+			
+			// Reload game configuration
+			General.WriteLogLine("Reloading game configuration...");
+			configinfo = General.GetConfigurationInfo(options.ConfigFile);
+			config = General.LoadGameConfiguration(options.ConfigFile);
+			
+			// Reload data resources
+			General.WriteLogLine("Reloading data resources...");
+			data.Dispose();
+			data = new DataManager();
+			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
+			data.Load(configinfo.Resources, options.Resources, maplocation);
+
+			// Reset status
+			General.MainWindow.DisplayStatus(oldstatus);
+			Cursor.Current = oldcursor;
+		}
+		
+		// Game Configuration action
+		[Action(Action.MAPOPTIONS)]
+		public void ShowMapOptions()
+		{
+			// Show map options dialog
+			MapOptionsForm optionsform = new MapOptionsForm(options);
+			if(optionsform.ShowDialog(General.MainWindow) == DialogResult.OK)
+			{
+				// Update interface
+				General.MainWindow.UpdateInterface();
+				
+				// Reload resources
+				ReloadResources();
+			}
+
+			// Done
+			optionsform.Dispose();
+		}
+		
 		// This changes editing mode
 		public void ChangeMode(Type modetype, params object[] args)
 		{

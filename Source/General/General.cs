@@ -410,7 +410,7 @@ namespace CodeImp.DoomBuilder
 				// Create main window
 				General.WriteLogLine("Loading main interface window...");
 				mainwindow = new MainForm();
-				mainwindow.UpdateMenus();
+				mainwindow.UpdateInterface();
 
 				// Show main window
 				General.WriteLogLine("Showing main interface window...");
@@ -579,7 +579,7 @@ namespace CodeImp.DoomBuilder
 					}
 
 					// All done
-					mainwindow.UpdateMenus();
+					mainwindow.UpdateInterface();
 					mainwindow.DisplayReady();
 					Cursor.Current = Cursors.Default;
 				}
@@ -607,7 +607,7 @@ namespace CodeImp.DoomBuilder
 
 				// Done
 				Cursor.Current = Cursors.Default;
-				mainwindow.UpdateMenus();
+				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				General.WriteLogLine("Map unload done");
 			}
@@ -677,7 +677,7 @@ namespace CodeImp.DoomBuilder
 					}
 
 					// All done
-					mainwindow.UpdateMenus();
+					mainwindow.UpdateInterface();
 					mainwindow.DisplayReady();
 					Cursor.Current = Cursors.Default;
 				}
@@ -704,7 +704,7 @@ namespace CodeImp.DoomBuilder
 				map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL);
 
 				// All done
-				mainwindow.UpdateMenus();
+				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				Cursor.Current = Cursors.Default;
 			}
@@ -734,7 +734,7 @@ namespace CodeImp.DoomBuilder
 				map.SaveMap(savefile.FileName, MapManager.SAVE_AS);
 
 				// All done
-				mainwindow.UpdateMenus();
+				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				Cursor.Current = Cursors.Default;
 			}
@@ -821,6 +821,12 @@ namespace CodeImp.DoomBuilder
 		// This shows a message and logs the message
 		public static DialogResult ShowWarningMessage(string message, MessageBoxButtons buttons)
 		{
+			return ShowWarningMessage(message, buttons, MessageBoxDefaultButton.Button1);
+		}
+
+		// This shows a message and logs the message
+		public static DialogResult ShowWarningMessage(string message, MessageBoxButtons buttons, MessageBoxDefaultButton defaultbutton)
+		{
 			Cursor oldcursor;
 			DialogResult result;
 
@@ -832,7 +838,7 @@ namespace CodeImp.DoomBuilder
 			Cursor.Current = Cursors.Default;
 
 			// Show message
-			result = MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Warning);
+			result = MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Warning, defaultbutton);
 
 			// Restore old cursor
 			Cursor.Current = oldcursor;

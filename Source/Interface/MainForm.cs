@@ -95,6 +95,37 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		#endregion
+		
+		#region ================== General
+
+		// This updates all menus for the current status
+		public void UpdateInterface()
+		{
+			// Map opened?
+			if(General.Map != null)
+			{
+				// Show map name and filename in caption
+				this.Text = General.Map.FileTitle + " (" + General.Map.Options.CurrentName + ") - " + Application.ProductName;
+			}
+			else
+			{
+				// Show normal caption
+				this.Text = Application.ProductName;
+			}
+
+			// Update menus and toolbar icons
+			UpdateFileMenu();
+			UpdateEditMenu();
+			UpdateToolsMenu();
+		}
+		
+		// Generic event that invokes the tagged action
+		private void InvokeTaggedAction(object sender, EventArgs e)
+		{
+			General.Actions[(sender as ToolStripItem).Tag.ToString()].Invoke();
+		}
+
+		#endregion
 
 		#region ================== Window
 
@@ -472,19 +503,6 @@ namespace CodeImp.DoomBuilder.Interface
 				}
 			}
 		}
-		
-		// This updates all menus for the current status
-		public void UpdateMenus()
-		{
-			// Update them all
-			UpdateFileMenu();
-		}
-
-		// Generic event that invokes the tagged action
-		private void InvokeTaggedAction(object sender, EventArgs e)
-		{
-			General.Actions[(sender as ToolStripItem).Tag.ToString()].Invoke();
-		}
 
 		#endregion
 
@@ -631,13 +649,29 @@ namespace CodeImp.DoomBuilder.Interface
 		private void itemexit_Click(object sender, EventArgs e) { this.Close(); }
 
 		// Recent item clicked
-		void recentitem_Click(object sender, EventArgs e)
+		private void recentitem_Click(object sender, EventArgs e)
 		{
 			// Get the item that was clicked
 			ToolStripItem item = (sender as ToolStripItem);
 
 			// Open this file
-			General.OpenMapFile(item.Text);
+			General.OpenMapFile(item.Tag.ToString());
+		}
+		
+		#endregion
+
+		#region ================== Edit Menu
+
+		// This sets up the edit menu
+		private void UpdateEditMenu()
+		{
+			// No edit menu when no map open
+			menuedit.Enabled = (General.Map != null);
+			
+			// Enable/disable items
+			
+			// Toolbar icons
+			buttonmapoptions.Enabled = (General.Map != null);
 		}
 		
 		#endregion
@@ -658,6 +692,15 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Tools Menu
 
+		// This sets up the tools menu
+		private void UpdateToolsMenu()
+		{
+			// Enable/disable items
+			itemreloadresources.Enabled = (General.Map != null);
+			
+			// Toolbar icons
+		}
+		
 		// Game Configuration action
 		[Action(Action.CONFIGURATION)]
 		public void ShowConfiguration()
@@ -666,7 +709,11 @@ namespace CodeImp.DoomBuilder.Interface
 			ConfigForm cfgform = new ConfigForm();
 			if(cfgform.ShowDialog(this) == DialogResult.OK)
 			{
-				// TODO: Reload resources if a map is open
+				// Update interface
+				UpdateInterface();
+				
+				// Reload resources if a map is open
+				if(General.Map != null) General.Map.ReloadResources();
 			}
 			
 			// Done

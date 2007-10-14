@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
+using System.Windows.Forms;
 
 #endregion
 
@@ -127,21 +128,30 @@ namespace CodeImp.DoomBuilder.Data
 				// TODO: Make this work more elegant using reflection.
 				// Make DataLocation.type of type Type and assign the
 				// types of the desired reader classes.
-				
-				// Choose container type
-				switch(dl.type)
-				{
-					// WAD file container
-					case DataLocation.RESOURCE_WAD:
-						c = new WADReader(dl);
-						break;
-						
-					// Directory container
-					case DataLocation.RESOURCE_DIRECTORY:
-						c = new DirectoryReader(dl);
-						break;
-				}
 
+				try
+				{
+					// Choose container type
+					switch(dl.type)
+					{
+						// WAD file container
+						case DataLocation.RESOURCE_WAD:
+							c = new WADReader(dl);
+							break;
+
+						// Directory container
+						case DataLocation.RESOURCE_DIRECTORY:
+							c = new DirectoryReader(dl);
+							break;
+					}
+				}
+				catch(Exception)
+				{
+					// Unable to load resource
+					General.ShowErrorMessage("Unable to load resources from location \"" + dl.location + "\". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
+					continue;
+				}	
+				
 				// Add container
 				if(c != null) containers.Add(c);
 			}
@@ -189,9 +199,17 @@ namespace CodeImp.DoomBuilder.Data
 			// Go for all containers
 			foreach(DataReader d in containers)
 			{
-				// Resume
-				General.WriteLogLine("Resumed data resource '" + d.Location.location + "'");
-				d.Resume();
+				try
+				{
+					// Resume
+					General.WriteLogLine("Resumed data resource '" + d.Location.location + "'");
+					d.Resume();
+				}
+				catch(Exception)
+				{
+					// Unable to load resource
+					General.ShowErrorMessage("Unable to load resources from location \"" + d.Location.location + "\". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
+				}
 			}
 		}
 		

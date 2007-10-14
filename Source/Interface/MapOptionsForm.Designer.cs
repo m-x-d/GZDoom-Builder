@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// levelname
 			// 
+			this.levelname.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.levelname.Location = new System.Drawing.Point(129, 73);
 			this.levelname.Name = "levelname";
 			this.levelname.Size = new System.Drawing.Size(94, 20);
@@ -105,7 +106,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.config.Location = new System.Drawing.Point(129, 31);
 			this.config.Name = "config";
 			this.config.Size = new System.Drawing.Size(213, 22);
-			this.config.Sorted = true;
 			this.config.TabIndex = 6;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 

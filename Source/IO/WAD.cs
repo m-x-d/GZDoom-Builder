@@ -255,8 +255,8 @@ namespace CodeImp.DoomBuilder.IO
 			if(!isreadonly)
 			{
 				// Flush writing changes
-				writer.Flush();
-				file.Flush();
+				if(writer != null) writer.Flush();
+				if(file != null) file.Flush();
 			}
 		}
 		
