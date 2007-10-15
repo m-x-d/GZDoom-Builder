@@ -609,6 +609,9 @@ namespace CodeImp.DoomBuilder.Interface
 			recentitems[0].Text = GetDisplayFilename(filename);
 			recentitems[0].Tag = filename;
 			recentitems[0].Visible = true;
+
+			// Hide the no recent item
+			itemnorecent.Visible = false;
 		}
 
 		// This returns the trimmed file/path string

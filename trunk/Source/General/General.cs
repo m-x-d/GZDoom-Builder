@@ -663,7 +663,7 @@ namespace CodeImp.DoomBuilder
 					map = new MapManager();
 					if(map.InitializeOpenMap(filename, openmapwindow.Options))
 					{
-						// Done
+						// Add recent file
 						mainwindow.AddRecentFile(filename);
 					}
 					else
@@ -701,7 +701,11 @@ namespace CodeImp.DoomBuilder
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Save the map
-				map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL);
+				if(map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL))
+				{
+					// Add recent file
+					mainwindow.AddRecentFile(map.FilePathName);
+				}
 
 				// All done
 				mainwindow.UpdateInterface();
@@ -731,7 +735,11 @@ namespace CodeImp.DoomBuilder
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Save the map
-				map.SaveMap(savefile.FileName, MapManager.SAVE_AS);
+				if(map.SaveMap(savefile.FileName, MapManager.SAVE_AS))
+				{
+					// Add recent file
+					mainwindow.AddRecentFile(map.FilePathName);
+				}
 
 				// All done
 				mainwindow.UpdateInterface();
