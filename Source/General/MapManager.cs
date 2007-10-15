@@ -345,28 +345,45 @@ namespace CodeImp.DoomBuilder
 			// Suspend data resources
 			data.Suspend();
 
-			// Except when saving INTO another file,
-			// kill the target file if it is different from source file
-			if((savemode != SAVE_INTO) && (newfilepathname != filepathname))
+			try
 			{
-				// Kill target file
-				if(File.Exists(newfilepathname)) File.Delete(newfilepathname);
+				// Except when saving INTO another file,
+				// kill the target file if it is different from source file
+				if((savemode != SAVE_INTO) && (newfilepathname != filepathname))
+				{
+					// Kill target file
+					if(File.Exists(newfilepathname)) File.Delete(newfilepathname);
 
-				// Kill .dbs settings file
-				settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
-				if(File.Exists(settingsfile)) File.Delete(settingsfile);
+					// Kill .dbs settings file
+					settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
+					if(File.Exists(settingsfile)) File.Delete(settingsfile);
+				}
+
+				// On Save AS we have to copy the previous file to the new file
+				if((savemode == SAVE_AS) && (filepathname != ""))
+				{
+					// Copy if original file still exists
+					if(File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
+				}
+				
+				// Open the target file
+				targetwad = new WAD(newfilepathname);
+			}
+			catch(IOException)
+			{
+				General.ShowErrorMessage("IO Error while writing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
+				data.Resume();
+				General.WriteLogLine("Map saving failed");
+				return false;
+			}
+			catch(UnauthorizedAccessException)
+			{
+				General.ShowErrorMessage("Error while accessing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
+				data.Resume();
+				General.WriteLogLine("Map saving failed");
+				return false;
 			}
 			
-			// On Save AS we have to copy the previous file to the new file
-			if((savemode == SAVE_AS) && (filepathname != ""))
-			{
-				// Copy if original file still exists
-				if(File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
-			}
-			
-			// Open the target file
-			targetwad = new WAD(newfilepathname);
-
 			// Determine original map name
 			if(options.PreviousName != "") origmapname = options.PreviousName;
 				else origmapname = options.CurrentName;
