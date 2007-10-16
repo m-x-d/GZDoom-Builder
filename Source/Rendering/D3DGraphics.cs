@@ -30,6 +30,7 @@ using SlimDX.Direct3D;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX;
+using CodeImp.DoomBuilder.Interface;
 
 #endregion
 
@@ -50,7 +51,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private int adapter;
 		
 		// Main objects
-		private Panel rendertarget;
+		private RenderTargetControl rendertarget;
 		private Capabilities devicecaps;
 		private Device device;
 		private Renderer2D renderer2d;
@@ -68,7 +69,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public bool IsDisposed { get { return isdisposed; } }
 		public Renderer2D Renderer2D { get { return renderer2d; } }
 		public Renderer3D Renderer3D { get { return renderer3d; } }
-		public Panel RenderTarget { get { return rendertarget; } }
+		public RenderTargetControl RenderTarget { get { return rendertarget; } }
 		public Viewport Viewport { get { return viewport; } }
 
 		#endregion
@@ -76,7 +77,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public D3DGraphics(Panel rendertarget)
+		public D3DGraphics(RenderTargetControl rendertarget)
 		{
 			// Set render target
 			this.rendertarget = rendertarget;
