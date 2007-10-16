@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== Properties
 
 		public bool MouseInDisplay { get { return mouseinside; } }
-		public Panel Display { get { return display; } }
+		public RenderTargetControl Display { get { return display; } }
 
 		#endregion
 
@@ -88,6 +88,9 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Make recent items list
 			CreateRecentFiles();
+			
+			// Show splash
+			ShowSplashDisplay();
 			
 			// Keep last position and size
 			lastposition = this.Location;
@@ -316,9 +319,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public void ShowSplashDisplay()
 		{
 			// Change display to show splash logo
-			display.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			display.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash2;
-			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			display.SetSplashLogoDisplay();
 			this.Update();
 		}
 		
@@ -326,9 +327,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public void ClearDisplay()
 		{
 			// Clear the display
-			display.BackColor = Color.Black;
-			display.BackgroundImage = null;
-			display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+			display.SetManualRendering();
 			this.Update();
 		}
 

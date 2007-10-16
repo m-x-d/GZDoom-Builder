@@ -34,11 +34,27 @@ namespace CodeImp.DoomBuilder.Interface
 {
 	internal class ResourceListView : ListView
 	{
+		#region ================== Constants
+
 		private const string DRAG_TYPE = "ReorderItems";
+
+		#endregion
+
+		#region ================== Variables
+
+		// List of items
 		private List<ListViewItem> dragitems;
-		
+
+		#endregion
+
+		#region ================== Properties
+
 		// Disable sorting
 		public new SortOrder Sorting { get { return SortOrder.None; } set { base.Sorting = SortOrder.None; } }
+
+		#endregion
+
+		#region ================== Constructor
 
 		// Constructor
 		public ResourceListView(): base()
@@ -46,7 +62,11 @@ namespace CodeImp.DoomBuilder.Interface
 			// List for dragged items
 			dragitems = new List<ListViewItem>();
 		}
-		
+
+		#endregion
+
+		#region ================== Overrides
+
 		// When items are dropped
 		protected override void OnDragDrop(DragEventArgs e)
 		{
@@ -246,6 +266,10 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 		}
 
+		#endregion
+
+		#region ================== Methods
+
 		// This deselects all items
 		private void DeselectAll()
 		{
@@ -256,5 +280,7 @@ namespace CodeImp.DoomBuilder.Interface
 				base.SelectedItems[i].Selected = false;
 			}
 		}
+
+		#endregion
 	}
 }

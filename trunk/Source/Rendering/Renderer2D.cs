@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
-				graphics.RenderTarget.BackgroundImage = null;
+				graphics.RenderTarget.SetImageSource(null);
 				if(image != null) image.Dispose();
 				pixels = null;
 				
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public override void Reset()
 		{
 			// Trash old image
-			graphics.RenderTarget.BackgroundImage = null;
+			graphics.RenderTarget.SetImageSource(null);
 			if(image != null) image.Dispose();
 
 			// Re-create image memory
@@ -125,12 +125,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			height = graphics.RenderTarget.ClientSize.Height;
 			
 			// Trash old image
-			graphics.RenderTarget.BackgroundImage = null;
+			graphics.RenderTarget.SetImageSource(null);
 			if(image != null) image.Dispose();
 			
 			// Allocate memory
 			image = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			graphics.RenderTarget.BackgroundImage = image;
+			graphics.RenderTarget.SetImageSource(image);
 		}
 
 		// This begins a drawing session

@@ -107,6 +107,9 @@
     <Compile Include="Interface\PreferencesForm.Designer.cs">
       <DependentUpon>PreferencesForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\RenderTargetControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Interface\ResourceListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -194,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\floor0_3.bmp" />
     <None Include="Resources\Properties.png" />
     <None Include="Resources\NewMap2.png" />
     <None Include="Resources\Zoom.png" />
