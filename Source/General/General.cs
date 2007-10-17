@@ -802,7 +802,19 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		#region ================== Tools
-		
+
+		// Convert bool to integer
+		public static int Bool2Int(bool v)
+		{
+			if(v) return 1; else return 0;
+		}
+
+		// Convert integer to bool
+		public static bool Int2Bool(int v)
+		{
+			return (v != 0);
+		}
+
 		// This shows a message and logs the message
 		public static DialogResult ShowErrorMessage(string message, MessageBoxButtons buttons)
 		{
