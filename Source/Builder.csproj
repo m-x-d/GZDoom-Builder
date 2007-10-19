@@ -153,16 +153,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Rendering\Base2DShader.cs" />
     <Compile Include="Rendering\D3DGraphics.cs" />
     <Compile Include="Data\ImageData.cs" />
+    <Compile Include="Rendering\D3DShader.cs" />
     <Compile Include="Rendering\FlatVertex.cs" />
     <Compile Include="Rendering\ID3DResource.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
     <Compile Include="Rendering\Plotter.cs" />
-    <Compile Include="Rendering\PTVertex.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Renderer2D.cs" />
     <Compile Include="Rendering\Renderer3D.cs" />
+    <Compile Include="Rendering\ShaderManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlimDX, Version=1.0.2847.35002, Culture=neutral, processorArchitecture=x86" />
@@ -225,6 +227,7 @@
       <DependentUpon>ResourceListEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Actions.cfg" />
+    <EmbeddedResource Include="Resources\base2d.fx" />
     <None Include="Resources\Splash2.png" />
   </ItemGroup>
 </Project>

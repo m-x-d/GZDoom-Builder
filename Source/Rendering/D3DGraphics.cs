@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Renderer3D renderer3d;
 		private Viewport viewport;
 		private List<ID3DResource> resources;
+		private ShaderManager shaders;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -72,7 +73,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		public Renderer3D Renderer3D { get { return renderer3d; } }
 		public RenderTargetControl RenderTarget { get { return rendertarget; } }
 		public Viewport Viewport { get { return viewport; } }
-
+		public ShaderManager Shaders { get { return shaders; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -139,7 +141,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.ZWriteEnable, false);
 			device.SetRenderState(RenderState.Clipping, true);
 			device.SetRenderState(RenderState.CullMode, Cull.None);
-			device.VertexFormat = PTVertex.Format;
 
 			// Sampler settings
 			device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
@@ -154,7 +155,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// First texture stage
 			device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.SelectArg1);
 			device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
-			device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.TFactor);
 			device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
 			device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
 
@@ -164,7 +164,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// First alpha stage
 			device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.SelectArg1);
 			device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
-			device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.TFactor);
 
 			// No more further stages
 			device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Disable);
@@ -178,6 +177,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Get the viewport
 			viewport = device.Viewport;
+
+			// Setup shaders
+			if(shaders != null) shaders.Dispose();
+			shaders = new ShaderManager();
 		}
 
 		#endregion
@@ -302,7 +305,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Unload all Direct3D resources
 			foreach(ID3DResource res in resources) res.UnloadResource();
-
+			
 			// Make present parameters
 			displaypp = CreatePresentParameters(adapter);
 			

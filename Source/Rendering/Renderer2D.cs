@@ -104,8 +104,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Start drawing
 			if(graphics.StartRendering())
 			{
-				graphics.Device.VertexFormat = FlatVertex.Format;
-
 				// Left top
 				verts[0].x = -0.5f;
 				verts[0].y = -0.5f;
@@ -134,11 +132,19 @@ namespace CodeImp.DoomBuilder.Rendering
 				verts[3].u = 1f;
 				verts[3].v = 1f;
 				
-				// Draw
+				// Set renderstates AND shader settings
 				graphics.Device.SetTexture(0, tex);
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				graphics.Shaders.Base2D.Texture1 = tex;
+				graphics.Shaders.Base2D.SetSettings(1f / pwidth, 1f / pheight, 0.3f);
+				
+				// Draw
+				graphics.Shaders.Base2D.Begin();
+				graphics.Shaders.Base2D.BeginPass(0);
 				try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, verts); }
 				catch(Exception) { }
+				graphics.Shaders.Base2D.EndPass();
+				graphics.Shaders.Base2D.End();
 
 				// Done
 				graphics.FinishRendering();
