@@ -507,6 +507,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
 			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
 			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
+			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
 			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
 			this.display.Resize += new System.EventHandler(this.display_Resize);
 			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);

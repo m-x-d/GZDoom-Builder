@@ -34,7 +34,7 @@ using SlimDX;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal interface IResource : IDisposable
+	internal interface ID3DResource : IDisposable
 	{
 		// This is used to unload the resouce
 		void UnloadResource();

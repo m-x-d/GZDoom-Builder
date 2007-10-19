@@ -335,9 +335,15 @@ namespace CodeImp.DoomBuilder.Interface
 		public void RedrawDisplay()
 		{
 			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.RedrawDisplay();
-			display.Invalidate();
+			//display.Invalidate();
 		}
 
+		// This event is called when a repaint is needed
+		private void display_Paint(object sender, PaintEventArgs e)
+		{
+			if((General.Map != null) && (General.Map.Mode != null) && !displayresized) General.Map.Mode.RefreshDisplay();
+		}
+		
 		// Redraw requested
 		private void redrawtimer_Tick(object sender, EventArgs e)
 		{

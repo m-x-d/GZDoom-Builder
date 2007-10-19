@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
 		private Viewport viewport;
+		private List<ID3DResource> resources;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -82,6 +83,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Set render target
 			this.rendertarget = rendertarget;
 
+			// Create resources list
+			resources = new List<ID3DResource>();
+			
 			// Create renderers
 			renderer2d = new Renderer2D(this);
 			renderer3d = new Renderer3D(this);
@@ -148,22 +152,22 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
 
 			// First texture stage
-			device.SetTextureStageState(0, TextureStage.ColorOp, TextureOperation.SelectArg1);
-			device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Diffuse);
+			device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.SelectArg1);
+			device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
 			device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.TFactor);
 			device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
 			device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
 
 			// No more further stages
-			device.SetTextureStageState(1, TextureStage.ColorOp, TextureOperation.Disable);
+			device.SetTextureStageState(1, TextureStage.ColorOperation, TextureOperation.Disable);
 			
 			// First alpha stage
-			device.SetTextureStageState(0, TextureStage.AlphaOp, TextureOperation.SelectArg1);
-			device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.TFactor);
+			device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.SelectArg1);
+			device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
 			device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.TFactor);
 
 			// No more further stages
-			device.SetTextureStageState(1, TextureStage.AlphaOp, TextureOperation.Disable);
+			device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Disable);
 			
 			// Setup material
 			Material material = new Material();
@@ -229,7 +233,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Add event to cancel resize event
 			//device.DeviceResizing += new CancelEventHandler(CancelResize);
-
+			
+			// Reset renderers
+			renderer2d.Reset();
+			renderer3d.Reset();
+			
 			// Initialize settings
 			SetupSettings();
 			
@@ -262,7 +270,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			displaypp.BackBufferHeight = rendertarget.ClientSize.Height;
 			displaypp.EnableAutoDepthStencil = true;
 			displaypp.AutoDepthStencilFormat = Format.D16;
-			displaypp.MultiSample = MultiSampleType.None;
+			displaypp.Multisample = MultisampleType.None;
 			displaypp.PresentationInterval = PresentInterval.Immediate;
 
 			// Return result
@@ -273,12 +281,27 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Resetting
 
+		// This registers a resource
+		public void RegisterResource(ID3DResource res)
+		{
+			// Add resource
+			resources.Add(res);
+		}
+
+		// This unregisters a resource
+		public void UnregisterResource(ID3DResource res)
+		{
+			// Remove resource
+			resources.Remove(res);
+		}
+		
 		// This resets the device and returns true on success
 		public bool Reset()
 		{
 			PresentParameters displaypp;
 
-			// TODO: Unload all Direct3D resources
+			// Unload all Direct3D resources
+			foreach(ID3DResource res in resources) res.UnloadResource();
 
 			// Make present parameters
 			displaypp = CreatePresentParameters(adapter);
@@ -296,12 +319,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Initialize settings
 			SetupSettings();
-
-			// Reset renderers
-			renderer2d.Reset();
-			renderer3d.Reset();
-
-			// TODO: Reload all Direct3D resources
+			
+			// Reload all Direct3D resources
+			foreach(ID3DResource res in resources) res.ReloadResource();
 
 			// Success
 			return true;

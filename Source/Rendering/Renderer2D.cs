@@ -45,16 +45,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Variables
 
-		// Owner
-		private D3DGraphics graphics;
-
 		// Rendering memory
-		private Bitmap image;
-		private BitmapData pixeldata;
-		private PixelColor* pixels;
-		private int width;
-		private int height;
-		
+		private Texture tex;
+		private int width, height;
+		private int pwidth, pheight;
+		private Plotter plotter;
+
 		// View settings (world coordinates)
 		private float scale;
 		private float offsetx;
@@ -73,13 +69,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public Renderer2D(D3DGraphics graphics)
+		public Renderer2D(D3DGraphics graphics) : base(graphics)
 		{
 			// Initialize
-			this.graphics = graphics;
-
-			// Create image memory
-			CreateMemory();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -92,9 +84,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
-				graphics.RenderTarget.SetImageSource(null);
-				if(image != null) image.Dispose();
-				pixels = null;
+				if(tex != null) tex.Dispose();
+				tex = null;
 				
 				// Done
 				base.Dispose();
@@ -105,53 +96,134 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Control
 		
+		// This draws the image on screen
+		public void Present()
+		{
+			FlatVertex[] verts = new FlatVertex[4];
+
+			// Start drawing
+			if(graphics.StartRendering())
+			{
+				graphics.Device.VertexFormat = FlatVertex.Format;
+
+				// Left top
+				verts[0].x = -0.5f;
+				verts[0].y = -0.5f;
+				verts[0].w = 1f;
+				verts[0].u = 0f;
+				verts[0].v = 0f;
+
+				// Right top
+				verts[1].x = pwidth - 0.5f;
+				verts[1].y = -0.5f;
+				verts[1].w = 1f;
+				verts[1].u = 1f;
+				verts[1].v = 0f;
+
+				// Left bottom
+				verts[2].x = -0.5f;
+				verts[2].y = pheight - 0.5f;
+				verts[2].w = 1f;
+				verts[2].u = 0f;
+				verts[2].v = 1f;
+
+				// Right bottom
+				verts[3].x = pwidth - 0.5f;
+				verts[3].y = pheight - 0.5f;
+				verts[3].w = 1f;
+				verts[3].u = 1f;
+				verts[3].v = 1f;
+				
+				// Draw
+				graphics.Device.SetTexture(0, tex);
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, verts); }
+				catch(Exception) { }
+
+				// Done
+				graphics.FinishRendering();
+			}
+		}
+
+		// This is called before a device is reset
+		// (when resized or display adapter was changed)
+		public override void UnloadResource()
+		{
+			// Trash old texture
+			if(tex != null) tex.Dispose();
+			tex = null;
+		}
+		
 		// This is called resets when the device is reset
 		// (when resized or display adapter was changed)
+		public override void ReloadResource()
+		{
+			// Re-create texture
+			CreateTexture();
+		}
+
+		// This resets the graphics
 		public override void Reset()
 		{
-			// Trash old image
-			graphics.RenderTarget.SetImageSource(null);
-			if(image != null) image.Dispose();
-
-			// Re-create image memory
-			CreateMemory();
+			UnloadResource();
+			ReloadResource();
 		}
 
 		// Allocates new image memory to render on
-		public void CreateMemory()
+		public void CreateTexture()
 		{
+			SurfaceDescription sd;
+			
 			// Get new width and height
 			width = graphics.RenderTarget.ClientSize.Width;
 			height = graphics.RenderTarget.ClientSize.Height;
 			
-			// Trash old image
-			graphics.RenderTarget.SetImageSource(null);
-			if(image != null) image.Dispose();
+			// Trash old texture
+			if(tex != null) tex.Dispose();
+			tex = null;
 			
-			// Allocate memory
-			image = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-			graphics.RenderTarget.SetImageSource(image);
+			// Create new texture
+			tex = new Texture(graphics.Device, width, height, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
+
+			// Get the real surface size
+			sd = tex.GetLevelDescription(0);
+			pwidth = sd.Width;
+			pheight = sd.Height;
 		}
 
 		// This begins a drawing session
 		public unsafe bool StartRendering()
 		{
-			// Lock memory
-			pixeldata = image.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-			pixels = (PixelColor*)pixeldata.Scan0.ToPointer();
+			LockedRect rect;
 			
-			// Erase image
-			General.ZeroMemory(pixeldata.Scan0, width * height * 4);
-			
-			// Ready for rendering
-			return true;
+			// Do we have a texture?
+			if(tex != null)
+			{
+				// Lock memory
+				rect = tex.LockRectangle(0, LockFlags.Discard);
+
+				// Create plotter
+				plotter = new Plotter((PixelColor*)rect.Data.DataPointer.ToPointer(), rect.Pitch / sizeof(PixelColor), pheight, width, height);
+				plotter.Clear();
+
+				// Ready for rendering
+				return true;
+			}
+			else
+			{
+				// Can't render!
+				return false;
+			}
 		}
 		
 		// This ends a drawing session
 		public void FinishRendering()
 		{
 			// Unlock memory
-			image.UnlockBits(pixeldata);
+			tex.UnlockRectangle(0);
+
+			// Present new image
+			Present();
 		}
 		
 		// This changes view position
@@ -178,206 +250,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This unprojects mouse coordinates into map coordinates
 		public Vector2D GetMapCoordinates(Vector2D mousepos)
 		{
-			Vector3 mp, res;
-
-			// FIXME!
-			
-			// Get mouse position in Vector3
-			//mp = new Vector3(mousepos.x, mousepos.y, 1f);
-			
-			// Unproject
-			//res = mp.Unproject(graphics.Viewport, matproj, matview, matworld);
-
-			// Return result
-			//return new Vector2D(res.X, res.Y);
-			return new Vector2D();
-		}
-
-		#endregion
-
-		#region ================== Pixel Rendering
-
-		// This draws a pixel normally
-		private void DrawPixelSolid(int x, int y, PixelColor c)
-		{
-			// Draw pixel when within range
-			if((x >= 0) && (x < width) && (y >= 0) && (y < height))
-				pixels[y * width + x] = c;
-		}
-
-		// This draws a pixel alpha blended
-		private void DrawPixelAlpha(int x, int y, PixelColor c)
-		{
-			float a;
-
-			// Draw only when within range
-			if((x >= 0) && (x < width) && (y >= 0) && (y < height))
-			{
-				// Get the target pixel
-				PixelColor* p = pixels + (y * width + x);
-				
-				// Not drawn on target yet?
-				if(*(int*)p == 0)
-				{
-					// Simply apply color to pixel
-					*p = c;
-				}
-				else
-				{
-					// Blend with pixel
-					a = (float)c.a * 0.003921568627450980392156862745098f;
-					if((int)p->a + (int)c.a > 255) p->a = 255; else p->a += c.a;
-					p->r = (byte)((float)p->r * (1f - a) + (float)c.r * a);
-					p->g = (byte)((float)p->g * (1f - a) + (float)c.g * a);
-					p->b = (byte)((float)p->b * (1f - a) + (float)c.b * a);
-				}
-			}
-		}
-
-		// This draws a line alpha blended
-		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-		private void DrawLineAlpha(int x1, int y1, int x2, int y2, PixelColor c)
-		{
-			int i;
-
-			// Check if the line is outside the screen for sure.
-			// This is quickly done by checking in which area both points are. When this
-			// is above, below, right or left of the screen, then skip drawing the line.
-			if(((x1 < 0) && (x2 < 0)) ||
-			   ((x1 > width) && (x2 > width)) ||
-			   ((y1 < 0) && (y2 < 0)) ||
-			   ((y1 > height) && (y2 > height))) return;
-			
-			// Distance of the line
-			int dx = x2 - x1;
-			int dy = y2 - y1;
-
-			// Positive (absolute) distance
-			int dxabs = Math.Abs(dx);
-			int dyabs = Math.Abs(dy);
-
-			// Half distance
-			int x = dyabs >> 1;
-			int y = dxabs >> 1;
-
-			// Direction
-			int sdx = Math.Sign(dx);
-			int sdy = Math.Sign(dy);
-
-			// Start position
-			int px = x1;
-			int py = y1;
-
-			// Draw first pixel
-			DrawPixelAlpha(px, py, c);
-			
-			// Check if the line is more horizontal than vertical
-			if(dxabs >= dyabs)
-			{
-				for(i = 0; i < dxabs; i++)
-				{
-					y += dyabs;
-					if(y >= dxabs)
-					{
-						y -= dxabs;
-						py += sdy;
-					}
-					px += sdx;
-
-					// Draw pixel
-					DrawPixelAlpha(px, py, c);
-				}
-			}
-			// Else the line is more vertical than horizontal
-			else
-			{
-				for(i = 0; i < dyabs; i++)
-				{
-					x += dxabs;
-					if(x >= dyabs)
-					{
-						x -= dyabs;
-						px += sdx;
-					}
-					py += sdy;
-
-					// Draw pixel
-					DrawPixelAlpha(px, py, c);
-				}
-			}
-		}
-
-		// This draws a line normally
-		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-		private void DrawLineSolid(int x1, int y1, int x2, int y2, PixelColor c)
-		{
-			int i;
-
-			// Check if the line is outside the screen for sure.
-			// This is quickly done by checking in which area both points are. When this
-			// is above, below, right or left of the screen, then skip drawing the line.
-			if(((x1 < 0) && (x2 < 0)) ||
-			   ((x1 > width) && (x2 > width)) ||
-			   ((y1 < 0) && (y2 < 0)) ||
-			   ((y1 > height) && (y2 > height))) return;
-
-			// Distance of the line
-			int dx = x2 - x1;
-			int dy = y2 - y1;
-
-			// Positive (absolute) distance
-			int dxabs = Math.Abs(dx);
-			int dyabs = Math.Abs(dy);
-
-			// Half distance
-			int x = dyabs >> 1;
-			int y = dxabs >> 1;
-
-			// Direction
-			int sdx = Math.Sign(dx);
-			int sdy = Math.Sign(dy);
-
-			// Start position
-			int px = x1;
-			int py = y1;
-
-			// Draw first pixel
-			DrawPixelSolid(px, py, c);
-
-			// Check if the line is more horizontal than vertical
-			if(dxabs >= dyabs)
-			{
-				for(i = 0; i < dxabs; i++)
-				{
-					y += dyabs;
-					if(y >= dxabs)
-					{
-						y -= dxabs;
-						py += sdy;
-					}
-					px += sdx;
-
-					// Draw pixel
-					DrawPixelSolid(px, py, c);
-				}
-			}
-			// Else the line is more vertical than horizontal
-			else
-			{
-				for(i = 0; i < dyabs; i++)
-				{
-					x += dxabs;
-					if(x >= dyabs)
-					{
-						x -= dyabs;
-						px += sdx;
-					}
-					py += sdy;
-
-					// Draw pixel
-					DrawPixelSolid(px, py, c);
-				}
-			}
+			float ox = -offsetx + (width * 0.5f) / scale;
+			float oy = -offsety - (height * 0.5f) / scale;
+			return mousepos.GetTransformed(ox, oy, scale, -scale);
 		}
 
 		#endregion
@@ -385,22 +260,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Map Rendering
 
 		// This renders a set of Linedefs
-		public unsafe void RenderLinedefs(MapSet map, ICollection<Linedef> linedefs)
+		public void RenderLinedefs(MapSet map, ICollection<Linedef> linedefs)
 		{
-			Vector2D voffset = new Vector2D(-offsetx + (width * 0.5f) / scale, -offsety - (height * 0.5f) / scale);
-			Vector2D vscale = new Vector2D(scale, -scale);
-			PixelColor c = PixelColor.FromColor(Color.SkyBlue);
+			float ox = -offsetx + (width * 0.5f) / scale;
+			float oy = -offsety - (height * 0.5f) / scale;
+			PixelColor c = PixelColor.FromColor(Color.White);
 			Vector2D v1, v2;
-
+			
 			// Go for all linedefs
 			foreach(Linedef l in linedefs)
 			{
 				// Transform vertex coordinates
-				v1 = l.Start.Position.GetTransformed(voffset, vscale);
-				v2 = l.End.Position.GetTransformed(voffset, vscale);
-
+				v1 = l.Start.Position.GetTransformed(ox, oy, scale, -scale);
+				v2 = l.End.Position.GetTransformed(ox, oy, scale, -scale);
+				
 				// Draw line
-				DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
 			}
 		}
 
@@ -408,29 +283,21 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void RenderVertices(MapSet map, ICollection<Vertex> vertices)
 		{
 			Vector2D nv;
-			Vector2D voffset = new Vector2D(-offsetx + (width * 0.5f) / scale, -offsety - (height * 0.5f) / scale);
-			Vector2D vscale = new Vector2D(scale, -scale);
-			PixelColor c = PixelColor.FromInt(-1);
+			float ox = -offsetx + (width * 0.5f) / scale;
+			float oy = -offsety - (height * 0.5f) / scale;
+			PixelColor c = PixelColor.FromColor(Color.DeepSkyBlue);
 			int x, y;
 			
 			// Go for all vertices
 			foreach(Vertex v in vertices)
 			{
 				// Transform vertex coordinates
-				nv = v.Position.GetTransformed(voffset, vscale);
+				nv = v.Position.GetTransformed(ox, oy, scale, -scale);
 				x = (int)nv.x;
 				y = (int)nv.y;
 				
 				// Draw pixel here
-				DrawPixelSolid(x, y, c);
-				DrawPixelSolid(x + 1, y, c);
-				DrawPixelSolid(x, y + 1, c);
-				DrawPixelSolid(x - 1, y, c);
-				DrawPixelSolid(x, y - 1, c);
-				DrawPixelSolid(x + 1, y - 1, c);
-				DrawPixelSolid(x + 1, y + 1, c);
-				DrawPixelSolid(x - 1, y - 1, c);
-				DrawPixelSolid(x - 1, y + 1, c);
+				plotter.DrawVertexSolid(x, y, 2, c);
 			}
 		}
 
