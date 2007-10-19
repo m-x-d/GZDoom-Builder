@@ -689,7 +689,7 @@ namespace CodeImp.DoomBuilder
 
 					// Check if this lump should be copied
 					if((lumprequired && copyrequired) || (lumpblindcopy && copyblindcopy) ||
-					   (lumpnodebuild && copynodebuild) || ((lumpscript != "") && copyscript))
+					   (lumpnodebuild && copynodebuild) || ((lumpscript.Length != 0) && copyscript))
 					{
 						// Get the lump name
 						srclumpname = ml.Key.ToString();

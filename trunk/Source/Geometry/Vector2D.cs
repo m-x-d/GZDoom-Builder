@@ -261,9 +261,15 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// Transform
-		public Vector2D GetTransformed(Vector2D offset, Vector2D scale)
+		public unsafe Vector2D GetTransformed(Vector2D* offset, Vector2D* scale)
 		{
-			return new Vector2D((x + offset.x) * scale.x, (y + offset.y) * scale.y);
+			return new Vector2D((x + offset->x) * scale->x, (y + offset->y) * scale->y);
+		}
+
+		// Transform
+		public unsafe Vector2D GetTransformed(float offsetx, float offsety, float scalex, float scaley)
+		{
+			return new Vector2D((x + offsetx) * scalex, (y + offsety) * scaley);
 		}
 		
 		#endregion

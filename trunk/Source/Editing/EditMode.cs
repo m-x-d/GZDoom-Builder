@@ -121,6 +121,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void MouseUp(MouseEventArgs e) { }
 		public virtual void Cancel() { }
 		public virtual void RedrawDisplay() { }
+		public virtual void RefreshDisplay() { }
 		
 		#endregion
 	}

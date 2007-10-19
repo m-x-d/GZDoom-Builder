@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Vertex format
 		public static readonly VertexFormat Format = VertexFormat.Position | VertexFormat.Diffuse | VertexFormat.Texture1;
 		public static readonly int Stride = 6 * 4;
-
+		
 		// Members
 		public float x;
 		public float y;

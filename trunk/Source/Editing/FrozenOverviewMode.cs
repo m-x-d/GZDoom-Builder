@@ -72,8 +72,14 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
+		// This just refreshes the display
+		public override void RefreshDisplay()
+		{
+			renderer.Present();
+		}
+		
 		// This redraws the display
-		public override void RedrawDisplay()
+		public unsafe override void RedrawDisplay()
 		{
 			if(renderer.StartRendering())
 			{

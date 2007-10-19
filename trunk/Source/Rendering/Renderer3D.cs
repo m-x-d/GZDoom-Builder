@@ -40,9 +40,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Variables
 
-		// Owner
-		private D3DGraphics graphics;
-
 		#endregion
 
 		#region ================== Properties
@@ -52,10 +49,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Renderer3D(D3DGraphics graphics)
+		public Renderer3D(D3DGraphics graphics) : base(graphics)
 		{
 			// Initialize
-			this.graphics = General.Map.Graphics;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);

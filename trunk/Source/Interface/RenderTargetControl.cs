@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Pass on to base
 			// Do we really want this?
-			base.OnPaint(pe);
+			base.RaisePaintEvent(this, pe);
 		}
 
 		#endregion
@@ -136,10 +136,10 @@ namespace CodeImp.DoomBuilder.Interface
 			*/
 			this.SetStyle(ControlStyles.SupportsTransparentBackColor, false);
 			this.SetStyle(ControlStyles.ContainerControl, false);
-			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, false);
 			this.SetStyle(ControlStyles.UserPaint, true);
 			this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-			this.SetStyle(ControlStyles.Opaque, false);
+			this.SetStyle(ControlStyles.Opaque, true);
 			this.UpdateStyles();
 			this.BackColor = Color.Black;
 			this.BackgroundImage = null;

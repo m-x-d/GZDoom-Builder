@@ -803,6 +803,18 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Tools
 
+		// This returns the next power of 2
+		public static int NextPowerOf2(int v)
+		{
+			int p = 0;
+
+			// Continue increasing until higher than v
+			while(Math.Pow(2, p) < v) p++;
+
+			// Return power
+			return (int)Math.Pow(2, p);
+		}
+		
 		// Convert bool to integer
 		public static int Bool2Int(bool v)
 		{
