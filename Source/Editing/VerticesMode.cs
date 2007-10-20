@@ -41,9 +41,6 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 
-		// Selection
-		private MapSelection selection;
-
 		#endregion
 
 		#region ================== Properties
@@ -57,15 +54,6 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		public VerticesMode()
 		{
-		}
-
-		/// <summary>
-		/// From dragging
-		/// </summary>
-		public VerticesMode(MapSelection selection)
-		{
-			// Keep selection
-			this.selection = selection;
 		}
 
 		// Diposer
@@ -92,8 +80,8 @@ namespace CodeImp.DoomBuilder.Editing
 			if(renderer.StartRendering(true))
 			{
 				// Render stuff
-				renderer.RenderLinedefs(General.Map.Map, General.Map.Map.Linedefs);
-				renderer.RenderVertices(General.Map.Map, General.Map.Map.Vertices);
+				renderer.RenderLinedefs(General.Map.Map, General.Map.Map.Linedefs, null);
+				renderer.RenderVertices(General.Map.Map, General.Map.Map.Vertices, null);
 
 				// Done
 				renderer.FinishRendering();

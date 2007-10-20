@@ -21,14 +21,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Windows.Forms;
+using System.IO;
 using System.Reflection;
-using System.Drawing;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Rendering
+namespace CodeImp.DoomBuilder
 {
-	internal sealed class ColorSetting : IEquatable<ColorSetting>
+	internal class GameConfigurationCache
 	{
 		#region ================== Constants
 
@@ -36,27 +38,23 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Variables
 
-		private string name;
-		private PixelColor color;
+		private int soundlinedefflags;
 
 		#endregion
 
 		#region ================== Properties
 
-		public Color Color { get { return Color.FromArgb(color.ToInt()); } set { color = PixelColor.FromColor(value); } }
-		public PixelColor PixelColor { get { return color; } set { color = value; } }
-		public string Name { get { return name; } }
+		public int SoundLinedefFlags { get { return soundlinedefflags; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ColorSetting(string name, PixelColor color)
+		public GameConfigurationCache(Configuration cfg)
 		{
 			// Initialize
-			this.name = name;
-			this.color = color;
+			soundlinedefflags = cfg.ReadSetting("soundlinedefflags", 0);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -66,30 +64,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Methods
 
-		// This returns a PixelColor with adjusted alpha
-		public PixelColor WithAlpha(byte a)
-		{
-			return new PixelColor(color, a);
-		}
-		
-		// Equal?
-		public bool Equals(ColorSetting other)
-		{
-			return this.name == other.name;
-		}
-
-		// To PixelColor
-		public static implicit operator PixelColor(ColorSetting c)
-		{
-			return c.color;
-		}
-
-		// To Color
-		public static implicit operator Color(ColorSetting c)
-		{
-			return Color.FromArgb(c.color.ToInt());
-		}
-		
 		#endregion
 	}
 }

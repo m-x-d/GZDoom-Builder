@@ -722,6 +722,9 @@ namespace CodeImp.DoomBuilder.Interface
 				
 				// Reload resources if a map is open
 				if(General.Map != null) General.Map.ReloadResources();
+				
+				// Redraw display
+				RedrawDisplay();
 			}
 			
 			// Done
@@ -738,6 +741,9 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Update shortcut keys in menus
 				ApplyShortcutKeys();
+
+				// Redraw display
+				RedrawDisplay();
 			}
 
 			// Done

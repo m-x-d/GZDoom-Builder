@@ -68,10 +68,12 @@ namespace CodeImp.DoomBuilder
 		private MapOptions options;
 		private ConfigurationInfo configinfo;
 		private Configuration config;
+		private GameConfigurationCache configsettings;
 		private DataManager data;
 		private EditMode mode;
 		private D3DGraphics graphics;
 		private WAD tempwad;
+		private MapSelection selection;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -91,6 +93,8 @@ namespace CodeImp.DoomBuilder
 		public bool IsDisposed { get { return isdisposed; } }
 		public D3DGraphics Graphics { get { return graphics; } }
 		public Configuration Configuration { get { return config; } }
+		public GameConfigurationCache Settings { get { return configsettings; } }
+		public MapSelection Selection { get { return selection; } }
 		
 		#endregion
 
@@ -101,6 +105,9 @@ namespace CodeImp.DoomBuilder
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
+
+			// Basic objects
+			selection = new MapSelection();
 		}
 
 		// Diposer
@@ -123,7 +130,7 @@ namespace CodeImp.DoomBuilder
 				mode.Dispose();
 				General.WriteLogLine("Stopping graphics device...");
 				graphics.Dispose();
-
+				
 				// Remove temp file
 				General.WriteLogLine("Removing temporary directory...");
 				try { Directory.Delete(temppath, true); } catch(Exception e)
@@ -132,6 +139,9 @@ namespace CodeImp.DoomBuilder
 					General.WriteLogLine("Failed to remove temporary directory!");
 				}
 
+				// Basic objects
+				selection.Dispose();
+				
 				// We may spend some time to clean things up here
 				GC.Collect();
 				
@@ -172,6 +182,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = General.LoadGameConfiguration(options.ConfigFile);
+			configsettings = new GameConfigurationCache(config);
 
 			// Create map data
 			map = new MapSet();
@@ -238,6 +249,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = General.LoadGameConfiguration(options.ConfigFile);
+			configsettings = new GameConfigurationCache(config);
 
 			// Create map data
 			map = new MapSet();
@@ -812,6 +824,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Reloading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = General.LoadGameConfiguration(options.ConfigFile);
+			configsettings = new GameConfigurationCache(config);
 			
 			// Reload data resources
 			General.WriteLogLine("Reloading data resources...");

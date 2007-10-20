@@ -305,6 +305,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Unload all Direct3D resources
 			foreach(ID3DResource res in resources) res.UnloadResource();
+			if(shaders != null) shaders.Dispose();
 			
 			// Make present parameters
 			displaypp = CreatePresentParameters(adapter);
