@@ -43,7 +43,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		public PixelColor Color { get { return color; } }
+		public Color Color { get { return Color.FromArgb(color.ToInt()); } set { color = PixelColor.FromColor(value); } }
+		public PixelColor PixelColor { get { return color; } set { color = value; } }
 		public string Name { get { return name; } }
 
 		#endregion
@@ -75,6 +76,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		public static implicit operator PixelColor(ColorSetting c)
 		{
 			return c.color;
+		}
+
+		// To Color
+		public static implicit operator Color(ColorSetting c)
+		{
+			return Color.FromArgb(c.color.ToInt());
 		}
 		
 		#endregion

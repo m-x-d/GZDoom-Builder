@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
 			this.colorconstants = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorliterals = new CodeImp.DoomBuilder.Interface.ColorControl();
-			this.colorControl1 = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorscriptbackground = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorkeywords = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorlinenumbers = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorcomments = new CodeImp.DoomBuilder.Interface.ColorControl();
@@ -423,7 +423,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.colorsgroup3.Controls.Add(this.colorconstants);
 			this.colorsgroup3.Controls.Add(this.colorliterals);
-			this.colorsgroup3.Controls.Add(this.colorControl1);
+			this.colorsgroup3.Controls.Add(this.colorscriptbackground);
 			this.colorsgroup3.Controls.Add(this.colorkeywords);
 			this.colorsgroup3.Controls.Add(this.colorlinenumbers);
 			this.colorsgroup3.Controls.Add(this.colorcomments);
@@ -458,16 +458,16 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorliterals.Size = new System.Drawing.Size(150, 23);
 			this.colorliterals.TabIndex = 15;
 			// 
-			// colorControl1
+			// colorscriptbackground
 			// 
-			this.colorControl1.BackColor = System.Drawing.SystemColors.Control;
-			this.colorControl1.Label = "Background:";
-			this.colorControl1.Location = new System.Drawing.Point(15, 27);
-			this.colorControl1.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorControl1.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorControl1.Name = "colorControl1";
-			this.colorControl1.Size = new System.Drawing.Size(150, 23);
-			this.colorControl1.TabIndex = 10;
+			this.colorscriptbackground.BackColor = System.Drawing.SystemColors.Control;
+			this.colorscriptbackground.Label = "Background:";
+			this.colorscriptbackground.Location = new System.Drawing.Point(15, 27);
+			this.colorscriptbackground.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorscriptbackground.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorscriptbackground.Name = "colorscriptbackground";
+			this.colorscriptbackground.Size = new System.Drawing.Size(150, 23);
+			this.colorscriptbackground.TabIndex = 10;
 			// 
 			// colorkeywords
 			// 
@@ -617,7 +617,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private ColorControl colorselection3d;
 		private ColorControl colorhighlight3d;
 		private ColorControl colorcrosshair3d;
-		private ColorControl colorControl1;
+		private ColorControl colorscriptbackground;
 		private ColorControl colorkeywords;
 		private ColorControl colorlinenumbers;
 		private ColorControl colorcomments;
