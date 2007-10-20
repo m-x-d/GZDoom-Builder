@@ -336,7 +336,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Rendering
 
 		// This begins a drawing session
-		public bool StartRendering()
+		public bool StartRendering(int backcolor)
 		{
 			CooperativeLevel coopresult;
 
@@ -360,7 +360,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 
 				// Clear the screen
-				device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, 0, 1f, 0);
+				device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1f, 0);
 
 				// Ready to render
 				device.BeginScene();

@@ -62,6 +62,7 @@ namespace CodeImp.DoomBuilder.Map
 		private bool updateneeded;
 		private float lengthsq;
 		private float length;
+		private float lengthinv;
 		//private float angle;
 
 		// Properties
@@ -90,6 +91,9 @@ namespace CodeImp.DoomBuilder.Map
 		public int Action { get { return action; } }
 		public int Tag { get { return tag; } }
 		public int Selected { get { return selected; } set { selected = value; } }
+		public float LengthSq { get { return lengthsq; } }
+		public float Length { get { return length; } }
+		public float LengthInv { get { return lengthinv; } }
 
 		#endregion
 
@@ -209,8 +213,10 @@ namespace CodeImp.DoomBuilder.Map
 				// Recalculate values
 				lengthsq = delta.GetLengthSq();
 				length = (float)Math.Sqrt(lengthsq);
+				if(length > 0f) lengthinv = 1f / length; else lengthinv = 1f / 0.0000000001f;
+				
 				//angle = delta.GetAngle();
-
+				
 				// Updated
 				updateneeded = false;
 			}
