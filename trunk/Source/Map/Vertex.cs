@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Methods
-
+		
 		// This returns the distance from given coordinates
 		public float DistanceToSq(Vector2D p)
 		{

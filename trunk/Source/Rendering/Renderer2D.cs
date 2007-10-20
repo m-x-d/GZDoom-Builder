@@ -41,6 +41,9 @@ namespace CodeImp.DoomBuilder.Rendering
 	{
 		#region ================== Constants
 
+		private const byte DOUBLESIDED_LINE_ALPHA = 130;
+		private const float FSAA_BLEND_FACTOR = 0.6f;
+
 		#endregion
 
 		#region ================== Variables
@@ -135,8 +138,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Set renderstates AND shader settings
 				graphics.Device.SetTexture(0, tex);
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
 				graphics.Shaders.Base2D.Texture1 = tex;
-				graphics.Shaders.Base2D.SetSettings(1f / pwidth, 1f / pheight, 0.3f);
+				graphics.Shaders.Base2D.SetSettings(1f / pwidth, 1f / pheight, FSAA_BLEND_FACTOR);
 				
 				// Draw
 				graphics.Shaders.Base2D.Begin();
@@ -266,11 +272,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Map Rendering
 
 		// This renders a set of Linedefs
-		public void RenderLinedefs(MapSet map, ICollection<Linedef> linedefs)
+		public void RenderLinedefs(MapSet map, ICollection<Linedef> linedefs, Linedef highlight)
 		{
 			float ox = -offsetx + (width * 0.5f) / scale;
 			float oy = -offsety - (height * 0.5f) / scale;
-			PixelColor c = PixelColor.FromColor(Color.White);
+			PixelColor c;
 			Vector2D v1, v2;
 			
 			// Go for all linedefs
@@ -279,19 +285,42 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Transform vertex coordinates
 				v1 = l.Start.Position.GetTransformed(ox, oy, scale, -scale);
 				v2 = l.End.Position.GetTransformed(ox, oy, scale, -scale);
-				
-				// Draw line
-				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+
+				// Sinlgesided lines
+				if((l.Back == null) || (l.Front == null))
+				{
+					// Determine color
+					if(l == highlight) c = General.Colors.Highlight;
+					else if(l.Selected > 0) c = General.Colors.Selection;
+					else if(l.Action != 0) c = General.Colors.Actions;
+					else c = General.Colors.Linedefs;
+					
+					// Draw line
+					plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+				}
+				// Doublesided lines
+				else
+				{
+					// Determine color
+					if(l == highlight) c = General.Colors.Highlight;
+					else if(l.Selected > 0) c = General.Colors.Selection;
+					else if(l.Action != 0) c = General.Colors.Actions.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+					else if((l.Flags & General.Map.Settings.SoundLinedefFlags) != 0) c = General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+					else c = General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+					
+					// Draw line
+					plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+				}
 			}
 		}
 
 		// This renders a set of Linedefs
-		public void RenderVertices(MapSet map, ICollection<Vertex> vertices)
+		public void RenderVertices(MapSet map, ICollection<Vertex> vertices, Vertex highlight)
 		{
 			Vector2D nv;
 			float ox = -offsetx + (width * 0.5f) / scale;
 			float oy = -offsety - (height * 0.5f) / scale;
-			PixelColor c = PixelColor.FromColor(Color.DeepSkyBlue);
+			PixelColor c;
 			int x, y;
 			
 			// Go for all vertices
@@ -301,6 +330,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				nv = v.Position.GetTransformed(ox, oy, scale, -scale);
 				x = (int)nv.x;
 				y = (int)nv.y;
+				
+				// Determine color
+				if(v == highlight) c = General.Colors.Highlight;
+				else if(v.Selected > 0) c = General.Colors.Selection;
+				else c = General.Colors.Vertices;
 				
 				// Draw pixel here
 				plotter.DrawVertexSolid(x, y, 2, c);

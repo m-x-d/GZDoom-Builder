@@ -87,10 +87,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This is called when the graphics need to be reset
 		public virtual void Reset() { }
 
-		#endregion
-
 		// For DirectX resources
 		public virtual void UnloadResource() { }
 		public virtual void ReloadResource() { }
+
+		#endregion
 	}
 }
