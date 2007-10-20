@@ -78,6 +78,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			return FromColor(Color.FromArgb(c));
 		}
 
+		// To int
+		public int ToInt()
+		{
+			return Color.FromArgb(a, r, g, b).ToArgb();
+		}
+
 		#endregion
 
 		#region ================== Methods

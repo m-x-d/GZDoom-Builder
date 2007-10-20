@@ -287,7 +287,7 @@ namespace CodeImp.DoomBuilder.Interface
 			if(General.Map == null) return;
 
 			// In classic mode?
-			if(General.Map.Mode is ViewClassicMode)
+			if(General.Map.Mode is ClassicMode)
 			{
 				// Requested from menu?
 				if(sender is ToolStripMenuItem)
@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder.Interface
 					zoom = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
 
 					// Zoom now
-					(General.Map.Mode as ViewClassicMode).SetZoom((float)zoom / 100f);
+					(General.Map.Mode as ClassicMode).SetZoom((float)zoom / 100f);
 				}
 			}
 		}
@@ -307,8 +307,8 @@ namespace CodeImp.DoomBuilder.Interface
 			if(General.Map == null) return;
 			
 			// In classic mode?
-			if(General.Map.Mode is ViewClassicMode)
-				(General.Map.Mode as ViewClassicMode).CenterInScreen();
+			if(General.Map.Mode is ClassicMode)
+				(General.Map.Mode as ClassicMode).CenterInScreen();
 		}
 		
 		#endregion

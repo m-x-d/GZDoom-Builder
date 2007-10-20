@@ -54,8 +54,8 @@
     <Compile Include="Data\SpriteImage.cs" />
     <Compile Include="Data\TextureImage.cs" />
     <Compile Include="Editing\EditMode.cs" />
-    <Compile Include="Editing\FrozenOverviewMode.cs" />
-    <Compile Include="Editing\ViewClassicMode.cs" />
+    <Compile Include="Editing\VerticesMode.cs" />
+    <Compile Include="Editing\ClassicMode.cs" />
     <Compile Include="Controls\ActionDelegate.cs" />
     <Compile Include="Controls\Action.cs" />
     <Compile Include="Controls\ActionManager.cs" />
@@ -79,6 +79,12 @@
     </Compile>
     <Compile Include="Interface\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ColorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ColorControl.Designer.cs">
+      <DependentUpon>ColorControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\ConfigForm.cs">
       <SubType>Form</SubType>
@@ -141,6 +147,7 @@
     </Compile>
     <Compile Include="Map\Linedef.cs" />
     <Compile Include="Map\MapOptions.cs" />
+    <Compile Include="Map\MapSelection.cs" />
     <Compile Include="Map\MapSet.cs" />
     <Compile Include="Data\DataLocation.cs" />
     <Compile Include="Map\Sector.cs" />
@@ -154,6 +161,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rendering\Base2DShader.cs" />
+    <Compile Include="Rendering\ColorCollection.cs" />
+    <Compile Include="Rendering\ColorSetting.cs" />
     <Compile Include="Rendering\D3DGraphics.cs" />
     <Compile Include="Data\ImageData.cs" />
     <Compile Include="Rendering\D3DShader.cs" />
@@ -201,6 +210,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\ColorPick.png" />
     <None Include="Resources\Zoom.png" />
     <None Include="Resources\Properties.png" />
     <None Include="Resources\NewMap2.png" />
@@ -210,6 +220,10 @@
     <None Include="Resources\Splash2small.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\ColorControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ColorControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\ConfigForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ConfigForm.cs</DependentUpon>

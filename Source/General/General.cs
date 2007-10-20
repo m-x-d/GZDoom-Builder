@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Geometry;
 using System.Runtime.InteropServices;
 using CodeImp.DoomBuilder.Controls;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -105,6 +106,7 @@ namespace CodeImp.DoomBuilder
 		private static Configuration settings;
 		private static MapManager map;
 		private static ActionManager actions;
+		private static ColorCollection colors;
 		
 		// Configurations
 		private static List<ConfigurationInfo> configs;
@@ -122,6 +124,7 @@ namespace CodeImp.DoomBuilder
 		public static string CompilersPath { get { return compilerspath; } }
 		public static MainForm MainWindow { get { return mainwindow; } }
 		public static Configuration Settings { get { return settings; } }
+		public static ColorCollection Colors { get { return colors; } }
 		public static List<ConfigurationInfo> Configs { get { return configs; } }
 		public static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
 		public static List<CompilerInfo> Compilers { get { return compilers; } }
@@ -429,6 +432,10 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Loading nodebuilder configurations...");
 				LoadAllNodebuilderConfigurations();
 
+				// Load color settings
+				General.WriteLogLine("Loading color settings...");
+				colors = new ColorCollection(settings);
+
 				// Run application from the main window
 				General.WriteLogLine("Startup done");
 				mainwindow.DisplayReady();
@@ -512,6 +519,9 @@ namespace CodeImp.DoomBuilder
 				mainwindow.Dispose();
 				actions.Dispose();
 
+				// Save colors
+				colors.SaveColors(settings);
+				
 				// Save action controls
 				actions.SaveSettings();
 

@@ -33,13 +33,16 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class FrozenOverviewMode : ViewClassicMode
+	internal class VerticesMode : ClassicMode
 	{
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
+
+		// Selection
+		private MapSelection selection;
 
 		#endregion
 
@@ -49,10 +52,20 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
-		public FrozenOverviewMode()
+		/// <summary>
+		/// Fresh mode
+		/// </summary>
+		public VerticesMode()
 		{
-			CenterInScreen();
+		}
+
+		/// <summary>
+		/// From dragging
+		/// </summary>
+		public VerticesMode(MapSelection selection)
+		{
+			// Keep selection
+			this.selection = selection;
 		}
 
 		// Diposer
@@ -71,20 +84,18 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 
 		#region ================== Methods
-
-		// This just refreshes the display
-		public override void RefreshDisplay()
-		{
-			renderer.Present();
-		}
 		
 		// This redraws the display
 		public unsafe override void RedrawDisplay()
 		{
-			if(renderer.StartRendering())
+			// Start with a clear display
+			if(renderer.StartRendering(true))
 			{
+				// Render stuff
 				renderer.RenderLinedefs(General.Map.Map, General.Map.Map.Linedefs);
 				renderer.RenderVertices(General.Map.Map, General.Map.Map.Vertices);
+
+				// Done
 				renderer.FinishRendering();
 			}
 		}

@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder
 			ActionAttribute.BindMethods(this);
 
 			// Set default mode
-			ChangeMode(typeof(FrozenOverviewMode));
+			ChangeMode(new VerticesMode());
 
 			// Success
 			General.WriteLogLine("Map creation done");
@@ -279,8 +279,11 @@ namespace CodeImp.DoomBuilder
 			ActionAttribute.BindMethods(this);
 
 			// Set default mode
-			ChangeMode(typeof(FrozenOverviewMode));
+			ChangeMode(new VerticesMode());
 
+			// Center map in screen
+			(General.Map.Mode as ClassicMode).CenterInScreen();
+			
 			// Success
 			General.WriteLogLine("Map loading done");
 			return true;
@@ -842,14 +845,14 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This changes editing mode
-		public void ChangeMode(Type modetype, params object[] args)
+		public void ChangeMode(EditMode newmode)
 		{
 			// Dispose current mode
 			if(mode != null) mode.Dispose();
 			
-			// Create a new mode
-			General.WriteLogLine("Switching edit mode to " + modetype.Name + "...");
-			mode = EditMode.Create(modetype, args);
+			// Set new mode
+			General.WriteLogLine("Switched edit mode to " + newmode.GetType().Name);
+			mode = newmode;
 			
 			// Redraw the display
 			General.MainWindow.RedrawDisplay();
