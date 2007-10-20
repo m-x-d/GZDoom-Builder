@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			FlatVertex[] verts = new FlatVertex[4];
 
 			// Start drawing
-			if(graphics.StartRendering())
+			if(graphics.StartRendering(General.Colors.Background.PixelColor.ToInt()))
 			{
 				// Left top
 				verts[0].x = -0.5f;
@@ -276,8 +276,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			float ox = -offsetx + (width * 0.5f) / scale;
 			float oy = -offsety - (height * 0.5f) / scale;
+			float indicatorlength = 10f / scale;
 			PixelColor c;
 			Vector2D v1, v2;
+			float mx, my, ix, iy;
 			
 			// Go for all linedefs
 			foreach(Linedef l in linedefs)
@@ -294,9 +296,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					else if(l.Selected > 0) c = General.Colors.Selection;
 					else if(l.Action != 0) c = General.Colors.Actions;
 					else c = General.Colors.Linedefs;
-					
-					// Draw line
-					plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
 				}
 				// Doublesided lines
 				else
@@ -307,10 +306,19 @@ namespace CodeImp.DoomBuilder.Rendering
 					else if(l.Action != 0) c = General.Colors.Actions.WithAlpha(DOUBLESIDED_LINE_ALPHA);
 					else if((l.Flags & General.Map.Settings.SoundLinedefFlags) != 0) c = General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
 					else c = General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);
-					
-					// Draw line
-					plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
 				}
+				
+				// Draw line
+				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+
+				// Calculate normal indicator
+				mx = (v2.x - v1.x) * 0.5f;
+				my = (v2.y - v1.y) * 0.5f;
+				iy = (v1.y + my) + (mx * l.LengthInv) * indicatorlength;
+				ix = (v1.x + mx) - (my * l.LengthInv) * indicatorlength;
+				
+				// Draw normal indicator
+				plotter.DrawLineSolid((int)(v1.x + mx), (int)(v1.y + my), (int)ix, (int)iy, c);
 			}
 		}
 
