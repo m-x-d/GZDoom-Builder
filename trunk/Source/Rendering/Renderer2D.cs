@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This begins a drawing session
-		public unsafe bool StartRendering()
+		public unsafe bool StartRendering(bool cleardisplay)
 		{
 			LockedRect rect;
 			
@@ -210,8 +210,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// Create plotter
 				plotter = new Plotter((PixelColor*)rect.Data.DataPointer.ToPointer(), rect.Pitch / sizeof(PixelColor), pheight, width, height);
-				plotter.Clear();
-
+				if(cleardisplay) plotter.Clear();
+				
 				// Ready for rendering
 				return true;
 			}

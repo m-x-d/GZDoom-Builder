@@ -31,6 +31,17 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.Label label7;
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
+			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
+			this.colorgrid64 = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorgrid = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorassociations = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorsoundlinedefs = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorspeciallinedefs = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorbackcolor = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorselection = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorvertices = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorhighlight = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorlinedefs = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
@@ -45,12 +56,29 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actioncontrolclear = new System.Windows.Forms.Button();
 			this.actionkey = new System.Windows.Forms.TextBox();
 			this.actiondescription = new System.Windows.Forms.Label();
+			this.tabcolors = new System.Windows.Forms.TabPage();
+			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
+			this.colorconstants = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorliterals = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorControl1 = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorkeywords = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorlinenumbers = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorcomments = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorplaintext = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorsgroup2 = new System.Windows.Forms.GroupBox();
+			this.colorselection3d = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorhighlight3d = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorcrosshair3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
+			this.colorsgroup1.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabkeys.SuspendLayout();
 			this.actioncontrolpanel.SuspendLayout();
+			this.tabcolors.SuspendLayout();
+			this.colorsgroup3.SuspendLayout();
+			this.colorsgroup2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label7
@@ -80,12 +108,142 @@ namespace CodeImp.DoomBuilder.Interface
 			label5.TabIndex = 4;
 			label5.Text = "Press the desired key combination here:";
 			// 
+			// colorsgroup1
+			// 
+			this.colorsgroup1.Controls.Add(this.colorgrid64);
+			this.colorsgroup1.Controls.Add(this.colorgrid);
+			this.colorsgroup1.Controls.Add(this.colorassociations);
+			this.colorsgroup1.Controls.Add(this.colorsoundlinedefs);
+			this.colorsgroup1.Controls.Add(this.colorspeciallinedefs);
+			this.colorsgroup1.Controls.Add(this.colorbackcolor);
+			this.colorsgroup1.Controls.Add(this.colorselection);
+			this.colorsgroup1.Controls.Add(this.colorvertices);
+			this.colorsgroup1.Controls.Add(this.colorhighlight);
+			this.colorsgroup1.Controls.Add(this.colorlinedefs);
+			this.colorsgroup1.Location = new System.Drawing.Point(12, 10);
+			this.colorsgroup1.Name = "colorsgroup1";
+			this.colorsgroup1.Size = new System.Drawing.Size(181, 330);
+			this.colorsgroup1.TabIndex = 10;
+			this.colorsgroup1.TabStop = false;
+			this.colorsgroup1.Text = " Classic modes ";
+			this.colorsgroup1.Visible = false;
+			// 
+			// colorgrid64
+			// 
+			this.colorgrid64.BackColor = System.Drawing.SystemColors.Control;
+			this.colorgrid64.Label = "64 Block grid:";
+			this.colorgrid64.Location = new System.Drawing.Point(15, 288);
+			this.colorgrid64.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorgrid64.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorgrid64.Name = "colorgrid64";
+			this.colorgrid64.Size = new System.Drawing.Size(150, 23);
+			this.colorgrid64.TabIndex = 15;
+			// 
+			// colorgrid
+			// 
+			this.colorgrid.BackColor = System.Drawing.SystemColors.Control;
+			this.colorgrid.Label = "Custom grid:";
+			this.colorgrid.Location = new System.Drawing.Point(15, 259);
+			this.colorgrid.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorgrid.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorgrid.Name = "colorgrid";
+			this.colorgrid.Size = new System.Drawing.Size(150, 23);
+			this.colorgrid.TabIndex = 14;
+			// 
+			// colorassociations
+			// 
+			this.colorassociations.BackColor = System.Drawing.SystemColors.Control;
+			this.colorassociations.Label = "Associations:";
+			this.colorassociations.Location = new System.Drawing.Point(15, 230);
+			this.colorassociations.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorassociations.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorassociations.Name = "colorassociations";
+			this.colorassociations.Size = new System.Drawing.Size(150, 23);
+			this.colorassociations.TabIndex = 13;
+			// 
+			// colorsoundlinedefs
+			// 
+			this.colorsoundlinedefs.BackColor = System.Drawing.SystemColors.Control;
+			this.colorsoundlinedefs.Label = "Sound lines:";
+			this.colorsoundlinedefs.Location = new System.Drawing.Point(15, 143);
+			this.colorsoundlinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorsoundlinedefs.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorsoundlinedefs.Name = "colorsoundlinedefs";
+			this.colorsoundlinedefs.Size = new System.Drawing.Size(150, 23);
+			this.colorsoundlinedefs.TabIndex = 12;
+			// 
+			// colorspeciallinedefs
+			// 
+			this.colorspeciallinedefs.BackColor = System.Drawing.SystemColors.Control;
+			this.colorspeciallinedefs.Label = "Action lines:";
+			this.colorspeciallinedefs.Location = new System.Drawing.Point(15, 114);
+			this.colorspeciallinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorspeciallinedefs.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorspeciallinedefs.Name = "colorspeciallinedefs";
+			this.colorspeciallinedefs.Size = new System.Drawing.Size(150, 23);
+			this.colorspeciallinedefs.TabIndex = 11;
+			// 
+			// colorbackcolor
+			// 
+			this.colorbackcolor.BackColor = System.Drawing.SystemColors.Control;
+			this.colorbackcolor.Label = "Background:";
+			this.colorbackcolor.Location = new System.Drawing.Point(15, 27);
+			this.colorbackcolor.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorbackcolor.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorbackcolor.Name = "colorbackcolor";
+			this.colorbackcolor.Size = new System.Drawing.Size(150, 23);
+			this.colorbackcolor.TabIndex = 5;
+			// 
+			// colorselection
+			// 
+			this.colorselection.BackColor = System.Drawing.SystemColors.Control;
+			this.colorselection.Label = "Selection:";
+			this.colorselection.Location = new System.Drawing.Point(15, 201);
+			this.colorselection.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorselection.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorselection.Name = "colorselection";
+			this.colorselection.Size = new System.Drawing.Size(150, 23);
+			this.colorselection.TabIndex = 9;
+			// 
+			// colorvertices
+			// 
+			this.colorvertices.BackColor = System.Drawing.SystemColors.Control;
+			this.colorvertices.Label = "Vertices:";
+			this.colorvertices.Location = new System.Drawing.Point(15, 56);
+			this.colorvertices.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorvertices.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorvertices.Name = "colorvertices";
+			this.colorvertices.Size = new System.Drawing.Size(150, 23);
+			this.colorvertices.TabIndex = 6;
+			// 
+			// colorhighlight
+			// 
+			this.colorhighlight.BackColor = System.Drawing.SystemColors.Control;
+			this.colorhighlight.Label = "Highlight:";
+			this.colorhighlight.Location = new System.Drawing.Point(15, 172);
+			this.colorhighlight.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorhighlight.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorhighlight.Name = "colorhighlight";
+			this.colorhighlight.Size = new System.Drawing.Size(150, 23);
+			this.colorhighlight.TabIndex = 8;
+			// 
+			// colorlinedefs
+			// 
+			this.colorlinedefs.BackColor = System.Drawing.SystemColors.Control;
+			this.colorlinedefs.Label = "Common lines:";
+			this.colorlinedefs.Location = new System.Drawing.Point(15, 85);
+			this.colorlinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorlinedefs.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorlinedefs.Name = "colorlinedefs";
+			this.colorlinedefs.Size = new System.Drawing.Size(150, 23);
+			this.colorlinedefs.TabIndex = 7;
+			// 
 			// cancel
 			// 
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.cancel.Location = new System.Drawing.Point(497, 406);
 			this.cancel.Name = "cancel";
-			this.cancel.Size = new System.Drawing.Size(112, 27);
+			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 20;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
@@ -95,7 +253,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.apply.Location = new System.Drawing.Point(379, 406);
 			this.apply.Name = "apply";
-			this.apply.Size = new System.Drawing.Size(112, 27);
+			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 19;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
@@ -105,6 +263,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.tabs.Controls.Add(this.tabinterface);
 			this.tabs.Controls.Add(this.tabkeys);
+			this.tabs.Controls.Add(this.tabcolors);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
 			this.tabs.Location = new System.Drawing.Point(11, 13);
@@ -113,6 +272,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.Size = new System.Drawing.Size(598, 379);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 18;
+			this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
 			// 
 			// tabinterface
 			// 
@@ -246,13 +406,166 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actiondescription.TabIndex = 3;
 			this.actiondescription.UseMnemonic = false;
 			// 
+			// tabcolors
+			// 
+			this.tabcolors.Controls.Add(this.colorsgroup3);
+			this.tabcolors.Controls.Add(this.colorsgroup2);
+			this.tabcolors.Controls.Add(this.colorsgroup1);
+			this.tabcolors.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabcolors.Location = new System.Drawing.Point(4, 23);
+			this.tabcolors.Name = "tabcolors";
+			this.tabcolors.Size = new System.Drawing.Size(590, 352);
+			this.tabcolors.TabIndex = 2;
+			this.tabcolors.Text = "Colors";
+			this.tabcolors.UseVisualStyleBackColor = true;
+			// 
+			// colorsgroup3
+			// 
+			this.colorsgroup3.Controls.Add(this.colorconstants);
+			this.colorsgroup3.Controls.Add(this.colorliterals);
+			this.colorsgroup3.Controls.Add(this.colorControl1);
+			this.colorsgroup3.Controls.Add(this.colorkeywords);
+			this.colorsgroup3.Controls.Add(this.colorlinenumbers);
+			this.colorsgroup3.Controls.Add(this.colorcomments);
+			this.colorsgroup3.Controls.Add(this.colorplaintext);
+			this.colorsgroup3.Location = new System.Drawing.Point(398, 10);
+			this.colorsgroup3.Name = "colorsgroup3";
+			this.colorsgroup3.Size = new System.Drawing.Size(181, 330);
+			this.colorsgroup3.TabIndex = 12;
+			this.colorsgroup3.TabStop = false;
+			this.colorsgroup3.Text = " Script editor ";
+			this.colorsgroup3.Visible = false;
+			// 
+			// colorconstants
+			// 
+			this.colorconstants.BackColor = System.Drawing.SystemColors.Control;
+			this.colorconstants.Label = "Constants:";
+			this.colorconstants.Location = new System.Drawing.Point(15, 201);
+			this.colorconstants.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorconstants.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorconstants.Name = "colorconstants";
+			this.colorconstants.Size = new System.Drawing.Size(150, 23);
+			this.colorconstants.TabIndex = 16;
+			// 
+			// colorliterals
+			// 
+			this.colorliterals.BackColor = System.Drawing.SystemColors.Control;
+			this.colorliterals.Label = "Literals:";
+			this.colorliterals.Location = new System.Drawing.Point(15, 172);
+			this.colorliterals.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorliterals.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorliterals.Name = "colorliterals";
+			this.colorliterals.Size = new System.Drawing.Size(150, 23);
+			this.colorliterals.TabIndex = 15;
+			// 
+			// colorControl1
+			// 
+			this.colorControl1.BackColor = System.Drawing.SystemColors.Control;
+			this.colorControl1.Label = "Background:";
+			this.colorControl1.Location = new System.Drawing.Point(15, 27);
+			this.colorControl1.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorControl1.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorControl1.Name = "colorControl1";
+			this.colorControl1.Size = new System.Drawing.Size(150, 23);
+			this.colorControl1.TabIndex = 10;
+			// 
+			// colorkeywords
+			// 
+			this.colorkeywords.BackColor = System.Drawing.SystemColors.Control;
+			this.colorkeywords.Label = "Keywords:";
+			this.colorkeywords.Location = new System.Drawing.Point(15, 143);
+			this.colorkeywords.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorkeywords.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorkeywords.Name = "colorkeywords";
+			this.colorkeywords.Size = new System.Drawing.Size(150, 23);
+			this.colorkeywords.TabIndex = 14;
+			// 
+			// colorlinenumbers
+			// 
+			this.colorlinenumbers.BackColor = System.Drawing.SystemColors.Control;
+			this.colorlinenumbers.Label = "Line numbers:";
+			this.colorlinenumbers.Location = new System.Drawing.Point(15, 56);
+			this.colorlinenumbers.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorlinenumbers.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorlinenumbers.Name = "colorlinenumbers";
+			this.colorlinenumbers.Size = new System.Drawing.Size(150, 23);
+			this.colorlinenumbers.TabIndex = 11;
+			// 
+			// colorcomments
+			// 
+			this.colorcomments.BackColor = System.Drawing.SystemColors.Control;
+			this.colorcomments.Label = "Comments:";
+			this.colorcomments.Location = new System.Drawing.Point(15, 114);
+			this.colorcomments.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorcomments.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorcomments.Name = "colorcomments";
+			this.colorcomments.Size = new System.Drawing.Size(150, 23);
+			this.colorcomments.TabIndex = 13;
+			// 
+			// colorplaintext
+			// 
+			this.colorplaintext.BackColor = System.Drawing.SystemColors.Control;
+			this.colorplaintext.Label = "Plain text:";
+			this.colorplaintext.Location = new System.Drawing.Point(15, 85);
+			this.colorplaintext.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorplaintext.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorplaintext.Name = "colorplaintext";
+			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
+			this.colorplaintext.TabIndex = 12;
+			// 
+			// colorsgroup2
+			// 
+			this.colorsgroup2.Controls.Add(this.colorselection3d);
+			this.colorsgroup2.Controls.Add(this.colorhighlight3d);
+			this.colorsgroup2.Controls.Add(this.colorcrosshair3d);
+			this.colorsgroup2.Location = new System.Drawing.Point(205, 10);
+			this.colorsgroup2.Name = "colorsgroup2";
+			this.colorsgroup2.Size = new System.Drawing.Size(181, 330);
+			this.colorsgroup2.TabIndex = 11;
+			this.colorsgroup2.TabStop = false;
+			this.colorsgroup2.Text = " 3D mode ";
+			this.colorsgroup2.Visible = false;
+			// 
+			// colorselection3d
+			// 
+			this.colorselection3d.BackColor = System.Drawing.SystemColors.Control;
+			this.colorselection3d.Label = "Selection:";
+			this.colorselection3d.Location = new System.Drawing.Point(15, 85);
+			this.colorselection3d.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorselection3d.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorselection3d.Name = "colorselection3d";
+			this.colorselection3d.Size = new System.Drawing.Size(150, 23);
+			this.colorselection3d.TabIndex = 8;
+			// 
+			// colorhighlight3d
+			// 
+			this.colorhighlight3d.BackColor = System.Drawing.SystemColors.Control;
+			this.colorhighlight3d.Label = "Highlight:";
+			this.colorhighlight3d.Location = new System.Drawing.Point(15, 56);
+			this.colorhighlight3d.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorhighlight3d.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorhighlight3d.Name = "colorhighlight3d";
+			this.colorhighlight3d.Size = new System.Drawing.Size(150, 23);
+			this.colorhighlight3d.TabIndex = 7;
+			// 
+			// colorcrosshair3d
+			// 
+			this.colorcrosshair3d.BackColor = System.Drawing.SystemColors.Control;
+			this.colorcrosshair3d.Label = "Crosshair:";
+			this.colorcrosshair3d.Location = new System.Drawing.Point(15, 27);
+			this.colorcrosshair3d.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorcrosshair3d.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorcrosshair3d.Name = "colorcrosshair3d";
+			this.colorcrosshair3d.Size = new System.Drawing.Size(150, 23);
+			this.colorcrosshair3d.TabIndex = 6;
+			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(619, 442);
+			this.ClientSize = new System.Drawing.Size(619, 440);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -265,10 +578,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Preferences";
+			this.colorsgroup1.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabkeys.ResumeLayout(false);
 			this.actioncontrolpanel.ResumeLayout(false);
 			this.actioncontrolpanel.PerformLayout();
+			this.tabcolors.ResumeLayout(false);
+			this.colorsgroup3.ResumeLayout(false);
+			this.colorsgroup2.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -289,5 +606,29 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.Button actioncontrolclear;
 		private System.Windows.Forms.TextBox actionkey;
 		private System.Windows.Forms.Label actiondescription;
+		private System.Windows.Forms.TabPage tabcolors;
+		private ColorControl colorselection;
+		private ColorControl colorhighlight;
+		private ColorControl colorlinedefs;
+		private ColorControl colorvertices;
+		private ColorControl colorbackcolor;
+		private System.Windows.Forms.GroupBox colorsgroup3;
+		private System.Windows.Forms.GroupBox colorsgroup2;
+		private ColorControl colorselection3d;
+		private ColorControl colorhighlight3d;
+		private ColorControl colorcrosshair3d;
+		private ColorControl colorControl1;
+		private ColorControl colorkeywords;
+		private ColorControl colorlinenumbers;
+		private ColorControl colorcomments;
+		private ColorControl colorplaintext;
+		private ColorControl colorliterals;
+		private ColorControl colorconstants;
+		private ColorControl colorspeciallinedefs;
+		private ColorControl colorsoundlinedefs;
+		private ColorControl colorassociations;
+		private ColorControl colorgrid64;
+		private ColorControl colorgrid;
+		private System.Windows.Forms.GroupBox colorsgroup1;
 	}
 }

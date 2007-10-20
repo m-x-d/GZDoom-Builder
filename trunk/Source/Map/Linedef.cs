@@ -70,6 +70,9 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private byte[] args;
 		
+		// Selections
+		private int selected;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -86,6 +89,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Flags { get { return flags; } }
 		public int Action { get { return action; } }
 		public int Tag { get { return tag; } }
+		public int Selected { get { return selected; } set { selected = value; } }
 
 		#endregion
 

@@ -53,6 +53,9 @@ namespace CodeImp.DoomBuilder.Map
 
 		// References
 		private LinkedList<Linedef> linedefs;
+
+		// Selections
+		private int selected;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -67,6 +70,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int X { get { return x; } }
 		public int Y { get { return y; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public int Selected { get { return selected; } set { selected = value; } }
 
 		#endregion
 

@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int brightness;
 
+		// Selections
+		private int selected;
+
 		// Disposing
 		private bool isdisposed = false;
 
@@ -71,6 +74,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Special { get { return special; } }
 		public int Tag { get { return tag; } }
 		public int Brightness { get { return brightness; } }
+		public int Selected { get { return selected; } set { selected = value; } }
 
 		#endregion
 

@@ -36,7 +36,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class ViewClassicMode : EditMode
+	internal abstract class ClassicMode : EditMode
 	{
 		#region ================== Constants
 
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ViewClassicMode()
+		public ClassicMode()
 		{
 			// Initialize
 			this.renderer = General.Map.Graphics.Renderer2D;
@@ -268,6 +268,16 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Let the base class know
 			base.MouseMove(e);
+		}
+
+		#endregion
+
+		#region ================== Display
+
+		// This just refreshes the display
+		public override void RefreshDisplay()
+		{
+			renderer.Present();
 		}
 
 		#endregion

@@ -279,5 +279,19 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		#endregion
+
+		#region ================== Tabs
+
+		// Tab changes
+		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(tabs.SelectedTab != tabkeys) this.AcceptButton = apply; else this.AcceptButton = null;
+			if(tabs.SelectedTab != tabkeys) this.CancelButton = cancel; else this.CancelButton = null;
+			colorsgroup1.Visible = (tabs.SelectedTab == tabcolors);
+			colorsgroup2.Visible = (tabs.SelectedTab == tabcolors);
+			colorsgroup3.Visible = (tabs.SelectedTab == tabcolors);
+		}
+
+		#endregion
 	}
 }
