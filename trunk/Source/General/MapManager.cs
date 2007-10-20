@@ -116,6 +116,9 @@ namespace CodeImp.DoomBuilder
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Change to no mode
+				ChangeMode(null);
+				
 				// Unbind any methods
 				ActionAttribute.UnbindMethods(this);
 
@@ -126,8 +129,6 @@ namespace CodeImp.DoomBuilder
 				tempwad.Dispose();
 				General.WriteLogLine("Unloading map data...");
 				map.Dispose();
-				General.WriteLogLine("Stopping edit mode...");
-				mode.Dispose();
 				General.WriteLogLine("Stopping graphics device...");
 				graphics.Dispose();
 				
@@ -802,6 +803,69 @@ namespace CodeImp.DoomBuilder
 		
 		#endregion
 
+		#region ================== Editing Modes
+
+		// This changes the editing mode.
+		// Order in which events occur for the old and new modes:
+		// 
+		// - Constructor of new mode is called
+		// - Disengage of old mode is called
+		// ----- Mode switches -----
+		// - Engage of new mode is called
+		// - Dispose of old mode is called
+		//
+		public void ChangeMode(EditMode newmode)
+		{
+			EditMode oldmode = mode;
+
+			// Log info
+			if(newmode != null)
+				General.WriteLogLine("Switching edit mode to " + newmode.GetType().Name + "...");
+			else
+				General.WriteLogLine("Stopping edit mode...");
+
+			// Disenagage old mode
+			if(oldmode != null) oldmode.Disengage();
+
+			// Apply new mode
+			mode = newmode;
+
+			// Engage new mode
+			if(newmode != null) newmode.Engage();
+
+			// Dispose old mode
+			if(mode != null) mode.Dispose();
+
+			// Redraw the display
+			General.MainWindow.RedrawDisplay();
+		}
+
+		// This switches to vertices mode
+		[Action(Action.VERTICESMODE)]
+		public void SwitchVerticesMode()
+		{
+			// Change to vertices mode
+			ChangeMode(new VerticesMode());
+		}
+
+		// This switches to linedefs mode
+		[Action(Action.LINEDEFSMODE)]
+		public void SwitchLinedefsMode()
+		{
+			// Change to linedefs mode
+			ChangeMode(new LinedefsMode());
+		}
+
+		// This switches to sectors mode
+		[Action(Action.SECTORSMODE)]
+		public void SwitchSectorsMode()
+		{
+			// Change to sectors mode
+			ChangeMode(new SectorsMode());
+		}
+		
+		#endregion
+		
 		#region ================== Methods
 
 		// This reloads resources
@@ -837,7 +901,7 @@ namespace CodeImp.DoomBuilder
 			General.MainWindow.DisplayStatus(oldstatus);
 			Cursor.Current = oldcursor;
 		}
-		
+
 		// Game Configuration action
 		[Action(Action.MAPOPTIONS)]
 		public void ShowMapOptions()
@@ -848,27 +912,13 @@ namespace CodeImp.DoomBuilder
 			{
 				// Update interface
 				General.MainWindow.UpdateInterface();
-				
+
 				// Reload resources
 				ReloadResources();
 			}
 
 			// Done
 			optionsform.Dispose();
-		}
-		
-		// This changes editing mode
-		public void ChangeMode(EditMode newmode)
-		{
-			// Dispose current mode
-			if(mode != null) mode.Dispose();
-			
-			// Set new mode
-			General.WriteLogLine("Switched edit mode to " + newmode.GetType().Name);
-			mode = newmode;
-			
-			// Redraw the display
-			General.MainWindow.RedrawDisplay();
 		}
 
 		#endregion

@@ -34,18 +34,18 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class VerticesMode : ClassicMode
+	internal class LinedefsMode : ClassicMode
 	{
 		#region ================== Constants
 
-		protected const float VERTEX_HIGHLIGHT_RANGE = 20f;
+		protected const float LINEDEF_HIGHLIGHT_RANGE = 20f;
 
 		#endregion
 
 		#region ================== Variables
 
 		// Highlighted item
-		private Vertex highlighted;
+		private Linedef highlighted;
 
 		#endregion
 
@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public VerticesMode()
+		public LinedefsMode()
 		{
 		}
 
@@ -81,18 +81,18 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Engage()
 		{
 			base.Engage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(true);
+
+			// Check linedefs button on main window
+			General.MainWindow.SetLinedefsChecked(true);
 		}
 
 		// Mode disengages
 		public override void Disengage()
 		{
 			base.Disengage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(false);
+
+			// Check linedefs button on main window
+			General.MainWindow.SetLinedefsChecked(false);
 		}
 
 		// This redraws the display
@@ -101,62 +101,72 @@ namespace CodeImp.DoomBuilder.Editing
 			// Start with a clear display
 			if(renderer.StartRendering(true))
 			{
-				// Render stuff
+				// Render lines
 				renderer.RenderLinedefSet(General.Map.Map, General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(General.Map.Map, General.Map.Map.Vertices);
 
 				// Render highlighted item
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, General.Colors.Highlight);
-				
+					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
+
+				// Render vertices
+				renderer.RenderVerticesSet(General.Map.Map, General.Map.Map.Vertices);
+
 				// Done
 				renderer.FinishRendering();
 			}
 		}
-		
+
 		// This highlights a new item
-		protected void Highlight(Vertex v)
+		protected void Highlight(Linedef l)
 		{
 			// Update display
 			if(renderer.StartRendering(false))
 			{
 				// Undraw previous highlight
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
-
+				{
+					renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+				}
+				
 				// Set new highlight
-				highlighted = v;
+				highlighted = l;
 
 				// Render highlighted item
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, General.Colors.Highlight);
+				{
+					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
+					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+				}
 				
 				// Done
 				renderer.FinishRendering();
 			}
 		}
-		
+
 		// Mouse moves
 		public override void MouseMove(MouseEventArgs e)
 		{
 			base.MouseMove(e);
 
-			// Find the nearest vertex within highlight range
-			Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+			// Find the nearest linedef within highlight range
+			Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
 
 			// Highlight if not the same
-			if(v != highlighted) Highlight(v);
+			if(l != highlighted) Highlight(l);
 		}
 
 		// Mouse leaves
 		public override void MouseLeave(EventArgs e)
 		{
 			base.MouseLeave(e);
-			
+
 			// Highlight nothing
 			Highlight(null);
 		}
-		
+
 		#endregion
 	}
 }

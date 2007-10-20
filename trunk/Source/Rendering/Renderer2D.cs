@@ -56,9 +56,13 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// View settings (world coordinates)
 		private float scale;
+		private float scaleinv;
 		private float offsetx;
 		private float offsety;
-
+		private float translatex;
+		private float translatey;
+		private float linenormalsize;
+		
 		#endregion
 
 		#region ================== Properties
@@ -206,13 +210,18 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartRendering(bool cleardisplay)
 		{
+			LockFlags lockflags;
 			LockedRect rect;
 			
 			// Do we have a texture?
 			if(tex != null)
 			{
+				// Determine lock requirements
+				if(cleardisplay) lockflags = LockFlags.Discard | LockFlags.NoSystemLock;
+							else lockflags = LockFlags.NoSystemLock;
+
 				// Lock memory
-				rect = tex.LockRectangle(0, LockFlags.Discard);
+				rect = tex.LockRectangle(0, lockflags);
 
 				// Create plotter
 				plotter = new Plotter((PixelColor*)rect.Data.DataPointer.ToPointer(), rect.Pitch / sizeof(PixelColor), pheight, width, height);
@@ -244,6 +253,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Change position in world coordinates
 			offsetx = x;
 			offsety = y;
+			UpdateTransformations();
 		}
 		
 		// This changes zoom
@@ -251,7 +261,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Change zoom scale
 			this.scale = scale;
-
+			UpdateTransformations();
+			
 			// Show zoom on main window
 			General.MainWindow.UpdateZoom(scale);
 			
@@ -259,94 +270,131 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(Linedef l in General.Map.Map.Linedefs) l.NeedUpdate();
 		}
 
+		// This updates some maths
+		private void UpdateTransformations()
+		{
+			scaleinv = 1f / scale;
+			translatex = -offsetx + (width * 0.5f) * scaleinv;
+			translatey = -offsety - (height * 0.5f) * scaleinv;
+			linenormalsize = 10f * scaleinv;
+		}
+		
 		// This unprojects mouse coordinates into map coordinates
 		public Vector2D GetMapCoordinates(Vector2D mousepos)
 		{
-			float ox = -offsetx + (width * 0.5f) / scale;
-			float oy = -offsety - (height * 0.5f) / scale;
-			return mousepos.GetTransformed(ox, oy, scale, -scale);
+			return mousepos.GetInvTransformed(-translatex, -translatey, scaleinv, -scaleinv);
+		}
+
+		#endregion
+
+		#region ================== Colors
+
+		// This returns the color for a vertex
+		public PixelColor DetermineVertexColor(Vertex v)
+		{
+			// Determine color
+			if(v.Selected > 0) return General.Colors.Selection;
+			else return General.Colors.Vertices;
+		}
+
+		// This returns the color for a linedef
+		public PixelColor DetermineLinedefColor(Linedef l)
+		{
+			// Sinlgesided lines
+			if((l.Back == null) || (l.Front == null))
+			{
+				// Determine color
+				if(l.Selected > 0) return General.Colors.Selection;
+				else if(l.Action != 0) return General.Colors.Actions;
+				else return General.Colors.Linedefs;
+			}
+			// Doublesided lines
+			else
+			{
+				// Determine color
+				if(l.Selected > 0) return General.Colors.Selection;
+				else if(l.Action != 0) return General.Colors.Actions.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+				else if((l.Flags & General.Map.Settings.SoundLinedefFlags) != 0) return General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+				else return General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+			}
 		}
 
 		#endregion
 
 		#region ================== Map Rendering
 
-		// This renders a set of Linedefs
-		public void RenderLinedefs(MapSet map, ICollection<Linedef> linedefs, Linedef highlight)
+		// This renders the linedefs of a sector with special color
+		public void RenderSector(Sector s, PixelColor c)
 		{
-			float ox = -offsetx + (width * 0.5f) / scale;
-			float oy = -offsety - (height * 0.5f) / scale;
-			float indicatorlength = 10f / scale;
-			PixelColor c;
-			Vector2D v1, v2;
-			float mx, my, ix, iy;
-			
-			// Go for all linedefs
-			foreach(Linedef l in linedefs)
+			// Go for all sides in the sector
+			foreach(Sidedef sd in s.Sidedefs)
 			{
-				// Transform vertex coordinates
-				v1 = l.Start.Position.GetTransformed(ox, oy, scale, -scale);
-				v2 = l.End.Position.GetTransformed(ox, oy, scale, -scale);
+				// Render this linedef
+				RenderLinedef(sd.Line, c);
 
-				// Sinlgesided lines
-				if((l.Back == null) || (l.Front == null))
-				{
-					// Determine color
-					if(l == highlight) c = General.Colors.Highlight;
-					else if(l.Selected > 0) c = General.Colors.Selection;
-					else if(l.Action != 0) c = General.Colors.Actions;
-					else c = General.Colors.Linedefs;
-				}
-				// Doublesided lines
-				else
-				{
-					// Determine color
-					if(l == highlight) c = General.Colors.Highlight;
-					else if(l.Selected > 0) c = General.Colors.Selection;
-					else if(l.Action != 0) c = General.Colors.Actions.WithAlpha(DOUBLESIDED_LINE_ALPHA);
-					else if((l.Flags & General.Map.Settings.SoundLinedefFlags) != 0) c = General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
-					else c = General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);
-				}
-				
-				// Draw line
-				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
-
-				// Calculate normal indicator
-				mx = (v2.x - v1.x) * 0.5f;
-				my = (v2.y - v1.y) * 0.5f;
-				iy = (v1.y + my) + (mx * l.LengthInv) * indicatorlength;
-				ix = (v1.x + mx) - (my * l.LengthInv) * indicatorlength;
-				
-				// Draw normal indicator
-				plotter.DrawLineSolid((int)(v1.x + mx), (int)(v1.y + my), (int)ix, (int)iy, c);
+				// Render the two vertices on top
+				RenderVertex(sd.Line.Start, DetermineVertexColor(sd.Line.Start));
+				RenderVertex(sd.Line.End, DetermineVertexColor(sd.Line.End));
 			}
 		}
 
-		// This renders a set of Linedefs
-		public void RenderVertices(MapSet map, ICollection<Vertex> vertices, Vertex highlight)
+		// This renders the linedefs of a sector
+		public void RenderSector(Sector s)
 		{
-			Vector2D nv;
-			float ox = -offsetx + (width * 0.5f) / scale;
-			float oy = -offsety - (height * 0.5f) / scale;
-			PixelColor c;
-			int x, y;
-			
-			// Go for all vertices
-			foreach(Vertex v in vertices)
+			// Go for all sides in the sector
+			foreach(Sidedef sd in s.Sidedefs)
 			{
-				// Transform vertex coordinates
-				nv = v.Position.GetTransformed(ox, oy, scale, -scale);
-				x = (int)nv.x;
-				y = (int)nv.y;
-				
-				// Determine color
-				if(v == highlight) c = General.Colors.Highlight;
-				else if(v.Selected > 0) c = General.Colors.Selection;
-				else c = General.Colors.Vertices;
-				
-				// Draw pixel here
-				plotter.DrawVertexSolid(x, y, 2, c);
+				// Render this linedef
+				RenderLinedef(sd.Line, DetermineLinedefColor(sd.Line));
+
+				// Render the two vertices on top
+				RenderVertex(sd.Line.Start, DetermineVertexColor(sd.Line.Start));
+				RenderVertex(sd.Line.End, DetermineVertexColor(sd.Line.End));
 			}
+		}	
+
+		// This renders a single linedef
+		public void RenderLinedef(Linedef l, PixelColor c)
+		{
+			// Transform vertex coordinates
+			Vector2D v1 = l.Start.Position.GetTransformed(translatex, translatey, scale, -scale);
+			Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
+
+			// Draw line
+			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+
+			// Calculate normal indicator
+			float mx = (v2.x - v1.x) * 0.5f;
+			float my = (v2.y - v1.y) * 0.5f;
+
+			// Draw normal indicator
+			plotter.DrawLineSolid((int)(v1.x + mx), (int)(v1.y + my),
+								  (int)((v1.x + mx) - (my * l.LengthInv) * linenormalsize),
+								  (int)((v1.y + my) + (mx * l.LengthInv) * linenormalsize), c);
+		}
+		
+		// This renders a set of linedefs
+		public void RenderLinedefSet(MapSet map, ICollection<Linedef> linedefs)
+		{
+			// Go for all linedefs
+			foreach(Linedef l in linedefs) RenderLinedef(l, DetermineLinedefColor(l));
+		}
+
+		// This renders a single vertex
+		public void RenderVertex(Vertex v, PixelColor c)
+		{
+			// Transform vertex coordinates
+			Vector2D nv = v.Position.GetTransformed(translatex, translatey, scale, -scale);
+
+			// Draw pixel here
+			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, 2, c);
+		}
+		
+		// This renders a set of vertices
+		public void RenderVerticesSet(MapSet map, ICollection<Vertex> vertices)
+		{
+			// Go for all vertices
+			foreach(Vertex v in vertices) RenderVertex(v, DetermineVertexColor(v));
 		}
 
 		#endregion

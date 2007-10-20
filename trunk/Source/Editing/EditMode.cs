@@ -59,9 +59,6 @@ namespace CodeImp.DoomBuilder.Editing
 		// Constructor
 		public EditMode()
 		{
-			// Bind any methods
-			ActionAttribute.BindMethods(this);
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -72,9 +69,6 @@ namespace CodeImp.DoomBuilder.Editing
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				// Unbind any methods
-				ActionAttribute.UnbindMethods(this);
-				
 				// Clean up
 
 				// Done
@@ -110,6 +104,20 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 
 		#region ================== Methods
+
+		// Mode engages
+		public virtual void Engage()
+		{
+			// Bind any methods
+			ActionAttribute.BindMethods(this);
+		}
+
+		// Mode disengages
+		public virtual void Disengage()
+		{
+			// Unbind any methods
+			ActionAttribute.UnbindMethods(this);
+		}
 
 		// Optional interface methods
 		public virtual void MouseClick(MouseEventArgs e) { }

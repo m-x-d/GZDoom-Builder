@@ -34,18 +34,16 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class VerticesMode : ClassicMode
+	internal class SectorsMode : ClassicMode
 	{
 		#region ================== Constants
-
-		protected const float VERTEX_HIGHLIGHT_RANGE = 20f;
 
 		#endregion
 
 		#region ================== Variables
 
 		// Highlighted item
-		private Vertex highlighted;
+		private Sector highlighted;
 
 		#endregion
 
@@ -56,7 +54,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public VerticesMode()
+		public SectorsMode()
 		{
 		}
 
@@ -81,18 +79,18 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Engage()
 		{
 			base.Engage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(true);
+
+			// Check sectors button on main window
+			General.MainWindow.SetSectorsChecked(true);
 		}
 
 		// Mode disengages
 		public override void Disengage()
 		{
 			base.Disengage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(false);
+
+			// Check sectors button on main window
+			General.MainWindow.SetSectorsChecked(false);
 		}
 
 		// This redraws the display
@@ -107,30 +105,30 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// Render highlighted item
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, General.Colors.Highlight);
-				
+					renderer.RenderSector(highlighted, General.Colors.Highlight);
+
 				// Done
 				renderer.FinishRendering();
 			}
 		}
-		
+
 		// This highlights a new item
-		protected void Highlight(Vertex v)
+		protected void Highlight(Sector s)
 		{
 			// Update display
 			if(renderer.StartRendering(false))
 			{
 				// Undraw previous highlight
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+					renderer.RenderSector(highlighted);
 
 				// Set new highlight
-				highlighted = v;
+				highlighted = s;
 
 				// Render highlighted item
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, General.Colors.Highlight);
-				
+					renderer.RenderSector(highlighted, General.Colors.Highlight);
+
 				// Done
 				renderer.FinishRendering();
 			}
@@ -141,22 +139,50 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.MouseMove(e);
 
-			// Find the nearest vertex within highlight range
-			Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+			// Find the nearest linedef within highlight range
+			Linedef l = General.Map.Map.NearestLinedef(mousemappos);
 
-			// Highlight if not the same
-			if(v != highlighted) Highlight(v);
+			// Check on which side of the linedef the mouse is
+			float side = l.SideOfLine(mousemappos);
+			if(side > 0)
+			{
+				// Is there a sidedef here?
+				if(l.Back != null)
+				{
+					// Highlight if not the same
+					if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+				}
+				else
+				{
+					// Highlight nothing
+					if(highlighted != null) Highlight(null);
+				}
+			}
+			else
+			{
+				// Is there a sidedef here?
+				if(l.Front != null)
+				{
+					// Highlight if not the same
+					if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
+				}
+				else
+				{
+					// Highlight nothing
+					if(highlighted != null) Highlight(null);
+				}
+			}
 		}
 
 		// Mouse leaves
 		public override void MouseLeave(EventArgs e)
 		{
 			base.MouseLeave(e);
-			
+
 			// Highlight nothing
 			Highlight(null);
 		}
-		
+
 		#endregion
 	}
 }

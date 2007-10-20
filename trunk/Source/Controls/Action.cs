@@ -47,6 +47,9 @@ namespace CodeImp.DoomBuilder.Controls
 		public const string PREFERENCES = "preferences";
 		public const string MAPOPTIONS = "mapoptions";
 		public const string RELOADRESOURCES = "reloadresources";
+		public const string VERTICESMODE = "verticesmode";
+		public const string LINEDEFSMODE = "linedefsmode";
+		public const string SECTORSMODE = "sectorsmode";
 		
 		#endregion
 		

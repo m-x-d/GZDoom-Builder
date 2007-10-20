@@ -1,0 +1,8 @@
+[15:49] <SoM> if you split a linedef with a vertex, there should be an option that will align the second half of the split 
+[15:49] <SoM> so like, if I have a line that is 128 units long
+[15:49] <SoM> and I split them in half
+[15:50] <SoM> the second linedef of the split would have the offset of the first + 64
+[15:50] <SoM> I don't think it would take much effort
+[15:50] <SoM> and it could easily be optional
+[15:51] <SoM> I've been doing a lot of detailing that would be made a lot easier with a feature like this
+[15:52] <CodeImp> i dont even think that should be an option, but normal behaviour

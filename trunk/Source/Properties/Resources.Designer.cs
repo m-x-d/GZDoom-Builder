@@ -74,6 +74,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap LinesMode {
+            get {
+                object obj = ResourceManager.GetObject("LinesMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap NewMap {
             get {
                 object obj = ResourceManager.GetObject("NewMap", resourceCulture);
@@ -102,6 +109,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap SectorsMode {
+            get {
+                object obj = ResourceManager.GetObject("SectorsMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Splash2 {
             get {
                 object obj = ResourceManager.GetObject("Splash2", resourceCulture);
@@ -112,6 +126,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap Splash2small {
             get {
                 object obj = ResourceManager.GetObject("Splash2small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap VerticesMode {
+            get {
+                object obj = ResourceManager.GetObject("VerticesMode", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
