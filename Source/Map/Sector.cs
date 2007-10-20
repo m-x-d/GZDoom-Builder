@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
+		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public int FloorHeight { get { return floorheight; } }
 		public int CeilHeight { get { return ceilheight; } }

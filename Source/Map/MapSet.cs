@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Geometry;
 using SlimDX.Direct3D;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
+using System.Drawing;
 
 #endregion
 
@@ -329,13 +330,38 @@ namespace CodeImp.DoomBuilder.Map
 			return closest;
 		}
 
+		// This finds the line closest to the specified position
+		public static Linedef NearestLinedefRange(ICollection<Linedef> selection, Vector2D pos, float maxrange)
+		{
+			Linedef closest = null;
+			float distance = float.MaxValue;
+			float maxrangesq = maxrange * maxrange;
+			float d;
+
+			// Go for all linedefs in selection
+			foreach(Linedef l in selection)
+			{
+				// Calculate distance and check if closer than previous find
+				d = l.DistanceToSq(pos, true);
+				if((d <= maxrangesq) && (d < distance))
+				{
+					// This one is closer
+					closest = l;
+					distance = d;
+				}
+			}
+			
+			// Return result
+			return closest;
+		}
+
 		// This finds the vertex closest to the specified position
 		public static Vertex NearestVertex(ICollection<Vertex> selection, Vector2D pos)
 		{
 			Vertex closest = null;
 			float distance = float.MaxValue;
 			float d;
-
+			
 			// Go for all vertices in selection
 			foreach(Vertex v in selection)
 			{
@@ -352,6 +378,38 @@ namespace CodeImp.DoomBuilder.Map
 			// Return result
 			return closest;
 		}
+
+		// This finds the vertex closest to the specified position
+		public static Vertex NearestVertexSquareRange(ICollection<Vertex> selection, Vector2D pos, float maxrange)
+		{
+			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
+			Vertex closest = null;
+			float distance = float.MaxValue;
+			float d;
+
+			// Go for all vertices in selection
+			foreach(Vertex v in selection)
+			{
+				// Within range?
+				if((v.Position.x >= range.Left) && (v.Position.x <= range.Right))
+				{
+					if((v.Position.y >= range.Top) && (v.Position.y <= range.Bottom))
+					{
+						// Close than previous find?
+						d = Math.Abs(v.Position.x - pos.x) + Math.Abs(v.Position.y - pos.y);
+						if(d < distance)
+						{
+							// This one is closer
+							closest = v;
+							distance = d;
+						}
+					}
+				}
+			}
+
+			// Return result
+			return closest;
+		}
 		
 		#endregion
 
@@ -360,8 +418,14 @@ namespace CodeImp.DoomBuilder.Map
 		// This finds the line closest to the specified position
 		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
 
+		// This finds the line closest to the specified position
+		public Linedef NearestLinedefRange(Vector2D pos, float maxrange) { return MapSet.NearestLinedefRange(linedefs, pos, maxrange); }
+
 		// This finds the vertex closest to the specified position
 		public Vertex NearestVertex(Vector2D pos) { return MapSet.NearestVertex(vertices, pos); }
+
+		// This finds the vertex closest to the specified position
+		public Vertex NearestVertexSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestVertexSquareRange(vertices, pos, maxrange); }
 
 		// This performs sidedefs compression
 		public void CompressSidedefs()

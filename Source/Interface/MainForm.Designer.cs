@@ -47,6 +47,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemnorecent = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemexit = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuedit = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemverticesmode = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemlinedefsmode = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemsectorsmode = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.itemmapoptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemreloadresources = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,6 +64,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonsavemap = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonmapoptions = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonverticesmode = new System.Windows.Forms.ToolStripButton();
+			this.buttonlinedefsmode = new System.Windows.Forms.ToolStripButton();
+			this.buttonsectorsmode = new System.Windows.Forms.ToolStripButton();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.zoomlabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -220,10 +228,46 @@ namespace CodeImp.DoomBuilder.Interface
 			// menuedit
 			// 
 			this.menuedit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemverticesmode,
+            this.itemlinedefsmode,
+            this.itemsectorsmode,
+            this.toolStripSeparator6,
             this.itemmapoptions});
 			this.menuedit.Name = "menuedit";
 			this.menuedit.Size = new System.Drawing.Size(37, 20);
 			this.menuedit.Text = "Edit";
+			// 
+			// itemverticesmode
+			// 
+			this.itemverticesmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.VerticesMode;
+			this.itemverticesmode.Name = "itemverticesmode";
+			this.itemverticesmode.Size = new System.Drawing.Size(161, 22);
+			this.itemverticesmode.Tag = "verticesmode";
+			this.itemverticesmode.Text = "Vertices Mode";
+			this.itemverticesmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemlinedefsmode
+			// 
+			this.itemlinedefsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinesMode;
+			this.itemlinedefsmode.Name = "itemlinedefsmode";
+			this.itemlinedefsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemlinedefsmode.Tag = "linedefsmode";
+			this.itemlinedefsmode.Text = "Linedefs Mode";
+			this.itemlinedefsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemsectorsmode
+			// 
+			this.itemsectorsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.SectorsMode;
+			this.itemsectorsmode.Name = "itemsectorsmode";
+			this.itemsectorsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemsectorsmode.Tag = "sectorsmode";
+			this.itemsectorsmode.Text = "Sectors Mode";
+			this.itemsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(158, 6);
 			// 
 			// itemmapoptions
 			// 
@@ -292,7 +336,11 @@ namespace CodeImp.DoomBuilder.Interface
             this.buttonopenmap,
             this.buttonsavemap,
             this.toolStripSeparator3,
-            this.buttonmapoptions});
+            this.buttonmapoptions,
+            this.toolStripSeparator5,
+            this.buttonverticesmode,
+            this.buttonlinedefsmode,
+            this.buttonsectorsmode});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(731, 25);
@@ -348,6 +396,45 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonmapoptions.Tag = "mapoptions";
 			this.buttonmapoptions.Text = "Map Options";
 			this.buttonmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonverticesmode
+			// 
+			this.buttonverticesmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonverticesmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.VerticesMode;
+			this.buttonverticesmode.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonverticesmode.Name = "buttonverticesmode";
+			this.buttonverticesmode.Size = new System.Drawing.Size(23, 22);
+			this.buttonverticesmode.Tag = "verticesmode";
+			this.buttonverticesmode.Text = "Vertices Mode";
+			this.buttonverticesmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonlinedefsmode
+			// 
+			this.buttonlinedefsmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonlinedefsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinesMode;
+			this.buttonlinedefsmode.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonlinedefsmode.Name = "buttonlinedefsmode";
+			this.buttonlinedefsmode.Size = new System.Drawing.Size(23, 22);
+			this.buttonlinedefsmode.Tag = "linedefsmode";
+			this.buttonlinedefsmode.Text = "Linedefs Mode";
+			this.buttonlinedefsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonsectorsmode
+			// 
+			this.buttonsectorsmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonsectorsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.SectorsMode;
+			this.buttonsectorsmode.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonsectorsmode.Name = "buttonsectorsmode";
+			this.buttonsectorsmode.Size = new System.Drawing.Size(23, 22);
+			this.buttonsectorsmode.Tag = "sectorsmode";
+			this.buttonsectorsmode.Text = "Sectors Mode";
+			this.buttonsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// statusbar
 			// 
@@ -592,5 +679,13 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemmapoptions;
 		private System.Windows.Forms.ToolStripButton buttonmapoptions;
 		private System.Windows.Forms.ToolStripMenuItem itemreloadresources;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripButton buttonverticesmode;
+		private System.Windows.Forms.ToolStripButton buttonlinedefsmode;
+		private System.Windows.Forms.ToolStripButton buttonsectorsmode;
+		private System.Windows.Forms.ToolStripMenuItem itemverticesmode;
+		private System.Windows.Forms.ToolStripMenuItem itemlinedefsmode;
+		private System.Windows.Forms.ToolStripMenuItem itemsectorsmode;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 	}
 }

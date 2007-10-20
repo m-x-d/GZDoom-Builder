@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.Interface
 				yposlabel.Text = coords.y.ToString("####0");
 			
 			// Update status bar
-			statusbar.Update();
+			//statusbar.Update();
 		}
 
 		// This changes zoom display
@@ -276,7 +276,7 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 
 			// Update status bar
-			statusbar.Update();
+			//statusbar.Update();
 		}
 
 		// Zoom to a specified level
@@ -670,16 +670,44 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Edit Menu
 
+		// This sets the status of the vertices button
+		public void SetVerticesChecked(bool value)
+		{
+			itemverticesmode.Checked = value;
+			buttonverticesmode.Checked = value;
+		}
+
+		// This sets the status of the linedefs button
+		public void SetLinedefsChecked(bool value)
+		{
+			itemlinedefsmode.Checked = value;
+			buttonlinedefsmode.Checked = value;
+		}
+
+		// This sets the status of the sectors button
+		public void SetSectorsChecked(bool value)
+		{
+			itemsectorsmode.Checked = value;
+			buttonsectorsmode.Checked = value;
+		}
+
 		// This sets up the edit menu
 		private void UpdateEditMenu()
 		{
 			// No edit menu when no map open
-			menuedit.Enabled = (General.Map != null);
+			//menuedit.Visible = (General.Map != null);
 			
 			// Enable/disable items
+			itemmapoptions.Enabled = (General.Map != null);
+			itemverticesmode.Enabled = (General.Map != null);
+			itemlinedefsmode.Enabled = (General.Map != null);
+			itemsectorsmode.Enabled = (General.Map != null);
 			
 			// Toolbar icons
 			buttonmapoptions.Enabled = (General.Map != null);
+			buttonverticesmode.Enabled = (General.Map != null);
+			buttonlinedefsmode.Enabled = (General.Map != null);
+			buttonsectorsmode.Enabled = (General.Map != null);
 		}
 		
 		#endregion

@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// Mouse status
 		protected Vector2D mousepos;
 		protected Vector2D mousemappos;
+		protected MouseButtons mousebuttons;
 		protected bool mouseinside;
 		
 		#endregion
@@ -121,7 +122,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void ZoomIn()
 		{
 			// Zoom
-			ZoomBy(1.2f);
+			ZoomBy(1.3f);
 		}
 
 		// This zooms out
@@ -129,7 +130,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void ZoomOut()
 		{
 			// Zoom
-			ZoomBy(0.8f);
+			ZoomBy(0.7f);
 		}
 
 		// This scrolls anywhere
@@ -178,9 +179,8 @@ namespace CodeImp.DoomBuilder.Editing
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 			
-			// Determine new unprojected mouse coordinates
-			mousemappos = renderer.GetMapCoordinates(mousepos);
-			General.MainWindow.UpdateCoordinates(mousemappos);
+			// Give a new mousemove event to update coordinates
+			if(mouseinside) MouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
 		}
 
 		// This zooms to a specific level
@@ -191,9 +191,8 @@ namespace CodeImp.DoomBuilder.Editing
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 
-			// Determine new unprojected mouse coordinates
-			mousemappos = renderer.GetMapCoordinates(mousepos);
-			General.MainWindow.UpdateCoordinates(mousemappos);
+			// Give a new mousemove event to update coordinates
+			if(mouseinside) MouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
 		}
 		
 		// This zooms and scrolls to fit the map in the window
@@ -230,10 +229,9 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
-			
-			// Determine new unprojected mouse coordinates
-			mousemappos = renderer.GetMapCoordinates(mousepos);
-			General.MainWindow.UpdateCoordinates(mousemappos);
+
+			// Give a new mousemove event to update coordinates
+			if(mouseinside) MouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
 		}
 		
 		#endregion
@@ -247,6 +245,7 @@ namespace CodeImp.DoomBuilder.Editing
 			mouseinside = false;
 			mousepos = new Vector2D(float.NaN, float.NaN);
 			mousemappos = mousepos;
+			mousebuttons = MouseButtons.None;
 			
 			// Determine new unprojected mouse coordinates
 			General.MainWindow.UpdateCoordinates(mousemappos);
@@ -262,6 +261,7 @@ namespace CodeImp.DoomBuilder.Editing
 			mouseinside = true;
 			mousepos = new Vector2D(e.X, e.Y);
 			mousemappos = renderer.GetMapCoordinates(mousepos);
+			mousebuttons = e.Button;
 			
 			// Update labels in main window
 			General.MainWindow.UpdateCoordinates(mousemappos);
