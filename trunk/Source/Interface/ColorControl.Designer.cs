@@ -54,14 +54,19 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// button
 			// 
+			this.button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.button.Image = global::CodeImp.DoomBuilder.Properties.Resources.ColorPick;
-			this.button.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.button.Location = new System.Drawing.Point(322, 0);
 			this.button.Name = "button";
+			this.button.Padding = new System.Windows.Forms.Padding(0, 0, 2, 3);
 			this.button.Size = new System.Drawing.Size(26, 23);
 			this.button.TabIndex = 2;
 			this.button.UseVisualStyleBackColor = true;
 			this.button.Click += new System.EventHandler(this.button_Click);
+			this.button.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_MouseDown);
+			this.button.MouseMove += new System.Windows.Forms.MouseEventHandler(this.button_MouseMove);
+			this.button.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_MouseUp);
 			// 
 			// dialog
 			// 
