@@ -89,6 +89,29 @@ namespace CodeImp.DoomBuilder.Interface
 			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollUp"));
 			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollDown"));
 
+			// Set the colors
+			// TODO: Make this automated by using the collection
+			colorbackcolor.Color = General.Colors.Background;
+			colorvertices.Color = General.Colors.Vertices;
+			colorlinedefs.Color = General.Colors.Linedefs;
+			colorspeciallinedefs.Color = General.Colors.Actions;
+			colorsoundlinedefs.Color = General.Colors.Sounds;
+			colorhighlight.Color = General.Colors.Highlight;
+			colorselection.Color = General.Colors.Selection;
+			colorassociations.Color = General.Colors.Association;
+			colorgrid.Color = General.Colors.Grid;
+			colorgrid64.Color = General.Colors.Grid64;
+			colorcrosshair3d.Color = General.Colors.Crosshair3D;
+			colorhighlight3d.Color = General.Colors.Highlight3D;
+			colorselection3d.Color = General.Colors.Selection3D;
+			colorscriptbackground.Color = General.Colors.ScriptBackground;
+			colorlinenumbers.Color = General.Colors.LineNumbers;
+			colorplaintext.Color = General.Colors.PlainText;
+			colorcomments.Color = General.Colors.Comments;
+			colorkeywords.Color = General.Colors.Keywords;
+			colorliterals.Color = General.Colors.Literals;
+			colorconstants.Color = General.Colors.Constants;
+
 			// Done
 			allowapplycontrol = true;
 		}
@@ -265,6 +288,29 @@ namespace CodeImp.DoomBuilder.Interface
 			foreach(ListViewItem item in listactions.Items)
 				General.Actions[item.Name].SetShortcutKey((int)item.SubItems[1].Tag);
 
+			// Apply the colors
+			// TODO: Make this automated by using the collection
+			General.Colors.Background.PixelColor = colorbackcolor.Color;
+			General.Colors.Vertices.PixelColor = colorvertices.Color;
+			General.Colors.Linedefs.PixelColor = colorlinedefs.Color;
+			General.Colors.Actions.PixelColor = colorspeciallinedefs.Color;
+			General.Colors.Sounds.PixelColor = colorsoundlinedefs.Color;
+			General.Colors.Highlight.PixelColor = colorhighlight.Color;
+			General.Colors.Selection.PixelColor = colorselection.Color;
+			General.Colors.Association.PixelColor = colorassociations.Color;
+			General.Colors.Grid.PixelColor = colorgrid.Color;
+			General.Colors.Grid64.PixelColor = colorgrid64.Color;
+			General.Colors.Crosshair3D.PixelColor = colorcrosshair3d.Color;
+			General.Colors.Highlight3D.PixelColor = colorhighlight3d.Color;
+			General.Colors.Selection3D.PixelColor = colorselection3d.Color;
+			General.Colors.ScriptBackground.PixelColor = colorscriptbackground.Color;
+			General.Colors.LineNumbers.PixelColor = colorlinenumbers.Color;
+			General.Colors.PlainText.PixelColor = colorplaintext.Color;
+			General.Colors.Comments.PixelColor = colorcomments.Color;
+			General.Colors.Keywords.PixelColor = colorkeywords.Color;
+			General.Colors.Literals.PixelColor = colorliterals.Color;
+			General.Colors.Constants.PixelColor = colorconstants.Color;
+			
 			// Close
 			this.DialogResult = DialogResult.OK;
 			this.Close();
@@ -285,6 +331,7 @@ namespace CodeImp.DoomBuilder.Interface
 		// Tab changes
 		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			// Enable/disable stuff with tabs
 			if(tabs.SelectedTab != tabkeys) this.AcceptButton = apply; else this.AcceptButton = null;
 			if(tabs.SelectedTab != tabkeys) this.CancelButton = cancel; else this.CancelButton = null;
 			colorsgroup1.Visible = (tabs.SelectedTab == tabcolors);

@@ -44,11 +44,28 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		private ColorSetting Background { get { return colors["background"]; } }
-		private ColorSetting Vertex { get { return colors["vertex"]; } }
-		private ColorSetting Linedef { get { return colors["linedef"]; } }
-		private ColorSetting Highlight { get { return colors["highlight"]; } }
-		private ColorSetting Selection { get { return colors["selection"]; } }
+		public ColorSetting Background { get { return colors["background"]; } }
+		public ColorSetting Vertices { get { return colors["vertices"]; } }
+		public ColorSetting Linedefs { get { return colors["linedefs"]; } }
+		public ColorSetting Actions { get { return colors["actions"]; } }
+		public ColorSetting Sounds { get { return colors["sounds"]; } }
+		public ColorSetting Highlight { get { return colors["highlight"]; } }
+		public ColorSetting Selection { get { return colors["selection"]; } }
+		public ColorSetting Association { get { return colors["association"]; } }
+		public ColorSetting Grid { get { return colors["grid"]; } }
+		public ColorSetting Grid64 { get { return colors["grid64"]; } }
+		
+		public ColorSetting Crosshair3D { get { return colors["crosshair3d"]; } }
+		public ColorSetting Highlight3D { get { return colors["highlight3d"]; } }
+		public ColorSetting Selection3D { get { return colors["selection3d"]; } }
+
+		public ColorSetting ScriptBackground { get { return colors["scriptbackground"]; } }
+		public ColorSetting LineNumbers { get { return colors["linenumbers"]; } }
+		public ColorSetting PlainText { get { return colors["plaintext"]; } }
+		public ColorSetting Comments { get { return colors["coments"]; } }
+		public ColorSetting Keywords { get { return colors["keywords"]; } }
+		public ColorSetting Literals { get { return colors["literals"]; } }
+		public ColorSetting Constants { get { return colors["constants"]; } }
 
 		#endregion
 
@@ -85,7 +102,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(KeyValuePair<string, ColorSetting> c in collection.colors)
 			{
 				// Copy
-				colors.Add(c.Key, new ColorSetting(c.Key, c.Value.Color));
+				colors.Add(c.Key, new ColorSetting(c.Key, c.Value.PixelColor));
 			}
 
 			// We have no destructor
@@ -103,7 +120,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(KeyValuePair<string, ColorSetting> c in collection.colors)
 			{
 				// Add or update
-				colors[c.Key] = new ColorSetting(c.Key, c.Value.Color);
+				colors[c.Key] = new ColorSetting(c.Key, c.Value.PixelColor);
 			}
 		}
 		
@@ -114,7 +131,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(KeyValuePair<string, ColorSetting> c in colors)
 			{
 				// Write to configuration
-				cfg.WriteSetting("colors." + c.Key, c.Value.Color.ToInt());
+				cfg.WriteSetting("colors." + c.Key, c.Value.PixelColor.ToInt());
 			}
 		}
 		
