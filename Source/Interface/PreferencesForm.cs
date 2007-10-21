@@ -310,6 +310,7 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Colors.Keywords.PixelColor = colorkeywords.Color;
 			General.Colors.Literals.PixelColor = colorliterals.Color;
 			General.Colors.Constants.PixelColor = colorconstants.Color;
+			General.Colors.CreateAssistColors();
 			
 			// Close
 			this.DialogResult = DialogResult.OK;
