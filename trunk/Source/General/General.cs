@@ -32,6 +32,7 @@ using System.Runtime.InteropServices;
 using CodeImp.DoomBuilder.Controls;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 

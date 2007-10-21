@@ -44,6 +44,9 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Config\GameConfiguration.cs" />
+    <Compile Include="Config\ThingCategory.cs" />
+    <Compile Include="Config\ThingTypeInfo.cs" />
     <Compile Include="Controls\ActionAttribute.cs" />
     <Compile Include="Controls\KeyControl.cs" />
     <Compile Include="Data\DirectoryReader.cs" />
@@ -62,12 +65,11 @@
     <Compile Include="Controls\ActionDelegate.cs" />
     <Compile Include="Controls\Action.cs" />
     <Compile Include="Controls\ActionManager.cs" />
-    <Compile Include="General\CompilerInfo.cs" />
-    <Compile Include="General\ConfigurationInfo.cs" />
-    <Compile Include="General\GameConfigurationCache.cs" />
+    <Compile Include="Config\CompilerInfo.cs" />
+    <Compile Include="Config\ConfigurationInfo.cs" />
     <Compile Include="General\MapManager.cs" />
     <Compile Include="Controls\SpecialKeys.cs" />
-    <Compile Include="General\NodebuilderInfo.cs" />
+    <Compile Include="Config\NodebuilderInfo.cs" />
     <Compile Include="Geometry\Angle2D.cs" />
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Vector2D.cs" />
@@ -215,9 +217,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\VerticesMode.png" />
     <None Include="Resources\SectorsMode.png" />
     <None Include="Resources\LinesMode.png" />
-    <None Include="Resources\VerticesMode.png" />
     <None Include="Resources\ColorPick.png" />
     <None Include="Resources\Zoom.png" />
     <None Include="Resources\Properties.png" />

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -56,6 +57,10 @@ namespace CodeImp.DoomBuilder.Map
 		private int action;
 		private byte[] args;
 
+		// Configuration
+		private float size;
+		private PixelColor color;
+		
 		// Selections
 		private int selected;
 		
@@ -209,6 +214,12 @@ namespace CodeImp.DoomBuilder.Map
 			this.tag = tag;
 			this.action = action;
 			this.args = args;
+		}
+		
+		// This updates the settings from configuration
+		public void UpdateConfiguration()
+		{
+			// Lookup settings
 		}
 		
 		#endregion

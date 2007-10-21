@@ -58,7 +58,8 @@ float4 ps_main(PixelData pd) : COLOR
 		n = addcolor(n, tex2D(texture1samp, float2(pd.uv.x, pd.uv.y - settings.y)));
 		
 		// If any pixels nearby where found, return a blend, otherwise return nothing
-		if(n.a > 0.1f) return float4(n.rgb, n.a * settings.z); else return (float4)0;
+		//if(n.a > 0.1f) return float4(n.rgb, n.a * settings.z); else return (float4)0;
+		return float4(n.rgb, n.a * settings.z);
 	}
 	else return c;
 }

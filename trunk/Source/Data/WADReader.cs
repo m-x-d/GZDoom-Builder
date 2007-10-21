@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.Data
 			bool strifedata;
 			
 			// Determine default scale
-			defaultscale = General.Map.Configuration.ReadSetting("defaulttexturescale", 1.0f);
+			defaultscale = General.Map.Configuration.DefaultTextureScale;
 			
 			// Get number of textures
 			texturedata.Seek(0, SeekOrigin.Begin);

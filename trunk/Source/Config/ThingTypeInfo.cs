@@ -21,16 +21,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Windows.Forms;
-using System.IO;
-using System.Reflection;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Data;
+using System.IO;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 #endregion
 
-namespace CodeImp.DoomBuilder
+namespace CodeImp.DoomBuilder.Config
 {
-	internal class GameConfigurationCache
+	internal class ThingTypeInfo
 	{
 		#region ================== Constants
 
@@ -38,24 +39,19 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Variables
 
-		private int soundlinedefflags;
-
 		#endregion
 
 		#region ================== Properties
-
-		public int SoundLinedefFlags { get { return soundlinedefflags; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public GameConfigurationCache(Configuration cfg)
+		public ThingTypeInfo()
 		{
 			// Initialize
-			soundlinedefflags = cfg.ReadSetting("soundlinedefflags", 0);
-			
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}

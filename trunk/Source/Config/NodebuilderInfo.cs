@@ -29,7 +29,7 @@ using System.Windows.Forms;
 
 #endregion
 
-namespace CodeImp.DoomBuilder
+namespace CodeImp.DoomBuilder.Config
 {
 	internal class NodebuilderInfo : IComparable<NodebuilderInfo>
 	{

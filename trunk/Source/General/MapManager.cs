@@ -32,6 +32,7 @@ using System.Diagnostics;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -67,8 +68,7 @@ namespace CodeImp.DoomBuilder
 		private MapSetIO io;
 		private MapOptions options;
 		private ConfigurationInfo configinfo;
-		private Configuration config;
-		private GameConfigurationCache configsettings;
+		private GameConfiguration config;
 		private DataManager data;
 		private EditMode mode;
 		private D3DGraphics graphics;
@@ -92,8 +92,7 @@ namespace CodeImp.DoomBuilder
 		public bool IsChanged { get { return changed; } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public D3DGraphics Graphics { get { return graphics; } }
-		public Configuration Configuration { get { return config; } }
-		public GameConfigurationCache Settings { get { return configsettings; } }
+		public GameConfiguration Configuration { get { return config; } }
 		public MapSelection Selection { get { return selection; } }
 		
 		#endregion
@@ -159,7 +158,6 @@ namespace CodeImp.DoomBuilder
 		public bool InitializeNewMap(MapOptions options)
 		{
 			string tempfile;
-			string iointerface;
 			
 			// Apply settings
 			this.filetitle = "unnamed.wad";
@@ -182,9 +180,8 @@ namespace CodeImp.DoomBuilder
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
-			config = General.LoadGameConfiguration(options.ConfigFile);
-			configsettings = new GameConfigurationCache(config);
-
+			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+			
 			// Create map data
 			map = new MapSet();
 			
@@ -194,9 +191,8 @@ namespace CodeImp.DoomBuilder
 			tempwad = new WAD(tempfile);
 			
 			// Read the map from temp file
-			iointerface = config.ReadSetting("formatinterface", "");
-			General.WriteLogLine("Initializing map format interface " + iointerface + "...");
-			io = MapSetIO.Create(iointerface, tempwad, this);
+			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 
 			// Create required lumps
 			General.WriteLogLine("Creating map data structures...");
@@ -225,7 +221,6 @@ namespace CodeImp.DoomBuilder
 		{
 			WAD mapwad;
 			string tempfile;
-			string iointerface;
 			DataLocation maplocation;
 			
 			// Apply settings
@@ -249,8 +244,7 @@ namespace CodeImp.DoomBuilder
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
-			config = General.LoadGameConfiguration(options.ConfigFile);
-			configsettings = new GameConfigurationCache(config);
+			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 
 			// Create map data
 			map = new MapSet();
@@ -273,9 +267,8 @@ namespace CodeImp.DoomBuilder
 			mapwad.Dispose();
 			
 			// Read the map from temp file
-			iointerface = config.ReadSetting("formatinterface", "");
-			General.WriteLogLine("Initializing map format interface " + iointerface + "...");
-			io = MapSetIO.Create(iointerface, tempwad, this);
+			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 			General.WriteLogLine("Reading map data structures from file...");
 			map = io.Read(map, TEMP_MAP_HEADER);
 
@@ -489,7 +482,6 @@ namespace CodeImp.DoomBuilder
 			NodebuilderInfo nodebuilder;
 			string tempfile1, tempfile2;
 			bool lumpnodebuild, lumpallowempty, lumpscomplete;
-			IDictionary maplumps;
 			WAD buildwad;
 			int srcindex;
 
@@ -540,8 +532,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Go for all the map lump names
 						lumpscomplete = true;
-						maplumps = config.ReadSetting("maplumpnames", new Hashtable());
-						foreach(DictionaryEntry ml in maplumps)
+						foreach(DictionaryEntry ml in config.MapLumpNames)
 						{
 							// Read lump settings from map config
 							lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
@@ -551,7 +542,7 @@ namespace CodeImp.DoomBuilder
 							if(lumpnodebuild && !lumpallowempty)
 							{
 								// Find the lump in the source
-								if(buildwad.FindLump(ml.Key.ToString(), srcindex, srcindex + maplumps.Count + 2) == null)
+								if(buildwad.FindLump(ml.Key.ToString(), srcindex, srcindex + config.MapLumpNames.Count + 2) == null)
 								{
 									// Missing a lump!
 									lumpscomplete = false;
@@ -612,7 +603,6 @@ namespace CodeImp.DoomBuilder
 			int headerindex, insertindex, targetindex;
 			string lumpname;
 			bool lumprequired;
-			IDictionary maplumps;
 			
 			// Find the map header in target
 			headerindex = target.FindLumpIndex(mapname);
@@ -627,8 +617,7 @@ namespace CodeImp.DoomBuilder
 			insertindex = headerindex;
 
 			// Go for all the map lump names
-			maplumps = config.ReadSetting("maplumpnames", new Hashtable());
-			foreach(DictionaryEntry ml in maplumps)
+			foreach(DictionaryEntry ml in config.MapLumpNames)
 			{
 				// Read lump settings from map config
 				lumprequired = config.ReadSetting("maplumpnames." + ml.Key + ".required", false);
@@ -641,7 +630,7 @@ namespace CodeImp.DoomBuilder
 					if(lumpname == CONFIG_MAP_HEADER) lumpname = mapname;
 
 					// Check if the lump is missing at the target
-					targetindex = FindSpecificLump(target, lumpname, headerindex, mapname, maplumps);
+					targetindex = FindSpecificLump(target, lumpname, headerindex, mapname, config.MapLumpNames);
 					if(targetindex == -1)
 					{
 						// Determine target index
@@ -670,7 +659,6 @@ namespace CodeImp.DoomBuilder
 			bool lumprequired, lumpblindcopy, lumpnodebuild;
 			string lumpscript, srclumpname, tgtlumpname;
 			int srcheaderindex, tgtheaderindex, targetindex, sourceindex, lumpindex;
-			IDictionary maplumps;
 			Lump lump, newlump;
 			
 			// Find the map header in target
@@ -694,8 +682,7 @@ namespace CodeImp.DoomBuilder
 				//source.Lumps[srcindex].CopyTo(newlump);
 				
 				// Go for all the map lump names
-				maplumps = config.ReadSetting("maplumpnames", new Hashtable());
-				foreach(DictionaryEntry ml in maplumps)
+				foreach(DictionaryEntry ml in config.MapLumpNames)
 				{
 					// Read lump settings from map config
 					lumprequired = config.ReadSetting("maplumpnames." + ml.Key + ".required", false);
@@ -714,11 +701,11 @@ namespace CodeImp.DoomBuilder
 						if(tgtlumpname == CONFIG_MAP_HEADER) tgtlumpname = targetmapname;
 						
 						// Find the lump in the source
-						sourceindex = FindSpecificLump(source, srclumpname, srcheaderindex, sourcemapname, maplumps);
+						sourceindex = FindSpecificLump(source, srclumpname, srcheaderindex, sourcemapname, config.MapLumpNames);
 						if(sourceindex > -1)
 						{
 							// Remove lump at target
-							lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, maplumps);
+							lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, config.MapLumpNames);
 
 							// Determine target index
 							// When original lump was found and removed then insert at that position
@@ -887,8 +874,7 @@ namespace CodeImp.DoomBuilder
 			// Reload game configuration
 			General.WriteLogLine("Reloading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
-			config = General.LoadGameConfiguration(options.ConfigFile);
-			configsettings = new GameConfigurationCache(config);
+			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 			
 			// Reload data resources
 			General.WriteLogLine("Reloading data resources...");

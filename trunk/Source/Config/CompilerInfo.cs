@@ -28,7 +28,7 @@ using System.Diagnostics;
 
 #endregion
 
-namespace CodeImp.DoomBuilder
+namespace CodeImp.DoomBuilder.Config
 {
 	internal class CompilerInfo
 	{
