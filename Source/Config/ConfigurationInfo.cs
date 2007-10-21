@@ -27,7 +27,7 @@ using System.IO;
 
 #endregion
 
-namespace CodeImp.DoomBuilder
+namespace CodeImp.DoomBuilder.Config
 {
 	internal class ConfigurationInfo : IComparable<ConfigurationInfo>
 	{

@@ -21,47 +21,45 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Data;
+using System.IO;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Geometry
+namespace CodeImp.DoomBuilder.Config
 {
-	public struct Angle2D
+	internal class ThingCategory
 	{
 		#region ================== Constants
 
-		public const float PI = (float)Math.PI;
-		public const float PI2 = (float)Math.PI * 2f;
-		public const float PIDEG = 57.295779513082320876798154814105f;
+		#endregion
+
+		#region ================== Variables
+
+		#endregion
+
+		#region ================== Properties
+
+		#endregion
+
+		#region ================== Constructor / Disposer
+
+		// Constructor
+		public ThingCategory()
+		{
+			// Initialize
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
 
 		#endregion
 
 		#region ================== Methods
 
-		// This normalizes an angle
-		public static float Normalized(float a)
-		{
-			while(a < 0f) a += PI2;
-			while(a > PI2) a -= PI2;
-			return a;
-		}
-
-		// This returns the difference between two angles
-		public static float Difference(float a, float b)
-		{
-			float d;
-
-			// Calculate delta angle
-			d = Normalized(a) - Normalized(b);
-
-			// Make corrections for zero barrier
-			if(d < 0f) d += PI2;
-			if(d > PI) d -= PI2;
-
-			// Return result
-			return d;
-		}
-		
 		#endregion
 	}
 }

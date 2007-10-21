@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 

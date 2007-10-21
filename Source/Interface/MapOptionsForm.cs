@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -75,7 +76,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private void apply_Click(object sender, EventArgs e)
 		{
 			Configuration newcfg;
-			string oldio, newio;
 			WAD sourcewad;
 			bool conflictingname;
 			
@@ -125,9 +125,7 @@ namespace CodeImp.DoomBuilder.Interface
 				if(newcfg == null) return;
 				
 				// Check if the config uses a different IO interface
-				oldio = General.Map.Configuration.ReadSetting("formatinterface", "");
-				newio = newcfg.ReadSetting("formatinterface", "");
-				if(oldio != newio)
+				if(newcfg.ReadSetting("formatinterface", "") != General.Map.Configuration.FormatInterface)
 				{
 					// Warn the user about IO interface change
 					if(General.ShowWarningMessage("The game configuration you selected uses a different file format than your current map. Because your map was not designed for this format it may cause the map to work incorrectly in the game. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)

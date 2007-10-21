@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Read properties from stream
 				x = reader.ReadInt16();
 				y = reader.ReadInt16();
-				angle = reader.ReadInt16();		// TODO: Fix this!
+				angle = (float)(reader.ReadInt16() + 90) / Angle2D.PIDEG;
 				type = reader.ReadUInt16();
 				flags = reader.ReadUInt16();
 				
@@ -306,23 +306,19 @@ namespace CodeImp.DoomBuilder.IO
 			Dictionary<Vertex, int> vertexids = new Dictionary<Vertex,int>();
 			Dictionary<Sidedef, int> sidedefids = new Dictionary<Sidedef,int>();
 			Dictionary<Sector, int> sectorids = new Dictionary<Sector,int>();
-			IDictionary maplumps;
 			
 			// First index everything
 			foreach(Vertex v in map.Vertices) vertexids.Add(v, vertexids.Count);
 			foreach(Sidedef sd in map.Sidedefs) sidedefids.Add(sd, sidedefids.Count);
 			foreach(Sector s in map.Sectors) sectorids.Add(s, sectorids.Count);
-
-			// Read map lumps
-			maplumps = manager.Configuration.ReadSetting("maplumpnames", new Hashtable());
 			
 			// Write lumps to wad (note the backwards order because they
 			// are all inserted at position+1 when not found)
-			WriteSectors(map, position, maplumps);
-			WriteVertices(map, position, maplumps);
-			WriteSidedefs(map, position, maplumps, sectorids);
-			WriteLinedefs(map, position, maplumps, sidedefids, vertexids);
-			WriteThings(map, position, maplumps);
+			WriteSectors(map, position, manager.Configuration.MapLumpNames);
+			WriteVertices(map, position, manager.Configuration.MapLumpNames);
+			WriteSidedefs(map, position, manager.Configuration.MapLumpNames, sectorids);
+			WriteLinedefs(map, position, manager.Configuration.MapLumpNames, sidedefids, vertexids);
+			WriteThings(map, position, manager.Configuration.MapLumpNames);
 		}
 
 		// This writes the THINGS to WAD file
@@ -343,7 +339,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Write properties to stream
 				writer.Write((Int16)t.Position.x);
 				writer.Write((Int16)t.Position.y);
-				writer.Write((Int16)t.Angle);	    // TODO: Fix this!
+				writer.Write((Int16)((t.Angle * Angle2D.PIDEG) - 90));
 				writer.Write((UInt16)t.Type);
 				writer.Write((UInt16)t.Flags);
 			}
