@@ -470,11 +470,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This returns the color for a vertex
-		public PixelColor DetermineVertexColor(Vertex v)
+		public string DetermineVertexColor(Vertex v)
 		{
 			// Determine color
-			if(v.Selected > 0) return General.Colors.Selection;
-			else return General.Colors.Vertices;
+			if(v.Selected > 0) return "selection";
+			else return "vertices";
 		}
 
 		// This returns the color for a linedef
@@ -623,13 +623,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This renders a single vertex
-		public void RenderVertex(Vertex v, PixelColor c)
+		public void RenderVertex(Vertex v, string colorname)
 		{
 			// Transform vertex coordinates
 			Vector2D nv = v.Position.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw pixel here
-			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, 2, c);
+			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, 2, General.Colors.ColorByName[colorname], General.Colors.BrightColorByName[colorname], General.Colors.DarkColorByName[colorname]);
 		}
 		
 		// This renders a set of vertices

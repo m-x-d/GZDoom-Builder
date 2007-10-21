@@ -769,7 +769,7 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Update shortcut keys in menus
 				ApplyShortcutKeys();
-
+				
 				// Redraw display
 				RedrawDisplay();
 			}

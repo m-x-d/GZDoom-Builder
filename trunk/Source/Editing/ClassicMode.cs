@@ -40,6 +40,9 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		#region ================== Constants
 
+		private const float SCALE_MAX = 20f;
+		private const float SCALE_MIN = 0.01f;
+
 		#endregion
 
 		#region ================== Variables
@@ -154,6 +157,10 @@ namespace CodeImp.DoomBuilder.Editing
 			// This will be the new zoom scale
 			newscale = renderer.Scale * deltaz;
 
+			// Limit scale
+			if(newscale > SCALE_MAX) newscale = SCALE_MAX;
+			if(newscale < SCALE_MIN) newscale = SCALE_MIN;
+			
 			// Get the dimensions of the display
 			clientsize = new Vector2D(General.Map.Graphics.RenderTarget.ClientSize.Width,
 									  General.Map.Graphics.RenderTarget.ClientSize.Height);

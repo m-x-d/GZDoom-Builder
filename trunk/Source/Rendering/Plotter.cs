@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 
 		#region ================== Pixel Rendering
-
+		
 		// This clears all pixels black
 		public void Clear()
 		{
@@ -94,23 +94,60 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This draws a pixel normally
-		public void DrawVertexSolid(int x, int y, int size, PixelColor c)
+		public void DrawVertexSolid(int x, int y, int size, PixelColor c, PixelColor l, PixelColor d)
 		{
 			int xp, yp;
 			
 			// Do unchecked?
 			if((x - size >= 0) && (x + size < visiblewidth) && (y - size >= 0) && (y + size < visibleheight))
 			{
+				// Filled square
 				for(yp = y - size; yp <= y + size; yp++)
 					for(xp = x - size; xp <= x + size; xp++)
 						pixels[yp * width + xp] = c;
+
+				// Vertical edges
+				for(yp = y - size + 1; yp <= y + size - 1; yp++)
+				{
+					pixels[yp * width + (x - size)] = l;
+					pixels[yp * width + (x + size)] = d;
+				}
+
+				// Horizontal edges
+				for(xp = x - size + 1; xp <= x + size - 1; xp++)
+				{
+					pixels[(y - size) * width + xp] = l;
+					pixels[(y + size) * width + xp] = d;
+				}
+
+				// Corners
+				pixels[(y - size) * width + (x - size)] = l;
+				pixels[(y + size) * width + (x + size)] = d;
 			}
 			else
 			{
+				// Filled square
 				for(yp = y - size; yp <= y + size; yp++)
 					for(xp = x - size; xp <= x + size; xp++)
-						if((xp >= 0) && (xp < visiblewidth) && (yp >= 0) && (yp < visibleheight))
-							pixels[yp * width + xp] = c;
+						DrawPixelSolid(xp, yp, c);
+
+				// Vertical edges
+				for(yp = y - size + 1; yp <= y + size - 1; yp++)
+				{
+					DrawPixelSolid(x - size, yp, l);
+					DrawPixelSolid(x + size, yp, d);
+				}
+
+				// Horizontal edges
+				for(xp = x - size + 1; xp <= x + size - 1; xp++)
+				{
+					DrawPixelSolid(xp, y - size, l);
+					DrawPixelSolid(xp, y + size, d);
+				}
+
+				// Corners
+				DrawPixelSolid(x - size, y - size, l);
+				DrawPixelSolid(x + size, y + size, d);
 			}
 		}
 
