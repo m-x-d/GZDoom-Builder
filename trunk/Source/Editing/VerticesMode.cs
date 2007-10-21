@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// Render highlighted item
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, "highlight");
+					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
 				
 				// Render things
 				renderer.RenderThingSet(General.Map.Map.Things);
@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// Render highlighted item
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, "highlight");
+					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
 				
 				// Done
 				renderer.FinishRendering();

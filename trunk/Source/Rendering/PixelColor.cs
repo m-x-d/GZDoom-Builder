@@ -88,6 +88,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Methods
 
+		// This returns a new PixelColor with adjusted alpha
+		public PixelColor WithAlpha(byte a)
+		{
+			return new PixelColor(this, a);
+		}
+
 		// This blends two colors with respect to alpha
 		public PixelColor Blend(PixelColor a, PixelColor b)
 		{
