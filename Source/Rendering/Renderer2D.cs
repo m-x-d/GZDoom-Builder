@@ -357,12 +357,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			FlatVertex[] verts = null;
 			PixelColor[] oldcolors = null;
 			
-			// Do we need to resize the buffer?
+			// Do we need to make changes?
 			if((newnumthings > maxthings) || !preserve)
 			{
-				// Calculate new size
-				newmaxthings = newnumthings + THING_BUFFER_STEP;
-
 				// Read old things data if we want to keep it
 				if(preserve && (thingsvertices != null) && (numthings > 0))
 				{
@@ -370,14 +367,28 @@ namespace CodeImp.DoomBuilder.Rendering
 					verts = stream.ReadRange<FlatVertex>(numthings * 8);
 					thingsvertices.Unlock();
 					stream.Dispose();
-					thingsvertices.Dispose();
 					oldcolors = thingcolors;
 				}
 				
-				// Create new buffer
-				thingsvertices = new VertexBuffer(graphics.Device, newmaxthings * 8 * FlatVertex.Stride, Usage.Dynamic, VertexFormat.None, Pool.Default);
-				thingcolors = new PixelColor[newmaxthings];
-				maxthings = newmaxthings;
+				// Buffer needs to be reallocated?
+				if(newnumthings > maxthings)
+				{
+					// Calculate new size
+					newmaxthings = newnumthings + THING_BUFFER_STEP;
+					
+					// Trash old buffer
+					if(thingsvertices != null) thingsvertices.Dispose();
+					
+					// Create new buffer
+					thingsvertices = new VertexBuffer(graphics.Device, newmaxthings * 8 * FlatVertex.Stride, Usage.Dynamic, VertexFormat.None, Pool.Default);
+					thingcolors = new PixelColor[newmaxthings];
+					maxthings = newmaxthings;
+				}
+				else
+				{
+					// Buffer stays the same
+					newmaxthings = maxthings;
+				}
 				
 				// Keep old things?
 				if(preserve && (verts != null))
