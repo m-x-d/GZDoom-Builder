@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemverticesmode = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemlinedefsmode = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsectorsmode = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemthingsmode = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.itemmapoptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
@@ -68,6 +69,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonverticesmode = new System.Windows.Forms.ToolStripButton();
 			this.buttonlinedefsmode = new System.Windows.Forms.ToolStripButton();
 			this.buttonsectorsmode = new System.Windows.Forms.ToolStripButton();
+			this.buttonthingsmode = new System.Windows.Forms.ToolStripButton();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.zoomlabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -231,6 +233,7 @@ namespace CodeImp.DoomBuilder.Interface
             this.itemverticesmode,
             this.itemlinedefsmode,
             this.itemsectorsmode,
+            this.itemthingsmode,
             this.toolStripSeparator6,
             this.itemmapoptions});
 			this.menuedit.Name = "menuedit";
@@ -263,6 +266,15 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsectorsmode.Tag = "sectorsmode";
 			this.itemsectorsmode.Text = "Sectors Mode";
 			this.itemsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemthingsmode
+			// 
+			this.itemthingsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.ThingsMode;
+			this.itemthingsmode.Name = "itemthingsmode";
+			this.itemthingsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemthingsmode.Tag = "thingsmode";
+			this.itemthingsmode.Text = "Things Mode";
+			this.itemthingsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripSeparator6
 			// 
@@ -340,7 +352,8 @@ namespace CodeImp.DoomBuilder.Interface
             this.toolStripSeparator5,
             this.buttonverticesmode,
             this.buttonlinedefsmode,
-            this.buttonsectorsmode});
+            this.buttonsectorsmode,
+            this.buttonthingsmode});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(731, 25);
@@ -435,6 +448,17 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonsectorsmode.Tag = "sectorsmode";
 			this.buttonsectorsmode.Text = "Sectors Mode";
 			this.buttonsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonthingsmode
+			// 
+			this.buttonthingsmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonthingsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.ThingsMode;
+			this.buttonthingsmode.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonthingsmode.Name = "buttonthingsmode";
+			this.buttonthingsmode.Size = new System.Drawing.Size(23, 22);
+			this.buttonthingsmode.Tag = "thingsmode";
+			this.buttonthingsmode.Text = "Things Mode";
+			this.buttonthingsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// statusbar
 			// 
@@ -687,5 +711,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemlinedefsmode;
 		private System.Windows.Forms.ToolStripMenuItem itemsectorsmode;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripButton buttonthingsmode;
+		private System.Windows.Forms.ToolStripMenuItem itemthingsmode;
 	}
 }

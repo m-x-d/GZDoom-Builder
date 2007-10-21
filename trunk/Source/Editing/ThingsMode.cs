@@ -34,18 +34,18 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class VerticesMode : ClassicMode
+	internal class ThingsMode : ClassicMode
 	{
 		#region ================== Constants
 
-		protected const float VERTEX_HIGHLIGHT_RANGE = 20f;
+		protected const float THING_HIGHLIGHT_RANGE = 10f;
 
 		#endregion
 
 		#region ================== Variables
 
 		// Highlighted item
-		private Vertex highlighted;
+		private Thing highlighted;
 
 		#endregion
 
@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public VerticesMode()
+		public ThingsMode()
 		{
 		}
 
@@ -81,18 +81,18 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Engage()
 		{
 			base.Engage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(true);
+
+			// Check things button on main window
+			General.MainWindow.SetThingsChecked(true);
 		}
 
 		// Mode disengages
 		public override void Disengage()
 		{
 			base.Disengage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(false);
+
+			// Check things button on main window
+			General.MainWindow.SetThingsChecked(false);
 		}
 
 		// This redraws the display
@@ -101,66 +101,66 @@ namespace CodeImp.DoomBuilder.Editing
 			// Start with a clear display
 			if(renderer.StartRendering(true))
 			{
-				// Render things
-				renderer.SetThingsRenderOrder(false);
-				renderer.RenderThingSet(General.Map.Map.Things);
-				
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
+				// Render things
+				renderer.SetThingsRenderOrder(true);
+				renderer.RenderThingSet(General.Map.Map.Things);
+
 				// Render highlighted item
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
-				
+					renderer.RenderThing(highlighted, General.Colors.Highlight);
+
 				// Done
 				renderer.FinishRendering();
 			}
 		}
-		
+
 		// This highlights a new item
-		protected void Highlight(Vertex v)
+		protected void Highlight(Thing t)
 		{
 			// Update display
 			if(renderer.StartRendering(false))
 			{
 				// Undraw previous highlight
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
 
 				// Set new highlight
-				highlighted = v;
+				highlighted = t;
 
 				// Render highlighted item
 				if(highlighted != null)
-					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
-				
+					renderer.RenderThing(highlighted, General.Colors.Highlight);
+
 				// Done
 				renderer.FinishRendering();
 			}
 		}
-		
+
 		// Mouse moves
 		public override void MouseMove(MouseEventArgs e)
 		{
 			base.MouseMove(e);
 
 			// Find the nearest vertex within highlight range
-			Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+			//Thing t = General.Map.Map.Nearestt(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
 
 			// Highlight if not the same
-			if(v != highlighted) Highlight(v);
+			//if(t != highlighted) Highlight(v);
 		}
 
 		// Mouse leaves
 		public override void MouseLeave(EventArgs e)
 		{
 			base.MouseLeave(e);
-			
+
 			// Highlight nothing
 			Highlight(null);
 		}
-		
+
 		#endregion
 	}
 }

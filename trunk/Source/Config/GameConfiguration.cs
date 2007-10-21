@@ -46,8 +46,14 @@ namespace CodeImp.DoomBuilder.Config
 		private float defaulttexturescale;
 		private float defaultflatscale;
 		private string formatinterface;
-		private IDictionary maplumpnames;
 		private int soundlinedefflags;
+		
+		// Map lumps
+		private IDictionary maplumpnames;
+		
+		// Things
+		private List<ThingCategory> thingcategories;
+		private Dictionary<int, ThingTypeInfo> things;
 		
 		#endregion
 
@@ -57,8 +63,13 @@ namespace CodeImp.DoomBuilder.Config
 		public float DefaultTextureScale { get { return defaulttexturescale; } }
 		public float DefaultFlatScale { get { return defaultflatscale; } }
 		public string FormatInterface { get { return formatinterface; } }
-		public IDictionary MapLumpNames { get { return maplumpnames; } }
 		public int SoundLinedefFlags { get { return soundlinedefflags; } }
+		
+		// Map lumps
+		public IDictionary MapLumpNames { get { return maplumpnames; } }
+
+		// Things
+		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		
 		#endregion
 
@@ -67,16 +78,34 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		public GameConfiguration(Configuration cfg)
 		{
-			// Keep reference
+			IDictionary dic;
+			ThingCategory thingcat;
+			
+			// Initialize
 			this.cfg = cfg;
+			this.thingcategories = new List<ThingCategory>();
+			this.things = new Dictionary<int, ThingTypeInfo>();
 			
 			// Read general settings
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
 			defaultflatscale = cfg.ReadSetting("defaultflatscale", 1f);
 			formatinterface = cfg.ReadSetting("formatinterface", "");
-			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
 			soundlinedefflags = cfg.ReadSetting("soundlinedefflags", 0);
 			
+			// Get map lumps
+			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
+
+			// Get thing categories
+			dic = cfg.ReadSetting("thingtypes", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Make a category
+				thingcat = new ThingCategory(cfg, de.Key.ToString());
+
+				// Add all thing in category to the big list
+				foreach(ThingTypeInfo t in thingcat.Things) things.Add(t.Index, t);
+			}
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -94,6 +123,22 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ReadSetting(string setting, bool defaultsetting) { return cfg.ReadSetting(setting, defaultsetting); }
 		public byte ReadSetting(string setting, byte defaultsetting) { return cfg.ReadSetting(setting, defaultsetting); }
 		public IDictionary ReadSetting(string setting, IDictionary defaultsetting) { return cfg.ReadSetting(setting, defaultsetting); }
+		
+		// This gets thing information by index
+		public ThingTypeInfo GetThingInfo(int index)
+		{
+			// Index in config?
+			if(things.ContainsKey(index))
+			{
+				// Return from config
+				return things[index];
+			}
+			else
+			{
+				// Create unknown thing info
+				return new ThingTypeInfo(index);
+			}
+		}
 		
 		#endregion
 	}

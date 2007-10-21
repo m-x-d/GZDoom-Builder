@@ -35,7 +35,7 @@ float4 ps_circle(PixelData pd) : COLOR
 {
 	float4 c = tex2D(texture1samp, pd.uv);
 	float4 s = tex2D(texture1samp, pd.uv + float2(0.25f, 0.0f));
-	return lerp(c * thingcolor, float4(s.rgb, c.a), s.a);
+	return float4(lerp(c.rgb * thingcolor.rgb, s.rgb, s.a), c.a * thingcolor.a);
 }
 
 // Pixel shader for icon

@@ -244,6 +244,34 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Methods
 
 		// This returns the shortest distance from given coordinates to line
+		public float SafeDistanceToSq(Vector2D p, bool bounded)
+		{
+			Vector2D v1 = start.Position;
+			Vector2D v2 = end.Position;
+
+			// Calculate intersection offset
+			float u = ((p.x - v1.x) * (v2.x - v1.x) + (p.y - v1.y) * (v2.y - v1.y)) / lengthsq;
+
+			// Limit intersection offset to the line
+			if(bounded) if(u < lengthinv) u = lengthinv; else if(u > (1f - lengthinv)) u = 1f - lengthinv;
+
+			// Calculate intersection point
+			Vector2D i = v1 + u * (v2 - v1);
+
+			// Return distance between intersection and point
+			// which is the shortest distance to the line
+			float ldx = p.x - i.x;
+			float ldy = p.y - i.y;
+			return ldx * ldx + ldy * ldy;
+		}
+
+		// This returns the shortest distance from given coordinates to line
+		public float SafeDistanceTo(Vector2D p, bool bounded)
+		{
+			return (float)Math.Sqrt(SafeDistanceToSq(p, bounded));
+		}
+
+		// This returns the shortest distance from given coordinates to line
 		public float DistanceToSq(Vector2D p, bool bounded)
 		{
 			Vector2D v1 = start.Position;

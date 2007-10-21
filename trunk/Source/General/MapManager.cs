@@ -850,6 +850,14 @@ namespace CodeImp.DoomBuilder
 			// Change to sectors mode
 			ChangeMode(new SectorsMode());
 		}
+
+		// This switches to things mode
+		[Action(Action.THINGSMODE)]
+		public void SwitchThingsMode()
+		{
+			// Change to things mode
+			ChangeMode(new ThingsMode());
+		}
 		
 		#endregion
 		
@@ -882,7 +890,10 @@ namespace CodeImp.DoomBuilder
 			data = new DataManager();
 			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
-
+			
+			// Apply new settings to map elements
+			map.UpdateConfiguration();
+			
 			// Reset status
 			General.MainWindow.DisplayStatus(oldstatus);
 			Cursor.Current = oldcursor;

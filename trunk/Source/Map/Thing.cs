@@ -23,6 +23,8 @@ using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Config;
+using System.Drawing;
 
 #endregion
 
@@ -60,6 +62,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Configuration
 		private float size;
 		private PixelColor color;
+		private float iconoffset;
 		
 		// Selections
 		private int selected;
@@ -78,7 +81,10 @@ namespace CodeImp.DoomBuilder.Map
 		public float Angle { get { return angle; } }
 		public int Flags { get { return flags; } }
 		public int Selected { get { return selected; } set { selected = value; } }
-
+		public float Size { get { return size; } }
+		public float IconOffset { get { return iconoffset; } }
+		public PixelColor Color { get { return color; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -219,7 +225,28 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates the settings from configuration
 		public void UpdateConfiguration()
 		{
+			ThingTypeInfo ti;
+			
 			// Lookup settings
+			ti = General.Map.Configuration.GetThingInfo(type);
+
+			// Apply size
+			size = ti.Width;
+
+			// Color valid?
+			if((ti.Color >= 0) && (ti.Color < ColorCollection.NUM_THING_COLORS))
+			{
+				// Apply color
+				color = General.Colors.Colors[ti.Color + ColorCollection.THING_COLORS_OFFSET];
+			}
+			else
+			{
+				// Unknown thing color
+				color = General.Colors.Colors[ColorCollection.THING_COLORS_OFFSET];
+			}
+			
+			// Apply icon offset (arrow or dot)
+			if(ti.Arrow) iconoffset = 0f; else iconoffset = 0.25f;
 		}
 		
 		#endregion

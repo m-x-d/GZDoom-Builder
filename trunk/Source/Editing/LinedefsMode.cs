@@ -101,6 +101,10 @@ namespace CodeImp.DoomBuilder.Editing
 			// Start with a clear display
 			if(renderer.StartRendering(true))
 			{
+				// Render things
+				renderer.SetThingsRenderOrder(false);
+				renderer.RenderThingSet(General.Map.Map.Things);
+				
 				// Render lines
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 

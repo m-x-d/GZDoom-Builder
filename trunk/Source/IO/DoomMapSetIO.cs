@@ -113,6 +113,7 @@ namespace CodeImp.DoomBuilder.IO
 				t = map.CreateThing();
 				t.Update(type, new Vector3D(x, y, 0f), angle, flags, 0, 0, Thing.EMPTY_ARGS);
 				t.DetermineSector();
+				t.UpdateConfiguration();
 			}
 
 			// Done

@@ -60,6 +60,7 @@
     <Compile Include="Editing\EditMode.cs" />
     <Compile Include="Editing\LinedefsMode.cs" />
     <Compile Include="Editing\SectorsMode.cs" />
+    <Compile Include="Editing\ThingsMode.cs" />
     <Compile Include="Editing\VerticesMode.cs" />
     <Compile Include="Editing\ClassicMode.cs" />
     <Compile Include="Controls\ActionDelegate.cs" />
@@ -217,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\ThingsMode.png" />
     <None Include="Resources\VerticesMode.png" />
     <None Include="Resources\SectorsMode.png" />
     <None Include="Resources\LinesMode.png" />
