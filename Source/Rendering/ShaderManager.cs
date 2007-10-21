@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Shaders
 		private Base2DShader base2dshader;
+		private Things2DShader things2dshader;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -62,6 +63,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public bool Enabled { get { return useshaders; } }
 		public string ShaderTechnique { get { return shadertechnique; } }
 		public Base2DShader Base2D { get { return base2dshader; } }
+		public Things2DShader Things2D { get { return things2dshader; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -80,6 +82,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Initialize effects
 			base2dshader = new Base2DShader(this);
+			things2dshader = new Things2DShader(this);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -93,6 +96,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Clean up
 				base2dshader.Dispose();
+				things2dshader.Dispose();
 				
 				// Done
 				isdisposed = true;

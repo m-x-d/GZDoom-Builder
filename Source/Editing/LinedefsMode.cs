@@ -102,14 +102,14 @@ namespace CodeImp.DoomBuilder.Editing
 			if(renderer.StartRendering(true))
 			{
 				// Render lines
-				renderer.RenderLinedefSet(General.Map.Map, General.Map.Map.Linedefs);
+				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 
 				// Render highlighted item
 				if(highlighted != null)
 					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
 
 				// Render vertices
-				renderer.RenderVerticesSet(General.Map.Map, General.Map.Map.Vertices);
+				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
 				// Done
 				renderer.FinishRendering();

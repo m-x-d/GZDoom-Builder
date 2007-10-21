@@ -88,10 +88,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Create resources list
 			resources = new List<ID3DResource>();
 			
-			// Create renderers
-			renderer2d = new Renderer2D(this);
-			renderer3d = new Renderer3D(this);
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -121,6 +117,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This completes initialization after the device has started or has been reset
 		private void SetupSettings()
 		{
+			int intvalue;
+			float floatvalue;
+			
 			// Setup renderstates
 			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
 			device.SetRenderState(RenderState.Ambient, Color.White.ToArgb());
@@ -142,19 +141,25 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.Clipping, true);
 			device.SetRenderState(RenderState.CullMode, Cull.None);
 
+			// Make LOD bias hack until SlimDX has a SetSamplerState overload that accepts a float
+			floatvalue = -0.99f;
+			unsafe { General.CopyMemory(&intvalue, &floatvalue, new UIntPtr(4)); }
+
 			// Sampler settings
 			device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
 			device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
 			device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Linear);
-
+			device.SetSamplerState(0, SamplerState.MipMapLodBias, intvalue);
+			
 			// Texture addressing
 			device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
 			device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
 			device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
 
 			// First texture stage
-			device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.SelectArg1);
+			device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
 			device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
+			device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.TFactor);
 			device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
 			device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
 
@@ -162,9 +167,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetTextureStageState(1, TextureStage.ColorOperation, TextureOperation.Disable);
 			
 			// First alpha stage
-			device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.SelectArg1);
+			device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
 			device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
-
+			device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.TFactor);
+			
 			// No more further stages
 			device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Disable);
 			
@@ -236,10 +242,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Add event to cancel resize event
 			//device.DeviceResizing += new CancelEventHandler(CancelResize);
-			
-			// Reset renderers
-			renderer2d.Reset();
-			renderer3d.Reset();
+
+			// Create renderers
+			renderer2d = new Renderer2D(this);
+			renderer3d = new Renderer3D(this);
 			
 			// Initialize settings
 			SetupSettings();

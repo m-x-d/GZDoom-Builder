@@ -73,7 +73,10 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Read things
 			ReadThings(map, firstindex);
-
+			
+			// Remove unused vertices
+			map.RemoveUnusedVertices();
+			
 			// Return result;
 			return map;
 		}
