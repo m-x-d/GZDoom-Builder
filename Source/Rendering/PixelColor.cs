@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using System.Reflection;
 using System.Drawing;
+using SlimDX.Direct3D;
 
 #endregion
 
@@ -84,6 +85,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			return Color.FromArgb(a, r, g, b).ToArgb();
 		}
 
+		// To ColorValue
+		public ColorValue ToColorValue()
+		{
+			return new ColorValue((float)a * 0.00392156862745098f,
+								  (float)r * 0.00392156862745098f,
+								  (float)g * 0.00392156862745098f,
+								  (float)b * 0.00392156862745098f);
+		}
+		
 		#endregion
 
 		#region ================== Methods
