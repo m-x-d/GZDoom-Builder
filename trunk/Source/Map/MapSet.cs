@@ -433,6 +433,21 @@ namespace CodeImp.DoomBuilder.Map
 			// TODO: Make this
 		}
 		
+		// This removes unused vertices
+		public void RemoveUnusedVertices()
+		{
+			LinkedListNode<Vertex> vn, vc;
+			
+			// Go for all vertices
+			vn = vertices.First;
+			while(vn != null)
+			{
+				vc = vn;
+				vn = vc.Next;
+				if(vc.Value.Linedefs.Count == 0) vertices.Remove(vc);
+			}
+		}
+
 		#endregion
 	}
 }

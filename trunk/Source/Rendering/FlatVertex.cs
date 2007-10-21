@@ -11,7 +11,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	public struct FlatVertex
 	{
 		// Vertex format
-		public static readonly int Stride = 7 * 4;
+		public static readonly int Stride = 6 * 4;
 
 		// Members
 		public float x;

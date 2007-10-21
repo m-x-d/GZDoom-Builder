@@ -26,6 +26,7 @@ using SlimDX.Direct3D9;
 using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.IO;
+using System.IO;
 
 #endregion
 
@@ -149,7 +150,19 @@ namespace CodeImp.DoomBuilder.Data
 		// This creates the Direct3D texture
 		public void CreateTexture()
 		{
-			// TODO: Write to memory stream and read with Texture.FromStream
+			MemoryStream memstream;
+			
+			// Only do this when texture is not created yet
+			if(texture == null)
+			{
+				// Write to memory stream and read from memory
+				memstream = new MemoryStream();
+				bitmap.Save(memstream, ImageFormat.Bmp);
+				memstream.Seek(0, SeekOrigin.Begin);
+				texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length, bitmap.Size.Width, bitmap.Size.Height, 0,
+					Usage.None, Format.Unknown, Pool.Managed, Filter.Box, Filter.Box, 0);
+				memstream.Dispose();
+			}
 		}
 		
 		// This destroys the Direct3D texture

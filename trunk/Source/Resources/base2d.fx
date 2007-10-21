@@ -42,7 +42,7 @@ float4 addcolor(float4 c1, float4 c2)
 }
 
 // Pixel shader
-float4 ps20_main(PixelData pd) : COLOR
+float4 ps_main(PixelData pd) : COLOR
 {
 	// Take this pixel's color
 	float4 c = tex2D(texture1samp, pd.uv);
@@ -69,7 +69,7 @@ technique SM20
 	pass p0
 	{
 	    VertexShader = null;
-	    PixelShader = compile ps_2_0 ps20_main();
+	    PixelShader = compile ps_2_0 ps_main();
 		CullMode = None;
 	    ZEnable = false;
 	    AlphaBlendEnable = true;

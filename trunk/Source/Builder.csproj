@@ -51,6 +51,7 @@
     <Compile Include="Data\FlatImage.cs" />
     <Compile Include="Data\PatchNames.cs" />
     <Compile Include="Data\Playpal.cs" />
+    <Compile Include="Data\ResourceImage.cs" />
     <Compile Include="Data\SpriteImage.cs" />
     <Compile Include="Data\TextureImage.cs" />
     <Compile Include="Editing\EditMode.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="Rendering\Renderer2D.cs" />
     <Compile Include="Rendering\Renderer3D.cs" />
     <Compile Include="Rendering\ShaderManager.cs" />
+    <Compile Include="Rendering\Things2DShader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SlimDX, Version=1.0.2847.35002, Culture=neutral, processorArchitecture=x86" />
@@ -248,6 +250,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Actions.cfg" />
     <EmbeddedResource Include="Resources\base2d.fx" />
+    <EmbeddedResource Include="Resources\Thing2D.png" />
+    <EmbeddedResource Include="Resources\things2d.fx" />
     <None Include="Resources\Splash2.png" />
   </ItemGroup>
 </Project>
