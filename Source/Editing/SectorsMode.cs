@@ -99,7 +99,11 @@ namespace CodeImp.DoomBuilder.Editing
 			// Start with a clear display
 			if(renderer.StartRendering(true))
 			{
-				// Render stuff
+				// Render things
+				renderer.SetThingsRenderOrder(false);
+				renderer.RenderThingSet(General.Map.Map.Things);
+				
+				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 

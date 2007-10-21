@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public const string VERTICESMODE = "verticesmode";
 		public const string LINEDEFSMODE = "linedefsmode";
 		public const string SECTORSMODE = "sectorsmode";
+		public const string THINGSMODE = "thingsmode";
 		
 		#endregion
 		

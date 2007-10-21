@@ -41,7 +41,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float DARK_ADDITION = -0.2f;
 
 		// Palette size
-		private const int NUM_COLORS = 20;
+		private const int NUM_COLORS = 40;
+		public const int NUM_THING_COLORS = 20;
+		public const int THING_COLORS_OFFSET = 20;
 
 		// Colors!
 		public const int BACKGROUND = 0;
@@ -64,6 +66,26 @@ namespace CodeImp.DoomBuilder.Rendering
 		public const int KEYWORDS = 17;
 		public const int LITERALS = 18;
 		public const int CONSTANTS = 19;
+		public const int THINGCOLOR00 = 20;
+		public const int THINGCOLOR01 = 21;
+		public const int THINGCOLOR02 = 22;
+		public const int THINGCOLOR03 = 23;
+		public const int THINGCOLOR04 = 24;
+		public const int THINGCOLOR05 = 25;
+		public const int THINGCOLOR06 = 26;
+		public const int THINGCOLOR07 = 27;
+		public const int THINGCOLOR08 = 28;
+		public const int THINGCOLOR09 = 29;
+		public const int THINGCOLOR10 = 30;
+		public const int THINGCOLOR11 = 31;
+		public const int THINGCOLOR12 = 32;
+		public const int THINGCOLOR13 = 33;
+		public const int THINGCOLOR14 = 34;
+		public const int THINGCOLOR15 = 35;
+		public const int THINGCOLOR16 = 36;
+		public const int THINGCOLOR17 = 37;
+		public const int THINGCOLOR18 = 38;
+		public const int THINGCOLOR19 = 39;
 		
 		#endregion
 
@@ -121,8 +143,30 @@ namespace CodeImp.DoomBuilder.Rendering
 			for(int i = 0; i < NUM_COLORS; i++)
 			{
 				// Read color
-				colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), -1));
+				colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), 0));
 			}
+
+			// Set new colors
+			if(colors[THINGCOLOR00].ToInt() == 0) colors[THINGCOLOR00] = PixelColor.FromColor(Color.DimGray);
+			if(colors[THINGCOLOR01].ToInt() == 0) colors[THINGCOLOR01] = PixelColor.FromColor(Color.RoyalBlue);
+			if(colors[THINGCOLOR02].ToInt() == 0) colors[THINGCOLOR02] = PixelColor.FromColor(Color.ForestGreen);
+			if(colors[THINGCOLOR03].ToInt() == 0) colors[THINGCOLOR03] = PixelColor.FromColor(Color.LightSeaGreen);
+			if(colors[THINGCOLOR04].ToInt() == 0) colors[THINGCOLOR04] = PixelColor.FromColor(Color.Firebrick);
+			if(colors[THINGCOLOR05].ToInt() == 0) colors[THINGCOLOR05] = PixelColor.FromColor(Color.DarkViolet);
+			if(colors[THINGCOLOR06].ToInt() == 0) colors[THINGCOLOR06] = PixelColor.FromColor(Color.Goldenrod);
+			if(colors[THINGCOLOR07].ToInt() == 0) colors[THINGCOLOR07] = PixelColor.FromColor(Color.Silver);
+			if(colors[THINGCOLOR08].ToInt() == 0) colors[THINGCOLOR08] = PixelColor.FromColor(Color.Gray);
+			if(colors[THINGCOLOR09].ToInt() == 0) colors[THINGCOLOR09] = PixelColor.FromColor(Color.DeepSkyBlue);
+			if(colors[THINGCOLOR10].ToInt() == 0) colors[THINGCOLOR10] = PixelColor.FromColor(Color.LimeGreen);
+			if(colors[THINGCOLOR11].ToInt() == 0) colors[THINGCOLOR11] = PixelColor.FromColor(Color.PaleTurquoise);
+			if(colors[THINGCOLOR12].ToInt() == 0) colors[THINGCOLOR12] = PixelColor.FromColor(Color.Tomato);
+			if(colors[THINGCOLOR13].ToInt() == 0) colors[THINGCOLOR13] = PixelColor.FromColor(Color.Violet);
+			if(colors[THINGCOLOR14].ToInt() == 0) colors[THINGCOLOR14] = PixelColor.FromColor(Color.Yellow);
+			if(colors[THINGCOLOR15].ToInt() == 0) colors[THINGCOLOR15] = PixelColor.FromColor(Color.WhiteSmoke);
+			if(colors[THINGCOLOR16].ToInt() == 0) colors[THINGCOLOR16] = PixelColor.FromColor(Color.LightPink);
+			if(colors[THINGCOLOR17].ToInt() == 0) colors[THINGCOLOR17] = PixelColor.FromColor(Color.DarkOrange);
+			if(colors[THINGCOLOR18].ToInt() == 0) colors[THINGCOLOR18] = PixelColor.FromColor(Color.DarkKhaki);
+			if(colors[THINGCOLOR19].ToInt() == 0) colors[THINGCOLOR19] = PixelColor.FromColor(Color.DarkGoldenrod);
 			
 			// Create assist colors
 			CreateAssistColors();

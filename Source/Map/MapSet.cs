@@ -301,6 +301,14 @@ namespace CodeImp.DoomBuilder.Map
 			// Update all linedefs
 			foreach(Linedef l in linedefs) l.Update();
 		}
+
+		// This updates all structures after a
+		// configuration or settings change
+		public void UpdateConfiguration()
+		{
+			// Update all things
+			foreach(Thing t in things) t.UpdateConfiguration();
+		}
 		
 		#endregion
 
@@ -317,7 +325,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in selection)
 			{
 				// Calculate distance and check if closer than previous find
-				d = l.DistanceToSq(pos, true);
+				d = l.SafeDistanceToSq(pos, true);
 				if(d < distance)
 				{
 					// This one is closer
@@ -342,7 +350,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in selection)
 			{
 				// Calculate distance and check if closer than previous find
-				d = l.DistanceToSq(pos, true);
+				d = l.SafeDistanceToSq(pos, true);
 				if((d <= maxrangesq) && (d < distance))
 				{
 					// This one is closer
@@ -430,7 +438,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This performs sidedefs compression
 		public void CompressSidedefs()
 		{
-			// TODO: Make this
+			// TODO: Make this happen
 		}
 		
 		// This removes unused vertices

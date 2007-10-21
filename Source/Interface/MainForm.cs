@@ -691,6 +691,13 @@ namespace CodeImp.DoomBuilder.Interface
 			buttonsectorsmode.Checked = value;
 		}
 
+		// This sets the status of the things button
+		public void SetThingsChecked(bool value)
+		{
+			itemthingsmode.Checked = value;
+			buttonthingsmode.Checked = value;
+		}
+
 		// This sets up the edit menu
 		private void UpdateEditMenu()
 		{
@@ -702,12 +709,14 @@ namespace CodeImp.DoomBuilder.Interface
 			itemverticesmode.Enabled = (General.Map != null);
 			itemlinedefsmode.Enabled = (General.Map != null);
 			itemsectorsmode.Enabled = (General.Map != null);
+			itemthingsmode.Enabled = (General.Map != null);
 			
 			// Toolbar icons
 			buttonmapoptions.Enabled = (General.Map != null);
 			buttonverticesmode.Enabled = (General.Map != null);
 			buttonlinedefsmode.Enabled = (General.Map != null);
 			buttonsectorsmode.Enabled = (General.Map != null);
+			buttonthingsmode.Enabled = (General.Map != null);
 		}
 		
 		#endregion
@@ -769,6 +778,9 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Update shortcut keys in menus
 				ApplyShortcutKeys();
+
+				// Apply new settings if a map is open
+				if(General.Map != null) General.Map.Map.UpdateConfiguration();
 				
 				// Redraw display
 				RedrawDisplay();

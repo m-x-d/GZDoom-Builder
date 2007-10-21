@@ -44,9 +44,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		private const byte DOUBLESIDED_LINE_ALPHA = 130;
 		private const float FSAA_BLEND_FACTOR = 0.6f;
-		private const float THING_ARROW_SIZE = 15f;
-		private const float THING_CIRCLE_SIZE = 10f;
+		private const float THING_ARROW_SIZE = 1.5f;
+		private const float THING_ARROW_SHRINK = 2f;
+		private const float THING_CIRCLE_SIZE = 1f;
+		private const float THING_CIRCLE_SHRINK = 2f;
 		private const int THING_BUFFER_STEP = 100;
+		private const byte THINGS_BACK_ALPHA = 80;
 
 		#endregion
 
@@ -65,6 +68,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private PixelColor[] thingcolors;
 		private int numthings;
 		private int maxthings;
+		
+		// Render settings
+		private bool thingsfront;
 		
 		// Images
 		private ResourceImage thingtexture;
@@ -133,6 +139,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Start drawing
 			if(graphics.StartRendering(General.Colors.Background.ToInt()))
 			{
+				// Render things in back?
+				if(!thingsfront) PresentThings(THINGS_BACK_ALPHA);
+				
 				// Set renderstates
 				graphics.Device.SetTexture(0, tex);
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
@@ -149,44 +158,53 @@ namespace CodeImp.DoomBuilder.Rendering
 				try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, screenverts); } catch(Exception) { }
 				graphics.Shaders.Base2D.EndPass();
 				graphics.Shaders.Base2D.End();
-
-				// Do we have things to render?
-				if((numthings > 0) && (thingsvertices != null))
-				{
-					// Set renderstates
-					graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-					graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-					graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
-					graphics.Device.SetTexture(0, thingtexture.Texture);
-					graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
-					
-					// Set the vertex buffer
-					graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
-					
-					// Go for all things
-					for(int i = 0; i < numthings; i++)
-					{
-						// Set renderstates
-						graphics.Device.SetRenderState(RenderState.TextureFactor, thingcolors[i].ToInt());
-						graphics.Shaders.Things2D.SetColors(thingcolors[i]);
-						
-						// Draw the thing circle
-						graphics.Shaders.Things2D.Begin();
-						graphics.Shaders.Things2D.BeginPass(0);
-						try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, i * 8, 2); } catch(Exception) { }
-						graphics.Shaders.Things2D.EndPass();
-						
-						// Draw the thing icon
-						graphics.Shaders.Things2D.BeginPass(1);
-						try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, i * 8 + 4, 2); } catch(Exception) { }
-						graphics.Shaders.Things2D.EndPass();
-						graphics.Shaders.Things2D.End();
-					}
-				}
+				
+				// Render things in front with full alpha?
+				if(thingsfront) PresentThings(255);
 				
 				// Done
 				graphics.FinishRendering();
+			}
+		}
+
+		// This presents the things
+		private void PresentThings(byte a)
+		{
+			// Do we have things to render?
+			if((numthings > 0) && (thingsvertices != null))
+			{
+				// Set renderstates
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetTexture(0, thingtexture.Texture);
+				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
+
+				// Set the vertex buffer
+				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
+
+				// Go for all things
+				for(int i = 0; i < numthings; i++)
+				{
+					// Set renderstates
+					graphics.Device.SetRenderState(RenderState.TextureFactor, thingcolors[i].ToInt());
+					graphics.Shaders.Things2D.SetColors(thingcolors[i].WithAlpha(a));
+
+					// Draw the thing circle
+					graphics.Shaders.Things2D.Begin();
+					graphics.Shaders.Things2D.BeginPass(0);
+					try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, i * 8, 2); }
+					catch(Exception) { }
+					graphics.Shaders.Things2D.EndPass();
+
+					// Draw the thing icon
+					graphics.Shaders.Things2D.BeginPass(1);
+					try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, i * 8 + 4, 2); }
+					catch(Exception) { }
+					graphics.Shaders.Things2D.EndPass();
+					graphics.Shaders.Things2D.End();
+				}
 			}
 		}
 
@@ -411,58 +429,65 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This makes vertices for a thing
 		private void CreateThingVerts(Thing t, ref FlatVertex[] verts, int offset)
 		{
+			float circlesize;
+			float arrowsize;
+			
 			// Transform to screen coordinates
 			Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
 			
+			// Determine sizes
+			circlesize = (t.Size - THING_CIRCLE_SHRINK) * scale * THING_CIRCLE_SIZE;
+			arrowsize = (t.Size - THING_ARROW_SHRINK) * scale * THING_ARROW_SIZE;
+			
 			// Setup fixed rect for circle
-			verts[offset].x = screenpos.x - THING_CIRCLE_SIZE;
-			verts[offset].y = screenpos.y - THING_CIRCLE_SIZE;
+			verts[offset].x = screenpos.x - circlesize;
+			verts[offset].y = screenpos.y - circlesize;
 			verts[offset].w = 1f;
 			verts[offset].u = 1f / 512f;
 			verts[offset].v = 1f / 128f;
 			offset++;
-			verts[offset].x = screenpos.x + THING_CIRCLE_SIZE;
-			verts[offset].y = screenpos.y - THING_CIRCLE_SIZE;
+			verts[offset].x = screenpos.x + circlesize;
+			verts[offset].y = screenpos.y - circlesize;
 			verts[offset].w = 1f;
 			verts[offset].u = 0.25f - 1f / 512f;
 			verts[offset].v = 1f / 128f;
 			offset++;
-			verts[offset].x = screenpos.x - THING_CIRCLE_SIZE;
-			verts[offset].y = screenpos.y + THING_CIRCLE_SIZE;
+			verts[offset].x = screenpos.x - circlesize;
+			verts[offset].y = screenpos.y + circlesize;
 			verts[offset].w = 1f;
 			verts[offset].u = 1f / 512f;
 			verts[offset].v = 1f - 1f / 128f;
 			offset++;
-			verts[offset].x = screenpos.x + THING_CIRCLE_SIZE;
-			verts[offset].y = screenpos.y + THING_CIRCLE_SIZE;
+			verts[offset].x = screenpos.x + circlesize;
+			verts[offset].y = screenpos.y + circlesize;
 			verts[offset].w = 1f;
 			verts[offset].u = 0.25f - 1f / 512f;
 			verts[offset].v = 1f - 1f / 128f;
 			offset++;
 			
 			// Setup rotated rect for arrow
-			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.25f) * THING_ARROW_SIZE;
-			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.25f) * THING_ARROW_SIZE;
+			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
+			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
 			verts[offset].w = 1f;
-			verts[offset].u = 0.50f;
+			verts[offset].u = 0.50f + t.IconOffset;
 			verts[offset].v = 0f;
 			offset++;
-			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * THING_ARROW_SIZE;
-			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.25f) * THING_ARROW_SIZE;
+			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
+			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
 			verts[offset].w = 1f;
-			verts[offset].u = 0.75f;
+			verts[offset].u = 0.75f + t.IconOffset;
 			verts[offset].v = 0f;
 			offset++;
-			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.75f) * THING_ARROW_SIZE;
-			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.75f) * THING_ARROW_SIZE;
+			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
+			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
 			verts[offset].w = 1f;
-			verts[offset].u = 0.50f;
+			verts[offset].u = 0.50f + t.IconOffset;
 			verts[offset].v = 1f;
 			offset++;
-			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.75f) * THING_ARROW_SIZE;
-			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.75f) * THING_ARROW_SIZE;
+			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
+			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
 			verts[offset].w = 1f;
-			verts[offset].u = 0.75f;
+			verts[offset].u = 0.75f + t.IconOffset;
 			verts[offset].v = 1f;
 		}
 		
@@ -475,9 +500,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Determine color
 			if(t.Selected > 0) return General.Colors.Selection;
-			else return PixelColor.FromColor(Color.Tomato);
-
-			// TODO: Check against game configuration or embed color into thing
+			else return t.Color;
 		}
 
 		// This returns the color for a vertex
@@ -512,7 +535,18 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 
-		#region ================== Map Rendering
+		#region ================== Settings
+		
+		// This sets the things in front or back
+		public void SetThingsRenderOrder(bool front)
+		{
+			// Set things render order
+			this.thingsfront = front;
+		}
+
+		#endregion
+		
+		#region ================== Rendering
 
 		// This adds a thing in the things buffer for rendering
 		public void RenderThing(Thing t, PixelColor c)

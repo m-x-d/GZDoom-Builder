@@ -26,12 +26,13 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal class ThingCategory
+	internal class ThingCategory : IDisposable
 	{
 		#region ================== Constants
 
@@ -39,27 +40,127 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
+		// Things
+		private List<ThingTypeInfo> things;
+		
+		// Category properties
+		private string name;
+		private string title;
+		private bool sorted;
+
+		// Thing properties for inheritance
+		private string sprite;
+		private int color;
+		private int arrow;
+		private float width;
+		private float height;
+		private int hangs;
+		private int blocking;
+		private int errorcheck;
+
+		// Disposing
+		private bool isdisposed = false;
+		
 		#endregion
 
 		#region ================== Properties
+
+		public string Name { get { return name; } }
+		public string Title { get { return title; } }
+		public string Sprite { get { return sprite; } }
+		public bool Sorted { get { return sorted; } }
+		public int Color { get { return color; } }
+		public int Arrow { get { return arrow; } }
+		public float Width { get { return width; } }
+		public float Height { get { return height; } }
+		public int Hangs { get { return hangs; } }
+		public int Blocking { get { return blocking; } }
+		public int ErrorCheck { get { return errorcheck; } }
+		public bool IsDisposed { get { return isdisposed; } }
+		public List<ThingTypeInfo> Things { get { return things; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ThingCategory()
+		public ThingCategory(Configuration cfg, string name)
 		{
+			IDictionary dic;
+			int index;
+			
 			// Initialize
+			this.name = name;
+			this.things = new List<ThingTypeInfo>();
+			
+			// Read properties
+			this.title = cfg.ReadSetting("thingtypes." + name + ".title", "<category>");
+			this.sprite = cfg.ReadSetting("thingtypes." + name + ".sprite", "");
+			this.sorted = (cfg.ReadSetting("thingtypes." + name + ".sort", 0) != 0);
+			this.color = cfg.ReadSetting("thingtypes." + name + ".color", 0);
+			this.arrow = cfg.ReadSetting("thingtypes." + name + ".arrow", 0);
+			this.width = cfg.ReadSetting("thingtypes." + name + ".width", 16);
+			this.height = cfg.ReadSetting("thingtypes." + name + ".height", 16);
+			this.hangs = cfg.ReadSetting("thingtypes." + name + ".hangs", 0);
+			this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
+			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".errorcheck", 0);
+			
+			// Safety
+			if(this.width < 2f) this.width = 2f;
+			if(this.height < 2f) this.height = 2f;
+			
+			// Go for all items in category
+			dic = cfg.ReadSetting("thingtypes." + name, new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Check if the item key is numeric
+				if(int.TryParse(de.Key.ToString(), NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out index))
+				{
+					// Check if the item value is a structure
+					if(de.Value is IDictionary)
+					{
+						// Create this thing
+						things.Add(new ThingTypeInfo(this, index, cfg));
+					}
+					// Check if the item value is a string
+					else if(de.Value is string)
+					{
+						// Interpret this as the title
+						things.Add(new ThingTypeInfo(this, index, de.Value.ToString()));
+					}
+				}
+			}
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
+		// Disposer
+		public void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Clean up
+				things = null;
+
+				// Done
+				isdisposed = true;
+			}
+		}
+		
 		#endregion
 
 		#region ================== Methods
 
+		// This adds a thing to the category
+		public void AddThing(ThingTypeInfo t)
+		{
+			// Add
+			things.Add(t);
+		}
+		
 		#endregion
 	}
 }
+
