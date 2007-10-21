@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			for(int i = 0; i < NUM_COLORS; i++)
 			{
 				// Get original color
-				o = ColorValue.FromColor(Color.FromArgb(colors[i].ToInt()));
+				o = colors[i].ToColorValue();
 
 				// Create brighter color
 				c.Red = Saturate(o.Red * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);

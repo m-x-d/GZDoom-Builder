@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void SetColors(PixelColor thing)
 		{
 			// Set settings
-			if(manager.Enabled) effect.SetValue(thingcolor, ColorValue.FromColor(Color.FromArgb(thing.ToInt())));
+			if(manager.Enabled) effect.SetValue(thingcolor, thing.ToColorValue());
 		}
 
 		#endregion
