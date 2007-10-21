@@ -34,56 +34,76 @@ namespace CodeImp.DoomBuilder.Rendering
 	{
 		#region ================== Constants
 
+		// Assist color creation
 		private const float BRIGHT_MULTIPLIER = 1.0f;
 		private const float BRIGHT_ADDITION = 0.4f;
 		private const float DARK_MULTIPLIER = 0.9f;
 		private const float DARK_ADDITION = -0.2f;
 
+		// Palette size
+		private const int NUM_COLORS = 20;
+
+		// Colors!
+		public const int BACKGROUND = 0;
+		public const int VERTICES = 1;
+		public const int LINEDEFS = 2;
+		public const int ACTIONS = 3;
+		public const int SOUNDS = 4;
+		public const int HIGHLIGHT = 5;
+		public const int SELECTION = 6;
+		public const int ASSOCIATION = 7;
+		public const int GRID = 8;
+		public const int GRID64 = 9;
+		public const int CROSSHAIR3D = 10;
+		public const int HIGHLIGHT3D = 11;
+		public const int SELECTION3D = 12;
+		public const int SCRIPTBACKGROUND = 13;
+		public const int LINENUMBERS = 14;
+		public const int PLAINTEXT = 15;
+		public const int COMMENTS = 16;
+		public const int KEYWORDS = 17;
+		public const int LITERALS = 18;
+		public const int CONSTANTS = 19;
+		
 		#endregion
 
 		#region ================== Variables
 
 		// Colors
-		private Dictionary<string, ColorSetting> colors;
-		private Dictionary<string, ColorSetting> brightcolors;
-		private Dictionary<string, ColorSetting> darkcolors;
+		private PixelColor[] colors;
+		private PixelColor[] brightcolors;
+		private PixelColor[] darkcolors;
 		
 		#endregion
 
 		#region ================== Properties
 
-		public Dictionary<string, ColorSetting> ColorByName { get { return colors; } }
-		public Dictionary<string, ColorSetting> BrightColorByName { get { return brightcolors; } }
-		public Dictionary<string, ColorSetting> DarkColorByName { get { return darkcolors; } }
+		public PixelColor[] Colors { get { return colors; } }
+		public PixelColor[] BrightColors { get { return brightcolors; } }
+		public PixelColor[] DarkColors { get { return darkcolors; } }
 		
-		public ColorSetting Background { get { return colors["background"]; } }
-		public ColorSetting Vertices { get { return colors["vertices"]; } }
-		public ColorSetting VerticesBright { get { return brightcolors["vertices"]; } }
-		public ColorSetting VerticesDark { get { return darkcolors["vertices"]; } }
-		public ColorSetting Linedefs { get { return colors["linedefs"]; } }
-		public ColorSetting Actions { get { return colors["actions"]; } }
-		public ColorSetting Sounds { get { return colors["sounds"]; } }
-		public ColorSetting Highlight { get { return colors["highlight"]; } }
-		public ColorSetting HighlightBright { get { return brightcolors["highlight"]; } }
-		public ColorSetting HighlightDark { get { return darkcolors["highlight"]; } }
-		public ColorSetting Selection { get { return colors["selection"]; } }
-		public ColorSetting SelectionBright { get { return brightcolors["selection"]; } }
-		public ColorSetting SelectionDark { get { return darkcolors["selection"]; } }
-		public ColorSetting Association { get { return colors["association"]; } }
-		public ColorSetting Grid { get { return colors["grid"]; } }
-		public ColorSetting Grid64 { get { return colors["grid64"]; } }
-		
-		public ColorSetting Crosshair3D { get { return colors["crosshair3d"]; } }
-		public ColorSetting Highlight3D { get { return colors["highlight3d"]; } }
-		public ColorSetting Selection3D { get { return colors["selection3d"]; } }
+		public PixelColor Background { get { return colors[BACKGROUND]; } set { colors[BACKGROUND] = value; } }
+		public PixelColor Vertices { get { return colors[VERTICES]; } set { colors[VERTICES] = value; } }
+		public PixelColor Linedefs { get { return colors[LINEDEFS]; } set { colors[LINEDEFS] = value; } }
+		public PixelColor Actions { get { return colors[ACTIONS]; } set { colors[ACTIONS] = value; } }
+		public PixelColor Sounds { get { return colors[SOUNDS]; } set { colors[SOUNDS] = value; } }
+		public PixelColor Highlight { get { return colors[HIGHLIGHT]; } set { colors[HIGHLIGHT] = value; } }
+		public PixelColor Selection { get { return colors[SELECTION]; } set { colors[SELECTION] = value; } }
+		public PixelColor Association { get { return colors[ASSOCIATION]; } set { colors[ASSOCIATION] = value; } }
+		public PixelColor Grid { get { return colors[GRID]; } set { colors[GRID] = value; } }
+		public PixelColor Grid64 { get { return colors[GRID64]; } set { colors[GRID64] = value; } }
 
-		public ColorSetting ScriptBackground { get { return colors["scriptbackground"]; } }
-		public ColorSetting LineNumbers { get { return colors["linenumbers"]; } }
-		public ColorSetting PlainText { get { return colors["plaintext"]; } }
-		public ColorSetting Comments { get { return colors["coments"]; } }
-		public ColorSetting Keywords { get { return colors["keywords"]; } }
-		public ColorSetting Literals { get { return colors["literals"]; } }
-		public ColorSetting Constants { get { return colors["constants"]; } }
+		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } set { colors[CROSSHAIR3D] = value; } }
+		public PixelColor Highlight3D { get { return colors[HIGHLIGHT3D]; } set { colors[HIGHLIGHT3D] = value; } }
+		public PixelColor Selection3D { get { return colors[SELECTION3D]; } set { colors[SELECTION3D] = value; } }
+
+		public PixelColor ScriptBackground { get { return colors[SCRIPTBACKGROUND]; } set { colors[SCRIPTBACKGROUND] = value; } }
+		public PixelColor LineNumbers { get { return colors[LINENUMBERS]; } set { colors[LINENUMBERS] = value; } }
+		public PixelColor PlainText { get { return colors[PLAINTEXT]; } set { colors[PLAINTEXT] = value; } }
+		public PixelColor Comments { get { return colors[COMMENTS]; } set { colors[COMMENTS] = value; } }
+		public PixelColor Keywords { get { return colors[KEYWORDS]; } set { colors[KEYWORDS] = value; } }
+		public PixelColor Literals { get { return colors[LITERALS]; } set { colors[LITERALS] = value; } }
+		public PixelColor Constants { get { return colors[CONSTANTS]; } set { colors[CONSTANTS] = value; } }
 
 		#endregion
 
@@ -92,22 +112,18 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Constructor for settings from configuration
 		public ColorCollection(Configuration cfg)
 		{
-			IDictionary cs;
-			
 			// Initialize
-			colors = new Dictionary<string, ColorSetting>();
-			brightcolors = new Dictionary<string, ColorSetting>();
-			darkcolors = new Dictionary<string, ColorSetting>();
+			colors = new PixelColor[NUM_COLORS];
+			brightcolors = new PixelColor[NUM_COLORS];
+			darkcolors = new PixelColor[NUM_COLORS];
 			
 			// Read all colors from config
-			cs = cfg.ReadSetting("colors", new Hashtable());
-			foreach(DictionaryEntry c in cs)
+			for(int i = 0; i < NUM_COLORS; i++)
 			{
-				// Add color
-				if(c.Value is int)
-					colors.Add(c.Key.ToString(), new ColorSetting(c.Key.ToString(), PixelColor.FromInt((int)c.Value)));
+				// Read color
+				colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), -1));
 			}
-
+			
 			// Create assist colors
 			CreateAssistColors();
 			
@@ -119,15 +135,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		public ColorCollection(ColorCollection collection)
 		{
 			// Initialize
-			colors = new Dictionary<string, ColorSetting>();
+			colors = new PixelColor[NUM_COLORS];
+			brightcolors = new PixelColor[NUM_COLORS];
+			darkcolors = new PixelColor[NUM_COLORS];
 
-			// Go for all elements in the original collection
-			foreach(KeyValuePair<string, ColorSetting> c in collection.colors)
-			{
-				// Copy
-				colors.Add(c.Key, new ColorSetting(c.Key, c.Value.PixelColor));
-			}
-
+			// Copy all colors
+			for(int i = 0; i < NUM_COLORS; i++)
+				colors[i] = collection.colors[i];
+			
+			// Create assist colors
+			CreateAssistColors();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -149,34 +167,31 @@ namespace CodeImp.DoomBuilder.Rendering
 			ColorValue c = new ColorValue(1f, 0f, 0f, 0f);
 			
 			// Go for all colors
-			foreach(KeyValuePair<string, ColorSetting> cc in colors)
+			for(int i = 0; i < NUM_COLORS; i++)
 			{
 				// Get original color
-				o = ColorValue.FromColor(cc.Value.Color);
+				o = ColorValue.FromColor(Color.FromArgb(colors[i].ToInt()));
 
 				// Create brighter color
 				c.Red = Saturate(o.Red * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
 				c.Green = Saturate(o.Green * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
 				c.Blue = Saturate(o.Blue * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
-				brightcolors[cc.Key] = new ColorSetting(cc.Key, PixelColor.FromInt(c.ToArgb()));
+				brightcolors[i] = PixelColor.FromInt(c.ToArgb());
 
 				// Create darker color
 				c.Red = Saturate(o.Red * DARK_MULTIPLIER + DARK_ADDITION);
 				c.Green = Saturate(o.Green * DARK_MULTIPLIER + DARK_ADDITION);
 				c.Blue = Saturate(o.Blue * DARK_MULTIPLIER + DARK_ADDITION);
-				darkcolors[cc.Key] = new ColorSetting(cc.Key, PixelColor.FromInt(c.ToArgb()));
+				darkcolors[i] = PixelColor.FromInt(c.ToArgb());
 			}
 		}
 		
 		// This applies colors to this collection
 		public void Apply(ColorCollection collection)
 		{
-			// Go for all elements in the original collection
-			foreach(KeyValuePair<string, ColorSetting> c in collection.colors)
-			{
-				// Add or update
-				colors[c.Key] = new ColorSetting(c.Key, c.Value.PixelColor);
-			}
+			// Copy all colors
+			for(int i = 0; i < NUM_COLORS; i++)
+				colors[i] = collection.colors[i];
 
 			// Rebuild assist colors
 			CreateAssistColors();
@@ -185,11 +200,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This saves colors to configuration
 		public void SaveColors(Configuration cfg)
 		{
-			// Go for all elements in the original collection
-			foreach(KeyValuePair<string, ColorSetting> c in colors)
+			// Write all colors to config
+			for(int i = 0; i < NUM_COLORS; i++)
 			{
-				// Write to configuration
-				cfg.WriteSetting("colors." + c.Key, c.Value.PixelColor.ToInt());
+				// Write color
+				cfg.WriteSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), colors[i].ToInt());
 			}
 		}
 		

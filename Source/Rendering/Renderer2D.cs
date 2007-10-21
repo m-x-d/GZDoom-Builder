@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void Present()
 		{
 			// Start drawing
-			if(graphics.StartRendering(General.Colors.Background.PixelColor.ToInt()))
+			if(graphics.StartRendering(General.Colors.Background.ToInt()))
 			{
 				// Set renderstates
 				graphics.Device.SetTexture(0, tex);
@@ -470,11 +470,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This returns the color for a vertex
-		public string DetermineVertexColor(Vertex v)
+		public int DetermineVertexColor(Vertex v)
 		{
 			// Determine color
-			if(v.Selected > 0) return "selection";
-			else return "vertices";
+			if(v.Selected > 0) return ColorCollection.SELECTION;
+			else return ColorCollection.VERTICES;
 		}
 
 		// This returns the color for a linedef
@@ -623,13 +623,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This renders a single vertex
-		public void RenderVertex(Vertex v, string colorname)
+		public void RenderVertex(Vertex v, int colorindex)
 		{
 			// Transform vertex coordinates
 			Vector2D nv = v.Position.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw pixel here
-			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, 2, General.Colors.ColorByName[colorname], General.Colors.BrightColorByName[colorname], General.Colors.DarkColorByName[colorname]);
+			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, 2, General.Colors.Colors[colorindex], General.Colors.BrightColors[colorindex], General.Colors.DarkColors[colorindex]);
 		}
 		
 		// This renders a set of vertices

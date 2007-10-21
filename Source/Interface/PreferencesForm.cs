@@ -290,26 +290,26 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Apply the colors
 			// TODO: Make this automated by using the collection
-			General.Colors.Background.PixelColor = colorbackcolor.Color;
-			General.Colors.Vertices.PixelColor = colorvertices.Color;
-			General.Colors.Linedefs.PixelColor = colorlinedefs.Color;
-			General.Colors.Actions.PixelColor = colorspeciallinedefs.Color;
-			General.Colors.Sounds.PixelColor = colorsoundlinedefs.Color;
-			General.Colors.Highlight.PixelColor = colorhighlight.Color;
-			General.Colors.Selection.PixelColor = colorselection.Color;
-			General.Colors.Association.PixelColor = colorassociations.Color;
-			General.Colors.Grid.PixelColor = colorgrid.Color;
-			General.Colors.Grid64.PixelColor = colorgrid64.Color;
-			General.Colors.Crosshair3D.PixelColor = colorcrosshair3d.Color;
-			General.Colors.Highlight3D.PixelColor = colorhighlight3d.Color;
-			General.Colors.Selection3D.PixelColor = colorselection3d.Color;
-			General.Colors.ScriptBackground.PixelColor = colorscriptbackground.Color;
-			General.Colors.LineNumbers.PixelColor = colorlinenumbers.Color;
-			General.Colors.PlainText.PixelColor = colorplaintext.Color;
-			General.Colors.Comments.PixelColor = colorcomments.Color;
-			General.Colors.Keywords.PixelColor = colorkeywords.Color;
-			General.Colors.Literals.PixelColor = colorliterals.Color;
-			General.Colors.Constants.PixelColor = colorconstants.Color;
+			General.Colors.Background = colorbackcolor.Color;
+			General.Colors.Vertices = colorvertices.Color;
+			General.Colors.Linedefs = colorlinedefs.Color;
+			General.Colors.Actions = colorspeciallinedefs.Color;
+			General.Colors.Sounds = colorsoundlinedefs.Color;
+			General.Colors.Highlight = colorhighlight.Color;
+			General.Colors.Selection = colorselection.Color;
+			General.Colors.Association = colorassociations.Color;
+			General.Colors.Grid = colorgrid.Color;
+			General.Colors.Grid64 = colorgrid64.Color;
+			General.Colors.Crosshair3D = colorcrosshair3d.Color;
+			General.Colors.Highlight3D = colorhighlight3d.Color;
+			General.Colors.Selection3D = colorselection3d.Color;
+			General.Colors.ScriptBackground = colorscriptbackground.Color;
+			General.Colors.LineNumbers = colorlinenumbers.Color;
+			General.Colors.PlainText = colorplaintext.Color;
+			General.Colors.Comments = colorcomments.Color;
+			General.Colors.Keywords = colorkeywords.Color;
+			General.Colors.Literals = colorliterals.Color;
+			General.Colors.Constants = colorconstants.Color;
 			General.Colors.CreateAssistColors();
 			
 			// Close
