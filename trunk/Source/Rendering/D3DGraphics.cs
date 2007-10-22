@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// First texture stage
 			device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
 			device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
-			device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.TFactor);
+			device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.Diffuse);
 			device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
 			device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
 
@@ -169,7 +169,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// First alpha stage
 			device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
 			device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
-			device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.TFactor);
+			device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.Diffuse);
 			
 			// No more further stages
 			device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Disable);
