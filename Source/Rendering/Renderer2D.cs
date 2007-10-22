@@ -71,7 +71,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Render settings
 		private bool thingsfront;
-		
+		private int vertexsize;
+
 		// Images
 		private ResourceImage thingtexture;
 		
@@ -140,7 +141,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(graphics.StartRendering(General.Colors.Background.ToInt()))
 			{
 				// Render things in back?
-				if(!thingsfront) PresentThings(THINGS_BACK_ALPHA);
+				if(!thingsfront) PresentThings();
 				
 				// Set renderstates
 				graphics.Device.SetTexture(0, tex);
@@ -148,7 +149,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Shaders.Base2D.Texture1 = tex;
 				graphics.Shaders.Base2D.SetSettings(1f / pwidth, 1f / pheight, FSAA_BLEND_FACTOR);
 				
@@ -159,8 +159,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Base2D.EndPass();
 				graphics.Shaders.Base2D.End();
 				
-				// Render things in front with full alpha?
-				if(thingsfront) PresentThings(255);
+				// Render things in front?
+				if(thingsfront) PresentThings();
 				
 				// Done
 				graphics.FinishRendering();
@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This presents the things
-		private void PresentThings(byte a)
+		private void PresentThings()
 		{
 			// Do we have things to render?
 			if((numthings > 0) && (thingsvertices != null))
@@ -184,27 +184,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Set the vertex buffer
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
 
-				// Go for all things
-				for(int i = 0; i < numthings; i++)
-				{
-					// Set renderstates
-					graphics.Device.SetRenderState(RenderState.TextureFactor, thingcolors[i].ToInt());
-					graphics.Shaders.Things2D.SetColors(thingcolors[i].WithAlpha(a));
-
-					// Draw the thing circle
-					graphics.Shaders.Things2D.Begin();
-					graphics.Shaders.Things2D.BeginPass(0);
-					try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, i * 8, 2); }
-					catch(Exception) { }
-					graphics.Shaders.Things2D.EndPass();
-
-					// Draw the thing icon
-					graphics.Shaders.Things2D.BeginPass(1);
-					try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, i * 8 + 4, 2); }
-					catch(Exception) { }
-					graphics.Shaders.Things2D.EndPass();
-					graphics.Shaders.Things2D.End();
-				}
+				// Draw the thing circle
+				graphics.Shaders.Things2D.Begin();
+				graphics.Shaders.Things2D.BeginPass(0);
+				try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, 4 * numthings); } catch(Exception) { }
+				graphics.Shaders.Things2D.EndPass();
+				graphics.Shaders.Things2D.End();
 			}
 		}
 
@@ -263,21 +248,25 @@ namespace CodeImp.DoomBuilder.Rendering
 			screenverts[0].x = 0.5f;
 			screenverts[0].y = 0.5f;
 			screenverts[0].w = 1f;
+			screenverts[0].c = -1;
 			screenverts[0].u = 1f / pwidth;
 			screenverts[0].v = 1f / pheight;
 			screenverts[1].x = pwidth - 1.5f;
 			screenverts[1].y = 0.5f;
 			screenverts[1].w = 1f;
+			screenverts[1].c = -1;
 			screenverts[1].u = 1f - 1f / pwidth;
 			screenverts[1].v = 1f / pheight;
 			screenverts[2].x = 0.5f;
 			screenverts[2].y = pheight - 1.5f;
+			screenverts[2].c = -1;
 			screenverts[2].w = 1f;
 			screenverts[2].u = 1f / pwidth;
 			screenverts[2].v = 1f - 1f / pheight;
 			screenverts[3].x = pwidth - 1.5f;
 			screenverts[3].y = pheight - 1.5f;
 			screenverts[3].w = 1f;
+			screenverts[3].c = -1;
 			screenverts[3].u = 1f - 1f / pwidth;
 			screenverts[3].v = 1f - 1f / pheight;
 		}
@@ -355,6 +344,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			translatex = -offsetx + (width * 0.5f) * scaleinv;
 			translatey = -offsety - (height * 0.5f) * scaleinv;
 			linenormalsize = 10f * scaleinv;
+			vertexsize = (int)(1.7f * scale + 0.5f);
+			if(vertexsize < 0) vertexsize = 0;
+			if(vertexsize > 4) vertexsize = 4;
 		}
 		
 		// This unprojects mouse coordinates into map coordinates
@@ -381,8 +373,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Read old things data if we want to keep it
 				if(preserve && (thingsvertices != null) && (numthings > 0))
 				{
-					stream = thingsvertices.Lock(0, numthings * 8 * FlatVertex.Stride, LockFlags.ReadOnly);
-					verts = stream.ReadRange<FlatVertex>(numthings * 8);
+					stream = thingsvertices.Lock(0, numthings * 12 * FlatVertex.Stride, LockFlags.ReadOnly | LockFlags.NoSystemLock);
+					verts = stream.ReadRange<FlatVertex>(numthings * 12);
 					thingsvertices.Unlock();
 					stream.Dispose();
 					oldcolors = thingcolors;
@@ -398,7 +390,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(thingsvertices != null) thingsvertices.Dispose();
 					
 					// Create new buffer
-					thingsvertices = new VertexBuffer(graphics.Device, newmaxthings * 8 * FlatVertex.Stride, Usage.Dynamic, VertexFormat.None, Pool.Default);
+					thingsvertices = new VertexBuffer(graphics.Device, newmaxthings * 12 * FlatVertex.Stride, Usage.Dynamic, VertexFormat.None, Pool.Default);
 					thingcolors = new PixelColor[newmaxthings];
 					maxthings = newmaxthings;
 				}
@@ -412,7 +404,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(preserve && (verts != null))
 				{
 					// Write old things into new buffer
-					stream = thingsvertices.Lock(0, maxthings * 8 * FlatVertex.Stride, LockFlags.Discard);
+					stream = thingsvertices.Lock(0, maxthings * 12 * FlatVertex.Stride, LockFlags.Discard | LockFlags.NoSystemLock);
 					stream.WriteRange<FlatVertex>(verts);
 					thingsvertices.Unlock();
 					stream.Dispose();
@@ -427,10 +419,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This makes vertices for a thing
-		private void CreateThingVerts(Thing t, ref FlatVertex[] verts, int offset)
+		// Returns false when not on the screen
+		private bool CreateThingVerts(Thing t, ref FlatVertex[] verts, int offset, PixelColor c)
 		{
 			float circlesize;
 			float arrowsize;
+			int color;
 			
 			// Transform to screen coordinates
 			Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
@@ -439,56 +433,88 @@ namespace CodeImp.DoomBuilder.Rendering
 			circlesize = (t.Size - THING_CIRCLE_SHRINK) * scale * THING_CIRCLE_SIZE;
 			arrowsize = (t.Size - THING_ARROW_SHRINK) * scale * THING_ARROW_SIZE;
 			
-			// Setup fixed rect for circle
-			verts[offset].x = screenpos.x - circlesize;
-			verts[offset].y = screenpos.y - circlesize;
-			verts[offset].w = 1f;
-			verts[offset].u = 1f / 512f;
-			verts[offset].v = 1f / 128f;
-			offset++;
-			verts[offset].x = screenpos.x + circlesize;
-			verts[offset].y = screenpos.y - circlesize;
-			verts[offset].w = 1f;
-			verts[offset].u = 0.25f - 1f / 512f;
-			verts[offset].v = 1f / 128f;
-			offset++;
-			verts[offset].x = screenpos.x - circlesize;
-			verts[offset].y = screenpos.y + circlesize;
-			verts[offset].w = 1f;
-			verts[offset].u = 1f / 512f;
-			verts[offset].v = 1f - 1f / 128f;
-			offset++;
-			verts[offset].x = screenpos.x + circlesize;
-			verts[offset].y = screenpos.y + circlesize;
-			verts[offset].w = 1f;
-			verts[offset].u = 0.25f - 1f / 512f;
-			verts[offset].v = 1f - 1f / 128f;
-			offset++;
-			
-			// Setup rotated rect for arrow
-			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
-			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
-			verts[offset].w = 1f;
-			verts[offset].u = 0.50f + t.IconOffset;
-			verts[offset].v = 0f;
-			offset++;
-			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
-			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
-			verts[offset].w = 1f;
-			verts[offset].u = 0.75f + t.IconOffset;
-			verts[offset].v = 0f;
-			offset++;
-			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
-			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
-			verts[offset].w = 1f;
-			verts[offset].u = 0.50f + t.IconOffset;
-			verts[offset].v = 1f;
-			offset++;
-			verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
-			verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
-			verts[offset].w = 1f;
-			verts[offset].u = 0.75f + t.IconOffset;
-			verts[offset].v = 1f;
+			// Check if the thing is actually on screen
+			if(((screenpos.x + circlesize) > 0.0f) && ((screenpos.x - circlesize) < (float)width) &&
+				((screenpos.y + circlesize) > 0.0f) && ((screenpos.x - circlesize) < (float)height))
+			{
+				// Determine color and alpha
+				if(thingsfront) color = c.ToInt(); else color = c.WithAlpha(THINGS_BACK_ALPHA).ToInt();
+
+				// Setup fixed rect for circle
+				verts[offset].x = screenpos.x - circlesize;
+				verts[offset].y = screenpos.y - circlesize;
+				verts[offset].w = 1f;
+				verts[offset].c = color;
+				verts[offset].u = 1f / 512f;
+				verts[offset].v = 1f / 128f;
+				offset++;
+				verts[offset].x = screenpos.x + circlesize;
+				verts[offset].y = screenpos.y - circlesize;
+				verts[offset].w = 1f;
+				verts[offset].c = color;
+				verts[offset].u = 0.25f - 1f / 512f;
+				verts[offset].v = 1f / 128f;
+				offset++;
+				verts[offset].x = screenpos.x - circlesize;
+				verts[offset].y = screenpos.y + circlesize;
+				verts[offset].w = 1f;
+				verts[offset].c = color;
+				verts[offset].u = 1f / 512f;
+				verts[offset].v = 1f - 1f / 128f;
+				offset++;
+				verts[offset] = verts[offset - 2];
+				offset++;
+				verts[offset] = verts[offset - 2];
+				offset++;
+				verts[offset].x = screenpos.x + circlesize;
+				verts[offset].y = screenpos.y + circlesize;
+				verts[offset].w = 1f;
+				verts[offset].c = color;
+				verts[offset].u = 0.25f - 1f / 512f;
+				verts[offset].v = 1f - 1f / 128f;
+				offset++;
+
+				// Setup rotated rect for arrow
+				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
+				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
+				verts[offset].w = 1f;
+				verts[offset].c = -1;
+				verts[offset].u = 0.50f + t.IconOffset;
+				verts[offset].v = 0f;
+				offset++;
+				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
+				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
+				verts[offset].w = 1f;
+				verts[offset].c = -1;
+				verts[offset].u = 0.75f + t.IconOffset;
+				verts[offset].v = 0f;
+				offset++;
+				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
+				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
+				verts[offset].w = 1f;
+				verts[offset].c = -1;
+				verts[offset].u = 0.50f + t.IconOffset;
+				verts[offset].v = 1f;
+				offset++;
+				verts[offset] = verts[offset - 2];
+				offset++;
+				verts[offset] = verts[offset - 2];
+				offset++;
+				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
+				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
+				verts[offset].w = 1f;
+				verts[offset].c = -1;
+				verts[offset].u = 0.75f + t.IconOffset;
+				verts[offset].v = 1f;
+
+				// Done
+				return true;
+			}
+			else
+			{
+				// Not on screen
+				return false;
+			}
 		}
 		
 		#endregion
@@ -551,35 +577,32 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This adds a thing in the things buffer for rendering
 		public void RenderThing(Thing t, PixelColor c)
 		{
-			FlatVertex[] verts = new FlatVertex[8];
+			FlatVertex[] verts = new FlatVertex[12];
 			DataStream stream;
 
-			// TODO: Check if the thing is actually on screen
+			// Create vertices
+			if(CreateThingVerts(t, ref verts, 0, c))
+			{
+				// Make sure there is enough memory reserved
+				ReserveThingsMemory(numthings + 1, true);
 
-			// Make sure there is enough memory reserved
-			ReserveThingsMemory(numthings + 1, true);
+				// Store vertices in buffer
+				stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
+				stream.WriteRange<FlatVertex>(verts);
+				thingsvertices.Unlock();
+				stream.Dispose();
 
-			// Store the thing color
-			thingcolors[numthings] = c;
-
-			// Store vertices in buffer
-			stream = thingsvertices.Lock(numthings * 8 * FlatVertex.Stride, 8 * FlatVertex.Stride, LockFlags.NoSystemLock);
-			CreateThingVerts(t, ref verts, 0);
-			stream.WriteRange<FlatVertex>(verts);
-			thingsvertices.Unlock();
-			stream.Dispose();
-
-			// Thing added!
-			numthings++;
+				// Thing added!
+				numthings++;
+			}
 		}
 
 		// This adds a thing in the things buffer for rendering
 		public void RenderThingSet(ICollection<Thing> things)
 		{
-			FlatVertex[] verts = new FlatVertex[things.Count * 8];
+			FlatVertex[] verts = new FlatVertex[things.Count * 12];
 			DataStream stream;
 			int offset = 0;
-			int added = 0;
 			
 			// Make sure there is enough memory reserved
 			ReserveThingsMemory(numthings + things.Count, true);
@@ -587,27 +610,22 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Go for all things
 			foreach(Thing t in things)
 			{
-				// TODO: Check if the thing is actually on screen
-				
-				// Store the thing color
-				thingcolors[numthings + offset] = DetermineThingColor(t);
-
 				// Create vertices
-				CreateThingVerts(t, ref verts, offset * 8);
-
-				// Next
-				added++;
-				offset++;
+				if(CreateThingVerts(t, ref verts, offset * 12, DetermineThingColor(t)))
+				{
+					// Next
+					offset++;
+				}
 			}
 			
 			// Store vertices in buffer
-			stream = thingsvertices.Lock(numthings * 8 * FlatVertex.Stride, things.Count * 8 * FlatVertex.Stride, LockFlags.NoSystemLock);
+			stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, things.Count * 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
 			stream.WriteRange<FlatVertex>(verts);
 			thingsvertices.Unlock();
 			stream.Dispose();
 
 			// Things added!
-			numthings += added;
+			numthings += offset;
 		}
 		
 		// This renders the linedefs of a sector with special color
@@ -674,7 +692,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D nv = v.Position.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw pixel here
-			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, 2, General.Colors.Colors[colorindex], General.Colors.BrightColors[colorindex], General.Colors.DarkColors[colorindex]);
+			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, vertexsize, General.Colors.Colors[colorindex], General.Colors.BrightColors[colorindex], General.Colors.DarkColors[colorindex]);
 		}
 		
 		// This renders a set of vertices

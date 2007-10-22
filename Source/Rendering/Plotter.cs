@@ -121,8 +121,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 
 				// Corners
-				pixels[(y - size) * width + (x - size)] = l;
 				pixels[(y + size) * width + (x + size)] = d;
+				pixels[(y - size) * width + (x - size)] = l;
 			}
 			else
 			{
@@ -146,8 +146,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 
 				// Corners
-				DrawPixelSolid(x - size, y - size, l);
 				DrawPixelSolid(x + size, y + size, d);
+				DrawPixelSolid(x - size, y - size, l);
 			}
 		}
 

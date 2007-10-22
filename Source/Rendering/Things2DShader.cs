@@ -43,7 +43,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Property handlers
 		private EffectHandle texture1;
-		private EffectHandle thingcolor;
 
 		#endregion
 
@@ -65,14 +64,14 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(effect != null)
 			{
 				texture1 = effect.GetParameter(null, "texture1");
-				thingcolor = effect.GetParameter(null, "thingcolor");
 			}
 
 			// Initialize world vertex declaration
 			VertexElement[] elements = new VertexElement[]
 			{
 				new VertexElement(0, 0, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.PositionTransformed, 0),
-				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+				new VertexElement(0, 16, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
+				new VertexElement(0, 20, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
 				VertexElement.VertexDeclarationEnd
 			};
 			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, elements);
@@ -89,7 +88,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Clean up
 				texture1.Dispose();
-				thingcolor.Dispose();
 
 				// Done
 				base.Dispose();
@@ -99,13 +97,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 
 		#region ================== Methods
-
-		// This sets the settings
-		public void SetColors(PixelColor thing)
-		{
-			// Set settings
-			if(manager.Enabled) effect.SetValue(thingcolor, thing.ToColorValue());
-		}
 
 		#endregion
 	}
