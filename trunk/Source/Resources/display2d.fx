@@ -1,4 +1,4 @@
-// Base 2D rendering shader
+// 2D display rendering shader
 // Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
 
 // Pixel input data
@@ -12,7 +12,8 @@ struct PixelData
 // Settings
 // x = texel width
 // y = texel height
-// z = blend factor
+// z = FSAA blend factor
+// w = transparency
 float4 settings;
 
 // Texture1 input
@@ -60,9 +61,9 @@ float4 ps_main(PixelData pd) : COLOR
 		
 		// If any pixels nearby where found, return a blend, otherwise return nothing
 		//if(n.a > 0.1f) return float4(n.rgb, n.a * settings.z); else return (float4)0;
-		return float4(n.rgb, n.a * settings.z);
+		return float4(n.rgb, n.a * settings.z * settings.w);
 	}
-	else return c;
+	else return float4(c.rgb, c.a * settings.w);
 }
 
 // Technique for shader model 2.0
@@ -72,10 +73,5 @@ technique SM20
 	{
 	    VertexShader = null;
 	    PixelShader = compile ps_2_0 ps_main();
-		CullMode = None;
-	    ZEnable = false;
-	    AlphaBlendEnable = true;
-	    SrcBlend = SrcAlpha;
-	    DestBlend = InvSrcAlpha;
 	}
 }

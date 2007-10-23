@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public unsafe override void RedrawDisplay()
 		{
 			// Start with a clear display
-			if(renderer.StartRendering(true))
+			if(renderer.StartRendering(true, true))
 			{
 				// Render things
 				renderer.SetThingsRenderOrder(false);
@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected void Highlight(Linedef l)
 		{
 			// Update display
-			if(renderer.StartRendering(false))
+			if(renderer.StartRendering(false, false))
 			{
 				// Undraw previous highlight
 				if(highlighted != null)

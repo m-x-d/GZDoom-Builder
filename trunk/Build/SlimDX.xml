@@ -4,543 +4,6 @@
         "SlimDX"
     </assembly>
     <members>
-        <member name="M:SlimDX.Vector2.Equals(SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Determines whether the specified Object instances are considered equal. 
-</summary>
-            <param name="value1" />
-            <param name="value2" />
-            <returns>
-                <c>true</c> if <paramref name="value1" /> is the same instance as <paramref name="value2" /> or 
-if both are <c>null</c> references or if <c>objA.Equals(objB)</c> returns <c>true</c>; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Equals(SlimDX.Vector2)">
-            <summary>
-Returns a value that indicates whether the current instance is equal to the specified object. 
-</summary>
-            <param name="other">Object to make the comparison with.</param>
-            <returns>
-                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Equals(System.Object)">
-            <summary>
-Returns a value that indicates whether the current instance is equal to a specified object. 
-</summary>
-            <param name="obj">Object to make the comparison with.</param>
-            <returns>
-                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.GetHashCode">
-            <summary>
-Gets the hash code of the vector object. 
-</summary>
-            <returns>Hash code of the vector object.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.ToString">
-            <summary>
-Retrieves a string representation of the current object. 
-</summary>
-            <returns>A string that represents the object.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.op_Inequality(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Tests vectors for inequality. 
-</summary>
-            <param name="left">The first source vector.</param>
-            <param name="right">The second source vector.</param>
-            <returns>
-                <c>true</c> if the vectors are not equal; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.op_Equality(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Tests vectors for equality. 
-</summary>
-            <param name="left">The first source vector.</param>
-            <param name="right">The second source vector.</param>
-            <returns>
-                <c>true</c> if the vectors are equal; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.op_Division(SlimDX.Vector2,System.Single)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.op_Multiply(System.Single,SlimDX.Vector2)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.op_Multiply(SlimDX.Vector2,System.Single)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.op_UnaryNegation(SlimDX.Vector2)">
-            <summary>
-Reverses the direction of a given vector.
-</summary>
-            <param name="value">The vector to negate.</param>
-            <returns>A vector facing in the opposite direction.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.op_Subtraction(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Subtracts two vectors.
-</summary>
-            <param name="left">The first vector to subtract.</param>
-            <param name="right">The second vector to subtract.</param>
-            <returns>The difference of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.op_Addition(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Adds two vectors.
-</summary>
-            <param name="left">The first vector to add.</param>
-            <param name="right">The second vector to add.</param>
-            <returns>The sum of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Maximize(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Returns a vector containing the smallest components of the specified vectors.
-</summary>
-            <param name="value1">The first source vector.</param>
-            <param name="value2">The second source vector.</param>
-            <param name="result">When the method completes, contains an new vector composed of the largest components of the source vectors.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Maximize(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Returns a vector containing the largest components of the specified vectors.
-</summary>
-            <param name="value1">The first source vector.</param>
-            <param name="value2">The second source vector.</param>
-            <returns>A vector containing the largest components of the source vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Minimize(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Returns a vector containing the smallest components of the specified vectors.
-</summary>
-            <param name="value1">The first source vector.</param>
-            <param name="value2">The second source vector.</param>
-            <param name="result">When the method completes, contains an new vector composed of the smallest components of the source vectors.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Minimize(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Returns a vector containing the smallest components of the specified vectors.
-</summary>
-            <param name="value1">The first source vector.</param>
-            <param name="value2">The second source vector.</param>
-            <returns>A vector containing the smallest components of the source vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.TransformNormal(SlimDX.Vector2[],SlimDX.Matrix@)">
-            <summary>
-Performs a normal transformation using the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="normals">The normal vectors to transform.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <returns>The transformed normals.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.TransformNormal(SlimDX.Vector2@,SlimDX.Matrix@,SlimDX.Vector2@)">
-            <summary>
-Performs a normal transformation using the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="normal">The normal vector to transform.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <param name="result">When the method completes, contains the transformed normal.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.TransformNormal(SlimDX.Vector2,SlimDX.Matrix)">
-            <summary>
-Performs a normal transformation using the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="normal">The normal vector to transform.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <returns>The transformed normal.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2[],SlimDX.Quaternion@)">
-            <summary>
-Transforms an array of 2D vectors by the given <see cref="T:SlimDX.Quaternion" /> rotation.
-</summary>
-            <param name="vectors">The vectors to rotate.</param>
-            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
-            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2@,SlimDX.Quaternion@,SlimDX.Vector4@)">
-            <summary>
-Transforms a 2D vector by the given <see cref="T:SlimDX.Quaternion" /> rotation.
-</summary>
-            <param name="vector">The vector to rotate.</param>
-            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
-            <param name="result">When the method completes, contains the transformed <see cref="T:SlimDX.Vector4" />.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2,SlimDX.Quaternion)">
-            <summary>
-Transforms a 2D vector by the given <see cref="T:SlimDX.Quaternion" /> rotation.
-</summary>
-            <param name="vector">The vector to rotate.</param>
-            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
-            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2[],SlimDX.Matrix@)">
-            <summary>
-Transforms an array of 2D vectors by the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="vectors">The source vectors.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <returns>The transformed <see cref="T:SlimDX.Vector4" />s.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2@,SlimDX.Matrix@,SlimDX.Vector4@)">
-            <summary>
-Transforms a 2D vector by the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="vector">The source vector.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <param name="result">When the method completes, contains the transformed <see cref="T:SlimDX.Vector4" />.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2,SlimDX.Matrix)">
-            <summary>
-Transforms a 2D vector by the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="vector">The source vector.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Normalize(SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Converts the vector into a unit vector.
-</summary>
-            <param name="vector">The vector to normalize.</param>
-            <param name="result">When the method completes, contains the normalized vector.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Normalize(SlimDX.Vector2)">
-            <summary>
-Converts the vector into a unit vector.
-</summary>
-            <param name="vector">The vector to normalize.</param>
-            <returns>The normalized vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Dot(SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Calculates the dot product of two vectors.
-</summary>
-            <param name="left">First source vector.</param>
-            <param name="right">Second source vector.</param>
-            <returns>The dot product of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Dot(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Calculates the dot product of two vectors.
-</summary>
-            <param name="left">First source vector.</param>
-            <param name="right">Second source vector.</param>
-            <returns>The dot product of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.DistanceSquared(SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Calculates the squared distance between two vectors.
-</summary>
-            <param name="value1">The first vector.</param>
-            <param name="value2">The second vector.</param>
-            <returns>The squared distance between the two vectors.</returns>
-            <remarks>Distance squared is the value before taking the square root. 
-Distance squared can often be used in place of distance if relative comparisons are being made. 
-For example, consider three points A, B, and C. To determine whether B or C is further from A, 
-compare the distance between A and B to the distance between A and C. Calculating the two distances 
-involves two square roots, which are computationally expensive. However, using distance squared 
-provides the same information and avoids calculating two square roots.
-</remarks>
-        </member>
-        <member name="M:SlimDX.Vector2.DistanceSquared(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Calculates the squared distance between two vectors.
-</summary>
-            <param name="value1">The first vector.</param>
-            <param name="value2">The second vector.</param>
-            <returns>The squared distance between the two vectors.</returns>
-            <remarks>Distance squared is the value before taking the square root. 
-Distance squared can often be used in place of distance if relative comparisons are being made. 
-For example, consider three points A, B, and C. To determine whether B or C is further from A, 
-compare the distance between A and B to the distance between A and C. Calculating the two distances 
-involves two square roots, which are computationally expensive. However, using distance squared 
-provides the same information and avoids calculating two square roots.
-</remarks>
-        </member>
-        <member name="M:SlimDX.Vector2.Distance(SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Calculates the distance between two vectors.
-</summary>
-            <param name="value1">The first vector.</param>
-            <param name="value2">The second vector.</param>
-            <returns>The distance between the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Distance(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Calculates the distance between two vectors.
-</summary>
-            <param name="value1">The first vector.</param>
-            <param name="value2">The second vector.</param>
-            <returns>The distance between the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.SmoothStep(SlimDX.Vector2@,SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
-            <summary>
-Performs a cubic interpolation between two vectors.
-</summary>
-            <param name="start">Start vector.</param>
-            <param name="end">End vector.</param>
-            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
-            <param name="result">When the method completes, contains the cubic interpolation of the two vectors.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.SmoothStep(SlimDX.Vector2,SlimDX.Vector2,System.Single)">
-            <summary>
-Performs a cubic interpolation between two vectors.
-</summary>
-            <param name="start">Start vector.</param>
-            <param name="end">End vector.</param>
-            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
-            <returns>The cubic interpolation of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Lerp(SlimDX.Vector2@,SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
-            <summary>
-Performs a linear interpolation between two vectors.
-</summary>
-            <param name="start">Start vector.</param>
-            <param name="end">End vector.</param>
-            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
-            <param name="result">When the method completes, contains the linear interpolation of the two vectors.</param>
-            <remarks>
-This method performs the linear interpolation based on the following formula.
-<code>start + (end - start) * amount</code>
-Passing <paramref name="amount" /> a value of 0 will cause <paramref name="start" /> to be returned; a value of 1 will cause <paramref name="end" /> to be returned. 
-</remarks>
-        </member>
-        <member name="M:SlimDX.Vector2.Lerp(SlimDX.Vector2,SlimDX.Vector2,System.Single)">
-            <summary>
-Performs a linear interpolation between two vectors.
-</summary>
-            <param name="start">Start vector.</param>
-            <param name="end">End vector.</param>
-            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
-            <returns>The linear interpolation of the two vectors.</returns>
-            <remarks>
-This method performs the linear interpolation based on the following formula.
-<code>start + (end - start) * amount</code>
-Passing <paramref name="amount" /> a value of 0 will cause <paramref name="start" /> to be returned; a value of 1 will cause <paramref name="end" /> to be returned. 
-</remarks>
-        </member>
-        <member name="M:SlimDX.Vector2.Hermite(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
-            <summary>
-Performs a Hermite spline interpolation.
-</summary>
-            <param name="value1">First source position vector.</param>
-            <param name="tangent1">First source tangent vector.</param>
-            <param name="value2">Second source position vector.</param>
-            <param name="tangent2">Second source tangent vector.</param>
-            <param name="amount">Weighting factor.</param>
-            <param name="result">When the method completes, contains the result of the Hermite spline interpolation.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Hermite(SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,System.Single)">
-            <summary>
-Performs a Hermite spline interpolation.
-</summary>
-            <param name="value1">First source position vector.</param>
-            <param name="tangent1">First source tangent vector.</param>
-            <param name="value2">Second source position vector.</param>
-            <param name="tangent2">Second source tangent vector.</param>
-            <param name="amount">Weighting factor.</param>
-            <returns>The result of the Hermite spline interpolation.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Clamp(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Restricts a value to be within a specified range.
-</summary>
-            <param name="value">The value to clamp.</param>
-            <param name="min">The minimum value.</param>
-            <param name="max">The maximum value.</param>
-            <param name="result">When the method completes, contains the clamped value.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Clamp(SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Restricts a value to be within a specified range.
-</summary>
-            <param name="value">The value to clamp.</param>
-            <param name="min">The minimum value.</param>
-            <param name="max">The maximum value.</param>
-            <returns>The clamped value.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.CatmullRom(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
-            <summary>
-Performs a Catmull-Rom interpolation using the specified positions.
-</summary>
-            <param name="value1">The first position in the interpolation.</param>
-            <param name="value2">The second position in the interpolation.</param>
-            <param name="value3">The third position in the interpolation.</param>
-            <param name="value4">The fourth position in the interpolation.</param>
-            <param name="amount">Weighting factor.</param>
-            <param name="result">When the method completes, contains the result of the Catmull-Rom interpolation.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.CatmullRom(SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,System.Single)">
-            <summary>
-Performs a Catmull-Rom interpolation using the specified positions.
-</summary>
-            <param name="value1">The first position in the interpolation.</param>
-            <param name="value2">The second position in the interpolation.</param>
-            <param name="value3">The third position in the interpolation.</param>
-            <param name="value4">The fourth position in the interpolation.</param>
-            <param name="amount">Weighting factor.</param>
-            <returns>A vector that is the result of the Catmull-Rom interpolation.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Barycentric(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,System.Single,System.Single,SlimDX.Vector2@)">
-            <summary>
-Returns a <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 2D triangle.
-</summary>
-            <param name="value1">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 1 of the triangle.</param>
-            <param name="value2">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 2 of the triangle.</param>
-            <param name="value3">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 3 of the triangle.</param>
-            <param name="amount1">Barycentric coordinate b2, which expresses the weighting factor toward vertex 2 (specified in <paramref name="value2" />).</param>
-            <param name="amount2">Barycentric coordinate b3, which expresses the weighting factor toward vertex 3 (specified in <paramref name="value3" />).</param>
-            <param name="result">When the method completes, contains the 2D Cartesian coordinates of the specified point.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Barycentric(SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,System.Single,System.Single)">
-            <summary>
-Returns a <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 2D triangle.
-</summary>
-            <param name="value1">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 1 of the triangle.</param>
-            <param name="value2">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 2 of the triangle.</param>
-            <param name="value3">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 3 of the triangle.</param>
-            <param name="amount1">Barycentric coordinate b2, which expresses the weighting factor toward vertex 2 (specified in <paramref name="value2" />).</param>
-            <param name="amount2">Barycentric coordinate b3, which expresses the weighting factor toward vertex 3 (specified in <paramref name="value3" />).</param>
-            <returns>A new <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of the specified point.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Negate(SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Reverses the direction of a given vector.
-</summary>
-            <param name="value">The vector to negate.</param>
-            <param name="result">When the method completes, contains a vector facing in the opposite direction.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Negate(SlimDX.Vector2)">
-            <summary>
-Reverses the direction of a given vector.
-</summary>
-            <param name="value">The vector to negate.</param>
-            <returns>A vector facing in the opposite direction.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Divide(SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <param name="result">When the method completes, contains the scaled vector.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Divide(SlimDX.Vector2,System.Single)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="value">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Multiply(SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <param name="result">When the method completes, contains the scaled vector.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Multiply(SlimDX.Vector2,System.Single)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="value">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Modulate(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Modulates a vector by another.
-</summary>
-            <param name="left">The first vector to modulate.</param>
-            <param name="right">The second vector to modulate.</param>
-            <param name="result">When the moethod completes, contains the modulated vector.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Modulate(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Modulates a vector by another.
-</summary>
-            <param name="left">The first vector to modulate.</param>
-            <param name="right">The second vector to modulate.</param>
-            <returns>The modulated vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Subtract(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Subtracts two vectors.
-</summary>
-            <param name="left">The first vector to subtract.</param>
-            <param name="right">The second vector to subtract.</param>
-            <param name="result">When the method completes, contains the difference of the two vectors.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Subtract(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Subtracts two vectors.
-</summary>
-            <param name="left">The first vector to subtract.</param>
-            <param name="right">The second vector to subtract.</param>
-            <returns>The difference of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Add(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
-            <summary>
-Adds two vectors.
-</summary>
-            <param name="left">The first vector to add.</param>
-            <param name="right">The second vector to add.</param>
-            <param name="result">When the method completes, contains the sum of the two vectors.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.Add(SlimDX.Vector2,SlimDX.Vector2)">
-            <summary>
-Adds two vectors.
-</summary>
-            <param name="left">The first vector to add.</param>
-            <param name="right">The second vector to add.</param>
-            <returns>The sum of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Normalize">
-            <summary>
-Converts the vector into a unit vector.
-</summary>
-        </member>
-        <member name="M:SlimDX.Vector2.LengthSquared">
-            <summary>
-Calculates the squared length of the vector.
-</summary>
-            <returns>The squared length of the vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.Length">
-            <summary>
-Calculates the length of the vector.
-</summary>
-            <returns>The length of the vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector2.#ctor(System.Single,System.Single)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Vector2" /> class.
-</summary>
-            <param name="x">Initial value for the X component of the vector.</param>
-            <param name="y">Initial value for the Y component of the vector.</param>
-        </member>
-        <member name="M:SlimDX.Vector2.#ctor(System.Single)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Vector2" /> class.
-</summary>
-            <param name="value">The value that will be assigned to all components.</param>
-        </member>
         <member name="M:SlimDX.Vector3.Equals(SlimDX.Vector3@,SlimDX.Vector3@)">
             <summary>
 Determines whether the specified Object instances are considered equal. 
@@ -1190,6 +653,1506 @@ Initializes a new instance of the <see cref="T:SlimDX.Vector3" /> class.
 </summary>
             <param name="value">The value that will be assigned to all components.</param>
         </member>
+        <member name="M:SlimDX.Direct3D9.Texture.Fill(SlimDX.Direct3D9.Fill2DCallback)">
+            <summary>
+Uses a user-provided function to fill each texel of each mip level of a given texture.
+</summary>
+            <param name="callback">A function that uses the signature of the Fill2DCallback delegate.</param>
+            <summary>
+Uses a user-provided function to fill each texel of each mip level of a given texture.
+</summary>
+            <param name="callback">A function that uses the signature of the Fill2DCallback delegate.</param>
+        </member>
+        <member name="M:SlimDX.Direct3D9.Texture.SaveToFile(System.String,SlimDX.Direct3D9.ImageFileFormat)">
+            <summary>
+Function to save the texture to a file.
+</summary>
+            <param name="fileName">Filename and path for the texture.</param>
+            <param name="format">File format used to encode the image.</param>
+            <summary>
+Function to save the texture to a file.
+</summary>
+            <param name="fileName">Filename and path for the texture.</param>
+            <param name="format">File format used to encode the image.</param>
+        </member>
+        <member name="M:SlimDX.Direct3D9.Texture.Save(SlimDX.Direct3D9.ImageFileFormat)">
+            <summary>
+Function to save the texture to a stream.
+</summary>
+            <param name="format">File format used to encode the image.</param>
+            <returns>A graphics stream containing the texture data.</returns>
+            <summary>
+Function to save the texture to a stream.
+</summary>
+            <param name="format">File format used to encode the image.</param>
+            <returns>A graphics stream containing the texture data.</returns>
+        </member>
+        <member name="M:SlimDX.Direct3D9.Texture.CheckRequirements(SlimDX.Direct3D9.Device,System.Int32,System.Int32,System.Int32,SlimDX.Direct3D9.Usage,SlimDX.Direct3D9.Format,SlimDX.Direct3D9.Pool)">
+            <summary>
+Checks texture-creation parameters.
+</summary>
+            <param name="device">Device associated with the texture.</param>
+            <param name="width">Requested width of the texture.</param>
+            <param name="height">Requested height of the texture.</param>
+            <param name="mipLevelCount">Requested number of mip-map levels for the texture.</param>
+            <param name="usage">Usage.None or Usage.RenderTarget.</param>
+            <param name="format">Requested format for the texture.</param>
+            <param name="pool">Memory class where the resource will be placed.</param>
+            <returns>A value type containing the proposed values to pass to the texture creation functions.</returns>
+        </member>
+        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.MipLevelCount">
+            <summary>
+Proposed number of mip-map levels for the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.Format">
+            <summary>
+Proposed format of the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.Depth">
+            <summary>
+Proposed depth of the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.Height">
+            <summary>
+Proposed height of the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.Width">
+            <summary>
+Proposed width of the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.CubeTextureRequirements.MipLevelCount">
+            <summary>
+Proposed number of mip-map levels for the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.CubeTextureRequirements.Format">
+            <summary>
+Proposed format of the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.CubeTextureRequirements.Size">
+            <summary>
+Proposed size of the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.TextureRequirements.MipLevelCount">
+            <summary>
+Proposed number of mip-map levels for the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.TextureRequirements.Format">
+            <summary>
+Proposed format of the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.TextureRequirements.Height">
+            <summary>
+Proposed height of the texture.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D9.TextureRequirements.Width">
+            <summary>
+Proposed width of the texture.
+</summary>
+        </member>
+        <member name="T:SlimDX.Direct3D9.Fill2DCallback">
+            <summary>
+Callback function used by FillTexture.
+</summary>
+            <param name="coordinate">Texture coordinate being sampled.</param>
+            <param name="texelSize">Dimensions of the texel.</param>
+            <returns>A 4 dimensional vector, representing a color value.  X maps to R, G to Y, etc...</returns>
+        </member>
+        <member name="M:SlimDX.Direct3D9.ImageInformation.FromStream(System.IO.Stream)">
+            <summary>
+Function to extract image information from a stream.
+</summary>
+            <param name="stream">Stream containing the image.</param>
+            <returns>Information about the image.</returns>
+            <summary>
+Function to extract image information from a stream.
+</summary>
+            <param name="stream">Stream containing the image.</param>
+            <returns>Information about the image.</returns>
+        </member>
+        <member name="M:SlimDX.Direct3D9.ImageInformation.FromStream(System.IO.Stream,System.Boolean)">
+            <summary>
+Function to extract image information from a stream.
+</summary>
+            <param name="stream">Stream containing the image.</param>
+            <param name="peek">TRUE to preserve the stream position, FALSE will move the stream pointer.</param>
+            <returns>Information about the image.</returns>
+            <summary>
+Function to extract image information from a stream.
+</summary>
+            <param name="stream">Stream containing the image.</param>
+            <param name="peek">TRUE to preserve the stream position, FALSE will move the stream pointer.</param>
+            <returns>Information about the image.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Equals(SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Determines whether the specified Object instances are considered equal. 
+</summary>
+            <param name="value1" />
+            <param name="value2" />
+            <returns>
+                <c>true</c> if <paramref name="value1" /> is the same instance as <paramref name="value2" /> or 
+if both are <c>null</c> references or if <c>objA.Equals(objB)</c> returns <c>true</c>; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Equals(SlimDX.Vector4)">
+            <summary>
+Returns a value that indicates whether the current instance is equal to the specified object. 
+</summary>
+            <param name="other">Object to make the comparison with.</param>
+            <returns>
+                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Equals(System.Object)">
+            <summary>
+Returns a value that indicates whether the current instance is equal to a specified object. 
+</summary>
+            <param name="obj">Object to make the comparison with.</param>
+            <returns>
+                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.GetHashCode">
+            <summary>
+Gets the hash code of the vector object. 
+</summary>
+            <returns>Hash code of the vector object.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.ToString">
+            <summary>
+Retrieves a string representation of the current object. 
+</summary>
+            <returns>A string that represents the object.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.op_Inequality(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Tests vectors for inequality. 
+</summary>
+            <param name="left">The first source vector.</param>
+            <param name="right">The second source vector.</param>
+            <returns>
+                <c>true</c> if the vectors are not equal; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.op_Equality(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Tests vectors for equality. 
+</summary>
+            <param name="left">The first source vector.</param>
+            <param name="right">The second source vector.</param>
+            <returns>
+                <c>true</c> if the vectors are equal; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.op_Division(SlimDX.Vector4,System.Single)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.op_Multiply(System.Single,SlimDX.Vector4)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.op_Multiply(SlimDX.Vector4,System.Single)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.op_UnaryNegation(SlimDX.Vector4)">
+            <summary>
+Reverses the direction of a given vector.
+</summary>
+            <param name="value">The vector to negate.</param>
+            <returns>A vector facing in the opposite direction.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.op_Subtraction(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Subtracts two vectors.
+</summary>
+            <param name="left">The first vector to subtract.</param>
+            <param name="right">The second vector to subtract.</param>
+            <returns>The difference of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.op_Addition(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Adds two vectors.
+</summary>
+            <param name="left">The first vector to add.</param>
+            <param name="right">The second vector to add.</param>
+            <returns>The sum of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Maximize(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Returns a vector containing the smallest components of the specified vectors.
+</summary>
+            <param name="value1">The first source vector.</param>
+            <param name="value2">The second source vector.</param>
+            <param name="result">When the method completes, contains an new vector composed of the largest components of the source vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Maximize(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Returns a vector containing the largest components of the specified vectors.
+</summary>
+            <param name="value1">The first source vector.</param>
+            <param name="value2">The second source vector.</param>
+            <returns>A vector containing the largest components of the source vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Minimize(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Returns a vector containing the smallest components of the specified vectors.
+</summary>
+            <param name="value1">The first source vector.</param>
+            <param name="value2">The second source vector.</param>
+            <param name="result">When the method completes, contains an new vector composed of the smallest components of the source vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Minimize(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Returns a vector containing the smallest components of the specified vectors.
+</summary>
+            <param name="value1">The first source vector.</param>
+            <param name="value2">The second source vector.</param>
+            <returns>A vector containing the smallest components of the source vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4[],SlimDX.Quaternion@)">
+            <summary>
+Transforms an array of 4D vectors by the given <see cref="T:SlimDX.Quaternion" /> rotation.
+</summary>
+            <param name="vectors">The vectors to rotate.</param>
+            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
+            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4@,SlimDX.Quaternion@,SlimDX.Vector4@)">
+            <summary>
+Transforms a 4D vector by the given <see cref="T:SlimDX.Quaternion" /> rotation.
+</summary>
+            <param name="vector">The vector to rotate.</param>
+            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
+            <param name="result">When the method completes, contains the transformed <see cref="T:SlimDX.Vector4" />.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4,SlimDX.Quaternion)">
+            <summary>
+Transforms a 4D vector by the given <see cref="T:SlimDX.Quaternion" /> rotation.
+</summary>
+            <param name="vector">The vector to rotate.</param>
+            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
+            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4[],SlimDX.Matrix@)">
+            <summary>
+Transforms an array of 4D vectors by the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="vectors">The source vectors.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <returns>The transformed <see cref="T:SlimDX.Vector4" />s.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4@,SlimDX.Matrix@,SlimDX.Vector4@)">
+            <summary>
+Transforms a 4D vector by the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="vector">The source vector.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <param name="result">When the method completes, contains the transformed <see cref="T:SlimDX.Vector4" />.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4,SlimDX.Matrix)">
+            <summary>
+Transforms a 4D vector by the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="vector">The source vector.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Normalize(SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Converts the vector into a unit vector.
+</summary>
+            <param name="vector">The vector to normalize.</param>
+            <param name="result">When the method completes, contains the normalized vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Normalize(SlimDX.Vector4)">
+            <summary>
+Converts the vector into a unit vector.
+</summary>
+            <param name="vector">The vector to normalize.</param>
+            <returns>The normalized vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Dot(SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Calculates the dot product of two vectors.
+</summary>
+            <param name="left">First source vector.</param>
+            <param name="right">Second source vector.</param>
+            <returns>The dot product of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Dot(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Calculates the dot product of two vectors.
+</summary>
+            <param name="left">First source vector.</param>
+            <param name="right">Second source vector.</param>
+            <returns>The dot product of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.DistanceSquared(SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Calculates the squared distance between two vectors.
+</summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The squared distance between the two vectors.</returns>
+            <remarks>Distance squared is the value before taking the square root. 
+Distance squared can often be used in place of distance if relative comparisons are being made. 
+For example, consider three points A, B, and C. To determine whether B or C is further from A, 
+compare the distance between A and B to the distance between A and C. Calculating the two distances 
+involves two square roots, which are computationally expensive. However, using distance squared 
+provides the same information and avoids calculating two square roots.
+</remarks>
+        </member>
+        <member name="M:SlimDX.Vector4.DistanceSquared(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Calculates the squared distance between two vectors.
+</summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The squared distance between the two vectors.</returns>
+            <remarks>Distance squared is the value before taking the square root. 
+Distance squared can often be used in place of distance if relative comparisons are being made. 
+For example, consider three points A, B, and C. To determine whether B or C is further from A, 
+compare the distance between A and B to the distance between A and C. Calculating the two distances 
+involves two square roots, which are computationally expensive. However, using distance squared 
+provides the same information and avoids calculating two square roots.
+</remarks>
+        </member>
+        <member name="M:SlimDX.Vector4.Distance(SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Calculates the distance between two vectors.
+</summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The distance between the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Distance(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Calculates the distance between two vectors.
+</summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The distance between the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.SmoothStep(SlimDX.Vector4@,SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
+            <summary>
+Performs a cubic interpolation between two vectors.
+</summary>
+            <param name="start">Start vector.</param>
+            <param name="end">End vector.</param>
+            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
+            <param name="result">When the method completes, contains the cubic interpolation of the two vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.SmoothStep(SlimDX.Vector4,SlimDX.Vector4,System.Single)">
+            <summary>
+Performs a cubic interpolation between two vectors.
+</summary>
+            <param name="start">Start vector.</param>
+            <param name="end">End vector.</param>
+            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
+            <returns>The cubic interpolation of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Lerp(SlimDX.Vector4@,SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
+            <summary>
+Performs a linear interpolation between two vectors.
+</summary>
+            <param name="start">Start vector.</param>
+            <param name="end">End vector.</param>
+            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
+            <param name="result">When the method completes, contains the linear interpolation of the two vectors.</param>
+            <remarks>
+This method performs the linear interpolation based on the following formula.
+<code>start + (end - start) * amount</code>
+Passing <paramref name="amount" /> a value of 0 will cause <paramref name="start" /> to be returned; a value of 1 will cause <paramref name="end" /> to be returned. 
+</remarks>
+        </member>
+        <member name="M:SlimDX.Vector4.Lerp(SlimDX.Vector4,SlimDX.Vector4,System.Single)">
+            <summary>
+Performs a linear interpolation between two vectors.
+</summary>
+            <param name="start">Start vector.</param>
+            <param name="end">End vector.</param>
+            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
+            <returns>The linear interpolation of the two vectors.</returns>
+            <remarks>
+This method performs the linear interpolation based on the following formula.
+<code>start + (end - start) * amount</code>
+Passing <paramref name="amount" /> a value of 0 will cause <paramref name="start" /> to be returned; a value of 1 will cause <paramref name="end" /> to be returned. 
+</remarks>
+        </member>
+        <member name="M:SlimDX.Vector4.Hermite(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
+            <summary>
+Performs a Hermite spline interpolation.
+</summary>
+            <param name="value1">First source position vector.</param>
+            <param name="tangent1">First source tangent vector.</param>
+            <param name="value2">Second source position vector.</param>
+            <param name="tangent2">Second source tangent vector.</param>
+            <param name="amount">Weighting factor.</param>
+            <param name="result">When the method completes, contains the result of the Hermite spline interpolation.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Hermite(SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,System.Single)">
+            <summary>
+Performs a Hermite spline interpolation.
+</summary>
+            <param name="value1">First source position vector.</param>
+            <param name="tangent1">First source tangent vector.</param>
+            <param name="value2">Second source position vector.</param>
+            <param name="tangent2">Second source tangent vector.</param>
+            <param name="amount">Weighting factor.</param>
+            <returns>The result of the Hermite spline interpolation.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Clamp(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Restricts a value to be within a specified range.
+</summary>
+            <param name="value">The value to clamp.</param>
+            <param name="min">The minimum value.</param>
+            <param name="max">The maximum value.</param>
+            <param name="result">When the method completes, contains the clamped value.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Clamp(SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Restricts a value to be within a specified range.
+</summary>
+            <param name="value">The value to clamp.</param>
+            <param name="min">The minimum value.</param>
+            <param name="max">The maximum value.</param>
+            <returns>The clamped value.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.CatmullRom(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
+            <summary>
+Performs a Catmull-Rom interpolation using the specified positions.
+</summary>
+            <param name="value1">The first position in the interpolation.</param>
+            <param name="value2">The second position in the interpolation.</param>
+            <param name="value3">The third position in the interpolation.</param>
+            <param name="value4">The fourth position in the interpolation.</param>
+            <param name="amount">Weighting factor.</param>
+            <param name="result">When the method completes, contains the result of the Catmull-Rom interpolation.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.CatmullRom(SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,System.Single)">
+            <summary>
+Performs a Catmull-Rom interpolation using the specified positions.
+</summary>
+            <param name="value1">The first position in the interpolation.</param>
+            <param name="value2">The second position in the interpolation.</param>
+            <param name="value3">The third position in the interpolation.</param>
+            <param name="value4">The fourth position in the interpolation.</param>
+            <param name="amount">Weighting factor.</param>
+            <returns>A vector that is the result of the Catmull-Rom interpolation.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Barycentric(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,System.Single,System.Single,SlimDX.Vector4@)">
+            <summary>
+Returns a <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 4D triangle.
+</summary>
+            <param name="value1">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 1 of the triangle.</param>
+            <param name="value2">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 2 of the triangle.</param>
+            <param name="value3">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 3 of the triangle.</param>
+            <param name="amount1">Barycentric coordinate b2, which expresses the weighting factor toward vertex 2 (specified in <paramref name="value2" />).</param>
+            <param name="amount2">Barycentric coordinate b3, which expresses the weighting factor toward vertex 3 (specified in <paramref name="value3" />).</param>
+            <param name="result">When the method completes, contains the 4D Cartesian coordinates of the specified point.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Barycentric(SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,System.Single,System.Single)">
+            <summary>
+Returns a <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 4D triangle.
+</summary>
+            <param name="value1">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 1 of the triangle.</param>
+            <param name="value2">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 2 of the triangle.</param>
+            <param name="value3">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 3 of the triangle.</param>
+            <param name="amount1">Barycentric coordinate b2, which expresses the weighting factor toward vertex 2 (specified in <paramref name="value2" />).</param>
+            <param name="amount2">Barycentric coordinate b3, which expresses the weighting factor toward vertex 3 (specified in <paramref name="value3" />).</param>
+            <returns>A new <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of the specified point.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Negate(SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Reverses the direction of a given vector.
+</summary>
+            <param name="value">The vector to negate.</param>
+            <param name="result">When the method completes, contains a vector facing in the opposite direction.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Negate(SlimDX.Vector4)">
+            <summary>
+Reverses the direction of a given vector.
+</summary>
+            <param name="value">The vector to negate.</param>
+            <returns>A vector facing in the opposite direction.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Divide(SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <param name="result">When the method completes, contains the scaled vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Divide(SlimDX.Vector4,System.Single)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="value">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Multiply(SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <param name="result">When the method completes, contains the scaled vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Multiply(SlimDX.Vector4,System.Single)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="value">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Modulate(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Modulates a vector by another.
+</summary>
+            <param name="left">The first vector to modulate.</param>
+            <param name="right">The second vector to modulate.</param>
+            <param name="result">When the moethod completes, contains the modulated vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Modulate(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Modulates a vector by another.
+</summary>
+            <param name="left">The first vector to modulate.</param>
+            <param name="right">The second vector to modulate.</param>
+            <returns>The modulated vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Subtract(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Subtracts two vectors.
+</summary>
+            <param name="left">The first vector to subtract.</param>
+            <param name="right">The second vector to subtract.</param>
+            <param name="result">When the method completes, contains the difference of the two vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Subtract(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Subtracts two vectors.
+</summary>
+            <param name="left">The first vector to subtract.</param>
+            <param name="right">The second vector to subtract.</param>
+            <returns>The difference of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Add(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
+            <summary>
+Adds two vectors.
+</summary>
+            <param name="left">The first vector to add.</param>
+            <param name="right">The second vector to add.</param>
+            <param name="result">When the method completes, contains the sum of the two vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.Add(SlimDX.Vector4,SlimDX.Vector4)">
+            <summary>
+Adds two vectors.
+</summary>
+            <param name="left">The first vector to add.</param>
+            <param name="right">The second vector to add.</param>
+            <returns>The sum of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Normalize">
+            <summary>
+Converts the vector into a unit vector.
+</summary>
+        </member>
+        <member name="M:SlimDX.Vector4.LengthSquared">
+            <summary>
+Calculates the squared length of the vector.
+</summary>
+            <returns>The squared length of the vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.Length">
+            <summary>
+Calculates the length of the vector.
+</summary>
+            <returns>The length of the vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector4.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Vector4" /> class.
+</summary>
+            <param name="x">Initial value for the X component of the vector.</param>
+            <param name="y">Initial value for the Y component of the vector.</param>
+            <param name="z">Initial value for the Z component of the vector.</param>
+            <param name="w">Initial value for the W component of the vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.#ctor(SlimDX.Vector3,System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Vector4" /> class.
+</summary>
+            <param name="value">A vector containing the values with which to initialize the X, Y, and Z components</param>
+            <param name="w">Initial value for the W component of the vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.#ctor(SlimDX.Vector2,System.Single,System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Vector4" /> class.
+</summary>
+            <param name="value">A vector containing the values with which to initialize the X and Y components</param>
+            <param name="z">Initial value for the Z component of the vector.</param>
+            <param name="w">Initial value for the W component of the vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector4.#ctor(System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Vector4" /> class.
+</summary>
+            <param name="value">The value that will be assigned to all components.</param>
+        </member>
+        <member name="P:SlimDX.Direct3D10.Texture2D.Height">
+            <summary>
+Gets the height of the texture in texels.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D10.Texture2D.Width">
+            <summary>
+Gets the width of the texture in texels.
+</summary>
+        </member>
+        <member name="M:SlimDX.Plane.Equals(SlimDX.Plane@,SlimDX.Plane@)">
+            <summary>
+Determines whether the specified Object instances are considered equal. 
+</summary>
+            <param name="value1" />
+            <param name="value2" />
+            <returns>
+                <c>true</c> if <paramref name="value1" /> is the same instance as <paramref name="value2" /> or 
+if both are <c>null</c> references or if <c>objA.Equals(objB)</c> returns <c>true</c>; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Equals(SlimDX.Plane)">
+            <summary>
+Returns a value that indicates whether the current instance is equal to the specified object. 
+</summary>
+            <param name="other">Object to make the comparison with.</param>
+            <returns>
+                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Equals(System.Object)">
+            <summary>
+Returns a value that indicates whether the current instance is equal to a specified object. 
+</summary>
+            <param name="obj">Object to make the comparison with.</param>
+            <returns>
+                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.GetHashCode">
+            <summary>
+Gets the hash code of the plane object. 
+</summary>
+            <returns>Hash code of the plane object.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.ToString">
+            <summary>
+Retrieves a string representation of the current object. 
+</summary>
+            <returns>A string that represents the object.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.op_Inequality(SlimDX.Plane,SlimDX.Plane)">
+            <summary>
+Tests planes for inequality. 
+</summary>
+            <param name="left">The first source plane.</param>
+            <param name="right">The second source plane.</param>
+            <returns>
+                <c>true</c> if the planes are not equal; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.op_Equality(SlimDX.Plane,SlimDX.Plane)">
+            <summary>
+Tests planes for equality. 
+</summary>
+            <param name="left">The first source plane.</param>
+            <param name="right">The second source plane.</param>
+            <returns>
+                <c>true</c> if the planes are equal; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.op_Multiply(System.Single,SlimDX.Plane)">
+            <summary>
+Scales the plane by the given scaling factor.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="scale">The scaling factor.</param>
+            <returns>The scaled plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.op_Multiply(SlimDX.Plane,System.Single)">
+            <summary>
+Scales the plane by the given scaling factor.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="scale">The scaling factor.</param>
+            <returns>The scaled plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Intersects(SlimDX.Plane@,SlimDX.Vector3@,SlimDX.Vector3@,SlimDX.Vector3@)">
+            <summary>
+Finds the intersection between a plane and a line.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="start">The start point of the line.</param>
+            <param name="end">The end point of the line.</param>
+            <param name="intersectPoint">If an intersection is found, contains the intersection point between the line and the plane.</param>
+            <returns>
+                <c>true</c> if an intersection is found; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Intersects(SlimDX.Plane,SlimDX.Vector3,SlimDX.Vector3,SlimDX.Vector3@)">
+            <summary>
+Finds the intersection between a plane and a line.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="start">The start point of the line.</param>
+            <param name="end">The end point of the line.</param>
+            <param name="intersectPoint">If an intersection is found, contains the intersection point between the line and the plane.</param>
+            <returns>
+                <c>true</c> if an intersection is found; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane[],SlimDX.Quaternion@)">
+            <summary>
+Transforms an array of normalized planes by a quaternion rotation.
+</summary>
+            <param name="planes">The normalized source planes.</param>
+            <param name="rotation">The quaternion rotation.</param>
+            <returns>The transformed planes.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane@,SlimDX.Quaternion@,SlimDX.Plane@)">
+            <summary>
+Transforms a normalized plane by a quaternion rotation.
+</summary>
+            <param name="plane">The normalized source plane.</param>
+            <param name="rotation">The quaternion rotation.</param>
+            <param name="result">When the method completes, contains the transformed plane.</param>
+        </member>
+        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane,SlimDX.Quaternion)">
+            <summary>
+Transforms a normalized plane by a quaternion rotation.
+</summary>
+            <param name="plane">The normalized source plane.</param>
+            <param name="rotation">The quaternion rotation.</param>
+            <returns>The transformed plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane[],SlimDX.Matrix@)">
+            <summary>
+Transforms an array of normalized planes by a matrix.
+</summary>
+            <param name="planes">The normalized source planes.</param>
+            <param name="transformation">The transformation matrix.</param>
+            <returns>The transformed planes.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane@,SlimDX.Matrix@,SlimDX.Plane@)">
+            <summary>
+Transforms a normalized plane by a matrix.
+</summary>
+            <param name="plane">The normalized source plane.</param>
+            <param name="transformation">The transformation matrix.</param>
+            <param name="result">When the method completes, contains the transformed plane.</param>
+        </member>
+        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane,SlimDX.Matrix)">
+            <summary>
+Transforms a normalized plane by a matrix.
+</summary>
+            <param name="plane">The normalized source plane.</param>
+            <param name="transformation">The transformation matrix.</param>
+            <returns>The transformed plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Normalize(SlimDX.Plane@,SlimDX.Plane@)">
+            <summary>
+Changes the coefficients of the normal vector of the plane to make it of unit length.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="result">When the method completes, contains the normalized plane.</param>
+        </member>
+        <member name="M:SlimDX.Plane.Normalize(SlimDX.Plane)">
+            <summary>
+Changes the coefficients of the normal vector of the plane to make it of unit length.
+</summary>
+            <param name="plane">The source plane.</param>
+            <returns>The normalized plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Normalize">
+            <summary>
+Changes the coefficients of the normal vector of the plane to make it of unit length.
+</summary>
+        </member>
+        <member name="M:SlimDX.Plane.DotNormal(SlimDX.Plane@,SlimDX.Vector3@)">
+            <summary>
+Calculates the dot product of the specified vector and the normal of the plane.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="point">The source vector.</param>
+            <returns>The dot product of the specified vector and the normal of the plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.DotNormal(SlimDX.Plane,SlimDX.Vector3)">
+            <summary>
+Calculates the dot product of the specified vector and the normal of the plane.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="point">The source vector.</param>
+            <returns>The dot product of the specified vector and the normal of the plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.DotCoordinate(SlimDX.Plane@,SlimDX.Vector3@)">
+            <summary>
+Calculates the dot product of a specified vector and the normal of the plane plus the distance value of the plane.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="point">The source vector.</param>
+            <returns>The dot product of a specified vector and the normal of the Plane plus the distance value of the plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.DotCoordinate(SlimDX.Plane,SlimDX.Vector3)">
+            <summary>
+Calculates the dot product of a specified vector and the normal of the plane plus the distance value of the plane.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="point">The source vector.</param>
+            <returns>The dot product of a specified vector and the normal of the Plane plus the distance value of the plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Dot(SlimDX.Plane@,SlimDX.Vector4@)">
+            <summary>
+Calculates the dot product of the specified vector and plane.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="point">The source vector.</param>
+            <returns>The dot product of the specified vector and plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.Dot(SlimDX.Plane,SlimDX.Vector4)">
+            <summary>
+Calculates the dot product of the specified vector and plane.
+</summary>
+            <param name="plane">The source plane.</param>
+            <param name="point">The source vector.</param>
+            <returns>The dot product of the specified vector and plane.</returns>
+        </member>
+        <member name="M:SlimDX.Plane.#ctor(SlimDX.Vector4)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Plane" /> class.
+</summary>
+            <param name="value">
+A vector with the X, Y, and Z components defining the normal to the plane.
+The W component defines the distance of the plane along its normal from the origin.
+</param>
+        </member>
+        <member name="M:SlimDX.Plane.#ctor(SlimDX.Vector3,SlimDX.Vector3,SlimDX.Vector3)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Plane" /> class.
+</summary>
+            <param name="point1">First point of a triangle defining the plane.</param>
+            <param name="point2">Second point of a triangle defining the plane.</param>
+            <param name="point3">Third point of a triangle defining the plane.</param>
+        </member>
+        <member name="M:SlimDX.Plane.#ctor(SlimDX.Vector3,System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Plane" /> class.
+</summary>
+            <param name="normal">The normal vector to the plane.</param>
+            <param name="d">Distance of the plane along its normal from the origin.</param>
+        </member>
+        <member name="M:SlimDX.Plane.#ctor(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Plane" /> class.
+</summary>
+            <param name="a">X component of the normal defining the plane.</param>
+            <param name="b">Y component of the normal defining the plane.</param>
+            <param name="c">Z component of the normal defining the plane.</param>
+            <param name="d">Distance of the plane along its normal from the origin.</param>
+        </member>
+        <member name="P:SlimDX.Direct3D10.ShaderReflection.OutputParameterCount">
+            <summary>
+Gets the number of parameters in the output signature. 
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D10.ShaderReflection.InputParameterCount">
+            <summary>
+Gets the number of parameters in the input signature. 
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D10.ShaderReflection.BoundResourcesCount">
+            <summary>
+Gets the number of resource (textures and buffers) bound to a shader. 
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D10.ShaderReflection.ConstantBufferCount">
+            <summary>
+Gets the number of constant buffers.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D10.ShaderReflection.Creator">
+            <summary>
+Gets the creator.
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D10.ShaderReflection.Version">
+            <summary>
+Gets the version.
+</summary>
+        </member>
+        <member name="M:SlimDX.Vector2.Equals(SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Determines whether the specified Object instances are considered equal. 
+</summary>
+            <param name="value1" />
+            <param name="value2" />
+            <returns>
+                <c>true</c> if <paramref name="value1" /> is the same instance as <paramref name="value2" /> or 
+if both are <c>null</c> references or if <c>objA.Equals(objB)</c> returns <c>true</c>; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Equals(SlimDX.Vector2)">
+            <summary>
+Returns a value that indicates whether the current instance is equal to the specified object. 
+</summary>
+            <param name="other">Object to make the comparison with.</param>
+            <returns>
+                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Equals(System.Object)">
+            <summary>
+Returns a value that indicates whether the current instance is equal to a specified object. 
+</summary>
+            <param name="obj">Object to make the comparison with.</param>
+            <returns>
+                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.GetHashCode">
+            <summary>
+Gets the hash code of the vector object. 
+</summary>
+            <returns>Hash code of the vector object.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.ToString">
+            <summary>
+Retrieves a string representation of the current object. 
+</summary>
+            <returns>A string that represents the object.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.op_Inequality(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Tests vectors for inequality. 
+</summary>
+            <param name="left">The first source vector.</param>
+            <param name="right">The second source vector.</param>
+            <returns>
+                <c>true</c> if the vectors are not equal; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.op_Equality(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Tests vectors for equality. 
+</summary>
+            <param name="left">The first source vector.</param>
+            <param name="right">The second source vector.</param>
+            <returns>
+                <c>true</c> if the vectors are equal; <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.op_Division(SlimDX.Vector2,System.Single)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.op_Multiply(System.Single,SlimDX.Vector2)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.op_Multiply(SlimDX.Vector2,System.Single)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.op_UnaryNegation(SlimDX.Vector2)">
+            <summary>
+Reverses the direction of a given vector.
+</summary>
+            <param name="value">The vector to negate.</param>
+            <returns>A vector facing in the opposite direction.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.op_Subtraction(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Subtracts two vectors.
+</summary>
+            <param name="left">The first vector to subtract.</param>
+            <param name="right">The second vector to subtract.</param>
+            <returns>The difference of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.op_Addition(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Adds two vectors.
+</summary>
+            <param name="left">The first vector to add.</param>
+            <param name="right">The second vector to add.</param>
+            <returns>The sum of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Maximize(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Returns a vector containing the smallest components of the specified vectors.
+</summary>
+            <param name="value1">The first source vector.</param>
+            <param name="value2">The second source vector.</param>
+            <param name="result">When the method completes, contains an new vector composed of the largest components of the source vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Maximize(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Returns a vector containing the largest components of the specified vectors.
+</summary>
+            <param name="value1">The first source vector.</param>
+            <param name="value2">The second source vector.</param>
+            <returns>A vector containing the largest components of the source vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Minimize(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Returns a vector containing the smallest components of the specified vectors.
+</summary>
+            <param name="value1">The first source vector.</param>
+            <param name="value2">The second source vector.</param>
+            <param name="result">When the method completes, contains an new vector composed of the smallest components of the source vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Minimize(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Returns a vector containing the smallest components of the specified vectors.
+</summary>
+            <param name="value1">The first source vector.</param>
+            <param name="value2">The second source vector.</param>
+            <returns>A vector containing the smallest components of the source vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.TransformNormal(SlimDX.Vector2[],SlimDX.Matrix@)">
+            <summary>
+Performs a normal transformation using the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="normals">The normal vectors to transform.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <returns>The transformed normals.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.TransformNormal(SlimDX.Vector2@,SlimDX.Matrix@,SlimDX.Vector2@)">
+            <summary>
+Performs a normal transformation using the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="normal">The normal vector to transform.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <param name="result">When the method completes, contains the transformed normal.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.TransformNormal(SlimDX.Vector2,SlimDX.Matrix)">
+            <summary>
+Performs a normal transformation using the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="normal">The normal vector to transform.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <returns>The transformed normal.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2[],SlimDX.Quaternion@)">
+            <summary>
+Transforms an array of 2D vectors by the given <see cref="T:SlimDX.Quaternion" /> rotation.
+</summary>
+            <param name="vectors">The vectors to rotate.</param>
+            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
+            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2@,SlimDX.Quaternion@,SlimDX.Vector4@)">
+            <summary>
+Transforms a 2D vector by the given <see cref="T:SlimDX.Quaternion" /> rotation.
+</summary>
+            <param name="vector">The vector to rotate.</param>
+            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
+            <param name="result">When the method completes, contains the transformed <see cref="T:SlimDX.Vector4" />.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2,SlimDX.Quaternion)">
+            <summary>
+Transforms a 2D vector by the given <see cref="T:SlimDX.Quaternion" /> rotation.
+</summary>
+            <param name="vector">The vector to rotate.</param>
+            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
+            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2[],SlimDX.Matrix@)">
+            <summary>
+Transforms an array of 2D vectors by the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="vectors">The source vectors.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <returns>The transformed <see cref="T:SlimDX.Vector4" />s.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2@,SlimDX.Matrix@,SlimDX.Vector4@)">
+            <summary>
+Transforms a 2D vector by the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="vector">The source vector.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <param name="result">When the method completes, contains the transformed <see cref="T:SlimDX.Vector4" />.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Transform(SlimDX.Vector2,SlimDX.Matrix)">
+            <summary>
+Transforms a 2D vector by the given <see cref="T:SlimDX.Matrix" />.
+</summary>
+            <param name="vector">The source vector.</param>
+            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
+            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Normalize(SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Converts the vector into a unit vector.
+</summary>
+            <param name="vector">The vector to normalize.</param>
+            <param name="result">When the method completes, contains the normalized vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Normalize(SlimDX.Vector2)">
+            <summary>
+Converts the vector into a unit vector.
+</summary>
+            <param name="vector">The vector to normalize.</param>
+            <returns>The normalized vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Dot(SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Calculates the dot product of two vectors.
+</summary>
+            <param name="left">First source vector.</param>
+            <param name="right">Second source vector.</param>
+            <returns>The dot product of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Dot(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Calculates the dot product of two vectors.
+</summary>
+            <param name="left">First source vector.</param>
+            <param name="right">Second source vector.</param>
+            <returns>The dot product of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.DistanceSquared(SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Calculates the squared distance between two vectors.
+</summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The squared distance between the two vectors.</returns>
+            <remarks>Distance squared is the value before taking the square root. 
+Distance squared can often be used in place of distance if relative comparisons are being made. 
+For example, consider three points A, B, and C. To determine whether B or C is further from A, 
+compare the distance between A and B to the distance between A and C. Calculating the two distances 
+involves two square roots, which are computationally expensive. However, using distance squared 
+provides the same information and avoids calculating two square roots.
+</remarks>
+        </member>
+        <member name="M:SlimDX.Vector2.DistanceSquared(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Calculates the squared distance between two vectors.
+</summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The squared distance between the two vectors.</returns>
+            <remarks>Distance squared is the value before taking the square root. 
+Distance squared can often be used in place of distance if relative comparisons are being made. 
+For example, consider three points A, B, and C. To determine whether B or C is further from A, 
+compare the distance between A and B to the distance between A and C. Calculating the two distances 
+involves two square roots, which are computationally expensive. However, using distance squared 
+provides the same information and avoids calculating two square roots.
+</remarks>
+        </member>
+        <member name="M:SlimDX.Vector2.Distance(SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Calculates the distance between two vectors.
+</summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The distance between the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Distance(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Calculates the distance between two vectors.
+</summary>
+            <param name="value1">The first vector.</param>
+            <param name="value2">The second vector.</param>
+            <returns>The distance between the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.SmoothStep(SlimDX.Vector2@,SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
+            <summary>
+Performs a cubic interpolation between two vectors.
+</summary>
+            <param name="start">Start vector.</param>
+            <param name="end">End vector.</param>
+            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
+            <param name="result">When the method completes, contains the cubic interpolation of the two vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.SmoothStep(SlimDX.Vector2,SlimDX.Vector2,System.Single)">
+            <summary>
+Performs a cubic interpolation between two vectors.
+</summary>
+            <param name="start">Start vector.</param>
+            <param name="end">End vector.</param>
+            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
+            <returns>The cubic interpolation of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Lerp(SlimDX.Vector2@,SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
+            <summary>
+Performs a linear interpolation between two vectors.
+</summary>
+            <param name="start">Start vector.</param>
+            <param name="end">End vector.</param>
+            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
+            <param name="result">When the method completes, contains the linear interpolation of the two vectors.</param>
+            <remarks>
+This method performs the linear interpolation based on the following formula.
+<code>start + (end - start) * amount</code>
+Passing <paramref name="amount" /> a value of 0 will cause <paramref name="start" /> to be returned; a value of 1 will cause <paramref name="end" /> to be returned. 
+</remarks>
+        </member>
+        <member name="M:SlimDX.Vector2.Lerp(SlimDX.Vector2,SlimDX.Vector2,System.Single)">
+            <summary>
+Performs a linear interpolation between two vectors.
+</summary>
+            <param name="start">Start vector.</param>
+            <param name="end">End vector.</param>
+            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
+            <returns>The linear interpolation of the two vectors.</returns>
+            <remarks>
+This method performs the linear interpolation based on the following formula.
+<code>start + (end - start) * amount</code>
+Passing <paramref name="amount" /> a value of 0 will cause <paramref name="start" /> to be returned; a value of 1 will cause <paramref name="end" /> to be returned. 
+</remarks>
+        </member>
+        <member name="M:SlimDX.Vector2.Hermite(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
+            <summary>
+Performs a Hermite spline interpolation.
+</summary>
+            <param name="value1">First source position vector.</param>
+            <param name="tangent1">First source tangent vector.</param>
+            <param name="value2">Second source position vector.</param>
+            <param name="tangent2">Second source tangent vector.</param>
+            <param name="amount">Weighting factor.</param>
+            <param name="result">When the method completes, contains the result of the Hermite spline interpolation.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Hermite(SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,System.Single)">
+            <summary>
+Performs a Hermite spline interpolation.
+</summary>
+            <param name="value1">First source position vector.</param>
+            <param name="tangent1">First source tangent vector.</param>
+            <param name="value2">Second source position vector.</param>
+            <param name="tangent2">Second source tangent vector.</param>
+            <param name="amount">Weighting factor.</param>
+            <returns>The result of the Hermite spline interpolation.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Clamp(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Restricts a value to be within a specified range.
+</summary>
+            <param name="value">The value to clamp.</param>
+            <param name="min">The minimum value.</param>
+            <param name="max">The maximum value.</param>
+            <param name="result">When the method completes, contains the clamped value.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Clamp(SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Restricts a value to be within a specified range.
+</summary>
+            <param name="value">The value to clamp.</param>
+            <param name="min">The minimum value.</param>
+            <param name="max">The maximum value.</param>
+            <returns>The clamped value.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.CatmullRom(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
+            <summary>
+Performs a Catmull-Rom interpolation using the specified positions.
+</summary>
+            <param name="value1">The first position in the interpolation.</param>
+            <param name="value2">The second position in the interpolation.</param>
+            <param name="value3">The third position in the interpolation.</param>
+            <param name="value4">The fourth position in the interpolation.</param>
+            <param name="amount">Weighting factor.</param>
+            <param name="result">When the method completes, contains the result of the Catmull-Rom interpolation.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.CatmullRom(SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,System.Single)">
+            <summary>
+Performs a Catmull-Rom interpolation using the specified positions.
+</summary>
+            <param name="value1">The first position in the interpolation.</param>
+            <param name="value2">The second position in the interpolation.</param>
+            <param name="value3">The third position in the interpolation.</param>
+            <param name="value4">The fourth position in the interpolation.</param>
+            <param name="amount">Weighting factor.</param>
+            <returns>A vector that is the result of the Catmull-Rom interpolation.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Barycentric(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@,System.Single,System.Single,SlimDX.Vector2@)">
+            <summary>
+Returns a <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 2D triangle.
+</summary>
+            <param name="value1">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 1 of the triangle.</param>
+            <param name="value2">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 2 of the triangle.</param>
+            <param name="value3">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 3 of the triangle.</param>
+            <param name="amount1">Barycentric coordinate b2, which expresses the weighting factor toward vertex 2 (specified in <paramref name="value2" />).</param>
+            <param name="amount2">Barycentric coordinate b3, which expresses the weighting factor toward vertex 3 (specified in <paramref name="value3" />).</param>
+            <param name="result">When the method completes, contains the 2D Cartesian coordinates of the specified point.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Barycentric(SlimDX.Vector2,SlimDX.Vector2,SlimDX.Vector2,System.Single,System.Single)">
+            <summary>
+Returns a <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 2D triangle.
+</summary>
+            <param name="value1">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 1 of the triangle.</param>
+            <param name="value2">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 2 of the triangle.</param>
+            <param name="value3">A <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of vertex 3 of the triangle.</param>
+            <param name="amount1">Barycentric coordinate b2, which expresses the weighting factor toward vertex 2 (specified in <paramref name="value2" />).</param>
+            <param name="amount2">Barycentric coordinate b3, which expresses the weighting factor toward vertex 3 (specified in <paramref name="value3" />).</param>
+            <returns>A new <see cref="T:SlimDX.Vector2" /> containing the 2D Cartesian coordinates of the specified point.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Negate(SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Reverses the direction of a given vector.
+</summary>
+            <param name="value">The vector to negate.</param>
+            <param name="result">When the method completes, contains a vector facing in the opposite direction.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Negate(SlimDX.Vector2)">
+            <summary>
+Reverses the direction of a given vector.
+</summary>
+            <param name="value">The vector to negate.</param>
+            <returns>A vector facing in the opposite direction.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Divide(SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <param name="result">When the method completes, contains the scaled vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Divide(SlimDX.Vector2,System.Single)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="value">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Multiply(SlimDX.Vector2@,System.Single,SlimDX.Vector2@)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="vector">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <param name="result">When the method completes, contains the scaled vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Multiply(SlimDX.Vector2,System.Single)">
+            <summary>
+Scales a vector by the given value.
+</summary>
+            <param name="value">The vector to scale.</param>
+            <param name="scale">The amount by which to scale the vector.</param>
+            <returns>The scaled vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Modulate(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Modulates a vector by another.
+</summary>
+            <param name="left">The first vector to modulate.</param>
+            <param name="right">The second vector to modulate.</param>
+            <param name="result">When the moethod completes, contains the modulated vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Modulate(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Modulates a vector by another.
+</summary>
+            <param name="left">The first vector to modulate.</param>
+            <param name="right">The second vector to modulate.</param>
+            <returns>The modulated vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Subtract(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Subtracts two vectors.
+</summary>
+            <param name="left">The first vector to subtract.</param>
+            <param name="right">The second vector to subtract.</param>
+            <param name="result">When the method completes, contains the difference of the two vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Subtract(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Subtracts two vectors.
+</summary>
+            <param name="left">The first vector to subtract.</param>
+            <param name="right">The second vector to subtract.</param>
+            <returns>The difference of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Add(SlimDX.Vector2@,SlimDX.Vector2@,SlimDX.Vector2@)">
+            <summary>
+Adds two vectors.
+</summary>
+            <param name="left">The first vector to add.</param>
+            <param name="right">The second vector to add.</param>
+            <param name="result">When the method completes, contains the sum of the two vectors.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.Add(SlimDX.Vector2,SlimDX.Vector2)">
+            <summary>
+Adds two vectors.
+</summary>
+            <param name="left">The first vector to add.</param>
+            <param name="right">The second vector to add.</param>
+            <returns>The sum of the two vectors.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Normalize">
+            <summary>
+Converts the vector into a unit vector.
+</summary>
+        </member>
+        <member name="M:SlimDX.Vector2.LengthSquared">
+            <summary>
+Calculates the squared length of the vector.
+</summary>
+            <returns>The squared length of the vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.Length">
+            <summary>
+Calculates the length of the vector.
+</summary>
+            <returns>The length of the vector.</returns>
+        </member>
+        <member name="M:SlimDX.Vector2.#ctor(System.Single,System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Vector2" /> class.
+</summary>
+            <param name="x">Initial value for the X component of the vector.</param>
+            <param name="y">Initial value for the Y component of the vector.</param>
+        </member>
+        <member name="M:SlimDX.Vector2.#ctor(System.Single)">
+            <summary>
+Initializes a new instance of the <see cref="T:SlimDX.Vector2" /> class.
+</summary>
+            <param name="value">The value that will be assigned to all components.</param>
+        </member>
+        <member name="P:SlimDX.Direct3D10.Resource.Dimension">
+            <summary>
+Gets the resource's dimension (type).
+</summary>
+        </member>
+        <member name="P:SlimDX.Direct3D10.Resource.EvictionPriority">
+            <summary>
+Gets or sets the resource's eviction priority.
+</summary>
+        </member>
         <member name="P:SlimDX.XInput.Controller.IsConnected">
             <summary>
 Tests if the controller is currently connected. 
@@ -1477,427 +2440,79 @@ Flags that indicate the keyboard state at the time of the input event.
 Bitmask of the device digital buttons
 </summary>
         </member>
-        <member name="M:SlimDX.Plane.Equals(SlimDX.Plane@,SlimDX.Plane@)">
+        <member name="M:SlimDX.DirectInput.InputException.CheckHResult(System.Int32!System.Runtime.CompilerServices.IsLong,System.String,System.Object)">
             <summary>
-Determines whether the specified Object instances are considered equal. 
+Checks the specified result code. If it specifies an error, an exception matching that
+error will be thrown.
 </summary>
-            <param name="value1" />
-            <param name="value2" />
-            <returns>
-                <c>true</c> if <paramref name="value1" /> is the same instance as <paramref name="value2" /> or 
-if both are <c>null</c> references or if <c>objA.Equals(objB)</c> returns <c>true</c>; otherwise, <c>false</c>.</returns>
+            <param name="hr">The result code.</param>
+            <param name="dataKey">The data key.</param>
+            <param name="dataValue">The data value.</param>
         </member>
-        <member name="M:SlimDX.Plane.Equals(SlimDX.Plane)">
+        <member name="M:SlimDX.DirectInput.InputException.CheckHResult(System.Int32!System.Runtime.CompilerServices.IsLong)">
             <summary>
-Returns a value that indicates whether the current instance is equal to the specified object. 
+Checks the specified result code. If it specifies an error, an exception matching that
+error will be thrown.
 </summary>
-            <param name="other">Object to make the comparison with.</param>
-            <returns>
-                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
+            <param name="hr">The result code.</param>
         </member>
-        <member name="M:SlimDX.Plane.Equals(System.Object)">
+        <member name="M:SlimDX.DirectInput.InputException.GetExceptionFromHResult(System.Int32!System.Runtime.CompilerServices.IsLong)">
             <summary>
-Returns a value that indicates whether the current instance is equal to a specified object. 
+Retrieves the exception that corresponds to the specified result code.
 </summary>
-            <param name="obj">Object to make the comparison with.</param>
-            <returns>
-                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
+            <param name="hr">The result code.</param>
         </member>
-        <member name="M:SlimDX.Plane.GetHashCode">
+        <member name="P:SlimDX.DirectInput.InputException.LastError">
             <summary>
-Gets the hash code of the plane object. 
-</summary>
-            <returns>Hash code of the plane object.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.ToString">
-            <summary>
-Retrieves a string representation of the current object. 
-</summary>
-            <returns>A string that represents the object.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.op_Inequality(SlimDX.Plane,SlimDX.Plane)">
-            <summary>
-Tests planes for inequality. 
-</summary>
-            <param name="left">The first source plane.</param>
-            <param name="right">The second source plane.</param>
-            <returns>
-                <c>true</c> if the planes are not equal; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.op_Equality(SlimDX.Plane,SlimDX.Plane)">
-            <summary>
-Tests planes for equality. 
-</summary>
-            <param name="left">The first source plane.</param>
-            <param name="right">The second source plane.</param>
-            <returns>
-                <c>true</c> if the planes are equal; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.op_Multiply(System.Single,SlimDX.Plane)">
-            <summary>
-Scales the plane by the given scaling factor.
-</summary>
-            <param name="plane">The source plane.</param>
-            <param name="scale">The scaling factor.</param>
-            <returns>The scaled plane.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.op_Multiply(SlimDX.Plane,System.Single)">
-            <summary>
-Scales the plane by the given scaling factor.
-</summary>
-            <param name="plane">The source plane.</param>
-            <param name="scale">The scaling factor.</param>
-            <returns>The scaled plane.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Intersects(SlimDX.Plane@,SlimDX.Vector3@,SlimDX.Vector3@,SlimDX.Vector3@)">
-            <summary>
-Finds the intersection between a plane and a line.
-</summary>
-            <param name="plane">The source plane.</param>
-            <param name="start">The start point of the line.</param>
-            <param name="end">The end point of the line.</param>
-            <param name="intersectPoint">If an intersection is found, contains the intersection point between the line and the plane.</param>
-            <returns>
-                <c>true</c> if an intersection is found; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Intersects(SlimDX.Plane,SlimDX.Vector3,SlimDX.Vector3,SlimDX.Vector3@)">
-            <summary>
-Finds the intersection between a plane and a line.
-</summary>
-            <param name="plane">The source plane.</param>
-            <param name="start">The start point of the line.</param>
-            <param name="end">The end point of the line.</param>
-            <param name="intersectPoint">If an intersection is found, contains the intersection point between the line and the plane.</param>
-            <returns>
-                <c>true</c> if an intersection is found; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane[],SlimDX.Quaternion@)">
-            <summary>
-Transforms an array of normalized planes by a quaternion rotation.
-</summary>
-            <param name="planes">The normalized source planes.</param>
-            <param name="rotation">The quaternion rotation.</param>
-            <returns>The transformed planes.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane@,SlimDX.Quaternion@,SlimDX.Plane@)">
-            <summary>
-Transforms a normalized plane by a quaternion rotation.
-</summary>
-            <param name="plane">The normalized source plane.</param>
-            <param name="rotation">The quaternion rotation.</param>
-            <param name="result">When the method completes, contains the transformed plane.</param>
-        </member>
-        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane,SlimDX.Quaternion)">
-            <summary>
-Transforms a normalized plane by a quaternion rotation.
-</summary>
-            <param name="plane">The normalized source plane.</param>
-            <param name="rotation">The quaternion rotation.</param>
-            <returns>The transformed plane.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane[],SlimDX.Matrix@)">
-            <summary>
-Transforms an array of normalized planes by a matrix.
-</summary>
-            <param name="planes">The normalized source planes.</param>
-            <param name="transformation">The transformation matrix.</param>
-            <returns>The transformed planes.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane@,SlimDX.Matrix@,SlimDX.Plane@)">
-            <summary>
-Transforms a normalized plane by a matrix.
-</summary>
-            <param name="plane">The normalized source plane.</param>
-            <param name="transformation">The transformation matrix.</param>
-            <param name="result">When the method completes, contains the transformed plane.</param>
-        </member>
-        <member name="M:SlimDX.Plane.Transform(SlimDX.Plane,SlimDX.Matrix)">
-            <summary>
-Transforms a normalized plane by a matrix.
-</summary>
-            <param name="plane">The normalized source plane.</param>
-            <param name="transformation">The transformation matrix.</param>
-            <returns>The transformed plane.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Normalize(SlimDX.Plane@,SlimDX.Plane@)">
-            <summary>
-Changes the coefficients of the normal vector of the plane to make it of unit length.
-</summary>
-            <param name="plane">The source plane.</param>
-            <param name="result">When the method completes, contains the normalized plane.</param>
-        </member>
-        <member name="M:SlimDX.Plane.Normalize(SlimDX.Plane)">
-            <summary>
-Changes the coefficients of the normal vector of the plane to make it of unit length.
-</summary>
-            <param name="plane">The source plane.</param>
-            <returns>The normalized plane.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Normalize">
-            <summary>
-Changes the coefficients of the normal vector of the plane to make it of unit length.
+Gets or sets the last error code.
 </summary>
         </member>
-        <member name="M:SlimDX.Plane.DotNormal(SlimDX.Plane@,SlimDX.Vector3@)">
+        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.String,System.Exception)">
             <summary>
-Calculates the dot product of the specified vector and the normal of the plane.
+Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
 </summary>
-            <param name="plane">The source plane.</param>
-            <param name="point">The source vector.</param>
-            <returns>The dot product of the specified vector and the normal of the plane.</returns>
+            <param name="message">The error message.</param>
+            <param name="innerException">The wrapped exception.</param>
         </member>
-        <member name="M:SlimDX.Plane.DotNormal(SlimDX.Plane,SlimDX.Vector3)">
+        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.Int32,System.String)">
             <summary>
-Calculates the dot product of the specified vector and the normal of the plane.
+Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
 </summary>
-            <param name="plane">The source plane.</param>
-            <param name="point">The source vector.</param>
-            <returns>The dot product of the specified vector and the normal of the plane.</returns>
+            <param name="errorCode">The DirectInput error code.</param>
+            <param name="message">The error message.</param>
         </member>
-        <member name="M:SlimDX.Plane.DotCoordinate(SlimDX.Plane@,SlimDX.Vector3@)">
+        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.Int32)">
             <summary>
-Calculates the dot product of a specified vector and the normal of the plane plus the distance value of the plane.
+Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
 </summary>
-            <param name="plane">The source plane.</param>
-            <param name="point">The source vector.</param>
-            <returns>The dot product of a specified vector and the normal of the Plane plus the distance value of the plane.</returns>
+            <param name="errorCode">The DirectInput error code.</param>
         </member>
-        <member name="M:SlimDX.Plane.DotCoordinate(SlimDX.Plane,SlimDX.Vector3)">
+        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.String)">
             <summary>
-Calculates the dot product of a specified vector and the normal of the plane plus the distance value of the plane.
+Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
 </summary>
-            <param name="plane">The source plane.</param>
-            <param name="point">The source vector.</param>
-            <returns>The dot product of a specified vector and the normal of the Plane plus the distance value of the plane.</returns>
+            <param name="message">The error message.</param>
         </member>
-        <member name="M:SlimDX.Plane.Dot(SlimDX.Plane@,SlimDX.Vector4@)">
+        <member name="M:SlimDX.DirectInput.InputException.#ctor">
             <summary>
-Calculates the dot product of the specified vector and plane.
-</summary>
-            <param name="plane">The source plane.</param>
-            <param name="point">The source vector.</param>
-            <returns>The dot product of the specified vector and plane.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.Dot(SlimDX.Plane,SlimDX.Vector4)">
-            <summary>
-Calculates the dot product of the specified vector and plane.
-</summary>
-            <param name="plane">The source plane.</param>
-            <param name="point">The source vector.</param>
-            <returns>The dot product of the specified vector and plane.</returns>
-        </member>
-        <member name="M:SlimDX.Plane.#ctor(SlimDX.Vector4)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Plane" /> class.
-</summary>
-            <param name="value">
-A vector with the X, Y, and Z components defining the normal to the plane.
-The W component defines the distance of the plane along its normal from the origin.
-</param>
-        </member>
-        <member name="M:SlimDX.Plane.#ctor(SlimDX.Vector3,SlimDX.Vector3,SlimDX.Vector3)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Plane" /> class.
-</summary>
-            <param name="point1">First point of a triangle defining the plane.</param>
-            <param name="point2">Second point of a triangle defining the plane.</param>
-            <param name="point3">Third point of a triangle defining the plane.</param>
-        </member>
-        <member name="M:SlimDX.Plane.#ctor(SlimDX.Vector3,System.Single)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Plane" /> class.
-</summary>
-            <param name="normal">The normal vector to the plane.</param>
-            <param name="d">Distance of the plane along its normal from the origin.</param>
-        </member>
-        <member name="M:SlimDX.Plane.#ctor(System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Plane" /> class.
-</summary>
-            <param name="a">X component of the normal defining the plane.</param>
-            <param name="b">Y component of the normal defining the plane.</param>
-            <param name="c">Z component of the normal defining the plane.</param>
-            <param name="d">Distance of the plane along its normal from the origin.</param>
-        </member>
-        <member name="M:SlimDX.Direct3D9.Texture.Fill(SlimDX.Direct3D9.Fill2DCallback)">
-            <summary>
-Uses a user-provided function to fill each texel of each mip level of a given texture.
-</summary>
-            <param name="callback">A function that uses the signature of the Fill2DCallback delegate.</param>
-            <summary>
-Uses a user-provided function to fill each texel of each mip level of a given texture.
-</summary>
-            <param name="callback">A function that uses the signature of the Fill2DCallback delegate.</param>
-        </member>
-        <member name="M:SlimDX.Direct3D9.Texture.SaveToFile(System.String,SlimDX.Direct3D9.ImageFileFormat)">
-            <summary>
-Function to save the texture to a file.
-</summary>
-            <param name="fileName">Filename and path for the texture.</param>
-            <param name="format">File format used to encode the image.</param>
-            <summary>
-Function to save the texture to a file.
-</summary>
-            <param name="fileName">Filename and path for the texture.</param>
-            <param name="format">File format used to encode the image.</param>
-        </member>
-        <member name="M:SlimDX.Direct3D9.Texture.Save(SlimDX.Direct3D9.ImageFileFormat)">
-            <summary>
-Function to save the texture to a stream.
-</summary>
-            <param name="format">File format used to encode the image.</param>
-            <returns>A graphics stream containing the texture data.</returns>
-            <summary>
-Function to save the texture to a stream.
-</summary>
-            <param name="format">File format used to encode the image.</param>
-            <returns>A graphics stream containing the texture data.</returns>
-        </member>
-        <member name="M:SlimDX.Direct3D9.Texture.CheckRequirements(SlimDX.Direct3D9.Device,System.Int32,System.Int32,System.Int32,SlimDX.Direct3D9.Usage,SlimDX.Direct3D9.Format,SlimDX.Direct3D9.Pool)">
-            <summary>
-Checks texture-creation parameters.
-</summary>
-            <param name="device">Device associated with the texture.</param>
-            <param name="width">Requested width of the texture.</param>
-            <param name="height">Requested height of the texture.</param>
-            <param name="mipLevelCount">Requested number of mip-map levels for the texture.</param>
-            <param name="usage">Usage.None or Usage.RenderTarget.</param>
-            <param name="format">Requested format for the texture.</param>
-            <param name="pool">Memory class where the resource will be placed.</param>
-            <returns>A value type containing the proposed values to pass to the texture creation functions.</returns>
-        </member>
-        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.MipLevelCount">
-            <summary>
-Proposed number of mip-map levels for the texture.
+Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
 </summary>
         </member>
-        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.Format">
+        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
             <summary>
-Proposed format of the texture.
+Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
+</summary>
+            <param name="info">Serialization information.</param>
+            <param name="context">Streaming context information.</param>
+        </member>
+        <member name="M:SlimDX.DirectInput.InputException.#cctor">
+            <summary>
+Initializes the <see cref="T:SlimDX.DirectInput.InputException" /> class.
 </summary>
         </member>
-        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.Depth">
+        <member name="T:SlimDX.DirectInput.InputException">
             <summary>
-Proposed depth of the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.Height">
-            <summary>
-Proposed height of the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.VolumeTextureRequirements.Width">
-            <summary>
-Proposed width of the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.CubeTextureRequirements.MipLevelCount">
-            <summary>
-Proposed number of mip-map levels for the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.CubeTextureRequirements.Format">
-            <summary>
-Proposed format of the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.CubeTextureRequirements.Size">
-            <summary>
-Proposed size of the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.TextureRequirements.MipLevelCount">
-            <summary>
-Proposed number of mip-map levels for the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.TextureRequirements.Format">
-            <summary>
-Proposed format of the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.TextureRequirements.Height">
-            <summary>
-Proposed height of the texture.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D9.TextureRequirements.Width">
-            <summary>
-Proposed width of the texture.
-</summary>
-        </member>
-        <member name="T:SlimDX.Direct3D9.Fill2DCallback">
-            <summary>
-Callback function used by FillTexture.
-</summary>
-            <param name="coordinate">Texture coordinate being sampled.</param>
-            <param name="texelSize">Dimensions of the texel.</param>
-            <returns>A 4 dimensional vector, representing a color value.  X maps to R, G to Y, etc...</returns>
-        </member>
-        <member name="M:SlimDX.Direct3D9.ImageInformation.FromStream(System.IO.Stream)">
-            <summary>
-Function to extract image information from a stream.
-</summary>
-            <param name="stream">Stream containing the image.</param>
-            <returns>Information about the image.</returns>
-            <summary>
-Function to extract image information from a stream.
-</summary>
-            <param name="stream">Stream containing the image.</param>
-            <returns>Information about the image.</returns>
-        </member>
-        <member name="M:SlimDX.Direct3D9.ImageInformation.FromStream(System.IO.Stream,System.Boolean)">
-            <summary>
-Function to extract image information from a stream.
-</summary>
-            <param name="stream">Stream containing the image.</param>
-            <param name="peek">TRUE to preserve the stream position, FALSE will move the stream pointer.</param>
-            <returns>Information about the image.</returns>
-            <summary>
-Function to extract image information from a stream.
-</summary>
-            <param name="stream">Stream containing the image.</param>
-            <param name="peek">TRUE to preserve the stream position, FALSE will move the stream pointer.</param>
-            <returns>Information about the image.</returns>
-        </member>
-        <member name="P:SlimDX.Direct3D10.Texture2D.Height">
-            <summary>
-Gets the height of the texture in texels.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.Texture2D.Width">
-            <summary>
-Gets the width of the texture in texels.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.ShaderReflection.OutputParameterCount">
-            <summary>
-Gets the number of parameters in the output signature. 
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.ShaderReflection.InputParameterCount">
-            <summary>
-Gets the number of parameters in the input signature. 
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.ShaderReflection.BoundResourcesCount">
-            <summary>
-Gets the number of resource (textures and buffers) bound to a shader. 
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.ShaderReflection.ConstantBufferCount">
-            <summary>
-Gets the number of constant buffers.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.ShaderReflection.Creator">
-            <summary>
-Gets the creator.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.ShaderReflection.Version">
-            <summary>
-Gets the version.
+Provides standard access to all DirectInput exceptions, errors, and result codes.
 </summary>
         </member>
         <member name="E:SlimDX.DirectInput.Device`1.DeviceLost">
@@ -1908,11 +2523,6 @@ Occurs when the device is lost.
         <member name="E:SlimDX.DirectInput.Device`1.BufferOverflow">
             <summary>
 Occurs when the device's data buffer overflows.
-</summary>
-        </member>
-        <member name="P:SlimDX.DirectInput.Device`1.NativePointer">
-            <summary>
-Gets a pointer to the native DirectInput interface.
 </summary>
         </member>
         <member name="P:SlimDX.DirectInput.Device`1.DeviceInformation">
@@ -4101,620 +4711,138 @@ any other DirectInput methods.
 Provides an interface to DirectInput.
 </summary>
         </member>
-        <member name="M:SlimDX.DirectInput.InputException.CheckHResult(System.Int32!System.Runtime.CompilerServices.IsLong,System.String,System.Object)">
+        <member name="M:SlimDX.Utils.ConvertRect(tagRECT)">
             <summary>
-Checks the specified result code. If it specifies an error, an exception matching that
-error will be thrown.
+Function to convert a standard RECT to a GDI+ rectangle.
 </summary>
-            <param name="hr">The result code.</param>
-            <param name="dataKey">The data key.</param>
-            <param name="dataValue">The data value.</param>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.CheckHResult(System.Int32!System.Runtime.CompilerServices.IsLong)">
-            <summary>
-Checks the specified result code. If it specifies an error, an exception matching that
-error will be thrown.
-</summary>
-            <param name="hr">The result code.</param>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.GetExceptionFromHResult(System.Int32!System.Runtime.CompilerServices.IsLong)">
-            <summary>
-Retrieves the exception that corresponds to the specified result code.
-</summary>
-            <param name="hr">The result code.</param>
-        </member>
-        <member name="P:SlimDX.DirectInput.InputException.LastError">
-            <summary>
-Gets or sets the last error code.
-</summary>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.String,System.Exception)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
-</summary>
-            <param name="message">The error message.</param>
-            <param name="innerException">The wrapped exception.</param>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.Int32,System.String)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
-</summary>
-            <param name="errorCode">The DirectInput error code.</param>
-            <param name="message">The error message.</param>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.Int32)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
-</summary>
-            <param name="errorCode">The DirectInput error code.</param>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.String)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
-</summary>
-            <param name="message">The error message.</param>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.#ctor">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
-</summary>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.DirectInput.InputException" /> class.
-</summary>
-            <param name="info">Serialization information.</param>
-            <param name="context">Streaming context information.</param>
-        </member>
-        <member name="M:SlimDX.DirectInput.InputException.#cctor">
-            <summary>
-Initializes the <see cref="T:SlimDX.DirectInput.InputException" /> class.
-</summary>
-        </member>
-        <member name="T:SlimDX.DirectInput.InputException">
-            <summary>
-Provides standard access to all DirectInput exceptions, errors, and result codes.
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.Resource.Dimension">
-            <summary>
-Gets the resource's dimension (type).
-</summary>
-        </member>
-        <member name="P:SlimDX.Direct3D10.Resource.EvictionPriority">
-            <summary>
-Gets or sets the resource's eviction priority.
-</summary>
-        </member>
-        <member name="M:SlimDX.Vector4.Equals(SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Determines whether the specified Object instances are considered equal. 
-</summary>
-            <param name="value1" />
-            <param name="value2" />
-            <returns>
-                <c>true</c> if <paramref name="value1" /> is the same instance as <paramref name="value2" /> or 
-if both are <c>null</c> references or if <c>objA.Equals(objB)</c> returns <c>true</c>; otherwise, <c>false</c>.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Equals(SlimDX.Vector4)">
-            <summary>
-Returns a value that indicates whether the current instance is equal to the specified object. 
-</summary>
-            <param name="other">Object to make the comparison with.</param>
-            <returns>
-                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Equals(System.Object)">
-            <summary>
-Returns a value that indicates whether the current instance is equal to a specified object. 
-</summary>
-            <param name="obj">Object to make the comparison with.</param>
-            <returns>
-                <c>true</c> if the current instance is equal to the specified object; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.GetHashCode">
-            <summary>
-Gets the hash code of the vector object. 
-</summary>
-            <returns>Hash code of the vector object.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.ToString">
-            <summary>
-Retrieves a string representation of the current object. 
-</summary>
-            <returns>A string that represents the object.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.op_Inequality(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Tests vectors for inequality. 
-</summary>
-            <param name="left">The first source vector.</param>
-            <param name="right">The second source vector.</param>
-            <returns>
-                <c>true</c> if the vectors are not equal; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.op_Equality(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Tests vectors for equality. 
-</summary>
-            <param name="left">The first source vector.</param>
-            <param name="right">The second source vector.</param>
-            <returns>
-                <c>true</c> if the vectors are equal; <c>false</c> otherwise.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.op_Division(SlimDX.Vector4,System.Single)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.op_Multiply(System.Single,SlimDX.Vector4)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.op_Multiply(SlimDX.Vector4,System.Single)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.op_UnaryNegation(SlimDX.Vector4)">
-            <summary>
-Reverses the direction of a given vector.
-</summary>
-            <param name="value">The vector to negate.</param>
-            <returns>A vector facing in the opposite direction.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.op_Subtraction(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Subtracts two vectors.
-</summary>
-            <param name="left">The first vector to subtract.</param>
-            <param name="right">The second vector to subtract.</param>
-            <returns>The difference of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.op_Addition(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Adds two vectors.
-</summary>
-            <param name="left">The first vector to add.</param>
-            <param name="right">The second vector to add.</param>
-            <returns>The sum of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Maximize(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Returns a vector containing the smallest components of the specified vectors.
-</summary>
-            <param name="value1">The first source vector.</param>
-            <param name="value2">The second source vector.</param>
-            <param name="result">When the method completes, contains an new vector composed of the largest components of the source vectors.</param>
-        </member>
-        <member name="M:SlimDX.Vector4.Maximize(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Returns a vector containing the largest components of the specified vectors.
-</summary>
-            <param name="value1">The first source vector.</param>
-            <param name="value2">The second source vector.</param>
-            <returns>A vector containing the largest components of the source vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Minimize(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Returns a vector containing the smallest components of the specified vectors.
-</summary>
-            <param name="value1">The first source vector.</param>
-            <param name="value2">The second source vector.</param>
-            <param name="result">When the method completes, contains an new vector composed of the smallest components of the source vectors.</param>
-        </member>
-        <member name="M:SlimDX.Vector4.Minimize(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Returns a vector containing the smallest components of the specified vectors.
-</summary>
-            <param name="value1">The first source vector.</param>
-            <param name="value2">The second source vector.</param>
-            <returns>A vector containing the smallest components of the source vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4[],SlimDX.Quaternion@)">
-            <summary>
-Transforms an array of 4D vectors by the given <see cref="T:SlimDX.Quaternion" /> rotation.
-</summary>
-            <param name="vectors">The vectors to rotate.</param>
-            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
-            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4@,SlimDX.Quaternion@,SlimDX.Vector4@)">
-            <summary>
-Transforms a 4D vector by the given <see cref="T:SlimDX.Quaternion" /> rotation.
-</summary>
-            <param name="vector">The vector to rotate.</param>
-            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
-            <param name="result">When the method completes, contains the transformed <see cref="T:SlimDX.Vector4" />.</param>
-        </member>
-        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4,SlimDX.Quaternion)">
-            <summary>
-Transforms a 4D vector by the given <see cref="T:SlimDX.Quaternion" /> rotation.
-</summary>
-            <param name="vector">The vector to rotate.</param>
-            <param name="rotation">The <see cref="T:SlimDX.Quaternion" /> rotation to apply.</param>
-            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4[],SlimDX.Matrix@)">
-            <summary>
-Transforms an array of 4D vectors by the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="vectors">The source vectors.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <returns>The transformed <see cref="T:SlimDX.Vector4" />s.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4@,SlimDX.Matrix@,SlimDX.Vector4@)">
-            <summary>
-Transforms a 4D vector by the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="vector">The source vector.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <param name="result">When the method completes, contains the transformed <see cref="T:SlimDX.Vector4" />.</param>
-        </member>
-        <member name="M:SlimDX.Vector4.Transform(SlimDX.Vector4,SlimDX.Matrix)">
-            <summary>
-Transforms a 4D vector by the given <see cref="T:SlimDX.Matrix" />.
-</summary>
-            <param name="vector">The source vector.</param>
-            <param name="transformation">The transformation <see cref="T:SlimDX.Matrix" />.</param>
-            <returns>The transformed <see cref="T:SlimDX.Vector4" />.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Normalize(SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Converts the vector into a unit vector.
-</summary>
-            <param name="vector">The vector to normalize.</param>
-            <param name="result">When the method completes, contains the normalized vector.</param>
-        </member>
-        <member name="M:SlimDX.Vector4.Normalize(SlimDX.Vector4)">
-            <summary>
-Converts the vector into a unit vector.
-</summary>
-            <param name="vector">The vector to normalize.</param>
-            <returns>The normalized vector.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Dot(SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Calculates the dot product of two vectors.
-</summary>
-            <param name="left">First source vector.</param>
-            <param name="right">Second source vector.</param>
-            <returns>The dot product of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Dot(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Calculates the dot product of two vectors.
-</summary>
-            <param name="left">First source vector.</param>
-            <param name="right">Second source vector.</param>
-            <returns>The dot product of the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.DistanceSquared(SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Calculates the squared distance between two vectors.
-</summary>
-            <param name="value1">The first vector.</param>
-            <param name="value2">The second vector.</param>
-            <returns>The squared distance between the two vectors.</returns>
-            <remarks>Distance squared is the value before taking the square root. 
-Distance squared can often be used in place of distance if relative comparisons are being made. 
-For example, consider three points A, B, and C. To determine whether B or C is further from A, 
-compare the distance between A and B to the distance between A and C. Calculating the two distances 
-involves two square roots, which are computationally expensive. However, using distance squared 
-provides the same information and avoids calculating two square roots.
-</remarks>
-        </member>
-        <member name="M:SlimDX.Vector4.DistanceSquared(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Calculates the squared distance between two vectors.
-</summary>
-            <param name="value1">The first vector.</param>
-            <param name="value2">The second vector.</param>
-            <returns>The squared distance between the two vectors.</returns>
-            <remarks>Distance squared is the value before taking the square root. 
-Distance squared can often be used in place of distance if relative comparisons are being made. 
-For example, consider three points A, B, and C. To determine whether B or C is further from A, 
-compare the distance between A and B to the distance between A and C. Calculating the two distances 
-involves two square roots, which are computationally expensive. However, using distance squared 
-provides the same information and avoids calculating two square roots.
-</remarks>
-        </member>
-        <member name="M:SlimDX.Vector4.Distance(SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Calculates the distance between two vectors.
-</summary>
-            <param name="value1">The first vector.</param>
-            <param name="value2">The second vector.</param>
-            <returns>The distance between the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.Distance(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Calculates the distance between two vectors.
-</summary>
-            <param name="value1">The first vector.</param>
-            <param name="value2">The second vector.</param>
-            <returns>The distance between the two vectors.</returns>
-        </member>
-        <member name="M:SlimDX.Vector4.SmoothStep(SlimDX.Vector4@,SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
-            <summary>
-Performs a cubic interpolation between two vectors.
-</summary>
-            <param name="start">Start vector.</param>
-            <param name="end">End vector.</param>
-            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
-            <param name="result">When the method completes, contains the cubic interpolation of the two vectors.</param>
-        </member>
-        <member name="M:SlimDX.Vector4.SmoothStep(SlimDX.Vector4,SlimDX.Vector4,System.Single)">
+            <param name="rect">RECT to convert.</param>
+            <returns>A GDI+ rectangle structure.</returns>
             <summary>
-Performs a cubic interpolation between two vectors.
+Function to convert a standard RECT to a GDI+ rectangle.
 </summary>
-            <param name="start">Start vector.</param>
-            <param name="end">End vector.</param>
-            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
-            <returns>The cubic interpolation of the two vectors.</returns>
+            <param name="rect">RECT to convert.</param>
+            <returns>A GDI+ rectangle structure.</returns>
         </member>
-        <member name="M:SlimDX.Vector4.Lerp(SlimDX.Vector4@,SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
+        <member name="M:SlimDX.Direct3D9.Direct3D.CheckDeviceFormatConversion(System.Int32,SlimDX.Direct3D9.DeviceType,SlimDX.Direct3D9.Format,SlimDX.Direct3D9.Format)">
             <summary>
-Performs a linear interpolation between two vectors.
+Tests the device to see if it supports conversion from one display format to another.
 </summary>
-            <param name="start">Start vector.</param>
-            <param name="end">End vector.</param>
-            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
-            <param name="result">When the method completes, contains the linear interpolation of the two vectors.</param>
-            <remarks>
-This method performs the linear interpolation based on the following formula.
-<code>start + (end - start) * amount</code>
-Passing <paramref name="amount" /> a value of 0 will cause <paramref name="start" /> to be returned; a value of 1 will cause <paramref name="end" /> to be returned. 
-</remarks>
-        </member>
-        <member name="M:SlimDX.Vector4.Lerp(SlimDX.Vector4,SlimDX.Vector4,System.Single)">
+            <param name="adapter">Index of the adapter to use.</param>
+            <param name="deviceType">One of the DeviceType members.</param>
+            <param name="sourceFormat">Format to convert from.</param>
+            <param name="targetFormat">Format to convert into.</param>
+            <returns>TRUE if successful, FALSE if not.</returns>
             <summary>
-Performs a linear interpolation between two vectors.
+Tests the device to see if it supports conversion from one display format to another.
 </summary>
-            <param name="start">Start vector.</param>
-            <param name="end">End vector.</param>
-            <param name="amount">Value between 0 and 1 indicating the weight of <paramref name="end" />.</param>
-            <returns>The linear interpolation of the two vectors.</returns>
-            <remarks>
-This method performs the linear interpolation based on the following formula.
-<code>start + (end - start) * amount</code>
-Passing <paramref name="amount" /> a value of 0 will cause <paramref name="start" /> to be returned; a value of 1 will cause <paramref name="end" /> to be returned. 
-</remarks>
+            <param name="adapter">Index of the adapter to use.</param>
+            <param name="deviceType">One of the DeviceType members.</param>
+            <param name="sourceFormat">Format to convert from.</param>
+            <param name="targetFormat">Format to convert into.</param>
+            <returns>TRUE if successful, FALSE if not.</returns>
         </member>
-        <member name="M:SlimDX.Vector4.Hermite(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
+        <member name="M:SlimDX.Direct3D9.Direct3D.CheckDeviceFormatConversion(System.Int32,SlimDX.Direct3D9.DeviceType,SlimDX.Direct3D9.Format,SlimDX.Direct3D9.Format,System.Int32@)">
             <summary>
-Performs a Hermite spline interpolation.
+Tests the device to see if it supports conversion from one display format to another.
 </summary>
-            <param name="value1">First source position vector.</param>
-            <param name="tangent1">First source tangent vector.</param>
-            <param name="value2">Second source position vector.</param>
-            <param name="tangent2">Second source tangent vector.</param>
-            <param name="amount">Weighting factor.</param>
-            <param name="result">When the method completes, contains the result of the Hermite spline interpolation.</param>
-        </member>
-        <member name="M:SlimDX.Vector4.Hermite(SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,System.Single)">
+            <param name="adapter">Index of the adapter to use.</param>
+            <param name="deviceType">One of the DeviceType members.</param>
+            <param name="sourceFormat">Format to convert from.</param>
+            <param name="targetFormat">Format to convert into.</param>
+            <param name="result">0 if successful.  Otherwise an HRESULT error code for the function.</param>
+            <returns>TRUE if successful, FALSE if not.</returns>
             <summary>
-Performs a Hermite spline interpolation.
+Tests the device to see if it supports conversion from one display format to another.
 </summary>
-            <param name="value1">First source position vector.</param>
-            <param name="tangent1">First source tangent vector.</param>
-            <param name="value2">Second source position vector.</param>
-            <param name="tangent2">Second source tangent vector.</param>
-            <param name="amount">Weighting factor.</param>
-            <returns>The result of the Hermite spline interpolation.</returns>
+            <param name="adapter">Index of the adapter to use.</param>
+            <param name="deviceType">One of the DeviceType members.</param>
+            <param name="sourceFormat">Format to convert from.</param>
+            <param name="targetFormat">Format to convert into.</param>
+            <param name="result">0 if successful.  Otherwise an HRESULT error code for the function.</param>
+            <returns>TRUE if successful, FALSE if not.</returns>
         </member>
-        <member name="M:SlimDX.Vector4.Clamp(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
+        <member name="T:SlimDX.Direct3D9.ZBufferType">
             <summary>
-Restricts a value to be within a specified range.
+ZBuffer usage types.
 </summary>
-            <param name="value">The value to clamp.</param>
-            <param name="min">The minimum value.</param>
-            <param name="max">The maximum value.</param>
-            <param name="result">When the method completes, contains the clamped value.</param>
         </member>
-        <member name="M:SlimDX.Vector4.Clamp(SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Restricts a value to be within a specified range.
-</summary>
-            <param name="value">The value to clamp.</param>
-            <param name="min">The minimum value.</param>
-            <param name="max">The maximum value.</param>
-            <returns>The clamped value.</returns>
+        <member name="F:SlimDX.Direct3D9.ZBufferType.UseWBuffer">
+            <summary>Used to enable a W-buffer.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.CatmullRom(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
-            <summary>
-Performs a Catmull-Rom interpolation using the specified positions.
-</summary>
-            <param name="value1">The first position in the interpolation.</param>
-            <param name="value2">The second position in the interpolation.</param>
-            <param name="value3">The third position in the interpolation.</param>
-            <param name="value4">The fourth position in the interpolation.</param>
-            <param name="amount">Weighting factor.</param>
-            <param name="result">When the method completes, contains the result of the Catmull-Rom interpolation.</param>
+        <member name="F:SlimDX.Direct3D9.ZBufferType.DontUseZBuffer">
+            <summary>Used to disable the depth buffer.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.CatmullRom(SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,System.Single)">
-            <summary>
-Performs a Catmull-Rom interpolation using the specified positions.
-</summary>
-            <param name="value1">The first position in the interpolation.</param>
-            <param name="value2">The second position in the interpolation.</param>
-            <param name="value3">The third position in the interpolation.</param>
-            <param name="value4">The fourth position in the interpolation.</param>
-            <param name="amount">Weighting factor.</param>
-            <returns>A vector that is the result of the Catmull-Rom interpolation.</returns>
+        <member name="F:SlimDX.Direct3D9.ZBufferType.UseZBuffer">
+            <summary>Used to enable the depth buffer.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Barycentric(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@,System.Single,System.Single,SlimDX.Vector4@)">
+        <member name="T:SlimDX.Direct3D9.StencilOperation">
             <summary>
-Returns a <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 4D triangle.
+Stencil operations.
 </summary>
-            <param name="value1">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 1 of the triangle.</param>
-            <param name="value2">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 2 of the triangle.</param>
-            <param name="value3">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 3 of the triangle.</param>
-            <param name="amount1">Barycentric coordinate b2, which expresses the weighting factor toward vertex 2 (specified in <paramref name="value2" />).</param>
-            <param name="amount2">Barycentric coordinate b3, which expresses the weighting factor toward vertex 3 (specified in <paramref name="value3" />).</param>
-            <param name="result">When the method completes, contains the 4D Cartesian coordinates of the specified point.</param>
         </member>
-        <member name="M:SlimDX.Vector4.Barycentric(SlimDX.Vector4,SlimDX.Vector4,SlimDX.Vector4,System.Single,System.Single)">
-            <summary>
-Returns a <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of a point specified in Barycentric coordinates relative to a 4D triangle.
-</summary>
-            <param name="value1">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 1 of the triangle.</param>
-            <param name="value2">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 2 of the triangle.</param>
-            <param name="value3">A <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of vertex 3 of the triangle.</param>
-            <param name="amount1">Barycentric coordinate b2, which expresses the weighting factor toward vertex 2 (specified in <paramref name="value2" />).</param>
-            <param name="amount2">Barycentric coordinate b3, which expresses the weighting factor toward vertex 3 (specified in <paramref name="value3" />).</param>
-            <returns>A new <see cref="T:SlimDX.Vector4" /> containing the 4D Cartesian coordinates of the specified point.</returns>
+        <member name="F:SlimDX.Direct3D9.StencilOperation.Decr">
+            <summary>Decrement the stencil value.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Negate(SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Reverses the direction of a given vector.
-</summary>
-            <param name="value">The vector to negate.</param>
-            <param name="result">When the method completes, contains a vector facing in the opposite direction.</param>
+        <member name="F:SlimDX.Direct3D9.StencilOperation.Incr">
+            <summary>Increment the stencil value.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Negate(SlimDX.Vector4)">
-            <summary>
-Reverses the direction of a given vector.
-</summary>
-            <param name="value">The vector to negate.</param>
-            <returns>A vector facing in the opposite direction.</returns>
+        <member name="F:SlimDX.Direct3D9.StencilOperation.Invert">
+            <summary>Invert the stencil value.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Divide(SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <param name="result">When the method completes, contains the scaled vector.</param>
+        <member name="F:SlimDX.Direct3D9.StencilOperation.DecrSat">
+            <summary>Decrement and clamp stencil value.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Divide(SlimDX.Vector4,System.Single)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="value">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
+        <member name="F:SlimDX.Direct3D9.StencilOperation.IncrSat">
+            <summary>Increment and clamp stencil value.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Multiply(SlimDX.Vector4@,System.Single,SlimDX.Vector4@)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="vector">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <param name="result">When the method completes, contains the scaled vector.</param>
+        <member name="F:SlimDX.Direct3D9.StencilOperation.Replace">
+            <summary>Replace the stencil value.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Multiply(SlimDX.Vector4,System.Single)">
-            <summary>
-Scales a vector by the given value.
-</summary>
-            <param name="value">The vector to scale.</param>
-            <param name="scale">The amount by which to scale the vector.</param>
-            <returns>The scaled vector.</returns>
+        <member name="F:SlimDX.Direct3D9.StencilOperation.Zero">
+            <summary>Zero the stencil value.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Modulate(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Modulates a vector by another.
-</summary>
-            <param name="left">The first vector to modulate.</param>
-            <param name="right">The second vector to modulate.</param>
-            <param name="result">When the moethod completes, contains the modulated vector.</param>
+        <member name="F:SlimDX.Direct3D9.StencilOperation.Keep">
+            <summary>Keep the stencil value.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Modulate(SlimDX.Vector4,SlimDX.Vector4)">
+        <member name="T:SlimDX.Direct3D9.Compare">
             <summary>
-Modulates a vector by another.
+Comparison operations.
 </summary>
-            <param name="left">The first vector to modulate.</param>
-            <param name="right">The second vector to modulate.</param>
-            <returns>The modulated vector.</returns>
         </member>
-        <member name="M:SlimDX.Vector4.Subtract(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Subtracts two vectors.
-</summary>
-            <param name="left">The first vector to subtract.</param>
-            <param name="right">The second vector to subtract.</param>
-            <param name="result">When the method completes, contains the difference of the two vectors.</param>
+        <member name="F:SlimDX.Direct3D9.Compare.Always">
+            <summary>Always accept.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Subtract(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Subtracts two vectors.
-</summary>
-            <param name="left">The first vector to subtract.</param>
-            <param name="right">The second vector to subtract.</param>
-            <returns>The difference of the two vectors.</returns>
+        <member name="F:SlimDX.Direct3D9.Compare.GreaterEqual">
+            <summary>Accept if greater than or equal</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Add(SlimDX.Vector4@,SlimDX.Vector4@,SlimDX.Vector4@)">
-            <summary>
-Adds two vectors.
-</summary>
-            <param name="left">The first vector to add.</param>
-            <param name="right">The second vector to add.</param>
-            <param name="result">When the method completes, contains the sum of the two vectors.</param>
+        <member name="F:SlimDX.Direct3D9.Compare.NotEqual">
+            <summary>Accept if not equal.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Add(SlimDX.Vector4,SlimDX.Vector4)">
-            <summary>
-Adds two vectors.
-</summary>
-            <param name="left">The first vector to add.</param>
-            <param name="right">The second vector to add.</param>
-            <returns>The sum of the two vectors.</returns>
+        <member name="F:SlimDX.Direct3D9.Compare.Greater">
+            <summary>Accept if greater than.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Normalize">
-            <summary>
-Converts the vector into a unit vector.
-</summary>
+        <member name="F:SlimDX.Direct3D9.Compare.LessEqual">
+            <summary>Accept if equal or less than.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.LengthSquared">
-            <summary>
-Calculates the squared length of the vector.
-</summary>
-            <returns>The squared length of the vector.</returns>
+        <member name="F:SlimDX.Direct3D9.Compare.Equal">
+            <summary>Accept if equal.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.Length">
-            <summary>
-Calculates the length of the vector.
-</summary>
-            <returns>The length of the vector.</returns>
+        <member name="F:SlimDX.Direct3D9.Compare.Less">
+            <summary>Accept if less than.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.#ctor(System.Single,System.Single,System.Single,System.Single)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Vector4" /> class.
-</summary>
-            <param name="x">Initial value for the X component of the vector.</param>
-            <param name="y">Initial value for the Y component of the vector.</param>
-            <param name="z">Initial value for the Z component of the vector.</param>
-            <param name="w">Initial value for the W component of the vector.</param>
+        <member name="F:SlimDX.Direct3D9.Compare.Never">
+            <summary>Never accept</summary>
         </member>
-        <member name="M:SlimDX.Vector4.#ctor(SlimDX.Vector3,System.Single)">
+        <member name="T:SlimDX.Direct3D9.ShadeMode">
             <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Vector4" /> class.
+Shading modes.
 </summary>
-            <param name="value">A vector containing the values with which to initialize the X, Y, and Z components</param>
-            <param name="w">Initial value for the W component of the vector.</param>
         </member>
-        <member name="M:SlimDX.Vector4.#ctor(SlimDX.Vector2,System.Single,System.Single)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Vector4" /> class.
-</summary>
-            <param name="value">A vector containing the values with which to initialize the X and Y components</param>
-            <param name="z">Initial value for the Z component of the vector.</param>
-            <param name="w">Initial value for the W component of the vector.</param>
+        <member name="F:SlimDX.Direct3D9.ShadeMode.Gouraud">
+            <summary>Gouraud shading.</summary>
         </member>
-        <member name="M:SlimDX.Vector4.#ctor(System.Single)">
-            <summary>
-Initializes a new instance of the <see cref="T:SlimDX.Vector4" /> class.
-</summary>
-            <param name="value">The value that will be assigned to all components.</param>
+        <member name="F:SlimDX.Direct3D9.ShadeMode.Flat">
+            <summary>Flat shading.</summary>
         </member>
         <member name="P:SlimDX.Plane.D">
             <summary>
@@ -4873,139 +5001,6 @@ Gets or sets the X component of the vector.
             <summary>
 Defines a vector with four components.
 </summary>
-        </member>
-        <member name="M:SlimDX.Utils.ConvertRect(tagRECT)">
-            <summary>
-Function to convert a standard RECT to a GDI+ rectangle.
-</summary>
-            <param name="rect">RECT to convert.</param>
-            <returns>A GDI+ rectangle structure.</returns>
-            <summary>
-Function to convert a standard RECT to a GDI+ rectangle.
-</summary>
-            <param name="rect">RECT to convert.</param>
-            <returns>A GDI+ rectangle structure.</returns>
-        </member>
-        <member name="M:SlimDX.Direct3D9.Direct3D.CheckDeviceFormatConversion(System.Int32,SlimDX.Direct3D9.DeviceType,SlimDX.Direct3D9.Format,SlimDX.Direct3D9.Format)">
-            <summary>
-Tests the device to see if it supports conversion from one display format to another.
-</summary>
-            <param name="adapter">Index of the adapter to use.</param>
-            <param name="deviceType">One of the DeviceType members.</param>
-            <param name="sourceFormat">Format to convert from.</param>
-            <param name="targetFormat">Format to convert into.</param>
-            <returns>TRUE if successful, FALSE if not.</returns>
-            <summary>
-Tests the device to see if it supports conversion from one display format to another.
-</summary>
-            <param name="adapter">Index of the adapter to use.</param>
-            <param name="deviceType">One of the DeviceType members.</param>
-            <param name="sourceFormat">Format to convert from.</param>
-            <param name="targetFormat">Format to convert into.</param>
-            <returns>TRUE if successful, FALSE if not.</returns>
-        </member>
-        <member name="M:SlimDX.Direct3D9.Direct3D.CheckDeviceFormatConversion(System.Int32,SlimDX.Direct3D9.DeviceType,SlimDX.Direct3D9.Format,SlimDX.Direct3D9.Format,System.Int32@)">
-            <summary>
-Tests the device to see if it supports conversion from one display format to another.
-</summary>
-            <param name="adapter">Index of the adapter to use.</param>
-            <param name="deviceType">One of the DeviceType members.</param>
-            <param name="sourceFormat">Format to convert from.</param>
-            <param name="targetFormat">Format to convert into.</param>
-            <param name="result">0 if successful.  Otherwise an HRESULT error code for the function.</param>
-            <returns>TRUE if successful, FALSE if not.</returns>
-            <summary>
-Tests the device to see if it supports conversion from one display format to another.
-</summary>
-            <param name="adapter">Index of the adapter to use.</param>
-            <param name="deviceType">One of the DeviceType members.</param>
-            <param name="sourceFormat">Format to convert from.</param>
-            <param name="targetFormat">Format to convert into.</param>
-            <param name="result">0 if successful.  Otherwise an HRESULT error code for the function.</param>
-            <returns>TRUE if successful, FALSE if not.</returns>
-        </member>
-        <member name="T:SlimDX.Direct3D9.ZBufferType">
-            <summary>
-ZBuffer usage types.
-</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.ZBufferType.UseWBuffer">
-            <summary>Used to enable a W-buffer.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.ZBufferType.DontUseZBuffer">
-            <summary>Used to disable the depth buffer.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.ZBufferType.UseZBuffer">
-            <summary>Used to enable the depth buffer.</summary>
-        </member>
-        <member name="T:SlimDX.Direct3D9.StencilOperation">
-            <summary>
-Stencil operations.
-</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.StencilOperation.Decr">
-            <summary>Decrement the stencil value.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.StencilOperation.Incr">
-            <summary>Increment the stencil value.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.StencilOperation.Invert">
-            <summary>Invert the stencil value.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.StencilOperation.DecrSat">
-            <summary>Decrement and clamp stencil value.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.StencilOperation.IncrSat">
-            <summary>Increment and clamp stencil value.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.StencilOperation.Replace">
-            <summary>Replace the stencil value.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.StencilOperation.Zero">
-            <summary>Zero the stencil value.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.StencilOperation.Keep">
-            <summary>Keep the stencil value.</summary>
-        </member>
-        <member name="T:SlimDX.Direct3D9.Compare">
-            <summary>
-Comparison operations.
-</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.Compare.Always">
-            <summary>Always accept.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.Compare.GreaterEqual">
-            <summary>Accept if greater than or equal</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.Compare.NotEqual">
-            <summary>Accept if not equal.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.Compare.Greater">
-            <summary>Accept if greater than.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.Compare.LessEqual">
-            <summary>Accept if equal or less than.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.Compare.Equal">
-            <summary>Accept if equal.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.Compare.Less">
-            <summary>Accept if less than.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.Compare.Never">
-            <summary>Never accept</summary>
-        </member>
-        <member name="T:SlimDX.Direct3D9.ShadeMode">
-            <summary>
-Shading modes.
-</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.ShadeMode.Gouraud">
-            <summary>Gouraud shading.</summary>
-        </member>
-        <member name="F:SlimDX.Direct3D9.ShadeMode.Flat">
-            <summary>Flat shading.</summary>
         </member>
     </members>
 </doc>

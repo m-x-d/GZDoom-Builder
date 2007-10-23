@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private bool useshaders;
 		
 		// Shaders
-		private Base2DShader base2dshader;
+		private Display2DShader display2dshader;
 		private Things2DShader things2dshader;
 		
 		// Disposing
@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		public bool Enabled { get { return useshaders; } }
 		public string ShaderTechnique { get { return shadertechnique; } }
-		public Base2DShader Base2D { get { return base2dshader; } }
+		public Display2DShader Display2D { get { return display2dshader; } }
 		public Things2DShader Things2D { get { return things2dshader; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			shadertechnique = "SM20";
 			
 			// Initialize effects
-			base2dshader = new Base2DShader(this);
+			display2dshader = new Display2DShader(this);
 			things2dshader = new Things2DShader(this);
 			
 			// We have no destructor
@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
-				base2dshader.Dispose();
+				display2dshader.Dispose();
 				things2dshader.Dispose();
 				
 				// Done

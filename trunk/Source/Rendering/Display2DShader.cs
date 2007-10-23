@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal sealed class Base2DShader : D3DShader
+	internal sealed class Display2DShader : D3DShader
 	{
 		#region ================== Variables
 
@@ -56,10 +56,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Base2DShader(ShaderManager manager) : base(manager)
+		public Display2DShader(ShaderManager manager) : base(manager)
 		{
 			// Load effect from file
-			effect = LoadEffect("base2d.fx");
+			effect = LoadEffect("display2d.fx");
 
 			// Get the property handlers from effect
 			if(effect != null)
@@ -102,9 +102,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Methods
 
 		// This sets the settings
-		public void SetSettings(float texelx, float texely, float blendfactor)
+		public void SetSettings(float texelx, float texely, float fsaafactor, float alpha)
 		{
-			Vector4 values = new Vector4(texelx, texely, blendfactor, 0f);
+			Vector4 values = new Vector4(texelx, texely, fsaafactor, alpha);
 			if(manager.Enabled) effect.SetValue(settings, values);
 		}
 

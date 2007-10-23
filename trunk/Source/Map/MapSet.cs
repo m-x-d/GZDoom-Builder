@@ -418,6 +418,38 @@ namespace CodeImp.DoomBuilder.Map
 			// Return result
 			return closest;
 		}
+
+		// This finds the thing closest to the specified position
+		public static Thing NearestThingSquareRange(ICollection<Thing> selection, Vector2D pos, float maxrange)
+		{
+			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
+			Thing closest = null;
+			float distance = float.MaxValue;
+			float d;
+
+			// Go for all vertices in selection
+			foreach(Thing t in selection)
+			{
+				// Within range?
+				if((t.Position.x >= (range.Left - t.Size)) && (t.Position.x <= (range.Right + t.Size)))
+				{
+					if((t.Position.y >= (range.Top - t.Size)) && (t.Position.y <= (range.Bottom + t.Size)))
+					{
+						// Close than previous find?
+						d = Math.Abs(t.Position.x - pos.x) + Math.Abs(t.Position.y - pos.y);
+						if(d < distance)
+						{
+							// This one is closer
+							closest = t;
+							distance = d;
+						}
+					}
+				}
+			}
+
+			// Return result
+			return closest;
+		}
 		
 		#endregion
 
@@ -434,6 +466,9 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This finds the vertex closest to the specified position
 		public Vertex NearestVertexSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestVertexSquareRange(vertices, pos, maxrange); }
+
+		// This finds the thing closest to the specified position
+		public Thing NearestThingSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestThingSquareRange(things, pos, maxrange); }
 
 		// This performs sidedefs compression
 		public void CompressSidedefs()

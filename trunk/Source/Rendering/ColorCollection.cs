@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(colors[THINGCOLOR03].ToInt() == 0) colors[THINGCOLOR03] = PixelColor.FromColor(Color.LightSeaGreen);
 			if(colors[THINGCOLOR04].ToInt() == 0) colors[THINGCOLOR04] = PixelColor.FromColor(Color.Firebrick);
 			if(colors[THINGCOLOR05].ToInt() == 0) colors[THINGCOLOR05] = PixelColor.FromColor(Color.DarkViolet);
-			if(colors[THINGCOLOR06].ToInt() == 0) colors[THINGCOLOR06] = PixelColor.FromColor(Color.Goldenrod);
+			if(colors[THINGCOLOR06].ToInt() == 0) colors[THINGCOLOR06] = PixelColor.FromColor(Color.DarkGoldenrod);
 			if(colors[THINGCOLOR07].ToInt() == 0) colors[THINGCOLOR07] = PixelColor.FromColor(Color.Silver);
 			if(colors[THINGCOLOR08].ToInt() == 0) colors[THINGCOLOR08] = PixelColor.FromColor(Color.Gray);
 			if(colors[THINGCOLOR09].ToInt() == 0) colors[THINGCOLOR09] = PixelColor.FromColor(Color.DeepSkyBlue);
@@ -166,7 +166,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(colors[THINGCOLOR16].ToInt() == 0) colors[THINGCOLOR16] = PixelColor.FromColor(Color.LightPink);
 			if(colors[THINGCOLOR17].ToInt() == 0) colors[THINGCOLOR17] = PixelColor.FromColor(Color.DarkOrange);
 			if(colors[THINGCOLOR18].ToInt() == 0) colors[THINGCOLOR18] = PixelColor.FromColor(Color.DarkKhaki);
-			if(colors[THINGCOLOR19].ToInt() == 0) colors[THINGCOLOR19] = PixelColor.FromColor(Color.DarkGoldenrod);
+			if(colors[THINGCOLOR19].ToInt() == 0) colors[THINGCOLOR19] = PixelColor.FromColor(Color.Goldenrod);
 			
 			// Create assist colors
 			CreateAssistColors();

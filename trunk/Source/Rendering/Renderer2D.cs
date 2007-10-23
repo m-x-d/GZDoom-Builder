@@ -49,25 +49,35 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float THING_CIRCLE_SIZE = 1f;
 		private const float THING_CIRCLE_SHRINK = 2f;
 		private const int THING_BUFFER_STEP = 100;
-		private const byte THINGS_BACK_ALPHA = 80;
+		private const float THINGS_BACK_ALPHA = 0.4f;
 
 		#endregion
 
 		#region ================== Variables
 
-		// Rendering memory for lines and vertices
-		private Texture tex;
-		private int width, height;
-		private int pwidth, pheight;
-		private Plotter plotter;
-		private FlatVertex[] screenverts = new FlatVertex[4];
-		private LockedRect lockedrect;
+		// Rendertargets
+		private Texture structtex;
+		private Texture thingstex;
+
+		// Locking data
+		private LockedRect structlocked;
+		private Surface thingssurface;
+
+		// Rendertarget sizes
+		private Size windowsize;
+		private Size structsize;
+		private Size thingssize;
 		
-		// Buffers for rendering things
+		// Geometry plotter
+		private Plotter plotter;
+
+		// Vertices to present the textures
+		private FlatVertex[] structverts;
+		private FlatVertex[] thingsverts;
+		
+		// Batch buffer for things rendering
 		private VertexBuffer thingsvertices;
-		private PixelColor[] thingcolors;
-		private int numthings;
-		private int maxthings;
+		private int maxthings, numthings;
 		
 		// Render settings
 		private bool thingsfront;
@@ -105,8 +115,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingtexture.LoadImage();
 			thingtexture.CreateTexture();
 
-			// Create texture for rendering lines/vertices
-			CreateTexture();
+			// Create rendertargets
+			CreateRendertargets();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -118,12 +128,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				// Clean up
-				if(tex != null) tex.Dispose();
-				tex = null;
-				if(thingsvertices != null) thingsvertices.Dispose();
-				thingsvertices = null;
-				thingtexture.Dispose();
+				// Destroy rendertargets
+				DestroyRendertargets();
 				
 				// Done
 				base.Dispose();
@@ -132,35 +138,39 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 
-		#region ================== Control
-		
+		#region ================== Displaying
+
 		// This draws the image on screen
 		public void Present()
 		{
 			// Start drawing
 			if(graphics.StartRendering(General.Colors.Background.ToInt()))
 			{
+				// Renderstates that count for this whole sequence
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				graphics.Device.SetRenderState(RenderState.ZEnable, false);
+
 				// Render things in back?
-				if(!thingsfront) PresentThings();
+				if(!thingsfront) PresentThings(THINGS_BACK_ALPHA);
 				
 				// Set renderstates
-				graphics.Device.SetTexture(0, tex);
-				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
-				graphics.Shaders.Base2D.Texture1 = tex;
-				graphics.Shaders.Base2D.SetSettings(1f / pwidth, 1f / pheight, FSAA_BLEND_FACTOR);
+				graphics.Device.SetTexture(0, structtex);
+				graphics.Shaders.Display2D.Texture1 = structtex;
+				graphics.Shaders.Display2D.SetSettings(1f / structsize.Width, 1f / structsize.Height, FSAA_BLEND_FACTOR, 1f);
 				
 				// Draw the lines and vertices texture
-				graphics.Shaders.Base2D.Begin();
-				graphics.Shaders.Base2D.BeginPass(0);
-				try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, screenverts); } catch(Exception) { }
-				graphics.Shaders.Base2D.EndPass();
-				graphics.Shaders.Base2D.End();
+				graphics.Shaders.Display2D.Begin();
+				graphics.Shaders.Display2D.BeginPass(0);
+				try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts); } catch(Exception) { }
+				graphics.Shaders.Display2D.EndPass();
+				graphics.Shaders.Display2D.End();
 				
 				// Render things in front?
-				if(thingsfront) PresentThings();
+				if(thingsfront) PresentThings(1f);
 				
 				// Done
 				graphics.FinishRendering();
@@ -168,52 +178,47 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This presents the things
-		private void PresentThings()
+		private void PresentThings(float alpha)
 		{
-			// Do we have things to render?
-			if((numthings > 0) && (thingsvertices != null))
-			{
-				// Set renderstates
-				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
-				graphics.Device.SetTexture(0, thingtexture.Texture);
-				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
+			// Set renderstates
+			//graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			//graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+			//graphics.Device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
+			//graphics.Device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+			graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+			graphics.Device.SetTexture(0, thingstex);
+			graphics.Shaders.Display2D.Texture1 = thingstex;
+			graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_BLEND_FACTOR, alpha);
 
-				// Set the vertex buffer
-				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
-
-				// Draw the thing circle
-				graphics.Shaders.Things2D.Begin();
-				graphics.Shaders.Things2D.BeginPass(0);
-				try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, 4 * numthings); } catch(Exception) { }
-				graphics.Shaders.Things2D.EndPass();
-				graphics.Shaders.Things2D.End();
-			}
+			// Draw the lines and vertices texture
+			graphics.Shaders.Display2D.Begin();
+			graphics.Shaders.Display2D.BeginPass(0);
+			try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts); } catch(Exception) { }
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
 		}
+		
+		#endregion
+
+		#region ================== Management
 
 		// This is called before a device is reset
 		// (when resized or display adapter was changed)
 		public override void UnloadResource()
 		{
-			// Trash old texture
-			if(tex != null) tex.Dispose();
-			tex = null;
-
-			// Trash things buffer
-			if(thingsvertices != null) thingsvertices.Dispose();
-			thingsvertices = null;
-			maxthings = 0;
-			numthings = 0;
+			// Destroy rendertargets
+			DestroyRendertargets();
 		}
 		
 		// This is called resets when the device is reset
 		// (when resized or display adapter was changed)
 		public override void ReloadResource()
 		{
-			// Re-create texture
-			CreateTexture();
+			// Re-create rendertargets
+			CreateRendertargets();
 		}
 
 		// This resets the graphics
@@ -223,97 +228,86 @@ namespace CodeImp.DoomBuilder.Rendering
 			ReloadResource();
 		}
 
+		// This destroys the rendertargets
+		private void DestroyRendertargets()
+		{
+			// Trash rendertargets
+			if(structtex != null) structtex.Dispose();
+			if(thingstex != null) thingstex.Dispose();
+			structtex = null;
+			thingstex = null;
+			
+			// Trash things batch buffer
+			if(thingsvertices != null) thingsvertices.Dispose();
+			thingsvertices = null;
+			numthings = 0;
+			maxthings = 0;
+		}
+		
 		// Allocates new image memory to render on
-		public void CreateTexture()
+		public void CreateRendertargets()
 		{
 			SurfaceDescription sd;
 			
+			// Destroy rendertargets
+			DestroyRendertargets();
+			
 			// Get new width and height
-			width = graphics.RenderTarget.ClientSize.Width;
-			height = graphics.RenderTarget.ClientSize.Height;
-			
-			// Trash old texture
-			if(tex != null) tex.Dispose();
-			tex = null;
-			
-			// Create new texture
-			tex = new Texture(graphics.Device, width, height, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
+			windowsize.Width = graphics.RenderTarget.ClientSize.Width;
+			windowsize.Height = graphics.RenderTarget.ClientSize.Height;
 
-			// Get the real surface size
-			sd = tex.GetLevelDescription(0);
-			pwidth = sd.Width;
-			pheight = sd.Height;
+			// Create rendertargets textures
+			structtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
+			thingstex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+
+			// Get the real surface sizes
+			sd = structtex.GetLevelDescription(0);
+			structsize.Width = sd.Width;
+			structsize.Height = sd.Height;
+			sd = thingstex.GetLevelDescription(0);
+			thingssize.Width = sd.Width;
+			thingssize.Height = sd.Height;
 
 			// Setup screen vertices
+			structverts = CreateScreenVerts(structsize);
+			thingsverts = CreateScreenVerts(thingssize);
+		}
+
+		// This makes screen vertices for display
+		private FlatVertex[] CreateScreenVerts(Size texturesize)
+		{
+			FlatVertex[] screenverts = new FlatVertex[4];
 			screenverts[0].x = 0.5f;
 			screenverts[0].y = 0.5f;
 			screenverts[0].w = 1f;
 			screenverts[0].c = -1;
-			screenverts[0].u = 1f / pwidth;
-			screenverts[0].v = 1f / pheight;
-			screenverts[1].x = pwidth - 1.5f;
+			screenverts[0].u = 1f / texturesize.Width;
+			screenverts[0].v = 1f / texturesize.Height;
+			screenverts[1].x = texturesize.Width - 1.5f;
 			screenverts[1].y = 0.5f;
 			screenverts[1].w = 1f;
 			screenverts[1].c = -1;
-			screenverts[1].u = 1f - 1f / pwidth;
-			screenverts[1].v = 1f / pheight;
+			screenverts[1].u = 1f - 1f / texturesize.Width;
+			screenverts[1].v = 1f / texturesize.Height;
 			screenverts[2].x = 0.5f;
-			screenverts[2].y = pheight - 1.5f;
+			screenverts[2].y = texturesize.Height - 1.5f;
 			screenverts[2].c = -1;
 			screenverts[2].w = 1f;
-			screenverts[2].u = 1f / pwidth;
-			screenverts[2].v = 1f - 1f / pheight;
-			screenverts[3].x = pwidth - 1.5f;
-			screenverts[3].y = pheight - 1.5f;
+			screenverts[2].u = 1f / texturesize.Width;
+			screenverts[2].v = 1f - 1f / texturesize.Height;
+			screenverts[3].x = texturesize.Width - 1.5f;
+			screenverts[3].y = texturesize.Height - 1.5f;
 			screenverts[3].w = 1f;
 			screenverts[3].c = -1;
-			screenverts[3].u = 1f - 1f / pwidth;
-			screenverts[3].v = 1f - 1f / pheight;
+			screenverts[3].u = 1f - 1f / texturesize.Width;
+			screenverts[3].v = 1f - 1f / texturesize.Height;
+			return screenverts;
 		}
 
-		// This begins a drawing session
-		public unsafe bool StartRendering(bool cleardisplay)
-		{
-			LockFlags lockflags;
-			
-			// Do we have a texture?
-			if(tex != null)
-			{
-				// Determine lock requirements
-				if(cleardisplay) lockflags = LockFlags.Discard | LockFlags.NoSystemLock;
-							else lockflags = LockFlags.NoSystemLock;
-
-				// Lock memory
-				lockedrect = tex.LockRectangle(0, lockflags);
-
-				// Create plotter
-				plotter = new Plotter((PixelColor*)lockedrect.Data.DataPointer.ToPointer(), lockedrect.Pitch / sizeof(PixelColor), pheight, width, height);
-				if(cleardisplay) plotter.Clear();
-				
-				// Reset things buffer when display is cleared
-				if(cleardisplay) ReserveThingsMemory(0, false);
-				
-				// Ready for rendering
-				return true;
-			}
-			else
-			{
-				// Can't render!
-				return false;
-			}
-		}
+		#endregion
 		
-		// This ends a drawing session
-		public void FinishRendering()
-		{
-			// Unlock memory
-			tex.UnlockRectangle(0);
-			lockedrect.Data.Dispose();
-			
-			// Present new image
-			Present();
-		}
-		
+		#region ================== Coordination
+
 		// This changes view position
 		public void PositionView(float x, float y)
 		{
@@ -341,8 +335,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void UpdateTransformations()
 		{
 			scaleinv = 1f / scale;
-			translatex = -offsetx + (width * 0.5f) * scaleinv;
-			translatey = -offsety - (height * 0.5f) * scaleinv;
+			translatex = -offsetx + (windowsize.Width * 0.5f) * scaleinv;
+			translatey = -offsety - (windowsize.Height * 0.5f) * scaleinv;
 			linenormalsize = 10f * scaleinv;
 			vertexsize = (int)(1.7f * scale + 0.5f);
 			if(vertexsize < 0) vertexsize = 0;
@@ -365,7 +359,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			int newmaxthings;
 			DataStream stream;
 			FlatVertex[] verts = null;
-			PixelColor[] oldcolors = null;
 			
 			// Do we need to make changes?
 			if((newnumthings > maxthings) || !preserve)
@@ -377,7 +370,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					verts = stream.ReadRange<FlatVertex>(numthings * 12);
 					thingsvertices.Unlock();
 					stream.Dispose();
-					oldcolors = thingcolors;
 				}
 				
 				// Buffer needs to be reallocated?
@@ -391,7 +383,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					
 					// Create new buffer
 					thingsvertices = new VertexBuffer(graphics.Device, newmaxthings * 12 * FlatVertex.Stride, Usage.Dynamic, VertexFormat.None, Pool.Default);
-					thingcolors = new PixelColor[newmaxthings];
 					maxthings = newmaxthings;
 				}
 				else
@@ -408,7 +399,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					stream.WriteRange<FlatVertex>(verts);
 					thingsvertices.Unlock();
 					stream.Dispose();
-					oldcolors.CopyTo(thingcolors, 0);
 				}
 				else
 				{
@@ -434,11 +424,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			arrowsize = (t.Size - THING_ARROW_SHRINK) * scale * THING_ARROW_SIZE;
 			
 			// Check if the thing is actually on screen
-			if(((screenpos.x + circlesize) > 0.0f) && ((screenpos.x - circlesize) < (float)width) &&
-				((screenpos.y + circlesize) > 0.0f) && ((screenpos.x - circlesize) < (float)height))
+			if(((screenpos.x + circlesize) > 0.0f) && ((screenpos.x - circlesize) < (float)windowsize.Width) &&
+				((screenpos.y + circlesize) > 0.0f) && ((screenpos.y - circlesize) < (float)windowsize.Height))
 			{
-				// Determine color and alpha
-				if(thingsfront) color = c.ToInt(); else color = c.WithAlpha(THINGS_BACK_ALPHA).ToInt();
+				// Get integral color
+				color = c.ToInt();
 
 				// Setup fixed rect for circle
 				verts[offset].x = screenpos.x - circlesize;
@@ -517,6 +507,26 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 		
+		// This draws a set of things
+		private void RenderThingsBatch(int offset, int count)
+		{
+			// Set renderstates for things rendering
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
+			graphics.Device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
+			graphics.Device.SetTexture(0, thingtexture.Texture);
+			graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
+			graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
+			
+			// Draw the things batched
+			graphics.Shaders.Things2D.Begin();
+			graphics.Shaders.Things2D.BeginPass(0);
+			try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, offset * 12, count * 4); }	catch(Exception) { }
+			graphics.Shaders.Things2D.EndPass();
+			graphics.Shaders.Things2D.End();
+		}
+		
 		#endregion
 
 		#region ================== Colors
@@ -574,6 +584,71 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		#region ================== Rendering
 
+		// This begins a drawing session
+		public unsafe bool StartRendering(bool clearstructs, bool clearthings)
+		{
+			LockFlags lockflags;
+
+			// Rendertargets available?
+			if((structtex != null) && (thingstex != null))
+			{
+				// Determine lock requirements
+				if(clearstructs) lockflags = LockFlags.Discard | LockFlags.NoSystemLock;
+				else lockflags = LockFlags.NoSystemLock;
+
+				// Lock structures rendertarget memory
+				structlocked = structtex.LockRectangle(0, lockflags);
+
+				// Create structures plotter
+				plotter = new Plotter((PixelColor*)structlocked.Data.DataPointer.ToPointer(), structlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
+				if(clearstructs) plotter.Clear();
+
+				// Set the rendertarget to the things texture
+				thingssurface = thingstex.GetSurfaceLevel(0);
+				graphics.Device.SetDepthStencilSurface(null);
+				graphics.Device.SetRenderTarget(0, thingssurface);
+
+				// Clear the things?
+				if(clearthings)
+				{
+					// Clear rendertarget
+					graphics.Device.Clear(ClearFlags.Target, 0, 1f, 0);
+				}
+
+				// Always trash things batch buffer
+				if(thingsvertices != null) thingsvertices.Dispose();
+				thingsvertices = null;
+				numthings = 0;
+				maxthings = 0;
+
+				// Ready for rendering
+				return true;
+			}
+			else
+			{
+				// Can't render!
+				return false;
+			}
+		}
+
+		// This ends a drawing session
+		public void FinishRendering()
+		{
+			// Unlock memory
+			structtex.UnlockRectangle(0);
+			structlocked.Data.Dispose();
+			plotter = null;
+
+			// Release rendertarget
+			graphics.Device.SetDepthStencilSurface(graphics.DepthBuffer);
+			graphics.Device.SetRenderTarget(0, graphics.BackBuffer);
+			thingssurface.Dispose();
+			thingssurface = null;
+
+			// Present new image
+			Present();
+		}
+
 		// This adds a thing in the things buffer for rendering
 		public void RenderThing(Thing t, PixelColor c)
 		{
@@ -592,7 +667,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				thingsvertices.Unlock();
 				stream.Dispose();
 
-				// Thing added!
+				// Thing added, render it
+				RenderThingsBatch(numthings, 1);
 				numthings++;
 			}
 		}
@@ -602,7 +678,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			FlatVertex[] verts = new FlatVertex[things.Count * 12];
 			DataStream stream;
-			int offset = 0;
+			int addcount = 0;
 			
 			// Make sure there is enough memory reserved
 			ReserveThingsMemory(numthings + things.Count, true);
@@ -611,10 +687,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(Thing t in things)
 			{
 				// Create vertices
-				if(CreateThingVerts(t, ref verts, offset * 12, DetermineThingColor(t)))
+				if(CreateThingVerts(t, ref verts, addcount * 12, DetermineThingColor(t)))
 				{
 					// Next
-					offset++;
+					addcount++;
 				}
 			}
 			
@@ -624,8 +700,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingsvertices.Unlock();
 			stream.Dispose();
 
-			// Things added!
-			numthings += offset;
+			// Things added, render them
+			RenderThingsBatch(numthings, addcount);
+			numthings += addcount;
 		}
 		
 		// This renders the linedefs of a sector with special color
