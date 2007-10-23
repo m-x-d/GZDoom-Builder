@@ -59,6 +59,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Viewport viewport;
 		private List<ID3DResource> resources;
 		private ShaderManager shaders;
+		private Surface backbuffer;
+		private Surface depthbuffer;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -74,6 +76,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		public RenderTargetControl RenderTarget { get { return rendertarget; } }
 		public Viewport Viewport { get { return viewport; } }
 		public ShaderManager Shaders { get { return shaders; } }
+		public Surface BackBuffer { get { return backbuffer; } }
+		public Surface DepthBuffer { get { return depthbuffer; } }
 		
 		#endregion
 
@@ -117,9 +121,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This completes initialization after the device has started or has been reset
 		private void SetupSettings()
 		{
-			int intvalue;
-			float floatvalue;
-			
 			// Setup renderstates
 			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
 			device.SetRenderState(RenderState.Ambient, Color.White.ToArgb());
@@ -141,15 +142,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.Clipping, true);
 			device.SetRenderState(RenderState.CullMode, Cull.None);
 
-			// Make LOD bias hack until SlimDX has a SetSamplerState overload that accepts a float
-			floatvalue = -0.99f;
-			unsafe { General.CopyMemory(&intvalue, &floatvalue, new UIntPtr(4)); }
-
 			// Sampler settings
 			device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
 			device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
 			device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Linear);
-			device.SetSamplerState(0, SamplerState.MipMapLodBias, intvalue);
+			device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
 			
 			// Texture addressing
 			device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
@@ -181,6 +178,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			material.Specular = ColorValue.FromColor(Color.White);
 			device.Material = material;
 
+			// Keep a reference to the original buffers
+			backbuffer = device.GetBackBuffer(0, 0);
+			depthbuffer = device.GetDepthStencilSurface();
+			
 			// Get the viewport
 			viewport = device.Viewport;
 
@@ -242,7 +243,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Add event to cancel resize event
 			//device.DeviceResizing += new CancelEventHandler(CancelResize);
-
+			
 			// Create renderers
 			renderer2d = new Renderer2D(this);
 			renderer3d = new Renderer3D(this);

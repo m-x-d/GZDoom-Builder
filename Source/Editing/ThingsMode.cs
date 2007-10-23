@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public unsafe override void RedrawDisplay()
 		{
 			// Start with a clear display
-			if(renderer.StartRendering(true))
+			if(renderer.StartRendering(true, true))
 			{
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected void Highlight(Thing t)
 		{
 			// Update display
-			if(renderer.StartRendering(false))
+			if(renderer.StartRendering(false, false))
 			{
 				// Undraw previous highlight
 				if(highlighted != null)
@@ -146,10 +146,10 @@ namespace CodeImp.DoomBuilder.Editing
 			base.MouseMove(e);
 
 			// Find the nearest vertex within highlight range
-			//Thing t = General.Map.Map.Nearestt(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+			Thing t = General.Map.Map.NearestThingSquareRange(mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
 
 			// Highlight if not the same
-			//if(t != highlighted) Highlight(v);
+			if(t != highlighted) Highlight(t);
 		}
 
 		// Mouse leaves

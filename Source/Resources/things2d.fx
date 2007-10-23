@@ -50,10 +50,5 @@ technique SM20
 	{
 	    VertexShader = null;
 	    PixelShader = compile ps_2_0 ps_circle();
-		CullMode = None;
-	    ZEnable = false;
-	    AlphaBlendEnable = true;
-	    SrcBlend = SrcAlpha;
-	    DestBlend = InvSrcAlpha;
 	}
 }
