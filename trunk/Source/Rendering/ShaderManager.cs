@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal class ShaderManager : IDisposable
+	public class ShaderManager : IDisposable
 	{
 		#region ================== Constants
 

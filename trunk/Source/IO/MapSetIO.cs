@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal abstract class MapSetIO
+	public abstract class MapSetIO
 	{
 		#region ================== Constants
 

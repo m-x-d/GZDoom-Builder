@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class Thing : IDisposable
+	public class Thing : IDisposable
 	{
 		#region ================== Constants
 
@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int action;
 		private byte[] args;
+		private int x, y, zoffset;
 
 		// Configuration
 		private float size;
@@ -79,12 +80,17 @@ namespace CodeImp.DoomBuilder.Map
 		public Vector3D Position { get { return pos; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public float Angle { get { return angle; } }
+		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 		public int Flags { get { return flags; } }
 		public int Selected { get { return selected; } set { selected = value; } }
 		public float Size { get { return size; } }
 		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }
-		
+		public int X { get { return x; } }
+		public int Y { get { return y; } }
+		public int ZOffset { get { return zoffset; } }
+		public Sector Sector { get { return sector; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -138,6 +144,9 @@ namespace CodeImp.DoomBuilder.Map
 			t.tag = tag;
 			t.action = action;
 			t.args = EMPTY_ARGS;
+			t.x = x;
+			t.y = y;
+			t.zoffset = zoffset;
 			args.CopyTo(t.args, 0);
 		}
 		
@@ -145,28 +154,22 @@ namespace CodeImp.DoomBuilder.Map
 		public void DetermineSector()
 		{
 			Sector newsector = null;
-			Vertex nv;
 			Linedef nl;
 
-			// Find the nearest vertex on the map
-			nv = map.NearestVertex(pos);
-			if(nv != null)
+			// Find the nearest linedef on the map
+			nl = map.NearestLinedef(pos);
+			if(nl != null)
 			{
-				// Find the nearest linedef on the vertex
-				nl = nv.NearestLinedef(pos);
-				if(nl != null)
+				// Check what side of line we are at
+				if(nl.SideOfLine(pos) < 0f)
 				{
-					// Check what side of line we are at
-					if(nl.SideOfLine(pos) < 0f)
-					{
-						// Front side
-						if(nl.Front != null) newsector = nl.Front.Sector;
-					}
-					else
-					{
-						// Back side
-						if(nl.Back != null) newsector = nl.Back.Sector;
-					}
+					// Front side
+					if(nl.Front != null) newsector = nl.Front.Sector;
+				}
+				else
+				{
+					// Back side
+					if(nl.Back != null) newsector = nl.Back.Sector;
 				}
 			}
 
@@ -194,32 +197,35 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This moves the thing
 		// NOTE: This does not update sector! (call DetermineSector)
-		public void Move(Vector3D newpos)
+		public void Move(int x, int y, int zoffset)
 		{
 			// Change position
-			pos = newpos;
+			this.x = x;
+			this.y = y;
+			this.zoffset = zoffset;
+			this.pos = new Vector3D(x, y, zoffset);
 		}
 		
 		// This rotates the thing
 		public void Rotate(float newangle)
 		{
 			// Change angle
-			angle = newangle;
+			this.angle = newangle;
 		}
 		
 		// This updates all properties
 		// NOTE: This does not update sector! (call DetermineSector)
-		public void Update(int type, Vector3D pos, float angle,
+		public void Update(int type, int x, int y, int zoffset, float angle,
 						   int flags, int tag, int action, byte[] args)
 		{
 			// Apply changes
 			this.type = type;
-			this.pos = pos;
 			this.angle = angle;
 			this.flags = flags;
 			this.tag = tag;
 			this.action = action;
 			this.args = args;
+			this.Move(x, y, zoffset);
 		}
 		
 		// This updates the settings from configuration
@@ -228,7 +234,7 @@ namespace CodeImp.DoomBuilder.Map
 			ThingTypeInfo ti;
 			
 			// Lookup settings
-			ti = General.Map.Configuration.GetThingInfo(type);
+			ti = General.Map.Config.GetThingInfo(type);
 
 			// Apply size
 			size = ti.Width;

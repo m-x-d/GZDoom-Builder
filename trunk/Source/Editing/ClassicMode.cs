@@ -36,7 +36,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal abstract class ClassicMode : EditMode
+	public abstract class ClassicMode : EditMode
 	{
 		#region ================== Constants
 

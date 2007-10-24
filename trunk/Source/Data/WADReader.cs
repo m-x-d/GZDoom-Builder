@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal sealed class WADReader : DataReader
+	public sealed class WADReader : DataReader
 	{
 		#region ================== Constants
 
@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.Data
 			bool strifedata;
 			
 			// Determine default scale
-			defaultscale = General.Map.Configuration.DefaultTextureScale;
+			defaultscale = General.Map.Config.DefaultTextureScale;
 			
 			// Get number of textures
 			texturedata.Seek(0, SeekOrigin.Begin);

@@ -29,7 +29,7 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class MapOptions
+	public class MapOptions
 	{
 		#region ================== Constants
 

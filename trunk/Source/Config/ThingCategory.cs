@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal class ThingCategory : IDisposable
+	public class ThingCategory : IDisposable
 	{
 		#region ================== Constants
 

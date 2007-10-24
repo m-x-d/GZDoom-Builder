@@ -30,7 +30,7 @@ using SlimDX.Direct3D;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal sealed class ColorCollection
+	public sealed class ColorCollection
 	{
 		#region ================== Constants
 

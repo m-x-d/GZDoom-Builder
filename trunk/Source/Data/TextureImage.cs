@@ -31,7 +31,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal sealed unsafe class TextureImage : ImageData
+	public sealed unsafe class TextureImage : ImageData
 	{
 		#region ================== Constants
 

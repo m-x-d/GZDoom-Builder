@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class Sidedef : IDisposable
+	public class Sidedef : IDisposable
 	{
 		#region ================== Constants
 

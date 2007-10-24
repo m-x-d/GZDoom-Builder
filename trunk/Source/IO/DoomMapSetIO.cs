@@ -29,7 +29,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal class DoomMapSetIO : MapSetIO
+	public class DoomMapSetIO : MapSetIO
 	{
 		#region ================== Constants
 
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.IO
 				
 				// Create new item
 				t = map.CreateThing();
-				t.Update(type, new Vector3D(x, y, 0f), angle, flags, 0, 0, Thing.EMPTY_ARGS);
+				t.Update(type, x, y, 0, angle, flags, 0, 0, Thing.EMPTY_ARGS);
 				t.DetermineSector();
 				t.UpdateConfiguration();
 			}
@@ -256,6 +256,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Create new item
 				l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
 				l.Update(flags, tag, action, Linedef.EMPTY_ARGS);
+				l.Update();
 
 				// Line has a front side?
 				if(s1 != ushort.MaxValue)
@@ -265,8 +266,8 @@ namespace CodeImp.DoomBuilder.IO
 					offsetx = readside.ReadInt16();
 					offsety = readside.ReadInt16();
 					thigh = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
-					tmid = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
 					tlow = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
+					tmid = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
 					sc = readside.ReadUInt16();
 
 					// Create front sidedef
@@ -282,8 +283,8 @@ namespace CodeImp.DoomBuilder.IO
 					offsetx = readside.ReadInt16();
 					offsety = readside.ReadInt16();
 					thigh = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
-					tmid = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
 					tlow = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
+					tmid = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
 					sc = readside.ReadUInt16();
 
 					// Create back sidedef
@@ -315,11 +316,11 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Write lumps to wad (note the backwards order because they
 			// are all inserted at position+1 when not found)
-			WriteSectors(map, position, manager.Configuration.MapLumpNames);
-			WriteVertices(map, position, manager.Configuration.MapLumpNames);
-			WriteSidedefs(map, position, manager.Configuration.MapLumpNames, sectorids);
-			WriteLinedefs(map, position, manager.Configuration.MapLumpNames, sidedefids, vertexids);
-			WriteThings(map, position, manager.Configuration.MapLumpNames);
+			WriteSectors(map, position, manager.Config.MapLumpNames);
+			WriteVertices(map, position, manager.Config.MapLumpNames);
+			WriteSidedefs(map, position, manager.Config.MapLumpNames, sectorids);
+			WriteLinedefs(map, position, manager.Config.MapLumpNames, sidedefids, vertexids);
+			WriteThings(map, position, manager.Config.MapLumpNames);
 		}
 
 		// This writes the THINGS to WAD file
@@ -488,7 +489,7 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write(Lump.MakeFixedName(s.FloorTexture, WAD.ENCODING));
 				writer.Write(Lump.MakeFixedName(s.CeilTexture, WAD.ENCODING));
 				writer.Write((Int16)s.Brightness);
-				writer.Write((UInt16)s.Special);
+				writer.Write((UInt16)s.Effect);
 				writer.Write((UInt16)s.Tag);
 			}
 

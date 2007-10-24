@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Controls.Add(this.button);
 			this.Controls.Add(this.panel);
 			this.Controls.Add(this.label);
+			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.MinimumSize = new System.Drawing.Size(100, 23);
 			this.Name = "ColorControl";

@@ -38,7 +38,7 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal unsafe class Renderer2D : Renderer
+	public unsafe class Renderer2D : Renderer
 	{
 		#region ================== Constants
 
@@ -564,7 +564,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Determine color
 				if(l.Selected > 0) return General.Colors.Selection;
 				else if(l.Action != 0) return General.Colors.Actions.WithAlpha(DOUBLESIDED_LINE_ALPHA);
-				else if((l.Flags & General.Map.Configuration.SoundLinedefFlags) != 0) return General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+				else if((l.Flags & General.Map.Config.SoundLinedefFlags) != 0) return General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
 				else return General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);
 			}
 		}

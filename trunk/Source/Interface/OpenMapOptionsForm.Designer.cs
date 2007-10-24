@@ -155,8 +155,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// OpenMapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(389, 465);
 			this.Controls.Add(this.mapslist);

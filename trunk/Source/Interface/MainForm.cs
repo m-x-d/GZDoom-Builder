@@ -29,6 +29,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Editing;
 using System.Collections;
 using System.IO;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -789,6 +790,32 @@ namespace CodeImp.DoomBuilder.Interface
 			// Done
 			prefform.Dispose();
 		}
+
+		#endregion
+		
+		#region ================== Info Panels
+
+		// This hides all info panels
+		public void HideInfo()
+		{
+			// Hide them all
+			if(linedefinfo.Visible) linedefinfo.Hide();
+			if(vertexinfo.Visible) vertexinfo.Hide();
+			if(sectorinfo.Visible) sectorinfo.Hide();
+			if(thinginfo.Visible) thinginfo.Hide();
+		}
+		
+		// Show linedef info
+		public void ShowLinedefInfo(Linedef l) { linedefinfo.ShowInfo(l); }
+
+		// Show vertex info
+		public void ShowVertexInfo(Vertex v) { vertexinfo.ShowInfo(v); }
+
+		// Show sector info
+		public void ShowSectorInfo(Sector s) { sectorinfo.ShowInfo(s); }
+
+		// Show thing info
+		public void ShowThingInfo(Thing t) { thinginfo.ShowInfo(t); }
 
 		#endregion
 	}

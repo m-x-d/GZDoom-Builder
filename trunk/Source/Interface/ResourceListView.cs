@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal class ResourceListView : ListView
+	public class ResourceListView : ListView
 	{
 		#region ================== Constants
 

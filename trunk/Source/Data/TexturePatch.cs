@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal struct TexturePatch
+	public struct TexturePatch
 	{
 		public string lumpname;
 		public int x;

@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class Vertex : IDisposable
+	public class Vertex : IDisposable
 	{
 		#region ================== Constants
 		

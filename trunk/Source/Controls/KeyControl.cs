@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	internal struct KeyControl
+	public struct KeyControl
 	{
 		#region ================== Variables
 

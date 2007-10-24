@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class SectorsMode : ClassicMode
+	public class SectorsMode : ClassicMode
 	{
 		#region ================== Constants
 
@@ -89,7 +89,10 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.Disengage();
 
-			// Check sectors button on main window
+			// Hide highlight info
+			General.MainWindow.HideInfo();
+			
+			// Uncheck sectors button on main window
 			General.MainWindow.SetSectorsChecked(false);
 		}
 
@@ -126,6 +129,13 @@ namespace CodeImp.DoomBuilder.Editing
 				if(highlighted != null)
 					renderer.RenderSector(highlighted);
 
+				/*
+				// Undraw highlighted things
+				if(highlighted != null)
+					foreach(Thing t in highlighted.Things)
+						renderer.RenderThing(t, renderer.DetermineThingColor(t));
+				*/
+				
 				// Set new highlight
 				highlighted = s;
 
@@ -133,9 +143,20 @@ namespace CodeImp.DoomBuilder.Editing
 				if(highlighted != null)
 					renderer.RenderSector(highlighted, General.Colors.Highlight);
 
+				/*
+				// Render highlighted things
+				if(highlighted != null)
+					foreach(Thing t in highlighted.Things)
+						renderer.RenderThing(t, General.Colors.Highlight);
+				*/
+				
 				// Done
 				renderer.FinishRendering();
 			}
+
+			// Show highlight info
+			if(highlighted != null) General.MainWindow.ShowSectorInfo(highlighted);
+				else General.MainWindow.HideInfo();
 		}
 		
 		// Mouse moves

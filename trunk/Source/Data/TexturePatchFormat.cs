@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal enum TexturePatchFormat : int
+	public enum TexturePatchFormat : int
 	{
 		Unknown = 0,			// Not determined yet
 		Invalid = 1,			// Considered invalid

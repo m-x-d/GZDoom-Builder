@@ -52,6 +52,7 @@
     <Compile Include="Data\DirectoryReader.cs" />
     <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\FlatImage.cs" />
+    <Compile Include="Data\NullImage.cs" />
     <Compile Include="Data\PatchNames.cs" />
     <Compile Include="Data\Playpal.cs" />
     <Compile Include="Data\ResourceImage.cs" />
@@ -102,6 +103,12 @@
     <Compile Include="Interface\DelayedForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Interface\LinedefInfoPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\LinedefInfoPanel.Designer.cs">
+      <DependentUpon>LinedefInfoPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\MapOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -137,6 +144,24 @@
     </Compile>
     <Compile Include="Interface\ResourceOptionsForm.Designer.cs">
       <DependentUpon>ResourceOptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\SectorInfoPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\SectorInfoPanel.Designer.cs">
+      <DependentUpon>SectorInfoPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ThingInfoPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ThingInfoPanel.Designer.cs">
+      <DependentUpon>ThingInfoPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\VertexInfoPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\VertexInfoPanel.Designer.cs">
+      <DependentUpon>VertexInfoPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="IO\Configuration.cs" />
     <Compile Include="General\General.cs" />
@@ -186,8 +211,10 @@
   <ItemGroup>
     <Reference Include="SlimDX, Version=1.0.2851.40166, Culture=neutral, processorArchitecture=x86" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Interface\AboutForm.resx">
@@ -244,6 +271,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>DelayedForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Interface\LinedefInfoPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LinedefInfoPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\PreferencesForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PreferencesForm.cs</DependentUpon>
@@ -251,6 +282,18 @@
     <EmbeddedResource Include="Interface\ResourceListEditor.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ResourceListEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\SectorInfoPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SectorInfoPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ThingInfoPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThingInfoPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\VertexInfoPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>VertexInfoPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Actions.cfg" />
     <EmbeddedResource Include="Resources\display2d.fx" />

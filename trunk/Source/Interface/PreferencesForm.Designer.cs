@@ -131,6 +131,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorgrid64
 			// 
 			this.colorgrid64.BackColor = System.Drawing.SystemColors.Control;
+			this.colorgrid64.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorgrid64.Label = "64 Block grid:";
 			this.colorgrid64.Location = new System.Drawing.Point(15, 288);
 			this.colorgrid64.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -142,6 +143,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorgrid
 			// 
 			this.colorgrid.BackColor = System.Drawing.SystemColors.Control;
+			this.colorgrid.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorgrid.Label = "Custom grid:";
 			this.colorgrid.Location = new System.Drawing.Point(15, 259);
 			this.colorgrid.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -153,6 +155,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorassociations
 			// 
 			this.colorassociations.BackColor = System.Drawing.SystemColors.Control;
+			this.colorassociations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorassociations.Label = "Associations:";
 			this.colorassociations.Location = new System.Drawing.Point(15, 230);
 			this.colorassociations.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -164,6 +167,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorsoundlinedefs
 			// 
 			this.colorsoundlinedefs.BackColor = System.Drawing.SystemColors.Control;
+			this.colorsoundlinedefs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorsoundlinedefs.Label = "Sound lines:";
 			this.colorsoundlinedefs.Location = new System.Drawing.Point(15, 143);
 			this.colorsoundlinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -175,6 +179,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorspeciallinedefs
 			// 
 			this.colorspeciallinedefs.BackColor = System.Drawing.SystemColors.Control;
+			this.colorspeciallinedefs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorspeciallinedefs.Label = "Action lines:";
 			this.colorspeciallinedefs.Location = new System.Drawing.Point(15, 114);
 			this.colorspeciallinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -186,6 +191,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorbackcolor
 			// 
 			this.colorbackcolor.BackColor = System.Drawing.SystemColors.Control;
+			this.colorbackcolor.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorbackcolor.Label = "Background:";
 			this.colorbackcolor.Location = new System.Drawing.Point(15, 27);
 			this.colorbackcolor.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -197,6 +203,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorselection
 			// 
 			this.colorselection.BackColor = System.Drawing.SystemColors.Control;
+			this.colorselection.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorselection.Label = "Selection:";
 			this.colorselection.Location = new System.Drawing.Point(15, 201);
 			this.colorselection.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -208,6 +215,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorvertices
 			// 
 			this.colorvertices.BackColor = System.Drawing.SystemColors.Control;
+			this.colorvertices.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorvertices.Label = "Vertices:";
 			this.colorvertices.Location = new System.Drawing.Point(15, 56);
 			this.colorvertices.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -219,6 +227,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorhighlight
 			// 
 			this.colorhighlight.BackColor = System.Drawing.SystemColors.Control;
+			this.colorhighlight.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorhighlight.Label = "Highlight:";
 			this.colorhighlight.Location = new System.Drawing.Point(15, 172);
 			this.colorhighlight.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -230,6 +239,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorlinedefs
 			// 
 			this.colorlinedefs.BackColor = System.Drawing.SystemColors.Control;
+			this.colorlinedefs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorlinedefs.Label = "Common lines:";
 			this.colorlinedefs.Location = new System.Drawing.Point(15, 85);
 			this.colorlinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -381,7 +391,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.actioncontrolclear.Location = new System.Drawing.Point(193, 140);
 			this.actioncontrolclear.Name = "actioncontrolclear";
-			this.actioncontrolclear.Size = new System.Drawing.Size(63, 27);
+			this.actioncontrolclear.Size = new System.Drawing.Size(63, 25);
 			this.actioncontrolclear.TabIndex = 6;
 			this.actioncontrolclear.TabStop = false;
 			this.actioncontrolclear.Text = "Clear";
@@ -439,6 +449,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorconstants
 			// 
 			this.colorconstants.BackColor = System.Drawing.SystemColors.Control;
+			this.colorconstants.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorconstants.Label = "Constants:";
 			this.colorconstants.Location = new System.Drawing.Point(15, 201);
 			this.colorconstants.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -450,6 +461,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorliterals
 			// 
 			this.colorliterals.BackColor = System.Drawing.SystemColors.Control;
+			this.colorliterals.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorliterals.Label = "Literals:";
 			this.colorliterals.Location = new System.Drawing.Point(15, 172);
 			this.colorliterals.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -461,6 +473,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorscriptbackground
 			// 
 			this.colorscriptbackground.BackColor = System.Drawing.SystemColors.Control;
+			this.colorscriptbackground.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorscriptbackground.Label = "Background:";
 			this.colorscriptbackground.Location = new System.Drawing.Point(15, 27);
 			this.colorscriptbackground.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -472,6 +485,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorkeywords
 			// 
 			this.colorkeywords.BackColor = System.Drawing.SystemColors.Control;
+			this.colorkeywords.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorkeywords.Label = "Keywords:";
 			this.colorkeywords.Location = new System.Drawing.Point(15, 143);
 			this.colorkeywords.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -483,6 +497,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorlinenumbers
 			// 
 			this.colorlinenumbers.BackColor = System.Drawing.SystemColors.Control;
+			this.colorlinenumbers.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorlinenumbers.Label = "Line numbers:";
 			this.colorlinenumbers.Location = new System.Drawing.Point(15, 56);
 			this.colorlinenumbers.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -494,6 +509,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorcomments
 			// 
 			this.colorcomments.BackColor = System.Drawing.SystemColors.Control;
+			this.colorcomments.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorcomments.Label = "Comments:";
 			this.colorcomments.Location = new System.Drawing.Point(15, 114);
 			this.colorcomments.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -505,6 +521,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorplaintext
 			// 
 			this.colorplaintext.BackColor = System.Drawing.SystemColors.Control;
+			this.colorplaintext.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorplaintext.Label = "Plain text:";
 			this.colorplaintext.Location = new System.Drawing.Point(15, 85);
 			this.colorplaintext.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -529,6 +546,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorselection3d
 			// 
 			this.colorselection3d.BackColor = System.Drawing.SystemColors.Control;
+			this.colorselection3d.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorselection3d.Label = "Selection:";
 			this.colorselection3d.Location = new System.Drawing.Point(15, 85);
 			this.colorselection3d.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -540,6 +558,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorhighlight3d
 			// 
 			this.colorhighlight3d.BackColor = System.Drawing.SystemColors.Control;
+			this.colorhighlight3d.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorhighlight3d.Label = "Highlight:";
 			this.colorhighlight3d.Location = new System.Drawing.Point(15, 56);
 			this.colorhighlight3d.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -551,6 +570,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// colorcrosshair3d
 			// 
 			this.colorcrosshair3d.BackColor = System.Drawing.SystemColors.Control;
+			this.colorcrosshair3d.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorcrosshair3d.Label = "Crosshair:";
 			this.colorcrosshair3d.Location = new System.Drawing.Point(15, 27);
 			this.colorcrosshair3d.MaximumSize = new System.Drawing.Size(10000, 23);
@@ -562,8 +582,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(619, 440);
 			this.Controls.Add(this.cancel);

@@ -29,7 +29,7 @@ using SlimDX.Direct3D;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class Linedef : IDisposable
+	public class Linedef : IDisposable
 	{
 		#region ================== Constants
 
@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Map
 		private float lengthsq;
 		private float length;
 		private float lengthinv;
-		//private float angle;
+		private float angle;
 
 		// Properties
 		private int flags;
@@ -94,6 +94,8 @@ namespace CodeImp.DoomBuilder.Map
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
 		public float LengthInv { get { return lengthinv; } }
+		public float Angle { get { return angle; } }
+		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 
 		#endregion
 
@@ -214,8 +216,7 @@ namespace CodeImp.DoomBuilder.Map
 				lengthsq = delta.GetLengthSq();
 				length = (float)Math.Sqrt(lengthsq);
 				if(length > 0f) lengthinv = 1f / length; else lengthinv = 1f / 0.0000000001f;
-				
-				//angle = delta.GetAngle();
+				angle = delta.GetAngle();
 				
 				// Updated
 				updateneeded = false;

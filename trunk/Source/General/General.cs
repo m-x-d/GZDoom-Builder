@@ -38,7 +38,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder
 {
-	internal static class General
+	public static class General
 	{
 		#region ================== API Declarations
 
@@ -49,14 +49,14 @@ namespace CodeImp.DoomBuilder
 		public static extern void ZeroMemory(IntPtr dest, int size);
 
 		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
-		internal static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
+		public static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
 
 		[DllImport("kernel32.dll", SetLastError = true)]
-		internal static unsafe extern void* VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, uint flAllocationType, uint flProtect);
+		public static unsafe extern void* VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, uint flAllocationType, uint flProtect);
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static unsafe extern bool VirtualFree(void* lpAddress, UIntPtr dwSize, uint dwFreeType);
+		public static unsafe extern bool VirtualFree(void* lpAddress, UIntPtr dwSize, uint dwFreeType);
 
 		#endregion
 

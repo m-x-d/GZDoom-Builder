@@ -87,6 +87,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.panelinfo = new System.Windows.Forms.Panel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
+			this.vertexinfo = new CodeImp.DoomBuilder.Interface.VertexInfoPanel();
+			this.sectorinfo = new CodeImp.DoomBuilder.Interface.SectorInfoPanel();
+			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
+			this.thinginfo = new CodeImp.DoomBuilder.Interface.ThingInfoPanel();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -96,6 +100,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menumain.SuspendLayout();
 			this.toolbar.SuspendLayout();
 			this.statusbar.SuspendLayout();
+			this.panelinfo.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.display)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -140,7 +145,7 @@ namespace CodeImp.DoomBuilder.Interface
             this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
-			this.menumain.Size = new System.Drawing.Size(731, 24);
+			this.menumain.Size = new System.Drawing.Size(839, 24);
 			this.menumain.TabIndex = 0;
 			this.menumain.Text = "menuStrip1";
 			// 
@@ -356,7 +361,7 @@ namespace CodeImp.DoomBuilder.Interface
             this.buttonthingsmode});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
-			this.toolbar.Size = new System.Drawing.Size(731, 25);
+			this.toolbar.Size = new System.Drawing.Size(839, 25);
 			this.toolbar.TabIndex = 1;
 			this.toolbar.Text = "toolStrip1";
 			// 
@@ -474,14 +479,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.statusbar.Location = new System.Drawing.Point(0, 522);
 			this.statusbar.Name = "statusbar";
 			this.statusbar.ShowItemToolTips = true;
-			this.statusbar.Size = new System.Drawing.Size(731, 23);
+			this.statusbar.Size = new System.Drawing.Size(839, 23);
 			this.statusbar.TabIndex = 2;
 			// 
 			// statuslabel
 			// 
 			this.statuslabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(520, 18);
+			this.statuslabel.Size = new System.Drawing.Size(628, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -592,10 +597,14 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// panelinfo
 			// 
+			this.panelinfo.Controls.Add(this.vertexinfo);
+			this.panelinfo.Controls.Add(this.thinginfo);
+			this.panelinfo.Controls.Add(this.sectorinfo);
+			this.panelinfo.Controls.Add(this.linedefinfo);
 			this.panelinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panelinfo.Location = new System.Drawing.Point(0, 421);
+			this.panelinfo.Location = new System.Drawing.Point(0, 416);
 			this.panelinfo.Name = "panelinfo";
-			this.panelinfo.Size = new System.Drawing.Size(731, 101);
+			this.panelinfo.Size = new System.Drawing.Size(839, 106);
 			this.panelinfo.TabIndex = 4;
 			// 
 			// redrawtimer
@@ -612,7 +621,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.display.Location = new System.Drawing.Point(0, 49);
 			this.display.Name = "display";
-			this.display.Size = new System.Drawing.Size(731, 372);
+			this.display.Size = new System.Drawing.Size(839, 367);
 			this.display.TabIndex = 5;
 			this.display.TabStop = false;
 			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
@@ -625,16 +634,60 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
 			// 
+			// vertexinfo
+			// 
+			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.vertexinfo.Location = new System.Drawing.Point(3, 3);
+			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.vertexinfo.Name = "vertexinfo";
+			this.vertexinfo.Size = new System.Drawing.Size(180, 100);
+			this.vertexinfo.TabIndex = 1;
+			this.vertexinfo.Visible = false;
+			// 
+			// sectorinfo
+			// 
+			this.sectorinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.sectorinfo.Location = new System.Drawing.Point(3, 3);
+			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.sectorinfo.Name = "sectorinfo";
+			this.sectorinfo.Size = new System.Drawing.Size(447, 100);
+			this.sectorinfo.TabIndex = 2;
+			this.sectorinfo.Visible = false;
+			// 
+			// linedefinfo
+			// 
+			this.linedefinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
+			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.linedefinfo.Name = "linedefinfo";
+			this.linedefinfo.Size = new System.Drawing.Size(783, 100);
+			this.linedefinfo.TabIndex = 0;
+			this.linedefinfo.Visible = false;
+			// 
+			// thinginfo
+			// 
+			this.thinginfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.thinginfo.Location = new System.Drawing.Point(3, 3);
+			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.thinginfo.Name = "thinginfo";
+			this.thinginfo.Size = new System.Drawing.Size(385, 100);
+			this.thinginfo.TabIndex = 3;
+			this.thinginfo.Visible = false;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(731, 545);
+			this.ClientSize = new System.Drawing.Size(839, 545);
 			this.Controls.Add(this.display);
 			this.Controls.Add(this.panelinfo);
 			this.Controls.Add(this.statusbar);
 			this.Controls.Add(this.toolbar);
 			this.Controls.Add(this.menumain);
-			this.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menumain;
@@ -654,6 +707,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.toolbar.PerformLayout();
 			this.statusbar.ResumeLayout(false);
 			this.statusbar.PerformLayout();
+			this.panelinfo.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.display)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -713,5 +767,9 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripButton buttonthingsmode;
 		private System.Windows.Forms.ToolStripMenuItem itemthingsmode;
+		private LinedefInfoPanel linedefinfo;
+		private VertexInfoPanel vertexinfo;
+		private SectorInfoPanel sectorinfo;
+		private ThingInfoPanel thinginfo;
 	}
 }

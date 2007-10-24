@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class ThingsMode : ClassicMode
+	public class ThingsMode : ClassicMode
 	{
 		#region ================== Constants
 
@@ -91,7 +91,10 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.Disengage();
 
-			// Check things button on main window
+			// Hide highlight info
+			General.MainWindow.HideInfo();
+
+			// Uncheck things button on main window
 			General.MainWindow.SetThingsChecked(false);
 		}
 
@@ -138,6 +141,10 @@ namespace CodeImp.DoomBuilder.Editing
 				// Done
 				renderer.FinishRendering();
 			}
+
+			// Show highlight info
+			if(highlighted != null) General.MainWindow.ShowThingInfo(highlighted);
+				else General.MainWindow.HideInfo();
 		}
 
 		// Mouse moves
