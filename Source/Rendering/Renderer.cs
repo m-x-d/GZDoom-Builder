@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal abstract class Renderer : IDisposable, ID3DResource
+	public abstract class Renderer : IDisposable, ID3DResource
 	{
 		#region ================== Constants
 

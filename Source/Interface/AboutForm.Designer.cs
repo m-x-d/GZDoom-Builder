@@ -79,8 +79,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// AboutForm
 			// 
 			this.AcceptButton = this.close;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.close;
 			this.ClientSize = new System.Drawing.Size(518, 104);
 			this.Controls.Add(this.builderlink);

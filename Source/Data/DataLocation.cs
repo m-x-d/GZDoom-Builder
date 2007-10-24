@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal struct DataLocation : IComparable<DataLocation>, IComparable, IEquatable<DataLocation>
+	public struct DataLocation : IComparable<DataLocation>, IComparable, IEquatable<DataLocation>
 	{
 		// Constants
 		public const int RESOURCE_WAD = 0;

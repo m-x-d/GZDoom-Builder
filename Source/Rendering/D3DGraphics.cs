@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.Interface;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal class D3DGraphics : IDisposable
+	public class D3DGraphics : IDisposable
 	{
 		#region ================== Constants
 

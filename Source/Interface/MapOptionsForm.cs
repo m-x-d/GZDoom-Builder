@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal partial class MapOptionsForm : DelayedForm
+	public partial class MapOptionsForm : DelayedForm
 	{
 		// Variables
 		private MapOptions options;
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Interface
 				if(newcfg == null) return;
 				
 				// Check if the config uses a different IO interface
-				if(newcfg.ReadSetting("formatinterface", "") != General.Map.Configuration.FormatInterface)
+				if(newcfg.ReadSetting("formatinterface", "") != General.Map.Config.FormatInterface)
 				{
 					// Warn the user about IO interface change
 					if(General.ShowWarningMessage("The game configuration you selected uses a different file format than your current map. Because your map was not designed for this format it may cause the map to work incorrectly in the game. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)

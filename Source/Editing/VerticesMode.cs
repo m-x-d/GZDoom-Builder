@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class VerticesMode : ClassicMode
+	public class VerticesMode : ClassicMode
 	{
 		#region ================== Constants
 
@@ -90,8 +90,11 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Disengage()
 		{
 			base.Disengage();
+
+			// Hide highlight info
+			General.MainWindow.HideInfo();
 			
-			// Check vertices button on main window
+			// Uncheck vertices button on main window
 			General.MainWindow.SetVerticesChecked(false);
 		}
 
@@ -138,6 +141,10 @@ namespace CodeImp.DoomBuilder.Editing
 				// Done
 				renderer.FinishRendering();
 			}
+
+			// Show highlight info
+			if(highlighted != null) General.MainWindow.ShowVertexInfo(highlighted);
+				else General.MainWindow.HideInfo();
 		}
 		
 		// Mouse moves

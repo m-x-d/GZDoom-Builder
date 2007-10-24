@@ -32,7 +32,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal abstract unsafe class ImageData : IDisposable
+	public abstract unsafe class ImageData : IDisposable
 	{
 		#region ================== Constants
 
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This creates the 2D pixel data
-		public void CreatePixelData()
+		public virtual void CreatePixelData()
 		{
 			BitmapData bmpdata;
 
@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This creates the Direct3D texture
-		public void CreateTexture()
+		public virtual void CreateTexture()
 		{
 			MemoryStream memstream;
 			

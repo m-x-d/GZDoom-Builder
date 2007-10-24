@@ -31,7 +31,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal sealed class DataManager : IDisposable
+	public sealed class DataManager : IDisposable
 	{
 		#region ================== Constants
 
@@ -282,6 +282,86 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 		
+		// This returns a texture by string
+		public ImageData GetTextureByName(string name)
+		{
+			// Get the long name
+			long longname = Lump.MakeLongName(name);
+			return GetTextureByLongName(longname);
+		}
+
+		// This returns a texture by long
+		public ImageData GetTextureByLongName(long longname)
+		{
+			// Does this texture exist?
+			if(textures.ContainsKey(longname))
+			{
+				// Return texture
+				return textures[longname];
+			}
+			else
+			{
+				// Return null image
+				return new NullImage();
+			}
+		}
+		
+		#endregion
+
+		#region ================== Flats
+
+		// This returns a flat by string
+		public ImageData GetFlatByName(string name)
+		{
+			// Get the long name
+			long longname = Lump.MakeLongName(name);
+			return GetFlatByLongName(longname);
+		}
+
+		// This returns a flat by long
+		public ImageData GetFlatByLongName(long longname)
+		{
+			// Does this flat exist?
+			if(flats.ContainsKey(longname))
+			{
+				// Return flat
+				return flats[longname];
+			}
+			else
+			{
+				// Return null image
+				return new NullImage();
+			}
+		}
+
+		#endregion
+
+		#region ================== Sprites
+
+		// This returns a sprite by string
+		public ImageData GetSpriteByName(string name)
+		{
+			// Get the long name
+			long longname = Lump.MakeLongName(name);
+			return GetSpriteByLongName(longname);
+		}
+
+		// This returns a sprite by long
+		public ImageData GetSpriteByLongName(long longname)
+		{
+			// Does this sprite exist?
+			if(sprites.ContainsKey(longname))
+			{
+				// Return sprite
+				return sprites[longname];
+			}
+			else
+			{
+				// Return null image
+				return new NullImage();
+			}
+		}
+
 		#endregion
 	}
 }

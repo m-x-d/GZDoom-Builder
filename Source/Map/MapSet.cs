@@ -31,7 +31,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class MapSet : IDisposable
+	public class MapSet : IDisposable
 	{
 		#region ================== Variables
 

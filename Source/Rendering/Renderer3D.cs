@@ -32,7 +32,7 @@ using System.ComponentModel;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal class Renderer3D : Renderer
+	public class Renderer3D : Renderer
 	{
 		#region ================== Constants
 

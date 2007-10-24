@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal partial class ResourceOptionsForm : DelayedForm
+	public partial class ResourceOptionsForm : DelayedForm
 	{
 		// Variables
 		private DataLocation res;

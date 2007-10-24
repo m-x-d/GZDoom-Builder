@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class MapSelection : IDisposable
+	public class MapSelection : IDisposable
 	{
 		#region ================== Constants
 

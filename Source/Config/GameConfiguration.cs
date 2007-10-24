@@ -31,7 +31,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal class GameConfiguration
+	public class GameConfiguration
 	{
 		#region ================== Constants
 
@@ -125,18 +125,18 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary ReadSetting(string setting, IDictionary defaultsetting) { return cfg.ReadSetting(setting, defaultsetting); }
 		
 		// This gets thing information by index
-		public ThingTypeInfo GetThingInfo(int index)
+		public ThingTypeInfo GetThingInfo(int thingtype)
 		{
 			// Index in config?
-			if(things.ContainsKey(index))
+			if(things.ContainsKey(thingtype))
 			{
 				// Return from config
-				return things[index];
+				return things[thingtype];
 			}
 			else
 			{
 				// Create unknown thing info
-				return new ThingTypeInfo(index);
+				return new ThingTypeInfo(thingtype);
 			}
 		}
 		

@@ -27,7 +27,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal class ClippedStream : Stream
+	public class ClippedStream : Stream
 	{
 		#region ================== Variables
 

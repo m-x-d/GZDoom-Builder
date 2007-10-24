@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal class Sector : IDisposable
+	public class Sector : IDisposable
 	{
 		#region ================== Constants
 
@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int ceilheight;
 		private string floortexname;
 		private string ceiltexname;
-		private int special;
+		private int effect;
 		private int tag;
 		private int brightness;
 
@@ -67,12 +67,13 @@ namespace CodeImp.DoomBuilder.Map
 
 		public MapSet Map { get { return map; } }
 		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
+		public ICollection<Thing> Things { get { return things; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public int FloorHeight { get { return floorheight; } }
 		public int CeilHeight { get { return ceilheight; } }
 		public string FloorTexture { get { return floortexname; } }
 		public string CeilTexture { get { return ceiltexname; } }
-		public int Special { get { return special; } }
+		public int Effect { get { return effect; } }
 		public int Tag { get { return tag; } }
 		public int Brightness { get { return brightness; } }
 		public int Selected { get { return selected; } set { selected = value; } }
@@ -160,7 +161,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.ceiltexname = ceiltexname;
 			s.floorheight = floorheight;
 			s.floortexname = floortexname;
-			s.special = special;
+			s.effect = effect;
 			s.tag = tag;
 			s.brightness = brightness;
 		}
@@ -170,14 +171,14 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 
 		// This updates all properties
-		public void Update(int hfloor, int hceil, string tfloor, string tceil, int special, int tag, int brightness)
+		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, int tag, int brightness)
 		{
 			// Apply changes
 			this.floorheight = hfloor;
 			this.ceilheight = hceil;
 			this.floortexname = tfloor;
 			this.ceiltexname = tceil;
-			this.special = special;
+			this.effect = effect;
 			this.tag = tag;
 			this.brightness = brightness;
 		}

@@ -1,6 +1,6 @@
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal partial class ResourceListEditor
+	public partial class ResourceListEditor
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -195,9 +195,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// ResourceListEditor
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.Controls.Add(this.splitContainer1);
+			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "ResourceListEditor";
 			this.Size = new System.Drawing.Size(350, 166);
 			buttonsbar2.Panel1.ResumeLayout(false);

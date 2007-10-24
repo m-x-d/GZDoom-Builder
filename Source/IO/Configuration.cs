@@ -142,7 +142,7 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal sealed class Configuration
+	public sealed class Configuration
 	{
 		#region ================== Constants
 		

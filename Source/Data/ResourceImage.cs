@@ -31,7 +31,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class ResourceImage : ImageData
+	public class ResourceImage : ImageData
 	{
 		#region ================== Constants
 

@@ -33,7 +33,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal unsafe class DoomPictureReader
+	public unsafe class DoomPictureReader
 	{
 		#region ================== Constants
 

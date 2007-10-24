@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class LinedefsMode : ClassicMode
+	public class LinedefsMode : ClassicMode
 	{
 		#region ================== Constants
 
@@ -91,7 +91,10 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.Disengage();
 
-			// Check linedefs button on main window
+			// Hide highlight info
+			General.MainWindow.HideInfo();
+
+			// Uncheck linedefs button on main window
 			General.MainWindow.SetLinedefsChecked(false);
 		}
 
@@ -148,6 +151,10 @@ namespace CodeImp.DoomBuilder.Editing
 				// Done
 				renderer.FinishRendering();
 			}
+			
+			// Show highlight info
+			if(highlighted != null) General.MainWindow.ShowLinedefInfo(highlighted);
+				else General.MainWindow.HideInfo();
 		}
 
 		// Mouse moves

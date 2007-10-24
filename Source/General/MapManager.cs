@@ -38,7 +38,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder
 {
-	internal class MapManager : IDisposable
+	public class MapManager : IDisposable
 	{
 		#region ================== Constants
 
@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder
 		public bool IsChanged { get { return changed; } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public D3DGraphics Graphics { get { return graphics; } }
-		public GameConfiguration Configuration { get { return config; } }
+		public GameConfiguration Config { get { return config; } }
 		public MapSelection Selection { get { return selection; } }
 		
 		#endregion

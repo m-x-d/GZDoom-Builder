@@ -28,7 +28,7 @@ using System.Reflection;
 namespace CodeImp.DoomBuilder.Controls
 {
 	[AttributeUsage(AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
-	internal class ActionAttribute : Attribute
+	public class ActionAttribute : Attribute
 	{
 		#region ================== Variables
 

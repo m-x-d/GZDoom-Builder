@@ -31,7 +31,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal class ThingTypeInfo
+	public class ThingTypeInfo
 	{
 		#region ================== Constants
 

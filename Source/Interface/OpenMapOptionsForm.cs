@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal partial class OpenMapOptionsForm : DelayedForm
+	public partial class OpenMapOptionsForm : DelayedForm
 	{
 		// Variables
 		private Configuration mapsettings;
