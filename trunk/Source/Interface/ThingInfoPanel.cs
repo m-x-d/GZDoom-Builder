@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.Interface
 			tag.Text = ""; // TODO
 			angle.Text = t.AngleDeg.ToString() + "\u00B0";
 			spritename.Text = ti.Sprite;
-			spritetex.BackgroundImage = General.Map.Data.GetSpriteBitmap(ti.SpriteLongName);
+			spritetex.BackgroundImage = General.Map.Data.GetSpriteBitmap(ti.Sprite);
 
 			// Show the whole thing
 			this.Show();

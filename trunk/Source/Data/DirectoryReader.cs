@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 		
 		#region ================== Textures
-
+		
 		#endregion
 	}
 }
