@@ -327,7 +327,7 @@ namespace CodeImp.DoomBuilder.Data
 					}
 
 					// Wait a bit
-					Thread.Sleep(10);
+					Thread.Sleep(1);
 
 					lock(list)
 					{
