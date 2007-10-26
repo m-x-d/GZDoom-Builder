@@ -190,8 +190,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.images.TransparentColor = System.Drawing.Color.Transparent;
 			this.images.Images.SetKeyName(0, "Folder.ico");
 			this.images.Images.SetKeyName(1, "File.ico");
-			this.images.Images.SetKeyName(2, "FolderLocked.ico");
-			this.images.Images.SetKeyName(3, "FileLocked.ico");
+			this.images.Images.SetKeyName(2, "PK3.ico");
+			this.images.Images.SetKeyName(3, "FolderLocked.ico");
+			this.images.Images.SetKeyName(4, "FileLocked.ico");
+			this.images.Images.SetKeyName(5, "PK3Locked.ico");
 			// 
 			// ResourceListEditor
 			// 

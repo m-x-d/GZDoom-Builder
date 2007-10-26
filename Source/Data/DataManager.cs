@@ -144,6 +144,11 @@ namespace CodeImp.DoomBuilder.Data
 						case DataLocation.RESOURCE_DIRECTORY:
 							c = new DirectoryReader(dl);
 							break;
+
+						// PK3 file container
+						case DataLocation.RESOURCE_PK3:
+							c = new PK3Reader(dl);
+							break;
 					}
 				}
 				catch(Exception)

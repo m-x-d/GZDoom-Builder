@@ -54,6 +54,7 @@
     <Compile Include="Data\FlatImage.cs" />
     <Compile Include="Data\NullImage.cs" />
     <Compile Include="Data\PatchNames.cs" />
+    <Compile Include="Data\PK3Reader.cs" />
     <Compile Include="Data\Playpal.cs" />
     <Compile Include="Data\ResourceImage.cs" />
     <Compile Include="Data\SpriteImage.cs" />

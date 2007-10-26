@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Interface
 			label6.AutoEllipsis = true;
 			label6.Location = new System.Drawing.Point(12, 15);
 			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(384, 37);
+			label6.Size = new System.Drawing.Size(393, 37);
 			label6.TabIndex = 21;
 			label6.Text = "These are the resources that will be loaded when this configuration is chosen for" +
 				" editing. Usually you add your IWAD (like doom.wad or doom2.wad) here.";
@@ -234,6 +234,7 @@ namespace CodeImp.DoomBuilder.Interface
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.configdata.DialogOffset = new System.Drawing.Point(-120, 10);
+			this.configdata.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.configdata.Location = new System.Drawing.Point(15, 55);
 			this.configdata.Name = "configdata";
 			this.configdata.Size = new System.Drawing.Size(381, 220);

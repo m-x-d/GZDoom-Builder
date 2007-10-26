@@ -31,6 +31,7 @@ namespace CodeImp.DoomBuilder.Data
 		// Constants
 		public const int RESOURCE_WAD = 0;
 		public const int RESOURCE_DIRECTORY = 1;
+		public const int RESOURCE_PK3 = 2;
 		
 		// Members
 		public int type;

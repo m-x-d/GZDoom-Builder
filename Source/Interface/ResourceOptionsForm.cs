@@ -53,16 +53,19 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Setup for WAD File
 				case DataLocation.RESOURCE_WAD:
-					wadfiletab.Select();
 					wadlocation.Text = res.location;
 					break;
 
 				// Setup for Directory
 				case DataLocation.RESOURCE_DIRECTORY:
-					directorytab.Select();
 					dirlocation.Text = res.location;
 					dir_textures.Checked = res.textures;
 					dir_flats.Checked = res.flats;
+					break;
+					
+				// Setup for PK3 File
+				case DataLocation.RESOURCE_PK3:
+					pk3location.Text = res.location;
 					break;
 			}
 
@@ -79,7 +82,7 @@ namespace CodeImp.DoomBuilder.Interface
 				// Setup WAD File
 				case DataLocation.RESOURCE_WAD:
 
-					// Check if directory is specified
+					// Check if file is specified
 					if((wadlocation.Text.Length == 0) ||
 					   (!File.Exists(wadlocation.Text)))
 					{
@@ -129,6 +132,30 @@ namespace CodeImp.DoomBuilder.Interface
 						this.Close();
 					}
 					break;
+					
+				// Setup PK3 File
+				case DataLocation.RESOURCE_PK3:
+
+					// Check if file is specified
+					if((pk3location.Text.Length == 0) ||
+					   (!File.Exists(pk3location.Text)))
+					{
+						// No valid pk3 file specified
+						MessageBox.Show(this, "Please select a valid PK3 File resource.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					}
+					else
+					{
+						// Apply settings
+						res.type = DataLocation.RESOURCE_PK3;
+						res.location = pk3location.Text;
+						res.textures = false;
+						res.flats = false;
+
+						// Done
+						this.DialogResult = DialogResult.OK;
+						this.Close();
+					}
+					break;
 			}
 		}
 
@@ -159,6 +186,17 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Use this directory
 				dirlocation.Text = dirdialog.SelectedPath;
+			}
+		}
+
+		// Browse PK3 File clicked
+		private void browsepk3_Click(object sender, EventArgs e)
+		{
+			// Browse for PK3 File
+			if(pk3filedialog.ShowDialog(this) == DialogResult.OK)
+			{
+				// Use this file
+				pk3location.Text = pk3filedialog.FileName;
 			}
 		}
 	}

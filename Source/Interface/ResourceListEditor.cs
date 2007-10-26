@@ -68,6 +68,32 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Methods
 
+		// This gets the icon index for a resource location type
+		private int GetIconIndex(int locationtype, bool locked)
+		{
+			int lockedaddition;
+			
+			// Locked?
+			if(locked) lockedaddition = (images.Images.Count / 2);
+				else lockedaddition = 0;
+			
+			// What type?
+			switch(locationtype)
+			{
+				case DataLocation.RESOURCE_DIRECTORY:
+					return 0 + lockedaddition;
+
+				case DataLocation.RESOURCE_WAD:
+					return 1 + lockedaddition;
+
+				case DataLocation.RESOURCE_PK3:
+					return 2 + lockedaddition;
+
+				default:
+					return -1;
+			}
+		}
+		
 		// This will show a fixed list
 		public void FixedResourceLocationList(DataLocationList list)
 		{
@@ -88,12 +114,7 @@ namespace CodeImp.DoomBuilder.Interface
 				// Add item as fixed
 				resourceitems.Items.Insert(0, new ListViewItem(list[i].location));
 				resourceitems.Items[0].Tag = list[i];
-
-				// Set icon
-				if(list[i].type == DataLocation.RESOURCE_DIRECTORY)
-					resourceitems.Items[0].ImageIndex = 2;
-				else if(list[i].type == DataLocation.RESOURCE_WAD)
-					resourceitems.Items[0].ImageIndex = 3;
+				resourceitems.Items[0].ImageIndex = GetIconIndex(list[i].type, true);
 
 				// Set disabled
 				resourceitems.Items[0].ForeColor = SystemColors.GrayText;
@@ -158,13 +179,8 @@ namespace CodeImp.DoomBuilder.Interface
 			index = resourceitems.Items.Count;
 			resourceitems.Items.Add(new ListViewItem(rl.location));
 			resourceitems.Items[index].Tag = rl;
-
-			// Set icon
-			if(rl.type == DataLocation.RESOURCE_DIRECTORY)
-				resourceitems.Items[index].ImageIndex = 0;
-			else if(rl.type == DataLocation.RESOURCE_WAD)
-				resourceitems.Items[index].ImageIndex = 1;
-
+			resourceitems.Items[index].ImageIndex = GetIconIndex(rl.type, false);
+			
 			// Set normal color
 			resourceitems.Items[index].ForeColor = SystemColors.WindowText;
 
@@ -237,13 +253,8 @@ namespace CodeImp.DoomBuilder.Interface
 					rl = resoptions.ResourceLocation;
 					selecteditem.Text = rl.location;
 					selecteditem.Tag = rl;
-
-					// Set icon
-					if(rl.type == DataLocation.RESOURCE_DIRECTORY)
-						selecteditem.ImageIndex = 0;
-					else if(rl.type == DataLocation.RESOURCE_WAD)
-						selecteditem.ImageIndex = 1;
-
+					selecteditem.ImageIndex = GetIconIndex(rl.type, false);
+					
 					// Done
 					resourceitems.EndUpdate();
 					
