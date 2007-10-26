@@ -85,12 +85,12 @@ namespace CodeImp.DoomBuilder.Interface
 			this.xposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.yposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panelinfo = new System.Windows.Forms.Panel();
-			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
-			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
 			this.vertexinfo = new CodeImp.DoomBuilder.Interface.VertexInfoPanel();
+			this.thinginfo = new CodeImp.DoomBuilder.Interface.ThingInfoPanel();
 			this.sectorinfo = new CodeImp.DoomBuilder.Interface.SectorInfoPanel();
 			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
-			this.thinginfo = new CodeImp.DoomBuilder.Interface.ThingInfoPanel();
+			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
+			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -484,9 +484,11 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// statuslabel
 			// 
-			this.statuslabel.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.statuslabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Status2;
+			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(628, 18);
+			this.statuslabel.Size = new System.Drawing.Size(597, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -607,6 +609,50 @@ namespace CodeImp.DoomBuilder.Interface
 			this.panelinfo.Size = new System.Drawing.Size(839, 106);
 			this.panelinfo.TabIndex = 4;
 			// 
+			// vertexinfo
+			// 
+			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.vertexinfo.Location = new System.Drawing.Point(3, 3);
+			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.vertexinfo.Name = "vertexinfo";
+			this.vertexinfo.Size = new System.Drawing.Size(180, 100);
+			this.vertexinfo.TabIndex = 1;
+			this.vertexinfo.Visible = false;
+			// 
+			// thinginfo
+			// 
+			this.thinginfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.thinginfo.Location = new System.Drawing.Point(3, 3);
+			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.thinginfo.Name = "thinginfo";
+			this.thinginfo.Size = new System.Drawing.Size(385, 100);
+			this.thinginfo.TabIndex = 3;
+			this.thinginfo.Visible = false;
+			// 
+			// sectorinfo
+			// 
+			this.sectorinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.sectorinfo.Location = new System.Drawing.Point(3, 3);
+			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.sectorinfo.Name = "sectorinfo";
+			this.sectorinfo.Size = new System.Drawing.Size(447, 100);
+			this.sectorinfo.TabIndex = 2;
+			this.sectorinfo.Visible = false;
+			// 
+			// linedefinfo
+			// 
+			this.linedefinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
+			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.linedefinfo.Name = "linedefinfo";
+			this.linedefinfo.Size = new System.Drawing.Size(783, 100);
+			this.linedefinfo.TabIndex = 0;
+			this.linedefinfo.Visible = false;
+			// 
 			// redrawtimer
 			// 
 			this.redrawtimer.Interval = 1;
@@ -633,50 +679,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
-			// 
-			// vertexinfo
-			// 
-			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.vertexinfo.Location = new System.Drawing.Point(3, 3);
-			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.vertexinfo.Name = "vertexinfo";
-			this.vertexinfo.Size = new System.Drawing.Size(180, 100);
-			this.vertexinfo.TabIndex = 1;
-			this.vertexinfo.Visible = false;
-			// 
-			// sectorinfo
-			// 
-			this.sectorinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.sectorinfo.Location = new System.Drawing.Point(3, 3);
-			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.sectorinfo.Name = "sectorinfo";
-			this.sectorinfo.Size = new System.Drawing.Size(447, 100);
-			this.sectorinfo.TabIndex = 2;
-			this.sectorinfo.Visible = false;
-			// 
-			// linedefinfo
-			// 
-			this.linedefinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
-			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.linedefinfo.Name = "linedefinfo";
-			this.linedefinfo.Size = new System.Drawing.Size(783, 100);
-			this.linedefinfo.TabIndex = 0;
-			this.linedefinfo.Visible = false;
-			// 
-			// thinginfo
-			// 
-			this.thinginfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.thinginfo.Location = new System.Drawing.Point(3, 3);
-			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.thinginfo.Name = "thinginfo";
-			this.thinginfo.Size = new System.Drawing.Size(385, 100);
-			this.thinginfo.TabIndex = 3;
-			this.thinginfo.Visible = false;
 			// 
 			// MainForm
 			// 

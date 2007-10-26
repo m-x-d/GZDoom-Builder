@@ -110,9 +110,6 @@ namespace CodeImp.DoomBuilder.Map
 				// Dispose the sidedefs that are attached to this sector
 				// because a sidedef cannot exist without reference to its sector.
 				foreach(Sidedef sd in sidedefs) sd.Dispose();
-				
-				// Determine new sector references on things
-				foreach(Thing t in things) t.DetermineSector();
 
 				// Clean up
 				mainlistitem = null;

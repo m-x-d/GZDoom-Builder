@@ -130,6 +130,27 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Status0 {
+            get {
+                object obj = ResourceManager.GetObject("Status0", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Status1 {
+            get {
+                object obj = ResourceManager.GetObject("Status1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Status2 {
+            get {
+                object obj = ResourceManager.GetObject("Status2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ThingsMode {
             get {
                 object obj = ResourceManager.GetObject("ThingsMode", resourceCulture);

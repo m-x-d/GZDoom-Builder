@@ -69,7 +69,8 @@ namespace CodeImp.DoomBuilder.Data
 
 		public Playpal Palette { get { return palette; } }
 		public bool IsDisposed { get { return isdisposed; } }
-
+		public bool IsLoading { get { return (backgroundloader != null) && backgroundloader.IsAlive; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -276,16 +277,15 @@ namespace CodeImp.DoomBuilder.Data
 		// The background loader
 		private void BackgroundLoad()
 		{
-			int loadedtextures, loadedflats, loadedsprites;
 			int starttime = General.Clock.GetCurrentTime();
 			int deltatime;
 			
 			try
 			{
 				// Load all lists
-				loadedtextures = LoadImagesList(textures);
-				loadedflats = LoadImagesList(flats);
-				loadedsprites = LoadImagesList(sprites);
+				LoadImagesList(textures);
+				LoadImagesList(flats);
+				LoadImagesList(sprites);
 			}
 			catch(ThreadInterruptedException)
 			{
@@ -295,16 +295,17 @@ namespace CodeImp.DoomBuilder.Data
 			// Done
 			deltatime = General.Clock.GetCurrentTime() - starttime;
 			General.WriteLogLine("Background resource loading completed in " + deltatime + "ms");
-			General.WriteLogLine("Loaded " + loadedtextures + " textures, " + loadedflats + " flats, " + loadedsprites + " sprites");
+			General.WriteLogLine("Loaded " + textures.Count + " textures, " + flats.Count + " flats, " + sprites.Count + " sprites");
+			backgroundloader = null;
+			General.MainWindow.UpdateStatusIcon();
 		}
 
 		// This loads a list of ImageData
-		private int LoadImagesList(Dictionary<long, ImageData> list)
+		private void LoadImagesList(Dictionary<long, ImageData> list)
 		{
 			Dictionary<long, ImageData>.Enumerator walker;
 			bool moveresult = false;
 			bool interrupted = false;
-			int numloaded;
 			
 			do
 			{
@@ -313,7 +314,6 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					walker = list.GetEnumerator();
 					moveresult = walker.MoveNext();
-					numloaded = 0;
 				}
 
 				// Continue until at end of list
@@ -324,7 +324,6 @@ namespace CodeImp.DoomBuilder.Data
 						// Load image
 						walker.Current.Value.LoadImage();
 						//walker.Current.Value.CreateTexture();
-						if(walker.Current.Value.IsLoaded) numloaded++;
 					}
 
 					// Wait a bit
@@ -347,9 +346,6 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 			while(interrupted);
-
-			// Return result
-			return numloaded;
 		}
 		
 		#endregion
