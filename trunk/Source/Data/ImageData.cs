@@ -94,18 +94,21 @@ namespace CodeImp.DoomBuilder.Data
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				// Clean up
-				if(bitmap != null) bitmap.Dispose();
-				if(texture != null) texture.Dispose();
-				if(pixeldata != null)
+				lock(this)
 				{
-					General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
-					pixeldata = null;
-					GC.RemoveMemoryPressure(pixeldatasize);
-				}
+					// Clean up
+					if(bitmap != null) bitmap.Dispose();
+					if(texture != null) texture.Dispose();
+					if(pixeldata != null)
+					{
+						General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
+						pixeldata = null;
+						GC.RemoveMemoryPressure(pixeldatasize);
+					}
 
-				// Done
-				isdisposed = true;
+					// Done
+					isdisposed = true;
+				}
 			}
 		}
 
@@ -133,21 +136,24 @@ namespace CodeImp.DoomBuilder.Data
 			// Only do this when data is not created yet
 			if((pixeldata == null) && IsLoaded)
 			{
-				// Clean up old memory if reserved
-				if(pixeldata != null)
+				lock(this)
 				{
-					General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
-					pixeldata = null;
-					GC.RemoveMemoryPressure(pixeldatasize);
-				}
+					// Clean up old memory if reserved
+					if(pixeldata != null)
+					{
+						General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
+						pixeldata = null;
+						GC.RemoveMemoryPressure(pixeldatasize);
+					}
 
-				// Make a data copy of the bits for the 2D renderer
-				bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-				pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height * sizeof(PixelColor));
-				pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(pixeldatasize), General.MEM_COMMIT, General.PAGE_READWRITE);
-				General.CopyMemory((void*)pixeldata, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldatasize));
-				bitmap.UnlockBits(bmpdata);
-				GC.AddMemoryPressure(pixeldatasize);
+					// Make a data copy of the bits for the 2D renderer
+					bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+					pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height * sizeof(PixelColor));
+					pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(pixeldatasize), General.MEM_COMMIT, General.PAGE_READWRITE);
+					General.CopyMemory((void*)pixeldata, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldatasize));
+					bitmap.UnlockBits(bmpdata);
+					GC.AddMemoryPressure(pixeldatasize);
+				}
 			}
 		}
 		
@@ -159,22 +165,28 @@ namespace CodeImp.DoomBuilder.Data
 			// Only do this when texture is not created yet
 			if((texture == null) && IsLoaded)
 			{
-				// Write to memory stream and read from memory
-				memstream = new MemoryStream();
-				bitmap.Save(memstream, ImageFormat.Bmp);
-				memstream.Seek(0, SeekOrigin.Begin);
-				texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length, bitmap.Size.Width, bitmap.Size.Height, 0,
-					Usage.None, Format.Unknown, Pool.Managed, Filter.Box, Filter.Box, 0);
-				memstream.Dispose();
+				lock(this)
+				{
+					// Write to memory stream and read from memory
+					memstream = new MemoryStream();
+					bitmap.Save(memstream, ImageFormat.Bmp);
+					memstream.Seek(0, SeekOrigin.Begin);
+					texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length, bitmap.Size.Width, bitmap.Size.Height, 0,
+						Usage.None, Format.Unknown, Pool.Managed, Filter.Box, Filter.Box, 0);
+					memstream.Dispose();
+				}
 			}
 		}
 		
 		// This destroys the Direct3D texture
 		public void ReleaseTexture()
 		{
-			// Trash it
-			if(texture != null) texture.Dispose();
-			texture = null;
+			lock(this)
+			{
+				// Trash it
+				if(texture != null) texture.Dispose();
+				texture = null;
+			}
 		}
 		
 		#endregion

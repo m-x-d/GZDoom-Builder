@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Things
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
+		public ICollection<ThingTypeInfo> Things { get { return things.Values; } }
 		
 		#endregion
 
