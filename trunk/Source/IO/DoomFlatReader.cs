@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.IO
 			PixelColor* pixeldata = null;
 			float sqrlength;
 			byte[] bytes;
-			uint datalength;
+			uint datalength = 0;
 			
 			// Check if the flat is square
 			sqrlength = (float)Math.Sqrt(stream.Length);
