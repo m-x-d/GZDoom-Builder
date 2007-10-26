@@ -21,21 +21,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.IO;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Geometry;
+using System.Drawing;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Rendering;
+using System.Drawing.Imaging;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Data
+namespace CodeImp.DoomBuilder.IO
 {
-	public enum TexturePatchFormat : int
+	public unsafe interface IImageReader
 	{
-		Unknown = 0,			// Not determined yet
-		Invalid = 1,			// Considered invalid
-		DoomImage = 2,			// Doom Image format  (column list rendered data)
-		DoomFlat = 3,			// Doom Flat format   (raw 8-bit pixel data)
-		PNG = 4,				// Portable Network Graphic
-		Bitmap_P8 = 5,			// Bitmap 8-bit Paletted
-		Bitmap_B5G6R5 = 6,		// Bitmap 16-bit
-		Bitmap_B8G8R8 = 7,		// Bitmap 24-bit
-		Bitmap_A8B8G8R8 = 8,	// Bitmap 32-bit
+		// Methods
+		Bitmap ReadAsBitmap(Stream stream);
+		void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y);
 	}
 }

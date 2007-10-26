@@ -56,23 +56,26 @@ namespace CodeImp.DoomBuilder.Interface
 			brightness.Text = s.Brightness.ToString();
 			floorname.Text = s.FloorTexture;
 			ceilingname.Text = s.CeilTexture;
-			floortex.BackgroundImage = FindFlat(s.FloorTexture);
-			ceilingtex.BackgroundImage = FindFlat(s.CeilTexture);
+			floortex.BackgroundImage = General.Map.Data.GetFlatBitmap(s.FloorTexture);
+			ceilingtex.BackgroundImage = General.Map.Data.GetFlatBitmap(s.CeilTexture);
 
 			// Show the whole thing
 			this.Show();
 			this.Update();
 		}
 
-		// This loads and returns the flat image if possible
-		private Image FindFlat(string name)
+		// When visible changed
+		protected override void OnVisibleChanged(EventArgs e)
 		{
-			ImageData img;
+			// Hiding panels
+			if(!this.Visible)
+			{
+				floortex.BackgroundImage = null;
+				ceilingtex.BackgroundImage = null;
+			}
 
-			// Get it
-			img = General.Map.Data.GetFlatByName(name);
-			img.LoadImage();
-			return img.Bitmap;
+			// Call base
+			base.OnVisibleChanged(e);
 		}
 	}
 }

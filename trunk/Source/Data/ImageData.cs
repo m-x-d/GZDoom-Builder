@@ -130,21 +130,25 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			BitmapData bmpdata;
 
-			// Clean up old memory if reserved
-			if(pixeldata != null)
+			// Only do this when data is not created yet
+			if((pixeldata == null) && IsLoaded)
 			{
-				General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
-				pixeldata = null;
-				GC.RemoveMemoryPressure(pixeldatasize);
+				// Clean up old memory if reserved
+				if(pixeldata != null)
+				{
+					General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
+					pixeldata = null;
+					GC.RemoveMemoryPressure(pixeldatasize);
+				}
+
+				// Make a data copy of the bits for the 2D renderer
+				bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+				pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height * sizeof(PixelColor));
+				pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(pixeldatasize), General.MEM_COMMIT, General.PAGE_READWRITE);
+				General.CopyMemory((void*)pixeldata, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldatasize));
+				bitmap.UnlockBits(bmpdata);
+				GC.AddMemoryPressure(pixeldatasize);
 			}
-			
-			// Make a data copy of the bits for the 2D renderer
-			bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-			pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height * sizeof(PixelColor));
-			pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(pixeldatasize), General.MEM_COMMIT, General.PAGE_READWRITE);
-			General.CopyMemory((void*)pixeldata, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldatasize));
-			bitmap.UnlockBits(bmpdata);
-			GC.AddMemoryPressure(pixeldatasize);
 		}
 		
 		// This creates the Direct3D texture
@@ -153,7 +157,7 @@ namespace CodeImp.DoomBuilder.Data
 			MemoryStream memstream;
 			
 			// Only do this when texture is not created yet
-			if(texture == null)
+			if((texture == null) && IsLoaded)
 			{
 				// Write to memory stream and read from memory
 				memstream = new MemoryStream();

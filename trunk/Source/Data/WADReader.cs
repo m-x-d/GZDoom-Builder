@@ -129,6 +129,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override ICollection<ImageData> LoadTextures(PatchNames pnames)
 		{
 			List<ImageData> images = new List<ImageData>();
+			string rangestart, rangeend;
 			Lump lump;
 			
 			// Load two sets of textures, if available
@@ -137,10 +138,59 @@ namespace CodeImp.DoomBuilder.Data
 			lump = file.FindLump("TEXTURE2");
 			if(lump != null) LoadTextureSet(lump.Stream, ref images, pnames);
 			
+			// Read ranges from configuration
+			foreach(DictionaryEntry r in General.Map.Config.TextureRanges)
+			{
+				// Read start and end
+				rangestart = General.Map.Config.ReadSetting("textures." + r.Key + ".start", "");
+				rangeend = General.Map.Config.ReadSetting("textures." + r.Key + ".end", "");
+				if((rangestart.Length > 0) && (rangeend.Length > 0))
+				{
+					// Load texture range
+					LoadTexturesRange(rangestart, rangeend, ref images, pnames);
+				}
+			}
+			
 			// Return result
 			return images;
 		}
 		
+		// This loads a range of textures
+		private void LoadTexturesRange(string startlump, string endlump, ref List<ImageData> images, PatchNames pnames)
+		{
+			int startindex, endindex;
+			float defaultscale;
+			TextureImage image;
+			
+			// Determine default scale
+			defaultscale = General.Map.Config.DefaultTextureScale;
+			
+			// Continue until no more start can be found
+			startindex = file.FindLumpIndex(startlump);
+			while(startindex > -1)
+			{
+				// Find end index
+				endindex = file.FindLumpIndex(endlump, startindex + 1);
+				if(endindex == -1) endindex = file.Lumps.Count - 1;
+				
+				// Go for all lumps between start and end exclusive
+				for(int i = startindex + 1; i < endindex; i++)
+				{
+					// Make the image object
+					image = new TextureImage(file.Lumps[i].Name, 0, 0, defaultscale, defaultscale);
+
+					// Add single patch
+					image.AddPatch(new TexturePatch(file.Lumps[i].Name, 0, 0));
+					
+					// Add image to collection
+					images.Add(image);
+				}
+				
+				// Find the next start
+				startindex = file.FindLumpIndex(startlump, endindex);
+			}
+		}
+
 		// This loads a set of textures
 		private void LoadTextureSet(Stream texturedata, ref List<ImageData> images, PatchNames pnames)
 		{
@@ -257,6 +307,76 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			Lump lump;
 			
+			// Find the lump
+			lump = file.FindLump(pname);
+			if(lump != null) return lump.Stream; else return null;
+		}
+		
+		#endregion
+		
+		#region ================== Flats
+
+		// This loads the textures
+		public override ICollection<ImageData> LoadFlats()
+		{
+			List<ImageData> images = new List<ImageData>();
+			string rangestart, rangeend;
+
+			// Read ranges from configuration
+			foreach(DictionaryEntry r in General.Map.Config.FlatRanges)
+			{
+				// Read start and end
+				rangestart = General.Map.Config.ReadSetting("flats." + r.Key + ".start", "");
+				rangeend = General.Map.Config.ReadSetting("flats." + r.Key + ".end", "");
+				if((rangestart.Length > 0) && (rangeend.Length > 0))
+				{
+					// Load texture range
+					LoadFlatsRange(rangestart, rangeend, ref images);
+				}
+			}
+
+			// Return result
+			return images;
+		}
+
+		// This loads a range of flats
+		private void LoadFlatsRange(string startlump, string endlump, ref List<ImageData> images)
+		{
+			int startindex, endindex;
+			float defaultscale;
+			FlatImage image;
+
+			// Determine default scale
+			defaultscale = General.Map.Config.DefaultTextureScale;
+
+			// Continue until no more start can be found
+			startindex = file.FindLumpIndex(startlump);
+			while(startindex > -1)
+			{
+				// Find end index
+				endindex = file.FindLumpIndex(endlump, startindex + 1);
+				if(endindex == -1) endindex = file.Lumps.Count - 1;
+
+				// Go for all lumps between start and end exclusive
+				for(int i = startindex + 1; i < endindex; i++)
+				{
+					// Make the image object
+					image = new FlatImage(file.Lumps[i].Name);
+
+					// Add image to collection
+					images.Add(image);
+				}
+
+				// Find the next start
+				startindex = file.FindLumpIndex(startlump, endindex);
+			}
+		}
+		
+		// This finds and returns a patch stream
+		public override Stream GetFlatData(string pname)
+		{
+			Lump lump;
+
 			// Find the lump
 			lump = file.FindLump(pname);
 			if(lump != null) return lump.Stream; else return null;

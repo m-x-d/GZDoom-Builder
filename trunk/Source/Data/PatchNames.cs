@@ -49,6 +49,13 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Constructor / Disposer
 
+		// Constructor for empty list
+		public PatchNames()
+		{
+			// Create array
+			pnames = new string[0];
+		}
+
 		// Constructor
 		public PatchNames(Stream stream)
 		{

@@ -33,21 +33,13 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public unsafe class DoomPictureReader
+	public unsafe class DoomPictureReader : IImageReader
 	{
-		#region ================== Constants
-
-		#endregion
-
 		#region ================== Variables
 
 		// Palette to use
 		private Playpal palette;
 		
-		#endregion
-
-		#region ================== Properties
-
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -57,11 +49,53 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Initialize
 			this.palette = palette;
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
 		}
 
 		#endregion
 
 		#region ================== Methods
+		
+		// This validates the data as doom picture
+		public bool Validate(Stream stream)
+		{
+			BinaryReader reader = new BinaryReader(stream);
+			int width, height;
+			int dataoffset;
+			int datalength;
+			int columnaddr;
+			
+			// Initialize
+			dataoffset = (int)stream.Position;
+			datalength = (int)stream.Length - (int)stream.Position;
+
+			// Need at least 4 bytes
+			if(datalength < 4) return false;
+
+			// Read size and offset
+			width = reader.ReadInt16();
+			height = reader.ReadInt16();
+			reader.ReadInt16();
+			reader.ReadInt16();
+
+			// Valid width and height?
+			if((width <= 0) || (height <= 0)) return false;
+			
+			// Go for all columns
+			for(int x = 0; x < width; x++)
+			{
+				// Get column address
+				columnaddr = reader.ReadInt32();
+				
+				// Check if address is outside valid range
+				if((columnaddr < (8 + width * 4)) || (columnaddr >= datalength)) return false;
+			}
+
+			// Return success
+			return true;
+		}
 		
 		// This creates a Bitmap from the given data
 		// Returns null on failure
@@ -87,13 +121,18 @@ namespace CodeImp.DoomBuilder.IO
 
 				// Done
 				bmp.UnlockBits(bitmapdata);
-				return bmp;
 			}
 			else
 			{
 				// Failed loading picture
-				return null;
+				bmp = null;
 			}
+
+			// Free memory
+			General.VirtualFree((void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))), General.MEM_RELEASE);
+
+			// Return result
+			return bmp;
 		}
 		
 		// This draws the picture to the given pixel color data
@@ -152,59 +191,64 @@ namespace CodeImp.DoomBuilder.IO
 			try
 			{
 			#endif
-				// Read size and offset
-				width = reader.ReadInt16();
-				height = reader.ReadInt16();
-				offsetx = reader.ReadInt16();
-				offsety = reader.ReadInt16();
+			
+			// Read size and offset
+			width = reader.ReadInt16();
+			height = reader.ReadInt16();
+			offsetx = reader.ReadInt16();
+			offsety = reader.ReadInt16();
+			
+			// Valid width and height?
+			if((width <= 0) || (height <= 0)) return null;
+			
+			// Read the column addresses
+			columns = new int[width];
+			for(int x = 0; x < width; x++) columns[x] = reader.ReadInt32();
+			
+			// Allocate memory
+			datalength = (uint)(sizeof(PixelColor) * width * height);
+			pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(datalength), General.MEM_COMMIT, General.PAGE_READWRITE);
+			General.ZeroMemory(new IntPtr(pixeldata), (int)datalength);
+			
+			// Go for all columns
+			for(int x = 0; x < width; x++)
+			{
+				// Seek to column start
+				stream.Seek(dataoffset + columns[x], SeekOrigin.Begin);
+				
+				// Read first post start
+				y = reader.ReadByte();
 
-				// Read the column addresses
-				columns = new int[width];
-				for(int x = 0; x < width; x++) columns[x] = reader.ReadInt32();
-				
-				// Allocate memory
-				datalength = (uint)(sizeof(PixelColor) * width * height);
-				pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(datalength), General.MEM_COMMIT, General.PAGE_READWRITE);
-				General.ZeroMemory(new IntPtr(pixeldata), (int)datalength);
-				
-				// Go for all columns
-				for(int x = 0; x < width; x++)
+				// Continue while not end of column reached
+				while(y < 255)
 				{
-					// Seek to column start
-					stream.Seek(dataoffset + columns[x], SeekOrigin.Begin);
-					
-					// Read first post start
-					y = reader.ReadByte();
+					// Read number of pixels in post
+					count = reader.ReadByte();
 
-					// Continue while not end of column reached
-					while(y < 255)
+					// Skip unused pixel
+					stream.Seek(1, SeekOrigin.Current);
+
+					// Draw post
+					for(int yo = 0; yo < count; yo++)
 					{
-						// Read number of pixels in post
-						count = reader.ReadByte();
+						// Read pixel color index
+						p = reader.ReadByte();
 
-						// Skip unused pixel
-						stream.Seek(1, SeekOrigin.Current);
-
-						// Draw post
-						for(int yo = 0; yo < count; yo++)
-						{
-							// Read pixel color index
-							p = reader.ReadByte();
-
-							// Draw pixel
-							pixeldata[(y + yo) * width + x] = palette[p];
-						}
-						
-						// Skip unused pixel
-						stream.Seek(1, SeekOrigin.Current);
-
-						// Read next post start
-						y = reader.ReadByte();
+						// Draw pixel
+						pixeldata[(y + yo) * width + x] = palette[p];
 					}
-				}
+					
+					// Skip unused pixel
+					stream.Seek(1, SeekOrigin.Current);
 
-				// Return pointer
-				return pixeldata;
+					// Read next post start
+					y = reader.ReadByte();
+				}
+			}
+
+			// Return pointer
+			return pixeldata;
+			
 			#if !DEBUG
 			}
 			catch(Exception)
