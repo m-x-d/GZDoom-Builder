@@ -111,9 +111,6 @@ namespace CodeImp.DoomBuilder.Map
 				sidedefs = null;
 				sectors = null;
 				things = null;
-
-				// We may spend some time to clean things up here
-				GC.Collect();
 				
 				// Done
 				isdisposed = true;

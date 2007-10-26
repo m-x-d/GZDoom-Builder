@@ -251,6 +251,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\Status1.png" />
+    <None Include="Resources\Status2.png" />
+    <None Include="Resources\Status0.png" />
     <None Include="Resources\UnknownImage.png" />
     <None Include="Resources\ThingsMode.png" />
     <None Include="Resources\VerticesMode.png" />

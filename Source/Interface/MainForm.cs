@@ -45,6 +45,12 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#endregion
 
+		#region ================== Delegates
+
+		private delegate void CallUpdateStatusIcon();
+		
+		#endregion
+
 		#region ================== Variables
 
 		// Position/size
@@ -126,7 +132,9 @@ namespace CodeImp.DoomBuilder.Interface
 		// Generic event that invokes the tagged action
 		private void InvokeTaggedAction(object sender, EventArgs e)
 		{
+			this.Update();
 			General.Actions[(sender as ToolStripItem).Tag.ToString()].Invoke();
+			this.Update();
 		}
 
 		#endregion
@@ -233,6 +241,9 @@ namespace CodeImp.DoomBuilder.Interface
 			if(statuslabel.Text != status)
 				statuslabel.Text = status;
 			
+			// Update icon as well
+			UpdateStatusIcon();
+			
 			// Refresh if needed
 			statusbar.Invalidate();
 			this.Update();
@@ -243,6 +254,50 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Display ready status description
 			DisplayStatus(STATUS_READY_TEXT);
+		}
+
+		// This updates the status icon
+		public void UpdateStatusIcon()
+		{
+			// From another thread?
+			if(statusbar.InvokeRequired)
+			{
+				// Call to form thread
+				CallUpdateStatusIcon call = new CallUpdateStatusIcon(UpdateStatusIcon);
+				this.Invoke(call);
+			}
+			else
+			{
+				// Ready status?
+				if(statuslabel.Text == STATUS_READY_TEXT)
+				{
+					// Map open?
+					if((General.Map != null) && (General.Map.Data != null))
+					{
+						// Check if loading in the background
+						if(General.Map.Data.IsLoading)
+						{
+							// Display semi-ready icon
+							statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status1;
+						}
+						else
+						{
+							// Display ready icon
+							statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status0;
+						}
+					}
+					else
+					{
+						// Display ready icon
+						statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status0;
+					}
+				}
+				else
+				{
+					// Display busy icon
+					statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status2;
+				}
+			}
 		}
 
 		// This changes coordinates display
