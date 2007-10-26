@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label2;
+			System.Windows.Forms.Label label3;
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.wadfiletab = new System.Windows.Forms.TabPage();
 			this.browsewad = new System.Windows.Forms.Button();
@@ -43,11 +44,17 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply = new System.Windows.Forms.Button();
 			this.wadfiledialog = new System.Windows.Forms.OpenFileDialog();
 			this.dirdialog = new System.Windows.Forms.FolderBrowserDialog();
+			this.pk3filetab = new System.Windows.Forms.TabPage();
+			this.browsepk3 = new System.Windows.Forms.Button();
+			this.pk3location = new System.Windows.Forms.TextBox();
+			this.pk3filedialog = new System.Windows.Forms.OpenFileDialog();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
+			label3 = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.wadfiletab.SuspendLayout();
 			this.directorytab.SuspendLayout();
+			this.pk3filetab.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -74,12 +81,13 @@ namespace CodeImp.DoomBuilder.Interface
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.wadfiletab);
 			this.tabs.Controls.Add(this.directorytab);
+			this.tabs.Controls.Add(this.pk3filetab);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
-			this.tabs.Location = new System.Drawing.Point(12, 12);
+			this.tabs.Location = new System.Drawing.Point(9, 11);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(353, 161);
+			this.tabs.Size = new System.Drawing.Size(369, 161);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
@@ -92,7 +100,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.wadfiletab.Location = new System.Drawing.Point(4, 23);
 			this.wadfiletab.Name = "wadfiletab";
 			this.wadfiletab.Padding = new System.Windows.Forms.Padding(3);
-			this.wadfiletab.Size = new System.Drawing.Size(345, 134);
+			this.wadfiletab.Size = new System.Drawing.Size(361, 134);
 			this.wadfiletab.TabIndex = 0;
 			this.wadfiletab.Text = "From WAD File";
 			this.wadfiletab.UseVisualStyleBackColor = true;
@@ -100,7 +108,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// browsewad
 			// 
 			this.browsewad.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browsewad.Location = new System.Drawing.Point(296, 36);
+			this.browsewad.Location = new System.Drawing.Point(315, 36);
 			this.browsewad.Name = "browsewad";
 			this.browsewad.Size = new System.Drawing.Size(30, 23);
 			this.browsewad.TabIndex = 2;
@@ -113,7 +121,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.wadlocation.Location = new System.Drawing.Point(17, 37);
 			this.wadlocation.Name = "wadlocation";
 			this.wadlocation.ReadOnly = true;
-			this.wadlocation.Size = new System.Drawing.Size(273, 20);
+			this.wadlocation.Size = new System.Drawing.Size(292, 20);
 			this.wadlocation.TabIndex = 1;
 			// 
 			// directorytab
@@ -127,7 +135,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.directorytab.Location = new System.Drawing.Point(4, 23);
 			this.directorytab.Name = "directorytab";
 			this.directorytab.Padding = new System.Windows.Forms.Padding(3);
-			this.directorytab.Size = new System.Drawing.Size(345, 134);
+			this.directorytab.Size = new System.Drawing.Size(361, 134);
 			this.directorytab.TabIndex = 1;
 			this.directorytab.Text = "From Directory";
 			this.directorytab.UseVisualStyleBackColor = true;
@@ -155,7 +163,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// browsedir
 			// 
 			this.browsedir.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browsedir.Location = new System.Drawing.Point(296, 91);
+			this.browsedir.Location = new System.Drawing.Point(316, 91);
 			this.browsedir.Name = "browsedir";
 			this.browsedir.Size = new System.Drawing.Size(30, 23);
 			this.browsedir.TabIndex = 5;
@@ -169,14 +177,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.dirlocation.Location = new System.Drawing.Point(17, 92);
 			this.dirlocation.Name = "dirlocation";
 			this.dirlocation.ReadOnly = true;
-			this.dirlocation.Size = new System.Drawing.Size(273, 20);
+			this.dirlocation.Size = new System.Drawing.Size(293, 20);
 			this.dirlocation.TabIndex = 4;
 			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(253, 189);
+			this.cancel.Location = new System.Drawing.Point(266, 192);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 15;
@@ -187,7 +195,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(135, 189);
+			this.apply.Location = new System.Drawing.Point(148, 192);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 14;
@@ -204,12 +212,58 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.dirdialog.Description = "Please select a directory from which to load images when editing your map...";
 			// 
+			// pk3filetab
+			// 
+			this.pk3filetab.Controls.Add(this.browsepk3);
+			this.pk3filetab.Controls.Add(this.pk3location);
+			this.pk3filetab.Controls.Add(label3);
+			this.pk3filetab.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.pk3filetab.Location = new System.Drawing.Point(4, 23);
+			this.pk3filetab.Name = "pk3filetab";
+			this.pk3filetab.Size = new System.Drawing.Size(361, 134);
+			this.pk3filetab.TabIndex = 2;
+			this.pk3filetab.Text = "From PK3 File";
+			this.pk3filetab.UseVisualStyleBackColor = true;
+			// 
+			// browsepk3
+			// 
+			this.browsepk3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browsepk3.Location = new System.Drawing.Point(315, 36);
+			this.browsepk3.Name = "browsepk3";
+			this.browsepk3.Size = new System.Drawing.Size(30, 23);
+			this.browsepk3.TabIndex = 5;
+			this.browsepk3.Text = "...";
+			this.browsepk3.UseVisualStyleBackColor = true;
+			this.browsepk3.Click += new System.EventHandler(this.browsepk3_Click);
+			// 
+			// pk3location
+			// 
+			this.pk3location.Location = new System.Drawing.Point(17, 37);
+			this.pk3location.Name = "pk3location";
+			this.pk3location.ReadOnly = true;
+			this.pk3location.Size = new System.Drawing.Size(292, 20);
+			this.pk3location.TabIndex = 4;
+			// 
+			// label3
+			// 
+			label3.AutoSize = true;
+			label3.Location = new System.Drawing.Point(15, 20);
+			label3.Name = "label3";
+			label3.Size = new System.Drawing.Size(98, 14);
+			label3.TabIndex = 3;
+			label3.Text = "PK3 File Resource:";
+			// 
+			// pk3filedialog
+			// 
+			this.pk3filedialog.Filter = "Doom PK3 Files (*.pk3)|*.pk3";
+			this.pk3filedialog.Title = "Browse PK3 File";
+			// 
 			// ResourceOptionsForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(377, 226);
+			this.ClientSize = new System.Drawing.Size(386, 226);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -229,6 +283,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.wadfiletab.PerformLayout();
 			this.directorytab.ResumeLayout(false);
 			this.directorytab.PerformLayout();
+			this.pk3filetab.ResumeLayout(false);
+			this.pk3filetab.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -248,5 +304,9 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.CheckBox dir_textures;
 		private System.Windows.Forms.OpenFileDialog wadfiledialog;
 		private System.Windows.Forms.FolderBrowserDialog dirdialog;
+		private System.Windows.Forms.TabPage pk3filetab;
+		private System.Windows.Forms.Button browsepk3;
+		private System.Windows.Forms.TextBox pk3location;
+		private System.Windows.Forms.OpenFileDialog pk3filedialog;
 	}
 }
