@@ -121,15 +121,15 @@ namespace CodeImp.DoomBuilder.IO
 
 				// Done
 				bmp.UnlockBits(bitmapdata);
+
+				// Free memory
+				General.VirtualFree((void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))), General.MEM_RELEASE);
 			}
 			else
 			{
 				// Failed loading picture
 				bmp = null;
 			}
-
-			// Free memory
-			General.VirtualFree((void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))), General.MEM_RELEASE);
 
 			// Return result
 			return bmp;
@@ -163,12 +163,15 @@ namespace CodeImp.DoomBuilder.IO
 						}
 					}
 				}
+
+				// Free memory
+				General.VirtualFree((void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))), General.MEM_RELEASE);
 			}
 		}
 
 		// This creates pixel color data from the given data
 		// Returns null on failure
-		public PixelColor* ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
+		private PixelColor* ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
 		{
 			BinaryReader reader = new BinaryReader(stream);
 			PixelColor* pixeldata = null;

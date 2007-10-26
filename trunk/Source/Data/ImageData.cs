@@ -67,9 +67,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
-		public PixelColor* PixelData { get { return pixeldata; } }
-		public Bitmap Bitmap { get { return bitmap; } }
-		public Texture Texture { get { return texture; } }
+		public PixelColor* PixelData { get { lock(this) { return pixeldata; } } }
+		public Bitmap Bitmap { get { lock(this) { return bitmap; } } }
+		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsLoaded { get { return (bitmap != null); } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public int Width { get { return width; } }
@@ -133,10 +133,10 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			BitmapData bmpdata;
 
-			// Only do this when data is not created yet
-			if((pixeldata == null) && IsLoaded)
+			lock(this)
 			{
-				lock(this)
+				// Only do this when data is not created yet
+				if((pixeldata == null) && IsLoaded)
 				{
 					// Clean up old memory if reserved
 					if(pixeldata != null)
@@ -162,10 +162,10 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			MemoryStream memstream;
 			
-			// Only do this when texture is not created yet
-			if((texture == null) && IsLoaded)
+			lock(this)
 			{
-				lock(this)
+				// Only do this when texture is not created yet
+				if((texture == null) && IsLoaded)
 				{
 					// Write to memory stream and read from memory
 					memstream = new MemoryStream();

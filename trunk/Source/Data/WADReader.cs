@@ -176,14 +176,18 @@ namespace CodeImp.DoomBuilder.Data
 				// Go for all lumps between start and end exclusive
 				for(int i = startindex + 1; i < endindex; i++)
 				{
-					// Make the image object
-					image = new TextureImage(file.Lumps[i].Name, 0, 0, defaultscale, defaultscale);
+					// Lump not zero length?
+					if(file.Lumps[i].Length > 0)
+					{
+						// Make the image object
+						image = new TextureImage(file.Lumps[i].Name, 0, 0, defaultscale, defaultscale);
 
-					// Add single patch
-					image.AddPatch(new TexturePatch(file.Lumps[i].Name, 0, 0));
-					
-					// Add image to collection
-					images.Add(image);
+						// Add single patch
+						image.AddPatch(new TexturePatch(file.Lumps[i].Name, 0, 0));
+
+						// Add image to collection
+						images.Add(image);
+					}
 				}
 				
 				// Find the next start
@@ -355,20 +359,25 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Find end index
 				endindex = file.FindLumpIndex(endlump, startindex + 1);
-				if(endindex == -1) endindex = file.Lumps.Count - 1;
-
-				// Go for all lumps between start and end exclusive
-				for(int i = startindex + 1; i < endindex; i++)
+				if(endindex > -1)
 				{
-					// Make the image object
-					image = new FlatImage(file.Lumps[i].Name);
+					// Go for all lumps between start and end exclusive
+					for(int i = startindex + 1; i < endindex; i++)
+					{
+						// Lump not zero-length?
+						if(file.Lumps[i].Length > 0)
+						{
+							// Make the image object
+							image = new FlatImage(file.Lumps[i].Name);
 
-					// Add image to collection
-					images.Add(image);
+							// Add image to collection
+							images.Add(image);
+						}
+					}
 				}
-
+				
 				// Find the next start
-				startindex = file.FindLumpIndex(startlump, endindex);
+				startindex = file.FindLumpIndex(startlump, startindex + 1);
 			}
 		}
 		

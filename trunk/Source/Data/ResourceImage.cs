@@ -33,18 +33,6 @@ namespace CodeImp.DoomBuilder.Data
 {
 	public class ResourceImage : ImageData
 	{
-		#region ================== Constants
-
-		#endregion
-
-		#region ================== Variables
-
-		#endregion
-
-		#region ================== Properties
-
-		#endregion
-
 		#region ================== Constructor / Disposer
 
 		// Constructor
@@ -55,19 +43,6 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
-		}
-
-		// Diposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Done
-				base.Dispose();
-			}
 		}
 
 		#endregion

@@ -130,6 +130,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Destroy rendertargets
 				DestroyRendertargets();
+				thingtexture.Dispose();
 				
 				// Done
 				base.Dispose();
@@ -144,7 +145,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void Present()
 		{
 			// Start drawing
-			if(graphics.StartRendering(General.Colors.Background.ToInt()))
+			if(graphics.StartRendering(true, General.Colors.Background.ToInt()))
 			{
 				// Renderstates that count for this whole sequence
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
@@ -165,7 +166,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Draw the lines and vertices texture
 				graphics.Shaders.Display2D.Begin();
 				graphics.Shaders.Display2D.BeginPass(0);
-				try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts); } catch(Exception) { }
+				//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts); } catch(Exception) { }
+				graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts);
 				graphics.Shaders.Display2D.EndPass();
 				graphics.Shaders.Display2D.End();
 				
@@ -173,7 +175,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(thingsfront) PresentThings(1f);
 				
 				// Done
-				graphics.FinishRendering();
+				graphics.FinishRendering(true);
 			}
 		}
 
@@ -196,7 +198,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Draw the lines and vertices texture
 			graphics.Shaders.Display2D.Begin();
 			graphics.Shaders.Display2D.BeginPass(0);
-			try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts); } catch(Exception) { }
+			//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts); } catch(Exception) { }
+			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts);
 			graphics.Shaders.Display2D.EndPass();
 			graphics.Shaders.Display2D.End();
 		}
@@ -382,7 +385,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(thingsvertices != null) thingsvertices.Dispose();
 					
 					// Create new buffer
-					thingsvertices = new VertexBuffer(graphics.Device, newmaxthings * 12 * FlatVertex.Stride, Usage.Dynamic, VertexFormat.None, Pool.Default);
+					thingsvertices = new VertexBuffer(graphics.Device, newmaxthings * 12 * FlatVertex.Stride, Usage.None, VertexFormat.None, Pool.Managed);
 					maxthings = newmaxthings;
 				}
 				else
@@ -510,21 +513,26 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This draws a set of things
 		private void RenderThingsBatch(int offset, int count)
 		{
-			// Set renderstates for things rendering
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-			graphics.Device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
-			graphics.Device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
-			graphics.Device.SetTexture(0, thingtexture.Texture);
-			graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
-			graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
-			
-			// Draw the things batched
-			graphics.Shaders.Things2D.Begin();
-			graphics.Shaders.Things2D.BeginPass(0);
-			try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, offset * 12, count * 4); }	catch(Exception) { }
-			graphics.Shaders.Things2D.EndPass();
-			graphics.Shaders.Things2D.End();
+			// Anything to render?
+			if(count > 0)
+			{
+				// Set renderstates for things rendering
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
+				graphics.Device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
+				graphics.Device.SetTexture(0, thingtexture.Texture);
+				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
+				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
+
+				// Draw the things batched
+				graphics.Shaders.Things2D.Begin();
+				graphics.Shaders.Things2D.BeginPass(0);
+				//try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, offset * 12, count * 4); } catch(Exception) { }
+				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, offset * 12, count * 4);
+				graphics.Shaders.Things2D.EndPass();
+				graphics.Shaders.Things2D.End();
+			}
 		}
 		
 		#endregion
@@ -603,30 +611,33 @@ namespace CodeImp.DoomBuilder.Rendering
 				plotter = new Plotter((PixelColor*)structlocked.Data.DataPointer.ToPointer(), structlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
 				if(clearstructs) plotter.Clear();
 
-				// Set the rendertarget to the things texture
-				thingssurface = thingstex.GetSurfaceLevel(0);
-				graphics.Device.SetDepthStencilSurface(null);
-				graphics.Device.SetRenderTarget(0, thingssurface);
-
-				// Clear the things?
-				if(clearthings)
-				{
-					// Clear rendertarget
-					graphics.Device.Clear(ClearFlags.Target, 0, 1f, 0);
-				}
-
 				// Always trash things batch buffer
 				if(thingsvertices != null) thingsvertices.Dispose();
 				thingsvertices = null;
 				numthings = 0;
 				maxthings = 0;
-
-				// Ready for rendering
-				return true;
+				
+				// Set the rendertarget to the things texture
+				thingssurface = thingstex.GetSurfaceLevel(0);
+				graphics.Device.SetDepthStencilSurface(null);
+				graphics.Device.SetRenderTarget(0, thingssurface);
+				if(clearthings) graphics.Device.Clear(ClearFlags.Target, 0, 1f, 0);
+				if(graphics.StartRendering(false, 0))
+				{
+					// Ready for rendering
+					return true;
+				}
+				else
+				{
+					// Can't render!
+					FinishRendering();
+					return false;
+				}
 			}
 			else
 			{
 				// Can't render!
+				FinishRendering();
 				return false;
 			}
 		}
@@ -634,17 +645,24 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This ends a drawing session
 		public void FinishRendering()
 		{
-			// Unlock memory
-			structtex.UnlockRectangle(0);
-			structlocked.Data.Dispose();
-			plotter = null;
-
+			// Stop rendering
+			graphics.FinishRendering(false);
+			
 			// Release rendertarget
-			graphics.Device.SetDepthStencilSurface(graphics.DepthBuffer);
-			graphics.Device.SetRenderTarget(0, graphics.BackBuffer);
-			thingssurface.Dispose();
-			thingssurface = null;
+			try
+			{
+				graphics.Device.SetDepthStencilSurface(graphics.DepthBuffer);
+				graphics.Device.SetRenderTarget(0, graphics.BackBuffer);
+			}
+			catch(Exception) { }
 
+			// Clean up
+			if(structtex != null) structtex.UnlockRectangle(0);
+			if(structlocked.Data != null) structlocked.Data.Dispose();
+			if(thingssurface != null) thingssurface.Dispose();
+			thingssurface = null;
+			plotter = null;
+			
 			// Present new image
 			Present();
 		}

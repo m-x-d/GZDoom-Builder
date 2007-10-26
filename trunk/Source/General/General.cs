@@ -108,6 +108,7 @@ namespace CodeImp.DoomBuilder
 		private static MapManager map;
 		private static ActionManager actions;
 		private static ColorCollection colors;
+		private static Clock clock;
 		
 		// Configurations
 		private static List<ConfigurationInfo> configs;
@@ -131,6 +132,7 @@ namespace CodeImp.DoomBuilder
 		public static List<CompilerInfo> Compilers { get { return compilers; } }
 		public static MapManager Map { get { return map; } }
 		public static ActionManager Actions { get { return actions; } }
+		public static Clock Clock { get { return clock; } }
 		
 		#endregion
 
@@ -437,6 +439,10 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Loading color settings...");
 				colors = new ColorCollection(settings);
 
+				// Create application clock
+				General.WriteLogLine("Creating application clock...");
+				clock = new Clock();
+				
 				// Run application from the main window
 				General.WriteLogLine("Startup done");
 				mainwindow.DisplayReady();
@@ -519,6 +525,7 @@ namespace CodeImp.DoomBuilder
 				if(map != null) map.Dispose();
 				mainwindow.Dispose();
 				actions.Dispose();
+				clock.Dispose();
 
 				// Save colors
 				colors.SaveColors(settings);

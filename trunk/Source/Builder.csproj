@@ -70,6 +70,7 @@
     <Compile Include="Controls\ActionManager.cs" />
     <Compile Include="Config\CompilerInfo.cs" />
     <Compile Include="Config\ConfigurationInfo.cs" />
+    <Compile Include="General\Clock.cs" />
     <Compile Include="General\MapManager.cs" />
     <Compile Include="Controls\SpecialKeys.cs" />
     <Compile Include="Config\NodebuilderInfo.cs" />
