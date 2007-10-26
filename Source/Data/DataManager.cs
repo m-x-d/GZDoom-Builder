@@ -261,21 +261,24 @@ namespace CodeImp.DoomBuilder.Data
 		// This stops background loading
 		private void StopBackgroundLoader()
 		{
-			// Stop the thread and wait for it to end
 			General.WriteLogLine("Stopping background resource loading...");
-			backgroundloader.Interrupt();
-			backgroundloader.Join();
+			if(backgroundloader != null)
+			{
+				// Stop the thread and wait for it to end
+				backgroundloader.Interrupt();
+				backgroundloader.Join();
 
-			// Done
-			backgroundloader = null;
+				// Done
+				backgroundloader = null;
+			}
 		}
 
 		// The background loader
 		private void BackgroundLoad()
 		{
-			int loadedtextures;
-			int loadedflats;
-			int loadedsprites;
+			int loadedtextures, loadedflats, loadedsprites;
+			int starttime = General.Clock.GetCurrentTime();
+			int deltatime;
 			
 			try
 			{
@@ -290,10 +293,9 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Done
-			General.WriteLogLine("Background resource loading completed");
-			General.WriteLogLine("Loaded textures: " + loadedtextures + " / " + textures.Count);
-			General.WriteLogLine("Loaded flats: " + loadedflats + " / " + flats.Count);
-			General.WriteLogLine("Loaded sprites: " + loadedsprites + " / " + sprites.Count);
+			deltatime = General.Clock.GetCurrentTime() - starttime;
+			General.WriteLogLine("Background resource loading completed in " + deltatime + "ms");
+			General.WriteLogLine("Loaded " + loadedtextures + " textures, " + loadedflats + " flats, " + loadedsprites + " sprites");
 		}
 
 		// This loads a list of ImageData

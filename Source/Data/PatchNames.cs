@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.Data
 			for(uint i = 0; i < length; i++)
 			{
 				byte[] bytes = reader.ReadBytes(8);
-				pnames[i] = Lump.MakeNormalName(bytes, WAD.ENCODING);
+				pnames[i] = Lump.MakeNormalName(bytes, WAD.ENCODING).ToUpperInvariant();
 			}
 		}
 

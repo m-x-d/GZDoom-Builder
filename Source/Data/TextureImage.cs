@@ -33,20 +33,12 @@ namespace CodeImp.DoomBuilder.Data
 {
 	public sealed unsafe class TextureImage : ImageData
 	{
-		#region ================== Constants
-
-		#endregion
-
 		#region ================== Variables
 
 		private List<TexturePatch> patches;
 		private float scalex;
 		private float scaley;
 		
-		#endregion
-
-		#region ================== Properties
-
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -66,19 +58,6 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
-		}
-
-		// Diposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Done
-				base.Dispose();
-			}
 		}
 
 		#endregion
@@ -128,7 +107,7 @@ namespace CodeImp.DoomBuilder.Data
 						patchdata.Read(membytes, 0, (int)patchdata.Length);
 						mem = new MemoryStream(membytes);
 						mem.Seek(0, SeekOrigin.Begin);
-
+						
 						// Get a reader for the data
 						reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
 						if(reader is UnknownImageReader)

@@ -103,10 +103,14 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
+				foreach(ID3DResource res in resources) res.UnloadResource();
+				if(shaders != null) shaders.Dispose();
 				renderer2d.Dispose();
 				renderer3d.Dispose();
-				device.Dispose();
 				rendertarget = null;
+				if(backbuffer != null) backbuffer.Dispose();
+				if(depthbuffer != null) depthbuffer.Dispose();
+				device.Dispose();
 				Direct3D.Terminate();
 				
 				// Done
@@ -313,6 +317,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Unload all Direct3D resources
 			foreach(ID3DResource res in resources) res.UnloadResource();
 			if(shaders != null) shaders.Dispose();
+			if(backbuffer != null) backbuffer.Dispose();
+			if(depthbuffer != null) depthbuffer.Dispose();
 			
 			// Make present parameters
 			displaypp = CreatePresentParameters(adapter);
@@ -343,7 +349,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Rendering
 
 		// This begins a drawing session
-		public bool StartRendering(int backcolor)
+		public bool StartRendering(bool clear, int backcolor)
 		{
 			CooperativeLevel coopresult;
 
@@ -367,7 +373,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 
 				// Clear the screen
-				device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1f, 0);
+				if(clear) device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1f, 0);
 
 				// Ready to render
 				device.BeginScene();
@@ -381,7 +387,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This ends a drawing session
-		public void FinishRendering()
+		public void FinishRendering(bool present)
 		{
 			try
 			{
@@ -389,7 +395,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				device.EndScene();
 
 				// Display the scene
-				device.Present();
+				if(present) device.Present();
 			}
 			// Errors are not a problem here
 			catch(Exception) { }
