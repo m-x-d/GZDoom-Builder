@@ -60,11 +60,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Leave when already loaded
 			if(this.IsLoaded) return;
 
-			// Load file
-			bitmap = (Bitmap)Bitmap.FromFile(filepathname);
+			lock(this)
+			{
+				// Load file
+				bitmap = (Bitmap)Bitmap.FromFile(filepathname);
 
-			// Pass on to base
-			base.LoadImage();
+				// Pass on to base
+				base.LoadImage();
+			}
 		}
 		
 		#endregion

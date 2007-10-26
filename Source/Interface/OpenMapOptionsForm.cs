@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Initialize
 			InitializeComponent();
+			this.Text = "Open Map from " + Path.GetFileName(filepathname);
 			this.filepathname = filepathname;
 			this.options = new MapOptions();
 		}

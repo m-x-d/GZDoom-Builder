@@ -78,13 +78,16 @@ namespace CodeImp.DoomBuilder.Data
 		public override void LoadImage()
 		{
 			Stream bitmapdata;
-			
-			// Get resource from memory
-			bitmapdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + Name);
-			bitmap = (Bitmap)Image.FromStream(bitmapdata);
-			
-			// Pass on to base
-			base.LoadImage();
+
+			lock(this)
+			{
+				// Get resource from memory
+				bitmapdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + Name);
+				bitmap = (Bitmap)Image.FromStream(bitmapdata);
+
+				// Pass on to base
+				base.LoadImage();
+			}
 		}
 		
 		#endregion
