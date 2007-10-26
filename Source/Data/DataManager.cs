@@ -449,27 +449,46 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Sprites
 
-		// This returns an image by string
+		// This returns an image by long
 		public ImageData GetSpriteImage(string name)
 		{
-			// Get the long name
+			Stream spritedata = null;
 			long longname = Lump.MakeLongName(name);
-			return GetSpriteImage(longname);
-		}
+			SpriteImage image;
 
-		// This returns an image by long
-		public ImageData GetSpriteImage(long longname)
-		{
-			// Does this sprite exist?
+			// Sprite already loaded?
 			if(sprites.ContainsKey(longname))
 			{
-				// Return sprite
+				// Return exiting sprite
 				return sprites[longname];
 			}
 			else
 			{
-				// Return null image
-				return new NullImage();
+				// Go for all opened containers
+				for(int i = containers.Count - 1; i >= 0; i--)
+				{
+					// This contain provides this sprite?
+					spritedata = containers[i].GetSpriteData(name);
+					if(spritedata != null) break;
+				}
+
+				// Found anything?
+				if(spritedata != null)
+				{
+					// Make new sprite image
+					image = new SpriteImage(name);
+
+					// Add to collection
+					sprites.Add(longname, image);
+
+					// Return result
+					return image;
+				}
+				else
+				{
+					// Return null image
+					return new NullImage();
+				}
 			}
 		}
 
@@ -481,27 +500,10 @@ namespace CodeImp.DoomBuilder.Data
 			return img.Bitmap;
 		}
 
-		// This returns a bitmap by string
-		public Bitmap GetSpriteBitmap(long longname)
-		{
-			ImageData img = GetSpriteImage(longname);
-			img.LoadImage();
-			return img.Bitmap;
-		}
-
 		// This returns a texture by string
 		public Texture GetSpriteTexture(string name)
 		{
 			ImageData img = GetSpriteImage(name);
-			img.LoadImage();
-			img.CreateTexture();
-			return img.Texture;
-		}
-
-		// This returns a texture by string
-		public Texture GetSpriteTexture(long longname)
-		{
-			ImageData img = GetSpriteImage(longname);
 			img.LoadImage();
 			img.CreateTexture();
 			return img.Texture;

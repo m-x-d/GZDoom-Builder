@@ -116,5 +116,12 @@ namespace CodeImp.DoomBuilder.Data
 		public virtual Stream GetFlatData(string pname) { return null; }
 		
 		#endregion
+		
+		#region ================== Sprites
+
+		// When implemented, this returns the sprite lump
+		public virtual Stream GetSpriteData(string pname) { return null; }
+		
+		#endregion
 	}
 }

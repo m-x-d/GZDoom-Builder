@@ -383,5 +383,19 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		#endregion
+
+		#region ================== Sprite
+
+		// This finds and returns a sprite stream
+		public override Stream GetSpriteData(string pname)
+		{
+			Lump lump;
+
+			// Find the lump
+			lump = file.FindLump(pname);
+			if(lump != null) return lump.Stream; else return null;
+		}
+
+		#endregion
 	}
 }
