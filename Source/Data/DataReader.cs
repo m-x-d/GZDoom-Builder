@@ -106,5 +106,15 @@ namespace CodeImp.DoomBuilder.Data
 		public virtual ICollection<ImageData> LoadTextures(PatchNames pnames) { return null; }
 
 		#endregion
+
+		#region ================== Flats
+		
+		// When implemented, this loads the flats
+		public virtual ICollection<ImageData> LoadFlats() { return null; }
+
+		// When implemented, this returns the flat lump
+		public virtual Stream GetFlatData(string pname) { return null; }
+		
+		#endregion
 	}
 }

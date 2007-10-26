@@ -47,13 +47,14 @@ namespace CodeImp.DoomBuilder.Interface
 			ThingTypeInfo ti;
 			int zvalue;
 			string zinfo;
-
+			
 			// Lookup thing info
 			ti = General.Map.Config.GetThingInfo(t.Type);
 
 			// TODO: Lookup action description from config
 
 			// Determine z info to show
+			t.DetermineSector();
 			if(t.Sector != null)
 			{
 				// Hangs from ceiling?
@@ -71,7 +72,7 @@ namespace CodeImp.DoomBuilder.Interface
 			else
 			{
 				zvalue = t.ZOffset;
-				if(zvalue > 0) zinfo = "+" + zvalue.ToString(); else zinfo = zvalue.ToString();
+				if(zvalue >= 0) zinfo = "+" + zvalue.ToString(); else zinfo = zvalue.ToString();
 			}
 			
 			// Thing info
@@ -81,22 +82,24 @@ namespace CodeImp.DoomBuilder.Interface
 			tag.Text = ""; // TODO
 			angle.Text = t.AngleDeg.ToString() + "\u00B0";
 			spritename.Text = ti.Sprite;
-			spritetex.BackgroundImage = FindSprite(ti.Sprite);
+			spritetex.BackgroundImage = General.Map.Data.GetSpriteBitmap(ti.SpriteLongName);
 
 			// Show the whole thing
 			this.Show();
 			this.Update();
 		}
 
-		// This loads and returns the sprite image if possible
-		private Image FindSprite(string name)
+		// When visible changed
+		protected override void OnVisibleChanged(EventArgs e)
 		{
-			ImageData img;
+			// Hiding panels
+			if(!this.Visible)
+			{
+				spritetex.BackgroundImage = null;
+			}
 
-			// Get it
-			img = General.Map.Data.GetSpriteByName(name);
-			img.LoadImage();
-			return img.Bitmap;
+			// Call base
+			base.OnVisibleChanged(e);
 		}
 	}
 }

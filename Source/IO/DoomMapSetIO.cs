@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Create new item
 				t = map.CreateThing();
 				t.Update(type, x, y, 0, angle, flags, 0, 0, Thing.EMPTY_ARGS);
-				t.DetermineSector();
+				//t.DetermineSector();
 				t.UpdateConfiguration();
 			}
 

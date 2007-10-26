@@ -137,6 +137,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap UnknownImage {
+            get {
+                object obj = ResourceManager.GetObject("UnknownImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap VerticesMode {
             get {
                 object obj = ResourceManager.GetObject("VerticesMode", resourceCulture);

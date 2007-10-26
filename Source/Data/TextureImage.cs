@@ -96,12 +96,13 @@ namespace CodeImp.DoomBuilder.Data
 		public override void LoadImage()
 		{
 			uint datalength = (uint)(width * height * sizeof(PixelColor));
-			DoomPictureReader reader = new DoomPictureReader(General.Map.Data.Palette);
+			IImageReader reader;
 			BitmapData bitmapdata;
 			MemoryStream mem;
 			PixelColor* pixels;
 			Stream patchdata;
 			byte[] membytes;
+			bool failed = false;
 			
 			// Leave when already loaded
 			if(this.IsLoaded) return;
@@ -126,13 +127,32 @@ namespace CodeImp.DoomBuilder.Data
 					mem = new MemoryStream(membytes);
 					mem.Seek(0, SeekOrigin.Begin);
 
+					// Get a reader for the data
+					reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
+					if(reader is UnknownImageReader)
+					{
+						// Data is in an unknown format!
+						General.WriteLogLine("WARNING: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+						failed = true;
+						break;
+					}
+					
 					// Draw the patch
+					mem.Seek(0, SeekOrigin.Begin);
 					reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y);
+				}
+				else
+				{
+					// Missing a patch lump!
+					General.WriteLogLine("WARNING: Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'!");
 				}
 			}
 			
 			// Done
 			bitmap.UnlockBits(bitmapdata);
+			
+			// When failed, use the error picture
+			if(failed) bitmap = UnknownImageReader.ReadAsBitmap();
 			
 			// Pass on to base
 			base.LoadImage();

@@ -26,6 +26,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
 using System.Windows.Forms;
+using SlimDX.Direct3D9;
 
 #endregion
 
@@ -161,6 +162,8 @@ namespace CodeImp.DoomBuilder.Data
 			LoadPalette();
 			General.WriteLogLine("Loading textures...");
 			LoadTextures();
+			General.WriteLogLine("Loading flats...");
+			LoadFlats();
 		}
 
 		// This unloads all data
@@ -236,7 +239,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		private void LoadTextures()
 		{
-			PatchNames pnames;
+			PatchNames pnames = new PatchNames();
 			ICollection<ImageData> images;
 			
 			// Go for all opened containers
@@ -282,16 +285,16 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 		
-		// This returns a texture by string
-		public ImageData GetTextureByName(string name)
+		// This returns an image by string
+		public ImageData GetTextureImage(string name)
 		{
 			// Get the long name
 			long longname = Lump.MakeLongName(name);
-			return GetTextureByLongName(longname);
+			return GetTextureImage(longname);
 		}
 
-		// This returns a texture by long
-		public ImageData GetTextureByLongName(long longname)
+		// This returns an image by long
+		public ImageData GetTextureImage(long longname)
 		{
 			// Does this texture exist?
 			if(textures.ContainsKey(longname))
@@ -305,21 +308,95 @@ namespace CodeImp.DoomBuilder.Data
 				return new NullImage();
 			}
 		}
+
+		// This returns a bitmap by string
+		public Bitmap GetTextureBitmap(string name)
+		{
+			ImageData img = GetTextureImage(name);
+			img.LoadImage();
+			return img.Bitmap;
+		}
+
+		// This returns a bitmap by string
+		public Bitmap GetTextureBitmap(long longname)
+		{
+			ImageData img = GetTextureImage(longname);
+			img.LoadImage();
+			return img.Bitmap;
+		}
+
+		// This returns a texture by string
+		public Texture GetTextureTexture(string name)
+		{
+			ImageData img = GetTextureImage(name);
+			img.LoadImage();
+			img.CreateTexture();
+			return img.Texture;
+		}
+
+		// This returns a texture by string
+		public Texture GetTextureTexture(long longname)
+		{
+			ImageData img = GetTextureImage(longname);
+			img.LoadImage();
+			img.CreateTexture();
+			return img.Texture;
+		}
 		
 		#endregion
 
 		#region ================== Flats
 
-		// This returns a flat by string
-		public ImageData GetFlatByName(string name)
+		// This loads the flats
+		private void LoadFlats()
+		{
+			ICollection<ImageData> images;
+
+			// Go for all opened containers
+			foreach(DataReader dr in containers)
+			{
+				// Load flats
+				images = dr.LoadFlats();
+				if(images != null)
+				{
+					// Go for all flats
+					foreach(ImageData img in images)
+					{
+						// Add or replace in flats list
+						flats.Remove(img.LongName);
+						flats.Add(img.LongName, img);
+					}
+				}
+			}
+		}
+
+		// This returns a specific flat stream
+		public Stream GetFlatData(string pname)
+		{
+			Stream flat;
+
+			// Go for all opened containers
+			for(int i = containers.Count - 1; i >= 0; i--)
+			{
+				// This contain provides this flat?
+				flat = containers[i].GetFlatData(pname);
+				if(flat != null) return flat;
+			}
+
+			// No such patch found
+			return null;
+		}
+		
+		// This returns an image by string
+		public ImageData GetFlatImage(string name)
 		{
 			// Get the long name
 			long longname = Lump.MakeLongName(name);
-			return GetFlatByLongName(longname);
+			return GetFlatImage(longname);
 		}
 
-		// This returns a flat by long
-		public ImageData GetFlatByLongName(long longname)
+		// This returns an image by long
+		public ImageData GetFlatImage(long longname)
 		{
 			// Does this flat exist?
 			if(flats.ContainsKey(longname))
@@ -334,20 +411,54 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 
+		// This returns a bitmap by string
+		public Bitmap GetFlatBitmap(string name)
+		{
+			ImageData img = GetFlatImage(name);
+			img.LoadImage();
+			return img.Bitmap;
+		}
+
+		// This returns a bitmap by string
+		public Bitmap GetFlatBitmap(long longname)
+		{
+			ImageData img = GetFlatImage(longname);
+			img.LoadImage();
+			return img.Bitmap;
+		}
+
+		// This returns a texture by string
+		public Texture GetFlatTexture(string name)
+		{
+			ImageData img = GetFlatImage(name);
+			img.LoadImage();
+			img.CreateTexture();
+			return img.Texture;
+		}
+
+		// This returns a texture by string
+		public Texture GetFlatTexture(long longname)
+		{
+			ImageData img = GetFlatImage(longname);
+			img.LoadImage();
+			img.CreateTexture();
+			return img.Texture;
+		}
+		
 		#endregion
 
 		#region ================== Sprites
 
-		// This returns a sprite by string
-		public ImageData GetSpriteByName(string name)
+		// This returns an image by string
+		public ImageData GetSpriteImage(string name)
 		{
 			// Get the long name
 			long longname = Lump.MakeLongName(name);
-			return GetSpriteByLongName(longname);
+			return GetSpriteImage(longname);
 		}
 
-		// This returns a sprite by long
-		public ImageData GetSpriteByLongName(long longname)
+		// This returns an image by long
+		public ImageData GetSpriteImage(long longname)
 		{
 			// Does this sprite exist?
 			if(sprites.ContainsKey(longname))
@@ -362,6 +473,40 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 
+		// This returns a bitmap by string
+		public Bitmap GetSpriteBitmap(string name)
+		{
+			ImageData img = GetSpriteImage(name);
+			img.LoadImage();
+			return img.Bitmap;
+		}
+
+		// This returns a bitmap by string
+		public Bitmap GetSpriteBitmap(long longname)
+		{
+			ImageData img = GetSpriteImage(longname);
+			img.LoadImage();
+			return img.Bitmap;
+		}
+
+		// This returns a texture by string
+		public Texture GetSpriteTexture(string name)
+		{
+			ImageData img = GetSpriteImage(name);
+			img.LoadImage();
+			img.CreateTexture();
+			return img.Texture;
+		}
+
+		// This returns a texture by string
+		public Texture GetSpriteTexture(long longname)
+		{
+			ImageData img = GetSpriteImage(longname);
+			img.LoadImage();
+			img.CreateTexture();
+			return img.Texture;
+		}
+		
 		#endregion
 	}
 }

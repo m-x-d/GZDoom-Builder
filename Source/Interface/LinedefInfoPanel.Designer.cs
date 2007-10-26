@@ -30,13 +30,13 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.GroupBox groupBox1;
-			System.Windows.Forms.Label label13;
-			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label4;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
 			this.backoffset = new System.Windows.Forms.Label();
+			this.backoffsetlabel = new System.Windows.Forms.Label();
 			this.frontoffset = new System.Windows.Forms.Label();
+			this.frontoffsetlabel = new System.Windows.Forms.Label();
 			this.tag = new System.Windows.Forms.Label();
 			this.angle = new System.Windows.Forms.Label();
 			this.length = new System.Windows.Forms.Label();
@@ -57,8 +57,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.backhightex = new System.Windows.Forms.Panel();
 			label1 = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
-			label13 = new System.Windows.Forms.Label();
-			label5 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -81,9 +79,9 @@ namespace CodeImp.DoomBuilder.Interface
 			groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
 			groupBox1.Controls.Add(this.backoffset);
-			groupBox1.Controls.Add(label13);
+			groupBox1.Controls.Add(this.backoffsetlabel);
 			groupBox1.Controls.Add(this.frontoffset);
-			groupBox1.Controls.Add(label5);
+			groupBox1.Controls.Add(this.frontoffsetlabel);
 			groupBox1.Controls.Add(this.tag);
 			groupBox1.Controls.Add(this.angle);
 			groupBox1.Controls.Add(this.length);
@@ -108,14 +106,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.backoffset.TabIndex = 17;
 			this.backoffset.Text = "100, 100";
 			// 
-			// label13
+			// backoffsetlabel
 			// 
-			label13.AutoSize = true;
-			label13.Location = new System.Drawing.Point(111, 77);
-			label13.Name = "label13";
-			label13.Size = new System.Drawing.Size(66, 14);
-			label13.TabIndex = 14;
-			label13.Text = "Back offset:";
+			this.backoffsetlabel.AutoSize = true;
+			this.backoffsetlabel.Location = new System.Drawing.Point(111, 77);
+			this.backoffsetlabel.Name = "backoffsetlabel";
+			this.backoffsetlabel.Size = new System.Drawing.Size(66, 14);
+			this.backoffsetlabel.TabIndex = 14;
+			this.backoffsetlabel.Text = "Back offset:";
 			// 
 			// frontoffset
 			// 
@@ -126,14 +124,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.frontoffset.TabIndex = 11;
 			this.frontoffset.Text = "100, 100";
 			// 
-			// label5
+			// frontoffsetlabel
 			// 
-			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(110, 58);
-			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(67, 14);
-			label5.TabIndex = 8;
-			label5.Text = "Front offset:";
+			this.frontoffsetlabel.AutoSize = true;
+			this.frontoffsetlabel.Location = new System.Drawing.Point(110, 58);
+			this.frontoffsetlabel.Name = "frontoffsetlabel";
+			this.frontoffsetlabel.Size = new System.Drawing.Size(67, 14);
+			this.frontoffsetlabel.TabIndex = 8;
+			this.frontoffsetlabel.Text = "Front offset:";
 			// 
 			// tag
 			// 
@@ -388,6 +386,8 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.Panel backhightex;
 		private System.Windows.Forms.GroupBox frontpanel;
 		private System.Windows.Forms.GroupBox backpanel;
+		private System.Windows.Forms.Label backoffsetlabel;
+		private System.Windows.Forms.Label frontoffsetlabel;
 
 	}
 }

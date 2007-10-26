@@ -77,7 +77,7 @@
     <Compile Include="Geometry\Vector2D.cs" />
     <Compile Include="Geometry\Vector3D.cs" />
     <Compile Include="Data\TexturePatch.cs" />
-    <Compile Include="Data\TexturePatchFormat.cs" />
+    <Compile Include="Data\ImageDataFormat.cs" />
     <Compile Include="Data\DataReader.cs" />
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
@@ -166,10 +166,14 @@
     <Compile Include="IO\Configuration.cs" />
     <Compile Include="General\General.cs" />
     <Compile Include="IO\ClippedStream.cs" />
+    <Compile Include="IO\DoomFlatReader.cs" />
     <Compile Include="IO\DoomMapSetIO.cs" />
     <Compile Include="IO\DoomPictureReader.cs" />
+    <Compile Include="IO\FileImageReader.cs" />
+    <Compile Include="IO\IImageReader.cs" />
     <Compile Include="IO\Lump.cs" />
     <Compile Include="IO\MapSetIO.cs" />
+    <Compile Include="IO\UnknownImageReader.cs" />
     <Compile Include="IO\WAD.cs" />
     <Compile Include="Interface\MainForm.cs">
       <SubType>Form</SubType>
@@ -245,6 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\UnknownImage.png" />
     <None Include="Resources\ThingsMode.png" />
     <None Include="Resources\VerticesMode.png" />
     <None Include="Resources\SectorsMode.png" />

@@ -51,6 +51,10 @@ namespace CodeImp.DoomBuilder.Config
 		// Map lumps
 		private IDictionary maplumpnames;
 		
+		// Texture/flat sources
+		private IDictionary textureranges;
+		private IDictionary flatranges;
+		
 		// Things
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> things;
@@ -67,6 +71,10 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Map lumps
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
+
+		// Texture/flat sources
+		public IDictionary TextureRanges { get { return textureranges; } }
+		public IDictionary FlatRanges { get { return flatranges; } }
 
 		// Things
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
@@ -95,6 +103,10 @@ namespace CodeImp.DoomBuilder.Config
 			// Get map lumps
 			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
 
+			// Get texture and flat sources
+			textureranges = cfg.ReadSetting("textures", new Hashtable());
+			flatranges = cfg.ReadSetting("flats", new Hashtable());
+			
 			// Get thing categories
 			dic = cfg.ReadSetting("thingtypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)

@@ -50,8 +50,6 @@ namespace CodeImp.DoomBuilder.Interface
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg.ToString() + "\u00B0";
 			tag.Text = l.Tag.ToString();
-			frontoffset.Visible = (l.Front != null);
-			backoffset.Visible = (l.Front != null);
 
 			// Front side available?
 			if(l.Front != null)
@@ -61,9 +59,26 @@ namespace CodeImp.DoomBuilder.Interface
 				fronthighname.Text = l.Front.HighTexture;
 				frontmidname.Text = l.Front.MiddleTexture;
 				frontlowname.Text = l.Front.LowTexture;
-				fronthightex.BackgroundImage = FindTexture(l.Front.HighTexture);
-				frontmidtex.BackgroundImage = FindTexture(l.Front.MiddleTexture);
-				frontlowtex.BackgroundImage = FindTexture(l.Front.LowTexture);
+				fronthightex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Front.HighTexture);
+				frontmidtex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Front.MiddleTexture);
+				frontlowtex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Front.LowTexture);
+				frontoffsetlabel.Enabled = true;
+				frontoffset.Enabled = true;
+				frontpanel.Enabled = true;
+			}
+			else
+			{
+				// Show no info
+				frontoffsetlabel.Enabled = false;
+				frontoffset.Enabled = false;
+				frontpanel.Enabled = false;
+				frontoffset.Text = "--, --";
+				fronthighname.Text = "";
+				frontmidname.Text = "";
+				frontlowname.Text = "";
+				fronthightex.BackgroundImage = null;
+				frontmidtex.BackgroundImage = null;
+				frontlowtex.BackgroundImage = null;
 			}
 
 			// Back size available?
@@ -74,14 +89,27 @@ namespace CodeImp.DoomBuilder.Interface
 				backhighname.Text = l.Back.HighTexture;
 				backmidname.Text = l.Back.MiddleTexture;
 				backlowname.Text = l.Back.LowTexture;
-				backhightex.BackgroundImage = FindTexture(l.Back.HighTexture);
-				backmidtex.BackgroundImage = FindTexture(l.Back.MiddleTexture);
-				backlowtex.BackgroundImage = FindTexture(l.Back.LowTexture);
+				backhightex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Back.HighTexture);
+				backmidtex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Back.MiddleTexture);
+				backlowtex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Back.LowTexture);
+				backoffsetlabel.Enabled = true;
+				backoffset.Enabled = true;
+				backpanel.Enabled = true;
 			}
-
-			// Show panels
-			frontpanel.Visible = (l.Front != null);
-			backpanel.Visible = (l.Back != null);
+			else
+			{
+				// Show no info
+				backoffsetlabel.Enabled = false;
+				backoffset.Enabled = false;
+				backpanel.Enabled = false;
+				backoffset.Text = "--, --";
+				backhighname.Text = "";
+				backmidname.Text = "";
+				backlowname.Text = "";
+				backhightex.BackgroundImage = null;
+				backmidtex.BackgroundImage = null;
+				backlowtex.BackgroundImage = null;
+			}
 
 			// Show the whole thing
 			this.Show();
@@ -91,26 +119,19 @@ namespace CodeImp.DoomBuilder.Interface
 		// When visible changed
 		protected override void OnVisibleChanged(EventArgs e)
 		{
-			// Hide panels
+			// Hiding panels
 			if(!this.Visible)
 			{
-				frontpanel.Visible = false;
-				backpanel.Visible = false;
+				fronthightex.BackgroundImage = null;
+				frontmidtex.BackgroundImage = null;
+				frontlowtex.BackgroundImage = null;
+				backhightex.BackgroundImage = null;
+				backmidtex.BackgroundImage = null;
+				backlowtex.BackgroundImage = null;
 			}
 
 			// Call base
 			base.OnVisibleChanged(e);
-		}
-
-		// This loads and returns the texture image if possible
-		private Image FindTexture(string name)
-		{
-			ImageData img;
-
-			// Get it
-			img = General.Map.Data.GetTextureByName(name);
-			img.LoadImage();
-			return img.Bitmap;
 		}
 	}
 }
