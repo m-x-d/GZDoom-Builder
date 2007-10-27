@@ -147,7 +147,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menumain.Name = "menumain";
 			this.menumain.Size = new System.Drawing.Size(839, 24);
 			this.menumain.TabIndex = 0;
-			this.menumain.Text = "menuStrip1";
 			// 
 			// menufile
 			// 
@@ -363,7 +362,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(839, 25);
 			this.toolbar.TabIndex = 1;
-			this.toolbar.Text = "toolStrip1";
 			// 
 			// buttonnewmap
 			// 
@@ -488,7 +486,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(597, 18);
+			this.statuslabel.Size = new System.Drawing.Size(628, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

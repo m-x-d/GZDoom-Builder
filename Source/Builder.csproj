@@ -207,6 +207,7 @@
     <Compile Include="Rendering\FlatVertex.cs" />
     <Compile Include="Rendering\ID3DResource.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
+    <Compile Include="Rendering\PixelColorBlock.cs" />
     <Compile Include="Rendering\Plotter.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Renderer2D.cs" />

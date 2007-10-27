@@ -92,6 +92,7 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Done
 			bmp.UnlockBits(bmpdata);
+			bmp.Dispose();
 		}
 		
 		#endregion

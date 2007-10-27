@@ -131,7 +131,10 @@ namespace CodeImp.DoomBuilder.Data
 			List<ImageData> images = new List<ImageData>();
 			string rangestart, rangeend;
 			Lump lump;
-			
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
 			// Load two sets of textures, if available
 			lump = file.FindLump("TEXTURE1");
 			if(lump != null) LoadTextureSet(lump.Stream, ref images, pnames);
@@ -206,7 +209,7 @@ namespace CodeImp.DoomBuilder.Data
 			byte[] namebytes;
 			TextureImage image;
 			bool strifedata;
-			
+
 			// Determine default scale
 			defaultscale = General.Map.Config.DefaultTextureScale;
 			
@@ -310,7 +313,10 @@ namespace CodeImp.DoomBuilder.Data
 		public override Stream GetPatchData(string pname)
 		{
 			Lump lump;
-			
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
 			// Find the lump
 			lump = file.FindLump(pname);
 			if(lump != null) return lump.Stream; else return null;
@@ -325,6 +331,9 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			List<ImageData> images = new List<ImageData>();
 			string rangestart, rangeend;
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Read ranges from configuration
 			foreach(DictionaryEntry r in General.Map.Config.FlatRanges)
@@ -386,6 +395,9 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			Lump lump;
 
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
 			// Find the lump
 			lump = file.FindLump(pname);
 			if(lump != null) return lump.Stream; else return null;
@@ -399,6 +411,9 @@ namespace CodeImp.DoomBuilder.Data
 		public override Stream GetSpriteData(string pname)
 		{
 			Lump lump;
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find the lump
 			lump = file.FindLump(pname);

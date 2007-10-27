@@ -59,7 +59,8 @@ namespace CodeImp.DoomBuilder.Data
 				// Get resource from memory
 				bitmapdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + Name);
 				bitmap = (Bitmap)Image.FromStream(bitmapdata);
-
+				bitmapdata.Dispose();
+				
 				// Pass on to base
 				base.LoadImage();
 			}

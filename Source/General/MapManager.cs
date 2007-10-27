@@ -879,6 +879,13 @@ namespace CodeImp.DoomBuilder
 			General.MainWindow.DisplayStatus("Reloading data resources...");
 			Cursor.Current = Cursors.WaitCursor;
 			
+			// Clean up
+			config = null;
+			configinfo = null;
+			data.Dispose();
+			data = null;
+			GC.Collect();
+			
 			// Reload game configuration
 			General.WriteLogLine("Reloading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
@@ -886,7 +893,6 @@ namespace CodeImp.DoomBuilder
 			
 			// Reload data resources
 			General.WriteLogLine("Reloading data resources...");
-			data.Dispose();
 			data = new DataManager();
 			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
