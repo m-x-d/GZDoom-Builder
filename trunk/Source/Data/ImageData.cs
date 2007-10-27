@@ -52,8 +52,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected Bitmap bitmap;
 
 		// 2D rendering data
-		private PixelColor* pixeldata = null;
-		private uint pixeldatasize;
+		private PixelColorBlock pixeldata;
 		
 		// Direct3D texture
 		private Texture texture;
@@ -67,7 +66,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
-		public PixelColor* PixelData { get { lock(this) { return pixeldata; } } }
+		public PixelColorBlock PixelData { get { lock(this) { return pixeldata; } } }
 		public Bitmap Bitmap { get { lock(this) { return bitmap; } } }
 		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsLoaded { get { return (bitmap != null); } }
@@ -99,13 +98,8 @@ namespace CodeImp.DoomBuilder.Data
 					// Clean up
 					if(bitmap != null) bitmap.Dispose();
 					if(texture != null) texture.Dispose();
-					if(pixeldata != null)
-					{
-						General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
-						pixeldata = null;
-						GC.RemoveMemoryPressure(pixeldatasize);
-					}
-
+					pixeldata = null;
+					
 					// Done
 					isdisposed = true;
 				}
@@ -138,21 +132,11 @@ namespace CodeImp.DoomBuilder.Data
 				// Only do this when data is not created yet
 				if((pixeldata == null) && IsLoaded)
 				{
-					// Clean up old memory if reserved
-					if(pixeldata != null)
-					{
-						General.VirtualFree((void*)pixeldata, new UIntPtr(pixeldatasize), General.MEM_RELEASE);
-						pixeldata = null;
-						GC.RemoveMemoryPressure(pixeldatasize);
-					}
-
 					// Make a data copy of the bits for the 2D renderer
 					bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-					pixeldatasize = (uint)(bmpdata.Width * bmpdata.Height * sizeof(PixelColor));
-					pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(pixeldatasize), General.MEM_COMMIT, General.PAGE_READWRITE);
-					General.CopyMemory((void*)pixeldata, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldatasize));
+					pixeldata = new PixelColorBlock(bitmap.Size.Width, bitmap.Size.Height);
+					General.CopyMemory((void*)pixeldata.Pointer, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldata.Length));
 					bitmap.UnlockBits(bmpdata);
-					GC.AddMemoryPressure(pixeldatasize);
 				}
 			}
 		}

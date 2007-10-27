@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.IO
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
 			BitmapData bitmapdata;
-			PixelColor* pixeldata;
+			PixelColorBlock pixeldata;
 			PixelColor* targetdata;
 			int width, height;
 			Bitmap bmp;
@@ -101,13 +101,10 @@ namespace CodeImp.DoomBuilder.IO
 				targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
 				// Copy the pixels
-				General.CopyMemory((void*)targetdata, (void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))));
+				General.CopyMemory((void*)targetdata, (void*)pixeldata.Pointer, new UIntPtr((uint)(width * height * sizeof(PixelColor))));
 
 				// Done
 				bmp.UnlockBits(bitmapdata);
-
-				// Free memory
-				General.VirtualFree((void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))), General.MEM_RELEASE);
 			}
 			else
 			{
@@ -157,17 +154,17 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Done
 			bmp.UnlockBits(bmpdata);
+			bmp.Dispose();
 		}
 
 		// This creates pixel color data from the given data
 		// Returns null on failure
-		private PixelColor* ReadAsPixelData(Stream stream, out int width, out int height)
+		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height)
 		{
 			BinaryReader reader = new BinaryReader(stream);
-			PixelColor* pixeldata = null;
+			PixelColorBlock pixeldata = null;
 			float sqrlength;
 			byte[] bytes;
-			uint datalength = 0;
 			
 			// Check if the flat is square
 			sqrlength = (float)Math.Sqrt(stream.Length);
@@ -201,16 +198,15 @@ namespace CodeImp.DoomBuilder.IO
 			if((width <= 0) || (height <= 0)) return null;
 
 			// Allocate memory
-			datalength = (uint)(sizeof(PixelColor) * width * height);
-			pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(datalength), General.MEM_COMMIT, General.PAGE_READWRITE);
-			General.ZeroMemory(new IntPtr(pixeldata), (int)datalength);
+			pixeldata = new PixelColorBlock(width, height);
+			pixeldata.Clear();
 
 			// Read flat bytes from stream
 			bytes = new byte[width * height];
 			stream.Read(bytes, 0, width * height);
 
 			// Convert bytes with palette
-			for(uint i = 0; i < width * height; i++) pixeldata[i] = palette[bytes[i]];
+			for(uint i = 0; i < width * height; i++) pixeldata.Pointer[i] = palette[bytes[i]];
 
 			// Return pointer
 			return pixeldata;
@@ -219,9 +215,6 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			catch(Exception)
 			{
-				// Free memory if allocated
-				if(datalength > 0) General.VirtualFree((void*)pixeldata, new UIntPtr(datalength), General.MEM_RELEASE);
-				
 				// Return nothing
 				return null;
 			}

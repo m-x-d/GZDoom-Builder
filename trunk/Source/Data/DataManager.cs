@@ -371,8 +371,9 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		private void LoadTextures()
 		{
-			PatchNames pnames = new PatchNames();
 			ICollection<ImageData> images;
+			PatchNames pnames = new PatchNames();
+			PatchNames newpnames;
 			
 			// Go for all opened containers
 			foreach(DataReader dr in containers)
@@ -381,20 +382,19 @@ namespace CodeImp.DoomBuilder.Data
 				// Note that pnames is NOT set to null in the loop
 				// because if a container has no pnames, the pnames
 				// of the previous (higher) container should be used.
-				pnames = dr.LoadPatchNames();
-				if(pnames != null)
+				newpnames = dr.LoadPatchNames();
+				if(newpnames != null) pnames = newpnames;
+
+				// Load textures
+				images = dr.LoadTextures(pnames);
+				if(images != null)
 				{
-					// Load textures
-					images = dr.LoadTextures(pnames);
-					if(images != null)
+					// Go for all textures
+					foreach(ImageData img in images)
 					{
-						// Go for all textures
-						foreach(ImageData img in images)
-						{
-							// Add or replace in textures list
-							textures.Remove(img.LongName);
-							textures.Add(img.LongName, img);
-						}
+						// Add or replace in textures list
+						textures.Remove(img.LongName);
+						textures.Add(img.LongName, img);
 					}
 				}
 			}

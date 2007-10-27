@@ -197,6 +197,9 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Standard new configuration
 			NewConfiguration();
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
 		}
 		
 		// Constructor
@@ -204,6 +207,9 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Standard new configuration
 			NewConfiguration(sorted);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
 		}
 		
 		// Constructor to load a file immediately
@@ -211,6 +217,9 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Load configuration from file
 			LoadConfiguration(filename);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
 		}
 		
 		// Constructor to load a file immediately
@@ -218,6 +227,9 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Load configuration from file
 			LoadConfiguration(filename, sorted);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
 		}
 		
 		#endregion

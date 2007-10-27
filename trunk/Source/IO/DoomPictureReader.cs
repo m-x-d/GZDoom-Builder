@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.IO
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
 			BitmapData bitmapdata;
-			PixelColor* pixeldata;
+			PixelColorBlock pixeldata;
 			PixelColor* targetdata;
 			int width, height, x, y;
 			Bitmap bmp;
@@ -117,13 +117,10 @@ namespace CodeImp.DoomBuilder.IO
 				targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
 				// Copy the pixels
-				General.CopyMemory((void*)targetdata, (void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))));
+				General.CopyMemory((void*)targetdata, (void*)pixeldata.Pointer, new UIntPtr((uint)(width * height * sizeof(PixelColor))));
 
 				// Done
 				bmp.UnlockBits(bitmapdata);
-
-				// Free memory
-				General.VirtualFree((void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))), General.MEM_RELEASE);
 			}
 			else
 			{
@@ -139,7 +136,7 @@ namespace CodeImp.DoomBuilder.IO
 		// Throws exception on failure
 		public void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
 		{
-			PixelColor* pixeldata;
+			PixelColorBlock pixeldata;
 			int width, height, ox, oy, tx, ty;
 
 			// Read pixel data
@@ -153,29 +150,25 @@ namespace CodeImp.DoomBuilder.IO
 					for(oy = 0; oy < height; oy++)
 					{
 						// Copy this pixel?
-						if(pixeldata[oy * width + ox].a > 0.5f)
+						if(pixeldata.Pointer[oy * width + ox].a > 0.5f)
 						{
 							// Calculate target pixel and copy when within bounds
 							tx = x + ox;
 							ty = y + oy;
 							if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
-								target[ty * targetwidth + tx] = pixeldata[oy * width + ox];
+								target[ty * targetwidth + tx] = pixeldata.Pointer[oy * width + ox];
 						}
 					}
 				}
-
-				// Free memory
-				General.VirtualFree((void*)pixeldata, new UIntPtr((uint)(width * height * sizeof(PixelColor))), General.MEM_RELEASE);
 			}
 		}
 
 		// This creates pixel color data from the given data
 		// Returns null on failure
-		private PixelColor* ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
+		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
 		{
 			BinaryReader reader = new BinaryReader(stream);
-			PixelColor* pixeldata = null;
-			uint datalength = 0;
+			PixelColorBlock pixeldata = null;
 			int y, count, p;
 			int[] columns;
 			int dataoffset;
@@ -209,9 +202,8 @@ namespace CodeImp.DoomBuilder.IO
 			for(int x = 0; x < width; x++) columns[x] = reader.ReadInt32();
 			
 			// Allocate memory
-			datalength = (uint)(sizeof(PixelColor) * width * height);
-			pixeldata = (PixelColor*)General.VirtualAlloc(IntPtr.Zero, new UIntPtr(datalength), General.MEM_COMMIT, General.PAGE_READWRITE);
-			General.ZeroMemory(new IntPtr(pixeldata), (int)datalength);
+			pixeldata = new PixelColorBlock(width, height);
+			pixeldata.Clear();
 			
 			// Go for all columns
 			for(int x = 0; x < width; x++)
@@ -238,7 +230,7 @@ namespace CodeImp.DoomBuilder.IO
 						p = reader.ReadByte();
 
 						// Draw pixel
-						pixeldata[(y + yo) * width + x] = palette[p];
+						pixeldata.Pointer[(y + yo) * width + x] = palette[p];
 					}
 					
 					// Skip unused pixel
@@ -256,9 +248,6 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			catch(Exception)
 			{
-				// Free memory if allocated
-				if(datalength > 0) General.VirtualFree((void*)pixeldata, new UIntPtr(datalength), General.MEM_RELEASE);
-				
 				// Return nothing
 				return null;
 			}

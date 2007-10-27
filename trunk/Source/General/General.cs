@@ -51,13 +51,6 @@ namespace CodeImp.DoomBuilder
 		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
 		public static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
 
-		[DllImport("kernel32.dll", SetLastError = true)]
-		public static unsafe extern void* VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, uint flAllocationType, uint flProtect);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static unsafe extern bool VirtualFree(void* lpAddress, UIntPtr dwSize, uint dwFreeType);
-
 		#endregion
 
 		#region ================== Constants

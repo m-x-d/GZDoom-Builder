@@ -115,12 +115,13 @@ namespace CodeImp.DoomBuilder.Data
 							// Data is in an unknown format!
 							General.WriteLogLine("WARNING: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
 							failed = true;
-							break;
 						}
-
-						// Draw the patch
-						mem.Seek(0, SeekOrigin.Begin);
-						reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y);
+						else
+						{
+							// Draw the patch
+							mem.Seek(0, SeekOrigin.Begin);
+							reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y);
+						}
 					}
 					else
 					{
@@ -133,7 +134,11 @@ namespace CodeImp.DoomBuilder.Data
 				bitmap.UnlockBits(bitmapdata);
 
 				// When failed, use the error picture
-				if(failed) bitmap = UnknownImageReader.ReadAsBitmap();
+				if(failed)
+				{
+					bitmap.Dispose();
+					bitmap = UnknownImageReader.ReadAsBitmap();
+				}
 
 				// Pass on to base
 				base.LoadImage();

@@ -40,11 +40,11 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public FileImage(string filepathname)
+		public FileImage(string name, string filepathname)
 		{
 			// Initialize
 			this.filepathname = filepathname;
-			SetName(Path.GetFileNameWithoutExtension(filepathname));
+			SetName(name);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
