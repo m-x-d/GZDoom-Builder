@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
+using ICSharpCode.SharpZipLib.Zip;
 
 #endregion
 
@@ -52,6 +53,15 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			General.WriteLogLine("Opening PK3 resource '" + location.location + "'");
 
+			ZipInputStream z = new ZipInputStream(File.Open(dl.location, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+			ZipEntry ze;
+			while((ze = z.GetNextEntry()) != null)
+			{
+				General.WriteLogLine(ze.Name);
+				
+			}
+			z.Dispose();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
