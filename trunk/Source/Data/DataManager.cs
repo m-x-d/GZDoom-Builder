@@ -68,6 +68,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		public Playpal Palette { get { return palette; } }
+		public ICollection<ImageData> Textures { get { return textures.Values; } }
+		public ICollection<ImageData> Flats { get { return flats.Values; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool IsLoading { get { return (backgroundloader != null) && backgroundloader.IsAlive; } }
 		

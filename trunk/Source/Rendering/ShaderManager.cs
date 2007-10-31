@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public class ShaderManager : IDisposable
+	public class ShaderManager : IDisposable, ID3DResource
 	{
 		#region ================== Constants
 
@@ -52,6 +52,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Shaders
 		private Display2DShader display2dshader;
 		private Things2DShader things2dshader;
+		
+		// Device
+		private D3DDevice device;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -71,18 +74,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ShaderManager()
+		public ShaderManager(D3DDevice device)
 		{
-			Capabilities caps;
-
-			// Check if we can use shaders
-			caps = General.Map.Graphics.Device.GetDeviceCaps();
-			useshaders = (caps.PixelShaderVersion.Major >= 2);
-			shadertechnique = "SM20";
+			// Initialize
+			this.device = device;
 			
-			// Initialize effects
-			display2dshader = new Display2DShader(this);
-			things2dshader = new Things2DShader(this);
+			// Load
+			ReloadResource();
+
+			// Register as resource
+			device.RegisterResource(this);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -95,14 +96,43 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
-				display2dshader.Dispose();
-				things2dshader.Dispose();
+				UnloadResource();
+
+				// Unregister as resource
+				device.UnregisterResource(this);
 				
 				// Done
+				device = null;
 				isdisposed = true;
 			}
 		}
 
+		#endregion
+
+		#region ================== Resources
+
+		// Clean up resources
+		public void UnloadResource()
+		{
+			display2dshader.Dispose();
+			things2dshader.Dispose();
+		}
+
+		// Load resources
+		public void ReloadResource()
+		{
+			Capabilities caps;
+
+			// Check if we can use shaders
+			caps = General.Map.Graphics.Device.GetDeviceCaps();
+			useshaders = (caps.PixelShaderVersion.Major >= 2);
+			shadertechnique = "SM20";
+
+			// Initialize effects
+			display2dshader = new Display2DShader(this);
+			things2dshader = new Things2DShader(this);
+		}
+		
 		#endregion
 	}
 }

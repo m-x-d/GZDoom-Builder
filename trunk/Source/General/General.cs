@@ -935,6 +935,14 @@ namespace CodeImp.DoomBuilder
 		}
 
 		#endregion
+
+		[Action(Action.TESTACTION)]
+		public static void TestAction()
+		{
+			TextureBrowserForm t = new TextureBrowserForm();
+			t.ShowDialog(mainwindow);
+			t.Dispose();
+		}
 	}
 }
 

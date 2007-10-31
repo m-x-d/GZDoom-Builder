@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public Renderer2D(D3DGraphics graphics) : base(graphics)
+		public Renderer2D(D3DDevice graphics) : base(graphics)
 		{
 			// Initialize
 			thingtexture = new ResourceImage("Thing2D.png");
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void Present()
 		{
 			// Start drawing
-			if(graphics.StartRendering(true, General.Colors.Background.ToInt()))
+			if(graphics.StartRendering(true, General.Colors.Background.ToInt(), graphics.BackBuffer, graphics.DepthBuffer))
 			{
 				// Renderstates that count for this whole sequence
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			windowsize.Height = graphics.RenderTarget.ClientSize.Height;
 
 			// Create rendertargets textures
-			structtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.Dynamic, Format.A8R8G8B8, Pool.Default);
+			structtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 			thingstex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 
 			// Get the real surface sizes
@@ -595,17 +595,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartRendering(bool clearstructs, bool clearthings)
 		{
-			LockFlags lockflags;
-
 			// Rendertargets available?
 			if((structtex != null) && (thingstex != null))
 			{
-				// Determine lock requirements
-				if(clearstructs) lockflags = LockFlags.Discard | LockFlags.NoSystemLock;
-				else lockflags = LockFlags.NoSystemLock;
-
 				// Lock structures rendertarget memory
-				structlocked = structtex.LockRectangle(0, lockflags);
+				structlocked = structtex.LockRectangle(0, LockFlags.NoSystemLock);
 
 				// Create structures plotter
 				plotter = new Plotter((PixelColor*)structlocked.Data.DataPointer.ToPointer(), structlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
@@ -619,10 +613,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				
 				// Set the rendertarget to the things texture
 				thingssurface = thingstex.GetSurfaceLevel(0);
-				graphics.Device.SetDepthStencilSurface(null);
-				graphics.Device.SetRenderTarget(0, thingssurface);
-				if(clearthings) graphics.Device.Clear(ClearFlags.Target, 0, 1f, 0);
-				if(graphics.StartRendering(false, 0))
+				if(graphics.StartRendering(clearthings, 0, thingssurface, null))
 				{
 					// Ready for rendering
 					return true;

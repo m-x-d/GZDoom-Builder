@@ -53,6 +53,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			General.WriteLogLine("Opening PK3 resource '" + location.location + "'");
 
+			//TEST
+			/*
 			ZipInputStream z = new ZipInputStream(File.Open(dl.location, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
 			ZipEntry ze;
 			while((ze = z.GetNextEntry()) != null)
@@ -61,6 +63,7 @@ namespace CodeImp.DoomBuilder.Data
 				
 			}
 			z.Dispose();
+			*/
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
