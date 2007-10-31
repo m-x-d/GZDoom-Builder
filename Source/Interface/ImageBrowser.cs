@@ -17,29 +17,35 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
+using System.ComponentModel;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Reflection;
-using System.Drawing;
-using SlimDX.Direct3D;
-using System.ComponentModel;
+using Microsoft.Win32;
+using System.Diagnostics;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Rendering
+namespace CodeImp.DoomBuilder.Interface
 {
-	public class Renderer3D : Renderer
+	public partial class ImageBrowser : UserControl
 	{
 		#region ================== Constants
+
+		private const int ITEM_WIDTH = 80;
+		private const int ITEM_HEIGHT = 92;
 
 		#endregion
 
 		#region ================== Variables
 
+		// Number of items horizontally
+		private int numitemswidth;
+		
 		#endregion
 
 		#region ================== Properties
@@ -49,30 +55,42 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Renderer3D(D3DDevice graphics) : base(graphics)
+		public ImageBrowser()
 		{
+			// Make items list
+			
 			// Initialize
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Diposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Done
-				base.Dispose();
-			}
+			InitializeComponent();
 		}
 
 		#endregion
 
+		#region ================== Events
+
+		// When resized
+		protected override void OnResize(EventArgs e)
+		{
+			
+			// Call base
+			base.OnResize(e);
+		}
+
+		#endregion
+		
+		#region ================== Controls
+
+		#endregion
+		
 		#region ================== Methods
+
+		// This adds an item
+		public void Add(string name, ImageData image, object tag)
+		{
+			// Make new item
+			
+			// Add item to list
+			
+		}
 
 		#endregion
 	}

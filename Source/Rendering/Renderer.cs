@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Variables
 
 		// Graphics
-		protected D3DGraphics graphics;
+		protected D3DDevice graphics;
 
 		// Disposing
 		protected bool isdisposed = false;
@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Renderer(D3DGraphics g)
+		public Renderer(D3DDevice g)
 		{
 			// Initialize
 			this.graphics = g;

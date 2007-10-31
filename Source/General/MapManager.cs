@@ -71,7 +71,9 @@ namespace CodeImp.DoomBuilder
 		private GameConfiguration config;
 		private DataManager data;
 		private EditMode mode;
-		private D3DGraphics graphics;
+		private D3DDevice graphics;
+		private Renderer2D renderer2d;
+		private Renderer3D renderer3d;
 		private WAD tempwad;
 		private MapSelection selection;
 		
@@ -91,7 +93,9 @@ namespace CodeImp.DoomBuilder
 		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed; } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public D3DGraphics Graphics { get { return graphics; } }
+		public D3DDevice Graphics { get { return graphics; } }
+		public Renderer2D Renderer2D { get { return renderer2d; } }
+		public Renderer3D Renderer3D { get { return renderer3d; } }
 		public GameConfiguration Config { get { return config; } }
 		public MapSelection Selection { get { return selection; } }
 		
@@ -129,6 +133,8 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Unloading map data...");
 				map.Dispose();
 				General.WriteLogLine("Stopping graphics device...");
+				renderer2d.Dispose();
+				renderer3d.Dispose();
 				graphics.Dispose();
 				
 				// Remove temp file
@@ -174,8 +180,12 @@ namespace CodeImp.DoomBuilder
 			
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
-			graphics = new D3DGraphics(General.MainWindow.Display);
+			graphics = new D3DDevice(General.MainWindow.Display);
 			if(!graphics.Initialize()) return false;
+			
+			// Create renderers
+			renderer2d = new Renderer2D(graphics);
+			renderer3d = new Renderer3D(graphics);
 			
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
@@ -238,9 +248,13 @@ namespace CodeImp.DoomBuilder
 
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
-			graphics = new D3DGraphics(General.MainWindow.Display);
+			graphics = new D3DDevice(General.MainWindow.Display);
 			if(!graphics.Initialize()) return false;
 
+			// Create renderers
+			renderer2d = new Renderer2D(graphics);
+			renderer3d = new Renderer3D(graphics);
+			
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);

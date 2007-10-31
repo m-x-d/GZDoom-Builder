@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public ClassicMode()
 		{
 			// Initialize
-			this.renderer = General.Map.Graphics.Renderer2D;
+			this.renderer = General.Map.Renderer2D;
 		}
 
 		// Diposer

@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.Interface;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public class D3DGraphics : IDisposable
+	public class D3DDevice : IDisposable
 	{
 		#region ================== Constants
 
@@ -54,8 +54,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private RenderTargetControl rendertarget;
 		private Capabilities devicecaps;
 		private Device device;
-		private Renderer2D renderer2d;
-		private Renderer3D renderer3d;
 		private Viewport viewport;
 		private List<ID3DResource> resources;
 		private ShaderManager shaders;
@@ -71,8 +69,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		public Device Device { get { return device; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public Renderer2D Renderer2D { get { return renderer2d; } }
-		public Renderer3D Renderer3D { get { return renderer3d; } }
 		public RenderTargetControl RenderTarget { get { return rendertarget; } }
 		public Viewport Viewport { get { return viewport; } }
 		public ShaderManager Shaders { get { return shaders; } }
@@ -84,7 +80,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public D3DGraphics(RenderTargetControl rendertarget)
+		public D3DDevice(RenderTargetControl rendertarget)
 		{
 			// Set render target
 			this.rendertarget = rendertarget;
@@ -105,8 +101,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Clean up
 				foreach(ID3DResource res in resources) res.UnloadResource();
 				if(shaders != null) shaders.Dispose();
-				renderer2d.Dispose();
-				renderer3d.Dispose();
 				rendertarget = null;
 				if(backbuffer != null) backbuffer.Dispose();
 				if(depthbuffer != null) depthbuffer.Dispose();
@@ -188,10 +182,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Get the viewport
 			viewport = device.Viewport;
-
-			// Setup shaders
-			if(shaders != null) shaders.Dispose();
-			shaders = new ShaderManager();
 		}
 
 		#endregion
@@ -247,10 +237,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Add event to cancel resize event
 			//device.DeviceResizing += new CancelEventHandler(CancelResize);
-			
-			// Create renderers
-			renderer2d = new Renderer2D(this);
-			renderer3d = new Renderer3D(this);
+
+			// Create shader manager
+			shaders = new ShaderManager();
 			
 			// Initialize settings
 			SetupSettings();
@@ -316,9 +305,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Unload all Direct3D resources
 			foreach(ID3DResource res in resources) res.UnloadResource();
-			if(shaders != null) shaders.Dispose();
-			if(backbuffer != null) backbuffer.Dispose();
-			if(depthbuffer != null) depthbuffer.Dispose();
 			
 			// Make present parameters
 			displaypp = CreatePresentParameters(adapter);
@@ -349,7 +335,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Rendering
 
 		// This begins a drawing session
-		public bool StartRendering(bool clear, int backcolor)
+		public bool StartRendering(bool clear, int backcolor, Surface target, Surface depthbuffer)
 		{
 			CooperativeLevel coopresult;
 
@@ -372,8 +358,18 @@ namespace CodeImp.DoomBuilder.Rendering
 					return false;
 				}
 
+				// Set rendertarget
+				device.SetDepthStencilSurface(depthbuffer);
+				device.SetRenderTarget(0, target);
+				
 				// Clear the screen
-				if(clear) device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1f, 0);
+				if(clear)
+				{
+					if(depthbuffer != null)
+						device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1f, 0);
+					else
+						device.Clear(ClearFlags.Target, backcolor, 1f, 0);
+				}
 
 				// Ready to render
 				device.BeginScene();
@@ -387,20 +383,28 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This ends a drawing session
-		public void FinishRendering(bool present)
+		public void FinishRendering()
 		{
 			try
 			{
 				// Done
 				device.EndScene();
-
-				// Display the scene
-				if(present) device.Present();
 			}
 			// Errors are not a problem here
 			catch(Exception) { }
 		}
 
+		// This presents what has been drawn
+		public void Present()
+		{
+			try
+			{
+				device.Present();
+			}
+			// Errors are not a problem here
+			catch(Exception) { }
+		}
+		
 		#endregion
 
 		#region ================== Tools

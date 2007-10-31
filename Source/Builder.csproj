@@ -105,6 +105,12 @@
     <Compile Include="Interface\DelayedForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Interface\ImageBrowser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ImageBrowser.Designer.cs">
+      <DependentUpon>ImageBrowser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\LinedefInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -152,6 +158,12 @@
     </Compile>
     <Compile Include="Interface\SectorInfoPanel.Designer.cs">
       <DependentUpon>SectorInfoPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\TextureBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\TextureBrowserForm.Designer.cs">
+      <DependentUpon>TextureBrowserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\ThingInfoPanel.cs">
       <SubType>UserControl</SubType>
@@ -201,7 +213,7 @@
     <Compile Include="Rendering\Display2DShader.cs" />
     <Compile Include="Rendering\ColorCollection.cs" />
     <Compile Include="Rendering\ColorSetting.cs" />
-    <Compile Include="Rendering\D3DGraphics.cs" />
+    <Compile Include="Rendering\D3DDevice.cs" />
     <Compile Include="Data\ImageData.cs" />
     <Compile Include="Rendering\D3DShader.cs" />
     <Compile Include="Rendering\FlatVertex.cs" />
@@ -281,6 +293,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>DelayedForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ImageBrowser.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ImageBrowser.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\LinedefInfoPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>LinedefInfoPanel.cs</DependentUpon>
@@ -296,6 +312,10 @@
     <EmbeddedResource Include="Interface\SectorInfoPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SectorInfoPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\TextureBrowserForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TextureBrowserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\ThingInfoPanel.resx">
       <SubType>Designer</SubType>
