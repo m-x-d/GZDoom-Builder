@@ -70,6 +70,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonlinedefsmode = new System.Windows.Forms.ToolStripButton();
 			this.buttonsectorsmode = new System.Windows.Forms.ToolStripButton();
 			this.buttonthingsmode = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonthingsfilter = new System.Windows.Forms.ToolStripButton();
+			this.thingfilters = new System.Windows.Forms.ToolStripComboBox();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.zoomlabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -91,7 +95,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
-			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -358,7 +361,10 @@ namespace CodeImp.DoomBuilder.Interface
             this.buttonlinedefsmode,
             this.buttonsectorsmode,
             this.buttonthingsmode,
-            this.toolStripSeparator7});
+            this.toolStripSeparator7,
+            this.buttonthingsfilter,
+            this.thingfilters,
+            this.toolStripSeparator8});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(839, 25);
@@ -463,6 +469,42 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonthingsmode.Tag = "thingsmode";
 			this.buttonthingsmode.Text = "Things Mode";
 			this.buttonthingsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonthingsfilter
+			// 
+			this.buttonthingsfilter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonthingsfilter.Enabled = false;
+			this.buttonthingsfilter.Image = global::CodeImp.DoomBuilder.Properties.Resources.Filter;
+			this.buttonthingsfilter.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonthingsfilter.Name = "buttonthingsfilter";
+			this.buttonthingsfilter.Size = new System.Drawing.Size(23, 22);
+			this.buttonthingsfilter.Text = "Configure Things Filters";
+			// 
+			// thingfilters
+			// 
+			this.thingfilters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.thingfilters.Enabled = false;
+			this.thingfilters.Items.AddRange(new object[] {
+            "(none)",
+            "(custom)",
+            "Easy skill items only",
+            "Medium skill items only",
+            "Hard skill items only"});
+			this.thingfilters.Name = "thingfilters";
+			this.thingfilters.Size = new System.Drawing.Size(130, 25);
+			this.thingfilters.ToolTipText = "Things Filter";
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
 			// 
 			// statusbar
 			// 
@@ -668,22 +710,15 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Name = "display";
 			this.display.Size = new System.Drawing.Size(839, 367);
 			this.display.TabIndex = 5;
-			this.display.TabStop = false;
 			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
 			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
 			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
-			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
+			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
 			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
 			this.display.Resize += new System.EventHandler(this.display_Resize);
-			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
-			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
-			// 
-			// toolStripSeparator7
-			// 
-			this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
+			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			// 
 			// MainForm
 			// 
@@ -778,5 +813,8 @@ namespace CodeImp.DoomBuilder.Interface
 		private SectorInfoPanel sectorinfo;
 		private ThingInfoPanel thinginfo;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private System.Windows.Forms.ToolStripButton buttonthingsfilter;
+		private System.Windows.Forms.ToolStripComboBox thingfilters;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
 	}
 }
