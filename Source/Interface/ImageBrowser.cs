@@ -27,6 +27,7 @@ using System.Diagnostics;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -43,12 +44,17 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Variables
 
-		// Number of items horizontally
-		private int numitemswidth;
+		// Graphics device for rendering
+		private D3DDevice graphics;
+		
+		// Items list
+		private List<ImageBrowserItem> items;
 		
 		#endregion
 
 		#region ================== Properties
+
+		public int Count { get { return items.Count; } }
 
 		#endregion
 
@@ -57,7 +63,12 @@ namespace CodeImp.DoomBuilder.Interface
 		// Constructor
 		public ImageBrowser()
 		{
+			// Make graphics device
+			graphics = new D3DDevice(rendertarget);
+			graphics.Initialize();
+			
 			// Make items list
+			items = new List<ImageBrowserItem>();
 			
 			// Initialize
 			InitializeComponent();
@@ -70,6 +81,8 @@ namespace CodeImp.DoomBuilder.Interface
 		// When resized
 		protected override void OnResize(EventArgs e)
 		{
+			// Redraw
+			Redraw();
 			
 			// Call base
 			base.OnResize(e);
@@ -77,19 +90,31 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#endregion
 		
-		#region ================== Controls
+		#region ================== Rendering
 
+		// This redraws the list
+		public void Redraw()
+		{
+			int numitemswide;
+
+			// Calculate number of items wide
+			numitemswide = (int)Math.Floor((float)ClientSize.Width / (float)ITEM_WIDTH);
+		}
+		
 		#endregion
 		
 		#region ================== Methods
 
 		// This adds an item
-		public void Add(string name, ImageData image, object tag)
+		public void Add(string text, ImageData image, object tag)
 		{
+			ImageBrowserItem i;
+
 			// Make new item
+			i = new ImageBrowserItem(text, image, tag);
 			
 			// Add item to list
-			
+			items.Add(i);
 		}
 
 		#endregion

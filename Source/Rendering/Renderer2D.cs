@@ -175,7 +175,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(thingsfront) PresentThings(1f);
 				
 				// Done
-				graphics.FinishRendering(true);
+				graphics.FinishRendering();
+				graphics.Present();
 			}
 		}
 
@@ -637,7 +638,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void FinishRendering()
 		{
 			// Stop rendering
-			graphics.FinishRendering(false);
+			graphics.FinishRendering();
 			
 			// Release rendertarget
 			try
