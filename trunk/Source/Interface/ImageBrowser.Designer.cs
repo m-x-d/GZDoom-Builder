@@ -17,6 +17,7 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				components.Dispose();
 			}
+			if(graphics != null) graphics.Dispose();
 			base.Dispose(disposing);
 		}
 
@@ -32,7 +33,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.rendertarget = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
 			this.splitter.Panel1.SuspendLayout();
 			this.splitter.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.rendertarget)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// splitter
@@ -61,7 +61,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.rendertarget.Name = "rendertarget";
 			this.rendertarget.Size = new System.Drawing.Size(518, 310);
 			this.rendertarget.TabIndex = 3;
-			this.rendertarget.TabStop = false;
 			// 
 			// ImageBrowser
 			// 
@@ -74,7 +73,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Size = new System.Drawing.Size(518, 346);
 			this.splitter.Panel1.ResumeLayout(false);
 			this.splitter.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.rendertarget)).EndInit();
 			this.ResumeLayout(false);
 
 		}
