@@ -63,15 +63,21 @@ namespace CodeImp.DoomBuilder.Interface
 		// Constructor
 		public ImageBrowser()
 		{
-			// Make graphics device
-			graphics = new D3DDevice(rendertarget);
-			graphics.Initialize();
+			// Initialize
+			InitializeComponent();
 			
 			// Make items list
 			items = new List<ImageBrowserItem>();
-			
-			// Initialize
-			InitializeComponent();
+
+			rendertarget.SetBounds(0, 0, 0, 10000, BoundsSpecified.Height);
+			rendertarget.ClientSize = new Size(0, 10000);
+		}
+
+		// Destructor
+		~ImageBrowser()
+		{
+			// Clean up
+			if(graphics != null) graphics.Dispose();
 		}
 
 		#endregion
@@ -92,6 +98,14 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		#region ================== Rendering
 
+		// Initialize
+		public void InitializeGraphics()
+		{
+			// Make graphics device
+			graphics = new D3DDevice(rendertarget);
+			graphics.Initialize();
+		}
+		
 		// This redraws the list
 		public void Redraw()
 		{
