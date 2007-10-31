@@ -239,7 +239,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			//device.DeviceResizing += new CancelEventHandler(CancelResize);
 
 			// Create shader manager
-			shaders = new ShaderManager();
+			shaders = new ShaderManager(this);
 			
 			// Initialize settings
 			SetupSettings();

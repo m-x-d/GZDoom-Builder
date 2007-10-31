@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -101,7 +102,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.toolbar.SuspendLayout();
 			this.statusbar.SuspendLayout();
 			this.panelinfo.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.display)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// toolStripMenuItem1
@@ -357,7 +357,8 @@ namespace CodeImp.DoomBuilder.Interface
             this.buttonverticesmode,
             this.buttonlinedefsmode,
             this.buttonsectorsmode,
-            this.buttonthingsmode});
+            this.buttonthingsmode,
+            this.toolStripSeparator7});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(839, 25);
@@ -398,7 +399,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// toolStripSeparator3
 			// 
-			this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
 			// 
@@ -415,7 +416,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// toolStripSeparator5
 			// 
-			this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+			this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
 			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
 			// 
@@ -678,6 +679,12 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
 			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -708,7 +715,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.statusbar.ResumeLayout(false);
 			this.statusbar.PerformLayout();
 			this.panelinfo.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.display)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -771,5 +777,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private VertexInfoPanel vertexinfo;
 		private SectorInfoPanel sectorinfo;
 		private ThingInfoPanel thinginfo;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 	}
 }

@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.rendertarget.Location = new System.Drawing.Point(0, 0);
 			this.rendertarget.Name = "rendertarget";
 			this.rendertarget.Size = new System.Drawing.Size(518, 310);
-			this.rendertarget.TabIndex = 0;
+			this.rendertarget.TabIndex = 3;
 			this.rendertarget.TabStop = false;
 			// 
 			// ImageBrowser

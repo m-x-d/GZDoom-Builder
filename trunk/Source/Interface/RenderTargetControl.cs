@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public class RenderTargetControl : PictureBox
+	public class RenderTargetControl : Panel
 	{
 		#region ================== Constants
 
@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Set new source image
 			img = srcimg;
-			this.Image = img;
+			//this.Image = img;
 		}
 
 		// This sets up the control to display the splash logo
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Change display to show splash logo
 			this.SetStyle(ControlStyles.SupportsTransparentBackColor, false);
-			this.SetStyle(ControlStyles.ContainerControl, false);
+			this.SetStyle(ControlStyles.ContainerControl, true);
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			this.SetStyle(ControlStyles.UserPaint, true);
 			this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash2;
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.Image = null;
+			//this.Image = null;
 		}
 		
 		// This sets up the control for manual rendering
@@ -128,14 +128,14 @@ namespace CodeImp.DoomBuilder.Interface
 			// Change display for rendering
 			/*
 			this.SetStyle(ControlStyles.SupportsTransparentBackColor, false);
-			this.SetStyle(ControlStyles.ContainerControl, false);
+			this.SetStyle(ControlStyles.ContainerControl, true);
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, false);
 			this.SetStyle(ControlStyles.UserPaint, true);
 			this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 			this.SetStyle(ControlStyles.Opaque, true);
 			*/
 			this.SetStyle(ControlStyles.SupportsTransparentBackColor, false);
-			this.SetStyle(ControlStyles.ContainerControl, false);
+			this.SetStyle(ControlStyles.ContainerControl, true);
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, false);
 			this.SetStyle(ControlStyles.UserPaint, true);
 			this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
 			//this.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.floor0_3;
 			//this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Tile;
-			this.Image = img;
+			//this.Image = img;
 		}
 
 		#endregion
