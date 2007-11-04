@@ -81,6 +81,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Hourglass {
+            get {
+                object obj = ResourceManager.GetObject("Hourglass", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap LinesMode {
             get {
                 object obj = ResourceManager.GetObject("LinesMode", resourceCulture);

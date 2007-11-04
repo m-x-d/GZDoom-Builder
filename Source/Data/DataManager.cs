@@ -325,7 +325,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// Load image
 						walker.Current.Value.LoadImage();
-						//walker.Current.Value.CreateTexture();
+						//walker.Current.Value.CreateTexture();	// Impossible from different thread
 					}
 
 					// Wait a bit

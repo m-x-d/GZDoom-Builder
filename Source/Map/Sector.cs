@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -51,6 +52,8 @@ namespace CodeImp.DoomBuilder.Map
 		private int ceilheight;
 		private string floortexname;
 		private string ceiltexname;
+		private long longfloortexname;
+		private long longceiltexname;
 		private int effect;
 		private int tag;
 		private int brightness;
@@ -73,6 +76,8 @@ namespace CodeImp.DoomBuilder.Map
 		public int CeilHeight { get { return ceilheight; } }
 		public string FloorTexture { get { return floortexname; } }
 		public string CeilTexture { get { return ceiltexname; } }
+		public long LongFloorTexture { get { return longfloortexname; } }
+		public long LongCeilTexture { get { return longceiltexname; } }
 		public int Effect { get { return effect; } }
 		public int Tag { get { return tag; } }
 		public int Brightness { get { return brightness; } }
@@ -155,9 +160,9 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Copy properties
 			s.ceilheight = ceilheight;
-			s.ceiltexname = ceiltexname;
+			s.SetCeilTexture(ceiltexname);
 			s.floorheight = floorheight;
-			s.floortexname = floortexname;
+			s.SetFloorTexture(floortexname);
 			s.effect = effect;
 			s.tag = tag;
 			s.brightness = brightness;
@@ -173,13 +178,27 @@ namespace CodeImp.DoomBuilder.Map
 			// Apply changes
 			this.floorheight = hfloor;
 			this.ceilheight = hceil;
-			this.floortexname = tfloor;
-			this.ceiltexname = tceil;
+			SetFloorTexture(tfloor);
+			SetCeilTexture(tceil);
 			this.effect = effect;
 			this.tag = tag;
 			this.brightness = brightness;
 		}
 
+		// This sets texture
+		public void SetFloorTexture(string name)
+		{
+			floortexname = name;
+			longfloortexname = Lump.MakeLongName(name);
+		}
+
+		// This sets texture
+		public void SetCeilTexture(string name)
+		{
+			ceiltexname = name;
+			longceiltexname = Lump.MakeLongName(name);
+		}
+		
 		#endregion
 	}
 }

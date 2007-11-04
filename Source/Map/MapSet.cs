@@ -487,7 +487,7 @@ namespace CodeImp.DoomBuilder.Map
 				if(vc.Value.Linedefs.Count == 0) vertices.Remove(vc);
 			}
 		}
-
+		
 		#endregion
 	}
 }

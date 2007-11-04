@@ -33,6 +33,8 @@ using CodeImp.DoomBuilder.Controls;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
+using SlimDX.Direct3D9;
+using System.Drawing;
 
 #endregion
 
@@ -368,6 +370,10 @@ namespace CodeImp.DoomBuilder
 		{
 			Uri localpath;
 			Version thisversion;
+
+			// Enable OS visual styles
+			Application.EnableVisualStyles();
+			Application.DoEvents();		// This must be here to work around a .NET bug
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();
@@ -415,6 +421,10 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Showing main interface window...");
 				mainwindow.Show();
 				mainwindow.Update();
+
+				// Start Direct3D
+				General.WriteLogLine("Starting Direct3D graphics driver...");
+				Direct3D.Initialize();
 
 				// Load game configurations
 				General.WriteLogLine("Loading game configurations...");
@@ -519,6 +529,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.Dispose();
 				actions.Dispose();
 				clock.Dispose();
+				Direct3D.Terminate();
 
 				// Save colors
 				colors.SaveColors(settings);
@@ -932,6 +943,73 @@ namespace CodeImp.DoomBuilder
 
 			// Return the filename
 			return dirname;
+		}
+
+		// This shows an image in a panel either zoomed or centered depending on size
+		public static void DisplayZoomedImage(Panel panel, Image image)
+		{
+			// Set the image
+			panel.BackgroundImage = image;
+			
+			// Image not null?
+			if(image != null)
+			{
+				// Small enough to fit in panel?
+				if((image.Size.Width < panel.ClientRectangle.Width) &&
+				   (image.Size.Height < panel.ClientRectangle.Height))
+				{
+					// Display centered
+					panel.BackgroundImageLayout = ImageLayout.Center;
+				}
+				else
+				{
+					// Display zoomed
+					panel.BackgroundImageLayout = ImageLayout.Zoom;
+				}
+			}
+		}
+
+		// This calculates the new rectangle when one is scaled into another keeping aspect ratio
+		public static RectangleF MakeZoomedRect(Size source, RectangleF target)
+		{
+			return MakeZoomedRect(new SizeF((int)source.Width, (int)source.Height), target);
+		}
+
+		// This calculates the new rectangle when one is scaled into another keeping aspect ratio
+		public static RectangleF MakeZoomedRect(Size source, Rectangle target)
+		{
+			return MakeZoomedRect(new SizeF((int)source.Width, (int)source.Height),
+								  new RectangleF((int)target.Left, (int)target.Top, (int)target.Width, (int)target.Height));
+		}
+		
+		// This calculates the new rectangle when one is scaled into another keeping aspect ratio
+		public static RectangleF MakeZoomedRect(SizeF source, RectangleF target)
+		{
+			float scale;
+			
+			// Image fits?
+			if((source.Width <= target.Width) &&
+			   (source.Height <= target.Height))
+			{
+				// Just center
+				scale = 1.0f;
+			}
+			// Image is wider than tall?
+			else if((source.Width - target.Width) > (source.Height - target.Height))
+			{
+				// Scale down by width
+				scale = target.Width / source.Width;
+			}
+			else
+			{
+				// Scale down by height
+				scale = target.Height / source.Height;
+			}
+			
+			// Return centered and scaled
+			return new RectangleF(target.Left + (target.Width - source.Width * scale) * 0.5f,
+								  target.Top + (target.Height - source.Height * scale) * 0.5f,
+								  source.Width * scale, source.Height * scale);
 		}
 
 		#endregion

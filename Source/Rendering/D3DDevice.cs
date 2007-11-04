@@ -105,7 +105,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(backbuffer != null) backbuffer.Dispose();
 				if(depthbuffer != null) depthbuffer.Dispose();
 				device.Dispose();
-				Direct3D.Terminate();
 				
 				// Done
 				isdisposed = true;
@@ -194,9 +193,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			PresentParameters displaypp;
 			DeviceType devtype;
 
-			// Start DirectX
-			Direct3D.Initialize();
-			
 			// Use default adapter
 			this.adapter = 0; // Manager.Adapters.Default.Adapter;
 
@@ -306,6 +302,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Unload all Direct3D resources
 			foreach(ID3DResource res in resources) res.UnloadResource();
 			
+			// Lose backbuffers
+			backbuffer.Dispose();
+			depthbuffer.Dispose();
+			backbuffer = null;
+			depthbuffer = null;
+
 			// Make present parameters
 			displaypp = CreatePresentParameters(adapter);
 			
