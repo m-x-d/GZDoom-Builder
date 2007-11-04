@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Config
 		private float defaultflatscale;
 		private string formatinterface;
 		private int soundlinedefflags;
+		private bool mixtexturesflats;
 		
 		// Map lumps
 		private IDictionary maplumpnames;
@@ -68,6 +69,7 @@ namespace CodeImp.DoomBuilder.Config
 		public float DefaultFlatScale { get { return defaultflatscale; } }
 		public string FormatInterface { get { return formatinterface; } }
 		public int SoundLinedefFlags { get { return soundlinedefflags; } }
+		public bool MixTexturesFlats { get { return mixtexturesflats; } }
 		
 		// Map lumps
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
@@ -100,6 +102,7 @@ namespace CodeImp.DoomBuilder.Config
 			defaultflatscale = cfg.ReadSetting("defaultflatscale", 1f);
 			formatinterface = cfg.ReadSetting("formatinterface", "");
 			soundlinedefflags = cfg.ReadSetting("soundlinedefflags", 0);
+			mixtexturesflats = cfg.ReadSetting("mixtexturesflats", false);
 			
 			// Get map lumps
 			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
