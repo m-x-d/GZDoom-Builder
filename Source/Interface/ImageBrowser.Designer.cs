@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.list.OwnerDraw = true;
 			this.list.Size = new System.Drawing.Size(518, 312);
 			this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.list.TabIndex = 0;
+			this.list.TabIndex = 1;
 			this.list.UseCompatibleStateImageBehavior = false;
 			this.list.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.list_DrawItem);
 			this.list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.list_ItemSelectionChanged);

@@ -397,6 +397,13 @@ namespace CodeImp.DoomBuilder.Data
 						// Add or replace in textures list
 						textures.Remove(img.LongName);
 						textures.Add(img.LongName, img);
+
+						// Also add as flat when using mixed resources
+						if(General.Map.Config.MixTexturesFlats)
+						{
+							flats.Remove(img.LongName);
+							flats.Add(img.LongName, img);
+						}
 					}
 				}
 			}
@@ -502,6 +509,13 @@ namespace CodeImp.DoomBuilder.Data
 						// Add or replace in flats list
 						flats.Remove(img.LongName);
 						flats.Add(img.LongName, img);
+
+						// Also add as texture when using mixed resources
+						if(General.Map.Config.MixTexturesFlats)
+						{
+							textures.Remove(img.LongName);
+							textures.Add(img.LongName, img);
+						}
 					}
 				}
 			}

@@ -115,8 +115,17 @@ namespace CodeImp.DoomBuilder.Interface
 		// Name typed
 		private void objectname_TextChanged(object sender, EventArgs e)
 		{
+			Point spos;
+			
+			// Update list
 			RefillList();
-			if((list.SelectedItems.Count == 0) && (list.Items.Count > 0)) list.Items[0].Selected = true;
+
+			// No item selected?
+			if(list.SelectedItems.Count == 0)
+			{
+				// Select first
+				SelectFirstItem();
+			}
 		}
 
 		// Key pressed
@@ -144,6 +153,26 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Methods
 
+		// This selects an item by name
+		public void SelectItem(string name)
+		{
+			ListViewItem lvi;
+			
+			// Find item with this text
+			lvi = list.FindItemWithText(name);
+			if(lvi != null)
+			{
+				// Does the text really match?
+				if(lvi.Text == name)
+				{
+					// Select this item
+					list.SelectedItems.Clear();
+					lvi.Selected = true;
+					lvi.EnsureVisible();
+				}
+			}
+		}
+		
 		// This performs item sleection by keys
 		private void SelectNextItem(SearchDirectionHint dir)
 		{
@@ -154,12 +183,7 @@ namespace CodeImp.DoomBuilder.Interface
 			if(list.SelectedItems.Count == 0)
 			{
 				// Select first
-				if(list.Items.Count > 0)
-				{
-					lvi = list.FindNearestItem(SearchDirectionHint.Right, new Point(0, 0));
-					if(lvi != null) lvi.Selected = true;
-					lvi.EnsureVisible();
-				}
+				SelectFirstItem();
 			}
 			else
 			{
@@ -184,6 +208,26 @@ namespace CodeImp.DoomBuilder.Interface
 					// Select next item
 					list.SelectedItems.Clear();
 					lvi.Selected = true;
+				}
+				
+				// Make selection visible
+				if(list.SelectedItems.Count > 0) list.SelectedItems[0].EnsureVisible();
+			}
+		}
+
+		// This selectes the first item
+		private void SelectFirstItem()
+		{
+			ListViewItem lvi;
+			
+			// Select first
+			if(list.Items.Count > 0)
+			{
+				list.SelectedItems.Clear();
+				lvi = list.FindNearestItem(SearchDirectionHint.Down, new Point(1, -100000));
+				if(lvi != null)
+				{
+					lvi.Selected = true;
 					lvi.EnsureVisible();
 				}
 			}
@@ -200,14 +244,21 @@ namespace CodeImp.DoomBuilder.Interface
 		// This begins adding items
 		public void BeginAdding()
 		{
+			// Stop updating
 			refreshtimer.Enabled = false;
 		}
 
 		// This ends adding items
 		public void EndAdding()
 		{
+			// Fill list with items
 			RefillList();
+
+			// Start updating if needed
 			refreshtimer.Enabled = true;
+			
+			// Select first item
+			SelectFirstItem();
 		}
 		
 		// This adds an item
@@ -240,6 +291,7 @@ namespace CodeImp.DoomBuilder.Interface
 				if(ValidateItem(i))
 				{
 					i.Group = i.ListGroup;
+					i.Selected = false;
 					showitems.Add(i);
 				}
 			}
@@ -260,6 +312,12 @@ namespace CodeImp.DoomBuilder.Interface
 		private bool ValidateItem(ImageBrowserItem i)
 		{
 			return i.Text.Contains(objectname.Text);
+		}
+		
+		// This sends the focus to the textbox
+		public void FocusTextbox()
+		{
+			objectname.Focus();
 		}
 		
 		#endregion
