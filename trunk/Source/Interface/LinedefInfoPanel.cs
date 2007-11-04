@@ -59,9 +59,9 @@ namespace CodeImp.DoomBuilder.Interface
 				fronthighname.Text = l.Front.HighTexture;
 				frontmidname.Text = l.Front.MiddleTexture;
 				frontlowname.Text = l.Front.LowTexture;
-				fronthightex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Front.HighTexture);
-				frontmidtex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Front.MiddleTexture);
-				frontlowtex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Front.LowTexture);
+				General.DisplayZoomedImage(fronthightex, General.Map.Data.GetTextureBitmap(l.Front.HighTexture));
+				General.DisplayZoomedImage(frontmidtex, General.Map.Data.GetTextureBitmap(l.Front.MiddleTexture));
+				General.DisplayZoomedImage(frontlowtex, General.Map.Data.GetTextureBitmap(l.Front.LowTexture));
 				frontoffsetlabel.Enabled = true;
 				frontoffset.Enabled = true;
 				frontpanel.Enabled = true;
@@ -89,9 +89,9 @@ namespace CodeImp.DoomBuilder.Interface
 				backhighname.Text = l.Back.HighTexture;
 				backmidname.Text = l.Back.MiddleTexture;
 				backlowname.Text = l.Back.LowTexture;
-				backhightex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Back.HighTexture);
-				backmidtex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Back.MiddleTexture);
-				backlowtex.BackgroundImage = General.Map.Data.GetTextureBitmap(l.Back.LowTexture);
+				General.DisplayZoomedImage(backhightex, General.Map.Data.GetTextureBitmap(l.Back.HighTexture));
+				General.DisplayZoomedImage(backmidtex, General.Map.Data.GetTextureBitmap(l.Back.MiddleTexture));
+				General.DisplayZoomedImage(backlowtex, General.Map.Data.GetTextureBitmap(l.Back.LowTexture));
 				backoffsetlabel.Enabled = true;
 				backoffset.Enabled = true;
 				backpanel.Enabled = true;

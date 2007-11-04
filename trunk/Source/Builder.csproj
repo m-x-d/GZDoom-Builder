@@ -130,6 +130,9 @@
     <Compile Include="Interface\OpenMapOptionsForm.Designer.cs">
       <DependentUpon>OpenMapOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\OptimizedListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Interface\PreferencesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -264,6 +267,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\Hourglass.png" />
     <None Include="Resources\Filter.png" />
     <None Include="Resources\ThingsMode.png" />
     <None Include="Resources\Status1.png" />

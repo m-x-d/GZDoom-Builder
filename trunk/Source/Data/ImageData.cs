@@ -27,6 +27,7 @@ using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
+using System.Windows.Forms;
 
 #endregion
 
@@ -67,7 +68,7 @@ namespace CodeImp.DoomBuilder.Data
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
 		public PixelColorBlock PixelData { get { lock(this) { return pixeldata; } } }
-		public Bitmap Bitmap { get { lock(this) { return bitmap; } } }
+		public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return bitmap; else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
 		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsLoaded { get { return (bitmap != null); } }
 		public bool IsDisposed { get { return isdisposed; } }

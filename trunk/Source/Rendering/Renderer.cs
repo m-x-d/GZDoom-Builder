@@ -76,6 +76,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.UnregisterResource(this);
 				
 				// Done
+				graphics = null;
 				isdisposed = true;
 			}
 		}

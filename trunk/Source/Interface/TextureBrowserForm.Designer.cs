@@ -28,26 +28,54 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.textures = new CodeImp.DoomBuilder.Interface.ImageBrowser();
+			this.browser = new CodeImp.DoomBuilder.Interface.ImageBrowser();
+			this.cancel = new System.Windows.Forms.Button();
+			this.apply = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
-			// textures
+			// browser
 			// 
-			this.textures.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.textures.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.textures.Location = new System.Drawing.Point(12, 12);
-			this.textures.Name = "textures";
-			this.textures.Size = new System.Drawing.Size(523, 350);
-			this.textures.TabIndex = 0;
+			this.browser.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browser.LabelText = "Select or enter a texture name:";
+			this.browser.Location = new System.Drawing.Point(11, 9);
+			this.browser.Name = "browser";
+			this.browser.Size = new System.Drawing.Size(649, 418);
+			this.browser.TabIndex = 0;
+			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Interface.ImageBrowser.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
+			// 
+			// cancel
+			// 
+			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cancel.Location = new System.Drawing.Point(548, 404);
+			this.cancel.Name = "cancel";
+			this.cancel.Size = new System.Drawing.Size(112, 25);
+			this.cancel.TabIndex = 22;
+			this.cancel.Text = "Cancel";
+			this.cancel.UseVisualStyleBackColor = true;
+			// 
+			// apply
+			// 
+			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.apply.Location = new System.Drawing.Point(430, 404);
+			this.apply.Name = "apply";
+			this.apply.Size = new System.Drawing.Size(112, 25);
+			this.apply.TabIndex = 21;
+			this.apply.Text = "OK";
+			this.apply.UseVisualStyleBackColor = true;
 			// 
 			// TextureBrowserForm
 			// 
+			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(547, 374);
-			this.Controls.Add(this.textures);
-			this.DoubleBuffered = true;
+			this.CancelButton = this.cancel;
+			this.ClientSize = new System.Drawing.Size(672, 439);
+			this.Controls.Add(this.cancel);
+			this.Controls.Add(this.apply);
+			this.Controls.Add(this.browser);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MinimizeBox = false;
 			this.Name = "TextureBrowserForm";
@@ -60,6 +88,8 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#endregion
 
-		private ImageBrowser textures;
+		private ImageBrowser browser;
+		private System.Windows.Forms.Button cancel;
+		private System.Windows.Forms.Button apply;
 	}
 }

@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -53,6 +54,9 @@ namespace CodeImp.DoomBuilder.Map
 		private string texnamehigh;
 		private string texnamemid;
 		private string texnamelow;
+		private long longtexnamehigh;
+		private long longtexnamemid;
+		private long longtexnamelow;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -72,6 +76,9 @@ namespace CodeImp.DoomBuilder.Map
 		public string HighTexture { get { return texnamehigh; } }
 		public string MiddleTexture { get { return texnamemid; } }
 		public string LowTexture { get { return texnamelow; } }
+		public long LongHighTexture { get { return longtexnamehigh; } }
+		public long LongMiddleTexture { get { return longtexnamemid; } }
+		public long LongLowTexture { get { return longtexnamelow; } }
 		
 		#endregion
 
@@ -133,9 +140,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Copy properties
 			s.offsetx = offsetx;
 			s.offsety = offsety;
-			s.texnamehigh = texnamehigh;
-			s.texnamelow = texnamelow;
-			s.texnamemid = texnamemid;
+			s.SetTextureHigh(texnamehigh);
+			s.SetTextureMid(texnamelow);
+			s.SetTextureLow(texnamemid);
 		}
 		
 		#endregion
@@ -148,9 +155,30 @@ namespace CodeImp.DoomBuilder.Map
 			// Apply changes
 			this.offsetx = offsetx;
 			this.offsety = offsety;
-			this.texnamehigh = thigh;
-			this.texnamemid = tmid;
-			this.texnamelow = tlow;
+			SetTextureHigh(thigh);
+			SetTextureMid(tmid);
+			SetTextureLow(tlow);
+		}
+
+		// This sets texture
+		public void SetTextureHigh(string name)
+		{
+			texnamehigh = name;
+			longtexnamehigh = Lump.MakeLongName(name);
+		}
+
+		// This sets texture
+		public void SetTextureMid(string name)
+		{
+			texnamemid = name;
+			longtexnamemid = Lump.MakeLongName(name);
+		}
+
+		// This sets texture
+		public void SetTextureLow(string name)
+		{
+			texnamelow = name;
+			longtexnamelow = Lump.MakeLongName(name);
 		}
 
 		#endregion
