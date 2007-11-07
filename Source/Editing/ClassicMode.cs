@@ -53,8 +53,11 @@ namespace CodeImp.DoomBuilder.Editing
 		// Mouse status
 		protected Vector2D mousepos;
 		protected Vector2D mousemappos;
+		protected Vector2D mousedownpos;
+		protected Vector2D mousedownmappos;
 		protected MouseButtons mousebuttons;
 		protected bool mouseinside;
+		protected bool mousedragging;
 		
 		#endregion
 
@@ -264,6 +267,8 @@ namespace CodeImp.DoomBuilder.Editing
 		// Mouse moved inside the display
 		public override void MouseMove(MouseEventArgs e)
 		{
+			Vector2D delta;
+
 			// Record last position
 			mouseinside = true;
 			mousepos = new Vector2D(e.X, e.Y);
@@ -273,10 +278,45 @@ namespace CodeImp.DoomBuilder.Editing
 			// Update labels in main window
 			General.MainWindow.UpdateCoordinates(mousemappos);
 			
+			// Holding any buttons?
+			if(e.Button != MouseButtons.None)
+			{
+				// Not dragging?
+				if(!mousedragging)
+				{
+					// Check if moved enough pixels for dragging
+					delta = mousedownpos - mousepos;
+					if((Math.Abs(delta.x) > DRAG_START_MOVE_PIXELS) ||
+					   (Math.Abs(delta.y) > DRAG_START_MOVE_PIXELS))
+					{
+						// Dragging starts now
+						mousedragging = true;
+						DragStart(e);
+					}
+				}
+			}
+			
 			// Let the base class know
 			base.MouseMove(e);
 		}
 
+		// Mouse button pressed
+		public override void MouseDown(MouseEventArgs e)
+		{
+			// Save mouse down position
+			mousedownpos = mousepos;
+			mousedownmappos = mousemappos;
+			
+			// Let the base class know
+			base.MouseDown(e);
+		}
+
+		// This is called when the mouse is moved enough pixels and holding one or more buttons
+		protected virtual void DragStart(MouseEventArgs e)
+		{
+
+		}
+		
 		#endregion
 
 		#region ================== Display
@@ -287,6 +327,17 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer.Present();
 		}
 
+		#endregion
+
+		#region ================== Methods
+
+		// Override cancel method to bind it with its action
+		[Action(Action.CANCELMODE)]
+		public override void Cancel()
+		{
+			base.Cancel();
+		}
+		
 		#endregion
 	}
 }

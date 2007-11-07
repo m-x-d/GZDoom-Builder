@@ -76,6 +76,17 @@ namespace CodeImp.DoomBuilder.Interface
 			objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
 		}
 
+		// This applies the color settings
+		public void ApplyColorSettings()
+		{
+			// Force black background?
+			if(General.Settings.ReadSetting("blackbrowsers", false))
+			{
+				list.BackColor = Color.Black;
+				list.ForeColor = Color.White;
+			}
+		}
+
 		#endregion
 
 		#region ================== Rendering
@@ -115,8 +126,6 @@ namespace CodeImp.DoomBuilder.Interface
 		// Name typed
 		private void objectname_TextChanged(object sender, EventArgs e)
 		{
-			Point spos;
-			
 			// Update list
 			RefillList();
 

@@ -59,6 +59,7 @@
     <Compile Include="Data\ResourceImage.cs" />
     <Compile Include="Data\SpriteImage.cs" />
     <Compile Include="Data\TextureImage.cs" />
+    <Compile Include="Editing\DragVerticesMode.cs" />
     <Compile Include="Editing\EditMode.cs" />
     <Compile Include="Editing\LinedefsMode.cs" />
     <Compile Include="Editing\SectorsMode.cs" />

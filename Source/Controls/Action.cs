@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public const string SECTORSMODE = "sectorsmode";
 		public const string THINGSMODE = "thingsmode";
 		public const string TESTACTION = "testaction";
+		public const string CANCELMODE = "cancelmode";
 		
 		#endregion
 		
@@ -187,6 +188,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This raises events for this action
 		public void Invoke()
 		{
+			List<ActionDelegate> delegateslist;
+			
 			// No method bound?
 			if(delegates.Count == 0)
 			{
@@ -194,8 +197,11 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
+				// Copy delegates list
+				delegateslist = new List<ActionDelegate>(delegates);
+				
 				// Invoke all the delegates
-				foreach(ActionDelegate ad in delegates) ad.Invoke();
+				foreach(ActionDelegate ad in delegateslist) ad.Invoke();
 			}
 		}
 

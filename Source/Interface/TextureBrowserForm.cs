@@ -50,7 +50,8 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Initialize
 			InitializeComponent();
-
+			browser.ApplyColorSettings();
+			
 			// Make groups
 			ListViewGroup used = browser.AddGroup("Used Textures");
 			ListViewGroup avail = browser.AddGroup("Available Textures");

@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
-
+			
 			// Basic objects
 			selection = new MapSelection();
 		}

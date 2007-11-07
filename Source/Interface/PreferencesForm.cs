@@ -111,6 +111,7 @@ namespace CodeImp.DoomBuilder.Interface
 			colorkeywords.Color = General.Colors.Keywords;
 			colorliterals.Color = General.Colors.Literals;
 			colorconstants.Color = General.Colors.Constants;
+			blackbrowsers.Checked = General.Settings.ReadSetting("blackbrowsers", false);
 
 			// Done
 			allowapplycontrol = true;
@@ -311,6 +312,7 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Colors.Literals = colorliterals.Color;
 			General.Colors.Constants = colorconstants.Color;
 			General.Colors.CreateAssistColors();
+			General.Settings.WriteSetting("blackbrowsers", blackbrowsers.Checked);
 			
 			// Close
 			this.DialogResult = DialogResult.OK;

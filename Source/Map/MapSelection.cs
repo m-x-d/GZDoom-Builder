@@ -188,6 +188,15 @@ namespace CodeImp.DoomBuilder.Map
 			things.Clear();
 		}
 		
+		// This clears all
+		public void ClearAll()
+		{
+			ClearThings();
+			ClearLinedefs();
+			ClearSectors();
+			ClearVertices();
+		}
+		
 		#endregion
 	}
 }

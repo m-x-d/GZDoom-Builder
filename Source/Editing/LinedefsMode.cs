@@ -77,6 +77,15 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
+		// Cancel mode
+		public override void Cancel()
+		{
+			base.Cancel();
+
+			// Return to this mode
+			General.Map.ChangeMode(new LinedefsMode());
+		}
+
 		// Mode engages
 		public override void Engage()
 		{
