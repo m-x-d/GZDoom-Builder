@@ -69,6 +69,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorselection3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorhighlight3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorcrosshair3d = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.blackbrowsers = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -122,7 +123,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorsgroup1.Controls.Add(this.colorlinedefs);
 			this.colorsgroup1.Location = new System.Drawing.Point(12, 10);
 			this.colorsgroup1.Name = "colorsgroup1";
-			this.colorsgroup1.Size = new System.Drawing.Size(181, 330);
+			this.colorsgroup1.Size = new System.Drawing.Size(181, 325);
 			this.colorsgroup1.TabIndex = 10;
 			this.colorsgroup1.TabStop = false;
 			this.colorsgroup1.Text = " Classic modes ";
@@ -251,7 +252,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// cancel
 			// 
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(497, 406);
+			this.cancel.Location = new System.Drawing.Point(497, 428);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 20;
@@ -261,7 +262,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// apply
 			// 
-			this.apply.Location = new System.Drawing.Point(379, 406);
+			this.apply.Location = new System.Drawing.Point(379, 428);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 19;
@@ -279,7 +280,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.Location = new System.Drawing.Point(11, 13);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(598, 379);
+			this.tabs.Size = new System.Drawing.Size(598, 406);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 18;
 			this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
@@ -290,7 +291,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabinterface.Location = new System.Drawing.Point(4, 23);
 			this.tabinterface.Name = "tabinterface";
 			this.tabinterface.Padding = new System.Windows.Forms.Padding(3);
-			this.tabinterface.Size = new System.Drawing.Size(590, 352);
+			this.tabinterface.Size = new System.Drawing.Size(590, 379);
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
@@ -303,7 +304,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabkeys.Location = new System.Drawing.Point(4, 23);
 			this.tabkeys.Name = "tabkeys";
 			this.tabkeys.Padding = new System.Windows.Forms.Padding(3);
-			this.tabkeys.Size = new System.Drawing.Size(590, 352);
+			this.tabkeys.Size = new System.Drawing.Size(590, 379);
 			this.tabkeys.TabIndex = 1;
 			this.tabkeys.Text = "Controls";
 			this.tabkeys.UseVisualStyleBackColor = true;
@@ -324,7 +325,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.listactions.MultiSelect = false;
 			this.listactions.Name = "listactions";
 			this.listactions.ShowGroups = false;
-			this.listactions.Size = new System.Drawing.Size(274, 326);
+			this.listactions.Size = new System.Drawing.Size(274, 353);
 			this.listactions.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listactions.TabIndex = 0;
 			this.listactions.TabStop = false;
@@ -360,7 +361,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actioncontrolpanel.Location = new System.Drawing.Point(299, 12);
 			this.actioncontrolpanel.Margin = new System.Windows.Forms.Padding(6);
 			this.actioncontrolpanel.Name = "actioncontrolpanel";
-			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 326);
+			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 353);
 			this.actioncontrolpanel.TabIndex = 9;
 			this.actioncontrolpanel.TabStop = false;
 			this.actioncontrolpanel.Text = " Action control ";
@@ -418,13 +419,14 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// tabcolors
 			// 
+			this.tabcolors.Controls.Add(this.blackbrowsers);
 			this.tabcolors.Controls.Add(this.colorsgroup3);
 			this.tabcolors.Controls.Add(this.colorsgroup2);
 			this.tabcolors.Controls.Add(this.colorsgroup1);
 			this.tabcolors.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabcolors.Location = new System.Drawing.Point(4, 23);
 			this.tabcolors.Name = "tabcolors";
-			this.tabcolors.Size = new System.Drawing.Size(590, 352);
+			this.tabcolors.Size = new System.Drawing.Size(590, 379);
 			this.tabcolors.TabIndex = 2;
 			this.tabcolors.Text = "Colors";
 			this.tabcolors.UseVisualStyleBackColor = true;
@@ -440,7 +442,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorsgroup3.Controls.Add(this.colorplaintext);
 			this.colorsgroup3.Location = new System.Drawing.Point(398, 10);
 			this.colorsgroup3.Name = "colorsgroup3";
-			this.colorsgroup3.Size = new System.Drawing.Size(181, 330);
+			this.colorsgroup3.Size = new System.Drawing.Size(181, 325);
 			this.colorsgroup3.TabIndex = 12;
 			this.colorsgroup3.TabStop = false;
 			this.colorsgroup3.Text = " Script editor ";
@@ -537,7 +539,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorsgroup2.Controls.Add(this.colorcrosshair3d);
 			this.colorsgroup2.Location = new System.Drawing.Point(205, 10);
 			this.colorsgroup2.Name = "colorsgroup2";
-			this.colorsgroup2.Size = new System.Drawing.Size(181, 330);
+			this.colorsgroup2.Size = new System.Drawing.Size(181, 325);
 			this.colorsgroup2.TabIndex = 11;
 			this.colorsgroup2.TabStop = false;
 			this.colorsgroup2.Text = " 3D mode ";
@@ -579,12 +581,20 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorcrosshair3d.Size = new System.Drawing.Size(150, 23);
 			this.colorcrosshair3d.TabIndex = 6;
 			// 
+			// blackbrowsers
+			// 
+			this.blackbrowsers.AutoSize = true;
+			this.blackbrowsers.Location = new System.Drawing.Point(13, 345);
+			this.blackbrowsers.Name = "blackbrowsers";
+			this.blackbrowsers.Size = new System.Drawing.Size(241, 18);
+			this.blackbrowsers.TabIndex = 13;
+			this.blackbrowsers.Text = "Force black background for image browsers";
+			this.blackbrowsers.UseVisualStyleBackColor = true;
+			// 
 			// PreferencesForm
 			// 
-			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(619, 440);
+			this.ClientSize = new System.Drawing.Size(619, 464);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -603,6 +613,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actioncontrolpanel.ResumeLayout(false);
 			this.actioncontrolpanel.PerformLayout();
 			this.tabcolors.ResumeLayout(false);
+			this.tabcolors.PerformLayout();
 			this.colorsgroup3.ResumeLayout(false);
 			this.colorsgroup2.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -649,5 +660,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private ColorControl colorgrid64;
 		private ColorControl colorgrid;
 		private System.Windows.Forms.GroupBox colorsgroup1;
+		private System.Windows.Forms.CheckBox blackbrowsers;
 	}
 }

@@ -77,6 +77,15 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
+		// Cancel mode
+		public override void Cancel()
+		{
+			base.Cancel();
+			
+			// Return to this mode
+			General.Map.ChangeMode(new VerticesMode());
+		}
+
 		// Mode engages
 		public override void Engage()
 		{
@@ -152,11 +161,15 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.MouseMove(e);
 
-			// Find the nearest vertex within highlight range
-			Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+			// Not holding any buttons?
+			if(e.Button == MouseButtons.None)
+			{
+				// Find the nearest vertex within highlight range
+				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
 
-			// Highlight if not the same
-			if(v != highlighted) Highlight(v);
+				// Highlight if not the same
+				if(v != highlighted) Highlight(v);
+			}
 		}
 
 		// Mouse leaves
@@ -168,6 +181,87 @@ namespace CodeImp.DoomBuilder.Editing
 			Highlight(null);
 		}
 		
+		// Mouse button pressed
+		public override void MouseDown(MouseEventArgs e)
+		{
+			base.MouseDown(e);
+
+			// Which button is used?
+			if(e.Button == EditMode.SELECT_BUTTON)
+			{
+				// Item highlighted?
+				if(highlighted != null)
+				{
+					// Item already selected?
+					if(General.Map.Selection.Vertices.Contains(highlighted))
+					{
+						// Deselect
+						General.Map.Selection.RemoveVertex(highlighted);
+					}
+					else
+					{
+						// Select
+						General.Map.Selection.AddVertex(highlighted);
+					}
+
+					// Update display
+					if(renderer.StartRendering(false, false))
+					{
+						// Undraw highlight to show selection
+						renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+						renderer.FinishRendering();
+					}
+				}
+			}
+		}
+		
+		// Mouse released
+		public override void MouseUp(MouseEventArgs e)
+		{
+			base.MouseUp(e);
+
+			// Item highlighted?
+			if(highlighted != null)
+			{
+				// Update display
+				if(renderer.StartRendering(false, false))
+				{
+					// Render highlighted item
+					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
+					renderer.FinishRendering();
+				}
+			}
+		}
+
+		// Mouse wants to drag
+		protected override void DragStart(MouseEventArgs e)
+		{
+			base.DragStart(e);
+
+			// Which button is used?
+			if(e.Button == EditMode.SELECT_BUTTON)
+			{
+				// Make selection
+
+			}
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Anything highlighted?
+				if(highlighted != null)
+				{
+					// Highlighted item not selected?
+					if(!General.Map.Selection.Vertices.Contains(highlighted))
+					{
+						// Select only this vertex for dragging
+						General.Map.Selection.ClearVertices();
+						General.Map.Selection.AddVertex(highlighted);
+					}
+
+					// Start dragging the selection
+					General.Map.ChangeMode(new DragVerticesMode());
+				}
+			}
+		}
 		#endregion
 	}
 }

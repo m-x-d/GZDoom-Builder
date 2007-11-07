@@ -123,8 +123,8 @@ namespace CodeImp.DoomBuilder.Interface
 				else
 				{
 					// Normal
-					backcolor = SystemBrushes.Window;
-					forecolor = SystemBrushes.WindowText;
+					backcolor = new SolidBrush(base.ListView.BackColor);
+					forecolor = new SolidBrush(base.ListView.ForeColor);
 				}
 
 				// Draw!
