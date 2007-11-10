@@ -151,6 +151,24 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 
+		// This draws a dotted grid line horizontally
+		public void DrawGridLineH(int y, PixelColor c)
+		{
+			int numpixels = visiblewidth >> 1;
+			
+			// Draw all pixels on this line
+			for(int i = 0; i < numpixels; i++) DrawPixelSolid(i << 1, y, c);
+		}
+
+		// This draws a dotted grid line vertically
+		public void DrawGridLineV(int x, PixelColor c)
+		{
+			int numpixels = visibleheight >> 1;
+
+			// Draw all pixels on this line
+			for(int i = 0; i < numpixels; i++) DrawPixelSolid(x, i << 1, c);
+		}
+
 		// This draws a pixel alpha blended
 		public void DrawPixelAlpha(int x, int y, PixelColor c)
 		{
@@ -176,79 +194,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					p->r = (byte)((float)p->r * (1f - a) + (float)c.r * a);
 					p->g = (byte)((float)p->g * (1f - a) + (float)c.g * a);
 					p->b = (byte)((float)p->b * (1f - a) + (float)c.b * a);
-				}
-			}
-		}
-
-		// This draws a line alpha blended
-		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-		public void DrawLineAlpha(int x1, int y1, int x2, int y2, PixelColor c)
-		{
-			int i;
-
-			// Check if the line is outside the screen for sure.
-			// This is quickly done by checking in which area both points are. When this
-			// is above, below, right or left of the screen, then skip drawing the line.
-			if(((x1 < 0) && (x2 < 0)) ||
-			   ((x1 > visiblewidth) && (x2 > visiblewidth)) ||
-			   ((y1 < 0) && (y2 < 0)) ||
-			   ((y1 > visibleheight) && (y2 > visibleheight))) return;
-
-			// Distance of the line
-			int dx = x2 - x1;
-			int dy = y2 - y1;
-
-			// Positive (absolute) distance
-			int dxabs = Math.Abs(dx);
-			int dyabs = Math.Abs(dy);
-
-			// Half distance
-			int x = dyabs >> 1;
-			int y = dxabs >> 1;
-
-			// Direction
-			int sdx = Math.Sign(dx);
-			int sdy = Math.Sign(dy);
-
-			// Start position
-			int px = x1;
-			int py = y1;
-
-			// Draw first pixel
-			DrawPixelAlpha(px, py, c);
-
-			// Check if the line is more horizontal than vertical
-			if(dxabs >= dyabs)
-			{
-				for(i = 0; i < dxabs; i++)
-				{
-					y += dyabs;
-					if(y >= dxabs)
-					{
-						y -= dxabs;
-						py += sdy;
-					}
-					px += sdx;
-
-					// Draw pixel
-					DrawPixelAlpha(px, py, c);
-				}
-			}
-			// Else the line is more vertical than horizontal
-			else
-			{
-				for(i = 0; i < dyabs; i++)
-				{
-					x += dxabs;
-					if(x >= dyabs)
-					{
-						x -= dyabs;
-						px += sdx;
-					}
-					py += sdy;
-
-					// Draw pixel
-					DrawPixelAlpha(px, py, c);
 				}
 			}
 		}

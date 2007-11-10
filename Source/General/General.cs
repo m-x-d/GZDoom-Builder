@@ -561,7 +561,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Management
 
 		// This creates a new map
-		[Action(Action.NEWMAP)]
+		[Action("newmap")]
 		public static void NewMap()
 		{
 			MapOptions newoptions = new MapOptions();
@@ -609,7 +609,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This closes the current map
-		[Action(Action.CLOSEMAP)]
+		[Action("closemap")]
 		public static void CloseMap()
 		{
 			// Ask the user to save changes (if any)
@@ -636,7 +636,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This loads a map from file
-		[Action(Action.OPENMAP)]
+		[Action("openmap")]
 		public static void OpenMap()
 		{
 			OpenFileDialog openfile;
@@ -707,7 +707,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This saves the current map
-		[Action(Action.SAVEMAP)]
+		[Action("savemap")]
 		public static void SaveMap()
 		{
 			// Check if a wad file is known
@@ -737,7 +737,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This saves the current map as a different file
-		[Action(Action.SAVEMAPAS)]
+		[Action("savemapas")]
 		public static void SaveMapAs()
 		{
 			SaveFileDialog savefile;
@@ -1014,7 +1014,7 @@ namespace CodeImp.DoomBuilder
 
 		#endregion
 
-		[Action(Action.TESTACTION)]
+		[Action("testaction")]
 		public static void TestAction()
 		{
 			TextureBrowserForm t = new TextureBrowserForm();

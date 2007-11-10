@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Management
-
+		
 		// This sets the name
 		protected void SetName(string name)
 		{

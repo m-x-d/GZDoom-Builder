@@ -84,8 +84,11 @@ namespace CodeImp.DoomBuilder.Interface
 			// Setup controls
 			InitializeComponent();
 
-			// Fix things
+			// Visual Studio IDE doesn't let me set these in the designer :(
 			buttonzoom.Font = menufile.Font;
+			buttonzoom.DropDownDirection = ToolStripDropDownDirection.AboveLeft;
+			buttongrid.Font = menufile.Font;
+			buttongrid.DropDownDirection = ToolStripDropDownDirection.AboveLeft;
 
 			// Bind any methods
 			ActionAttribute.BindMethods(this);
@@ -123,6 +126,9 @@ namespace CodeImp.DoomBuilder.Interface
 				this.Text = Application.ProductName;
 			}
 
+			// Update the status bar
+			UpdateStatusbar();
+			
 			// Update menus and toolbar icons
 			UpdateFileMenu();
 			UpdateEditMenu();
@@ -228,6 +234,36 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Statusbar
 
+		// This updates the status bar
+		private void UpdateStatusbar()
+		{
+			// Map open?
+			if(General.Map != null)
+			{
+				// Enable items
+				xposlabel.Enabled = true;
+				yposlabel.Enabled = true;
+				poscommalabel.Enabled = true;
+				zoomlabel.Enabled = true;
+				buttonzoom.Enabled = true;
+				gridlabel.Enabled = true;
+				buttongrid.Enabled = true;
+			}
+			else
+			{
+				// Disable items
+				xposlabel.Text = "--";
+				yposlabel.Text = "--";
+				xposlabel.Enabled = false;
+				yposlabel.Enabled = false;
+				poscommalabel.Enabled = false;
+				zoomlabel.Enabled = false;
+				buttonzoom.Enabled = false;
+				gridlabel.Enabled = false;
+				buttongrid.Enabled = false;
+			}
+		}
+		
 		// This returns the current status text
 		public string GetCurrentSatus()
 		{
@@ -365,6 +401,69 @@ namespace CodeImp.DoomBuilder.Interface
 			// In classic mode?
 			if(General.Map.Mode is ClassicMode)
 				(General.Map.Mode as ClassicMode).CenterInScreen();
+		}
+
+		// This changes grid display
+		public void UpdateGrid(int gridsize)
+		{
+			// Update grid label
+			if(gridsize == 0)
+				gridlabel.Text = "--";
+			else
+				gridlabel.Text = gridsize.ToString("###0") + " mp";
+
+			// Update status bar
+			//statusbar.Update();
+		}
+
+		// Set grid to a specified size
+		private void itemgridsize_Click(object sender, EventArgs e)
+		{
+			int size;
+
+			if(General.Map == null) return;
+
+			// In classic mode?
+			if(General.Map.Mode is ClassicMode)
+			{
+				// Requested from menu?
+				if(sender is ToolStripMenuItem)
+				{
+					// Get integral zoom level
+					size = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
+
+					// Change grid size
+					General.Map.Grid.SetGridSize(size);
+					
+					// Redraw display
+					RedrawDisplay();
+				}
+			}
+		}
+
+		// Show grid setup
+		private void itemgridcustom_Click(object sender, EventArgs e)
+		{
+			ShowGridSetup();
+		}
+		
+		// This shows the grid setup dialog
+		[Action("gridsetup")]
+		public void ShowGridSetup()
+		{
+			// Only when a map is open
+			if(General.Map == null) return;
+			
+			// Show preferences dialog
+			GridSetupForm gridform = new GridSetupForm();
+			if(gridform.ShowDialog(this) == DialogResult.OK)
+			{
+				// Redraw display
+				RedrawDisplay();
+			}
+
+			// Done
+			gridform.Dispose();
 		}
 		
 		#endregion
@@ -803,7 +902,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// Game Configuration action
-		[Action(Action.CONFIGURATION)]
+		[Action("configuration")]
 		public void ShowConfiguration()
 		{
 			// Show configuration dialog
@@ -825,7 +924,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Preferences action
-		[Action(Action.PREFERENCES)]
+		[Action("preferences")]
 		public void ShowPreferences()
 		{
 			// Show preferences dialog

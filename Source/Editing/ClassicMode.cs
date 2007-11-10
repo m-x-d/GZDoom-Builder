@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected Vector2D mousedownmappos;
 		protected MouseButtons mousebuttons;
 		protected bool mouseinside;
-		protected bool mousedragging;
+		protected MouseButtons mousedragging = MouseButtons.None;
 		
 		#endregion
 
@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Scroll / Zoom
 
 		// This scrolls the view north
-		[Action(Action.SCROLLNORTH)]
+		[Action("scrollnorth")]
 		public virtual void ScrollNorth()
 		{
 			// Scroll
@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view south
-		[Action(Action.SCROLLSOUTH)]
+		[Action("scrollsouth")]
 		public virtual void ScrollSouth()
 		{
 			// Scroll
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view west
-		[Action(Action.SCROLLWEST)]
+		[Action("scrollwest")]
 		public virtual void ScrollWest()
 		{
 			// Scroll
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view east
-		[Action(Action.SCROLLEAST)]
+		[Action("scrolleast")]
 		public virtual void ScrollEast()
 		{
 			// Scroll
@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This zooms in
-		[Action(Action.ZOOMIN)]
+		[Action("zoomin")]
 		public virtual void ZoomIn()
 		{
 			// Zoom
@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This zooms out
-		[Action(Action.ZOOMOUT)]
+		[Action("zoomout")]
 		public virtual void ZoomOut()
 		{
 			// Zoom
@@ -281,11 +281,12 @@ namespace CodeImp.DoomBuilder.Editing
 			// Update labels in main window
 			General.MainWindow.UpdateCoordinates(mousemappos);
 			
-			// Holding any buttons?
-			if(e.Button != MouseButtons.None)
+			// Holding a button?
+			if((e.Button == EditMode.EDIT_BUTTON) ||
+			   (e.Button == EditMode.SELECT_BUTTON))
 			{
 				// Not dragging?
-				if(!mousedragging)
+				if(mousedragging == MouseButtons.None)
 				{
 					// Check if moved enough pixels for dragging
 					delta = mousedownpos - mousepos;
@@ -293,7 +294,7 @@ namespace CodeImp.DoomBuilder.Editing
 					   (Math.Abs(delta.y) > DRAG_START_MOVE_PIXELS))
 					{
 						// Dragging starts now
-						mousedragging = true;
+						mousedragging = e.Button;
 						DragStart(e);
 					}
 				}
@@ -314,8 +315,29 @@ namespace CodeImp.DoomBuilder.Editing
 			base.MouseDown(e);
 		}
 
+		// Mouse button released
+		public override void MouseUp(MouseEventArgs e)
+		{
+			// Releasing drag button?
+			if(e.Button == mousedragging)
+			{
+				// No longer dragging
+				mousedragging = MouseButtons.None;
+				DragStop(e);
+			}
+
+			// Let the base class know
+			base.MouseUp(e);
+		}
+		
 		// This is called when the mouse is moved enough pixels and holding one or more buttons
 		protected virtual void DragStart(MouseEventArgs e)
+		{
+
+		}
+
+		// This is called when a drag is ended because the mouse buton is released
+		protected virtual void DragStop(MouseEventArgs e)
 		{
 
 		}
@@ -335,7 +357,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Methods
 
 		// Override cancel method to bind it with its action
-		[Action(Action.CANCELMODE)]
+		[Action("cancelmode")]
 		public override void Cancel()
 		{
 			cancelled = true;

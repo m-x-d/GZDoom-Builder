@@ -94,29 +94,32 @@ namespace CodeImp.DoomBuilder.Interface
 		// Draw item
 		private void list_DrawItem(object sender, DrawListViewItemEventArgs e)
 		{
-			if(!updating)
-				e.Graphics.DrawImageUnscaled((e.Item as ImageBrowserItem).GetImage(e.Bounds), e.Bounds);
+			if(!updating) e.Graphics.DrawImageUnscaled((e.Item as ImageBrowserItem).GetImage(e.Bounds), e.Bounds);
 		}
 
 		// Resfresher
 		private void refreshtimer_Tick(object sender, EventArgs e)
 		{
+			// Continue refreshing only when still loading data
+			refreshtimer.Enabled = General.Map.Data.IsLoading;
+			
 			// Go for all items
 			foreach(ImageBrowserItem i in list.Items)
 			{
-				// Items needs to be redrawn?
-				if(i.CheckRedrawNeeded(i.Bounds))
+				// Bounds within view?
+				if(i.Bounds.IntersectsWith(list.ClientRectangle))
 				{
-					// Redraw item
-					i.GetImage(i.Bounds);
+					// Items needs to be redrawn?
+					if(i.CheckRedrawNeeded(i.Bounds))
+					{
+						// Redraw item
+						i.GetImage(i.Bounds);
 
-					// Refresh item in list
-					list.RedrawItems(i.Index, i.Index, false);
+						// Refresh item in list
+						list.RedrawItems(i.Index, i.Index, false);
+					}
 				}
 			}
-			
-			// Continue refreshing only when still loading data
-			refreshtimer.Enabled = General.Map.Data.IsLoading;
 		}
 		
 		#endregion
@@ -264,7 +267,7 @@ namespace CodeImp.DoomBuilder.Interface
 			RefillList();
 
 			// Start updating if needed
-			refreshtimer.Enabled = true;
+			refreshtimer.Enabled = General.Map.Data.IsLoading;
 			
 			// Select first item
 			SelectFirstItem();

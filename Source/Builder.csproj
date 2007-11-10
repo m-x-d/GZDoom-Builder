@@ -61,6 +61,7 @@
     <Compile Include="Data\TextureImage.cs" />
     <Compile Include="Editing\DragVerticesMode.cs" />
     <Compile Include="Editing\EditMode.cs" />
+    <Compile Include="Editing\GridSetup.cs" />
     <Compile Include="Editing\LinedefsMode.cs" />
     <Compile Include="Editing\SectorsMode.cs" />
     <Compile Include="Editing\ThingsMode.cs" />
@@ -103,8 +104,20 @@
     <Compile Include="Interface\ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\FlatBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\FlatBrowserForm.Designer.cs">
+      <DependentUpon>FlatBrowserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\DelayedForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\GridSetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\GridSetupForm.Designer.cs">
+      <DependentUpon>GridSetupForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\ImageBrowser.cs">
       <SubType>UserControl</SubType>
@@ -268,6 +281,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\Grid2.png" />
     <None Include="Resources\Hourglass.png" />
     <None Include="Resources\Filter.png" />
     <None Include="Resources\ThingsMode.png" />
@@ -296,9 +310,17 @@
       <SubType>Designer</SubType>
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Interface\FlatBrowserForm.resx">
+      <DependentUpon>FlatBrowserForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\DelayedForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DelayedForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\GridSetupForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>GridSetupForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\ImageBrowser.resx">
       <SubType>Designer</SubType>

@@ -33,6 +33,7 @@ using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -49,7 +50,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float THING_CIRCLE_SIZE = 1f;
 		private const float THING_CIRCLE_SHRINK = 2f;
 		private const int THING_BUFFER_STEP = 100;
-		private const float THINGS_BACK_ALPHA = 0.4f;
+		private const float THINGS_BACK_ALPHA = 0.3f;
 
 		#endregion
 
@@ -74,6 +75,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Vertices to present the textures
 		private FlatVertex[] structverts;
 		private FlatVertex[] thingsverts;
+		private FlatVertex[] backverts;
 		
 		// Batch buffer for things rendering
 		private VertexBuffer thingsvertices;
@@ -139,7 +141,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 
-		#region ================== Displaying
+		#region ================== Presenting
 
 		// This draws the image on screen
 		public void Present()
@@ -151,6 +153,24 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
 
+				// Render a background image?
+				if((backverts != null) && (General.Map.Grid.Background.Texture != null))
+				{
+					// Set renderstates
+					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+					graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+					graphics.Device.SetTexture(0, General.Map.Grid.Background.Texture);
+					graphics.Shaders.Display2D.Texture1 = General.Map.Grid.Background.Texture;
+					graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_BLEND_FACTOR, 1f);
+
+					// Draw the background
+					graphics.Shaders.Display2D.Begin();
+					graphics.Shaders.Display2D.BeginPass(0);
+					graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backverts);
+					graphics.Shaders.Display2D.EndPass();
+					graphics.Shaders.Display2D.End();
+				}
+				
 				// Render things in back?
 				if(!thingsfront) PresentThings(THINGS_BACK_ALPHA);
 				
@@ -187,7 +207,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			//graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			//graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
 			//graphics.Device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
-			//graphics.Device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
@@ -520,8 +539,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Set renderstates for things rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-				graphics.Device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
-				graphics.Device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
 				graphics.Device.SetTexture(0, thingtexture.Texture);
 				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
@@ -590,7 +607,87 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		#endregion
-		
+
+		#region ================== Background
+
+		// This sets up background image vertices
+		private void SetupBackground()
+		{
+			Vector2D ltpos, rbpos;
+			Vector2D backoffset = new Vector2D((float)General.Map.Grid.BackgroundX, (float)General.Map.Grid.BackgroundY);
+			Vector2D backimagesize = new Vector2D((float)General.Map.Grid.Background.Width, (float)General.Map.Grid.Background.Height);
+			
+			// Only if a background image is set
+			if((General.Map.Grid.Background != null) &&
+			   !(General.Map.Grid.Background is NullImage))
+			{
+				// Make vertices
+				backverts = CreateScreenVerts(windowsize);
+
+				// Determine map coordinates for view window
+				ltpos = GetMapCoordinates(new Vector2D(0f, 0f));
+				rbpos = GetMapCoordinates(new Vector2D(windowsize.Width, windowsize.Height));
+				
+				// Offset by given background offset
+				ltpos -= backoffset;
+				rbpos -= backoffset;
+				
+				// Calculate UV coordinates
+				// NOTE: backimagesize.y is made negative to match Doom's coordinate system
+				backverts[0].u = ltpos.x / backimagesize.x;
+				backverts[0].v = ltpos.y / -backimagesize.y;
+				backverts[1].u = rbpos.x / backimagesize.x;
+				backverts[1].v = ltpos.y / -backimagesize.y;
+				backverts[2].u = ltpos.x / backimagesize.x;
+				backverts[2].v = rbpos.y / -backimagesize.y;
+				backverts[3].u = rbpos.x / backimagesize.x;
+				backverts[3].v = rbpos.y / -backimagesize.y;
+			}
+			else
+			{
+				// No background image
+				backverts = null;
+			}
+		}
+
+		// This renders the grid
+		private void RenderGrid(float size, PixelColor c)
+		{
+			Vector2D ltpos, rbpos;
+			Vector2D pos = new Vector2D();
+			float sizeinv = 1f / size;
+			
+			// Only render grid when not screen-filling
+			if((size * scale) > 6f)
+			{
+				// Determine map coordinates for view window
+				ltpos = GetMapCoordinates(new Vector2D(0, 0));
+				rbpos = GetMapCoordinates(new Vector2D(windowsize.Width, windowsize.Height));
+
+				// Clip to nearest grid
+				ltpos = GridSetup.SnappedToGrid(ltpos, size, sizeinv);
+				rbpos = GridSetup.SnappedToGrid(rbpos, size, sizeinv);
+				
+				// Draw all horizontal grid lines
+				for(float y = ltpos.y + size; y > rbpos.y - size; y -= size)
+				{
+					pos.y = y;
+					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
+					plotter.DrawGridLineH((int)pos.y, c);
+				}
+				
+				// Draw all vertical grid lines
+				for(float x = ltpos.x - size; x < rbpos.x + size; x += size)
+				{
+					pos.x = x;
+					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
+					plotter.DrawGridLineV((int)pos.x, c);
+				}
+			}
+		}
+
+		#endregion
+
 		#region ================== Rendering
 
 		// This begins a drawing session
@@ -606,11 +703,24 @@ namespace CodeImp.DoomBuilder.Rendering
 				plotter = new Plotter((PixelColor*)structlocked.Data.DataPointer.ToPointer(), structlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
 				if(clearstructs) plotter.Clear();
 
+				// Redraw grid when structures image was cleared
+				if(clearstructs)
+				{
+					// Render normal grid
+					RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid);
+
+					// Render 64 grid
+					if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64);
+				}
+
 				// Always trash things batch buffer
 				if(thingsvertices != null) thingsvertices.Dispose();
 				thingsvertices = null;
 				numthings = 0;
 				maxthings = 0;
+				
+				// Setup vertices for background image
+				SetupBackground();
 				
 				// Set the rendertarget to the things texture
 				thingssurface = thingstex.GetSurfaceLevel(0);
