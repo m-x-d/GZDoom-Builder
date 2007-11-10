@@ -29,33 +29,6 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	public class Action
 	{
-		#region ================== Constants
-
-		public const string NEWMAP = "newmap";
-		public const string OPENMAP = "openmap";
-		public const string CLOSEMAP = "closemap";
-		public const string SAVEMAP = "savemap";
-		public const string SAVEMAPAS = "savemapas";
-		public const string SHOWOVERVIEW = "showoverview";
-		public const string SCROLLNORTH = "scrollnorth";
-		public const string SCROLLSOUTH = "scrollsouth";
-		public const string SCROLLWEST = "scrollwest";
-		public const string SCROLLEAST = "scrolleast";
-		public const string ZOOMIN = "zoomin";
-		public const string ZOOMOUT = "zoomout";
-		public const string CONFIGURATION = "configuration";
-		public const string PREFERENCES = "preferences";
-		public const string MAPOPTIONS = "mapoptions";
-		public const string RELOADRESOURCES = "reloadresources";
-		public const string VERTICESMODE = "verticesmode";
-		public const string LINEDEFSMODE = "linedefsmode";
-		public const string SECTORSMODE = "sectorsmode";
-		public const string THINGSMODE = "thingsmode";
-		public const string TESTACTION = "testaction";
-		public const string CANCELMODE = "cancelmode";
-		
-		#endregion
-		
 		#region ================== Variables
 
 		// Description

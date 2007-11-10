@@ -76,6 +76,7 @@ namespace CodeImp.DoomBuilder
 		private Renderer3D renderer3d;
 		private WAD tempwad;
 		private MapSelection selection;
+		private GridSetup grid;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -98,6 +99,7 @@ namespace CodeImp.DoomBuilder
 		public Renderer3D Renderer3D { get { return renderer3d; } }
 		public GameConfiguration Config { get { return config; } }
 		public MapSelection Selection { get { return selection; } }
+		public GridSetup Grid { get { return grid; } }
 		
 		#endregion
 
@@ -110,6 +112,7 @@ namespace CodeImp.DoomBuilder
 			GC.SuppressFinalize(this);
 			
 			// Basic objects
+			grid = new GridSetup();
 			selection = new MapSelection();
 		}
 
@@ -848,7 +851,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This switches to vertices mode
-		[Action(Action.VERTICESMODE)]
+		[Action("verticesmode")]
 		public void SwitchVerticesMode()
 		{
 			// Change to vertices mode
@@ -856,7 +859,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This switches to linedefs mode
-		[Action(Action.LINEDEFSMODE)]
+		[Action("linedefsmode")]
 		public void SwitchLinedefsMode()
 		{
 			// Change to linedefs mode
@@ -864,7 +867,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This switches to sectors mode
-		[Action(Action.SECTORSMODE)]
+		[Action("sectorsmode")]
 		public void SwitchSectorsMode()
 		{
 			// Change to sectors mode
@@ -872,7 +875,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This switches to things mode
-		[Action(Action.THINGSMODE)]
+		[Action("thingsmode")]
 		public void SwitchThingsMode()
 		{
 			// Change to things mode
@@ -884,7 +887,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Methods
 
 		// This reloads resources
-		[Action(Action.RELOADRESOURCES)]
+		[Action("reloadresources")]
 		public void ReloadResources()
 		{
 			DataLocation maplocation;
@@ -919,6 +922,9 @@ namespace CodeImp.DoomBuilder
 			
 			// Apply new settings to map elements
 			map.UpdateConfiguration();
+
+			// Re-link the background image
+			grid.LinkBackground();
 			
 			// Reset status
 			General.MainWindow.DisplayStatus(oldstatus);
@@ -926,7 +932,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// Game Configuration action
-		[Action(Action.MAPOPTIONS)]
+		[Action("mapoptions")]
 		public void ShowMapOptions()
 		{
 			// Show map options dialog

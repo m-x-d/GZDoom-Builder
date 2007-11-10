@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class TextureBrowserForm : DelayedForm
+	public partial class FlatBrowserForm : DelayedForm
 	{
 		// Variables
 		private string selectedname;
@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public string SelectedName { get { return selectedname; } }
 		
 		// Constructor
-		public TextureBrowserForm()
+		public FlatBrowserForm()
 		{
 			Dictionary<long, long> useditems = new Dictionary<long,long>();
 			
@@ -53,49 +53,49 @@ namespace CodeImp.DoomBuilder.Interface
 			browser.ApplyColorSettings();
 			
 			// Make groups
-			ListViewGroup used = browser.AddGroup("Used Textures");
-			ListViewGroup avail = browser.AddGroup("Available Textures");
+			ListViewGroup used = browser.AddGroup("Used Flats");
+			ListViewGroup avail = browser.AddGroup("Available Flats");
 			
-			// Go through the map to find the used textures
-			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+			// Go through the map to find the used flats
+			foreach(Sector s in General.Map.Map.Sectors)
 			{
-				// Add high texture
-				if(sd.HighTexture.Length > 0)
-					if(!useditems.ContainsKey(sd.LongHighTexture)) useditems.Add(sd.LongHighTexture, 0);
+				// Add floor flat
+				if(!useditems.ContainsKey(s.LongFloorTexture)) useditems.Add(s.LongFloorTexture, 0);
 
-				// Add mid texture
-				if(sd.LowTexture.Length > 0)
-					if(!useditems.ContainsKey(sd.LongMiddleTexture)) useditems.Add(sd.LongMiddleTexture, 0);
-
-				// Add low texture
-				if(sd.MiddleTexture.Length > 0)
-					if(!useditems.ContainsKey(sd.LongLowTexture)) useditems.Add(sd.LongLowTexture, 0);
+				// Add ceiling flat
+				if(!useditems.ContainsKey(s.LongCeilTexture)) useditems.Add(s.LongCeilTexture, 0);
 			}
 
-			// When mixing textures with flats, include flats as well
+			// When mixing textures with flats, include textures as well
 			if(General.Map.Config.MixTexturesFlats)
 			{
-				// Go through the map to find the used flats
-				foreach(Sector s in General.Map.Map.Sectors)
+				// Go through the map to find the used textures
+				foreach(Sidedef sd in General.Map.Map.Sidedefs)
 				{
-					// Add floor flat
-					if(!useditems.ContainsKey(s.LongFloorTexture)) useditems.Add(s.LongFloorTexture, 0);
+					// Add high texture
+					if(sd.HighTexture.Length > 0)
+						if(!useditems.ContainsKey(sd.LongHighTexture)) useditems.Add(sd.LongHighTexture, 0);
 
-					// Add ceil flat
-					if(!useditems.ContainsKey(s.LongCeilTexture)) useditems.Add(s.LongCeilTexture, 0);
+					// Add mid texture
+					if(sd.LowTexture.Length > 0)
+						if(!useditems.ContainsKey(sd.LongMiddleTexture)) useditems.Add(sd.LongMiddleTexture, 0);
+
+					// Add low texture
+					if(sd.MiddleTexture.Length > 0)
+						if(!useditems.ContainsKey(sd.LongLowTexture)) useditems.Add(sd.LongLowTexture, 0);
 				}
 			}
 			
 			// Start adding
 			browser.BeginAdding();
 
-			// Add all used textures
-			foreach(ImageData img in General.Map.Data.Textures)
+			// Add all used flats
+			foreach(ImageData img in General.Map.Data.Flats)
 				if(useditems.ContainsKey(img.LongName))
 					browser.Add(img.Name, img, img, used);
 			
-			// Add all available textures
-			foreach(ImageData img in General.Map.Data.Textures)
+			// Add all available flats
+			foreach(ImageData img in General.Map.Data.Flats)
 				browser.Add(img.Name, img, img, avail);
 			
 			// Done adding
@@ -131,14 +131,14 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Activated
-		private void TextureBrowserForm_Activated(object sender, EventArgs e)
+		private void FlatBrowserForm_Activated(object sender, EventArgs e)
 		{
 			// Focus the textbox
 			browser.FocusTextbox();
 		}
 
 		// Loading
-		private void TextureBrowserForm_Load(object sender, EventArgs e)
+		private void FlatBrowserForm_Load(object sender, EventArgs e)
 		{
 			// Position window from configuration settings
 			this.SuspendLayout();
@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Resized
-		private void TextureBrowserForm_ResizeEnd(object sender, EventArgs e)
+		private void FlatBrowserForm_ResizeEnd(object sender, EventArgs e)
 		{
 			// Normal windowstate?
 			if(this.WindowState == FormWindowState.Normal)
@@ -171,7 +171,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Moved
-		private void TextureBrowserForm_Move(object sender, EventArgs e)
+		private void FlatBrowserForm_Move(object sender, EventArgs e)
 		{
 			// Normal windowstate?
 			if(this.WindowState == FormWindowState.Normal)
@@ -183,7 +183,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Closing
-		private void TextureBrowserForm_FormClosing(object sender, FormClosingEventArgs e)
+		private void FlatBrowserForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			int windowstate;
 
@@ -201,11 +201,11 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
 		}
 
-		// Static method to browse for texture
+		// Static method to browse for flats
 		// Returns null when cancelled.
 		public static string Browse(IWin32Window parent, string select)
 		{
-			TextureBrowserForm browser = new TextureBrowserForm();
+			FlatBrowserForm browser = new FlatBrowserForm();
 			if(browser.ShowDialog(parent) == DialogResult.OK)
 			{
 				// Return result

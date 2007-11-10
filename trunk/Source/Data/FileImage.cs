@@ -64,7 +64,11 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Load file
 				bitmap = (Bitmap)Bitmap.FromFile(filepathname);
-
+				
+				// Get width and height from image
+				width = bitmap.Size.Width;
+				height = bitmap.Size.Height;
+				
 				// Pass on to base
 				base.LoadImage();
 			}

@@ -119,6 +119,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void SetupSettings()
 		{
 			// Setup renderstates
+			device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
+			device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
 			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
 			device.SetRenderState(RenderState.Ambient, Color.White.ToArgb());
 			device.SetRenderState(RenderState.AmbientMaterialSource, ColorSource.Material);
@@ -303,8 +305,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(ID3DResource res in resources) res.UnloadResource();
 			
 			// Lose backbuffers
-			backbuffer.Dispose();
-			depthbuffer.Dispose();
+			if(backbuffer != null) backbuffer.Dispose();
+			if(depthbuffer != null) depthbuffer.Dispose();
 			backbuffer = null;
 			depthbuffer = null;
 

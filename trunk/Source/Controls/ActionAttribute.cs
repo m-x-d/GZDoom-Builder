@@ -90,7 +90,10 @@ namespace CodeImp.DoomBuilder.Controls
 					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
 					
 					// Bind method to action
-					General.Actions[a.action].Bind(del);
+					if(General.Actions.Exists(a.action))
+						General.Actions[a.action].Bind(del);
+					else
+						throw new ArgumentException("Could not bind " + m.ReflectedType.Name + "." + m.Name + " to action \"" + a.action + "\", that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
 				}
 			}
 		}

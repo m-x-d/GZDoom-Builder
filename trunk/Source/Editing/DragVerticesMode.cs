@@ -38,7 +38,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public class DragVerticesMode : VerticesMode
+	public class DragVerticesMode : ClassicMode
 	{
 		#region ================== Constants
 
@@ -46,11 +46,14 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 
-		// Mouse offset from dragitem
-		protected Vector2D dragoffset;
+		// Mouse position on map where dragging started
+		protected Vector2D dragstartmappos;
 
-		// Item used as reference for dragging
+		// Item used as reference for snapping to the grid
 		protected Vertex dragitem;
+
+		// List of old vertex positions
+		protected List<Vector2D> oldpositions;
 
 		#endregion
 
@@ -61,12 +64,17 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor to start dragging immediately
-		public DragVerticesMode(Vertex dragitem, Vector2D dragoffset)
+		public DragVerticesMode(Vertex dragitem, Vector2D dragstartmappos)
 		{
 			// Initialize
 			this.dragitem = dragitem;
-			this.dragoffset = dragoffset;
+			this.dragstartmappos = dragstartmappos;
 
+			// Make old positions list
+			// We will use this as reference to move the vertices, or to move them back on cancel
+			oldpositions = new List<Vector2D>(General.Map.Selection.Vertices.Count);
+			foreach(Vertex v in General.Map.Selection.Vertices) oldpositions.Add(v.Position);
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -91,15 +99,42 @@ namespace CodeImp.DoomBuilder.Editing
 		// Cancelled
 		public override void Cancel()
 		{
-			// Move geometry back to original position
+			int i = 0;
 
-			// Continue cancelling
+			// Move geometry back to original position
+			foreach(Vertex v in General.Map.Selection.Vertices)
+			{
+				// Move vertex back to original position
+				v.Move(oldpositions[i]);
+
+				// Next
+				i++;
+			}
+
+			// Update cached values
+			General.Map.Map.Update();
+			
+			// Cancel base class
 			base.Cancel();
+			
+			// Return to vertices mode
+			General.Map.ChangeMode(new VerticesMode());
 		}
 
+		// Mode engages
+		public override void Engage()
+		{
+			base.Engage();
+
+			// Check vertices button on main window
+			General.MainWindow.SetVerticesChecked(true);
+		}
+		
 		// Disenagaging
 		public override void Disengage()
 		{
+			base.Disengage();
+			
 			// When not cancelled
 			if(!cancelled)
 			{
@@ -110,40 +145,68 @@ namespace CodeImp.DoomBuilder.Editing
 				// Map is changed
 				General.Map.IsChanged = true;
 			}
-			
-			// Continue disengage
-			base.Disengage();
+
+			// Hide highlight info
+			General.MainWindow.HideInfo();
+
+			// Uncheck vertices button on main window
+			General.MainWindow.SetVerticesChecked(false);
 		}
 
-		// Mouse button pressed
-		public override void MouseDown(MouseEventArgs e)
+		// This redraws the display
+		public unsafe override void RedrawDisplay()
 		{
-			// Do nothing.
+			// Start with a clear display
+			if(renderer.StartRendering(true, true))
+			{
+				// Render things
+				renderer.SetThingsRenderOrder(false);
+				renderer.RenderThingSet(General.Map.Map.Things);
+
+				// Render lines and vertices
+				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
+				renderer.RenderVerticesSet(General.Map.Map.Vertices);
+
+				// Done
+				renderer.FinishRendering();
+			}
 		}
 
 		// Mouse moving
 		public override void MouseMove(MouseEventArgs e)
 		{
-			
-			// TODO: Move selected geometry and redraw
-			
+			int i = 0;
+
+			base.MouseMove(e);
+
+			// Move selected geometry
+			foreach(Vertex v in General.Map.Selection.Vertices)
+			{
+				// Move vertex from old position relative to the mouse position change since drag start
+				v.Move(oldpositions[i] + (mousemappos - dragstartmappos));
+				
+				// Next
+				i++;
+			}
+
+			// Update cached values
+			General.Map.Map.Update();
+
+			// Redraw
+			General.MainWindow.RedrawDisplay();
 		}
 
 		// Mosue button released
 		public override void MouseUp(MouseEventArgs e)
 		{
+			base.MouseUp(e);
+			
 			// Is the editing button released?
 			if(e.Button == EditMode.EDIT_BUTTON)
 			{
 				// Just return to vertices mode, geometry will be merged on disengage.
 				General.Map.ChangeMode(new VerticesMode());
 			}
-		}
-
-		// When dragging starts
-		protected override void DragStart(MouseEventArgs e)
-		{
-			// Do nothing. We're already dragging.
 		}
 		
 		#endregion

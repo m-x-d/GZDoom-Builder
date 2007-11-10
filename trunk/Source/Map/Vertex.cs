@@ -165,6 +165,13 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 
 		// This moves the vertex
+		public void Move(Vector2D newpos)
+		{
+			// Change position
+			this.Move((int)Math.Round(newpos.x), (int)Math.Round(newpos.y));
+		}
+
+		// This moves the vertex
 		public void Move(int newx, int newy)
 		{
 			// Change position
