@@ -32,6 +32,10 @@ using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
+
+// This mode if for quickly dragging vertices without a layer.
+// The geometry is merged and the mode returns to VerticesMode when the mouse is released.
+
 namespace CodeImp.DoomBuilder.Editing
 {
 	public class DragVerticesMode : VerticesMode
@@ -42,6 +46,12 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 
+		// Mouse offset from dragitem
+		protected Vector2D dragoffset;
+
+		// Item used as reference for dragging
+		protected Vertex dragitem;
+
 		#endregion
 
 		#region ================== Properties
@@ -50,19 +60,12 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Constructor / Disposer
 
-		// Constructor to start without dragging
-		public DragVerticesMode(Vertex highlighted)
-		{
-			// Initialize
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
 		// Constructor to start dragging immediately
-		public DragVerticesMode()
+		public DragVerticesMode(Vertex dragitem, Vector2D dragoffset)
 		{
 			// Initialize
+			this.dragitem = dragitem;
+			this.dragoffset = dragoffset;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -85,6 +88,64 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
+		// Cancelled
+		public override void Cancel()
+		{
+			// Move geometry back to original position
+
+			// Continue cancelling
+			base.Cancel();
+		}
+
+		// Disenagaging
+		public override void Disengage()
+		{
+			// When not cancelled
+			if(!cancelled)
+			{
+				
+				// TODO: Merge geometry
+				
+
+				// Map is changed
+				General.Map.IsChanged = true;
+			}
+			
+			// Continue disengage
+			base.Disengage();
+		}
+
+		// Mouse button pressed
+		public override void MouseDown(MouseEventArgs e)
+		{
+			// Do nothing.
+		}
+
+		// Mouse moving
+		public override void MouseMove(MouseEventArgs e)
+		{
+			
+			// TODO: Move selected geometry and redraw
+			
+		}
+
+		// Mosue button released
+		public override void MouseUp(MouseEventArgs e)
+		{
+			// Is the editing button released?
+			if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Just return to vertices mode, geometry will be merged on disengage.
+				General.Map.ChangeMode(new VerticesMode());
+			}
+		}
+
+		// When dragging starts
+		protected override void DragStart(MouseEventArgs e)
+		{
+			// Do nothing. We're already dragging.
+		}
+		
 		#endregion
 	}
 }

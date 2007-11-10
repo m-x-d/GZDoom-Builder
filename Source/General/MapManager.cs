@@ -125,17 +125,20 @@ namespace CodeImp.DoomBuilder
 				// Unbind any methods
 				ActionAttribute.UnbindMethods(this);
 
+				// Basic objects
+				if(selection != null) selection.Dispose();
+				
 				// Dispose
 				General.WriteLogLine("Unloading data resources...");
-				data.Dispose();
+				if(data != null) data.Dispose();
 				General.WriteLogLine("Closing temporary file...");
-				tempwad.Dispose();
+				if(tempwad != null) tempwad.Dispose();
 				General.WriteLogLine("Unloading map data...");
-				map.Dispose();
+				if(map != null) map.Dispose();
 				General.WriteLogLine("Stopping graphics device...");
-				renderer2d.Dispose();
-				renderer3d.Dispose();
-				graphics.Dispose();
+				if(renderer2d != null) renderer2d.Dispose();
+				if(renderer3d != null) renderer3d.Dispose();
+				if(graphics != null) graphics.Dispose();
 				
 				// Remove temp file
 				General.WriteLogLine("Removing temporary directory...");
@@ -145,9 +148,6 @@ namespace CodeImp.DoomBuilder
 					General.WriteLogLine("Failed to remove temporary directory!");
 				}
 
-				// Basic objects
-				selection.Dispose();
-				
 				// We may spend some time to clean things up here
 				GC.Collect();
 				
@@ -284,7 +284,12 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
 			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 			General.WriteLogLine("Reading map data structures from file...");
-			map = io.Read(map, TEMP_MAP_HEADER);
+			try { map = io.Read(map, TEMP_MAP_HEADER); }
+			catch(Exception)
+			{
+				General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
+				return false;
+			}
 
 			// Update structures
 			map.Update();
@@ -806,6 +811,7 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Editing Modes
 
+		//
 		// This changes the editing mode.
 		// Order in which events occur for the old and new modes:
 		// 

@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 
 		// Highlighted item
-		private Vertex highlighted;
+		protected Vertex highlighted;
 
 		#endregion
 
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.Editing
 					}
 
 					// Start dragging the selection
-					General.Map.ChangeMode(new DragVerticesMode());
+					General.Map.ChangeMode(new DragVerticesMode(highlighted, mousedownmappos - highlighted.Position));
 				}
 			}
 		}

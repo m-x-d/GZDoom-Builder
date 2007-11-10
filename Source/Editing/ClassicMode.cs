@@ -47,6 +47,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 
+		// Cancelled?
+		protected bool cancelled;
+
 		// Graphics
 		protected Renderer2D renderer;
 		
@@ -335,6 +338,7 @@ namespace CodeImp.DoomBuilder.Editing
 		[Action(Action.CANCELMODE)]
 		public override void Cancel()
 		{
+			cancelled = true;
 			base.Cancel();
 		}
 		
