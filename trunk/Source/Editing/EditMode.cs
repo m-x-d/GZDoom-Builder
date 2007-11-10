@@ -109,6 +109,16 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
+		//
+		// Order in which events occur for the old and new modes:
+		// 
+		// - Constructor of new mode is called
+		// - Disengage of old mode is called
+		// ----- Mode switches -----
+		// - Engage of new mode is called
+		// - Dispose of old mode is called
+		//
+		
 		// Mode engages
 		public virtual void Engage()
 		{

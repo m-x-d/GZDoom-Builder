@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actionkey = new System.Windows.Forms.TextBox();
 			this.actiondescription = new System.Windows.Forms.Label();
 			this.tabcolors = new System.Windows.Forms.TabPage();
+			this.blackbrowsers = new System.Windows.Forms.CheckBox();
 			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
 			this.colorconstants = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorliterals = new CodeImp.DoomBuilder.Interface.ColorControl();
@@ -69,7 +70,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorselection3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorhighlight3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorcrosshair3d = new CodeImp.DoomBuilder.Interface.ColorControl();
-			this.blackbrowsers = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -431,6 +431,16 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabcolors.Text = "Colors";
 			this.tabcolors.UseVisualStyleBackColor = true;
 			// 
+			// blackbrowsers
+			// 
+			this.blackbrowsers.AutoSize = true;
+			this.blackbrowsers.Location = new System.Drawing.Point(13, 345);
+			this.blackbrowsers.Name = "blackbrowsers";
+			this.blackbrowsers.Size = new System.Drawing.Size(241, 18);
+			this.blackbrowsers.TabIndex = 13;
+			this.blackbrowsers.Text = "Force black background for image browsers";
+			this.blackbrowsers.UseVisualStyleBackColor = true;
+			// 
 			// colorsgroup3
 			// 
 			this.colorsgroup3.Controls.Add(this.colorconstants);
@@ -580,16 +590,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorcrosshair3d.Name = "colorcrosshair3d";
 			this.colorcrosshair3d.Size = new System.Drawing.Size(150, 23);
 			this.colorcrosshair3d.TabIndex = 6;
-			// 
-			// blackbrowsers
-			// 
-			this.blackbrowsers.AutoSize = true;
-			this.blackbrowsers.Location = new System.Drawing.Point(13, 345);
-			this.blackbrowsers.Name = "blackbrowsers";
-			this.blackbrowsers.Size = new System.Drawing.Size(241, 18);
-			this.blackbrowsers.TabIndex = 13;
-			this.blackbrowsers.Text = "Force black background for image browsers";
-			this.blackbrowsers.UseVisualStyleBackColor = true;
 			// 
 			// PreferencesForm
 			// 
