@@ -97,6 +97,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float translatex;
 		private float translatey;
 		private float linenormalsize;
+		private float lastgridscale = -1f;
+		private float lastgridx;
+		private float lastgridy;
 		
 		#endregion
 
@@ -153,6 +156,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Renderstates that count for this whole sequence
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
+				graphics.Shaders.Display2D.Begin();
 
 				// Render a background image?
 				if((backimageverts != null) && (General.Map.Grid.Background.Texture != null))
@@ -165,11 +169,9 @@ namespace CodeImp.DoomBuilder.Rendering
 					graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_BLEND_FACTOR, 1f);
 
 					// Draw the background image
-					graphics.Shaders.Display2D.Begin();
 					graphics.Shaders.Display2D.BeginPass(1);
 					graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backimageverts);
 					graphics.Shaders.Display2D.EndPass();
-					graphics.Shaders.Display2D.End();
 				}
 				
 				// From here on only using screen vertices
@@ -186,12 +188,10 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Display2D.SetSettings(1f / backsize.Width, 1f / backsize.Height, 0f, 1f);
 
 				// Draw the background grid
-				graphics.Shaders.Display2D.Begin();
 				graphics.Shaders.Display2D.BeginPass(1);
 				//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backverts);
 				graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
 				graphics.Shaders.Display2D.EndPass();
-				graphics.Shaders.Display2D.End();
 				
 				// Set renderstates
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
@@ -203,18 +203,17 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Display2D.SetSettings(1f / structsize.Width, 1f / structsize.Height, FSAA_BLEND_FACTOR, 1f);
 				
 				// Draw the lines and vertices texture
-				graphics.Shaders.Display2D.Begin();
 				graphics.Shaders.Display2D.BeginPass(0);
 				//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts); } catch(Exception) { }
 				//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts);
 				graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
 				graphics.Shaders.Display2D.EndPass();
-				graphics.Shaders.Display2D.End();
 				
 				// Render things in front?
 				if(thingsfront) PresentThings(1f);
 				
 				// Done
+				graphics.Shaders.Display2D.End();
 				graphics.FinishRendering();
 				graphics.Present();
 			}
@@ -236,13 +235,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_BLEND_FACTOR, alpha);
 
 			// Draw the lines and vertices texture
-			graphics.Shaders.Display2D.Begin();
 			graphics.Shaders.Display2D.BeginPass(0);
 			//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts); } catch(Exception) { }
 			//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts);
 			graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
 			graphics.Shaders.Display2D.EndPass();
-			graphics.Shaders.Display2D.End();
 		}
 		
 		#endregion
@@ -290,6 +287,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingsvertices = null;
 			numthings = 0;
 			maxthings = 0;
+			lastgridscale = -1f;
 		}
 		
 		// Allocates new image memory to render on
@@ -693,22 +691,29 @@ namespace CodeImp.DoomBuilder.Rendering
 			Plotter gridplotter;
 			LockedRect lockedrect;
 			
-			// Lock background rendertarget memory
-			lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
-			
-			// Create a plotter
-			gridplotter = new Plotter((PixelColor*)lockedrect.Data.DataPointer.ToPointer(), lockedrect.Pitch / sizeof(PixelColor), backsize.Height, backsize.Width, backsize.Height);
-			gridplotter.Clear();
-			
-			// Render normal grid
-			RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid, gridplotter);
+			// Do we need to redraw grid?
+			if((lastgridscale != scale) || (lastgridx != offsetx) || (lastgridy != offsety))
+			{
+				// Lock background rendertarget memory
+				lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
 
-			// Render 64 grid
-			if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
+				// Create a plotter
+				gridplotter = new Plotter((PixelColor*)lockedrect.Data.DataPointer.ToPointer(), lockedrect.Pitch / sizeof(PixelColor), backsize.Height, backsize.Width, backsize.Height);
+				gridplotter.Clear();
 
-			// Done
-			backtex.UnlockRectangle(0);
-			lockedrect.Data.Dispose();
+				// Render normal grid
+				RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid, gridplotter);
+
+				// Render 64 grid
+				if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
+
+				// Done
+				backtex.UnlockRectangle(0);
+				lockedrect.Data.Dispose();
+				lastgridscale = scale;
+				lastgridx = offsetx;
+				lastgridy = offsety;
+			}
 		}
 		
 		// This renders the grid
