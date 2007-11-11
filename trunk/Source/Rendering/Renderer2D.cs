@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Variables
 
 		// Rendertargets
+		private Texture backtex;
 		private Texture structtex;
 		private Texture thingstex;
 
@@ -68,14 +69,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Size windowsize;
 		private Size structsize;
 		private Size thingssize;
+		private Size backsize;
 		
 		// Geometry plotter
 		private Plotter plotter;
 
 		// Vertices to present the textures
-		private FlatVertex[] structverts;
-		private FlatVertex[] thingsverts;
-		private FlatVertex[] backverts;
+		private VertexBuffer screenverts;
+		private FlatVertex[] backimageverts;
 		
 		// Batch buffer for things rendering
 		private VertexBuffer thingsvertices;
@@ -154,7 +155,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
 
 				// Render a background image?
-				if((backverts != null) && (General.Map.Grid.Background.Texture != null))
+				if((backimageverts != null) && (General.Map.Grid.Background.Texture != null))
 				{
 					// Set renderstates
 					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
@@ -163,16 +164,34 @@ namespace CodeImp.DoomBuilder.Rendering
 					graphics.Shaders.Display2D.Texture1 = General.Map.Grid.Background.Texture;
 					graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_BLEND_FACTOR, 1f);
 
-					// Draw the background
+					// Draw the background image
 					graphics.Shaders.Display2D.Begin();
-					graphics.Shaders.Display2D.BeginPass(0);
-					graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backverts);
+					graphics.Shaders.Display2D.BeginPass(1);
+					graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backimageverts);
 					graphics.Shaders.Display2D.EndPass();
 					graphics.Shaders.Display2D.End();
 				}
 				
+				// From here on only using screen vertices
+				graphics.Device.SetStreamSource(0, screenverts, 0, sizeof(FlatVertex));
+				
 				// Render things in back?
 				if(!thingsfront) PresentThings(THINGS_BACK_ALPHA);
+
+				// Set renderstates
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+				graphics.Device.SetTexture(0, backtex);
+				graphics.Shaders.Display2D.Texture1 = backtex;
+				graphics.Shaders.Display2D.SetSettings(1f / backsize.Width, 1f / backsize.Height, 0f, 1f);
+
+				// Draw the background grid
+				graphics.Shaders.Display2D.Begin();
+				graphics.Shaders.Display2D.BeginPass(1);
+				//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backverts);
+				graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+				graphics.Shaders.Display2D.EndPass();
+				graphics.Shaders.Display2D.End();
 				
 				// Set renderstates
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
@@ -187,7 +206,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Display2D.Begin();
 				graphics.Shaders.Display2D.BeginPass(0);
 				//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts); } catch(Exception) { }
-				graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts);
+				//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts);
+				graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
 				graphics.Shaders.Display2D.EndPass();
 				graphics.Shaders.Display2D.End();
 				
@@ -219,7 +239,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Display2D.Begin();
 			graphics.Shaders.Display2D.BeginPass(0);
 			//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts); } catch(Exception) { }
-			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts);
+			//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts);
+			graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
 			graphics.Shaders.Display2D.EndPass();
 			graphics.Shaders.Display2D.End();
 		}
@@ -257,8 +278,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Trash rendertargets
 			if(structtex != null) structtex.Dispose();
 			if(thingstex != null) thingstex.Dispose();
+			if(backtex != null) backtex.Dispose();
+			if(screenverts != null) screenverts.Dispose();
 			structtex = null;
 			thingstex = null;
+			backtex = null;
+			screenverts = null;
 			
 			// Trash things batch buffer
 			if(thingsvertices != null) thingsvertices.Dispose();
@@ -271,6 +296,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void CreateRendertargets()
 		{
 			SurfaceDescription sd;
+			DataStream stream;
+			FlatVertex[] verts;
 			
 			// Destroy rendertargets
 			DestroyRendertargets();
@@ -282,7 +309,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Create rendertargets textures
 			structtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 			thingstex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-
+			backtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			
 			// Get the real surface sizes
 			sd = structtex.GetLevelDescription(0);
 			structsize.Width = sd.Width;
@@ -290,10 +318,19 @@ namespace CodeImp.DoomBuilder.Rendering
 			sd = thingstex.GetLevelDescription(0);
 			thingssize.Width = sd.Width;
 			thingssize.Height = sd.Height;
+			sd = backtex.GetLevelDescription(0);
+			backsize.Width = sd.Width;
+			backsize.Height = sd.Height;
 
-			// Setup screen vertices
-			structverts = CreateScreenVerts(structsize);
-			thingsverts = CreateScreenVerts(thingssize);
+			// Create vertex buffers
+			screenverts = new VertexBuffer(graphics.Device, 4 * sizeof(FlatVertex), Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
+
+			// Make screen vertices
+			stream = screenverts.Lock(0, 4 * sizeof(FlatVertex), LockFlags.Discard | LockFlags.NoSystemLock);
+			verts = CreateScreenVerts(structsize);
+			stream.WriteRange<FlatVertex>(verts);
+			screenverts.Unlock();
+			stream.Dispose();
 		}
 
 		// This makes screen vertices for display
@@ -622,7 +659,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			   !(General.Map.Grid.Background is NullImage))
 			{
 				// Make vertices
-				backverts = CreateScreenVerts(windowsize);
+				backimageverts = CreateScreenVerts(windowsize);
 
 				// Determine map coordinates for view window
 				ltpos = GetMapCoordinates(new Vector2D(0f, 0f));
@@ -634,24 +671,48 @@ namespace CodeImp.DoomBuilder.Rendering
 				
 				// Calculate UV coordinates
 				// NOTE: backimagesize.y is made negative to match Doom's coordinate system
-				backverts[0].u = ltpos.x / backimagesize.x;
-				backverts[0].v = ltpos.y / -backimagesize.y;
-				backverts[1].u = rbpos.x / backimagesize.x;
-				backverts[1].v = ltpos.y / -backimagesize.y;
-				backverts[2].u = ltpos.x / backimagesize.x;
-				backverts[2].v = rbpos.y / -backimagesize.y;
-				backverts[3].u = rbpos.x / backimagesize.x;
-				backverts[3].v = rbpos.y / -backimagesize.y;
+				backimageverts[0].u = ltpos.x / backimagesize.x;
+				backimageverts[0].v = ltpos.y / -backimagesize.y;
+				backimageverts[1].u = rbpos.x / backimagesize.x;
+				backimageverts[1].v = ltpos.y / -backimagesize.y;
+				backimageverts[2].u = ltpos.x / backimagesize.x;
+				backimageverts[2].v = rbpos.y / -backimagesize.y;
+				backimageverts[3].u = rbpos.x / backimagesize.x;
+				backimageverts[3].v = rbpos.y / -backimagesize.y;
 			}
 			else
 			{
 				// No background image
-				backverts = null;
+				backimageverts = null;
 			}
 		}
 
+		// This renders all grid
+		private void RenderBackgroundGrid()
+		{
+			Plotter gridplotter;
+			LockedRect lockedrect;
+			
+			// Lock background rendertarget memory
+			lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
+			
+			// Create a plotter
+			gridplotter = new Plotter((PixelColor*)lockedrect.Data.DataPointer.ToPointer(), lockedrect.Pitch / sizeof(PixelColor), backsize.Height, backsize.Width, backsize.Height);
+			gridplotter.Clear();
+			
+			// Render normal grid
+			RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid, gridplotter);
+
+			// Render 64 grid
+			if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
+
+			// Done
+			backtex.UnlockRectangle(0);
+			lockedrect.Data.Dispose();
+		}
+		
 		// This renders the grid
-		private void RenderGrid(float size, PixelColor c)
+		private void RenderGrid(float size, PixelColor c, Plotter gridplotter)
 		{
 			Vector2D ltpos, rbpos;
 			Vector2D pos = new Vector2D();
@@ -673,7 +734,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					pos.y = y;
 					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-					plotter.DrawGridLineH((int)pos.y, c);
+					gridplotter.DrawGridLineH((int)pos.y, c);
 				}
 				
 				// Draw all vertical grid lines
@@ -681,7 +742,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					pos.x = x;
 					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-					plotter.DrawGridLineV((int)pos.x, c);
+					gridplotter.DrawGridLineV((int)pos.x, c);
 				}
 			}
 		}
@@ -704,14 +765,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(clearstructs) plotter.Clear();
 
 				// Redraw grid when structures image was cleared
-				if(clearstructs)
-				{
-					// Render normal grid
-					RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid);
-
-					// Render 64 grid
-					if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64);
-				}
+				if(clearstructs) RenderBackgroundGrid();
 
 				// Always trash things batch buffer
 				if(thingsvertices != null) thingsvertices.Dispose();

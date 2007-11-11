@@ -155,18 +155,27 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void DrawGridLineH(int y, PixelColor c)
 		{
 			int numpixels = visiblewidth >> 1;
+			int offset = y & 0x01;
+			int ywidth = y * width;
 			
-			// Draw all pixels on this line
-			for(int i = 0; i < numpixels; i++) DrawPixelSolid(i << 1, y, c);
+			if((y >= 0) && (y < height))
+			{
+				// Draw all pixels on this line
+				for(int i = 0; i < numpixels; i++) pixels[ywidth + ((i << 1) | offset)] = c;
+			}
 		}
 
 		// This draws a dotted grid line vertically
 		public void DrawGridLineV(int x, PixelColor c)
 		{
 			int numpixels = visibleheight >> 1;
-
-			// Draw all pixels on this line
-			for(int i = 0; i < numpixels; i++) DrawPixelSolid(x, i << 1, c);
+			int offset = x & 0x01;
+			
+			if((x >= 0) && (x < width))
+			{
+				// Draw all pixels on this line
+				for(int i = 0; i < numpixels; i++) pixels[((i << 1) | offset) * width + x] = c;
+			}
 		}
 
 		// This draws a pixel alpha blended
