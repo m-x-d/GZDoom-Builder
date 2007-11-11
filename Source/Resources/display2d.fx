@@ -44,7 +44,7 @@ float4 addcolor(float4 c1, float4 c2)
 }
 
 // Pixel shader
-float4 ps_main(PixelData pd) : COLOR
+float4 ps_fsaa(PixelData pd) : COLOR
 {
 	// Take this pixel's color
 	float4 c = tex2D(texture1samp, pd.uv);
@@ -66,12 +66,26 @@ float4 ps_main(PixelData pd) : COLOR
 	else return float4(c.rgb, c.a * settings.w);
 }
 
+// Pixel shader
+float4 ps_normal(PixelData pd) : COLOR
+{
+	// Take this pixel's color
+	float4 c = tex2D(texture1samp, pd.uv);
+	return float4(c.rgb, c.a * settings.w);
+}
+
 // Technique for shader model 2.0
 technique SM20
 {
 	pass p0
 	{
 	    VertexShader = null;
-	    PixelShader = compile ps_2_0 ps_main();
+	    PixelShader = compile ps_2_0 ps_fsaa();
+	}
+	
+	pass p1
+	{
+	    VertexShader = null;
+	    PixelShader = compile ps_2_0 ps_normal();
 	}
 }
