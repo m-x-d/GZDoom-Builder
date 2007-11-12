@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder
 		private WAD tempwad;
 		private MapSelection selection;
 		private GridSetup grid;
+		private UndoManager undoredo;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -100,7 +101,8 @@ namespace CodeImp.DoomBuilder
 		public GameConfiguration Config { get { return config; } }
 		public MapSelection Selection { get { return selection; } }
 		public GridSetup Grid { get { return grid; } }
-		
+		public UndoManager UndoRedo { get { return undoredo; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -114,6 +116,8 @@ namespace CodeImp.DoomBuilder
 			// Basic objects
 			grid = new GridSetup();
 			selection = new MapSelection();
+			undoredo = new UndoManager();
+
 		}
 
 		// Diposer
@@ -130,6 +134,7 @@ namespace CodeImp.DoomBuilder
 
 				// Basic objects
 				if(selection != null) selection.Dispose();
+				if(undoredo != null) undoredo.Dispose();
 				
 				// Dispose
 				General.WriteLogLine("Unloading data resources...");
@@ -886,6 +891,18 @@ namespace CodeImp.DoomBuilder
 		
 		#region ================== Methods
 
+		// This sets a new mapset for editing
+		public void ChangeMapSet(MapSet newmap)
+		{
+			// Can't have a selection in an old map set
+			selection.ClearAll();
+
+			// Apply
+			map.Dispose();
+			map = newmap;
+			map.Update();
+		}
+		
 		// This reloads resources
 		[Action("reloadresources")]
 		public void ReloadResources()

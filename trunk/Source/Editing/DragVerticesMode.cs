@@ -46,6 +46,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 
+		// Undo ticket
+		private int undoticket;
+		
 		// Mouse position on map where dragging started
 		protected Vector2D dragstartmappos;
 
@@ -70,6 +73,9 @@ namespace CodeImp.DoomBuilder.Editing
 			this.dragitem = dragitem;
 			this.dragstartmappos = dragstartmappos;
 
+			// Make undo
+			undoticket = General.Map.UndoRedo.CreateUndo("drag vertices", UndoGroup.None, 0, false);
+			
 			// Make old positions list
 			// We will use this as reference to move the vertices, or to move them back on cancel
 			oldpositions = new List<Vector2D>(General.Map.Selection.Vertices.Count);
@@ -101,6 +107,9 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			int i = 0;
 
+			// Withdraw undo
+			General.Map.UndoRedo.WithdrawUndo(undoticket);
+			
 			// Move geometry back to original position
 			foreach(Vertex v in General.Map.Selection.Vertices)
 			{
@@ -138,7 +147,6 @@ namespace CodeImp.DoomBuilder.Editing
 			// When not cancelled
 			if(!cancelled)
 			{
-				
 				// TODO: Merge geometry
 				
 

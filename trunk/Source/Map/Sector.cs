@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public class Sector : IDisposable
+	public sealed class Sector : IDisposable
 	{
 		#region ================== Constants
 
@@ -128,6 +128,21 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
+		// This copies all properties to another sector
+		public void CopyPropertiesTo(Sector s)
+		{
+			// Copy properties
+			s.ceilheight = ceilheight;
+			s.ceiltexname = ceiltexname;
+			s.longceiltexname = longceiltexname;
+			s.floorheight = floorheight;
+			s.floortexname = floortexname;
+			s.longfloortexname = longfloortexname;
+			s.effect = effect;
+			s.tag = tag;
+			s.brightness = brightness;
+		}
+		
 		// This attaches a sidedef and returns the listitem
 		public LinkedListNode<Sidedef> AttachSidedef(Sidedef sd) { return sidedefs.AddLast(sd); }
 
@@ -154,19 +169,6 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This detaches a thing
 		public void DetachThing(LinkedListNode<Thing> l) { if(!isdisposed) things.Remove(l); }
-		
-		// This copies all properties to another sector
-		public void CopyPropertiesTo(Sector s)
-		{
-			// Copy properties
-			s.ceilheight = ceilheight;
-			s.SetCeilTexture(ceiltexname);
-			s.floorheight = floorheight;
-			s.SetFloorTexture(floortexname);
-			s.effect = effect;
-			s.tag = tag;
-			s.brightness = brightness;
-		}
 		
 		#endregion
 

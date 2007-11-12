@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public class Thing : IDisposable
+	public sealed class Thing : IDisposable
 	{
 		#region ================== Constants
 
@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Configuration
 		private float size;
 		private PixelColor color;
-		private float iconoffset;
+		private float iconoffset;	// Arrow or dot coordinate offset on the texture
 		
 		// Selections
 		private int selected;
@@ -143,10 +143,13 @@ namespace CodeImp.DoomBuilder.Map
 			t.flags = flags;
 			t.tag = tag;
 			t.action = action;
-			t.args = EMPTY_ARGS;
 			t.x = x;
 			t.y = y;
 			t.zoffset = zoffset;
+			t.args = EMPTY_ARGS;
+			t.size = size;
+			t.color = color;
+			t.iconoffset = iconoffset;
 			args.CopyTo(t.args, 0);
 		}
 		

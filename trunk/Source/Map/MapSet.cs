@@ -31,7 +31,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public class MapSet : IDisposable
+	public sealed class MapSet : IDisposable
 	{
 		#region ================== Variables
 
@@ -128,6 +128,10 @@ namespace CodeImp.DoomBuilder.Map
 			Dictionary<Linedef, Linedef> linedeflink = new Dictionary<Linedef, Linedef>(linedefs.Count);
 			Dictionary<Sector, Sector> sectorlink = new Dictionary<Sector, Sector>(sectors.Count);
 			
+			// TODO: Try making this faster by giving each element that
+			// requires a lookup (vertex/linedef/sector) a reference to
+			// its clone and remove those references after cloning.
+
 			// Create the map set
 			MapSet newset = new MapSet();
 

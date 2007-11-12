@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public class Sidedef : IDisposable
+	public sealed class Sidedef : IDisposable
 	{
 		#region ================== Constants
 
@@ -140,9 +140,12 @@ namespace CodeImp.DoomBuilder.Map
 			// Copy properties
 			s.offsetx = offsetx;
 			s.offsety = offsety;
-			s.SetTextureHigh(texnamehigh);
-			s.SetTextureMid(texnamelow);
-			s.SetTextureLow(texnamemid);
+			s.texnamehigh = texnamehigh;
+			s.texnamemid = texnamemid;
+			s.texnamelow = texnamelow;
+			s.longtexnamehigh = longtexnamehigh;
+			s.longtexnamemid = longtexnamemid;
+			s.longtexnamelow = longtexnamelow;
 		}
 		
 		#endregion

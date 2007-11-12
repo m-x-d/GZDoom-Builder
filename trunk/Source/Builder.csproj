@@ -65,6 +65,9 @@
     <Compile Include="Editing\LinedefsMode.cs" />
     <Compile Include="Editing\SectorsMode.cs" />
     <Compile Include="Editing\ThingsMode.cs" />
+    <Compile Include="Editing\UndoGroup.cs" />
+    <Compile Include="Editing\UndoManager.cs" />
+    <Compile Include="Editing\UndoSnapshot.cs" />
     <Compile Include="Editing\VerticesMode.cs" />
     <Compile Include="Editing\ClassicMode.cs" />
     <Compile Include="Controls\ActionDelegate.cs" />
@@ -281,6 +284,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\Redo.png" />
+    <None Include="Resources\Undo.png" />
     <None Include="Resources\Grid2.png" />
     <None Include="Resources\Hourglass.png" />
     <None Include="Resources\Filter.png" />
