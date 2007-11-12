@@ -39,26 +39,20 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+			System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
 			System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+			System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.poscommalabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menumain = new System.Windows.Forms.MenuStrip();
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemnewmap = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemopenmap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemclosemap = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemsavemap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsavemapas = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsavemapinto = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemnorecent = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemexit = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuedit = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemverticesmode = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemlinedefsmode = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemsectorsmode = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemthingsmode = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemmapoptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemreloadresources = new System.Windows.Forms.ToolStripMenuItem();
 			this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,20 +60,21 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpabout = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
-			this.buttonnewmap = new System.Windows.Forms.ToolStripButton();
-			this.buttonopenmap = new System.Windows.Forms.ToolStripButton();
-			this.buttonsavemap = new System.Windows.Forms.ToolStripButton();
-			this.buttonmapoptions = new System.Windows.Forms.ToolStripButton();
-			this.buttonverticesmode = new System.Windows.Forms.ToolStripButton();
-			this.buttonlinedefsmode = new System.Windows.Forms.ToolStripButton();
-			this.buttonsectorsmode = new System.Windows.Forms.ToolStripButton();
-			this.buttonthingsmode = new System.Windows.Forms.ToolStripButton();
-			this.buttonthingsfilter = new System.Windows.Forms.ToolStripButton();
 			this.thingfilters = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
-			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gridlabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.zoomlabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.xposlabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.yposlabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.panelinfo = new System.Windows.Forms.Panel();
+			this.vertexinfo = new CodeImp.DoomBuilder.Interface.VertexInfoPanel();
+			this.thinginfo = new CodeImp.DoomBuilder.Interface.ThingInfoPanel();
+			this.sectorinfo = new CodeImp.DoomBuilder.Interface.SectorInfoPanel();
+			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
+			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
+			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
+			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.buttongrid = new System.Windows.Forms.ToolStripDropDownButton();
 			this.itemgrid1024 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemgrid512 = new System.Windows.Forms.ToolStripMenuItem();
@@ -91,7 +86,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemgrid8 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemgrid4 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemgridcustom = new System.Windows.Forms.ToolStripMenuItem();
-			this.zoomlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.buttonzoom = new System.Windows.Forms.ToolStripDropDownButton();
 			this.itemzoom200 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemzoom100 = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,15 +94,27 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemzoom10 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemzoom5 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemzoomfittoscreen = new System.Windows.Forms.ToolStripMenuItem();
-			this.xposlabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.yposlabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.panelinfo = new System.Windows.Forms.Panel();
-			this.vertexinfo = new CodeImp.DoomBuilder.Interface.VertexInfoPanel();
-			this.thinginfo = new CodeImp.DoomBuilder.Interface.ThingInfoPanel();
-			this.sectorinfo = new CodeImp.DoomBuilder.Interface.SectorInfoPanel();
-			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
-			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
-			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
+			this.buttonnewmap = new System.Windows.Forms.ToolStripButton();
+			this.buttonopenmap = new System.Windows.Forms.ToolStripButton();
+			this.buttonsavemap = new System.Windows.Forms.ToolStripButton();
+			this.buttonmapoptions = new System.Windows.Forms.ToolStripButton();
+			this.buttonverticesmode = new System.Windows.Forms.ToolStripButton();
+			this.buttonlinedefsmode = new System.Windows.Forms.ToolStripButton();
+			this.buttonsectorsmode = new System.Windows.Forms.ToolStripButton();
+			this.buttonthingsmode = new System.Windows.Forms.ToolStripButton();
+			this.buttonthingsfilter = new System.Windows.Forms.ToolStripButton();
+			this.itemnewmap = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemopenmap = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemsavemap = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemundo = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemredo = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemverticesmode = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemlinedefsmode = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemsectorsmode = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemthingsmode = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemmapoptions = new System.Windows.Forms.ToolStripMenuItem();
+			this.buttonundo = new System.Windows.Forms.ToolStripButton();
+			this.buttonredo = new System.Windows.Forms.ToolStripButton();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -119,8 +125,10 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.menumain.SuspendLayout();
 			this.toolbar.SuspendLayout();
 			this.statusbar.SuspendLayout();
@@ -147,13 +155,6 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			toolStripSeparator1.Name = "toolStripSeparator1";
 			toolStripSeparator1.Size = new System.Drawing.Size(6, 23);
-			// 
-			// poscommalabel
-			// 
-			this.poscommalabel.Name = "poscommalabel";
-			this.poscommalabel.Size = new System.Drawing.Size(11, 18);
-			this.poscommalabel.Text = ",";
-			this.poscommalabel.ToolTipText = "Current X, Y coordinates on map";
 			// 
 			// toolStripSeparator4
 			// 
@@ -189,15 +190,17 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator7.Name = "toolStripSeparator7";
 			toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
 			// 
-			// toolStripMenuItem4
+			// toolStripMenuItem5
 			// 
-			toolStripMenuItem4.Name = "toolStripMenuItem4";
-			toolStripMenuItem4.Size = new System.Drawing.Size(161, 6);
+			toolStripMenuItem5.Name = "toolStripMenuItem5";
+			toolStripMenuItem5.Size = new System.Drawing.Size(158, 6);
 			// 
-			// toolStripSeparator2
+			// poscommalabel
 			// 
-			toolStripSeparator2.Name = "toolStripSeparator2";
-			toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
+			this.poscommalabel.Name = "poscommalabel";
+			this.poscommalabel.Size = new System.Drawing.Size(11, 18);
+			this.poscommalabel.Text = ",";
+			this.poscommalabel.ToolTipText = "Current X, Y coordinates on map";
 			// 
 			// menumain
 			// 
@@ -229,25 +232,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menufile.Size = new System.Drawing.Size(35, 20);
 			this.menufile.Text = "File";
 			// 
-			// itemnewmap
-			// 
-			this.itemnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.File;
-			this.itemnewmap.Name = "itemnewmap";
-			this.itemnewmap.ShortcutKeyDisplayString = "";
-			this.itemnewmap.Size = new System.Drawing.Size(201, 22);
-			this.itemnewmap.Tag = "newmap";
-			this.itemnewmap.Text = "New Map";
-			this.itemnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemopenmap
-			// 
-			this.itemopenmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
-			this.itemopenmap.Name = "itemopenmap";
-			this.itemopenmap.Size = new System.Drawing.Size(201, 22);
-			this.itemopenmap.Tag = "openmap";
-			this.itemopenmap.Text = "Open Map...";
-			this.itemopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
 			// itemclosemap
 			// 
 			this.itemclosemap.Name = "itemclosemap";
@@ -255,15 +239,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemclosemap.Tag = "closemap";
 			this.itemclosemap.Text = "Close Map";
 			this.itemclosemap.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemsavemap
-			// 
-			this.itemsavemap.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
-			this.itemsavemap.Name = "itemsavemap";
-			this.itemsavemap.Size = new System.Drawing.Size(201, 22);
-			this.itemsavemap.Tag = "savemap";
-			this.itemsavemap.Text = "Save Map";
-			this.itemsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemsavemapas
 			// 
@@ -297,6 +272,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// menuedit
 			// 
 			this.menuedit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemundo,
+            this.itemredo,
+            toolStripMenuItem5,
             this.itemverticesmode,
             this.itemlinedefsmode,
             this.itemsectorsmode,
@@ -306,51 +284,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menuedit.Name = "menuedit";
 			this.menuedit.Size = new System.Drawing.Size(37, 20);
 			this.menuedit.Text = "Edit";
-			// 
-			// itemverticesmode
-			// 
-			this.itemverticesmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.VerticesMode;
-			this.itemverticesmode.Name = "itemverticesmode";
-			this.itemverticesmode.Size = new System.Drawing.Size(161, 22);
-			this.itemverticesmode.Tag = "verticesmode";
-			this.itemverticesmode.Text = "Vertices Mode";
-			this.itemverticesmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemlinedefsmode
-			// 
-			this.itemlinedefsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinesMode;
-			this.itemlinedefsmode.Name = "itemlinedefsmode";
-			this.itemlinedefsmode.Size = new System.Drawing.Size(161, 22);
-			this.itemlinedefsmode.Tag = "linedefsmode";
-			this.itemlinedefsmode.Text = "Linedefs Mode";
-			this.itemlinedefsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemsectorsmode
-			// 
-			this.itemsectorsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.SectorsMode;
-			this.itemsectorsmode.Name = "itemsectorsmode";
-			this.itemsectorsmode.Size = new System.Drawing.Size(161, 22);
-			this.itemsectorsmode.Tag = "sectorsmode";
-			this.itemsectorsmode.Text = "Sectors Mode";
-			this.itemsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemthingsmode
-			// 
-			this.itemthingsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.ThingsMode;
-			this.itemthingsmode.Name = "itemthingsmode";
-			this.itemthingsmode.Size = new System.Drawing.Size(161, 22);
-			this.itemthingsmode.Tag = "thingsmode";
-			this.itemthingsmode.Text = "Things Mode";
-			this.itemthingsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemmapoptions
-			// 
-			this.itemmapoptions.Image = global::CodeImp.DoomBuilder.Properties.Resources.Properties;
-			this.itemmapoptions.Name = "itemmapoptions";
-			this.itemmapoptions.Size = new System.Drawing.Size(161, 22);
-			this.itemmapoptions.Tag = "mapoptions";
-			this.itemmapoptions.Text = "Map Options....";
-			this.itemmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// menutools
 			// 
@@ -411,6 +344,9 @@ namespace CodeImp.DoomBuilder.Interface
             this.buttonsavemap,
             toolStripSeparator3,
             this.buttonmapoptions,
+            toolStripSeparator10,
+            this.buttonundo,
+            this.buttonredo,
             toolStripSeparator5,
             this.buttonverticesmode,
             this.buttonlinedefsmode,
@@ -424,6 +360,362 @@ namespace CodeImp.DoomBuilder.Interface
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(839, 25);
 			this.toolbar.TabIndex = 1;
+			// 
+			// thingfilters
+			// 
+			this.thingfilters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.thingfilters.Enabled = false;
+			this.thingfilters.Items.AddRange(new object[] {
+            "(none)",
+            "(custom)",
+            "Easy skill items only",
+            "Medium skill items only",
+            "Hard skill items only"});
+			this.thingfilters.Name = "thingfilters";
+			this.thingfilters.Size = new System.Drawing.Size(130, 25);
+			this.thingfilters.ToolTipText = "Things Filter";
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
+			// 
+			// statusbar
+			// 
+			this.statusbar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statuslabel,
+            this.gridlabel,
+            this.buttongrid,
+            toolStripSeparator1,
+            this.zoomlabel,
+            this.buttonzoom,
+            toolStripSeparator9,
+            this.xposlabel,
+            this.poscommalabel,
+            this.yposlabel});
+			this.statusbar.Location = new System.Drawing.Point(0, 522);
+			this.statusbar.Name = "statusbar";
+			this.statusbar.ShowItemToolTips = true;
+			this.statusbar.Size = new System.Drawing.Size(839, 23);
+			this.statusbar.TabIndex = 2;
+			// 
+			// gridlabel
+			// 
+			this.gridlabel.AutoSize = false;
+			this.gridlabel.AutoToolTip = true;
+			this.gridlabel.Name = "gridlabel";
+			this.gridlabel.Size = new System.Drawing.Size(64, 18);
+			this.gridlabel.Text = "32 mp";
+			this.gridlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.gridlabel.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
+			this.gridlabel.ToolTipText = "Grid size";
+			// 
+			// zoomlabel
+			// 
+			this.zoomlabel.AutoSize = false;
+			this.zoomlabel.AutoToolTip = true;
+			this.zoomlabel.Name = "zoomlabel";
+			this.zoomlabel.Size = new System.Drawing.Size(54, 18);
+			this.zoomlabel.Text = "50%";
+			this.zoomlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.zoomlabel.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
+			this.zoomlabel.ToolTipText = "Zoom level";
+			// 
+			// xposlabel
+			// 
+			this.xposlabel.AutoSize = false;
+			this.xposlabel.Name = "xposlabel";
+			this.xposlabel.Size = new System.Drawing.Size(50, 18);
+			this.xposlabel.Text = "0";
+			this.xposlabel.ToolTipText = "Current X, Y coordinates on map";
+			// 
+			// yposlabel
+			// 
+			this.yposlabel.AutoSize = false;
+			this.yposlabel.Name = "yposlabel";
+			this.yposlabel.Size = new System.Drawing.Size(50, 18);
+			this.yposlabel.Text = "0";
+			this.yposlabel.ToolTipText = "Current X, Y coordinates on map";
+			// 
+			// panelinfo
+			// 
+			this.panelinfo.Controls.Add(this.vertexinfo);
+			this.panelinfo.Controls.Add(this.thinginfo);
+			this.panelinfo.Controls.Add(this.sectorinfo);
+			this.panelinfo.Controls.Add(this.linedefinfo);
+			this.panelinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.panelinfo.Location = new System.Drawing.Point(0, 416);
+			this.panelinfo.Name = "panelinfo";
+			this.panelinfo.Size = new System.Drawing.Size(839, 106);
+			this.panelinfo.TabIndex = 4;
+			// 
+			// vertexinfo
+			// 
+			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.vertexinfo.Location = new System.Drawing.Point(3, 3);
+			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.vertexinfo.Name = "vertexinfo";
+			this.vertexinfo.Size = new System.Drawing.Size(180, 100);
+			this.vertexinfo.TabIndex = 1;
+			this.vertexinfo.Visible = false;
+			// 
+			// thinginfo
+			// 
+			this.thinginfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.thinginfo.Location = new System.Drawing.Point(3, 3);
+			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.thinginfo.Name = "thinginfo";
+			this.thinginfo.Size = new System.Drawing.Size(385, 100);
+			this.thinginfo.TabIndex = 3;
+			this.thinginfo.Visible = false;
+			// 
+			// sectorinfo
+			// 
+			this.sectorinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.sectorinfo.Location = new System.Drawing.Point(3, 3);
+			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.sectorinfo.Name = "sectorinfo";
+			this.sectorinfo.Size = new System.Drawing.Size(447, 100);
+			this.sectorinfo.TabIndex = 2;
+			this.sectorinfo.Visible = false;
+			// 
+			// linedefinfo
+			// 
+			this.linedefinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
+			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.linedefinfo.Name = "linedefinfo";
+			this.linedefinfo.Size = new System.Drawing.Size(783, 100);
+			this.linedefinfo.TabIndex = 0;
+			this.linedefinfo.Visible = false;
+			// 
+			// redrawtimer
+			// 
+			this.redrawtimer.Interval = 1;
+			this.redrawtimer.Tick += new System.EventHandler(this.redrawtimer_Tick);
+			// 
+			// display
+			// 
+			this.display.BackColor = System.Drawing.SystemColors.AppWorkspace;
+			this.display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.display.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.display.CausesValidation = false;
+			this.display.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.display.Location = new System.Drawing.Point(0, 49);
+			this.display.Name = "display";
+			this.display.Size = new System.Drawing.Size(839, 367);
+			this.display.TabIndex = 5;
+			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
+			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
+			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
+			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
+			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
+			this.display.Resize += new System.EventHandler(this.display_Resize);
+			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
+			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
+			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
+			// 
+			// statuslabel
+			// 
+			this.statuslabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Status2;
+			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.statuslabel.Name = "statuslabel";
+			this.statuslabel.Size = new System.Drawing.Size(201, 16);
+			this.statuslabel.Spring = true;
+			this.statuslabel.Text = "Initializing user interface...";
+			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// buttongrid
+			// 
+			this.buttongrid.AutoToolTip = false;
+			this.buttongrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttongrid.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemgrid1024,
+            this.itemgrid512,
+            this.itemgrid256,
+            this.itemgrid128,
+            this.itemgrid64,
+            this.itemgrid32,
+            this.itemgrid16,
+            this.itemgrid8,
+            this.itemgrid4,
+            toolStripMenuItem4,
+            this.itemgridcustom});
+			this.buttongrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2;
+			this.buttongrid.ImageTransparentColor = System.Drawing.Color.Transparent;
+			this.buttongrid.Name = "buttongrid";
+			this.buttongrid.Size = new System.Drawing.Size(29, 20);
+			this.buttongrid.Text = "Grid";
+			// 
+			// itemgrid1024
+			// 
+			this.itemgrid1024.Name = "itemgrid1024";
+			this.itemgrid1024.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid1024.Tag = "1024";
+			this.itemgrid1024.Text = "1024 mp";
+			this.itemgrid1024.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid512
+			// 
+			this.itemgrid512.Name = "itemgrid512";
+			this.itemgrid512.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid512.Tag = "512";
+			this.itemgrid512.Text = "512 mp";
+			this.itemgrid512.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid256
+			// 
+			this.itemgrid256.Name = "itemgrid256";
+			this.itemgrid256.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid256.Tag = "256";
+			this.itemgrid256.Text = "256 mp";
+			this.itemgrid256.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid128
+			// 
+			this.itemgrid128.Name = "itemgrid128";
+			this.itemgrid128.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid128.Tag = "128";
+			this.itemgrid128.Text = "128 mp";
+			this.itemgrid128.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid64
+			// 
+			this.itemgrid64.Name = "itemgrid64";
+			this.itemgrid64.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid64.Tag = "64";
+			this.itemgrid64.Text = "64 mp";
+			this.itemgrid64.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid32
+			// 
+			this.itemgrid32.Name = "itemgrid32";
+			this.itemgrid32.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid32.Tag = "32";
+			this.itemgrid32.Text = "32 mp";
+			this.itemgrid32.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid16
+			// 
+			this.itemgrid16.Name = "itemgrid16";
+			this.itemgrid16.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid16.Tag = "16";
+			this.itemgrid16.Text = "16 mp";
+			this.itemgrid16.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid8
+			// 
+			this.itemgrid8.Name = "itemgrid8";
+			this.itemgrid8.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid8.Tag = "8";
+			this.itemgrid8.Text = "8 mp";
+			this.itemgrid8.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid4
+			// 
+			this.itemgrid4.Name = "itemgrid4";
+			this.itemgrid4.Size = new System.Drawing.Size(164, 22);
+			this.itemgrid4.Tag = "4";
+			this.itemgrid4.Text = "4 mp";
+			this.itemgrid4.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// toolStripMenuItem4
+			// 
+			toolStripMenuItem4.Name = "toolStripMenuItem4";
+			toolStripMenuItem4.Size = new System.Drawing.Size(161, 6);
+			// 
+			// itemgridcustom
+			// 
+			this.itemgridcustom.Name = "itemgridcustom";
+			this.itemgridcustom.Size = new System.Drawing.Size(164, 22);
+			this.itemgridcustom.Text = "Customize...";
+			this.itemgridcustom.Click += new System.EventHandler(this.itemgridcustom_Click);
+			// 
+			// buttonzoom
+			// 
+			this.buttonzoom.AutoToolTip = false;
+			this.buttonzoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonzoom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemzoom200,
+            this.itemzoom100,
+            this.itemzoom50,
+            this.itemzoom25,
+            this.itemzoom10,
+            this.itemzoom5,
+            toolStripSeparator2,
+            this.itemzoomfittoscreen});
+			this.buttonzoom.Image = global::CodeImp.DoomBuilder.Properties.Resources.Zoom;
+			this.buttonzoom.ImageTransparentColor = System.Drawing.Color.Transparent;
+			this.buttonzoom.Name = "buttonzoom";
+			this.buttonzoom.Size = new System.Drawing.Size(29, 20);
+			this.buttonzoom.Text = "Zoom";
+			// 
+			// itemzoom200
+			// 
+			this.itemzoom200.Name = "itemzoom200";
+			this.itemzoom200.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom200.Tag = "200";
+			this.itemzoom200.Text = "200%";
+			this.itemzoom200.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom100
+			// 
+			this.itemzoom100.Name = "itemzoom100";
+			this.itemzoom100.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom100.Tag = "100";
+			this.itemzoom100.Text = "100%";
+			this.itemzoom100.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom50
+			// 
+			this.itemzoom50.Name = "itemzoom50";
+			this.itemzoom50.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom50.Tag = "50";
+			this.itemzoom50.Text = "50%";
+			this.itemzoom50.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom25
+			// 
+			this.itemzoom25.Name = "itemzoom25";
+			this.itemzoom25.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom25.Tag = "25";
+			this.itemzoom25.Text = "25%";
+			this.itemzoom25.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom10
+			// 
+			this.itemzoom10.Name = "itemzoom10";
+			this.itemzoom10.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom10.Tag = "10";
+			this.itemzoom10.Text = "10%";
+			this.itemzoom10.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom5
+			// 
+			this.itemzoom5.Name = "itemzoom5";
+			this.itemzoom5.Size = new System.Drawing.Size(167, 22);
+			this.itemzoom5.Tag = "5";
+			this.itemzoom5.Text = "5%";
+			this.itemzoom5.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			toolStripSeparator2.Name = "toolStripSeparator2";
+			toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
+			// 
+			// itemzoomfittoscreen
+			// 
+			this.itemzoomfittoscreen.Name = "itemzoomfittoscreen";
+			this.itemzoomfittoscreen.Size = new System.Drawing.Size(167, 22);
+			this.itemzoomfittoscreen.Text = "Fit to screen";
+			this.itemzoomfittoscreen.Click += new System.EventHandler(this.itemzoomfittoscreen_Click);
 			// 
 			// buttonnewmap
 			// 
@@ -523,351 +815,124 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonthingsfilter.Size = new System.Drawing.Size(23, 22);
 			this.buttonthingsfilter.Text = "Configure Things Filters";
 			// 
-			// thingfilters
-			// 
-			this.thingfilters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.thingfilters.Enabled = false;
-			this.thingfilters.Items.AddRange(new object[] {
-            "(none)",
-            "(custom)",
-            "Easy skill items only",
-            "Medium skill items only",
-            "Hard skill items only"});
-			this.thingfilters.Name = "thingfilters";
-			this.thingfilters.Size = new System.Drawing.Size(130, 25);
-			this.thingfilters.ToolTipText = "Things Filter";
-			// 
-			// toolStripSeparator8
-			// 
-			this.toolStripSeparator8.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
-			// 
-			// statusbar
-			// 
-			this.statusbar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statuslabel,
-            this.gridlabel,
-            this.buttongrid,
-            toolStripSeparator1,
-            this.zoomlabel,
-            this.buttonzoom,
-            toolStripSeparator9,
-            this.xposlabel,
-            this.poscommalabel,
-            this.yposlabel});
-			this.statusbar.Location = new System.Drawing.Point(0, 522);
-			this.statusbar.Name = "statusbar";
-			this.statusbar.ShowItemToolTips = true;
-			this.statusbar.Size = new System.Drawing.Size(839, 23);
-			this.statusbar.TabIndex = 2;
-			// 
-			// statuslabel
-			// 
-			this.statuslabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Status2;
-			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(482, 18);
-			this.statuslabel.Spring = true;
-			this.statuslabel.Text = "Initializing user interface...";
-			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// gridlabel
-			// 
-			this.gridlabel.AutoSize = false;
-			this.gridlabel.AutoToolTip = true;
-			this.gridlabel.Name = "gridlabel";
-			this.gridlabel.Size = new System.Drawing.Size(64, 18);
-			this.gridlabel.Text = "32 mp";
-			this.gridlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.gridlabel.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
-			this.gridlabel.ToolTipText = "Grid size";
-			// 
-			// buttongrid
-			// 
-			this.buttongrid.AutoToolTip = false;
-			this.buttongrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttongrid.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.itemgrid1024,
-            this.itemgrid512,
-            this.itemgrid256,
-            this.itemgrid128,
-            this.itemgrid64,
-            this.itemgrid32,
-            this.itemgrid16,
-            this.itemgrid8,
-            this.itemgrid4,
-            toolStripMenuItem4,
-            this.itemgridcustom});
-			this.buttongrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2;
-			this.buttongrid.ImageTransparentColor = System.Drawing.Color.Transparent;
-			this.buttongrid.Name = "buttongrid";
-			this.buttongrid.Size = new System.Drawing.Size(29, 21);
-			this.buttongrid.Text = "Grid";
-			// 
-			// itemgrid1024
-			// 
-			this.itemgrid1024.Name = "itemgrid1024";
-			this.itemgrid1024.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid1024.Tag = "1024";
-			this.itemgrid1024.Text = "1024 mp";
-			this.itemgrid1024.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgrid512
-			// 
-			this.itemgrid512.Name = "itemgrid512";
-			this.itemgrid512.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid512.Tag = "512";
-			this.itemgrid512.Text = "512 mp";
-			this.itemgrid512.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgrid256
-			// 
-			this.itemgrid256.Name = "itemgrid256";
-			this.itemgrid256.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid256.Tag = "256";
-			this.itemgrid256.Text = "256 mp";
-			this.itemgrid256.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgrid128
-			// 
-			this.itemgrid128.Name = "itemgrid128";
-			this.itemgrid128.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid128.Tag = "128";
-			this.itemgrid128.Text = "128 mp";
-			this.itemgrid128.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgrid64
-			// 
-			this.itemgrid64.Name = "itemgrid64";
-			this.itemgrid64.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid64.Tag = "64";
-			this.itemgrid64.Text = "64 mp";
-			this.itemgrid64.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgrid32
-			// 
-			this.itemgrid32.Name = "itemgrid32";
-			this.itemgrid32.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid32.Tag = "32";
-			this.itemgrid32.Text = "32 mp";
-			this.itemgrid32.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgrid16
-			// 
-			this.itemgrid16.Name = "itemgrid16";
-			this.itemgrid16.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid16.Tag = "16";
-			this.itemgrid16.Text = "16 mp";
-			this.itemgrid16.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgrid8
-			// 
-			this.itemgrid8.Name = "itemgrid8";
-			this.itemgrid8.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid8.Tag = "8";
-			this.itemgrid8.Text = "8 mp";
-			this.itemgrid8.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgrid4
-			// 
-			this.itemgrid4.Name = "itemgrid4";
-			this.itemgrid4.Size = new System.Drawing.Size(164, 22);
-			this.itemgrid4.Tag = "4";
-			this.itemgrid4.Text = "4 mp";
-			this.itemgrid4.Click += new System.EventHandler(this.itemgridsize_Click);
-			// 
-			// itemgridcustom
-			// 
-			this.itemgridcustom.Name = "itemgridcustom";
-			this.itemgridcustom.Size = new System.Drawing.Size(164, 22);
-			this.itemgridcustom.Text = "Customize...";
-			this.itemgridcustom.Click += new System.EventHandler(this.itemgridcustom_Click);
-			// 
-			// zoomlabel
-			// 
-			this.zoomlabel.AutoSize = false;
-			this.zoomlabel.AutoToolTip = true;
-			this.zoomlabel.Name = "zoomlabel";
-			this.zoomlabel.Size = new System.Drawing.Size(54, 18);
-			this.zoomlabel.Text = "50%";
-			this.zoomlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.zoomlabel.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
-			this.zoomlabel.ToolTipText = "Zoom level";
-			// 
-			// buttonzoom
-			// 
-			this.buttonzoom.AutoToolTip = false;
-			this.buttonzoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonzoom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.itemzoom200,
-            this.itemzoom100,
-            this.itemzoom50,
-            this.itemzoom25,
-            this.itemzoom10,
-            this.itemzoom5,
-            toolStripSeparator2,
-            this.itemzoomfittoscreen});
-			this.buttonzoom.Image = global::CodeImp.DoomBuilder.Properties.Resources.Zoom;
-			this.buttonzoom.ImageTransparentColor = System.Drawing.Color.Transparent;
-			this.buttonzoom.Name = "buttonzoom";
-			this.buttonzoom.Size = new System.Drawing.Size(29, 21);
-			this.buttonzoom.Text = "Zoom";
-			// 
-			// itemzoom200
-			// 
-			this.itemzoom200.Name = "itemzoom200";
-			this.itemzoom200.Size = new System.Drawing.Size(167, 22);
-			this.itemzoom200.Tag = "200";
-			this.itemzoom200.Text = "200%";
-			this.itemzoom200.Click += new System.EventHandler(this.itemzoomto_Click);
-			// 
-			// itemzoom100
-			// 
-			this.itemzoom100.Name = "itemzoom100";
-			this.itemzoom100.Size = new System.Drawing.Size(167, 22);
-			this.itemzoom100.Tag = "100";
-			this.itemzoom100.Text = "100%";
-			this.itemzoom100.Click += new System.EventHandler(this.itemzoomto_Click);
-			// 
-			// itemzoom50
-			// 
-			this.itemzoom50.Name = "itemzoom50";
-			this.itemzoom50.Size = new System.Drawing.Size(167, 22);
-			this.itemzoom50.Tag = "50";
-			this.itemzoom50.Text = "50%";
-			this.itemzoom50.Click += new System.EventHandler(this.itemzoomto_Click);
-			// 
-			// itemzoom25
-			// 
-			this.itemzoom25.Name = "itemzoom25";
-			this.itemzoom25.Size = new System.Drawing.Size(167, 22);
-			this.itemzoom25.Tag = "25";
-			this.itemzoom25.Text = "25%";
-			this.itemzoom25.Click += new System.EventHandler(this.itemzoomto_Click);
-			// 
-			// itemzoom10
-			// 
-			this.itemzoom10.Name = "itemzoom10";
-			this.itemzoom10.Size = new System.Drawing.Size(167, 22);
-			this.itemzoom10.Tag = "10";
-			this.itemzoom10.Text = "10%";
-			this.itemzoom10.Click += new System.EventHandler(this.itemzoomto_Click);
-			// 
-			// itemzoom5
-			// 
-			this.itemzoom5.Name = "itemzoom5";
-			this.itemzoom5.Size = new System.Drawing.Size(167, 22);
-			this.itemzoom5.Tag = "5";
-			this.itemzoom5.Text = "5%";
-			this.itemzoom5.Click += new System.EventHandler(this.itemzoomto_Click);
-			// 
-			// itemzoomfittoscreen
-			// 
-			this.itemzoomfittoscreen.Name = "itemzoomfittoscreen";
-			this.itemzoomfittoscreen.Size = new System.Drawing.Size(167, 22);
-			this.itemzoomfittoscreen.Text = "Fit to screen";
-			this.itemzoomfittoscreen.Click += new System.EventHandler(this.itemzoomfittoscreen_Click);
-			// 
-			// xposlabel
-			// 
-			this.xposlabel.AutoSize = false;
-			this.xposlabel.Name = "xposlabel";
-			this.xposlabel.Size = new System.Drawing.Size(50, 18);
-			this.xposlabel.Text = "0";
-			this.xposlabel.ToolTipText = "Current X, Y coordinates on map";
-			// 
-			// yposlabel
-			// 
-			this.yposlabel.AutoSize = false;
-			this.yposlabel.Name = "yposlabel";
-			this.yposlabel.Size = new System.Drawing.Size(50, 18);
-			this.yposlabel.Text = "0";
-			this.yposlabel.ToolTipText = "Current X, Y coordinates on map";
-			// 
-			// panelinfo
-			// 
-			this.panelinfo.Controls.Add(this.vertexinfo);
-			this.panelinfo.Controls.Add(this.thinginfo);
-			this.panelinfo.Controls.Add(this.sectorinfo);
-			this.panelinfo.Controls.Add(this.linedefinfo);
-			this.panelinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panelinfo.Location = new System.Drawing.Point(0, 416);
-			this.panelinfo.Name = "panelinfo";
-			this.panelinfo.Size = new System.Drawing.Size(839, 106);
-			this.panelinfo.TabIndex = 4;
-			// 
-			// vertexinfo
-			// 
-			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.vertexinfo.Location = new System.Drawing.Point(3, 3);
-			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.vertexinfo.Name = "vertexinfo";
-			this.vertexinfo.Size = new System.Drawing.Size(180, 100);
-			this.vertexinfo.TabIndex = 1;
-			this.vertexinfo.Visible = false;
-			// 
-			// thinginfo
-			// 
-			this.thinginfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.thinginfo.Location = new System.Drawing.Point(3, 3);
-			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.thinginfo.Name = "thinginfo";
-			this.thinginfo.Size = new System.Drawing.Size(385, 100);
-			this.thinginfo.TabIndex = 3;
-			this.thinginfo.Visible = false;
-			// 
-			// sectorinfo
-			// 
-			this.sectorinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.sectorinfo.Location = new System.Drawing.Point(3, 3);
-			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.sectorinfo.Name = "sectorinfo";
-			this.sectorinfo.Size = new System.Drawing.Size(447, 100);
-			this.sectorinfo.TabIndex = 2;
-			this.sectorinfo.Visible = false;
-			// 
-			// linedefinfo
-			// 
-			this.linedefinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
-			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.linedefinfo.Name = "linedefinfo";
-			this.linedefinfo.Size = new System.Drawing.Size(783, 100);
-			this.linedefinfo.TabIndex = 0;
-			this.linedefinfo.Visible = false;
-			// 
-			// redrawtimer
-			// 
-			this.redrawtimer.Interval = 1;
-			this.redrawtimer.Tick += new System.EventHandler(this.redrawtimer_Tick);
-			// 
-			// display
-			// 
-			this.display.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.display.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.display.CausesValidation = false;
-			this.display.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.display.Location = new System.Drawing.Point(0, 49);
-			this.display.Name = "display";
-			this.display.Size = new System.Drawing.Size(839, 367);
-			this.display.TabIndex = 5;
-			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
-			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
-			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
-			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
-			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
-			this.display.Resize += new System.EventHandler(this.display_Resize);
-			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
-			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
-			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
+			// itemnewmap
+			// 
+			this.itemnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.File;
+			this.itemnewmap.Name = "itemnewmap";
+			this.itemnewmap.ShortcutKeyDisplayString = "";
+			this.itemnewmap.Size = new System.Drawing.Size(201, 22);
+			this.itemnewmap.Tag = "newmap";
+			this.itemnewmap.Text = "New Map";
+			this.itemnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemopenmap
+			// 
+			this.itemopenmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
+			this.itemopenmap.Name = "itemopenmap";
+			this.itemopenmap.Size = new System.Drawing.Size(201, 22);
+			this.itemopenmap.Tag = "openmap";
+			this.itemopenmap.Text = "Open Map...";
+			this.itemopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemsavemap
+			// 
+			this.itemsavemap.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
+			this.itemsavemap.Name = "itemsavemap";
+			this.itemsavemap.Size = new System.Drawing.Size(201, 22);
+			this.itemsavemap.Tag = "savemap";
+			this.itemsavemap.Text = "Save Map";
+			this.itemsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemundo
+			// 
+			this.itemundo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Undo;
+			this.itemundo.Name = "itemundo";
+			this.itemundo.Size = new System.Drawing.Size(161, 22);
+			this.itemundo.Tag = "undo";
+			this.itemundo.Text = "Undo";
+			this.itemundo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemredo
+			// 
+			this.itemredo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Redo;
+			this.itemredo.Name = "itemredo";
+			this.itemredo.Size = new System.Drawing.Size(161, 22);
+			this.itemredo.Tag = "redo";
+			this.itemredo.Text = "Redo";
+			this.itemredo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemverticesmode
+			// 
+			this.itemverticesmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.VerticesMode;
+			this.itemverticesmode.Name = "itemverticesmode";
+			this.itemverticesmode.Size = new System.Drawing.Size(161, 22);
+			this.itemverticesmode.Tag = "verticesmode";
+			this.itemverticesmode.Text = "Vertices Mode";
+			this.itemverticesmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemlinedefsmode
+			// 
+			this.itemlinedefsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinesMode;
+			this.itemlinedefsmode.Name = "itemlinedefsmode";
+			this.itemlinedefsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemlinedefsmode.Tag = "linedefsmode";
+			this.itemlinedefsmode.Text = "Linedefs Mode";
+			this.itemlinedefsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemsectorsmode
+			// 
+			this.itemsectorsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.SectorsMode;
+			this.itemsectorsmode.Name = "itemsectorsmode";
+			this.itemsectorsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemsectorsmode.Tag = "sectorsmode";
+			this.itemsectorsmode.Text = "Sectors Mode";
+			this.itemsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemthingsmode
+			// 
+			this.itemthingsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.ThingsMode;
+			this.itemthingsmode.Name = "itemthingsmode";
+			this.itemthingsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemthingsmode.Tag = "thingsmode";
+			this.itemthingsmode.Text = "Things Mode";
+			this.itemthingsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemmapoptions
+			// 
+			this.itemmapoptions.Image = global::CodeImp.DoomBuilder.Properties.Resources.Properties;
+			this.itemmapoptions.Name = "itemmapoptions";
+			this.itemmapoptions.Size = new System.Drawing.Size(161, 22);
+			this.itemmapoptions.Tag = "mapoptions";
+			this.itemmapoptions.Text = "Map Options....";
+			this.itemmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonundo
+			// 
+			this.buttonundo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonundo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Undo;
+			this.buttonundo.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonundo.Name = "buttonundo";
+			this.buttonundo.Size = new System.Drawing.Size(23, 22);
+			this.buttonundo.Tag = "undo";
+			this.buttonundo.Text = "Undo";
+			this.buttonundo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator10
+			// 
+			toolStripSeparator10.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			toolStripSeparator10.Name = "toolStripSeparator10";
+			toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonredo
+			// 
+			this.buttonredo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonredo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Redo;
+			this.buttonredo.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonredo.Name = "buttonredo";
+			this.buttonredo.Size = new System.Drawing.Size(23, 22);
+			this.buttonredo.Tag = "redo";
+			this.buttonredo.Text = "Redo";
+			this.buttonredo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MainForm
 			// 
@@ -973,5 +1038,9 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemgridcustom;
 		private System.Windows.Forms.ToolStripMenuItem itemgrid512;
 		private System.Windows.Forms.ToolStripStatusLabel poscommalabel;
+		private System.Windows.Forms.ToolStripMenuItem itemundo;
+		private System.Windows.Forms.ToolStripMenuItem itemredo;
+		private System.Windows.Forms.ToolStripButton buttonundo;
+		private System.Windows.Forms.ToolStripButton buttonredo;
 	}
 }

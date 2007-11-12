@@ -123,6 +123,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Redo {
+            get {
+                object obj = ResourceManager.GetObject("Redo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap SaveMap {
             get {
                 object obj = ResourceManager.GetObject("SaveMap", resourceCulture);
@@ -175,6 +182,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap ThingsMode {
             get {
                 object obj = ResourceManager.GetObject("ThingsMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Undo {
+            get {
+                object obj = ResourceManager.GetObject("Undo", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

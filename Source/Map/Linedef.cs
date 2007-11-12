@@ -29,7 +29,7 @@ using SlimDX.Direct3D;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public class Linedef : IDisposable
+	public sealed class Linedef : IDisposable
 	{
 		#region ================== Constants
 
@@ -155,6 +155,17 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
+		// This copies all properties to another line
+		public void CopyPropertiesTo(Linedef l)
+		{
+			// Copy properties
+			l.action = action;
+			l.args = (byte[])args.Clone();
+			l.flags = flags;
+			l.tag = tag;
+			l.updateneeded = true;
+		}
+		
 		// This attaches a sidedef on the front
 		public void AttachFront(Sidedef s)
 		{
@@ -227,17 +238,6 @@ namespace CodeImp.DoomBuilder.Map
 		public void NeedUpdate()
 		{
 			updateneeded = true;
-		}
-
-		// This copies all properties to another line
-		public void CopyPropertiesTo(Linedef l)
-		{
-			// Copy properties
-			l.action = action;
-			l.args = (byte[])args.Clone();
-			l.flags = flags;
-			l.tag = tag;
-			l.updateneeded = true;
 		}
 		
 		#endregion

@@ -865,6 +865,20 @@ namespace CodeImp.DoomBuilder.Interface
 			itemlinedefsmode.Enabled = (General.Map != null);
 			itemsectorsmode.Enabled = (General.Map != null);
 			itemthingsmode.Enabled = (General.Map != null);
+			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
+			itemredo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextRedo != null);
+
+			// Determine undo description
+			if(itemundo.Enabled)
+				itemundo.Text = "Undo " + General.Map.UndoRedo.NextUndo.description;
+			else
+				itemundo.Text = "Undo";
+
+			// Determine redo description
+			if(itemredo.Enabled)
+				itemredo.Text = "Redo " + General.Map.UndoRedo.NextRedo.description;
+			else
+				itemredo.Text = "Redo";
 			
 			// Toolbar icons
 			buttonmapoptions.Enabled = (General.Map != null);
@@ -872,6 +886,10 @@ namespace CodeImp.DoomBuilder.Interface
 			buttonlinedefsmode.Enabled = (General.Map != null);
 			buttonsectorsmode.Enabled = (General.Map != null);
 			buttonthingsmode.Enabled = (General.Map != null);
+			buttonundo.Enabled = itemundo.Enabled;
+			buttonredo.Enabled = itemredo.Enabled;
+			buttonundo.ToolTipText = itemundo.Text;
+			buttonredo.ToolTipText = itemredo.Text;
 		}
 		
 		#endregion
