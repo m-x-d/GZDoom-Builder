@@ -153,6 +153,18 @@ namespace CodeImp.DoomBuilder.Geometry
 			return a.x * b.x + a.y * b.y;
 		}
 
+		// This compares a vector
+		public static bool operator ==(Vector2D a, Vector2D b)
+		{
+			return (a.x == b.x) && (a.y == b.y);
+		}
+
+		// This compares a vector
+		public static bool operator !=(Vector2D a, Vector2D b)
+		{
+			return (a.x != b.x) || (a.y != b.y);
+		}
+		
 		// This reflects the vector v over mirror m
 		// Note that mirror m must be normalized!
 		// R = V - 2 * M * (M dot V)
