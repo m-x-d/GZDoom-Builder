@@ -71,6 +71,9 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Properties
 
+		public bool ShiftState { get { return shift; } }
+		public bool CtrlState { get { return ctrl; } }
+		public bool AltState { get { return alt; } }
 		public bool MouseInDisplay { get { return mouseinside; } }
 		public RenderTargetControl Display { get { return display; } }
 

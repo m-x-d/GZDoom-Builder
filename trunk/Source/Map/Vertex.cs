@@ -160,10 +160,6 @@ namespace CodeImp.DoomBuilder.Map
 		// This finds the line closest to the specified position
 		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
 
-		#endregion
-
-		#region ================== Changes
-
 		// This moves the vertex
 		public void Move(Vector2D newpos)
 		{
@@ -183,6 +179,13 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in linedefs) l.NeedUpdate();
 		}
 
+		// This snaps the vertex to the grid
+		public void SnapToGrid()
+		{
+			// Calculate nearest grid coordinates
+			this.Move(General.Map.Grid.SnappedToGrid(pos));
+		}
+		
 		#endregion
 	}
 }

@@ -47,13 +47,17 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 
 		// Mouse position on map where dragging started
-		protected Vector2D dragstartmappos;
+		private Vector2D dragstartmappos;
 
 		// Item used as reference for snapping to the grid
-		protected Vertex dragitem;
+		private Vertex dragitem;
+		private Vector2D dragitemposition;
 
 		// List of old vertex positions
-		protected List<Vector2D> oldpositions;
+		private List<Vector2D> oldpositions;
+
+		// Options
+		private bool snaptogrid;
 
 		#endregion
 
@@ -74,6 +78,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// We will use this as reference to move the vertices, or to move them back on cancel
 			oldpositions = new List<Vector2D>(General.Map.Selection.Vertices.Count);
 			foreach(Vertex v in General.Map.Selection.Vertices) oldpositions.Add(v.Position);
+
+			// Also keep old position of the dragged item
+			dragitemposition = dragitem.Position;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -97,18 +104,45 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Methods
 
 		// This moves the selected geometry relatively
-		private void MoveGeometryRelative(Vector2D offset)
+		// Returns true when geometry has actually moved
+		private bool MoveGeometryRelative(Vector2D offset, bool snap)
 		{
+			Vector2D oldpos = dragitem.Position;
 			int i = 0;
 			
-			// Move selected geometry
-			foreach(Vertex v in General.Map.Selection.Vertices)
+			// Snap to grid?
+			if(snap)
 			{
-				// Move vertex from old position relative to the mouse position change since drag start
-				v.Move(oldpositions[i] + offset);
+				// Move the dragged item
+				dragitem.Move(dragitemposition + offset);
 
-				// Next
-				i++;
+				// Snap item to grid
+				dragitem.SnapToGrid();
+
+				// Adjust the offset
+				offset += dragitem.Position - (dragitemposition + offset);
+			}
+
+			// Drag item moved?
+			if(!snap || (dragitem.Position != oldpos))
+			{
+				// Move selected geometry
+				foreach(Vertex v in General.Map.Selection.Vertices)
+				{
+					// Move vertex from old position relative to the mouse position change since drag start
+					v.Move(oldpositions[i] + offset);
+
+					// Next
+					i++;
+				}
+
+				// Moved
+				return true;
+			}
+			else
+			{
+				// No changes
+				return false;
 			}
 		}
 		
@@ -116,7 +150,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Cancel()
 		{
 			// Move geometry back to original position
-			MoveGeometryRelative(new Vector2D(0f, 0f));
+			MoveGeometryRelative(new Vector2D(0f, 0f), false);
 
 			// Update cached values
 			General.Map.Map.Update();
@@ -146,13 +180,13 @@ namespace CodeImp.DoomBuilder.Editing
 			if(!cancelled)
 			{
 				// Move geometry back to original position
-				MoveGeometryRelative(new Vector2D(0f, 0f));
+				MoveGeometryRelative(new Vector2D(0f, 0f), false);
 
 				// Make undo
 				General.Map.UndoRedo.CreateUndo("drag vertices", UndoGroup.None, 0, false);
 
 				// Move selected geometry to final position
-				MoveGeometryRelative(mousemappos - dragstartmappos);
+				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid);
 
 				
 				// TODO: Merge geometry
@@ -195,18 +229,20 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void MouseMove(MouseEventArgs e)
 		{
 			base.MouseMove(e);
-
-			// Move selected geometry
-			MoveGeometryRelative(mousemappos - dragstartmappos);
-
-			// Update cached values
-			General.Map.Map.Update();
+			snaptogrid = !General.MainWindow.ShiftState;
 			
-			// Redraw
-			General.MainWindow.RedrawDisplay();
+			// Move selected geometry
+			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid))
+			{
+				// Update cached values
+				General.Map.Map.Update();
+
+				// Redraw
+				General.MainWindow.RedrawDisplay();
+			}
 		}
 
-		// Mosue button released
+		// Mouse button released
 		public override void MouseUp(MouseEventArgs e)
 		{
 			base.MouseUp(e);
