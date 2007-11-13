@@ -200,6 +200,9 @@ namespace CodeImp.DoomBuilder.Editing
 				// Put it on the stack
 				redos.Push(r);
 
+				// Reset grouping
+				lastgroup = UndoGroup.None;
+				
 				// Change map set
 				General.Map.ChangeMapSet(u.map);
 
@@ -226,6 +229,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// Put it on the stack
 				undos.Push(u);
+
+				// Reset grouping
+				lastgroup = UndoGroup.None;
 
 				// Change map set
 				General.Map.ChangeMapSet(r.map);

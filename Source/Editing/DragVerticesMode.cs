@@ -46,9 +46,6 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 
-		// Undo ticket
-		private int undoticket;
-		
 		// Mouse position on map where dragging started
 		protected Vector2D dragstartmappos;
 
@@ -73,9 +70,6 @@ namespace CodeImp.DoomBuilder.Editing
 			this.dragitem = dragitem;
 			this.dragstartmappos = dragstartmappos;
 
-			// Make undo
-			undoticket = General.Map.UndoRedo.CreateUndo("drag vertices", UndoGroup.None, 0, false);
-			
 			// Make old positions list
 			// We will use this as reference to move the vertices, or to move them back on cancel
 			oldpositions = new List<Vector2D>(General.Map.Selection.Vertices.Count);
@@ -102,23 +96,27 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
-		// Cancelled
-		public override void Cancel()
+		// This moves the selected geometry relatively
+		private void MoveGeometryRelative(Vector2D offset)
 		{
 			int i = 0;
-
-			// Withdraw undo
-			General.Map.UndoRedo.WithdrawUndo(undoticket);
 			
-			// Move geometry back to original position
+			// Move selected geometry
 			foreach(Vertex v in General.Map.Selection.Vertices)
 			{
-				// Move vertex back to original position
-				v.Move(oldpositions[i]);
+				// Move vertex from old position relative to the mouse position change since drag start
+				v.Move(oldpositions[i] + offset);
 
 				// Next
 				i++;
 			}
+		}
+		
+		// Cancelled
+		public override void Cancel()
+		{
+			// Move geometry back to original position
+			MoveGeometryRelative(new Vector2D(0f, 0f));
 
 			// Update cached values
 			General.Map.Map.Update();
@@ -147,8 +145,21 @@ namespace CodeImp.DoomBuilder.Editing
 			// When not cancelled
 			if(!cancelled)
 			{
-				// TODO: Merge geometry
+				// Move geometry back to original position
+				MoveGeometryRelative(new Vector2D(0f, 0f));
+
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("drag vertices", UndoGroup.None, 0, false);
+
+				// Move selected geometry to final position
+				MoveGeometryRelative(mousemappos - dragstartmappos);
+
 				
+				// TODO: Merge geometry
+
+
+				// Update cached values
+				General.Map.Map.Update();
 
 				// Map is changed
 				General.Map.IsChanged = true;
@@ -183,23 +194,14 @@ namespace CodeImp.DoomBuilder.Editing
 		// Mouse moving
 		public override void MouseMove(MouseEventArgs e)
 		{
-			int i = 0;
-
 			base.MouseMove(e);
 
 			// Move selected geometry
-			foreach(Vertex v in General.Map.Selection.Vertices)
-			{
-				// Move vertex from old position relative to the mouse position change since drag start
-				v.Move(oldpositions[i] + (mousemappos - dragstartmappos));
-				
-				// Next
-				i++;
-			}
+			MoveGeometryRelative(mousemappos - dragstartmappos);
 
 			// Update cached values
 			General.Map.Map.Update();
-
+			
 			// Redraw
 			General.MainWindow.RedrawDisplay();
 		}
