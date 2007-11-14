@@ -146,6 +146,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void MouseUp(MouseEventArgs e) { }
 		public virtual void RedrawDisplay() { }
 		public virtual void RefreshDisplay() { }
+		public virtual void KeyDown(KeyEventArgs e) { }
+		public virtual void KeyUp(KeyEventArgs e) { }
 		
 		#endregion
 	}

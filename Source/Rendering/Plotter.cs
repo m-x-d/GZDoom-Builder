@@ -96,34 +96,39 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This draws a pixel normally
 		public void DrawVertexSolid(int x, int y, int size, PixelColor c, PixelColor l, PixelColor d)
 		{
+			int x1 = x - size;
+			int x2 = x + size;
+			int y1 = y - size;
+			int y2 = y + size;
 			int xp, yp;
-			
+
 			// Do unchecked?
-			if((x - size >= 0) && (x + size < visiblewidth) && (y - size >= 0) && (y + size < visibleheight))
+			if((x1 >= 0) && (x2 < visiblewidth) && (y1 >= 0) && (y2 < visibleheight))
 			{
 				// Filled square
-				for(yp = y - size; yp <= y + size; yp++)
-					for(xp = x - size; xp <= x + size; xp++)
+				for(yp = y1; yp <= y2; yp++)
+					for(xp = x1; xp <= x2; xp++)
 						pixels[yp * width + xp] = c;
 
 				// Vertical edges
-				for(yp = y - size + 1; yp <= y + size - 1; yp++)
+				for(yp = y1 + 1; yp <= y2 - 1; yp++)
 				{
-					pixels[yp * width + (x - size)] = l;
-					pixels[yp * width + (x + size)] = d;
+					pixels[yp * width + x1] = l;
+					pixels[yp * width + x2] = d;
 				}
 
 				// Horizontal edges
-				for(xp = x - size + 1; xp <= x + size - 1; xp++)
+				for(xp = x1 + 1; xp <= x2 - 1; xp++)
 				{
-					pixels[(y - size) * width + xp] = l;
-					pixels[(y + size) * width + xp] = d;
+					pixels[y1 * width + xp] = l;
+					pixels[y2 * width + xp] = d;
 				}
 
 				// Corners
-				pixels[(y + size) * width + (x + size)] = d;
-				pixels[(y - size) * width + (x - size)] = l;
+				pixels[y2 * width + x2] = d;
+				pixels[y1 * width + x1] = l;
 			}
+			/*
 			else
 			{
 				// Filled square
@@ -149,6 +154,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				DrawPixelSolid(x + size, y + size, d);
 				DrawPixelSolid(x - size, y - size, l);
 			}
+			*/
 		}
 
 		// This draws a dotted grid line horizontally

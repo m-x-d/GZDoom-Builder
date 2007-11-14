@@ -526,6 +526,7 @@ namespace CodeImp.DoomBuilder
 				
 				// Clean up
 				if(map != null) map.Dispose();
+				map = null;
 				mainwindow.Dispose();
 				actions.Dispose();
 				clock.Dispose();
