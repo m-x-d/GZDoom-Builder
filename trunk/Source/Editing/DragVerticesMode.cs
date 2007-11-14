@@ -175,6 +175,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Disengage()
 		{
 			base.Disengage();
+			Cursor.Current = Cursors.WaitCursor;
 			
 			// When not cancelled
 			if(!cancelled)
@@ -204,6 +205,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Uncheck vertices button on main window
 			General.MainWindow.SetVerticesChecked(false);
+			Cursor.Current = Cursors.Default;
 		}
 
 		// This redraws the display
@@ -225,12 +227,11 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
-		// Mouse moving
-		public override void MouseMove(MouseEventArgs e)
+		// This updates the dragging
+		private void Update()
 		{
-			base.MouseMove(e);
 			snaptogrid = !General.MainWindow.ShiftState;
-			
+
 			// Move selected geometry
 			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid))
 			{
@@ -240,6 +241,13 @@ namespace CodeImp.DoomBuilder.Editing
 				// Redraw
 				General.MainWindow.RedrawDisplay();
 			}
+		}
+
+		// Mouse moving
+		public override void MouseMove(MouseEventArgs e)
+		{
+			base.MouseMove(e);
+			Update();
 		}
 
 		// Mouse button released
@@ -253,6 +261,20 @@ namespace CodeImp.DoomBuilder.Editing
 				// Just return to vertices mode, geometry will be merged on disengage.
 				General.Map.ChangeMode(new VerticesMode());
 			}
+		}
+
+		// When a key is released
+		public override void KeyUp(KeyEventArgs e)
+		{
+			base.KeyUp(e);
+			if(snaptogrid != !General.MainWindow.ShiftState) Update();
+		}
+
+		// When a key is pressed
+		public override void KeyDown(KeyEventArgs e)
+		{
+			base.KeyDown(e);
+			if(snaptogrid != !General.MainWindow.ShiftState) Update();
 		}
 		
 		#endregion

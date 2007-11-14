@@ -249,7 +249,7 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		#endregion
 		
-		#region ================== Mouse input
+		#region ================== Input
 
 		// Mouse leaves the display
 		public override void MouseLeave(EventArgs e)

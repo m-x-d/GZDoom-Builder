@@ -610,6 +610,9 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Invoke any actions associated with this key
 			General.Actions.InvokeByKey((int)e.KeyData);
+
+			// Invoke on editing mode
+			if(General.Map != null) General.Map.Mode.KeyDown(e);
 		}
 
 		// When a key is released
@@ -619,6 +622,9 @@ namespace CodeImp.DoomBuilder.Interface
 			alt = e.Alt;
 			shift = e.Shift;
 			ctrl = e.Control;
+
+			// Invoke on editing mode
+			if(General.Map != null) General.Map.Mode.KeyUp(e);
 		}
 
 		#endregion
