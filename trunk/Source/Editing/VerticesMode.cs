@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		#region ================== Constants
 
-		protected const float VERTEX_HIGHLIGHT_RANGE = 20f;
+		public const float VERTEX_HIGHLIGHT_RANGE = 20f;
 
 		#endregion
 

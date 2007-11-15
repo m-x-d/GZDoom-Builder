@@ -587,12 +587,14 @@ namespace CodeImp.DoomBuilder.Interface
 			if(e.Delta > 0)
 			{
 				// Invoke actions for scrollwheel
+				//for(int i = 0; i < e.Delta; i += 120)
 				General.Actions.InvokeByKey(mod | (int)SpecialKeys.MScrollUp);
 			}
 			// Scrollwheel down?
 			else if(e.Delta < 0)
 			{
 				// Invoke actions for scrollwheel
+				//for(int i = 0; i > e.Delta; i -= 120)
 				General.Actions.InvokeByKey(mod | (int)SpecialKeys.MScrollDown);
 			}
 			

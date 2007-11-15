@@ -147,6 +147,9 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Scroll now
 			renderer.PositionView(renderer.OffsetX + deltax, renderer.OffsetY + deltay);
+			this.ViewChanged();
+			
+			// Redraw
 			General.MainWindow.RedrawDisplay();
 
 			// Determine new unprojected mouse coordinates
@@ -189,6 +192,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Zoom now
 			renderer.PositionView(renderer.OffsetX - diff.x, renderer.OffsetY + diff.y);
 			renderer.ScaleView(newscale);
+			this.ViewChanged();
+
+			// Redraw
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 			
@@ -201,6 +207,9 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Zoom now
 			renderer.ScaleView(newscale);
+			this.ViewChanged();
+
+			// Redraw
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 
@@ -240,11 +249,19 @@ namespace CodeImp.DoomBuilder.Editing
 			// Change the view to see the whole map
 			renderer.ScaleView(scale);
 			renderer.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
+			this.ViewChanged();
+			
+			// Redraw
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 
 			// Give a new mousemove event to update coordinates
 			if(mouseinside) MouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
+		}
+
+		// This is called when the view changes (scroll/zoom)
+		protected virtual void ViewChanged()
+		{
 		}
 		
 		#endregion
