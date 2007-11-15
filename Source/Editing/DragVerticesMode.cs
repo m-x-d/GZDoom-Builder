@@ -56,8 +56,12 @@ namespace CodeImp.DoomBuilder.Editing
 		// List of old vertex positions
 		private List<Vector2D> oldpositions;
 
+		// List of non-selected items
+		private List<Vertex> others;
+		
 		// Options
-		private bool snaptogrid;
+		private bool snaptogrid;		// SHIFT to disable
+		private bool snaptonearest;		// CTRL to enable
 
 		#endregion
 
@@ -81,6 +85,11 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Also keep old position of the dragged item
 			dragitemposition = dragitem.Position;
+
+			// Make list of non-selected vertices
+			// This will be used for snapping to nearest items
+			others = new List<Vertex>(General.Map.Map.Vertices.Count);
+			foreach(Vertex v in General.Map.Map.Vertices) if(v.Selected == 0) others.Add(v);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -102,16 +111,35 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 
 		#region ================== Methods
-
+		
 		// This moves the selected geometry relatively
 		// Returns true when geometry has actually moved
-		private bool MoveGeometryRelative(Vector2D offset, bool snap)
+		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapnearest)
 		{
 			Vector2D oldpos = dragitem.Position;
+			Vertex nearest;
 			int i = 0;
 			
+			// Snap to nearest?
+			if(snapnearest)
+			{
+				// Find nearest unselected item within selection range
+				nearest = MapSet.NearestVertexSquareRange(others, mousemappos, VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+				if(nearest != null)
+				{
+					// Move the dragged item
+					dragitem.Move(nearest.Position);
+
+					// Adjust the offset
+					offset = nearest.Position - dragitemposition;
+
+					// Do not snap to grid!
+					snapgrid = false;
+				}
+			}
+
 			// Snap to grid?
-			if(snap)
+			if(snapgrid)
 			{
 				// Move the dragged item
 				dragitem.Move(dragitemposition + offset);
@@ -124,12 +152,13 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 
 			// Drag item moved?
-			if(!snap || (dragitem.Position != oldpos))
+			if(!snapgrid || (dragitem.Position != oldpos))
 			{
 				// Move selected geometry
 				foreach(Vertex v in General.Map.Selection.Vertices)
 				{
-					// Move vertex from old position relative to the mouse position change since drag start
+					// Move vertex from old position relative to the
+					// mouse position change since drag start
 					v.Move(oldpositions[i] + offset);
 
 					// Next
@@ -150,7 +179,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Cancel()
 		{
 			// Move geometry back to original position
-			MoveGeometryRelative(new Vector2D(0f, 0f), false);
+			MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
 
 			// Update cached values
 			General.Map.Map.Update();
@@ -181,13 +210,13 @@ namespace CodeImp.DoomBuilder.Editing
 			if(!cancelled)
 			{
 				// Move geometry back to original position
-				MoveGeometryRelative(new Vector2D(0f, 0f), false);
+				MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
 
 				// Make undo
 				General.Map.UndoRedo.CreateUndo("drag vertices", UndoGroup.None, 0, false);
 
 				// Move selected geometry to final position
-				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid);
+				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
 
 				
 				// TODO: Merge geometry
@@ -222,6 +251,11 @@ namespace CodeImp.DoomBuilder.Editing
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
+				// Draw the dragged item highlighted
+				// This is important to know, because this item is used
+				// for snapping to the grid and snapping to nearest items
+				renderer.RenderVertex(dragitem, ColorCollection.HIGHLIGHT);
+				
 				// Done
 				renderer.FinishRendering();
 			}
@@ -231,9 +265,10 @@ namespace CodeImp.DoomBuilder.Editing
 		private void Update()
 		{
 			snaptogrid = !General.MainWindow.ShiftState;
-
+			snaptonearest = General.MainWindow.CtrlState;
+			
 			// Move selected geometry
-			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid))
+			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest))
 			{
 				// Update cached values
 				General.Map.Map.Update();
@@ -268,6 +303,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.KeyUp(e);
 			if(snaptogrid != !General.MainWindow.ShiftState) Update();
+			if(snaptonearest != General.MainWindow.CtrlState) Update();
 		}
 
 		// When a key is pressed
@@ -275,6 +311,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.KeyDown(e);
 			if(snaptogrid != !General.MainWindow.ShiftState) Update();
+			if(snaptonearest != General.MainWindow.CtrlState) Update();
 		}
 		
 		#endregion
