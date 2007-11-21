@@ -757,7 +757,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Rendering
 
 		// This begins a drawing session
-		public unsafe bool StartRendering(bool clearstructs, bool clearthings)
+		public unsafe bool Start(bool clearstructs, bool clearthings)
 		{
 			// Rendertargets available?
 			if((structtex != null) && (thingstex != null))
@@ -791,20 +791,20 @@ namespace CodeImp.DoomBuilder.Rendering
 				else
 				{
 					// Can't render!
-					FinishRendering();
+					Finish();
 					return false;
 				}
 			}
 			else
 			{
 				// Can't render!
-				FinishRendering();
+				Finish();
 				return false;
 			}
 		}
 
 		// This ends a drawing session
-		public void FinishRendering()
+		public void Finish()
 		{
 			// Stop rendering
 			graphics.FinishRendering();

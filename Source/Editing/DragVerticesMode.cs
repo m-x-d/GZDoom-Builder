@@ -240,13 +240,9 @@ namespace CodeImp.DoomBuilder.Editing
 		// This redraws the display
 		public unsafe override void RedrawDisplay()
 		{
-			// Start with a clear display
-			if(renderer.StartRendering(true, true))
+			// Start rendering
+			if(renderer.Start(true, false))
 			{
-				// Render things
-				renderer.SetThingsRenderOrder(false);
-				renderer.RenderThingSet(General.Map.Map.Things);
-
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
@@ -257,7 +253,7 @@ namespace CodeImp.DoomBuilder.Editing
 				renderer.RenderVertex(dragitem, ColorCollection.HIGHLIGHT);
 				
 				// Done
-				renderer.FinishRendering();
+				renderer.Finish();
 			}
 		}
 

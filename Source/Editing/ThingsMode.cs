@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public unsafe override void RedrawDisplay()
 		{
 			// Start with a clear display
-			if(renderer.StartRendering(true, true))
+			if(renderer.Start(true, true))
 			{
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Editing
 					renderer.RenderThing(highlighted, General.Colors.Highlight);
 
 				// Done
-				renderer.FinishRendering();
+				renderer.Finish();
 			}
 		}
 
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected void Highlight(Thing t)
 		{
 			// Update display
-			if(renderer.StartRendering(false, false))
+			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
 				if(highlighted != null)
@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.Editing
 					renderer.RenderThing(highlighted, General.Colors.Highlight);
 
 				// Done
-				renderer.FinishRendering();
+				renderer.Finish();
 			}
 
 			// Show highlight info

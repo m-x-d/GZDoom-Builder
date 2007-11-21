@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public unsafe override void RedrawDisplay()
 		{
 			// Start with a clear display
-			if(renderer.StartRendering(true, true))
+			if(renderer.Start(true, true))
 			{
 				// Render things
 				renderer.SetThingsRenderOrder(false);
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Editing
 					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
 				
 				// Done
-				renderer.FinishRendering();
+				renderer.Finish();
 			}
 		}
 		
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.Editing
 		protected void Highlight(Vertex v)
 		{
 			// Update display
-			if(renderer.StartRendering(false, false))
+			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
 				if(highlighted != null)
@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.Editing
 					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
 				
 				// Done
-				renderer.FinishRendering();
+				renderer.Finish();
 			}
 
 			// Show highlight info
@@ -205,11 +205,11 @@ namespace CodeImp.DoomBuilder.Editing
 					}
 
 					// Update display
-					if(renderer.StartRendering(false, false))
+					if(renderer.Start(false, false))
 					{
 						// Undraw highlight to show selection
 						renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
-						renderer.FinishRendering();
+						renderer.Finish();
 					}
 				}
 			}
@@ -224,11 +224,11 @@ namespace CodeImp.DoomBuilder.Editing
 			if(highlighted != null)
 			{
 				// Update display
-				if(renderer.StartRendering(false, false))
+				if(renderer.Start(false, false))
 				{
 					// Render highlighted item
 					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
-					renderer.FinishRendering();
+					renderer.Finish();
 				}
 			}
 		}
