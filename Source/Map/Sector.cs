@@ -61,6 +61,9 @@ namespace CodeImp.DoomBuilder.Map
 		// Selections
 		private int selected;
 
+		// Cloning
+		private Sector clone;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -82,6 +85,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Tag { get { return tag; } }
 		public int Brightness { get { return brightness; } }
 		public int Selected { get { return selected; } set { selected = value; } }
+		public Sector Clone { get { return clone; } set { clone = value; } }
 
 		#endregion
 

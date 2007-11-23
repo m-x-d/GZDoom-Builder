@@ -73,6 +73,9 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Selections
 		private int selected;
+
+		// Cloning
+		private Linedef clone;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -96,6 +99,7 @@ namespace CodeImp.DoomBuilder.Map
 		public float LengthInv { get { return lengthinv; } }
 		public float Angle { get { return angle; } }
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
+		public Linedef Clone { get { return clone; } set { clone = value; } }
 
 		#endregion
 

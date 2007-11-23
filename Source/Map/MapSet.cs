@@ -124,31 +124,25 @@ namespace CodeImp.DoomBuilder.Map
 		// This makes a deep copy and returns a new MapSet
 		public MapSet Clone()
 		{
-			Dictionary<Vertex, Vertex> vertexlink = new Dictionary<Vertex,Vertex>(vertices.Count);
-			Dictionary<Linedef, Linedef> linedeflink = new Dictionary<Linedef, Linedef>(linedefs.Count);
-			Dictionary<Sector, Sector> sectorlink = new Dictionary<Sector, Sector>(sectors.Count);
-			
-			// TODO: Try making this faster by giving each element that
-			// requires a lookup (vertex/linedef/sector) a reference to
-			// its clone and remove those references after cloning.
-
 			// Create the map set
 			MapSet newset = new MapSet();
 
+			// TODO: Clone sectors first, then the linedefs and in the same loop
+			// the sidedefs so that the linedefs do not need a clone reference
+			
 			// Go for all vertices
 			foreach(Vertex v in vertices)
 			{
 				// Make new vertex
-				Vertex nv = newset.CreateVertex(v.X, v.Y);
-				vertexlink.Add(v, nv);
+				v.Clone = newset.CreateVertex(v.X, v.Y);
 			}
 
 			// Go for all linedefs
 			foreach(Linedef l in linedefs)
 			{
 				// Make new linedef
-				Linedef nl = newset.CreateLinedef(vertexlink[l.Start], vertexlink[l.End]);
-				linedeflink.Add(l, nl);
+				Linedef nl = newset.CreateLinedef(l.Start.Clone, l.End.Clone);
+				l.Clone = nl;
 				
 				// Copy properties
 				l.CopyPropertiesTo(nl);
@@ -162,7 +156,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Make new sector
 				Sector ns = newset.CreateSector();
-				sectorlink.Add(s, ns);
+				s.Clone = ns;
 				
 				// Copy properties
 				s.CopyPropertiesTo(ns);
@@ -172,7 +166,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sidedef d in sidedefs)
 			{
 				// Make new sidedef
-				Sidedef nd = newset.CreateSidedef(linedeflink[d.Line], d.IsFront, sectorlink[d.Sector]);
+				Sidedef nd = newset.CreateSidedef(d.Line.Clone, d.IsFront, d.Sector.Clone);
 				
 				// Copy properties
 				d.CopyPropertiesTo(nd);
@@ -188,6 +182,11 @@ namespace CodeImp.DoomBuilder.Map
 				t.CopyPropertiesTo(nt);
 			}
 
+			// Remove clone references
+			foreach(Vertex v in vertices) v.Clone = null;
+			foreach(Linedef l in linedefs) l.Clone = null;
+			foreach(Sector s in sectors) s.Clone = null;
+			
 			// Return the new set
 			return newset;
 		}
