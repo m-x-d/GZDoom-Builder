@@ -124,31 +124,17 @@ namespace CodeImp.DoomBuilder.Map
 		// This makes a deep copy and returns a new MapSet
 		public MapSet Clone()
 		{
+			Linedef nl;
+			Sidedef nd;
+			
 			// Create the map set
 			MapSet newset = new MapSet();
 
-			// TODO: Clone sectors first, then the linedefs and in the same loop
-			// the sidedefs so that the linedefs do not need a clone reference
-			
 			// Go for all vertices
 			foreach(Vertex v in vertices)
 			{
 				// Make new vertex
 				v.Clone = newset.CreateVertex(v.X, v.Y);
-			}
-
-			// Go for all linedefs
-			foreach(Linedef l in linedefs)
-			{
-				// Make new linedef
-				Linedef nl = newset.CreateLinedef(l.Start.Clone, l.End.Clone);
-				l.Clone = nl;
-				
-				// Copy properties
-				l.CopyPropertiesTo(nl);
-
-				// Recalculate
-				l.Update();
 			}
 
 			// Go for all sectors
@@ -162,14 +148,34 @@ namespace CodeImp.DoomBuilder.Map
 				s.CopyPropertiesTo(ns);
 			}
 
-			// Go for all sidedefs
-			foreach(Sidedef d in sidedefs)
+			// Go for all linedefs
+			foreach(Linedef l in linedefs)
 			{
-				// Make new sidedef
-				Sidedef nd = newset.CreateSidedef(d.Line.Clone, d.IsFront, d.Sector.Clone);
+				// Make new linedef
+				nl = newset.CreateLinedef(l.Start.Clone, l.End.Clone);
 				
 				// Copy properties
-				d.CopyPropertiesTo(nd);
+				l.CopyPropertiesTo(nl);
+
+				// Linedef has a front side?
+				if(l.Front != null)
+				{
+					// Make new sidedef
+					nd = newset.CreateSidedef(nl, true, l.Front.Sector.Clone);
+
+					// Copy properties
+					l.Front.CopyPropertiesTo(nd);
+				}
+
+				// Linedef has a back side?
+				if(l.Back != null)
+				{
+					// Make new sidedef
+					nd = newset.CreateSidedef(nl, false, l.Back.Sector.Clone);
+
+					// Copy properties
+					l.Back.CopyPropertiesTo(nd);
+				}
 			}
 
 			// Go for all things
@@ -184,7 +190,6 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Remove clone references
 			foreach(Vertex v in vertices) v.Clone = null;
-			foreach(Linedef l in linedefs) l.Clone = null;
 			foreach(Sector s in sectors) s.Clone = null;
 			
 			// Return the new set
