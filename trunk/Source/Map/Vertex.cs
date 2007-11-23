@@ -57,6 +57,9 @@ namespace CodeImp.DoomBuilder.Map
 		// Selections
 		private int selected;
 		
+		// Cloning
+		private Vertex clone;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -71,6 +74,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Y { get { return y; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public int Selected { get { return selected; } set { selected = value; } }
+		public Vertex Clone { get { return clone; } set { clone = value; } }
 
 		#endregion
 
