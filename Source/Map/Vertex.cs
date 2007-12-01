@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Linedef> linedefs;
 
 		// Selections
-		private int selected;
+		private bool selected;
 		
 		// Cloning
 		private Vertex clone;
@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int X { get { return x; } }
 		public int Y { get { return y; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public int Selected { get { return selected; } set { selected = value; } }
+		public bool Selected { get { return selected; } set { selected = value; } }
 		public Vertex Clone { get { return clone; } set { clone = value; } }
 
 		#endregion

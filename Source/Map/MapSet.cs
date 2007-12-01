@@ -317,7 +317,152 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#endregion
 
+		#region ================== Selection
+
+		// This clears all selected items
+		public void ClearAllSelected()
+		{
+			ClearSelectedVertices();
+			ClearSelectedThings();
+			ClearSelectedLinedefs();
+			ClearSelectedSectors();
+		}
+
+		// This clears selected vertices
+		public void ClearSelectedVertices()
+		{
+			foreach(Vertex v in vertices) v.Selected = false;
+		}
+
+		// This clears selected things
+		public void ClearSelectedThings()
+		{
+			foreach(Thing t in things) t.Selected = false;
+		}
+
+		// This clears selected linedefs
+		public void ClearSelectedLinedefs()
+		{
+			foreach(Linedef l in linedefs) l.Selected = false;
+		}
+
+		// This clears selected sectors
+		public void ClearSelectedSectors()
+		{
+			foreach(Sector s in sectors) s.Selected = false;
+		}
+
+		// Returns a collection of vertices that match a selected state
+		public ICollection<Vertex> GetVerticesSelection(bool selected)
+		{
+			List<Vertex> list = new List<Vertex>();
+			foreach(Vertex v in vertices) if(v.Selected == selected) list.Add(v);
+			return list;
+		}
+
+		// Returns a collection of things that match a selected state
+		public ICollection<Thing> GetThingsSelection(bool selected)
+		{
+			List<Thing> list = new List<Thing>();
+			foreach(Thing t in things) if(t.Selected == selected) list.Add(t);
+			return list;
+		}
+
+		// Returns a collection of linedefs that match a selected state
+		public ICollection<Linedef> GetLinedefsSelection(bool selected)
+		{
+			List<Linedef> list = new List<Linedef>();
+			foreach(Linedef l in linedefs) if(l.Selected == selected) list.Add(l);
+			return list;
+		}
+
+		// Returns a collection of sectors that match a selected state
+		public ICollection<Sector> GetSectorsSelection(bool selected)
+		{
+			List<Sector> list = new List<Sector>();
+			foreach(Sector s in sectors) if(s.Selected == selected) list.Add(s);
+			return list;
+		}
+
+		#endregion
+
 		#region ================== Static Tools
+
+		// This joins overlapping lines together
+		// Returns the number of joins made
+		public static int JoinOverlappingLines(ICollection<Linedef> lines)
+		{
+			int joinsdone = 0;
+			bool joined;
+			
+			do
+			{
+				// No joins yet
+				joined = false;
+
+				// Go for all the lines
+				foreach(Linedef l1 in lines)
+				{
+					// Go for all the lines
+					foreach(Linedef l2 in lines)
+					{
+						// Sharing vertices?
+						if( ((l1.Start == l2.Start) && (l1.End == l2.End)) ||
+							((l1.End == l2.Start) && (l1.Start == l2.End)))
+						{
+							// Not the same line?
+							if(l1 != l2)
+							{
+								// Merge these two linedefs
+								l1.Join(l2);
+								joinsdone++;
+								joined = true;
+								break;
+							}
+						}
+					}
+					
+					// Will have to restart when joined
+					if(joined) break;
+				}
+			}
+			while(joined);
+
+			// Return result
+			return joinsdone;
+		}
+		
+		// This removes looped linedefs (linedefs which reference the same vertex for start and end)
+		// Returns the number of linedefs removed
+		public static int RemoveLoopedLinedefs(ICollection<Linedef> lines)
+		{
+			int linesremoved = 0;
+			bool removedline;
+
+			do
+			{
+				// Nothing removed yet
+				removedline = false;
+
+				// Go for all the lines
+				foreach(Linedef l in lines)
+				{
+					// Check if referencing the same vertex twice
+					if(l.Start == l.End)
+					{
+						// Remove this line
+						l.Dispose();
+						linesremoved++;
+						removedline = true;
+						break;
+					}
+				}
+			}
+			while(removedline);
+
+			// Return result
+			return linesremoved;
+		}
 
 		// This joins nearby vertices from two collections. This does NOT join vertices
 		// within the same collection, only if they exist in both collections.
@@ -585,7 +730,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This makes a list of lines related to vertex selection
 		// A line is unstable when one vertex is selected and the other isn't.
-		public ICollection<Linedef> LinedefsFromSelectedVertices(bool includestable, bool includeunstable)
+		public ICollection<Linedef> LinedefsFromSelectedVertices(bool includeunselected, bool includestable, bool includeunstable)
 		{
 			List<Linedef> list = new List<Linedef>();
 			
@@ -593,37 +738,14 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in linedefs)
 			{
 				// Check if this is to be included
-				if((includestable && ((l.Start.Selected > 0) && (l.End.Selected > 0))) ||
-				   (includeunstable && ((l.Start.Selected > 0) || (l.End.Selected > 0))) )
+				if((includestable && (l.Start.Selected && l.End.Selected)) ||
+				   (includeunstable && (l.Start.Selected ^ l.End.Selected)) ||
+				   (includeunselected && (!l.Start.Selected && !l.End.Selected)) )
 				{
 					// Add to list
 					list.Add(l);
 				}
 			}
-
-			// Return result
-			return list;
-		}
-
-		// This returns all vertices not in verts collection
-		public ICollection<Vertex> InvertedCollection(ICollection<Vertex> verts)
-		{
-			List<Vertex> list = new List<Vertex>();
-
-			// Go for all vertices
-			foreach(Vertex v in vertices) if(!verts.Contains(v)) list.Add(v);
-
-			// Return result
-			return list;
-		}
-
-		// This returns all linedefs not in lines collection
-		public ICollection<Linedef> InvertedCollection(ICollection<Linedef> lines)
-		{
-			List<Linedef> list = new List<Linedef>();
-
-			// Go for all lines
-			foreach(Linedef l in linedefs) if(!lines.Contains(l)) list.Add(l);
 
 			// Return result
 			return list;

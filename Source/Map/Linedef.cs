@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Map
 		private byte[] args;
 		
 		// Selections
-		private int selected;
+		private bool selected;
 
 		// Cloning
 		private Linedef clone;
@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Flags { get { return flags; } }
 		public int Action { get { return action; } }
 		public int Tag { get { return tag; } }
-		public int Selected { get { return selected; } set { selected = value; } }
+		public bool Selected { get { return selected; } set { selected = value; } }
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
 		public float LengthInv { get { return lengthinv; } }
@@ -362,6 +362,13 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Return result
 			return nl;
+		}
+		
+		// This joins the line with another line
+		// This line will be disposed
+		public void Join(Linedef other)
+		{
+			// TODO
 		}
 		
 		#endregion

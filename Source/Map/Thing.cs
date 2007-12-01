@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Map
 		private float iconoffset;	// Arrow or dot coordinate offset on the texture
 		
 		// Selections
-		private int selected;
+		private bool selected;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.Map
 		public float Angle { get { return angle; } }
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 		public int Flags { get { return flags; } }
-		public int Selected { get { return selected; } set { selected = value; } }
+		public bool Selected { get { return selected; } set { selected = value; } }
 		public float Size { get { return size; } }
 		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }

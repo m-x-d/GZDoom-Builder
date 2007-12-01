@@ -148,6 +148,54 @@ namespace CodeImp.DoomBuilder.Map
 			s.longtexnamelow = longtexnamelow;
 		}
 		
+		// This copies textures to another sidedef
+		// And possibly also the offsets
+		public void AddTexturesTo(Sidedef s)
+		{
+			int copyoffsets = 0;
+
+			// Upper texture set?
+			if((texnamehigh.Length > 0) && (texnamehigh[0] != '-'))
+			{
+				// Copy upper texture
+				s.texnamehigh = texnamehigh;
+				s.longtexnamehigh = longtexnamehigh;
+
+				// Counts as a half coice for copying offsets
+				copyoffsets += 1;
+			}
+
+			// Middle texture set?
+			if((texnamemid.Length > 0) && (texnamemid[0] != '-'))
+			{
+				// Copy middle texture
+				s.texnamemid = texnamemid;
+				s.longtexnamemid = longtexnamemid;
+
+				// Counts for copying offsets
+				copyoffsets += 2;
+			}
+
+			// Lower texture set?
+			if((texnamelow.Length > 0) && (texnamelow[0] != '-'))
+			{
+				// Copy middle texture
+				s.texnamelow = texnamelow;
+				s.longtexnamelow = longtexnamelow;
+
+				// Counts as a half coice for copying offsets
+				copyoffsets += 1;
+			}
+
+			// Copy offsets also?
+			if(copyoffsets >= 2)
+			{
+				// Copy offsets
+				s.offsetx = offsetx;
+				s.offsety = offsety;
+			}
+		}
+		
 		#endregion
 
 		#region ================== Changes
