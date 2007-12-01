@@ -190,6 +190,36 @@ namespace CodeImp.DoomBuilder.Map
 			this.Move(General.Map.Grid.SnappedToGrid(pos));
 		}
 		
+		// This joins another vertex
+		// Which means this vertex is removed and the other is kept!
+		public void Join(Vertex other)
+		{
+			LinkedListNode<Linedef> previous;
+			LinkedListNode<Linedef> current;
+			
+			// Go for all lines
+			current = linedefs.Last;
+			while(current != null)
+			{
+				// Get previous
+				previous = current.Previous;
+
+				// Move the start to the other vertex
+				if(current.Value.Start == this)
+					current.Value.SetStartVertex(other);
+
+				// Move the end to the other vertex
+				if(current.Value.End == this)
+					current.Value.SetEndVertex(other);
+
+				// Go back one
+				current = previous;
+			}
+
+			// Remove this vertex
+			this.Dispose();
+		}
+
 		#endregion
 	}
 }

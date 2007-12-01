@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.nodebuilder3d = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuilder3d", "");
 			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
-			this.resources = new DataLocationList(General.Settings, "configurations." + settingskey + ".resources");
+			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
 		}
 
 		// Constructor
@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Config
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuilder3d", nodebuilder3d);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
-			resources.WriteToConfig(General.Settings, "configurations." + settingskey + ".resources");
+			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
 		}
 
 		// String representation

@@ -88,6 +88,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Grid4 {
+            get {
+                object obj = ResourceManager.GetObject("Grid4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Hourglass {
             get {
                 object obj = ResourceManager.GetObject("Hourglass", resourceCulture);

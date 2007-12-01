@@ -158,6 +158,26 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
+		// This sets new start vertex
+		public void SetStartVertex(Vertex v)
+		{
+			// Change start
+			start.DetachLinedef(startvertexlistitem);
+			start = v;
+			startvertexlistitem = start.AttachLinedef(this);
+			this.updateneeded = true;
+		}
+
+		// This sets new end vertex
+		public void SetEndVertex(Vertex v)
+		{
+			// Change end
+			end.DetachLinedef(endvertexlistitem);
+			end = v;
+			endvertexlistitem = end.AttachLinedef(this);
+			this.updateneeded = true;
+		}
+
 		// This copies all properties to another line
 		public void CopyPropertiesTo(Linedef l)
 		{
@@ -312,6 +332,36 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Calculate and return side information
 			return (p.y - v1.y) * (v2.x - v1.x) - (p.x - v1.x) * (v2.y - v1.y);
+		}
+
+		// This splits this line by vertex v
+		// Returns the new line resulting from the split
+		public Linedef Split(Vertex v)
+		{
+			Linedef nl;
+			Sidedef nsd;
+
+			// Copy linedef and change vertices
+			nl = map.CreateLinedef(v, end);
+			CopyPropertiesTo(nl);
+			SetEndVertex(v);
+
+			// Copy front sidedef if exists
+			if(front != null)
+			{
+				nsd = map.CreateSidedef(nl, true, front.Sector);
+				front.CopyPropertiesTo(nsd);
+			}
+
+			// Copy back sidedef if exists
+			if(back != null)
+			{
+				nsd = map.CreateSidedef(nl, false, back.Sector);
+				back.CopyPropertiesTo(nsd);
+			}
+
+			// Return result
+			return nl;
 		}
 		
 		#endregion

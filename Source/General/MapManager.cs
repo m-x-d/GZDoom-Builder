@@ -891,6 +891,17 @@ namespace CodeImp.DoomBuilder
 		
 		#region ================== Methods
 
+		// This clears the selection
+		[Action("clearselection")]
+		public void ClearSelection()
+		{
+			// Clear selection
+			selection.ClearAll();
+
+			// Redraw
+			General.MainWindow.RedrawDisplay();
+		}
+		
 		// This sets a new mapset for editing
 		public void ChangeMapSet(MapSet newmap)
 		{

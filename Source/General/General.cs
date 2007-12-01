@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder
 		// Main objects
 		private static Assembly thisasm;
 		private static MainForm mainwindow;
-		private static Configuration settings;
+		private static ProgramConfiguration settings;
 		private static MapManager map;
 		private static ActionManager actions;
 		private static ColorCollection colors;
@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder
 		public static string ConfigsPath { get { return configspath; } }
 		public static string CompilersPath { get { return compilerspath; } }
 		public static MainForm MainWindow { get { return mainwindow; } }
-		public static Configuration Settings { get { return settings; } }
+		public static ProgramConfiguration Settings { get { return settings; } }
 		public static ColorCollection Colors { get { return colors; } }
 		public static List<ConfigurationInfo> Configs { get { return configs; } }
 		public static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
@@ -404,7 +404,9 @@ namespace CodeImp.DoomBuilder
 			
 			// Load configuration
 			General.WriteLogLine("Loading program configuration...");
-			if(LoadProgramConfiguration())
+			settings = new ProgramConfiguration();
+			if(settings.Load(Path.Combine(settingspath, SETTINGS_FILE),
+							 Path.Combine(apppath, SETTINGS_FILE)))
 			{
 				// Create action manager
 				actions = new ActionManager();
@@ -440,7 +442,7 @@ namespace CodeImp.DoomBuilder
 
 				// Load color settings
 				General.WriteLogLine("Loading color settings...");
-				colors = new ColorCollection(settings);
+				colors = new ColorCollection(settings.Config);
 
 				// Create application clock
 				General.WriteLogLine("Creating application clock...");
@@ -456,57 +458,6 @@ namespace CodeImp.DoomBuilder
 				// Terminate
 				Terminate(false);
 			}
-		}
-		
-		// Program configuration
-		private static bool LoadProgramConfiguration()
-		{
-			DialogResult result;
-			
-			// Check if no config for this user exists yet
-			if(!File.Exists(Path.Combine(settingspath, SETTINGS_FILE)))
-			{
-				// Copy new configuration
-				General.WriteLogLine("Local user program configuration is missing!");
-				File.Copy(Path.Combine(apppath, SETTINGS_FILE), Path.Combine(settingspath, SETTINGS_FILE));
-				General.WriteLogLine("New program configuration copied for local user");
-			}
-
-			// Load it
-			settings = new Configuration(Path.Combine(settingspath, SETTINGS_FILE), true);
-			if(settings.ErrorResult != 0)
-			{
-				// Error in configuration
-				// Ask user for a new copy
-				result = ShowErrorMessage("Error in program configuration near line " + settings.ErrorLine + ": " + settings.ErrorDescription, MessageBoxButtons.YesNoCancel);
-				if(result == DialogResult.Yes)
-				{
-					// Remove old configuration and make a new copy
-					General.WriteLogLine("User requested a new copy of the program configuration");
-					File.Delete(Path.Combine(settingspath, SETTINGS_FILE));
-					File.Copy(Path.Combine(apppath, SETTINGS_FILE), Path.Combine(settingspath, SETTINGS_FILE));
-					General.WriteLogLine("New program configuration copied for local user");
-					
-					// Load it
-					settings = new Configuration(Path.Combine(settingspath, SETTINGS_FILE), true);
-					if(settings.ErrorResult != 0)
-					{
-						// Error in configuration
-						General.WriteLogLine("Error in program configuration near line " + settings.ErrorLine + ": " + settings.ErrorDescription);
-						ShowErrorMessage("Default program configuration is corrupted. Please re-install Doom Builder.", MessageBoxButtons.OK);
-						return false;
-					}
-				}
-				else if(result == DialogResult.Cancel)
-				{
-					// User requested to cancel startup
-					General.WriteLogLine("User cancelled startup");
-					return false;
-				}
-			}
-
-			// Done
-			return true;
 		}
 		
 		#endregion
@@ -533,7 +484,7 @@ namespace CodeImp.DoomBuilder
 				Direct3D.Terminate();
 
 				// Save colors
-				colors.SaveColors(settings);
+				colors.SaveColors(settings.Config);
 				
 				// Save action controls
 				actions.SaveSettings();
@@ -543,7 +494,7 @@ namespace CodeImp.DoomBuilder
 
 				// Save settings configuration
 				General.WriteLogLine("Saving program configuration...");
-				settings.SaveConfiguration(Path.Combine(settingspath, SETTINGS_FILE));
+				settings.Save(Path.Combine(settingspath, SETTINGS_FILE));
 
 				// Application ends here and now
 				General.WriteLogLine("Termination done");

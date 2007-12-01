@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public void ApplyColorSettings()
 		{
 			// Force black background?
-			if(General.Settings.ReadSetting("blackbrowsers", false))
+			if(General.Settings.BlackBrowsers)
 			{
 				list.BackColor = Color.Black;
 				list.ForeColor = Color.White;

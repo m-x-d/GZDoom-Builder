@@ -319,6 +319,129 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Static Tools
 
+		// This joins nearby vertices from two collections. This does NOT join vertices
+		// within the same collection, only if they exist in both collections.
+		// The vertex from the second collection is moved to match the first vertex.
+		// When keepsecond is true, the vertex in the second collection is kept,
+		// otherwise the vertex in the first collection is kept.
+		// Returns the number of joins made
+		public static int JoinVertices(ICollection<Vertex> set1, ICollection<Vertex> set2, bool keepsecond, float joindist)
+		{
+			float joindist2 = joindist * joindist;
+			int joinsdone = 0;
+			bool joined;
+
+			do
+			{
+				// No joins yet
+				joined = false;
+
+				// Go for all vertices in the first set
+				foreach(Vertex v1 in set1)
+				{
+					// Go for all vertices in the second set
+					foreach(Vertex v2 in set2)
+					{
+						// Check if vertices are close enough
+						if(v1.DistanceToSq(v2.Position) <= joindist2)
+						{
+							// Check if not the same vertex
+							if(v1 != v2)
+							{
+								// Move the second vertex to match the first
+								v2.Move(v1.Position);
+								
+								// Check which one to keep
+								if(keepsecond)
+								{
+									// Join the first into the second
+									// Second is kept, first is removed
+									v1.Join(v2);
+									set1.Remove(v1);
+									set2.Remove(v1);
+								}
+								else
+								{
+									// Join the second into the first
+									// First is kept, second is removed
+									v2.Join(v1);
+									set1.Remove(v2);
+									set2.Remove(v2);
+								}
+								
+								// Count the join
+								joinsdone++;
+								joined = true;
+								break;
+							}
+						}
+					}
+
+					// Will have to restart when joined
+					if(joined) break;
+				}
+			}
+			while(joined);
+
+			// Return result
+			return joinsdone;
+		}
+		
+		// This splits the given lines with the given vertices
+		// Returns the number of splits made
+		public static int SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist)
+		{
+			float splitdist2 = splitdist * splitdist;
+			int splitsdone = 0;
+			bool splitted;
+			Linedef nl;
+
+			do
+			{
+				// No split yet
+				splitted = false;
+				
+				// Go for all the lines
+				foreach(Linedef l in lines)
+				{
+					// Go for all the vertices
+					foreach(Vertex v in verts)
+					{
+						// Check if v is close enough to l for splitting
+						if(l.DistanceToSq(v.Position, true) <= splitdist2)
+						{
+							// Line is not already referencing v?
+							if((l.Start != v) && (l.End != v))
+							{
+								// Split line l with vertex v
+								nl = l.Split(v);
+
+								// Add the new line to the list
+								lines.Add(nl);
+
+								// Both lines must be updated because their new length
+								// is relevant for next iterations!
+								l.Update();
+								nl.Update();
+								
+								// Count the split
+								splitsdone++;
+								splitted = true;
+								break;
+							}
+						}
+					}
+
+					// Will have to restart when splitted
+					if(splitted) break;
+				}
+			}
+			while(splitted);
+
+			// Return result
+			return splitsdone;
+		}
+		
 		// This finds the line closest to the specified position
 		public static Linedef NearestLinedef(ICollection<Linedef> selection, Vector2D pos)
 		{
@@ -460,6 +583,52 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Tools
 
+		// This makes a list of lines related to vertex selection
+		// A line is unstable when one vertex is selected and the other isn't.
+		public ICollection<Linedef> LinedefsFromSelectedVertices(bool includestable, bool includeunstable)
+		{
+			List<Linedef> list = new List<Linedef>();
+			
+			// Go for all lines
+			foreach(Linedef l in linedefs)
+			{
+				// Check if this is to be included
+				if((includestable && ((l.Start.Selected > 0) && (l.End.Selected > 0))) ||
+				   (includeunstable && ((l.Start.Selected > 0) || (l.End.Selected > 0))) )
+				{
+					// Add to list
+					list.Add(l);
+				}
+			}
+
+			// Return result
+			return list;
+		}
+
+		// This returns all vertices not in verts collection
+		public ICollection<Vertex> InvertedCollection(ICollection<Vertex> verts)
+		{
+			List<Vertex> list = new List<Vertex>();
+
+			// Go for all vertices
+			foreach(Vertex v in vertices) if(!verts.Contains(v)) list.Add(v);
+
+			// Return result
+			return list;
+		}
+
+		// This returns all linedefs not in lines collection
+		public ICollection<Linedef> InvertedCollection(ICollection<Linedef> lines)
+		{
+			List<Linedef> list = new List<Linedef>();
+
+			// Go for all lines
+			foreach(Linedef l in linedefs) if(!lines.Contains(l)) list.Add(l);
+
+			// Return result
+			return list;
+		}
+		
 		// This finds the line closest to the specified position
 		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
 
@@ -475,6 +644,37 @@ namespace CodeImp.DoomBuilder.Map
 		// This finds the thing closest to the specified position
 		public Thing NearestThingSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestThingSquareRange(things, pos, maxrange); }
 
+		// This finds the closest unselected linedef that is not connected to the given vertex
+		public Linedef NearestUnselectedUnreferencedLinedef(Vector2D pos, float maxrange, Vertex v, out float distance)
+		{
+			Linedef closest = null;
+			distance = float.MaxValue;
+			float maxrangesq = maxrange * maxrange;
+			float d;
+
+			// Go for all linedefs in selection
+			foreach(Linedef l in linedefs)
+			{
+				// Calculate distance and check if closer than previous find
+				d = l.SafeDistanceToSq(pos, true);
+				if((d <= maxrangesq) && (d < distance))
+				{
+					// Check if not selected
+
+					// Check if linedef is not connected to v
+					if((l.Start != v) && (l.End != v))
+					{
+						// This one is closer
+						closest = l;
+						distance = d;
+					}
+				}
+			}
+
+			// Return result
+			return closest;
+		}
+		
 		// This performs sidedefs compression
 		public void CompressSidedefs()
 		{
