@@ -230,11 +230,15 @@ namespace CodeImp.DoomBuilder.Editing
 			// Go for all vertices
 			foreach(Vertex v in General.Map.Map.Vertices)
 			{
-				// Adjust boundaries by vertices
-				if(v.Position.x < left) left = v.Position.x;
-				if(v.Position.x > right) right = v.Position.x;
-				if(v.Position.y < top) top = v.Position.y;
-				if(v.Position.y > bottom) bottom = v.Position.y;
+				// Vertex used?
+				if(v.Linedefs.Count > 0)
+				{
+					// Adjust boundaries by vertices
+					if(v.Position.x < left) left = v.Position.x;
+					if(v.Position.x > right) right = v.Position.x;
+					if(v.Position.y < top) top = v.Position.y;
+					if(v.Position.y > bottom) bottom = v.Position.y;
+				}
 			}
 
 			// Calculate width/height

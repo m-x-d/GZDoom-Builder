@@ -45,6 +45,7 @@
   -->
   <ItemGroup>
     <Compile Include="Config\GameConfiguration.cs" />
+    <Compile Include="Config\ProgramConfiguration.cs" />
     <Compile Include="Config\ThingCategory.cs" />
     <Compile Include="Config\ThingTypeInfo.cs" />
     <Compile Include="Controls\ActionAttribute.cs" />
@@ -284,6 +285,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\Grid4.png" />
     <None Include="Resources\Redo.png" />
     <None Include="Resources\Undo.png" />
     <None Include="Resources\Grid2.png" />

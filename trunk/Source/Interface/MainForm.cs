@@ -76,6 +76,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public bool AltState { get { return alt; } }
 		public bool MouseInDisplay { get { return mouseinside; } }
 		public RenderTargetControl Display { get { return display; } }
+		public bool SnapToGrid { get { return buttonsnaptogrid.Checked; } }
 
 		#endregion
 
@@ -876,6 +877,7 @@ namespace CodeImp.DoomBuilder.Interface
 			itemlinedefsmode.Enabled = (General.Map != null);
 			itemsectorsmode.Enabled = (General.Map != null);
 			itemthingsmode.Enabled = (General.Map != null);
+			itemsnaptogrid.Enabled = (General.Map != null);
 			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
 			itemredo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextRedo != null);
 
@@ -901,6 +903,15 @@ namespace CodeImp.DoomBuilder.Interface
 			buttonredo.Enabled = itemredo.Enabled;
 			buttonundo.ToolTipText = itemundo.Text;
 			buttonredo.ToolTipText = itemredo.Text;
+			buttonsnaptogrid.Enabled = (General.Map != null);
+		}
+
+		// Action to toggle snap to grid
+		[Action("togglesnap")]
+		public void ToggleSnapToGrid()
+		{
+			buttonsnaptogrid.Checked = !buttonsnaptogrid.Checked;
+			itemsnaptogrid.Checked = buttonsnaptogrid.Checked;
 		}
 		
 		#endregion
