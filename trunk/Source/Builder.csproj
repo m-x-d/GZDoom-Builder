@@ -219,7 +219,6 @@
     </Compile>
     <Compile Include="Map\Linedef.cs" />
     <Compile Include="Map\MapOptions.cs" />
-    <Compile Include="Map\MapSelection.cs" />
     <Compile Include="Map\MapSet.cs" />
     <Compile Include="Data\DataLocation.cs" />
     <Compile Include="Map\Sector.cs" />

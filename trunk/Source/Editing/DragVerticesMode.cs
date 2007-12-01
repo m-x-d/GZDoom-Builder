@@ -56,6 +56,9 @@ namespace CodeImp.DoomBuilder.Editing
 		// List of old vertex positions
 		private List<Vector2D> oldpositions;
 
+		// List of selected items
+		private ICollection<Vertex> selectedverts;
+
 		// List of non-selected items
 		private ICollection<Vertex> unselectedverts;
 
@@ -83,21 +86,24 @@ namespace CodeImp.DoomBuilder.Editing
 
 			Cursor.Current = Cursors.AppStarting;
 			
+			// Make list of selected vertices
+			selectedverts = General.Map.Map.GetVerticesSelection(true);
+			
+			// Make list of non-selected vertices
+			// This will be used for snapping to nearest items
+			unselectedverts = General.Map.Map.GetVerticesSelection(false);
+			
 			// Make old positions list
 			// We will use this as reference to move the vertices, or to move them back on cancel
-			oldpositions = new List<Vector2D>(General.Map.Selection.Vertices.Count);
-			foreach(Vertex v in General.Map.Selection.Vertices) oldpositions.Add(v.Position);
+			oldpositions = new List<Vector2D>(selectedverts.Count);
+			foreach(Vertex v in selectedverts) oldpositions.Add(v.Position);
 
 			// Also keep old position of the dragged item
 			dragitemposition = dragitem.Position;
 
-			// Make list of non-selected vertices
-			// This will be used for snapping to nearest items
-			unselectedverts = General.Map.Map.InvertedCollection(General.Map.Selection.Vertices);
-			
 			// Make list of unstable lines only
 			// These will have their length displayed during the drag
-			unstablelines = General.Map.Map.LinedefsFromSelectedVertices(false, true);
+			unstablelines = General.Map.Map.LinedefsFromSelectedVertices(false, false, true);
 
 			Cursor.Current = Cursors.Default;
 
@@ -165,7 +171,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(!snapgrid || (dragitem.Position != oldpos))
 			{
 				// Move selected geometry
-				foreach(Vertex v in General.Map.Selection.Vertices)
+				foreach(Vertex v in selectedverts)
 				{
 					// Move vertex from old position relative to the
 					// mouse position change since drag start
@@ -192,7 +198,7 @@ namespace CodeImp.DoomBuilder.Editing
 			MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
 
 			// If only a single vertex was selected, deselect it now
-			if(General.Map.Selection.Vertices.Count == 1) General.Map.Selection.ClearVertices();
+			if(selectedverts.Count == 1) General.Map.Map.ClearSelectedVertices();
 			
 			// Update cached values
 			General.Map.Map.Update();
@@ -242,13 +248,13 @@ namespace CodeImp.DoomBuilder.Editing
 				stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0, false);
 
 				// Find lines that moved during the drag
-				movinglines = General.Map.Map.LinedefsFromSelectedVertices(true, true);
+				movinglines = General.Map.Map.LinedefsFromSelectedVertices(false, true, true);
 
-				// Find all non-moving lines (inverse of movinglines)
-				fixedlines = General.Map.Map.InvertedCollection(movinglines);
+				// Find all non-moving lines
+				fixedlines = General.Map.Map.LinedefsFromSelectedVertices(true, false, false);
 
 				// Join nearby vertices
-				stitches += MapSet.JoinVertices(unselectedverts, General.Map.Selection.Vertices, true, General.Settings.StitchDistance);
+				stitches += MapSet.JoinVertices(unselectedverts, selectedverts, true, General.Settings.StitchDistance);
 
 				// Update cached values
 				General.Map.Map.Update();
@@ -257,11 +263,13 @@ namespace CodeImp.DoomBuilder.Editing
 				stitches += MapSet.SplitLinesByVertices(movinglines, unselectedverts, General.Settings.StitchDistance);
 				
 				// Split non-moving lines with selected vertices
-				stitches += MapSet.SplitLinesByVertices(fixedlines, General.Map.Selection.Vertices, General.Settings.StitchDistance);
-				
+				stitches += MapSet.SplitLinesByVertices(fixedlines, selectedverts, General.Settings.StitchDistance);
 
-				// TODO: Join overlapping lines and remove looped lines
+				// Remove looped linedefs
+				stitches += MapSet.RemoveLoopedLinedefs(General.Map.Map.Linedefs);
 
+				// Join overlapping lines
+				stitches += MapSet.JoinOverlappingLines(General.Map.Map.Linedefs);
 
 				// No stitching done? then withdraw undo
 				if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
@@ -269,7 +277,7 @@ namespace CodeImp.DoomBuilder.Editing
 				// ===== END GEOMETRY STITCHING
 
 				// If only a single vertex was selected, deselect it now
-				if(General.Map.Selection.Vertices.Count == 1) General.Map.Selection.ClearVertices();
+				if(selectedverts.Count == 1) General.Map.Map.ClearSelectedVertices();
 				
 				// Update cached values
 				General.Map.Map.Update();
@@ -294,7 +302,8 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(General.Map.Map.Vertices);
+				renderer.RenderVerticesSet(unselectedverts);
+				renderer.RenderVerticesSet(selectedverts);
 
 				// Draw the dragged item highlighted
 				// This is important to know, because this item is used

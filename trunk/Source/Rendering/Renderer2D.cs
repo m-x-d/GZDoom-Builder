@@ -596,7 +596,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor DetermineThingColor(Thing t)
 		{
 			// Determine color
-			if(t.Selected > 0) return General.Colors.Selection;
+			if(t.Selected) return General.Colors.Selection;
 			else return t.Color;
 		}
 
@@ -604,7 +604,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public int DetermineVertexColor(Vertex v)
 		{
 			// Determine color
-			if(v.Selected > 0) return ColorCollection.SELECTION;
+			if(v.Selected) return ColorCollection.SELECTION;
 			else return ColorCollection.VERTICES;
 		}
 
@@ -615,7 +615,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if((l.Back == null) || (l.Front == null))
 			{
 				// Determine color
-				if(l.Selected > 0) return General.Colors.Selection;
+				if(l.Selected) return General.Colors.Selection;
 				else if(l.Action != 0) return General.Colors.Actions;
 				else return General.Colors.Linedefs;
 			}
@@ -623,7 +623,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			else
 			{
 				// Determine color
-				if(l.Selected > 0) return General.Colors.Selection;
+				if(l.Selected) return General.Colors.Selection;
 				else if(l.Action != 0) return General.Colors.Actions.WithAlpha(DOUBLESIDED_LINE_ALPHA);
 				else if((l.Flags & General.Map.Config.SoundLinedefFlags) != 0) return General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
 				else return General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);

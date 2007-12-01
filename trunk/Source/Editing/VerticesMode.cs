@@ -192,18 +192,9 @@ namespace CodeImp.DoomBuilder.Editing
 				// Item highlighted?
 				if(highlighted != null)
 				{
-					// Item already selected?
-					if(General.Map.Selection.Vertices.Contains(highlighted))
-					{
-						// Deselect
-						General.Map.Selection.RemoveVertex(highlighted);
-					}
-					else
-					{
-						// Select
-						General.Map.Selection.AddVertex(highlighted);
-					}
-
+					// Flip selection
+					highlighted.Selected = !highlighted.Selected;
+					
 					// Update display
 					if(renderer.Start(false, false))
 					{
@@ -250,11 +241,11 @@ namespace CodeImp.DoomBuilder.Editing
 				if(highlighted != null)
 				{
 					// Highlighted item not selected?
-					if(!General.Map.Selection.Vertices.Contains(highlighted))
+					if(!highlighted.Selected)
 					{
 						// Select only this vertex for dragging
-						General.Map.Selection.ClearVertices();
-						General.Map.Selection.AddVertex(highlighted);
+						General.Map.Map.ClearSelectedVertices();
+						highlighted.Selected = true;
 					}
 
 					// Start dragging the selection

@@ -75,7 +75,6 @@ namespace CodeImp.DoomBuilder
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
 		private WAD tempwad;
-		private MapSelection selection;
 		private GridSetup grid;
 		private UndoManager undoredo;
 		
@@ -99,7 +98,6 @@ namespace CodeImp.DoomBuilder
 		public Renderer2D Renderer2D { get { return renderer2d; } }
 		public Renderer3D Renderer3D { get { return renderer3d; } }
 		public GameConfiguration Config { get { return config; } }
-		public MapSelection Selection { get { return selection; } }
 		public GridSetup Grid { get { return grid; } }
 		public UndoManager UndoRedo { get { return undoredo; } }
 
@@ -115,7 +113,6 @@ namespace CodeImp.DoomBuilder
 			
 			// Basic objects
 			grid = new GridSetup();
-			selection = new MapSelection();
 			undoredo = new UndoManager();
 
 		}
@@ -133,7 +130,6 @@ namespace CodeImp.DoomBuilder
 				ActionAttribute.UnbindMethods(this);
 
 				// Basic objects
-				if(selection != null) selection.Dispose();
 				if(undoredo != null) undoredo.Dispose();
 				
 				// Dispose
@@ -896,7 +892,7 @@ namespace CodeImp.DoomBuilder
 		public void ClearSelection()
 		{
 			// Clear selection
-			selection.ClearAll();
+			map.ClearAllSelected();
 
 			// Redraw
 			General.MainWindow.RedrawDisplay();
@@ -906,7 +902,7 @@ namespace CodeImp.DoomBuilder
 		public void ChangeMapSet(MapSet newmap)
 		{
 			// Can't have a selection in an old map set
-			selection.ClearAll();
+			map.ClearAllSelected();
 
 			// Apply
 			map.Dispose();
