@@ -369,6 +369,8 @@ namespace CodeImp.DoomBuilder.Map
 		public void Join(Linedef other)
 		{
 			// TODO
+
+			this.Dispose();
 		}
 		
 		#endregion
