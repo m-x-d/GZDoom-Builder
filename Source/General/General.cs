@@ -772,7 +772,7 @@ namespace CodeImp.DoomBuilder
 			// Write to log file
 			File.AppendAllText(logfile, text);
 		}
-
+		
 		#endregion
 
 		#region ================== Tools

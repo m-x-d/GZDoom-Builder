@@ -403,17 +403,41 @@ namespace CodeImp.DoomBuilder.Map
 				// Go for all the lines
 				foreach(Linedef l1 in lines)
 				{
-					// Go for all the lines
-					foreach(Linedef l2 in lines)
+					// Check if these vertices have lines that overlap
+					foreach(Linedef l2 in l1.Start.Linedefs)
 					{
 						// Sharing vertices?
-						if( ((l1.Start == l2.Start) && (l1.End == l2.End)) ||
-							((l1.End == l2.Start) && (l1.Start == l2.End)))
+						if((l1.End == l2.End) ||
+						   (l1.End == l2.Start))
 						{
 							// Not the same line?
 							if(l1 != l2)
 							{
 								// Merge these two linedefs
+								while(lines.Remove(l1));
+								l1.Join(l2);
+								joinsdone++;
+								joined = true;
+								break;
+							}
+						}
+					}
+					
+					// Will have to restart when joined
+					if(joined) break;
+					
+					// Check if these vertices have lines that overlap
+					foreach(Linedef l2 in l1.End.Linedefs)
+					{
+						// Sharing vertices?
+						if((l1.Start == l2.End) ||
+						   (l1.Start == l2.Start))
+						{
+							// Not the same line?
+							if(l1 != l2)
+							{
+								// Merge these two linedefs
+								while(lines.Remove(l1));
 								l1.Join(l2);
 								joinsdone++;
 								joined = true;
@@ -451,6 +475,7 @@ namespace CodeImp.DoomBuilder.Map
 					if(l.Start == l.End)
 					{
 						// Remove this line
+						while(lines.Remove(l));
 						l.Dispose();
 						linesremoved++;
 						removedline = true;
@@ -533,8 +558,9 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This splits the given lines with the given vertices
+		// All affected lines will be added to changedlines
 		// Returns the number of splits made
-		public static int SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist)
+		public static int SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines)
 		{
 			float splitdist2 = splitdist * splitdist;
 			int splitsdone = 0;
@@ -568,6 +594,10 @@ namespace CodeImp.DoomBuilder.Map
 								// is relevant for next iterations!
 								l.Update();
 								nl.Update();
+
+								// Add both lines to changedlines
+								changedlines.Add(l);
+								changedlines.Add(nl);
 								
 								// Count the split
 								splitsdone++;

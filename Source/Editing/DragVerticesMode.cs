@@ -224,11 +224,12 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			ICollection<Linedef> movinglines;
 			ICollection<Linedef> fixedlines;
+			ICollection<Linedef> changedlines;
 			int stitches = 0;
 			int stitchundo;
 			
 			base.Disengage();
-			Cursor.Current = Cursors.WaitCursor;
+			Cursor.Current = Cursors.AppStarting;
 			
 			// When not cancelled
 			if(!cancelled)
@@ -249,7 +250,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// Find lines that moved during the drag
 				movinglines = General.Map.Map.LinedefsFromSelectedVertices(false, true, true);
-
+				
 				// Find all non-moving lines
 				fixedlines = General.Map.Map.LinedefsFromSelectedVertices(true, false, false);
 
@@ -260,16 +261,16 @@ namespace CodeImp.DoomBuilder.Editing
 				General.Map.Map.Update();
 				
 				// Split moving lines with unselected vertices
-				stitches += MapSet.SplitLinesByVertices(movinglines, unselectedverts, General.Settings.StitchDistance);
+				stitches += MapSet.SplitLinesByVertices(movinglines, unselectedverts, General.Settings.StitchDistance, movinglines);
 				
 				// Split non-moving lines with selected vertices
-				stitches += MapSet.SplitLinesByVertices(fixedlines, selectedverts, General.Settings.StitchDistance);
+				stitches += MapSet.SplitLinesByVertices(fixedlines, selectedverts, General.Settings.StitchDistance, movinglines);
 
 				// Remove looped linedefs
-				stitches += MapSet.RemoveLoopedLinedefs(General.Map.Map.Linedefs);
+				stitches += MapSet.RemoveLoopedLinedefs(movinglines);
 
 				// Join overlapping lines
-				stitches += MapSet.JoinOverlappingLines(General.Map.Map.Linedefs);
+				stitches += MapSet.JoinOverlappingLines(movinglines);
 
 				// No stitching done? then withdraw undo
 				if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
