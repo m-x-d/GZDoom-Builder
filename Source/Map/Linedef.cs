@@ -24,6 +24,7 @@ using System.Text;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D;
+using System.Drawing;
 
 #endregion
 
@@ -64,7 +65,8 @@ namespace CodeImp.DoomBuilder.Map
 		private float length;
 		private float lengthinv;
 		private float angle;
-
+		private Rectangle rect;
+		
 		// Properties
 		private int flags;
 		private int action;
@@ -99,6 +101,7 @@ namespace CodeImp.DoomBuilder.Map
 		public float LengthInv { get { return lengthinv; } }
 		public float Angle { get { return angle; } }
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
+		public Rectangle Rect { get { return rect; } }
 
 		#endregion
 
@@ -239,6 +242,7 @@ namespace CodeImp.DoomBuilder.Map
 		public void Update()
 		{
 			Vector2D delta;
+			int l, t, r, b;
 			
 			// Update if needed
 			if(updateneeded)
@@ -251,6 +255,11 @@ namespace CodeImp.DoomBuilder.Map
 				length = (float)Math.Sqrt(lengthsq);
 				if(length > 0f) lengthinv = 1f / length; else lengthinv = 1f / 0.0000000001f;
 				angle = delta.GetAngle();
+				l = Math.Min(start.X, end.X);
+				t = Math.Min(start.Y, end.Y);
+				r = Math.Max(start.X, end.X);
+				b = Math.Max(start.Y, end.Y);
+				rect = new Rectangle(l, t, r - l, b - t);
 				
 				// Updated
 				updateneeded = false;
