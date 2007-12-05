@@ -29,6 +29,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
+using System.Drawing;
 
 #endregion
 
@@ -225,6 +226,7 @@ namespace CodeImp.DoomBuilder.Editing
 			ICollection<Linedef> movinglines;
 			ICollection<Linedef> fixedlines;
 			ICollection<Linedef> changedlines;
+			Rectangle editarea;
 			int stitches = 0;
 			int stitchundo;
 			
@@ -245,6 +247,11 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// ===== BEGIN GEOMETRY STITCHING
 				
+				// Determine area in which we are editing
+				editarea = MapSet.AreaFromVertices(selectedverts);
+				editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
+					             (int)Math.Ceiling(General.Settings.StitchDistance));
+				
 				// Make undo for the stitching
 				stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0, false);
 
@@ -261,9 +268,11 @@ namespace CodeImp.DoomBuilder.Editing
 				General.Map.Map.Update();
 				
 				// Split moving lines with unselected vertices
+				unselectedverts = MapSet.FilterArea(unselectedverts, ref editarea);
 				stitches += MapSet.SplitLinesByVertices(movinglines, unselectedverts, General.Settings.StitchDistance, movinglines);
 				
 				// Split non-moving lines with selected vertices
+				fixedlines = MapSet.FilterArea(fixedlines, ref editarea);
 				stitches += MapSet.SplitLinesByVertices(fixedlines, selectedverts, General.Settings.StitchDistance, movinglines);
 
 				// Remove looped linedefs

@@ -386,7 +386,87 @@ namespace CodeImp.DoomBuilder.Map
 
 		#endregion
 
-		#region ================== Static Tools
+		#region ================== Areas
+
+		// This creates an area from vertices
+		public static Rectangle AreaFromVertices(ICollection<Vertex> verts)
+		{
+			int l = int.MaxValue;
+			int t = int.MaxValue;
+			int r = int.MinValue;
+			int b = int.MinValue;
+
+			// Go for all vertices
+			foreach(Vertex v in verts)
+			{
+				// Adjust boundaries by vertices
+				if(v.X < l) l = v.X;
+				if(v.X > r) r = v.X;
+				if(v.Y < t) t = v.Y;
+				if(v.Y > b) b = v.Y;
+			}
+
+			// Return a rect
+			return new Rectangle(l, t, r - l, b - t);
+		}
+		
+		// This filters lines by a square area
+		public static ICollection<Linedef> FilterArea(ICollection<Linedef> lines, ref Rectangle area)
+		{
+			ICollection<Linedef> newlines = new List<Linedef>(lines.Count);
+			
+			// Go for all lines
+			foreach(Linedef l in lines)
+			{
+				// Check the cs field bits
+				if((GetCSFieldBits(l.Start, ref area) & GetCSFieldBits(l.End, ref area)) != 0)
+				{
+					// The line could be in the area
+					newlines.Add(l);
+				}
+			}
+			
+			// Return result
+			return newlines;
+		}
+
+		// This returns the cohen-sutherland field bits for a vertex in a rectangle area
+		private static byte GetCSFieldBits(Vertex v, ref Rectangle area)
+		{
+			byte bits = 0;
+			if(v.Y < area.Top) bits |= 0x01;
+			if(v.Y > area.Bottom) bits |= 0x02;
+			if(v.X < area.Left) bits |= 0x04;
+			if(v.X > area.Right) bits |= 0x08;
+			return bits;
+		}
+
+		// This filters vertices by a square area
+		public static ICollection<Vertex> FilterArea(ICollection<Vertex> verts, ref Rectangle area)
+		{
+			ICollection<Vertex> newverts = new List<Vertex>(verts.Count);
+
+			// Go for all verts
+			foreach(Vertex v in verts)
+			{
+				// Within rect?
+				if((v.X >= area.Left) &&
+				   (v.X <= area.Right) &&
+				   (v.Y >= area.Top) &&
+				   (v.Y <= area.Bottom))
+				{
+					// The vertex is in the area
+					newverts.Add(v);
+				}
+			}
+
+			// Return result
+			return newverts;
+		}
+
+		#endregion
+
+		#region ================== Geometry Tools
 
 		// This joins overlapping lines together
 		// Returns the number of joins made
@@ -596,9 +676,9 @@ namespace CodeImp.DoomBuilder.Map
 								nl.Update();
 
 								// Add both lines to changedlines
-								changedlines.Add(l);
-								changedlines.Add(nl);
-								
+								if(changedlines != null) changedlines.Add(l);
+								if(changedlines != null) changedlines.Add(nl);
+
 								// Count the split
 								splitsdone++;
 								splitted = true;
@@ -762,7 +842,7 @@ namespace CodeImp.DoomBuilder.Map
 		// A line is unstable when one vertex is selected and the other isn't.
 		public ICollection<Linedef> LinedefsFromSelectedVertices(bool includeunselected, bool includestable, bool includeunstable)
 		{
-			List<Linedef> list = new List<Linedef>();
+			List<Linedef> list = new List<Linedef>((linedefs.Count / 2) + 1);
 			
 			// Go for all lines
 			foreach(Linedef l in linedefs)
