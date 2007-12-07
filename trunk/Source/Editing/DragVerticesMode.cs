@@ -247,11 +247,6 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// ===== BEGIN GEOMETRY STITCHING
 				
-				// Determine area in which we are editing
-				editarea = MapSet.AreaFromVertices(selectedverts);
-				editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
-					             (int)Math.Ceiling(General.Settings.StitchDistance));
-				
 				// Make undo for the stitching
 				stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0, false);
 
@@ -260,6 +255,11 @@ namespace CodeImp.DoomBuilder.Editing
 				
 				// Find all non-moving lines
 				fixedlines = General.Map.Map.LinedefsFromSelectedVertices(true, false, false);
+				
+				// Determine area in which we are editing
+				editarea = MapSet.AreaFromLines(movinglines);
+				editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
+					             (int)Math.Ceiling(General.Settings.StitchDistance));
 
 				// Join nearby vertices
 				stitches += MapSet.JoinVertices(unselectedverts, selectedverts, true, General.Settings.StitchDistance);
