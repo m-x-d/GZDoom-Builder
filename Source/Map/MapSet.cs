@@ -409,6 +409,32 @@ namespace CodeImp.DoomBuilder.Map
 			// Return a rect
 			return new Rectangle(l, t, r - l, b - t);
 		}
+
+		// This creates an area from vertices
+		public static Rectangle AreaFromLines(ICollection<Linedef> lines)
+		{
+			int l = int.MaxValue;
+			int t = int.MaxValue;
+			int r = int.MinValue;
+			int b = int.MinValue;
+
+			// Go for all vertices
+			foreach(Linedef ld in lines)
+			{
+				// Adjust boundaries by vertices
+				if(ld.Start.X < l) l = ld.Start.X;
+				if(ld.Start.X > r) r = ld.Start.X;
+				if(ld.Start.Y < t) t = ld.Start.Y;
+				if(ld.Start.Y > b) b = ld.Start.Y;
+				if(ld.End.X < l) l = ld.End.X;
+				if(ld.End.X > r) r = ld.End.X;
+				if(ld.End.Y < t) t = ld.End.Y;
+				if(ld.End.Y > b) b = ld.End.Y;
+			}
+
+			// Return a rect
+			return new Rectangle(l, t, r - l, b - t);
+		}
 		
 		// This filters lines by a square area
 		public static ICollection<Linedef> FilterArea(ICollection<Linedef> lines, ref Rectangle area)
@@ -419,7 +445,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in lines)
 			{
 				// Check the cs field bits
-				if((GetCSFieldBits(l.Start, ref area) & GetCSFieldBits(l.End, ref area)) != 0)
+				if((GetCSFieldBits(l.Start, ref area) & GetCSFieldBits(l.End, ref area)) == 0)
 				{
 					// The line could be in the area
 					newlines.Add(l);
