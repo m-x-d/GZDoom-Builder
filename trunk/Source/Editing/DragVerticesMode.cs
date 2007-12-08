@@ -225,7 +225,6 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			ICollection<Linedef> movinglines;
 			ICollection<Linedef> fixedlines;
-			ICollection<Linedef> changedlines;
 			Rectangle editarea;
 			int stitches = 0;
 			int stitchundo;
@@ -246,44 +245,45 @@ namespace CodeImp.DoomBuilder.Editing
 				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
 
 				// ===== BEGIN GEOMETRY STITCHING
-				
-				// Make undo for the stitching
-				stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0, false);
+				if(General.MainWindow.AutoMerge)
+				{
+					// Make undo for the stitching
+					stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0, false);
 
-				// Find lines that moved during the drag
-				movinglines = General.Map.Map.LinedefsFromSelectedVertices(false, true, true);
-				
-				// Find all non-moving lines
-				fixedlines = General.Map.Map.LinedefsFromSelectedVertices(true, false, false);
-				
-				// Determine area in which we are editing
-				editarea = MapSet.AreaFromLines(movinglines);
-				editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
-					             (int)Math.Ceiling(General.Settings.StitchDistance));
+					// Find lines that moved during the drag
+					movinglines = General.Map.Map.LinedefsFromSelectedVertices(false, true, true);
 
-				// Join nearby vertices
-				stitches += MapSet.JoinVertices(unselectedverts, selectedverts, true, General.Settings.StitchDistance);
+					// Find all non-moving lines
+					fixedlines = General.Map.Map.LinedefsFromSelectedVertices(true, false, false);
 
-				// Update cached values
-				General.Map.Map.Update();
-				
-				// Split moving lines with unselected vertices
-				unselectedverts = MapSet.FilterArea(unselectedverts, ref editarea);
-				stitches += MapSet.SplitLinesByVertices(movinglines, unselectedverts, General.Settings.StitchDistance, movinglines);
-				
-				// Split non-moving lines with selected vertices
-				fixedlines = MapSet.FilterArea(fixedlines, ref editarea);
-				stitches += MapSet.SplitLinesByVertices(fixedlines, selectedverts, General.Settings.StitchDistance, movinglines);
+					// Determine area in which we are editing
+					editarea = MapSet.AreaFromLines(movinglines);
+					editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
+									 (int)Math.Ceiling(General.Settings.StitchDistance));
 
-				// Remove looped linedefs
-				stitches += MapSet.RemoveLoopedLinedefs(movinglines);
+					// Join nearby vertices
+					stitches += MapSet.JoinVertices(unselectedverts, selectedverts, true, General.Settings.StitchDistance);
 
-				// Join overlapping lines
-				stitches += MapSet.JoinOverlappingLines(movinglines);
+					// Update cached values
+					General.Map.Map.Update();
 
-				// No stitching done? then withdraw undo
-				if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
+					// Split moving lines with unselected vertices
+					unselectedverts = MapSet.FilterArea(unselectedverts, ref editarea);
+					stitches += MapSet.SplitLinesByVertices(movinglines, unselectedverts, General.Settings.StitchDistance, movinglines);
 
+					// Split non-moving lines with selected vertices
+					fixedlines = MapSet.FilterArea(fixedlines, ref editarea);
+					stitches += MapSet.SplitLinesByVertices(fixedlines, selectedverts, General.Settings.StitchDistance, movinglines);
+
+					// Remove looped linedefs
+					stitches += MapSet.RemoveLoopedLinedefs(movinglines);
+
+					// Join overlapping lines
+					stitches += MapSet.JoinOverlappingLines(movinglines);
+
+					// No stitching done? then withdraw undo
+					if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
+				}
 				// ===== END GEOMETRY STITCHING
 
 				// If only a single vertex was selected, deselect it now

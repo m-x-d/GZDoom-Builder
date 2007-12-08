@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Properties
 
-		public Action this[string action] { get { return actions[action]; } }
+		public Action this[string action] { get { if(actions.ContainsKey(action)) return actions[action]; else throw new ArgumentException("There is no such action \"" + action + "\""); } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion

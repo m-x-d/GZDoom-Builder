@@ -145,6 +145,9 @@
   <data name="NewMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NewMap2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="mergegeometry" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mergegeometry.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="File" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NewMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -163,8 +166,8 @@
   <data name="Grid2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Grid2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ThingsMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ThingsMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Grid4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Grid4.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SaveMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SaveMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -175,6 +178,9 @@
   <data name="VerticesMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\VerticesMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ThingsMode" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ThingsMode.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Status1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -184,7 +190,7 @@
   <data name="OpenMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\OpenMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Grid4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Grid4.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="mergegeometry2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mergegeometry2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

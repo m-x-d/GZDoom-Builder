@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Configuration cfg;
 		
 		// Cached variables
+		private int undolevels;
 		private bool blackbrowsers;
 		private float stitchdistance;
 		
@@ -51,6 +52,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		public Configuration Config { get { return cfg; } }
+		public int UndoLevels { get { return undolevels; } set { undolevels = value; } }
 		public bool BlackBrowsers { get { return blackbrowsers; } set { blackbrowsers = value; } }
 		public float StitchDistance { get { return stitchdistance; } set { stitchdistance = value; } }
 
@@ -78,6 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 				// Read the cache variables
 				blackbrowsers = cfg.ReadSetting("blackbrowsers", false);
 				stitchdistance = cfg.ReadSetting("stitchdistance", 2.0f);
+				undolevels = cfg.ReadSetting("undolevels", 20);
 
 				// Success
 				return true;
@@ -95,6 +98,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Write the cache variables
 			cfg.WriteSetting("blackbrowsers", blackbrowsers);
 			cfg.WriteSetting("stitchdistance", stitchdistance);
+			cfg.WriteSetting("undolevels", undolevels);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
