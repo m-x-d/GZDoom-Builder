@@ -75,9 +75,6 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Selections
 		private bool selected;
-
-		// Cloning
-		private Linedef clone;
 		
 		// Disposing
 		private bool isdisposed = false;

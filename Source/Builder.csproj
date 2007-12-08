@@ -284,6 +284,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\mergegeometry2.png" />
+    <None Include="Resources\mergegeometry.png" />
     <None Include="Resources\Grid4.png" />
     <None Include="Resources\Redo.png" />
     <None Include="Resources\Undo.png" />

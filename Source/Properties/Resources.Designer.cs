@@ -109,6 +109,20 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap mergegeometry {
+            get {
+                object obj = ResourceManager.GetObject("mergegeometry", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap mergegeometry2 {
+            get {
+                object obj = ResourceManager.GetObject("mergegeometry2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap NewMap {
             get {
                 object obj = ResourceManager.GetObject("NewMap", resourceCulture);

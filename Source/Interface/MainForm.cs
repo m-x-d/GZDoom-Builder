@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public bool MouseInDisplay { get { return mouseinside; } }
 		public RenderTargetControl Display { get { return display; } }
 		public bool SnapToGrid { get { return buttonsnaptogrid.Checked; } }
+		public bool AutoMerge { get { return buttonautomerge.Checked; } }
 
 		#endregion
 
@@ -872,14 +873,15 @@ namespace CodeImp.DoomBuilder.Interface
 			//menuedit.Visible = (General.Map != null);
 			
 			// Enable/disable items
+			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
+			itemredo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextRedo != null);
 			itemmapoptions.Enabled = (General.Map != null);
 			itemverticesmode.Enabled = (General.Map != null);
 			itemlinedefsmode.Enabled = (General.Map != null);
 			itemsectorsmode.Enabled = (General.Map != null);
 			itemthingsmode.Enabled = (General.Map != null);
 			itemsnaptogrid.Enabled = (General.Map != null);
-			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
-			itemredo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextRedo != null);
+			itemautomerge.Enabled = (General.Map != null);
 
 			// Determine undo description
 			if(itemundo.Enabled)
@@ -904,6 +906,7 @@ namespace CodeImp.DoomBuilder.Interface
 			buttonundo.ToolTipText = itemundo.Text;
 			buttonredo.ToolTipText = itemredo.Text;
 			buttonsnaptogrid.Enabled = (General.Map != null);
+			buttonautomerge.Enabled = (General.Map != null);
 		}
 
 		// Action to toggle snap to grid
@@ -912,6 +915,14 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			buttonsnaptogrid.Checked = !buttonsnaptogrid.Checked;
 			itemsnaptogrid.Checked = buttonsnaptogrid.Checked;
+		}
+
+		// Action to toggle auto merge
+		[Action("toggleautomerge")]
+		public void ToggleAutoMerge()
+		{
+			buttonautomerge.Checked = !buttonautomerge.Checked;
+			itemautomerge.Checked = buttonautomerge.Checked;
 		}
 		
 		#endregion

@@ -44,8 +44,8 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 
 		// Undo and redo stacks
-		private Stack<UndoSnapshot> undos;
-		private Stack<UndoSnapshot> redos;
+		private List<UndoSnapshot> undos;
+		private List<UndoSnapshot> redos;
 
 		// Grouping
 		private UndoGroup lastgroup;
@@ -61,8 +61,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		public UndoSnapshot NextUndo { get { if(undos.Count > 0) return undos.Peek(); else return null; } }
-		public UndoSnapshot NextRedo { get { if(redos.Count > 0) return redos.Peek(); else return null; } }
+		public UndoSnapshot NextUndo { get { if(undos.Count > 0) return undos[0]; else return null; } }
+		public UndoSnapshot NextRedo { get { if(redos.Count > 0) return redos[0]; else return null; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -74,8 +74,8 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Initialize
 			ticketid = 1;
-			undos = new Stack<UndoSnapshot>();
-			redos = new Stack<UndoSnapshot>();
+			undos = new List<UndoSnapshot>(General.Settings.UndoLevels + 1);
+			redos = new List<UndoSnapshot>(General.Settings.UndoLevels + 1);
 
 			// Bind any methods
 			ActionAttribute.BindMethods(this);
@@ -122,6 +122,21 @@ namespace CodeImp.DoomBuilder.Editing
 			undos.Clear();
 		}
 
+		// This checks and removes a level when the limit is reached
+		private void LimitUndoRedoLevel(List<UndoSnapshot> list)
+		{
+			UndoSnapshot u;
+			
+			// Too many?
+			if(list.Count > General.Settings.UndoLevels)
+			{
+				// Remove one and dispose map
+				u = list[list.Count - 1];
+				u.map.Dispose();
+				list.RemoveAt(list.Count - 1);
+			}
+		}
+
 		#endregion
 		
 		#region ================== Public Methods
@@ -143,8 +158,9 @@ namespace CodeImp.DoomBuilder.Editing
 				u = new UndoSnapshot(description, allow3dchange, General.Map.Map.Clone(), ticketid);
 
 				// Put it on the stack
-				undos.Push(u);
-
+				undos.Insert(0, u);
+				LimitUndoRedoLevel(undos);
+				
 				// Clear all redos
 				redos.Clear();
 
@@ -171,10 +187,10 @@ namespace CodeImp.DoomBuilder.Editing
 			if(undos.Count > 0)
 			{
 				// Check if the ticket id matches
-				if(ticket == undos.Peek().ticketid)
+				if(ticket == undos[0].ticketid)
 				{
 					// Remove the last made undo
-					undos.Pop();
+					undos.RemoveAt(0);
 					
 					// Update
 					General.MainWindow.UpdateInterface();
@@ -192,14 +208,16 @@ namespace CodeImp.DoomBuilder.Editing
 			if(undos.Count > 0)
 			{
 				// Get undo snapshot
-				u = undos.Pop();
+				u = undos[0];
+				undos.RemoveAt(0);
 
 				// Make a snapshot for redo
 				r = new UndoSnapshot(u, General.Map.Map.Clone());
 
 				// Put it on the stack
-				redos.Push(r);
-
+				redos.Insert(0, r);
+				LimitUndoRedoLevel(redos);
+				
 				// Reset grouping
 				lastgroup = UndoGroup.None;
 				
@@ -222,14 +240,16 @@ namespace CodeImp.DoomBuilder.Editing
 			if(redos.Count > 0)
 			{
 				// Get redo snapshot
-				r = redos.Pop();
+				r = redos[0];
+				redos.RemoveAt(0);
 
 				// Make a snapshot for undo
 				u = new UndoSnapshot(r, General.Map.Map.Clone());
 
 				// Put it on the stack
-				undos.Push(u);
-
+				undos.Insert(0, u);
+				LimitUndoRedoLevel(undos);
+				
 				// Reset grouping
 				lastgroup = UndoGroup.None;
 

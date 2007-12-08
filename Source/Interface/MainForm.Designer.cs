@@ -86,6 +86,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.thingfilters = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
+			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gridlabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -118,6 +119,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
+			this.itemautomerge = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -174,7 +176,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// toolStripSeparator6
 			// 
 			toolStripSeparator6.Name = "toolStripSeparator6";
-			toolStripSeparator6.Size = new System.Drawing.Size(158, 6);
+			toolStripSeparator6.Size = new System.Drawing.Size(162, 6);
 			// 
 			// toolStripSeparator3
 			// 
@@ -197,7 +199,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// toolStripMenuItem5
 			// 
 			toolStripMenuItem5.Name = "toolStripMenuItem5";
-			toolStripMenuItem5.Size = new System.Drawing.Size(158, 6);
+			toolStripMenuItem5.Size = new System.Drawing.Size(162, 6);
 			// 
 			// toolStripSeparator10
 			// 
@@ -218,7 +220,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// toolStripSeparator11
 			// 
 			toolStripSeparator11.Name = "toolStripSeparator11";
-			toolStripSeparator11.Size = new System.Drawing.Size(158, 6);
+			toolStripSeparator11.Size = new System.Drawing.Size(162, 6);
 			// 
 			// poscommalabel
 			// 
@@ -334,6 +336,7 @@ namespace CodeImp.DoomBuilder.Interface
             this.itemthingsmode,
             toolStripSeparator6,
             this.itemsnaptogrid,
+            this.itemautomerge,
             toolStripSeparator11,
             this.itemmapoptions});
 			this.menuedit.Name = "menuedit";
@@ -344,7 +347,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemundo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Undo;
 			this.itemundo.Name = "itemundo";
-			this.itemundo.Size = new System.Drawing.Size(161, 22);
+			this.itemundo.Size = new System.Drawing.Size(165, 22);
 			this.itemundo.Tag = "undo";
 			this.itemundo.Text = "Undo";
 			this.itemundo.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -353,7 +356,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemredo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Redo;
 			this.itemredo.Name = "itemredo";
-			this.itemredo.Size = new System.Drawing.Size(161, 22);
+			this.itemredo.Size = new System.Drawing.Size(165, 22);
 			this.itemredo.Tag = "redo";
 			this.itemredo.Text = "Redo";
 			this.itemredo.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -362,7 +365,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemverticesmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.VerticesMode;
 			this.itemverticesmode.Name = "itemverticesmode";
-			this.itemverticesmode.Size = new System.Drawing.Size(161, 22);
+			this.itemverticesmode.Size = new System.Drawing.Size(165, 22);
 			this.itemverticesmode.Tag = "verticesmode";
 			this.itemverticesmode.Text = "Vertices Mode";
 			this.itemverticesmode.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -371,7 +374,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemlinedefsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinesMode;
 			this.itemlinedefsmode.Name = "itemlinedefsmode";
-			this.itemlinedefsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemlinedefsmode.Size = new System.Drawing.Size(165, 22);
 			this.itemlinedefsmode.Tag = "linedefsmode";
 			this.itemlinedefsmode.Text = "Linedefs Mode";
 			this.itemlinedefsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -380,7 +383,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemsectorsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.SectorsMode;
 			this.itemsectorsmode.Name = "itemsectorsmode";
-			this.itemsectorsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemsectorsmode.Size = new System.Drawing.Size(165, 22);
 			this.itemsectorsmode.Tag = "sectorsmode";
 			this.itemsectorsmode.Text = "Sectors Mode";
 			this.itemsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -389,7 +392,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemthingsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.ThingsMode;
 			this.itemthingsmode.Name = "itemthingsmode";
-			this.itemthingsmode.Size = new System.Drawing.Size(161, 22);
+			this.itemthingsmode.Size = new System.Drawing.Size(165, 22);
 			this.itemthingsmode.Tag = "thingsmode";
 			this.itemthingsmode.Text = "Things Mode";
 			this.itemthingsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -400,7 +403,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsnaptogrid.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.itemsnaptogrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid4;
 			this.itemsnaptogrid.Name = "itemsnaptogrid";
-			this.itemsnaptogrid.Size = new System.Drawing.Size(161, 22);
+			this.itemsnaptogrid.Size = new System.Drawing.Size(165, 22);
 			this.itemsnaptogrid.Tag = "togglesnap";
 			this.itemsnaptogrid.Text = "Snap to Grid";
 			this.itemsnaptogrid.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -409,7 +412,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemmapoptions.Image = global::CodeImp.DoomBuilder.Properties.Resources.Properties;
 			this.itemmapoptions.Name = "itemmapoptions";
-			this.itemmapoptions.Size = new System.Drawing.Size(161, 22);
+			this.itemmapoptions.Size = new System.Drawing.Size(165, 22);
 			this.itemmapoptions.Tag = "mapoptions";
 			this.itemmapoptions.Text = "Map Options....";
 			this.itemmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -485,7 +488,8 @@ namespace CodeImp.DoomBuilder.Interface
             this.buttonthingsfilter,
             this.thingfilters,
             this.toolStripSeparator8,
-            this.buttonsnaptogrid});
+            this.buttonsnaptogrid,
+            this.buttonautomerge});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(839, 25);
@@ -643,6 +647,19 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonsnaptogrid.Tag = "togglesnap";
 			this.buttonsnaptogrid.Text = "Snap to Grid";
 			this.buttonsnaptogrid.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonautomerge
+			// 
+			this.buttonautomerge.Checked = true;
+			this.buttonautomerge.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.buttonautomerge.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonautomerge.Image = global::CodeImp.DoomBuilder.Properties.Resources.mergegeometry2;
+			this.buttonautomerge.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonautomerge.Name = "buttonautomerge";
+			this.buttonautomerge.Size = new System.Drawing.Size(23, 22);
+			this.buttonautomerge.Tag = "toggleautomerge";
+			this.buttonautomerge.Text = "Merge Geometry";
+			this.buttonautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// statusbar
 			// 
@@ -970,6 +987,17 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			// 
+			// itemautomerge
+			// 
+			this.itemautomerge.Checked = true;
+			this.itemautomerge.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.itemautomerge.Image = global::CodeImp.DoomBuilder.Properties.Resources.mergegeometry2;
+			this.itemautomerge.Name = "itemautomerge";
+			this.itemautomerge.Size = new System.Drawing.Size(165, 22);
+			this.itemautomerge.Tag = "toggleautomerge";
+			this.itemautomerge.Text = "Merge Geometry";
+			this.itemautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1080,5 +1108,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripButton buttonredo;
 		private System.Windows.Forms.ToolStripButton buttonsnaptogrid;
 		private System.Windows.Forms.ToolStripMenuItem itemsnaptogrid;
+		private System.Windows.Forms.ToolStripButton buttonautomerge;
+		private System.Windows.Forms.ToolStripMenuItem itemautomerge;
 	}
 }
