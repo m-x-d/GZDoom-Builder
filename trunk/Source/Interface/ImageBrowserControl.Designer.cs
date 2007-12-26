@@ -1,6 +1,6 @@
 namespace CodeImp.DoomBuilder.Interface
 {
-	partial class ImageBrowser
+	partial class ImageBrowserControl
 	{
 		/// <summary> 
 		/// Required designer variable.

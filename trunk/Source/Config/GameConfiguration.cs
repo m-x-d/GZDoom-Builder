@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Dictionary<int, LinedefActionInfo> linedefactions;
 		private List<LinedefActionInfo> sortedlinedefactions;
 		private List<LinedefActionCategory> actioncategories;
+		private List<LinedefActivateInfo> linedefactivates;
 		
 		#endregion
 
@@ -97,6 +98,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary<int, LinedefActionInfo> LinedefActions { get { return linedefactions; } }
 		public List<LinedefActionInfo> SortedLinedefActions { get { return sortedlinedefactions; } }
 		public List<LinedefActionCategory> ActionCategories { get { return actioncategories; } }
+		public List<LinedefActivateInfo> LinedefActivates { get { return linedefactivates; } }
 
 		#endregion
 
@@ -113,6 +115,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.linedefactions = new Dictionary<int, LinedefActionInfo>();
 			this.actioncategories = new List<LinedefActionCategory>();
 			this.sortedlinedefactions = new List<LinedefActionInfo>();
+			this.linedefactivates = new List<LinedefActivateInfo>();
 			
 			// Read general settings
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
@@ -136,6 +139,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Linedefs
 			LoadLinedefFlags();
 			LoadLinedefActions();
+			LoadLinedefActivations();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -184,7 +188,7 @@ namespace CodeImp.DoomBuilder.Config
 						linedefflags.Add(bitvalue, de.Value.ToString());
 					else
 						General.WriteLogLine("WARNING: Structure 'linedefflags' contains conflicting bit flag keys. Make sure all keys are unique integers and powers of 2!");
-
+						
 					// Update bit flags checking value
 					bitflagscheck |= bitvalue;
 				}
@@ -236,6 +240,7 @@ namespace CodeImp.DoomBuilder.Config
 					
 					// Add action to category and sorted list
 					sortedlinedefactions.Add(ai);
+					linedefactions.Add(actionnumber, ai);
 					ac.Add(ai);
 				}
 				else
@@ -253,6 +258,34 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Sort the categories list
 			actioncategories.Sort();
+		}
+
+		// Linedef activates
+		private void LoadLinedefActivations()
+		{
+			IDictionary dic;
+			int bitvalue;
+
+			// Get linedef activations
+			dic = cfg.ReadSetting("linedefactivations", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Try paring the bit value
+				if(int.TryParse(de.Key.ToString(),
+					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
+					CultureInfo.InvariantCulture, out bitvalue))
+				{
+					// Add to the list
+					linedefactivates.Add(new LinedefActivateInfo(bitvalue, de.Value.ToString()));
+				}
+				else
+				{
+					General.WriteLogLine("WARNING: Structure 'linedefactivations' contains invalid keys!");
+				}
+			}
+
+			// Sort the list
+			linedefactivates.Sort();
 		}
 		
 		#endregion

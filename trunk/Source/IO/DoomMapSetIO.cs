@@ -452,8 +452,8 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write((Int16)sd.OffsetX);
 				writer.Write((Int16)sd.OffsetY);
 				writer.Write(Lump.MakeFixedName(sd.HighTexture, WAD.ENCODING));
-				writer.Write(Lump.MakeFixedName(sd.MiddleTexture, WAD.ENCODING));
 				writer.Write(Lump.MakeFixedName(sd.LowTexture, WAD.ENCODING));
+				writer.Write(Lump.MakeFixedName(sd.MiddleTexture, WAD.ENCODING));
 				writer.Write((UInt16)sectorids[sd.Sector]);
 			}
 

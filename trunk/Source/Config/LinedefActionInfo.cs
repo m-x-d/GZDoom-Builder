@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.Config
 		// This presents the item as string
 		public override string ToString()
 		{
-			return index + ": " + prefix + " " + title;
+			return index + " - " + title;
 		}
 
 		// This compares against another action info

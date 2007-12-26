@@ -43,10 +43,18 @@ namespace CodeImp.DoomBuilder.Interface
 		// This shows the info
 		public void ShowInfo(Linedef l)
 		{
-			// TODO: Get line action information
+			string actioninfo = "";
+			
+			// Get line action information
+			if(General.Map.Config.LinedefActions.ContainsKey(l.Action))
+				actioninfo = General.Map.Config.LinedefActions[l.Action].ToString();
+			else if(l.Action == 0)
+				actioninfo = l.Action.ToString() + " - None";
+			else
+				actioninfo = l.Action.ToString() + " - Unknown";
 			
 			// Linedef info
-			action.Text = l.Action.ToString();
+			action.Text = actioninfo;
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg.ToString() + "\u00B0";
 			tag.Text = l.Tag.ToString();
@@ -59,9 +67,9 @@ namespace CodeImp.DoomBuilder.Interface
 				fronthighname.Text = l.Front.HighTexture;
 				frontmidname.Text = l.Front.MiddleTexture;
 				frontlowname.Text = l.Front.LowTexture;
-				General.DisplayZoomedImage(fronthightex, General.Map.Data.GetTextureBitmap(l.Front.HighTexture));
-				General.DisplayZoomedImage(frontmidtex, General.Map.Data.GetTextureBitmap(l.Front.MiddleTexture));
-				General.DisplayZoomedImage(frontlowtex, General.Map.Data.GetTextureBitmap(l.Front.LowTexture));
+				DisplaySidedefTexture(fronthightex, l.Front.HighTexture, l.Front.HighRequired());
+				DisplaySidedefTexture(frontmidtex, l.Front.MiddleTexture, l.Front.MiddleRequired());
+				DisplaySidedefTexture(frontlowtex, l.Front.LowTexture, l.Front.LowRequired());
 				frontoffsetlabel.Enabled = true;
 				frontoffset.Enabled = true;
 				frontpanel.Enabled = true;
@@ -89,9 +97,9 @@ namespace CodeImp.DoomBuilder.Interface
 				backhighname.Text = l.Back.HighTexture;
 				backmidname.Text = l.Back.MiddleTexture;
 				backlowname.Text = l.Back.LowTexture;
-				General.DisplayZoomedImage(backhightex, General.Map.Data.GetTextureBitmap(l.Back.HighTexture));
-				General.DisplayZoomedImage(backmidtex, General.Map.Data.GetTextureBitmap(l.Back.MiddleTexture));
-				General.DisplayZoomedImage(backlowtex, General.Map.Data.GetTextureBitmap(l.Back.LowTexture));
+				DisplaySidedefTexture(backhightex, l.Back.HighTexture, l.Back.HighRequired());
+				DisplaySidedefTexture(backmidtex, l.Back.MiddleTexture, l.Back.MiddleRequired());
+				DisplaySidedefTexture(backlowtex, l.Back.LowTexture, l.Back.LowRequired());
 				backoffsetlabel.Enabled = true;
 				backoffset.Enabled = true;
 				backpanel.Enabled = true;
@@ -132,6 +140,42 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Call base
 			base.OnVisibleChanged(e);
+		}
+
+		// This shows a sidedef texture in a panel
+		private void DisplaySidedefTexture(Panel panel, string name, bool required)
+		{
+			// Check if name is a "none" texture
+			if((name.Length < 1) || (name[0] == '-'))
+			{
+				// Determine image to show
+				if(required)
+					panel.BackgroundImage = CodeImp.DoomBuilder.Properties.Resources.MissingTexture;
+				else
+					panel.BackgroundImage = null;
+			}
+			else
+			{
+				// Set the image
+				panel.BackgroundImage = General.Map.Data.GetTextureBitmap(name);
+			}
+			
+			// Image not null?
+			if(panel.BackgroundImage != null)
+			{
+				// Small enough to fit in panel?
+				if((panel.BackgroundImage.Size.Width < panel.ClientRectangle.Width) &&
+				   (panel.BackgroundImage.Size.Height < panel.ClientRectangle.Height))
+				{
+					// Display centered
+					panel.BackgroundImageLayout = ImageLayout.Center;
+				}
+				else
+				{
+					// Display zoomed
+					panel.BackgroundImageLayout = ImageLayout.Zoom;
+				}
+			}
 		}
 	}
 }

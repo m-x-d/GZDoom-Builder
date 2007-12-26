@@ -201,6 +201,47 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#endregion
 
+		#region ================== Methods
+
+		// This checks if a texture is required
+		public bool HighRequired()
+		{
+			// Doublesided?
+			if(Other != null)
+			{
+				// Texture is required when ceiling of other side is lower
+				return (Other.sector.CeilHeight < this.sector.CeilHeight);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// This checks if a texture is required
+		public bool MiddleRequired()
+		{
+			// Texture is required when the line is singlesided
+			return (Other == null);
+		}
+
+		// This checks if a texture is required
+		public bool LowRequired()
+		{
+			// Doublesided?
+			if(Other != null)
+			{
+				// Texture is required when floor of other side is higher
+				return (Other.sector.FloorHeight > this.sector.FloorHeight);
+			}
+			else
+			{
+				return false;
+			}
+		}
+		
+		#endregion
+
 		#region ================== Changes
 
 		// This updates all properties
