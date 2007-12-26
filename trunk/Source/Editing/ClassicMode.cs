@@ -343,8 +343,8 @@ namespace CodeImp.DoomBuilder.Editing
 			if(e.Button == mousedragging)
 			{
 				// No longer dragging
-				mousedragging = MouseButtons.None;
 				DragStop(e);
+				mousedragging = MouseButtons.None;
 			}
 
 			// Let the base class know

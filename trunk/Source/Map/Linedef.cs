@@ -34,10 +34,8 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
-		public const int BUFFERVERTICES = 4;
-		public const int RENDERPRIMITIVES = 2;
-		public static readonly byte[] EMPTY_ARGS = new byte[5];
-		private const float NORMAL_LENGTH = 6f;
+		public const int NUM_ARGS = 5;
+		public static readonly byte[] EMPTY_ARGS = new byte[NUM_ARGS];
 		
 		#endregion
 
@@ -268,10 +266,28 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			updateneeded = true;
 		}
-		
+
 		#endregion
 		
 		#region ================== Methods
+		
+		// This applies single/double sided flags
+		public void ApplySidedFlags()
+		{
+			// Doublesided?
+			if((front != null) && (back != null))
+			{
+				// Apply or remove flags for doublesided line
+				flags &= ~General.Map.Config.SingleSidedFlags;
+				flags |= General.Map.Config.DoubleSidedFlags;
+			}
+			else
+			{
+				// Apply or remove flags for singlesided line
+				flags &= ~General.Map.Config.DoubleSidedFlags;
+				flags |= General.Map.Config.SingleSidedFlags;
+			}
+		}
 
 		// This returns the shortest distance from given coordinates to line
 		public float SafeDistanceToSq(Vector2D p, bool bounded)
@@ -374,9 +390,156 @@ namespace CodeImp.DoomBuilder.Map
 		// This line will be disposed
 		public void Join(Linedef other)
 		{
-			// TODO
+			Sector l1fs, l1bs, l2fs, l2bs;
+			
+			// Get sector references
+			if(other.front != null) l1fs = other.front.Sector; else l1fs = null;
+			if(other.back != null) l1bs = other.back.Sector; else l1bs = null;
+			if(this.front != null) l2fs = this.front.Sector; else l2fs = null;
+			if(this.back != null) l2bs = this.back.Sector; else l2bs = null;
 
+			// Compare front sectors
+			if(l1fs == l2fs)
+			{
+				// Copy textures
+				if(other.front != null) other.front.AddTexturesTo(this.back);
+				if(this.front != null) this.front.AddTexturesTo(other.back);
+
+				// Change sidedefs
+				JoinChangeSidedefs(other, true, back);
+			}
+			// Compare back sectors
+			else if(l1bs == l2bs)
+			{
+				// Copy textures
+				if(other.back != null) other.back.AddTexturesTo(this.front);
+				if(this.back != null) this.back.AddTexturesTo(other.front);
+				
+				// Change sidedefs
+				JoinChangeSidedefs(other, false, front);
+			}
+			// Compare front and back
+			else if(l1fs == l2bs)
+			{
+				// Copy textures
+				if(other.front != null) other.front.AddTexturesTo(this.front);
+				if(this.back != null) this.back.AddTexturesTo(other.back);
+
+				// Change sidedefs
+				JoinChangeSidedefs(other, true, front);
+			}
+			// Compare back and front
+			else if(l1bs == l2fs)
+			{
+				// Copy textures
+				if(other.back != null) other.back.AddTexturesTo(this.back);
+				if(this.front != null) this.front.AddTexturesTo(other.front);
+
+				// Change sidedefs
+				JoinChangeSidedefs(other, false, back);
+			}
+			else
+			{
+				// Other line single sided?
+				if(other.back == null)
+				{
+					// This line with its back to the other?
+					if(this.start == other.end)
+					{
+						// Copy textures
+						if(other.back != null) other.back.AddTexturesTo(this.front);
+						if(this.back != null) this.back.AddTexturesTo(other.front);
+
+						// Change sidedefs
+						JoinChangeSidedefs(other, false, front);
+					}
+					else
+					{
+						// Copy textures
+						if(other.back != null) other.back.AddTexturesTo(this.back);
+						if(this.front != null) this.front.AddTexturesTo(other.front);
+
+						// Change sidedefs
+						JoinChangeSidedefs(other, false, back);
+					}
+				}
+				// This line single sided?
+				if(this.back == null)
+				{
+					// Other line with its back to this?
+					if(other.start == this.end)
+					{
+						// Copy textures
+						if(other.back != null) other.back.AddTexturesTo(this.front);
+						if(this.back != null) this.back.AddTexturesTo(other.front);
+
+						// Change sidedefs
+						JoinChangeSidedefs(other, false, front);
+					}
+					else
+					{
+						// Copy textures
+						if(other.front != null) other.front.AddTexturesTo(this.front);
+						if(this.back != null) this.back.AddTexturesTo(other.back);
+
+						// Change sidedefs
+						JoinChangeSidedefs(other, true, front);
+					}
+				}
+				else
+				{
+					// This line with its back to the other?
+					if(this.start == other.end)
+					{
+						// Copy textures
+						if(other.back != null) other.back.AddTexturesTo(this.front);
+						if(this.back != null) this.back.AddTexturesTo(other.front);
+
+						// Change sidedefs
+						JoinChangeSidedefs(other, false, front);
+					}
+					else
+					{
+						// Copy textures
+						if(other.back != null) other.back.AddTexturesTo(this.back);
+						if(this.front != null) this.front.AddTexturesTo(other.front);
+
+						// Change sidedefs
+						JoinChangeSidedefs(other, false, back);
+					}
+				}
+			}
+
+			// If either of the two lines was selected, keep the other selected
+			if(this.selected) other.selected = true;
+
+			// Apply single/double sided flags
+			other.ApplySidedFlags();
+			
+			// I got killed by the other.
 			this.Dispose();
+		}
+		
+		// This changes sidedefs (used for joining lines)
+		private void JoinChangeSidedefs(Linedef other, bool front, Sidedef newside)
+		{
+			Sidedef sd;
+			
+			// Change sidedefs
+			if(front)
+			{
+				if(other.front != null) other.front.Dispose();
+			}
+			else
+			{
+				if(other.back != null) other.back.Dispose();
+			}
+			
+			if(newside != null)
+			{
+				sd = map.CreateSidedef(other, front, newside.Sector);
+				newside.CopyPropertiesTo(sd);
+			}
 		}
 		
 		#endregion

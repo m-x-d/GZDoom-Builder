@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Editing
 				renderer.RenderThingSet(General.Map.Map.Things);
 
 				// Render highlighted item
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderThing(highlighted, General.Colors.Highlight);
 
 				// Done
@@ -137,14 +137,14 @@ namespace CodeImp.DoomBuilder.Editing
 			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
 
 				// Set new highlight
 				highlighted = t;
 
 				// Render highlighted item
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderThing(highlighted, General.Colors.Highlight);
 
 				// Done
@@ -152,8 +152,10 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 
 			// Show highlight info
-			if(highlighted != null) General.MainWindow.ShowThingInfo(highlighted);
-				else General.MainWindow.HideInfo();
+			if((highlighted != null) && !highlighted.IsDisposed)
+				General.MainWindow.ShowThingInfo(highlighted);
+			else
+				General.MainWindow.HideInfo();
 		}
 
 		// Mouse moves
@@ -177,6 +179,92 @@ namespace CodeImp.DoomBuilder.Editing
 			Highlight(null);
 		}
 
+		// Mouse button pressed
+		public override void MouseDown(MouseEventArgs e)
+		{
+			base.MouseDown(e);
+
+			// Select button?
+			if(e.Button == EditMode.SELECT_BUTTON)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Flip selection
+					highlighted.Selected = !highlighted.Selected;
+					
+					// Update display
+					if(renderer.Start(false, false))
+					{
+						// Redraw highlight to show selection
+						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+						renderer.Finish();
+					}
+				}
+			}
+			// Edit button?
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Highlighted item not selected?
+					if(!highlighted.Selected)
+					{
+						// Make this the only selection
+						General.Map.Map.ClearSelectedThings();
+						highlighted.Selected = true;
+						General.MainWindow.RedrawDisplay();
+					}
+
+					// Update display
+					if(renderer.Start(false, false))
+					{
+						// Redraw highlight to show selection
+						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+						renderer.Finish();
+					}
+				}
+			}
+		}
+
+		// Mouse released
+		public override void MouseUp(MouseEventArgs e)
+		{
+			ICollection<Thing> selected;
+
+			base.MouseUp(e);
+			
+			// Item highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				// Update display
+				if(renderer.Start(false, false))
+				{
+					// Render highlighted item
+					renderer.RenderThing(highlighted, General.Colors.Highlight);
+					renderer.Finish();
+				}
+
+				// Edit button?
+				if(e.Button == EditMode.EDIT_BUTTON)
+				{
+					// Anything selected?
+					selected = General.Map.Map.GetThingsSelection(true);
+					if(selected.Count > 0)
+					{
+						// Show thing edit dialog
+
+						// When a single thing was selected, deselect it now
+						if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
+
+						// Update entire display
+						General.MainWindow.RedrawDisplay();
+					}
+				}
+			}
+		}
+		
 		#endregion
 	}
 }

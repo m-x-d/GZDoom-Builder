@@ -98,6 +98,22 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.Disengage();
 
+			// Check which mode we are switching to
+			if(General.Map.NewMode is VerticesMode)
+			{
+				// Convert selection to vertices
+
+				// Clear selected sectors
+				General.Map.Map.ClearSelectedSectors();
+			}
+			else if(General.Map.NewMode is LinedefsMode)
+			{
+				// Convert selection to linedefs
+
+				// Clear selected sectors
+				General.Map.Map.ClearSelectedSectors();
+			}
+			
 			// Hide highlight info
 			General.MainWindow.HideInfo();
 			
@@ -120,7 +136,7 @@ namespace CodeImp.DoomBuilder.Editing
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
 				// Render highlighted item
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderSector(highlighted, General.Colors.Highlight);
 
 				// Done
@@ -135,7 +151,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderSector(highlighted);
 
 				/*
@@ -149,7 +165,7 @@ namespace CodeImp.DoomBuilder.Editing
 				highlighted = s;
 
 				// Render highlighted item
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderSector(highlighted, General.Colors.Highlight);
 
 				/*
@@ -164,8 +180,10 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 
 			// Show highlight info
-			if(highlighted != null) General.MainWindow.ShowSectorInfo(highlighted);
-				else General.MainWindow.HideInfo();
+			if((highlighted != null) && !highlighted.IsDisposed)
+				General.MainWindow.ShowSectorInfo(highlighted);
+			else
+				General.MainWindow.HideInfo();
 		}
 		
 		// Mouse moves
@@ -217,6 +235,58 @@ namespace CodeImp.DoomBuilder.Editing
 			Highlight(null);
 		}
 
+		// Mouse button pressed
+		public override void MouseDown(MouseEventArgs e)
+		{
+			base.MouseDown(e);
+			bool front, back;
+			
+			// Which button is used?
+			if(e.Button == EditMode.SELECT_BUTTON)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Flip selection
+					highlighted.Selected = !highlighted.Selected;
+
+					// Make update lines selection
+					foreach(Sidedef sd in highlighted.Sidedefs)
+					{
+						if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
+						if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
+						sd.Line.Selected = front | back;
+					}
+					
+					// Update display
+					if(renderer.Start(false, false))
+					{
+						// Redraw highlight to show selection
+						renderer.RenderSector(highlighted);
+						renderer.Finish();
+					}
+				}
+			}
+		}
+
+		// Mouse released
+		public override void MouseUp(MouseEventArgs e)
+		{
+			base.MouseUp(e);
+
+			// Item highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				// Update display
+				if(renderer.Start(false, false))
+				{
+					// Render highlighted item
+					renderer.RenderSector(highlighted, General.Colors.Highlight);
+					renderer.Finish();
+				}
+			}
+		}
+		
 		#endregion
 	}
 }

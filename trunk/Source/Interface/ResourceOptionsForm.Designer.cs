@@ -40,13 +40,13 @@ namespace CodeImp.DoomBuilder.Interface
 			this.dir_textures = new System.Windows.Forms.CheckBox();
 			this.browsedir = new System.Windows.Forms.Button();
 			this.dirlocation = new System.Windows.Forms.TextBox();
+			this.pk3filetab = new System.Windows.Forms.TabPage();
+			this.browsepk3 = new System.Windows.Forms.Button();
+			this.pk3location = new System.Windows.Forms.TextBox();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.wadfiledialog = new System.Windows.Forms.OpenFileDialog();
 			this.dirdialog = new System.Windows.Forms.FolderBrowserDialog();
-			this.pk3filetab = new System.Windows.Forms.TabPage();
-			this.browsepk3 = new System.Windows.Forms.Button();
-			this.pk3location = new System.Windows.Forms.TextBox();
 			this.pk3filedialog = new System.Windows.Forms.OpenFileDialog();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -74,6 +74,15 @@ namespace CodeImp.DoomBuilder.Interface
 			label2.Size = new System.Drawing.Size(104, 14);
 			label2.TabIndex = 3;
 			label2.Text = "Directory Resource:";
+			// 
+			// label3
+			// 
+			label3.AutoSize = true;
+			label3.Location = new System.Drawing.Point(15, 20);
+			label3.Name = "label3";
+			label3.Size = new System.Drawing.Size(98, 14);
+			label3.TabIndex = 3;
+			label3.Text = "PK3 File Resource:";
 			// 
 			// tabs
 			// 
@@ -108,11 +117,13 @@ namespace CodeImp.DoomBuilder.Interface
 			// browsewad
 			// 
 			this.browsewad.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browsewad.Image = global::CodeImp.DoomBuilder.Properties.Resources.Folder;
 			this.browsewad.Location = new System.Drawing.Point(315, 36);
 			this.browsewad.Name = "browsewad";
+			this.browsewad.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsewad.Size = new System.Drawing.Size(30, 23);
 			this.browsewad.TabIndex = 2;
-			this.browsewad.Text = "...";
+			this.browsewad.Text = " ";
 			this.browsewad.UseVisualStyleBackColor = true;
 			this.browsewad.Click += new System.EventHandler(this.browsewad_Click);
 			// 
@@ -163,11 +174,12 @@ namespace CodeImp.DoomBuilder.Interface
 			// browsedir
 			// 
 			this.browsedir.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browsedir.Image = global::CodeImp.DoomBuilder.Properties.Resources.Folder;
 			this.browsedir.Location = new System.Drawing.Point(316, 91);
 			this.browsedir.Name = "browsedir";
+			this.browsedir.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsedir.Size = new System.Drawing.Size(30, 23);
 			this.browsedir.TabIndex = 5;
-			this.browsedir.Text = "...";
 			this.browsedir.UseVisualStyleBackColor = true;
 			this.browsedir.Click += new System.EventHandler(this.browsedir_Click);
 			// 
@@ -179,6 +191,39 @@ namespace CodeImp.DoomBuilder.Interface
 			this.dirlocation.ReadOnly = true;
 			this.dirlocation.Size = new System.Drawing.Size(293, 20);
 			this.dirlocation.TabIndex = 4;
+			// 
+			// pk3filetab
+			// 
+			this.pk3filetab.Controls.Add(this.browsepk3);
+			this.pk3filetab.Controls.Add(this.pk3location);
+			this.pk3filetab.Controls.Add(label3);
+			this.pk3filetab.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.pk3filetab.Location = new System.Drawing.Point(4, 23);
+			this.pk3filetab.Name = "pk3filetab";
+			this.pk3filetab.Size = new System.Drawing.Size(361, 134);
+			this.pk3filetab.TabIndex = 2;
+			this.pk3filetab.Text = "From PK3 File";
+			this.pk3filetab.UseVisualStyleBackColor = true;
+			// 
+			// browsepk3
+			// 
+			this.browsepk3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browsepk3.Image = global::CodeImp.DoomBuilder.Properties.Resources.Folder;
+			this.browsepk3.Location = new System.Drawing.Point(315, 36);
+			this.browsepk3.Name = "browsepk3";
+			this.browsepk3.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
+			this.browsepk3.Size = new System.Drawing.Size(30, 23);
+			this.browsepk3.TabIndex = 5;
+			this.browsepk3.UseVisualStyleBackColor = true;
+			this.browsepk3.Click += new System.EventHandler(this.browsepk3_Click);
+			// 
+			// pk3location
+			// 
+			this.pk3location.Location = new System.Drawing.Point(17, 37);
+			this.pk3location.Name = "pk3location";
+			this.pk3location.ReadOnly = true;
+			this.pk3location.Size = new System.Drawing.Size(292, 20);
+			this.pk3location.TabIndex = 4;
 			// 
 			// cancel
 			// 
@@ -211,47 +256,6 @@ namespace CodeImp.DoomBuilder.Interface
 			// dirdialog
 			// 
 			this.dirdialog.Description = "Please select a directory from which to load images when editing your map...";
-			// 
-			// pk3filetab
-			// 
-			this.pk3filetab.Controls.Add(this.browsepk3);
-			this.pk3filetab.Controls.Add(this.pk3location);
-			this.pk3filetab.Controls.Add(label3);
-			this.pk3filetab.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.pk3filetab.Location = new System.Drawing.Point(4, 23);
-			this.pk3filetab.Name = "pk3filetab";
-			this.pk3filetab.Size = new System.Drawing.Size(361, 134);
-			this.pk3filetab.TabIndex = 2;
-			this.pk3filetab.Text = "From PK3 File";
-			this.pk3filetab.UseVisualStyleBackColor = true;
-			// 
-			// browsepk3
-			// 
-			this.browsepk3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browsepk3.Location = new System.Drawing.Point(315, 36);
-			this.browsepk3.Name = "browsepk3";
-			this.browsepk3.Size = new System.Drawing.Size(30, 23);
-			this.browsepk3.TabIndex = 5;
-			this.browsepk3.Text = "...";
-			this.browsepk3.UseVisualStyleBackColor = true;
-			this.browsepk3.Click += new System.EventHandler(this.browsepk3_Click);
-			// 
-			// pk3location
-			// 
-			this.pk3location.Location = new System.Drawing.Point(17, 37);
-			this.pk3location.Name = "pk3location";
-			this.pk3location.ReadOnly = true;
-			this.pk3location.Size = new System.Drawing.Size(292, 20);
-			this.pk3location.TabIndex = 4;
-			// 
-			// label3
-			// 
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(15, 20);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(98, 14);
-			label3.TabIndex = 3;
-			label3.Text = "PK3 File Resource:";
 			// 
 			// pk3filedialog
 			// 

@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder
 		private GameConfiguration config;
 		private DataManager data;
 		private EditMode mode;
+		private EditMode newmode;
 		private D3DDevice graphics;
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
@@ -91,6 +92,7 @@ namespace CodeImp.DoomBuilder
 		public MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
 		public EditMode Mode { get { return mode; } }
+		public EditMode NewMode { get { return newmode; } }
 		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed; } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -825,10 +827,11 @@ namespace CodeImp.DoomBuilder
 		// - Engage of new mode is called
 		// - Dispose of old mode is called
 		//
-		public void ChangeMode(EditMode newmode)
+		public void ChangeMode(EditMode nextmode)
 		{
 			EditMode oldmode = mode;
-
+			newmode = nextmode;
+			
 			// Log info
 			if(newmode != null)
 				General.WriteLogLine("Switching edit mode to " + newmode.GetType().Name + "...");
@@ -847,6 +850,9 @@ namespace CodeImp.DoomBuilder
 			// Dispose old mode
 			if(mode != null) mode.Dispose();
 
+			// Done switching
+			newmode = null;
+			
 			// Redraw the display
 			General.MainWindow.RedrawDisplay();
 		}

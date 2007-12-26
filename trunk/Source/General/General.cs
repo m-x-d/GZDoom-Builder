@@ -777,6 +777,14 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Tools
 
+		// This returns an element from a collection by index
+		public static T GetByIndex<T>(ICollection<T> collection, int index)
+		{
+			IEnumerator<T> e = collection.GetEnumerator();
+			for(int i = -1; i < index; i++) e.MoveNext();
+			return e.Current;
+		}
+
 		// This returns the next power of 2
 		public static int NextPowerOf2(int v)
 		{

@@ -47,6 +47,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 
+		// Mode to return to
+		private EditMode basemode;
+		
 		// Mouse position on map where dragging started
 		private Vector2D dragstartmappos;
 
@@ -79,12 +82,13 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor to start dragging immediately
-		public DragVerticesMode(Vertex dragitem, Vector2D dragstartmappos)
+		public DragVerticesMode(EditMode basemode, Vertex dragitem, Vector2D dragstartmappos)
 		{
 			// Initialize
 			this.dragitem = dragitem;
 			this.dragstartmappos = dragstartmappos;
-
+			this.basemode = basemode;
+			
 			Cursor.Current = Cursors.AppStarting;
 			
 			// Make list of selected vertices
@@ -208,7 +212,7 @@ namespace CodeImp.DoomBuilder.Editing
 			base.Cancel();
 			
 			// Return to vertices mode
-			General.Map.ChangeMode(new VerticesMode());
+			General.Map.ChangeMode(basemode);
 		}
 
 		// Mode engages
@@ -223,12 +227,6 @@ namespace CodeImp.DoomBuilder.Editing
 		// Disenagaging
 		public override void Disengage()
 		{
-			ICollection<Linedef> movinglines;
-			ICollection<Linedef> fixedlines;
-			Rectangle editarea;
-			int stitches = 0;
-			int stitchundo;
-			
 			base.Disengage();
 			Cursor.Current = Cursors.AppStarting;
 			
@@ -244,47 +242,8 @@ namespace CodeImp.DoomBuilder.Editing
 				// Move selected geometry to final position
 				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
 
-				// ===== BEGIN GEOMETRY STITCHING
-				if(General.MainWindow.AutoMerge)
-				{
-					// Make undo for the stitching
-					stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0, false);
-
-					// Find lines that moved during the drag
-					movinglines = General.Map.Map.LinedefsFromSelectedVertices(false, true, true);
-
-					// Find all non-moving lines
-					fixedlines = General.Map.Map.LinedefsFromSelectedVertices(true, false, false);
-
-					// Determine area in which we are editing
-					editarea = MapSet.AreaFromLines(movinglines);
-					editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
-									 (int)Math.Ceiling(General.Settings.StitchDistance));
-
-					// Join nearby vertices
-					stitches += MapSet.JoinVertices(unselectedverts, selectedverts, true, General.Settings.StitchDistance);
-
-					// Update cached values
-					General.Map.Map.Update();
-
-					// Split moving lines with unselected vertices
-					unselectedverts = MapSet.FilterArea(unselectedverts, ref editarea);
-					stitches += MapSet.SplitLinesByVertices(movinglines, unselectedverts, General.Settings.StitchDistance, movinglines);
-
-					// Split non-moving lines with selected vertices
-					fixedlines = MapSet.FilterArea(fixedlines, ref editarea);
-					stitches += MapSet.SplitLinesByVertices(fixedlines, selectedverts, General.Settings.StitchDistance, movinglines);
-
-					// Remove looped linedefs
-					stitches += MapSet.RemoveLoopedLinedefs(movinglines);
-
-					// Join overlapping lines
-					stitches += MapSet.JoinOverlappingLines(movinglines);
-
-					// No stitching done? then withdraw undo
-					if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
-				}
-				// ===== END GEOMETRY STITCHING
+				// Stitch geometry
+				General.Map.Map.StitchGeometry(selectedverts, unselectedverts);
 
 				// If only a single vertex was selected, deselect it now
 				if(selectedverts.Count == 1) General.Map.Map.ClearSelectedVertices();
@@ -358,7 +317,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(e.Button == EditMode.EDIT_BUTTON)
 			{
 				// Just return to vertices mode, geometry will be merged on disengage.
-				General.Map.ChangeMode(new VerticesMode());
+				General.Map.ChangeMode(basemode);
 			}
 		}
 
