@@ -409,6 +409,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Name = "ConfigForm";
 			this.Opacity = 0;
 			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Game Configurations";
 			this.tabs.ResumeLayout(false);

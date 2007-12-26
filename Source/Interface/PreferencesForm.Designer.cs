@@ -605,6 +605,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Name = "PreferencesForm";
 			this.Opacity = 0;
 			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Preferences";
 			this.colorsgroup1.ResumeLayout(false);

@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Interface
 	public partial class ActionSelectorControl : UserControl
 	{
 		// Constants
-		private const string NUMBER_SEPERATOR = ":\t";
+		private const string NUMBER_SEPERATOR = "\t";
 		
 		// Properties
 		public bool Empty { get { return (number.Text.Length == 0); } set { if(value) number.Text = ""; } }

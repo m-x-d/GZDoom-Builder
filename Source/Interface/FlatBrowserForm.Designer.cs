@@ -83,6 +83,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Name = "FlatBrowserForm";
 			this.Opacity = 0;
 			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Browse Flats";
 			this.Activated += new System.EventHandler(this.FlatBrowserForm_Activated);

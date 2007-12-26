@@ -78,10 +78,12 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.action.BackColor = System.Drawing.SystemColors.Control;
 			this.action.Cursor = System.Windows.Forms.Cursors.Default;
+			this.action.Empty = false;
 			this.action.Location = new System.Drawing.Point(18, 27);
 			this.action.Name = "action";
 			this.action.Size = new System.Drawing.Size(430, 21);
 			this.action.TabIndex = 5;
+			this.action.Value = 402;
 			// 
 			// browseaction
 			// 
@@ -139,6 +141,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.MinimizeBox = false;
 			this.Name = "LinedefEditForm";
 			this.Opacity = 0;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Linedefs";
 			this.actiongroup.ResumeLayout(false);

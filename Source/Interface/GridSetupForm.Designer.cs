@@ -226,6 +226,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Name = "GridSetupForm";
 			this.Opacity = 0;
 			this.ShowIcon = false;
+			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Custom Grid Setup";
 			groupBox1.ResumeLayout(false);
