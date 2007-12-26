@@ -45,7 +45,11 @@
   -->
   <ItemGroup>
     <Compile Include="Config\GameConfiguration.cs" />
+    <Compile Include="Config\INumberedTitle.cs" />
+    <Compile Include="Config\LinedefActionCategory.cs" />
+    <Compile Include="Config\LinedefActionInfo.cs" />
     <Compile Include="Config\ProgramConfiguration.cs" />
+    <Compile Include="Config\TagType.cs" />
     <Compile Include="Config\ThingCategory.cs" />
     <Compile Include="Config\ThingTypeInfo.cs" />
     <Compile Include="Controls\ActionAttribute.cs" />
@@ -96,6 +100,18 @@
     <Compile Include="Interface\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\ActionSelectorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ActionSelectorControl.Designer.cs">
+      <DependentUpon>ActionSelectorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\CheckboxArrayControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\CheckboxArrayControl.Designer.cs">
+      <DependentUpon>CheckboxArrayControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\ColorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -130,6 +146,12 @@
       <DependentUpon>ImageBrowser.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\ImageBrowserItem.cs" />
+    <Compile Include="Interface\LinedefEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\LinedefEditForm.Designer.cs">
+      <DependentUpon>LinedefEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\LinedefInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -252,8 +274,10 @@
     <Reference Include="Sharpzip, Version=0.85.2.329, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="SlimDX, Version=1.0.2851.40166, Culture=neutral, processorArchitecture=x86" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Interface\AboutForm.resx">
@@ -284,6 +308,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <None Include="Resources\treeview.png" />
+    <None Include="Resources\Folder.png" />
     <None Include="Resources\mergegeometry2.png" />
     <None Include="Resources\mergegeometry.png" />
     <None Include="Resources\Grid4.png" />
@@ -310,6 +336,14 @@
     <None Include="Resources\Splash2small.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\ActionSelectorControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ActionSelectorControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\CheckboxArrayControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CheckboxArrayControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\ColorControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ColorControl.cs</DependentUpon>
@@ -333,6 +367,10 @@
     <EmbeddedResource Include="Interface\ImageBrowser.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ImageBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\LinedefEditForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>LinedefEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\LinedefInfoPanel.resx">
       <SubType>Designer</SubType>

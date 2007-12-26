@@ -100,6 +100,22 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.Disengage();
 
+			// Check which mode we are switching to
+			if(General.Map.NewMode is VerticesMode)
+			{
+				// Convert selection to vertices
+
+				// Clear selected linedefs
+				General.Map.Map.ClearSelectedLinedefs();
+			}
+			else if(General.Map.NewMode is SectorsMode)
+			{
+				// Convert selection to sectors
+
+				// Clear selected linedefs
+				General.Map.Map.ClearSelectedLinedefs();
+			}
+			
 			// Hide highlight info
 			General.MainWindow.HideInfo();
 
@@ -121,7 +137,7 @@ namespace CodeImp.DoomBuilder.Editing
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 
 				// Render highlighted item
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
 
 				// Render vertices
@@ -139,7 +155,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
 					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
@@ -150,7 +166,7 @@ namespace CodeImp.DoomBuilder.Editing
 				highlighted = l;
 
 				// Render highlighted item
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
 					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
@@ -162,8 +178,10 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 			
 			// Show highlight info
-			if(highlighted != null) General.MainWindow.ShowLinedefInfo(highlighted);
-				else General.MainWindow.HideInfo();
+			if((highlighted != null) && !highlighted.IsDisposed)
+				General.MainWindow.ShowLinedefInfo(highlighted);
+			else
+				General.MainWindow.HideInfo();
 		}
 
 		// Mouse moves
@@ -187,6 +205,102 @@ namespace CodeImp.DoomBuilder.Editing
 			Highlight(null);
 		}
 
+		// Mouse button pressed
+		public override void MouseDown(MouseEventArgs e)
+		{
+			base.MouseDown(e);
+
+			// Select button?
+			if(e.Button == EditMode.SELECT_BUTTON)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Flip selection
+					highlighted.Selected = !highlighted.Selected;
+
+					// Update display
+					if(renderer.Start(false, false))
+					{
+						// Redraw highlight to show selection
+						renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+						renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+						renderer.Finish();
+					}
+				}
+			}
+			// Edit button?
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Highlighted item not selected?
+					if(!highlighted.Selected)
+					{
+						// Make this the only selection
+						General.Map.Map.ClearSelectedLinedefs();
+						highlighted.Selected = true;
+						General.MainWindow.RedrawDisplay();
+					}
+
+					// Update display
+					if(renderer.Start(false, false))
+					{
+						// Redraw highlight to show selection
+						renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+						renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+						renderer.Finish();
+					}
+				}
+			}
+		}
+
+		// Mouse released
+		public override void MouseUp(MouseEventArgs e)
+		{
+			ICollection<Linedef> selected;
+
+			base.MouseUp(e);
+
+			// Item highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				// Update display
+				if(renderer.Start(false, false))
+				{
+					// Render highlighted item
+					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
+					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					renderer.Finish();
+				}
+
+				// Edit button?
+				if(e.Button == EditMode.EDIT_BUTTON)
+				{
+					// Anything selected?
+					selected = General.Map.Map.GetLinedefsSelection(true);
+					if(selected.Count > 0)
+					{
+						// Show line edit dialog
+						LinedefEditForm f = new LinedefEditForm();
+						f.Setup(selected);
+						f.ShowDialog(General.MainWindow);
+						f.Dispose();
+						
+						// When a single line was selected, deselect it now
+						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
+
+						// Update entire display
+						General.MainWindow.RedrawDisplay();
+					}
+				}
+			}
+		}
+		
 		#endregion
 	}
 }

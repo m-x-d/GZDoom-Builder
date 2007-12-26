@@ -100,6 +100,22 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.Disengage();
 
+			// Check which mode we are switching to
+			if(General.Map.NewMode is LinedefsMode)
+			{
+				// Convert selection to linedefs
+
+				// Clear selected vertices
+				General.Map.Map.ClearSelectedVertices();
+			}
+			else if(General.Map.NewMode is SectorsMode)
+			{
+				// Convert selection to sectors
+				
+				// Clear selected vertices
+				General.Map.Map.ClearSelectedVertices();
+			}
+
 			// Hide highlight info
 			General.MainWindow.HideInfo();
 			
@@ -122,7 +138,7 @@ namespace CodeImp.DoomBuilder.Editing
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
 				// Render highlighted item
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
 				
 				// Done
@@ -137,14 +153,14 @@ namespace CodeImp.DoomBuilder.Editing
 			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
 
 				// Set new highlight
 				highlighted = v;
 
 				// Render highlighted item
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
 				
 				// Done
@@ -152,8 +168,10 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 
 			// Show highlight info
-			if(highlighted != null) General.MainWindow.ShowVertexInfo(highlighted);
-				else General.MainWindow.HideInfo();
+			if((highlighted != null) && !highlighted.IsDisposed)
+				General.MainWindow.ShowVertexInfo(highlighted);
+			else
+				General.MainWindow.HideInfo();
 		}
 		
 		// Mouse moves
@@ -190,7 +208,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(e.Button == EditMode.SELECT_BUTTON)
 			{
 				// Item highlighted?
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					// Flip selection
 					highlighted.Selected = !highlighted.Selected;
@@ -198,7 +216,7 @@ namespace CodeImp.DoomBuilder.Editing
 					// Update display
 					if(renderer.Start(false, false))
 					{
-						// Undraw highlight to show selection
+						// Redraw highlight to show selection
 						renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
 						renderer.Finish();
 					}
@@ -212,7 +230,7 @@ namespace CodeImp.DoomBuilder.Editing
 			base.MouseUp(e);
 
 			// Item highlighted?
-			if(highlighted != null)
+			if((highlighted != null) && !highlighted.IsDisposed)
 			{
 				// Update display
 				if(renderer.Start(false, false))
@@ -238,7 +256,7 @@ namespace CodeImp.DoomBuilder.Editing
 			else if(e.Button == EditMode.EDIT_BUTTON)
 			{
 				// Anything highlighted?
-				if(highlighted != null)
+				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					// Highlighted item not selected?
 					if(!highlighted.Selected)
@@ -249,10 +267,11 @@ namespace CodeImp.DoomBuilder.Editing
 					}
 
 					// Start dragging the selection
-					General.Map.ChangeMode(new DragVerticesMode(highlighted, mousedownmappos));
+					General.Map.ChangeMode(new DragVerticesMode(new VerticesMode(), highlighted, mousedownmappos));
 				}
 			}
 		}
+		
 		#endregion
 	}
 }

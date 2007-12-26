@@ -34,7 +34,8 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
-		public static readonly byte[] EMPTY_ARGS = new byte[5];
+		public const int NUM_ARGS = 5;
+		public static readonly byte[] EMPTY_ARGS = new byte[NUM_ARGS];
 
 		#endregion
 

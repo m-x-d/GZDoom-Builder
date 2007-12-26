@@ -81,6 +81,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Folder {
+            get {
+                object obj = ResourceManager.GetObject("Folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Grid2 {
             get {
                 object obj = ResourceManager.GetObject("Grid2", resourceCulture);
@@ -203,6 +210,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap ThingsMode {
             get {
                 object obj = ResourceManager.GetObject("ThingsMode", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap treeview {
+            get {
+                object obj = ResourceManager.GetObject("treeview", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

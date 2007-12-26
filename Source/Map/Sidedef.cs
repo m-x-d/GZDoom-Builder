@@ -154,6 +154,9 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			int copyoffsets = 0;
 
+			// s cannot be null
+			if(s == null) return;
+			
 			// Upper texture set?
 			if((texnamehigh.Length > 0) && (texnamehigh[0] != '-'))
 			{

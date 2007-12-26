@@ -26,6 +26,7 @@ using SlimDX.Direct3D;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
 using System.Drawing;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -360,6 +361,43 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
+		// Returns a collection of vertices that match a selected state on the linedefs
+		public ICollection<Vertex> GetVerticesFromLinesSelection(bool selected)
+		{
+			List<Vertex> list = new List<Vertex>();
+			foreach(Vertex v in vertices)
+			{
+				foreach(Linedef l in v.Linedefs)
+				{
+					if(l.Selected == selected)
+					{
+						list.Add(v);
+						break;
+					}
+				}
+			}
+			return list;
+		}
+
+		// Returns a collection of vertices that match a selected state on the linedefs
+		public ICollection<Vertex> GetVerticesFromSectorsSelection(bool selected)
+		{
+			List<Vertex> list = new List<Vertex>();
+			foreach(Vertex v in vertices)
+			{
+				foreach(Linedef l in v.Linedefs)
+				{
+					if( ((l.Front != null) && (l.Front.Sector.Selected == selected)) ||
+						((l.Back != null) && (l.Back.Sector.Selected == selected)) )
+					{
+						list.Add(v);
+						break;
+					}
+				}
+			}
+			return list;
+		}
+
 		// Returns a collection of things that match a selected state
 		public ICollection<Thing> GetThingsSelection(bool selected)
 		{
@@ -389,7 +427,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Areas
 
 		// This creates an area from vertices
-		public static Rectangle AreaFromVertices(ICollection<Vertex> verts)
+		public static Rectangle CreateArea(ICollection<Vertex> verts)
 		{
 			int l = int.MaxValue;
 			int t = int.MaxValue;
@@ -410,15 +448,15 @@ namespace CodeImp.DoomBuilder.Map
 			return new Rectangle(l, t, r - l, b - t);
 		}
 
-		// This creates an area from vertices
-		public static Rectangle AreaFromLines(ICollection<Linedef> lines)
+		// This creates an area from linedefs
+		public static Rectangle CreateArea(ICollection<Linedef> lines)
 		{
 			int l = int.MaxValue;
 			int t = int.MaxValue;
 			int r = int.MinValue;
 			int b = int.MinValue;
 
-			// Go for all vertices
+			// Go for all linedefs
 			foreach(Linedef ld in lines)
 			{
 				// Adjust boundaries by vertices
@@ -437,7 +475,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This filters lines by a square area
-		public static ICollection<Linedef> FilterArea(ICollection<Linedef> lines, ref Rectangle area)
+		public static ICollection<Linedef> FilterByArea(ICollection<Linedef> lines, ref Rectangle area)
 		{
 			ICollection<Linedef> newlines = new List<Linedef>(lines.Count);
 			
@@ -468,7 +506,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This filters vertices by a square area
-		public static ICollection<Vertex> FilterArea(ICollection<Vertex> verts, ref Rectangle area)
+		public static ICollection<Vertex> FilterByArea(ICollection<Vertex> verts, ref Rectangle area)
 		{
 			ICollection<Vertex> newverts = new List<Vertex>(verts.Count);
 
@@ -492,6 +530,63 @@ namespace CodeImp.DoomBuilder.Map
 
 		#endregion
 
+		#region ================== Stitching
+
+		// This stitches geometry
+		public int StitchGeometry(ICollection<Vertex> movingverts, ICollection<Vertex> fixedverts)
+		{
+			ICollection<Linedef> movinglines;
+			ICollection<Linedef> fixedlines;
+			ICollection<Vertex> nearbyfixedverts;
+			Rectangle editarea;
+			int stitches = 0;
+			int stitchundo;
+			
+			if(General.MainWindow.AutoMerge)
+			{
+				// Make undo for the stitching
+				stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0, false);
+
+				// Find lines that moved during the drag
+				movinglines = LinedefsFromSelectedVertices(false, true, true);
+
+				// Find all non-moving lines
+				fixedlines = LinedefsFromSelectedVertices(true, false, false);
+
+				// Determine area in which we are editing
+				editarea = MapSet.CreateArea(movinglines);
+				editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
+								 (int)Math.Ceiling(General.Settings.StitchDistance));
+
+				// Join nearby vertices
+				stitches += MapSet.JoinVertices(fixedverts, movingverts, true, General.Settings.StitchDistance);
+
+				// Update cached values
+				Update();
+
+				// Split moving lines with unselected vertices
+				nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
+				stitches += MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, General.Settings.StitchDistance, movinglines);
+
+				// Split non-moving lines with selected vertices
+				fixedlines = MapSet.FilterByArea(fixedlines, ref editarea);
+				stitches += MapSet.SplitLinesByVertices(fixedlines, movingverts, General.Settings.StitchDistance, movinglines);
+
+				// Remove looped linedefs
+				stitches += MapSet.RemoveLoopedLinedefs(movinglines);
+
+				// Join overlapping lines
+				stitches += MapSet.JoinOverlappingLines(movinglines);
+
+				// No stitching done? then withdraw undo
+				if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
+			}
+
+			return stitches;
+		}
+		
+		#endregion
+		
 		#region ================== Geometry Tools
 
 		// This joins overlapping lines together
@@ -688,7 +783,8 @@ namespace CodeImp.DoomBuilder.Map
 						if(l.DistanceToSq(v.Position, true) <= splitdist2)
 						{
 							// Line is not already referencing v?
-							if((l.Start != v) && (l.End != v))
+							if(((l.Start.X != v.X) || (l.Start.Y != v.Y)) &&
+							   ((l.End.X != v.X) || (l.End.Y != v.Y)))
 							{
 								// Split line l with vertex v
 								nl = l.Split(v);
