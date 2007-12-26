@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.browser = new CodeImp.DoomBuilder.Interface.ImageBrowser();
+			this.browser = new CodeImp.DoomBuilder.Interface.ImageBrowserControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.SuspendLayout();
@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.browser.Name = "browser";
 			this.browser.Size = new System.Drawing.Size(689, 457);
 			this.browser.TabIndex = 0;
-			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Interface.ImageBrowser.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
+			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Interface.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
 			// cancel
 			// 
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#endregion
 
-		private ImageBrowser browser;
+		private ImageBrowserControl browser;
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
 	}

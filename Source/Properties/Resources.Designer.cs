@@ -130,6 +130,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap MissingTexture {
+            get {
+                object obj = ResourceManager.GetObject("MissingTexture", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap NewMap {
             get {
                 object obj = ResourceManager.GetObject("NewMap", resourceCulture);
