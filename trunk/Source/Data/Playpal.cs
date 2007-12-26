@@ -49,6 +49,23 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
+		public Playpal()
+		{
+			// Create array
+			colors = new PixelColor[256];
+
+			// Set all palette entries
+			for(int i = 0; i < 256; i++)
+			{
+				// Set colors to gray
+				colors[i].r = 127;
+				colors[i].g = 127;
+				colors[i].b = 127;
+				colors[i].a = 255;
+			}
+		}
+
+		// Constructor
 		public Playpal(Stream stream)
 		{
 			BinaryReader reader = new BinaryReader(stream);
