@@ -171,7 +171,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Load stuff
-			General.WriteLogLine("Loading PLAYPAL palette...");
+			General.WriteLogLine("Loading palette...");
 			LoadPalette();
 			General.WriteLogLine("Loading textures...");
 			LoadTextures();
@@ -363,6 +363,13 @@ namespace CodeImp.DoomBuilder.Data
 				// Load palette
 				palette = containers[i].LoadPalette();
 				if(palette != null) break;
+			}
+
+			// Make empty palette when still no palette found
+			if(palette == null)
+			{
+				General.WriteLogLine("WARNING: None of the loaded resources define a color palette!");
+				palette = new Playpal();
 			}
 		}
 
