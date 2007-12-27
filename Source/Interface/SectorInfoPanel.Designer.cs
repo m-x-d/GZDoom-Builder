@@ -28,13 +28,13 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label13;
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label4;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label1;
+			this.sectorinfo = new System.Windows.Forms.GroupBox();
 			this.brightness = new System.Windows.Forms.Label();
 			this.height = new System.Windows.Forms.Label();
 			this.tag = new System.Windows.Forms.Label();
@@ -47,40 +47,39 @@ namespace CodeImp.DoomBuilder.Interface
 			this.floorpanel = new System.Windows.Forms.GroupBox();
 			this.floorname = new System.Windows.Forms.Label();
 			this.floortex = new System.Windows.Forms.Panel();
-			groupBox1 = new System.Windows.Forms.GroupBox();
 			label13 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
-			groupBox1.SuspendLayout();
+			this.sectorinfo.SuspendLayout();
 			this.ceilingpanel.SuspendLayout();
 			this.floorpanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// groupBox1
+			// sectorinfo
 			// 
-			groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.sectorinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
-			groupBox1.Controls.Add(this.brightness);
-			groupBox1.Controls.Add(label13);
-			groupBox1.Controls.Add(this.height);
-			groupBox1.Controls.Add(label5);
-			groupBox1.Controls.Add(this.tag);
-			groupBox1.Controls.Add(this.floor);
-			groupBox1.Controls.Add(this.ceiling);
-			groupBox1.Controls.Add(label4);
-			groupBox1.Controls.Add(label3);
-			groupBox1.Controls.Add(label2);
-			groupBox1.Controls.Add(this.effect);
-			groupBox1.Controls.Add(label1);
-			groupBox1.Location = new System.Drawing.Point(0, 0);
-			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(230, 100);
-			groupBox1.TabIndex = 2;
-			groupBox1.TabStop = false;
-			groupBox1.Text = " Sector ";
+			this.sectorinfo.Controls.Add(this.brightness);
+			this.sectorinfo.Controls.Add(label13);
+			this.sectorinfo.Controls.Add(this.height);
+			this.sectorinfo.Controls.Add(label5);
+			this.sectorinfo.Controls.Add(this.tag);
+			this.sectorinfo.Controls.Add(this.floor);
+			this.sectorinfo.Controls.Add(this.ceiling);
+			this.sectorinfo.Controls.Add(label4);
+			this.sectorinfo.Controls.Add(label3);
+			this.sectorinfo.Controls.Add(label2);
+			this.sectorinfo.Controls.Add(this.effect);
+			this.sectorinfo.Controls.Add(label1);
+			this.sectorinfo.Location = new System.Drawing.Point(0, 0);
+			this.sectorinfo.Name = "sectorinfo";
+			this.sectorinfo.Size = new System.Drawing.Size(230, 100);
+			this.sectorinfo.TabIndex = 2;
+			this.sectorinfo.TabStop = false;
+			this.sectorinfo.Text = " Sector ";
 			// 
 			// brightness
 			// 
@@ -259,14 +258,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.Controls.Add(this.floorpanel);
 			this.Controls.Add(this.ceilingpanel);
-			this.Controls.Add(groupBox1);
+			this.Controls.Add(this.sectorinfo);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "SectorInfoPanel";
 			this.Size = new System.Drawing.Size(450, 100);
-			groupBox1.ResumeLayout(false);
-			groupBox1.PerformLayout();
+			this.sectorinfo.ResumeLayout(false);
+			this.sectorinfo.PerformLayout();
 			this.ceilingpanel.ResumeLayout(false);
 			this.floorpanel.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -287,5 +286,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.GroupBox floorpanel;
 		private System.Windows.Forms.Label floorname;
 		private System.Windows.Forms.Panel floortex;
+		private System.Windows.Forms.GroupBox sectorinfo;
 	}
 }

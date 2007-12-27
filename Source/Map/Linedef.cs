@@ -87,9 +87,9 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public int Flags { get { return flags; } }
-		public int Action { get { return action; } }
-		public int Tag { get { return tag; } }
+		public int Flags { get { return flags; } set { flags = value; } }
+		public int Action { get { return action; } set { action = value; } }
+		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }

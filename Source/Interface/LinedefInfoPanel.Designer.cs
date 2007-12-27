@@ -189,10 +189,10 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// action
 			// 
-			this.action.AutoSize = true;
+			this.action.AutoEllipsis = true;
 			this.action.Location = new System.Drawing.Point(55, 19);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(190, 14);
+			this.action.Size = new System.Drawing.Size(197, 14);
 			this.action.TabIndex = 1;
 			this.action.Text = "0 - Big Door that goes Wobbly Wobbly";
 			// 

@@ -611,15 +611,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This returns the color for a linedef
 		public PixelColor DetermineLinedefColor(Linedef l)
 		{
-			// Sinlgesided lines
-			if((l.Back == null) || (l.Front == null))
+			// Impassable lines
+			if((l.Flags & General.Map.Config.ImpassableFlags) != 0)
 			{
 				// Determine color
 				if(l.Selected) return General.Colors.Selection;
 				else if(l.Action != 0) return General.Colors.Actions;
 				else return General.Colors.Linedefs;
 			}
-			// Doublesided lines
 			else
 			{
 				// Determine color

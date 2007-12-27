@@ -39,11 +39,18 @@ namespace CodeImp.DoomBuilder.Interface
 {
 	public class FlatSelectorControl : ImageSelectorControl
 	{
+		// Setup
+		public void Initialize()
+		{
+			// Fill autocomplete list
+			name.AutoCompleteCustomSource.AddRange(General.Map.Data.FlatNames.ToArray());
+		}
+		
 		// This finds the image we need for the given flat name
-		protected override Image FindImage(string name)
+		protected override Image FindImage(string imagename)
 		{
 			// Check if name is a "none" texture
-			if((name.Length < 1) || (name[0] == '-'))
+			if((imagename.Length < 1) || (imagename[0] == '-'))
 			{
 				// Flat required!
 				return CodeImp.DoomBuilder.Properties.Resources.MissingTexture;
@@ -51,18 +58,18 @@ namespace CodeImp.DoomBuilder.Interface
 			else
 			{
 				// Set the image
-				return General.Map.Data.GetFlatBitmap(name);
+				return General.Map.Data.GetFlatBitmap(imagename);
 			}
 		}
 
 		// This browses for a flat
-		protected override string BrowseImage(string name)
+		protected override string BrowseImage(string imagename)
 		{
 			string result;
 
 			// Browse for texture
-			result = FlatBrowserForm.Browse(this.ParentForm, name);
-			if(result != null) return result; else return name;
+			result = FlatBrowserForm.Browse(this.ParentForm, imagename);
+			if(result != null) return result; else return imagename;
 		}
 	}
 }

@@ -38,9 +38,6 @@ namespace CodeImp.DoomBuilder.Interface
 {
 	public abstract partial class ImageSelectorControl : UserControl
 	{
-		// Events
-		public event EventHandler ImageClicked;
-
 		// Properties
 		public string TextureName { get { return name.Text; } set { name.Text = value; } }
 		
@@ -50,7 +47,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Initialize
 			InitializeComponent();
 		}
-
+		
 		// When resized
 		private void ImageSelectorControl_Resize(object sender, EventArgs e)
 		{
@@ -71,9 +68,25 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This must determine and return the image to show
-		protected abstract Image FindImage(string name);
+		protected abstract Image FindImage(string imagename);
 
 		// This must show the image browser and return the selected texture name
-		protected abstract string BrowseImage(string name);
+		protected abstract string BrowseImage(string imagename);
+
+		// This determines the result value
+		public string GetResult(string original)
+		{
+			// Anyting entered?
+			if(name.Text.Trim().Length > 0)
+			{
+				// Return the new value
+				return name.Text;
+			}
+			else
+			{
+				// Nothing given, keep original value
+				return original;
+			}
+		}
 	}
 }
