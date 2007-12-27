@@ -760,7 +760,8 @@ namespace CodeImp.DoomBuilder
 			Console.WriteLine(line);
 			
 			// Write to log file
-			File.AppendAllText(logfile, line + Environment.NewLine);
+			try { File.AppendAllText(logfile, line + Environment.NewLine); }
+			catch(Exception) { }
 		}
 
 		// This outputs log information
@@ -770,7 +771,8 @@ namespace CodeImp.DoomBuilder
 			Console.Write(text);
 
 			// Write to log file
-			File.AppendAllText(logfile, text);
+			try { File.AppendAllText(logfile, text); }
+			catch(Exception) { }
 		}
 		
 		#endregion

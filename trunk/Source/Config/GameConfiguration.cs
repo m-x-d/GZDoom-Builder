@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int soundlinedefflags;
 		private int singlesidedflags;
 		private int doublesidedflags;
+		private int impassableflags;
 		private bool mixtexturesflats;
 		
 		// Map lumps
@@ -80,6 +81,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int SoundLinedefFlags { get { return soundlinedefflags; } }
 		public int SingleSidedFlags { get { return singlesidedflags; } }
 		public int DoubleSidedFlags { get { return doublesidedflags; } }
+		public int ImpassableFlags { get { return impassableflags; } }
 		public bool MixTexturesFlats { get { return mixtexturesflats; } }
 		
 		// Map lumps
@@ -124,6 +126,7 @@ namespace CodeImp.DoomBuilder.Config
 			soundlinedefflags = cfg.ReadSetting("soundlinedefflags", 0);
 			singlesidedflags = cfg.ReadSetting("singlesidedflags", 0);
 			doublesidedflags = cfg.ReadSetting("doublesidedflags", 0);
+			impassableflags = cfg.ReadSetting("impassableflags", 0);
 			mixtexturesflats = cfg.ReadSetting("mixtexturesflats", false);
 			
 			// Get map lumps

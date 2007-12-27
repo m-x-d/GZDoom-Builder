@@ -90,6 +90,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int X { get { return x; } }
 		public int Y { get { return y; } }
 		public int ZOffset { get { return zoffset; } }
+		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
 
 		#endregion

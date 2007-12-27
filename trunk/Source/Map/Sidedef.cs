@@ -71,8 +71,8 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
 		public Sector Sector { get { return sector; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public int OffsetX { get { return offsetx; } }
-		public int OffsetY { get { return offsety; } }
+		public int OffsetX { get { return offsetx; } set { offsetx = value; } }
+		public int OffsetY { get { return offsety; } set { offsety = value; } }
 		public string HighTexture { get { return texnamehigh; } }
 		public string MiddleTexture { get { return texnamemid; } }
 		public string LowTexture { get { return texnamelow; } }
@@ -92,6 +92,9 @@ namespace CodeImp.DoomBuilder.Map
 			this.mainlistitem = listitem;
 			this.linedef = l;
 			this.sector = s;
+			SetTextureHigh("-");
+			SetTextureMid("-");
+			SetTextureLow("-");
 			
 			// Attach to the linedef
 			if(front) l.AttachFront(this); else l.AttachBack(this);
@@ -276,6 +279,19 @@ namespace CodeImp.DoomBuilder.Map
 			longtexnamelow = Lump.MakeLongName(name);
 		}
 
+		// This changes sector
+		public void ChangeSector(Sector newsector)
+		{
+			// Detach from sector
+			sector.DetachSidedef(sectorlistitem);
+
+			// Change sector
+			sector = newsector;
+			
+			// Attach to sector
+			sectorlistitem = sector.AttachSidedef(this);
+		}
+		
 		#endregion
 	}
 }

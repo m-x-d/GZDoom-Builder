@@ -45,11 +45,18 @@ namespace CodeImp.DoomBuilder.Interface
 		// Properties
 		public bool Required { get { return required; } set { required = value; } }
 
+		// Setup
+		public void Initialize()
+		{
+			// Fill autocomplete list
+			name.AutoCompleteCustomSource.AddRange(General.Map.Data.TextureNames.ToArray());
+		}
+		
 		// This finds the image we need for the given texture name
-		protected override Image FindImage(string name)
+		protected override Image FindImage(string imagename)
 		{
 			// Check if name is a "none" texture
-			if((name.Length < 1) || (name[0] == '-'))
+			if((imagename.Length < 1) || (imagename[0] == '-'))
 			{
 				// Determine image to show
 				if(required)
@@ -60,18 +67,18 @@ namespace CodeImp.DoomBuilder.Interface
 			else
 			{
 				// Set the image
-				return General.Map.Data.GetTextureBitmap(name);
+				return General.Map.Data.GetTextureBitmap(imagename);
 			}
 		}
 
 		// This browses for a texture
-		protected override string BrowseImage(string name)
+		protected override string BrowseImage(string imagename)
 		{
 			string result;
 
 			// Browse for texture
-			result = TextureBrowserForm.Browse(this.ParentForm, name);
-			if(result != null) return result; else return name;
+			result = TextureBrowserForm.Browse(this.ParentForm, imagename);
+			if(result != null) return result; else return imagename;
 		}
 	}
 }

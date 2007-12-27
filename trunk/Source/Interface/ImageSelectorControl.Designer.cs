@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private void InitializeComponent()
 		{
 			this.preview = new System.Windows.Forms.Panel();
-			this.name = new System.Windows.Forms.TextBox();
+			this.name = new CodeImp.DoomBuilder.Interface.AutoSelectTextbox();
 			this.SuspendLayout();
 			// 
 			// preview
@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// name
 			// 
+			this.name.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.name.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
 			this.name.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
 			this.name.Location = new System.Drawing.Point(0, 64);
 			this.name.Name = "name";
@@ -67,7 +69,8 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#endregion
 
-		private System.Windows.Forms.Panel preview;
-		private System.Windows.Forms.TextBox name;
+		protected System.Windows.Forms.Panel preview;
+		protected CodeImp.DoomBuilder.Interface.AutoSelectTextbox name;
+
 	}
 }

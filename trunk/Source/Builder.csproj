@@ -107,6 +107,9 @@
     <Compile Include="Interface\ActionSelectorControl.Designer.cs">
       <DependentUpon>ActionSelectorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\AutoSelectTextbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Interface\CheckboxArrayControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

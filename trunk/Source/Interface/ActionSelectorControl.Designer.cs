@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.number = new System.Windows.Forms.TextBox();
+			this.number = new CodeImp.DoomBuilder.Interface.AutoSelectTextbox();
 			this.list = new System.Windows.Forms.ComboBox();
 			this.numberpanel = new System.Windows.Forms.Panel();
 			this.numberpanel.SuspendLayout();
@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#endregion
 
-		private System.Windows.Forms.TextBox number;
+		private CodeImp.DoomBuilder.Interface.AutoSelectTextbox number;
 		private System.Windows.Forms.ComboBox list;
 		private System.Windows.Forms.Panel numberpanel;
 	}

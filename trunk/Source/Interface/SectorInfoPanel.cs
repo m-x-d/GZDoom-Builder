@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// TODO: Lookup effect description in config
 
 			// Sector info
+			sectorinfo.Text = " Sector " + s.Index.ToString() + " ";
 			effect.Text = s.Effect.ToString();
 			ceiling.Text = s.CeilHeight.ToString();
 			floor.Text = s.FloorHeight.ToString();

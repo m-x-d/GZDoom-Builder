@@ -34,8 +34,19 @@ namespace CodeImp.DoomBuilder.Map
 {
 	public sealed class MapSet : IDisposable
 	{
+		#region ================== Constants
+
+		// Highest tag
+		public const int HIGHEST_TAG = 65534;
+
+		#endregion
+
 		#region ================== Variables
 
+		// Sector indexing
+		private List<int> indexholes;
+		private int lastsectorindex;
+		
 		// Map structures
 		private LinkedList<Vertex> vertices;
 		private LinkedList<Linedef> linedefs;
@@ -70,7 +81,9 @@ namespace CodeImp.DoomBuilder.Map
 			sidedefs = new LinkedList<Sidedef>();
 			sectors = new LinkedList<Sector>();
 			things = new LinkedList<Thing>();
-
+			indexholes = new List<int>();
+			lastsectorindex = 0;
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -112,6 +125,7 @@ namespace CodeImp.DoomBuilder.Map
 				sidedefs = null;
 				sectors = null;
 				things = null;
+				indexholes = null;
 				
 				// Done
 				isdisposed = true;
@@ -260,6 +274,28 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a new sector
 		public Sector CreateSector()
 		{
+			int index;
+			
+			// Do we have any index holes we can use?
+			if(indexholes.Count > 0)
+			{
+				// Take one of the index holes
+				index = indexholes[indexholes.Count - 1];
+				indexholes.RemoveAt(indexholes.Count - 1);
+			}
+			else
+			{
+				// Make a new index
+				index = lastsectorindex++;
+			}
+			
+			// Make the sector
+			return CreateSector(index);
+		}
+		
+		// This creates a new sector
+		public Sector CreateSector(int index)
+		{
 			LinkedListNode<Sector> listitem;
 			Sector s;
 
@@ -267,7 +303,7 @@ namespace CodeImp.DoomBuilder.Map
 			listitem = new LinkedListNode<Sector>(null);
 
 			// Make the sector
-			s = new Sector(this, listitem);
+			s = new Sector(this, listitem, index);
 			listitem.Value = s;
 
 			// Add sector to the list
@@ -295,6 +331,12 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Return result
 			return t;
+		}
+
+		// This adds a sector index hole
+		public void AddSectorIndexHole(int index)
+		{
+			indexholes.Add(index);
 		}
 
 		#endregion
@@ -959,6 +1001,45 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Tools
+
+		// This returns the next unused tag number
+		public int GetNewTag()
+		{
+			bool[] usedtags = new bool[HIGHEST_TAG+1];
+			usedtags.Initialize();
+			
+			// Check all sectors
+			foreach(Sector s in sectors) usedtags[s.Tag] = true;
+			
+			// Check all lines
+			foreach(Linedef l in linedefs) usedtags[l.Tag] = true;
+
+			// Check all things
+			foreach(Thing t in things) usedtags[t.Tag] = true;
+			
+			// Now find the first unused index
+			for(int i = 1; i <= HIGHEST_TAG; i++)
+				if(usedtags[i] == false) return i;
+			
+			// Problem: all tags used!
+			// Lets ignore this problem for now, who needs 65-thousand tags?!
+			return 0;
+		}
+		
+		// This returns the sector with the given index or null when the index is not in use
+		// TODO: Speed this up by keeping sector references with indices in a dictionary?
+		public Sector GetSectorByIndex(int index)
+		{
+			// Go for all sectors
+			foreach(Sector s in sectors)
+			{
+				// Return sector when index matches
+				if(s.Index == index) return s;
+			}
+			
+			// Nothing found
+			return null;
+		}
 
 		// This makes a list of lines related to vertex selection
 		// A line is unstable when one vertex is selected and the other isn't.

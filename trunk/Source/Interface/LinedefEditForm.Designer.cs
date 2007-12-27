@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.Label label8;
 			System.Windows.Forms.Label label9;
 			System.Windows.Forms.Label label10;
+			System.Windows.Forms.Label label11;
+			System.Windows.Forms.Label label12;
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
@@ -53,20 +55,20 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
+			this.backsector = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.backlow = new CodeImp.DoomBuilder.Interface.TextureSelectorControl();
 			this.backmid = new CodeImp.DoomBuilder.Interface.TextureSelectorControl();
 			this.backhigh = new CodeImp.DoomBuilder.Interface.TextureSelectorControl();
 			this.backoffsety = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.backoffsetx = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.backsector = new System.Windows.Forms.Button();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
+			this.frontsector = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.frontlow = new CodeImp.DoomBuilder.Interface.TextureSelectorControl();
 			this.frontmid = new CodeImp.DoomBuilder.Interface.TextureSelectorControl();
 			this.fronthigh = new CodeImp.DoomBuilder.Interface.TextureSelectorControl();
 			this.frontoffsety = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.frontoffsetx = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.frontsector = new System.Windows.Forms.Button();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -77,6 +79,8 @@ namespace CodeImp.DoomBuilder.Interface
 			label8 = new System.Windows.Forms.Label();
 			label9 = new System.Windows.Forms.Label();
 			label10 = new System.Windows.Forms.Label();
+			label11 = new System.Windows.Forms.Label();
+			label12 = new System.Windows.Forms.Label();
 			this.actiongroup.SuspendLayout();
 			this.settingsgroup.SuspendLayout();
 			this.tabs.SuspendLayout();
@@ -134,7 +138,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// label6
 			// 
 			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(16, 104);
+			label6.Location = new System.Drawing.Point(16, 79);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(81, 14);
 			label6.TabIndex = 7;
@@ -143,7 +147,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// label7
 			// 
 			label7.AutoSize = true;
-			label7.Location = new System.Drawing.Point(16, 104);
+			label7.Location = new System.Drawing.Point(16, 79);
 			label7.Name = "label7";
 			label7.Size = new System.Drawing.Size(81, 14);
 			label7.TabIndex = 7;
@@ -176,6 +180,24 @@ namespace CodeImp.DoomBuilder.Interface
 			label10.Text = "Upper";
 			label10.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
+			// label11
+			// 
+			label11.AutoSize = true;
+			label11.Location = new System.Drawing.Point(26, 40);
+			label11.Name = "label11";
+			label11.Size = new System.Drawing.Size(71, 14);
+			label11.TabIndex = 13;
+			label11.Text = "Sector Index:";
+			// 
+			// label12
+			// 
+			label12.AutoSize = true;
+			label12.Location = new System.Drawing.Point(26, 40);
+			label12.Name = "label12";
+			label12.Size = new System.Drawing.Size(71, 14);
+			label12.TabIndex = 16;
+			label12.Text = "Sector Index:";
+			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -186,6 +208,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.cancel.TabIndex = 17;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
+			this.cancel.Click += new System.EventHandler(this.cancel_Click);
 			// 
 			// apply
 			// 
@@ -196,6 +219,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply.TabIndex = 16;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
+			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
 			// actiongroup
 			// 
@@ -222,9 +246,12 @@ namespace CodeImp.DoomBuilder.Interface
 			this.newtag.TabIndex = 8;
 			this.newtag.Text = "New Tag";
 			this.newtag.UseVisualStyleBackColor = true;
+			this.newtag.Click += new System.EventHandler(this.newtag_Click);
 			// 
 			// tag
 			// 
+			this.tag.AllowNegative = false;
+			this.tag.AllowRelative = true;
 			this.tag.Location = new System.Drawing.Point(62, 75);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(68, 20);
@@ -336,25 +363,38 @@ namespace CodeImp.DoomBuilder.Interface
 			this.backside.TabIndex = 2;
 			this.backside.Text = "Back Side";
 			this.backside.UseVisualStyleBackColor = true;
+			this.backside.CheckStateChanged += new System.EventHandler(this.backside_CheckStateChanged);
 			// 
 			// backgroup
 			// 
+			this.backgroup.Controls.Add(this.backsector);
+			this.backgroup.Controls.Add(label12);
 			this.backgroup.Controls.Add(this.backlow);
 			this.backgroup.Controls.Add(this.backmid);
 			this.backgroup.Controls.Add(this.backhigh);
 			this.backgroup.Controls.Add(this.backoffsety);
 			this.backgroup.Controls.Add(this.backoffsetx);
 			this.backgroup.Controls.Add(label7);
-			this.backgroup.Controls.Add(this.backsector);
 			this.backgroup.Controls.Add(label8);
 			this.backgroup.Controls.Add(label9);
 			this.backgroup.Controls.Add(label10);
+			this.backgroup.Enabled = false;
 			this.backgroup.Location = new System.Drawing.Point(8, 157);
 			this.backgroup.Name = "backgroup";
 			this.backgroup.Size = new System.Drawing.Size(499, 140);
 			this.backgroup.TabIndex = 1;
 			this.backgroup.TabStop = false;
 			this.backgroup.Text = "     ";
+			// 
+			// backsector
+			// 
+			this.backsector.AllowNegative = false;
+			this.backsector.AllowRelative = false;
+			this.backsector.Location = new System.Drawing.Point(103, 37);
+			this.backsector.Name = "backsector";
+			this.backsector.Size = new System.Drawing.Size(94, 20);
+			this.backsector.TabIndex = 17;
+			this.backsector.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// backlow
 			// 
@@ -385,26 +425,23 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// backoffsety
 			// 
-			this.backoffsety.Location = new System.Drawing.Point(154, 101);
+			this.backoffsety.AllowNegative = true;
+			this.backoffsety.AllowRelative = true;
+			this.backoffsety.Location = new System.Drawing.Point(152, 76);
 			this.backoffsety.Name = "backoffsety";
 			this.backoffsety.Size = new System.Drawing.Size(45, 20);
 			this.backoffsety.TabIndex = 9;
+			this.backoffsety.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// backoffsetx
 			// 
-			this.backoffsetx.Location = new System.Drawing.Point(103, 101);
+			this.backoffsetx.AllowNegative = true;
+			this.backoffsetx.AllowRelative = true;
+			this.backoffsetx.Location = new System.Drawing.Point(103, 76);
 			this.backoffsetx.Name = "backoffsetx";
 			this.backoffsetx.Size = new System.Drawing.Size(45, 20);
 			this.backoffsetx.TabIndex = 8;
-			// 
-			// backsector
-			// 
-			this.backsector.Location = new System.Drawing.Point(103, 37);
-			this.backsector.Name = "backsector";
-			this.backsector.Size = new System.Drawing.Size(96, 24);
-			this.backsector.TabIndex = 6;
-			this.backsector.Text = "Select Sector";
-			this.backsector.UseVisualStyleBackColor = true;
+			this.backoffsetx.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// frontside
 			// 
@@ -415,25 +452,38 @@ namespace CodeImp.DoomBuilder.Interface
 			this.frontside.TabIndex = 0;
 			this.frontside.Text = "Front Side";
 			this.frontside.UseVisualStyleBackColor = true;
+			this.frontside.CheckStateChanged += new System.EventHandler(this.frontside_CheckStateChanged);
 			// 
 			// frontgroup
 			// 
+			this.frontgroup.Controls.Add(this.frontsector);
+			this.frontgroup.Controls.Add(label11);
 			this.frontgroup.Controls.Add(this.frontlow);
 			this.frontgroup.Controls.Add(this.frontmid);
 			this.frontgroup.Controls.Add(this.fronthigh);
 			this.frontgroup.Controls.Add(this.frontoffsety);
 			this.frontgroup.Controls.Add(this.frontoffsetx);
 			this.frontgroup.Controls.Add(label6);
-			this.frontgroup.Controls.Add(this.frontsector);
 			this.frontgroup.Controls.Add(label5);
 			this.frontgroup.Controls.Add(label4);
 			this.frontgroup.Controls.Add(label3);
+			this.frontgroup.Enabled = false;
 			this.frontgroup.Location = new System.Drawing.Point(8, 8);
 			this.frontgroup.Name = "frontgroup";
 			this.frontgroup.Size = new System.Drawing.Size(499, 140);
 			this.frontgroup.TabIndex = 0;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
+			// 
+			// frontsector
+			// 
+			this.frontsector.AllowNegative = false;
+			this.frontsector.AllowRelative = false;
+			this.frontsector.Location = new System.Drawing.Point(103, 37);
+			this.frontsector.Name = "frontsector";
+			this.frontsector.Size = new System.Drawing.Size(94, 20);
+			this.frontsector.TabIndex = 14;
+			this.frontsector.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// frontlow
 			// 
@@ -464,26 +514,23 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// frontoffsety
 			// 
-			this.frontoffsety.Location = new System.Drawing.Point(154, 101);
+			this.frontoffsety.AllowNegative = true;
+			this.frontoffsety.AllowRelative = true;
+			this.frontoffsety.Location = new System.Drawing.Point(152, 76);
 			this.frontoffsety.Name = "frontoffsety";
 			this.frontoffsety.Size = new System.Drawing.Size(45, 20);
 			this.frontoffsety.TabIndex = 9;
+			this.frontoffsety.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// frontoffsetx
 			// 
-			this.frontoffsetx.Location = new System.Drawing.Point(103, 101);
+			this.frontoffsetx.AllowNegative = true;
+			this.frontoffsetx.AllowRelative = true;
+			this.frontoffsetx.Location = new System.Drawing.Point(103, 76);
 			this.frontoffsetx.Name = "frontoffsetx";
 			this.frontoffsetx.Size = new System.Drawing.Size(45, 20);
 			this.frontoffsetx.TabIndex = 8;
-			// 
-			// frontsector
-			// 
-			this.frontsector.Location = new System.Drawing.Point(103, 37);
-			this.frontsector.Name = "frontsector";
-			this.frontsector.Size = new System.Drawing.Size(96, 24);
-			this.frontsector.TabIndex = 6;
-			this.frontsector.Text = "Select Sector";
-			this.frontsector.UseVisualStyleBackColor = true;
+			this.frontoffsetx.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// LinedefEditForm
 			// 
@@ -535,19 +582,19 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.GroupBox frontgroup;
 		private System.Windows.Forms.CheckBox frontside;
-		private System.Windows.Forms.Button frontsector;
 		private NumericTextbox frontoffsety;
 		private NumericTextbox frontoffsetx;
 		private System.Windows.Forms.CheckBox backside;
 		private System.Windows.Forms.GroupBox backgroup;
 		private NumericTextbox backoffsety;
 		private NumericTextbox backoffsetx;
-		private System.Windows.Forms.Button backsector;
 		private TextureSelectorControl frontlow;
 		private TextureSelectorControl frontmid;
 		private TextureSelectorControl fronthigh;
 		private TextureSelectorControl backlow;
 		private TextureSelectorControl backmid;
 		private TextureSelectorControl backhigh;
+		private NumericTextbox backsector;
+		private NumericTextbox frontsector;
 	}
 }

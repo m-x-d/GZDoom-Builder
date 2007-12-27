@@ -50,9 +50,11 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Textures
 		private Dictionary<long, ImageData> textures;
+		private List<string> texturenames;
 		
 		// Flats
 		private Dictionary<long, ImageData> flats;
+		private List<string> flatnames;
 
 		// Sprites
 		private Dictionary<long, ImageData> sprites;
@@ -70,6 +72,8 @@ namespace CodeImp.DoomBuilder.Data
 		public Playpal Palette { get { return palette; } }
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
 		public ICollection<ImageData> Flats { get { return flats.Values; } }
+		public List<string> TextureNames { get { return texturenames; } }
+		public List<string> FlatNames { get { return flatnames; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool IsLoading { get { return (backgroundloader != null) && backgroundloader.IsAlive; } }
 		
@@ -127,6 +131,8 @@ namespace CodeImp.DoomBuilder.Data
 			textures = new Dictionary<long, ImageData>();
 			flats = new Dictionary<long, ImageData>();
 			sprites = new Dictionary<long, ImageData>();
+			texturenames = new List<string>();
+			flatnames = new List<string>();
 			
 			// Go for all locations
 			foreach(DataLocation dl in locations)
@@ -195,7 +201,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<long, ImageData> i in flats) i.Value.Dispose();
 			foreach(KeyValuePair<long, ImageData> i in sprites) i.Value.Dispose();
 			palette = null;
-			
+
 			// Dispose containers
 			foreach(DataReader c in containers) c.Dispose();
 			containers.Clear();
@@ -402,12 +408,14 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(ImageData img in images)
 					{
 						// Add or replace in textures list
+						if(!textures.ContainsKey(img.LongName)) texturenames.Add(img.Name);
 						textures.Remove(img.LongName);
 						textures.Add(img.LongName, img);
-
+						
 						// Also add as flat when using mixed resources
 						if(General.Map.Config.MixTexturesFlats)
 						{
+							if(!flats.ContainsKey(img.LongName)) flatnames.Add(img.Name);
 							flats.Remove(img.LongName);
 							flats.Add(img.LongName, img);
 						}
@@ -514,12 +522,14 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(ImageData img in images)
 					{
 						// Add or replace in flats list
+						if(!flats.ContainsKey(img.LongName)) flatnames.Add(img.Name);
 						flats.Remove(img.LongName);
 						flats.Add(img.LongName, img);
 
 						// Also add as texture when using mixed resources
 						if(General.Map.Config.MixTexturesFlats)
 						{
+							if(!textures.ContainsKey(img.LongName)) texturenames.Add(img.Name);
 							textures.Remove(img.LongName);
 							textures.Add(img.LongName, img);
 						}

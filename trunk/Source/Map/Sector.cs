@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Thing> things;
 		
 		// Properties
+		private int index;
 		private int floorheight;
 		private int ceilheight;
 		private string floortexname;
@@ -75,6 +76,7 @@ namespace CodeImp.DoomBuilder.Map
 		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
 		public ICollection<Thing> Things { get { return things; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public int Index { get { return index; } }
 		public int FloorHeight { get { return floorheight; } }
 		public int CeilHeight { get { return ceilheight; } }
 		public string FloorTexture { get { return floortexname; } }
@@ -82,7 +84,7 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongFloorTexture { get { return longfloortexname; } }
 		public long LongCeilTexture { get { return longceiltexname; } }
 		public int Effect { get { return effect; } }
-		public int Tag { get { return tag; } }
+		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public int Brightness { get { return brightness; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
@@ -92,13 +94,16 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Sector(MapSet map, LinkedListNode<Sector> listitem)
+		public Sector(MapSet map, LinkedListNode<Sector> listitem, int index)
 		{
 			// Initialize
 			this.map = map;
 			this.mainlistitem = listitem;
 			this.sidedefs = new LinkedList<Sidedef>();
 			this.things = new LinkedList<Thing>();
+			this.index = index;
+			SetCeilTexture("-");
+			SetFloorTexture("-");
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -115,6 +120,9 @@ namespace CodeImp.DoomBuilder.Map
 
 				// Remove from main list
 				mainlistitem.List.Remove(mainlistitem);
+
+				// Register the index as free
+				map.AddSectorIndexHole(index);
 				
 				// Dispose the sidedefs that are attached to this sector
 				// because a sidedef cannot exist without reference to its sector.
