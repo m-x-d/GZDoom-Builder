@@ -63,6 +63,7 @@
     <Compile Include="Data\PK3Reader.cs" />
     <Compile Include="Data\Playpal.cs" />
     <Compile Include="Data\ResourceImage.cs" />
+    <Compile Include="Data\SimpleTextureImage.cs" />
     <Compile Include="Data\SpriteImage.cs" />
     <Compile Include="Data\TextureImage.cs" />
     <Compile Include="Editing\DragVerticesMode.cs" />
@@ -243,6 +244,7 @@
     <Compile Include="IO\Configuration.cs" />
     <Compile Include="General\General.cs" />
     <Compile Include="IO\ClippedStream.cs" />
+    <Compile Include="IO\HexenMapSetIO.cs" />
     <Compile Include="IO\DoomFlatReader.cs" />
     <Compile Include="IO\DoomMapSetIO.cs" />
     <Compile Include="IO\DoomPictureReader.cs" />

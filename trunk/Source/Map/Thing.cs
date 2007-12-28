@@ -83,6 +83,8 @@ namespace CodeImp.DoomBuilder.Map
 		public float Angle { get { return angle; } }
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 		public int Flags { get { return flags; } }
+		public int Action { get { return action; } }
+		public byte[] Args { get { return args; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public float Size { get { return size; } }
 		public float IconOffset { get { return iconoffset; } }
