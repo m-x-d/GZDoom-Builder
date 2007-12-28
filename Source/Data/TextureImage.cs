@@ -83,8 +83,9 @@ namespace CodeImp.DoomBuilder.Data
 			byte[] membytes;
 			bool failed = false;
 			
-			// Leave when already loaded
+			// Checks
 			if(this.IsLoaded) return;
+			if((width == 0) || (height == 0)) return;
 
 			lock(this)
 			{

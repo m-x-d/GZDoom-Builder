@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			int startindex, endindex;
 			float defaultscale;
-			TextureImage image;
+			SimpleTextureImage image;
 			
 			// Determine default scale
 			defaultscale = General.Map.Config.DefaultTextureScale;
@@ -182,12 +182,9 @@ namespace CodeImp.DoomBuilder.Data
 					// Lump not zero length?
 					if(file.Lumps[i].Length > 0)
 					{
-						// Make the image object
-						image = new TextureImage(file.Lumps[i].Name, 0, 0, defaultscale, defaultscale);
-
-						// Add single patch
-						image.AddPatch(new TexturePatch(file.Lumps[i].Name, 0, 0));
-
+						// Make the image
+						image = new SimpleTextureImage(file.Lumps[i].Name, file.Lumps[i].Name, defaultscale, defaultscale);
+						
 						// Add image to collection
 						images.Add(image);
 					}

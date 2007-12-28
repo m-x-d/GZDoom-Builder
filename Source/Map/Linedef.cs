@@ -97,6 +97,7 @@ namespace CodeImp.DoomBuilder.Map
 		public float Angle { get { return angle; } }
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 		public Rectangle Rect { get { return rect; } }
+		public byte[] Args { get { return args; } }
 
 		#endregion
 
