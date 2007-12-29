@@ -715,7 +715,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Opacity = 0;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Edit Linedefs";
+			this.Text = "Edit Linedef";
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);

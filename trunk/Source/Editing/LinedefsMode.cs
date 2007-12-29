@@ -286,10 +286,7 @@ namespace CodeImp.DoomBuilder.Editing
 					if(selected.Count > 0)
 					{
 						// Show line edit dialog
-						LinedefEditForm f = new LinedefEditForm();
-						f.Setup(selected);
-						f.ShowDialog(General.MainWindow);
-						f.Dispose();
+						LinedefEditForm.EditLinedefs(General.MainWindow, selected);
 						
 						// When a single line was selected, deselect it now
 						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
