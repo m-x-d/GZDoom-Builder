@@ -593,7 +593,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// PreferencesForm
 			// 
+			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(619, 464);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);

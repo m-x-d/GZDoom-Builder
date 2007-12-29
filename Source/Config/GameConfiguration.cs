@@ -51,6 +51,8 @@ namespace CodeImp.DoomBuilder.Config
 		private int doublesidedflags;
 		private int impassableflags;
 		private bool mixtexturesflats;
+		private bool generalizedactions;
+		private bool generalizedeffects;
 		
 		// Map lumps
 		private IDictionary maplumpnames;
@@ -84,6 +86,8 @@ namespace CodeImp.DoomBuilder.Config
 		public int DoubleSidedFlags { get { return doublesidedflags; } }
 		public int ImpassableFlags { get { return impassableflags; } }
 		public bool MixTexturesFlats { get { return mixtexturesflats; } }
+		public bool GeneralizedActions { get { return generalizedactions; } }
+		public bool GeneralizedEffects { get { return generalizedeffects; } }
 		
 		// Map lumps
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
@@ -131,6 +135,8 @@ namespace CodeImp.DoomBuilder.Config
 			doublesidedflags = cfg.ReadSetting("doublesidedflags", 0);
 			impassableflags = cfg.ReadSetting("impassableflags", 0);
 			mixtexturesflats = cfg.ReadSetting("mixtexturesflats", false);
+			generalizedactions = cfg.ReadSetting("generalizedlinedefs", false);
+			generalizedeffects = cfg.ReadSetting("generalizedsectors", false);
 			
 			// Get map lumps
 			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());

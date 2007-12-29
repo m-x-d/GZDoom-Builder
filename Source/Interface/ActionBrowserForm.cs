@@ -107,35 +107,39 @@ namespace CodeImp.DoomBuilder.Interface
 				}
 			}
 
-			// Add for all generalized categories to the combobox
-			category.Items.AddRange(General.Map.Config.GenActionCategories.ToArray());
-
-			// Given action is generalized?
-			if(General.Map.Config.IsGeneralizedAction(action))
+			// Using generalized actions?
+			if(General.Map.Config.GeneralizedActions)
 			{
-				// Open the generalized tab
-				tabs.SelectedTab = tabgeneralized;
+				// Add for all generalized categories to the combobox
+				category.Items.AddRange(General.Map.Config.GenActionCategories.ToArray());
 
-				// Select category
-				foreach(GeneralActionCategory ac in category.Items)
-					if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) category.SelectedItem = ac;
-
-				// Anything selected?
-				if(category.SelectedIndex > -1)
+				// Given action is generalized?
+				if(General.Map.Config.IsGeneralizedAction(action))
 				{
-					// Go for all options in selected category
-					sc = category.SelectedItem as GeneralActionCategory;
-					actionbits = action - sc.Offset;
-					for(int i = 0; i < MAX_OPTIONS; i++)
+					// Open the generalized tab
+					tabs.SelectedTab = tabgeneralized;
+
+					// Select category
+					foreach(GeneralActionCategory ac in category.Items)
+						if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) category.SelectedItem = ac;
+
+					// Anything selected?
+					if(category.SelectedIndex > -1)
 					{
-						// Option used?
-						if(i < sc.Options.Count)
+						// Go for all options in selected category
+						sc = category.SelectedItem as GeneralActionCategory;
+						actionbits = action - sc.Offset;
+						for(int i = 0; i < MAX_OPTIONS; i++)
 						{
-							// Go for all bits
-							foreach(GeneralActionBit ab in sc.Options[i].Bits)
+							// Option used?
+							if(i < sc.Options.Count)
 							{
-								// Select this setting if matches
-								if((actionbits & ab.Index) == ab.Index) options[i].SelectedItem = ab;
+								// Go for all bits
+								foreach(GeneralActionBit ab in sc.Options[i].Bits)
+								{
+									// Select this setting if matches
+									if((actionbits & ab.Index) == ab.Index) options[i].SelectedItem = ab;
+								}
 							}
 						}
 					}
@@ -143,8 +147,8 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 			else
 			{
-				// Open the predefined tab
-				tabs.SelectedTab = tabactions;
+				// Remove generalized tab
+				tabs.TabPages.Remove(tabgeneralized);
 			}
 		}
 		
