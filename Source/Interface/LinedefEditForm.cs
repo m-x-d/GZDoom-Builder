@@ -74,7 +74,8 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Keep this list
 			this.lines = lines;
-
+			if(lines.Count > 1) this.Text = "Edit Linedefs (" + lines.Count + ")";
+			
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first linedef properties
 			////////////////////////////////////////////////////////////////////////
@@ -198,6 +199,16 @@ namespace CodeImp.DoomBuilder.Interface
 					if(backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
 				}
 			}
+		}
+
+		// This shows the dialog to edit lines
+		public static void EditLinedefs(IWin32Window owner, ICollection<Linedef> lines)
+		{
+			// Show line edit dialog
+			LinedefEditForm f = new LinedefEditForm();
+			f.Setup(lines);
+			f.ShowDialog(owner);
+			f.Dispose();
 		}
 		
 		// Front side (un)checked

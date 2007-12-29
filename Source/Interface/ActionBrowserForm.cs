@@ -174,7 +174,7 @@ namespace CodeImp.DoomBuilder.Interface
 			if(tabs.SelectedTab == tabactions)
 			{
 				// Action node selected?
-				if(actions.SelectedNode.Tag is LinedefActionInfo)
+				if((actions.SelectedNode != null) && (actions.SelectedNode.Tag is LinedefActionInfo))
 				{
 					// Our result
 					selectedaction = (actions.SelectedNode.Tag as LinedefActionInfo).Index;
