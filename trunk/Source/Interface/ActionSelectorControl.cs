@@ -32,6 +32,9 @@ namespace CodeImp.DoomBuilder.Interface
 {
 	public partial class ActionSelectorControl : UserControl
 	{
+		// Events
+		public event EventHandler ValueChanges;
+		
 		// Constants
 		private const string NUMBER_SEPERATOR = "\t";
 		
@@ -73,6 +76,7 @@ namespace CodeImp.DoomBuilder.Interface
 			Brush displaybrush;
 			Brush backbrush;
 			string displayname;
+			int intnumber = 0;
 			
 			// Unknow item?
 			if(e.Index < 0)
@@ -81,11 +85,16 @@ namespace CodeImp.DoomBuilder.Interface
 				displaybrush = new SolidBrush(SystemColors.GrayText);
 				backbrush = new SolidBrush(SystemColors.Window);
 				
+				// Try getting integral number
+				int.TryParse(number.Text, out intnumber);
+				
 				// Check what to display
 				if(number.Text.Length == 0)
 					displayname = "";
-				else if(number.Text == "0")
+				else if(intnumber == 0)
 					displayname = "None";
+				else if(General.Map.Config.IsGeneralizedAction(intnumber))
+					displayname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(intnumber) + ")";
 				else
 					displayname = "Unknown";
 			}
@@ -168,6 +177,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// Select item
 			if(list.SelectedIndex != itemindex) list.SelectedIndex = itemindex;
 			list.Refresh();
+			
+			// Raise change event
+			if(ValueChanges != null) ValueChanges(this, EventArgs.Empty);
 		}
 
 		// Keys pressed in number box

@@ -44,12 +44,15 @@ namespace CodeImp.DoomBuilder.Interface
 			// Initialize
 			InitializeComponent();
 			
-			// Fill linedef flags list
+			// Fill flags list
 			foreach(KeyValuePair<int, string> lf in General.Map.Config.LinedefFlags) flags.Add(lf.Value, lf.Key);
 
-			// Fill linedef actions list
+			// Fill actions list
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
+			// Fill activations list
+			activation.Items.AddRange(General.Map.Config.LinedefActivates.ToArray());
+			
 			// Initialize image selectors
 			fronthigh.Initialize();
 			frontmid.Initialize();
@@ -57,11 +60,16 @@ namespace CodeImp.DoomBuilder.Interface
 			backhigh.Initialize();
 			backmid.Initialize();
 			backlow.Initialize();
+
+			// Show appropriate panel
+			doompanel.Visible = General.Map.IsType(typeof(DoomMapSetIO));
+			hexenpanel.Visible = General.Map.IsType(typeof(HexenMapSetIO));
 		}
 
 		// This sets up the form to edit the given lines
 		public void Setup(ICollection<Linedef> lines)
 		{
+			LinedefActivateInfo sai;
 			Linedef fl;
 			
 			// Keep this list
@@ -78,10 +86,19 @@ namespace CodeImp.DoomBuilder.Interface
 			foreach(CheckBox c in flags.Checkboxes)
 				c.Checked = (fl.Flags & (int)c.Tag) != 0;
 			
-			// Action/activation/tags
+			// Activations
+			foreach(LinedefActivateInfo ai in activation.Items)
+				if((fl.Flags & ai.Index) == ai.Index) activation.SelectedItem = ai;
+			
+			// Action/tags
 			action.Value = fl.Action;
 			tag.Text = fl.Tag.ToString();
-
+			arg0.Text = fl.Args[0].ToString();
+			arg1.Text = fl.Args[1].ToString();
+			arg2.Text = fl.Args[2].ToString();
+			arg3.Text = fl.Args[3].ToString();
+			arg4.Text = fl.Args[4].ToString();
+			
 			// Front side and back side checkboxes
 			frontside.Checked = (fl.Front != null);
 			backside.Checked = (fl.Back != null);
@@ -125,9 +142,23 @@ namespace CodeImp.DoomBuilder.Interface
 					}
 				}
 
-				// Action/activation/tags
+				// Activations
+				if(activation.Items.Count > 0)
+				{
+					sai = (activation.Items[0] as LinedefActivateInfo);
+					foreach(LinedefActivateInfo ai in activation.Items)
+						if((l.Flags & ai.Index) == ai.Index) sai = ai;
+					if(sai != activation.SelectedItem) activation.SelectedIndex = -1;
+				}
+				
+				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
 				if(l.Tag.ToString() != tag.Text) tag.Text = "";
+				if(l.Args[0].ToString() != arg0.Text) arg0.Text = "";
+				if(l.Args[1].ToString() != arg1.Text) arg1.Text = "";
+				if(l.Args[2].ToString() != arg2.Text) arg2.Text = "";
+				if(l.Args[3].ToString() != arg3.Text) arg3.Text = "";
+				if(l.Args[4].ToString() != arg4.Text) arg4.Text = "";
 				
 				// Front side checkbox
 				if((l.Front != null) != frontside.Checked)
@@ -205,6 +236,10 @@ namespace CodeImp.DoomBuilder.Interface
 			// Go for all the lines
 			foreach(Linedef l in lines)
 			{
+				// Remove activation flags
+				if(activation.SelectedIndex > -1)
+					foreach(LinedefActivateInfo ai in activation.Items) l.Flags &= ~ai.Index;
+
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
@@ -212,9 +247,18 @@ namespace CodeImp.DoomBuilder.Interface
 					else if(c.CheckState == CheckState.Unchecked) l.Flags &= ~(int)c.Tag;
 				}
 				
-				// Action/activation/tags
+				// Apply chosen activation flag
+				if(activation.SelectedIndex > -1)
+					l.Flags |= (activation.SelectedItem as LinedefActivateInfo).Index;
+				
+				// Action/tags
 				if(!action.Empty) l.Action = action.Value;
 				l.Tag = tag.GetResult(l.Tag);
+				l.Args[0] = (byte)arg0.GetResult(l.Args[0]);
+				l.Args[1] = (byte)arg1.GetResult(l.Args[1]);
+				l.Args[2] = (byte)arg2.GetResult(l.Args[2]);
+				l.Args[3] = (byte)arg3.GetResult(l.Args[3]);
+				l.Args[4] = (byte)arg4.GetResult(l.Args[4]);
 
 				// Remove front side?
 				if((l.Front != null) && (frontside.CheckState == CheckState.Unchecked))
@@ -222,7 +266,7 @@ namespace CodeImp.DoomBuilder.Interface
 					l.Front.Dispose();
 				}
 				// Create or modify front side?
-				if(frontside.CheckState == CheckState.Checked)
+				else if(frontside.CheckState == CheckState.Checked)
 				{
 					// Make sure we have a valid sector (make a new one if needed)
 					if(l.Front != null) index = l.Front.Sector.Index; else index = -1;
@@ -249,7 +293,7 @@ namespace CodeImp.DoomBuilder.Interface
 					l.Back.Dispose();
 				}
 				// Create or modify back side?
-				if(backside.CheckState == CheckState.Checked)
+				else if(backside.CheckState == CheckState.Checked)
 				{
 					// Make sure we have a valid sector (make a new one if needed)
 					if(l.Back != null) index = l.Back.Sector.Index; else index = -1;
@@ -288,6 +332,38 @@ namespace CodeImp.DoomBuilder.Interface
 		private void newtag_Click(object sender, EventArgs e)
 		{
 			tag.Text = General.Map.Map.GetNewTag().ToString();
+		}
+
+		// Action changes
+		private void action_ValueChanges(object sender, EventArgs e)
+		{
+			int showaction = 0;
+			
+			// Only when line type is known
+			if(General.Map.Config.LinedefActions.ContainsKey(action.Value)) showaction = action.Value;
+			
+			// Change the argument descriptions
+			arg0label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[0] + ":";
+			arg1label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[1] + ":";
+			arg2label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[2] + ":";
+			arg3label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[3] + ":";
+			arg4label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[4] + ":";
+			arg0label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[0];
+			arg1label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[1];
+			arg2label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[2];
+			arg3label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[3];
+			arg4label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[4];
+			if(arg0label.Enabled) arg0.ForeColor = SystemColors.WindowText; else arg0.ForeColor = SystemColors.GrayText;
+			if(arg1label.Enabled) arg1.ForeColor = SystemColors.WindowText; else arg1.ForeColor = SystemColors.GrayText;
+			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
+			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
+			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
+		}
+
+		// Browse Action clicked
+		private void browseaction_Click(object sender, EventArgs e)
+		{
+			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
 		}
 	}
 }

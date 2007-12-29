@@ -102,6 +102,7 @@ namespace CodeImp.DoomBuilder
 		public GameConfiguration Config { get { return config; } }
 		public GridSetup Grid { get { return grid; } }
 		public UndoManager UndoRedo { get { return undoredo; } }
+		public Type Type { get { return io.GetType(); } }
 
 		#endregion
 
@@ -979,6 +980,12 @@ namespace CodeImp.DoomBuilder
 
 			// Done
 			optionsform.Dispose();
+		}
+
+		// This returns true is the given type matches
+		public bool IsType(Type t)
+		{
+			return io.GetType().Equals(t);
 		}
 
 		#endregion
