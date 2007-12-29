@@ -230,7 +230,7 @@ namespace CodeImp.DoomBuilder.IO
 			BinaryReader readline, readside;
 			Lump linedefslump, sidedefslump;
 			int num, i, offsetx, offsety, v1, v2;
-			int s1, s2, flags, action, tag, sc;
+			int s1, s2, flags, action, sc;
 			byte[] args = new byte[Linedef.NUM_ARGS];
 			string thigh, tmid, tlow;
 			Linedef l;

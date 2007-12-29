@@ -44,7 +44,10 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Config\GeneralActionBit.cs" />
+    <Compile Include="Config\GeneralActionOption.cs" />
     <Compile Include="Config\GameConfiguration.cs" />
+    <Compile Include="Config\GeneralActionCategory.cs" />
     <Compile Include="Config\INumberedTitle.cs" />
     <Compile Include="Config\LinedefActionCategory.cs" />
     <Compile Include="Config\LinedefActionInfo.cs" />
@@ -101,6 +104,12 @@
     </Compile>
     <Compile Include="Interface\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ActionBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\ActionBrowserForm.Designer.cs">
+      <DependentUpon>ActionBrowserForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\ActionSelectorControl.cs">
       <SubType>UserControl</SubType>
@@ -357,6 +366,10 @@
     <None Include="Resources\Splash2small.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\ActionBrowserForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ActionBrowserForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\ActionSelectorControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ActionSelectorControl.cs</DependentUpon>

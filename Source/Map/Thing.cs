@@ -231,7 +231,8 @@ namespace CodeImp.DoomBuilder.Map
 			this.flags = flags;
 			this.tag = tag;
 			this.action = action;
-			this.args = args;
+			this.args = new byte[NUM_ARGS];
+			args.CopyTo(this.args, 0);
 			this.Move(x, y, zoffset);
 		}
 		

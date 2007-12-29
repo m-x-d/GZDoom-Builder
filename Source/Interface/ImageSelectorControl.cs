@@ -52,7 +52,17 @@ namespace CodeImp.DoomBuilder.Interface
 		private void ImageSelectorControl_Resize(object sender, EventArgs e)
 		{
 			// Fixed size
-			this.ClientSize = new Size(preview.Left + preview.Width, name.Top + name.Height);
+			//this.ClientSize = new Size(preview.Left + preview.Width, name.Top + name.Height);
+			preview.Width = this.ClientSize.Width;
+			preview.Height = this.ClientSize.Height - name.Height - 4;
+			name.Width = this.ClientSize.Width;
+			name.Top = this.ClientSize.Height - name.Height;
+		}
+
+		// Layout change
+		private void ImageSelectorControl_Layout(object sender, LayoutEventArgs e)
+		{
+			ImageSelectorControl_Resize(sender, EventArgs.Empty);
 		}
 
 		// Image clicked

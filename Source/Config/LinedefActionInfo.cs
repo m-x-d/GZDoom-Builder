@@ -48,7 +48,8 @@ namespace CodeImp.DoomBuilder.Config
 		private string title;
 		private string[] argtitle;
 		private TagType[] argtagtype;
-
+		private bool[] argused;
+		
 		#endregion
 
 		#region ================== Properties
@@ -60,6 +61,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string Title { get { return title; } }
 		public string[] ArgTitle { get { return argtitle; } }
 		public TagType[] ArgTagType { get { return argtagtype; } }
+		public bool[] ArgUsed { get { return argused; } }
 
 		#endregion
 
@@ -70,11 +72,13 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			string[] parts;
 			int p = 0;
+			int argindex;
 			
 			// Initialize
 			this.index = index;
 			this.argtitle = new string[Linedef.NUM_ARGS];
 			this.argtagtype = new TagType[Linedef.NUM_ARGS];
+			this.argused = new bool[Linedef.NUM_ARGS];
 			
 			// Find the parts by splitting on spaces
 			parts = desc.Split(new char[] {' '}, 3);
@@ -88,7 +92,9 @@ namespace CodeImp.DoomBuilder.Config
 			// No args/marks
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
 			{
-				this.argtitle[i] = "";
+				argindex = i + 1;
+				this.argused[i] = false;
+				this.argtitle[i] = "Argument " + argindex;
 				this.argtagtype[i] = TagType.None;
 			}
 
@@ -99,6 +105,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		public LinedefActionInfo(int index, Configuration cfg)
 		{
+			string actionsetting = "linedeftypes." + index.ToString(CultureInfo.InvariantCulture);
 			string desc;
 			string[] parts;
 			int p = 0;
@@ -108,9 +115,10 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = index;
 			this.argtitle = new string[Linedef.NUM_ARGS];
 			this.argtagtype = new TagType[Linedef.NUM_ARGS];
+			this.argused = new bool[Linedef.NUM_ARGS];
 			
 			// Read description
-			desc = cfg.ReadSetting("linedeftypes." + index.ToString(CultureInfo.InvariantCulture) + ".title", "  Unknown");
+			desc = cfg.ReadSetting(actionsetting + ".title", "  Unknown");
 			
 			// Find the parts by splitting on spaces
 			parts = desc.Split(new char[] { ' ' }, 3);
@@ -125,10 +133,9 @@ namespace CodeImp.DoomBuilder.Config
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
 			{
 				argindex = i + 1;
-				this.argtitle[i] = cfg.ReadSetting("linedeftypes." + index.ToString(CultureInfo.InvariantCulture) +
-					".arg" + argindex.ToString(CultureInfo.InvariantCulture), "");
-				this.argtagtype[i] = (TagType)cfg.ReadSetting("linedeftypes." + index.ToString(CultureInfo.InvariantCulture) +
-					".mark" + argindex.ToString(CultureInfo.InvariantCulture), (int)TagType.None);
+				this.argused[i] = cfg.SettingExists(actionsetting + ".arg" + argindex.ToString(CultureInfo.InvariantCulture));
+				this.argtitle[i] = cfg.ReadSetting(actionsetting + ".arg" + argindex.ToString(CultureInfo.InvariantCulture), "Argument " + argindex);
+				this.argtagtype[i] = (TagType)cfg.ReadSetting(actionsetting + ".mark" + argindex.ToString(CultureInfo.InvariantCulture), (int)TagType.None);
 			}
 			
 			// We have no destructor

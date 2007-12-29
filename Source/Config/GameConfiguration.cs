@@ -69,6 +69,7 @@ namespace CodeImp.DoomBuilder.Config
 		private List<LinedefActionInfo> sortedlinedefactions;
 		private List<LinedefActionCategory> actioncategories;
 		private List<LinedefActivateInfo> linedefactivates;
+		private List<GeneralActionCategory> genactioncategories;
 		
 		#endregion
 
@@ -101,6 +102,7 @@ namespace CodeImp.DoomBuilder.Config
 		public List<LinedefActionInfo> SortedLinedefActions { get { return sortedlinedefactions; } }
 		public List<LinedefActionCategory> ActionCategories { get { return actioncategories; } }
 		public List<LinedefActivateInfo> LinedefActivates { get { return linedefactivates; } }
+		public List<GeneralActionCategory> GenActionCategories { get { return genactioncategories; } }
 
 		#endregion
 
@@ -118,6 +120,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.actioncategories = new List<LinedefActionCategory>();
 			this.sortedlinedefactions = new List<LinedefActionInfo>();
 			this.linedefactivates = new List<LinedefActivateInfo>();
+			this.genactioncategories = new List<GeneralActionCategory>();
 			
 			// Read general settings
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
@@ -143,11 +146,16 @@ namespace CodeImp.DoomBuilder.Config
 			LoadLinedefFlags();
 			LoadLinedefActions();
 			LoadLinedefActivations();
-			
-			// We have no destructor
-			GC.SuppressFinalize(this);
+			LoadLinedefGeneralizedAction();
 		}
 
+		// Destructor
+		~GameConfiguration()
+		{
+			foreach(ThingCategory tc in thingcategories) tc.Dispose();
+			foreach(LinedefActionCategory ac in actioncategories) ac.Dispose();
+		}
+		
 		#endregion
 
 		#region ================== Loading
@@ -290,6 +298,28 @@ namespace CodeImp.DoomBuilder.Config
 			// Sort the list
 			linedefactivates.Sort();
 		}
+
+		// Linedef generalized actions
+		private void LoadLinedefGeneralizedAction()
+		{
+			IDictionary dic;
+
+			// Get linedef activations
+			dic = cfg.ReadSetting("gen_linedeftypes", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Check for valid structure
+				if(de.Value is IDictionary)
+				{
+					// Add category
+					genactioncategories.Add(new GeneralActionCategory(de.Key.ToString(), cfg));
+				}
+				else
+				{
+					General.WriteLogLine("WARNING: Structure 'gen_linedeftypes' contains invalid entries!");
+				}
+			}
+		}
 		
 		#endregion
 
@@ -319,6 +349,42 @@ namespace CodeImp.DoomBuilder.Config
 				// Create unknown thing info
 				return new ThingTypeInfo(thingtype);
 			}
+		}
+		
+		// This checks if an action is generalized or predefined
+		public bool IsGeneralizedAction(int action)
+		{
+			// Only actions above 0
+			if(action > 0)
+			{
+				// Go for all categories
+				foreach(GeneralActionCategory ac in genactioncategories)
+				{
+					// Check if the action is within range of this category
+					if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) return true;
+				}
+			}
+
+			// Not generalized
+			return false;
+		}
+
+		// This gets the generalized action category from action number
+		public GeneralActionCategory GetGeneralizedActionCategory(int action)
+		{
+			// Only actions above 0
+			if(action > 0)
+			{
+				// Go for all categories
+				foreach(GeneralActionCategory ac in genactioncategories)
+				{
+					// Check if the action is within range of this category
+					if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) return ac;
+				}
+			}
+
+			// Not generalized
+			return null;
 		}
 		
 		#endregion

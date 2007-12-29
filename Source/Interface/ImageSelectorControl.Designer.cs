@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Controls.Add(this.preview);
 			this.Name = "ImageSelectorControl";
 			this.Size = new System.Drawing.Size(115, 136);
+			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.ImageSelectorControl_Layout);
 			this.Resize += new System.EventHandler(this.ImageSelectorControl_Resize);
 			this.ResumeLayout(false);
 			this.PerformLayout();
