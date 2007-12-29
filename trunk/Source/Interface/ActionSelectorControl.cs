@@ -73,69 +73,74 @@ namespace CodeImp.DoomBuilder.Interface
 		private void list_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			INumberedTitle item;
-			Brush displaybrush;
-			Brush backbrush;
-			string displayname;
+			Brush displaybrush = SystemBrushes.WindowText;
+			Brush backbrush = SystemBrushes.Window;
+			string displayname = "";
 			int intnumber = 0;
 			
-			// Unknow item?
-			if(e.Index < 0)
+			// Only when running
+			if(!this.DesignMode)
 			{
-				// Grayed
-				displaybrush = new SolidBrush(SystemColors.GrayText);
-				backbrush = new SolidBrush(SystemColors.Window);
-				
-				// Try getting integral number
-				int.TryParse(number.Text, out intnumber);
-				
-				// Check what to display
-				if(number.Text.Length == 0)
-					displayname = "";
-				else if(intnumber == 0)
-					displayname = "None";
-				else if(General.Map.Config.IsGeneralizedAction(intnumber))
-					displayname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(intnumber) + ")";
-				else
-					displayname = "Unknown";
-			}
-			// In the display part of the combobox?
-			else if((e.State & DrawItemState.ComboBoxEdit) != 0)
-			{
-				// Show without number
-				item = (INumberedTitle)list.Items[e.Index];
-				displayname = item.Title.Trim();
-				
-				// Determine colors to use
-				if(item.Index == 0)
+				// Unknow item?
+				if(e.Index < 0)
 				{
 					// Grayed
 					displaybrush = new SolidBrush(SystemColors.GrayText);
 					backbrush = new SolidBrush(SystemColors.Window);
-				}
-				else
-				{
-					// Normal color
-					displaybrush = new SolidBrush(list.ForeColor);
-					backbrush = new SolidBrush(SystemColors.Window);
-				}
-			}
-			else
-			{
-				// Use number and description
-				item = (INumberedTitle)list.Items[e.Index];
-				displayname = item.Index + NUMBER_SEPERATOR + item.Title;
 
-				// Determine colors to use
-				if((e.State & DrawItemState.Focus) != 0)
+					// Try getting integral number
+					int.TryParse(number.Text, out intnumber);
+
+					// Check what to display
+					if(number.Text.Length == 0)
+						displayname = "";
+					else if(intnumber == 0)
+						displayname = "None";
+					else if(General.Map.Config.IsGeneralizedAction(intnumber))
+						displayname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(intnumber) + ")";
+					else
+						displayname = "Unknown";
+				}
+				// In the display part of the combobox?
+				else if((e.State & DrawItemState.ComboBoxEdit) != 0)
 				{
-					displaybrush = new SolidBrush(SystemColors.HighlightText);
-					backbrush = new SolidBrush(SystemColors.Highlight);
+					// Show without number
+					item = (INumberedTitle)list.Items[e.Index];
+					displayname = item.Title.Trim();
+
+					// Determine colors to use
+					if(item.Index == 0)
+					{
+						// Grayed
+						displaybrush = new SolidBrush(SystemColors.GrayText);
+						backbrush = new SolidBrush(SystemColors.Window);
+					}
+					else
+					{
+						// Normal color
+						displaybrush = new SolidBrush(list.ForeColor);
+						backbrush = new SolidBrush(SystemColors.Window);
+					}
 				}
 				else
 				{
-					displaybrush = new SolidBrush(list.ForeColor);
-					backbrush = new SolidBrush(SystemColors.Window);
+					// Use number and description
+					item = (INumberedTitle)list.Items[e.Index];
+					displayname = item.Index + NUMBER_SEPERATOR + item.Title;
+
+					// Determine colors to use
+					if((e.State & DrawItemState.Focus) != 0)
+					{
+						displaybrush = new SolidBrush(SystemColors.HighlightText);
+						backbrush = new SolidBrush(SystemColors.Highlight);
+					}
+					else
+					{
+						displaybrush = new SolidBrush(list.ForeColor);
+						backbrush = new SolidBrush(SystemColors.Window);
+					}
 				}
+				
 			}
 
 			// Draw item

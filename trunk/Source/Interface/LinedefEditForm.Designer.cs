@@ -226,9 +226,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg0label
 			// 
-			this.arg0label.Location = new System.Drawing.Point(-36, 58);
+			this.arg0label.Location = new System.Drawing.Point(-18, 58);
 			this.arg0label.Name = "arg0label";
-			this.arg0label.Size = new System.Drawing.Size(143, 14);
+			this.arg0label.Size = new System.Drawing.Size(179, 14);
 			this.arg0label.TabIndex = 12;
 			this.arg0label.Text = "Argument 1:";
 			this.arg0label.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -236,9 +236,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg1label
 			// 
-			this.arg1label.Location = new System.Drawing.Point(-36, 84);
+			this.arg1label.Location = new System.Drawing.Point(-18, 84);
 			this.arg1label.Name = "arg1label";
-			this.arg1label.Size = new System.Drawing.Size(143, 14);
+			this.arg1label.Size = new System.Drawing.Size(179, 14);
 			this.arg1label.TabIndex = 14;
 			this.arg1label.Text = "Argument 2:";
 			this.arg1label.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -246,9 +246,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg4label
 			// 
-			this.arg4label.Location = new System.Drawing.Point(294, 58);
+			this.arg4label.Location = new System.Drawing.Point(192, 84);
 			this.arg4label.Name = "arg4label";
-			this.arg4label.Size = new System.Drawing.Size(143, 14);
+			this.arg4label.Size = new System.Drawing.Size(179, 14);
 			this.arg4label.TabIndex = 16;
 			this.arg4label.Text = "Argument 5:";
 			this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -256,9 +256,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg2label
 			// 
-			this.arg2label.Location = new System.Drawing.Point(130, 58);
+			this.arg2label.Location = new System.Drawing.Point(-18, 110);
 			this.arg2label.Name = "arg2label";
-			this.arg2label.Size = new System.Drawing.Size(143, 14);
+			this.arg2label.Size = new System.Drawing.Size(179, 14);
 			this.arg2label.TabIndex = 18;
 			this.arg2label.Text = "Argument 3:";
 			this.arg2label.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -266,9 +266,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg3label
 			// 
-			this.arg3label.Location = new System.Drawing.Point(130, 84);
+			this.arg3label.Location = new System.Drawing.Point(192, 58);
 			this.arg3label.Name = "arg3label";
-			this.arg3label.Size = new System.Drawing.Size(143, 14);
+			this.arg3label.Size = new System.Drawing.Size(179, 14);
 			this.arg3label.TabIndex = 20;
 			this.arg3label.Text = "Argument 4:";
 			this.arg3label.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -278,7 +278,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(439, 402);
+			this.cancel.Location = new System.Drawing.Point(439, 428);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 17;
@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(320, 402);
+			this.apply.Location = new System.Drawing.Point(320, 428);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 16;
@@ -308,7 +308,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actiongroup.Controls.Add(this.doompanel);
 			this.actiongroup.Location = new System.Drawing.Point(8, 169);
 			this.actiongroup.Name = "actiongroup";
-			this.actiongroup.Size = new System.Drawing.Size(517, 171);
+			this.actiongroup.Size = new System.Drawing.Size(517, 197);
 			this.actiongroup.TabIndex = 18;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
@@ -332,14 +332,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.hexenpanel.Controls.Add(this.arg4label);
 			this.hexenpanel.Location = new System.Drawing.Point(6, 54);
 			this.hexenpanel.Name = "hexenpanel";
-			this.hexenpanel.Size = new System.Drawing.Size(505, 111);
+			this.hexenpanel.Size = new System.Drawing.Size(505, 137);
 			this.hexenpanel.TabIndex = 13;
 			// 
 			// arg3
 			// 
 			this.arg3.AllowNegative = false;
 			this.arg3.AllowRelative = true;
-			this.arg3.Location = new System.Drawing.Point(279, 81);
+			this.arg3.Location = new System.Drawing.Point(377, 55);
 			this.arg3.Name = "arg3";
 			this.arg3.Size = new System.Drawing.Size(50, 20);
 			this.arg3.TabIndex = 21;
@@ -348,7 +348,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg2.AllowNegative = false;
 			this.arg2.AllowRelative = true;
-			this.arg2.Location = new System.Drawing.Point(279, 55);
+			this.arg2.Location = new System.Drawing.Point(167, 107);
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(50, 20);
 			this.arg2.TabIndex = 19;
@@ -357,7 +357,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg4.AllowNegative = false;
 			this.arg4.AllowRelative = true;
-			this.arg4.Location = new System.Drawing.Point(443, 55);
+			this.arg4.Location = new System.Drawing.Point(377, 81);
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(50, 20);
 			this.arg4.TabIndex = 17;
@@ -366,7 +366,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg1.AllowNegative = false;
 			this.arg1.AllowRelative = true;
-			this.arg1.Location = new System.Drawing.Point(113, 81);
+			this.arg1.Location = new System.Drawing.Point(167, 81);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(50, 20);
 			this.arg1.TabIndex = 15;
@@ -375,7 +375,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg0.AllowNegative = false;
 			this.arg0.AllowRelative = true;
-			this.arg0.Location = new System.Drawing.Point(113, 55);
+			this.arg0.Location = new System.Drawing.Point(167, 55);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(50, 20);
 			this.arg0.TabIndex = 13;
@@ -424,7 +424,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.doompanel.Controls.Add(this.newtag);
 			this.doompanel.Location = new System.Drawing.Point(6, 54);
 			this.doompanel.Name = "doompanel";
-			this.doompanel.Size = new System.Drawing.Size(505, 111);
+			this.doompanel.Size = new System.Drawing.Size(505, 137);
 			this.doompanel.TabIndex = 12;
 			// 
 			// tag
@@ -488,7 +488,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(541, 375);
+			this.tabs.Size = new System.Drawing.Size(541, 401);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 20;
 			// 
@@ -500,7 +500,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabPage1.Location = new System.Drawing.Point(4, 23);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(5);
-			this.tabPage1.Size = new System.Drawing.Size(533, 348);
+			this.tabPage1.Size = new System.Drawing.Size(533, 374);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Properties";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -515,7 +515,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabPage2.Location = new System.Drawing.Point(4, 23);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(5);
-			this.tabPage2.Size = new System.Drawing.Size(533, 348);
+			this.tabPage2.Size = new System.Drawing.Size(533, 374);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Sidedefs";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -523,7 +523,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// backside
 			// 
 			this.backside.AutoSize = true;
-			this.backside.Location = new System.Drawing.Point(20, 176);
+			this.backside.Location = new System.Drawing.Point(20, 188);
 			this.backside.Name = "backside";
 			this.backside.Size = new System.Drawing.Size(74, 18);
 			this.backside.TabIndex = 2;
@@ -545,9 +545,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.backgroup.Controls.Add(label9);
 			this.backgroup.Controls.Add(label10);
 			this.backgroup.Enabled = false;
-			this.backgroup.Location = new System.Drawing.Point(8, 179);
+			this.backgroup.Location = new System.Drawing.Point(8, 191);
 			this.backgroup.Name = "backgroup";
-			this.backgroup.Size = new System.Drawing.Size(517, 161);
+			this.backgroup.Size = new System.Drawing.Size(517, 175);
 			this.backgroup.TabIndex = 1;
 			this.backgroup.TabStop = false;
 			this.backgroup.Text = "     ";
@@ -567,7 +567,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.backlow.Location = new System.Drawing.Point(416, 37);
 			this.backlow.Name = "backlow";
 			this.backlow.Required = false;
-			this.backlow.Size = new System.Drawing.Size(83, 107);
+			this.backlow.Size = new System.Drawing.Size(83, 120);
 			this.backlow.TabIndex = 15;
 			this.backlow.TextureName = "";
 			// 
@@ -576,7 +576,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.backmid.Location = new System.Drawing.Point(325, 37);
 			this.backmid.Name = "backmid";
 			this.backmid.Required = false;
-			this.backmid.Size = new System.Drawing.Size(83, 107);
+			this.backmid.Size = new System.Drawing.Size(83, 120);
 			this.backmid.TabIndex = 14;
 			this.backmid.TextureName = "";
 			// 
@@ -585,7 +585,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.backhigh.Location = new System.Drawing.Point(234, 37);
 			this.backhigh.Name = "backhigh";
 			this.backhigh.Required = false;
-			this.backhigh.Size = new System.Drawing.Size(83, 107);
+			this.backhigh.Size = new System.Drawing.Size(83, 120);
 			this.backhigh.TabIndex = 13;
 			this.backhigh.TextureName = "";
 			// 
@@ -636,7 +636,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.frontgroup.Enabled = false;
 			this.frontgroup.Location = new System.Drawing.Point(8, 8);
 			this.frontgroup.Name = "frontgroup";
-			this.frontgroup.Size = new System.Drawing.Size(517, 161);
+			this.frontgroup.Size = new System.Drawing.Size(517, 175);
 			this.frontgroup.TabIndex = 0;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
@@ -656,7 +656,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.frontlow.Location = new System.Drawing.Point(416, 37);
 			this.frontlow.Name = "frontlow";
 			this.frontlow.Required = false;
-			this.frontlow.Size = new System.Drawing.Size(83, 107);
+			this.frontlow.Size = new System.Drawing.Size(83, 120);
 			this.frontlow.TabIndex = 12;
 			this.frontlow.TextureName = "";
 			// 
@@ -665,7 +665,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.frontmid.Location = new System.Drawing.Point(325, 37);
 			this.frontmid.Name = "frontmid";
 			this.frontmid.Required = false;
-			this.frontmid.Size = new System.Drawing.Size(83, 107);
+			this.frontmid.Size = new System.Drawing.Size(83, 120);
 			this.frontmid.TabIndex = 11;
 			this.frontmid.TextureName = "";
 			// 
@@ -674,7 +674,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.fronthigh.Location = new System.Drawing.Point(234, 37);
 			this.fronthigh.Name = "fronthigh";
 			this.fronthigh.Required = false;
-			this.fronthigh.Size = new System.Drawing.Size(83, 107);
+			this.fronthigh.Size = new System.Drawing.Size(83, 120);
 			this.fronthigh.TabIndex = 10;
 			this.fronthigh.TextureName = "";
 			// 
@@ -703,7 +703,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(561, 437);
+			this.ClientSize = new System.Drawing.Size(561, 463);
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
