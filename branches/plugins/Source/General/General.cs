@@ -127,12 +127,12 @@ namespace CodeImp.DoomBuilder
 		public static MainForm MainWindow { get { return mainwindow; } }
 		public static ProgramConfiguration Settings { get { return settings; } }
 		public static ColorCollection Colors { get { return colors; } }
-		public static List<ConfigurationInfo> Configs { get { return configs; } }
-		public static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
-		public static List<CompilerInfo> Compilers { get { return compilers; } }
+		internal static List<ConfigurationInfo> Configs { get { return configs; } }
+		internal static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
+		internal static List<CompilerInfo> Compilers { get { return compilers; } }
 		public static MapManager Map { get { return map; } }
-		public static ActionManager Actions { get { return actions; } }
-		public static PluginManager Plugins { get { return plugins; } }
+		internal static ActionManager Actions { get { return actions; } }
+		internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		
 		#endregion
@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Configurations
 
 		// This returns the game configuration info by filename
-		public static ConfigurationInfo GetConfigurationInfo(string filename)
+		internal static ConfigurationInfo GetConfigurationInfo(string filename)
 		{
 			// Go for all config infos
 			foreach(ConfigurationInfo ci in configs)
@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This loads and returns a game configuration
-		public static Configuration LoadGameConfiguration(string filename)
+		internal static Configuration LoadGameConfiguration(string filename)
 		{
 			Configuration cfg;
 			
@@ -353,7 +353,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This returns a nodebuilder by name
-		public static NodebuilderInfo GetNodebuilderByName(string name)
+		internal static NodebuilderInfo GetNodebuilderByName(string name)
 		{
 			// Go for all nodebuilders
 			foreach(NodebuilderInfo n in nodebuilders)
@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder
 
 		// Main program entry
 		[STAThread]
-		public static void Main(string[] args)
+		internal static void Main(string[] args)
 		{
 			Uri localpath;
 			Version thisversion;
@@ -477,7 +477,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Terminate
 		
 		// This terminates the program
-		public static void Terminate(bool properexit)
+		internal static void Terminate(bool properexit)
 		{
 			// Terminate properly?
 			if(properexit)
@@ -527,7 +527,7 @@ namespace CodeImp.DoomBuilder
 
 		// This creates a new map
 		[Action("newmap")]
-		public static void NewMap()
+		internal static void NewMap()
 		{
 			MapOptions newoptions = new MapOptions();
 			MapOptionsForm optionswindow;
@@ -575,7 +575,7 @@ namespace CodeImp.DoomBuilder
 
 		// This closes the current map
 		[Action("closemap")]
-		public static void CloseMap()
+		internal static void CloseMap()
 		{
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -602,7 +602,7 @@ namespace CodeImp.DoomBuilder
 
 		// This loads a map from file
 		[Action("openmap")]
-		public static void OpenMap()
+		internal static void OpenMap()
 		{
 			OpenFileDialog openfile;
 			
@@ -625,7 +625,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This opens the specified file
-		public static void OpenMapFile(string filename)
+		internal static void OpenMapFile(string filename)
 		{
 			OpenMapOptionsForm openmapwindow;
 
@@ -673,7 +673,7 @@ namespace CodeImp.DoomBuilder
 		
 		// This saves the current map
 		[Action("savemap")]
-		public static void SaveMap()
+		internal static void SaveMap()
 		{
 			// Check if a wad file is known
 			if(map.FilePathName == "")
@@ -703,7 +703,7 @@ namespace CodeImp.DoomBuilder
 
 		// This saves the current map as a different file
 		[Action("savemapas")]
-		public static void SaveMapAs()
+		internal static void SaveMapAs()
 		{
 			SaveFileDialog savefile;
 			
@@ -737,7 +737,7 @@ namespace CodeImp.DoomBuilder
 		
 		// This asks to save the map if needed
 		// Returns false when action was cancelled
-		public static bool AskSaveMap()
+		internal static bool AskSaveMap()
 		{
 			DialogResult result;
 			
@@ -877,7 +877,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This returns a unique temp filename
-		public static string MakeTempFilename(string tempdir)
+		internal static string MakeTempFilename(string tempdir)
 		{
 			string filename;
 			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -899,7 +899,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This returns a unique temp directory name
-		public static string MakeTempDirname()
+		internal static string MakeTempDirname()
 		{
 			string dirname;
 			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -990,7 +990,7 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		[Action("testaction")]
-		public static void TestAction()
+		internal static void TestAction()
 		{
 			TextureBrowserForm t = new TextureBrowserForm();
 			t.ShowDialog(mainwindow);

@@ -38,7 +38,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder
 {
-	public class MapManager : IDisposable
+	public class MapManager
 	{
 		#region ================== Constants
 
@@ -89,16 +89,16 @@ namespace CodeImp.DoomBuilder
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
 		public string TempPath { get { return temppath; } }
-		public MapOptions Options { get { return options; } }
+		internal MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
-		public EditMode Mode { get { return mode; } }
-		public EditMode NewMode { get { return newmode; } }
+		internal EditMode Mode { get { return mode; } }
+		internal EditMode NewMode { get { return newmode; } }
 		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed; } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public D3DDevice Graphics { get { return graphics; } }
-		public Renderer2D Renderer2D { get { return renderer2d; } }
-		public Renderer3D Renderer3D { get { return renderer3d; } }
+		internal D3DDevice Graphics { get { return graphics; } }
+		public IRenderer2D Renderer2D { get { return renderer2d; } }
+		public IRenderer3D Renderer3D { get { return renderer3d; } }
 		public GameConfiguration Config { get { return config; } }
 		public GridSetup Grid { get { return grid; } }
 		public UndoManager UndoRedo { get { return undoredo; } }
@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public MapManager()
+		internal MapManager()
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// Diposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== New / Open
 		
 		// Initializes for a new map
-		public bool InitializeNewMap(MapOptions options)
+		internal bool InitializeNewMap(MapOptions options)
 		{
 			string tempfile;
 			
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// Initializes for an existing map
-		public bool InitializeOpenMap(string filepathname, MapOptions options)
+		internal bool InitializeOpenMap(string filepathname, MapOptions options)
 		{
 			WAD mapwad;
 			string tempfile;
@@ -327,7 +327,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Save
 
 		// Initializes for an existing map
-		public bool SaveMap(string newfilepathname, int savemode)
+		internal bool SaveMap(string newfilepathname, int savemode)
 		{
 			MapSet outputset;
 			string nodebuildername, oldstatus, settingsfile;
@@ -757,7 +757,7 @@ namespace CodeImp.DoomBuilder
 		
 		// This finds a lump within the range of known lump names
 		// Returns -1 when the lump cannot be found
-		public static int FindSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps)
+		internal static int FindSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps)
 		{
 			// Use the configured map lump names to find the specific lump within range,
 			// because when an unknown lump is met, this search must stop.
@@ -793,7 +793,7 @@ namespace CodeImp.DoomBuilder
 		
 		// This removes a specific lump and returns the position where the lump was removed
 		// Returns -1 when the lump could not be found
-		public static int RemoveSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps)
+		internal static int RemoveSpecificLump(WAD source, string lumpname, int mapheaderindex, string mapheadername, IDictionary maplumps)
 		{
 			int lumpindex;
 			
@@ -829,7 +829,7 @@ namespace CodeImp.DoomBuilder
 		// - Engage of new mode is called
 		// - Dispose of old mode is called
 		//
-		public void ChangeMode(EditMode nextmode)
+		internal void ChangeMode(EditMode nextmode)
 		{
 			EditMode oldmode = mode;
 			newmode = nextmode;
@@ -861,7 +861,7 @@ namespace CodeImp.DoomBuilder
 
 		// This switches to vertices mode
 		[Action("verticesmode")]
-		public void SwitchVerticesMode()
+		internal void SwitchVerticesMode()
 		{
 			// Change to vertices mode
 			ChangeMode(new VerticesMode());
@@ -869,7 +869,7 @@ namespace CodeImp.DoomBuilder
 
 		// This switches to linedefs mode
 		[Action("linedefsmode")]
-		public void SwitchLinedefsMode()
+		internal void SwitchLinedefsMode()
 		{
 			// Change to linedefs mode
 			ChangeMode(new LinedefsMode());
@@ -877,7 +877,7 @@ namespace CodeImp.DoomBuilder
 
 		// This switches to sectors mode
 		[Action("sectorsmode")]
-		public void SwitchSectorsMode()
+		internal void SwitchSectorsMode()
 		{
 			// Change to sectors mode
 			ChangeMode(new SectorsMode());
@@ -885,7 +885,7 @@ namespace CodeImp.DoomBuilder
 
 		// This switches to things mode
 		[Action("thingsmode")]
-		public void SwitchThingsMode()
+		internal void SwitchThingsMode()
 		{
 			// Change to things mode
 			ChangeMode(new ThingsMode());
@@ -907,7 +907,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This sets a new mapset for editing
-		public void ChangeMapSet(MapSet newmap)
+		internal void ChangeMapSet(MapSet newmap)
 		{
 			// Can't have a selection in an old map set
 			map.ClearAllSelected();
@@ -920,7 +920,7 @@ namespace CodeImp.DoomBuilder
 		
 		// This reloads resources
 		[Action("reloadresources")]
-		public void ReloadResources()
+		internal void ReloadResources()
 		{
 			DataLocation maplocation;
 			string oldstatus;
@@ -965,7 +965,7 @@ namespace CodeImp.DoomBuilder
 
 		// Game Configuration action
 		[Action("mapoptions")]
-		public void ShowMapOptions()
+		internal void ShowMapOptions()
 		{
 			// Show map options dialog
 			MapOptionsForm optionsform = new MapOptionsForm(options);

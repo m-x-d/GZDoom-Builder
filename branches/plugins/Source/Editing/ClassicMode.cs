@@ -36,7 +36,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public abstract class ClassicMode : EditMode
+	internal abstract class ClassicMode : EditMode
 	{
 		#region ================== Constants
 
@@ -51,7 +51,8 @@ namespace CodeImp.DoomBuilder.Editing
 		protected bool cancelled;
 
 		// Graphics
-		protected Renderer2D renderer;
+		protected IRenderer2D renderer;
+		private Renderer2D renderer2d;
 		
 		// Mouse status
 		protected Vector2D mousepos;
@@ -75,6 +76,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Initialize
 			this.renderer = General.Map.Renderer2D;
+			this.renderer2d = (Renderer2D)General.Map.Renderer2D;
 		}
 
 		// Diposer
@@ -99,7 +101,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void ScrollNorth()
 		{
 			// Scroll
-			ScrollBy(0f, 100f / renderer.Scale);
+			ScrollBy(0f, 100f / renderer2d.Scale);
 		}
 
 		// This scrolls the view south
@@ -107,7 +109,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void ScrollSouth()
 		{
 			// Scroll
-			ScrollBy(0f, -100f / renderer.Scale);
+			ScrollBy(0f, -100f / renderer2d.Scale);
 		}
 
 		// This scrolls the view west
@@ -115,7 +117,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void ScrollWest()
 		{
 			// Scroll
-			ScrollBy(-100f / renderer.Scale, 0f);
+			ScrollBy(-100f / renderer2d.Scale, 0f);
 		}
 
 		// This scrolls the view east
@@ -123,7 +125,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void ScrollEast()
 		{
 			// Scroll
-			ScrollBy(100f / renderer.Scale, 0f);
+			ScrollBy(100f / renderer2d.Scale, 0f);
 		}
 
 		// This zooms in
@@ -146,14 +148,14 @@ namespace CodeImp.DoomBuilder.Editing
 		private void ScrollBy(float deltax, float deltay)
 		{
 			// Scroll now
-			renderer.PositionView(renderer.OffsetX + deltax, renderer.OffsetY + deltay);
+			renderer2d.PositionView(renderer2d.OffsetX + deltax, renderer2d.OffsetY + deltay);
 			this.ViewChanged();
 			
 			// Redraw
 			General.MainWindow.RedrawDisplay();
 
 			// Determine new unprojected mouse coordinates
-			mousemappos = renderer.GetMapCoordinates(mousepos);
+			mousemappos = renderer2d.GetMapCoordinates(mousepos);
 			General.MainWindow.UpdateCoordinates(mousemappos);
 		}
 
@@ -164,7 +166,7 @@ namespace CodeImp.DoomBuilder.Editing
 			float newscale;
 			
 			// This will be the new zoom scale
-			newscale = renderer.Scale * deltaz;
+			newscale = renderer2d.Scale * deltaz;
 
 			// Limit scale
 			if(newscale > SCALE_MAX) newscale = SCALE_MAX;
@@ -187,11 +189,11 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 
 			// Calculate view position difference
-			diff = ((clientsize / newscale) - (clientsize / renderer.Scale)) * zoompos;
+			diff = ((clientsize / newscale) - (clientsize / renderer2d.Scale)) * zoompos;
 
 			// Zoom now
-			renderer.PositionView(renderer.OffsetX - diff.x, renderer.OffsetY + diff.y);
-			renderer.ScaleView(newscale);
+			renderer2d.PositionView(renderer2d.OffsetX - diff.x, renderer2d.OffsetY + diff.y);
+			renderer2d.ScaleView(newscale);
 			this.ViewChanged();
 
 			// Redraw
@@ -206,7 +208,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public void SetZoom(float newscale)
 		{
 			// Zoom now
-			renderer.ScaleView(newscale);
+			renderer2d.ScaleView(newscale);
 			this.ViewChanged();
 
 			// Redraw
@@ -251,8 +253,8 @@ namespace CodeImp.DoomBuilder.Editing
 			if(scalew < scaleh) scale = scalew; else scale = scaleh;
 
 			// Change the view to see the whole map
-			renderer.ScaleView(scale);
-			renderer.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
+			renderer2d.ScaleView(scale);
+			renderer2d.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
 			this.ViewChanged();
 			
 			// Redraw
@@ -296,7 +298,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Record last position
 			mouseinside = true;
 			mousepos = new Vector2D(e.X, e.Y);
-			mousemappos = renderer.GetMapCoordinates(mousepos);
+			mousemappos = renderer2d.GetMapCoordinates(mousepos);
 			mousebuttons = e.Button;
 			
 			// Update labels in main window
@@ -370,7 +372,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// This just refreshes the display
 		public override void RefreshDisplay()
 		{
-			renderer.Present();
+			renderer2d.Present();
 		}
 
 		#endregion

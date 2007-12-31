@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class ActionSelectorControl : UserControl
+	internal partial class ActionSelectorControl : UserControl
 	{
 		// Events
 		public event EventHandler ValueChanges;

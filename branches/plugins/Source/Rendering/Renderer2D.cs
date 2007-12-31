@@ -39,7 +39,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public unsafe class Renderer2D : Renderer
+	internal unsafe sealed class Renderer2D : Renderer, IRenderer2D
 	{
 		#region ================== Constants
 
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public Renderer2D(D3DDevice graphics) : base(graphics)
+		internal Renderer2D(D3DDevice graphics) : base(graphics)
 		{
 			// Initialize
 			thingtexture = new ResourceImage("Thing2D.png");
@@ -128,8 +128,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
-		public override void Dispose()
+		// Disposer
+		internal override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This destroys the rendertargets
-		private void DestroyRendertargets()
+		public void DestroyRendertargets()
 		{
 			// Trash rendertargets
 			if(structtex != null) structtex.Dispose();

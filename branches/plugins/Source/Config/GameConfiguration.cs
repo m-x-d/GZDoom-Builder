@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public GameConfiguration(Configuration cfg)
+		internal GameConfiguration(Configuration cfg)
 		{
 			// Initialize
 			this.cfg = cfg;

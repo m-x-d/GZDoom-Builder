@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Sector : IDisposable
+	public sealed class Sector
 	{
 		#region ================== Constants
 

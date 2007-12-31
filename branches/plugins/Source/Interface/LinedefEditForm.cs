@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class LinedefEditForm : DelayedForm
+	internal partial class LinedefEditForm : DelayedForm
 	{
 		// Variables
 		private ICollection<Linedef> lines;

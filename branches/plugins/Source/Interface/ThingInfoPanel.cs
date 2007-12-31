@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class ThingInfoPanel : UserControl
+	internal partial class ThingInfoPanel : UserControl
 	{
 		// Constructor
 		public ThingInfoPanel()

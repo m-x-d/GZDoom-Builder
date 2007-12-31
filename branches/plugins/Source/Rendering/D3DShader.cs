@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public abstract class D3DShader : IDisposable
+	internal abstract class D3DShader
 	{
 		#region ================== Constants
 

@@ -34,7 +34,7 @@ using System.Threading;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public sealed class DataManager : IDisposable
+	public sealed class DataManager
 	{
 		#region ================== Constants
 
@@ -82,14 +82,14 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public DataManager()
+		internal DataManager()
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// Disposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Loading / Unloading
 
 		// This loads all data resources
-		public void Load(DataLocationList configlist, DataLocationList maplist, DataLocation maplocation)
+		internal void Load(DataLocationList configlist, DataLocationList maplist, DataLocation maplocation)
 		{
 			DataLocationList all = DataLocationList.Combined(configlist, maplist);
 			all.Add(maplocation);
@@ -115,14 +115,14 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads all data resources
-		public void Load(DataLocationList configlist, DataLocationList maplist)
+		internal void Load(DataLocationList configlist, DataLocationList maplist)
 		{
 			DataLocationList all = DataLocationList.Combined(configlist, maplist);
 			Load(all);
 		}
 
 		// This loads all data resources
-		public void Load(DataLocationList locations)
+		internal void Load(DataLocationList locations)
 		{
 			DataReader c;
 			
@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This unloads all data
-		public void Unload()
+		internal void Unload()
 		{
 			// Stop background loader
 			StopBackgroundLoader();
@@ -212,7 +212,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Suspend / Resume
 
 		// This suspends data resources
-		public void Suspend()
+		internal void Suspend()
 		{
 			// Stop background loader
 			StopBackgroundLoader();
@@ -227,7 +227,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This resumes data resources
-		public void Resume()
+		internal void Resume()
 		{
 			// Go for all containers
 			foreach(DataReader d in containers)
@@ -425,7 +425,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This returns a specific patch stream
-		public Stream GetPatchData(string pname)
+		internal Stream GetPatchData(string pname)
 		{
 			Stream patch;
 
@@ -539,7 +539,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns a specific flat stream
-		public Stream GetFlatData(string pname)
+		internal Stream GetFlatData(string pname)
 		{
 			Stream flat;
 

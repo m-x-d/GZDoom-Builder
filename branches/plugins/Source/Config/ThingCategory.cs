@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class ThingCategory : IDisposable
+	public class ThingCategory
 	{
 		#region ================== Constants
 
@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ThingCategory(Configuration cfg, string name)
+		internal ThingCategory(Configuration cfg, string name)
 		{
 			IDictionary dic;
 			int index;
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// Disposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Methods
 
 		// This adds a thing to the category
-		public void AddThing(ThingTypeInfo t)
+		internal void AddThing(ThingTypeInfo t)
 		{
 			// Add
 			things.Add(t);

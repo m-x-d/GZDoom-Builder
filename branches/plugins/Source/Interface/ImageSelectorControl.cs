@@ -36,7 +36,7 @@ using System.Drawing.Drawing2D;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public abstract partial class ImageSelectorControl : UserControl
+	internal abstract partial class ImageSelectorControl : UserControl
 	{
 		// Properties
 		public string TextureName { get { return name.Text; } set { name.Text = value; } }

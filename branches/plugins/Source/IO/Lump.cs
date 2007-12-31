@@ -27,7 +27,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public class Lump : IDisposable
+	internal class Lump
 	{
 		#region ================== Variables
 

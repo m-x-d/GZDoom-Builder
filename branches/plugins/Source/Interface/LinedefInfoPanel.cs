@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class LinedefInfoPanel : UserControl
+	internal partial class LinedefInfoPanel : UserControl
 	{
 		// Constructor
 		public LinedefInfoPanel()

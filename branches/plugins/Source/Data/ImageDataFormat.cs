@@ -29,7 +29,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public static class ImageDataFormat
+	internal static class ImageDataFormat
 	{
 		// Input guess formats
 		public const int UNKNOWN = 0;			// No clue.

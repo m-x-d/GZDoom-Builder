@@ -295,6 +295,8 @@
     <Compile Include="Rendering\D3DShader.cs" />
     <Compile Include="Rendering\FlatVertex.cs" />
     <Compile Include="Rendering\ID3DResource.cs" />
+    <Compile Include="Rendering\IRenderer2D.cs" />
+    <Compile Include="Rendering\IRenderer3D.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
     <Compile Include="Rendering\PixelColorBlock.cs" />
     <Compile Include="Rendering\Plotter.cs" />

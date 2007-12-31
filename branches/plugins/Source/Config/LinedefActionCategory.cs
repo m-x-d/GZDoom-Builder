@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class LinedefActionCategory : IDisposable, IComparable<LinedefActionCategory>
+	public class LinedefActionCategory : IComparable<LinedefActionCategory>
 	{
 		#region ================== Constants
 
@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public LinedefActionCategory(string name)
+		internal LinedefActionCategory(string name)
 		{
 			// Initialize
 			this.name = name;
@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// Diposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Methods
 
 		// This adds an action to this category
-		public void Add(LinedefActionInfo a)
+		internal void Add(LinedefActionInfo a)
 		{
 			// Make it so.
 			actions.Add(a);

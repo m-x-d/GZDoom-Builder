@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class CompilerInfo
+	internal class CompilerInfo
 	{
 		#region ================== Constants
 

@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public class RenderTargetControl : Panel
+	internal class RenderTargetControl : Panel
 	{
 		#region ================== Constants
 

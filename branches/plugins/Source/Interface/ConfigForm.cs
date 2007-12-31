@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class ConfigForm : DelayedForm
+	internal partial class ConfigForm : DelayedForm
 	{
 		// Constructor
 		public ConfigForm()

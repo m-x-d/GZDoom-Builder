@@ -1,11 +1,39 @@
+
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
+/*
+ * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
+ * This program is released under GNU General Public License
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+#endregion
+
+#region ================== Namespaces
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
+using CodeImp.DoomBuilder.Interface;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
+using System.Diagnostics;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Data;
-using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Geometry;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.Editing
 {
@@ -39,18 +67,18 @@ namespace CodeImp.DoomBuilder.Editing
 
 		public int GridSize { get { return gridsize; } }
 		public float GridSizeF { get { return gridsizef; } }
-		public string BackgroundName { get { return background; } }
-		public int BackgroundSource { get { return backsource; } }
-		public ImageData Background { get { return backimage; } }
-		public int BackgroundX { get { return backoffsetx; } }
-		public int BackgroundY { get { return backoffsety; } }
+		internal string BackgroundName { get { return background; } }
+		internal int BackgroundSource { get { return backsource; } }
+		internal ImageData Background { get { return backimage; } }
+		internal int BackgroundX { get { return backoffsetx; } }
+		internal int BackgroundY { get { return backoffsety; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public GridSetup()
+		internal GridSetup()
 		{
 			// Initialize
 			SetGridSize(DEFAULT_GRID_SIZE);
@@ -64,7 +92,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Methods
 
 		// This sets the grid size
-		public void SetGridSize(int size)
+		internal void SetGridSize(int size)
 		{
 			// Change grid
 			this.gridsize = size;
@@ -76,7 +104,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This sets the background
-		public void SetBackground(string name, int source)
+		internal void SetBackground(string name, int source)
 		{
 			// Set background
 			if(name == null) name = "";
@@ -88,7 +116,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This sets the background offset
-		public void SetBackgroundOffset(int offsetx, int offsety)
+		internal void SetBackgroundOffset(int offsetx, int offsety)
 		{
 			// Set background offset
 			this.backoffsetx = offsetx;
@@ -96,7 +124,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This finds and links the background image
-		public void LinkBackground()
+		internal void LinkBackground()
 		{
 			// From textures?
 			if(backsource == SOURCE_TEXTURES)

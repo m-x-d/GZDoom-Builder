@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public abstract class DataReader : IDisposable
+	internal abstract class DataReader
 	{
 		#region ================== Variables
 

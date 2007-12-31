@@ -7,7 +7,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class GeneralActionCategory : IDisposable
+	public class GeneralActionCategory
 	{
 		#region ================== Constants
 
@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public GeneralActionCategory(string name, Configuration cfg)
+		internal GeneralActionCategory(string name, Configuration cfg)
 		{
 			IDictionary opts;
 			
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// Diposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)

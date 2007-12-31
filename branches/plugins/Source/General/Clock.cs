@@ -28,7 +28,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder
 {
-	public class Clock : IDisposable
+	public class Clock
 	{
 		#region ================== Declarations
 		

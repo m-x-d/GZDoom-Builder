@@ -32,7 +32,7 @@ using System.ComponentModel;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public class Renderer3D : Renderer
+	internal sealed class Renderer3D : Renderer, IRenderer3D
 	{
 		#region ================== Constants
 
@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Renderer3D(D3DDevice graphics) : base(graphics)
+		internal Renderer3D(D3DDevice graphics) : base(graphics)
 		{
 			// Initialize
 
@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// Diposer
-		public override void Dispose()
+		internal override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)

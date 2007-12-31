@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public GeneralActionOption(string cat, string name, IDictionary bitslist)
+		internal GeneralActionOption(string cat, string name, IDictionary bitslist)
 		{
 			int index;
 			

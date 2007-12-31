@@ -27,7 +27,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Plugins
 {
-	public class PluginManager : IDisposable
+	internal class PluginManager
 	{
 		#region ================== Constants
 

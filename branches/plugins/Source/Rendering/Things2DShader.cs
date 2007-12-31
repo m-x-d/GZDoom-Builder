@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public sealed class Things2DShader : D3DShader
+	internal sealed class Things2DShader : D3DShader
 	{
 		#region ================== Variables
 

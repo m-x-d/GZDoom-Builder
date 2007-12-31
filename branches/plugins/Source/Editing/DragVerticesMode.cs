@@ -39,7 +39,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public class DragVerticesMode : ClassicMode
+	internal class DragVerticesMode : ClassicMode
 	{
 		#region ================== Constants
 

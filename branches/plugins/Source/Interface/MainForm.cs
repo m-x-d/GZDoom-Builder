@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public bool CtrlState { get { return ctrl; } }
 		public bool AltState { get { return alt; } }
 		public bool MouseInDisplay { get { return mouseinside; } }
-		public RenderTargetControl Display { get { return display; } }
+		internal RenderTargetControl Display { get { return display; } }
 		public bool SnapToGrid { get { return buttonsnaptogrid.Checked; } }
 		public bool AutoMerge { get { return buttonautomerge.Checked; } }
 
@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public MainForm()
+		internal MainForm()
 		{
 			// Setup controls
 			InitializeComponent();
@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== General
 
 		// This updates all menus for the current status
-		public void UpdateInterface()
+		internal void UpdateInterface()
 		{
 			// Map opened?
 			if(General.Map != null)
@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// This returns the current status text
-		public string GetCurrentSatus()
+		internal string GetCurrentSatus()
 		{
 			return statuslabel.Text;
 		}
@@ -298,7 +298,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This updates the status icon
-		public void UpdateStatusIcon()
+		internal void UpdateStatusIcon()
 		{
 			// From another thread?
 			if(statusbar.InvokeRequired)
@@ -342,7 +342,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This changes coordinates display
-		public void UpdateCoordinates(Vector2D coords)
+		internal void UpdateCoordinates(Vector2D coords)
 		{
 			// X position
 			if(float.IsNaN(coords.x))
@@ -361,7 +361,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This changes zoom display
-		public void UpdateZoom(float scale)
+		internal void UpdateZoom(float scale)
 		{
 			// Update scale label
 			if(float.IsNaN(scale))
@@ -409,7 +409,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This changes grid display
-		public void UpdateGrid(int gridsize)
+		internal void UpdateGrid(int gridsize)
 		{
 			// Update grid label
 			if(gridsize == 0)
@@ -454,7 +454,7 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		// This shows the grid setup dialog
 		[Action("gridsetup")]
-		public void ShowGridSetup()
+		internal void ShowGridSetup()
 		{
 			// Only when a map is open
 			if(General.Map == null) return;
@@ -476,7 +476,7 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== Display
 
 		// This shows the splash screen on display
-		public void ShowSplashDisplay()
+		internal void ShowSplashDisplay()
 		{
 			// Change display to show splash logo
 			display.SetSplashLogoDisplay();
@@ -484,7 +484,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// This clears the display
-		public void ClearDisplay()
+		internal void ClearDisplay()
 		{
 			// Clear the display
 			display.SetManualRendering();
@@ -636,7 +636,7 @@ namespace CodeImp.DoomBuilder.Interface
 		#region ================== Menus
 
 		// Public method to apply shortcut keys
-		public void ApplyShortcutKeys()
+		internal void ApplyShortcutKeys()
 		{
 			// Apply shortcut keys to menus
 			ApplyShortcutKeys(menumain.Items);
@@ -911,7 +911,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 		// Action to toggle snap to grid
 		[Action("togglesnap")]
-		public void ToggleSnapToGrid()
+		internal void ToggleSnapToGrid()
 		{
 			buttonsnaptogrid.Checked = !buttonsnaptogrid.Checked;
 			itemsnaptogrid.Checked = buttonsnaptogrid.Checked;
@@ -919,7 +919,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 		// Action to toggle auto merge
 		[Action("toggleautomerge")]
-		public void ToggleAutoMerge()
+		internal void ToggleAutoMerge()
 		{
 			buttonautomerge.Checked = !buttonautomerge.Checked;
 			itemautomerge.Checked = buttonautomerge.Checked;
@@ -954,7 +954,7 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		// Game Configuration action
 		[Action("configuration")]
-		public void ShowConfiguration()
+		internal void ShowConfiguration()
 		{
 			// Show configuration dialog
 			ConfigForm cfgform = new ConfigForm();
@@ -976,7 +976,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 		// Preferences action
 		[Action("preferences")]
-		public void ShowPreferences()
+		internal void ShowPreferences()
 		{
 			// Show preferences dialog
 			PreferencesForm prefform = new PreferencesForm();

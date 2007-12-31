@@ -27,7 +27,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	public class Action
+	internal class Action
 	{
 		#region ================== Variables
 

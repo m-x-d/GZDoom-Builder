@@ -53,8 +53,8 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Dont do anything
 		public override void LoadImage() { bitmap = CodeImp.DoomBuilder.Properties.Resources.UnknownImage; }
-		public override void CreatePixelData() { }
-		public override void CreateTexture() { }
+		internal override void CreatePixelData() { }
+		internal override void CreateTexture() { }
 
 		#endregion
 	}

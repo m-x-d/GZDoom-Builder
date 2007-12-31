@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public sealed class PatchNames
+	internal sealed class PatchNames
 	{
 		#region ================== Constants
 

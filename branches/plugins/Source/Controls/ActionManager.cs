@@ -30,7 +30,7 @@ using System.Collections;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	public class ActionManager : IDisposable
+	internal class ActionManager
 	{
 		#region ================== Constants
 

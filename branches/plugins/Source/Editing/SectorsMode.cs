@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public class SectorsMode : ClassicMode
+	internal class SectorsMode : ClassicMode
 	{
 		#region ================== Constants
 

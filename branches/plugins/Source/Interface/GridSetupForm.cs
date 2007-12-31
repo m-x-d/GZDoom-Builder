@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class GridSetupForm : DelayedForm
+	internal partial class GridSetupForm : DelayedForm
 	{
 		// Variables
 		private string backgroundname;

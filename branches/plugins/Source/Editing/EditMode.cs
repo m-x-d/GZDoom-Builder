@@ -35,7 +35,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public abstract class EditMode : IDisposable
+	internal abstract class EditMode
 	{
 		#region ================== Constants
 

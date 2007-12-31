@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Thing : IDisposable
+	public sealed class Thing
 	{
 		#region ================== Constants
 

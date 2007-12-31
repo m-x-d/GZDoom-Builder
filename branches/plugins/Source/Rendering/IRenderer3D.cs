@@ -32,24 +32,16 @@ using SlimDX.Direct3D9;
 using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	// FlatVertex
-	internal struct FlatVertex
+	public interface IRenderer3D
 	{
-		// Vertex format
-		public static readonly int Stride = 7 * 4;
-
-		// Members
-		public float x;
-		public float y;
-		public float z;
-		public float w;
-		public int c;
-		public float u;
-		public float v;
+		//void Finish();
+		//bool Start();
 	}
 }

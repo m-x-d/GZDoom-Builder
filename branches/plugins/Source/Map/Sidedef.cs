@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Sidedef : IDisposable
+	public sealed class Sidedef
 	{
 		#region ================== Constants
 
