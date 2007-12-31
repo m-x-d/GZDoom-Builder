@@ -278,6 +278,8 @@
     <Compile Include="Map\SidedefPart.cs" />
     <Compile Include="Map\Thing.cs" />
     <Compile Include="Map\Vertex.cs" />
+    <Compile Include="Plugins\Plugin.cs" />
+    <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -443,5 +445,12 @@
     <EmbeddedResource Include="Resources\Thing2D.png" />
     <EmbeddedResource Include="Resources\things2d.fx" />
     <None Include="Resources\Splash2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BuilderLib.csproj">
+      <Project>{7F14F309-23BB-4CE5-B24F-E5712C45DF8D}</Project>
+      <Name>BuilderLib</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
 </Project>

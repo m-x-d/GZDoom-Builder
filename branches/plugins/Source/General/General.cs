@@ -35,6 +35,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
 using SlimDX.Direct3D9;
 using System.Drawing;
+using CodeImp.DoomBuilder.Plugins;
 
 #endregion
 
@@ -83,6 +84,7 @@ namespace CodeImp.DoomBuilder
 		private const string LOG_FILE = "Builder.log";
 		private const string GAME_CONFIGS_DIR = "Configurations";
 		private const string COMPILERS_DIR = "Compilers";
+		private const string PLUGINS_DIR = "Plugins";
 
 		#endregion
 
@@ -95,6 +97,7 @@ namespace CodeImp.DoomBuilder
 		private static string temppath;
 		private static string configspath;
 		private static string compilerspath;
+		private static string pluginspath;
 		
 		// Main objects
 		private static Assembly thisasm;
@@ -102,6 +105,7 @@ namespace CodeImp.DoomBuilder
 		private static ProgramConfiguration settings;
 		private static MapManager map;
 		private static ActionManager actions;
+		private static PluginManager plugins;
 		private static ColorCollection colors;
 		private static Clock clock;
 		
@@ -119,6 +123,7 @@ namespace CodeImp.DoomBuilder
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }
 		public static string CompilersPath { get { return compilerspath; } }
+		public static string PluginsPath { get { return pluginspath; } }
 		public static MainForm MainWindow { get { return mainwindow; } }
 		public static ProgramConfiguration Settings { get { return settings; } }
 		public static ColorCollection Colors { get { return colors; } }
@@ -127,6 +132,7 @@ namespace CodeImp.DoomBuilder
 		public static List<CompilerInfo> Compilers { get { return compilers; } }
 		public static MapManager Map { get { return map; } }
 		public static ActionManager Actions { get { return actions; } }
+		public static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		
 		#endregion
@@ -388,6 +394,7 @@ namespace CodeImp.DoomBuilder
 			settingspath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR);
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
+			pluginspath = Path.Combine(apppath, PLUGINS_DIR);
 			logfile = Path.Combine(settingspath, LOG_FILE);
 			
 			// Make program settings directory if missing
@@ -401,6 +408,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Local settings path:  " + settingspath);
 			General.WriteLogLine("Configurations path:  " + configspath);
 			General.WriteLogLine("Compilers path:       " + compilerspath);
+			General.WriteLogLine("Plugins path:         " + pluginspath);
 			
 			// Load configuration
 			General.WriteLogLine("Loading program configuration...");
@@ -428,6 +436,10 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Starting Direct3D graphics driver...");
 				Direct3D.Initialize();
 
+				// Load plugin manager
+				General.WriteLogLine("Loading plugins...");
+				plugins = new PluginManager();
+				
 				// Load game configurations
 				General.WriteLogLine("Loading game configurations...");
 				LoadAllGameConfigurations();
@@ -481,6 +493,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.Dispose();
 				actions.Dispose();
 				clock.Dispose();
+				plugins.Dispose();
 				Direct3D.Terminate();
 
 				// Save colors
