@@ -1,0 +1,124 @@
+
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
+/*
+ * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
+ * This program is released under GNU General Public License
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+#endregion
+
+#region ================== Namespaces
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Reflection;
+using System.Drawing;
+using SlimDX.Direct3D;
+
+#endregion
+
+namespace CodeImp.DoomBuilder.Rendering
+{
+	public struct PixelColor
+	{
+		#region ================== Variables
+
+		// Members
+		public byte b;
+		public byte g;
+		public byte r;
+		public byte a;
+
+		#endregion
+
+		#region ================== Constructors
+
+		// Constructor
+		public PixelColor(byte a, byte r, byte g, byte b)
+		{
+			// Initialize
+			this.a = a;
+			this.r = r;
+			this.g = g;
+			this.b = b;
+		}
+
+		// Constructor
+		public PixelColor(PixelColor p, byte a)
+		{
+			// Initialize
+			this.a = a;
+			this.r = p.r;
+			this.g = p.g;
+			this.b = p.b;
+		}
+
+		#endregion
+
+		#region ================== Static Methods
+
+		// Construct from color
+		public static PixelColor FromColor(Color c)
+		{
+			return new PixelColor(c.A, c.R, c.G, c.B);
+		}
+
+		// Construct from int
+		public static PixelColor FromInt(int c)
+		{
+			return FromColor(Color.FromArgb(c));
+		}
+
+		// To int
+		public int ToInt()
+		{
+			return Color.FromArgb(a, r, g, b).ToArgb();
+		}
+
+		// To ColorValue
+		public ColorValue ToColorValue()
+		{
+			return new ColorValue((float)a * 0.00392156862745098f,
+								  (float)r * 0.00392156862745098f,
+								  (float)g * 0.00392156862745098f,
+								  (float)b * 0.00392156862745098f);
+		}
+		
+		#endregion
+
+		#region ================== Methods
+
+		// This returns a new PixelColor with adjusted alpha
+		public PixelColor WithAlpha(byte a)
+		{
+			return new PixelColor(this, a);
+		}
+
+		// This blends two colors with respect to alpha
+		public PixelColor Blend(PixelColor a, PixelColor b)
+		{
+			PixelColor c = new PixelColor();
+			float ba;
+
+			ba = (float)a.a * 0.003921568627450980392156862745098f;
+			c.r = (byte)((float)a.r * (1f - ba) + (float)b.r * ba);
+			c.g = (byte)((float)a.g * (1f - ba) + (float)b.g * ba);
+			c.b = (byte)((float)a.b * (1f - ba) + (float)b.b * ba);
+			c.a = (byte)((float)a.a * (1f - ba) + ba);
+
+			return c;
+		}
+
+		#endregion
+	}
+}
