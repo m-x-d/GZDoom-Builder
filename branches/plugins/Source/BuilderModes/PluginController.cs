@@ -25,6 +25,7 @@ using System.IO;
 using System.Reflection;
 using CodeImp.DoomBuilder.Plugins;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 

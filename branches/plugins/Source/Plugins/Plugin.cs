@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			if(!isdisposed)
 			{
 				// Clean up
-				if(controller != null) controller.Dispose();
+				//if(controller != null) controller.Dispose();
 				controller = null;
 				asm = null;
 				

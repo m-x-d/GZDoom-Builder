@@ -39,9 +39,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BuilderLib.csproj">
-      <Project>{7F14F309-23BB-4CE5-B24F-E5712C45DF8D}</Project>
-      <Name>BuilderLib</Name>
+    <ProjectReference Include="..\Builder.csproj">
+      <Project>{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}</Project>
+      <Name>Builder</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

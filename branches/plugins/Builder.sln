@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Builder", "Source\Builder.csproj", "{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderLib", "Source\BuilderLib.csproj", "{7F14F309-23BB-4CE5-B24F-E5712C45DF8D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderModes", "Source\BuilderModes\BuilderModes.csproj", "{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}"
 EndProject
 Global
@@ -17,10 +15,6 @@ Global
 		{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F14F309-23BB-4CE5-B24F-E5712C45DF8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F14F309-23BB-4CE5-B24F-E5712C45DF8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F14F309-23BB-4CE5-B24F-E5712C45DF8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F14F309-23BB-4CE5-B24F-E5712C45DF8D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|Any CPU.ActiveCfg = Release|Any CPU

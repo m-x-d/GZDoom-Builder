@@ -31,9 +31,9 @@ namespace CodeImp.DoomBuilder.Plugins
 	public interface IPluginController
 	{
 		// Properties
-		bool IsDisposed { get; }
+		//bool IsDisposed { get; }
 		
 		// Methods
-		void Dispose();
+		//void Dispose();
 	}
 }
