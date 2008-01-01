@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -45,7 +46,6 @@ namespace CodeImp.DoomBuilder.Plugins
 
 		#region ================== Properties
 
-		// Disposing
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -92,6 +92,34 @@ namespace CodeImp.DoomBuilder.Plugins
 		#endregion
 
 		#region ================== Methods
+
+		// This creates a list of all editing modes in all plugins
+		public List<EditModeInfo> GetEditModes()
+		{
+			List<EditModeInfo> modes = new List<EditModeInfo>();
+			Type[] editclasses;
+			EditModeAttribute[] attribs;
+			
+			// Go for all plugins
+			foreach(Plugin p in plugins)
+			{
+				// For all classes that inherit from EditMode
+				editclasses = p.FindClasses(typeof(EditMode));
+				foreach(Type t in editclasses)
+				{
+					// For all defined EditMode attributes
+					attribs = (EditModeAttribute[])t.GetCustomAttributes(typeof(EditModeAttribute), true);
+					foreach(EditModeAttribute attr in attribs)
+					{
+						// Make edit mode information
+						modes.Add(new EditModeInfo(p, t, attr));
+					}
+				}
+			}
+
+			// Return list
+			return modes;
+		}
 
 		#endregion
 	}

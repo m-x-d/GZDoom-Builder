@@ -29,23 +29,25 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	internal class VerticesMode : ClassicMode
+	[EditMode(SwitchAction = "linedefsmode")]
+	public class LinedefsMode : ClassicMode
 	{
 		#region ================== Constants
 
-		public const float VERTEX_HIGHLIGHT_RANGE = 20f;
+		protected const float LINEDEF_HIGHLIGHT_RANGE = 20f;
 
 		#endregion
 
 		#region ================== Variables
 
 		// Highlighted item
-		protected Vertex highlighted;
+		private Linedef highlighted;
 
 		#endregion
 
@@ -56,7 +58,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public VerticesMode()
+		public LinedefsMode()
 		{
 		}
 
@@ -81,18 +83,18 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Cancel()
 		{
 			base.Cancel();
-			
+
 			// Return to this mode
-			General.Map.ChangeMode(new VerticesMode());
+			General.Map.ChangeMode(new LinedefsMode());
 		}
 
 		// Mode engages
 		public override void Engage()
 		{
 			base.Engage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(true);
+
+			// Check linedefs button on main window
+			General.MainWindow.SetLinedefsChecked(true);
 		}
 
 		// Mode disengages
@@ -101,26 +103,26 @@ namespace CodeImp.DoomBuilder.Editing
 			base.Disengage();
 
 			// Check which mode we are switching to
-			if(General.Map.NewMode is LinedefsMode)
+			if(General.Map.NewMode is VerticesMode)
 			{
-				// Convert selection to linedefs
+				// Convert selection to vertices
 
-				// Clear selected vertices
-				General.Map.Map.ClearSelectedVertices();
+				// Clear selected linedefs
+				General.Map.Map.ClearSelectedLinedefs();
 			}
 			else if(General.Map.NewMode is SectorsMode)
 			{
 				// Convert selection to sectors
-				
-				// Clear selected vertices
-				General.Map.Map.ClearSelectedVertices();
-			}
 
+				// Clear selected linedefs
+				General.Map.Map.ClearSelectedLinedefs();
+			}
+			
 			// Hide highlight info
 			General.MainWindow.HideInfo();
-			
-			// Uncheck vertices button on main window
-			General.MainWindow.SetVerticesChecked(false);
+
+			// Uncheck linedefs button on main window
+			General.MainWindow.SetLinedefsChecked(false);
 		}
 
 		// This redraws the display
@@ -133,78 +135,84 @@ namespace CodeImp.DoomBuilder.Editing
 				renderer.SetThingsRenderOrder(false);
 				renderer.RenderThingSet(General.Map.Map.Things);
 				
-				// Render lines and vertices
+				// Render lines
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
-				
+					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
+
+				// Render vertices
+				renderer.RenderVerticesSet(General.Map.Map.Vertices);
+
 				// Done
 				renderer.Finish();
 			}
 		}
-		
+
 		// This highlights a new item
-		protected void Highlight(Vertex v)
+		protected void Highlight(Linedef l)
 		{
 			// Update display
 			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
-
+				{
+					renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+				}
+				
 				// Set new highlight
-				highlighted = v;
+				highlighted = l;
 
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
+				{
+					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
+					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+				}
 				
 				// Done
 				renderer.Finish();
 			}
-
+			
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
-				General.MainWindow.ShowVertexInfo(highlighted);
+				General.MainWindow.ShowLinedefInfo(highlighted);
 			else
 				General.MainWindow.HideInfo();
 		}
-		
+
 		// Mouse moves
 		public override void MouseMove(MouseEventArgs e)
 		{
 			base.MouseMove(e);
 
-			// Not holding any buttons?
-			if(e.Button == MouseButtons.None)
-			{
-				// Find the nearest vertex within highlight range
-				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+			// Find the nearest linedef within highlight range
+			Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
 
-				// Highlight if not the same
-				if(v != highlighted) Highlight(v);
-			}
+			// Highlight if not the same
+			if(l != highlighted) Highlight(l);
 		}
 
 		// Mouse leaves
 		public override void MouseLeave(EventArgs e)
 		{
 			base.MouseLeave(e);
-			
+
 			// Highlight nothing
 			Highlight(null);
 		}
-		
+
 		// Mouse button pressed
 		public override void MouseDown(MouseEventArgs e)
 		{
 			base.MouseDown(e);
 
-			// Which button is used?
+			// Select button?
 			if(e.Button == EditMode.SELECT_BUTTON)
 			{
 				// Item highlighted?
@@ -212,21 +220,51 @@ namespace CodeImp.DoomBuilder.Editing
 				{
 					// Flip selection
 					highlighted.Selected = !highlighted.Selected;
-					
+
 					// Update display
 					if(renderer.Start(false, false))
 					{
 						// Redraw highlight to show selection
-						renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+						renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+						renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+						renderer.Finish();
+					}
+				}
+			}
+			// Edit button?
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Highlighted item not selected?
+					if(!highlighted.Selected)
+					{
+						// Make this the only selection
+						General.Map.Map.ClearSelectedLinedefs();
+						highlighted.Selected = true;
+						General.MainWindow.RedrawDisplay();
+					}
+
+					// Update display
+					if(renderer.Start(false, false))
+					{
+						// Redraw highlight to show selection
+						renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+						renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 						renderer.Finish();
 					}
 				}
 			}
 		}
-		
+
 		// Mouse released
 		public override void MouseUp(MouseEventArgs e)
 		{
+			ICollection<Linedef> selected;
+
 			base.MouseUp(e);
 
 			// Item highlighted?
@@ -236,38 +274,28 @@ namespace CodeImp.DoomBuilder.Editing
 				if(renderer.Start(false, false))
 				{
 					// Render highlighted item
-					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
+					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
+					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 					renderer.Finish();
 				}
-			}
-		}
 
-		// Mouse wants to drag
-		protected override void DragStart(MouseEventArgs e)
-		{
-			base.DragStart(e);
-
-			// Which button is used?
-			if(e.Button == EditMode.SELECT_BUTTON)
-			{
-				// Make selection
-
-			}
-			else if(e.Button == EditMode.EDIT_BUTTON)
-			{
-				// Anything highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
+				// Edit button?
+				if(e.Button == EditMode.EDIT_BUTTON)
 				{
-					// Highlighted item not selected?
-					if(!highlighted.Selected)
+					// Anything selected?
+					selected = General.Map.Map.GetLinedefsSelection(true);
+					if(selected.Count > 0)
 					{
-						// Select only this vertex for dragging
-						General.Map.Map.ClearSelectedVertices();
-						highlighted.Selected = true;
-					}
+						// Show line edit dialog
+						General.MainWindow.ShowEditLinedefs(selected);
+						
+						// When a single line was selected, deselect it now
+						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 
-					// Start dragging the selection
-					General.Map.ChangeMode(new DragVerticesMode(new VerticesMode(), highlighted, mousedownmappos));
+						// Update entire display
+						General.MainWindow.RedrawDisplay();
+					}
 				}
 			}
 		}

@@ -200,16 +200,6 @@ namespace CodeImp.DoomBuilder.Interface
 				}
 			}
 		}
-
-		// This shows the dialog to edit lines
-		public static void EditLinedefs(IWin32Window owner, ICollection<Linedef> lines)
-		{
-			// Show line edit dialog
-			LinedefEditForm f = new LinedefEditForm();
-			f.Setup(lines);
-			f.ShowDialog(owner);
-			f.Dispose();
-		}
 		
 		// Front side (un)checked
 		private void frontside_CheckStateChanged(object sender, EventArgs e)

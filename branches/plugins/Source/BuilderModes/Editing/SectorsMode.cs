@@ -29,12 +29,14 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	internal class SectorsMode : ClassicMode
+	[EditMode(SwitchAction = "sectorsmode")]
+	public class SectorsMode : ClassicMode
 	{
 		#region ================== Constants
 

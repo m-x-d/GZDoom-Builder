@@ -36,7 +36,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal abstract class ClassicMode : EditMode
+	public abstract class ClassicMode : EditMode
 	{
 		#region ================== Constants
 
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Scroll / Zoom
 
 		// This scrolls the view north
-		[Action("scrollnorth")]
+		[Action("scrollnorth", BaseAction = true)]
 		public virtual void ScrollNorth()
 		{
 			// Scroll
@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view south
-		[Action("scrollsouth")]
+		[Action("scrollsouth", BaseAction = true)]
 		public virtual void ScrollSouth()
 		{
 			// Scroll
@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view west
-		[Action("scrollwest")]
+		[Action("scrollwest", BaseAction = true)]
 		public virtual void ScrollWest()
 		{
 			// Scroll
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view east
-		[Action("scrolleast")]
+		[Action("scrolleast", BaseAction = true)]
 		public virtual void ScrollEast()
 		{
 			// Scroll
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This zooms in
-		[Action("zoomin")]
+		[Action("zoomin", BaseAction = true)]
 		public virtual void ZoomIn()
 		{
 			// Zoom
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This zooms out
-		[Action("zoomout")]
+		[Action("zoomout", BaseAction = true)]
 		public virtual void ZoomOut()
 		{
 			// Zoom
@@ -380,7 +380,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Methods
 
 		// Override cancel method to bind it with its action
-		[Action("cancelmode")]
+		[Action("cancelmode", BaseAction = true)]
 		public override void Cancel()
 		{
 			cancelled = true;

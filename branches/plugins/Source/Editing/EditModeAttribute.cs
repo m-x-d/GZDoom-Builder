@@ -17,62 +17,39 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
+using System.ComponentModel;
+using System.Drawing;
 using System.Text;
-using System.IO;
-using System.Reflection;
-using CodeImp.DoomBuilder.Plugins;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Map;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes
+namespace CodeImp.DoomBuilder.Editing
 {
-	public class PluginController : IPluginController
+	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
+	public class EditModeAttribute : Attribute
 	{
-		#region ================== Constants
-
-		#endregion
-
 		#region ================== Variables
 
-		// Disposing
-		private bool isdisposed = false;
+		// Properties
+		private string switchaction;
 
 		#endregion
 
 		#region ================== Properties
 
-		// Disposing
-		public bool IsDisposed { get { return isdisposed; } }
+		public string SwitchAction { get { return switchaction; } set { switchaction = value; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public PluginController()
+		public EditModeAttribute()
 		{
 			// Initialize
-			
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
 
-		// Diposer
-		public void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-				
-				// Done
-				isdisposed = true;
-			}
 		}
 
 		#endregion

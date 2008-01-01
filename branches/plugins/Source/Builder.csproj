@@ -69,16 +69,13 @@
     <Compile Include="Data\SimpleTextureImage.cs" />
     <Compile Include="Data\SpriteImage.cs" />
     <Compile Include="Data\TextureImage.cs" />
-    <Compile Include="Editing\DragVerticesMode.cs" />
     <Compile Include="Editing\EditMode.cs" />
+    <Compile Include="Editing\EditModeAttribute.cs" />
+    <Compile Include="Editing\EditModeInfo.cs" />
     <Compile Include="Editing\GridSetup.cs" />
-    <Compile Include="Editing\LinedefsMode.cs" />
-    <Compile Include="Editing\SectorsMode.cs" />
-    <Compile Include="Editing\ThingsMode.cs" />
     <Compile Include="Editing\UndoGroup.cs" />
     <Compile Include="Editing\UndoManager.cs" />
     <Compile Include="Editing\UndoSnapshot.cs" />
-    <Compile Include="Editing\VerticesMode.cs" />
     <Compile Include="Editing\ClassicMode.cs" />
     <Compile Include="Controls\ActionDelegate.cs" />
     <Compile Include="Controls\Action.cs" />
@@ -278,7 +275,6 @@
     <Compile Include="Map\SidedefPart.cs" />
     <Compile Include="Map\Thing.cs" />
     <Compile Include="Map\Vertex.cs" />
-    <Compile Include="Plugins\IPluginController.cs" />
     <Compile Include="Plugins\Plugin.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -37,9 +38,10 @@ using System.Drawing;
 // This mode if for quickly dragging vertices without a layer.
 // The geometry is merged and the mode returns to VerticesMode when the mouse is released.
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	internal class DragVerticesMode : ClassicMode
+	[EditMode]
+	public class DragVerticesMode : ClassicMode
 	{
 		#region ================== Constants
 

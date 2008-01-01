@@ -29,12 +29,14 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	internal class ThingsMode : ClassicMode
+	[EditMode(SwitchAction = "thingsmode")]
+	public class ThingsMode : ClassicMode
 	{
 		#region ================== Constants
 

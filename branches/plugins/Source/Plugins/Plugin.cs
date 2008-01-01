@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using System.IO;
 using System.Reflection;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -42,9 +43,6 @@ namespace CodeImp.DoomBuilder.Plugins
 		// Unique name used to refer to this assembly
 		private string name;
 		
-		// Controller
-		private IPluginController controller;
-		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -52,6 +50,7 @@ namespace CodeImp.DoomBuilder.Plugins
 
 		#region ================== Properties
 
+		public Assembly Assembly { get { return asm; } }
 		public string Name { get { return name; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
@@ -70,26 +69,9 @@ namespace CodeImp.DoomBuilder.Plugins
 			
 			// Load assembly
 			asm = Assembly.LoadFile(filename);
-
-			// Find the controller
-			controllertype = FindSingleClass(typeof(IPluginController));
-			if(controllertype != null)
-			{
-				// Create instance
-				controller = CreateObject<IPluginController>(controllertype);
-				if(controller == null)
-				{
-					// Can't work with this plugin if the controller doesnt work
-					General.WriteLogLine("ERROR: Failed to create controller for plugin '" + name + "'!");
-					this.Dispose();
-				}
-			}
-			else
-			{
-				// Can't work with this plugin if it doesn't have a controller
-				General.WriteLogLine("ERROR: Plugin '" + name + "' does not export a controller class!");
-				this.Dispose();
-			}
+			
+			// Load actions
+			General.Actions.LoadActions(asm);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -102,8 +84,6 @@ namespace CodeImp.DoomBuilder.Plugins
 			if(!isdisposed)
 			{
 				// Clean up
-				//if(controller != null) controller.Dispose();
-				controller = null;
 				asm = null;
 				
 				// Done
@@ -142,12 +122,18 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 		
 		// This creates an instance of a class
-		public T CreateObject<T>(Type t)
+		public T CreateObject<T>(Type t, params object[] args)
+		{
+			return CreateObjectA<T>(t, args);
+		}
+
+		// This creates an instance of a class
+		public T CreateObjectA<T>(Type t, object[] args)
 		{
 			try
 			{
 				// Create instance
-				return (T)asm.CreateInstance(t.FullName);
+				return (T)asm.CreateInstance(t.FullName, false, BindingFlags.Default, null, args, CultureInfo.CurrentCulture, new object[0]);
 			}
 			catch(TargetInvocationException e)
 			{

@@ -24,15 +24,16 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using System.Diagnostics;
 using CodeImp.DoomBuilder.Interface;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
-using System.Diagnostics;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Plugins;
 
 #endregion
 
@@ -78,6 +79,7 @@ namespace CodeImp.DoomBuilder
 		private WAD tempwad;
 		private GridSetup grid;
 		private UndoManager undoredo;
+		private List<EditModeInfo> allmodes;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -91,8 +93,8 @@ namespace CodeImp.DoomBuilder
 		public string TempPath { get { return temppath; } }
 		internal MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
-		internal EditMode Mode { get { return mode; } }
-		internal EditMode NewMode { get { return newmode; } }
+		public EditMode Mode { get { return mode; } }
+		public EditMode NewMode { get { return newmode; } }
 		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed; } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -117,7 +119,7 @@ namespace CodeImp.DoomBuilder
 			// Basic objects
 			grid = new GridSetup();
 			undoredo = new UndoManager();
-
+			allmodes = new List<EditModeInfo>();
 		}
 
 		// Diposer
@@ -127,7 +129,7 @@ namespace CodeImp.DoomBuilder
 			if(!isdisposed)
 			{
 				// Change to no mode
-				ChangeMode(null);
+				ChangeMode((EditMode)null);
 				
 				// Unbind any methods
 				ActionAttribute.UnbindMethods(this);
@@ -136,6 +138,8 @@ namespace CodeImp.DoomBuilder
 				if(undoredo != null) undoredo.Dispose();
 				
 				// Dispose
+				General.WriteLogLine("Unloading editing modes...");
+				foreach(EditModeInfo emi in allmodes) emi.Dispose();
 				General.WriteLogLine("Unloading data resources...");
 				if(data != null) data.Dispose();
 				General.WriteLogLine("Closing temporary file...");
@@ -194,6 +198,10 @@ namespace CodeImp.DoomBuilder
 			renderer2d = new Renderer2D(graphics);
 			renderer3d = new Renderer3D(graphics);
 			
+			// Load editing modes from plugins
+			General.WriteLogLine("Loading editing modes...");
+			allmodes = General.Plugins.GetEditModes();
+			
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
@@ -226,7 +234,7 @@ namespace CodeImp.DoomBuilder
 			ActionAttribute.BindMethods(this);
 
 			// Set default mode
-			ChangeMode(new VerticesMode());
+			ChangeMode("VerticesMode");
 
 			// Success
 			General.WriteLogLine("Map creation done");
@@ -261,6 +269,10 @@ namespace CodeImp.DoomBuilder
 			// Create renderers
 			renderer2d = new Renderer2D(graphics);
 			renderer3d = new Renderer3D(graphics);
+
+			// Load editing modes from plugins
+			General.WriteLogLine("Loading editing modes...");
+			allmodes = General.Plugins.GetEditModes();
 			
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
@@ -312,7 +324,7 @@ namespace CodeImp.DoomBuilder
 			ActionAttribute.BindMethods(this);
 
 			// Set default mode
-			ChangeMode(new VerticesMode());
+			ChangeMode("VerticesMode");
 
 			// Center map in screen
 			(General.Map.Mode as ClassicMode).CenterInScreen();
@@ -829,7 +841,7 @@ namespace CodeImp.DoomBuilder
 		// - Engage of new mode is called
 		// - Dispose of old mode is called
 		//
-		internal void ChangeMode(EditMode nextmode)
+		public void ChangeMode(EditMode nextmode)
 		{
 			EditMode oldmode = mode;
 			newmode = nextmode;
@@ -858,37 +870,21 @@ namespace CodeImp.DoomBuilder
 			// Redraw the display
 			General.MainWindow.RedrawDisplay();
 		}
-
-		// This switches to vertices mode
-		[Action("verticesmode")]
-		internal void SwitchVerticesMode()
+		
+		// This changes mode by class name and optionally with arguments
+		public void ChangeMode(string classname, params object[] args)
 		{
-			// Change to vertices mode
-			ChangeMode(new VerticesMode());
-		}
-
-		// This switches to linedefs mode
-		[Action("linedefsmode")]
-		internal void SwitchLinedefsMode()
-		{
-			// Change to linedefs mode
-			ChangeMode(new LinedefsMode());
-		}
-
-		// This switches to sectors mode
-		[Action("sectorsmode")]
-		internal void SwitchSectorsMode()
-		{
-			// Change to sectors mode
-			ChangeMode(new SectorsMode());
-		}
-
-		// This switches to things mode
-		[Action("thingsmode")]
-		internal void SwitchThingsMode()
-		{
-			// Change to things mode
-			ChangeMode(new ThingsMode());
+			// Find the edit mode
+			foreach(EditModeInfo emi in allmodes)
+			{
+				// Mode matches class name?
+				if(emi.ToString() == classname)
+				{
+					// Switch to this mode
+					emi.SwitchToMode(args);
+					break;
+				}
+			}
 		}
 		
 		#endregion

@@ -46,37 +46,37 @@ namespace CodeImp.DoomBuilder
 		#region ================== API Declarations
 
 		//[DllImport("user32.dll")]
-		//public static extern bool LockWindowUpdate(IntPtr hwnd);
+		//internal static extern bool LockWindowUpdate(IntPtr hwnd);
 
 		[DllImport("kernel32.dll", EntryPoint="RtlZeroMemory", SetLastError=false)]
-		public static extern void ZeroMemory(IntPtr dest, int size);
+		internal static extern void ZeroMemory(IntPtr dest, int size);
 
 		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
-		public static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
+		internal static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
 
 		#endregion
 
 		#region ================== Constants
 
 		// Memory APIs
-		public const uint MEM_COMMIT = 0x1000;
-		public const uint MEM_RESERVE = 0x2000;
-		public const uint MEM_DECOMMIT = 0x4000;
-		public const uint MEM_RELEASE = 0x8000;
-		public const uint MEM_RESET = 0x80000;
-		public const uint MEM_TOP_DOWN = 0x100000;
-		public const uint MEM_PHYSICAL = 0x400000;
-		public const uint PAGE_NOACCESS = 0x01;
-		public const uint PAGE_READONLY = 0x02;
-		public const uint PAGE_READWRITE = 0x04;
-		public const uint PAGE_WRITECOPY = 0x08;
-		public const uint PAGE_EXECUTE = 0x10;
-		public const uint PAGE_EXECUTE_READ = 0x20;
-		public const uint PAGE_EXECUTE_READWRITE = 0x40;
-		public const uint PAGE_EXECUTE_WRITECOPY = 0x80;
-		public const uint PAGE_GUARD = 0x100;
-		public const uint PAGE_NOCACHE = 0x200;
-		public const uint PAGE_WRITECOMBINE = 0x400;
+		internal const uint MEM_COMMIT = 0x1000;
+		internal const uint MEM_RESERVE = 0x2000;
+		internal const uint MEM_DECOMMIT = 0x4000;
+		internal const uint MEM_RELEASE = 0x8000;
+		internal const uint MEM_RESET = 0x80000;
+		internal const uint MEM_TOP_DOWN = 0x100000;
+		internal const uint MEM_PHYSICAL = 0x400000;
+		internal const uint PAGE_NOACCESS = 0x01;
+		internal const uint PAGE_READONLY = 0x02;
+		internal const uint PAGE_READWRITE = 0x04;
+		internal const uint PAGE_WRITECOPY = 0x08;
+		internal const uint PAGE_EXECUTE = 0x10;
+		internal const uint PAGE_EXECUTE_READ = 0x20;
+		internal const uint PAGE_EXECUTE_READWRITE = 0x40;
+		internal const uint PAGE_EXECUTE_WRITECOPY = 0x80;
+		internal const uint PAGE_GUARD = 0x100;
+		internal const uint PAGE_NOCACHE = 0x200;
+		internal const uint PAGE_WRITECOMBINE = 0x400;
 		
 		// Files and Folders
 		private const string SETTINGS_FILE = "Builder.cfg";
@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Properties
 
-		public static Assembly ThisAssembly { get { return thisasm; } }
+		internal static Assembly ThisAssembly { get { return thisasm; } }
 		public static string AppPath { get { return apppath; } }
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }
@@ -813,13 +813,13 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// Convert bool to integer
-		public static int Bool2Int(bool v)
+		internal static int Bool2Int(bool v)
 		{
 			if(v) return 1; else return 0;
 		}
 
 		// Convert integer to bool
-		public static bool Int2Bool(int v)
+		internal static bool Int2Bool(int v)
 		{
 			return (v != 0);
 		}

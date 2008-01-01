@@ -143,8 +143,11 @@ namespace CodeImp.DoomBuilder.Interface
 		// Generic event that invokes the tagged action
 		private void InvokeTaggedAction(object sender, EventArgs e)
 		{
+			string asmname;
+			
 			this.Update();
-			General.Actions[(sender as ToolStripItem).Tag.ToString()].Invoke();
+			asmname = General.ThisAssembly.GetName().Name.ToLowerInvariant();
+			General.Actions[asmname + "_" + (sender as ToolStripItem).Tag.ToString()].Invoke();
 			this.Update();
 		}
 
@@ -1021,6 +1024,20 @@ namespace CodeImp.DoomBuilder.Interface
 
 		// Show thing info
 		public void ShowThingInfo(Thing t) { thinginfo.ShowInfo(t); }
+
+		#endregion
+
+		#region ================== Dialogs
+
+		// This shows the dialog to edit lines
+		public void ShowEditLinedefs(ICollection<Linedef> lines)
+		{
+			// Show line edit dialog
+			LinedefEditForm f = new LinedefEditForm();
+			f.Setup(lines);
+			f.ShowDialog(this);
+			f.Dispose();
+		}
 
 		#endregion
 	}
