@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		internal override void Dispose()
 		{
 			// Not already disposed?

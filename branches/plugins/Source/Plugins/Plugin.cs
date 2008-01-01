@@ -61,8 +61,6 @@ namespace CodeImp.DoomBuilder.Plugins
 		// Constructor
 		public Plugin(string filename)
 		{
-			Type controllertype = null;
-			
 			// Initialize
 			name = Path.GetFileNameWithoutExtension(filename);
 			General.WriteLogLine("Loading plugin '" + name + "' from '" + Path.GetFileName(filename) + "'...");
@@ -77,7 +75,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?
@@ -95,6 +93,27 @@ namespace CodeImp.DoomBuilder.Plugins
 
 		#region ================== Methods
 
+		// This creates a stream to read a resource or returns null when not found
+		public Stream FindResource(string resourcename)
+		{
+			string[] resnames;
+			
+			// Find a resource
+			resnames = asm.GetManifestResourceNames();
+			foreach(string rn in resnames)
+			{
+				// Found it?
+				if(rn.EndsWith(resourcename, StringComparison.InvariantCultureIgnoreCase))
+				{
+					// Get a stream from the resource
+					return asm.GetManifestResourceStream(rn);
+				}
+			}
+
+			// Nothing found
+			return null;
+		}
+		
 		// This finds all class types that inherits from the given type
 		public Type[] FindClasses(Type t)
 		{

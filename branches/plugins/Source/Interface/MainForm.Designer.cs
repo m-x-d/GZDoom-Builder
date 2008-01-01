@@ -37,14 +37,14 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-			System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-			System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 			System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+			this.buttoneditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
+			this.itemeditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
 			this.poscommalabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menumain = new System.Windows.Forms.MenuStrip();
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,11 +59,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menuedit = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemundo = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemredo = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemverticesmode = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemlinedefsmode = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemsectorsmode = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemthingsmode = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsnaptogrid = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemautomerge = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemmapoptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemreloadresources = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,10 +75,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonmapoptions = new System.Windows.Forms.ToolStripButton();
 			this.buttonundo = new System.Windows.Forms.ToolStripButton();
 			this.buttonredo = new System.Windows.Forms.ToolStripButton();
-			this.buttonverticesmode = new System.Windows.Forms.ToolStripButton();
-			this.buttonlinedefsmode = new System.Windows.Forms.ToolStripButton();
-			this.buttonsectorsmode = new System.Windows.Forms.ToolStripButton();
-			this.buttonthingsmode = new System.Windows.Forms.ToolStripButton();
 			this.buttonthingsfilter = new System.Windows.Forms.ToolStripButton();
 			this.thingfilters = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -119,7 +112,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
-			this.itemautomerge = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -128,9 +120,7 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -184,22 +174,11 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator3.Name = "toolStripSeparator3";
 			toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
 			// 
-			// toolStripSeparator5
-			// 
-			toolStripSeparator5.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			toolStripSeparator5.Name = "toolStripSeparator5";
-			toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-			// 
 			// toolStripSeparator7
 			// 
 			toolStripSeparator7.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			toolStripSeparator7.Name = "toolStripSeparator7";
 			toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
-			// 
-			// toolStripMenuItem5
-			// 
-			toolStripMenuItem5.Name = "toolStripMenuItem5";
-			toolStripMenuItem5.Size = new System.Drawing.Size(162, 6);
 			// 
 			// toolStripSeparator10
 			// 
@@ -221,6 +200,17 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			toolStripSeparator11.Name = "toolStripSeparator11";
 			toolStripSeparator11.Size = new System.Drawing.Size(162, 6);
+			// 
+			// buttoneditmodesseperator
+			// 
+			this.buttoneditmodesseperator.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.buttoneditmodesseperator.Name = "buttoneditmodesseperator";
+			this.buttoneditmodesseperator.Size = new System.Drawing.Size(6, 25);
+			// 
+			// itemeditmodesseperator
+			// 
+			this.itemeditmodesseperator.Name = "itemeditmodesseperator";
+			this.itemeditmodesseperator.Size = new System.Drawing.Size(162, 6);
 			// 
 			// poscommalabel
 			// 
@@ -329,11 +319,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menuedit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemundo,
             this.itemredo,
-            toolStripMenuItem5,
-            this.itemverticesmode,
-            this.itemlinedefsmode,
-            this.itemsectorsmode,
-            this.itemthingsmode,
+            this.itemeditmodesseperator,
             toolStripSeparator6,
             this.itemsnaptogrid,
             this.itemautomerge,
@@ -361,42 +347,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemredo.Text = "Redo";
 			this.itemredo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// itemverticesmode
-			// 
-			this.itemverticesmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.VerticesMode;
-			this.itemverticesmode.Name = "itemverticesmode";
-			this.itemverticesmode.Size = new System.Drawing.Size(165, 22);
-			this.itemverticesmode.Tag = "verticesmode";
-			this.itemverticesmode.Text = "Vertices Mode";
-			this.itemverticesmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemlinedefsmode
-			// 
-			this.itemlinedefsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinesMode;
-			this.itemlinedefsmode.Name = "itemlinedefsmode";
-			this.itemlinedefsmode.Size = new System.Drawing.Size(165, 22);
-			this.itemlinedefsmode.Tag = "linedefsmode";
-			this.itemlinedefsmode.Text = "Linedefs Mode";
-			this.itemlinedefsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemsectorsmode
-			// 
-			this.itemsectorsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.SectorsMode;
-			this.itemsectorsmode.Name = "itemsectorsmode";
-			this.itemsectorsmode.Size = new System.Drawing.Size(165, 22);
-			this.itemsectorsmode.Tag = "sectorsmode";
-			this.itemsectorsmode.Text = "Sectors Mode";
-			this.itemsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemthingsmode
-			// 
-			this.itemthingsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.ThingsMode;
-			this.itemthingsmode.Name = "itemthingsmode";
-			this.itemthingsmode.Size = new System.Drawing.Size(165, 22);
-			this.itemthingsmode.Tag = "thingsmode";
-			this.itemthingsmode.Text = "Things Mode";
-			this.itemthingsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
 			// itemsnaptogrid
 			// 
 			this.itemsnaptogrid.Checked = true;
@@ -407,6 +357,17 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsnaptogrid.Tag = "togglesnap";
 			this.itemsnaptogrid.Text = "Snap to Grid";
 			this.itemsnaptogrid.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemautomerge
+			// 
+			this.itemautomerge.Checked = true;
+			this.itemautomerge.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.itemautomerge.Image = global::CodeImp.DoomBuilder.Properties.Resources.mergegeometry2;
+			this.itemautomerge.Name = "itemautomerge";
+			this.itemautomerge.Size = new System.Drawing.Size(165, 22);
+			this.itemautomerge.Tag = "toggleautomerge";
+			this.itemautomerge.Text = "Merge Geometry";
+			this.itemautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemmapoptions
 			// 
@@ -479,11 +440,7 @@ namespace CodeImp.DoomBuilder.Interface
             toolStripSeparator10,
             this.buttonundo,
             this.buttonredo,
-            toolStripSeparator5,
-            this.buttonverticesmode,
-            this.buttonlinedefsmode,
-            this.buttonsectorsmode,
-            this.buttonthingsmode,
+            this.buttoneditmodesseperator,
             toolStripSeparator7,
             this.buttonthingsfilter,
             this.thingfilters,
@@ -560,50 +517,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonredo.Tag = "redo";
 			this.buttonredo.Text = "Redo";
 			this.buttonredo.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// buttonverticesmode
-			// 
-			this.buttonverticesmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonverticesmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.VerticesMode;
-			this.buttonverticesmode.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonverticesmode.Name = "buttonverticesmode";
-			this.buttonverticesmode.Size = new System.Drawing.Size(23, 22);
-			this.buttonverticesmode.Tag = "verticesmode";
-			this.buttonverticesmode.Text = "Vertices Mode";
-			this.buttonverticesmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// buttonlinedefsmode
-			// 
-			this.buttonlinedefsmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonlinedefsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinesMode;
-			this.buttonlinedefsmode.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonlinedefsmode.Name = "buttonlinedefsmode";
-			this.buttonlinedefsmode.Size = new System.Drawing.Size(23, 22);
-			this.buttonlinedefsmode.Tag = "linedefsmode";
-			this.buttonlinedefsmode.Text = "Linedefs Mode";
-			this.buttonlinedefsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// buttonsectorsmode
-			// 
-			this.buttonsectorsmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonsectorsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.SectorsMode;
-			this.buttonsectorsmode.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonsectorsmode.Name = "buttonsectorsmode";
-			this.buttonsectorsmode.Size = new System.Drawing.Size(23, 22);
-			this.buttonsectorsmode.Tag = "sectorsmode";
-			this.buttonsectorsmode.Text = "Sectors Mode";
-			this.buttonsectorsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// buttonthingsmode
-			// 
-			this.buttonthingsmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonthingsmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.ThingsMode;
-			this.buttonthingsmode.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonthingsmode.Name = "buttonthingsmode";
-			this.buttonthingsmode.Size = new System.Drawing.Size(23, 22);
-			this.buttonthingsmode.Tag = "thingsmode";
-			this.buttonthingsmode.Text = "Things Mode";
-			this.buttonthingsmode.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonthingsfilter
 			// 
@@ -987,17 +900,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			// 
-			// itemautomerge
-			// 
-			this.itemautomerge.Checked = true;
-			this.itemautomerge.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.itemautomerge.Image = global::CodeImp.DoomBuilder.Properties.Resources.mergegeometry2;
-			this.itemautomerge.Name = "itemautomerge";
-			this.itemautomerge.Size = new System.Drawing.Size(165, 22);
-			this.itemautomerge.Tag = "toggleautomerge";
-			this.itemautomerge.Text = "Merge Geometry";
-			this.itemautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1074,14 +976,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemmapoptions;
 		private System.Windows.Forms.ToolStripButton buttonmapoptions;
 		private System.Windows.Forms.ToolStripMenuItem itemreloadresources;
-		private System.Windows.Forms.ToolStripButton buttonverticesmode;
-		private System.Windows.Forms.ToolStripButton buttonlinedefsmode;
-		private System.Windows.Forms.ToolStripButton buttonsectorsmode;
-		private System.Windows.Forms.ToolStripMenuItem itemverticesmode;
-		private System.Windows.Forms.ToolStripMenuItem itemlinedefsmode;
-		private System.Windows.Forms.ToolStripMenuItem itemsectorsmode;
-		private System.Windows.Forms.ToolStripButton buttonthingsmode;
-		private System.Windows.Forms.ToolStripMenuItem itemthingsmode;
 		private LinedefInfoPanel linedefinfo;
 		private VertexInfoPanel vertexinfo;
 		private SectorInfoPanel sectorinfo;
@@ -1110,5 +1004,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemsnaptogrid;
 		private System.Windows.Forms.ToolStripButton buttonautomerge;
 		private System.Windows.Forms.ToolStripMenuItem itemautomerge;
+		private System.Windows.Forms.ToolStripSeparator buttoneditmodesseperator;
+		private System.Windows.Forms.ToolStripSeparator itemeditmodesseperator;
 	}
 }

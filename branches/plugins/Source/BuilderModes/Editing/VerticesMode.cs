@@ -35,7 +35,10 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "verticesmode")]
+	[EditMode(SwitchAction = "verticesmode",
+			  ButtonDesc = "Vertices Mode",
+		      ButtonImage = "VerticesMode.png",
+			  ButtonOrder = int.MinValue + 0)]
 	public class VerticesMode : ClassicMode
 	{
 		#region ================== Constants
@@ -62,7 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -92,9 +95,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void Engage()
 		{
 			base.Engage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(true);
 		}
 
 		// Mode disengages
@@ -120,9 +120,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 			// Hide highlight info
 			General.MainWindow.HideInfo();
-			
-			// Uncheck vertices button on main window
-			General.MainWindow.SetVerticesChecked(false);
 		}
 
 		// This redraws the display

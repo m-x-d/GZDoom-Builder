@@ -79,6 +79,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		#region ================== Properties
 
+		// Just keep the vertices mode button checked
+		public override string EditModeButtonName { get { return typeof(VerticesMode).Name; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -118,7 +121,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -221,9 +224,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void Engage()
 		{
 			base.Engage();
-
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(true);
 		}
 		
 		// Disenagaging
@@ -260,8 +260,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Hide highlight info
 			General.MainWindow.HideInfo();
 
-			// Uncheck vertices button on main window
-			General.MainWindow.SetVerticesChecked(false);
+			// Done
 			Cursor.Current = Cursors.Default;
 		}
 

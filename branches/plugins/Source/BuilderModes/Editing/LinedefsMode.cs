@@ -35,7 +35,10 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "linedefsmode")]
+	[EditMode(SwitchAction = "linedefsmode",
+			  ButtonDesc = "Linedefs Mode",
+			  ButtonImage = "LinesMode.png",
+			  ButtonOrder = int.MinValue + 1)]
 	public class LinedefsMode : ClassicMode
 	{
 		#region ================== Constants
@@ -62,7 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -92,9 +95,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void Engage()
 		{
 			base.Engage();
-
-			// Check linedefs button on main window
-			General.MainWindow.SetLinedefsChecked(true);
 		}
 
 		// Mode disengages
@@ -120,9 +120,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			
 			// Hide highlight info
 			General.MainWindow.HideInfo();
-
-			// Uncheck linedefs button on main window
-			General.MainWindow.SetLinedefsChecked(false);
 		}
 
 		// This redraws the display

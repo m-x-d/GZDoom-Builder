@@ -34,12 +34,18 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// Properties
 		private string switchaction;
-
+		private string buttonimage;
+		private string buttondesc;
+		private int buttonorder;
+		
 		#endregion
 
 		#region ================== Properties
 
 		public string SwitchAction { get { return switchaction; } set { switchaction = value; } }
+		public string ButtonImage { get { return buttonimage; } set { buttonimage = value; } }
+		public string ButtonDesc { get { return buttondesc; } set { buttondesc = value; } }
+		public int ButtonOrder { get { return buttonorder; } set { buttonorder = value; } }
 
 		#endregion
 

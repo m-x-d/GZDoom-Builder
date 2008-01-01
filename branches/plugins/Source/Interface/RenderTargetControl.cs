@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.SetStyle(ControlStyles.FixedHeight, true);
 		}
 		
-		// Diposer
+		// Disposer
 		protected override void Dispose(bool disposing)
 		{
 			// Clean up

@@ -35,7 +35,10 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "sectorsmode")]
+	[EditMode(SwitchAction = "sectorsmode",
+			  ButtonDesc = "Sectors Mode",
+		      ButtonImage = "SectorsMode.png",
+			  ButtonOrder = int.MinValue + 2)]
 	public class SectorsMode : ClassicMode
 	{
 		#region ================== Constants
@@ -60,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -90,9 +93,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void Engage()
 		{
 			base.Engage();
-
-			// Check sectors button on main window
-			General.MainWindow.SetSectorsChecked(true);
 		}
 
 		// Mode disengages
@@ -118,9 +118,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			
 			// Hide highlight info
 			General.MainWindow.HideInfo();
-			
-			// Uncheck sectors button on main window
-			General.MainWindow.SetSectorsChecked(false);
 		}
 
 		// This redraws the display

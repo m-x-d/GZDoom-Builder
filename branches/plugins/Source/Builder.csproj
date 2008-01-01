@@ -350,13 +350,9 @@
     <None Include="Resources\Grid2.png" />
     <None Include="Resources\Hourglass.png" />
     <None Include="Resources\Filter.png" />
-    <None Include="Resources\ThingsMode.png" />
     <None Include="Resources\Status1.png" />
     <None Include="Resources\Status2.png" />
     <None Include="Resources\Status0.png" />
-    <None Include="Resources\VerticesMode.png" />
-    <None Include="Resources\SectorsMode.png" />
-    <None Include="Resources\LinesMode.png" />
     <None Include="Resources\ColorPick.png" />
     <None Include="Resources\Zoom.png" />
     <None Include="Resources\Properties.png" />

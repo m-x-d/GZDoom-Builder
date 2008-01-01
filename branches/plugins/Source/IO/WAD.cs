@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.IO
 			this.Dispose();
 		}
 		
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?

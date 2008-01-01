@@ -35,7 +35,10 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "thingsmode")]
+	[EditMode(SwitchAction = "thingsmode",
+			  ButtonDesc = "Things Mode",
+		      ButtonImage = "ThingsMode.png",
+			  ButtonOrder = int.MinValue + 3)]
 	public class ThingsMode : ClassicMode
 	{
 		#region ================== Constants
@@ -62,7 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -92,9 +95,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void Engage()
 		{
 			base.Engage();
-
-			// Check things button on main window
-			General.MainWindow.SetThingsChecked(true);
 		}
 
 		// Mode disengages
@@ -104,9 +104,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 			// Hide highlight info
 			General.MainWindow.HideInfo();
-
-			// Uncheck things button on main window
-			General.MainWindow.SetThingsChecked(false);
 		}
 
 		// This redraws the display

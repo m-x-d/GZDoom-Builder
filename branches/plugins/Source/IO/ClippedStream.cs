@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.IO
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public new void Dispose()
 		{
 			// Not already disposed?

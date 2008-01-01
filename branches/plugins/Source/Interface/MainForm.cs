@@ -67,6 +67,9 @@ namespace CodeImp.DoomBuilder.Interface
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
 		
+		// Edit modes
+		private List<ToolStripItem> editmodeitems;
+		
 		#endregion
 
 		#region ================== Properties
@@ -88,7 +91,8 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Setup controls
 			InitializeComponent();
-
+			editmodeitems = new List<ToolStripItem>();
+			
 			// Visual Studio IDE doesn't let me set these in the designer :(
 			buttonzoom.Font = menufile.Font;
 			buttonzoom.DropDownDirection = ToolStripDropDownDirection.AboveLeft;
@@ -138,6 +142,7 @@ namespace CodeImp.DoomBuilder.Interface
 			UpdateFileMenu();
 			UpdateEditMenu();
 			UpdateToolsMenu();
+			UpdateEditModeItems();
 		}
 		
 		// Generic event that invokes the tagged action
@@ -476,6 +481,72 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		#endregion
 
+		#region ================== Toolbar
+
+		// This enables or disables all editing mode items
+		private void UpdateEditModeItems()
+		{
+			// Enable/disable all items
+			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
+		}
+
+		// This checks one of the edit mode items (and unchecks all others)
+		internal void CheckEditModeButton(string modeclassname)
+		{
+			// Go for all items
+			foreach(ToolStripItem i in editmodeitems)
+			{
+				// Check what type it is
+				if(i is ToolStripMenuItem)
+				{
+					// Check if mode type matches with given name
+					(i as ToolStripMenuItem).Checked = ((i.Tag as EditModeInfo).Type.Name == modeclassname);
+				}
+				else if(i is ToolStripButton)
+				{
+					// Check if mode type matches with given name
+					(i as ToolStripButton).Checked = ((i.Tag as EditModeInfo).Type.Name == modeclassname);
+				}
+			}
+		}
+		
+		// This adds an editing mode button to the toolbar and edit menu
+		internal void AddEditModeButton(EditModeInfo modeinfo)
+		{
+			ToolStripItem item;
+			int index;
+			
+			// Create a button
+			index = toolbar.Items.IndexOf(buttoneditmodesseperator);
+			item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
+			item.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			item.Tag = modeinfo;
+			item.Enabled = (General.Map != null);
+			toolbar.Items.Insert(index + 1, item);
+			editmodeitems.Add(item);
+
+			// Create menu item
+			index = menuedit.DropDownItems.IndexOf(itemeditmodesseperator);
+			item = new ToolStripMenuItem(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
+			item.Tag = modeinfo;
+			item.Enabled = (General.Map != null);
+			menuedit.DropDownItems.Insert(index + 1, item);
+			editmodeitems.Add(item);
+		}
+
+		// This handles edit mode button clicks
+		private void EditModeButtonHandler(object sender, EventArgs e)
+		{
+			EditModeInfo modeinfo;
+			
+			this.Update();
+			modeinfo = (EditModeInfo)((sender as ToolStripItem).Tag);
+			General.Actions[modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly)].Invoke();
+			this.Update();
+		}
+		
+		#endregion
+		
 		#region ================== Display
 
 		// This shows the splash screen on display
@@ -841,34 +912,6 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Edit Menu
 
-		// This sets the status of the vertices button
-		public void SetVerticesChecked(bool value)
-		{
-			itemverticesmode.Checked = value;
-			buttonverticesmode.Checked = value;
-		}
-
-		// This sets the status of the linedefs button
-		public void SetLinedefsChecked(bool value)
-		{
-			itemlinedefsmode.Checked = value;
-			buttonlinedefsmode.Checked = value;
-		}
-
-		// This sets the status of the sectors button
-		public void SetSectorsChecked(bool value)
-		{
-			itemsectorsmode.Checked = value;
-			buttonsectorsmode.Checked = value;
-		}
-
-		// This sets the status of the things button
-		public void SetThingsChecked(bool value)
-		{
-			itemthingsmode.Checked = value;
-			buttonthingsmode.Checked = value;
-		}
-
 		// This sets up the edit menu
 		private void UpdateEditMenu()
 		{
@@ -879,10 +922,6 @@ namespace CodeImp.DoomBuilder.Interface
 			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
 			itemredo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextRedo != null);
 			itemmapoptions.Enabled = (General.Map != null);
-			itemverticesmode.Enabled = (General.Map != null);
-			itemlinedefsmode.Enabled = (General.Map != null);
-			itemsectorsmode.Enabled = (General.Map != null);
-			itemthingsmode.Enabled = (General.Map != null);
 			itemsnaptogrid.Enabled = (General.Map != null);
 			itemautomerge.Enabled = (General.Map != null);
 
@@ -900,10 +939,6 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Toolbar icons
 			buttonmapoptions.Enabled = (General.Map != null);
-			buttonverticesmode.Enabled = (General.Map != null);
-			buttonlinedefsmode.Enabled = (General.Map != null);
-			buttonsectorsmode.Enabled = (General.Map != null);
-			buttonthingsmode.Enabled = (General.Map != null);
 			buttonundo.Enabled = itemundo.Enabled;
 			buttonredo.Enabled = itemredo.Enabled;
 			buttonundo.ToolTipText = itemundo.Text;

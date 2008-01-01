@@ -56,6 +56,10 @@ namespace CodeImp.DoomBuilder.Editing
 
 		public bool IsDisposed { get { return isdisposed; } }
 
+		// Unless overriden, this returns the name of this mode
+		// for checking the appropriate button on the toolbar.
+		public virtual string EditModeButtonName { get { return GetType().Name; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -67,7 +71,7 @@ namespace CodeImp.DoomBuilder.Editing
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public virtual void Dispose()
 		{
 			// Not already disposed?

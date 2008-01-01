@@ -79,7 +79,6 @@ namespace CodeImp.DoomBuilder
 		private WAD tempwad;
 		private GridSetup grid;
 		private UndoManager undoredo;
-		private List<EditModeInfo> allmodes;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -119,10 +118,9 @@ namespace CodeImp.DoomBuilder
 			// Basic objects
 			grid = new GridSetup();
 			undoredo = new UndoManager();
-			allmodes = new List<EditModeInfo>();
 		}
 
-		// Diposer
+		// Disposer
 		internal void Dispose()
 		{
 			// Not already disposed?
@@ -138,8 +136,6 @@ namespace CodeImp.DoomBuilder
 				if(undoredo != null) undoredo.Dispose();
 				
 				// Dispose
-				General.WriteLogLine("Unloading editing modes...");
-				foreach(EditModeInfo emi in allmodes) emi.Dispose();
 				General.WriteLogLine("Unloading data resources...");
 				if(data != null) data.Dispose();
 				General.WriteLogLine("Closing temporary file...");
@@ -197,10 +193,6 @@ namespace CodeImp.DoomBuilder
 			// Create renderers
 			renderer2d = new Renderer2D(graphics);
 			renderer3d = new Renderer3D(graphics);
-			
-			// Load editing modes from plugins
-			General.WriteLogLine("Loading editing modes...");
-			allmodes = General.Plugins.GetEditModes();
 			
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
@@ -270,10 +262,6 @@ namespace CodeImp.DoomBuilder
 			renderer2d = new Renderer2D(graphics);
 			renderer3d = new Renderer3D(graphics);
 
-			// Load editing modes from plugins
-			General.WriteLogLine("Loading editing modes...");
-			allmodes = General.Plugins.GetEditModes();
-			
 			// Load game configuration
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
@@ -858,6 +846,12 @@ namespace CodeImp.DoomBuilder
 			// Apply new mode
 			mode = newmode;
 
+			// Check appropriate button on interface
+			if(newmode != null)
+				General.MainWindow.CheckEditModeButton(newmode.EditModeButtonName);
+			else
+				General.MainWindow.CheckEditModeButton("");
+			
 			// Engage new mode
 			if(newmode != null) newmode.Engage();
 
@@ -874,17 +868,8 @@ namespace CodeImp.DoomBuilder
 		// This changes mode by class name and optionally with arguments
 		public void ChangeMode(string classname, params object[] args)
 		{
-			// Find the edit mode
-			foreach(EditModeInfo emi in allmodes)
-			{
-				// Mode matches class name?
-				if(emi.ToString() == classname)
-				{
-					// Switch to this mode
-					emi.SwitchToMode(args);
-					break;
-				}
-			}
+			EditModeInfo emi = General.Plugins.GetEditModeInfo(classname);
+			if(emi != null) emi.SwitchToMode(args);
 		}
 		
 		#endregion

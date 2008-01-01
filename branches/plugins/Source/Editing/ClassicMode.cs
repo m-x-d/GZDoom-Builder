@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Editing
 			this.renderer2d = (Renderer2D)General.Map.Renderer2D;
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?

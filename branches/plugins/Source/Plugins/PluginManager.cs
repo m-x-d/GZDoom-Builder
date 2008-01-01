@@ -39,6 +39,9 @@ namespace CodeImp.DoomBuilder.Plugins
 		// Plugins
 		private List<Plugin> plugins;
 		
+		// Modes
+		private List<EditModeInfo> editmodes;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -46,6 +49,7 @@ namespace CodeImp.DoomBuilder.Plugins
 
 		#region ================== Properties
 
+		public ICollection<EditModeInfo> EditModes { get { return editmodes; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -56,10 +60,14 @@ namespace CodeImp.DoomBuilder.Plugins
 		public PluginManager()
 		{
 			string[] filenames;
+			Type[] editclasses;
+			EditModeAttribute[] emattrs;
+			EditModeInfo editmodeinfo;
 			Plugin p;
 			
-			// Make plugins list
+			// Make lists
 			this.plugins = new List<Plugin>();
+			this.editmodes = new List<EditModeInfo>();
 			
 			// Find all .dll files
 			filenames = Directory.GetFiles(General.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly);
@@ -69,13 +77,38 @@ namespace CodeImp.DoomBuilder.Plugins
 				General.MainWindow.DisplayStatus("Loading plugin '" + Path.GetFileName(fn) + "'...");
 				p = new Plugin(fn);
 				if(!p.IsDisposed) this.plugins.Add(p);
+				
+				// For all classes that inherit from EditMode
+				editclasses = p.FindClasses(typeof(EditMode));
+				foreach(Type t in editclasses)
+				{
+					// For all defined EditMode attributes
+					emattrs = (EditModeAttribute[])t.GetCustomAttributes(typeof(EditModeAttribute), true);
+					foreach(EditModeAttribute a in emattrs)
+					{
+						// Make edit mode information
+						editmodeinfo = new EditModeInfo(p, t, a);
+						editmodes.Add(editmodeinfo);
+					}
+				}
+			}
+
+			// Sort the list in order for buttons
+			editmodes.Sort();
+
+			// Go for all edit modes to add buttons
+			foreach(EditModeInfo emi in editmodes)
+			{
+				// Add a button to interface?
+				if((emi.ButtonImage != null) && (emi.ButtonDesc != null))
+					General.MainWindow.AddEditModeButton(emi);
 			}
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?
@@ -93,34 +126,20 @@ namespace CodeImp.DoomBuilder.Plugins
 
 		#region ================== Methods
 
-		// This creates a list of all editing modes in all plugins
-		public List<EditModeInfo> GetEditModes()
+		// This returns specific editing mode info by name
+		public EditModeInfo GetEditModeInfo(string editmodename)
 		{
-			List<EditModeInfo> modes = new List<EditModeInfo>();
-			Type[] editclasses;
-			EditModeAttribute[] attribs;
-			
-			// Go for all plugins
-			foreach(Plugin p in plugins)
+			// Find the edit mode
+			foreach(EditModeInfo emi in editmodes)
 			{
-				// For all classes that inherit from EditMode
-				editclasses = p.FindClasses(typeof(EditMode));
-				foreach(Type t in editclasses)
-				{
-					// For all defined EditMode attributes
-					attribs = (EditModeAttribute[])t.GetCustomAttributes(typeof(EditModeAttribute), true);
-					foreach(EditModeAttribute attr in attribs)
-					{
-						// Make edit mode information
-						modes.Add(new EditModeInfo(p, t, attr));
-					}
-				}
+				// Mode matches class name?
+				if(emi.ToString() == editmodename) return emi;
 			}
 
-			// Return list
-			return modes;
+			// No such mode found
+			return null;
 		}
-
+		
 		#endregion
 	}
 }

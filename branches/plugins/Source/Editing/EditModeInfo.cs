@@ -26,12 +26,13 @@ using System.IO;
 using System.Reflection;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Plugins;
+using System.Drawing;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class EditModeInfo
+	internal class EditModeInfo : IComparable<EditModeInfo>
 	{
 		#region ================== Constants
 
@@ -47,9 +48,21 @@ namespace CodeImp.DoomBuilder.Editing
 		private ActionAttribute switchactionattr = null;
 		private ActionDelegate switchactiondel = null;
 
+		// Mode button
+		private Stream buttonimagestream = null;
+		private Image buttonimage = null;
+		private string buttondesc = null;
+		private int buttonorder = int.MaxValue;
+		
 		#endregion
 
 		#region ================== Properties
+
+		public Plugin Plugin { get { return plugin; } }
+		public Type Type { get { return type; } }
+		public ActionAttribute SwitchAction { get { return switchactionattr; } }
+		public Image ButtonImage { get { return buttonimage; } }
+		public string ButtonDesc { get { return buttondesc; } }
 
 		#endregion
 
@@ -72,6 +85,18 @@ namespace CodeImp.DoomBuilder.Editing
 				ActionAttribute.BindDelegate(plugin.Assembly, switchactiondel, switchactionattr);
 			}
 			
+			// Make button info
+			if((attr.ButtonImage != null) && (attr.ButtonDesc != null))
+			{
+				buttonimagestream = plugin.FindResource(attr.ButtonImage);
+				if(buttonimagestream != null)
+				{
+					buttonimage = Image.FromStream(buttonimagestream);
+					buttondesc = attr.ButtonDesc;
+					buttonorder = attr.ButtonOrder;
+				}
+			}
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -81,6 +106,8 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Unbind switch action
 			if(switchactiondel != null) ActionAttribute.UnbindDelegate(plugin.Assembly, switchactiondel, switchactionattr);
+			buttonimage.Dispose();
+			buttonimagestream.Dispose();
 
 			// Clean up
 			plugin = null;
@@ -95,11 +122,15 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			EditMode newmode;
 			
-			// Create instance
-			newmode = plugin.CreateObject<EditMode>(type);
+			// Only when a map is opened
+			if(General.Map != null)
+			{
+				// Create instance
+				newmode = plugin.CreateObject<EditMode>(type);
 
-			// Switch mode
-			General.Map.ChangeMode(newmode);
+				// Switch mode
+				General.Map.ChangeMode(newmode);
+			}
 		}
 
 		// This switches to the mode with arguments
@@ -107,17 +138,29 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			EditMode newmode;
 
-			// Create instance
-			newmode = plugin.CreateObjectA<EditMode>(type, args);
+			// Only when a map is opened
+			if(General.Map != null)
+			{
+				// Create instance
+				newmode = plugin.CreateObjectA<EditMode>(type, args);
 
-			// Switch mode
-			General.Map.ChangeMode(newmode);
+				// Switch mode
+				General.Map.ChangeMode(newmode);
+			}
 		}
 
 		// String representation
 		public override string ToString()
 		{
 			return type.Name;
+		}
+
+		// Compare by button order
+		public int CompareTo(EditModeInfo other)
+		{
+			if(this.buttonorder > other.buttonorder) return -1;
+			else if(this.buttonorder < other.buttonorder) return 1;
+			else return 0;
 		}
 		
 		#endregion
