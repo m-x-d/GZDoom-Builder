@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Vertex : IDisposable
+	public sealed class Vertex
 	{
 		#region ================== Constants
 		
@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Map
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?

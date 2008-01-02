@@ -29,23 +29,26 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	public class ThingsMode : ClassicMode
+	[EditMode(SwitchAction = "sectorsmode",
+			  ButtonDesc = "Sectors Mode",
+		      ButtonImage = "SectorsMode.png",
+			  ButtonOrder = int.MinValue + 2)]
+	public class SectorsMode : ClassicMode
 	{
 		#region ================== Constants
-
-		protected const float THING_HIGHLIGHT_RANGE = 10f;
 
 		#endregion
 
 		#region ================== Variables
 
 		// Highlighted item
-		private Thing highlighted;
+		private Sector highlighted;
 
 		#endregion
 
@@ -56,11 +59,11 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ThingsMode()
+		public SectorsMode()
 		{
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -83,16 +86,13 @@ namespace CodeImp.DoomBuilder.Editing
 			base.Cancel();
 
 			// Return to this mode
-			General.Map.ChangeMode(new ThingsMode());
+			General.Map.ChangeMode(new SectorsMode());
 		}
 
 		// Mode engages
 		public override void Engage()
 		{
 			base.Engage();
-
-			// Check things button on main window
-			General.MainWindow.SetThingsChecked(true);
 		}
 
 		// Mode disengages
@@ -100,11 +100,24 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.Disengage();
 
-			// Hide highlight info
-			General.MainWindow.HideInfo();
+			// Check which mode we are switching to
+			if(General.Map.NewMode is VerticesMode)
+			{
+				// Convert selection to vertices
 
-			// Uncheck things button on main window
-			General.MainWindow.SetThingsChecked(false);
+				// Clear selected sectors
+				General.Map.Map.ClearSelectedSectors();
+			}
+			else if(General.Map.NewMode is LinedefsMode)
+			{
+				// Convert selection to linedefs
+
+				// Clear selected sectors
+				General.Map.Map.ClearSelectedSectors();
+			}
+			
+			// Hide highlight info
+			General.Interface.HideInfo();
 		}
 
 		// This redraws the display
@@ -113,17 +126,17 @@ namespace CodeImp.DoomBuilder.Editing
 			// Start with a clear display
 			if(renderer.Start(true, true))
 			{
+				// Render things
+				renderer.SetThingsRenderOrder(false);
+				renderer.RenderThingSet(General.Map.Map.Things);
+				
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
-				// Render things
-				renderer.SetThingsRenderOrder(true);
-				renderer.RenderThingSet(General.Map.Map.Things);
-
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, General.Colors.Highlight);
+					renderer.RenderSector(highlighted, General.Colors.Highlight);
 
 				// Done
 				renderer.Finish();
@@ -131,43 +144,85 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This highlights a new item
-		protected void Highlight(Thing t)
+		protected void Highlight(Sector s)
 		{
 			// Update display
 			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+					renderer.RenderSector(highlighted);
 
+				/*
+				// Undraw highlighted things
+				if(highlighted != null)
+					foreach(Thing t in highlighted.Things)
+						renderer.RenderThing(t, renderer.DetermineThingColor(t));
+				*/
+				
 				// Set new highlight
-				highlighted = t;
+				highlighted = s;
 
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, General.Colors.Highlight);
+					renderer.RenderSector(highlighted, General.Colors.Highlight);
 
+				/*
+				// Render highlighted things
+				if(highlighted != null)
+					foreach(Thing t in highlighted.Things)
+						renderer.RenderThing(t, General.Colors.Highlight);
+				*/
+				
 				// Done
 				renderer.Finish();
 			}
 
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
-				General.MainWindow.ShowThingInfo(highlighted);
+				General.Interface.ShowSectorInfo(highlighted);
 			else
-				General.MainWindow.HideInfo();
+				General.Interface.HideInfo();
 		}
-
+		
 		// Mouse moves
 		public override void MouseMove(MouseEventArgs e)
 		{
 			base.MouseMove(e);
 
-			// Find the nearest vertex within highlight range
-			Thing t = General.Map.Map.NearestThingSquareRange(mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
+			// Find the nearest linedef within highlight range
+			Linedef l = General.Map.Map.NearestLinedef(mousemappos);
 
-			// Highlight if not the same
-			if(t != highlighted) Highlight(t);
+			// Check on which side of the linedef the mouse is
+			float side = l.SideOfLine(mousemappos);
+			if(side > 0)
+			{
+				// Is there a sidedef here?
+				if(l.Back != null)
+				{
+					// Highlight if not the same
+					if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+				}
+				else
+				{
+					// Highlight nothing
+					if(highlighted != null) Highlight(null);
+				}
+			}
+			else
+			{
+				// Is there a sidedef here?
+				if(l.Front != null)
+				{
+					// Highlight if not the same
+					if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
+				}
+				else
+				{
+					// Highlight nothing
+					if(highlighted != null) Highlight(null);
+				}
+			}
 		}
 
 		// Mouse leaves
@@ -183,8 +238,9 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void MouseDown(MouseEventArgs e)
 		{
 			base.MouseDown(e);
-
-			// Select button?
+			bool front, back;
+			
+			// Which button is used?
 			if(e.Button == EditMode.SELECT_BUTTON)
 			{
 				// Item highlighted?
@@ -192,36 +248,20 @@ namespace CodeImp.DoomBuilder.Editing
 				{
 					// Flip selection
 					highlighted.Selected = !highlighted.Selected;
+
+					// Make update lines selection
+					foreach(Sidedef sd in highlighted.Sidedefs)
+					{
+						if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
+						if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
+						sd.Line.Selected = front | back;
+					}
 					
 					// Update display
 					if(renderer.Start(false, false))
 					{
 						// Redraw highlight to show selection
-						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
-						renderer.Finish();
-					}
-				}
-			}
-			// Edit button?
-			else if(e.Button == EditMode.EDIT_BUTTON)
-			{
-				// Item highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					// Highlighted item not selected?
-					if(!highlighted.Selected)
-					{
-						// Make this the only selection
-						General.Map.Map.ClearSelectedThings();
-						highlighted.Selected = true;
-						General.MainWindow.RedrawDisplay();
-					}
-
-					// Update display
-					if(renderer.Start(false, false))
-					{
-						// Redraw highlight to show selection
-						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+						renderer.RenderSector(highlighted);
 						renderer.Finish();
 					}
 				}
@@ -231,10 +271,8 @@ namespace CodeImp.DoomBuilder.Editing
 		// Mouse released
 		public override void MouseUp(MouseEventArgs e)
 		{
-			ICollection<Thing> selected;
-
 			base.MouseUp(e);
-			
+
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
@@ -242,25 +280,8 @@ namespace CodeImp.DoomBuilder.Editing
 				if(renderer.Start(false, false))
 				{
 					// Render highlighted item
-					renderer.RenderThing(highlighted, General.Colors.Highlight);
+					renderer.RenderSector(highlighted, General.Colors.Highlight);
 					renderer.Finish();
-				}
-
-				// Edit button?
-				if(e.Button == EditMode.EDIT_BUTTON)
-				{
-					// Anything selected?
-					selected = General.Map.Map.GetThingsSelection(true);
-					if(selected.Count > 0)
-					{
-						// Show thing edit dialog
-
-						// When a single thing was selected, deselect it now
-						if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
-
-						// Update entire display
-						General.MainWindow.RedrawDisplay();
-					}
 				}
 			}
 		}

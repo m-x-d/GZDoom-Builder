@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Sidedef : IDisposable
+	public sealed class Sidedef
 	{
 		#region ================== Constants
 
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Map
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?

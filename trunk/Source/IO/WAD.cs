@@ -27,7 +27,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public class WAD : IDisposable
+	internal class WAD
 	{
 		#region ================== Constants
 
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.IO
 			this.Dispose();
 		}
 		
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?

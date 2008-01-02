@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Linedef : IDisposable
+	public sealed class Linedef
 	{
 		#region ================== Constants
 
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Map
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?

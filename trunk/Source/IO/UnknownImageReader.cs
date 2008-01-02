@@ -33,7 +33,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public unsafe class UnknownImageReader : IImageReader
+	internal unsafe class UnknownImageReader : IImageReader
 	{
 		#region ================== Constructor / Disposer
 

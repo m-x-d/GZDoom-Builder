@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public sealed class Display2DShader : D3DShader
+	internal sealed class Display2DShader : D3DShader
 	{
 		#region ================== Variables
 
@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?

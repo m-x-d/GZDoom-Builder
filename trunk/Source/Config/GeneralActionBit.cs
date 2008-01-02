@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public GeneralActionBit(int index, string title)
+		internal GeneralActionBit(int index, string title)
 		{
 			// Initialize
 			this.index = index;

@@ -29,7 +29,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class ConfigurationInfo : IComparable<ConfigurationInfo>
+	internal class ConfigurationInfo : IComparable<ConfigurationInfo>
 	{
 		#region ================== Variables
 

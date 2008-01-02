@@ -35,7 +35,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public class UndoManager : IDisposable
+	public class UndoManager
 	{
 		#region ================== Constants
 
@@ -61,8 +61,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		public UndoSnapshot NextUndo { get { if(undos.Count > 0) return undos[0]; else return null; } }
-		public UndoSnapshot NextRedo { get { if(redos.Count > 0) return redos[0]; else return null; } }
+		internal UndoSnapshot NextUndo { get { if(undos.Count > 0) return undos[0]; else return null; } }
+		internal UndoSnapshot NextRedo { get { if(redos.Count > 0) return redos[0]; else return null; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public UndoManager()
+		internal UndoManager()
 		{
 			// Initialize
 			ticketid = 1;
@@ -84,8 +84,8 @@ namespace CodeImp.DoomBuilder.Editing
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
-		public void Dispose()
+		// Disposer
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)

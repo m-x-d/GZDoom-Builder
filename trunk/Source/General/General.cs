@@ -35,6 +35,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
 using SlimDX.Direct3D9;
 using System.Drawing;
+using CodeImp.DoomBuilder.Plugins;
 
 #endregion
 
@@ -45,37 +46,37 @@ namespace CodeImp.DoomBuilder
 		#region ================== API Declarations
 
 		//[DllImport("user32.dll")]
-		//public static extern bool LockWindowUpdate(IntPtr hwnd);
+		//internal static extern bool LockWindowUpdate(IntPtr hwnd);
 
 		[DllImport("kernel32.dll", EntryPoint="RtlZeroMemory", SetLastError=false)]
-		public static extern void ZeroMemory(IntPtr dest, int size);
+		internal static extern void ZeroMemory(IntPtr dest, int size);
 
 		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
-		public static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
+		internal static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
 
 		#endregion
 
 		#region ================== Constants
 
 		// Memory APIs
-		public const uint MEM_COMMIT = 0x1000;
-		public const uint MEM_RESERVE = 0x2000;
-		public const uint MEM_DECOMMIT = 0x4000;
-		public const uint MEM_RELEASE = 0x8000;
-		public const uint MEM_RESET = 0x80000;
-		public const uint MEM_TOP_DOWN = 0x100000;
-		public const uint MEM_PHYSICAL = 0x400000;
-		public const uint PAGE_NOACCESS = 0x01;
-		public const uint PAGE_READONLY = 0x02;
-		public const uint PAGE_READWRITE = 0x04;
-		public const uint PAGE_WRITECOPY = 0x08;
-		public const uint PAGE_EXECUTE = 0x10;
-		public const uint PAGE_EXECUTE_READ = 0x20;
-		public const uint PAGE_EXECUTE_READWRITE = 0x40;
-		public const uint PAGE_EXECUTE_WRITECOPY = 0x80;
-		public const uint PAGE_GUARD = 0x100;
-		public const uint PAGE_NOCACHE = 0x200;
-		public const uint PAGE_WRITECOMBINE = 0x400;
+		internal const uint MEM_COMMIT = 0x1000;
+		internal const uint MEM_RESERVE = 0x2000;
+		internal const uint MEM_DECOMMIT = 0x4000;
+		internal const uint MEM_RELEASE = 0x8000;
+		internal const uint MEM_RESET = 0x80000;
+		internal const uint MEM_TOP_DOWN = 0x100000;
+		internal const uint MEM_PHYSICAL = 0x400000;
+		internal const uint PAGE_NOACCESS = 0x01;
+		internal const uint PAGE_READONLY = 0x02;
+		internal const uint PAGE_READWRITE = 0x04;
+		internal const uint PAGE_WRITECOPY = 0x08;
+		internal const uint PAGE_EXECUTE = 0x10;
+		internal const uint PAGE_EXECUTE_READ = 0x20;
+		internal const uint PAGE_EXECUTE_READWRITE = 0x40;
+		internal const uint PAGE_EXECUTE_WRITECOPY = 0x80;
+		internal const uint PAGE_GUARD = 0x100;
+		internal const uint PAGE_NOCACHE = 0x200;
+		internal const uint PAGE_WRITECOMBINE = 0x400;
 		
 		// Files and Folders
 		private const string SETTINGS_FILE = "Builder.cfg";
@@ -83,6 +84,7 @@ namespace CodeImp.DoomBuilder
 		private const string LOG_FILE = "Builder.log";
 		private const string GAME_CONFIGS_DIR = "Configurations";
 		private const string COMPILERS_DIR = "Compilers";
+		private const string PLUGINS_DIR = "Plugins";
 
 		#endregion
 
@@ -95,6 +97,7 @@ namespace CodeImp.DoomBuilder
 		private static string temppath;
 		private static string configspath;
 		private static string compilerspath;
+		private static string pluginspath;
 		
 		// Main objects
 		private static Assembly thisasm;
@@ -102,6 +105,7 @@ namespace CodeImp.DoomBuilder
 		private static ProgramConfiguration settings;
 		private static MapManager map;
 		private static ActionManager actions;
+		private static PluginManager plugins;
 		private static ColorCollection colors;
 		private static Clock clock;
 		
@@ -114,19 +118,22 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Properties
 
-		public static Assembly ThisAssembly { get { return thisasm; } }
+		internal static Assembly ThisAssembly { get { return thisasm; } }
 		public static string AppPath { get { return apppath; } }
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }
 		public static string CompilersPath { get { return compilerspath; } }
-		public static MainForm MainWindow { get { return mainwindow; } }
+		public static string PluginsPath { get { return pluginspath; } }
+		internal static MainForm MainWindow { get { return mainwindow; } }
+		public static IMainForm Interface { get { return mainwindow; } }
 		public static ProgramConfiguration Settings { get { return settings; } }
 		public static ColorCollection Colors { get { return colors; } }
-		public static List<ConfigurationInfo> Configs { get { return configs; } }
-		public static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
-		public static List<CompilerInfo> Compilers { get { return compilers; } }
+		internal static List<ConfigurationInfo> Configs { get { return configs; } }
+		internal static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
+		internal static List<CompilerInfo> Compilers { get { return compilers; } }
 		public static MapManager Map { get { return map; } }
-		public static ActionManager Actions { get { return actions; } }
+		internal static ActionManager Actions { get { return actions; } }
+		internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		
 		#endregion
@@ -134,7 +141,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Configurations
 
 		// This returns the game configuration info by filename
-		public static ConfigurationInfo GetConfigurationInfo(string filename)
+		internal static ConfigurationInfo GetConfigurationInfo(string filename)
 		{
 			// Go for all config infos
 			foreach(ConfigurationInfo ci in configs)
@@ -153,7 +160,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This loads and returns a game configuration
-		public static Configuration LoadGameConfiguration(string filename)
+		internal static Configuration LoadGameConfiguration(string filename)
 		{
 			Configuration cfg;
 			
@@ -347,7 +354,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This returns a nodebuilder by name
-		public static NodebuilderInfo GetNodebuilderByName(string name)
+		internal static NodebuilderInfo GetNodebuilderByName(string name)
 		{
 			// Go for all nodebuilders
 			foreach(NodebuilderInfo n in nodebuilders)
@@ -366,7 +373,7 @@ namespace CodeImp.DoomBuilder
 
 		// Main program entry
 		[STAThread]
-		public static void Main(string[] args)
+		internal static void Main(string[] args)
 		{
 			Uri localpath;
 			Version thisversion;
@@ -388,6 +395,7 @@ namespace CodeImp.DoomBuilder
 			settingspath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR);
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
+			pluginspath = Path.Combine(apppath, PLUGINS_DIR);
 			logfile = Path.Combine(settingspath, LOG_FILE);
 			
 			// Make program settings directory if missing
@@ -401,6 +409,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Local settings path:  " + settingspath);
 			General.WriteLogLine("Configurations path:  " + configspath);
 			General.WriteLogLine("Compilers path:       " + compilerspath);
+			General.WriteLogLine("Plugins path:         " + pluginspath);
 			
 			// Load configuration
 			General.WriteLogLine("Loading program configuration...");
@@ -428,6 +437,10 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Starting Direct3D graphics driver...");
 				Direct3D.Initialize();
 
+				// Load plugin manager
+				General.WriteLogLine("Loading plugins...");
+				plugins = new PluginManager();
+				
 				// Load game configurations
 				General.WriteLogLine("Loading game configurations...");
 				LoadAllGameConfigurations();
@@ -465,7 +478,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Terminate
 		
 		// This terminates the program
-		public static void Terminate(bool properexit)
+		internal static void Terminate(bool properexit)
 		{
 			// Terminate properly?
 			if(properexit)
@@ -481,6 +494,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.Dispose();
 				actions.Dispose();
 				clock.Dispose();
+				plugins.Dispose();
 				Direct3D.Terminate();
 
 				// Save colors
@@ -514,7 +528,7 @@ namespace CodeImp.DoomBuilder
 
 		// This creates a new map
 		[Action("newmap")]
-		public static void NewMap()
+		internal static void NewMap()
 		{
 			MapOptions newoptions = new MapOptions();
 			MapOptionsForm optionswindow;
@@ -562,7 +576,7 @@ namespace CodeImp.DoomBuilder
 
 		// This closes the current map
 		[Action("closemap")]
-		public static void CloseMap()
+		internal static void CloseMap()
 		{
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -589,7 +603,7 @@ namespace CodeImp.DoomBuilder
 
 		// This loads a map from file
 		[Action("openmap")]
-		public static void OpenMap()
+		internal static void OpenMap()
 		{
 			OpenFileDialog openfile;
 			
@@ -612,7 +626,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This opens the specified file
-		public static void OpenMapFile(string filename)
+		internal static void OpenMapFile(string filename)
 		{
 			OpenMapOptionsForm openmapwindow;
 
@@ -660,7 +674,7 @@ namespace CodeImp.DoomBuilder
 		
 		// This saves the current map
 		[Action("savemap")]
-		public static void SaveMap()
+		internal static void SaveMap()
 		{
 			// Check if a wad file is known
 			if(map.FilePathName == "")
@@ -690,7 +704,7 @@ namespace CodeImp.DoomBuilder
 
 		// This saves the current map as a different file
 		[Action("savemapas")]
-		public static void SaveMapAs()
+		internal static void SaveMapAs()
 		{
 			SaveFileDialog savefile;
 			
@@ -724,7 +738,7 @@ namespace CodeImp.DoomBuilder
 		
 		// This asks to save the map if needed
 		// Returns false when action was cancelled
-		public static bool AskSaveMap()
+		internal static bool AskSaveMap()
 		{
 			DialogResult result;
 			
@@ -800,13 +814,13 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// Convert bool to integer
-		public static int Bool2Int(bool v)
+		internal static int Bool2Int(bool v)
 		{
 			if(v) return 1; else return 0;
 		}
 
 		// Convert integer to bool
-		public static bool Int2Bool(int v)
+		internal static bool Int2Bool(int v)
 		{
 			return (v != 0);
 		}
@@ -864,7 +878,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This returns a unique temp filename
-		public static string MakeTempFilename(string tempdir)
+		internal static string MakeTempFilename(string tempdir)
 		{
 			string filename;
 			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -886,7 +900,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This returns a unique temp directory name
-		public static string MakeTempDirname()
+		internal static string MakeTempDirname()
 		{
 			string dirname;
 			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -977,7 +991,7 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		[Action("testaction")]
-		public static void TestAction()
+		internal static void TestAction()
 		{
 			TextureBrowserForm t = new TextureBrowserForm();
 			t.ShowDialog(mainwindow);

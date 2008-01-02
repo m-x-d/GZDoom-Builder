@@ -29,7 +29,7 @@ using System.Drawing.Drawing2D;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class CheckboxArrayControl : UserControl
+	internal partial class CheckboxArrayControl : UserControl
 	{
 		// Constants
 		private const int SPACING_Y = 1;

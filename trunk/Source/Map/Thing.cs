@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Thing : IDisposable
+	public sealed class Thing
 	{
 		#region ================== Constants
 
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Map
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?
@@ -263,6 +263,24 @@ namespace CodeImp.DoomBuilder.Map
 			if(ti.Arrow) iconoffset = 0f; else iconoffset = 0.25f;
 		}
 		
+		#endregion
+
+		#region ================== Methods
+
+		// This returns the distance from given coordinates
+		public float DistanceToSq(Vector2D p)
+		{
+			Vector2D delta = p - (Vector2D)pos;
+			return delta.GetLengthSq();
+		}
+
+		// This returns the distance from given coordinates
+		public float DistanceTo(Vector2D p)
+		{
+			Vector2D delta = p - (Vector2D)pos;
+			return delta.GetLength();
+		}
+
 		#endregion
 	}
 }

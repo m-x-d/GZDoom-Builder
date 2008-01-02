@@ -29,23 +29,28 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	public class VerticesMode : ClassicMode
+	[EditMode(SwitchAction = "thingsmode",
+			  ButtonDesc = "Things Mode",
+		      ButtonImage = "ThingsMode.png",
+			  ButtonOrder = int.MinValue + 3)]
+	public class ThingsMode : ClassicMode
 	{
 		#region ================== Constants
 
-		public const float VERTEX_HIGHLIGHT_RANGE = 20f;
+		protected const float THING_HIGHLIGHT_RANGE = 10f;
 
 		#endregion
 
 		#region ================== Variables
 
 		// Highlighted item
-		protected Vertex highlighted;
+		private Thing highlighted;
 
 		#endregion
 
@@ -56,11 +61,11 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public VerticesMode()
+		public ThingsMode()
 		{
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -81,18 +86,15 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Cancel()
 		{
 			base.Cancel();
-			
+
 			// Return to this mode
-			General.Map.ChangeMode(new VerticesMode());
+			General.Map.ChangeMode(new ThingsMode());
 		}
 
 		// Mode engages
 		public override void Engage()
 		{
 			base.Engage();
-			
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(true);
 		}
 
 		// Mode disengages
@@ -100,27 +102,8 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			base.Disengage();
 
-			// Check which mode we are switching to
-			if(General.Map.NewMode is LinedefsMode)
-			{
-				// Convert selection to linedefs
-
-				// Clear selected vertices
-				General.Map.Map.ClearSelectedVertices();
-			}
-			else if(General.Map.NewMode is SectorsMode)
-			{
-				// Convert selection to sectors
-				
-				// Clear selected vertices
-				General.Map.Map.ClearSelectedVertices();
-			}
-
 			// Hide highlight info
-			General.MainWindow.HideInfo();
-			
-			// Uncheck vertices button on main window
-			General.MainWindow.SetVerticesChecked(false);
+			General.Interface.HideInfo();
 		}
 
 		// This redraws the display
@@ -129,82 +112,78 @@ namespace CodeImp.DoomBuilder.Editing
 			// Start with a clear display
 			if(renderer.Start(true, true))
 			{
-				// Render things
-				renderer.SetThingsRenderOrder(false);
-				renderer.RenderThingSet(General.Map.Map.Things);
-				
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
+				// Render things
+				renderer.SetThingsRenderOrder(true);
+				renderer.RenderThingSet(General.Map.Map.Things);
+
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
-				
+					renderer.RenderThing(highlighted, General.Colors.Highlight);
+
 				// Done
 				renderer.Finish();
 			}
 		}
-		
+
 		// This highlights a new item
-		protected void Highlight(Vertex v)
+		protected void Highlight(Thing t)
 		{
 			// Update display
 			if(renderer.Start(false, false))
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
 
 				// Set new highlight
-				highlighted = v;
+				highlighted = t;
 
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
-				
+					renderer.RenderThing(highlighted, General.Colors.Highlight);
+
 				// Done
 				renderer.Finish();
 			}
 
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
-				General.MainWindow.ShowVertexInfo(highlighted);
+				General.Interface.ShowThingInfo(highlighted);
 			else
-				General.MainWindow.HideInfo();
+				General.Interface.HideInfo();
 		}
-		
+
 		// Mouse moves
 		public override void MouseMove(MouseEventArgs e)
 		{
 			base.MouseMove(e);
 
-			// Not holding any buttons?
-			if(e.Button == MouseButtons.None)
-			{
-				// Find the nearest vertex within highlight range
-				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+			// Find the nearest vertex within highlight range
+			Thing t = General.Map.Map.NearestThingSquareRange(mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
 
-				// Highlight if not the same
-				if(v != highlighted) Highlight(v);
-			}
+			// Highlight if not the same
+			if(t != highlighted) Highlight(t);
 		}
 
 		// Mouse leaves
 		public override void MouseLeave(EventArgs e)
 		{
 			base.MouseLeave(e);
-			
+
 			// Highlight nothing
 			Highlight(null);
 		}
-		
+
 		// Mouse button pressed
 		public override void MouseDown(MouseEventArgs e)
 		{
 			base.MouseDown(e);
 
-			// Which button is used?
+			// Select button?
 			if(e.Button == EditMode.SELECT_BUTTON)
 			{
 				// Item highlighted?
@@ -217,18 +196,44 @@ namespace CodeImp.DoomBuilder.Editing
 					if(renderer.Start(false, false))
 					{
 						// Redraw highlight to show selection
-						renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+						renderer.Finish();
+					}
+				}
+			}
+			// Edit button?
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Highlighted item not selected?
+					if(!highlighted.Selected)
+					{
+						// Make this the only selection
+						General.Map.Map.ClearSelectedThings();
+						highlighted.Selected = true;
+						General.Interface.RedrawDisplay();
+					}
+
+					// Update display
+					if(renderer.Start(false, false))
+					{
+						// Redraw highlight to show selection
+						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
 						renderer.Finish();
 					}
 				}
 			}
 		}
-		
+
 		// Mouse released
 		public override void MouseUp(MouseEventArgs e)
 		{
-			base.MouseUp(e);
+			ICollection<Thing> selected;
 
+			base.MouseUp(e);
+			
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
@@ -236,38 +241,25 @@ namespace CodeImp.DoomBuilder.Editing
 				if(renderer.Start(false, false))
 				{
 					// Render highlighted item
-					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
+					renderer.RenderThing(highlighted, General.Colors.Highlight);
 					renderer.Finish();
 				}
-			}
-		}
 
-		// Mouse wants to drag
-		protected override void DragStart(MouseEventArgs e)
-		{
-			base.DragStart(e);
-
-			// Which button is used?
-			if(e.Button == EditMode.SELECT_BUTTON)
-			{
-				// Make selection
-
-			}
-			else if(e.Button == EditMode.EDIT_BUTTON)
-			{
-				// Anything highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
+				// Edit button?
+				if(e.Button == EditMode.EDIT_BUTTON)
 				{
-					// Highlighted item not selected?
-					if(!highlighted.Selected)
+					// Anything selected?
+					selected = General.Map.Map.GetThingsSelection(true);
+					if(selected.Count > 0)
 					{
-						// Select only this vertex for dragging
-						General.Map.Map.ClearSelectedVertices();
-						highlighted.Selected = true;
-					}
+						// Show thing edit dialog
 
-					// Start dragging the selection
-					General.Map.ChangeMode(new DragVerticesMode(new VerticesMode(), highlighted, mousedownmappos));
+						// When a single thing was selected, deselect it now
+						if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
+
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 		}

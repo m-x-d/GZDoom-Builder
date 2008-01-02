@@ -27,7 +27,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public class Lump : IDisposable
+	internal class Lump
 	{
 		#region ================== Variables
 
@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.IO
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?

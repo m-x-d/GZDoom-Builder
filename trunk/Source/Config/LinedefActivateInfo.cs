@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public LinedefActivateInfo(int index, string title)
+		internal LinedefActivateInfo(int index, string title)
 		{
 			// Initialize
 			this.index = index;

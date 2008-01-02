@@ -109,13 +109,6 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap LinesMode {
-            get {
-                object obj = ResourceManager.GetObject("LinesMode", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap mergegeometry {
             get {
                 object obj = ResourceManager.GetObject("mergegeometry", resourceCulture);
@@ -172,13 +165,6 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap SectorsMode {
-            get {
-                object obj = ResourceManager.GetObject("SectorsMode", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap Splash2 {
             get {
                 object obj = ResourceManager.GetObject("Splash2", resourceCulture);
@@ -214,13 +200,6 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap ThingsMode {
-            get {
-                object obj = ResourceManager.GetObject("ThingsMode", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap treeview {
             get {
                 object obj = ResourceManager.GetObject("treeview", resourceCulture);
@@ -238,13 +217,6 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap UnknownImage {
             get {
                 object obj = ResourceManager.GetObject("UnknownImage", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        internal static System.Drawing.Bitmap VerticesMode {
-            get {
-                object obj = ResourceManager.GetObject("VerticesMode", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

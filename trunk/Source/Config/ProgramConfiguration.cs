@@ -51,17 +51,17 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Properties
 
-		public Configuration Config { get { return cfg; } }
-		public int UndoLevels { get { return undolevels; } set { undolevels = value; } }
-		public bool BlackBrowsers { get { return blackbrowsers; } set { blackbrowsers = value; } }
-		public float StitchDistance { get { return stitchdistance; } set { stitchdistance = value; } }
+		internal Configuration Config { get { return cfg; } }
+		public int UndoLevels { get { return undolevels; } internal set { undolevels = value; } }
+		public bool BlackBrowsers { get { return blackbrowsers; } internal set { blackbrowsers = value; } }
+		public float StitchDistance { get { return stitchdistance; } internal set { stitchdistance = value; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ProgramConfiguration()
+		internal ProgramConfiguration()
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Loading / Saving
 
 		// This loads the program configuration
-		public bool Load(string cfgfilepathname, string defaultfilepathname)
+		internal bool Load(string cfgfilepathname, string defaultfilepathname)
 		{
 			// First parse it
 			if(Read(cfgfilepathname, defaultfilepathname))
@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// This saves the program configuration
-		public void Save(string filepathname)
+		internal void Save(string filepathname)
 		{
 			// Write the cache variables
 			cfg.WriteSetting("blackbrowsers", blackbrowsers);
@@ -171,8 +171,8 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary ReadSetting(string setting, IDictionary defaultsetting) { return cfg.ReadSetting(setting, defaultsetting); }
 
 		// WriteSetting
-		public bool WriteSetting(string setting, object settingvalue) { return cfg.WriteSetting(setting, settingvalue); }
-		public bool WriteSetting(string setting, object settingvalue, string pathseperator) { return cfg.WriteSetting(setting, settingvalue, pathseperator); }
+		internal bool WriteSetting(string setting, object settingvalue) { return cfg.WriteSetting(setting, settingvalue); }
+		internal bool WriteSetting(string setting, object settingvalue, string pathseperator) { return cfg.WriteSetting(setting, settingvalue, pathseperator); }
 		
 		#endregion
 	}

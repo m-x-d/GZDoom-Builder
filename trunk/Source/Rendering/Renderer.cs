@@ -26,7 +26,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public abstract class Renderer : IDisposable, ID3DResource
+	internal abstract class Renderer : ID3DResource
 	{
 		#region ================== Constants
 
@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Renderer(D3DDevice g)
+		internal Renderer(D3DDevice g)
 		{
 			// Initialize
 			this.graphics = g;
@@ -64,8 +64,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
-		public virtual void Dispose()
+		// Disposer
+		internal virtual void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)

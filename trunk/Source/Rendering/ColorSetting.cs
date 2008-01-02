@@ -28,7 +28,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public sealed class ColorSetting : IEquatable<ColorSetting>
+	internal sealed class ColorSetting : IEquatable<ColorSetting>
 	{
 		#region ================== Constants
 

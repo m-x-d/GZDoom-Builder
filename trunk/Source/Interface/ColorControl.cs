@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class ColorControl : UserControl
+	internal partial class ColorControl : UserControl
 	{
 		// Constructor
 		public ColorControl()

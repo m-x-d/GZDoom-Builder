@@ -27,7 +27,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public class ClippedStream : Stream
+	internal class ClippedStream : Stream
 	{
 		#region ================== Variables
 
@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.IO
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public new void Dispose()
 		{
 			// Not already disposed?

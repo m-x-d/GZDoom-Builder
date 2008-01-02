@@ -39,7 +39,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public unsafe class Renderer2D : Renderer
+	internal unsafe sealed class Renderer2D : Renderer, IRenderer2D
 	{
 		#region ================== Constants
 
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public Renderer2D(D3DDevice graphics) : base(graphics)
+		internal Renderer2D(D3DDevice graphics) : base(graphics)
 		{
 			// Initialize
 			thingtexture = new ResourceImage("Thing2D.png");
@@ -128,8 +128,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
-		public override void Dispose()
+		// Disposer
+		internal override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This destroys the rendertargets
-		private void DestroyRendertargets()
+		public void DestroyRendertargets()
 		{
 			// Trash rendertargets
 			if(structtex != null) structtex.Dispose();
@@ -826,7 +826,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Present new image
 			Present();
 		}
-
+		
 		// This adds a thing in the things buffer for rendering
 		public void RenderThing(Thing t, PixelColor c)
 		{
@@ -913,6 +913,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}	
 
+		// This renders a simple line
+		public void RenderLine(Vector2D start, Vector2D end, PixelColor c)
+		{
+			// Transform coordinates
+			Vector2D v1 = start.GetTransformed(translatex, translatey, scale, -scale);
+			Vector2D v2 = end.GetTransformed(translatex, translatey, scale, -scale);
+
+			// Draw line
+			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+		}
+		
 		// This renders a single linedef
 		public void RenderLinedef(Linedef l, PixelColor c)
 		{
