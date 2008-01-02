@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class VertexInfoPanel : UserControl
+	internal partial class VertexInfoPanel : UserControl
 	{
 		// Constructor
 		public VertexInfoPanel()

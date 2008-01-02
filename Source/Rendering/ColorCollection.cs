@@ -104,35 +104,35 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor[] BrightColors { get { return brightcolors; } }
 		public PixelColor[] DarkColors { get { return darkcolors; } }
 		
-		public PixelColor Background { get { return colors[BACKGROUND]; } set { colors[BACKGROUND] = value; } }
-		public PixelColor Vertices { get { return colors[VERTICES]; } set { colors[VERTICES] = value; } }
-		public PixelColor Linedefs { get { return colors[LINEDEFS]; } set { colors[LINEDEFS] = value; } }
-		public PixelColor Actions { get { return colors[ACTIONS]; } set { colors[ACTIONS] = value; } }
-		public PixelColor Sounds { get { return colors[SOUNDS]; } set { colors[SOUNDS] = value; } }
-		public PixelColor Highlight { get { return colors[HIGHLIGHT]; } set { colors[HIGHLIGHT] = value; } }
-		public PixelColor Selection { get { return colors[SELECTION]; } set { colors[SELECTION] = value; } }
-		public PixelColor Association { get { return colors[ASSOCIATION]; } set { colors[ASSOCIATION] = value; } }
-		public PixelColor Grid { get { return colors[GRID]; } set { colors[GRID] = value; } }
-		public PixelColor Grid64 { get { return colors[GRID64]; } set { colors[GRID64] = value; } }
+		public PixelColor Background { get { return colors[BACKGROUND]; } internal set { colors[BACKGROUND] = value; } }
+		public PixelColor Vertices { get { return colors[VERTICES]; } internal set { colors[VERTICES] = value; } }
+		public PixelColor Linedefs { get { return colors[LINEDEFS]; } internal set { colors[LINEDEFS] = value; } }
+		public PixelColor Actions { get { return colors[ACTIONS]; } internal set { colors[ACTIONS] = value; } }
+		public PixelColor Sounds { get { return colors[SOUNDS]; } internal set { colors[SOUNDS] = value; } }
+		public PixelColor Highlight { get { return colors[HIGHLIGHT]; } internal set { colors[HIGHLIGHT] = value; } }
+		public PixelColor Selection { get { return colors[SELECTION]; } internal set { colors[SELECTION] = value; } }
+		public PixelColor Association { get { return colors[ASSOCIATION]; } internal set { colors[ASSOCIATION] = value; } }
+		public PixelColor Grid { get { return colors[GRID]; } internal set { colors[GRID] = value; } }
+		public PixelColor Grid64 { get { return colors[GRID64]; } internal set { colors[GRID64] = value; } }
 
-		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } set { colors[CROSSHAIR3D] = value; } }
-		public PixelColor Highlight3D { get { return colors[HIGHLIGHT3D]; } set { colors[HIGHLIGHT3D] = value; } }
-		public PixelColor Selection3D { get { return colors[SELECTION3D]; } set { colors[SELECTION3D] = value; } }
+		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } internal set { colors[CROSSHAIR3D] = value; } }
+		public PixelColor Highlight3D { get { return colors[HIGHLIGHT3D]; } internal set { colors[HIGHLIGHT3D] = value; } }
+		public PixelColor Selection3D { get { return colors[SELECTION3D]; } internal set { colors[SELECTION3D] = value; } }
 
-		public PixelColor ScriptBackground { get { return colors[SCRIPTBACKGROUND]; } set { colors[SCRIPTBACKGROUND] = value; } }
-		public PixelColor LineNumbers { get { return colors[LINENUMBERS]; } set { colors[LINENUMBERS] = value; } }
-		public PixelColor PlainText { get { return colors[PLAINTEXT]; } set { colors[PLAINTEXT] = value; } }
-		public PixelColor Comments { get { return colors[COMMENTS]; } set { colors[COMMENTS] = value; } }
-		public PixelColor Keywords { get { return colors[KEYWORDS]; } set { colors[KEYWORDS] = value; } }
-		public PixelColor Literals { get { return colors[LITERALS]; } set { colors[LITERALS] = value; } }
-		public PixelColor Constants { get { return colors[CONSTANTS]; } set { colors[CONSTANTS] = value; } }
+		public PixelColor ScriptBackground { get { return colors[SCRIPTBACKGROUND]; } internal set { colors[SCRIPTBACKGROUND] = value; } }
+		public PixelColor LineNumbers { get { return colors[LINENUMBERS]; } internal set { colors[LINENUMBERS] = value; } }
+		public PixelColor PlainText { get { return colors[PLAINTEXT]; } internal set { colors[PLAINTEXT] = value; } }
+		public PixelColor Comments { get { return colors[COMMENTS]; } internal set { colors[COMMENTS] = value; } }
+		public PixelColor Keywords { get { return colors[KEYWORDS]; } internal set { colors[KEYWORDS] = value; } }
+		public PixelColor Literals { get { return colors[LITERALS]; } internal set { colors[LITERALS] = value; } }
+		public PixelColor Constants { get { return colors[CONSTANTS]; } internal set { colors[CONSTANTS] = value; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor for settings from configuration
-		public ColorCollection(Configuration cfg)
+		internal ColorCollection(Configuration cfg)
 		{
 			// Initialize
 			colors = new PixelColor[NUM_COLORS];
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// Copy constructor
-		public ColorCollection(ColorCollection collection)
+		internal ColorCollection(ColorCollection collection)
 		{
 			// Initialize
 			colors = new PixelColor[NUM_COLORS];
@@ -205,7 +205,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This creates assist colors
-		public void CreateAssistColors()
+		internal void CreateAssistColors()
 		{
 			ColorValue o;
 			ColorValue c = new ColorValue(1f, 0f, 0f, 0f);
@@ -231,7 +231,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This applies colors to this collection
-		public void Apply(ColorCollection collection)
+		internal void Apply(ColorCollection collection)
 		{
 			// Copy all colors
 			for(int i = 0; i < NUM_COLORS; i++)
@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This saves colors to configuration
-		public void SaveColors(Configuration cfg)
+		internal void SaveColors(Configuration cfg)
 		{
 			// Write all colors to config
 			for(int i = 0; i < NUM_COLORS; i++)

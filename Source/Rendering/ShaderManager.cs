@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public class ShaderManager : IDisposable, ID3DResource
+	internal class ShaderManager : ID3DResource
 	{
 		#region ================== Constants
 
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?

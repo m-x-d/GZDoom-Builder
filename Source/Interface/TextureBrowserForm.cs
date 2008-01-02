@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class TextureBrowserForm : DelayedForm
+	internal partial class TextureBrowserForm : DelayedForm
 	{
 		// Variables
 		private string selectedname;

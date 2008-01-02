@@ -31,7 +31,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class NodebuilderInfo : IComparable<NodebuilderInfo>
+	internal class NodebuilderInfo : IComparable<NodebuilderInfo>
 	{
 		#region ================== Constants
 

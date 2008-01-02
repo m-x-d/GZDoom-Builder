@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class ActionBrowserForm : DelayedForm
+	internal partial class ActionBrowserForm : DelayedForm
 	{
 		// Constants
 		private const int MAX_OPTIONS = 8;

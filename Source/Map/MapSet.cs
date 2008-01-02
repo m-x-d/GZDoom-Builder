@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class MapSet : IDisposable
+	public sealed class MapSet
 	{
 		#region ================== Constants
 
@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Map
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			ArrayList list;

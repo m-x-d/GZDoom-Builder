@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public LinedefActionInfo(int index, string desc)
+		internal LinedefActionInfo(int index, string desc)
 		{
 			string[] parts;
 			int p = 0;
@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// Constructor
-		public LinedefActionInfo(int index, Configuration cfg)
+		internal LinedefActionInfo(int index, Configuration cfg)
 		{
 			string actionsetting = "linedeftypes." + index.ToString(CultureInfo.InvariantCulture);
 			string desc;

@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public sealed class WADReader : DataReader
+	internal sealed class WADReader : DataReader
 	{
 		#region ================== Constants
 
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Data
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?

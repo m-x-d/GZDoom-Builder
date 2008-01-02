@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class PreferencesForm : DelayedForm
+	internal partial class PreferencesForm : DelayedForm
 	{
 		#region ================== Variables
 

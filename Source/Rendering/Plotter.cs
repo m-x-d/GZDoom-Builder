@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public unsafe sealed class Plotter
+	internal unsafe sealed class Plotter
 	{
 		#region ================== Constants
 

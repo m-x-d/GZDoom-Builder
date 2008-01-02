@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public GameConfiguration(Configuration cfg)
+		internal GameConfiguration(Configuration cfg)
 		{
 			// Initialize
 			this.cfg = cfg;
@@ -391,6 +391,12 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Not generalized
 			return null;
+		}
+		
+		// This checks if a specific edit mode class is listed
+		public bool IsEditModeSpecified(string classname)
+		{
+			return cfg.SettingExists("additionalmodes." + classname.ToString(CultureInfo.InvariantCulture));
 		}
 		
 		#endregion

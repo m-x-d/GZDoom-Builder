@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class LinedefEditForm : DelayedForm
+	internal partial class LinedefEditForm : DelayedForm
 	{
 		// Variables
 		private ICollection<Linedef> lines;
@@ -199,16 +199,6 @@ namespace CodeImp.DoomBuilder.Interface
 					if(backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
 				}
 			}
-		}
-
-		// This shows the dialog to edit lines
-		public static void EditLinedefs(IWin32Window owner, ICollection<Linedef> lines)
-		{
-			// Show line edit dialog
-			LinedefEditForm f = new LinedefEditForm();
-			f.Setup(lines);
-			f.ShowDialog(owner);
-			f.Dispose();
 		}
 		
 		// Front side (un)checked

@@ -1,6 +1,6 @@
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class ResourceListEditor
+	partial class ResourceListEditor
 	{
 		/// <summary> 
 		/// Required designer variable.

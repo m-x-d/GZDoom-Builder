@@ -31,7 +31,7 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public sealed class PK3Reader : DataReader
+	internal sealed class PK3Reader : DataReader
 	{
 		#region ================== Constants
 

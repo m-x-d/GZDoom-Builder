@@ -31,6 +31,12 @@ namespace CodeImp.DoomBuilder.Rendering
 {
 	public struct PixelColor
 	{
+		#region ================== Statics
+
+		public static readonly PixelColor Transparent = new PixelColor(0, 0, 0, 0);
+		
+		#endregion
+
 		#region ================== Variables
 
 		// Members

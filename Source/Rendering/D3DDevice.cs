@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.Interface;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public class D3DDevice : IDisposable
+	internal class D3DDevice
 	{
 		#region ================== Constants
 
@@ -67,20 +67,20 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		public Device Device { get { return device; } }
+		internal Device Device { get { return device; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public RenderTargetControl RenderTarget { get { return rendertarget; } }
-		public Viewport Viewport { get { return viewport; } }
-		public ShaderManager Shaders { get { return shaders; } }
-		public Surface BackBuffer { get { return backbuffer; } }
-		public Surface DepthBuffer { get { return depthbuffer; } }
+		internal RenderTargetControl RenderTarget { get { return rendertarget; } }
+		internal Viewport Viewport { get { return viewport; } }
+		internal ShaderManager Shaders { get { return shaders; } }
+		internal Surface BackBuffer { get { return backbuffer; } }
+		internal Surface DepthBuffer { get { return depthbuffer; } }
 		
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public D3DDevice(RenderTargetControl rendertarget)
+		internal D3DDevice(RenderTargetControl rendertarget)
 		{
 			// Set render target
 			this.rendertarget = rendertarget;
@@ -92,8 +92,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
-		public void Dispose()
+		// Disposer
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -283,21 +283,21 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Resetting
 
 		// This registers a resource
-		public void RegisterResource(ID3DResource res)
+		internal void RegisterResource(ID3DResource res)
 		{
 			// Add resource
 			resources.Add(res);
 		}
 
 		// This unregisters a resource
-		public void UnregisterResource(ID3DResource res)
+		internal void UnregisterResource(ID3DResource res)
 		{
 			// Remove resource
 			resources.Remove(res);
 		}
 		
 		// This resets the device and returns true on success
-		public bool Reset()
+		internal bool Reset()
 		{
 			PresentParameters displaypp;
 

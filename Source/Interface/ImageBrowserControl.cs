@@ -36,7 +36,7 @@ using System.Drawing.Drawing2D;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class ImageBrowserControl : UserControl
+	internal partial class ImageBrowserControl : UserControl
 	{
 		#region ================== Delegates / Events
 

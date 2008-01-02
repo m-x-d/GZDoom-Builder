@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class SectorInfoPanel : UserControl
+	internal partial class SectorInfoPanel : UserControl
 	{
 		// Constructor
 		public SectorInfoPanel()

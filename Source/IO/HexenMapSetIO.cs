@@ -29,7 +29,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public class HexenMapSetIO : MapSetIO
+	internal class HexenMapSetIO : MapSetIO
 	{
 		#region ================== Constants
 

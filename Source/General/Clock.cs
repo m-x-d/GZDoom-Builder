@@ -28,7 +28,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder
 {
-	public class Clock : IDisposable
+	public class Clock
 	{
 		#region ================== Declarations
 		
@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder
 			GC.SuppressFinalize(this);
 		}
 		
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?

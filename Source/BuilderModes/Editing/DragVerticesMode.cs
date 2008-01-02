@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -37,8 +38,9 @@ using System.Drawing;
 // This mode if for quickly dragging vertices without a layer.
 // The geometry is merged and the mode returns to VerticesMode when the mouse is released.
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
+	[EditMode]
 	public class DragVerticesMode : ClassicMode
 	{
 		#region ================== Constants
@@ -77,6 +79,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
+		// Just keep the vertices mode button checked
+		public override string EditModeButtonName { get { return typeof(VerticesMode).Name; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -116,7 +121,7 @@ namespace CodeImp.DoomBuilder.Editing
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -219,9 +224,6 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Engage()
 		{
 			base.Engage();
-
-			// Check vertices button on main window
-			General.MainWindow.SetVerticesChecked(true);
 		}
 		
 		// Disenagaging
@@ -256,10 +258,9 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 
 			// Hide highlight info
-			General.MainWindow.HideInfo();
+			General.Interface.HideInfo();
 
-			// Uncheck vertices button on main window
-			General.MainWindow.SetVerticesChecked(false);
+			// Done
 			Cursor.Current = Cursors.Default;
 		}
 
@@ -287,8 +288,8 @@ namespace CodeImp.DoomBuilder.Editing
 		// This updates the dragging
 		private void Update()
 		{
-			snaptogrid = General.MainWindow.ShiftState ^ General.MainWindow.SnapToGrid;
-			snaptonearest = General.MainWindow.CtrlState;
+			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			snaptonearest = General.Interface.CtrlState;
 			
 			// Move selected geometry
 			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest))
@@ -297,7 +298,7 @@ namespace CodeImp.DoomBuilder.Editing
 				General.Map.Map.Update();
 
 				// Redraw
-				General.MainWindow.RedrawDisplay();
+				General.Interface.RedrawDisplay();
 			}
 		}
 
@@ -325,16 +326,16 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void KeyUp(KeyEventArgs e)
 		{
 			base.KeyUp(e);
-			if(snaptogrid != General.MainWindow.ShiftState ^ General.MainWindow.SnapToGrid) Update();
-			if(snaptonearest != General.MainWindow.CtrlState) Update();
+			if(snaptogrid != General.Interface.ShiftState ^ General.Interface.SnapToGrid) Update();
+			if(snaptonearest != General.Interface.CtrlState) Update();
 		}
 
 		// When a key is pressed
 		public override void KeyDown(KeyEventArgs e)
 		{
 			base.KeyDown(e);
-			if(snaptogrid != General.MainWindow.ShiftState ^ General.MainWindow.SnapToGrid) Update();
-			if(snaptonearest != General.MainWindow.CtrlState) Update();
+			if(snaptogrid != General.Interface.ShiftState ^ General.Interface.SnapToGrid) Update();
+			if(snaptonearest != General.Interface.CtrlState) Update();
 		}
 		
 		#endregion

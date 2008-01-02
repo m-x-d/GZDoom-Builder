@@ -29,7 +29,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class AboutForm : DelayedForm
+	internal partial class AboutForm : DelayedForm
 	{
 		// Constructor
 		public AboutForm()

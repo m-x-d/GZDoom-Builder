@@ -33,7 +33,7 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public unsafe interface IImageReader
+	internal unsafe interface IImageReader
 	{
 		// Methods
 		Bitmap ReadAsBitmap(Stream stream);

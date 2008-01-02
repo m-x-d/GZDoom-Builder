@@ -29,7 +29,7 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class ResourceListEditor : UserControl
+	internal partial class ResourceListEditor : UserControl
 	{
 		#region ================== Delegates / Events
 

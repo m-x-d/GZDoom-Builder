@@ -25,14 +25,17 @@ using CodeImp.DoomBuilder.Properties;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
 using System.Collections;
+using System.Reflection;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	public class ActionManager : IDisposable
+	internal class ActionManager
 	{
 		#region ================== Constants
+
+		private const string ACTIONS_RESOURCE = "Actions.cfg";
 
 		#endregion
 
@@ -62,14 +65,14 @@ namespace CodeImp.DoomBuilder.Controls
 			General.WriteLogLine("Starting action manager...");
 			actions = new Dictionary<string, Action>();
 
-			// Load all actions
-			LoadActions();
+			// Load all actions in this assembly
+			LoadActions(General.ThisAssembly);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public void Dispose()
 		{
 			// Not already disposed?
@@ -86,45 +89,73 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Actions
 
-		// This loads all actions
-		private void LoadActions()
+		// This loads all actions from an assembly
+		public void LoadActions(Assembly asm)
 		{
 			Stream actionsdata;
 			StreamReader actionsreader;
 			Configuration cfg;
 			string name, title, desc;
 			bool amouse, akeys, ascroll;
-			int key;
-			
-			// Get a stream from the resource
-			actionsdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources.Actions.cfg");
-			actionsreader = new StreamReader(actionsdata, Encoding.ASCII);
-			
-			// Load configuration from stream
-			cfg = new Configuration();
-			cfg.InputConfiguration(actionsreader.ReadToEnd());
+			string[] resnames;
+			AssemblyName asmname = asm.GetName();
 
-			// Done with the resource
-			actionsreader.Dispose();
-			actionsdata.Dispose();
-
-			// Go for all objects in the configuration
-			foreach(DictionaryEntry a in cfg.Root)
+			// Find a resource named Actions.cfg
+			resnames = asm.GetManifestResourceNames();
+			foreach(string rn in resnames)
 			{
-				// Get action properties
-				name = a.Key.ToString();
-				title = cfg.ReadSetting(name + ".title", "[" + name + "]");
-				desc = cfg.ReadSetting(name + ".description", "");
-				key = General.Settings.ReadSetting("shortcuts." + name, 0);
-				akeys = cfg.ReadSetting(name + ".allowkeys", false);
-				amouse = cfg.ReadSetting(name + ".allowmouse", false);
-				ascroll = cfg.ReadSetting(name + ".allowscroll", false);
-				
-				// Create an action
-				actions.Add(name, new Action(name, title, desc, key, akeys, amouse, ascroll));
+				// Found one?
+				if(rn.EndsWith(ACTIONS_RESOURCE, StringComparison.InvariantCultureIgnoreCase))
+				{
+					// Get a stream from the resource
+					actionsdata = asm.GetManifestResourceStream(rn);
+					actionsreader = new StreamReader(actionsdata, Encoding.ASCII);
+
+					// Load configuration from stream
+					cfg = new Configuration();
+					cfg.InputConfiguration(actionsreader.ReadToEnd());
+
+					// Done with the resource
+					actionsreader.Dispose();
+					actionsdata.Dispose();
+
+					// Go for all objects in the configuration
+					foreach(DictionaryEntry a in cfg.Root)
+					{
+						// Get action properties
+						name = asmname.Name.ToLowerInvariant() + "_" + a.Key.ToString();
+						title = cfg.ReadSetting(a.Key + ".title", "[" + name + "]");
+						desc = cfg.ReadSetting(a.Key + ".description", "");
+						akeys = cfg.ReadSetting(a.Key + ".allowkeys", false);
+						amouse = cfg.ReadSetting(a.Key + ".allowmouse", false);
+						ascroll = cfg.ReadSetting(a.Key + ".allowscroll", false);
+
+						// Create an action
+						CreateAction(name, title, desc, akeys, amouse, ascroll);
+					}
+				}
 			}
 		}
 
+		// This manually creates an action
+		private void CreateAction(string name, string title, string desc, bool allowkeys, bool allowmouse, bool allowscroll)
+		{
+			// Action does not exist yet?
+			if(!actions.ContainsKey(name))
+			{
+				// Read the key from configuration
+				int key = General.Settings.ReadSetting("shortcuts." + name, 0);
+
+				// Create an action
+				actions.Add(name, new Action(name, title, desc, key, allowkeys, allowmouse, allowscroll));
+			}
+			else
+			{
+				// Action already exists!
+				General.WriteLogLine("WARNING: Action '" + name + "' already exists. Action names must be unique!");
+			}
+		}
+		
 		// This checks if a given action exists
 		public bool Exists(string action)
 		{

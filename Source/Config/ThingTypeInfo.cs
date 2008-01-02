@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ThingTypeInfo(int index)
+		internal ThingTypeInfo(int index)
 		{
 			// Initialize
 			this.index = index;
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// Constructor
-		public ThingTypeInfo(ThingCategory cat, int index, Configuration cfg)
+		internal ThingTypeInfo(ThingCategory cat, int index, Configuration cfg)
 		{
 			string key = index.ToString(CultureInfo.InvariantCulture);
 			

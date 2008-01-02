@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public class RenderTargetControl : Panel
+	internal class RenderTargetControl : Panel
 	{
 		#region ================== Constants
 
@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.SetStyle(ControlStyles.FixedHeight, true);
 		}
 		
-		// Diposer
+		// Disposer
 		protected override void Dispose(bool disposing)
 		{
 			// Clean up

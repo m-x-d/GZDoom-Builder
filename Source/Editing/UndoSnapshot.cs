@@ -35,7 +35,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public class UndoSnapshot
+	internal class UndoSnapshot
 	{
 		public MapSet map;
 		public string description;

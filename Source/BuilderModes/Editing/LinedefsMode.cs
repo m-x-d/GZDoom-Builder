@@ -29,11 +29,16 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
+	[EditMode(SwitchAction = "linedefsmode",
+			  ButtonDesc = "Linedefs Mode",
+			  ButtonImage = "LinesMode.png",
+			  ButtonOrder = int.MinValue + 1)]
 	public class LinedefsMode : ClassicMode
 	{
 		#region ================== Constants
@@ -60,7 +65,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
@@ -90,9 +95,6 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void Engage()
 		{
 			base.Engage();
-
-			// Check linedefs button on main window
-			General.MainWindow.SetLinedefsChecked(true);
 		}
 
 		// Mode disengages
@@ -117,10 +119,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 			
 			// Hide highlight info
-			General.MainWindow.HideInfo();
-
-			// Uncheck linedefs button on main window
-			General.MainWindow.SetLinedefsChecked(false);
+			General.Interface.HideInfo();
 		}
 
 		// This redraws the display
@@ -179,9 +178,9 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
-				General.MainWindow.ShowLinedefInfo(highlighted);
+				General.Interface.ShowLinedefInfo(highlighted);
 			else
-				General.MainWindow.HideInfo();
+				General.Interface.HideInfo();
 		}
 
 		// Mouse moves
@@ -242,7 +241,7 @@ namespace CodeImp.DoomBuilder.Editing
 						// Make this the only selection
 						General.Map.Map.ClearSelectedLinedefs();
 						highlighted.Selected = true;
-						General.MainWindow.RedrawDisplay();
+						General.Interface.RedrawDisplay();
 					}
 
 					// Update display
@@ -286,13 +285,13 @@ namespace CodeImp.DoomBuilder.Editing
 					if(selected.Count > 0)
 					{
 						// Show line edit dialog
-						LinedefEditForm.EditLinedefs(General.MainWindow, selected);
+						General.Interface.ShowEditLinedefs(selected);
 						
 						// When a single line was selected, deselect it now
 						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 
 						// Update entire display
-						General.MainWindow.RedrawDisplay();
+						General.Interface.RedrawDisplay();
 					}
 				}
 			}
