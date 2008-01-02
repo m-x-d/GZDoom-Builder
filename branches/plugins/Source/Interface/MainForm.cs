@@ -35,7 +35,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class MainForm : DelayedForm
+	public partial class MainForm : DelayedForm, IMainForm
 	{
 		#region ================== Constants
 
@@ -510,6 +510,32 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 		}
 		
+		// This removes the config-specific editing mode buttons
+		internal void RemoveSpecificEditModeButtons()
+		{
+			bool removed;
+
+			do
+			{
+				// Go for all items
+				removed = false;
+				foreach(ToolStripItem i in editmodeitems)
+				{
+					// Only remove the button if it is for a config-specific editing mode
+					if((i.Tag as EditModeInfo).ConfigSpecific)
+					{
+						// Remove it and restart
+						editmodeitems.Remove(i);
+						toolbar.Items.Remove(i);
+						menuedit.DropDownItems.Remove(i);
+						removed = true;
+						break;
+					}
+				}
+			}
+			while(removed);
+		}
+		
 		// This adds an editing mode button to the toolbar and edit menu
 		internal void AddEditModeButton(EditModeInfo modeinfo)
 		{
@@ -522,15 +548,15 @@ namespace CodeImp.DoomBuilder.Interface
 			item.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			item.Tag = modeinfo;
 			item.Enabled = (General.Map != null);
-			toolbar.Items.Insert(index + 1, item);
+			toolbar.Items.Insert(index, item);
 			editmodeitems.Add(item);
-
+			
 			// Create menu item
 			index = menuedit.DropDownItems.IndexOf(itemeditmodesseperator);
 			item = new ToolStripMenuItem(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
 			item.Tag = modeinfo;
 			item.Enabled = (General.Map != null);
-			menuedit.DropDownItems.Insert(index + 1, item);
+			menuedit.DropDownItems.Insert(index, item);
 			editmodeitems.Add(item);
 		}
 
@@ -827,7 +853,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// This adds a recent file to the list
-		public void AddRecentFile(string filename)
+		internal void AddRecentFile(string filename)
 		{
 			int movedownto = MAX_RECENT_FILES - 1;
 			

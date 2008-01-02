@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.Disengage();
 
 			// Hide highlight info
-			General.MainWindow.HideInfo();
+			General.Interface.HideInfo();
 		}
 
 		// This redraws the display
@@ -152,9 +152,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
-				General.MainWindow.ShowThingInfo(highlighted);
+				General.Interface.ShowThingInfo(highlighted);
 			else
-				General.MainWindow.HideInfo();
+				General.Interface.HideInfo();
 		}
 
 		// Mouse moves
@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						// Make this the only selection
 						General.Map.Map.ClearSelectedThings();
 						highlighted.Selected = true;
-						General.MainWindow.RedrawDisplay();
+						General.Interface.RedrawDisplay();
 					}
 
 					// Update display
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
 
 						// Update entire display
-						General.MainWindow.RedrawDisplay();
+						General.Interface.RedrawDisplay();
 					}
 				}
 			}

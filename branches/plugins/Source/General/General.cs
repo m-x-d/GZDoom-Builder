@@ -124,7 +124,8 @@ namespace CodeImp.DoomBuilder
 		public static string ConfigsPath { get { return configspath; } }
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
-		public static MainForm MainWindow { get { return mainwindow; } }
+		internal static MainForm MainWindow { get { return mainwindow; } }
+		public static IMainForm Interface { get { return mainwindow; } }
 		public static ProgramConfiguration Settings { get { return settings; } }
 		public static ColorCollection Colors { get { return colors; } }
 		internal static List<ConfigurationInfo> Configs { get { return configs; } }

@@ -35,16 +35,16 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-			System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-			System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 			System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+			System.Windows.Forms.ToolStripSeparator toolstripSeperator1;
+			System.Windows.Forms.ToolStripSeparator toolstripSeperator6;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-			this.buttoneditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
 			this.itemeditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
+			this.buttoneditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
 			this.poscommalabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menumain = new System.Windows.Forms.MenuStrip();
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,13 +118,13 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+			toolstripSeperator1 = new System.Windows.Forms.ToolStripSeparator();
+			toolstripSeperator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.menumain.SuspendLayout();
 			this.toolbar.SuspendLayout();
 			this.statusbar.SuspendLayout();
@@ -163,10 +163,10 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator9.Name = "toolStripSeparator9";
 			toolStripSeparator9.Size = new System.Drawing.Size(6, 23);
 			// 
-			// toolStripSeparator6
+			// itemeditmodesseperator
 			// 
-			toolStripSeparator6.Name = "toolStripSeparator6";
-			toolStripSeparator6.Size = new System.Drawing.Size(162, 6);
+			this.itemeditmodesseperator.Name = "itemeditmodesseperator";
+			this.itemeditmodesseperator.Size = new System.Drawing.Size(162, 6);
 			// 
 			// toolStripSeparator3
 			// 
@@ -174,11 +174,11 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator3.Name = "toolStripSeparator3";
 			toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
 			// 
-			// toolStripSeparator7
+			// buttoneditmodesseperator
 			// 
-			toolStripSeparator7.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			toolStripSeparator7.Name = "toolStripSeparator7";
-			toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+			this.buttoneditmodesseperator.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.buttoneditmodesseperator.Name = "buttoneditmodesseperator";
+			this.buttoneditmodesseperator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// toolStripSeparator10
 			// 
@@ -201,16 +201,16 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator11.Name = "toolStripSeparator11";
 			toolStripSeparator11.Size = new System.Drawing.Size(162, 6);
 			// 
-			// buttoneditmodesseperator
+			// toolstripSeperator1
 			// 
-			this.buttoneditmodesseperator.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.buttoneditmodesseperator.Name = "buttoneditmodesseperator";
-			this.buttoneditmodesseperator.Size = new System.Drawing.Size(6, 25);
+			toolstripSeperator1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			toolstripSeperator1.Name = "toolstripSeperator1";
+			toolstripSeperator1.Size = new System.Drawing.Size(6, 25);
 			// 
-			// itemeditmodesseperator
+			// toolstripSeperator6
 			// 
-			this.itemeditmodesseperator.Name = "itemeditmodesseperator";
-			this.itemeditmodesseperator.Size = new System.Drawing.Size(162, 6);
+			toolstripSeperator6.Name = "toolstripSeperator6";
+			toolstripSeperator6.Size = new System.Drawing.Size(162, 6);
 			// 
 			// poscommalabel
 			// 
@@ -319,8 +319,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.menuedit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemundo,
             this.itemredo,
+            toolstripSeperator6,
             this.itemeditmodesseperator,
-            toolStripSeparator6,
             this.itemsnaptogrid,
             this.itemautomerge,
             toolStripSeparator11,
@@ -440,8 +440,8 @@ namespace CodeImp.DoomBuilder.Interface
             toolStripSeparator10,
             this.buttonundo,
             this.buttonredo,
+            toolstripSeperator1,
             this.buttoneditmodesseperator,
-            toolStripSeparator7,
             this.buttonthingsfilter,
             this.thingfilters,
             this.toolStripSeparator8,

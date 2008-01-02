@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Editing\DragVerticesMode.cs" />
     <Compile Include="Editing\LinedefsMode.cs" />
+    <Compile Include="Editing\WAuthorMode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Editing\SectorsMode.cs" />
     <Compile Include="Editing\ThingsMode.cs" />
@@ -64,6 +65,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\SectorsMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\WAuthor.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

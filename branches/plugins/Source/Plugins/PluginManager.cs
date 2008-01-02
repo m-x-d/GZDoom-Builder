@@ -99,8 +99,8 @@ namespace CodeImp.DoomBuilder.Plugins
 			// Go for all edit modes to add buttons
 			foreach(EditModeInfo emi in editmodes)
 			{
-				// Add a button to interface?
-				if((emi.ButtonImage != null) && (emi.ButtonDesc != null))
+				// Add all non-config-specific buttons to interface
+				if((emi.ButtonImage != null) && (emi.ButtonDesc != null) && !emi.ConfigSpecific)
 					General.MainWindow.AddEditModeButton(emi);
 			}
 
@@ -138,6 +138,25 @@ namespace CodeImp.DoomBuilder.Plugins
 
 			// No such mode found
 			return null;
+		}
+		
+		// This is called when the game canfiguration is set or changed
+		public void GameConfigurationChanged()
+		{
+			// Remove all config-specific editing mode buttons from toolbar
+			General.MainWindow.RemoveSpecificEditModeButtons();
+
+			// Go for all edit modes to add buttons
+			foreach(EditModeInfo emi in editmodes)
+			{
+				// Add only non-config-specific buttons to interface
+				if((emi.ButtonImage != null) && (emi.ButtonDesc != null) && emi.ConfigSpecific)
+				{
+					// Add if this button is specified by the game config
+					if(General.Map.Config.IsEditModeSpecified(emi.Type.Name))
+						General.MainWindow.AddEditModeButton(emi);
+				}
+			}
 		}
 		
 		#endregion

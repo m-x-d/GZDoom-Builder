@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			}
 			
 			// Hide highlight info
-			General.MainWindow.HideInfo();
+			General.Interface.HideInfo();
 		}
 
 		// This redraws the display
@@ -180,9 +180,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
-				General.MainWindow.ShowSectorInfo(highlighted);
+				General.Interface.ShowSectorInfo(highlighted);
 			else
-				General.MainWindow.HideInfo();
+				General.Interface.HideInfo();
 		}
 		
 		// Mouse moves

@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// Mode type
 		private Plugin plugin;
 		private Type type;
+		private bool configspecific;
 		
 		// Mode switching
 		private ActionAttribute switchactionattr = null;
@@ -63,6 +64,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public ActionAttribute SwitchAction { get { return switchactionattr; } }
 		public Image ButtonImage { get { return buttonimage; } }
 		public string ButtonDesc { get { return buttondesc; } }
+		public bool ConfigSpecific { get { return configspecific; } }
 
 		#endregion
 
@@ -74,7 +76,8 @@ namespace CodeImp.DoomBuilder.Editing
 			// Initialize
 			this.plugin = plugin;
 			this.type = type;
-
+			this.configspecific = attr.ConfigSpecific;
+			
 			// Make switch action info
 			if((attr.SwitchAction != null) && (attr.SwitchAction.Length > 0))
 			{
@@ -158,8 +161,8 @@ namespace CodeImp.DoomBuilder.Editing
 		// Compare by button order
 		public int CompareTo(EditModeInfo other)
 		{
-			if(this.buttonorder > other.buttonorder) return -1;
-			else if(this.buttonorder < other.buttonorder) return 1;
+			if(this.buttonorder > other.buttonorder) return 1;
+			else if(this.buttonorder < other.buttonorder) return -1;
 			else return 0;
 		}
 		

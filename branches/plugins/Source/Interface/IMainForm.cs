@@ -37,34 +37,27 @@ using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Rendering
+namespace CodeImp.DoomBuilder.Interface
 {
-	public interface IRenderer2D
+	public interface IMainForm
 	{
 		// Properties
-		float OffsetX { get; }
-		float OffsetY { get; }
-		float Scale { get; }
+		bool AltState { get; }
+		bool CtrlState { get; }
+		bool ShiftState { get; }
+		bool MouseInDisplay { get; }
+		bool AutoMerge { get; }
+		bool SnapToGrid { get; }
 
-		// Color methods
-		PixelColor DetermineLinedefColor(Linedef l);
-		PixelColor DetermineThingColor(Thing t);
-		int DetermineVertexColor(Vertex v);
-
-		// Rendering management methods
-		bool Start(bool clearstructs, bool clearthings);
-		void Finish();
-		void SetThingsRenderOrder(bool front);
-
-		// Drawing methods
-		void RenderLine(Vector2D start, Vector2D end, PixelColor c);
-		void RenderLinedef(Linedef l, PixelColor c);
-		void RenderLinedefSet(ICollection<Linedef> linedefs);
-		void RenderSector(Sector s);
-		void RenderSector(Sector s, PixelColor c);
-		void RenderThing(Thing t, PixelColor c);
-		void RenderThingSet(ICollection<Thing> things);
-		void RenderVertex(Vertex v, int colorindex);
-		void RenderVerticesSet(ICollection<Vertex> vertices);
+		// Methods
+		void DisplayReady();
+		void DisplayStatus(string status);
+		void RedrawDisplay();
+		void ShowEditLinedefs(ICollection<Linedef> lines);
+		void ShowLinedefInfo(Linedef l);
+		void ShowSectorInfo(Sector s);
+		void ShowThingInfo(Thing t);
+		void ShowVertexInfo(Vertex v);
+		void HideInfo();
 	}
 }

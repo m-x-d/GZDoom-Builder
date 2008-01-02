@@ -166,6 +166,7 @@
     <Compile Include="Interface\ImageSelectorControl.Designer.cs">
       <DependentUpon>ImageSelectorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\IMainForm.cs" />
     <Compile Include="Interface\LinedefEditForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -826,7 +826,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Present new image
 			Present();
 		}
-
+		
 		// This adds a thing in the things buffer for rendering
 		public void RenderThing(Thing t, PixelColor c)
 		{
@@ -913,6 +913,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}	
 
+		// This renders a simple line
+		public void RenderLine(Vector2D start, Vector2D end, PixelColor c)
+		{
+			// Transform coordinates
+			Vector2D v1 = start.GetTransformed(translatex, translatey, scale, -scale);
+			Vector2D v2 = end.GetTransformed(translatex, translatey, scale, -scale);
+
+			// Draw line
+			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+		}
+		
 		// This renders a single linedef
 		public void RenderLinedef(Linedef l, PixelColor c)
 		{

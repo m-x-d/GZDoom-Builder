@@ -393,6 +393,12 @@ namespace CodeImp.DoomBuilder.Config
 			return null;
 		}
 		
+		// This checks if a specific edit mode class is listed
+		public bool IsEditModeSpecified(string classname)
+		{
+			return cfg.SettingExists("additionalmodes." + classname.ToString(CultureInfo.InvariantCulture));
+		}
+		
 		#endregion
 	}
 }
