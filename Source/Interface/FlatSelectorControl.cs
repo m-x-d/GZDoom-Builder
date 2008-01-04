@@ -37,7 +37,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal class FlatSelectorControl : ImageSelectorControl
+	public class FlatSelectorControl : ImageSelectorControl
 	{
 		// Setup
 		public void Initialize()

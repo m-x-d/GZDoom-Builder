@@ -34,13 +34,14 @@ using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-
-// This mode if for quickly dragging vertices without a layer.
-// The geometry is merged and the mode returns to VerticesMode when the mouse is released.
-
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
+	// No action or button for this mode, it is automatic.
+	// The EditMode attribute does not have to be specified unless the
+	// mode must be activated by class name rather than direct instance.
+	// In that case, just specifying the attribute like this is enough:
 	[EditMode]
+
 	public class DragVerticesMode : ClassicMode
 	{
 		#region ================== Constants
