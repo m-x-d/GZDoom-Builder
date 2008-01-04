@@ -858,7 +858,7 @@ namespace CodeImp.DoomBuilder
 			if(newmode != null) newmode.Engage();
 
 			// Dispose old mode
-			if(mode != null) mode.Dispose();
+			if(oldmode != null) oldmode.Dispose();
 
 			// Done switching
 			newmode = null;

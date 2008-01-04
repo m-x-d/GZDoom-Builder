@@ -17,22 +17,26 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using System.Globalization;
+using System.Text;
 using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
+using CodeImp.DoomBuilder.Interface;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Editing;
+using System.Drawing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Interface
+namespace CodeImp.DoomBuilder.Editing
 {
-	public class OptimizedListView : ListView
+	public abstract class VisualMode : EditMode
 	{
 		#region ================== Constants
 
@@ -40,19 +44,40 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Variables
 
+		// Disposing
+		private bool isdisposed = false;
+
 		#endregion
 
 		#region ================== Properties
 
+		// Disposing
+		public bool IsDisposed { get { return isdisposed; } }
+
 		#endregion
 
-		#region ================== Constructor
+		#region ================== Constructor / Disposer
 
 		// Constructor
-		public OptimizedListView() : base()
+		public VisualMode()
 		{
-			this.DoubleBuffered = true;
-			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+			// Initialize
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Diposer
+		public void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Clean up
+
+				// Done
+				isdisposed = true;
+			}
 		}
 
 		#endregion

@@ -37,7 +37,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal class TextureSelectorControl : ImageSelectorControl
+	public class TextureSelectorControl : ImageSelectorControl
 	{
 		// Variables
 		private bool required;

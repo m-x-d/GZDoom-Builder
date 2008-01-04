@@ -35,10 +35,11 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "verticesmode",
-			  ButtonDesc = "Vertices Mode",
-		      ButtonImage = "VerticesMode.png",
-			  ButtonOrder = int.MinValue + 0)]
+	[EditMode(SwitchAction = "verticesmode",	// Action name used to switch to this mode
+			  ButtonDesc = "Vertices Mode",		// Description on the button in toolbar/menu
+		      ButtonImage = "VerticesMode.png",	// Image resource name for the button
+			  ButtonOrder = int.MinValue + 0)]	// Position of the button (lower is more to the left)
+
 	public class VerticesMode : ClassicMode
 	{
 		#region ================== Constants

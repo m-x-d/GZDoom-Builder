@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	internal class AutoSelectTextbox : TextBox
+	public class AutoSelectTextbox : TextBox
 	{
 		#region ================== Constants
 

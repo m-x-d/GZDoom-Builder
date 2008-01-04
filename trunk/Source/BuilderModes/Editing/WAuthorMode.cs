@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			  ButtonImage = "WAuthor.png",
 			  ButtonOrder = int.MinValue + 4,
 			  ConfigSpecific = true)]
+	
 	public class WAuthorMode : ClassicMode
 	{
 		#region ================== Constants
@@ -51,6 +52,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#endregion
 
 		#region ================== Variables
+		
+		// Tools
+		protected WAuthorTools tools;
 		
 		// Highlighted item
 		protected object highlighted;
@@ -67,7 +71,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public WAuthorMode()
 		{
 			// Initialize
+			tools = new WAuthorTools();
 
+			// Enable this and you'll have a floating window
+			//tools.Show(General.Interface);
+			//General.Interface.Focus();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -79,7 +88,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(!isdisposed)
 			{
 				// Clean up
-
+				tools.Dispose();
+				
 				// Dispose base
 				base.Dispose();
 			}
@@ -319,7 +329,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		// Maybe i'll finish this later, or not even include this mode at all, not sure yet.
 		
-		/*
 		// Mouse leaves
 		public override void MouseLeave(EventArgs e)
 		{
@@ -339,6 +348,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void MouseUp(MouseEventArgs e)
 		{
 			base.MouseUp(e);
+
+			// This shows a popup menu
+			tools.LinedefPopup.Show(Cursor.Position);
 		}
 
 		// Mouse wants to drag
@@ -346,7 +358,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			base.DragStart(e);
 		}
-		*/
 		
 		#endregion
 	}

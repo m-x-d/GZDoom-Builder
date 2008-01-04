@@ -39,7 +39,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public interface IMainForm
+	public interface IMainForm : IWin32Window
 	{
 		// Properties
 		bool AltState { get; }
@@ -59,5 +59,6 @@ namespace CodeImp.DoomBuilder.Interface
 		void ShowThingInfo(Thing t);
 		void ShowVertexInfo(Vertex v);
 		void HideInfo();
+		bool Focus();
 	}
 }
