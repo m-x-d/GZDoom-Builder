@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Only do this when texture is not created yet
-				if((texture == null) && IsLoaded)
+				if(((texture == null) || (texture.Disposed)) && IsLoaded)
 				{
 					// Write to memory stream and read from memory
 					memstream = new MemoryStream();

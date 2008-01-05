@@ -27,6 +27,10 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Editing
 {
+	/// <summary>
+	/// This registers an EditMode derived class as a known editing mode within Doom Builder.
+	/// Allows automatic binding with an action and a button on the toolbar/menu.
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
 	public class EditModeAttribute : Attribute
 	{
@@ -78,7 +82,10 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
+		/// <summary>
+		/// This registers an EditMode derived class as a known editing mode within Doom Builder.
+		/// Allows automatic binding with an action and a button on the toolbar/menu.
+		/// </summary>
 		public EditModeAttribute()
 		{
 			// Initialize

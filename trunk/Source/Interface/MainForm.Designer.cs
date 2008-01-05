@@ -112,6 +112,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.linedefinfo = new CodeImp.DoomBuilder.Interface.LinedefInfoPanel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
+			this.processor = new System.Windows.Forms.Timer(this.components);
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -163,22 +164,11 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator9.Name = "toolStripSeparator9";
 			toolStripSeparator9.Size = new System.Drawing.Size(6, 23);
 			// 
-			// itemeditmodesseperator
-			// 
-			this.itemeditmodesseperator.Name = "itemeditmodesseperator";
-			this.itemeditmodesseperator.Size = new System.Drawing.Size(162, 6);
-			// 
 			// toolStripSeparator3
 			// 
 			toolStripSeparator3.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			toolStripSeparator3.Name = "toolStripSeparator3";
 			toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
-			// 
-			// buttoneditmodesseperator
-			// 
-			this.buttoneditmodesseperator.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.buttoneditmodesseperator.Name = "buttoneditmodesseperator";
-			this.buttoneditmodesseperator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// toolStripSeparator10
 			// 
@@ -211,6 +201,17 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			toolstripSeperator6.Name = "toolstripSeperator6";
 			toolstripSeperator6.Size = new System.Drawing.Size(162, 6);
+			// 
+			// itemeditmodesseperator
+			// 
+			this.itemeditmodesseperator.Name = "itemeditmodesseperator";
+			this.itemeditmodesseperator.Size = new System.Drawing.Size(162, 6);
+			// 
+			// buttoneditmodesseperator
+			// 
+			this.buttoneditmodesseperator.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.buttoneditmodesseperator.Name = "buttoneditmodesseperator";
+			this.buttoneditmodesseperator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// poscommalabel
 			// 
@@ -900,6 +901,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			// 
+			// processor
+			// 
+			this.processor.Interval = 10;
+			this.processor.Tick += new System.EventHandler(this.processor_Tick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1006,5 +1012,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripMenuItem itemautomerge;
 		private System.Windows.Forms.ToolStripSeparator buttoneditmodesseperator;
 		private System.Windows.Forms.ToolStripSeparator itemeditmodesseperator;
+		private System.Windows.Forms.Timer processor;
 	}
 }

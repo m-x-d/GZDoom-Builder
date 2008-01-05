@@ -1,4 +1,4 @@
-﻿
+
 #region ================== Copyright (c) 2007 Pascal vd Heiden
 
 /*
@@ -32,37 +32,23 @@ using SlimDX.Direct3D9;
 using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Interface
+namespace CodeImp.DoomBuilder.Rendering
 {
-	public interface IMainForm : IWin32Window
+	// WorldVertex
+	public struct WorldVertex
 	{
-		// Properties
-		bool AltState { get; }
-		bool CtrlState { get; }
-		bool ShiftState { get; }
-		bool MouseInDisplay { get; }
-		bool AutoMerge { get; }
-		bool SnapToGrid { get; }
+		// Vertex format
+		public static readonly int Stride = 6 * 4;
 
-		// Methods
-		void DisplayReady();
-		void DisplayStatus(string status);
-		void RedrawDisplay();
-		void ShowEditLinedefs(ICollection<Linedef> lines);
-		void ShowLinedefInfo(Linedef l);
-		void ShowSectorInfo(Sector s);
-		void ShowThingInfo(Thing t);
-		void ShowVertexInfo(Vertex v);
-		void HideInfo();
-		void UpdateCoordinates(Vector2D coords);
-		bool Focus();
-		void SetProcessorState(bool on);
-		void StartExclusiveMouseInput();
-		void StopExclusiveMouseInput();
+		// Members
+		public float x;
+		public float y;
+		public float z;
+		public int c;
+		public float u;
+		public float v;
 	}
 }

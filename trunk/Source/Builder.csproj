@@ -58,6 +58,7 @@
     <Compile Include="Config\ThingTypeInfo.cs" />
     <Compile Include="Controls\ActionAttribute.cs" />
     <Compile Include="Controls\KeyControl.cs" />
+    <Compile Include="Controls\MouseInput.cs" />
     <Compile Include="Data\DirectoryReader.cs" />
     <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\FlatImage.cs" />
@@ -222,6 +223,12 @@
     <Compile Include="Interface\ResourceOptionsForm.Designer.cs">
       <DependentUpon>ResourceOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\SectorEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\SectorEditForm.Designer.cs">
+      <DependentUpon>SectorEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\SectorInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -295,6 +302,7 @@
     <Compile Include="Rendering\ID3DResource.cs" />
     <Compile Include="Rendering\IRenderer2D.cs" />
     <Compile Include="Rendering\IRenderer3D.cs" />
+    <Compile Include="Rendering\VisualGeometry.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
     <Compile Include="Rendering\PixelColorBlock.cs" />
     <Compile Include="Rendering\Plotter.cs" />
@@ -303,6 +311,9 @@
     <Compile Include="Rendering\Renderer3D.cs" />
     <Compile Include="Rendering\ShaderManager.cs" />
     <Compile Include="Rendering\Things2DShader.cs" />
+    <Compile Include="Rendering\VisualSector.cs" />
+    <Compile Include="Rendering\World3DShader.cs" />
+    <Compile Include="Rendering\WorldVertex.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Sharpzip, Version=0.85.2.329, Culture=neutral, processorArchitecture=MSIL" />
@@ -421,6 +432,10 @@
       <SubType>Designer</SubType>
       <DependentUpon>ResourceListEditor.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Interface\SectorEditForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SectorEditForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\SectorInfoPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SectorInfoPanel.cs</DependentUpon>
@@ -442,5 +457,6 @@
     <EmbeddedResource Include="Resources\Thing2D.png" />
     <EmbeddedResource Include="Resources\things2d.fx" />
     <None Include="Resources\Splash2.png" />
+    <EmbeddedResource Include="Resources\world3d.fx" />
   </ItemGroup>
 </Project>

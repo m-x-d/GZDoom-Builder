@@ -17,35 +17,29 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
+using System.ComponentModel;
+using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Reflection;
-using System.Drawing;
-using System.ComponentModel;
 using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D;
-using SlimDX.Direct3D9;
-using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
-using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.IO;
+using System.IO;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Rendering
+namespace CodeImp.DoomBuilder.Interface
 {
-	public interface IRenderer3D
+	public partial class SectorEditForm : DelayedForm
 	{
-		void Finish();
-		bool Start();
-		void StartGeometry();
-		void FinishGeometry();
-		void RenderGeometry(VisualSector s);
-		void PositionAndLookAt(Vector3D pos, Vector3D lookat);
+		// Constructor
+		public SectorEditForm()
+		{
+			// Initialize
+			InitializeComponent();
+		}
 	}
 }

@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Shaders
 		private Display2DShader display2dshader;
 		private Things2DShader things2dshader;
+		private World3DShader world3dshader;
 		
 		// Device
 		private D3DDevice device;
@@ -67,6 +68,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public string ShaderTechnique { get { return shadertechnique; } }
 		public Display2DShader Display2D { get { return display2dshader; } }
 		public Things2DShader Things2D { get { return things2dshader; } }
+		public World3DShader World3D { get { return world3dshader; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -116,6 +118,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			display2dshader.Dispose();
 			things2dshader.Dispose();
+			world3dshader.Dispose();
 		}
 
 		// Load resources
@@ -131,6 +134,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize effects
 			display2dshader = new Display2DShader(this);
 			things2dshader = new Things2DShader(this);
+			world3dshader = new World3DShader(this);
 		}
 		
 		#endregion

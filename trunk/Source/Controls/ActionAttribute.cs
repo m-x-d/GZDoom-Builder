@@ -27,6 +27,9 @@ using System.Reflection;
 
 namespace CodeImp.DoomBuilder.Controls
 {
+	/// <summary>
+	/// This binds a method to an action.
+	/// </summary>
 	[AttributeUsage(AttributeTargets.Method, Inherited=true, AllowMultiple=true)]
 	public class ActionAttribute : Attribute
 	{
@@ -40,13 +43,19 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Properties
 
+		/// <summary>
+		/// Set to true to indicate this is a core Doom Builder action when used within a plugin.
+		/// </summary>
 		public bool BaseAction { get { return baseaction; } set { baseaction = value; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
+		/// <summary>
+		/// This binds a method to an action.
+		/// </summary>
+		/// <param name="action">The action name as defined in Actions.cfg resource.</param>
 		public ActionAttribute(string action)
 		{
 			// Initialize

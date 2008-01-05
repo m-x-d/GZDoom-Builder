@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 	[EditMode(SwitchAction = "visualmode",		// Action name used to switch to this mode
 			  ButtonDesc = "Visual Mode",		// Description on the button in toolbar/menu
 			  ButtonImage = "VisualMode.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 100)]	// Position of the button (lower is more to the left)
+			  ButtonOrder = 0)]					// Position of the button (lower is more to the left)
 
 	public class BaseVisualMode : VisualMode
 	{
@@ -48,15 +48,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		#region ================== Variables
 
-		// Disposing
-		private bool isdisposed = false;
-
 		#endregion
 
 		#region ================== Properties
-
-		// Disposing
-		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
@@ -72,7 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// Diposer
-		public void Dispose()
+		public override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -80,14 +74,40 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Clean up
 
 				// Done
-				isdisposed = true;
+				base.Dispose();
 			}
 		}
 
 		#endregion
 
 		#region ================== Methods
+		
+		// This draws a frame
+		public override void RedrawDisplay()
+		{
+			VisualSector vs = new VisualSector(General.GetByIndex<Sector>(General.Map.Map.Sectors, 0));
+			VisualObject vo = new VisualObject();
+			vo.Texture = General.Map.Data.GetTextureImage("TEKGREN1");
+			vo.Visible = true;
+			vs.AddGeometry(vo);
 
+			// Start drawing
+			if(renderer.Start())
+			{
+				// Begin with geometry
+				renderer.StartGeometry();
+
+				renderer.RenderGeometry(vs);
+
+				renderer.FinishGeometry();
+
+				renderer.Finish();
+			}
+
+			// Call base
+			base.RedrawDisplay();
+		}
+		
 		#endregion
 	}
 }

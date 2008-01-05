@@ -30,11 +30,15 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Editing
 {
+	/// <summary>
+	/// Provides basic user input interface functionality for a Doom Builder editing mode.
+	/// </summary>
 	public abstract class EditMode
 	{
 		#region ================== Constants
@@ -64,7 +68,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
+		/// <summary>
+		/// Provides basic user input interface functionality for a Doom Builder editing mode.
+		/// </summary>
 		public EditMode()
 		{
 			// We have no destructor
@@ -138,6 +144,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This forces the mode to cancel and return to the "parent" mode
+		[Action("cancelmode", BaseAction = true)]
 		public virtual void Cancel() { }
 		
 		// Optional interface methods
@@ -152,6 +159,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void RefreshDisplay() { }
 		public virtual void KeyDown(KeyEventArgs e) { }
 		public virtual void KeyUp(KeyEventArgs e) { }
+		public virtual void MouseInput(Vector2D delta) { }
+		public virtual void Process() { }
 		
 		#endregion
 	}
