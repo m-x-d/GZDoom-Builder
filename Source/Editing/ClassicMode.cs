@@ -36,6 +36,9 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Editing
 {
+	/// <summary>
+	/// Provides specialized functionality for a classic (2D) Doom Builder editing mode.
+	/// </summary>
 	public abstract class ClassicMode : EditMode
 	{
 		#region ================== Constants
@@ -71,7 +74,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
+		/// <summary>
+		/// Provides specialized functionality for a classic (2D) Doom Builder editing mode.
+		/// </summary>
 		public ClassicMode()
 		{
 			// Initialize
@@ -379,8 +384,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
-		// Override cancel method to bind it with its action
-		[Action("cancelmode", BaseAction = true)]
+		// Cancelling
 		public override void Cancel()
 		{
 			cancelled = true;

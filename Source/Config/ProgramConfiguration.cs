@@ -46,6 +46,9 @@ namespace CodeImp.DoomBuilder.Config
 		private int undolevels;
 		private bool blackbrowsers;
 		private float stitchdistance;
+		private int visualfov;
+		private float visualmousesensx;
+		private float visualmousesensy;
 		
 		#endregion
 
@@ -55,6 +58,9 @@ namespace CodeImp.DoomBuilder.Config
 		public int UndoLevels { get { return undolevels; } internal set { undolevels = value; } }
 		public bool BlackBrowsers { get { return blackbrowsers; } internal set { blackbrowsers = value; } }
 		public float StitchDistance { get { return stitchdistance; } internal set { stitchdistance = value; } }
+		public int VisualFOV { get { return visualfov; } internal set { visualfov = value; } }
+		public float VisualMouseSensX { get { return visualmousesensx; } internal set { visualmousesensx = value; } }
+		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
 
 		#endregion
 
@@ -81,7 +87,10 @@ namespace CodeImp.DoomBuilder.Config
 				blackbrowsers = cfg.ReadSetting("blackbrowsers", false);
 				stitchdistance = cfg.ReadSetting("stitchdistance", 2.0f);
 				undolevels = cfg.ReadSetting("undolevels", 20);
-
+				visualfov = cfg.ReadSetting("visualfov", 80);
+				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40);
+				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40);
+				
 				// Success
 				return true;
 			}
@@ -99,6 +108,9 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("blackbrowsers", blackbrowsers);
 			cfg.WriteSetting("stitchdistance", stitchdistance);
 			cfg.WriteSetting("undolevels", undolevels);
+			cfg.WriteSetting("visualfov", visualfov);
+			cfg.WriteSetting("visualmousesensx", visualmousesensx);
+			cfg.WriteSetting("visualmousesensy", visualmousesensy);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

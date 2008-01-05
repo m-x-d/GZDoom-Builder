@@ -63,6 +63,8 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		// Input
 		private bool shift, ctrl, alt;
+		private MouseInput mouseinput;
+		private Rectangle originalclip;
 		
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
@@ -220,6 +222,10 @@ namespace CodeImp.DoomBuilder.Interface
 
 			General.WriteLogLine("Closing main interface window...");
 
+			// Stop exclusive mode, if any is active
+			StopExclusiveMouseInput();
+			SetProcessorState(false);
+			
 			// Unbind methods
 			ActionAttribute.UnbindMethods(this);
 			
@@ -350,7 +356,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This changes coordinates display
-		internal void UpdateCoordinates(Vector2D coords)
+		public void UpdateCoordinates(Vector2D coords)
 		{
 			// X position
 			if(float.IsNaN(coords.x))
@@ -655,18 +661,21 @@ namespace CodeImp.DoomBuilder.Interface
 		private void display_MouseEnter(object sender, EventArgs e)
 		{
 			mouseinside = true;
-			if(General.Map != null) General.Map.Mode.MouseEnter(e);
+			if((General.Map != null) && (mouseinput == null)) General.Map.Mode.MouseEnter(e);
 		}
 
 		// Mouse leaves
 		private void display_MouseLeave(object sender, EventArgs e)
 		{
 			mouseinside = false;
-			if(General.Map != null) General.Map.Mode.MouseLeave(e);
+			if((General.Map != null) && (mouseinput == null)) General.Map.Mode.MouseLeave(e);
 		}
 
 		// Mouse moves
-		private void display_MouseMove(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseMove(e); }
+		private void display_MouseMove(object sender, MouseEventArgs e)
+		{
+			if((General.Map != null) && (mouseinput == null)) General.Map.Mode.MouseMove(e);
+		}
 
 		// Mouse up
 		private void display_MouseUp(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseUp(e); }
@@ -675,6 +684,42 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Input
 
+		// This requests exclusive mouse input
+		public void StartExclusiveMouseInput()
+		{
+			// Only when not already in exclusive mode
+			if(mouseinput == null)
+			{
+				General.WriteLogLine("Starting exclusive mouse input mode...");
+				
+				// Start special input device
+				mouseinput = new MouseInput(this);
+
+				// Lock and hide the mouse in window
+				originalclip = Cursor.Clip;
+				Cursor.Clip = display.RectangleToScreen(display.ClientRectangle);
+				Cursor.Hide();
+			}
+		}
+		
+		// This stops exclusive mouse input
+		public void StopExclusiveMouseInput()
+		{
+			// Only when in exclusive mode
+			if(mouseinput != null)
+			{
+				General.WriteLogLine("Stopping exclusive mouse input mode...");
+
+				// Stop special input device
+				mouseinput.Dispose();
+				mouseinput = null;
+
+				// Release and show the mouse
+				Cursor.Clip = originalclip;
+				Cursor.Show();
+			}
+		}
+		
 		// When the mouse wheel is changed
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
@@ -1098,6 +1143,35 @@ namespace CodeImp.DoomBuilder.Interface
 			f.Setup(lines);
 			f.ShowDialog(this);
 			f.Dispose();
+		}
+
+		#endregion
+
+		#region ================== Processor
+
+		// This toggles the processor
+		public void SetProcessorState(bool on)
+		{
+			processor.Enabled = on;
+		}
+		
+		// Processor event
+		private void processor_Tick(object sender, EventArgs e)
+		{
+			Vector2D deltamouse;
+			
+			// In exclusive mouse mode?
+			if(mouseinput != null)
+			{
+				// Process mouse input
+				deltamouse = mouseinput.Process();
+				if((General.Map != null) && (General.Map.Mode != null))
+					General.Map.Mode.MouseInput(deltamouse);
+			}
+			
+			// Process signal
+			if((General.Map != null) && (General.Map.Mode != null))
+				General.Map.Mode.Process();
 		}
 
 		#endregion

@@ -37,43 +37,44 @@ using System.Drawing.Imaging;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal sealed class Display2DShader : D3DShader
+	internal sealed class World3DShader : D3DShader
 	{
 		#region ================== Variables
 
 		// Property handlers
 		private EffectHandle texture1;
-		private EffectHandle settings;
-
+		private EffectHandle worldviewproj;
+		
 		#endregion
 
 		#region ================== Properties
 
+		public Matrix WorldViewProj { set { if(manager.Enabled) effect.SetValue(worldviewproj, value); } }
 		public Texture Texture1 { set { if(manager.Enabled) effect.SetValue(texture1, value); } }
-		
+
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Display2DShader(ShaderManager manager) : base(manager)
+		public World3DShader(ShaderManager manager) : base(manager)
 		{
 			// Load effect from file
-			effect = LoadEffect("display2d.fx");
+			effect = LoadEffect("world3d.fx");
 
 			// Get the property handlers from effect
 			if(effect != null)
 			{
+				worldviewproj = effect.GetParameter(null, "worldviewproj");
 				texture1 = effect.GetParameter(null, "texture1");
-				settings = effect.GetParameter(null, "settings");
 			}
-			
+
 			// Initialize world vertex declaration
 			VertexElement[] elements = new VertexElement[]
 			{
-				new VertexElement(0, 0, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.PositionTransformed, 0),
-				new VertexElement(0, 16, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
-				new VertexElement(0, 20, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
+				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
 				VertexElement.VertexDeclarationEnd
 			};
 			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, elements);
@@ -90,8 +91,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Clean up
 				if(texture1 != null) texture1.Dispose();
-				if(settings != null) settings.Dispose();
-				
+				if(worldviewproj != null) worldviewproj.Dispose();
+
 				// Done
 				base.Dispose();
 			}
@@ -100,13 +101,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 
 		#region ================== Methods
-
-		// This sets the settings
-		public void SetSettings(float texelx, float texely, float fsaafactor, float alpha)
-		{
-			Vector4 values = new Vector4(texelx, texely, fsaafactor, alpha);
-			if(manager.Enabled) effect.SetValue(settings, values);
-		}
 
 		#endregion
 	}

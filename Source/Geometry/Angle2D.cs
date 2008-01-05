@@ -31,6 +31,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Constants
 
 		public const float PI = (float)Math.PI;
+		public const float PIHALF = (float)Math.PI * 0.5f;
 		public const float PI2 = (float)Math.PI * 2f;
 		public const float PIDEG = 57.295779513082320876798154814105f;
 

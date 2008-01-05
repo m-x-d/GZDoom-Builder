@@ -27,70 +27,103 @@ using System.Reflection;
 using System.Drawing;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D;
-using SlimDX.Direct3D9;
-using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Rendering
+namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	internal sealed class Things2DShader : D3DShader
+	internal class VisualObject : VisualGeometry
 	{
+		#region ================== Constants
+
+		#endregion
+
 		#region ================== Variables
 
-		// Property handlers
-		private EffectHandle texture1;
+		// Disposing
+		private bool isdisposed = false;
 
 		#endregion
 
 		#region ================== Properties
 
-		public Texture Texture1 { set { if(manager.Enabled) effect.SetValue(texture1, value); } }
+		// Disposing
+		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Things2DShader(ShaderManager manager) : base(manager)
+		public VisualObject()
 		{
-			// Load effect from file
-			effect = LoadEffect("things2d.fx");
+			// Initialize
+			WorldVertex[] v = new WorldVertex[6];
 
-			// Get the property handlers from effect
-			if(effect != null)
-			{
-				texture1 = effect.GetParameter(null, "texture1");
-			}
+			v[0].c = -1;
+			v[0].x = 0.0f;
+			v[0].y = 0.0f;
+			v[0].z = 0.0f;
+			v[0].u = 0.0f;
+			v[0].v = 1.0f;
 
-			// Initialize world vertex declaration
-			VertexElement[] elements = new VertexElement[]
-			{
-				new VertexElement(0, 0, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.PositionTransformed, 0),
-				new VertexElement(0, 16, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
-				new VertexElement(0, 20, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
-				VertexElement.VertexDeclarationEnd
-			};
-			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, elements);
+			v[1].c = -1;
+			v[1].x = 0.0f;
+			v[1].y = 0.0f;
+			v[1].z = 100.0f;
+			v[1].u = 0.0f;
+			v[1].v = 0.0f;
 
+			v[2].c = -1;
+			v[2].x = 100.0f;
+			v[2].y = 50.0f;
+			v[2].z = 100.0f;
+			v[2].u = 1.0f;
+			v[2].v = 0.0f;
+
+			v[3].c = -1;
+			v[3].x = 0.0f;
+			v[3].y = 0.0f;
+			v[3].z = 100.0f;
+			v[3].u = 0.0f;
+			v[3].v = 0.0f;
+
+			v[4].c = -1;
+			v[4].x = 100.0f;
+			v[4].y = 50.0f;
+			v[4].z = 100.0f;
+			v[4].u = 1.0f;
+			v[4].v = 0.0f;
+
+			v[5].c = -1;
+			v[5].x = 100.0f;
+			v[5].y = 0.0f;
+			v[5].z = 0.0f;
+			v[5].u = 1.0f;
+			v[5].v = 1.0f;
+
+			this.SetVertices(v);
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
-		// Disposer
-		public override void Dispose()
+		// Diposer
+		public void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
 			{
 				// Clean up
-				if(texture1 != null) texture1.Dispose();
 
 				// Done
-				base.Dispose();
+				isdisposed = true;
 			}
 		}
 

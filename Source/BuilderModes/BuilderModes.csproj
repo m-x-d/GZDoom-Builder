@@ -39,6 +39,7 @@
     <Compile Include="Editing\BaseVisualMode.cs" />
     <Compile Include="Editing\DragVerticesMode.cs" />
     <Compile Include="Editing\LinedefsMode.cs" />
+    <Compile Include="Editing\VisualObject.cs" />
     <Compile Include="Editing\WAuthorMode.cs" />
     <Compile Include="Editing\WAuthorTools.cs">
       <SubType>Form</SubType>

@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -352,7 +353,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// This shows a popup menu
 			tools.LinedefPopup.Show(Cursor.Position);
 		}
-
+		
 		// Mouse wants to drag
 		protected override void DragStart(MouseEventArgs e)
 		{

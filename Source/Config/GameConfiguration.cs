@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool mixtexturesflats;
 		private bool generalizedactions;
 		private bool generalizedeffects;
+		private int start3dmodethingtype;
 		
 		// Map lumps
 		private IDictionary maplumpnames;
@@ -88,6 +89,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool MixTexturesFlats { get { return mixtexturesflats; } }
 		public bool GeneralizedActions { get { return generalizedactions; } }
 		public bool GeneralizedEffects { get { return generalizedeffects; } }
+		public int Start3DModeThingType { get { return start3dmodethingtype; } }
 		
 		// Map lumps
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
@@ -137,6 +139,7 @@ namespace CodeImp.DoomBuilder.Config
 			mixtexturesflats = cfg.ReadSetting("mixtexturesflats", false);
 			generalizedactions = cfg.ReadSetting("generalizedlinedefs", false);
 			generalizedeffects = cfg.ReadSetting("generalizedsectors", false);
+			start3dmodethingtype = cfg.ReadSetting("start3dmode", 0);
 			
 			// Get map lumps
 			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());

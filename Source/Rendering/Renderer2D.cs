@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Display2D.Texture1 = thingstex;
 			graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_BLEND_FACTOR, alpha);
 
-			// Draw the lines and vertices texture
+			// Draw the things texture
 			graphics.Shaders.Display2D.BeginPass(0);
 			//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts); } catch(Exception) { }
 			//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts);
@@ -248,6 +248,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// This is called before a device is reset
 		// (when resized or display adapter was changed)
+		/// <summary>
+		/// DO NOT USE.
+		/// </summary>
 		public override void UnloadResource()
 		{
 			// Destroy rendertargets
@@ -256,6 +259,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// This is called resets when the device is reset
 		// (when resized or display adapter was changed)
+		/// <summary>
+		/// DO NOT USE.
+		/// </summary>
 		public override void ReloadResource()
 		{
 			// Re-create rendertargets
