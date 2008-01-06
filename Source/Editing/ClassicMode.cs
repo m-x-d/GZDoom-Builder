@@ -225,6 +225,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This zooms and scrolls to fit the map in the window
+		[Action("centerinscreen", BaseAction = true)]
 		public void CenterInScreen()
 		{
 			float left = float.MaxValue;
