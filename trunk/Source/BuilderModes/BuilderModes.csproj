@@ -39,6 +39,7 @@
     <Compile Include="Editing\BaseVisualMode.cs" />
     <Compile Include="Editing\DragVerticesMode.cs" />
     <Compile Include="Editing\LinedefsMode.cs" />
+    <Compile Include="Editing\TriangulatorMode.cs" />
     <Compile Include="Editing\VisualObject.cs" />
     <Compile Include="Editing\WAuthorMode.cs" />
     <Compile Include="Editing\WAuthorTools.cs">
@@ -83,6 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\VisualMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\TriangulatorMode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

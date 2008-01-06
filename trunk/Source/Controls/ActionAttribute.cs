@@ -161,7 +161,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(General.Actions.Exists(actionname))
 				General.Actions[actionname].Bind(d);
 			else
-				throw new ArgumentException("Could not bind delegate for " + d.Method.Name + " to action \"" + actionname + "\", that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
+				General.WriteLogLine("WARNING: Could not bind delegate for " + d.Method.Name + " to action \"" + a.action + "\" (" + actionname + "), that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
 		}
 		
 		// This unbinds all methods marked with this attribute

@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Controls
 			StreamReader actionsreader;
 			Configuration cfg;
 			string name, title, desc;
-			bool amouse, akeys, ascroll;
+			bool amouse, akeys, ascroll, debugonly;
 			string[] resnames;
 			AssemblyName asmname = asm.GetName();
 
@@ -129,9 +129,14 @@ namespace CodeImp.DoomBuilder.Controls
 						akeys = cfg.ReadSetting(a.Key + ".allowkeys", false);
 						amouse = cfg.ReadSetting(a.Key + ".allowmouse", false);
 						ascroll = cfg.ReadSetting(a.Key + ".allowscroll", false);
+						debugonly = cfg.ReadSetting(a.Key + ".debugonly", false);
 
-						// Create an action
-						CreateAction(name, title, desc, akeys, amouse, ascroll);
+						// Check if action should be included
+						if(General.DebugBuild || !debugonly)
+						{
+							// Create an action
+							CreateAction(name, title, desc, akeys, amouse, ascroll);
+						}
 					}
 				}
 			}
