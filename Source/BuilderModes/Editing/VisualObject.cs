@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 			v[2].c = -1;
 			v[2].x = 100.0f;
-			v[2].y = 50.0f;
+			v[2].y = 0.0f;
 			v[2].z = 100.0f;
 			v[2].u = 1.0f;
 			v[2].v = 0.0f;
@@ -90,13 +90,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			v[3].c = -1;
 			v[3].x = 0.0f;
 			v[3].y = 0.0f;
-			v[3].z = 100.0f;
+			v[3].z = 0.0f;
 			v[3].u = 0.0f;
-			v[3].v = 0.0f;
+			v[3].v = 1.0f;
 
 			v[4].c = -1;
 			v[4].x = 100.0f;
-			v[4].y = 50.0f;
+			v[4].y = 0.0f;
 			v[4].z = 100.0f;
 			v[4].u = 1.0f;
 			v[4].v = 0.0f;

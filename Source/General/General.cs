@@ -114,6 +114,9 @@ namespace CodeImp.DoomBuilder
 		private static List<CompilerInfo> compilers;
 		private static List<NodebuilderInfo> nodebuilders;
 		
+		// States
+		private static bool debugbuild;
+
 		#endregion
 
 		#region ================== Properties
@@ -135,6 +138,7 @@ namespace CodeImp.DoomBuilder
 		internal static ActionManager Actions { get { return actions; } }
 		internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
+		public static bool DebugBuild { get { return debugbuild; } }
 		
 		#endregion
 
@@ -378,6 +382,13 @@ namespace CodeImp.DoomBuilder
 			Uri localpath;
 			Version thisversion;
 
+			// Determine states
+			#if DEBUG
+				debugbuild = true;
+			#else
+				debugbuild = false;
+			#endif
+			
 			// Enable OS visual styles
 			Application.EnableVisualStyles();
 			Application.DoEvents();		// This must be here to work around a .NET bug
