@@ -966,6 +966,16 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Draw pixel here
 			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, vertexsize, General.Colors.Colors[colorindex], General.Colors.BrightColors[colorindex], General.Colors.DarkColors[colorindex]);
 		}
+
+		// This renders a single vertex at specified coordinates
+		public void RenderVertexAt(Vector2D v, int colorindex)
+		{
+			// Transform vertex coordinates
+			Vector2D nv = v.GetTransformed(translatex, translatey, scale, -scale);
+
+			// Draw pixel here
+			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, vertexsize, General.Colors.Colors[colorindex], General.Colors.BrightColors[colorindex], General.Colors.DarkColors[colorindex]);
+		}
 		
 		// This renders a set of vertices
 		public void RenderVerticesSet(ICollection<Vertex> vertices)

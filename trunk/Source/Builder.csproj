@@ -91,6 +91,7 @@
     <Compile Include="Geometry\Angle2D.cs" />
     <Compile Include="Geometry\BSPTriangulator.cs" />
     <Compile Include="Geometry\EarClipTriangulator.cs" />
+    <Compile Include="Geometry\EarClipVertex.cs" />
     <Compile Include="Geometry\GLNodesTriangulator.cs" />
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Polygon.cs" />
