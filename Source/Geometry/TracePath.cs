@@ -96,9 +96,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// On front or back?
 					if(base[i].IsFront)
-						p.Add(base[i].Line.End.Position);
+						p.AddLast(new EarClipVertex(base[i].Line.End.Position));
 					else
-						p.Add(base[i].Line.Start.Position);
+						p.AddLast(new EarClipVertex(base[i].Line.Start.Position));
 				}
 			}
 			

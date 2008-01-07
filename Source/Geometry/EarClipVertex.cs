@@ -57,6 +57,16 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Constructor / Disposer
 
 		// Constructor
+		internal EarClipVertex(EarClipVertex v)
+		{
+			// Initialize
+			this.pos = v.pos;
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Constructor
 		internal EarClipVertex(Vector2D v)
 		{
 			// Initialize

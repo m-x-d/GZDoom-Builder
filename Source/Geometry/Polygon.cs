@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	public class Polygon : List<Vector2D>
+	public class Polygon : LinkedList<EarClipVertex>
 	{
 		#region ================== Variables
 
@@ -58,10 +58,10 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// Constructor
-		internal Polygon(Polygon p, Vector2D add) : base(p)
+		internal Polygon(Polygon p, EarClipVertex add) : base(p)
 		{
 			// Initialize
-			base.Add(add);
+			base.AddLast(add);
 			children = new List<Polygon>();
 		}
 
@@ -74,15 +74,16 @@ namespace CodeImp.DoomBuilder.Geometry
 		public bool Intersect(Vector2D p)
 		{
 			float miny, maxy, maxx, xint;
-			Vector2D v1 = base[base.Count - 1];
+			Vector2D v1 = base.Last.Value.Position;
 			Vector2D v2;
+			LinkedListNode<EarClipVertex> n = base.First;
 			int c = 0;
 			
 			// Go for all vertices
-			for(int i = 0; i < base.Count; i++)
+			while(n != null)
 			{
 				// Get next vertex
-				v2 = base[i];
+				v2 = n.Value.Position;
 
 				// Determine min/max values
 				miny = Math.Min(v1.y, v2.y);
@@ -104,6 +105,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				
 				// Move to next
 				v1 = v2;
+				n = n.Next;
 			}
 
 			// Return result
@@ -123,7 +125,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 
 			// Check if it can be inserted here
-			if(this.Intersect(p[0]))
+			if(this.Intersect(p.First.Value.Position))
 			{
 				// Make the polygon the inverse of this one
 				p.Inner = !inner;
