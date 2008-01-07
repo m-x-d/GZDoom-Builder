@@ -374,7 +374,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This shows a polygon
 		private void ShowPolygon(Polygon p, PixelColor c)
 		{
-			for(int a = 0; a < 6; a++)
+			LinkedListNode<EarClipVertex> v;
+			
+			for(int a = 0; a < 5; a++)
 			{
 				RedrawDisplay();
 				Thread.Sleep(10);
@@ -390,21 +392,23 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
 					// Go for all vertices in the polygon
-					for(int i = 1; i < p.Count; i++)
+					v = p.First;
+					while(v != null)
 					{
 						// Show the line
-						renderer.RenderLine(p[i - 1], p[i], c);
+						if(v.Next != null) renderer.RenderLine(v.Value.Position, v.Next.Value.Position, c);
+						v = v.Next;
 					}
 					
 					// Show last line as well
-					renderer.RenderLine(p[p.Count - 1], p[0], c);
+					renderer.RenderLine(p.Last.Value.Position, p.First.Value.Position, c);
 					
 					// Done
 					renderer.Finish();
 				}
 
 				// Wait a bit
-				Thread.Sleep(100);
+				Thread.Sleep(50);
 			}
 		}
 

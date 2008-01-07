@@ -119,7 +119,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			// TRACING
 			polys = DoTrace(sector);
 			
-			// TODO: CUTTING
+			// CUTTING
+			DoCutting(polys);
 			
 			// EAR-CLIPPING
 			foreach(Polygon p in polys) triangles.AddRange(DoEarClip(p));
@@ -178,17 +179,6 @@ namespace CodeImp.DoomBuilder.Geometry
 					// Insert if it belongs as a child
 					if(p.InsertChild(newpoly))
 					{
-						#if DEBUG
-						if(newpoly.Inner)
-						{
-							if(OnShowPolygon != null) OnShowPolygon(newpoly, PixelColor.FromColor(Color.DodgerBlue));
-						}
-						else
-						{
-							if(OnShowPolygon != null) OnShowPolygon(newpoly, PixelColor.FromColor(Color.OrangeRed));
-						}
-						#endif
-						
 						// Done
 						newpoly = null;
 						break;
@@ -201,10 +191,6 @@ namespace CodeImp.DoomBuilder.Geometry
 					// Then add it at root level as outer polygon
 					newpoly.Inner = false;
 					root.Add(newpoly);
-					
-					#if DEBUG
-					if(OnShowPolygon != null) OnShowPolygon(newpoly, General.Colors.Selection);
-					#endif
 				}
 			}
 
@@ -315,6 +301,188 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Cutting
 
+		// This cuts into outer polygons to solve inner polygons and make the polygon tree flat
+		private void DoCutting(List<Polygon> polys)
+		{
+			Queue<Polygon> todo = new Queue<Polygon>(polys);
+			
+			// Begin processing outer polygons
+			while(todo.Count > 0)
+			{
+				// Get outer polygon to process
+				Polygon p = todo.Dequeue();
+
+				// Any inner polygons to work with?
+				if(p.Children.Count > 0)
+				{
+					// Go for all the children
+					foreach(Polygon c in p.Children)
+					{
+						// The children of the children are outer polygons again,
+						// so move them to the root and add for processing
+						polys.AddRange(c.Children);
+						foreach(Polygon sc in c.Children) todo.Enqueue(sc);
+
+						// Remove from inner polygon
+						c.Children.Clear();
+					}
+
+					// Now do some cutting on this polygon to merge the inner polygons
+					MergeInnerPolys(p);
+				}
+			}
+		}
+
+		// This takes an outer polygon and a set of inner polygons to start cutting on
+		private void MergeInnerPolys(Polygon p)
+		{
+			LinkedList<Polygon> todo = new LinkedList<Polygon>(p.Children);
+			LinkedListNode<EarClipVertex> start;
+			LinkedListNode<Polygon> ip;
+			LinkedListNode<Polygon> found;
+			LinkedListNode<EarClipVertex> foundstart;
+			
+			// Continue until no more inner polygons to process
+			while(todo.Count > 0)
+			{
+				// Find the inner polygon with the highest x vertex
+				found = null;
+				foundstart = null;
+				ip = todo.First;
+				while(ip != null)
+				{
+					start = FindRightMostVertex(ip.Value);
+					if((foundstart == null) || (start.Value.Position.x > foundstart.Value.Position.x))
+					{
+						// Found a better start
+						found = ip;
+						foundstart = start;
+					}
+					
+					// Next!
+					ip = ip.Next;
+				}
+				
+				// Remove from todo list
+				todo.Remove(found);
+
+				// Get cut start and end
+				SplitOuterWithInner(foundstart, p, found.Value);
+			}
+			
+			// Remove the children, they should be merged in the polygon by now
+			p.Children.Clear();
+		}
+
+		// This finds the right-most vertex in an inner polygon to use for cut startpoint.
+		private LinkedListNode<EarClipVertex> FindRightMostVertex(Polygon p)
+		{
+			LinkedListNode<EarClipVertex> found = p.First;
+			LinkedListNode<EarClipVertex> v = found.Next;
+			
+			// Go for all vertices to find the on with the biggest x value
+			while(v != null)
+			{
+				if(v.Value.Position.x > found.Value.Position.x) found = v;
+				v = v.Next;
+			}
+
+			// Return result
+			return found;
+		}
+		
+		// This finds the cut coordinates and splits the other poly with inner vertices
+		private void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, Polygon p, Polygon inner)
+		{
+			Line2D starttoright = new Line2D(start.Value.Position, start.Value.Position + new Vector2D(1000.0f, 0.0f));
+			LinkedListNode<EarClipVertex> v1, v2;
+			LinkedListNode<EarClipVertex> insertbefore = null;
+			float u, ul, foundu = float.MaxValue;
+			EarClipVertex split;
+			
+			// Go for all lines in the outer polygon
+			v1 = p.Last;
+			v2 = p.First;
+			while(v2 != null)
+			{
+				// Check if the line is to the right of start
+				if((v1.Value.Position.x > start.Value.Position.x) ||
+				   (v2.Value.Position.x > start.Value.Position.x))
+				{
+					// Find intersection
+					Line2D pl = new Line2D(v1.Value.Position, v2.Value.Position);
+					pl.GetIntersection(starttoright, out u, out ul);
+					if(float.IsNaN(u))
+					{
+						// We have found a line that is perfectly horizontal
+						// (parallel to the cut scan line) Check if the line
+						// is overlapping the cut scan line.
+						if(v1.Value.Position.y == start.Value.Position.y)
+						{
+							// Calculate distance of each vertex in units
+							u = starttoright.GetNearestOnLine(v1.Value.Position);
+							ul = starttoright.GetNearestOnLine(v2.Value.Position);
+
+							// Rule out vertices before the scan line
+							if(u < 0) u = float.MaxValue;
+							if(ul < 0) ul = float.MaxValue;
+
+							// Choose closest of both vertices
+							if((u < ul) && (u < foundu))
+							{
+								insertbefore = v2;
+								foundu = u;
+							}
+							else if((u > ul) && (ul < foundu))
+							{
+								insertbefore = v2;
+								foundu = ul;
+							}
+						}
+					}
+					// Found a closer match?
+					else if((ul >= 0) && (ul <= 1) && (u > 0) && (u < foundu))
+					{
+						// Found a closer intersection
+						insertbefore = v2;
+						foundu = u;
+					}
+				}
+				
+				// Next
+				v1 = v2;
+				v2 = v2.Next;
+			}
+
+			// Found anything?
+			if(insertbefore != null)
+			{
+				// Find the position where we have to split the outer polygon
+				split = new EarClipVertex(starttoright.GetCoordinatesAt(foundu));
+
+				// Insert manual split vertices
+				p.AddBefore(insertbefore, new EarClipVertex(split));
+
+				// Start inserting from the start (do I make sense this time?)
+				v1 = start;
+				do
+				{
+					// Insert inner polygon vertex
+					p.AddBefore(insertbefore, new EarClipVertex(v1.Value));
+					if(v1.Next != null) v1 = v1.Next; else v1 = v1.List.First;
+				}
+				while(v1 != start);
+
+				// Insert manual split vertices
+				p.AddBefore(insertbefore, new EarClipVertex(start.Value));
+				p.AddBefore(insertbefore, new EarClipVertex(split));
+			}
+			else
+			{
+				throw new Exception("Can't find an edge for polygon cutting!");
+			}
+		}
+
 		#endregion
 
 		#region ================== Ear Clipping
@@ -332,17 +500,11 @@ namespace CodeImp.DoomBuilder.Geometry
 			EarClipVertex[] t, t1, t2;
 			
 			// Go for all vertices to fill list
-			foreach(Vector2D vec in poly)
-			{
-				// Add to main list
-				v = new EarClipVertex(vec);
-				v.SetVertsLink(verts.AddLast(v));
-			}
-
+			foreach(EarClipVertex vec in poly)
+				vec.SetVertsLink(verts.AddLast(vec));
+			
 			// Optimization: Vertices which have lines with the
 			// same angle are useless. Remove them!
-			// TODO: Move this optimization into TracePath::MakePolygon()? Because in
-			// there we can use the line's cached angle instead of calculating it here.
 			v = verts.First.Value;
 			while(v != null)
 			{
@@ -355,7 +517,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Check if both lines have the same angle
 				Line2D a = new Line2D(t[0].Position, t[1].Position);
 				Line2D b = new Line2D(t[1].Position, t[2].Position);
-				if(Math.Abs(Angle2D.Difference(a.GetAngle(), b.GetAngle())) < 0.0001f)
+				if(Math.Abs(Angle2D.Difference(a.GetAngle(), b.GetAngle())) < 0.00001f)
 				{
 					// Same angles, remove vertex
 					v.Remove();
@@ -465,28 +627,17 @@ namespace CodeImp.DoomBuilder.Geometry
 		private bool IsReflex(EarClipVertex[] t)
 		{
 			// Return true when corner is > 180 deg
-			return (Line2D.GetSideOfLine(t[0].Position, t[2].Position, t[1].Position) < 0.00001f);
+			//return (Line2D.GetSideOfLine(t[0].Position, t[2].Position, t[1].Position) < 0.00001f);
+			return (Line2D.GetSideOfLine(t[0].Position, t[2].Position, t[1].Position) < 0);
 		}
 		
 		// This checks if a point is inside a triangle
 		// NOTE: vertices in t must be in clockwise order!
 		private bool PointInsideTriangle(EarClipVertex[] t, Vector2D p)
 		{
-			#if DEBUG
-			
-			float a = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p);
-			float b = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p);
-			float c = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p);
-			
-			return (a < 0.00001f) && (b < 0.00001f) && (c < 0.00001f);
-			
-			#else
-			
 			return (Line2D.GetSideOfLine(t[0].Position, t[1].Position, p) < 0.00001f) &&
 				   (Line2D.GetSideOfLine(t[1].Position, t[2].Position, p) < 0.00001f) &&
 				   (Line2D.GetSideOfLine(t[2].Position, t[0].Position, p) < 0.00001f);
-			
-			#endif
 		}
 
 		#endregion
