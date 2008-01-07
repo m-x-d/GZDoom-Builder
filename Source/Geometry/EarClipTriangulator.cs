@@ -338,6 +338,32 @@ namespace CodeImp.DoomBuilder.Geometry
 				v = new EarClipVertex(vec);
 				v.SetVertsLink(verts.AddLast(v));
 			}
+
+			// Optimization: Vertices which have lines with the
+			// same angle are useless. Remove them!
+			// TODO: Move this optimization into TracePath::MakePolygon()? Because in
+			// there we can use the line's cached angle instead of calculating it here.
+			v = verts.First.Value;
+			while(v != null)
+			{
+				// Get the next vertex
+				if(v.MainListNode.Next != null) v1 = v.MainListNode.Next.Value; else v1 = null;
+				
+				// Get triangle for v
+				t = GetTriangle(v);
+				
+				// Check if both lines have the same angle
+				Line2D a = new Line2D(t[0].Position, t[1].Position);
+				Line2D b = new Line2D(t[1].Position, t[2].Position);
+				if(Math.Abs(Angle2D.Difference(a.GetAngle(), b.GetAngle())) < 0.0001f)
+				{
+					// Same angles, remove vertex
+					v.Remove();
+				}
+				
+				// Next!
+				v = v1;
+			}
 			
 			// Go for all vertices to determine reflex or convex
 			foreach(EarClipVertex vv in verts)
