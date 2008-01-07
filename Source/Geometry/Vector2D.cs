@@ -153,6 +153,17 @@ namespace CodeImp.DoomBuilder.Geometry
 			return a.x * b.x + a.y * b.y;
 		}
 
+		// This calculates the cross product
+		public static Vector2D CrossProduct(Vector2D a, Vector2D b)
+		{
+			Vector2D result = new Vector2D();
+
+			// Calculate and return the dot product
+			result.x = a.y * b.x;
+			result.y = a.x * b.y;
+			return result;
+		}
+		
 		// This compares a vector
 		public static bool operator ==(Vector2D a, Vector2D b)
 		{

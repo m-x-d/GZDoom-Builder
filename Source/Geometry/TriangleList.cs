@@ -33,5 +33,12 @@ namespace CodeImp.DoomBuilder.Geometry
 {
 	public class TriangleList : List<Vector2D>
 	{
+		// This adds a triangle
+		internal void Add(EarClipVertex[] t)
+		{
+			base.Add(t[0].Position);
+			base.Add(t[1].Position);
+			base.Add(t[2].Position);
+		}
 	}
 }

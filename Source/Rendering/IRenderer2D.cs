@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderThing(Thing t, PixelColor c);
 		void RenderThingSet(ICollection<Thing> things);
 		void RenderVertex(Vertex v, int colorindex);
+		void RenderVertexAt(Vector2D v, int colorindex);
 		void RenderVerticesSet(ICollection<Vertex> vertices);
 	}
 }

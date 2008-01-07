@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Terminate
 			VirtualFree((void*)memory, new UIntPtr(memorysize), General.MEM_RELEASE);
 			GC.RemoveMemoryPressure(memorysize);
+			memorysize = 0;
 		}
 
 		#endregion
@@ -93,7 +94,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This clears the memory black
 		public void Clear()
 		{
-			General.ZeroMemory(new IntPtr(memory), (int)memorysize);
+			if(memorysize > 0) General.ZeroMemory(new IntPtr(memory), (int)memorysize);
 		}
 
 		#endregion

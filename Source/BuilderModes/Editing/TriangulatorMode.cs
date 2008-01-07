@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using System.Threading;
+using System.Drawing;
 
 #endregion
 
@@ -284,7 +285,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					EarClipTriangulator t = new EarClipTriangulator();
 					t.OnShowLine = new EarClipTriangulator.ShowLine(ShowLine);
 					t.OnShowPolygon = new EarClipTriangulator.ShowPolygon(ShowPolygon);
-
+					t.OnShowPoint = new EarClipTriangulator.ShowPoint(ShowPoint);
+					t.OnShowEarClip = new EarClipTriangulator.ShowEarClip(ShowEarClip);
+					
 					// Triangulate this now!
 					triangles = t.Triangulate(General.GetByIndex<Sector>(selected, 0));
 
@@ -305,11 +308,42 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 							renderer.RenderLine(triangles[i + 1], triangles[i + 2], General.Colors.Selection);
 							renderer.RenderLine(triangles[i + 2], triangles[i + 0], General.Colors.Selection);
 						}
-						
+
 						// Done
 						renderer.Finish();
+						Thread.Sleep(200);
 					}
 				}
+			}
+		}
+
+		// This shows a point
+		private void ShowPoint(Vector2D v, int c)
+		{
+			for(int a = 0; a < 6; a++)
+			{
+				RedrawDisplay();
+				Thread.Sleep(10);
+
+				// Start with a clear display
+				if(renderer.Start(true, true))
+				{
+					// Do not show things
+					renderer.SetThingsRenderOrder(false);
+
+					// Render lines and vertices
+					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
+					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+
+					// Show the point
+					renderer.RenderVertexAt(v, c);
+
+					// Done
+					renderer.Finish();
+				}
+
+				// Wait a bit
+				Thread.Sleep(100);
 			}
 		}
 
@@ -371,6 +405,85 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 				// Wait a bit
 				Thread.Sleep(100);
+			}
+		}
+
+		// This shows a polygon
+		private void ShowEarClip(EarClipVertex[] found, LinkedList<EarClipVertex> remains)
+		{
+			EarClipVertex prev, first;
+			
+			for(int a = 0; a < 5; a++)
+			{
+				// Start with a clear display
+				if(renderer.Start(true, true))
+				{
+					// Do not show things
+					renderer.SetThingsRenderOrder(false);
+
+					// Render lines and vertices
+					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
+					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+
+					// Go for all remaining vertices
+					prev = null; first = null;
+					foreach(EarClipVertex v in remains)
+					{
+						// Show the line
+						if(prev != null) renderer.RenderLine(v.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+						if(prev == null) first = v;
+						prev = v;
+						
+						if(v.IsReflex)
+							renderer.RenderVertexAt(v.Position, ColorCollection.SELECTION);
+						else
+							renderer.RenderVertexAt(v.Position, ColorCollection.VERTICES);
+					}
+					if(first != null) renderer.RenderLine(first.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+
+					if(found != null)
+					{
+						renderer.RenderLine(found[0].Position, found[1].Position, PixelColor.FromColor(Color.SkyBlue));
+						renderer.RenderLine(found[1].Position, found[2].Position, PixelColor.FromColor(Color.SkyBlue));
+						renderer.RenderLine(found[2].Position, found[0].Position, PixelColor.FromColor(Color.SkyBlue));
+						renderer.RenderVertexAt(found[1].Position, ColorCollection.ASSOCIATION);
+					}
+					
+					// Done
+					renderer.Finish();
+				}
+				Thread.Sleep(10);
+
+				// Start with a clear display
+				if(renderer.Start(true, true))
+				{
+					// Do not show things
+					renderer.SetThingsRenderOrder(false);
+
+					// Render lines and vertices
+					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
+					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+
+					// Go for all remaining vertices
+					prev = null; first = null;
+					foreach(EarClipVertex v in remains)
+					{
+						// Show the line
+						if(prev != null) renderer.RenderLine(v.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+						if(prev == null) first = v;
+						prev = v;
+
+						if(v.IsReflex)
+							renderer.RenderVertexAt(v.Position, ColorCollection.SELECTION);
+						else
+							renderer.RenderVertexAt(v.Position, ColorCollection.VERTICES);
+					}
+					if(first != null) renderer.RenderLine(first.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+
+					// Done
+					renderer.Finish();
+				}
+				Thread.Sleep(20);
 			}
 		}
 		

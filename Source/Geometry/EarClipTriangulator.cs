@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.Geometry
 	/// Responsible for creating and caching sector polygons.
 	/// Performs triangulation of sectors by using ear clipping.
 	/// </summary>
+	/// See: http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
 	public sealed class EarClipTriangulator : Triangulator
 	{
 		#region ================== Delegates
@@ -43,11 +44,15 @@ namespace CodeImp.DoomBuilder.Geometry
 		// These are not called in a release build
 		public delegate void ShowLine(Vector2D v1, Vector2D v2, PixelColor c);
 		public delegate void ShowPolygon(Polygon p, PixelColor c);
-
+		public delegate void ShowPoint(Vector2D v, int c);
+		public delegate void ShowEarClip(EarClipVertex[] found, LinkedList<EarClipVertex> remaining);
+		
 		// For debugging purpose only!
 		// These are not called in a release build
 		public ShowLine OnShowLine;
 		public ShowPolygon OnShowPolygon;
+		public ShowPoint OnShowPoint;
+		public ShowEarClip OnShowEarClip;
 		
 		#endregion
 
@@ -94,6 +99,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This triangulates a sector and stores it
 		protected override void PerformTriangulation(Sector sector)
 		{
+			TriangleList triangles = new TriangleList();
 			List<Polygon> polys;
 			
 			/*
@@ -112,10 +118,14 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			// TRACING
 			polys = DoTrace(sector);
+			
+			// TODO: CUTTING
+			
+			// EAR-CLIPPING
+			foreach(Polygon p in polys) triangles.AddRange(DoEarClip(p));
 
-
-			// DEBUG:
-			base.StoreTriangles(sector, new TriangleList());
+			// STORE
+			base.StoreTriangles(sector, triangles);
 		}
 
 		#endregion
@@ -148,7 +158,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				// This guarantees that we start out with an outer polygon and we just
 				// have to check if it is inside a previously found polygon.
 				start = FindRightMostVertex(todosides);
-				
+
 				// Trace to find a polygon
 				path = DoTracePath(new TracePath(), start, null, s, todosides);
 
@@ -308,6 +318,150 @@ namespace CodeImp.DoomBuilder.Geometry
 		#endregion
 
 		#region ================== Ear Clipping
+
+		// This clips a polygon and returns the triangles
+		// The polygon may not have any holes or islands
+		private TriangleList DoEarClip(Polygon poly)
+		{
+			LinkedList<EarClipVertex> verts = new LinkedList<EarClipVertex>();
+			List<EarClipVertex> convexes = new List<EarClipVertex>(poly.Count);
+			LinkedList<EarClipVertex> reflexes = new LinkedList<EarClipVertex>();
+			LinkedList<EarClipVertex> eartips = new LinkedList<EarClipVertex>();
+			TriangleList result = new TriangleList();
+			EarClipVertex v, v1, v2;
+			EarClipVertex[] t, t1, t2;
+			
+			// Go for all vertices to fill list
+			foreach(Vector2D vec in poly)
+			{
+				// Add to main list
+				v = new EarClipVertex(vec);
+				v.SetVertsLink(verts.AddLast(v));
+			}
+			
+			// Go for all vertices to determine reflex or convex
+			foreach(EarClipVertex vv in verts)
+			{
+				// Add to reflex or convex list
+				if(IsReflex(GetTriangle(vv))) vv.AddReflex(reflexes); else convexes.Add(vv);
+			}
+
+			// Go for all convex vertices to see if they are ear tips
+			foreach(EarClipVertex cv in convexes)
+			{
+				// Add when this a valid ear
+				t = GetTriangle(cv);
+				if(CheckValidEar(t, reflexes)) cv.AddEarTip(eartips);
+			}
+
+			// Process ears until done
+			while((eartips.Count > 0) && (verts.Count > 2))
+			{
+				// Get next ear
+				v = eartips.First.Value;
+				t = GetTriangle(v);
+
+				// Add ear as triangle
+				result.Add(t);
+				
+				// Remove this ear from all lists
+				v.Remove();
+				v1 = t[0];
+				v2 = t[2];
+
+				#if DEBUG
+				if(OnShowEarClip != null) OnShowEarClip(t, verts);
+				#endif
+				
+				// Test first neighbour
+				t1 = GetTriangle(v1);
+				if(IsReflex(t1))
+				{
+					// List as reflex if not listed yet
+					if(!v1.IsReflex) v1.AddReflex(reflexes);
+					v1.RemoveEarTip();
+				}
+				else
+				{
+					// Remove from reflexes
+					v1.RemoveReflex();
+				}
+				
+				// Test second neighbour
+				t2 = GetTriangle(v2);
+				if(IsReflex(t2))
+				{
+					// List as reflex if not listed yet
+					if(!v2.IsReflex) v2.AddReflex(reflexes);
+					v2.RemoveEarTip();
+				}
+				else
+				{
+					// Remove from reflexes
+					v2.RemoveReflex();
+				}
+				
+				// Check if any neightbour have become a valid or invalid ear
+				if(!v1.IsReflex && CheckValidEar(t1, reflexes)) v1.AddEarTip(eartips); else v1.RemoveEarTip();
+				if(!v2.IsReflex && CheckValidEar(t2, reflexes)) v2.AddEarTip(eartips); else v2.RemoveEarTip();
+			}
+			
+			// Return result
+			return result;
+		}
+
+		// This checks if a given ear is a valid (no intersections from reflex vertices)
+		private bool CheckValidEar(EarClipVertex[] t, LinkedList<EarClipVertex> reflexes)
+		{
+			// Go for all reflex vertices
+			foreach(EarClipVertex rv in reflexes)
+			{
+				// Return false on intersection
+				if(PointInsideTriangle(t, rv.Position) &&
+				   (rv != t[0]) && (rv != t[1]) && (rv != t[2])) return false;
+			}
+
+			// Valid ear!
+			return true;
+		}
+		
+		// This returns the 3-vertex array triangle for an ear
+		private EarClipVertex[] GetTriangle(EarClipVertex v)
+		{
+			EarClipVertex[] t = new EarClipVertex[3];
+			if(v.MainListNode.Previous == null) t[0] = v.MainListNode.List.Last.Value; else t[0] = v.MainListNode.Previous.Value;
+			t[1] = v;
+			if(v.MainListNode.Next == null) t[2] = v.MainListNode.List.First.Value; else t[2] = v.MainListNode.Next.Value;
+			return t;
+		}
+		
+		// This checks if a vertex is reflex (corner > 180 deg) or convex (corner < 180 deg)
+		private bool IsReflex(EarClipVertex[] t)
+		{
+			// Return true when corner is > 180 deg
+			return (Line2D.GetSideOfLine(t[0].Position, t[2].Position, t[1].Position) < 0.00001f);
+		}
+		
+		// This checks if a point is inside a triangle
+		// NOTE: vertices in t must be in clockwise order!
+		private bool PointInsideTriangle(EarClipVertex[] t, Vector2D p)
+		{
+			#if DEBUG
+			
+			float a = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p);
+			float b = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p);
+			float c = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p);
+			
+			return (a < 0.00001f) && (b < 0.00001f) && (c < 0.00001f);
+			
+			#else
+			
+			return (Line2D.GetSideOfLine(t[0].Position, t[1].Position, p) < 0.00001f) &&
+				   (Line2D.GetSideOfLine(t[1].Position, t[2].Position, p) < 0.00001f) &&
+				   (Line2D.GetSideOfLine(t[2].Position, t[0].Position, p) < 0.00001f);
+			
+			#endif
+		}
 
 		#endregion
 	}
