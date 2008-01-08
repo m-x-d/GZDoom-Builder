@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -71,6 +72,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
 		public Sector Sector { get { return sector; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public float Angle { get { if(IsFront) return linedef.Angle; else return Angle2D.Normalized(linedef.Angle + Angle2D.PI); } }
 		public int OffsetX { get { return offsetx; } set { offsetx = value; } }
 		public int OffsetY { get { return offsety; } set { offsety = value; } }
 		public string HighTexture { get { return texnamehigh; } }

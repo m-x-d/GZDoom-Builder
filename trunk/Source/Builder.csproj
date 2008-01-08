@@ -95,6 +95,7 @@
     <Compile Include="Geometry\GLNodesTriangulator.cs" />
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\Polygon.cs" />
+    <Compile Include="Geometry\SidedefAngleSorter.cs" />
     <Compile Include="Geometry\TracePath.cs" />
     <Compile Include="Geometry\TriangleList.cs" />
     <Compile Include="Geometry\Triangulator.cs" />

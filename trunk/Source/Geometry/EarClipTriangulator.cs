@@ -206,6 +206,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			TracePath nextpath;
 			TracePath result;
 			Vertex nextvertex;
+			List<Sidedef> allsides;
+			SidedefAngleSorter sorter;
 			
 			// Found the vertex we are tracing to?
 			if(fromhere == findme) return history;
@@ -213,8 +215,9 @@ namespace CodeImp.DoomBuilder.Geometry
 			// On the first run, findme is null (otherwise the trace would end
 			// immeditely when it starts) so set findme here on the first run.
 			if(findme == null) findme = fromhere;
-			
-			// Go for all lines connected to this vertex
+
+			// Make a list of sides referring to the same sector
+			allsides = new List<Sidedef>(fromhere.Linedefs.Count * 2);
 			foreach(Linedef l in fromhere.Linedefs)
 			{
 				// Should we go along the front or back side?
@@ -225,15 +228,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					if((l.Front != null) && (l.Front.Sector == sector))
 					{
 						// Visit here when not visited yet
-						if(sides.ContainsKey(l.Front) && !sides[l.Front])
-						{
-							// Mark sidedef as visited and move to next vertex
-							sides[l.Front] = true;
-							nextpath = new TracePath(history, l.Front);
-							if(l.Start == fromhere) nextvertex = l.End; else nextvertex = l.Start;
-							result = DoTracePath(nextpath, nextvertex, findme, sector, sides);
-							if(result != null) return result;
-						}
+						if(sides.ContainsKey(l.Front) && !sides[l.Front]) allsides.Add(l.Front);
 					}
 				}
 				else
@@ -242,17 +237,31 @@ namespace CodeImp.DoomBuilder.Geometry
 					if((l.Back != null) && (l.Back.Sector == sector))
 					{
 						// Visit here when not visited yet
-						if(sides.ContainsKey(l.Back) && !sides[l.Back])
-						{
-							// Mark sidedef as visited and move to next vertex
-							sides[l.Back] = true;
-							nextpath = new TracePath(history, l.Back);
-							if(l.Start == fromhere) nextvertex = l.End; else nextvertex = l.Start;
-							result = DoTracePath(nextpath, nextvertex, findme, sector, sides);
-							if(result != null) return result;
-						}
+						if(sides.ContainsKey(l.Back) && !sides[l.Back]) allsides.Add(l.Back);
 					}
 				}
+			}
+
+			// Previous line available?
+			if(history.Count > 0)
+			{
+				// This is done to ensure the tracing works along vertices that are shared by
+				// more than 2 lines/sides of the same sector. We must continue tracing along
+				// the first next smallest delta angle! This sorts the smallest delta angle to
+				// the top of the list.
+				sorter = new SidedefAngleSorter(history[history.Count - 1], fromhere);
+				allsides.Sort(sorter);
+			}
+			
+			// Go for all lines connected to this vertex
+			foreach(Sidedef s in allsides)
+			{
+				// Mark sidedef as visited and move to next vertex
+				sides[s] = true;
+				nextpath = new TracePath(history, s);
+				if(s.Line.Start == fromhere) nextvertex = s.Line.End; else nextvertex = s.Line.Start;
+				result = DoTracePath(nextpath, nextvertex, findme, sector, sides);
+				if(result != null) return result;
 			}
 
 			// Nothing found

@@ -846,11 +846,14 @@ namespace CodeImp.DoomBuilder.Rendering
 				ReserveThingsMemory(numthings + 1, true);
 
 				// Store vertices in buffer
-				stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
-				stream.WriteRange<FlatVertex>(verts);
-				thingsvertices.Unlock();
-				stream.Dispose();
-
+				if(thingsvertices != null)
+				{
+					stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
+					stream.WriteRange<FlatVertex>(verts);
+					thingsvertices.Unlock();
+					stream.Dispose();
+				}
+				
 				// Thing added, render it
 				RenderThingsBatch(numthings, 1);
 				numthings++;
@@ -879,11 +882,14 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			
 			// Store vertices in buffer
-			stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, things.Count * 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
-			stream.WriteRange<FlatVertex>(verts);
-			thingsvertices.Unlock();
-			stream.Dispose();
-
+			if(thingsvertices != null)
+			{
+				stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, things.Count * 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
+				stream.WriteRange<FlatVertex>(verts);
+				thingsvertices.Unlock();
+				stream.Dispose();
+			}
+			
 			// Things added, render them
 			RenderThingsBatch(numthings, addcount);
 			numthings += addcount;
