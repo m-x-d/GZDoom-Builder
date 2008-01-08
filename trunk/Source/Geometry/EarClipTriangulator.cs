@@ -137,6 +137,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		private List<Polygon> DoTrace(Sector s)
 		{
 			Dictionary<Sidedef, bool> todosides = new Dictionary<Sidedef, bool>(s.Sidedefs.Count);
+			Dictionary<Vertex, Vertex> ignores = new Dictionary<Vertex,Vertex>();
 			List<Polygon> root = new List<Polygon>();
 			TracePath path;
 			Polygon newpoly;
@@ -158,39 +159,49 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Find the right-most vertex to start a trace with.
 				// This guarantees that we start out with an outer polygon and we just
 				// have to check if it is inside a previously found polygon.
-				start = FindRightMostVertex(todosides);
+				start = FindRightMostVertex(todosides, ignores);
 
+				// No more possible start vertex found?
+				// Then leave with what we have up till now.
+				if(start == null) break;
+				
 				// Trace to find a polygon
 				path = DoTracePath(new TracePath(), start, null, s, todosides);
 
 				// If tracing is not possible (sector not closed?)
-				// then leave with what we have up till now
-				if(path == null) break;
-				
-				// Remove the sides found in the path
-				foreach(Sidedef sd in path) todosides.Remove(sd);
-
-				// Create the polygon
-				newpoly = path.MakePolygon();
-				
-				// Determine where this polygon goes in our tree
-				foreach(Polygon p in root)
+				// then add the start to the ignore list and try again later
+				if(path == null)
 				{
-					// Insert if it belongs as a child
-					if(p.InsertChild(newpoly))
-					{
-						// Done
-						newpoly = null;
-						break;
-					}
+					// Ignore vertex as start
+					ignores.Add(start, start);
 				}
-				
-				// Still not inserted in our tree?
-				if(newpoly != null)
+				else
 				{
-					// Then add it at root level as outer polygon
-					newpoly.Inner = false;
-					root.Add(newpoly);
+					// Remove the sides found in the path
+					foreach(Sidedef sd in path) todosides.Remove(sd);
+
+					// Create the polygon
+					newpoly = path.MakePolygon();
+
+					// Determine where this polygon goes in our tree
+					foreach(Polygon p in root)
+					{
+						// Insert if it belongs as a child
+						if(p.InsertChild(newpoly))
+						{
+							// Done
+							newpoly = null;
+							break;
+						}
+					}
+
+					// Still not inserted in our tree?
+					if(newpoly != null)
+					{
+						// Then add it at root level as outer polygon
+						newpoly.Inner = false;
+						root.Add(newpoly);
+					}
 				}
 			}
 
@@ -290,18 +301,26 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This finds the right-most vertex to start tracing with
-		private Vertex FindRightMostVertex(Dictionary<Sidedef, bool> sides)
+		private Vertex FindRightMostVertex(Dictionary<Sidedef, bool> sides, Dictionary<Vertex, Vertex> ignores)
 		{
-			Vertex found = General.GetByIndex<Sidedef>(sides.Keys, 0).Line.Start;
+			Vertex found = null;
 			
 			// Go for all sides to find the right-most side
 			foreach(KeyValuePair<Sidedef, bool> sd in sides)
 			{
-				// Check if more to the right than the last found
-				if(sd.Key.Line.Start.X > found.X) found = sd.Key.Line.Start;
-				if(sd.Key.Line.End.X > found.X) found = sd.Key.Line.End;
+				// First found?
+				if((found == null) && !ignores.ContainsKey(sd.Key.Line.Start)) found = sd.Key.Line.Start;
+				if((found == null) && !ignores.ContainsKey(sd.Key.Line.End)) found = sd.Key.Line.End;
+				
+				// Compare?
+				if(found != null)
+				{
+					// Check if more to the right than the previous found
+					if((sd.Key.Line.Start.X > found.X) && !ignores.ContainsKey(sd.Key.Line.Start)) found = sd.Key.Line.Start;
+					if((sd.Key.Line.End.X > found.X) && !ignores.ContainsKey(sd.Key.Line.End)) found = sd.Key.Line.End;
+				}
 			}
-
+			
 			// Return result
 			return found;
 		}
