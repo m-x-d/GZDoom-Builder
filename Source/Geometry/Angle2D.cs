@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			// Make corrections for zero barrier
 			if(d < 0f) d += PI2;
-			if(d > PI) d -= PI2;
+			if(d > PI) d = PI2 - d;
 
 			// Return result
 			return d;
