@@ -269,27 +269,64 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Anything selected?
-				selected = General.Map.Map.GetSectorsSelection(true);
-				if(selected.Count > 0)
+				// Which button is used?
+				if(e.Button == EditMode.SELECT_BUTTON)
 				{
-					// Remove highlight
-					Highlight(null);
+					// Anything selected?
+					selected = General.Map.Map.GetSectorsSelection(true);
+					if(selected.Count > 0)
+					{
+						// Remove highlight
+						Highlight(null);
 
-					// Clear selection
-					General.Map.Map.ClearSelectedSectors();
-					General.Map.Map.ClearSelectedLinedefs();
-					General.Interface.RedrawDisplay();
-					
+						// Clear selection
+						General.Map.Map.ClearSelectedSectors();
+						General.Map.Map.ClearSelectedLinedefs();
+						General.Interface.RedrawDisplay();
+
+						// Get a triangulator and bind events
+						EarClipTriangulator t = new EarClipTriangulator();
+						t.OnShowLine = new EarClipTriangulator.ShowLine(ShowLine);
+						t.OnShowPolygon = new EarClipTriangulator.ShowPolygon(ShowPolygon);
+						t.OnShowPoint = new EarClipTriangulator.ShowPoint(ShowPoint);
+						t.OnShowEarClip = new EarClipTriangulator.ShowEarClip(ShowEarClip);
+
+						// Triangulate this now!
+						triangles = t.Triangulate(General.GetByIndex<Sector>(selected, 0));
+
+						// Start with a clear display
+						if(renderer.Start(true, true))
+						{
+							// Do not show things
+							renderer.SetThingsRenderOrder(false);
+
+							// Render lines and vertices
+							renderer.RenderLinedefSet(General.Map.Map.Linedefs);
+							renderer.RenderVerticesSet(General.Map.Map.Vertices);
+
+							// Go for all triangle vertices
+							for(int i = 0; i < triangles.Count; i += 3)
+							{
+								renderer.RenderLine(triangles[i + 0], triangles[i + 1], General.Colors.Selection);
+								renderer.RenderLine(triangles[i + 1], triangles[i + 2], General.Colors.Selection);
+								renderer.RenderLine(triangles[i + 2], triangles[i + 0], General.Colors.Selection);
+							}
+
+							// Done
+							renderer.Finish();
+							Thread.Sleep(200);
+						}
+					}
+				}
+				else
+				{
 					// Get a triangulator and bind events
 					EarClipTriangulator t = new EarClipTriangulator();
-					t.OnShowLine = new EarClipTriangulator.ShowLine(ShowLine);
-					t.OnShowPolygon = new EarClipTriangulator.ShowPolygon(ShowPolygon);
-					t.OnShowPoint = new EarClipTriangulator.ShowPoint(ShowPoint);
-					t.OnShowEarClip = new EarClipTriangulator.ShowEarClip(ShowEarClip);
-					
-					// Triangulate this now!
-					triangles = t.Triangulate(General.GetByIndex<Sector>(selected, 0));
+
+					// Triangulate the whole map!
+					triangles = new TriangleList();
+					foreach(Sector s in General.Map.Map.Sectors)
+						triangles.AddRange(t.Triangulate(s));
 
 					// Start with a clear display
 					if(renderer.Start(true, true))
@@ -300,7 +337,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						// Render lines and vertices
 						renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 						renderer.RenderVerticesSet(General.Map.Map.Vertices);
-						
+
 						// Go for all triangle vertices
 						for(int i = 0; i < triangles.Count; i += 3)
 						{
