@@ -505,10 +505,6 @@ namespace CodeImp.DoomBuilder.Geometry
 				p.AddBefore(insertbefore, new EarClipVertex(start.Value));
 				p.AddBefore(insertbefore, new EarClipVertex(split));
 			}
-			else
-			{
-				throw new Exception("Can't find an edge for polygon cutting!");
-			}
 		}
 
 		#endregion
