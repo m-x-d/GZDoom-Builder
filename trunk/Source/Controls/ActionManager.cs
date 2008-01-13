@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Controls
 			Stream actionsdata;
 			StreamReader actionsreader;
 			Configuration cfg;
-			string name, title, desc;
+			string name, title, desc, shortname;
 			bool amouse, akeys, ascroll, debugonly;
 			string[] resnames;
 			AssemblyName asmname = asm.GetName();
@@ -123,7 +123,8 @@ namespace CodeImp.DoomBuilder.Controls
 					foreach(DictionaryEntry a in cfg.Root)
 					{
 						// Get action properties
-						name = asmname.Name.ToLowerInvariant() + "_" + a.Key.ToString();
+						shortname = a.Key.ToString();
+						name = asmname.Name.ToLowerInvariant() + "_" + shortname;
 						title = cfg.ReadSetting(a.Key + ".title", "[" + name + "]");
 						desc = cfg.ReadSetting(a.Key + ".description", "");
 						akeys = cfg.ReadSetting(a.Key + ".allowkeys", false);
@@ -135,7 +136,7 @@ namespace CodeImp.DoomBuilder.Controls
 						if(General.DebugBuild || !debugonly)
 						{
 							// Create an action
-							CreateAction(name, title, desc, akeys, amouse, ascroll);
+							CreateAction(name, shortname, title, desc, akeys, amouse, ascroll);
 						}
 					}
 				}
@@ -143,7 +144,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This manually creates an action
-		private void CreateAction(string name, string title, string desc, bool allowkeys, bool allowmouse, bool allowscroll)
+		private void CreateAction(string name, string shortname, string title, string desc, bool allowkeys, bool allowmouse, bool allowscroll)
 		{
 			// Action does not exist yet?
 			if(!actions.ContainsKey(name))
@@ -152,7 +153,7 @@ namespace CodeImp.DoomBuilder.Controls
 				int key = General.Settings.ReadSetting("shortcuts." + name, 0);
 
 				// Create an action
-				actions.Add(name, new Action(name, title, desc, key, allowkeys, allowmouse, allowscroll));
+				actions.Add(name, new Action(name, shortname, title, desc, key, allowkeys, allowmouse, allowscroll));
 			}
 			else
 			{
@@ -198,7 +199,7 @@ namespace CodeImp.DoomBuilder.Controls
 				a.Value.SetShortcutKey(0);
 		}
 		
-		// This will call the associated action for a keypress
+		// This will call the associated actions for a keypress
 		public void InvokeByKey(int key)
 		{
 			// Go for all actions
@@ -211,6 +212,26 @@ namespace CodeImp.DoomBuilder.Controls
 					a.Value.Invoke();
 				}
 			}
+		}
+		
+		// This returns all action names for a given key
+		public string[] GetActionsByKey(int key)
+		{
+			List<string> actionnames = new List<string>();
+			
+			// Go for all actions
+			foreach(KeyValuePair<string, Action> a in actions)
+			{
+				// This action is associated with this key?
+				if(a.Value.ShortcutKey == key)
+				{
+					// List short name
+					actionnames.Add(a.Value.ShortName);
+				}
+			}
+
+			// Return result;
+			return actionnames.ToArray();
 		}
 		
 		#endregion

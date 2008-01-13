@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Cache
 		private bool updateneeded;
 		private float lengthsq;
+		private float lengthsqinv;
 		private float length;
 		private float lengthinv;
 		private float angle;
@@ -235,7 +236,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This updates the line when changes have been made
-		public void Update()
+		public void UpdateCache()
 		{
 			Vector2D delta;
 			int l, t, r, b;
@@ -250,6 +251,7 @@ namespace CodeImp.DoomBuilder.Map
 				lengthsq = delta.GetLengthSq();
 				length = (float)Math.Sqrt(lengthsq);
 				if(length > 0f) lengthinv = 1f / length; else lengthinv = 1f / 0.0000000001f;
+				if(lengthsq > 0f) lengthsqinv = 1f / lengthsq; else lengthsqinv = 1f / 0.0000000001f;
 				angle = delta.GetAngle();
 				l = Math.Min(start.X, end.X);
 				t = Math.Min(start.Y, end.Y);
@@ -262,10 +264,15 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
-		// This flags the line needs an update
+		// This flags the line needs an update because it moved
 		public void NeedUpdate()
 		{
+			// Update this line
 			updateneeded = true;
+
+			// Update sectors as well
+			if(front != null) front.Sector.UpdateNeeded = true;
+			if(back != null) back.Sector.UpdateNeeded = true;
 		}
 
 		#endregion
@@ -297,7 +304,7 @@ namespace CodeImp.DoomBuilder.Map
 			Vector2D v2 = end.Position;
 
 			// Calculate intersection offset
-			float u = ((p.x - v1.x) * (v2.x - v1.x) + (p.y - v1.y) * (v2.y - v1.y)) / lengthsq;
+			float u = ((p.x - v1.x) * (v2.x - v1.x) + (p.y - v1.y) * (v2.y - v1.y)) * lengthsqinv;
 
 			// Limit intersection offset to the line
 			if(bounded) if(u < lengthinv) u = lengthinv; else if(u > (1f - lengthinv)) u = 1f - lengthinv;
@@ -325,7 +332,7 @@ namespace CodeImp.DoomBuilder.Map
 			Vector2D v2 = end.Position;
 			
 			// Calculate intersection offset
-			float u = ((p.x - v1.x) * (v2.x - v1.x) + (p.y - v1.y) * (v2.y - v1.y)) / lengthsq;
+			float u = ((p.x - v1.x) * (v2.x - v1.x) + (p.y - v1.y) * (v2.y - v1.y)) * lengthsqinv;
 
 			// Limit intersection offset to the line
 			if(bounded) if(u < 0f) u = 0f; else if(u > 1f) u = 1f;

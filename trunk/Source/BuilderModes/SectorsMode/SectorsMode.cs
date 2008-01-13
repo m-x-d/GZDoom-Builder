@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
-
+				
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderSector(highlighted, General.Colors.Highlight);

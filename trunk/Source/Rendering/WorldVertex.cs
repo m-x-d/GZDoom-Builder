@@ -50,5 +50,49 @@ namespace CodeImp.DoomBuilder.Rendering
 		public int c;
 		public float u;
 		public float v;
+
+		// Constructor
+		public WorldVertex(float x, float y, float z, int c, float u, float v)
+		{
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.c = c;
+			this.u = u;
+			this.v = v;
+		}
+
+		// Constructor
+		public WorldVertex(float x, float y, float z, float u, float v)
+		{
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.c = -1;
+			this.u = u;
+			this.v = v;
+		}
+
+		// Constructor
+		public WorldVertex(float x, float y, float z, int c)
+		{
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.c = c;
+			this.u = 0.0f;
+			this.v = 0.0f;
+		}
+
+		// Constructor
+		public WorldVertex(float x, float y, float z)
+		{
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.c = -1;
+			this.u = 0.0f;
+			this.v = 0.0f;
+		}
 	}
 }

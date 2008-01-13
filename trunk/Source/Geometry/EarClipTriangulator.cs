@@ -36,7 +36,9 @@ namespace CodeImp.DoomBuilder.Geometry
 	/// Performs triangulation of sectors by using ear clipping.
 	/// </summary>
 	/// See: http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
-	public sealed class EarClipTriangulator : Triangulator
+	/// NOTE: This is not a derived class from Triangulator because
+	/// caching is not required (sectors cache their own triangles)
+	public sealed class EarClipTriangulator
 	{
 		#region ================== Delegates
 
@@ -79,25 +81,12 @@ namespace CodeImp.DoomBuilder.Geometry
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Done
-				base.Dispose();
-			}
-		}
-
 		#endregion
 
 		#region ================== Methods
 
 		// This triangulates a sector and stores it
-		protected override void PerformTriangulation(Sector sector)
+		public TriangleList PerformTriangulation(Sector sector)
 		{
 			TriangleList triangles = new TriangleList();
 			List<Polygon> polys;
@@ -125,8 +114,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			// EAR-CLIPPING
 			foreach(Polygon p in polys) triangles.AddRange(DoEarClip(p));
 
-			// STORE
-			base.StoreTriangles(sector, triangles);
+			// Return result
+			return triangles;
 		}
 
 		#endregion
@@ -617,6 +606,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(!v1.IsReflex && CheckValidEar(t1, reflexes)) v1.AddEarTip(eartips); else v1.RemoveEarTip();
 				if(!v2.IsReflex && CheckValidEar(t2, reflexes)) v2.AddEarTip(eartips); else v2.RemoveEarTip();
 			}
+			
+			// Dispose remaining vertices
+			foreach(EarClipVertex ecv in verts) ecv.Dispose();
 			
 			// Return result
 			return result;

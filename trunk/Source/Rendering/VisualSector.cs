@@ -82,13 +82,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
 		}
 
 		// Diposer
-		public void Dispose()
+		public virtual void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -112,7 +109,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// This is called before a device is reset
 		// (when resized or display adapter was changed)
-		public void UnloadResource()
+		public virtual void UnloadResource()
 		{
 			// Trash geometry buffer
 			if(geobuffer != null) geobuffer.Dispose();
@@ -122,7 +119,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// This is called resets when the device is reset
 		// (when resized or display adapter was changed)
-		public void ReloadResource()
+		public virtual void ReloadResource()
 		{
 			// Make new geometry
 			//Update();
@@ -137,6 +134,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Trash geometry buffer
 			if(geobuffer != null) geobuffer.Dispose();
+			geobuffer = null;
 			
 			// Sort the geo list by texture
 			geolist.Sort();
@@ -144,21 +142,28 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Count the number of vertices there are
 			foreach(VisualGeometry g in geolist) numverts += g.Vertices.Length;
 			
-			// Make a new buffer
-			geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * numverts,
-										 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
-
-			// Fill the buffer
-			bufferstream = geobuffer.Lock(0, WorldVertex.Stride * numverts, LockFlags.Discard);
-			foreach(VisualGeometry g in geolist)
+			// Any vertics?
+			if(numverts > 0)
 			{
-				bufferstream.WriteRange<WorldVertex>(g.Vertices, v, g.Vertices.Length);
-				g.VertexOffset = v;
-				v += g.Vertices.Length;
-			}
-			geobuffer.Unlock();
-			bufferstream.Dispose();
+				// Make a new buffer
+				geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * numverts,
+											 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 
+				// Fill the buffer
+				bufferstream = geobuffer.Lock(0, WorldVertex.Stride * numverts, LockFlags.Discard);
+				foreach(VisualGeometry g in geolist)
+				{
+					if(g.Vertices.Length > 0)
+					{
+						bufferstream.WriteRange<WorldVertex>(g.Vertices);
+						g.VertexOffset = v;
+						v += g.Vertices.Length;
+					}
+				}
+				geobuffer.Unlock();
+				bufferstream.Dispose();
+			}
+			
 			// Done
 			updategeo = false;
 		}
@@ -171,6 +176,14 @@ namespace CodeImp.DoomBuilder.Rendering
 			updategeo = true;
 		}
 
+		// This removes all geometry
+		public void ClearGeometry()
+		{
+			foreach(VisualGeometry g in geolist) g.Sector = null;
+			geolist.Clear();
+			updategeo = true;
+		}
+		
 		#endregion
 	}
 }

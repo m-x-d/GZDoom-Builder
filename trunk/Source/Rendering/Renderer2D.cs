@@ -578,6 +578,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(count > 0)
 			{
 				// Set renderstates for things rendering
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				graphics.Device.SetRenderState(RenderState.ZEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
 				graphics.Device.SetTexture(0, thingtexture.Texture);

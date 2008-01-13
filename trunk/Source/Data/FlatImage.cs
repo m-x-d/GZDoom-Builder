@@ -87,6 +87,8 @@ namespace CodeImp.DoomBuilder.Data
 					// Get width and height from image
 					width = bitmap.Size.Width;
 					height = bitmap.Size.Height;
+					scaledwidth = (float)width * General.Map.Config.DefaultFlatScale;
+					scaledheight = (float)height * General.Map.Config.DefaultFlatScale;
 				}
 				else
 				{

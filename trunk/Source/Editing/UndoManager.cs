@@ -203,7 +203,9 @@ namespace CodeImp.DoomBuilder.Editing
 		public void PerformUndo()
 		{
 			UndoSnapshot u, r;
-
+			Cursor oldcursor = Cursor.Current;
+			Cursor.Current = Cursors.WaitCursor;
+			
 			// Anything to undo?
 			if(undos.Count > 0)
 			{
@@ -228,6 +230,8 @@ namespace CodeImp.DoomBuilder.Editing
 				General.MainWindow.RedrawDisplay();
 				General.MainWindow.UpdateInterface();
 			}
+
+			Cursor.Current = oldcursor;
 		}
 		
 		// This performs a redo
@@ -235,7 +239,9 @@ namespace CodeImp.DoomBuilder.Editing
 		public void PerformRedo()
 		{
 			UndoSnapshot u, r;
-
+			Cursor oldcursor = Cursor.Current;
+			Cursor.Current = Cursors.WaitCursor;
+			
 			// Anything to redo?
 			if(redos.Count > 0)
 			{
@@ -260,6 +266,8 @@ namespace CodeImp.DoomBuilder.Editing
 				General.MainWindow.RedrawDisplay();
 				General.MainWindow.UpdateInterface();
 			}
+			
+			Cursor.Current = oldcursor;
 		}
 
 		#endregion

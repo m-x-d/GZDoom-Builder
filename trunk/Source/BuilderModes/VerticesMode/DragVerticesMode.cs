@@ -271,6 +271,19 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Start rendering
 			if(renderer.Start(true, false))
 			{
+				// Uncomment this to see triangulation
+				/*
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					for(int i = 0; i < s.Triangles.Count; i += 3)
+					{
+						renderer.RenderLine(s.Triangles[i + 0], s.Triangles[i + 1], General.Colors.Selection);
+						renderer.RenderLine(s.Triangles[i + 1], s.Triangles[i + 2], General.Colors.Selection);
+						renderer.RenderLine(s.Triangles[i + 2], s.Triangles[i + 0], General.Colors.Selection);
+					}
+				}
+				*/
+				
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(unselectedverts);
@@ -296,6 +309,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest))
 			{
 				// Update cached values
+				//General.Map.Map.Update(true, false);
 				General.Map.Map.Update();
 
 				// Redraw

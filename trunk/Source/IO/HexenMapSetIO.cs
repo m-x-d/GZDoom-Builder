@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Create new item
 				l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
 				l.Update(flags, 0, action, args);
-				l.Update();
+				l.UpdateCache();
 
 				// Line has a front side?
 				if(s1 != ushort.MaxValue)
