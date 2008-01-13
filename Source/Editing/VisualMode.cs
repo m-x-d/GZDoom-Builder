@@ -45,8 +45,9 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constants
 
 		private const float ANGLE_FROM_MOUSE = 0.0001f;
-		private const float MAX_ANGLEZ_UP = 80f / Angle2D.PIDEG;
-		private const float MAX_ANGLEZ_DOWN = (360f - 80f) / Angle2D.PIDEG;
+		private const float MAX_ANGLEZ_LOW = 100f / Angle2D.PIDEG;
+		private const float MAX_ANGLEZ_HIGH = (360f - 100f) / Angle2D.PIDEG;
+		private const float CAMERA_SPEED = 6f;
 		
 		#endregion
 
@@ -63,6 +64,12 @@ namespace CodeImp.DoomBuilder.Editing
 		private Vector3D campos;
 		private Vector3D camtarget;
 		private float camanglexy, camanglez;
+
+		// Input
+		private bool keyforward;
+		private bool keybackward;
+		private bool keyleft;
+		private bool keyright;
 
 		#endregion
 
@@ -83,6 +90,8 @@ namespace CodeImp.DoomBuilder.Editing
 			// Initialize
 			this.renderer = General.Map.Renderer3D;
 			this.renderer3d = (Renderer3D)General.Map.Renderer3D;
+			this.campos = new Vector3D(0.0f, 0.0f, 96.0f);
+			this.camanglez = Angle2D.PI;
 		}
 
 		// Diposer
@@ -100,7 +109,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Start / Stop
 
 		// Mode is engaged
 		public override void Engage()
@@ -116,9 +125,9 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Position camera here
 				modething.DetermineSector();
-				campos = modething.Position + new Vector3D(0, 0, 20);
-				camanglexy = modething.Angle;
-				camanglez = 0f;
+				campos = modething.Position + new Vector3D(0.0f, 0.0f, 96.0f);
+				camanglexy = modething.Angle + Angle2D.PI;
+				camanglez = Angle2D.PI;
 			}
 
 			// Start special input mode
@@ -136,7 +145,7 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Position the thing to match camera
 				modething.Move((int)campos.x, (int)campos.y, 0);
-				modething.Rotate(camanglexy);
+				modething.Rotate(camanglexy - Angle2D.PI);
 			}
 			
 			// Stop special input mode
@@ -144,32 +153,98 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Interface.StopExclusiveMouseInput();
 		}
 
+		#endregion
+
+		#region ================== Input
+
 		// Mouse input
 		public override void MouseInput(Vector2D delta)
 		{
 			base.MouseInput(delta);
 
 			// Change camera angles with the mouse changes
-			camanglexy += delta.x * ANGLE_FROM_MOUSE;
-			camanglez -= delta.y * ANGLE_FROM_MOUSE;
+			camanglexy -= delta.x * ANGLE_FROM_MOUSE;
+			camanglez += delta.y * ANGLE_FROM_MOUSE;
+			
+			// Normalize angles
+			camanglexy = Angle2D.Normalized(camanglexy);
+			camanglez = Angle2D.Normalized(camanglez);
 
 			// Limit vertical angle
-			if(camanglez < MAX_ANGLEZ_UP) camanglez = MAX_ANGLEZ_UP;
-			if(camanglez > MAX_ANGLEZ_DOWN) camanglez = MAX_ANGLEZ_DOWN;
-			
-			// Normalize horizontal angle
-			camanglexy = Angle2D.Normalized(camanglexy);
+			if(camanglez < MAX_ANGLEZ_LOW) camanglez = MAX_ANGLEZ_LOW;
+			if(camanglez > MAX_ANGLEZ_HIGH) camanglez = MAX_ANGLEZ_HIGH;
 			
 			General.MainWindow.UpdateCoordinates(new Vector2D(camanglexy, camanglez));
 		}
+
+		// Key down
+		public override void KeyDown(KeyEventArgs e)
+		{
+			string[] actions;
+			
+			base.KeyDown(e);
+			
+			// Get the actions for this key
+			actions = General.Actions.GetActionsByKey((int)e.KeyData);
+			foreach(string a in actions)
+			{
+				// Check what key was pressed down
+				switch(a)
+				{
+					case "moveforward": keyforward = true; break;
+					case "movebackward": keybackward = true; break;
+					case "moveleft": keyleft = true; break;
+					case "moveright": keyright = true; break;
+				}
+			}
+		}
+
+		// Key up
+		public override void KeyUp(KeyEventArgs e)
+		{
+			string[] actions;
+
+			base.KeyUp(e);
+
+			// Get the actions for this key
+			actions = General.Actions.GetActionsByKey((int)e.KeyData);
+			foreach(string a in actions)
+			{
+				// Check what key was pressed down
+				switch(a)
+				{
+					case "moveforward": keyforward = false; break;
+					case "movebackward": keybackward = false; break;
+					case "moveleft": keyleft = false; break;
+					case "moveright": keyright = false; break;
+				}
+			}
+		}
 		
+		#endregion
+
+		#region ================== Processing
+
 		// Processing
 		public override void Process()
 		{
+			Vector3D camvec;
+			Vector3D camvecstrafe;
+			
 			base.Process();
 			
+			// Calculate camera direction vectors
+			camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);
+			camvecstrafe = Vector3D.FromAngleXYZ(camanglexy + Angle2D.PIHALF, camanglez);
+			
+			// Move the camera
+			if(keyforward) campos += camvec * CAMERA_SPEED;
+			if(keybackward) campos -= camvec * CAMERA_SPEED;
+			if(keyleft) campos -= camvecstrafe * CAMERA_SPEED;
+			if(keyright) campos += camvecstrafe * CAMERA_SPEED;
+			
 			// Target the camera
-			camtarget = campos + Vector3D.FromAngleXYZ(camanglexy, camanglez);
+			camtarget = campos + camvec;
 			
 			// Apply new camera matrices
 			renderer.PositionAndLookAt(campos, camtarget);

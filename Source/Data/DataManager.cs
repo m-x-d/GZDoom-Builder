@@ -62,6 +62,9 @@ namespace CodeImp.DoomBuilder.Data
 		// Background loading
 		private Thread backgroundloader;
 		
+		// Special images
+		private ImageData missingtexture3d;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -76,6 +79,7 @@ namespace CodeImp.DoomBuilder.Data
 		public List<string> FlatNames { get { return flatnames; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool IsLoading { get { return (backgroundloader != null) && backgroundloader.IsAlive; } }
+		public ImageData MissingTexture3D { get { return missingtexture3d; } }
 		
 		#endregion
 
@@ -86,6 +90,10 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
+
+			// Load special images
+			missingtexture3d = new ResourceImage("MissingTexture3D.png");
+			missingtexture3d.LoadImage();
 		}
 
 		// Disposer
@@ -96,6 +104,8 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Clean up
 				Unload();
+				missingtexture3d.Dispose();
+				missingtexture3d = null;
 				
 				// Done
 				isdisposed = true;

@@ -35,12 +35,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "visualmode",		// Action name used to switch to this mode
-			  ButtonDesc = "Visual Mode",		// Description on the button in toolbar/menu
-			  ButtonImage = "VisualMode.png",	// Image resource name for the button
-			  ButtonOrder = 0)]					// Position of the button (lower is more to the left)
-
-	public class BaseVisualMode : VisualMode
+	internal class BaseVisualSector : VisualSector
 	{
 		#region ================== Constants
 
@@ -57,23 +52,24 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public BaseVisualMode()
+		public BaseVisualSector(Sector s) : base(s)
 		{
 			// Initialize
-
+			Rebuild();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
-			if(!isdisposed)
+			if(!IsDisposed)
 			{
 				// Clean up
 
-				// Done
+				// Dispose base
 				base.Dispose();
 			}
 		}
@@ -81,31 +77,31 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#endregion
 
 		#region ================== Methods
-		
-		// This draws a frame
-		public override void RedrawDisplay()
+
+		// This (re)builds the visual sector, calculating all geometry from scratch
+		public void Rebuild()
 		{
-			VisualSector vs = new VisualSector(General.GetByIndex<Sector>(General.Map.Map.Sectors, 0));
-			VisualObject vo = new VisualObject();
-			vo.Texture = General.Map.Data.GetTextureImage("TEKGREN1");
-			vo.Visible = true;
-			vs.AddGeometry(vo);
+			// Forget old geometry
+			base.ClearGeometry();
+			
+			// Make the floor and ceiling
+			base.AddGeometry(new VisualFloor(base.Sector));
+			base.AddGeometry(new VisualCeiling(base.Sector));
 
-			// Start drawing
-			if(renderer.Start())
+			// Go for all sidedefs
+			foreach(Sidedef sd in base.Sector.Sidedefs)
 			{
-				// Begin with geometry
-				renderer.StartGeometry();
-
-				renderer.RenderGeometry(vs);
-
-				renderer.FinishGeometry();
-
-				renderer.Finish();
+				// Make middle wall
+				base.AddGeometry(new VisualMiddle(sd));
+				
+				// Check if upper and lower parts are possible at all
+				if(sd.Other != null)
+				{
+					// Make upper and lower walls
+					base.AddGeometry(new VisualLower(sd));
+					base.AddGeometry(new VisualUpper(sd));
+				}
 			}
-
-			// Call base
-			base.RedrawDisplay();
 		}
 		
 		#endregion

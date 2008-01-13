@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Description
 		private string name;
+		private string shortname;
 		private string title;
 		private string description;
 
@@ -52,6 +53,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 
 		public string Name { get { return name; } }
+		public string ShortName { get { return shortname; } }
 		public string Title { get { return title; } }
 		public string Description { get { return description; } }
 		public int ShortcutKey { get { return key; } }
@@ -64,11 +66,12 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Action(string name, string title, string description, int key,
+		public Action(string name, string shortname, string title, string description, int key,
 					  bool allowkeys, bool allowmouse, bool allowscroll)
 		{
 			// Initialize
 			this.name = name;
+			this.shortname = shortname;
 			this.title = title;
 			this.description = description;
 			this.delegates = new List<ActionDelegate>();
@@ -166,7 +169,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// No method bound?
 			if(delegates.Count == 0)
 			{
-				General.WriteLogLine("Called action '" + name + "' has no methods bound");
+				// Ignore this since keys can also be handled through KeyDown and KeyUp in editing modes
+				//General.WriteLogLine("Called action '" + name + "' has no methods bound");
 			}
 			else
 			{

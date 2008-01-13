@@ -38,7 +38,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	internal class VisualObject : VisualGeometry
+	internal class VisualCeiling : VisualGeometry
 	{
 		#region ================== Constants
 
@@ -46,85 +46,61 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		#region ================== Variables
 
-		// Disposing
-		private bool isdisposed = false;
-
 		#endregion
 
 		#region ================== Properties
-
-		// Disposing
-		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public VisualObject()
+		public VisualCeiling(Sector s)
 		{
-			// Initialize
-			WorldVertex[] v = new WorldVertex[6];
+			WorldVertex[] verts;
+			WorldVertex v;
+			PixelColor pc;
 
-			v[0].c = -1;
-			v[0].x = 0.0f;
-			v[0].y = 0.0f;
-			v[0].z = 0.0f;
-			v[0].u = 0.0f;
-			v[0].v = 1.0f;
+			// Load floor texture
+			base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);
+			base.Texture.LoadImage();
 
-			v[1].c = -1;
-			v[1].x = 0.0f;
-			v[1].y = 0.0f;
-			v[1].z = 100.0f;
-			v[1].u = 0.0f;
-			v[1].v = 0.0f;
+			// Make vertices
+			verts = new WorldVertex[s.Triangles.Count];
+			for(int i = 0; i < s.Triangles.Count; i++)
+			{
+				// Use sector brightness for color shading
+				//pc = new PixelColor(255, unchecked((byte)s.Brightness), unchecked((byte)s.Brightness), unchecked((byte)s.Brightness));
+				//verts[i].c = pc.ToInt();
+				verts[i].c = -1;
 
-			v[2].c = -1;
-			v[2].x = 100.0f;
-			v[2].y = 0.0f;
-			v[2].z = 100.0f;
-			v[2].u = 1.0f;
-			v[2].v = 0.0f;
+				// Grid aligned texture coordinates
+				verts[i].u = s.Triangles[i].x / base.Texture.ScaledWidth;
+				verts[i].v = s.Triangles[i].y / base.Texture.ScaledHeight;
 
-			v[3].c = -1;
-			v[3].x = 0.0f;
-			v[3].y = 0.0f;
-			v[3].z = 0.0f;
-			v[3].u = 0.0f;
-			v[3].v = 1.0f;
+				// Vertex coordinates
+				verts[i].x = s.Triangles[i].x;
+				verts[i].y = s.Triangles[i].y;
+				verts[i].z = (float)s.CeilHeight;
+			}
 
-			v[4].c = -1;
-			v[4].x = 100.0f;
-			v[4].y = 0.0f;
-			v[4].z = 100.0f;
-			v[4].u = 1.0f;
-			v[4].v = 0.0f;
-
-			v[5].c = -1;
-			v[5].x = 100.0f;
-			v[5].y = 0.0f;
-			v[5].z = 0.0f;
-			v[5].u = 1.0f;
-			v[5].v = 1.0f;
-
-			this.SetVertices(v);
+			// The sector triangulation created clockwise triangles that
+			// are right up for the floor. For the ceiling we must flip
+			// the triangles upside down.
+			// Swap some vertices to flip all triangles
+			for(int i = 0; i < verts.Length; i += 3)
+			{
+				// Swap
+				v = verts[i];
+				verts[i] = verts[i + 1];
+				verts[i + 1] = v;
+			}
 			
+			// Apply vertices
+			base.SetVertices(verts);
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
-		}
-
-		// Diposer
-		public void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Done
-				isdisposed = true;
-			}
 		}
 
 		#endregion

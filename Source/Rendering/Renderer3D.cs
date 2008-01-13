@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			anglez = delta.GetAngleZ();
 			
 			// Make the view matrix
-			view = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));
+			view = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, -1f));
 
 			// Make the billboard matrix
 			billboard = Matrix.RotationYawPitchRoll(0f, anglexy, anglez - Angle2D.PIHALF);
@@ -182,6 +182,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins rendering world geometry
 		public void StartGeometry()
 		{
+			// Renderstates
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.CounterClockwise);
+			graphics.Device.SetRenderState(RenderState.ZEnable, true);
+			graphics.Device.SetRenderState(RenderState.ZWriteEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+			
 			// Setup shader
 			graphics.Shaders.World3D.Begin();
 			graphics.Shaders.World3D.WorldViewProj = viewproj;
@@ -216,36 +223,40 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Update the sector if needed
 			if(s.NeedsUpdateGeo) s.Update();
 			
-			// Set the buffer
-			graphics.Device.SetStreamSource(0, s.GeometryBuffer, 0, WorldVertex.Stride);
-			
-			// Go for all geometry in this sector
-			foreach(VisualGeometry g in s.GeometryList)
+			// Only render when a vertexbuffer exists
+			if(s.GeometryBuffer != null)
 			{
-				// Change texture?
-				if(g.Texture != lasttexture)
-				{
-					// Now using this texture
-					lasttexture = g.Texture;
-					if(lasttexture != null)
-					{
-						// Load image and make texture
-						if(!lasttexture.IsLoaded) lasttexture.LoadImage();
-						if((lasttexture.Texture == null) || lasttexture.Texture.Disposed)
-							lasttexture.CreateTexture();
+				// Set the buffer
+				graphics.Device.SetStreamSource(0, s.GeometryBuffer, 0, WorldVertex.Stride);
 
-						// Apply texture
-						graphics.Shaders.World3D.Texture1 = lasttexture.Texture;
-						graphics.Shaders.World3D.ApplySettings();
+				// Go for all geometry in this sector
+				foreach(VisualGeometry g in s.GeometryList)
+				{
+					// Change texture?
+					if(g.Texture != lasttexture)
+					{
+						// Now using this texture
+						lasttexture = g.Texture;
+						if(lasttexture != null)
+						{
+							// Load image and make texture
+							if(!lasttexture.IsLoaded) lasttexture.LoadImage();
+							if((lasttexture.Texture == null) || lasttexture.Texture.Disposed)
+								lasttexture.CreateTexture();
+
+							// Apply texture
+							graphics.Shaders.World3D.Texture1 = lasttexture.Texture;
+							graphics.Shaders.World3D.ApplySettings();
+						}
 					}
+
+					// Render it!
+					graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
 				}
 
-				// Render it!
-				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+				// Remove references
+				graphics.Shaders.World3D.Texture1 = null;
 			}
-			
-			// Remove references
-			graphics.Shaders.World3D.Texture1 = null;
 		}
 
 		#endregion

@@ -346,8 +346,18 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates all structures if needed
 		public void Update()
 		{
+			// Update all!
+			Update(true, true);
+		}
+
+		// This updates all structures if needed
+		public void Update(bool dolines, bool dosectors)
+		{
 			// Update all linedefs
-			foreach(Linedef l in linedefs) l.Update();
+			if(dolines) foreach(Linedef l in linedefs) l.UpdateCache();
+
+			// Update all sectors
+			if(dosectors) foreach(Sector s in sectors) s.UpdateCache();
 		}
 
 		// This updates all structures after a
@@ -537,9 +547,9 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This returns the cohen-sutherland field bits for a vertex in a rectangle area
-		private static byte GetCSFieldBits(Vertex v, ref Rectangle area)
+		private static int GetCSFieldBits(Vertex v, ref Rectangle area)
 		{
-			byte bits = 0;
+			int bits = 0;
 			if(v.Y < area.Top) bits |= 0x01;
 			if(v.Y > area.Bottom) bits |= 0x02;
 			if(v.X < area.Left) bits |= 0x04;
@@ -603,8 +613,8 @@ namespace CodeImp.DoomBuilder.Map
 				// Join nearby vertices
 				stitches += MapSet.JoinVertices(fixedverts, movingverts, true, General.Settings.StitchDistance);
 
-				// Update cached values
-				Update();
+				// Update cached values of lines because we need their length/angle
+				Update(true, false);
 
 				// Split moving lines with unselected vertices
 				nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
@@ -836,8 +846,8 @@ namespace CodeImp.DoomBuilder.Map
 
 								// Both lines must be updated because their new length
 								// is relevant for next iterations!
-								l.Update();
-								nl.Update();
+								l.UpdateCache();
+								nl.UpdateCache();
 
 								// Add both lines to changedlines
 								if(changedlines != null) changedlines.Add(l);
@@ -852,6 +862,8 @@ namespace CodeImp.DoomBuilder.Map
 					}
 
 					// Will have to restart when splitted
+					// TODO: If we make (linked) lists from the collections first,
+					// we don't have to restart when splitted?
 					if(splitted) break;
 				}
 			}

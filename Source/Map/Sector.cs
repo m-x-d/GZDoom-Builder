@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -65,6 +66,10 @@ namespace CodeImp.DoomBuilder.Map
 		// Cloning
 		private Sector clone;
 		
+		// Triangulation
+		private bool updateneeded;
+		private TriangleList triangles;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -87,7 +92,9 @@ namespace CodeImp.DoomBuilder.Map
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public int Brightness { get { return brightness; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
+		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
+		public TriangleList Triangles { get { return triangles; } set { triangles = value; } }
 
 		#endregion
 
@@ -156,7 +163,11 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This attaches a sidedef and returns the listitem
-		public LinkedListNode<Sidedef> AttachSidedef(Sidedef sd) { return sidedefs.AddLast(sd); }
+		public LinkedListNode<Sidedef> AttachSidedef(Sidedef sd)
+		{
+			updateneeded = true;
+			return sidedefs.AddLast(sd);
+		}
 
 		// This detaches a sidedef
 		public void DetachSidedef(LinkedListNode<Sidedef> l)
@@ -165,6 +176,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(!isdisposed)
 			{
 				// Remove sidedef
+				updateneeded = true;
 				sidedefs.Remove(l);
 
 				// No more sidedefs left?
@@ -181,6 +193,20 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This detaches a thing
 		public void DetachThing(LinkedListNode<Thing> l) { if(!isdisposed) things.Remove(l); }
+
+		// This updates the sector when changes have been made
+		public void UpdateCache()
+		{
+			// Update if needed
+			if(updateneeded)
+			{
+				// Triangulate sector again
+				triangles = General.EarClipper.PerformTriangulation(this);
+				
+				// Updated
+				updateneeded = false;
+			}
+		}
 		
 		#endregion
 
