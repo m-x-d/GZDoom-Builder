@@ -278,7 +278,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(439, 428);
+			this.cancel.Location = new System.Drawing.Point(439, 435);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 17;
@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(320, 428);
+			this.apply.Location = new System.Drawing.Point(320, 435);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 16;
@@ -299,7 +299,8 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// actiongroup
 			// 
-			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(label2);
@@ -308,7 +309,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actiongroup.Controls.Add(this.doompanel);
 			this.actiongroup.Location = new System.Drawing.Point(8, 169);
 			this.actiongroup.Name = "actiongroup";
-			this.actiongroup.Size = new System.Drawing.Size(517, 197);
+			this.actiongroup.Size = new System.Drawing.Size(517, 203);
 			this.actiongroup.TabIndex = 18;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
@@ -332,7 +333,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.hexenpanel.Controls.Add(this.arg4label);
 			this.hexenpanel.Location = new System.Drawing.Point(6, 54);
 			this.hexenpanel.Name = "hexenpanel";
-			this.hexenpanel.Size = new System.Drawing.Size(505, 137);
+			this.hexenpanel.Size = new System.Drawing.Size(505, 143);
 			this.hexenpanel.TabIndex = 13;
 			// 
 			// arg3
@@ -424,7 +425,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.doompanel.Controls.Add(this.newtag);
 			this.doompanel.Location = new System.Drawing.Point(6, 54);
 			this.doompanel.Name = "doompanel";
-			this.doompanel.Size = new System.Drawing.Size(505, 137);
+			this.doompanel.Size = new System.Drawing.Size(505, 143);
 			this.doompanel.TabIndex = 12;
 			// 
 			// tag
@@ -488,7 +489,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(541, 401);
+			this.tabs.Size = new System.Drawing.Size(541, 408);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 20;
 			// 
@@ -500,7 +501,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabPage1.Location = new System.Drawing.Point(4, 23);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(5);
-			this.tabPage1.Size = new System.Drawing.Size(533, 374);
+			this.tabPage1.Size = new System.Drawing.Size(533, 381);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Properties";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -703,7 +704,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(561, 463);
+			this.ClientSize = new System.Drawing.Size(561, 470);
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
