@@ -171,7 +171,10 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					// Create the polygon
 					newpoly = path.MakePolygon();
-
+					#if DEBUG
+					if(OnShowPolygon != null) OnShowPolygon(newpoly, General.Colors.Selection);
+					#endif
+					
 					// Determine where this polygon goes in our tree
 					foreach(Polygon p in root)
 					{
@@ -260,6 +263,19 @@ namespace CodeImp.DoomBuilder.Geometry
 				sides[s] = true;
 				nextpath = new TracePath(history, s);
 				if(s.Line.Start == fromhere) nextvertex = s.Line.End; else nextvertex = s.Line.Start;
+				
+				// TEST
+				#if DEBUG
+				if(s.IsFront)
+				{
+					if(OnShowLine != null) OnShowLine(s.Line.Start.Position, s.Line.End.Position, PixelColor.FromColor(Color.Chartreuse));
+				}
+				else
+				{
+					if(OnShowLine != null) OnShowLine(s.Line.Start.Position, s.Line.End.Position, PixelColor.FromColor(Color.DeepSkyBlue));
+				}
+				#endif
+				
 				result = DoTracePath(nextpath, nextvertex, findme, sector, sides);
 				if(result != null) return result;
 			}
@@ -570,10 +586,6 @@ namespace CodeImp.DoomBuilder.Geometry
 				v1 = t[0];
 				v2 = t[2];
 
-				#if DEBUG
-				if(OnShowEarClip != null) OnShowEarClip(t, verts);
-				#endif
-				
 				// Test first neighbour
 				t1 = GetTriangle(v1);
 				if(IsReflex(t1))

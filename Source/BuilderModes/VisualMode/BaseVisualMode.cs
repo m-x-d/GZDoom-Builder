@@ -54,6 +54,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// List of visible sectors
 		private Dictionary<Sector, BaseVisualSector> visiblesectors;
 		
+		// Visual view range ^ 2
+		private float visualviewrange2;
+		
 		#endregion
 
 		#region ================== Properties
@@ -68,6 +71,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Initialize
 			allsectors = new Dictionary<Sector, BaseVisualSector>(General.Map.Map.Sectors.Count);
 			visiblesectors = new Dictionary<Sector, BaseVisualSector>();
+			visualviewrange2 = General.Settings.VisualViewRange * General.Settings.VisualViewRange;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -131,10 +135,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This recursively finds and adds visible sectors
-		private void ProcessVisibleSectors(Sector start, Vector2D campos)
+		private void ProcessVisibleSectors(Sector start, Vector2D campos, Clipper clipper)
 		{
 			BaseVisualSector vs;
+			Clipper newclip;
 			Sector os;
+			float side;
 			
 			// Find the basesector and make it if needed
 			if(allsectors.ContainsKey(start))
@@ -155,6 +161,26 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Go for all sidedefs in the sector
 			foreach(Sidedef sd in start.Sidedefs)
 			{
+				// Camera on the front of this side?
+				side = sd.Line.SideOfLine(campos);
+				if(((side > 0) && sd.IsFront) ||
+				   ((side < 0) && !sd.IsFront))
+				{
+					// Sidedef blocking the view?
+					if((sd.Other == null) ||
+					   (sd.Other.Sector.FloorHeight >= (sd.Sector.CeilHeight - 0.0001f)) ||
+					   (sd.Other.Sector.CeilHeight <= (sd.Sector.FloorHeight + 0.0001f)) ||
+					   (sd.Other.Sector.FloorHeight >= (sd.Other.Sector.CeilHeight - 0.0001f)))
+					{
+						// This blocks the view
+						//clipper.InsertRange(sd.Line.Start.Position, sd.Line.End.Position);
+					}
+				}
+			}
+			
+			// Go for all sidedefs in the sector
+			foreach(Sidedef sd in start.Sidedefs)
+			{
 				// Doublesided and not referring to same sector?
 				if((sd.Other != null) && (sd.Other.Sector != sd.Sector))
 				{
@@ -164,10 +190,21 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Sector not yet added?
 					if(!visiblesectors.ContainsKey(os))
 					{
-						// TODO: Visiblity checking!
+						// Within view range?
+						if(sd.Line.DistanceToSq(campos, true) < visualviewrange2)
 						{
-							// Process this sector as well
-							ProcessVisibleSectors(os, campos);
+							// Check if the sector can be seen
+							//if(clipper.TestRange(sd.Line.Start.Position, sd.Line.End.Position))
+							{
+								// Make a copy of the visibility clipper
+								newclip = new Clipper(clipper);
+
+								// Process this sector as well
+								ProcessVisibleSectors(os, campos, newclip);
+
+								// Done with this clipper
+								newclip.Dispose();
+							}
 						}
 					}
 				}
@@ -206,6 +243,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void Process()
 		{
 			Vector2D campos;
+			Clipper clipper;
 			
 			// Process base class first
 			base.Process();
@@ -213,11 +251,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Get the 2D camera position
 			campos = new Vector2D(base.CameraPosition.x, base.CameraPosition.y);
 			
+			// Make visibility clipper
+			clipper = new Clipper((Vector2D)base.CameraPosition);
+			
 			// Make new visibility list
 			visiblesectors = new Dictionary<Sector, BaseVisualSector>(General.Map.Map.Sectors.Count);
 			
 			// Process all visible sectors starting with the nearest
-			ProcessVisibleSectors(FindStartSector(campos), campos);
+			ProcessVisibleSectors(FindStartSector(campos), campos, clipper);
+
+			// Clean up
+			clipper.Dispose();
 		}
 		
 		#endregion

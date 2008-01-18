@@ -36,10 +36,12 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Testing\TriangulatorMode.cs" />
     <Compile Include="VisualMode\BaseVisualMode.cs" />
     <Compile Include="VisualMode\BaseVisualSector.cs" />
     <Compile Include="VerticesMode\DragVerticesMode.cs" />
     <Compile Include="LinedefsMode\LinedefsMode.cs" />
+    <Compile Include="VisualMode\Clipper.cs" />
     <Compile Include="VisualMode\VisualCeiling.cs" />
     <Compile Include="VisualMode\VisualFloor.cs" />
     <Compile Include="VisualMode\VisualLower.cs" />

@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int visualfov;
 		private float visualmousesensx;
 		private float visualmousesensy;
+		private float visualviewrange;
 		
 		#endregion
 
@@ -61,6 +62,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int VisualFOV { get { return visualfov; } internal set { visualfov = value; } }
 		public float VisualMouseSensX { get { return visualmousesensx; } internal set { visualmousesensx = value; } }
 		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
+		public float VisualViewRange { get { return visualviewrange; } internal set { visualviewrange = value; } }
 
 		#endregion
 
@@ -88,8 +90,9 @@ namespace CodeImp.DoomBuilder.Config
 				stitchdistance = cfg.ReadSetting("stitchdistance", 2.0f);
 				undolevels = cfg.ReadSetting("undolevels", 20);
 				visualfov = cfg.ReadSetting("visualfov", 80);
-				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40);
-				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40);
+				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40f);
+				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40f);
+				visualviewrange = cfg.ReadSetting("visualviewrange", 1000f);
 				
 				// Success
 				return true;
@@ -111,6 +114,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("visualfov", visualfov);
 			cfg.WriteSetting("visualmousesensx", visualmousesensx);
 			cfg.WriteSetting("visualmousesensy", visualmousesensy);
+			cfg.WriteSetting("visualviewrange", visualviewrange);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
