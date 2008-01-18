@@ -30,40 +30,59 @@ namespace CodeImp.DoomBuilder.Geometry
 	internal class SidedefAngleSorter : IComparer<Sidedef>
 	{
 		// Variables
-		private float baseangle;
+		private Sidedef baseside;
 		private Vertex basevertex;
 		
 		// Constructor
-		public SidedefAngleSorter(Sidedef baseside, Vertex basev)
+		public SidedefAngleSorter(Sidedef baseside, Vertex fromvertex)
 		{
 			// Initialize
-			baseangle = baseside.Angle;
-			if(baseside.Line.Start == basev) basevertex = baseside.Line.End;
-				else basevertex = baseside.Line.Start;
+			this.baseside = baseside;
+			this.basevertex = fromvertex;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
+		// This calculates the relative angle between two sides
+		private float CalculateRelativeAngle(Sidedef a, Sidedef b)
+		{
+			float s, n, ana, anb;
+			Vector2D va, vb;
+			bool dir;
+			
+			// Determine angles
+			ana = a.Line.Angle; if(a.Line.End == basevertex) ana += Angle2D.PI;
+			anb = b.Line.Angle; if(b.Line.End == basevertex) anb += Angle2D.PI;
+			
+			// Take the difference from angles
+			n = Angle2D.Difference(ana, anb);
+			
+			// Get line end vertices a and b that are not connected to basevertex
+			if(a.Line.Start == basevertex) va = a.Line.End.Position; else va = a.Line.Start.Position;
+			if(b.Line.Start == basevertex) vb = b.Line.End.Position; else vb = b.Line.Start.Position;
+			
+			// Determine rotation direction
+			dir = baseside.IsFront;
+			if(baseside.Line.End == basevertex) dir = !dir;
+			
+			// Check to which side the angle goes and adjust angle as needed
+			s = Line2D.GetSideOfLine(va, vb, basevertex.Position);
+			if((s < 0) && dir) n = Angle2D.PI2 - n;
+			if((s > 0) && !dir) n = Angle2D.PI2 - n;
+			
+			// Return result
+			return n;
+		}
+		
 		// Comparer
 		public int Compare(Sidedef x, Sidedef y)
 		{
 			float ax, ay;
-			float sx, sy;
 			
-			// Calculate x angle
-			ax = Angle2D.Difference(baseangle, x.Angle);
-			sx = x.Line.SideOfLine(basevertex.Position);
-			if((sx < 0) && x.IsFront) ax += Angle2D.PI;
-			if((sx > 0) && !x.IsFront) ax += Angle2D.PI;
-			ax = Angle2D.Normalized(ax);
-			
-			// Calculate y angle
-			ay = Angle2D.Difference(baseangle, y.Angle);
-			sy = y.Line.SideOfLine(basevertex.Position);
-			if((sy < 0) && x.IsFront) ay += Angle2D.PI;
-			if((sy > 0) && !x.IsFront) ay += Angle2D.PI;
-			ay = Angle2D.Normalized(ay);
+			// Calculate angles
+			ax = CalculateRelativeAngle(baseside, x);
+			ay = CalculateRelativeAngle(baseside, y);
 			
 			// Compare results
 			if(ax < ay) return 1;

@@ -213,7 +213,14 @@ namespace CodeImp.DoomBuilder.Geometry
 			// Return vector from angle
 			return FromAngle(angle) * length;
 		}
-		
+
+		// This calculates the angle
+		public static float GetAngle(Vector2D a, Vector2D b)
+		{
+			// Calculate and return the angle
+			return -(float)Math.Atan2(-(a.y - b.y), (a.x - b.x)) + (float)Math.PI * 0.5f;
+		}
+
 		#endregion
 
 		#region ================== Methods
