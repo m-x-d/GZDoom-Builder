@@ -709,8 +709,8 @@ namespace CodeImp.DoomBuilder.IO
 						key = "";
 						val = "";
 					}
-					// Otherwise (if not a space) it will be a keyword
-					else if(c != ' ')
+					// Otherwise (if not whitespace) it will be a keyword
+					else if((c != ' ') && (c != '\t'))
 					{
 						// Now parsing a keyword
 						pm = PM_KEYWORD;

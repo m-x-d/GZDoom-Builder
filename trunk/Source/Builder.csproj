@@ -53,6 +53,8 @@
     <Compile Include="Config\TagType.cs" />
     <Compile Include="Config\ThingCategory.cs" />
     <Compile Include="Config\ThingTypeInfo.cs" />
+    <Compile Include="Config\UniversalFieldInfo.cs" />
+    <Compile Include="Config\UniversalFieldType.cs" />
     <Compile Include="Controls\ActionAttribute.cs" />
     <Compile Include="Controls\KeyControl.cs" />
     <Compile Include="Controls\MouseInput.cs" />
@@ -142,6 +144,13 @@
     </Compile>
     <Compile Include="Interface\ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\FieldsEditorRow.cs" />
+    <Compile Include="Interface\FieldsEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\FieldsEditorControl.Designer.cs">
+      <DependentUpon>FieldsEditorControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\FlatBrowserForm.cs">
       <SubType>Form</SubType>
@@ -273,6 +282,7 @@
     <Compile Include="IO\IImageReader.cs" />
     <Compile Include="IO\Lump.cs" />
     <Compile Include="IO\MapSetIO.cs" />
+    <Compile Include="IO\UniversalMapSetIO.cs" />
     <Compile Include="IO\UnknownImageReader.cs" />
     <Compile Include="IO\WAD.cs" />
     <Compile Include="Interface\MainForm.cs">
@@ -408,6 +418,10 @@
     <EmbeddedResource Include="Interface\ConfigForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\FieldsEditorControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>FieldsEditorControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\FlatBrowserForm.resx">
       <DependentUpon>FlatBrowserForm.cs</DependentUpon>

@@ -58,6 +58,9 @@ namespace CodeImp.DoomBuilder.Map
 		private long longtexnamehigh;
 		private long longtexnamemid;
 		private long longtexnamelow;
+
+		// Additional fields
+		private SortedList<string, object> fields;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -81,6 +84,7 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongHighTexture { get { return longtexnamehigh; } }
 		public long LongMiddleTexture { get { return longtexnamemid; } }
 		public long LongLowTexture { get { return longtexnamelow; } }
+		public SortedList<string, object> Fields { get { return fields; } }
 		
 		#endregion
 
@@ -151,6 +155,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.longtexnamehigh = longtexnamehigh;
 			s.longtexnamemid = longtexnamemid;
 			s.longtexnamelow = longtexnamelow;
+			if(fields != null) s.MakeFields(fields);
 		}
 		
 		// This copies textures to another sidedef
@@ -202,6 +207,23 @@ namespace CodeImp.DoomBuilder.Map
 				s.offsetx = offsetx;
 				s.offsety = offsety;
 			}
+		}
+		
+		#endregion
+		
+		#region ================== Fields
+
+		// This makes new fields
+		public void MakeFields()
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+		}
+
+		// This makes fields from another list of fields
+		public void MakeFields(SortedList<string, object> copyfrom)
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
 		}
 		
 		#endregion

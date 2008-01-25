@@ -69,6 +69,9 @@ namespace CodeImp.DoomBuilder.Map
 		// Triangulation
 		private bool updateneeded;
 		private TriangleList triangles;
+
+		// Additional fields
+		private SortedList<string, object> fields;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -95,6 +98,7 @@ namespace CodeImp.DoomBuilder.Map
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
 		public TriangleList Triangles { get { return triangles; } set { triangles = value; } }
+		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
 
@@ -160,6 +164,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.effect = effect;
 			s.tag = tag;
 			s.brightness = brightness;
+			if(fields != null) s.MakeFields(fields);
 		}
 		
 		// This attaches a sidedef and returns the listitem
@@ -210,6 +215,23 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#endregion
 
+		#region ================== Fields
+
+		// This makes new fields
+		public void MakeFields()
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+		}
+
+		// This makes fields from another list of fields
+		public void MakeFields(SortedList<string, object> copyfrom)
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
+		}
+
+		#endregion
+		
 		#region ================== Changes
 
 		// This updates all properties

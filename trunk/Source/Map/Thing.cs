@@ -68,6 +68,9 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Selections
 		private bool selected;
+
+		// Additional fields
+		private SortedList<string, object> fields;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -94,6 +97,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int ZOffset { get { return zoffset; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
+		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
 
@@ -155,6 +159,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.color = color;
 			t.iconoffset = iconoffset;
 			args.CopyTo(t.args, 0);
+			if(fields != null) t.MakeFields(fields);
 		}
 		
 		// This determines which sector the thing is in and links it
@@ -198,6 +203,23 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 		
+		#endregion
+
+		#region ================== Fields
+
+		// This makes new fields
+		public void MakeFields()
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+		}
+
+		// This makes fields from another list of fields
+		public void MakeFields(SortedList<string, object> copyfrom)
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
+		}
+
 		#endregion
 		
 		#region ================== Changes

@@ -53,6 +53,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// Fill activations list
 			activation.Items.AddRange(General.Map.Config.LinedefActivates.ToArray());
 			
+			// Fill universal fields list
+			fieldslist.ListFixedFields(General.Map.Config.LinedefFields);
+			
 			// Initialize image selectors
 			fronthigh.Initialize();
 			frontmid.Initialize();
