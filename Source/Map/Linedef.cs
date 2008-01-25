@@ -72,6 +72,9 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private byte[] args;
 		
+		// Additional fields
+		private SortedList<string, object> fields;
+		
 		// Selections
 		private bool selected;
 		
@@ -99,6 +102,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 		public Rectangle Rect { get { return rect; } }
 		public byte[] Args { get { return args; } }
+		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
 
@@ -187,6 +191,7 @@ namespace CodeImp.DoomBuilder.Map
 			l.flags = flags;
 			l.tag = tag;
 			l.updateneeded = true;
+			if(fields != null) l.MakeFields(fields);
 		}
 		
 		// This attaches a sidedef on the front
@@ -273,6 +278,23 @@ namespace CodeImp.DoomBuilder.Map
 			// Update sectors as well
 			if(front != null) front.Sector.UpdateNeeded = true;
 			if(back != null) back.Sector.UpdateNeeded = true;
+		}
+
+		#endregion
+
+		#region ================== Fields
+
+		// This makes new fields
+		public void MakeFields()
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+		}
+
+		// This makes fields from another list of fields
+		public void MakeFields(SortedList<string, object> copyfrom)
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
 		}
 
 		#endregion

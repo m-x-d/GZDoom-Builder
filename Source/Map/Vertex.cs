@@ -59,6 +59,9 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Cloning
 		private Vertex clone;
+
+		// Additional fields
+		private SortedList<string, object> fields;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -75,6 +78,7 @@ namespace CodeImp.DoomBuilder.Map
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public Vertex Clone { get { return clone; } set { clone = value; } }
+		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
 
@@ -145,8 +149,35 @@ namespace CodeImp.DoomBuilder.Map
 
 		#endregion
 
+		#region ================== Fields
+
+		// This makes new fields
+		public void MakeFields()
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+		}
+
+		// This makes fields from another list of fields
+		public void MakeFields(SortedList<string, object> copyfrom)
+		{
+			if(fields != null) fields = new SortedList<string, object>();
+			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
+		}
+
+		#endregion
+		
 		#region ================== Methods
 
+		// This copies all properties to another thing
+		public void CopyPropertiesTo(Vertex v)
+		{
+			// Copy properties
+			v.x = x;
+			v.y = y;
+			v.pos = pos;
+			if(fields != null) v.MakeFields(fields);
+		}
+		
 		// This returns the distance from given coordinates
 		public float DistanceToSq(Vector2D p)
 		{

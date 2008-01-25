@@ -83,6 +83,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.fronthigh = new CodeImp.DoomBuilder.Interface.TextureSelectorControl();
 			this.frontoffsety = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.frontoffsetx = new CodeImp.DoomBuilder.Interface.NumericTextbox();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.fieldslist = new CodeImp.DoomBuilder.Interface.FieldsEditorControl();
 			label2 = new System.Windows.Forms.Label();
 			taglabel = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -105,6 +107,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabPage2.SuspendLayout();
 			this.backgroup.SuspendLayout();
 			this.frontgroup.SuspendLayout();
+			this.tabPage3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label2
@@ -484,6 +487,7 @@ namespace CodeImp.DoomBuilder.Interface
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.tabPage1);
 			this.tabs.Controls.Add(this.tabPage2);
+			this.tabs.Controls.Add(this.tabPage3);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
@@ -516,7 +520,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabPage2.Location = new System.Drawing.Point(4, 23);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(5);
-			this.tabPage2.Size = new System.Drawing.Size(533, 374);
+			this.tabPage2.Size = new System.Drawing.Size(533, 381);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Sidedefs";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -699,6 +703,24 @@ namespace CodeImp.DoomBuilder.Interface
 			this.frontoffsetx.TabIndex = 8;
 			this.frontoffsetx.Enter += new System.EventHandler(this.SelectAllText);
 			// 
+			// tabPage3
+			// 
+			this.tabPage3.Controls.Add(this.fieldslist);
+			this.tabPage3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabPage3.Location = new System.Drawing.Point(4, 23);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Size = new System.Drawing.Size(533, 381);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "Custom";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// fieldslist
+			// 
+			this.fieldslist.Location = new System.Drawing.Point(12, 12);
+			this.fieldslist.Name = "fieldslist";
+			this.fieldslist.Size = new System.Drawing.Size(508, 357);
+			this.fieldslist.TabIndex = 0;
+			// 
 			// LinedefEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -732,6 +754,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.backgroup.PerformLayout();
 			this.frontgroup.ResumeLayout(false);
 			this.frontgroup.PerformLayout();
+			this.tabPage3.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -780,5 +803,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.Label arg4label;
 		private System.Windows.Forms.Label arg2label;
 		private System.Windows.Forms.Label arg3label;
+		private System.Windows.Forms.TabPage tabPage3;
+		private FieldsEditorControl fieldslist;
 	}
 }

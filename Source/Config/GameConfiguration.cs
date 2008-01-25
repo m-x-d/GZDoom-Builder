@@ -74,6 +74,9 @@ namespace CodeImp.DoomBuilder.Config
 		private List<LinedefActivateInfo> linedefactivates;
 		private List<GeneralActionCategory> genactioncategories;
 		
+		// Universal fields
+		private List<UniversalFieldInfo> linedeffields;
+		
 		#endregion
 
 		#region ================== Properties
@@ -110,6 +113,9 @@ namespace CodeImp.DoomBuilder.Config
 		public List<LinedefActivateInfo> LinedefActivates { get { return linedefactivates; } }
 		public List<GeneralActionCategory> GenActionCategories { get { return genactioncategories; } }
 
+		// Universal fields
+		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -156,6 +162,9 @@ namespace CodeImp.DoomBuilder.Config
 			LoadLinedefActions();
 			LoadLinedefActivations();
 			LoadLinedefGeneralizedAction();
+
+			// Universal fields
+			linedeffields = LoadUniversalFields("linedefs");
 		}
 
 		// Destructor
@@ -169,6 +178,33 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Loading
 
+		// This loads a universal fields list
+		private List<UniversalFieldInfo> LoadUniversalFields(string elementname)
+		{
+			List<UniversalFieldInfo> list = new List<UniversalFieldInfo>();
+			UniversalFieldInfo uf;
+			IDictionary dic;
+			
+			// Get fields
+			dic = cfg.ReadSetting("universalfields." + elementname, new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				try
+				{
+					// Read the field info and add to list
+					uf = new UniversalFieldInfo(elementname, de.Key.ToString(), cfg);
+					list.Add(uf);
+				}
+				catch(Exception e)
+				{
+					General.WriteLogLine("WARNING: Unable to read universal field definition 'universalfields." + elementname + "." + de.Key + "'!");
+				}
+			}
+
+			// Return result
+			return list;
+		}
+		
 		// Things and thing categories
 		private void LoadThingCategories()
 		{
