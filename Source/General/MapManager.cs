@@ -132,10 +132,8 @@ namespace CodeImp.DoomBuilder
 				// Unbind any methods
 				ActionAttribute.UnbindMethods(this);
 
-				// Basic objects
-				if(undoredo != null) undoredo.Dispose();
-				
 				// Dispose
+				if(undoredo != null) undoredo.Dispose();
 				General.WriteLogLine("Unloading data resources...");
 				if(data != null) data.Dispose();
 				General.WriteLogLine("Closing temporary file...");
