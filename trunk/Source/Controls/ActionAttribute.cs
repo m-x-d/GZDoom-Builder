@@ -141,6 +141,7 @@ namespace CodeImp.DoomBuilder.Controls
 					actionname = a.GetFullActionName(type.Assembly);
 					
 					// Bind method to action
+					General.WriteLogLine("Binding '" + actionname + "'");
 					if(General.Actions.Exists(actionname))
 						General.Actions[actionname].Bind(del);
 					else
@@ -192,7 +193,7 @@ namespace CodeImp.DoomBuilder.Controls
 				General.WriteLogLine("Unbinding action methods for " + type.Name + " object...");
 
 			// Go for all methods on obj
-			methods = type.GetMethods();
+			methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 			foreach(MethodInfo m in methods)
 			{
 				// Check if the method has this attribute
@@ -208,6 +209,7 @@ namespace CodeImp.DoomBuilder.Controls
 					actionname = a.GetFullActionName(type.Assembly);
 
 					// Unbind method from action
+					General.WriteLogLine("Unbinding '" + actionname + "'");
 					General.Actions[actionname].Unbind(del);
 				}
 			}
