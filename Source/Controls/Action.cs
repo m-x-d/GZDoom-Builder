@@ -131,6 +131,26 @@ namespace CodeImp.DoomBuilder.Controls
 					// Make string representation
 					return ctrlprefix + "ScrollUp";
 
+				// Keys that would otherwise have odd names
+				case (int)Keys.Oemtilde: return ctrlprefix + "~";
+				case (int)Keys.OemMinus: return ctrlprefix + "-";
+				case (int)Keys.Oemplus: return ctrlprefix + "+";
+				case (int)Keys.Subtract: return ctrlprefix + "NumPad-";
+				case (int)Keys.Add: return ctrlprefix + "NumPad+";
+				case (int)Keys.Decimal: return ctrlprefix + "NumPad.";
+				case (int)Keys.Multiply: return ctrlprefix + "NumPad*";
+				case (int)Keys.Divide: return ctrlprefix + "NumPad/";
+				case (int)Keys.OemOpenBrackets: return ctrlprefix + "[";
+				case (int)Keys.OemCloseBrackets: return ctrlprefix + "]";
+				case (int)Keys.Oem1: return ctrlprefix + ";";
+				case (int)Keys.Oem7: return ctrlprefix + "'";
+				case (int)Keys.Oemcomma: return ctrlprefix + ",";
+				case (int)Keys.OemPeriod: return ctrlprefix + ".";
+				case (int)Keys.OemQuestion: return ctrlprefix + "?";
+				case (int)Keys.Oem5: return ctrlprefix + "\\";
+				case (int)Keys.Capital: return ctrlprefix + "CapsLock";
+				case (int)Keys.Back: return ctrlprefix + "Backspace";
+				
 				default:
 					
 					// Use standard key-string conversion
