@@ -956,6 +956,25 @@ namespace CodeImp.DoomBuilder
 				// Update interface
 				General.MainWindow.UpdateInterface();
 
+				// Stop data manager
+				data.Dispose();
+				
+				// Apply new options
+				this.options = optionsform.Options;
+
+				// Load new game configuration
+				General.WriteLogLine("Loading game configuration...");
+				configinfo = General.GetConfigurationInfo(options.ConfigFile);
+				config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
+				General.Plugins.GameConfigurationChanged();
+				
+				// Setup new map format IO
+				General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+				io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+
+				// Create required lumps if they don't exist yet
+				CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
+				
 				// Reload resources
 				ReloadResources();
 			}
