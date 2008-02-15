@@ -72,6 +72,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// List of unstable lines
 		private ICollection<Linedef> unstablelines;
 		
+		// Keep track of view changes
+		private float lastoffsetx;
+		private float lastoffsety;
+		private float lastscale;
+		
 		// Options
 		private bool snaptogrid;		// SHIFT to toggle
 		private bool snaptonearest;		// CTRL to enable
@@ -112,6 +117,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Also keep old position of the dragged item
 			dragitemposition = dragitem.Position;
 
+			// Keep view information
+			lastoffsetx = renderer.OffsetX;
+			lastoffsety = renderer.OffsetY;
+			lastscale = renderer.Scale;
+			
 			// Make list of unstable lines only
 			// These will have their length displayed during the drag
 			unstablelines = General.Map.Map.LinedefsFromSelectedVertices(false, false, true);
@@ -268,8 +278,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This redraws the display
 		public unsafe override void RedrawDisplay()
 		{
+			bool viewchanged = false;
+			
+			// View changed?
+			if(renderer.OffsetX != lastoffsetx) viewchanged = true;
+			if(renderer.OffsetY != lastoffsety) viewchanged = true;
+			if(renderer.Scale != lastscale) viewchanged = true;
+
 			// Start rendering
-			if(renderer.Start(true, false))
+			if(renderer.Start(true, viewchanged))
 			{
 				// Uncomment this to see triangulation
 				/*
@@ -283,6 +300,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 				}
 				*/
+
+				// Redraw things when view changed
+				if(viewchanged)
+				{
+					renderer.SetThingsRenderOrder(false);
+					renderer.RenderThingSet(General.Map.Map.Things);
+
+					// Keep view information
+					lastoffsetx = renderer.OffsetX;
+					lastoffsety = renderer.OffsetY;
+					lastscale = renderer.Scale;
+				}
 				
 				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);

@@ -141,7 +141,6 @@ namespace CodeImp.DoomBuilder.Controls
 					actionname = a.GetFullActionName(type.Assembly);
 					
 					// Bind method to action
-					General.WriteLogLine("Binding '" + actionname + "'");
 					if(General.Actions.Exists(actionname))
 						General.Actions[actionname].Bind(del);
 					else
@@ -209,7 +208,6 @@ namespace CodeImp.DoomBuilder.Controls
 					actionname = a.GetFullActionName(type.Assembly);
 
 					// Unbind method from action
-					General.WriteLogLine("Unbinding '" + actionname + "'");
 					General.Actions[actionname].Unbind(del);
 				}
 			}
