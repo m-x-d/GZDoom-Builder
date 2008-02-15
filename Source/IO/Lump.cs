@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.IO
 		public static unsafe long MakeLongName(string name)
 		{
 			long value = 0;
-			byte[] namebytes = Encoding.ASCII.GetBytes(name);
+			byte[] namebytes = Encoding.ASCII.GetBytes(name.Trim().ToUpper());
 			uint bytes = (uint)namebytes.Length;
 			if(bytes > 8) bytes = 8;
 
@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.IO
 			while((length < fixedname.Length) && (fixedname[length] != 0)) length++;
 			
 			// Make normal name
-			return encoding.GetString(fixedname, 0, length).Trim();
+			return encoding.GetString(fixedname, 0, length).Trim().ToUpper();
 		}
 
 		// This makes the fixed name from normal name
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.IO
 			byte[] fixedname = new byte[8];
 
 			// Write the name in bytes
-			encoding.GetBytes(name.Trim(), 0, name.Length, fixedname, 0);
+			encoding.GetBytes(name.Trim().ToUpper(), 0, name.Length, fixedname, 0);
 
 			// Return result
 			return fixedname;

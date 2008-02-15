@@ -65,8 +65,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.flags = new CodeImp.DoomBuilder.Interface.CheckboxArrayControl();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.tabs = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.tabproperties = new System.Windows.Forms.TabPage();
+			this.tabsidedefs = new System.Windows.Forms.TabPage();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
 			this.backsector = new CodeImp.DoomBuilder.Interface.NumericTextbox();
@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.fronthigh = new CodeImp.DoomBuilder.Interface.TextureSelectorControl();
 			this.frontoffsety = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.frontoffsetx = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Interface.FieldsEditorControl();
 			label2 = new System.Windows.Forms.Label();
 			taglabel = new System.Windows.Forms.Label();
@@ -103,11 +103,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.doompanel.SuspendLayout();
 			this.settingsgroup.SuspendLayout();
 			this.tabs.SuspendLayout();
-			this.tabPage1.SuspendLayout();
-			this.tabPage2.SuspendLayout();
+			this.tabproperties.SuspendLayout();
+			this.tabsidedefs.SuspendLayout();
 			this.backgroup.SuspendLayout();
 			this.frontgroup.SuspendLayout();
-			this.tabPage3.SuspendLayout();
+			this.tabcustom.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label2
@@ -485,9 +485,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabs.Controls.Add(this.tabPage1);
-			this.tabs.Controls.Add(this.tabPage2);
-			this.tabs.Controls.Add(this.tabPage3);
+			this.tabs.Controls.Add(this.tabproperties);
+			this.tabs.Controls.Add(this.tabsidedefs);
+			this.tabs.Controls.Add(this.tabcustom);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
@@ -497,33 +497,33 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 20;
 			// 
-			// tabPage1
+			// tabproperties
 			// 
-			this.tabPage1.Controls.Add(this.settingsgroup);
-			this.tabPage1.Controls.Add(this.actiongroup);
-			this.tabPage1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabPage1.Location = new System.Drawing.Point(4, 23);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(5);
-			this.tabPage1.Size = new System.Drawing.Size(533, 381);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Properties";
-			this.tabPage1.UseVisualStyleBackColor = true;
+			this.tabproperties.Controls.Add(this.settingsgroup);
+			this.tabproperties.Controls.Add(this.actiongroup);
+			this.tabproperties.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabproperties.Location = new System.Drawing.Point(4, 23);
+			this.tabproperties.Name = "tabproperties";
+			this.tabproperties.Padding = new System.Windows.Forms.Padding(5);
+			this.tabproperties.Size = new System.Drawing.Size(533, 381);
+			this.tabproperties.TabIndex = 0;
+			this.tabproperties.Text = "Properties";
+			this.tabproperties.UseVisualStyleBackColor = true;
 			// 
-			// tabPage2
+			// tabsidedefs
 			// 
-			this.tabPage2.Controls.Add(this.backside);
-			this.tabPage2.Controls.Add(this.backgroup);
-			this.tabPage2.Controls.Add(this.frontside);
-			this.tabPage2.Controls.Add(this.frontgroup);
-			this.tabPage2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabPage2.Location = new System.Drawing.Point(4, 23);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(5);
-			this.tabPage2.Size = new System.Drawing.Size(533, 381);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Sidedefs";
-			this.tabPage2.UseVisualStyleBackColor = true;
+			this.tabsidedefs.Controls.Add(this.backside);
+			this.tabsidedefs.Controls.Add(this.backgroup);
+			this.tabsidedefs.Controls.Add(this.frontside);
+			this.tabsidedefs.Controls.Add(this.frontgroup);
+			this.tabsidedefs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabsidedefs.Location = new System.Drawing.Point(4, 23);
+			this.tabsidedefs.Name = "tabsidedefs";
+			this.tabsidedefs.Padding = new System.Windows.Forms.Padding(5);
+			this.tabsidedefs.Size = new System.Drawing.Size(533, 381);
+			this.tabsidedefs.TabIndex = 1;
+			this.tabsidedefs.Text = "Sidedefs";
+			this.tabsidedefs.UseVisualStyleBackColor = true;
 			// 
 			// backside
 			// 
@@ -703,16 +703,16 @@ namespace CodeImp.DoomBuilder.Interface
 			this.frontoffsetx.TabIndex = 8;
 			this.frontoffsetx.Enter += new System.EventHandler(this.SelectAllText);
 			// 
-			// tabPage3
+			// tabcustom
 			// 
-			this.tabPage3.Controls.Add(this.fieldslist);
-			this.tabPage3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabPage3.Location = new System.Drawing.Point(4, 23);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(533, 381);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Custom";
-			this.tabPage3.UseVisualStyleBackColor = true;
+			this.tabcustom.Controls.Add(this.fieldslist);
+			this.tabcustom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabcustom.Location = new System.Drawing.Point(4, 23);
+			this.tabcustom.Name = "tabcustom";
+			this.tabcustom.Size = new System.Drawing.Size(533, 381);
+			this.tabcustom.TabIndex = 2;
+			this.tabcustom.Text = "Custom";
+			this.tabcustom.UseVisualStyleBackColor = true;
 			// 
 			// fieldslist
 			// 
@@ -747,14 +747,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.doompanel.PerformLayout();
 			this.settingsgroup.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
-			this.tabPage1.ResumeLayout(false);
-			this.tabPage2.ResumeLayout(false);
-			this.tabPage2.PerformLayout();
+			this.tabproperties.ResumeLayout(false);
+			this.tabsidedefs.ResumeLayout(false);
+			this.tabsidedefs.PerformLayout();
 			this.backgroup.ResumeLayout(false);
 			this.backgroup.PerformLayout();
 			this.frontgroup.ResumeLayout(false);
 			this.frontgroup.PerformLayout();
-			this.tabPage3.ResumeLayout(false);
+			this.tabcustom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -772,8 +772,8 @@ namespace CodeImp.DoomBuilder.Interface
 		private NumericTextbox tag;
 		private System.Windows.Forms.Button newtag;
 		private System.Windows.Forms.TabControl tabs;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.TabPage tabproperties;
+		private System.Windows.Forms.TabPage tabsidedefs;
 		private System.Windows.Forms.GroupBox frontgroup;
 		private System.Windows.Forms.CheckBox frontside;
 		private NumericTextbox frontoffsety;
@@ -803,7 +803,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.Label arg4label;
 		private System.Windows.Forms.Label arg2label;
 		private System.Windows.Forms.Label arg3label;
-		private System.Windows.Forms.TabPage tabPage3;
+		private System.Windows.Forms.TabPage tabcustom;
 		private FieldsEditorControl fieldslist;
 	}
 }

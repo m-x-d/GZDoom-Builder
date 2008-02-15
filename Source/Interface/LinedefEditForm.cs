@@ -64,9 +64,10 @@ namespace CodeImp.DoomBuilder.Interface
 			backmid.Initialize();
 			backlow.Initialize();
 
-			// Show appropriate panel
+			// Show appropriate panels/tabs
 			doompanel.Visible = General.Map.IsType(typeof(DoomMapSetIO));
 			hexenpanel.Visible = General.Map.IsType(typeof(HexenMapSetIO));
+			if(!General.Map.IsType(typeof(UniversalMapSetIO))) tabs.TabPages.Remove(tabcustom);
 		}
 
 		// This sets up the form to edit the given lines
