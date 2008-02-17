@@ -37,6 +37,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// number
 			// 
 			this.number.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.number.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.number.Location = new System.Drawing.Point(3, 1);
 			this.number.Name = "number";
 			this.number.Size = new System.Drawing.Size(43, 13);

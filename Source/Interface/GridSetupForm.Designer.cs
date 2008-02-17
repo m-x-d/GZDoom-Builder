@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// gridsize
 			// 
+			this.gridsize.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.gridsize.Location = new System.Drawing.Point(146, 28);
 			this.gridsize.Maximum = new decimal(new int[] {
             4096,
@@ -123,6 +124,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// backoffsety
 			// 
 			this.backoffsety.Enabled = false;
+			this.backoffsety.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.backoffsety.Location = new System.Drawing.Point(197, 137);
 			this.backoffsety.Maximum = new decimal(new int[] {
             4096,
@@ -136,6 +138,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// backoffsetx
 			// 
 			this.backoffsetx.Enabled = false;
+			this.backoffsetx.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.backoffsetx.Location = new System.Drawing.Point(134, 137);
 			this.backoffsetx.Maximum = new decimal(new int[] {
             4096,

@@ -401,6 +401,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// actionkey
 			// 
+			this.actionkey.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.actionkey.Location = new System.Drawing.Point(23, 142);
 			this.actionkey.Name = "actionkey";
 			this.actionkey.Size = new System.Drawing.Size(163, 20);

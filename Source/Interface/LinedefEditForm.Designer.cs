@@ -343,6 +343,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg3.AllowNegative = false;
 			this.arg3.AllowRelative = true;
+			this.arg3.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.arg3.Location = new System.Drawing.Point(377, 55);
 			this.arg3.Name = "arg3";
 			this.arg3.Size = new System.Drawing.Size(50, 20);
@@ -352,6 +353,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg2.AllowNegative = false;
 			this.arg2.AllowRelative = true;
+			this.arg2.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.arg2.Location = new System.Drawing.Point(167, 107);
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(50, 20);
@@ -361,6 +363,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg4.AllowNegative = false;
 			this.arg4.AllowRelative = true;
+			this.arg4.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.arg4.Location = new System.Drawing.Point(377, 81);
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(50, 20);
@@ -370,6 +373,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg1.AllowNegative = false;
 			this.arg1.AllowRelative = true;
+			this.arg1.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.arg1.Location = new System.Drawing.Point(167, 81);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(50, 20);
@@ -379,6 +383,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.arg0.AllowNegative = false;
 			this.arg0.AllowRelative = true;
+			this.arg0.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.arg0.Location = new System.Drawing.Point(167, 55);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(50, 20);
@@ -435,6 +440,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.tag.AllowNegative = false;
 			this.tag.AllowRelative = true;
+			this.tag.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.tag.Location = new System.Drawing.Point(56, 19);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(68, 20);
@@ -561,6 +567,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.backsector.AllowNegative = false;
 			this.backsector.AllowRelative = false;
+			this.backsector.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.backsector.Location = new System.Drawing.Point(103, 37);
 			this.backsector.Name = "backsector";
 			this.backsector.Size = new System.Drawing.Size(94, 20);
@@ -598,6 +605,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.backoffsety.AllowNegative = true;
 			this.backoffsety.AllowRelative = true;
+			this.backoffsety.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.backoffsety.Location = new System.Drawing.Point(152, 76);
 			this.backoffsety.Name = "backoffsety";
 			this.backoffsety.Size = new System.Drawing.Size(45, 20);
@@ -608,6 +616,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.backoffsetx.AllowNegative = true;
 			this.backoffsetx.AllowRelative = true;
+			this.backoffsetx.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.backoffsetx.Location = new System.Drawing.Point(103, 76);
 			this.backoffsetx.Name = "backoffsetx";
 			this.backoffsetx.Size = new System.Drawing.Size(45, 20);
@@ -650,6 +659,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.frontsector.AllowNegative = false;
 			this.frontsector.AllowRelative = false;
+			this.frontsector.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.frontsector.Location = new System.Drawing.Point(103, 37);
 			this.frontsector.Name = "frontsector";
 			this.frontsector.Size = new System.Drawing.Size(94, 20);
@@ -687,6 +697,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.frontoffsety.AllowNegative = true;
 			this.frontoffsety.AllowRelative = true;
+			this.frontoffsety.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.frontoffsety.Location = new System.Drawing.Point(152, 76);
 			this.frontoffsety.Name = "frontoffsety";
 			this.frontoffsety.Size = new System.Drawing.Size(45, 20);
@@ -697,6 +708,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.frontoffsetx.AllowNegative = true;
 			this.frontoffsetx.AllowRelative = true;
+			this.frontoffsetx.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.frontoffsetx.Location = new System.Drawing.Point(103, 76);
 			this.frontoffsetx.Name = "frontoffsetx";
 			this.frontoffsetx.Size = new System.Drawing.Size(45, 20);
