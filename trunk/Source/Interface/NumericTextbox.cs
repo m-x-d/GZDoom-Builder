@@ -49,10 +49,16 @@ namespace CodeImp.DoomBuilder.Interface
 
 		public bool AllowNegative { get { return allownegative; } set { allownegative = value; } }
 		public bool AllowRelative { get { return allowrelative; } set { allowrelative = value; } }
-		
+
 		#endregion
 
 		#region ================== Constructor / Disposer
+
+		// Constructor
+		public NumericTextbox()
+		{
+			this.ImeMode = ImeMode.Off;
+		}
 
 		#endregion
 
