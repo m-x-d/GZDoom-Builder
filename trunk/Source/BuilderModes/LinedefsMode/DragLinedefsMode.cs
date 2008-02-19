@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 	// In that case, just specifying the attribute like this is enough:
 	[EditMode]
 
-	public class DragVerticesMode : DragGeometryMode
+	public class DragLinedefsMode : DragGeometryMode
 	{
 		#region ================== Constants
 
@@ -50,9 +50,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		#region ================== Variables
 
-		private ICollection<Vertex> selectedverts;
-		private ICollection<Vertex> unselectedverts;
-		
+		private ICollection<Linedef> selectedlines;
+		private ICollection<Linedef> unselectedlines;
+
 		#endregion
 
 		#region ================== Properties
@@ -62,16 +62,19 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor to start dragging immediately
-		public DragVerticesMode(EditMode basemode, Vertex dragitem, Vector2D dragstartmappos)
+		public DragLinedefsMode(EditMode basemode, Linedef dragitem, Vector2D dragstartmappos)
 		{
-			// Get selected vertices
-			selectedverts = General.Map.Map.GetVerticesSelection(true);
-			unselectedverts = General.Map.Map.GetVerticesSelection(false);
+			// Get the nearest vertex for snapping
+			Vertex nearest = General.Map.Map.NearestVertex(dragstartmappos);
+			
+			// Get selected lines
+			selectedlines = General.Map.Map.GetLinedefsSelection(true);
+			unselectedlines = General.Map.Map.GetLinedefsSelection(false);
 			
 			// Initialize
-			base.StartDrag(basemode, dragitem, dragstartmappos,
-						   General.Map.Map.GetVerticesSelection(true),
-						   General.Map.Map.GetVerticesSelection(false));
+			base.StartDrag(basemode, nearest, dragstartmappos,
+						   General.Map.Map.GetVerticesFromLinesSelection(true),
+						   General.Map.Map.GetVerticesFromLinesSelectionEx(false));
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -108,8 +111,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// When not cancelled
 			if(!cancelled)
 			{
-				// If only a single vertex was selected, deselect it now
-				if(selectedverts.Count == 1) General.Map.Map.ClearSelectedVertices();
+				// If only a single linedef was selected, deselect it now
+				if(selectedlines.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 			}
 		}
 
@@ -142,9 +145,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				}
 				
 				// Render lines and vertices
-				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(unselectedverts);
-				renderer.RenderVerticesSet(selectedverts);
+				renderer.RenderLinedefSet(unselectedlines);
+				renderer.RenderLinedefSet(selectedlines);
+				renderer.RenderVerticesSet(General.Map.Map.Vertices);
 
 				// Draw the dragged item highlighted
 				// This is important to know, because this item is used

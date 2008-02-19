@@ -12,6 +12,8 @@
     <AssemblyName>Builder</AssemblyName>
     <StartupObject>CodeImp.DoomBuilder.General</StartupObject>
     <ApplicationIcon>Resources\Builder.ico</ApplicationIcon>
+    <Win32Resource>
+    </Win32Resource>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -372,7 +374,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Builder.ico" />
     <EmbeddedResource Include="Resources\MissingTexture3D.png" />
     <None Include="Resources\MissingTexture.png" />
     <None Include="Resources\UnknownImage.png" />
@@ -485,5 +486,8 @@
     <EmbeddedResource Include="Resources\things2d.fx" />
     <None Include="Resources\Splash2.png" />
     <EmbeddedResource Include="Resources\world3d.fx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Builder.ico" />
   </ItemGroup>
 </Project>

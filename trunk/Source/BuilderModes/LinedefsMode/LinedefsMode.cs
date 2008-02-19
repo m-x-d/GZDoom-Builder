@@ -297,6 +297,36 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				}
 			}
 		}
+
+		// Mouse wants to drag
+		protected override void DragStart(MouseEventArgs e)
+		{
+			base.DragStart(e);
+
+			// Which button is used?
+			if(e.Button == EditMode.SELECT_BUTTON)
+			{
+				// Make selection
+
+			}
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Anything highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Highlighted item not selected?
+					if(!highlighted.Selected)
+					{
+						// Select only this linedef for dragging
+						General.Map.Map.ClearSelectedLinedefs();
+						highlighted.Selected = true;
+					}
+
+					// Start dragging the selection
+					General.Map.ChangeMode(new DragLinedefsMode(new LinedefsMode(), highlighted, mousedownmappos));
+				}
+			}
+		}
 		
 		#endregion
 	}
