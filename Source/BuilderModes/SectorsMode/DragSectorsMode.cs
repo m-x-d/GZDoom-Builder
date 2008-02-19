@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This redraws the display
 		public unsafe override void RedrawDisplay()
 		{
-			bool viewchanged = false;
+			bool viewchanged = CheckViewChanged();
 			
 			// Start rendering
 			if(renderer.Start(true, viewchanged))
@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				*/
 
 				// Redraw things when view changed
-				if(CheckViewChanged())
+				if(viewchanged)
 				{
 					renderer.SetThingsRenderOrder(false);
 					renderer.RenderThingSet(General.Map.Map.Things);

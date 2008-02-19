@@ -305,10 +305,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(label2);
 			this.actiongroup.Controls.Add(this.action);
 			this.actiongroup.Controls.Add(this.browseaction);
+			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(this.doompanel);
 			this.actiongroup.Location = new System.Drawing.Point(8, 169);
 			this.actiongroup.Name = "actiongroup";
@@ -721,6 +721,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabcustom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabcustom.Location = new System.Drawing.Point(4, 23);
 			this.tabcustom.Name = "tabcustom";
+			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
 			this.tabcustom.Size = new System.Drawing.Size(533, 381);
 			this.tabcustom.TabIndex = 2;
 			this.tabcustom.Text = "Custom";
@@ -728,9 +729,13 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// fieldslist
 			// 
-			this.fieldslist.Location = new System.Drawing.Point(12, 12);
+			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.fieldslist.Location = new System.Drawing.Point(11, 11);
+			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
 			this.fieldslist.Name = "fieldslist";
-			this.fieldslist.Size = new System.Drawing.Size(508, 357);
+			this.fieldslist.Size = new System.Drawing.Size(511, 359);
 			this.fieldslist.TabIndex = 0;
 			// 
 			// LinedefEditForm
