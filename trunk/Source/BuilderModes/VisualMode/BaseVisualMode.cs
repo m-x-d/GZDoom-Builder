@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?

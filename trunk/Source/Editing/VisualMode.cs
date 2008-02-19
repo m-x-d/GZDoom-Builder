@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Editing
 			this.camanglez = Angle2D.PI;
 		}
 
-		// Diposer
+		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?

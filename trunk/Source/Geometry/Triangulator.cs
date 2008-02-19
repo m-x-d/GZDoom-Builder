@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			GC.SuppressFinalize(this);
 		}
 
-		// Diposer
+		// Disposer
 		public virtual void Dispose()
 		{
 			// Not already disposed?
