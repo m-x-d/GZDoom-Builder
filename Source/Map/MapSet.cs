@@ -432,6 +432,28 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Returns a collection of vertices that match a selected state on the linedefs
+		// The difference with GetVerticesFromLinesSelection is that in this method
+		// ALL linedefs of a vertex must match the specified selected state.
+		public ICollection<Vertex> GetVerticesFromLinesSelectionEx(bool selected)
+		{
+			List<Vertex> list = new List<Vertex>();
+			foreach(Vertex v in vertices)
+			{
+				bool qualified = true;
+				foreach(Linedef l in v.Linedefs)
+				{
+					if(l.Selected != selected)
+					{
+						qualified = false;
+						break;
+					}
+				}
+				if(qualified) list.Add(v);
+			}
+			return list;
+		}
+
+		// Returns a collection of vertices that match a selected state on the linedefs
 		public ICollection<Vertex> GetVerticesFromSectorsSelection(bool selected)
 		{
 			List<Vertex> list = new List<Vertex>();
@@ -1074,6 +1096,37 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Return result
 			return list;
+		}
+
+		// This makes a list of unstable lines from the given vertices.
+		// A line is unstable when one vertex is selected and the other isn't.
+		public static ICollection<Linedef> UnstableLinedefsFromVertices(ICollection<Vertex> verts)
+		{
+			Dictionary<Linedef, Linedef> lines = new Dictionary<Linedef, Linedef>();
+
+			// Go for all vertices
+			foreach(Vertex v in verts)
+			{
+				// Go for all lines
+				foreach(Linedef l in v.Linedefs)
+				{
+					// If the line exists in the list
+					if(lines.ContainsKey(l))
+					{
+						// Remove it
+						lines.Remove(l);
+					}
+					// Otherwise add it
+					else
+					{
+						// Add the line
+						lines.Add(l, l);
+					}
+				}
+			}
+			
+			// Return result
+			return new List<Linedef>(lines.Values);
 		}
 		
 		// This finds the line closest to the specified position

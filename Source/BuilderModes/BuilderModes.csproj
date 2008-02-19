@@ -33,6 +33,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LinedefsMode\DragLinedefsMode.cs" />
+    <Compile Include="Shared\DragGeometryMode.cs" />
     <Compile Include="Testing\TriangulatorMode.cs" />
     <Compile Include="VisualMode\BaseVisualMode.cs" />
     <Compile Include="VisualMode\BaseVisualSector.cs" />
