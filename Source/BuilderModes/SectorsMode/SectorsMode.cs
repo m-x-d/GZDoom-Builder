@@ -81,6 +81,22 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		#region ================== Methods
 
+		// This selectes or deselects a sector
+		protected void SelectSector(Sector s, bool selectstate)
+		{
+			// Flip selection
+			s.Selected = selectstate;
+
+			// Make update lines selection
+			foreach(Sidedef sd in s.Sidedefs)
+			{
+				bool front, back;
+				if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
+				if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
+				sd.Line.Selected = front | back;
+			}
+		}
+		
 		// Cancel mode
 		public override void Cancel()
 		{
@@ -239,7 +255,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void MouseDown(MouseEventArgs e)
 		{
 			base.MouseDown(e);
-			bool front, back;
 			
 			// Which button is used?
 			if(e.Button == EditMode.SELECT_BUTTON)
@@ -248,15 +263,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					// Flip selection
-					highlighted.Selected = !highlighted.Selected;
-
-					// Make update lines selection
-					foreach(Sidedef sd in highlighted.Sidedefs)
-					{
-						if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
-						if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
-						sd.Line.Selected = front | back;
-					}
+					SelectSector(highlighted, !highlighted.Selected);
 					
 					// Update display
 					if(renderer.Start(false, false))
@@ -283,6 +290,36 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Render highlighted item
 					renderer.RenderSector(highlighted, General.Colors.Highlight);
 					renderer.Finish();
+				}
+			}
+		}
+
+		// Mouse wants to drag
+		protected override void DragStart(MouseEventArgs e)
+		{
+			base.DragStart(e);
+
+			// Which button is used?
+			if(e.Button == EditMode.SELECT_BUTTON)
+			{
+				// Make selection
+
+			}
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Anything highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Highlighted item not selected?
+					if(!highlighted.Selected)
+					{
+						// Select only this sector for dragging
+						General.Map.Map.ClearSelectedSectors();
+						SelectSector(highlighted, true);
+					}
+
+					// Start dragging the selection
+					General.Map.ChangeMode(new DragSectorsMode(new SectorsMode(), highlighted, mousedownmappos));
 				}
 			}
 		}

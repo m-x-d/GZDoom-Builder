@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			General.Map.Graphics.RegisterResource(this);
 		}
 
-		// Diposer
+		// Disposer
 		public virtual void Dispose()
 		{
 			// Not already disposed?
