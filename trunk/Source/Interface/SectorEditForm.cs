@@ -33,13 +33,39 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Interface
 {
-	public partial class SectorEditForm : DelayedForm
+	internal partial class SectorEditForm : DelayedForm
 	{
+		// Variables
+		private ICollection<Sector> sectors;
+
 		// Constructor
 		public SectorEditForm()
 		{
 			// Initialize
 			InitializeComponent();
+		}
+		
+		// This sets up the form to edit the given sectors
+		public void Setup(ICollection<Sector> sectors)
+		{
+			// Keep this list
+			this.sectors = sectors;
+			if(sectors.Count > 1) this.Text = "Edit Sectors (" + sectors.Count + ")";
+			
+		}
+
+		// Cancel clicked
+		private void cancel_Click(object sender, EventArgs e)
+		{
+			// Be gone
+			this.DialogResult = DialogResult.Cancel;
+			this.Close();
+		}
+
+		// This finds a new (unused) tag
+		private void newtag_Click(object sender, EventArgs e)
+		{
+			tag.Text = General.Map.Map.GetNewTag().ToString();
 		}
 	}
 }

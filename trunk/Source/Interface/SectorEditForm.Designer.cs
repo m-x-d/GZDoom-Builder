@@ -31,16 +31,23 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.GroupBox groupaction;
+			System.Windows.Forms.Label taglabel;
 			System.Windows.Forms.GroupBox groupeffect;
+			System.Windows.Forms.Label label9;
+			System.Windows.Forms.Label label8;
 			System.Windows.Forms.GroupBox groupfloorceiling;
+			System.Windows.Forms.Label label7;
+			System.Windows.Forms.Label label6;
+			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label4;
-			System.Windows.Forms.Label label5;
-			System.Windows.Forms.Label label6;
-			System.Windows.Forms.Label label7;
-			System.Windows.Forms.Label label8;
-			System.Windows.Forms.Label label9;
-			System.Windows.Forms.Label taglabel;
+			this.tag = new CodeImp.DoomBuilder.Interface.NumericTextbox();
+			this.newtag = new System.Windows.Forms.Button();
+			this.brightness = new CodeImp.DoomBuilder.Interface.NumericTextbox();
+			this.effect = new CodeImp.DoomBuilder.Interface.ActionSelectorControl();
+			this.sectorheight = new System.Windows.Forms.Label();
+			this.ceilingheight = new CodeImp.DoomBuilder.Interface.NumericTextbox();
+			this.floorheight = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.floortex = new CodeImp.DoomBuilder.Interface.FlatSelectorControl();
 			this.ceilingtex = new CodeImp.DoomBuilder.Interface.FlatSelectorControl();
 			this.cancel = new System.Windows.Forms.Button();
@@ -48,29 +55,22 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
 			this.tabcustom = new System.Windows.Forms.TabPage();
+			this.fieldslist = new CodeImp.DoomBuilder.Interface.FieldsEditorControl();
 			this.flatSelectorControl2 = new CodeImp.DoomBuilder.Interface.FlatSelectorControl();
 			this.flatSelectorControl1 = new CodeImp.DoomBuilder.Interface.FlatSelectorControl();
-			this.fieldslist = new CodeImp.DoomBuilder.Interface.FieldsEditorControl();
-			this.floorheight = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.ceilingheight = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.sectorheight = new System.Windows.Forms.Label();
-			this.effect = new CodeImp.DoomBuilder.Interface.ActionSelectorControl();
-			this.brightness = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.tag = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.newtag = new System.Windows.Forms.Button();
 			label1 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			groupaction = new System.Windows.Forms.GroupBox();
+			taglabel = new System.Windows.Forms.Label();
 			groupeffect = new System.Windows.Forms.GroupBox();
+			label9 = new System.Windows.Forms.Label();
+			label8 = new System.Windows.Forms.Label();
 			groupfloorceiling = new System.Windows.Forms.GroupBox();
+			label7 = new System.Windows.Forms.Label();
+			label6 = new System.Windows.Forms.Label();
+			label5 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
-			label5 = new System.Windows.Forms.Label();
-			label6 = new System.Windows.Forms.Label();
-			label7 = new System.Windows.Forms.Label();
-			label8 = new System.Windows.Forms.Label();
-			label9 = new System.Windows.Forms.Label();
-			taglabel = new System.Windows.Forms.Label();
 			groupaction.SuspendLayout();
 			groupeffect.SuspendLayout();
 			groupfloorceiling.SuspendLayout();
@@ -111,6 +111,35 @@ namespace CodeImp.DoomBuilder.Interface
 			groupaction.TabStop = false;
 			groupaction.Text = " Action ";
 			// 
+			// tag
+			// 
+			this.tag.AllowNegative = false;
+			this.tag.AllowRelative = true;
+			this.tag.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.tag.Location = new System.Drawing.Point(89, 28);
+			this.tag.Name = "tag";
+			this.tag.Size = new System.Drawing.Size(53, 20);
+			this.tag.TabIndex = 10;
+			// 
+			// taglabel
+			// 
+			taglabel.AutoSize = true;
+			taglabel.Location = new System.Drawing.Point(55, 31);
+			taglabel.Name = "taglabel";
+			taglabel.Size = new System.Drawing.Size(28, 14);
+			taglabel.TabIndex = 9;
+			taglabel.Text = "Tag:";
+			// 
+			// newtag
+			// 
+			this.newtag.Location = new System.Drawing.Point(148, 27);
+			this.newtag.Name = "newtag";
+			this.newtag.Size = new System.Drawing.Size(76, 23);
+			this.newtag.TabIndex = 11;
+			this.newtag.Text = "New Tag";
+			this.newtag.UseVisualStyleBackColor = true;
+			this.newtag.Click += new System.EventHandler(this.newtag_Click);
+			// 
 			// groupeffect
 			// 
 			groupeffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -124,7 +153,46 @@ namespace CodeImp.DoomBuilder.Interface
 			groupeffect.Size = new System.Drawing.Size(436, 105);
 			groupeffect.TabIndex = 4;
 			groupeffect.TabStop = false;
-			groupeffect.Text = " Effect ";
+			groupeffect.Text = " Effects ";
+			// 
+			// brightness
+			// 
+			this.brightness.AllowNegative = false;
+			this.brightness.AllowRelative = true;
+			this.brightness.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.brightness.Location = new System.Drawing.Point(89, 63);
+			this.brightness.Name = "brightness";
+			this.brightness.Size = new System.Drawing.Size(53, 20);
+			this.brightness.TabIndex = 17;
+			// 
+			// label9
+			// 
+			label9.AutoSize = true;
+			label9.Location = new System.Drawing.Point(21, 66);
+			label9.Name = "label9";
+			label9.Size = new System.Drawing.Size(62, 14);
+			label9.TabIndex = 2;
+			label9.Text = "Brightness:";
+			// 
+			// effect
+			// 
+			this.effect.BackColor = System.Drawing.SystemColors.Control;
+			this.effect.Cursor = System.Windows.Forms.Cursors.Default;
+			this.effect.Empty = false;
+			this.effect.Location = new System.Drawing.Point(89, 28);
+			this.effect.Name = "effect";
+			this.effect.Size = new System.Drawing.Size(326, 21);
+			this.effect.TabIndex = 1;
+			this.effect.Value = 402;
+			// 
+			// label8
+			// 
+			label8.AutoSize = true;
+			label8.Location = new System.Drawing.Point(38, 31);
+			label8.Name = "label8";
+			label8.Size = new System.Drawing.Size(45, 14);
+			label8.TabIndex = 0;
+			label8.Text = "Special:";
 			// 
 			// groupfloorceiling
 			// 
@@ -146,6 +214,65 @@ namespace CodeImp.DoomBuilder.Interface
 			groupfloorceiling.TabIndex = 3;
 			groupfloorceiling.TabStop = false;
 			groupfloorceiling.Text = "Floor and Ceiling ";
+			// 
+			// sectorheight
+			// 
+			this.sectorheight.AutoSize = true;
+			this.sectorheight.Location = new System.Drawing.Point(113, 99);
+			this.sectorheight.Name = "sectorheight";
+			this.sectorheight.Size = new System.Drawing.Size(13, 14);
+			this.sectorheight.TabIndex = 21;
+			this.sectorheight.Text = "0";
+			// 
+			// label7
+			// 
+			label7.AutoSize = true;
+			label7.Location = new System.Drawing.Point(32, 99);
+			label7.Name = "label7";
+			label7.Size = new System.Drawing.Size(74, 14);
+			label7.TabIndex = 20;
+			label7.Text = "Sector height:";
+			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label6
+			// 
+			label6.AutoSize = true;
+			label6.Location = new System.Drawing.Point(33, 69);
+			label6.Name = "label6";
+			label6.Size = new System.Drawing.Size(73, 14);
+			label6.TabIndex = 19;
+			label6.Text = "Ceiling height:";
+			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// ceilingheight
+			// 
+			this.ceilingheight.AllowNegative = true;
+			this.ceilingheight.AllowRelative = true;
+			this.ceilingheight.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.ceilingheight.Location = new System.Drawing.Point(112, 66);
+			this.ceilingheight.Name = "ceilingheight";
+			this.ceilingheight.Size = new System.Drawing.Size(68, 20);
+			this.ceilingheight.TabIndex = 18;
+			// 
+			// label5
+			// 
+			label5.AutoSize = true;
+			label5.Location = new System.Drawing.Point(40, 40);
+			label5.Name = "label5";
+			label5.Size = new System.Drawing.Size(66, 14);
+			label5.TabIndex = 17;
+			label5.Text = "Floor height:";
+			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// floorheight
+			// 
+			this.floorheight.AllowNegative = true;
+			this.floorheight.AllowRelative = true;
+			this.floorheight.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.floorheight.Location = new System.Drawing.Point(112, 37);
+			this.floorheight.Name = "floorheight";
+			this.floorheight.Size = new System.Drawing.Size(68, 20);
+			this.floorheight.TabIndex = 16;
 			// 
 			// label2
 			// 
@@ -191,6 +318,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.cancel.TabIndex = 19;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
+			this.cancel.Click += new System.EventHandler(this.cancel_Click);
 			// 
 			// apply
 			// 
@@ -244,6 +372,17 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
 			// 
+			// fieldslist
+			// 
+			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.fieldslist.Location = new System.Drawing.Point(11, 11);
+			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
+			this.fieldslist.Name = "fieldslist";
+			this.fieldslist.Size = new System.Drawing.Size(427, 347);
+			this.fieldslist.TabIndex = 1;
+			// 
 			// flatSelectorControl2
 			// 
 			this.flatSelectorControl2.Location = new System.Drawing.Point(271, 37);
@@ -259,143 +398,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.flatSelectorControl1.Size = new System.Drawing.Size(83, 105);
 			this.flatSelectorControl1.TabIndex = 12;
 			this.flatSelectorControl1.TextureName = "";
-			// 
-			// fieldslist
-			// 
-			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.fieldslist.Location = new System.Drawing.Point(11, 11);
-			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
-			this.fieldslist.Name = "fieldslist";
-			this.fieldslist.Size = new System.Drawing.Size(427, 347);
-			this.fieldslist.TabIndex = 1;
-			// 
-			// floorheight
-			// 
-			this.floorheight.AllowNegative = false;
-			this.floorheight.AllowRelative = false;
-			this.floorheight.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.floorheight.Location = new System.Drawing.Point(112, 37);
-			this.floorheight.Name = "floorheight";
-			this.floorheight.Size = new System.Drawing.Size(68, 20);
-			this.floorheight.TabIndex = 16;
-			// 
-			// label5
-			// 
-			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(40, 40);
-			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(66, 14);
-			label5.TabIndex = 17;
-			label5.Text = "Floor height:";
-			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// ceilingheight
-			// 
-			this.ceilingheight.AllowNegative = false;
-			this.ceilingheight.AllowRelative = false;
-			this.ceilingheight.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.ceilingheight.Location = new System.Drawing.Point(112, 66);
-			this.ceilingheight.Name = "ceilingheight";
-			this.ceilingheight.Size = new System.Drawing.Size(68, 20);
-			this.ceilingheight.TabIndex = 18;
-			// 
-			// label6
-			// 
-			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(33, 69);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(73, 14);
-			label6.TabIndex = 19;
-			label6.Text = "Ceiling height:";
-			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// label7
-			// 
-			label7.AutoSize = true;
-			label7.Location = new System.Drawing.Point(32, 99);
-			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(74, 14);
-			label7.TabIndex = 20;
-			label7.Text = "Sector height:";
-			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// sectorheight
-			// 
-			this.sectorheight.AutoSize = true;
-			this.sectorheight.Location = new System.Drawing.Point(113, 99);
-			this.sectorheight.Name = "sectorheight";
-			this.sectorheight.Size = new System.Drawing.Size(13, 14);
-			this.sectorheight.TabIndex = 21;
-			this.sectorheight.Text = "0";
-			// 
-			// label8
-			// 
-			label8.AutoSize = true;
-			label8.Location = new System.Drawing.Point(44, 32);
-			label8.Name = "label8";
-			label8.Size = new System.Drawing.Size(39, 14);
-			label8.TabIndex = 0;
-			label8.Text = "Effect:";
-			// 
-			// effect
-			// 
-			this.effect.BackColor = System.Drawing.SystemColors.Control;
-			this.effect.Cursor = System.Windows.Forms.Cursors.Default;
-			this.effect.Empty = false;
-			this.effect.Location = new System.Drawing.Point(89, 28);
-			this.effect.Name = "effect";
-			this.effect.Size = new System.Drawing.Size(326, 21);
-			this.effect.TabIndex = 1;
-			this.effect.Value = 402;
-			// 
-			// label9
-			// 
-			label9.AutoSize = true;
-			label9.Location = new System.Drawing.Point(21, 66);
-			label9.Name = "label9";
-			label9.Size = new System.Drawing.Size(62, 14);
-			label9.TabIndex = 2;
-			label9.Text = "Brightness:";
-			// 
-			// brightness
-			// 
-			this.brightness.AllowNegative = false;
-			this.brightness.AllowRelative = false;
-			this.brightness.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.brightness.Location = new System.Drawing.Point(89, 63);
-			this.brightness.Name = "brightness";
-			this.brightness.Size = new System.Drawing.Size(53, 20);
-			this.brightness.TabIndex = 17;
-			// 
-			// tag
-			// 
-			this.tag.AllowNegative = false;
-			this.tag.AllowRelative = true;
-			this.tag.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.tag.Location = new System.Drawing.Point(89, 28);
-			this.tag.Name = "tag";
-			this.tag.Size = new System.Drawing.Size(53, 20);
-			this.tag.TabIndex = 10;
-			// 
-			// taglabel
-			// 
-			taglabel.AutoSize = true;
-			taglabel.Location = new System.Drawing.Point(55, 31);
-			taglabel.Name = "taglabel";
-			taglabel.Size = new System.Drawing.Size(28, 14);
-			taglabel.TabIndex = 9;
-			taglabel.Text = "Tag:";
-			// 
-			// newtag
-			// 
-			this.newtag.Location = new System.Drawing.Point(148, 27);
-			this.newtag.Name = "newtag";
-			this.newtag.Size = new System.Drawing.Size(76, 23);
-			this.newtag.TabIndex = 11;
-			this.newtag.Text = "New Tag";
-			this.newtag.UseVisualStyleBackColor = true;
 			// 
 			// SectorEditForm
 			// 

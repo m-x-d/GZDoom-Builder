@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Interface
 		void DisplayStatus(string status);
 		void RedrawDisplay();
 		void ShowEditLinedefs(ICollection<Linedef> lines);
+		void ShowEditSectors(ICollection<Sector> sectors);
 		void ShowLinedefInfo(Linedef l);
 		void ShowSectorInfo(Sector s);
 		void ShowThingInfo(Thing t);

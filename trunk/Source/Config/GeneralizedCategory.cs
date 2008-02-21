@@ -7,7 +7,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class GeneralActionCategory
+	public class GeneralizedCategory
 	{
 		#region ================== Constants
 
@@ -19,7 +19,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string title;
 		private int offset;
 		private int length;
-		private List<GeneralActionOption> options;
+		private List<GeneralizedOption> options;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string Title { get { return title; } }
 		public int Offset { get { return offset; } }
 		public int Length { get { return length; } }
-		public List<GeneralActionOption> Options { get { return options; } }
+		public List<GeneralizedOption> Options { get { return options; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		
 		#endregion
@@ -39,27 +39,27 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal GeneralActionCategory(string name, Configuration cfg)
+		internal GeneralizedCategory(string structure, string name, Configuration cfg)
 		{
 			IDictionary opts;
 			
 			// Initialize
-			this.options = new List<GeneralActionOption>();
+			this.options = new List<GeneralizedOption>();
 			
 			// Read properties
-			this.title = cfg.ReadSetting("gen_linedeftypes." + name + ".title", "");
-			this.offset = cfg.ReadSetting("gen_linedeftypes." + name + ".offset", 0);
-			this.length = cfg.ReadSetting("gen_linedeftypes." + name + ".length", 0);
+			this.title = cfg.ReadSetting(structure + "." + name + ".title", "");
+			this.offset = cfg.ReadSetting(structure + "." + name + ".offset", 0);
+			this.length = cfg.ReadSetting(structure + "." + name + ".length", 0);
 			
 			// Read the options
-			opts = cfg.ReadSetting("gen_linedeftypes." + name, new Hashtable());
+			opts = cfg.ReadSetting(structure + "." + name, new Hashtable());
 			foreach(DictionaryEntry de in opts)
 			{
 				// Is this an option and not just some value?
 				if(de.Value is IDictionary)
 				{
 					// Add the option
-					this.options.Add(new GeneralActionOption(name, de.Key.ToString(), (IDictionary)de.Value));
+					this.options.Add(new GeneralizedOption(structure, name, de.Key.ToString(), (IDictionary)de.Value));
 				}
 			}
 

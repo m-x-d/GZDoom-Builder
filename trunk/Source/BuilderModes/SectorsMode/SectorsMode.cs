@@ -255,8 +255,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void MouseDown(MouseEventArgs e)
 		{
 			base.MouseDown(e);
-			
-			// Which button is used?
+
+			// Select button?
 			if(e.Button == EditMode.SELECT_BUTTON)
 			{
 				// Item highlighted?
@@ -274,11 +274,38 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 				}
 			}
+			// Edit button?
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Highlighted item not selected?
+					if(!highlighted.Selected)
+					{
+						// Make this the only selection
+						General.Map.Map.ClearSelectedSectors();
+						General.Map.Map.ClearSelectedLinedefs();
+						SelectSector(highlighted, true);
+						General.Interface.RedrawDisplay();
+					}
+
+					// Update display
+					if(renderer.Start(false, false))
+					{
+						// Redraw highlight to show selection
+						renderer.RenderSector(highlighted);
+						renderer.Finish();
+					}
+				}
+			}
 		}
 
 		// Mouse released
 		public override void MouseUp(MouseEventArgs e)
 		{
+			ICollection<Sector> selected;
+
 			base.MouseUp(e);
 
 			// Item highlighted?
@@ -290,6 +317,28 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Render highlighted item
 					renderer.RenderSector(highlighted, General.Colors.Highlight);
 					renderer.Finish();
+				}
+
+				// Edit button?
+				if(e.Button == EditMode.EDIT_BUTTON)
+				{
+					// Anything selected?
+					selected = General.Map.Map.GetSectorsSelection(true);
+					if(selected.Count > 0)
+					{
+						// Show sector edit dialog
+						General.Interface.ShowEditSectors(selected);
+
+						// When a single sector was selected, deselect it now
+						if(selected.Count == 1)
+						{
+							General.Map.Map.ClearSelectedSectors();
+							General.Map.Map.ClearSelectedLinedefs();
+						}
+
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 		}
