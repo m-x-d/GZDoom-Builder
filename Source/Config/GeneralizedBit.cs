@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class GeneralActionBit : INumberedTitle, IComparable<GeneralActionBit>
+	public class GeneralizedBit : INumberedTitle, IComparable<GeneralizedBit>
 	{
 		#region ================== Constants
 
@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal GeneralActionBit(int index, string title)
+		internal GeneralizedBit(int index, string title)
 		{
 			// Initialize
 			this.index = index;
@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// This compares against another
-		public int CompareTo(GeneralActionBit other)
+		public int CompareTo(GeneralizedBit other)
 		{
 			if(this.index < other.index) return -1;
 			else if(this.index > other.index) return 1;

@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public ActionBrowserForm(int action)
 		{
 			TreeNode cn, n;
-			GeneralActionCategory sc;
+			GeneralizedCategory sc;
 			int actionbits;
 			
 			// Initialize
@@ -120,14 +120,14 @@ namespace CodeImp.DoomBuilder.Interface
 					tabs.SelectedTab = tabgeneralized;
 
 					// Select category
-					foreach(GeneralActionCategory ac in category.Items)
+					foreach(GeneralizedCategory ac in category.Items)
 						if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) category.SelectedItem = ac;
 
 					// Anything selected?
 					if(category.SelectedIndex > -1)
 					{
 						// Go for all options in selected category
-						sc = category.SelectedItem as GeneralActionCategory;
+						sc = category.SelectedItem as GeneralizedCategory;
 						actionbits = action - sc.Offset;
 						for(int i = 0; i < MAX_OPTIONS; i++)
 						{
@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.Interface
 							if(i < sc.Options.Count)
 							{
 								// Go for all bits
-								foreach(GeneralActionBit ab in sc.Options[i].Bits)
+								foreach(GeneralizedBit ab in sc.Options[i].Bits)
 								{
 									// Select this setting if matches
 									if((actionbits & ab.Index) == ab.Index) options[i].SelectedItem = ab;
@@ -165,7 +165,7 @@ namespace CodeImp.DoomBuilder.Interface
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
-			GeneralActionCategory sc;
+			GeneralizedCategory sc;
 			
 			// Presume no result
 			selectedaction = 0;
@@ -187,7 +187,7 @@ namespace CodeImp.DoomBuilder.Interface
 				if(category.SelectedIndex > -1)
 				{
 					// Add category bits and go for all options
-					sc = category.SelectedItem as GeneralActionCategory;
+					sc = category.SelectedItem as GeneralizedCategory;
 					selectedaction = sc.Offset;
 					for(int i = 0; i < MAX_OPTIONS; i++)
 					{
@@ -196,7 +196,7 @@ namespace CodeImp.DoomBuilder.Interface
 						{
 							// Add selected bits
 							if(options[i].SelectedIndex > -1)
-								selectedaction += (options[i].SelectedItem as GeneralActionBit).Index;
+								selectedaction += (options[i].SelectedItem as GeneralizedBit).Index;
 						}
 					}
 				}
@@ -218,13 +218,13 @@ namespace CodeImp.DoomBuilder.Interface
 		// Generalized category selected
 		private void category_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			GeneralActionCategory ac;
+			GeneralizedCategory ac;
 			
 			// Category selected?
 			if(category.SelectedIndex > -1)
 			{
 				// Get the category
-				ac = category.SelectedItem as GeneralActionCategory;
+				ac = category.SelectedItem as GeneralizedCategory;
 				
 				// Go for all options
 				for(int i = 0; i < MAX_OPTIONS; i++)

@@ -114,7 +114,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(!cancelled)
 			{
 				// If only a single sector was selected, deselect it now
-				if(selectedsectors.Count == 1) General.Map.Map.ClearSelectedSectors();
+				if(selectedsectors.Count == 1)
+				{
+					General.Map.Map.ClearSelectedSectors();
+					General.Map.Map.ClearSelectedLinedefs();
+				}
 			}
 		}
 

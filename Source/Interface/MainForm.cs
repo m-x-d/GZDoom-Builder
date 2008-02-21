@@ -1145,6 +1145,16 @@ namespace CodeImp.DoomBuilder.Interface
 			f.Dispose();
 		}
 
+		// This shows the dialog to edit sectors
+		public void ShowEditSectors(ICollection<Sector> sectors)
+		{
+			// Show line edit dialog
+			SectorEditForm f = new SectorEditForm();
+			f.Setup(sectors);
+			f.ShowDialog(this);
+			f.Dispose();
+		}
+
 		#endregion
 
 		#region ================== Processor

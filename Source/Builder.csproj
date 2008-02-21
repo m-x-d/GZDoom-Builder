@@ -43,10 +43,11 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="Config\GeneralActionBit.cs" />
-    <Compile Include="Config\GeneralActionOption.cs" />
+    <Compile Include="Config\SectorEffectInfo.cs" />
+    <Compile Include="Config\GeneralizedBit.cs" />
+    <Compile Include="Config\GeneralizedOption.cs" />
     <Compile Include="Config\GameConfiguration.cs" />
-    <Compile Include="Config\GeneralActionCategory.cs" />
+    <Compile Include="Config\GeneralizedCategory.cs" />
     <Compile Include="Config\INumberedTitle.cs" />
     <Compile Include="Config\LinedefActionCategory.cs" />
     <Compile Include="Config\LinedefActionInfo.cs" />

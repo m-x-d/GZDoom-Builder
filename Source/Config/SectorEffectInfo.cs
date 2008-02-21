@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class GeneralActionOption
+	public class SectorEffectInfo : INumberedTitle, IComparable<SectorEffectInfo>
 	{
 		#region ================== Constants
 
@@ -41,47 +41,27 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Variables
 
 		// Properties
-		private string name;
-		private List<GeneralActionBit> bits;
+		private int index;
+		private string title;
 		
 		#endregion
 
 		#region ================== Properties
 
-		public string Name { get { return name; } }
-		public List<GeneralActionBit> Bits { get { return bits; } }
+		public int Index { get { return index; } }
+		public string Title { get { return title; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal GeneralActionOption(string cat, string name, IDictionary bitslist)
+		internal SectorEffectInfo(int index, string title)
 		{
-			int index;
-			
 			// Initialize
-			this.name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
-			this.bits = new List<GeneralActionBit>();
+			this.index = index;
+			this.title = title;
 
-			// Go for all bits
-			foreach(DictionaryEntry de in bitslist)
-			{
-				// Check if the item key is numeric
-				if(int.TryParse(de.Key.ToString(), NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out index))
-				{
-					// Add to list
-					this.bits.Add(new GeneralActionBit(index, de.Value.ToString()));
-				}
-				else
-				{
-					General.WriteLogLine("WARNING: Structure 'gen_linedefflags." + cat + "." + name + "' contains invalid entries!");
-				}
-			}
-			
-			// Sort the list
-			bits.Sort();
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -93,9 +73,17 @@ namespace CodeImp.DoomBuilder.Config
 		// This presents the item as string
 		public override string ToString()
 		{
-			return name;
+			return index + " - " + title;
 		}
-		
+
+		// This compares against another action info
+		public int CompareTo(SectorEffectInfo other)
+		{
+			if(this.index < other.index) return -1;
+			else if(this.index > other.index) return 1;
+			else return 0;
+		}
+
 		#endregion
 	}
 }

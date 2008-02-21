@@ -72,8 +72,13 @@ namespace CodeImp.DoomBuilder.Config
 		private List<LinedefActionInfo> sortedlinedefactions;
 		private List<LinedefActionCategory> actioncategories;
 		private List<LinedefActivateInfo> linedefactivates;
-		private List<GeneralActionCategory> genactioncategories;
+		private List<GeneralizedCategory> genactioncategories;
 		
+		// Sectors
+		private Dictionary<int, SectorEffectInfo> sectoreffects;
+		private List<SectorEffectInfo> sortedsectoreffects;
+		private List<GeneralizedCategory> geneffectcategories;
+
 		// Universal fields
 		private List<UniversalFieldInfo> linedeffields;
 		
@@ -111,7 +116,12 @@ namespace CodeImp.DoomBuilder.Config
 		public List<LinedefActionInfo> SortedLinedefActions { get { return sortedlinedefactions; } }
 		public List<LinedefActionCategory> ActionCategories { get { return actioncategories; } }
 		public List<LinedefActivateInfo> LinedefActivates { get { return linedefactivates; } }
-		public List<GeneralActionCategory> GenActionCategories { get { return genactioncategories; } }
+		public List<GeneralizedCategory> GenActionCategories { get { return genactioncategories; } }
+
+		// Sectors
+		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
+		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
+		public List<GeneralizedCategory> GenEffectCategories { get { return genactioncategories; } }
 
 		// Universal fields
 		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
@@ -132,7 +142,10 @@ namespace CodeImp.DoomBuilder.Config
 			this.actioncategories = new List<LinedefActionCategory>();
 			this.sortedlinedefactions = new List<LinedefActionInfo>();
 			this.linedefactivates = new List<LinedefActivateInfo>();
-			this.genactioncategories = new List<GeneralActionCategory>();
+			this.genactioncategories = new List<GeneralizedCategory>();
+			this.sectoreffects = new Dictionary<int, SectorEffectInfo>();
+			this.sortedsectoreffects = new List<SectorEffectInfo>();
+			this.geneffectcategories = new List<GeneralizedCategory>();
 			
 			// Read general settings
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
@@ -161,8 +174,12 @@ namespace CodeImp.DoomBuilder.Config
 			LoadLinedefFlags();
 			LoadLinedefActions();
 			LoadLinedefActivations();
-			LoadLinedefGeneralizedAction();
+			LoadLinedefGeneralizedActions();
 
+			// Sectors
+			LoadSectorEffects();
+			LoadSectorGeneralizedEffects();
+			
 			// Universal fields
 			linedeffields = LoadUniversalFields("linedefs");
 		}
@@ -345,7 +362,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// Linedef generalized actions
-		private void LoadLinedefGeneralizedAction()
+		private void LoadLinedefGeneralizedActions()
 		{
 			IDictionary dic;
 
@@ -357,11 +374,66 @@ namespace CodeImp.DoomBuilder.Config
 				if(de.Value is IDictionary)
 				{
 					// Add category
-					genactioncategories.Add(new GeneralActionCategory(de.Key.ToString(), cfg));
+					genactioncategories.Add(new GeneralizedCategory("gen_linedeftypes", de.Key.ToString(), cfg));
 				}
 				else
 				{
 					General.WriteLogLine("WARNING: Structure 'gen_linedeftypes' contains invalid entries!");
+				}
+			}
+		}
+
+		// Sector effects
+		private void LoadSectorEffects()
+		{
+			IDictionary dic;
+			SectorEffectInfo si;
+			int actionnumber;
+			
+			// Get sector effects
+			dic = cfg.ReadSetting("sectortypes", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Try paring the action number
+				if(int.TryParse(de.Key.ToString(),
+					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
+					CultureInfo.InvariantCulture, out actionnumber))
+				{
+					// Make effects
+					si = new SectorEffectInfo(actionnumber, de.Value.ToString());
+					
+					// Add action to category and sorted list
+					sortedsectoreffects.Add(si);
+					sectoreffects.Add(actionnumber, si);
+				}
+				else
+				{
+					General.WriteLogLine("WARNING: Structure 'sectortypes' contains invalid keys!");
+				}
+			}
+
+			// Sort the actions list
+			sortedsectoreffects.Sort();
+		}
+
+		// Sector generalized effects
+		private void LoadSectorGeneralizedEffects()
+		{
+			IDictionary dic;
+
+			// Get linedef activations
+			dic = cfg.ReadSetting("gen_sectortypes", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Check for valid structure
+				if(de.Value is IDictionary)
+				{
+					// Add category
+					geneffectcategories.Add(new GeneralizedCategory("gen_sectortypes", de.Key.ToString(), cfg));
+				}
+				else
+				{
+					General.WriteLogLine("WARNING: Structure 'gen_sectortypes' contains invalid entries!");
 				}
 			}
 		}
@@ -403,7 +475,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(action > 0)
 			{
 				// Go for all categories
-				foreach(GeneralActionCategory ac in genactioncategories)
+				foreach(GeneralizedCategory ac in genactioncategories)
 				{
 					// Check if the action is within range of this category
 					if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) return true;
@@ -415,13 +487,13 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		// This gets the generalized action category from action number
-		public GeneralActionCategory GetGeneralizedActionCategory(int action)
+		public GeneralizedCategory GetGeneralizedActionCategory(int action)
 		{
 			// Only actions above 0
 			if(action > 0)
 			{
 				// Go for all categories
-				foreach(GeneralActionCategory ac in genactioncategories)
+				foreach(GeneralizedCategory ac in genactioncategories)
 				{
 					// Check if the action is within range of this category
 					if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) return ac;
