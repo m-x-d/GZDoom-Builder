@@ -43,13 +43,21 @@ namespace CodeImp.DoomBuilder.Interface
 		// This shows the info
 		public void ShowInfo(Sector s)
 		{
+			string effectinfo = "";
+			
 			int sheight = s.CeilHeight - s.FloorHeight;
 
-			// TODO: Lookup effect description in config
+			// Lookup effect description in config
+			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
+				effectinfo = General.Map.Config.SectorEffects[s.Effect].ToString();
+			else if(s.Effect == 0)
+				effectinfo = s.Effect.ToString() + " - Normal";
+			else
+				effectinfo = s.Effect.ToString() + " - Unknown";
 
 			// Sector info
 			sectorinfo.Text = " Sector " + s.Index.ToString() + " ";
-			effect.Text = s.Effect.ToString();
+			effect.Text = effectinfo;
 			ceiling.Text = s.CeilHeight.ToString();
 			floor.Text = s.FloorHeight.ToString();
 			tag.Text = s.Tag.ToString();
