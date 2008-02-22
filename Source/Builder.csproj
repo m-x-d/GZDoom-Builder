@@ -500,5 +500,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <EmbeddedResource Include="Resources\Thing2D_Simple.png" />
   </ItemGroup>
 </Project>
