@@ -148,6 +148,12 @@
     <Compile Include="Interface\ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\EffectBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\EffectBrowserForm.Designer.cs">
+      <DependentUpon>EffectBrowserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\FieldsEditorRow.cs" />
     <Compile Include="Interface\FieldsEditorControl.cs">
       <SubType>UserControl</SubType>
@@ -420,6 +426,10 @@
     <EmbeddedResource Include="Interface\ConfigForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ConfigForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\EffectBrowserForm.resx">
+      <DependentUpon>EffectBrowserForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Interface\FieldsEditorControl.resx">
       <SubType>Designer</SubType>

@@ -35,12 +35,16 @@ namespace CodeImp.DoomBuilder.Interface
 		// Events
 		public event EventHandler ValueChanges;
 		
+		// Variables
+		private List<GeneralizedCategory> generalizedcategories;
+		
 		// Constants
 		private const string NUMBER_SEPERATOR = "\t";
 		
 		// Properties
 		public bool Empty { get { return (number.Text.Length == 0); } set { if(value) number.Text = ""; } }
 		public int Value { get { if(number.Text.Length > 0) return int.Parse(number.Text); else return 0; } set { number.Text = value.ToString(); } }
+		public List<GeneralizedCategory> GeneralizedCategories { get { return generalizedcategories; } set { generalizedcategories = value; } }
 		
 		// Constructor
 		public ActionSelectorControl()
@@ -96,7 +100,7 @@ namespace CodeImp.DoomBuilder.Interface
 						displayname = "";
 					else if(intnumber == 0)
 						displayname = "None";
-					else if(General.Map.Config.IsGeneralizedAction(intnumber))
+					else if((generalizedcategories != null) && GameConfiguration.IsGeneralized(intnumber, generalizedcategories))
 						displayname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(intnumber) + ")";
 					else
 						displayname = "Unknown";

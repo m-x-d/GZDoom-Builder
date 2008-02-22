@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Interface
 				category.Items.AddRange(General.Map.Config.GenActionCategories.ToArray());
 
 				// Given action is generalized?
-				if(General.Map.Config.IsGeneralizedAction(action))
+				if(GameConfiguration.IsGeneralized(action, General.Map.Config.GenActionCategories))
 				{
 					// Open the generalized tab
 					tabs.SelectedTab = tabgeneralized;

@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.Label label4;
 			this.tag = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.newtag = new System.Windows.Forms.Button();
+			this.browseeffect = new System.Windows.Forms.Button();
 			this.brightness = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.effect = new CodeImp.DoomBuilder.Interface.ActionSelectorControl();
 			this.sectorheight = new System.Windows.Forms.Label();
@@ -144,6 +145,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			groupeffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			groupeffect.Controls.Add(this.browseeffect);
 			groupeffect.Controls.Add(this.brightness);
 			groupeffect.Controls.Add(label9);
 			groupeffect.Controls.Add(this.effect);
@@ -154,6 +156,19 @@ namespace CodeImp.DoomBuilder.Interface
 			groupeffect.TabIndex = 4;
 			groupeffect.TabStop = false;
 			groupeffect.Text = " Effects ";
+			// 
+			// browseeffect
+			// 
+			this.browseeffect.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browseeffect.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
+			this.browseeffect.Location = new System.Drawing.Point(385, 27);
+			this.browseeffect.Name = "browseeffect";
+			this.browseeffect.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
+			this.browseeffect.Size = new System.Drawing.Size(30, 23);
+			this.browseeffect.TabIndex = 18;
+			this.browseeffect.Text = " ";
+			this.browseeffect.UseVisualStyleBackColor = true;
+			this.browseeffect.Click += new System.EventHandler(this.browseeffect_Click);
 			// 
 			// brightness
 			// 
@@ -179,9 +194,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.effect.BackColor = System.Drawing.SystemColors.Control;
 			this.effect.Cursor = System.Windows.Forms.Cursors.Default;
 			this.effect.Empty = false;
+			this.effect.GeneralizedCategories = null;
 			this.effect.Location = new System.Drawing.Point(89, 28);
 			this.effect.Name = "effect";
-			this.effect.Size = new System.Drawing.Size(326, 21);
+			this.effect.Size = new System.Drawing.Size(290, 21);
 			this.effect.TabIndex = 1;
 			this.effect.Value = 402;
 			// 
@@ -329,6 +345,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply.TabIndex = 18;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
+			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
 			// tabs
 			// 
@@ -415,6 +432,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Name = "SectorEditForm";
 			this.Opacity = 0;
 			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Sector";
 			groupaction.ResumeLayout(false);
 			groupaction.PerformLayout();
@@ -448,5 +466,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private NumericTextbox brightness;
 		private NumericTextbox tag;
 		private System.Windows.Forms.Button newtag;
+		private System.Windows.Forms.Button browseeffect;
 	}
 }

@@ -59,7 +59,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			WorldVertex[] verts;
 			WorldVertex v;
-			PixelColor pc;
 
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);

@@ -1,6 +1,6 @@
 namespace CodeImp.DoomBuilder.Interface
 {
-	partial class ActionBrowserForm
+	partial class EffectBrowserForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,16 +28,7 @@ namespace CodeImp.DoomBuilder.Interface
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.Label label1;
-			System.Windows.Forms.Label label2;
-			System.Windows.Forms.Label label3;
-			System.Windows.Forms.Label label4;
-			System.Windows.Forms.Label label5;
-			System.Windows.Forms.Label label6;
-			System.Windows.Forms.GroupBox groupBox1;
-			System.Windows.Forms.Label label7;
 			System.Windows.Forms.GroupBox groupBox2;
-			this.category = new System.Windows.Forms.ComboBox();
 			this.option7 = new System.Windows.Forms.ComboBox();
 			this.option7label = new System.Windows.Forms.Label();
 			this.option6 = new System.Windows.Forms.ComboBox();
@@ -56,113 +47,18 @@ namespace CodeImp.DoomBuilder.Interface
 			this.option0label = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.actions = new System.Windows.Forms.TreeView();
 			this.tabs = new System.Windows.Forms.TabControl();
-			this.tabactions = new System.Windows.Forms.TabPage();
-			this.prefixespanel = new System.Windows.Forms.Panel();
+			this.tabeffects = new System.Windows.Forms.TabPage();
+			this.effects = new System.Windows.Forms.ListView();
+			this.colnumber = new System.Windows.Forms.ColumnHeader();
+			this.colname = new System.Windows.Forms.ColumnHeader();
 			this.tabgeneralized = new System.Windows.Forms.TabPage();
-			label1 = new System.Windows.Forms.Label();
-			label2 = new System.Windows.Forms.Label();
-			label3 = new System.Windows.Forms.Label();
-			label4 = new System.Windows.Forms.Label();
-			label5 = new System.Windows.Forms.Label();
-			label6 = new System.Windows.Forms.Label();
-			groupBox1 = new System.Windows.Forms.GroupBox();
-			label7 = new System.Windows.Forms.Label();
 			groupBox2 = new System.Windows.Forms.GroupBox();
-			groupBox1.SuspendLayout();
 			groupBox2.SuspendLayout();
 			this.tabs.SuspendLayout();
-			this.tabactions.SuspendLayout();
-			this.prefixespanel.SuspendLayout();
+			this.tabeffects.SuspendLayout();
 			this.tabgeneralized.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// label1
-			// 
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(27, 0);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(60, 14);
-			label1.TabIndex = 21;
-			label1.Text = "S = Switch";
-			// 
-			// label2
-			// 
-			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(140, 0);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(77, 14);
-			label2.TabIndex = 22;
-			label2.Text = "W = Walk over";
-			// 
-			// label3
-			// 
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(269, 0);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(63, 14);
-			label3.TabIndex = 23;
-			label3.Text = "G = Gunfire";
-			// 
-			// label4
-			// 
-			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(27, 16);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(49, 14);
-			label4.TabIndex = 24;
-			label4.Text = "D = Door";
-			// 
-			// label5
-			// 
-			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(140, 16);
-			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(80, 14);
-			label5.TabIndex = 25;
-			label5.Text = "R = Repeatable";
-			// 
-			// label6
-			// 
-			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(269, 16);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(74, 14);
-			label6.TabIndex = 26;
-			label6.Text = "1 = Once only";
-			// 
-			// groupBox1
-			// 
-			groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			groupBox1.Controls.Add(this.category);
-			groupBox1.Controls.Add(label7);
-			groupBox1.Location = new System.Drawing.Point(6, 6);
-			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(379, 65);
-			groupBox1.TabIndex = 0;
-			groupBox1.TabStop = false;
-			groupBox1.Text = " Category ";
-			// 
-			// category
-			// 
-			this.category.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.category.FormattingEnabled = true;
-			this.category.Location = new System.Drawing.Point(118, 25);
-			this.category.Name = "category";
-			this.category.Size = new System.Drawing.Size(199, 22);
-			this.category.TabIndex = 1;
-			this.category.SelectedIndexChanged += new System.EventHandler(this.category_SelectedIndexChanged);
-			// 
-			// label7
-			// 
-			label7.AutoSize = true;
-			label7.Location = new System.Drawing.Point(58, 28);
-			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(54, 14);
-			label7.TabIndex = 0;
-			label7.Text = "Category:";
 			// 
 			// groupBox2
 			// 
@@ -185,9 +81,9 @@ namespace CodeImp.DoomBuilder.Interface
 			groupBox2.Controls.Add(this.option1label);
 			groupBox2.Controls.Add(this.option0);
 			groupBox2.Controls.Add(this.option0label);
-			groupBox2.Location = new System.Drawing.Point(6, 77);
+			groupBox2.Location = new System.Drawing.Point(6, 6);
 			groupBox2.Name = "groupBox2";
-			groupBox2.Size = new System.Drawing.Size(379, 326);
+			groupBox2.Size = new System.Drawing.Size(379, 397);
 			groupBox2.TabIndex = 1;
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Options ";
@@ -375,23 +271,12 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
-			// actions
-			// 
-			this.actions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.actions.HideSelection = false;
-			this.actions.Location = new System.Drawing.Point(6, 52);
-			this.actions.Name = "actions";
-			this.actions.Size = new System.Drawing.Size(379, 351);
-			this.actions.TabIndex = 0;
-			// 
 			// tabs
 			// 
 			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabs.Controls.Add(this.tabactions);
+			this.tabs.Controls.Add(this.tabeffects);
 			this.tabs.Controls.Add(this.tabgeneralized);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(150, 19);
@@ -403,46 +288,57 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 12;
 			// 
-			// tabactions
+			// tabeffects
 			// 
-			this.tabactions.Controls.Add(this.actions);
-			this.tabactions.Controls.Add(this.prefixespanel);
-			this.tabactions.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabactions.Location = new System.Drawing.Point(4, 23);
-			this.tabactions.Name = "tabactions";
-			this.tabactions.Padding = new System.Windows.Forms.Padding(3);
-			this.tabactions.Size = new System.Drawing.Size(391, 409);
-			this.tabactions.TabIndex = 0;
-			this.tabactions.Text = "Predefined Actions";
-			this.tabactions.UseVisualStyleBackColor = true;
+			this.tabeffects.Controls.Add(this.effects);
+			this.tabeffects.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabeffects.Location = new System.Drawing.Point(4, 23);
+			this.tabeffects.Name = "tabeffects";
+			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
+			this.tabeffects.Size = new System.Drawing.Size(391, 409);
+			this.tabeffects.TabIndex = 0;
+			this.tabeffects.Text = "Predefined Effects";
+			this.tabeffects.UseVisualStyleBackColor = true;
 			// 
-			// prefixespanel
+			// effects
 			// 
-			this.prefixespanel.Controls.Add(label6);
-			this.prefixespanel.Controls.Add(label5);
-			this.prefixespanel.Controls.Add(label4);
-			this.prefixespanel.Controls.Add(label3);
-			this.prefixespanel.Controls.Add(label2);
-			this.prefixespanel.Controls.Add(label1);
-			this.prefixespanel.Location = new System.Drawing.Point(7, 12);
-			this.prefixespanel.Name = "prefixespanel";
-			this.prefixespanel.Size = new System.Drawing.Size(378, 34);
-			this.prefixespanel.TabIndex = 27;
+			this.effects.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colnumber,
+            this.colname});
+			this.effects.FullRowSelect = true;
+			this.effects.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.effects.HideSelection = false;
+			this.effects.Location = new System.Drawing.Point(6, 6);
+			this.effects.MultiSelect = false;
+			this.effects.Name = "effects";
+			this.effects.Size = new System.Drawing.Size(382, 397);
+			this.effects.TabIndex = 0;
+			this.effects.UseCompatibleStateImageBehavior = false;
+			this.effects.View = System.Windows.Forms.View.Details;
+			// 
+			// colnumber
+			// 
+			this.colnumber.Text = "Effect";
+			this.colnumber.Width = 70;
+			// 
+			// colname
+			// 
+			this.colname.Text = "Description";
+			this.colname.Width = 280;
 			// 
 			// tabgeneralized
 			// 
 			this.tabgeneralized.Controls.Add(groupBox2);
-			this.tabgeneralized.Controls.Add(groupBox1);
 			this.tabgeneralized.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabgeneralized.Location = new System.Drawing.Point(4, 23);
 			this.tabgeneralized.Name = "tabgeneralized";
 			this.tabgeneralized.Padding = new System.Windows.Forms.Padding(3);
 			this.tabgeneralized.Size = new System.Drawing.Size(391, 409);
 			this.tabgeneralized.TabIndex = 1;
-			this.tabgeneralized.Text = "Generalized Actions";
+			this.tabgeneralized.Text = "Generalized Effects";
 			this.tabgeneralized.UseVisualStyleBackColor = true;
 			// 
-			// ActionBrowserForm
+			// EffectBrowserForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -455,18 +351,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "ActionBrowserForm";
+			this.Name = "EffectBrowserForm";
 			this.Opacity = 0;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Edit Action";
-			groupBox1.ResumeLayout(false);
-			groupBox1.PerformLayout();
+			this.Text = "Edit Effect";
 			groupBox2.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
-			this.tabactions.ResumeLayout(false);
-			this.prefixespanel.ResumeLayout(false);
-			this.prefixespanel.PerformLayout();
+			this.tabeffects.ResumeLayout(false);
 			this.tabgeneralized.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -476,11 +368,9 @@ namespace CodeImp.DoomBuilder.Interface
 
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
-		private System.Windows.Forms.TreeView actions;
 		private System.Windows.Forms.TabControl tabs;
-		private System.Windows.Forms.TabPage tabactions;
+		private System.Windows.Forms.TabPage tabeffects;
 		private System.Windows.Forms.TabPage tabgeneralized;
-		private System.Windows.Forms.ComboBox category;
 		private System.Windows.Forms.ComboBox option7;
 		private System.Windows.Forms.Label option7label;
 		private System.Windows.Forms.ComboBox option6;
@@ -497,6 +387,8 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.Label option1label;
 		private System.Windows.Forms.ComboBox option0;
 		private System.Windows.Forms.Label option0label;
-		private System.Windows.Forms.Panel prefixespanel;
+		private System.Windows.Forms.ListView effects;
+		private System.Windows.Forms.ColumnHeader colnumber;
+		private System.Windows.Forms.ColumnHeader colname;
 	}
 }
