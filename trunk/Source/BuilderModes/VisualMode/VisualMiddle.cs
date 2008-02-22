@@ -58,7 +58,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public VisualMiddle(Sidedef s)
 		{
 			WorldVertex[] verts;
-			PixelColor pc;
 			float geotop;
 			float geobottom;
 			float geoheight;

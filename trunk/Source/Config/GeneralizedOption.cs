@@ -59,7 +59,12 @@ namespace CodeImp.DoomBuilder.Config
 		internal GeneralizedOption(string structure, string cat, string name, IDictionary bitslist)
 		{
 			int index;
+			string fullpath;
 			
+			// Determine path
+			if(cat.Length > 0) fullpath = structure + "." + cat;
+				else fullpath = structure;
+
 			// Initialize
 			this.name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(name);
 			this.bits = new List<GeneralizedBit>();
@@ -75,7 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.WriteLogLine("WARNING: Structure '" + structure + "." + cat + "." + name + "' contains invalid entries!");
+					General.WriteLogLine("WARNING: Structure '" + fullpath + "." + name + "' contains invalid entries!");
 				}
 			}
 			

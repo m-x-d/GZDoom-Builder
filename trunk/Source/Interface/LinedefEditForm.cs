@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Interface
 			foreach(KeyValuePair<int, string> lf in General.Map.Config.LinedefFlags) flags.Add(lf.Value, lf.Key);
 
 			// Fill actions list
+			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
 			// Fill activations list

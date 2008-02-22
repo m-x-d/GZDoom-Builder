@@ -85,15 +85,15 @@ namespace CodeImp.DoomBuilder.Map
 		public ICollection<Thing> Things { get { return things; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public int Index { get { return index; } }
-		public int FloorHeight { get { return floorheight; } }
-		public int CeilHeight { get { return ceilheight; } }
+		public int FloorHeight { get { return floorheight; } set { floorheight = value; } }
+		public int CeilHeight { get { return ceilheight; } set { ceilheight = value; } }
 		public string FloorTexture { get { return floortexname; } }
 		public string CeilTexture { get { return ceiltexname; } }
 		public long LongFloorTexture { get { return longfloortexname; } }
 		public long LongCeilTexture { get { return longceiltexname; } }
-		public int Effect { get { return effect; } }
+		public int Effect { get { return effect; } set { effect = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
-		public int Brightness { get { return brightness; } }
+		public int Brightness { get { return brightness; } set { brightness = value; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }

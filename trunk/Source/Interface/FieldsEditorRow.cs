@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Update type from cell
 			try { fieldtype = (UniversalFieldType)Enum.Parse(typeof(UniversalFieldType), this.Cells[1].Value.ToString(), true); }
-			catch(Exception e) { this.Cells[1].Value = fieldtype.ToString(); }
+			catch(Exception) { this.Cells[1].Value = fieldtype.ToString(); }
 		}
 		
 		// This undefines the field

@@ -77,10 +77,11 @@ namespace CodeImp.DoomBuilder.Config
 		// Sectors
 		private Dictionary<int, SectorEffectInfo> sectoreffects;
 		private List<SectorEffectInfo> sortedsectoreffects;
-		private List<GeneralizedCategory> geneffectcategories;
+		private List<GeneralizedOption> geneffectoptions;
 
 		// Universal fields
 		private List<UniversalFieldInfo> linedeffields;
+		private List<UniversalFieldInfo> sectorfields;
 		
 		#endregion
 
@@ -121,10 +122,11 @@ namespace CodeImp.DoomBuilder.Config
 		// Sectors
 		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
 		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
-		public List<GeneralizedCategory> GenEffectCategories { get { return genactioncategories; } }
+		public List<GeneralizedOption> GenEffectOptions { get { return geneffectoptions; } }
 
 		// Universal fields
 		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
+		public List<UniversalFieldInfo> SectorFields { get { return sectorfields; } }
 		
 		#endregion
 
@@ -145,7 +147,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.genactioncategories = new List<GeneralizedCategory>();
 			this.sectoreffects = new Dictionary<int, SectorEffectInfo>();
 			this.sortedsectoreffects = new List<SectorEffectInfo>();
-			this.geneffectcategories = new List<GeneralizedCategory>();
+			this.geneffectoptions = new List<GeneralizedOption>();
 			
 			// Read general settings
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
@@ -182,6 +184,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Universal fields
 			linedeffields = LoadUniversalFields("linedefs");
+			sectorfields = LoadUniversalFields("sectors");
 		}
 
 		// Destructor
@@ -212,7 +215,7 @@ namespace CodeImp.DoomBuilder.Config
 					uf = new UniversalFieldInfo(elementname, de.Key.ToString(), cfg);
 					list.Add(uf);
 				}
-				catch(Exception e)
+				catch(Exception)
 				{
 					General.WriteLogLine("WARNING: Unable to read universal field definition 'universalfields." + elementname + "." + de.Key + "'!");
 				}
@@ -421,15 +424,15 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			IDictionary dic;
 
-			// Get linedef activations
+			// Get sector effects
 			dic = cfg.ReadSetting("gen_sectortypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Check for valid structure
 				if(de.Value is IDictionary)
 				{
-					// Add category
-					geneffectcategories.Add(new GeneralizedCategory("gen_sectortypes", de.Key.ToString(), cfg));
+					// Add option
+					geneffectoptions.Add(new GeneralizedOption("gen_sectortypes", "", de.Key.ToString(), de.Value as IDictionary));
 				}
 				else
 				{
@@ -469,13 +472,13 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This checks if an action is generalized or predefined
-		public bool IsGeneralizedAction(int action)
+		public static bool IsGeneralized(int action, List<GeneralizedCategory> categories)
 		{
 			// Only actions above 0
 			if(action > 0)
 			{
 				// Go for all categories
-				foreach(GeneralizedCategory ac in genactioncategories)
+				foreach(GeneralizedCategory ac in categories)
 				{
 					// Check if the action is within range of this category
 					if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) return true;
