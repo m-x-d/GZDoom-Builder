@@ -90,11 +90,20 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Create texture bitmap
-				bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-				bitmapdata = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-				pixels = (PixelColor*)bitmapdata.Scan0.ToPointer();
-				General.ZeroMemory(new IntPtr(pixels), width * height * sizeof(PixelColor));
-
+				try
+				{
+					bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+					bitmapdata = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+					pixels = (PixelColor*)bitmapdata.Scan0.ToPointer();
+					General.ZeroMemory(new IntPtr(pixels), width * height * sizeof(PixelColor));
+				}
+				catch(Exception e)
+				{
+					// Unable to make bitmap
+					General.WriteLogLine("ERROR: Unable to load texture image '" + this.Name + "'. " + e.GetType().Name + ": " + e.Message);
+					return;
+				}
+				
 				// Go for all patches
 				foreach(TexturePatch p in patches)
 				{
