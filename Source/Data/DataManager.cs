@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// If a loader is already running, stop it first
 			if(backgroundloader != null) StopBackgroundLoader();
-			
+
 			// Start a low priority thread to load images in background
 			General.WriteLogLine("Starting background resource loading...");
 			backgroundloader = new Thread(new ThreadStart(BackgroundLoad));

@@ -51,7 +51,16 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads the image and returns a Bitmap
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
-			return (Bitmap)Bitmap.FromStream(stream);
+			try
+			{
+				return (Bitmap)Bitmap.FromStream(stream);
+			}
+			catch(Exception e)
+			{
+				// Unable to make bitmap
+				General.WriteLogLine("ERROR: Unable to make file image. " + e.GetType().Name + ": " + e.Message);
+				return null;
+			}
 		}
 
 		// This draws the picture to the given pixel color data

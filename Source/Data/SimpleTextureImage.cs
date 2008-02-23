@@ -101,6 +101,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Load the image
 					mem.Seek(0, SeekOrigin.Begin);
 					bitmap = reader.ReadAsBitmap(mem);
+					if(bitmap == null) return;
 				}
 
 				// Pass on to base

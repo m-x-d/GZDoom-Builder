@@ -112,15 +112,24 @@ namespace CodeImp.DoomBuilder.IO
 			if(pixeldata != null)
 			{
 				// Create bitmap and lock pixels
-				bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-				bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-				targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
+				try
+				{
+					bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+					bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+					targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
-				// Copy the pixels
-				General.CopyMemory((void*)targetdata, (void*)pixeldata.Pointer, new UIntPtr((uint)(width * height * sizeof(PixelColor))));
+					// Copy the pixels
+					General.CopyMemory((void*)targetdata, (void*)pixeldata.Pointer, new UIntPtr((uint)(width * height * sizeof(PixelColor))));
 
-				// Done
-				bmp.UnlockBits(bitmapdata);
+					// Done
+					bmp.UnlockBits(bitmapdata);
+				}
+				catch(Exception e)
+				{
+					// Unable to make bitmap
+					General.WriteLogLine("ERROR: Unable to make doom picture data. " + e.GetType().Name + ": " + e.Message);
+					return null;
+				}
 			}
 			else
 			{
