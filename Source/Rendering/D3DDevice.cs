@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Renderstates
 
 		// This completes initialization after the device has started or has been reset
-		private void SetupSettings()
+		public void SetupSettings()
 		{
 			// Setup renderstates
 			device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
@@ -140,6 +140,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.ZWriteEnable, false);
 			device.SetRenderState(RenderState.Clipping, true);
 			device.SetRenderState(RenderState.CullMode, Cull.None);
+			device.SetPixelShader(null);
+			device.SetVertexShader(null);
 
 			// Sampler settings
 			device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
@@ -159,16 +161,28 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
 			device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
 
+			// Second texture stage
+			device.SetTextureStageState(1, TextureStage.ColorOperation, TextureOperation.Modulate);
+			device.SetTextureStageState(1, TextureStage.ColorArg1, TextureArgument.Current);
+			device.SetTextureStageState(1, TextureStage.ColorArg2, TextureArgument.TFactor);
+			device.SetTextureStageState(1, TextureStage.ResultArg, TextureArgument.Current);
+			device.SetTextureStageState(1, TextureStage.TexCoordIndex, 0);
+
 			// No more further stages
-			device.SetTextureStageState(1, TextureStage.ColorOperation, TextureOperation.Disable);
+			device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.Disable);
 			
 			// First alpha stage
 			device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
 			device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
 			device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.Diffuse);
+
+			// Second alpha stage
+			device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Modulate);
+			device.SetTextureStageState(1, TextureStage.AlphaArg1, TextureArgument.Current);
+			device.SetTextureStageState(1, TextureStage.AlphaArg2, TextureArgument.TFactor);
 			
 			// No more further stages
-			device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Disable);
+			device.SetTextureStageState(2, TextureStage.AlphaOperation, TextureOperation.Disable);
 			
 			// Setup material
 			Material material = new Material();
@@ -176,13 +190,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			material.Diffuse = ColorValue.FromColor(Color.White);
 			material.Specular = ColorValue.FromColor(Color.White);
 			device.Material = material;
-
-			// Keep a reference to the original buffers
-			backbuffer = device.GetBackBuffer(0, 0);
-			depthbuffer = device.GetDepthStencilSurface();
-			
-			// Get the viewport
-			viewport = device.Viewport;
 		}
 
 		#endregion
@@ -235,6 +242,13 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Add event to cancel resize event
 			//device.DeviceResizing += new CancelEventHandler(CancelResize);
+
+			// Keep a reference to the original buffers
+			backbuffer = device.GetBackBuffer(0, 0);
+			depthbuffer = device.GetDepthStencilSurface();
+
+			// Get the viewport
+			viewport = device.Viewport;
 
 			// Create shader manager
 			shaders = new ShaderManager(this);
@@ -324,6 +338,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				return false;
 			}
 
+			// Keep a reference to the original buffers
+			backbuffer = device.GetBackBuffer(0, 0);
+			depthbuffer = device.GetDepthStencilSurface();
+
+			// Get the viewport
+			viewport = device.Viewport;
+			
 			// Initialize settings
 			SetupSettings();
 			

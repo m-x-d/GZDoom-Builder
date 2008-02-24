@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	public class DragGeometryMode : ClassicMode
+	public abstract class DragGeometryMode : ClassicMode
 	{
 		#region ================== Constants
 

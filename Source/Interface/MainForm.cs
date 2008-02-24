@@ -314,6 +314,8 @@ namespace CodeImp.DoomBuilder.Interface
 		// This updates the status icon
 		internal void UpdateStatusIcon()
 		{
+			if(IsDisposed) return;
+			
 			// From another thread?
 			if(statusbar.InvokeRequired)
 			{
@@ -1094,8 +1096,14 @@ namespace CodeImp.DoomBuilder.Interface
 				// Update shortcut keys in menus
 				ApplyShortcutKeys();
 
-				// Apply new settings if a map is open
-				if(General.Map != null) General.Map.Map.UpdateConfiguration();
+				// Map opened?
+				if(General.Map != null)
+				{
+					// Setup and reload stuff
+					General.Map.Graphics.SetupSettings();
+					General.Map.Map.UpdateConfiguration();
+					General.Map.ReloadResources();
+				}
 				
 				// Redraw display
 				RedrawDisplay();

@@ -36,6 +36,7 @@
     <Compile Include="LinedefsMode\DragLinedefsMode.cs" />
     <Compile Include="SectorsMode\DragSectorsMode.cs" />
     <Compile Include="Shared\DragGeometryMode.cs" />
+    <Compile Include="Shared\DrawGeometryMode.cs" />
     <Compile Include="Testing\TriangulatorMode.cs" />
     <Compile Include="VisualMode\BaseVisualMode.cs" />
     <Compile Include="VisualMode\BaseVisualSector.cs" />

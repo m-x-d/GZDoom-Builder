@@ -235,7 +235,7 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Calculate camera direction vectors
 			camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);
-			camvecstrafe = Vector3D.FromAngleXYZ(camanglexy + Angle2D.PIHALF, camanglez);
+			camvecstrafe = Vector3D.FromAngleXY(camanglexy + Angle2D.PIHALF);
 			
 			// Move the camera
 			if(keyforward) campos += camvec * CAMERA_SPEED;

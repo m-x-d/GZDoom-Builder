@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Map;
 namespace CodeImp.DoomBuilder.Geometry
 {
 	/// <summary>
-	/// Responsible for creating and caching sector polygons.
+	/// Responsible for creating sector polygons.
 	/// Performs triangulation of sectors by using ear clipping.
 	/// </summary>
 	/// See: http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf

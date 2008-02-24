@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			Brush forecolor;
 			Brush backcolor;
-			
+
 			// Do we need to redraw?
 			if(CheckRedrawNeeded(bounds))
 			{
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Interface
 				g.FillRectangle(backcolor, 0, 0, bounds.Width, bounds.Height);
 				g.DrawImage(icon.Bitmap, General.MakeZoomedRect(icon.Bitmap.Size, imagerect));
 				g.DrawString(this.Text, this.ListView.Font, forecolor, textpos);
-				
+
 				// Done
 				g.Dispose();
 			}

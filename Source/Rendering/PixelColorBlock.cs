@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.height = height;
 			this.memorysize = (uint)width * (uint)height * (uint)sizeof(PixelColor);
 			this.memory = (PixelColor*)VirtualAlloc(IntPtr.Zero, new UIntPtr(memorysize), General.MEM_COMMIT, General.PAGE_READWRITE);
+			if(this.memory == (PixelColor*)0) throw new OutOfMemoryException();
 			GC.AddMemoryPressure(memorysize);
 		}
 

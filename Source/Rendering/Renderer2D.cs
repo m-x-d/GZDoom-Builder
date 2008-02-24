@@ -88,6 +88,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Images
 		private ResourceImage thingtexture;
+		private ResourceImage thingtexturesimple;
 		
 		// View settings (world coordinates)
 		private float scale;
@@ -117,7 +118,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal Renderer2D(D3DDevice graphics) : base(graphics)
 		{
 			// Initialize
+			thingtexturesimple = new ResourceImage("Thing2D_Simple.png");
+			thingtexturesimple.UseColorCorrection = false;
+			thingtexturesimple.LoadImage();
+			thingtexturesimple.CreateTexture();
 			thingtexture = new ResourceImage("Thing2D.png");
+			thingtexture.UseColorCorrection = false;
 			thingtexture.LoadImage();
 			thingtexture.CreateTexture();
 
@@ -137,6 +143,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Destroy rendertargets
 				DestroyRendertargets();
 				thingtexture.Dispose();
+				thingtexturesimple.Dispose();
 				
 				// Done
 				base.Dispose();
@@ -164,6 +171,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Set renderstates
 					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 					graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+					graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 					graphics.Device.SetTexture(0, General.Map.Grid.Background.Texture);
 					graphics.Shaders.Display2D.Texture1 = General.Map.Grid.Background.Texture;
 					graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_BLEND_FACTOR, 1f);
@@ -183,6 +191,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Set renderstates
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetTexture(0, backtex);
 				graphics.Shaders.Display2D.Texture1 = backtex;
 				graphics.Shaders.Display2D.SetSettings(1f / backsize.Width, 1f / backsize.Height, 0f, 1f);
@@ -198,6 +207,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetTexture(0, structtex);
 				graphics.Shaders.Display2D.Texture1 = structtex;
 				graphics.Shaders.Display2D.SetSettings(1f / structsize.Width, 1f / structsize.Height, FSAA_BLEND_FACTOR, 1f);
@@ -230,6 +240,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 			graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, (new ColorValue(alpha, 1f, 1f, 1f)).ToArgb());
 			graphics.Device.SetTexture(0, thingstex);
 			graphics.Shaders.Display2D.Texture1 = thingstex;
 			graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_BLEND_FACTOR, alpha);
@@ -582,9 +593,19 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-				graphics.Device.SetTexture(0, thingtexture.Texture);
-				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
+
+				if(General.Settings.QualityDisplay)
+				{
+					graphics.Device.SetTexture(0, thingtexture.Texture);
+					graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
+				}
+				else
+				{
+					graphics.Device.SetTexture(0, thingtexturesimple.Texture);
+					graphics.Shaders.Things2D.Texture1 = thingtexturesimple.Texture;
+				}
 
 				// Draw the things batched
 				graphics.Shaders.Things2D.Begin();
