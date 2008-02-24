@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 	// In that case, just specifying the attribute like this is enough:
 	[EditMode]
 
-	public class DragLinedefsMode : DragGeometryMode
+	public sealed class DragLinedefsMode : DragGeometryMode
 	{
 		#region ================== Constants
 

@@ -49,6 +49,11 @@ namespace CodeImp.DoomBuilder.Interface
 			// Initialize
 			InitializeComponent();
 
+			// Interface
+			imagebrightness.Value = General.Settings.ImageBrightness;
+			backgroundload.Checked = General.Settings.BackgroundLoading;
+			qualitydisplay.Checked = General.Settings.QualityDisplay;
+			
 			// Fill list of actions
 			actions = General.Actions.GetAllActions();
 			foreach(Action a in actions)
@@ -285,6 +290,11 @@ namespace CodeImp.DoomBuilder.Interface
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			// Apply interface
+			General.Settings.ImageBrightness = imagebrightness.Value;
+			General.Settings.BackgroundLoading = backgroundload.Checked;
+			General.Settings.QualityDisplay = qualitydisplay.Checked;
+			
 			// Apply control keys to actions
 			foreach(ListViewItem item in listactions.Items)
 				General.Actions[item.Name].SetShortcutKey((int)item.SubItems[1].Tag);
@@ -340,6 +350,18 @@ namespace CodeImp.DoomBuilder.Interface
 			colorsgroup1.Visible = (tabs.SelectedTab == tabcolors);
 			colorsgroup2.Visible = (tabs.SelectedTab == tabcolors);
 			colorsgroup3.Visible = (tabs.SelectedTab == tabcolors);
+		}
+
+		#endregion
+
+		#region ================== Interface Panel
+
+		private void imagebrightness_ValueChanged(object sender, EventArgs e)
+		{
+			if(imagebrightness.Value > 0)
+				imagebrightnesslabel.Text = "+" + imagebrightness.Value.ToString();
+			else
+				imagebrightnesslabel.Text = imagebrightness.Value.ToString();
 		}
 
 		#endregion

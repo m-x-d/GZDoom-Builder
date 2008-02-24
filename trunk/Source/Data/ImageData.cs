@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected int height;
 		protected float scaledwidth;
 		protected float scaledheight;
+		protected bool usecolorcorrection;
 		
 		// GDI bitmap
 		protected Bitmap bitmap;
@@ -67,8 +68,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
+		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
 		public PixelColorBlock PixelData { get { lock(this) { return pixeldata; } } }
-		public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return bitmap; else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
+		public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return new Bitmap(bitmap); else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
 		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsLoaded { get { return (bitmap != null); } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -86,6 +88,9 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
+
+			// Defaults
+			usecolorcorrection = true;
 		}
 
 		// Disposer
@@ -99,6 +104,8 @@ namespace CodeImp.DoomBuilder.Data
 					// Clean up
 					if(bitmap != null) bitmap.Dispose();
 					if(texture != null) texture.Dispose();
+					bitmap = null;
+					texture = null;
 					pixeldata = null;
 					
 					// Done
@@ -118,9 +125,44 @@ namespace CodeImp.DoomBuilder.Data
 			this.longname = Lump.MakeLongName(name);
 		}
 		
+		// This unloads the image
+		public virtual void UnloadImage()
+		{
+			lock(this)
+			{
+				if(bitmap != null) bitmap.Dispose();
+				bitmap = null;
+			}
+		}
+		
 		// This requests loading the image
 		public virtual void LoadImage()
 		{
+			BitmapData bmpdata;
+
+			// Determine amounts
+			float gamma = (float)(General.Settings.ImageBrightness + 10) * 0.1f;
+			float bright = (float)General.Settings.ImageBrightness * 5f;
+			
+			// This applies brightness correction on the image
+			if(IsLoaded && usecolorcorrection)
+			{
+				bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+				byte* pixels = (byte*)(bmpdata.Scan0.ToPointer());
+				for(int p = 0; p < bmpdata.Stride * bmpdata.Height; p += 4)
+				{
+					// Apply color correction for individual colors
+					float r = (float)pixels[p + 0] * gamma + bright;
+					float g = (float)pixels[p + 1] * gamma + bright;
+					float b = (float)pixels[p + 2] * gamma + bright;
+					
+					// Clamp to 0..255 range
+					if(r < 0f) pixels[p + 0] = 0; else if(r > 255f) pixels[p + 0] = 255; else pixels[p + 0] = (byte)r;
+					if(g < 0f) pixels[p + 1] = 0; else if(g > 255f) pixels[p + 1] = 255; else pixels[p + 1] = (byte)g;
+					if(b < 0f) pixels[p + 2] = 0; else if(b > 255f) pixels[p + 2] = 255; else pixels[p + 2] = (byte)b;
+				}
+				bitmap.UnlockBits(bmpdata);
+			}
 		}
 		
 		// This creates the 2D pixel data

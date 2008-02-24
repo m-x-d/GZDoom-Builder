@@ -381,7 +381,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\MissingTexture3D.png" />
     <None Include="Resources\MissingTexture.png" />
     <None Include="Resources\UnknownImage.png" />
     <None Include="Resources\treeview.png" />
@@ -500,6 +499,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Builder.ico" />
+    <EmbeddedResource Include="Resources\MissingTexture3D.png" />
     <EmbeddedResource Include="Resources\Thing2D_Simple.png" />
   </ItemGroup>
 </Project>

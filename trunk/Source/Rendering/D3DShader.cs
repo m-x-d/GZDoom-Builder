@@ -144,31 +144,31 @@ namespace CodeImp.DoomBuilder.Rendering
 			General.Map.Graphics.Device.VertexDeclaration = vertexdecl;
 
 			// Set effect
-			if(manager.Enabled) effect.Begin(FX.DoNotSaveState);
+			if(manager.Enabled && General.Settings.QualityDisplay) effect.Begin(FX.DoNotSaveState);
 		}
 
 		// This begins a pass
 		public void BeginPass(int index)
 		{
-			if(manager.Enabled) effect.BeginPass(index);
+			if(manager.Enabled && General.Settings.QualityDisplay) effect.BeginPass(index);
 		}
 
 		// This ends a pass
 		public void EndPass()
 		{
-			if(manager.Enabled) effect.EndPass();
+			if(manager.Enabled && General.Settings.QualityDisplay) effect.EndPass();
 		}
 		
 		// This ends te shader
 		public void End()
 		{
-			if(manager.Enabled) effect.End();
+			if(manager.Enabled && General.Settings.QualityDisplay) effect.End();
 		}
 
 		// This applies properties during a pass
 		public void ApplySettings()
 		{
-			if(manager.Enabled) effect.CommitChanges();
+			if(manager.Enabled && General.Settings.QualityDisplay) effect.CommitChanges();
 		}
 		
 		#endregion

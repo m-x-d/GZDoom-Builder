@@ -916,10 +916,10 @@ namespace CodeImp.DoomBuilder
 			Cursor.Current = Cursors.WaitCursor;
 			
 			// Clean up
-			config = null;
-			configinfo = null;
 			data.Dispose();
 			data = null;
+			config = null;
+			configinfo = null;
 			GC.Collect();
 			
 			// Reload game configuration

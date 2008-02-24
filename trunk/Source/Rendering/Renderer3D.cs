@@ -168,6 +168,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				
 				// Ready
 				return true;
@@ -188,6 +189,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.ZWriteEnable, true);
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			
 			// Setup shader
 			graphics.Shaders.World3D.Begin();
@@ -245,6 +247,7 @@ namespace CodeImp.DoomBuilder.Rendering
 								lasttexture.CreateTexture();
 
 							// Apply texture
+							graphics.Device.SetTexture(0, lasttexture.Texture);
 							graphics.Shaders.World3D.Texture1 = lasttexture.Texture;
 							graphics.Shaders.World3D.ApplySettings();
 						}
