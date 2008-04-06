@@ -38,17 +38,17 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// pictureBox1
 			// 
-			pictureBox1.Image = global::CodeImp.DoomBuilder.Properties.Resources.Splash2small;
+			pictureBox1.Image = global::CodeImp.DoomBuilder.Properties.Resources.Splash2_small;
 			pictureBox1.Location = new System.Drawing.Point(12, 12);
 			pictureBox1.Name = "pictureBox1";
-			pictureBox1.Size = new System.Drawing.Size(137, 82);
+			pictureBox1.Size = new System.Drawing.Size(102, 106);
 			pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			pictureBox1.TabIndex = 0;
 			pictureBox1.TabStop = false;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(166, 12);
+			this.label1.Location = new System.Drawing.Point(129, 21);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(342, 50);
 			this.label1.TabIndex = 2;
@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// close
 			// 
 			this.close.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.close.Location = new System.Drawing.Point(392, 69);
+			this.close.Location = new System.Drawing.Point(355, 93);
 			this.close.Name = "close";
 			this.close.Size = new System.Drawing.Size(116, 25);
 			this.close.TabIndex = 3;
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// builderlink
 			// 
 			this.builderlink.AutoSize = true;
-			this.builderlink.Location = new System.Drawing.Point(166, 62);
+			this.builderlink.Location = new System.Drawing.Point(129, 71);
 			this.builderlink.Name = "builderlink";
 			this.builderlink.Size = new System.Drawing.Size(121, 14);
 			this.builderlink.TabIndex = 5;
@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.AcceptButton = this.close;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.close;
-			this.ClientSize = new System.Drawing.Size(518, 104);
+			this.ClientSize = new System.Drawing.Size(482, 126);
 			this.Controls.Add(this.builderlink);
 			this.Controls.Add(this.close);
 			this.Controls.Add(this.label1);
