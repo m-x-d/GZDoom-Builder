@@ -165,16 +165,16 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap Splash2 {
+        internal static System.Drawing.Bitmap Splash2_small {
             get {
-                object obj = ResourceManager.GetObject("Splash2", resourceCulture);
+                object obj = ResourceManager.GetObject("Splash2_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static System.Drawing.Bitmap Splash2small {
+        internal static System.Drawing.Bitmap Splash2_trans {
             get {
-                object obj = ResourceManager.GetObject("Splash2small", resourceCulture);
+                object obj = ResourceManager.GetObject("Splash2_trans", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
