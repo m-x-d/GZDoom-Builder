@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public DragLinedefsMode(EditMode basemode, Linedef dragitem, Vector2D dragstartmappos)
 		{
 			// Get the nearest vertex for snapping
-			Vertex nearest = General.Map.Map.NearestVertex(dragstartmappos);
+			Vertex nearest = MapSet.NearestVertex(General.Map.Map.GetVerticesFromLinesSelection(true), dragstartmappos);
 			
 			// Get selected lines
 			selectedlines = General.Map.Map.GetLinedefsSelection(true);
