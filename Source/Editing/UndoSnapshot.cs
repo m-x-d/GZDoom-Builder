@@ -39,15 +39,13 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		public MapSet map;
 		public string description;
-		public bool allow3dchange;		// True when allowed to change in 3D mode
 		public int ticketid;			// For safe withdrawing
 
 		// Constructor
-		public UndoSnapshot(string description, bool allow3dchange, MapSet map, int ticketid)
+		public UndoSnapshot(string description, MapSet map, int ticketid)
 		{
 			this.ticketid = ticketid;
 			this.description = description;
-			this.allow3dchange = allow3dchange;
 			this.map = map;
 		}
 
@@ -56,7 +54,6 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			this.ticketid = info.ticketid;
 			this.description = info.description;
-			this.allow3dchange = info.allow3dchange;
 			this.map = map;
 		}
 	}

@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Public Methods
 
 		// This makes an undo and returns the unique ticket id
-		public int CreateUndo(string description, UndoGroup group, int grouptag, bool allow3dchange)
+		public int CreateUndo(string description, UndoGroup group, int grouptag)
 		{
 			UndoSnapshot u;
 			
@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.Editing
 				if(++ticketid == int.MaxValue) ticketid = 1;
 
 				// Make a snapshot
-				u = new UndoSnapshot(description, allow3dchange, General.Map.Map.Clone(), ticketid);
+				u = new UndoSnapshot(description, General.Map.Map.Clone(), ticketid);
 
 				// Put it on the stack
 				undos.Insert(0, u);

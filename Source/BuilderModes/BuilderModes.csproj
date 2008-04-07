@@ -38,6 +38,7 @@
     <Compile Include="Shared\DragGeometryMode.cs" />
     <Compile Include="Shared\DrawGeometryMode.cs" />
     <Compile Include="Testing\TriangulatorMode.cs" />
+    <Compile Include="ThingsMode\DragThingsMode.cs" />
     <Compile Include="VisualMode\BaseVisualMode.cs" />
     <Compile Include="VisualMode\BaseVisualSector.cs" />
     <Compile Include="VerticesMode\DragVerticesMode.cs" />

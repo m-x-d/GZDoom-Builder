@@ -226,6 +226,16 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This moves the thing
 		// NOTE: This does not update sector! (call DetermineSector)
+		public void Move(Vector2D newpos)
+		{
+			// Change position
+			this.x = (int)newpos.x;
+			this.y = (int)newpos.y;
+			this.pos = new Vector3D(newpos.x, newpos.y, zoffset);
+		}
+
+		// This moves the thing
+		// NOTE: This does not update sector! (call DetermineSector)
 		public void Move(int x, int y, int zoffset)
 		{
 			// Change position
@@ -288,6 +298,13 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Methods
+
+		// This snaps the vertex to the grid
+		public void SnapToGrid()
+		{
+			// Calculate nearest grid coordinates
+			this.Move(General.Map.Grid.SnappedToGrid((Vector2D)pos));
+		}
 
 		// This returns the distance from given coordinates
 		public float DistanceToSq(Vector2D p)

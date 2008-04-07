@@ -368,7 +368,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 
 					// Start dragging the selection
-					General.Map.ChangeMode(new DragSectorsMode(new SectorsMode(), highlighted, mousedownmappos));
+					General.Map.ChangeMode(new DragSectorsMode(new SectorsMode(), mousedownmappos));
 				}
 			}
 		}
