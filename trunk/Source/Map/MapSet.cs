@@ -619,7 +619,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(General.MainWindow.AutoMerge)
 			{
 				// Make undo for the stitching
-				stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0, false);
+				stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0);
 
 				// Find lines that moved during the drag
 				movinglines = LinedefsFromSelectedVertices(false, true, true);
@@ -960,6 +960,30 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					// This one is closer
 					closest = v;
+					distance = d;
+				}
+			}
+
+			// Return result
+			return closest;
+		}
+
+		// This finds the thing closest to the specified position
+		public static Thing NearestThing(ICollection<Thing> selection, Vector2D pos)
+		{
+			Thing closest = null;
+			float distance = float.MaxValue;
+			float d;
+
+			// Go for all things in selection
+			foreach(Thing t in selection)
+			{
+				// Calculate distance and check if closer than previous find
+				d = t.DistanceToSq(pos);
+				if(d < distance)
+				{
+					// This one is closer
+					closest = t;
 					distance = d;
 				}
 			}

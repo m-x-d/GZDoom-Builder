@@ -314,8 +314,6 @@ namespace CodeImp.DoomBuilder.Interface
 		// This updates the status icon
 		internal void UpdateStatusIcon()
 		{
-			if(IsDisposed) return;
-			
 			// From another thread?
 			if(statusbar.InvokeRequired)
 			{

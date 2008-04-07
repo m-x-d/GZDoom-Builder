@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor to start dragging immediately
-		public DragLinedefsMode(EditMode basemode, Linedef dragitem, Vector2D dragstartmappos)
+		public DragLinedefsMode(EditMode basemode, Vector2D dragstartmappos)
 		{
 			// Get the nearest vertex for snapping
 			Vertex nearest = MapSet.NearestVertex(General.Map.Map.GetVerticesFromLinesSelection(true), dragstartmappos);

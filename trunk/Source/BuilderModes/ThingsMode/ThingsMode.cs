@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 	{
 		#region ================== Constants
 
-		protected const float THING_HIGHLIGHT_RANGE = 10f;
+		public const float THING_HIGHLIGHT_RANGE = 10f;
 
 		#endregion
 
@@ -254,6 +254,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					if(selected.Count > 0)
 					{
 						// Show thing edit dialog
+						// TODO
 
 						// When a single thing was selected, deselect it now
 						if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
@@ -261,6 +262,36 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						// Update entire display
 						General.Interface.RedrawDisplay();
 					}
+				}
+			}
+		}
+
+		// Mouse wants to drag
+		protected override void DragStart(MouseEventArgs e)
+		{
+			base.DragStart(e);
+
+			// Which button is used?
+			if(e.Button == EditMode.SELECT_BUTTON)
+			{
+				// Make selection
+
+			}
+			else if(e.Button == EditMode.EDIT_BUTTON)
+			{
+				// Anything highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Highlighted item not selected?
+					if(!highlighted.Selected)
+					{
+						// Select only this sector for dragging
+						General.Map.Map.ClearSelectedThings();
+						highlighted.Selected = true;
+					}
+
+					// Start dragging the selection
+					General.Map.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos));
 				}
 			}
 		}
