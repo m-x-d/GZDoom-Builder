@@ -131,10 +131,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
 			{
-				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(General.Map.Map.Vertices);
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderSector(highlighted, General.Colors.Highlight);
+					renderer.PlotSector(highlighted, General.Colors.Highlight);
 				renderer.Finish();
 			}
 
@@ -156,14 +156,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderSector(highlighted);
+					renderer.PlotSector(highlighted);
 
 				// Set new highlight
 				highlighted = s;
 
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderSector(highlighted, General.Colors.Highlight);
+					renderer.PlotSector(highlighted, General.Colors.Highlight);
 
 				// Done
 				renderer.Finish();
@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					if(renderer.StartPlotter(false))
 					{
 						// Redraw highlight to show selection
-						renderer.RenderSector(highlighted);
+						renderer.PlotSector(highlighted);
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -301,15 +301,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						if(renderer.StartPlotter(true))
 						{
 							// Render lines and vertices
-							renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-							renderer.RenderVerticesSet(General.Map.Map.Vertices);
+							renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+							renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 							// Go for all triangle vertices
 							for(int i = 0; i < triangles.Count; i += 3)
 							{
-								renderer.RenderLine(triangles[i + 0], triangles[i + 1], General.Colors.Selection);
-								renderer.RenderLine(triangles[i + 1], triangles[i + 2], General.Colors.Selection);
-								renderer.RenderLine(triangles[i + 2], triangles[i + 0], General.Colors.Selection);
+								renderer.PlotLine(triangles[i + 0], triangles[i + 1], General.Colors.Selection);
+								renderer.PlotLine(triangles[i + 1], triangles[i + 2], General.Colors.Selection);
+								renderer.PlotLine(triangles[i + 2], triangles[i + 0], General.Colors.Selection);
 							}
 
 							// Done
@@ -333,15 +333,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					if(renderer.StartPlotter(true))
 					{
 						// Render lines and vertices
-						renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-						renderer.RenderVerticesSet(General.Map.Map.Vertices);
+						renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+						renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 						// Go for all triangle vertices
 						for(int i = 0; i < triangles.Count; i += 3)
 						{
-							renderer.RenderLine(triangles[i + 0], triangles[i + 1], General.Colors.Selection);
-							renderer.RenderLine(triangles[i + 1], triangles[i + 2], General.Colors.Selection);
-							renderer.RenderLine(triangles[i + 2], triangles[i + 0], General.Colors.Selection);
+							renderer.PlotLine(triangles[i + 0], triangles[i + 1], General.Colors.Selection);
+							renderer.PlotLine(triangles[i + 1], triangles[i + 2], General.Colors.Selection);
+							renderer.PlotLine(triangles[i + 2], triangles[i + 0], General.Colors.Selection);
 						}
 
 						// Done
@@ -365,11 +365,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(renderer.StartPlotter(true))
 				{
 					// Render lines and vertices
-					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+					renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+					renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 					// Show the point
-					renderer.RenderVertexAt(v, c);
+					renderer.PlotVertexAt(v, c);
 
 					// Done
 					renderer.Finish();
@@ -394,11 +394,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(renderer.StartPlotter(true))
 				{
 					// Render lines and vertices
-					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+					renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+					renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 					// Show the line
-					renderer.RenderLine(v1, v2, c);
+					renderer.PlotLine(v1, v2, c);
 
 					// Done
 					renderer.Finish();
@@ -425,20 +425,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(renderer.StartPlotter(true))
 				{
 					// Render lines and vertices
-					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+					renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+					renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 					// Go for all vertices in the polygon
 					v = p.First;
 					while(v != null)
 					{
 						// Show the line
-						if(v.Next != null) renderer.RenderLine(v.Value.Position, v.Next.Value.Position, c);
+						if(v.Next != null) renderer.PlotLine(v.Value.Position, v.Next.Value.Position, c);
 						v = v.Next;
 					}
 					
 					// Show last line as well
-					renderer.RenderLine(p.Last.Value.Position, p.First.Value.Position, c);
+					renderer.PlotLine(p.Last.Value.Position, p.First.Value.Position, c);
 					
 					// Done
 					renderer.Finish();
@@ -461,31 +461,31 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(renderer.StartPlotter(true))
 				{
 					// Render lines and vertices
-					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+					renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+					renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 					// Go for all remaining vertices
 					prev = null; first = null;
 					foreach(EarClipVertex v in remains)
 					{
 						// Show the line
-						if(prev != null) renderer.RenderLine(v.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+						if(prev != null) renderer.PlotLine(v.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
 						if(prev == null) first = v;
 						prev = v;
 						
 						if(v.IsReflex)
-							renderer.RenderVertexAt(v.Position, ColorCollection.SELECTION);
+							renderer.PlotVertexAt(v.Position, ColorCollection.SELECTION);
 						else
-							renderer.RenderVertexAt(v.Position, ColorCollection.VERTICES);
+							renderer.PlotVertexAt(v.Position, ColorCollection.VERTICES);
 					}
-					if(first != null) renderer.RenderLine(first.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+					if(first != null) renderer.PlotLine(first.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
 
 					if(found != null)
 					{
-						renderer.RenderLine(found[0].Position, found[1].Position, PixelColor.FromColor(Color.SkyBlue));
-						renderer.RenderLine(found[1].Position, found[2].Position, PixelColor.FromColor(Color.SkyBlue));
-						renderer.RenderLine(found[2].Position, found[0].Position, PixelColor.FromColor(Color.SkyBlue));
-						renderer.RenderVertexAt(found[1].Position, ColorCollection.ASSOCIATION);
+						renderer.PlotLine(found[0].Position, found[1].Position, PixelColor.FromColor(Color.SkyBlue));
+						renderer.PlotLine(found[1].Position, found[2].Position, PixelColor.FromColor(Color.SkyBlue));
+						renderer.PlotLine(found[2].Position, found[0].Position, PixelColor.FromColor(Color.SkyBlue));
+						renderer.PlotVertexAt(found[1].Position, ColorCollection.ASSOCIATION);
 					}
 					
 					// Done
@@ -498,24 +498,24 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(renderer.StartPlotter(true))
 				{
 					// Render lines and vertices
-					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+					renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+					renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 					// Go for all remaining vertices
 					prev = null; first = null;
 					foreach(EarClipVertex v in remains)
 					{
 						// Show the line
-						if(prev != null) renderer.RenderLine(v.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+						if(prev != null) renderer.PlotLine(v.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
 						if(prev == null) first = v;
 						prev = v;
 
 						if(v.IsReflex)
-							renderer.RenderVertexAt(v.Position, ColorCollection.SELECTION);
+							renderer.PlotVertexAt(v.Position, ColorCollection.SELECTION);
 						else
-							renderer.RenderVertexAt(v.Position, ColorCollection.VERTICES);
+							renderer.PlotVertexAt(v.Position, ColorCollection.VERTICES);
 					}
-					if(first != null) renderer.RenderLine(first.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+					if(first != null) renderer.PlotLine(first.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
 
 					// Done
 					renderer.Finish();

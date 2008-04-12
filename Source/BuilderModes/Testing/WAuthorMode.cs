@@ -133,8 +133,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
 			{
-				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(General.Map.Map.Vertices);
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				if((highlighted != null) && !(highlighted is Thing)) DrawHighlight(true);
 				renderer.Finish();
 			}
@@ -161,21 +161,21 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(highlighted is Vertex)
 				{
 					if((highlighted as Vertex).IsDisposed) return;
-					renderer.RenderVertex(highlighted as Vertex, ColorCollection.HIGHLIGHT);
+					renderer.PlotVertex(highlighted as Vertex, ColorCollection.HIGHLIGHT);
 				}
 				// Linedef
 				else if(highlighted is Linedef)
 				{
 					if((highlighted as Linedef).IsDisposed) return;
-					renderer.RenderLinedef((highlighted as Linedef), General.Colors.Highlight);
-					renderer.RenderVertex((highlighted as Linedef).Start, renderer.DetermineVertexColor((highlighted as Linedef).Start));
-					renderer.RenderVertex((highlighted as Linedef).End, renderer.DetermineVertexColor((highlighted as Linedef).End));
+					renderer.PlotLinedef((highlighted as Linedef), General.Colors.Highlight);
+					renderer.PlotVertex((highlighted as Linedef).Start, renderer.DetermineVertexColor((highlighted as Linedef).Start));
+					renderer.PlotVertex((highlighted as Linedef).End, renderer.DetermineVertexColor((highlighted as Linedef).End));
 				}
 				// Sector
 				else if(highlighted is Sector)
 				{
 					if((highlighted as Sector).IsDisposed) return;
-					renderer.RenderSector((highlighted as Sector), General.Colors.Highlight);
+					renderer.PlotSector((highlighted as Sector), General.Colors.Highlight);
 				}
 				// Thing
 				else if(highlighted is Thing)
@@ -191,21 +191,21 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(highlighted is Vertex)
 				{
 					if((highlighted as Vertex).IsDisposed) return;
-					renderer.RenderVertex(highlighted as Vertex, renderer.DetermineVertexColor(highlighted as Vertex));
+					renderer.PlotVertex(highlighted as Vertex, renderer.DetermineVertexColor(highlighted as Vertex));
 				}
 				// Linedef
 				else if(highlighted is Linedef)
 				{
 					if((highlighted as Linedef).IsDisposed) return;
-					renderer.RenderLinedef((highlighted as Linedef), renderer.DetermineLinedefColor((highlighted as Linedef)));
-					renderer.RenderVertex((highlighted as Linedef).Start, renderer.DetermineVertexColor((highlighted as Linedef).Start));
-					renderer.RenderVertex((highlighted as Linedef).End, renderer.DetermineVertexColor((highlighted as Linedef).End));
+					renderer.PlotLinedef((highlighted as Linedef), renderer.DetermineLinedefColor((highlighted as Linedef)));
+					renderer.PlotVertex((highlighted as Linedef).Start, renderer.DetermineVertexColor((highlighted as Linedef).Start));
+					renderer.PlotVertex((highlighted as Linedef).End, renderer.DetermineVertexColor((highlighted as Linedef).End));
 				}
 				// Sector
 				else if(highlighted is Sector)
 				{
 					if((highlighted as Sector).IsDisposed) return;
-					renderer.RenderSector((highlighted as Sector));
+					renderer.PlotSector((highlighted as Sector));
 				}
 				// Thing
 				else if(highlighted is Thing)

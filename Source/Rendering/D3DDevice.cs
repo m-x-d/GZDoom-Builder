@@ -124,6 +124,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
 			device.SetRenderState(RenderState.Ambient, Color.White.ToArgb());
 			device.SetRenderState(RenderState.AmbientMaterialSource, ColorSource.Material);
+			device.SetRenderState(RenderState.ColorWriteEnable, ColorWriteEnable.Red | ColorWriteEnable.Green | ColorWriteEnable.Blue | ColorWriteEnable.Alpha);
 			device.SetRenderState(RenderState.ColorVertex, false);
 			device.SetRenderState(RenderState.DiffuseMaterialSource, ColorSource.Color1);
 			device.SetRenderState(RenderState.FillMode, FillMode.Solid);

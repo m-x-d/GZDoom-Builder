@@ -113,8 +113,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
 			{
-				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(General.Map.Map.Vertices);
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderThing(highlighted, General.Colors.Highlight);
 				renderer.Finish();
@@ -165,11 +165,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			base.MouseMove(e);
 
-			// Find the nearest vertex within highlight range
-			Thing t = General.Map.Map.NearestThingSquareRange(mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
+			// Not holding any buttons?
+			if(e.Button == MouseButtons.None)
+			{
+				// Find the nearest vertex within highlight range
+				Thing t = General.Map.Map.NearestThingSquareRange(mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
 
-			// Highlight if not the same
-			if(t != highlighted) Highlight(t);
+				// Highlight if not the same
+				if(t != highlighted) Highlight(t);
+			}
 		}
 
 		// Mouse leaves

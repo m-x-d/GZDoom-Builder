@@ -54,20 +54,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Rendering management methods
 		bool StartPlotter(bool clear);
 		bool StartThings(bool clear);
+		bool StartOverlay(bool clear);
 		void Finish();
 		void SetThingsRenderOrder(bool front);
 		void Present();
 
 		// Drawing methods
-		void RenderLine(Vector2D start, Vector2D end, PixelColor c);
-		void RenderLinedef(Linedef l, PixelColor c);
-		void RenderLinedefSet(ICollection<Linedef> linedefs);
-		void RenderSector(Sector s);
-		void RenderSector(Sector s, PixelColor c);
+		void PlotLine(Vector2D start, Vector2D end, PixelColor c);
+		void PlotLinedef(Linedef l, PixelColor c);
+		void PlotLinedefSet(ICollection<Linedef> linedefs);
+		void PlotSector(Sector s);
+		void PlotSector(Sector s, PixelColor c);
+		void PlotVertex(Vertex v, int colorindex);
+		void PlotVertexAt(Vector2D v, int colorindex);
+		void PlotVerticesSet(ICollection<Vertex> vertices);
 		void RenderThing(Thing t, PixelColor c);
 		void RenderThingSet(ICollection<Thing> things);
-		void RenderVertex(Vertex v, int colorindex);
-		void RenderVertexAt(Vector2D v, int colorindex);
-		void RenderVerticesSet(ICollection<Vertex> vertices);
+		void RenderRectangle(RectangleF rect, float bordersize, PixelColor c, bool transformrect);
 	}
 }
