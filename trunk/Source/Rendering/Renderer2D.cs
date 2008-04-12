@@ -43,17 +43,18 @@ namespace CodeImp.DoomBuilder.Rendering
 	/* This renders a 2D presentation of the map
 	 * This is done in several layers:
 	 * 
-	 * 1) Background image
+	 * 1) Background grid
 	 * 
 	 * 2) Things
 	 * 
-	 * 3) Plotter (grid and geometric structures)
+	 * 3) Plotter (geometric structures)
 	 * 
 	 * 4) Overlay
 	 * 
 	 * The order of layers 2 and 3 can be changed by
 	 * calling SetThingsRenderOrder.
 	 */
+
 	internal unsafe sealed class Renderer2D : Renderer, IRenderer2D
 	{
 		#region ================== Constants
@@ -75,15 +76,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Texture backtex;
 		private Texture plottertex;
 		private Texture thingstex;
+		private Texture overlaytex;
 
 		// Locking data
 		private LockedRect plotlocked;
-		private Surface thingssurface;
+		private Surface targetsurface;
 
 		// Rendertarget sizes
 		private Size windowsize;
 		private Size structsize;
 		private Size thingssize;
+		private Size overlaysize;
 		private Size backsize;
 		
 		// Geometry plotter
@@ -100,6 +103,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Render settings
 		private bool thingsfront;
 		private int vertexsize;
+		private RenderLayers renderlayer = RenderLayers.None;
 
 		// Images
 		private ResourceImage thingtexture;
@@ -237,6 +241,21 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Render things in front?
 				if(thingsfront) PresentThings(1f);
 				
+				// Set renderstates
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, (new ColorValue(1f, 1f, 1f, 1f)).ToArgb());
+				graphics.Device.SetTexture(0, overlaytex);
+				graphics.Shaders.Display2D.Texture1 = overlaytex;
+				graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_BLEND_FACTOR, 1f);
+
+				// Draw the overlay texture
+				graphics.Shaders.Display2D.BeginPass(0);
+				graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+				graphics.Shaders.Display2D.EndPass();
+				
 				// Done
 				graphics.Shaders.Display2D.End();
 				graphics.FinishRendering();
@@ -307,12 +326,14 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Trash rendertargets
 			if(plottertex != null) plottertex.Dispose();
 			if(thingstex != null) thingstex.Dispose();
+			if(overlaytex != null) overlaytex.Dispose();
 			if(backtex != null) backtex.Dispose();
 			if(screenverts != null) screenverts.Dispose();
 			plottertex = null;
 			thingstex = null;
 			backtex = null;
 			screenverts = null;
+			overlaytex = null;
 			
 			// Trash things batch buffer
 			if(thingsvertices != null) thingsvertices.Dispose();
@@ -340,6 +361,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			plottertex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 			thingstex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 			backtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			overlaytex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 			
 			// Get the real surface sizes
 			sd = plottertex.GetLevelDescription(0);
@@ -351,7 +373,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			sd = backtex.GetLevelDescription(0);
 			backsize.Width = sd.Width;
 			backsize.Height = sd.Height;
-
+			sd = overlaytex.GetLevelDescription(0);
+			overlaysize.Width = sd.Width;
+			overlaysize.Height = sd.Height;
+			
+			// Clear rendertargets
+			StartPlotter(true); Finish();
+			StartThings(true); Finish();
+			StartOverlay(true); Finish();
+			
 			// Create vertex buffers
 			screenverts = new VertexBuffer(graphics.Device, 4 * sizeof(FlatVertex), Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
 
@@ -437,6 +467,307 @@ namespace CodeImp.DoomBuilder.Rendering
 		public Vector2D GetMapCoordinates(Vector2D mousepos)
 		{
 			return mousepos.GetInvTransformed(-translatex, -translatey, scaleinv, -scaleinv);
+		}
+
+		#endregion
+
+		#region ================== Colors
+
+		// This returns the color for a thing
+		public PixelColor DetermineThingColor(Thing t)
+		{
+			// Determine color
+			if(t.Selected) return General.Colors.Selection;
+			else return t.Color;
+		}
+
+		// This returns the color for a vertex
+		public int DetermineVertexColor(Vertex v)
+		{
+			// Determine color
+			if(v.Selected) return ColorCollection.SELECTION;
+			else return ColorCollection.VERTICES;
+		}
+
+		// This returns the color for a linedef
+		public PixelColor DetermineLinedefColor(Linedef l)
+		{
+			// Impassable lines
+			if((l.Flags & General.Map.Config.ImpassableFlags) != 0)
+			{
+				// Determine color
+				if(l.Selected) return General.Colors.Selection;
+				else if(l.Action != 0) return General.Colors.Actions;
+				else return General.Colors.Linedefs;
+			}
+			else
+			{
+				// Determine color
+				if(l.Selected) return General.Colors.Selection;
+				else if(l.Action != 0) return General.Colors.Actions.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+				else if((l.Flags & General.Map.Config.SoundLinedefFlags) != 0) return General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+				else return General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);
+			}
+		}
+
+		#endregion
+
+		#region ================== Settings
+		
+		// This sets the things in front or back
+		public void SetThingsRenderOrder(bool front)
+		{
+			// Set things render order
+			this.thingsfront = front;
+		}
+
+		#endregion
+
+		#region ================== Start / Finish
+
+		// This begins a drawing session
+		public unsafe bool StartPlotter(bool clear)
+		{
+			if(renderlayer != RenderLayers.None) throw new InvalidCallException("Renderer starting called before finished previous layer. Call Finish() first!");
+			renderlayer = RenderLayers.Plotter;
+
+			// Rendertargets available?
+			if(plottertex != null)
+			{
+				// Lock structures rendertarget memory
+				plotlocked = plottertex.LockRectangle(0, LockFlags.NoSystemLock);
+
+				// Create structures plotter
+				plotter = new Plotter((PixelColor*)plotlocked.Data.DataPointer.ToPointer(), plotlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
+				if(clear) plotter.Clear();
+
+				// Redraw grid when structures image was cleared
+				if(clear)
+				{
+					RenderBackgroundGrid();
+					SetupBackground();
+				}
+				
+				// Ready for rendering
+				return true;
+			}
+			else
+			{
+				// Can't render!
+				Finish();
+				return false;
+			}
+		}
+
+		// This begins a drawing session
+		public unsafe bool StartThings(bool clear)
+		{
+			if(renderlayer != RenderLayers.None) throw new InvalidCallException("Renderer starting called before finished previous layer. Call Finish() first!");
+			renderlayer = RenderLayers.Things;
+
+			// Rendertargets available?
+			if(thingstex != null)
+			{
+				// Always trash things batch buffer
+				if(thingsvertices != null) thingsvertices.Dispose();
+				thingsvertices = null;
+				numthings = 0;
+				maxthings = 0;
+				
+				// Set the rendertarget to the things texture
+				targetsurface = thingstex.GetSurfaceLevel(0);
+				if(graphics.StartRendering(clear, 0, targetsurface, null))
+				{
+					// Ready for rendering
+					return true;
+				}
+				else
+				{
+					// Can't render!
+					Finish();
+					return false;
+				}
+			}
+			else
+			{
+				// Can't render!
+				Finish();
+				return false;
+			}
+		}
+
+		// This begins a drawing session
+		public unsafe bool StartOverlay(bool clear)
+		{
+			if(renderlayer != RenderLayers.None) throw new InvalidCallException("Renderer starting called before finished previous layer. Call Finish() first!");
+			renderlayer = RenderLayers.Overlay;
+
+			// Rendertargets available?
+			if(overlaytex != null)
+			{
+				// Set the rendertarget to the things texture
+				targetsurface = overlaytex.GetSurfaceLevel(0);
+				if(graphics.StartRendering(clear, 0, targetsurface, null))
+				{
+					// Ready for rendering
+					return true;
+				}
+				else
+				{
+					// Can't render!
+					Finish();
+					return false;
+				}
+			}
+			else
+			{
+				// Can't render!
+				Finish();
+				return false;
+			}
+		}
+
+		// This ends a drawing session
+		public void Finish()
+		{
+			// Stop rendering
+			graphics.FinishRendering();
+			
+			// Clean up plotter
+			if(renderlayer == RenderLayers.Plotter)
+			{
+				if(plottertex != null) plottertex.UnlockRectangle(0);
+				if(plotlocked.Data != null) plotlocked.Data.Dispose();
+				plotter = null;
+			}
+			
+			// Clean up things / overlay
+			if((renderlayer == RenderLayers.Things) || (renderlayer == RenderLayers.Overlay))
+			{
+				// Release rendertarget
+				try
+				{
+					graphics.Device.SetDepthStencilSurface(graphics.DepthBuffer);
+					graphics.Device.SetRenderTarget(0, graphics.BackBuffer);
+				}
+				catch(Exception) { }
+				if(targetsurface != null) targetsurface.Dispose();
+				targetsurface = null;
+			}
+			
+			// Done
+			renderlayer = RenderLayers.None;
+		}
+
+		#endregion
+
+		#region ================== Background
+
+		// This sets up background image vertices
+		private void SetupBackground()
+		{
+			Vector2D ltpos, rbpos;
+			Vector2D backoffset = new Vector2D((float)General.Map.Grid.BackgroundX, (float)General.Map.Grid.BackgroundY);
+			Vector2D backimagesize = new Vector2D((float)General.Map.Grid.Background.Width, (float)General.Map.Grid.Background.Height);
+			
+			// Only if a background image is set
+			if((General.Map.Grid.Background != null) &&
+			   !(General.Map.Grid.Background is NullImage))
+			{
+				// Make vertices
+				backimageverts = CreateScreenVerts(windowsize);
+
+				// Determine map coordinates for view window
+				ltpos = GetMapCoordinates(new Vector2D(0f, 0f));
+				rbpos = GetMapCoordinates(new Vector2D(windowsize.Width, windowsize.Height));
+				
+				// Offset by given background offset
+				ltpos -= backoffset;
+				rbpos -= backoffset;
+				
+				// Calculate UV coordinates
+				// NOTE: backimagesize.y is made negative to match Doom's coordinate system
+				backimageverts[0].u = ltpos.x / backimagesize.x;
+				backimageverts[0].v = ltpos.y / -backimagesize.y;
+				backimageverts[1].u = rbpos.x / backimagesize.x;
+				backimageverts[1].v = ltpos.y / -backimagesize.y;
+				backimageverts[2].u = ltpos.x / backimagesize.x;
+				backimageverts[2].v = rbpos.y / -backimagesize.y;
+				backimageverts[3].u = rbpos.x / backimagesize.x;
+				backimageverts[3].v = rbpos.y / -backimagesize.y;
+			}
+			else
+			{
+				// No background image
+				backimageverts = null;
+			}
+		}
+
+		// This renders all grid
+		private void RenderBackgroundGrid()
+		{
+			Plotter gridplotter;
+			LockedRect lockedrect;
+			
+			// Do we need to redraw grid?
+			if((lastgridscale != scale) || (lastgridx != offsetx) || (lastgridy != offsety))
+			{
+				// Lock background rendertarget memory
+				lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
+
+				// Create a plotter
+				gridplotter = new Plotter((PixelColor*)lockedrect.Data.DataPointer.ToPointer(), lockedrect.Pitch / sizeof(PixelColor), backsize.Height, backsize.Width, backsize.Height);
+				gridplotter.Clear();
+
+				// Render normal grid
+				RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid, gridplotter);
+
+				// Render 64 grid
+				if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
+
+				// Done
+				backtex.UnlockRectangle(0);
+				lockedrect.Data.Dispose();
+				lastgridscale = scale;
+				lastgridx = offsetx;
+				lastgridy = offsety;
+			}
+		}
+		
+		// This renders the grid
+		private void RenderGrid(float size, PixelColor c, Plotter gridplotter)
+		{
+			Vector2D ltpos, rbpos;
+			Vector2D pos = new Vector2D();
+			float sizeinv = 1f / size;
+			
+			// Only render grid when not screen-filling
+			if((size * scale) > 6f)
+			{
+				// Determine map coordinates for view window
+				ltpos = GetMapCoordinates(new Vector2D(0, 0));
+				rbpos = GetMapCoordinates(new Vector2D(windowsize.Width, windowsize.Height));
+
+				// Clip to nearest grid
+				ltpos = GridSetup.SnappedToGrid(ltpos, size, sizeinv);
+				rbpos = GridSetup.SnappedToGrid(rbpos, size, sizeinv);
+				
+				// Draw all horizontal grid lines
+				for(float y = ltpos.y + size; y > rbpos.y - size; y -= size)
+				{
+					pos.y = y;
+					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
+					gridplotter.DrawGridLineH((int)pos.y, c);
+				}
+				
+				// Draw all vertical grid lines
+				for(float x = ltpos.x - size; x < rbpos.x + size; x += size)
+				{
+					pos.x = x;
+					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
+					gridplotter.DrawGridLineV((int)pos.x, c);
+				}
+			}
 		}
 
 		#endregion
@@ -631,274 +962,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Things2D.End();
 			}
 		}
-		
-		#endregion
 
-		#region ================== Colors
-
-		// This returns the color for a thing
-		public PixelColor DetermineThingColor(Thing t)
-		{
-			// Determine color
-			if(t.Selected) return General.Colors.Selection;
-			else return t.Color;
-		}
-
-		// This returns the color for a vertex
-		public int DetermineVertexColor(Vertex v)
-		{
-			// Determine color
-			if(v.Selected) return ColorCollection.SELECTION;
-			else return ColorCollection.VERTICES;
-		}
-
-		// This returns the color for a linedef
-		public PixelColor DetermineLinedefColor(Linedef l)
-		{
-			// Impassable lines
-			if((l.Flags & General.Map.Config.ImpassableFlags) != 0)
-			{
-				// Determine color
-				if(l.Selected) return General.Colors.Selection;
-				else if(l.Action != 0) return General.Colors.Actions;
-				else return General.Colors.Linedefs;
-			}
-			else
-			{
-				// Determine color
-				if(l.Selected) return General.Colors.Selection;
-				else if(l.Action != 0) return General.Colors.Actions.WithAlpha(DOUBLESIDED_LINE_ALPHA);
-				else if((l.Flags & General.Map.Config.SoundLinedefFlags) != 0) return General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
-				else return General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);
-			}
-		}
-
-		#endregion
-
-		#region ================== Settings
-		
-		// This sets the things in front or back
-		public void SetThingsRenderOrder(bool front)
-		{
-			// Set things render order
-			this.thingsfront = front;
-		}
-
-		#endregion
-
-		#region ================== Background
-
-		// This sets up background image vertices
-		private void SetupBackground()
-		{
-			Vector2D ltpos, rbpos;
-			Vector2D backoffset = new Vector2D((float)General.Map.Grid.BackgroundX, (float)General.Map.Grid.BackgroundY);
-			Vector2D backimagesize = new Vector2D((float)General.Map.Grid.Background.Width, (float)General.Map.Grid.Background.Height);
-			
-			// Only if a background image is set
-			if((General.Map.Grid.Background != null) &&
-			   !(General.Map.Grid.Background is NullImage))
-			{
-				// Make vertices
-				backimageverts = CreateScreenVerts(windowsize);
-
-				// Determine map coordinates for view window
-				ltpos = GetMapCoordinates(new Vector2D(0f, 0f));
-				rbpos = GetMapCoordinates(new Vector2D(windowsize.Width, windowsize.Height));
-				
-				// Offset by given background offset
-				ltpos -= backoffset;
-				rbpos -= backoffset;
-				
-				// Calculate UV coordinates
-				// NOTE: backimagesize.y is made negative to match Doom's coordinate system
-				backimageverts[0].u = ltpos.x / backimagesize.x;
-				backimageverts[0].v = ltpos.y / -backimagesize.y;
-				backimageverts[1].u = rbpos.x / backimagesize.x;
-				backimageverts[1].v = ltpos.y / -backimagesize.y;
-				backimageverts[2].u = ltpos.x / backimagesize.x;
-				backimageverts[2].v = rbpos.y / -backimagesize.y;
-				backimageverts[3].u = rbpos.x / backimagesize.x;
-				backimageverts[3].v = rbpos.y / -backimagesize.y;
-			}
-			else
-			{
-				// No background image
-				backimageverts = null;
-			}
-		}
-
-		// This renders all grid
-		private void RenderBackgroundGrid()
-		{
-			Plotter gridplotter;
-			LockedRect lockedrect;
-			
-			// Do we need to redraw grid?
-			if((lastgridscale != scale) || (lastgridx != offsetx) || (lastgridy != offsety))
-			{
-				// Lock background rendertarget memory
-				lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
-
-				// Create a plotter
-				gridplotter = new Plotter((PixelColor*)lockedrect.Data.DataPointer.ToPointer(), lockedrect.Pitch / sizeof(PixelColor), backsize.Height, backsize.Width, backsize.Height);
-				gridplotter.Clear();
-
-				// Render normal grid
-				RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid, gridplotter);
-
-				// Render 64 grid
-				if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
-
-				// Done
-				backtex.UnlockRectangle(0);
-				lockedrect.Data.Dispose();
-				lastgridscale = scale;
-				lastgridx = offsetx;
-				lastgridy = offsety;
-			}
-		}
-		
-		// This renders the grid
-		private void RenderGrid(float size, PixelColor c, Plotter gridplotter)
-		{
-			Vector2D ltpos, rbpos;
-			Vector2D pos = new Vector2D();
-			float sizeinv = 1f / size;
-			
-			// Only render grid when not screen-filling
-			if((size * scale) > 6f)
-			{
-				// Determine map coordinates for view window
-				ltpos = GetMapCoordinates(new Vector2D(0, 0));
-				rbpos = GetMapCoordinates(new Vector2D(windowsize.Width, windowsize.Height));
-
-				// Clip to nearest grid
-				ltpos = GridSetup.SnappedToGrid(ltpos, size, sizeinv);
-				rbpos = GridSetup.SnappedToGrid(rbpos, size, sizeinv);
-				
-				// Draw all horizontal grid lines
-				for(float y = ltpos.y + size; y > rbpos.y - size; y -= size)
-				{
-					pos.y = y;
-					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-					gridplotter.DrawGridLineH((int)pos.y, c);
-				}
-				
-				// Draw all vertical grid lines
-				for(float x = ltpos.x - size; x < rbpos.x + size; x += size)
-				{
-					pos.x = x;
-					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-					gridplotter.DrawGridLineV((int)pos.x, c);
-				}
-			}
-		}
-
-		#endregion
-
-		#region ================== Basic Tools
-
-
-		#endregion
-
-		#region ================== Rendering
-
-		// This begins a drawing session
-		public unsafe bool StartPlotter(bool clear)
-		{
-			// Rendertargets available?
-			if(plottertex != null)
-			{
-				// Lock structures rendertarget memory
-				plotlocked = plottertex.LockRectangle(0, LockFlags.NoSystemLock);
-
-				// Create structures plotter
-				plotter = new Plotter((PixelColor*)plotlocked.Data.DataPointer.ToPointer(), plotlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
-				if(clear) plotter.Clear();
-
-				// Redraw grid when structures image was cleared
-				if(clear) RenderBackgroundGrid();
-
-				// Always trash things batch buffer
-				if(thingsvertices != null) thingsvertices.Dispose();
-				thingsvertices = null;
-				numthings = 0;
-				maxthings = 0;
-
-				// Setup vertices for background image
-				SetupBackground();
-				
-				// Ready for rendering
-				return true;
-			}
-			else
-			{
-				// Can't render!
-				Finish();
-				return false;
-			}
-		}
-
-		// This begins a drawing session
-		public unsafe bool StartThings(bool clear)
-		{
-			// Rendertargets available?
-			if(thingstex != null)
-			{
-				// Always trash things batch buffer
-				if(thingsvertices != null) thingsvertices.Dispose();
-				thingsvertices = null;
-				numthings = 0;
-				maxthings = 0;
-				
-				// Setup vertices for background image
-				SetupBackground();
-				
-				// Set the rendertarget to the things texture
-				thingssurface = thingstex.GetSurfaceLevel(0);
-				if(graphics.StartRendering(clear, 0, thingssurface, null))
-				{
-					// Ready for rendering
-					return true;
-				}
-				else
-				{
-					// Can't render!
-					Finish();
-					return false;
-				}
-			}
-			else
-			{
-				// Can't render!
-				Finish();
-				return false;
-			}
-		}
-
-		// This ends a drawing session
-		public void Finish()
-		{
-			// Stop rendering
-			graphics.FinishRendering();
-			
-			// Release rendertarget
-			try
-			{
-				graphics.Device.SetDepthStencilSurface(graphics.DepthBuffer);
-				graphics.Device.SetRenderTarget(0, graphics.BackBuffer);
-			}
-			catch(Exception) { }
-
-			// Clean up
-			if(plottertex != null) plottertex.UnlockRectangle(0);
-			if(plotlocked.Data != null) plotlocked.Data.Dispose();
-			if(thingssurface != null) thingssurface.Dispose();
-			thingssurface = null;
-			plotter = null;
-		}
-		
 		// This adds a thing in the things buffer for rendering
 		public void RenderThing(Thing t, PixelColor c)
 		{
@@ -919,7 +983,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					thingsvertices.Unlock();
 					stream.Dispose();
 				}
-				
+
 				// Thing added, render it
 				RenderThingsBatch(numthings, 1);
 				numthings++;
@@ -932,7 +996,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			FlatVertex[] verts = new FlatVertex[things.Count * 12];
 			DataStream stream;
 			int addcount = 0;
-			
+
 			// Make sure there is enough memory reserved
 			ReserveThingsMemory(numthings + things.Count, true);
 
@@ -946,7 +1010,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					addcount++;
 				}
 			}
-			
+
 			// Store vertices in buffer
 			if(thingsvertices != null)
 			{
@@ -955,44 +1019,170 @@ namespace CodeImp.DoomBuilder.Rendering
 				thingsvertices.Unlock();
 				stream.Dispose();
 			}
-			
+
 			// Things added, render them
 			RenderThingsBatch(numthings, addcount);
 			numthings += addcount;
 		}
 		
+		#endregion
+
+		#region ================== Overlay
+
+		// This renders a rectangle with given border size and color
+		public void RenderRectangle(RectangleF rect, float bordersize, PixelColor c)
+		{
+			FlatQuad[] quads = new FlatQuad[4];
+			
+			/*
+			 * Rectangle setup:
+			 * 
+			 *  --------------------------
+			 *  |___________0____________|
+			 *  |  |                  |  |
+			 *  |  |                  |  |
+			 *  |  |                  |  |
+			 *  | 2|                  |3 |
+			 *  |  |                  |  |
+			 *  |  |                  |  |
+			 *  |__|__________________|__|
+			 *  |           1            |
+			 *  --------------------------
+			 * 
+			 * Don't you just love ASCII art?
+			 */
+			
+			// Calculate positions
+			Vector2D lt = new Vector2D(rect.Left, rect.Top);
+			Vector2D rb = new Vector2D(rect.Right, rect.Bottom);
+			lt = lt.GetTransformed(translatex, translatey, scale, -scale);
+			rb = rb.GetTransformed(translatex, translatey, scale, -scale);
+			float bw = bordersize;
+			
+			// Make quads
+			quads[0] = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y, rb.x, lt.y + bw);
+			quads[1] = new FlatQuad(PrimitiveType.TriangleList, lt.x, rb.y - bw, rb.x, rb.y);
+			quads[2] = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y + bw, lt.x + bw, rb.y);
+			quads[3] = new FlatQuad(PrimitiveType.TriangleList, rb.x - bw, lt.y + bw, rb.x, rb.y - bw);
+			quads[0].SetColors(c.ToInt());
+			quads[1].SetColors(c.ToInt());
+			quads[2].SetColors(c.ToInt());
+			quads[3].SetColors(c.ToInt());	
+			
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			
+			// Draw
+			graphics.Shaders.Color2D.Begin();
+			graphics.Shaders.Color2D.BeginPass(0);
+			quads[0].Render(graphics);
+			quads[1].Render(graphics);
+			quads[2].Render(graphics);
+			quads[3].Render(graphics);
+			graphics.Shaders.Color2D.EndPass();
+			graphics.Shaders.Color2D.End();
+		}
+
+		// This renders a rectangle with given border size and color
+		public void RenderRectangle(RectangleF rect, float bordersize, PixelColor c, bool transformrect)
+		{
+			FlatQuad[] quads = new FlatQuad[4];
+			
+			/*
+			 * Rectangle setup:
+			 * 
+			 *  --------------------------
+			 *  |___________0____________|
+			 *  |  |                  |  |
+			 *  |  |                  |  |
+			 *  |  |                  |  |
+			 *  | 2|                  |3 |
+			 *  |  |                  |  |
+			 *  |  |                  |  |
+			 *  |__|__________________|__|
+			 *  |           1            |
+			 *  --------------------------
+			 * 
+			 * Don't you just love ASCII art?
+			 */
+			
+			// Calculate positions
+			Vector2D lt = new Vector2D(rect.Left, rect.Top);
+			Vector2D rb = new Vector2D(rect.Right, rect.Bottom);
+			if(transformrect)
+			{
+				lt = lt.GetTransformed(translatex, translatey, scale, -scale);
+				rb = rb.GetTransformed(translatex, translatey, scale, -scale);
+			}
+			
+			// Make quads
+			quads[0] = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y, rb.x, lt.y + bordersize);
+			quads[1] = new FlatQuad(PrimitiveType.TriangleList, lt.x, rb.y - bordersize, rb.x, rb.y);
+			quads[2] = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y + bordersize, lt.x + bordersize, rb.y);
+			quads[3] = new FlatQuad(PrimitiveType.TriangleList, rb.x - bordersize, lt.y + bordersize, rb.x, rb.y - bordersize);
+			quads[0].SetColors(c.ToInt());
+			quads[1].SetColors(c.ToInt());
+			quads[2].SetColors(c.ToInt());
+			quads[3].SetColors(c.ToInt());	
+			
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			
+			// Draw
+			graphics.Shaders.Color2D.Begin();
+			graphics.Shaders.Color2D.BeginPass(0);
+			quads[0].Render(graphics);
+			quads[1].Render(graphics);
+			quads[2].Render(graphics);
+			quads[3].Render(graphics);
+			graphics.Shaders.Color2D.EndPass();
+			graphics.Shaders.Color2D.End();
+		}
+
+		#endregion
+
+		#region ================== Geometry
+
 		// This renders the linedefs of a sector with special color
-		public void RenderSector(Sector s, PixelColor c)
+		public void PlotSector(Sector s, PixelColor c)
 		{
 			// Go for all sides in the sector
 			foreach(Sidedef sd in s.Sidedefs)
 			{
 				// Render this linedef
-				RenderLinedef(sd.Line, c);
+				PlotLinedef(sd.Line, c);
 
 				// Render the two vertices on top
-				RenderVertex(sd.Line.Start, DetermineVertexColor(sd.Line.Start));
-				RenderVertex(sd.Line.End, DetermineVertexColor(sd.Line.End));
+				PlotVertex(sd.Line.Start, DetermineVertexColor(sd.Line.Start));
+				PlotVertex(sd.Line.End, DetermineVertexColor(sd.Line.End));
 			}
 		}
 
 		// This renders the linedefs of a sector
-		public void RenderSector(Sector s)
+		public void PlotSector(Sector s)
 		{
 			// Go for all sides in the sector
 			foreach(Sidedef sd in s.Sidedefs)
 			{
 				// Render this linedef
-				RenderLinedef(sd.Line, DetermineLinedefColor(sd.Line));
+				PlotLinedef(sd.Line, DetermineLinedefColor(sd.Line));
 
 				// Render the two vertices on top
-				RenderVertex(sd.Line.Start, DetermineVertexColor(sd.Line.Start));
-				RenderVertex(sd.Line.End, DetermineVertexColor(sd.Line.End));
+				PlotVertex(sd.Line.Start, DetermineVertexColor(sd.Line.Start));
+				PlotVertex(sd.Line.End, DetermineVertexColor(sd.Line.End));
 			}
 		}	
 
 		// This renders a simple line
-		public void RenderLine(Vector2D start, Vector2D end, PixelColor c)
+		public void PlotLine(Vector2D start, Vector2D end, PixelColor c)
 		{
 			// Transform coordinates
 			Vector2D v1 = start.GetTransformed(translatex, translatey, scale, -scale);
@@ -1003,7 +1193,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This renders a single linedef
-		public void RenderLinedef(Linedef l, PixelColor c)
+		public void PlotLinedef(Linedef l, PixelColor c)
 		{
 			// Transform vertex coordinates
 			Vector2D v1 = l.Start.Position.GetTransformed(translatex, translatey, scale, -scale);
@@ -1023,14 +1213,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This renders a set of linedefs
-		public void RenderLinedefSet(ICollection<Linedef> linedefs)
+		public void PlotLinedefSet(ICollection<Linedef> linedefs)
 		{
 			// Go for all linedefs
-			foreach(Linedef l in linedefs) RenderLinedef(l, DetermineLinedefColor(l));
+			foreach(Linedef l in linedefs) PlotLinedef(l, DetermineLinedefColor(l));
 		}
 
 		// This renders a single vertex
-		public void RenderVertex(Vertex v, int colorindex)
+		public void PlotVertex(Vertex v, int colorindex)
 		{
 			// Transform vertex coordinates
 			Vector2D nv = v.Position.GetTransformed(translatex, translatey, scale, -scale);
@@ -1040,7 +1230,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This renders a single vertex at specified coordinates
-		public void RenderVertexAt(Vector2D v, int colorindex)
+		public void PlotVertexAt(Vector2D v, int colorindex)
 		{
 			// Transform vertex coordinates
 			Vector2D nv = v.GetTransformed(translatex, translatey, scale, -scale);
@@ -1050,10 +1240,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This renders a set of vertices
-		public void RenderVerticesSet(ICollection<Vertex> vertices)
+		public void PlotVerticesSet(ICollection<Vertex> vertices)
 		{
 			// Go for all vertices
-			foreach(Vertex v in vertices) RenderVertex(v, DetermineVertexColor(v));
+			foreach(Vertex v in vertices) PlotVertex(v, DetermineVertexColor(v));
 		}
 
 		#endregion

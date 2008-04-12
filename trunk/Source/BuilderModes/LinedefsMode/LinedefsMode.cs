@@ -129,10 +129,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Render lines
 			if(renderer.StartPlotter(true))
 			{
-				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
-				renderer.RenderVerticesSet(General.Map.Map.Vertices);
+					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				renderer.Finish();
 			}
 
@@ -156,9 +156,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
-					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+					renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 				}
 				
 				// Set new highlight
@@ -167,9 +167,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
-					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
+					renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 				}
 				
 				// Done
@@ -189,11 +189,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			base.MouseMove(e);
 
-			// Find the nearest linedef within highlight range
-			Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+			// Not holding any buttons?
+			if(e.Button == MouseButtons.None)
+			{
+				// Find the nearest linedef within highlight range
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
 
-			// Highlight if not the same
-			if(l != highlighted) Highlight(l);
+				// Highlight if not the same
+				if(l != highlighted) Highlight(l);
+			}
 		}
 
 		// Mouse leaves
@@ -223,9 +227,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					if(renderer.StartPlotter(false))
 					{
 						// Redraw highlight to show selection
-						renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
-						renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-						renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+						renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -250,9 +254,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					if(renderer.StartPlotter(false))
 					{
 						// Redraw highlight to show selection
-						renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
-						renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-						renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+						renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -274,9 +278,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(renderer.StartPlotter(false))
 				{
 					// Render highlighted item
-					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
-					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
+					renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 					renderer.Finish();
 					renderer.Present();
 				}

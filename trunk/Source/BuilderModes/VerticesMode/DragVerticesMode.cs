@@ -135,14 +135,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				*/
 				
 				// Render lines and vertices
-				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(unselectedverts);
-				renderer.RenderVerticesSet(selectedverts);
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotVerticesSet(unselectedverts);
+				renderer.PlotVerticesSet(selectedverts);
 
 				// Draw the dragged item highlighted
 				// This is important to know, because this item is used
 				// for snapping to the grid and snapping to nearest items
-				renderer.RenderVertex(dragitem, ColorCollection.HIGHLIGHT);
+				renderer.PlotVertex(dragitem, ColorCollection.HIGHLIGHT);
 				
 				// Done
 				renderer.Finish();

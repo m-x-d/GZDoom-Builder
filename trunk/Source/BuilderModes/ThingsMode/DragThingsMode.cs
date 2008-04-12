@@ -214,8 +214,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Render lines and vertices
 				if(renderer.StartPlotter(true))
 				{
-					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+					renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+					renderer.PlotVerticesSet(General.Map.Map.Vertices);
 					renderer.Finish();
 				}
 			}

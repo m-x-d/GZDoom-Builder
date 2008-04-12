@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
+using System.Drawing;
 
 #endregion
 
@@ -143,10 +144,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
 			{
-				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-				renderer.RenderVerticesSet(General.Map.Map.Vertices);
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderSector(highlighted, General.Colors.Highlight);
+					renderer.PlotSector(highlighted, General.Colors.Highlight);
 				renderer.Finish();
 			}
 
@@ -169,7 +170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderSector(highlighted);
+					renderer.PlotSector(highlighted);
 
 				/*
 				// Undraw highlighted things
@@ -183,7 +184,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderSector(highlighted, General.Colors.Highlight);
+					renderer.PlotSector(highlighted, General.Colors.Highlight);
 
 				/*
 				// Render highlighted things
@@ -209,37 +210,41 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			base.MouseMove(e);
 
-			// Find the nearest linedef within highlight range
-			Linedef l = General.Map.Map.NearestLinedef(mousemappos);
+			// Not holding any buttons?
+			if(e.Button == MouseButtons.None)
+			{
+				// Find the nearest linedef within highlight range
+				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
 
-			// Check on which side of the linedef the mouse is
-			float side = l.SideOfLine(mousemappos);
-			if(side > 0)
-			{
-				// Is there a sidedef here?
-				if(l.Back != null)
+				// Check on which side of the linedef the mouse is
+				float side = l.SideOfLine(mousemappos);
+				if(side > 0)
 				{
-					// Highlight if not the same
-					if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+					// Is there a sidedef here?
+					if(l.Back != null)
+					{
+						// Highlight if not the same
+						if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+					}
+					else
+					{
+						// Highlight nothing
+						if(highlighted != null) Highlight(null);
+					}
 				}
 				else
 				{
-					// Highlight nothing
-					if(highlighted != null) Highlight(null);
-				}
-			}
-			else
-			{
-				// Is there a sidedef here?
-				if(l.Front != null)
-				{
-					// Highlight if not the same
-					if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
-				}
-				else
-				{
-					// Highlight nothing
-					if(highlighted != null) Highlight(null);
+					// Is there a sidedef here?
+					if(l.Front != null)
+					{
+						// Highlight if not the same
+						if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
+					}
+					else
+					{
+						// Highlight nothing
+						if(highlighted != null) Highlight(null);
+					}
 				}
 			}
 		}
@@ -271,7 +276,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					if(renderer.StartPlotter(false))
 					{
 						// Redraw highlight to show selection
-						renderer.RenderSector(highlighted);
+						renderer.PlotSector(highlighted);
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -297,7 +302,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					if(renderer.StartPlotter(false))
 					{
 						// Redraw highlight to show selection
-						renderer.RenderSector(highlighted);
+						renderer.PlotSector(highlighted);
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -319,7 +324,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(renderer.StartPlotter(false))
 				{
 					// Render highlighted item
-					renderer.RenderSector(highlighted, General.Colors.Highlight);
+					renderer.PlotSector(highlighted, General.Colors.Highlight);
 					renderer.Finish();
 					renderer.Present();
 				}
