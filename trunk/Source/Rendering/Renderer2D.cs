@@ -39,6 +39,21 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
+
+	/* This renders a 2D presentation of the map
+	 * This is done in several layers:
+	 * 
+	 * 1) Background image
+	 * 
+	 * 2) Things
+	 * 
+	 * 3) Plotter (grid and geometric structures)
+	 * 
+	 * 4) Overlay
+	 * 
+	 * The order of layers 2 and 3 can be changed by
+	 * calling SetThingsRenderOrder.
+	 */
 	internal unsafe sealed class Renderer2D : Renderer, IRenderer2D
 	{
 		#region ================== Constants
@@ -58,11 +73,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Rendertargets
 		private Texture backtex;
-		private Texture structtex;
+		private Texture plottertex;
 		private Texture thingstex;
 
 		// Locking data
-		private LockedRect structlocked;
+		private LockedRect plotlocked;
 		private Surface thingssurface;
 
 		// Rendertarget sizes
@@ -208,8 +223,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-				graphics.Device.SetTexture(0, structtex);
-				graphics.Shaders.Display2D.Texture1 = structtex;
+				graphics.Device.SetTexture(0, plottertex);
+				graphics.Shaders.Display2D.Texture1 = plottertex;
 				graphics.Shaders.Display2D.SetSettings(1f / structsize.Width, 1f / structsize.Height, FSAA_BLEND_FACTOR, 1f);
 				
 				// Draw the lines and vertices texture
@@ -290,11 +305,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void DestroyRendertargets()
 		{
 			// Trash rendertargets
-			if(structtex != null) structtex.Dispose();
+			if(plottertex != null) plottertex.Dispose();
 			if(thingstex != null) thingstex.Dispose();
 			if(backtex != null) backtex.Dispose();
 			if(screenverts != null) screenverts.Dispose();
-			structtex = null;
+			plottertex = null;
 			thingstex = null;
 			backtex = null;
 			screenverts = null;
@@ -322,12 +337,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			windowsize.Height = graphics.RenderTarget.ClientSize.Height;
 
 			// Create rendertargets textures
-			structtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			plottertex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 			thingstex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 			backtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 			
 			// Get the real surface sizes
-			sd = structtex.GetLevelDescription(0);
+			sd = plottertex.GetLevelDescription(0);
 			structsize.Width = sd.Width;
 			structsize.Height = sd.Height;
 			sd = thingstex.GetLevelDescription(0);
@@ -782,24 +797,55 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 
+		#region ================== Basic Tools
+
+
+		#endregion
+
 		#region ================== Rendering
 
 		// This begins a drawing session
-		public unsafe bool Start(bool clearstructs, bool clearthings)
+		public unsafe bool StartPlotter(bool clear)
 		{
 			// Rendertargets available?
-			if((structtex != null) && (thingstex != null))
+			if(plottertex != null)
 			{
 				// Lock structures rendertarget memory
-				structlocked = structtex.LockRectangle(0, LockFlags.NoSystemLock);
+				plotlocked = plottertex.LockRectangle(0, LockFlags.NoSystemLock);
 
 				// Create structures plotter
-				plotter = new Plotter((PixelColor*)structlocked.Data.DataPointer.ToPointer(), structlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
-				if(clearstructs) plotter.Clear();
+				plotter = new Plotter((PixelColor*)plotlocked.Data.DataPointer.ToPointer(), plotlocked.Pitch / sizeof(PixelColor), structsize.Height, structsize.Width, structsize.Height);
+				if(clear) plotter.Clear();
 
 				// Redraw grid when structures image was cleared
-				if(clearstructs) RenderBackgroundGrid();
+				if(clear) RenderBackgroundGrid();
 
+				// Always trash things batch buffer
+				if(thingsvertices != null) thingsvertices.Dispose();
+				thingsvertices = null;
+				numthings = 0;
+				maxthings = 0;
+
+				// Setup vertices for background image
+				SetupBackground();
+				
+				// Ready for rendering
+				return true;
+			}
+			else
+			{
+				// Can't render!
+				Finish();
+				return false;
+			}
+		}
+
+		// This begins a drawing session
+		public unsafe bool StartThings(bool clear)
+		{
+			// Rendertargets available?
+			if(thingstex != null)
+			{
 				// Always trash things batch buffer
 				if(thingsvertices != null) thingsvertices.Dispose();
 				thingsvertices = null;
@@ -811,7 +857,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				
 				// Set the rendertarget to the things texture
 				thingssurface = thingstex.GetSurfaceLevel(0);
-				if(graphics.StartRendering(clearthings, 0, thingssurface, null))
+				if(graphics.StartRendering(clear, 0, thingssurface, null))
 				{
 					// Ready for rendering
 					return true;
@@ -846,14 +892,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			catch(Exception) { }
 
 			// Clean up
-			if(structtex != null) structtex.UnlockRectangle(0);
-			if(structlocked.Data != null) structlocked.Data.Dispose();
+			if(plottertex != null) plottertex.UnlockRectangle(0);
+			if(plotlocked.Data != null) plotlocked.Data.Dispose();
 			if(thingssurface != null) thingssurface.Dispose();
 			thingssurface = null;
 			plotter = null;
-			
-			// Present new image
-			Present();
 		}
 		
 		// This adds a thing in the things buffer for rendering

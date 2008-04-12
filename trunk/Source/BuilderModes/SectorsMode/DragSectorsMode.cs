@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			bool viewchanged = CheckViewChanged();
 			
 			// Start rendering
-			if(renderer.Start(true, viewchanged))
+			if(renderer.StartPlotter(true))
 			{
 				// Uncomment this to see triangulation
 				/*
@@ -142,13 +142,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 				}
 				*/
-
-				// Redraw things when view changed
-				if(viewchanged)
-				{
-					renderer.SetThingsRenderOrder(false);
-					renderer.RenderThingSet(General.Map.Map.Things);
-				}
 				
 				// Render lines and vertices
 				renderer.RenderLinedefSet(unselectedlines);
@@ -163,6 +156,19 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Done
 				renderer.Finish();
 			}
+
+			// Redraw things when view changed
+			if(viewchanged)
+			{
+				if(renderer.StartThings(true))
+				{
+					renderer.SetThingsRenderOrder(false);
+					renderer.RenderThingSet(General.Map.Map.Things);
+					renderer.Finish();
+				}
+			}
+
+			renderer.Present();
 		}
 		
 		#endregion

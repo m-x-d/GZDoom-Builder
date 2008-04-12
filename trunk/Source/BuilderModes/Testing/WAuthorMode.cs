@@ -130,23 +130,25 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This redraws the display
 		public unsafe override void RedrawDisplay()
 		{
-			// Start with a clear display
-			if(renderer.Start(true, true))
+			// Render lines and vertices
+			if(renderer.StartPlotter(true))
 			{
-				// Render things
-				renderer.SetThingsRenderOrder(true);
-				renderer.RenderThingSet(General.Map.Map.Things);
-
-				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
-
-				// Render highlighted item
-				if(highlighted != null) DrawHighlight(true);
-
-				// Done
+				if((highlighted != null) && !(highlighted is Thing)) DrawHighlight(true);
 				renderer.Finish();
 			}
+			
+			// Render things
+			if(renderer.StartThings(true))
+			{
+				renderer.SetThingsRenderOrder(true);
+				renderer.RenderThingSet(General.Map.Map.Things);
+				if((highlighted != null) && (highlighted is Thing)) DrawHighlight(true);
+				renderer.Finish();
+			}
+
+			renderer.Present();
 		}
 
 		// This draws the highlighted item
@@ -217,23 +219,44 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This highlights a new item
 		protected void Highlight(object h)
 		{
+			bool renderresult;
+			
 			// Changes?
 			if(highlighted != h)
 			{
-				// Update display
-				if(renderer.Start(false, false))
+				if(highlighted != null)
 				{
+					// Start update
+					if(highlighted is Thing)
+						renderresult = renderer.StartThings(false);
+					else
+						renderresult = renderer.StartPlotter(false);
+						
 					// Undraw previous highlight
-					if(highlighted != null) DrawHighlight(false);
+					if(renderresult)
+					{
+						DrawHighlight(false);
+						renderer.Finish();
+					}
+				}
+				
+				// Set new highlight
+				highlighted = h;
 
-					// Set new highlight
-					highlighted = h;
+				if(highlighted != null)
+				{
+					// Start update
+					if(highlighted is Thing)
+						renderresult = renderer.StartThings(false);
+					else
+						renderresult = renderer.StartPlotter(false);
 
-					// Render highlighted item
-					if(highlighted != null) DrawHighlight(true);
-
-					// Done
-					renderer.Finish();
+					// Undraw previous highlight
+					if(renderresult)
+					{
+						DrawHighlight(true);
+						renderer.Finish();
+					}
 				}
 
 				// Hide info
@@ -252,6 +275,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					else if(highlighted is Thing)
 						General.Interface.ShowThingInfo(highlighted as Thing);
 				}
+
+				renderer.Present();
 			}
 		}
 

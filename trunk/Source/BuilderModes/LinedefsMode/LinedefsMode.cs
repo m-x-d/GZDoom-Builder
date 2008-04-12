@@ -126,33 +126,32 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This redraws the display
 		public unsafe override void RedrawDisplay()
 		{
-			// Start with a clear display
-			if(renderer.Start(true, true))
+			// Render lines
+			if(renderer.StartPlotter(true))
 			{
-				// Render things
-				renderer.SetThingsRenderOrder(false);
-				renderer.RenderThingSet(General.Map.Map.Things);
-				
-				// Render lines
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
-
-				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
-
-				// Render vertices
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
-
-				// Done
 				renderer.Finish();
 			}
+
+			// Render things
+			if(renderer.StartThings(true))
+			{
+				renderer.SetThingsRenderOrder(false);
+				renderer.RenderThingSet(General.Map.Map.Things);
+				renderer.Finish();
+			}
+
+			renderer.Present();
 		}
 
 		// This highlights a new item
 		protected void Highlight(Linedef l)
 		{
 			// Update display
-			if(renderer.Start(false, false))
+			if(renderer.StartPlotter(false))
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
@@ -175,6 +174,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				
 				// Done
 				renderer.Finish();
+				renderer.Present();
 			}
 			
 			// Show highlight info
@@ -220,13 +220,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					highlighted.Selected = !highlighted.Selected;
 
 					// Update display
-					if(renderer.Start(false, false))
+					if(renderer.StartPlotter(false))
 					{
 						// Redraw highlight to show selection
 						renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
 						renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
 						renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 						renderer.Finish();
+						renderer.Present();
 					}
 				}
 			}
@@ -246,13 +247,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 
 					// Update display
-					if(renderer.Start(false, false))
+					if(renderer.StartPlotter(false))
 					{
 						// Redraw highlight to show selection
 						renderer.RenderLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
 						renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
 						renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 						renderer.Finish();
+						renderer.Present();
 					}
 				}
 			}
@@ -269,13 +271,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
 				// Update display
-				if(renderer.Start(false, false))
+				if(renderer.StartPlotter(false))
 				{
 					// Render highlighted item
 					renderer.RenderLinedef(highlighted, General.Colors.Highlight);
 					renderer.RenderVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
 					renderer.RenderVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 					renderer.Finish();
+					renderer.Present();
 				}
 
 				// Edit button?
