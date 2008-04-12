@@ -209,16 +209,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			bool viewchanged = CheckViewChanged();
 
-			// Start with a clear display
-			if(renderer.Start(viewchanged, true))
+			if(viewchanged)
 			{
-				if(viewchanged)
+				// Render lines and vertices
+				if(renderer.StartPlotter(true))
 				{
-					// Render lines and vertices
 					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 					renderer.RenderVerticesSet(General.Map.Map.Vertices);
+					renderer.Finish();
 				}
-				
+			}
+			
+			// Render things
+			if(renderer.StartThings(true))
+			{
 				// Render things
 				renderer.SetThingsRenderOrder(true);
 				renderer.RenderThingSet(unselectedthings);
@@ -232,6 +236,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Done
 				renderer.Finish();
 			}
+
+			renderer.Present();
 		}
 		
 		// Cancelled

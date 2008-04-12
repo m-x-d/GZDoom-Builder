@@ -126,31 +126,32 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This redraws the display
 		public unsafe override void RedrawDisplay()
 		{
-			// Start with a clear display
-			if(renderer.Start(true, true))
+			// Render lines and vertices
+			if(renderer.StartPlotter(true))
 			{
-				// Render things
-				renderer.SetThingsRenderOrder(false);
-				renderer.RenderThingSet(General.Map.Map.Things);
-				
-				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
-
-				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
-				
-				// Done
 				renderer.Finish();
 			}
+
+			// Render things
+			if(renderer.StartThings(true))
+			{
+				renderer.SetThingsRenderOrder(false);
+				renderer.RenderThingSet(General.Map.Map.Things);
+				renderer.Finish();
+			}
+
+			renderer.Present();
 		}
 		
 		// This highlights a new item
 		protected void Highlight(Vertex v)
 		{
 			// Update display
-			if(renderer.Start(false, false))
+			if(renderer.StartPlotter(false))
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
@@ -165,6 +166,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				
 				// Done
 				renderer.Finish();
+				renderer.Present();
 			}
 
 			// Show highlight info
@@ -212,13 +214,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				{
 					// Flip selection
 					highlighted.Selected = !highlighted.Selected;
-					
-					// Update display
-					if(renderer.Start(false, false))
+
+					// Redraw highlight to show selection
+					if(renderer.StartPlotter(false))
 					{
-						// Redraw highlight to show selection
 						renderer.RenderVertex(highlighted, renderer.DetermineVertexColor(highlighted));
 						renderer.Finish();
+						renderer.Present();
 					}
 				}
 			}
@@ -232,12 +234,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Update display
-				if(renderer.Start(false, false))
+				// Render highlighted item
+				if(renderer.StartPlotter(false))
 				{
-					// Render highlighted item
 					renderer.RenderVertex(highlighted, ColorCollection.HIGHLIGHT);
 					renderer.Finish();
+					renderer.Present();
 				}
 			}
 		}

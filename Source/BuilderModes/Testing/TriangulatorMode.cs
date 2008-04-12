@@ -128,30 +128,31 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This redraws the display
 		public unsafe override void RedrawDisplay()
 		{
-			// Start with a clear display
-			if(renderer.Start(true, true))
+			// Render lines and vertices
+			if(renderer.StartPlotter(true))
 			{
-				// Do not show things
-				renderer.SetThingsRenderOrder(false);
-
-				// Render lines and vertices
 				renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 				renderer.RenderVerticesSet(General.Map.Map.Vertices);
-
-				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.RenderSector(highlighted, General.Colors.Highlight);
-
-				// Done
 				renderer.Finish();
 			}
+
+			// Do not show things
+			if(renderer.StartThings(true))
+			{
+				renderer.SetThingsRenderOrder(false);
+				renderer.Finish();
+			}
+
+			renderer.Present();
 		}
 
 		// This highlights a new item
 		protected void Highlight(Sector s)
 		{
-			// Update display
-			if(renderer.Start(false, false))
+			// Redraw lines
+			if(renderer.StartPlotter(false))
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
@@ -166,6 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 				// Done
 				renderer.Finish();
+				renderer.Present();
 			}
 
 			// Show highlight info
@@ -248,11 +250,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 
 					// Update display
-					if(renderer.Start(false, false))
+					if(renderer.StartPlotter(false))
 					{
 						// Redraw highlight to show selection
 						renderer.RenderSector(highlighted);
 						renderer.Finish();
+						renderer.Present();
 					}
 				}
 			}
@@ -295,11 +298,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						triangles = t.PerformTriangulation(General.GetByIndex<Sector>(selected, 0));
 
 						// Start with a clear display
-						if(renderer.Start(true, true))
+						if(renderer.StartPlotter(true))
 						{
-							// Do not show things
-							renderer.SetThingsRenderOrder(false);
-
 							// Render lines and vertices
 							renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 							renderer.RenderVerticesSet(General.Map.Map.Vertices);
@@ -314,6 +314,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 							// Done
 							renderer.Finish();
+							renderer.Present();
 							Thread.Sleep(200);
 						}
 					}
@@ -329,11 +330,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						triangles.AddRange(t.PerformTriangulation(s));
 
 					// Start with a clear display
-					if(renderer.Start(true, true))
+					if(renderer.StartPlotter(true))
 					{
-						// Do not show things
-						renderer.SetThingsRenderOrder(false);
-
 						// Render lines and vertices
 						renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 						renderer.RenderVerticesSet(General.Map.Map.Vertices);
@@ -348,6 +346,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 						// Done
 						renderer.Finish();
+						renderer.Present();
 						Thread.Sleep(200);
 					}
 				}
@@ -363,11 +362,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				Thread.Sleep(20);
 
 				// Start with a clear display
-				if(renderer.Start(true, true))
+				if(renderer.StartPlotter(true))
 				{
-					// Do not show things
-					renderer.SetThingsRenderOrder(false);
-
 					// Render lines and vertices
 					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 					renderer.RenderVerticesSet(General.Map.Map.Vertices);
@@ -377,6 +373,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 					// Done
 					renderer.Finish();
+					renderer.Present();
 				}
 
 				// Wait a bit
@@ -394,11 +391,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				Application.DoEvents();
 				
 				// Start with a clear display
-				if(renderer.Start(true, true))
+				if(renderer.StartPlotter(true))
 				{
-					// Do not show things
-					renderer.SetThingsRenderOrder(false);
-
 					// Render lines and vertices
 					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 					renderer.RenderVerticesSet(General.Map.Map.Vertices);
@@ -408,6 +402,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 					// Done
 					renderer.Finish();
+					renderer.Present();
 				}
 
 				// Wait a bit
@@ -427,11 +422,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				Thread.Sleep(10);
 				
 				// Start with a clear display
-				if(renderer.Start(true, true))
+				if(renderer.StartPlotter(true))
 				{
-					// Do not show things
-					renderer.SetThingsRenderOrder(false);
-
 					// Render lines and vertices
 					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 					renderer.RenderVerticesSet(General.Map.Map.Vertices);
@@ -450,6 +442,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					
 					// Done
 					renderer.Finish();
+					renderer.Present();
 				}
 
 				// Wait a bit
@@ -465,11 +458,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			for(int a = 0; a < 5; a++)
 			{
 				// Start with a clear display
-				if(renderer.Start(true, true))
+				if(renderer.StartPlotter(true))
 				{
-					// Do not show things
-					renderer.SetThingsRenderOrder(false);
-
 					// Render lines and vertices
 					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 					renderer.RenderVerticesSet(General.Map.Map.Vertices);
@@ -500,15 +490,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					
 					// Done
 					renderer.Finish();
+					renderer.Present();
 				}
 				Thread.Sleep(10);
 
 				// Start with a clear display
-				if(renderer.Start(true, true))
+				if(renderer.StartPlotter(true))
 				{
-					// Do not show things
-					renderer.SetThingsRenderOrder(false);
-
 					// Render lines and vertices
 					renderer.RenderLinedefSet(General.Map.Map.Linedefs);
 					renderer.RenderVerticesSet(General.Map.Map.Vertices);
@@ -531,6 +519,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 					// Done
 					renderer.Finish();
+					renderer.Present();
 				}
 				Thread.Sleep(20);
 			}

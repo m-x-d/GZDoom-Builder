@@ -600,7 +600,10 @@ namespace CodeImp.DoomBuilder.Interface
 		// This redraws the display on the next paint event
 		public void RedrawDisplay()
 		{
-			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.RedrawDisplay();
+			if((General.Map != null) && (General.Map.Mode != null))
+			{
+				General.Map.Mode.RedrawDisplay();
+			}
 			//display.Invalidate();
 		}
 

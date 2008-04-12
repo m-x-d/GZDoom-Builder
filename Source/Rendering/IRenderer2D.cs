@@ -52,9 +52,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		int DetermineVertexColor(Vertex v);
 
 		// Rendering management methods
-		bool Start(bool clearstructs, bool clearthings);
+		bool StartPlotter(bool clear);
+		bool StartThings(bool clear);
 		void Finish();
 		void SetThingsRenderOrder(bool front);
+		void Present();
 
 		// Drawing methods
 		void RenderLine(Vector2D start, Vector2D end, PixelColor c);
