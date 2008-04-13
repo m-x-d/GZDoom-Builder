@@ -106,6 +106,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private RenderLayers renderlayer = RenderLayers.None;
 
 		// Images
+		private ResourceImage whitetexture;
 		private ResourceImage thingtexture;
 		private ResourceImage thingtexturesimple;
 		
@@ -145,6 +146,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingtexture.UseColorCorrection = false;
 			thingtexture.LoadImage();
 			thingtexture.CreateTexture();
+			whitetexture = new ResourceImage("White.png");
+			whitetexture.UseColorCorrection = false;
+			whitetexture.LoadImage();
+			whitetexture.CreateTexture();
 
 			// Create rendertargets
 			CreateRendertargets();
@@ -163,6 +168,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				DestroyRendertargets();
 				thingtexture.Dispose();
 				thingtexturesimple.Dispose();
+				whitetexture.Dispose();
 				
 				// Done
 				base.Dispose();
@@ -246,7 +252,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, (new ColorValue(1f, 1f, 1f, 1f)).ToArgb());
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetTexture(0, overlaytex);
 				graphics.Shaders.Display2D.Texture1 = overlaytex;
 				graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_BLEND_FACTOR, 1f);
@@ -260,6 +266,10 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Display2D.End();
 				graphics.FinishRendering();
 				graphics.Present();
+
+				// Release binds
+				graphics.Device.SetTexture(0, null);
+				graphics.Shaders.Display2D.Texture1 = null;
 			}
 		}
 
@@ -630,9 +640,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This ends a drawing session
 		public void Finish()
 		{
-			// Stop rendering
-			graphics.FinishRendering();
-			
 			// Clean up plotter
 			if(renderlayer == RenderLayers.Plotter)
 			{
@@ -644,6 +651,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Clean up things / overlay
 			if((renderlayer == RenderLayers.Things) || (renderlayer == RenderLayers.Overlay))
 			{
+				// Stop rendering
+				graphics.FinishRendering();
+				
 				// Release rendertarget
 				try
 				{
@@ -1028,64 +1038,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 
 		#region ================== Overlay
-
-		// This renders a rectangle with given border size and color
-		public void RenderRectangle(RectangleF rect, float bordersize, PixelColor c)
-		{
-			FlatQuad[] quads = new FlatQuad[4];
-			
-			/*
-			 * Rectangle setup:
-			 * 
-			 *  --------------------------
-			 *  |___________0____________|
-			 *  |  |                  |  |
-			 *  |  |                  |  |
-			 *  |  |                  |  |
-			 *  | 2|                  |3 |
-			 *  |  |                  |  |
-			 *  |  |                  |  |
-			 *  |__|__________________|__|
-			 *  |           1            |
-			 *  --------------------------
-			 * 
-			 * Don't you just love ASCII art?
-			 */
-			
-			// Calculate positions
-			Vector2D lt = new Vector2D(rect.Left, rect.Top);
-			Vector2D rb = new Vector2D(rect.Right, rect.Bottom);
-			lt = lt.GetTransformed(translatex, translatey, scale, -scale);
-			rb = rb.GetTransformed(translatex, translatey, scale, -scale);
-			float bw = bordersize;
-			
-			// Make quads
-			quads[0] = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y, rb.x, lt.y + bw);
-			quads[1] = new FlatQuad(PrimitiveType.TriangleList, lt.x, rb.y - bw, rb.x, rb.y);
-			quads[2] = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y + bw, lt.x + bw, rb.y);
-			quads[3] = new FlatQuad(PrimitiveType.TriangleList, rb.x - bw, lt.y + bw, rb.x, rb.y - bw);
-			quads[0].SetColors(c.ToInt());
-			quads[1].SetColors(c.ToInt());
-			quads[2].SetColors(c.ToInt());
-			quads[3].SetColors(c.ToInt());	
-			
-			// Set renderstates for rendering
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-			graphics.Device.SetRenderState(RenderState.ZEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-			
-			// Draw
-			graphics.Shaders.Color2D.Begin();
-			graphics.Shaders.Color2D.BeginPass(0);
-			quads[0].Render(graphics);
-			quads[1].Render(graphics);
-			quads[2].Render(graphics);
-			quads[3].Render(graphics);
-			graphics.Shaders.Color2D.EndPass();
-			graphics.Shaders.Color2D.End();
-		}
 
 		// This renders a rectangle with given border size and color
 		public void RenderRectangle(RectangleF rect, float bordersize, PixelColor c, bool transformrect)

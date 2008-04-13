@@ -506,6 +506,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Resources\White.png" />
     <EmbeddedResource Include="Resources\color2d.fx" />
     <None Include="Resources\Splash2_small.png" />
     <None Include="Resources\Splash2_trans.png" />
