@@ -241,7 +241,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
 
 				// Make undo for the dragging
-				General.Map.UndoRedo.CreateUndo("drag vertices", UndoGroup.None, 0);
+				General.Map.UndoRedo.CreateUndo("drag", UndoGroup.None, 0);
 
 				// Move selected geometry to final position
 				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
