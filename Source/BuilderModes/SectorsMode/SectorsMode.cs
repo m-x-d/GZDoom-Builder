@@ -159,6 +159,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				renderer.Finish();
 			}
 
+			// Selecting?
+			if(selecting)
+			{
+				// Render selection
+				if(renderer.StartOverlay(true))
+				{
+					RenderSelection();
+					renderer.Finish();
+				}
+			}
+			
 			renderer.Present();
 		}
 
@@ -203,6 +214,63 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				General.Interface.ShowSectorInfo(highlighted);
 			else
 				General.Interface.HideInfo();
+		}
+
+		// This is called wheh selection ends
+		protected override void EndSelection()
+		{
+			// Go for all lines
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
+							  (l.Start.Position.y >= selectionrect.Top) &&
+							  (l.Start.Position.x <= selectionrect.Right) &&
+							  (l.Start.Position.y <= selectionrect.Bottom) &&
+							  (l.End.Position.x >= selectionrect.Left) &&
+							  (l.End.Position.y >= selectionrect.Top) &&
+							  (l.End.Position.x <= selectionrect.Right) &&
+							  (l.End.Position.y <= selectionrect.Bottom));
+			}
+
+			// Go for all sectors
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Go for all sidedefs
+				bool allselected = true;
+				foreach(Sidedef sd in s.Sidedefs)
+				{
+					if(!sd.Line.Selected)
+					{
+						allselected = false;
+						break;
+					}
+				}
+
+				// Sector completely selected?
+				s.Selected = allselected;
+			}
+
+			// Make sure all linedefs reflect selected sectors
+			foreach(Sector s in General.Map.Map.Sectors)
+				SelectSector(s, s.Selected);
+			
+			base.EndSelection();
+			if(renderer.StartOverlay(true)) renderer.Finish();
+			General.Interface.RedrawDisplay();
+		}
+
+		// This is called when the selection is updated
+		protected override void UpdateSelection()
+		{
+			base.UpdateSelection();
+			
+			// Render selection
+			if(renderer.StartOverlay(true))
+			{
+				RenderSelection();
+				renderer.Finish();
+				renderer.Present();
+			}
 		}
 		
 		// Mouse moves
@@ -271,7 +339,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				{
 					// Flip selection
 					SelectSector(highlighted, !highlighted.Selected);
-					
+
 					// Update display
 					if(renderer.StartPlotter(false))
 					{
@@ -280,6 +348,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						renderer.Finish();
 						renderer.Present();
 					}
+				}
+				else
+				{
+					// Start making a selection
+					StartSelection();
 				}
 			}
 			// Edit button?
@@ -358,13 +431,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			base.DragStart(e);
 
-			// Which button is used?
-			if(e.Button == EditMode.SELECT_BUTTON)
-			{
-				// Make selection
-
-			}
-			else if(e.Button == EditMode.EDIT_BUTTON)
+			// Edit button used?
+			if(e.Button == EditMode.EDIT_BUTTON)
 			{
 				// Anything highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
