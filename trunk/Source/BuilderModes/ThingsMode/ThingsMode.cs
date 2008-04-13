@@ -128,6 +128,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				renderer.Finish();
 			}
 
+			// Selecting?
+			if(selecting)
+			{
+				// Render selection
+				if(renderer.StartOverlay(true))
+				{
+					RenderSelection();
+					renderer.Finish();
+				}
+			}
+			
 			renderer.Present();
 		}
 
@@ -158,6 +169,37 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				General.Interface.ShowThingInfo(highlighted);
 			else
 				General.Interface.HideInfo();
+		}
+
+		// This is called wheh selection ends
+		protected override void EndSelection()
+		{
+			// Go for all things
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				t.Selected = ((t.Position.x >= selectionrect.Left) &&
+							  (t.Position.y >= selectionrect.Top) &&
+							  (t.Position.x <= selectionrect.Right) &&
+							  (t.Position.y <= selectionrect.Bottom));
+			}
+
+			base.EndSelection();
+			if(renderer.StartOverlay(true)) renderer.Finish();
+			General.Interface.RedrawDisplay();
+		}
+
+		// This is called when the selection is updated
+		protected override void UpdateSelection()
+		{
+			base.UpdateSelection();
+
+			// Render selection
+			if(renderer.StartOverlay(true))
+			{
+				RenderSelection();
+				renderer.Finish();
+				renderer.Present();
+			}
 		}
 
 		// Mouse moves
@@ -207,6 +249,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						renderer.Finish();
 						renderer.Present();
 					}
+				}
+				else
+				{
+					// Start making a selection
+					StartSelection();
 				}
 			}
 			// Edit button?
@@ -280,13 +327,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			base.DragStart(e);
 
-			// Which button is used?
-			if(e.Button == EditMode.SELECT_BUTTON)
-			{
-				// Make selection
-
-			}
-			else if(e.Button == EditMode.EDIT_BUTTON)
+			// Edit button used?
+			if(e.Button == EditMode.EDIT_BUTTON)
 			{
 				// Anything highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)

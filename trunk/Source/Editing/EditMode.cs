@@ -155,11 +155,16 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void MouseLeave(EventArgs e) { }
 		public virtual void MouseMove(MouseEventArgs e) { }
 		public virtual void MouseUp(MouseEventArgs e) { }
-		public virtual void RedrawDisplay() { }
-		public virtual void RefreshDisplay() { }
 		public virtual void KeyDown(KeyEventArgs e) { }
 		public virtual void KeyUp(KeyEventArgs e) { }
 		public virtual void MouseInput(Vector2D delta) { }
+
+		/// <summary>
+		/// NOTE: Do not call directly! Only for overriding. Call General.Interface.RedrawDisplay() instead.
+		/// </summary>
+		public virtual void RedrawDisplay() { }
+		public virtual void RefreshDisplay() { }
+
 		public virtual void Process() { }
 		
 		#endregion

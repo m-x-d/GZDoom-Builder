@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		private const float SCALE_MAX = 20f;
 		private const float SCALE_MIN = 0.01f;
+		private const float SELECTION_BORDER_SIZE = 2f;
+		private const int SELECTION_ALPHA = 200;
 
 		#endregion
 
@@ -65,6 +67,11 @@ namespace CodeImp.DoomBuilder.Editing
 		protected MouseButtons mousebuttons;
 		protected bool mouseinside;
 		protected MouseButtons mousedragging = MouseButtons.None;
+		
+		// Selection
+		protected bool selecting;
+		private Vector2D selectstart;
+		protected RectangleF selectionrect;
 		
 		#endregion
 
@@ -329,6 +336,9 @@ namespace CodeImp.DoomBuilder.Editing
 				}
 			}
 			
+			// Selecting?
+			if(selecting) UpdateSelection();
+			
 			// Let the base class know
 			base.MouseMove(e);
 		}
@@ -355,6 +365,9 @@ namespace CodeImp.DoomBuilder.Editing
 				mousedragging = MouseButtons.None;
 			}
 
+			// Selection stops
+			if(selecting) EndSelection();
+			
 			// Let the base class know
 			base.MouseUp(e);
 		}
@@ -390,6 +403,49 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			cancelled = true;
 			base.Cancel();
+		}
+		
+		// This starts a selection
+		protected virtual void StartSelection()
+		{
+			selecting = true;
+			selectstart = mousemappos;
+			selectionrect = new RectangleF(selectstart.x, selectstart.y, 0, 0);
+		}
+		
+		// This updates a selection
+		protected virtual void UpdateSelection()
+		{
+			selectionrect.X = selectstart.x;
+			selectionrect.Y = selectstart.y;
+			selectionrect.Width = mousemappos.x - selectstart.x;
+			selectionrect.Height = mousemappos.y - selectstart.y;
+			
+			if(selectionrect.Width < 0f)
+			{
+				selectionrect.Width = -selectionrect.Width;
+				selectionrect.X -= selectionrect.Width;
+			}
+			
+			if(selectionrect.Height < 0f)
+			{
+				selectionrect.Height = -selectionrect.Height;
+				selectionrect.Y -= selectionrect.Height;
+			}
+		}
+
+		// This is called when a selection is released
+		protected virtual void EndSelection()
+		{
+			selecting = false;
+		}
+		
+		// This draws the selection on the overlay layer
+		// Must call renderer.StartOverlay first!
+		protected virtual void RenderSelection()
+		{
+			renderer.RenderRectangle(selectionrect, SELECTION_BORDER_SIZE,
+				General.Colors.Highlight.WithAlpha(SELECTION_ALPHA), true);
 		}
 		
 		#endregion
