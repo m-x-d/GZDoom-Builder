@@ -408,7 +408,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns a collection of vertices that match a selected state
 		public ICollection<Vertex> GetVerticesSelection(bool selected)
 		{
-			List<Vertex> list = new List<Vertex>();
+			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
 			foreach(Vertex v in vertices) if(v.Selected == selected) list.Add(v);
 			return list;
 		}
@@ -416,7 +416,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns a collection of vertices that match a selected state on the linedefs
 		public ICollection<Vertex> GetVerticesFromLinesSelection(bool selected)
 		{
-			List<Vertex> list = new List<Vertex>();
+			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
 			foreach(Vertex v in vertices)
 			{
 				foreach(Linedef l in v.Linedefs)
@@ -436,7 +436,7 @@ namespace CodeImp.DoomBuilder.Map
 		// ALL linedefs of a vertex must match the specified selected state.
 		public ICollection<Vertex> GetVerticesFromLinesSelectionEx(bool selected)
 		{
-			List<Vertex> list = new List<Vertex>();
+			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
 			foreach(Vertex v in vertices)
 			{
 				bool qualified = true;
@@ -456,7 +456,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns a collection of vertices that match a selected state on the linedefs
 		public ICollection<Vertex> GetVerticesFromSectorsSelection(bool selected)
 		{
-			List<Vertex> list = new List<Vertex>();
+			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
 			foreach(Vertex v in vertices)
 			{
 				foreach(Linedef l in v.Linedefs)
@@ -475,7 +475,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns a collection of things that match a selected state
 		public ICollection<Thing> GetThingsSelection(bool selected)
 		{
-			List<Thing> list = new List<Thing>();
+			List<Thing> list = new List<Thing>(things.Count >> 1);
 			foreach(Thing t in things) if(t.Selected == selected) list.Add(t);
 			return list;
 		}
@@ -483,7 +483,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns a collection of linedefs that match a selected state
 		public ICollection<Linedef> GetLinedefsSelection(bool selected)
 		{
-			List<Linedef> list = new List<Linedef>();
+			List<Linedef> list = new List<Linedef>(linedefs.Count >> 1);
 			foreach(Linedef l in linedefs) if(l.Selected == selected) list.Add(l);
 			return list;
 		}
@@ -491,7 +491,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns a collection of sectors that match a selected state
 		public ICollection<Sector> GetSectorsSelection(bool selected)
 		{
-			List<Sector> list = new List<Sector>();
+			List<Sector> list = new List<Sector>(sectors.Count >> 1);
 			foreach(Sector s in sectors) if(s.Selected == selected) list.Add(s);
 			return list;
 		}

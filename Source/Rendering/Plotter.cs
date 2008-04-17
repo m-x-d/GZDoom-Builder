@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This draws a pixel normally
-		public void DrawPixelSolid(int x, int y, PixelColor c)
+		public void DrawPixelSolid(int x, int y, ref PixelColor c)
 		{
 			// Draw pixel when within range
 			if((x >= 0) && (x < visiblewidth) && (y >= 0) && (y < visibleheight))
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This draws a pixel normally
-		public void DrawVertexSolid(int x, int y, int size, PixelColor c, PixelColor l, PixelColor d)
+		public void DrawVertexSolid(int x, int y, int size, ref PixelColor c, ref PixelColor l, ref PixelColor d)
 		{
 			int x1 = x - size;
 			int x2 = x + size;
@@ -158,7 +158,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This draws a dotted grid line horizontally
-		public void DrawGridLineH(int y, PixelColor c)
+		public void DrawGridLineH(int y, ref PixelColor c)
 		{
 			int numpixels = visiblewidth >> 1;
 			int offset = y & 0x01;
@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This draws a dotted grid line vertically
-		public void DrawGridLineV(int x, PixelColor c)
+		public void DrawGridLineV(int x, ref PixelColor c)
 		{
 			int numpixels = visibleheight >> 1;
 			int offset = x & 0x01;
@@ -185,7 +185,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This draws a pixel alpha blended
-		public void DrawPixelAlpha(int x, int y, PixelColor c)
+		public void DrawPixelAlpha(int x, int y, ref PixelColor c)
 		{
 			float a;
 
@@ -215,7 +215,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// This draws a line normally
 		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-		public void DrawLineSolid(int x1, int y1, int x2, int y2, PixelColor c)
+		public void DrawLineSolid(int x1, int y1, int x2, int y2, ref PixelColor c)
 		{
 			int i;
 
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			   (y1 >= 0) && (y2 >= 0) && (y1 < visibleheight) && (y2 < visibleheight))
 			{
 				// Do an unchecked draw
-				DrawLineSolidUnchecked(x1, y1, x2, y2, c);
+				DrawLineSolidUnchecked(x1, y1, x2, y2, ref c);
 				return;
 			}
 			
@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			int py = y1;
 
 			// Draw first pixel
-			DrawPixelSolid(px, py, c);
+			DrawPixelSolid(px, py, ref c);
 
 			// Check if the line is more horizontal than vertical
 			if(dxabs >= dyabs)
@@ -275,7 +275,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					px += sdx;
 
 					// Draw pixel
-					DrawPixelSolid(px, py, c);
+					DrawPixelSolid(px, py, ref c);
 				}
 			}
 			// Else the line is more vertical than horizontal
@@ -292,14 +292,14 @@ namespace CodeImp.DoomBuilder.Rendering
 					py += sdy;
 
 					// Draw pixel
-					DrawPixelSolid(px, py, c);
+					DrawPixelSolid(px, py, ref c);
 				}
 			}
 		}
 
 		// This draws a line normally
 		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-		private void DrawLineSolidUnchecked(int x1, int y1, int x2, int y2, PixelColor c)
+		private void DrawLineSolidUnchecked(int x1, int y1, int x2, int y2, ref PixelColor c)
 		{
 			int i;
 
