@@ -71,5 +71,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderThing(Thing t, PixelColor c);
 		void RenderThingSet(ICollection<Thing> things);
 		void RenderRectangle(RectangleF rect, float bordersize, PixelColor c, bool transformrect);
+		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect);
+		void RenderText(string text, Vector2D pos, PixelColor c, bool transformpos);
+		void RenderTextCentered(string text, Vector2D pos, PixelColor c, bool transformpos);
 	}
 }

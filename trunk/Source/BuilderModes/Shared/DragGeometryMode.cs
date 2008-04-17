@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private ICollection<Vertex> unselectedverts;
 
 		// List of unstable lines
-		private ICollection<Linedef> unstablelines;
+		protected ICollection<Linedef> unstablelines;
 		
 		// Keep track of view changes
 		private float lastoffsetx;

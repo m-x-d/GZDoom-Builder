@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 				}
 				*/
-				
+
 				// Render lines and vertices
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(unselectedverts);
@@ -158,6 +158,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.Finish();
 				}
 			}
+
+			if(renderer.StartOverlay(true))
+			{
+				foreach(Linedef l in unstablelines)
+				{
+					Vector2D delta = new Vector2D(l.End.X - l.Start.X, l.End.Y - l.Start.Y);
+					Vector2D textpos = l.Start.Position + (delta * 0.5f);
+					int length = (int)Math.Round(l.Length);
+					renderer.RenderTextCentered(length.ToString(), textpos, General.Colors.Highlight, true);
+				}
+
+				renderer.Finish();
+			}
+
 
 			renderer.Present();
 		}

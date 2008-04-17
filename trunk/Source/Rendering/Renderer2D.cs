@@ -60,7 +60,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constants
 
 		private const byte DOUBLESIDED_LINE_ALPHA = 130;
-		private const float FSAA_BLEND_FACTOR = 0.6f;
+		private const float FSAA_PLOTTER_BLEND_FACTOR = 0.6f;
+		private const float FSAA_OVERLAY_BLEND_FACTOR = 0.2f;
 		private const float THING_ARROW_SIZE = 1.5f;
 		private const float THING_ARROW_SHRINK = 2f;
 		private const float THING_CIRCLE_SIZE = 1f;
@@ -68,6 +69,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const int THING_BUFFER_STEP = 100;
 		private const float THINGS_BACK_ALPHA = 0.3f;
 
+		private const string FONT_NAME = "Verdana";
+		private const int FONT_WIDTH = 0;
+		private const int FONT_HEIGHT = 0;
+		
 		#endregion
 
 		#region ================== Variables
@@ -89,6 +94,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Size overlaysize;
 		private Size backsize;
 		
+		// Font
+		private SlimDX.Direct3D9.Font font;
+
 		// Geometry plotter
 		private Plotter plotter;
 
@@ -199,7 +207,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 					graphics.Device.SetTexture(0, General.Map.Grid.Background.Texture);
 					graphics.Shaders.Display2D.Texture1 = General.Map.Grid.Background.Texture;
-					graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_BLEND_FACTOR, 1f);
+					graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_PLOTTER_BLEND_FACTOR, 1f);
 
 					// Draw the background image
 					graphics.Shaders.Display2D.BeginPass(1);
@@ -235,7 +243,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetTexture(0, plottertex);
 				graphics.Shaders.Display2D.Texture1 = plottertex;
-				graphics.Shaders.Display2D.SetSettings(1f / structsize.Width, 1f / structsize.Height, FSAA_BLEND_FACTOR, 1f);
+				graphics.Shaders.Display2D.SetSettings(1f / structsize.Width, 1f / structsize.Height, FSAA_PLOTTER_BLEND_FACTOR, 1f);
 				
 				// Draw the lines and vertices texture
 				graphics.Shaders.Display2D.BeginPass(0);
@@ -255,7 +263,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetTexture(0, overlaytex);
 				graphics.Shaders.Display2D.Texture1 = overlaytex;
-				graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_BLEND_FACTOR, 1f);
+				graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_OVERLAY_BLEND_FACTOR, 1f);
 
 				// Draw the overlay texture
 				graphics.Shaders.Display2D.BeginPass(0);
@@ -287,7 +295,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.TextureFactor, (new ColorValue(alpha, 1f, 1f, 1f)).ToArgb());
 			graphics.Device.SetTexture(0, thingstex);
 			graphics.Shaders.Display2D.Texture1 = thingstex;
-			graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_BLEND_FACTOR, alpha);
+			graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_PLOTTER_BLEND_FACTOR, alpha);
 
 			// Draw the things texture
 			graphics.Shaders.Display2D.BeginPass(0);
@@ -351,6 +359,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			numthings = 0;
 			maxthings = 0;
 			lastgridscale = -1f;
+
+			// Trash font
+			if(font != null) font.Dispose();
+			font = null;
 		}
 		
 		// Allocates new image memory to render on
@@ -391,6 +403,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			StartPlotter(true); Finish();
 			StartThings(true); Finish();
 			StartOverlay(true); Finish();
+			
+			// Create font
+			font = new SlimDX.Direct3D9.Font(graphics.Device, FONT_WIDTH, FONT_HEIGHT, FontWeight.Bold, 1, false, CharacterSet.Ansi, Precision.Default, FontQuality.AntiAliased, PitchAndFamily.Default, FONT_NAME);
 			
 			// Create vertex buffers
 			screenverts = new VertexBuffer(graphics.Device, 4 * sizeof(FlatVertex), Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
@@ -767,7 +782,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					pos.y = y;
 					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-					gridplotter.DrawGridLineH((int)pos.y, c);
+					gridplotter.DrawGridLineH((int)pos.y, ref c);
 				}
 				
 				// Draw all vertical grid lines
@@ -775,7 +790,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					pos.x = x;
 					pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-					gridplotter.DrawGridLineV((int)pos.x, c);
+					gridplotter.DrawGridLineV((int)pos.x, ref c);
 				}
 			}
 		}
@@ -1039,6 +1054,42 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Overlay
 
+		// This renders text
+		public void RenderText(string text, Vector2D pos, PixelColor c, bool transformpos)
+		{
+			// Calculate coordinates
+			if(transformpos) pos = pos.GetTransformed(translatex, translatey, scale, -scale);
+			Rectangle posr = new Rectangle((int)pos.x, (int)pos.y, 0, 0);
+			
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			
+			// Draw
+			if(font != null) font.DrawString(null, text, posr, DrawTextFormat.VCenter | DrawTextFormat.Left | DrawTextFormat.NoClip, c.ToInt());
+		}
+
+		// This renders text
+		public void RenderTextCentered(string text, Vector2D pos, PixelColor c, bool transformpos)
+		{
+			// Calculate coordinates
+			if(transformpos) pos = pos.GetTransformed(translatex, translatey, scale, -scale);
+			Rectangle posr = new Rectangle((int)pos.x, (int)pos.y, 0, 0);
+
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+
+			// Draw
+			if(font != null) font.DrawString(null, text, posr, DrawTextFormat.VCenter | DrawTextFormat.Center | DrawTextFormat.NoClip, c.ToInt());
+		}
+		
 		// This renders a rectangle with given border size and color
 		public void RenderRectangle(RectangleF rect, float bordersize, PixelColor c, bool transformrect)
 		{
@@ -1099,6 +1150,37 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Color2D.End();
 		}
 
+		// This renders a filled rectangle with given color
+		public void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect)
+		{
+			// Calculate positions
+			Vector2D lt = new Vector2D(rect.Left, rect.Top);
+			Vector2D rb = new Vector2D(rect.Right, rect.Bottom);
+			if(transformrect)
+			{
+				lt = lt.GetTransformed(translatex, translatey, scale, -scale);
+				rb = rb.GetTransformed(translatex, translatey, scale, -scale);
+			}
+
+			// Make quad
+			FlatQuad quad = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y, rb.x, rb.y);
+			quad.SetColors(c.ToInt());
+			
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+
+			// Draw
+			graphics.Shaders.Color2D.Begin();
+			graphics.Shaders.Color2D.BeginPass(0);
+			quad.Render(graphics);
+			graphics.Shaders.Color2D.EndPass();
+			graphics.Shaders.Color2D.End();
+		}
+
 		#endregion
 
 		#region ================== Geometry
@@ -1141,7 +1223,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D v2 = end.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw line
-			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);
 		}
 		
 		// This renders a single linedef
@@ -1152,7 +1234,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw line
-			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, c);
+			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);
 
 			// Calculate normal indicator
 			float mx = (v2.x - v1.x) * 0.5f;
@@ -1161,7 +1243,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Draw normal indicator
 			plotter.DrawLineSolid((int)(v1.x + mx), (int)(v1.y + my),
 								  (int)((v1.x + mx) - (my * l.LengthInv) * linenormalsize),
-								  (int)((v1.y + my) + (mx * l.LengthInv) * linenormalsize), c);
+								  (int)((v1.y + my) + (mx * l.LengthInv) * linenormalsize), ref c);
 		}
 		
 		// This renders a set of linedefs
@@ -1178,7 +1260,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D nv = v.Position.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw pixel here
-			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, vertexsize, General.Colors.Colors[colorindex], General.Colors.BrightColors[colorindex], General.Colors.DarkColors[colorindex]);
+			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, vertexsize, ref General.Colors.Colors[colorindex], ref General.Colors.BrightColors[colorindex], ref General.Colors.DarkColors[colorindex]);
 		}
 
 		// This renders a single vertex at specified coordinates
@@ -1188,7 +1270,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D nv = v.GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw pixel here
-			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, vertexsize, General.Colors.Colors[colorindex], General.Colors.BrightColors[colorindex], General.Colors.DarkColors[colorindex]);
+			plotter.DrawVertexSolid((int)nv.x, (int)nv.y, vertexsize, ref General.Colors.Colors[colorindex], ref General.Colors.BrightColors[colorindex], ref General.Colors.DarkColors[colorindex]);
 		}
 		
 		// This renders a set of vertices
