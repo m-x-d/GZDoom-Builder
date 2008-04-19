@@ -98,9 +98,12 @@ namespace CodeImp.DoomBuilder.Map
 			this.mainlistitem = listitem;
 			this.linedef = l;
 			this.sector = s;
-			SetTextureHigh("-");
-			SetTextureMid("-");
-			SetTextureLow("-");
+			this.texnamehigh = "-";
+			this.texnamemid = "-";
+			this.texnamelow = "-";
+			this.longtexnamehigh = map.EmptyLongName;
+			this.longtexnamemid = map.EmptyLongName;
+			this.longtexnamelow = map.EmptyLongName;
 			
 			// Attach to the linedef
 			if(front) l.AttachFront(this); else l.AttachBack(this);

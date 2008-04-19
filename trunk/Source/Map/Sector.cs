@@ -114,8 +114,10 @@ namespace CodeImp.DoomBuilder.Map
 			this.sidedefs = new LinkedList<Sidedef>();
 			this.things = new LinkedList<Thing>();
 			this.index = index;
-			SetCeilTexture("-");
-			SetFloorTexture("-");
+			this.floortexname = "-";
+			this.ceiltexname = "-";
+			this.longfloortexname = map.EmptyLongName;
+			this.longceiltexname = map.EmptyLongName;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

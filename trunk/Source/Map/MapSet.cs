@@ -27,6 +27,7 @@ using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -53,7 +54,10 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Sidedef> sidedefs;
 		private LinkedList<Sector> sectors;
 		private LinkedList<Thing> things;
-		
+
+		// Optimization
+		private long emptylongname;
+
 		// Disposing
 		private bool isdisposed = false;
 
@@ -67,6 +71,7 @@ namespace CodeImp.DoomBuilder.Map
 		public ICollection<Sector> Sectors { get { return sectors; } }
 		public ICollection<Thing> Things { get { return things; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public long EmptyLongName { get { return emptylongname; } }
 		
 		#endregion
 
@@ -83,6 +88,7 @@ namespace CodeImp.DoomBuilder.Map
 			things = new LinkedList<Thing>();
 			indexholes = new List<int>();
 			lastsectorindex = 0;
+			emptylongname = Lump.MakeLongName("-");
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
