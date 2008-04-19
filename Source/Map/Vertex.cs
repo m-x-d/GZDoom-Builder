@@ -181,8 +181,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns the distance from given coordinates
 		public float DistanceToSq(Vector2D p)
 		{
-			Vector2D delta = p - pos;
-			return delta.GetLengthSq();
+			return (p.x - pos.x) * (p.x - pos.x) + (p.y - pos.y) * (p.y - pos.y);
 		}
 		
 		// This returns the distance from given coordinates

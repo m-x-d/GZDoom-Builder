@@ -292,8 +292,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest))
 			{
 				// Update cached values
-				//General.Map.Map.Update(true, false);
-				General.Map.Map.Update();
+				General.Map.Map.Update(true, false);
 
 				// Redraw
 				General.Interface.RedrawDisplay();
