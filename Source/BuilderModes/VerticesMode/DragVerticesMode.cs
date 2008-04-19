@@ -121,19 +121,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Start rendering
 			if(renderer.StartPlotter(true))
 			{
-				// Uncomment this to see triangulation
-				/*
-				foreach(Sector s in General.Map.Map.Sectors)
-				{
-					for(int i = 0; i < s.Triangles.Count; i += 3)
-					{
-						renderer.RenderLine(s.Triangles[i + 0], s.Triangles[i + 1], General.Colors.Selection);
-						renderer.RenderLine(s.Triangles[i + 1], s.Triangles[i + 2], General.Colors.Selection);
-						renderer.RenderLine(s.Triangles[i + 2], s.Triangles[i + 0], General.Colors.Selection);
-					}
-				}
-				*/
-
 				// Render lines and vertices
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(unselectedverts);
