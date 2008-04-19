@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			Dictionary<Sidedef, bool> todosides = new Dictionary<Sidedef, bool>(s.Sidedefs.Count);
 			Dictionary<Vertex, Vertex> ignores = new Dictionary<Vertex,Vertex>();
 			List<Polygon> root = new List<Polygon>();
-			TracePath path;
+			SidedefsTracePath path;
 			Polygon newpoly;
 			Vertex start;
 			
@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(start == null) break;
 				
 				// Trace to find a polygon
-				path = DoTracePath(new TracePath(), start, null, s, todosides);
+				path = DoTracePath(new SidedefsTracePath(), start, null, s, todosides);
 
 				// If tracing is not possible (sector not closed?)
 				// then add the start to the ignore list and try again later
@@ -204,10 +204,10 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This recursively traces a path
 		// Returns the resulting TracePath when the search is complete
 		// or returns null when no path found.
-		private TracePath DoTracePath(TracePath history, Vertex fromhere, Vertex findme, Sector sector, Dictionary<Sidedef, bool> sides)
+		private SidedefsTracePath DoTracePath(SidedefsTracePath history, Vertex fromhere, Vertex findme, Sector sector, Dictionary<Sidedef, bool> sides)
 		{
-			TracePath nextpath;
-			TracePath result;
+			SidedefsTracePath nextpath;
+			SidedefsTracePath result;
 			Vertex nextvertex;
 			List<Sidedef> allsides;
 			SidedefAngleSorter sorter;
@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				// Mark sidedef as visited and move to next vertex
 				sides[s] = true;
-				nextpath = new TracePath(history, s);
+				nextpath = new SidedefsTracePath(history, s);
 				if(s.Line.Start == fromhere) nextvertex = s.Line.End; else nextvertex = s.Line.Start;
 				
 				// TEST
