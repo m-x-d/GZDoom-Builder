@@ -106,7 +106,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// Disenagaging
 		public override void Disengage()
 		{
+			// Select vertices from lines selection
+			General.Map.Map.ClearSelectedVertices();
+			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesSelection(true);
+			foreach(Vertex v in verts) v.Selected = true;
+
+			// Perform normal disengage
 			base.Disengage();
+
+			// Clear vertex selection
+			General.Map.Map.ClearSelectedVertices();
 			
 			// When not cancelled
 			if(!cancelled)
@@ -124,19 +133,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Start rendering structure
 			if(renderer.StartPlotter(true))
 			{
-				// Uncomment this to see triangulation
-				/*
-				foreach(Sector s in General.Map.Map.Sectors)
-				{
-					for(int i = 0; i < s.Triangles.Count; i += 3)
-					{
-						renderer.RenderLine(s.Triangles[i + 0], s.Triangles[i + 1], General.Colors.Selection);
-						renderer.RenderLine(s.Triangles[i + 1], s.Triangles[i + 2], General.Colors.Selection);
-						renderer.RenderLine(s.Triangles[i + 2], s.Triangles[i + 0], General.Colors.Selection);
-					}
-				}
-				*/
-
 				// Render lines and vertices
 				renderer.PlotLinedefSet(unselectedlines);
 				renderer.PlotLinedefSet(selectedlines);
