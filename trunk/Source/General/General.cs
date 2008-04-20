@@ -585,6 +585,7 @@ namespace CodeImp.DoomBuilder
 					}
 
 					// All done
+					mainwindow.RedrawDisplay();
 					mainwindow.UpdateInterface();
 					mainwindow.DisplayReady();
 					Cursor.Current = Cursors.Default;
@@ -613,6 +614,7 @@ namespace CodeImp.DoomBuilder
 
 				// Done
 				Cursor.Current = Cursors.Default;
+				mainwindow.RedrawDisplay();
 				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				General.WriteLogLine("Map unload done");
@@ -683,6 +685,7 @@ namespace CodeImp.DoomBuilder
 					}
 
 					// All done
+					mainwindow.RedrawDisplay();
 					mainwindow.UpdateInterface();
 					mainwindow.DisplayReady();
 					Cursor.Current = Cursors.Default;
