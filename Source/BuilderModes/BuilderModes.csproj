@@ -33,21 +33,21 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LinedefsMode\DragLinedefsMode.cs" />
-    <Compile Include="SectorsMode\DragSectorsMode.cs" />
-    <Compile Include="Shared\DragGeometryMode.cs" />
-    <Compile Include="Shared\DrawGeometryMode.cs" />
+    <Compile Include="ClassicModes\DragLinedefsMode.cs" />
+    <Compile Include="ClassicModes\DragSectorsMode.cs" />
+    <Compile Include="ClassicModes\DragGeometryMode.cs" />
+    <Compile Include="ClassicModes\DrawGeometryMode.cs" />
     <Compile Include="Testing\TriangulatorMode.cs" />
-    <Compile Include="ThingsMode\DragThingsMode.cs" />
-    <Compile Include="VisualMode\BaseVisualMode.cs" />
-    <Compile Include="VisualMode\BaseVisualSector.cs" />
-    <Compile Include="VerticesMode\DragVerticesMode.cs" />
-    <Compile Include="LinedefsMode\LinedefsMode.cs" />
-    <Compile Include="VisualMode\Clipper.cs" />
-    <Compile Include="VisualMode\VisualCeiling.cs" />
-    <Compile Include="VisualMode\VisualFloor.cs" />
-    <Compile Include="VisualMode\VisualLower.cs" />
-    <Compile Include="VisualMode\VisualMiddle.cs" />
+    <Compile Include="ClassicModes\DragThingsMode.cs" />
+    <Compile Include="VisualModes\BaseVisualMode.cs" />
+    <Compile Include="VisualModes\BaseVisualSector.cs" />
+    <Compile Include="ClassicModes\DragVerticesMode.cs" />
+    <Compile Include="ClassicModes\LinedefsMode.cs" />
+    <Compile Include="VisualModes\Clipper.cs" />
+    <Compile Include="VisualModes\VisualCeiling.cs" />
+    <Compile Include="VisualModes\VisualFloor.cs" />
+    <Compile Include="VisualModes\VisualLower.cs" />
+    <Compile Include="VisualModes\VisualMiddle.cs" />
     <Compile Include="Testing\WAuthorMode.cs" />
     <Compile Include="Testing\WAuthorTools.cs">
       <SubType>Form</SubType>
@@ -56,10 +56,10 @@
       <DependentUpon>WAuthorTools.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SectorsMode\SectorsMode.cs" />
-    <Compile Include="ThingsMode\ThingsMode.cs" />
-    <Compile Include="VerticesMode\VerticesMode.cs" />
-    <Compile Include="VisualMode\VisualUpper.cs" />
+    <Compile Include="ClassicModes\SectorsMode.cs" />
+    <Compile Include="ClassicModes\ThingsMode.cs" />
+    <Compile Include="ClassicModes\VerticesMode.cs" />
+    <Compile Include="VisualModes\VisualUpper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Builder.csproj">
