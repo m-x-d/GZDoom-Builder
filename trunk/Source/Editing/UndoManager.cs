@@ -162,7 +162,7 @@ namespace CodeImp.DoomBuilder.Editing
 				LimitUndoRedoLevel(undos);
 				
 				// Clear all redos
-				redos.Clear();
+				ClearRedos();
 
 				// Keep grouping info
 				lastgroup = group;
