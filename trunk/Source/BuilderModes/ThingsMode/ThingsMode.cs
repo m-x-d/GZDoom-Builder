@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This redraws the display
-		public unsafe override void RedrawDisplay()
+		public override void RedrawDisplay()
 		{
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
