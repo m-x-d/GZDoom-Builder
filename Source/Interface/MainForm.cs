@@ -604,13 +604,26 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				General.Map.Mode.RedrawDisplay();
 			}
-			//display.Invalidate();
+			else
+			{
+				display.Invalidate();
+			}
 		}
 
 		// This event is called when a repaint is needed
 		private void display_Paint(object sender, PaintEventArgs e)
 		{
-			if((General.Map != null) && (General.Map.Mode != null) && !displayresized) General.Map.Mode.RefreshDisplay();
+			if(General.Map != null)
+			{
+				if(General.Map.Mode != null)
+				{
+					if(!displayresized) General.Map.Mode.RefreshDisplay();
+				}
+				else
+				{
+					e.Graphics.Clear(Color.FromArgb(General.Colors.Background.ToInt()));
+				}
+			}
 		}
 		
 		// Redraw requested
@@ -652,36 +665,36 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// Mouse click
-		private void display_MouseClick(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseClick(e); }
+		private void display_MouseClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseClick(e); }
 
 		// Mouse doubleclick
-		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseDoubleClick(e); }
+		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseDoubleClick(e); }
 
 		// Mouse down
-		private void display_MouseDown(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseDown(e); }
+		private void display_MouseDown(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseDown(e); }
 
 		// Mouse enters
 		private void display_MouseEnter(object sender, EventArgs e)
 		{
 			mouseinside = true;
-			if((General.Map != null) && (mouseinput == null)) General.Map.Mode.MouseEnter(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.MouseEnter(e);
 		}
 
 		// Mouse leaves
 		private void display_MouseLeave(object sender, EventArgs e)
 		{
 			mouseinside = false;
-			if((General.Map != null) && (mouseinput == null)) General.Map.Mode.MouseLeave(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.MouseLeave(e);
 		}
 
 		// Mouse moves
 		private void display_MouseMove(object sender, MouseEventArgs e)
 		{
-			if((General.Map != null) && (mouseinput == null)) General.Map.Mode.MouseMove(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.MouseMove(e);
 		}
 
 		// Mouse up
-		private void display_MouseUp(object sender, MouseEventArgs e) { if(General.Map != null) General.Map.Mode.MouseUp(e); }
+		private void display_MouseUp(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseUp(e); }
 		
 		#endregion
 
@@ -764,7 +777,7 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Actions.InvokeByKey((int)e.KeyData);
 
 			// Invoke on editing mode
-			if(General.Map != null) General.Map.Mode.KeyDown(e);
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.KeyDown(e);
 		}
 
 		// When a key is released
@@ -776,7 +789,7 @@ namespace CodeImp.DoomBuilder.Interface
 			ctrl = e.Control;
 
 			// Invoke on editing mode
-			if(General.Map != null) General.Map.Mode.KeyUp(e);
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.KeyUp(e);
 		}
 
 		#endregion

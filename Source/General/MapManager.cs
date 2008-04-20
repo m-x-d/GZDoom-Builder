@@ -315,7 +315,7 @@ namespace CodeImp.DoomBuilder
 			ChangeMode("VerticesMode");
 
 			// Center map in screen
-			(General.Map.Mode as ClassicMode).CenterInScreen();
+			if(General.Map.Mode is ClassicMode) (General.Map.Mode as ClassicMode).CenterInScreen();
 			
 			// Success
 			General.WriteLogLine("Map loading done");
