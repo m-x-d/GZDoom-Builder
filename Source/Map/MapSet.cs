@@ -1225,6 +1225,61 @@ namespace CodeImp.DoomBuilder.Map
 				if(vc.Value.Linedefs.Count == 0) vertices.Remove(vc);
 			}
 		}
+
+		/// <summary>
+		/// This finds the inner path from the beginning of a line to the end of the line.
+		/// Returns null when no path could be found.
+		/// </summary>
+		public static ICollection<Linedef> FindInnerMostPath(Linedef start, bool front)
+		{
+			MapSet map = start.Map;
+			List<Linedef> path = new List<Linedef>();
+			Dictionary<Linedef, int> tracecount = new Dictionary<Linedef, int>(map.Linedefs.Count);
+			Linedef nextline = start;
+			bool nextfront = front;
+
+			do
+			{
+				// Add line to path
+				path.Add(nextline);
+				tracecount[nextline]++;
+
+				// Determine next vertex to use
+				Vertex v = nextfront ? nextline.End : nextline.Start;
+
+				// Get list of linedefs and sort by angle
+				List<Linedef> lines = new List<Linedef>(v.Linedefs);
+				LinedefAngleSorter sorter = new LinedefAngleSorter(nextline, nextfront, v);
+				lines.Sort(sorter);
+
+				// Source line is the only one?
+				if(lines.Count == 1)
+				{
+					// Are we allowed to trace along this line again?
+					if(tracecount[nextline] < 2)
+					{
+						// Turn around and go back along the other side of the line
+						nextfront = !nextfront;
+					}
+					else
+					{
+						// No more lines, trace ends here
+						path = null;
+					}
+				}
+				else
+				{
+					// Trace along the next line
+					if(lines[0] == nextline) nextline = lines[1]; else nextline = lines[0];
+				}
+			}
+			// Continue as long as we have not reached the start yet
+			// or we have no next line to trace
+			while((path != null) && (nextline != start));
+
+			// Return path (null when trace failed)
+			return path;
+		}
 		
 		#endregion
 	}
