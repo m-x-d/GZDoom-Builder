@@ -299,26 +299,21 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			}
 		}
 
+		// When edit button is released
+		protected override void EndEdit()
+		{
+			// Just return to base mode, Disengage will be called automatically.
+			General.Map.ChangeMode(basemode);
+			
+			base.EndEdit();
+		}
+		
 		// Mouse moving
 		public override void MouseMove(MouseEventArgs e)
 		{
 			base.MouseMove(e);
 			Update();
 		}
-
-		// Mouse button released
-		public override void MouseUp(MouseEventArgs e)
-		{
-			base.MouseUp(e);
-			
-			// Is the editing button released?
-			if(e.Button == EditMode.EDIT_BUTTON)
-			{
-				// Just return to vertices mode, geometry will be merged on disengage.
-				General.Map.ChangeMode(basemode);
-			}
-		}
-
 		// When a key is released
 		public override void KeyUp(KeyEventArgs e)
 		{

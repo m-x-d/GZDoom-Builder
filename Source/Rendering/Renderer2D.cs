@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		private const byte DOUBLESIDED_LINE_ALPHA = 130;
 		private const float FSAA_PLOTTER_BLEND_FACTOR = 0.6f;
-		private const float FSAA_OVERLAY_BLEND_FACTOR = 0.2f;
+		private const float FSAA_OVERLAY_BLEND_FACTOR = 0.6f;
 		private const float THING_ARROW_SIZE = 1.5f;
 		private const float THING_ARROW_SHRINK = 2f;
 		private const float THING_CIRCLE_SIZE = 1f;
@@ -137,6 +137,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public float OffsetX { get { return offsetx; } }
 		public float OffsetY { get { return offsety; } }
 		public float Scale { get { return scale; } }
+		public int VertexSize { get { return vertexsize; } }
 
 		#endregion
 
@@ -1177,6 +1178,59 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Color2D.Begin();
 			graphics.Shaders.Color2D.BeginPass(0);
 			quad.Render(graphics);
+			graphics.Shaders.Color2D.EndPass();
+			graphics.Shaders.Color2D.End();
+		}
+
+		// This renders a line with given color
+		public void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords)
+		{
+			FlatVertex[] verts = new FlatVertex[4];
+			
+			// Calculate positions
+			if(transformcoords)
+			{
+				start = start.GetTransformed(translatex, translatey, scale, -scale);
+				end = end.GetTransformed(translatex, translatey, scale, -scale);
+			}
+
+			// Calculate offsets
+			Vector2D delta = end - start;
+			Vector2D dn = delta.GetNormal() * thickness;
+			
+			// Make vertices
+			verts[0].x = start.x - dn.x + dn.y;
+			verts[0].y = start.y - dn.y - dn.x;
+			verts[0].z = 0.0f;
+			verts[0].w = 1.0f;
+			verts[0].c = c.ToInt();
+			verts[1].x = start.x - dn.x - dn.y;
+			verts[1].y = start.y - dn.y + dn.x;
+			verts[1].z = 0.0f;
+			verts[1].w = 1.0f;
+			verts[1].c = c.ToInt();
+			verts[2].x = end.x + dn.x + dn.y;
+			verts[2].y = end.y + dn.y - dn.x;
+			verts[2].z = 0.0f;
+			verts[2].w = 1.0f;
+			verts[2].c = c.ToInt();
+			verts[3].x = end.x + dn.x - dn.y;
+			verts[3].y = end.y + dn.y + dn.x;
+			verts[3].z = 0.0f;
+			verts[3].w = 1.0f;
+			verts[3].c = c.ToInt();
+			
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+
+			// Draw
+			graphics.Shaders.Color2D.Begin();
+			graphics.Shaders.Color2D.BeginPass(0);
+			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, verts);
 			graphics.Shaders.Color2D.EndPass();
 			graphics.Shaders.Color2D.End();
 		}

@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
-			
+
 			// Basic objects
 			grid = new GridSetup();
 			undoredo = new UndoManager();
@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder
 				ChangeMode((EditMode)null);
 				
 				// Unbind any methods
-				ActionAttribute.UnbindMethods(this);
+				General.Actions.UnbindMethods(this);
 
 				// Dispose
 				if(undoredo != null) undoredo.Dispose();
@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder
 			data.Load(configinfo.Resources, options.Resources);
 
 			// Bind any methods
-			ActionAttribute.BindMethods(this);
+			General.Actions.BindMethods(this);
 
 			// Set default mode
 			ChangeMode("VerticesMode");
@@ -309,7 +309,7 @@ namespace CodeImp.DoomBuilder
 			data.Load(configinfo.Resources, options.Resources, maplocation);
 
 			// Bind any methods
-			ActionAttribute.BindMethods(this);
+			General.Actions.BindMethods(this);
 
 			// Set default mode
 			ChangeMode("VerticesMode");
@@ -877,7 +877,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Methods
 
 		// This clears the selection
-		[Action("clearselection")]
+		[BeginAction("clearselection")]
 		public void ClearSelection()
 		{
 			// Clear selection
@@ -900,7 +900,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This reloads resources
-		[Action("reloadresources")]
+		[BeginAction("reloadresources")]
 		internal void ReloadResources()
 		{
 			DataLocation maplocation;
@@ -946,7 +946,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// Game Configuration action
-		[Action("mapoptions")]
+		[BeginAction("mapoptions")]
 		internal void ShowMapOptions()
 		{
 			// Show map options dialog

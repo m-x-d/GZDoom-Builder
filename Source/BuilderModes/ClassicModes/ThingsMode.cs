@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Render selection
 				if(renderer.StartOverlay(true))
 				{
-					RenderSelection();
+					RenderMultiSelection();
 					renderer.Finish();
 				}
 			}
@@ -171,35 +171,102 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				General.Interface.HideInfo();
 		}
 
-		// This is called wheh selection ends
-		protected override void EndSelection()
+		// Selection
+		protected override void Select()
 		{
-			// Go for all things
-			foreach(Thing t in General.Map.Map.Things)
+			// Item highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				t.Selected = ((t.Position.x >= selectionrect.Left) &&
-							  (t.Position.y >= selectionrect.Top) &&
-							  (t.Position.x <= selectionrect.Right) &&
-							  (t.Position.y <= selectionrect.Bottom));
+				// Flip selection
+				highlighted.Selected = !highlighted.Selected;
+
+				// Update display
+				if(renderer.StartThings(false))
+				{
+					// Redraw highlight to show selection
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+			else
+			{
+				// Start making a selection
+				StartMultiSelection();
 			}
 
-			base.EndSelection();
-			if(renderer.StartOverlay(true)) renderer.Finish();
-			General.Interface.RedrawDisplay();
+			base.Select();
 		}
 
-		// This is called when the selection is updated
-		protected override void UpdateSelection()
+		// End selection
+		protected override void EndSelect()
 		{
-			base.UpdateSelection();
-
-			// Render selection
-			if(renderer.StartOverlay(true))
+			// Not ending from a multi-selection?
+			if(!selecting)
 			{
-				RenderSelection();
-				renderer.Finish();
-				renderer.Present();
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Update display
+					if(renderer.StartThings(false))
+					{
+						// Render highlighted item
+						renderer.RenderThing(highlighted, General.Colors.Highlight);
+						renderer.Finish();
+						renderer.Present();
+					}
+				}
 			}
+
+			base.EndSelect();
+		}
+
+		// Start editing
+		protected override void Edit()
+		{
+			// Item highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				// Highlighted item not selected?
+				if(!highlighted.Selected)
+				{
+					// Make this the only selection
+					General.Map.Map.ClearSelectedThings();
+					highlighted.Selected = true;
+					General.Interface.RedrawDisplay();
+				}
+
+				// Update display
+				if(renderer.StartThings(false))
+				{
+					// Redraw highlight to show selection
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+
+			base.Edit();
+		}
+
+		// Done editing
+		protected override void EndEdit()
+		{
+			// Anything selected?
+			ICollection<Thing> selected = General.Map.Map.GetThingsSelection(true);
+			if(selected.Count > 0)
+			{
+				// Show thing edit dialog
+				// TODO
+
+				// When a single thing was selected, deselect it now
+				if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
+
+				// Update entire display
+				General.Interface.RedrawDisplay();
+			}
+
+			base.EndEdit();
 		}
 
 		// Mouse moves
@@ -227,108 +294,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			Highlight(null);
 		}
 
-		// Mouse button pressed
-		public override void MouseDown(MouseEventArgs e)
-		{
-			base.MouseDown(e);
-
-			// Select button?
-			if(e.Button == EditMode.SELECT_BUTTON)
-			{
-				// Item highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					// Flip selection
-					highlighted.Selected = !highlighted.Selected;
-					
-					// Update display
-					if(renderer.StartThings(false))
-					{
-						// Redraw highlight to show selection
-						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
-						renderer.Finish();
-						renderer.Present();
-					}
-				}
-				else
-				{
-					// Start making a selection
-					StartSelection();
-				}
-			}
-			// Edit button?
-			else if(e.Button == EditMode.EDIT_BUTTON)
-			{
-				// Item highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					// Highlighted item not selected?
-					if(!highlighted.Selected)
-					{
-						// Make this the only selection
-						General.Map.Map.ClearSelectedThings();
-						highlighted.Selected = true;
-						General.Interface.RedrawDisplay();
-					}
-
-					// Update display
-					if(renderer.StartThings(false))
-					{
-						// Redraw highlight to show selection
-						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
-						renderer.Finish();
-						renderer.Present();
-					}
-				}
-			}
-		}
-
-		// Mouse released
-		public override void MouseUp(MouseEventArgs e)
-		{
-			ICollection<Thing> selected;
-
-			base.MouseUp(e);
-			
-			// Item highlighted?
-			if((highlighted != null) && !highlighted.IsDisposed)
-			{
-				// Update display
-				if(renderer.StartThings(false))
-				{
-					// Render highlighted item
-					renderer.RenderThing(highlighted, General.Colors.Highlight);
-					renderer.Finish();
-					renderer.Present();
-				}
-
-				// Edit button?
-				if(e.Button == EditMode.EDIT_BUTTON)
-				{
-					// Anything selected?
-					selected = General.Map.Map.GetThingsSelection(true);
-					if(selected.Count > 0)
-					{
-						// Show thing edit dialog
-						// TODO
-
-						// When a single thing was selected, deselect it now
-						if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
-
-						// Update entire display
-						General.Interface.RedrawDisplay();
-					}
-				}
-			}
-		}
-
 		// Mouse wants to drag
 		protected override void DragStart(MouseEventArgs e)
 		{
 			base.DragStart(e);
 
 			// Edit button used?
-			if(e.Button == EditMode.EDIT_BUTTON)
+			if(General.Interface.CheckActionActive(null, "classicedit"))
 			{
 				// Anything highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
@@ -344,6 +316,41 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Start dragging the selection
 					General.Map.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos));
 				}
+			}
+		}
+
+		// This is called wheh selection ends
+		protected override void EndMultiSelection()
+		{
+			// Go for all things
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				t.Selected = ((t.Position.x >= selectionrect.Left) &&
+							  (t.Position.y >= selectionrect.Top) &&
+							  (t.Position.x <= selectionrect.Right) &&
+							  (t.Position.y <= selectionrect.Bottom));
+			}
+
+			base.EndMultiSelection();
+
+			// Clear overlay
+			if(renderer.StartOverlay(true)) renderer.Finish();
+
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+
+		// This is called when the selection is updated
+		protected override void UpdateMultiSelection()
+		{
+			base.UpdateMultiSelection();
+
+			// Render selection
+			if(renderer.StartOverlay(true))
+			{
+				RenderMultiSelection();
+				renderer.Finish();
+				renderer.Present();
 			}
 		}
 		

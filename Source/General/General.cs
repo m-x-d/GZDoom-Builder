@@ -436,7 +436,7 @@ namespace CodeImp.DoomBuilder
 				actions = new ActionManager();
 				
 				// Bind static methods to actions
-				ActionAttribute.BindMethods(typeof(General));
+				General.Actions.BindMethods(typeof(General));
 
 				// Create main window
 				General.WriteLogLine("Loading main interface window...");
@@ -504,7 +504,7 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Termination requested");
 
 				// Unbind static methods from actions
-				ActionAttribute.UnbindMethods(typeof(General));
+				General.Actions.UnbindMethods(typeof(General));
 				
 				// Clean up
 				if(map != null) map.Dispose();
@@ -545,7 +545,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Management
 
 		// This creates a new map
-		[Action("newmap")]
+		[BeginAction("newmap")]
 		internal static void NewMap()
 		{
 			MapOptions newoptions = new MapOptions();
@@ -594,7 +594,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This closes the current map
-		[Action("closemap")]
+		[BeginAction("closemap")]
 		internal static void CloseMap()
 		{
 			// Ask the user to save changes (if any)
@@ -622,7 +622,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This loads a map from file
-		[Action("openmap")]
+		[BeginAction("openmap")]
 		internal static void OpenMap()
 		{
 			OpenFileDialog openfile;
@@ -694,7 +694,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This saves the current map
-		[Action("savemap")]
+		[BeginAction("savemap")]
 		internal static void SaveMap()
 		{
 			// Check if a wad file is known
@@ -724,7 +724,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This saves the current map as a different file
-		[Action("savemapas")]
+		[BeginAction("savemapas")]
 		internal static void SaveMapAs()
 		{
 			SaveFileDialog savefile;
@@ -1011,7 +1011,7 @@ namespace CodeImp.DoomBuilder
 
 		#endregion
 
-		[Action("testaction")]
+		[BeginAction("testaction")]
 		internal static void TestAction()
 		{
 			TextureBrowserForm t = new TextureBrowserForm();

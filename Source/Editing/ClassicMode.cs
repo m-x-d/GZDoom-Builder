@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Scroll / Zoom
 
 		// This scrolls the view north
-		[Action("scrollnorth", BaseAction = true)]
+		[BeginAction("scrollnorth", BaseAction = true)]
 		public virtual void ScrollNorth()
 		{
 			// Scroll
@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view south
-		[Action("scrollsouth", BaseAction = true)]
+		[BeginAction("scrollsouth", BaseAction = true)]
 		public virtual void ScrollSouth()
 		{
 			// Scroll
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view west
-		[Action("scrollwest", BaseAction = true)]
+		[BeginAction("scrollwest", BaseAction = true)]
 		public virtual void ScrollWest()
 		{
 			// Scroll
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This scrolls the view east
-		[Action("scrolleast", BaseAction = true)]
+		[BeginAction("scrolleast", BaseAction = true)]
 		public virtual void ScrollEast()
 		{
 			// Scroll
@@ -141,7 +141,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This zooms in
-		[Action("zoomin", BaseAction = true)]
+		[BeginAction("zoomin", BaseAction = true)]
 		public virtual void ZoomIn()
 		{
 			// Zoom
@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This zooms out
-		[Action("zoomout", BaseAction = true)]
+		[BeginAction("zoomout", BaseAction = true)]
 		public virtual void ZoomOut()
 		{
 			// Zoom
@@ -232,7 +232,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This zooms and scrolls to fit the map in the window
-		[Action("centerinscreen", BaseAction = true)]
+		[BeginAction("centerinscreen", BaseAction = true)]
 		public void CenterInScreen()
 		{
 			float left = float.MaxValue;
@@ -318,8 +318,7 @@ namespace CodeImp.DoomBuilder.Editing
 			General.MainWindow.UpdateCoordinates(mousemappos);
 			
 			// Holding a button?
-			if((e.Button == EditMode.EDIT_BUTTON) ||
-			   (e.Button == EditMode.SELECT_BUTTON))
+			if(e.Button != MouseButtons.None)
 			{
 				// Not dragging?
 				if(mousedragging == MouseButtons.None)
@@ -337,7 +336,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 			
 			// Selecting?
-			if(selecting) UpdateSelection();
+			if(selecting) UpdateMultiSelection();
 			
 			// Let the base class know
 			base.MouseMove(e);
@@ -364,24 +363,23 @@ namespace CodeImp.DoomBuilder.Editing
 				DragStop(e);
 				mousedragging = MouseButtons.None;
 			}
-
-			// Selection stops
-			if(selecting) EndSelection();
 			
 			// Let the base class know
 			base.MouseUp(e);
 		}
-		
-		// This is called when the mouse is moved enough pixels and holding one or more buttons
+
+		/// <summary>
+		/// Automatically called when dragging operation starts.
+		/// </summary>
 		protected virtual void DragStart(MouseEventArgs e)
 		{
-
 		}
 
-		// This is called when a drag is ended because the mouse buton is released
+		/// <summary>
+		/// Automatically called when dragging operation stops.
+		/// </summary>
 		protected virtual void DragStop(MouseEventArgs e)
 		{
-
 		}
 		
 		#endregion
@@ -398,23 +396,85 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
-		// Cancelling
+		/// <summary>
+		/// Automatically called by the core when this editing mode is engaged.
+		/// </summary>
+		public override void Engage()
+		{
+			// Clear display overlay
+			renderer.StartOverlay(true);
+			renderer.Finish();
+			base.Engage();
+		}
+
+		/// <summary>
+		/// Called when the user requests to cancel this editing mode.
+		/// </summary>
 		public override void Cancel()
 		{
 			cancelled = true;
 			base.Cancel();
 		}
-		
-		// This starts a selection
-		protected virtual void StartSelection()
+
+		/// <summary>
+		/// This is called automatically when the Edit button is pressed.
+		/// (in Doom Builder 1, this was always the right mousebutton)
+		/// </summary>
+		[BeginAction("classicedit", BaseAction = true)]
+		protected virtual void Edit()
+		{
+		}
+
+		/// <summary>
+		/// This is called automatically when the Edit button is released.
+		/// (in Doom Builder 1, this was always the right mousebutton)
+		/// </summary>
+		[EndAction("classicedit", BaseAction = true)]
+		protected virtual void EndEdit()
+		{
+		}
+
+		/// <summary>
+		/// This is called automatically when the Select button is pressed.
+		/// (in Doom Builder 1, this was always the left mousebutton)
+		/// </summary>
+		[BeginAction("classicselect", BaseAction = true)]
+		protected virtual void Select()
+		{
+		}
+
+		/// <summary>
+		/// This is called automatically when the Select button is released.
+		/// (in Doom Builder 1, this was always the left mousebutton)
+		/// </summary>
+		[EndAction("classicselect", BaseAction = true)]
+		protected virtual void EndSelect()
+		{
+			if(selecting) EndMultiSelection();
+		}
+
+		/// <summary>
+		/// This is called automatically when a rectangular multi-selection ends.
+		/// </summary>
+		protected virtual void EndMultiSelection()
+		{
+			selecting = false;
+		}
+
+		/// <summary>
+		/// Call this to initiate a rectangular multi-selection.
+		/// </summary>
+		protected virtual void StartMultiSelection()
 		{
 			selecting = true;
 			selectstart = mousemappos;
 			selectionrect = new RectangleF(selectstart.x, selectstart.y, 0, 0);
 		}
-		
-		// This updates a selection
-		protected virtual void UpdateSelection()
+
+		/// <summary>
+		/// This is called automatically when a multi-selection is updated.
+		/// </summary>
+		protected virtual void UpdateMultiSelection()
 		{
 			selectionrect.X = selectstart.x;
 			selectionrect.Y = selectstart.y;
@@ -434,15 +494,11 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
-		// This is called when a selection is released
-		protected virtual void EndSelection()
-		{
-			selecting = false;
-		}
-		
-		// This draws the selection on the overlay layer
-		// Must call renderer.StartOverlay first!
-		protected virtual void RenderSelection()
+		/// <summary>
+		/// Call this to draw the selection on the overlay layer.
+		/// Must call renderer.StartOverlay first!
+		/// </summary>
+		protected virtual void RenderMultiSelection()
 		{
 			renderer.RenderRectangle(selectionrect, SELECTION_BORDER_SIZE,
 				General.Colors.Highlight.WithAlpha(SELECTION_ALPHA), true);

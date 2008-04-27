@@ -45,7 +45,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		float OffsetX { get; }
 		float OffsetY { get; }
 		float Scale { get; }
-
+		int VertexSize { get; }
+		
 		// Color methods
 		PixelColor DetermineLinedefColor(Linedef l);
 		PixelColor DetermineThingColor(Thing t);
@@ -72,6 +73,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderThingSet(ICollection<Thing> things);
 		void RenderRectangle(RectangleF rect, float bordersize, PixelColor c, bool transformrect);
 		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect);
+		void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords);
 		void RenderText(string text, Vector2D pos, PixelColor c, bool transformpos);
 		void RenderTextCentered(string text, Vector2D pos, PixelColor c, bool transformpos);
 	}

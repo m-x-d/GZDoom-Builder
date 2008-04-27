@@ -30,6 +30,8 @@ using CodeImp.DoomBuilder.Editing;
 using System.Collections;
 using System.IO;
 using CodeImp.DoomBuilder.Map;
+using System.Reflection;
+using CodeImp.DoomBuilder.Plugins;
 
 #endregion
 
@@ -102,7 +104,7 @@ namespace CodeImp.DoomBuilder.Interface
 			buttongrid.DropDownDirection = ToolStripDropDownDirection.AboveLeft;
 
 			// Bind any methods
-			ActionAttribute.BindMethods(this);
+			General.Actions.BindMethods(this);
 			
 			// Apply shortcut keys
 			ApplyShortcutKeys();
@@ -154,7 +156,7 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			this.Update();
 			asmname = General.ThisAssembly.GetName().Name.ToLowerInvariant();
-			General.Actions[asmname + "_" + (sender as ToolStripItem).Tag.ToString()].Invoke();
+			General.Actions[asmname + "_" + (sender as ToolStripItem).Tag.ToString()].Begin();
 			this.Update();
 		}
 
@@ -227,7 +229,7 @@ namespace CodeImp.DoomBuilder.Interface
 			SetProcessorState(false);
 			
 			// Unbind methods
-			ActionAttribute.UnbindMethods(this);
+			General.Actions.UnbindMethods(this);
 			
 			// Determine window state to save
 			if(this.WindowState != FormWindowState.Minimized)
@@ -467,7 +469,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// This shows the grid setup dialog
-		[Action("gridsetup")]
+		[BeginAction("gridsetup")]
 		internal void ShowGridSetup()
 		{
 			// Only when a map is open
@@ -573,7 +575,7 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			this.Update();
 			modeinfo = (EditModeInfo)((sender as ToolStripItem).Tag);
-			General.Actions[modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly)].Invoke();
+			General.Actions[modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly)].Begin();
 			this.Update();
 		}
 		
@@ -671,7 +673,26 @@ namespace CodeImp.DoomBuilder.Interface
 		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseDoubleClick(e); }
 
 		// Mouse down
-		private void display_MouseDown(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseDown(e); }
+		private void display_MouseDown(object sender, MouseEventArgs e)
+		{
+			int key = 0;
+			
+			// Create key
+			switch(e.Button)
+			{
+				case MouseButtons.Left: key = (int)Keys.LButton; break;
+				case MouseButtons.Middle: key = (int)Keys.MButton; break;
+				case MouseButtons.Right: key = (int)Keys.RButton; break;
+				case MouseButtons.XButton1: key = (int)Keys.XButton1; break;
+				case MouseButtons.XButton2: key = (int)Keys.XButton2; break;
+			}
+			
+			// Invoke any actions associated with this key
+			General.Actions.KeyPressed(key);
+			
+			// Invoke on editing mode
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseDown(e);
+		}
 
 		// Mouse enters
 		private void display_MouseEnter(object sender, EventArgs e)
@@ -694,12 +715,40 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Mouse up
-		private void display_MouseUp(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseUp(e); }
+		private void display_MouseUp(object sender, MouseEventArgs e)
+		{
+			int key = 0;
+
+			// Create key
+			switch(e.Button)
+			{
+				case MouseButtons.Left: key = (int)Keys.LButton; break;
+				case MouseButtons.Middle: key = (int)Keys.MButton; break;
+				case MouseButtons.Right: key = (int)Keys.RButton; break;
+				case MouseButtons.XButton1: key = (int)Keys.XButton1; break;
+				case MouseButtons.XButton2: key = (int)Keys.XButton2; break;
+			}
+
+			// Invoke any actions associated with this key
+			General.Actions.KeyReleased(key);
+
+			// Invoke on editing mode
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseUp(e);
+		}
 		
 		#endregion
 
 		#region ================== Input
 
+		// This checks if a given action is active
+		public bool CheckActionActive(Assembly assembly, string actionname)
+		{
+			if(assembly == null)
+				return General.Actions.CheckActionActive(General.ThisAssembly, actionname);
+			else
+				return General.Actions.CheckActionActive(assembly, actionname);
+		}
+		
 		// This requests exclusive mouse input
 		public void StartExclusiveMouseInput()
 		{
@@ -739,26 +788,21 @@ namespace CodeImp.DoomBuilder.Interface
 		// When the mouse wheel is changed
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
-			int mod = 0;
-
-			// Create modifiers
-			if(alt) mod |= (int)Keys.Alt;
-			if(shift) mod |= (int)Keys.Shift;
-			if(ctrl) mod |= (int)Keys.Control;
-
 			// Scrollwheel up?
 			if(e.Delta > 0)
 			{
 				// Invoke actions for scrollwheel
 				//for(int i = 0; i < e.Delta; i += 120)
-				General.Actions.InvokeByKey(mod | (int)SpecialKeys.MScrollUp);
+				General.Actions.KeyPressed((int)SpecialKeys.MScrollUp);
+				General.Actions.KeyReleased((int)SpecialKeys.MScrollUp);
 			}
 			// Scrollwheel down?
 			else if(e.Delta < 0)
 			{
 				// Invoke actions for scrollwheel
 				//for(int i = 0; i > e.Delta; i -= 120)
-				General.Actions.InvokeByKey(mod | (int)SpecialKeys.MScrollDown);
+				General.Actions.KeyPressed((int)SpecialKeys.MScrollDown);
+				General.Actions.KeyReleased((int)SpecialKeys.MScrollDown);
 			}
 			
 			// Let the base know
@@ -768,13 +812,19 @@ namespace CodeImp.DoomBuilder.Interface
 		// When a key is pressed
 		private void MainForm_KeyDown(object sender, KeyEventArgs e)
 		{
+			int mod = 0;
+			
 			// Keep key modifiers
 			alt = e.Alt;
 			shift = e.Shift;
 			ctrl = e.Control;
+			if(alt) mod |= (int)Keys.Alt;
+			if(shift) mod |= (int)Keys.Shift;
+			if(ctrl) mod |= (int)Keys.Control;
 			
 			// Invoke any actions associated with this key
-			General.Actions.InvokeByKey((int)e.KeyData);
+			General.Actions.UpdateModifiers(mod);
+			General.Actions.KeyPressed((int)e.KeyData);
 
 			// Invoke on editing mode
 			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.KeyDown(e);
@@ -783,10 +833,19 @@ namespace CodeImp.DoomBuilder.Interface
 		// When a key is released
 		private void MainForm_KeyUp(object sender, KeyEventArgs e)
 		{
+			int mod = 0;
+
 			// Keep key modifiers
 			alt = e.Alt;
 			shift = e.Shift;
 			ctrl = e.Control;
+			if(alt) mod |= (int)Keys.Alt;
+			if(shift) mod |= (int)Keys.Shift;
+			if(ctrl) mod |= (int)Keys.Control;
+
+			// Invoke any actions associated with this key
+			General.Actions.UpdateModifiers(mod);
+			General.Actions.KeyReleased((int)e.KeyData);
 
 			// Invoke on editing mode
 			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.KeyUp(e);
@@ -1035,7 +1094,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Action to toggle snap to grid
-		[Action("togglesnap")]
+		[BeginAction("togglesnap")]
 		internal void ToggleSnapToGrid()
 		{
 			buttonsnaptogrid.Checked = !buttonsnaptogrid.Checked;
@@ -1043,7 +1102,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Action to toggle auto merge
-		[Action("toggleautomerge")]
+		[BeginAction("toggleautomerge")]
 		internal void ToggleAutoMerge()
 		{
 			buttonautomerge.Checked = !buttonautomerge.Checked;
@@ -1078,7 +1137,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// Game Configuration action
-		[Action("configuration")]
+		[BeginAction("configuration")]
 		internal void ShowConfiguration()
 		{
 			// Show configuration dialog
@@ -1100,7 +1159,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// Preferences action
-		[Action("preferences")]
+		[BeginAction("preferences")]
 		internal void ShowPreferences()
 		{
 			// Show preferences dialog

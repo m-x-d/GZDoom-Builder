@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Editing;
+using System.Reflection;
 
 #endregion
 
@@ -157,6 +158,19 @@ namespace CodeImp.DoomBuilder.Plugins
 						General.MainWindow.AddEditModeButton(emi);
 				}
 			}
+		}
+		
+		// This returns a plugin by assembly, or null when plugin cannot be found
+		public Plugin FindPluginByAssembly(Assembly assembly)
+		{
+			// Go for all plugins the find the one with matching assembly
+			foreach(Plugin p in plugins)
+			{
+				if(p.Assembly == assembly) return p;
+			}
+
+			// Nothing found
+			return null;
 		}
 		
 		#endregion
