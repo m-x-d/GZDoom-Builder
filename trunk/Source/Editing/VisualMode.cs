@@ -184,6 +184,7 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			base.KeyDown(e);
 			
+			/* WRONG
 			// Get the actions for this key
 			actions = General.Actions.GetActionsByKey((int)e.KeyData);
 			foreach(string a in actions)
@@ -197,6 +198,7 @@ namespace CodeImp.DoomBuilder.Editing
 					case "moveright": keyright = true; break;
 				}
 			}
+			*/
 		}
 
 		// Key up
@@ -206,6 +208,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 			base.KeyUp(e);
 
+			/* WRONG
 			// Get the actions for this key
 			actions = General.Actions.GetActionsByKey((int)e.KeyData);
 			foreach(string a in actions)
@@ -219,6 +222,7 @@ namespace CodeImp.DoomBuilder.Editing
 					case "moveright": keyright = false; break;
 				}
 			}
+			*/
 		}
 		
 		#endregion

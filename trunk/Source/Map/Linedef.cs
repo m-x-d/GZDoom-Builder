@@ -319,6 +319,14 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
+		// This returns the closest coordinates ON the line
+		public Vector2D NearestOnLine(Vector2D pos)
+		{
+			float u = Line2D.GetNearestOnLine(start.Position, end.Position, pos);
+			if(u < 0f) u = 0f; else if(u > 1f) u = 1f;
+			return Line2D.GetCoordinatesAt(start.Position, end.Position, u);
+		}
+
 		// This returns the shortest distance from given coordinates to line
 		public float SafeDistanceToSq(Vector2D p, bool bounded)
 		{

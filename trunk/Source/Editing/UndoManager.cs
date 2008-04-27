@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.Editing
 			redos = new List<UndoSnapshot>(General.Settings.UndoLevels + 1);
 
 			// Bind any methods
-			ActionAttribute.BindMethods(this);
+			General.Actions.BindMethods(this);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(!isdisposed)
 			{
 				// Unbind any methods
-				ActionAttribute.UnbindMethods(this);
+				General.Actions.UnbindMethods(this);
 				
 				// Clean up
 				ClearUndos();
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This performs an undo
-		[Action("undo")]
+		[BeginAction("undo")]
 		public void PerformUndo()
 		{
 			UndoSnapshot u, r;
@@ -235,7 +235,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This performs a redo
-		[Action("redo")]
+		[BeginAction("redo")]
 		public void PerformRedo()
 		{
 			UndoSnapshot u, r;

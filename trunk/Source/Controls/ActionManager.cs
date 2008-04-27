@@ -26,6 +26,7 @@ using System.IO;
 using CodeImp.DoomBuilder.IO;
 using System.Collections;
 using System.Reflection;
+using System.Windows.Forms;
 
 #endregion
 
@@ -43,6 +44,13 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Actions
 		private Dictionary<string, Action> actions;
+		
+		// Keys state
+		private int modifiers;
+		private List<int> pressedkeys;
+		
+		// Begun actions
+		private List<Action> activeactions;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -64,7 +72,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			General.WriteLogLine("Starting action manager...");
 			actions = new Dictionary<string, Action>();
-
+			pressedkeys = new List<int>();
+			activeactions = new List<Action>();
+			
 			// Load all actions in this assembly
 			LoadActions(General.ThisAssembly);
 			
@@ -96,7 +106,7 @@ namespace CodeImp.DoomBuilder.Controls
 			StreamReader actionsreader;
 			Configuration cfg;
 			string name, title, desc, shortname;
-			bool amouse, akeys, ascroll, debugonly;
+			bool amouse, akeys, ascroll, debugonly, noshift, repeat;
 			string[] resnames;
 			AssemblyName asmname = asm.GetName();
 
@@ -127,16 +137,18 @@ namespace CodeImp.DoomBuilder.Controls
 						name = asmname.Name.ToLowerInvariant() + "_" + shortname;
 						title = cfg.ReadSetting(a.Key + ".title", "[" + name + "]");
 						desc = cfg.ReadSetting(a.Key + ".description", "");
-						akeys = cfg.ReadSetting(a.Key + ".allowkeys", false);
-						amouse = cfg.ReadSetting(a.Key + ".allowmouse", false);
+						akeys = cfg.ReadSetting(a.Key + ".allowkeys", true);
+						amouse = cfg.ReadSetting(a.Key + ".allowmouse", true);
 						ascroll = cfg.ReadSetting(a.Key + ".allowscroll", false);
+						noshift = cfg.ReadSetting(a.Key + ".disregardshift", false);
+						repeat = cfg.ReadSetting(a.Key + ".repeat", false);
 						debugonly = cfg.ReadSetting(a.Key + ".debugonly", false);
 
 						// Check if action should be included
 						if(General.DebugBuild || !debugonly)
 						{
 							// Create an action
-							CreateAction(name, shortname, title, desc, akeys, amouse, ascroll);
+							CreateAction(name, shortname, title, desc, akeys, amouse, ascroll, noshift, repeat);
 						}
 					}
 				}
@@ -144,7 +156,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This manually creates an action
-		private void CreateAction(string name, string shortname, string title, string desc, bool allowkeys, bool allowmouse, bool allowscroll)
+		private void CreateAction(string name, string shortname, string title, string desc, bool allowkeys, bool allowmouse, bool allowscroll, bool disregardshift, bool repeat)
 		{
 			// Action does not exist yet?
 			if(!actions.ContainsKey(name))
@@ -153,13 +165,203 @@ namespace CodeImp.DoomBuilder.Controls
 				int key = General.Settings.ReadSetting("shortcuts." + name, 0);
 
 				// Create an action
-				actions.Add(name, new Action(name, shortname, title, desc, key, allowkeys, allowmouse, allowscroll));
+				actions.Add(name, new Action(name, shortname, title, desc, key, allowkeys, allowmouse, allowscroll, disregardshift, repeat));
 			}
 			else
 			{
 				// Action already exists!
 				General.WriteLogLine("WARNING: Action '" + name + "' already exists. Action names must be unique!");
 			}
+		}
+
+		// This binds all methods marked with this attribute
+		internal void BindMethods(Type type)
+		{
+			// Bind static methods
+			BindMethods(null, type);
+		}
+
+		// This binds all methods marked with this attribute
+		internal void BindMethods(object obj)
+		{
+			// Bind instance methods
+			BindMethods(obj, obj.GetType());
+		}
+
+		// This binds all methods marked with this attribute
+		private void BindMethods(object obj, Type type)
+		{
+			MethodInfo[] methods;
+			ActionAttribute[] attrs;
+			ActionDelegate del;
+			string actionname;
+
+			if(obj == null)
+				General.WriteLogLine("Binding static action methods for class " + type.Name + "...");
+			else
+				General.WriteLogLine("Binding action methods for " + type.Name + " object...");
+
+			// Go for all methods on obj
+			methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+			foreach(MethodInfo m in methods)
+			{
+				// Check if the method has this attribute
+				attrs = (ActionAttribute[])m.GetCustomAttributes(typeof(BeginActionAttribute), true);
+
+				// Go for all attributes
+				foreach(ActionAttribute a in attrs)
+				{
+					// Create a delegate for this method
+					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
+
+					// Make proper name
+					actionname = a.GetFullActionName(type.Assembly);
+
+					// Bind method to action
+					if(Exists(actionname))
+						actions[actionname].BindBegin(del);
+					else
+						throw new ArgumentException("Could not bind " + m.ReflectedType.Name + "." + m.Name + " to action \"" + actionname + "\", that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
+				}
+				
+				// Check if the method has this attribute
+				attrs = (ActionAttribute[])m.GetCustomAttributes(typeof(EndActionAttribute), true);
+
+				// Go for all attributes
+				foreach(ActionAttribute a in attrs)
+				{
+					// Create a delegate for this method
+					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
+
+					// Make proper name
+					actionname = a.GetFullActionName(type.Assembly);
+
+					// Bind method to action
+					if(Exists(actionname))
+						actions[actionname].BindEnd(del);
+					else
+						throw new ArgumentException("Could not bind " + m.ReflectedType.Name + "." + m.Name + " to action \"" + actionname + "\", that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
+				}
+			}
+		}
+
+		// This binds a delegate manually
+		internal void BindBeginDelegate(Assembly asm, ActionDelegate d, BeginActionAttribute a)
+		{
+			string actionname;
+
+			// Make proper name
+			actionname = a.GetFullActionName(asm);
+
+			// Bind delegate to action
+			if(Exists(actionname))
+				actions[actionname].BindBegin(d);
+			else
+				General.WriteLogLine("WARNING: Could not bind delegate for " + d.Method.Name + " to action \"" + a.ActionName + "\" (" + actionname + "), that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
+		}
+
+		// This binds a delegate manually
+		internal void BindEndDelegate(Assembly asm, ActionDelegate d, EndActionAttribute a)
+		{
+			string actionname;
+
+			// Make proper name
+			actionname = a.GetFullActionName(asm);
+
+			// Bind delegate to action
+			if(Exists(actionname))
+				actions[actionname].BindEnd(d);
+			else
+				General.WriteLogLine("WARNING: Could not bind delegate for " + d.Method.Name + " to action \"" + a.ActionName + "\" (" + actionname + "), that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
+		}
+
+		// This unbinds all methods marked with this attribute
+		internal void UnbindMethods(Type type)
+		{
+			// Unbind static methods
+			UnbindMethods(null, type);
+		}
+
+		// This unbinds all methods marked with this attribute
+		internal void UnbindMethods(object obj)
+		{
+			// Unbind instance methods
+			UnbindMethods(obj, obj.GetType());
+		}
+
+		// This unbinds all methods marked with this attribute
+		private void UnbindMethods(object obj, Type type)
+		{
+			MethodInfo[] methods;
+			ActionAttribute[] attrs;
+			ActionDelegate del;
+			string actionname;
+
+			if(obj == null)
+				General.WriteLogLine("Unbinding static action methods for class " + type.Name + "...");
+			else
+				General.WriteLogLine("Unbinding action methods for " + type.Name + " object...");
+
+			// Go for all methods on obj
+			methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+			foreach(MethodInfo m in methods)
+			{
+				// Check if the method has this attribute
+				attrs = (ActionAttribute[])m.GetCustomAttributes(typeof(BeginActionAttribute), true);
+
+				// Go for all attributes
+				foreach(ActionAttribute a in attrs)
+				{
+					// Create a delegate for this method
+					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
+
+					// Make proper name
+					actionname = a.GetFullActionName(type.Assembly);
+
+					// Unbind method from action
+					actions[actionname].UnbindBegin(del);
+				}
+				
+				// Check if the method has this attribute
+				attrs = (ActionAttribute[])m.GetCustomAttributes(typeof(EndActionAttribute), true);
+
+				// Go for all attributes
+				foreach(ActionAttribute a in attrs)
+				{
+					// Create a delegate for this method
+					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
+
+					// Make proper name
+					actionname = a.GetFullActionName(type.Assembly);
+
+					// Unbind method from action
+					actions[actionname].UnbindEnd(del);
+				}
+			}
+		}
+
+		// This unbinds a delegate manually
+		internal void UnbindBeginDelegate(Assembly asm, ActionDelegate d, BeginActionAttribute a)
+		{
+			string actionname;
+
+			// Make proper name
+			actionname = a.GetFullActionName(asm);
+
+			// Unbind delegate to action
+			actions[actionname].UnbindBegin(d);
+		}
+
+		// This unbinds a delegate manually
+		internal void UnbindEndDelegate(Assembly asm, ActionDelegate d, EndActionAttribute a)
+		{
+			string actionname;
+
+			// Make proper name
+			actionname = a.GetFullActionName(asm);
+
+			// Unbind delegate to action
+			actions[actionname].UnbindEnd(d);
 		}
 		
 		// This checks if a given action exists
@@ -190,7 +392,21 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Shortcut Keys
+		
+		// This checks if a given action is active
+		public bool CheckActionActive(Assembly asm, string actionname)
+		{
+			// Find active action
+			string fullname = asm.GetName().Name.ToLowerInvariant() + "_" + actionname;
+			foreach(Action a in activeactions)
+			{
+				if(a.Name == fullname) return true;
+			}
 
+			// No such active action
+			return false;
+		}
+		
 		// Removes all shortcut keys
 		public void RemoveShortcutKeys()
 		{
@@ -199,23 +415,95 @@ namespace CodeImp.DoomBuilder.Controls
 				a.Value.SetShortcutKey(0);
 		}
 		
+		// This notifies a key has been pressed
+		public void KeyPressed(int key)
+		{
+			int strippedkey = key & ~((int)Keys.Alt | (int)Keys.Shift | (int)Keys.Control);
+			if((strippedkey == (int)Keys.ShiftKey) || (strippedkey == (int)Keys.ControlKey)) key = strippedkey;
+			bool repeat = pressedkeys.Contains(strippedkey);
+			
+			// Invoke event
+			BeginActionByKey(key, repeat);
+			Action[] acts = GetActionsByKey(key);
+			foreach(Action a in acts) if(!activeactions.Contains(a)) activeactions.Add(a);
+			
+			// Update pressed keys
+			if(!repeat) pressedkeys.Add(strippedkey);
+		}
+
+		// This notifies a key has been released
+		public void KeyReleased(int key)
+		{
+			int strippedkey = key & ~((int)Keys.Alt | (int)Keys.Shift | (int)Keys.Control);
+			List<Action> keepactions = new List<Action>();
+			
+			// Update pressed keys
+			if(pressedkeys.Contains(strippedkey)) pressedkeys.Remove(strippedkey);
+
+			// End actions that no longer match
+			EndActiveActions();
+		}
+		
+		// This updates the modifiers
+		public void UpdateModifiers(int mods)
+		{
+			// Update modifiers
+			modifiers = mods;
+
+			// End actions that no longer match
+			EndActiveActions();
+		}
+		
 		// This will call the associated actions for a keypress
-		public void InvokeByKey(int key)
+		private void BeginActionByKey(int key, bool repeated)
 		{
 			// Go for all actions
 			foreach(KeyValuePair<string, Action> a in actions)
 			{
 				// This action is associated with this key?
-				if(a.Value.ShortcutKey == key)
+				if(a.Value.KeyMatches(key) && (a.Value.Repeat || !repeated))
 				{
 					// Invoke action
-					a.Value.Invoke();
+					a.Value.Begin();
 				}
 			}
 		}
+
+		// This will end active actions for which the pressed keys do not match
+		private void EndActiveActions()
+		{
+			List<Action> keepactions = new List<Action>();
+
+			// Go for all active actions
+			foreach(Action a in activeactions)
+			{
+				// Go for all pressed keys
+				bool stillactive = false;
+				foreach(int k in pressedkeys)
+				{
+					if((k == (int)Keys.ShiftKey) || (k == (int)Keys.ControlKey))
+						stillactive |= a.KeyMatches(k);
+					else
+						stillactive |= a.KeyMatches(k | modifiers);
+				}
+
+				// End the action if no longer matches any of the keys
+				if(!stillactive)
+				{
+					a.End();
+				}
+				else
+				{
+					keepactions.Add(a);
+				}
+			}
+
+			// Update list of activate actions
+			activeactions = keepactions;
+		}
 		
 		// This returns all action names for a given key
-		public string[] GetActionsByKey(int key)
+		public string[] GetActionNamesByKey(int key)
 		{
 			List<string> actionnames = new List<string>();
 			
@@ -223,10 +511,30 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(KeyValuePair<string, Action> a in actions)
 			{
 				// This action is associated with this key?
-				if(a.Value.ShortcutKey == key)
+				if(a.Value.KeyMatches(key))
 				{
 					// List short name
 					actionnames.Add(a.Value.ShortName);
+				}
+			}
+
+			// Return result;
+			return actionnames.ToArray();
+		}
+
+		// This returns all action names for a given key
+		public Action[] GetActionsByKey(int key)
+		{
+			List<Action> actionnames = new List<Action>();
+
+			// Go for all actions
+			foreach(KeyValuePair<string, Action> a in actions)
+			{
+				// This action is associated with this key?
+				if(a.Value.KeyMatches(key))
+				{
+					// List short name
+					actionnames.Add(a.Value);
 				}
 			}
 

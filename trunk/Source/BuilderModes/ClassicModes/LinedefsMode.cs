@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 	{
 		#region ================== Constants
 
-		protected const float LINEDEF_HIGHLIGHT_RANGE = 20f;
+		public const float LINEDEF_HIGHLIGHT_RANGE = 20f;
 
 		#endregion
 
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Render selection
 				if(renderer.StartOverlay(true))
 				{
-					RenderSelection();
+					RenderMultiSelection();
 					renderer.Finish();
 				}
 			}
@@ -195,39 +195,108 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				General.Interface.HideInfo();
 		}
 
-		// This is called wheh selection ends
-		protected override void EndSelection()
+		// Selection
+		protected override void Select()
 		{
-			// Go for all lines
-			foreach(Linedef l in General.Map.Map.Linedefs)
+			// Item highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
-							  (l.Start.Position.y >= selectionrect.Top) &&
-							  (l.Start.Position.x <= selectionrect.Right) &&
-							  (l.Start.Position.y <= selectionrect.Bottom) &&
-							  (l.End.Position.x >= selectionrect.Left) &&
-							  (l.End.Position.y >= selectionrect.Top) &&
-							  (l.End.Position.x <= selectionrect.Right) &&
-							  (l.End.Position.y <= selectionrect.Bottom));
+				// Flip selection
+				highlighted.Selected = !highlighted.Selected;
+
+				// Update display
+				if(renderer.StartPlotter(false))
+				{
+					// Redraw highlight to show selection
+					renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+					renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					renderer.Finish();
+					renderer.Present();
+				}
 			}
-			
-			base.EndSelection();
-			if(renderer.StartOverlay(true)) renderer.Finish();
-			General.Interface.RedrawDisplay();
+			else
+			{
+				// Start rectangular selection
+				StartMultiSelection();
+			}
+
+			base.Select();
 		}
 
-		// This is called when the selection is updated
-		protected override void UpdateSelection()
+		// End selection
+		protected override void EndSelect()
 		{
-			base.UpdateSelection();
-
-			// Render selection
-			if(renderer.StartOverlay(true))
+			// Not stopping from multiselection?
+			if(!selecting)
 			{
-				RenderSelection();
-				renderer.Finish();
-				renderer.Present();
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Update display
+					if(renderer.StartPlotter(false))
+					{
+						// Render highlighted item
+						renderer.PlotLinedef(highlighted, General.Colors.Highlight);
+						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+						renderer.Finish();
+						renderer.Present();
+					}
+				}
 			}
+			
+			base.EndSelect();
+		}
+		
+		// Start editing
+		protected override void Edit()
+		{
+			// Item highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				// Highlighted item not selected?
+				if(!highlighted.Selected)
+				{
+					// Make this the only selection
+					General.Map.Map.ClearSelectedLinedefs();
+					highlighted.Selected = true;
+					General.Interface.RedrawDisplay();
+				}
+
+				// Update display
+				if(renderer.StartPlotter(false))
+				{
+					// Redraw highlight to show selection
+					renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+					renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+					renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+			
+			base.Edit();
+		}
+		
+		// Done editing
+		protected override void EndEdit()
+		{
+			// Anything selected?
+			ICollection<Linedef> selected = General.Map.Map.GetLinedefsSelection(true);
+			if(selected.Count > 0)
+			{
+				// Show line edit dialog
+				General.Interface.ShowEditLinedefs(selected);
+
+				// When a single line was selected, deselect it now
+				if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
+
+				// Update entire display
+				General.Interface.RedrawDisplay();
+			}
+			
+			base.EndEdit();
 		}
 		
 		// Mouse moves
@@ -255,114 +324,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			Highlight(null);
 		}
 
-		// Mouse button pressed
-		public override void MouseDown(MouseEventArgs e)
-		{
-			base.MouseDown(e);
-
-			// Select button?
-			if(e.Button == EditMode.SELECT_BUTTON)
-			{
-				// Item highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					// Flip selection
-					highlighted.Selected = !highlighted.Selected;
-
-					// Update display
-					if(renderer.StartPlotter(false))
-					{
-						// Redraw highlight to show selection
-						renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
-						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
-						renderer.Finish();
-						renderer.Present();
-					}
-				}
-				else
-				{
-					// Start making a selection
-					StartSelection();
-				}
-			}
-			// Edit button?
-			else if(e.Button == EditMode.EDIT_BUTTON)
-			{
-				// Item highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					// Highlighted item not selected?
-					if(!highlighted.Selected)
-					{
-						// Make this the only selection
-						General.Map.Map.ClearSelectedLinedefs();
-						highlighted.Selected = true;
-						General.Interface.RedrawDisplay();
-					}
-
-					// Update display
-					if(renderer.StartPlotter(false))
-					{
-						// Redraw highlight to show selection
-						renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
-						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
-						renderer.Finish();
-						renderer.Present();
-					}
-				}
-			}
-		}
-
-		// Mouse released
-		public override void MouseUp(MouseEventArgs e)
-		{
-			ICollection<Linedef> selected;
-
-			base.MouseUp(e);
-
-			// Item highlighted?
-			if((highlighted != null) && !highlighted.IsDisposed)
-			{
-				// Update display
-				if(renderer.StartPlotter(false))
-				{
-					// Render highlighted item
-					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
-					renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-					renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
-					renderer.Finish();
-					renderer.Present();
-				}
-
-				// Edit button?
-				if(e.Button == EditMode.EDIT_BUTTON)
-				{
-					// Anything selected?
-					selected = General.Map.Map.GetLinedefsSelection(true);
-					if(selected.Count > 0)
-					{
-						// Show line edit dialog
-						General.Interface.ShowEditLinedefs(selected);
-						
-						// When a single line was selected, deselect it now
-						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
-
-						// Update entire display
-						General.Interface.RedrawDisplay();
-					}
-				}
-			}
-		}
-
 		// Mouse wants to drag
 		protected override void DragStart(MouseEventArgs e)
 		{
 			base.DragStart(e);
 
 			// Edit button used?
-			if(e.Button == EditMode.EDIT_BUTTON)
+			if(General.Interface.CheckActionActive(null, "classicedit"))
 			{
 				// Anything highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
@@ -378,6 +346,45 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Start dragging the selection
 					General.Map.ChangeMode(new DragLinedefsMode(new LinedefsMode(), mousedownmappos));
 				}
+			}
+		}
+
+		// This is called wheh selection ends
+		protected override void EndMultiSelection()
+		{
+			// Go for all lines
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
+							  (l.Start.Position.y >= selectionrect.Top) &&
+							  (l.Start.Position.x <= selectionrect.Right) &&
+							  (l.Start.Position.y <= selectionrect.Bottom) &&
+							  (l.End.Position.x >= selectionrect.Left) &&
+							  (l.End.Position.y >= selectionrect.Top) &&
+							  (l.End.Position.x <= selectionrect.Right) &&
+							  (l.End.Position.y <= selectionrect.Bottom));
+			}
+
+			base.EndMultiSelection();
+
+			// Clear overlay
+			if(renderer.StartOverlay(true)) renderer.Finish();
+
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+
+		// This is called when the selection is updated
+		protected override void UpdateMultiSelection()
+		{
+			base.UpdateMultiSelection();
+
+			// Render selection
+			if(renderer.StartOverlay(true))
+			{
+				RenderMultiSelection();
+				renderer.Finish();
+				renderer.Present();
 			}
 		}
 		

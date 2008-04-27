@@ -65,5 +65,6 @@ namespace CodeImp.DoomBuilder.Interface
 		void SetProcessorState(bool on);
 		void StartExclusiveMouseInput();
 		void StopExclusiveMouseInput();
+		bool CheckActionActive(Assembly assembly, string actionname);
 	}
 }

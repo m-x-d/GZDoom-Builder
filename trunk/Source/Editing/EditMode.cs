@@ -44,8 +44,6 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constants
 
 		public const int DRAG_START_MOVE_PIXELS = 5;
-		public const MouseButtons EDIT_BUTTON = MouseButtons.Right;
-		public const MouseButtons SELECT_BUTTON = MouseButtons.Left;
 
 		#endregion
 
@@ -133,18 +131,18 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void Engage()
 		{
 			// Bind any methods
-			ActionAttribute.BindMethods(this);
+			General.Actions.BindMethods(this);
 		}
 
 		// Mode disengages
 		public virtual void Disengage()
 		{
 			// Unbind any methods
-			ActionAttribute.UnbindMethods(this);
+			General.Actions.UnbindMethods(this);
 		}
 
 		// This forces the mode to cancel and return to the "parent" mode
-		[Action("cancelmode", BaseAction = true)]
+		[BeginAction("cancelmode", BaseAction = true)]
 		public virtual void Cancel() { }
 		
 		// Optional interface methods

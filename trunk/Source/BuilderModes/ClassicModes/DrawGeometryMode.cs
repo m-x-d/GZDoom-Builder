@@ -31,19 +31,19 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "drawlinesmode",	// Action name used to switch to this mode
-			  ButtonDesc = "Draw Lines Mode",	// Description on the button in toolbar/menu
-			  ButtonImage = "LinesMode.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 1)]	// Position of the button (lower is more to the left)
+	[EditMode(SwitchAction = "drawlinesmode")]
 
 	public class DrawGeometryMode : ClassicMode
 	{
 		#region ================== Constants
+
+		private const float LINE_THICKNESS = 0.6f;
 
 		#endregion
 
@@ -110,6 +110,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.Cancel();
 			
 			// Return to original mode
+			Type t = basemode.GetType();
+			basemode = (EditMode)Activator.CreateInstance(t);
 			General.Map.ChangeMode(basemode);
 		}
 
@@ -119,12 +121,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.Disengage();
 			Cursor.Current = Cursors.AppStarting;
 
-			// When not cancelled
-			if(!cancelled)
+			// When not cancelled and points have been drawn
+			if(!cancelled && (points.Count > 0))
 			{
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("line draw", UndoGroup.None, 0);
 				
+
+
 				// Update cached values
 				General.Map.Map.Update();
 
@@ -143,7 +147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		protected bool CheckViewChanged()
 		{
 			bool viewchanged = false;
-
+			
 			// View changed?
 			if(renderer.OffsetX != lastoffsetx) viewchanged = true;
 			if(renderer.OffsetY != lastoffsety) viewchanged = true;
@@ -187,15 +191,92 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			snaptonearest = General.Interface.CtrlState;
 
+			Vector2D lastp = new Vector2D(0, 0);
+			Vector2D curp = GetCurrentPosition();
+			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
+			
 			// Render drawing lines
 			if(renderer.StartOverlay(true))
 			{
-				RenderSelection();
+				// Go for all points to draw lines
+				if(points.Count > 0)
+				{
+					// Render lines
+					lastp = points[0];
+					for(int i = 1; i < points.Count; i++)
+					{
+						renderer.RenderLine(lastp, points[i], LINE_THICKNESS, General.Colors.Selection, true);
+						lastp = points[i];
+					}
+					
+					// Render line to cursor
+					renderer.RenderLine(lastp, curp, LINE_THICKNESS, General.Colors.Highlight, true);
+					
+					// Render vertices
+					for(int i = 0; i < points.Count; i++)
+						renderer.RenderRectangleFilled(new RectangleF(points[i].x - vsize, points[i].y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Selection, true);
+				}
+
+				// Render vertex at cursor
+				renderer.RenderRectangleFilled(new RectangleF(curp.x - vsize, curp.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Highlight, true);
+				
+				// Done
 				renderer.Finish();
 			}
 
 			// Done
 			renderer.Present();
+		}
+		
+		// This gets the aligned and snapped draw position
+		private Vector2D GetCurrentPosition()
+		{
+			// Snap to nearest?
+			if(snaptonearest)
+			{
+				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
+				
+				// Go for all drawn points
+				foreach(Vector2D v in points)
+				{
+					Vector2D delta = mousemappos - v;
+					if(delta.GetLengthSq() < (vrange * vrange)) return v;
+				}
+				
+				// Try the nearest vertex
+				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
+				if(nv != null) return nv.Position;
+				
+				// Try the nearest linedef
+				Linedef nl = General.Map.Map.NearestLinedefRange(mousemappos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+				if(nl != null)
+				{
+					// Snap to grid?
+					if(snaptogrid)
+					{
+						// Aligned to line and grid
+						// TODO: Find nearest horzontal and vertical grid intersections and align there
+						return nl.NearestOnLine(mousemappos);
+					}
+					else
+					{
+						// Aligned to line
+						return nl.NearestOnLine(mousemappos);
+					}
+				}
+			}
+
+			// Snap to grid?
+			if(snaptogrid)
+			{
+				// Aligned to grid
+				return General.Map.Grid.SnappedToGrid(mousemappos);
+			}
+			else
+			{
+				// Normal position
+				return mousemappos;
+			}
 		}
 		
 		// Mouse moving
@@ -205,26 +286,46 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			Update();
 		}
 
-		// Mouse button released
-		public override void MouseUp(MouseEventArgs e)
+		// Drawing a point
+		[BeginAction("drawpoint")]
+		public void DrawPoint()
 		{
-			base.MouseUp(e);
+			// Mouse inside window?
+			if(General.Interface.MouseInDisplay)
+			{
+				points.Add(GetCurrentPosition());
+				Update();
+			}
+		}
+
+		// Remove a point
+		[BeginAction("removepoint")]
+		public void RemovePoint()
+		{
+			if(points.Count > 0) points.RemoveAt(points.Count - 1);
+			Update();
+		}
+
+		// Finish drawing
+		[BeginAction("finishdraw")]
+		public void FinishDraw()
+		{
+			// Just return to base mode, Disengage will be called automatically.
+			General.Map.ChangeMode(basemode);
 		}
 
 		// When a key is released
 		public override void KeyUp(KeyEventArgs e)
 		{
 			base.KeyUp(e);
-			if(snaptogrid != General.Interface.ShiftState ^ General.Interface.SnapToGrid) Update();
-			if(snaptonearest != General.Interface.CtrlState) Update();
+			Update();
 		}
 
 		// When a key is pressed
 		public override void KeyDown(KeyEventArgs e)
 		{
 			base.KeyDown(e);
-			if(snaptogrid != General.Interface.ShiftState ^ General.Interface.SnapToGrid) Update();
-			if(snaptonearest != General.Interface.CtrlState) Update();
+			Update();
 		}
 		
 		#endregion

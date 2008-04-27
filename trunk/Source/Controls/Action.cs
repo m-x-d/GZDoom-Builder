@@ -39,14 +39,18 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Shortcut key
 		private int key;
+		private int keymask;
 
 		// Shortcut options
 		private bool allowkeys;
 		private bool allowmouse;
 		private bool allowscroll;
+		private bool disregardshift;
+		private bool repeat;
 		
 		// Delegate
-		private List<ActionDelegate> delegates;
+		private List<ActionDelegate> begindelegates;
+		private List<ActionDelegate> enddelegates;
 		
 		#endregion
 
@@ -57,9 +61,12 @@ namespace CodeImp.DoomBuilder.Controls
 		public string Title { get { return title; } }
 		public string Description { get { return description; } }
 		public int ShortcutKey { get { return key; } }
+		public int ShortcutMask { get { return keymask; } }
 		public bool AllowKeys { get { return allowkeys; } }
 		public bool AllowMouse { get { return allowmouse; } }
 		public bool AllowScroll { get { return allowscroll; } }
+		public bool DisregardShift { get { return disregardshift; } }
+		public bool Repeat { get { return repeat; } }
 
 		#endregion
 
@@ -67,18 +74,32 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Constructor
 		public Action(string name, string shortname, string title, string description, int key,
-					  bool allowkeys, bool allowmouse, bool allowscroll)
+					  bool allowkeys, bool allowmouse, bool allowscroll, bool disregardshift, bool repeat)
 		{
 			// Initialize
 			this.name = name;
 			this.shortname = shortname;
 			this.title = title;
 			this.description = description;
-			this.delegates = new List<ActionDelegate>();
+			this.begindelegates = new List<ActionDelegate>();
+			this.enddelegates = new List<ActionDelegate>();
 			this.allowkeys = allowkeys;
 			this.allowmouse = allowmouse;
 			this.allowscroll = allowscroll;
-			this.key = key;
+			this.disregardshift = disregardshift;
+			this.repeat = repeat;
+
+			if(disregardshift)
+			{
+				keymask = (int)Keys.Shift | (int)Keys.Control;
+				keymask = ~keymask;
+			}
+			else
+			{
+				keymask = ~0;
+			}
+			
+			this.key = key & keymask;
 		}
 
 		// Destructor
@@ -166,42 +187,71 @@ namespace CodeImp.DoomBuilder.Controls
 		public void SetShortcutKey(int key)
 		{
 			// Make it so.
-			this.key = key;
+			this.key = key & keymask;
 		}
 		
 		// This binds a delegate to this action
-		public void Bind(ActionDelegate method)
+		public void BindBegin(ActionDelegate method)
 		{
-			delegates.Add(method);
+			begindelegates.Add(method);
 		}
 
 		// This removes a delegate from this action
-		public void Unbind(ActionDelegate method)
+		public void UnbindBegin(ActionDelegate method)
 		{
-			delegates.Remove(method);
+			begindelegates.Remove(method);
+		}
+
+		// This binds a delegate to this action
+		public void BindEnd(ActionDelegate method)
+		{
+			enddelegates.Add(method);
+		}
+
+		// This removes a delegate from this action
+		public void UnbindEnd(ActionDelegate method)
+		{
+			enddelegates.Remove(method);
 		}
 
 		// This raises events for this action
-		public void Invoke()
+		public void Begin()
 		{
 			List<ActionDelegate> delegateslist;
 			
-			// No method bound?
-			if(delegates.Count == 0)
-			{
-				// Ignore this since keys can also be handled through KeyDown and KeyUp in editing modes
-				//General.WriteLogLine("Called action '" + name + "' has no methods bound");
-			}
-			else
+			// Method bound?
+			if(begindelegates.Count > 0)
 			{
 				// Copy delegates list
-				delegateslist = new List<ActionDelegate>(delegates);
+				delegateslist = new List<ActionDelegate>(begindelegates);
 				
 				// Invoke all the delegates
 				foreach(ActionDelegate ad in delegateslist) ad.Invoke();
 			}
 		}
 
+		// This raises events for this action
+		public void End()
+		{
+			List<ActionDelegate> delegateslist;
+
+			// Method bound?
+			if(enddelegates.Count > 0)
+			{
+				// Copy delegates list
+				delegateslist = new List<ActionDelegate>(enddelegates);
+
+				// Invoke all the delegates
+				foreach(ActionDelegate ad in delegateslist) ad.Invoke();
+			}
+		}
+
+		// This checks if the action qualifies for a key combination
+		public bool KeyMatches(int pressedkey)
+		{
+			return (key == (pressedkey & keymask));
+		}
+		
 		#endregion
 	}
 }

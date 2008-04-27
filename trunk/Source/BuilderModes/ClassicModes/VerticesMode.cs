@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Render selection
 				if(renderer.StartOverlay(true))
 				{
-					RenderSelection();
+					RenderMultiSelection();
 					renderer.Finish();
 				}
 			}
@@ -186,36 +186,65 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			else
 				General.Interface.HideInfo();
 		}
-
-		// This is called wheh selection ends
-		protected override void EndSelection()
+		
+		// Selection
+		protected override void Select()
 		{
-			// Go for all vertices
-			foreach(Vertex v in General.Map.Map.Vertices)
+			// Item highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				v.Selected = ((v.Position.x >= selectionrect.Left) &&
-							  (v.Position.y >= selectionrect.Top) &&
-							  (v.Position.x <= selectionrect.Right) &&
-							  (v.Position.y <= selectionrect.Bottom));
+				// Flip selection
+				highlighted.Selected = !highlighted.Selected;
+
+				// Redraw highlight to show selection
+				if(renderer.StartPlotter(false))
+				{
+					renderer.PlotVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+			else
+			{
+				// Start making a selection
+				StartMultiSelection();
 			}
 			
-			base.EndSelection();
-			if(renderer.StartOverlay(true)) renderer.Finish();
-			General.Interface.RedrawDisplay();
+			base.Select();
 		}
-
-		// This is called when the selection is updated
-		protected override void UpdateSelection()
+		
+		// End selection
+		protected override void EndSelect()
 		{
-			base.UpdateSelection();
-
-			// Render selection
-			if(renderer.StartOverlay(true))
+			// Not stopping from multiselection?
+			if(!selecting)
 			{
-				RenderSelection();
-				renderer.Finish();
-				renderer.Present();
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Render highlighted item
+					if(renderer.StartPlotter(false))
+					{
+						renderer.PlotVertex(highlighted, ColorCollection.HIGHLIGHT);
+						renderer.Finish();
+						renderer.Present();
+					}
+				}
 			}
+			
+			base.EndSelect();
+		}
+		
+		// Start editing
+		protected override void Edit()
+		{
+			base.Edit();
+		}
+		
+		// Done editing
+		protected override void EndEdit()
+		{
+			base.EndEdit();
 		}
 		
 		// Mouse moves
@@ -242,54 +271,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Highlight nothing
 			Highlight(null);
 		}
-		
-		// Mouse button pressed
-		public override void MouseDown(MouseEventArgs e)
-		{
-			base.MouseDown(e);
-
-			// Which button is used?
-			if(e.Button == EditMode.SELECT_BUTTON)
-			{
-				// Item highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					// Flip selection
-					highlighted.Selected = !highlighted.Selected;
-
-					// Redraw highlight to show selection
-					if(renderer.StartPlotter(false))
-					{
-						renderer.PlotVertex(highlighted, renderer.DetermineVertexColor(highlighted));
-						renderer.Finish();
-						renderer.Present();
-					}
-				}
-				else
-				{
-					// Start making a selection
-					StartSelection();
-				}
-			}
-		}
-		
-		// Mouse released
-		public override void MouseUp(MouseEventArgs e)
-		{
-			base.MouseUp(e);
-
-			// Item highlighted?
-			if((highlighted != null) && !highlighted.IsDisposed)
-			{
-				// Render highlighted item
-				if(renderer.StartPlotter(false))
-				{
-					renderer.PlotVertex(highlighted, ColorCollection.HIGHLIGHT);
-					renderer.Finish();
-					renderer.Present();
-				}
-			}
-		}
 
 		// Mouse wants to drag
 		protected override void DragStart(MouseEventArgs e)
@@ -297,7 +278,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.DragStart(e);
 
 			// Edit button used?
-			if(e.Button == EditMode.EDIT_BUTTON)
+			if(General.Interface.CheckActionActive(null, "classicedit"))
 			{
 				// Anything highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
@@ -313,6 +294,41 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Start dragging the selection
 					General.Map.ChangeMode(new DragVerticesMode(new VerticesMode(), highlighted, mousedownmappos));
 				}
+			}
+		}
+
+		// This is called wheh selection ends
+		protected override void EndMultiSelection()
+		{
+			// Go for all vertices
+			foreach(Vertex v in General.Map.Map.Vertices)
+			{
+				v.Selected = ((v.Position.x >= selectionrect.Left) &&
+							  (v.Position.y >= selectionrect.Top) &&
+							  (v.Position.x <= selectionrect.Right) &&
+							  (v.Position.y <= selectionrect.Bottom));
+			}
+
+			base.EndMultiSelection();
+
+			// Clear overlay
+			if(renderer.StartOverlay(true)) renderer.Finish();
+
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+
+		// This is called when the selection is updated
+		protected override void UpdateMultiSelection()
+		{
+			base.UpdateMultiSelection();
+
+			// Render selection
+			if(renderer.StartOverlay(true))
+			{
+				RenderMultiSelection();
+				renderer.Finish();
+				renderer.Present();
 			}
 		}
 		

@@ -59,6 +59,8 @@
     <Compile Include="Config\UniversalFieldInfo.cs" />
     <Compile Include="Config\UniversalFieldType.cs" />
     <Compile Include="Controls\ActionAttribute.cs" />
+    <Compile Include="Controls\BeginActionAttribute.cs" />
+    <Compile Include="Controls\EndActionAttribute.cs" />
     <Compile Include="Controls\KeyControl.cs" />
     <Compile Include="Controls\MouseInput.cs" />
     <Compile Include="Data\DirectoryReader.cs" />

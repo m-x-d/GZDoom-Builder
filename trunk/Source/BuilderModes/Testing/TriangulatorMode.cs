@@ -232,8 +232,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.MouseDown(e);
 			bool front, back;
 
-			// Which button is used?
-			if(e.Button == EditMode.SELECT_BUTTON)
+			// Edit button is used?
+			if(General.Interface.CheckActionActive(null, "classicedit"))
 			{
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
@@ -272,8 +272,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Which button is used?
-				if(e.Button == EditMode.SELECT_BUTTON)
+				// Edit button is used?
+				if(General.Interface.CheckActionActive(null, "classicedit"))
 				{
 					// Anything selected?
 					selected = General.Map.Map.GetSectorsSelection(true);

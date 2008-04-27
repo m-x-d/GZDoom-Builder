@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private bool configspecific;
 		
 		// Mode switching
-		private ActionAttribute switchactionattr = null;
+		private BeginActionAttribute switchactionattr = null;
 		private ActionDelegate switchactiondel = null;
 
 		// Mode button
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		public Plugin Plugin { get { return plugin; } }
 		public Type Type { get { return type; } }
-		public ActionAttribute SwitchAction { get { return switchactionattr; } }
+		public BeginActionAttribute SwitchAction { get { return switchactionattr; } }
 		public Image ButtonImage { get { return buttonimage; } }
 		public string ButtonDesc { get { return buttondesc; } }
 		public bool ConfigSpecific { get { return configspecific; } }
@@ -81,11 +81,11 @@ namespace CodeImp.DoomBuilder.Editing
 			// Make switch action info
 			if((attr.SwitchAction != null) && (attr.SwitchAction.Length > 0))
 			{
-				switchactionattr = new ActionAttribute(attr.SwitchAction);
+				switchactionattr = new BeginActionAttribute(attr.SwitchAction);
 				switchactiondel = new ActionDelegate(SwitchToMode);
 
 				// Bind switch action
-				ActionAttribute.BindDelegate(plugin.Assembly, switchactiondel, switchactionattr);
+				General.Actions.BindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
 			}
 			
 			// Make button info
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public void Dispose()
 		{
 			// Unbind switch action
-			if(switchactiondel != null) ActionAttribute.UnbindDelegate(plugin.Assembly, switchactiondel, switchactionattr);
+			if(switchactiondel != null) General.Actions.UnbindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
 			buttonimage.Dispose();
 			buttonimagestream.Dispose();
 
