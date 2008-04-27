@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This performs an undo
 		[BeginAction("undo")]
-		public void PerformUndo()
+		internal void PerformUndo()
 		{
 			UndoSnapshot u, r;
 			Cursor oldcursor = Cursor.Current;
@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		// This performs a redo
 		[BeginAction("redo")]
-		public void PerformRedo()
+		internal void PerformRedo()
 		{
 			UndoSnapshot u, r;
 			Cursor oldcursor = Cursor.Current;
