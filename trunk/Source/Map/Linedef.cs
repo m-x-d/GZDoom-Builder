@@ -319,6 +319,82 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
+		// This returns all points at which the line intersects with the grid
+		public List<Vector2D> GetGridIntersections()
+		{
+			List<Vector2D> coords = new List<Vector2D>();
+			/*
+			float startx = start.Position.x;
+			float endx = end.Position.x;
+			float starty = start.Position.y;
+			float endy = end.Position.y;
+			float dirx = (float)Math.Sign(endx - startx);
+			float diry = (float)Math.Sign(endy - starty);
+			 */
+			Vector2D v = new Vector2D();
+			float gx, gy, minx, maxx, miny, maxy;
+			bool reversex, reversey;
+			
+			if(start.Position.x > end.Position.x)
+			{
+				minx = end.Position.x;
+				maxx = start.Position.x;
+				reversex = true;
+			}
+			else
+			{
+				minx = start.Position.x;
+				maxx = end.Position.x;
+				reversex = false;
+			}
+
+			if(start.Position.y > end.Position.y)
+			{
+				miny = end.Position.y;
+				maxy = start.Position.y;
+				reversey = true;
+			}
+			else
+			{
+				miny = start.Position.y;
+				maxy = end.Position.y;
+				reversey = false;
+			}
+
+			// Go for all vertical grid lines in between line start and end
+			gx = General.Map.Grid.GetHigher(minx);
+			if(gx < maxx)
+			{
+				for(; gx < maxx; gx += General.Map.Grid.GridSizeF)
+				{
+					// Add intersection point at this x coordinate
+					float u = (gx - minx) / (maxx - minx);
+					if(reversex) u = 1.0f - u;
+					v.x = gx;
+					v.y = start.Position.y + (end.Position.y - start.Position.y) * u;
+					coords.Add(v);
+				}
+			}
+			
+			// Go for all horizontal grid lines in between line start and end
+			gy = General.Map.Grid.GetHigher(miny);
+			if(gy < maxy)
+			{
+				for(; gy < maxy; gy += General.Map.Grid.GridSizeF)
+				{
+					// Add intersection point at this y coordinate
+					float u = (gy - miny) / (maxy - miny);
+					if(reversey) u = 1.0f - u;
+					v.x = start.Position.x + (end.Position.x - start.Position.x) * u;
+					v.y = gy;
+					coords.Add(v);
+				}
+			}
+			
+			// Profit
+			return coords;
+		}
+		
 		// This returns the closest coordinates ON the line
 		public Vector2D NearestOnLine(Vector2D pos)
 		{

@@ -41,6 +41,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 	public class DrawGeometryMode : ClassicMode
 	{
+		#region ================== Structures
+
+		private struct DrawnVertex
+		{
+			public Vector2D pos;
+			public bool stitch;
+		}
+
+		#endregion
+		
 		#region ================== Constants
 
 		private const float LINE_THICKNESS = 0.6f;
@@ -53,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private EditMode basemode;
 
 		// Drawing points
-		private List<Vector2D> points;
+		private List<DrawnVertex> points;
 
 		// Keep track of view changes
 		private float lastoffsetx;
@@ -80,7 +90,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			// Initialize
 			this.basemode = General.Map.Mode;
-			points = new List<Vector2D>();
+			points = new List<DrawnVertex>();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -127,8 +137,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("line draw", UndoGroup.None, 0);
 				
-
-
 				// Update cached values
 				General.Map.Map.Update();
 
@@ -189,10 +197,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private void Update()
 		{
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
-			snaptonearest = General.Interface.CtrlState;
+			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
 			Vector2D lastp = new Vector2D(0, 0);
-			Vector2D curp = GetCurrentPosition();
+			DrawnVertex curp = GetCurrentPosition();
 			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
 			
 			// Render drawing lines
@@ -202,23 +210,32 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(points.Count > 0)
 				{
 					// Render lines
-					lastp = points[0];
+					lastp = points[0].pos;
 					for(int i = 1; i < points.Count; i++)
 					{
-						renderer.RenderLine(lastp, points[i], LINE_THICKNESS, General.Colors.Selection, true);
-						lastp = points[i];
+						renderer.RenderLine(lastp, points[i].pos, LINE_THICKNESS, General.Colors.Selection, true);
+						lastp = points[i].pos;
 					}
 					
 					// Render line to cursor
-					renderer.RenderLine(lastp, curp, LINE_THICKNESS, General.Colors.Highlight, true);
+					renderer.RenderLine(lastp, curp.pos, LINE_THICKNESS, General.Colors.Highlight, true);
 					
 					// Render vertices
 					for(int i = 0; i < points.Count; i++)
-						renderer.RenderRectangleFilled(new RectangleF(points[i].x - vsize, points[i].y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Selection, true);
+					{
+						if(points[i].stitch)
+						{
+							renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Highlight, true);
+						}
+						else
+						{
+							renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Selection, true);
+						}
+					}
 				}
 
 				// Render vertex at cursor
-				renderer.RenderRectangleFilled(new RectangleF(curp.x - vsize, curp.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Highlight, true);
+				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Highlight, true);
 				
 				// Done
 				renderer.Finish();
@@ -229,23 +246,35 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 		
 		// This gets the aligned and snapped draw position
-		private Vector2D GetCurrentPosition()
+		private DrawnVertex GetCurrentPosition()
 		{
+			DrawnVertex p = new DrawnVertex();
+			
 			// Snap to nearest?
 			if(snaptonearest)
 			{
 				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
 				
 				// Go for all drawn points
-				foreach(Vector2D v in points)
+				foreach(DrawnVertex v in points)
 				{
-					Vector2D delta = mousemappos - v;
-					if(delta.GetLengthSq() < (vrange * vrange)) return v;
+					Vector2D delta = mousemappos - v.pos;
+					if(delta.GetLengthSq() < (vrange * vrange))
+					{
+						p.pos = v.pos;
+						p.stitch = true;
+						return p;
+					}
 				}
 				
 				// Try the nearest vertex
 				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
-				if(nv != null) return nv.Position;
+				if(nv != null)
+				{
+					p.pos = nv.Position;
+					p.stitch = true;
+					return p;
+				}
 				
 				// Try the nearest linedef
 				Linedef nl = General.Map.Map.NearestLinedefRange(mousemappos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
@@ -254,14 +283,33 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Snap to grid?
 					if(snaptogrid)
 					{
-						// Aligned to line and grid
-						// TODO: Find nearest horzontal and vertical grid intersections and align there
-						return nl.NearestOnLine(mousemappos);
+						// Get grid intersection coordinates
+						List<Vector2D> coords = nl.GetGridIntersections();
+
+						// Find nearest grid intersection
+						float found_distance = float.MaxValue;
+						Vector2D found_coord = new Vector2D();
+						foreach(Vector2D v in coords)
+						{
+							Vector2D delta = mousemappos - v;
+							if(delta.GetLengthSq() < found_distance)
+							{
+								found_distance = delta.GetLengthSq();
+								found_coord = v;
+							}
+						}
+						
+						// Align to the closest grid intersection
+						p.pos = found_coord;
+						p.stitch = true;
+						return p;
 					}
 					else
 					{
 						// Aligned to line
-						return nl.NearestOnLine(mousemappos);
+						p.pos = nl.NearestOnLine(mousemappos);
+						p.stitch = true;
+						return p;
 					}
 				}
 			}
@@ -270,12 +318,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(snaptogrid)
 			{
 				// Aligned to grid
-				return General.Map.Grid.SnappedToGrid(mousemappos);
+				p.pos = General.Map.Grid.SnappedToGrid(mousemappos);
+				p.stitch = false;
+				return p;
 			}
 			else
 			{
 				// Normal position
-				return mousemappos;
+				p.pos = mousemappos;
+				p.stitch = false;
+				return p;
 			}
 		}
 		
@@ -318,14 +370,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void KeyUp(KeyEventArgs e)
 		{
 			base.KeyUp(e);
-			Update();
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
 		}
 
 		// When a key is pressed
 		public override void KeyDown(KeyEventArgs e)
 		{
 			base.KeyDown(e);
-			Update();
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
 		}
 		
 		#endregion

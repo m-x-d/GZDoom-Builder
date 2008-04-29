@@ -66,6 +66,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// List of unstable lines
 		protected ICollection<Linedef> unstablelines;
 		
+		// List of unselected lines
+		protected ICollection<Linedef> unselectedlines;
+		
 		// Keep track of view changes
 		private float lastoffsetx;
 		private float lastoffsety;
@@ -145,24 +148,67 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapnearest)
 		{
 			Vector2D oldpos = dragitem.Position;
-			Vertex nearest;
 			int i = 0;
 			
 			// Snap to nearest?
 			if(snapnearest)
 			{
-				// Find nearest unselected item within selection range
-				nearest = MapSet.NearestVertexSquareRange(unselectedverts, mousemappos, VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
-				if(nearest != null)
+				// Find nearest unselected vertex within range
+				Vertex nv = MapSet.NearestVertexSquareRange(unselectedverts, mousemappos, VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+				if(nv != null)
 				{
 					// Move the dragged item
-					dragitem.Move(nearest.Position);
+					dragitem.Move(nv.Position);
 
 					// Adjust the offset
-					offset = nearest.Position - dragitemposition;
+					offset = nv.Position - dragitemposition;
 
 					// Do not snap to grid!
 					snapgrid = false;
+				}
+				else
+				{
+					// Find the nearest unselected line within range
+					Linedef nl = MapSet.NearestLinedefRange(unselectedlines, mousemappos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+					if(nl != null)
+					{
+						// Snap to grid?
+						if(snaptogrid)
+						{
+							// Get grid intersection coordinates
+							List<Vector2D> coords = nl.GetGridIntersections();
+
+							// Find nearest grid intersection
+							float found_distance = float.MaxValue;
+							Vector2D found_coord = new Vector2D();
+							foreach(Vector2D v in coords)
+							{
+								Vector2D delta = mousemappos - v;
+								if(delta.GetLengthSq() < found_distance)
+								{
+									found_distance = delta.GetLengthSq();
+									found_coord = v;
+								}
+							}
+							
+							// Move the dragged item
+							dragitem.Move(found_coord);
+
+							// Align to line here
+							offset = found_coord - dragitemposition;
+
+							// Do not snap to grid anymore
+							snapgrid = false;
+						}
+						else
+						{
+							// Move the dragged item
+							dragitem.Move(nl.NearestOnLine(mousemappos));
+
+							// Align to line here
+							offset = nl.NearestOnLine(mousemappos) - dragitemposition;
+						}
+					}
 				}
 			}
 
@@ -286,7 +332,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private void Update()
 		{
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
-			snaptonearest = General.Interface.CtrlState;
+			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 			
 			// Move selected geometry
 			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest))
@@ -318,16 +364,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void KeyUp(KeyEventArgs e)
 		{
 			base.KeyUp(e);
-			if(snaptogrid != General.Interface.ShiftState ^ General.Interface.SnapToGrid) Update();
-			if(snaptonearest != General.Interface.CtrlState) Update();
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
 		}
 
 		// When a key is pressed
 		public override void KeyDown(KeyEventArgs e)
 		{
 			base.KeyDown(e);
-			if(snaptogrid != General.Interface.ShiftState ^ General.Interface.SnapToGrid) Update();
-			if(snaptonearest != General.Interface.CtrlState) Update();
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
 		}
 		
 		#endregion
