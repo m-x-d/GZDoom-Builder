@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		
 		#region ================== Constants
 
-		private const float LINE_THICKNESS = 0.6f;
+		private const float LINE_THICKNESS = 0.8f;
 
 		#endregion
 
@@ -137,6 +137,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("line draw", UndoGroup.None, 0);
 				
+				// MOO
+
 				// Update cached values
 				General.Map.Map.Update();
 
