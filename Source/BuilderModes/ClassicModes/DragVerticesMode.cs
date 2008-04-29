@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Get selected vertices
 			selectedverts = General.Map.Map.GetVerticesSelection(true);
 			unselectedverts = General.Map.Map.GetVerticesSelection(false);
+			unselectedlines = General.Map.Map.LinedefsFromSelectedVertices(true, false, false);
 			
 			// Initialize
 			base.StartDrag(basemode, dragitem, dragstartmappos,

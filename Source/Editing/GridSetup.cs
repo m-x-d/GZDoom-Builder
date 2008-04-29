@@ -144,6 +144,18 @@ namespace CodeImp.DoomBuilder.Editing
 			backimage.CreateTexture();
 		}
 		
+		// This returns the next higher coordinate
+		public float GetHigher(float offset)
+		{
+			return (float)Math.Round((offset + (gridsizef * 0.5f)) * gridsizefinv) * gridsizef;
+		}
+
+		// This returns the next lower coordinate
+		public float GetLower(float offset)
+		{
+			return (float)Math.Round((offset - (gridsizef * 0.5f)) * gridsizefinv) * gridsizef;
+		}
+		
 		// This snaps to the nearest grid coordinate
 		public Vector2D SnappedToGrid(Vector2D v)
 		{

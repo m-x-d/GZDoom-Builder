@@ -51,7 +51,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Variables
 
 		private ICollection<Linedef> selectedlines;
-		private ICollection<Linedef> unselectedlines;
 
 		#endregion
 
