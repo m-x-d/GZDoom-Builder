@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Selections
 		private bool selected;
+		private bool marked;
 
 		// Additional fields
 		private SortedList<string, object> fields;
@@ -89,6 +90,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Action { get { return action; } }
 		public byte[] Args { get { return args; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
+		public bool Marked { get { return marked; } set { marked = value; } }
 		public float Size { get { return size; } }
 		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }

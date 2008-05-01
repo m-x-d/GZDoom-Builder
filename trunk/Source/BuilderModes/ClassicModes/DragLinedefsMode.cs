@@ -63,17 +63,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// Constructor to start dragging immediately
 		public DragLinedefsMode(EditMode basemode, Vector2D dragstartmappos)
 		{
-			// Get the nearest vertex for snapping
-			Vertex nearest = MapSet.NearestVertex(General.Map.Map.GetVerticesFromLinesSelection(true), dragstartmappos);
+			// Mark what we are dragging
+			General.Map.Map.ClearAllMarks();
+			General.Map.Map.MarkSelectedLinedefs(true, true);
+			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
+			foreach(Vertex v in verts) v.Marked = true;
 			
 			// Get selected lines
 			selectedlines = General.Map.Map.GetLinedefsSelection(true);
-			unselectedlines = General.Map.Map.GetLinedefsSelection(false);
-			
+
 			// Initialize
-			base.StartDrag(basemode, nearest, dragstartmappos,
-						   General.Map.Map.GetVerticesFromLinesSelection(true),
-						   General.Map.Map.GetVerticesFromLinesSelectionEx(false));
+			base.StartDrag(basemode, dragstartmappos);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			// Select vertices from lines selection
 			General.Map.Map.ClearSelectedVertices();
-			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesSelection(true);
+			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 			foreach(Vertex v in verts) v.Selected = true;
 
 			// Perform normal disengage
@@ -133,7 +133,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(renderer.StartPlotter(true))
 			{
 				// Render lines and vertices
-				renderer.PlotLinedefSet(unselectedlines);
+				renderer.PlotLinedefSet(snaptolines);
+				renderer.PlotLinedefSet(unstablelines);
 				renderer.PlotLinedefSet(selectedlines);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 

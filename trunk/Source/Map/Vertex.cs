@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Selections
 		private bool selected;
+		private bool marked;
 		
 		// Cloning
 		private Vertex clone;
@@ -77,6 +78,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Y { get { return y; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
+		public bool Marked { get { return marked; } set { marked = value; } }
 		public Vertex Clone { get { return clone; } set { clone = value; } }
 		public SortedList<string, object> Fields { get { return fields; } }
 
@@ -248,6 +250,7 @@ namespace CodeImp.DoomBuilder.Map
 
 			// If either of the two vertices was selected, keep the other selected
 			if(this.selected) other.selected = true;
+			if(this.marked) other.marked = true;
 
 			// Remove this vertex
 			this.Dispose();

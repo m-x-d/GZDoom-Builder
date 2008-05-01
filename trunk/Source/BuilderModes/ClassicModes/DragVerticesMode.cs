@@ -50,9 +50,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		#region ================== Variables
 
-		private ICollection<Vertex> selectedverts;
-		private ICollection<Vertex> unselectedverts;
-		
 		#endregion
 
 		#region ================== Properties
@@ -64,15 +61,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// Constructor to start dragging immediately
 		public DragVerticesMode(EditMode basemode, Vertex dragitem, Vector2D dragstartmappos)
 		{
-			// Get selected vertices
-			selectedverts = General.Map.Map.GetVerticesSelection(true);
-			unselectedverts = General.Map.Map.GetVerticesSelection(false);
-			unselectedlines = General.Map.Map.LinedefsFromSelectedVertices(true, false, false);
-			
+			// Mark what we are dragging
+			General.Map.Map.ClearAllMarks();
+			General.Map.Map.MarkSelectedVertices(true, true);
+
 			// Initialize
-			base.StartDrag(basemode, dragitem, dragstartmappos,
-						   General.Map.Map.GetVerticesSelection(true),
-						   General.Map.Map.GetVerticesSelection(false));
+			base.StartDrag(basemode, dragstartmappos);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

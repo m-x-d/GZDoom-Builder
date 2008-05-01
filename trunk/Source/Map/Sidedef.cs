@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Additional fields
 		private SortedList<string, object> fields;
-		
+
 		// Disposing
 		private bool isdisposed = false;
 

@@ -161,8 +161,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				}
 
 				// STEP 2: Merge the new geometry
-				foreach(Vertex v in mergeverts) v.Selected = true;
-				map.StitchGeometry(mergeverts, nonmergeverts);
+				foreach(Vertex v in mergeverts) v.Marked = true;
+				map.StitchGeometry();
 				
 				// STEP 3: Make sectors where possible
 				
