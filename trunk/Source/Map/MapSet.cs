@@ -156,17 +156,15 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Make new vertex
 				v.Clone = newset.CreateVertex(v.X, v.Y);
+				v.CopyPropertiesTo(v.Clone);
 			}
 
 			// Go for all sectors
 			foreach(Sector s in sectors)
 			{
 				// Make new sector
-				Sector ns = newset.CreateSector();
-				s.Clone = ns;
-				
-				// Copy properties
-				s.CopyPropertiesTo(ns);
+				s.Clone = newset.CreateSector();
+				s.CopyPropertiesTo(s.Clone);
 			}
 
 			// Go for all linedefs
@@ -174,8 +172,6 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Make new linedef
 				nl = newset.CreateLinedef(l.Start.Clone, l.End.Clone);
-				
-				// Copy properties
 				l.CopyPropertiesTo(nl);
 
 				// Linedef has a front side?
@@ -183,8 +179,6 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					// Make new sidedef
 					nd = newset.CreateSidedef(nl, true, l.Front.Sector.Clone);
-
-					// Copy properties
 					l.Front.CopyPropertiesTo(nd);
 				}
 
@@ -193,8 +187,6 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					// Make new sidedef
 					nd = newset.CreateSidedef(nl, false, l.Back.Sector.Clone);
-
-					// Copy properties
 					l.Back.CopyPropertiesTo(nd);
 				}
 			}
@@ -204,8 +196,6 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Make new thing
 				Thing nt = newset.CreateThing();
-
-				// Copy properties
 				t.CopyPropertiesTo(nt);
 			}
 

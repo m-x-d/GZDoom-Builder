@@ -178,6 +178,7 @@ namespace CodeImp.DoomBuilder.Map
 			v.y = y;
 			v.pos = pos;
 			if(fields != null) v.MakeFields(fields);
+			v.selected = selected;
 		}
 		
 		// This returns the distance from given coordinates

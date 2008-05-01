@@ -162,6 +162,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.iconoffset = iconoffset;
 			args.CopyTo(t.args, 0);
 			if(fields != null) t.MakeFields(fields);
+			t.selected = selected;
 		}
 		
 		// This determines which sector the thing is in and links it
