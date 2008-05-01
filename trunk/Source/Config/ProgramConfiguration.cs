@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				// Read the cache variables
 				blackbrowsers = cfg.ReadSetting("blackbrowsers", false);
-				stitchdistance = cfg.ReadSetting("stitchdistance", 2.0f);
+				stitchdistance = cfg.ReadSetting("stitchdistance", 1.0f);
 				undolevels = cfg.ReadSetting("undolevels", 20);
 				visualfov = cfg.ReadSetting("visualfov", 80);
 				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40f);

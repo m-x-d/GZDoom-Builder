@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
+		public const float SIDE_POINT_DISTANCE = 0.001f;
 		public const int NUM_ARGS = 5;
 		public static readonly byte[] EMPTY_ARGS = new byte[NUM_ARGS];
 		
@@ -305,6 +306,26 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Methods
 		
+		// This returns a point for testing on one side
+		public Vector2D GetSidePoint(bool front)
+		{
+			Vector2D n = new Vector2D();
+			n.x = (end.Position.x - start.Position.x) * lengthinv * SIDE_POINT_DISTANCE;
+			n.y = (end.Position.y - start.Position.y) * lengthinv * SIDE_POINT_DISTANCE;
+
+			if(front)
+			{
+				n.x = -n.x;
+				n.y = -n.y;
+			}
+
+			Vector2D p = new Vector2D();
+			p.x = start.Position.x + (end.Position.x - start.Position.x) * 0.5f - n.y;
+			p.y = start.Position.y + (end.Position.y - start.Position.y) * 0.5f + n.x;
+
+			return p;
+		}
+		
 		// This applies single/double sided flags
 		public void ApplySidedFlags()
 		{
@@ -493,6 +514,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				nsd = map.CreateSidedef(nl, true, front.Sector);
 				front.CopyPropertiesTo(nsd);
+				nsd.Marked = front.Marked;
 			}
 
 			// Copy back sidedef if exists
@@ -500,6 +522,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				nsd = map.CreateSidedef(nl, false, back.Sector);
 				back.CopyPropertiesTo(nsd);
+				nsd.Marked = back.Marked;
 			}
 
 			// Return result
@@ -660,6 +683,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				sd = map.CreateSidedef(other, front, newside.Sector);
 				newside.CopyPropertiesTo(sd);
+				sd.Marked = newside.Marked;
 			}
 		}
 		

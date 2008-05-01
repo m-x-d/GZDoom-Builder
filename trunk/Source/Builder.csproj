@@ -94,6 +94,7 @@
     <Compile Include="Config\NodebuilderInfo.cs" />
     <Compile Include="Geometry\Angle2D.cs" />
     <Compile Include="Geometry\BSPTriangulator.cs" />
+    <Compile Include="Geometry\LinedefsTracePath.cs" />
     <Compile Include="Geometry\LinedefAngleSorter.cs" />
     <Compile Include="Geometry\EarClipTriangulator.cs" />
     <Compile Include="Geometry\EarClipVertex.cs" />
@@ -304,6 +305,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Map\Linedef.cs" />
+    <Compile Include="Map\LinedefSide.cs" />
     <Compile Include="Map\MapOptions.cs" />
     <Compile Include="Map\MapSet.cs" />
     <Compile Include="Data\DataLocation.cs" />

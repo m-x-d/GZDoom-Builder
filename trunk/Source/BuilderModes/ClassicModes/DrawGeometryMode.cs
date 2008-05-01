@@ -94,6 +94,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			
 			// No selection in this mode
 			General.Map.Map.ClearAllSelected();
+			General.Map.Map.ClearAllMarks();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -131,8 +132,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// Disenagaging
 		public override void Disengage()
 		{
+			List<Vertex> newverts = new List<Vertex>();
+			List<Linedef> newlines = new List<Linedef>();
+			List<Vertex> mergeverts = new List<Vertex>();
+			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
+
 			MapSet map = General.Map.Map;
+
 			base.Disengage();
+
 			Cursor.Current = Cursors.AppStarting;
 
 			// When not cancelled and points have been drawn
@@ -142,29 +150,66 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				General.Map.UndoRedo.CreateUndo("line draw", UndoGroup.None, 0);
 				
 				// STEP 1: Create the new geometry
-				List<Vertex> newverts = new List<Vertex>();
-				List<Linedef> newlines = new List<Linedef>();
-				List<Vertex> mergeverts = new List<Vertex>();
-				List<Vertex> nonmergeverts = new List<Vertex>(map.Vertices);
+
+				// Make first vertex
 				Vertex v1 = map.CreateVertex((int)points[0].pos.x, (int)points[0].pos.y);
+				
+				// Keep references
 				newverts.Add(v1);
 				if(points[0].stitch) mergeverts.Add(v1); else nonmergeverts.Add(v1);
+
+				// Go for all other points
 				for(int i = 1; i < points.Count; i++)
 				{
+					// Create vertex for point
 					Vertex v2 = map.CreateVertex((int)points[i].pos.x, (int)points[i].pos.y);
+
+					// Keep references
 					newverts.Add(v2);
 					if(points[i].stitch) mergeverts.Add(v2); else nonmergeverts.Add(v2);
+
+					// Create line between point and previous
 					Linedef ld = map.CreateLinedef(v1, v2);
+					ld.Marked = true;
 					ld.Selected = true;
 					newlines.Add(ld);
+
+					// Next
 					v1 = v2;
 				}
-
+				
 				// STEP 2: Merge the new geometry
 				foreach(Vertex v in mergeverts) v.Marked = true;
+				MapSet.JoinVertices(mergeverts, mergeverts, true, General.Settings.StitchDistance);
 				map.StitchGeometry();
 				
 				// STEP 3: Make sectors where possible
+				bool[] frontsdone = new bool[newlines.Count];
+				for(int i = 0; i < newlines.Count; i++)
+				{
+					Linedef ld = newlines[i];
+					
+					// Front not marked as done?
+					if(!frontsdone[i])
+					{
+						// Make sector here
+						Sector newsector = map.MakeSector(ld, true);
+						if(newsector != null)
+						{
+							// Go for all sidedefs in this new sector
+							foreach(Sidedef sd in newsector.Sidedefs)
+							{
+								// Side matches with a side of our new lines?
+								int lineindex = newlines.IndexOf(sd.Line);
+								if(lineindex > -1)
+								{
+									// Mark this side as done
+									if(sd.IsFront) frontsdone[lineindex] = true;
+								}
+							}
+						}
+					}
+				}
 				
 				// Update cached values
 				map.Update();

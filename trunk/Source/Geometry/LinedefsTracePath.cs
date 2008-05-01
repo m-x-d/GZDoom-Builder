@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	public class SidedefsTracePath : List<Sidedef>
+	public class LinedefTracePath : List<Linedef>
 	{
 		#region ================== Constants
 
@@ -48,13 +48,26 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public SidedefsTracePath()
+		public LinedefTracePath()
 		{
 			// Initialize
 		}
 
 		// Constructor
-		public SidedefsTracePath(SidedefsTracePath p, Sidedef add) : base(p)
+		public LinedefTracePath(IEnumerable<Linedef> lines) : base(lines)
+		{
+			// Initialize
+		}
+
+		// Constructor
+		public LinedefTracePath(ICollection<LinedefSide> lines) : base(lines.Count)
+		{
+			// Initialize
+			foreach(LinedefSide ls in lines) base.Add(ls.Line);
+		}
+
+		// Constructor
+		public LinedefTracePath(LinedefTracePath p, Linedef add) : base(p)
 		{
 			// Initialize
 			base.Add(add);
@@ -71,10 +84,10 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(base.Count > 1)
 			{
 				// The end sidedef must share a vertex with the first
-				return (base[0].Line.Start == base[base.Count - 1].Line.Start) ||
-					   (base[0].Line.Start == base[base.Count - 1].Line.End) ||
-					   (base[0].Line.End == base[base.Count - 1].Line.Start) ||
-					   (base[0].Line.End == base[base.Count - 1].Line.End);
+				return (base[0].Start == base[base.Count - 1].Start) ||
+					   (base[0].Start == base[base.Count - 1].End) ||
+					   (base[0].End == base[base.Count - 1].Start) ||
+					   (base[0].End == base[base.Count - 1].End);
 			}
 			else
 			{
@@ -87,18 +100,26 @@ namespace CodeImp.DoomBuilder.Geometry
 		public Polygon MakePolygon()
 		{
 			Polygon p = new Polygon();
+			bool forward = true;
 			
 			// Any sides at all?
 			if(base.Count > 0)
 			{
-				// Add all sides
-				for(int i = 0; i < base.Count; i++)
+				p.AddLast(new EarClipVertex(base[0].Start.Position));
+				
+				// Add all lines, but the first
+				for(int i = 1; i < base.Count; i++)
 				{
-					// On front or back?
-					if(base[i].IsFront)
-						p.AddLast(new EarClipVertex(base[i].Line.End.Position));
+					// Traverse direction changes?
+					if((base[i - 1].Start == base[i].Start) ||
+					   (base[i - 1].End == base[i].End))
+						forward = !forward;
+
+					// Add next vertex
+					if(forward)
+						p.AddLast(new EarClipVertex(base[i].Start.Position));
 					else
-						p.AddLast(new EarClipVertex(base[i].Line.Start.Position));
+						p.AddLast(new EarClipVertex(base[i].End.Position));
 				}
 			}
 			
