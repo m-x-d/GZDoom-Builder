@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private Vector2D dragstartmappos;
 
 		// Item used as reference for snapping to the grid
-		protected Thing dragitem;
+		private Thing dragitem;
 		private Vector2D dragitemposition;
 
 		// List of old thing positions
@@ -298,7 +298,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This checks if the view offset/zoom changed and updates the check
-		protected bool CheckViewChanged()
+		private bool CheckViewChanged()
 		{
 			bool viewchanged = false;
 			
