@@ -246,6 +246,9 @@ namespace CodeImp.DoomBuilder.Map
 				current = previous;
 			}
 
+			// If either of the two vertices was selected, keep the other selected
+			if(this.selected) other.selected = true;
+
 			// Remove this vertex
 			this.Dispose();
 		}
