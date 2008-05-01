@@ -117,6 +117,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.start = start;
 			this.end = end;
 			this.updateneeded = true;
+			this.args = new byte[NUM_ARGS];
 			
 			// Attach to vertices
 			startvertexlistitem = start.AttachLinedef(this);
@@ -481,6 +482,7 @@ namespace CodeImp.DoomBuilder.Map
 			nl = map.CreateLinedef(v, end);
 			CopyPropertiesTo(nl);
 			SetEndVertex(v);
+			nl.selected = this.selected;
 
 			// Copy front sidedef if exists
 			if(front != null)
