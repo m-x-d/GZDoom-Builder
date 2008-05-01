@@ -170,6 +170,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.tag = tag;
 			s.brightness = brightness;
 			if(fields != null) s.MakeFields(fields);
+			s.selected = selected;
 		}
 		
 		// This attaches a sidedef and returns the listitem

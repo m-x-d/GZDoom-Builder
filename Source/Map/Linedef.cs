@@ -195,6 +195,7 @@ namespace CodeImp.DoomBuilder.Map
 			l.tag = tag;
 			l.updateneeded = true;
 			if(fields != null) l.MakeFields(fields);
+			l.selected = selected;
 		}
 		
 		// This attaches a sidedef on the front
