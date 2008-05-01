@@ -436,6 +436,7 @@ namespace CodeImp.DoomBuilder.Map
 			ClearMarkedThings(false);
 			ClearMarkedLinedefs(false);
 			ClearMarkedSectors(false);
+			ClearMarkedSidedefs(false);
 		}
 
 		// This clears marked vertices
@@ -454,6 +455,12 @@ namespace CodeImp.DoomBuilder.Map
 		public void ClearMarkedLinedefs(bool mark)
 		{
 			foreach(Linedef l in linedefs) l.Marked = mark;
+		}
+
+		// This clears marked sidedefs
+		public void ClearMarkedSidedefs(bool mark)
+		{
+			foreach(Sidedef s in sidedefs) s.Marked = mark;
 		}
 
 		// This clears marked sectors
@@ -497,25 +504,40 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a marking from selection
 		public void MarkSelectedVertices(bool selected, bool mark)
 		{
-			foreach(Vertex v in vertices) if(v.Selected == selected) v.Marked |= mark;
+			foreach(Vertex v in vertices) if(v.Selected == selected) v.Marked = mark;
 		}
 
 		// This creates a marking from selection
 		public void MarkSelectedLinedefs(bool selected, bool mark)
 		{
-			foreach(Linedef l in linedefs) if(l.Selected == selected) l.Marked |= mark;
+			foreach(Linedef l in linedefs) if(l.Selected == selected) l.Marked = mark;
 		}
 
 		// This creates a marking from selection
 		public void MarkSelectedSectors(bool selected, bool mark)
 		{
-			foreach(Sector s in sectors) if(s.Selected == selected) s.Marked |= mark;
+			foreach(Sector s in sectors) if(s.Selected == selected) s.Marked = mark;
 		}
 
 		// This creates a marking from selection
 		public void MarkSelectedThings(bool selected, bool mark)
 		{
-			foreach(Thing t in things) if(t.Selected == selected) t.Marked |= mark;
+			foreach(Thing t in things) if(t.Selected == selected) t.Marked = mark;
+		}
+
+		/// <summary>
+		/// This marks the front and back sidedefs on linedefs with the matching mark
+		/// </summary>
+		public void MarkSidedefsFromLinedefs(bool matchmark, bool setmark)
+		{
+			foreach(Linedef l in linedefs)
+			{
+				if(l.Marked == matchmark)
+				{
+					if(l.Front != null) l.Front.Marked = setmark;
+					if(l.Back != null) l.Back.Marked = setmark;
+				}
+			}
 		}
 
 		/// <summary>
@@ -755,6 +777,114 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Geometry Tools
 
+		/// <summary>
+		/// This automagically makes a sector, starting at one side of a line.
+		/// Returns the sector reference when created, return null when not created.
+		/// </summary>
+		public Sector MakeSector(Linedef line, bool front)
+		{
+			// Find inner path
+			List<LinedefSide> path = FindInnerMostPath(line, front);
+			if(path != null)
+			{
+				// Make polygon
+				LinedefTracePath tracepath = new LinedefTracePath(path);
+				Polygon poly = tracepath.MakePolygon();
+
+				// Check if the front of the line is inside the polygon
+				if(poly.Intersect(line.GetSidePoint(front)))
+				{
+					Sidedef source = null;
+					Sector newsector = CreateSector();
+					
+					// Check if any of the sides already has a sidedef
+					// Then we use information from that sidedef to make the others
+					foreach(LinedefSide ls in path)
+					{
+						if(ls.Front)
+						{
+							if(ls.Line.Front != null)
+							{
+								source = ls.Line.Front;
+								source.Sector.CopyPropertiesTo(newsector);
+								break;
+							}
+						}
+						else
+						{
+							if(ls.Line.Back != null)
+							{
+								source = ls.Line.Back;
+								source.Sector.CopyPropertiesTo(newsector);
+								break;
+							}
+						}
+					}
+					
+					// If we couldn't find anything, try the other sides
+					if(source == null)
+					{
+						foreach(LinedefSide ls in path)
+						{
+							if(ls.Front)
+							{
+								if(ls.Line.Back != null)
+								{
+									source = ls.Line.Back;
+									source.Sector.CopyPropertiesTo(newsector);
+									break;
+								}
+							}
+							else
+							{
+								if(ls.Line.Front != null)
+								{
+									source = ls.Line.Front;
+									source.Sector.CopyPropertiesTo(newsector);
+									break;
+								}
+							}
+						}
+					}
+					
+					// Go for all sides to make sidedefs
+					foreach(LinedefSide ls in path)
+					{
+						if(ls.Front)
+						{
+							// Create sidedef is needed and ensure it points to the new sector
+							if(ls.Line.Front == null) CreateSidedef(ls.Line, true, newsector);
+							if(ls.Line.Front.Sector != newsector) ls.Line.Front.ChangeSector(newsector);
+							if(source != null) source.CopyPropertiesTo(ls.Line.Front); else source = ls.Line.Front;
+						}
+						else
+						{
+							// Create sidedef is needed and ensure it points to the new sector
+							if(ls.Line.Back == null) CreateSidedef(ls.Line, false, newsector);
+							if(ls.Line.Back.Sector != newsector) ls.Line.Back.ChangeSector(newsector);
+							if(source != null) source.CopyPropertiesTo(ls.Line.Back); else source = ls.Line.Back;
+						}
+
+						// Update line
+						ls.Line.ApplySidedFlags();
+					}
+
+					// Return the new sector
+					return newsector;
+				}
+				else
+				{
+					// Outside the map, can't create a sector
+					return null;
+				}
+			}
+			else
+			{
+				// Impossible to find a path!
+				return null;
+			}
+		}
+		
 		// This joins overlapping lines together
 		// Returns the number of joins made
 		public static int JoinOverlappingLines(ICollection<Linedef> lines)
@@ -781,8 +911,10 @@ namespace CodeImp.DoomBuilder.Map
 							if(l1 != l2)
 							{
 								// Merge these two linedefs
-								while(lines.Remove(l1));
-								l1.Join(l2);
+								//while(lines.Remove(l1));
+								//l1.Join(l2);
+								while(lines.Remove(l2)) ;
+								l2.Join(l1);
 								joinsdone++;
 								joined = true;
 								break;
@@ -804,8 +936,10 @@ namespace CodeImp.DoomBuilder.Map
 							if(l1 != l2)
 							{
 								// Merge these two linedefs
-								while(lines.Remove(l1));
-								l1.Join(l2);
+								//while(lines.Remove(l1));
+								//l1.Join(l2);
+								while(lines.Remove(l2)) ;
+								l2.Join(l1);
 								joinsdone++;
 								joined = true;
 								break;
@@ -1316,20 +1450,19 @@ namespace CodeImp.DoomBuilder.Map
 		/// This finds the inner path from the beginning of a line to the end of the line.
 		/// Returns null when no path could be found.
 		/// </summary>
-		public static ICollection<Linedef> FindInnerMostPath(Linedef start, bool front)
+		public List<LinedefSide> FindInnerMostPath(Linedef start, bool front)
 		{
-			MapSet map = start.Map;
-			List<Linedef> path = new List<Linedef>();
-			Dictionary<Linedef, int> tracecount = new Dictionary<Linedef, int>(map.Linedefs.Count);
+			List<LinedefSide> path = new List<LinedefSide>();
+			Dictionary<Linedef, int> tracecount = new Dictionary<Linedef, int>(linedefs.Count);
 			Linedef nextline = start;
 			bool nextfront = front;
 
 			do
 			{
 				// Add line to path
-				path.Add(nextline);
-				tracecount[nextline]++;
-
+				path.Add(new LinedefSide(nextline, nextfront));
+				if(!tracecount.ContainsKey(nextline)) tracecount.Add(nextline, 1); else tracecount[nextline]++;
+				
 				// Determine next vertex to use
 				Vertex v = nextfront ? nextline.End : nextline.Start;
 
@@ -1356,7 +1489,12 @@ namespace CodeImp.DoomBuilder.Map
 				else
 				{
 					// Trace along the next line
+					Linedef prevline = nextline;
 					if(lines[0] == nextline) nextline = lines[1]; else nextline = lines[0];
+
+					// Check if front side changes
+					if((prevline.Start == nextline.Start) ||
+					   (prevline.End == nextline.End)) nextfront = !nextfront;
 				}
 			}
 			// Continue as long as we have not reached the start yet

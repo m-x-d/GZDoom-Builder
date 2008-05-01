@@ -62,6 +62,9 @@ namespace CodeImp.DoomBuilder.Map
 		// Additional fields
 		private SortedList<string, object> fields;
 
+		// Selections
+		private bool marked;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -84,6 +87,7 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongHighTexture { get { return longtexnamehigh; } }
 		public long LongMiddleTexture { get { return longtexnamemid; } }
 		public long LongLowTexture { get { return longtexnamelow; } }
+		public bool Marked { get { return marked; } set { marked = value; } }
 		public SortedList<string, object> Fields { get { return fields; } }
 		
 		#endregion
