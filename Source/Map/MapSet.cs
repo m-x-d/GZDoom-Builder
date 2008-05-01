@@ -411,73 +411,6 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sector s in sectors) s.Selected = false;
 		}
 
-		// Returns a collection of vertices that match a selected state
-		public ICollection<Vertex> GetVerticesSelection(bool selected)
-		{
-			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
-			foreach(Vertex v in vertices) if(v.Selected == selected) list.Add(v);
-			return list;
-		}
-
-		// Returns a collection of vertices that match a selected state on the linedefs
-		public ICollection<Vertex> GetVerticesFromLinesSelection(bool selected)
-		{
-			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
-			foreach(Vertex v in vertices)
-			{
-				foreach(Linedef l in v.Linedefs)
-				{
-					if(l.Selected == selected)
-					{
-						list.Add(v);
-						break;
-					}
-				}
-			}
-			return list;
-		}
-
-		// Returns a collection of vertices that match a selected state on the linedefs
-		// The difference with GetVerticesFromLinesSelection is that in this method
-		// ALL linedefs of a vertex must match the specified selected state.
-		public ICollection<Vertex> GetVerticesFromLinesSelectionEx(bool selected)
-		{
-			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
-			foreach(Vertex v in vertices)
-			{
-				bool qualified = true;
-				foreach(Linedef l in v.Linedefs)
-				{
-					if(l.Selected != selected)
-					{
-						qualified = false;
-						break;
-					}
-				}
-				if(qualified) list.Add(v);
-			}
-			return list;
-		}
-
-		// Returns a collection of vertices that match a selected state on the linedefs
-		public ICollection<Vertex> GetVerticesFromSectorsSelection(bool selected)
-		{
-			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
-			foreach(Vertex v in vertices)
-			{
-				foreach(Linedef l in v.Linedefs)
-				{
-					if( ((l.Front != null) && (l.Front.Sector.Selected == selected)) ||
-						((l.Back != null) && (l.Back.Sector.Selected == selected)) )
-					{
-						list.Add(v);
-						break;
-					}
-				}
-			}
-			return list;
-		}
-
 		// Returns a collection of things that match a selected state
 		public ICollection<Thing> GetThingsSelection(bool selected)
 		{
@@ -502,6 +435,164 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
+		#endregion
+
+		#region ================== Marking
+
+		// This clears all marks
+		public void ClearAllMarks()
+		{
+			ClearMarkedVertices(false);
+			ClearMarkedThings(false);
+			ClearMarkedLinedefs(false);
+			ClearMarkedSectors(false);
+		}
+
+		// This clears marked vertices
+		public void ClearMarkedVertices(bool mark)
+		{
+			foreach(Vertex v in vertices) v.Marked = mark;
+		}
+
+		// This clears marked things
+		public void ClearMarkedThings(bool mark)
+		{
+			foreach(Thing t in things) t.Marked = mark;
+		}
+
+		// This clears marked linedefs
+		public void ClearMarkedLinedefs(bool mark)
+		{
+			foreach(Linedef l in linedefs) l.Marked = mark;
+		}
+
+		// This clears marked sectors
+		public void ClearMarkedSectors(bool mark)
+		{
+			foreach(Sector s in sectors) s.Marked = mark;
+		}
+
+		// Returns a collection of vertices that match a marked state
+		public ICollection<Vertex> GetMarkedVertices(bool mark)
+		{
+			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
+			foreach(Vertex v in vertices) if(v.Marked == mark) list.Add(v);
+			return list;
+		}
+
+		// Returns a collection of things that match a marked state
+		public ICollection<Thing> GetMarkedThings(bool mark)
+		{
+			List<Thing> list = new List<Thing>(things.Count >> 1);
+			foreach(Thing t in things) if(t.Marked == mark) list.Add(t);
+			return list;
+		}
+
+		// Returns a collection of linedefs that match a marked state
+		public ICollection<Linedef> GetMarkedLinedefs(bool mark)
+		{
+			List<Linedef> list = new List<Linedef>(linedefs.Count >> 1);
+			foreach(Linedef l in linedefs) if(l.Marked == mark) list.Add(l);
+			return list;
+		}
+
+		// Returns a collection of sectors that match a marked state
+		public ICollection<Sector> GetMarkedSectors(bool mark)
+		{
+			List<Sector> list = new List<Sector>(sectors.Count >> 1);
+			foreach(Sector s in sectors) if(s.Marked == mark) list.Add(s);
+			return list;
+		}
+
+		// This creates a marking from selection
+		public void MarkSelectedVertices(bool selected, bool mark)
+		{
+			foreach(Vertex v in vertices) if(v.Selected == selected) v.Marked |= mark;
+		}
+
+		// This creates a marking from selection
+		public void MarkSelectedLinedefs(bool selected, bool mark)
+		{
+			foreach(Linedef l in linedefs) if(l.Selected == selected) l.Marked |= mark;
+		}
+
+		// This creates a marking from selection
+		public void MarkSelectedSectors(bool selected, bool mark)
+		{
+			foreach(Sector s in sectors) if(s.Selected == selected) s.Marked |= mark;
+		}
+
+		// This creates a marking from selection
+		public void MarkSelectedThings(bool selected, bool mark)
+		{
+			foreach(Thing t in things) if(t.Selected == selected) t.Marked |= mark;
+		}
+
+		/// <summary>
+		/// Returns a collection of vertices that match a marked state on the linedefs
+		/// </summary>
+		public ICollection<Vertex> GetVerticesFromLinesMarks(bool mark)
+		{
+			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
+			foreach(Vertex v in vertices)
+			{
+				foreach(Linedef l in v.Linedefs)
+				{
+					if(l.Marked == mark)
+					{
+						list.Add(v);
+						break;
+					}
+				}
+			}
+			return list;
+		}
+
+		/// <summary>
+		/// Returns a collection of vertices that match a marked state on the linedefs
+		/// The difference with GetVerticesFromLinesMarks is that in this method
+		/// ALL linedefs of a vertex must match the specified marked state.
+		/// </summary>
+		public ICollection<Vertex> GetVerticesFromAllLinesMarks(bool mark)
+		{
+			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
+			foreach(Vertex v in vertices)
+			{
+				bool qualified = true;
+				foreach(Linedef l in v.Linedefs)
+				{
+					if(l.Marked != mark)
+					{
+						qualified = false;
+						break;
+					}
+				}
+				if(qualified) list.Add(v);
+			}
+			return list;
+		}
+
+		/// <summary>
+		/// Returns a collection of vertices that match a marked state on the linedefs
+		/// </summary>
+		public ICollection<Vertex> GetVerticesFromSectorsMarks(bool mark)
+		{
+			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
+			foreach(Vertex v in vertices)
+			{
+				foreach(Linedef l in v.Linedefs)
+				{
+					if(((l.Front != null) && (l.Front.Sector.Marked == mark)) ||
+						((l.Back != null) && (l.Back.Sector.Marked == mark)))
+					{
+						list.Add(v);
+						break;
+					}
+				}
+			}
+			return list;
+		}
+		
 		#endregion
 
 		#region ================== Areas
@@ -612,55 +703,60 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Stitching
 
-		// This stitches geometry
-		public int StitchGeometry(ICollection<Vertex> movingverts, ICollection<Vertex> fixedverts)
+		/// <summary>
+		/// Stitches marked geometry with non-marked geometry. Returns the number of stitches made.
+		/// </summary>
+		public int StitchGeometry()
 		{
 			ICollection<Linedef> movinglines;
 			ICollection<Linedef> fixedlines;
 			ICollection<Vertex> nearbyfixedverts;
+			ICollection<Vertex> movingverts;
+			ICollection<Vertex> fixedverts;
 			Rectangle editarea;
 			int stitches = 0;
 			int stitchundo;
+
+			// Find vertices
+			movingverts = General.Map.Map.GetMarkedVertices(true);
+			fixedverts = General.Map.Map.GetMarkedVertices(false);
 			
-			if(General.MainWindow.AutoMerge)
-			{
-				// Make undo for the stitching
-				stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0);
+			// Make undo for the stitching
+			stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0);
 
-				// Find lines that moved during the drag
-				movinglines = LinedefsFromSelectedVertices(false, true, true);
+			// Find lines that moved during the drag
+			movinglines = LinedefsFromMarkedVertices(false, true, true);
 
-				// Find all non-moving lines
-				fixedlines = LinedefsFromSelectedVertices(true, false, false);
+			// Find all non-moving lines
+			fixedlines = LinedefsFromMarkedVertices(true, false, false);
 
-				// Determine area in which we are editing
-				editarea = MapSet.CreateArea(movinglines);
-				editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
-								 (int)Math.Ceiling(General.Settings.StitchDistance));
+			// Determine area in which we are editing
+			editarea = MapSet.CreateArea(movinglines);
+			editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
+							 (int)Math.Ceiling(General.Settings.StitchDistance));
 
-				// Join nearby vertices
-				stitches += MapSet.JoinVertices(fixedverts, movingverts, true, General.Settings.StitchDistance);
+			// Join nearby vertices
+			stitches += MapSet.JoinVertices(fixedverts, movingverts, true, General.Settings.StitchDistance);
 
-				// Update cached values of lines because we need their length/angle
-				Update(true, false);
+			// Update cached values of lines because we need their length/angle
+			Update(true, false);
 
-				// Split moving lines with unselected vertices
-				nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
-				stitches += MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, General.Settings.StitchDistance, movinglines);
+			// Split moving lines with unselected vertices
+			nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
+			stitches += MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, General.Settings.StitchDistance, movinglines);
 
-				// Split non-moving lines with selected vertices
-				fixedlines = MapSet.FilterByArea(fixedlines, ref editarea);
-				stitches += MapSet.SplitLinesByVertices(fixedlines, movingverts, General.Settings.StitchDistance, movinglines);
+			// Split non-moving lines with selected vertices
+			fixedlines = MapSet.FilterByArea(fixedlines, ref editarea);
+			stitches += MapSet.SplitLinesByVertices(fixedlines, movingverts, General.Settings.StitchDistance, movinglines);
 
-				// Remove looped linedefs
-				stitches += MapSet.RemoveLoopedLinedefs(movinglines);
+			// Remove looped linedefs
+			stitches += MapSet.RemoveLoopedLinedefs(movinglines);
 
-				// Join overlapping lines
-				stitches += MapSet.JoinOverlappingLines(movinglines);
+			// Join overlapping lines
+			stitches += MapSet.JoinOverlappingLines(movinglines);
 
-				// No stitching done? then withdraw undo
-				if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
-			}
+			// No stitching done? then withdraw undo
+			if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
 
 			return stitches;
 		}
@@ -1105,9 +1201,9 @@ namespace CodeImp.DoomBuilder.Map
 			return null;
 		}
 
-		// This makes a list of lines related to vertex selection
-		// A line is unstable when one vertex is selected and the other isn't.
-		public ICollection<Linedef> LinedefsFromSelectedVertices(bool includeunselected, bool includestable, bool includeunstable)
+		// This makes a list of lines related to marked vertices
+		// A line is unstable when one vertex is marked and the other isn't.
+		public ICollection<Linedef> LinedefsFromMarkedVertices(bool includeunselected, bool includestable, bool includeunstable)
 		{
 			List<Linedef> list = new List<Linedef>((linedefs.Count / 2) + 1);
 			
@@ -1115,9 +1211,9 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in linedefs)
 			{
 				// Check if this is to be included
-				if((includestable && (l.Start.Selected && l.End.Selected)) ||
-				   (includeunstable && (l.Start.Selected ^ l.End.Selected)) ||
-				   (includeunselected && (!l.Start.Selected && !l.End.Selected)) )
+				if((includestable && (l.Start.Marked && l.End.Marked)) ||
+				   (includeunstable && (l.Start.Marked ^ l.End.Marked)) ||
+				   (includeunselected && (!l.Start.Marked && !l.End.Marked)))
 				{
 					// Add to list
 					list.Add(l);

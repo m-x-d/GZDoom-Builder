@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Selections
 		private bool selected;
+		private bool marked;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -95,6 +96,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Action { get { return action; } set { action = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public bool Selected { get { return selected; } set { selected = value; } }
+		public bool Marked { get { return marked; } set { marked = value; } }
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
 		public float LengthInv { get { return lengthinv; } }
@@ -483,7 +485,8 @@ namespace CodeImp.DoomBuilder.Map
 			CopyPropertiesTo(nl);
 			SetEndVertex(v);
 			nl.selected = this.selected;
-
+			nl.marked = this.marked;
+			
 			// Copy front sidedef if exists
 			if(front != null)
 			{
@@ -628,7 +631,8 @@ namespace CodeImp.DoomBuilder.Map
 
 			// If either of the two lines was selected, keep the other selected
 			if(this.selected) other.selected = true;
-
+			if(this.marked) other.marked = true;
+			
 			// Apply single/double sided flags
 			other.ApplySidedFlags();
 			

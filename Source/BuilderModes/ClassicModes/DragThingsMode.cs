@@ -98,12 +98,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 			Cursor.Current = Cursors.AppStarting;
 
-			// Get the nearest thing for snapping
-			dragitem = MapSet.NearestThing(General.Map.Map.GetThingsSelection(true), dragstartmappos);
+			// Mark what we are dragging
+			General.Map.Map.ClearAllMarks();
+			General.Map.Map.MarkSelectedThings(true, true);
 			
 			// Get selected things
-			selectedthings = General.Map.Map.GetThingsSelection(true);
-			unselectedthings = General.Map.Map.GetThingsSelection(false);
+			selectedthings = General.Map.Map.GetMarkedThings(true);
+			unselectedthings = General.Map.Map.GetMarkedThings(false);
+			
+			// Get the nearest thing for snapping
+			dragitem = MapSet.NearestThing(selectedthings, dragstartmappos);
 
 			// Make old positions list
 			// We will use this as reference to move the vertices, or to move them back on cancel
@@ -284,7 +288,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
 				
 				// Update cached values
-				General.Map.Map.Update();
+				General.Map.Map.Update(false, false);
 
 				// Map is changed
 				General.Map.IsChanged = true;

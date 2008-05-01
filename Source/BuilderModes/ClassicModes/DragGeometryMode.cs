@@ -58,16 +58,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private List<Vector2D> oldpositions;
 
 		// List of selected items
-		private ICollection<Vertex> selectedverts;
+		protected ICollection<Vertex> selectedverts;
 
 		// List of non-selected items
-		private ICollection<Vertex> unselectedverts;
+		protected ICollection<Vertex> unselectedverts;
 
 		// List of unstable lines
 		protected ICollection<Linedef> unstablelines;
 		
 		// List of unselected lines
-		protected ICollection<Linedef> unselectedlines;
+		protected ICollection<Linedef> snaptolines;
 		
 		// Keep track of view changes
 		private float lastoffsetx;
@@ -107,22 +107,27 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Methods
 
 		// Constructor to start dragging immediately
-		protected void StartDrag(EditMode basemode, Vertex dragitem, Vector2D dragstartmappos, ICollection<Vertex> selected, ICollection<Vertex> unselected)
+		protected void StartDrag(EditMode basemode, Vector2D dragstartmappos)
 		{
 			// Initialize
-			this.dragitem = dragitem;
 			this.dragstartmappos = dragstartmappos;
 			this.basemode = basemode;
 
 			Cursor.Current = Cursors.AppStarting;
 
 			// Make list of selected vertices
-			selectedverts = selected;
+			selectedverts = General.Map.Map.GetMarkedVertices(true);
 
 			// Make list of non-selected vertices
 			// This will be used for snapping to nearest items
-			unselectedverts = unselected;
+			unselectedverts = General.Map.Map.GetMarkedVertices(false);
 
+			// Get the nearest vertex for snapping
+			dragitem = MapSet.NearestVertex(selectedverts, dragstartmappos);
+			
+			// Lines to snap to
+			snaptolines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
+			
 			// Make old positions list
 			// We will use this as reference to move the vertices, or to move them back on cancel
 			oldpositions = new List<Vector2D>(selectedverts.Count);
@@ -148,13 +153,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapnearest)
 		{
 			Vector2D oldpos = dragitem.Position;
+			Vector2D anchorpos = dragitemposition + offset;
 			int i = 0;
 			
 			// Snap to nearest?
 			if(snapnearest)
 			{
 				// Find nearest unselected vertex within range
-				Vertex nv = MapSet.NearestVertexSquareRange(unselectedverts, mousemappos, VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+				Vertex nv = MapSet.NearestVertexSquareRange(unselectedverts, anchorpos, VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
 				if(nv != null)
 				{
 					// Move the dragged item
@@ -169,7 +175,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				else
 				{
 					// Find the nearest unselected line within range
-					Linedef nl = MapSet.NearestLinedefRange(unselectedlines, mousemappos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+					Linedef nl = MapSet.NearestLinedefRange(snaptolines, anchorpos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
 					if(nl != null)
 					{
 						// Snap to grid?
@@ -183,7 +189,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 							Vector2D found_coord = new Vector2D();
 							foreach(Vector2D v in coords)
 							{
-								Vector2D delta = mousemappos - v;
+								Vector2D delta = anchorpos - v;
 								if(delta.GetLengthSq() < found_distance)
 								{
 									found_distance = delta.GetLengthSq();
@@ -203,10 +209,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						else
 						{
 							// Move the dragged item
-							dragitem.Move(nl.NearestOnLine(mousemappos));
+							dragitem.Move(nl.NearestOnLine(anchorpos));
 
 							// Align to line here
-							offset = nl.NearestOnLine(mousemappos) - dragitemposition;
+							offset = nl.NearestOnLine(anchorpos) - dragitemposition;
 						}
 					}
 				}
@@ -216,13 +222,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(snapgrid)
 			{
 				// Move the dragged item
-				dragitem.Move(dragitemposition + offset);
+				dragitem.Move(anchorpos);
 
 				// Snap item to grid
 				dragitem.SnapToGrid();
 
 				// Adjust the offset
-				offset += dragitem.Position - (dragitemposition + offset);
+				offset += dragitem.Position - anchorpos;
 			}
 
 			// Drag item moved?
@@ -293,7 +299,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
 
 				// Stitch geometry
-				General.Map.Map.StitchGeometry(selectedverts, unselectedverts);
+				if(snaptonearest) General.Map.Map.StitchGeometry();
 				
 				// Update cached values
 				General.Map.Map.Update();

@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Selections
 		private bool selected;
+		private bool marked;
 
 		// Cloning
 		private Sector clone;
@@ -96,6 +97,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public int Brightness { get { return brightness; } set { brightness = value; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
+		public bool Marked { get { return marked; } set { marked = value; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
 		public TriangleList Triangles { get { return triangles; } set { triangles = value; } }
