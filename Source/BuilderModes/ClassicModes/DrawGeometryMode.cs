@@ -92,6 +92,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			this.basemode = General.Map.Mode;
 			points = new List<DrawnVertex>();
 			
+			// No selection in this mode
+			General.Map.Map.ClearAllSelected();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -128,6 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// Disenagaging
 		public override void Disengage()
 		{
+			MapSet map = General.Map.Map;
 			base.Disengage();
 			Cursor.Current = Cursors.AppStarting;
 
@@ -137,10 +141,33 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("line draw", UndoGroup.None, 0);
 				
-				// MOO
+				// STEP 1: Create the new geometry
+				List<Vertex> newverts = new List<Vertex>();
+				List<Linedef> newlines = new List<Linedef>();
+				List<Vertex> mergeverts = new List<Vertex>();
+				List<Vertex> nonmergeverts = new List<Vertex>(map.Vertices);
+				Vertex v1 = map.CreateVertex((int)points[0].pos.x, (int)points[0].pos.y);
+				newverts.Add(v1);
+				if(points[0].stitch) mergeverts.Add(v1); else nonmergeverts.Add(v1);
+				for(int i = 1; i < points.Count; i++)
+				{
+					Vertex v2 = map.CreateVertex((int)points[i].pos.x, (int)points[i].pos.y);
+					newverts.Add(v2);
+					if(points[i].stitch) mergeverts.Add(v2); else nonmergeverts.Add(v2);
+					Linedef ld = map.CreateLinedef(v1, v2);
+					ld.Selected = true;
+					newlines.Add(ld);
+					v1 = v2;
+				}
 
+				// STEP 2: Merge the new geometry
+				foreach(Vertex v in mergeverts) v.Selected = true;
+				map.StitchGeometry(mergeverts, nonmergeverts);
+				
+				// STEP 3: Make sectors where possible
+				
 				// Update cached values
-				General.Map.Map.Update();
+				map.Update();
 
 				// Map is changed
 				General.Map.IsChanged = true;
@@ -321,14 +348,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				// Aligned to grid
 				p.pos = General.Map.Grid.SnappedToGrid(mousemappos);
-				p.stitch = false;
+				p.stitch = snaptonearest;
 				return p;
 			}
 			else
 			{
 				// Normal position
 				p.pos = mousemappos;
-				p.stitch = false;
+				p.stitch = snaptonearest;
 				return p;
 			}
 		}
