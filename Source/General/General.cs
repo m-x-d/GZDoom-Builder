@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder
 		private static bool debugbuild;
 
 		// Tools
-		private static EarClipTriangulator earclipper;
+		private static Triangulator earclipper;
 		
 		#endregion
 
@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder
 		internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
-		internal static EarClipTriangulator EarClipper { get { return earclipper; } }
+		internal static Triangulator EarClipper { get { return earclipper; } }
 		
 		#endregion
 
@@ -449,7 +449,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.Update();
 
 				// Create tools
-				earclipper = new EarClipTriangulator();
+				earclipper = new Triangulator();
 
 				// Start Direct3D
 				General.WriteLogLine("Starting Direct3D graphics driver...");

@@ -288,11 +288,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						General.Interface.RedrawDisplay();
 
 						// Get a triangulator and bind events
-						EarClipTriangulator t = new EarClipTriangulator();
-						t.OnShowLine = new EarClipTriangulator.ShowLine(ShowLine);
-						t.OnShowPolygon = new EarClipTriangulator.ShowPolygon(ShowPolygon);
-						t.OnShowPoint = new EarClipTriangulator.ShowPoint(ShowPoint);
-						t.OnShowEarClip = new EarClipTriangulator.ShowEarClip(ShowEarClip);
+						Triangulator t = new Triangulator();
+						t.OnShowLine = new Triangulator.ShowLine(ShowLine);
+						t.OnShowPolygon = new Triangulator.ShowPolygon(ShowPolygon);
+						t.OnShowPoint = new Triangulator.ShowPoint(ShowPoint);
+						t.OnShowEarClip = new Triangulator.ShowEarClip(ShowEarClip);
 
 						// Triangulate this now!
 						triangles = t.PerformTriangulation(General.GetByIndex<Sector>(selected, 0));
@@ -322,7 +322,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				else
 				{
 					// Get a triangulator and bind events
-					EarClipTriangulator t = new EarClipTriangulator();
+					Triangulator t = new Triangulator();
 
 					// Triangulate the whole map!
 					triangles = new TriangleList();
