@@ -232,13 +232,12 @@ namespace CodeImp.DoomBuilder
 				cfg = LoadGameConfiguration(Path.GetFileName(filepath));
 				if(cfg != null)
 				{
-					// Get name and filename
-					name = cfg.ReadSetting("game", "<unnamed game>");
 					fullfilename = Path.GetFileName(filepath);
+					ConfigurationInfo cfginfo = new ConfigurationInfo(cfg, fullfilename);
 					
 					// Add to lists
-					General.WriteLogLine("Registered game configuration '" + name + "' from '" + fullfilename + "'");
-					configs.Add(new ConfigurationInfo(name, fullfilename));
+					General.WriteLogLine("Registered game configuration '" + cfginfo.Name + "' from '" + fullfilename + "'");
+					configs.Add(cfginfo);
 				}
 			}
 
