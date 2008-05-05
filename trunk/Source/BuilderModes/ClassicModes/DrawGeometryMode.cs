@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			List<Linedef> newlines = new List<Linedef>();
 			List<Vertex> mergeverts = new List<Vertex>();
 			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
-
+			
 			MapSet map = General.Map.Map;
 
 			base.Disengage();
@@ -149,7 +149,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("line draw", UndoGroup.None, 0);
 				
-				// STEP 1: Create the new geometry
+				/***************************************************\
+					STEP 1: Create the new geometry
+				\***************************************************/
 
 				// Make first vertex
 				Vertex v1 = map.CreateVertex((int)points[0].pos.x, (int)points[0].pos.y);
@@ -223,18 +225,29 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					v1 = v2;
 				}
 
-				// STEP 2: Merge the new geometry
+				/***************************************************\
+					STEP 2: Merge the new geometry
+				\***************************************************/
+				
+				// Mark our new vertices that need to merge and merge them with themselves
 				foreach(Vertex v in mergeverts) v.Marked = true;
 				MapSet.JoinVertices(mergeverts, mergeverts, true, General.Settings.StitchDistance);
+
+				// Perform standard geometry stitching between new and existing geometry
+				// The marked vertices indicate the new geometry
 				map.StitchGeometry();
 
-				// Re-find our new lines, because they have been merged with the other geometry
+				// Find our new lines again, because they have been merged with the other geometry
+				// but their Marked property is copied where they have joined!
 				newlines = map.GetMarkedLinedefs(true);
-
+				
 				// Split the new lines with the new vertices so that self-intersecting draws also work
 				MapSet.SplitLinesByVertices(newlines, mergeverts, General.Settings.StitchDistance, null);
 				
-				// STEP 3: Make sectors where possible
+				/***************************************************\
+					STEP 3: Join and create new sectors
+				\***************************************************/
+
 				bool[] frontsdone = new bool[newlines.Count];
 				bool[] backsdone = new bool[newlines.Count];
 				for(int i = 0; i < newlines.Count; i++)
@@ -244,11 +257,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Front not marked as done?
 					if(!frontsdone[i])
 					{
-						// Make sector here
-						SectorMaker maker = new SectorMaker();
-						Sector newsector = maker.MakeAt(ld, true);
-						if(newsector != null)
+						// Find a way to create a sector here
+						List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(ld, true);
+						if(sectorlines != null)
 						{
+							// Make the new sector
+							Sector newsector = SectorTools.MakeSector(sectorlines);
+							
 							// Go for all sidedefs in this new sector
 							foreach(Sidedef sd in newsector.Sidedefs)
 							{
@@ -269,23 +284,46 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Back not marked as done?
 					if(!backsdone[i])
 					{
-						// Make sector here
-						SectorMaker maker = new SectorMaker();
-						Sector newsector = maker.MakeAt(ld, false);
-						if(newsector != null)
+						// Find a way to create a sector here
+						List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(ld, false);
+						if(sectorlines != null)
 						{
-							// Go for all sidedefs in this new sector
-							foreach(Sidedef sd in newsector.Sidedefs)
+							// We don't always want to create a new sector on the back sides
+							// So first check if any of the surrounding lines originally have sidedefs
+							Sidedef joinsidedef = null;
+							foreach(LinedefSide ls in sectorlines)
 							{
-								// Side matches with a side of our new lines?
-								int lineindex = newlines.IndexOf(sd.Line);
-								if(lineindex > -1)
+								if(ls.Front && (ls.Line.Front != null))
 								{
-									// Mark this side as done
-									if(sd.IsFront)
-										frontsdone[lineindex] = true;
-									else
-										backsdone[lineindex] = true;
+									joinsidedef = ls.Line.Front;
+									break;
+								}
+								else if(!ls.Front && (ls.Line.Back != null))
+								{
+									joinsidedef = ls.Line.Back;
+									break;
+								}
+							}
+							
+							// Join?
+							if(joinsidedef != null)
+							{
+								// Join the new sector
+								Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
+
+								// Go for all sidedefs in this new sector
+								foreach(Sidedef sd in newsector.Sidedefs)
+								{
+									// Side matches with a side of our new lines?
+									int lineindex = newlines.IndexOf(sd.Line);
+									if(lineindex > -1)
+									{
+										// Mark this side as done
+										if(sd.IsFront)
+											frontsdone[lineindex] = true;
+										else
+											backsdone[lineindex] = true;
+									}
 								}
 							}
 						}

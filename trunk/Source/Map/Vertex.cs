@@ -231,7 +231,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(this.selected) other.selected = true;
 			if(this.marked) other.marked = true;
 
-			// Detach all linedefs
+			// Detach all linedefs and attach them to the other
 			// This will automatically dispose this vertex
 			while(linedefs != null)
 			{
