@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				\***************************************************/
 
 				// Make first vertex
-				Vertex v1 = map.CreateVertex((int)points[0].pos.x, (int)points[0].pos.y);
+				Vertex v1 = map.CreateVertex(points[0].pos);
 				
 				// Keep references
 				newverts.Add(v1);
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				for(int i = 1; i < points.Count; i++)
 				{
 					// Create vertex for point
-					Vertex v2 = map.CreateVertex((int)points[i].pos.x, (int)points[i].pos.y);
+					Vertex v2 = map.CreateVertex(points[i].pos);
 
 					// Keep references
 					newverts.Add(v2);
@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 							Vector2D splitpoint = measureline.GetCoordinatesAt(u);
 
 							// Make the vertex
-							Vertex splitvertex = map.CreateVertex((int)splitpoint.x, (int)splitpoint.y);
+							Vertex splitvertex = map.CreateVertex(splitpoint);
 							
 							// The Split method ties the end of the original line to the given
 							// vertex and starts a new line at the given vertex, so continue

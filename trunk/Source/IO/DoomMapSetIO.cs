@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.IO
 				y = reader.ReadInt16();
 
 				// Create new item
-				v = map.CreateVertex(x, y);
+				v = map.CreateVertex(new Vector2D((float)x, (float)y));
 				
 				// Add it to the lookup table
 				link.Add(i, v);
@@ -373,8 +373,8 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(Vertex v in map.Vertices)
 			{
 				// Write properties to stream
-				writer.Write((Int16)v.X);
-				writer.Write((Int16)v.Y);
+				writer.Write((Int16)(int)Math.Round(v.Position.x));
+				writer.Write((Int16)(int)Math.Round(v.Position.y));
 			}
 
 			// Find insert position and remove old lump

@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Vertex v in vertices)
 			{
 				// Make new vertex
-				v.Clone = newset.CreateVertex(v.X, v.Y);
+				v.Clone = newset.CreateVertex(v.Position);
 				v.CopyPropertiesTo(v.Clone);
 			}
 
@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This creates a new vertex
-		public Vertex CreateVertex(int x, int y)
+		public Vertex CreateVertex(Vector2D pos)
 		{
 			LinkedListNode<Vertex> listitem;
 			Vertex v;
@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.Map
 			listitem = new LinkedListNode<Vertex>(null);
 
 			// Make the vertex
-			v = new Vertex(this, listitem, x, y);
+			v = new Vertex(this, listitem, pos);
 			listitem.Value = v;
 
 			// Add vertex to the list
@@ -610,55 +610,55 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Areas
 
 		// This creates an area from vertices
-		public static Rectangle CreateArea(ICollection<Vertex> verts)
+		public static RectangleF CreateArea(ICollection<Vertex> verts)
 		{
-			int l = int.MaxValue;
-			int t = int.MaxValue;
-			int r = int.MinValue;
-			int b = int.MinValue;
+			float l = float.MaxValue;
+			float t = float.MaxValue;
+			float r = float.MinValue;
+			float b = float.MinValue;
 
 			// Go for all vertices
 			foreach(Vertex v in verts)
 			{
 				// Adjust boundaries by vertices
-				if(v.X < l) l = v.X;
-				if(v.X > r) r = v.X;
-				if(v.Y < t) t = v.Y;
-				if(v.Y > b) b = v.Y;
+				if(v.Position.x < l) l = v.Position.x;
+				if(v.Position.x > r) r = v.Position.x;
+				if(v.Position.y < t) t = v.Position.y;
+				if(v.Position.y > b) b = v.Position.y;
 			}
 
 			// Return a rect
-			return new Rectangle(l, t, r - l, b - t);
+			return new RectangleF(l, t, r - l, b - t);
 		}
 
 		// This creates an area from linedefs
-		public static Rectangle CreateArea(ICollection<Linedef> lines)
+		public static RectangleF CreateArea(ICollection<Linedef> lines)
 		{
-			int l = int.MaxValue;
-			int t = int.MaxValue;
-			int r = int.MinValue;
-			int b = int.MinValue;
+			float l = float.MaxValue;
+			float t = float.MaxValue;
+			float r = float.MinValue;
+			float b = float.MinValue;
 
 			// Go for all linedefs
 			foreach(Linedef ld in lines)
 			{
 				// Adjust boundaries by vertices
-				if(ld.Start.X < l) l = ld.Start.X;
-				if(ld.Start.X > r) r = ld.Start.X;
-				if(ld.Start.Y < t) t = ld.Start.Y;
-				if(ld.Start.Y > b) b = ld.Start.Y;
-				if(ld.End.X < l) l = ld.End.X;
-				if(ld.End.X > r) r = ld.End.X;
-				if(ld.End.Y < t) t = ld.End.Y;
-				if(ld.End.Y > b) b = ld.End.Y;
+				if(ld.Start.Position.x < l) l = ld.Start.Position.x;
+				if(ld.Start.Position.x > r) r = ld.Start.Position.x;
+				if(ld.Start.Position.y < t) t = ld.Start.Position.y;
+				if(ld.Start.Position.y > b) b = ld.Start.Position.y;
+				if(ld.End.Position.x < l) l = ld.End.Position.x;
+				if(ld.End.Position.x > r) r = ld.End.Position.x;
+				if(ld.End.Position.y < t) t = ld.End.Position.y;
+				if(ld.End.Position.y > b) b = ld.End.Position.y;
 			}
 
 			// Return a rect
-			return new Rectangle(l, t, r - l, b - t);
+			return new RectangleF(l, t, r - l, b - t);
 		}
 		
 		// This filters lines by a square area
-		public static ICollection<Linedef> FilterByArea(ICollection<Linedef> lines, ref Rectangle area)
+		public static ICollection<Linedef> FilterByArea(ICollection<Linedef> lines, ref RectangleF area)
 		{
 			ICollection<Linedef> newlines = new List<Linedef>(lines.Count);
 			
@@ -678,18 +678,18 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This returns the cohen-sutherland field bits for a vertex in a rectangle area
-		private static int GetCSFieldBits(Vertex v, ref Rectangle area)
+		private static int GetCSFieldBits(Vertex v, ref RectangleF area)
 		{
 			int bits = 0;
-			if(v.Y < area.Top) bits |= 0x01;
-			if(v.Y > area.Bottom) bits |= 0x02;
-			if(v.X < area.Left) bits |= 0x04;
-			if(v.X > area.Right) bits |= 0x08;
+			if(v.Position.y < area.Top) bits |= 0x01;
+			if(v.Position.y > area.Bottom) bits |= 0x02;
+			if(v.Position.x < area.Left) bits |= 0x04;
+			if(v.Position.x > area.Right) bits |= 0x08;
 			return bits;
 		}
 
 		// This filters vertices by a square area
-		public static ICollection<Vertex> FilterByArea(ICollection<Vertex> verts, ref Rectangle area)
+		public static ICollection<Vertex> FilterByArea(ICollection<Vertex> verts, ref RectangleF area)
 		{
 			ICollection<Vertex> newverts = new List<Vertex>(verts.Count);
 
@@ -697,10 +697,10 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Vertex v in verts)
 			{
 				// Within rect?
-				if((v.X >= area.Left) &&
-				   (v.X <= area.Right) &&
-				   (v.Y >= area.Top) &&
-				   (v.Y <= area.Bottom))
+				if((v.Position.x >= area.Left) &&
+				   (v.Position.x <= area.Right) &&
+				   (v.Position.y >= area.Top) &&
+				   (v.Position.y <= area.Bottom))
 				{
 					// The vertex is in the area
 					newverts.Add(v);
@@ -725,7 +725,7 @@ namespace CodeImp.DoomBuilder.Map
 			ICollection<Vertex> nearbyfixedverts;
 			ICollection<Vertex> movingverts;
 			ICollection<Vertex> fixedverts;
-			Rectangle editarea;
+			RectangleF editarea;
 			int stitches = 0;
 			int stitchundo;
 
@@ -998,8 +998,12 @@ namespace CodeImp.DoomBuilder.Map
 						if(l.DistanceToSq(v.Position, true) <= splitdist2)
 						{
 							// Line is not already referencing v?
-							if(((l.Start.X != v.X) || (l.Start.Y != v.Y)) &&
-							   ((l.End.X != v.X) || (l.End.Y != v.Y)))
+							Vector2D deltastart = l.Start.Position - v.Position;
+							Vector2D deltaend = l.End.Position - v.Position;
+							if(((Math.Abs(deltastart.x) > 0.001f) ||
+							    (Math.Abs(deltastart.y) > 0.001f)) &&
+							   ((Math.Abs(deltaend.x) > 0.001f) ||
+							    (Math.Abs(deltaend.y) > 0.001f)))
 							{
 								// Split line l with vertex v
 								nl = l.Split(v);

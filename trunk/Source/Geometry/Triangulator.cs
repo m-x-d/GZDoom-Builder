@@ -319,8 +319,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(found != null)
 				{
 					// Check if more to the right than the previous found
-					if((sd.Key.Line.Start.X > found.X) && !ignores.ContainsKey(sd.Key.Line.Start)) found = sd.Key.Line.Start;
-					if((sd.Key.Line.End.X > found.X) && !ignores.ContainsKey(sd.Key.Line.End)) found = sd.Key.Line.End;
+					if((sd.Key.Line.Start.Position.x > found.Position.x) && !ignores.ContainsKey(sd.Key.Line.Start)) found = sd.Key.Line.Start;
+					if((sd.Key.Line.End.Position.x > found.Position.x) && !ignores.ContainsKey(sd.Key.Line.End)) found = sd.Key.Line.End;
 				}
 			}
 			
