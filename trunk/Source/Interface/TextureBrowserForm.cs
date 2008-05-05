@@ -88,15 +88,23 @@ namespace CodeImp.DoomBuilder.Interface
 			
 			// Start adding
 			browser.BeginAdding();
-
-			// Add all used textures
-			foreach(ImageData img in General.Map.Data.Textures)
-				if(useditems.ContainsKey(img.LongName))
-					browser.Add(img.Name, img, img, used);
 			
-			// Add all available textures
+			// Add all available textures and mark the images for temporary loading
 			foreach(ImageData img in General.Map.Data.Textures)
+			{
 				browser.Add(img.Name, img, img, avail);
+				img.Temporary = true;
+			}
+
+			// Add all used textures and mark the images for permanent loading
+			foreach(ImageData img in General.Map.Data.Textures)
+			{
+				if(useditems.ContainsKey(img.LongName))
+				{
+					browser.Add(img.Name, img, img, used);
+					img.Temporary = false;
+				}
+			}
 			
 			// Done adding
 			browser.EndAdding();
@@ -199,6 +207,9 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Settings.WriteSetting("browserwindow.sizewidth", lastsize.Width);
 			General.Settings.WriteSetting("browserwindow.sizeheight", lastsize.Height);
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
+			
+			// Clean up
+			browser.CleanUp();
 		}
 
 		// Static method to browse for texture

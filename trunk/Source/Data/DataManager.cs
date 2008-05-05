@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<long, ImageData> sprites;
 
 		// Background loading
+		private LinkedList<ImageData> loadlist;
 		private Thread backgroundloader;
 		
 		// Special images
@@ -78,8 +79,22 @@ namespace CodeImp.DoomBuilder.Data
 		public List<string> TextureNames { get { return texturenames; } }
 		public List<string> FlatNames { get { return flatnames; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public bool IsLoading { get { return (backgroundloader != null) && backgroundloader.IsAlive; } }
 		public ImageData MissingTexture3D { get { return missingtexture3d; } }
+		
+		public bool IsLoading
+		{
+			get
+			{
+				if(loadlist != null)
+				{
+					return (backgroundloader != null) && backgroundloader.IsAlive && (loadlist.Count > 0);
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
 		
 		#endregion
 
@@ -134,6 +149,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads all data resources
 		internal void Load(DataLocationList locations)
 		{
+			int texcount, flatcount, spritecount;
 			DataReader c;
 			
 			// Create collections
@@ -143,6 +159,7 @@ namespace CodeImp.DoomBuilder.Data
 			sprites = new Dictionary<long, ImageData>();
 			texturenames = new List<string>();
 			flatnames = new List<string>();
+			loadlist = new LinkedList<ImageData>();
 			
 			// Go for all locations
 			foreach(DataLocation dl in locations)
@@ -187,17 +204,20 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Load stuff
-			General.WriteLogLine("Loading palette...");
 			LoadPalette();
-			General.WriteLogLine("Loading textures...");
-			LoadTextures();
-			General.WriteLogLine("Loading flats...");
-			LoadFlats();
-			General.WriteLogLine("Loading sprites...");
-			LoadSprites();
+			texcount = LoadTextures();
+			flatcount = LoadFlats();
+			spritecount = LoadSprites();
 
+			// Sort names
+			texturenames.Sort();
+			flatnames.Sort();
+			
 			// Start background loading
 			StartBackgroundLoader();
+
+			// Output info
+			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + spritecount + " sprites");
 		}
 
 		// This unloads all data
@@ -215,6 +235,15 @@ namespace CodeImp.DoomBuilder.Data
 			// Dispose containers
 			foreach(DataReader c in containers) c.Dispose();
 			containers.Clear();
+
+			// Trash collections
+			containers = null;
+			textures = null;
+			flats = null;
+			sprites = null;
+			texturenames = null;
+			flatnames = null;
+			loadlist = null;
 		}
 
 		#endregion
@@ -269,21 +298,19 @@ namespace CodeImp.DoomBuilder.Data
 			// If a loader is already running, stop it first
 			if(backgroundloader != null) StopBackgroundLoader();
 
-			// Only do background loading when preferred
-			if(General.Settings.BackgroundLoading)
-			{
-				// Start a low priority thread to load images in background
-				General.WriteLogLine("Starting background resource loading...");
-				backgroundloader = new Thread(new ThreadStart(BackgroundLoad));
-				backgroundloader.Name = "BackgroundLoader";
-				backgroundloader.Priority = ThreadPriority.Lowest;
-				backgroundloader.Start();
-			}
+			// Start a low priority thread to load images in background
+			General.WriteLogLine("Starting background resource loading...");
+			backgroundloader = new Thread(new ThreadStart(BackgroundLoad));
+			backgroundloader.Name = "BackgroundLoader";
+			backgroundloader.Priority = ThreadPriority.Lowest;
+			backgroundloader.Start();
 		}
 
 		// This stops background loading
 		private void StopBackgroundLoader()
 		{
+			LinkedListNode<ImageData> n;
+			
 			General.WriteLogLine("Stopping background resource loading...");
 			if(backgroundloader != null)
 			{
@@ -291,83 +318,126 @@ namespace CodeImp.DoomBuilder.Data
 				backgroundloader.Interrupt();
 				backgroundloader.Join();
 
+				// Reset load states on all images in the list
+				n = loadlist.First;
+				while(n != null)
+				{
+					n.Value.LoadState = ImageData.LOADSTATE_NONE;
+					n.Value.LoadingTicket = null;
+					n = n.Next;
+				}
+				loadlist.Clear();
+				
 				// Done
 				backgroundloader = null;
+				General.MainWindow.UpdateStatusIcon();
 			}
 		}
 
 		// The background loader
 		private void BackgroundLoad()
 		{
-			int starttime = General.Clock.GetCurrentTime();
-			int deltatime;
-			
 			try
 			{
-				// Load all lists
-				LoadImagesList(textures);
-				LoadImagesList(flats);
-				LoadImagesList(sprites);
+				do
+				{
+					// Get next item
+					ImageData image = null;
+					lock(loadlist)
+					{
+						// Anything to do?
+						if(loadlist.Count > 0)
+						{
+							// Fetch image
+							image = loadlist.First.Value;
+							image.LoadingTicket = null;
+							loadlist.RemoveFirst();
+							
+							// Load or unload this image?
+							switch(image.LoadState)
+							{
+								// Load image
+								case ImageData.LOADSTATE_LOAD:
+									image.LoadImage();
+									//image.CreateTexture();	// Impossible from different thread
+									break;
+
+								// Unload image
+								case ImageData.LOADSTATE_TRASH:
+									image.UnloadImage();
+									break;
+							}
+						}
+					}
+
+					// Did we do something?
+					if(image != null)
+					{
+						// Wait a bit and update icon
+						General.MainWindow.UpdateStatusIcon();
+						Thread.Sleep(1);
+					}
+					else
+					{
+						// Wait longer to release CPU resources
+						Thread.Sleep(50);
+					}
+				}
+				while(true);
 			}
 			catch(ThreadInterruptedException)
 			{
 				return;
 			}
+		}
 
-			// Done
-			deltatime = General.Clock.GetCurrentTime() - starttime;
-			General.WriteLogLine("Background resource loading completed in " + deltatime + "ms");
-			General.WriteLogLine("Loaded " + textures.Count + " textures, " + flats.Count + " flats, " + sprites.Count + " sprites");
-			backgroundloader = null;
+		// This adds an image for background loading or unloading
+		public void BackgroundLoadImage(ImageData img, bool load)
+		{
+			int loadstate = load ? ImageData.LOADSTATE_LOAD : ImageData.LOADSTATE_TRASH;
+			
+			lock(loadlist)
+			{
+				// Already in the list?
+				if(img.LoadingTicket != null)
+				{
+					// Just change the state
+					img.LoadState = loadstate;
+				}
+				else
+				{
+					// Set load state and add to list
+					img.LoadState = loadstate;
+					img.LoadingTicket = loadlist.AddLast(img);
+				}
+			}
+			
+			// Update icon
 			General.MainWindow.UpdateStatusIcon();
 		}
 
-		// This loads a list of ImageData
-		private void LoadImagesList(Dictionary<long, ImageData> list)
+		// This removes an image from background loading
+		// This does not work for images that are being unloaded!
+		public void BackgroundCancelImage(ImageData img)
 		{
-			Dictionary<long, ImageData>.Enumerator walker;
-			bool moveresult = false;
-			bool interrupted = false;
-			
-			do
+			// Queued?
+			if(img.LoadingTicket != null)
 			{
-				// Get enumerator
-				lock(list)
+				// Not being trashed?
+				if(img.LoadState != ImageData.LOADSTATE_TRASH)
 				{
-					walker = list.GetEnumerator();
-					moveresult = walker.MoveNext();
-				}
-
-				// Continue until at end of list
-				while(moveresult)
-				{
-					lock(list)
+					lock(loadlist)
 					{
-						// Load image
-						walker.Current.Value.LoadImage();
-						//walker.Current.Value.CreateTexture();	// Impossible from different thread
+						// Remove it from queue
+						LinkedListNode<ImageData> ticket = img.LoadingTicket;
+						img.LoadingTicket = null;
+						loadlist.Remove(ticket);
 					}
-
-					// Wait a bit
-					Thread.Sleep(1);
-
-					lock(list)
-					{
-						try
-						{
-							// Move to next item
-							moveresult = walker.MoveNext();
-						}
-						catch(InvalidOperationException)
-						{
-							// List was modified, restart!
-							interrupted = true;
-							break;
-						}
-					}
+					
+					// Update icon
+					General.MainWindow.UpdateStatusIcon();
 				}
 			}
-			while(interrupted);
 		}
 		
 		#endregion
@@ -398,11 +468,12 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 		
 		// This loads the textures
-		private void LoadTextures()
+		private int LoadTextures()
 		{
 			ICollection<ImageData> images;
 			PatchNames pnames = new PatchNames();
 			PatchNames newpnames;
+			int counter = 0;
 			
 			// Go for all opened containers
 			foreach(DataReader dr in containers)
@@ -425,6 +496,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(!textures.ContainsKey(img.LongName)) texturenames.Add(img.Name);
 						textures.Remove(img.LongName);
 						textures.Add(img.LongName, img);
+						counter++;
 						
 						// Also add as flat when using mixed resources
 						if(General.Map.Config.MixTexturesFlats)
@@ -436,6 +508,9 @@ namespace CodeImp.DoomBuilder.Data
 					}
 				}
 			}
+			
+			// Output info
+			return counter;
 		}
 		
 		// This returns a specific patch stream
@@ -466,19 +541,16 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns an image by long
 		public ImageData GetTextureImage(long longname)
 		{
-			lock(textures)
+			// Does this texture exist?
+			if(textures.ContainsKey(longname))
 			{
-				// Does this texture exist?
-				if(textures.ContainsKey(longname))
-				{
-					// Return texture
-					return textures[longname];
-				}
-				else
-				{
-					// Return null image
-					return new NullImage();
-				}
+				// Return texture
+				return textures[longname];
+			}
+			else
+			{
+				// Return null image
+				return new NullImage();
 			}
 		}
 		
@@ -521,10 +593,11 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Flats
 
 		// This loads the flats
-		private void LoadFlats()
+		private int LoadFlats()
 		{
 			ICollection<ImageData> images;
-
+			int counter = 0;
+			
 			// Go for all opened containers
 			foreach(DataReader dr in containers)
 			{
@@ -539,6 +612,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(!flats.ContainsKey(img.LongName)) flatnames.Add(img.Name);
 						flats.Remove(img.LongName);
 						flats.Add(img.LongName, img);
+						counter++;
 
 						// Also add as texture when using mixed resources
 						if(General.Map.Config.MixTexturesFlats)
@@ -550,6 +624,9 @@ namespace CodeImp.DoomBuilder.Data
 					}
 				}
 			}
+
+			// Output info
+			return counter;
 		}
 
 		// This returns a specific flat stream
@@ -580,19 +657,16 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns an image by long
 		public ImageData GetFlatImage(long longname)
 		{
-			lock(flats)
+			// Does this flat exist?
+			if(flats.ContainsKey(longname))
 			{
-				// Does this flat exist?
-				if(flats.ContainsKey(longname))
-				{
-					// Return flat
-					return flats[longname];
-				}
-				else
-				{
-					// Return null image
-					return new NullImage();
-				}
+				// Return flat
+				return flats[longname];
+			}
+			else
+			{
+				// Return null image
+				return new NullImage();
 			}
 		}
 
@@ -635,7 +709,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Sprites
 
 		// This loads the sprites
-		private void LoadSprites()
+		private int LoadSprites()
 		{
 			Stream spritedata = null;
 			SpriteImage image;
@@ -665,6 +739,9 @@ namespace CodeImp.DoomBuilder.Data
 					}
 				}
 			}
+
+			// Output info
+			return sprites.Count;
 		}
 
 		// This returns an image by long
@@ -674,41 +751,38 @@ namespace CodeImp.DoomBuilder.Data
 			long longname = Lump.MakeLongName(name);
 			SpriteImage image;
 
-			lock(sprites)
+			// Sprite already loaded?
+			if(sprites.ContainsKey(longname))
 			{
-				// Sprite already loaded?
-				if(sprites.ContainsKey(longname))
+				// Return exiting sprite
+				return sprites[longname];
+			}
+			else
+			{
+				// Go for all opened containers
+				for(int i = containers.Count - 1; i >= 0; i--)
 				{
-					// Return exiting sprite
-					return sprites[longname];
+					// This contain provides this sprite?
+					spritedata = containers[i].GetSpriteData(name);
+					if(spritedata != null) break;
+				}
+
+				// Found anything?
+				if(spritedata != null)
+				{
+					// Make new sprite image
+					image = new SpriteImage(name);
+
+					// Add to collection
+					sprites.Add(longname, image);
+
+					// Return result
+					return image;
 				}
 				else
 				{
-					// Go for all opened containers
-					for(int i = containers.Count - 1; i >= 0; i--)
-					{
-						// This contain provides this sprite?
-						spritedata = containers[i].GetSpriteData(name);
-						if(spritedata != null) break;
-					}
-
-					// Found anything?
-					if(spritedata != null)
-					{
-						// Make new sprite image
-						image = new SpriteImage(name);
-
-						// Add to collection
-						sprites.Add(longname, image);
-
-						// Return result
-						return image;
-					}
-					else
-					{
-						// Return null image
-						return new NullImage();
-					}
+					// Return null image
+					return new NullImage();
 				}
 			}
 		}

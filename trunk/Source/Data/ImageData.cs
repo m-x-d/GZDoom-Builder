@@ -37,6 +37,10 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Constants
 
+		internal const int LOADSTATE_NONE = 0;
+		internal const int LOADSTATE_LOAD = 1;
+		internal const int LOADSTATE_TRASH = 2;
+
 		#endregion
 
 		#region ================== Variables
@@ -49,6 +53,11 @@ namespace CodeImp.DoomBuilder.Data
 		protected float scaledwidth;
 		protected float scaledheight;
 		protected bool usecolorcorrection;
+		
+		// Background loading
+		private LinkedListNode<ImageData> loadingticket;
+		private int loadstate;		// true when loading, false when unloading
+		private bool temporary;
 		
 		// GDI bitmap
 		protected Bitmap bitmap;
@@ -74,6 +83,9 @@ namespace CodeImp.DoomBuilder.Data
 		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsLoaded { get { return (bitmap != null); } }
 		public bool IsDisposed { get { return isdisposed; } }
+		internal bool Temporary { get { return temporary; } set { temporary = value; } }
+		internal int LoadState { get { return loadstate; } set { loadstate = value; } }
+		internal LinkedListNode<ImageData> LoadingTicket { get { return loadingticket; } set { loadingticket = value; } }
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
 		public float ScaledWidth { get { return scaledwidth; } }
@@ -132,6 +144,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				if(bitmap != null) bitmap.Dispose();
 				bitmap = null;
+				loadstate = ImageData.LOADSTATE_NONE;
 			}
 		}
 		
@@ -163,6 +176,9 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				bitmap.UnlockBits(bmpdata);
 			}
+
+			// Done, reset load state
+			loadstate = ImageData.LOADSTATE_NONE;
 		}
 		
 		// This creates the 2D pixel data

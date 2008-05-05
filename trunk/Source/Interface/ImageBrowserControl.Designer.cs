@@ -30,11 +30,11 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			this.components = new System.ComponentModel.Container();
 			this.splitter = new System.Windows.Forms.SplitContainer();
-			this.list = new CodeImp.DoomBuilder.Interface.OptimizedListView();
 			this.images = new System.Windows.Forms.ImageList(this.components);
 			this.objectname = new System.Windows.Forms.TextBox();
 			this.label = new System.Windows.Forms.Label();
 			this.refreshtimer = new System.Windows.Forms.Timer(this.components);
+			this.list = new CodeImp.DoomBuilder.Interface.OptimizedListView();
 			this.splitter.Panel1.SuspendLayout();
 			this.splitter.Panel2.SuspendLayout();
 			this.splitter.SuspendLayout();
@@ -62,24 +62,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.splitter.TabIndex = 0;
 			this.splitter.TabStop = false;
 			// 
-			// list
-			// 
-			this.list.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.list.LargeImageList = this.images;
-			this.list.Location = new System.Drawing.Point(0, 0);
-			this.list.MultiSelect = false;
-			this.list.Name = "list";
-			this.list.OwnerDraw = true;
-			this.list.Size = new System.Drawing.Size(518, 312);
-			this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.list.TabIndex = 1;
-			this.list.UseCompatibleStateImageBehavior = false;
-			this.list.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.list_DrawItem);
-			this.list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.list_ItemSelectionChanged);
-			// 
 			// images
 			// 
-			this.images.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
+			this.images.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
 			this.images.ImageSize = new System.Drawing.Size(64, 64);
 			this.images.TransparentColor = System.Drawing.Color.Transparent;
 			// 
@@ -107,13 +92,27 @@ namespace CodeImp.DoomBuilder.Interface
 			this.refreshtimer.Interval = 500;
 			this.refreshtimer.Tick += new System.EventHandler(this.refreshtimer_Tick);
 			// 
-			// ImageBrowser
+			// list
+			// 
+			this.list.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.list.LargeImageList = this.images;
+			this.list.Location = new System.Drawing.Point(0, 0);
+			this.list.MultiSelect = false;
+			this.list.Name = "list";
+			this.list.OwnerDraw = true;
+			this.list.Size = new System.Drawing.Size(518, 312);
+			this.list.TabIndex = 1;
+			this.list.UseCompatibleStateImageBehavior = false;
+			this.list.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.list_DrawItem);
+			this.list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.list_ItemSelectionChanged);
+			// 
+			// ImageBrowserControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.splitter);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.Name = "ImageBrowser";
+			this.Name = "ImageBrowserControl";
 			this.Size = new System.Drawing.Size(518, 346);
 			this.splitter.Panel1.ResumeLayout(false);
 			this.splitter.Panel2.ResumeLayout(false);

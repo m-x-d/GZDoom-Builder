@@ -25,10 +25,11 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D;
 using System.Drawing;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Map
+namespace CodeImp.DoomBuilder.Geometry
 {
 	/// <summary>
 	/// This is used to indicate a side of a line without the need for a sidedef.
