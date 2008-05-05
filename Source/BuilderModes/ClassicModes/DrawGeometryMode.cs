@@ -193,7 +193,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					if(!frontsdone[i])
 					{
 						// Make sector here
-						Sector newsector = map.MakeSector(ld, true);
+						SectorMaker maker = new SectorMaker();
+						Sector newsector = maker.MakeAt(ld, true);
 						if(newsector != null)
 						{
 							// Go for all sidedefs in this new sector

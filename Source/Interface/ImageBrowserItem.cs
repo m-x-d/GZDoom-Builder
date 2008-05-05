@@ -45,17 +45,21 @@ namespace CodeImp.DoomBuilder.Interface
 
 		// Group
 		private ListViewGroup listgroup;
+		private LinkedListNode<ImageBrowserItem> loadedticked;
 		
 		// Image cache
-		private Image image;
+		private Image normalimage;
+		private Image selectedimage;
 		private bool imageloaded;
-		private bool imageselected;
 		
 		#endregion
 
 		#region ================== Properties
 
 		public ListViewGroup ListGroup { get { return listgroup; } set { listgroup = value; } }
+		public LinkedListNode<ImageBrowserItem> LoadedTicket { get { return loadedticked; } set { loadedticked = value; } }
+		public bool IsImageLoaded { get { return imageloaded; } }
+		public bool HasImage { get { return (normalimage != null); } }
 
 		#endregion
 
@@ -70,6 +74,15 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Tag = tag;
 		}
 		
+		// Disposer
+		public void Dispose()
+		{
+			ReleaseImage();
+			loadedticked = null;
+			icon = null;
+			listgroup = null;
+		}
+		
 		#endregion
 		
 		#region ================== Methods
@@ -77,67 +90,82 @@ namespace CodeImp.DoomBuilder.Interface
 		// This checks if a redraw is needed
 		public bool CheckRedrawNeeded(Rectangle bounds)
 		{
-			return ((image == null) || (image.Size != bounds.Size) ||
-				(this.Selected != imageselected) || (icon.IsLoaded && !imageloaded));
+			return (normalimage == null) || (selectedimage == null) || (icon.IsLoaded && !imageloaded);
+		}
+		
+		// This draws the images
+		private Image DrawImage(Rectangle bounds, bool selected)
+		{
+			Brush forecolor;
+			Brush backcolor;
+
+			// Make a new image and graphics to draw with
+			Image image = new Bitmap(bounds.Width, bounds.Height, PixelFormat.Format32bppArgb);
+			Graphics g = Graphics.FromImage(image);
+			g.CompositingQuality = CompositingQuality.HighSpeed;
+			g.InterpolationMode = InterpolationMode.Bilinear;
+			g.SmoothingMode = SmoothingMode.HighQuality;
+			g.PixelOffsetMode = PixelOffsetMode.None;
+
+			// Determine coordinates
+			SizeF textsize = g.MeasureString(this.Text, this.ListView.Font, bounds.Width);
+			Size bordersize = new Size((bounds.Width - 64) >> 1, (bounds.Height - 64 - (int)textsize.Height) >> 1);
+			Rectangle imagerect = new Rectangle(bordersize.Width, bordersize.Height, 64, 64);
+			PointF textpos = new PointF(((float)bounds.Width - textsize.Width) * 0.5f, bounds.Height - textsize.Height - 2);
+
+			// Determine colors
+			if(selected)
+			{
+				// Highlighted
+				backcolor = new LinearGradientBrush(new Point(0, 0), new Point(0, bounds.Height),
+					AdjustedColor(SystemColors.Highlight, 0.2f),
+					AdjustedColor(SystemColors.Highlight, -0.1f));
+				forecolor = SystemBrushes.HighlightText;
+			}
+			else
+			{
+				// Normal
+				backcolor = new SolidBrush(base.ListView.BackColor);
+				forecolor = new SolidBrush(base.ListView.ForeColor);
+			}
+
+			// Draw!
+			g.FillRectangle(backcolor, 0, 0, bounds.Width, bounds.Height);
+			g.DrawImage(icon.Bitmap, General.MakeZoomedRect(icon.Bitmap.Size, imagerect));
+			g.DrawString(this.Text, this.ListView.Font, forecolor, textpos);
+
+			// Done
+			g.Dispose();
+			return image;
 		}
 		
 		// This requests the cached image and redraws it if needed
 		public Image GetImage(Rectangle bounds)
 		{
-			Brush forecolor;
-			Brush backcolor;
-
 			// Do we need to redraw?
 			if(CheckRedrawNeeded(bounds))
 			{
-				// Keep settings
-				this.imageloaded = icon.IsLoaded;
-				this.imageselected = this.Selected;
-				
-				// Trash old image
-				if(image != null) image.Dispose();
+				// Keep image loaded state
+				imageloaded = icon.IsLoaded;
 
-				// Make a new image and graphics to draw with
-				image = new Bitmap(bounds.Width, bounds.Height, PixelFormat.Format32bppArgb);
-				Graphics g = Graphics.FromImage(image);
-				g.CompositingQuality = CompositingQuality.HighSpeed;
-				g.InterpolationMode = InterpolationMode.Bilinear;
-				g.SmoothingMode = SmoothingMode.HighQuality;
-				g.PixelOffsetMode = PixelOffsetMode.None;
-				
-				// Determine coordinates
-				SizeF textsize = g.MeasureString(this.Text, this.ListView.Font, bounds.Width);
-				Size bordersize = new Size((bounds.Width - 64) >> 1, (bounds.Height - 64 - (int)textsize.Height) >> 1);
-				Rectangle imagerect = new Rectangle(bordersize.Width, bordersize.Height, 64, 64);
-				PointF textpos = new PointF(((float)bounds.Width - textsize.Width) * 0.5f, bounds.Height - textsize.Height - 2);
-
-				// Determine colors
-				if(this.Selected)
-				{
-					// Highlighted
-					backcolor = new LinearGradientBrush(new Point(0, 0), new Point(0, bounds.Height),
-						AdjustedColor(SystemColors.Highlight, 0.2f),
-						AdjustedColor(SystemColors.Highlight, -0.1f));
-					forecolor = SystemBrushes.HighlightText;
-				}
-				else
-				{
-					// Normal
-					backcolor = new SolidBrush(base.ListView.BackColor);
-					forecolor = new SolidBrush(base.ListView.ForeColor);
-				}
-
-				// Draw!
-				g.FillRectangle(backcolor, 0, 0, bounds.Width, bounds.Height);
-				g.DrawImage(icon.Bitmap, General.MakeZoomedRect(icon.Bitmap.Size, imagerect));
-				g.DrawString(this.Text, this.ListView.Font, forecolor, textpos);
-
-				// Done
-				g.Dispose();
+				// Redraw both images
+				if(normalimage != null) normalimage.Dispose();
+				if(selectedimage != null) selectedimage.Dispose();
+				normalimage = DrawImage(bounds, false);
+				selectedimage = DrawImage(bounds, true);
 			}
 
 			// Return image
-			return image;
+			if(this.Selected) return selectedimage; else return normalimage;
+		}
+
+		// This releases image resources
+		public void ReleaseImage()
+		{
+			if(normalimage != null) normalimage.Dispose();
+			if(selectedimage != null) selectedimage.Dispose();
+			normalimage = null;
+			selectedimage = null;
 		}
 
 		// This brightens or darkens a color

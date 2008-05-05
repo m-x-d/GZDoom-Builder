@@ -199,6 +199,9 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Settings.WriteSetting("browserwindow.sizewidth", lastsize.Width);
 			General.Settings.WriteSetting("browserwindow.sizeheight", lastsize.Height);
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
+
+			// Clean up
+			browser.CleanUp();
 		}
 
 		// Static method to browse for flats

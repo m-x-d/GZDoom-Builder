@@ -34,7 +34,6 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label1;
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
-			this.backgroundload = new System.Windows.Forms.CheckBox();
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
 			this.imagebrightness = new System.Windows.Forms.TrackBar();
 			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
@@ -123,7 +122,6 @@ namespace CodeImp.DoomBuilder.Interface
 			// groupBox1
 			// 
 			groupBox1.Controls.Add(this.qualitydisplay);
-			groupBox1.Controls.Add(this.backgroundload);
 			groupBox1.Controls.Add(this.imagebrightnesslabel);
 			groupBox1.Controls.Add(this.imagebrightness);
 			groupBox1.Controls.Add(label1);
@@ -143,16 +141,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.qualitydisplay.TabIndex = 10;
 			this.qualitydisplay.Text = "High quality display";
 			this.qualitydisplay.UseVisualStyleBackColor = true;
-			// 
-			// backgroundload
-			// 
-			this.backgroundload.AutoSize = true;
-			this.backgroundload.Location = new System.Drawing.Point(25, 102);
-			this.backgroundload.Name = "backgroundload";
-			this.backgroundload.Size = new System.Drawing.Size(197, 18);
-			this.backgroundload.TabIndex = 9;
-			this.backgroundload.Text = "Load all texture and flats in memory";
-			this.backgroundload.UseVisualStyleBackColor = true;
 			// 
 			// imagebrightnesslabel
 			// 
@@ -743,7 +731,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.GroupBox colorsgroup1;
 		private System.Windows.Forms.CheckBox blackbrowsers;
 		private System.Windows.Forms.CheckBox qualitydisplay;
-		private System.Windows.Forms.CheckBox backgroundload;
 		private System.Windows.Forms.Label imagebrightnesslabel;
 		private System.Windows.Forms.TrackBar imagebrightness;
 	}

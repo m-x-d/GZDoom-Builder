@@ -51,7 +51,6 @@ namespace CodeImp.DoomBuilder.Config
 		private float visualmousesensy;
 		private float visualviewrange;
 		private int imagebrightness;
-		private bool backgroundload;
 		private bool qualitydisplay;
 		
 		#endregion
@@ -67,7 +66,6 @@ namespace CodeImp.DoomBuilder.Config
 		public float VisualMouseSensX { get { return visualmousesensx; } internal set { visualmousesensx = value; } }
 		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
 		public float VisualViewRange { get { return visualviewrange; } internal set { visualviewrange = value; } }
-		public bool BackgroundLoading { get { return backgroundload; } internal set { backgroundload = value; } }
 		public bool QualityDisplay { get { return qualitydisplay; } internal set { qualitydisplay = value; } }
 
 		#endregion
@@ -100,7 +98,6 @@ namespace CodeImp.DoomBuilder.Config
 				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40f);
 				visualviewrange = cfg.ReadSetting("visualviewrange", 1000f);
 				imagebrightness = cfg.ReadSetting("imagebrightness", 3);
-				backgroundload = cfg.ReadSetting("backgroundload", true);
 				qualitydisplay = cfg.ReadSetting("qualitydisplay", true);
 				
 				// Success
@@ -125,7 +122,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("visualmousesensy", visualmousesensy);
 			cfg.WriteSetting("visualviewrange", visualviewrange);
 			cfg.WriteSetting("imagebrightness", imagebrightness);
-			cfg.WriteSetting("backgroundload", backgroundload);
 			cfg.WriteSetting("qualitydisplay", qualitydisplay);
 
 			// Save settings configuration

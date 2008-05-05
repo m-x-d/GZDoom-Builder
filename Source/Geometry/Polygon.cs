@@ -69,6 +69,13 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		#region ================== Methods
 
+		// This merges a polygon into this one
+		public void Add(Polygon p)
+		{
+			// Initialize
+			foreach(EarClipVertex v in p) base.AddLast(v);
+		}
+		
 		// Point inside the polygon?
 		// See: http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
 		public bool Intersect(Vector2D p)

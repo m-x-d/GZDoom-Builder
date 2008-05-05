@@ -38,6 +38,13 @@ namespace CodeImp.DoomBuilder.Interface
 {
 	internal partial class ImageBrowserControl : UserControl
 	{
+		#region ================== Constants
+
+		// Maximum loaded items
+		private const int MAX_LOADED_ITEMS = 200;
+		
+		#endregion
+		
 		#region ================== Delegates / Events
 
 		public delegate void SelectedItemChangedDelegate();
@@ -53,6 +60,9 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		// All items
 		private List<ImageBrowserItem> items;
+		
+		// Loaded items
+		private LinkedList<ImageBrowserItem> loadeditems;
 		
 		#endregion
 
@@ -71,11 +81,12 @@ namespace CodeImp.DoomBuilder.Interface
 			// Initialize
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
+			loadeditems = new LinkedList<ImageBrowserItem>();
 			
 			// Move textbox with label
 			objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
 		}
-
+		
 		// This applies the color settings
 		public void ApplyColorSettings()
 		{
@@ -85,6 +96,37 @@ namespace CodeImp.DoomBuilder.Interface
 				list.BackColor = Color.Black;
 				list.ForeColor = Color.White;
 			}
+		}
+
+		// This cleans everything up (we can't override Dispose?)
+		public virtual void CleanUp()
+		{
+			// Stop refresh timer
+			refreshtimer.Enabled = false;
+
+			// Begin updating list
+			updating = true;
+			list.SuspendLayout();
+			list.BeginUpdate();
+
+			// Go for all items
+			foreach(ImageBrowserItem i in list.Items)
+			{
+				// Queue image for unloading if only temporary
+				if(i.icon.IsLoaded && i.icon.Temporary) General.Map.Data.BackgroundLoadImage(i.icon, false);
+				
+				// Dispose item
+				i.Dispose();
+			}
+
+			// Trash list items
+			list.Clear();
+			loadeditems.Clear();
+			
+			// Done updating list
+			updating = false;
+			list.EndUpdate();
+			list.ResumeLayout();
 		}
 
 		#endregion
@@ -97,18 +139,25 @@ namespace CodeImp.DoomBuilder.Interface
 			if(!updating) e.Graphics.DrawImageUnscaled((e.Item as ImageBrowserItem).GetImage(e.Bounds), e.Bounds);
 		}
 
-		// Resfresher
+		// Refresher
 		private void refreshtimer_Tick(object sender, EventArgs e)
 		{
-			// Continue refreshing only when still loading data
-			refreshtimer.Enabled = General.Map.Data.IsLoading;
-			
 			// Go for all items
 			foreach(ImageBrowserItem i in list.Items)
 			{
 				// Bounds within view?
 				if(i.Bounds.IntersectsWith(list.ClientRectangle))
 				{
+					// Remove from loaded list if in there
+					if(i.LoadedTicket != null) loadeditems.Remove(i.LoadedTicket);
+					
+					// Image not loaded?
+					if(!i.icon.IsLoaded && !i.IsImageLoaded)
+					{
+						// Queue for background loading
+						General.Map.Data.BackgroundLoadImage(i.icon, true);
+					}
+
 					// Items needs to be redrawn?
 					if(i.CheckRedrawNeeded(i.Bounds))
 					{
@@ -118,10 +167,35 @@ namespace CodeImp.DoomBuilder.Interface
 						// Refresh item in list
 						list.RedrawItems(i.Index, i.Index, false);
 					}
+					else
+					{
+						// Queue for unloading if only temporary
+						if(i.icon.IsLoaded && i.icon.Temporary) General.Map.Data.BackgroundLoadImage(i.icon, false);
+					}
+
+					// Add to loaded list
+					i.LoadedTicket = loadeditems.AddLast(i);
+				}
+				else
+				{
+					// When queued for loading, remove it from queue
+					General.Map.Data.BackgroundCancelImage(i.icon);
+				}
+			}
+
+			// More items laoded than allowed?
+			if(loadeditems.Count > MAX_LOADED_ITEMS)
+			{
+				// Unload items
+				for(int i = 0; i < (loadeditems.Count - MAX_LOADED_ITEMS); i++)
+				{
+					loadeditems.First.Value.ReleaseImage();
+					loadeditems.First.Value.LoadedTicket = null;
+					loadeditems.RemoveFirst();
 				}
 			}
 		}
-		
+
 		#endregion
 
 		#region ================== Events
@@ -130,7 +204,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private void objectname_TextChanged(object sender, EventArgs e)
 		{
 			// Update list
-			RefillList();
+			RefillList(false);
 
 			// No item selected?
 			if(list.SelectedItems.Count == 0)
@@ -236,7 +310,8 @@ namespace CodeImp.DoomBuilder.Interface
 			if(list.Items.Count > 0)
 			{
 				list.SelectedItems.Clear();
-				lvi = list.FindNearestItem(SearchDirectionHint.Down, new Point(1, -100000));
+				//lvi = list.FindNearestItem(SearchDirectionHint.Down, new Point(1, -100000));
+				lvi = list.Items[0];
 				if(lvi != null)
 				{
 					lvi.Selected = true;
@@ -264,13 +339,10 @@ namespace CodeImp.DoomBuilder.Interface
 		public void EndAdding()
 		{
 			// Fill list with items
-			RefillList();
+			RefillList(true);
 
-			// Start updating if needed
-			refreshtimer.Enabled = General.Map.Data.IsLoading;
-			
-			// Select first item
-			SelectFirstItem();
+			// Start updating
+			refreshtimer.Enabled = true;
 		}
 		
 		// This adds an item
@@ -283,7 +355,7 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 
 		// This fills the list based on the objectname filter
-		private void RefillList()
+		private void RefillList(bool selectfirst)
 		{
 			List<ListViewItem> showitems = new List<ListViewItem>();
 			
@@ -296,7 +368,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Group property of items will be set to null, we will restore it later
 			list.Items.Clear();
 			
-			// Go for all items NOT in the list
+			// Go for all items
 			foreach(ImageBrowserItem i in items)
 			{
 				// Add item if valid
@@ -311,6 +383,9 @@ namespace CodeImp.DoomBuilder.Interface
 			// Fill list
 			list.Items.AddRange(showitems.ToArray());
 
+			// Select first item?
+			if(selectfirst) SelectFirstItem();
+			
 			// Done updating list
 			updating = false;
 			list.EndUpdate();

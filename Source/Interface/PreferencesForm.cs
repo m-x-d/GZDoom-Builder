@@ -51,7 +51,6 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Interface
 			imagebrightness.Value = General.Settings.ImageBrightness;
-			backgroundload.Checked = General.Settings.BackgroundLoading;
 			qualitydisplay.Checked = General.Settings.QualityDisplay;
 			
 			// Fill list of actions
@@ -292,7 +291,6 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
-			General.Settings.BackgroundLoading = backgroundload.Checked;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
 			
 			// Apply control keys to actions
