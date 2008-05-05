@@ -36,6 +36,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string name;
 		private string filename;
 		private string settingskey;
+		private string defaultlumpname;
 		private string nodebuildersave;
 		private string nodebuildertest;
 		private string nodebuilder3d;
@@ -49,6 +50,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		public string Name { get { return name; } }
 		public string Filename { get { return filename; } }
+		public string DefaultLumpName { get { return defaultlumpname; } }
 		public string NodebuilderSave { get { return nodebuildersave; } set { nodebuildersave = value; } }
 		public string NodebuilderTest { get { return nodebuildertest; } set { nodebuildertest = value; } }
 		public string Nodebuilder3D { get { return nodebuilder3d; } set { nodebuilder3d = value; } }
@@ -61,12 +63,15 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ConfigurationInfo(string name, string filename)
+		public ConfigurationInfo(Configuration cfg, string filename)
 		{
 			// Initialize
-			this.name = name;
 			this.filename = filename;
 			this.settingskey = Path.GetFileNameWithoutExtension(filename).ToLower();
+			
+			// Load settings from game configuration
+			this.name = cfg.ReadSetting("game", "<unnamed game>");
+			this.defaultlumpname = cfg.ReadSetting("defaultlumpname", "");
 			
 			// Load settings from program configuration
 			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", "");

@@ -175,6 +175,13 @@ namespace CodeImp.DoomBuilder.Interface
 				// Get the info
 				ci = (ConfigurationInfo)config.SelectedItem;
 
+				// No lump name in the name field?
+				if(levelname.Text.Trim().Length == 0)
+				{
+					// Get default lump name from configuration
+					levelname.Text = ci.DefaultLumpName;
+				}
+				
 				// Show resources
 				datalocations.FixedResourceLocationList(ci.Resources);
 			}
