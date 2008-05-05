@@ -98,6 +98,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.levelname.Name = "levelname";
 			this.levelname.Size = new System.Drawing.Size(94, 20);
 			this.levelname.TabIndex = 8;
+			this.levelname.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.levelname_KeyPress);
 			// 
 			// config
 			// 
@@ -157,6 +158,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// datalocations
 			// 
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
+			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.datalocations.Location = new System.Drawing.Point(15, 28);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(336, 130);

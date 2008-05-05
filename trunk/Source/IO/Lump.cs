@@ -29,6 +29,13 @@ namespace CodeImp.DoomBuilder.IO
 {
 	internal class Lump
 	{
+		#region ================== Methods
+
+		// Allowed characters in a map lump name
+		public const string MAP_LUMP_NAME_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
+
+		#endregion
+
 		#region ================== Variables
 
 		// Owner

@@ -209,11 +209,14 @@ namespace CodeImp.DoomBuilder.Geometry
 		private Polygon FindOuterLines(Linedef line, bool front, List<LinedefSide> alllines)
 		{
 			// Find inner path
-			alllines = FindInnerMostPath(line, front);
-			if(alllines != null)
+			List<LinedefSide> pathlines = FindInnerMostPath(line, front);
+			if(pathlines != null)
 			{
+				// Keep the lines
+				alllines.AddRange(pathlines);
+				
 				// Make polygon
-				LinedefTracePath tracepath = new LinedefTracePath(alllines);
+				LinedefTracePath tracepath = new LinedefTracePath(pathlines);
 				Polygon poly = tracepath.MakePolygon();
 
 				// Check if the front of the line is inside the polygon
