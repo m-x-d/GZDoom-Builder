@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Data
 		public PixelColorBlock PixelData { get { lock(this) { return pixeldata; } } }
 		public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return new Bitmap(bitmap); else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
 		public Texture Texture { get { lock(this) { return texture; } } }
-		public bool IsLoaded { get { return (bitmap != null); } }
+		public bool IsLoaded { get { return (bitmap != null) && (loadstate != ImageData.LOADSTATE_LOAD); } }
 		public bool IsDisposed { get { return isdisposed; } }
 		internal bool Temporary { get { return temporary; } set { temporary = value; } }
 		internal int LoadState { get { return loadstate; } set { loadstate = value; } }
@@ -158,7 +158,7 @@ namespace CodeImp.DoomBuilder.Data
 			float bright = (float)General.Settings.ImageBrightness * 5f;
 			
 			// This applies brightness correction on the image
-			if(IsLoaded && usecolorcorrection)
+			if((bitmap != null) && usecolorcorrection)
 			{
 				bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
 				byte* pixels = (byte*)(bmpdata.Scan0.ToPointer());

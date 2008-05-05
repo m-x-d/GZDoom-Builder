@@ -178,8 +178,11 @@ namespace CodeImp.DoomBuilder.Interface
 				}
 				else
 				{
-					// When queued for loading, remove it from queue
-					General.Map.Data.BackgroundCancelImage(i.icon);
+					// Queue for unloading if only temporary
+					if(i.icon.IsLoaded && i.icon.Temporary)
+						General.Map.Data.BackgroundLoadImage(i.icon, false);
+					else
+						General.Map.Data.BackgroundCancelImage(i.icon);
 				}
 			}
 

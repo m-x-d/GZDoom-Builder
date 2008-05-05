@@ -166,6 +166,7 @@ namespace CodeImp.DoomBuilder.Interface
 			if(selectedimage != null) selectedimage.Dispose();
 			normalimage = null;
 			selectedimage = null;
+			imageloaded = false;
 		}
 
 		// This brightens or darkens a color
