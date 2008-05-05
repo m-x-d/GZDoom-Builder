@@ -35,77 +35,47 @@ namespace CodeImp.DoomBuilder.Geometry
 	/// This makes a sector from all surrounding lines from a given coordinate.
 	/// Automatically finds the sidedef/sector properties from surrounding sectors/sidedefs.
 	/// </summary>
-	public class SectorMaker
+	public static class SectorTools
 	{
 		#region ================== Constants
 
 		#endregion
 
-		#region ================== Variables
-
-		#endregion
-
-		#region ================== Properties
-
-		#endregion
-
-		#region ================== Constructor / Destructor
+		#region ================== Pathfinding
 
 		/// <summary>
-		/// This makes a sector from all surrounding lines from a given coordinate.
-		/// Automatically finds the sidedef/sector properties from surrounding sectors/sidedefs.
+		/// This finds a potential sector at the given coordinates,
+		/// or returns null when a sector is not possible there.
 		/// </summary>
-		public SectorMaker()
-		{
-			// Initialize
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-		
-		#endregion
-
-		#region ================== Methods
-
-		/// <summary>
-		/// This makes a sector at the given coordinates, or returns null
-		/// when sector could not be created.
-		/// </summary>
-		public Sector MakeAt(Vector2D pos)
+		public static List<LinedefSide> FindPotentialSectorAt(Vector2D pos)
 		{
 			// Find the nearest line and determine side, then use the other method to create the sector
 			Linedef l = General.Map.Map.NearestLinedef(pos);
-			return MakeAt(l, (l.SideOfLine(pos) <= 0));
+			return FindPotentialSectorAt(l, (l.SideOfLine(pos) <= 0));
 		}
 
 		/// <summary>
-		/// This makes a sector starting at the given line and side, or
-		/// returns null when sector could not be created.
+		/// This finds a potential sector starting at the given line and side,
+		/// or returns null when sector is not possible.
 		/// </summary>
-		public Sector MakeAt(Linedef line, bool front)
+		public static List<LinedefSide> FindPotentialSectorAt(Linedef line, bool front)
 		{
 			List<LinedefSide> alllines = new List<LinedefSide>();
 			
-			// STEP 1: Find the outer lines
+			// Find the outer lines
 			Polygon p = FindOuterLines(line, front, alllines);
 			if(p != null)
 			{
-				// STEP 2: Find the inner lines
+				// Find the inner lines
 				FindInnerLines(p, alllines);
-
-				// STEP 3: Make the sector
-				return MakeSector(alllines);
+				return alllines;
 			}
 			else
 				return null;
 		}
 
-		#endregion
-
-		#region ================== Pathfinding
-
 		// This finds the inner lines of the sector and adds them to the sector polygon
-		private void FindInnerLines(Polygon p, List<LinedefSide> alllines)
+		private static void FindInnerLines(Polygon p, List<LinedefSide> alllines)
 		{
 			Vertex foundv;
 			bool vvalid, findmore;
@@ -206,7 +176,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		// This finds the outer lines of the sector as a polygon
 		// Returns null when no valid outer polygon can be found
-		private Polygon FindOuterLines(Linedef line, bool front, List<LinedefSide> alllines)
+		private static Polygon FindOuterLines(Linedef line, bool front, List<LinedefSide> alllines)
 		{
 			// Find inner path
 			List<LinedefSide> pathlines = FindInnerMostPath(line, front);
@@ -233,7 +203,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		// This finds the inner path from the beginning of a line to the end of the line.
 		// Returns null when no path could be found.
-		private List<LinedefSide> FindInnerMostPath(Linedef start, bool front)
+		private static List<LinedefSide> FindInnerMostPath(Linedef start, bool front)
 		{
 			List<LinedefSide> path = new List<LinedefSide>();
 			Dictionary<Linedef, int> tracecount = new Dictionary<Linedef, int>();
@@ -302,7 +272,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Sector Making
 
 		// This makes the sector from the given lines and sides
-		private Sector MakeSector(List<LinedefSide> alllines)
+		public static Sector MakeSector(List<LinedefSide> alllines)
 		{
 			Sidedef source = null;
 			Sector newsector = General.Map.Map.CreateSector();
@@ -381,6 +351,34 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			// Return the new sector
 			return newsector;
+		}
+
+
+		// This joins a sector with the given lines and sides
+		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original)
+		{
+			// Go for all sides to make sidedefs
+			foreach(LinedefSide ls in alllines)
+			{
+				if(ls.Front)
+				{
+					// Create sidedef is needed and ensure it points to the new sector
+					if(ls.Line.Front == null) General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
+					original.CopyPropertiesTo(ls.Line.Front);
+				}
+				else
+				{
+					// Create sidedef is needed and ensure it points to the new sector
+					if(ls.Line.Back == null) General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
+					original.CopyPropertiesTo(ls.Line.Back);
+				}
+
+				// Update line
+				ls.Line.ApplySidedFlags();
+			}
+
+			// Return the new sector
+			return original.Sector;
 		}
 
 		#endregion

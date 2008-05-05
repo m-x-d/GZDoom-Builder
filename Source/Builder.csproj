@@ -95,7 +95,7 @@
     <Compile Include="Geometry\Angle2D.cs" />
     <Compile Include="Geometry\LinedefsTracePath.cs" />
     <Compile Include="Geometry\LinedefAngleSorter.cs" />
-    <Compile Include="Geometry\SectorMaker.cs" />
+    <Compile Include="Geometry\SectorTools.cs" />
     <Compile Include="Geometry\Triangulator.cs" />
     <Compile Include="Geometry\EarClipVertex.cs" />
     <Compile Include="Geometry\Line2D.cs" />
