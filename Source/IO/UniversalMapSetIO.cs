@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Properties
 
 		public override int MaxSidedefs { get { return int.MaxValue; } }
+		public override int VertexDecimals { get { return 3; } }
 
 		#endregion
 

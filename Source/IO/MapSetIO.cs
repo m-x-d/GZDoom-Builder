@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal abstract class MapSetIO
+	internal abstract class MapSetIO : IMapSetIO
 	{
 		#region ================== Constants
 
@@ -49,13 +49,14 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Properties
 
 		public abstract int MaxSidedefs { get; }
+		public abstract int VertexDecimals { get; }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public MapSetIO(WAD wad, MapManager manager)
+		internal MapSetIO(WAD wad, MapManager manager)
 		{
 			// Initialize
 			this.wad = wad;

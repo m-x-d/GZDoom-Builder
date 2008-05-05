@@ -332,6 +332,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 				// Make corrections for backward linedefs
 				MapSet.FlipBackwardLinedefs(newlines);
+
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
 				
 				// Update cached values
 				map.Update();

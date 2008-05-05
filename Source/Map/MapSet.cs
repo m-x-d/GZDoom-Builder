@@ -1205,6 +1205,12 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Tools
 
+		// This snaps all vertices to the map format accuracy
+		public void SnapAllToAccuracy()
+		{
+			foreach(Vertex v in vertices) v.SnapToAccuracy();
+		}
+		
 		// This returns the next unused tag number
 		public int GetNewTag()
 		{

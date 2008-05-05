@@ -291,6 +291,7 @@
     <Compile Include="IO\DoomPictureReader.cs" />
     <Compile Include="IO\FileImageReader.cs" />
     <Compile Include="IO\IImageReader.cs" />
+    <Compile Include="IO\IMapSetIO.cs" />
     <Compile Include="IO\Lump.cs" />
     <Compile Include="IO\MapSetIO.cs" />
     <Compile Include="IO\UniversalMapSetIO.cs" />
