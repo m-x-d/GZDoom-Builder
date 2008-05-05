@@ -301,6 +301,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Stitch geometry
 				if(snaptonearest) General.Map.Map.StitchGeometry();
 				
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
+				
 				// Update cached values
 				General.Map.Map.Update();
 

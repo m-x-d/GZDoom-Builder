@@ -194,17 +194,19 @@ namespace CodeImp.DoomBuilder.Map
 		public void Move(Vector2D newpos)
 		{
 			// Change position
-			this.Move((int)Math.Round(newpos.x), (int)Math.Round(newpos.y));
-		}
-
-		// This moves the vertex
-		public void Move(int newx, int newy)
-		{
-			// Change position
-			pos = new Vector2D(newx, newy);
+			pos = newpos;
 			
 			// Let all lines know they need an update
 			foreach(Linedef l in linedefs) l.NeedUpdate();
+		}
+
+		// This snaps the vertex to the map format accuracy
+		public void SnapToAccuracy()
+		{
+			// Round the coordinates
+			Vector2D newpos = new Vector2D((float)Math.Round(pos.x, General.Map.FormatInterface.VertexDecimals),
+										   (float)Math.Round(pos.y, General.Map.FormatInterface.VertexDecimals));
+			this.Move(newpos);
 		}
 
 		// This snaps the vertex to the grid
