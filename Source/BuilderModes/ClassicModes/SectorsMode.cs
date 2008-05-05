@@ -329,36 +329,43 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
-
-				// Check on which side of the linedef the mouse is
-				float side = l.SideOfLine(mousemappos);
-				if(side > 0)
+				if(l != null)
 				{
-					// Is there a sidedef here?
-					if(l.Back != null)
+					// Check on which side of the linedef the mouse is
+					float side = l.SideOfLine(mousemappos);
+					if(side > 0)
 					{
-						// Highlight if not the same
-						if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+						// Is there a sidedef here?
+						if(l.Back != null)
+						{
+							// Highlight if not the same
+							if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+						}
+						else
+						{
+							// Highlight nothing
+							if(highlighted != null) Highlight(null);
+						}
 					}
 					else
 					{
-						// Highlight nothing
-						if(highlighted != null) Highlight(null);
+						// Is there a sidedef here?
+						if(l.Front != null)
+						{
+							// Highlight if not the same
+							if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
+						}
+						else
+						{
+							// Highlight nothing
+							if(highlighted != null) Highlight(null);
+						}
 					}
 				}
 				else
 				{
-					// Is there a sidedef here?
-					if(l.Front != null)
-					{
-						// Highlight if not the same
-						if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
-					}
-					else
-					{
-						// Highlight nothing
-						if(highlighted != null) Highlight(null);
-					}
+					// Highlight nothing
+					if(highlighted != null) Highlight(null);
 				}
 			}
 		}

@@ -174,14 +174,65 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					ld.Selected = true;
 					newlines.Add(ld);
 
+					// Should we split this line to merge with intersecting lines?
+					if(points[i - 1].stitch || points[i].stitch)
+					{
+						// Check if any other lines intersect this line
+						List<float> intersections = new List<float>();
+						foreach(Linedef ld2 in map.Linedefs)
+						{
+							// Not the same as the subject line
+							if(ld2 != ld)
+							{
+								// Intersecting?
+								// We only keep the unit length from the start of the line and
+								// do the real splitting later, when all intersections are known
+								float u = ld.GetIntersectionU(ld2);
+								if(!float.IsNaN(u) && (u > 0.0f) && (u < 1.0f)) intersections.Add(u);
+							}
+						}
+
+						// Sort the intersections
+						intersections.Sort();
+
+						// Go for all found intersections
+						Linedef splitline = ld;
+						Line2D measureline = ld.GetLine2D();
+						foreach(float u in intersections)
+						{
+							// Calculate exact coordinates where to split
+							// We use measureline for this, because the original line
+							// may already have changed in length due to a previous split
+							Vector2D splitpoint = measureline.GetCoordinatesAt(u);
+
+							// Make the vertex
+							Vertex splitvertex = map.CreateVertex((int)splitpoint.x, (int)splitpoint.y);
+							
+							// The Split method ties the end of the original line to the given
+							// vertex and starts a new line at the given vertex, so continue
+							// splitting with the new line, because the intersections are sorted
+							// from low to high (beginning at the original line start)
+							splitline = splitline.Split(splitvertex);
+							newlines.Add(splitline);
+							newverts.Add(splitvertex);
+							mergeverts.Add(splitvertex);
+						}
+					}
+					
 					// Next
 					v1 = v2;
 				}
-				
+
 				// STEP 2: Merge the new geometry
 				foreach(Vertex v in mergeverts) v.Marked = true;
 				MapSet.JoinVertices(mergeverts, mergeverts, true, General.Settings.StitchDistance);
 				map.StitchGeometry();
+
+				// Re-find our new lines, because they have been merged with the other geometry
+				newlines = map.GetMarkedLinedefs(true);
+
+				// Split the new lines with the new vertices so that self-intersecting draws also work
+				MapSet.SplitLinesByVertices(newlines, mergeverts, General.Settings.StitchDistance, null);
 				
 				// STEP 3: Make sectors where possible
 				bool[] frontsdone = new bool[newlines.Count];
@@ -240,6 +291,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						}
 					}
 				}
+
+				// Make corrections for backward linedefs
+				MapSet.FlipBackwardLinedefs(newlines);
 				
 				// Update cached values
 				map.Update();
@@ -300,10 +354,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This updates the dragging
 		private void Update()
 		{
+			PixelColor color;
+			
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
-			Vector2D lastp = new Vector2D(0, 0);
+			DrawnVertex lastp = new DrawnVertex();
 			DrawnVertex curp = GetCurrentPosition();
 			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
 			
@@ -314,15 +370,28 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(points.Count > 0)
 				{
 					// Render lines
-					lastp = points[0].pos;
+					lastp = points[0];
 					for(int i = 1; i < points.Count; i++)
 					{
-						renderer.RenderLine(lastp, points[i].pos, LINE_THICKNESS, General.Colors.Selection, true);
-						lastp = points[i].pos;
+						// Determine line color
+						if(lastp.stitch || points[i].stitch)
+							color = General.Colors.Highlight;
+						else
+							color = General.Colors.Selection;
+						
+						// Render line
+						renderer.RenderLine(lastp.pos, points[i].pos, LINE_THICKNESS, color, true);
+						lastp = points[i];
 					}
-					
+
+					// Determine line color
+					if(lastp.stitch || snaptonearest)
+						color = General.Colors.Highlight;
+					else
+						color = General.Colors.Selection;
+
 					// Render line to cursor
-					renderer.RenderLine(lastp, curp.pos, LINE_THICKNESS, General.Colors.Highlight, true);
+					renderer.RenderLine(lastp.pos, curp.pos, LINE_THICKNESS, color, true);
 					
 					// Render vertices
 					for(int i = 0; i < points.Count; i++)
@@ -338,8 +407,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 				}
 
+				// Determine point color
+				if(snaptonearest) color = General.Colors.Highlight;
+				else color = General.Colors.Selection;
+				
 				// Render vertex at cursor
-				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Highlight, true);
+				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 				
 				// Done
 				renderer.Finish();

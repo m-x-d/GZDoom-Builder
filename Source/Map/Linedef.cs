@@ -306,6 +306,51 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Methods
 		
+		// This flips the linedef's vertex attachments
+		public void FlipVertices()
+		{
+			Vertex v = start;
+			start = end;
+			end = v;
+			NeedUpdate();
+		}
+
+		// This flips the sidedefs
+		public void FlipSidedefs()
+		{
+			Sidedef sd = front;
+			front = back;
+			back = sd;
+		}
+		
+		// This makes a Line2D instance
+		public Line2D GetLine2D()
+		{
+			return new Line2D(start.Position, end.Position);
+		}
+		
+		// This gets the intersection point with another line
+		public float GetIntersectionU(Linedef other)
+		{
+			return GetIntersectionU(other.GetLine2D());
+		}
+
+		// This gets the intersection point with another line
+		// Returns NaN when no intersection exists.
+		public float GetIntersectionU(Line2D otherline)
+		{
+			float u;
+			Line2D thisline = this.GetLine2D();
+			if(!otherline.GetIntersection(thisline, out u)) u = float.NaN;
+			return u;
+		}
+		
+		// This returns a vector of coordinates at the given unit length
+		public Vector2D GetCoordinatesAt(float u)
+		{
+			return GetLine2D().GetCoordinatesAt(u);
+		}
+		
 		// This returns a point for testing on one side
 		public Vector2D GetSidePoint(bool front)
 		{
