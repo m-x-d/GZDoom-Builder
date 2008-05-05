@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				foreach(Linedef l in unstablelines)
 				{
-					Vector2D delta = new Vector2D(l.End.X - l.Start.X, l.End.Y - l.Start.Y);
+					Vector2D delta = l.End.Position - l.Start.Position;
 					Vector2D textpos = l.Start.Position + (delta * 0.5f);
 					int length = (int)Math.Round(l.Length);
 					renderer.RenderTextCentered(length.ToString(), textpos, General.Colors.Highlight, true);

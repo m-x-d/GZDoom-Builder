@@ -48,7 +48,6 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedListNode<Vertex> mainlistitem;
 
 		// Position
-		private int x, y;
 		private Vector2D pos;
 
 		// References
@@ -74,8 +73,6 @@ namespace CodeImp.DoomBuilder.Map
 		public MapSet Map { get { return map; } }
 		public ICollection<Linedef> Linedefs { get { return linedefs; } }
 		public Vector2D Position { get { return pos; } }
-		public int X { get { return x; } }
-		public int Y { get { return y; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
@@ -87,15 +84,13 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Vertex(MapSet map, LinkedListNode<Vertex> listitem, int x, int y)
+		public Vertex(MapSet map, LinkedListNode<Vertex> listitem, Vector2D pos)
 		{
 			// Initialize
 			this.map = map;
 			this.linedefs = new LinkedList<Linedef>();
 			this.mainlistitem = listitem;
-			this.pos = new Vector2D(x, y);
-			this.x = x;
-			this.y = y;
+			this.pos = pos;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -174,8 +169,6 @@ namespace CodeImp.DoomBuilder.Map
 		public void CopyPropertiesTo(Vertex v)
 		{
 			// Copy properties
-			v.x = x;
-			v.y = y;
 			v.pos = pos;
 			if(fields != null) v.MakeFields(fields);
 			v.selected = selected;
@@ -208,8 +201,6 @@ namespace CodeImp.DoomBuilder.Map
 		public void Move(int newx, int newy)
 		{
 			// Change position
-			x = newx;
-			y = newy;
 			pos = new Vector2D(newx, newy);
 			
 			// Let all lines know they need an update

@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				foreach(Vertex v in General.Map.Map.Vertices)
 				{
 					// More to the right?
-					if((foundv == null) || (v.X >= foundv.X))
+					if((foundv == null) || (v.Position.x >= foundv.Position.x))
 					{
 						// Vertex is inside the polygon?
 						if(p.Intersect(v.Position))
