@@ -185,6 +185,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				
 				// STEP 3: Make sectors where possible
 				bool[] frontsdone = new bool[newlines.Count];
+				bool[] backsdone = new bool[newlines.Count];
 				for(int i = 0; i < newlines.Count; i++)
 				{
 					Linedef ld = newlines[i];
@@ -205,7 +206,35 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 								if(lineindex > -1)
 								{
 									// Mark this side as done
-									if(sd.IsFront) frontsdone[lineindex] = true;
+									if(sd.IsFront)
+										frontsdone[lineindex] = true;
+									else
+										backsdone[lineindex] = true;
+								}
+							}
+						}
+					}
+
+					// Back not marked as done?
+					if(!backsdone[i])
+					{
+						// Make sector here
+						SectorMaker maker = new SectorMaker();
+						Sector newsector = maker.MakeAt(ld, false);
+						if(newsector != null)
+						{
+							// Go for all sidedefs in this new sector
+							foreach(Sidedef sd in newsector.Sidedefs)
+							{
+								// Side matches with a side of our new lines?
+								int lineindex = newlines.IndexOf(sd.Line);
+								if(lineindex > -1)
+								{
+									// Mark this side as done
+									if(sd.IsFront)
+										frontsdone[lineindex] = true;
+									else
+										backsdone[lineindex] = true;
 								}
 							}
 						}

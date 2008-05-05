@@ -186,5 +186,18 @@ namespace CodeImp.DoomBuilder.Interface
 				datalocations.FixedResourceLocationList(ci.Resources);
 			}
 		}
+
+		// When keys are pressed in the level name field
+		private void levelname_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			string allowedchars = Lump.MAP_LUMP_NAME_CHARS + Lump.MAP_LUMP_NAME_CHARS.ToLowerInvariant() + "\b";
+
+			// Check if key is not allowed
+			if(allowedchars.IndexOf(e.KeyChar) == -1)
+			{
+				// Cancel this
+				e.Handled = true;
+			}
+		}
 	}
 }
