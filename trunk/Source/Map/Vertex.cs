@@ -227,34 +227,20 @@ namespace CodeImp.DoomBuilder.Map
 		// Which means this vertex is removed and the other is kept!
 		public void Join(Vertex other)
 		{
-			LinkedListNode<Linedef> previous;
-			LinkedListNode<Linedef> current;
-			
-			// Go for all lines
-			current = linedefs.Last;
-			while(current != null)
-			{
-				// Get previous
-				previous = current.Previous;
-
-				// Move the start to the other vertex
-				if(current.Value.Start == this)
-					current.Value.SetStartVertex(other);
-
-				// Move the end to the other vertex
-				if(current.Value.End == this)
-					current.Value.SetEndVertex(other);
-
-				// Go back one
-				current = previous;
-			}
-
 			// If either of the two vertices was selected, keep the other selected
 			if(this.selected) other.selected = true;
 			if(this.marked) other.marked = true;
 
-			// Remove this vertex
-			this.Dispose();
+			// Detach all linedefs
+			// This will automatically dispose this vertex
+			while(linedefs != null)
+			{
+				// Move the line to the other vertex
+				if(linedefs.First.Value.Start == this)
+					linedefs.First.Value.SetStartVertex(other);
+				else
+					linedefs.First.Value.SetEndVertex(other);
+			}
 		}
 
 		#endregion
