@@ -226,6 +226,8 @@ namespace CodeImp.DoomBuilder
 
 			// Set default mode
 			ChangeMode("VerticesMode");
+			ClassicMode cmode = (mode as ClassicMode);
+			cmode.SetZoom(0.5f);
 
 			// Success
 			General.WriteLogLine("Map creation done");
