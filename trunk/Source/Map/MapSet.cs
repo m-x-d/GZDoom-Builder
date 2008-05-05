@@ -470,7 +470,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Returns a collection of vertices that match a marked state
-		public ICollection<Vertex> GetMarkedVertices(bool mark)
+		public List<Vertex> GetMarkedVertices(bool mark)
 		{
 			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
 			foreach(Vertex v in vertices) if(v.Marked == mark) list.Add(v);
@@ -478,7 +478,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Returns a collection of things that match a marked state
-		public ICollection<Thing> GetMarkedThings(bool mark)
+		public List<Thing> GetMarkedThings(bool mark)
 		{
 			List<Thing> list = new List<Thing>(things.Count >> 1);
 			foreach(Thing t in things) if(t.Marked == mark) list.Add(t);
@@ -486,7 +486,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Returns a collection of linedefs that match a marked state
-		public ICollection<Linedef> GetMarkedLinedefs(bool mark)
+		public List<Linedef> GetMarkedLinedefs(bool mark)
 		{
 			List<Linedef> list = new List<Linedef>(linedefs.Count >> 1);
 			foreach(Linedef l in linedefs) if(l.Marked == mark) list.Add(l);
@@ -494,7 +494,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Returns a collection of sectors that match a marked state
-		public ICollection<Sector> GetMarkedSectors(bool mark)
+		public List<Sector> GetMarkedSectors(bool mark)
 		{
 			List<Sector> list = new List<Sector>(sectors.Count >> 1);
 			foreach(Sector s in sectors) if(s.Marked == mark) list.Add(s);
@@ -949,7 +949,30 @@ namespace CodeImp.DoomBuilder.Map
 			// Return result
 			return joinsdone;
 		}
-		
+
+		// This corrects lines that have a back sidedef but no front
+		// sidedef by flipping them. Returns the number of flips made.
+		public static int FlipBackwardLinedefs(ICollection<Linedef> lines)
+		{
+			int flipsdone = 0;
+			
+			// Examine all lines
+			foreach(Linedef l in lines)
+			{
+				// Back side but no front side?
+				if((l.Back != null) && (l.Front == null))
+				{
+					// Flip that linedef!
+					l.FlipVertices();
+					l.FlipSidedefs();
+					flipsdone++;
+				}
+			}
+
+			// Return result
+			return flipsdone;
+		}
+
 		// This splits the given lines with the given vertices
 		// All affected lines will be added to changedlines
 		// Returns the number of splits made

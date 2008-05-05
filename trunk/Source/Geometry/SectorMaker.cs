@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(lines.Count == 1)
 				{
 					// Are we allowed to trace along this line again?
-					if(tracecount[nextline] < 2)
+					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 2))
 					{
 						// Turn around and go back along the other side of the line
 						nextfront = !nextfront;
@@ -275,9 +275,18 @@ namespace CodeImp.DoomBuilder.Geometry
 					Linedef prevline = nextline;
 					if(lines[0] == nextline) nextline = lines[1]; else nextline = lines[0];
 
-					// Check if front side changes
-					if((prevline.Start == nextline.Start) ||
-					   (prevline.End == nextline.End)) nextfront = !nextfront;
+					// Are we allowed to trace this line again?
+					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 2))
+					{
+						// Check if front side changes
+						if((prevline.Start == nextline.Start) ||
+						   (prevline.End == nextline.End)) nextfront = !nextfront;
+					}
+					else
+					{
+						// No more lines, trace ends here
+						path = null;
+					}
 				}
 			}
 			// Continue as long as we have not reached the start yet
