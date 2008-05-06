@@ -62,6 +62,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			List<LinedefSide> alllines = new List<LinedefSide>();
 			
+			// TODO: Right now this will fail when it has found inner lines
+			// So fix it to make it find the outer lines first!
+
 			// Find the outer lines
 			Polygon p = FindOuterLines(line, front, alllines);
 			if(p != null)
@@ -152,7 +155,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					foundlinefront = (foundline.SideOfLine(foundv.Position + testpos) < 0.0f);
 
 					// Find inner path
-					List<LinedefSide> innerlines = FindInnerMostPath(foundline, foundlinefront);
+					List<LinedefSide> innerlines = FindClosestPath(foundline, foundlinefront);
 					if(innerlines != null)
 					{
 						// Make polygon
@@ -179,7 +182,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		private static Polygon FindOuterLines(Linedef line, bool front, List<LinedefSide> alllines)
 		{
 			// Find inner path
-			List<LinedefSide> pathlines = FindInnerMostPath(line, front);
+			List<LinedefSide> pathlines = FindClosestPath(line, front);
 			if(pathlines != null)
 			{
 				// Keep the lines
@@ -201,9 +204,11 @@ namespace CodeImp.DoomBuilder.Geometry
 			return null;
 		}
 		
-		// This finds the inner path from the beginning of a line to the end of the line.
-		// Returns null when no path could be found.
-		private static List<LinedefSide> FindInnerMostPath(Linedef start, bool front)
+		/// <summary>
+		/// This finds the closest path from the beginning of a line to the end of the line.
+		/// Returns null when no path could be found.
+		/// </summary>
+		public static List<LinedefSide> FindClosestPath(Linedef start, bool front)
 		{
 			List<LinedefSide> path = new List<LinedefSide>();
 			Dictionary<Linedef, int> tracecount = new Dictionary<Linedef, int>();
