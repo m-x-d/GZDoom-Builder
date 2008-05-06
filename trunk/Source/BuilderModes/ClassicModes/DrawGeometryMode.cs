@@ -231,7 +231,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				
 				// Mark our new vertices that need to merge and merge them with themselves
 				foreach(Vertex v in mergeverts) v.Marked = true;
-				MapSet.JoinVertices(mergeverts, mergeverts, true, General.Settings.StitchDistance);
+				MapSet.JoinVertices(mergeverts, mergeverts, true, MapSet.STITCH_DISTANCE);
 
 				// Perform standard geometry stitching between new and existing geometry
 				// The marked vertices indicate the new geometry
@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				newlines = map.GetMarkedLinedefs(true);
 				
 				// Split the new lines with the new vertices so that self-intersecting draws also work
-				MapSet.SplitLinesByVertices(newlines, mergeverts, General.Settings.StitchDistance, null);
+				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
 				
 				/***************************************************\
 					STEP 3: Join and create new sectors

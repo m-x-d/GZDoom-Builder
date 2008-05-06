@@ -145,6 +145,8 @@ namespace CodeImp.DoomBuilder.Map
 				// Detach from vertices
 				start.DetachLinedef(startvertexlistitem);
 				end.DetachLinedef(endvertexlistitem);
+				startvertexlistitem = null;
+				endvertexlistitem = null;
 				
 				// Dispose sidedefs
 				if(front != null) front.Dispose();
@@ -152,8 +154,6 @@ namespace CodeImp.DoomBuilder.Map
 				
 				// Clean up
 				mainlistitem = null;
-				startvertexlistitem = null;
-				endvertexlistitem = null;
 				start = null;
 				end = null;
 				front = null;
@@ -170,7 +170,8 @@ namespace CodeImp.DoomBuilder.Map
 		public void SetStartVertex(Vertex v)
 		{
 			// Change start
-			start.DetachLinedef(startvertexlistitem);
+			if(startvertexlistitem != null) start.DetachLinedef(startvertexlistitem);
+			startvertexlistitem = null;
 			start = v;
 			startvertexlistitem = start.AttachLinedef(this);
 			this.updateneeded = true;
@@ -180,7 +181,8 @@ namespace CodeImp.DoomBuilder.Map
 		public void SetEndVertex(Vertex v)
 		{
 			// Change end
-			end.DetachLinedef(endvertexlistitem);
+			if(endvertexlistitem != null) end.DetachLinedef(endvertexlistitem);
+			endvertexlistitem = null;
 			end = v;
 			endvertexlistitem = end.AttachLinedef(this);
 			this.updateneeded = true;
@@ -305,19 +307,28 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 		
 		#region ================== Methods
-		
+
 		// This flips the linedef's vertex attachments
 		public void FlipVertices()
 		{
+			// Flip vertices
 			Vertex v = start;
 			start = end;
 			end = v;
+
+			// Flip tickets accordingly
+			LinkedListNode<Linedef> vn = startvertexlistitem;
+			startvertexlistitem = endvertexlistitem;
+			endvertexlistitem = vn;
+
+			// Update required (angle changed)
 			NeedUpdate();
 		}
 
 		// This flips the sidedefs
 		public void FlipSidedefs()
 		{
+			// Flip sidedefs
 			Sidedef sd = front;
 			front = back;
 			back = sd;
