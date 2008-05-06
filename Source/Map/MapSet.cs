@@ -40,6 +40,9 @@ namespace CodeImp.DoomBuilder.Map
 		// Highest tag
 		public const int HIGHEST_TAG = 65534;
 
+		// Stiching distance
+		public const float STITCH_DISTANCE = 0.001f;
+		
 		#endregion
 
 		#region ================== Variables
@@ -744,22 +747,22 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Determine area in which we are editing
 			editarea = MapSet.CreateArea(movinglines);
-			editarea.Inflate((int)Math.Ceiling(General.Settings.StitchDistance),
-							 (int)Math.Ceiling(General.Settings.StitchDistance));
+			editarea.Inflate(MapSet.STITCH_DISTANCE * 2.0f,
+							 MapSet.STITCH_DISTANCE * 2.0f);
 
 			// Join nearby vertices
-			stitches += MapSet.JoinVertices(fixedverts, movingverts, true, General.Settings.StitchDistance);
+			stitches += MapSet.JoinVertices(fixedverts, movingverts, true, MapSet.STITCH_DISTANCE);
 
 			// Update cached values of lines because we need their length/angle
 			Update(true, false);
 
 			// Split moving lines with unselected vertices
 			nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
-			stitches += MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, General.Settings.StitchDistance, movinglines);
+			stitches += MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, MapSet.STITCH_DISTANCE, movinglines);
 
 			// Split non-moving lines with selected vertices
 			fixedlines = MapSet.FilterByArea(fixedlines, ref editarea);
-			stitches += MapSet.SplitLinesByVertices(fixedlines, movingverts, General.Settings.StitchDistance, movinglines);
+			stitches += MapSet.SplitLinesByVertices(fixedlines, movingverts, MapSet.STITCH_DISTANCE, movinglines);
 
 			// Remove looped linedefs
 			stitches += MapSet.RemoveLoopedLinedefs(movinglines);

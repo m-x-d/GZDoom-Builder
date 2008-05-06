@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Map
 
 				// Dispose the lines that are attached to this vertex
 				// because a linedef cannot exist without 2 vertices.
-				foreach(Linedef l in linedefs) l.Dispose();
+				while(linedefs.First != null) linedefs.First.Value.Dispose();
 				
 				// Clean up
 				linedefs = null;
