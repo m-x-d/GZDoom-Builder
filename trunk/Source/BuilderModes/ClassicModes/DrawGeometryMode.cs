@@ -175,7 +175,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					ld.Marked = true;
 					ld.Selected = true;
 					newlines.Add(ld);
-
+					ld.UpdateCache();
+					
 					// Should we split this line to merge with intersecting lines?
 					if(points[i - 1].stitch || points[i].stitch)
 					{
@@ -230,8 +231,39 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				\***************************************************/
 				
 				// Mark our new vertices that need to merge and merge them with themselves
+				// This completes the self intersections for which splits were made in step 1.
 				foreach(Vertex v in mergeverts) v.Marked = true;
 				MapSet.JoinVertices(mergeverts, mergeverts, true, MapSet.STITCH_DISTANCE);
+
+				// In step 3 we will make sectors on the front sides and join sectors on the
+				// back sides, but because the user could have drawn counterclockwise or just
+				// some weird polygon this could result in problems. The following code adjusts
+				// the direction of all new lines so that their front (right) side is facing
+				// the interior of the new drawn polygon.
+				map.Update(true, false);
+				foreach(Linedef ld in newlines)
+				{
+					// Find closest path starting with the front of this linedef
+					List<LinedefSide> pathlines = SectorTools.FindClosestPath(ld, true);
+					if(pathlines != null)
+					{
+						// Make polygon
+						LinedefTracePath tracepath = new LinedefTracePath(pathlines);
+						Polygon pathpoly = tracepath.MakePolygon();
+
+						// Check if the front of the line is outside the polygon
+						if(!pathpoly.Intersect(ld.GetSidePoint(true)))
+						{
+							// TODO: Maybe we also need to trace from the back side of the line
+							// here and see if that side lies in the interior? Just to make
+							// sure this flip will really help?
+							
+							// We must flip this linedef to face the interior
+							ld.FlipVertices();
+							ld.FlipSidedefs();
+						}
+					}
+				}
 
 				// Perform standard geometry stitching between new and existing geometry
 				// The marked vertices indicate the new geometry
