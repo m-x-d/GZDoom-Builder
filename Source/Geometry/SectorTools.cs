@@ -62,9 +62,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			List<LinedefSide> alllines = new List<LinedefSide>();
 			
-			// TODO: Right now this will fail when it has found inner lines
-			// So fix it to make it find the outer lines first!
-
 			// Find the outer lines
 			Polygon p = FindOuterLines(line, front, alllines);
 			if(p != null)
@@ -144,8 +141,8 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					// We already know that each linedef will go from this vertex
 					// to the left, because this is the right-most vertex in this area.
-					// If the line goes to the right, that means the other vertex of that
-					// line must lie outside this area and the mapper made an error.
+					// If the line would go to the right, that means the other vertex of
+					// that line must lie outside this area and the mapper made an error.
 					// Should I check for this error and fail to create a sector in
 					// that case or ignore it and create a malformed sector (possibly
 					// breaking another sector also)?
@@ -165,9 +162,9 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Check if the front of the line is outside the polygon
 						if(!innerpoly.Intersect(foundline.GetSidePoint(foundlinefront)))
 						{
-							// Valid island found!
+							// Valid hole found!
 							alllines.AddRange(innerlines);
-							p.Add(innerpoly);
+							p.InsertChild(innerpoly);
 							findmore = true;
 						}
 					}
@@ -181,27 +178,95 @@ namespace CodeImp.DoomBuilder.Geometry
 		// Returns null when no valid outer polygon can be found
 		private static Polygon FindOuterLines(Linedef line, bool front, List<LinedefSide> alllines)
 		{
-			// Find inner path
-			List<LinedefSide> pathlines = FindClosestPath(line, front);
-			if(pathlines != null)
-			{
-				// Keep the lines
-				alllines.AddRange(pathlines);
-				
-				// Make polygon
-				LinedefTracePath tracepath = new LinedefTracePath(pathlines);
-				Polygon poly = tracepath.MakePolygon();
+			Linedef scanline = line;
+			bool scanfront = front;
 
-				// Check if the front of the line is inside the polygon
-				if(poly.Intersect(line.GetSidePoint(front)))
+			do
+			{
+				// Find closest path
+				List<LinedefSide> pathlines = FindClosestPath(scanline, scanfront);
+				if(pathlines != null)
 				{
-					// Valid polygon!
-					return poly;
+					// Make polygon
+					LinedefTracePath tracepath = new LinedefTracePath(pathlines);
+					Polygon poly = tracepath.MakePolygon();
+
+					// Check if the front of the line is inside the polygon
+					if(poly.Intersect(line.GetSidePoint(front)))
+					{
+						// Outer lines found!
+						alllines.AddRange(pathlines);
+						return poly;
+					}
+					else
+					{
+						// Inner lines found. This is not what we need, we want the outer lines.
+						// Find the right-most vertex to start a scan from there towards the outer lines.
+						Vertex foundv = null;
+						foreach(LinedefSide ls in pathlines)
+						{
+							if((foundv == null) || (ls.Line.Start.Position.x > foundv.Position.x))
+								foundv = ls.Line.Start;
+							
+							if((foundv == null) || (ls.Line.End.Position.x > foundv.Position.x))
+								foundv = ls.Line.End;
+						}
+
+						// If foundv is null then something is horribly wrong with the
+						// path we received from FindClosestPath!
+						if(foundv == null) throw new Exception("FAIL!");
+						
+						// From the right-most vertex trace outward to the right to
+						// find the next closest linedef, this is based on the idea that
+						// all sectors are closed.
+						Vector2D lineoffset = new Vector2D(100.0f, 0.0f);
+						Line2D testline = new Line2D(foundv.Position, foundv.Position + lineoffset);
+						scanline = null;
+						float foundu = float.MaxValue;
+						foreach(Linedef ld in General.Map.Map.Linedefs)
+						{
+							// Line to the right of start point?
+							if((ld.Start.Position.x > foundv.Position.x) ||
+							   (ld.End.Position.x > foundv.Position.x))
+							{
+								// Line intersecting the y axis?
+								if( !((ld.Start.Position.y > foundv.Position.y) &&
+									  (ld.End.Position.y > foundv.Position.y)) &&
+								    !((ld.Start.Position.y < foundv.Position.y) &&
+									  (ld.End.Position.y < foundv.Position.y)))
+								{
+									// Check if this linedef intersects our test line at a closer range
+									float thisu;
+									ld.Line.GetIntersection(testline, out thisu);
+									if((thisu > 0.00001f) && (thisu < foundu) && !float.IsNaN(thisu))
+									{
+										scanline = ld;
+										foundu = thisu;
+									}
+								}
+							}
+						}
+
+						// Did we meet another line?
+						if(scanline != null)
+						{
+							// Determine on which side we should start the next pathfind
+							scanfront = (scanline.SideOfLine(foundv.Position) < 0.0f);
+						}
+						else
+						{
+							// Appearently we reached the end of the map, no sector possible here
+							return null;
+						}
+					}
+				}
+				else
+				{
+					// Can't find a path
+					return null;
 				}
 			}
-
-			// Path is invalid for sector outer lines
-			return null;
+			while(true);
 		}
 		
 		/// <summary>
@@ -233,7 +298,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(lines.Count == 1)
 				{
 					// Are we allowed to trace along this line again?
-					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 2))
+					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 3))
 					{
 						// Turn around and go back along the other side of the line
 						nextfront = !nextfront;
@@ -251,7 +316,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					if(lines[0] == nextline) nextline = lines[1]; else nextline = lines[0];
 
 					// Are we allowed to trace this line again?
-					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 2))
+					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 3))
 					{
 						// Check if front side changes
 						if((prevline.Start == nextline.Start) ||
@@ -266,7 +331,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 			// Continue as long as we have not reached the start yet
 			// or we have no next line to trace
-			while((path != null) && (nextline != start));
+			while((path != null) && ((nextline != start) || (nextfront != front)));
 
 			// Return path (null when trace failed)
 			return path;
@@ -368,18 +433,23 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(ls.Front)
 				{
 					// Create sidedef is needed and ensure it points to the new sector
-					if(ls.Line.Front == null) General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
+					if(ls.Line.Front == null)
+					{
+						General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
+						ls.Line.ApplySidedFlags();
+					}
 					original.CopyPropertiesTo(ls.Line.Front);
 				}
 				else
 				{
 					// Create sidedef is needed and ensure it points to the new sector
-					if(ls.Line.Back == null) General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
+					if(ls.Line.Back == null)
+					{
+						General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
+						ls.Line.ApplySidedFlags();
+					}
 					original.CopyPropertiesTo(ls.Line.Back);
 				}
-
-				// Update line
-				ls.Line.ApplySidedFlags();
 			}
 
 			// Return the new sector

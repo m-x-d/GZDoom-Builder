@@ -133,6 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void Disengage()
 		{
 			List<Vertex> newverts = new List<Vertex>();
+			List<Vertex> intersectverts = new List<Vertex>();
 			List<Linedef> newlines = new List<Linedef>();
 			List<Vertex> mergeverts = new List<Vertex>();
 			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
@@ -155,6 +156,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 				// Make first vertex
 				Vertex v1 = map.CreateVertex(points[0].pos);
+				v1.Marked = true;
 				
 				// Keep references
 				newverts.Add(v1);
@@ -165,7 +167,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				{
 					// Create vertex for point
 					Vertex v2 = map.CreateVertex(points[i].pos);
-
+					v2.Marked = true;
+					
 					// Keep references
 					newverts.Add(v2);
 					if(points[i].stitch) mergeverts.Add(v2); else nonmergeverts.Add(v2);
@@ -182,16 +185,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					{
 						// Check if any other lines intersect this line
 						List<float> intersections = new List<float>();
+						Line2D measureline = ld.Line;
 						foreach(Linedef ld2 in map.Linedefs)
 						{
-							// Not the same as the subject line
-							if(ld2 != ld)
+							// Intersecting?
+							// We only keep the unit length from the start of the line and
+							// do the real splitting later, when all intersections are known
+							float u;
+							if(ld2.Line.GetIntersection(measureline, out u))
 							{
-								// Intersecting?
-								// We only keep the unit length from the start of the line and
-								// do the real splitting later, when all intersections are known
-								float u = ld.GetIntersectionU(ld2);
-								if(!float.IsNaN(u) && (u > 0.0f) && (u < 1.0f)) intersections.Add(u);
+								if(!float.IsNaN(u) && (u > 0.0f) && (u < 1.0f) && (ld2 != ld))
+									intersections.Add(u);
 							}
 						}
 
@@ -200,7 +204,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 						// Go for all found intersections
 						Linedef splitline = ld;
-						Line2D measureline = ld.GetLine2D();
 						foreach(float u in intersections)
 						{
 							// Calculate exact coordinates where to split
@@ -210,6 +213,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 							// Make the vertex
 							Vertex splitvertex = map.CreateVertex(splitpoint);
+							splitvertex.Marked = true;
+							newverts.Add(splitvertex);
+							mergeverts.Add(splitvertex);			// <-- add to merge?
+							intersectverts.Add(splitvertex);
 							
 							// The Split method ties the end of the original line to the given
 							// vertex and starts a new line at the given vertex, so continue
@@ -217,8 +224,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 							// from low to high (beginning at the original line start)
 							splitline = splitline.Split(splitvertex);
 							newlines.Add(splitline);
-							newverts.Add(splitvertex);
-							mergeverts.Add(splitvertex);
 						}
 					}
 					
@@ -226,14 +231,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					v1 = v2;
 				}
 
+				// Join merge vertices so that overlapping vertices in the draw become one.
+				MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
+				
+				// Merge intersetion vertices with the new lines. This completes the
+				// self intersections for which splits were made above.
+				map.Update(true, false);
+				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null);
+
 				/***************************************************\
 					STEP 2: Merge the new geometry
 				\***************************************************/
-				
-				// Mark our new vertices that need to merge and merge them with themselves
-				// This completes the self intersections for which splits were made in step 1.
-				foreach(Vertex v in mergeverts) v.Marked = true;
-				MapSet.JoinVertices(mergeverts, mergeverts, true, MapSet.STITCH_DISTANCE);
 
 				// In step 3 we will make sectors on the front sides and join sectors on the
 				// back sides, but because the user could have drawn counterclockwise or just
@@ -254,27 +262,46 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						// Check if the front of the line is outside the polygon
 						if(!pathpoly.Intersect(ld.GetSidePoint(true)))
 						{
-							// TODO: Maybe we also need to trace from the back side of the line
-							// here and see if that side lies in the interior? Just to make
-							// sure this flip will really help?
+							// Now trace from the back side of the line to see if
+							// the back side lies in the interior. I don't want to
+							// flip the line if it is not helping.
+
+							/*
+							// Find closest path starting with the back of this linedef
+							pathlines = SectorTools.FindClosestPath(ld, false);
+							if(pathlines != null)
+							{
+								// Make polygon
+								tracepath = new LinedefTracePath(pathlines);
+								pathpoly = tracepath.MakePolygon();
+
+								// Check if the back of the line is inside the polygon
+								if(pathpoly.Intersect(ld.GetSidePoint(false)))
+								{
+									// We must flip this linedef to face the interior
+									ld.FlipVertices();
+									ld.FlipSidedefs();
+								}
+							}
+							*/
 							
 							// We must flip this linedef to face the interior
 							ld.FlipVertices();
 							ld.FlipSidedefs();
+							ld.UpdateCache();
 						}
 					}
 				}
 
-				// Perform standard geometry stitching between new and existing geometry
-				// The marked vertices indicate the new geometry
+				// Before this point, the new geometry is not linked with the existing geometry.
+				// Now perform standard geometry stitching to merge the new geometry with the rest
+				// of the map. The marked vertices indicate the new geometry.
 				map.StitchGeometry();
-
+				map.Update(true, false);
+				
 				// Find our new lines again, because they have been merged with the other geometry
 				// but their Marked property is copied where they have joined!
 				newlines = map.GetMarkedLinedefs(true);
-				
-				// Split the new lines with the new vertices so that self-intersecting draws also work
-				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
 				
 				/***************************************************\
 					STEP 3: Join and create new sectors
