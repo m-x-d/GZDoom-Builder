@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			Vector2D v1 = base.Last.Value.Position;
 			Vector2D v2;
 			LinkedListNode<EarClipVertex> n = base.First;
-			int c = 0;
+			uint c = 0;
 			
 			// Go for all vertices
 			while(n != null)
@@ -115,8 +115,24 @@ namespace CodeImp.DoomBuilder.Geometry
 				n = n.Next;
 			}
 
-			// Return result
-			return ((c & 0x01) != 0);
+			// Inside this polygon?
+			if((c & 0x00000001UL) != 0)
+			{
+				// Check if not inside the children
+				foreach(Polygon child in children)
+				{
+					// Inside this child? Then it is not inside this polygon.
+					if(child.Intersect(p)) return false;
+				}
+
+				// Inside polygon!
+				return true;
+			}
+			else
+			{
+				// Not inside the polygon
+				return false;
+			}
 		}
 		
 		// This inserts a polygon if it is a child of this one

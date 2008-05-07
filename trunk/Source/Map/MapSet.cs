@@ -984,7 +984,6 @@ namespace CodeImp.DoomBuilder.Map
 			float splitdist2 = splitdist * splitdist;
 			int splitsdone = 0;
 			bool splitted;
-			Linedef nl;
 
 			do
 			{
@@ -1009,7 +1008,7 @@ namespace CodeImp.DoomBuilder.Map
 							    (Math.Abs(deltaend.y) > 0.001f)))
 							{
 								// Split line l with vertex v
-								nl = l.Split(v);
+								Linedef nl = l.Split(v);
 
 								// Add the new line to the list
 								lines.Add(nl);
@@ -1020,8 +1019,11 @@ namespace CodeImp.DoomBuilder.Map
 								nl.UpdateCache();
 
 								// Add both lines to changedlines
-								if(changedlines != null) changedlines.Add(l);
-								if(changedlines != null) changedlines.Add(nl);
+								if(changedlines != null)
+								{
+									changedlines.Add(l);
+									changedlines.Add(nl);
+								}
 
 								// Count the split
 								splitsdone++;

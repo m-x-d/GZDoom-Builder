@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public Line2D Line { get { return new Line2D(start.Position, end.Position); } }
 		public int Flags { get { return flags; } set { flags = value; } }
 		public int Action { get { return action; } set { action = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
@@ -332,34 +333,6 @@ namespace CodeImp.DoomBuilder.Map
 			Sidedef sd = front;
 			front = back;
 			back = sd;
-		}
-		
-		// This makes a Line2D instance
-		public Line2D GetLine2D()
-		{
-			return new Line2D(start.Position, end.Position);
-		}
-		
-		// This gets the intersection point with another line
-		public float GetIntersectionU(Linedef other)
-		{
-			return GetIntersectionU(other.GetLine2D());
-		}
-
-		// This gets the intersection point with another line
-		// Returns NaN when no intersection exists.
-		public float GetIntersectionU(Line2D otherline)
-		{
-			float u;
-			Line2D thisline = this.GetLine2D();
-			if(!otherline.GetIntersection(thisline, out u)) u = float.NaN;
-			return u;
-		}
-		
-		// This returns a vector of coordinates at the given unit length
-		public Vector2D GetCoordinatesAt(float u)
-		{
-			return GetLine2D().GetCoordinatesAt(u);
 		}
 		
 		// This returns a point for testing on one side
