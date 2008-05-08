@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Interface
 			colorsoundlinedefs.Color = General.Colors.Sounds;
 			colorhighlight.Color = General.Colors.Highlight;
 			colorselection.Color = General.Colors.Selection;
-			colorassociations.Color = General.Colors.Association;
+			colorindication.Color = General.Colors.Indication;
 			colorgrid.Color = General.Colors.Grid;
 			colorgrid64.Color = General.Colors.Grid64;
 			colorcrosshair3d.Color = General.Colors.Crosshair3D;
@@ -306,7 +306,7 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Colors.Sounds = colorsoundlinedefs.Color;
 			General.Colors.Highlight = colorhighlight.Color;
 			General.Colors.Selection = colorselection.Color;
-			General.Colors.Association = colorassociations.Color;
+			General.Colors.Indication = colorindication.Color;
 			General.Colors.Grid = colorgrid.Color;
 			General.Colors.Grid64 = colorgrid64.Color;
 			General.Colors.Crosshair3D = colorcrosshair3d.Color;

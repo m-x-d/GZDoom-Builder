@@ -485,7 +485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						renderer.PlotLine(found[0].Position, found[1].Position, PixelColor.FromColor(Color.SkyBlue));
 						renderer.PlotLine(found[1].Position, found[2].Position, PixelColor.FromColor(Color.SkyBlue));
 						renderer.PlotLine(found[2].Position, found[0].Position, PixelColor.FromColor(Color.SkyBlue));
-						renderer.PlotVertexAt(found[1].Position, ColorCollection.ASSOCIATION);
+						renderer.PlotVertexAt(found[1].Position, ColorCollection.INDICATION);
 					}
 					
 					// Done
