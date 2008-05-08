@@ -951,6 +951,9 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("mapoptions")]
 		internal void ShowMapOptions()
 		{
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+			
 			// Show map options dialog
 			MapOptionsForm optionsform = new MapOptionsForm(options);
 			if(optionsform.ShowDialog(General.MainWindow) == DialogResult.OK)

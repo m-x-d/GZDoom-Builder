@@ -422,13 +422,15 @@ namespace CodeImp.DoomBuilder.Controls
 			if((strippedkey == (int)Keys.ShiftKey) || (strippedkey == (int)Keys.ControlKey)) key = strippedkey;
 			bool repeat = pressedkeys.Contains(strippedkey);
 			
-			// Invoke event
-			BeginActionByKey(key, repeat);
-			Action[] acts = GetActionsByKey(key);
-			foreach(Action a in acts) if(!activeactions.Contains(a)) activeactions.Add(a);
-			
 			// Update pressed keys
 			if(!repeat) pressedkeys.Add(strippedkey);
+			
+			// Add action to active list
+			Action[] acts = GetActionsByKey(key);
+			foreach(Action a in acts) if(!activeactions.Contains(a)) activeactions.Add(a);
+
+			// Invoke actions
+			BeginActionByKey(key, repeat);
 		}
 
 		// This notifies a key has been released
@@ -441,6 +443,16 @@ namespace CodeImp.DoomBuilder.Controls
 			if(pressedkeys.Contains(strippedkey)) pressedkeys.Remove(strippedkey);
 
 			// End actions that no longer match
+			EndActiveActions();
+		}
+
+		// This releases all pressed keys
+		public void ReleaseAllKeys()
+		{
+			// Clear pressed keys
+			pressedkeys.Clear();
+
+			// End actions
 			EndActiveActions();
 		}
 		
@@ -461,10 +473,18 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(KeyValuePair<string, Action> a in actions)
 			{
 				// This action is associated with this key?
-				if(a.Value.KeyMatches(key) && (a.Value.Repeat || !repeated))
+				if(a.Value.KeyMatches(key))
 				{
-					// Invoke action
-					a.Value.Begin();
+					// Allowed to repeat?
+					if(a.Value.Repeat || !repeated)
+					{
+						// Invoke action
+						a.Value.Begin();
+					}
+					else
+					{
+						//General.WriteLogLine("Action \"" + a.Value.Name + "\" failed because it does not support repeating activation!");
+					}
 				}
 			}
 		}

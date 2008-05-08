@@ -377,14 +377,6 @@ namespace CodeImp.DoomBuilder.Map
 		public List<Vector2D> GetGridIntersections()
 		{
 			List<Vector2D> coords = new List<Vector2D>();
-			/*
-			float startx = start.Position.x;
-			float endx = end.Position.x;
-			float starty = start.Position.y;
-			float endy = end.Position.y;
-			float dirx = (float)Math.Sign(endx - startx);
-			float diry = (float)Math.Sign(endy - starty);
-			 */
 			Vector2D v = new Vector2D();
 			float gx, gy, minx, maxx, miny, maxy;
 			bool reversex, reversey;

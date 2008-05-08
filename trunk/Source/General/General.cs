@@ -543,13 +543,23 @@ namespace CodeImp.DoomBuilder
 		
 		#region ================== Management
 
+		// This cancels a volatile mode
+		internal static void CancelVolatileMode()
+		{
+			if((map != null) && (map.Mode != null) && map.Mode.Attributes.Volatile)
+				map.Mode.Cancel();
+		}
+
 		// This creates a new map
 		[BeginAction("newmap")]
 		internal static void NewMap()
 		{
 			MapOptions newoptions = new MapOptions();
 			MapOptionsForm optionswindow;
-			
+
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
 			{
@@ -596,6 +606,9 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("closemap")]
 		internal static void CloseMap()
 		{
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
 			{
@@ -625,7 +638,10 @@ namespace CodeImp.DoomBuilder
 		internal static void OpenMap()
 		{
 			OpenFileDialog openfile;
-			
+
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+
 			// Open map file dialog
 			openfile = new OpenFileDialog();
 			openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
@@ -649,6 +665,9 @@ namespace CodeImp.DoomBuilder
 		{
 			OpenMapOptionsForm openmapwindow;
 
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+			
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
 			{
@@ -693,14 +712,21 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This saves the current map
+		// Returns tre when saved, false when cancelled or failed
 		[BeginAction("savemap")]
-		internal static void SaveMap()
+		internal static void ActionSaveMap() { SaveMap(); }
+		internal static bool SaveMap()
 		{
+			bool result = false;
+			
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+			
 			// Check if a wad file is known
 			if(map.FilePathName == "")
 			{
 				// Call to SaveMapAs
-				SaveMapAs();
+				result = SaveMapAs();
 			}
 			else
 			{
@@ -713,6 +739,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Add recent file
 					mainwindow.AddRecentFile(map.FilePathName);
+					result = true;
 				}
 
 				// All done
@@ -720,14 +747,23 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayReady();
 				Cursor.Current = Cursors.Default;
 			}
+
+			return result;
 		}
 
+
 		// This saves the current map as a different file
+		// Returns tre when saved, false when cancelled or failed
 		[BeginAction("savemapas")]
-		internal static void SaveMapAs()
+		internal static void ActionSaveMapAs() { SaveMapAs(); }
+		internal static bool SaveMapAs()
 		{
 			SaveFileDialog savefile;
+			bool result = false;
 			
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+
 			// Show save as dialog
 			savefile = new SaveFileDialog();
 			savefile.Filter = "Doom WAD Files (*.wad)|*.wad";
@@ -747,6 +783,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Add recent file
 					mainwindow.AddRecentFile(map.FilePathName);
+					result = true;
 				}
 
 				// All done
@@ -754,6 +791,8 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayReady();
 				Cursor.Current = Cursors.Default;
 			}
+
+			return result;
 		}
 		
 		// This asks to save the map if needed
@@ -769,8 +808,8 @@ namespace CodeImp.DoomBuilder
 				result = MessageBox.Show(mainwindow, "Do you want to save changes to " + map.FileTitle + " (" + map.Options.CurrentName + ")?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 				if(result == DialogResult.Yes)
 				{
-					// TODO: Save map
-
+					// Save map and return true on success
+					return SaveMap();
 				}
 				else if(result == DialogResult.Cancel)
 				{

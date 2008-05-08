@@ -37,7 +37,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "drawlinesmode")]
+	[EditMode(SwitchAction = "drawlinesmode", Volatile = true)]
 
 	public class DrawGeometryMode : ClassicMode
 	{
@@ -733,6 +733,19 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				points.Add(GetCurrentPosition());
 				Update();
+
+				// Check if point stitches with the first
+				if((points.Count > 1) && (points[points.Count - 1].stitch))
+				{
+					Vector2D p1 = points[0].pos;
+					Vector2D p2 = points[points.Count - 1].pos;
+					Vector2D delta = p1 - p2;
+					if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
+					{
+						// Finish drawing
+						FinishDraw();
+					}
+				}
 			}
 		}
 
