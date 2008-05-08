@@ -274,12 +274,22 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// When turnatends is true, the algorithm will continue at the other side of the
 		/// line when a dead end has been reached. Returns null when no path could be found.
 		/// </summary>
-		public static List<LinedefSide> FindClosestPath(Linedef start, bool front, bool turnatends)
+		public static List<LinedefSide> FindClosestPath(Linedef startline, bool startfront, bool turnatends)
+		{
+			return FindClosestPath(startline, startfront, startline, startfront, turnatends);
+		}
+		
+		/// <summary>
+		/// This finds the closest path from the beginning of a line to the end of the line.
+		/// When turnatends is true, the algorithm will continue at the other side of the
+		/// line when a dead end has been reached. Returns null when no path could be found.
+		/// </summary>
+		public static List<LinedefSide> FindClosestPath(Linedef startline, bool startfront, Linedef endline, bool endfront, bool turnatends)
 		{
 			List<LinedefSide> path = new List<LinedefSide>();
 			Dictionary<Linedef, int> tracecount = new Dictionary<Linedef, int>();
-			Linedef nextline = start;
-			bool nextfront = front;
+			Linedef nextline = startline;
+			bool nextfront = startfront;
 
 			do
 			{
@@ -332,8 +342,12 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 			// Continue as long as we have not reached the start yet
 			// or we have no next line to trace
-			while((path != null) && ((nextline != start) || (nextfront != front)));
+			while((path != null) && ((nextline != endline) || (nextfront != endfront)));
 
+			// If start and front are not the same, add the end to the list also
+			if((path != null) && ((startline != endline) || (startfront != endfront)))
+				path.Add(new LinedefSide(endline, endfront));
+			
 			// Return path (null when trace failed)
 			return path;
 		}

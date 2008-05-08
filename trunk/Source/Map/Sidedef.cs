@@ -237,6 +237,28 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Methods
 
+		// This removes textures that are not required
+		public void RemoveUnneededTextures(bool removemiddle)
+		{
+			if(!HighRequired())
+			{
+				this.texnamehigh = "-";
+				this.longtexnamehigh = map.EmptyLongName;
+			}
+
+			if(!MiddleRequired() && removemiddle)
+			{
+				this.texnamemid = "-";
+				this.longtexnamemid = map.EmptyLongName;
+			}
+			
+			if(!LowRequired())
+			{
+				this.texnamelow = "-";
+				this.longtexnamelow = map.EmptyLongName;
+			}
+		}
+		
 		// This checks if a texture is required
 		public bool HighRequired()
 		{
