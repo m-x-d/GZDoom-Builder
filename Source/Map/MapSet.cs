@@ -736,9 +736,6 @@ namespace CodeImp.DoomBuilder.Map
 			movingverts = General.Map.Map.GetMarkedVertices(true);
 			fixedverts = General.Map.Map.GetMarkedVertices(false);
 			
-			// Make undo for the stitching
-			stitchundo = General.Map.UndoRedo.CreateUndo("stitch geometry", UndoGroup.None, 0);
-
 			// Find lines that moved during the drag
 			movinglines = LinedefsFromMarkedVertices(false, true, true);
 
@@ -769,9 +766,6 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Join overlapping lines
 			stitches += MapSet.JoinOverlappingLines(movinglines);
-
-			// No stitching done? then withdraw undo
-			if(stitches == 0) General.Map.UndoRedo.WithdrawUndo(stitchundo);
 
 			return stitches;
 		}
