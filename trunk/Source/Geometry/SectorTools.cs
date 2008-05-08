@@ -412,6 +412,10 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 			}
 
+			// Still nothing found?
+			// Then apply default sector properties
+			if(source == null) ApplyDefaultsToSector(newsector);
+
 			// Go for all sides to make sidedefs
 			foreach(LinedefSide ls in alllines)
 			{
@@ -420,14 +424,14 @@ namespace CodeImp.DoomBuilder.Geometry
 					// Create sidedef is needed and ensure it points to the new sector
 					if(ls.Line.Front == null) General.Map.Map.CreateSidedef(ls.Line, true, newsector);
 					if(ls.Line.Front.Sector != newsector) ls.Line.Front.ChangeSector(newsector);
-					if(source != null) source.CopyPropertiesTo(ls.Line.Front); else source = ls.Line.Front;
+					if(source != null) source.CopyPropertiesTo(ls.Line.Front); else ApplyDefaultsToSidedef(ls.Line.Front);
 				}
 				else
 				{
 					// Create sidedef is needed and ensure it points to the new sector
 					if(ls.Line.Back == null) General.Map.Map.CreateSidedef(ls.Line, false, newsector);
 					if(ls.Line.Back.Sector != newsector) ls.Line.Back.ChangeSector(newsector);
-					if(source != null) source.CopyPropertiesTo(ls.Line.Back); else source = ls.Line.Back;
+					if(source != null) source.CopyPropertiesTo(ls.Line.Back); else ApplyDefaultsToSidedef(ls.Line.Back);
 				}
 
 				// Update line
@@ -471,6 +475,24 @@ namespace CodeImp.DoomBuilder.Geometry
 			return original.Sector;
 		}
 
+		// This applies defaults to a sidedef
+		private static void ApplyDefaultsToSidedef(Sidedef sd)
+		{
+			if(sd.HighRequired()) sd.SetTextureHigh(General.Settings.DefaultTexture);
+			if(sd.MiddleRequired()) sd.SetTextureMid(General.Settings.DefaultTexture);
+			if(sd.LowRequired()) sd.SetTextureLow(General.Settings.DefaultTexture);
+		}
+
+		// This applies defaults to a sector
+		private static void ApplyDefaultsToSector(Sector s)
+		{
+			s.SetFloorTexture(General.Settings.DefaultFloorTexture);
+			s.SetCeilTexture(General.Settings.DefaultCeilingTexture);
+			s.FloorHeight = General.Settings.DefaultFloorHeight;
+			s.CeilHeight = General.Settings.DefaultCeilingHeight;
+			s.Brightness = General.Settings.DefaultBrightness;
+		}
+		
 		#endregion
 	}
 }

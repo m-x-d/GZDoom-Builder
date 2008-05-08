@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -52,6 +53,14 @@ namespace CodeImp.DoomBuilder.Config
 		private int imagebrightness;
 		private bool qualitydisplay;
 		
+		// These are not stored in the configuration, only used at runtime
+		private string defaulttexture;
+		private int defaultbrightness = 192;
+		private int defaultfloorheight = 0;
+		private int defaultceilheight = 128;
+		private string defaultfloortexture;
+		private string defaultceiltexture;
+		
 		#endregion
 
 		#region ================== Properties
@@ -65,6 +74,13 @@ namespace CodeImp.DoomBuilder.Config
 		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
 		public float VisualViewRange { get { return visualviewrange; } internal set { visualviewrange = value; } }
 		public bool QualityDisplay { get { return qualitydisplay; } internal set { qualitydisplay = value; } }
+
+		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
+		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
+		public string DefaultCeilingTexture { get { return defaultceiltexture; } set { defaultceiltexture = value; } }
+		public int DefaultBrightness { get { return defaultbrightness; } set { defaultbrightness = value; } }
+		public int DefaultFloorHeight { get { return defaultfloorheight; } set { defaultfloorheight = value; } }
+		public int DefaultCeilingHeight { get { return defaultceilheight; } set { defaultceilheight = value; } }
 
 		#endregion
 
@@ -193,6 +209,114 @@ namespace CodeImp.DoomBuilder.Config
 		// WriteSetting
 		internal bool WriteSetting(string setting, object settingvalue) { return cfg.WriteSetting(setting, settingvalue); }
 		internal bool WriteSetting(string setting, object settingvalue, string pathseperator) { return cfg.WriteSetting(setting, settingvalue, pathseperator); }
+		
+		// This attempts to find the default drawing settings
+		public void FindDefaultDrawSettings()
+		{
+			bool foundone;
+			
+			// Only possible when a map is loaded
+			if(General.Map == null) return;
+			
+			// Default texture missing?
+			if((defaulttexture == null) || defaulttexture.StartsWith("-"))
+			{
+				// Find default texture from map
+				foundone = false;
+				foreach(Sidedef sd in General.Map.Map.Sidedefs)
+				{
+					if(!sd.MiddleTexture.StartsWith("-"))
+					{
+						foundone = true;
+						defaulttexture = sd.MiddleTexture;
+						break;
+					}
+				}
+				
+				// Not found yet?
+				if(!foundone)
+				{
+					// Pick the first STARTAN from the list.
+					// I love the STARTAN texture as default for some reason.
+					foreach(string s in General.Map.Data.TextureNames)
+					{
+						if(s.StartsWith("STARTAN"))
+						{
+							foundone = true;
+							defaulttexture = s;
+							break;
+						}
+					}
+					
+					// Otherwise just pick the first
+					if(!foundone)
+					{
+						if(General.Map.Data.TextureNames.Count > 1)
+							defaulttexture = General.Map.Data.TextureNames[1];
+					}
+				}
+			}
+
+			// Default floor missing?
+			if((defaultfloortexture == null) || (defaultfloortexture.Length == 0))
+			{
+				// Find default texture from map
+				foundone = false;
+				if(General.Map.Map.Sectors.Count > 0)
+				{
+					foundone = true;
+					defaultfloortexture = General.GetByIndex<Sector>(General.Map.Map.Sectors, 0).FloorTexture;
+				}
+
+				// Pick the first FLOOR from the list.
+				foreach(string s in General.Map.Data.FlatNames)
+				{
+					if(s.StartsWith("FLOOR"))
+					{
+						foundone = true;
+						defaultfloortexture = s;
+						break;
+					}
+				}
+
+				// Otherwise just pick the first
+				if(!foundone)
+				{
+					if(General.Map.Data.FlatNames.Count > 0)
+						defaultfloortexture = General.Map.Data.FlatNames[0];
+				}
+			}
+
+			// Default ceiling missing?
+			if((defaultceiltexture == null) || (defaultceiltexture.Length == 0))
+			{
+				// Find default texture from map
+				foundone = false;
+				if(General.Map.Map.Sectors.Count > 0)
+				{
+					foundone = true;
+					defaultceiltexture = General.GetByIndex<Sector>(General.Map.Map.Sectors, 0).CeilTexture;
+				}
+
+				// Pick the first FLOOR from the list.
+				foreach(string s in General.Map.Data.FlatNames)
+				{
+					if(s.StartsWith("FLOOR"))
+					{
+						foundone = true;
+						defaultceiltexture = s;
+						break;
+					}
+				}
+
+				// Otherwise just pick the first
+				if(!foundone)
+				{
+					if(General.Map.Data.FlatNames.Count > 1)
+						defaultceiltexture = General.Map.Data.FlatNames[1];
+				}
+			}
+		}
 		
 		#endregion
 	}

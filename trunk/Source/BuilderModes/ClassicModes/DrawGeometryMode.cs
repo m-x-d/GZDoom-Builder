@@ -140,11 +140,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
 			
 			MapSet map = General.Map.Map;
-
+			
 			base.Disengage();
 
 			Cursor.Current = Cursors.AppStarting;
 
+			General.Settings.FindDefaultDrawSettings();
+			
 			// When not cancelled and points have been drawn
 			if(!cancelled && (points.Count > 0))
 			{
