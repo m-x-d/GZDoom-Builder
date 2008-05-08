@@ -209,6 +209,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Anything to undo?
 			if(undos.Count > 0)
 			{
+				// Cancel volatile mode, if any
+				General.CancelVolatileMode();
+
 				// Get undo snapshot
 				u = undos[0];
 				undos.RemoveAt(0);
@@ -245,6 +248,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Anything to redo?
 			if(redos.Count > 0)
 			{
+				// Cancel volatile mode, if any
+				General.CancelVolatileMode();
+
 				// Get redo snapshot
 				r = redos[0];
 				redos.RemoveAt(0);

@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private string buttondesc;
 		private int buttonorder;
 		private bool configspecific;
+		private bool isvolatile;
 		
 		#endregion
 
@@ -77,6 +78,13 @@ namespace CodeImp.DoomBuilder.Editing
 		/// class name in the "additionalmodes" structure.
 		/// </summary>
 		public bool ConfigSpecific { get { return configspecific; } set { configspecific = value; } }
+
+		/// <summary>
+		/// When set to true, this mode is cancelled when core actions like
+		/// undo and save are performed. The editing mode should then return to
+		/// a non-volatile mode.
+		/// </summary>
+		public bool Volatile { get { return isvolatile; } set { isvolatile = value; } }
 
 		#endregion
 

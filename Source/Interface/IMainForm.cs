@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Interface
 		bool MouseInDisplay { get; }
 		bool AutoMerge { get; }
 		bool SnapToGrid { get; }
+		bool MouseExclusive { get; }
 
 		// Methods
 		void DisplayReady();
@@ -65,6 +66,8 @@ namespace CodeImp.DoomBuilder.Interface
 		void SetProcessorState(bool on);
 		void StartExclusiveMouseInput();
 		void StopExclusiveMouseInput();
+		void BreakExclusiveMouseInput();
+		void ResumeExclusiveMouseInput();
 		bool CheckActionActive(Assembly assembly, string actionname);
 	}
 }

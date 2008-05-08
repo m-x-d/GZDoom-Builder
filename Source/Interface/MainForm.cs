@@ -67,6 +67,8 @@ namespace CodeImp.DoomBuilder.Interface
 		private bool shift, ctrl, alt;
 		private MouseInput mouseinput;
 		private Rectangle originalclip;
+		private bool mouseexclusive;
+		private int mouseexclusivebreaklevel;
 		
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
@@ -85,7 +87,8 @@ namespace CodeImp.DoomBuilder.Interface
 		internal RenderTargetControl Display { get { return display; } }
 		public bool SnapToGrid { get { return buttonsnaptogrid.Checked; } }
 		public bool AutoMerge { get { return buttonautomerge.Checked; } }
-
+		public bool MouseExclusive { get { return mouseexclusive; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -183,6 +186,23 @@ namespace CodeImp.DoomBuilder.Interface
 				lastposition = this.Location;
 				lastsize = this.Size;
 			}
+		}
+
+		// Window receives focus
+		private void MainForm_Activated(object sender, EventArgs e)
+		{
+			// Resume any exclusive mouse input
+			ResumeExclusiveMouseInput();
+		}
+		
+		// Window loses focus
+		private void MainForm_Deactivate(object sender, EventArgs e)
+		{
+			// Release all pressed keys
+			General.Actions.ReleaseAllKeys();
+
+			// Stop exclusive mouse input
+			BreakExclusiveMouseInput();
 		}
 		
 		// Window is moved
@@ -749,14 +769,12 @@ namespace CodeImp.DoomBuilder.Interface
 				return General.Actions.CheckActionActive(assembly, actionname);
 		}
 		
-		// This requests exclusive mouse input
-		public void StartExclusiveMouseInput()
+		// This is a tool to lock the mouse in exclusive mode
+		private void StartMouseExclusive()
 		{
-			// Only when not already in exclusive mode
+			// Not already locked?
 			if(mouseinput == null)
 			{
-				General.WriteLogLine("Starting exclusive mouse input mode...");
-				
 				// Start special input device
 				mouseinput = new MouseInput(this);
 
@@ -766,15 +784,13 @@ namespace CodeImp.DoomBuilder.Interface
 				Cursor.Hide();
 			}
 		}
-		
-		// This stops exclusive mouse input
-		public void StopExclusiveMouseInput()
+
+		// This is a tool to unlock the mouse
+		private void StopMouseExclusive()
 		{
-			// Only when in exclusive mode
+			// Locked?
 			if(mouseinput != null)
 			{
-				General.WriteLogLine("Stopping exclusive mouse input mode...");
-
 				// Stop special input device
 				mouseinput.Dispose();
 				mouseinput = null;
@@ -782,6 +798,65 @@ namespace CodeImp.DoomBuilder.Interface
 				// Release and show the mouse
 				Cursor.Clip = originalclip;
 				Cursor.Show();
+			}
+		}
+
+		// This requests exclusive mouse input
+		public void StartExclusiveMouseInput()
+		{
+			// Only when not already in exclusive mode
+			if(!mouseexclusive)
+			{
+				General.WriteLogLine("Starting exclusive mouse input mode...");
+				
+				// Start special input device
+				StartMouseExclusive();
+				mouseexclusive = true;
+				mouseexclusivebreaklevel = 0;
+			}
+		}
+		
+		// This stops exclusive mouse input
+		public void StopExclusiveMouseInput()
+		{
+			// Only when in exclusive mode
+			if(mouseexclusive)
+			{
+				General.WriteLogLine("Stopping exclusive mouse input mode...");
+
+				// Stop special input device
+				StopMouseExclusive();
+				mouseexclusive = false;
+				mouseexclusivebreaklevel = 0;
+			}
+		}
+
+		// This temporarely breaks exclusive mode and counts the break level
+		public void BreakExclusiveMouseInput()
+		{
+			// Only when in exclusive mode
+			if(mouseexclusive)
+			{
+				// Stop special input device
+				StopMouseExclusive();
+				
+				// Count the break level
+				mouseexclusivebreaklevel++;
+			}
+		}
+
+		// This resumes exclusive mode from a break when all breaks have been called to resume
+		public void ResumeExclusiveMouseInput()
+		{
+			// Only when in exclusive mode
+			if(mouseexclusive && (mouseexclusivebreaklevel > 0))
+			{
+				// Decrease break level
+				mouseexclusivebreaklevel--;
+
+				// All break levels resumed? Then lock the mouse again.
+				if(mouseexclusivebreaklevel == 0)
+					StartMouseExclusive();
 			}
 		}
 		

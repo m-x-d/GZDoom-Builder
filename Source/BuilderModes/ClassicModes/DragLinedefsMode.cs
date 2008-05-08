@@ -40,8 +40,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 	// The EditMode attribute does not have to be specified unless the
 	// mode must be activated by class name rather than direct instance.
 	// In that case, just specifying the attribute like this is enough:
-	[EditMode]
+	// [EditMode]
 
+	[EditMode(Volatile = true)]
+	
 	public sealed class DragLinedefsMode : DragGeometryMode
 	{
 		#region ================== Constants

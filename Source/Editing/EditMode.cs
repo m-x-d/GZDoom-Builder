@@ -49,6 +49,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Variables
 		
+		// Attributes
+		private EditModeAttribute attributes;
+		
 		// Disposing
 		protected bool isdisposed = false;
 
@@ -58,6 +61,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		public bool IsDisposed { get { return isdisposed; } }
 
+		public EditModeAttribute Attributes { get { return attributes; } }
+		
 		// Unless overriden, this returns the name of this mode
 		// for checking the appropriate button on the toolbar.
 		public virtual string EditModeButtonName { get { return GetType().Name; } }
@@ -71,6 +76,20 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		public EditMode()
 		{
+			// Fetch attributes
+			object[] attrs = this.GetType().GetCustomAttributes(true);
+			foreach(object a in attrs)
+			{
+				if(a is EditModeAttribute)
+				{
+					attributes = (EditModeAttribute)a;
+					break;
+				}
+			}
+
+			// No attributes found?
+			if(attributes == null) throw new Exception("Editing mode \"" + this.GetType().Name + "\" is missing EditMode attributes!");
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
