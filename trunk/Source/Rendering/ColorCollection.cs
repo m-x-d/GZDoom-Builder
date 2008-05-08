@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public const int SOUNDS = 4;
 		public const int HIGHLIGHT = 5;
 		public const int SELECTION = 6;
-		public const int ASSOCIATION = 7;
+		public const int INDICATION = 7;
 		public const int GRID = 8;
 		public const int GRID64 = 9;
 		public const int CROSSHAIR3D = 10;
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Sounds { get { return colors[SOUNDS]; } internal set { colors[SOUNDS] = value; } }
 		public PixelColor Highlight { get { return colors[HIGHLIGHT]; } internal set { colors[HIGHLIGHT] = value; } }
 		public PixelColor Selection { get { return colors[SELECTION]; } internal set { colors[SELECTION] = value; } }
-		public PixelColor Association { get { return colors[ASSOCIATION]; } internal set { colors[ASSOCIATION] = value; } }
+		public PixelColor Indication { get { return colors[INDICATION]; } internal set { colors[INDICATION] = value; } }
 		public PixelColor Grid { get { return colors[GRID]; } internal set { colors[GRID] = value; } }
 		public PixelColor Grid64 { get { return colors[GRID64]; } internal set { colors[GRID64] = value; } }
 

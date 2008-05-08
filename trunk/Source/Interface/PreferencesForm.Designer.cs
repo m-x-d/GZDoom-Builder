@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
 			this.colorgrid64 = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorgrid = new CodeImp.DoomBuilder.Interface.ColorControl();
-			this.colorassociations = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.colorindication = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorsoundlinedefs = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorspeciallinedefs = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorbackcolor = new CodeImp.DoomBuilder.Interface.ColorControl();
@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.colorsgroup1.Controls.Add(this.colorgrid64);
 			this.colorsgroup1.Controls.Add(this.colorgrid);
-			this.colorsgroup1.Controls.Add(this.colorassociations);
+			this.colorsgroup1.Controls.Add(this.colorindication);
 			this.colorsgroup1.Controls.Add(this.colorsoundlinedefs);
 			this.colorsgroup1.Controls.Add(this.colorspeciallinedefs);
 			this.colorsgroup1.Controls.Add(this.colorbackcolor);
@@ -213,17 +213,17 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorgrid.Size = new System.Drawing.Size(150, 23);
 			this.colorgrid.TabIndex = 14;
 			// 
-			// colorassociations
+			// colorindication
 			// 
-			this.colorassociations.BackColor = System.Drawing.SystemColors.Control;
-			this.colorassociations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.colorassociations.Label = "Associations:";
-			this.colorassociations.Location = new System.Drawing.Point(15, 230);
-			this.colorassociations.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorassociations.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorassociations.Name = "colorassociations";
-			this.colorassociations.Size = new System.Drawing.Size(150, 23);
-			this.colorassociations.TabIndex = 13;
+			this.colorindication.BackColor = System.Drawing.SystemColors.Control;
+			this.colorindication.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.colorindication.Label = "Indications:";
+			this.colorindication.Location = new System.Drawing.Point(15, 230);
+			this.colorindication.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorindication.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorindication.Name = "colorindication";
+			this.colorindication.Size = new System.Drawing.Size(150, 23);
+			this.colorindication.TabIndex = 13;
 			// 
 			// colorsoundlinedefs
 			// 
@@ -725,7 +725,7 @@ namespace CodeImp.DoomBuilder.Interface
 		private ColorControl colorconstants;
 		private ColorControl colorspeciallinedefs;
 		private ColorControl colorsoundlinedefs;
-		private ColorControl colorassociations;
+		private ColorControl colorindication;
 		private ColorControl colorgrid64;
 		private ColorControl colorgrid;
 		private System.Windows.Forms.GroupBox colorsgroup1;

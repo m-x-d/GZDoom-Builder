@@ -385,6 +385,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 				}
 
+				// Mark only the vertices that should be merged
+				map.ClearMarkedVertices(false);
+				foreach(Vertex v in mergeverts) v.Marked = true;
+				
 				// Before this point, the new geometry is not linked with the existing geometry.
 				// Now perform standard geometry stitching to merge the new geometry with the rest
 				// of the map. The marked vertices indicate the new geometry.
@@ -392,7 +396,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				map.Update(true, false);
 				
 				// Find our new lines again, because they have been merged with the other geometry
-				// but their Marked property is copied where they have joined!
+				// but their Marked property is copied where they have joined.
 				newlines = map.GetMarkedLinedefs(true);
 				
 				/***************************************************\
@@ -563,6 +567,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This updates the dragging
 		private void Update()
 		{
+			PixelColor stitchcolor = General.Colors.Highlight;
+			PixelColor losecolor = General.Colors.Selection;
 			PixelColor color;
 			
 			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
@@ -571,6 +577,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			DrawnVertex lastp = new DrawnVertex();
 			DrawnVertex curp = GetCurrentPosition();
 			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
+			float vsizeborder = ((float)renderer.VertexSize + 3.0f) / renderer.Scale;
 			
 			// Render drawing lines
 			if(renderer.StartOverlay(true))
@@ -583,10 +590,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					for(int i = 1; i < points.Count; i++)
 					{
 						// Determine line color
-						if(lastp.stitch || points[i].stitch)
-							color = General.Colors.Highlight;
-						else
-							color = General.Colors.Selection;
+						if(lastp.stitch && points[i].stitch) color = stitchcolor;
+							else color = losecolor;
 						
 						// Render line
 						renderer.RenderLine(lastp.pos, points[i].pos, LINE_THICKNESS, color, true);
@@ -594,10 +599,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 
 					// Determine line color
-					if(lastp.stitch || snaptonearest)
-						color = General.Colors.Highlight;
-					else
-						color = General.Colors.Selection;
+					if(lastp.stitch && snaptonearest) color = stitchcolor;
+						else color = losecolor;
 
 					// Render line to cursor
 					renderer.RenderLine(lastp.pos, curp.pos, LINE_THICKNESS, color, true);
@@ -605,20 +608,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					// Render vertices
 					for(int i = 0; i < points.Count; i++)
 					{
-						if(points[i].stitch)
-						{
-							renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Highlight, true);
-						}
-						else
-						{
-							renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Selection, true);
-						}
+						// Determine line color
+						if(points[i].stitch) color = stitchcolor;
+							else color = losecolor;
+						
+						// Render line
+						renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 					}
 				}
-
+				
 				// Determine point color
-				if(snaptonearest) color = General.Colors.Highlight;
-				else color = General.Colors.Selection;
+				if(snaptonearest) color = stitchcolor;
+					else color = losecolor;
 				
 				// Render vertex at cursor
 				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
