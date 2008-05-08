@@ -458,6 +458,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.ApplySidedFlags();
 					}
 					original.CopyPropertiesTo(ls.Line.Front);
+					ApplyDefaultsToSidedef(ls.Line.Front);
 				}
 				else
 				{
@@ -468,7 +469,11 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.ApplySidedFlags();
 					}
 					original.CopyPropertiesTo(ls.Line.Back);
+					ApplyDefaultsToSidedef(ls.Line.Back);
 				}
+
+				// Update line
+				ls.Line.ApplySidedFlags();
 			}
 
 			// Return the new sector
@@ -478,9 +483,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This applies defaults to a sidedef
 		private static void ApplyDefaultsToSidedef(Sidedef sd)
 		{
-			if(sd.HighRequired()) sd.SetTextureHigh(General.Settings.DefaultTexture);
-			if(sd.MiddleRequired()) sd.SetTextureMid(General.Settings.DefaultTexture);
-			if(sd.LowRequired()) sd.SetTextureLow(General.Settings.DefaultTexture);
+			if(sd.HighRequired() && sd.HighTexture.StartsWith("-")) sd.SetTextureHigh(General.Settings.DefaultTexture);
+			if(sd.MiddleRequired() && sd.MiddleTexture.StartsWith("-")) sd.SetTextureMid(General.Settings.DefaultTexture);
+			if(sd.LowRequired() && sd.LowTexture.StartsWith("-")) sd.SetTextureLow(General.Settings.DefaultTexture);
 		}
 
 		// This applies defaults to a sector
