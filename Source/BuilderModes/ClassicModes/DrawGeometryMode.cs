@@ -135,6 +135,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
 			List<Linedef> newlines = new List<Linedef>();
+			List<Linedef> oldlines = new List<Linedef>(General.Map.Map.Linedefs);
 			List<Vertex> mergeverts = new List<Vertex>();
 			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
 			
@@ -182,7 +183,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					newlines.Add(ld);
 					
 					// Should we split this line to merge with intersecting lines?
-					if(points[i - 1].stitch || points[i].stitch)
+					if(points[i - 1].stitch && points[i].stitch)
 					{
 						// Check if any other lines intersect this line
 						List<float> intersections = new List<float>();
@@ -236,12 +237,103 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Join merge vertices so that overlapping vertices in the draw become one.
 				MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
 				
+				// We prefer a closed polygon, because then we can determine the interior properly
+				// Check if the two ends of the polygon are closed
+				bool drawingclosed = false;
+				if(newlines.Count > 0)
+				{
+					// When not closed, we will try to find a path to close it
+					Linedef firstline = newlines[0];
+					Linedef lastline = newlines[newlines.Count - 1];
+					drawingclosed = (firstline.Start == lastline.End);
+					if(!drawingclosed)
+					{
+						// First and last vertex stitch with geometry?
+						if(points[0].stitch && points[points.Count - 1].stitch)
+						{
+							// Find out where they will stitch
+							Linedef l1 = MapSet.NearestLinedefRange(oldlines, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+							Linedef l2 = MapSet.NearestLinedefRange(oldlines, lastline.End.Position, MapSet.STITCH_DISTANCE);
+							if((l1 != null) && (l2 != null))
+							{
+								List<LinedefSide> shortestpath = null;
+								
+								// Same line?
+								if(l1 == l2)
+								{
+									// Then just connect the two
+									shortestpath = new List<LinedefSide>();
+									shortestpath.Add(new LinedefSide(l1, true));
+								}
+								else
+								{
+									// Find the shortest, closest path between these lines
+									List<List<LinedefSide>> paths = new List<List<LinedefSide>>(8);
+									paths.Add(SectorTools.FindClosestPath(l1, true, l2, true, true));
+									paths.Add(SectorTools.FindClosestPath(l1, true, l2, false, true));
+									paths.Add(SectorTools.FindClosestPath(l1, false, l2, true, true));
+									paths.Add(SectorTools.FindClosestPath(l1, false, l2, false, true));
+									paths.Add(SectorTools.FindClosestPath(l2, true, l1, true, true));
+									paths.Add(SectorTools.FindClosestPath(l2, true, l1, false, true));
+									paths.Add(SectorTools.FindClosestPath(l2, false, l1, true, true));
+									paths.Add(SectorTools.FindClosestPath(l2, false, l1, false, true));
+									
+									foreach(List<LinedefSide> p in paths)
+										if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
+								}
+								
+								// Found a path?
+								if(shortestpath != null)
+								{
+									// Go for all vertices in the path to make additional lines
+									v1 = firstline.Start;
+									for(int i = 1; i < shortestpath.Count; i++)
+									{
+										// Get the next position
+										Vector2D v2pos = shortestpath[i].Front ? shortestpath[i].Line.Start.Position : shortestpath[i].Line.End.Position;
+										
+										// Make the new vertex
+										Vertex v2 = map.CreateVertex(v2pos);
+										v2.Marked = true;
+										mergeverts.Add(v2);
+										
+										// Make the line
+										Linedef ld = map.CreateLinedef(v1, v2);
+										ld.Marked = true;
+										ld.Selected = true;
+										ld.ApplySidedFlags();
+										ld.UpdateCache();
+										newlines.Add(ld);
+
+										// Next
+										v1 = v2;
+									}
+
+									// Make the final line
+									Linedef lld = map.CreateLinedef(v1, lastline.End);
+									lld.Marked = true;
+									lld.Selected = true;
+									lld.ApplySidedFlags();
+									lld.UpdateCache();
+									newlines.Add(lld);
+
+									// Drawing is now closed
+									drawingclosed = true;
+
+									// Join merge vertices so that overlapping vertices in the draw become one.
+									MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
+								}
+							}
+						}
+					}
+				}
+				
 				// Merge intersetion vertices with the new lines. This completes the
 				// self intersections for which splits were made above.
 				map.Update(true, false);
 				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null);
 				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
-
+				
 				/***************************************************\
 					STEP 2: Merge the new geometry
 				\***************************************************/
@@ -304,6 +396,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					STEP 3: Join and create new sectors
 				\***************************************************/
 
+				// The code below atempts to create sectors on the front sides of the drawn
+				// geometry and joins sectors on the back sides of the drawn geometry.
+				// This code does not change any geometry, it only makes/updates sidedefs.
 				bool[] frontsdone = new bool[newlines.Count];
 				bool[] backsdone = new bool[newlines.Count];
 				for(int i = 0; i < newlines.Count; i++)
