@@ -152,7 +152,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					foundlinefront = (foundline.SideOfLine(foundv.Position + testpos) < 0.0f);
 
 					// Find inner path
-					List<LinedefSide> innerlines = FindClosestPath(foundline, foundlinefront);
+					List<LinedefSide> innerlines = FindClosestPath(foundline, foundlinefront, true);
 					if(innerlines != null)
 					{
 						// Make polygon
@@ -184,7 +184,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			do
 			{
 				// Find closest path
-				List<LinedefSide> pathlines = FindClosestPath(scanline, scanfront);
+				List<LinedefSide> pathlines = FindClosestPath(scanline, scanfront, true);
 				if(pathlines != null)
 				{
 					// Make polygon
@@ -271,9 +271,10 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		/// <summary>
 		/// This finds the closest path from the beginning of a line to the end of the line.
-		/// Returns null when no path could be found.
+		/// When turnatends is true, the algorithm will continue at the other side of the
+		/// line when a dead end has been reached. Returns null when no path could be found.
 		/// </summary>
-		public static List<LinedefSide> FindClosestPath(Linedef start, bool front)
+		public static List<LinedefSide> FindClosestPath(Linedef start, bool front, bool turnatends)
 		{
 			List<LinedefSide> path = new List<LinedefSide>();
 			Dictionary<Linedef, int> tracecount = new Dictionary<Linedef, int>();
@@ -298,7 +299,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(lines.Count == 1)
 				{
 					// Are we allowed to trace along this line again?
-					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 3))
+					if(turnatends && (!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 3)))
 					{
 						// Turn around and go back along the other side of the line
 						nextfront = !nextfront;

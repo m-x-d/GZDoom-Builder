@@ -177,8 +177,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					Linedef ld = map.CreateLinedef(v1, v2);
 					ld.Marked = true;
 					ld.Selected = true;
-					newlines.Add(ld);
+					ld.ApplySidedFlags();
 					ld.UpdateCache();
+					newlines.Add(ld);
 					
 					// Should we split this line to merge with intersecting lines?
 					if(points[i - 1].stitch || points[i].stitch)
@@ -223,6 +224,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 							// splitting with the new line, because the intersections are sorted
 							// from low to high (beginning at the original line start)
 							splitline = splitline.Split(splitvertex);
+							splitline.ApplySidedFlags();
 							newlines.Add(splitline);
 						}
 					}
@@ -238,6 +240,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// self intersections for which splits were made above.
 				map.Update(true, false);
 				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null);
+				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
 
 				/***************************************************\
 					STEP 2: Merge the new geometry
@@ -252,13 +255,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				foreach(Linedef ld in newlines)
 				{
 					// Find closest path starting with the front of this linedef
-					List<LinedefSide> pathlines = SectorTools.FindClosestPath(ld, true);
+					List<LinedefSide> pathlines = SectorTools.FindClosestPath(ld, true, true);
 					if(pathlines != null)
 					{
 						// Make polygon
 						LinedefTracePath tracepath = new LinedefTracePath(pathlines);
 						Polygon pathpoly = tracepath.MakePolygon();
-
+						
 						// Check if the front of the line is outside the polygon
 						if(!pathpoly.Intersect(ld.GetSidePoint(true)))
 						{
@@ -266,9 +269,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 							// the back side lies in the interior. I don't want to
 							// flip the line if it is not helping.
 
-							/*
 							// Find closest path starting with the back of this linedef
-							pathlines = SectorTools.FindClosestPath(ld, false);
+							pathlines = SectorTools.FindClosestPath(ld, false, true);
 							if(pathlines != null)
 							{
 								// Make polygon
@@ -281,14 +283,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 									// We must flip this linedef to face the interior
 									ld.FlipVertices();
 									ld.FlipSidedefs();
+									ld.UpdateCache();
 								}
 							}
-							*/
-							
-							// We must flip this linedef to face the interior
-							ld.FlipVertices();
-							ld.FlipSidedefs();
-							ld.UpdateCache();
 						}
 					}
 				}
