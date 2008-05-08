@@ -298,6 +298,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemsavemapinto.Name = "itemsavemapinto";
 			this.itemsavemapinto.Size = new System.Drawing.Size(201, 22);
+			this.itemsavemapinto.Tag = "savemapinto";
 			this.itemsavemapinto.Text = "Save Map Into...";
 			this.itemsavemapinto.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 

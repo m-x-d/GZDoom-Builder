@@ -136,6 +136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			List<Vertex> intersectverts = new List<Vertex>();
 			List<Linedef> newlines = new List<Linedef>();
 			List<Linedef> oldlines = new List<Linedef>(General.Map.Map.Linedefs);
+			List<Sidedef> insidesides = new List<Sidedef>();
 			List<Vertex> mergeverts = new List<Vertex>();
 			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
 			
@@ -420,6 +421,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 							// Go for all sidedefs in this new sector
 							foreach(Sidedef sd in newsector.Sidedefs)
 							{
+								// Keep list of sides inside created sectors
+								insidesides.Add(sd);
+								
 								// Side matches with a side of our new lines?
 								int lineindex = newlines.IndexOf(sd.Line);
 								if(lineindex > -1)
@@ -486,6 +490,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Make corrections for backward linedefs
 				MapSet.FlipBackwardLinedefs(newlines);
 
+				// Remove all unneeded textures
+				foreach(Linedef ld in newlines)
+				{
+					if(ld.Front != null) ld.Front.RemoveUnneededTextures(true);
+					if(ld.Back != null) ld.Back.RemoveUnneededTextures(true);
+				}
+				foreach(Sidedef sd in insidesides)
+				{
+					sd.RemoveUnneededTextures(true);
+				}
+				
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();
 				
