@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Variables
 
 		private ICollection<Linedef> selectedlines;
+		private ICollection<Linedef> unselectedlines;
 
 		#endregion
 
@@ -71,8 +72,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 			foreach(Vertex v in verts) v.Marked = true;
 			
-			// Get selected lines
+			// Get line collections
 			selectedlines = General.Map.Map.GetLinedefsSelection(true);
+			unselectedlines = General.Map.Map.GetLinedefsSelection(false);
 
 			// Initialize
 			base.StartDrag(basemode, dragstartmappos);
@@ -135,8 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(renderer.StartPlotter(true))
 			{
 				// Render lines and vertices
-				renderer.PlotLinedefSet(snaptolines);
-				renderer.PlotLinedefSet(unstablelines);
+				renderer.PlotLinedefSet(unselectedlines);
 				renderer.PlotLinedefSet(selectedlines);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
