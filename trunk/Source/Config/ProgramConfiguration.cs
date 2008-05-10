@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Config
 				visualviewrange = cfg.ReadSetting("visualviewrange", 1000f);
 				imagebrightness = cfg.ReadSetting("imagebrightness", 3);
 				qualitydisplay = cfg.ReadSetting("qualitydisplay", true);
-				squarethings = cfg.ReadSetting("squarethings", true);
+				squarethings = cfg.ReadSetting("squarethings", false);
 				
 				// Success
 				return true;
