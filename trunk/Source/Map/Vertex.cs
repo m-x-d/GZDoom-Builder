@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Vertex(MapSet map, LinkedListNode<Vertex> listitem, Vector2D pos)
+		internal Vertex(MapSet map, LinkedListNode<Vertex> listitem, Vector2D pos)
 		{
 			// Initialize
 			this.map = map;

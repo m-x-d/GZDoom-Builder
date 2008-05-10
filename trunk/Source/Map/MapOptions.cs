@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public MapOptions()
+		internal MapOptions()
 		{
 			// Initialize
 			this.previousname = "";
@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Constructor to load from Doom Builder Map Settings Configuration
-		public MapOptions(Configuration cfg, string mapname)
+		internal MapOptions(Configuration cfg, string mapname)
 		{
 			IDictionary mapinfo, resinfo;
 			DataLocation res;

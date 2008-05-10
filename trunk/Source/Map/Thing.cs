@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Thing(MapSet map, LinkedListNode<Thing> listitem)
+		internal Thing(MapSet map, LinkedListNode<Thing> listitem)
 		{
 			// Initialize
 			this.map = map;

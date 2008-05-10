@@ -65,13 +65,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float THING_ARROW_SIZE = 1.5f;
 		private const float THING_ARROW_SHRINK = 2f;
 		private const float THING_CIRCLE_SIZE = 1f;
-		private const float THING_CIRCLE_SHRINK = 2f;
+		private const float THING_CIRCLE_SHRINK = 0f;
 		private const int THING_BUFFER_STEP = 100;
 		private const float THINGS_BACK_ALPHA = 0.3f;
 
 		private const string FONT_NAME = "Verdana";
 		private const int FONT_WIDTH = 0;
 		private const int FONT_HEIGHT = 0;
+
+		private const int THING_SHINY = 1;
+		private const int THING_SQUARE = 2;
+		private const int NUM_THING_TEXTURES = 4;
 		
 		#endregion
 
@@ -115,8 +119,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Images
 		private ResourceImage whitetexture;
-		private ResourceImage thingtexture;
-		private ResourceImage thingtexturesimple;
+		private ResourceImage[] thingtexture;
 		
 		// View settings (world coordinates)
 		private float scale;
@@ -146,15 +149,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Constructor
 		internal Renderer2D(D3DDevice graphics) : base(graphics)
 		{
-			// Initialize
-			thingtexturesimple = new ResourceImage("Thing2D_Simple.png");
-			thingtexturesimple.UseColorCorrection = false;
-			thingtexturesimple.LoadImage();
-			thingtexturesimple.CreateTexture();
-			thingtexture = new ResourceImage("Thing2D.png");
-			thingtexture.UseColorCorrection = false;
-			thingtexture.LoadImage();
-			thingtexture.CreateTexture();
+			// Load thing textures
+			thingtexture = new ResourceImage[NUM_THING_TEXTURES];
+			for(int i = 0; i < NUM_THING_TEXTURES; i++)
+			{
+				thingtexture[i] = new ResourceImage("Thing2D_" + i.ToString(CultureInfo.InvariantCulture) + ".png");
+				thingtexture[i].UseColorCorrection = false;
+				thingtexture[i].LoadImage();
+				thingtexture[i].CreateTexture();
+			}
+
+			// Load white texture
 			whitetexture = new ResourceImage("White.png");
 			whitetexture.UseColorCorrection = false;
 			whitetexture.LoadImage();
@@ -175,8 +180,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Destroy rendertargets
 				DestroyRendertargets();
-				thingtexture.Dispose();
-				thingtexturesimple.Dispose();
+				foreach(ResourceImage i in thingtexture) i.Dispose();
 				whitetexture.Dispose();
 				
 				// Done
@@ -312,9 +316,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// This is called before a device is reset
 		// (when resized or display adapter was changed)
-		/// <summary>
-		/// DO NOT USE.
-		/// </summary>
 		public override void UnloadResource()
 		{
 			// Destroy rendertargets
@@ -323,9 +324,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// This is called resets when the device is reset
 		// (when resized or display adapter was changed)
-		/// <summary>
-		/// DO NOT USE.
-		/// </summary>
 		public override void ReloadResource()
 		{
 			// Re-create rendertargets
@@ -957,6 +955,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This draws a set of things
 		private void RenderThingsBatch(int offset, int count)
 		{
+			int thingtextureindex = 0;
+			
 			// Anything to render?
 			if(count > 0)
 			{
@@ -968,16 +968,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
 
-				if(General.Settings.QualityDisplay)
-				{
-					graphics.Device.SetTexture(0, thingtexture.Texture);
-					graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
-				}
-				else
-				{
-					graphics.Device.SetTexture(0, thingtexturesimple.Texture);
-					graphics.Shaders.Things2D.Texture1 = thingtexturesimple.Texture;
-				}
+				// Determine things texture to use
+				if(General.Settings.QualityDisplay) thingtextureindex |= THING_SHINY;
+				if(General.Settings.SquareThings) thingtextureindex |= THING_SQUARE;
+				graphics.Device.SetTexture(0, thingtexture[thingtextureindex].Texture);
+				graphics.Shaders.Things2D.Texture1 = thingtexture[thingtextureindex].Texture;
 
 				// Draw the things batched
 				graphics.Shaders.Things2D.Begin();

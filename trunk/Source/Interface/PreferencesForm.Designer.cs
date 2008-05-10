@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorselection3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorhighlight3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorcrosshair3d = new CodeImp.DoomBuilder.Interface.ColorControl();
+			this.squarethings = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -121,6 +122,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// groupBox1
 			// 
+			groupBox1.Controls.Add(this.squarethings);
 			groupBox1.Controls.Add(this.qualitydisplay);
 			groupBox1.Controls.Add(this.imagebrightnesslabel);
 			groupBox1.Controls.Add(this.imagebrightness);
@@ -654,6 +656,16 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorcrosshair3d.Size = new System.Drawing.Size(150, 23);
 			this.colorcrosshair3d.TabIndex = 6;
 			// 
+			// squarethings
+			// 
+			this.squarethings.AutoSize = true;
+			this.squarethings.Location = new System.Drawing.Point(25, 150);
+			this.squarethings.Name = "squarethings";
+			this.squarethings.Size = new System.Drawing.Size(93, 18);
+			this.squarethings.TabIndex = 11;
+			this.squarethings.Text = "Square things";
+			this.squarethings.UseVisualStyleBackColor = true;
+			// 
 			// PreferencesForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -733,5 +745,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.CheckBox qualitydisplay;
 		private System.Windows.Forms.Label imagebrightnesslabel;
 		private System.Windows.Forms.TrackBar imagebrightness;
+		private System.Windows.Forms.CheckBox squarethings;
 	}
 }

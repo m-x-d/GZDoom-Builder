@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Linedef(MapSet map, LinkedListNode<Linedef> listitem, Vertex start, Vertex end)
+		internal Linedef(MapSet map, LinkedListNode<Linedef> listitem, Vertex start, Vertex end)
 		{
 			// Initialize
 			this.map = map;

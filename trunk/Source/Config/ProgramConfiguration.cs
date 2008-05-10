@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Config
 		private float visualviewrange;
 		private int imagebrightness;
 		private bool qualitydisplay;
+		private bool squarethings;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -74,6 +75,7 @@ namespace CodeImp.DoomBuilder.Config
 		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
 		public float VisualViewRange { get { return visualviewrange; } internal set { visualviewrange = value; } }
 		public bool QualityDisplay { get { return qualitydisplay; } internal set { qualitydisplay = value; } }
+		public bool SquareThings { get { return squarethings; } internal set { squarethings = value; } }
 
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -112,6 +114,7 @@ namespace CodeImp.DoomBuilder.Config
 				visualviewrange = cfg.ReadSetting("visualviewrange", 1000f);
 				imagebrightness = cfg.ReadSetting("imagebrightness", 3);
 				qualitydisplay = cfg.ReadSetting("qualitydisplay", true);
+				squarethings = cfg.ReadSetting("squarethings", true);
 				
 				// Success
 				return true;
@@ -135,6 +138,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("visualviewrange", visualviewrange);
 			cfg.WriteSetting("imagebrightness", imagebrightness);
 			cfg.WriteSetting("qualitydisplay", qualitydisplay);
+			cfg.WriteSetting("squarethings", squarethings);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

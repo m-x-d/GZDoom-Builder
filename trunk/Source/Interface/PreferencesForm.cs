@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Interface
 			imagebrightness.Value = General.Settings.ImageBrightness;
 			qualitydisplay.Checked = General.Settings.QualityDisplay;
+			squarethings.Checked = General.Settings.SquareThings;
 			
 			// Fill list of actions
 			actions = General.Actions.GetAllActions();
@@ -292,6 +293,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
+			General.Settings.SquareThings = squarethings.Checked;
 			
 			// Apply control keys to actions
 			foreach(ListViewItem item in listactions.Items)
