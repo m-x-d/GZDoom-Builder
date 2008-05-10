@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <DocumentationFile>..\Build\Builder.xml</DocumentationFile>
@@ -512,10 +512,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Resources\Font.png" />
     <EmbeddedResource Include="Resources\Thing2D_3.png" />
     <EmbeddedResource Include="Resources\Thing2D_2.png" />
     <EmbeddedResource Include="Resources\White.png" />
     <EmbeddedResource Include="Resources\color2d.fx" />
+    <EmbeddedResource Include="Resources\Font.cfg" />
     <None Include="Resources\Splash2_small.png" />
     <None Include="Resources\Splash2_trans.png" />
   </ItemGroup>
