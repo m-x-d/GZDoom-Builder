@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Sector(MapSet map, LinkedListNode<Sector> listitem, int index)
+		internal Sector(MapSet map, LinkedListNode<Sector> listitem, int index)
 		{
 			// Initialize
 			this.map = map;

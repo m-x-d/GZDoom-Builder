@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor for new empty map
-		public MapSet()
+		internal MapSet()
 		{
 			// Initialize
 			vertices = new LinkedList<Vertex>();
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Disposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			ArrayList list;
 			
