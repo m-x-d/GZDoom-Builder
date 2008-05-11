@@ -24,7 +24,10 @@ using System.Text;
 using System.Reflection;
 using System.Drawing;
 using CodeImp.DoomBuilder.IO;
-using SlimDX.Direct3D;
+using SlimDX.Direct3D9;
+using SlimDX;
+
+using Configuration = CodeImp.DoomBuilder.IO.Configuration;
 
 #endregion
 
@@ -207,8 +210,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This creates assist colors
 		internal void CreateAssistColors()
 		{
-			ColorValue o;
-			ColorValue c = new ColorValue(1f, 0f, 0f, 0f);
+			Color4 o;
+			Color4 c = new Color4(1f, 0f, 0f, 0f);
 			
 			// Go for all colors
 			for(int i = 0; i < NUM_COLORS; i++)

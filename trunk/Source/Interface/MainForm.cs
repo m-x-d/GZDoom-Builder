@@ -242,33 +242,36 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			int windowstate;
 
-			General.WriteLogLine("Closing main interface window...");
+			if(e.CloseReason != CloseReason.ApplicationExitCall)
+			{
+				General.WriteLogLine("Closing main interface window...");
 
-			// Stop exclusive mode, if any is active
-			StopExclusiveMouseInput();
-			SetProcessorState(false);
-			
-			// Unbind methods
-			General.Actions.UnbindMethods(this);
-			
-			// Determine window state to save
-			if(this.WindowState != FormWindowState.Minimized)
-				windowstate = (int)this.WindowState;
-			else
-				windowstate = (int)FormWindowState.Normal;
-			
-			// Save window settings
-			General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
-			General.Settings.WriteSetting("mainwindow.positiony", lastposition.Y);
-			General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
-			General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
-			General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
+				// Stop exclusive mode, if any is active
+				StopExclusiveMouseInput();
+				SetProcessorState(false);
 
-			// Save recent files
-			SaveRecentFiles();
-			
-			// Terminate the program
-			General.Terminate(true);
+				// Unbind methods
+				General.Actions.UnbindMethods(this);
+
+				// Determine window state to save
+				if(this.WindowState != FormWindowState.Minimized)
+					windowstate = (int)this.WindowState;
+				else
+					windowstate = (int)FormWindowState.Normal;
+
+				// Save window settings
+				General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
+				General.Settings.WriteSetting("mainwindow.positiony", lastposition.Y);
+				General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
+				General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
+				General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
+
+				// Save recent files
+				SaveRecentFiles();
+
+				// Terminate the program
+				General.Terminate(true);
+			}
 		}
 
 		#endregion

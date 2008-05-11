@@ -23,7 +23,8 @@ using System.Globalization;
 using System.Text;
 using System.Reflection;
 using System.Drawing;
-using SlimDX.Direct3D;
+using SlimDX.Direct3D9;
+using SlimDX;
 
 #endregion
 
@@ -92,14 +93,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// To ColorValue
-		public ColorValue ToColorValue()
+		public Color4 ToColorValue()
 		{
-			return new ColorValue((float)a * 0.00392156862745098f,
-								  (float)r * 0.00392156862745098f,
-								  (float)g * 0.00392156862745098f,
-								  (float)b * 0.00392156862745098f);
+			return new Color4((float)a * 0.00392156862745098f,
+							  (float)r * 0.00392156862745098f,
+							  (float)g * 0.00392156862745098f,
+							  (float)b * 0.00392156862745098f);
 		}
-		
+
 		#endregion
 
 		#region ================== Methods

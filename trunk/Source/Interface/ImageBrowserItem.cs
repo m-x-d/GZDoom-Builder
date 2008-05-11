@@ -30,7 +30,8 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Rendering;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
-using SlimDX.Direct3D;
+using SlimDX.Direct3D9;
+using SlimDX;
 
 #endregion
 
@@ -172,7 +173,7 @@ namespace CodeImp.DoomBuilder.Interface
 		// This brightens or darkens a color
 		private Color AdjustedColor(Color c, float amount)
 		{
-			ColorValue cc = ColorValue.FromColor(c);
+			Color4 cc = new Color4(c);
 			
 			// Adjust color
 			cc.Red = Saturate((cc.Red * (1f + amount)) + (amount * 0.5f));

@@ -23,7 +23,7 @@ using System.Globalization;
 using System.Text;
 using System.Reflection;
 using System.Drawing;
-using SlimDX.Direct3D;
+using SlimDX.Direct3D9;
 using System.Runtime.InteropServices;
 
 #endregion
