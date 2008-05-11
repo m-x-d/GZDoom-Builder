@@ -27,7 +27,6 @@ using System.Reflection;
 using System.Drawing;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D;
 using SlimDX.Direct3D9;
 using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
@@ -130,7 +129,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Capabilities caps;
 
 			// Check if we can use shaders
-			caps = General.Map.Graphics.Device.GetDeviceCaps();
+			caps = General.Map.Graphics.Device.Capabilities;
 			useshaders = (caps.PixelShaderVersion.Major >= 2);
 			shadertechnique = "SM20";
 

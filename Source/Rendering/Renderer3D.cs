@@ -25,7 +25,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
-using SlimDX.Direct3D;
 using System.ComponentModel;
 using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
@@ -159,7 +158,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public bool Start()
 		{
 			// Start drawing
-			if(graphics.StartRendering(true, General.Colors.Background.ToInt(), graphics.BackBuffer, graphics.DepthBuffer))
+			if(graphics.StartRendering(true, General.Colors.Background.ToColorValue(), graphics.BackBuffer, graphics.DepthBuffer))
 			{
 				// Beginning renderstates
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
@@ -167,7 +166,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				
 				// Ready
@@ -184,7 +183,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void StartGeometry()
 		{
 			// Renderstates
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.CounterClockwise);
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
 			graphics.Device.SetRenderState(RenderState.ZEnable, true);
 			graphics.Device.SetRenderState(RenderState.ZWriteEnable, true);
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);

@@ -395,6 +395,9 @@ namespace CodeImp.DoomBuilder
 			// Enable OS visual styles
 			Application.EnableVisualStyles();
 			Application.DoEvents();		// This must be here to work around a .NET bug
+
+			// Hook to DLL loading failure event
+			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();
@@ -452,7 +455,9 @@ namespace CodeImp.DoomBuilder
 
 				// Start Direct3D
 				General.WriteLogLine("Starting Direct3D graphics driver...");
-				Direct3D.Initialize();
+				try { Direct3D.Initialize(); }
+				catch(Direct3D9NotFoundException) { AskDownloadDirectX(); return; }
+				catch(Direct3DX9NotFoundException) { AskDownloadDirectX(); return; }
 
 				// Load plugin manager
 				General.WriteLogLine("Loading plugins...");
@@ -489,6 +494,33 @@ namespace CodeImp.DoomBuilder
 				Terminate(false);
 			}
 		}
+
+		// This handles DLL linking errors
+		private static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+		{
+			// Check if SlimDX failed loading
+			if(args.Name.Contains("SlimDX")) AskDownloadDirectX();
+
+			// Return null
+			return null;
+		}
+		
+		// This asks the user to download DirectX
+		private static void AskDownloadDirectX()
+		{
+			// Ask the user to download DirectX
+			if(MessageBox.Show("This application requires the latest version of Microsoft DirectX installed on your computer." + Environment.NewLine +
+				"Do you want to install and update Microsoft DirectX now?", "DirectX Error", System.Windows.Forms.MessageBoxButtons.YesNo,
+				System.Windows.Forms.MessageBoxIcon.Exclamation) == System.Windows.Forms.DialogResult.Yes)
+			{
+				// Open DX web setup
+				//System.Diagnostics.Process.Start("http://www.microsoft.com/downloads/details.aspx?FamilyId=2DA43D38-DB71-4C1B-BC6A-9B6652CD92A3").WaitForExit(1000);
+				System.Diagnostics.Process.Start(Path.Combine(apppath, "dxwebsetup.exe")).WaitForExit(1000);
+			}
+
+			// End program here
+			Terminate(false);
+		}
 		
 		#endregion
 		
@@ -505,15 +537,6 @@ namespace CodeImp.DoomBuilder
 				// Unbind static methods from actions
 				General.Actions.UnbindMethods(typeof(General));
 				
-				// Clean up
-				if(map != null) map.Dispose();
-				map = null;
-				mainwindow.Dispose();
-				actions.Dispose();
-				clock.Dispose();
-				plugins.Dispose();
-				Direct3D.Terminate();
-
 				// Save colors
 				colors.SaveColors(settings.Config);
 				
@@ -526,6 +549,14 @@ namespace CodeImp.DoomBuilder
 				// Save settings configuration
 				General.WriteLogLine("Saving program configuration...");
 				settings.Save(Path.Combine(settingspath, SETTINGS_FILE));
+
+				// Clean up
+				if(map != null) map.Dispose(); map = null;
+				if(mainwindow != null) mainwindow.Dispose();
+				if(actions != null) actions.Dispose();
+				if(clock != null) clock.Dispose();
+				if(plugins != null) plugins.Dispose();
+				try { Direct3D.Terminate(); } catch(Exception) { }
 
 				// Application ends here and now
 				General.WriteLogLine("Termination done");

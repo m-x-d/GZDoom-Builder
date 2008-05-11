@@ -25,7 +25,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Drawing;
-using SlimDX.Direct3D;
+using SlimDX.Direct3D9;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX;

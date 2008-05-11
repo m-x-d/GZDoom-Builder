@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
-using SlimDX.Direct3D;
+using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
 using System.Drawing;

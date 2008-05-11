@@ -27,7 +27,6 @@ using System.Reflection;
 using System.Drawing;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D;
 using SlimDX.Direct3D9;
 using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
@@ -88,7 +87,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Texture overlaytex;
 
 		// Locking data
-		private LockedRect plotlocked;
+		private DataRectangle plotlocked;
 		private Surface targetsurface;
 
 		// Rendertarget sizes
@@ -196,7 +195,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void Present()
 		{
 			// Start drawing
-			if(graphics.StartRendering(true, General.Colors.Background.ToInt(), graphics.BackBuffer, graphics.DepthBuffer))
+			if(graphics.StartRendering(true, General.Colors.Background.ToColorValue(), graphics.BackBuffer, graphics.DepthBuffer))
 			{
 				// Renderstates that count for this whole sequence
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
@@ -244,7 +243,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetTexture(0, plottertex);
 				graphics.Shaders.Display2D.Texture1 = plottertex;
@@ -264,7 +263,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-				graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetTexture(0, overlaytex);
 				graphics.Shaders.Display2D.Texture1 = overlaytex;
@@ -296,8 +295,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-			graphics.Device.SetRenderState(RenderState.DestBlend, Blend.InvSourceAlpha);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, (new ColorValue(alpha, 1f, 1f, 1f)).ToArgb());
+			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, (new Color4(alpha, 1f, 1f, 1f)).ToArgb());
 			graphics.Device.SetTexture(0, thingstex);
 			graphics.Shaders.Display2D.Texture1 = thingstex;
 			graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_PLOTTER_BLEND_FACTOR, alpha);
@@ -404,7 +403,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			StartOverlay(true); Finish();
 			
 			// Create font
-			font = new SlimDX.Direct3D9.Font(graphics.Device, FONT_WIDTH, FONT_HEIGHT, FontWeight.Bold, 1, false, CharacterSet.Ansi, Precision.Default, FontQuality.AntiAliased, PitchAndFamily.Default, FONT_NAME);
+			font = new SlimDX.Direct3D9.Font(graphics.Device, FONT_WIDTH, FONT_HEIGHT, FontWeight.Bold, 1, false, CharacterSet.Ansi, Precision.Default, FontQuality.Antialiased, PitchAndFamily.Default, FONT_NAME);
 			
 			// Create vertex buffers
 			screenverts = new VertexBuffer(graphics.Device, 4 * sizeof(FlatVertex), Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
@@ -552,7 +551,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartPlotter(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) throw new InvalidCallException("Renderer starting called before finished previous layer. Call Finish() first!");
+			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Plotter;
 
 			// Rendertargets available?
@@ -586,7 +585,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartThings(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) throw new InvalidCallException("Renderer starting called before finished previous layer. Call Finish() first!");
+			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Things;
 
 			// Rendertargets available?
@@ -600,7 +599,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				
 				// Set the rendertarget to the things texture
 				targetsurface = thingstex.GetSurfaceLevel(0);
-				if(graphics.StartRendering(clear, 0, targetsurface, null))
+				if(graphics.StartRendering(clear, new Color4(0), targetsurface, null))
 				{
 					// Ready for rendering
 					return true;
@@ -623,7 +622,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartOverlay(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) throw new InvalidCallException("Renderer starting called before finished previous layer. Call Finish() first!");
+			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Overlay;
 
 			// Rendertargets available?
@@ -631,7 +630,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Set the rendertarget to the things texture
 				targetsurface = overlaytex.GetSurfaceLevel(0);
-				if(graphics.StartRendering(clear, 0, targetsurface, null))
+				if(graphics.StartRendering(clear, new Color4(0), targetsurface, null))
 				{
 					// Ready for rendering
 					return true;
@@ -671,7 +670,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Release rendertarget
 				try
 				{
-					graphics.Device.SetDepthStencilSurface(graphics.DepthBuffer);
+					graphics.Device.DepthStencilSurface = graphics.DepthBuffer;
 					graphics.Device.SetRenderTarget(0, graphics.BackBuffer);
 				}
 				catch(Exception) { }
@@ -731,7 +730,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void RenderBackgroundGrid()
 		{
 			Plotter gridplotter;
-			LockedRect lockedrect;
+			DataRectangle lockedrect;
 			
 			// Do we need to redraw grid?
 			if((lastgridscale != scale) || (lastgridx != offsetx) || (lastgridy != offsety))
@@ -1065,7 +1064,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			
 			// Draw
-			if(font != null) font.DrawString(null, text, posr, DrawTextFormat.VCenter | DrawTextFormat.Left | DrawTextFormat.NoClip, c.ToInt());
+			if(font != null) font.DrawString(null, text, posr, DrawTextFormat.VCenter | DrawTextFormat.Left | DrawTextFormat.NoClip, c.ToColorValue());
 		}
 
 		// This renders text
@@ -1083,7 +1082,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 
 			// Draw
-			if(font != null) font.DrawString(null, text, posr, DrawTextFormat.VCenter | DrawTextFormat.Center | DrawTextFormat.NoClip, c.ToInt());
+			if(font != null) font.DrawString(null, text, posr, DrawTextFormat.VCenter | DrawTextFormat.Center | DrawTextFormat.NoClip, c.ToColorValue());
 		}
 		
 		// This renders a rectangle with given border size and color

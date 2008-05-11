@@ -26,7 +26,6 @@ using System.IO;
 using System.Reflection;
 using System.Drawing;
 using SlimDX.Direct3D9;
-using SlimDX.Direct3D;
 using System.ComponentModel;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX;
@@ -141,8 +140,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.ZWriteEnable, false);
 			device.SetRenderState(RenderState.Clipping, true);
 			device.SetRenderState(RenderState.CullMode, Cull.None);
-			device.SetPixelShader(null);
-			device.SetVertexShader(null);
+			device.PixelShader = null;
+			device.VertexShader = null;
 
 			// Sampler settings
 			device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
@@ -187,9 +186,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Setup material
 			Material material = new Material();
-			material.Ambient = ColorValue.FromColor(Color.White);
-			material.Diffuse = ColorValue.FromColor(Color.White);
-			material.Specular = ColorValue.FromColor(Color.White);
+			material.Ambient = new Color4(Color.White);
+			material.Diffuse = new Color4(Color.White);
+			material.Specular = new Color4(Color.White);
 			device.Material = material;
 		}
 
@@ -246,7 +245,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Keep a reference to the original buffers
 			backbuffer = device.GetBackBuffer(0, 0);
-			depthbuffer = device.GetDepthStencilSurface();
+			depthbuffer = device.DepthStencilSurface;
 
 			// Get the viewport
 			viewport = device.Viewport;
@@ -341,7 +340,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Keep a reference to the original buffers
 			backbuffer = device.GetBackBuffer(0, 0);
-			depthbuffer = device.GetDepthStencilSurface();
+			depthbuffer = device.DepthStencilSurface;
 
 			// Get the viewport
 			viewport = device.Viewport;
@@ -361,31 +360,24 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Rendering
 
 		// This begins a drawing session
-		public bool StartRendering(bool clear, int backcolor, Surface target, Surface depthbuffer)
+		public bool StartRendering(bool clear, Color4 backcolor, Surface target, Surface depthbuffer)
 		{
-			CooperativeLevel coopresult;
-
 			// When minimized, do not render anything
 			if(General.MainWindow.WindowState != FormWindowState.Minimized)
 			{
 				// Test the cooperative level
-				coopresult = device.CheckCooperativeLevel();
+				Result coopresult = device.TestCooperativeLevel();
 				
 				// Check if device must be reset
-				if(coopresult == CooperativeLevel.DeviceNotReset)
+				if(!coopresult.IsSuccess)
 				{
 					// Device is lost and must be reset now
+					// TODO: Check result codes, device cannot always be reset
 					return Reset();
-				}
-				// Check if device is lost
-				else if(coopresult == CooperativeLevel.DeviceLost)
-				{
-					// Device is lost and cannot be reset now
-					return false;
 				}
 
 				// Set rendertarget
-				device.SetDepthStencilSurface(depthbuffer);
+				device.DepthStencilSurface = depthbuffer;
 				device.SetRenderTarget(0, target);
 				
 				// Clear the screen

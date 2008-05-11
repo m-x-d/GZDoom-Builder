@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Set cooperative level
 			mouse.SetCooperativeLevel(source,
-				CooperativeLevel.NonExclusive | CooperativeLevel.Foreground);
+				CooperativeLevel.Nonexclusive | CooperativeLevel.Foreground);
 
 			// Aquire device
 			try { mouse.Acquire(); }
@@ -112,11 +112,10 @@ namespace CodeImp.DoomBuilder.Controls
 			MouseState ms;
 			float changex, changey;
 			
-			try
+			// Poll the device
+			Result result = mouse.Poll();
+			if(result.IsSuccess)
 			{
-				// Poll the device
-				mouse.Poll();
-
 				// Get the changes since previous poll
 				ms = mouse.GetCurrentState();
 				
@@ -127,16 +126,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Return changes
 				return new Vector2D(changex, changey);
 			}
-			// Lost device?
-			catch(InputLostException)
-			{
-				// Reaquire device
-				try { mouse.Acquire(); }
-				catch(Exception) { }
-				return new Vector2D();
-			}
-			// Lost device?
-			catch(DeviceNotAcquiredException)
+			else
 			{
 				// Reaquire device
 				try { mouse.Acquire(); }
