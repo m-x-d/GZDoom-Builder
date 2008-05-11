@@ -21,6 +21,7 @@ SetupLogging=false
 AppMutex=doombuilder2
 PrivilegesRequired=poweruser
 ShowLanguageDialog=no
+LanguageDetectionMethod=none
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -30,7 +31,6 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
-Source: d3dx9_36.dll; DestDir: {app}; Flags: ignoreversion
 Source: SlimDX.dll; DestDir: {app}; Flags: ignoreversion
 Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion
 Source: Builder.cfg; DestDir: {app}; Flags: ignoreversion
@@ -39,6 +39,7 @@ Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion
 Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: Plugins\*; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Setup\*; DestDir: {app}\Setup; Flags: ignoreversion
 
 [Icons]
 Name: {group}\Doom Builder; Filename: {app}\Builder.exe
@@ -46,140 +47,79 @@ Name: {group}\{cm:UninstallProgram,Doom Builder}; Filename: {uninstallexe}
 Name: {commondesktop}\Doom Builder; Filename: {app}\Builder.exe; Tasks: desktopicon
 
 [Run]
-Filename: {app}\Builder.exe; Description: {cm:LaunchProgram,Doom Builder}; Flags: nowait postinstall skipifsilent; Check: IsAllInstalled
-Filename: http://www.microsoft.com/downloads/details.aspx?FamilyID=0856eacb-4362-4b0d-8edd-aab15c5e04f5&displaylang=en; Flags: nowait shellexec postinstall skipifsilent; Check: not IsNetInstalled; Description: Open Microsoft .NET Framework download website
-Filename: http://www.microsoft.com/directx/; Description: Open DirectX download website; Flags: nowait shellexec postinstall skipifsilent; Check: not IsDXInstalled
+Filename: {app}\Builder.exe; Description: {cm:LaunchProgram,Doom Builder}; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
 Name: {app}\Builder.log; Type: files
 [InstallDelete]
 Name: {app}\Builder.pdb; Type: files
 [Code]
+// Global variables
 var
-	dxinstalled: Boolean;
-	netinstalled: Boolean;
+	page_info_dx: TOutputMsgWizardPage;
+	page_setup_dx: TOutputProgressWizardPage;
+	page_info_net: TOutputMsgWizardPage;
+	page_setup_net: TOutputProgressWizardPage;
 
 
-// This decodes a DirectX version
-procedure DecodeVersion( verstr: String; var verint: array of Integer );
+
+
+// When the wizard initializes
+procedure InitializeWizard();
+begin
+	// Make custom pages
+	page_info_dx := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft DirectX', '', 'Setup will now start the installation and/or update of your Microsoft DirectX version. Press Next to begin.');
+	page_setup_dx := CreateOutputProgressPage('Installing Microsoft DirectX', 'Setup is installing Microsoft DirectX, please wait...');
+	page_info_net := CreateOutputMsgPage(page_info_dx.ID, 'Installing Microsoft .NET Framework', '', 'Setup will now start the installation and/or update of your Microsoft .NET Framework. Press Next to begin.');
+	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework', 'Setup is installing Microsoft.NET Framework, please wait...');
+end;
+
+
+
+// This is called to check if a page must be skipped
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+	// Skip the .NET page?
+	if(PageID = page_info_net.ID) then
+		Result := RegKeyExists(HKLM, 'SOFTWARE\Microsoft\.NETFramework\policy\v2.0')
+	else
+		Result := False;
+end;
+
+
+// This is called when the Next button is clicked
+function NextButtonClick(CurPage: Integer): Boolean;
 var
-  i,p: Integer; s: string;
-begin
-  // initialize array
-  verint := [0,0,0,0];
-  i := 0;
-  while ( (Length(verstr) > 0) and (i < 4) ) do
-  begin
-  	p := pos('.', verstr);
-  	if p > 0 then
-  	begin
-      if p = 1 then s:= '0' else s:= Copy( verstr, 1, p - 1 );
-  	  verint[i] := StrToInt(s);
-  	  i := i + 1;
-  	  verstr := Copy( verstr, p+1, Length(verstr));
-  	end
-  	else
-  	begin
-  	  verint[i] := StrToInt( verstr );
-  	  verstr := '';
-  	end;
-  end;
-
-end;
-
-
-// This function compares version string
-// return -1 if ver1 < ver2
-// return  0 if ver1 = ver2
-// return  1 if ver1 > ver2
-function CompareVersion( ver1, ver2: String ) : Integer;
-var
-  verint1, verint2: array of Integer;
-  i: integer;
+	ErrorCode: Integer;
 begin
 
-  SetArrayLength( verint1, 4 );
-  DecodeVersion( ver1, verint1 );
-
-  SetArrayLength( verint2, 4 );
-  DecodeVersion( ver2, verint2 );
-
-  Result := 0; i := 0;
-  while ( (Result = 0) and ( i < 4 ) ) do
-  begin
-  	if verint1[i] > verint2[i] then
-  	  Result := 1
-  	else
-      if verint1[i] < verint2[i] then
-  	    Result := -1
-  	  else
-  	    Result := 0;
-
-  	i := i + 1;
-  end;
-
-end;
-
-
-// DirectX version is stored in registry as 4.majorversion.minorversion
-// DirectX 8.0 is 4.8.0
-// DirectX 8.1 is 4.8.1
-// DirectX 9.0 is 4.9.0
-function GetDirectXVersion(): String;
-var
-  sVersion:  String;
-begin
-  sVersion := '';
-
-  RegQueryStringValue( HKLM, 'SOFTWARE\Microsoft\DirectX', 'Version', sVersion );
-
-  Result := sVersion;
-end;
-
-
-// This will look for installed components when Setup starts up
-function InitializeSetup(): Boolean;
-begin
-		// Test dependencies
-		netinstalled := (RegKeyExists(HKLM,'SOFTWARE\Microsoft\.NETFramework\policy\v2.0') = true);
-		dxinstalled := (CompareVersion(GetDirectXVersion(), '4.9.0.904') >= 0);
-
-		// Always continue
-		Result := true;
-end;
-
-
-// Here follow methods to check the result of installed components.
-function IsDXInstalled(): Boolean;
-begin
-	Result := dxinstalled;
-end;
-
-function IsNetInstalled(): Boolean;
-begin
-	Result := netinstalled;
-end;
-
-function IsAllInstalled(): Boolean;
-begin
-	Result := dxinstalled and netinstalled;
-end;
-
-
-// This will show messages depending on installed components, after installation.
-procedure CurPageChanged(CurPageID: Integer);
-begin
-	// Installation done page?
-	if(CurPageID = wpFinished) then
+	// Next pressed on DX info page?
+	if(CurPage = page_info_dx.ID) then
 	begin
-		// Test .NET 2.0
-		if (IsNetInstalled() = false) then
-			MsgBox('Microsoft .NET Framework 2.0 is not installed.'#10'Please download and install Microsoft .NET Framework 2.0 before using Doom Builder.', mbError, MB_OK);
-
-		// Test DirectX 9.0
-		if (IsDXInstalled() = false) then
-			MsgBox('Microsoft DirectX 9 is not installed. You need Microsoft DirectX 9 or later for this program to run properly.'#10'Please upgrade your DirectX version at http://www.microsoft.com/directx.', mbError, MB_OK);
+		// Show progress page and run setup
+		page_setup_dx.Show;
+		try
+			ShellExec('open', ExpandConstant('{app}\Setup\dxwebsetup.exe'), '', '/Q', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+		finally
+			page_setup_dx.Hide;
+		end;
 	end
+
+	// Next pressed on .NET info page?
+	if(CurPage = page_info_net.ID) then
+	begin
+		// Show progress page and run setup
+		page_setup_net.Show;
+		try
+			ShellExec('open', ExpandConstant('{app}\Setup\dotnetfx35setup.exe'), '', '/noreboot', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+		finally
+			page_setup_net.Hide;
+		end;
+	end
+
+	Result := True;
 end;
+
+
 
 

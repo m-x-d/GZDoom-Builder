@@ -85,6 +85,7 @@ namespace CodeImp.DoomBuilder
 		private const string GAME_CONFIGS_DIR = "Configurations";
 		private const string COMPILERS_DIR = "Compilers";
 		private const string PLUGINS_DIR = "Plugins";
+		private const string SETUP_DIR = "Setup";
 
 		#endregion
 
@@ -92,6 +93,7 @@ namespace CodeImp.DoomBuilder
 
 		// Files and Folders
 		private static string apppath;
+		private static string setuppath;
 		private static string settingspath;
 		private static string logfile;
 		private static string temppath;
@@ -409,6 +411,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Setup directories
 			temppath = Path.GetTempPath();
+			setuppath = Path.Combine(apppath, SETUP_DIR);
 			settingspath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR);
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
@@ -515,7 +518,7 @@ namespace CodeImp.DoomBuilder
 			{
 				// Open DX web setup
 				//System.Diagnostics.Process.Start("http://www.microsoft.com/downloads/details.aspx?FamilyId=2DA43D38-DB71-4C1B-BC6A-9B6652CD92A3").WaitForExit(1000);
-				System.Diagnostics.Process.Start(Path.Combine(apppath, "dxwebsetup.exe")).WaitForExit(1000);
+				System.Diagnostics.Process.Start(Path.Combine(setuppath, "dxwebsetup.exe")).WaitForExit(1000);
 			}
 
 			// End program here
