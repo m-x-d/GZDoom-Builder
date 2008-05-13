@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public float Height { get { return rect.Height; } set { rect.Height = value; updateneeded = true; } }
 		public float Right { get { return rect.Right; } set { rect.Width = value - rect.X + 1f; updateneeded = true; } }
 		public float Bottom { get { return rect.Bottom; } set { rect.Height = value - rect.Y + 1f; updateneeded = true; } }
-		public string Text { get { return text; } set { if(text != value) { text = value; updateneeded = true; } } }
+		public string Text { get { return text; } set { if(text != value.ToUpperInvariant()) { text = value.ToUpperInvariant(); updateneeded = true; } } }
 		public bool TransformCoords { get { return transformcoords; } set { transformcoords = value; updateneeded = true; } }
 		public SizeF TextSize { get { return size; } }
 		public float Scale { get { return scale; } set { scale = value; updateneeded = true; } }
