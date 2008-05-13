@@ -30,6 +30,9 @@ using System.ComponentModel;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX;
 using CodeImp.DoomBuilder.Interface;
+using CodeImp.DoomBuilder.Data;
+
+using Configuration = CodeImp.DoomBuilder.IO.Configuration;
 
 #endregion
 
@@ -58,6 +61,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private ShaderManager shaders;
 		private Surface backbuffer;
 		private Surface depthbuffer;
+		private TextFont font;
+		private ResourceImage fonttexture;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -73,6 +78,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal ShaderManager Shaders { get { return shaders; } }
 		internal Surface BackBuffer { get { return backbuffer; } }
 		internal Surface DepthBuffer { get { return depthbuffer; } }
+		internal TextFont Font { get { return font; } }
+		internal Texture FontTexture { get { return fonttexture.Texture; } }
 		
 		#endregion
 
@@ -104,6 +111,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(backbuffer != null) backbuffer.Dispose();
 				if(depthbuffer != null) depthbuffer.Dispose();
 				device.Dispose();
+				if(font != null) font.Dispose();
+				if(fonttexture != null) fonttexture.Dispose();
 				
 				// Done
 				isdisposed = true;
@@ -252,6 +261,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Create shader manager
 			shaders = new ShaderManager(this);
+			
+			// Font
+			font = new TextFont();
+			fonttexture = new ResourceImage("Font.png");
+			fonttexture.LoadImage();
+			fonttexture.CreateTexture();
 			
 			// Initialize settings
 			SetupSettings();

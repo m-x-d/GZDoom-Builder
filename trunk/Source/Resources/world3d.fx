@@ -54,10 +54,7 @@ float4 ps_main(PixelData pd) : COLOR
 	float4 tcolor = tex2D(texturesamp, pd.uv);
 	
 	// Blend texture color and vertex color
-    return float4(tcolor.r * pd.color.r,
-				  tcolor.g * pd.color.g,
-				  tcolor.b * pd.color.b,
-				  tcolor.a * pd.color.a);
+    return tcolor * pd.color;
 }
 
 // Technique for shader model 2.0

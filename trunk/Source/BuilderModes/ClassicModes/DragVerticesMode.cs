@@ -143,19 +143,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				}
 			}
 
+			// Redraw overlay
 			if(renderer.StartOverlay(true))
 			{
-				foreach(Linedef l in unstablelines)
+				foreach(TextLabel l in labels)
 				{
-					Vector2D delta = l.End.Position - l.Start.Position;
-					Vector2D textpos = l.Start.Position + (delta * 0.5f);
-					int length = (int)Math.Round(l.Length);
-					renderer.RenderTextCentered(length.ToString(), textpos, General.Colors.Highlight, true);
+					renderer.RenderText(l);
 				}
-
 				renderer.Finish();
 			}
-
 
 			renderer.Present();
 		}

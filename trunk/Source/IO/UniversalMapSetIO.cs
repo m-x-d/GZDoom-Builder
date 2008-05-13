@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		public override int MaxSidedefs { get { return int.MaxValue; } }
 		public override int VertexDecimals { get { return 3; } }
+		public override string DecimalsFormat { get { return "0.000"; } }
 
 		#endregion
 

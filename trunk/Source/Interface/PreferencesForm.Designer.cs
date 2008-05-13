@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label1;
+			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
 			this.imagebrightness = new System.Windows.Forms.TrackBar();
@@ -75,7 +76,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorselection3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorhighlight3d = new CodeImp.DoomBuilder.Interface.ColorControl();
 			this.colorcrosshair3d = new CodeImp.DoomBuilder.Interface.ColorControl();
-			this.squarethings = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -133,6 +133,16 @@ namespace CodeImp.DoomBuilder.Interface
 			groupBox1.TabIndex = 6;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Graphics ";
+			// 
+			// squarethings
+			// 
+			this.squarethings.AutoSize = true;
+			this.squarethings.Location = new System.Drawing.Point(25, 150);
+			this.squarethings.Name = "squarethings";
+			this.squarethings.Size = new System.Drawing.Size(93, 18);
+			this.squarethings.TabIndex = 11;
+			this.squarethings.Text = "Square things";
+			this.squarethings.UseVisualStyleBackColor = true;
 			// 
 			// qualitydisplay
 			// 
@@ -433,6 +443,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.actioncontrol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.actioncontrol.FormattingEnabled = true;
+			this.actioncontrol.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.actioncontrol.Location = new System.Drawing.Point(23, 204);
 			this.actioncontrol.Name = "actioncontrol";
 			this.actioncontrol.Size = new System.Drawing.Size(197, 22);
@@ -655,16 +666,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.colorcrosshair3d.Name = "colorcrosshair3d";
 			this.colorcrosshair3d.Size = new System.Drawing.Size(150, 23);
 			this.colorcrosshair3d.TabIndex = 6;
-			// 
-			// squarethings
-			// 
-			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(25, 150);
-			this.squarethings.Name = "squarethings";
-			this.squarethings.Size = new System.Drawing.Size(93, 18);
-			this.squarethings.TabIndex = 11;
-			this.squarethings.Text = "Square things";
-			this.squarethings.UseVisualStyleBackColor = true;
 			// 
 			// PreferencesForm
 			// 
