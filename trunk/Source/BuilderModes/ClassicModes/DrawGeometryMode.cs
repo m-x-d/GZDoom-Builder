@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		// Drawing points
 		private List<DrawnVertex> points;
+		private List<LineLengthLabel> labels;
 
 		// Keep track of view changes
 		private float lastoffsetx;
@@ -91,6 +92,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Initialize
 			this.basemode = General.Map.Mode;
 			points = new List<DrawnVertex>();
+			labels = new List<LineLengthLabel>();
 			
 			// No selection in this mode
 			General.Map.Map.ClearAllSelected();
@@ -107,7 +109,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(!isdisposed)
 			{
 				// Clean up
-
+				if(labels != null)
+					foreach(LineLengthLabel l in labels) l.Dispose();
+				
 				// Done
 				base.Dispose();
 			}
@@ -579,6 +583,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
 			float vsizeborder = ((float)renderer.VertexSize + 3.0f) / renderer.Scale;
 			
+			// The last label's end must go to the mouse cursor
+			if(labels.Count > 0) labels[labels.Count - 1].End = curp.pos;
+			
 			// Render drawing lines
 			if(renderer.StartOverlay(true))
 			{
@@ -623,6 +630,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				
 				// Render vertex at cursor
 				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
+				
+				// Go for all labels
+				foreach(LineLengthLabel l in labels) renderer.RenderText(l.TextLabel);
 				
 				// Done
 				renderer.Finish();
@@ -732,7 +742,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Mouse inside window?
 			if(General.Interface.MouseInDisplay)
 			{
-				points.Add(GetCurrentPosition());
+				DrawnVertex newpoint = GetCurrentPosition();
+				points.Add(newpoint);
+				labels.Add(new LineLengthLabel());
+				labels[labels.Count - 1].Start = newpoint.pos;
+				if(labels.Count > 1) labels[labels.Count - 2].End = newpoint.pos;
 				Update();
 
 				// Check if point stitches with the first
@@ -755,6 +769,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public void RemovePoint()
 		{
 			if(points.Count > 0) points.RemoveAt(points.Count - 1);
+			if(labels.Count > 0)
+			{
+				labels[labels.Count - 1].Dispose();
+				labels.RemoveAt(labels.Count - 1);
+			}
+			
 			Update();
 		}
 

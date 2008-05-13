@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		protected ICollection<Linedef> snaptolines;
 		
 		// Text labels for all unstable lines
-		protected TextLabel[] labels;
+		protected LineLengthLabel[] labels;
 		
 		// Keep track of view changes
 		private float lastoffsetx;
@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				// Clean up
 				if(labels != null)
-					foreach(TextLabel l in labels) l.Dispose();
+					foreach(LineLengthLabel l in labels) l.Dispose();
 				
 				// Done
 				base.Dispose();
@@ -151,22 +151,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			unstablelines = MapSet.UnstableLinedefsFromVertices(selectedverts);
 
 			// Make text labels
-			labels = new TextLabel[unstablelines.Count];
+			labels = new LineLengthLabel[unstablelines.Count];
 			int index = 0;
 			foreach(Linedef l in unstablelines)
-			{
-				Vector2D center = l.GetCenterPoint();
-				labels[index] = new TextLabel(12);
-				labels[index].Rectangle = new RectangleF(center.x, center.y, 0f, 0f);
-				labels[index].AlignX = TextAlignmentX.Center;
-				labels[index].AlignY = TextAlignmentY.Middle;
-				labels[index].Color = General.Colors.Highlight;
-				labels[index].Backcolor = General.Colors.Background;
-				labels[index].Scale = 14f;
-				labels[index].TransformCoords = true;
-				labels[index].Text = l.Length.ToString("0");
-				index++;
-			}
+				labels[index++] = new LineLengthLabel(l.Start.Position, l.End.Position);
 			
 			Cursor.Current = Cursors.Default;
 		}
@@ -271,13 +259,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Update labels
 				int index = 0;
 				foreach(Linedef l in unstablelines)
-				{
-					l.UpdateCache();
-					Vector2D center = l.GetCenterPoint();
-					labels[index].Rectangle = new RectangleF(center.x, center.y, 0f, 0f);
-					labels[index].Text = l.Length.ToString("0");
-					index++;
-				}
+					labels[index++].Move(l.Start.Position, l.End.Position);
 
 				// Moved
 				return true;
