@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		public abstract int MaxSidedefs { get; }
 		public abstract int VertexDecimals { get; }
+		public abstract string DecimalsFormat { get; }
 
 		#endregion
 

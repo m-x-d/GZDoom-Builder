@@ -160,6 +160,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.Finish();
 				}
 			}
+
+			// Redraw overlay
+			if(renderer.StartOverlay(true))
+			{
+				foreach(TextLabel l in labels)
+				{
+					renderer.RenderText(l);
+				}
+				renderer.Finish();
+			}
 			
 			renderer.Present();
 		}

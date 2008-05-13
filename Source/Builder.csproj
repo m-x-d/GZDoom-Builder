@@ -324,6 +324,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rendering\Color2DShader.cs" />
+    <Compile Include="Rendering\Texture2DShader.cs" />
     <Compile Include="Rendering\Display2DShader.cs" />
     <Compile Include="Rendering\ColorCollection.cs" />
     <Compile Include="Rendering\ColorSetting.cs" />
@@ -336,6 +337,9 @@
     <Compile Include="Rendering\IRenderer2D.cs" />
     <Compile Include="Rendering\IRenderer3D.cs" />
     <Compile Include="Rendering\RenderLayers.cs" />
+    <Compile Include="Rendering\TextAlignment.cs" />
+    <Compile Include="Rendering\TextFont.cs" />
+    <Compile Include="Rendering\TextLabel.cs" />
     <Compile Include="Rendering\VisualGeometry.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
     <Compile Include="Rendering\PixelColorBlock.cs" />
@@ -517,5 +521,6 @@
     <EmbeddedResource Include="Resources\Font.cfg" />
     <None Include="Resources\Splash2_small.png" />
     <None Include="Resources\Splash2_trans.png" />
+    <EmbeddedResource Include="Resources\texture2d.fx" />
   </ItemGroup>
 </Project>

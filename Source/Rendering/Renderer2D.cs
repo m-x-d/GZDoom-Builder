@@ -138,6 +138,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		public float OffsetX { get { return offsetx; } }
 		public float OffsetY { get { return offsety; } }
+		public float TranslateX { get { return translatex; } }
+		public float TranslateY { get { return translatey; } }
 		public float Scale { get { return scale; } }
 		public int VertexSize { get { return vertexsize; } }
 
@@ -1050,39 +1052,31 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Overlay
 
 		// This renders text
-		public void RenderText(string text, Vector2D pos, PixelColor c, bool transformpos)
+		public void RenderText(TextLabel text)
 		{
-			// Calculate coordinates
-			if(transformpos) pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-			Rectangle posr = new Rectangle((int)pos.x, (int)pos.y, 0, 0);
+			// Update the text if needed
+			text.Update(translatex, translatey, scale, -scale);
 			
-			// Set renderstates for rendering
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-			graphics.Device.SetRenderState(RenderState.ZEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-			
-			// Draw
-			if(font != null) font.DrawString(null, text, posr, DrawTextFormat.VCenter | DrawTextFormat.Left | DrawTextFormat.NoClip, c.ToColorValue());
-		}
+			// Text is created?
+			if(text.VertexBuffer != null)
+			{
+				// Set renderstates for rendering
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				graphics.Device.SetRenderState(RenderState.ZEnable, false);
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				graphics.Shaders.Texture2D.Texture1 = graphics.FontTexture;
+				graphics.Device.SetTexture(0, graphics.FontTexture);
+				graphics.Device.SetStreamSource(0, text.VertexBuffer, 0, FlatVertex.Stride);
 
-		// This renders text
-		public void RenderTextCentered(string text, Vector2D pos, PixelColor c, bool transformpos)
-		{
-			// Calculate coordinates
-			if(transformpos) pos = pos.GetTransformed(translatex, translatey, scale, -scale);
-			Rectangle posr = new Rectangle((int)pos.x, (int)pos.y, 0, 0);
-
-			// Set renderstates for rendering
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-			graphics.Device.SetRenderState(RenderState.ZEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-
-			// Draw
-			if(font != null) font.DrawString(null, text, posr, DrawTextFormat.VCenter | DrawTextFormat.Center | DrawTextFormat.NoClip, c.ToColorValue());
+				// Draw
+				graphics.Shaders.Texture2D.Begin();
+				graphics.Shaders.Texture2D.BeginPass(0);
+				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces);
+				graphics.Shaders.Texture2D.EndPass();
+				graphics.Shaders.Texture2D.End();
+			}
 		}
 		
 		// This renders a rectangle with given border size and color

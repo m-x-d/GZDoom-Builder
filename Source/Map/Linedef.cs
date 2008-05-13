@@ -354,6 +354,12 @@ namespace CodeImp.DoomBuilder.Map
 
 			return p;
 		}
+
+		// This returns a point in the middle of the line
+		public Vector2D GetCenterPoint()
+		{
+			return start.Position + (end.Position - start.Position) * 0.5f;
+		}
 		
 		// This applies single/double sided flags
 		public void ApplySidedFlags()

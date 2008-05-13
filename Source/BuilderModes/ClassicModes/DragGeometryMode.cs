@@ -69,6 +69,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// List of unselected lines
 		protected ICollection<Linedef> snaptolines;
 		
+		// Text labels for all unstable lines
+		protected TextLabel[] labels;
+		
 		// Keep track of view changes
 		private float lastoffsetx;
 		private float lastoffsety;
@@ -96,7 +99,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			if(!isdisposed)
 			{
 				// Clean up
-
+				if(labels != null)
+					foreach(TextLabel l in labels) l.Dispose();
+				
 				// Done
 				base.Dispose();
 			}
@@ -145,9 +150,27 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// These will have their length displayed during the drag
 			unstablelines = MapSet.UnstableLinedefsFromVertices(selectedverts);
 
+			// Make text labels
+			labels = new TextLabel[unstablelines.Count];
+			int index = 0;
+			foreach(Linedef l in unstablelines)
+			{
+				Vector2D center = l.GetCenterPoint();
+				labels[index] = new TextLabel(12);
+				labels[index].Rectangle = new RectangleF(center.x, center.y, 0f, 0f);
+				labels[index].AlignX = TextAlignmentX.Center;
+				labels[index].AlignY = TextAlignmentY.Middle;
+				labels[index].Color = General.Colors.Highlight;
+				labels[index].Backcolor = General.Colors.Background;
+				labels[index].Scale = 14f;
+				labels[index].TransformCoords = true;
+				labels[index].Text = l.Length.ToString("0");
+				index++;
+			}
+			
 			Cursor.Current = Cursors.Default;
 		}
-		
+
 		// This moves the selected geometry relatively
 		// Returns true when geometry has actually moved
 		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapnearest)
@@ -243,6 +266,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 					// Next
 					i++;
+				}
+
+				// Update labels
+				int index = 0;
+				foreach(Linedef l in unstablelines)
+				{
+					l.UpdateCache();
+					Vector2D center = l.GetCenterPoint();
+					labels[index].Rectangle = new RectangleF(center.x, center.y, 0f, 0f);
+					labels[index].Text = l.Length.ToString("0");
+					index++;
 				}
 
 				// Moved

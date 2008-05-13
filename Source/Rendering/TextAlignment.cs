@@ -21,19 +21,36 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Windows.Forms;
 using System.IO;
-using CodeImp.DoomBuilder.Map;
 using System.Reflection;
-using System.Diagnostics;
+using System.Drawing;
+using System.ComponentModel;
+using CodeImp.DoomBuilder.Map;
+using SlimDX.Direct3D9;
+using SlimDX;
+using CodeImp.DoomBuilder.Geometry;
+using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.IO
+namespace CodeImp.DoomBuilder.Rendering
 {
-	public interface IMapSetIO
+	// This enumeration defines horizontal alignment
+	public enum TextAlignmentX : int
 	{
-		int MaxSidedefs { get; }
-		int VertexDecimals { get; }
-		string DecimalsFormat { get; }
+		Left = 0,
+		Center = 1,
+		Right = 2
+	}
+
+	// This enumeration defines vertical alignment
+	public enum TextAlignmentY : int
+	{
+		Top = 0,
+		Middle = 1,
+		Bottom = 2
 	}
 }

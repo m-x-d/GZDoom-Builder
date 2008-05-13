@@ -73,7 +73,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderRectangle(RectangleF rect, float bordersize, PixelColor c, bool transformrect);
 		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect);
 		void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords);
-		void RenderText(string text, Vector2D pos, PixelColor c, bool transformpos);
-		void RenderTextCentered(string text, Vector2D pos, PixelColor c, bool transformpos);
+		void RenderText(TextLabel text);
 	}
 }
