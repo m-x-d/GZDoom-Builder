@@ -146,9 +146,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Redraw overlay
 			if(renderer.StartOverlay(true))
 			{
-				foreach(TextLabel l in labels)
+				foreach(LineLengthLabel l in labels)
 				{
-					renderer.RenderText(l);
+					renderer.RenderText(l.TextLabel);
 				}
 				renderer.Finish();
 			}
