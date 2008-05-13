@@ -76,20 +76,34 @@ namespace CodeImp.DoomBuilder.Plugins
 			{
 				// Load plugin from this file
 				General.MainWindow.DisplayStatus("Loading plugin '" + Path.GetFileName(fn) + "'...");
-				p = new Plugin(fn);
-				if(!p.IsDisposed) this.plugins.Add(p);
-				
-				// For all classes that inherit from EditMode
-				editclasses = p.FindClasses(typeof(EditMode));
-				foreach(Type t in editclasses)
+				try
 				{
-					// For all defined EditMode attributes
-					emattrs = (EditModeAttribute[])t.GetCustomAttributes(typeof(EditModeAttribute), true);
-					foreach(EditModeAttribute a in emattrs)
+					p = new Plugin(fn);
+				}
+				catch(Exception)
+				{
+					General.WriteLogLine("WARNING: Plugin file '" + Path.GetFileName(fn) + "' was not loaded.");
+					p = null;
+				}
+
+				// Continue if no errors
+				if((p != null) && (!p.IsDisposed))
+				{
+					// Add to plugins
+					this.plugins.Add(p);
+
+					// For all classes that inherit from EditMode
+					editclasses = p.FindClasses(typeof(EditMode));
+					foreach(Type t in editclasses)
 					{
-						// Make edit mode information
-						editmodeinfo = new EditModeInfo(p, t, a);
-						editmodes.Add(editmodeinfo);
+						// For all defined EditMode attributes
+						emattrs = (EditModeAttribute[])t.GetCustomAttributes(typeof(EditModeAttribute), true);
+						foreach(EditModeAttribute a in emattrs)
+						{
+							// Make edit mode information
+							editmodeinfo = new EditModeInfo(p, t, a);
+							editmodes.Add(editmodeinfo);
+						}
 					}
 				}
 			}

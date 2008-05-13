@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Make button info
 			if((attr.ButtonImage != null) && (attr.ButtonDesc != null))
 			{
-				buttonimagestream = plugin.FindResource(attr.ButtonImage);
+				buttonimagestream = plugin.GetResourceStream(attr.ButtonImage);
 				if(buttonimagestream != null)
 				{
 					buttonimage = Image.FromStream(buttonimagestream);

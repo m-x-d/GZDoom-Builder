@@ -29,7 +29,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Plugins
 {
-	internal class Plugin
+	internal class Plugin : IDisposable
 	{
 		#region ================== Constants
 
@@ -39,6 +39,9 @@ namespace CodeImp.DoomBuilder.Plugins
 
 		// The plugin assembly
 		private Assembly asm;
+		
+		// The plug
+		private Plug plug;
 		
 		// Unique name used to refer to this assembly
 		private string name;
@@ -51,6 +54,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		#region ================== Properties
 
 		public Assembly Assembly { get { return asm; } }
+		public Plug Plug { get { return plug; } }
 		public string Name { get { return name; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
@@ -67,6 +71,29 @@ namespace CodeImp.DoomBuilder.Plugins
 			
 			// Load assembly
 			asm = Assembly.LoadFile(filename);
+
+			// Find the class that inherits from Plugin
+			Type t = FindSingleClass(typeof(Plug));
+			if(t != null)
+			{
+				// Are the multiple plug classes?
+				if(FindClasses(typeof(Plug)).Length > 1)
+				{
+					// Show a warning
+					General.WriteLogLine("WARNING: Plugin '" + name + "' has more than one plug!");
+				}
+				
+				// Make plug instance
+				plug = CreateObject<Plug>(t);
+				plug.Plugin = this;
+				plug.Initialize();
+			}
+			else
+			{
+				// How can we plug something in without a plug?
+				General.WriteLogLine("ERROR: Could not load plugin '" + name + "', plugin is missing the plug!");
+				throw new Exception();
+			}
 			
 			// Load actions
 			General.Actions.LoadActions(asm);
@@ -94,7 +121,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		#region ================== Methods
 
 		// This creates a stream to read a resource or returns null when not found
-		public Stream FindResource(string resourcename)
+		public Stream GetResourceStream(string resourcename)
 		{
 			string[] resnames;
 			
