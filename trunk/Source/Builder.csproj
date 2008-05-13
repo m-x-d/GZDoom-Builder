@@ -315,6 +315,7 @@
     <Compile Include="Map\SidedefPart.cs" />
     <Compile Include="Map\Thing.cs" />
     <Compile Include="Map\Vertex.cs" />
+    <Compile Include="Plugins\Plug.cs" />
     <Compile Include="Plugins\Plugin.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
