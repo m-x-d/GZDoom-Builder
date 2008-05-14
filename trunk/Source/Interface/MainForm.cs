@@ -933,6 +933,19 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Menus
 
+		// This adds a menu to the menus bar
+		public void AddMenu(ToolStripMenuItem menu)
+		{
+			// Insert the menu before the Tools menu
+			menumain.Items.Insert(menumain.Items.IndexOf(menutools), menu);
+		}
+
+		// This removes a menu to the menus bar
+		public void RemoveMenu(ToolStripMenuItem menu)
+		{
+			menumain.Items.Remove(menu);
+		}
+
 		// Public method to apply shortcut keys
 		internal void ApplyShortcutKeys()
 		{

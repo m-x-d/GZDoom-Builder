@@ -266,6 +266,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			font = new TextFont();
 			fonttexture = new ResourceImage("Font.png");
 			fonttexture.LoadImage();
+			fonttexture.MipMapLevels = 2;
 			fonttexture.CreateTexture();
 			
 			// Initialize settings

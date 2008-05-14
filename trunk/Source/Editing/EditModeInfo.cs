@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private Plugin plugin;
 		private Type type;
 		private bool configspecific;
+		private bool isvolatile;
 		
 		// Mode switching
 		private BeginActionAttribute switchactionattr = null;
@@ -65,7 +66,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public Image ButtonImage { get { return buttonimage; } }
 		public string ButtonDesc { get { return buttondesc; } }
 		public bool ConfigSpecific { get { return configspecific; } }
-
+		public bool Volatile { get { return isvolatile; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -77,12 +79,13 @@ namespace CodeImp.DoomBuilder.Editing
 			this.plugin = plugin;
 			this.type = type;
 			this.configspecific = attr.ConfigSpecific;
+			this.isvolatile = attr.Volatile;
 			
 			// Make switch action info
 			if((attr.SwitchAction != null) && (attr.SwitchAction.Length > 0))
 			{
 				switchactionattr = new BeginActionAttribute(attr.SwitchAction);
-				switchactiondel = new ActionDelegate(SwitchToMode);
+				switchactiondel = new ActionDelegate(UserSwitchToMode);
 
 				// Bind switch action
 				General.Actions.BindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
@@ -119,6 +122,27 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 
 		#region ================== Methods
+
+		// This switches to the mode by user command
+		// (when user presses shortcut key)
+		public void UserSwitchToMode()
+		{
+			EditMode newmode;
+
+			// Only when a map is opened
+			if(General.Map != null)
+			{
+				// Not switching from volatile mode to volatile mode?
+				if((General.Map.Mode == null) || !General.Map.Mode.Attributes.Volatile || !this.isvolatile)
+				{
+					// Create instance
+					newmode = plugin.CreateObject<EditMode>(type);
+
+					// Switch mode
+					General.Map.ChangeMode(newmode);
+				}
+			}
+		}
 
 		// This switches to the mode
 		public void SwitchToMode()

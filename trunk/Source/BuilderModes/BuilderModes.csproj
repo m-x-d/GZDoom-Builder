@@ -38,6 +38,12 @@
     <Compile Include="ClassicModes\DragGeometryMode.cs" />
     <Compile Include="ClassicModes\DrawGeometryMode.cs" />
     <Compile Include="General\BuilderPlug.cs" />
+    <Compile Include="Interface\MenusForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\MenusForm.Designer.cs">
+      <DependentUpon>MenusForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Testing\TriangulatorMode.cs" />
     <Compile Include="ClassicModes\DragThingsMode.cs" />
     <Compile Include="General\LineLengthLabel.cs" />
@@ -93,6 +99,10 @@
     <EmbeddedResource Include="Resources\WAuthor.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\MenusForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MenusForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\VisualMode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

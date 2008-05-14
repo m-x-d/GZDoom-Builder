@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public abstract class DragGeometryMode : ClassicMode
 	{
@@ -87,6 +87,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		// Just keep the base mode button checked
 		public override string EditModeButtonName { get { return basemode.GetType().Name; } }
+
+		internal EditMode BaseMode { get { return basemode; } }
 		
 		#endregion
 
@@ -300,11 +302,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void Disengage()
 		{
 			base.Disengage();
-			Cursor.Current = Cursors.AppStarting;
 			
 			// When not cancelled
 			if(!cancelled)
 			{
+				Cursor.Current = Cursors.AppStarting;
+				
 				// Move geometry back to original position
 				MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
 
@@ -323,15 +326,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Update cached values
 				General.Map.Map.Update();
 
-				// Map is changed
+				// Done
+				Cursor.Current = Cursors.Default;
 				General.Map.IsChanged = true;
 			}
 
 			// Hide highlight info
 			General.Interface.HideInfo();
-
-			// Done
-			Cursor.Current = Cursors.Default;
 		}
 
 		// This checks if the view offset/zoom changed and updates the check

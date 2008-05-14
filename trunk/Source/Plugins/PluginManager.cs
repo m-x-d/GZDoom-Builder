@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				{
 					p = new Plugin(fn);
 				}
-				catch(Exception)
+				catch(InvalidProgramException)
 				{
 					General.WriteLogLine("WARNING: Plugin file '" + Path.GetFileName(fn) + "' was not loaded.");
 					p = null;
@@ -185,6 +185,20 @@ namespace CodeImp.DoomBuilder.Plugins
 
 			// Nothing found
 			return null;
+		}
+
+		// This calls ReloadResources on all plugins
+		public void ReloadResources()
+		{
+			foreach(Plugin p in plugins)
+				p.Plug.ReloadResources();
+		}
+
+		// This calls ModeChanges on all plugins
+		public void ModeChanges(EditMode oldmode, EditMode newmode)
+		{
+			foreach(Plugin p in plugins)
+				p.Plug.ModeChanges(oldmode, newmode);
 		}
 		
 		#endregion

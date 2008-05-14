@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	// No action or button for this mode, it is automatic.
 	// The EditMode attribute does not have to be specified unless the

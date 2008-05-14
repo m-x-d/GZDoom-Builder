@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			{
 				// How can we plug something in without a plug?
 				General.WriteLogLine("ERROR: Could not load plugin '" + name + "', plugin is missing the plug!");
-				throw new Exception();
+				throw new InvalidProgramException();
 			}
 			
 			// Load actions
