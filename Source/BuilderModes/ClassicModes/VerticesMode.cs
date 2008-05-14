@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(SwitchAction = "verticesmode",	// Action name used to switch to this mode
 			  ButtonDesc = "Vertices Mode",		// Description on the button in toolbar/menu

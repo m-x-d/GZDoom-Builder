@@ -68,5 +68,7 @@ namespace CodeImp.DoomBuilder.Interface
 		void BreakExclusiveMouseInput();
 		void ResumeExclusiveMouseInput();
 		bool CheckActionActive(Assembly assembly, string actionname);
+		void AddMenu(ToolStripMenuItem menu);
+		void RemoveMenu(ToolStripMenuItem menu);
 	}
 }

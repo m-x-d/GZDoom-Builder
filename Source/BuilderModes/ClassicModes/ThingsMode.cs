@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(SwitchAction = "thingsmode",		// Action name used to switch to this mode
 			  ButtonDesc = "Things Mode",		// Description on the button in toolbar/menu

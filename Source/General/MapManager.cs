@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder
 		private WAD tempwad;
 		private GridSetup grid;
 		private UndoManager undoredo;
+		private bool cancelmodechange;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -104,6 +105,7 @@ namespace CodeImp.DoomBuilder
 		public GridSetup Grid { get { return grid; } }
 		public UndoManager UndoRedo { get { return undoredo; } }
 		public IMapSetIO FormatInterface { get { return io; } }
+		public bool CancelModeChange { get { return cancelmodechange; } set { cancelmodechange |= value; } }
 
 		#endregion
 
@@ -835,15 +837,33 @@ namespace CodeImp.DoomBuilder
 		{
 			EditMode oldmode = mode;
 			newmode = nextmode;
+			cancelmodechange = false;
 			
 			// Log info
 			if(newmode != null)
 				General.WriteLogLine("Switching edit mode to " + newmode.GetType().Name + "...");
 			else
 				General.WriteLogLine("Stopping edit mode...");
+			
+			// Let the plugins know beforehand
+			General.Plugins.ModeChanges(oldmode, newmode);
 
+			// Change cancelled?
+			if(cancelmodechange)
+			{
+				General.WriteLogLine("Edit mode change cancelled.");
+				return;
+			}
+			
 			// Disenagage old mode
 			if(oldmode != null) oldmode.Disengage();
+
+			// Change cancelled?
+			if(cancelmodechange)
+			{
+				General.WriteLogLine("Edit mode change cancelled.");
+				return;
+			}
 
 			// Apply new mode
 			mode = newmode;
@@ -941,6 +961,9 @@ namespace CodeImp.DoomBuilder
 
 			// Re-link the background image
 			grid.LinkBackground();
+			
+			// Inform all plugins that the resource are reloaded
+			General.Plugins.ReloadResources();
 			
 			// Reset status
 			General.MainWindow.DisplayStatus(oldstatus);

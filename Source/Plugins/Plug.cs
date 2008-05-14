@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -99,6 +100,22 @@ namespace CodeImp.DoomBuilder.Plugins
 		public Stream GetResourceStream(string resourcename)
 		{
 			return plugin.GetResourceStream(resourcename);
+		}
+
+		/// <summary>
+		/// This is called by the Doom Builder core when the user chose to reload the resources.
+		/// </summary>
+		public virtual void ReloadResources()
+		{
+		}
+
+		/// <summary>
+		/// This is called by the Doom Builder core when the editing mode changes.
+		/// </summary>
+		/// <param name="oldmode">The previous editing mode</param>
+		/// <param name="newmode">The new editing mode</param>
+		public virtual void ModeChanges(EditMode oldmode, EditMode newmode)
+		{
 		}
 		
 		#endregion

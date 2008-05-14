@@ -34,7 +34,7 @@ using System.Drawing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(SwitchAction = "sectorsmode",		// Action name used to switch to this mode
 			  ButtonDesc = "Sectors Mode",		// Description on the button in toolbar/menu

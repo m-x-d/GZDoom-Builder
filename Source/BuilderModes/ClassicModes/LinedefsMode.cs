@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(SwitchAction = "linedefsmode",	// Action name used to switch to this mode
 			  ButtonDesc = "Linedefs Mode",		// Description on the button in toolbar/menu

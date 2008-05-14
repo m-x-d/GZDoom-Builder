@@ -35,7 +35,7 @@ using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(SwitchAction = "drawlinesmode", Volatile = true)]
 
@@ -81,6 +81,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		// Just keep the base mode button checked
 		public override string EditModeButtonName { get { return basemode.GetType().Name; } }
+
+		internal EditMode BaseMode { get { return basemode; } }
 
 		#endregion
 

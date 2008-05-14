@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.Data
 		private PixelColorBlock pixeldata;
 		
 		// Direct3D texture
+		private int mipmaplevels = 0;	// 0 creates the full chain
 		private Texture texture;
 
 		// Disposing
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder.Data
 		internal bool Temporary { get { return temporary; } set { temporary = value; } }
 		internal int LoadState { get { return loadstate; } set { loadstate = value; } }
 		internal LinkedListNode<ImageData> LoadingTicket { get { return loadingticket; } set { loadingticket = value; } }
+		public int MipMapLevels { get { return mipmaplevels; } set { mipmaplevels = value; } }
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
 		public float ScaledWidth { get { return scaledwidth; } }
@@ -214,7 +216,7 @@ namespace CodeImp.DoomBuilder.Data
 					memstream = new MemoryStream();
 					bitmap.Save(memstream, ImageFormat.Bmp);
 					memstream.Seek(0, SeekOrigin.Begin);
-					texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length, bitmap.Size.Width, bitmap.Size.Height, 0,
+					texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length, bitmap.Size.Width, bitmap.Size.Height, mipmaplevels,
 						Usage.None, Format.Unknown, Pool.Managed, Filter.Box, Filter.Box, 0);
 					memstream.Dispose();
 				}
