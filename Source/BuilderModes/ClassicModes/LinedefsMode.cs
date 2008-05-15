@@ -393,6 +393,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
+		[BeginAction("curvelinesmode")]
+		public void CurveLinedefs()
+		{
+			// No selected lines?
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if(selected.Count == 0)
+			{
+				// Anything highlighted?
+				if(highlighted != null)
+				{
+					// Select the highlighted item
+					highlighted.Selected = true;
+					selected.Add(highlighted);
+				}
+			}
+
+			// Any selected lines?
+			if(selected.Count > 0)
+			{
+				// Go into curve linedefs mode
+				General.Map.ChangeMode(new CurveLinedefsMode(new LinedefsMode()));
+			}
+		}
+		
 		[BeginAction("fliplinedefs")]
 		public void FlipLinedefs()
 		{

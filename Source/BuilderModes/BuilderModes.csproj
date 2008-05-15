@@ -33,11 +33,18 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassicModes\CurveLinedefsMode.cs" />
     <Compile Include="ClassicModes\DragLinedefsMode.cs" />
     <Compile Include="ClassicModes\DragSectorsMode.cs" />
     <Compile Include="ClassicModes\DragGeometryMode.cs" />
     <Compile Include="ClassicModes\DrawGeometryMode.cs" />
     <Compile Include="General\BuilderPlug.cs" />
+    <Compile Include="Interface\CurveLinedefsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\CurveLinedefsForm.Designer.cs">
+      <DependentUpon>CurveLinedefsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\MenusForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,13 +77,6 @@
     <Compile Include="VisualModes\VisualUpper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Builder.csproj">
-      <Project>{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}</Project>
-      <Name>Builder</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\Actions.cfg" />
   </ItemGroup>
   <ItemGroup>
@@ -99,11 +99,21 @@
     <EmbeddedResource Include="Resources\WAuthor.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\CurveLinedefsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CurveLinedefsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\MenusForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MenusForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\VisualMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Builder.csproj">
+      <Project>{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}</Project>
+      <Name>Builder</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
