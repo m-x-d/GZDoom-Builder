@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEndEdit()
 		{
 			// Anything selected?
-			ICollection<Thing> selected = General.Map.Map.GetThingsSelection(true);
+			ICollection<Thing> selected = General.Map.Map.GetSelectedThings(true);
 			if(selected.Count > 0)
 			{
 				// Show thing edit dialog
