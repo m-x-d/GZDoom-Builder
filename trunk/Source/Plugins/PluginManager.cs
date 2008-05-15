@@ -191,14 +191,14 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void ReloadResources()
 		{
 			foreach(Plugin p in plugins)
-				p.Plug.ReloadResources();
+				p.Plug.OnReloadResources();
 		}
 
 		// This calls ModeChanges on all plugins
 		public void ModeChanges(EditMode oldmode, EditMode newmode)
 		{
 			foreach(Plugin p in plugins)
-				p.Plug.ModeChanges(oldmode, newmode);
+				p.Plug.OnModeChange(oldmode, newmode);
 		}
 		
 		#endregion

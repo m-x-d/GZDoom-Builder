@@ -92,15 +92,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// Mode engages
-		public override void Engage()
+		public override void OnEngage()
 		{
-			base.Engage();
+			base.OnEngage();
 		}
 		
 		// Disenagaging
-		public override void Disengage()
+		public override void OnDisengage()
 		{
-			base.Disengage();
+			base.OnDisengage();
 			
 			// When not cancelled
 			if(!cancelled)
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This redraws the display
-		public override void RedrawDisplay()
+		public override void OnRedrawDisplay()
 		{
 			bool viewchanged = CheckViewChanged();
 			

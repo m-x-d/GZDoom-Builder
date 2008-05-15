@@ -86,24 +86,24 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Methods
 
 		// Cancel mode
-		public override void Cancel()
+		public override void OnCancel()
 		{
-			base.Cancel();
+			base.OnCancel();
 
 			// Return to this mode
 			General.Map.ChangeMode(new SectorsMode());
 		}
 
 		// Mode engages
-		public override void Engage()
+		public override void OnEngage()
 		{
-			base.Engage();
+			base.OnEngage();
 		}
 
 		// Mode disengages
-		public override void Disengage()
+		public override void OnDisengage()
 		{
-			base.Disengage();
+			base.OnDisengage();
 
 			// Check which mode we are switching to
 			if(General.Map.NewMode is VerticesMode)
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This redraws the display
-		public unsafe override void RedrawDisplay()
+		public unsafe override void OnRedrawDisplay()
 		{
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
@@ -178,9 +178,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// Mouse moves
-		public override void MouseMove(MouseEventArgs e)
+		public override void OnMouseMove(MouseEventArgs e)
 		{
-			base.MouseMove(e);
+			base.OnMouseMove(e);
 
 			// Find the nearest linedef within highlight range
 			Linedef l = General.Map.Map.NearestLinedef(mousemappos);
@@ -218,18 +218,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// Mouse leaves
-		public override void MouseLeave(EventArgs e)
+		public override void OnMouseLeave(EventArgs e)
 		{
-			base.MouseLeave(e);
+			base.OnMouseLeave(e);
 
 			// Highlight nothing
 			Highlight(null);
 		}
 
 		// Mouse button pressed
-		public override void MouseDown(MouseEventArgs e)
+		public override void OnMouseDown(MouseEventArgs e)
 		{
-			base.MouseDown(e);
+			base.OnMouseDown(e);
 			bool front, back;
 
 			// Edit button is used?
@@ -262,12 +262,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// Mouse released
-		public override void MouseUp(MouseEventArgs e)
+		public override void OnMouseUp(MouseEventArgs e)
 		{
 			ICollection<Sector> selected;
 			TriangleList triangles;
 			
-			base.MouseUp(e);
+			base.OnMouseUp(e);
 			
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			for(int a = 0; a < 6; a++)
 			{
-				RedrawDisplay();
+				OnRedrawDisplay();
 				Thread.Sleep(20);
 
 				// Start with a clear display
@@ -386,7 +386,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			for(int a = 0; a < 6; a++)
 			{
-				RedrawDisplay();
+				OnRedrawDisplay();
 				Thread.Sleep(20);
 				Application.DoEvents();
 				
@@ -418,7 +418,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			
 			for(int a = 0; a < 5; a++)
 			{
-				RedrawDisplay();
+				OnRedrawDisplay();
 				Thread.Sleep(10);
 				
 				// Start with a clear display

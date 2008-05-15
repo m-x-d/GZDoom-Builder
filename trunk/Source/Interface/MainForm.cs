@@ -627,7 +627,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			if((General.Map != null) && (General.Map.Mode != null))
 			{
-				General.Map.Mode.RedrawDisplay();
+				General.Map.Mode.OnRedrawDisplay();
 			}
 			else
 			{
@@ -642,7 +642,7 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				if(General.Map.Mode != null)
 				{
-					if(!displayresized) General.Map.Mode.RefreshDisplay();
+					if(!displayresized) General.Map.Mode.OnRefreshDisplay();
 				}
 				else
 				{
@@ -690,10 +690,10 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// Mouse click
-		private void display_MouseClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseClick(e); }
+		private void display_MouseClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.OnMouseClick(e); }
 
 		// Mouse doubleclick
-		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseDoubleClick(e); }
+		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.OnMouseDoubleClick(e); }
 
 		// Mouse down
 		private void display_MouseDown(object sender, MouseEventArgs e)
@@ -714,27 +714,27 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Actions.KeyPressed(key);
 			
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseDown(e);
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.OnMouseDown(e);
 		}
 
 		// Mouse enters
 		private void display_MouseEnter(object sender, EventArgs e)
 		{
 			mouseinside = true;
-			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.MouseEnter(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.OnMouseEnter(e);
 		}
 
 		// Mouse leaves
 		private void display_MouseLeave(object sender, EventArgs e)
 		{
 			mouseinside = false;
-			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.MouseLeave(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.OnMouseLeave(e);
 		}
 
 		// Mouse moves
 		private void display_MouseMove(object sender, MouseEventArgs e)
 		{
-			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.MouseMove(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Map.Mode != null)) General.Map.Mode.OnMouseMove(e);
 		}
 
 		// Mouse up
@@ -756,7 +756,7 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Actions.KeyReleased(key);
 
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.MouseUp(e);
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.OnMouseUp(e);
 		}
 		
 		#endregion
@@ -905,7 +905,7 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Actions.KeyPressed((int)e.KeyData);
 
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.KeyDown(e);
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.OnKeyDown(e);
 		}
 
 		// When a key is released
@@ -926,7 +926,7 @@ namespace CodeImp.DoomBuilder.Interface
 			General.Actions.KeyReleased((int)e.KeyData);
 
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.KeyUp(e);
+			if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.OnKeyUp(e);
 		}
 
 		#endregion
@@ -1348,12 +1348,12 @@ namespace CodeImp.DoomBuilder.Interface
 				// Process mouse input
 				deltamouse = mouseinput.Process();
 				if((General.Map != null) && (General.Map.Mode != null))
-					General.Map.Mode.MouseInput(deltamouse);
+					General.Map.Mode.OnMouseInput(deltamouse);
 			}
 			
 			// Process signal
 			if((General.Map != null) && (General.Map.Mode != null))
-				General.Map.Mode.Process();
+				General.Map.Mode.OnProcess();
 		}
 
 		#endregion

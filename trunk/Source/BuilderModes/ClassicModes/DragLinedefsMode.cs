@@ -101,13 +101,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// Mode engages
-		public override void Engage()
+		public override void OnEngage()
 		{
-			base.Engage();
+			base.OnEngage();
 		}
 		
 		// Disenagaging
-		public override void Disengage()
+		public override void OnDisengage()
 		{
 			// Select vertices from lines selection
 			General.Map.Map.ClearSelectedVertices();
@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Vertex v in verts) v.Selected = true;
 
 			// Perform normal disengage
-			base.Disengage();
+			base.OnDisengage();
 
 			// Clear vertex selection
 			General.Map.Map.ClearSelectedVertices();
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This redraws the display
-		public override void RedrawDisplay()
+		public override void OnRedrawDisplay()
 		{
 			bool viewchanged = CheckViewChanged();
 			

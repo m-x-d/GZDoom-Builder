@@ -101,24 +101,24 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Methods
 
 		// Cancel mode
-		public override void Cancel()
+		public override void OnCancel()
 		{
-			base.Cancel();
+			base.OnCancel();
 
 			// Return to this mode
 			General.Map.ChangeMode(new WAuthorMode());
 		}
 
 		// Mode engages
-		public override void Engage()
+		public override void OnEngage()
 		{
-			base.Engage();
+			base.OnEngage();
 		}
 
 		// Mode disengages
-		public override void Disengage()
+		public override void OnDisengage()
 		{
-			base.Disengage();
+			base.OnDisengage();
 
 			// Clear selected vertices
 			General.Map.Map.ClearAllSelected();
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This redraws the display
-		public unsafe override void RedrawDisplay()
+		public unsafe override void OnRedrawDisplay()
 		{
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
@@ -281,9 +281,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// Mouse moves
-		public override void MouseMove(MouseEventArgs e)
+		public override void OnMouseMove(MouseEventArgs e)
 		{
-			base.MouseMove(e);
+			base.OnMouseMove(e);
 
 			// Not holding any buttons?
 			if(e.Button == MouseButtons.None)
@@ -356,33 +356,33 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// Maybe i'll finish this later, or not even include this mode at all, not sure yet.
 		
 		// Mouse leaves
-		public override void MouseLeave(EventArgs e)
+		public override void OnMouseLeave(EventArgs e)
 		{
-			base.MouseLeave(e);
+			base.OnMouseLeave(e);
 
 			// Highlight nothing
 			Highlight(null);
 		}
 
 		// Mouse button pressed
-		public override void MouseDown(MouseEventArgs e)
+		public override void OnMouseDown(MouseEventArgs e)
 		{
-			base.MouseDown(e);
+			base.OnMouseDown(e);
 		}
 
 		// Mouse released
-		public override void MouseUp(MouseEventArgs e)
+		public override void OnMouseUp(MouseEventArgs e)
 		{
-			base.MouseUp(e);
+			base.OnMouseUp(e);
 
 			// This shows a popup menu
 			tools.LinedefPopup.Show(Cursor.Position);
 		}
 		
 		// Mouse wants to drag
-		protected override void DragStart(MouseEventArgs e)
+		protected override void OnDragStart(MouseEventArgs e)
 		{
-			base.DragStart(e);
+			base.OnDragStart(e);
 		}
 		
 		#endregion

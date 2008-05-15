@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				// Make plug instance
 				plug = CreateObject<Plug>(t);
 				plug.Plugin = this;
-				plug.Initialize();
+				plug.OnInitialize();
 			}
 			else
 			{

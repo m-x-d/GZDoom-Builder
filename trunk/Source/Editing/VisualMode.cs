@@ -112,9 +112,9 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Start / Stop
 
 		// Mode is engaged
-		public override void Engage()
+		public override void OnEngage()
 		{
-			base.Engage();
+			base.OnEngage();
 			
 			// Find a 3D Mode thing
 			foreach(Thing t in General.Map.Map.Things)
@@ -136,9 +136,9 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Mode is disengaged
-		public override void Disengage()
+		public override void OnDisengage()
 		{
-			base.Disengage();
+			base.OnDisengage();
 
 			// Do we have a 3D Mode thing?
 			if(modething != null)
@@ -158,9 +158,9 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Input
 
 		// Mouse input
-		public override void MouseInput(Vector2D delta)
+		public override void OnMouseInput(Vector2D delta)
 		{
-			base.MouseInput(delta);
+			base.OnMouseInput(delta);
 
 			// Change camera angles with the mouse changes
 			camanglexy -= delta.x * ANGLE_FROM_MOUSE;
@@ -178,11 +178,11 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Key down
-		public override void KeyDown(KeyEventArgs e)
+		public override void OnKeyDown(KeyEventArgs e)
 		{
 			string[] actions;
 			
-			base.KeyDown(e);
+			base.OnKeyDown(e);
 			
 			/* WRONG
 			// Get the actions for this key
@@ -202,11 +202,11 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Key up
-		public override void KeyUp(KeyEventArgs e)
+		public override void OnKeyUp(KeyEventArgs e)
 		{
 			string[] actions;
 
-			base.KeyUp(e);
+			base.OnKeyUp(e);
 
 			/* WRONG
 			// Get the actions for this key
@@ -230,12 +230,12 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Processing
 
 		// Processing
-		public override void Process()
+		public override void OnProcess()
 		{
 			Vector3D camvec;
 			Vector3D camvecstrafe;
 			
-			base.Process();
+			base.OnProcess();
 			
 			// Calculate camera direction vectors
 			camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);

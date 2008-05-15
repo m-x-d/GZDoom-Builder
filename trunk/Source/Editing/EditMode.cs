@@ -147,14 +147,14 @@ namespace CodeImp.DoomBuilder.Editing
 		//
 		
 		// Mode engages
-		public virtual void Engage()
+		public virtual void OnEngage()
 		{
 			// Bind any methods
 			General.Actions.BindMethods(this);
 		}
 
 		// Mode disengages
-		public virtual void Disengage()
+		public virtual void OnDisengage()
 		{
 			// Unbind any methods
 			General.Actions.UnbindMethods(this);
@@ -162,27 +162,26 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This forces the mode to cancel and return to the "parent" mode
 		[BeginAction("cancelmode", BaseAction = true)]
-		public virtual void Cancel() { }
+		public virtual void OnCancel() { }
 		
-		// Optional interface methods
-		public virtual void MouseClick(MouseEventArgs e) { }
-		public virtual void MouseDoubleClick(MouseEventArgs e) { }
-		public virtual void MouseDown(MouseEventArgs e) { }
-		public virtual void MouseEnter(EventArgs e) { }
-		public virtual void MouseLeave(EventArgs e) { }
-		public virtual void MouseMove(MouseEventArgs e) { }
-		public virtual void MouseUp(MouseEventArgs e) { }
-		public virtual void KeyDown(KeyEventArgs e) { }
-		public virtual void KeyUp(KeyEventArgs e) { }
-		public virtual void MouseInput(Vector2D delta) { }
+		// Interface events
+		public virtual void OnMouseClick(MouseEventArgs e) { }
+		public virtual void OnMouseDoubleClick(MouseEventArgs e) { }
+		public virtual void OnMouseDown(MouseEventArgs e) { }
+		public virtual void OnMouseEnter(EventArgs e) { }
+		public virtual void OnMouseLeave(EventArgs e) { }
+		public virtual void OnMouseMove(MouseEventArgs e) { }
+		public virtual void OnMouseUp(MouseEventArgs e) { }
+		public virtual void OnKeyDown(KeyEventArgs e) { }
+		public virtual void OnKeyUp(KeyEventArgs e) { }
+		public virtual void OnMouseInput(Vector2D delta) { }
+		
+		// Rendering events
+		public virtual void OnRedrawDisplay() { }
+		public virtual void OnRefreshDisplay() { }
 
-		/// <summary>
-		/// NOTE: Do not call directly! Only for overriding. Call General.Interface.RedrawDisplay() instead.
-		/// </summary>
-		public virtual void RedrawDisplay() { }
-		public virtual void RefreshDisplay() { }
-
-		public virtual void Process() { }
+		// Processing events
+		public virtual void OnProcess() { }
 		
 		#endregion
 	}

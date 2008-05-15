@@ -99,24 +99,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Cancel mode
-		public override void Cancel()
+		public override void OnCancel()
 		{
-			base.Cancel();
+			base.OnCancel();
 
 			// Return to this mode
 			General.Map.ChangeMode(new SectorsMode());
 		}
 
 		// Mode engages
-		public override void Engage()
+		public override void OnEngage()
 		{
-			base.Engage();
+			base.OnEngage();
 		}
 
 		// Mode disengages
-		public override void Disengage()
+		public override void OnDisengage()
 		{
-			base.Disengage();
+			base.OnDisengage();
 
 			// Check which mode we are switching to
 			if(General.Map.NewMode is VerticesMode)
@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This redraws the display
-		public override void RedrawDisplay()
+		public override void OnRedrawDisplay()
 		{
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Selection
-		protected override void Select()
+		protected override void OnSelect()
 		{
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
@@ -240,11 +240,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				StartMultiSelection();
 			}
 
-			base.Select();
+			base.OnSelect();
 		}
 
 		// End selection
-		protected override void EndSelect()
+		protected override void OnEndSelect()
 		{
 			// Not stopping from multiselection?
 			if(!selecting)
@@ -263,11 +263,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			base.EndSelect();
+			base.OnEndSelect();
 		}
 
 		// Start editing
-		protected override void Edit()
+		protected override void OnEdit()
 		{
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
@@ -292,11 +292,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			base.Edit();
+			base.OnEdit();
 		}
 
 		// Done editing
-		protected override void EndEdit()
+		protected override void OnEndEdit()
 		{
 			// Anything selected?
 			ICollection<Sector> selected = General.Map.Map.GetSectorsSelection(true);
@@ -316,13 +316,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RedrawDisplay();
 			}
 
-			base.EndEdit();
+			base.OnEndEdit();
 		}
 		
 		// Mouse moves
-		public override void MouseMove(MouseEventArgs e)
+		public override void OnMouseMove(MouseEventArgs e)
 		{
-			base.MouseMove(e);
+			base.OnMouseMove(e);
 
 			// Not holding any buttons?
 			if(e.Button == MouseButtons.None)
@@ -371,18 +371,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Mouse leaves
-		public override void MouseLeave(EventArgs e)
+		public override void OnMouseLeave(EventArgs e)
 		{
-			base.MouseLeave(e);
+			base.OnMouseLeave(e);
 
 			// Highlight nothing
 			Highlight(null);
 		}
 
 		// Mouse wants to drag
-		protected override void DragStart(MouseEventArgs e)
+		protected override void OnDragStart(MouseEventArgs e)
 		{
-			base.DragStart(e);
+			base.OnDragStart(e);
 
 			// Edit button used?
 			if(General.Interface.CheckActionActive(null, "classicedit"))
@@ -405,7 +405,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This is called wheh selection ends
-		protected override void EndMultiSelection()
+		protected override void OnEndMultiSelection()
 		{
 			// Go for all lines
 			foreach(Linedef l in General.Map.Map.Linedefs)
@@ -442,15 +442,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Sector s in General.Map.Map.Sectors)
 				SelectSector(s, s.Selected);
 
-			base.EndMultiSelection();
+			base.OnEndMultiSelection();
 			if(renderer.StartOverlay(true)) renderer.Finish();
 			General.Interface.RedrawDisplay();
 		}
 
 		// This is called when the selection is updated
-		protected override void UpdateMultiSelection()
+		protected override void OnUpdateMultiSelection()
 		{
-			base.UpdateMultiSelection();
+			base.OnUpdateMultiSelection();
 
 			// Render selection
 			if(renderer.StartOverlay(true))
