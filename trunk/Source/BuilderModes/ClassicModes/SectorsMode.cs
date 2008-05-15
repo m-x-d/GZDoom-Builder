@@ -299,7 +299,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEndEdit()
 		{
 			// Anything selected?
-			ICollection<Sector> selected = General.Map.Map.GetSectorsSelection(true);
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 			if(selected.Count > 0)
 			{
 				// Show sector edit dialog

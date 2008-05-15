@@ -73,8 +73,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Vertex v in verts) v.Marked = true;
 			
 			// Get line collections
-			selectedlines = General.Map.Map.GetLinedefsSelection(true);
-			unselectedlines = General.Map.Map.GetLinedefsSelection(false);
+			selectedlines = General.Map.Map.GetSelectedLinedefs(true);
+			unselectedlines = General.Map.Map.GetSelectedLinedefs(false);
 
 			// Initialize
 			base.StartDrag(basemode, dragstartmappos);

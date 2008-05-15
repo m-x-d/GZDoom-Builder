@@ -404,8 +404,16 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sector s in sectors) s.Selected = false;
 		}
 
+		// Returns a collection of vertices that match a selected state
+		public ICollection<Vertex> GetSelectedVertices(bool selected)
+		{
+			List<Vertex> list = new List<Vertex>(things.Count >> 1);
+			foreach(Vertex v in vertices) if(v.Selected == selected) list.Add(v);
+			return list;
+		}
+
 		// Returns a collection of things that match a selected state
-		public ICollection<Thing> GetThingsSelection(bool selected)
+		public ICollection<Thing> GetSelectedThings(bool selected)
 		{
 			List<Thing> list = new List<Thing>(things.Count >> 1);
 			foreach(Thing t in things) if(t.Selected == selected) list.Add(t);
@@ -413,7 +421,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Returns a collection of linedefs that match a selected state
-		public ICollection<Linedef> GetLinedefsSelection(bool selected)
+		public ICollection<Linedef> GetSelectedLinedefs(bool selected)
 		{
 			List<Linedef> list = new List<Linedef>(linedefs.Count >> 1);
 			foreach(Linedef l in linedefs) if(l.Selected == selected) list.Add(l);
@@ -421,7 +429,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Returns a collection of sectors that match a selected state
-		public ICollection<Sector> GetSectorsSelection(bool selected)
+		public ICollection<Sector> GetSelectedSectors(bool selected)
 		{
 			List<Sector> list = new List<Sector>(sectors.Count >> 1);
 			foreach(Sector s in sectors) if(s.Selected == selected) list.Add(s);

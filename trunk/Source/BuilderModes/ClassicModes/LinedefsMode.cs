@@ -284,7 +284,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEndEdit()
 		{
 			// Anything selected?
-			ICollection<Linedef> selected = General.Map.Map.GetLinedefsSelection(true);
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
 			if(selected.Count > 0)
 			{
 				// Show line edit dialog
@@ -396,18 +396,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("fliplinedefs")]
 		public void FlipLinedefs()
 		{
-			// Go for all selected linedefs
-			General.Map.Map.ClearMarkedLinedefs(false);
-			General.Map.Map.MarkSelectedLinedefs(true, true);
-			ICollection<Linedef> selected = General.Map.Map.GetMarkedLinedefs(true);
-			foreach(Linedef l in selected)
+			// Any selected lines?
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if(selected.Count > 0)
 			{
-				l.FlipVertices();
-				l.FlipSidedefs();
-			}
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("Flip linedefs", UndoGroup.None, 0);
 
-			// Redraw
-			General.Interface.RedrawDisplay();
+				// Flip all selected linedefs
+				foreach(Linedef l in selected)
+				{
+					l.FlipVertices();
+					l.FlipSidedefs();
+				}
+
+				// Redraw
+				General.Interface.RedrawDisplay();
+			}
+		}
+
+		[BeginAction("flipsidedefs")]
+		public void FlipSidedefs()
+		{
+			// Any selected lines?
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if(selected.Count > 0)
+			{
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("Flip sidedefs", UndoGroup.None, 0);
+
+				// Flip sidedefs in all selected linedefs
+				foreach(Linedef l in selected)
+				{
+					l.FlipSidedefs();
+				}
+
+				// Redraw
+				General.Interface.RedrawDisplay();
+			}
 		}
 
 		#endregion

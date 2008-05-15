@@ -276,7 +276,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				if(General.Interface.CheckActionActive(null, "classicedit"))
 				{
 					// Anything selected?
-					selected = General.Map.Map.GetSectorsSelection(true);
+					selected = General.Map.Map.GetSelectedSectors(true);
 					if(selected.Count > 0)
 					{
 						// Remove highlight
