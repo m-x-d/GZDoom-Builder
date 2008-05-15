@@ -86,7 +86,6 @@ namespace CodeImp.DoomBuilder.Plugins
 				// Make plug instance
 				plug = CreateObject<Plug>(t);
 				plug.Plugin = this;
-				plug.OnInitialize();
 			}
 			else
 			{
@@ -97,6 +96,9 @@ namespace CodeImp.DoomBuilder.Plugins
 			
 			// Load actions
 			General.Actions.LoadActions(asm);
+			
+			// Plugin is now initialized
+			plug.OnInitialize();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

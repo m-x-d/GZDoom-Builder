@@ -256,7 +256,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemnewmap.Name = "itemnewmap";
 			this.itemnewmap.ShortcutKeyDisplayString = "";
 			this.itemnewmap.Size = new System.Drawing.Size(201, 22);
-			this.itemnewmap.Tag = "newmap";
+			this.itemnewmap.Tag = "builder_newmap";
 			this.itemnewmap.Text = "New Map";
 			this.itemnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemopenmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
 			this.itemopenmap.Name = "itemopenmap";
 			this.itemopenmap.Size = new System.Drawing.Size(201, 22);
-			this.itemopenmap.Tag = "openmap";
+			this.itemopenmap.Tag = "builder_openmap";
 			this.itemopenmap.Text = "Open Map...";
 			this.itemopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -273,7 +273,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemclosemap.Name = "itemclosemap";
 			this.itemclosemap.Size = new System.Drawing.Size(201, 22);
-			this.itemclosemap.Tag = "closemap";
+			this.itemclosemap.Tag = "builder_closemap";
 			this.itemclosemap.Text = "Close Map";
 			this.itemclosemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsavemap.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
 			this.itemsavemap.Name = "itemsavemap";
 			this.itemsavemap.Size = new System.Drawing.Size(201, 22);
-			this.itemsavemap.Tag = "savemap";
+			this.itemsavemap.Tag = "builder_savemap";
 			this.itemsavemap.Text = "Save Map";
 			this.itemsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -290,7 +290,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemsavemapas.Name = "itemsavemapas";
 			this.itemsavemapas.Size = new System.Drawing.Size(201, 22);
-			this.itemsavemapas.Tag = "savemapas";
+			this.itemsavemapas.Tag = "builder_savemapas";
 			this.itemsavemapas.Text = "Save Map As...";
 			this.itemsavemapas.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -298,7 +298,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemsavemapinto.Name = "itemsavemapinto";
 			this.itemsavemapinto.Size = new System.Drawing.Size(201, 22);
-			this.itemsavemapinto.Tag = "savemapinto";
+			this.itemsavemapinto.Tag = "builder_savemapinto";
 			this.itemsavemapinto.Text = "Save Map Into...";
 			this.itemsavemapinto.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -336,7 +336,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemundo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Undo;
 			this.itemundo.Name = "itemundo";
 			this.itemundo.Size = new System.Drawing.Size(165, 22);
-			this.itemundo.Tag = "undo";
+			this.itemundo.Tag = "builder_undo";
 			this.itemundo.Text = "Undo";
 			this.itemundo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -345,7 +345,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemredo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Redo;
 			this.itemredo.Name = "itemredo";
 			this.itemredo.Size = new System.Drawing.Size(165, 22);
-			this.itemredo.Tag = "redo";
+			this.itemredo.Tag = "builder_redo";
 			this.itemredo.Text = "Redo";
 			this.itemredo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -356,7 +356,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsnaptogrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid4;
 			this.itemsnaptogrid.Name = "itemsnaptogrid";
 			this.itemsnaptogrid.Size = new System.Drawing.Size(165, 22);
-			this.itemsnaptogrid.Tag = "togglesnap";
+			this.itemsnaptogrid.Tag = "builder_togglesnap";
 			this.itemsnaptogrid.Text = "Snap to Grid";
 			this.itemsnaptogrid.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -367,7 +367,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemautomerge.Image = global::CodeImp.DoomBuilder.Properties.Resources.mergegeometry2;
 			this.itemautomerge.Name = "itemautomerge";
 			this.itemautomerge.Size = new System.Drawing.Size(165, 22);
-			this.itemautomerge.Tag = "toggleautomerge";
+			this.itemautomerge.Tag = "builder_toggleautomerge";
 			this.itemautomerge.Text = "Merge Geometry";
 			this.itemautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -376,7 +376,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemmapoptions.Image = global::CodeImp.DoomBuilder.Properties.Resources.Properties;
 			this.itemmapoptions.Name = "itemmapoptions";
 			this.itemmapoptions.Size = new System.Drawing.Size(165, 22);
-			this.itemmapoptions.Tag = "mapoptions";
+			this.itemmapoptions.Tag = "builder_mapoptions";
 			this.itemmapoptions.Text = "Map Options....";
 			this.itemmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -395,7 +395,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.itemreloadresources.Name = "itemreloadresources";
 			this.itemreloadresources.Size = new System.Drawing.Size(197, 22);
-			this.itemreloadresources.Tag = "reloadresources";
+			this.itemreloadresources.Tag = "builder_reloadresources";
 			this.itemreloadresources.Text = "Reload Resources";
 			this.itemreloadresources.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -403,7 +403,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
 			this.configurationToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-			this.configurationToolStripMenuItem.Tag = "configuration";
+			this.configurationToolStripMenuItem.Tag = "builder_configuration";
 			this.configurationToolStripMenuItem.Text = "Game Configurations...";
 			this.configurationToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -411,7 +411,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
 			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
-			this.preferencesToolStripMenuItem.Tag = "preferences";
+			this.preferencesToolStripMenuItem.Tag = "builder_preferences";
 			this.preferencesToolStripMenuItem.Text = "Preferences...";
 			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -893,14 +893,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.display.Size = new System.Drawing.Size(839, 367);
 			this.display.TabIndex = 5;
 			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
-			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
-			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
-			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
-			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
-			this.display.Resize += new System.EventHandler(this.display_Resize);
-			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
 			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
+			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
+			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
+			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
+			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
+			this.display.Resize += new System.EventHandler(this.display_Resize);
 			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
+			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
 			// 
 			// processor
 			// 
@@ -924,14 +924,14 @@ namespace CodeImp.DoomBuilder.Interface
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Doom Builder";
 			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
-			this.Resize += new System.EventHandler(this.MainForm_Resize);
+			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Activated += new System.EventHandler(this.MainForm_Activated);
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
 			this.Move += new System.EventHandler(this.MainForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
+			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
 			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
-			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.menumain.ResumeLayout(false);
 			this.menumain.PerformLayout();
 			this.toolbar.ResumeLayout(false);

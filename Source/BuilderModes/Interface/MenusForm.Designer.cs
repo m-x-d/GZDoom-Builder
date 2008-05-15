@@ -30,15 +30,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			this.menustrip = new System.Windows.Forms.MenuStrip();
 			this.linedefsmenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.sectorsmenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.fliplinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.flipsidedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.curvelinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sectorsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.joinsectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingscwitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingsccwitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
@@ -68,38 +68,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.linedefsmenu.Text = "Linedefs";
 			this.linedefsmenu.Visible = false;
 			// 
-			// sectorsmenu
-			// 
-			this.sectorsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.joinsectorsitem,
-            this.mergesectorsitem,
-            this.toolStripMenuItem2});
-			this.sectorsmenu.Name = "sectorsmenu";
-			this.sectorsmenu.Size = new System.Drawing.Size(55, 20);
-			this.sectorsmenu.Text = "Sectors";
-			this.sectorsmenu.Visible = false;
-			// 
-			// thingsmenu
-			// 
-			this.thingsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.rotatethingscwitem,
-            this.rotatethingsccwitem});
-			this.thingsmenu.Name = "thingsmenu";
-			this.thingsmenu.Size = new System.Drawing.Size(50, 20);
-			this.thingsmenu.Text = "Things";
-			this.thingsmenu.Visible = false;
-			// 
 			// fliplinedefsitem
 			// 
 			this.fliplinedefsitem.Name = "fliplinedefsitem";
 			this.fliplinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.fliplinedefsitem.Tag = "buildermodes_fliplinedefs";
 			this.fliplinedefsitem.Text = "Flip Linedefs";
+			this.fliplinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// flipsidedefsitem
 			// 
 			this.flipsidedefsitem.Name = "flipsidedefsitem";
 			this.flipsidedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.flipsidedefsitem.Tag = "buildermodes_flipsidedefs";
 			this.flipsidedefsitem.Text = "Flip Sidedefs";
+			this.flipsidedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -111,6 +94,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.curvelinedefsitem.Name = "curvelinedefsitem";
 			this.curvelinedefsitem.Size = new System.Drawing.Size(169, 22);
 			this.curvelinedefsitem.Text = "Curve Linedefs...";
+			// 
+			// sectorsmenu
+			// 
+			this.sectorsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.joinsectorsitem,
+            this.mergesectorsitem,
+            this.toolStripMenuItem2});
+			this.sectorsmenu.Name = "sectorsmenu";
+			this.sectorsmenu.Size = new System.Drawing.Size(55, 20);
+			this.sectorsmenu.Text = "Sectors";
+			this.sectorsmenu.Visible = false;
 			// 
 			// joinsectorsitem
 			// 
@@ -128,6 +122,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(151, 6);
+			// 
+			// thingsmenu
+			// 
+			this.thingsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rotatethingscwitem,
+            this.rotatethingsccwitem});
+			this.thingsmenu.Name = "thingsmenu";
+			this.thingsmenu.Size = new System.Drawing.Size(50, 20);
+			this.thingsmenu.Text = "Things";
+			this.thingsmenu.Visible = false;
 			// 
 			// rotatethingscwitem
 			// 

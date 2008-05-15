@@ -113,6 +113,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else if(mode is ThingsMode) HideAllMenusExcept(thingsmenu);
 			else HideAllMenus();
 		}
+
+		// This invokes an action from control event
+		private void InvokeTaggedAction(object sender, EventArgs e)
+		{
+			General.Interface.InvokeTaggedAction(sender, e);
+		}
 		
 		#endregion
 	}

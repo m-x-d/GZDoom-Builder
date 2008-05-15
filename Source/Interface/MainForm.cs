@@ -153,13 +153,16 @@ namespace CodeImp.DoomBuilder.Interface
 		}
 		
 		// Generic event that invokes the tagged action
-		private void InvokeTaggedAction(object sender, EventArgs e)
+		public void InvokeTaggedAction(object sender, EventArgs e)
 		{
 			string asmname;
 			
 			this.Update();
-			asmname = General.ThisAssembly.GetName().Name.ToLowerInvariant();
-			General.Actions[asmname + "_" + (sender as ToolStripItem).Tag.ToString()].Begin();
+			//asmname = General.ThisAssembly.GetName().Name.ToLowerInvariant();
+			//General.Actions[asmname + "_" + (sender as ToolStripItem).Tag.ToString()].Begin();
+			//General.Actions[asmname + "_" + (sender as ToolStripItem).Tag.ToString()].End();
+			General.Actions[(sender as ToolStripItem).Tag.ToString()].Begin();
+			General.Actions[(sender as ToolStripItem).Tag.ToString()].End();
 			this.Update();
 		}
 
@@ -938,6 +941,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Insert the menu before the Tools menu
 			menumain.Items.Insert(menumain.Items.IndexOf(menutools), menu);
+			ApplyShortcutKeys(menu.DropDownItems);
 		}
 
 		// This removes a menu to the menus bar
