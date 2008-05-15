@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 		/// <summary>
-		/// This is called by the Doom Builder core when the user chose to reload the resources.
+		/// This is called when the user chose to reload the resources.
 		/// </summary>
 		public virtual void OnReloadResources()
 		{
@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		public virtual void OnMapReconfigure()
 		{
 		}
-		
+
 		#endregion
 	}
 }

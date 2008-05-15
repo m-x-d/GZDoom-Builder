@@ -1002,6 +1002,9 @@ namespace CodeImp.DoomBuilder
 
 				// Create required lumps if they don't exist yet
 				CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
+
+				// Let the plugins know
+				General.Plugins.MapReconfigure();
 				
 				// Reload resources
 				ReloadResources();
