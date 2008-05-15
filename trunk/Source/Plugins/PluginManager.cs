@@ -187,18 +187,36 @@ namespace CodeImp.DoomBuilder.Plugins
 			return null;
 		}
 
-		// This calls ReloadResources on all plugins
+		#endregion
+
+		#region ================== Events
+
+		// This calls OnReloadResources on all plugins
 		public void ReloadResources()
 		{
 			foreach(Plugin p in plugins)
 				p.Plug.OnReloadResources();
 		}
 
-		// This calls ModeChanges on all plugins
+		// This calls OnModeChange on all plugins
 		public void ModeChanges(EditMode oldmode, EditMode newmode)
 		{
 			foreach(Plugin p in plugins)
 				p.Plug.OnModeChange(oldmode, newmode);
+		}
+
+		// This calls OnProgramReconfigure on all plugins
+		public void ProgramReconfigure()
+		{
+			foreach(Plugin p in plugins)
+				p.Plug.OnProgramReconfigure();
+		}
+
+		// This calls OnMapReconfigure on all plugins
+		public void MapReconfigure()
+		{
+			foreach(Plugin p in plugins)
+				p.Plug.OnMapReconfigure();
 		}
 		
 		#endregion

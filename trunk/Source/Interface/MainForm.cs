@@ -1237,6 +1237,9 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Update interface
 				UpdateInterface();
+
+				// Let the plugins know
+				General.Plugins.ProgramReconfigure();
 				
 				// Reload resources if a map is open
 				if(General.Map != null) General.Map.ReloadResources();
@@ -1259,6 +1262,9 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Update shortcut keys in menus
 				ApplyShortcutKeys();
+				
+				// Let the plugins know
+				General.Plugins.ProgramReconfigure();
 
 				// Map opened?
 				if(General.Map != null)
