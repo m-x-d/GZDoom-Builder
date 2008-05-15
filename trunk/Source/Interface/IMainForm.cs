@@ -70,5 +70,6 @@ namespace CodeImp.DoomBuilder.Interface
 		bool CheckActionActive(Assembly assembly, string actionname);
 		void AddMenu(ToolStripMenuItem menu);
 		void RemoveMenu(ToolStripMenuItem menu);
+		void InvokeTaggedAction(object sender, EventArgs e);
 	}
 }

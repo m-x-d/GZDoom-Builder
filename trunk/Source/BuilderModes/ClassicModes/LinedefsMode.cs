@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -388,6 +389,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		#endregion
+
+		#region ================== Actions
+
+		[BeginAction("fliplinedefs")]
+		public void FlipLinedefs()
+		{
+			// Go for all selected linedefs
+			General.Map.Map.ClearMarkedLinedefs(false);
+			General.Map.Map.MarkSelectedLinedefs(true, true);
+			ICollection<Linedef> selected = General.Map.Map.GetMarkedLinedefs(true);
+			foreach(Linedef l in selected)
+			{
+				l.FlipVertices();
+				l.FlipSidedefs();
+			}
+
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+
 		#endregion
 	}
 }
