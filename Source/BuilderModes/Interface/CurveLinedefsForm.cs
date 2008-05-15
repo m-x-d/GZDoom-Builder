@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public int Vertices { get { return verticesbar.Value; } }
 		public float Distance { get { return (float)distancebar.Value; } }
-		public float Angle { get { return (float)anglebar.Value; } }
+		public float Angle { get { return Angle2D.DegToRad((float)anglebar.Value); } }
 		public bool FixedCurve { get { return circular.Checked; } }
 		public bool Backwards { get { return backwards.Checked; } }
 

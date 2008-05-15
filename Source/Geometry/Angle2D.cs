@@ -39,6 +39,18 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Methods
 
+		// This converts degrees to radians
+		public static float DegToRad(float deg)
+		{
+			return deg / PIDEG;
+		}
+
+		// This converts radians to degrees
+		public static float RadToDeg(float rad)
+		{
+			return rad * PIDEG;
+		}
+
 		// This normalizes an angle
 		public static float Normalized(float a)
 		{
