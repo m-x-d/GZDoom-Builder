@@ -856,7 +856,7 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Disenagage old mode
-			if(oldmode != null) oldmode.Disengage();
+			if(oldmode != null) oldmode.OnDisengage();
 
 			// Change cancelled?
 			if(cancelmodechange)
@@ -875,7 +875,7 @@ namespace CodeImp.DoomBuilder
 				General.MainWindow.CheckEditModeButton("");
 			
 			// Engage new mode
-			if(newmode != null) newmode.Engage();
+			if(newmode != null) newmode.OnEngage();
 
 			// Dispose old mode
 			if(oldmode != null) oldmode.Dispose();

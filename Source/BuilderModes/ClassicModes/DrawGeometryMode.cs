@@ -124,10 +124,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// Cancelled
-		public override void Cancel()
+		public override void OnCancel()
 		{
 			// Cancel base class
-			base.Cancel();
+			base.OnCancel();
 			
 			// Return to original mode
 			Type t = basemode.GetType();
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Disenagaging
-		public override void Disengage()
+		public override void OnDisengage()
 		{
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			MapSet map = General.Map.Map;
 			
-			base.Disengage();
+			base.OnDisengage();
 
 			Cursor.Current = Cursors.AppStarting;
 
@@ -548,7 +548,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This redraws the display
-		public override void RedrawDisplay()
+		public override void OnRedrawDisplay()
 		{
 			// Render lines
 			if(renderer.StartPlotter(true))
@@ -731,9 +731,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Mouse moving
-		public override void MouseMove(MouseEventArgs e)
+		public override void OnMouseMove(MouseEventArgs e)
 		{
-			base.MouseMove(e);
+			base.OnMouseMove(e);
 			Update();
 		}
 
@@ -789,17 +789,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// When a key is released
-		public override void KeyUp(KeyEventArgs e)
+		public override void OnKeyUp(KeyEventArgs e)
 		{
-			base.KeyUp(e);
+			base.OnKeyUp(e);
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
 			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
 		}
 
 		// When a key is pressed
-		public override void KeyDown(KeyEventArgs e)
+		public override void OnKeyDown(KeyEventArgs e)
 		{
-			base.KeyDown(e);
+			base.OnKeyDown(e);
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
 			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
 		}

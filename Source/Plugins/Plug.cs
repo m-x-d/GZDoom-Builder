@@ -84,13 +84,6 @@ namespace CodeImp.DoomBuilder.Plugins
 		#region ================== Methods
 
 		/// <summary>
-		/// This is called after the constructor to allow a plugin to initialize.
-		/// </summary>
-		public virtual void Initialize()
-		{
-		}
-
-		/// <summary>
 		/// This finds the embedded resource with the specified name in the plugin and creates
 		/// a Stream from it. Returns null when the embedded resource cannot be found.
 		/// </summary>
@@ -102,10 +95,21 @@ namespace CodeImp.DoomBuilder.Plugins
 			return plugin.GetResourceStream(resourcename);
 		}
 
+		#endregion
+
+		#region ================== Events
+
+		/// <summary>
+		/// This is called after the constructor to allow a plugin to initialize.
+		/// </summary>
+		public virtual void OnInitialize()
+		{
+		}
+
 		/// <summary>
 		/// This is called by the Doom Builder core when the user chose to reload the resources.
 		/// </summary>
-		public virtual void ReloadResources()
+		public virtual void OnReloadResources()
 		{
 		}
 
@@ -114,7 +118,21 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// </summary>
 		/// <param name="oldmode">The previous editing mode</param>
 		/// <param name="newmode">The new editing mode</param>
-		public virtual void ModeChanges(EditMode oldmode, EditMode newmode)
+		public virtual void OnModeChange(EditMode oldmode, EditMode newmode)
+		{
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when the user changes the program configuration (F5).
+		/// </summary>
+		public virtual void OnProgramReconfigure()
+		{
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when the user changes the map settings (F2).
+		/// </summary>
+		public virtual void OnMapReconfigure()
 		{
 		}
 		

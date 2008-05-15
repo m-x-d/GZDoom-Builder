@@ -161,7 +161,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Scroll now
 			renderer2d.PositionView(renderer2d.OffsetX + deltax, renderer2d.OffsetY + deltay);
-			this.ViewChanged();
+			this.OnViewChanged();
 			
 			// Redraw
 			General.MainWindow.RedrawDisplay();
@@ -206,14 +206,14 @@ namespace CodeImp.DoomBuilder.Editing
 			// Zoom now
 			renderer2d.PositionView(renderer2d.OffsetX - diff.x, renderer2d.OffsetY + diff.y);
 			renderer2d.ScaleView(newscale);
-			this.ViewChanged();
+			this.OnViewChanged();
 
 			// Redraw
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 			
 			// Give a new mousemove event to update coordinates
-			if(mouseinside) MouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
+			if(mouseinside) OnMouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
 		}
 
 		// This zooms to a specific level
@@ -221,14 +221,14 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Zoom now
 			renderer2d.ScaleView(newscale);
-			this.ViewChanged();
+			this.OnViewChanged();
 
 			// Redraw
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 
 			// Give a new mousemove event to update coordinates
-			if(mouseinside) MouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
+			if(mouseinside) OnMouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
 		}
 		
 		// This zooms and scrolls to fit the map in the window
@@ -268,18 +268,20 @@ namespace CodeImp.DoomBuilder.Editing
 			// Change the view to see the whole map
 			renderer2d.ScaleView(scale);
 			renderer2d.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
-			this.ViewChanged();
+			this.OnViewChanged();
 			
 			// Redraw
 			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 
 			// Give a new mousemove event to update coordinates
-			if(mouseinside) MouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
+			if(mouseinside) OnMouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
 		}
 
-		// This is called when the view changes (scroll/zoom)
-		protected virtual void ViewChanged()
+		/// <summary>
+		/// This is called when the view changes (scroll/zoom), before the display is redrawn.
+		/// </summary>
+		protected virtual void OnViewChanged()
 		{
 		}
 		
@@ -288,7 +290,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Input
 
 		// Mouse leaves the display
-		public override void MouseLeave(EventArgs e)
+		public override void OnMouseLeave(EventArgs e)
 		{
 			// Mouse is outside the display
 			mouseinside = false;
@@ -300,11 +302,11 @@ namespace CodeImp.DoomBuilder.Editing
 			General.MainWindow.UpdateCoordinates(mousemappos);
 			
 			// Let the base class know
-			base.MouseLeave(e);
+			base.OnMouseLeave(e);
 		}
 
 		// Mouse moved inside the display
-		public override void MouseMove(MouseEventArgs e)
+		public override void OnMouseMove(MouseEventArgs e)
 		{
 			Vector2D delta;
 
@@ -330,55 +332,55 @@ namespace CodeImp.DoomBuilder.Editing
 					{
 						// Dragging starts now
 						mousedragging = e.Button;
-						DragStart(e);
+						OnDragStart(e);
 					}
 				}
 			}
 			
 			// Selecting?
-			if(selecting) UpdateMultiSelection();
+			if(selecting) OnUpdateMultiSelection();
 			
 			// Let the base class know
-			base.MouseMove(e);
+			base.OnMouseMove(e);
 		}
 
 		// Mouse button pressed
-		public override void MouseDown(MouseEventArgs e)
+		public override void OnMouseDown(MouseEventArgs e)
 		{
 			// Save mouse down position
 			mousedownpos = mousepos;
 			mousedownmappos = mousemappos;
 			
 			// Let the base class know
-			base.MouseDown(e);
+			base.OnMouseDown(e);
 		}
 
 		// Mouse button released
-		public override void MouseUp(MouseEventArgs e)
+		public override void OnMouseUp(MouseEventArgs e)
 		{
 			// Releasing drag button?
 			if(e.Button == mousedragging)
 			{
 				// No longer dragging
-				DragStop(e);
+				OnDragStop(e);
 				mousedragging = MouseButtons.None;
 			}
 			
 			// Let the base class know
-			base.MouseUp(e);
+			base.OnMouseUp(e);
 		}
 
 		/// <summary>
 		/// Automatically called when dragging operation starts.
 		/// </summary>
-		protected virtual void DragStart(MouseEventArgs e)
+		protected virtual void OnDragStart(MouseEventArgs e)
 		{
 		}
 
 		/// <summary>
 		/// Automatically called when dragging operation stops.
 		/// </summary>
-		protected virtual void DragStop(MouseEventArgs e)
+		protected virtual void OnDragStop(MouseEventArgs e)
 		{
 		}
 		
@@ -387,7 +389,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Display
 
 		// This just refreshes the display
-		public override void RefreshDisplay()
+		public override void OnRefreshDisplay()
 		{
 			renderer2d.Present();
 		}
@@ -399,21 +401,21 @@ namespace CodeImp.DoomBuilder.Editing
 		/// <summary>
 		/// Automatically called by the core when this editing mode is engaged.
 		/// </summary>
-		public override void Engage()
+		public override void OnEngage()
 		{
 			// Clear display overlay
 			renderer.StartOverlay(true);
 			renderer.Finish();
-			base.Engage();
+			base.OnEngage();
 		}
 
 		/// <summary>
 		/// Called when the user requests to cancel this editing mode.
 		/// </summary>
-		public override void Cancel()
+		public override void OnCancel()
 		{
 			cancelled = true;
-			base.Cancel();
+			base.OnCancel();
 		}
 
 		/// <summary>
@@ -421,7 +423,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// (in Doom Builder 1, this was always the right mousebutton)
 		/// </summary>
 		[BeginAction("classicedit", BaseAction = true)]
-		protected virtual void Edit()
+		protected virtual void OnEdit()
 		{
 		}
 
@@ -430,7 +432,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// (in Doom Builder 1, this was always the right mousebutton)
 		/// </summary>
 		[EndAction("classicedit", BaseAction = true)]
-		protected virtual void EndEdit()
+		protected virtual void OnEndEdit()
 		{
 		}
 
@@ -439,7 +441,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// (in Doom Builder 1, this was always the left mousebutton)
 		/// </summary>
 		[BeginAction("classicselect", BaseAction = true)]
-		protected virtual void Select()
+		protected virtual void OnSelect()
 		{
 		}
 
@@ -448,15 +450,15 @@ namespace CodeImp.DoomBuilder.Editing
 		/// (in Doom Builder 1, this was always the left mousebutton)
 		/// </summary>
 		[EndAction("classicselect", BaseAction = true)]
-		protected virtual void EndSelect()
+		protected virtual void OnEndSelect()
 		{
-			if(selecting) EndMultiSelection();
+			if(selecting) OnEndMultiSelection();
 		}
 
 		/// <summary>
 		/// This is called automatically when a rectangular multi-selection ends.
 		/// </summary>
-		protected virtual void EndMultiSelection()
+		protected virtual void OnEndMultiSelection()
 		{
 			selecting = false;
 		}
@@ -474,7 +476,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// <summary>
 		/// This is called automatically when a multi-selection is updated.
 		/// </summary>
-		protected virtual void UpdateMultiSelection()
+		protected virtual void OnUpdateMultiSelection()
 		{
 			selectionrect.X = selectstart.x;
 			selectionrect.Y = selectstart.y;

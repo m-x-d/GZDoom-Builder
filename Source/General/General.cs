@@ -581,7 +581,7 @@ namespace CodeImp.DoomBuilder
 		internal static void CancelVolatileMode()
 		{
 			if((map != null) && (map.Mode != null) && map.Mode.Attributes.Volatile)
-				map.Mode.Cancel();
+				map.Mode.OnCancel();
 		}
 
 		// This creates a new map
