@@ -1,0 +1,168 @@
+
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
+/*
+ * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
+ * This program is released under GNU General Public License
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+#endregion
+
+#region ================== Namespaces
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
+using CodeImp.DoomBuilder.Interface;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Geometry;
+using System.Drawing;
+using CodeImp.DoomBuilder.Editing;
+
+#endregion
+
+namespace CodeImp.DoomBuilder.BuilderModes
+{
+	public partial class CurveLinedefsForm : DelayedForm
+	{
+		#region ================== Properties
+
+		public int Vertices { get { return verticesbar.Value; } }
+		public float Distance { get { return (float)distancebar.Value; } }
+		public float Angle { get { return (float)anglebar.Value; } }
+		public bool FixedCurve { get { return circular.Checked; } }
+		public bool Backwards { get { return backwards.Checked; } }
+
+		#endregion
+
+		#region ================== Constructor / Disposer
+
+		// Constructor
+		public CurveLinedefsForm()
+		{
+			// Initialize
+			InitializeComponent();
+		}
+
+		#endregion
+
+		#region ================== Interface
+		
+		// Window closing
+		private void CurveLinedefsForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			// User closing the window?
+			if(e.CloseReason == CloseReason.UserClosing)
+			{
+				// Just return to linedefs mode
+				General.Map.ChangeMode(new LinedefsMode());
+				e.Cancel = true;
+			}
+		}
+
+		// Window is shown
+		protected override void OnShown(EventArgs e)
+		{
+			// First time showing?
+			if((this.Location.X == 0) && (this.Location.Y == 0))
+			{
+				// Position in left-top of owner
+				this.Location = new Point(this.Owner.Location.X + 20, this.Owner.Location.Y + 80); 
+			}
+			
+			// Continue
+			base.OnShown(e);
+		}
+		
+		// Vertices bar changed
+		private void verticesbar_ValueChanged(object sender, EventArgs e)
+		{
+			vertices.Text = verticesbar.Value.ToString();
+			General.Interface.RedrawDisplay();
+		}
+
+		// Vertices loses focus
+		private void vertices_Leave(object sender, EventArgs e)
+		{
+			vertices.Text = verticesbar.Value.ToString();
+		}
+
+		// Vertices change
+		private void vertices_TextChanged(object sender, EventArgs e)
+		{
+			int result = vertices.GetResult(verticesbar.Value);
+			if((result >= verticesbar.Minimum) && (result <= verticesbar.Maximum)) verticesbar.Value = result;
+		}
+
+		// Distance bar changed
+		private void distancebar_ValueChanged(object sender, EventArgs e)
+		{
+			distance.Text = distancebar.Value.ToString();
+			General.Interface.RedrawDisplay();
+		}
+
+		// Distance loses focus
+		private void distance_Leave(object sender, EventArgs e)
+		{
+			distance.Text = distancebar.Value.ToString();
+		}
+
+		// Distance changed
+		private void distance_TextChanged(object sender, EventArgs e)
+		{
+			int result = distance.GetResult(distancebar.Value);
+			if((result >= distancebar.Minimum) && (result <= distancebar.Maximum)) distancebar.Value = result;
+		}
+
+		// Angle bar changed
+		private void anglebar_ValueChanged(object sender, EventArgs e)
+		{
+			angle.Text = anglebar.Value.ToString();
+			General.Interface.RedrawDisplay();
+		}
+
+		// Angle loses focus
+		private void angle_Leave(object sender, EventArgs e)
+		{
+			angle.Text = anglebar.Value.ToString();
+		}
+
+		// Angle changed
+		private void angle_TextChanged(object sender, EventArgs e)
+		{
+			int result = angle.GetResult(anglebar.Value);
+			if((result >= anglebar.Minimum) && (result <= anglebar.Maximum)) anglebar.Value = result;
+		}
+
+		// Circular curve switched
+		private void circular_CheckedChanged(object sender, EventArgs e)
+		{
+			// Enable/disable controls
+			distance.Enabled = !circular.Checked;
+			distancebar.Enabled = !circular.Checked;
+			distancelabel.Enabled = !circular.Checked;
+			General.Interface.RedrawDisplay();
+		}
+
+		// Curve backwards switched
+		private void backwards_CheckedChanged(object sender, EventArgs e)
+		{
+			General.Interface.RedrawDisplay();
+		}
+
+		#endregion
+	}
+}

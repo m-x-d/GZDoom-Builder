@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Main objects
 		private MenusForm menusform;
+		private CurveLinedefsForm curvelinedefsform;
 
 		#endregion
 
@@ -58,6 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static BuilderPlug Me { get { return me; } }
 
 		public MenusForm MenusForm { get { return menusform; } }
+		public CurveLinedefsForm CurveLinedefsForm { get { return curvelinedefsform; } }
 
 		#endregion
 
@@ -72,6 +74,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Load menus form and register it
 			menusform = new MenusForm();
 			menusform.Register();
+
+			// Load curve linedefs form
+			curvelinedefsform = new CurveLinedefsForm();
 		}
 		
 		// Disposer
@@ -83,6 +88,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Clean up
 				menusform.Unregister();
 				menusform.Dispose();
+				menusform = null;
+				curvelinedefsform.Dispose();
+				curvelinedefsform = null;
 				
 				// Done
 				me = null;

@@ -106,6 +106,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(mode is DragGeometryMode) mode = (mode as DragGeometryMode).BaseMode;
 			if(mode is DragThingsMode) mode = (mode as DragThingsMode).BaseMode;
 			if(mode is DrawGeometryMode) mode = (mode as DrawGeometryMode).BaseMode;
+			if(mode is CurveLinedefsMode) mode = (mode as CurveLinedefsMode).BaseMode;
 			
 			// Final decision
 			if(mode is LinedefsMode) HideAllMenusExcept(linedefsmenu);
