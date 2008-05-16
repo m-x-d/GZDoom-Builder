@@ -53,7 +53,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		private Linedef highlighted;
-
+		
+		// Interface
+		private bool editpressed;
+		
 		#endregion
 
 		#region ================== Properties
@@ -256,6 +259,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
+				// Edit pressed in this mode
+				editpressed = true;
+				
 				// Highlighted item not selected?
 				if(!highlighted.Selected)
 				{
@@ -283,20 +289,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Done editing
 		protected override void OnEndEdit()
 		{
-			// Anything selected?
-			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
-			if(selected.Count > 0)
+			// Edit pressed in this mode?
+			if(editpressed)
 			{
-				// Show line edit dialog
-				General.Interface.ShowEditLinedefs(selected);
+				// Anything selected?
+				ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+				if(selected.Count > 0)
+				{
+					// Show line edit dialog
+					General.Interface.ShowEditLinedefs(selected);
 
-				// When a single line was selected, deselect it now
-				if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
+					// When a single line was selected, deselect it now
+					if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 
-				// Update entire display
-				General.Interface.RedrawDisplay();
+					// Update entire display
+					General.Interface.RedrawDisplay();
+				}
 			}
 
+			editpressed = false;
 			base.OnEndEdit();
 		}
 		

@@ -40,8 +40,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		private CurveLinedefsMode mode;
-		
 		#endregion
 
 		#region ================== Properties
@@ -80,11 +78,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This shows the window
-		public void Show(Form owner, CurveLinedefsMode mode)
+		public void Show(Form owner)
 		{
-			// Keep reference to mode
-			this.mode = mode;
-			
 			// First time showing?
 			//if((this.Location.X == 0) && (this.Location.Y == 0))
 			{
@@ -183,7 +178,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void apply_Click(object sender, EventArgs e)
 		{
 			// Apply now
-			mode.Apply();
+			General.Map.AcceptMode();
 		}
 		
 		#endregion

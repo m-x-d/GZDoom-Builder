@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 
 			// Show toolbox window
-			BuilderPlug.Me.CurveLinedefsForm.Show((Form)General.Interface, this);
+			BuilderPlug.Me.CurveLinedefsForm.Show((Form)General.Interface);
 		}
 
 		// Disenagaging
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This applies the curves and returns to the base mode
-		public void Apply()
+		public override void OnAccept()
 		{
 			// Create undo
 			General.Map.UndoRedo.CreateUndo("Curve linedefs", UndoGroup.None, 0);
