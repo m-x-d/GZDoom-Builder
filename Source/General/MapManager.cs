@@ -885,6 +885,9 @@ namespace CodeImp.DoomBuilder
 				return;
 			}
 
+			// Reset cursor
+			General.Interface.SetCursor(Cursors.Default);
+			
 			// Apply new mode
 			mode = newmode;
 

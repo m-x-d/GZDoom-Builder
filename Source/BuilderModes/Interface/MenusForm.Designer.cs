@@ -41,6 +41,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingscwitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingsccwitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+			this.splitlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -62,7 +64,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.fliplinedefsitem,
             this.flipsidedefsitem,
             this.toolStripMenuItem1,
-            this.curvelinedefsitem});
+            this.curvelinedefsitem,
+            this.toolStripMenuItem3,
+            this.splitlinedefsitem});
 			this.linedefsmenu.Name = "linedefsmenu";
 			this.linedefsmenu.Size = new System.Drawing.Size(59, 20);
 			this.linedefsmenu.Text = "Linedefs";
@@ -150,6 +154,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.rotatethingsccwitem.Size = new System.Drawing.Size(204, 22);
 			this.rotatethingsccwitem.Text = "Rotate Counterclockwise";
 			// 
+			// toolStripMenuItem3
+			// 
+			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(166, 6);
+			// 
+			// splitlinedefsitem
+			// 
+			this.splitlinedefsitem.Name = "splitlinedefsitem";
+			this.splitlinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.splitlinedefsitem.Tag = "splitlinedefs";
+			this.splitlinedefsitem.Text = "Split Linedefs";
+			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -186,5 +203,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
 		private System.Windows.Forms.ToolStripMenuItem rotatethingscwitem;
 		private System.Windows.Forms.ToolStripMenuItem rotatethingsccwitem;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+		private System.Windows.Forms.ToolStripMenuItem splitlinedefsitem;
 	}
 }

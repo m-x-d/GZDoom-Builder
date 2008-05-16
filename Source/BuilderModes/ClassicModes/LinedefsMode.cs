@@ -404,6 +404,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
+		[BeginAction("splitlinedefs")]
+		public void SplitLinedefs()
+		{
+			// Make list of selected linedefs
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+
+			// Anything to do?
+			if(selected.Count > 0)
+			{
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("Split " + selected.Count + " linedefs", UndoGroup.None, 0);
+				
+				// Go for all linedefs to split
+				foreach(Linedef ld in selected)
+				{
+					Vertex splitvertex;
+
+					// Linedef highlighted?
+					if(ld == highlighted)
+					{
+						// Split at nearest position on the line
+						Vector2D nearestpos = ld.NearestOnLine(mousemappos);
+						splitvertex = General.Map.Map.CreateVertex(nearestpos);
+					}
+					else
+					{
+						// Split in middle of line
+						splitvertex = General.Map.Map.CreateVertex(ld.GetCenterPoint());
+					}
+					
+					// Snap to map format accuracy
+					splitvertex.SnapToAccuracy();
+					
+					// Split the line
+					ld.Split(splitvertex);
+				}
+
+				// Update cache values
+				General.Map.Map.Update();
+				
+				// Redraw screen
+				General.Interface.RedrawDisplay();
+			}
+		}
+		
 		[BeginAction("curvelinesmode")]
 		public void CurveLinedefs()
 		{

@@ -614,6 +614,7 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Change display to show splash logo
 			display.SetSplashLogoDisplay();
+			display.Cursor = Cursors.Default;
 			this.Update();
 		}
 		
@@ -623,6 +624,13 @@ namespace CodeImp.DoomBuilder.Interface
 			// Clear the display
 			display.SetManualRendering();
 			this.Update();
+		}
+
+		// This sets the display cursor
+		public void SetCursor(Cursor cursor)
+		{
+			// Only when a map is open
+			if(General.Map != null) display.Cursor = cursor;
 		}
 
 		// This redraws the display on the next paint event

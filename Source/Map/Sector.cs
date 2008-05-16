@@ -244,10 +244,20 @@ namespace CodeImp.DoomBuilder.Map
 		// This sector will be disposed
 		public void Join(Sector other)
 		{
-			// Change secter reference on my sidedefs
-			// This automatically disposes this sector
-			while(sidedefs != null)
-				sidedefs.First.Value.ChangeSector(other);
+			// Any sidedefs to move?
+			if(sidedefs.Count > 0)
+			{
+				// Change secter reference on my sidedefs
+				// This automatically disposes this sector
+				while(sidedefs != null)
+					sidedefs.First.Value.ChangeSector(other);
+			}
+			else
+			{
+				// No sidedefs attached
+				// Dispose manually
+				this.Dispose();
+			}
 		}
 		
 		#endregion

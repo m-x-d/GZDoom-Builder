@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.Interface
 		void BreakExclusiveMouseInput();
 		void ResumeExclusiveMouseInput();
 		bool CheckActionActive(Assembly assembly, string actionname);
+		void SetCursor(Cursor cursor);
 		
 		/// <summary>
 		/// This adds a menu to the Doom Builder menu strip.

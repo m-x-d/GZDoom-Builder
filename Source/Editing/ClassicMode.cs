@@ -507,5 +507,38 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		#endregion
+		
+		#region ================== Actions
+
+		/// <summary>
+		/// This creates a new vertex at the mouse position (insertvertex action).
+		/// </summary>
+		[BeginAction("insertvertex", BaseAction = true)]
+		public virtual void InsertVertex()
+		{
+			// Mouse in window?
+			if(mouseinside)
+			{
+				// Create vertex at mouse position
+				Vertex v = General.Map.Map.CreateVertex(mousemappos);
+
+				// Snap to grid enabled?
+				if(General.Interface.SnapToGrid)
+				{
+					// Snap to grid
+					v.SnapToGrid();
+				}
+				else
+				{
+					// Snap to map format accuracy
+					v.SnapToAccuracy();
+				}
+				
+				// Redraw screen
+				General.Interface.RedrawDisplay();
+			}
+		}
+
+		#endregion
 	}
 }
