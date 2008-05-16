@@ -53,6 +53,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Highlighted item
 		private Sector highlighted;
 
+		// Interface
+		private bool editpressed;
+
 		// The methods GetSelected* and MarkSelected* on the MapSet do not
 		// retain the order in which items were selected.
 		// This list keeps in order while sectors are selected/deselected.
@@ -319,6 +322,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
+				// Edit pressed in this mode
+				editpressed = true;
+
 				// Highlighted item not selected?
 				if(!highlighted.Selected)
 				{
@@ -345,24 +351,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Done editing
 		protected override void OnEndEdit()
 		{
-			// Anything selected?
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if(selected.Count > 0)
+			// Edit pressed in this mode?
+			if(editpressed)
 			{
-				// Show sector edit dialog
-				General.Interface.ShowEditSectors(selected);
-
-				// When a single sector was selected, deselect it now
-				if(selected.Count == 1)
+				// Anything selected?
+				ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+				if(selected.Count > 0)
 				{
-					General.Map.Map.ClearSelectedSectors();
-					General.Map.Map.ClearSelectedLinedefs();
-				}
+					// Show sector edit dialog
+					General.Interface.ShowEditSectors(selected);
 
-				// Update entire display
-				General.Interface.RedrawDisplay();
+					// When a single sector was selected, deselect it now
+					if(selected.Count == 1)
+					{
+						General.Map.Map.ClearSelectedSectors();
+						General.Map.Map.ClearSelectedLinedefs();
+					}
+
+					// Update entire display
+					General.Interface.RedrawDisplay();
+				}
 			}
 
+			editpressed = false;
 			base.OnEndEdit();
 		}
 		

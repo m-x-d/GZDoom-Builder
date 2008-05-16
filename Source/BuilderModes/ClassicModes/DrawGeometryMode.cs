@@ -135,8 +135,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.ChangeMode(basemode);
 		}
 
-		// Disenagaging
-		public override void OnDisengage()
+		// Accepted
+		public override void OnAccept()
 		{
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
@@ -145,21 +145,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Sidedef> insidesides = new List<Sidedef>();
 			List<Vertex> mergeverts = new List<Vertex>();
 			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
-			
 			MapSet map = General.Map.Map;
 			
-			base.OnDisengage();
-
 			Cursor.Current = Cursors.AppStarting;
 
 			General.Settings.FindDefaultDrawSettings();
-			
-			// When not cancelled and points have been drawn
-			if(!cancelled && (points.Count > 0))
+
+			// When points have been drawn
+			if(points.Count > 0)
 			{
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("line draw", UndoGroup.None, 0);
-				
+
 				/***************************************************\
 					STEP 1: Create the new geometry
 				\***************************************************/
@@ -167,7 +164,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Make first vertex
 				Vertex v1 = map.CreateVertex(points[0].pos);
 				v1.Marked = true;
-				
+
 				// Keep references
 				newverts.Add(v1);
 				if(points[0].stitch) mergeverts.Add(v1); else nonmergeverts.Add(v1);
@@ -178,7 +175,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Create vertex for point
 					Vertex v2 = map.CreateVertex(points[i].pos);
 					v2.Marked = true;
-					
+
 					// Keep references
 					newverts.Add(v2);
 					if(points[i].stitch) mergeverts.Add(v2); else nonmergeverts.Add(v2);
@@ -190,7 +187,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ld.ApplySidedFlags();
 					ld.UpdateCache();
 					newlines.Add(ld);
-					
+
 					// Should we split this line to merge with intersecting lines?
 					if(points[i - 1].stitch && points[i].stitch)
 					{
@@ -228,7 +225,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							newverts.Add(splitvertex);
 							mergeverts.Add(splitvertex);			// <-- add to merge?
 							intersectverts.Add(splitvertex);
-							
+
 							// The Split method ties the end of the original line to the given
 							// vertex and starts a new line at the given vertex, so continue
 							// splitting with the new line, because the intersections are sorted
@@ -238,14 +235,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							newlines.Add(splitline);
 						}
 					}
-					
+
 					// Next
 					v1 = v2;
 				}
 
 				// Join merge vertices so that overlapping vertices in the draw become one.
 				MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
-				
+
 				// We prefer a closed polygon, because then we can determine the interior properly
 				// Check if the two ends of the polygon are closed
 				bool drawingclosed = false;
@@ -266,7 +263,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if((l1 != null) && (l2 != null))
 							{
 								List<LinedefSide> shortestpath = null;
-								
+
 								// Same line?
 								if(l1 == l2)
 								{
@@ -286,11 +283,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									paths.Add(SectorTools.FindClosestPath(l2, true, l1, false, true));
 									paths.Add(SectorTools.FindClosestPath(l2, false, l1, true, true));
 									paths.Add(SectorTools.FindClosestPath(l2, false, l1, false, true));
-									
+
 									foreach(List<LinedefSide> p in paths)
 										if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
 								}
-								
+
 								// Found a path?
 								if(shortestpath != null)
 								{
@@ -300,12 +297,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									{
 										// Get the next position
 										Vector2D v2pos = shortestpath[i].Front ? shortestpath[i].Line.Start.Position : shortestpath[i].Line.End.Position;
-										
+
 										// Make the new vertex
 										Vertex v2 = map.CreateVertex(v2pos);
 										v2.Marked = true;
 										mergeverts.Add(v2);
-										
+
 										// Make the line
 										Linedef ld = map.CreateLinedef(v1, v2);
 										ld.Marked = true;
@@ -336,13 +333,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 				}
-				
+
 				// Merge intersetion vertices with the new lines. This completes the
 				// self intersections for which splits were made above.
 				map.Update(true, false);
 				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null);
 				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
-				
+
 				/***************************************************\
 					STEP 2: Merge the new geometry
 				\***************************************************/
@@ -362,7 +359,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Make polygon
 						LinedefTracePath tracepath = new LinedefTracePath(pathlines);
 						Polygon pathpoly = tracepath.MakePolygon();
-						
+
 						// Check if the front of the line is outside the polygon
 						if(!pathpoly.Intersect(ld.GetSidePoint(true)))
 						{
@@ -394,17 +391,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Mark only the vertices that should be merged
 				map.ClearMarkedVertices(false);
 				foreach(Vertex v in mergeverts) v.Marked = true;
-				
+
 				// Before this point, the new geometry is not linked with the existing geometry.
 				// Now perform standard geometry stitching to merge the new geometry with the rest
 				// of the map. The marked vertices indicate the new geometry.
 				map.StitchGeometry();
 				map.Update(true, false);
-				
+
 				// Find our new lines again, because they have been merged with the other geometry
 				// but their Marked property is copied where they have joined.
 				newlines = map.GetMarkedLinedefs(true);
-				
+
 				/***************************************************\
 					STEP 3: Join and create new sectors
 				\***************************************************/
@@ -417,7 +414,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < newlines.Count; i++)
 				{
 					Linedef ld = newlines[i];
-					
+
 					// Front not marked as done?
 					if(!frontsdone[i])
 					{
@@ -427,13 +424,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							// Make the new sector
 							Sector newsector = SectorTools.MakeSector(sectorlines);
-							
+
 							// Go for all sidedefs in this new sector
 							foreach(Sidedef sd in newsector.Sidedefs)
 							{
 								// Keep list of sides inside created sectors
 								insidesides.Add(sd);
-								
+
 								// Side matches with a side of our new lines?
 								int lineindex = newlines.IndexOf(sd.Line);
 								if(lineindex > -1)
@@ -471,7 +468,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									break;
 								}
 							}
-							
+
 							// Join?
 							if(joinsidedef != null)
 							{
@@ -510,10 +507,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					sd.RemoveUnneededTextures(true);
 				}
-				
+
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();
-				
+
 				// Update cached values
 				map.Update();
 
@@ -523,6 +520,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Done
 			Cursor.Current = Cursors.Default;
+			
+			// Return to original mode
+			Type t = basemode.GetType();
+			basemode = (EditMode)Activator.CreateInstance(t);
+			General.Map.ChangeMode(basemode);
 		}
 
 		// This checks if the view offset/zoom changed and updates the check
@@ -781,8 +783,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("finishdraw")]
 		public void FinishDraw()
 		{
-			// Just return to base mode, Disengage will be called automatically.
-			General.Map.ChangeMode(basemode);
+			// Accept the changes
+			General.Map.AcceptMode();
 		}
 
 		// When a key is released

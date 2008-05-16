@@ -832,7 +832,17 @@ namespace CodeImp.DoomBuilder
 			// Let the mode know
 			mode.OnCancel();
 		}
-		
+
+		/// <summary>
+		/// This accepts the changes in the current mode.
+		/// </summary>
+		[BeginAction("acceptmode")]
+		public void AcceptMode()
+		{
+			// Let the mode know
+			mode.OnAccept();
+		}
+
 		//
 		// This changes the editing mode.
 		// Order in which events occur for the old and new modes:

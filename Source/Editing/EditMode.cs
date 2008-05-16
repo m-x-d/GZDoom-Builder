@@ -162,6 +162,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This forces the mode to cancel and return to the "parent" mode
 		public virtual void OnCancel() { }
+
+		public virtual void OnAccept() { }
 		
 		// Interface events
 		public virtual void OnMouseClick(MouseEventArgs e) { }

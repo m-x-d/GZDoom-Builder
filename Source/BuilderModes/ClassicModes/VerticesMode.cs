@@ -53,6 +53,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Highlighted item
 		protected Vertex highlighted;
 
+		// Interface
+		private bool editpressed;
+
 		#endregion
 
 		#region ================== Properties
@@ -238,12 +241,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Start editing
 		protected override void OnEdit()
 		{
+			// Edit pressed in this mode
+			editpressed = true;
+
 			base.OnEdit();
 		}
 		
 		// Done editing
 		protected override void OnEndEdit()
 		{
+			editpressed = false;
 			base.OnEndEdit();
 		}
 		
