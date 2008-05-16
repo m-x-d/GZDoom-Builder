@@ -939,12 +939,18 @@ namespace CodeImp.DoomBuilder.Interface
 		// This adds a menu to the menus bar
 		public void AddMenu(ToolStripMenuItem menu)
 		{
+			// Find the plugin that called this method
+			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
+
+			// Fix tags to full action names
+			RenameTagsToFullActions(menu.DropDownItems, plugin);
+			
 			// Insert the menu before the Tools menu
 			menumain.Items.Insert(menumain.Items.IndexOf(menutools), menu);
 			ApplyShortcutKeys(menu.DropDownItems);
 		}
-
-		// This removes a menu to the menus bar
+		
+		// Removes a menu
 		public void RemoveMenu(ToolStripMenuItem menu)
 		{
 			menumain.Items.Remove(menu);
@@ -960,9 +966,6 @@ namespace CodeImp.DoomBuilder.Interface
 		// This sets the shortcut keys on menu items
 		private void ApplyShortcutKeys(ToolStripItemCollection items)
 		{
-			ToolStripMenuItem menuitem;
-			string actionname;
-			
 			// Go for all controls to find menu items
 			foreach(ToolStripItem item in items)
 			{
@@ -970,13 +973,13 @@ namespace CodeImp.DoomBuilder.Interface
 				if(item is ToolStripMenuItem)
 				{
 					// Get the item in proper type
-					menuitem = (item as ToolStripMenuItem);
+					ToolStripMenuItem menuitem = (item as ToolStripMenuItem);
 
 					// Tag set for this item?
-					if(menuitem.Tag != null)
+					if((menuitem.Tag != null) && (menuitem.Tag is string))
 					{
 						// Get the action name
-						actionname = menuitem.Tag.ToString();
+						string actionname = menuitem.Tag.ToString();
 
 						// Action with this name available?
 						if(General.Actions.Exists(actionname))
@@ -992,6 +995,39 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 		}
 
+		// This fixes short action names to fully qualified
+		// action names on menu item tags
+		private void RenameTagsToFullActions(ToolStripItemCollection items, Plugin plugin)
+		{
+			// Go for all controls to find menu items
+			foreach(ToolStripItem item in items)
+			{
+				// This is a menu item?
+				if(item is ToolStripMenuItem)
+				{
+					// Get the item in proper type
+					ToolStripMenuItem menuitem = (item as ToolStripMenuItem);
+
+					// Tag set for this item?
+					if((menuitem.Tag != null) && (menuitem.Tag is string))
+					{
+						// Get the action name
+						string actionname = menuitem.Tag.ToString();
+
+						// Check if the tag doe not already begin with the assembly name
+						if(!(menuitem.Tag as string).StartsWith(plugin.Name + "_", StringComparison.InvariantCultureIgnoreCase))
+						{
+							// Change the tag to a fully qualified action name
+							menuitem.Tag = plugin.Name.ToLowerInvariant() + "_" + (menuitem.Tag as string);
+						}
+					}
+
+					// Recursively perform operation on child menu items
+					RenameTagsToFullActions(menuitem.DropDownItems, plugin);
+				}
+			}
+		}
+		
 		#endregion
 
 		#region ================== File Menu

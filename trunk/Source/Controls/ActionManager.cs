@@ -492,34 +492,37 @@ namespace CodeImp.DoomBuilder.Controls
 		// This will end active actions for which the pressed keys do not match
 		private void EndActiveActions()
 		{
-			List<Action> keepactions = new List<Action>();
-
-			// Go for all active actions
-			foreach(Action a in activeactions)
+			bool listchanged;
+			
+			do
 			{
-				// Go for all pressed keys
-				bool stillactive = false;
-				foreach(int k in pressedkeys)
+				// Go for all active actions
+				listchanged = false;
+				for(int i = 0; i < activeactions.Count; i++)
 				{
-					if((k == (int)Keys.ShiftKey) || (k == (int)Keys.ControlKey))
-						stillactive |= a.KeyMatches(k);
-					else
-						stillactive |= a.KeyMatches(k | modifiers);
-				}
+					Action a = activeactions[i];
+					
+					// Go for all pressed keys
+					bool stillactive = false;
+					foreach(int k in pressedkeys)
+					{
+						if((k == (int)Keys.ShiftKey) || (k == (int)Keys.ControlKey))
+							stillactive |= a.KeyMatches(k);
+						else
+							stillactive |= a.KeyMatches(k | modifiers);
+					}
 
-				// End the action if no longer matches any of the keys
-				if(!stillactive)
-				{
-					a.End();
-				}
-				else
-				{
-					keepactions.Add(a);
+					// End the action if no longer matches any of the keys
+					if(!stillactive)
+					{
+						activeactions.RemoveAt(i);
+						listchanged = true;
+						a.End();
+						break;
+					}
 				}
 			}
-
-			// Update list of activate actions
-			activeactions = keepactions;
+			while(listchanged);
 		}
 		
 		// This returns all action names for a given key

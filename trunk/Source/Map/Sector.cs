@@ -237,7 +237,21 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		#endregion
+
+		#region ================== Methods
+
+		// This joins the sector with another sector
+		// This sector will be disposed
+		public void Join(Sector other)
+		{
+			// Change secter reference on my sidedefs
+			// This automatically disposes this sector
+			while(sidedefs != null)
+				sidedefs.First.Value.ChangeSector(other);
+		}
 		
+		#endregion
+
 		#region ================== Changes
 
 		// This updates all properties

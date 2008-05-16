@@ -465,6 +465,7 @@ namespace CodeImp.DoomBuilder
 				// Load plugin manager
 				General.WriteLogLine("Loading plugins...");
 				plugins = new PluginManager();
+				plugins.LoadAllPlugins();
 				
 				// Load game configurations
 				General.WriteLogLine("Loading game configurations...");
