@@ -521,9 +521,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.IsChanged = true;
 			}
 
-			// Hide highlight info
-			General.Interface.HideInfo();
-
 			// Done
 			Cursor.Current = Cursors.Default;
 		}

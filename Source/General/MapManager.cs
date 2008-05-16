@@ -823,6 +823,16 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Editing Modes
 
+		/// <summary>
+		/// This cancels the current mode.
+		/// </summary>
+		[BeginAction("cancelmode")]
+		public void CancelMode()
+		{
+			// Let the mode know
+			mode.OnCancel();
+		}
+		
 		//
 		// This changes the editing mode.
 		// Order in which events occur for the old and new modes:

@@ -330,9 +330,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Cursor.Current = Cursors.Default;
 				General.Map.IsChanged = true;
 			}
-
-			// Hide highlight info
-			General.Interface.HideInfo();
 		}
 
 		// This checks if the view offset/zoom changed and updates the check

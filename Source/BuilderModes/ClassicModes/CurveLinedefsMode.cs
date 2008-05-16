@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Cancel base class
 			base.OnCancel();
 
-			// Return to vertices mode
+			// Return to base mode
 			General.Map.ChangeMode(basemode);
 		}
 
@@ -110,10 +110,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 
 			// Show toolbox window
-			BuilderPlug.Me.CurveLinedefsForm.Show(General.Interface);
-
-			// Keep focus on main window
-			General.Interface.Focus();
+			BuilderPlug.Me.CurveLinedefsForm.Show((Form)General.Interface, this);
 		}
 
 		// Disenagaging
@@ -123,11 +120,47 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Hide toolbox window
 			BuilderPlug.Me.CurveLinedefsForm.Hide();
-			
-			// Hide highlight info
-			General.Interface.HideInfo();
 		}
 
+		// This applies the curves and returns to the base mode
+		public void Apply()
+		{
+			// Create undo
+			General.Map.UndoRedo.CreateUndo("Curve linedefs", UndoGroup.None, 0);
+			
+			// Go for all selected lines
+			foreach(Linedef ld in selectedlines)
+			{
+				// Make curve for line
+				List<Vector2D> points = GenerateCurve(ld);
+				if(points.Count > 0)
+				{
+					// TODO: We may want some sector create/join code in here
+					// to allow curves that overlap lines and some geometry merging
+
+					// Go for all points to split the line
+					Linedef splitline = ld;
+					for(int i = 0; i < points.Count; i++)
+					{
+						// Make vertex
+						Vertex v = General.Map.Map.CreateVertex(points[i]);
+
+						// Split the line and move on with this line
+						splitline = splitline.Split(v);
+					}
+				}
+			}
+
+			// Snap to map format accuracy
+			General.Map.Map.SnapAllToAccuracy();
+			
+			// Update caches
+			General.Map.Map.Update();
+			
+			// Return to base mode
+			General.Map.ChangeMode(basemode);
+		}
+		
 		// This generates the vertices to split the line with, from start to end
 		private List<Vector2D> GenerateCurve(Linedef line)
 		{
