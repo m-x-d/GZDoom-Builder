@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using System.Drawing;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -52,6 +53,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Highlighted item
 		private Sector highlighted;
 
+		// The methods GetSelected* and MarkSelected* on the MapSet do not
+		// retain the order in which items were selected.
+		// This list keeps in order while sectors are selected/deselected.
+		private List<Sector> orderedselection;
+		
 		#endregion
 
 		#region ================== Properties
@@ -63,6 +69,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public SectorsMode()
 		{
+			// Make ordered selection list
+			orderedselection = new List<Sector>();
+
+			// Fill the list with selected sectors (these are not in order, but we have no other choice)
+			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
+			foreach(Sector s in selectedsectors) orderedselection.Add(s);
 		}
 
 		// Disposer
@@ -72,7 +84,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!isdisposed)
 			{
 				// Clean up
-
+				orderedselection = null;
+				
 				// Dispose base
 				base.Dispose();
 			}
@@ -82,19 +95,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// When undo is used
+		[EndAction("undo", BaseAction = true)]
+		public void Undo()
+		{
+			// Clear ordered selection
+			orderedselection.Clear();
+		}
+
+		// When redo is used
+		[EndAction("redo", BaseAction = true)]
+		public void Redo()
+		{
+			// Clear ordered selection
+			orderedselection.Clear();
+		}
+
 		// This selectes or deselects a sector
 		protected void SelectSector(Sector s, bool selectstate)
 		{
-			// Flip selection
-			s.Selected = selectstate;
-
-			// Make update lines selection
-			foreach(Sidedef sd in s.Sidedefs)
+			bool selectionchanged = false;
+			
+			// Select the sector?
+			if(selectstate && !s.Selected)
 			{
-				bool front, back;
-				if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
-				if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
-				sd.Line.Selected = front | back;
+				orderedselection.Add(s);
+				s.Selected = true;
+				selectionchanged = true;
+			}
+			// Deselect the sector?
+			else if(!selectstate && s.Selected)
+			{
+				orderedselection.Remove(s);
+				s.Selected = false;
+				selectionchanged = true;
+			}
+
+			// Selection changed?
+			if(selectionchanged)
+			{
+				// Make update lines selection
+				foreach(Sidedef sd in s.Sidedefs)
+				{
+					bool front, back;
+					if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
+					if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
+					sd.Line.Selected = front | back;
+				}
 			}
 		}
 		
@@ -461,6 +508,85 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		#endregion
+
+		#region ================== Actions
+
+		// Thi joins sectors together and keeps all lines
+		[BeginAction("joinsectors")]
+		public void JoinSectors()
+		{
+			// Worth our money?
+			int count = General.Map.Map.GetSelectedSectors(true).Count;
+			if(count > 1)
+			{
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("Join " + count + " sectors", UndoGroup.None, 0);
+
+				// Merge
+				JoinMergeSectors(false);
+
+				// Deselect
+				General.Map.Map.ClearSelectedSectors();
+				General.Map.Map.ClearSelectedLinedefs();
+				
+				// Redraw display
+				General.Interface.RedrawDisplay();
+			}
+		}
+
+		// This joins sectors together and removes the lines in between
+		[BeginAction("mergesectors")]
+		public void MergeSectors()
+		{
+			// Worth our money?
+			int count = General.Map.Map.GetSelectedSectors(true).Count;
+			if(count > 1)
+			{
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("Merge " + count + " sectors", UndoGroup.None, 0);
+
+				// Merge
+				JoinMergeSectors(true);
+
+				// Deselect
+				General.Map.Map.ClearSelectedSectors();
+				General.Map.Map.ClearSelectedLinedefs();
+
+				// Redraw display
+				General.Interface.RedrawDisplay();
+			}
+		}
+
+		// Support function for joining and merging sectors
+		private void JoinMergeSectors(bool removelines)
+		{
+			// Remove lines in betwen joining sectors?
+			if(removelines)
+			{
+				// Go for all selected linedefs
+				ICollection<Linedef> selectedlines = General.Map.Map.GetSelectedLinedefs(true);
+				foreach(Linedef ld in selectedlines)
+				{
+					// Front and back side?
+					if((ld.Front != null) && (ld.Back != null))
+					{
+						// Both a selected sector, but not the same?
+						if(ld.Front.Sector.Selected && ld.Back.Sector.Selected &&
+						   (ld.Front.Sector != ld.Back.Sector))
+						{
+							// Remove this line
+							ld.Dispose();
+						}
+					}
+				}
+			}
+			
+			// Join all selected sectors with the first
+			for(int i = 1; i < orderedselection.Count; i++)
+				orderedselection[i].Join(orderedselection[0]);
+		}
+
 		#endregion
 	}
 }

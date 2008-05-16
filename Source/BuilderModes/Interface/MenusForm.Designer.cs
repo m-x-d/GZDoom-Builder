@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.fliplinedefsitem.Name = "fliplinedefsitem";
 			this.fliplinedefsitem.Size = new System.Drawing.Size(169, 22);
-			this.fliplinedefsitem.Tag = "buildermodes_fliplinedefs";
+			this.fliplinedefsitem.Tag = "fliplinedefs";
 			this.fliplinedefsitem.Text = "Flip Linedefs";
 			this.fliplinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.flipsidedefsitem.Name = "flipsidedefsitem";
 			this.flipsidedefsitem.Size = new System.Drawing.Size(169, 22);
-			this.flipsidedefsitem.Tag = "buildermodes_flipsidedefs";
+			this.flipsidedefsitem.Tag = "flipsidedefs";
 			this.flipsidedefsitem.Text = "Flip Sidedefs";
 			this.flipsidedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.curvelinedefsitem.Name = "curvelinedefsitem";
 			this.curvelinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.curvelinedefsitem.Tag = "curvelinesmode";
 			this.curvelinedefsitem.Text = "Curve Linedefs...";
 			// 
 			// sectorsmenu
@@ -110,13 +111,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.joinsectorsitem.Name = "joinsectorsitem";
 			this.joinsectorsitem.Size = new System.Drawing.Size(154, 22);
+			this.joinsectorsitem.Tag = "joinsectors";
 			this.joinsectorsitem.Text = "Join Sectors";
+			this.joinsectorsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// mergesectorsitem
 			// 
 			this.mergesectorsitem.Name = "mergesectorsitem";
 			this.mergesectorsitem.Size = new System.Drawing.Size(154, 22);
+			this.mergesectorsitem.Tag = "mergesectors";
 			this.mergesectorsitem.Text = "Merge Sectors";
+			this.mergesectorsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripMenuItem2
 			// 

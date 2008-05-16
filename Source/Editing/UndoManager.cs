@@ -226,6 +226,10 @@ namespace CodeImp.DoomBuilder.Editing
 				// Reset grouping
 				lastgroup = UndoGroup.None;
 				
+				// Remove selection
+				u.map.ClearAllMarks();
+				u.map.ClearAllSelected();
+				
 				// Change map set
 				General.Map.ChangeMapSet(u.map);
 
@@ -264,6 +268,10 @@ namespace CodeImp.DoomBuilder.Editing
 				
 				// Reset grouping
 				lastgroup = UndoGroup.None;
+
+				// Remove selection
+				r.map.ClearAllMarks();
+				r.map.ClearAllSelected();
 
 				// Change map set
 				General.Map.ChangeMapSet(r.map);

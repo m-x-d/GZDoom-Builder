@@ -68,8 +68,29 @@ namespace CodeImp.DoomBuilder.Interface
 		void BreakExclusiveMouseInput();
 		void ResumeExclusiveMouseInput();
 		bool CheckActionActive(Assembly assembly, string actionname);
+		
+		/// <summary>
+		/// This adds a menu to the Doom Builder menu strip.
+		/// <para>
+		/// NOTE: When the Tag property of menu items is set with a string, this changes the
+		/// tag to a fully qualified action name by prefixing it with the assembly name.
+		/// </para>
+		/// </summary>
+		/// <param name="menu">The menu to add to Doom Builder.</param>
 		void AddMenu(ToolStripMenuItem menu);
+		
+		/// <summary>
+		/// This removes a menu from the Doom Builder menu strip.
+		/// </summary>
+		/// <param name="menu">The menu to remove.</param>
 		void RemoveMenu(ToolStripMenuItem menu);
+		
+		/// <summary>
+		/// This method invokes the action specified on the Tag property of the given menu item.
+		/// </summary>
+		/// <param name="sender">Menu item with Tag property set to the name of an action
+		/// that you want to invoke.</param>
+		/// <param name="e">Unused.</param>
 		void InvokeTaggedAction(object sender, EventArgs e);
 	}
 }

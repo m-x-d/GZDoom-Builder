@@ -94,12 +94,6 @@ namespace CodeImp.DoomBuilder.Plugins
 				throw new InvalidProgramException();
 			}
 			
-			// Load actions
-			General.Actions.LoadActions(asm);
-			
-			// Plugin is now initialized
-			plug.OnInitialize();
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
