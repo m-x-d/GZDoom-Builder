@@ -123,6 +123,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// Engaging
+		public override void OnEngage()
+		{
+			base.OnEngage();
+
+			// Set cursor
+			General.Interface.SetCursor(Cursors.Cross);
+		}
+		
 		// Cancelled
 		public override void OnCancel()
 		{

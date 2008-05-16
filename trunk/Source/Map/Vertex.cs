@@ -224,15 +224,25 @@ namespace CodeImp.DoomBuilder.Map
 			if(this.selected) other.selected = true;
 			if(this.marked) other.marked = true;
 
-			// Detach all linedefs and attach them to the other
-			// This will automatically dispose this vertex
-			while(linedefs != null)
+			// Any linedefs to move?
+			if(linedefs.Count > 0)
 			{
-				// Move the line to the other vertex
-				if(linedefs.First.Value.Start == this)
-					linedefs.First.Value.SetStartVertex(other);
-				else
-					linedefs.First.Value.SetEndVertex(other);
+				// Detach all linedefs and attach them to the other
+				// This will automatically dispose this vertex
+				while(linedefs != null)
+				{
+					// Move the line to the other vertex
+					if(linedefs.First.Value.Start == this)
+						linedefs.First.Value.SetStartVertex(other);
+					else
+						linedefs.First.Value.SetEndVertex(other);
+				}
+			}
+			else
+			{
+				// No lines attached
+				// Dispose manually
+				this.Dispose();
 			}
 		}
 
