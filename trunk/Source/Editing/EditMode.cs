@@ -161,7 +161,6 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This forces the mode to cancel and return to the "parent" mode
-		[BeginAction("cancelmode", BaseAction = true)]
 		public virtual void OnCancel() { }
 		
 		// Interface events

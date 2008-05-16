@@ -38,6 +38,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public partial class CurveLinedefsForm : DelayedForm
 	{
+		#region ================== Variables
+
+		private CurveLinedefsMode mode;
+		
+		#endregion
+
 		#region ================== Properties
 
 		public int Vertices { get { return verticesbar.Value; } }
@@ -67,24 +73,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// User closing the window?
 			if(e.CloseReason == CloseReason.UserClosing)
 			{
-				// Just return to linedefs mode
-				General.Map.ChangeMode(new LinedefsMode());
+				// Just cancel
+				General.Map.CancelMode();
 				e.Cancel = true;
 			}
 		}
 
-		// Window is shown
-		protected override void OnShown(EventArgs e)
+		// This shows the window
+		public void Show(Form owner, CurveLinedefsMode mode)
 		{
-			// First time showing?
-			if((this.Location.X == 0) && (this.Location.Y == 0))
-			{
-				// Position in left-top of owner
-				this.Location = new Point(this.Owner.Location.X + 20, this.Owner.Location.Y + 80); 
-			}
+			// Keep reference to mode
+			this.mode = mode;
 			
-			// Continue
-			base.OnShown(e);
+			// First time showing?
+			//if((this.Location.X == 0) && (this.Location.Y == 0))
+			{
+				// Position at left-top of owner
+				this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90); 
+			}
+
+			// Show window
+			base.Show(owner);
 		}
 		
 		// Vertices bar changed
@@ -162,7 +171,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.Interface.RedrawDisplay();
 		}
+		
+		// Cancel clicked
+		private void cancel_Click(object sender, EventArgs e)
+		{
+			// Cancel now
+			General.Map.CancelMode();
+		}
 
+		// Apply clicked
+		private void apply_Click(object sender, EventArgs e)
+		{
+			// Apply now
+			mode.Apply();
+		}
+		
 		#endregion
 	}
 }

@@ -151,6 +151,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.cancel.TabIndex = 22;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
+			this.cancel.Click += new System.EventHandler(this.cancel_Click);
 			// 
 			// apply
 			// 
@@ -161,6 +162,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.apply.TabIndex = 21;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
+			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
 			// circular
 			// 
