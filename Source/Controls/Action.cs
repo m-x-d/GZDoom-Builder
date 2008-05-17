@@ -67,7 +67,9 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool AllowScroll { get { return allowscroll; } }
 		public bool DisregardShift { get { return disregardshift; } }
 		public bool Repeat { get { return repeat; } }
-
+		public bool BeginBound { get { return (begindelegates.Count > 0); } }
+		public bool EndBound { get { return (enddelegates.Count > 0); } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer

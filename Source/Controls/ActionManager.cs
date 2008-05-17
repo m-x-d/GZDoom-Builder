@@ -469,17 +469,22 @@ namespace CodeImp.DoomBuilder.Controls
 		// This will call the associated actions for a keypress
 		private void BeginActionByKey(int key, bool repeated)
 		{
-			// Go for all actions
+			// Get all actions for which a begin is bound
+			List<Action> boundactions = new List<Action>(actions.Count);
 			foreach(KeyValuePair<string, Action> a in actions)
+				if(a.Value.BeginBound) boundactions.Add(a.Value);
+			
+			// Go for all actions
+			foreach(Action a in boundactions)
 			{
 				// This action is associated with this key?
-				if(a.Value.KeyMatches(key))
+				if(a.KeyMatches(key))
 				{
 					// Allowed to repeat?
-					if(a.Value.Repeat || !repeated)
+					if(a.Repeat || !repeated)
 					{
 						// Invoke action
-						a.Value.Begin();
+						a.Begin();
 					}
 					else
 					{

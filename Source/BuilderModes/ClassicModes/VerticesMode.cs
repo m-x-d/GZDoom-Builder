@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 
 		public const float VERTEX_HIGHLIGHT_RANGE = 20f;
+		public const float LINEDEF_SPLIT_RANGE = 8f;
 
 		#endregion
 
@@ -242,9 +243,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Start editing
 		protected override void OnEdit()
 		{
-			// Edit pressed in this mode
-			editpressed = true;
+			// Vertex highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				// Edit pressed in this mode
+				editpressed = true;
+			}
+			else
+			{
+				// Find the nearest linedef within highlight range
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_SPLIT_RANGE / renderer.Scale);
 
+				// Found a line?
+				if(l != null)
+				{
+					// Create undo
+					General.Map.UndoRedo.CreateUndo("Split linedef", UndoGroup.None, 0);
+
+					// Create vertex at nearest point on line
+					Vector2D nearestpos = l.NearestOnLine(mousemappos);
+					Vertex v = General.Map.Map.CreateVertex(nearestpos);
+
+					// Snap to map format accuracy
+					v.SnapToAccuracy();
+
+					// Split the line with this vertex
+					l.Split(v);
+
+					// Highlight it
+					Highlight(v);
+
+					// Redraw display
+					General.Interface.RedrawDisplay();
+				}
+				else
+				{
+					// Start drawing mode
+					DrawGeometryMode drawmode = new DrawGeometryMode();
+					drawmode.DrawPointAt(mousemappos, true);
+					General.Map.ChangeMode(drawmode);
+				}
+			}
+			
 			base.OnEdit();
 		}
 		
