@@ -170,6 +170,7 @@ namespace CodeImp.DoomBuilder.Interface
 		public int GetResult(int original)
 		{
 			string textpart = this.Text;
+			int result = 0;
 
 			// Strip prefixes
 			textpart = textpart.Replace("+", "");
@@ -182,18 +183,20 @@ namespace CodeImp.DoomBuilder.Interface
 				if(this.Text.StartsWith("++"))
 				{
 					// Add number to original
-					return original + int.Parse(textpart);
+					if(!int.TryParse(textpart, out result)) result = 0;
+					return original + result;
 				}
 				// Prefixed with --?
 				else if(this.Text.StartsWith("--"))
 				{
 					// Subtract number from original
-					return original - int.Parse(textpart);
+					if(!int.TryParse(textpart, out result)) result = 0;
+					return original - result;
 				}
 				else
 				{
 					// Return the new value
-					return int.Parse(this.Text);
+					if(int.TryParse(this.Text, out result)) return result; else return 0;
 				}
 			}
 			else

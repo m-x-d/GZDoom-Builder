@@ -131,6 +131,12 @@
     <Compile Include="Interface\ActionSelectorControl.Designer.cs">
       <DependentUpon>ActionSelectorControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\AngleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\AngleControl.Designer.cs">
+      <DependentUpon>AngleControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\AutoSelectTextbox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -139,6 +145,12 @@
     </Compile>
     <Compile Include="Interface\CheckboxArrayControl.Designer.cs">
       <DependentUpon>CheckboxArrayControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ClickableNumericTextbox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ClickableNumericTextbox.Designer.cs">
+      <DependentUpon>ClickableNumericTextbox.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\ColorControl.cs">
       <SubType>UserControl</SubType>
@@ -271,6 +283,12 @@
     </Compile>
     <Compile Include="Interface\TextureSelectorControl.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\ThingEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\ThingEditForm.Designer.cs">
+      <DependentUpon>ThingEditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\ThingInfoPanel.cs">
       <SubType>UserControl</SubType>
@@ -514,6 +532,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Interface\AngleControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AngleControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ClickableNumericTextbox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ClickableNumericTextbox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ThingEditForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThingEditForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Font.png" />
     <EmbeddedResource Include="Resources\Thing2D_3.png" />
     <EmbeddedResource Include="Resources\Thing2D_2.png" />
