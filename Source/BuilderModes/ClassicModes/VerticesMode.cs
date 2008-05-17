@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -339,6 +340,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		#endregion
+
+		#region ================== Actions
+
+		[BeginAction("deleteitem", BaseAction = true)]
+		public void DeleteItem()
+		{
+			// Make list of selected vertices
+			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+
+			// Anything to do?
+			if(selected.Count > 0)
+			{
+				// Make undo
+				if(selected.Count > 1)
+					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices", UndoGroup.None, 0);
+				else
+					General.Map.UndoRedo.CreateUndo("Delete vertex", UndoGroup.None, 0);
+
+				// Dispose selected vertices
+				foreach(Vertex v in selected) v.Dispose();
+
+				// Update cache values
+				General.Map.Map.Update();
+
+				// Invoke a new mousemove so that the highlighted item updates
+				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
+				OnMouseMove(e);
+
+				// Redraw screen
+				General.Interface.RedrawDisplay();
+			}
+		}
+
 		#endregion
 	}
 }

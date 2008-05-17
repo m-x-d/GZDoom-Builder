@@ -404,6 +404,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
+		[BeginAction("deleteitem", BaseAction = true)]
+		public void DeleteItem()
+		{
+			// Make list of selected linedefs
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+
+			// Anything to do?
+			if(selected.Count > 0)
+			{
+				// Make undo
+				if(selected.Count > 1)
+					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " linedefs", UndoGroup.None, 0);
+				else
+					General.Map.UndoRedo.CreateUndo("Delete linedef", UndoGroup.None, 0);
+				
+				// Dispose selected linedefs
+				foreach(Linedef ld in selected) ld.Dispose();
+				
+				// Update cache values
+				General.Map.Map.Update();
+
+				// Invoke a new mousemove so that the highlighted item updates
+				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
+				OnMouseMove(e);
+				
+				// Redraw screen
+				General.Interface.RedrawDisplay();
+			}
+		}
+		
 		[BeginAction("splitlinedefs")]
 		public void SplitLinedefs()
 		{
@@ -415,7 +446,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selected.Count > 0)
 			{
 				// Make undo
-				General.Map.UndoRedo.CreateUndo("Split " + selected.Count + " linedefs", UndoGroup.None, 0);
+				if(selected.Count > 1)
+					General.Map.UndoRedo.CreateUndo("Split " + selected.Count + " linedefs", UndoGroup.None, 0);
+				else
+					General.Map.UndoRedo.CreateUndo("Split linedef", UndoGroup.None, 0);
 				
 				// Go for all linedefs to split
 				foreach(Linedef ld in selected)
@@ -482,7 +516,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selected.Count > 0)
 			{
 				// Make undo
-				General.Map.UndoRedo.CreateUndo("Flip linedefs", UndoGroup.None, 0);
+				if(selected.Count > 1)
+					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " linedefs", UndoGroup.None, 0);
+				else
+					General.Map.UndoRedo.CreateUndo("Flip linedef", UndoGroup.None, 0);
 
 				// Flip all selected linedefs
 				foreach(Linedef l in selected)
@@ -504,7 +541,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selected.Count > 0)
 			{
 				// Make undo
-				General.Map.UndoRedo.CreateUndo("Flip sidedefs", UndoGroup.None, 0);
+				if(selected.Count > 1)
+					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " sidedefs", UndoGroup.None, 0);
+				else
+					General.Map.UndoRedo.CreateUndo("Flip sidedef", UndoGroup.None, 0);
 
 				// Flip sidedefs in all selected linedefs
 				foreach(Linedef l in selected)
