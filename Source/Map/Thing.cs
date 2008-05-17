@@ -81,13 +81,13 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
-		public int Type { get { return type; } }
+		public int Type { get { return type; } set { type = value; } }
 		public Vector3D Position { get { return pos; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public float Angle { get { return angle; } }
-		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
-		public int Flags { get { return flags; } }
-		public int Action { get { return action; } }
+		public int AngleDeg { get { return (int)Angle2D.RadToDeg(angle); } }
+		public int Flags { get { return flags; } set { flags = value; } }
+		public int Action { get { return action; } set { action = value; } }
 		public byte[] Args { get { return args; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Map
 		public PixelColor Color { get { return color; } }
 		public int X { get { return x; } }
 		public int Y { get { return y; } }
-		public int ZOffset { get { return zoffset; } }
+		public int ZOffset { get { return zoffset; } set { zoffset = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
 		public SortedList<string, object> Fields { get { return fields; } }

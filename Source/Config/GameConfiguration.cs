@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.Config
 		private IDictionary flatranges;
 		
 		// Things
+		private Dictionary<int, string> thingflags;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> things;
 		
@@ -108,6 +109,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary FlatRanges { get { return flatranges; } }
 
 		// Things
+		public IDictionary<int, string> ThingFlags { get { return thingflags; } }
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> Things { get { return things.Values; } }
 		
@@ -137,6 +139,7 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			// Initialize
 			this.cfg = cfg;
+			this.thingflags = new Dictionary<int, string>();
 			this.thingcategories = new List<ThingCategory>();
 			this.things = new Dictionary<int, ThingTypeInfo>();
 			this.linedefflags = new Dictionary<int, string>();
@@ -170,6 +173,7 @@ namespace CodeImp.DoomBuilder.Config
 			flatranges = cfg.ReadSetting("flats", new Hashtable());
 			
 			// Things
+			LoadThingFlags();
 			LoadThingCategories();
 			
 			// Linedefs
@@ -238,8 +242,11 @@ namespace CodeImp.DoomBuilder.Config
 				// Make a category
 				thingcat = new ThingCategory(cfg, de.Key.ToString());
 
-				// Add all thing in category to the big list
+				// Add all things in category to the big list
 				foreach(ThingTypeInfo t in thingcat.Things) things.Add(t.Index, t);
+
+				// Add category to list
+				thingcategories.Add(thingcat);
 			}
 		}
 		
@@ -440,6 +447,38 @@ namespace CodeImp.DoomBuilder.Config
 				}
 			}
 		}
+
+		// Thing flags
+		private void LoadThingFlags()
+		{
+			IDictionary dic;
+			int bitflagscheck = 0;
+			int bitvalue;
+
+			// Get linedef flags
+			dic = cfg.ReadSetting("thingflags", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Try paring the bit value
+				if(int.TryParse(de.Key.ToString(),
+					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
+					CultureInfo.InvariantCulture, out bitvalue))
+				{
+					// Check for conflict and add to list
+					if((bitvalue & bitflagscheck) == 0)
+						thingflags.Add(bitvalue, de.Value.ToString());
+					else
+						General.WriteLogLine("WARNING: Structure 'thingflags' contains conflicting bit flag keys. Make sure all keys are unique integers and powers of 2!");
+
+					// Update bit flags checking value
+					bitflagscheck |= bitvalue;
+				}
+				else
+				{
+					General.WriteLogLine("WARNING: Structure 'thingflags' contains invalid keys!");
+				}
+			}
+		}
 		
 		#endregion
 
@@ -468,6 +507,23 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				// Create unknown thing info
 				return new ThingTypeInfo(thingtype);
+			}
+		}
+
+		// This gets thing information by index
+		// Returns null when thing type info could not be found
+		public ThingTypeInfo GetThingInfoEx(int thingtype)
+		{
+			// Index in config?
+			if(things.ContainsKey(thingtype))
+			{
+				// Return from config
+				return things[thingtype];
+			}
+			else
+			{
+				// No such thing type known
+				return null;
 			}
 		}
 		

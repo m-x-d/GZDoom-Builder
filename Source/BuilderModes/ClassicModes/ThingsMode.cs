@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(selected.Count > 0)
 				{
 					// Show thing edit dialog
-					// TODO
+					General.Interface.ShowEditThings(selected);
 
 					// When a single thing was selected, deselect it now
 					if(selected.Count == 1) General.Map.Map.ClearSelectedThings();

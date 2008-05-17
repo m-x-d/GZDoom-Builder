@@ -1374,9 +1374,19 @@ namespace CodeImp.DoomBuilder.Interface
 		// This shows the dialog to edit sectors
 		public void ShowEditSectors(ICollection<Sector> sectors)
 		{
-			// Show line edit dialog
+			// Show sector edit dialog
 			SectorEditForm f = new SectorEditForm();
 			f.Setup(sectors);
+			f.ShowDialog(this);
+			f.Dispose();
+		}
+
+		// This shows the dialog to edit things
+		public void ShowEditThings(ICollection<Thing> things)
+		{
+			// Show thing edit dialog
+			ThingEditForm f = new ThingEditForm();
+			f.Setup(things);
 			f.ShowDialog(this);
 			f.Dispose();
 		}

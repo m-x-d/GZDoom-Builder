@@ -35,6 +35,10 @@ namespace CodeImp.DoomBuilder.Config
 	{
 		#region ================== Constants
 
+		public const int THING_BLOCKING_NONE = 0;
+		public const int THING_BLOCKING_FULL = 1;
+		public const int THING_BLOCKING_HEIGHT = 2;
+
 		#endregion
 
 		#region ================== Variables

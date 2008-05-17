@@ -1087,7 +1087,7 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("testaction")]
 		internal static void TestAction()
 		{
-			TextureBrowserForm t = new TextureBrowserForm();
+			ThingEditForm t = new ThingEditForm();
 			t.ShowDialog(mainwindow);
 			t.Dispose();
 		}

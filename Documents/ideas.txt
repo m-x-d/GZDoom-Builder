@@ -7,6 +7,18 @@
 [15:51] <SoM> I've been doing a lot of detailing that would be made a lot easier with a feature like this
 [15:52] <CodeImp> i dont even think that should be an option, but normal behaviour
 
+===========================================================================================
+
 [20:55] <esselaptop> CodeImp_: i thought of another nice feature that i don't think DB has. in slade, you can middle-click (or bind it to something else) to select the nearest vertex. like, if you're drawing a line and you want to connect it to something that's off-grid, you can just put the mouse nearby the off-grid vertex and middle-click, and it'll snap to it.
 
+===========================================================================================
+
 Make Sector feature allows you to click somewhere and all surrounding lines will form a new sector. handy to split merged sectors.
+
+===========================================================================================
+
+typed linedef arguments
+the possible types are also defined in the configuration
+this allows a user to pick from a list instead of entering a number for the linedef args
+
+
