@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label1;
-			System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Monsters");
+			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Monsters");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ThingEditForm));
 			System.Windows.Forms.GroupBox groupBox2;
 			System.Windows.Forms.Label label6;
@@ -213,10 +213,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.typelist.Location = new System.Drawing.Point(11, 24);
 			this.typelist.Margin = new System.Windows.Forms.Padding(8, 8, 9, 8);
 			this.typelist.Name = "typelist";
-			treeNode2.Name = "Node0";
-			treeNode2.Text = "Monsters";
+			treeNode1.Name = "Node0";
+			treeNode1.Text = "Monsters";
 			this.typelist.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode2});
+            treeNode1});
 			this.typelist.SelectedImageIndex = 0;
 			this.typelist.Size = new System.Drawing.Size(246, 248);
 			this.typelist.TabIndex = 0;
@@ -226,7 +226,26 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.thingimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("thingimages.ImageStream")));
 			this.thingimages.TransparentColor = System.Drawing.SystemColors.Window;
-			this.thingimages.Images.SetKeyName(0, "ThingsListIcon.png");
+			this.thingimages.Images.SetKeyName(0, "thing00.png");
+			this.thingimages.Images.SetKeyName(1, "thing01.png");
+			this.thingimages.Images.SetKeyName(2, "thing02.png");
+			this.thingimages.Images.SetKeyName(3, "thing03.png");
+			this.thingimages.Images.SetKeyName(4, "thing04.png");
+			this.thingimages.Images.SetKeyName(5, "thing05.png");
+			this.thingimages.Images.SetKeyName(6, "thing06.png");
+			this.thingimages.Images.SetKeyName(7, "thing07.png");
+			this.thingimages.Images.SetKeyName(8, "thing08.png");
+			this.thingimages.Images.SetKeyName(9, "thing09.png");
+			this.thingimages.Images.SetKeyName(10, "thing10.png");
+			this.thingimages.Images.SetKeyName(11, "thing11.png");
+			this.thingimages.Images.SetKeyName(12, "thing12.png");
+			this.thingimages.Images.SetKeyName(13, "thing13.png");
+			this.thingimages.Images.SetKeyName(14, "thing14.png");
+			this.thingimages.Images.SetKeyName(15, "thing15.png");
+			this.thingimages.Images.SetKeyName(16, "thing16.png");
+			this.thingimages.Images.SetKeyName(17, "thing17.png");
+			this.thingimages.Images.SetKeyName(18, "thing18.png");
+			this.thingimages.Images.SetKeyName(19, "thing19.png");
 			// 
 			// groupBox2
 			// 
