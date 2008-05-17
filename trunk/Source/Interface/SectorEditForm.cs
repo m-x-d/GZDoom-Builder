@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Interface
 
 			// Make undo
 			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
-			General.Map.UndoRedo.CreateUndo("edit " + undodesc, UndoGroup.None, 0);
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc, UndoGroup.None, 0);
 
 			// Go for all sectors
 			foreach(Sector s in sectors)

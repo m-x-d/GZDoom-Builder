@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(points.Count > 0)
 			{
 				// Make undo for the draw
-				General.Map.UndoRedo.CreateUndo("line draw", UndoGroup.None, 0);
+				General.Map.UndoRedo.CreateUndo("Line draw", UndoGroup.None, 0);
 
 				/***************************************************\
 					STEP 1: Create the new geometry

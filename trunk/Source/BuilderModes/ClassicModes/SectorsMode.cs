@@ -523,7 +523,59 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
-		// Thi joins sectors together and keeps all lines
+		[BeginAction("deleteitem", BaseAction = true)]
+		public void DeleteItem()
+		{
+			// Make list of selected sectors
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+
+			// Anything to do?
+			if(selected.Count > 0)
+			{
+				// Make undo
+				if(selected.Count > 1)
+					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " sectors", UndoGroup.None, 0);
+				else
+					General.Map.UndoRedo.CreateUndo("Delete sector", UndoGroup.None, 0);
+
+				// Dispose selected sectors
+				foreach(Sector s in selected)
+				{
+					// Get all the linedefs
+					General.Map.Map.ClearMarkedLinedefs(false);
+					foreach(Sidedef sd in s.Sidedefs) sd.Line.Marked = true;
+					List<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);
+					
+					// Dispose the sector
+					s.Dispose();
+
+					// Check all the lines
+					for(int i = lines.Count - 1; i >= 0; i--)
+					{
+						// If the line has become orphaned, remove it
+						if((lines[i].Front == null) && (lines[i].Back == null))
+						{
+							// Remove line
+							lines[i].Dispose();
+						}
+						else
+						{
+							// Update sided flags
+							lines[i].ApplySidedFlags();
+						}
+					}
+				}
+
+				// Update cache values
+				General.Map.Map.Update();
+
+				// Redraw screen
+				General.Interface.RedrawDisplay();
+			}
+		}
+		
+		// This joins sectors together and keeps all lines
 		[BeginAction("joinsectors")]
 		public void JoinSectors()
 		{
