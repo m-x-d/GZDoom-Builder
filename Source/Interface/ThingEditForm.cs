@@ -69,10 +69,14 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Create category
 				TreeNode cn = typelist.Nodes.Add(tc.Name, tc.Title);
+				if((tc.Color >= 0) && (tc.Color < thingimages.Images.Count)) cn.ImageIndex = tc.Color;
+				cn.SelectedImageIndex = cn.ImageIndex;
 				foreach(ThingTypeInfo ti in tc.Things)
 				{
 					// Create thing
 					TreeNode n = cn.Nodes.Add(ti.Title);
+					if((ti.Color >= 0) && (ti.Color < thingimages.Images.Count)) n.ImageIndex = ti.Color;
+					n.SelectedImageIndex = n.ImageIndex;
 					n.Tag = ti;
 					nodes.Add(n);
 				}
