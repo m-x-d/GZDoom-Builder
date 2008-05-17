@@ -344,7 +344,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-
+			else
+			{
+				// Start drawing mode
+				DrawGeometryMode drawmode = new DrawGeometryMode();
+				drawmode.DrawPointAt(mousemappos, true);
+				General.Map.ChangeMode(drawmode);
+			}
+			
 			base.OnEdit();
 		}
 

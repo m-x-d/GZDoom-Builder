@@ -745,6 +745,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Update();
 		}
 
+		// This draws a point at a specific location
+		public void DrawPointAt(Vector2D pos, bool stitch)
+		{
+			DrawnVertex newpoint = new DrawnVertex();
+			newpoint.pos = pos;
+			newpoint.stitch = stitch;
+			points.Add(newpoint);
+			labels.Add(new LineLengthLabel());
+			labels[labels.Count - 1].Start = newpoint.pos;
+			if(labels.Count > 1) labels[labels.Count - 2].End = newpoint.pos;
+			Update();
+
+			// Check if point stitches with the first
+			if((points.Count > 1) && (points[points.Count - 1].stitch))
+			{
+				Vector2D p1 = points[0].pos;
+				Vector2D p2 = points[points.Count - 1].pos;
+				Vector2D delta = p1 - p2;
+				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
+				{
+					// Finish drawing
+					FinishDraw();
+				}
+			}
+		}
+		
 		// Drawing a point
 		[BeginAction("drawpoint")]
 		public void DrawPoint()
@@ -753,24 +779,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Interface.MouseInDisplay)
 			{
 				DrawnVertex newpoint = GetCurrentPosition();
-				points.Add(newpoint);
-				labels.Add(new LineLengthLabel());
-				labels[labels.Count - 1].Start = newpoint.pos;
-				if(labels.Count > 1) labels[labels.Count - 2].End = newpoint.pos;
-				Update();
-
-				// Check if point stitches with the first
-				if((points.Count > 1) && (points[points.Count - 1].stitch))
-				{
-					Vector2D p1 = points[0].pos;
-					Vector2D p2 = points[points.Count - 1].pos;
-					Vector2D delta = p1 - p2;
-					if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
-					{
-						// Finish drawing
-						FinishDraw();
-					}
-				}
+				DrawPointAt(newpoint.pos, newpoint.stitch);
 			}
 		}
 

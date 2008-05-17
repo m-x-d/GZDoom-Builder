@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Edit pressed in this mode
 				editpressed = true;
-				
+
 				// Highlighted item not selected?
 				if(!highlighted.Selected)
 				{
@@ -282,7 +282,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-
+			else
+			{
+				// Start drawing mode
+				DrawGeometryMode drawmode = new DrawGeometryMode();
+				drawmode.DrawPointAt(mousemappos, true);
+				General.Map.ChangeMode(drawmode);
+			}
+			
 			base.OnEdit();
 		}
 		
