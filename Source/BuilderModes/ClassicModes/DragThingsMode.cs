@@ -232,7 +232,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				// Render things
-				renderer.SetThingsRenderOrder(true);
 				renderer.RenderThingSet(unselectedthings);
 				renderer.RenderThingSet(selectedthings);
 
@@ -271,6 +270,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+			renderer.SetPresentation(Presentation.Things);
 		}
 		
 		// Disenagaging

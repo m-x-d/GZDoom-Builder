@@ -296,6 +296,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+			renderer.SetPresentation(Presentation.Standard);
 		}
 		
 		// Disenagaging

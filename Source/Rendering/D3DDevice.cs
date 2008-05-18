@@ -269,6 +269,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			fonttexture.MipMapLevels = 2;
 			fonttexture.CreateTexture();
 			
+			// Initialize presentations
+			Presentation.Initialize();
+			
 			// Initialize settings
 			SetupSettings();
 			

@@ -142,7 +142,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.SetThingsRenderOrder(true);
 				renderer.RenderThingSet(General.Map.Map.Things);
 				if((highlighted != null) && (highlighted is Thing)) DrawHighlight(true);
 				renderer.Finish();

@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		// Rendering events
 		public virtual void OnRedrawDisplay() { }
-		public virtual void OnRefreshDisplay() { }
+		public virtual void OnPresentDisplay() { }
 
 		// Processing events
 		public virtual void OnProcess() { }

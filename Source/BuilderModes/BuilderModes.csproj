@@ -33,6 +33,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassicModes\BrightnessMode.cs" />
     <Compile Include="ClassicModes\CurveLinedefsMode.cs" />
     <Compile Include="ClassicModes\DragLinedefsMode.cs" />
     <Compile Include="ClassicModes\DragSectorsMode.cs" />
@@ -114,6 +115,9 @@
       <Project>{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}</Project>
       <Name>Builder</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\BrightnessMode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

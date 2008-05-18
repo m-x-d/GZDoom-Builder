@@ -37,7 +37,7 @@ using System.Drawing.Imaging;
 namespace CodeImp.DoomBuilder.Rendering
 {
 	// FlatVertex
-	internal struct FlatVertex
+	public struct FlatVertex
 	{
 		// Vertex format
 		public static readonly int Stride = 7 * 4;

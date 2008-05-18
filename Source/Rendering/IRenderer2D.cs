@@ -43,6 +43,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Properties
 		float OffsetX { get; }
 		float OffsetY { get; }
+		float TranslateX { get; }
+		float TranslateY { get; }
 		float Scale { get; }
 		int VertexSize { get; }
 		
@@ -56,7 +58,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		bool StartThings(bool clear);
 		bool StartOverlay(bool clear);
 		void Finish();
-		void SetThingsRenderOrder(bool front);
+		void SetPresentation(Presentation present);
 		void Present();
 
 		// Drawing methods
@@ -74,5 +76,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect);
 		void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords);
 		void RenderText(TextLabel text);
+		void RenderGeometry(FlatVertex[] vertices, ImageData texture);
 	}
 }

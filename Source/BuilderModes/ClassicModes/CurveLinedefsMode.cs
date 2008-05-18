@@ -108,7 +108,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
-
+			renderer.SetPresentation(Presentation.Standard);
+			
 			// Show toolbox window
 			BuilderPlug.Me.CurveLinedefsForm.Show((Form)General.Interface);
 		}
@@ -206,7 +207,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.SetThingsRenderOrder(false);
 				renderer.RenderThingSet(General.Map.Map.Things);
 				renderer.Finish();
 			}
