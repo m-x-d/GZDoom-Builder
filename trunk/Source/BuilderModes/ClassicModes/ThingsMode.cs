@@ -390,6 +390,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Thing t in selected) t.Dispose();
 				
 				// Update cache values
+				General.Map.IsChanged = true;
 				General.Map.Map.Update();
 
 				// Invoke a new mousemove so that the highlighted item updates

@@ -431,6 +431,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Linedef ld in selected) ld.Dispose();
 				
 				// Update cache values
+				General.Map.IsChanged = true;
 				General.Map.Map.Update();
 
 				// Invoke a new mousemove so that the highlighted item updates
@@ -484,6 +485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Update cache values
+				General.Map.IsChanged = true;
 				General.Map.Map.Update();
 				
 				// Redraw screen
@@ -536,6 +538,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Redraw
+				General.Map.IsChanged = true;
 				General.Interface.RedrawDisplay();
 			}
 		}
@@ -560,6 +563,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Redraw
+				General.Map.IsChanged = true;
 				General.Interface.RedrawDisplay();
 			}
 		}

@@ -157,6 +157,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Update caches
 			General.Map.Map.Update();
+			General.Map.IsChanged = true;
 			
 			// Return to base mode
 			General.Map.ChangeMode(basemode);

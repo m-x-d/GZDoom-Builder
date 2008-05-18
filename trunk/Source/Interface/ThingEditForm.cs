@@ -336,6 +336,7 @@ namespace CodeImp.DoomBuilder.Interface
 			}
 
 			// Done
+			General.Map.IsChanged = true;
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}

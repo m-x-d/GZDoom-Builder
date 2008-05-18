@@ -575,6 +575,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Update cache values
+				General.Map.IsChanged = true;
 				General.Map.Map.Update();
 
 				// Redraw screen
@@ -599,7 +600,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Deselect
 				General.Map.Map.ClearSelectedSectors();
 				General.Map.Map.ClearSelectedLinedefs();
-				
+				General.Map.IsChanged = true;
+
 				// Redraw display
 				General.Interface.RedrawDisplay();
 			}
@@ -622,6 +624,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Deselect
 				General.Map.Map.ClearSelectedSectors();
 				General.Map.Map.ClearSelectedLinedefs();
+				General.Map.IsChanged = true;
 
 				// Redraw display
 				General.Interface.RedrawDisplay();
