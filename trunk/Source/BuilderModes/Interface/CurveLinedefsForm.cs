@@ -38,7 +38,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public partial class CurveLinedefsForm : DelayedForm
 	{
-		#region ================== Variables
+		#region ================== Constants
+
+		private int MIN_VERTICES = 1;
+		private int MAX_VERTICES = 200;
+		private int MIN_DISTANCE = 0;
+		private int MAX_DISTANCE = 10000;
+		private int MIN_ANGLE = 0;
+		private int MAX_ANGLE = 180;
 
 		#endregion
 
@@ -59,6 +66,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Initialize
 			InitializeComponent();
+
+			// Set negative properties for stupid
+			// scrollbars that work the other way around
+			verticesbar.Maximum = -MIN_VERTICES;
+			verticesbar.Minimum = -MAX_VERTICES;
+			distancebar.Maximum = -MIN_DISTANCE;
+			distancebar.Minimum = -MAX_DISTANCE;
+			anglebar.Maximum = -MIN_ANGLE;
+			anglebar.Minimum = -MAX_ANGLE;
 		}
 
 		#endregion
