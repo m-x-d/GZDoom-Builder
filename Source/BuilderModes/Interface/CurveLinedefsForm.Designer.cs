@@ -114,31 +114,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// verticesbar
 			// 
+			this.verticesbar.LargeChange = 1;
 			this.verticesbar.Location = new System.Drawing.Point(125, 10);
-			this.verticesbar.Maximum = 200;
-			this.verticesbar.Minimum = 1;
+			this.verticesbar.Maximum = -1;
+			this.verticesbar.Minimum = -200;
 			this.verticesbar.Name = "verticesbar";
 			this.verticesbar.Size = new System.Drawing.Size(19, 24);
 			this.verticesbar.TabIndex = 6;
-			this.verticesbar.Value = 1;
+			this.verticesbar.Value = -8;
 			this.verticesbar.ValueChanged += new System.EventHandler(this.verticesbar_ValueChanged);
 			// 
 			// distancebar
 			// 
+			this.distancebar.LargeChange = 8;
 			this.distancebar.Location = new System.Drawing.Point(125, 42);
-			this.distancebar.Maximum = 10000;
+			this.distancebar.Maximum = 0;
+			this.distancebar.Minimum = -10000;
 			this.distancebar.Name = "distancebar";
 			this.distancebar.Size = new System.Drawing.Size(19, 24);
+			this.distancebar.SmallChange = 8;
 			this.distancebar.TabIndex = 7;
+			this.distancebar.Value = -128;
 			this.distancebar.ValueChanged += new System.EventHandler(this.distancebar_ValueChanged);
 			// 
 			// anglebar
 			// 
+			this.anglebar.LargeChange = 5;
 			this.anglebar.Location = new System.Drawing.Point(125, 74);
-			this.anglebar.Maximum = 180;
+			this.anglebar.Maximum = 0;
+			this.anglebar.Minimum = -180;
 			this.anglebar.Name = "anglebar";
 			this.anglebar.Size = new System.Drawing.Size(19, 24);
+			this.anglebar.SmallChange = 5;
 			this.anglebar.TabIndex = 8;
+			this.anglebar.Value = -180;
 			this.anglebar.ValueChanged += new System.EventHandler(this.anglebar_ValueChanged);
 			// 
 			// cancel

@@ -39,8 +39,10 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			// Initialize
 			this.baseline = baseline;
-			this.front = front;
 			this.basevertex = fromvertex;
+			
+			// Determine rotation direction
+			if(baseline.End == basevertex) this.front = !front; else this.front = front;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -51,7 +53,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			float s, n, ana, anb;
 			Vector2D va, vb;
-			bool dir;
 			
 			// Determine angles
 			ana = a.Angle; if(a.End == basevertex) ana += Angle2D.PI;
@@ -64,13 +65,9 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(a.Start == basevertex) va = a.End.Position; else va = a.Start.Position;
 			if(b.Start == basevertex) vb = b.End.Position; else vb = b.Start.Position;
 			
-			// Determine rotation direction
-			if(baseline.End == basevertex) dir = !front; else dir = front;
-			
 			// Check to which side the angle goes and adjust angle as needed
 			s = Line2D.GetSideOfLine(va, vb, basevertex.Position);
-			if((s < 0) && dir) n = Angle2D.PI2 - n;
-			if((s > 0) && !dir) n = Angle2D.PI2 - n;
+			if(((s < 0) && front) || ((s > 0) && !front)) n = Angle2D.PI2 - n;
 			
 			// Return result
 			return n;
