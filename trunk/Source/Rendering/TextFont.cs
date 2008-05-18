@@ -179,7 +179,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v1 * 0.5f + offsetv;
 			vert.x = textx;
 			vert.y = texty;
-			vert.w = 1f;
 			stream.Write<FlatVertex>(vert);
 
 			// Create leftbottom vertex
@@ -188,7 +187,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v2 * 0.5f + offsetv;
 			vert.x = textx;
 			vert.y = texty + textheight;
-			vert.w = 1f;
 			stream.Write<FlatVertex>(vert);
 
 			// Create righttop vertex
@@ -197,7 +195,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v1 * 0.5f + offsetv;
 			vert.x = textx + cwidth;
 			vert.y = texty;
-			vert.w = 1f;
 			stream.Write<FlatVertex>(vert);
 
 			// Create leftbottom vertex
@@ -206,7 +203,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v2 * 0.5f + offsetv;
 			vert.x = textx;
 			vert.y = texty + textheight;
-			vert.w = 1f;
 			stream.Write<FlatVertex>(vert);
 
 			// Create righttop vertex
@@ -215,7 +211,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v1 * 0.5f + offsetv;
 			vert.x = textx + cwidth;
 			vert.y = texty;
-			vert.w = 1f;
 			stream.Write<FlatVertex>(vert);
 
 			// Create rightbottom vertex
@@ -224,7 +219,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v2 * 0.5f + offsetv;
 			vert.x = textx + cwidth;
 			vert.y = texty + textheight;
-			vert.w = 1f;
 			stream.Write<FlatVertex>(vert);
 
 			textx += (cwidth + (ADJUST_SPACING * scale));

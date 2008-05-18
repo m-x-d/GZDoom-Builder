@@ -32,6 +32,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using System.Drawing;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -72,7 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public BrightnessMode()
 		{
-			// Make ordered selection list
+			// Make lists
 			orderedselection = new List<Sector>();
 
 			// Fill the list with selected sectors (these are not in order, but we have no other choice)
@@ -167,6 +168,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
+			p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 0.3f, false));
 			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			renderer.SetPresentation(p);
 		}
@@ -212,38 +214,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
+				renderer.RenderThingSet(General.Map.Map.Things);
 				renderer.Finish();
 			}
 
-			// Render selection
-			if(renderer.StartOverlay(true))
-			{
-				foreach(Sector s in General.Map.Map.Sectors)
-				{
-					PixelColor b = new PixelColor(255, (byte)s.Brightness, (byte)s.Brightness, (byte)s.Brightness);
-					int bint = b.ToInt();
-					FlatVertex[] verts = new FlatVertex[s.Triangles.Count];
-					int index = 0;
-					foreach(Vector2D v in s.Triangles)
-					{
-						Vector2D tv = v.GetTransformed(renderer.TranslateX, renderer.TranslateY, renderer.Scale, -renderer.Scale);
-						verts[index].x = tv.x;
-						verts[index].y = tv.y;
-						verts[index].z = 0f;
-						verts[index].w = 1f;
-						verts[index].c = bint;
-						index++;
-					}
-					renderer.RenderGeometry(verts, null);
-				}
-				
-				if(selecting) RenderMultiSelection();
-				renderer.Finish();
-			}
+			// Render overlay
+			UpdateOverlay();
 
 			renderer.Present();
 		}
 
+		// This updates the overlay
+		private void UpdateOverlay()
+		{
+			if(renderer.StartOverlay(true))
+			{
+				// Go for all sectors
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					// Determine color by brightness
+					PixelColor brightnesscolor = new PixelColor(255, (byte)s.Brightness, (byte)s.Brightness, (byte)s.Brightness);
+					int brightnessint = brightnesscolor.ToInt();
+
+					// Load texture image
+					ImageData texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
+					if(!texture.IsLoaded) texture.LoadImage();
+
+					// Make vertices
+					FlatVertex[] verts = new FlatVertex[s.Vertices.Length];
+					s.Vertices.CopyTo(verts, 0);
+					for(int i = 0; i < verts.Length; i++)
+					{
+						verts[i].u = verts[i].x / texture.ScaledWidth;
+						verts[i].v = verts[i].y / texture.ScaledHeight;
+					}
+
+					// Render the geometry
+					renderer.RenderGeometry(verts, texture, true);
+				}
+
+				if(selecting) RenderMultiSelection();
+
+				renderer.Finish();
+			}
+		}
+		
 		// This highlights a new item
 		protected void Highlight(Sector s)
 		{
@@ -489,13 +504,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnUpdateMultiSelection();
 
-			// Render selection
-			if(renderer.StartOverlay(true))
-			{
-				RenderMultiSelection();
-				renderer.Finish();
-				renderer.Present();
-			}
+			// Render overlay
+			UpdateOverlay();
+			renderer.Present();
 		}
 		
 		#endregion

@@ -201,6 +201,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
 				graphics.Device.SetStreamSource(0, screenverts, 0, sizeof(FlatVertex));
+				graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 				graphics.Shaders.Display2D.Begin();
 				
 				// Go for all layers
@@ -308,6 +309,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Release binds
 				graphics.Device.SetTexture(0, null);
 				graphics.Shaders.Display2D.Texture1 = null;
+				graphics.Device.SetStreamSource(0, null, 0, 0);
 			}
 		}
 		
@@ -424,25 +426,21 @@ namespace CodeImp.DoomBuilder.Rendering
 			FlatVertex[] screenverts = new FlatVertex[4];
 			screenverts[0].x = 0.5f;
 			screenverts[0].y = 0.5f;
-			screenverts[0].w = 1f;
 			screenverts[0].c = -1;
 			screenverts[0].u = 1f / texturesize.Width;
 			screenverts[0].v = 1f / texturesize.Height;
 			screenverts[1].x = texturesize.Width - 1.5f;
 			screenverts[1].y = 0.5f;
-			screenverts[1].w = 1f;
 			screenverts[1].c = -1;
 			screenverts[1].u = 1f - 1f / texturesize.Width;
 			screenverts[1].v = 1f / texturesize.Height;
 			screenverts[2].x = 0.5f;
 			screenverts[2].y = texturesize.Height - 1.5f;
 			screenverts[2].c = -1;
-			screenverts[2].w = 1f;
 			screenverts[2].u = 1f / texturesize.Width;
 			screenverts[2].v = 1f - 1f / texturesize.Height;
 			screenverts[3].x = texturesize.Width - 1.5f;
 			screenverts[3].y = texturesize.Height - 1.5f;
-			screenverts[3].w = 1f;
 			screenverts[3].c = -1;
 			screenverts[3].u = 1f - 1f / texturesize.Width;
 			screenverts[3].v = 1f - 1f / texturesize.Height;
@@ -486,6 +484,24 @@ namespace CodeImp.DoomBuilder.Rendering
 			vertexsize = (int)(1.7f * scale + 0.5f);
 			if(vertexsize < 0) vertexsize = 0;
 			if(vertexsize > 4) vertexsize = 4;
+			Matrix scaling = Matrix.Scaling((1f / (float)windowsize.Width) * 2f, (1f / (float)windowsize.Height) * -2f, 1f);
+			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
+			graphics.Device.SetTransform(TransformState.View, Matrix.Multiply(translate, scaling));
+		}
+
+		// This sets the world matrix for transformation
+		private void SetWorldTransformation(bool transform)
+		{
+			if(transform)
+			{
+				Matrix translate = Matrix.Translation(translatex, translatey, 0f);
+				Matrix scaling = Matrix.Scaling(scale, -scale, 1f);
+				graphics.Device.SetTransform(TransformState.World, Matrix.Multiply(translate, scaling));
+			}
+			else
+			{
+				graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			}
 		}
 		
 		// This unprojects mouse coordinates into map coordinates
@@ -563,6 +579,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 				
 				// Ready for rendering
+				UpdateTransformations();
 				return true;
 			}
 			else
@@ -593,6 +610,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(graphics.StartRendering(clear, new Color4(0), targetsurface, null))
 				{
 					// Ready for rendering
+					UpdateTransformations();
 					return true;
 				}
 				else
@@ -624,6 +642,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(graphics.StartRendering(clear, new Color4(0), targetsurface, null))
 				{
 					// Ready for rendering
+					UpdateTransformations();
 					return true;
 				}
 				else
@@ -868,21 +887,18 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Setup fixed rect for circle
 				verts[offset].x = screenpos.x - circlesize;
 				verts[offset].y = screenpos.y - circlesize;
-				verts[offset].w = 1f;
 				verts[offset].c = color;
 				verts[offset].u = 1f / 512f;
 				verts[offset].v = 1f / 128f;
 				offset++;
 				verts[offset].x = screenpos.x + circlesize;
 				verts[offset].y = screenpos.y - circlesize;
-				verts[offset].w = 1f;
 				verts[offset].c = color;
 				verts[offset].u = 0.25f - 1f / 512f;
 				verts[offset].v = 1f / 128f;
 				offset++;
 				verts[offset].x = screenpos.x - circlesize;
 				verts[offset].y = screenpos.y + circlesize;
-				verts[offset].w = 1f;
 				verts[offset].c = color;
 				verts[offset].u = 1f / 512f;
 				verts[offset].v = 1f - 1f / 128f;
@@ -893,7 +909,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				offset++;
 				verts[offset].x = screenpos.x + circlesize;
 				verts[offset].y = screenpos.y + circlesize;
-				verts[offset].w = 1f;
 				verts[offset].c = color;
 				verts[offset].u = 0.25f - 1f / 512f;
 				verts[offset].v = 1f - 1f / 128f;
@@ -902,21 +917,18 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Setup rotated rect for arrow
 				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
 				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
-				verts[offset].w = 1f;
 				verts[offset].c = -1;
 				verts[offset].u = 0.50f + t.IconOffset;
 				verts[offset].v = 0f;
 				offset++;
 				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
 				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
-				verts[offset].w = 1f;
 				verts[offset].c = -1;
 				verts[offset].u = 0.75f + t.IconOffset;
 				verts[offset].v = 0f;
 				offset++;
 				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
 				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
-				verts[offset].w = 1f;
 				verts[offset].c = -1;
 				verts[offset].u = 0.50f + t.IconOffset;
 				verts[offset].v = 1f;
@@ -927,7 +939,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				offset++;
 				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
 				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
-				verts[offset].w = 1f;
 				verts[offset].c = -1;
 				verts[offset].u = 0.75f + t.IconOffset;
 				verts[offset].v = 1f;
@@ -963,11 +974,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(General.Settings.SquareThings) thingtextureindex |= THING_SQUARE;
 				graphics.Device.SetTexture(0, thingtexture[thingtextureindex].Texture);
 				graphics.Shaders.Things2D.Texture1 = thingtexture[thingtextureindex].Texture;
+				SetWorldTransformation(false);
+				graphics.Shaders.Things2D.SetSettings();
 
 				// Draw the things batched
 				graphics.Shaders.Things2D.Begin();
 				graphics.Shaders.Things2D.BeginPass(0);
-				//try { graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, offset * 12, count * 4); } catch(Exception) { }
 				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, offset * 12, count * 4);
 				graphics.Shaders.Things2D.EndPass();
 				graphics.Shaders.Things2D.End();
@@ -1042,7 +1054,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// This renders geometry
 		// The geometry must be a triangle list
-		public void RenderGeometry(FlatVertex[] vertices, ImageData texture)
+		public void RenderGeometry(FlatVertex[] vertices, ImageData texture, bool transformcoords)
 		{
 			Texture t = null;
 
@@ -1066,15 +1078,17 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-				graphics.Shaders.Texture2D.Texture1 = t;
+				graphics.Shaders.Display2D.Texture1 = t;
 				graphics.Device.SetTexture(0, t);
+				SetWorldTransformation(transformcoords);
+				graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
 
 				// Draw
-				graphics.Shaders.Texture2D.Begin();
-				graphics.Shaders.Texture2D.BeginPass(0);
+				graphics.Shaders.Display2D.Begin();
+				graphics.Shaders.Display2D.BeginPass(2);
 				graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleList, 0, vertices.Length / 3, vertices);
-				graphics.Shaders.Texture2D.EndPass();
-				graphics.Shaders.Texture2D.End();
+				graphics.Shaders.Display2D.EndPass();
+				graphics.Shaders.Display2D.End();
 			}
 		}
 
@@ -1093,16 +1107,19 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-				graphics.Shaders.Texture2D.Texture1 = graphics.FontTexture;
+				graphics.Shaders.Display2D.Texture1 = graphics.FontTexture;
+				SetWorldTransformation(false);
+				graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
 				graphics.Device.SetTexture(0, graphics.FontTexture);
 				graphics.Device.SetStreamSource(0, text.VertexBuffer, 0, FlatVertex.Stride);
 
 				// Draw
-				graphics.Shaders.Texture2D.Begin();
-				graphics.Shaders.Texture2D.BeginPass(0);
+				graphics.Shaders.Display2D.Begin();
+				graphics.Shaders.Display2D.BeginPass(2);
+				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces >> 1);
 				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces);
-				graphics.Shaders.Texture2D.EndPass();
-				graphics.Shaders.Texture2D.End();
+				graphics.Shaders.Display2D.EndPass();
+				graphics.Shaders.Display2D.End();
 			}
 		}
 		
@@ -1146,7 +1163,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			quads[0].SetColors(c.ToInt());
 			quads[1].SetColors(c.ToInt());
 			quads[2].SetColors(c.ToInt());
-			quads[3].SetColors(c.ToInt());	
+			quads[3].SetColors(c.ToInt());
 			
 			// Set renderstates for rendering
 			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
@@ -1154,16 +1171,20 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			SetWorldTransformation(false);
+			graphics.Device.SetTexture(0, whitetexture.Texture);
+			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
 			
 			// Draw
-			graphics.Shaders.Color2D.Begin();
-			graphics.Shaders.Color2D.BeginPass(0);
+			graphics.Shaders.Display2D.Begin();
+			graphics.Shaders.Display2D.BeginPass(1);
 			quads[0].Render(graphics);
 			quads[1].Render(graphics);
 			quads[2].Render(graphics);
 			quads[3].Render(graphics);
-			graphics.Shaders.Color2D.EndPass();
-			graphics.Shaders.Color2D.End();
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
 		}
 
 		// This renders a filled rectangle with given color
@@ -1188,13 +1209,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			SetWorldTransformation(false);
+			graphics.Device.SetTexture(0, whitetexture.Texture);
+			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
 
 			// Draw
-			graphics.Shaders.Color2D.Begin();
-			graphics.Shaders.Color2D.BeginPass(0);
+			graphics.Shaders.Display2D.Begin();
+			graphics.Shaders.Display2D.BeginPass(1);
 			quad.Render(graphics);
-			graphics.Shaders.Color2D.EndPass();
-			graphics.Shaders.Color2D.End();
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
 		}
 
 		// This renders a line with given color
@@ -1217,22 +1242,18 @@ namespace CodeImp.DoomBuilder.Rendering
 			verts[0].x = start.x - dn.x + dn.y;
 			verts[0].y = start.y - dn.y - dn.x;
 			verts[0].z = 0.0f;
-			verts[0].w = 1.0f;
 			verts[0].c = c.ToInt();
 			verts[1].x = start.x - dn.x - dn.y;
 			verts[1].y = start.y - dn.y + dn.x;
 			verts[1].z = 0.0f;
-			verts[1].w = 1.0f;
 			verts[1].c = c.ToInt();
 			verts[2].x = end.x + dn.x + dn.y;
 			verts[2].y = end.y + dn.y - dn.x;
 			verts[2].z = 0.0f;
-			verts[2].w = 1.0f;
 			verts[2].c = c.ToInt();
 			verts[3].x = end.x + dn.x - dn.y;
 			verts[3].y = end.y + dn.y + dn.x;
 			verts[3].z = 0.0f;
-			verts[3].w = 1.0f;
 			verts[3].c = c.ToInt();
 			
 			// Set renderstates for rendering
@@ -1241,13 +1262,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			SetWorldTransformation(false);
+			graphics.Device.SetTexture(0, whitetexture.Texture);
+			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
 
 			// Draw
-			graphics.Shaders.Color2D.Begin();
-			graphics.Shaders.Color2D.BeginPass(0);
+			graphics.Shaders.Display2D.Begin();
+			graphics.Shaders.Display2D.BeginPass(0);
 			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, verts);
-			graphics.Shaders.Color2D.EndPass();
-			graphics.Shaders.Color2D.End();
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
 		}
 
 		#endregion

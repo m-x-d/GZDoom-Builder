@@ -65,8 +65,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.Texture.LoadImage();
 
 			// Make vertices
-			verts = new WorldVertex[s.Triangles.Count];
-			for(int i = 0; i < s.Triangles.Count; i++)
+			verts = new WorldVertex[s.Vertices.Length];
+			for(int i = 0; i < s.Vertices.Length; i++)
 			{
 				// Use sector brightness for color shading
 				//pc = new PixelColor(255, unchecked((byte)s.Brightness), unchecked((byte)s.Brightness), unchecked((byte)s.Brightness));
@@ -74,12 +74,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				verts[i].c = -1;
 
 				// Grid aligned texture coordinates
-				verts[i].u = s.Triangles[i].x / base.Texture.ScaledWidth;
-				verts[i].v = s.Triangles[i].y / base.Texture.ScaledHeight;
+				verts[i].u = s.Vertices[i].x / base.Texture.ScaledWidth;
+				verts[i].v = s.Vertices[i].y / base.Texture.ScaledHeight;
 
 				// Vertex coordinates
-				verts[i].x = s.Triangles[i].x;
-				verts[i].y = s.Triangles[i].y;
+				verts[i].x = s.Vertices[i].x;
+				verts[i].y = s.Vertices[i].y;
 				verts[i].z = (float)s.CeilHeight;
 			}
 
