@@ -342,9 +342,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Rendering\Color2DShader.cs" />
     <Compile Include="Rendering\Presentation.cs" />
-    <Compile Include="Rendering\Texture2DShader.cs" />
     <Compile Include="Rendering\Display2DShader.cs" />
     <Compile Include="Rendering\ColorCollection.cs" />
     <Compile Include="Rendering\ColorSetting.cs" />
@@ -549,10 +547,8 @@
     <EmbeddedResource Include="Resources\Thing2D_3.png" />
     <EmbeddedResource Include="Resources\Thing2D_2.png" />
     <EmbeddedResource Include="Resources\White.png" />
-    <EmbeddedResource Include="Resources\color2d.fx" />
     <EmbeddedResource Include="Resources\Font.cfg" />
     <None Include="Resources\Splash2_small.png" />
     <None Include="Resources\Splash2_trans.png" />
-    <EmbeddedResource Include="Resources\texture2d.fx" />
   </ItemGroup>
 </Project>

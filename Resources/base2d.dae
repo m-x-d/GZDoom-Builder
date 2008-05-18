@@ -14,7 +14,7 @@
         <title/>
     </asset>
     <library_effects>
-        <effect id="Effect" name="base2d">
+        <effect id="Effect" name="display2d">
             <profile_COMMON>
                 <technique sid="__fxc2_default">
                     <constant/>
@@ -22,7 +22,7 @@
             </profile_COMMON>
             <extra type="import">
                 <technique profile="NVIDIA_FXCOMPOSER">
-                    <import url="../Source/Resources/base2d.fx" compiler_options="" profile="fx"/>
+                    <import url="../Source/Resources/display2d.fx" compiler_options="" profile="fx"/>
                 </technique>
             </extra>
         </effect>

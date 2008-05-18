@@ -120,8 +120,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, General.Colors.Highlight);
 				renderer.Finish();
 			}
 
@@ -129,6 +127,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.Map.Things);
+				if((highlighted != null) && !highlighted.IsDisposed)
+					renderer.RenderThing(highlighted, General.Colors.Highlight);
 				renderer.Finish();
 			}
 

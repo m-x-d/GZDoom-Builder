@@ -231,7 +231,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			for(int i = 0; i < numvertices; i++)
 			{
 				// Initialize to defaults
-				vertices[i].w = 1f;
 				vertices[i].c = -1;
 			}
 		}

@@ -24,6 +24,7 @@ using System.Text;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -70,7 +71,9 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Triangulation
 		private bool updateneeded;
-		private TriangleList triangles;
+		private bool triangulationneeded;
+		private TriangleList triverts;
+		private FlatVertex[] vertices;
 
 		// Additional fields
 		private SortedList<string, object> fields;
@@ -95,12 +98,12 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongCeilTexture { get { return longceiltexname; } }
 		public int Effect { get { return effect; } set { effect = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
-		public int Brightness { get { return brightness; } set { brightness = value; } }
+		public int Brightness { get { return brightness; } set { brightness = value; updateneeded = true; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
-		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; } }
+		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
-		public TriangleList Triangles { get { return triangles; } set { triangles = value; } }
+		public FlatVertex[] Vertices { get { return vertices; } }
 		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
@@ -171,12 +174,14 @@ namespace CodeImp.DoomBuilder.Map
 			s.brightness = brightness;
 			if(fields != null) s.MakeFields(fields);
 			s.selected = selected;
+			s.updateneeded = true;
 		}
 		
 		// This attaches a sidedef and returns the listitem
 		public LinkedListNode<Sidedef> AttachSidedef(Sidedef sd)
 		{
 			updateneeded = true;
+			triangulationneeded = true;
 			return sidedefs.AddLast(sd);
 		}
 
@@ -188,6 +193,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Remove sidedef
 				updateneeded = true;
+				triangulationneeded = true;
 				sidedefs.Remove(l);
 
 				// No more sidedefs left?
@@ -211,8 +217,31 @@ namespace CodeImp.DoomBuilder.Map
 			// Update if needed
 			if(updateneeded)
 			{
-				// Triangulate sector again
-				triangles = General.EarClipper.PerformTriangulation(this);
+				// Triangulate again?
+				if(triangulationneeded || (triverts == null))
+				{
+					// Triangulate sector
+					triverts = General.EarClipper.PerformTriangulation(this);
+				}
+				
+				// Brightness color (alpha is opaque)
+				byte clampedbright = 0;
+				if((brightness >= 0) && (brightness <= 255)) clampedbright = (byte)brightness;
+				else if(brightness > 255) clampedbright = 255;
+				PixelColor brightcolor = new PixelColor(255, clampedbright, clampedbright, clampedbright);
+				int brightint = brightcolor.ToInt();
+				
+				// Make vertices
+				vertices = new FlatVertex[triverts.Count];
+				for(int i = 0; i < triverts.Count; i++)
+				{
+					vertices[i].x = triverts[i].x;
+					vertices[i].y = triverts[i].y;
+					vertices[i].z = 1.0f;
+					vertices[i].c = brightint;
+					vertices[i].u = triverts[i].x;
+					vertices[i].v = triverts[i].y;
+				}
 				
 				// Updated
 				updateneeded = false;
@@ -275,6 +304,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.effect = effect;
 			this.tag = tag;
 			this.brightness = brightness;
+			updateneeded = true;
 		}
 
 		// This sets texture
@@ -282,6 +312,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			floortexname = name;
 			longfloortexname = Lump.MakeLongName(name);
+			updateneeded = true;
 		}
 
 		// This sets texture
@@ -289,6 +320,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			ceiltexname = name;
 			longceiltexname = Lump.MakeLongName(name);
+			updateneeded = true;
 		}
 		
 		#endregion

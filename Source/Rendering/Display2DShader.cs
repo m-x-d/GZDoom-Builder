@@ -42,7 +42,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Property handlers
 		private EffectHandle texture1;
-		private EffectHandle settings;
+		private EffectHandle rendersettings;
+		private EffectHandle transformsettings;
 
 		#endregion
 
@@ -64,15 +65,16 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(effect != null)
 			{
 				texture1 = effect.GetParameter(null, "texture1");
-				settings = effect.GetParameter(null, "settings");
+				rendersettings = effect.GetParameter(null, "rendersettings");
+				transformsettings = effect.GetParameter(null, "transformsettings");
 			}
 			
 			// Initialize world vertex declaration
 			VertexElement[] elements = new VertexElement[]
 			{
-				new VertexElement(0, 0, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.PositionTransformed, 0),
-				new VertexElement(0, 16, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
-				new VertexElement(0, 20, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
+				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
 				VertexElement.VertexDeclarationEnd
 			};
 			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, elements);
@@ -89,7 +91,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Clean up
 				if(texture1 != null) texture1.Dispose();
-				if(settings != null) settings.Dispose();
+				if(rendersettings != null) rendersettings.Dispose();
+				if(transformsettings != null) transformsettings.Dispose();
 				
 				// Done
 				base.Dispose();
@@ -103,8 +106,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets the settings
 		public void SetSettings(float texelx, float texely, float fsaafactor, float alpha)
 		{
-			Vector4 values = new Vector4(texelx, texely, fsaafactor, alpha);
-			if(manager.Enabled) effect.SetValue(settings, values);
+			if(manager.Enabled)
+			{
+				Vector4 values = new Vector4(texelx, texely, fsaafactor, alpha);
+				effect.SetValue(rendersettings, values);
+				Matrix world = manager.D3DDevice.Device.GetTransform(TransformState.World);
+				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
+				effect.SetValue(transformsettings, Matrix.Multiply(world, view));
+			}
 		}
 
 		#endregion

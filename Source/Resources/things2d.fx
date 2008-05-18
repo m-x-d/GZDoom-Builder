@@ -1,6 +1,14 @@
 // Things 2D rendering shader
 // Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
 
+// Vertex input data
+struct VertexData
+{
+    float3 pos		: POSITION;
+    float4 color	: COLOR0;
+    float2 uv		: TEXCOORD0;
+};
+
 // Pixel input data
 struct PixelData
 {
@@ -8,6 +16,9 @@ struct PixelData
     float4 color	: COLOR0;
     float2 uv		: TEXCOORD0;
 };
+
+// Transform settings
+float4x4 transformsettings;
 
 // Texture1 input
 texture texture1
@@ -27,6 +38,16 @@ sampler2D texture1samp = sampler_state
 	AddressV = Wrap;
 	MipMapLodBias = -0.99f;
 };
+
+// Transformation
+PixelData vs_transform(VertexData vd)
+{
+	PixelData pd = (PixelData)0;
+	pd.pos = mul(float4(vd.pos, 1.0f), transformsettings);
+	pd.color = vd.color;
+	pd.uv = vd.uv;
+	return pd;
+}
 
 // Pixel shader for colored circle
 float4 ps_circle(PixelData pd) : COLOR
@@ -48,7 +69,7 @@ technique SM20
 {
 	pass p0
 	{
-	    VertexShader = null;
+	    VertexShader = compile vs_2_0 vs_transform();
 	    PixelShader = compile ps_2_0 ps_circle();
 	}
 }
