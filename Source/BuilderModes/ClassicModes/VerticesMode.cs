@@ -404,6 +404,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Vertex v in selected) v.Dispose();
 
 				// Update cache values
+				General.Map.IsChanged = true;
 				General.Map.Map.Update();
 
 				// Invoke a new mousemove so that the highlighted item updates

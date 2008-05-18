@@ -461,7 +461,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonnewmap.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonnewmap.Name = "buttonnewmap";
 			this.buttonnewmap.Size = new System.Drawing.Size(23, 22);
-			this.buttonnewmap.Tag = "newmap";
+			this.buttonnewmap.Tag = "builder_newmap";
 			this.buttonnewmap.Text = "New Map";
 			this.buttonnewmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -472,7 +472,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonopenmap.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonopenmap.Name = "buttonopenmap";
 			this.buttonopenmap.Size = new System.Drawing.Size(23, 22);
-			this.buttonopenmap.Tag = "openmap";
+			this.buttonopenmap.Tag = "builder_openmap";
 			this.buttonopenmap.Text = "Open Map";
 			this.buttonopenmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -483,7 +483,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonsavemap.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonsavemap.Name = "buttonsavemap";
 			this.buttonsavemap.Size = new System.Drawing.Size(23, 22);
-			this.buttonsavemap.Tag = "savemap";
+			this.buttonsavemap.Tag = "builder_savemap";
 			this.buttonsavemap.Text = "Save Map";
 			this.buttonsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -494,7 +494,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonmapoptions.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonmapoptions.Name = "buttonmapoptions";
 			this.buttonmapoptions.Size = new System.Drawing.Size(23, 22);
-			this.buttonmapoptions.Tag = "mapoptions";
+			this.buttonmapoptions.Tag = "builder_mapoptions";
 			this.buttonmapoptions.Text = "Map Options";
 			this.buttonmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -505,7 +505,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonundo.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonundo.Name = "buttonundo";
 			this.buttonundo.Size = new System.Drawing.Size(23, 22);
-			this.buttonundo.Tag = "undo";
+			this.buttonundo.Tag = "builder_undo";
 			this.buttonundo.Text = "Undo";
 			this.buttonundo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -516,7 +516,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonredo.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonredo.Name = "buttonredo";
 			this.buttonredo.Size = new System.Drawing.Size(23, 22);
-			this.buttonredo.Tag = "redo";
+			this.buttonredo.Tag = "builder_redo";
 			this.buttonredo.Text = "Redo";
 			this.buttonredo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -559,7 +559,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonsnaptogrid.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonsnaptogrid.Name = "buttonsnaptogrid";
 			this.buttonsnaptogrid.Size = new System.Drawing.Size(23, 22);
-			this.buttonsnaptogrid.Tag = "togglesnap";
+			this.buttonsnaptogrid.Tag = "builder_togglesnap";
 			this.buttonsnaptogrid.Text = "Snap to Grid";
 			this.buttonsnaptogrid.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -572,7 +572,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonautomerge.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonautomerge.Name = "buttonautomerge";
 			this.buttonautomerge.Size = new System.Drawing.Size(23, 22);
-			this.buttonautomerge.Tag = "toggleautomerge";
+			this.buttonautomerge.Tag = "builder_toggleautomerge";
 			this.buttonautomerge.Text = "Merge Geometry";
 			this.buttonautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
