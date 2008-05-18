@@ -44,9 +44,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
-		public int Vertices { get { return verticesbar.Value; } }
-		public float Distance { get { return (float)distancebar.Value; } }
-		public float Angle { get { return Angle2D.DegToRad((float)anglebar.Value); } }
+		public int Vertices { get { return -verticesbar.Value; } }
+		public float Distance { get { return (float)-distancebar.Value; } }
+		public float Angle { get { return Angle2D.DegToRad((float)-anglebar.Value); } }
 		public bool FixedCurve { get { return circular.Checked; } }
 		public bool Backwards { get { return backwards.Checked; } }
 
@@ -94,60 +94,66 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Vertices bar changed
 		private void verticesbar_ValueChanged(object sender, EventArgs e)
 		{
-			vertices.Text = verticesbar.Value.ToString();
+			int v = -verticesbar.Value;
+			vertices.Text = v.ToString();
 			General.Interface.RedrawDisplay();
 		}
 
 		// Vertices loses focus
 		private void vertices_Leave(object sender, EventArgs e)
 		{
-			vertices.Text = verticesbar.Value.ToString();
+			int v = -verticesbar.Value;
+			vertices.Text = v.ToString();
 		}
 
 		// Vertices change
 		private void vertices_TextChanged(object sender, EventArgs e)
 		{
-			int result = vertices.GetResult(verticesbar.Value);
+			int result = -vertices.GetResult(-verticesbar.Value);
 			if((result >= verticesbar.Minimum) && (result <= verticesbar.Maximum)) verticesbar.Value = result;
 		}
 
 		// Distance bar changed
 		private void distancebar_ValueChanged(object sender, EventArgs e)
 		{
-			distance.Text = distancebar.Value.ToString();
+			int v = -distancebar.Value;
+			distance.Text = v.ToString();
 			General.Interface.RedrawDisplay();
 		}
 
 		// Distance loses focus
 		private void distance_Leave(object sender, EventArgs e)
 		{
-			distance.Text = distancebar.Value.ToString();
+			int v = -distancebar.Value;
+			distance.Text = v.ToString();
 		}
 
 		// Distance changed
 		private void distance_TextChanged(object sender, EventArgs e)
 		{
-			int result = distance.GetResult(distancebar.Value);
+			int result = -distance.GetResult(-distancebar.Value);
 			if((result >= distancebar.Minimum) && (result <= distancebar.Maximum)) distancebar.Value = result;
 		}
 
 		// Angle bar changed
 		private void anglebar_ValueChanged(object sender, EventArgs e)
 		{
-			angle.Text = anglebar.Value.ToString();
+			int v = -anglebar.Value;
+			angle.Text = v.ToString();
 			General.Interface.RedrawDisplay();
 		}
 
 		// Angle loses focus
 		private void angle_Leave(object sender, EventArgs e)
 		{
-			angle.Text = anglebar.Value.ToString();
+			int v = -anglebar.Value;
+			angle.Text = v.ToString();
 		}
 
 		// Angle changed
 		private void angle_TextChanged(object sender, EventArgs e)
 		{
-			int result = angle.GetResult(anglebar.Value);
+			int result = -angle.GetResult(-anglebar.Value);
 			if((result >= anglebar.Minimum) && (result <= anglebar.Maximum)) anglebar.Value = result;
 		}
 

@@ -301,8 +301,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								// Found a path?
 								if(shortestpath != null)
 								{
+									// Check which direction the path goes in
+									if(shortestpath[0].Line == l1)
+									{
+										// Begin at start
+										v1 = firstline.Start;
+									}
+									else
+									{
+										// Begin at end
+										v1 = lastline.End;
+									}
+									
 									// Go for all vertices in the path to make additional lines
-									v1 = firstline.Start;
 									for(int i = 1; i < shortestpath.Count; i++)
 									{
 										// Get the next position
@@ -326,7 +337,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									}
 
 									// Make the final line
-									Linedef lld = map.CreateLinedef(v1, lastline.End);
+									Linedef lld;
+									
+									// Check which direction the path goes in
+									if(shortestpath[0].Line == l1)
+									{
+										// Path stops at end
+										lld = map.CreateLinedef(v1, lastline.End);
+									}
+									else
+									{
+										// Path stops at begin
+										lld = map.CreateLinedef(v1, firstline.Start);
+									}
+
+									// Setup line
 									lld.Marked = true;
 									lld.Selected = true;
 									lld.ApplySidedFlags();
