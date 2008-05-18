@@ -431,7 +431,6 @@
     <None Include="Resources\SaveMap.png" />
     <None Include="Resources\OpenMap.png" />
     <None Include="Resources\NewMap.png" />
-    <None Include="Resources\Splash2small.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Interface\ActionBrowserForm.resx">
@@ -522,7 +521,6 @@
     <EmbeddedResource Include="Resources\display2d.fx" />
     <EmbeddedResource Include="Resources\Thing2D_1.png" />
     <EmbeddedResource Include="Resources\things2d.fx" />
-    <None Include="Resources\Splash2.png" />
     <EmbeddedResource Include="Resources\world3d.fx" />
   </ItemGroup>
   <ItemGroup>
@@ -531,6 +529,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Splash3_trans.png" />
+    <None Include="Resources\Splash3_small.png" />
     <EmbeddedResource Include="Interface\AngleControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AngleControl.cs</DependentUpon>
@@ -548,7 +548,5 @@
     <EmbeddedResource Include="Resources\Thing2D_2.png" />
     <EmbeddedResource Include="Resources\White.png" />
     <EmbeddedResource Include="Resources\Font.cfg" />
-    <None Include="Resources\Splash2_small.png" />
-    <None Include="Resources\Splash2_trans.png" />
   </ItemGroup>
 </Project>

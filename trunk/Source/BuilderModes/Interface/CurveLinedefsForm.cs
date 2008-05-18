@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int MIN_DISTANCE = 0;
 		private int MAX_DISTANCE = 10000;
 		private int MIN_ANGLE = 0;
-		private int MAX_ANGLE = 180;
+		private int MAX_ANGLE = 350;
 
 		#endregion
 

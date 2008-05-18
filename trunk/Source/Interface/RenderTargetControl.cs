@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.SetStyle(ControlStyles.Opaque, false);
 			this.UpdateStyles();
 			this.BackColor = System.Drawing.SystemColors.AppWorkspace;
-			this.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash2_trans;
+			this.BackgroundImage = global::CodeImp.DoomBuilder.Properties.Resources.Splash3_trans;
 			this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			//this.Image = null;
 		}
