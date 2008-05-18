@@ -175,20 +175,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Make list
 			List<Vector2D> points = new List<Vector2D>(vertices);
-			
-			// Anders Astrand, this is where your code goes.
-			// "line" is the original linedef to create a curve from
-			// "vertices" is the number of points to generate evenly along
-			// the curve (excluding line start and end)
-			// "distance" is the curve distance from the line (same as in Doom Builder 1)
-			// "angle" is the delta angle (same as in Doom Builder 1)
-			// "fixedcurve" is true when the curve must be forced circular (same as in Doom Builder 1)
-			// "backwards" is true, then the curve should go towards the back side of the line
-			// otherwise the curve goes to the front side of the line (like Doom Builder 1 did)
-			// Return value should be a list of Vector2D points
-			
-			// TEST:
-			points.Add(line.GetCenterPoint());
+
+            //Added by Anders Åstrand 2008-05-18
+            //The formulas used are taken from http://mathworld.wolfram.com/CircularSegment.html
+            //c and theta are known (length of line and angle parameter). d, R and h are
+            //calculated from those two
+            //If the curve is not supposed to be a circular segment it's simply deformed to fit
+            //the value set for distance.
+            
+            //The vertices are generated to be evenly distributed (by angle) along the curve
+            //and lastly they are rotated and moved to fit with the original line
+
+            //calculate some identities of a circle segment (refer to the graph in the url above)
+            double c = line.Length;
+            double theta = angle;
+
+            double d = (c / Math.Tan(theta / 2)) / 2;
+            double R = d / Math.Cos(theta / 2);
+            double h = R - d;
+
+            double yDeform = fixedcurve ? 1 : distance / h;
+            if (backwards)
+                yDeform = -yDeform;
+
+            double a, x, y;
+            Vector2D vertex;
+
+            for (int v = 1; v <= vertices; v++)
+            {
+                //calculate the angle for this vertex
+                //the curve starts at PI/2 - theta/2 and is segmented into vertices+1 segments
+                //this assumes the line is horisontal and on y = 0, the point is rotated and moved later
+                
+                a = (Math.PI - theta)/2 + v * (theta / (vertices + 1));
+
+                //calculate the coordinates of the point, and distort the y coordinate
+                //using the deform factor calculated above
+                x = Math.Cos(a) * R;
+                y = (Math.Sin(a) * R - d) * yDeform;
+
+                //rotate and transform to fit original line
+                vertex = new Vector2D((float)x, (float)y).GetRotated(line.Angle + Angle2D.PIHALF);
+                vertex = vertex.GetTransformed(line.GetCenterPoint().x, line.GetCenterPoint().y, 1, 1);
+
+                points.Add(vertex);
+            }
+             
 
 			// Done
 			return points;

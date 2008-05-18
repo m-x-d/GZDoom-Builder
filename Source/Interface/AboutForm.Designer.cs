@@ -38,19 +38,19 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// pictureBox1
 			// 
-			pictureBox1.Image = global::CodeImp.DoomBuilder.Properties.Resources.Splash2_small;
+			pictureBox1.Image = global::CodeImp.DoomBuilder.Properties.Resources.Splash3_small;
 			pictureBox1.Location = new System.Drawing.Point(12, 12);
 			pictureBox1.Name = "pictureBox1";
-			pictureBox1.Size = new System.Drawing.Size(102, 106);
+			pictureBox1.Size = new System.Drawing.Size(226, 80);
 			pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			pictureBox1.TabIndex = 0;
 			pictureBox1.TabStop = false;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(129, 21);
+			this.label1.Location = new System.Drawing.Point(12, 93);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(342, 50);
+			this.label1.Size = new System.Drawing.Size(318, 50);
 			this.label1.TabIndex = 2;
 			this.label1.Text = "Doom Builder is designed and programmed by Pascal vd Heiden.\r\nSeveral game config" +
 				"urations were written by various members of the Doom community.";
@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// close
 			// 
 			this.close.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.close.Location = new System.Drawing.Point(355, 93);
+			this.close.Location = new System.Drawing.Point(214, 139);
 			this.close.Name = "close";
 			this.close.Size = new System.Drawing.Size(116, 25);
 			this.close.TabIndex = 3;
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// builderlink
 			// 
 			this.builderlink.AutoSize = true;
-			this.builderlink.Location = new System.Drawing.Point(129, 71);
+			this.builderlink.Location = new System.Drawing.Point(12, 144);
 			this.builderlink.Name = "builderlink";
 			this.builderlink.Size = new System.Drawing.Size(121, 14);
 			this.builderlink.TabIndex = 5;
@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.AcceptButton = this.close;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.close;
-			this.ClientSize = new System.Drawing.Size(482, 126);
+			this.ClientSize = new System.Drawing.Size(337, 172);
 			this.Controls.Add(this.builderlink);
 			this.Controls.Add(this.close);
 			this.Controls.Add(this.label1);
