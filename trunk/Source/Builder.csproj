@@ -343,6 +343,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Rendering\Color2DShader.cs" />
+    <Compile Include="Rendering\Presentation.cs" />
     <Compile Include="Rendering\Texture2DShader.cs" />
     <Compile Include="Rendering\Display2DShader.cs" />
     <Compile Include="Rendering\ColorCollection.cs" />

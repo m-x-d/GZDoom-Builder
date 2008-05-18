@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+			renderer.SetPresentation(Presentation.Standard);
 		}
 		
 		// Disenagaging
@@ -160,7 +161,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(renderer.StartThings(true))
 				{
-					renderer.SetThingsRenderOrder(false);
 					renderer.RenderThingSet(General.Map.Map.Things);
 					renderer.Finish();
 				}
@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				renderer.Finish();
 			}
-			
+
 			renderer.Present();
 		}
 		

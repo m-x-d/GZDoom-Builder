@@ -141,7 +141,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Do not show things
 			if(renderer.StartThings(true))
 			{
-				renderer.SetThingsRenderOrder(false);
 				renderer.Finish();
 			}
 

@@ -653,7 +653,7 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				if(General.Map.Mode != null)
 				{
-					if(!displayresized) General.Map.Mode.OnRefreshDisplay();
+					if(!displayresized) General.Map.Mode.OnPresentDisplay();
 				}
 				else
 				{

@@ -137,7 +137,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(renderer.StartThings(true))
 				{
-					renderer.SetThingsRenderOrder(false);
 					renderer.RenderThingSet(General.Map.Map.Things);
 					renderer.Finish();
 				}

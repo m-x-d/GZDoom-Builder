@@ -100,6 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+			renderer.SetPresentation(Presentation.Things);
 		}
 
 		// Mode disengages
@@ -127,7 +128,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.SetThingsRenderOrder(true);
 				renderer.RenderThingSet(General.Map.Map.Things);
 				renderer.Finish();
 			}
@@ -142,10 +142,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Finish();
 				}
 			}
-			
+
 			renderer.Present();
 		}
-
+		
 		// This highlights a new item
 		protected void Highlight(Thing t)
 		{

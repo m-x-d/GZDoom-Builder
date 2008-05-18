@@ -37,12 +37,12 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(SwitchAction = "sectorsmode",		// Action name used to switch to this mode
-			  ButtonDesc = "Sectors Mode",		// Description on the button in toolbar/menu
-		      ButtonImage = "SectorsMode.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 2)]	// Position of the button (lower is more to the left)
+	[EditMode(SwitchAction = "brightnessmode",
+			  ButtonDesc = "Brightness Mode",
+			  ButtonImage = "BrightnessMode.png",
+			  ButtonOrder = int.MinValue + 3)]
 
-	public class SectorsMode : ClassicMode
+	public class BrightnessMode : ClassicMode
 	{
 		#region ================== Constants
 
@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public SectorsMode()
+		public BrightnessMode()
 		{
 			// Make ordered selection list
 			orderedselection = new List<Sector>();
@@ -161,7 +161,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
-			renderer.SetPresentation(Presentation.Standard);
+
+			// Make customized presentation
+			CustomPresentation p = new CustomPresentation();
+			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
+			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
+			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
+			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
+			renderer.SetPresentation(p);
 		}
 
 		// Mode disengages
@@ -205,19 +212,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.RenderThingSet(General.Map.Map.Things);
 				renderer.Finish();
 			}
 
-			// Selecting?
-			if(selecting)
+			// Render selection
+			if(renderer.StartOverlay(true))
 			{
-				// Render selection
-				if(renderer.StartOverlay(true))
+				foreach(Sector s in General.Map.Map.Sectors)
 				{
-					RenderMultiSelection();
-					renderer.Finish();
+					PixelColor b = new PixelColor(255, (byte)s.Brightness, (byte)s.Brightness, (byte)s.Brightness);
+					int bint = b.ToInt();
+					FlatVertex[] verts = new FlatVertex[s.Triangles.Count];
+					int index = 0;
+					foreach(Vector2D v in s.Triangles)
+					{
+						Vector2D tv = v.GetTransformed(renderer.TranslateX, renderer.TranslateY, renderer.Scale, -renderer.Scale);
+						verts[index].x = tv.x;
+						verts[index].y = tv.y;
+						verts[index].z = 0f;
+						verts[index].w = 1f;
+						verts[index].c = bint;
+						index++;
+					}
+					renderer.RenderGeometry(verts, null);
 				}
+				
+				if(selecting) RenderMultiSelection();
+				renderer.Finish();
 			}
 
 			renderer.Present();
@@ -344,13 +365,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-			else
-			{
-				// Start drawing mode
-				DrawGeometryMode drawmode = new DrawGeometryMode();
-				drawmode.DrawPointAt(mousemappos, true);
-				General.Map.ChangeMode(drawmode);
-			}
 			
 			base.OnEdit();
 		}
@@ -361,23 +375,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Edit pressed in this mode?
 			if(editpressed)
 			{
-				// Anything selected?
-				ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-				if(selected.Count > 0)
-				{
-					// Show sector edit dialog
-					General.Interface.ShowEditSectors(selected);
-
-					// When a single sector was selected, deselect it now
-					if(selected.Count == 1)
-					{
-						General.Map.Map.ClearSelectedSectors();
-						General.Map.Map.ClearSelectedLinedefs();
-					}
-
-					// Update entire display
-					General.Interface.RedrawDisplay();
-				}
 			}
 
 			editpressed = false;
@@ -444,31 +441,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Highlight(null);
 		}
 
-		// Mouse wants to drag
-		protected override void OnDragStart(MouseEventArgs e)
-		{
-			base.OnDragStart(e);
-
-			// Edit button used?
-			if(General.Interface.CheckActionActive(null, "classicedit"))
-			{
-				// Anything highlighted?
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					// Highlighted item not selected?
-					if(!highlighted.Selected)
-					{
-						// Select only this sector for dragging
-						General.Map.Map.ClearSelectedSectors();
-						SelectSector(highlighted, true);
-					}
-
-					// Start dragging the selection
-					General.Map.ChangeMode(new DragSectorsMode(new SectorsMode(), mousedownmappos));
-				}
-			}
-		}
-
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
@@ -529,133 +501,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Actions
-
-		[BeginAction("deleteitem", BaseAction = true)]
-		public void DeleteItem()
-		{
-			// Make list of selected sectors
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
-
-			// Anything to do?
-			if(selected.Count > 0)
-			{
-				// Make undo
-				if(selected.Count > 1)
-					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " sectors", UndoGroup.None, 0);
-				else
-					General.Map.UndoRedo.CreateUndo("Delete sector", UndoGroup.None, 0);
-
-				// Dispose selected sectors
-				foreach(Sector s in selected)
-				{
-					// Get all the linedefs
-					General.Map.Map.ClearMarkedLinedefs(false);
-					foreach(Sidedef sd in s.Sidedefs) sd.Line.Marked = true;
-					List<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);
-					
-					// Dispose the sector
-					s.Dispose();
-
-					// Check all the lines
-					for(int i = lines.Count - 1; i >= 0; i--)
-					{
-						// If the line has become orphaned, remove it
-						if((lines[i].Front == null) && (lines[i].Back == null))
-						{
-							// Remove line
-							lines[i].Dispose();
-						}
-						else
-						{
-							// Update sided flags
-							lines[i].ApplySidedFlags();
-						}
-					}
-				}
-
-				// Update cache values
-				General.Map.Map.Update();
-
-				// Redraw screen
-				General.Interface.RedrawDisplay();
-			}
-		}
-		
-		// This joins sectors together and keeps all lines
-		[BeginAction("joinsectors")]
-		public void JoinSectors()
-		{
-			// Worth our money?
-			int count = General.Map.Map.GetSelectedSectors(true).Count;
-			if(count > 1)
-			{
-				// Make undo
-				General.Map.UndoRedo.CreateUndo("Join " + count + " sectors", UndoGroup.None, 0);
-
-				// Merge
-				JoinMergeSectors(false);
-
-				// Deselect
-				General.Map.Map.ClearSelectedSectors();
-				General.Map.Map.ClearSelectedLinedefs();
-				
-				// Redraw display
-				General.Interface.RedrawDisplay();
-			}
-		}
-
-		// This joins sectors together and removes the lines in between
-		[BeginAction("mergesectors")]
-		public void MergeSectors()
-		{
-			// Worth our money?
-			int count = General.Map.Map.GetSelectedSectors(true).Count;
-			if(count > 1)
-			{
-				// Make undo
-				General.Map.UndoRedo.CreateUndo("Merge " + count + " sectors", UndoGroup.None, 0);
-
-				// Merge
-				JoinMergeSectors(true);
-
-				// Deselect
-				General.Map.Map.ClearSelectedSectors();
-				General.Map.Map.ClearSelectedLinedefs();
-
-				// Redraw display
-				General.Interface.RedrawDisplay();
-			}
-		}
-
-		// Support function for joining and merging sectors
-		private void JoinMergeSectors(bool removelines)
-		{
-			// Remove lines in betwen joining sectors?
-			if(removelines)
-			{
-				// Go for all selected linedefs
-				ICollection<Linedef> selectedlines = General.Map.Map.GetSelectedLinedefs(true);
-				foreach(Linedef ld in selectedlines)
-				{
-					// Front and back side?
-					if((ld.Front != null) && (ld.Back != null))
-					{
-						// Both a selected sector, but not the same?
-						if(ld.Front.Sector.Selected && ld.Back.Sector.Selected &&
-						   (ld.Front.Sector != ld.Back.Sector))
-						{
-							// Remove this line
-							ld.Dispose();
-						}
-					}
-				}
-			}
-			
-			// Join all selected sectors with the first
-			for(int i = 1; i < orderedselection.Count; i++)
-				orderedselection[i].Join(orderedselection[0]);
-		}
 
 		#endregion
 	}

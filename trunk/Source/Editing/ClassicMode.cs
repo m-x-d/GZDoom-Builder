@@ -404,7 +404,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Display
 
 		// This just refreshes the display
-		public override void OnRefreshDisplay()
+		public override void OnPresentDisplay()
 		{
 			renderer2d.Present();
 		}

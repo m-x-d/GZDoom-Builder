@@ -39,19 +39,9 @@ using CodeImp.DoomBuilder.Editing;
 namespace CodeImp.DoomBuilder.Rendering
 {
 
-	/* This renders a 2D presentation of the map
-	 * This is done in several layers:
-	 * 
-	 * 1) Background grid
-	 * 
-	 * 2) Things
-	 * 
-	 * 3) Plotter (geometric structures)
-	 * 
-	 * 4) Overlay
-	 * 
-	 * The order of layers 2 and 3 can be changed by
-	 * calling SetThingsRenderOrder.
+	/* This renders a 2D presentation of the map. This is done in several
+	 * layers which each are optimized for a different purpose. Set the
+	 * PresentationLayer(s) to specify how to present these layers.
 	 */
 
 	internal unsafe sealed class Renderer2D : Renderer, IRenderer2D
@@ -59,8 +49,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constants
 
 		private const byte DOUBLESIDED_LINE_ALPHA = 130;
-		private const float FSAA_PLOTTER_BLEND_FACTOR = 0.6f;
-		private const float FSAA_OVERLAY_BLEND_FACTOR = 0.6f;
+		private const float FSAA_FACTOR = 0.6f;
 		private const float THING_ARROW_SIZE = 1.5f;
 		private const float THING_ARROW_SHRINK = 2f;
 		private const float THING_CIRCLE_SIZE = 1f;
@@ -131,6 +120,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float lastgridscale = -1f;
 		private float lastgridx;
 		private float lastgridy;
+
+		// Presentation
+		private Presentation present;
 		
 		#endregion
 
@@ -193,6 +185,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Presenting
 
+		// This sets the presentation to use
+		public void SetPresentation(Presentation present)
+		{
+			this.present = new Presentation(present);
+		}
+		
 		// This draws the image on screen
 		public void Present()
 		{
@@ -202,80 +200,106 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Renderstates that count for this whole sequence
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
-				graphics.Shaders.Display2D.Begin();
-
-				// Render a background image?
-				if((backimageverts != null) && (General.Map.Grid.Background.Texture != null))
-				{
-					// Set renderstates
-					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-					graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-					graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-					graphics.Device.SetTexture(0, General.Map.Grid.Background.Texture);
-					graphics.Shaders.Display2D.Texture1 = General.Map.Grid.Background.Texture;
-					graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_PLOTTER_BLEND_FACTOR, 1f);
-
-					// Draw the background image
-					graphics.Shaders.Display2D.BeginPass(1);
-					graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backimageverts);
-					graphics.Shaders.Display2D.EndPass();
-				}
-				
-				// From here on only using screen vertices
 				graphics.Device.SetStreamSource(0, screenverts, 0, sizeof(FlatVertex));
+				graphics.Shaders.Display2D.Begin();
 				
-				// Render things in back?
-				if(!thingsfront) PresentThings(THINGS_BACK_ALPHA);
+				// Go for all layers
+				foreach(PresentLayer layer in present.layers)
+				{
+					int aapass;
+					
+					// Set blending mode
+					switch(layer.blending)
+					{
+						case BlendingMode.None:
+							graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+							graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+							graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+							break;
 
-				// Set renderstates
-				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-				graphics.Device.SetTexture(0, backtex);
-				graphics.Shaders.Display2D.Texture1 = backtex;
-				graphics.Shaders.Display2D.SetSettings(1f / backsize.Width, 1f / backsize.Height, 0f, 1f);
+						case BlendingMode.Mask:
+							graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+							graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+							graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+							break;
 
-				// Draw the background grid
-				graphics.Shaders.Display2D.BeginPass(1);
-				//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backverts);
-				graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-				graphics.Shaders.Display2D.EndPass();
-				
-				// Set renderstates
-				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-				graphics.Device.SetTexture(0, plottertex);
-				graphics.Shaders.Display2D.Texture1 = plottertex;
-				graphics.Shaders.Display2D.SetSettings(1f / structsize.Width, 1f / structsize.Height, FSAA_PLOTTER_BLEND_FACTOR, 1f);
-				
-				// Draw the lines and vertices texture
-				graphics.Shaders.Display2D.BeginPass(0);
-				//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts); } catch(Exception) { }
-				//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, structverts);
-				graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-				graphics.Shaders.Display2D.EndPass();
-				
-				// Render things in front?
-				if(thingsfront) PresentThings(1f);
-				
-				// Set renderstates
-				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-				graphics.Device.SetTexture(0, overlaytex);
-				graphics.Shaders.Display2D.Texture1 = overlaytex;
-				graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_OVERLAY_BLEND_FACTOR, 1f);
+						case BlendingMode.Alpha:
+							graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+							graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+							graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+							graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
+							graphics.Device.SetRenderState(RenderState.TextureFactor, (new Color4(layer.alpha, 1f, 1f, 1f)).ToArgb());
+							break;
 
-				// Draw the overlay texture
-				graphics.Shaders.Display2D.BeginPass(0);
-				graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-				graphics.Shaders.Display2D.EndPass();
-				
+						case BlendingMode.Additive:
+							graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+							graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+							graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+							graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
+							graphics.Device.SetRenderState(RenderState.TextureFactor, (new Color4(layer.alpha, 1f, 1f, 1f)).ToArgb());
+							break;
+					}
+
+					// Check which pass to use
+					if(layer.antialiasing) aapass = 0; else aapass = 1;
+					
+					// Render layer
+					switch(layer.layer)
+					{
+						// BACKGROUND
+						case RendererLayer.Background:
+							if((backimageverts == null) || (General.Map.Grid.Background.Texture == null)) break;
+							graphics.Device.SetTexture(0, General.Map.Grid.Background.Texture);
+							graphics.Shaders.Display2D.Texture1 = General.Map.Grid.Background.Texture;
+							graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_FACTOR, layer.alpha);
+							graphics.Shaders.Display2D.BeginPass(aapass);
+							graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backimageverts);
+							graphics.Shaders.Display2D.EndPass();
+							graphics.Device.SetStreamSource(0, screenverts, 0, sizeof(FlatVertex));
+							break;
+
+						// GRID
+						case RendererLayer.Grid:
+							graphics.Device.SetTexture(0, backtex);
+							graphics.Shaders.Display2D.Texture1 = backtex;
+							graphics.Shaders.Display2D.SetSettings(1f / backsize.Width, 1f / backsize.Height, FSAA_FACTOR, layer.alpha);
+							graphics.Shaders.Display2D.BeginPass(aapass);
+							graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+							graphics.Shaders.Display2D.EndPass();
+							break;
+
+						// GEOMETRY
+						case RendererLayer.Geometry:
+							graphics.Device.SetTexture(0, plottertex);
+							graphics.Shaders.Display2D.Texture1 = plottertex;
+							graphics.Shaders.Display2D.SetSettings(1f / structsize.Width, 1f / structsize.Height, FSAA_FACTOR, layer.alpha);
+							graphics.Shaders.Display2D.BeginPass(aapass);
+							graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+							graphics.Shaders.Display2D.EndPass();
+							break;
+
+						// THINGS
+						case RendererLayer.Things:
+							graphics.Device.SetTexture(0, thingstex);
+							graphics.Shaders.Display2D.Texture1 = thingstex;
+							graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_FACTOR, layer.alpha);
+							graphics.Shaders.Display2D.BeginPass(aapass);
+							graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+							graphics.Shaders.Display2D.EndPass();
+							break;
+
+						// OVERLAY
+						case RendererLayer.Overlay:
+							graphics.Device.SetTexture(0, overlaytex);
+							graphics.Shaders.Display2D.Texture1 = overlaytex;
+							graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_FACTOR, layer.alpha);
+							graphics.Shaders.Display2D.BeginPass(aapass);
+							graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+							graphics.Shaders.Display2D.EndPass();
+							break;
+					}
+				}
+
 				// Done
 				graphics.Shaders.Display2D.End();
 				graphics.FinishRendering();
@@ -285,30 +309,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetTexture(0, null);
 				graphics.Shaders.Display2D.Texture1 = null;
 			}
-		}
-
-		// This presents the things
-		private void PresentThings(float alpha)
-		{
-			// Set renderstates
-			//graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			//graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-			//graphics.Device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, (new Color4(alpha, 1f, 1f, 1f)).ToArgb());
-			graphics.Device.SetTexture(0, thingstex);
-			graphics.Shaders.Display2D.Texture1 = thingstex;
-			graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_PLOTTER_BLEND_FACTOR, alpha);
-
-			// Draw the things texture
-			graphics.Shaders.Display2D.BeginPass(0);
-			//try { graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts); } catch(Exception) { }
-			//graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, thingsverts);
-			graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-			graphics.Shaders.Display2D.EndPass();
 		}
 		
 		#endregion
@@ -533,17 +533,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				else if((l.Flags & General.Map.Config.SoundLinedefFlags) != 0) return General.Colors.Sounds.WithAlpha(DOUBLESIDED_LINE_ALPHA);
 				else return General.Colors.Linedefs.WithAlpha(DOUBLESIDED_LINE_ALPHA);
 			}
-		}
-
-		#endregion
-
-		#region ================== Settings
-		
-		// This sets the things in front or back
-		public void SetThingsRenderOrder(bool front)
-		{
-			// Set things render order
-			this.thingsfront = front;
 		}
 
 		#endregion
@@ -1050,6 +1039,44 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 
 		#region ================== Overlay
+
+		// This renders geometry
+		// The geometry must be a triangle list
+		public void RenderGeometry(FlatVertex[] vertices, ImageData texture)
+		{
+			Texture t = null;
+
+			if(vertices.Length > 0)
+			{
+				if(texture != null)
+				{
+					// Make sure the texture is loaded
+					if(!texture.IsLoaded) texture.LoadImage();
+					if(texture.Texture == null) texture.CreateTexture();
+					t = texture.Texture;
+				}
+				else
+				{
+					t = whitetexture.Texture;
+				}
+
+				// Set renderstates for rendering
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				graphics.Device.SetRenderState(RenderState.ZEnable, false);
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				graphics.Shaders.Texture2D.Texture1 = t;
+				graphics.Device.SetTexture(0, t);
+
+				// Draw
+				graphics.Shaders.Texture2D.Begin();
+				graphics.Shaders.Texture2D.BeginPass(0);
+				graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleList, 0, vertices.Length / 3, vertices);
+				graphics.Shaders.Texture2D.EndPass();
+				graphics.Shaders.Texture2D.End();
+			}
+		}
 
 		// This renders text
 		public void RenderText(TextLabel text)
