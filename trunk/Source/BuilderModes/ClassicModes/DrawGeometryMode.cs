@@ -444,6 +444,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// The code below atempts to create sectors on the front sides of the drawn
 				// geometry and joins sectors on the back sides of the drawn geometry.
 				// This code does not change any geometry, it only makes/updates sidedefs.
+				bool sidescreated = false;
 				bool[] frontsdone = new bool[newlines.Count];
 				bool[] backsdone = new bool[newlines.Count];
 				for(int i = 0; i < newlines.Count; i++)
@@ -457,6 +458,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(ld, true);
 						if(sectorlines != null)
 						{
+							sidescreated = true;
+							
 							// Make the new sector
 							Sector newsector = SectorTools.MakeSector(sectorlines);
 
@@ -507,6 +510,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							// Join?
 							if(joinsidedef != null)
 							{
+								sidescreated = true;
+
 								// Join the new sector
 								Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
 
@@ -543,6 +548,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					sd.RemoveUnneededTextures(true);
 				}
 
+				// Check if any of our new lines have sides
+				if(sidescreated)
+				{
+					// Then remove the lines which have no sides at all
+					for(int i = newlines.Count - 1; i >= 0; i--)
+					{
+						// Remove the line if it has no sides
+						if((newlines[i].Front == null) && (newlines[i].Back == null)) newlines[i].Dispose();
+					}
+				}
+				
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();
 
