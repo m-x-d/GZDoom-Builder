@@ -165,6 +165,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap SlimDX_small {
+            get {
+                object obj = ResourceManager.GetObject("SlimDX_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Splash3_small {
             get {
                 object obj = ResourceManager.GetObject("Splash3_small", resourceCulture);

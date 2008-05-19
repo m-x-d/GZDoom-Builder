@@ -529,6 +529,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\SlimDX_small.png" />
     <None Include="Resources\Splash3_trans.png" />
     <None Include="Resources\Splash3_small.png" />
     <EmbeddedResource Include="Interface\AngleControl.resx">
