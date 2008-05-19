@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Reflection;
 
 #endregion
 
@@ -36,12 +37,23 @@ namespace CodeImp.DoomBuilder.Interface
 		{
 			// Initialize
 			InitializeComponent();
+
+			// Show version
+			string postfix = "";
+			if(General.DebugBuild) postfix = "(debug)";
+			version.Text = Application.ProductName + " version " + Application.ProductVersion + " " + postfix;
 		}
 
 		// Launch Doom Builder website
 		private void builderlink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			OpenWebsite("http://" + builderlink.Text);
+		}
+
+		// Clicking SlimDX logo
+		private void slimdxlogo_Click(object sender, EventArgs e)
+		{
+			OpenWebsite("http://slimdx.mdxinfo.com/");
 		}
 
 		// This opens a URL in the default browser

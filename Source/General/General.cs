@@ -639,7 +639,8 @@ namespace CodeImp.DoomBuilder
 
 		// This closes the current map
 		[BeginAction("closemap")]
-		internal static void CloseMap()
+		internal static void ActionCloseMap() { CloseMap(); }
+		internal static bool CloseMap()
 		{
 			// Cancel volatile mode, if any
 			General.CancelVolatileMode();
@@ -651,7 +652,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayStatus("Closing map...");
 				General.WriteLogLine("Unloading map...");
 				Cursor.Current = Cursors.WaitCursor;
-				
+
 				// Trash the current map
 				if(map != null) map.Dispose();
 				map = null;
@@ -665,6 +666,12 @@ namespace CodeImp.DoomBuilder
 				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				General.WriteLogLine("Map unload done");
+				return true;
+			}
+			else
+			{
+				// User cancelled
+				return false;
 			}
 		}
 

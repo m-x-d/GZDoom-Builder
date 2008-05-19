@@ -247,33 +247,42 @@ namespace CodeImp.DoomBuilder.Interface
 
 			if(e.CloseReason != CloseReason.ApplicationExitCall)
 			{
-				General.WriteLogLine("Closing main interface window...");
+				// Close the map
+				if(General.CloseMap())
+				{
+					General.WriteLogLine("Closing main interface window...");
 
-				// Stop exclusive mode, if any is active
-				StopExclusiveMouseInput();
-				SetProcessorState(false);
+					// Stop exclusive mode, if any is active
+					StopExclusiveMouseInput();
+					SetProcessorState(false);
 
-				// Unbind methods
-				General.Actions.UnbindMethods(this);
+					// Unbind methods
+					General.Actions.UnbindMethods(this);
 
-				// Determine window state to save
-				if(this.WindowState != FormWindowState.Minimized)
-					windowstate = (int)this.WindowState;
+					// Determine window state to save
+					if(this.WindowState != FormWindowState.Minimized)
+						windowstate = (int)this.WindowState;
+					else
+						windowstate = (int)FormWindowState.Normal;
+
+					// Save window settings
+					General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
+					General.Settings.WriteSetting("mainwindow.positiony", lastposition.Y);
+					General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
+					General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
+					General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
+
+					// Save recent files
+					SaveRecentFiles();
+
+					// Terminate the program
+					General.Terminate(true);
+				}
 				else
-					windowstate = (int)FormWindowState.Normal;
-
-				// Save window settings
-				General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
-				General.Settings.WriteSetting("mainwindow.positiony", lastposition.Y);
-				General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
-				General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
-				General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
-
-				// Save recent files
-				SaveRecentFiles();
-
-				// Terminate the program
-				General.Terminate(true);
+				{
+					// Cancel the close
+					e.Cancel = true;
+				}
 			}
 		}
 
