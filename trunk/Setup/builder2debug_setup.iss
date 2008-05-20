@@ -50,7 +50,7 @@ Name: {commondesktop}\Doom Builder; Filename: {app}\Builder.exe; Tasks: desktopi
 Filename: {app}\Builder.exe; Description: {cm:LaunchProgram,Doom Builder}; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
-Name: {app}\Builder.log; Type: files
+Name: {localappdata}\Doom Builder; Type: files
 [Code]
 // Global variables
 var
