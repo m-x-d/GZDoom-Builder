@@ -1,0 +1,8 @@
+%F  indicates the edited PWAD file to be tested.
+%WP  indicates the IWAD resource files to be used (paths included).
+%WF  indicates the IWAD resource files to be used (without paths).
+%L  indicates the map lump name as is set in the map options.
+%AP  indicates the additional resources (if any, paths included).
+%AF  indicates the additional resources (if any, without paths).
+%E  indicates the Episode number from E#M# map name.
+%M  indicates the Map number from E#M# or MAP## map name.

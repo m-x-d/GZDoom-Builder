@@ -58,7 +58,6 @@ namespace CodeImp.DoomBuilder.Interface
 			// Fill comboboxes with nodebuilders
 			nodebuildersave.Items.AddRange(General.Nodebuilders.ToArray());
 			nodebuildertest.Items.AddRange(General.Nodebuilders.ToArray());
-			nodebuilder3d.Items.AddRange(General.Nodebuilders.ToArray());
 		}
 
 		// Configuration item selected
@@ -110,22 +109,6 @@ namespace CodeImp.DoomBuilder.Interface
 						break;
 					}
 				}
-
-				// Go for all nodebuilder 3d items
-				nodebuilder3d.SelectedIndex = -1;
-				for(int i = 0; i < nodebuilder3d.Items.Count; i++)
-				{
-					// Get item
-					ni = nodebuilder3d.Items[i] as NodebuilderInfo;
-					
-					// Item matches configuration setting?
-					if(string.Compare(ni.Name, ci.Nodebuilder3D, false) == 0)
-					{
-						// Select this item
-						nodebuilder3d.SelectedIndex = i;
-						break;
-					}
-				}
 				
 				// Set test application and parameters
 				testapplication.Text = ci.TestProgram;
@@ -144,7 +127,6 @@ namespace CodeImp.DoomBuilder.Interface
 				configdata.EditResourceLocationList(new DataLocationList());
 				nodebuildersave.SelectedIndex = -1;
 				nodebuildertest.SelectedIndex = -1;
-				nodebuilder3d.SelectedIndex = -1;
 				testapplication.Text = "";
 				testparameters.Text = "";
 				tabs.Enabled = false;
@@ -197,20 +179,6 @@ namespace CodeImp.DoomBuilder.Interface
 			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			if(nodebuildertest.SelectedItem != null)
 				ci.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Name;
-		}
-
-		// Nodebuilder selection changed
-		private void nodebuilder3d_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			ConfigurationInfo ci;
-
-			// Leave when no configuration selected
-			if(listconfigs.SelectedItems.Count == 0) return;
-
-			// Apply to selected configuration
-			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
-			if(nodebuilder3d.SelectedItem != null)
-				ci.Nodebuilder3D = (nodebuilder3d.SelectedItem as NodebuilderInfo).Name;
 		}
 		
 		// Test application changed

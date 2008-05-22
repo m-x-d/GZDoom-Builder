@@ -39,7 +39,6 @@ namespace CodeImp.DoomBuilder.Config
 		private string defaultlumpname;
 		private string nodebuildersave;
 		private string nodebuildertest;
-		private string nodebuilder3d;
 		private DataLocationList resources;
 		private string testprogram;
 		private string testparameters;
@@ -53,7 +52,6 @@ namespace CodeImp.DoomBuilder.Config
 		public string DefaultLumpName { get { return defaultlumpname; } }
 		public string NodebuilderSave { get { return nodebuildersave; } set { nodebuildersave = value; } }
 		public string NodebuilderTest { get { return nodebuildertest; } set { nodebuildertest = value; } }
-		public string Nodebuilder3D { get { return nodebuilder3d; } set { nodebuilder3d = value; } }
 		public DataLocationList Resources { get { return resources; } }
 		public string TestProgram { get { return testprogram; } set { testprogram = value; } }
 		public string TestParameters { get { return testparameters; } set { testparameters = value; } }
@@ -76,7 +74,6 @@ namespace CodeImp.DoomBuilder.Config
 			// Load settings from program configuration
 			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", "");
 			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", "");
-			this.nodebuilder3d = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuilder3d", "");
 			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
@@ -104,7 +101,6 @@ namespace CodeImp.DoomBuilder.Config
 			// Write to configuration
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildersave", nodebuildersave);
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildertest", nodebuildertest);
-			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuilder3d", nodebuilder3d);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
@@ -125,7 +121,6 @@ namespace CodeImp.DoomBuilder.Config
 			ci.settingskey = this.settingskey;
 			ci.nodebuildersave = this.nodebuildersave;
 			ci.nodebuildertest = this.nodebuildertest;
-			ci.nodebuilder3d = this.nodebuilder3d;
 			ci.resources = new DataLocationList();
 			ci.resources.AddRange(this.resources);
 			ci.testprogram = this.testprogram;
@@ -141,7 +136,6 @@ namespace CodeImp.DoomBuilder.Config
 			this.settingskey = ci.settingskey;
 			this.nodebuildersave = ci.nodebuildersave;
 			this.nodebuildertest = ci.nodebuildertest;
-			this.nodebuilder3d = ci.nodebuilder3d;
 			this.resources = new DataLocationList();
 			this.resources.AddRange(ci.resources);
 			this.testprogram = ci.testprogram;

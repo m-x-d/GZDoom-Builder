@@ -805,5 +805,35 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		#endregion
+		
+		#region ================== Tools
+
+		// This finds the first IWAD resource
+		// Returns false when not found
+		internal bool FindFirstIWAD(out DataLocation result)
+		{
+			// Go for all data containers
+			foreach(DataReader dr in containers)
+			{
+				// Container is a WAD file?
+				if(dr is WADReader)
+				{
+					// Check if it is an IWAD
+					WADReader wr = dr as WADReader;
+					if(wr.IsIWAD)
+					{
+						// Return location!
+						result = wr.Location;
+						return true;
+					}
+				}
+			}
+
+			// No IWAD found
+			result = new DataLocation();
+			return false;
+		}
+
+		#endregion
 	}
 }

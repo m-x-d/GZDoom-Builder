@@ -40,10 +40,13 @@ namespace CodeImp.DoomBuilder.Data
 
 		// Source
 		private WAD file;
-
+		private bool is_iwad;
+		
 		#endregion
 
 		#region ================== Properties
+
+		public bool IsIWAD { get { return is_iwad; } }
 
 		#endregion
 
@@ -52,10 +55,11 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public WADReader(DataLocation dl) : base(dl)
 		{
+			General.WriteLogLine("Opening WAD resource '" + location.location + "'");
+
 			// Initialize
 			file = new WAD(location.location, true);
-
-			General.WriteLogLine("Opening WAD resource '" + location.location + "'");
+			is_iwad = (file.Type == WAD.TYPE_IWAD);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -92,6 +96,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override void Resume()
 		{
 			file = new WAD(location.location, true);
+			is_iwad = (file.Type == WAD.TYPE_IWAD);
 			base.Resume();
 		}
 		
