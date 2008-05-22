@@ -836,6 +836,50 @@ namespace CodeImp.DoomBuilder
 
 			return result;
 		}
+
+
+		// This saves the current map as a different file
+		// Returns tre when saved, false when cancelled or failed
+		[BeginAction("savemapinto")]
+		internal static void ActionSaveMapInto() { SaveMapInto(); }
+		internal static bool SaveMapInto()
+		{
+			SaveFileDialog savefile;
+			bool result = false;
+
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+
+			// Show save as dialog
+			savefile = new SaveFileDialog();
+			savefile.Filter = "Doom WAD Files (*.wad)|*.wad";
+			savefile.Title = "Save Map Into";
+			savefile.AddExtension = true;
+			savefile.CheckPathExists = true;
+			savefile.OverwritePrompt = false;
+			savefile.ValidateNames = true;
+			if(savefile.ShowDialog(mainwindow) == DialogResult.OK)
+			{
+				// Display status
+				mainwindow.DisplayStatus("Saving map file...");
+				Cursor.Current = Cursors.WaitCursor;
+
+				// Save the map
+				if(map.SaveMap(savefile.FileName, MapManager.SAVE_INTO))
+				{
+					// Add recent file
+					mainwindow.AddRecentFile(map.FilePathName);
+					result = true;
+				}
+
+				// All done
+				mainwindow.UpdateInterface();
+				mainwindow.DisplayReady();
+				Cursor.Current = Cursors.Default;
+			}
+
+			return result;
+		}
 		
 		// This asks to save the map if needed
 		// Returns false when action was cancelled

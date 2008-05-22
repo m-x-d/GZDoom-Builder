@@ -34,18 +34,15 @@ namespace CodeImp.DoomBuilder.Interface
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigForm));
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label7;
-			System.Windows.Forms.Label label8;
 			System.Windows.Forms.Label label9;
 			System.Windows.Forms.Label label4;
 			System.Windows.Forms.Label label1;
-			System.Windows.Forms.Label label10;
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabresources = new System.Windows.Forms.TabPage();
 			this.configdata = new CodeImp.DoomBuilder.Interface.ResourceListEditor();
 			this.tabnodebuilder = new System.Windows.Forms.TabPage();
-			this.nodebuilder3d = new System.Windows.Forms.ComboBox();
 			this.nodebuildertest = new System.Windows.Forms.ComboBox();
 			this.nodebuildersave = new System.Windows.Forms.ComboBox();
 			this.tabtesting = new System.Windows.Forms.TabPage();
@@ -61,11 +58,9 @@ namespace CodeImp.DoomBuilder.Interface
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
-			label8 = new System.Windows.Forms.Label();
 			label9 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
-			label10 = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.tabresources.SuspendLayout();
 			this.tabnodebuilder.SuspendLayout();
@@ -123,15 +118,6 @@ namespace CodeImp.DoomBuilder.Interface
 			label7.TabIndex = 26;
 			label7.Text = "Configuration for testing:";
 			// 
-			// label8
-			// 
-			label8.AutoSize = true;
-			label8.Location = new System.Drawing.Point(25, 170);
-			label8.Name = "label8";
-			label8.Size = new System.Drawing.Size(136, 14);
-			label8.TabIndex = 28;
-			label8.Text = "Configuration for 3D mode:";
-			// 
 			// label9
 			// 
 			label9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -141,9 +127,7 @@ namespace CodeImp.DoomBuilder.Interface
 			label9.Name = "label9";
 			label9.Size = new System.Drawing.Size(393, 54);
 			label9.TabIndex = 23;
-			label9.Text = "Here you can specify the program settings to use for launching a game engine when" +
-				" testing the map. Use the placeholders as listed below where you want automatic " +
-				"names and numbers inserted.";
+			label9.Text = resources.GetString("label9.Text");
 			// 
 			// label4
 			// 
@@ -162,17 +146,6 @@ namespace CodeImp.DoomBuilder.Interface
 			label1.Size = new System.Drawing.Size(63, 14);
 			label1.TabIndex = 24;
 			label1.Text = "Application:";
-			// 
-			// label10
-			// 
-			label10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			label10.AutoEllipsis = true;
-			label10.Location = new System.Drawing.Point(41, 151);
-			label10.Name = "label10";
-			label10.Size = new System.Drawing.Size(352, 122);
-			label10.TabIndex = 29;
-			label10.Text = resources.GetString("label10.Text");
 			// 
 			// cancel
 			// 
@@ -243,8 +216,6 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// tabnodebuilder
 			// 
-			this.tabnodebuilder.Controls.Add(label8);
-			this.tabnodebuilder.Controls.Add(this.nodebuilder3d);
 			this.tabnodebuilder.Controls.Add(label7);
 			this.tabnodebuilder.Controls.Add(this.nodebuildertest);
 			this.tabnodebuilder.Controls.Add(label2);
@@ -258,19 +229,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabnodebuilder.TabIndex = 1;
 			this.tabnodebuilder.Text = "Nodebuilder";
 			this.tabnodebuilder.UseVisualStyleBackColor = true;
-			// 
-			// nodebuilder3d
-			// 
-			this.nodebuilder3d.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.nodebuilder3d.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.nodebuilder3d.FormattingEnabled = true;
-			this.nodebuilder3d.Location = new System.Drawing.Point(167, 167);
-			this.nodebuilder3d.Name = "nodebuilder3d";
-			this.nodebuilder3d.Size = new System.Drawing.Size(229, 22);
-			this.nodebuilder3d.Sorted = true;
-			this.nodebuilder3d.TabIndex = 27;
-			this.nodebuilder3d.SelectedIndexChanged += new System.EventHandler(this.nodebuilder3d_SelectedIndexChanged);
 			// 
 			// nodebuildertest
 			// 
@@ -302,7 +260,6 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.tabtesting.Controls.Add(this.testresult);
 			this.tabtesting.Controls.Add(this.labelresult);
-			this.tabtesting.Controls.Add(label10);
 			this.tabtesting.Controls.Add(this.testparameters);
 			this.tabtesting.Controls.Add(label4);
 			this.tabtesting.Controls.Add(this.browsewad);
@@ -323,15 +280,17 @@ namespace CodeImp.DoomBuilder.Interface
 			this.testresult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.testresult.BackColor = System.Drawing.SystemColors.Control;
-			this.testresult.Location = new System.Drawing.Point(86, 276);
+			this.testresult.Location = new System.Drawing.Point(86, 217);
+			this.testresult.Multiline = true;
 			this.testresult.Name = "testresult";
-			this.testresult.Size = new System.Drawing.Size(307, 20);
+			this.testresult.ReadOnly = true;
+			this.testresult.Size = new System.Drawing.Size(307, 79);
 			this.testresult.TabIndex = 31;
 			// 
 			// labelresult
 			// 
 			this.labelresult.AutoSize = true;
-			this.labelresult.Location = new System.Drawing.Point(38, 279);
+			this.labelresult.Location = new System.Drawing.Point(38, 220);
 			this.labelresult.Name = "labelresult";
 			this.labelresult.Size = new System.Drawing.Size(40, 14);
 			this.labelresult.TabIndex = 30;
@@ -342,8 +301,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.testparameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.testparameters.Location = new System.Drawing.Point(86, 118);
+			this.testparameters.Multiline = true;
 			this.testparameters.Name = "testparameters";
-			this.testparameters.Size = new System.Drawing.Size(307, 20);
+			this.testparameters.Size = new System.Drawing.Size(307, 79);
 			this.testparameters.TabIndex = 28;
 			// 
 			// browsewad
@@ -434,7 +394,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private ResourceListEditor configdata;
 		private System.Windows.Forms.ComboBox nodebuildertest;
 		private System.Windows.Forms.ComboBox nodebuildersave;
-		private System.Windows.Forms.ComboBox nodebuilder3d;
 		private System.Windows.Forms.TextBox testparameters;
 		private System.Windows.Forms.Button browsewad;
 		private System.Windows.Forms.TextBox testapplication;

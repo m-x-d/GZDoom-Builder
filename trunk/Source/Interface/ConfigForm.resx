@@ -136,7 +136,7 @@
     <value>False</value>
   </metadata>
   <data name="label3.Text" xml:space="preserve">
-    <value>The nodebuilder is a compiler which builds geometry structures for your map. You need these structures both for playing and 3D mode. For each purpose you can choose the desired nodebuilder configuration here.</value>
+    <value>The nodebuilder is a compiler which builds geometry structures for your map. You need these structures to be able to play the map in the game. For each purpose you can choose the desired nodebuilder configuration here.</value>
   </data>
   <metadata name="label2.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -150,18 +150,15 @@
   <metadata name="label7.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
-  <metadata name="label8.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="label8.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
   <metadata name="label9.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="label9.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Here you can specify the program settings to use for launching a game engine when testing the map. Press F1 for a list of placeholders that can be used for automatic filenames, paths, names and numbers.</value>
+  </data>
   <metadata name="label4.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -174,22 +171,6 @@
   <metadata name="label1.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
-  <metadata name="label10.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="label10.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <data name="label10.Text" xml:space="preserve">
-    <value>%F  indicates the edited PWAD file to be tested.
-%WP  indicates the IWAD resource files to be used (paths included).
-%WF  indicates the IWAD resource files to be used (without paths).
-%L  indicates the map lump name as is set in the map options.
-%AP  indicates the additional resources (if any, paths included).
-%AF  indicates the additional resources (if any, without paths).
-%E  indicates the Episode number from E#M# map name.
-%M  indicates the Map number from E#M# or MAP## map name.</value>
-  </data>
   <metadata name="cancel.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -206,9 +187,6 @@
     <value>True</value>
   </metadata>
   <metadata name="tabnodebuilder.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <metadata name="nodebuilder3d.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
   <metadata name="nodebuildertest.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
