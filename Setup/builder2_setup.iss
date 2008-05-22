@@ -47,7 +47,6 @@ Name: {group}\{cm:UninstallProgram,Doom Builder}; Filename: {uninstallexe}
 Name: {commondesktop}\Doom Builder; Filename: {app}\Builder.exe; Tasks: desktopicon
 
 [Run]
-Filename: {app}\Builder.exe; Description: {cm:LaunchProgram,Doom Builder}; Flags: nowait postinstall skipifsilent
 
 [UninstallDelete]
 Name: {localappdata}\Doom Builder; Type: filesandordirs
