@@ -65,6 +65,9 @@ namespace CodeImp.DoomBuilder
 		private string filetitle;
 		private string filepathname;
 		private string temppath;
+		private bool cancelmodechange;
+
+		// Main objects
 		private MapSet map;
 		private MapSetIO io;
 		private MapOptions options;
@@ -79,7 +82,7 @@ namespace CodeImp.DoomBuilder
 		private WAD tempwad;
 		private GridSetup grid;
 		private UndoManager undoredo;
-		private bool cancelmodechange;
+		private Launcher launcher;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -91,6 +94,7 @@ namespace CodeImp.DoomBuilder
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
 		public string TempPath { get { return temppath; } }
+		public bool CancelModeChange { get { return cancelmodechange; } set { cancelmodechange |= value; } }
 		internal MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
 		public EditMode Mode { get { return mode; } }
@@ -102,10 +106,11 @@ namespace CodeImp.DoomBuilder
 		public IRenderer2D Renderer2D { get { return renderer2d; } }
 		public IRenderer3D Renderer3D { get { return renderer3d; } }
 		public GameConfiguration Config { get { return config; } }
+		internal ConfigurationInfo ConfigSettings { get { return configinfo; } }
 		public GridSetup Grid { get { return grid; } }
 		public UndoManager UndoRedo { get { return undoredo; } }
 		public IMapSetIO FormatInterface { get { return io; } }
-		public bool CancelModeChange { get { return cancelmodechange; } set { cancelmodechange |= value; } }
+		internal Launcher Launcher { get { return launcher; } }
 
 		#endregion
 
@@ -117,9 +122,15 @@ namespace CodeImp.DoomBuilder
 			// We have no destructor
 			GC.SuppressFinalize(this);
 
+			// Create temporary path
+			temppath = General.MakeTempDirname();
+			Directory.CreateDirectory(temppath);
+			General.WriteLogLine("Temporary directory:  " + temppath);
+
 			// Basic objects
 			grid = new GridSetup();
 			undoredo = new UndoManager();
+			launcher = new Launcher(this);
 		}
 
 		// Disposer
@@ -135,6 +146,7 @@ namespace CodeImp.DoomBuilder
 				General.Actions.UnbindMethods(this);
 
 				// Dispose
+				if(launcher != null) launcher.Dispose();
 				if(undoredo != null) undoredo.Dispose();
 				General.WriteLogLine("Unloading data resources...");
 				if(data != null) data.Dispose();
@@ -180,11 +192,6 @@ namespace CodeImp.DoomBuilder
 
 			General.WriteLogLine("Creating new map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
 
-			// Create temporary path
-			temppath = General.MakeTempDirname();
-			Directory.CreateDirectory(temppath);
-			General.WriteLogLine("Temporary directory:  " + temppath);
-			
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
 			graphics = new D3DDevice(General.MainWindow.Display);
@@ -250,11 +257,6 @@ namespace CodeImp.DoomBuilder
 			this.options = options;
 
 			General.WriteLogLine("Opening map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
-
-			// Create temporary path
-			temppath = General.MakeTempDirname();
-			Directory.CreateDirectory(temppath);
-			General.WriteLogLine("Temporary directory:  " + temppath);
 
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");

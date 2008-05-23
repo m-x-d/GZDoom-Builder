@@ -27,6 +27,7 @@ using System.Diagnostics;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
+using System.IO;
 
 #endregion
 
@@ -51,6 +52,10 @@ namespace CodeImp.DoomBuilder.Interface
 				// Add a copy
 				lvi = listconfigs.Items.Add(ci.Name);
 				lvi.Tag = ci.Clone();
+
+				// This is the current configuration?
+				if((General.Map != null) && (General.Map.ConfigSettings.Filename == ci.Filename))
+					lvi.Selected = true;
 			}
 
 			// TODO: Save and test nodebuilders are allowed to be empty
@@ -58,6 +63,28 @@ namespace CodeImp.DoomBuilder.Interface
 			// Fill comboboxes with nodebuilders
 			nodebuildersave.Items.AddRange(General.Nodebuilders.ToArray());
 			nodebuildertest.Items.AddRange(General.Nodebuilders.ToArray());
+
+			// Check if a map is loaded
+			if(General.Map != null)
+			{
+				// Show parameters example result
+				labelresult.Visible = true;
+				testresult.Visible = true;
+				noresultlabel.Visible = false;
+			}
+			else
+			{
+				// Cannot show parameters example result
+				labelresult.Visible = false;
+				testresult.Visible = false;
+				noresultlabel.Visible = true;
+			}
+		}
+
+		// This shows a specific page
+		public void ShowTab(int index)
+		{
+			tabs.SelectedIndex = index;
 		}
 
 		// Configuration item selected
@@ -205,6 +232,20 @@ namespace CodeImp.DoomBuilder.Interface
 			// Apply to selected configuration
 			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			ci.TestParameters = testparameters.Text;
+
+			// Show example result
+			CreateParametersExample();
+		}
+		
+		// This creates a new parameters example
+		private void CreateParametersExample()
+		{
+			// Map loaded?
+			if(General.Map != null)
+			{
+				// Make converted parameters
+				testresult.Text = General.Map.Launcher.ConvertParameters(testparameters.Text);
+			}
 		}
 		
 		// OK clicked
@@ -239,10 +280,22 @@ namespace CodeImp.DoomBuilder.Interface
 			this.Close();
 		}
 
-		// Browse clicked
-		private void browsewad_Click(object sender, EventArgs e)
+		// Browse test program
+		private void browsetestprogram_Click(object sender, EventArgs e)
 		{
-
+			// Set initial directory
+			if(testapplication.Text.Length > 0)
+			{
+				try { testprogramdialog.InitialDirectory = Path.GetDirectoryName(testapplication.Text); }
+				catch(Exception) { }
+			}
+			
+			// Browse for test program
+			if(testprogramdialog.ShowDialog() == DialogResult.OK)
+			{
+				// Apply
+				testapplication.Text = testprogramdialog.FileName;
+			}
 		}
 	}
 }

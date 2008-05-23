@@ -37,11 +37,11 @@ namespace CodeImp.DoomBuilder.Interface
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
-			System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
-			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
 			System.Windows.Forms.ToolStripSeparator toolstripSeperator1;
 			System.Windows.Forms.ToolStripSeparator toolstripSeperator6;
+			System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
+			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.itemeditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
 			this.buttoneditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
@@ -54,6 +54,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsavemap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsavemapas = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsavemapinto = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripSeparator();
+			this.itemtestmap = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemnorecent = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemexit = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuedit = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +82,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
 			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttontest = new System.Windows.Forms.ToolStripButton();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gridlabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -121,11 +125,11 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
 			toolstripSeperator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolstripSeperator6 = new System.Windows.Forms.ToolStripSeparator();
+			toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+			toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.menumain.SuspendLayout();
 			this.toolbar.SuspendLayout();
 			this.statusbar.SuspendLayout();
@@ -176,16 +180,6 @@ namespace CodeImp.DoomBuilder.Interface
 			toolStripSeparator10.Name = "toolStripSeparator10";
 			toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
 			// 
-			// toolStripMenuItem4
-			// 
-			toolStripMenuItem4.Name = "toolStripMenuItem4";
-			toolStripMenuItem4.Size = new System.Drawing.Size(161, 6);
-			// 
-			// toolStripSeparator2
-			// 
-			toolStripSeparator2.Name = "toolStripSeparator2";
-			toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
-			// 
 			// toolStripSeparator11
 			// 
 			toolStripSeparator11.Name = "toolStripSeparator11";
@@ -201,6 +195,16 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			toolstripSeperator6.Name = "toolstripSeperator6";
 			toolstripSeperator6.Size = new System.Drawing.Size(162, 6);
+			// 
+			// toolStripMenuItem4
+			// 
+			toolStripMenuItem4.Name = "toolStripMenuItem4";
+			toolStripMenuItem4.Size = new System.Drawing.Size(161, 6);
+			// 
+			// toolStripSeparator2
+			// 
+			toolStripSeparator2.Name = "toolStripSeparator2";
+			toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
 			// 
 			// itemeditmodesseperator
 			// 
@@ -242,6 +246,8 @@ namespace CodeImp.DoomBuilder.Interface
             this.itemsavemap,
             this.itemsavemapas,
             this.itemsavemapinto,
+            this.toolStripMenuItem5,
+            this.itemtestmap,
             toolStripMenuItem2,
             this.itemnorecent,
             toolStripMenuItem3,
@@ -301,6 +307,20 @@ namespace CodeImp.DoomBuilder.Interface
 			this.itemsavemapinto.Tag = "builder_savemapinto";
 			this.itemsavemapinto.Text = "Save Map Into...";
 			this.itemsavemapinto.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripMenuItem5
+			// 
+			this.toolStripMenuItem5.Name = "toolStripMenuItem5";
+			this.toolStripMenuItem5.Size = new System.Drawing.Size(198, 6);
+			// 
+			// itemtestmap
+			// 
+			this.itemtestmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.Test;
+			this.itemtestmap.Name = "itemtestmap";
+			this.itemtestmap.Size = new System.Drawing.Size(201, 22);
+			this.itemtestmap.Tag = "builder_testmap";
+			this.itemtestmap.Text = "Test Map";
+			this.itemtestmap.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemnorecent
 			// 
@@ -448,7 +468,9 @@ namespace CodeImp.DoomBuilder.Interface
             this.thingfilters,
             this.toolStripSeparator8,
             this.buttonsnaptogrid,
-            this.buttonautomerge});
+            this.buttonautomerge,
+            this.toolStripSeparator5,
+            this.buttontest});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(839, 25);
@@ -575,6 +597,22 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonautomerge.Tag = "builder_toggleautomerge";
 			this.buttonautomerge.Text = "Merge Geometry";
 			this.buttonautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttontest
+			// 
+			this.buttontest.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttontest.Image = global::CodeImp.DoomBuilder.Properties.Resources.Test;
+			this.buttontest.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttontest.Name = "buttontest";
+			this.buttontest.Size = new System.Drawing.Size(23, 22);
+			this.buttontest.Tag = "builder_testmap";
+			this.buttontest.Text = "Test Map";
+			this.buttontest.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// statusbar
 			// 
@@ -1016,5 +1054,9 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripSeparator buttoneditmodesseperator;
 		private System.Windows.Forms.ToolStripSeparator itemeditmodesseperator;
 		private System.Windows.Forms.Timer processor;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripButton buttontest;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
+		private System.Windows.Forms.ToolStripMenuItem itemtestmap;
 	}
 }

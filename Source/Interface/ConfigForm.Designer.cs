@@ -46,13 +46,15 @@ namespace CodeImp.DoomBuilder.Interface
 			this.nodebuildertest = new System.Windows.Forms.ComboBox();
 			this.nodebuildersave = new System.Windows.Forms.ComboBox();
 			this.tabtesting = new System.Windows.Forms.TabPage();
+			this.browsetestprogram = new System.Windows.Forms.Button();
+			this.noresultlabel = new System.Windows.Forms.Label();
 			this.testresult = new System.Windows.Forms.TextBox();
 			this.labelresult = new System.Windows.Forms.Label();
 			this.testparameters = new System.Windows.Forms.TextBox();
-			this.browsewad = new System.Windows.Forms.Button();
 			this.testapplication = new System.Windows.Forms.TextBox();
 			this.listconfigs = new System.Windows.Forms.ListView();
 			this.columnname = new System.Windows.Forms.ColumnHeader();
+			this.testprogramdialog = new System.Windows.Forms.OpenFileDialog();
 			label5 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -258,11 +260,12 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// tabtesting
 			// 
+			this.tabtesting.Controls.Add(this.browsetestprogram);
+			this.tabtesting.Controls.Add(this.noresultlabel);
 			this.tabtesting.Controls.Add(this.testresult);
 			this.tabtesting.Controls.Add(this.labelresult);
 			this.tabtesting.Controls.Add(this.testparameters);
 			this.tabtesting.Controls.Add(label4);
-			this.tabtesting.Controls.Add(this.browsewad);
 			this.tabtesting.Controls.Add(this.testapplication);
 			this.tabtesting.Controls.Add(label1);
 			this.tabtesting.Controls.Add(label9);
@@ -274,6 +277,27 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabtesting.TabIndex = 2;
 			this.tabtesting.Text = "Testing";
 			this.tabtesting.UseVisualStyleBackColor = true;
+			// 
+			// browsetestprogram
+			// 
+			this.browsetestprogram.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browsetestprogram.Image = global::CodeImp.DoomBuilder.Properties.Resources.Folder;
+			this.browsetestprogram.Location = new System.Drawing.Point(363, 76);
+			this.browsetestprogram.Name = "browsetestprogram";
+			this.browsetestprogram.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
+			this.browsetestprogram.Size = new System.Drawing.Size(30, 23);
+			this.browsetestprogram.TabIndex = 33;
+			this.browsetestprogram.Text = " ";
+			this.browsetestprogram.UseVisualStyleBackColor = true;
+			this.browsetestprogram.Click += new System.EventHandler(this.browsetestprogram_Click);
+			// 
+			// noresultlabel
+			// 
+			this.noresultlabel.Location = new System.Drawing.Point(84, 217);
+			this.noresultlabel.Name = "noresultlabel";
+			this.noresultlabel.Size = new System.Drawing.Size(272, 43);
+			this.noresultlabel.TabIndex = 32;
+			this.noresultlabel.Text = "An example result cannot be displayed, because it requires a map to be loaded.";
 			// 
 			// testresult
 			// 
@@ -305,17 +329,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.testparameters.Name = "testparameters";
 			this.testparameters.Size = new System.Drawing.Size(307, 79);
 			this.testparameters.TabIndex = 28;
-			// 
-			// browsewad
-			// 
-			this.browsewad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.browsewad.Location = new System.Drawing.Point(312, 75);
-			this.browsewad.Name = "browsewad";
-			this.browsewad.Size = new System.Drawing.Size(81, 24);
-			this.browsewad.TabIndex = 26;
-			this.browsewad.Text = "Browse...";
-			this.browsewad.UseVisualStyleBackColor = true;
-			this.browsewad.Click += new System.EventHandler(this.browsewad_Click);
+			this.testparameters.TextChanged += new System.EventHandler(this.testparameters_TextChanged);
 			// 
 			// testapplication
 			// 
@@ -324,8 +338,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.testapplication.Location = new System.Drawing.Point(86, 77);
 			this.testapplication.Name = "testapplication";
 			this.testapplication.ReadOnly = true;
-			this.testapplication.Size = new System.Drawing.Size(220, 20);
+			this.testapplication.Size = new System.Drawing.Size(271, 20);
 			this.testapplication.TabIndex = 25;
+			this.testapplication.TextChanged += new System.EventHandler(this.testapplication_TextChanged);
 			// 
 			// listconfigs
 			// 
@@ -351,6 +366,11 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.columnname.Text = "Configuration";
 			this.columnname.Width = 200;
+			// 
+			// testprogramdialog
+			// 
+			this.testprogramdialog.Filter = "Executable Files (*.exe)|*.exe|Batch Files (*.bat)|*.bat";
+			this.testprogramdialog.Title = "Browse Test Program";
 			// 
 			// ConfigForm
 			// 
@@ -395,11 +415,13 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ComboBox nodebuildertest;
 		private System.Windows.Forms.ComboBox nodebuildersave;
 		private System.Windows.Forms.TextBox testparameters;
-		private System.Windows.Forms.Button browsewad;
 		private System.Windows.Forms.TextBox testapplication;
 		private System.Windows.Forms.TextBox testresult;
 		private System.Windows.Forms.Label labelresult;
 		private System.Windows.Forms.ListView listconfigs;
 		private System.Windows.Forms.ColumnHeader columnname;
+		private System.Windows.Forms.Label noresultlabel;
+		private System.Windows.Forms.Button browsetestprogram;
+		private System.Windows.Forms.OpenFileDialog testprogramdialog;
 	}
 }

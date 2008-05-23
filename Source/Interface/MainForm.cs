@@ -709,6 +709,13 @@ namespace CodeImp.DoomBuilder.Interface
 			if(!redrawtimer.Enabled) redrawtimer.Enabled = true;
 		}
 		
+		// This requests a delayed redraw
+		public void DelayedRedraw()
+		{
+			// Request redraw
+			if(!redrawtimer.Enabled) redrawtimer.Enabled = true;
+		}
+		
 		// Mouse click
 		private void display_MouseClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Mode != null)) General.Map.Mode.OnMouseClick(e); }
 
@@ -1057,11 +1064,13 @@ namespace CodeImp.DoomBuilder.Interface
 			itemsavemap.Enabled = (General.Map != null);
 			itemsavemapas.Enabled = (General.Map != null);
 			itemsavemapinto.Enabled = (General.Map != null);
+			itemtestmap.Enabled = (General.Map != null);
 
 			// Toolbar icons
 			buttonnewmap.Enabled = itemnewmap.Enabled;
 			buttonopenmap.Enabled = itemopenmap.Enabled;
 			buttonsavemap.Enabled = itemsavemap.Enabled;
+			buttontest.Enabled = itemtestmap.Enabled;
 		}
 
 		// This sets the recent files from configuration
@@ -1289,7 +1298,15 @@ namespace CodeImp.DoomBuilder.Interface
 		internal void ShowConfiguration()
 		{
 			// Show configuration dialog
+			ShowConfigurationPage(-1);
+		}
+
+		// This shows the configuration on a specific page
+		internal void ShowConfigurationPage(int pageindex)
+		{
+			// Show configuration dialog
 			ConfigForm cfgform = new ConfigForm();
+			if(pageindex > -1) cfgform.ShowTab(pageindex);
 			if(cfgform.ShowDialog(this) == DialogResult.OK)
 			{
 				// Update interface
@@ -1297,14 +1314,14 @@ namespace CodeImp.DoomBuilder.Interface
 
 				// Let the plugins know
 				General.Plugins.ProgramReconfigure();
-				
+
 				// Reload resources if a map is open
 				if(General.Map != null) General.Map.ReloadResources();
-				
+
 				// Redraw display
 				RedrawDisplay();
 			}
-			
+
 			// Done
 			cfgform.Dispose();
 		}

@@ -203,12 +203,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetStreamSource(0, screenverts, 0, sizeof(FlatVertex));
 				graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 				graphics.Shaders.Display2D.Begin();
-				
+
 				// Go for all layers
 				foreach(PresentLayer layer in present.layers)
 				{
 					int aapass;
-					
+
 					// Set blending mode
 					switch(layer.blending)
 					{
@@ -243,7 +243,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					// Check which pass to use
 					if(layer.antialiasing) aapass = 0; else aapass = 1;
-					
+
 					// Render layer
 					switch(layer.layer)
 					{
@@ -310,6 +310,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetTexture(0, null);
 				graphics.Shaders.Display2D.Texture1 = null;
 				graphics.Device.SetStreamSource(0, null, 0, 0);
+			}
+			else
+			{
+				// Request delayed redraw
+				General.MainWindow.DelayedRedraw();
 			}
 		}
 		
