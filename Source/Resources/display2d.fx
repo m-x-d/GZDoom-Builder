@@ -43,7 +43,8 @@ sampler2D texture1samp = sampler_state
     MipFilter = Point;
 	AddressU = Wrap;
 	AddressV = Wrap;
-}; 
+	MipMapLodBias = 0f;
+};
 
 // Texture sampler settings
 sampler2D texture1linear = sampler_state
@@ -54,7 +55,8 @@ sampler2D texture1linear = sampler_state
     MipFilter = Linear;
 	AddressU = Wrap;
 	AddressV = Wrap;
-}; 
+	MipMapLodBias = 0f;
+};
 
 // Transformation
 PixelData vs_transform(VertexData vd)

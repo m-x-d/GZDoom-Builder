@@ -36,7 +36,7 @@ sampler2D texture1samp = sampler_state
     MipFilter = Linear;
 	AddressU = Wrap;
 	AddressV = Wrap;
-	MipMapLodBias = -0.99f;
+	MipMapLodBias = -0.9f;
 };
 
 // Transformation
@@ -56,7 +56,7 @@ float4 ps_circle(PixelData pd) : COLOR
 	float4 c = tex2D(texture1samp, pd.uv);
 	
 	// Use shinyness?
-	if(pd.uv.x < 0.5f)
+	if(pd.uv.x < 0.4f)
 	{
 		float4 s = tex2D(texture1samp, pd.uv + float2(0.25f, 0.0f));
 		return float4(lerp(c.rgb * pd.color.rgb, s.rgb, s.a), c.a * pd.color.a);
