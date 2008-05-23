@@ -1025,6 +1025,12 @@ namespace CodeImp.DoomBuilder
 		// This returns a unique temp filename
 		internal static string MakeTempFilename(string tempdir)
 		{
+			return MakeTempFilename(tempdir, "tmp");
+		}
+
+		// This returns a unique temp filename
+		internal static string MakeTempFilename(string tempdir, string extension)
+		{
 			string filename;
 			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
 			Random rnd = new Random();
@@ -1035,7 +1041,7 @@ namespace CodeImp.DoomBuilder
 				// Generate a filename
 				filename = "";
 				for(i = 0; i < 8; i++) filename += chars[rnd.Next(chars.Length)];
-				filename = Path.Combine(tempdir, filename + ".tmp");
+				filename = Path.Combine(tempdir, filename + "." + extension);
 			}
 			// Continue while file is not unique
 			while(File.Exists(filename) || Directory.Exists(filename));

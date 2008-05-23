@@ -1,8 +1,27 @@
-%F  indicates the edited PWAD file to be tested.
-%WP  indicates the IWAD resource files to be used (paths included).
-%WF  indicates the IWAD resource files to be used (without paths).
-%L  indicates the map lump name as is set in the map options.
-%AP  indicates the additional resources (if any, paths included).
-%AF  indicates the additional resources (if any, without paths).
-%E  indicates the Episode number from E#M# map name.
-%M  indicates the Map number from E#M# or MAP## map name.
+-------------------------------------------------------------------------------------
+
+%F indicates the edited PWAD file to be tested.
+NOTE: Doom Builder writes everything to a temporary file, this is not the file
+that was opened through the File -> Open Map dialog.
+
+-------------------------------------------------------------------------------------
+
+%WP indicates the IWAD resource file to be used (path included).
+This is the first (highest) IWAD file that is found in the resources list.
+
+-------------------------------------------------------------------------------------
+
+%WF indicates the IWAD resource file to be used (without path).
+This is the first (highest) IWAD file that is found in the resources list.
+
+-------------------------------------------------------------------------------------
+
+%L indicates the map lump name as is set in the map options.
+
+-------------------------------------------------------------------------------------
+
+%AP indicates the all resources files, except the first IWAD file (paths included).
+The items are seperated by spaces. When used within quotes "%AP", the quotes are
+also repeated for every item.
+
+-------------------------------------------------------------------------------------

@@ -312,6 +312,7 @@
     <Compile Include="IO\FileImageReader.cs" />
     <Compile Include="IO\IImageReader.cs" />
     <Compile Include="IO\IMapSetIO.cs" />
+    <Compile Include="General\Launcher.cs" />
     <Compile Include="IO\Lump.cs" />
     <Compile Include="IO\MapSetIO.cs" />
     <Compile Include="IO\UniversalMapSetIO.cs" />
@@ -529,6 +530,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Test.png" />
     <None Include="Resources\SlimDX_small.png" />
     <None Include="Resources\Splash3_trans.png" />
     <None Include="Resources\Splash3_small.png" />

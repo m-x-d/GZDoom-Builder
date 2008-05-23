@@ -395,9 +395,15 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Check if device must be reset
 				if(!coopresult.IsSuccess)
 				{
-					// Device is lost and must be reset now
-					// TODO: Check result codes, device cannot always be reset
-					return Reset();
+					// Should we reset?
+					if(coopresult.Name == "D3DERR_DEVICENOTRESET")
+					{
+						// Device is lost and must be reset now
+						Reset();
+					}
+					
+					// Impossible to render at this point
+					return false;
 				}
 
 				// Set rendertarget
