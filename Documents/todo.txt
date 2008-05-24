@@ -1,0 +1,31 @@
+- All core builder modes must be config-specific so that anyone
+	can remove them to replace them with their own mode
+
+- Make things filter
+
+- Change toolbar buttons
+	- Make seperate attribute for editing modes to create a button
+	- Make classes and attributes to manually add buttons to the toolbar
+
+- Change linedefs in configurations
+	- Proper formatting
+	- Enummed arguments support
+
+- Make UDMF implementation
+	- Also enummed field values support
+
+- Make "Make Sector" mode
+	- On mousemove (?) already show the sector outline it will create
+	- On click make the sector
+
+- Make sector gradient features
+
+- Make 3D Mode (config specific!)
+
+- Make texture alignment features
+
+- Make find/replace features
+
+- Make copy/paste features
+
+- Make error checking feature
