@@ -3,6 +3,8 @@
 
 - Make things filter
 
+- Add log in main window for debug versions
+
 - Change toolbar buttons
 	- Make seperate attribute for editing modes to create a button
 	- Make classes and attributes to manually add buttons to the toolbar
@@ -29,3 +31,12 @@
 - Make copy/paste features
 
 - Make error checking feature
+
+- Make advanced drag/rotate/resize/flip/skew/turn/barf mode
+
+- Make quick sector draw (square/circle) mode
+
+- Make dialog and editing mode help documentation
+
+- Make Plugin Development Kit
+
