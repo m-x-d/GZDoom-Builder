@@ -120,4 +120,7 @@ end;
 
 
 
+[Registry]
+Root: HKLM; Subkey: SOFTWARE\CodeImp\Doom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
+
 
