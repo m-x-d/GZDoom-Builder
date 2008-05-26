@@ -83,6 +83,7 @@ namespace CodeImp.DoomBuilder
 		private GridSetup grid;
 		private UndoManager undoredo;
 		private Launcher launcher;
+		private ThingsFilter thingsfilter;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -111,6 +112,7 @@ namespace CodeImp.DoomBuilder
 		public UndoManager UndoRedo { get { return undoredo; } }
 		public IMapSetIO FormatInterface { get { return io; } }
 		internal Launcher Launcher { get { return launcher; } }
+		public ThingsFilter ThingsFilter { get { return thingsfilter; } }
 
 		#endregion
 
@@ -131,6 +133,7 @@ namespace CodeImp.DoomBuilder
 			grid = new GridSetup();
 			undoredo = new UndoManager();
 			launcher = new Launcher(this);
+			thingsfilter = new NullThingsFilter();
 		}
 
 		// Disposer
@@ -224,7 +227,11 @@ namespace CodeImp.DoomBuilder
 			tempwad.Insert(TEMP_MAP_HEADER, 0, 0);
 			io.Write(map, TEMP_MAP_HEADER, 1);
 			CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
-
+			
+			// Update structures
+			map.Update();
+			thingsfilter.Update();
+			
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
 			data = new DataManager();
@@ -307,7 +314,8 @@ namespace CodeImp.DoomBuilder
 
 			// Update structures
 			map.Update();
-
+			thingsfilter.Update();
+			
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
 			data = new DataManager();
@@ -923,6 +931,25 @@ namespace CodeImp.DoomBuilder
 		
 		#region ================== Methods
 
+		// This changes thing filter
+		internal void ChangeThingFilter(ThingsFilter newfilter)
+		{
+			// We have a special filter for null
+			if(newfilter == null) newfilter = new NullThingsFilter();
+			
+			// Deactivate old filter
+			if(thingsfilter != null) thingsfilter.Deactivate();
+
+			// Change
+			thingsfilter = newfilter;
+
+			// Activate filter
+			thingsfilter.Activate();
+			
+			// Redraw
+			General.MainWindow.RedrawDisplay();
+		}
+		
 		// This clears the selection
 		[BeginAction("clearselection")]
 		public void ClearSelection()
@@ -944,6 +971,7 @@ namespace CodeImp.DoomBuilder
 			map.Dispose();
 			map = newmap;
 			map.Update();
+			thingsfilter.Update();
 		}
 		
 		// This reloads resources
@@ -1039,6 +1067,16 @@ namespace CodeImp.DoomBuilder
 			optionsform.Dispose();
 		}
 
+		// This shows the things filters setup
+		[BeginAction("thingsfilterssetup")]
+		internal void ShowThingsFiltersSetup()
+		{
+			// Show line edit dialog
+			ThingsFiltersForm f = new ThingsFiltersForm();
+			f.ShowDialog(General.MainWindow);
+			f.Dispose();
+		}
+		
 		// This returns true is the given type matches
 		public bool IsType(Type t)
 		{

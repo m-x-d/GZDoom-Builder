@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Property handlers
 		private EffectHandle texture1;
+		private EffectHandle rendersettings;
 		private EffectHandle transformsettings;
 
 		#endregion
@@ -64,6 +65,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(effect != null)
 			{
 				texture1 = effect.GetParameter(null, "texture1");
+				rendersettings = effect.GetParameter(null, "rendersettings");
 				transformsettings = effect.GetParameter(null, "transformsettings");
 			}
 
@@ -89,6 +91,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Clean up
 				if(texture1 != null) texture1.Dispose();
+				if(rendersettings != null) rendersettings.Dispose();
 				if(transformsettings != null) transformsettings.Dispose();
 
 				// Done
@@ -101,10 +104,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Methods
 
 		// This sets the settings
-		public void SetSettings()
+		public void SetSettings(float alpha)
 		{
 			if(manager.Enabled)
 			{
+				Vector4 values = new Vector4(0.0f, 0.0f, 1.0f, alpha);
+				effect.SetValue(rendersettings, values);
 				Matrix world = manager.D3DDevice.Device.GetTransform(TransformState.World);
 				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
 				effect.SetValue(transformsettings, Matrix.Multiply(world, view));

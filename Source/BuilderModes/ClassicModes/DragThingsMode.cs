@@ -108,7 +108,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Get selected things
 			selectedthings = General.Map.Map.GetMarkedThings(true);
-			unselectedthings = General.Map.Map.GetMarkedThings(false);
+			unselectedthings = new List<Thing>();
+			foreach(Thing t in General.Map.ThingsFilter.VisibleThings) if(!t.Marked) unselectedthings.Add(t);
 			
 			// Get the nearest thing for snapping
 			dragitem = MapSet.NearestThing(selectedthings, dragstartmappos);
@@ -232,13 +233,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				// Render things
-				renderer.RenderThingSet(unselectedthings);
-				renderer.RenderThingSet(selectedthings);
+				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
+				renderer.RenderThingSet(unselectedthings, 1.0f);
+				renderer.RenderThingSet(selectedthings, 1.0f);
 
 				// Draw the dragged item highlighted
 				// This is important to know, because this item is used
 				// for snapping to the grid and snapping to nearest items
-				renderer.RenderThing(dragitem, General.Colors.Highlight);
+				renderer.RenderThing(dragitem, General.Colors.Highlight, 1.0f);
 
 				// Done
 				renderer.Finish();

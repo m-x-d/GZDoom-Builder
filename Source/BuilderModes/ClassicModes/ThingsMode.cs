@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 
 		public const float THING_HIGHLIGHT_RANGE = 10f;
-
+		
 		#endregion
 
 		#region ================== Variables
@@ -126,9 +126,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.RenderThingSet(General.Map.Map.Things);
+				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
+				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, General.Colors.Highlight);
+					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
 				renderer.Finish();
 			}
 
@@ -154,14 +155,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
 
 				// Set new highlight
 				highlighted = t;
 
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, General.Colors.Highlight);
+					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
 
 				// Done
 				renderer.Finish();
@@ -188,7 +189,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(renderer.StartThings(false))
 				{
 					// Redraw highlight to show selection
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
 					renderer.Finish();
 					renderer.Present();
 				}
@@ -215,7 +216,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(renderer.StartThings(false))
 					{
 						// Render highlighted item
-						renderer.RenderThing(highlighted, General.Colors.Highlight);
+						renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -247,7 +248,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(renderer.StartThings(false))
 				{
 					// Redraw highlight to show selection
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted));
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
 					renderer.Finish();
 					renderer.Present();
 				}
@@ -272,6 +273,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// When a single thing was selected, deselect it now
 					if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
 
+					// Update things filter
+					General.Map.ThingsFilter.Update();
+					
 					// Update entire display
 					General.Interface.RedrawDisplay();
 				}
@@ -290,8 +294,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.Button == MouseButtons.None)
 			{
 				// Find the nearest vertex within highlight range
-				Thing t = General.Map.Map.NearestThingSquareRange(mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
-
+				Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
+				
 				// Highlight if not the same
 				if(t != highlighted) Highlight(t);
 			}
@@ -335,7 +339,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEndMultiSelection()
 		{
 			// Go for all things
-			foreach(Thing t in General.Map.Map.Things)
+			foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
 			{
 				t.Selected = ((t.Position.x >= selectionrect.Left) &&
 							  (t.Position.y >= selectionrect.Top) &&

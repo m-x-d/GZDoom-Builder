@@ -612,7 +612,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				
 				// Set the rendertarget to the things texture
 				targetsurface = thingstex.GetSurfaceLevel(0);
-				if(graphics.StartRendering(clear, new Color4(0), targetsurface, null))
+				if(graphics.StartRendering(clear, General.Colors.Background.WithAlpha(0).ToColorValue(), targetsurface, null))
 				{
 					// Ready for rendering
 					UpdateTransformations();
@@ -644,7 +644,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Set the rendertarget to the things texture
 				targetsurface = overlaytex.GetSurfaceLevel(0);
-				if(graphics.StartRendering(clear, new Color4(0), targetsurface, null))
+				if(graphics.StartRendering(clear, General.Colors.Background.WithAlpha(0).ToColorValue(), targetsurface, null))
 				{
 					// Ready for rendering
 					UpdateTransformations();
@@ -959,19 +959,24 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This draws a set of things
-		private void RenderThingsBatch(int offset, int count)
+		private void RenderThingsBatch(int offset, int count, float alpha)
 		{
 			int thingtextureindex = 0;
 			
 			// Anything to render?
 			if(count > 0)
 			{
+				// Make alpha color
+				Color4 alphacolor = new Color4(alpha, 1.0f, 1.0f, 1.0f);
+				
 				// Set renderstates for things rendering
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
-				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, alphacolor.ToArgb());
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
 
 				// Determine things texture to use
@@ -980,7 +985,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetTexture(0, thingtexture[thingtextureindex].Texture);
 				graphics.Shaders.Things2D.Texture1 = thingtexture[thingtextureindex].Texture;
 				SetWorldTransformation(false);
-				graphics.Shaders.Things2D.SetSettings();
+				graphics.Shaders.Things2D.SetSettings(alpha);
 
 				// Draw the things batched
 				graphics.Shaders.Things2D.Begin();
@@ -992,7 +997,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This adds a thing in the things buffer for rendering
-		public void RenderThing(Thing t, PixelColor c)
+		public void RenderThing(Thing t, PixelColor c, float alpha)
 		{
 			FlatVertex[] verts = new FlatVertex[12];
 			DataStream stream;
@@ -1013,44 +1018,47 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 
 				// Thing added, render it
-				RenderThingsBatch(numthings, 1);
+				RenderThingsBatch(numthings, 1, alpha);
 				numthings++;
 			}
 		}
 
 		// This adds a thing in the things buffer for rendering
-		public void RenderThingSet(ICollection<Thing> things)
+		public void RenderThingSet(ICollection<Thing> things, float alpha)
 		{
-			FlatVertex[] verts = new FlatVertex[things.Count * 12];
-			DataStream stream;
-			int addcount = 0;
-
-			// Make sure there is enough memory reserved
-			ReserveThingsMemory(numthings + things.Count, true);
-
-			// Go for all things
-			foreach(Thing t in things)
+			// Anything to do?
+			if(things.Count > 0)
 			{
-				// Create vertices
-				if(CreateThingVerts(t, ref verts, addcount * 12, DetermineThingColor(t)))
+				FlatVertex[] verts = new FlatVertex[things.Count * 12];
+
+				// Make sure there is enough memory reserved
+				ReserveThingsMemory(numthings + things.Count, true);
+
+				// Go for all things
+				int addcount = 0;
+				foreach(Thing t in things)
 				{
-					// Next
-					addcount++;
+					// Create vertices
+					if(CreateThingVerts(t, ref verts, addcount * 12, DetermineThingColor(t)))
+					{
+						// Next
+						addcount++;
+					}
 				}
-			}
 
-			// Store vertices in buffer
-			if(thingsvertices != null)
-			{
-				stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, things.Count * 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
-				stream.WriteRange<FlatVertex>(verts);
-				thingsvertices.Unlock();
-				stream.Dispose();
-			}
+				// Store vertices in buffer
+				if(thingsvertices != null)
+				{
+					DataStream stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, things.Count * 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
+					stream.WriteRange<FlatVertex>(verts);
+					thingsvertices.Unlock();
+					stream.Dispose();
+				}
 
-			// Things added, render them
-			RenderThingsBatch(numthings, addcount);
-			numthings += addcount;
+				// Things added, render them
+				RenderThingsBatch(numthings, addcount, alpha);
+				numthings += addcount;
+			}
 		}
 		
 		#endregion

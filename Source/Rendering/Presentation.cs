@@ -32,7 +32,8 @@ namespace CodeImp.DoomBuilder.Rendering
 	public class Presentation
 	{
 		// Constants for static instances
-		private const float THINGS_BACK_ALPHA = 0.3f;
+		public const float THINGS_BACK_ALPHA = 0.3f;
+		public const float THINGS_HIDDEN_ALPHA = 0.66f;
 		
 		// Static instances
 		private static Presentation standard;
@@ -74,7 +75,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			things.layers.Add(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
 			things.layers.Add(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			things.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
-			things.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 1f, true));
+			things.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 1f, false));
 			things.layers.Add(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
 		}
 	}

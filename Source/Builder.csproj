@@ -80,6 +80,8 @@
     <Compile Include="Editing\EditModeAttribute.cs" />
     <Compile Include="Editing\EditModeInfo.cs" />
     <Compile Include="Editing\GridSetup.cs" />
+    <Compile Include="Editing\NullThingsFilter.cs" />
+    <Compile Include="Editing\ThingsFilter.cs" />
     <Compile Include="Editing\UndoGroup.cs" />
     <Compile Include="Editing\UndoManager.cs" />
     <Compile Include="Editing\UndoSnapshot.cs" />
@@ -295,6 +297,12 @@
     </Compile>
     <Compile Include="Interface\ThingInfoPanel.Designer.cs">
       <DependentUpon>ThingInfoPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ThingsFiltersForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\ThingsFiltersForm.Designer.cs">
+      <DependentUpon>ThingsFiltersForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\VertexInfoPanel.cs">
       <SubType>UserControl</SubType>
@@ -545,6 +553,10 @@
     <EmbeddedResource Include="Interface\ThingEditForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ThingEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Interface\ThingsFiltersForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThingsFiltersForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Font.png" />
     <EmbeddedResource Include="Resources\Thing2D_3.png" />
