@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		// Toolbar
 		private EventHandler buttonvisiblechangedhandler;
+		private bool updatingfilters;
 		
 		#endregion
 
@@ -871,6 +872,78 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Toolbar
 
+		// This loses focus
+		private void LoseFocus(object sender, EventArgs e)
+		{
+			// Lose focus!
+			this.ActiveControl = null;
+		}
+
+		// Things filter selected
+		private void thingfilters_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Only possible when a map is open
+			if((General.Map != null) && !updatingfilters)
+			{
+				// Change filter
+				General.Map.ChangeThingFilter(thingfilters.SelectedItem as ThingsFilter);
+			}
+
+			// Lose focus
+			LoseFocus(sender, e);
+		}
+		
+		// This updates the things filter on the toolbar
+		internal void UpdateThingsFilters()
+		{
+			// Only possible to list filters when a map is open
+			if(General.Map != null)
+			{
+				ThingsFilter oldfilter = null;
+				if(thingfilters.SelectedIndex > -1)
+					oldfilter = thingfilters.SelectedItem as ThingsFilter;
+				
+				updatingfilters = true;
+
+				// Clear the list
+				thingfilters.Items.Clear();
+
+				// Add null filter
+				if(General.Map.ThingsFilter is NullThingsFilter)
+					thingfilters.Items.Add(General.Map.ThingsFilter);
+				else
+					thingfilters.Items.Add(new NullThingsFilter());
+
+				// Add all filters
+				foreach(ThingsFilter f in General.Map.ConfigSettings.ThingsFilters)
+					thingfilters.Items.Add(f);
+
+				// Select current filter
+				foreach(ThingsFilter f in thingfilters.Items)
+					if(f == General.Map.ThingsFilter) thingfilters.SelectedItem = f;
+
+				updatingfilters = false;
+				
+				// No filter selected?
+				if(thingfilters.SelectedIndex == -1)
+				{
+					// Select the first and update
+					thingfilters.SelectedIndex = 0;
+				}
+				// Another filter got selected?
+				else if(oldfilter != (thingfilters.SelectedItem as ThingsFilter))
+				{
+					// Update!
+					thingfilters_SelectedIndexChanged(this, EventArgs.Empty);
+				}
+			}
+			else
+			{
+				// Clear the list
+				thingfilters.Items.Clear();
+			}
+		}
+		
 		// This adds a button to the toolbar
 		public void AddButton(ToolStripItem button)
 		{
@@ -1353,6 +1426,9 @@ namespace CodeImp.DoomBuilder.Interface
 			itemreloadresources.Enabled = (General.Map != null);
 			
 			// Toolbar icons
+			thingfilters.Enabled = (General.Map != null);
+			buttonthingsfilter.Enabled = (General.Map != null);
+			UpdateThingsFilters();
 		}
 		
 		// Game Configuration action

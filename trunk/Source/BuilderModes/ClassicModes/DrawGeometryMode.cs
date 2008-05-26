@@ -611,7 +611,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.RenderThingSet(General.Map.Map.Things);
+				renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
 				renderer.Finish();
 			}
 

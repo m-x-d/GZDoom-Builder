@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Interface
 			label6.AutoEllipsis = true;
 			label6.Location = new System.Drawing.Point(12, 15);
 			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(393, 37);
+			label6.Size = new System.Drawing.Size(394, 37);
 			label6.TabIndex = 21;
 			label6.Text = "These are the resources that will be loaded when this configuration is chosen for" +
 				" editing. Usually you add your IWAD (like doom.wad or doom2.wad) here.";
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(573, 381);
+			this.cancel.Location = new System.Drawing.Point(567, 368);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 17;
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(455, 381);
+			this.apply.Location = new System.Drawing.Point(449, 368);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 16;
@@ -182,10 +182,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabs.Enabled = false;
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
-			this.tabs.Location = new System.Drawing.Point(263, 17);
+			this.tabs.Location = new System.Drawing.Point(256, 12);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(422, 345);
+			this.tabs.Size = new System.Drawing.Size(423, 345);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 18;
 			// 
@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabresources.Location = new System.Drawing.Point(4, 23);
 			this.tabresources.Name = "tabresources";
 			this.tabresources.Padding = new System.Windows.Forms.Padding(6);
-			this.tabresources.Size = new System.Drawing.Size(414, 318);
+			this.tabresources.Size = new System.Drawing.Size(415, 318);
 			this.tabresources.TabIndex = 0;
 			this.tabresources.Text = "Resources";
 			this.tabresources.UseVisualStyleBackColor = true;
@@ -212,7 +212,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.configdata.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.configdata.Location = new System.Drawing.Point(15, 55);
 			this.configdata.Name = "configdata";
-			this.configdata.Size = new System.Drawing.Size(381, 220);
+			this.configdata.Size = new System.Drawing.Size(382, 220);
 			this.configdata.TabIndex = 20;
 			this.configdata.OnContentChanged += new CodeImp.DoomBuilder.Interface.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
 			// 
@@ -349,7 +349,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.listconfigs.FullRowSelect = true;
 			this.listconfigs.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.listconfigs.HideSelection = false;
-			this.listconfigs.Location = new System.Drawing.Point(17, 17);
+			this.listconfigs.Location = new System.Drawing.Point(12, 12);
 			this.listconfigs.MultiSelect = false;
 			this.listconfigs.Name = "listconfigs";
 			this.listconfigs.ShowGroups = false;
@@ -377,7 +377,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(697, 416);
+			this.ClientSize = new System.Drawing.Size(690, 403);
 			this.Controls.Add(this.listconfigs);
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);

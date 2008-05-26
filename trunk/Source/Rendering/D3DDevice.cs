@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void SetupSettings()
 		{
 			// Setup renderstates
-			device.SetRenderState(RenderState.AlphaRef, 0x0000007F);
+			device.SetRenderState(RenderState.AlphaRef, 0x0000007E);
 			device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
 			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
 			device.SetRenderState(RenderState.Ambient, Color.White.ToArgb());

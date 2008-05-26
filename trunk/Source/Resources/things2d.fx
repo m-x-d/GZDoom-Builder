@@ -17,6 +17,10 @@ struct PixelData
     float2 uv		: TEXCOORD0;
 };
 
+// Render settings
+// w = transparency
+float4 rendersettings;
+
 // Transform settings
 float4x4 transformsettings;
 
@@ -59,9 +63,11 @@ float4 ps_circle(PixelData pd) : COLOR
 	if(pd.uv.x < 0.4f)
 	{
 		float4 s = tex2D(texture1samp, pd.uv + float2(0.25f, 0.0f));
-		return float4(lerp(c.rgb * pd.color.rgb, s.rgb, s.a), c.a * pd.color.a);
+		c = float4(lerp(c.rgb * pd.color.rgb, s.rgb, s.a), c.a);
 	}
-	else return c;
+	
+	c.a = c.a * pd.color.a * rendersettings.w;
+	return c;
 }
 
 // Technique for shader model 2.0

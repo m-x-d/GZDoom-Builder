@@ -70,8 +70,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		void PlotVertex(Vertex v, int colorindex);
 		void PlotVertexAt(Vector2D v, int colorindex);
 		void PlotVerticesSet(ICollection<Vertex> vertices);
-		void RenderThing(Thing t, PixelColor c);
-		void RenderThingSet(ICollection<Thing> things);
+		void RenderThing(Thing t, PixelColor c, float alpha);
+		void RenderThingSet(ICollection<Thing> things, float alpha);
 		void RenderRectangle(RectangleF rect, float bordersize, PixelColor c, bool transformrect);
 		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect);
 		void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords);

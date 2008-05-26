@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.RenderThingSet(General.Map.Map.Things);
+				renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
 				if((highlighted != null) && (highlighted is Thing)) DrawHighlight(true);
 				renderer.Finish();
 			}
@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				else if(highlighted is Thing)
 				{
 					if((highlighted as Thing).IsDisposed) return;
-					renderer.RenderThing((highlighted as Thing), General.Colors.Highlight);
+					renderer.RenderThing((highlighted as Thing), General.Colors.Highlight, 1.0f);
 				}
 			}
 			// With original color
@@ -210,7 +210,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				else if(highlighted is Thing)
 				{
 					if((highlighted as Thing).IsDisposed) return;
-					renderer.RenderThing((highlighted as Thing), renderer.DetermineThingColor((highlighted as Thing)));
+					renderer.RenderThing((highlighted as Thing), renderer.DetermineThingColor((highlighted as Thing)), 1.0f);
 				}
 			}
 		}

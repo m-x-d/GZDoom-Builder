@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttontest = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gridlabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -117,7 +118,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
 			this.processor = new System.Windows.Forms.Timer(this.components);
-			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -552,7 +552,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttonthingsfilter.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonthingsfilter.Name = "buttonthingsfilter";
 			this.buttonthingsfilter.Size = new System.Drawing.Size(23, 22);
+			this.buttonthingsfilter.Tag = "builder_thingsfilterssetup";
 			this.buttonthingsfilter.Text = "Configure Things Filters";
+			this.buttonthingsfilter.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// thingfilters
 			// 
@@ -567,6 +569,8 @@ namespace CodeImp.DoomBuilder.Interface
 			this.thingfilters.Name = "thingfilters";
 			this.thingfilters.Size = new System.Drawing.Size(130, 25);
 			this.thingfilters.ToolTipText = "Things Filter";
+			this.thingfilters.SelectedIndexChanged += new System.EventHandler(this.thingfilters_SelectedIndexChanged);
+			this.thingfilters.DropDownClosed += new System.EventHandler(this.LoseFocus);
 			// 
 			// toolStripSeparator8
 			// 
@@ -615,6 +619,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.buttontest.Tag = "builder_testmap";
 			this.buttontest.Text = "Test Map";
 			this.buttontest.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
 			// 
 			// statusbar
 			// 
@@ -946,11 +955,6 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.processor.Interval = 10;
 			this.processor.Tick += new System.EventHandler(this.processor_Tick);
-			// 
-			// toolStripSeparator6
-			// 
-			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
 			// 
 			// MainForm
 			// 

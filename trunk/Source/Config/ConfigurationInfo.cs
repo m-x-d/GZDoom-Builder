@@ -24,6 +24,7 @@ using System.Text;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -42,6 +43,7 @@ namespace CodeImp.DoomBuilder.Config
 		private DataLocationList resources;
 		private string testprogram;
 		private string testparameters;
+		private List<ThingsFilter> thingsfilters;
 
 		#endregion
 
@@ -55,6 +57,7 @@ namespace CodeImp.DoomBuilder.Config
 		public DataLocationList Resources { get { return resources; } }
 		public string TestProgram { get { return testprogram; } set { testprogram = value; } }
 		public string TestParameters { get { return testparameters; } set { testparameters = value; } }
+		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
 
 		#endregion
 
@@ -77,6 +80,14 @@ namespace CodeImp.DoomBuilder.Config
 			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
+			
+			// Make list of things filters
+			thingsfilters = new List<ThingsFilter>();
+			IDictionary cfgfilters = General.Settings.ReadSetting("configurations." + settingskey + ".thingsfilters", new Hashtable());
+			foreach(DictionaryEntry de in cfgfilters)
+			{
+				thingsfilters.Add(new ThingsFilter(General.Settings.Config, "configurations." + settingskey + ".thingsfilters." + de.Key));
+			}
 		}
 
 		// Constructor
@@ -104,6 +115,13 @@ namespace CodeImp.DoomBuilder.Config
 			General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
+
+			// Write filters to configuration
+			for(int i = 0; i < thingsfilters.Count; i++)
+			{
+				thingsfilters[i].WriteSettings(General.Settings.Config,
+					"configurations." + settingskey + ".thingsfilters.filter" + i.ToString(CultureInfo.InvariantCulture));
+			}
 		}
 
 		// String representation

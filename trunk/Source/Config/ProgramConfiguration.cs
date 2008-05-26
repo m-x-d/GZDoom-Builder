@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using System.Reflection;
 using CodeImp.DoomBuilder.Plugins;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -55,7 +56,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int imagebrightness;
 		private bool qualitydisplay;
 		private bool squarethings;
-		
+
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
 		private int defaultbrightness = 192;

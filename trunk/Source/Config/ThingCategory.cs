@@ -159,6 +159,12 @@ namespace CodeImp.DoomBuilder.Config
 			// Add
 			things.Add(t);
 		}
+
+		// String representation
+		public override string ToString()
+		{
+			return title;
+		}
 		
 		#endregion
 	}
