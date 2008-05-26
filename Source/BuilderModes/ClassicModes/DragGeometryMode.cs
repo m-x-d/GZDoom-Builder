@@ -114,11 +114,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// Constructor to start dragging immediately
-		protected void StartDrag(EditMode basemode, Vector2D dragstartmappos)
+		protected void StartDrag(Vector2D dragstartmappos)
 		{
 			// Initialize
 			this.dragstartmappos = dragstartmappos;
-			this.basemode = basemode;
+			
+			// Create new instance of the previous mode
+			this.basemode = (EditMode)Assembly.GetCallingAssembly().CreateInstance(General.Map.Mode.GetType().FullName, false, BindingFlags.Default, null, null, CultureInfo.CurrentCulture, new object[0]);
 
 			Cursor.Current = Cursors.AppStarting;
 
