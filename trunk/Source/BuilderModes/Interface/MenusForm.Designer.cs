@@ -34,6 +34,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.flipsidedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.curvelinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
+			this.splitlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.sectorsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.joinsectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,8 +43,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingscwitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingsccwitem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
-			this.splitlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -100,6 +100,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.curvelinedefsitem.Tag = "curvelinesmode";
 			this.curvelinedefsitem.Text = "Curve Linedefs...";
 			// 
+			// toolStripMenuItem3
+			// 
+			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(166, 6);
+			// 
+			// splitlinedefsitem
+			// 
+			this.splitlinedefsitem.Name = "splitlinedefsitem";
+			this.splitlinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.splitlinedefsitem.Tag = "splitlinedefs";
+			this.splitlinedefsitem.Text = "Split Linedefs";
+			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// sectorsmenu
 			// 
 			this.sectorsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -153,19 +166,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.rotatethingsccwitem.Name = "rotatethingsccwitem";
 			this.rotatethingsccwitem.Size = new System.Drawing.Size(204, 22);
 			this.rotatethingsccwitem.Text = "Rotate Counterclockwise";
-			// 
-			// toolStripMenuItem3
-			// 
-			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(166, 6);
-			// 
-			// splitlinedefsitem
-			// 
-			this.splitlinedefsitem.Name = "splitlinedefsitem";
-			this.splitlinedefsitem.Size = new System.Drawing.Size(169, 22);
-			this.splitlinedefsitem.Tag = "splitlinedefs";
-			this.splitlinedefsitem.Text = "Split Linedefs";
-			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MenusForm
 			// 

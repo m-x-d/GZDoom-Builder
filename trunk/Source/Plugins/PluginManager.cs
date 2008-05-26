@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Plugins
 					foreach(Type t in editclasses)
 					{
 						// For all defined EditMode attributes
-						emattrs = (EditModeAttribute[])t.GetCustomAttributes(typeof(EditModeAttribute), true);
+						emattrs = (EditModeAttribute[])t.GetCustomAttributes(typeof(EditModeAttribute), false);
 						foreach(EditModeAttribute a in emattrs)
 						{
 							// Make edit mode information

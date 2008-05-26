@@ -566,7 +566,7 @@ namespace CodeImp.DoomBuilder.Config
 		// This checks if a specific edit mode class is listed
 		public bool IsEditModeSpecified(string classname)
 		{
-			return cfg.SettingExists("additionalmodes." + classname.ToString(CultureInfo.InvariantCulture));
+			return cfg.SettingExists("editingmodes." + classname.ToString(CultureInfo.InvariantCulture));
 		}
 		
 		#endregion

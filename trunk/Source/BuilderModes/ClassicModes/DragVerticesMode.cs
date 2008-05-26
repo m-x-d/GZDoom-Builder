@@ -61,14 +61,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor to start dragging immediately
-		public DragVerticesMode(EditMode basemode, Vertex dragitem, Vector2D dragstartmappos)
+		public DragVerticesMode(Vertex dragitem, Vector2D dragstartmappos)
 		{
 			// Mark what we are dragging
 			General.Map.Map.ClearAllMarks();
 			General.Map.Map.MarkSelectedVertices(true, true);
 
 			// Initialize
-			base.StartDrag(basemode, dragstartmappos);
+			base.StartDrag(dragstartmappos);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

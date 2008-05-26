@@ -51,15 +51,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		// Highlighted item
-		private Sector highlighted;
+		protected Sector highlighted;
 
 		// Interface
-		private bool editpressed;
+		protected bool editpressed;
 
 		// The methods GetSelected* and MarkSelected* on the MapSet do not
 		// retain the order in which items were selected.
 		// This list keeps in order while sectors are selected/deselected.
-		private List<Sector> orderedselection;
+		protected List<Sector> orderedselection;
 		
 		#endregion
 
@@ -464,7 +464,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Map.ChangeMode(new DragSectorsMode(new SectorsMode(), mousedownmappos));
+					General.Map.ChangeMode(new DragSectorsMode(mousedownmappos));
 				}
 			}
 		}

@@ -363,7 +363,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Map.ChangeMode(new DragLinedefsMode(new LinedefsMode(), mousedownmappos));
+					General.Map.ChangeMode(new DragLinedefsMode(mousedownmappos));
 				}
 			}
 		}
