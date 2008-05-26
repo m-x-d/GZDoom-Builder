@@ -30,10 +30,13 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
+Source: Builder.cfg; DestDir: {app}; Flags: ignoreversion
 Source: Builder.pdb; DestDir: {app}; Flags: ignoreversion
 Source: SlimDX.dll; DestDir: {app}; Flags: ignoreversion
 Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion
-Source: Builder.cfg; DestDir: {app}; Flags: ignoreversion
+Source: msvcr80.dll; DestDir: {app}; Flags: ignoreversion
+Source: msvcp80.dll; DestDir: {app}; Flags: ignoreversion
+Source: msvcm80.dll; DestDir: {app}; Flags: ignoreversion
 Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion
 Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion
 Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion
