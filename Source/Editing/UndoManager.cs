@@ -96,6 +96,7 @@ namespace CodeImp.DoomBuilder.Editing
 				// Clean up
 				ClearUndos();
 				ClearRedos();
+				General.WriteLogLine("All undo and redo levels cleared.");
 				
 				// Done
 				isdisposed = true;
@@ -154,6 +155,8 @@ namespace CodeImp.DoomBuilder.Editing
 				// Next ticket id
 				if(++ticketid == int.MaxValue) ticketid = 1;
 
+				General.WriteLogLine("Creating undo snapshot \"" + description + "\", Group " + group + ", Tag " + grouptag + ", Ticket ID " + ticketid + "...");
+				
 				// Make a snapshot
 				u = new UndoSnapshot(description, General.Map.Map.Clone(), ticketid);
 
@@ -189,6 +192,8 @@ namespace CodeImp.DoomBuilder.Editing
 				// Check if the ticket id matches
 				if(ticket == undos[0].ticketid)
 				{
+					General.WriteLogLine("Withdrawing undo snapshot \"" + undos[0].description + "\", Ticket ID " + ticket + "...");
+
 					// Remove the last made undo
 					undos.RemoveAt(0);
 					
@@ -215,6 +220,8 @@ namespace CodeImp.DoomBuilder.Editing
 				// Get undo snapshot
 				u = undos[0];
 				undos.RemoveAt(0);
+
+				General.WriteLogLine("Performing undo \"" + u.description + "\", Ticket ID " + u.ticketid + "...");
 
 				// Make a snapshot for redo
 				r = new UndoSnapshot(u, General.Map.Map.Clone());
@@ -258,6 +265,8 @@ namespace CodeImp.DoomBuilder.Editing
 				// Get redo snapshot
 				r = redos[0];
 				redos.RemoveAt(0);
+
+				General.WriteLogLine("Performing redo \"" + r.description + "\", Ticket ID " + r.ticketid + "...");
 
 				// Make a snapshot for undo
 				u = new UndoSnapshot(r, General.Map.Map.Clone());
