@@ -117,6 +117,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Interface.RenderTargetControl();
 			this.processor = new System.Windows.Forms.Timer(this.components);
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -470,7 +471,8 @@ namespace CodeImp.DoomBuilder.Interface
             this.buttonsnaptogrid,
             this.buttonautomerge,
             this.toolStripSeparator5,
-            this.buttontest});
+            this.buttontest,
+            this.toolStripSeparator6});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(839, 25);
@@ -945,6 +947,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.processor.Interval = 10;
 			this.processor.Tick += new System.EventHandler(this.processor_Tick);
 			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1058,5 +1065,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.ToolStripButton buttontest;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
 		private System.Windows.Forms.ToolStripMenuItem itemtestmap;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 	}
 }

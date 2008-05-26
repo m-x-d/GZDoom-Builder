@@ -42,7 +42,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Menus list
 		private ToolStripItem[] menus;
-		
+
+		// Buttons list
+		private ToolStripItem[] buttons;
+
 		#endregion
 
 		#region ================== Properties
@@ -64,6 +67,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// List all menus
 			menus = new ToolStripItem[menustrip.Items.Count];
 			for(int i = 0; i < menustrip.Items.Count; i++) menus[i] = menustrip.Items[i];
+
+			// List all buttons
+			buttons = new ToolStripItem[toolstrip.Items.Count];
+			for(int i = 0; i < toolstrip.Items.Count; i++) buttons[i] = toolstrip.Items[i];
 		}
 		
 		#endregion
@@ -76,6 +83,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add the menus to the core
 			foreach(ToolStripMenuItem m in menus)
 				General.Interface.AddMenu(m);
+			
+			// Add the buttons to the core
+			foreach(ToolStripItem b in buttons)
+				General.Interface.AddButton(b);
 		}
 
 		// This unregisters from the core
@@ -84,6 +95,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Remove the menus from the core
 			foreach(ToolStripMenuItem m in menus)
 				General.Interface.RemoveMenu(m);
+
+			// Remove the buttons from the core
+			foreach(ToolStripItem b in buttons)
+				General.Interface.RemoveButton(b);
 		}
 
 		// This hides all menus

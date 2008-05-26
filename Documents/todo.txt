@@ -1,13 +1,6 @@
-- All core builder modes must be config-specific so that anyone
-	can remove them to replace them with their own mode
-
-- Change toolbar buttons
-	- Make seperate attribute for editing modes to create a button
-	- Make classes and attributes to manually add buttons to the toolbar
+- Add log in main window for debug versions
 
 - Make things filter
-
-- Add log in main window for debug versions
 
 - Change linedefs in configurations
 	- Proper formatting
@@ -41,4 +34,5 @@
 - Make dialog and editing mode help documentation
 
 - Make Plugin Development Kit
+	- Add proper XML comments to classes, properties and methods
 

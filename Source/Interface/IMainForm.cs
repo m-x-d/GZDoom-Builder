@@ -94,5 +94,8 @@ namespace CodeImp.DoomBuilder.Interface
 		/// that you want to invoke.</param>
 		/// <param name="e">Unused.</param>
 		void InvokeTaggedAction(object sender, EventArgs e);
+
+		void AddButton(ToolStripItem button);
+		void RemoveButton(ToolStripItem button);
 	}
 }

@@ -76,6 +76,9 @@ namespace CodeImp.DoomBuilder.Interface
 		// Edit modes
 		private List<ToolStripItem> editmodeitems;
 		
+		// Toolbar
+		private EventHandler buttonvisiblechangedhandler;
+		
 		#endregion
 
 		#region ================== Properties
@@ -106,6 +109,9 @@ namespace CodeImp.DoomBuilder.Interface
 			buttongrid.Font = menufile.Font;
 			buttongrid.DropDownDirection = ToolStripDropDownDirection.AboveLeft;
 
+			// Event handlers
+			buttonvisiblechangedhandler = new EventHandler(ToolbarButtonVisibleChanged);
+			
 			// Bind any methods
 			General.Actions.BindMethods(this);
 			
@@ -158,9 +164,6 @@ namespace CodeImp.DoomBuilder.Interface
 			string asmname;
 			
 			this.Update();
-			//asmname = General.ThisAssembly.GetName().Name.ToLowerInvariant();
-			//General.Actions[asmname + "_" + (sender as ToolStripItem).Tag.ToString()].Begin();
-			//General.Actions[asmname + "_" + (sender as ToolStripItem).Tag.ToString()].End();
 			General.Actions[(sender as ToolStripItem).Tag.ToString()].Begin();
 			General.Actions[(sender as ToolStripItem).Tag.ToString()].End();
 			this.Update();
@@ -524,98 +527,6 @@ namespace CodeImp.DoomBuilder.Interface
 		
 		#endregion
 
-		#region ================== Toolbar
-
-		// This enables or disables all editing mode items
-		private void UpdateEditModeItems()
-		{
-			// Enable/disable all items
-			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
-		}
-
-		// This checks one of the edit mode items (and unchecks all others)
-		internal void CheckEditModeButton(string modeclassname)
-		{
-			// Go for all items
-			foreach(ToolStripItem i in editmodeitems)
-			{
-				// Check what type it is
-				if(i is ToolStripMenuItem)
-				{
-					// Check if mode type matches with given name
-					(i as ToolStripMenuItem).Checked = ((i.Tag as EditModeInfo).Type.Name == modeclassname);
-				}
-				else if(i is ToolStripButton)
-				{
-					// Check if mode type matches with given name
-					(i as ToolStripButton).Checked = ((i.Tag as EditModeInfo).Type.Name == modeclassname);
-				}
-			}
-		}
-		
-		// This removes the config-specific editing mode buttons
-		internal void RemoveSpecificEditModeButtons()
-		{
-			bool removed;
-
-			do
-			{
-				// Go for all items
-				removed = false;
-				foreach(ToolStripItem i in editmodeitems)
-				{
-					// Only remove the button if it is for a config-specific editing mode
-					if((i.Tag as EditModeInfo).ConfigSpecific)
-					{
-						// Remove it and restart
-						editmodeitems.Remove(i);
-						toolbar.Items.Remove(i);
-						menuedit.DropDownItems.Remove(i);
-						removed = true;
-						break;
-					}
-				}
-			}
-			while(removed);
-		}
-		
-		// This adds an editing mode button to the toolbar and edit menu
-		internal void AddEditModeButton(EditModeInfo modeinfo)
-		{
-			ToolStripItem item;
-			int index;
-			
-			// Create a button
-			index = toolbar.Items.IndexOf(buttoneditmodesseperator);
-			item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
-			item.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			item.Tag = modeinfo;
-			item.Enabled = (General.Map != null);
-			toolbar.Items.Insert(index, item);
-			editmodeitems.Add(item);
-			
-			// Create menu item
-			index = menuedit.DropDownItems.IndexOf(itemeditmodesseperator);
-			item = new ToolStripMenuItem(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
-			item.Tag = modeinfo;
-			item.Enabled = (General.Map != null);
-			menuedit.DropDownItems.Insert(index, item);
-			editmodeitems.Add(item);
-		}
-
-		// This handles edit mode button clicks
-		private void EditModeButtonHandler(object sender, EventArgs e)
-		{
-			EditModeInfo modeinfo;
-			
-			this.Update();
-			modeinfo = (EditModeInfo)((sender as ToolStripItem).Tag);
-			General.Actions[modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly)].Begin();
-			this.Update();
-		}
-		
-		#endregion
-		
 		#region ================== Display
 
 		// This shows the splash screen on display
@@ -958,6 +869,157 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#endregion
 
+		#region ================== Toolbar
+
+		// This adds a button to the toolbar
+		public void AddButton(ToolStripItem button)
+		{
+			// Find the plugin that called this method
+			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
+
+			// Fix tags to full action names
+			ToolStripItemCollection items = new ToolStripItemCollection(toolbar, new ToolStripItem[0]);
+			items.Add(button);
+			RenameTagsToFullActions(items, plugin);
+			
+			// Bind visible changed event
+			if(!(button is ToolStripSeparator)) button.VisibleChanged += buttonvisiblechangedhandler;
+			
+			// Insert the button at the end of the toolbar
+			toolbar.Items.Add(button);
+			UpdateSeperators();
+		}
+
+		// Removes a button
+		public void RemoveButton(ToolStripItem button)
+		{
+			// Unbind visible changed event
+			if(!(button is ToolStripSeparator)) button.VisibleChanged -= buttonvisiblechangedhandler;
+
+			// Remove button
+			toolbar.Items.Remove(button);
+			UpdateSeperators();
+		}
+
+		// This handle visibility changes in the toolbar buttons
+		private void ToolbarButtonVisibleChanged(object sender, EventArgs e)
+		{
+			// Update the seeprators
+			UpdateSeperators();
+		}
+
+		// This updates the seperators
+		// Hides redundant seperators and shows single seperators
+		private void UpdateSeperators()
+		{
+			ToolStripItem pvi = null;
+			foreach(ToolStripItem i in toolbar.Items)
+			{
+				// This is a seperator?
+				if(i is ToolStripSeparator)
+				{
+					// Make visible when previous item was not a seperator
+					i.Visible = !(pvi is ToolStripSeparator);
+				}
+
+				// Keep as previous visible item
+				if(i.Visible) pvi = i;
+			}
+
+			// Hide last item if it is a seperator
+			if(pvi is ToolStripSeparator) pvi.Visible = false;
+		}
+		
+		// This enables or disables all editing mode items
+		private void UpdateEditModeItems()
+		{
+			// Enable/disable all items
+			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
+		}
+
+		// This checks one of the edit mode items (and unchecks all others)
+		internal void CheckEditModeButton(string modeclassname)
+		{
+			// Go for all items
+			foreach(ToolStripItem i in editmodeitems)
+			{
+				// Check what type it is
+				if(i is ToolStripMenuItem)
+				{
+					// Check if mode type matches with given name
+					(i as ToolStripMenuItem).Checked = ((i.Tag as EditModeInfo).Type.Name == modeclassname);
+				}
+				else if(i is ToolStripButton)
+				{
+					// Check if mode type matches with given name
+					(i as ToolStripButton).Checked = ((i.Tag as EditModeInfo).Type.Name == modeclassname);
+				}
+			}
+		}
+		
+		// This removes the config-specific editing mode buttons
+		internal void RemoveSpecificEditModeButtons()
+		{
+			bool removed;
+
+			do
+			{
+				// Go for all items
+				removed = false;
+				foreach(ToolStripItem i in editmodeitems)
+				{
+					// Only remove the button if it is for a config-specific editing mode
+					if((i.Tag as EditModeInfo).ConfigSpecific)
+					{
+						// Remove it and restart
+						editmodeitems.Remove(i);
+						toolbar.Items.Remove(i);
+						menuedit.DropDownItems.Remove(i);
+						removed = true;
+						break;
+					}
+				}
+			}
+			while(removed);
+		}
+		
+		// This adds an editing mode button to the toolbar and edit menu
+		internal void AddEditModeButton(EditModeInfo modeinfo)
+		{
+			ToolStripItem item;
+			int index;
+			
+			// Create a button
+			index = toolbar.Items.IndexOf(buttoneditmodesseperator);
+			item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
+			item.DisplayStyle = ToolStripItemDisplayStyle.Image;
+			item.Tag = modeinfo;
+			item.Enabled = (General.Map != null);
+			toolbar.Items.Insert(index, item);
+			editmodeitems.Add(item);
+			
+			// Create menu item
+			index = menuedit.DropDownItems.IndexOf(itemeditmodesseperator);
+			item = new ToolStripMenuItem(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
+			item.Tag = modeinfo;
+			item.Enabled = (General.Map != null);
+			menuedit.DropDownItems.Insert(index, item);
+			editmodeitems.Add(item);
+		}
+
+		// This handles edit mode button clicks
+		private void EditModeButtonHandler(object sender, EventArgs e)
+		{
+			EditModeInfo modeinfo;
+			
+			this.Update();
+			modeinfo = (EditModeInfo)((sender as ToolStripItem).Tag);
+			General.Actions[modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly)].Begin();
+			this.Update();
+		}
+		
+		#endregion
+		
 		#region ================== Menus
 
 		// This adds a menu to the menus bar
