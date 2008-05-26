@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingscwitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingsccwitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolstrip = new System.Windows.Forms.ToolStrip();
 			this.menustrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -167,10 +168,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.rotatethingsccwitem.Size = new System.Drawing.Size(204, 22);
 			this.rotatethingsccwitem.Text = "Rotate Counterclockwise";
 			// 
+			// toolstrip
+			// 
+			this.toolstrip.Location = new System.Drawing.Point(0, 24);
+			this.toolstrip.Name = "toolstrip";
+			this.toolstrip.Size = new System.Drawing.Size(423, 25);
+			this.toolstrip.TabIndex = 1;
+			this.toolstrip.Text = "toolstrip";
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(423, 248);
+			this.Controls.Add(this.toolstrip);
 			this.Controls.Add(this.menustrip);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -205,5 +215,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem rotatethingsccwitem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
 		private System.Windows.Forms.ToolStripMenuItem splitlinedefsitem;
+		private System.Windows.Forms.ToolStrip toolstrip;
 	}
 }

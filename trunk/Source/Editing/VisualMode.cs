@@ -177,52 +177,52 @@ namespace CodeImp.DoomBuilder.Editing
 			General.MainWindow.UpdateCoordinates(new Vector2D(camanglexy, camanglez));
 		}
 
-		// Key down
-		public override void OnKeyDown(KeyEventArgs e)
+		[BeginAction("moveforward", BaseAction = true)]
+		public virtual void BeginMoveForward()
 		{
-			string[] actions;
-			
-			base.OnKeyDown(e);
-			
-			/* WRONG
-			// Get the actions for this key
-			actions = General.Actions.GetActionsByKey((int)e.KeyData);
-			foreach(string a in actions)
-			{
-				// Check what key was pressed down
-				switch(a)
-				{
-					case "moveforward": keyforward = true; break;
-					case "movebackward": keybackward = true; break;
-					case "moveleft": keyleft = true; break;
-					case "moveright": keyright = true; break;
-				}
-			}
-			*/
+			keyforward = true;
 		}
 
-		// Key up
-		public override void OnKeyUp(KeyEventArgs e)
+		[EndAction("moveforward", BaseAction = true)]
+		public virtual void EndMoveForward()
 		{
-			string[] actions;
+			keyforward = false;
+		}
 
-			base.OnKeyUp(e);
+		[BeginAction("movebackward", BaseAction = true)]
+		public virtual void BeginMoveBackward()
+		{
+			keybackward = true;
+		}
 
-			/* WRONG
-			// Get the actions for this key
-			actions = General.Actions.GetActionsByKey((int)e.KeyData);
-			foreach(string a in actions)
-			{
-				// Check what key was pressed down
-				switch(a)
-				{
-					case "moveforward": keyforward = false; break;
-					case "movebackward": keybackward = false; break;
-					case "moveleft": keyleft = false; break;
-					case "moveright": keyright = false; break;
-				}
-			}
-			*/
+		[EndAction("movebackward", BaseAction = true)]
+		public virtual void EndMoveBackward()
+		{
+			keybackward = false;
+		}
+
+		[BeginAction("moveleft", BaseAction = true)]
+		public virtual void BeginMoveLeft()
+		{
+			keyleft = true;
+		}
+
+		[EndAction("moveleft", BaseAction = true)]
+		public virtual void EndMoveLeft()
+		{
+			keyleft = false;
+		}
+
+		[BeginAction("moveright", BaseAction = true)]
+		public virtual void BeginMoveRight()
+		{
+			keyright = true;
+		}
+
+		[EndAction("moveright", BaseAction = true)]
+		public virtual void EndMoveRight()
+		{
+			keyright = false;
 		}
 		
 		#endregion
