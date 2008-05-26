@@ -103,32 +103,44 @@ namespace CodeImp.DoomBuilder.Rendering
 			Effect fx;
 			string errors;
 			Stream fxdata;
-			byte[] alldata;
 			
 			// Return null when not using shaders
 			if(!manager.Enabled) return null;
 			
-			//try
+			// Load the resource
+			fxdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + fxfile);
+			fxdata.Seek(0, SeekOrigin.Begin);
+			
+			try
 			{
-				// Load the resource
-				fxdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + fxfile);
-				alldata = new byte[(int)fxdata.Length];
-				fxdata.Read(alldata, 0, (int)fxdata.Length);
-				
-				// Load effect from file
-				fx = Effect.FromMemory(General.Map.Graphics.Device, alldata, null, null, null, ShaderFlags.None, null, out errors);
+				// Compile effect
+				fx = Effect.FromStream(General.Map.Graphics.Device, fxdata, null, null, null, ShaderFlags.None, null, out errors);
 				if((errors != null) && (errors != ""))
 				{
-					throw new Exception("Errors in effect file " + Path.GetFileName(fxfile) + ": " + errors);
+					throw new Exception("Errors in effect file " + fxfile + ": " + errors);
 				}
 			}
-			/*
-			catch(Exception e)
+			catch(Exception)
 			{
-				throw new Exception(e.GetType().Name + " while loading effect " + fxfile + ": " + e.Message);
+				// Compiling failed, try with debug information
+				try
+				{
+					// Compile effect
+					fx = Effect.FromStream(General.Map.Graphics.Device, fxdata, null, null, null, ShaderFlags.Debug, null, out errors);
+					if((errors != null) && (errors != ""))
+					{
+						throw new Exception("Errors in effect file " + fxfile + ": " + errors);
+					}
+				}
+				catch(Exception e)
+				{
+					// No debug information, just crash
+					throw new Exception(e.GetType().Name + " while loading effect " + fxfile + ": " + e.Message);
+				}
 			}
-			*/
-
+			
+			fxdata.Dispose();
+			
 			// Set the technique to use
 			fx.Technique = manager.ShaderTechnique;
 

@@ -339,44 +339,58 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			PresentParameters displaypp;
 
-			// Unload all Direct3D resources
-			foreach(ID3DResource res in resources) res.UnloadResource();
-
-			// Lose backbuffers
-			if(backbuffer != null) backbuffer.Dispose();
-			if(depthbuffer != null) depthbuffer.Dispose();
-			backbuffer = null;
-			depthbuffer = null;
-
-			// Make present parameters
-			displaypp = CreatePresentParameters(adapter);
+			// Test the cooperative level
+			Result coopresult = device.TestCooperativeLevel();
 			
-			try
+			// Can we reset?
+			//if(coopresult.Name != "D3DERR_DEVICENOTRESET")
 			{
-				// Reset the device
-				device.Reset(displaypp);
+				// Unload all Direct3D resources
+				foreach(ID3DResource res in resources) res.UnloadResource();
+
+				// Lose backbuffers
+				if(backbuffer != null) backbuffer.Dispose();
+				if(depthbuffer != null) depthbuffer.Dispose();
+				backbuffer = null;
+				depthbuffer = null;
+
+				// Make present parameters
+				displaypp = CreatePresentParameters(adapter);
+
+				try
+				{
+					// Reset the device
+					device.Reset(displaypp);
+				}
+				catch(Exception)
+				{
+					// Failed to re-initialize
+					return false;
+				}
+
+				// Keep a reference to the original buffers
+				backbuffer = device.GetBackBuffer(0, 0);
+				depthbuffer = device.DepthStencilSurface;
+
+				// Get the viewport
+				viewport = device.Viewport;
+
+				// Initialize settings
+				SetupSettings();
+
+				// Reload all Direct3D resources
+				foreach(ID3DResource res in resources) res.ReloadResource();
+
+				// Success
+				return true;
 			}
-			catch(Exception)
+			/*
+			else
 			{
-				// Failed to re-initialize
+				// Failed
 				return false;
 			}
-
-			// Keep a reference to the original buffers
-			backbuffer = device.GetBackBuffer(0, 0);
-			depthbuffer = device.DepthStencilSurface;
-
-			// Get the viewport
-			viewport = device.Viewport;
-
-			// Initialize settings
-			SetupSettings();
-			
-			// Reload all Direct3D resources
-			foreach(ID3DResource res in resources) res.ReloadResource();
-
-			// Success
-			return true;
+			*/
 		}
 
 		#endregion

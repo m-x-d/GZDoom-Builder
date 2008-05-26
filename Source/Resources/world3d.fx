@@ -32,7 +32,7 @@ sampler2D texturesamp = sampler_state
     MipFilter = Linear;
 	AddressU = Wrap;
 	AddressV = Wrap;
-	MipMapLodBias = 0f;
+	MipMapLodBias = 0.0f;
 };
 
 // Vertex shader
