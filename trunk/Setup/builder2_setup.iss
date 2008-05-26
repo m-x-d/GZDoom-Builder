@@ -50,16 +50,20 @@ Name: {group}\{cm:UninstallProgram,Doom Builder}; Filename: {uninstallexe}
 Name: {commondesktop}\Doom Builder; Filename: {app}\Builder.exe; Tasks: desktopicon
 
 [Run]
+Filename: {app}\Setup\vcredist_x86.exe; StatusMsg: Setup is updating required files...; Parameters: /Q
+Filename: {app}\Setup\dxwebsetup.exe; Parameters: /Q; StatusMsg: Setup is updating Microsoft DirectX....
 
 [UninstallDelete]
 Name: {localappdata}\Doom Builder; Type: filesandordirs
 [InstallDelete]
 Name: {app}\Builder.pdb; Type: files
+[Registry]
+Root: HKLM; Subkey: SOFTWARE\CodeImp\Doom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
 [Code]
 // Global variables
 var
-	page_info_dx: TOutputMsgWizardPage;
-	page_setup_dx: TOutputProgressWizardPage;
+	//page_info_dx: TOutputMsgWizardPage;
+	//page_setup_dx: TOutputProgressWizardPage;
 	page_info_net: TOutputMsgWizardPage;
 	page_setup_net: TOutputProgressWizardPage;
 
@@ -70,9 +74,10 @@ var
 procedure InitializeWizard();
 begin
 	// Make custom pages
-	page_info_dx := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft DirectX', '', 'Setup will now start the installation and/or update of your Microsoft DirectX version. Press Next to begin.');
-	page_setup_dx := CreateOutputProgressPage('Installing Microsoft DirectX', 'Setup is installing Microsoft DirectX, please wait...');
-	page_info_net := CreateOutputMsgPage(page_info_dx.ID, 'Installing Microsoft .NET Framework', '', 'Setup will now start the installation and/or update of your Microsoft .NET Framework. Press Next to begin.');
+	//page_info_dx := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft DirectX', '', 'Setup will now start the installation and/or update of your Microsoft DirectX version. Press Next to begin.');
+	//page_setup_dx := CreateOutputProgressPage('Installing Microsoft DirectX', 'Setup is installing Microsoft DirectX, please wait...');
+	//page_info_net := CreateOutputMsgPage(page_info_dx.ID, 'Installing Microsoft .NET Framework', '', 'Setup will now start the installation and/or update of your Microsoft .NET Framework. Press Next to begin.');
+	page_info_net := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft .NET Framework', '', 'Setup will now start the installation and/or update of your Microsoft .NET Framework. Press Next to begin.');
 	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework', 'Setup is installing Microsoft.NET Framework, please wait...');
 end;
 
@@ -96,16 +101,16 @@ var
 begin
 
 	// Next pressed on DX info page?
-	if(CurPage = page_info_dx.ID) then
-	begin
-		// Show progress page and run setup
-		page_setup_dx.Show;
-		try
-			ShellExec('open', ExpandConstant('{app}\Setup\dxwebsetup.exe'), '', '/Q', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
-		finally
-			page_setup_dx.Hide;
-		end;
-	end
+	//if(CurPage = page_info_dx.ID) then
+	//begin
+	//	// Show progress page and run setup
+	//	page_setup_dx.Show;
+	//	try
+	//		ShellExec('open', ExpandConstant('{app}\Setup\dxwebsetup.exe'), '', '/Q', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+	//	finally
+	//		page_setup_dx.Hide;
+	//	end;
+	//end
 
 	// Next pressed on .NET info page?
 	if(CurPage = page_info_net.ID) then
@@ -113,7 +118,7 @@ begin
 		// Show progress page and run setup
 		page_setup_net.Show;
 		try
-			ShellExec('open', ExpandConstant('{app}\Setup\dotnetfx35setup.exe'), '', '/noreboot', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+			ShellExec('open', ExpandConstant('{app}\Setup\dotnetfx35setup.exe'), '', '/QB', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
 		finally
 			page_setup_net.Hide;
 		end;
@@ -125,5 +130,6 @@ end;
 
 
 
-[Registry]
-Root: HKLM; Subkey: SOFTWARE\CodeImp\Doom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
+
+
+
