@@ -1,11 +1,12 @@
-- Make things filter
-
 - Change linedefs in configurations
 	- Proper formatting
 	- Enummed arguments support
 
 - Make UDMF implementation
+	- All fields in sectors, linedefs and things must internally use UDMF fields
 	- Also enummed field values support
+
+- Complete Things filter with UDMF fields
 
 - Make "Make Sector" mode
 	- On mousemove (?) already show the sector outline it will create
