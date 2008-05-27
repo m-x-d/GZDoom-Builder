@@ -68,74 +68,30 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal LinedefActionInfo(int index, string desc)
+		internal LinedefActionInfo(int index, Configuration cfg, string categoryname)
 		{
-			string[] parts;
-			int p = 0;
-			int argindex;
+			string actionsetting = "linedeftypes." + categoryname + "." + index.ToString(CultureInfo.InvariantCulture);
 			
 			// Initialize
 			this.index = index;
+			this.category = categoryname;
 			this.argtitle = new string[Linedef.NUM_ARGS];
 			this.argtagtype = new TagType[Linedef.NUM_ARGS];
 			this.argused = new bool[Linedef.NUM_ARGS];
-			
-			// Find the parts by splitting on spaces
-			parts = desc.Split(new char[] {' '}, 3);
-			if(parts.Length >= 3) this.prefix = parts[p++]; else this.prefix = "";
-			if(parts.Length >= 2) this.category = parts[p++]; else this.category = "Unknown";
-			if(parts.Length >= 1) this.name = this.category + " " + parts[p++]; else this.name = this.category;
-			this.name = this.name.Trim();
+
+			// Read settings
+			this.name = cfg.ReadSetting(actionsetting + ".title", "Unnamed");
+			this.prefix = cfg.ReadSetting(actionsetting + ".prefix", "");
 			this.title = this.prefix + " " + this.name;
 			this.title = this.title.Trim();
-			
-			// No args/marks
-			for(int i = 0; i < Linedef.NUM_ARGS; i++)
-			{
-				argindex = i + 1;
-				this.argused[i] = false;
-				this.argtitle[i] = "Argument " + argindex;
-				this.argtagtype[i] = TagType.None;
-			}
 
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Constructor
-		internal LinedefActionInfo(int index, Configuration cfg)
-		{
-			string actionsetting = "linedeftypes." + index.ToString(CultureInfo.InvariantCulture);
-			string desc;
-			string[] parts;
-			int p = 0;
-			int argindex;
-			
-			// Initialize
-			this.index = index;
-			this.argtitle = new string[Linedef.NUM_ARGS];
-			this.argtagtype = new TagType[Linedef.NUM_ARGS];
-			this.argused = new bool[Linedef.NUM_ARGS];
-			
-			// Read description
-			desc = cfg.ReadSetting(actionsetting + ".title", "  Unknown");
-			
-			// Find the parts by splitting on spaces
-			parts = desc.Split(new char[] { ' ' }, 3);
-			if(parts.Length >= 3) this.prefix = parts[p++]; else this.prefix = "";
-			if(parts.Length >= 2) this.category = parts[p++]; else this.category = "Unknown";
-			if(parts.Length >= 1) this.name = this.category + " " + parts[p++]; else this.name = this.category;
-			this.name = this.name.Trim();
-			this.title = this.prefix + " " + this.name;
-			this.title = this.title.Trim();
-			
 			// Read the args and marks
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
 			{
-				argindex = i + 1;
-				this.argused[i] = cfg.SettingExists(actionsetting + ".arg" + argindex.ToString(CultureInfo.InvariantCulture));
-				this.argtitle[i] = cfg.ReadSetting(actionsetting + ".arg" + argindex.ToString(CultureInfo.InvariantCulture), "Argument " + argindex);
-				this.argtagtype[i] = (TagType)cfg.ReadSetting(actionsetting + ".mark" + argindex.ToString(CultureInfo.InvariantCulture), (int)TagType.None);
+				string istr = i.ToString(CultureInfo.InvariantCulture);
+				this.argused[i] = cfg.SettingExists(actionsetting + ".arg" + istr);
+				this.argtitle[i] = cfg.ReadSetting(actionsetting + ".arg" + istr + ".title", "Argument " + (i + 1));
+				this.argtagtype[i] = (TagType)cfg.ReadSetting(actionsetting + ".arg" + istr + ".tag", (int)TagType.None);
 			}
 			
 			// We have no destructor
