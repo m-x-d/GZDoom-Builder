@@ -75,10 +75,10 @@ namespace CodeImp.DoomBuilder.Interface
 			{
 				// Empty category names will not be created
 				// (those actions will go in the root of the tree)
-				if(ac.Name.Length > 0)
+				if(ac.Title.Length > 0)
 				{
 					// Create category
-					cn = actions.Nodes.Add(ac.Name);
+					cn = actions.Nodes.Add(ac.Title);
 					foreach(LinedefActionInfo ai in ac.Actions)
 					{
 						// Create action

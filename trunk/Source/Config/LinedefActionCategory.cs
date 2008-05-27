@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Category properties
 		private string name;
+		private string title;
 
 		// Actions
 		private List<LinedefActionInfo> actions;
@@ -54,6 +55,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		public string Name { get { return name; } }
+		public string Title { get { return title; } }
 		public List<LinedefActionInfo> Actions { get { return actions; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
@@ -62,10 +64,11 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal LinedefActionCategory(string name)
+		internal LinedefActionCategory(string name, string title)
 		{
 			// Initialize
 			this.name = name;
+			this.title = title;
 			this.actions = new List<LinedefActionInfo>();
 
 			// We have no destructor
@@ -101,6 +104,12 @@ namespace CodeImp.DoomBuilder.Config
 		public int CompareTo(LinedefActionCategory other)
 		{
 			return string.Compare(this.name, other.name);
+		}
+		
+		// String representation
+		public override string ToString()
+		{
+			return title;
 		}
 		
 		#endregion

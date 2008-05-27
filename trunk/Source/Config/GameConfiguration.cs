@@ -291,44 +291,48 @@ namespace CodeImp.DoomBuilder.Config
 			LinedefActionCategory ac;
 			int actionnumber;
 			
-			// Get linedef actions
+			// Get linedef categories
 			dic = cfg.ReadSetting("linedeftypes", new Hashtable());
-			foreach(DictionaryEntry de in dic)
+			foreach(DictionaryEntry cde in dic)
 			{
-				// Try paring the action number
-				if(int.TryParse(de.Key.ToString(),
-					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
-					CultureInfo.InvariantCulture, out actionnumber))
-				{
-					// Expanded type?
-					if(de.Value is IDictionary)
-					{
-						// Let the class constructure read it
-						ai = new LinedefActionInfo(actionnumber, cfg);
-					}
-					else
-					{
-						// We have all the information in one string (title/prefix only)
-						ai = new LinedefActionInfo(actionnumber, de.Value.ToString());
-					}
+				// Read category title
+				string cattitle = cfg.ReadSetting("linedeftypes." + cde.Key + ".title", "");
 
-					// Make or get a category
-					if(cats.ContainsKey(ai.Category))
-						ac = cats[ai.Category];
-					else
-					{
-						ac = new LinedefActionCategory(ai.Category);
-						cats.Add(ai.Category, ac);
-					}
-					
-					// Add action to category and sorted list
-					sortedlinedefactions.Add(ai);
-					linedefactions.Add(actionnumber, ai);
-					ac.Add(ai);
-				}
+				// Make or get category
+				if(cats.ContainsKey(cde.Key.ToString()))
+					ac = cats[cde.Key.ToString()];
 				else
 				{
-					General.WriteLogLine("WARNING: Structure 'linedeftypes' contains invalid keys!");
+					ac = new LinedefActionCategory(cde.Key.ToString(), cattitle);
+					cats.Add(cde.Key.ToString(), ac);
+				}
+				
+				// Go for all line types in category
+				IDictionary catdic = cfg.ReadSetting("linedeftypes." + cde.Key, new Hashtable());
+				foreach(DictionaryEntry de in catdic)
+				{
+					// Check if the item key is numeric
+					if(int.TryParse(de.Key.ToString(),
+						NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
+						CultureInfo.InvariantCulture, out actionnumber))
+					{
+						// Check if the item value is a structure
+						if(de.Value is IDictionary)
+						{
+							// Make the line type
+							ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString());
+
+							// Add action to category and sorted list
+							sortedlinedefactions.Add(ai);
+							linedefactions.Add(actionnumber, ai);
+							ac.Add(ai);
+						}
+						else
+						{
+							// Failure
+							General.WriteLogLine("WARNING: Structure 'linedeftypes' contains invalid types! (all types must be expanded structures)");
+						}
+					}
 				}
 			}
 
