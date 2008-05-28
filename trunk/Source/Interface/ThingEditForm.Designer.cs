@@ -58,11 +58,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.tabeffects = new System.Windows.Forms.TabPage();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.hexenpanel = new System.Windows.Forms.Panel();
-			this.arg3 = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.arg2 = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.arg4 = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.arg1 = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.arg0 = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.arg1label = new System.Windows.Forms.Label();
 			this.arg0label = new System.Windows.Forms.Label();
 			this.arg3label = new System.Windows.Forms.Label();
@@ -78,6 +73,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.fieldslist = new CodeImp.DoomBuilder.Interface.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.arg4 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
+			this.arg3 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
+			this.arg2 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
+			this.arg1 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
+			this.arg0 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -436,11 +436,11 @@ namespace CodeImp.DoomBuilder.Interface
 			this.hexenpanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.hexenpanel.Controls.Add(this.arg3);
-			this.hexenpanel.Controls.Add(this.arg2);
-			this.hexenpanel.Controls.Add(this.arg4);
-			this.hexenpanel.Controls.Add(this.arg1);
 			this.hexenpanel.Controls.Add(this.arg0);
+			this.hexenpanel.Controls.Add(this.arg1);
+			this.hexenpanel.Controls.Add(this.arg2);
+			this.hexenpanel.Controls.Add(this.arg3);
+			this.hexenpanel.Controls.Add(this.arg4);
 			this.hexenpanel.Controls.Add(this.arg1label);
 			this.hexenpanel.Controls.Add(this.arg0label);
 			this.hexenpanel.Controls.Add(this.arg3label);
@@ -451,59 +451,9 @@ namespace CodeImp.DoomBuilder.Interface
 			this.hexenpanel.Size = new System.Drawing.Size(609, 208);
 			this.hexenpanel.TabIndex = 13;
 			// 
-			// arg3
-			// 
-			this.arg3.AllowNegative = false;
-			this.arg3.AllowRelative = true;
-			this.arg3.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg3.Location = new System.Drawing.Point(388, 13);
-			this.arg3.Name = "arg3";
-			this.arg3.Size = new System.Drawing.Size(50, 20);
-			this.arg3.TabIndex = 21;
-			// 
-			// arg2
-			// 
-			this.arg2.AllowNegative = false;
-			this.arg2.AllowRelative = true;
-			this.arg2.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg2.Location = new System.Drawing.Point(178, 65);
-			this.arg2.Name = "arg2";
-			this.arg2.Size = new System.Drawing.Size(50, 20);
-			this.arg2.TabIndex = 19;
-			// 
-			// arg4
-			// 
-			this.arg4.AllowNegative = false;
-			this.arg4.AllowRelative = true;
-			this.arg4.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg4.Location = new System.Drawing.Point(388, 39);
-			this.arg4.Name = "arg4";
-			this.arg4.Size = new System.Drawing.Size(50, 20);
-			this.arg4.TabIndex = 17;
-			// 
-			// arg1
-			// 
-			this.arg1.AllowNegative = false;
-			this.arg1.AllowRelative = true;
-			this.arg1.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg1.Location = new System.Drawing.Point(178, 39);
-			this.arg1.Name = "arg1";
-			this.arg1.Size = new System.Drawing.Size(50, 20);
-			this.arg1.TabIndex = 15;
-			// 
-			// arg0
-			// 
-			this.arg0.AllowNegative = false;
-			this.arg0.AllowRelative = true;
-			this.arg0.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg0.Location = new System.Drawing.Point(178, 13);
-			this.arg0.Name = "arg0";
-			this.arg0.Size = new System.Drawing.Size(50, 20);
-			this.arg0.TabIndex = 13;
-			// 
 			// arg1label
 			// 
-			this.arg1label.Location = new System.Drawing.Point(-7, 42);
+			this.arg1label.Location = new System.Drawing.Point(-6, 42);
 			this.arg1label.Name = "arg1label";
 			this.arg1label.Size = new System.Drawing.Size(179, 14);
 			this.arg1label.TabIndex = 14;
@@ -513,7 +463,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg0label
 			// 
-			this.arg0label.Location = new System.Drawing.Point(-7, 16);
+			this.arg0label.Location = new System.Drawing.Point(-6, 16);
 			this.arg0label.Name = "arg0label";
 			this.arg0label.Size = new System.Drawing.Size(179, 14);
 			this.arg0label.TabIndex = 12;
@@ -523,7 +473,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg3label
 			// 
-			this.arg3label.Location = new System.Drawing.Point(203, 16);
+			this.arg3label.Location = new System.Drawing.Point(240, 16);
 			this.arg3label.Name = "arg3label";
 			this.arg3label.Size = new System.Drawing.Size(179, 14);
 			this.arg3label.TabIndex = 20;
@@ -533,7 +483,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg2label
 			// 
-			this.arg2label.Location = new System.Drawing.Point(-7, 68);
+			this.arg2label.Location = new System.Drawing.Point(-6, 68);
 			this.arg2label.Name = "arg2label";
 			this.arg2label.Size = new System.Drawing.Size(179, 14);
 			this.arg2label.TabIndex = 18;
@@ -543,7 +493,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			// arg4label
 			// 
-			this.arg4label.Location = new System.Drawing.Point(203, 42);
+			this.arg4label.Location = new System.Drawing.Point(240, 42);
 			this.arg4label.Name = "arg4label";
 			this.arg4label.Size = new System.Drawing.Size(179, 14);
 			this.arg4label.TabIndex = 16;
@@ -559,7 +509,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.action.GeneralizedCategories = null;
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(401, 21);
+			this.action.Size = new System.Drawing.Size(462, 21);
 			this.action.TabIndex = 5;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
@@ -568,7 +518,7 @@ namespace CodeImp.DoomBuilder.Interface
 			// 
 			this.browseaction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
-			this.browseaction.Location = new System.Drawing.Point(469, 26);
+			this.browseaction.Location = new System.Drawing.Point(530, 26);
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browseaction.Size = new System.Drawing.Size(30, 23);
@@ -664,6 +614,51 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// arg4
+			// 
+			this.arg4.FormattingEnabled = true;
+			this.arg4.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg4.Location = new System.Drawing.Point(425, 39);
+			this.arg4.Name = "arg4";
+			this.arg4.Size = new System.Drawing.Size(93, 22);
+			this.arg4.TabIndex = 23;
+			// 
+			// arg3
+			// 
+			this.arg3.FormattingEnabled = true;
+			this.arg3.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg3.Location = new System.Drawing.Point(425, 13);
+			this.arg3.Name = "arg3";
+			this.arg3.Size = new System.Drawing.Size(93, 22);
+			this.arg3.TabIndex = 24;
+			// 
+			// arg2
+			// 
+			this.arg2.FormattingEnabled = true;
+			this.arg2.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg2.Location = new System.Drawing.Point(179, 65);
+			this.arg2.Name = "arg2";
+			this.arg2.Size = new System.Drawing.Size(93, 22);
+			this.arg2.TabIndex = 25;
+			// 
+			// arg1
+			// 
+			this.arg1.FormattingEnabled = true;
+			this.arg1.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg1.Location = new System.Drawing.Point(179, 39);
+			this.arg1.Name = "arg1";
+			this.arg1.Size = new System.Drawing.Size(93, 22);
+			this.arg1.TabIndex = 26;
+			// 
+			// arg0
+			// 
+			this.arg0.FormattingEnabled = true;
+			this.arg0.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg0.Location = new System.Drawing.Point(179, 13);
+			this.arg0.Name = "arg0";
+			this.arg0.Size = new System.Drawing.Size(93, 22);
+			this.arg0.TabIndex = 27;
+			// 
 			// ThingEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -695,7 +690,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);
-			this.hexenpanel.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.tabcustom.ResumeLayout(false);
@@ -728,11 +722,6 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.Button newtag;
 		private System.Windows.Forms.GroupBox actiongroup;
 		private System.Windows.Forms.Panel hexenpanel;
-		private NumericTextbox arg3;
-		private NumericTextbox arg2;
-		private NumericTextbox arg4;
-		private NumericTextbox arg1;
-		private NumericTextbox arg0;
 		private System.Windows.Forms.Label arg1label;
 		private System.Windows.Forms.Label arg0label;
 		private System.Windows.Forms.Label arg3label;
@@ -742,5 +731,10 @@ namespace CodeImp.DoomBuilder.Interface
 		private System.Windows.Forms.Button browseaction;
 		private System.Windows.Forms.Panel doompanel;
 		private FieldsEditorControl fieldslist;
+		private ArgumentBox arg0;
+		private ArgumentBox arg1;
+		private ArgumentBox arg2;
+		private ArgumentBox arg3;
+		private ArgumentBox arg4;
 	}
 }

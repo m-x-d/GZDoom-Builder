@@ -84,6 +84,9 @@ namespace CodeImp.DoomBuilder.Config
 		private List<UniversalFieldInfo> linedeffields;
 		private List<UniversalFieldInfo> sectorfields;
 		
+		// Enums
+		private Dictionary<string, EnumList> enums;
+		
 		#endregion
 
 		#region ================== Properties
@@ -129,6 +132,9 @@ namespace CodeImp.DoomBuilder.Config
 		// Universal fields
 		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
 		public List<UniversalFieldInfo> SectorFields { get { return sectorfields; } }
+
+		// Enums
+		public IDictionary<string, EnumList> Enums { get { return enums; } }
 		
 		#endregion
 
@@ -151,6 +157,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.sectoreffects = new Dictionary<int, SectorEffectInfo>();
 			this.sortedsectoreffects = new List<SectorEffectInfo>();
 			this.geneffectoptions = new List<GeneralizedOption>();
+			this.enums = new Dictionary<string, EnumList>();
 			
 			// Read general settings
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
@@ -171,6 +178,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Get texture and flat sources
 			textureranges = cfg.ReadSetting("textures", new Hashtable());
 			flatranges = cfg.ReadSetting("flats", new Hashtable());
+
+			// Enums
+			LoadEnums();
 			
 			// Things
 			LoadThingFlags();
@@ -202,6 +212,21 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Loading
 
+		// This loads the enumerations
+		private void LoadEnums()
+		{
+			IDictionary dic;
+
+			// Get enums list
+			dic = cfg.ReadSetting("enums", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Make new enum
+				EnumList list = new EnumList(de.Key.ToString(), cfg);
+				enums.Add(de.Key.ToString(), list);
+			}
+		}
+		
 		// This loads a universal fields list
 		private List<UniversalFieldInfo> LoadUniversalFields(string elementname)
 		{
@@ -320,7 +345,7 @@ namespace CodeImp.DoomBuilder.Config
 						if(de.Value is IDictionary)
 						{
 							// Make the line type
-							ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString());
+							ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString(), enums);
 
 							// Add action to category and sorted list
 							sortedlinedefactions.Add(ai);

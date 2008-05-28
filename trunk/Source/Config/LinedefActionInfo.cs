@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string[] argtitle;
 		private TagType[] argtagtype;
 		private bool[] argused;
+		private string[] argenum;
 		
 		#endregion
 
@@ -62,13 +63,14 @@ namespace CodeImp.DoomBuilder.Config
 		public string[] ArgTitle { get { return argtitle; } }
 		public TagType[] ArgTagType { get { return argtagtype; } }
 		public bool[] ArgUsed { get { return argused; } }
+		public string[] ArgEnum { get { return argenum; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal LinedefActionInfo(int index, Configuration cfg, string categoryname)
+		internal LinedefActionInfo(int index, Configuration cfg, string categoryname, IDictionary<string, EnumList> enums)
 		{
 			string actionsetting = "linedeftypes." + categoryname + "." + index.ToString(CultureInfo.InvariantCulture);
 			
@@ -78,6 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.argtitle = new string[Linedef.NUM_ARGS];
 			this.argtagtype = new TagType[Linedef.NUM_ARGS];
 			this.argused = new bool[Linedef.NUM_ARGS];
+			this.argenum = new string[Linedef.NUM_ARGS];
 
 			// Read settings
 			this.name = cfg.ReadSetting(actionsetting + ".title", "Unnamed");
@@ -88,10 +91,19 @@ namespace CodeImp.DoomBuilder.Config
 			// Read the args and marks
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
 			{
+				// Read
 				string istr = i.ToString(CultureInfo.InvariantCulture);
 				this.argused[i] = cfg.SettingExists(actionsetting + ".arg" + istr);
 				this.argtitle[i] = cfg.ReadSetting(actionsetting + ".arg" + istr + ".title", "Argument " + (i + 1));
 				this.argtagtype[i] = (TagType)cfg.ReadSetting(actionsetting + ".arg" + istr + ".tag", (int)TagType.None);
+				this.argenum[i] = cfg.ReadSetting(actionsetting + ".arg" + istr + ".enum", "");
+
+				// Verify enums
+				if((this.argenum[i].Length > 0) && !enums.ContainsKey(this.argenum[i]))
+				{
+					General.WriteLogLine("WARNING: Linedef type enumeration '" + this.argenum[i] + "' does not exist! (found on linedef type " + index + ")");
+					this.argenum[i] = "";
+				}
 			}
 			
 			// We have no destructor
