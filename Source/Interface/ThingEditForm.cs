@@ -213,6 +213,11 @@ namespace CodeImp.DoomBuilder.Interface
 			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
 			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
 			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
+			arg0.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[0]);
+			arg1.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[1]);
+			arg2.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[2]);
+			arg3.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[3]);
+			arg4.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[4]);
 		}
 
 		// Browse Action clicked
