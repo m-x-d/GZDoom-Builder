@@ -62,6 +62,13 @@ namespace CodeImp.DoomBuilder.Interface
 
 		#region ================== Methods
 
+		// This sets the value
+		public void SetValue(int v)
+		{
+			this.SelectedItem = null;
+			this.Text = v.ToString();
+		}
+		
 		// This fills the box with the given enum
 		public void SetupEnums(string enumslistname)
 		{
@@ -156,6 +163,7 @@ namespace CodeImp.DoomBuilder.Interface
 				if(!int.TryParse(str, NumberStyles.Integer, CultureInfo.CurrentCulture, out num))
 				{
 					// Invalid relative number
+					this.SelectedItem = null;
 					this.Text = "";
 				}
 			}
@@ -194,12 +202,14 @@ namespace CodeImp.DoomBuilder.Interface
 					if(!foundmatch)
 					{
 						// Null the value
+						this.SelectedItem = null;
 						this.Text = "";
 					}
 				}
 				else
 				{
 					// Invalid, just zero it
+					this.SelectedItem = null;
 					this.Text = "";
 				}
 			}

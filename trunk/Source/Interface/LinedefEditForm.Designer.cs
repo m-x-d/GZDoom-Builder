@@ -50,6 +50,10 @@ namespace CodeImp.DoomBuilder.Interface
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.hexenpanel = new System.Windows.Forms.Panel();
+			this.arg2 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
+			this.arg1 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
+			this.arg0 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
+			this.arg3 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
 			this.arg4 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
 			this.activation = new System.Windows.Forms.ComboBox();
 			this.action = new CodeImp.DoomBuilder.Interface.ActionSelectorControl();
@@ -82,10 +86,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.frontoffsetx = new CodeImp.DoomBuilder.Interface.NumericTextbox();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Interface.FieldsEditorControl();
-			this.arg3 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
-			this.arg0 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
-			this.arg1 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
-			this.arg2 = new CodeImp.DoomBuilder.Interface.ArgumentBox();
 			label2 = new System.Windows.Forms.Label();
 			taglabel = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -340,6 +340,42 @@ namespace CodeImp.DoomBuilder.Interface
 			this.hexenpanel.Size = new System.Drawing.Size(505, 132);
 			this.hexenpanel.TabIndex = 13;
 			// 
+			// arg2
+			// 
+			this.arg2.FormattingEnabled = true;
+			this.arg2.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg2.Location = new System.Drawing.Point(159, 107);
+			this.arg2.Name = "arg2";
+			this.arg2.Size = new System.Drawing.Size(93, 22);
+			this.arg2.TabIndex = 26;
+			// 
+			// arg1
+			// 
+			this.arg1.FormattingEnabled = true;
+			this.arg1.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg1.Location = new System.Drawing.Point(159, 81);
+			this.arg1.Name = "arg1";
+			this.arg1.Size = new System.Drawing.Size(93, 22);
+			this.arg1.TabIndex = 25;
+			// 
+			// arg0
+			// 
+			this.arg0.FormattingEnabled = true;
+			this.arg0.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg0.Location = new System.Drawing.Point(159, 55);
+			this.arg0.Name = "arg0";
+			this.arg0.Size = new System.Drawing.Size(93, 22);
+			this.arg0.TabIndex = 24;
+			// 
+			// arg3
+			// 
+			this.arg3.FormattingEnabled = true;
+			this.arg3.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.arg3.Location = new System.Drawing.Point(400, 55);
+			this.arg3.Name = "arg3";
+			this.arg3.Size = new System.Drawing.Size(93, 22);
+			this.arg3.TabIndex = 23;
+			// 
 			// arg4
 			// 
 			this.arg4.FormattingEnabled = true;
@@ -348,6 +384,7 @@ namespace CodeImp.DoomBuilder.Interface
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(93, 22);
 			this.arg4.TabIndex = 22;
+			this.arg4.TextChanged += new System.EventHandler(this.arg4_TextChanged);
 			// 
 			// activation
 			// 
@@ -711,42 +748,6 @@ namespace CodeImp.DoomBuilder.Interface
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.Size = new System.Drawing.Size(511, 417);
 			this.fieldslist.TabIndex = 0;
-			// 
-			// arg3
-			// 
-			this.arg3.FormattingEnabled = true;
-			this.arg3.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg3.Location = new System.Drawing.Point(400, 55);
-			this.arg3.Name = "arg3";
-			this.arg3.Size = new System.Drawing.Size(93, 22);
-			this.arg3.TabIndex = 23;
-			// 
-			// arg0
-			// 
-			this.arg0.FormattingEnabled = true;
-			this.arg0.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg0.Location = new System.Drawing.Point(159, 55);
-			this.arg0.Name = "arg0";
-			this.arg0.Size = new System.Drawing.Size(93, 22);
-			this.arg0.TabIndex = 24;
-			// 
-			// arg1
-			// 
-			this.arg1.FormattingEnabled = true;
-			this.arg1.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg1.Location = new System.Drawing.Point(159, 81);
-			this.arg1.Name = "arg1";
-			this.arg1.Size = new System.Drawing.Size(93, 22);
-			this.arg1.TabIndex = 25;
-			// 
-			// arg2
-			// 
-			this.arg2.FormattingEnabled = true;
-			this.arg2.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.arg2.Location = new System.Drawing.Point(159, 107);
-			this.arg2.Name = "arg2";
-			this.arg2.Size = new System.Drawing.Size(93, 22);
-			this.arg2.TabIndex = 26;
 			// 
 			// LinedefEditForm
 			// 
