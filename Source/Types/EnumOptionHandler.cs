@@ -47,8 +47,8 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Properties
 
-		public virtual bool IsBrowseable { get { return true; } }
-		public virtual bool IsEnumerable { get { return true; } }
+		public override bool IsBrowseable { get { return true; } }
+		public override bool IsEnumerable { get { return true; } }
 		
 		#endregion
 
@@ -66,22 +66,43 @@ namespace CodeImp.DoomBuilder.Types
 		#endregion
 		
 		#region ================== Methods
-
+		
 		public override void SetValue(object value)
 		{
 			this.value = null;
-			
-			// First try to match the value against the enum values
-			foreach(EnumItem item in list)
+
+			// Value is an integer?
+			if(value is int)
 			{
-				// Matching value?
-				if(item.Value == value.ToString())
+				int intvalue = (int)value;
+
+				// First try to match the value against the enum values
+				foreach(EnumItem item in list)
 				{
-					// Set this value
-					this.value = item;
+					// Matching value?
+					if(item.GetIntValue() == intvalue)
+					{
+						// Set this value
+						this.value = item;
+					}
 				}
 			}
-
+			
+			// No match found yet?
+			if(this.value == null)
+			{
+				// First try to match the value against the enum values
+				foreach(EnumItem item in list)
+				{
+					// Matching value?
+					if(item.Value == value.ToString())
+					{
+						// Set this value
+						this.value = item;
+					}
+				}
+			}
+			
 			// No match found yet?
 			if(this.value == null)
 			{
@@ -105,6 +126,11 @@ namespace CodeImp.DoomBuilder.Types
 			}
 		}
 
+		public override object GetValue()
+		{
+			return GetIntValue();
+		}
+		
 		public override int GetIntValue()
 		{
 			if(this.value != null)

@@ -131,11 +131,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// Action/tags
 			action.Value = ft.Action;
 			tag.Text = ft.Tag.ToString();
-			arg0.Text = ft.Args[0].ToString();
-			arg1.Text = ft.Args[1].ToString();
-			arg2.Text = ft.Args[2].ToString();
-			arg3.Text = ft.Args[3].ToString();
-			arg4.Text = ft.Args[4].ToString();
+			arg0.SetValue(ft.Args[0]);
+			arg1.SetValue(ft.Args[1]);
+			arg2.SetValue(ft.Args[2]);
+			arg3.SetValue(ft.Args[3]);
+			arg4.SetValue(ft.Args[4]);
 
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all lines and change the options when a setting is different
@@ -172,11 +172,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				if(t.Action != action.Value) action.Empty = true;
 				if(t.Tag.ToString() != tag.Text) tag.Text = "";
-				if(t.Args[0].ToString() != arg0.Text) arg0.Text = "";
-				if(t.Args[1].ToString() != arg1.Text) arg1.Text = "";
-				if(t.Args[2].ToString() != arg2.Text) arg2.Text = "";
-				if(t.Args[3].ToString() != arg3.Text) arg3.Text = "";
-				if(t.Args[4].ToString() != arg4.Text) arg4.Text = "";
+				if(t.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
+				if(t.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
+				if(t.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
+				if(t.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
+				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
 			}
 		}
 		
@@ -214,11 +214,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
 			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
 			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
-			arg0.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[0].Enum);
-			arg1.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[1].Enum);
-			arg2.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[2].Enum);
-			arg3.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[3].Enum);
-			arg4.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[4].Enum);
+			arg0.Setup(General.Map.Config.LinedefActions[showaction].Args[0]);
+			arg1.Setup(General.Map.Config.LinedefActions[showaction].Args[1]);
+			arg2.Setup(General.Map.Config.LinedefActions[showaction].Args[2]);
+			arg3.Setup(General.Map.Config.LinedefActions[showaction].Args[3]);
+			arg4.Setup(General.Map.Config.LinedefActions[showaction].Args[4]);
 		}
 
 		// Browse Action clicked
@@ -331,11 +331,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				if(!action.Empty) t.Action = action.Value;
 				t.Tag = tag.GetResult(t.Tag);
-				t.Args[0] = (byte)arg0.GetResult(t.Args[0]);
-				t.Args[1] = (byte)arg1.GetResult(t.Args[1]);
-				t.Args[2] = (byte)arg2.GetResult(t.Args[2]);
-				t.Args[3] = (byte)arg3.GetResult(t.Args[3]);
-				t.Args[4] = (byte)arg4.GetResult(t.Args[4]);
+				t.Args[0] = arg0.GetResult(t.Args[0]);
+				t.Args[1] = arg1.GetResult(t.Args[1]);
+				t.Args[2] = arg2.GetResult(t.Args[2]);
+				t.Args[3] = arg3.GetResult(t.Args[3]);
+				t.Args[4] = arg4.GetResult(t.Args[4]);
 
 				// Update settings
 				t.UpdateConfiguration();

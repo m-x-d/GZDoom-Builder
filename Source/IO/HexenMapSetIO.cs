@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.IO
 			MemoryStream mem;
 			BinaryReader reader;
 			int num, i, tag, z, action, x, y, type, flags;
-			byte[] args = new byte[Thing.NUM_ARGS];
+			int[] args = new int[Thing.NUM_ARGS];
 			float angle;
 			Thing t;
 			
@@ -233,7 +233,7 @@ namespace CodeImp.DoomBuilder.IO
 			Lump linedefslump, sidedefslump;
 			int num, i, offsetx, offsety, v1, v2;
 			int s1, s2, flags, action, sc;
-			byte[] args = new byte[Linedef.NUM_ARGS];
+			int[] args = new int[Linedef.NUM_ARGS];
 			string thigh, tmid, tlow;
 			Linedef l;
 			Sidedef s;

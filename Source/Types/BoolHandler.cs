@@ -30,7 +30,8 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	internal class NullHandler : TypeHandler
+	[TypeHandler(3)]
+	internal class BoolHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -38,11 +39,13 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private object value;
+		private bool value;
 
 		#endregion
 
 		#region ================== Properties
+
+		public override bool IsCustomType { get { return true; } }
 
 		#endregion
 
@@ -50,26 +53,49 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void SetValue(object value)
 		{
-			this.value = value;
+			bool result;
+
+			// already bool?
+			if(value is bool)
+			{
+				this.value = (bool)value;
+			}
+			// int or float?
+			else if((value is int) || (value is float))
+			{
+				// Set directly
+				this.value = (Math.Abs((float)value) > 0.0001f);
+			}
+			// string?
+			else if(value is string)
+			{
+				// Try parsing as string
+				if(value.ToString().ToLowerInvariant().StartsWith("t"))
+					this.value = true;
+				else
+					this.value = false;
+			}
+			else
+			{
+				this.value = false;
+			}
 		}
 
 		public override object GetValue()
 		{
-			return this.value.ToString();
+			return this.value;
 		}
 
 		public override int GetIntValue()
 		{
-			int result;
-			if(int.TryParse(this.value.ToString(), out result)) return result;
-				else return 0;
+			if(this.value) return 1; else return 0;
 		}
-		
+
 		public override string GetStringValue()
 		{
 			return this.value.ToString();
 		}
-		
+
 		#endregion
 	}
 }

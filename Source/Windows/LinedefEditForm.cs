@@ -100,11 +100,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Action/tags
 			action.Value = fl.Action;
 			tag.Text = fl.Tag.ToString();
-			arg0.Text = fl.Args[0].ToString();
-			arg1.Text = fl.Args[1].ToString();
-			arg2.Text = fl.Args[2].ToString();
-			arg3.Text = fl.Args[3].ToString();
-			arg4.Text = fl.Args[4].ToString();
+			arg0.SetValue(fl.Args[0]);
+			arg1.SetValue(fl.Args[1]);
+			arg2.SetValue(fl.Args[2]);
+			arg3.SetValue(fl.Args[3]);
 			arg4.SetValue(fl.Args[4]);
 			
 			// Front side and back side checkboxes
@@ -162,11 +161,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
 				if(l.Tag.ToString() != tag.Text) tag.Text = "";
-				if(l.Args[0].ToString() != arg0.Text) arg0.Text = "";
-				if(l.Args[1].ToString() != arg1.Text) arg1.Text = "";
-				if(l.Args[2].ToString() != arg2.Text) arg2.Text = "";
-				if(l.Args[3].ToString() != arg3.Text) arg3.Text = "";
-				if(l.Args[4].ToString() != arg4.Text) arg4.Text = "";
+				if(l.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
+				if(l.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
+				if(l.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
+				if(l.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
+				if(l.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
 				
 				// Front side checkbox
 				if((l.Front != null) != frontside.Checked)
@@ -262,11 +261,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				if(!action.Empty) l.Action = action.Value;
 				l.Tag = tag.GetResult(l.Tag);
-				l.Args[0] = (byte)arg0.GetResult(l.Args[0]);
-				l.Args[1] = (byte)arg1.GetResult(l.Args[1]);
-				l.Args[2] = (byte)arg2.GetResult(l.Args[2]);
-				l.Args[3] = (byte)arg3.GetResult(l.Args[3]);
-				l.Args[4] = (byte)arg4.GetResult(l.Args[4]);
+				l.Args[0] = arg0.GetResult(l.Args[0]);
+				l.Args[1] = arg1.GetResult(l.Args[1]);
+				l.Args[2] = arg2.GetResult(l.Args[2]);
+				l.Args[3] = arg3.GetResult(l.Args[3]);
+				l.Args[4] = arg4.GetResult(l.Args[4]);
 
 				// Remove front side?
 				if((l.Front != null) && (frontside.CheckState == CheckState.Unchecked))
@@ -367,22 +366,17 @@ namespace CodeImp.DoomBuilder.Windows
 			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
 			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
 			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
-			arg0.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[0].Enum);
-			arg1.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[1].Enum);
-			arg2.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[2].Enum);
-			arg3.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[3].Enum);
-			arg4.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[4].Enum);
+			arg0.Setup(General.Map.Config.LinedefActions[showaction].Args[0]);
+			arg1.Setup(General.Map.Config.LinedefActions[showaction].Args[1]);
+			arg2.Setup(General.Map.Config.LinedefActions[showaction].Args[2]);
+			arg3.Setup(General.Map.Config.LinedefActions[showaction].Args[3]);
+			arg4.Setup(General.Map.Config.LinedefActions[showaction].Args[4]);
 		}
 
 		// Browse Action clicked
 		private void browseaction_Click(object sender, EventArgs e)
 		{
 			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
-		}
-
-		private void arg4_TextChanged(object sender, EventArgs e)
-		{
-			General.WriteLog(arg4.Text);
 		}
 	}
 }

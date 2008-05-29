@@ -25,12 +25,16 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Config;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Types
 {
-	internal class NullHandler : TypeHandler
+	[TypeHandler(12)]
+	internal class EnumBitsHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -38,38 +42,76 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private object value;
+		private EnumList list;
+		private int value;
 
 		#endregion
 
 		#region ================== Properties
 
+		public override bool IsBrowseable { get { return true; } }
+		
 		#endregion
 
+		#region ================== Constructor
+
+		// When set up for an argument
+		public override void SetupArgument(ArgumentInfo arginfo)
+		{
+			base.SetupArgument(arginfo);
+
+			// Keep enum list reference
+			list = arginfo.Enum;
+		}
+
+		#endregion
+		
 		#region ================== Methods
+
+		public override void Browse(IWin32Window parent)
+		{
+			value = BitFlagsForm.ShowDialog(parent, list, value);
+		}
 
 		public override void SetValue(object value)
 		{
-			this.value = value;
+			int result;
+
+			// Already an int?
+			if(value is int)
+			{
+				// Set directly
+				this.value = (int)value;
+			}
+			else
+			{
+				// Try parsing as string
+				if(int.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.CurrentCulture, out result))
+				{
+					this.value = result;
+				}
+				else
+				{
+					this.value = 0;
+				}
+			}
 		}
 
 		public override object GetValue()
 		{
-			return this.value.ToString();
+			return this.value;
 		}
 
 		public override int GetIntValue()
 		{
-			int result;
-			if(int.TryParse(this.value.ToString(), out result)) return result;
-				else return 0;
+			return this.value;
 		}
-		
+
 		public override string GetStringValue()
 		{
 			return this.value.ToString();
 		}
-		
+
 		#endregion
 	}
 }

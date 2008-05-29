@@ -32,6 +32,10 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Types
 {
+	/// <summary>
+	/// Type Handler base class. A Type Handler takes care of editing, validating and
+	/// displaying values of different types for UDMF fields and hexen arguments.
+	/// </summary>
 	internal abstract class TypeHandler
 	{
 		#region ================== Constants
@@ -62,10 +66,16 @@ namespace CodeImp.DoomBuilder.Types
 		{
 			// Get my attributes
 			object[] attrs = this.GetType().GetCustomAttributes(typeof(TypeHandlerAttribute), false);
-			TypeHandlerAttribute attr = (attrs[0] as TypeHandlerAttribute);
-			
-			// Initialize
-			this.index = attr.Index;
+			if(attrs.Length > 0)
+			{
+				// Set index from attribute
+				this.index = (attrs[0] as TypeHandlerAttribute).Index;
+			}
+			else
+			{
+				// Indexless
+				this.index = -1;
+			}
 		}
 
 		// This sets up the handler for arguments
@@ -83,6 +93,10 @@ namespace CodeImp.DoomBuilder.Types
 		// How the value is actually validated and stored is up to the implementation
 		public abstract void SetValue(object value);
 
+		// This must return the value as one of the primitive data types
+		// supported by UDMF: int, string, float or bool
+		public abstract object GetValue();
+		
 		// This must return the value as integer (for arguments)
 		public virtual int GetIntValue()
 		{
@@ -93,9 +107,8 @@ namespace CodeImp.DoomBuilder.Types
 		public abstract string GetStringValue();
 
 		// This is called when the user presses the browse button
-		public virtual object Browse(IWin32Window parent)
+		public virtual void Browse(IWin32Window parent)
 		{
-			return null;
 		}
 		
 		// This must returns an enum list when IsEnumerable is true
