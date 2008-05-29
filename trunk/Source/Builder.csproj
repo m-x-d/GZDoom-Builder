@@ -117,202 +117,202 @@
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\WADReader.cs" />
-    <Compile Include="Interface\AboutForm.cs">
+    <Compile Include="Windows\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\AboutForm.Designer.cs">
+    <Compile Include="Windows\AboutForm.Designer.cs">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ActionBrowserForm.cs">
+    <Compile Include="Windows\ActionBrowserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\ActionBrowserForm.Designer.cs">
+    <Compile Include="Windows\ActionBrowserForm.Designer.cs">
       <DependentUpon>ActionBrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ActionSelectorControl.cs">
+    <Compile Include="Controls\ActionSelectorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\ActionSelectorControl.Designer.cs">
+    <Compile Include="Controls\ActionSelectorControl.Designer.cs">
       <DependentUpon>ActionSelectorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\AngleControl.cs">
+    <Compile Include="Controls\AngleControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\AngleControl.Designer.cs">
+    <Compile Include="Controls\AngleControl.Designer.cs">
       <DependentUpon>AngleControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ArgumentBox.cs">
+    <Compile Include="Controls\ArgumentBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interface\AutoSelectTextbox.cs">
+    <Compile Include="Controls\AutoSelectTextbox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interface\CheckboxArrayControl.cs">
+    <Compile Include="Controls\CheckboxArrayControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\CheckboxArrayControl.Designer.cs">
+    <Compile Include="Controls\CheckboxArrayControl.Designer.cs">
       <DependentUpon>CheckboxArrayControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ClickableNumericTextbox.cs">
+    <Compile Include="Controls\ClickableNumericTextbox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\ClickableNumericTextbox.Designer.cs">
+    <Compile Include="Controls\ClickableNumericTextbox.Designer.cs">
       <DependentUpon>ClickableNumericTextbox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ColorControl.cs">
+    <Compile Include="Controls\ColorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\ColorControl.Designer.cs">
+    <Compile Include="Controls\ColorControl.Designer.cs">
       <DependentUpon>ColorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ConfigForm.cs">
+    <Compile Include="Windows\ConfigForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\ConfigForm.Designer.cs">
+    <Compile Include="Windows\ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\EffectBrowserForm.cs">
+    <Compile Include="Windows\EffectBrowserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\EffectBrowserForm.Designer.cs">
+    <Compile Include="Windows\EffectBrowserForm.Designer.cs">
       <DependentUpon>EffectBrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\FieldsEditorRow.cs" />
-    <Compile Include="Interface\FieldsEditorControl.cs">
+    <Compile Include="Controls\FieldsEditorRow.cs" />
+    <Compile Include="Controls\FieldsEditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\FieldsEditorControl.Designer.cs">
+    <Compile Include="Controls\FieldsEditorControl.Designer.cs">
       <DependentUpon>FieldsEditorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\FlatBrowserForm.cs">
+    <Compile Include="Windows\FlatBrowserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\FlatBrowserForm.Designer.cs">
+    <Compile Include="Windows\FlatBrowserForm.Designer.cs">
       <DependentUpon>FlatBrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\DelayedForm.cs">
+    <Compile Include="Windows\DelayedForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\FlatSelectorControl.cs">
+    <Compile Include="Controls\FlatSelectorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\GridSetupForm.cs">
+    <Compile Include="Windows\GridSetupForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\GridSetupForm.Designer.cs">
+    <Compile Include="Windows\GridSetupForm.Designer.cs">
       <DependentUpon>GridSetupForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ImageBrowserControl.cs">
+    <Compile Include="Controls\ImageBrowserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\ImageBrowserControl.Designer.cs">
+    <Compile Include="Controls\ImageBrowserControl.Designer.cs">
       <DependentUpon>ImageBrowserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ImageBrowserItem.cs" />
-    <Compile Include="Interface\ImageSelectorControl.cs">
+    <Compile Include="Controls\ImageBrowserItem.cs" />
+    <Compile Include="Controls\ImageSelectorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\ImageSelectorControl.Designer.cs">
+    <Compile Include="Controls\ImageSelectorControl.Designer.cs">
       <DependentUpon>ImageSelectorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\IMainForm.cs" />
-    <Compile Include="Interface\LinedefEditForm.cs">
+    <Compile Include="Windows\IMainForm.cs" />
+    <Compile Include="Windows\LinedefEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\LinedefEditForm.Designer.cs">
+    <Compile Include="Windows\LinedefEditForm.Designer.cs">
       <DependentUpon>LinedefEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\LinedefInfoPanel.cs">
+    <Compile Include="Controls\LinedefInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\LinedefInfoPanel.Designer.cs">
+    <Compile Include="Controls\LinedefInfoPanel.Designer.cs">
       <DependentUpon>LinedefInfoPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\MapOptionsForm.cs">
+    <Compile Include="Windows\MapOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\MapOptionsForm.Designer.cs">
+    <Compile Include="Windows\MapOptionsForm.Designer.cs">
       <DependentUpon>MapOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\NumericTextbox.cs">
+    <Compile Include="Controls\NumericTextbox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interface\OpenMapOptionsForm.cs">
+    <Compile Include="Windows\OpenMapOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\OpenMapOptionsForm.Designer.cs">
+    <Compile Include="Windows\OpenMapOptionsForm.Designer.cs">
       <DependentUpon>OpenMapOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\OptimizedListView.cs">
+    <Compile Include="Controls\OptimizedListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interface\PreferencesForm.cs">
+    <Compile Include="Windows\PreferencesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\PreferencesForm.Designer.cs">
+    <Compile Include="Windows\PreferencesForm.Designer.cs">
       <DependentUpon>PreferencesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\RenderTargetControl.cs">
+    <Compile Include="Controls\RenderTargetControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interface\ResourceListView.cs">
+    <Compile Include="Controls\ResourceListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interface\ResourceListEditor.cs">
+    <Compile Include="Controls\ResourceListEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\ResourceListEditor.Designer.cs">
+    <Compile Include="Controls\ResourceListEditor.Designer.cs">
       <DependentUpon>ResourceListEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ResourceOptionsForm.cs">
+    <Compile Include="Windows\ResourceOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\ResourceOptionsForm.Designer.cs">
+    <Compile Include="Windows\ResourceOptionsForm.Designer.cs">
       <DependentUpon>ResourceOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\SectorEditForm.cs">
+    <Compile Include="Windows\SectorEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\SectorEditForm.Designer.cs">
+    <Compile Include="Windows\SectorEditForm.Designer.cs">
       <DependentUpon>SectorEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\SectorInfoPanel.cs">
+    <Compile Include="Controls\SectorInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\SectorInfoPanel.Designer.cs">
+    <Compile Include="Controls\SectorInfoPanel.Designer.cs">
       <DependentUpon>SectorInfoPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\TextureBrowserForm.cs">
+    <Compile Include="Windows\TextureBrowserForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\TextureBrowserForm.Designer.cs">
+    <Compile Include="Windows\TextureBrowserForm.Designer.cs">
       <DependentUpon>TextureBrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\TextureSelectorControl.cs">
+    <Compile Include="Controls\TextureSelectorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\ThingEditForm.cs">
+    <Compile Include="Windows\ThingEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\ThingEditForm.Designer.cs">
+    <Compile Include="Windows\ThingEditForm.Designer.cs">
       <DependentUpon>ThingEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ThingInfoPanel.cs">
+    <Compile Include="Controls\ThingInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\ThingInfoPanel.Designer.cs">
+    <Compile Include="Controls\ThingInfoPanel.Designer.cs">
       <DependentUpon>ThingInfoPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ThingsFiltersForm.cs">
+    <Compile Include="Windows\ThingsFiltersForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\ThingsFiltersForm.Designer.cs">
+    <Compile Include="Windows\ThingsFiltersForm.Designer.cs">
       <DependentUpon>ThingsFiltersForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\VertexInfoPanel.cs">
+    <Compile Include="Controls\VertexInfoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Interface\VertexInfoPanel.Designer.cs">
+    <Compile Include="Controls\VertexInfoPanel.Designer.cs">
       <DependentUpon>VertexInfoPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="IO\Configuration.cs" />
@@ -331,10 +331,10 @@
     <Compile Include="IO\UniversalMapSetIO.cs" />
     <Compile Include="IO\UnknownImageReader.cs" />
     <Compile Include="IO\WAD.cs" />
-    <Compile Include="Interface\MainForm.cs">
+    <Compile Include="Windows\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Interface\MainForm.Designer.cs">
+    <Compile Include="Windows\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Map\Linedef.cs" />
@@ -396,23 +396,23 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Interface\AboutForm.resx">
+    <EmbeddedResource Include="Windows\AboutForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\MainForm.resx">
+    <EmbeddedResource Include="Windows\MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\MapOptionsForm.resx">
+    <EmbeddedResource Include="Windows\MapOptionsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MapOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\OpenMapOptionsForm.resx">
+    <EmbeddedResource Include="Windows\OpenMapOptionsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>OpenMapOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ResourceOptionsForm.resx">
+    <EmbeddedResource Include="Windows\ResourceOptionsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ResourceOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -447,87 +447,87 @@
     <None Include="Resources\NewMap.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Interface\ActionBrowserForm.resx">
+    <EmbeddedResource Include="Windows\ActionBrowserForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ActionBrowserForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ActionSelectorControl.resx">
+    <EmbeddedResource Include="Controls\ActionSelectorControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ActionSelectorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\CheckboxArrayControl.resx">
+    <EmbeddedResource Include="Controls\CheckboxArrayControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CheckboxArrayControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ColorControl.resx">
+    <EmbeddedResource Include="Controls\ColorControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ColorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ConfigForm.resx">
+    <EmbeddedResource Include="Windows\ConfigForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ConfigForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\EffectBrowserForm.resx">
+    <EmbeddedResource Include="Windows\EffectBrowserForm.resx">
       <DependentUpon>EffectBrowserForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\FieldsEditorControl.resx">
+    <EmbeddedResource Include="Controls\FieldsEditorControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>FieldsEditorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\FlatBrowserForm.resx">
+    <EmbeddedResource Include="Windows\FlatBrowserForm.resx">
       <DependentUpon>FlatBrowserForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\DelayedForm.resx">
+    <EmbeddedResource Include="Windows\DelayedForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>DelayedForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\GridSetupForm.resx">
+    <EmbeddedResource Include="Windows\GridSetupForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GridSetupForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ImageBrowserControl.resx">
+    <EmbeddedResource Include="Controls\ImageBrowserControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ImageBrowserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ImageSelectorControl.resx">
+    <EmbeddedResource Include="Controls\ImageSelectorControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ImageSelectorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\LinedefEditForm.resx">
+    <EmbeddedResource Include="Windows\LinedefEditForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>LinedefEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\LinedefInfoPanel.resx">
+    <EmbeddedResource Include="Controls\LinedefInfoPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>LinedefInfoPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\PreferencesForm.resx">
+    <EmbeddedResource Include="Windows\PreferencesForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PreferencesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ResourceListEditor.resx">
+    <EmbeddedResource Include="Controls\ResourceListEditor.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ResourceListEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\SectorEditForm.resx">
+    <EmbeddedResource Include="Windows\SectorEditForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SectorEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\SectorInfoPanel.resx">
+    <EmbeddedResource Include="Controls\SectorInfoPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>SectorInfoPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\TextureBrowserForm.resx">
+    <EmbeddedResource Include="Windows\TextureBrowserForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TextureBrowserForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ThingInfoPanel.resx">
+    <EmbeddedResource Include="Controls\ThingInfoPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ThingInfoPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\VertexInfoPanel.resx">
+    <EmbeddedResource Include="Controls\VertexInfoPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>VertexInfoPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -547,19 +547,19 @@
     <None Include="Resources\SlimDX_small.png" />
     <None Include="Resources\Splash3_trans.png" />
     <None Include="Resources\Splash3_small.png" />
-    <EmbeddedResource Include="Interface\AngleControl.resx">
+    <EmbeddedResource Include="Controls\AngleControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AngleControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ClickableNumericTextbox.resx">
+    <EmbeddedResource Include="Controls\ClickableNumericTextbox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ClickableNumericTextbox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ThingEditForm.resx">
+    <EmbeddedResource Include="Windows\ThingEditForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ThingEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Interface\ThingsFiltersForm.resx">
+    <EmbeddedResource Include="Windows\ThingsFiltersForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ThingsFiltersForm.cs</DependentUpon>
     </EmbeddedResource>
