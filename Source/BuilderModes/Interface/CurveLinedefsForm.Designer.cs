@@ -1,4 +1,4 @@
-using CodeImp.DoomBuilder.Interface;
+using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
@@ -33,9 +33,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			System.Windows.Forms.Label label1;
 			this.distancelabel = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.vertices = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.distance = new CodeImp.DoomBuilder.Interface.NumericTextbox();
-			this.angle = new CodeImp.DoomBuilder.Interface.NumericTextbox();
+			this.vertices = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.distance = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.angle = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.verticesbar = new System.Windows.Forms.VScrollBar();
 			this.distancebar = new System.Windows.Forms.VScrollBar();
 			this.anglebar = new System.Windows.Forms.VScrollBar();
@@ -233,9 +233,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		private System.Windows.Forms.Label label3;
-		private CodeImp.DoomBuilder.Interface.NumericTextbox vertices;
-		private NumericTextbox distance;
-		private NumericTextbox angle;
+		private CodeImp.DoomBuilder.Controls.NumericTextbox vertices;
+		private CodeImp.DoomBuilder.Controls.NumericTextbox distance;
+		private CodeImp.DoomBuilder.Controls.NumericTextbox angle;
 		private System.Windows.Forms.VScrollBar verticesbar;
 		private System.Windows.Forms.VScrollBar distancebar;
 		private System.Windows.Forms.VScrollBar anglebar;
