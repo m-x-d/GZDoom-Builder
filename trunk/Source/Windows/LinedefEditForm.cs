@@ -352,26 +352,26 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.Config.LinedefActions.ContainsKey(action.Value)) showaction = action.Value;
 			
 			// Change the argument descriptions
-			arg0label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[0] + ":";
-			arg1label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[1] + ":";
-			arg2label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[2] + ":";
-			arg3label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[3] + ":";
-			arg4label.Text = General.Map.Config.LinedefActions[showaction].ArgTitle[4] + ":";
-			arg0label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[0];
-			arg1label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[1];
-			arg2label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[2];
-			arg3label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[3];
-			arg4label.Enabled = General.Map.Config.LinedefActions[showaction].ArgUsed[4];
+			arg0label.Text = General.Map.Config.LinedefActions[showaction].Args[0].Title + ":";
+			arg1label.Text = General.Map.Config.LinedefActions[showaction].Args[1].Title + ":";
+			arg2label.Text = General.Map.Config.LinedefActions[showaction].Args[2].Title + ":";
+			arg3label.Text = General.Map.Config.LinedefActions[showaction].Args[3].Title + ":";
+			arg4label.Text = General.Map.Config.LinedefActions[showaction].Args[4].Title + ":";
+			arg0label.Enabled = General.Map.Config.LinedefActions[showaction].Args[0].Used;
+			arg1label.Enabled = General.Map.Config.LinedefActions[showaction].Args[1].Used;
+			arg2label.Enabled = General.Map.Config.LinedefActions[showaction].Args[2].Used;
+			arg3label.Enabled = General.Map.Config.LinedefActions[showaction].Args[3].Used;
+			arg4label.Enabled = General.Map.Config.LinedefActions[showaction].Args[4].Used;
 			if(arg0label.Enabled) arg0.ForeColor = SystemColors.WindowText; else arg0.ForeColor = SystemColors.GrayText;
 			if(arg1label.Enabled) arg1.ForeColor = SystemColors.WindowText; else arg1.ForeColor = SystemColors.GrayText;
 			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
 			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
 			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
-			arg0.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[0]);
-			arg1.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[1]);
-			arg2.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[2]);
-			arg3.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[3]);
-			arg4.SetupEnums(General.Map.Config.LinedefActions[showaction].ArgEnum[4]);
+			arg0.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[0].Enum);
+			arg1.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[1].Enum);
+			arg2.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[2].Enum);
+			arg3.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[3].Enum);
+			arg4.SetupEnums(General.Map.Config.LinedefActions[showaction].Args[4].Enum);
 		}
 
 		// Browse Action clicked

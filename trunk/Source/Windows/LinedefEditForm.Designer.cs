@@ -378,6 +378,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// arg4
 			// 
+			this.arg4.DropDownWidth = 200;
 			this.arg4.FormattingEnabled = true;
 			this.arg4.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.arg4.Location = new System.Drawing.Point(400, 81);
