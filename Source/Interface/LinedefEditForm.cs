@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Interface
 			arg2.Text = fl.Args[2].ToString();
 			arg3.Text = fl.Args[3].ToString();
 			arg4.Text = fl.Args[4].ToString();
+			arg4.SetValue(fl.Args[4]);
 			
 			// Front side and back side checkboxes
 			frontside.Checked = (fl.Front != null);
@@ -376,6 +377,11 @@ namespace CodeImp.DoomBuilder.Interface
 		private void browseaction_Click(object sender, EventArgs e)
 		{
 			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
+		}
+
+		private void arg4_TextChanged(object sender, EventArgs e)
+		{
+			General.WriteLog(arg4.Text);
 		}
 	}
 }
