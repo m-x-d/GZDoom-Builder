@@ -36,6 +36,7 @@ using CodeImp.DoomBuilder.Config;
 using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Plugins;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -109,6 +110,7 @@ namespace CodeImp.DoomBuilder
 		private static ActionManager actions;
 		private static PluginManager plugins;
 		private static ColorCollection colors;
+		private static TypesManager types;
 		private static Clock clock;
 		
 		// Configurations
@@ -145,6 +147,7 @@ namespace CodeImp.DoomBuilder
 		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
 		internal static Triangulator EarClipper { get { return earclipper; } }
+		internal static TypesManager Types { get { return types; } }
 		
 		#endregion
 
@@ -524,6 +527,10 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Creating application clock...");
 				clock = new Clock();
 				
+				// Create types manager
+				General.WriteLogLine("Creating types manager...");
+				types = new TypesManager();
+				
 				// Run application from the main window
 				General.WriteLogLine("Startup done");
 				mainwindow.DisplayReady();
@@ -597,6 +604,7 @@ namespace CodeImp.DoomBuilder
 				if(actions != null) actions.Dispose();
 				if(clock != null) clock.Dispose();
 				if(plugins != null) plugins.Dispose();
+				if(types != null) types.Dispose();
 				try { Direct3D.Terminate(); } catch(Exception) { }
 
 				// Application ends here and now

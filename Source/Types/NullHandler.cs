@@ -25,13 +25,12 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Config
+namespace CodeImp.DoomBuilder.Types
 {
-	public class EnumItem
+	internal class NullHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -39,46 +38,24 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
-		private string value;
-		private string title;
+		private object value;
 
 		#endregion
 
 		#region ================== Properties
 
-		public string Value { get { return value; } }
-		public string Title { get { return title; } }
-
-		#endregion
-
-		#region ================== Constructor
-
-		// Constructor
-		public EnumItem(string value, string title)
-		{
-			// Initialize
-			this.value = value;
-			this.title = title;
-		}
-		
 		#endregion
 
 		#region ================== Methods
 
-		// String representation
-		public override string ToString()
+		public override void SetValue(object value)
 		{
-			return title;
+			this.value = value;
 		}
 
-		// This returns the value as int
-		public int GetIntValue()
+		public override string GetStringValue()
 		{
-			int result;
-			if(int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
-				return result;
-			else
-				return 0;
+			return this.value.ToString();
 		}
 		
 		#endregion

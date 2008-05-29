@@ -39,43 +39,40 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
-		private string name;
-
 		#endregion
 
 		#region ================== Properties
 
-		public string Name { get { return name; } }
-
 		#endregion
 
 		#region ================== Constructor
+
+		// Constructor to load from dictionary
+		internal EnumList(IDictionary dic)
+		{
+			int index;
+
+			// Read the dictionary
+			foreach(DictionaryEntry de in dic)
+			{
+				// Add item
+				EnumItem item = new EnumItem(de.Key.ToString(), de.Value.ToString());
+				base.Add(item);
+			}
+		}
 
 		// Constructor to load from configuration
 		internal EnumList(string name, Configuration cfg)
 		{
 			int index;
 			
-			// Initialize
-			this.name = name;
-
 			// Read the list from configuration
 			IDictionary dic = cfg.ReadSetting("enums." + name, new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				// Try paring the bit value
-				if(int.TryParse(de.Key.ToString(),
-					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
-					CultureInfo.InvariantCulture, out index))
-				{
-					// Add item
-					EnumItem item = new EnumItem(index, de.Value.ToString());
-					base.Add(item);
-				}
-				else
-				{
-					General.WriteLogLine("WARNING: Enum structure '" + name + "' contains invalid keys!");
-				}
+				// Add item
+				EnumItem item = new EnumItem(de.Key.ToString(), de.Value.ToString());
+				base.Add(item);
 			}
 		}
 
@@ -83,14 +80,14 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Methods
 
-		// This gets an item by enum index
+		// This gets an item by value
 		// Returns null when item could not be found
-		public EnumItem GetByEnumIndex(int enumindex)
+		public EnumItem GetByEnumIndex(string value)
 		{
 			// Find the item
 			foreach(EnumItem i in this)
 			{
-				if(i.Index == enumindex) return i;
+				if(i.Value == value) return i;
 			}
 
 			// Nothing found

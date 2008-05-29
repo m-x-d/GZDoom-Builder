@@ -46,10 +46,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string category;
 		private string name;
 		private string title;
-		private string[] argtitle;
-		private TagType[] argtagtype;
-		private bool[] argused;
-		private string[] argenum;
+		private ArgumentInfo[] args;
 		
 		#endregion
 
@@ -60,10 +57,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string Category { get { return category; } }
 		public string Name { get { return name; } }
 		public string Title { get { return title; } }
-		public string[] ArgTitle { get { return argtitle; } }
-		public TagType[] ArgTagType { get { return argtagtype; } }
-		public bool[] ArgUsed { get { return argused; } }
-		public string[] ArgEnum { get { return argenum; } }
+		public ArgumentInfo[] Args { get { return args; } }
 
 		#endregion
 
@@ -77,34 +71,17 @@ namespace CodeImp.DoomBuilder.Config
 			// Initialize
 			this.index = index;
 			this.category = categoryname;
-			this.argtitle = new string[Linedef.NUM_ARGS];
-			this.argtagtype = new TagType[Linedef.NUM_ARGS];
-			this.argused = new bool[Linedef.NUM_ARGS];
-			this.argenum = new string[Linedef.NUM_ARGS];
-
+			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			
 			// Read settings
 			this.name = cfg.ReadSetting(actionsetting + ".title", "Unnamed");
 			this.prefix = cfg.ReadSetting(actionsetting + ".prefix", "");
 			this.title = this.prefix + " " + this.name;
 			this.title = this.title.Trim();
 
-			// Read the args and marks
+			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
-			{
-				// Read
-				string istr = i.ToString(CultureInfo.InvariantCulture);
-				this.argused[i] = cfg.SettingExists(actionsetting + ".arg" + istr);
-				this.argtitle[i] = cfg.ReadSetting(actionsetting + ".arg" + istr + ".title", "Argument " + (i + 1));
-				this.argtagtype[i] = (TagType)cfg.ReadSetting(actionsetting + ".arg" + istr + ".tag", (int)TagType.None);
-				this.argenum[i] = cfg.ReadSetting(actionsetting + ".arg" + istr + ".enum", "");
-
-				// Verify enums
-				if((this.argenum[i].Length > 0) && !enums.ContainsKey(this.argenum[i]))
-				{
-					General.WriteLogLine("WARNING: Linedef type enumeration '" + this.argenum[i] + "' does not exist! (found on linedef type " + index + ")");
-					this.argenum[i] = "";
-				}
-			}
+				this.args[i] = new ArgumentInfo(cfg, actionsetting, i, enums);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

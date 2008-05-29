@@ -45,6 +45,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Config\ArgumentInfo.cs" />
     <Compile Include="Config\EnumItem.cs" />
     <Compile Include="Config\EnumList.cs" />
     <Compile Include="Config\SectorEffectInfo.cs" />
@@ -117,6 +118,12 @@
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\WADReader.cs" />
+    <Compile Include="Types\EnumOptionHandler.cs" />
+    <Compile Include="Types\IntegerHandler.cs" />
+    <Compile Include="Types\NullHandler.cs" />
+    <Compile Include="Types\TypeHandler.cs" />
+    <Compile Include="Types\TypeHandlerAttribute.cs" />
+    <Compile Include="Types\TypesManager.cs" />
     <Compile Include="Windows\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -25,13 +25,13 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
-using System.Windows.Forms;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Config
+namespace CodeImp.DoomBuilder.Types
 {
-	public class EnumItem
+	[TypeHandler(0)]
+	internal class IntegerHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -39,46 +39,50 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
-		private string value;
-		private string title;
-
+		private int value;
+		
 		#endregion
 
 		#region ================== Properties
 
-		public string Value { get { return value; } }
-		public string Title { get { return title; } }
+		public override bool IsCustomType { get { return true; } }
 
-		#endregion
-
-		#region ================== Constructor
-
-		// Constructor
-		public EnumItem(string value, string title)
-		{
-			// Initialize
-			this.value = value;
-			this.title = title;
-		}
-		
 		#endregion
 
 		#region ================== Methods
 
-		// String representation
-		public override string ToString()
-		{
-			return title;
-		}
-
-		// This returns the value as int
-		public int GetIntValue()
+		public override void SetValue(object value)
 		{
 			int result;
-			if(int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out result))
-				return result;
+			
+			// Already an int or float?
+			if((value is int) || (value is float))
+			{
+				// Return the same
+				this.value = (int)value;
+			}
 			else
-				return 0;
+			{
+				// Try parsing as string
+				if(int.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.CurrentCulture, out result))
+				{
+					this.value = result;
+				}
+				else
+				{
+					this.value = 0;
+				}
+			}
+		}
+
+		public override int GetIntValue()
+		{
+			return this.value;
+		}
+
+		public override string GetStringValue()
+		{
+			return this.value.ToString();
 		}
 		
 		#endregion

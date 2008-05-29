@@ -70,31 +70,21 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This fills the box with the given enum
-		public void SetupEnums(string enumslistname)
+		public void SetupEnums(EnumList enumslist)
 		{
-			EnumList list;
-
 			// Keep old value
 			int value = this.GetResult(0);
 
 			// Find the enums list
-			if(General.Map.Config.Enums.ContainsKey(enumslistname))
-			{
-				// Enums found
-				list = General.Map.Config.Enums[enumslistname];
+			if(enumslist != null)
 				this.DropDownStyle = ComboBoxStyle.DropDown;
-			}
 			else
-			{
-				// No enums
-				list = null;
 				this.DropDownStyle = ComboBoxStyle.Simple;
-			}
 			
 			// Fill list
-			this.enums = list;
+			this.enums = enumslist;
 			this.Items.Clear();
-			if(list != null) this.Items.AddRange(list.ToArray());
+			if(enumslist != null) this.Items.AddRange(enumslist.ToArray());
 
 			// Re-apply value
 			this.Text = value.ToString();
@@ -115,7 +105,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Enum selected?
 				if(this.SelectedItem != null)
 				{
-					return (this.SelectedItem as EnumItem).Index;
+					return (this.SelectedItem as EnumItem).GetIntValue();
 				}
 				else
 				{
@@ -174,7 +164,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Try selecting this enum
 					EnumItem item = null;
-					if(enums != null) item = enums.GetByEnumIndex(num);
+					if(enums != null) item = enums.GetByEnumIndex(num.ToString());
 					if(item != null)
 					{
 						// Select enum

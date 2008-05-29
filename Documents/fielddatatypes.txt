@@ -23,8 +23,9 @@ all supported data types:
 
 - Only types indicates with * are usable for standard hexen args
 - When no type is specified, the default type is 0 (integer)
+- Enum types (11, 12 and 16) cannot be used in custom UDMF fields
 
-For types 11, 12 and 16 there must be an "enum" field that
+For enum types 11, 12 and 16 there must be an "enum" field that
 either specifies the values or refers to an existing enum set:
 
 	enum
@@ -37,7 +38,7 @@ either specifies the values or refers to an existing enum set:
 
 	enum = "yesno";
 
-Type 16 uses case-sensitive strings for value and can only be
+Type 16 uses case-sensitive strings for values and can only be
 used as an option, not as bit flags:
 
 	enum
