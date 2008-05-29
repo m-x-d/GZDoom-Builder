@@ -26,6 +26,9 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -33,21 +36,67 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	internal partial class LinedefInfoPanel : UserControl
 	{
+		private int hexenformatwidth;
+		private int doomformatwidth;
+		
 		// Constructor
 		public LinedefInfoPanel()
 		{
 			// Initialize
 			InitializeComponent();
+
+			// Hide stuff when in Doom format
+			hexenformatwidth = infopanel.Width;
+			doomformatwidth = infopanel.Width - 190;
 		}
 		
 		// This shows the info
 		public void ShowInfo(Linedef l)
 		{
 			string actioninfo = "";
+			LinedefActionInfo act = null;
+			TypeHandler th;
+
+			// Show/hide stuff depending on format
+			if(General.Map.FormatInterface.GetType() == typeof(DoomMapSetIO))
+			{
+				arglbl1.Visible = false;
+				arglbl2.Visible = false;
+				arglbl3.Visible = false;
+				arglbl4.Visible = false;
+				arglbl5.Visible = false;
+				arg1.Visible = false;
+				arg2.Visible = false;
+				arg3.Visible = false;
+				arg4.Visible = false;
+				arg5.Visible = false;
+				infopanel.Width = doomformatwidth;
+			}
+			else
+			{
+				arglbl1.Visible = true;
+				arglbl2.Visible = true;
+				arglbl3.Visible = true;
+				arglbl4.Visible = true;
+				arglbl5.Visible = true;
+				arg1.Visible = true;
+				arg2.Visible = true;
+				arg3.Visible = true;
+				arg4.Visible = true;
+				arg5.Visible = true;
+				infopanel.Width = hexenformatwidth;
+			}
+
+			// Move panels
+			frontpanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + frontpanel.Margin.Left;
+			backpanel.Left = frontpanel.Left + frontpanel.Width + frontpanel.Margin.Right + backpanel.Margin.Left;
 			
 			// Get line action information
 			if(General.Map.Config.LinedefActions.ContainsKey(l.Action))
-				actioninfo = General.Map.Config.LinedefActions[l.Action].ToString();
+			{
+				act = General.Map.Config.LinedefActions[l.Action];
+				actioninfo = act.ToString();
+			}
 			else if(l.Action == 0)
 				actioninfo = l.Action.ToString() + " - None";
 			else
@@ -58,6 +107,59 @@ namespace CodeImp.DoomBuilder.Controls
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg.ToString() + "\u00B0";
 			tag.Text = l.Tag.ToString();
+
+			// Arguments
+			if(act != null)
+			{
+				arglbl1.Text = act.Args[0].Title + ":";
+				arglbl2.Text = act.Args[1].Title + ":";
+				arglbl3.Text = act.Args[2].Title + ":";
+				arglbl4.Text = act.Args[3].Title + ":";
+				arglbl5.Text = act.Args[4].Title + ":";
+				arglbl1.Enabled = act.Args[0].Used;
+				arglbl2.Enabled = act.Args[1].Used;
+				arglbl3.Enabled = act.Args[2].Used;
+				arglbl4.Enabled = act.Args[3].Used;
+				arglbl5.Enabled = act.Args[4].Used;
+				arg1.Enabled = act.Args[0].Used;
+				arg2.Enabled = act.Args[1].Used;
+				arg3.Enabled = act.Args[2].Used;
+				arg4.Enabled = act.Args[3].Used;
+				arg5.Enabled = act.Args[4].Used;
+				th = General.Types.GetArgumentHandler(act.Args[0]);
+				th.SetValue(l.Args[0]); arg1.Text = th.GetStringValue();
+				th = General.Types.GetArgumentHandler(act.Args[1]);
+				th.SetValue(l.Args[1]); arg2.Text = th.GetStringValue();
+				th = General.Types.GetArgumentHandler(act.Args[2]);
+				th.SetValue(l.Args[2]); arg3.Text = th.GetStringValue();
+				th = General.Types.GetArgumentHandler(act.Args[3]);
+				th.SetValue(l.Args[3]); arg4.Text = th.GetStringValue();
+				th = General.Types.GetArgumentHandler(act.Args[4]);
+				th.SetValue(l.Args[4]); arg5.Text = th.GetStringValue();
+			}
+			else
+			{
+				arglbl1.Text = "Argument 1:";
+				arglbl2.Text = "Argument 2:";
+				arglbl3.Text = "Argument 3:";
+				arglbl4.Text = "Argument 4:";
+				arglbl5.Text = "Argument 5:";
+				arglbl1.Enabled = false;
+				arglbl2.Enabled = false;
+				arglbl3.Enabled = false;
+				arglbl4.Enabled = false;
+				arglbl5.Enabled = false;
+				arg1.Enabled = false;
+				arg2.Enabled = false;
+				arg3.Enabled = false;
+				arg4.Enabled = false;
+				arg5.Enabled = false;
+				arg1.Text = "-";
+				arg2.Text = "-";
+				arg3.Text = "-";
+				arg4.Text = "-";
+				arg5.Text = "-";
+			}
 
 			// Front side available?
 			if(l.Front != null)
