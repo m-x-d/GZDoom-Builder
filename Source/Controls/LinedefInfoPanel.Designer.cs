@@ -29,11 +29,21 @@ namespace CodeImp.DoomBuilder.Controls
 		private void InitializeComponent()
 		{
 			System.Windows.Forms.Label label1;
-			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label4;
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
+			this.infopanel = new System.Windows.Forms.GroupBox();
+			this.arg5 = new System.Windows.Forms.Label();
+			this.arglbl5 = new System.Windows.Forms.Label();
+			this.arglbl4 = new System.Windows.Forms.Label();
+			this.arg4 = new System.Windows.Forms.Label();
+			this.arglbl3 = new System.Windows.Forms.Label();
+			this.arglbl2 = new System.Windows.Forms.Label();
+			this.arg3 = new System.Windows.Forms.Label();
+			this.arglbl1 = new System.Windows.Forms.Label();
+			this.arg2 = new System.Windows.Forms.Label();
 			this.backoffset = new System.Windows.Forms.Label();
+			this.arg1 = new System.Windows.Forms.Label();
 			this.backoffsetlabel = new System.Windows.Forms.Label();
 			this.frontoffset = new System.Windows.Forms.Label();
 			this.frontoffsetlabel = new System.Windows.Forms.Label();
@@ -56,11 +66,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backhighname = new System.Windows.Forms.Label();
 			this.backhightex = new System.Windows.Forms.Panel();
 			label1 = new System.Windows.Forms.Label();
-			groupBox1 = new System.Windows.Forms.GroupBox();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
-			groupBox1.SuspendLayout();
+			this.infopanel.SuspendLayout();
 			this.frontpanel.SuspendLayout();
 			this.backpanel.SuspendLayout();
 			this.SuspendLayout();
@@ -74,28 +83,129 @@ namespace CodeImp.DoomBuilder.Controls
 			label1.TabIndex = 0;
 			label1.Text = "Action:";
 			// 
-			// groupBox1
+			// infopanel
 			// 
-			groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.infopanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
-			groupBox1.Controls.Add(this.backoffset);
-			groupBox1.Controls.Add(this.backoffsetlabel);
-			groupBox1.Controls.Add(this.frontoffset);
-			groupBox1.Controls.Add(this.frontoffsetlabel);
-			groupBox1.Controls.Add(this.tag);
-			groupBox1.Controls.Add(this.angle);
-			groupBox1.Controls.Add(this.length);
-			groupBox1.Controls.Add(label4);
-			groupBox1.Controls.Add(label3);
-			groupBox1.Controls.Add(label2);
-			groupBox1.Controls.Add(this.action);
-			groupBox1.Controls.Add(label1);
-			groupBox1.Location = new System.Drawing.Point(0, 0);
-			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(258, 100);
-			groupBox1.TabIndex = 1;
-			groupBox1.TabStop = false;
-			groupBox1.Text = " Linedef ";
+			this.infopanel.Controls.Add(this.arg5);
+			this.infopanel.Controls.Add(this.arglbl5);
+			this.infopanel.Controls.Add(this.arglbl4);
+			this.infopanel.Controls.Add(this.arg4);
+			this.infopanel.Controls.Add(this.arglbl3);
+			this.infopanel.Controls.Add(this.arglbl2);
+			this.infopanel.Controls.Add(this.arg3);
+			this.infopanel.Controls.Add(this.arglbl1);
+			this.infopanel.Controls.Add(this.arg2);
+			this.infopanel.Controls.Add(this.backoffset);
+			this.infopanel.Controls.Add(this.arg1);
+			this.infopanel.Controls.Add(this.backoffsetlabel);
+			this.infopanel.Controls.Add(this.frontoffset);
+			this.infopanel.Controls.Add(this.frontoffsetlabel);
+			this.infopanel.Controls.Add(this.tag);
+			this.infopanel.Controls.Add(this.angle);
+			this.infopanel.Controls.Add(this.length);
+			this.infopanel.Controls.Add(label4);
+			this.infopanel.Controls.Add(label3);
+			this.infopanel.Controls.Add(label2);
+			this.infopanel.Controls.Add(this.action);
+			this.infopanel.Controls.Add(label1);
+			this.infopanel.Location = new System.Drawing.Point(0, 0);
+			this.infopanel.Name = "infopanel";
+			this.infopanel.Size = new System.Drawing.Size(461, 100);
+			this.infopanel.TabIndex = 1;
+			this.infopanel.TabStop = false;
+			this.infopanel.Text = " Linedef ";
+			// 
+			// arg5
+			// 
+			this.arg5.AutoEllipsis = true;
+			this.arg5.Location = new System.Drawing.Point(373, 79);
+			this.arg5.Name = "arg5";
+			this.arg5.Size = new System.Drawing.Size(83, 14);
+			this.arg5.TabIndex = 27;
+			this.arg5.Text = "Arg 1:";
+			// 
+			// arglbl5
+			// 
+			this.arglbl5.AutoEllipsis = true;
+			this.arglbl5.BackColor = System.Drawing.Color.Transparent;
+			this.arglbl5.Location = new System.Drawing.Point(246, 79);
+			this.arglbl5.Name = "arglbl5";
+			this.arglbl5.Size = new System.Drawing.Size(121, 14);
+			this.arglbl5.TabIndex = 22;
+			this.arglbl5.Text = "Arg 1:";
+			this.arglbl5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// arglbl4
+			// 
+			this.arglbl4.AutoEllipsis = true;
+			this.arglbl4.BackColor = System.Drawing.Color.Transparent;
+			this.arglbl4.Location = new System.Drawing.Point(246, 64);
+			this.arglbl4.Name = "arglbl4";
+			this.arglbl4.Size = new System.Drawing.Size(121, 14);
+			this.arglbl4.TabIndex = 21;
+			this.arglbl4.Text = "Arg 1:";
+			this.arglbl4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// arg4
+			// 
+			this.arg4.AutoEllipsis = true;
+			this.arg4.Location = new System.Drawing.Point(373, 64);
+			this.arg4.Name = "arg4";
+			this.arg4.Size = new System.Drawing.Size(83, 14);
+			this.arg4.TabIndex = 26;
+			this.arg4.Text = "Arg 1:";
+			// 
+			// arglbl3
+			// 
+			this.arglbl3.AutoEllipsis = true;
+			this.arglbl3.BackColor = System.Drawing.Color.Transparent;
+			this.arglbl3.Location = new System.Drawing.Point(246, 49);
+			this.arglbl3.Name = "arglbl3";
+			this.arglbl3.Size = new System.Drawing.Size(121, 14);
+			this.arglbl3.TabIndex = 20;
+			this.arglbl3.Text = "Arg 1:";
+			this.arglbl3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// arglbl2
+			// 
+			this.arglbl2.AutoEllipsis = true;
+			this.arglbl2.BackColor = System.Drawing.Color.Transparent;
+			this.arglbl2.Location = new System.Drawing.Point(246, 34);
+			this.arglbl2.Name = "arglbl2";
+			this.arglbl2.Size = new System.Drawing.Size(121, 14);
+			this.arglbl2.TabIndex = 19;
+			this.arglbl2.Text = "Arg 1:";
+			this.arglbl2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// arg3
+			// 
+			this.arg3.AutoEllipsis = true;
+			this.arg3.Location = new System.Drawing.Point(373, 49);
+			this.arg3.Name = "arg3";
+			this.arg3.Size = new System.Drawing.Size(83, 14);
+			this.arg3.TabIndex = 25;
+			this.arg3.Text = "Arg 1:";
+			// 
+			// arglbl1
+			// 
+			this.arglbl1.AutoEllipsis = true;
+			this.arglbl1.BackColor = System.Drawing.Color.Transparent;
+			this.arglbl1.Location = new System.Drawing.Point(246, 19);
+			this.arglbl1.Name = "arglbl1";
+			this.arglbl1.Size = new System.Drawing.Size(121, 14);
+			this.arglbl1.TabIndex = 18;
+			this.arglbl1.Text = "Arg 1:";
+			this.arglbl1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// arg2
+			// 
+			this.arg2.AutoEllipsis = true;
+			this.arg2.Location = new System.Drawing.Point(373, 34);
+			this.arg2.Name = "arg2";
+			this.arg2.Size = new System.Drawing.Size(83, 14);
+			this.arg2.TabIndex = 24;
+			this.arg2.Text = "Arg 1:";
 			// 
 			// backoffset
 			// 
@@ -105,6 +215,15 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backoffset.Size = new System.Drawing.Size(49, 14);
 			this.backoffset.TabIndex = 17;
 			this.backoffset.Text = "100, 100";
+			// 
+			// arg1
+			// 
+			this.arg1.AutoEllipsis = true;
+			this.arg1.Location = new System.Drawing.Point(373, 19);
+			this.arg1.Name = "arg1";
+			this.arg1.Size = new System.Drawing.Size(83, 14);
+			this.arg1.TabIndex = 23;
+			this.arg1.Text = "Arg 1:";
 			// 
 			// backoffsetlabel
 			// 
@@ -190,9 +309,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// action
 			// 
 			this.action.AutoEllipsis = true;
+			this.action.BackColor = System.Drawing.Color.Transparent;
 			this.action.Location = new System.Drawing.Point(55, 19);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(197, 14);
+			this.action.Size = new System.Drawing.Size(205, 14);
 			this.action.TabIndex = 1;
 			this.action.Text = "0 - Big Door that goes Wobbly Wobbly";
 			// 
@@ -206,7 +326,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontpanel.Controls.Add(this.frontmidtex);
 			this.frontpanel.Controls.Add(this.fronthighname);
 			this.frontpanel.Controls.Add(this.fronthightex);
-			this.frontpanel.Location = new System.Drawing.Point(264, 0);
+			this.frontpanel.Location = new System.Drawing.Point(467, 0);
 			this.frontpanel.Name = "frontpanel";
 			this.frontpanel.Size = new System.Drawing.Size(241, 100);
 			this.frontpanel.TabIndex = 2;
@@ -280,7 +400,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backpanel.Controls.Add(this.backmidtex);
 			this.backpanel.Controls.Add(this.backhighname);
 			this.backpanel.Controls.Add(this.backhightex);
-			this.backpanel.Location = new System.Drawing.Point(511, 0);
+			this.backpanel.Location = new System.Drawing.Point(714, 0);
 			this.backpanel.Name = "backpanel";
 			this.backpanel.Size = new System.Drawing.Size(241, 100);
 			this.backpanel.TabIndex = 3;
@@ -349,15 +469,15 @@ namespace CodeImp.DoomBuilder.Controls
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.Controls.Add(this.backpanel);
 			this.Controls.Add(this.frontpanel);
-			this.Controls.Add(groupBox1);
+			this.Controls.Add(this.infopanel);
 			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "LinedefInfoPanel";
-			this.Size = new System.Drawing.Size(770, 100);
-			groupBox1.ResumeLayout(false);
-			groupBox1.PerformLayout();
+			this.Size = new System.Drawing.Size(965, 100);
+			this.infopanel.ResumeLayout(false);
+			this.infopanel.PerformLayout();
 			this.frontpanel.ResumeLayout(false);
 			this.backpanel.ResumeLayout(false);
 			this.ResumeLayout(false);
@@ -388,6 +508,17 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.GroupBox backpanel;
 		private System.Windows.Forms.Label backoffsetlabel;
 		private System.Windows.Forms.Label frontoffsetlabel;
+		private System.Windows.Forms.Label arglbl5;
+		private System.Windows.Forms.Label arglbl4;
+		private System.Windows.Forms.Label arglbl3;
+		private System.Windows.Forms.Label arglbl2;
+		private System.Windows.Forms.Label arglbl1;
+		private System.Windows.Forms.Label arg5;
+		private System.Windows.Forms.Label arg4;
+		private System.Windows.Forms.Label arg3;
+		private System.Windows.Forms.Label arg2;
+		private System.Windows.Forms.Label arg1;
+		private System.Windows.Forms.GroupBox infopanel;
 
 	}
 }
