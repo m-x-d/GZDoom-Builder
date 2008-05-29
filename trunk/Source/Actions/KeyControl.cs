@@ -29,7 +29,7 @@ using System.Windows.Forms;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Controls
+namespace CodeImp.DoomBuilder.Actions
 {
 	internal struct KeyControl
 	{

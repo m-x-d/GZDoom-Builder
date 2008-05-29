@@ -24,7 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Diagnostics;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Rendering;

@@ -24,7 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Plugins;
 using System.Drawing;
 

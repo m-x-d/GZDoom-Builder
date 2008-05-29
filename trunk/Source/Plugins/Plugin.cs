@@ -23,7 +23,7 @@ using System.Globalization;
 using System.Text;
 using System.IO;
 using System.Reflection;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Actions;
 
 #endregion
 

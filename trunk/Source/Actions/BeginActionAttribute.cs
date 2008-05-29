@@ -21,14 +21,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
+using System.Reflection;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Controls
+namespace CodeImp.DoomBuilder.Actions
 {
-	public enum SpecialKeys : int
+	/// <summary>
+	/// This binds a method to an action which is then called when the action is started.
+	/// </summary>
+	public class BeginActionAttribute : ActionAttribute
 	{
-		MScrollUp = 65530,
-		MScrollDown = 65531,
+		/// <summary>
+		/// This binds a method to an action which is then called when the action is started.
+		/// </summary>
+		/// <param name="action">The action name as defined in Actions.cfg resource.</param>
+		public BeginActionAttribute(string action) : base(action)
+		{
+		}
 	}
 }

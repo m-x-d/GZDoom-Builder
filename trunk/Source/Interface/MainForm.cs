@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Text;
 using System.Globalization;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Editing;

@@ -24,7 +24,7 @@ using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Data;
 using System.Diagnostics;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Actions;
 using System.Windows.Forms;
 
 #endregion

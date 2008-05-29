@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Controls
+namespace CodeImp.DoomBuilder.Actions
 {
 	internal class MouseInput : IDisposable
 	{
