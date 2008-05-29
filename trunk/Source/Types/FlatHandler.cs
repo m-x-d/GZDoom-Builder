@@ -25,12 +25,15 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Types
 {
-	internal class NullHandler : TypeHandler
+	[TypeHandler(7)]
+	internal class FlatHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -38,38 +41,39 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private object value;
+		private string value;
 
 		#endregion
 
 		#region ================== Properties
 
+		public override bool IsBrowseable { get { return true; } }
+		public override bool IsCustomType { get { return true; } }
+
 		#endregion
 
 		#region ================== Methods
 
+		public override void Browse(IWin32Window parent)
+		{
+			this.value = FlatBrowserForm.Browse(parent, this.value);
+		}
+
 		public override void SetValue(object value)
 		{
-			this.value = value;
+			this.value = value.ToString();
 		}
 
 		public override object GetValue()
 		{
-			return this.value.ToString();
+			return this.value;
 		}
 
-		public override int GetIntValue()
-		{
-			int result;
-			if(int.TryParse(this.value.ToString(), out result)) return result;
-				else return 0;
-		}
-		
 		public override string GetStringValue()
 		{
-			return this.value.ToString();
+			return this.value;
 		}
-		
+
 		#endregion
 	}
 }

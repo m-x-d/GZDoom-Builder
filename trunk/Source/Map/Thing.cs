@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constants
 
 		public const int NUM_ARGS = 5;
-		public static readonly byte[] EMPTY_ARGS = new byte[NUM_ARGS];
+		public static readonly int[] EMPTY_ARGS = new int[NUM_ARGS];
 
 		#endregion
 
@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int flags;
 		private int tag;
 		private int action;
-		private byte[] args;
+		private int[] args;
 		private int x, y, zoffset;
 
 		// Configuration
@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int AngleDeg { get { return (int)Angle2D.RadToDeg(angle); } }
 		public int Flags { get { return flags; } set { flags = value; } }
 		public int Action { get { return action; } set { action = value; } }
-		public byte[] Args { get { return args; } }
+		public int[] Args { get { return args; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
 		public float Size { get { return size; } }
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates all properties
 		// NOTE: This does not update sector! (call DetermineSector)
 		public void Update(int type, int x, int y, int zoffset, float angle,
-						   int flags, int tag, int action, byte[] args)
+						   int flags, int tag, int action, int[] args)
 		{
 			// Apply changes
 			this.type = type;
@@ -266,7 +266,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.flags = flags;
 			this.tag = tag;
 			this.action = action;
-			this.args = new byte[NUM_ARGS];
+			this.args = new int[NUM_ARGS];
 			args.CopyTo(this.args, 0);
 			this.Move(x, y, zoffset);
 		}

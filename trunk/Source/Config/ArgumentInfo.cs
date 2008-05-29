@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		public string Title { get { return title; } }
-		public bool Used { get { return false; } }
+		public bool Used { get { return used; } }
 		public int Type { get { return type; } }
 		public EnumList Enum { get { return enumlist; } }
 

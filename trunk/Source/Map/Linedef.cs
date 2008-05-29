@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		public const float SIDE_POINT_DISTANCE = 0.001f;
 		public const int NUM_ARGS = 5;
-		public static readonly byte[] EMPTY_ARGS = new byte[NUM_ARGS];
+		public static readonly int[] EMPTY_ARGS = new int[NUM_ARGS];
 		
 		#endregion
 
@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int flags;
 		private int action;
 		private int tag;
-		private byte[] args;
+		private int[] args;
 		
 		// Additional fields
 		private SortedList<string, object> fields;
@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Map
 		public float Angle { get { return angle; } }
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 		public RectangleF Rect { get { return rect; } }
-		public byte[] Args { get { return args; } }
+		public int[] Args { get { return args; } }
 		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.start = start;
 			this.end = end;
 			this.updateneeded = true;
-			this.args = new byte[NUM_ARGS];
+			this.args = new int[NUM_ARGS];
 			
 			// Attach to vertices
 			startvertexlistitem = start.AttachLinedef(this);
@@ -194,7 +194,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Copy properties
 			l.action = action;
-			l.args = (byte[])args.Clone();
+			l.args = (int[])args.Clone();
 			l.flags = flags;
 			l.tag = tag;
 			l.updateneeded = true;
@@ -753,13 +753,13 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 		
 		// This updates all properties
-		public void Update(int flags, int tag, int action, byte[] args)
+		public void Update(int flags, int tag, int action, int[] args)
 		{
 			// Apply changes
 			this.flags = flags;
 			this.tag = tag;
 			this.action = action;
-			this.args = new byte[NUM_ARGS];
+			this.args = new int[NUM_ARGS];
 			args.CopyTo(this.args, 0);
 			this.updateneeded = true;
 		}

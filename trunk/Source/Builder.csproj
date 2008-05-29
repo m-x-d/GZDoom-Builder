@@ -68,6 +68,12 @@
     <Compile Include="Actions\EndActionAttribute.cs" />
     <Compile Include="Actions\KeyControl.cs" />
     <Compile Include="Actions\MouseInput.cs" />
+    <Compile Include="Controls\ArgumentBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ArgumentBox.Designer.cs">
+      <DependentUpon>ArgumentBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data\DirectoryReader.cs" />
     <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\FlatImage.cs" />
@@ -118,9 +124,18 @@
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\WADReader.cs" />
+    <Compile Include="Types\BoolHandler.cs" />
+    <Compile Include="Types\ColorHandler.cs" />
+    <Compile Include="Types\EnumBitsHandler.cs" />
     <Compile Include="Types\EnumOptionHandler.cs" />
+    <Compile Include="Types\FlatHandler.cs" />
+    <Compile Include="Types\FloatHandler.cs" />
     <Compile Include="Types\IntegerHandler.cs" />
+    <Compile Include="Types\LinedefTypeHandler.cs" />
     <Compile Include="Types\NullHandler.cs" />
+    <Compile Include="Types\SectorEffectHandler.cs" />
+    <Compile Include="Types\StringHandler.cs" />
+    <Compile Include="Types\TextureHandler.cs" />
     <Compile Include="Types\TypeHandler.cs" />
     <Compile Include="Types\TypeHandlerAttribute.cs" />
     <Compile Include="Types\TypesManager.cs" />
@@ -148,7 +163,7 @@
     <Compile Include="Controls\AngleControl.Designer.cs">
       <DependentUpon>AngleControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ArgumentBox.cs">
+    <Compile Include="Controls\BlaBlaBla.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\AutoSelectTextbox.cs">
@@ -171,6 +186,12 @@
     </Compile>
     <Compile Include="Controls\ColorControl.Designer.cs">
       <DependentUpon>ColorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\BitFlagsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\BitFlagsForm.Designer.cs">
+      <DependentUpon>BitFlagsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\ConfigForm.cs">
       <SubType>Form</SubType>
@@ -558,9 +579,17 @@
       <SubType>Designer</SubType>
       <DependentUpon>AngleControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ArgumentBox.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ArgumentBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ClickableNumericTextbox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ClickableNumericTextbox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\BitFlagsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BitFlagsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ThingEditForm.resx">
       <SubType>Designer</SubType>
