@@ -1,7 +1,3 @@
-- Change linedefs in configurations
-	- Proper formatting
-	- Enummed arguments support
-
 - Make UDMF implementation
 	- All fields in sectors, linedefs and things must internally use UDMF fields
 	- Also enummed field values support
@@ -17,6 +13,8 @@
 - Make sector gradient features
 
 - Make 3D Mode (config specific!)
+
+- Make textureset filters
 
 - Make texture alignment features
 
