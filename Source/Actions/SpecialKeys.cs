@@ -24,7 +24,11 @@ using System.Text;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Controls
+namespace CodeImp.DoomBuilder.Actions
 {
-	internal delegate void ActionDelegate();
+	public enum SpecialKeys : int
+	{
+		MScrollUp = 65530,
+		MScrollDown = 65531,
+	}
 }

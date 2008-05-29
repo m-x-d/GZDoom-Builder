@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Plugins;
 

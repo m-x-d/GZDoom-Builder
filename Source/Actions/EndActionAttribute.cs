@@ -25,7 +25,7 @@ using System.Reflection;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Controls
+namespace CodeImp.DoomBuilder.Actions
 {
 	/// <summary>
 	/// This binds a method to an action which is then called when the action is stopped.

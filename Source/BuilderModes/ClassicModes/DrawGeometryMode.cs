@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Actions;
 
 #endregion
 
