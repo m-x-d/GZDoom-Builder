@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// combobox
 			// 
+			this.combobox.DropDownWidth = 130;
 			this.combobox.Location = new System.Drawing.Point(0, 1);
 			this.combobox.Name = "combobox";
 			this.combobox.Size = new System.Drawing.Size(149, 22);
