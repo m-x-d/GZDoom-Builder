@@ -22,6 +22,7 @@ AppMutex=doombuilder2
 PrivilegesRequired=poweruser
 ShowLanguageDialog=no
 LanguageDetectionMethod=none
+MinVersion=0,5.01.2600
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -38,7 +39,7 @@ Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion
 Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion
 Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: Plugins\*; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\BuilderModes.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Setup\*; DestDir: {app}\Setup; Flags: ignoreversion
 
 [Icons]
