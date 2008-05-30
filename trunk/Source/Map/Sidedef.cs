@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Sidedef
+	public sealed class Sidedef : MapElement
 	{
 		#region ================== Constants
 
@@ -59,14 +59,8 @@ namespace CodeImp.DoomBuilder.Map
 		private long longtexnamemid;
 		private long longtexnamelow;
 
-		// Additional fields
-		private SortedList<string, object> fields;
-
 		// Selections
 		private bool marked;
-		
-		// Disposing
-		private bool isdisposed = false;
 
 		#endregion
 
@@ -77,7 +71,6 @@ namespace CodeImp.DoomBuilder.Map
 		public Linedef Line { get { return linedef; } }
 		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
 		public Sector Sector { get { return sector; } }
-		public bool IsDisposed { get { return isdisposed; } }
 		public float Angle { get { if(IsFront) return linedef.Angle; else return Angle2D.Normalized(linedef.Angle + Angle2D.PI); } }
 		public int OffsetX { get { return offsetx; } set { offsetx = value; } }
 		public int OffsetY { get { return offsety; } set { offsety = value; } }
@@ -88,7 +81,6 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongMiddleTexture { get { return longtexnamemid; } }
 		public long LongLowTexture { get { return longtexnamelow; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
-		public SortedList<string, object> Fields { get { return fields; } }
 		
 		#endregion
 
@@ -120,7 +112,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Disposer
-		public void Dispose()
+		public override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -143,6 +135,9 @@ namespace CodeImp.DoomBuilder.Map
 				linedef = null;
 				map = null;
 				sector = null;
+
+				// Dispose base
+				base.Dispose();
 			}
 		}
 
@@ -162,7 +157,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.longtexnamehigh = longtexnamehigh;
 			s.longtexnamemid = longtexnamemid;
 			s.longtexnamelow = longtexnamelow;
-			if(fields != null) s.MakeFields(fields);
+			CopyFieldsTo(s);
 		}
 		
 		// This copies textures to another sidedef
@@ -214,23 +209,6 @@ namespace CodeImp.DoomBuilder.Map
 				s.offsetx = offsetx;
 				s.offsety = offsety;
 			}
-		}
-		
-		#endregion
-		
-		#region ================== Fields
-
-		// This makes new fields
-		public void MakeFields()
-		{
-			if(fields != null) fields = new SortedList<string, object>();
-		}
-
-		// This makes fields from another list of fields
-		public void MakeFields(SortedList<string, object> copyfrom)
-		{
-			if(fields != null) fields = new SortedList<string, object>();
-			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
 		}
 		
 		#endregion

@@ -124,6 +124,9 @@
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\WADReader.cs" />
+    <Compile Include="Map\MapElement.cs" />
+    <Compile Include="Map\UniFields.cs" />
+    <Compile Include="Map\UniValue.cs" />
     <Compile Include="Types\BoolHandler.cs" />
     <Compile Include="Types\ColorHandler.cs" />
     <Compile Include="Types\EnumBitsHandler.cs" />
