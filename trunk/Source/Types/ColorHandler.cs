@@ -34,7 +34,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(10)]
+	[TypeHandler(10, "Color", true)]
 	internal class ColorHandler : TypeHandler
 	{
 		#region ================== Constants
@@ -50,7 +50,6 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Properties
 
 		public override bool IsBrowseable { get { return true; } }
-		public override bool IsCustomType { get { return true; } }
 
 		#endregion
 

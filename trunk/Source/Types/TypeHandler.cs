@@ -45,17 +45,22 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Variables
 
 		protected int index;
+		protected string typename;
+		protected bool customusable;
 		protected ArgumentInfo arginfo;
+		protected TypeHandlerAttribute attribute;
 		
 		#endregion
 
 		#region ================== Properties
 
 		public int Index { get { return index; } }
+		public string TypeName { get { return typename; } }
+		public bool IsCustomUsable { get { return customusable; } }
+		public TypeHandlerAttribute Attribute { get { return attribute; } }
 
 		public virtual bool IsBrowseable { get { return false; } }
 		public virtual bool IsEnumerable { get { return false; } }
-		public virtual bool IsCustomType { get { return false; } }
 
 		#endregion
 
@@ -64,25 +69,52 @@ namespace CodeImp.DoomBuilder.Types
 		// Constructor
 		public TypeHandler()
 		{
-			// Get my attributes
-			object[] attrs = this.GetType().GetCustomAttributes(typeof(TypeHandlerAttribute), false);
-			if(attrs.Length > 0)
+		}
+
+		// This sets up the handler for arguments
+		public virtual void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo)
+		{
+			// Setup
+			this.arginfo = arginfo;
+			if(attr != null)
 			{
-				// Set index from attribute
-				this.index = (attrs[0] as TypeHandlerAttribute).Index;
+				// Set attributes
+				this.attribute = attr;
+				this.index = attr.Index;
+				this.typename = attr.Name;
+				this.customusable = attr.IsCustomUsable;
 			}
 			else
 			{
 				// Indexless
+				this.attribute = null;
 				this.index = -1;
+				this.typename = "Unknown";
+				this.customusable = false;
 			}
 		}
 
 		// This sets up the handler for arguments
-		public virtual void SetupArgument(ArgumentInfo arginfo)
+		public virtual void SetupField(TypeHandlerAttribute attr)
 		{
 			// Setup
 			this.arginfo = arginfo;
+			if(attr != null)
+			{
+				// Set attributes
+				this.attribute = attr;
+				this.index = attr.Index;
+				this.typename = attr.Name;
+				this.customusable = attr.IsCustomUsable;
+			}
+			else
+			{
+				// Indexless
+				this.attribute = null;
+				this.index = -1;
+				this.typename = "Unknown";
+				this.customusable = false;
+			}
 		}
 		
 		#endregion
@@ -112,8 +144,6 @@ namespace CodeImp.DoomBuilder.Types
 		}
 		
 		// This must returns an enum list when IsEnumerable is true
-		// When the user chooses an enum from this list, it will be
-		// set using SetValue with the EnumItem as value.
 		public virtual EnumList GetEnumList()
 		{
 			return null;

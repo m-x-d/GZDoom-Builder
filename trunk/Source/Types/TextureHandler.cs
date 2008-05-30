@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(6)]
+	[TypeHandler(6, "Texture", true)]
 	internal class TextureHandler : TypeHandler
 	{
 		#region ================== Constants
@@ -48,7 +48,6 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Properties
 
 		public override bool IsBrowseable { get { return true; } }
-		public override bool IsCustomType { get { return true; } }
 
 		#endregion
 

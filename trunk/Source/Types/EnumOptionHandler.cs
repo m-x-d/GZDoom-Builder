@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(11)]
+	[TypeHandler(11, "Setting", false)]
 	internal class EnumOptionHandler : TypeHandler
 	{
 		#region ================== Constants
@@ -55,9 +55,9 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Constructor
 
 		// When set up for an argument
-		public override void SetupArgument(ArgumentInfo arginfo)
+		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo)
 		{
-			base.SetupArgument(arginfo);
+			base.SetupArgument(attr, arginfo);
 
 			// Keep enum list reference
 			list = arginfo.Enum;

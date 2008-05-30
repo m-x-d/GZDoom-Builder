@@ -1112,6 +1112,8 @@ namespace CodeImp.DoomBuilder.IO
 		public byte ReadSetting(string setting, byte defaultsetting, string pathseperator) { return Convert.ToByte(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
 		public IDictionary ReadSetting(string setting, IDictionary defaultsetting) { return (IDictionary)ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR); }
 		public IDictionary ReadSetting(string setting, IDictionary defaultsetting, string pathseperator) { return (IDictionary)ReadAnySetting(setting, defaultsetting, pathseperator); }
+
+		public object ReadSettingObject(string setting, object defaultsetting) { return ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR); }
 		
 		
 		// This writes a given setting to the configuration.
