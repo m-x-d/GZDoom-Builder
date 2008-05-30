@@ -32,6 +32,7 @@ using SlimDX.Direct3D9;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -58,7 +59,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool isdefined;
 		
 		// Type
-		private UniversalFieldType fieldtype;
+		private TypeHandler fieldtype;
 		
 		#endregion
 
@@ -66,7 +67,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public bool IsFixed { get { return isfixed; } }
 		public bool IsDefined { get { return isdefined; } }
-		public UniversalFieldType Type { get { return fieldtype; } }
+		public TypeHandler TypeHandler { get { return fieldtype; } }
 		public UniversalFieldInfo Info { get { return fieldinfo; } }
 
 		#endregion
@@ -85,7 +86,7 @@ namespace CodeImp.DoomBuilder.Controls
 			isfixed = true;
 			
 			// Type
-			this.fieldtype = fixedfield.Type;
+			this.fieldtype = General.Types.GetFieldHandler(fixedfield.Type, fixedfield.Default);
 			
 			// Make all cells
 			base.CreateCells(view);
@@ -95,18 +96,18 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Cells[0].ReadOnly = true;
 
 			// Setup type cell
-			this.Cells[1].Value = fixedfield.Type.ToString();
+			this.Cells[1].Value = fieldtype.Attribute;
 			this.Cells[1].ReadOnly = true;
 
 			// Setup value cell
-			this.Cells[2].Value = fixedfield.DefaultStr;
+			this.Cells[2].Value = fieldtype.GetStringValue();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// Constructor for a non-fixed, defined field
-		public FieldsEditorRow(DataGridView view, string name, UniversalFieldType type, object value)
+		public FieldsEditorRow(DataGridView view, string name, int type, object value)
 		{
 			// Defined
 			this.DefaultCellStyle.ForeColor = SystemColors.WindowText;
@@ -116,7 +117,7 @@ namespace CodeImp.DoomBuilder.Controls
 			isfixed = false;
 
 			// Type
-			this.fieldtype = type;
+			this.fieldtype = General.Types.GetFieldHandler(type, value);
 
 			// Make all cells
 			base.CreateCells(view);
@@ -126,11 +127,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Cells[0].ReadOnly = true;
 
 			// Setup type cell
-			this.Cells[1].Value = type.ToString();
+			this.Cells[1].Value = fieldtype.Attribute;
 			this.Cells[1].ReadOnly = false;
 
 			// Setup value cell
-			this.Cells[2].Value = value;
+			this.Cells[2].Value = fieldtype.GetStringValue();
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -143,9 +144,25 @@ namespace CodeImp.DoomBuilder.Controls
 		// This is called when a cell is edited
 		public void CellChanged()
 		{
-			// Update type from cell
-			try { fieldtype = (UniversalFieldType)Enum.Parse(typeof(UniversalFieldType), this.Cells[1].Value.ToString(), true); }
-			catch(Exception) { this.Cells[1].Value = fieldtype.ToString(); }
+			// This gdmn grid thing returns the chosen value as string instead
+			// of the object type I added to the combobox...
+			if(this.Cells[1].Value is string)
+			{
+				// Find the TypeHandlerAttribute with this name
+				TypeHandlerAttribute attrib = General.Types.GetNamedAttribute(this.Cells[1].Value.ToString());
+
+				// Different?
+				if(attrib.Index != fieldtype.Index)
+				{
+					// Change field type!
+					fieldtype = General.Types.GetFieldHandler(attrib.Index, this.Cells[2].Value);
+					this.Cells[1].Value = attrib;
+				}
+			}
+			
+			// Validate value
+			fieldtype.SetValue(this.Cells[2].Value);
+			this.Cells[2].Value = fieldtype.GetStringValue();
 		}
 		
 		// This undefines the field
@@ -157,7 +174,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!isfixed) throw new InvalidOperationException();
 			
 			// Now undefined
-			this.Cells[2].Value = fieldinfo.DefaultStr;
+			this.Cells[2].Value = fieldinfo.Default;
 			this.DefaultCellStyle.ForeColor = SystemColors.GrayText;
 			isdefined = false;
 		}

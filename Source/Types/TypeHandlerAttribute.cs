@@ -39,28 +39,42 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Variables
 
 		private int index;
-
+		private string name;
+		private Type type;
+		private bool customusable;
+		
 		#endregion
 
 		#region ================== Properties
 
 		public int Index { get { return index; } }
-
+		public string Name { get { return name; } }
+		public bool IsCustomUsable { get { return customusable; } }
+		public Type Type { get { return type; } set { type = value; } }
+		
 		#endregion
 
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public TypeHandlerAttribute(int index)
+		public TypeHandlerAttribute(int index, string name, bool customusable)
 		{
 			// Initialize
 			this.index = index;
+			this.name = name;
+			this.customusable = customusable;
 		}
 
 		#endregion
 
 		#region ================== Methods
 
+		// String representation
+		public override string ToString()
+		{
+			return name;
+		}
+		
 		#endregion
 	}
 }

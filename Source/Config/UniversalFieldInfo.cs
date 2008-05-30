@@ -42,20 +42,16 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Properties
 		private string name;
-		private UniversalFieldType type;
-		private string defstring;
-		private int defint;
-		private float deffloat;
+		private int type;
+		private object defaultvalue;
 
 		#endregion
 
 		#region ================== Properties
 
 		public string Name { get { return name; } }
-		public UniversalFieldType Type { get { return type; } }
-		public string DefaultStr { get { return defstring; } }
-		public int DefaultInt { get { return defint; } }
-		public float DefaultFloat { get { return deffloat; } }
+		public int Type { get { return type; } }
+		public object Default { get { return defaultvalue; } }
 
 		#endregion
 
@@ -70,35 +66,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.name = name;
 
 			// Read type
-			this.type = (UniversalFieldType)cfg.ReadSetting(setting + ".type", 0);
-			switch(this.type)
-			{
-				case UniversalFieldType.Integer:
-				case UniversalFieldType.LinedefAction:
-				case UniversalFieldType.SectorEffect:
-					defint = cfg.ReadSetting(setting + ".default", 0);
-					deffloat = (float)defint;
-					defstring = DefaultInt.ToString(CultureInfo.InvariantCulture);
-					break;
-
-				case UniversalFieldType.Float:
-					deffloat = cfg.ReadSetting(setting + ".default", 0.0f);
-					defint = (int)Math.Round(deffloat);
-					defstring = DefaultFloat.ToString(CultureInfo.InvariantCulture);
-					break;
-
-				case UniversalFieldType.String:
-				case UniversalFieldType.Flat:
-				case UniversalFieldType.Texture:
-					defstring = cfg.ReadSetting(setting + ".default", "");
-					float.TryParse(DefaultStr, NumberStyles.Number, CultureInfo.InvariantCulture, out deffloat);
-					int.TryParse(DefaultStr, NumberStyles.Number, CultureInfo.InvariantCulture, out defint);
-					break;
-					
-				default:
-					General.WriteLogLine("WARNING: Universal field '" + path + "." + name + "' is defined as unknown type " + (int)this.type + "!");
-					break;
-			}
+			this.type = cfg.ReadSetting(setting + ".type", 0);
+			this.defaultvalue = cfg.ReadSettingObject(setting + ".default", null);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

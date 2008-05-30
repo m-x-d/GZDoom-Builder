@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(3)]
+	[TypeHandler(3, "Boolean", true)]
 	internal class BoolHandler : TypeHandler
 	{
 		#region ================== Constants
@@ -44,8 +44,6 @@ namespace CodeImp.DoomBuilder.Types
 		#endregion
 
 		#region ================== Properties
-
-		public override bool IsCustomType { get { return true; } }
 
 		#endregion
 

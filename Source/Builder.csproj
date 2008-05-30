@@ -62,7 +62,6 @@
     <Compile Include="Config\ThingCategory.cs" />
     <Compile Include="Config\ThingTypeInfo.cs" />
     <Compile Include="Config\UniversalFieldInfo.cs" />
-    <Compile Include="Config\UniversalFieldType.cs" />
     <Compile Include="Actions\ActionAttribute.cs" />
     <Compile Include="Actions\BeginActionAttribute.cs" />
     <Compile Include="Actions\EndActionAttribute.cs" />

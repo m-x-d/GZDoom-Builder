@@ -33,7 +33,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(4)]
+	[TypeHandler(4, "Linedef Action", true)]
 	internal class LinedefTypeHandler : TypeHandler
 	{
 		#region ================== Constants
@@ -49,7 +49,6 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Properties
 
 		public override bool IsBrowseable { get { return true; } }
-		public override bool IsCustomType { get { return true; } }
 
 		#endregion
 

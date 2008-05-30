@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Make types list
 			fieldtype.Items.Clear();
-			fieldtype.Items.AddRange(Enum.GetNames(typeof(UniversalFieldType)));
+			fieldtype.Items.AddRange(General.Types.GetCustomUseAttributes());
 		}
 
 		// This adds a list of fixed fields (in undefined state)
@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Controls
 					if((row.Cells[0].Value != null) && (row.Cells[0].Value.ToString().Trim().Length > 0))
 					{
 						// Make new row
-						frow = new FieldsEditorRow(fieldslist, row.Cells[0].Value.ToString().Trim(), UniversalFieldType.Integer, 0);
+						frow = new FieldsEditorRow(fieldslist, row.Cells[0].Value.ToString().Trim(), 0, 0);
 						frow.Visible = false;
 						fieldslist.Rows.Insert(e.RowIndex + 1, frow);
 					}
@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if((e.ColumnIndex == 2) && (frow != null))
 			{
 				// Defined?
-				if((row.Cells[2].Value != null) && (!frow.IsFixed || (frow.Info.DefaultStr != row.Cells[2].Value.ToString())))
+				if((row.Cells[2].Value != null) && (!frow.IsFixed || (frow.Info.Default != row.Cells[2].Value)))
 					frow.Define(row.Cells[2].Value);
 				else if(frow.IsFixed)
 					frow.Undefine();
@@ -217,15 +217,12 @@ namespace CodeImp.DoomBuilder.Controls
 				// Get selected row
 				row = fieldslist.SelectedRows[0];
 				if(row is FieldsEditorRow) frow = row as FieldsEditorRow;
-
+				
 				// Not the new row and FieldsEditorRow available?
 				if((row.Index < fieldslist.NewRowIndex) && (frow != null))
 				{
 					// Browse button available for this type?
-					if((frow.Type == UniversalFieldType.Flat) ||
-					   (frow.Type == UniversalFieldType.LinedefAction) ||
-					   (frow.Type == UniversalFieldType.SectorEffect) ||
-					   (frow.Type == UniversalFieldType.Texture))
+					if(frow.TypeHandler.IsBrowseable)
 					{
 						Rectangle cellrect = fieldslist.GetCellDisplayRectangle(2, row.Index, false);
 
@@ -234,6 +231,7 @@ namespace CodeImp.DoomBuilder.Controls
 						browsebutton.Height = cellrect.Height;
 						browsebutton.Visible = true;
 
+						/*
 						// Determine image/text
 						if((frow.Type == UniversalFieldType.SectorEffect) ||
 						   (frow.Type == UniversalFieldType.LinedefAction))
@@ -246,6 +244,7 @@ namespace CodeImp.DoomBuilder.Controls
 							browsebutton.Image = null;
 							browsebutton.Text = "...";
 						}
+						*/
 					}
 					else
 					{
@@ -261,6 +260,11 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				browsebutton.Visible = false;
 			}
+		}
+
+		private void fieldslist_DataError(object sender, DataGridViewDataErrorEventArgs e)
+		{
+			e.ThrowException = false;
 		}
 	}
 }
