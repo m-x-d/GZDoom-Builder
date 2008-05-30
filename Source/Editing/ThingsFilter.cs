@@ -211,7 +211,7 @@ namespace CodeImp.DoomBuilder.Editing
 						{
 							if(t.Fields[s] is bool)
 							{
-								if((bool)t.Fields[s] == false)
+								if((bool)t.Fields[s].Value == false)
 								{
 									qualifies = false;
 									break;
@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.Editing
 						{
 							if(t.Fields[s] is bool)
 							{
-								if((bool)t.Fields[s] == true)
+								if((bool)t.Fields[s].Value == true)
 								{
 									qualifies = false;
 									break;

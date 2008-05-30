@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Sector
+	public sealed class Sector : MapElement
 	{
 		#region ================== Constants
 
@@ -75,12 +75,6 @@ namespace CodeImp.DoomBuilder.Map
 		private TriangleList triverts;
 		private FlatVertex[] vertices;
 
-		// Additional fields
-		private SortedList<string, object> fields;
-		
-		// Disposing
-		private bool isdisposed = false;
-
 		#endregion
 
 		#region ================== Properties
@@ -88,7 +82,6 @@ namespace CodeImp.DoomBuilder.Map
 		public MapSet Map { get { return map; } }
 		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
 		public ICollection<Thing> Things { get { return things; } }
-		public bool IsDisposed { get { return isdisposed; } }
 		public int Index { get { return index; } }
 		public int FloorHeight { get { return floorheight; } set { floorheight = value; } }
 		public int CeilHeight { get { return ceilheight; } set { ceilheight = value; } }
@@ -104,7 +97,6 @@ namespace CodeImp.DoomBuilder.Map
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
 		public FlatVertex[] Vertices { get { return vertices; } }
-		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
 
@@ -129,7 +121,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Disposer
-		public void Dispose()
+		public override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -152,6 +144,9 @@ namespace CodeImp.DoomBuilder.Map
 				sidedefs = null;
 				things = null;
 				map = null;
+
+				// Dispose base
+				base.Dispose();
 			}
 		}
 
@@ -172,9 +167,9 @@ namespace CodeImp.DoomBuilder.Map
 			s.effect = effect;
 			s.tag = tag;
 			s.brightness = brightness;
-			if(fields != null) s.MakeFields(fields);
 			s.selected = selected;
 			s.updateneeded = true;
+			CopyFieldsTo(s);
 		}
 		
 		// This attaches a sidedef and returns the listitem
@@ -248,23 +243,6 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 		
-		#endregion
-
-		#region ================== Fields
-
-		// This makes new fields
-		public void MakeFields()
-		{
-			if(fields != null) fields = new SortedList<string, object>();
-		}
-
-		// This makes fields from another list of fields
-		public void MakeFields(SortedList<string, object> copyfrom)
-		{
-			if(fields != null) fields = new SortedList<string, object>();
-			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
-		}
-
 		#endregion
 
 		#region ================== Methods

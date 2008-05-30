@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Linedef
+	public sealed class Linedef : MapElement
 	{
 		#region ================== Constants
 
@@ -73,15 +73,9 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int[] args;
 		
-		// Additional fields
-		private SortedList<string, object> fields;
-		
 		// Selections
 		private bool selected;
 		private bool marked;
-		
-		// Disposing
-		private bool isdisposed = false;
 
 		#endregion
 
@@ -92,7 +86,6 @@ namespace CodeImp.DoomBuilder.Map
 		public Vertex End { get { return end; } }
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
-		public bool IsDisposed { get { return isdisposed; } }
 		public Line2D Line { get { return new Line2D(start.Position, end.Position); } }
 		public int Flags { get { return flags; } set { flags = value; } }
 		public int Action { get { return action; } set { action = value; } }
@@ -106,7 +99,6 @@ namespace CodeImp.DoomBuilder.Map
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 		public RectangleF Rect { get { return rect; } }
 		public int[] Args { get { return args; } }
-		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
 
@@ -132,7 +124,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Disposer
-		public void Dispose()
+		public override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -160,6 +152,9 @@ namespace CodeImp.DoomBuilder.Map
 				front = null;
 				back = null;
 				map = null;
+
+				// Clean up base
+				base.Dispose();
 			}
 		}
 
@@ -198,8 +193,8 @@ namespace CodeImp.DoomBuilder.Map
 			l.flags = flags;
 			l.tag = tag;
 			l.updateneeded = true;
-			if(fields != null) l.MakeFields(fields);
 			l.selected = selected;
+			CopyFieldsTo(l);
 		}
 		
 		// This attaches a sidedef on the front
@@ -286,23 +281,6 @@ namespace CodeImp.DoomBuilder.Map
 			// Update sectors as well
 			if(front != null) front.Sector.UpdateNeeded = true;
 			if(back != null) back.Sector.UpdateNeeded = true;
-		}
-
-		#endregion
-
-		#region ================== Fields
-
-		// This makes new fields
-		public void MakeFields()
-		{
-			if(fields != null) fields = new SortedList<string, object>();
-		}
-
-		// This makes fields from another list of fields
-		public void MakeFields(SortedList<string, object> copyfrom)
-		{
-			if(fields != null) fields = new SortedList<string, object>();
-			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
 		}
 
 		#endregion

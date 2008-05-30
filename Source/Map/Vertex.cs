@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Vertex
+	public sealed class Vertex : MapElement
 	{
 		#region ================== Constants
 		
@@ -60,12 +60,6 @@ namespace CodeImp.DoomBuilder.Map
 		// Cloning
 		private Vertex clone;
 
-		// Additional fields
-		private SortedList<string, object> fields;
-		
-		// Disposing
-		private bool isdisposed = false;
-
 		#endregion
 
 		#region ================== Properties
@@ -73,11 +67,9 @@ namespace CodeImp.DoomBuilder.Map
 		public MapSet Map { get { return map; } }
 		public ICollection<Linedef> Linedefs { get { return linedefs; } }
 		public Vector2D Position { get { return pos; } }
-		public bool IsDisposed { get { return isdisposed; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
 		public Vertex Clone { get { return clone; } set { clone = value; } }
-		public SortedList<string, object> Fields { get { return fields; } }
 
 		#endregion
 
@@ -97,7 +89,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Disposer
-		public void Dispose()
+		public override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -116,6 +108,9 @@ namespace CodeImp.DoomBuilder.Map
 				linedefs = null;
 				mainlistitem = null;
 				map = null;
+
+				// Dispose base
+				base.Dispose();
 			}
 		}
 
@@ -145,23 +140,6 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		#endregion
-
-		#region ================== Fields
-
-		// This makes new fields
-		public void MakeFields()
-		{
-			if(fields != null) fields = new SortedList<string, object>();
-		}
-
-		// This makes fields from another list of fields
-		public void MakeFields(SortedList<string, object> copyfrom)
-		{
-			if(fields != null) fields = new SortedList<string, object>();
-			foreach(KeyValuePair<string, object> f in copyfrom) fields[f.Key] = f.Value;
-		}
-
-		#endregion
 		
 		#region ================== Methods
 
@@ -170,8 +148,8 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Copy properties
 			v.pos = pos;
-			if(fields != null) v.MakeFields(fields);
 			v.selected = selected;
+			CopyFieldsTo(v);
 		}
 		
 		// This returns the distance from given coordinates
