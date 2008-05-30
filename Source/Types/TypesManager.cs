@@ -161,6 +161,14 @@ namespace CodeImp.DoomBuilder.Types
 			// Nothing found
 			return null;
 		}
+
+		// This returns the attribute with the give type
+		public TypeHandlerAttribute GetAttribute(int type)
+		{
+			// Do we have a handler type for this?
+			if(handlertypes.ContainsKey(type)) return handlertypes[type];
+				else return null;
+		}
 		
 		#endregion
 	}

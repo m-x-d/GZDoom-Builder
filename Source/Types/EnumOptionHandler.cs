@@ -71,58 +71,66 @@ namespace CodeImp.DoomBuilder.Types
 		{
 			this.value = null;
 
-			// Value is an integer?
-			if(value is int)
+			// Input null?
+			if(value == null)
 			{
-				int intvalue = (int)value;
+				this.value = new EnumItem("0", "NULL");
+			}
+			else
+			{
+				// Value is an integer?
+				if(value is int)
+				{
+					int intvalue = (int)value;
 
-				// First try to match the value against the enum values
-				foreach(EnumItem item in list)
-				{
-					// Matching value?
-					if(item.GetIntValue() == intvalue)
+					// First try to match the value against the enum values
+					foreach(EnumItem item in list)
 					{
-						// Set this value
-						this.value = item;
+						// Matching value?
+						if(item.GetIntValue() == intvalue)
+						{
+							// Set this value
+							this.value = item;
+						}
 					}
 				}
-			}
-			
-			// No match found yet?
-			if(this.value == null)
-			{
-				// First try to match the value against the enum values
-				foreach(EnumItem item in list)
-				{
-					// Matching value?
-					if(item.Value == value.ToString())
-					{
-						// Set this value
-						this.value = item;
-					}
-				}
-			}
-			
-			// No match found yet?
-			if(this.value == null)
-			{
-				// Try to match against the titles
-				foreach(EnumItem item in list)
-				{
-					// Matching value?
-					if(item.Title.ToLowerInvariant() == value.ToString().ToLowerInvariant())
-					{
-						// Set this value
-						this.value = item;
-					}
-				}
-			}
 
-			// Still no match found?
-			if(this.value == null)
-			{
-				// Make a dummy value
-				this.value = new EnumItem(value.ToString(), value.ToString());
+				// No match found yet?
+				if(this.value == null)
+				{
+					// First try to match the value against the enum values
+					foreach(EnumItem item in list)
+					{
+						// Matching value?
+						if(item.Value == value.ToString())
+						{
+							// Set this value
+							this.value = item;
+						}
+					}
+				}
+
+				// No match found yet?
+				if(this.value == null)
+				{
+					// Try to match against the titles
+					foreach(EnumItem item in list)
+					{
+						// Matching value?
+						if(item.Title.ToLowerInvariant() == value.ToString().ToLowerInvariant())
+						{
+							// Set this value
+							this.value = item;
+						}
+					}
+				}
+
+				// Still no match found?
+				if(this.value == null)
+				{
+					// Make a dummy value
+					this.value = new EnumItem(value.ToString(), value.ToString());
+				}
 			}
 		}
 

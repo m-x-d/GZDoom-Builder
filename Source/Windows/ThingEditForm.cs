@@ -62,6 +62,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill actions list
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
+
+			// Initialize custom fields editor
+			fieldslist.Setup();
 			
 			// Go for all predefined categories
 			typelist.Nodes.Clear();

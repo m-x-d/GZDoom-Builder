@@ -81,7 +81,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldslist.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.fieldslist_CellBeginEdit);
 			this.fieldslist.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellEndEdit);
 			this.fieldslist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellClick);
-			this.fieldslist.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.fieldslist_DataError);
 			this.fieldslist.SelectionChanged += new System.EventHandler(this.fieldslist_SelectionChanged);
 			// 
 			// deleterowstimer

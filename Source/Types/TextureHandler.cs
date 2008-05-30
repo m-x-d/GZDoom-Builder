@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private string value;
+		private string value = "";
 
 		#endregion
 
@@ -60,7 +60,10 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void SetValue(object value)
 		{
-			this.value = value.ToString();
+			if(value != null)
+				this.value = value.ToString();
+			else
+				this.value = "";
 		}
 
 		public override object GetValue()

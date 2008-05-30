@@ -4,6 +4,8 @@
 
 - Complete Things filter with UDMF fields
 
+- Controls to increase/decrease grid size
+
 - Make "Make Sector" mode
 	- On mousemove (?) already show the sector outline it will create
 	- On click make the sector
@@ -27,6 +29,8 @@
 - Make advanced drag/rotate/resize/flip/skew/turn/barf mode
 
 - Make quick sector draw (square/circle) mode
+
+- Make script editor
 
 - Make dialog and editing mode help documentation
 

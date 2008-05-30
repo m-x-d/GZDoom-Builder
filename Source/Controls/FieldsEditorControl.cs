@@ -47,12 +47,16 @@ namespace CodeImp.DoomBuilder.Controls
 		public FieldsEditorControl()
 		{
 			InitializeComponent();
-
+		}
+		
+		// This sets up the control
+		public void Setup()
+		{
 			// Make types list
 			fieldtype.Items.Clear();
 			fieldtype.Items.AddRange(General.Types.GetCustomUseAttributes());
 		}
-
+		
 		// This adds a list of fixed fields (in undefined state)
 		public void ListFixedFields(List<UniversalFieldInfo> list)
 		{
@@ -62,6 +66,135 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Update new row
 			SetupNewRowStyle();
+		}
+
+		// This sets up the fields and values from a UniFields object
+		// When first is true, the values are applied unconditionally
+		// When first is false, the values in the grid are erased when
+		// they differ from the given values (for multiselection)
+		public void SetValues(UniFields fromfields, bool first)
+		{
+			// Go for all the fields
+			foreach(KeyValuePair<string, UniValue> f in fromfields)
+			{
+				// Go for all rows
+				bool foundrow = false;
+				foreach(DataGridViewRow row in fieldslist.Rows)
+				{
+					// Row is a field?
+					if(row is FieldsEditorRow)
+					{
+						FieldsEditorRow frow = row as FieldsEditorRow;
+						
+						// Row name matches with field
+						if(frow.Name == f.Key)
+						{
+							// First time?
+							if(first)
+							{
+								// Set type when row is not fixed
+								if(!frow.IsFixed) frow.ChangeType(f.Value.Type);
+
+								// Apply value of field to row
+								frow.Define(f.Value.Value);
+							}
+							else
+							{
+								// Check if the value is different
+								if(!frow.TypeHandler.GetValue().Equals(f.Value.Value))
+								{
+									// Clear the value in the row
+									frow.Clear();
+								}
+							}
+
+							// Done
+							foundrow = true;
+							break;
+						}
+
+						// Is this row defined previously?
+						if(frow.IsDefined)
+						{
+							// Check if this row can not be found in the fields at all
+							if(!fromfields.ContainsKey(frow.Name))
+							{
+								// It is not defined in these fields, clear the value
+								frow.Clear();
+							}
+						}
+					}
+				}
+
+				// Row not found?
+				if(!foundrow)
+				{
+					// Make new row
+					FieldsEditorRow frow = new FieldsEditorRow(fieldslist, f.Key, f.Value.Type, f.Value.Value);
+					fieldslist.Rows.Insert(fieldslist.Rows.Count - 1, frow);
+
+					// When not the first, clear the field
+					// because the others did not define this one
+					if(!first) frow.Clear();
+				}
+			}
+		}
+		
+		// This applies the current fields to a UniFields object
+		public void Apply(UniFields tofields)
+		{
+			// Go for all the fields
+			UniFields tempfields = new UniFields(tofields);
+			foreach(KeyValuePair<string, UniValue> f in tempfields)
+			{
+				// Go for all rows
+				bool foundrow = false;
+				foreach(DataGridViewRow row in fieldslist.Rows)
+				{
+					// Row is a field and matches field name?
+					if((row is FieldsEditorRow) && (row.Cells[0].Value.ToString() == f.Key))
+					{
+						FieldsEditorRow frow = row as FieldsEditorRow;
+
+						// Field is defined?
+						if(frow.IsDefined)
+						{
+							foundrow = true;
+							break;
+						}
+					}
+				}
+
+				// No such row?
+				if(!foundrow)
+				{
+					// Remove the definition from the fields
+					tofields.Remove(f.Key);
+				}
+			}
+			
+			// Go for all rows
+			foreach(DataGridViewRow row in fieldslist.Rows)
+			{
+				// Row is a field?
+				if(row is FieldsEditorRow)
+				{
+					FieldsEditorRow frow = row as FieldsEditorRow;
+
+					// Field is defined?
+					if(frow.IsDefined)
+					{
+						// Only apply when not empty
+						if(!frow.IsEmpty)
+						{
+							// Apply field
+							object oldvalue = null;
+							if(tofields.ContainsKey(frow.Name)) oldvalue = tofields[frow.Name].Value;
+							tofields[frow.Name] = new UniValue(frow.TypeHandler.Index, frow.GetResult(oldvalue));
+						}
+					}
+				}
+			}
 		}
 
 		// This sets up the new row
@@ -145,13 +278,18 @@ namespace CodeImp.DoomBuilder.Controls
 				// Row is a new row?
 				if(frow == null)
 				{
-					// Valid property name given?
-					if((row.Cells[0].Value != null) && (row.Cells[0].Value.ToString().Trim().Length > 0))
+					// Name given?
+					if(row.Cells[0].Value != null)
 					{
-						// Make new row
-						frow = new FieldsEditorRow(fieldslist, row.Cells[0].Value.ToString().Trim(), 0, 0);
-						frow.Visible = false;
-						fieldslist.Rows.Insert(e.RowIndex + 1, frow);
+						// Make a valid UDMF field name
+						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
+						if(validname.Length > 0)
+						{
+							// Make new row
+							frow = new FieldsEditorRow(fieldslist, validname, 0, 0);
+							frow.Visible = false;
+							fieldslist.Rows.Insert(e.RowIndex + 1, frow);
+						}
 					}
 					
 					// Mark the row for delete
@@ -260,11 +398,6 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				browsebutton.Visible = false;
 			}
-		}
-
-		private void fieldslist_DataError(object sender, DataGridViewDataErrorEventArgs e)
-		{
-			e.ThrowException = false;
 		}
 	}
 }
