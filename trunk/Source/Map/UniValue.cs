@@ -35,6 +35,8 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
+		private const string NAME_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789_";
+		
 		#endregion
 
 		#region ================== Variables
@@ -56,7 +58,7 @@ namespace CodeImp.DoomBuilder.Map
 			set
 			{
 				// Value may only be a primitive type
-				if(!(value is int) || !(value is float) || !(value is string) || !(value is bool))
+				if((!(value is int) && !(value is float) && !(value is string) && !(value is bool)) || (value == null))
 					throw new ArgumentException("Universal field values can only be of type int, float, string or bool.");
 				
 				this.value = value;
@@ -70,6 +72,16 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor
 
 		// Constructor
+		public UniValue(int type, object value)
+		{
+			this.type = type;
+			this.value = value;
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Constructor
 		public UniValue()
 		{
 			// We have no destructor
@@ -79,6 +91,19 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Methods
+
+		// This validates a UDMF field name and returns the valid part
+		public static string ValidateName(string name)
+		{
+			// Keep only valid characters
+			string fieldname = name.Trim().ToLowerInvariant();
+			string validname = "";
+			for(int c = 0; c < fieldname.Length; c++)
+			{
+				if(NAME_CHARS.IndexOf(fieldname[c]) > -1) validname += fieldname[c];
+			}
+			return validname;
+		}
 
 		#endregion
 	}

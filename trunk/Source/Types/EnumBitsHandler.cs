@@ -77,8 +77,13 @@ namespace CodeImp.DoomBuilder.Types
 		{
 			int result;
 
+			// Null?
+			if(value == null)
+			{
+				this.value = 0;
+			}
 			// Already an int?
-			if(value is int)
+			else if(value is int)
 			{
 				// Set directly
 				this.value = (int)value;

@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private object value;
+		private object value = (int)0;
 
 		#endregion
 
@@ -50,7 +50,10 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void SetValue(object value)
 		{
-			this.value = value;
+			if(value != null)
+				this.value = value;
+			else
+				this.value = (int)0;
 		}
 
 		public override object GetValue()

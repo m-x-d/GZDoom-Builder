@@ -66,6 +66,9 @@ namespace CodeImp.DoomBuilder.Windows
 			backmid.Initialize();
 			backlow.Initialize();
 
+			// Initialize custom fields editor
+			fieldslist.Setup();
+			
 			// Show appropriate panels/tabs
 			doompanel.Visible = General.Map.IsType(typeof(DoomMapSetIO));
 			hexenpanel.Visible = General.Map.IsType(typeof(HexenMapSetIO));
@@ -131,6 +134,9 @@ namespace CodeImp.DoomBuilder.Windows
 				backoffsetx.Text = fl.Back.OffsetX.ToString();
 				backoffsety.Text = fl.Back.OffsetY.ToString();
 			}
+
+			// Custom fields
+			fieldslist.SetValues(fl.Fields, true);
 
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all lines and change the options when a setting is different
@@ -204,6 +210,9 @@ namespace CodeImp.DoomBuilder.Windows
 					if(backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
 					if(backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
 				}
+				
+				// Custom fields
+				fieldslist.SetValues(l.Fields, false);
 			}
 		}
 		
@@ -320,6 +329,9 @@ namespace CodeImp.DoomBuilder.Windows
 					l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
 					l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
 				}
+
+				// Custom fields
+				fieldslist.Apply(l.Fields);
 			}
 
 			// Done

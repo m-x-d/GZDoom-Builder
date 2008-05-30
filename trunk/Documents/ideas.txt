@@ -21,4 +21,13 @@ typed linedef arguments
 the possible types are also defined in the configuration
 this allows a user to pick from a list instead of entering a number for the linedef args
 
+===========================================================================================
+
+Slider to change transparency amount of doublesided lines
+
+===========================================================================================
+
+Draw association on top of highlight so that a highligted sector referring to it's own
+lines still show the line association. But for a line referring to the sector the association
+should be drawn underneath the highlight or the highlight would be invisible.
 

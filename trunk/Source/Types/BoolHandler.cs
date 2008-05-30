@@ -53,8 +53,13 @@ namespace CodeImp.DoomBuilder.Types
 		{
 			bool result;
 
+			// null?
+			if(value == null)
+			{
+				this.value = false;
+			}
 			// already bool?
-			if(value is bool)
+			else if(value is bool)
 			{
 				this.value = (bool)value;
 			}
