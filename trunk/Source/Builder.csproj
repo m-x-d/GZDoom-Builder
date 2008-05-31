@@ -123,6 +123,7 @@
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\WADReader.cs" />
+    <Compile Include="IO\UniversalParser.cs" />
     <Compile Include="Map\MapElement.cs" />
     <Compile Include="Map\UniFields.cs" />
     <Compile Include="Map\UniValue.cs" />
@@ -574,6 +575,7 @@
     <None Include="Resources\SlimDX_small.png" />
     <None Include="Resources\Splash3_trans.png" />
     <None Include="Resources\Splash3_small.png" />
+    <EmbeddedResource Include="Resources\UDMF.cfg" />
     <EmbeddedResource Include="Controls\AngleControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AngleControl.cs</DependentUpon>

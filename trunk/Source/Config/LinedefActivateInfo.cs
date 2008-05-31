@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class LinedefActivateInfo : INumberedTitle, IComparable<LinedefActivateInfo>
+	public class LinedefActivateInfo : IComparable<LinedefActivateInfo>
 	{
 		#region ================== Constants
 
@@ -41,14 +41,16 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Variables
 
 		// Properties
-		private int index;
+		private int intkey;
+		private string key;
 		private string title;
 		
 		#endregion
 
 		#region ================== Properties
 
-		public int Index { get { return index; } }
+		public int Index { get { return intkey; } }
+		public string Key { get { return key; } }
 		public string Title { get { return title; } }
 
 		#endregion
@@ -56,11 +58,14 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal LinedefActivateInfo(int index, string title)
+		internal LinedefActivateInfo(string key, string title)
 		{
 			// Initialize
-			this.index = index;
+			this.key = key;
 			this.title = title;
+			
+			// Try parsing key as int for comparison
+			if(!int.TryParse(key, out intkey)) intkey = 0;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -79,8 +84,8 @@ namespace CodeImp.DoomBuilder.Config
 		// This compares against another activate info
 		public int CompareTo(LinedefActivateInfo other)
 		{
-			if(this.index < other.index) return -1;
-			else if(this.index > other.index) return 1;
+			if(this.intkey < other.intkey) return -1;
+			else if(this.intkey > other.intkey) return 1;
 			else return 0;
 		}
 		

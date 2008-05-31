@@ -46,14 +46,15 @@ namespace CodeImp.DoomBuilder.Config
 		private float defaulttexturescale;
 		private float defaultflatscale;
 		private string formatinterface;
-		private int soundlinedefflags;
-		private int singlesidedflags;
-		private int doublesidedflags;
-		private int impassableflags;
+		private string soundlinedefflag;
+		private string singlesidedflag;
+		private string doublesidedflag;
+		private string impassableflag;
 		private bool mixtexturesflats;
 		private bool generalizedactions;
 		private bool generalizedeffects;
 		private int start3dmodethingtype;
+		private int linedefactivationsfilter;
 		
 		// Map lumps
 		private IDictionary maplumpnames;
@@ -63,12 +64,12 @@ namespace CodeImp.DoomBuilder.Config
 		private IDictionary flatranges;
 		
 		// Things
-		private Dictionary<int, string> thingflags;
+		private Dictionary<string, string> thingflags;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> things;
 		
 		// Linedefs
-		private Dictionary<int, string> linedefflags;
+		private Dictionary<string, string> linedefflags;
 		private Dictionary<int, LinedefActionInfo> linedefactions;
 		private List<LinedefActionInfo> sortedlinedefactions;
 		private List<LinedefActionCategory> actioncategories;
@@ -95,14 +96,15 @@ namespace CodeImp.DoomBuilder.Config
 		public float DefaultTextureScale { get { return defaulttexturescale; } }
 		public float DefaultFlatScale { get { return defaultflatscale; } }
 		public string FormatInterface { get { return formatinterface; } }
-		public int SoundLinedefFlags { get { return soundlinedefflags; } }
-		public int SingleSidedFlags { get { return singlesidedflags; } }
-		public int DoubleSidedFlags { get { return doublesidedflags; } }
-		public int ImpassableFlags { get { return impassableflags; } }
+		public string SoundLinedefFlag { get { return soundlinedefflag; } }
+		public string SingleSidedFlag { get { return singlesidedflag; } }
+		public string DoubleSidedFlag { get { return doublesidedflag; } }
+		public string ImpassableFlag { get { return impassableflag; } }
 		public bool MixTexturesFlats { get { return mixtexturesflats; } }
 		public bool GeneralizedActions { get { return generalizedactions; } }
 		public bool GeneralizedEffects { get { return generalizedeffects; } }
 		public int Start3DModeThingType { get { return start3dmodethingtype; } }
+		public int LinedefActivationsFilter { get { return linedefactivationsfilter; } }
 		
 		// Map lumps
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
@@ -112,12 +114,12 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary FlatRanges { get { return flatranges; } }
 
 		// Things
-		public IDictionary<int, string> ThingFlags { get { return thingflags; } }
+		public IDictionary<string, string> ThingFlags { get { return thingflags; } }
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> Things { get { return things.Values; } }
 		
 		// Linedefs
-		public IDictionary<int, string> LinedefFlags { get { return linedefflags; } }
+		public IDictionary<string, string> LinedefFlags { get { return linedefflags; } }
 		public IDictionary<int, LinedefActionInfo> LinedefActions { get { return linedefactions; } }
 		public List<LinedefActionInfo> SortedLinedefActions { get { return sortedlinedefactions; } }
 		public List<LinedefActionCategory> ActionCategories { get { return actioncategories; } }
@@ -143,12 +145,14 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		internal GameConfiguration(Configuration cfg)
 		{
+			object obj;
+			
 			// Initialize
 			this.cfg = cfg;
-			this.thingflags = new Dictionary<int, string>();
+			this.thingflags = new Dictionary<string, string>();
 			this.thingcategories = new List<ThingCategory>();
 			this.things = new Dictionary<int, ThingTypeInfo>();
-			this.linedefflags = new Dictionary<int, string>();
+			this.linedefflags = new Dictionary<string, string>();
 			this.linedefactions = new Dictionary<int, LinedefActionInfo>();
 			this.actioncategories = new List<LinedefActionCategory>();
 			this.sortedlinedefactions = new List<LinedefActionInfo>();
@@ -163,14 +167,22 @@ namespace CodeImp.DoomBuilder.Config
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
 			defaultflatscale = cfg.ReadSetting("defaultflatscale", 1f);
 			formatinterface = cfg.ReadSetting("formatinterface", "");
-			soundlinedefflags = cfg.ReadSetting("soundlinedefflags", 0);
-			singlesidedflags = cfg.ReadSetting("singlesidedflags", 0);
-			doublesidedflags = cfg.ReadSetting("doublesidedflags", 0);
-			impassableflags = cfg.ReadSetting("impassableflags", 0);
 			mixtexturesflats = cfg.ReadSetting("mixtexturesflats", false);
 			generalizedactions = cfg.ReadSetting("generalizedlinedefs", false);
 			generalizedeffects = cfg.ReadSetting("generalizedsectors", false);
 			start3dmodethingtype = cfg.ReadSetting("start3dmode", 0);
+			linedefactivationsfilter = cfg.ReadSetting("linedefactivationsfilter", 0);
+			
+			// Flags have special (invariant culture) conversion
+			// because they are allowed to be written as integers in the configs
+			obj = cfg.ReadSettingObject("soundlinedefflag", 0);
+			if(obj is int) soundlinedefflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else soundlinedefflag = obj.ToString();
+			obj = cfg.ReadSetting("singlesidedflag", 0);
+			if(obj is int) singlesidedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else singlesidedflag = obj.ToString();
+			obj = cfg.ReadSetting("doublesidedflag", 0);
+			if(obj is int) doublesidedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else doublesidedflag = obj.ToString();
+			obj = cfg.ReadSetting("impassableflag", 0);
+			if(obj is int) impassableflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else impassableflag = obj.ToString();
 			
 			// Get map lumps
 			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
@@ -286,6 +298,7 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("linedefflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
+				/*
 				// Try paring the bit value
 				if(int.TryParse(de.Key.ToString(),
 					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
@@ -304,6 +317,9 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					General.WriteLogLine("WARNING: Structure 'linedefflags' contains invalid keys!");
 				}
+				*/
+				
+				linedefflags.Add(de.Key.ToString(), de.Value.ToString());
 			}
 		}
 
@@ -382,18 +398,8 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("linedefactivations", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				// Try paring the bit value
-				if(int.TryParse(de.Key.ToString(),
-					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
-					CultureInfo.InvariantCulture, out bitvalue))
-				{
-					// Add to the list
-					linedefactivates.Add(new LinedefActivateInfo(bitvalue, de.Value.ToString()));
-				}
-				else
-				{
-					General.WriteLogLine("WARNING: Structure 'linedefactivations' contains invalid keys!");
-				}
+				// Add to the list
+				linedefactivates.Add(new LinedefActivateInfo(de.Key.ToString(), de.Value.ToString()));
 			}
 
 			// Sort the list
@@ -488,6 +494,7 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("thingflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
+				/*
 				// Try paring the bit value
 				if(int.TryParse(de.Key.ToString(),
 					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
@@ -506,6 +513,9 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					General.WriteLogLine("WARNING: Structure 'thingflags' contains invalid keys!");
 				}
+				*/
+
+				thingflags.Add(de.Key.ToString(), de.Value.ToString());
 			}
 		}
 		

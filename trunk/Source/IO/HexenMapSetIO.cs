@@ -90,6 +90,7 @@ namespace CodeImp.DoomBuilder.IO
 			BinaryReader reader;
 			int num, i, tag, z, action, x, y, type, flags;
 			int[] args = new int[Thing.NUM_ARGS];
+			Dictionary<string, bool> stringflags;
 			float angle;
 			Thing t;
 			
@@ -119,10 +120,18 @@ namespace CodeImp.DoomBuilder.IO
 				args[2] = reader.ReadByte();
 				args[3] = reader.ReadByte();
 				args[4] = reader.ReadByte();
+
+				// Make string flags
+				stringflags = new Dictionary<string, bool>();
+				foreach(KeyValuePair<string, string> f in manager.Config.ThingFlags)
+				{
+					int fnum;
+					if(int.TryParse(f.Key, out fnum)) stringflags[f.Key] = ((flags & fnum) == fnum);
+				}
 				
 				// Create new item
 				t = map.CreateThing();
-				t.Update(type, x, y, z, angle, flags, tag, action, args);
+				t.Update(type, x, y, z, angle, stringflags, tag, action, args);
 				//t.DetermineSector();
 				t.UpdateConfiguration();
 			}
@@ -234,6 +243,7 @@ namespace CodeImp.DoomBuilder.IO
 			int num, i, offsetx, offsety, v1, v2;
 			int s1, s2, flags, action, sc;
 			int[] args = new int[Linedef.NUM_ARGS];
+			Dictionary<string, bool> stringflags;
 			string thigh, tmid, tlow;
 			Linedef l;
 			Sidedef s;
@@ -268,10 +278,18 @@ namespace CodeImp.DoomBuilder.IO
 				args[4] = readline.ReadByte();
 				s1 = readline.ReadUInt16();
 				s2 = readline.ReadUInt16();
+
+				// Make string flags
+				stringflags = new Dictionary<string, bool>();
+				foreach(KeyValuePair<string, string> f in manager.Config.LinedefFlags)
+				{
+					int fnum;
+					if(int.TryParse(f.Key, out fnum)) stringflags[f.Key] = ((flags & fnum) == fnum);
+				}
 				
 				// Create new item
 				l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-				l.Update(flags, 0, action, args);
+				l.Update(stringflags, (flags & manager.Config.LinedefActivationsFilter), 0, action, args);
 				l.UpdateCache();
 
 				// Line has a front side?
@@ -346,6 +364,7 @@ namespace CodeImp.DoomBuilder.IO
 			BinaryWriter writer;
 			Lump lump;
 			int insertpos;
+			int flags;
 			
 			// Create memory to write to
 			mem = new MemoryStream();
@@ -354,6 +373,15 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all things
 			foreach(Thing t in map.Things)
 			{
+				// Convert flags
+				flags = 0;
+				foreach(KeyValuePair<string, bool> f in t.Flags)
+				{
+					int fnum;
+					if(f.Value && int.TryParse(f.Key, out fnum)) flags |= fnum;
+				}
+
+				// Write properties to stream
 				// Write properties to stream
 				writer.Write((UInt16)t.Tag);
 				writer.Write((Int16)t.Position.x);
@@ -361,7 +389,7 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write((Int16)t.ZOffset);
 				writer.Write((Int16)((t.Angle * Angle2D.PIDEG) - 90));
 				writer.Write((UInt16)t.Type);
-				writer.Write((UInt16)t.Flags);
+				writer.Write((UInt16)flags);
 				writer.Write((Byte)t.Action);
 				writer.Write((Byte)t.Args[0]);
 				writer.Write((Byte)t.Args[1]);
@@ -420,6 +448,7 @@ namespace CodeImp.DoomBuilder.IO
 			Lump lump;
 			ushort sid;
 			int insertpos;
+			int flags;
 			
 			// Create memory to write to
 			mem = new MemoryStream();
@@ -428,10 +457,21 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all lines
 			foreach(Linedef l in map.Linedefs)
 			{
+				// Convert flags
+				flags = 0;
+				foreach(KeyValuePair<string, bool> f in l.Flags)
+				{
+					int fnum;
+					if(f.Value && int.TryParse(f.Key, out fnum)) flags |= fnum;
+				}
+
+				// Add activates to flags
+				flags |= (l.Activate & manager.Config.LinedefActivationsFilter);
+				
 				// Write properties to stream
 				writer.Write((UInt16)vertexids[l.Start]);
 				writer.Write((UInt16)vertexids[l.End]);
-				writer.Write((UInt16)l.Flags);
+				writer.Write((UInt16)flags);
 				writer.Write((Byte)l.Action);
 				writer.Write((Byte)l.Args[0]);
 				writer.Write((Byte)l.Args[1]);

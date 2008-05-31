@@ -68,8 +68,9 @@ namespace CodeImp.DoomBuilder.Map
 		private RectangleF rect;
 		
 		// Properties
-		private int flags;
+		private Dictionary<string, bool> flags;
 		private int action;
+		private int activate;
 		private int tag;
 		private int[] args;
 		
@@ -87,8 +88,9 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
 		public Line2D Line { get { return new Line2D(start.Position, end.Position); } }
-		public int Flags { get { return flags; } set { flags = value; } }
+		public Dictionary<string, bool> Flags { get { return flags; } }
 		public int Action { get { return action; } set { action = value; } }
+		public int Activate { get { return activate; } set { activate = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public bool Selected { get { return selected; } set { selected = value; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
@@ -114,6 +116,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.end = end;
 			this.updateneeded = true;
 			this.args = new int[NUM_ARGS];
+			this.flags = new Dictionary<string, bool>();
 			
 			// Attach to vertices
 			startvertexlistitem = start.AttachLinedef(this);
@@ -190,9 +193,10 @@ namespace CodeImp.DoomBuilder.Map
 			// Copy properties
 			l.action = action;
 			l.args = (int[])args.Clone();
-			l.flags = flags;
+			l.flags = new Dictionary<string, bool>(flags);
 			l.tag = tag;
 			l.updateneeded = true;
+			l.activate = activate;
 			l.selected = selected;
 			CopyFieldsTo(l);
 		}
@@ -287,6 +291,15 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Methods
 
+		// This checks and returns a flag without creating it
+		public bool IsFlagSet(string flagname)
+		{
+			if(flags.ContainsKey(flagname))
+				return flags[flagname];
+			else
+				return false;
+		}
+		
 		// This flips the linedef's vertex attachments
 		public void FlipVertices()
 		{
@@ -346,14 +359,14 @@ namespace CodeImp.DoomBuilder.Map
 			if((front != null) && (back != null))
 			{
 				// Apply or remove flags for doublesided line
-				flags &= ~General.Map.Config.SingleSidedFlags;
-				flags |= General.Map.Config.DoubleSidedFlags;
+				flags[General.Map.Config.SingleSidedFlag] = false;
+				flags[General.Map.Config.DoubleSidedFlag] = true;
 			}
 			else
 			{
 				// Apply or remove flags for singlesided line
-				flags &= ~General.Map.Config.DoubleSidedFlags;
-				flags |= General.Map.Config.SingleSidedFlags;
+				flags[General.Map.Config.SingleSidedFlag] = true;
+				flags[General.Map.Config.DoubleSidedFlag] = false;
 			}
 		}
 
@@ -731,11 +744,12 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 		
 		// This updates all properties
-		public void Update(int flags, int tag, int action, int[] args)
+		public void Update(Dictionary<string, bool> flags, int activate, int tag, int action, int[] args)
 		{
 			// Apply changes
-			this.flags = flags;
+			this.flags = new Dictionary<string, bool>(flags);
 			this.tag = tag;
+			this.activate = activate;
 			this.action = action;
 			this.args = new int[NUM_ARGS];
 			args.CopyTo(this.args, 0);

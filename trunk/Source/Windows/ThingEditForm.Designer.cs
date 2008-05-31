@@ -58,6 +58,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabeffects = new System.Windows.Forms.TabPage();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.hexenpanel = new System.Windows.Forms.Panel();
+			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg3 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg4 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg1label = new System.Windows.Forms.Label();
 			this.arg0label = new System.Windows.Forms.Label();
 			this.arg3label = new System.Windows.Forms.Label();
@@ -73,11 +78,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.arg4 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg3 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -451,6 +451,46 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel.Size = new System.Drawing.Size(609, 208);
 			this.hexenpanel.TabIndex = 13;
 			// 
+			// arg2
+			// 
+			this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg2.Location = new System.Drawing.Point(179, 63);
+			this.arg2.Name = "arg2";
+			this.arg2.Size = new System.Drawing.Size(93, 24);
+			this.arg2.TabIndex = 32;
+			// 
+			// arg1
+			// 
+			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg1.Location = new System.Drawing.Point(179, 37);
+			this.arg1.Name = "arg1";
+			this.arg1.Size = new System.Drawing.Size(93, 24);
+			this.arg1.TabIndex = 31;
+			// 
+			// arg0
+			// 
+			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg0.Location = new System.Drawing.Point(179, 11);
+			this.arg0.Name = "arg0";
+			this.arg0.Size = new System.Drawing.Size(93, 24);
+			this.arg0.TabIndex = 30;
+			// 
+			// arg3
+			// 
+			this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg3.Location = new System.Drawing.Point(425, 11);
+			this.arg3.Name = "arg3";
+			this.arg3.Size = new System.Drawing.Size(93, 24);
+			this.arg3.TabIndex = 29;
+			// 
+			// arg4
+			// 
+			this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg4.Location = new System.Drawing.Point(425, 37);
+			this.arg4.Name = "arg4";
+			this.arg4.Size = new System.Drawing.Size(93, 24);
+			this.arg4.TabIndex = 28;
+			// 
 			// arg1label
 			// 
 			this.arg1label.Location = new System.Drawing.Point(-6, 42);
@@ -585,6 +625,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.fieldslist.Location = new System.Drawing.Point(8, 9);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
 			this.fieldslist.Name = "fieldslist";
@@ -613,46 +654,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// arg4
-			// 
-			this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg4.Location = new System.Drawing.Point(425, 37);
-			this.arg4.Name = "arg4";
-			this.arg4.Size = new System.Drawing.Size(93, 24);
-			this.arg4.TabIndex = 28;
-			// 
-			// arg3
-			// 
-			this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg3.Location = new System.Drawing.Point(425, 11);
-			this.arg3.Name = "arg3";
-			this.arg3.Size = new System.Drawing.Size(93, 24);
-			this.arg3.TabIndex = 29;
-			// 
-			// arg0
-			// 
-			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg0.Location = new System.Drawing.Point(179, 11);
-			this.arg0.Name = "arg0";
-			this.arg0.Size = new System.Drawing.Size(93, 24);
-			this.arg0.TabIndex = 30;
-			// 
-			// arg1
-			// 
-			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg1.Location = new System.Drawing.Point(179, 37);
-			this.arg1.Name = "arg1";
-			this.arg1.Size = new System.Drawing.Size(93, 24);
-			this.arg1.TabIndex = 31;
-			// 
-			// arg2
-			// 
-			this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg2.Location = new System.Drawing.Point(179, 63);
-			this.arg2.Name = "arg2";
-			this.arg2.Size = new System.Drawing.Size(93, 24);
-			this.arg2.TabIndex = 32;
 			// 
 			// ThingEditForm
 			// 
