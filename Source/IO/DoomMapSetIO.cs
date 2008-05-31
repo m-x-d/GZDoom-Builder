@@ -57,12 +57,11 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads a map from the file and returns a MapSet
 		public override MapSet Read(MapSet map, string mapname)
 		{
-			int firstindex;
 			Dictionary<int, Vertex> vertexlink;
 			Dictionary<int, Sector> sectorlink;
 			
 			// Find the index where first map lump begins
-			firstindex = wad.FindLumpIndex(mapname) + 1;
+			int firstindex = wad.FindLumpIndex(mapname) + 1;
 
 			// Read vertices
 			vertexlink = ReadVertices(map, firstindex);
@@ -89,6 +88,7 @@ namespace CodeImp.DoomBuilder.IO
 			MemoryStream mem;
 			BinaryReader reader;
 			int num, i, x, y, type, flags;
+			Dictionary<string, bool> stringflags;
 			float angle;
 			Thing t;
 			
@@ -111,9 +111,17 @@ namespace CodeImp.DoomBuilder.IO
 				type = reader.ReadUInt16();
 				flags = reader.ReadUInt16();
 				
+				// Make string flags
+				stringflags = new Dictionary<string, bool>();
+				foreach(KeyValuePair<string, string> f in manager.Config.ThingFlags)
+				{
+					int fnum;
+					if(int.TryParse(f.Key, out fnum)) stringflags[f.Key] = ((flags & fnum) == fnum);
+				}
+				
 				// Create new item
 				t = map.CreateThing();
-				t.Update(type, x, y, 0, angle, flags, 0, 0, Thing.EMPTY_ARGS);
+				t.Update(type, x, y, 0, angle, stringflags, 0, 0, Thing.EMPTY_ARGS);
 				//t.DetermineSector();
 				t.UpdateConfiguration();
 			}
@@ -224,6 +232,7 @@ namespace CodeImp.DoomBuilder.IO
 			Lump linedefslump, sidedefslump;
 			int num, i, offsetx, offsety, v1, v2;
 			int s1, s2, flags, action, tag, sc;
+			Dictionary<string, bool> stringflags;
 			string thigh, tmid, tlow;
 			Linedef l;
 			Sidedef s;
@@ -254,10 +263,18 @@ namespace CodeImp.DoomBuilder.IO
 				tag = readline.ReadUInt16();
 				s1 = readline.ReadUInt16();
 				s2 = readline.ReadUInt16();
-				
+
+				// Make string flags
+				stringflags = new Dictionary<string, bool>();
+				foreach(KeyValuePair<string, string> f in manager.Config.LinedefFlags)
+				{
+					int fnum;
+					if(int.TryParse(f.Key, out fnum)) stringflags[f.Key] = ((flags & fnum) == fnum);
+				}
+
 				// Create new item
 				l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-				l.Update(flags, tag, action, Linedef.EMPTY_ARGS);
+				l.Update(stringflags, 0, tag, action, Linedef.EMPTY_ARGS);
 				l.UpdateCache();
 
 				// Line has a front side?
@@ -332,6 +349,7 @@ namespace CodeImp.DoomBuilder.IO
 			BinaryWriter writer;
 			Lump lump;
 			int insertpos;
+			int flags;
 			
 			// Create memory to write to
 			mem = new MemoryStream();
@@ -340,12 +358,20 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all things
 			foreach(Thing t in map.Things)
 			{
+				// Convert flags
+				flags = 0;
+				foreach(KeyValuePair<string, bool> f in t.Flags)
+				{
+					int fnum;
+					if(f.Value && int.TryParse(f.Key, out fnum)) flags |= fnum;
+				}
+				
 				// Write properties to stream
 				writer.Write((Int16)t.Position.x);
 				writer.Write((Int16)t.Position.y);
 				writer.Write((Int16)((t.Angle * Angle2D.PIDEG) - 90));
 				writer.Write((UInt16)t.Type);
-				writer.Write((UInt16)t.Flags);
+				writer.Write((UInt16)flags);
 			}
 			
 			// Find insert position and remove old lump
@@ -398,6 +424,7 @@ namespace CodeImp.DoomBuilder.IO
 			Lump lump;
 			ushort sid;
 			int insertpos;
+			int flags;
 			
 			// Create memory to write to
 			mem = new MemoryStream();
@@ -406,10 +433,18 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all lines
 			foreach(Linedef l in map.Linedefs)
 			{
+				// Convert flags
+				flags = 0;
+				foreach(KeyValuePair<string, bool> f in l.Flags)
+				{
+					int fnum;
+					if(f.Value && int.TryParse(f.Key, out fnum)) flags |= fnum;
+				}
+
 				// Write properties to stream
 				writer.Write((UInt16)vertexids[l.Start]);
 				writer.Write((UInt16)vertexids[l.End]);
-				writer.Write((UInt16)l.Flags);
+				writer.Write((UInt16)flags);
 				writer.Write((UInt16)l.Action);
 				writer.Write((UInt16)l.Tag);
 

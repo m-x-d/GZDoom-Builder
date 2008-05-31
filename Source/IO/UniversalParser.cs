@@ -14,121 +14,6 @@
 
 #endregion
 
-#region ================== CFG file structure syntax
-
-/*
-' ====================================================================================
-'    CONFIGURATION FILE STRUCTURE SYNTAX
-' ====================================================================================
-'
-'    Whitepace is always allowed. This includes spaces, tabs
-'    linefeeds (10) and carriage returns (13)
-'
-'    Keys may not have spaces or assignment operator = in them.
-'
-'    Comments start with // (unless used within strings)
-'    and count as comment for the rest of the line. Or use /* and */				/*
-'    to mark the beginning and end of a comment.
-'
-'    Simple setting:
-'
-'              key = value;
-'
-'    Example:  speed = 345;
-'              cars = 8;
-'
-'    Strings must be in quotes.
-'
-'    Example:  nickname = "Gherkin";
-'              altnick = "Gherk inn";
-'
-'    String Escape Sequences:
-'        \n    New line (10)
-'        \r    Carriage return (13)
-'        \t    Tab (9)
-'        \"    Double-quotation mark
-'        \\    Backslash
-'        \000  Any ASCII character (MUST be 3 digits! So for 13 you use \013)
-'
-'    Decimals ALWAYS use a dot, NEVER comma!
-'
-'    Example:  pressure = 15.29;
-'              acceleration = 1.0023;
-'
-'    true, false and null are valid keywords.
-'    null values can be left out.
-'
-'    In this example, both items are null.
-'    Example:  myitem = null;
-'              myotheritem;
-'
-'    Structures must use brackets.
-'
-'    Structure Example:
-'
-'              key
-'              {
-'                   key = value;
-'                   key = value;
-'
-'                   key
-'                   {
-'                        key = value;
-'                        key = value;
-'                        key = value;
-'                   }
-'
-'                   key = value;
-'                   key = value;
-'                   key = value;
-'                   key = value;
-'                   key = value;
-'              }
-'
-'    As you can see, structures inside structures are allowed
-'    and you may go as deep as you want. Note that only the root structures
-'    can be readed from config using ReadSetting. ReadSetting will return a
-'    Dictionary object containing everything in that root structure.
-'
-'    Key names must be unique within their scope.
-'
-'    This is NOT allowed, it may not have 'father' more
-'    than once in the same scope:
-'
-'              mother = 45;
-'              father = 52;
-'
-'              father
-'              {
-'                   length = 1.87;
-'              }
-'
-'    This however is allowed, because father
-'    now exists in a different scope:
-'
-'              mother = 45;
-'              father = 52;
-'
-'              parents
-'              {
-'                   father = 52;
-'              }
-'
-'    This too is allowed, both 'age' are in a different scope:
-'
-'              mother
-'              {
-'                   age = 45;
-'              }
-'
-'              father
-'              {
-'                   age = 52;
-'              }
-*/
-
-#endregion
-
 #region ================== Namespaces
 
 using System;
@@ -142,7 +27,7 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public sealed class Configuration
+	public sealed class UniversalParser
 	{
 		#region ================== Constants
 		
@@ -175,7 +60,7 @@ namespace CodeImp.DoomBuilder.IO
 		private int cpErrorLine = 0;
 		
 		// Configuration root
-		private IDictionary root = null;
+		private ListDictionary root = null;
 		
 		#endregion
 		
@@ -185,15 +70,14 @@ namespace CodeImp.DoomBuilder.IO
 		public int ErrorResult { get { return cpErrorResult; } }
 		public string ErrorDescription { get { return cpErrorDescription; } }
 		public int ErrorLine { get { return cpErrorLine; } }
-		public IDictionary Root { get { return root; } set { root = value; } }
-		public bool Sorted { get { return (root is ListDictionary); } }
+		public ListDictionary Root { get { return root; } set { root = value; } }
 		
 		#endregion
 		
 		#region ================== Constructor / Destructor
 		
 		// Constructor
-		public Configuration()
+		public UniversalParser()
 		{
 			// Standard new configuration
 			NewConfiguration();
@@ -202,31 +86,11 @@ namespace CodeImp.DoomBuilder.IO
 			GC.SuppressFinalize(this);
 		}
 		
-		// Constructor
-		public Configuration(bool sorted)
-		{
-			// Standard new configuration
-			NewConfiguration(sorted);
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-		
 		// Constructor to load a file immediately
-		public Configuration(string filename)
+		public UniversalParser(string filename)
 		{
 			// Load configuration from file
 			LoadConfiguration(filename);
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-		
-		// Constructor to load a file immediately
-		public Configuration(string filename, bool sorted)
-		{
-			// Load configuration from file
-			LoadConfiguration(filename, sorted);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -239,7 +103,7 @@ namespace CodeImp.DoomBuilder.IO
 		// This is called by all the ReadSetting overloads to perform the read
 		private bool CheckSetting(string setting, string pathseperator)
 		{
-			IDictionary cs = null;
+			ListDictionary cs = null;
 
 			// Split the path in an array
 			string[] keys = setting.Split(pathseperator.ToCharArray());
@@ -251,13 +115,13 @@ namespace CodeImp.DoomBuilder.IO
 			for(int i = 0; i < keys.Length; i++)
 			{
 				// Check if the current item is of ConfigStruct type
-				if(item is IDictionary)
+				if(item is ListDictionary)
 				{
 					// Check if the key is valid
 					if(ValidateKey(null, keys[i].Trim(), -1) == true)
 					{
 						// Cast to ConfigStruct
-						cs = (IDictionary)item;
+						cs = (ListDictionary)item;
 
 						// Check if the requested item exists
 						if(cs.Contains(keys[i]) == true)
@@ -291,7 +155,7 @@ namespace CodeImp.DoomBuilder.IO
 		// This is called by all the ReadSetting overloads to perform the read
 		private object ReadAnySetting(string setting, object defaultsetting, string pathseperator)
 		{
-			IDictionary cs = null;
+			ListDictionary cs = null;
 			
 			// Split the path in an array
 			string[] keys = setting.Split(pathseperator.ToCharArray());
@@ -303,13 +167,13 @@ namespace CodeImp.DoomBuilder.IO
 			for(int i = 0; i < keys.Length; i++)
 			{
 				// Check if the current item is of ConfigStruct type
-				if(item is IDictionary)
+				if(item is ListDictionary)
 				{
 					// Check if the key is valid
 					if(ValidateKey(null, keys[i].Trim(), -1) == true)
 					{
 						// Cast to ConfigStruct
-						cs = (IDictionary)item;
+						cs = (ListDictionary)item;
 						
 						// Check if the requested item exists
 						if(cs.Contains(keys[i]) == true)
@@ -343,65 +207,6 @@ namespace CodeImp.DoomBuilder.IO
 			return item;
 		}
 		
-		// This helps operator + to combine configurations inherited
-		private static IDictionary Combined(IDictionary d1, IDictionary d2, bool sorted)
-		{
-			// Create new dictionary
-			IDictionary result;
-			if(sorted) result = new ListDictionary(); else result = new Hashtable();
-			
-			// Copy all items from d1 to result
-			IDictionaryEnumerator d1e = d1.GetEnumerator();
-			while(d1e.MoveNext()) result.Add(d1e.Key, d1e.Value);
-			
-			// Go for all items in d2
-			IDictionaryEnumerator d2e = d2.GetEnumerator();
-			while(d2e.MoveNext())
-			{
-				// Check if this is another Hashtable
-				if(d2e.Value is IDictionary)
-				{
-					// Check if already in result
-					if(result.Contains(d2e.Key))
-					{
-						// Modify result
-						result[d2e.Key] = Combined((IDictionary)result[d2e.Key], (IDictionary)d2e.Value, sorted);
-					}
-					else
-					{
-						// Copy from d2
-						if(sorted)
-						{
-							// Sorted combine
-							result.Add(d2e.Key, Combined(new ListDictionary(), (IDictionary)d2e.Value, sorted));
-						}
-						else
-						{
-							// Unsorted combine
-							result.Add(d2e.Key, Combined(new Hashtable(), (IDictionary)d2e.Value, sorted));
-						}
-					}
-				}
-				else
-				{
-					// Check if also in d1
-					if(d1.Contains(d2e.Key))
-					{
-						// Modify result
-						result[d2e.Key] = d2e.Value;
-					}
-					else
-					{
-						// Copy
-						result.Add(d2e.Key, d2e.Value);
-					}
-				}
-			}
-			
-			// Return result
-			return result;
-		}
-		
 		
 		// This returns a string added with escape characters
 		private string EscapedString(string str)
@@ -430,7 +235,7 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// This validates a given key and sets
 		// error properties if key is invalid and errorline > -1
-		private bool ValidateKey(IDictionary container, string key, int errorline)
+		private bool ValidateKey(ListDictionary container, string key, int errorline)
 		{
 			bool validateresult;
 			
@@ -517,17 +322,14 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// This parses a structure in the given data starting
 		// from the given pos and line and updates pos and line.
-		private IDictionary InputStructure(ref string data, ref int pos, ref int line, bool sorted)
+		private ListDictionary InputStructure(ref string data, ref int pos, ref int line)
 		{
 			char c = '\0';					// current data character
 			int pm = PM_NOTHING;			// current parse mode
 			string key = "", val = "";		// current key and value beign built
 			bool escape = false;			// escape sequence?
 			bool endofstruct = false;		// true as soon as this level struct ends
-			IDictionary cs;
-			
-			// Create new struct to hold variables
-			if(sorted) cs = new ListDictionary(); else cs = new Hashtable();
+			ListDictionary cs = new ListDictionary();
 			
 			// Go through all of the data until
 			// the end or until the struct closes
@@ -552,7 +354,7 @@ namespace CodeImp.DoomBuilder.IO
 								pos++;
 								
 								// Parse this struct and add it
-								cs.Add(key.Trim(), InputStructure(ref data, ref pos, ref line, sorted));
+								cs.Add(key.Trim(), InputStructure(ref data, ref pos, ref line));
 								
 								// Check the last character
 								pos--;
@@ -727,12 +529,12 @@ namespace CodeImp.DoomBuilder.IO
 					if(c == ';')
 					{
 						// Floating point?
-						if(val.IndexOf("f") > -1)
+						if(val.IndexOf(".") > -1)
 						{
 							float fval = 0;
 							
 							// Convert to float (remove the f first)
-							try { fval = System.Convert.ToSingle(val.Trim().Replace("f", ""), CultureInfo.InvariantCulture); }
+							try { fval = System.Convert.ToSingle(val.Trim(), CultureInfo.InvariantCulture); }
 							catch(System.FormatException)
 							{ 
 								// ERROR: Invalid value in assignment
@@ -918,12 +720,6 @@ namespace CodeImp.DoomBuilder.IO
 									cs.Add(key.Trim(), false);
 									break;
 									
-								case "null":
-									
-									// Add null
-									cs.Add(key.Trim(), null);
-									break;
-									
 								default:
 									
 									// Unknown keyword
@@ -963,7 +759,7 @@ namespace CodeImp.DoomBuilder.IO
 		
 		
 		// This will create a data structure from the given object
-		private string OutputStructure(IDictionary cs, int level, string newline, bool whitespace)
+		private string OutputStructure(ListDictionary cs, int level, string newline, bool whitespace)
 		{
 			string leveltabs = "";
 			string spacing = "";
@@ -988,24 +784,14 @@ namespace CodeImp.DoomBuilder.IO
 					// Go to next item
 					de.MoveNext();
 					
-					// Check if the value is null
-					if(de.Value == null)
-					{
-						// Output the keyword "null"
-						//db.Append(leveltabs); db.Append(de.Key.ToString()); db.Append(spacing);
-						//db.Append("="); db.Append(spacing); db.Append("null;"); db.Append(newline);
-						
-						// Output key only
-						db.Append(leveltabs); db.Append(de.Key.ToString()); db.Append(";"); db.Append(newline);
-					}
 					// Check if the value if of ConfigStruct type
-					else if(de.Value is IDictionary)
+					if(de.Value is ListDictionary)
 					{
 						// Output recursive structure
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
 						db.Append(leveltabs); db.Append(de.Key); db.Append(newline);
 						db.Append(leveltabs); db.Append("{"); db.Append(newline);
-						db.Append(OutputStructure((IDictionary)de.Value, level + 1, newline, whitespace));
+						db.Append(OutputStructure((ListDictionary)de.Value, level + 1, newline, whitespace));
 						db.Append(leveltabs); db.Append("}"); db.Append(newline);
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
 					}
@@ -1057,20 +843,6 @@ namespace CodeImp.DoomBuilder.IO
 		
 		#region ================== Public Methods
 		
-		// Operator + combines two collections and overrides any from cfg2 over cfg1
-		public static Configuration operator+(Configuration cfg1, Configuration cfg2)
-		{
-			// Create new configuration
-			Configuration result = new Configuration(cfg1.Sorted | cfg2.Sorted);
-			
-			// Combine both roots
-			result.root = Combined(cfg1.root, cfg2.root, cfg1.Sorted | cfg2.Sorted);
-			
-			// Return result
-			return result;
-		}
-		
-		
 		// This clears the last error
 		public void ClearError()
 		{
@@ -1082,11 +854,10 @@ namespace CodeImp.DoomBuilder.IO
 		
 		
 		// This creates a new configuration
-		public void NewConfiguration() { NewConfiguration(false); }
-		public void NewConfiguration(bool sorted)
+		public void NewConfiguration()
 		{
 			// Create new configuration
-			if(sorted) root = new ListDictionary(); else root = new Hashtable();
+			root = new ListDictionary();
 		}
 		
 		// This checks if a given setting exists (disregards type)
@@ -1110,8 +881,8 @@ namespace CodeImp.DoomBuilder.IO
 		public bool ReadSetting(string setting, bool defaultsetting, string pathseperator) { return Convert.ToBoolean(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
 		public byte ReadSetting(string setting, byte defaultsetting) { return Convert.ToByte(ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR), CultureInfo.InvariantCulture); }
 		public byte ReadSetting(string setting, byte defaultsetting, string pathseperator) { return Convert.ToByte(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
-		public IDictionary ReadSetting(string setting, IDictionary defaultsetting) { return (IDictionary)ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR); }
-		public IDictionary ReadSetting(string setting, IDictionary defaultsetting, string pathseperator) { return (IDictionary)ReadAnySetting(setting, defaultsetting, pathseperator); }
+		public ListDictionary ReadSetting(string setting, ListDictionary defaultsetting) { return (ListDictionary)ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR); }
+		public ListDictionary ReadSetting(string setting, ListDictionary defaultsetting, string pathseperator) { return (ListDictionary)ReadAnySetting(setting, defaultsetting, pathseperator); }
 
 		public object ReadSettingObject(string setting, object defaultsetting) { return ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR); }
 		
@@ -1122,7 +893,7 @@ namespace CodeImp.DoomBuilder.IO
 		public bool WriteSetting(string setting, object settingvalue) { return WriteSetting(setting, settingvalue, DEFAULT_SEPERATOR); }
 		public bool WriteSetting(string setting, object settingvalue, string pathseperator)
 		{
-			IDictionary cs = null;
+			ListDictionary cs = null;
 			
 			// Split the path in an array
 			string[] keys = setting.Split(pathseperator.ToCharArray());
@@ -1138,13 +909,13 @@ namespace CodeImp.DoomBuilder.IO
 				if(ValidateKey(null, keys[i].Trim(), -1) == true)
 				{
 					// Cast to ConfigStruct
-					cs = (IDictionary)item;
+					cs = (ListDictionary)item;
 					
 					// Check if the requested item exists
 					if(cs.Contains(keys[i]) == true)
 					{
 						// Check if the requested item is a ConfigStruct
-						if(cs[keys[i]] is IDictionary)
+						if(cs[keys[i]] is ListDictionary)
 						{
 							// Set the item to the next item
 							item = cs[keys[i]];
@@ -1159,8 +930,7 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						// Key not found
 						// Create it now
-						IDictionary ncs;
-						if(root is ListDictionary) ncs = new ListDictionary(); else ncs = new Hashtable();
+						ListDictionary ncs = new ListDictionary();
 						cs.Add(keys[i], ncs);
 						
 						// Set the item to the next item
@@ -1175,7 +945,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			
 			// Cast to ConfigStruct
-			cs = (IDictionary)item;
+			cs = (ListDictionary)item;
 			
 			// Check if the key already exists
 			if(cs.Contains(finalkey) == true)
@@ -1198,7 +968,7 @@ namespace CodeImp.DoomBuilder.IO
 		public bool DeleteSetting(string setting) { return DeleteSetting(setting, DEFAULT_SEPERATOR); }
 		public bool DeleteSetting(string setting, string pathseperator)
 		{
-			IDictionary cs = null;
+			ListDictionary cs = null;
 			
 			// Split the path in an array
 			string[] keys = setting.Split(pathseperator.ToCharArray());
@@ -1214,13 +984,13 @@ namespace CodeImp.DoomBuilder.IO
 				if(ValidateKey(null, keys[i].Trim(), -1) == true)
 				{
 					// Cast to ConfigStruct
-					cs = (IDictionary)item;
+					cs = (ListDictionary)item;
 					
 					// Check if the requested item exists
 					if(cs.Contains(keys[i]) == true)
 					{
 						// Check if the requested item is a ConfigStruct
-						if(cs[keys[i]] is IDictionary)
+						if(cs[keys[i]] is ListDictionary)
 						{
 							// Set the item to the next item
 							item = cs[keys[i]];
@@ -1235,8 +1005,7 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						// Key not found
 						// Create it now
-						IDictionary ncs;
-						if(root is ListDictionary) ncs = new ListDictionary(); else ncs = new Hashtable();
+						ListDictionary ncs = new ListDictionary();
 						cs.Add(keys[i], ncs);
 						
 						// Set the item to the next item
@@ -1251,7 +1020,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			
 			// Cast to ConfigStruct
-			cs = (IDictionary)item;
+			cs = (ListDictionary)item;
 			
 			// Arrived at our destination
 			// Delete the key if the key exists
@@ -1305,8 +1074,7 @@ namespace CodeImp.DoomBuilder.IO
 		
 		
 		// This will load a configuration from file
-		public bool LoadConfiguration(string filename) { return LoadConfiguration(filename, false); }
-		public bool LoadConfiguration(string filename, bool sorted)
+		public bool LoadConfiguration(string filename)
 		{
 			// Check if the file is missing
 			if(File.Exists(filename) == false)
@@ -1325,14 +1093,13 @@ namespace CodeImp.DoomBuilder.IO
 				string data = Encoding.ASCII.GetString(fbuffer);
 				
 				// Load the configuration from this data
-				return InputConfiguration(data, sorted);
+				return InputConfiguration(data);
 			}
 		}
 		
 		
 		// This will load a configuration from string
-		public bool InputConfiguration(string data) { return InputConfiguration(data, false); }
-		public bool InputConfiguration(string data, bool sorted)
+		public bool InputConfiguration(string data)
 		{
 			// Remove returns and tabs because the
 			// parser only uses newline for new lines.
@@ -1345,7 +1112,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Parse the data to the root structure
 			int pos = 0;
 			int line = 1;
-			root = InputStructure(ref data, ref pos, ref line, sorted);
+			root = InputStructure(ref data, ref pos, ref line);
 			
 			// Return true when done, false when errors occurred
 			if(cpErrorResult == 0) return true; else return false;

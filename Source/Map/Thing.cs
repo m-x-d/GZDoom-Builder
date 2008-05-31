@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int type;
 		private Vector3D pos;
 		private float angle;
-		private int flags;
+		private Dictionary<string, bool> flags;
 		private int tag;
 		private int action;
 		private int[] args;
@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Vector3D Position { get { return pos; } }
 		public float Angle { get { return angle; } }
 		public int AngleDeg { get { return (int)Angle2D.RadToDeg(angle); } }
-		public int Flags { get { return flags; } set { flags = value; } }
+		public Dictionary<string, bool> Flags { get { return flags; } }
 		public int Action { get { return action; } set { action = value; } }
 		public int[] Args { get { return args; } }
 		public bool Selected { get { return selected; } set { selected = value; } }
@@ -103,6 +103,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Initialize
 			this.map = map;
 			this.mainlistitem = listitem;
+			this.flags = new Dictionary<string, bool>();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -145,7 +146,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.type = type;
 			t.angle = angle;
 			t.pos = pos;
-			t.flags = flags;
+			t.flags = new Dictionary<string,bool>(flags);
 			t.tag = tag;
 			t.action = action;
 			t.x = x;
@@ -236,12 +237,12 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates all properties
 		// NOTE: This does not update sector! (call DetermineSector)
 		public void Update(int type, int x, int y, int zoffset, float angle,
-						   int flags, int tag, int action, int[] args)
+						   Dictionary<string, bool> flags, int tag, int action, int[] args)
 		{
 			// Apply changes
 			this.type = type;
 			this.angle = angle;
-			this.flags = flags;
+			this.flags = new Dictionary<string, bool>(flags);
 			this.tag = tag;
 			this.action = action;
 			this.args = new int[NUM_ARGS];

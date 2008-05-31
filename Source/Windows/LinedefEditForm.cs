@@ -46,7 +46,8 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 			
 			// Fill flags list
-			foreach(KeyValuePair<int, string> lf in General.Map.Config.LinedefFlags) flags.Add(lf.Value, lf.Key);
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
+				flags.Add(lf.Value, lf.Key);
 
 			// Fill actions list
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
@@ -54,6 +55,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Fill activations list
 			activation.Items.AddRange(General.Map.Config.LinedefActivates.ToArray());
+			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) udmfactivates.Add(ai.Title, ai);
 			
 			// Fill universal fields list
 			fieldslist.ListFixedFields(General.Map.Config.LinedefFields);
@@ -69,10 +71,41 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize custom fields editor
 			fieldslist.Setup();
 			
-			// Show appropriate panels/tabs
-			doompanel.Visible = General.Map.IsType(typeof(DoomMapSetIO));
-			hexenpanel.Visible = General.Map.IsType(typeof(HexenMapSetIO));
-			//if(!General.Map.IsType(typeof(UniversalMapSetIO))) tabs.TabPages.Remove(tabcustom);
+			// THE CODE BELOW IS ABSOLUTELY UGLY
+			// I should make different controls for each format
+			// that handle linedef properties
+			
+			// UDMF map?
+			if(General.Map.IsType(typeof(UniversalMapSetIO)))
+			{
+				udmfpanel.Visible = true;
+				argspanel.Visible = true;
+			}
+			// Hexen map?
+			else if(General.Map.IsType(typeof(HexenMapSetIO)))
+			{
+				hexenpanel.Visible = true;
+				argspanel.Visible = true;
+				actiongroup.Height = 210;
+				this.Height = 510;
+			}
+			// Doom map?
+			else
+			{
+				actiongroup.Height = 68;
+				this.Height = 470;
+			}
+
+			// ID group?
+			if(!General.Map.IsType(typeof(HexenMapSetIO)))
+			{
+				// Match position after the action group
+				idgroup.Top = actiongroup.Bottom + actiongroup.Margin.Bottom + idgroup.Margin.Top;
+			}
+			else
+			{
+				idgroup.Visible = false;
+			}
 		}
 
 		// This sets up the form to edit the given lines
@@ -94,12 +127,19 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Flags
 			foreach(CheckBox c in flags.Checkboxes)
-				c.Checked = (fl.Flags & (int)c.Tag) != 0;
+				c.Checked = fl.Flags[c.Tag.ToString()];
 			
 			// Activations
 			foreach(LinedefActivateInfo ai in activation.Items)
-				if((fl.Flags & ai.Index) == ai.Index) activation.SelectedItem = ai;
-			
+				if((fl.Activate & ai.Index) == ai.Index) activation.SelectedItem = ai;
+
+			// UDMF Activations
+			foreach(CheckBox c in udmfactivates.Checkboxes)
+			{
+				LinedefActivateInfo ai = (c.Tag as LinedefActivateInfo);
+				c.Checked = fl.Flags[ai.Key];
+			}
+
 			// Action/tags
 			action.Value = fl.Action;
 			tag.Text = fl.Tag.ToString();
@@ -148,7 +188,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					if(((l.Flags & (int)c.Tag) != 0) != c.Checked)
+					if(l.Flags[c.Tag.ToString()] != c.Checked)
 					{
 						c.ThreeState = true;
 						c.CheckState = CheckState.Indeterminate;
@@ -160,10 +200,21 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					sai = (activation.Items[0] as LinedefActivateInfo);
 					foreach(LinedefActivateInfo ai in activation.Items)
-						if((l.Flags & ai.Index) == ai.Index) sai = ai;
+						if((l.Activate & ai.Index) == ai.Index) sai = ai;
 					if(sai != activation.SelectedItem) activation.SelectedIndex = -1;
 				}
-				
+
+				// UDMF Activations
+				foreach(CheckBox c in udmfactivates.Checkboxes)
+				{
+					LinedefActivateInfo ai = (c.Tag as LinedefActivateInfo);
+					if(c.Checked != fl.Flags[ai.Key])
+					{
+						c.ThreeState = true;
+						c.CheckState = CheckState.Indeterminate;
+					}
+				}
+
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
 				if(l.Tag.ToString() != tag.Text) tag.Text = "";
@@ -252,20 +303,24 @@ namespace CodeImp.DoomBuilder.Windows
 			// Go for all the lines
 			foreach(Linedef l in lines)
 			{
-				// Remove activation flags
-				if(activation.SelectedIndex > -1)
-					foreach(LinedefActivateInfo ai in activation.Items) l.Flags &= ~ai.Index;
-
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					if(c.CheckState == CheckState.Checked) l.Flags |= (int)c.Tag;
-					else if(c.CheckState == CheckState.Unchecked) l.Flags &= ~(int)c.Tag;
+					if(c.CheckState == CheckState.Checked) l.Flags[c.Tag.ToString()] = true;
+					else if(c.CheckState == CheckState.Unchecked) l.Flags[c.Tag.ToString()] = false;
 				}
 				
 				// Apply chosen activation flag
 				if(activation.SelectedIndex > -1)
-					l.Flags |= (activation.SelectedItem as LinedefActivateInfo).Index;
+					l.Activate = (activation.SelectedItem as LinedefActivateInfo).Index;
+				
+				// UDMF activations
+				foreach(CheckBox c in udmfactivates.Checkboxes)
+				{
+					LinedefActivateInfo ai = (c.Tag as LinedefActivateInfo);
+					if(c.CheckState == CheckState.Checked) l.Flags[ai.Key] = true;
+					else if(c.CheckState == CheckState.Unchecked) l.Flags[ai.Key] = false;
+				}
 				
 				// Action/tags
 				if(!action.Empty) l.Action = action.Value;

@@ -57,7 +57,8 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Fill flags list
-			foreach(KeyValuePair<int, string> tf in General.Map.Config.ThingFlags) flags.Add(tf.Value, tf.Key);
+			foreach(KeyValuePair<string, string> tf in General.Map.Config.ThingFlags)
+				flags.Add(tf.Value, tf.Key);
 
 			// Fill actions list
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
@@ -122,7 +123,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Flags
 			foreach(CheckBox c in flags.Checkboxes)
-				c.Checked = (ft.Flags & (int)c.Tag) != 0;
+				c.Checked = ft.Flags[c.Tag.ToString()];
 			
 			// Coordination
 			angledeg = ft.AngleDeg - 90;
@@ -158,7 +159,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					if(((t.Flags & (int)c.Tag) != 0) != c.Checked)
+					if(t.Flags[c.Tag.ToString()] != c.Checked)
 					{
 						c.ThreeState = true;
 						c.CheckState = CheckState.Indeterminate;
@@ -327,8 +328,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					if(c.CheckState == CheckState.Checked) t.Flags |= (int)c.Tag;
-					else if(c.CheckState == CheckState.Unchecked) t.Flags &= ~(int)c.Tag;
+					if(c.CheckState == CheckState.Checked) t.Flags[c.Tag.ToString()] = true;
+					else if(c.CheckState == CheckState.Unchecked) t.Flags[c.Tag.ToString()] = false;
 				}
 
 				// Action/tags

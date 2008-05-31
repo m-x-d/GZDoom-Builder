@@ -41,21 +41,26 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label11;
 			System.Windows.Forms.Label label12;
 			System.Windows.Forms.Label activationlabel;
-			this.arg0label = new System.Windows.Forms.Label();
-			this.arg1label = new System.Windows.Forms.Label();
-			this.arg4label = new System.Windows.Forms.Label();
-			this.arg2label = new System.Windows.Forms.Label();
-			this.arg3label = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.hexenpanel = new System.Windows.Forms.Panel();
-			this.arg3 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg4 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.activation = new System.Windows.Forms.ComboBox();
 			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.browseaction = new System.Windows.Forms.Button();
-			this.doompanel = new System.Windows.Forms.Panel();
+			this.udmfpanel = new System.Windows.Forms.Panel();
+			this.udmfactivates = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
+			this.argspanel = new System.Windows.Forms.Panel();
+			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg3 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg4 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg1label = new System.Windows.Forms.Label();
+			this.arg0label = new System.Windows.Forms.Label();
+			this.arg3label = new System.Windows.Forms.Label();
+			this.arg2label = new System.Windows.Forms.Label();
+			this.arg4label = new System.Windows.Forms.Label();
 			this.tag = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.newtag = new System.Windows.Forms.Button();
 			this.settingsgroup = new System.Windows.Forms.GroupBox();
@@ -63,16 +68,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.idgroup = new System.Windows.Forms.GroupBox();
 			this.tabsidedefs = new System.Windows.Forms.TabPage();
-			this.backside = new System.Windows.Forms.CheckBox();
-			this.backgroup = new System.Windows.Forms.GroupBox();
-			this.backsector = new CodeImp.DoomBuilder.Controls.NumericTextbox();
-			this.backlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
-			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
-			this.backhigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
-			this.backoffsety = new CodeImp.DoomBuilder.Controls.NumericTextbox();
-			this.backoffsetx = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.splitter = new System.Windows.Forms.SplitContainer();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
 			this.frontsector = new CodeImp.DoomBuilder.Controls.NumericTextbox();
@@ -81,11 +79,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fronthigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.frontoffsety = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.frontoffsetx = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.backside = new System.Windows.Forms.CheckBox();
+			this.backgroup = new System.Windows.Forms.GroupBox();
+			this.backsector = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.backlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
+			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
+			this.backhigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
+			this.backoffsety = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.backoffsetx = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
-			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			label2 = new System.Windows.Forms.Label();
 			taglabel = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -101,13 +104,18 @@ namespace CodeImp.DoomBuilder.Windows
 			activationlabel = new System.Windows.Forms.Label();
 			this.actiongroup.SuspendLayout();
 			this.hexenpanel.SuspendLayout();
+			this.udmfpanel.SuspendLayout();
+			this.argspanel.SuspendLayout();
 			this.settingsgroup.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabproperties.SuspendLayout();
-			this.groupBox1.SuspendLayout();
+			this.idgroup.SuspendLayout();
 			this.tabsidedefs.SuspendLayout();
-			this.backgroup.SuspendLayout();
+			this.splitter.Panel1.SuspendLayout();
+			this.splitter.Panel2.SuspendLayout();
+			this.splitter.SuspendLayout();
 			this.frontgroup.SuspendLayout();
+			this.backgroup.SuspendLayout();
 			this.tabcustom.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -222,67 +230,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// activationlabel
 			// 
 			activationlabel.AutoSize = true;
-			activationlabel.Location = new System.Drawing.Point(6, 18);
+			activationlabel.Location = new System.Drawing.Point(6, 17);
 			activationlabel.Name = "activationlabel";
 			activationlabel.Size = new System.Drawing.Size(44, 14);
 			activationlabel.TabIndex = 10;
 			activationlabel.Text = "Trigger:";
 			// 
-			// arg0label
-			// 
-			this.arg0label.Location = new System.Drawing.Point(-26, 58);
-			this.arg0label.Name = "arg0label";
-			this.arg0label.Size = new System.Drawing.Size(179, 14);
-			this.arg0label.TabIndex = 12;
-			this.arg0label.Text = "Argument 1:";
-			this.arg0label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg0label.UseMnemonic = false;
-			// 
-			// arg1label
-			// 
-			this.arg1label.Location = new System.Drawing.Point(-26, 84);
-			this.arg1label.Name = "arg1label";
-			this.arg1label.Size = new System.Drawing.Size(179, 14);
-			this.arg1label.TabIndex = 14;
-			this.arg1label.Text = "Argument 2:";
-			this.arg1label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg1label.UseMnemonic = false;
-			// 
-			// arg4label
-			// 
-			this.arg4label.Location = new System.Drawing.Point(215, 84);
-			this.arg4label.Name = "arg4label";
-			this.arg4label.Size = new System.Drawing.Size(179, 14);
-			this.arg4label.TabIndex = 16;
-			this.arg4label.Text = "Argument 5:";
-			this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg4label.UseMnemonic = false;
-			// 
-			// arg2label
-			// 
-			this.arg2label.Location = new System.Drawing.Point(-26, 110);
-			this.arg2label.Name = "arg2label";
-			this.arg2label.Size = new System.Drawing.Size(179, 14);
-			this.arg2label.TabIndex = 18;
-			this.arg2label.Text = "Argument 3:";
-			this.arg2label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg2label.UseMnemonic = false;
-			// 
-			// arg3label
-			// 
-			this.arg3label.Location = new System.Drawing.Point(215, 58);
-			this.arg3label.Name = "arg3label";
-			this.arg3label.Size = new System.Drawing.Size(179, 14);
-			this.arg3label.TabIndex = 20;
-			this.arg3label.Text = "Argument 4:";
-			this.arg3label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg3label.UseMnemonic = false;
-			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(439, 493);
+			this.cancel.Location = new System.Drawing.Point(439, 553);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 17;
@@ -293,7 +251,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(320, 493);
+			this.apply.Location = new System.Drawing.Point(320, 553);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 16;
@@ -303,64 +261,36 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// actiongroup
 			// 
-			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
+			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(label2);
 			this.actiongroup.Controls.Add(this.action);
 			this.actiongroup.Controls.Add(this.browseaction);
-			this.actiongroup.Controls.Add(this.doompanel);
-			this.actiongroup.Location = new System.Drawing.Point(8, 238);
+			this.actiongroup.Controls.Add(this.udmfpanel);
+			this.actiongroup.Controls.Add(this.argspanel);
+			this.actiongroup.Location = new System.Drawing.Point(8, 166);
 			this.actiongroup.Name = "actiongroup";
-			this.actiongroup.Size = new System.Drawing.Size(517, 192);
+			this.actiongroup.Size = new System.Drawing.Size(517, 253);
 			this.actiongroup.TabIndex = 18;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
 			// 
 			// hexenpanel
 			// 
-			this.hexenpanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.hexenpanel.Controls.Add(this.arg2);
-			this.hexenpanel.Controls.Add(this.arg1);
-			this.hexenpanel.Controls.Add(this.arg0);
-			this.hexenpanel.Controls.Add(this.arg3);
-			this.hexenpanel.Controls.Add(this.arg4);
 			this.hexenpanel.Controls.Add(this.activation);
 			this.hexenpanel.Controls.Add(activationlabel);
-			this.hexenpanel.Controls.Add(this.arg1label);
-			this.hexenpanel.Controls.Add(this.arg0label);
-			this.hexenpanel.Controls.Add(this.arg3label);
-			this.hexenpanel.Controls.Add(this.arg2label);
-			this.hexenpanel.Controls.Add(this.arg4label);
-			this.hexenpanel.Location = new System.Drawing.Point(6, 52);
+			this.hexenpanel.Location = new System.Drawing.Point(6, 139);
 			this.hexenpanel.Name = "hexenpanel";
-			this.hexenpanel.Size = new System.Drawing.Size(505, 132);
+			this.hexenpanel.Size = new System.Drawing.Size(505, 49);
 			this.hexenpanel.TabIndex = 13;
-			// 
-			// arg3
-			// 
-			this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg3.Location = new System.Drawing.Point(400, 53);
-			this.arg3.Name = "arg3";
-			this.arg3.Size = new System.Drawing.Size(93, 24);
-			this.arg3.TabIndex = 28;
-			// 
-			// arg4
-			// 
-			this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg4.Location = new System.Drawing.Point(400, 79);
-			this.arg4.Name = "arg4";
-			this.arg4.Size = new System.Drawing.Size(93, 24);
-			this.arg4.TabIndex = 27;
+			this.hexenpanel.Visible = false;
 			// 
 			// activation
 			// 
 			this.activation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.activation.FormattingEnabled = true;
-			this.activation.Location = new System.Drawing.Point(56, 14);
+			this.activation.Location = new System.Drawing.Point(56, 13);
 			this.activation.Name = "activation";
 			this.activation.Size = new System.Drawing.Size(437, 22);
 			this.activation.TabIndex = 11;
@@ -391,15 +321,134 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
-			// doompanel
+			// udmfpanel
 			// 
-			this.doompanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.udmfpanel.Controls.Add(this.udmfactivates);
+			this.udmfpanel.Location = new System.Drawing.Point(6, 143);
+			this.udmfpanel.Name = "udmfpanel";
+			this.udmfpanel.Size = new System.Drawing.Size(505, 104);
+			this.udmfpanel.TabIndex = 12;
+			this.udmfpanel.Visible = false;
+			// 
+			// udmfactivates
+			// 
+			this.udmfactivates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.doompanel.Location = new System.Drawing.Point(6, 54);
-			this.doompanel.Name = "doompanel";
-			this.doompanel.Size = new System.Drawing.Size(505, 132);
-			this.doompanel.TabIndex = 12;
+			this.udmfactivates.AutoScroll = true;
+			this.udmfactivates.Columns = 2;
+			this.udmfactivates.Location = new System.Drawing.Point(56, 5);
+			this.udmfactivates.Name = "udmfactivates";
+			this.udmfactivates.Size = new System.Drawing.Size(401, 95);
+			this.udmfactivates.TabIndex = 1;
+			// 
+			// argspanel
+			// 
+			this.argspanel.Controls.Add(this.arg2);
+			this.argspanel.Controls.Add(this.arg1);
+			this.argspanel.Controls.Add(this.arg0);
+			this.argspanel.Controls.Add(this.arg3);
+			this.argspanel.Controls.Add(this.arg4);
+			this.argspanel.Controls.Add(this.arg1label);
+			this.argspanel.Controls.Add(this.arg0label);
+			this.argspanel.Controls.Add(this.arg3label);
+			this.argspanel.Controls.Add(this.arg2label);
+			this.argspanel.Controls.Add(this.arg4label);
+			this.argspanel.Location = new System.Drawing.Point(6, 54);
+			this.argspanel.Name = "argspanel";
+			this.argspanel.Size = new System.Drawing.Size(505, 83);
+			this.argspanel.TabIndex = 13;
+			this.argspanel.Visible = false;
+			// 
+			// arg2
+			// 
+			this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg2.Location = new System.Drawing.Point(123, 55);
+			this.arg2.Name = "arg2";
+			this.arg2.Size = new System.Drawing.Size(93, 24);
+			this.arg2.TabIndex = 41;
+			// 
+			// arg1
+			// 
+			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg1.Location = new System.Drawing.Point(123, 29);
+			this.arg1.Name = "arg1";
+			this.arg1.Size = new System.Drawing.Size(93, 24);
+			this.arg1.TabIndex = 40;
+			// 
+			// arg0
+			// 
+			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg0.Location = new System.Drawing.Point(123, 3);
+			this.arg0.Name = "arg0";
+			this.arg0.Size = new System.Drawing.Size(93, 24);
+			this.arg0.TabIndex = 39;
+			// 
+			// arg3
+			// 
+			this.arg3.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg3.Location = new System.Drawing.Point(364, 3);
+			this.arg3.Name = "arg3";
+			this.arg3.Size = new System.Drawing.Size(93, 24);
+			this.arg3.TabIndex = 38;
+			// 
+			// arg4
+			// 
+			this.arg4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.arg4.Location = new System.Drawing.Point(364, 29);
+			this.arg4.Name = "arg4";
+			this.arg4.Size = new System.Drawing.Size(93, 24);
+			this.arg4.TabIndex = 37;
+			// 
+			// arg1label
+			// 
+			this.arg1label.Location = new System.Drawing.Point(-62, 34);
+			this.arg1label.Name = "arg1label";
+			this.arg1label.Size = new System.Drawing.Size(179, 14);
+			this.arg1label.TabIndex = 33;
+			this.arg1label.Text = "Argument 2:";
+			this.arg1label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arg1label.UseMnemonic = false;
+			// 
+			// arg0label
+			// 
+			this.arg0label.Location = new System.Drawing.Point(-62, 8);
+			this.arg0label.Name = "arg0label";
+			this.arg0label.Size = new System.Drawing.Size(179, 14);
+			this.arg0label.TabIndex = 32;
+			this.arg0label.Text = "Argument 1:";
+			this.arg0label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arg0label.UseMnemonic = false;
+			// 
+			// arg3label
+			// 
+			this.arg3label.Location = new System.Drawing.Point(179, 8);
+			this.arg3label.Name = "arg3label";
+			this.arg3label.Size = new System.Drawing.Size(179, 14);
+			this.arg3label.TabIndex = 36;
+			this.arg3label.Text = "Argument 4:";
+			this.arg3label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arg3label.UseMnemonic = false;
+			// 
+			// arg2label
+			// 
+			this.arg2label.Location = new System.Drawing.Point(-62, 60);
+			this.arg2label.Name = "arg2label";
+			this.arg2label.Size = new System.Drawing.Size(179, 14);
+			this.arg2label.TabIndex = 35;
+			this.arg2label.Text = "Argument 3:";
+			this.arg2label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arg2label.UseMnemonic = false;
+			// 
+			// arg4label
+			// 
+			this.arg4label.Location = new System.Drawing.Point(179, 34);
+			this.arg4label.Name = "arg4label";
+			this.arg4label.Size = new System.Drawing.Size(179, 14);
+			this.arg4label.TabIndex = 34;
+			this.arg4label.Text = "Argument 5:";
+			this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arg4label.UseMnemonic = false;
 			// 
 			// tag
 			// 
@@ -467,147 +516,74 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(541, 466);
+			this.tabs.Size = new System.Drawing.Size(541, 526);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 20;
 			// 
 			// tabproperties
 			// 
-			this.tabproperties.Controls.Add(this.groupBox1);
+			this.tabproperties.Controls.Add(this.idgroup);
 			this.tabproperties.Controls.Add(this.settingsgroup);
 			this.tabproperties.Controls.Add(this.actiongroup);
 			this.tabproperties.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabproperties.Location = new System.Drawing.Point(4, 23);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(5);
-			this.tabproperties.Size = new System.Drawing.Size(533, 439);
+			this.tabproperties.Size = new System.Drawing.Size(533, 499);
 			this.tabproperties.TabIndex = 0;
 			this.tabproperties.Text = "Properties";
 			this.tabproperties.UseVisualStyleBackColor = true;
 			// 
-			// groupBox1
+			// idgroup
 			// 
-			this.groupBox1.Controls.Add(this.tag);
-			this.groupBox1.Controls.Add(taglabel);
-			this.groupBox1.Controls.Add(this.newtag);
-			this.groupBox1.Location = new System.Drawing.Point(8, 166);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(517, 66);
-			this.groupBox1.TabIndex = 20;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = " Identification ";
+			this.idgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.idgroup.Controls.Add(this.tag);
+			this.idgroup.Controls.Add(taglabel);
+			this.idgroup.Controls.Add(this.newtag);
+			this.idgroup.Location = new System.Drawing.Point(8, 425);
+			this.idgroup.Name = "idgroup";
+			this.idgroup.Size = new System.Drawing.Size(517, 66);
+			this.idgroup.TabIndex = 20;
+			this.idgroup.TabStop = false;
+			this.idgroup.Text = " Identification ";
 			// 
 			// tabsidedefs
 			// 
-			this.tabsidedefs.Controls.Add(this.backside);
-			this.tabsidedefs.Controls.Add(this.backgroup);
-			this.tabsidedefs.Controls.Add(this.frontside);
-			this.tabsidedefs.Controls.Add(this.frontgroup);
+			this.tabsidedefs.Controls.Add(this.splitter);
 			this.tabsidedefs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabsidedefs.Location = new System.Drawing.Point(4, 23);
 			this.tabsidedefs.Name = "tabsidedefs";
 			this.tabsidedefs.Padding = new System.Windows.Forms.Padding(5);
-			this.tabsidedefs.Size = new System.Drawing.Size(533, 439);
+			this.tabsidedefs.Size = new System.Drawing.Size(533, 499);
 			this.tabsidedefs.TabIndex = 1;
 			this.tabsidedefs.Text = "Sidedefs";
 			this.tabsidedefs.UseVisualStyleBackColor = true;
 			// 
-			// backside
+			// splitter
 			// 
-			this.backside.AutoSize = true;
-			this.backside.Location = new System.Drawing.Point(20, 212);
-			this.backside.Name = "backside";
-			this.backside.Size = new System.Drawing.Size(74, 18);
-			this.backside.TabIndex = 2;
-			this.backside.Text = "Back Side";
-			this.backside.UseVisualStyleBackColor = true;
-			this.backside.CheckStateChanged += new System.EventHandler(this.backside_CheckStateChanged);
+			this.splitter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitter.Location = new System.Drawing.Point(5, 5);
+			this.splitter.Name = "splitter";
+			this.splitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
-			// backgroup
+			// splitter.Panel1
 			// 
-			this.backgroup.Controls.Add(this.backsector);
-			this.backgroup.Controls.Add(label12);
-			this.backgroup.Controls.Add(this.backlow);
-			this.backgroup.Controls.Add(this.backmid);
-			this.backgroup.Controls.Add(this.backhigh);
-			this.backgroup.Controls.Add(this.backoffsety);
-			this.backgroup.Controls.Add(this.backoffsetx);
-			this.backgroup.Controls.Add(label7);
-			this.backgroup.Controls.Add(label8);
-			this.backgroup.Controls.Add(label9);
-			this.backgroup.Controls.Add(label10);
-			this.backgroup.Enabled = false;
-			this.backgroup.Location = new System.Drawing.Point(8, 214);
-			this.backgroup.Name = "backgroup";
-			this.backgroup.Size = new System.Drawing.Size(517, 208);
-			this.backgroup.TabIndex = 1;
-			this.backgroup.TabStop = false;
-			this.backgroup.Text = "     ";
+			this.splitter.Panel1.Controls.Add(this.frontside);
+			this.splitter.Panel1.Controls.Add(this.frontgroup);
 			// 
-			// backsector
+			// splitter.Panel2
 			// 
-			this.backsector.AllowNegative = false;
-			this.backsector.AllowRelative = false;
-			this.backsector.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.backsector.Location = new System.Drawing.Point(103, 37);
-			this.backsector.Name = "backsector";
-			this.backsector.Size = new System.Drawing.Size(94, 20);
-			this.backsector.TabIndex = 17;
-			this.backsector.Enter += new System.EventHandler(this.SelectAllText);
-			// 
-			// backlow
-			// 
-			this.backlow.Location = new System.Drawing.Point(416, 37);
-			this.backlow.Name = "backlow";
-			this.backlow.Required = false;
-			this.backlow.Size = new System.Drawing.Size(83, 120);
-			this.backlow.TabIndex = 15;
-			this.backlow.TextureName = "";
-			// 
-			// backmid
-			// 
-			this.backmid.Location = new System.Drawing.Point(325, 37);
-			this.backmid.Name = "backmid";
-			this.backmid.Required = false;
-			this.backmid.Size = new System.Drawing.Size(83, 120);
-			this.backmid.TabIndex = 14;
-			this.backmid.TextureName = "";
-			// 
-			// backhigh
-			// 
-			this.backhigh.Location = new System.Drawing.Point(234, 37);
-			this.backhigh.Name = "backhigh";
-			this.backhigh.Required = false;
-			this.backhigh.Size = new System.Drawing.Size(83, 120);
-			this.backhigh.TabIndex = 13;
-			this.backhigh.TextureName = "";
-			// 
-			// backoffsety
-			// 
-			this.backoffsety.AllowNegative = true;
-			this.backoffsety.AllowRelative = true;
-			this.backoffsety.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.backoffsety.Location = new System.Drawing.Point(152, 76);
-			this.backoffsety.Name = "backoffsety";
-			this.backoffsety.Size = new System.Drawing.Size(45, 20);
-			this.backoffsety.TabIndex = 9;
-			this.backoffsety.Enter += new System.EventHandler(this.SelectAllText);
-			// 
-			// backoffsetx
-			// 
-			this.backoffsetx.AllowNegative = true;
-			this.backoffsetx.AllowRelative = true;
-			this.backoffsetx.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.backoffsetx.Location = new System.Drawing.Point(103, 76);
-			this.backoffsetx.Name = "backoffsetx";
-			this.backoffsetx.Size = new System.Drawing.Size(45, 20);
-			this.backoffsetx.TabIndex = 8;
-			this.backoffsetx.Enter += new System.EventHandler(this.SelectAllText);
+			this.splitter.Panel2.Controls.Add(this.backside);
+			this.splitter.Panel2.Controls.Add(this.backgroup);
+			this.splitter.Size = new System.Drawing.Size(523, 489);
+			this.splitter.SplitterDistance = 239;
+			this.splitter.TabIndex = 3;
 			// 
 			// frontside
 			// 
 			this.frontside.AutoSize = true;
-			this.frontside.Location = new System.Drawing.Point(20, 6);
+			this.frontside.Location = new System.Drawing.Point(15, 1);
 			this.frontside.Name = "frontside";
 			this.frontside.Size = new System.Drawing.Size(75, 18);
 			this.frontside.TabIndex = 0;
@@ -617,6 +593,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontgroup
 			// 
+			this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.frontgroup.Controls.Add(this.frontsector);
 			this.frontgroup.Controls.Add(label11);
 			this.frontgroup.Controls.Add(this.frontlow);
@@ -629,9 +608,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.Controls.Add(label4);
 			this.frontgroup.Controls.Add(label3);
 			this.frontgroup.Enabled = false;
-			this.frontgroup.Location = new System.Drawing.Point(8, 8);
+			this.frontgroup.Location = new System.Drawing.Point(3, 3);
 			this.frontgroup.Name = "frontgroup";
-			this.frontgroup.Size = new System.Drawing.Size(517, 200);
+			this.frontgroup.Size = new System.Drawing.Size(517, 233);
 			this.frontgroup.TabIndex = 0;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
@@ -652,7 +631,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontlow.Location = new System.Drawing.Point(416, 37);
 			this.frontlow.Name = "frontlow";
 			this.frontlow.Required = false;
-			this.frontlow.Size = new System.Drawing.Size(83, 120);
+			this.frontlow.Size = new System.Drawing.Size(83, 112);
 			this.frontlow.TabIndex = 12;
 			this.frontlow.TextureName = "";
 			// 
@@ -661,7 +640,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontmid.Location = new System.Drawing.Point(325, 37);
 			this.frontmid.Name = "frontmid";
 			this.frontmid.Required = false;
-			this.frontmid.Size = new System.Drawing.Size(83, 120);
+			this.frontmid.Size = new System.Drawing.Size(83, 112);
 			this.frontmid.TabIndex = 11;
 			this.frontmid.TextureName = "";
 			// 
@@ -670,7 +649,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fronthigh.Location = new System.Drawing.Point(234, 37);
 			this.fronthigh.Name = "fronthigh";
 			this.fronthigh.Required = false;
-			this.fronthigh.Size = new System.Drawing.Size(83, 120);
+			this.fronthigh.Size = new System.Drawing.Size(83, 112);
 			this.fronthigh.TabIndex = 10;
 			this.fronthigh.TextureName = "";
 			// 
@@ -696,6 +675,101 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontoffsetx.TabIndex = 8;
 			this.frontoffsetx.Enter += new System.EventHandler(this.SelectAllText);
 			// 
+			// backside
+			// 
+			this.backside.AutoSize = true;
+			this.backside.Location = new System.Drawing.Point(17, 1);
+			this.backside.Name = "backside";
+			this.backside.Size = new System.Drawing.Size(74, 18);
+			this.backside.TabIndex = 2;
+			this.backside.Text = "Back Side";
+			this.backside.UseVisualStyleBackColor = true;
+			this.backside.CheckStateChanged += new System.EventHandler(this.backside_CheckStateChanged);
+			// 
+			// backgroup
+			// 
+			this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.backgroup.Controls.Add(this.backsector);
+			this.backgroup.Controls.Add(label12);
+			this.backgroup.Controls.Add(this.backlow);
+			this.backgroup.Controls.Add(this.backmid);
+			this.backgroup.Controls.Add(this.backhigh);
+			this.backgroup.Controls.Add(this.backoffsety);
+			this.backgroup.Controls.Add(this.backoffsetx);
+			this.backgroup.Controls.Add(label7);
+			this.backgroup.Controls.Add(label8);
+			this.backgroup.Controls.Add(label9);
+			this.backgroup.Controls.Add(label10);
+			this.backgroup.Enabled = false;
+			this.backgroup.Location = new System.Drawing.Point(3, 3);
+			this.backgroup.Name = "backgroup";
+			this.backgroup.Size = new System.Drawing.Size(519, 240);
+			this.backgroup.TabIndex = 1;
+			this.backgroup.TabStop = false;
+			this.backgroup.Text = "     ";
+			// 
+			// backsector
+			// 
+			this.backsector.AllowNegative = false;
+			this.backsector.AllowRelative = false;
+			this.backsector.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.backsector.Location = new System.Drawing.Point(103, 37);
+			this.backsector.Name = "backsector";
+			this.backsector.Size = new System.Drawing.Size(94, 20);
+			this.backsector.TabIndex = 17;
+			this.backsector.Enter += new System.EventHandler(this.SelectAllText);
+			// 
+			// backlow
+			// 
+			this.backlow.Location = new System.Drawing.Point(416, 37);
+			this.backlow.Name = "backlow";
+			this.backlow.Required = false;
+			this.backlow.Size = new System.Drawing.Size(83, 112);
+			this.backlow.TabIndex = 15;
+			this.backlow.TextureName = "";
+			// 
+			// backmid
+			// 
+			this.backmid.Location = new System.Drawing.Point(325, 37);
+			this.backmid.Name = "backmid";
+			this.backmid.Required = false;
+			this.backmid.Size = new System.Drawing.Size(83, 112);
+			this.backmid.TabIndex = 14;
+			this.backmid.TextureName = "";
+			// 
+			// backhigh
+			// 
+			this.backhigh.Location = new System.Drawing.Point(234, 37);
+			this.backhigh.Name = "backhigh";
+			this.backhigh.Required = false;
+			this.backhigh.Size = new System.Drawing.Size(83, 112);
+			this.backhigh.TabIndex = 13;
+			this.backhigh.TextureName = "";
+			// 
+			// backoffsety
+			// 
+			this.backoffsety.AllowNegative = true;
+			this.backoffsety.AllowRelative = true;
+			this.backoffsety.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.backoffsety.Location = new System.Drawing.Point(152, 76);
+			this.backoffsety.Name = "backoffsety";
+			this.backoffsety.Size = new System.Drawing.Size(45, 20);
+			this.backoffsety.TabIndex = 9;
+			this.backoffsety.Enter += new System.EventHandler(this.SelectAllText);
+			// 
+			// backoffsetx
+			// 
+			this.backoffsetx.AllowNegative = true;
+			this.backoffsetx.AllowRelative = true;
+			this.backoffsetx.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.backoffsetx.Location = new System.Drawing.Point(103, 76);
+			this.backoffsetx.Name = "backoffsetx";
+			this.backoffsetx.Size = new System.Drawing.Size(45, 20);
+			this.backoffsetx.TabIndex = 8;
+			this.backoffsetx.Enter += new System.EventHandler(this.SelectAllText);
+			// 
 			// tabcustom
 			// 
 			this.tabcustom.Controls.Add(this.fieldslist);
@@ -703,7 +777,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcustom.Location = new System.Drawing.Point(4, 23);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(533, 439);
+			this.tabcustom.Size = new System.Drawing.Size(533, 499);
 			this.tabcustom.TabIndex = 2;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -713,42 +787,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.fieldslist.Location = new System.Drawing.Point(11, 11);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
 			this.fieldslist.Name = "fieldslist";
-			this.fieldslist.Size = new System.Drawing.Size(511, 417);
+			this.fieldslist.Size = new System.Drawing.Size(511, 477);
 			this.fieldslist.TabIndex = 0;
-			// 
-			// arg0
-			// 
-			this.arg0.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg0.Location = new System.Drawing.Point(159, 53);
-			this.arg0.Name = "arg0";
-			this.arg0.Size = new System.Drawing.Size(93, 24);
-			this.arg0.TabIndex = 29;
-			// 
-			// arg1
-			// 
-			this.arg1.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg1.Location = new System.Drawing.Point(159, 79);
-			this.arg1.Name = "arg1";
-			this.arg1.Size = new System.Drawing.Size(93, 24);
-			this.arg1.TabIndex = 30;
-			// 
-			// arg2
-			// 
-			this.arg2.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.arg2.Location = new System.Drawing.Point(159, 105);
-			this.arg2.Name = "arg2";
-			this.arg2.Size = new System.Drawing.Size(93, 24);
-			this.arg2.TabIndex = 31;
 			// 
 			// LinedefEditForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(561, 528);
+			this.ClientSize = new System.Drawing.Size(561, 588);
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -766,17 +817,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);
 			this.hexenpanel.PerformLayout();
+			this.udmfpanel.ResumeLayout(false);
+			this.argspanel.ResumeLayout(false);
 			this.settingsgroup.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
+			this.idgroup.ResumeLayout(false);
+			this.idgroup.PerformLayout();
 			this.tabsidedefs.ResumeLayout(false);
-			this.tabsidedefs.PerformLayout();
-			this.backgroup.ResumeLayout(false);
-			this.backgroup.PerformLayout();
+			this.splitter.Panel1.ResumeLayout(false);
+			this.splitter.Panel1.PerformLayout();
+			this.splitter.Panel2.ResumeLayout(false);
+			this.splitter.Panel2.PerformLayout();
+			this.splitter.ResumeLayout(false);
 			this.frontgroup.ResumeLayout(false);
 			this.frontgroup.PerformLayout();
+			this.backgroup.ResumeLayout(false);
+			this.backgroup.PerformLayout();
 			this.tabcustom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -814,20 +871,23 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.NumericTextbox backsector;
 		private CodeImp.DoomBuilder.Controls.NumericTextbox frontsector;
 		private System.Windows.Forms.ComboBox activation;
-		private System.Windows.Forms.Panel doompanel;
+		private System.Windows.Forms.Panel udmfpanel;
 		private System.Windows.Forms.Panel hexenpanel;
-		private System.Windows.Forms.Label arg0label;
-		private System.Windows.Forms.Label arg1label;
-		private System.Windows.Forms.Label arg4label;
-		private System.Windows.Forms.Label arg2label;
-		private System.Windows.Forms.Label arg3label;
 		private System.Windows.Forms.TabPage tabcustom;
 		private CodeImp.DoomBuilder.Controls.FieldsEditorControl fieldslist;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg4;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg3;
+		private System.Windows.Forms.GroupBox idgroup;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl udmfactivates;
+		private System.Windows.Forms.Panel argspanel;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg2;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg1;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg0;
+		private CodeImp.DoomBuilder.Controls.ArgumentBox arg3;
+		private CodeImp.DoomBuilder.Controls.ArgumentBox arg4;
+		private System.Windows.Forms.Label arg1label;
+		private System.Windows.Forms.Label arg0label;
+		private System.Windows.Forms.Label arg3label;
+		private System.Windows.Forms.Label arg2label;
+		private System.Windows.Forms.Label arg4label;
+		private System.Windows.Forms.SplitContainer splitter;
 	}
 }

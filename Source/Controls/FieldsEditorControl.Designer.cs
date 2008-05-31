@@ -34,11 +34,11 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.fieldslist = new System.Windows.Forms.DataGridView();
-			this.deleterowstimer = new System.Windows.Forms.Timer(this.components);
-			this.browsebutton = new System.Windows.Forms.Button();
 			this.fieldname = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.fieldtype = new System.Windows.Forms.DataGridViewComboBoxColumn();
 			this.fieldvalue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.deleterowstimer = new System.Windows.Forms.Timer(this.components);
+			this.browsebutton = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.fieldslist)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldslist.AllowUserToResizeColumns = false;
 			this.fieldslist.AllowUserToResizeRows = false;
 			this.fieldslist.BackgroundColor = System.Drawing.SystemColors.Window;
-			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.fieldslist.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
 			this.fieldslist.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.Disable;
 			this.fieldslist.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -82,23 +82,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldslist.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellEndEdit);
 			this.fieldslist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellClick);
 			this.fieldslist.SelectionChanged += new System.EventHandler(this.fieldslist_SelectionChanged);
-			// 
-			// deleterowstimer
-			// 
-			this.deleterowstimer.Interval = 1;
-			this.deleterowstimer.Tick += new System.EventHandler(this.deleterowstimer_Tick);
-			// 
-			// browsebutton
-			// 
-			this.browsebutton.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browsebutton.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
-			this.browsebutton.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
-			this.browsebutton.Location = new System.Drawing.Point(370, 43);
-			this.browsebutton.Name = "browsebutton";
-			this.browsebutton.Size = new System.Drawing.Size(30, 24);
-			this.browsebutton.TabIndex = 2;
-			this.browsebutton.UseVisualStyleBackColor = true;
-			this.browsebutton.Visible = false;
 			// 
 			// fieldname
 			// 
@@ -138,6 +121,23 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldvalue.Name = "fieldvalue";
 			this.fieldvalue.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.fieldvalue.Width = 120;
+			// 
+			// deleterowstimer
+			// 
+			this.deleterowstimer.Interval = 1;
+			this.deleterowstimer.Tick += new System.EventHandler(this.deleterowstimer_Tick);
+			// 
+			// browsebutton
+			// 
+			this.browsebutton.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browsebutton.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
+			this.browsebutton.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.browsebutton.Location = new System.Drawing.Point(370, 43);
+			this.browsebutton.Name = "browsebutton";
+			this.browsebutton.Size = new System.Drawing.Size(30, 24);
+			this.browsebutton.TabIndex = 2;
+			this.browsebutton.UseVisualStyleBackColor = true;
+			this.browsebutton.Visible = false;
 			// 
 			// FieldsEditorControl
 			// 
