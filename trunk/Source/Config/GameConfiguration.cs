@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Configuration cfg;
 		
 		// General settings
+		private string enginename;
 		private float defaulttexturescale;
 		private float defaultflatscale;
 		private string formatinterface;
@@ -84,6 +85,9 @@ namespace CodeImp.DoomBuilder.Config
 		// Universal fields
 		private List<UniversalFieldInfo> linedeffields;
 		private List<UniversalFieldInfo> sectorfields;
+		private List<UniversalFieldInfo> sidedeffields;
+		private List<UniversalFieldInfo> thingfields;
+		private List<UniversalFieldInfo> vertexfields;
 		
 		// Enums
 		private Dictionary<string, EnumList> enums;
@@ -93,6 +97,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		// General settings
+		public string EngineName { get { return enginename; } }
 		public float DefaultTextureScale { get { return defaulttexturescale; } }
 		public float DefaultFlatScale { get { return defaultflatscale; } }
 		public string FormatInterface { get { return formatinterface; } }
@@ -134,6 +139,9 @@ namespace CodeImp.DoomBuilder.Config
 		// Universal fields
 		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
 		public List<UniversalFieldInfo> SectorFields { get { return sectorfields; } }
+		public List<UniversalFieldInfo> SidedefFields { get { return sidedeffields; } }
+		public List<UniversalFieldInfo> ThingFields { get { return thingfields; } }
+		public List<UniversalFieldInfo> VertexFields { get { return vertexfields; } }
 
 		// Enums
 		public IDictionary<string, EnumList> Enums { get { return enums; } }
@@ -164,6 +172,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.enums = new Dictionary<string, EnumList>();
 			
 			// Read general settings
+			enginename = cfg.ReadSetting("engine", "");
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
 			defaultflatscale = cfg.ReadSetting("defaultflatscale", 1f);
 			formatinterface = cfg.ReadSetting("formatinterface", "");
@@ -209,8 +218,11 @@ namespace CodeImp.DoomBuilder.Config
 			LoadSectorGeneralizedEffects();
 			
 			// Universal fields
-			linedeffields = LoadUniversalFields("linedefs");
-			sectorfields = LoadUniversalFields("sectors");
+			linedeffields = LoadUniversalFields("linedef");
+			sectorfields = LoadUniversalFields("sector");
+			sidedeffields = LoadUniversalFields("sidedef");
+			thingfields = LoadUniversalFields("thing");
+			vertexfields = LoadUniversalFields("vertex");
 		}
 
 		// Destructor

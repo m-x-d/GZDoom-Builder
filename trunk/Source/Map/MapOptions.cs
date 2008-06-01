@@ -24,6 +24,7 @@ using System.Text;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -37,6 +38,9 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Variables
 
+		// Map configuration
+		private Configuration mapconfig;
+		
 		// Game configuration
 		private string configfile;
 		
@@ -77,6 +81,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal MapOptions()
 		{
 			// Initialize
+			this.mapconfig = new Configuration(true);
 			this.previousname = "";
 			this.currentname = "";
 			this.configfile = "";
@@ -94,10 +99,10 @@ namespace CodeImp.DoomBuilder.Map
 			this.currentname = mapname;
 			this.configfile = cfg.ReadSetting("config", "");
 			this.resources = new DataLocationList();
-
+			
 			// Go for all items in the map info
-			mapinfo = cfg.ReadSetting(mapname, new Hashtable());
-			foreach(DictionaryEntry mp in mapinfo)
+			this.mapconfig.Root = cfg.ReadSetting(mapname, new Hashtable());
+			foreach(DictionaryEntry mp in this.mapconfig.Root)
 			{
 				// Item is a structure?
 				if(mp.Value is IDictionary)
@@ -128,6 +133,30 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Methods
 
+		// This stores the map options in a configuration
+		public void WriteConfiguration(string settingsfile)
+		{
+			Configuration wadcfg;
+			
+			// Write settings to config
+			resources.WriteToConfig(mapconfig, "resources");
+
+			// Load the file or make a new file
+			if(File.Exists(settingsfile))
+				wadcfg = new Configuration(settingsfile, true);
+			else
+				wadcfg = new Configuration(true);
+			
+			// Write configuration type information
+			wadcfg.WriteSetting("type", "Doom Builder Map Settings Configuration");
+
+			// Update the settings file with this map configuration
+			wadcfg.WriteSetting("maps." + currentname, mapconfig.Root);
+
+			// Save file
+			wadcfg.SaveConfiguration(settingsfile);
+		}
+		
 		// This adds a resource location and returns the index where the item was added
 		public int AddResource(DataLocation res)
 		{
@@ -177,6 +206,39 @@ namespace CodeImp.DoomBuilder.Map
 		public override string ToString()
 		{
 			return currentname;
+		}
+		
+		// This returns the UDMF field type
+		public int GetUniversalFieldType(string elementname, string fieldname, int defaulttype)
+		{
+			int type;
+			
+			// Check if the field type is set in the game configuration
+			type = General.Map.Config.ReadSetting("universalfields." + elementname + "." + fieldname + ".type", -1);
+			if(type == -1)
+			{
+				// Read from map configuration
+				type = mapconfig.ReadSetting("fieldtypes." + elementname + "-" + fieldname, defaulttype);
+			}
+
+			return type;
+		}
+
+		// This stores the UDMF field type
+		public void SetUniversalFieldType(string elementname, string fieldname, int type)
+		{
+			// Check if the type of this field is not set in the game configuration
+			if(General.Map.Config.ReadSetting("universalfields." + elementname + "." + fieldname + ".type", -1) == -1)
+			{
+				// Write type to map configuration
+				mapconfig.WriteSetting("fieldtypes." + elementname + "-" + fieldname, type);
+			}
+		}
+		
+		// This removes all UDMF field types
+		public void ForgetUniversalFieldTypes()
+		{
+			mapconfig.DeleteSetting("fieldtypes");
 		}
 		
 		#endregion

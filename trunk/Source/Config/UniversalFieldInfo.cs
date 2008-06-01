@@ -44,7 +44,6 @@ namespace CodeImp.DoomBuilder.Config
 		private string name;
 		private int type;
 		private object defaultvalue;
-		private object specdefault;
 
 		#endregion
 
@@ -53,7 +52,6 @@ namespace CodeImp.DoomBuilder.Config
 		public string Name { get { return name; } }
 		public int Type { get { return type; } }
 		public object Default { get { return defaultvalue; } }
-		public object SpecDefault { get { return specdefault; } }
 
 		#endregion
 
@@ -70,7 +68,6 @@ namespace CodeImp.DoomBuilder.Config
 			// Read type
 			this.type = cfg.ReadSetting(setting + ".type", 0);
 			this.defaultvalue = cfg.ReadSettingObject(setting + ".default", null);
-			this.specdefault = cfg.ReadSettingObject(setting + ".specdefault", this.defaultvalue);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

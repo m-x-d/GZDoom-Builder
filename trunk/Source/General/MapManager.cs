@@ -474,18 +474,7 @@ namespace CodeImp.DoomBuilder
 			{
 				// Open or create the map settings
 				settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
-				if(File.Exists(settingsfile))
-					mapsettings = new Configuration(settingsfile, true);
-				else
-					mapsettings = new Configuration(true);
-
-				// Write settings
-				mapsettings.WriteSetting("type", "Doom Builder Map Settings Configuration");
-				mapsettings.WriteSetting("gameconfig", options.ConfigFile);
-				options.Resources.WriteToConfig(mapsettings, "maps." + options.CurrentName + ".resources");
-
-				// Save settings
-				mapsettings.SaveConfiguration(settingsfile);
+				options.WriteConfiguration(settingsfile);
 			}
 			catch(Exception e)
 			{

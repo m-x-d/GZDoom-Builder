@@ -1216,6 +1216,7 @@ namespace CodeImp.DoomBuilder.Map
 		public void SnapAllToAccuracy()
 		{
 			foreach(Vertex v in vertices) v.SnapToAccuracy();
+			foreach(Thing t in things) t.SnapToAccuracy();
 		}
 		
 		// This returns the next unused tag number

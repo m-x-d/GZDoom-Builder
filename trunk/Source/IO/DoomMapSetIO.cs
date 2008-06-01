@@ -383,6 +383,7 @@ namespace CodeImp.DoomBuilder.IO
 			lump = wad.Insert("THINGS", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
+			mem.Flush();
 		}
 
 		// This writes the VERTEXES to WAD file
@@ -414,6 +415,7 @@ namespace CodeImp.DoomBuilder.IO
 			lump = wad.Insert("VERTEXES", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
+			mem.Flush();
 		}
 
 		// This writes the LINEDEFS to WAD file
@@ -468,6 +470,7 @@ namespace CodeImp.DoomBuilder.IO
 			lump = wad.Insert("LINEDEFS", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
+			mem.Flush();
 		}
 
 		// This writes the SIDEDEFS to WAD file
@@ -503,6 +506,7 @@ namespace CodeImp.DoomBuilder.IO
 			lump = wad.Insert("SIDEDEFS", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
+			mem.Flush();
 		}
 
 		// This writes the SECTORS to WAD file
@@ -539,6 +543,7 @@ namespace CodeImp.DoomBuilder.IO
 			lump = wad.Insert("SECTORS", insertpos, (int)mem.Length);
 			lump.Stream.Seek(0, SeekOrigin.Begin);
 			mem.WriteTo(lump.Stream);
+			mem.Flush();
 		}
 		
 		#endregion

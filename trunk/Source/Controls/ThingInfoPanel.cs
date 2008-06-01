@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Controls
 			TypeHandler th;
 			string actioninfo = "";
 			string zinfo;
-			int zvalue;
+			float zvalue;
 
 			// Show/hide stuff depending on format
 			if(General.Map.FormatInterface.GetType() == typeof(DoomMapSetIO))
@@ -114,25 +114,25 @@ namespace CodeImp.DoomBuilder.Controls
 				// Hangs from ceiling?
 				if(ti.Hangs)
 				{
-					zvalue = t.Sector.CeilHeight + t.ZOffset;
+					zvalue = (float)t.Sector.CeilHeight + t.Position.z;
 					zinfo = zvalue.ToString();
 				}
 				else
 				{
-					zvalue = t.Sector.FloorHeight + t.ZOffset;
+					zvalue = (float)t.Sector.FloorHeight + t.Position.z;
 					zinfo = zvalue.ToString();
 				}
 			}
 			else
 			{
-				zvalue = t.ZOffset;
-				if(zvalue >= 0) zinfo = "+" + zvalue.ToString(); else zinfo = zvalue.ToString();
+				zvalue = t.Position.z;
+				if(zvalue >= 0.0f) zinfo = "+" + zvalue.ToString(); else zinfo = zvalue.ToString();
 			}
 			
 			// Thing info
 			type.Text = t.Type + " - " + ti.Title;
 			action.Text = actioninfo;
-			position.Text = t.X.ToString() + ", " + t.Y.ToString() + ", " + zinfo;
+			position.Text = t.Position.x.ToString() + ", " + t.Position.y.ToString() + ", " + zinfo;
 			tag.Text = t.Tag.ToString();
 			angle.Text = t.AngleDeg.ToString() + "\u00B0";
 			spritename.Text = ti.Sprite;

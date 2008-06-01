@@ -106,15 +106,26 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Check if this exceeds limits
 			if((this.position + count) > (this.length + 1))
-				throw new ArgumentException("Attempted to read outside the range of the stream.");
-			
-			// Seek if needed
-			if(basestream.Position != (this.offset + this.position))
-				basestream.Seek(this.offset + this.position, SeekOrigin.Begin);
-			
-			// Read from base stream
-			position += count;
-			return basestream.Read(buffer, offset, count);
+			{
+				// Read only within limits
+				count = this.length - (int)this.position;
+			}
+
+			// Anything to read?
+			if(count > 0)
+			{
+				// Seek if needed
+				if(basestream.Position != (this.offset + this.position))
+					basestream.Seek(this.offset + this.position, SeekOrigin.Begin);
+
+				// Read from base stream
+				position += count;
+				return basestream.Read(buffer, offset, count);
+			}
+			else
+			{
+				return 0;
+			}
 		}
 
 		// This writes to the stream

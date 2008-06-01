@@ -292,6 +292,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Move selected geometry to final position
 				MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptonearest);
+
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
 				
 				// Update cached values
 				General.Map.Map.Update(false, false);

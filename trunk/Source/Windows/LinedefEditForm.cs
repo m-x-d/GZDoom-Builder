@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Flags
 			foreach(CheckBox c in flags.Checkboxes)
-				c.Checked = fl.Flags[c.Tag.ToString()];
+				if(fl.Flags.ContainsKey(c.Tag.ToString())) c.Checked = fl.Flags[c.Tag.ToString()];
 			
 			// Activations
 			foreach(LinedefActivateInfo ai in activation.Items)
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(CheckBox c in udmfactivates.Checkboxes)
 			{
 				LinedefActivateInfo ai = (c.Tag as LinedefActivateInfo);
-				c.Checked = fl.Flags[ai.Key];
+				if(fl.Flags.ContainsKey(ai.Key)) c.Checked = fl.Flags[ai.Key];
 			}
 
 			// Action/tags
@@ -188,10 +188,13 @@ namespace CodeImp.DoomBuilder.Windows
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					if(l.Flags[c.Tag.ToString()] != c.Checked)
+					if(l.Flags.ContainsKey(c.Tag.ToString()))
 					{
-						c.ThreeState = true;
-						c.CheckState = CheckState.Indeterminate;
+						if(l.Flags[c.Tag.ToString()] != c.Checked)
+						{
+							c.ThreeState = true;
+							c.CheckState = CheckState.Indeterminate;
+						}
 					}
 				}
 
@@ -208,10 +211,13 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(CheckBox c in udmfactivates.Checkboxes)
 				{
 					LinedefActivateInfo ai = (c.Tag as LinedefActivateInfo);
-					if(c.Checked != fl.Flags[ai.Key])
+					if(l.Flags.ContainsKey(ai.Key))
 					{
-						c.ThreeState = true;
-						c.CheckState = CheckState.Indeterminate;
+						if(c.Checked != l.Flags[ai.Key])
+						{
+							c.ThreeState = true;
+							c.CheckState = CheckState.Indeterminate;
+						}
 					}
 				}
 
@@ -249,6 +255,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = "";
 					if(frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
 					if(frontoffsety.Text != l.Front.OffsetY.ToString()) frontoffsety.Text = "";
+					if(General.Map.IsType(typeof(UniversalMapSetIO))) customfrontbutton.Visible = true;
 				}
 
 				// Back settings
@@ -260,6 +267,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = "";
 					if(backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
 					if(backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
+					if(General.Map.IsType(typeof(UniversalMapSetIO))) custombackbutton.Visible = true;
 				}
 				
 				// Custom fields
@@ -444,6 +452,28 @@ namespace CodeImp.DoomBuilder.Windows
 		private void browseaction_Click(object sender, EventArgs e)
 		{
 			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
+		}
+
+		// Custom fields on front sides
+		private void customfrontbutton_Click(object sender, EventArgs e)
+		{
+			// Make collection of front sides
+			List<MapElement> sides = new List<MapElement>(lines.Count);
+			foreach(Linedef l in lines) if(l.Front != null) sides.Add(l.Front);
+			
+			// Edit these
+			CustomFieldsForm.ShowDialog(this, "Front side custom fields", sides, General.Map.Config.SidedefFields);
+		}
+
+		// Custom fields on back sides
+		private void custombackbutton_Click(object sender, EventArgs e)
+		{
+			// Make collection of back sides
+			List<MapElement> sides = new List<MapElement>(lines.Count);
+			foreach(Linedef l in lines) if(l.Back != null) sides.Add(l.Back);
+
+			// Edit these
+			CustomFieldsForm.ShowDialog(this, "Back side custom fields", sides, General.Map.Config.SidedefFields);
 		}
 	}
 }

@@ -123,6 +123,8 @@
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\WADReader.cs" />
+    <Compile Include="IO\UniversalCollection.cs" />
+    <Compile Include="IO\UniversalEntry.cs" />
     <Compile Include="IO\UniversalParser.cs" />
     <Compile Include="Map\MapElement.cs" />
     <Compile Include="Map\UniFields.cs" />
@@ -142,6 +144,7 @@
     <Compile Include="Types\TypeHandler.cs" />
     <Compile Include="Types\TypeHandlerAttribute.cs" />
     <Compile Include="Types\TypesManager.cs" />
+    <Compile Include="Types\UniversalType.cs" />
     <Compile Include="Windows\AboutForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -198,6 +201,12 @@
     </Compile>
     <Compile Include="Windows\ConfigForm.Designer.cs">
       <DependentUpon>ConfigForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\CustomFieldsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\CustomFieldsForm.Designer.cs">
+      <DependentUpon>CustomFieldsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\EffectBrowserForm.cs">
       <SubType>Form</SubType>
@@ -591,6 +600,10 @@
     <EmbeddedResource Include="Windows\BitFlagsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BitFlagsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\CustomFieldsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>CustomFieldsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ThingEditForm.resx">
       <SubType>Designer</SubType>

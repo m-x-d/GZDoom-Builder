@@ -343,6 +343,11 @@ namespace CodeImp.DoomBuilder.Config
 						defaultceiltexture = General.Map.Data.FlatNames[1];
 				}
 			}
+
+			// Texture names may not be null
+			if((defaulttexture == null) || (defaulttexture == "")) defaulttexture = "-";
+			if((defaultfloortexture == null) || (defaultfloortexture == "")) defaultfloortexture = "-";
+			if((defaultceiltexture == null) || (defaultceiltexture == "")) defaultceiltexture = "-";
 		}
 		
 		#endregion

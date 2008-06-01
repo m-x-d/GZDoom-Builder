@@ -87,9 +87,6 @@ namespace CodeImp.DoomBuilder.Map
 		public float Size { get { return size; } }
 		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }
-		public int X { get { return x; } }
-		public int Y { get { return y; } }
-		public int ZOffset { get { return zoffset; } set { zoffset = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
 
@@ -149,9 +146,6 @@ namespace CodeImp.DoomBuilder.Map
 			t.flags = new Dictionary<string,bool>(flags);
 			t.tag = tag;
 			t.action = action;
-			t.x = x;
-			t.y = y;
-			t.zoffset = zoffset;
 			t.args = EMPTY_ARGS;
 			t.size = size;
 			t.color = color;
@@ -208,22 +202,25 @@ namespace CodeImp.DoomBuilder.Map
 
 		// This moves the thing
 		// NOTE: This does not update sector! (call DetermineSector)
+		public void Move(Vector3D newpos)
+		{
+			// Change position
+			this.pos = newpos;
+		}
+
+		// This moves the thing
+		// NOTE: This does not update sector! (call DetermineSector)
 		public void Move(Vector2D newpos)
 		{
 			// Change position
-			this.x = (int)newpos.x;
-			this.y = (int)newpos.y;
 			this.pos = new Vector3D(newpos.x, newpos.y, zoffset);
 		}
 
 		// This moves the thing
 		// NOTE: This does not update sector! (call DetermineSector)
-		public void Move(int x, int y, int zoffset)
+		public void Move(float x, float y, float zoffset)
 		{
 			// Change position
-			this.x = x;
-			this.y = y;
-			this.zoffset = zoffset;
 			this.pos = new Vector3D(x, y, zoffset);
 		}
 		
@@ -236,7 +233,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// This updates all properties
 		// NOTE: This does not update sector! (call DetermineSector)
-		public void Update(int type, int x, int y, int zoffset, float angle,
+		public void Update(int type, float x, float y, float zoffset, float angle,
 						   Dictionary<string, bool> flags, int tag, int action, int[] args)
 		{
 			// Apply changes
@@ -288,6 +285,16 @@ namespace CodeImp.DoomBuilder.Map
 			this.Move(General.Map.Grid.SnappedToGrid((Vector2D)pos));
 		}
 
+		// This snaps the vertex to the map format accuracy
+		public void SnapToAccuracy()
+		{
+			// Round the coordinates
+			Vector3D newpos = new Vector3D((float)Math.Round(pos.x, General.Map.FormatInterface.VertexDecimals),
+										   (float)Math.Round(pos.y, General.Map.FormatInterface.VertexDecimals),
+										   (float)Math.Round(pos.z, General.Map.FormatInterface.VertexDecimals));
+			this.Move(newpos);
+		}
+		
 		// This returns the distance from given coordinates
 		public float DistanceToSq(Vector2D p)
 		{

@@ -1,10 +1,16 @@
-- Make UDMF implementation
-	- All fields in sectors, linedefs and things must internally use UDMF fields
-	- Also enummed field values support
+- Finish the custom fields editor
+	- Fix the browse button
+	- Enums should drop down in list
+	- Doubleclick to rename?
+	- Remember sort order
+	- Booleans should be enumerable (dropdown true/false)
+	- Strings should have a mutliline edit window on browse button
 
 - Complete Things filter with UDMF fields
 
 - Controls to increase/decrease grid size
+
+- "Insert Thing" control
 
 - Make "Make Sector" mode
 	- On mousemove (?) already show the sector outline it will create
