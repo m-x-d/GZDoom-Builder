@@ -1,0 +1,102 @@
+
+#region ================== Copyright (c) 2007 Pascal vd Heiden
+
+/*
+ * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
+ * This program is released under GNU General Public License
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ */
+
+#endregion
+
+#region ================== Namespaces
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using Microsoft.Win32;
+using System.Diagnostics;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Config;
+using System.IO;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Map;
+
+#endregion
+
+namespace CodeImp.DoomBuilder.Windows
+{
+	public partial class CustomFieldsForm : DelayedForm
+	{
+		// Keep a list of elements
+		private ICollection<MapElement> elements;
+		
+		// Constructor
+		public CustomFieldsForm()
+		{
+			// Initialize
+			InitializeComponent();
+		}
+
+		// This shows the dialog, returns false when cancelled
+		public static bool ShowDialog(IWin32Window owner, string title, ICollection<MapElement> elements, List<UniversalFieldInfo> fixedfields)
+		{
+			bool result;
+			CustomFieldsForm f = new CustomFieldsForm();
+			f.Setup(title, elements, fixedfields);
+			result = (f.ShowDialog(owner) == DialogResult.OK);
+			f.Dispose();
+			return result;
+		}
+		
+		// This sets up the dialog
+		public void Setup(string title, ICollection<MapElement> elements, List<UniversalFieldInfo> fixedfields)
+		{
+			// Keep list
+			this.elements = elements;
+			
+			// Fill universal fields list
+			fieldslist.ListFixedFields(fixedfields);
+
+			// Initialize custom fields editor
+			fieldslist.Setup();
+
+			// Setup from first element
+			MapElement fe = General.GetByIndex<MapElement>(elements, 0);
+			fieldslist.SetValues(fe.Fields, true);
+			
+			// Setup from all elements
+			foreach(MapElement e in elements)
+				fieldslist.SetValues(e.Fields, false);
+		}
+		
+		// OK clicked
+		private void apply_Click(object sender, EventArgs e)
+		{
+			// Apply fields to all elements
+			foreach(MapElement el in elements) fieldslist.Apply(el.Fields);
+			
+			// Done
+			General.Map.IsChanged = true;
+			this.DialogResult = DialogResult.OK;
+			this.Close();
+		}
+
+		// Cancel clicked
+		private void cancel_Click(object sender, EventArgs e)
+		{
+			// Be gone
+			this.DialogResult = DialogResult.Cancel;
+			this.Close();
+		}
+	}
+}

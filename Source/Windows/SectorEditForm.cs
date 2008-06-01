@@ -87,6 +87,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Action
 			tag.Text = sc.Tag.ToString();
+
+			// Custom fields
+			fieldslist.SetValues(sc.Fields, true);
 			
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all sectors and change the options when a setting is different
@@ -107,6 +110,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action
 				if(s.Tag.ToString() != tag.Text) tag.Text = "";
+
+				// Custom fields
+				fieldslist.SetValues(s.Fields, false);
 			}
 		}
 
@@ -134,6 +140,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action
 				s.Tag = tag.GetResult(s.Tag);
+
+				// Custom fields
+				fieldslist.Apply(s.Fields);
 			}
 
 			// Done

@@ -64,6 +64,9 @@ namespace CodeImp.DoomBuilder.Windows
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
 			action.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 
+			// Fill universal fields list
+			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
+			
 			// Initialize custom fields editor
 			fieldslist.Setup();
 			
@@ -123,14 +126,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Flags
 			foreach(CheckBox c in flags.Checkboxes)
-				c.Checked = ft.Flags[c.Tag.ToString()];
+				if(ft.Flags.ContainsKey(c.Tag.ToString())) c.Checked = ft.Flags[c.Tag.ToString()];
 			
 			// Coordination
 			angledeg = ft.AngleDeg - 90;
 			if(angledeg < 0) angledeg += 360;
 			if(angledeg >= 360) angledeg -= 360;
 			angle.Text = angledeg.ToString();
-			height.Text = ft.ZOffset.ToString();
+			height.Text = ((int)ft.Position.z).ToString();
 
 			// Action/tags
 			action.Value = ft.Action;
@@ -140,6 +143,9 @@ namespace CodeImp.DoomBuilder.Windows
 			arg2.SetValue(ft.Args[2]);
 			arg3.SetValue(ft.Args[3]);
 			arg4.SetValue(ft.Args[4]);
+
+			// Custom fields
+			fieldslist.SetValues(ft.Fields, true);
 
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all lines and change the options when a setting is different
@@ -159,10 +165,13 @@ namespace CodeImp.DoomBuilder.Windows
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					if(t.Flags[c.Tag.ToString()] != c.Checked)
+					if(t.Flags.ContainsKey(c.Tag.ToString()))
 					{
-						c.ThreeState = true;
-						c.CheckState = CheckState.Indeterminate;
+						if(t.Flags[c.Tag.ToString()] != c.Checked)
+						{
+							c.ThreeState = true;
+							c.CheckState = CheckState.Indeterminate;
+						}
 					}
 				}
 				
@@ -171,7 +180,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(angledeg < 0) angledeg += 360;
 				if(angledeg >= 360) angledeg -= 360;
 				if(angledeg.ToString() != angle.Text) angle.Text = "";
-				if(t.ZOffset.ToString() != height.Text) height.Text = "";
+				if(((int)t.Position.z).ToString() != height.Text) height.Text = "";
 
 				// Action/tags
 				if(t.Action != action.Value) action.Empty = true;
@@ -181,6 +190,9 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
 				if(t.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
 				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
+
+				// Custom fields
+				fieldslist.SetValues(t.Fields, false);
 			}
 		}
 		
@@ -323,7 +335,7 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Coordination
 				t.Rotate(Angle2D.DegToRad((float)(angle.GetResult(t.AngleDeg - 90) + 90)));
-				t.ZOffset = height.GetResult(t.ZOffset);
+				t.Move(t.Position.x, t.Position.y, (float)height.GetResult((int)t.Position.z));
 				
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
@@ -341,6 +353,9 @@ namespace CodeImp.DoomBuilder.Windows
 				t.Args[3] = arg3.GetResult(t.Args[3]);
 				t.Args[4] = arg4.GetResult(t.Args[4]);
 
+				// Custom fields
+				fieldslist.Apply(t.Fields);
+				
 				// Update settings
 				t.UpdateConfiguration();
 			}

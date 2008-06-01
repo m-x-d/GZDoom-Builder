@@ -386,7 +386,7 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write((UInt16)t.Tag);
 				writer.Write((Int16)t.Position.x);
 				writer.Write((Int16)t.Position.y);
-				writer.Write((Int16)t.ZOffset);
+				writer.Write((Int16)t.Position.z);
 				writer.Write((Int16)((t.Angle * Angle2D.PIDEG) - 90));
 				writer.Write((UInt16)t.Type);
 				writer.Write((UInt16)flags);

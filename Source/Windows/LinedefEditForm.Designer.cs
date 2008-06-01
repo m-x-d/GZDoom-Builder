@@ -73,6 +73,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.splitter = new System.Windows.Forms.SplitContainer();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
+			this.customfrontbutton = new System.Windows.Forms.Button();
 			this.frontsector = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.frontlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.frontmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
@@ -81,6 +82,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontoffsetx = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
+			this.custombackbutton = new System.Windows.Forms.Button();
 			this.backsector = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.backlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
@@ -269,9 +271,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.Controls.Add(this.browseaction);
 			this.actiongroup.Controls.Add(this.udmfpanel);
 			this.actiongroup.Controls.Add(this.argspanel);
-			this.actiongroup.Location = new System.Drawing.Point(8, 166);
+			this.actiongroup.Location = new System.Drawing.Point(8, 177);
 			this.actiongroup.Name = "actiongroup";
-			this.actiongroup.Size = new System.Drawing.Size(517, 253);
+			this.actiongroup.Size = new System.Drawing.Size(517, 242);
 			this.actiongroup.TabIndex = 18;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
@@ -326,7 +328,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfpanel.Controls.Add(this.udmfactivates);
 			this.udmfpanel.Location = new System.Drawing.Point(6, 143);
 			this.udmfpanel.Name = "udmfpanel";
-			this.udmfpanel.Size = new System.Drawing.Size(505, 104);
+			this.udmfpanel.Size = new System.Drawing.Size(505, 92);
 			this.udmfpanel.TabIndex = 12;
 			this.udmfpanel.Visible = false;
 			// 
@@ -339,7 +341,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfactivates.Columns = 2;
 			this.udmfactivates.Location = new System.Drawing.Point(56, 5);
 			this.udmfactivates.Name = "udmfactivates";
-			this.udmfactivates.Size = new System.Drawing.Size(401, 95);
+			this.udmfactivates.Size = new System.Drawing.Size(401, 83);
 			this.udmfactivates.TabIndex = 1;
 			// 
 			// argspanel
@@ -477,7 +479,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsgroup.Controls.Add(this.flags);
 			this.settingsgroup.Location = new System.Drawing.Point(8, 8);
 			this.settingsgroup.Name = "settingsgroup";
-			this.settingsgroup.Size = new System.Drawing.Size(517, 152);
+			this.settingsgroup.Size = new System.Drawing.Size(517, 163);
 			this.settingsgroup.TabIndex = 19;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Settings ";
@@ -491,7 +493,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags.Columns = 3;
 			this.flags.Location = new System.Drawing.Point(18, 26);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(493, 119);
+			this.flags.Size = new System.Drawing.Size(493, 125);
 			this.flags.TabIndex = 0;
 			// 
 			// checkBox1
@@ -596,6 +598,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.frontgroup.Controls.Add(this.customfrontbutton);
 			this.frontgroup.Controls.Add(this.frontsector);
 			this.frontgroup.Controls.Add(label11);
 			this.frontgroup.Controls.Add(this.frontlow);
@@ -614,6 +617,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.TabIndex = 0;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
+			// 
+			// customfrontbutton
+			// 
+			this.customfrontbutton.Location = new System.Drawing.Point(82, 124);
+			this.customfrontbutton.Name = "customfrontbutton";
+			this.customfrontbutton.Size = new System.Drawing.Size(115, 25);
+			this.customfrontbutton.TabIndex = 15;
+			this.customfrontbutton.Text = "Custom fields...";
+			this.customfrontbutton.UseVisualStyleBackColor = true;
+			this.customfrontbutton.Visible = false;
+			this.customfrontbutton.Click += new System.EventHandler(this.customfrontbutton_Click);
 			// 
 			// frontsector
 			// 
@@ -691,6 +705,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.backgroup.Controls.Add(this.custombackbutton);
 			this.backgroup.Controls.Add(this.backsector);
 			this.backgroup.Controls.Add(label12);
 			this.backgroup.Controls.Add(this.backlow);
@@ -709,6 +724,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.TabIndex = 1;
 			this.backgroup.TabStop = false;
 			this.backgroup.Text = "     ";
+			// 
+			// custombackbutton
+			// 
+			this.custombackbutton.Location = new System.Drawing.Point(82, 124);
+			this.custombackbutton.Name = "custombackbutton";
+			this.custombackbutton.Size = new System.Drawing.Size(115, 25);
+			this.custombackbutton.TabIndex = 18;
+			this.custombackbutton.Text = "Custom fields...";
+			this.custombackbutton.UseVisualStyleBackColor = true;
+			this.custombackbutton.Visible = false;
+			this.custombackbutton.Click += new System.EventHandler(this.custombackbutton_Click);
 			// 
 			// backsector
 			// 
@@ -889,5 +915,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label arg2label;
 		private System.Windows.Forms.Label arg4label;
 		private System.Windows.Forms.SplitContainer splitter;
+		private System.Windows.Forms.Button customfrontbutton;
+		private System.Windows.Forms.Button custombackbutton;
 	}
 }

@@ -167,11 +167,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// Returns the flags or the same flags when cancelled
 		public static int ShowDialog(IWin32Window owner, EnumList flags, int value)
 		{
+			int result = value;
 			BitFlagsForm f = new BitFlagsForm();
 			f.Setup(flags, value);
-			if(f.ShowDialog(owner) == DialogResult.OK) return value = f.Value;
+			if(f.ShowDialog(owner) == DialogResult.OK) result = f.Value;
 			f.Dispose();
-			return value;
+			return result;
 		}
 		
 		#endregion

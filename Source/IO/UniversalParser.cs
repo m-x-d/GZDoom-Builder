@@ -22,6 +22,7 @@ using System.Text;
 using System.Globalization;
 using System.Collections;
 using System.Collections.Specialized;
+using System.Collections.Generic;
 
 #endregion
 
@@ -34,6 +35,9 @@ namespace CodeImp.DoomBuilder.IO
 		// Path seperator
 		public const string DEFAULT_SEPERATOR = ".";
 		
+		// Allowed characters in a key
+		public const string KEY_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789_";
+		
 		// Parse mode constants
 		private const int PM_NOTHING = 0;
 		private const int PM_ASSIGNMENT = 1;
@@ -43,11 +47,11 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// Error strings
 		private const string ERROR_KEYMISSING = "Missing key name in assignment or scope.";
-		private const string ERROR_KEYSPACES = "Spaces not allowed in key names.";
+		private const string ERROR_KEYCHARACTERS = "Invalid characters in key name.";
 		private const string ERROR_ASSIGNINVALID = "Invalid assignment. Missing a previous terminator symbol?";
 		private const string ERROR_VALUEINVALID = "Invalid value in assignment. Missing a previous terminator symbol?";
 		private const string ERROR_VALUETOOBIG = "Value too big.";
-		private const string ERROR_KEYNOTUNQIUE = "Key is not unique within scope.";
+		private const string ERROR_KEYWITHOUTVALUE = "Key has no value assigned.";
 		private const string ERROR_KEYWORDUNKNOWN = "Unknown keyword in assignment. Missing a previous terminator symbol?";
 		
 		#endregion
@@ -60,7 +64,7 @@ namespace CodeImp.DoomBuilder.IO
 		private int cpErrorLine = 0;
 		
 		// Configuration root
-		private ListDictionary root = null;
+		private UniversalCollection root = null;
 		
 		#endregion
 		
@@ -70,7 +74,7 @@ namespace CodeImp.DoomBuilder.IO
 		public int ErrorResult { get { return cpErrorResult; } }
 		public string ErrorDescription { get { return cpErrorDescription; } }
 		public int ErrorLine { get { return cpErrorLine; } }
-		public ListDictionary Root { get { return root; } set { root = value; } }
+		public UniversalCollection Root { get { return root; } }
 		
 		#endregion
 		
@@ -100,114 +104,6 @@ namespace CodeImp.DoomBuilder.IO
 		
 		#region ================== Private Methods
 
-		// This is called by all the ReadSetting overloads to perform the read
-		private bool CheckSetting(string setting, string pathseperator)
-		{
-			ListDictionary cs = null;
-
-			// Split the path in an array
-			string[] keys = setting.Split(pathseperator.ToCharArray());
-
-			// Get the root item
-			object item = root;
-
-			// Go for each item
-			for(int i = 0; i < keys.Length; i++)
-			{
-				// Check if the current item is of ConfigStruct type
-				if(item is ListDictionary)
-				{
-					// Check if the key is valid
-					if(ValidateKey(null, keys[i].Trim(), -1) == true)
-					{
-						// Cast to ConfigStruct
-						cs = (ListDictionary)item;
-
-						// Check if the requested item exists
-						if(cs.Contains(keys[i]) == true)
-						{
-							// Set the item to the next item
-							item = cs[keys[i]];
-						}
-						else
-						{
-							// Key not found
-							return false;
-						}
-					}
-					else
-					{
-						// Invalid key in path
-						return false;
-					}
-				}
-				else
-				{
-					// Unable to go any further
-					return false;
-				}
-			}
-
-			// Return result
-			return true;
-		}
-		
-		// This is called by all the ReadSetting overloads to perform the read
-		private object ReadAnySetting(string setting, object defaultsetting, string pathseperator)
-		{
-			ListDictionary cs = null;
-			
-			// Split the path in an array
-			string[] keys = setting.Split(pathseperator.ToCharArray());
-			
-			// Get the root item
-			object item = root;
-			
-			// Go for each item
-			for(int i = 0; i < keys.Length; i++)
-			{
-				// Check if the current item is of ConfigStruct type
-				if(item is ListDictionary)
-				{
-					// Check if the key is valid
-					if(ValidateKey(null, keys[i].Trim(), -1) == true)
-					{
-						// Cast to ConfigStruct
-						cs = (ListDictionary)item;
-						
-						// Check if the requested item exists
-						if(cs.Contains(keys[i]) == true)
-						{
-							// Set the item to the next item
-							item = cs[keys[i]];
-						}
-						else
-						{
-							// Key not found
-							// return default setting
-							return defaultsetting;
-						}
-					}
-					else
-					{
-						// Invalid key in path
-						// return default setting
-						return defaultsetting;
-					}
-				}
-				else
-				{
-					// Unable to go any further
-					// return default setting
-					return defaultsetting;
-				}
-			}
-			
-			// Return the item
-			return item;
-		}
-		
-		
 		// This returns a string added with escape characters
 		private string EscapedString(string str)
 		{
@@ -235,12 +131,12 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// This validates a given key and sets
 		// error properties if key is invalid and errorline > -1
-		private bool ValidateKey(ListDictionary container, string key, int errorline)
+		private bool ValidateKey(string key, int errorline)
 		{
-			bool validateresult;
+			bool validateresult = true;
 			
 			// Check if key is an empty string
-			if(key == "")
+			if(key.Length == 0)
 			{
 				// ERROR: Missing key name in statement
 				if(errorline > -1) RaiseError(errorline, ERROR_KEYMISSING);
@@ -248,70 +144,16 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			else
 			{
-				// Check if there are spaces in the key
-				if(key.IndexOfAny(" ".ToCharArray()) > -1)
+				// Check if all characters are valid
+				foreach(char c in key)
 				{
-					// ERROR: Spaces not allowed in key names
-					if(errorline > -1) RaiseError(errorline, ERROR_KEYSPACES);
-					validateresult = false;
-				}
-				else
-				{
-					// Check if we can test existance
-					if(container != null)
+					if(KEY_CHARACTERS.IndexOf(c) == -1)
 					{
-						// Test if the key exists in this container
-						if(container.Contains(key) == true)
-						{
-							// ERROR: Key is not unique within struct
-							if(errorline > -1) RaiseError(errorline, ERROR_KEYNOTUNQIUE);
-							validateresult = false;
-						}
-						else
-						{
-							// Key OK
-							validateresult = true;
-						}
+						// ERROR: Invalid characters in key name
+						if(errorline > -1) RaiseError(errorline, ERROR_KEYCHARACTERS);
+						validateresult = false;
+						break;
 					}
-					else
-					{
-						// Key OK
-						validateresult = true;
-					}
-				}
-			}
-			
-			// Return result
-			return validateresult;
-		}
-		
-		
-		// This validates a given keyword and sets
-		// error properties if keyword is invalid and errorline > -1
-		private bool ValidateKeyword(string keyword, int errorline)
-		{
-			bool validateresult;
-			
-			// Check if key is an empty string
-			if(keyword == "")
-			{
-				// ERROR: Missing key name in statement
-				if(errorline > -1) RaiseError(errorline, ERROR_ASSIGNINVALID);
-				validateresult = false;
-			}
-			else
-			{
-				// Check if there are spaces in the key
-				if(keyword.IndexOfAny(" ".ToCharArray()) > -1)
-				{
-					// ERROR: Spaces not allowed in key names
-					if(errorline > -1) RaiseError(errorline, ERROR_ASSIGNINVALID);
-					validateresult = false;
-				}
-				else
-				{
-					// Key OK
-					validateresult = true;
 				}
 			}
 			
@@ -322,14 +164,14 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// This parses a structure in the given data starting
 		// from the given pos and line and updates pos and line.
-		private ListDictionary InputStructure(ref string data, ref int pos, ref int line)
+		private UniversalCollection InputStructure(ref string data, ref int pos, ref int line)
 		{
 			char c = '\0';					// current data character
 			int pm = PM_NOTHING;			// current parse mode
 			string key = "", val = "";		// current key and value beign built
 			bool escape = false;			// escape sequence?
 			bool endofstruct = false;		// true as soon as this level struct ends
-			ListDictionary cs = new ListDictionary();
+			UniversalCollection cs = new UniversalCollection();
 			
 			// Go through all of the data until
 			// the end or until the struct closes
@@ -348,13 +190,13 @@ namespace CodeImp.DoomBuilder.IO
 						case '{': // Begin of new struct
 							
 							// Validate key
-							if(ValidateKey(cs, key.Trim(), line))
+							if(ValidateKey(key.Trim(), line))
 							{
 								// Next character
 								pos++;
 								
 								// Parse this struct and add it
-								cs.Add(key.Trim(), InputStructure(ref data, ref pos, ref line));
+								cs.Add(new UniversalEntry(key.Trim(), InputStructure(ref data, ref pos, ref line)));
 								
 								// Check the last character
 								pos--;
@@ -377,7 +219,7 @@ namespace CodeImp.DoomBuilder.IO
 						case '=': // Assignment
 							
 							// Validate key
-							if(ValidateKey(cs, key.Trim(), line))
+							if(ValidateKey(key.Trim(), line))
 							{
 								// Now parsing assignment
 								pm = PM_ASSIGNMENT;
@@ -389,14 +231,10 @@ namespace CodeImp.DoomBuilder.IO
 						case ';': // Terminator
 							
 							// Validate key
-							if(ValidateKey(cs, key.Trim(), line))
+							if(ValidateKey(key.Trim(), line))
 							{
-								// Add the key with null as value
-								cs.Add(key.Trim(), null);
-							
-								// Reset key and value
-								key = "";
-								val = "";
+								// Error: No value
+								RaiseError(line, ERROR_KEYWITHOUTVALUE);
 							}
 							
 							// Leave switch
@@ -470,7 +308,7 @@ namespace CodeImp.DoomBuilder.IO
 						default: // Everything else
 							
 							// Add character to key
-							key += c.ToString(CultureInfo.InvariantCulture);
+							key += c.ToString(CultureInfo.InvariantCulture).ToLowerInvariant();
 							
 							// Leave switch
 							break;
@@ -542,7 +380,7 @@ namespace CodeImp.DoomBuilder.IO
 							}
 							
 							// Add it to struct
-							cs.Add(key.Trim(), fval);
+							cs.Add(new UniversalEntry(key.Trim(), fval));
 						}
 						else
 						{
@@ -556,7 +394,7 @@ namespace CodeImp.DoomBuilder.IO
 								ival = System.Convert.ToInt32(val.Trim(), CultureInfo.InvariantCulture);
 								
 								// Add it to struct
-								cs.Add(key.Trim(), ival);
+								cs.Add(new UniversalEntry(key.Trim(), ival));
 							}
 							catch(System.OverflowException)
 							{
@@ -567,7 +405,7 @@ namespace CodeImp.DoomBuilder.IO
 									lval = System.Convert.ToInt64(val.Trim(), CultureInfo.InvariantCulture);
 									
 									// Add it to struct
-									cs.Add(key.Trim(), lval);
+									cs.Add(new UniversalEntry(key.Trim(), lval));
 								}
 								catch(System.OverflowException)
 								{
@@ -673,7 +511,7 @@ namespace CodeImp.DoomBuilder.IO
 						else if(c == '\"')
 						{
 							// Add string to struct
-							cs.Add(key.Trim(), val);
+							cs.Add(new UniversalEntry(key.Trim(), val));
 							
 							// End of assignment
 							pm = PM_ASSIGNMENT;
@@ -702,38 +540,34 @@ namespace CodeImp.DoomBuilder.IO
 					// Check if keyword ends
 					if(c == ';')
 					{
-						// Validate the keyword
-						if(ValidateKeyword(val.Trim(), line))
+						// Add to the struct depending on the keyword
+						switch(val.Trim().ToLowerInvariant())
 						{
-							// Add to the struct depending on the keyword
-							switch(val.Trim().ToLowerInvariant())
-							{
-								case "true":
-									
-									// Add boolean true
-									cs.Add(key.Trim(), true);
-									break;
-									
-								case "false":
-									
-									// Add boolean false
-									cs.Add(key.Trim(), false);
-									break;
-									
-								default:
-									
-									// Unknown keyword
-									RaiseError(line, ERROR_KEYWORDUNKNOWN);
-									break;
-							}
-							
-							// End of assignment
-							pm = PM_NOTHING;
-							
-							// Reset key and value
-							key = "";
-							val = "";
+							case "true":
+								
+								// Add boolean true
+								cs.Add(new UniversalEntry(key.Trim(), true));
+								break;
+								
+							case "false":
+								
+								// Add boolean false
+								cs.Add(new UniversalEntry(key.Trim(), false));
+								break;
+								
+							default:
+								
+								// Unknown keyword
+								RaiseError(line, ERROR_KEYWORDUNKNOWN);
+								break;
 						}
+						
+						// End of assignment
+						pm = PM_NOTHING;
+						
+						// Reset key and value
+						key = "";
+						val = "";
 					}
 					// Check for new line
 					else if(c == '\n')
@@ -759,7 +593,7 @@ namespace CodeImp.DoomBuilder.IO
 		
 		
 		// This will create a data structure from the given object
-		private string OutputStructure(ListDictionary cs, int level, string newline, bool whitespace)
+		private string OutputStructure(UniversalCollection cs, int level, string newline, bool whitespace)
 		{
 			string leveltabs = "";
 			string spacing = "";
@@ -776,7 +610,7 @@ namespace CodeImp.DoomBuilder.IO
 				}
 				
 				// Get enumerator
-				IDictionaryEnumerator de = cs.GetEnumerator();
+				IEnumerator<UniversalEntry> de = cs.GetEnumerator();
 				
 				// Go for each item
 				for(int i = 0; i < cs.Count; i++)
@@ -784,53 +618,54 @@ namespace CodeImp.DoomBuilder.IO
 					// Go to next item
 					de.MoveNext();
 					
-					// Check if the value if of ConfigStruct type
-					if(de.Value is ListDictionary)
+					// Check if the value if of collection type
+					if(de.Current.Value is UniversalCollection)
 					{
 						// Output recursive structure
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
-						db.Append(leveltabs); db.Append(de.Key); db.Append(newline);
+						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(newline);
 						db.Append(leveltabs); db.Append("{"); db.Append(newline);
-						db.Append(OutputStructure((ListDictionary)de.Value, level + 1, newline, whitespace));
+						db.Append(OutputStructure((UniversalCollection)de.Current.Value, level + 1, newline, whitespace));
 						db.Append(leveltabs); db.Append("}"); db.Append(newline);
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
 					}
 					// Check if the value is of boolean type
-					else if(de.Value is bool)
+					else if(de.Current.Value is bool)
 					{
 						// Check value
-						if((bool)de.Value == true)
+						if((bool)de.Current.Value == true)
 						{
 							// Output the keyword "true"
-							db.Append(leveltabs); db.Append(de.Key.ToString()); db.Append(spacing);
+							db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing);
 							db.Append("="); db.Append(spacing); db.Append("true;"); db.Append(newline);
 						}
 						else
 						{
 							// Output the keyword "false"
-							db.Append(leveltabs); db.Append(de.Key.ToString()); db.Append(spacing);
+							db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing);
 							db.Append("="); db.Append(spacing); db.Append("false;"); db.Append(newline);
 						}
 					}
 					// Check if value is of float type
-					else if(de.Value is float)
+					else if(de.Current.Value is float)
 					{
-						// Output the value with a postfixed f
-						db.Append(leveltabs); db.Append(de.Key); db.Append(spacing); db.Append("=");
-						db.Append(spacing); db.Append(String.Format(CultureInfo.InvariantCulture, "{0}", de.Value)); db.Append("f;"); db.Append(newline);
+						// Output the value as float (3 decimals)
+						float f = (float)de.Current.Value;
+						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing); db.Append("=");
+						db.Append(spacing); db.Append(f.ToString("0.000", CultureInfo.InvariantCulture)); db.Append(";"); db.Append(newline);
 					}
 					// Check if value is of other numeric type
-					else if(de.Value.GetType().IsPrimitive)
+					else if(de.Current.Value.GetType().IsPrimitive)
 					{
 						// Output the value unquoted
-						db.Append(leveltabs); db.Append(de.Key); db.Append(spacing); db.Append("=");
-						db.Append(spacing); db.Append(String.Format(CultureInfo.InvariantCulture, "{0}", de.Value)); db.Append(";"); db.Append(newline);
+						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing); db.Append("=");
+						db.Append(spacing); db.Append(String.Format(CultureInfo.InvariantCulture, "{0}", de.Current.Value)); db.Append(";"); db.Append(newline);
 					}
 					else
 					{
 						// Output the value with quotes and escape characters
-						db.Append(leveltabs); db.Append(de.Key); db.Append(spacing); db.Append("=");
-						db.Append(spacing); db.Append("\""); db.Append(EscapedString(de.Value.ToString())); db.Append("\";"); db.Append(newline);
+						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(spacing); db.Append("=");
+						db.Append(spacing); db.Append("\""); db.Append(EscapedString(de.Current.Value.ToString())); db.Append("\";"); db.Append(newline);
 					}
 				}
 			}
@@ -857,186 +692,7 @@ namespace CodeImp.DoomBuilder.IO
 		public void NewConfiguration()
 		{
 			// Create new configuration
-			root = new ListDictionary();
-		}
-		
-		// This checks if a given setting exists (disregards type)
-		public bool SettingExists(string setting) { return CheckSetting(setting, DEFAULT_SEPERATOR); }
-		public bool SettingExists(string setting, string pathseperator) { return CheckSetting(setting, pathseperator); }
-		
-		// This can give a value of a key specified in a path form
-		// also, this does not error when the setting does not exist,
-		// but instead returns the given default value.
-		public string ReadSetting(string setting, string defaultsetting) { object r = ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR); if(r != null) return r.ToString(); else return null; }
-		public string ReadSetting(string setting, string defaultsetting, string pathseperator) { object r = ReadAnySetting(setting, defaultsetting, pathseperator); if(r != null) return r.ToString(); else return null; }
-		public int ReadSetting(string setting, int defaultsetting) { return Convert.ToInt32(ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR), CultureInfo.InvariantCulture); }
-		public int ReadSetting(string setting, int defaultsetting, string pathseperator) { return Convert.ToInt32(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
-		public float ReadSetting(string setting, float defaultsetting) { return Convert.ToSingle(ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR), CultureInfo.InvariantCulture); }
-		public float ReadSetting(string setting, float defaultsetting, string pathseperator) { return Convert.ToSingle(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
-		public short ReadSetting(string setting, short defaultsetting) { return Convert.ToInt16(ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR), CultureInfo.InvariantCulture); }
-		public short ReadSetting(string setting, short defaultsetting, string pathseperator) { return Convert.ToInt16(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
-		public long ReadSetting(string setting, long defaultsetting) { return Convert.ToInt64(ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR), CultureInfo.InvariantCulture); }
-		public long ReadSetting(string setting, long defaultsetting, string pathseperator) { return Convert.ToInt64(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
-		public bool ReadSetting(string setting, bool defaultsetting) { return Convert.ToBoolean(ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR), CultureInfo.InvariantCulture); }
-		public bool ReadSetting(string setting, bool defaultsetting, string pathseperator) { return Convert.ToBoolean(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
-		public byte ReadSetting(string setting, byte defaultsetting) { return Convert.ToByte(ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR), CultureInfo.InvariantCulture); }
-		public byte ReadSetting(string setting, byte defaultsetting, string pathseperator) { return Convert.ToByte(ReadAnySetting(setting, defaultsetting, pathseperator), CultureInfo.InvariantCulture); }
-		public ListDictionary ReadSetting(string setting, ListDictionary defaultsetting) { return (ListDictionary)ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR); }
-		public ListDictionary ReadSetting(string setting, ListDictionary defaultsetting, string pathseperator) { return (ListDictionary)ReadAnySetting(setting, defaultsetting, pathseperator); }
-
-		public object ReadSettingObject(string setting, object defaultsetting) { return ReadAnySetting(setting, defaultsetting, DEFAULT_SEPERATOR); }
-		
-		
-		// This writes a given setting to the configuration.
-		// Wont change existing structs, but will add them as needed.
-		// Returns true when written, false when failed.
-		public bool WriteSetting(string setting, object settingvalue) { return WriteSetting(setting, settingvalue, DEFAULT_SEPERATOR); }
-		public bool WriteSetting(string setting, object settingvalue, string pathseperator)
-		{
-			ListDictionary cs = null;
-			
-			// Split the path in an array
-			string[] keys = setting.Split(pathseperator.ToCharArray());
-			string finalkey = keys[keys.Length - 1];
-			
-			// Get the root item
-			object item = root;
-			
-			// Go for each path item
-			for(int i = 0; i < (keys.Length - 1); i++)
-			{
-				// Check if the key is valid
-				if(ValidateKey(null, keys[i].Trim(), -1) == true)
-				{
-					// Cast to ConfigStruct
-					cs = (ListDictionary)item;
-					
-					// Check if the requested item exists
-					if(cs.Contains(keys[i]) == true)
-					{
-						// Check if the requested item is a ConfigStruct
-						if(cs[keys[i]] is ListDictionary)
-						{
-							// Set the item to the next item
-							item = cs[keys[i]];
-						}
-						else
-						{
-							// Cant proceed with path
-							return false;
-						}
-					}
-					else
-					{
-						// Key not found
-						// Create it now
-						ListDictionary ncs = new ListDictionary();
-						cs.Add(keys[i], ncs);
-						
-						// Set the item to the next item
-						item = cs[keys[i]];
-					}
-				}
-				else
-				{
-					// Invalid key in path
-					return false;
-				}
-			}
-			
-			// Cast to ConfigStruct
-			cs = (ListDictionary)item;
-			
-			// Check if the key already exists
-			if(cs.Contains(finalkey) == true)
-			{
-				// Update the value
-				cs[finalkey] = settingvalue;
-			}
-			else
-			{
-				// Create the key/value pair
-				cs.Add(finalkey, settingvalue);
-			}
-			
-			// Return success
-			return true;
-		}
-		
-		
-		// This removes a given setting from the configuration.
-		public bool DeleteSetting(string setting) { return DeleteSetting(setting, DEFAULT_SEPERATOR); }
-		public bool DeleteSetting(string setting, string pathseperator)
-		{
-			ListDictionary cs = null;
-			
-			// Split the path in an array
-			string[] keys = setting.Split(pathseperator.ToCharArray());
-			string finalkey = keys[keys.Length - 1];
-			
-			// Get the root item
-			object item = root;
-			
-			// Go for each path item
-			for(int i = 0; i < (keys.Length - 1); i++)
-			{
-				// Check if the key is valid
-				if(ValidateKey(null, keys[i].Trim(), -1) == true)
-				{
-					// Cast to ConfigStruct
-					cs = (ListDictionary)item;
-					
-					// Check if the requested item exists
-					if(cs.Contains(keys[i]) == true)
-					{
-						// Check if the requested item is a ConfigStruct
-						if(cs[keys[i]] is ListDictionary)
-						{
-							// Set the item to the next item
-							item = cs[keys[i]];
-						}
-						else
-						{
-							// Cant proceed with path
-							return false;
-						}
-					}
-					else
-					{
-						// Key not found
-						// Create it now
-						ListDictionary ncs = new ListDictionary();
-						cs.Add(keys[i], ncs);
-						
-						// Set the item to the next item
-						item = cs[keys[i]];
-					}
-				}
-				else
-				{
-					// Invalid key in path
-					return false;
-				}
-			}
-			
-			// Cast to ConfigStruct
-			cs = (ListDictionary)item;
-			
-			// Arrived at our destination
-			// Delete the key if the key exists
-			if(cs.Contains(finalkey) == true)
-			{
-				// Key exists, delete it
-				cs.Remove(finalkey);
-				
-				// Return success
-				return true;
-			}
-			else
-			{
-				// Key not found, return fail
-				return false;
-			}
+			root = new UniversalCollection();
 		}
 		
 		
