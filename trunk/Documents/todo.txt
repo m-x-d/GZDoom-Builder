@@ -1,7 +1,5 @@
 - Finish the custom fields editor
-	- Fix the browse button
 	- Enums should drop down in list
-	- Doubleclick to rename?
 	- Remember sort order
 	- Booleans should be enumerable (dropdown true/false)
 	- Strings should have a mutliline edit window on browse button
