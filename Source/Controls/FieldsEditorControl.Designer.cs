@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldslist.TabIndex = 1;
 			this.fieldslist.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.fieldslist_UserDeletingRow);
 			this.fieldslist.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.fieldslist_CellBeginEdit);
+			this.fieldslist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellDoubleClick);
 			this.fieldslist.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellEndEdit);
 			this.fieldslist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellClick);
 			this.fieldslist.SelectionChanged += new System.EventHandler(this.fieldslist_SelectionChanged);
@@ -138,6 +139,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.browsebutton.TabIndex = 2;
 			this.browsebutton.UseVisualStyleBackColor = true;
 			this.browsebutton.Visible = false;
+			this.browsebutton.Click += new System.EventHandler(this.browsebutton_Click);
 			// 
 			// FieldsEditorControl
 			// 

@@ -143,6 +143,37 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Methods
 		
+		// Browse for value
+		public void Browse(IWin32Window parent)
+		{
+			if(fieldtype != null)
+			{
+				// Browse for value
+				fieldtype.Browse(parent);
+
+				// This is a fixed field?
+				if(isfixed)
+				{
+					// Does this match the default setting?
+					if(fieldtype.GetValue().Equals(fieldinfo.Default))
+					{
+						// Undefine this field!
+						Undefine();
+					}
+					else
+					{
+						// Define
+						Define(fieldtype.GetValue());
+					}
+				}
+				else
+				{
+					// Define
+					Define(fieldtype.GetValue());
+				}
+			}
+		}
+		
 		// This is called when a cell is edited
 		public void CellChanged()
 		{

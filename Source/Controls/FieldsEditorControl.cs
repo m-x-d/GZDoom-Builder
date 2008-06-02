@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// Variables
 		private string elementname;
+		private string lasteditfieldname;
 		
 		// Constructor
 		public FieldsEditorControl()
@@ -244,6 +245,33 @@ namespace CodeImp.DoomBuilder.Controls
 			if(fieldslist.SelectedCells.Count > 0) fieldslist.BeginEdit(true);
 		}
 
+		// Cell doubleclicked
+		private void fieldslist_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+		{
+			FieldsEditorRow frow = null;
+			
+			// Anything selected
+			if(fieldslist.SelectedRows.Count > 0)
+			{
+				// Get the row
+				DataGridViewRow row = fieldslist.Rows[e.RowIndex];
+				if(row is FieldsEditorRow) frow = row as FieldsEditorRow;
+				
+				// First column?
+				if(e.ColumnIndex == 0)
+				{
+					// Not a fixed field?
+					if(!frow.IsFixed)
+					{
+						lasteditfieldname = frow.Name;
+						fieldslist.CurrentCell = fieldslist.SelectedRows[0].Cells[0];
+						fieldslist.CurrentCell.ReadOnly = false;
+						fieldslist.BeginEdit(true);
+					}
+				}
+			}
+		}
+		
 		// User deletes a row
 		private void fieldslist_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
 		{
@@ -298,19 +326,87 @@ namespace CodeImp.DoomBuilder.Controls
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
 						if(validname.Length > 0)
 						{
-							// Try to find the type in the map options
-							int type = General.Map.Options.GetUniversalFieldType(elementname, validname, 0);
-							
-							// Make new row
-							frow = new FieldsEditorRow(fieldslist, validname, type, null);
-							frow.Visible = false;
-							fieldslist.Rows.Insert(e.RowIndex + 1, frow);
+							// Check if no other row already has this name
+							foreach(DataGridViewRow r in fieldslist.Rows)
+							{
+								// Name matches?
+								if(r.Cells[0].Value.ToString().ToLowerInvariant() == validname)
+								{
+									// Cannot have two rows with same name
+									validname = "";
+									General.ShowWarningMessage("Fields must have unique names!", MessageBoxButtons.OK);
+									break;
+								}
+							}
+
+							// Still valid?
+							if(validname.Length > 0)
+							{
+								// Try to find the type in the map options
+								int type = General.Map.Options.GetUniversalFieldType(elementname, validname, 0);
+
+								// Make new row
+								frow = new FieldsEditorRow(fieldslist, validname, type, null);
+								frow.Visible = false;
+								fieldslist.Rows.Insert(e.RowIndex + 1, frow);
+							}
 						}
 					}
-					
+
 					// Mark the row for delete
 					row.ReadOnly = true;
 					deleterowstimer.Start();
+				}
+				else
+				{
+					// Name given?
+					if(row.Cells[0].Value != null)
+					{
+						// Make a valid UDMF field name
+						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
+						if(validname.Length > 0)
+						{
+							// Check if no other row already has this name
+							foreach(DataGridViewRow r in fieldslist.Rows)
+							{
+								// Name matches?
+								if(r.Cells[0].Value.ToString().ToLowerInvariant() == validname)
+								{
+									// Cannot have two rows with same name
+									validname = "";
+									row.Cells[0].Value = lasteditfieldname;
+									General.ShowWarningMessage("Fields must have unique names!", MessageBoxButtons.OK);
+									break;
+								}
+							}
+
+							// Still valid?
+							if(validname.Length > 0)
+							{
+								// Try to find the type in the map options
+								int type = General.Map.Options.GetUniversalFieldType(elementname, validname, -1);
+
+								// Rename row and change type
+								row.Cells[0].Value = validname;
+								if(type != -1) frow.ChangeType(type);
+							}
+							else
+							{
+								// Keep old name
+								row.Cells[0].Value = lasteditfieldname;
+							}
+						}
+						else
+						{
+							// Keep old name
+							row.Cells[0].Value = lasteditfieldname;
+						}
+					}
+					else
+					{
+						// Keep old name
+						row.Cells[0].Value = lasteditfieldname;
+					}
 				}
 			}
 			// Changing field value?
@@ -413,6 +509,22 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				browsebutton.Visible = false;
+			}
+		}
+
+		// Browse clicked
+		private void browsebutton_Click(object sender, EventArgs e)
+		{
+			// Any row selected?
+			if(fieldslist.SelectedRows.Count > 0)
+			{
+				// Get selected row
+				DataGridViewRow row = fieldslist.SelectedRows[0];
+				if(row is FieldsEditorRow)
+				{
+					// Browse
+					(row as FieldsEditorRow).Browse(this.ParentForm);
+				}
 			}
 		}
 	}
