@@ -220,7 +220,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(type == -1)
 			{
 				// Read from map configuration
-				type = mapconfig.ReadSetting("fieldtypes." + elementname + "-" + fieldname, defaulttype);
+				type = mapconfig.ReadSetting("fieldtypes." + elementname + "." + fieldname, defaulttype);
 			}
 
 			return type;
@@ -233,7 +233,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(General.Map.Config.ReadSetting("universalfields." + elementname + "." + fieldname + ".type", -1) == -1)
 			{
 				// Write type to map configuration
-				mapconfig.WriteSetting("fieldtypes." + elementname + "-" + fieldname, type);
+				mapconfig.WriteSetting("fieldtypes." + elementname + "." + fieldname, type);
 			}
 		}
 		
