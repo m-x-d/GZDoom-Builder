@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		public virtual bool IsBrowseable { get { return false; } }
 		public virtual bool IsEnumerable { get { return false; } }
+		public virtual bool IsLimitedToEnums { get { return false; } }
 
 		#endregion
 
@@ -95,7 +96,7 @@ namespace CodeImp.DoomBuilder.Types
 		}
 
 		// This sets up the handler for arguments
-		public virtual void SetupField(TypeHandlerAttribute attr)
+		public virtual void SetupField(TypeHandlerAttribute attr, UniversalFieldInfo fieldinfo)
 		{
 			// Setup
 			this.arginfo = arginfo;
@@ -155,6 +156,13 @@ namespace CodeImp.DoomBuilder.Types
 			return this.GetStringValue();
 		}
 
+		// This returns the type to display for fixed fields
+		// Must be a custom usable type
+		public virtual TypeHandlerAttribute GetDisplayType()
+		{
+			return this.attribute;
+		}
+		
 		#endregion
 	}
 }

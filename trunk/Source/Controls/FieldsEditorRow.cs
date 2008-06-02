@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#endregion
 
-		#region ================== Constructor / Disposer
+		#region ================== Constructor
 
 		// Constructor for a fixed, undefined field
 		public FieldsEditorRow(DataGridView view, UniversalFieldInfo fixedfield)
@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Controls
 			isfixed = true;
 			
 			// Type
-			this.fieldtype = General.Types.GetFieldHandler(fixedfield.Type, fixedfield.Default);
+			this.fieldtype = General.Types.GetFieldHandler(fixedfield);
 			
 			// Make all cells
 			base.CreateCells(view);
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Cells[0].ReadOnly = true;
 
 			// Setup type cell
-			this.Cells[1].Value = fieldtype.Attribute;
+			this.Cells[1].Value = fieldtype.GetDisplayType();
 			this.Cells[1].ReadOnly = true;
 
 			// Setup value cell
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Cells[0].ReadOnly = true;
 
 			// Setup type cell
-			this.Cells[1].Value = fieldtype.Attribute;
+			this.Cells[1].Value = fieldtype.GetDisplayType();
 			this.Cells[1].ReadOnly = false;
 
 			// Setup value cell
@@ -188,8 +188,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(attrib.Index != fieldtype.Index)
 				{
 					// Change field type!
-					fieldtype = General.Types.GetFieldHandler(attrib.Index, this.Cells[2].Value);
-					this.Cells[1].Value = attrib;
+					this.ChangeType(attrib.Index);
 				}
 			}
 			
@@ -241,13 +240,16 @@ namespace CodeImp.DoomBuilder.Controls
 		// This changes the type
 		public void ChangeType(int typeindex)
 		{
+			// Can't do this for a fixed field!
+			if(isfixed) throw new InvalidOperationException();
+			
 			// Different?
 			if(typeindex != fieldtype.Index)
 			{
 				// Change field type!
 				TypeHandlerAttribute attrib = General.Types.GetAttribute(typeindex);
 				fieldtype = General.Types.GetFieldHandler(typeindex, this.Cells[2].Value);
-				this.Cells[1].Value = attrib;
+				this.Cells[1].Value = fieldtype.GetDisplayType();
 			}
 		}
 

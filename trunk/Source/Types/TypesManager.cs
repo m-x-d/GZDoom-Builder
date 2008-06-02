@@ -121,8 +121,8 @@ namespace CodeImp.DoomBuilder.Types
 			return th;
 		}
 
-		// This returns the type handler for a given universal field
-		public TypeHandler GetFieldHandler(int type, object defaultvalue)
+		// This returns the type handler for a custom universal field
+		public TypeHandler GetFieldHandler(int type, object defaultsetting)
 		{
 			Type t = typeof(NullHandler);
 			TypeHandlerAttribute ta = null;
@@ -136,8 +136,28 @@ namespace CodeImp.DoomBuilder.Types
 
 			// Create instance
 			TypeHandler th = (TypeHandler)General.ThisAssembly.CreateInstance(t.FullName);
-			th.SetupField(ta);
-			th.SetValue(defaultvalue);
+			th.SetupField(ta, null);
+			th.SetValue(defaultsetting);
+			return th;
+		}
+
+		// This returns the type handler for a given universal field
+		public TypeHandler GetFieldHandler(UniversalFieldInfo fieldinfo)
+		{
+			Type t = typeof(NullHandler);
+			TypeHandlerAttribute ta = null;
+
+			// Do we have a handler type for this?
+			if(handlertypes.ContainsKey(fieldinfo.Type))
+			{
+				ta = handlertypes[fieldinfo.Type];
+				t = ta.Type;
+			}
+
+			// Create instance
+			TypeHandler th = (TypeHandler)General.ThisAssembly.CreateInstance(t.FullName);
+			th.SetupField(ta, fieldinfo);
+			th.SetValue(fieldinfo.Default);
 			return th;
 		}
 		

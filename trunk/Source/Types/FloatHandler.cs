@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(1, "Float", true)]
+	[TypeHandler(1, "Decimal", true)]
 	internal class FloatHandler : TypeHandler
 	{
 		#region ================== Constants

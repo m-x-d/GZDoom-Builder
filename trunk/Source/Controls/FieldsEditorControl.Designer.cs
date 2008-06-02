@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldvalue = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.deleterowstimer = new System.Windows.Forms.Timer(this.components);
 			this.browsebutton = new System.Windows.Forms.Button();
+			this.enumscombo = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.fieldslist)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -58,7 +59,7 @@ namespace CodeImp.DoomBuilder.Controls
             this.fieldvalue});
 			dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			dataGridViewCellStyle4.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
 			dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -75,13 +76,15 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldslist.RowTemplate.DefaultCellStyle.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			this.fieldslist.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.fieldslist.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-			this.fieldslist.Size = new System.Drawing.Size(444, 244);
+			this.fieldslist.Size = new System.Drawing.Size(444, 263);
 			this.fieldslist.TabIndex = 1;
+			this.fieldslist.Scroll += new System.Windows.Forms.ScrollEventHandler(this.fieldslist_Scroll);
 			this.fieldslist.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.fieldslist_UserDeletingRow);
 			this.fieldslist.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.fieldslist_CellBeginEdit);
 			this.fieldslist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellDoubleClick);
 			this.fieldslist.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellEndEdit);
 			this.fieldslist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellClick);
+			this.fieldslist.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.fieldslist_DataError);
 			this.fieldslist.SelectionChanged += new System.EventHandler(this.fieldslist_SelectionChanged);
 			// 
 			// fieldname
@@ -99,6 +102,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// fieldtype
 			// 
+			this.fieldtype.AutoComplete = false;
 			dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
 			dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
 			dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
@@ -133,22 +137,33 @@ namespace CodeImp.DoomBuilder.Controls
 			this.browsebutton.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsebutton.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
 			this.browsebutton.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
-			this.browsebutton.Location = new System.Drawing.Point(370, 43);
+			this.browsebutton.Location = new System.Drawing.Point(370, 46);
 			this.browsebutton.Name = "browsebutton";
-			this.browsebutton.Size = new System.Drawing.Size(30, 24);
+			this.browsebutton.Size = new System.Drawing.Size(28, 26);
 			this.browsebutton.TabIndex = 2;
 			this.browsebutton.UseVisualStyleBackColor = true;
 			this.browsebutton.Visible = false;
 			this.browsebutton.Click += new System.EventHandler(this.browsebutton_Click);
 			// 
+			// enumscombo
+			// 
+			this.enumscombo.FormattingEnabled = true;
+			this.enumscombo.ItemHeight = 14;
+			this.enumscombo.Location = new System.Drawing.Point(295, 121);
+			this.enumscombo.Name = "enumscombo";
+			this.enumscombo.Size = new System.Drawing.Size(128, 22);
+			this.enumscombo.TabIndex = 3;
+			this.enumscombo.Validating += new System.ComponentModel.CancelEventHandler(this.enumscombo_Validating);
+			// 
 			// FieldsEditorControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.Controls.Add(this.enumscombo);
 			this.Controls.Add(this.browsebutton);
 			this.Controls.Add(this.fieldslist);
+			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "FieldsEditorControl";
-			this.Size = new System.Drawing.Size(474, 266);
+			this.Size = new System.Drawing.Size(474, 286);
 			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.FieldsEditorControl_Layout);
 			this.Resize += new System.EventHandler(this.FieldsEditorControl_Resize);
 			((System.ComponentModel.ISupportInitialize)(this.fieldslist)).EndInit();
@@ -161,6 +176,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.DataGridView fieldslist;
 		private System.Windows.Forms.Timer deleterowstimer;
 		private System.Windows.Forms.Button browsebutton;
+		private System.Windows.Forms.ComboBox enumscombo;
 		private System.Windows.Forms.DataGridViewTextBoxColumn fieldname;
 		private System.Windows.Forms.DataGridViewComboBoxColumn fieldtype;
 		private System.Windows.Forms.DataGridViewTextBoxColumn fieldvalue;

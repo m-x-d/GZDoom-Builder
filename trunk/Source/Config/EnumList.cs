@@ -47,6 +47,11 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Constructor
 
+		// Constructor for custom list
+		internal EnumList()
+		{
+		}
+
 		// Constructor to load from dictionary
 		internal EnumList(IDictionary dic)
 		{
