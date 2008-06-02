@@ -62,7 +62,16 @@ namespace CodeImp.DoomBuilder.Types
 			// Keep enum list reference
 			list = arginfo.Enum;
 		}
-		
+
+		// When set up for a universal field
+		public override void SetupField(TypeHandlerAttribute attr, UniversalFieldInfo fieldinfo)
+		{
+			base.SetupField(attr, fieldinfo);
+
+			// Keep enum list reference
+			if(fieldinfo != null) list = fieldinfo.Enum; else list = new EnumList();
+		}
+
 		#endregion
 		
 		#region ================== Methods
@@ -130,6 +139,7 @@ namespace CodeImp.DoomBuilder.Types
 				{
 					// Make a dummy value
 					this.value = new EnumItem(value.ToString(), value.ToString());
+					this.value = new EnumItem(this.value.GetIntValue().ToString(CultureInfo.InvariantCulture), value.ToString());
 				}
 			}
 		}
@@ -170,6 +180,13 @@ namespace CodeImp.DoomBuilder.Types
 		public override EnumList GetEnumList()
 		{
 			return list;
+		}
+
+		// This returns the type to display for fixed fields
+		// Must be a custom usable type
+		public override TypeHandlerAttribute GetDisplayType()
+		{
+			return General.Types.GetAttribute((int)UniversalType.Integer);
 		}
 		
 		#endregion

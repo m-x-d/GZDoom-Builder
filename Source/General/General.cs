@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder
 		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
 		internal static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
 
+		[DllImport("user32.dll", EntryPoint = "SendMessage", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
+		internal static extern int SendMessage(IntPtr hwnd, uint Msg, int wParam, int lParam);
+		
 		#endregion
 
 		#region ================== Constants
@@ -78,6 +81,9 @@ namespace CodeImp.DoomBuilder
 		internal const uint PAGE_GUARD = 0x100;
 		internal const uint PAGE_NOCACHE = 0x200;
 		internal const uint PAGE_WRITECOMBINE = 0x400;
+		
+		// SendMessage API
+		internal const int CB_SETITEMHEIGHT = 0x153;
 		
 		// Files and Folders
 		private const string SETTINGS_FILE = "Builder.cfg";

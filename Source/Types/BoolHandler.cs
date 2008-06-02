@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -39,11 +40,28 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
+		private EnumList list;
 		private bool value;
 
 		#endregion
 
 		#region ================== Properties
+
+		public override bool IsEnumerable { get { return true; } }
+		public override bool IsLimitedToEnums { get { return true; } }
+		
+		#endregion
+
+		#region ================== Constructor
+
+		// When set up for an argument
+		public BoolHandler() : base()
+		{
+			// Make enums
+			list = new EnumList();
+			list.Add(new EnumItem("true", "True"));
+			list.Add(new EnumItem("false", "False"));
+		}
 
 		#endregion
 
@@ -99,6 +117,12 @@ namespace CodeImp.DoomBuilder.Types
 			return this.value.ToString();
 		}
 
+		// This returns an enum list
+		public override EnumList GetEnumList()
+		{
+			return list;
+		}
+		
 		#endregion
 	}
 }

@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.Config
 				try
 				{
 					// Read the field info and add to list
-					uf = new UniversalFieldInfo(elementname, de.Key.ToString(), cfg);
+					uf = new UniversalFieldInfo(elementname, de.Key.ToString(), cfg, enums);
 					list.Add(uf);
 				}
 				catch(Exception)

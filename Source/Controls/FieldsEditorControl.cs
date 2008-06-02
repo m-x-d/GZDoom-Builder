@@ -40,19 +40,33 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	public partial class FieldsEditorControl : UserControl
 	{
+		#region ================== Constants
+
 		// Constants
 		private const string ADD_FIELD_TEXT = "   (click to add custom field)";
+
+		#endregion
 		
+		#region ================== Variables
+
 		// Variables
 		private string elementname;
 		private string lasteditfieldname;
-		
+
+		#endregion
+
+		#region ================== Constructor
+
 		// Constructor
 		public FieldsEditorControl()
 		{
 			InitializeComponent();
 		}
-		
+
+		#endregion
+
+		#region ================== Setup / Apply
+
 		// This sets up the control
 		public void Setup(string elementname)
 		{
@@ -211,18 +225,9 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
-		// This sets up the new row
-		private void SetupNewRowStyle()
-		{
-			// Show text for new row
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].Value = ADD_FIELD_TEXT;
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].Style.ForeColor = SystemColors.GrayText;
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].ReadOnly = false;
-			
-			// Make sure user can only enter property name in a new row
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[1].ReadOnly = true;
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[2].ReadOnly = true;
-		}
+		#endregion
+
+		#region ================== Events
 		
 		// Resized
 		private void FieldsEditorControl_Resize(object sender, EventArgs e)
@@ -241,6 +246,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// Cell clicked
 		private void fieldslist_CellClick(object sender, DataGridViewCellEventArgs e)
 		{
+			ApplyEnums(true);
+			
 			// Edit immediately
 			if(fieldslist.SelectedCells.Count > 0) fieldslist.BeginEdit(true);
 		}
@@ -290,7 +297,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// User selects a cell for editing
 		private void fieldslist_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
 		{
-			// Property cell?
+			// Field name cell?
 			if(e.ColumnIndex == 0)
 			{
 				// New row index?
@@ -299,6 +306,62 @@ namespace CodeImp.DoomBuilder.Controls
 					// Remove all text
 					fieldslist.Rows[e.RowIndex].Cells[0].Style.ForeColor = SystemColors.WindowText;
 					fieldslist.Rows[e.RowIndex].Cells[0].Value = "";
+				}
+			}
+			// Value cell?
+			else if(e.ColumnIndex == 2)
+			{
+				// Get the row
+				FieldsEditorRow frow = null;
+				DataGridViewRow row = fieldslist.Rows[e.RowIndex];
+				if(row is FieldsEditorRow)
+				{
+					// Get specializedrow
+					frow = row as FieldsEditorRow;
+
+					// Enumerable?
+					if(frow.TypeHandler.IsEnumerable)
+					{
+						// Fill combo with enums
+						enumscombo.SelectedItem = null;
+						enumscombo.Text = "";
+						enumscombo.Items.Clear();
+						enumscombo.Items.AddRange(frow.TypeHandler.GetEnumList().ToArray());
+						enumscombo.Tag = frow;
+
+						// Lock combo to enums?
+						if(frow.TypeHandler.IsLimitedToEnums)
+							enumscombo.DropDownStyle = ComboBoxStyle.DropDownList;
+						else
+							enumscombo.DropDownStyle = ComboBoxStyle.DropDown;
+						
+						// Position combobox
+						Rectangle cellrect = fieldslist.GetCellDisplayRectangle(2, row.Index, false);
+						enumscombo.Location = new Point(cellrect.Left, cellrect.Top);
+						enumscombo.Width = cellrect.Width;
+						int internalheight = cellrect.Height - (enumscombo.Height - enumscombo.ClientRectangle.Height) - 6;
+						General.SendMessage(enumscombo.Handle, General.CB_SETITEMHEIGHT, -1, internalheight);
+						
+						// Select the value of this field (for DropDownList style combo)
+						foreach(EnumItem i in enumscombo.Items)
+						{
+							// Matches?
+							if(string.Compare(i.Title, frow.TypeHandler.GetStringValue(), true, CultureInfo.InvariantCulture) == 0)
+							{
+								// Select this item
+								enumscombo.SelectedItem = i;
+							}
+						}
+
+						// Put the display text in the text (for DropDown style combo)
+						enumscombo.Text = frow.TypeHandler.GetStringValue();
+						
+						// Show combo
+						// Why does it not select all and focus the combobox?
+						enumscombo.Show();
+						enumscombo.Focus();
+						enumscombo.SelectAll();
+					}
 				}
 			}
 		}
@@ -412,11 +475,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// Changing field value?
 			if((e.ColumnIndex == 2) && (frow != null))
 			{
-				// Defined?
-				if((row.Cells[2].Value != null) && (!frow.IsFixed || (frow.Info.Default != row.Cells[2].Value)))
-					frow.Define(row.Cells[2].Value);
-				else if(frow.IsFixed)
-					frow.Undefine();
+				// Apply changes
+				ApplyValue(frow, row.Cells[2].Value);
 			}
 			
 			// Updated
@@ -451,10 +511,109 @@ namespace CodeImp.DoomBuilder.Controls
 		// Selection changes
 		private void fieldslist_SelectionChanged(object sender, EventArgs e)
 		{
+			ApplyEnums(true);
+			
 			// Update button
 			UpdateBrowseButton();
 		}
+
+		// Browse clicked
+		private void browsebutton_Click(object sender, EventArgs e)
+		{
+			// Any row selected?
+			if(fieldslist.SelectedRows.Count > 0)
+			{
+				// Get selected row
+				DataGridViewRow row = fieldslist.SelectedRows[0];
+				if(row is FieldsEditorRow)
+				{
+					// Browse
+					(row as FieldsEditorRow).Browse(this.ParentForm);
+				}
+			}
+		}
+
+		// This handles field data errors
+		private void fieldslist_DataError(object sender, DataGridViewDataErrorEventArgs e)
+		{
+			// Ignore this, because we want to display values
+			// in the type column that are not in their combobox
+			e.ThrowException = false;
+		}
+
+		// Validate value in enums combobox
+		private void enumscombo_Validating(object sender, CancelEventArgs e)
+		{
+			ApplyEnums(false);
+		}
+
+		// Scrolling
+		private void fieldslist_Scroll(object sender, ScrollEventArgs e)
+		{
+			// Stop any cell editing
+			ApplyEnums(true);
+			fieldslist.EndEdit();
+			HideBrowseButton();
+		}
 		
+		#endregion
+		
+		#region ================== Private Methods
+
+		// This applies a value to a row
+		private void ApplyValue(FieldsEditorRow frow, object value)
+		{
+			// Defined?
+			if((value != null) && (!frow.IsFixed || !frow.Info.Default.Equals(value)))
+				frow.Define(value);
+			else if(frow.IsFixed)
+				frow.Undefine();
+		}
+		
+		// This applies the contents of the enums combobox and hides (if opened)
+		private void ApplyEnums(bool hide)
+		{
+			// Enums combobox shown?
+			if((enumscombo.Visible) && (enumscombo.Tag is FieldsEditorRow))
+			{
+				// Get the row
+				FieldsEditorRow frow = (enumscombo.Tag as FieldsEditorRow);
+
+				// Take the selected value and apply it
+				ApplyValue(frow, enumscombo.Text);
+				
+				// Updated
+				frow.CellChanged();
+			}
+			
+			if(hide)
+			{
+				// Hide combobox
+				enumscombo.Tag = null;
+				enumscombo.Visible = false;
+				enumscombo.Items.Clear();
+			}
+		}
+		
+		// This sets up the new row
+		private void SetupNewRowStyle()
+		{
+			// Show text for new row
+			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].Value = ADD_FIELD_TEXT;
+			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].Style.ForeColor = SystemColors.GrayText;
+			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].ReadOnly = false;
+
+			// Make sure user can only enter property name in a new row
+			fieldslist.Rows[fieldslist.NewRowIndex].Cells[1].ReadOnly = true;
+			fieldslist.Rows[fieldslist.NewRowIndex].Cells[2].ReadOnly = true;
+		}
+
+		// This hides the browse button
+		private void HideBrowseButton()
+		{
+			browsebutton.Visible = false;
+		}
+
 		// This updates the button
 		private void UpdateBrowseButton()
 		{
@@ -467,16 +626,17 @@ namespace CodeImp.DoomBuilder.Controls
 				// Get selected row
 				row = fieldslist.SelectedRows[0];
 				if(row is FieldsEditorRow) frow = row as FieldsEditorRow;
-				
+
 				// Not the new row and FieldsEditorRow available?
 				if((row.Index < fieldslist.NewRowIndex) && (frow != null))
 				{
 					// Browse button available for this type?
-					if(frow.TypeHandler.IsBrowseable)
+					if(frow.TypeHandler.IsBrowseable && !frow.TypeHandler.IsEnumerable)
 					{
 						Rectangle cellrect = fieldslist.GetCellDisplayRectangle(2, row.Index, false);
 
 						// Show button
+						enumscombo.Visible = false;
 						browsebutton.Location = new Point(cellrect.Right - browsebutton.Width, cellrect.Top);
 						browsebutton.Height = cellrect.Height;
 						browsebutton.Visible = true;
@@ -498,34 +658,20 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					else
 					{
-						browsebutton.Visible = false;
+						HideBrowseButton();
 					}
 				}
 				else
 				{
-					browsebutton.Visible = false;
+					HideBrowseButton();
 				}
 			}
 			else
 			{
-				browsebutton.Visible = false;
+				HideBrowseButton();
 			}
 		}
-
-		// Browse clicked
-		private void browsebutton_Click(object sender, EventArgs e)
-		{
-			// Any row selected?
-			if(fieldslist.SelectedRows.Count > 0)
-			{
-				// Get selected row
-				DataGridViewRow row = fieldslist.SelectedRows[0];
-				if(row is FieldsEditorRow)
-				{
-					// Browse
-					(row as FieldsEditorRow).Browse(this.ParentForm);
-				}
-			}
-		}
+		
+		#endregion
 	}
 }
