@@ -375,6 +375,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Get the map name
 				selectedmapname = mapslist.SelectedItems[0].Text;
+				options = new MapOptions(mapsettings, selectedmapname);
 				
 				// Get locations from previous selected map settings
 				locations = new DataLocationList(mapsettings, "maps." + selectedmapname + ".resources");

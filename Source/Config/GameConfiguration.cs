@@ -186,11 +186,11 @@ namespace CodeImp.DoomBuilder.Config
 			// because they are allowed to be written as integers in the configs
 			obj = cfg.ReadSettingObject("soundlinedefflag", 0);
 			if(obj is int) soundlinedefflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else soundlinedefflag = obj.ToString();
-			obj = cfg.ReadSetting("singlesidedflag", 0);
+			obj = cfg.ReadSettingObject("singlesidedflag", 0);
 			if(obj is int) singlesidedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else singlesidedflag = obj.ToString();
-			obj = cfg.ReadSetting("doublesidedflag", 0);
+			obj = cfg.ReadSettingObject("doublesidedflag", 0);
 			if(obj is int) doublesidedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else doublesidedflag = obj.ToString();
-			obj = cfg.ReadSetting("impassableflag", 0);
+			obj = cfg.ReadSettingObject("impassableflag", 0);
 			if(obj is int) impassableflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else impassableflag = obj.ToString();
 			
 			// Get map lumps

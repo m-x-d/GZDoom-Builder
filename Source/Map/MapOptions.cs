@@ -81,11 +81,11 @@ namespace CodeImp.DoomBuilder.Map
 		internal MapOptions()
 		{
 			// Initialize
-			this.mapconfig = new Configuration(true);
 			this.previousname = "";
 			this.currentname = "";
 			this.configfile = "";
 			this.resources = new DataLocationList();
+			this.mapconfig = new Configuration(true);
 		}
 
 		// Constructor to load from Doom Builder Map Settings Configuration
@@ -99,10 +99,12 @@ namespace CodeImp.DoomBuilder.Map
 			this.currentname = mapname;
 			this.configfile = cfg.ReadSetting("config", "");
 			this.resources = new DataLocationList();
+			this.mapconfig = new Configuration(true);
 			
 			// Go for all items in the map info
-			this.mapconfig.Root = cfg.ReadSetting(mapname, new Hashtable());
-			foreach(DictionaryEntry mp in this.mapconfig.Root)
+			this.mapconfig.Root = cfg.ReadSetting("maps." + mapname, new Hashtable());
+			IDictionary reslist = this.mapconfig.ReadSetting("resources", new Hashtable());
+			foreach(DictionaryEntry mp in reslist)
 			{
 				// Item is a structure?
 				if(mp.Value is IDictionary)

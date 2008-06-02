@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
 			
 			// Initialize custom fields editor
-			fieldslist.Setup();
+			fieldslist.Setup("thing");
 			
 			// Go for all predefined categories
 			typelist.Nodes.Clear();

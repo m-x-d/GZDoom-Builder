@@ -48,27 +48,28 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// This shows the dialog, returns false when cancelled
-		public static bool ShowDialog(IWin32Window owner, string title, ICollection<MapElement> elements, List<UniversalFieldInfo> fixedfields)
+		public static bool ShowDialog(IWin32Window owner, string title, string elementname, ICollection<MapElement> elements, List<UniversalFieldInfo> fixedfields)
 		{
 			bool result;
 			CustomFieldsForm f = new CustomFieldsForm();
-			f.Setup(title, elements, fixedfields);
+			f.Setup(title, elementname, elements, fixedfields);
 			result = (f.ShowDialog(owner) == DialogResult.OK);
 			f.Dispose();
 			return result;
 		}
 		
 		// This sets up the dialog
-		public void Setup(string title, ICollection<MapElement> elements, List<UniversalFieldInfo> fixedfields)
+		public void Setup(string title, string elementname, ICollection<MapElement> elements, List<UniversalFieldInfo> fixedfields)
 		{
-			// Keep list
+			// Initialize
 			this.elements = elements;
+			this.Text = title;
 			
 			// Fill universal fields list
 			fieldslist.ListFixedFields(fixedfields);
 
 			// Initialize custom fields editor
-			fieldslist.Setup();
+			fieldslist.Setup(elementname);
 
 			// Setup from first element
 			MapElement fe = General.GetByIndex<MapElement>(elements, 0);
