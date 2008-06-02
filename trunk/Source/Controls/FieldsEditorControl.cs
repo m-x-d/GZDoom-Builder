@@ -43,6 +43,9 @@ namespace CodeImp.DoomBuilder.Controls
 		// Constants
 		private const string ADD_FIELD_TEXT = "   (click to add custom field)";
 		
+		// Variables
+		private string elementname;
+		
 		// Constructor
 		public FieldsEditorControl()
 		{
@@ -50,8 +53,11 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This sets up the control
-		public void Setup()
+		public void Setup(string elementname)
 		{
+			// Keep element name
+			this.elementname = elementname;
+			
 			// Make types list
 			fieldtype.Items.Clear();
 			fieldtype.Items.AddRange(General.Types.GetCustomUseAttributes());
@@ -191,6 +197,13 @@ namespace CodeImp.DoomBuilder.Controls
 							object oldvalue = null;
 							if(tofields.ContainsKey(frow.Name)) oldvalue = tofields[frow.Name].Value;
 							tofields[frow.Name] = new UniValue(frow.TypeHandler.Index, frow.GetResult(oldvalue));
+
+							// Custom row?
+							if(!frow.IsFixed)
+							{
+								// Write type to map configuration
+								General.Map.Options.SetUniversalFieldType(elementname, frow.Name, frow.TypeHandler.Index);
+							}
 						}
 					}
 				}
@@ -285,8 +298,11 @@ namespace CodeImp.DoomBuilder.Controls
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());
 						if(validname.Length > 0)
 						{
+							// Try to find the type in the map options
+							int type = General.Map.Options.GetUniversalFieldType(elementname, validname, 0);
+							
 							// Make new row
-							frow = new FieldsEditorRow(fieldslist, validname, 0, 0);
+							frow = new FieldsEditorRow(fieldslist, validname, type, null);
 							frow.Visible = false;
 							fieldslist.Rows.Insert(e.RowIndex + 1, frow);
 						}

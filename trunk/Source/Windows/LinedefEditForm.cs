@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.Windows
 			backlow.Initialize();
 
 			// Initialize custom fields editor
-			fieldslist.Setup();
+			fieldslist.Setup("linedef");
 			
 			// THE CODE BELOW IS ABSOLUTELY UGLY
 			// I should make different controls for each format
@@ -462,7 +462,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Linedef l in lines) if(l.Front != null) sides.Add(l.Front);
 			
 			// Edit these
-			CustomFieldsForm.ShowDialog(this, "Front side custom fields", sides, General.Map.Config.SidedefFields);
+			CustomFieldsForm.ShowDialog(this, "Front side custom fields", "sidedef", sides, General.Map.Config.SidedefFields);
 		}
 
 		// Custom fields on back sides
@@ -473,7 +473,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Linedef l in lines) if(l.Back != null) sides.Add(l.Back);
 
 			// Edit these
-			CustomFieldsForm.ShowDialog(this, "Back side custom fields", sides, General.Map.Config.SidedefFields);
+			CustomFieldsForm.ShowDialog(this, "Back side custom fields", "sidedef", sides, General.Map.Config.SidedefFields);
 		}
 	}
 }

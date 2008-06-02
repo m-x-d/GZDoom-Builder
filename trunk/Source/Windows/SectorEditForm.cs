@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 			ceilingtex.Initialize();
 
 			// Initialize custom fields editor
-			fieldslist.Setup();
+			fieldslist.Setup("sector");
 		}
 		
 		// This sets up the form to edit the given sectors
