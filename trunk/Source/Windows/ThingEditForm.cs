@@ -69,6 +69,12 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Initialize custom fields editor
 			fieldslist.Setup("thing");
+
+			// Not a UDMF map?
+			if(!General.Map.IsType(typeof(UniversalMapSetIO)))
+			{
+				tabs.TabPages.Remove(tabcustom);
+			}
 			
 			// Go for all predefined categories
 			typelist.Nodes.Clear();

@@ -37,20 +37,33 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	public partial class ThingsFiltersForm : DelayedForm
 	{
+		#region ================== Variables
+
+		private bool settingup;
+
+		#endregion
+		
 		#region ================== Constructor
 
 		// Constructor
 		public ThingsFiltersForm()
 		{
+			settingup = true;
+			
 			// Initialize
 			InitializeComponent();
 
 			// Fill the categories combobox
+			filtercategory.Items.Add("(any category)");
 			filtercategory.Items.AddRange(General.Map.Config.ThingCategories.ToArray());
 
 			// Fill checkboxes list
-			// TODO: When UDMF is implemented
-			filterfields.Add("TODO: When UDMF is implemented!", null);
+			foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
+			{
+				CheckBox box = filterfields.Add(flag.Value, flag.Key);
+				box.ThreeState = true;
+				box.CheckStateChanged += new EventHandler(filterfield_Check);
+			}
 			
 			// Fill list of filters
 			foreach(ThingsFilter f in General.Map.ConfigSettings.ThingsFilters)
@@ -69,6 +82,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Sort the list
 			listfilters.Sort();
+
+			// Done
+			settingup = false;
 		}
 
 		#endregion
@@ -137,13 +153,38 @@ namespace CodeImp.DoomBuilder.Windows
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 
 				// Enable settings
+				settingup = true;
 				deletefilter.Enabled = true;
 				filtergroup.Enabled = true;
 
-				// Show settings
+				// Show name
 				filtername.Text = f.Name;
+
+				// Show category
 				foreach(ThingCategory c in filtercategory.Items)
 					if(c.Name == f.CategoryName) filtercategory.SelectedItem = c;
+
+				// Show fields
+				foreach(CheckBox b in filterfields.Checkboxes)
+				{
+					// Field name forbidden?
+					if(f.ForbiddenFields.Contains(b.Tag.ToString()))
+					{
+						b.CheckState = CheckState.Unchecked;
+					}
+					// Field name required?
+					else if(f.RequiredFields.Contains(b.Tag.ToString()))
+					{
+						b.CheckState = CheckState.Checked;
+					}
+					else
+					{
+						b.CheckState = CheckState.Indeterminate;
+					}
+				}
+
+				// Done
+				settingup = false;
 			}
 			else
 			{
@@ -169,9 +210,12 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get selected filter
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 				
-				// Set new category name
-				if(filtercategory.SelectedIndex > -1)
+				// Category selected
+				if((filtercategory.SelectedIndex > -1) && (filtercategory.SelectedItem is ThingCategory))
+				{
+					// Set new category name
 					f.CategoryName = (filtercategory.SelectedItem as ThingCategory).Name;
+				}
 			}
 		}
 		
@@ -195,6 +239,42 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
+		// Field clicked
+		private void filterfield_Check(object sender, EventArgs e)
+		{
+			// Get the checkbox
+			CheckBox box = (sender as CheckBox);
+			
+			// Not setting up?
+			if(!settingup)
+			{
+				// Anything selected?
+				if(listfilters.SelectedItems.Count > 0)
+				{
+					// Get selected filter
+					ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+					
+					// New state is required?
+					if(box.CheckState == CheckState.Checked)
+					{
+						f.ForbiddenFields.Remove(box.Tag.ToString());
+						if(!f.RequiredFields.Contains(box.Tag.ToString())) f.RequiredFields.Add(box.Tag.ToString());
+					}
+					// New state is forbidden?
+					else if(box.CheckState == CheckState.Unchecked)
+					{
+						f.RequiredFields.Remove(box.Tag.ToString());
+						if(!f.ForbiddenFields.Contains(box.Tag.ToString())) f.ForbiddenFields.Add(box.Tag.ToString());
+					}
+					else
+					{
+						f.ForbiddenFields.Remove(box.Tag.ToString());
+						f.RequiredFields.Remove(box.Tag.ToString());
+					}
+				}
+			}
+		}
+		
 		#endregion
 	}
 }

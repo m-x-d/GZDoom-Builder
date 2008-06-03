@@ -41,7 +41,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Margin = new System.Windows.Forms.Padding(1);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 21;
+			this.cancel.TabIndex = 2;
+			this.cancel.TabStop = false;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -53,7 +54,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Margin = new System.Windows.Forms.Padding(1);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 20;
+			this.apply.TabIndex = 1;
+			this.apply.TabStop = false;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -69,7 +71,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.textbox.Name = "textbox";
 			this.textbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.textbox.Size = new System.Drawing.Size(456, 194);
-			this.textbox.TabIndex = 22;
+			this.textbox.TabIndex = 0;
+			this.textbox.TabStop = false;
 			// 
 			// TextEditForm
 			// 
@@ -90,6 +93,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Text";
+			this.Activated += new System.EventHandler(this.TextEditForm_Activated);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

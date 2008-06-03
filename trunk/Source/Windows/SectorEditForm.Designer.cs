@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupaction.Size = new System.Drawing.Size(436, 71);
 			groupaction.TabIndex = 5;
 			groupaction.TabStop = false;
-			groupaction.Text = " Action ";
+			groupaction.Text = " Identification ";
 			// 
 			// tag
 			// 
@@ -395,6 +395,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.fieldslist.Location = new System.Drawing.Point(11, 11);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
 			this.fieldslist.Name = "fieldslist";

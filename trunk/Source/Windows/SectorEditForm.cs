@@ -55,6 +55,12 @@ namespace CodeImp.DoomBuilder.Windows
 			floortex.Initialize();
 			ceilingtex.Initialize();
 
+			// Not a UDMF map?
+			if(!General.Map.IsType(typeof(UniversalMapSetIO)))
+			{
+				tabs.TabPages.Remove(tabcustom);
+			}
+			
 			// Initialize custom fields editor
 			fieldslist.Setup("sector");
 		}
