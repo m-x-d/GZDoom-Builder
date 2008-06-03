@@ -497,6 +497,9 @@ namespace CodeImp.DoomBuilder
 				ReloadResources();
 			}
 			
+			// Reset changed status
+			if(savemode != SAVE_TEST) changed = false;
+			
 			// Success!
 			General.WriteLogLine("Map saving done");
 			return true;

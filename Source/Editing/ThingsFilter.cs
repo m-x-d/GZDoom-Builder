@@ -110,9 +110,9 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Add to the corresponding list
 				if((bool)de.Value == true)
-					requiredfields.Add(de.Value.ToString());
+					requiredfields.Add(de.Key.ToString());
 				else
-					forbiddenfields.Add(de.Value.ToString());
+					forbiddenfields.Add(de.Key.ToString());
 			}
 			
 			// We have no destructor
@@ -196,10 +196,19 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// Get thing info
 				ThingTypeInfo ti = General.Map.Config.GetThingInfo(t.Type);
-				
-				// Check if the thing matches category and id
-				qualifies = ((t.Type == thingtype) || (thingtype == -1)) &&
-							((ti.Category.Name == categoryname) || (categoryname.Length == 0));
+
+				// Check if thing is in unknown category
+				if(ti.Category == null)
+				{
+					// Check if the thing matches id
+					qualifies = ((t.Type == thingtype) || (thingtype == -1)) && (categoryname.Length == 0);
+				}
+				else
+				{
+					// Check if the thing matches category and id
+					qualifies = ((t.Type == thingtype) || (thingtype == -1)) &&
+								((ti.Category.Name == categoryname) || (categoryname.Length == 0));
+				}
 				
 				// Still qualifies?
 				if(qualifies)
@@ -207,16 +216,10 @@ namespace CodeImp.DoomBuilder.Editing
 					// Go for all required fields
 					foreach(string s in requiredfields)
 					{
-						if(t.Fields.ContainsKey(s))
+						if(t.Flags.ContainsKey(s))
 						{
-							if(t.Fields[s] is bool)
-							{
-								if((bool)t.Fields[s].Value == false)
-								{
-									qualifies = false;
-									break;
-								}
-							}
+							qualifies = (t.Flags[s] == true);
+							break;
 						}
 						else
 						{
@@ -232,16 +235,10 @@ namespace CodeImp.DoomBuilder.Editing
 					// Go for all forbidden fields
 					foreach(string s in forbiddenfields)
 					{
-						if(t.Fields.ContainsKey(s))
+						if(t.Flags.ContainsKey(s))
 						{
-							if(t.Fields[s] is bool)
-							{
-								if((bool)t.Fields[s].Value == true)
-								{
-									qualifies = false;
-									break;
-								}
-							}
+							qualifies = (t.Flags[s] == false);
+							break;
 						}
 					}
 				}

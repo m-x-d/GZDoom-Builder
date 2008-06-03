@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Hexen map?
 			else if(General.Map.IsType(typeof(HexenMapSetIO)))
 			{
+				tabs.TabPages.Remove(tabcustom);
 				hexenpanel.Visible = true;
 				argspanel.Visible = true;
 				actiongroup.Height = 210;
@@ -92,6 +93,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Doom map?
 			else
 			{
+				tabs.TabPages.Remove(tabcustom);
 				actiongroup.Height = 68;
 				this.Height = 470;
 			}

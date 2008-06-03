@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filterfields.Columns = 2;
 			this.filterfields.Location = new System.Drawing.Point(18, 125);
 			this.filterfields.Name = "filterfields";
-			this.filterfields.Size = new System.Drawing.Size(350, 198);
+			this.filterfields.Size = new System.Drawing.Size(329, 198);
 			this.filterfields.TabIndex = 5;
 			// 
 			// label3

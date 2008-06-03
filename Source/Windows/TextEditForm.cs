@@ -71,5 +71,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
 		}
+
+		// Window activated
+		private void TextEditForm_Activated(object sender, EventArgs e)
+		{
+			// Focus to textbox
+			textbox.Focus();
+		}
 	}
 }

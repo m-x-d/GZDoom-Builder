@@ -1,5 +1,3 @@
-- Complete Things filter with UDMF fields
-
 - Controls to increase/decrease grid size
 
 - "Insert Thing" control
