@@ -78,12 +78,28 @@ namespace CodeImp.DoomBuilder.Controls
 			fieldtype.Items.AddRange(General.Types.GetCustomUseAttributes());
 		}
 		
+		// This applies last sort order
+		private void Sort()
+		{
+			// Sort
+			int sortcolumn = General.Settings.ReadSetting("customfieldssortcolumn", 0);
+			int sortorder = General.Settings.ReadSetting("customfieldssortorder", (int)ListSortDirection.Ascending);
+
+			if(sortorder == (int)SortOrder.Ascending)
+				fieldslist.Sort(fieldslist.Columns[sortcolumn], ListSortDirection.Ascending);
+			else if(sortorder == (int)SortOrder.Descending)
+				fieldslist.Sort(fieldslist.Columns[sortcolumn], ListSortDirection.Descending);
+		}
+		
 		// This adds a list of fixed fields (in undefined state)
 		public void ListFixedFields(List<UniversalFieldInfo> list)
 		{
 			// Add all fields
 			foreach(UniversalFieldInfo uf in list)
 				fieldslist.Rows.Add(new FieldsEditorRow(fieldslist, uf));
+
+			// Sort fields
+			Sort();
 
 			// Update new row
 			SetupNewRowStyle();
@@ -159,6 +175,9 @@ namespace CodeImp.DoomBuilder.Controls
 					if(!first) frow.Clear();
 				}
 			}
+
+			// Sort fields
+			Sort();
 		}
 		
 		// This applies the current fields to a UniFields object
@@ -228,6 +247,24 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Events
+
+		// Column header clicked
+		private void fieldslist_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+		{
+			// Save sort order
+			if(fieldslist.SortedColumn != null)
+			{
+				int sortcolumn = fieldslist.SortedColumn.Index;
+				int sortorder = (int)fieldslist.SortOrder;
+				General.Settings.WriteSetting("customfieldssortcolumn", sortcolumn);
+				General.Settings.WriteSetting("customfieldssortorder", sortorder);
+			}
+			
+			// Stop any cell editing
+			ApplyEnums(true);
+			fieldslist.EndEdit();
+			HideBrowseButton();
+		}
 		
 		// Resized
 		private void FieldsEditorControl_Resize(object sender, EventArgs e)
@@ -235,6 +272,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Rearrange controls
 			fieldslist.Size = this.ClientSize;
 			fieldvalue.Width = fieldslist.ClientRectangle.Width - fieldname.Width - fieldtype.Width - SystemInformation.VerticalScrollBarWidth - 10;
+			UpdateBrowseButton();
 		}
 
 		// Layout change
@@ -328,7 +366,7 @@ namespace CodeImp.DoomBuilder.Controls
 						enumscombo.Items.Clear();
 						enumscombo.Items.AddRange(frow.TypeHandler.GetEnumList().ToArray());
 						enumscombo.Tag = frow;
-
+						
 						// Lock combo to enums?
 						if(frow.TypeHandler.IsLimitedToEnums)
 							enumscombo.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -357,10 +395,7 @@ namespace CodeImp.DoomBuilder.Controls
 						enumscombo.Text = frow.TypeHandler.GetStringValue();
 						
 						// Show combo
-						// Why does it not select all and focus the combobox?
 						enumscombo.Show();
-						enumscombo.Focus();
-						enumscombo.SelectAll();
 					}
 				}
 			}
@@ -511,6 +546,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Selection changes
 		private void fieldslist_SelectionChanged(object sender, EventArgs e)
 		{
+			browsebutton.Visible = false;
 			ApplyEnums(true);
 			
 			// Update button
@@ -554,6 +590,17 @@ namespace CodeImp.DoomBuilder.Controls
 			ApplyEnums(true);
 			fieldslist.EndEdit();
 			HideBrowseButton();
+		}
+
+		// Mouse up event
+		private void fieldslist_MouseUp(object sender, MouseEventArgs e)
+		{
+			// Focus to enums combobox when visible
+			if(enumscombo.Visible)
+			{
+				enumscombo.Focus();
+				enumscombo.SelectAll();
+			}
 		}
 		
 		#endregion

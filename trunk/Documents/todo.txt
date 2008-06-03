@@ -1,8 +1,3 @@
-- Finish the custom fields editor
-	- Enums should drop down in list
-	- Remember sort order
-	- Strings should have a mutliline edit window on browse button
-
 - Complete Things filter with UDMF fields
 
 - Controls to increase/decrease grid size
