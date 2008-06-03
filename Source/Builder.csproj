@@ -133,6 +133,7 @@
     <Compile Include="Types\ColorHandler.cs" />
     <Compile Include="Types\EnumBitsHandler.cs" />
     <Compile Include="Types\EnumOptionHandler.cs" />
+    <Compile Include="Types\EnumStringsHandler.cs" />
     <Compile Include="Types\FlatHandler.cs" />
     <Compile Include="Types\FloatHandler.cs" />
     <Compile Include="Types\IntegerHandler.cs" />
@@ -318,6 +319,12 @@
     </Compile>
     <Compile Include="Controls\SectorInfoPanel.Designer.cs">
       <DependentUpon>SectorInfoPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TextEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\TextEditForm.Designer.cs">
+      <DependentUpon>TextEditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\TextureBrowserForm.cs">
       <SubType>Form</SubType>
@@ -604,6 +611,10 @@
     <EmbeddedResource Include="Windows\CustomFieldsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CustomFieldsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\TextEditForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TextEditForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ThingEditForm.resx">
       <SubType>Designer</SubType>

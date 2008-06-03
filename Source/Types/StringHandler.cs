@@ -25,6 +25,8 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Windows;
+using System.Windows.Forms;
 
 #endregion
 
@@ -45,9 +47,16 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Properties
 
+		public override bool IsBrowseable { get { return true; } }
+		
 		#endregion
 
 		#region ================== Methods
+
+		public override void Browse(IWin32Window parent)
+		{
+			value = TextEditForm.ShowDialog(parent, value);
+		}
 
 		public override void SetValue(object value)
 		{

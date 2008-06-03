@@ -82,6 +82,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldslist.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.fieldslist_UserDeletingRow);
 			this.fieldslist.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.fieldslist_CellBeginEdit);
 			this.fieldslist.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellDoubleClick);
+			this.fieldslist.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.fieldslist_ColumnHeaderMouseClick);
+			this.fieldslist.MouseUp += new System.Windows.Forms.MouseEventHandler(this.fieldslist_MouseUp);
 			this.fieldslist.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellEndEdit);
 			this.fieldslist.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.fieldslist_CellClick);
 			this.fieldslist.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.fieldslist_DataError);
@@ -98,7 +100,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fieldname.Frozen = true;
 			this.fieldname.HeaderText = "Property";
 			this.fieldname.Name = "fieldname";
-			this.fieldname.Width = 180;
+			this.fieldname.Width = 150;
 			// 
 			// fieldtype
 			// 
@@ -137,12 +139,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.browsebutton.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsebutton.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
 			this.browsebutton.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
-			this.browsebutton.Location = new System.Drawing.Point(370, 46);
+			this.browsebutton.Location = new System.Drawing.Point(343, 75);
 			this.browsebutton.Name = "browsebutton";
 			this.browsebutton.Size = new System.Drawing.Size(28, 26);
 			this.browsebutton.TabIndex = 2;
 			this.browsebutton.UseVisualStyleBackColor = true;
-			this.browsebutton.Visible = false;
 			this.browsebutton.Click += new System.EventHandler(this.browsebutton_Click);
 			// 
 			// enumscombo
