@@ -374,6 +374,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
+		// This creates a new thing at the mouse position
+		[BeginAction("insertitem", BaseAction = true)]
+		public virtual void InsertThing()
+		{
+			// Mouse in window?
+			if(mouseinside)
+			{
+				// Create things at mouse position
+				Thing t = General.Map.Map.CreateThing();
+				General.Settings.ApplyDefaultThingSettings(t);
+				t.Move(mousemappos);
+				t.UpdateConfiguration();
+				
+				// Update things filter so that it includes this thing
+				General.Map.ThingsFilter.Update();
+				
+				// Snap to grid enabled?
+				if(General.Interface.SnapToGrid)
+				{
+					// Snap to grid
+					t.SnapToGrid();
+				}
+				else
+				{
+					// Snap to map format accuracy
+					t.SnapToAccuracy();
+				}
+
+				// Redraw screen
+				General.Interface.RedrawDisplay();
+			}
+		}
+
 		[BeginAction("deleteitem", BaseAction = true)]
 		public void DeleteItem()
 		{
@@ -405,7 +438,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RedrawDisplay();
 			}
 		}
-
+		
 		#endregion
 	}
 }

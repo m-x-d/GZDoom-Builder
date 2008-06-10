@@ -179,6 +179,12 @@ namespace CodeImp.DoomBuilder.Windows
 						result = false;
 						break;
 					}
+					// If this lumps must exist, and is found
+					else if(((int)lmp.Value == 3) && (lumpresult != null))
+					{
+						// Good result.
+						result = true;
+					}
 					// If this lumps must exist, and it is missing
 					else if(((int)lmp.Value == 3) && (lumpresult == null))
 					{

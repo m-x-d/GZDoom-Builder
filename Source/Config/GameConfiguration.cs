@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Config
 		private IDictionary flatranges;
 		
 		// Things
+		private List<string> defaultthingflags;
 		private Dictionary<string, string> thingflags;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> things;
@@ -119,6 +120,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary FlatRanges { get { return flatranges; } }
 
 		// Things
+		public ICollection<string> DefaultThingFlags { get { return defaultthingflags; } }
 		public IDictionary<string, string> ThingFlags { get { return thingflags; } }
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> Things { get { return things.Values; } }
@@ -158,6 +160,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Initialize
 			this.cfg = cfg;
 			this.thingflags = new Dictionary<string, string>();
+			this.defaultthingflags = new List<string>();
 			this.thingcategories = new List<ThingCategory>();
 			this.things = new Dictionary<int, ThingTypeInfo>();
 			this.linedefflags = new Dictionary<string, string>();
@@ -205,6 +208,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Things
 			LoadThingFlags();
+			LoadDefaultThingFlags();
 			LoadThingCategories();
 			
 			// Linedefs
@@ -499,35 +503,31 @@ namespace CodeImp.DoomBuilder.Config
 		private void LoadThingFlags()
 		{
 			IDictionary dic;
-			int bitflagscheck = 0;
-			int bitvalue;
 
 			// Get linedef flags
 			dic = cfg.ReadSetting("thingflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
-			{
-				/*
-				// Try paring the bit value
-				if(int.TryParse(de.Key.ToString(),
-					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
-					CultureInfo.InvariantCulture, out bitvalue))
-				{
-					// Check for conflict and add to list
-					if((bitvalue & bitflagscheck) == 0)
-						thingflags.Add(bitvalue, de.Value.ToString());
-					else
-						General.WriteLogLine("WARNING: Structure 'thingflags' contains conflicting bit flag keys. Make sure all keys are unique integers and powers of 2!");
+				thingflags.Add(de.Key.ToString(), de.Value.ToString());
+		}
 
-					// Update bit flags checking value
-					bitflagscheck |= bitvalue;
+		// Default thing flags
+		private void LoadDefaultThingFlags()
+		{
+			IDictionary dic;
+
+			// Get linedef flags
+			dic = cfg.ReadSetting("defaultthingflags", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Check if flag exists
+				if(thingflags.ContainsKey(de.Key.ToString()))
+				{
+					defaultthingflags.Add(de.Key.ToString());
 				}
 				else
 				{
-					General.WriteLogLine("WARNING: Structure 'thingflags' contains invalid keys!");
+					General.WriteLogLine("WARNING: Structure 'defaultthingflags' contains unknown thing flags!");
 				}
-				*/
-
-				thingflags.Add(de.Key.ToString(), de.Value.ToString());
 			}
 		}
 		
