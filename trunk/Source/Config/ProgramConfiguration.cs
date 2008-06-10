@@ -64,6 +64,8 @@ namespace CodeImp.DoomBuilder.Config
 		private int defaultceilheight = 128;
 		private string defaultfloortexture;
 		private string defaultceiltexture;
+		private int defaultthingtype = 1;
+		private float defaultthingangle = 0.0f;
 		
 		#endregion
 
@@ -86,6 +88,8 @@ namespace CodeImp.DoomBuilder.Config
 		public int DefaultBrightness { get { return defaultbrightness; } set { defaultbrightness = value; } }
 		public int DefaultFloorHeight { get { return defaultfloorheight; } set { defaultfloorheight = value; } }
 		public int DefaultCeilingHeight { get { return defaultceilheight; } set { defaultceilheight = value; } }
+		public int DefaultThingType { get { return defaultthingtype; } set { defaultthingtype = value; } }
+		public float DefaultThingAngle { get { return defaultthingangle; } set { defaultthingangle = value; } }
 
 		#endregion
 
@@ -236,6 +240,18 @@ namespace CodeImp.DoomBuilder.Config
 		// WriteSetting
 		internal bool WriteSetting(string setting, object settingvalue) { return cfg.WriteSetting(setting, settingvalue); }
 		internal bool WriteSetting(string setting, object settingvalue, string pathseperator) { return cfg.WriteSetting(setting, settingvalue, pathseperator); }
+
+		#endregion
+
+		#region ================== Default Settings
+
+		// This applies default settings to a thing
+		public void ApplyDefaultThingSettings(Thing t)
+		{
+			t.Type = defaultthingtype;
+			t.Rotate(defaultthingangle);
+			foreach(string f in General.Map.Config.DefaultThingFlags) t.Flags[f] = true;
+		}
 		
 		// This attempts to find the default drawing settings
 		public void FindDefaultDrawSettings()

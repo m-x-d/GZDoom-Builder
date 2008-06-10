@@ -101,6 +101,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.map = map;
 			this.mainlistitem = listitem;
 			this.flags = new Dictionary<string, bool>();
+			this.args = new int[NUM_ARGS];
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

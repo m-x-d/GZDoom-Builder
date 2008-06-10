@@ -366,6 +366,10 @@ namespace CodeImp.DoomBuilder.Windows
 				t.UpdateConfiguration();
 			}
 
+			// Set as defaults
+			General.Settings.DefaultThingType = typeid.GetResult(General.Settings.DefaultThingType);
+			General.Settings.DefaultThingAngle = Angle2D.DegToRad((float)angle.GetResult((int)Angle2D.RadToDeg(General.Settings.DefaultThingAngle) - 90) + 90);
+			
 			// Done
 			General.Map.IsChanged = true;
 			this.DialogResult = DialogResult.OK;

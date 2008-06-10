@@ -385,6 +385,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
+		// This creates a new vertex at the mouse position
+		[BeginAction("insertitem", BaseAction = true)]
+		public virtual void InsertVertex()
+		{
+			// Mouse in window?
+			if(mouseinside)
+			{
+				// Create vertex at mouse position
+				Vertex v = General.Map.Map.CreateVertex(mousemappos);
+
+				// Snap to grid enabled?
+				if(General.Interface.SnapToGrid)
+				{
+					// Snap to grid
+					v.SnapToGrid();
+				}
+				else
+				{
+					// Snap to map format accuracy
+					v.SnapToAccuracy();
+				}
+
+				// Redraw screen
+				General.Interface.RedrawDisplay();
+			}
+		}
+
 		[BeginAction("deleteitem", BaseAction = true)]
 		public void DeleteItem()
 		{
