@@ -63,6 +63,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemredo = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsnaptogrid = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemautomerge = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
+			this.itemgridinc = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemgriddec = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemgridsetup = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemmapoptions = new System.Windows.Forms.ToolStripMenuItem();
 			this.menutools = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemreloadresources = new System.Windows.Forms.ToolStripMenuItem();
@@ -346,6 +350,10 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemeditmodesseperator,
             this.itemsnaptogrid,
             this.itemautomerge,
+            this.toolStripMenuItem6,
+            this.itemgridinc,
+            this.itemgriddec,
+            this.itemgridsetup,
             toolStripSeparator11,
             this.itemmapoptions});
 			this.menuedit.Name = "menuedit";
@@ -391,6 +399,36 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemautomerge.Tag = "builder_toggleautomerge";
 			this.itemautomerge.Text = "Merge Geometry";
 			this.itemautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripMenuItem6
+			// 
+			this.toolStripMenuItem6.Name = "toolStripMenuItem6";
+			this.toolStripMenuItem6.Size = new System.Drawing.Size(162, 6);
+			// 
+			// itemgridinc
+			// 
+			this.itemgridinc.Name = "itemgridinc";
+			this.itemgridinc.Size = new System.Drawing.Size(165, 22);
+			this.itemgridinc.Tag = "builder_gridinc";
+			this.itemgridinc.Text = "Increase Grid";
+			this.itemgridinc.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemgriddec
+			// 
+			this.itemgriddec.Name = "itemgriddec";
+			this.itemgriddec.Size = new System.Drawing.Size(165, 22);
+			this.itemgriddec.Tag = "builder_griddec";
+			this.itemgriddec.Text = "Decrease Grid";
+			this.itemgriddec.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemgridsetup
+			// 
+			this.itemgridsetup.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2;
+			this.itemgridsetup.Name = "itemgridsetup";
+			this.itemgridsetup.Size = new System.Drawing.Size(165, 22);
+			this.itemgridsetup.Tag = "builder_gridsetup";
+			this.itemgridsetup.Text = "Grid Setup...";
+			this.itemgridsetup.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemmapoptions
 			// 
@@ -1070,5 +1108,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
 		private System.Windows.Forms.ToolStripMenuItem itemtestmap;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+		private System.Windows.Forms.ToolStripMenuItem itemgridinc;
+		private System.Windows.Forms.ToolStripMenuItem itemgriddec;
+		private System.Windows.Forms.ToolStripMenuItem itemgridsetup;
 	}
 }

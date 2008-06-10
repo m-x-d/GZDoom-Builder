@@ -61,6 +61,9 @@ namespace CodeImp.DoomBuilder.Editing
 		private ImageData backimage = new NullImage();
 		private int backoffsetx, backoffsety;
 
+		// Disposing
+		private bool isdisposed;
+		
 		#endregion
 
 		#region ================== Properties
@@ -72,7 +75,8 @@ namespace CodeImp.DoomBuilder.Editing
 		internal ImageData Background { get { return backimage; } }
 		internal int BackgroundX { get { return backoffsetx; } }
 		internal int BackgroundY { get { return backoffsety; } }
-
+		internal bool Disposed { get { return isdisposed; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -82,9 +86,28 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Initialize
 			SetGridSize(DEFAULT_GRID_SIZE);
+
+			// Register actions
+			General.Actions.BindMethods(this);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
+		}
+
+		// Disposer
+		internal void Dispose()
+		{
+			if(!isdisposed)
+			{
+				// Clean up
+				backimage = null;
+
+				// Unregister actions
+				General.Actions.UnbindMethods(this);
+
+				// Done
+				isdisposed = true;
+			}
 		}
 
 		#endregion
@@ -167,6 +190,56 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			return new Vector2D((float)Math.Round(v.x * gridsizeinv) * gridsize,
 								(float)Math.Round(v.y * gridsizeinv) * gridsize);
+		}
+
+		#endregion
+
+		#region ================== Actions
+
+		// This shows the grid setup dialog
+		[BeginAction("gridsetup")]
+		internal void ShowGridSetup()
+		{
+			// Show preferences dialog
+			GridSetupForm gridform = new GridSetupForm();
+			if(gridform.ShowDialog(General.MainWindow) == DialogResult.OK)
+			{
+				// Redraw display
+				General.MainWindow.RedrawDisplay();
+			}
+
+			// Done
+			gridform.Dispose();
+		}
+
+		// This changes grid size
+		[BeginAction("gridinc")]
+		internal void IncreaseGrid()
+		{
+			// Not lower than 2
+			if(gridsize >= 4)
+			{
+				// Change grid
+				SetGridSize(gridsize >> 1);
+				
+				// Redraw display
+				General.MainWindow.RedrawDisplay();
+			}
+		}
+
+		// This changes grid size
+		[BeginAction("griddec")]
+		internal void DecreaseGrid()
+		{
+			// Not higher than 1024
+			if(gridsize <= 512)
+			{
+				// Change grid
+				SetGridSize(gridsize << 1);
+
+				// Redraw display
+				General.MainWindow.RedrawDisplay();
+			}
 		}
 
 		#endregion
