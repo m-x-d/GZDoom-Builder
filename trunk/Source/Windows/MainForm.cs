@@ -505,26 +505,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show grid setup
 		private void itemgridcustom_Click(object sender, EventArgs e)
 		{
-			ShowGridSetup();
-		}
-		
-		// This shows the grid setup dialog
-		[BeginAction("gridsetup")]
-		internal void ShowGridSetup()
-		{
-			// Only when a map is open
 			if(General.Map == null) return;
-			
-			// Show preferences dialog
-			GridSetupForm gridform = new GridSetupForm();
-			if(gridform.ShowDialog(this) == DialogResult.OK)
-			{
-				// Redraw display
-				RedrawDisplay();
-			}
 
-			// Done
-			gridform.Dispose();
+			General.Map.Grid.ShowGridSetup();
 		}
 		
 		#endregion
@@ -1363,6 +1346,9 @@ namespace CodeImp.DoomBuilder.Windows
 			itemmapoptions.Enabled = (General.Map != null);
 			itemsnaptogrid.Enabled = (General.Map != null);
 			itemautomerge.Enabled = (General.Map != null);
+			itemgridsetup.Enabled = (General.Map != null);
+			itemgridinc.Enabled = (General.Map != null);
+			itemgriddec.Enabled = (General.Map != null);
 
 			// Determine undo description
 			if(itemundo.Enabled)

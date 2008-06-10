@@ -149,6 +149,7 @@ namespace CodeImp.DoomBuilder
 				General.Actions.UnbindMethods(this);
 
 				// Dispose
+				if(grid != null) grid.Dispose();
 				if(launcher != null) launcher.Dispose();
 				if(undoredo != null) undoredo.Dispose();
 				General.WriteLogLine("Unloading data resources...");

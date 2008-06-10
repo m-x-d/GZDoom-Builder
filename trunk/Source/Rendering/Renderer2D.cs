@@ -118,6 +118,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float translatey;
 		private float linenormalsize;
 		private float lastgridscale = -1f;
+		private int lastgridsize;
 		private float lastgridx;
 		private float lastgridy;
 
@@ -366,6 +367,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			numthings = 0;
 			maxthings = 0;
 			lastgridscale = -1f;
+			lastgridsize = 0;
 
 			// Trash font
 			if(font != null) font.Dispose();
@@ -748,7 +750,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			DataRectangle lockedrect;
 			
 			// Do we need to redraw grid?
-			if((lastgridscale != scale) || (lastgridx != offsetx) || (lastgridy != offsety))
+			if((lastgridsize != General.Map.Grid.GridSize) || (lastgridscale != scale) ||
+			   (lastgridx != offsetx) || (lastgridy != offsety))
 			{
 				// Lock background rendertarget memory
 				lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
@@ -767,6 +770,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				backtex.UnlockRectangle(0);
 				lockedrect.Data.Dispose();
 				lastgridscale = scale;
+				lastgridsize = General.Map.Grid.GridSize;
 				lastgridx = offsetx;
 				lastgridy = offsety;
 			}
