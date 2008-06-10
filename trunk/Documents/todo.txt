@@ -28,6 +28,8 @@
 
 - Make script editor
 
+- Make DECORATE support
+
 - Make dialog and editing mode help documentation
 
 - Make Plugin Development Kit
