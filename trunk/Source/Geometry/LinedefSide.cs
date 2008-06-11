@@ -75,6 +75,16 @@ namespace CodeImp.DoomBuilder.Geometry
 			this.front = front;
 		}
 
+		/// <summary>
+		/// This makes a copy of the linedef side.
+		/// </summary>
+		public LinedefSide(LinedefSide original)
+		{
+			// Initialize
+			this.line = original.line;
+			this.front = original.front;
+		}
+
 		// Destructor
 		~LinedefSide()
 		{
@@ -83,6 +93,24 @@ namespace CodeImp.DoomBuilder.Geometry
 		#endregion
 
 		#region ================== Methods
+
+		// This compares a linedef side
+		public static bool operator ==(LinedefSide a, LinedefSide b)
+		{
+			if((object.Equals(a, null)) && (object.Equals(b, null))) return true;
+			if((!object.Equals(a, null)) && (object.Equals(b, null))) return false;
+			if((object.Equals(a, null)) && (!object.Equals(b, null))) return false;
+			return (a.line == b.line) && (a.front == b.front);
+		}
+
+		// This compares a linedef side
+		public static bool operator !=(LinedefSide a, LinedefSide b)
+		{
+			if((object.Equals(a, null)) && (object.Equals(b, null))) return false;
+			if((!object.Equals(a, null)) && (object.Equals(b, null))) return true;
+			if((object.Equals(a, null)) && (!object.Equals(b, null))) return true;
+			return (a.line != b.line) || (a.front != b.front);
+		}
 
 		#endregion
 	}

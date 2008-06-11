@@ -1,7 +1,3 @@
-- Make "Make Sector" mode
-	- On mousemove (?) already show the sector outline it will create
-	- On click make the sector
-
 - Show action associations when highlighting line/sector/thing
 
 - Make sector gradient features

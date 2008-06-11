@@ -115,6 +115,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.ceiltexname = "-";
 			this.longfloortexname = map.EmptyLongName;
 			this.longceiltexname = map.EmptyLongName;
+			this.triangulationneeded = true;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

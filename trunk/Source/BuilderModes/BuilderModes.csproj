@@ -39,6 +39,7 @@
     <Compile Include="ClassicModes\DragSectorsMode.cs" />
     <Compile Include="ClassicModes\DragGeometryMode.cs" />
     <Compile Include="ClassicModes\DrawGeometryMode.cs" />
+    <Compile Include="ClassicModes\MakeSectorMode.cs" />
     <Compile Include="General\BuilderPlug.cs" />
     <Compile Include="Interface\CurveLinedefsForm.cs">
       <SubType>Form</SubType>
@@ -118,6 +119,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\BrightnessMode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\NewSector2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

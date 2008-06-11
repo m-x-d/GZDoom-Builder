@@ -38,10 +38,11 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(SwitchAction = "brightnessmode",
+	[EditMode(DisplayName = "Sector Brightness",
+			  SwitchAction = "brightnessmode",
 			  ButtonDesc = "Brightness Mode",
 			  ButtonImage = "BrightnessMode.png",
-			  ButtonOrder = int.MinValue + 3)]
+			  ButtonOrder = int.MinValue + 201)]
 
 	public class BrightnessMode : SectorsMode
 	{
@@ -89,7 +90,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
-			p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 0.3f, false));
+			p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, Presentation.THINGS_BACK_ALPHA, false));
 			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			renderer.SetPresentation(p);
 		}
