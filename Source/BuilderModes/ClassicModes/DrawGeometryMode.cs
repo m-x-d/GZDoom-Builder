@@ -37,7 +37,9 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(SwitchAction = "drawlinesmode", Volatile = true)]
+	[EditMode(DisplayName = "Drawing",
+			  SwitchAction = "drawlinesmode",
+			  Volatile = true)]
 
 	public class DrawGeometryMode : ClassicMode
 	{
@@ -538,6 +540,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				MapSet.FlipBackwardLinedefs(newlines);
 
 				// Remove all unneeded textures
+				// Shouldn't this already be done by the
+				// makesector/joinsector functions?
 				foreach(Linedef ld in newlines)
 				{
 					if(ld.Front != null) ld.Front.RemoveUnneededTextures(true);

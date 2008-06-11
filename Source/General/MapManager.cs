@@ -895,10 +895,17 @@ namespace CodeImp.DoomBuilder
 			mode = newmode;
 
 			// Check appropriate button on interface
+			// And show the mode name
 			if(newmode != null)
+			{
 				General.MainWindow.CheckEditModeButton(newmode.EditModeButtonName);
+				General.MainWindow.DisplayModeName(newmode.Attributes.DisplayName);
+			}
 			else
+			{
 				General.MainWindow.CheckEditModeButton("");
+				General.MainWindow.DisplayModeName("");
+			}
 			
 			// Engage new mode
 			if(newmode != null) newmode.OnEngage();

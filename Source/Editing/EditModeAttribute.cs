@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private int buttonorder;
 		private bool configspecific;
 		private bool isvolatile;
+		private string displayname;
 		
 		#endregion
 
@@ -85,6 +86,11 @@ namespace CodeImp.DoomBuilder.Editing
 		/// a non-volatile mode.
 		/// </summary>
 		public bool Volatile { get { return isvolatile; } set { isvolatile = value; } }
+
+		/// <summary>
+		/// Name to display on the button information bar when no specific element information is displayed.
+		/// </summary>
+		public string DisplayName { get { return displayname; } set { displayname = value; } }
 
 		#endregion
 

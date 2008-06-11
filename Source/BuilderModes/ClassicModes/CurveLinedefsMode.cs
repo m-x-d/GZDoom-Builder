@@ -36,7 +36,8 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(Volatile = true)]
+	[EditMode(DisplayName = "Curve Linedefs",
+			  Volatile = true)]
 	public sealed class CurveLinedefsMode : ClassicMode
 	{
 		#region ================== Constants

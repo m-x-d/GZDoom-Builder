@@ -1486,6 +1486,13 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		#region ================== Info Panels
 
+		// This displays the current mode name
+		internal void DisplayModeName(string name)
+		{
+			modename.Text = name;
+			modename.Refresh();
+		}
+		
 		// This hides all info panels
 		public void HideInfo()
 		{
@@ -1494,52 +1501,82 @@ namespace CodeImp.DoomBuilder.Windows
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
+			modename.Visible = (General.Map != null);
+			modename.Refresh();
 		}
 		
 		// Show linedef info
-		public void ShowLinedefInfo(Linedef l) { linedefinfo.ShowInfo(l); }
+		public void ShowLinedefInfo(Linedef l)
+		{
+			modename.Visible = false;
+			linedefinfo.ShowInfo(l);
+		}
 
 		// Show vertex info
-		public void ShowVertexInfo(Vertex v) { vertexinfo.ShowInfo(v); }
+		public void ShowVertexInfo(Vertex v)
+		{
+			modename.Visible = false;
+			vertexinfo.ShowInfo(v);
+		}
 
 		// Show sector info
-		public void ShowSectorInfo(Sector s) { sectorinfo.ShowInfo(s); }
+		public void ShowSectorInfo(Sector s)
+		{
+			modename.Visible = false;
+			sectorinfo.ShowInfo(s);
+		}
 
 		// Show thing info
-		public void ShowThingInfo(Thing t) { thinginfo.ShowInfo(t); }
+		public void ShowThingInfo(Thing t)
+		{
+			modename.Visible = false;
+			thinginfo.ShowInfo(t);
+		}
 
 		#endregion
 
 		#region ================== Dialogs
 
 		// This shows the dialog to edit lines
-		public void ShowEditLinedefs(ICollection<Linedef> lines)
+		public DialogResult ShowEditLinedefs(ICollection<Linedef> lines)
 		{
+			DialogResult result;
+
 			// Show line edit dialog
 			LinedefEditForm f = new LinedefEditForm();
 			f.Setup(lines);
-			f.ShowDialog(this);
+			result = f.ShowDialog(this);
 			f.Dispose();
+
+			return result;
 		}
 
 		// This shows the dialog to edit sectors
-		public void ShowEditSectors(ICollection<Sector> sectors)
+		public DialogResult ShowEditSectors(ICollection<Sector> sectors)
 		{
+			DialogResult result;
+
 			// Show sector edit dialog
 			SectorEditForm f = new SectorEditForm();
 			f.Setup(sectors);
-			f.ShowDialog(this);
+			result = f.ShowDialog(this);
 			f.Dispose();
+
+			return result;
 		}
 
 		// This shows the dialog to edit things
-		public void ShowEditThings(ICollection<Thing> things)
+		public DialogResult ShowEditThings(ICollection<Thing> things)
 		{
+			DialogResult result;
+
 			// Show thing edit dialog
 			ThingEditForm f = new ThingEditForm();
 			f.Setup(things);
-			f.ShowDialog(this);
+			result = f.ShowDialog(this);
 			f.Dispose();
+			
+			return result;
 		}
 
 		#endregion

@@ -42,7 +42,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	// In that case, just specifying the attribute like this is enough:
 	// [EditMode]
 
-	[EditMode(Volatile = true)]
+	[EditMode(DisplayName = "Things",
+			  Volatile = true)]
 
 	public sealed class DragThingsMode : ClassicMode
 	{

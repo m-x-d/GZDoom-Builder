@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -37,6 +38,17 @@ namespace CodeImp.DoomBuilder.Geometry
 	/// </summary>
 	public static class SectorTools
 	{
+		#region ================== Structures
+
+		private struct SidedefSettings
+		{
+			public string newtexhigh;
+			public string newtexmid;
+			public string newtexlow;
+		}
+
+		#endregion
+		
 		#region ================== Constants
 
 		#endregion
@@ -369,9 +381,11 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This makes the sector from the given lines and sides
 		public static Sector MakeSector(List<LinedefSide> alllines)
 		{
-			Sidedef source = null;
 			Sector newsector = General.Map.Map.CreateSector();
-
+			Sector sourcesector = null;
+			SidedefSettings sourceside = new SidedefSettings();
+			bool removeuselessmiddle;
+			
 			// Check if any of the sides already has a sidedef
 			// Then we use information from that sidedef to make the others
 			foreach(LinedefSide ls in alllines)
@@ -380,8 +394,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					if(ls.Line.Front != null)
 					{
-						source = ls.Line.Front;
-						source.Sector.CopyPropertiesTo(newsector);
+						// Copy sidedef information if not already found
+						if(sourcesector == null) sourcesector = ls.Line.Front.Sector;
+						TakeSidedefSettings(ref sourceside, ls.Line.Front);
 						break;
 					}
 				}
@@ -389,62 +404,81 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					if(ls.Line.Back != null)
 					{
-						source = ls.Line.Back;
-						source.Sector.CopyPropertiesTo(newsector);
+						// Copy sidedef information if not already found
+						if(sourcesector == null) sourcesector = ls.Line.Back.Sector;
+						TakeSidedefSettings(ref sourceside, ls.Line.Back);
 						break;
 					}
 				}
 			}
 
-			// If we couldn't find anything, try the other sides
-			if(source == null)
+			// Now do the same for the other sides
+			// Note how information is only copied when not already found
+			// so this won't override information from the sides searched above
+			foreach(LinedefSide ls in alllines)
 			{
-				foreach(LinedefSide ls in alllines)
+				if(ls.Front)
 				{
-					if(ls.Front)
+					if(ls.Line.Back != null)
 					{
-						if(ls.Line.Back != null)
-						{
-							source = ls.Line.Back;
-							source.Sector.CopyPropertiesTo(newsector);
-							break;
-						}
+						// Copy sidedef information if not already found
+						if(sourcesector == null) sourcesector = ls.Line.Back.Sector;
+						TakeSidedefSettings(ref sourceside, ls.Line.Back);
+						break;
 					}
-					else
+				}
+				else
+				{
+					if(ls.Line.Front != null)
 					{
-						if(ls.Line.Front != null)
-						{
-							source = ls.Line.Front;
-							source.Sector.CopyPropertiesTo(newsector);
-							break;
-						}
+						// Copy sidedef information if not already found
+						if(sourcesector == null) sourcesector = ls.Line.Front.Sector;
+						TakeSidedefSettings(ref sourceside, ls.Line.Front);
+						break;
 					}
 				}
 			}
-
-			// Still nothing found?
-			// Then apply default sector properties
-			if(source == null) ApplyDefaultsToSector(newsector);
+			
+			// Use defaults where no settings could be found
+			TakeSidedefDefaults(ref sourceside);
+			
+			// Found a source sector?
+			if(sourcesector != null)
+			{
+				// Copy properties from source to new sector
+				sourcesector.CopyPropertiesTo(newsector);
+			}
+			else
+			{
+				// No source sector, apply default sector properties
+				ApplyDefaultsToSector(newsector);
+			}
 
 			// Go for all sides to make sidedefs
 			foreach(LinedefSide ls in alllines)
 			{
+				// We may only remove a useless middle texture when
+				// the line was previously singlesided
+				removeuselessmiddle = (ls.Line.Back == null) || (ls.Line.Front == null);
+				
 				if(ls.Front)
 				{
 					// Create sidedef is needed and ensure it points to the new sector
 					if(ls.Line.Front == null) General.Map.Map.CreateSidedef(ls.Line, true, newsector);
 					if(ls.Line.Front.Sector != newsector) ls.Line.Front.ChangeSector(newsector);
-					if(source != null) source.CopyPropertiesTo(ls.Line.Front); else ApplyDefaultsToSidedef(ls.Line.Front);
+					ApplyDefaultsToSidedef(ls.Line.Front, sourceside);
 				}
 				else
 				{
 					// Create sidedef is needed and ensure it points to the new sector
 					if(ls.Line.Back == null) General.Map.Map.CreateSidedef(ls.Line, false, newsector);
 					if(ls.Line.Back.Sector != newsector) ls.Line.Back.ChangeSector(newsector);
-					if(source != null) source.CopyPropertiesTo(ls.Line.Back); else ApplyDefaultsToSidedef(ls.Line.Back);
+					ApplyDefaultsToSidedef(ls.Line.Back, sourceside);
 				}
 
 				// Update line
+				if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(removeuselessmiddle);
+				if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(removeuselessmiddle);
 				ls.Line.ApplySidedFlags();
 			}
 
@@ -456,6 +490,14 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This joins a sector with the given lines and sides
 		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original)
 		{
+			SidedefSettings sourceside = new SidedefSettings();
+			
+			// Take settings fro mthe original side
+			TakeSidedefSettings(ref sourceside, original);
+
+			// Use defaults where no settings could be found
+			TakeSidedefDefaults(ref sourceside);
+
 			// Go for all sides to make sidedefs
 			foreach(LinedefSide ls in alllines)
 			{
@@ -465,10 +507,8 @@ namespace CodeImp.DoomBuilder.Geometry
 					if(ls.Line.Front == null)
 					{
 						General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
-						ls.Line.ApplySidedFlags();
+						ApplyDefaultsToSidedef(ls.Line.Front, sourceside);
 					}
-					original.CopyPropertiesTo(ls.Line.Front);
-					ApplyDefaultsToSidedef(ls.Line.Front);
 				}
 				else
 				{
@@ -476,10 +516,8 @@ namespace CodeImp.DoomBuilder.Geometry
 					if(ls.Line.Back == null)
 					{
 						General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
-						ls.Line.ApplySidedFlags();
+						ApplyDefaultsToSidedef(ls.Line.Back, sourceside);
 					}
-					original.CopyPropertiesTo(ls.Line.Back);
-					ApplyDefaultsToSidedef(ls.Line.Back);
 				}
 
 				// Update line
@@ -490,12 +528,32 @@ namespace CodeImp.DoomBuilder.Geometry
 			return original.Sector;
 		}
 
-		// This applies defaults to a sidedef
-		private static void ApplyDefaultsToSidedef(Sidedef sd)
+		// This takes default settings if not taken yet
+		private static void TakeSidedefDefaults(ref SidedefSettings settings)
 		{
-			if(sd.HighRequired() && sd.HighTexture.StartsWith("-")) sd.SetTextureHigh(General.Settings.DefaultTexture);
-			if(sd.MiddleRequired() && sd.MiddleTexture.StartsWith("-")) sd.SetTextureMid(General.Settings.DefaultTexture);
-			if(sd.LowRequired() && sd.LowTexture.StartsWith("-")) sd.SetTextureLow(General.Settings.DefaultTexture);
+			// Use defaults where no settings could be found
+			if(settings.newtexhigh == null) settings.newtexhigh = General.Settings.DefaultTexture;
+			if(settings.newtexmid == null) settings.newtexmid = General.Settings.DefaultTexture;
+			if(settings.newtexlow == null) settings.newtexlow = General.Settings.DefaultTexture;
+		}
+
+		// This takes sidedef settings if not taken yet
+		private static void TakeSidedefSettings(ref SidedefSettings settings, Sidedef side)
+		{
+			if((side.LongHighTexture != General.Map.Map.EmptyLongName) && (settings.newtexhigh == null))
+				settings.newtexhigh = side.HighTexture;
+			if((side.LongMiddleTexture != General.Map.Map.EmptyLongName) && (settings.newtexmid == null))
+				settings.newtexmid = side.MiddleTexture;
+			if((side.LongLowTexture != General.Map.Map.EmptyLongName) && (settings.newtexlow == null))
+				settings.newtexlow = side.LowTexture;
+		}
+		
+		// This applies defaults to a sidedef
+		private static void ApplyDefaultsToSidedef(Sidedef sd, SidedefSettings defaults)
+		{
+			if(sd.HighRequired() && sd.HighTexture.StartsWith("-")) sd.SetTextureHigh(defaults.newtexhigh);
+			if(sd.MiddleRequired() && sd.MiddleTexture.StartsWith("-")) sd.SetTextureMid(defaults.newtexmid);
+			if(sd.LowRequired() && sd.LowTexture.StartsWith("-")) sd.SetTextureLow(defaults.newtexlow);
 		}
 
 		// This applies defaults to a sector

@@ -36,7 +36,8 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(SwitchAction = "verticesmode",	// Action name used to switch to this mode
+	[EditMode(DisplayName = "Vertices",
+			  SwitchAction = "verticesmode",	// Action name used to switch to this mode
 			  ButtonDesc = "Vertices Mode",		// Description on the button in toolbar/menu
 		      ButtonImage = "VerticesMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 0)]	// Position of the button (lower is more to the left)

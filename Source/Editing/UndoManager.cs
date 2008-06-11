@@ -142,6 +142,13 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		#region ================== Public Methods
 
+		// This clears all redos
+		public void ClearAllRedos()
+		{
+			ClearRedos();
+			General.MainWindow.UpdateInterface();
+		}
+		
 		// This makes an undo and returns the unique ticket id
 		public int CreateUndo(string description, UndoGroup group, int grouptag)
 		{
@@ -205,7 +212,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This performs an undo
 		[BeginAction("undo")]
-		internal void PerformUndo()
+		public void PerformUndo()
 		{
 			UndoSnapshot u, r;
 			Cursor oldcursor = Cursor.Current;
