@@ -1,4 +1,8 @@
-- Show action associations when highlighting line/sector/thing
+- Make find/replace features
+
+- Make advanced drag/rotate/resize/flip/skew/turn/barf mode
+
+- Make copy/paste features
 
 - Make sector gradient features
 
@@ -8,13 +12,7 @@
 
 - Make texture alignment features
 
-- Make find/replace features
-
-- Make copy/paste features
-
 - Make error checking feature
-
-- Make advanced drag/rotate/resize/flip/skew/turn/barf mode
 
 - Make quick sector draw (square/circle) mode
 

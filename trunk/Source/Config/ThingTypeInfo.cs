@@ -122,8 +122,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".errorcheck", cat.ErrorCheck);
 
 			// Safety
-			if(this.width < 2f) this.width = 2f;
-			if(this.height < 2f) this.height = 2f;
+			if(this.width < 8f) this.width = 8f;
+			if(this.height < 8f) this.height = 8f;
 			
 			// Make long name for sprite lookup
 			this.spritelongname = Lump.MakeLongName(this.sprite);

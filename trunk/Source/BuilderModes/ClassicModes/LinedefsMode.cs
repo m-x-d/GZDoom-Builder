@@ -31,6 +31,8 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -54,6 +56,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		private Linedef highlighted;
+		private Association[] association = new Association[Linedef.NUM_ARGS];
+		private Association highlightasso = new Association();
 		
 		// Interface
 		private bool editpressed;
@@ -136,8 +140,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
 				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
 					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
+				}
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				renderer.Finish();
 			}
@@ -150,15 +158,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 			}
 
-			// Selecting?
-			if(selecting)
+			// Render selection
+			if(renderer.StartOverlay(true))
 			{
-				// Render selection
-				if(renderer.StartOverlay(true))
-				{
-					RenderMultiSelection();
-					renderer.Finish();
-				}
+				for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
+				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso);
+				if(selecting) RenderMultiSelection();
+				renderer.Finish();
 			}
 
 			renderer.Present();
@@ -167,31 +173,88 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This highlights a new item
 		protected void Highlight(Linedef l)
 		{
-			// Update display
-			if(renderer.StartPlotter(false))
-			{
-				// Undraw previous highlight
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
-					renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-					renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
-				}
-				
-				// Set new highlight
-				highlighted = l;
+			bool completeredraw = false;
+			LinedefActionInfo action = null;
 
-				// Render highlighted item
-				if((highlighted != null) && !highlighted.IsDisposed)
-				{
-					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
-					renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-					renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
-				}
+			// Often we can get away by simply undrawing the previous
+			// highlight and drawing the new highlight. But if associations
+			// are or were drawn we need to redraw the entire display.
+
+			// Previous association highlights something?
+			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
+			
+			// Set highlight association
+			if(l != null)
+				highlightasso.Set(l.Tag, UniversalType.LinedefTag);
+			else
+				highlightasso.Set(0, 0);
+
+			// New association highlights something?
+			if((l != null) && (l.Tag > 0)) completeredraw = true;
+
+			if(l != null)
+			{
+				// Check if we can find the linedefs action
+				if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
+					action = General.Map.Config.LinedefActions[l.Action];
+			}
+			
+			// Determine linedef associations
+			for(int i = 0; i < Linedef.NUM_ARGS; i++)
+			{
+				// Previous association highlights something?
+				if((association[i].type == UniversalType.SectorTag) ||
+				   (association[i].type == UniversalType.LinedefTag) ||
+				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
 				
-				// Done
-				renderer.Finish();
-				renderer.Present();
+				// Make new association
+				if(action != null)
+					association[i].Set(l.Args[i], action.Args[i].Type);
+				else
+					association[i].Set(0, 0);
+				
+				// New association highlights something?
+				if((association[i].type == UniversalType.SectorTag) ||
+				   (association[i].type == UniversalType.LinedefTag) ||
+				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+			}
+			
+			// If we're changing associations, then we
+			// need to redraw the entire display
+			if(completeredraw)
+			{
+				// Set new highlight and redraw completely
+				highlighted = l;
+				General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Update display
+				if(renderer.StartPlotter(false))
+				{
+					// Undraw previous highlight
+					if((highlighted != null) && !highlighted.IsDisposed)
+					{
+						renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					}
+
+					// Set new highlight
+					highlighted = l;
+
+					// Render highlighted item
+					if((highlighted != null) && !highlighted.IsDisposed)
+					{
+						renderer.PlotLinedef(highlighted, General.Colors.Highlight);
+						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					}
+
+					// Done
+					renderer.Finish();
+					renderer.Present();
+				}
 			}
 			
 			// Show highlight info

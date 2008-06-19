@@ -31,6 +31,8 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -54,6 +56,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		private Thing highlighted;
+		private Association[] association = new Association[Thing.NUM_ARGS];
+		private Association highlightasso = new Association();
 
 		// Interface
 		private bool editpressed;
@@ -121,6 +125,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
+				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
 				renderer.Finish();
 			}
 
@@ -129,8 +135,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
+				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
 				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso);
 					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
+				}
 				renderer.Finish();
 			}
 
@@ -151,25 +161,82 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This highlights a new item
 		protected void Highlight(Thing t)
 		{
-			// Update display
-			if(renderer.StartThings(false))
+			bool completeredraw = false;
+			LinedefActionInfo action = null;
+
+			// Often we can get away by simply undrawing the previous
+			// highlight and drawing the new highlight. But if associations
+			// are or were drawn we need to redraw the entire display.
+
+			// Previous association highlights something?
+			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
+			
+			// Set highlight association
+			if(t != null)
+				highlightasso.Set(t.Tag, UniversalType.ThingTag);
+			else
+				highlightasso.Set(0, 0);
+
+			// New association highlights something?
+			if((t != null) && (t.Tag > 0)) completeredraw = true;
+
+			if(t != null)
 			{
-				// Undraw previous highlight
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
-
-				// Set new highlight
-				highlighted = t;
-
-				// Render highlighted item
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
-
-				// Done
-				renderer.Finish();
-				renderer.Present();
+				// Check if we can find the linedefs action
+				if((t.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(t.Action))
+					action = General.Map.Config.LinedefActions[t.Action];
 			}
+			
+			// Determine linedef associations
+			for(int i = 0; i < Thing.NUM_ARGS; i++)
+			{
+				// Previous association highlights something?
+				if((association[i].type == UniversalType.SectorTag) ||
+				   (association[i].type == UniversalType.LinedefTag) ||
+				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+				
+				// Make new association
+				if(action != null)
+					association[i].Set(t.Args[i], action.Args[i].Type);
+				else
+					association[i].Set(0, 0);
+				
+				// New association highlights something?
+				if((association[i].type == UniversalType.SectorTag) ||
+				   (association[i].type == UniversalType.LinedefTag) ||
+				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+			}
+			
+			// If we're changing associations, then we
+			// need to redraw the entire display
+			if(completeredraw)
+			{
+				// Set new highlight and redraw completely
+				highlighted = t;
+				General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Update display
+				if(renderer.StartThings(false))
+				{
+					// Undraw previous highlight
+					if((highlighted != null) && !highlighted.IsDisposed)
+						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
 
+					// Set new highlight
+					highlighted = t;
+
+					// Render highlighted item
+					if((highlighted != null) && !highlighted.IsDisposed)
+						renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
+
+					// Done
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+			
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
 				General.Interface.ShowThingInfo(highlighted);

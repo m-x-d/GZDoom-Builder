@@ -32,6 +32,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using System.Drawing;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -53,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		protected Sector highlighted;
+		private Association highlightasso = new Association();
 
 		// Interface
 		protected bool editpressed;
@@ -199,7 +201,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				if((highlighted != null) && !highlighted.IsDisposed)
+				{
 					renderer.PlotSector(highlighted, General.Colors.Highlight);
+					BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+				}
 				renderer.Finish();
 			}
 
@@ -211,15 +216,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 			}
 
-			// Selecting?
-			if(selecting)
+			// Render selection
+			if(renderer.StartOverlay(true))
 			{
-				// Render selection
-				if(renderer.StartOverlay(true))
-				{
-					RenderMultiSelection();
-					renderer.Finish();
-				}
+				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso);
+				if(selecting) RenderMultiSelection();
+				renderer.Finish();
 			}
 
 			renderer.Present();
@@ -228,39 +230,68 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This highlights a new item
 		protected void Highlight(Sector s)
 		{
-			// Update display
-			if(renderer.StartPlotter(false))
+			bool completeredraw = false;
+			
+			// Often we can get away by simply undrawing the previous
+			// highlight and drawing the new highlight. But if associations
+			// are or were drawn we need to redraw the entire display.
+
+			// Previous association highlights something?
+			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
+
+			// Set highlight association
+			if(s != null)
+				highlightasso.Set(s.Tag, UniversalType.SectorTag);
+			else
+				highlightasso.Set(0, 0);
+
+			// New association highlights something?
+			if((s != null) && (s.Tag > 0)) completeredraw = true;
+			
+			// If we're changing associations, then we
+			// need to redraw the entire display
+			if(completeredraw)
 			{
-				// Undraw previous highlight
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.PlotSector(highlighted);
-
-				/*
-				// Undraw highlighted things
-				if(highlighted != null)
-					foreach(Thing t in highlighted.Things)
-						renderer.RenderThing(t, renderer.DetermineThingColor(t));
-				*/
-				
-				// Set new highlight
+				// Set new highlight and redraw completely
 				highlighted = s;
-
-				// Render highlighted item
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.PlotSector(highlighted, General.Colors.Highlight);
-
-				/*
-				// Render highlighted things
-				if(highlighted != null)
-					foreach(Thing t in highlighted.Things)
-						renderer.RenderThing(t, General.Colors.Highlight);
-				*/
-				
-				// Done
-				renderer.Finish();
-				renderer.Present();
+				General.Interface.RedrawDisplay();
 			}
+			else
+			{
+				// Update display
+				if(renderer.StartPlotter(false))
+				{
+					// Undraw previous highlight
+					if((highlighted != null) && !highlighted.IsDisposed)
+						renderer.PlotSector(highlighted);
 
+					/*
+					// Undraw highlighted things
+					if(highlighted != null)
+						foreach(Thing t in highlighted.Things)
+							renderer.RenderThing(t, renderer.DetermineThingColor(t));
+					*/
+
+					// Set new highlight
+					highlighted = s;
+
+					// Render highlighted item
+					if((highlighted != null) && !highlighted.IsDisposed)
+						renderer.PlotSector(highlighted, General.Colors.Highlight);
+
+					/*
+					// Render highlighted things
+					if(highlighted != null)
+						foreach(Thing t in highlighted.Things)
+							renderer.RenderThing(t, General.Colors.Highlight);
+					*/
+
+					// Done
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+			
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
 				General.Interface.ShowSectorInfo(highlighted);
