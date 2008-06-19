@@ -106,8 +106,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".errorcheck", 0);
 			
 			// Safety
-			if(this.width < 2f) this.width = 2f;
-			if(this.height < 2f) this.height = 2f;
+			if(this.width < 8f) this.width = 8f;
+			if(this.height < 8f) this.height = 8f;
 			
 			// Go for all items in category
 			dic = cfg.ReadSetting("thingtypes." + name, new Hashtable());

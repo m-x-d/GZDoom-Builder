@@ -40,6 +40,7 @@
     <Compile Include="ClassicModes\DragGeometryMode.cs" />
     <Compile Include="ClassicModes\DrawGeometryMode.cs" />
     <Compile Include="ClassicModes\MakeSectorMode.cs" />
+    <Compile Include="General\Association.cs" />
     <Compile Include="General\BuilderPlug.cs" />
     <Compile Include="Interface\CurveLinedefsForm.cs">
       <SubType>Form</SubType>

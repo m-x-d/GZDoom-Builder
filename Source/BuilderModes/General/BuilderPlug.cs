@@ -32,6 +32,8 @@ using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Plugins;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -109,6 +111,92 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			menusform.ShowEditingModeMenu(newmode);
 		}
 		
+		#endregion
+		
+		#region ================== Tools
+
+		// This renders the associated sectors/linedefs with the indication color
+		public void PlotAssociations(IRenderer2D renderer, Association asso)
+		{
+			// Tag must be above zero
+			if(asso.tag <= 0) return;
+			
+			// Sectors?
+			if(asso.type == UniversalType.SectorTag)
+			{
+				foreach(Sector s in General.Map.Map.Sectors)
+					if(s.Tag == asso.tag) renderer.PlotSector(s, General.Colors.Indication);
+			}
+			// Linedefs?
+			else if(asso.type == UniversalType.LinedefTag)
+			{
+				foreach(Linedef l in General.Map.Map.Linedefs)
+				{
+					if(l.Tag == asso.tag) renderer.PlotLinedef(l, General.Colors.Indication);
+				}
+			}
+		}
+
+		// This renders the associated things with the indication color
+		public void RenderAssociations(IRenderer2D renderer, Association asso)
+		{
+			// Tag must be above zero
+			if(asso.tag <= 0) return;
+
+			// Things?
+			if(asso.type == UniversalType.ThingTag)
+			{
+				foreach(Thing t in General.Map.Map.Things)
+				{
+					if(t.Tag == asso.tag) renderer.RenderThing(t, General.Colors.Indication, 1.0f);
+				}
+			}
+		}
+
+		// This renders the associated sectors/linedefs with the indication color
+		public void PlotReverseAssociations(IRenderer2D renderer, Association asso)
+		{
+			// Tag must be above zero
+			if(asso.tag <= 0) return;
+
+			// Linedefs
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				// Known action on this line?
+				if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
+				{
+					LinedefActionInfo action = General.Map.Config.LinedefActions[l.Action];
+					if((action.Args[0].Type == (int)asso.type) && (l.Args[0] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+					if((action.Args[1].Type == (int)asso.type) && (l.Args[1] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+					if((action.Args[2].Type == (int)asso.type) && (l.Args[2] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+					if((action.Args[3].Type == (int)asso.type) && (l.Args[3] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+					if((action.Args[4].Type == (int)asso.type) && (l.Args[4] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+				}
+			}
+		}
+
+		// This renders the associated things with the indication color
+		public void RenderReverseAssociations(IRenderer2D renderer, Association asso)
+		{
+			// Tag must be above zero
+			if(asso.tag <= 0) return;
+
+			// Things
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				// Known action on this thing?
+				if((t.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(t.Action))
+				{
+					LinedefActionInfo action = General.Map.Config.LinedefActions[t.Action];
+					if((action.Args[0].Type == (int)asso.type) && (t.Args[0] == asso.tag)) renderer.RenderThing(t, General.Colors.Indication, 1.0f);
+					if((action.Args[1].Type == (int)asso.type) && (t.Args[1] == asso.tag)) renderer.RenderThing(t, General.Colors.Indication, 1.0f);
+					if((action.Args[2].Type == (int)asso.type) && (t.Args[2] == asso.tag)) renderer.RenderThing(t, General.Colors.Indication, 1.0f);
+					if((action.Args[3].Type == (int)asso.type) && (t.Args[3] == asso.tag)) renderer.RenderThing(t, General.Colors.Indication, 1.0f);
+					if((action.Args[4].Type == (int)asso.type) && (t.Args[4] == asso.tag)) renderer.RenderThing(t, General.Colors.Indication, 1.0f);
+				}
+			}
+		}
+
 		#endregion
 	}
 }

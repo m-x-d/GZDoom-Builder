@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This requests loading the image
 		public virtual void LoadImage()
 		{
-			BitmapData bmpdata;
+			BitmapData bmpdata = null;
 
 			// Determine amounts
 			float gamma = (float)(General.Settings.ImageBrightness + 10) * 0.1f;
@@ -162,21 +162,37 @@ namespace CodeImp.DoomBuilder.Data
 			// This applies brightness correction on the image
 			if((bitmap != null) && usecolorcorrection)
 			{
-				bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-				byte* pixels = (byte*)(bmpdata.Scan0.ToPointer());
-				for(int p = 0; p < bmpdata.Stride * bmpdata.Height; p += 4)
+				try
 				{
-					// Apply color correction for individual colors
-					float r = (float)pixels[p + 0] * gamma + bright;
-					float g = (float)pixels[p + 1] * gamma + bright;
-					float b = (float)pixels[p + 2] * gamma + bright;
-					
-					// Clamp to 0..255 range
-					if(r < 0f) pixels[p + 0] = 0; else if(r > 255f) pixels[p + 0] = 255; else pixels[p + 0] = (byte)r;
-					if(g < 0f) pixels[p + 1] = 0; else if(g > 255f) pixels[p + 1] = 255; else pixels[p + 1] = (byte)g;
-					if(b < 0f) pixels[p + 2] = 0; else if(b > 255f) pixels[p + 2] = 255; else pixels[p + 2] = (byte)b;
+					// Try locking the bitmap
+					bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
 				}
-				bitmap.UnlockBits(bmpdata);
+				catch(Exception e)
+				{
+					General.WriteLogLine("ERROR: Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
+				}
+
+				// Bitmap locked?
+				if(bmpdata != null)
+				{
+					// Apply color correction
+					byte* pixels = (byte*)(bmpdata.Scan0.ToPointer());
+					for(int p = 0; p < bmpdata.Stride * bmpdata.Height; p += 4)
+					{
+						// Apply color correction for individual colors
+						float r = (float)pixels[p + 0] * gamma + bright;
+						float g = (float)pixels[p + 1] * gamma + bright;
+						float b = (float)pixels[p + 2] * gamma + bright;
+
+						// Clamp to 0..255 range
+						if(r < 0f) pixels[p + 0] = 0; else if(r > 255f) pixels[p + 0] = 255; else pixels[p + 0] = (byte)r;
+						if(g < 0f) pixels[p + 1] = 0; else if(g > 255f) pixels[p + 1] = 255; else pixels[p + 1] = (byte)g;
+						if(b < 0f) pixels[p + 2] = 0; else if(b > 255f) pixels[p + 2] = 255; else pixels[p + 2] = (byte)b;
+					}
+					
+					// Done with the lock
+					bitmap.UnlockBits(bmpdata);
+				}
 			}
 
 			// Done, reset load state

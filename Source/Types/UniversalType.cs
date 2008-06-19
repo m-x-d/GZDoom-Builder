@@ -27,7 +27,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	internal enum UniversalType : int
+	public enum UniversalType : int
 	{
 		Integer = 0,
 		Float = 1,
