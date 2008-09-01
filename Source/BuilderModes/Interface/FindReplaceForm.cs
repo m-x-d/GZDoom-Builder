@@ -206,6 +206,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		// Window closing
+		private void FindReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			// If the user closes the form, then just cancel the mode
+			if(e.CloseReason == CloseReason.UserClosing)
+			{
+				e.Cancel = true;
+				General.Map.CancelMode();
+			}
+		}
+
+		// Close button clicked
+		private void closebutton_Click(object sender, EventArgs e)
+		{
+			General.Map.CancelMode();
+		}
+
 		#endregion
 
 		#region ================== Methods
