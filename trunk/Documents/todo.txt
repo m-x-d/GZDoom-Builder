@@ -1,4 +1,4 @@
-- Make find/replace features
+- Add more find/replace types
 
 - Make advanced drag/rotate/resize/flip/skew/turn/barf mode
 
