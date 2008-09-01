@@ -1537,6 +1537,20 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Dialogs
 
+		// This browses the lindef types
+		// Returns the new action or the same action when cancelled
+		public int BrowseLinedefActions(IWin32Window owner, int initialvalue)
+		{
+			return ActionBrowserForm.BrowseAction(owner, initialvalue);
+		}
+
+		// This browses sector effects
+		// Returns the new effect or the same effect when cancelled
+		public int BrowseSectorEffect(IWin32Window owner, int initialvalue)
+		{
+			return EffectBrowserForm.BrowseEffect(owner, initialvalue);
+		}
+		
 		// This shows the dialog to edit lines
 		public DialogResult ShowEditLinedefs(ICollection<Linedef> lines)
 		{

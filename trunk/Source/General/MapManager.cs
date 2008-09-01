@@ -1071,7 +1071,7 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("thingsfilterssetup")]
 		internal void ShowThingsFiltersSetup()
 		{
-			// Show line edit dialog
+			// Show things filter dialog
 			ThingsFiltersForm f = new ThingsFiltersForm();
 			f.ShowDialog(General.MainWindow);
 			f.Dispose();
