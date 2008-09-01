@@ -70,7 +70,19 @@ namespace CodeImp.DoomBuilder.Windows
 		void ResumeExclusiveMouseInput();
 		bool CheckActionActive(Assembly assembly, string actionname);
 		void SetCursor(Cursor cursor);
+
+		/// <summary>
+		/// This browses the lindef types
+		/// </summary>
+		/// <returns>Returns the new action or the same action when cancelled</returns>
+		int BrowseLinedefActions(IWin32Window owner, int initialvalue);
 		
+		/// <summary>
+		/// This browses sector effects
+		/// </summary>
+		/// <returns>Returns the new effect or the same effect when cancelled</returns>
+		int BrowseSectorEffect(IWin32Window owner, int initialvalue);
+
 		/// <summary>
 		/// This adds a menu to the Doom Builder menu strip.
 		/// <para>

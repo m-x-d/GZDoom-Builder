@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Main objects
 		private MenusForm menusform;
 		private CurveLinedefsForm curvelinedefsform;
+		private FindReplaceForm findreplaceform;
 
 		#endregion
 
@@ -62,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public MenusForm MenusForm { get { return menusform; } }
 		public CurveLinedefsForm CurveLinedefsForm { get { return curvelinedefsform; } }
+		public FindReplaceForm FindReplaceForm { get { return findreplaceform; } }
 
 		#endregion
 
@@ -79,6 +81,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Load curve linedefs form
 			curvelinedefsform = new CurveLinedefsForm();
+
+			// Load find/replace form
+			findreplaceform = new FindReplaceForm();
 		}
 		
 		// Disposer
@@ -93,6 +98,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				menusform = null;
 				curvelinedefsform.Dispose();
 				curvelinedefsform = null;
+				findreplaceform.Dispose();
+				findreplaceform = null;
 				
 				// Done
 				me = null;
