@@ -1173,10 +1173,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			
 			// Make quads
-			quads[0] = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y, rb.x, lt.y + bordersize);
-			quads[1] = new FlatQuad(PrimitiveType.TriangleList, lt.x, rb.y - bordersize, rb.x, rb.y);
-			quads[2] = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y + bordersize, lt.x + bordersize, rb.y);
-			quads[3] = new FlatQuad(PrimitiveType.TriangleList, rb.x - bordersize, lt.y + bordersize, rb.x, rb.y - bordersize);
+			quads[0] = new FlatQuad(PrimitiveType.TriangleStrip, lt.x, lt.y, rb.x, lt.y - bordersize);
+			quads[1] = new FlatQuad(PrimitiveType.TriangleStrip, lt.x, rb.y + bordersize, rb.x, rb.y);
+			quads[2] = new FlatQuad(PrimitiveType.TriangleStrip, lt.x, lt.y - bordersize, lt.x + bordersize, rb.y + bordersize);
+			quads[3] = new FlatQuad(PrimitiveType.TriangleStrip, rb.x - bordersize, lt.y - bordersize, rb.x, rb.y + bordersize);
 			quads[0].SetColors(c.ToInt());
 			quads[1].SetColors(c.ToInt());
 			quads[2].SetColors(c.ToInt());
@@ -1217,7 +1217,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Make quad
-			FlatQuad quad = new FlatQuad(PrimitiveType.TriangleList, lt.x, lt.y, rb.x, rb.y);
+			FlatQuad quad = new FlatQuad(PrimitiveType.TriangleStrip, lt.x, lt.y, rb.x, rb.y);
 			quad.SetColors(c.ToInt());
 			
 			// Set renderstates for rendering
