@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Map;
 using System.Reflection;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -174,6 +175,55 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Window
+		
+		// Window is first shown
+		private void MainForm_Shown(object sender, EventArgs e)
+		{
+			// Check if the command line arguments tell us to load something
+			if(General.AutoLoadFile != null)
+			{
+				bool showdialog = false;
+				MapOptions options = new MapOptions();
+				Configuration mapsettings;
+				
+				// Any of the options already given?
+				if(General.AutoLoadMap != null)
+				{
+					// Try to find existing options in the settings file
+					string dbsfile = General.AutoLoadFile.Substring(0, General.AutoLoadFile.Length - 4) + ".dbs";
+					if(File.Exists(dbsfile))
+						try { mapsettings = new Configuration(dbsfile, true); }
+						catch(Exception) { mapsettings = new Configuration(true); }
+					else
+						mapsettings = new Configuration(true);
+
+					// Set map name and other options
+					options = new MapOptions(mapsettings, General.AutoLoadMap);
+
+					// Set configuration file (constructor already does this, but we want this info from the cmd args if possible)
+					options.ConfigFile = General.AutoLoadConfig;
+					if(options.ConfigFile == null) options.ConfigFile = mapsettings.ReadSetting("gameconfig", "");
+					if(options.ConfigFile.Trim().Length == 0) showdialog = true;
+				}
+				else
+				{
+					// No options given
+					showdialog = true;
+				}
+
+				// Show open map dialog?
+				if(showdialog)
+				{
+					// Show open dialog
+					General.OpenMapFile(General.AutoLoadFile);
+				}
+				else
+				{
+					// Open with options
+					General.OpenMapFileWithOptions(General.AutoLoadFile, options);
+				}
+			}
+		}
 
 		// Window is loaded
 		private void MainForm_Load(object sender, EventArgs e)
