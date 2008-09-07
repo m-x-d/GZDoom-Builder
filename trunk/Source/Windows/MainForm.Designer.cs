@@ -608,8 +608,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.thingfilters.Name = "thingfilters";
 			this.thingfilters.Size = new System.Drawing.Size(130, 25);
 			this.thingfilters.ToolTipText = "Things Filter";
-			this.thingfilters.SelectedIndexChanged += new System.EventHandler(this.thingfilters_SelectedIndexChanged);
 			this.thingfilters.DropDownClosed += new System.EventHandler(this.LoseFocus);
+			this.thingfilters.SelectedIndexChanged += new System.EventHandler(this.thingfilters_SelectedIndexChanged);
 			// 
 			// toolStripSeparator8
 			// 
@@ -996,14 +996,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.display.Size = new System.Drawing.Size(823, 367);
 			this.display.TabIndex = 5;
 			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
-			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
-			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
-			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
-			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
 			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
+			this.display.MouseMove += new System.Windows.Forms.MouseEventHandler(this.display_MouseMove);
+			this.display.MouseClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseClick);
+			this.display.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.display_MouseDoubleClick);
 			this.display.Resize += new System.EventHandler(this.display_Resize);
-			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			this.display.MouseEnter += new System.EventHandler(this.display_MouseEnter);
+			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
+			this.display.MouseUp += new System.Windows.Forms.MouseEventHandler(this.display_MouseUp);
 			// 
 			// processor
 			// 
@@ -1027,14 +1027,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Doom Builder";
 			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
-			this.Load += new System.EventHandler(this.MainForm_Load);
+			this.Resize += new System.EventHandler(this.MainForm_Resize);
+			this.Shown += new System.EventHandler(this.MainForm_Shown);
 			this.Activated += new System.EventHandler(this.MainForm_Activated);
-			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
 			this.Move += new System.EventHandler(this.MainForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-			this.Resize += new System.EventHandler(this.MainForm_Resize);
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
 			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
+			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.menumain.ResumeLayout(false);
 			this.menumain.PerformLayout();
 			this.toolbar.ResumeLayout(false);

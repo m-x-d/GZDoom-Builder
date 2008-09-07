@@ -37,6 +37,7 @@ using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Types;
+using System.Collections.ObjectModel;
 
 #endregion
 
@@ -129,7 +130,13 @@ namespace CodeImp.DoomBuilder
 
 		// Tools
 		private static Triangulator earclipper;
-		
+
+		// Command line arguments
+		private static string[] cmdargs;
+		private static string autoloadfile = null;
+		private static string autoloadmap = null;
+		private static string autoloadconfig = null;
+
 		#endregion
 
 		#region ================== Properties
@@ -140,6 +147,7 @@ namespace CodeImp.DoomBuilder
 		public static string ConfigsPath { get { return configspath; } }
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
+		public static ICollection<string> CommandArgs { get { return Array.AsReadOnly<string>(cmdargs); } }
 		internal static MainForm MainWindow { get { return mainwindow; } }
 		public static IMainForm Interface { get { return mainwindow; } }
 		public static ProgramConfiguration Settings { get { return settings; } }
@@ -154,6 +162,9 @@ namespace CodeImp.DoomBuilder
 		public static bool DebugBuild { get { return debugbuild; } }
 		internal static Triangulator EarClipper { get { return earclipper; } }
 		internal static TypesManager Types { get { return types; } }
+		internal static string AutoLoadFile { get { return autoloadfile; } }
+		internal static string AutoLoadMap { get { return autoloadmap; } }
+		internal static string AutoLoadConfig { get { return autoloadconfig; } }
 		
 		#endregion
 
@@ -432,7 +443,7 @@ namespace CodeImp.DoomBuilder
 		{
 			Uri localpath;
 			Version thisversion;
-
+			
 			// Determine states
 			#if DEBUG
 				debugbuild = true;
@@ -470,12 +481,18 @@ namespace CodeImp.DoomBuilder
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
 			General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
-			General.WriteLogLine("Application path:     " + apppath);
-			General.WriteLogLine("Temporary path:       " + temppath);
-			General.WriteLogLine("Local settings path:  " + settingspath);
-			General.WriteLogLine("Configurations path:  " + configspath);
-			General.WriteLogLine("Compilers path:       " + compilerspath);
-			General.WriteLogLine("Plugins path:         " + pluginspath);
+			General.WriteLogLine("Application path:        " + apppath);
+			General.WriteLogLine("Temporary path:          " + temppath);
+			General.WriteLogLine("Local settings path:     " + settingspath);
+			General.WriteLogLine("Configurations path:     " + configspath);
+			General.WriteLogLine("Compilers path:          " + compilerspath);
+			General.WriteLogLine("Plugins path:            " + pluginspath);
+			General.WriteLogLine("Command-line arguments:  " + args.Length);
+			for(int i = 0; i < args.Length; i++)
+				General.WriteLogLine("Argument " + i + ":   \"" + args[i] + "\"");
+			
+			// Parse command-line arguments
+			ParseCommandLineArgs(args);
 			
 			// Load configuration
 			General.WriteLogLine("Loading program configuration...");
@@ -574,6 +591,56 @@ namespace CodeImp.DoomBuilder
 
 			// End program here
 			Terminate(false);
+		}
+
+		// This parses the command line arguments
+		private static void ParseCommandLineArgs(string[] args)
+		{
+			// Keep a copy
+			cmdargs = args;
+			
+			// Make a queue so we can parse the values from left to right
+			Queue<string> argslist = new Queue<string>(args);
+			
+			// Parse list
+			while(argslist.Count > 0)
+			{
+				// Get next arg
+				string curarg = argslist.Dequeue();
+				
+				// Map name info?
+				if(string.Compare(curarg, "-MAP", true) == 0)
+				{
+					// Store next arg as map name information
+					autoloadmap = argslist.Dequeue();
+				}
+				// Config name info?
+				else if((string.Compare(curarg, "-CFG", true) == 0) ||
+					    (string.Compare(curarg, "-CONFIG", true) == 0))
+				{
+					// Store next arg as config filename information
+					autoloadconfig = argslist.Dequeue();
+				}
+				// Every other arg
+				else
+				{
+					// No command to load file yet?
+					if(autoloadfile == null)
+					{
+						// Check if this is a file we can load
+						if(File.Exists(curarg))
+						{
+							// Load this file!
+							autoloadfile = curarg.Trim();
+						}
+						else
+						{
+							// Note in the log that we cannot find this file
+							General.WriteLogLine("WARNING: Cannot find the specified file \"" + curarg + "\"");
+						}
+					}
+				}
+			}
 		}
 		
 		#endregion
@@ -769,42 +836,46 @@ namespace CodeImp.DoomBuilder
 				// Open map options dialog
 				openmapwindow = new OpenMapOptionsForm(filename);
 				if(openmapwindow.ShowDialog(mainwindow) == DialogResult.OK)
-				{
-					// Display status
-					mainwindow.DisplayStatus("Opening map file...");
-					Cursor.Current = Cursors.WaitCursor;
-					
-					// Clear the display
-					mainwindow.ClearDisplay();
-
-					// Trash the current map, if any
-					if(map != null) map.Dispose();
-
-					// Create map manager with given options
-					map = new MapManager();
-					if(map.InitializeOpenMap(filename, openmapwindow.Options))
-					{
-						// Add recent file
-						mainwindow.AddRecentFile(filename);
-					}
-					else
-					{
-						// Unable to create map manager
-						map.Dispose();
-						map = null;
-
-						// Show splash logo on display
-						mainwindow.ShowSplashDisplay();
-					}
-
-					// All done
-					mainwindow.RedrawDisplay();
-					mainwindow.UpdateInterface();
-					mainwindow.HideInfo();
-					mainwindow.DisplayReady();
-					Cursor.Current = Cursors.Default;
-				}
+					OpenMapFileWithOptions(filename, openmapwindow.Options);
 			}
+		}
+		
+		// This opens the specified file without dialog
+		internal static void OpenMapFileWithOptions(string filename, MapOptions options)
+		{
+			// Display status
+			mainwindow.DisplayStatus("Opening map file...");
+			Cursor.Current = Cursors.WaitCursor;
+
+			// Clear the display
+			mainwindow.ClearDisplay();
+
+			// Trash the current map, if any
+			if(map != null) map.Dispose();
+
+			// Create map manager with given options
+			map = new MapManager();
+			if(map.InitializeOpenMap(filename, options))
+			{
+				// Add recent file
+				mainwindow.AddRecentFile(filename);
+			}
+			else
+			{
+				// Unable to create map manager
+				map.Dispose();
+				map = null;
+
+				// Show splash logo on display
+				mainwindow.ShowSplashDisplay();
+			}
+
+			// All done
+			mainwindow.RedrawDisplay();
+			mainwindow.UpdateInterface();
+			mainwindow.HideInfo();
+			mainwindow.DisplayReady();
+			Cursor.Current = Cursors.Default;
 		}
 		
 		// This saves the current map
