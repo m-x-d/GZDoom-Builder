@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Initialize
 			this.previousname = "";
 			this.currentname = mapname;
-			this.configfile = cfg.ReadSetting("config", "");
+			this.configfile = cfg.ReadSetting("gameconfig", "");
 			this.resources = new DataLocationList();
 			this.mapconfig = new Configuration(true);
 			
