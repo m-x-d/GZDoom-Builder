@@ -34,6 +34,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassicModes\BrightnessMode.cs" />
+    <Compile Include="ClassicModes\EditSelectionMode.cs" />
     <Compile Include="ClassicModes\CurveLinedefsMode.cs" />
     <Compile Include="ClassicModes\DragLinedefsMode.cs" />
     <Compile Include="ClassicModes\DragSectorsMode.cs" />

@@ -58,6 +58,9 @@ namespace CodeImp.DoomBuilder
 
 		[DllImport("user32.dll", EntryPoint = "SendMessage", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
 		internal static extern int SendMessage(IntPtr hwnd, uint Msg, int wParam, int lParam);
+
+		[DllImport("user32.dll", SetLastError = true)]
+		internal static extern bool MessageBeep(MessageBeepType type);
 		
 		#endregion
 

@@ -34,6 +34,7 @@ using System.Reflection;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Properties;
 
 #endregion
 
@@ -46,7 +47,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private const string STATUS_READY_TEXT = "Ready.";
 		private const int MAX_RECENT_FILES = 8;
 		private const int MAX_RECENT_FILES_PIXELS = 250;
-
+		private const int WARNING_FLASH_COUNT = 5;
+		
 		#endregion
 
 		#region ================== Delegates
@@ -81,6 +83,10 @@ namespace CodeImp.DoomBuilder.Windows
 		// Toolbar
 		private EventHandler buttonvisiblechangedhandler;
 		private bool updatingfilters;
+		
+		// Statusbar
+		private int warningflashcount;
+		private bool warningsignon;
 		
 		#endregion
 
@@ -136,6 +142,12 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		#region ================== General
 
+		// This makes a beep sound
+		public void MessageBeep(MessageBeepType type)
+		{
+			General.MessageBeep(type);
+		}
+		
 		// This updates all menus for the current status
 		internal void UpdateInterface()
 		{
@@ -306,6 +318,9 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.CloseMap())
 				{
 					General.WriteLogLine("Closing main interface window...");
+					
+					// Hide warning to stop timers
+					HideWarning();
 
 					// Stop exclusive mode, if any is active
 					StopExclusiveMouseInput();
@@ -380,10 +395,70 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			return statuslabel.Text;
 		}
+
+		// This shows a warning
+		public void DisplayWarning(string warning)
+		{
+			MessageBeep(MessageBeepType.Warning);
+			warninglabel.Spring = true;
+			warninglabel.Text = warning;
+			warninglabel.Image = Resources.Warning;
+			warninglabel.Visible = true;
+			warningflashcount = 0;
+			warningsignon = true;
+			warningtimer.Stop();
+			warningtimer.Interval = 3000;
+			warningtimer.Start();
+			warningflasher.Start();
+		}
+
+		// This hides any warning
+		public void HideWarning()
+		{
+			warningtimer.Stop();
+			warninglabel.Visible = false;
+			warninglabel.Spring = false;
+			warningflasher.Stop();
+		}
+
+		// This flashes the warning sign
+		private void warningflasher_Tick(object sender, EventArgs e)
+		{
+			// Warning sign on?
+			if(warningsignon)
+			{
+				// Turn it off or should we stop?
+				if(warningflashcount < WARNING_FLASH_COUNT)
+				{
+					warninglabel.Image = Resources.WarningOff;
+					warningsignon = false;
+				}
+				else
+				{
+					warningflasher.Stop();
+				}
+			}
+			else
+			{
+				// Turn it on and count the flash
+				warninglabel.Image = Resources.Warning;
+				warningsignon = true;
+				warningflashcount++;
+			}
+		}
+		
+		// Warning timed out
+		private void warningtimer_Tick(object sender, EventArgs e)
+		{
+			HideWarning();
+		}
 		
 		// This changes status text
 		public void DisplayStatus(string status)
 		{
+			// Hide any warning
+			HideWarning();
+			
 			// Update status description
 			if(statuslabel.Text != status)
 				statuslabel.Text = status;

@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.warninglabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gridlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.buttongrid = new System.Windows.Forms.ToolStripDropDownButton();
 			this.itemgrid1024 = new System.Windows.Forms.ToolStripMenuItem();
@@ -123,6 +124,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Controls.RenderTargetControl();
 			this.processor = new System.Windows.Forms.Timer(this.components);
+			this.warningtimer = new System.Windows.Forms.Timer(this.components);
+			this.warningflasher = new System.Windows.Forms.Timer(this.components);
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -239,7 +242,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
 			this.menumain.Name = "menumain";
-			this.menumain.Size = new System.Drawing.Size(823, 24);
+			this.menumain.Size = new System.Drawing.Size(961, 24);
 			this.menumain.TabIndex = 0;
 			// 
 			// menufile
@@ -514,7 +517,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.toolStripSeparator6});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
-			this.toolbar.Size = new System.Drawing.Size(823, 25);
+			this.toolbar.Size = new System.Drawing.Size(961, 25);
 			this.toolbar.TabIndex = 1;
 			// 
 			// buttonnewmap
@@ -669,6 +672,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statusbar.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statuslabel,
+            this.warninglabel,
             this.gridlabel,
             this.buttongrid,
             toolStripSeparator1,
@@ -678,10 +682,10 @@ namespace CodeImp.DoomBuilder.Windows
             this.xposlabel,
             this.poscommalabel,
             this.yposlabel});
-			this.statusbar.Location = new System.Drawing.Point(0, 522);
+			this.statusbar.Location = new System.Drawing.Point(0, 611);
 			this.statusbar.Name = "statusbar";
 			this.statusbar.ShowItemToolTips = true;
-			this.statusbar.Size = new System.Drawing.Size(823, 23);
+			this.statusbar.Size = new System.Drawing.Size(961, 23);
 			this.statusbar.TabIndex = 2;
 			// 
 			// statuslabel
@@ -690,17 +694,29 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(497, 18);
+			this.statuslabel.Size = new System.Drawing.Size(571, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// warninglabel
+			// 
+			this.warninglabel.BackColor = System.Drawing.SystemColors.Control;
+			this.warninglabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+			this.warninglabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.warninglabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.warninglabel.Name = "warninglabel";
+			this.warninglabel.Size = new System.Drawing.Size(167, 18);
+			this.warninglabel.Text = "Make a selection first!";
+			this.warninglabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.warninglabel.Visible = false;
 			// 
 			// gridlabel
 			// 
 			this.gridlabel.AutoSize = false;
 			this.gridlabel.AutoToolTip = true;
 			this.gridlabel.Name = "gridlabel";
-			this.gridlabel.Size = new System.Drawing.Size(64, 18);
+			this.gridlabel.Size = new System.Drawing.Size(128, 18);
 			this.gridlabel.Text = "32 mp";
 			this.gridlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.gridlabel.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
@@ -916,9 +932,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelinfo.Controls.Add(this.sectorinfo);
 			this.panelinfo.Controls.Add(this.linedefinfo);
 			this.panelinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panelinfo.Location = new System.Drawing.Point(0, 416);
+			this.panelinfo.Location = new System.Drawing.Point(0, 505);
 			this.panelinfo.Name = "panelinfo";
-			this.panelinfo.Size = new System.Drawing.Size(823, 106);
+			this.panelinfo.Size = new System.Drawing.Size(961, 106);
 			this.panelinfo.TabIndex = 4;
 			// 
 			// modename
@@ -993,7 +1009,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.display.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.display.Location = new System.Drawing.Point(0, 49);
 			this.display.Name = "display";
-			this.display.Size = new System.Drawing.Size(823, 367);
+			this.display.Size = new System.Drawing.Size(961, 456);
 			this.display.TabIndex = 5;
 			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
 			this.display.MouseDown += new System.Windows.Forms.MouseEventHandler(this.display_MouseDown);
@@ -1010,10 +1026,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.processor.Interval = 10;
 			this.processor.Tick += new System.EventHandler(this.processor_Tick);
 			// 
+			// warningtimer
+			// 
+			this.warningtimer.Tick += new System.EventHandler(this.warningtimer_Tick);
+			// 
+			// warningflasher
+			// 
+			this.warningflasher.Tick += new System.EventHandler(this.warningflasher_Tick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(823, 545);
+			this.ClientSize = new System.Drawing.Size(961, 634);
 			this.Controls.Add(this.display);
 			this.Controls.Add(this.panelinfo);
 			this.Controls.Add(this.statusbar);
@@ -1131,5 +1155,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemgriddec;
 		private System.Windows.Forms.ToolStripMenuItem itemgridsetup;
 		private System.Windows.Forms.Label modename;
+		private System.Windows.Forms.ToolStripStatusLabel warninglabel;
+		private System.Windows.Forms.Timer warningtimer;
+		private System.Windows.Forms.Timer warningflasher;
 	}
 }

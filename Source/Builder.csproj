@@ -107,11 +107,12 @@
     <Compile Include="Geometry\Angle2D.cs" />
     <Compile Include="Geometry\LinedefsTracePath.cs" />
     <Compile Include="Geometry\LinedefAngleSorter.cs" />
+    <Compile Include="Geometry\Polygon.cs" />
     <Compile Include="Geometry\SectorTools.cs" />
     <Compile Include="Geometry\Triangulator.cs" />
     <Compile Include="Geometry\EarClipVertex.cs" />
     <Compile Include="Geometry\Line2D.cs" />
-    <Compile Include="Geometry\Polygon.cs" />
+    <Compile Include="Geometry\EarClipPolygon.cs" />
     <Compile Include="Geometry\SidedefAngleSorter.cs" />
     <Compile Include="Geometry\SidedefsTracePath.cs" />
     <Compile Include="Geometry\TriangleList.cs" />
@@ -275,6 +276,7 @@
     <Compile Include="Controls\NumericTextbox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Windows\MessageBeepType.cs" />
     <Compile Include="Windows\OpenMapOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -587,6 +589,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Warning.png" />
+    <None Include="Resources\WarningOff.png" />
     <None Include="Resources\Test.png" />
     <None Include="Resources\SlimDX_small.png" />
     <None Include="Resources\Splash3_trans.png" />

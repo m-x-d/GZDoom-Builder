@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// For debugging purpose only!
 		// These are not called in a release build
 		public delegate void ShowLine(Vector2D v1, Vector2D v2, PixelColor c);
-		public delegate void ShowPolygon(Polygon p, PixelColor c);
+		public delegate void ShowPolygon(EarClipPolygon p, PixelColor c);
 		public delegate void ShowPoint(Vector2D v, int c);
 		public delegate void ShowEarClip(EarClipVertex[] found, LinkedList<EarClipVertex> remaining);
 		
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public TriangleList PerformTriangulation(Sector sector)
 		{
 			TriangleList triangles = new TriangleList();
-			List<Polygon> polys;
+			List<EarClipPolygon> polys;
 			
 			/*
 			 * This process is divided into several steps:
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			DoCutting(polys);
 			
 			// EAR-CLIPPING
-			foreach(Polygon p in polys) triangles.AddRange(DoEarClip(p));
+			foreach(EarClipPolygon p in polys) triangles.AddRange(DoEarClip(p));
 
 			// Return result
 			return triangles;
@@ -121,13 +121,13 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Tracing
 
 		// This traces sector lines to create a polygon tree
-		private List<Polygon> DoTrace(Sector s)
+		private List<EarClipPolygon> DoTrace(Sector s)
 		{
 			Dictionary<Sidedef, bool> todosides = new Dictionary<Sidedef, bool>(s.Sidedefs.Count);
 			Dictionary<Vertex, Vertex> ignores = new Dictionary<Vertex,Vertex>();
-			List<Polygon> root = new List<Polygon>();
+			List<EarClipPolygon> root = new List<EarClipPolygon>();
 			SidedefsTracePath path;
-			Polygon newpoly;
+			EarClipPolygon newpoly;
 			Vertex start;
 			
 			// Fill the dictionary
@@ -174,7 +174,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					#endif
 					
 					// Determine where this polygon goes in our tree
-					foreach(Polygon p in root)
+					foreach(EarClipPolygon p in root)
 					{
 						// Insert if it belongs as a child
 						if(p.InsertChild(newpoly))
@@ -333,26 +333,26 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Cutting
 
 		// This cuts into outer polygons to solve inner polygons and make the polygon tree flat
-		private void DoCutting(List<Polygon> polys)
+		private void DoCutting(List<EarClipPolygon> polys)
 		{
-			Queue<Polygon> todo = new Queue<Polygon>(polys);
+			Queue<EarClipPolygon> todo = new Queue<EarClipPolygon>(polys);
 			
 			// Begin processing outer polygons
 			while(todo.Count > 0)
 			{
 				// Get outer polygon to process
-				Polygon p = todo.Dequeue();
+				EarClipPolygon p = todo.Dequeue();
 
 				// Any inner polygons to work with?
 				if(p.Children.Count > 0)
 				{
 					// Go for all the children
-					foreach(Polygon c in p.Children)
+					foreach(EarClipPolygon c in p.Children)
 					{
 						// The children of the children are outer polygons again,
 						// so move them to the root and add for processing
 						polys.AddRange(c.Children);
-						foreach(Polygon sc in c.Children) todo.Enqueue(sc);
+						foreach(EarClipPolygon sc in c.Children) todo.Enqueue(sc);
 
 						// Remove from inner polygon
 						c.Children.Clear();
@@ -365,12 +365,12 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This takes an outer polygon and a set of inner polygons to start cutting on
-		private void MergeInnerPolys(Polygon p)
+		private void MergeInnerPolys(EarClipPolygon p)
 		{
-			LinkedList<Polygon> todo = new LinkedList<Polygon>(p.Children);
+			LinkedList<EarClipPolygon> todo = new LinkedList<EarClipPolygon>(p.Children);
 			LinkedListNode<EarClipVertex> start;
-			LinkedListNode<Polygon> ip;
-			LinkedListNode<Polygon> found;
+			LinkedListNode<EarClipPolygon> ip;
+			LinkedListNode<EarClipPolygon> found;
 			LinkedListNode<EarClipVertex> foundstart;
 			
 			// Continue until no more inner polygons to process
@@ -406,7 +406,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This finds the right-most vertex in an inner polygon to use for cut startpoint.
-		private static LinkedListNode<EarClipVertex> FindRightMostVertex(Polygon p)
+		private static LinkedListNode<EarClipVertex> FindRightMostVertex(EarClipPolygon p)
 		{
 			LinkedListNode<EarClipVertex> found = p.First;
 			LinkedListNode<EarClipVertex> v = found.Next;
@@ -423,7 +423,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This finds the cut coordinates and splits the other poly with inner vertices
-		private static void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, Polygon p, Polygon inner)
+		private static void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p, EarClipPolygon inner)
 		{
 			Line2D starttoright = new Line2D(start.Value.Position, start.Value.Position + new Vector2D(1000.0f, 0.0f));
 			LinkedListNode<EarClipVertex> v1, v2;
@@ -516,7 +516,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		// This clips a polygon and returns the triangles
 		// The polygon may not have any holes or islands
-		private TriangleList DoEarClip(Polygon poly)
+		private TriangleList DoEarClip(EarClipPolygon poly)
 		{
 			LinkedList<EarClipVertex> verts = new LinkedList<EarClipVertex>();
 			List<EarClipVertex> convexes = new List<EarClipVertex>(poly.Count);

@@ -411,7 +411,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This shows a polygon
-		private void ShowPolygon(Polygon p, PixelColor c)
+		private void ShowPolygon(EarClipPolygon p, PixelColor c)
 		{
 			LinkedListNode<EarClipVertex> v;
 			
