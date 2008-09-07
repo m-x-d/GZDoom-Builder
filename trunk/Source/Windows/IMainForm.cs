@@ -70,7 +70,10 @@ namespace CodeImp.DoomBuilder.Windows
 		void ResumeExclusiveMouseInput();
 		bool CheckActionActive(Assembly assembly, string actionname);
 		void SetCursor(Cursor cursor);
-
+		void DisplayWarning(string warning);
+		void HideWarning();
+		void MessageBeep(MessageBeepType type);
+		
 		/// <summary>
 		/// This browses the lindef types
 		/// </summary>

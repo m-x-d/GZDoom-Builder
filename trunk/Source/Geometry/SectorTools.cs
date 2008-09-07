@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			List<LinedefSide> alllines = new List<LinedefSide>();
 			
 			// Find the outer lines
-			Polygon p = FindOuterLines(line, front, alllines);
+			EarClipPolygon p = FindOuterLines(line, front, alllines);
 			if(p != null)
 			{
 				// Find the inner lines
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This finds the inner lines of the sector and adds them to the sector polygon
-		private static void FindInnerLines(Polygon p, List<LinedefSide> alllines)
+		private static void FindInnerLines(EarClipPolygon p, List<LinedefSide> alllines)
 		{
 			Vertex foundv;
 			bool vvalid, findmore;
@@ -169,7 +169,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					{
 						// Make polygon
 						LinedefTracePath tracepath = new LinedefTracePath(innerlines);
-						Polygon innerpoly = tracepath.MakePolygon();
+						EarClipPolygon innerpoly = tracepath.MakePolygon();
 
 						// Check if the front of the line is outside the polygon
 						if(!innerpoly.Intersect(foundline.GetSidePoint(foundlinefront)))
@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		// This finds the outer lines of the sector as a polygon
 		// Returns null when no valid outer polygon can be found
-		private static Polygon FindOuterLines(Linedef line, bool front, List<LinedefSide> alllines)
+		private static EarClipPolygon FindOuterLines(Linedef line, bool front, List<LinedefSide> alllines)
 		{
 			Linedef scanline = line;
 			bool scanfront = front;
@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Make polygon
 					LinedefTracePath tracepath = new LinedefTracePath(pathlines);
-					Polygon poly = tracepath.MakePolygon();
+					EarClipPolygon poly = tracepath.MakePolygon();
 
 					// Check if the front of the line is inside the polygon
 					if(poly.Intersect(line.GetSidePoint(front)))

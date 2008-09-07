@@ -84,9 +84,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This makes a polygon from the path
-		public Polygon MakePolygon()
+		public EarClipPolygon MakePolygon()
 		{
-			Polygon p = new Polygon();
+			EarClipPolygon p = new EarClipPolygon();
 			
 			// Any sides at all?
 			if(base.Count > 0)
