@@ -29,7 +29,7 @@ using System.Windows.Forms;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.IO
+namespace CodeImp.DoomBuilder
 {
 	internal class Launcher : IDisposable
 	{
