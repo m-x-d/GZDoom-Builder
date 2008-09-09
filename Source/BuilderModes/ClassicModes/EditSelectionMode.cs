@@ -335,14 +335,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Rectangle
 				renderer.RenderGeometry(cornerverts, null, true);
-				renderer.RenderLine(corners[0], corners[1], 4, General.Colors.Highlight.WithAlpha(100), true);
-				renderer.RenderLine(corners[1], corners[2], 4, General.Colors.Highlight.WithAlpha(100), true);
-				renderer.RenderLine(corners[2], corners[3], 4, General.Colors.Highlight.WithAlpha(100), true);
-				renderer.RenderLine(corners[3], corners[0], 4, General.Colors.Highlight.WithAlpha(100), true);
+				renderer.RenderLine(corners[0], corners[1], 2, General.Colors.Highlight.WithAlpha(100), true);
+				renderer.RenderLine(corners[1], corners[2], 2, General.Colors.Highlight.WithAlpha(100), true);
+				renderer.RenderLine(corners[2], corners[3], 2, General.Colors.Highlight.WithAlpha(100), true);
+				renderer.RenderLine(corners[3], corners[0], 2, General.Colors.Highlight.WithAlpha(100), true);
 
 				// Extension line
 				if(extensionline.GetLengthSq() > 0.0f)
-					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(100), true);
+					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(200), true);
 
 				// Grips
 				for(int i = 0; i < 4; i++)
@@ -646,7 +646,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
 
 				// Try the nearest vertex
-				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
+				Vertex nv = MapSet.NearestVertexSquareRange(unselectedvertices, mousemappos, vrange);
 				if(nv != null) return nv.Position;
 			}
 
