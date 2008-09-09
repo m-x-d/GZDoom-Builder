@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 
 		private const float GRIP_SIZE = 11.0f;
-		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE };
+		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNESW };
 		
 		#endregion
 
@@ -92,6 +92,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private ICollection<Thing> selectedthings;
 		private List<Vector2D> vertexpos;
 		private List<Vector2D> thingpos;
+		private ICollection<Vertex> unselectedvertices;
 
 		// Modification
 		private float rotation;
@@ -105,16 +106,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D dragposition;
 		private Vector2D resizefilter;
 		private Vector2D resizevector;
+		private Vector2D edgevector;
 		private Line2D resizeaxis;
 		private int stickcorner;
 		private float rotategripangle;
 		
 		// Rectangle components
-		private Vector2D[] originalcorners;
+		private Vector2D[] originalcorners; // lefttop, righttop, rightbottom, leftbottom
 		private Vector2D[] corners;
 		private FlatVertex[] cornerverts;
 		private RectangleF[] resizegrips;	// top, right, bottom, left
 		private RectangleF[] rotategrips;   // lefttop, righttop, rightbottom, leftbottom
+		private Line2D extensionline;
+
+		// Options
+		private bool snaptogrid;		// SHIFT to toggle
+		private bool snaptonearest;		// CTRL to enable
 		
 		#endregion
 
@@ -166,6 +173,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Vertex v in verts) v.Marked = true;
 			selectedvertices = General.Map.Map.GetMarkedVertices(true);
 			selectedthings = General.Map.Map.GetMarkedThings(true);
+			unselectedvertices = General.Map.Map.GetMarkedVertices(false);
 
 			// Make sure everything is selected so that it turns up red
 			foreach(Vertex v in selectedvertices) v.Selected = true;
@@ -325,11 +333,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
+				// Rectangle
 				renderer.RenderGeometry(cornerverts, null, true);
 				renderer.RenderLine(corners[0], corners[1], 4, General.Colors.Highlight.WithAlpha(100), true);
 				renderer.RenderLine(corners[1], corners[2], 4, General.Colors.Highlight.WithAlpha(100), true);
 				renderer.RenderLine(corners[2], corners[3], 4, General.Colors.Highlight.WithAlpha(100), true);
 				renderer.RenderLine(corners[3], corners[0], 4, General.Colors.Highlight.WithAlpha(100), true);
+
+				// Extension line
+				if(extensionline.GetLengthSq() > 0.0f)
+					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(100), true);
+
+				// Grips
 				for(int i = 0; i < 4; i++)
 				{
 					renderer.RenderRectangleFilled(resizegrips[i], General.Colors.Background, true);
@@ -337,6 +352,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.RenderRectangleFilled(rotategrips[i], General.Colors.Background, true);
 					renderer.RenderRectangle(rotategrips[i], 2, General.Colors.Indication, true);
 				}
+				
 				renderer.Finish();
 			}
 
@@ -347,99 +363,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			
-			// Not in any modifying mode?
-			if(mode == ModifyMode.None)
-			{
-				// Check what grip the mouse is over
-				// and change cursor accordingly
-				Grip mousegrip = CheckMouseGrip();
-				switch(mousegrip)
-				{
-					case Grip.Main:
-						General.Interface.SetCursor(Cursors.Hand);
-						break;
-
-					case Grip.RotateLB:
-					case Grip.RotateLT:
-					case Grip.RotateRB:
-					case Grip.RotateRT:
-						General.Interface.SetCursor(Cursors.Cross);
-						break;
-
-					case Grip.SizeE:
-					case Grip.SizeS:
-					case Grip.SizeW:
-					case Grip.SizeN:
-
-						// Pick the best matching cursor depending on rotation and side
-						float resizeangle = rotation;
-						if((mousegrip == Grip.SizeE) || (mousegrip == Grip.SizeW)) resizeangle += Angle2D.PIHALF;
-						resizeangle = Angle2D.Normalized(resizeangle);
-						if(resizeangle > Angle2D.PI) resizeangle -= Angle2D.PI;
-						resizeangle = Math.Abs(resizeangle + Angle2D.PI / 8.000001f);
-						int cursorindex = (int)Math.Floor((resizeangle / Angle2D.PI) * 4.0f) % 4;
-						General.Interface.SetCursor(RESIZE_CURSORS[cursorindex]);
-						break;
-
-					default:
-						General.Interface.SetCursor(Cursors.Default);
-						break;
-				}
-			}
-			else
-			{
-				// Check what modifying mode we are in
-				switch(mode)
-				{
-					// Dragging
-					case ModifyMode.Dragging:
-						
-						// Change offset
-						offset += mousemappos - dragposition;
-						dragposition = mousemappos;
-
-						// Update
-						UpdateGeometry();
-						UpdateRectangleComponents();
-						General.Interface.RedrawDisplay();
-						break;
-
-					// Resizing
-					case ModifyMode.Resizing:
-
-						// Keep corner position
-						Vector2D oldcorner = corners[stickcorner];
-						
-						// Change size
-						float scale = resizeaxis.GetNearestOnLine(mousemappos);
-						size = (basesize * resizefilter) * scale + size * (1.0f - resizefilter);
-
-						// Adjust corner position
-						Vector2D newcorner = TransformedPoint(originalcorners[stickcorner]);
-						offset -= newcorner - oldcorner;
-						
-						// Update
-						UpdateGeometry();
-						UpdateRectangleComponents();
-						General.Interface.RedrawDisplay();
-						break;
-
-					// Rotating
-					case ModifyMode.Rotating:
-
-						// Get angle from mouse to center
-						Vector2D center = offset + size * 0.5f;
-						Vector2D delta = mousemappos - center;
-						rotation = delta.GetAngle() - rotategripangle;
-
-						// Update
-						UpdateGeometry();
-						UpdateRectangleComponents();
-						General.Interface.RedrawDisplay();
-						break;
-				}
-			}
+			Update();
 		}
 
 		// Mouse leaves the display
@@ -478,6 +402,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					resizevector = corners[1] - corners[2];
 					resizevector = resizevector.GetNormal() * Math.Sign(size.y);
 					
+					// The edgevector is a vector with length and direction of the edge perpendicular to the resizevector
+					edgevector = corners[1] - corners[0];
+					
 					// Make the resize axis. This is a line with the length and direction
 					// of basesize used to calculate the resize percentage.
 					resizeaxis = new Line2D(corners[2], corners[2] + resizevector * basesize.y);
@@ -496,6 +423,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// See description above
 					resizevector = corners[1] - corners[0];
 					resizevector = resizevector.GetNormal() * Math.Sign(size.x);
+					edgevector = corners[1] - corners[2];
 					resizeaxis = new Line2D(corners[0], corners[0] + resizevector * basesize.x);
 					resizefilter = new Vector2D(1.0f, 0.0f);
 					stickcorner = 0;
@@ -507,6 +435,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// See description above
 					resizevector = corners[2] - corners[1];
 					resizevector = resizevector.GetNormal() * Math.Sign(size.y);
+					edgevector = corners[2] - corners[3];
 					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.y);
 					resizefilter = new Vector2D(0.0f, 1.0f);
 					stickcorner = 0;
@@ -518,6 +447,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// See description above
 					resizevector = corners[0] - corners[1];
 					resizevector = resizevector.GetNormal() * Math.Sign(size.x);
+					edgevector = corners[0] - corners[3];
 					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.x);
 					resizefilter = new Vector2D(1.0f, 0.0f);
 					stickcorner = 1;
@@ -559,20 +489,179 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEndSelect();
 
-			// Check what modifying mode we are in
-			switch(mode)
-			{
-				case ModifyMode.Dragging:
-					General.Interface.RedrawDisplay();
-					break;
-			}
-			
+			// Remove extension line
+			extensionline = new Line2D();
+
+			// No modifying mode
 			mode = ModifyMode.None;
+
+			// Redraw
+			General.Interface.RedrawDisplay();
 		}
 
+		// When a key is released
+		public override void OnKeyUp(KeyEventArgs e)
+		{
+			base.OnKeyUp(e);
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+		}
+
+		// When a key is pressed
+		public override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+		}
+		
 		#endregion
 		
 		#region ================== Methods
+		
+		// This updates the selection
+		private void Update()
+		{
+			// Not in any modifying mode?
+			if(mode == ModifyMode.None)
+			{
+				// Check what grip the mouse is over
+				// and change cursor accordingly
+				Grip mousegrip = CheckMouseGrip();
+				switch(mousegrip)
+				{
+					case Grip.Main:
+						General.Interface.SetCursor(Cursors.Hand);
+						break;
+
+					case Grip.RotateLB:
+					case Grip.RotateLT:
+					case Grip.RotateRB:
+					case Grip.RotateRT:
+						General.Interface.SetCursor(Cursors.Cross);
+						break;
+
+					case Grip.SizeE:
+					case Grip.SizeS:
+					case Grip.SizeW:
+					case Grip.SizeN:
+
+						// Pick the best matching cursor depending on rotation and side
+						float resizeangle = rotation;
+						if((mousegrip == Grip.SizeE) || (mousegrip == Grip.SizeW)) resizeangle += Angle2D.PIHALF;
+						resizeangle = Angle2D.Normalized(resizeangle);
+						if(resizeangle > Angle2D.PI) resizeangle -= Angle2D.PI;
+						resizeangle = Math.Abs(resizeangle + Angle2D.PI / 8.000001f);
+						int cursorindex = (int)Math.Floor((resizeangle / Angle2D.PI) * 4.0f) % 4;
+						General.Interface.SetCursor(RESIZE_CURSORS[cursorindex]);
+						break;
+
+					default:
+						General.Interface.SetCursor(Cursors.Default);
+						break;
+				}
+			}
+			else
+			{
+				// Options
+				snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+				snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+
+				// Change to crosshair cursor so we can clearly see around the mouse cursor
+				General.Interface.SetCursor(Cursors.Cross);
+				
+				// Check what modifying mode we are in
+				switch(mode)
+				{
+					// Dragging
+					case ModifyMode.Dragging:
+
+						// Change offset
+						offset += mousemappos - dragposition;
+						dragposition = mousemappos;
+
+						// Update
+						UpdateGeometry();
+						UpdateRectangleComponents();
+						General.Interface.RedrawDisplay();
+						break;
+
+					// Resizing
+					case ModifyMode.Resizing:
+
+						// Get snapped position
+						Vector2D snappedmappos = GetNearestResizePosition();
+
+						// Keep corner position
+						Vector2D oldcorner = corners[stickcorner];
+						
+						// Change size with the scale from the ruler
+						float scale = resizeaxis.GetNearestOnLine(snappedmappos);
+						size = (basesize * resizefilter) * scale + size * (1.0f - resizefilter);
+
+						// Adjust corner position
+						Vector2D newcorner = TransformedPoint(originalcorners[stickcorner]);
+						offset -= newcorner - oldcorner;
+
+						// Snappedmappos is outside the edgevector of our rectangle?
+						// Then show the extension line so that the user knows what it is aligning to
+						Vector2D sizefiltered = (size * resizefilter);
+						float sizelength = sizefiltered.x + sizefiltered.y;
+						Line2D edgeline = new Line2D(resizeaxis.v1 + resizevector * sizelength, resizeaxis.v1 + resizevector * sizelength - edgevector);
+						float nearestonedge = edgeline.GetNearestOnLine(snappedmappos);
+						if(nearestonedge > 0.5f)
+							extensionline = new Line2D(edgeline.v1, snappedmappos);
+						else if(nearestonedge < 0.5f)
+							extensionline = new Line2D(edgeline.v2, snappedmappos);
+						
+						// Update
+						UpdateGeometry();
+						UpdateRectangleComponents();
+						General.Interface.RedrawDisplay();
+						break;
+
+					// Rotating
+					case ModifyMode.Rotating:
+
+						// Get angle from mouse to center
+						Vector2D center = offset + size * 0.5f;
+						Vector2D delta = mousemappos - center;
+						rotation = delta.GetAngle() - rotategripangle;
+
+						// Update
+						UpdateGeometry();
+						UpdateRectangleComponents();
+						General.Interface.RedrawDisplay();
+						break;
+				}
+			}
+		}
+
+		// This gets the aligned and snapped position nearest to the mouse cursor for resize actions
+		private Vector2D GetNearestResizePosition()
+		{
+			// Snap to nearest?
+			if(snaptonearest)
+			{
+				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
+
+				// Try the nearest vertex
+				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
+				if(nv != null) return nv.Position;
+			}
+
+			// Snap to grid?
+			if(snaptogrid)
+			{
+				// Aligned to grid
+				return General.Map.Grid.SnappedToGrid(mousemappos);
+			}
+			else
+			{
+				// Normal position
+				return mousemappos;
+			}
+		}
 		
 		// This checks and returns the grip the mouse pointer is in
 		private Grip CheckMouseGrip()

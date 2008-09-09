@@ -225,6 +225,12 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Methods
 
+		// This returns the perpendicular vector by simply making a normal
+		public Vector2D GetPerpendicular()
+		{
+			return new Vector2D(-y, x);
+		}
+		
 		// This returns a vector with the sign of all components
 		public Vector2D GetSign()
 		{

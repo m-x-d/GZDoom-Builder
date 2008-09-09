@@ -195,6 +195,13 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Methods
 
+		// This returns the perpendicular vector by simply making a normal
+		public Vector2D GetPerpendicular()
+		{
+			Vector2D d = GetDelta();
+			return new Vector2D(-d.y, d.x);
+		}
+
 		// This calculates the angle
 		public float GetAngle()
 		{

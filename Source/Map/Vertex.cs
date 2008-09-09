@@ -174,6 +174,14 @@ namespace CodeImp.DoomBuilder.Map
 			// Change position
 			pos = newpos;
 			
+			#if DEBUG
+			if(float.IsNaN(pos.x) || float.IsNaN(pos.y) ||
+			   float.IsInfinity(pos.x) || float.IsInfinity(pos.y))
+			{
+				General.Fail("Invalid vertex position!", "The given vertex coordinates cannot be NaN or Infinite.");
+			}
+			#endif
+			
 			// Let all lines know they need an update
 			foreach(Linedef l in linedefs) l.NeedUpdate();
 		}
