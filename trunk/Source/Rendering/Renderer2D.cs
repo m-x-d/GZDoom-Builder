@@ -1092,7 +1092,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Set renderstates for rendering
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
-				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Shaders.Display2D.Texture1 = t;
@@ -1102,7 +1102,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// Draw
 				graphics.Shaders.Display2D.Begin();
-				graphics.Shaders.Display2D.BeginPass(2);
+				graphics.Shaders.Display2D.BeginPass(1);
 				graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleList, 0, vertices.Length / 3, vertices);
 				graphics.Shaders.Display2D.EndPass();
 				graphics.Shaders.Display2D.End();

@@ -54,7 +54,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			None,
 			Dragging,
-			Resizing
+			Resizing,
+			Rotating
 		}
 
 		private enum Grip : int
@@ -76,13 +77,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 
 		private const float GRIP_SIZE = 11.0f;
-		private const float BORDER_PADDING = 5.0f;
 		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNESW, Cursors.SizeWE, Cursors.SizeNWSE };
 		
 		#endregion
 
 		#region ================== Variables
 
+		// Mode to return to
+		private EditMode basemode;
+		private bool modealreadyswitching = false;
+		
 		// Selection
 		private ICollection<Vertex> selectedvertices;
 		private ICollection<Thing> selectedthings;
@@ -102,10 +106,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D resizefilter;
 		private Vector2D resizevector;
 		private Line2D resizeaxis;
-		private bool adjustoffset;
+		private int stickcorner;
+		private float rotategripangle;
 		
 		// Rectangle components
+		private Vector2D[] originalcorners;
 		private Vector2D[] corners;
+		private FlatVertex[] cornerverts;
 		private RectangleF[] resizegrips;	// top, right, bottom, left
 		private RectangleF[] rotategrips;   // lefttop, righttop, rightbottom, leftbottom
 		
@@ -121,10 +128,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public EditSelectionMode()
 		{
 			// Initialize
+			basemode = General.Map.Mode;
 			mode = ModifyMode.None;
 			
 			// TEST:
-			rotation = Angle2D.PI2 * 0.01f;
+			rotation = Angle2D.PI2 * 0;// 0.02f;
 		}
 
 		// Disposer
@@ -143,15 +151,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Events
-
-		// Cancel mode
-		public override void OnCancel()
-		{
-			base.OnCancel();
-
-			// Return to this mode
-			General.Map.ChangeMode(new LinedefsMode());
-		}
 
 		// Mode engages
 		public override void OnEngage()
@@ -233,10 +232,69 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		// Cancel mode
+		public override void OnCancel()
+		{
+			base.OnCancel();
+
+			// Reset geometry in original position
+			int index = 0;
+			foreach(Vertex v in selectedvertices)
+				v.Move(vertexpos[index++]);
+
+			index = 0;
+			foreach(Thing t in selectedthings)
+				t.Move(thingpos[index++]);
+			
+			General.Map.Map.Update(true, true);
+			
+			// Return to original mode
+			Type mt = basemode.GetType();
+			basemode = (EditMode)Activator.CreateInstance(mt);
+			General.Map.ChangeMode(basemode);
+		}
+
+		// When accepted
+		public override void OnAccept()
+		{
+			base.OnAccept();
+			
+			// Reset geometry in original position
+			int index = 0;
+			foreach(Vertex v in selectedvertices)
+				v.Move(vertexpos[index++]);
+
+			index = 0;
+			foreach(Thing t in selectedthings)
+				t.Move(thingpos[index++]);
+
+			// Make undo
+			General.Map.UndoRedo.CreateUndo("Edit selection", UndoGroup.None, 0);
+
+			// Move geometry to new position
+			UpdateGeometry();
+			General.Map.Map.Update(true, true);
+
+			if(!modealreadyswitching)
+			{
+				// Return to original mode
+				Type mt = basemode.GetType();
+				basemode = (EditMode)Activator.CreateInstance(mt);
+				General.Map.ChangeMode(basemode);
+			}
+		}
+		
 		// Mode disengages
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
+
+			// When not cancelled manually, we assume it is accepted
+			if(!cancelled)
+			{
+				modealreadyswitching = true;
+				this.OnAccept();
+			}
 			
 			// Hide highlight info
 			General.Interface.HideInfo();
@@ -267,10 +325,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
-				renderer.RenderLine(corners[0], corners[1], 1, General.Colors.Vertices, true);
-				renderer.RenderLine(corners[1], corners[2], 1, General.Colors.Highlight, true);
-				renderer.RenderLine(corners[2], corners[3], 1, General.Colors.Highlight, true);
-				renderer.RenderLine(corners[3], corners[0], 1, General.Colors.Highlight, true);
+				renderer.RenderGeometry(cornerverts, null, true);
+				renderer.RenderLine(corners[0], corners[1], 4, General.Colors.Highlight.WithAlpha(100), true);
+				renderer.RenderLine(corners[1], corners[2], 4, General.Colors.Highlight.WithAlpha(100), true);
+				renderer.RenderLine(corners[2], corners[3], 4, General.Colors.Highlight.WithAlpha(100), true);
+				renderer.RenderLine(corners[3], corners[0], 4, General.Colors.Highlight.WithAlpha(100), true);
 				for(int i = 0; i < 4; i++)
 				{
 					renderer.RenderRectangleFilled(resizegrips[i], General.Colors.Background, true);
@@ -278,7 +337,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.RenderRectangleFilled(rotategrips[i], General.Colors.Background, true);
 					renderer.RenderRectangle(rotategrips[i], 2, General.Colors.Indication, true);
 				}
-				renderer.RenderRectangle(rotategrips[0], 2, General.Colors.Vertices, true);
 				renderer.Finish();
 			}
 
@@ -350,16 +408,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Resizing
 					case ModifyMode.Resizing:
 
-						// Adjust offset if needed
-						Vector2D oldsize = size;
+						// Keep corner position
+						Vector2D oldcorner = corners[stickcorner];
 						
 						// Change size
 						float scale = resizeaxis.GetNearestOnLine(mousemappos);
-						size = (basesize * resizefilter) * scale + (1.0f - resizefilter) * basesize;
+						size = (basesize * resizefilter) * scale + size * (1.0f - resizefilter);
 
-						// Adjust offset if needed
-						if(adjustoffset) offset -= (size - oldsize) * resizevector / basesize.y;
+						// Adjust corner position
+						Vector2D newcorner = TransformedPoint(originalcorners[stickcorner]);
+						offset -= newcorner - oldcorner;
 						
+						// Update
+						UpdateGeometry();
+						UpdateRectangleComponents();
+						General.Interface.RedrawDisplay();
+						break;
+
+					// Rotating
+					case ModifyMode.Rotating:
+
+						// Get angle from mouse to center
+						Vector2D center = offset + size * 0.5f;
+						Vector2D delta = mousemappos - center;
+						rotation = delta.GetAngle() - rotategripangle;
+
 						// Update
 						UpdateGeometry();
 						UpdateRectangleComponents();
@@ -383,6 +456,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnSelect();
 
+			// Used in many cases:
+			Vector2D center = offset + size * 0.5f;
+			Vector2D delta;
+
 			// Check what grip the mouse is over
 			switch(CheckMouseGrip())
 			{
@@ -395,16 +472,85 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Resize
 				case Grip.SizeN:
 
+					// The resize vector is a unit vector in the direction of the resize.
+					// We multiply this with the sign of the current size, because the
+					// corners may be reversed when the selection is flipped.
+					resizevector = corners[1] - corners[2];
+					resizevector = resizevector.GetNormal() * Math.Sign(size.y);
+					
 					// Make the resize axis. This is a line with the length and direction
 					// of basesize used to calculate the resize percentage.
-					resizevector = corners[2] - corners[1];
-					resizevector = resizevector.GetNormal() * basesize.y;
-					resizeaxis = new Line2D(corners[2], corners[2] + resizevector);
+					resizeaxis = new Line2D(corners[2], corners[2] + resizevector * basesize.y);
+
+					// Original axis filter
 					resizefilter = new Vector2D(0.0f, 1.0f);
-					adjustoffset = true;
+
+					// This is the corner that must stay in the same position
+					stickcorner = 2;
+
 					mode = ModifyMode.Resizing;
 					break;
 
+				// Resize
+				case Grip.SizeE:
+					// See description above
+					resizevector = corners[1] - corners[0];
+					resizevector = resizevector.GetNormal() * Math.Sign(size.x);
+					resizeaxis = new Line2D(corners[0], corners[0] + resizevector * basesize.x);
+					resizefilter = new Vector2D(1.0f, 0.0f);
+					stickcorner = 0;
+					mode = ModifyMode.Resizing;
+					break;
+
+				// Resize
+				case Grip.SizeS:
+					// See description above
+					resizevector = corners[2] - corners[1];
+					resizevector = resizevector.GetNormal() * Math.Sign(size.y);
+					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.y);
+					resizefilter = new Vector2D(0.0f, 1.0f);
+					stickcorner = 0;
+					mode = ModifyMode.Resizing;
+					break;
+
+				// Resize
+				case Grip.SizeW:
+					// See description above
+					resizevector = corners[0] - corners[1];
+					resizevector = resizevector.GetNormal() * Math.Sign(size.x);
+					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.x);
+					resizefilter = new Vector2D(1.0f, 0.0f);
+					stickcorner = 1;
+					mode = ModifyMode.Resizing;
+					break;
+
+				// Rotate
+				case Grip.RotateLB:
+					delta = corners[3] - center;
+					rotategripangle = delta.GetAngle() - rotation;
+					mode = ModifyMode.Rotating;
+					break;
+
+				// Rotate
+				case Grip.RotateLT:
+					delta = corners[0] - center;
+					rotategripangle = delta.GetAngle() - rotation;
+					mode = ModifyMode.Rotating;
+					break;
+
+				// Rotate
+				case Grip.RotateRB:
+					delta = corners[2] - center;
+					rotategripangle = delta.GetAngle() - rotation;
+					mode = ModifyMode.Rotating;
+					break;
+
+				// Rotate
+				case Grip.RotateRT:
+					delta = corners[1] - center;
+					rotategripangle = delta.GetAngle() - rotation;
+					mode = ModifyMode.Rotating;
+					break;
 			}
 		}
 
@@ -463,14 +609,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Resize
 			p = (p - baseoffset) * (size / basesize) + baseoffset;
 			
-			// Rotate around center
-			Vector2D center = baseoffset + basesize * 0.5f;
+			// Rotate
+			Vector2D center = baseoffset + size * 0.5f;
 			Vector2D po = p - center;
-			p.x = (float)Math.Cos(rotation) * po.x + (float)Math.Sin(rotation) * po.y;
-			p.y = (float)Math.Sin(rotation) * -po.x + (float)Math.Cos(rotation) * po.y;
+			p = po.GetRotated(rotation);
 			p += center;
 			
-			// Move
+			// Translate
 			p += offset - baseoffset;
 			
 			return p;
@@ -503,16 +648,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates the selection rectangle components
 		private void UpdateRectangleComponents()
 		{
-			float border = BORDER_PADDING / renderer.Scale;
 			float gripsize = GRIP_SIZE / renderer.Scale;
+
+			// Original (untransformed) corners
+			originalcorners = new Vector2D[4];
+			originalcorners[0] = new Vector2D(baseoffset.x, baseoffset.y);
+			originalcorners[1] = new Vector2D(baseoffset.x + basesize.x, baseoffset.y);
+			originalcorners[2] = new Vector2D(baseoffset.x + basesize.x, baseoffset.y + basesize.y);
+			originalcorners[3] = new Vector2D(baseoffset.x, baseoffset.y + basesize.y);
 
 			// Corners
 			corners = new Vector2D[4];
-			corners[0] = TransformedPoint(new Vector2D(baseoffset.x - border, baseoffset.y - border));
-			corners[1] = TransformedPoint(new Vector2D(baseoffset.x - border + basesize.x + border * 2, baseoffset.y - border));
-			corners[2] = TransformedPoint(new Vector2D(baseoffset.x - border + basesize.x + border * 2, baseoffset.y - border + basesize.y + border * 2));
-			corners[3] = TransformedPoint(new Vector2D(baseoffset.x - border, baseoffset.y - border + basesize.y + border * 2));
+			for(int i = 0; i < 4; i++)
+				corners[i] = TransformedPoint(originalcorners[i]);
 
+			// Vertices
+			cornerverts = new FlatVertex[6];
+			for(int i = 0; i < 6; i++)
+			{
+				cornerverts[i] = new FlatVertex();
+				cornerverts[i].z = 1.0f;
+				cornerverts[i].c = General.Colors.Highlight.WithAlpha(100).ToInt();
+			}
+			cornerverts[0].x = corners[0].x;
+			cornerverts[0].y = corners[0].y;
+			cornerverts[1].x = corners[1].x;
+			cornerverts[1].y = corners[1].y;
+			cornerverts[2].x = corners[2].x;
+			cornerverts[2].y = corners[2].y;
+			cornerverts[3].x = corners[0].x;
+			cornerverts[3].y = corners[0].y;
+			cornerverts[4].x = corners[2].x;
+			cornerverts[4].y = corners[2].y;
+			cornerverts[5].x = corners[3].x;
+			cornerverts[5].y = corners[3].y;
+			
 			// Middle points between corners
 			Vector2D middle01 = corners[0] + (corners[1] - corners[0]) * 0.5f;
 			Vector2D middle12 = corners[1] + (corners[2] - corners[1]) * 0.5f;

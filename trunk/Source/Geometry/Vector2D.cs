@@ -225,6 +225,12 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Methods
 
+		// This returns a vector with the sign of all components
+		public Vector2D GetSign()
+		{
+			return new Vector2D(Math.Sign(x), Math.Sign(y));
+		}
+		
 		// This calculates the angle
 		public float GetAngle()
 		{
@@ -305,8 +311,10 @@ namespace CodeImp.DoomBuilder.Geometry
         // Rotate (Added by Anders Åstrand 2008-05-18)
         public unsafe Vector2D GetRotated(float theta)
         {
-            double rx = Math.Cos(theta) * x - Math.Sin(theta) * y;
-            double ry = Math.Sin(theta) * x + Math.Cos(theta) * y;
+			double cos = Math.Cos(theta);
+			double sin = Math.Sin(theta);
+            double rx = cos * x - sin * y;
+            double ry = sin * x + cos * y;
             return new Vector2D((float)rx, (float)ry);
         }
 		#endregion
