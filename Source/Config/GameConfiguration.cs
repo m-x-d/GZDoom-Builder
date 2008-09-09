@@ -56,7 +56,11 @@ namespace CodeImp.DoomBuilder.Config
 		private bool generalizedeffects;
 		private int start3dmodethingtype;
 		private int linedefactivationsfilter;
+		private string testparameters;
 		
+		// Skills
+		private List<SkillInfo> skills;
+
 		// Map lumps
 		private IDictionary maplumpnames;
 		
@@ -111,6 +115,10 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GeneralizedEffects { get { return generalizedeffects; } }
 		public int Start3DModeThingType { get { return start3dmodethingtype; } }
 		public int LinedefActivationsFilter { get { return linedefactivationsfilter; } }
+		public string TestParameters { get { return testparameters; } }
+		
+		// Skills
+		public List<SkillInfo> Skills { get { return skills; } }
 		
 		// Map lumps
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
@@ -173,7 +181,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.sortedsectoreffects = new List<SectorEffectInfo>();
 			this.geneffectoptions = new List<GeneralizedOption>();
 			this.enums = new Dictionary<string, EnumList>();
-			
+			this.skills = new List<SkillInfo>();
+
 			// Read general settings
 			enginename = cfg.ReadSetting("engine", "");
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
@@ -184,6 +193,7 @@ namespace CodeImp.DoomBuilder.Config
 			generalizedeffects = cfg.ReadSetting("generalizedsectors", false);
 			start3dmodethingtype = cfg.ReadSetting("start3dmode", 0);
 			linedefactivationsfilter = cfg.ReadSetting("linedefactivationsfilter", 0);
+			testparameters = cfg.ReadSetting("testparameters", "");
 			
 			// Flags have special (invariant culture) conversion
 			// because they are allowed to be written as integers in the configs
@@ -202,6 +212,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Get texture and flat sources
 			textureranges = cfg.ReadSetting("textures", new Hashtable());
 			flatranges = cfg.ReadSetting("flats", new Hashtable());
+			
+			// Skills
+			LoadSkills();
 
 			// Enums
 			LoadEnums();
@@ -296,7 +309,17 @@ namespace CodeImp.DoomBuilder.Config
 				thingcat = new ThingCategory(cfg, de.Key.ToString());
 
 				// Add all things in category to the big list
-				foreach(ThingTypeInfo t in thingcat.Things) things.Add(t.Index, t);
+				foreach(ThingTypeInfo t in thingcat.Things)
+				{
+					if(!things.ContainsKey(t.Index))
+					{
+						things.Add(t.Index, t);
+					}
+					else
+					{
+						General.WriteLogLine("WARNING: Thing number " + t.Index + " is defined more than once! (as '" + things[t.Index].Title + "' and '" + t.Title + "')");
+					}
+				}
 
 				// Add category to list
 				thingcategories.Add(thingcat);
@@ -527,6 +550,27 @@ namespace CodeImp.DoomBuilder.Config
 				else
 				{
 					General.WriteLogLine("WARNING: Structure 'defaultthingflags' contains unknown thing flags!");
+				}
+			}
+		}
+
+		// Skills
+		private void LoadSkills()
+		{
+			IDictionary dic;
+
+			// Get skills
+			dic = cfg.ReadSetting("skills", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				int num = 0;
+				if(int.TryParse(de.Key.ToString(), out num))
+				{
+					skills.Add(new SkillInfo(num, de.Value.ToString()));
+				}
+				else
+				{
+					General.WriteLogLine("WARNING: Structure 'skills' contains invalid skill numbers!");
 				}
 			}
 		}

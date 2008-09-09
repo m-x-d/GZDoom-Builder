@@ -53,6 +53,12 @@ namespace CodeImp.DoomBuilder.Controls
 			InitializeComponent();
 		}
 
+		// This clears all information
+		public void ClearInfo()
+		{
+			list.Items.Clear();
+		}
+		
 		// This adds information to display
 		public void AddInfo(INumberedTitle[] infolist)
 		{

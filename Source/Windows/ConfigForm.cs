@@ -36,6 +36,9 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	internal partial class ConfigForm : DelayedForm
 	{
+		// Variables
+		private GameConfiguration gameconfig;
+		
 		// Constructor
 		public ConfigForm()
 		{
@@ -59,27 +62,14 @@ namespace CodeImp.DoomBuilder.Windows
 					lvi.Selected = true;
 			}
 
-			// TODO: Save and test nodebuilders are allowed to be empty
+			// No skill
+			skill.Value = 0;
+			
+			// TODO: Nodebuilders are allowed to be empty
 			
 			// Fill comboboxes with nodebuilders
 			nodebuildersave.Items.AddRange(General.Nodebuilders.ToArray());
 			nodebuildertest.Items.AddRange(General.Nodebuilders.ToArray());
-
-			// Check if a map is loaded
-			if(General.Map != null)
-			{
-				// Show parameters example result
-				labelresult.Visible = true;
-				testresult.Visible = true;
-				noresultlabel.Visible = false;
-			}
-			else
-			{
-				// Cannot show parameters example result
-				labelresult.Visible = false;
-				testresult.Visible = false;
-				noresultlabel.Visible = true;
-			}
 		}
 
 		// This shows a specific page
@@ -103,6 +93,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get config info of selected item
 				ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 
+				// Load the game configuration
+				gameconfig = new GameConfiguration(General.LoadGameConfiguration(ci.Filename));
+				
 				// Fill resources list
 				configdata.EditResourceLocationList(ci.Resources);
 
@@ -138,9 +131,18 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 				
+				// Fill skills list
+				skill.ClearInfo();
+				skill.AddInfo(gameconfig.Skills.ToArray());
+				
 				// Set test application and parameters
+				if(!ci.CustomParameters) ci.TestParameters = gameconfig.TestParameters;
 				testapplication.Text = ci.TestProgram;
 				testparameters.Text = ci.TestParameters;
+				int skilllevel = ci.TestSkill;
+				skill.Value = skilllevel - 1;
+				skill.Value = skilllevel;
+				customparameters.Checked = ci.CustomParameters;
 			}
 		}
 
@@ -157,7 +159,11 @@ namespace CodeImp.DoomBuilder.Windows
 				nodebuildertest.SelectedIndex = -1;
 				testapplication.Text = "";
 				testparameters.Text = "";
+				skill.Value = 0;
+				skill.ClearInfo();
+				customparameters.Checked = false;
 				tabs.Enabled = false;
+				gameconfig = null;
 			}
 		}
 
@@ -245,7 +251,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null)
 			{
 				// Make converted parameters
-				testresult.Text = General.Map.Launcher.ConvertParameters(testparameters.Text);
+				testresult.Text = General.Map.Launcher.ConvertParameters(testparameters.Text, skill.Value);
 			}
 		}
 		
@@ -297,6 +303,52 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply
 				testapplication.Text = testprogramdialog.FileName;
 			}
+		}
+
+		// Customize parameters (un)checked
+		private void customparameters_CheckedChanged(object sender, EventArgs e)
+		{
+			ConfigurationInfo ci;
+
+			// Leave when no configuration selected
+			if(listconfigs.SelectedItems.Count == 0) return;
+
+			// Apply to selected configuration
+			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			ci.CustomParameters = customparameters.Checked;
+
+			// Update interface
+			labelparameters.Visible = customparameters.Checked;
+			testparameters.Visible = customparameters.Checked;
+
+			// Check if a map is loaded
+			if(General.Map != null)
+			{
+				// Show parameters example result
+				labelresult.Visible = customparameters.Checked;
+				testresult.Visible = customparameters.Checked;
+				noresultlabel.Visible = false;
+			}
+			else
+			{
+				// Cannot show parameters example result
+				labelresult.Visible = false;
+				testresult.Visible = false;
+				noresultlabel.Visible = customparameters.Checked;
+			}
+		}
+
+		// Skill changes
+		private void skill_ValueChanges(object sender, EventArgs e)
+		{
+			ConfigurationInfo ci;
+
+			// Leave when no configuration selected
+			if(listconfigs.SelectedItems.Count == 0) return;
+
+			// Apply to selected configuration
+			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			ci.TestSkill = skill.Value;
 		}
 	}
 }

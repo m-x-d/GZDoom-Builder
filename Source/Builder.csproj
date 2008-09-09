@@ -58,6 +58,7 @@
     <Compile Include="Config\LinedefActionInfo.cs" />
     <Compile Include="Config\LinedefActivateInfo.cs" />
     <Compile Include="Config\ProgramConfiguration.cs" />
+    <Compile Include="Config\SkillInfo.cs" />
     <Compile Include="Config\TagType.cs" />
     <Compile Include="Config\ThingCategory.cs" />
     <Compile Include="Config\ThingTypeInfo.cs" />
