@@ -35,8 +35,9 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label7;
 			System.Windows.Forms.Label label9;
-			System.Windows.Forms.Label label4;
 			System.Windows.Forms.Label label1;
+			System.Windows.Forms.Label label8;
+			this.labelparameters = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
@@ -46,6 +47,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.nodebuildertest = new System.Windows.Forms.ComboBox();
 			this.nodebuildersave = new System.Windows.Forms.ComboBox();
 			this.tabtesting = new System.Windows.Forms.TabPage();
+			this.customparameters = new System.Windows.Forms.CheckBox();
+			this.skill = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.browsetestprogram = new System.Windows.Forms.Button();
 			this.noresultlabel = new System.Windows.Forms.Label();
 			this.testresult = new System.Windows.Forms.TextBox();
@@ -61,8 +64,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label2 = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
 			label9 = new System.Windows.Forms.Label();
-			label4 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
+			label8 = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.tabresources.SuspendLayout();
 			this.tabnodebuilder.SuspendLayout();
@@ -98,14 +101,14 @@ namespace CodeImp.DoomBuilder.Windows
 			label3.AutoEllipsis = true;
 			label3.Location = new System.Drawing.Point(12, 15);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(384, 54);
+			label3.Size = new System.Drawing.Size(385, 54);
 			label3.TabIndex = 22;
 			label3.Text = resources.GetString("label3.Text");
 			// 
 			// label2
 			// 
 			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(12, 80);
+			label2.Location = new System.Drawing.Point(12, 86);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(149, 14);
 			label2.TabIndex = 24;
@@ -127,27 +130,38 @@ namespace CodeImp.DoomBuilder.Windows
 			label9.AutoEllipsis = true;
 			label9.Location = new System.Drawing.Point(12, 15);
 			label9.Name = "label9";
-			label9.Size = new System.Drawing.Size(393, 54);
+			label9.Size = new System.Drawing.Size(394, 54);
 			label9.TabIndex = 23;
-			label9.Text = resources.GetString("label9.Text");
-			// 
-			// label4
-			// 
-			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(15, 121);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(65, 14);
-			label4.TabIndex = 27;
-			label4.Text = "Parameters:";
+			label9.Text = "Here you can specify the program settings to use for launching a game engine when" +
+				" testing the map. Press F1 for help with custom parameters.";
 			// 
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(15, 80);
+			label1.Location = new System.Drawing.Point(15, 62);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(63, 14);
 			label1.TabIndex = 24;
 			label1.Text = "Application:";
+			// 
+			// label8
+			// 
+			label8.AutoSize = true;
+			label8.Location = new System.Drawing.Point(21, 97);
+			label8.Name = "label8";
+			label8.Size = new System.Drawing.Size(57, 14);
+			label8.TabIndex = 34;
+			label8.Text = "Skill Level:";
+			// 
+			// labelparameters
+			// 
+			this.labelparameters.AutoSize = true;
+			this.labelparameters.Location = new System.Drawing.Point(15, 159);
+			this.labelparameters.Name = "labelparameters";
+			this.labelparameters.Size = new System.Drawing.Size(65, 14);
+			this.labelparameters.TabIndex = 27;
+			this.labelparameters.Text = "Parameters:";
+			this.labelparameters.Visible = false;
 			// 
 			// cancel
 			// 
@@ -227,7 +241,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabnodebuilder.Location = new System.Drawing.Point(4, 23);
 			this.tabnodebuilder.Name = "tabnodebuilder";
 			this.tabnodebuilder.Padding = new System.Windows.Forms.Padding(6);
-			this.tabnodebuilder.Size = new System.Drawing.Size(414, 318);
+			this.tabnodebuilder.Size = new System.Drawing.Size(415, 318);
 			this.tabnodebuilder.TabIndex = 1;
 			this.tabnodebuilder.Text = "Nodebuilder";
 			this.tabnodebuilder.UseVisualStyleBackColor = true;
@@ -240,7 +254,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.nodebuildertest.FormattingEnabled = true;
 			this.nodebuildertest.Location = new System.Drawing.Point(167, 122);
 			this.nodebuildertest.Name = "nodebuildertest";
-			this.nodebuildertest.Size = new System.Drawing.Size(229, 22);
+			this.nodebuildertest.Size = new System.Drawing.Size(230, 22);
 			this.nodebuildertest.Sorted = true;
 			this.nodebuildertest.TabIndex = 25;
 			this.nodebuildertest.SelectedIndexChanged += new System.EventHandler(this.nodebuildertest_SelectedIndexChanged);
@@ -251,21 +265,24 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.nodebuildersave.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.nodebuildersave.FormattingEnabled = true;
-			this.nodebuildersave.Location = new System.Drawing.Point(167, 77);
+			this.nodebuildersave.Location = new System.Drawing.Point(167, 83);
 			this.nodebuildersave.Name = "nodebuildersave";
-			this.nodebuildersave.Size = new System.Drawing.Size(229, 22);
+			this.nodebuildersave.Size = new System.Drawing.Size(230, 22);
 			this.nodebuildersave.Sorted = true;
 			this.nodebuildersave.TabIndex = 23;
 			this.nodebuildersave.SelectedIndexChanged += new System.EventHandler(this.nodebuildersave_SelectedIndexChanged);
 			// 
 			// tabtesting
 			// 
+			this.tabtesting.Controls.Add(this.customparameters);
+			this.tabtesting.Controls.Add(this.skill);
+			this.tabtesting.Controls.Add(label8);
 			this.tabtesting.Controls.Add(this.browsetestprogram);
 			this.tabtesting.Controls.Add(this.noresultlabel);
 			this.tabtesting.Controls.Add(this.testresult);
 			this.tabtesting.Controls.Add(this.labelresult);
 			this.tabtesting.Controls.Add(this.testparameters);
-			this.tabtesting.Controls.Add(label4);
+			this.tabtesting.Controls.Add(this.labelparameters);
 			this.tabtesting.Controls.Add(this.testapplication);
 			this.tabtesting.Controls.Add(label1);
 			this.tabtesting.Controls.Add(label9);
@@ -273,16 +290,40 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtesting.Location = new System.Drawing.Point(4, 23);
 			this.tabtesting.Name = "tabtesting";
 			this.tabtesting.Padding = new System.Windows.Forms.Padding(6);
-			this.tabtesting.Size = new System.Drawing.Size(414, 318);
+			this.tabtesting.Size = new System.Drawing.Size(415, 318);
 			this.tabtesting.TabIndex = 2;
 			this.tabtesting.Text = "Testing";
 			this.tabtesting.UseVisualStyleBackColor = true;
+			// 
+			// customparameters
+			// 
+			this.customparameters.AutoSize = true;
+			this.customparameters.Location = new System.Drawing.Point(86, 132);
+			this.customparameters.Name = "customparameters";
+			this.customparameters.Size = new System.Drawing.Size(134, 18);
+			this.customparameters.TabIndex = 36;
+			this.customparameters.Text = "Customize parameters";
+			this.customparameters.UseVisualStyleBackColor = true;
+			this.customparameters.CheckedChanged += new System.EventHandler(this.customparameters_CheckedChanged);
+			// 
+			// skill
+			// 
+			this.skill.BackColor = System.Drawing.SystemColors.Control;
+			this.skill.Cursor = System.Windows.Forms.Cursors.Default;
+			this.skill.Empty = false;
+			this.skill.GeneralizedCategories = null;
+			this.skill.Location = new System.Drawing.Point(87, 94);
+			this.skill.Name = "skill";
+			this.skill.Size = new System.Drawing.Size(271, 21);
+			this.skill.TabIndex = 35;
+			this.skill.Value = 402;
+			this.skill.ValueChanges += new System.EventHandler(this.skill_ValueChanges);
 			// 
 			// browsetestprogram
 			// 
 			this.browsetestprogram.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsetestprogram.Image = global::CodeImp.DoomBuilder.Properties.Resources.Folder;
-			this.browsetestprogram.Location = new System.Drawing.Point(363, 76);
+			this.browsetestprogram.Location = new System.Drawing.Point(363, 58);
 			this.browsetestprogram.Name = "browsetestprogram";
 			this.browsetestprogram.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsetestprogram.Size = new System.Drawing.Size(30, 23);
@@ -293,11 +334,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// noresultlabel
 			// 
-			this.noresultlabel.Location = new System.Drawing.Point(84, 217);
+			this.noresultlabel.Location = new System.Drawing.Point(84, 220);
 			this.noresultlabel.Name = "noresultlabel";
 			this.noresultlabel.Size = new System.Drawing.Size(272, 43);
 			this.noresultlabel.TabIndex = 32;
 			this.noresultlabel.Text = "An example result cannot be displayed, because it requires a map to be loaded.";
+			this.noresultlabel.Visible = false;
 			// 
 			// testresult
 			// 
@@ -308,8 +350,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.testresult.Multiline = true;
 			this.testresult.Name = "testresult";
 			this.testresult.ReadOnly = true;
-			this.testresult.Size = new System.Drawing.Size(307, 79);
+			this.testresult.Size = new System.Drawing.Size(308, 79);
 			this.testresult.TabIndex = 31;
+			this.testresult.Visible = false;
 			// 
 			// labelresult
 			// 
@@ -319,26 +362,28 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelresult.Size = new System.Drawing.Size(40, 14);
 			this.labelresult.TabIndex = 30;
 			this.labelresult.Text = "Result:";
+			this.labelresult.Visible = false;
 			// 
 			// testparameters
 			// 
 			this.testparameters.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.testparameters.Location = new System.Drawing.Point(86, 118);
+			this.testparameters.Location = new System.Drawing.Point(86, 156);
 			this.testparameters.Multiline = true;
 			this.testparameters.Name = "testparameters";
-			this.testparameters.Size = new System.Drawing.Size(307, 79);
+			this.testparameters.Size = new System.Drawing.Size(308, 41);
 			this.testparameters.TabIndex = 28;
+			this.testparameters.Visible = false;
 			this.testparameters.TextChanged += new System.EventHandler(this.testparameters_TextChanged);
 			// 
 			// testapplication
 			// 
 			this.testapplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.testapplication.Location = new System.Drawing.Point(86, 77);
+			this.testapplication.Location = new System.Drawing.Point(86, 59);
 			this.testapplication.Name = "testapplication";
 			this.testapplication.ReadOnly = true;
-			this.testapplication.Size = new System.Drawing.Size(271, 20);
+			this.testapplication.Size = new System.Drawing.Size(272, 20);
 			this.testapplication.TabIndex = 25;
 			this.testapplication.TextChanged += new System.EventHandler(this.testapplication_TextChanged);
 			// 
@@ -423,5 +468,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label noresultlabel;
 		private System.Windows.Forms.Button browsetestprogram;
 		private System.Windows.Forms.OpenFileDialog testprogramdialog;
+		private System.Windows.Forms.CheckBox customparameters;
+		private CodeImp.DoomBuilder.Controls.ActionSelectorControl skill;
+		private System.Windows.Forms.Label labelparameters;
 	}
 }

@@ -35,6 +35,8 @@ namespace CodeImp.DoomBuilder
 	{
 		#region ================== Constants
 
+		private const string NUMBERS = "0123456789";
+
 		#endregion
 
 		#region ================== Variables
@@ -84,12 +86,13 @@ namespace CodeImp.DoomBuilder
 		// This takes the unconverted parameters (with placeholders) and converts it
 		// to parameters with full paths, names and numbers where placeholders were put.
 		// The tempfile must be the full path and filename to the PWAD file to test.
-		public string ConvertParameters(string parameters)
+		public string ConvertParameters(string parameters, int skill)
 		{
 			string outp = parameters;
 			DataLocation iwadloc;
 			string p_wp = "", p_wf = "";
 			string p_ap = "", p_apq = "";
+			string p_l1 = "", p_l2 = "";
 			
 			// Find the first IWAD file
 			if(General.Map.Data.FindFirstIWAD(out iwadloc))
@@ -120,6 +123,38 @@ namespace CodeImp.DoomBuilder
 			// Trim last space from resource file locations
 			p_ap = p_ap.TrimEnd(' ');
 			p_apq = p_apq.TrimEnd(' ');
+
+			// Try finding the L1 and L2 numbers from the map name
+			string numstr = "";
+			bool first = true;
+			foreach(char c in General.Map.Options.CurrentName)
+			{
+				// Character is a number?
+				if(NUMBERS.IndexOf(c) > -1)
+				{
+					// Include it
+					numstr += c;
+				}
+				else
+				{
+					// Store the number if we found one
+					if(numstr.Length > 0)
+					{
+						int num = 0;
+						int.TryParse(numstr, out num);
+						if(first) p_l1 = num.ToString(); else p_l2 = num.ToString();
+						first = false;
+					}
+				}
+			}
+			
+			// Store the number if we found one
+			if(numstr.Length > 0)
+			{
+				int num = 0;
+				int.TryParse(numstr, out num);
+				if(first) p_l1 = num.ToString(); else p_l2 = num.ToString();
+			}
 			
 			// Make sure all our placeholders are in uppercase
 			outp = outp.Replace("%f", "%F");
@@ -129,18 +164,24 @@ namespace CodeImp.DoomBuilder
 			outp = outp.Replace("%wF", "%WF");
 			outp = outp.Replace("%Wp", "%WP");
 			outp = outp.Replace("%Wf", "%WF");
+			outp = outp.Replace("%l1", "%L1");
+			outp = outp.Replace("%l2", "%L2");
 			outp = outp.Replace("%l", "%L");
 			outp = outp.Replace("%ap", "%AP");
 			outp = outp.Replace("%aP", "%AP");
 			outp = outp.Replace("%Ap", "%AP");
+			outp = outp.Replace("%s", "%S");
 			
 			// Replace placeholders with actual values
 			outp = outp.Replace("%F", General.Map.Launcher.TempWAD);
 			outp = outp.Replace("%WP", p_wp);
 			outp = outp.Replace("%WF", p_wf);
+			outp = outp.Replace("%L1", p_l1);
+			outp = outp.Replace("%L2", p_l2);
 			outp = outp.Replace("%L", General.Map.Options.CurrentName);
 			outp = outp.Replace("\"%AP\"", p_apq);
 			outp = outp.Replace("%AP", p_ap);
+			outp = outp.Replace("%S", skill.ToString());
 			
 			// Return result
 			return outp;
@@ -175,13 +216,20 @@ namespace CodeImp.DoomBuilder
 				return;
 			}
 
+			// No custom parameters?
+			if(!General.Map.ConfigSettings.CustomParameters)
+			{
+				// Set parameters to the default ones
+				General.Map.ConfigSettings.TestParameters = General.Map.Config.TestParameters;
+			}
+
 			// Save map to temporary file
 			Cursor.Current = Cursors.WaitCursor;
 			tempwad = General.MakeTempFilename(General.Map.TempPath, "wad");
 			if(General.Map.SaveMap(tempwad, MapManager.SAVE_TEST))
 			{
 				// Make arguments
-				args = ConvertParameters(General.Map.ConfigSettings.TestParameters);
+				args = ConvertParameters(General.Map.ConfigSettings.TestParameters, General.Map.ConfigSettings.TestSkill);
 
 				// Setup process info
 				processinfo = new ProcessStartInfo();

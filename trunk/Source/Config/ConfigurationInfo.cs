@@ -43,6 +43,8 @@ namespace CodeImp.DoomBuilder.Config
 		private DataLocationList resources;
 		private string testprogram;
 		private string testparameters;
+		private bool customparameters;
+		private int testskill;
 		private List<ThingsFilter> thingsfilters;
 
 		#endregion
@@ -57,6 +59,8 @@ namespace CodeImp.DoomBuilder.Config
 		public DataLocationList Resources { get { return resources; } }
 		public string TestProgram { get { return testprogram; } set { testprogram = value; } }
 		public string TestParameters { get { return testparameters; } set { testparameters = value; } }
+		public int TestSkill { get { return testskill; } set { testskill = value; } }
+		public bool CustomParameters { get { return customparameters; } set { customparameters = value; } }
 		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
 
 		#endregion
@@ -79,6 +83,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", "");
 			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
+			this.customparameters = General.Settings.ReadSetting("configurations." + settingskey + ".customparameters", false);
+			this.testskill = General.Settings.ReadSetting("configurations." + settingskey + ".testskill", 3);
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
 			
 			// Make list of things filters
@@ -114,6 +120,8 @@ namespace CodeImp.DoomBuilder.Config
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildertest", nodebuildertest);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
+			General.Settings.WriteSetting("configurations." + settingskey + ".customparameters", customparameters);
+			General.Settings.WriteSetting("configurations." + settingskey + ".testskill", testskill);
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
 
 			// Write filters to configuration
@@ -143,6 +151,8 @@ namespace CodeImp.DoomBuilder.Config
 			ci.resources.AddRange(this.resources);
 			ci.testprogram = this.testprogram;
 			ci.testparameters = this.testparameters;
+			ci.customparameters = this.customparameters;
+			ci.testskill = this.testskill;
 			return ci;
 		}
 		
@@ -158,6 +168,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.resources.AddRange(ci.resources);
 			this.testprogram = ci.testprogram;
 			this.testparameters = ci.testparameters;
+			this.customparameters = ci.customparameters;
+			this.testskill = ci.testskill;
 		}
 		
 		#endregion

@@ -481,6 +481,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					rotategripangle = delta.GetAngle() - rotation;
 					mode = ModifyMode.Rotating;
 					break;
+
+				// Outside the selection?
+				default:
+					// Accept and be done with it
+					General.Map.AcceptMode();
+					break;
 			}
 		}
 
