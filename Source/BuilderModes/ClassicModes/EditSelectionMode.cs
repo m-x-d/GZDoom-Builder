@@ -563,6 +563,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
+				Vector2D snappedmappos = mousemappos;
+				bool dosnaptogrid = snaptogrid;
+
 				// Options
 				snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 				snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
@@ -589,8 +592,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Resizing
 					case ModifyMode.Resizing:
 
-						// Get snapped position
-						Vector2D snappedmappos = GetNearestResizePosition();
+						// Snap to nearest vertex?
+						if(snaptonearest)
+						{
+							float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
+
+							// Try the nearest vertex
+							Vertex nv = MapSet.NearestVertexSquareRange(unselectedvertices, snappedmappos, vrange);
+							if(nv != null)
+							{
+								snappedmappos = nv.Position;
+								dosnaptogrid = false;
+							}
+						}
+
+						// Snap to grid?
+						if(dosnaptogrid)
+						{
+							// Aligned to grid
+							snappedmappos = General.Map.Grid.SnappedToGrid(snappedmappos);
+						}
 
 						// Keep corner position
 						Vector2D oldcorner = corners[stickcorner];
@@ -625,41 +646,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Get angle from mouse to center
 						Vector2D center = offset + size * 0.5f;
-						Vector2D delta = mousemappos - center;
+						Vector2D delta = snappedmappos - center;
 						rotation = delta.GetAngle() - rotategripangle;
 
+						// Snap rotation to grip?
+						if(dosnaptogrid)
+						{
+							// We make 8 vectors that the rotation can snap to
+							float founddistance = float.MaxValue;
+							float foundrotation = rotation;
+							for(int i = 0; i < 8; i++)
+							{
+								// Make the vectors
+								float angle = (float)i * Angle2D.PI * 0.25f;
+								Vector2D gridvec = Vector2D.FromAngle(angle);
+								Vector3D rotvec = Vector2D.FromAngle(rotation);
+								
+								// Check distance
+								float dist = 2.0f - Vector2D.DotProduct(gridvec, rotvec);
+								if(dist < founddistance)
+								{
+									foundrotation = angle;
+									founddistance = dist;
+								}
+							}
+							
+							// Keep rotation
+							rotation = foundrotation;
+						}
+						
 						// Update
 						UpdateGeometry();
 						UpdateRectangleComponents();
 						General.Interface.RedrawDisplay();
 						break;
 				}
-			}
-		}
-
-		// This gets the aligned and snapped position nearest to the mouse cursor for resize actions
-		private Vector2D GetNearestResizePosition()
-		{
-			// Snap to nearest?
-			if(snaptonearest)
-			{
-				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
-
-				// Try the nearest vertex
-				Vertex nv = MapSet.NearestVertexSquareRange(unselectedvertices, mousemappos, vrange);
-				if(nv != null) return nv.Position;
-			}
-
-			// Snap to grid?
-			if(snaptogrid)
-			{
-				// Aligned to grid
-				return General.Map.Grid.SnappedToGrid(mousemappos);
-			}
-			else
-			{
-				// Normal position
-				return mousemappos;
 			}
 		}
 		
