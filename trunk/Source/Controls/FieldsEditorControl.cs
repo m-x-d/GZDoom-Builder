@@ -427,8 +427,9 @@ namespace CodeImp.DoomBuilder.Controls
 							// Check if no other row already has this name
 							foreach(DataGridViewRow r in fieldslist.Rows)
 							{
-								// Name matches?
-								if(r.Cells[0].Value.ToString().ToLowerInvariant() == validname)
+								// Name matches and not the same row?
+								if((r.Index != row.Index) && (r.Cells.Count > 0) && (r.Cells[0].Value != null) &&
+								   (r.Cells[0].Value.ToString().ToLowerInvariant() == validname))
 								{
 									// Cannot have two rows with same name
 									validname = "";
@@ -467,8 +468,9 @@ namespace CodeImp.DoomBuilder.Controls
 							// Check if no other row already has this name
 							foreach(DataGridViewRow r in fieldslist.Rows)
 							{
-								// Name matches?
-								if(r.Cells[0].Value.ToString().ToLowerInvariant() == validname)
+								// Name matches and not the same row?
+								if((r.Index != row.Index) && (r.Cells.Count > 0) && (r.Cells[0].Value != null) &&
+								   (r.Cells[0].Value.ToString().ToLowerInvariant() == validname))
 								{
 									// Cannot have two rows with same name
 									validname = "";
