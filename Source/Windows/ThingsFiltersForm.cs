@@ -159,11 +159,15 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Show name
 				filtername.Text = f.Name;
-
+				
 				// Show category
-				foreach(ThingCategory c in filtercategory.Items)
-					if(c.Name == f.CategoryName) filtercategory.SelectedItem = c;
-
+				foreach(object c in filtercategory.Items)
+				{
+					ThingCategory tc = (c as ThingCategory);
+					if((tc != null) && (tc.Name == f.CategoryName)) filtercategory.SelectedItem = tc;
+				}
+				if(filtercategory.SelectedIndex == -1) filtercategory.SelectedIndex = 0;
+				
 				// Show fields
 				foreach(CheckBox b in filterfields.Checkboxes)
 				{
@@ -215,6 +219,11 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					// Set new category name
 					f.CategoryName = (filtercategory.SelectedItem as ThingCategory).Name;
+				}
+				else
+				{
+					// Unset category name
+					f.CategoryName = "";
 				}
 			}
 		}
