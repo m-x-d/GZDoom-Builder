@@ -195,6 +195,12 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("testmap")]
 		public void Test()
 		{
+			TestAtSkill(General.Map.ConfigSettings.TestSkill);
+		}
+		
+		// This saves the map to a temporary file and launches a test wit hthe given skill
+		public void TestAtSkill(int skill)
+		{
 			Cursor oldcursor = Cursor.Current;
 			ProcessStartInfo processinfo;
 			Process process;
@@ -229,7 +235,7 @@ namespace CodeImp.DoomBuilder
 			if(General.Map.SaveMap(tempwad, MapManager.SAVE_TEST))
 			{
 				// Make arguments
-				args = ConvertParameters(General.Map.ConfigSettings.TestParameters, General.Map.ConfigSettings.TestSkill);
+				args = ConvertParameters(General.Map.ConfigSettings.TestParameters, skill);
 
 				// Setup process info
 				processinfo = new ProcessStartInfo();
@@ -264,7 +270,8 @@ namespace CodeImp.DoomBuilder
 			}
 
 			// Remove temporary file
-			try { File.Delete(tempwad); } catch(Exception) { }
+			try { File.Delete(tempwad); }
+			catch(Exception) { }
 
 			// Restore old cursor
 			Cursor.Current = oldcursor;

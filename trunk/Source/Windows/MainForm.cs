@@ -35,6 +35,7 @@ using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Properties;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -73,6 +74,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private Rectangle originalclip;
 		private bool mouseexclusive;
 		private int mouseexclusivebreaklevel;
+		
+		// Skills
+		private ToolStripMenuItem[] skills;
 		
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
@@ -162,7 +166,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Show normal caption
 				this.Text = Application.ProductName;
 			}
-
+			
 			// Update the status bar
 			UpdateStatusbar();
 			
@@ -171,6 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateEditMenu();
 			UpdateToolsMenu();
 			UpdateEditModeItems();
+			UpdateSkills();
 		}
 		
 		// Generic event that invokes the tagged action
@@ -980,7 +985,38 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Toolbar
-
+		
+		// This updates the skills list
+		private void UpdateSkills()
+		{
+			// Clear list
+			buttontest.DropDownItems.Clear();
+			
+			// Map loaded?
+			if(General.Map != null)
+			{
+				// Make the new skills list
+				skills = new ToolStripMenuItem[General.Map.Config.Skills.Count];
+				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
+				{
+					skills[i] = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
+					skills[i].Image = buttontest.Image;
+					skills[i].Click += new EventHandler(TestSkill_Click);
+					skills[i].Tag = General.Map.Config.Skills[i].Index;
+				}
+				
+				// Add to list
+				buttontest.DropDownItems.AddRange(skills);
+			}
+		}
+		
+		// Event handler for testing at a specific skill
+		private void TestSkill_Click(object sender, EventArgs e)
+		{
+			int skill = (int)((sender as ToolStripMenuItem).Tag);
+			General.Map.Launcher.TestAtSkill(skill);
+		}
+		
 		// This loses focus
 		private void LoseFocus(object sender, EventArgs e)
 		{
