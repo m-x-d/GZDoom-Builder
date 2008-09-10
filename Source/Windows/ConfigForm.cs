@@ -349,6 +349,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Apply to selected configuration
 			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			ci.TestSkill = skill.Value;
+
+			CreateParametersExample();
 		}
 	}
 }
