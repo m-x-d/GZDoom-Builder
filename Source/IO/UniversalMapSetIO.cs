@@ -54,8 +54,8 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// Make configuration
 			config = new Configuration();
-			
-			// Find a resource named Font.cfg
+
+			// Find a resource named UDMF.cfg
 			string[] resnames = General.ThisAssembly.GetManifestResourceNames();
 			foreach(string rn in resnames)
 			{
