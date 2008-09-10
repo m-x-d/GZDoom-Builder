@@ -165,28 +165,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Standard);
-		}
 
+			// Convert geometry selection to sectors only
+			General.Map.Map.ClearAllMarks();
+			General.Map.Map.MarkSelectedVertices(true, true);
+			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
+			foreach(Linedef l in lines) l.Selected = true;
+			General.Map.Map.ClearMarkedSectors(true);
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				if(!l.Selected)
+				{
+					if(l.Front != null) l.Front.Sector.Marked = false;
+					if(l.Back != null) l.Back.Sector.Marked = false;
+				}
+			}
+			General.Map.Map.ClearAllSelected();
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				if(s.Marked)
+				{
+					s.Selected = true;
+					foreach(Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
+				}
+			}		
+		}
+		
 		// Mode disengages
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
-
-			// Check which mode we are switching to
-			if(General.Map.NewMode is VerticesMode)
-			{
-				// Convert selection to vertices
-
-				// Clear selected sectors
-				General.Map.Map.ClearSelectedSectors();
-			}
-			else if(General.Map.NewMode is LinedefsMode)
-			{
-				// Convert selection to linedefs
-
-				// Clear selected sectors
-				General.Map.Map.ClearSelectedSectors();
-			}
 			
 			// Hide highlight info
 			General.Interface.HideInfo();

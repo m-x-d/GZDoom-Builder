@@ -106,6 +106,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Things);
+
+			// Convert geometry selection to linedefs selection
+			General.Map.Map.ClearAllMarks();
+			General.Map.Map.MarkSelectedVertices(true, true);
+			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
+			foreach(Linedef l in lines) l.Selected = true;
+			General.Map.Map.ClearSelectedSectors();
+			General.Map.Map.ClearSelectedVertices();
 		}
 
 		// Mode disengages
