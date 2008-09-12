@@ -121,6 +121,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnDisengage();
 
+			// Going to EditSelectionMode?
+			if(General.Map.NewMode is EditSelectionMode)
+			{
+				// No selection made? But we have a highlight!
+				if((General.Map.Map.GetSelectedThings(true).Count == 0) && (highlighted != null))
+				{
+					// Make the highlight the selection
+					highlighted.Selected = true;
+				}
+			}
+
 			// Hide highlight info
 			General.Interface.HideInfo();
 		}
@@ -450,6 +461,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
+		// This clears the selection
+		[BeginAction("clearselection", BaseAction = true)]
+		public void ClearSelection()
+		{
+			// Clear selection
+			General.Map.Map.ClearAllSelected();
+
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+		
 		// This creates a new thing at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
 		public virtual void InsertThing()

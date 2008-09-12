@@ -101,6 +101,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// This clears the selection
+		[BeginAction("clearselection", BaseAction = true)]
+		public void ClearSelection()
+		{
+			// Clear selection
+			General.Map.Map.ClearAllSelected();
+
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+		
 		// When undo is used
 		[EndAction("undo", BaseAction = true)]
 		public void Undo()
@@ -195,6 +206,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
+			
+			// Going to EditSelectionMode?
+			if(General.Map.NewMode is EditSelectionMode)
+			{
+				// No selection made? But we have a highlight!
+				if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+				{
+					// Make the highlight the selection
+					SelectSector(highlighted, true);
+				}
+			}
 			
 			// Hide highlight info
 			General.Interface.HideInfo();
