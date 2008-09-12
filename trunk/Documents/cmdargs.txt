@@ -1,10 +1,11 @@
 Doom Builder 2 command-line arguments
-======================================
+==========================================================================================
 
 Usage:
 
    builder.exe [wadfile] [-map mapname] [-cfg configname]
 
+==========================================================================================
 
 Parameters:
 
@@ -19,5 +20,21 @@ combination with -cfg to provide the required information to skip the map-option
 
 - cfg
 Where 'configname' is a game configuration filename, for example, "ZDoom_DoomHexen.cfg".
+Do NOT include the path, all game configurations must be in the Configurations subfolder.
 When used in combination with -map this will provide the required information to load a
 map directly and skip the map-options dialog.
+
+==========================================================================================
+
+Examples:
+
+This loads the file "Ubermegawad.wad" after Doom Builder is initialized and shows the
+map-options dialog:
+
+   builder.exe "C:\Games\Doom\My Maps\Ubermegawad.wad"
+
+This loads the file "Ubermegawad.wad" after Doom Builder is initialized and shows the
+map MAP23 with the game configuration for Doom 2:
+
+   builder.exe "C:\Games\Doom\My Maps\Ubermegawad.wad" -map MAP23 -cfg "Doom2.cfg"
+
