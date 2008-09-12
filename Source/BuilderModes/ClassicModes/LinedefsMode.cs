@@ -120,7 +120,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
-			
+
+			// Going to EditSelectionMode?
+			if(General.Map.NewMode is EditSelectionMode)
+			{
+				// No selection made? But we have a highlight!
+				if((General.Map.Map.GetSelectedLinedefs(true).Count == 0) && (highlighted != null))
+				{
+					// Make the highlight the selection
+					highlighted.Selected = true;
+				}
+			}
+
 			// Hide highlight info
 			General.Interface.HideInfo();
 		}
@@ -468,6 +479,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
+		// This clears the selection
+		[BeginAction("clearselection", BaseAction = true)]
+		public void ClearSelection()
+		{
+			// Clear selection
+			General.Map.Map.ClearAllSelected();
+
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+		
 		// This creates a new vertex at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
 		public virtual void InsertVertex()

@@ -893,22 +893,22 @@ namespace CodeImp.DoomBuilder
 			
 			// Apply new mode
 			mode = newmode;
+			
+			// Engage new mode
+			if(newmode != null) newmode.OnEngage();
 
 			// Check appropriate button on interface
 			// And show the mode name
-			if(newmode != null)
+			if(mode != null)
 			{
-				General.MainWindow.CheckEditModeButton(newmode.EditModeButtonName);
-				General.MainWindow.DisplayModeName(newmode.Attributes.DisplayName);
+				General.MainWindow.CheckEditModeButton(mode.EditModeButtonName);
+				General.MainWindow.DisplayModeName(mode.Attributes.DisplayName);
 			}
 			else
 			{
 				General.MainWindow.CheckEditModeButton("");
 				General.MainWindow.DisplayModeName("");
 			}
-			
-			// Engage new mode
-			if(newmode != null) newmode.OnEngage();
 
 			// Dispose old mode
 			if(oldmode != null) oldmode.Dispose();
@@ -928,7 +928,23 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		#endregion
+
+		#region ================== Copy / Paste
 		
+		// This copies the current selection
+		public void CopySelection()
+		{
+
+		}
+
+		// This pastes what is on the clipboard and makes it the current selection
+		public bool PasteSelection()
+		{
+			return false;
+		}
+		
+		#endregion
+
 		#region ================== Methods
 
 		// This changes thing filter
@@ -946,17 +962,6 @@ namespace CodeImp.DoomBuilder
 			// Activate filter
 			thingsfilter.Activate();
 			
-			// Redraw
-			General.MainWindow.RedrawDisplay();
-		}
-		
-		// This clears the selection
-		[BeginAction("clearselection")]
-		public void ClearSelection()
-		{
-			// Clear selection
-			map.ClearAllSelected();
-
 			// Redraw
 			General.MainWindow.RedrawDisplay();
 		}

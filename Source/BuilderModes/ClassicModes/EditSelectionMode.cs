@@ -520,10 +520,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
 			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
 		}
+
+		
 		
 		#endregion
 		
 		#region ================== Methods
+
+		// This clears the selection
+		[BeginAction("clearselection", BaseAction = true)]
+		public void ClearSelection()
+		{
+			// Accept changes
+			General.Map.Map.ClearAllSelected();
+			General.Map.AcceptMode();
+		}
 		
 		// This updates the selection
 		private void Update()
