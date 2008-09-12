@@ -1,0 +1,23 @@
+Doom Builder 2 command-line arguments
+======================================
+
+Usage:
+
+   builder.exe [wadfile] [-map mapname] [-cfg configname]
+
+
+Parameters:
+
+- wadfile
+This is a .WAD file to load immediately after Doom Builder has started up. Unless -map
+and -cfg are used, this will show the map-options dialog.
+
+- map
+Where 'mapname' is the name of the map (map header lump name) such as MAP01 or E1M1. When
+specified, this will indicate the map to load from the specified wad file. Use in
+combination with -cfg to provide the required information to skip the map-options dialog.
+
+- cfg
+Where 'configname' is a game configuration filename, for example, "ZDoom_DoomHexen.cfg".
+When used in combination with -map this will provide the required information to load a
+map directly and skip the map-options dialog.
