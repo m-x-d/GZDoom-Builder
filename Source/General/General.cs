@@ -524,7 +524,7 @@ namespace CodeImp.DoomBuilder
 
 				// Start Direct3D
 				General.WriteLogLine("Starting Direct3D graphics driver...");
-				try { Direct3D.Initialize(); }
+				try { D3DDevice.Startup(); }
 				catch(Direct3D9NotFoundException) { AskDownloadDirectX(); return; }
 				catch(Direct3DX9NotFoundException) { AskDownloadDirectX(); return; }
 
@@ -582,6 +582,11 @@ namespace CodeImp.DoomBuilder
 		// This asks the user to download DirectX
 		private static void AskDownloadDirectX()
 		{
+			// Cancel loading map from command-line parameters, if any.
+			// This causes problems, because when the window is shown, the map will
+			// be loaded and DirectX is initialized (which we seem to be missing)
+			autoloadfile = null;
+			
 			// Ask the user to download DirectX
 			if(MessageBox.Show("This application requires the latest version of Microsoft DirectX installed on your computer." + Environment.NewLine +
 				"Do you want to install and update Microsoft DirectX now?", "DirectX Error", System.Windows.Forms.MessageBoxButtons.YesNo,
@@ -681,7 +686,7 @@ namespace CodeImp.DoomBuilder
 				if(clock != null) clock.Dispose();
 				if(plugins != null) plugins.Dispose();
 				if(types != null) types.Dispose();
-				try { Direct3D.Terminate(); } catch(Exception) { }
+				try { D3DDevice.Terminate(); } catch(Exception) { }
 
 				// Application ends here and now
 				General.WriteLogLine("Termination done");
@@ -700,10 +705,20 @@ namespace CodeImp.DoomBuilder
 		#region ================== Management
 
 		// This cancels a volatile mode
-		internal static void CancelVolatileMode()
+		internal static bool CancelVolatileMode()
 		{
+			// Volatile mode?
 			if((map != null) && (map.Mode != null) && map.Mode.Attributes.Volatile)
+			{
+				// Cancel
 				map.Mode.OnCancel();
+				return true;
+			}
+			else
+			{
+				// Mode is not volatile
+				return false;
+			}
 		}
 
 		// This creates a new map

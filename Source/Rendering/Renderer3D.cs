@@ -166,7 +166,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				
 				// Ready
