@@ -48,8 +48,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		public Matrix WorldViewProj { set { if(manager.Enabled) effect.SetValue(worldviewproj, value); } }
-		public Texture Texture1 { set { if(manager.Enabled) effect.SetValue(texture1, value); } }
+		public Matrix WorldViewProj { set { if(manager.Enabled) effect.SetValue<Matrix>(worldviewproj, value); } }
+		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); } }
 
 		#endregion
 

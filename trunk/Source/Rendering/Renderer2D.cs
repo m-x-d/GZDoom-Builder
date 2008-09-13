@@ -229,7 +229,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 							graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 							graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-							graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
+							graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 							graphics.Device.SetRenderState(RenderState.TextureFactor, (new Color4(layer.alpha, 1f, 1f, 1f)).ToArgb());
 							break;
 
@@ -978,7 +978,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InvSourceAlpha);
+				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, alphacolor.ToArgb());
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);

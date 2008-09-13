@@ -218,38 +218,40 @@ namespace CodeImp.DoomBuilder.Editing
 			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
 			
-			// Anything to undo?
-			if(undos.Count > 0)
+			// Cancel volatile mode, if any
+			// This returns false when mode was not volatile
+			if(!General.CancelVolatileMode())
 			{
-				// Cancel volatile mode, if any
-				General.CancelVolatileMode();
+				// Anything to undo?
+				if(undos.Count > 0)
+				{
+					// Get undo snapshot
+					u = undos[0];
+					undos.RemoveAt(0);
 
-				// Get undo snapshot
-				u = undos[0];
-				undos.RemoveAt(0);
+					General.WriteLogLine("Performing undo \"" + u.description + "\", Ticket ID " + u.ticketid + "...");
 
-				General.WriteLogLine("Performing undo \"" + u.description + "\", Ticket ID " + u.ticketid + "...");
+					// Make a snapshot for redo
+					r = new UndoSnapshot(u, General.Map.Map.Clone());
 
-				// Make a snapshot for redo
-				r = new UndoSnapshot(u, General.Map.Map.Clone());
+					// Put it on the stack
+					redos.Insert(0, r);
+					LimitUndoRedoLevel(redos);
 
-				// Put it on the stack
-				redos.Insert(0, r);
-				LimitUndoRedoLevel(redos);
-				
-				// Reset grouping
-				lastgroup = UndoGroup.None;
-				
-				// Remove selection
-				u.map.ClearAllMarks();
-				u.map.ClearAllSelected();
-				
-				// Change map set
-				General.Map.ChangeMapSet(u.map);
+					// Reset grouping
+					lastgroup = UndoGroup.None;
 
-				// Update
-				General.MainWindow.RedrawDisplay();
-				General.MainWindow.UpdateInterface();
+					// Remove selection
+					u.map.ClearAllMarks();
+					u.map.ClearAllSelected();
+
+					// Change map set
+					General.Map.ChangeMapSet(u.map);
+
+					// Update
+					General.MainWindow.RedrawDisplay();
+					General.MainWindow.UpdateInterface();
+				}
 			}
 
 			Cursor.Current = oldcursor;
@@ -263,12 +265,12 @@ namespace CodeImp.DoomBuilder.Editing
 			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
 			
+			// Cancel volatile mode, if any
+			General.CancelVolatileMode();
+
 			// Anything to redo?
 			if(redos.Count > 0)
 			{
-				// Cancel volatile mode, if any
-				General.CancelVolatileMode();
-
 				// Get redo snapshot
 				r = redos[0];
 				redos.RemoveAt(0);

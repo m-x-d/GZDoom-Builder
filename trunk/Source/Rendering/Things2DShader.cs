@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		public Texture Texture1 { set { if(manager.Enabled) effect.SetValue(texture1, value); } }
+		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); } }
 
 		#endregion
 

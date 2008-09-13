@@ -52,8 +52,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Settings
 		private int adapter;
-		
+
 		// Main objects
+		private static Direct3D d3d;
 		private RenderTargetControl rendertarget;
 		private Capabilities devicecaps;
 		private Device device;
@@ -211,12 +212,28 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Initialization
 		
+		// This starts up Direct3D
+		public static void Startup()
+		{
+			d3d = new Direct3D();
+		}
+		
+		// This terminates Direct3D
+		public static void Terminate()
+		{
+			if(d3d != null)
+			{
+				d3d.Dispose();
+				d3d = null;
+			}
+		}
+		
 		// This initializes the graphics
 		public bool Initialize()
 		{
 			PresentParameters displaypp;
 			DeviceType devtype;
-
+			
 			// Use default adapter
 			this.adapter = 0; // Manager.Adapters.Default.Adapter;
 
@@ -224,13 +241,13 @@ namespace CodeImp.DoomBuilder.Rendering
 			displaypp = CreatePresentParameters(adapter);
 
 			// Determine device type for compatability with NVPerfHUD
-			if(Direct3D.Adapters[adapter].Details.Description.EndsWith(NVPERFHUD_ADAPTER))
+			if(d3d.Adapters[adapter].Details.Description.EndsWith(NVPERFHUD_ADAPTER))
 				devtype = DeviceType.Reference;
 			else
 				devtype = DeviceType.Hardware;
 
 			// Get the device capabilities
-			devicecaps = Direct3D.GetDeviceCaps(adapter, devtype);
+			devicecaps = d3d.GetDeviceCaps(adapter, devtype);
 
 			try
 			{
@@ -238,13 +255,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				if((devicecaps.DeviceCaps & DeviceCaps.HWTransformAndLight) != 0)
 				{
 					// Initialize with hardware TnL
-					device = new Device(adapter, devtype, rendertarget.Handle,
+					device = new Device(d3d, adapter, devtype, rendertarget.Handle,
 								CreateFlags.HardwareVertexProcessing, displaypp);
 				}
 				else
 				{
 					// Initialize with software TnL
-					device = new Device(adapter, devtype, rendertarget.Handle,
+					device = new Device(d3d, adapter, devtype, rendertarget.Handle,
 								CreateFlags.SoftwareVertexProcessing, displaypp);
 				}
 			}
@@ -299,7 +316,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			DisplayMode currentmode;
 			
 			// Get current display mode
-			currentmode = Direct3D.Adapters[adapter].CurrentDisplayMode;
+			currentmode = d3d.Adapters[adapter].CurrentDisplayMode;
 
 			// Make present parameters
 			displaypp.Windowed = true;
