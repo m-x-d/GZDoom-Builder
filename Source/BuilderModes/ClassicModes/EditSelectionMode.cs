@@ -382,10 +382,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Rectangle
 				PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
 				renderer.RenderGeometry(cornerverts, null, true);
-				renderer.RenderLine(corners[0], corners[1], 2, rectcolor, true);
-				renderer.RenderLine(corners[1], corners[2], 2, rectcolor, true);
-				renderer.RenderLine(corners[2], corners[3], 2, rectcolor, true);
-				renderer.RenderLine(corners[3], corners[0], 2, rectcolor, true);
+				renderer.RenderLine(corners[0], corners[1], 4, rectcolor, true);
+				renderer.RenderLine(corners[1], corners[2], 4, rectcolor, true);
+				renderer.RenderLine(corners[2], corners[3], 4, rectcolor, true);
+				renderer.RenderLine(corners[3], corners[0], 4, rectcolor, true);
 
 				// Extension line
 				if(extensionline.GetLengthSq() > 0.0f)
@@ -411,16 +411,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMouseMove(e);
 
-			// Not in a modifying mode?
-			if(mode == ModifyMode.None)
-			{
-				// Find the nearest vertex within highlight range
-				Vertex v = MapSet.NearestVertex(selectedvertices, mousemappos);
-
-				// Highlight if not the same
-				if(v != highlighted) Highlight(v);
-			}
-			
 			Update();
 		}
 
@@ -431,6 +421,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Reset cursor
 			General.Interface.SetCursor(Cursors.Default);
+		}
+
+		// When edit button is pressed
+		protected override void OnEdit()
+		{
+			base.OnEdit();
+			OnSelect();
+		}
+
+		// When edit button is released
+		protected override void OnEndEdit()
+		{
+			base.OnEndEdit();
+			OnEndSelect();
 		}
 
 		// When select button is pressed
@@ -649,6 +653,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				switch(mousegrip)
 				{
 					case Grip.Main:
+						
+						// Find the nearest vertex within highlight range
+						Vertex v = MapSet.NearestVertex(selectedvertices, mousemappos);
+
+						// Highlight if not the same
+						if(v != highlighted) Highlight(v);
+						
 						General.Interface.SetCursor(Cursors.Hand);
 						break;
 
