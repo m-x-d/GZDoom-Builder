@@ -37,13 +37,14 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 
 		// Properties
-		private string switchaction;
-		private string buttonimage;
-		private string buttondesc;
-		private int buttonorder;
-		private bool configspecific;
-		private bool isvolatile;
-		private string displayname;
+		private string switchaction = null;
+		private string buttonimage = null;
+		private string buttondesc = null;
+		private int buttonorder = 0;
+		private bool configspecific = false;
+		private bool isvolatile = false;
+		private string displayname = "Unnamed Mode";
+		private bool allowcopypaste = true;
 		
 		#endregion
 
@@ -88,10 +89,17 @@ namespace CodeImp.DoomBuilder.Editing
 		public bool Volatile { get { return isvolatile; } set { isvolatile = value; } }
 
 		/// <summary>
-		/// Name to display on the button information bar when no specific element information is displayed.
+		/// Name to display on the button information bar when no specific element
+		/// information is displayed.
 		/// </summary>
 		public string DisplayName { get { return displayname; } set { displayname = value; } }
 
+		/// <summary>
+		/// When set to false, the actions Cut, Copy and Paste cannot be used
+		/// in this mode. Default for this property is true.
+		/// </summary>
+		public bool AllowCopyPaste { get { return allowcopypaste; } set { allowcopypaste = value; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer

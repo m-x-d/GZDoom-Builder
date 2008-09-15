@@ -136,6 +136,13 @@ namespace CodeImp.DoomBuilder.Plugins
 		{
 		}
 
+		/// <summary>
+		/// Called by the Doom Builder core when the user pastes geometry into the map. The new geometry is created and marked before this method is called.
+		/// </summary>
+		public virtual void OnPaste()
+		{
+		}
+
 		#endregion
 	}
 }

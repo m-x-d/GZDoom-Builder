@@ -593,10 +593,13 @@
     <EmbeddedResource Include="Resources\Thing2D_0.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Copy.png" />
+    <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Paste.png" />
+    <None Include="Resources\Test.png" />
     <None Include="Resources\Warning.png" />
     <None Include="Resources\WarningOff.png" />
-    <None Include="Resources\Test.png" />
     <None Include="Resources\SlimDX_small.png" />
     <None Include="Resources\Splash3_trans.png" />
     <None Include="Resources\Splash3_small.png" />

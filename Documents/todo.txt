@@ -1,8 +1,10 @@
 - Add more find/replace types
 
-- Make advanced drag/rotate/resize/flip/skew/turn/barf mode
-
 - Make copy/paste features
+
+- Seperate modes into their own Mode menu
+
+- Make plugin support for custom toolbar buttons / menu items (Tools menu?)
 
 - Make sector gradient features
 
