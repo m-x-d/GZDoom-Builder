@@ -105,7 +105,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// slimdxlogo
 			// 
-			this.slimdxlogo.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.slimdxlogo.Image = global::CodeImp.DoomBuilder.Properties.Resources.SlimDX_small;
 			this.slimdxlogo.Location = new System.Drawing.Point(10, 210);
 			this.slimdxlogo.Name = "slimdxlogo";
@@ -113,7 +112,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.slimdxlogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.slimdxlogo.TabIndex = 7;
 			this.slimdxlogo.TabStop = false;
-			this.slimdxlogo.Click += new System.EventHandler(this.slimdxlogo_Click);
 			// 
 			// AboutForm
 			// 
