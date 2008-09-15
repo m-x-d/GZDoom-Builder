@@ -51,12 +51,6 @@ namespace CodeImp.DoomBuilder.Windows
 			OpenWebsite("http://" + builderlink.Text);
 		}
 
-		// Clicking SlimDX logo
-		private void slimdxlogo_Click(object sender, EventArgs e)
-		{
-			OpenWebsite("http://slimdx.mdxinfo.com/");
-		}
-
 		// This opens a URL in the default browser
 		private void OpenWebsite(string url)
 		{

@@ -1,4 +1,4 @@
-
+	
 #region ================== Copyright (c) 2007 Pascal vd Heiden
 
 /*
@@ -41,10 +41,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Edit Selection",
 			  SwitchAction = "editselectionmode",	// Action name used to switch to this mode
-			  ButtonDesc = "Edit Selection Mode",	// Description on the button in toolbar/menu
-			  ButtonImage = "LinesMode.png",		// Image resource name for the button
-			  Volatile = true,						
-			  ButtonOrder = int.MinValue + 210)]	// Position of the button (lower is more to the left)
+			  Volatile = true)]
 
 	public class EditSelectionMode : ClassicMode
 	{
@@ -77,6 +74,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 
 		private const float GRIP_SIZE = 11.0f;
+		private const float ZERO_SIZE_ADDITION = 20.0f;
+		private const byte RECTANGLE_ALPHA = 60;
+		private const byte EXTENSION_LINE_ALPHA = 200;
 		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNESW };
 		
 		#endregion
@@ -87,12 +87,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private EditMode basemode;
 		private bool modealreadyswitching = false;
 		
+		// Highlighted vertex
+		private Vertex highlighted;
+		private Vector2D highlightedpos;
+
 		// Selection
 		private ICollection<Vertex> selectedvertices;
 		private ICollection<Thing> selectedthings;
 		private List<Vector2D> vertexpos;
 		private List<Vector2D> thingpos;
 		private ICollection<Vertex> unselectedvertices;
+		private ICollection<Linedef> unselectedlines;
 
 		// Modification
 		private float rotation;
@@ -103,7 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Modifying Modes
 		private ModifyMode mode;
-		private Vector2D dragposition;
+		private Vector2D dragoffset;
 		private Vector2D resizefilter;
 		private Vector2D resizevector;
 		private Vector2D edgevector;
@@ -127,6 +132,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
+		// Just keep the base mode button checked
+		public override string EditModeButtonName { get { return basemode.GetType().Name; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -158,13 +166,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Events
-
+		
 		// Mode engages
 		public override void OnEngage()
 		{
 			base.OnEngage();
 
-			// Convert geometry selection into marked vertices
+			// Convert geometry selection
 			General.Map.Map.ClearAllMarks();
 			General.Map.Map.MarkSelectedVertices(true, true);
 			General.Map.Map.MarkSelectedThings(true, true);
@@ -174,11 +182,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			selectedvertices = General.Map.Map.GetMarkedVertices(true);
 			selectedthings = General.Map.Map.GetMarkedThings(true);
 			unselectedvertices = General.Map.Map.GetMarkedVertices(false);
-
+			
 			// Make sure everything is selected so that it turns up red
 			foreach(Vertex v in selectedvertices) v.Selected = true;
 			ICollection<Linedef> markedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 			foreach(Linedef l in markedlines) l.Selected = true;
+			unselectedlines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
 			
 			// Array to keep original coordinates
 			vertexpos = new List<Vector2D>(selectedvertices.Count);
@@ -196,7 +205,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				foreach(Vertex v in selectedvertices)
 				{
-					// Calculate offset and size
+					// Find left-top and right-bottom
 					if(v.Position.x < offset.x) offset.x = v.Position.x;
 					if(v.Position.y < offset.y) offset.y = v.Position.y;
 					if(v.Position.x > right.x) right.x = v.Position.x;
@@ -208,7 +217,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				foreach(Thing t in selectedthings)
 				{
-					// Calculate offset and size
+					// Find left-top and right-bottom
 					if(t.Position.x < offset.x) offset.x = t.Position.x;
 					if(t.Position.y < offset.y) offset.y = t.Position.y;
 					if(t.Position.x > right.x) right.x = t.Position.x;
@@ -217,8 +226,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Keep original coordinates
 					thingpos.Add(t.Position);
 				}
-
+				
+				// Calculate size
 				size = right - offset;
+				
+				// If the width of a dimension is zero, add a little
+				if(Math.Abs(size.x) < 1.0f)
+				{
+					size.x += ZERO_SIZE_ADDITION;
+					offset.x -= ZERO_SIZE_ADDITION / 2;
+				}
+				
+				if(Math.Abs(size.y) < 1.0f)
+				{
+					size.y += ZERO_SIZE_ADDITION;
+					offset.y -= ZERO_SIZE_ADDITION / 2;
+				}
+				
 				basesize = size;
 				baseoffset = offset;
 
@@ -266,23 +290,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnAccept()
 		{
 			base.OnAccept();
+
+			// Anything to do?
+			if((selectedthings.Count > 0) || (selectedvertices.Count > 0))
+			{
+				Cursor.Current = Cursors.AppStarting;
+
+				// Reset geometry in original position
+				int index = 0;
+				foreach(Vertex v in selectedvertices)
+					v.Move(vertexpos[index++]);
+
+				index = 0;
+				foreach(Thing t in selectedthings)
+					t.Move(thingpos[index++]);
+
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("Edit selection", UndoGroup.None, 0);
+
+				// Move geometry to new position
+				UpdateGeometry();
+				General.Map.Map.Update(true, true);
+
+				// Stitch geometry
+				if(snaptonearest) General.Map.Map.StitchGeometry();
+
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
+
+				// Update cached values
+				General.Map.Map.Update();
+
+				// Done
+				selectedvertices = new List<Vertex>();
+				selectedthings = new List<Thing>();
+				Cursor.Current = Cursors.Default;
+				General.Map.IsChanged = true;
+			}
 			
-			// Reset geometry in original position
-			int index = 0;
-			foreach(Vertex v in selectedvertices)
-				v.Move(vertexpos[index++]);
-
-			index = 0;
-			foreach(Thing t in selectedthings)
-				t.Move(thingpos[index++]);
-
-			// Make undo
-			General.Map.UndoRedo.CreateUndo("Edit selection", UndoGroup.None, 0);
-
-			// Move geometry to new position
-			UpdateGeometry();
-			General.Map.Map.Update(true, true);
-
 			if(!modealreadyswitching)
 			{
 				// Return to original mode
@@ -319,6 +364,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+				if(highlighted != null) renderer.PlotVertex(highlighted, ColorCollection.HIGHLIGHT);
 				renderer.Finish();
 			}
 
@@ -334,15 +380,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartOverlay(true))
 			{
 				// Rectangle
+				PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
 				renderer.RenderGeometry(cornerverts, null, true);
-				renderer.RenderLine(corners[0], corners[1], 2, General.Colors.Highlight.WithAlpha(100), true);
-				renderer.RenderLine(corners[1], corners[2], 2, General.Colors.Highlight.WithAlpha(100), true);
-				renderer.RenderLine(corners[2], corners[3], 2, General.Colors.Highlight.WithAlpha(100), true);
-				renderer.RenderLine(corners[3], corners[0], 2, General.Colors.Highlight.WithAlpha(100), true);
+				renderer.RenderLine(corners[0], corners[1], 2, rectcolor, true);
+				renderer.RenderLine(corners[1], corners[2], 2, rectcolor, true);
+				renderer.RenderLine(corners[2], corners[3], 2, rectcolor, true);
+				renderer.RenderLine(corners[3], corners[0], 2, rectcolor, true);
 
 				// Extension line
 				if(extensionline.GetLengthSq() > 0.0f)
-					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(200), true);
+					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(EXTENSION_LINE_ALPHA), true);
 
 				// Grips
 				for(int i = 0; i < 4; i++)
@@ -363,6 +410,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+
+			// Not in a modifying mode?
+			if(mode == ModifyMode.None)
+			{
+				// Find the nearest vertex within highlight range
+				Vertex v = MapSet.NearestVertex(selectedvertices, mousemappos);
+
+				// Highlight if not the same
+				if(v != highlighted) Highlight(v);
+			}
+			
 			Update();
 		}
 
@@ -379,7 +437,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnSelect()
 		{
 			base.OnSelect();
-
+			
 			// Used in many cases:
 			Vector2D center = offset + size * 0.5f;
 			Vector2D delta;
@@ -389,7 +447,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Drag main rectangle
 				case Grip.Main:
-					dragposition = mousemappos;
+					
+					// Find the original position of the highlighted vertex
+					if(highlighted != null)
+					{
+						int index = 0;
+						foreach(Vertex v in selectedvertices)
+						{
+							if(v == highlighted) highlightedpos = vertexpos[index];
+							index++;
+						}
+					}
+
+					dragoffset = mousemappos - offset;
 					mode = ModifyMode.Dragging;
 					break;
 
@@ -415,6 +485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// This is the corner that must stay in the same position
 					stickcorner = 2;
 
+					Highlight(null);
 					mode = ModifyMode.Resizing;
 					break;
 
@@ -427,6 +498,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					resizeaxis = new Line2D(corners[0], corners[0] + resizevector * basesize.x);
 					resizefilter = new Vector2D(1.0f, 0.0f);
 					stickcorner = 0;
+					Highlight(null);
 					mode = ModifyMode.Resizing;
 					break;
 
@@ -439,6 +511,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.y);
 					resizefilter = new Vector2D(0.0f, 1.0f);
 					stickcorner = 0;
+					Highlight(null);
 					mode = ModifyMode.Resizing;
 					break;
 
@@ -451,6 +524,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.x);
 					resizefilter = new Vector2D(1.0f, 0.0f);
 					stickcorner = 1;
+					Highlight(null);
 					mode = ModifyMode.Resizing;
 					break;
 
@@ -458,6 +532,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				case Grip.RotateLB:
 					delta = corners[3] - center;
 					rotategripangle = delta.GetAngle() - rotation;
+					Highlight(null);
 					mode = ModifyMode.Rotating;
 					break;
 
@@ -465,6 +540,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				case Grip.RotateLT:
 					delta = corners[0] - center;
 					rotategripangle = delta.GetAngle() - rotation;
+					Highlight(null);
 					mode = ModifyMode.Rotating;
 					break;
 
@@ -472,6 +548,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				case Grip.RotateRB:
 					delta = corners[2] - center;
 					rotategripangle = delta.GetAngle() - rotation;
+					Highlight(null);
 					mode = ModifyMode.Rotating;
 					break;
 
@@ -479,6 +556,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				case Grip.RotateRT:
 					delta = corners[1] - center;
 					rotategripangle = delta.GetAngle() - rotation;
+					Highlight(null);
 					mode = ModifyMode.Rotating;
 					break;
 
@@ -535,6 +613,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.ClearAllSelected();
 			General.Map.AcceptMode();
 		}
+
+		// This highlights a new vertex
+		protected void Highlight(Vertex v)
+		{
+			// Update display
+			if(renderer.StartPlotter(false))
+			{
+				// Undraw previous highlight
+				if((highlighted != null) && !highlighted.IsDisposed)
+					renderer.PlotVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+
+				// Set new highlight
+				highlighted = v;
+
+				// Render highlighted item
+				if((highlighted != null) && !highlighted.IsDisposed)
+					renderer.PlotVertex(highlighted, ColorCollection.HIGHLIGHT);
+
+				// Done
+				renderer.Finish();
+				renderer.Present();
+			}
+		}
 		
 		// This updates the selection
 		private void Update()
@@ -555,6 +656,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					case Grip.RotateLT:
 					case Grip.RotateRB:
 					case Grip.RotateRT:
+						Highlight(null);
 						General.Interface.SetCursor(Cursors.Cross);
 						break;
 
@@ -571,9 +673,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						resizeangle = Math.Abs(resizeangle + Angle2D.PI / 8.000001f);
 						int cursorindex = (int)Math.Floor((resizeangle / Angle2D.PI) * 4.0f) % 4;
 						General.Interface.SetCursor(RESIZE_CURSORS[cursorindex]);
+						Highlight(null);
 						break;
 
 					default:
+						Highlight(null);
 						General.Interface.SetCursor(Cursors.Default);
 						break;
 				}
@@ -596,9 +700,76 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Dragging
 					case ModifyMode.Dragging:
 
-						// Change offset
-						offset += mousemappos - dragposition;
-						dragposition = mousemappos;
+						// Change offset without snapping
+						offset = mousemappos - dragoffset;
+						
+						// Calculate transformed position of highlighted vertex
+						Vector2D transformedpos = TransformedPoint(highlightedpos);
+						
+						// Snap to nearest vertex?
+						if(snaptonearest && (highlighted != null))
+						{
+							float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
+
+							// Try the nearest vertex
+							Vertex nv = MapSet.NearestVertexSquareRange(unselectedvertices, transformedpos, vrange);
+							if(nv != null)
+							{
+								// Change offset to snap to target
+								offset += nv.Position - transformedpos;
+								dosnaptogrid = false;
+							}
+							else
+							{
+								// Find the nearest unselected line within range
+								Linedef nl = MapSet.NearestLinedefRange(unselectedlines, transformedpos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+								if(nl != null)
+								{
+									// Snap to grid?
+									if(dosnaptogrid)
+									{
+										// Get grid intersection coordinates
+										List<Vector2D> coords = nl.GetGridIntersections();
+										
+										// Find nearest grid intersection
+										float found_distance = float.MaxValue;
+										Vector2D found_pos = new Vector2D(float.NaN, float.NaN);
+										foreach(Vector2D v in coords)
+										{
+											Vector2D dist = transformedpos - v;
+											if(dist.GetLengthSq() < found_distance)
+											{
+												// Found a better match
+												found_distance = dist.GetLengthSq();
+												found_pos = v;
+												
+												// Do not snap to grid anymore
+												dosnaptogrid = false;
+											}
+										}
+
+										// Found something?
+										if(!float.IsNaN(found_pos.x))
+										{
+											// Change offset to snap to target
+											offset += found_pos - transformedpos;
+										}
+									}
+									else
+									{
+										// Change offset to snap onto the line
+										offset += nl.NearestOnLine(transformedpos) - transformedpos;
+									}
+								}
+							}
+						}
+
+						// Snap to grid?
+						if(dosnaptogrid && (highlighted != null))
+						{
+							// Change offset to align to grid
+							offset += General.Map.Grid.SnappedToGrid(transformedpos) - transformedpos;
+						}
 
 						// Update
 						UpdateGeometry();
@@ -776,6 +947,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void UpdateRectangleComponents()
 		{
 			float gripsize = GRIP_SIZE / renderer.Scale;
+			PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
 
 			// Original (untransformed) corners
 			originalcorners = new Vector2D[4];
@@ -795,7 +967,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				cornerverts[i] = new FlatVertex();
 				cornerverts[i].z = 1.0f;
-				cornerverts[i].c = General.Colors.Highlight.WithAlpha(100).ToInt();
+				cornerverts[i].c = rectcolor.ToInt();
 			}
 			cornerverts[0].x = corners[0].x;
 			cornerverts[0].y = corners[0].y;
