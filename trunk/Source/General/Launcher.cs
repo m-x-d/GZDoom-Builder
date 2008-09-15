@@ -251,13 +251,23 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Running test program: " + processinfo.FileName);
 				General.WriteLogLine("Program parameters:  " + processinfo.Arguments);
 
+				// Disable interface
+				General.MainWindow.DisplayStatus("Waiting for game application to finish...");
+				General.MainWindow.Enabled = false;
+				General.MainWindow.Activate();
+				
 				try
 				{
 					// Start the program
 					process = Process.Start(processinfo);
 
 					// Wait for program to complete
-					process.WaitForExit();
+					while(!process.WaitForExit(10))
+					{
+						General.MainWindow.Update();
+					}
+					
+					// Done
 					deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
 					General.WriteLogLine("Test program has finished.");
 					General.WriteLogLine("Run time: " + deltatime.TotalSeconds.ToString("###########0.00") + " seconds");
@@ -272,8 +282,11 @@ namespace CodeImp.DoomBuilder
 			// Remove temporary file
 			try { File.Delete(tempwad); }
 			catch(Exception) { }
-
-			// Restore old cursor
+			
+			// Done
+			General.MainWindow.Activate();
+			General.MainWindow.Enabled = true;
+			General.MainWindow.DisplayReady();
 			Cursor.Current = oldcursor;
 		}
 

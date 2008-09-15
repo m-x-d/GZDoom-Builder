@@ -932,12 +932,23 @@ namespace CodeImp.DoomBuilder
 		#region ================== Copy / Paste
 		
 		// This copies the current selection
+		[Action("copyselection")]
 		public void CopySelection()
 		{
 
 		}
 
+		// This cuts the current selection
+		[Action("cutselection")]
+		public void CutSelection()
+		{
+			CopySelection();
+			General.Actions["deleteitem"].Begin();
+			General.Actions["deleteitem"].End();
+		}
+		
 		// This pastes what is on the clipboard and makes it the current selection
+		[Action("pasteselection")]
 		public bool PasteSelection()
 		{
 			return false;
