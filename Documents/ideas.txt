@@ -43,3 +43,8 @@ Stemming from the same concept is FreeDraw, which I think is also a pretty simpl
 
 <esselfortium> Make Sector mode is sweet.
 <esselfortium> it'd be nice if it could somehow show you both that and what sector it currently belongs to, though.
+
+===========================================================================================
+
+Plugin that adds a key to toggle between 3D mode and the previous mode. Some people may want that behaviour back.
+
