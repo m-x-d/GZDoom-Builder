@@ -1504,6 +1504,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Enable/disable items
 			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
 			itemredo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextRedo != null);
+			itemcut.Enabled = (General.Map != null) && General.Map.Mode.Attributes.AllowCopyPaste;
+			itemcopy.Enabled = (General.Map != null) && General.Map.Mode.Attributes.AllowCopyPaste;
+			itempaste.Enabled = (General.Map != null) && General.Map.Mode.Attributes.AllowCopyPaste;
 			itemmapoptions.Enabled = (General.Map != null);
 			itemsnaptogrid.Enabled = (General.Map != null);
 			itemautomerge.Enabled = (General.Map != null);
@@ -1531,6 +1534,9 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonredo.ToolTipText = itemredo.Text;
 			buttonsnaptogrid.Enabled = (General.Map != null);
 			buttonautomerge.Enabled = (General.Map != null);
+			buttoncut.Enabled = itemcut.Enabled;
+			buttoncopy.Enabled = itemcopy.Enabled;
+			buttonpaste.Enabled = itempaste.Enabled;
 		}
 
 		// Action to toggle snap to grid
