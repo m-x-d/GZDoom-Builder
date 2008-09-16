@@ -82,6 +82,7 @@ namespace CodeImp.DoomBuilder
 		private WAD tempwad;
 		private GridSetup grid;
 		private UndoManager undoredo;
+		private CopyPasteManager copypaste;
 		private Launcher launcher;
 		private ThingsFilter thingsfilter;
 		
@@ -132,6 +133,7 @@ namespace CodeImp.DoomBuilder
 			// Basic objects
 			grid = new GridSetup();
 			undoredo = new UndoManager();
+			copypaste = new CopyPasteManager();
 			launcher = new Launcher(this);
 			thingsfilter = new NullThingsFilter();
 		}
@@ -151,6 +153,7 @@ namespace CodeImp.DoomBuilder
 				// Dispose
 				if(grid != null) grid.Dispose();
 				if(launcher != null) launcher.Dispose();
+				if(copypaste != null) copypaste.Dispose();
 				if(undoredo != null) undoredo.Dispose();
 				General.WriteLogLine("Unloading data resources...");
 				if(data != null) data.Dispose();
@@ -925,33 +928,6 @@ namespace CodeImp.DoomBuilder
 		{
 			EditModeInfo emi = General.Plugins.GetEditModeInfo(classname);
 			if(emi != null) emi.SwitchToMode(args);
-		}
-		
-		#endregion
-
-		#region ================== Copy / Paste
-		
-		// This copies the current selection
-		[Action("copyselection")]
-		public void CopySelection()
-		{
-
-		}
-
-		// This cuts the current selection
-		[Action("cutselection")]
-		public void CutSelection()
-		{
-			CopySelection();
-			General.Actions["deleteitem"].Begin();
-			General.Actions["deleteitem"].End();
-		}
-		
-		// This pastes what is on the clipboard and makes it the current selection
-		[Action("pasteselection")]
-		public bool PasteSelection()
-		{
-			return false;
 		}
 		
 		#endregion
