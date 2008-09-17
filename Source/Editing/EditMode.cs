@@ -162,8 +162,15 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// This forces the mode to cancel and return to the "parent" mode
 		public virtual void OnCancel() { }
-
 		public virtual void OnAccept() { }
+
+		// Called before copying. Return false when copying should be cancelled.
+		// The edit mode should mark all vertices, lines and sectors
+		// that need to be copied.
+		public virtual bool OnCopyBegin() { return false; }
+		
+		// Called before pasting. Return false when paste should be cancelled.
+		public virtual bool OnPasteBegin() { return false; }
 		
 		// Interface events
 		public virtual void OnMouseClick(MouseEventArgs e) { }

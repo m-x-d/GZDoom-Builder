@@ -97,9 +97,9 @@ namespace CodeImp.DoomBuilder.Map
 			this.texnamehigh = "-";
 			this.texnamemid = "-";
 			this.texnamelow = "-";
-			this.longtexnamehigh = map.EmptyLongName;
-			this.longtexnamemid = map.EmptyLongName;
-			this.longtexnamelow = map.EmptyLongName;
+			this.longtexnamehigh = MapSet.EmptyLongName;
+			this.longtexnamemid = MapSet.EmptyLongName;
+			this.longtexnamelow = MapSet.EmptyLongName;
 			
 			// Attach to the linedef
 			if(front) l.AttachFront(this); else l.AttachBack(this);
@@ -221,19 +221,19 @@ namespace CodeImp.DoomBuilder.Map
 			if(!HighRequired())
 			{
 				this.texnamehigh = "-";
-				this.longtexnamehigh = map.EmptyLongName;
+				this.longtexnamehigh = MapSet.EmptyLongName;
 			}
 
 			if(!MiddleRequired() && removemiddle)
 			{
 				this.texnamemid = "-";
-				this.longtexnamemid = map.EmptyLongName;
+				this.longtexnamemid = MapSet.EmptyLongName;
 			}
 			
 			if(!LowRequired())
 			{
 				this.texnamelow = "-";
-				this.longtexnamelow = map.EmptyLongName;
+				this.longtexnamelow = MapSet.EmptyLongName;
 			}
 		}
 		
