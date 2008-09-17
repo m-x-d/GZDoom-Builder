@@ -475,6 +475,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		// When copying
+		public override bool OnCopyBegin()
+		{
+			return true;
+		}
+		
+		// When pasting
+		public override bool OnPasteBegin()
+		{
+			return true;
+		}
+		
 		#endregion
 
 		#region ================== Actions
