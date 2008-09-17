@@ -126,10 +126,11 @@
     <Compile Include="Data\DataLocationList.cs" />
     <Compile Include="Data\DataManager.cs" />
     <Compile Include="Data\WADReader.cs" />
-    <Compile Include="IO\PrefabMapSetIO.cs" />
     <Compile Include="IO\UniversalCollection.cs" />
     <Compile Include="IO\UniversalEntry.cs" />
     <Compile Include="IO\UniversalParser.cs" />
+    <Compile Include="IO\UniversalStreamReader.cs" />
+    <Compile Include="IO\UniversalStreamWriter.cs" />
     <Compile Include="Map\MapElement.cs" />
     <Compile Include="Map\UniFields.cs" />
     <Compile Include="Map\UniValue.cs" />

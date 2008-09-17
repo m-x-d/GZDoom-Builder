@@ -44,8 +44,8 @@ namespace CodeImp.DoomBuilder
 		#region ================== Constants
 
 		// Map header name in temporary file
-		private const string TEMP_MAP_HEADER = "TEMPMAP";
-		private const string BUILD_MAP_HEADER = "MAP01";
+		internal const string TEMP_MAP_HEADER = "TEMPMAP";
+		internal const string BUILD_MAP_HEADER = "MAP01";
 		public const string CONFIG_MAP_HEADER = "~MAP";
 
 		// Save modes

@@ -509,6 +509,9 @@ namespace CodeImp.DoomBuilder
 				// Bind static methods to actions
 				General.Actions.BindMethods(typeof(General));
 
+				// Initialize static classes
+				MapSet.Initialize();
+
 				// Create main window
 				General.WriteLogLine("Loading main interface window...");
 				mainwindow = new MainForm();

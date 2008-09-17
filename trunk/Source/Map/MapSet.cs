@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Thing> things;
 
 		// Optimization
-		private long emptylongname;
+		private static long emptylongname;
 
 		// Disposing
 		private bool isdisposed = false;
@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Map
 		public ICollection<Sector> Sectors { get { return sectors; } }
 		public ICollection<Thing> Things { get { return things; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		public long EmptyLongName { get { return emptylongname; } }
+		public static long EmptyLongName { get { return emptylongname; } }
 		
 		#endregion
 
@@ -91,7 +91,6 @@ namespace CodeImp.DoomBuilder.Map
 			things = new LinkedList<Thing>();
 			indexholes = new List<int>();
 			lastsectorindex = 0;
-			emptylongname = Lump.MakeLongName("-");
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -139,6 +138,12 @@ namespace CodeImp.DoomBuilder.Map
 				// Done
 				isdisposed = true;
 			}
+		}
+
+		// Static initializer
+		internal static void Initialize()
+		{
+			emptylongname = Lump.MakeLongName("-");
 		}
 
 		#endregion

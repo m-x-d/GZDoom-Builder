@@ -113,8 +113,8 @@ namespace CodeImp.DoomBuilder.Map
 			this.index = index;
 			this.floortexname = "-";
 			this.ceiltexname = "-";
-			this.longfloortexname = map.EmptyLongName;
-			this.longceiltexname = map.EmptyLongName;
+			this.longfloortexname = MapSet.EmptyLongName;
+			this.longceiltexname = MapSet.EmptyLongName;
 			this.triangulationneeded = true;
 			
 			// We have no destructor

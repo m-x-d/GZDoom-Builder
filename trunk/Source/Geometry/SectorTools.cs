@@ -540,11 +540,11 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This takes sidedef settings if not taken yet
 		private static void TakeSidedefSettings(ref SidedefSettings settings, Sidedef side)
 		{
-			if((side.LongHighTexture != General.Map.Map.EmptyLongName) && (settings.newtexhigh == null))
+			if((side.LongHighTexture != MapSet.EmptyLongName) && (settings.newtexhigh == null))
 				settings.newtexhigh = side.HighTexture;
-			if((side.LongMiddleTexture != General.Map.Map.EmptyLongName) && (settings.newtexmid == null))
+			if((side.LongMiddleTexture != MapSet.EmptyLongName) && (settings.newtexmid == null))
 				settings.newtexmid = side.MiddleTexture;
-			if((side.LongLowTexture != General.Map.Map.EmptyLongName) && (settings.newtexlow == null))
+			if((side.LongLowTexture != MapSet.EmptyLongName) && (settings.newtexlow == null))
 				settings.newtexlow = side.LowTexture;
 		}
 		
