@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		#region ================== Constants
 		
-		private const string CLIPBOARD_DATA_FORMAT = "UDMF_GEOMETRTY";
+		private const string CLIPBOARD_DATA_FORMAT = "DOOM_BUILDER_GEOMETRY";
 
 		#endregion
 		
@@ -98,23 +98,20 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				MapSet copyset = new MapSet();
 				
-				// TODO: Do the copy
-
-				// Create temp wadfile
-				string tempfile = General.MakeTempFilename(General.TempPath);
-				General.WriteLogLine("Creating temporary file: " + tempfile);
-				WAD tempwad = new WAD(tempfile);
+				// Copy all data over
+				copyset = General.Map.Map.Clone();
 				
-				// Create writer interface
-				//MapSetIO io = new PrefabMapSetIO(tempwad, General.Map);
+				// Write data to stream
+				MemoryStream memstream = new MemoryStream();
+				UniversalStreamWriter writer = new UniversalStreamWriter();
+				writer.RememberCustomTypes = false;
+				writer.Write(copyset, memstream, null);
 				
-				// Write to temporary file
-				General.WriteLogLine("Writing map data structures to file...");
-				int index = tempwad.FindLumpIndex(MapManager.TEMP_MAP_HEADER);
-				if(index == -1) index = 0;
-				//io.Write(copyset, MapManager.TEMP_MAP_HEADER, index);
+				// Set on clipboard
+				Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
 				
-				//Clipboard.SetData(CLIPBOARD_DATA_FORMAT, io.
+				// Done
+				memstream.Dispose();
 				return true;
 			}
 			else
@@ -131,6 +128,15 @@ namespace CodeImp.DoomBuilder.Editing
 			if(General.Map.Mode.OnPasteBegin())
 			{
 				// TODO: Do the paste
+
+				if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
+				{
+					Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
+					memstream.Seek(0, SeekOrigin.Begin);
+					StreamReader reader = new StreamReader(memstream, Encoding.ASCII);
+					//File.WriteAllText("C:\\Test.txt", reader.ReadToEnd());
+					memstream.Dispose();
+				}
 
 				return true;
 			}
