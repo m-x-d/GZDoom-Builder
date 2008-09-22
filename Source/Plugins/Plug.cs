@@ -137,9 +137,70 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 		/// <summary>
+		/// Called by the Doom Builder core when the user wants to copy selected geometry.
+		/// Return false to abort the copy operation.
+		/// The result parameter is false when the operation was already aborted by another plugin.
+		/// </summary>
+		public virtual bool OnCopyBegin(bool result)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when the user has copied geometry.
+		/// </summary>
+		public virtual void OnCopyEnd()
+		{
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when the user wants to paste geometry into the map.
+		/// Return false to abort the paste operation.
+		/// The result parameter is false when the operation was already aborted by another plugin.
+		/// </summary>
+		public virtual bool OnPasteBegin(bool result)
+		{
+			return true;
+		}
+
+		/// <summary>
 		/// Called by the Doom Builder core when the user pastes geometry into the map. The new geometry is created and marked before this method is called.
 		/// </summary>
-		public virtual void OnPaste()
+		public virtual void OnPasteEnd()
+		{
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when the user wants to undo the previous action.
+		/// Return false to abort the operation.
+		/// The result parameter is false when the operation was already aborted by another plugin.
+		/// </summary>
+		public virtual bool OnUndoBegin(bool result)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when the user has undone the previous action.
+		/// </summary>
+		public virtual void OnUndoEnd()
+		{
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when the user wants to redo the previously undone action.
+		/// Return false to abort the operation.
+		/// The result parameter is false when the operation was already aborted by another plugin.
+		/// </summary>
+		public virtual bool OnRedoBegin(bool result)
+		{
+			return true;
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when the user has redone the action.
+		/// </summary>
+		public virtual void OnRedoEnd()
 		{
 		}
 
