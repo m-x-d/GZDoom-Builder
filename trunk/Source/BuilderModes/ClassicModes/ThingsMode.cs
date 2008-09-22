@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		      ButtonImage = "ThingsMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 300)]	// Position of the button (lower is more to the left)
 
-	public class ThingsMode : ClassicMode
+	public class ThingsMode : BaseClassicMode
 	{
 		#region ================== Constants
 
@@ -70,24 +70,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
-		public ThingsMode()
-		{
-		}
-
-		// Disposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Dispose base
-				base.Dispose();
-			}
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -108,7 +90,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Things);
 
 			// Convert geometry selection to linedefs selection
-			General.Map.Map.ClearAllMarks();
+			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedVertices(true, true);
 			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 			foreach(Linedef l in lines) l.Selected = true;
@@ -455,6 +437,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 				renderer.Present();
 			}
+		}
+
+		// When copying
+		public override bool OnCopyBegin()
+		{
+			// No selection made? But we have a highlight!
+			if((General.Map.Map.GetSelectedThings(true).Count == 0) && (highlighted != null))
+			{
+				// Make the highlight the selection
+				highlighted.Selected = true;
+			}
+
+			return base.OnCopyBegin();
+		}
+
+		// When pasting
+		public override bool OnPasteBegin()
+		{
+			// No selection made? But we have a highlight!
+			if((General.Map.Map.GetSelectedThings(true).Count == 0) && (highlighted != null))
+			{
+				// Make the highlight the selection
+				highlighted.Selected = true;
+			}
+
+			return base.OnPasteBegin();
 		}
 		
 		#endregion

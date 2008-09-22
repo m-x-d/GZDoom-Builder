@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonImage = "NewSector2.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 202)]	// Position of the button (lower is more to the left)
 
-	public class MakeSectorMode : ClassicMode
+	public class MakeSectorMode : BaseClassicMode
 	{
 		#region ================== Constants
 
@@ -99,6 +99,111 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
+
+		// This draws the geometry
+		private void DrawGeometry()
+		{
+			// Render lines and vertices
+			if(renderer.StartPlotter(true))
+			{
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+
+				// Render highlight
+				if(alllines != null)
+				{
+					foreach(Linedef l in alllines) renderer.PlotLinedef(l, General.Colors.Highlight);
+				}
+
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+				renderer.Finish();
+			}
+		}
+
+		// This draws the overlay
+		private void DrawOverlay()
+		{
+			// Redraw overlay
+			if(renderer.StartOverlay(true))
+			{
+				if((flashpolygon != null) && (flashintensity > 0.0f))
+				{
+					renderer.RenderGeometry(flashpolygon, null, true);
+				}
+
+				renderer.Finish();
+			}
+		}
+
+		// This highlights a new region
+		protected void Highlight(bool buttonspressed)
+		{
+			LinedefSide newnearest;
+
+			// Mouse inside?
+			if(mouseinside)
+			{
+				// Highlighting from a new sidedef?
+				Linedef nl = General.Map.Map.NearestLinedef(mousemappos);
+				float side = nl.SideOfLine(mousemappos);
+				newnearest = new LinedefSide(nl, (side <= 0.0f));
+				if(newnearest != nearestside)
+				{
+					// Only change when buttons are not pressed
+					if(!buttonspressed || (editside == newnearest))
+					{
+						// Find new sector
+						General.Interface.SetCursor(Cursors.AppStarting);
+						nearestside = newnearest;
+						allsides = SectorTools.FindPotentialSectorAt(mousemappos);
+						if(allsides != null)
+						{
+							alllines = new List<Linedef>(allsides.Count);
+							foreach(LinedefSide sd in allsides) alllines.Add(sd.Line);
+						}
+						else
+						{
+							alllines = null;
+						}
+						General.Interface.SetCursor(Cursors.Default);
+					}
+					else
+					{
+						// Don't highlight this one
+						nearestside = null;
+						allsides = null;
+						alllines = null;
+					}
+
+					// Redraw overlay
+					DrawGeometry();
+					renderer.Present();
+				}
+			}
+			else
+			{
+				// No valid region
+				nearestside = null;
+				allsides = null;
+				alllines = null;
+
+				// Redraw overlay
+				DrawGeometry();
+				renderer.Present();
+			}
+		}
+
+		// Start select
+		protected override void OnSelect()
+		{
+			// Select pressed in this mode
+			selectpressed = true;
+			editside = nearestside;
+			base.OnEdit();
+		}
+		
+		#endregion
+		
+		#region ================== Events
 
 		// Cancel mode
 		public override void OnCancel()
@@ -169,107 +274,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render overlay
 			DrawOverlay();
 			renderer.Present();
-		}
-
-		// This draws the geometry
-		private void DrawGeometry()
-		{
-			// Render lines and vertices
-			if(renderer.StartPlotter(true))
-			{
-				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-
-				// Render highlight
-				if(alllines != null)
-				{
-					foreach(Linedef l in alllines) renderer.PlotLinedef(l, General.Colors.Highlight);
-				}
-
-				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				renderer.Finish();
-			}
-		}
-
-		// This draws the overlay
-		private void DrawOverlay()
-		{
-			// Redraw overlay
-			if(renderer.StartOverlay(true))
-			{
-				if((flashpolygon != null) && (flashintensity > 0.0f))
-				{
-					renderer.RenderGeometry(flashpolygon, null, true);
-				}
-
-				renderer.Finish();
-			}
-		}
-		
-		// This highlights a new region
-		protected void Highlight(bool buttonspressed)
-		{
-			LinedefSide newnearest;
-			
-			// Mouse inside?
-			if(mouseinside)
-			{
-				// Highlighting from a new sidedef?
-				Linedef nl = General.Map.Map.NearestLinedef(mousemappos);
-				float side = nl.SideOfLine(mousemappos);
-				newnearest = new LinedefSide(nl, (side <= 0.0f));
-				if(newnearest != nearestside)
-				{
-					// Only change when buttons are not pressed
-					if(!buttonspressed || (editside == newnearest))
-					{
-						// Find new sector
-						General.Interface.SetCursor(Cursors.AppStarting);
-						nearestside = newnearest;
-						allsides = SectorTools.FindPotentialSectorAt(mousemappos);
-						if(allsides != null)
-						{
-							alllines = new List<Linedef>(allsides.Count);
-							foreach(LinedefSide sd in allsides) alllines.Add(sd.Line);
-						}
-						else
-						{
-							alllines = null;
-						}
-						General.Interface.SetCursor(Cursors.Default);
-					}
-					else
-					{
-						// Don't highlight this one
-						nearestside = null;
-						allsides = null;
-						alllines = null;
-					}
-					
-					// Redraw overlay
-					DrawGeometry();
-					renderer.Present();
-				}
-			}
-			else
-			{
-				// No valid region
-				nearestside = null;
-				allsides = null;
-				alllines = null;
-
-				// Redraw overlay
-				DrawGeometry();
-				renderer.Present();
-			}
-		}
-		
-		// Start select
-		protected override void OnSelect()
-		{
-			// Select pressed in this mode
-			selectpressed = true;
-			editside = nearestside;
-			base.OnEdit();
 		}
 
 		// Done selecting

@@ -27,3 +27,5 @@
 - Make Plugin Development Kit
 	- Add proper XML comments to classes, properties and methods
 
+- Contact AlysiumX (AlysiumX@gmail.com) for official video tutorials
+	(see http://www.youtube.com/view_play_list?p=6FDD1F9F674419E8)

@@ -36,16 +36,13 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public abstract class DragGeometryMode : ClassicMode
+	public abstract class DragGeometryMode : BaseClassicMode
 	{
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
-
-		// Mode to return to
-		private EditMode basemode;
 		
 		// Mouse position on map where dragging started
 		private Vector2D dragstartmappos;
@@ -86,9 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		// Just keep the base mode button checked
-		public override string EditModeButtonName { get { return basemode.GetType().Name; } }
-
-		internal EditMode BaseMode { get { return basemode; } }
+		public override string EditModeButtonName { get { return General.Map.PreviousStableMode.Name; } }
 		
 		#endregion
 
@@ -119,9 +114,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Initialize
 			this.dragstartmappos = dragstartmappos;
 			
-			// Create new instance of the previous mode
-			this.basemode = (EditMode)Assembly.GetCallingAssembly().CreateInstance(General.Map.Mode.GetType().FullName, false, BindingFlags.Default, null, null, CultureInfo.CurrentCulture, new object[0]);
-
 			Cursor.Current = Cursors.AppStarting;
 
 			// Make list of selected vertices
@@ -291,7 +283,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 			
 			// Return to vertices mode
-			General.Map.ChangeMode(basemode);
+			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
 		}
 
 		// Mode engages
@@ -375,7 +367,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEndEdit()
 		{
 			// Just return to base mode, Disengage will be called automatically.
-			General.Map.ChangeMode(basemode);
+			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
 
 			base.OnEndEdit();
 		}

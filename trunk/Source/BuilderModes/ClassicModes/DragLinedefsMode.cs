@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public DragLinedefsMode(Vector2D dragstartmappos)
 		{
 			// Mark what we are dragging
-			General.Map.Map.ClearAllMarks();
+			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedLinedefs(true, true);
 			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 			foreach(Vertex v in verts) v.Marked = true;

@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Tools
-
+		
 		// This renders the associated sectors/linedefs with the indication color
 		public void PlotAssociations(IRenderer2D renderer, Association asso)
 		{
@@ -143,6 +143,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 		}
+		
 
 		// This renders the associated things with the indication color
 		public void RenderAssociations(IRenderer2D renderer, Association asso)
@@ -159,6 +160,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 		}
+		
 
 		// This renders the associated sectors/linedefs with the indication color
 		public void PlotReverseAssociations(IRenderer2D renderer, Association asso)
@@ -181,6 +183,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 		}
+		
 
 		// This renders the associated things with the indication color
 		public void RenderReverseAssociations(IRenderer2D renderer, Association asso)

@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		      ButtonImage = "VerticesMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 0)]	// Position of the button (lower is more to the left)
 
-	public class VerticesMode : ClassicMode
+	public class VerticesMode : BaseClassicMode
 	{
 		#region ================== Constants
 
@@ -67,24 +67,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
-		public VerticesMode()
-		{
-		}
-
-		// Disposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Dispose base
-				base.Dispose();
-			}
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -107,7 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 
 			// Convert geometry selection to vertices only
-			General.Map.Map.ClearAllMarks();
+			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedLinedefs(true, true);
 			General.Map.Map.MarkSelectedSectors(true, true);
 			verts = General.Map.Map.GetVerticesFromLinesMarks(true);
@@ -390,6 +372,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		// When copying
+		public override bool OnCopyBegin()
+		{
+			// No selection made? But we have a highlight!
+			if((General.Map.Map.GetSelectedVertices(true).Count == 0) && (highlighted != null))
+			{
+				// Make the highlight the selection
+				highlighted.Selected = true;
+			}
+			
+			return base.OnCopyBegin();
+		}
+		
+		// When pasting
+		public override bool OnPasteBegin()
+		{
+			// No selection made? But we have a highlight!
+			if((General.Map.Map.GetSelectedVertices(true).Count == 0) && (highlighted != null))
+			{
+				// Make the highlight the selection
+				highlighted.Selected = true;
+			}
+			
+			return base.OnPasteBegin();
+		}
+		
 		#endregion
 
 		#region ================== Actions
@@ -463,7 +471,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RedrawDisplay();
 			}
 		}
-
+		
 		#endregion
 	}
 }

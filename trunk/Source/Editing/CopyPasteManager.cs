@@ -96,22 +96,25 @@ namespace CodeImp.DoomBuilder.Editing
 			// that need to be copied.
 			if(General.Map.Mode.OnCopyBegin())
 			{
-				MapSet copyset = new MapSet();
-				
-				// Copy all data over
-				copyset = General.Map.Map.Clone();
+				// Get all marked elements
+				ICollection<Vertex> verts = General.Map.Map.GetMarkedVertices(true);
+				ICollection<Sidedef> sides = General.Map.Map.GetMarkedSidedefs(true);
+				ICollection<Sector> sectors = General.Map.Map.GetMarkedSectors(true);
+				ICollection<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);
+				ICollection<Thing> things = General.Map.Map.GetMarkedThings(true);
 				
 				// Write data to stream
 				MemoryStream memstream = new MemoryStream();
 				UniversalStreamWriter writer = new UniversalStreamWriter();
 				writer.RememberCustomTypes = false;
-				writer.Write(copyset, memstream, null);
+				writer.Write(verts, lines, sides, sectors, things, memstream, null);
 				
 				// Set on clipboard
 				Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
 				
 				// Done
 				memstream.Dispose();
+				General.Map.Mode.OnCopyEnd();
 				return true;
 			}
 			else
@@ -124,21 +127,36 @@ namespace CodeImp.DoomBuilder.Editing
 		// This performs the paste. Returns false when paste was cancelled.
 		private bool DoPasteSelection()
 		{
-			// Ask the editing mode to prepare selection for pasting.
-			if(General.Map.Mode.OnPasteBegin())
+			// Anything to paste?
+			if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
 			{
-				// TODO: Do the paste
-
-				if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
+				// Ask the editing mode to prepare selection for pasting.
+				if(General.Map.Mode.OnPasteBegin())
 				{
+					// Read from clipboard
 					Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
 					memstream.Seek(0, SeekOrigin.Begin);
-					StreamReader reader = new StreamReader(memstream, Encoding.ASCII);
-					//File.WriteAllText("C:\\Test.txt", reader.ReadToEnd());
-					memstream.Dispose();
-				}
 
-				return true;
+					// Mark all current geometry
+					General.Map.Map.ClearAllMarks(true);
+
+					// Read data stream
+					UniversalStreamReader reader = new UniversalStreamReader();
+					reader.Read(General.Map.Map, memstream);
+
+					// The new geometry is not marked, so invert the marks to get it marked
+					General.Map.Map.InvertAllMarks();
+
+					// Done
+					memstream.Dispose();
+					General.Map.Mode.OnPasteEnd();
+					return true;
+				}
+				else
+				{
+					General.MessageBeep(MessageBeepType.Warning);
+					return false;
+				}
 			}
 			else
 			{

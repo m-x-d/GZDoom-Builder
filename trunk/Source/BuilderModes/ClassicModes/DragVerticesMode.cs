@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public DragVerticesMode(Vertex dragitem, Vector2D dragstartmappos)
 		{
 			// Mark what we are dragging
-			General.Map.Map.ClearAllMarks();
+			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedVertices(true, true);
 
 			// Initialize

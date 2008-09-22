@@ -117,16 +117,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This shows the menu for the current editing mode
 		public void ShowEditingModeMenu(EditMode mode)
 		{
+			Type sourcemode = typeof(object);
+			if(mode != null) sourcemode = mode.GetType();
+			
 			// When these modes are active, then test against the base mode they will return to
-			if(mode is DragGeometryMode) mode = (mode as DragGeometryMode).BaseMode;
-			if(mode is DragThingsMode) mode = (mode as DragThingsMode).BaseMode;
-			if(mode is DrawGeometryMode) mode = (mode as DrawGeometryMode).BaseMode;
-			if(mode is CurveLinedefsMode) mode = (mode as CurveLinedefsMode).BaseMode;
+			if((mode is DragGeometryMode) || (mode is DragThingsMode) ||
+			   (mode is DrawGeometryMode) || (mode is CurveLinedefsMode))
+				sourcemode = General.Map.PreviousStableMode;
 			
 			// Final decision
-			if(mode is LinedefsMode) HideAllMenusExcept(linedefsmenu);
-			else if(mode is SectorsMode) HideAllMenusExcept(sectorsmenu);
-			else if(mode is ThingsMode) HideAllMenusExcept(thingsmenu);
+			if(sourcemode == typeof(LinedefsMode)) HideAllMenusExcept(linedefsmenu);
+			else if(sourcemode == typeof(SectorsMode)) HideAllMenusExcept(sectorsmenu);
+			else if(sourcemode == typeof(ThingsMode)) HideAllMenusExcept(thingsmenu);
 			else HideAllMenus();
 		}
 

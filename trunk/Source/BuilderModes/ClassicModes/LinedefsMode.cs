@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonImage = "LinesMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 100)]	// Position of the button (lower is more to the left)
 
-	public class LinedefsMode : ClassicMode
+	public class LinedefsMode : BaseClassicMode
 	{
 		#region ================== Constants
 
@@ -70,27 +70,107 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
-		public LinedefsMode()
-		{
-		}
-
-		// Disposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Dispose base
-				base.Dispose();
-			}
-		}
-
 		#endregion
 
 		#region ================== Methods
+
+		// This highlights a new item
+		protected void Highlight(Linedef l)
+		{
+			bool completeredraw = false;
+			LinedefActionInfo action = null;
+
+			// Often we can get away by simply undrawing the previous
+			// highlight and drawing the new highlight. But if associations
+			// are or were drawn we need to redraw the entire display.
+
+			// Previous association highlights something?
+			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
+
+			// Set highlight association
+			if(l != null)
+				highlightasso.Set(l.Tag, UniversalType.LinedefTag);
+			else
+				highlightasso.Set(0, 0);
+
+			// New association highlights something?
+			if((l != null) && (l.Tag > 0)) completeredraw = true;
+
+			if(l != null)
+			{
+				// Check if we can find the linedefs action
+				if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
+					action = General.Map.Config.LinedefActions[l.Action];
+			}
+
+			// Determine linedef associations
+			for(int i = 0; i < Linedef.NUM_ARGS; i++)
+			{
+				// Previous association highlights something?
+				if((association[i].type == UniversalType.SectorTag) ||
+				   (association[i].type == UniversalType.LinedefTag) ||
+				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+
+				// Make new association
+				if(action != null)
+					association[i].Set(l.Args[i], action.Args[i].Type);
+				else
+					association[i].Set(0, 0);
+
+				// New association highlights something?
+				if((association[i].type == UniversalType.SectorTag) ||
+				   (association[i].type == UniversalType.LinedefTag) ||
+				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+			}
+
+			// If we're changing associations, then we
+			// need to redraw the entire display
+			if(completeredraw)
+			{
+				// Set new highlight and redraw completely
+				highlighted = l;
+				General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Update display
+				if(renderer.StartPlotter(false))
+				{
+					// Undraw previous highlight
+					if((highlighted != null) && !highlighted.IsDisposed)
+					{
+						renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
+						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					}
+
+					// Set new highlight
+					highlighted = l;
+
+					// Render highlighted item
+					if((highlighted != null) && !highlighted.IsDisposed)
+					{
+						renderer.PlotLinedef(highlighted, General.Colors.Highlight);
+						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
+						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
+					}
+
+					// Done
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+
+			// Show highlight info
+			if((highlighted != null) && !highlighted.IsDisposed)
+				General.Interface.ShowLinedefInfo(highlighted);
+			else
+				General.Interface.HideInfo();
+		}
+		
+		#endregion
+		
+		#region ================== Events
 
 		// Cancel mode
 		public override void OnCancel()
@@ -108,7 +188,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 			
 			// Convert geometry selection to linedefs selection
-			General.Map.Map.ClearAllMarks();
+			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedVertices(true, true);
 			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 			foreach(Linedef l in lines) l.Selected = true;
@@ -171,100 +251,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			renderer.Present();
-		}
-
-		// This highlights a new item
-		protected void Highlight(Linedef l)
-		{
-			bool completeredraw = false;
-			LinedefActionInfo action = null;
-
-			// Often we can get away by simply undrawing the previous
-			// highlight and drawing the new highlight. But if associations
-			// are or were drawn we need to redraw the entire display.
-
-			// Previous association highlights something?
-			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
-			
-			// Set highlight association
-			if(l != null)
-				highlightasso.Set(l.Tag, UniversalType.LinedefTag);
-			else
-				highlightasso.Set(0, 0);
-
-			// New association highlights something?
-			if((l != null) && (l.Tag > 0)) completeredraw = true;
-
-			if(l != null)
-			{
-				// Check if we can find the linedefs action
-				if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
-					action = General.Map.Config.LinedefActions[l.Action];
-			}
-			
-			// Determine linedef associations
-			for(int i = 0; i < Linedef.NUM_ARGS; i++)
-			{
-				// Previous association highlights something?
-				if((association[i].type == UniversalType.SectorTag) ||
-				   (association[i].type == UniversalType.LinedefTag) ||
-				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
-				
-				// Make new association
-				if(action != null)
-					association[i].Set(l.Args[i], action.Args[i].Type);
-				else
-					association[i].Set(0, 0);
-				
-				// New association highlights something?
-				if((association[i].type == UniversalType.SectorTag) ||
-				   (association[i].type == UniversalType.LinedefTag) ||
-				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
-			}
-			
-			// If we're changing associations, then we
-			// need to redraw the entire display
-			if(completeredraw)
-			{
-				// Set new highlight and redraw completely
-				highlighted = l;
-				General.Interface.RedrawDisplay();
-			}
-			else
-			{
-				// Update display
-				if(renderer.StartPlotter(false))
-				{
-					// Undraw previous highlight
-					if((highlighted != null) && !highlighted.IsDisposed)
-					{
-						renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
-						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
-					}
-
-					// Set new highlight
-					highlighted = l;
-
-					// Render highlighted item
-					if((highlighted != null) && !highlighted.IsDisposed)
-					{
-						renderer.PlotLinedef(highlighted, General.Colors.Highlight);
-						renderer.PlotVertex(highlighted.Start, renderer.DetermineVertexColor(highlighted.Start));
-						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
-					}
-
-					// Done
-					renderer.Finish();
-					renderer.Present();
-				}
-			}
-			
-			// Show highlight info
-			if((highlighted != null) && !highlighted.IsDisposed)
-				General.Interface.ShowLinedefInfo(highlighted);
-			else
-				General.Interface.HideInfo();
 		}
 
 		// Selection
@@ -474,17 +460,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Present();
 			}
 		}
-		
+
 		// When copying
 		public override bool OnCopyBegin()
 		{
-			return true;
+			// No selection made? But we have a highlight!
+			if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+			{
+				// Make the highlight the selection
+				highlighted.Selected = true;
+			}
+
+			return base.OnCopyBegin();
 		}
-		
+
 		// When pasting
 		public override bool OnPasteBegin()
 		{
-			return true;
+			// No selection made? But we have a highlight!
+			if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+			{
+				// Make the highlight the selection
+				highlighted.Selected = true;
+			}
+
+			return base.OnPasteBegin();
 		}
 		
 		#endregion

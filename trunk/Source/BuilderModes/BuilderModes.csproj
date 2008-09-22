@@ -33,6 +33,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassicModes\BaseClassicMode.cs" />
     <Compile Include="ClassicModes\BrightnessMode.cs" />
     <Compile Include="ClassicModes\EditSelectionMode.cs" />
     <Compile Include="ClassicModes\CurveLinedefsMode.cs" />

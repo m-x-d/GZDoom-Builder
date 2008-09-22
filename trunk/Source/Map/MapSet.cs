@@ -441,18 +441,51 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
+		// This selects geometry based on the marking
+		public void SelectMarkedGeometry(bool mark, bool select)
+		{
+			SelectMarkedVertices(mark, select);
+			SelectMarkedLinedefs(mark, select);
+			SelectMarkedSectors(mark, select);
+			SelectMarkedThings(mark, select);
+		}
+
+		// This selects geometry based on the marking
+		public void SelectMarkedVertices(bool mark, bool select)
+		{
+			foreach(Vertex v in vertices) if(v.Marked == mark) v.Selected = select;
+		}
+
+		// This selects geometry based on the marking
+		public void SelectMarkedLinedefs(bool mark, bool select)
+		{
+			foreach(Linedef l in linedefs) if(l.Marked == mark) l.Selected = select;
+		}
+
+		// This selects geometry based on the marking
+		public void SelectMarkedSectors(bool mark, bool select)
+		{
+			foreach(Sector s in sectors) if(s.Marked == mark) s.Selected = select;
+		}
+
+		// This selects geometry based on the marking
+		public void SelectMarkedThings(bool mark, bool select)
+		{
+			foreach(Thing t in things) if(t.Marked == mark) t.Selected = select;
+		}
+
 		#endregion
 
 		#region ================== Marking
 
 		// This clears all marks
-		public void ClearAllMarks()
+		public void ClearAllMarks(bool mark)
 		{
-			ClearMarkedVertices(false);
-			ClearMarkedThings(false);
-			ClearMarkedLinedefs(false);
-			ClearMarkedSectors(false);
-			ClearMarkedSidedefs(false);
+			ClearMarkedVertices(mark);
+			ClearMarkedThings(mark);
+			ClearMarkedLinedefs(mark);
+			ClearMarkedSectors(mark);
+			ClearMarkedSidedefs(mark);
 		}
 
 		// This clears marked vertices
@@ -485,6 +518,46 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sector s in sectors) s.Marked = mark;
 		}
 
+		// This inverts all marks
+		public void InvertAllMarks()
+		{
+			InvertMarkedVertices();
+			InvertMarkedThings();
+			InvertMarkedLinedefs();
+			InvertMarkedSectors();
+			InvertMarkedSidedefs();
+		}
+
+		// This inverts marked vertices
+		public void InvertMarkedVertices()
+		{
+			foreach(Vertex v in vertices) v.Marked = !v.Marked;
+		}
+
+		// This inverts marked things
+		public void InvertMarkedThings()
+		{
+			foreach(Thing t in things) t.Marked = !t.Marked;
+		}
+
+		// This inverts marked linedefs
+		public void InvertMarkedLinedefs()
+		{
+			foreach(Linedef l in linedefs) l.Marked = !l.Marked;
+		}
+
+		// This inverts marked sidedefs
+		public void InvertMarkedSidedefs()
+		{
+			foreach(Sidedef s in sidedefs) s.Marked = !s.Marked;
+		}
+
+		// This inverts marked sectors
+		public void InvertMarkedSectors()
+		{
+			foreach(Sector s in sectors) s.Marked = !s.Marked;
+		}
+
 		// Returns a collection of vertices that match a marked state
 		public List<Vertex> GetMarkedVertices(bool mark)
 		{
@@ -506,6 +579,14 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			List<Linedef> list = new List<Linedef>(linedefs.Count >> 1);
 			foreach(Linedef l in linedefs) if(l.Marked == mark) list.Add(l);
+			return list;
+		}
+
+		// Returns a collection of sidedefs that match a marked state
+		public List<Sidedef> GetMarkedSidedefs(bool mark)
+		{
+			List<Sidedef> list = new List<Sidedef>(sidedefs.Count >> 1);
+			foreach(Sidedef s in sidedefs) if(s.Marked == mark) list.Add(s);
 			return list;
 		}
 
@@ -553,6 +634,17 @@ namespace CodeImp.DoomBuilder.Map
 					if(l.Front != null) l.Front.Marked = setmark;
 					if(l.Back != null) l.Back.Marked = setmark;
 				}
+			}
+		}
+
+		/// <summary>
+		/// This marks the sidedefs that make up the sectors with the matching mark
+		/// </summary>
+		public void MarkSidedefsFromSectors(bool matchmark, bool setmark)
+		{
+			foreach(Sidedef sd in sidedefs)
+			{
+				if(sd.Sector.Marked == matchmark) sd.Marked = setmark;
 			}
 		}
 
@@ -619,6 +711,49 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 			return list;
+		}
+
+		// This marks all selected geometry, including sidedefs from sectors
+		// Returns the number of selected elements
+		public void MarkAllSelectedGeometry(bool mark)
+		{
+			General.Map.Map.ClearAllMarks(!mark);
+
+			// Direct vertices
+			General.Map.Map.MarkSelectedVertices(true, mark);
+
+			// Direct linedefs
+			General.Map.Map.MarkSelectedLinedefs(true, mark);
+
+			// Vertices from linedefs
+			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(mark);
+			foreach(Vertex v in verts) v.Marked = mark;
+
+			// Linedefs from vertices
+			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(!mark, mark, !mark);
+			foreach(Linedef l in lines) l.Marked = mark;
+
+			// Mark sectors from linedefs (note: this must be the first to mark
+			// sectors, because this clears the sector marks!)
+			General.Map.Map.ClearMarkedSectors(mark);
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				if(!l.Selected)
+				{
+					if(l.Front != null) l.Front.Sector.Marked = !mark;
+					if(l.Back != null) l.Back.Sector.Marked = !mark;
+				}
+			}
+
+			// Direct sectors
+			General.Map.Map.MarkSelectedSectors(true, mark);
+
+			// Direct things
+			General.Map.Map.MarkSelectedThings(true, mark);
+
+			// Sidedefs from linedefs
+			//General.Map.Map.MarkSidedefsFromLinedefs(true, mark);
+			General.Map.Map.MarkSidedefsFromSectors(true, mark);
 		}
 		
 		#endregion

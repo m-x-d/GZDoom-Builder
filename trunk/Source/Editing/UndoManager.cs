@@ -218,42 +218,46 @@ namespace CodeImp.DoomBuilder.Editing
 			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
 			
-			// Cancel volatile mode, if any
-			// This returns false when mode was not volatile
-			if(!General.CancelVolatileMode())
+			// Call UndoBegin event
+			if(General.Map.Mode.OnUndoBegin())
 			{
-				// Anything to undo?
-				if(undos.Count > 0)
+				// Cancel volatile mode, if any
+				// This returns false when mode was not volatile
+				if(!General.CancelVolatileMode())
 				{
-					// Get undo snapshot
-					u = undos[0];
-					undos.RemoveAt(0);
+					// Anything to undo?
+					if(undos.Count > 0)
+					{
+						// Get undo snapshot
+						u = undos[0];
+						undos.RemoveAt(0);
 
-					General.WriteLogLine("Performing undo \"" + u.description + "\", Ticket ID " + u.ticketid + "...");
+						General.WriteLogLine("Performing undo \"" + u.description + "\", Ticket ID " + u.ticketid + "...");
 
-					// Make a snapshot for redo
-					r = new UndoSnapshot(u, General.Map.Map.Clone());
+						// Make a snapshot for redo
+						r = new UndoSnapshot(u, General.Map.Map.Clone());
 
-					// Put it on the stack
-					redos.Insert(0, r);
-					LimitUndoRedoLevel(redos);
+						// Put it on the stack
+						redos.Insert(0, r);
+						LimitUndoRedoLevel(redos);
 
-					// Reset grouping
-					lastgroup = UndoGroup.None;
+						// Reset grouping
+						lastgroup = UndoGroup.None;
 
-					// Remove selection
-					u.map.ClearAllMarks();
-					u.map.ClearAllSelected();
+						// Remove selection
+						u.map.ClearAllMarks(false);
+						u.map.ClearAllSelected();
 
-					// Change map set
-					General.Map.ChangeMapSet(u.map);
+						// Change map set
+						General.Map.ChangeMapSet(u.map);
 
-					// Update
-					General.MainWindow.RedrawDisplay();
-					General.MainWindow.UpdateInterface();
+						// Update
+						General.MainWindow.RedrawDisplay();
+						General.MainWindow.UpdateInterface();
+					}
 				}
 			}
-
+			
 			Cursor.Current = oldcursor;
 		}
 		
@@ -265,38 +269,42 @@ namespace CodeImp.DoomBuilder.Editing
 			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
 			
-			// Cancel volatile mode, if any
-			General.CancelVolatileMode();
-
-			// Anything to redo?
-			if(redos.Count > 0)
+			// Call RedoBegin event
+			if(General.Map.Mode.OnRedoBegin())
 			{
-				// Get redo snapshot
-				r = redos[0];
-				redos.RemoveAt(0);
+				// Cancel volatile mode, if any
+				General.CancelVolatileMode();
 
-				General.WriteLogLine("Performing redo \"" + r.description + "\", Ticket ID " + r.ticketid + "...");
+				// Anything to redo?
+				if(redos.Count > 0)
+				{
+					// Get redo snapshot
+					r = redos[0];
+					redos.RemoveAt(0);
 
-				// Make a snapshot for undo
-				u = new UndoSnapshot(r, General.Map.Map.Clone());
+					General.WriteLogLine("Performing redo \"" + r.description + "\", Ticket ID " + r.ticketid + "...");
 
-				// Put it on the stack
-				undos.Insert(0, u);
-				LimitUndoRedoLevel(undos);
-				
-				// Reset grouping
-				lastgroup = UndoGroup.None;
+					// Make a snapshot for undo
+					u = new UndoSnapshot(r, General.Map.Map.Clone());
 
-				// Remove selection
-				r.map.ClearAllMarks();
-				r.map.ClearAllSelected();
+					// Put it on the stack
+					undos.Insert(0, u);
+					LimitUndoRedoLevel(undos);
 
-				// Change map set
-				General.Map.ChangeMapSet(r.map);
+					// Reset grouping
+					lastgroup = UndoGroup.None;
 
-				// Update
-				General.MainWindow.RedrawDisplay();
-				General.MainWindow.UpdateInterface();
+					// Remove selection
+					r.map.ClearAllMarks(false);
+					r.map.ClearAllSelected();
+
+					// Change map set
+					General.Map.ChangeMapSet(r.map);
+
+					// Update
+					General.MainWindow.RedrawDisplay();
+					General.MainWindow.UpdateInterface();
+				}
 			}
 			
 			Cursor.Current = oldcursor;

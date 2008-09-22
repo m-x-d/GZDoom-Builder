@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		      ButtonImage = "SectorsMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 200)]	// Position of the button (lower is more to the left)
 
-	public class SectorsMode : ClassicMode
+	public class SectorsMode : BaseClassicMode
 	{
 		#region ================== Constants
 
@@ -101,31 +101,105 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
-		// This clears the selection
-		[BeginAction("clearselection", BaseAction = true)]
-		public void ClearSelection()
+		// Support function for joining and merging sectors
+		private void JoinMergeSectors(bool removelines)
 		{
-			// Clear selection
-			General.Map.Map.ClearAllSelected();
+			// Remove lines in betwen joining sectors?
+			if(removelines)
+			{
+				// Go for all selected linedefs
+				ICollection<Linedef> selectedlines = General.Map.Map.GetSelectedLinedefs(true);
+				foreach(Linedef ld in selectedlines)
+				{
+					// Front and back side?
+					if((ld.Front != null) && (ld.Back != null))
+					{
+						// Both a selected sector, but not the same?
+						if(ld.Front.Sector.Selected && ld.Back.Sector.Selected &&
+						   (ld.Front.Sector != ld.Back.Sector))
+						{
+							// Remove this line
+							ld.Dispose();
+						}
+					}
+				}
+			}
 
-			// Redraw
-			General.Interface.RedrawDisplay();
-		}
-		
-		// When undo is used
-		[EndAction("undo", BaseAction = true)]
-		public void Undo()
-		{
-			// Clear ordered selection
-			orderedselection.Clear();
+			// Join all selected sectors with the first
+			for(int i = 1; i < orderedselection.Count; i++)
+				orderedselection[i].Join(orderedselection[0]);
 		}
 
-		// When redo is used
-		[EndAction("redo", BaseAction = true)]
-		public void Redo()
+		// This highlights a new item
+		protected void Highlight(Sector s)
 		{
-			// Clear ordered selection
-			orderedselection.Clear();
+			bool completeredraw = false;
+
+			// Often we can get away by simply undrawing the previous
+			// highlight and drawing the new highlight. But if associations
+			// are or were drawn we need to redraw the entire display.
+
+			// Previous association highlights something?
+			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
+
+			// Set highlight association
+			if(s != null)
+				highlightasso.Set(s.Tag, UniversalType.SectorTag);
+			else
+				highlightasso.Set(0, 0);
+
+			// New association highlights something?
+			if((s != null) && (s.Tag > 0)) completeredraw = true;
+
+			// If we're changing associations, then we
+			// need to redraw the entire display
+			if(completeredraw)
+			{
+				// Set new highlight and redraw completely
+				highlighted = s;
+				General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Update display
+				if(renderer.StartPlotter(false))
+				{
+					// Undraw previous highlight
+					if((highlighted != null) && !highlighted.IsDisposed)
+						renderer.PlotSector(highlighted);
+
+					/*
+					// Undraw highlighted things
+					if(highlighted != null)
+						foreach(Thing t in highlighted.Things)
+							renderer.RenderThing(t, renderer.DetermineThingColor(t));
+					*/
+
+					// Set new highlight
+					highlighted = s;
+
+					// Render highlighted item
+					if((highlighted != null) && !highlighted.IsDisposed)
+						renderer.PlotSector(highlighted, General.Colors.Highlight);
+
+					/*
+					// Render highlighted things
+					if(highlighted != null)
+						foreach(Thing t in highlighted.Things)
+							renderer.RenderThing(t, General.Colors.Highlight);
+					*/
+
+					// Done
+					renderer.Finish();
+					renderer.Present();
+				}
+			}
+
+			// Show highlight info
+			if((highlighted != null) && !highlighted.IsDisposed)
+				General.Interface.ShowSectorInfo(highlighted);
+			else
+				General.Interface.HideInfo();
 		}
 
 		// This selectes or deselects a sector
@@ -161,6 +235,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 		}
+
+		#endregion
+		
+		#region ================== Events
 		
 		// Cancel mode
 		public override void OnCancel()
@@ -178,7 +256,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 
 			// Convert geometry selection to sectors only
-			General.Map.Map.ClearAllMarks();
+			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedVertices(true, true);
 			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 			foreach(Linedef l in lines) l.Selected = true;
@@ -255,78 +333,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			renderer.Present();
-		}
-
-		// This highlights a new item
-		protected void Highlight(Sector s)
-		{
-			bool completeredraw = false;
-			
-			// Often we can get away by simply undrawing the previous
-			// highlight and drawing the new highlight. But if associations
-			// are or were drawn we need to redraw the entire display.
-
-			// Previous association highlights something?
-			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
-
-			// Set highlight association
-			if(s != null)
-				highlightasso.Set(s.Tag, UniversalType.SectorTag);
-			else
-				highlightasso.Set(0, 0);
-
-			// New association highlights something?
-			if((s != null) && (s.Tag > 0)) completeredraw = true;
-			
-			// If we're changing associations, then we
-			// need to redraw the entire display
-			if(completeredraw)
-			{
-				// Set new highlight and redraw completely
-				highlighted = s;
-				General.Interface.RedrawDisplay();
-			}
-			else
-			{
-				// Update display
-				if(renderer.StartPlotter(false))
-				{
-					// Undraw previous highlight
-					if((highlighted != null) && !highlighted.IsDisposed)
-						renderer.PlotSector(highlighted);
-
-					/*
-					// Undraw highlighted things
-					if(highlighted != null)
-						foreach(Thing t in highlighted.Things)
-							renderer.RenderThing(t, renderer.DetermineThingColor(t));
-					*/
-
-					// Set new highlight
-					highlighted = s;
-
-					// Render highlighted item
-					if((highlighted != null) && !highlighted.IsDisposed)
-						renderer.PlotSector(highlighted, General.Colors.Highlight);
-
-					/*
-					// Render highlighted things
-					if(highlighted != null)
-						foreach(Thing t in highlighted.Things)
-							renderer.RenderThing(t, General.Colors.Highlight);
-					*/
-
-					// Done
-					renderer.Finish();
-					renderer.Present();
-				}
-			}
-			
-			// Show highlight info
-			if((highlighted != null) && !highlighted.IsDisposed)
-				General.Interface.ShowSectorInfo(highlighted);
-			else
-				General.Interface.HideInfo();
 		}
 
 		// Selection
@@ -588,6 +594,50 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Present();
 			}
 		}
+
+		// When copying
+		public override bool OnCopyBegin()
+		{
+			// No selection made? But we have a highlight!
+			if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+			{
+				// Make the highlight the selection
+				SelectSector(highlighted, true);
+			}
+
+			return base.OnCopyBegin();
+		}
+
+		// When pasting
+		public override bool OnPasteBegin()
+		{
+			// No selection made? But we have a highlight!
+			if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+			{
+				// Make the highlight the selection
+				SelectSector(highlighted, true);
+			}
+
+			return base.OnPasteBegin();
+		}
+
+		// When undo is used
+		public override bool OnUndoBegin()
+		{
+			// Clear ordered selection
+			orderedselection.Clear();
+
+			return base.OnUndoBegin();
+		}
+
+		// When redo is used
+		public override bool OnRedoBegin()
+		{
+			// Clear ordered selection
+			orderedselection.Clear();
+
+			return base.OnRedoBegin();
+		}
 		
 		#endregion
 
@@ -721,35 +771,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		// Support function for joining and merging sectors
-		private void JoinMergeSectors(bool removelines)
+		// This clears the selection
+		[BeginAction("clearselection", BaseAction = true)]
+		public void ClearSelection()
 		{
-			// Remove lines in betwen joining sectors?
-			if(removelines)
-			{
-				// Go for all selected linedefs
-				ICollection<Linedef> selectedlines = General.Map.Map.GetSelectedLinedefs(true);
-				foreach(Linedef ld in selectedlines)
-				{
-					// Front and back side?
-					if((ld.Front != null) && (ld.Back != null))
-					{
-						// Both a selected sector, but not the same?
-						if(ld.Front.Sector.Selected && ld.Back.Sector.Selected &&
-						   (ld.Front.Sector != ld.Back.Sector))
-						{
-							// Remove this line
-							ld.Dispose();
-						}
-					}
-				}
-			}
-			
-			// Join all selected sectors with the first
-			for(int i = 1; i < orderedselection.Count; i++)
-				orderedselection[i].Join(orderedselection[0]);
-		}
+			// Clear selection
+			General.Map.Map.ClearAllSelected();
 
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+		
 		#endregion
 	}
 }

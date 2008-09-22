@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "editselectionmode",	// Action name used to switch to this mode
 			  Volatile = true)]
 
-	public class EditSelectionMode : ClassicMode
+	public class EditSelectionMode : BaseClassicMode
 	{
 		#region ================== Enums
 
@@ -83,8 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		// Mode to return to
-		private EditMode basemode;
+		// Mode switching
 		private bool modealreadyswitching = false;
 		
 		// Highlighted vertex
@@ -133,7 +132,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		// Just keep the base mode button checked
-		public override string EditModeButtonName { get { return basemode.GetType().Name; } }
+		public override string EditModeButtonName { get { return General.Map.PreviousStableMode.Name; } }
 		
 		#endregion
 
@@ -143,11 +142,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public EditSelectionMode()
 		{
 			// Initialize
-			basemode = General.Map.Mode;
 			mode = ModifyMode.None;
-			
-			// TEST:
-			rotation = Angle2D.PI2 * 0;// 0.02f;
 		}
 
 		// Disposer
@@ -164,459 +159,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		#endregion
-
-		#region ================== Events
-		
-		// Mode engages
-		public override void OnEngage()
-		{
-			base.OnEngage();
-
-			// Convert geometry selection
-			General.Map.Map.ClearAllMarks();
-			General.Map.Map.MarkSelectedVertices(true, true);
-			General.Map.Map.MarkSelectedThings(true, true);
-			General.Map.Map.MarkSelectedLinedefs(true, true);
-			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
-			foreach(Vertex v in verts) v.Marked = true;
-			selectedvertices = General.Map.Map.GetMarkedVertices(true);
-			selectedthings = General.Map.Map.GetMarkedThings(true);
-			unselectedvertices = General.Map.Map.GetMarkedVertices(false);
-			
-			// Make sure everything is selected so that it turns up red
-			foreach(Vertex v in selectedvertices) v.Selected = true;
-			ICollection<Linedef> markedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
-			foreach(Linedef l in markedlines) l.Selected = true;
-			unselectedlines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
-			
-			// Array to keep original coordinates
-			vertexpos = new List<Vector2D>(selectedvertices.Count);
-			thingpos = new List<Vector2D>(selectedthings.Count);
-
-			// A selection must be made!
-			if((selectedvertices.Count > 0) || (selectedthings.Count > 0))
-			{
-				// Initialize offset and size
-				offset.x = float.MaxValue;
-				offset.y = float.MaxValue;
-				Vector2D right;
-				right.x = float.MinValue;
-				right.y = float.MinValue;
-				
-				foreach(Vertex v in selectedvertices)
-				{
-					// Find left-top and right-bottom
-					if(v.Position.x < offset.x) offset.x = v.Position.x;
-					if(v.Position.y < offset.y) offset.y = v.Position.y;
-					if(v.Position.x > right.x) right.x = v.Position.x;
-					if(v.Position.y > right.y) right.y = v.Position.y;
-					
-					// Keep original coordinates
-					vertexpos.Add(v.Position);
-				}
-
-				foreach(Thing t in selectedthings)
-				{
-					// Find left-top and right-bottom
-					if(t.Position.x < offset.x) offset.x = t.Position.x;
-					if(t.Position.y < offset.y) offset.y = t.Position.y;
-					if(t.Position.x > right.x) right.x = t.Position.x;
-					if(t.Position.y > right.y) right.y = t.Position.y;
-
-					// Keep original coordinates
-					thingpos.Add(t.Position);
-				}
-				
-				// Calculate size
-				size = right - offset;
-				
-				// If the width of a dimension is zero, add a little
-				if(Math.Abs(size.x) < 1.0f)
-				{
-					size.x += ZERO_SIZE_ADDITION;
-					offset.x -= ZERO_SIZE_ADDITION / 2;
-				}
-				
-				if(Math.Abs(size.y) < 1.0f)
-				{
-					size.y += ZERO_SIZE_ADDITION;
-					offset.y -= ZERO_SIZE_ADDITION / 2;
-				}
-				
-				basesize = size;
-				baseoffset = offset;
-
-				// Set presentation
-				if(selectedthings.Count > 0)
-					renderer.SetPresentation(Presentation.Things);
-				else
-					renderer.SetPresentation(Presentation.Standard);
-
-				// Update
-				UpdateRectangleComponents();
-			}
-			else
-			{
-				General.Interface.DisplayWarning("Please make a selection first!");
-
-				// Cancel now
-				General.Map.CancelMode();
-			}
-		}
-
-		// Cancel mode
-		public override void OnCancel()
-		{
-			base.OnCancel();
-
-			// Reset geometry in original position
-			int index = 0;
-			foreach(Vertex v in selectedvertices)
-				v.Move(vertexpos[index++]);
-
-			index = 0;
-			foreach(Thing t in selectedthings)
-				t.Move(thingpos[index++]);
-			
-			General.Map.Map.Update(true, true);
-			
-			// Return to original mode
-			Type mt = basemode.GetType();
-			basemode = (EditMode)Activator.CreateInstance(mt);
-			General.Map.ChangeMode(basemode);
-		}
-
-		// When accepted
-		public override void OnAccept()
-		{
-			base.OnAccept();
-
-			// Anything to do?
-			if((selectedthings.Count > 0) || (selectedvertices.Count > 0))
-			{
-				Cursor.Current = Cursors.AppStarting;
-
-				// Reset geometry in original position
-				int index = 0;
-				foreach(Vertex v in selectedvertices)
-					v.Move(vertexpos[index++]);
-
-				index = 0;
-				foreach(Thing t in selectedthings)
-					t.Move(thingpos[index++]);
-
-				// Make undo
-				General.Map.UndoRedo.CreateUndo("Edit selection", UndoGroup.None, 0);
-
-				// Move geometry to new position
-				UpdateGeometry();
-				General.Map.Map.Update(true, true);
-
-				// Stitch geometry
-				if(snaptonearest) General.Map.Map.StitchGeometry();
-
-				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy();
-
-				// Update cached values
-				General.Map.Map.Update();
-
-				// Done
-				selectedvertices = new List<Vertex>();
-				selectedthings = new List<Thing>();
-				Cursor.Current = Cursors.Default;
-				General.Map.IsChanged = true;
-			}
-			
-			if(!modealreadyswitching)
-			{
-				// Return to original mode
-				Type mt = basemode.GetType();
-				basemode = (EditMode)Activator.CreateInstance(mt);
-				General.Map.ChangeMode(basemode);
-			}
-		}
-		
-		// Mode disengages
-		public override void OnDisengage()
-		{
-			base.OnDisengage();
-
-			// When not cancelled manually, we assume it is accepted
-			if(!cancelled)
-			{
-				modealreadyswitching = true;
-				this.OnAccept();
-			}
-			
-			// Hide highlight info
-			General.Interface.HideInfo();
-			General.Interface.SetCursor(Cursors.Default);
-		}
-
-		// This redraws the display
-		public override void OnRedrawDisplay()
-		{
-			UpdateRectangleComponents();
-			
-			// Render lines
-			if(renderer.StartPlotter(true))
-			{
-				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				if(highlighted != null) renderer.PlotVertex(highlighted, ColorCollection.HIGHLIGHT);
-				renderer.Finish();
-			}
-
-			// Render things
-			if(renderer.StartThings(true))
-			{
-				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
-				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
-				renderer.Finish();
-			}
-
-			// Render selection
-			if(renderer.StartOverlay(true))
-			{
-				// Rectangle
-				PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
-				renderer.RenderGeometry(cornerverts, null, true);
-				renderer.RenderLine(corners[0], corners[1], 4, rectcolor, true);
-				renderer.RenderLine(corners[1], corners[2], 4, rectcolor, true);
-				renderer.RenderLine(corners[2], corners[3], 4, rectcolor, true);
-				renderer.RenderLine(corners[3], corners[0], 4, rectcolor, true);
-
-				// Extension line
-				if(extensionline.GetLengthSq() > 0.0f)
-					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(EXTENSION_LINE_ALPHA), true);
-
-				// Grips
-				for(int i = 0; i < 4; i++)
-				{
-					renderer.RenderRectangleFilled(resizegrips[i], General.Colors.Background, true);
-					renderer.RenderRectangle(resizegrips[i], 2, General.Colors.Highlight, true);
-					renderer.RenderRectangleFilled(rotategrips[i], General.Colors.Background, true);
-					renderer.RenderRectangle(rotategrips[i], 2, General.Colors.Indication, true);
-				}
-				
-				renderer.Finish();
-			}
-
-			renderer.Present();
-		}
-		
-		// Mouse moves
-		public override void OnMouseMove(MouseEventArgs e)
-		{
-			base.OnMouseMove(e);
-
-			Update();
-		}
-
-		// Mouse leaves the display
-		public override void OnMouseLeave(EventArgs e)
-		{
-			base.OnMouseLeave(e);
-			
-			// Reset cursor
-			General.Interface.SetCursor(Cursors.Default);
-		}
-
-		// When edit button is pressed
-		protected override void OnEdit()
-		{
-			base.OnEdit();
-			OnSelect();
-		}
-
-		// When edit button is released
-		protected override void OnEndEdit()
-		{
-			base.OnEndEdit();
-			OnEndSelect();
-		}
-
-		// When select button is pressed
-		protected override void OnSelect()
-		{
-			base.OnSelect();
-			
-			// Used in many cases:
-			Vector2D center = offset + size * 0.5f;
-			Vector2D delta;
-
-			// Check what grip the mouse is over
-			switch(CheckMouseGrip())
-			{
-				// Drag main rectangle
-				case Grip.Main:
-					
-					// Find the original position of the highlighted vertex
-					if(highlighted != null)
-					{
-						int index = 0;
-						foreach(Vertex v in selectedvertices)
-						{
-							if(v == highlighted) highlightedpos = vertexpos[index];
-							index++;
-						}
-					}
-
-					dragoffset = mousemappos - offset;
-					mode = ModifyMode.Dragging;
-					break;
-
-				// Resize
-				case Grip.SizeN:
-
-					// The resize vector is a unit vector in the direction of the resize.
-					// We multiply this with the sign of the current size, because the
-					// corners may be reversed when the selection is flipped.
-					resizevector = corners[1] - corners[2];
-					resizevector = resizevector.GetNormal() * Math.Sign(size.y);
-					
-					// The edgevector is a vector with length and direction of the edge perpendicular to the resizevector
-					edgevector = corners[1] - corners[0];
-					
-					// Make the resize axis. This is a line with the length and direction
-					// of basesize used to calculate the resize percentage.
-					resizeaxis = new Line2D(corners[2], corners[2] + resizevector * basesize.y);
-
-					// Original axis filter
-					resizefilter = new Vector2D(0.0f, 1.0f);
-
-					// This is the corner that must stay in the same position
-					stickcorner = 2;
-
-					Highlight(null);
-					mode = ModifyMode.Resizing;
-					break;
-
-				// Resize
-				case Grip.SizeE:
-					// See description above
-					resizevector = corners[1] - corners[0];
-					resizevector = resizevector.GetNormal() * Math.Sign(size.x);
-					edgevector = corners[1] - corners[2];
-					resizeaxis = new Line2D(corners[0], corners[0] + resizevector * basesize.x);
-					resizefilter = new Vector2D(1.0f, 0.0f);
-					stickcorner = 0;
-					Highlight(null);
-					mode = ModifyMode.Resizing;
-					break;
-
-				// Resize
-				case Grip.SizeS:
-					// See description above
-					resizevector = corners[2] - corners[1];
-					resizevector = resizevector.GetNormal() * Math.Sign(size.y);
-					edgevector = corners[2] - corners[3];
-					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.y);
-					resizefilter = new Vector2D(0.0f, 1.0f);
-					stickcorner = 0;
-					Highlight(null);
-					mode = ModifyMode.Resizing;
-					break;
-
-				// Resize
-				case Grip.SizeW:
-					// See description above
-					resizevector = corners[0] - corners[1];
-					resizevector = resizevector.GetNormal() * Math.Sign(size.x);
-					edgevector = corners[0] - corners[3];
-					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.x);
-					resizefilter = new Vector2D(1.0f, 0.0f);
-					stickcorner = 1;
-					Highlight(null);
-					mode = ModifyMode.Resizing;
-					break;
-
-				// Rotate
-				case Grip.RotateLB:
-					delta = corners[3] - center;
-					rotategripangle = delta.GetAngle() - rotation;
-					Highlight(null);
-					mode = ModifyMode.Rotating;
-					break;
-
-				// Rotate
-				case Grip.RotateLT:
-					delta = corners[0] - center;
-					rotategripangle = delta.GetAngle() - rotation;
-					Highlight(null);
-					mode = ModifyMode.Rotating;
-					break;
-
-				// Rotate
-				case Grip.RotateRB:
-					delta = corners[2] - center;
-					rotategripangle = delta.GetAngle() - rotation;
-					Highlight(null);
-					mode = ModifyMode.Rotating;
-					break;
-
-				// Rotate
-				case Grip.RotateRT:
-					delta = corners[1] - center;
-					rotategripangle = delta.GetAngle() - rotation;
-					Highlight(null);
-					mode = ModifyMode.Rotating;
-					break;
-
-				// Outside the selection?
-				default:
-					// Accept and be done with it
-					General.Map.AcceptMode();
-					break;
-			}
-		}
-
-		// When selected button is released
-		protected override void OnEndSelect()
-		{
-			base.OnEndSelect();
-
-			// Remove extension line
-			extensionline = new Line2D();
-
-			// No modifying mode
-			mode = ModifyMode.None;
-
-			// Redraw
-			General.Interface.RedrawDisplay();
-		}
-
-		// When a key is released
-		public override void OnKeyUp(KeyEventArgs e)
-		{
-			base.OnKeyUp(e);
-			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
-			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
-		}
-
-		// When a key is pressed
-		public override void OnKeyDown(KeyEventArgs e)
-		{
-			base.OnKeyDown(e);
-			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
-			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
-		}
-
-		
-		
-		#endregion
 		
 		#region ================== Methods
-
-		// This clears the selection
-		[BeginAction("clearselection", BaseAction = true)]
-		public void ClearSelection()
-		{
-			// Accept changes
-			General.Map.Map.ClearAllSelected();
-			General.Map.AcceptMode();
-		}
 
 		// This highlights a new vertex
 		protected void Highlight(Vertex v)
@@ -1030,6 +574,457 @@ namespace CodeImp.DoomBuilder.BuilderModes
 											gripsize, gripsize);
 		}
 		
+		#endregion
+
+		#region ================== Events
+		
+		// Mode engages
+		public override void OnEngage()
+		{
+			base.OnEngage();
+
+			// Convert geometry selection
+			General.Map.Map.ClearAllMarks(false);
+			General.Map.Map.MarkSelectedVertices(true, true);
+			General.Map.Map.MarkSelectedThings(true, true);
+			General.Map.Map.MarkSelectedLinedefs(true, true);
+			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
+			foreach(Vertex v in verts) v.Marked = true;
+			selectedvertices = General.Map.Map.GetMarkedVertices(true);
+			selectedthings = General.Map.Map.GetMarkedThings(true);
+			unselectedvertices = General.Map.Map.GetMarkedVertices(false);
+			
+			// Make sure everything is selected so that it turns up red
+			foreach(Vertex v in selectedvertices) v.Selected = true;
+			ICollection<Linedef> markedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
+			foreach(Linedef l in markedlines) l.Selected = true;
+			unselectedlines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
+			
+			// Array to keep original coordinates
+			vertexpos = new List<Vector2D>(selectedvertices.Count);
+			thingpos = new List<Vector2D>(selectedthings.Count);
+
+			// A selection must be made!
+			if((selectedvertices.Count > 0) || (selectedthings.Count > 0))
+			{
+				// Initialize offset and size
+				offset.x = float.MaxValue;
+				offset.y = float.MaxValue;
+				Vector2D right;
+				right.x = float.MinValue;
+				right.y = float.MinValue;
+				
+				foreach(Vertex v in selectedvertices)
+				{
+					// Find left-top and right-bottom
+					if(v.Position.x < offset.x) offset.x = v.Position.x;
+					if(v.Position.y < offset.y) offset.y = v.Position.y;
+					if(v.Position.x > right.x) right.x = v.Position.x;
+					if(v.Position.y > right.y) right.y = v.Position.y;
+					
+					// Keep original coordinates
+					vertexpos.Add(v.Position);
+				}
+
+				foreach(Thing t in selectedthings)
+				{
+					// Find left-top and right-bottom
+					if(t.Position.x < offset.x) offset.x = t.Position.x;
+					if(t.Position.y < offset.y) offset.y = t.Position.y;
+					if(t.Position.x > right.x) right.x = t.Position.x;
+					if(t.Position.y > right.y) right.y = t.Position.y;
+
+					// Keep original coordinates
+					thingpos.Add(t.Position);
+				}
+				
+				// Calculate size
+				size = right - offset;
+				
+				// If the width of a dimension is zero, add a little
+				if(Math.Abs(size.x) < 1.0f)
+				{
+					size.x += ZERO_SIZE_ADDITION;
+					offset.x -= ZERO_SIZE_ADDITION / 2;
+				}
+				
+				if(Math.Abs(size.y) < 1.0f)
+				{
+					size.y += ZERO_SIZE_ADDITION;
+					offset.y -= ZERO_SIZE_ADDITION / 2;
+				}
+				
+				basesize = size;
+				baseoffset = offset;
+
+				// Set presentation
+				if(selectedthings.Count > 0)
+					renderer.SetPresentation(Presentation.Things);
+				else
+					renderer.SetPresentation(Presentation.Standard);
+
+				// Update
+				UpdateRectangleComponents();
+			}
+			else
+			{
+				General.Interface.DisplayWarning("Please make a selection first!");
+
+				// Cancel now
+				General.Map.CancelMode();
+			}
+		}
+
+		// Cancel mode
+		public override void OnCancel()
+		{
+			base.OnCancel();
+
+			// Reset geometry in original position
+			int index = 0;
+			foreach(Vertex v in selectedvertices)
+				v.Move(vertexpos[index++]);
+
+			index = 0;
+			foreach(Thing t in selectedthings)
+				t.Move(thingpos[index++]);
+			
+			General.Map.Map.Update(true, true);
+			
+			// Return to previous stable mode
+			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
+		}
+
+		// When accepted
+		public override void OnAccept()
+		{
+			base.OnAccept();
+
+			// Anything to do?
+			if((selectedthings.Count > 0) || (selectedvertices.Count > 0))
+			{
+				Cursor.Current = Cursors.AppStarting;
+
+				// Reset geometry in original position
+				int index = 0;
+				foreach(Vertex v in selectedvertices)
+					v.Move(vertexpos[index++]);
+
+				index = 0;
+				foreach(Thing t in selectedthings)
+					t.Move(thingpos[index++]);
+
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("Edit selection", UndoGroup.None, 0);
+
+				// Move geometry to new position
+				UpdateGeometry();
+				General.Map.Map.Update(true, true);
+
+				// Stitch geometry
+				if(snaptonearest) General.Map.Map.StitchGeometry();
+
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
+
+				// Update cached values
+				General.Map.Map.Update();
+
+				// Done
+				selectedvertices = new List<Vertex>();
+				selectedthings = new List<Thing>();
+				Cursor.Current = Cursors.Default;
+				General.Map.IsChanged = true;
+			}
+			
+			if(!modealreadyswitching)
+			{
+				// Return to previous stable mode
+				General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
+			}
+		}
+		
+		// Mode disengages
+		public override void OnDisengage()
+		{
+			base.OnDisengage();
+
+			// When not cancelled manually, we assume it is accepted
+			if(!cancelled)
+			{
+				modealreadyswitching = true;
+				this.OnAccept();
+			}
+			
+			// Hide highlight info
+			General.Interface.HideInfo();
+			General.Interface.SetCursor(Cursors.Default);
+		}
+
+		// This redraws the display
+		public override void OnRedrawDisplay()
+		{
+			UpdateRectangleComponents();
+			
+			// Render lines
+			if(renderer.StartPlotter(true))
+			{
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+				if(highlighted != null) renderer.PlotVertex(highlighted, ColorCollection.HIGHLIGHT);
+				renderer.Finish();
+			}
+
+			// Render things
+			if(renderer.StartThings(true))
+			{
+				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
+				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
+				renderer.Finish();
+			}
+
+			// Render selection
+			if(renderer.StartOverlay(true))
+			{
+				// Rectangle
+				PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
+				renderer.RenderGeometry(cornerverts, null, true);
+				renderer.RenderLine(corners[0], corners[1], 4, rectcolor, true);
+				renderer.RenderLine(corners[1], corners[2], 4, rectcolor, true);
+				renderer.RenderLine(corners[2], corners[3], 4, rectcolor, true);
+				renderer.RenderLine(corners[3], corners[0], 4, rectcolor, true);
+
+				// Extension line
+				if(extensionline.GetLengthSq() > 0.0f)
+					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(EXTENSION_LINE_ALPHA), true);
+
+				// Grips
+				for(int i = 0; i < 4; i++)
+				{
+					renderer.RenderRectangleFilled(resizegrips[i], General.Colors.Background, true);
+					renderer.RenderRectangle(resizegrips[i], 2, General.Colors.Highlight, true);
+					renderer.RenderRectangleFilled(rotategrips[i], General.Colors.Background, true);
+					renderer.RenderRectangle(rotategrips[i], 2, General.Colors.Indication, true);
+				}
+				
+				renderer.Finish();
+			}
+
+			renderer.Present();
+		}
+		
+		// Mouse moves
+		public override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			Update();
+		}
+
+		// Mouse leaves the display
+		public override void OnMouseLeave(EventArgs e)
+		{
+			base.OnMouseLeave(e);
+			
+			// Reset cursor
+			General.Interface.SetCursor(Cursors.Default);
+		}
+
+		// When edit button is pressed
+		protected override void OnEdit()
+		{
+			base.OnEdit();
+			OnSelect();
+		}
+
+		// When edit button is released
+		protected override void OnEndEdit()
+		{
+			base.OnEndEdit();
+			OnEndSelect();
+		}
+
+		// When select button is pressed
+		protected override void OnSelect()
+		{
+			base.OnSelect();
+			
+			// Used in many cases:
+			Vector2D center = offset + size * 0.5f;
+			Vector2D delta;
+
+			// Check what grip the mouse is over
+			switch(CheckMouseGrip())
+			{
+				// Drag main rectangle
+				case Grip.Main:
+					
+					// Find the original position of the highlighted vertex
+					if(highlighted != null)
+					{
+						int index = 0;
+						foreach(Vertex v in selectedvertices)
+						{
+							if(v == highlighted) highlightedpos = vertexpos[index];
+							index++;
+						}
+					}
+
+					dragoffset = mousemappos - offset;
+					mode = ModifyMode.Dragging;
+					break;
+
+				// Resize
+				case Grip.SizeN:
+
+					// The resize vector is a unit vector in the direction of the resize.
+					// We multiply this with the sign of the current size, because the
+					// corners may be reversed when the selection is flipped.
+					resizevector = corners[1] - corners[2];
+					resizevector = resizevector.GetNormal() * Math.Sign(size.y);
+					
+					// The edgevector is a vector with length and direction of the edge perpendicular to the resizevector
+					edgevector = corners[1] - corners[0];
+					
+					// Make the resize axis. This is a line with the length and direction
+					// of basesize used to calculate the resize percentage.
+					resizeaxis = new Line2D(corners[2], corners[2] + resizevector * basesize.y);
+
+					// Original axis filter
+					resizefilter = new Vector2D(0.0f, 1.0f);
+
+					// This is the corner that must stay in the same position
+					stickcorner = 2;
+
+					Highlight(null);
+					mode = ModifyMode.Resizing;
+					break;
+
+				// Resize
+				case Grip.SizeE:
+					// See description above
+					resizevector = corners[1] - corners[0];
+					resizevector = resizevector.GetNormal() * Math.Sign(size.x);
+					edgevector = corners[1] - corners[2];
+					resizeaxis = new Line2D(corners[0], corners[0] + resizevector * basesize.x);
+					resizefilter = new Vector2D(1.0f, 0.0f);
+					stickcorner = 0;
+					Highlight(null);
+					mode = ModifyMode.Resizing;
+					break;
+
+				// Resize
+				case Grip.SizeS:
+					// See description above
+					resizevector = corners[2] - corners[1];
+					resizevector = resizevector.GetNormal() * Math.Sign(size.y);
+					edgevector = corners[2] - corners[3];
+					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.y);
+					resizefilter = new Vector2D(0.0f, 1.0f);
+					stickcorner = 0;
+					Highlight(null);
+					mode = ModifyMode.Resizing;
+					break;
+
+				// Resize
+				case Grip.SizeW:
+					// See description above
+					resizevector = corners[0] - corners[1];
+					resizevector = resizevector.GetNormal() * Math.Sign(size.x);
+					edgevector = corners[0] - corners[3];
+					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * basesize.x);
+					resizefilter = new Vector2D(1.0f, 0.0f);
+					stickcorner = 1;
+					Highlight(null);
+					mode = ModifyMode.Resizing;
+					break;
+
+				// Rotate
+				case Grip.RotateLB:
+					delta = corners[3] - center;
+					rotategripangle = delta.GetAngle() - rotation;
+					Highlight(null);
+					mode = ModifyMode.Rotating;
+					break;
+
+				// Rotate
+				case Grip.RotateLT:
+					delta = corners[0] - center;
+					rotategripangle = delta.GetAngle() - rotation;
+					Highlight(null);
+					mode = ModifyMode.Rotating;
+					break;
+
+				// Rotate
+				case Grip.RotateRB:
+					delta = corners[2] - center;
+					rotategripangle = delta.GetAngle() - rotation;
+					Highlight(null);
+					mode = ModifyMode.Rotating;
+					break;
+
+				// Rotate
+				case Grip.RotateRT:
+					delta = corners[1] - center;
+					rotategripangle = delta.GetAngle() - rotation;
+					Highlight(null);
+					mode = ModifyMode.Rotating;
+					break;
+
+				// Outside the selection?
+				default:
+					// Accept and be done with it
+					General.Map.AcceptMode();
+					break;
+			}
+		}
+
+		// When selected button is released
+		protected override void OnEndSelect()
+		{
+			base.OnEndSelect();
+
+			// Remove extension line
+			extensionline = new Line2D();
+
+			// No modifying mode
+			mode = ModifyMode.None;
+
+			// Redraw
+			General.Interface.RedrawDisplay();
+		}
+
+		// When a key is released
+		public override void OnKeyUp(KeyEventArgs e)
+		{
+			base.OnKeyUp(e);
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+		}
+
+		// When a key is pressed
+		public override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+		}
+
+		
+		
+		#endregion
+
+		#region ================== Actions
+
+		// This clears the selection
+		[BeginAction("clearselection", BaseAction = true)]
+		public void ClearSelection()
+		{
+			// Accept changes
+			General.Map.Map.ClearAllSelected();
+			General.Map.AcceptMode();
+		}
+
 		#endregion
 	}
 }

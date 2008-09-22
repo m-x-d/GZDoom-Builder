@@ -379,6 +379,7 @@ namespace CodeImp.DoomBuilder.Windows
 				buttonzoom.Enabled = true;
 				gridlabel.Enabled = true;
 				buttongrid.Enabled = true;
+				configlabel.Text = General.Map.Config.Name;
 			}
 			else
 			{
@@ -392,6 +393,7 @@ namespace CodeImp.DoomBuilder.Windows
 				buttonzoom.Enabled = false;
 				gridlabel.Enabled = false;
 				buttongrid.Enabled = false;
+				configlabel.Text = "";
 			}
 		}
 		
