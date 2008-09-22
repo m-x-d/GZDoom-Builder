@@ -39,8 +39,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	[EditMode(DisplayName = "Find & Replace",
 			  SwitchAction = "findmode",
 			  Volatile = true)]
-	
-	public sealed class FindReplaceMode : ClassicMode
+
+	public sealed class FindReplaceMode : BaseClassicMode
 	{
 		#region ================== Constants
 
@@ -48,41 +48,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		// Mode to return to
-		private EditMode basemode;
-		
 		#endregion
 
 		#region ================== Properties
-
-		internal EditMode BaseMode { get { return basemode; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
-		public FindReplaceMode()
-		{
-			this.basemode = General.Map.Mode;
-		}
-
-		// Disposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
-
-				// Done
-				base.Dispose();
-			}
-		}
-
 		#endregion
 
-		#region ================== Methods
+		#region ================== Events
 
 		// Cancelled
 		public override void OnCancel()
@@ -91,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 
 			// Return to base mode
-			General.Map.ChangeMode(basemode.GetType().Name);
+			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
 		}
 
 		// Mode engages
@@ -127,7 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.IsChanged = true;
 
 			// Return to base mode
-			General.Map.ChangeMode(basemode);
+			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
 		}
 
 		// Redrawing display

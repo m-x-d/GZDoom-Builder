@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	[EditMode(DisplayName = "Things",
 			  Volatile = true)]
 
-	public sealed class DragThingsMode : ClassicMode
+	public sealed class DragThingsMode : BaseClassicMode
 	{
 		#region ================== Constants
 
@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Cursor.Current = Cursors.AppStarting;
 
 			// Mark what we are dragging
-			General.Map.Map.ClearAllMarks();
+			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedThings(true, true);
 			
 			// Get selected things

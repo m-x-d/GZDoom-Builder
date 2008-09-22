@@ -108,6 +108,17 @@ namespace CodeImp.DoomBuilder.IO
 		// writenamespace may be null to omit writing the namespace to the stream
 		public void Write(MapSet map, Stream stream, string writenamespace)
 		{
+			Write(map.Vertices, map.Linedefs, map.Sidedefs, map.Sectors, map.Things, stream, writenamespace);
+		}
+
+		// This writes the structures to a stream
+		// NOTE: writenamespace may be null to omit writing the namespace to the stream.
+		// NOTE: The given structures must be complete, with the exception of the sidedefs.
+		// If there are missing sidedefs, their reference will be removed from the linedefs.
+		public void Write(ICollection<Vertex> vertices, ICollection<Linedef> linedefs,
+						  ICollection<Sidedef> sidedefs, ICollection<Sector> sectors,
+						  ICollection<Thing> things, Stream stream, string writenamespace)
+		{
 			UniversalParser textmap = new UniversalParser();
 
 			// Begin with fields that must be at the top
@@ -118,24 +129,24 @@ namespace CodeImp.DoomBuilder.IO
 			Dictionary<Sector, int> sectorids = new Dictionary<Sector, int>();
 
 			// Index the elements in the data structures
-			foreach(Vertex v in map.Vertices) vertexids.Add(v, vertexids.Count);
-			foreach(Sidedef sd in map.Sidedefs) sidedefids.Add(sd, sidedefids.Count);
-			foreach(Sector s in map.Sectors) sectorids.Add(s, sectorids.Count);
+			foreach(Vertex v in vertices) vertexids.Add(v, vertexids.Count);
+			foreach(Sidedef sd in sidedefs) sidedefids.Add(sd, sidedefids.Count);
+			foreach(Sector s in sectors) sectorids.Add(s, sectorids.Count);
 
 			// If we write the custom field types again, then forget
 			// all previous field types (this gets rid of unused field types)
 			if(remembercustomtypes) General.Map.Options.ForgetUniversalFieldTypes();
 
 			// Write the data structures to textmap
-			WriteVertices(map.Vertices, textmap);
-			WriteLinedefs(map.Linedefs, textmap, sidedefids, vertexids);
-			WriteSidedefs(map.Sidedefs, textmap, sectorids);
-			WriteSectors(map.Sectors, textmap);
-			WriteThings(map.Things, textmap);
-			
+			WriteVertices(vertices, textmap);
+			WriteLinedefs(linedefs, textmap, sidedefids, vertexids);
+			WriteSidedefs(sidedefs, textmap, sectorids);
+			WriteSectors(sectors, textmap);
+			WriteThings(things, textmap);
+
 			// Get the textmap as string
 			string textmapstr = textmap.OutputConfiguration();
-			
+
 			// Write to stream
 			StreamWriter writer = new StreamWriter(stream, Encoding.ASCII);
 			writer.Write(textmapstr);
@@ -172,8 +183,19 @@ namespace CodeImp.DoomBuilder.IO
 				if(l.Tag != 0) coll.Add("id", l.Tag);
 				coll.Add("v1", vertexids[l.Start]);
 				coll.Add("v2", vertexids[l.End]);
-				if(l.Front != null) coll.Add("sidefront", sidedefids[l.Front]); else coll.Add("sidefront", -1);
-				if(l.Back != null) coll.Add("sideback", sidedefids[l.Back]); else coll.Add("sideback", -1);
+				
+				// Sidedef references
+				if((l.Front != null) && sidedefids.ContainsKey(l.Front))
+					coll.Add("sidefront", sidedefids[l.Front]);
+				else
+					coll.Add("sidefront", -1);
+				
+				if((l.Back != null) && sidedefids.ContainsKey(l.Back))
+					coll.Add("sideback", sidedefids[l.Back]);
+				else
+					coll.Add("sideback", -1);
+				
+				// Special
 				if(l.Action != 0) coll.Add("special", l.Action);
 				if(l.Args[0] != 0) coll.Add("arg0", l.Args[0]);
 				if(l.Args[1] != 0) coll.Add("arg1", l.Args[1]);
@@ -199,6 +221,8 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all sidedefs
 			foreach(Sidedef s in sidedefs)
 			{
+				int sectorid = (s.Sector != null) ? sectorids[s.Sector] : -1;
+
 				// Make collection
 				UniversalCollection coll = new UniversalCollection();
 				if(s.OffsetX != 0) coll.Add("offsetx", s.OffsetX);

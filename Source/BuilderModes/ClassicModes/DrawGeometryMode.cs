@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "drawlinesmode",
 			  Volatile = true)]
 
-	public class DrawGeometryMode : ClassicMode
+	public class DrawGeometryMode : BaseClassicMode
 	{
 		#region ================== Structures
 
@@ -61,9 +61,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		// Mode to return to
-		private EditMode basemode;
-
 		// Drawing points
 		private List<DrawnVertex> points;
 		private List<LineLengthLabel> labels;
@@ -82,9 +79,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		// Just keep the base mode button checked
-		public override string EditModeButtonName { get { return basemode.GetType().Name; } }
-
-		internal EditMode BaseMode { get { return basemode; } }
+		public override string EditModeButtonName { get { return General.Map.PreviousStableMode.Name; } }
 
 		#endregion
 
@@ -94,13 +89,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public DrawGeometryMode()
 		{
 			// Initialize
-			this.basemode = General.Map.Mode;
 			points = new List<DrawnVertex>();
 			labels = new List<LineLengthLabel>();
 			
 			// No selection in this mode
 			General.Map.Map.ClearAllSelected();
-			General.Map.Map.ClearAllMarks();
+			General.Map.Map.ClearAllMarks(false);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -125,6 +119,215 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// This checks if the view offset/zoom changed and updates the check
+		protected bool CheckViewChanged()
+		{
+			bool viewchanged = false;
+
+			// View changed?
+			if(renderer.OffsetX != lastoffsetx) viewchanged = true;
+			if(renderer.OffsetY != lastoffsety) viewchanged = true;
+			if(renderer.Scale != lastscale) viewchanged = true;
+
+			// Keep view information
+			lastoffsetx = renderer.OffsetX;
+			lastoffsety = renderer.OffsetY;
+			lastscale = renderer.Scale;
+
+			// Return result
+			return viewchanged;
+		}
+		
+		// This updates the dragging
+		private void Update()
+		{
+			PixelColor stitchcolor = General.Colors.Highlight;
+			PixelColor losecolor = General.Colors.Selection;
+			PixelColor color;
+
+			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+
+			DrawnVertex lastp = new DrawnVertex();
+			DrawnVertex curp = GetCurrentPosition();
+			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
+			float vsizeborder = ((float)renderer.VertexSize + 3.0f) / renderer.Scale;
+
+			// The last label's end must go to the mouse cursor
+			if(labels.Count > 0) labels[labels.Count - 1].End = curp.pos;
+
+			// Render drawing lines
+			if(renderer.StartOverlay(true))
+			{
+				// Go for all points to draw lines
+				if(points.Count > 0)
+				{
+					// Render lines
+					lastp = points[0];
+					for(int i = 1; i < points.Count; i++)
+					{
+						// Determine line color
+						if(lastp.stitch && points[i].stitch) color = stitchcolor;
+						else color = losecolor;
+
+						// Render line
+						renderer.RenderLine(lastp.pos, points[i].pos, LINE_THICKNESS, color, true);
+						lastp = points[i];
+					}
+
+					// Determine line color
+					if(lastp.stitch && snaptonearest) color = stitchcolor;
+					else color = losecolor;
+
+					// Render line to cursor
+					renderer.RenderLine(lastp.pos, curp.pos, LINE_THICKNESS, color, true);
+
+					// Render vertices
+					for(int i = 0; i < points.Count; i++)
+					{
+						// Determine line color
+						if(points[i].stitch) color = stitchcolor;
+						else color = losecolor;
+
+						// Render line
+						renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
+					}
+				}
+
+				// Determine point color
+				if(snaptonearest) color = stitchcolor;
+				else color = losecolor;
+
+				// Render vertex at cursor
+				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
+
+				// Go for all labels
+				foreach(LineLengthLabel l in labels) renderer.RenderText(l.TextLabel);
+
+				// Done
+				renderer.Finish();
+			}
+
+			// Done
+			renderer.Present();
+		}
+
+		// This gets the aligned and snapped draw position
+		private DrawnVertex GetCurrentPosition()
+		{
+			DrawnVertex p = new DrawnVertex();
+
+			// Snap to nearest?
+			if(snaptonearest)
+			{
+				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
+
+				// Go for all drawn points
+				foreach(DrawnVertex v in points)
+				{
+					Vector2D delta = mousemappos - v.pos;
+					if(delta.GetLengthSq() < (vrange * vrange))
+					{
+						p.pos = v.pos;
+						p.stitch = true;
+						return p;
+					}
+				}
+
+				// Try the nearest vertex
+				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
+				if(nv != null)
+				{
+					p.pos = nv.Position;
+					p.stitch = true;
+					return p;
+				}
+
+				// Try the nearest linedef
+				Linedef nl = General.Map.Map.NearestLinedefRange(mousemappos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+				if(nl != null)
+				{
+					// Snap to grid?
+					if(snaptogrid)
+					{
+						// Get grid intersection coordinates
+						List<Vector2D> coords = nl.GetGridIntersections();
+
+						// Find nearest grid intersection
+						float found_distance = float.MaxValue;
+						Vector2D found_coord = new Vector2D();
+						foreach(Vector2D v in coords)
+						{
+							Vector2D delta = mousemappos - v;
+							if(delta.GetLengthSq() < found_distance)
+							{
+								found_distance = delta.GetLengthSq();
+								found_coord = v;
+							}
+						}
+
+						// Align to the closest grid intersection
+						p.pos = found_coord;
+						p.stitch = true;
+						return p;
+					}
+					else
+					{
+						// Aligned to line
+						p.pos = nl.NearestOnLine(mousemappos);
+						p.stitch = true;
+						return p;
+					}
+				}
+			}
+
+			// Snap to grid?
+			if(snaptogrid)
+			{
+				// Aligned to grid
+				p.pos = General.Map.Grid.SnappedToGrid(mousemappos);
+				p.stitch = snaptonearest;
+				return p;
+			}
+			else
+			{
+				// Normal position
+				p.pos = mousemappos;
+				p.stitch = snaptonearest;
+				return p;
+			}
+		}
+
+		// This draws a point at a specific location
+		public void DrawPointAt(Vector2D pos, bool stitch)
+		{
+			DrawnVertex newpoint = new DrawnVertex();
+			newpoint.pos = pos;
+			newpoint.stitch = stitch;
+			points.Add(newpoint);
+			labels.Add(new LineLengthLabel());
+			labels[labels.Count - 1].Start = newpoint.pos;
+			if(labels.Count > 1) labels[labels.Count - 2].End = newpoint.pos;
+			Update();
+
+			// Check if point stitches with the first
+			if((points.Count > 1) && (points[points.Count - 1].stitch))
+			{
+				Vector2D p1 = points[0].pos;
+				Vector2D p2 = points[points.Count - 1].pos;
+				Vector2D delta = p1 - p2;
+				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
+				{
+					// Finish drawing
+					FinishDraw();
+				}
+			}
+		}
+		
+		#endregion
+
+		#region ================== Events
+
 		// Engaging
 		public override void OnEngage()
 		{
@@ -142,9 +345,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 			
 			// Return to original mode
-			Type t = basemode.GetType();
-			basemode = (EditMode)Activator.CreateInstance(t);
-			General.Map.ChangeMode(basemode);
+			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
 		}
 
 		// Accepted
@@ -577,28 +778,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Cursor.Current = Cursors.Default;
 			
 			// Return to original mode
-			Type t = basemode.GetType();
-			basemode = (EditMode)Activator.CreateInstance(t);
-			General.Map.ChangeMode(basemode);
-		}
-
-		// This checks if the view offset/zoom changed and updates the check
-		protected bool CheckViewChanged()
-		{
-			bool viewchanged = false;
-			
-			// View changed?
-			if(renderer.OffsetX != lastoffsetx) viewchanged = true;
-			if(renderer.OffsetY != lastoffsety) viewchanged = true;
-			if(renderer.Scale != lastscale) viewchanged = true;
-
-			// Keep view information
-			lastoffsetx = renderer.OffsetX;
-			lastoffsety = renderer.OffsetY;
-			lastscale = renderer.Scale;
-
-			// Return result
-			return viewchanged;
+			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
 		}
 
 		// This redraws the display
@@ -623,166 +803,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Update();
 		}
 		
-		// This updates the dragging
-		private void Update()
-		{
-			PixelColor stitchcolor = General.Colors.Highlight;
-			PixelColor losecolor = General.Colors.Selection;
-			PixelColor color;
-			
-			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
-			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
-
-			DrawnVertex lastp = new DrawnVertex();
-			DrawnVertex curp = GetCurrentPosition();
-			float vsize = ((float)renderer.VertexSize + 1.0f) / renderer.Scale;
-			float vsizeborder = ((float)renderer.VertexSize + 3.0f) / renderer.Scale;
-			
-			// The last label's end must go to the mouse cursor
-			if(labels.Count > 0) labels[labels.Count - 1].End = curp.pos;
-			
-			// Render drawing lines
-			if(renderer.StartOverlay(true))
-			{
-				// Go for all points to draw lines
-				if(points.Count > 0)
-				{
-					// Render lines
-					lastp = points[0];
-					for(int i = 1; i < points.Count; i++)
-					{
-						// Determine line color
-						if(lastp.stitch && points[i].stitch) color = stitchcolor;
-							else color = losecolor;
-						
-						// Render line
-						renderer.RenderLine(lastp.pos, points[i].pos, LINE_THICKNESS, color, true);
-						lastp = points[i];
-					}
-
-					// Determine line color
-					if(lastp.stitch && snaptonearest) color = stitchcolor;
-						else color = losecolor;
-
-					// Render line to cursor
-					renderer.RenderLine(lastp.pos, curp.pos, LINE_THICKNESS, color, true);
-					
-					// Render vertices
-					for(int i = 0; i < points.Count; i++)
-					{
-						// Determine line color
-						if(points[i].stitch) color = stitchcolor;
-							else color = losecolor;
-						
-						// Render line
-						renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
-					}
-				}
-				
-				// Determine point color
-				if(snaptonearest) color = stitchcolor;
-					else color = losecolor;
-				
-				// Render vertex at cursor
-				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
-				
-				// Go for all labels
-				foreach(LineLengthLabel l in labels) renderer.RenderText(l.TextLabel);
-				
-				// Done
-				renderer.Finish();
-			}
-
-			// Done
-			renderer.Present();
-		}
-		
-		// This gets the aligned and snapped draw position
-		private DrawnVertex GetCurrentPosition()
-		{
-			DrawnVertex p = new DrawnVertex();
-			
-			// Snap to nearest?
-			if(snaptonearest)
-			{
-				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
-				
-				// Go for all drawn points
-				foreach(DrawnVertex v in points)
-				{
-					Vector2D delta = mousemappos - v.pos;
-					if(delta.GetLengthSq() < (vrange * vrange))
-					{
-						p.pos = v.pos;
-						p.stitch = true;
-						return p;
-					}
-				}
-				
-				// Try the nearest vertex
-				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
-				if(nv != null)
-				{
-					p.pos = nv.Position;
-					p.stitch = true;
-					return p;
-				}
-				
-				// Try the nearest linedef
-				Linedef nl = General.Map.Map.NearestLinedefRange(mousemappos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
-				if(nl != null)
-				{
-					// Snap to grid?
-					if(snaptogrid)
-					{
-						// Get grid intersection coordinates
-						List<Vector2D> coords = nl.GetGridIntersections();
-
-						// Find nearest grid intersection
-						float found_distance = float.MaxValue;
-						Vector2D found_coord = new Vector2D();
-						foreach(Vector2D v in coords)
-						{
-							Vector2D delta = mousemappos - v;
-							if(delta.GetLengthSq() < found_distance)
-							{
-								found_distance = delta.GetLengthSq();
-								found_coord = v;
-							}
-						}
-						
-						// Align to the closest grid intersection
-						p.pos = found_coord;
-						p.stitch = true;
-						return p;
-					}
-					else
-					{
-						// Aligned to line
-						p.pos = nl.NearestOnLine(mousemappos);
-						p.stitch = true;
-						return p;
-					}
-				}
-			}
-
-			// Snap to grid?
-			if(snaptogrid)
-			{
-				// Aligned to grid
-				p.pos = General.Map.Grid.SnappedToGrid(mousemappos);
-				p.stitch = snaptonearest;
-				return p;
-			}
-			else
-			{
-				// Normal position
-				p.pos = mousemappos;
-				p.stitch = snaptonearest;
-				return p;
-			}
-		}
-		
 		// Mouse moving
 		public override void OnMouseMove(MouseEventArgs e)
 		{
@@ -790,31 +810,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Update();
 		}
 
-		// This draws a point at a specific location
-		public void DrawPointAt(Vector2D pos, bool stitch)
+		// When a key is released
+		public override void OnKeyUp(KeyEventArgs e)
 		{
-			DrawnVertex newpoint = new DrawnVertex();
-			newpoint.pos = pos;
-			newpoint.stitch = stitch;
-			points.Add(newpoint);
-			labels.Add(new LineLengthLabel());
-			labels[labels.Count - 1].Start = newpoint.pos;
-			if(labels.Count > 1) labels[labels.Count - 2].End = newpoint.pos;
-			Update();
-
-			// Check if point stitches with the first
-			if((points.Count > 1) && (points[points.Count - 1].stitch))
-			{
-				Vector2D p1 = points[0].pos;
-				Vector2D p2 = points[points.Count - 1].pos;
-				Vector2D delta = p1 - p2;
-				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
-				{
-					// Finish drawing
-					FinishDraw();
-				}
-			}
+			base.OnKeyUp(e);
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
 		}
+
+		// When a key is pressed
+		public override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+		}
+		
+		#endregion
+		
+		#region ================== Actions
 		
 		// Drawing a point
 		[BeginAction("drawpoint")]
@@ -850,22 +864,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.AcceptMode();
 		}
 
-		// When a key is released
-		public override void OnKeyUp(KeyEventArgs e)
-		{
-			base.OnKeyUp(e);
-			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
-			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
-		}
-
-		// When a key is pressed
-		public override void OnKeyDown(KeyEventArgs e)
-		{
-			base.OnKeyDown(e);
-			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
-			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
-		}
-		
 		#endregion
 	}
 }

@@ -168,9 +168,20 @@ namespace CodeImp.DoomBuilder.Editing
 		// The edit mode should mark all vertices, lines and sectors
 		// that need to be copied.
 		public virtual bool OnCopyBegin() { return false; }
+
+		// Called when the marked geometry has been copied.
+		public virtual void OnCopyEnd() { }
 		
 		// Called before pasting. Return false when paste should be cancelled.
-		public virtual bool OnPasteBegin() { return false; }
+		public virtual bool OnPasteBegin() { return true; }
+
+		// Called after new geometry has been pasted in. The new geometry is marked.
+		public virtual void OnPasteEnd() { }
+		
+		// Called when undo/redo is used
+		// Return false to cancel undo action
+		public virtual bool OnUndoBegin() { return true; }
+		public virtual bool OnRedoBegin() { return true; }
 		
 		// Interface events
 		public virtual void OnMouseClick(MouseEventArgs e) { }

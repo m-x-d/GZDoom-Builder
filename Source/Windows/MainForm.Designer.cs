@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+			System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.itemeditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
 			this.buttoneditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
@@ -62,6 +63,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menuedit = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemundo = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemredo = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
+			this.itemcut = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemcopy = new System.Windows.Forms.ToolStripMenuItem();
+			this.itempaste = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsnaptogrid = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemautomerge = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
@@ -96,6 +101,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.warninglabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.configlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.gridlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.buttongrid = new System.Windows.Forms.ToolStripDropDownButton();
 			this.itemgrid1024 = new System.Windows.Forms.ToolStripMenuItem();
@@ -130,10 +136,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.processor = new System.Windows.Forms.Timer(this.components);
 			this.warningtimer = new System.Windows.Forms.Timer(this.components);
 			this.warningflasher = new System.Windows.Forms.Timer(this.components);
-			this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
-			this.itemcut = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemcopy = new System.Windows.Forms.ToolStripMenuItem();
-			this.itempaste = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -148,6 +150,7 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
 			this.menumain.SuspendLayout();
 			this.toolbar.SuspendLayout();
 			this.statusbar.SuspendLayout();
@@ -229,6 +232,12 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripSeparator7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
 			toolStripSeparator7.Name = "toolStripSeparator7";
 			toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+			// 
+			// toolStripSeparator12
+			// 
+			toolStripSeparator12.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			toolStripSeparator12.Name = "toolStripSeparator12";
+			toolStripSeparator12.Size = new System.Drawing.Size(6, 23);
 			// 
 			// itemeditmodesseperator
 			// 
@@ -400,6 +409,38 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemredo.Tag = "builder_redo";
 			this.itemredo.Text = "Redo";
 			this.itemredo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripMenuItem7
+			// 
+			this.toolStripMenuItem7.Name = "toolStripMenuItem7";
+			this.toolStripMenuItem7.Size = new System.Drawing.Size(162, 6);
+			// 
+			// itemcut
+			// 
+			this.itemcut.Image = global::CodeImp.DoomBuilder.Properties.Resources.Cut;
+			this.itemcut.Name = "itemcut";
+			this.itemcut.Size = new System.Drawing.Size(165, 22);
+			this.itemcut.Tag = "builder_cutselection";
+			this.itemcut.Text = "Cut";
+			this.itemcut.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemcopy
+			// 
+			this.itemcopy.Image = global::CodeImp.DoomBuilder.Properties.Resources.Copy;
+			this.itemcopy.Name = "itemcopy";
+			this.itemcopy.Size = new System.Drawing.Size(165, 22);
+			this.itemcopy.Tag = "builder_copyselection";
+			this.itemcopy.Text = "Copy";
+			this.itemcopy.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itempaste
+			// 
+			this.itempaste.Image = global::CodeImp.DoomBuilder.Properties.Resources.Paste;
+			this.itempaste.Name = "itempaste";
+			this.itempaste.Size = new System.Drawing.Size(165, 22);
+			this.itempaste.Tag = "builder_pasteselection";
+			this.itempaste.Text = "Paste";
+			this.itempaste.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemsnaptogrid
 			// 
@@ -732,6 +773,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statuslabel,
             this.warninglabel,
+            this.configlabel,
+            toolStripSeparator12,
             this.gridlabel,
             this.buttongrid,
             toolStripSeparator1,
@@ -753,7 +796,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.statuslabel.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(571, 18);
+			this.statuslabel.Size = new System.Drawing.Size(208, 18);
 			this.statuslabel.Spring = true;
 			this.statuslabel.Text = "Initializing user interface...";
 			this.statuslabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -770,12 +813,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.warninglabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.warninglabel.Visible = false;
 			// 
+			// configlabel
+			// 
+			this.configlabel.AutoSize = false;
+			this.configlabel.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.configlabel.Name = "configlabel";
+			this.configlabel.Size = new System.Drawing.Size(250, 18);
+			this.configlabel.Text = "ZDoom (Doom in Hexen Format)";
+			this.configlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.configlabel.ToolTipText = "Current Game Configuration";
+			// 
 			// gridlabel
 			// 
 			this.gridlabel.AutoSize = false;
 			this.gridlabel.AutoToolTip = true;
 			this.gridlabel.Name = "gridlabel";
-			this.gridlabel.Size = new System.Drawing.Size(128, 18);
+			this.gridlabel.Size = new System.Drawing.Size(62, 18);
 			this.gridlabel.Text = "32 mp";
 			this.gridlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.gridlabel.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
@@ -1093,38 +1146,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.warningflasher.Tick += new System.EventHandler(this.warningflasher_Tick);
 			// 
-			// toolStripMenuItem7
-			// 
-			this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-			this.toolStripMenuItem7.Size = new System.Drawing.Size(162, 6);
-			// 
-			// itemcut
-			// 
-			this.itemcut.Image = global::CodeImp.DoomBuilder.Properties.Resources.Cut;
-			this.itemcut.Name = "itemcut";
-			this.itemcut.Size = new System.Drawing.Size(165, 22);
-			this.itemcut.Tag = "builder_cutselection";
-			this.itemcut.Text = "Cut";
-			this.itemcut.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemcopy
-			// 
-			this.itemcopy.Image = global::CodeImp.DoomBuilder.Properties.Resources.Copy;
-			this.itemcopy.Name = "itemcopy";
-			this.itemcopy.Size = new System.Drawing.Size(165, 22);
-			this.itemcopy.Tag = "builder_copyselection";
-			this.itemcopy.Text = "Copy";
-			this.itemcopy.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itempaste
-			// 
-			this.itempaste.Image = global::CodeImp.DoomBuilder.Properties.Resources.Paste;
-			this.itempaste.Name = "itempaste";
-			this.itempaste.Size = new System.Drawing.Size(165, 22);
-			this.itempaste.Tag = "builder_pasteselection";
-			this.itempaste.Text = "Paste";
-			this.itempaste.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1256,5 +1277,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemcut;
 		private System.Windows.Forms.ToolStripMenuItem itemcopy;
 		private System.Windows.Forms.ToolStripMenuItem itempaste;
+		private System.Windows.Forms.ToolStripStatusLabel configlabel;
 	}
 }

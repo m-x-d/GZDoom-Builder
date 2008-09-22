@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Configuration cfg;
 		
 		// General settings
+		private string configname;
 		private string enginename;
 		private float defaulttexturescale;
 		private float defaultflatscale;
@@ -102,6 +103,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		// General settings
+		public string Name { get { return configname; } }
 		public string EngineName { get { return enginename; } }
 		public float DefaultTextureScale { get { return defaulttexturescale; } }
 		public float DefaultFlatScale { get { return defaultflatscale; } }
@@ -184,6 +186,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.skills = new List<SkillInfo>();
 
 			// Read general settings
+			configname = cfg.ReadSetting("game", "<unnamed game>");
 			enginename = cfg.ReadSetting("engine", "");
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
 			defaultflatscale = cfg.ReadSetting("defaultflatscale", 1f);

@@ -76,6 +76,8 @@ namespace CodeImp.DoomBuilder
 		private DataManager data;
 		private EditMode mode;
 		private EditMode newmode;
+		private Type prevmode;
+		private Type prevstablemode;
 		private D3DDevice graphics;
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
@@ -101,6 +103,8 @@ namespace CodeImp.DoomBuilder
 		public MapSet Map { get { return map; } }
 		public EditMode Mode { get { return mode; } }
 		public EditMode NewMode { get { return newmode; } }
+		public Type PreviousMode { get { return prevmode; } }
+		public Type PreviousStableMode { get { return prevstablemode; } }
 		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed; } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -862,7 +866,6 @@ namespace CodeImp.DoomBuilder
 		public void ChangeMode(EditMode nextmode)
 		{
 			EditMode oldmode = mode;
-			newmode = nextmode;
 			cancelmodechange = false;
 			
 			// Log info
@@ -870,6 +873,19 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Switching edit mode to " + newmode.GetType().Name + "...");
 			else
 				General.WriteLogLine("Stopping edit mode...");
+			
+			// Remember previous mode
+			newmode = nextmode;
+			if(mode != null)
+			{
+				prevmode = mode.GetType();
+				if(!mode.Attributes.Volatile) prevstablemode = prevmode;
+			}
+			else
+			{
+				prevmode = null;
+				prevstablemode = null;
+			}
 			
 			// Let the plugins know beforehand
 			General.Plugins.ModeChanges(oldmode, newmode);
