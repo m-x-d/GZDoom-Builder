@@ -201,33 +201,86 @@ namespace CodeImp.DoomBuilder.Plugins
 
 		#region ================== Events
 
-		// This calls OnReloadResources on all plugins
+
 		public void ReloadResources()
 		{
-			foreach(Plugin p in plugins)
-				p.Plug.OnReloadResources();
+			foreach(Plugin p in plugins) p.Plug.OnReloadResources();
 		}
 
-		// This calls OnModeChange on all plugins
+
 		public void ModeChanges(EditMode oldmode, EditMode newmode)
 		{
-			foreach(Plugin p in plugins)
-				p.Plug.OnModeChange(oldmode, newmode);
+			foreach(Plugin p in plugins) p.Plug.OnModeChange(oldmode, newmode);
 		}
 
-		// This calls OnProgramReconfigure on all plugins
+
 		public void ProgramReconfigure()
 		{
-			foreach(Plugin p in plugins)
-				p.Plug.OnProgramReconfigure();
+			foreach(Plugin p in plugins) p.Plug.OnProgramReconfigure();
 		}
 
-		// This calls OnMapReconfigure on all plugins
+
 		public void MapReconfigure()
 		{
-			foreach(Plugin p in plugins)
-				p.Plug.OnMapReconfigure();
+			foreach(Plugin p in plugins) p.Plug.OnMapReconfigure();
 		}
+
+
+		public bool OnCopyBegin()
+		{
+			bool result = true;
+			foreach(Plugin p in plugins) result &= p.Plug.OnCopyBegin(result);
+			return result;
+		}
+
+
+		public void OnCopyEnd()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnCopyEnd();
+		}
+
+
+		public bool OnPasteBegin()
+		{
+			bool result = true;
+			foreach(Plugin p in plugins) result &= p.Plug.OnPasteBegin(result);
+			return result;
+		}
+
+
+		public void OnPasteEnd()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnPasteEnd();
+		}
+
+
+		public bool OnUndoBegin()
+		{
+			bool result = true;
+			foreach(Plugin p in plugins) result &= p.Plug.OnUndoBegin(result);
+			return result;
+		}
+
+
+		public void OnUndoEnd()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnUndoEnd();
+		}
+
+
+		public bool OnRedoBegin()
+		{
+			bool result = true;
+			foreach(Plugin p in plugins) result &= p.Plug.OnRedoBegin(result);
+			return result;
+		}
+
+
+		public void OnRedoEnd()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnRedoEnd();
+		}
+
 		
 		#endregion
 	}

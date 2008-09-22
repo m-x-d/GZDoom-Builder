@@ -91,37 +91,40 @@ namespace CodeImp.DoomBuilder.Editing
 		// This performs the copy. Returns false when copy was cancelled.
 		private bool DoCopySelection()
 		{
-			// Ask the editing mode to prepare selection for copying.
-			// The edit mode should mark all vertices, lines and sectors
-			// that need to be copied.
-			if(General.Map.Mode.OnCopyBegin())
+			// Let the plugins know
+			if(General.Plugins.OnPasteBegin())
 			{
-				// Get all marked elements
-				ICollection<Vertex> verts = General.Map.Map.GetMarkedVertices(true);
-				ICollection<Sidedef> sides = General.Map.Map.GetMarkedSidedefs(true);
-				ICollection<Sector> sectors = General.Map.Map.GetMarkedSectors(true);
-				ICollection<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);
-				ICollection<Thing> things = General.Map.Map.GetMarkedThings(true);
-				
-				// Write data to stream
-				MemoryStream memstream = new MemoryStream();
-				UniversalStreamWriter writer = new UniversalStreamWriter();
-				writer.RememberCustomTypes = false;
-				writer.Write(verts, lines, sides, sectors, things, memstream, null);
-				
-				// Set on clipboard
-				Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
-				
-				// Done
-				memstream.Dispose();
-				General.Map.Mode.OnCopyEnd();
-				return true;
+				// Ask the editing mode to prepare selection for copying.
+				// The edit mode should mark all vertices, lines and sectors
+				// that need to be copied.
+				if(General.Map.Mode.OnCopyBegin())
+				{
+					// Get all marked elements
+					ICollection<Vertex> verts = General.Map.Map.GetMarkedVertices(true);
+					ICollection<Sidedef> sides = General.Map.Map.GetMarkedSidedefs(true);
+					ICollection<Sector> sectors = General.Map.Map.GetMarkedSectors(true);
+					ICollection<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);
+					ICollection<Thing> things = General.Map.Map.GetMarkedThings(true);
+
+					// Write data to stream
+					MemoryStream memstream = new MemoryStream();
+					UniversalStreamWriter writer = new UniversalStreamWriter();
+					writer.RememberCustomTypes = false;
+					writer.Write(verts, lines, sides, sectors, things, memstream, null);
+
+					// Set on clipboard
+					Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
+
+					// Done
+					memstream.Dispose();
+					General.Map.Mode.OnCopyEnd();
+					General.Plugins.OnCopyEnd();
+					return true;
+				}
 			}
-			else
-			{
-				General.MessageBeep(MessageBeepType.Warning);
-				return false;
-			}
+			
+			// Aborted
+			return false;
 		}
 		
 		// This performs the paste. Returns false when paste was cancelled.
@@ -130,36 +133,40 @@ namespace CodeImp.DoomBuilder.Editing
 			// Anything to paste?
 			if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
 			{
-				// Ask the editing mode to prepare selection for pasting.
-				if(General.Map.Mode.OnPasteBegin())
+				// Let the plugins know
+				if(General.Plugins.OnPasteBegin())
 				{
-					// Read from clipboard
-					Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
-					memstream.Seek(0, SeekOrigin.Begin);
+					// Ask the editing mode to prepare selection for pasting.
+					if(General.Map.Mode.OnPasteBegin())
+					{
+						// Read from clipboard
+						Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
+						memstream.Seek(0, SeekOrigin.Begin);
 
-					// Mark all current geometry
-					General.Map.Map.ClearAllMarks(true);
+						// Mark all current geometry
+						General.Map.Map.ClearAllMarks(true);
 
-					// Read data stream
-					UniversalStreamReader reader = new UniversalStreamReader();
-					reader.Read(General.Map.Map, memstream);
+						// Read data stream
+						UniversalStreamReader reader = new UniversalStreamReader();
+						reader.Read(General.Map.Map, memstream);
 
-					// The new geometry is not marked, so invert the marks to get it marked
-					General.Map.Map.InvertAllMarks();
+						// The new geometry is not marked, so invert the marks to get it marked
+						General.Map.Map.InvertAllMarks();
 
-					// Done
-					memstream.Dispose();
-					General.Map.Mode.OnPasteEnd();
-					return true;
+						// Done
+						memstream.Dispose();
+						General.Map.Mode.OnPasteEnd();
+						General.Plugins.OnPasteEnd();
+						return true;
+					}
 				}
-				else
-				{
-					General.MessageBeep(MessageBeepType.Warning);
-					return false;
-				}
+				
+				// Aborted
+				return false;
 			}
 			else
 			{
+				// Nothing usefull on the clipboard
 				General.MessageBeep(MessageBeepType.Warning);
 				return false;
 			}
