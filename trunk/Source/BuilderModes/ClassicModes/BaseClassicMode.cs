@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This occurs when the user presses Copy. All selected geometry must be marked for copying!
 		public override bool OnCopyBegin()
 		{
-			General.Map.Map.MarkAllSelectedGeometry(true);
+			General.Map.Map.MarkAllSelectedGeometry(true, false);
 
 			// Return true when anything is selected so that the copy continues
 			// We only have to check vertices for the geometry, because without selected

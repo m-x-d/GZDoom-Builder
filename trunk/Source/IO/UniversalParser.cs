@@ -65,6 +65,9 @@ namespace CodeImp.DoomBuilder.IO
 		
 		// Configuration root
 		private UniversalCollection root = null;
+
+		// Settings
+		private bool strictchecking = true;
 		
 		#endregion
 		
@@ -75,6 +78,7 @@ namespace CodeImp.DoomBuilder.IO
 		public string ErrorDescription { get { return cpErrorDescription; } }
 		public int ErrorLine { get { return cpErrorLine; } }
 		public UniversalCollection Root { get { return root; } }
+		public bool StrictChecking { get { return strictchecking; } set { strictchecking = value; } }
 		
 		#endregion
 		
@@ -144,15 +148,19 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			else
 			{
-				// Check if all characters are valid
-				foreach(char c in key)
+				// Only when strict checking
+				if(strictchecking)
 				{
-					if(KEY_CHARACTERS.IndexOf(c) == -1)
+					// Check if all characters are valid
+					foreach(char c in key)
 					{
-						// ERROR: Invalid characters in key name
-						if(errorline > -1) RaiseError(errorline, ERROR_KEYCHARACTERS);
-						validateresult = false;
-						break;
+						if(KEY_CHARACTERS.IndexOf(c) == -1)
+						{
+							// ERROR: Invalid characters in key name
+							if(errorline > -1) RaiseError(errorline, ERROR_KEYCHARACTERS);
+							validateresult = false;
+							break;
+						}
 					}
 				}
 			}

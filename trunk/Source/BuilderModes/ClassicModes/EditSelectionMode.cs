@@ -685,6 +685,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Update
 				UpdateRectangleComponents();
+				Update();
+				
+				// When pasting and mouse is in screen, drag selection immediately
+				if(pasting && mouseinside) OnSelect();
 			}
 			else
 			{
@@ -736,11 +740,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Make undo
 				General.Map.UndoRedo.CreateUndo("Edit selection", UndoGroup.None, 0);
-
-				// Mark the selected geometry
+				
+				// Mark selected geometry
 				General.Map.Map.ClearAllMarks(false);
-				General.Map.Map.MarkAllSelectedGeometry(true);
-
+				General.Map.Map.MarkAllSelectedGeometry(true, false);
+				
 				// Move geometry to new position
 				UpdateGeometry();
 				General.Map.Map.Update(true, true);
@@ -752,21 +756,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.SnapAllToAccuracy();
 
 				// When pasting, we want to join with the parent sector
+				// where the sidedefs are referencing a virtual sector
 				if(pasting)
 				{
 					General.Settings.FindDefaultDrawSettings();
 					
 					// Go for all linedefs in the new geometry
-					ICollection<Linedef> newlines = General.Map.Map.GetMarkedLinedefs(true);
-					foreach(Linedef l in newlines)
+					List<Sidedef> newsides = General.Map.Map.GetMarkedSidedefs(true);
+					for(int i = 0; i < newsides.Count; i++)
 					{
-						// Missing sector on the front?
-						if((l.Front == null) && l.Marked)
+						Sidedef s = newsides[i];
+						
+						// Connected to a virtual sector?
+						if(s.Marked && s.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 						{
 							bool joined = false;
 
 							// Find a way to join a sector here
-							List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(l, true);
+							List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(s.Line, s.IsFront);
 							if(sectorlines != null)
 							{
 								// We don't always want to join a sector
@@ -774,12 +781,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								Sidedef joinsidedef = null;
 								foreach(LinedefSide ls in sectorlines)
 								{
-									if(ls.Front && (ls.Line.Front != null))
+									if(ls.Front && (ls.Line.Front != null) && !ls.Line.Front.Marked)
 									{
 										joinsidedef = ls.Line.Front;
 										break;
 									}
-									else if(!ls.Front && (ls.Line.Back != null))
+									else if(!ls.Front && (ls.Line.Back != null) && !ls.Line.Back.Marked)
 									{
 										joinsidedef = ls.Line.Back;
 										break;
@@ -793,63 +800,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
 									joined = true;
 
-									// Remove mark from linedefs so that it is not used to join a sector again
-									foreach(Sidedef sd in newsector.Sidedefs) sd.Line.Marked = false;
+									// Remove mark from sidedefs so that it is not used to join a sector again
+									foreach(Sidedef sd in newsector.Sidedefs) sd.Marked = false;
 								}
 							}
 
 							// Not joined any sector?
 							if(!joined)
 							{
-								// Flip the linedef and correct the sided flags
-								l.FlipVertices();
-								l.FlipSidedefs();
+								Linedef l = s.Line;
+
+								// Remove the sidedef
+								s.Dispose();
+
+								// Correct the linedef
+								if((l.Front == null) && (l.Back != null))
+								{
+									l.FlipVertices();
+									l.FlipSidedefs();
+								}
+
+								// Correct the sided flags
 								l.ApplySidedFlags();
 							}
 						}
-						
-						// Missing sector on the back?
-						if((l.Back == null) && l.Marked && l.IsFlagSet(General.Map.Config.DoubleSidedFlag))
-						{
-							bool joined = false;
-
-							// Find a way to join a sector here
-							List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(l, false);
-							if(sectorlines != null)
-							{
-								// We don't always want to join a sector
-								// So first check if any of the surrounding lines originally have sidedefs
-								Sidedef joinsidedef = null;
-								foreach(LinedefSide ls in sectorlines)
-								{
-									if(ls.Front && (ls.Line.Front != null))
-									{
-										joinsidedef = ls.Line.Front;
-										break;
-									}
-									else if(!ls.Front && (ls.Line.Back != null))
-									{
-										joinsidedef = ls.Line.Back;
-										break;
-									}
-								}
-
-								// Join?
-								if(joinsidedef != null)
-								{
-									// Join the new sector
-									Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
-									joined = true;
-
-									// Remove mark from linedefs so that it is not used to join a sector again
-									foreach(Sidedef sd in newsector.Sidedefs) sd.Line.Marked = false;
-								}
-							}
-
-							// Correct the sided flags if not joined a sector
-							if(!joined) l.ApplySidedFlags();
-						}
 					}
+
+					// Remove any virtual sectors
+					General.Map.Map.RemoveVirtualSectors();
 				}
 
 				// Update cached values

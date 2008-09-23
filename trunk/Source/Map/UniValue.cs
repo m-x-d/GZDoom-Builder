@@ -82,6 +82,16 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Constructor
+		public UniValue(UniValue v)
+		{
+			this.type = v.type;
+			this.value = v.value;
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Constructor
 		public UniValue()
 		{
 			// We have no destructor

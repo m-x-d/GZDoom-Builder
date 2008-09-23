@@ -45,12 +45,14 @@ namespace CodeImp.DoomBuilder.IO
 
 		private Configuration config;
 		private bool setknowncustomtypes;
+		private bool strictchecking = true;
 		
 		#endregion
 
 		#region ================== Properties
 
 		public bool SetKnownCustomTypes { get { return setknowncustomtypes; } set { setknowncustomtypes = value; } }
+		public bool StrictChecking { get { return strictchecking; } set { strictchecking = value; } }
 
 		#endregion
 
@@ -111,7 +113,8 @@ namespace CodeImp.DoomBuilder.IO
 			Dictionary<int, Vertex> vertexlink;
 			Dictionary<int, Sector> sectorlink;
 			UniversalParser textmap = new UniversalParser();
-
+			textmap.StrictChecking = strictchecking;
+			
 			try
 			{
 				// Read UDMF from stream

@@ -28,6 +28,7 @@ using SlimDX;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -42,6 +43,12 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Stiching distance
 		public const float STITCH_DISTANCE = 0.001f;
+		
+		// Virtual sector identification
+		// This contains a character that is invalid in the UDMF standard, but valid
+		// in our parser, so that it can only be used by Doom Builder and will never
+		// conflict with any other valid UDMF field.
+		internal const string VIRTUAL_SECTOR_FIELD = "!virtual_sector";
 		
 		#endregion
 
@@ -58,8 +65,9 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Sector> sectors;
 		private LinkedList<Thing> things;
 
-		// Optimization
+		// Statics
 		private static long emptylongname;
+		private static UniValue virtualsectorvalue;
 
 		// Disposing
 		private bool isdisposed = false;
@@ -74,7 +82,10 @@ namespace CodeImp.DoomBuilder.Map
 		public ICollection<Sector> Sectors { get { return sectors; } }
 		public ICollection<Thing> Things { get { return things; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		
 		public static long EmptyLongName { get { return emptylongname; } }
+		public static string VirtualSectorField { get { return VIRTUAL_SECTOR_FIELD; } }
+		public static UniValue VirtualSectorValue { get { return virtualsectorvalue; } }
 		
 		#endregion
 
@@ -144,6 +155,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal static void Initialize()
 		{
 			emptylongname = Lump.MakeLongName("-");
+			virtualsectorvalue = new UniValue((int)UniversalType.Integer, (int)0);
 		}
 
 		#endregion
@@ -211,6 +223,116 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Vertex v in vertices) v.Clone = null;
 			foreach(Sector s in sectors) s.Clone = null;
 			
+			// Return the new set
+			return newset;
+		}
+
+		// This makes a deep copy of the marked geometry and binds missing sectors to a virtual sector
+		internal MapSet CloneMarked()
+		{
+			Sector virtualsector = null;
+			
+			// Create the map set
+			MapSet newset = new MapSet();
+
+			// Get marked geometry
+			ICollection<Vertex> mvertices = GetMarkedVertices(true);
+			ICollection<Linedef> mlinedefs = GetMarkedLinedefs(true);
+			ICollection<Sector> msectors = GetMarkedSectors(true);
+			ICollection<Thing> mthings = GetMarkedThings(true);
+			
+			// Go for all vertices
+			foreach(Vertex v in mvertices)
+			{
+				// Make new vertex
+				v.Clone = newset.CreateVertex(v.Position);
+				v.CopyPropertiesTo(v.Clone);
+			}
+
+			// Go for all sectors
+			foreach(Sector s in msectors)
+			{
+				// Make new sector
+				s.Clone = newset.CreateSector();
+				s.CopyPropertiesTo(s.Clone);
+			}
+
+			// Go for all linedefs
+			foreach(Linedef l in mlinedefs)
+			{
+				// Make new linedef
+				Linedef nl = newset.CreateLinedef(l.Start.Clone, l.End.Clone);
+				l.CopyPropertiesTo(nl);
+
+				// Linedef has a front side?
+				if(l.Front != null)
+				{
+					Sidedef nd;
+					
+					// Sector on front side marked?
+					if(l.Front.Sector.Marked)
+					{
+						// Make new sidedef
+						nd = newset.CreateSidedef(nl, true, l.Front.Sector.Clone);
+					}
+					else
+					{
+						// Make virtual sector if needed
+						if(virtualsector == null)
+						{
+							virtualsector = newset.CreateSector();
+							l.Front.Sector.CopyPropertiesTo(virtualsector);
+							virtualsector.Fields[VIRTUAL_SECTOR_FIELD] = new UniValue(virtualsectorvalue);
+						}
+						
+						// Make new sidedef that links to the virtual sector
+						nd = newset.CreateSidedef(nl, true, virtualsector);
+					}
+					
+					l.Front.CopyPropertiesTo(nd);
+				}
+
+				// Linedef has a back side?
+				if(l.Back != null)
+				{
+					Sidedef nd;
+
+					// Sector on front side marked?
+					if(l.Back.Sector.Marked)
+					{
+						// Make new sidedef
+						nd = newset.CreateSidedef(nl, false, l.Back.Sector.Clone);
+					}
+					else
+					{
+						// Make virtual sector if needed
+						if(virtualsector == null)
+						{
+							virtualsector = newset.CreateSector();
+							l.Back.Sector.CopyPropertiesTo(virtualsector);
+							virtualsector.Fields[VIRTUAL_SECTOR_FIELD] = new UniValue(virtualsectorvalue);
+						}
+
+						// Make new sidedef that links to the virtual sector
+						nd = newset.CreateSidedef(nl, false, virtualsector);
+					}
+					
+					l.Back.CopyPropertiesTo(nd);
+				}
+			}
+
+			// Go for all things
+			foreach(Thing t in mthings)
+			{
+				// Make new thing
+				Thing nt = newset.CreateThing();
+				t.CopyPropertiesTo(nt);
+			}
+
+			// Remove clone references
+			foreach(Vertex v in vertices) v.Clone = null;
+			foreach(Sector s in sectors) s.Clone = null;
+
 			// Return the new set
 			return newset;
 		}
@@ -713,9 +835,12 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
-		// This marks all selected geometry, including sidedefs from sectors
-		// Returns the number of selected elements
-		public void MarkAllSelectedGeometry(bool mark)
+		/// <summary>
+		/// This marks all selected geometry, including sidedefs from sectors.
+		/// When sidedefsfromsectors is true, then the sidedefs are marked according to the
+		/// marked sectors. Otherwise the sidedefs are marked according to the marked linedefs.
+		/// </summary>
+		public void MarkAllSelectedGeometry(bool mark, bool sidedefsfromsectors)
 		{
 			General.Map.Map.ClearAllMarks(!mark);
 
@@ -725,13 +850,14 @@ namespace CodeImp.DoomBuilder.Map
 			// Direct linedefs
 			General.Map.Map.MarkSelectedLinedefs(true, mark);
 
+			// Linedefs from vertices
+			// We do this before "vertices from lines" because otherwise we get lines marked that we didn't select
+			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(!mark, mark, !mark);
+			foreach(Linedef l in lines) l.Marked = mark;
+
 			// Vertices from linedefs
 			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(mark);
 			foreach(Vertex v in verts) v.Marked = mark;
-
-			// Linedefs from vertices
-			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(!mark, mark, !mark);
-			foreach(Linedef l in lines) l.Marked = mark;
 
 			// Mark sectors from linedefs (note: this must be the first to mark
 			// sectors, because this clears the sector marks!)
@@ -751,9 +877,11 @@ namespace CodeImp.DoomBuilder.Map
 			// Direct things
 			General.Map.Map.MarkSelectedThings(true, mark);
 
-			// Sidedefs from linedefs
-			//General.Map.Map.MarkSidedefsFromLinedefs(true, mark);
-			General.Map.Map.MarkSidedefsFromSectors(true, mark);
+			// Sidedefs from linedefs or sectors
+			if(sidedefsfromsectors)
+				General.Map.Map.MarkSidedefsFromSectors(true, mark);
+			else
+				General.Map.Map.MarkSidedefsFromLinedefs(true, mark);
 		}
 		
 		#endregion
@@ -922,6 +1050,31 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Geometry Tools
 
+		// This removes any virtual sectors in the map
+		// Returns the number of sectors removed
+		public int RemoveVirtualSectors()
+		{
+			int count = 0;
+			LinkedListNode<Sector> n = sectors.First;
+			
+			// Go for all sectors
+			while(n != null)
+			{
+				LinkedListNode<Sector> nn = n.Next;
+				
+				// Remove when virtual
+				if(n.Value.Fields.ContainsKey(VIRTUAL_SECTOR_FIELD))
+				{
+					n.Value.Dispose();
+					count++;
+				}
+				
+				n = nn;
+			}
+
+			return count;
+		}
+		
 		// This joins overlapping lines together
 		// Returns the number of joins made
 		public static int JoinOverlappingLines(ICollection<Linedef> lines)
