@@ -754,12 +754,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// When pasting, we want to join with the parent sector
 				if(pasting)
 				{
+					General.Settings.FindDefaultDrawSettings();
+					
 					// Go for all linedefs in the new geometry
 					ICollection<Linedef> newlines = General.Map.Map.GetMarkedLinedefs(true);
 					foreach(Linedef l in newlines)
 					{
 						// Missing sector on the front?
-						if((l.Front == null) && l.Front.Marked)
+						if((l.Front == null) && l.Marked)
 						{
 							bool joined = false;
 
@@ -791,8 +793,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
 									joined = true;
 
-									// Remove mark from sidedefs so that it is not used to join a sector again
-									foreach(Sidedef sd in newsector.Sidedefs) sd.Marked = false;
+									// Remove mark from linedefs so that it is not used to join a sector again
+									foreach(Sidedef sd in newsector.Sidedefs) sd.Line.Marked = false;
 								}
 							}
 
@@ -807,7 +809,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						
 						// Missing sector on the back?
-						if((l.Back == null) && l.Back.Marked && l.IsFlagSet(General.Map.Config.DoubleSidedFlag))
+						if((l.Back == null) && l.Marked && l.IsFlagSet(General.Map.Config.DoubleSidedFlag))
 						{
 							bool joined = false;
 
@@ -839,8 +841,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
 									joined = true;
 
-									// Remove mark from sidedefs so that it is not used to join a sector again
-									foreach(Sidedef sd in newsector.Sidedefs) sd.Marked = false;
+									// Remove mark from linedefs so that it is not used to join a sector again
+									foreach(Sidedef sd in newsector.Sidedefs) sd.Line.Marked = false;
 								}
 							}
 
