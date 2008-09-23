@@ -99,7 +99,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.SelectMarkedGeometry(true, true);
 
 			// Switch to EditSelectionMode
-			General.Map.ChangeMode("EditSelectionMode");
+			EditSelectionMode editmode = new EditSelectionMode();
+			editmode.Pasting = true;
+			General.Map.ChangeMode(editmode);
 		}
 
 		#endregion

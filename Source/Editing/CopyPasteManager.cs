@@ -133,6 +133,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Anything to paste?
 			if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
 			{
+				// Cancel volatile mode
+				General.DisengageVolatileMode();
+				
 				// Let the plugins know
 				if(General.Plugins.OnPasteBegin())
 				{

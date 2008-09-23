@@ -832,7 +832,7 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		#region ================== Editing Modes
-
+		
 		/// <summary>
 		/// This cancels the current mode.
 		/// </summary>
@@ -949,7 +949,7 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		#region ================== Methods
-
+		
 		// This changes thing filter
 		internal void ChangeThingFilter(ThingsFilter newfilter)
 		{
@@ -1036,7 +1036,7 @@ namespace CodeImp.DoomBuilder
 		internal void ShowMapOptions()
 		{
 			// Cancel volatile mode, if any
-			General.CancelVolatileMode();
+			General.DisengageVolatileMode();
 			
 			// Show map options dialog
 			MapOptionsForm optionsform = new MapOptionsForm(options);

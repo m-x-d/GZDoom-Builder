@@ -83,8 +83,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		// Mode switching
+		// Modes
 		private bool modealreadyswitching = false;
+		private bool pasting = false;
 		
 		// Highlighted vertex
 		private Vertex highlighted;
@@ -133,6 +134,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Just keep the base mode button checked
 		public override string EditModeButtonName { get { return General.Map.PreviousStableMode.Name; } }
+
+		public bool Pasting { get { return pasting; } set { pasting = value; } }
 		
 		#endregion
 
@@ -657,6 +660,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				basesize = size;
 				baseoffset = offset;
 
+				// When pasting, we want to move the geometry so it is visible
+				if(pasting)
+				{
+					// Mouse in screen?
+					if(mouseinside)
+					{
+						offset = mousemappos - size / 2;
+					}
+					else
+					{
+						Vector2D viewmappos = new Vector2D(renderer.OffsetX, renderer.OffsetY);
+						offset = viewmappos - size / 2;
+					}
+
+					UpdateGeometry();
+				}
+
 				// Set presentation
 				if(selectedthings.Count > 0)
 					renderer.SetPresentation(Presentation.Things);
@@ -717,6 +737,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Make undo
 				General.Map.UndoRedo.CreateUndo("Edit selection", UndoGroup.None, 0);
 
+				// Mark the selected geometry
+				General.Map.Map.ClearAllMarks(false);
+				General.Map.Map.MarkAllSelectedGeometry(true);
+
 				// Move geometry to new position
 				UpdateGeometry();
 				General.Map.Map.Update(true, true);
@@ -726,6 +750,105 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();
+
+				// When pasting, we want to join with the parent sector
+				if(pasting)
+				{
+					// Go for all linedefs in the new geometry
+					ICollection<Linedef> newlines = General.Map.Map.GetMarkedLinedefs(true);
+					foreach(Linedef l in newlines)
+					{
+						// Missing sector on the front?
+						if((l.Front == null) && l.Front.Marked)
+						{
+							bool joined = false;
+
+							// Find a way to join a sector here
+							List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(l, true);
+							if(sectorlines != null)
+							{
+								// We don't always want to join a sector
+								// So first check if any of the surrounding lines originally have sidedefs
+								Sidedef joinsidedef = null;
+								foreach(LinedefSide ls in sectorlines)
+								{
+									if(ls.Front && (ls.Line.Front != null))
+									{
+										joinsidedef = ls.Line.Front;
+										break;
+									}
+									else if(!ls.Front && (ls.Line.Back != null))
+									{
+										joinsidedef = ls.Line.Back;
+										break;
+									}
+								}
+
+								// Join?
+								if(joinsidedef != null)
+								{
+									// Join the new sector
+									Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
+									joined = true;
+
+									// Remove mark from sidedefs so that it is not used to join a sector again
+									foreach(Sidedef sd in newsector.Sidedefs) sd.Marked = false;
+								}
+							}
+
+							// Not joined any sector?
+							if(!joined)
+							{
+								// Flip the linedef and correct the sided flags
+								l.FlipVertices();
+								l.FlipSidedefs();
+								l.ApplySidedFlags();
+							}
+						}
+						
+						// Missing sector on the back?
+						if((l.Back == null) && l.Back.Marked && l.IsFlagSet(General.Map.Config.DoubleSidedFlag))
+						{
+							bool joined = false;
+
+							// Find a way to join a sector here
+							List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(l, false);
+							if(sectorlines != null)
+							{
+								// We don't always want to join a sector
+								// So first check if any of the surrounding lines originally have sidedefs
+								Sidedef joinsidedef = null;
+								foreach(LinedefSide ls in sectorlines)
+								{
+									if(ls.Front && (ls.Line.Front != null))
+									{
+										joinsidedef = ls.Line.Front;
+										break;
+									}
+									else if(!ls.Front && (ls.Line.Back != null))
+									{
+										joinsidedef = ls.Line.Back;
+										break;
+									}
+								}
+
+								// Join?
+								if(joinsidedef != null)
+								{
+									// Join the new sector
+									Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
+									joined = true;
+
+									// Remove mark from sidedefs so that it is not used to join a sector again
+									foreach(Sidedef sd in newsector.Sidedefs) sd.Marked = false;
+								}
+							}
+
+							// Correct the sided flags if not joined a sector
+							if(!joined) l.ApplySidedFlags();
+						}
+					}
+				}
 
 				// Update cached values
 				General.Map.Map.Update();
