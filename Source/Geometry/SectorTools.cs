@@ -503,20 +503,32 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				if(ls.Front)
 				{
-					// Create sidedef is needed and ensure it points to the new sector
+					// Create sidedef if needed
 					if(ls.Line.Front == null)
 					{
 						General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
 						ApplyDefaultsToSidedef(ls.Line.Front, sourceside);
 					}
+					// Added 23-9-08, can we do this or will it break things?
+					else
+					{
+						// Link to the new sector
+						ls.Line.Front.ChangeSector(original.Sector);
+					}
 				}
 				else
 				{
-					// Create sidedef is needed and ensure it points to the new sector
+					// Create sidedef if needed
 					if(ls.Line.Back == null)
 					{
 						General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
 						ApplyDefaultsToSidedef(ls.Line.Back, sourceside);
+					}
+					// Added 23-9-08, can we do this or will it break things?
+					else
+					{
+						// Link to the new sector
+						ls.Line.Back.ChangeSector(original.Sector);
 					}
 				}
 

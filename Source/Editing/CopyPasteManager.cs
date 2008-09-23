@@ -99,18 +99,15 @@ namespace CodeImp.DoomBuilder.Editing
 				// that need to be copied.
 				if(General.Map.Mode.OnCopyBegin())
 				{
-					// Get all marked elements
-					ICollection<Vertex> verts = General.Map.Map.GetMarkedVertices(true);
-					ICollection<Sidedef> sides = General.Map.Map.GetMarkedSidedefs(true);
-					ICollection<Sector> sectors = General.Map.Map.GetMarkedSectors(true);
-					ICollection<Linedef> lines = General.Map.Map.GetMarkedLinedefs(true);
-					ICollection<Thing> things = General.Map.Map.GetMarkedThings(true);
-
+					// Copy the marked geometry
+					// This links sidedefs that are not linked to a marked sector to a virtual sector
+					MapSet copyset = General.Map.Map.CloneMarked();
+					
 					// Write data to stream
 					MemoryStream memstream = new MemoryStream();
 					UniversalStreamWriter writer = new UniversalStreamWriter();
 					writer.RememberCustomTypes = false;
-					writer.Write(verts, lines, sides, sectors, things, memstream, null);
+					writer.Write(copyset, memstream, null);
 
 					// Set on clipboard
 					Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
@@ -151,6 +148,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 						// Read data stream
 						UniversalStreamReader reader = new UniversalStreamReader();
+						reader.StrictChecking = false;
 						reader.Read(General.Map.Map, memstream);
 
 						// The new geometry is not marked, so invert the marks to get it marked
