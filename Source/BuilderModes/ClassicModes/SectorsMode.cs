@@ -206,33 +206,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected void SelectSector(Sector s, bool selectstate)
 		{
 			bool selectionchanged = false;
-			
-			// Select the sector?
-			if(selectstate && !s.Selected)
-			{
-				orderedselection.Add(s);
-				s.Selected = true;
-				selectionchanged = true;
-			}
-			// Deselect the sector?
-			else if(!selectstate && s.Selected)
-			{
-				orderedselection.Remove(s);
-				s.Selected = false;
-				selectionchanged = true;
-			}
 
-			// Selection changed?
-			if(selectionchanged)
+			if(!s.IsDisposed)
 			{
-				// Make update lines selection
-				foreach(Sidedef sd in s.Sidedefs)
+				// Select the sector?
+				if(selectstate && !s.Selected)
 				{
-					bool front, back;
-					if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
-					if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
-					sd.Line.Selected = front | back;
+					orderedselection.Add(s);
+					s.Selected = true;
+					selectionchanged = true;
 				}
+				// Deselect the sector?
+				else if(!selectstate && s.Selected)
+				{
+					orderedselection.Remove(s);
+					s.Selected = false;
+					selectionchanged = true;
+				}
+
+				// Selection changed?
+				if(selectionchanged)
+				{
+					// Make update lines selection
+					foreach(Sidedef sd in s.Sidedefs)
+					{
+						bool front, back;
+						if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
+						if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
+						sd.Line.Selected = front | back;
+					}
+				}
+			}
+			else
+			{
+				// Remove from list
+				orderedselection.Remove(s);
 			}
 		}
 
