@@ -760,13 +760,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(pasting)
 				{
 					General.Settings.FindDefaultDrawSettings();
-					
+
 					// Go for all linedefs in the new geometry
 					List<Sidedef> newsides = General.Map.Map.GetMarkedSidedefs(true);
 					for(int i = 0; i < newsides.Count; i++)
 					{
 						Sidedef s = newsides[i];
-						
+
 						// Connected to a virtual sector?
 						if(s.Marked && s.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 						{
@@ -829,7 +829,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Remove any virtual sectors
 					General.Map.Map.RemoveVirtualSectors();
 				}
-
+				
 				// Update cached values
 				General.Map.Map.Update();
 
@@ -1124,8 +1124,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ClearSelection()
 		{
 			// Accept changes
-			General.Map.Map.ClearAllSelected();
 			General.Map.AcceptMode();
+			General.Map.Map.ClearAllSelected();
 		}
 
 		#endregion
