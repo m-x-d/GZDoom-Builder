@@ -1259,6 +1259,7 @@ namespace CodeImp.DoomBuilder.Windows
 			item.Enabled = (General.Map != null);
 			menumode.DropDownItems.Insert(index, item);
 			editmodeitems.Add(item);
+			ApplyShortcutKeys(menumode.DropDownItems);
 		}
 
 		// This handles edit mode button clicks
@@ -1316,12 +1317,22 @@ namespace CodeImp.DoomBuilder.Windows
 					ToolStripMenuItem menuitem = (item as ToolStripMenuItem);
 
 					// Tag set for this item?
-					if((menuitem.Tag != null) && (menuitem.Tag is string))
+					if(menuitem.Tag is string)
 					{
-						// Get the action name
-						string actionname = menuitem.Tag.ToString();
-
 						// Action with this name available?
+						string actionname = menuitem.Tag.ToString();
+						if(General.Actions.Exists(actionname))
+						{
+							// Put the action shortcut key on the menu item
+							menuitem.ShortcutKeyDisplayString = Action.GetShortcutKeyDesc(General.Actions[actionname].ShortcutKey);
+						}
+					}
+					// Edit mode info set for this item?
+					else if(menuitem.Tag is EditModeInfo)
+					{
+						// Action with this name available?
+						EditModeInfo modeinfo = (menuitem.Tag as EditModeInfo);
+						string actionname = modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly);
 						if(General.Actions.Exists(actionname))
 						{
 							// Put the action shortcut key on the menu item
