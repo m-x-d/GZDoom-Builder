@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private const float GRIP_SIZE = 9.0f;
 		private const float ZERO_SIZE_ADDITION = 20.0f;
 		private const byte RECTANGLE_ALPHA = 60;
-		private const byte EXTENSION_LINE_ALPHA = 200;
+		private const byte EXTENSION_LINE_ALPHA = 150;
 		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNESW };
 		
 		#endregion
@@ -342,7 +342,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(snaptonearest)
 						{
 							float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
-
+							
 							// Try the nearest vertex
 							Vertex nv = MapSet.NearestVertexSquareRange(unselectedvertices, snappedmappos, vrange);
 							if(nv != null)
@@ -351,34 +351,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								dosnaptogrid = false;
 							}
 						}
-
+						
 						// Snap to grid?
 						if(dosnaptogrid)
 						{
 							// Aligned to grid
 							snappedmappos = General.Map.Grid.SnappedToGrid(snappedmappos);
 						}
-
+						
 						// Keep corner position
 						Vector2D oldcorner = corners[stickcorner];
 						
 						// Change size with the scale from the ruler
 						float scale = resizeaxis.GetNearestOnLine(snappedmappos);
 						size = (basesize * resizefilter) * scale + size * (1.0f - resizefilter);
-
+						
 						// Adjust corner position
 						Vector2D newcorner = TransformedPoint(originalcorners[stickcorner]);
 						offset -= newcorner - oldcorner;
-
-						// Snappedmappos is outside the edgevector of our rectangle?
-						// Then show the extension line so that the user knows what it is aligning to
+						
+						// Show the extension line so that the user knows what it is aligning to
 						Vector2D sizefiltered = (size * resizefilter);
 						float sizelength = sizefiltered.x + sizefiltered.y;
 						Line2D edgeline = new Line2D(resizeaxis.v1 + resizevector * sizelength, resizeaxis.v1 + resizevector * sizelength - edgevector);
 						float nearestonedge = edgeline.GetNearestOnLine(snappedmappos);
 						if(nearestonedge > 0.5f)
 							extensionline = new Line2D(edgeline.v1, snappedmappos);
-						else if(nearestonedge < 0.5f)
+						else
 							extensionline = new Line2D(edgeline.v2, snappedmappos);
 						
 						// Update
@@ -394,7 +393,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						Vector2D center = offset + size * 0.5f;
 						Vector2D delta = snappedmappos - center;
 						rotation = delta.GetAngle() - rotategripangle;
-
+						
 						// Snap rotation to grip?
 						if(dosnaptogrid)
 						{
@@ -580,7 +579,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Events
-		
+
 		// Mode engages
 		public override void OnEngage()
 		{
@@ -906,11 +905,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.RenderLine(corners[1], corners[2], 4, rectcolor, true);
 				renderer.RenderLine(corners[2], corners[3], 4, rectcolor, true);
 				renderer.RenderLine(corners[3], corners[0], 4, rectcolor, true);
-
+				
 				// Extension line
 				if(extensionline.GetLengthSq() > 0.0f)
 					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(EXTENSION_LINE_ALPHA), true);
-
+				
 				// Grips
 				for(int i = 0; i < 4; i++)
 				{
@@ -1096,13 +1095,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEndSelect()
 		{
 			base.OnEndSelect();
-
+			
 			// Remove extension line
 			extensionline = new Line2D();
-
+			
 			// No modifying mode
 			mode = ModifyMode.None;
-
+			
 			// Redraw
 			General.Interface.RedrawDisplay();
 		}
