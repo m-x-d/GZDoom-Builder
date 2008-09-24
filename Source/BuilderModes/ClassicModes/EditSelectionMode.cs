@@ -749,19 +749,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UpdateGeometry();
 				General.Map.Map.Update(true, true);
 
-				// Stitch geometry
-				if(snaptonearest) General.Map.Map.StitchGeometry();
-
-				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy();
-
 				// When pasting, we want to join with the parent sector
 				// where the sidedefs are referencing a virtual sector
 				if(pasting)
 				{
 					General.Settings.FindDefaultDrawSettings();
 
-					// Go for all linedefs in the new geometry
+					// Go for all sidedes in the new geometry
 					List<Sidedef> newsides = General.Map.Map.GetMarkedSidedefs(true);
 					for(int i = 0; i < newsides.Count; i++)
 					{
@@ -772,39 +766,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							bool joined = false;
 
-							// Find a way to join a sector here
-							List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(s.Line, s.IsFront);
-							if(sectorlines != null)
+							// Not virtual on both sides?
+							if((s.Other != null) && !s.Other.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 							{
-								// We don't always want to join a sector
-								// So first check if any of the surrounding lines originally have sidedefs
 								Sidedef joinsidedef = null;
-								foreach(LinedefSide ls in sectorlines)
-								{
-									if(ls.Front && (ls.Line.Front != null) && !ls.Line.Front.Marked)
-									{
-										joinsidedef = ls.Line.Front;
-										break;
-									}
-									else if(!ls.Front && (ls.Line.Back != null) && !ls.Line.Back.Marked)
-									{
-										joinsidedef = ls.Line.Back;
-										break;
-									}
-								}
+								
+								// Find out in which sector this was pasted
+								Vector2D testpoint = s.Line.GetSidePoint(!s.IsFront);
+								Linedef nl = MapSet.NearestLinedef(General.Map.Map.GetMarkedLinedefs(false), testpoint);
+								if(nl.SideOfLine(testpoint) <= 0)
+									joinsidedef = nl.Front;
+								else
+									joinsidedef = nl.Back;
 
 								// Join?
 								if(joinsidedef != null)
 								{
-									// Join the new sector
-									Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
+									s.ChangeSector(joinsidedef.Sector);
+									s.Marked = false;
 									joined = true;
-
-									// Remove mark from sidedefs so that it is not used to join a sector again
-									foreach(Sidedef sd in newsector.Sidedefs) sd.Marked = false;
 								}
 							}
-
+							
 							// Not joined any sector?
 							if(!joined)
 							{
@@ -825,7 +808,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 						}
 					}
-
+					
+					// Stitch geometry
+					if(snaptonearest) General.Map.Map.StitchGeometry();
+					
+					// Snap to map format accuracy
+					General.Map.Map.SnapAllToAccuracy();
+					
 					// Remove any virtual sectors
 					General.Map.Map.RemoveVirtualSectors();
 				}
