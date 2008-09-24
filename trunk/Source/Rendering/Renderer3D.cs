@@ -106,8 +106,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This creates the projection
 		internal void CreateProjection()
 		{
-			// Read the FOV from configuration
-			float fov = General.Settings.VisualFOV;
+			// Calculate FOV
+			float fov = Angle2D.DegToRad((float)General.Settings.VisualFOV);
 			
 			// Calculate aspect
 			float aspect = (float)General.Map.Graphics.RenderTarget.ClientSize.Width /
@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			anglez = delta.GetAngleZ();
 			
 			// Make the view matrix
-			view = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, -1f));
+			view = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));
 
 			// Make the billboard matrix
 			billboard = Matrix.RotationYawPitchRoll(0f, anglexy, anglez - Angle2D.PIHALF);
