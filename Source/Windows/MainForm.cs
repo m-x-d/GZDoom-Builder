@@ -44,11 +44,18 @@ namespace CodeImp.DoomBuilder.Windows
 	public partial class MainForm : DelayedForm, IMainForm
 	{
 		#region ================== Constants
-
+		
 		private const string STATUS_READY_TEXT = "Ready.";
 		private const int MAX_RECENT_FILES = 8;
 		private const int MAX_RECENT_FILES_PIXELS = 250;
 		private const int WARNING_FLASH_COUNT = 5;
+		
+		private enum StatusType : int
+		{
+			Ready,
+			Busy,
+			Warning
+		}
 		
 		#endregion
 
@@ -89,6 +96,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool updatingfilters;
 		
 		// Statusbar
+		private StatusType statustype;
 		private int warningflashcount;
 		private bool warningsignon;
 		
@@ -188,9 +196,9 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions[(sender as ToolStripItem).Tag.ToString()].End();
 			this.Update();
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Window
 		
 		// Window is first shown
@@ -362,9 +370,9 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		#endregion
-
+		
 		#region ================== Statusbar
-
+		
 		// This updates the status bar
 		private void UpdateStatusbar()
 		{
@@ -395,6 +403,8 @@ namespace CodeImp.DoomBuilder.Windows
 				buttongrid.Enabled = false;
 				configlabel.Text = "";
 			}
+			
+			UpdateStatusIcon();
 		}
 		
 		// This returns the current status text
@@ -402,55 +412,63 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			return statuslabel.Text;
 		}
-
+		
 		// This shows a warning
 		public void DisplayWarning(string warning)
 		{
 			MessageBeep(MessageBeepType.Warning);
-			warninglabel.Spring = true;
-			warninglabel.Text = warning;
-			warninglabel.Image = Resources.Warning;
-			warninglabel.Visible = true;
+			if(statuslabel.Text != warning) statuslabel.Text = warning;
+			statustype = StatusType.Warning;
+			statuslabel.Image = Resources.Warning;
 			warningflashcount = 0;
 			warningsignon = true;
 			warningtimer.Stop();
 			warningtimer.Interval = 3000;
 			warningtimer.Start();
 			warningflasher.Start();
+			
+			// Refresh if needed
+			statusbar.Invalidate();
+			this.Update();
 		}
-
+		
 		// This hides any warning
 		public void HideWarning()
 		{
-			warningtimer.Stop();
-			warninglabel.Visible = false;
-			warninglabel.Spring = false;
-			warningflasher.Stop();
+			if(statustype == StatusType.Warning)
+			{
+				warningtimer.Stop();
+				warningflasher.Stop();
+				DisplayReady();
+			}
 		}
-
+		
 		// This flashes the warning sign
 		private void warningflasher_Tick(object sender, EventArgs e)
 		{
-			// Warning sign on?
-			if(warningsignon)
+			if(statustype == StatusType.Warning)
 			{
-				// Turn it off or should we stop?
-				if(warningflashcount < WARNING_FLASH_COUNT)
+				// Warning sign on?
+				if(warningsignon)
 				{
-					warninglabel.Image = Resources.WarningOff;
-					warningsignon = false;
+					// Turn it off or should we stop?
+					if(warningflashcount < WARNING_FLASH_COUNT)
+					{
+						statuslabel.Image = Resources.WarningOff;
+						warningsignon = false;
+					}
+					else
+					{
+						warningflasher.Stop();
+					}
 				}
 				else
 				{
-					warningflasher.Stop();
+					// Turn it on and count the flash
+					statuslabel.Image = Resources.Warning;
+					warningsignon = true;
+					warningflashcount++;
 				}
-			}
-			else
-			{
-				// Turn it on and count the flash
-				warninglabel.Image = Resources.Warning;
-				warningsignon = true;
-				warningflashcount++;
 			}
 		}
 		
@@ -463,10 +481,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// This changes status text
 		public void DisplayStatus(string status)
 		{
-			// Hide any warning
-			HideWarning();
+			// Stop warning timers
+			warningtimer.Stop();
+			warningflasher.Stop();
 			
 			// Update status description
+			statustype = StatusType.Busy;
 			if(statuslabel.Text != status)
 				statuslabel.Text = status;
 			
@@ -481,10 +501,23 @@ namespace CodeImp.DoomBuilder.Windows
 		// This changes status text to Ready
 		public void DisplayReady()
 		{
-			// Display ready status description
-			DisplayStatus(STATUS_READY_TEXT);
-		}
+			// Stop warning timers
+			warningtimer.Stop();
+			warningflasher.Stop();
 
+			// Display ready status description
+			statustype = StatusType.Ready;
+			if(statuslabel.Text != STATUS_READY_TEXT)
+				statuslabel.Text = STATUS_READY_TEXT;
+			
+			// Update icon as well
+			UpdateStatusIcon();
+			
+			// Refresh if needed
+			statusbar.Invalidate();
+			this.Update();
+		}
+		
 		// This updates the status icon
 		internal void UpdateStatusIcon()
 		{
@@ -498,7 +531,7 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				// Ready status?
-				if(statuslabel.Text == STATUS_READY_TEXT)
+				if(statustype == StatusType.Ready)
 				{
 					// Map open?
 					if((General.Map != null) && (General.Map.Data != null))
@@ -521,14 +554,14 @@ namespace CodeImp.DoomBuilder.Windows
 						statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status0;
 					}
 				}
-				else
+				else if(statustype == StatusType.Busy)
 				{
 					// Display busy icon
 					statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status2;
 				}
 			}
 		}
-
+		
 		// This changes coordinates display
 		public void UpdateCoordinates(Vector2D coords)
 		{

@@ -1067,8 +1067,14 @@ namespace CodeImp.DoomBuilder
 				// Let the plugins know
 				General.Plugins.MapReconfigure();
 				
+				// Update interface
+				General.MainWindow.UpdateInterface();
+				
 				// Reload resources
 				ReloadResources();
+				
+				// Done
+				General.MainWindow.DisplayReady();
 			}
 
 			// Done
