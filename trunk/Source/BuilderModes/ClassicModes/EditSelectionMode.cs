@@ -659,7 +659,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				basesize = size;
 				baseoffset = offset;
-
+				
 				// When pasting, we want to move the geometry so it is visible
 				if(pasting)
 				{
@@ -676,13 +676,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					UpdateGeometry();
 				}
-
+				
 				// Set presentation
 				if(selectedthings.Count > 0)
 					renderer.SetPresentation(Presentation.Things);
 				else
 					renderer.SetPresentation(Presentation.Standard);
-
+				
 				// Update
 				UpdateRectangleComponents();
 				Update();
@@ -693,7 +693,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				General.Interface.DisplayWarning("Please make a selection first!");
-
+				
 				// Cancel now
 				General.Map.CancelMode();
 			}
@@ -748,11 +748,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Move geometry to new position
 				UpdateGeometry();
 				General.Map.Map.Update(true, true);
-
+				
 				// When pasting, we want to join with the parent sector
 				// where the sidedefs are referencing a virtual sector
 				if(pasting)
 				{
+					Sector parent = null;
+					Sector vsector = null;
 					General.Settings.FindDefaultDrawSettings();
 
 					// Go for all sidedes in the new geometry
@@ -760,12 +762,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 0; i < newsides.Count; i++)
 					{
 						Sidedef s = newsides[i];
-
+						
 						// Connected to a virtual sector?
 						if(s.Marked && s.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 						{
 							bool joined = false;
-
+							
+							// Keep reference to virtual sector
+							vsector = s.Sector;
+							
 							// Not virtual on both sides?
 							if((s.Other != null) && !s.Other.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 							{
@@ -778,13 +783,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									joinsidedef = nl.Front;
 								else
 									joinsidedef = nl.Back;
-
+								
 								// Join?
 								if(joinsidedef != null)
 								{
+									// Join!
 									s.ChangeSector(joinsidedef.Sector);
 									s.Marked = false;
 									joined = true;
+									
+									// If we have no parent sector yet, then this is it!
+									if(parent == null) parent = joinsidedef.Sector;
 								}
 							}
 							
@@ -809,15 +818,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 					
-					// Stitch geometry
-					if(snaptonearest) General.Map.Map.StitchGeometry();
-					
-					// Snap to map format accuracy
-					General.Map.Map.SnapAllToAccuracy();
+					// Do we have a virtual and parent sector?
+					if((vsector != null) && (parent != null))
+					{
+						// Adjust the floor and ceiling heights of all new sectors
+						ICollection<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
+						foreach(Sector s in newsectors)
+						{
+							s.CeilHeight += parent.CeilHeight - vsector.CeilHeight;
+							s.FloorHeight += parent.FloorHeight - vsector.FloorHeight;
+						}
+					}
 					
 					// Remove any virtual sectors
 					General.Map.Map.RemoveVirtualSectors();
 				}
+				
+				// Stitch geometry
+				if(snaptonearest) General.Map.Map.StitchGeometry();
+				
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
 				
 				// Update cached values
 				General.Map.Map.Update();
