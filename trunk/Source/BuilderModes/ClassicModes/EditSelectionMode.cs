@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constants
 
-		private const float GRIP_SIZE = 11.0f;
+		private const float GRIP_SIZE = 9.0f;
 		private const float ZERO_SIZE_ADDITION = 20.0f;
 		private const byte RECTANGLE_ALPHA = 60;
 		private const byte EXTENSION_LINE_ALPHA = 200;
@@ -688,7 +688,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Update();
 				
 				// When pasting and mouse is in screen, drag selection immediately
-				if(pasting && mouseinside) OnSelect();
+				//if(pasting && mouseinside) OnSelect();
 			}
 			else
 			{
