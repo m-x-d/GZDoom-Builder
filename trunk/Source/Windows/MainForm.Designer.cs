@@ -45,7 +45,6 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-			this.itemeditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
 			this.buttoneditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
 			this.poscommalabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menumain = new System.Windows.Forms.MenuStrip();
@@ -135,6 +134,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.processor = new System.Windows.Forms.Timer(this.components);
 			this.warningtimer = new System.Windows.Forms.Timer(this.components);
 			this.warningflasher = new System.Windows.Forms.Timer(this.components);
+			this.menumode = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
@@ -238,11 +238,6 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripSeparator12.Name = "toolStripSeparator12";
 			toolStripSeparator12.Size = new System.Drawing.Size(6, 23);
 			// 
-			// itemeditmodesseperator
-			// 
-			this.itemeditmodesseperator.Name = "itemeditmodesseperator";
-			this.itemeditmodesseperator.Size = new System.Drawing.Size(151, 6);
-			// 
 			// buttoneditmodesseperator
 			// 
 			this.buttoneditmodesseperator.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
@@ -261,6 +256,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menumain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menufile,
             this.menuedit,
+            this.menumode,
             this.menutools,
             this.menuhelp});
 			this.menumain.Location = new System.Drawing.Point(0, 0);
@@ -378,7 +374,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemcopy,
             this.itempaste,
             toolstripSeperator6,
-            this.itemeditmodesseperator,
             this.itemsnaptogrid,
             this.itemautomerge,
             this.toolStripMenuItem6,
@@ -1132,6 +1127,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.warningflasher.Tick += new System.EventHandler(this.warningflasher_Tick);
 			// 
+			// menumode
+			// 
+			this.menumode.Name = "menumode";
+			this.menumode.Size = new System.Drawing.Size(45, 20);
+			this.menumode.Text = "Mode";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -1241,7 +1242,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripButton buttonautomerge;
 		private System.Windows.Forms.ToolStripMenuItem itemautomerge;
 		private System.Windows.Forms.ToolStripSeparator buttoneditmodesseperator;
-		private System.Windows.Forms.ToolStripSeparator itemeditmodesseperator;
 		private System.Windows.Forms.Timer processor;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
@@ -1263,5 +1263,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemcopy;
 		private System.Windows.Forms.ToolStripMenuItem itempaste;
 		private System.Windows.Forms.ToolStripStatusLabel configlabel;
+		private System.Windows.Forms.ToolStripMenuItem menumode;
 	}
 }

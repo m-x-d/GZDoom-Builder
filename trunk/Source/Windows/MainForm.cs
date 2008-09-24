@@ -181,6 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update menus and toolbar icons
 			UpdateFileMenu();
 			UpdateEditMenu();
+			UpdateModeMenu();
 			UpdateToolsMenu();
 			UpdateEditModeItems();
 			UpdateSkills();
@@ -1227,7 +1228,7 @@ namespace CodeImp.DoomBuilder.Windows
 						// Remove it and restart
 						editmodeitems.Remove(i);
 						toolbar.Items.Remove(i);
-						menuedit.DropDownItems.Remove(i);
+						menumode.DropDownItems.Remove(i);
 						removed = true;
 						break;
 					}
@@ -1252,11 +1253,11 @@ namespace CodeImp.DoomBuilder.Windows
 			editmodeitems.Add(item);
 			
 			// Create menu item
-			index = menuedit.DropDownItems.IndexOf(itemeditmodesseperator);
+			index = menumode.DropDownItems.Count;
 			item = new ToolStripMenuItem(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
 			item.Tag = modeinfo;
 			item.Enabled = (General.Map != null);
-			menuedit.DropDownItems.Insert(index, item);
+			menumode.DropDownItems.Insert(index, item);
 			editmodeitems.Add(item);
 		}
 
@@ -1588,6 +1589,15 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			buttonautomerge.Checked = !buttonautomerge.Checked;
 			itemautomerge.Checked = buttonautomerge.Checked;
+		}
+		
+		#endregion
+
+		#region ================== Mode Menu
+
+		// This sets up the modes menu
+		private void UpdateModeMenu()
+		{
 		}
 		
 		#endregion
