@@ -46,5 +46,14 @@ Stemming from the same concept is FreeDraw, which I think is also a pretty simpl
 
 ===========================================================================================
 
-Plugin that adds a key to toggle between 3D mode and the previous mode. Some people may want that behaviour back.
+Plugin that adds a key to toggle between 3D mode and the previous mode. Some people may want that behaviour back. This inludes remapping keys so that the movement can be done with ESDF or WASD.
 
+===========================================================================================
+
+[00:10] <esselfortium> in db1, i can easily place slope-copy things and other related things at a high precision, by zooming in, because they stay nice and small when i zoom in...
+[00:10] <CodeImp> then those will have to be made a very small size in the config files
+[00:10] <esselfortium> in db2, it seems that the things are represented only by the big graphic instead of a dot that stays at the same size on the screen even when i zoom in, with a highlight outline around it.
+[00:10] <esselfortium> heh. k.
+[00:11] <CodeImp> or i'll add an option that makes them stay at the same size no matter the scale
+[00:11] <esselfortium> slade has the same problem, so i'd always have to switch into db1 when setting those up :p
+[00:11] <esselfortium> yes, that would be wonderful.
