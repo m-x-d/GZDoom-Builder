@@ -728,7 +728,7 @@ namespace CodeImp.DoomBuilder
 		public static bool DisengageVolatileMode()
 		{
 			// Volatile mode?
-			if((map != null) & (map.Mode != null) && map.Mode.Attributes.Volatile)
+			if((map != null) && (map.Mode != null) && map.Mode.Attributes.Volatile)
 			{
 				// Change back to normal mode
 				map.ChangeMode(map.PreviousStableMode.Name);
