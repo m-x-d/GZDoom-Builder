@@ -63,6 +63,9 @@ namespace CodeImp.DoomBuilder.Data
 		private LinkedList<ImageData> loadlist;
 		private Thread backgroundloader;
 		
+		// Image previews
+		private PreviewManager previews;
+		
 		// Special images
 		private ImageData missingtexture3d;
 		
@@ -160,6 +163,7 @@ namespace CodeImp.DoomBuilder.Data
 			texturenames = new List<string>();
 			flatnames = new List<string>();
 			loadlist = new LinkedList<ImageData>();
+			previews = new PreviewManager();
 			
 			// Go for all locations
 			foreach(DataLocation dl in locations)
@@ -225,6 +229,10 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Stop background loader
 			StopBackgroundLoader();
+			
+			// Dispose preview manager
+			previews.Dispose();
+			previews = null;
 			
 			// Dispose resources
 			foreach(KeyValuePair<long, ImageData> i in textures) i.Value.Dispose();
