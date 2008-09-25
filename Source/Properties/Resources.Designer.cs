@@ -109,6 +109,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Grid2_arrowup {
+            get {
+                object obj = ResourceManager.GetObject("Grid2_arrowup", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Grid4 {
             get {
                 object obj = ResourceManager.GetObject("Grid4", resourceCulture);
@@ -273,6 +280,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap Zoom {
             get {
                 object obj = ResourceManager.GetObject("Zoom", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Zoom_arrowup {
+            get {
+                object obj = ResourceManager.GetObject("Zoom_arrowup", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -81,6 +81,7 @@
     <Compile Include="Data\PatchNames.cs" />
     <Compile Include="Data\PK3Reader.cs" />
     <Compile Include="Data\Playpal.cs" />
+    <Compile Include="Data\PreviewManager.cs" />
     <Compile Include="Data\ResourceImage.cs" />
     <Compile Include="Data\SimpleTextureImage.cs" />
     <Compile Include="Data\SpriteImage.cs" />
@@ -598,6 +599,8 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Grid2_arrowup.png" />
+    <None Include="Resources\Zoom_arrowup.png" />
     <None Include="Resources\Paste.png" />
     <None Include="Resources\Test.png" />
     <None Include="Resources\Warning.png" />
