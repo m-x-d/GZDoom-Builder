@@ -86,12 +86,13 @@ namespace CodeImp.DoomBuilder.Data
 			// Checks
 			if(this.IsLoaded) return;
 			if((width == 0) || (height == 0)) return;
-
+			
 			lock(this)
 			{
 				// Create texture bitmap
 				try
 				{
+					if(bitmap != null) bitmap.Dispose();
 					bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 					bitmapdata = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 					pixels = (PixelColor*)bitmapdata.Scan0.ToPointer();

@@ -183,7 +183,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateEditMenu();
 			UpdateModeMenu();
 			UpdateToolsMenu();
-			UpdateEditModeItems();
+			UpdateToolbar();
 			UpdateSkills();
 		}
 		
@@ -1052,6 +1052,13 @@ namespace CodeImp.DoomBuilder.Windows
 			int skill = (int)((sender as ToolStripMenuItem).Tag);
 			General.Map.Launcher.TestAtSkill(skill);
 		}
+
+		// Toggle monster testing
+		private void buttontestmonsters_Click(object sender, EventArgs e)
+		{
+			General.Settings.TestMonsters = !General.Settings.TestMonsters;
+			buttontestmonsters.Checked = General.Settings.TestMonsters;
+		}
 		
 		// This loses focus
 		private void LoseFocus(object sender, EventArgs e)
@@ -1184,11 +1191,14 @@ namespace CodeImp.DoomBuilder.Windows
 			if(pvi is ToolStripSeparator) pvi.Visible = false;
 		}
 		
-		// This enables or disables all editing mode items
-		private void UpdateEditModeItems()
+		// This enables or disables all editing mode items and toolbar buttons
+		private void UpdateToolbar()
 		{
-			// Enable/disable all items
+			// Enable/disable all edit mode items
 			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
+
+			// Update buttons
+			buttontestmonsters.Checked = General.Settings.TestMonsters;
 		}
 
 		// This checks one of the edit mode items (and unchecks all others)

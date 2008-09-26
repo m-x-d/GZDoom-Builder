@@ -599,6 +599,7 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Monster2.png" />
     <None Include="Resources\Grid2_arrowup.png" />
     <None Include="Resources\Zoom_arrowup.png" />
     <None Include="Resources\Paste.png" />
