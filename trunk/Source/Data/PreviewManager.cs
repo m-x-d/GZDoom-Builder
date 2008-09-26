@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 		
 		#region ================== Loading
-
+		
 		// This makes a new atlas
 		private void MakeNewAtlas()
 		{
@@ -139,7 +139,15 @@ namespace CodeImp.DoomBuilder.Data
 			
 
 		}
-
+		
+		// Background loading
+		// Return true when we have more work to do, so that the
+		// thread will not wait too long before calling again
+		internal bool BackgroundLoad()
+		{
+			
+		}
+		
 		#endregion
 	}
 }

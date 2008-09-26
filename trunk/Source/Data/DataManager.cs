@@ -55,12 +55,12 @@ namespace CodeImp.DoomBuilder.Data
 		// Flats
 		private Dictionary<long, ImageData> flats;
 		private List<string> flatnames;
-
+		
 		// Sprites
 		private Dictionary<long, ImageData> sprites;
-
+		
 		// Background loading
-		private LinkedList<ImageData> loadlist;
+		private Queue<ImageData> imageque;
 		private Thread backgroundloader;
 		
 		// Image previews
@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		public Playpal Palette { get { return palette; } }
+		internal PreviewManager Previews { get { return previews; } }
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
 		public ICollection<ImageData> Flats { get { return flats.Values; } }
 		public List<string> TextureNames { get { return texturenames; } }
@@ -341,7 +342,7 @@ namespace CodeImp.DoomBuilder.Data
 				General.MainWindow.UpdateStatusIcon();
 			}
 		}
-
+		
 		// The background loader
 		private void BackgroundLoad()
 		{
@@ -351,34 +352,37 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					// Get next item
 					ImageData image = null;
-					lock(loadlist)
+					lock(imageque)
 					{
-						// Anything to do?
-						if(loadlist.Count > 0)
+						// Fethc next image to process
+						if(imageque.Count > 0) image = imageque.Dequeue();
+					}
+					
+					// Any image to process?
+					if(image != null)
+					{
+						// Load this image?
+						if(image.ImageState == ImageLoadState.Loading)
 						{
-							// Fetch image
-							image = loadlist.First.Value;
-							image.LoadingTicket = null;
-							loadlist.RemoveFirst();
-							
-							// Load or unload this image?
-							switch(image.LoadState)
-							{
-								// Load image
-								case ImageData.LOADSTATE_LOAD:
-									image.LoadImage();
-									//image.CreateTexture();	// Impossible from different thread
-									break;
-
-								// Unload image
-								case ImageData.LOADSTATE_TRASH:
-									image.UnloadImage();
-									break;
-							}
+							// Still referenced?
+							if(image.IsReferenced)
+								image.LoadImage();
+							else
+								image.ImageState = ImageLoadState.None;
+						}
+						
+						// Unload this image?
+						if(image.ImageState == ImageLoadState.Unloading)
+						{
+							// Still unreferenced?
+							if(!image.IsReferenced)
+								image.UnloadImage();
+							else
+								image.ImageState = ImageLoadState.Ready;
 						}
 					}
-
-					// Did we do something?
+					
+					// Doing something?
 					if(image != null)
 					{
 						// Wait a bit and update icon
@@ -387,9 +391,23 @@ namespace CodeImp.DoomBuilder.Data
 					}
 					else
 					{
-						// Wait longer to release CPU resources
-						Thread.Sleep(50);
+						// Process previews only when we don't have images to process
+						// because these are lower priority than the actual images
+						if(previews.BackgroundLoad())
+						{
+							// Wait a bit and update icon
+							General.MainWindow.UpdateStatusIcon();
+							Thread.Sleep(1);
+						}
+						else
+						{
+							// Wait longer to release CPU resources
+							Thread.Sleep(50);
+						}
 					}
+					
+					// Done
+					image = null;
 				}
 				while(true);
 			}
@@ -398,54 +416,28 @@ namespace CodeImp.DoomBuilder.Data
 				return;
 			}
 		}
-
+		
 		// This adds an image for background loading or unloading
-		public void BackgroundLoadImage(ImageData img, bool load)
+		internal void ProcessImage(ImageData img)
 		{
-			int loadstate = load ? ImageData.LOADSTATE_LOAD : ImageData.LOADSTATE_TRASH;
-			
-			lock(loadlist)
+			// Load this image?
+			if((img.ImageState == ImageLoadState.None) && img.IsReferenced)
 			{
-				// Already in the list?
-				if(img.LoadingTicket != null)
-				{
-					// Just change the state
-					img.LoadState = loadstate;
-				}
-				else
-				{
-					// Set load state and add to list
-					img.LoadState = loadstate;
-					img.LoadingTicket = loadlist.AddLast(img);
-				}
+				// Add for loading
+				img.ImageState = ImageLoadState.Loading;
+				lock(imageque) { imageque.Enqueue(img); }
+			}
+			
+			// Unload this image?
+			if((img.ImageState == ImageLoadState.Ready) && !img.IsReferenced)
+			{
+				// Add for unloading
+				img.ImageState = ImageLoadState.Unloading;
+				lock(imageque) { imageque.Enqueue(img); }
 			}
 			
 			// Update icon
 			General.MainWindow.UpdateStatusIcon();
-		}
-
-		// This removes an image from background loading
-		// This does not work for images that are being unloaded!
-		public void BackgroundCancelImage(ImageData img)
-		{
-			// Queued?
-			if(img.LoadingTicket != null)
-			{
-				// Not being trashed?
-				if(img.LoadState != ImageData.LOADSTATE_TRASH)
-				{
-					lock(loadlist)
-					{
-						// Remove it from queue
-						LinkedListNode<ImageData> ticket = img.LoadingTicket;
-						img.LoadingTicket = null;
-						loadlist.Remove(ticket);
-					}
-					
-					// Update icon
-					General.MainWindow.UpdateStatusIcon();
-				}
-			}
 		}
 		
 		#endregion

@@ -36,13 +36,9 @@ namespace CodeImp.DoomBuilder.Data
 	public abstract unsafe class ImageData
 	{
 		#region ================== Constants
-
-		internal const int LOADSTATE_NONE = 0;
-		internal const int LOADSTATE_LOAD = 1;
-		internal const int LOADSTATE_TRASH = 2;
-
+		
 		#endregion
-
+		
 		#region ================== Variables
 		
 		// Properties
@@ -54,45 +50,48 @@ namespace CodeImp.DoomBuilder.Data
 		protected float scaledheight;
 		protected bool usecolorcorrection;
 		
-		// Background loading
-		private LinkedListNode<ImageData> loadingticket;
-		private int loadstate;
-		private bool temporary;
+		// Loading
+		private LinkedListNode<ImageData> processticket;
+		private ImageLoadState previewstate;
+		private ImageLoadState imagestate;
+		
+		// References
+		private bool usedinmap;
+		private int references;
 		
 		// GDI bitmap
 		protected Bitmap bitmap;
-
-		// 2D rendering data
-		private PixelColorBlock pixeldata;
 		
 		// Direct3D texture
-		private int mipmaplevels = 0;	// 0 creates the full chain
+		private int mipmaplevels = 0;	// 0 = all mipmaps
 		private Texture texture;
-
+		
 		// Disposing
 		protected bool isdisposed = false;
-
+		
 		#endregion
-
+		
 		#region ================== Properties
-
+		
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
 		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
-		public PixelColorBlock PixelData { get { lock(this) { return pixeldata; } } }
 		public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return new Bitmap(bitmap); else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
 		public Texture Texture { get { lock(this) { return texture; } } }
-		public bool IsLoaded { get { return (bitmap != null) && (loadstate != ImageData.LOADSTATE_LOAD); } }
+		public bool IsPreviewLoaded { get { lock(this) { return (previewstate == ImageLoadState.Ready); } } }
+		public bool IsImageLoaded { get { lock(this) { return (imagestate == ImageLoadState.Ready); } } }
 		public bool IsDisposed { get { return isdisposed; } }
-		internal bool Temporary { get { return temporary; } set { temporary = value; } }
-		internal int LoadState { get { return loadstate; } set { loadstate = value; } }
-		internal LinkedListNode<ImageData> LoadingTicket { get { return loadingticket; } set { loadingticket = value; } }
+		internal ImageLoadState ImageState { get { return imagestate; } set { imagestate = value; } }
+		internal ImageLoadState PreviewState { get { return previewstate; } set { previewstate = value; } }
+		internal LinkedListNode<ImageData> ProcessTicket { get { return processticket; } set { processticket = value; } }
+		internal bool IsReferenced { get { return (references > 0) || usedinmap; } }
+		internal bool UsedInMap { get { return usedinmap; } set { usedinmap = value; } }
 		public int MipMapLevels { get { return mipmaplevels; } set { mipmaplevels = value; } }
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
 		public float ScaledWidth { get { return scaledwidth; } }
 		public float ScaledHeight { get { return scaledheight; } }
-
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -120,17 +119,33 @@ namespace CodeImp.DoomBuilder.Data
 					if(texture != null) texture.Dispose();
 					bitmap = null;
 					texture = null;
-					pixeldata = null;
 					
 					// Done
+					usedinmap = false;
+					references = 0;
+					imagestate = ImageLoadState.None;
+					previewstate = ImageLoadState.None;
 					isdisposed = true;
 				}
 			}
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Management
+		
+		// This adds a reference
+		public void AddReference()
+		{
+			references++;
+		}
+		
+		// This removes a reference
+		public void RemoveReference()
+		{
+			references--;
+			if(references < 0) General.Fail("FAIL! (references < 0)", "Somewhere this image is dereferenced more than it was referenced.");
+		}
 		
 		// This sets the name
 		protected void SetName(string name)
@@ -146,7 +161,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				if(bitmap != null) bitmap.Dispose();
 				bitmap = null;
-				loadstate = ImageData.LOADSTATE_NONE;
+				imagestate = ImageLoadState.None;
 			}
 		}
 		
@@ -154,67 +169,34 @@ namespace CodeImp.DoomBuilder.Data
 		public virtual void LoadImage()
 		{
 			BitmapData bmpdata = null;
-
-			// Determine amounts
-			float gamma = (float)(General.Settings.ImageBrightness + 10) * 0.1f;
-			float bright = (float)General.Settings.ImageBrightness * 5f;
 			
-			// This applies brightness correction on the image
-			if((bitmap != null) && usecolorcorrection)
-			{
-				try
-				{
-					// Try locking the bitmap
-					bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-				}
-				catch(Exception e)
-				{
-					General.WriteLogLine("ERROR: Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
-				}
-
-				// Bitmap locked?
-				if(bmpdata != null)
-				{
-					// Apply color correction
-					byte* pixels = (byte*)(bmpdata.Scan0.ToPointer());
-					for(int p = 0; p < bmpdata.Stride * bmpdata.Height; p += 4)
-					{
-						// Apply color correction for individual colors
-						float r = (float)pixels[p + 0] * gamma + bright;
-						float g = (float)pixels[p + 1] * gamma + bright;
-						float b = (float)pixels[p + 2] * gamma + bright;
-
-						// Clamp to 0..255 range
-						if(r < 0f) pixels[p + 0] = 0; else if(r > 255f) pixels[p + 0] = 255; else pixels[p + 0] = (byte)r;
-						if(g < 0f) pixels[p + 1] = 0; else if(g > 255f) pixels[p + 1] = 255; else pixels[p + 1] = (byte)g;
-						if(b < 0f) pixels[p + 2] = 0; else if(b > 255f) pixels[p + 2] = 255; else pixels[p + 2] = (byte)b;
-					}
-					
-					// Done with the lock
-					bitmap.UnlockBits(bmpdata);
-				}
-			}
-
-			// Done, reset load state
-			loadstate = ImageData.LOADSTATE_NONE;
-		}
-		
-		// This creates the 2D pixel data
-		internal virtual void CreatePixelData()
-		{
-			BitmapData bmpdata;
-
 			lock(this)
 			{
-				// Only do this when data is not created yet
-				if((pixeldata == null) && IsLoaded)
+				// This applies brightness correction on the image
+				if((bitmap != null) && usecolorcorrection)
 				{
-					// Make a data copy of the bits for the 2D renderer
-					bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-					pixeldata = new PixelColorBlock(bitmap.Size.Width, bitmap.Size.Height);
-					General.CopyMemory((void*)pixeldata.Pointer, bmpdata.Scan0.ToPointer(), new UIntPtr(pixeldata.Length));
-					bitmap.UnlockBits(bmpdata);
+					try
+					{
+						// Try locking the bitmap
+						bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+					}
+					catch(Exception e)
+					{
+						General.WriteLogLine("ERROR: Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
+					}
+					
+					// Bitmap locked?
+					if(bmpdata != null)
+					{
+						// Apply color correction
+						PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
+						General.Colors.ApplColorCorrection(pixels, bmpdata.Width * bmpdata.Height);
+						bitmap.UnlockBits(bmpdata);
+					}
 				}
+				
+				// Image is ready
+				imagestate = ImageLoadState.Ready;
 			}
 		}
 		
@@ -226,7 +208,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Only do this when texture is not created yet
-				if(((texture == null) || (texture.Disposed)) && IsLoaded)
+				if(((texture == null) || (texture.Disposed)) && this.IsLoaded)
 				{
 					// Write to memory stream and read from memory
 					memstream = new MemoryStream();
