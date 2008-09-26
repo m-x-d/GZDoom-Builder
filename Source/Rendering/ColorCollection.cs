@@ -99,10 +99,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		private PixelColor[] brightcolors;
 		private PixelColor[] darkcolors;
 		
+		// Color-correction table
+		private byte[] correctiontable;
+		
 		#endregion
-
+		
 		#region ================== Properties
-
+		
 		public PixelColor[] Colors { get { return colors; } }
 		public PixelColor[] BrightColors { get { return brightcolors; } }
 		public PixelColor[] DarkColors { get { return darkcolors; } }
@@ -117,11 +120,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Indication { get { return colors[INDICATION]; } internal set { colors[INDICATION] = value; } }
 		public PixelColor Grid { get { return colors[GRID]; } internal set { colors[GRID] = value; } }
 		public PixelColor Grid64 { get { return colors[GRID64]; } internal set { colors[GRID64] = value; } }
-
+		
 		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } internal set { colors[CROSSHAIR3D] = value; } }
 		public PixelColor Highlight3D { get { return colors[HIGHLIGHT3D]; } internal set { colors[HIGHLIGHT3D] = value; } }
 		public PixelColor Selection3D { get { return colors[SELECTION3D]; } internal set { colors[SELECTION3D] = value; } }
-
+		
 		public PixelColor ScriptBackground { get { return colors[SCRIPTBACKGROUND]; } internal set { colors[SCRIPTBACKGROUND] = value; } }
 		public PixelColor LineNumbers { get { return colors[LINENUMBERS]; } internal set { colors[LINENUMBERS] = value; } }
 		public PixelColor PlainText { get { return colors[PLAINTEXT]; } internal set { colors[PLAINTEXT] = value; } }
@@ -129,7 +132,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Keywords { get { return colors[KEYWORDS]; } internal set { colors[KEYWORDS] = value; } }
 		public PixelColor Literals { get { return colors[LITERALS]; } internal set { colors[LITERALS] = value; } }
 		public PixelColor Constants { get { return colors[CONSTANTS]; } internal set { colors[CONSTANTS] = value; } }
-
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -174,24 +177,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Create assist colors
 			CreateAssistColors();
 			
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Copy constructor
-		internal ColorCollection(ColorCollection collection)
-		{
-			// Initialize
-			colors = new PixelColor[NUM_COLORS];
-			brightcolors = new PixelColor[NUM_COLORS];
-			darkcolors = new PixelColor[NUM_COLORS];
-
-			// Copy all colors
-			for(int i = 0; i < NUM_COLORS; i++)
-				colors[i] = collection.colors[i];
-			
-			// Create assist colors
-			CreateAssistColors();
+			// Create color correction table
+			General.Colors.CreateCorrectionTable();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -200,6 +187,37 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 
 		#region ================== Methods
+		
+		// This generates a color-correction table
+		internal void CreateCorrectionTable()
+		{
+			// Determine amounts
+			float gamma = (float)(General.Settings.ImageBrightness + 10) * 0.1f;
+			float bright = (float)General.Settings.ImageBrightness * 5f;
+			
+			// Make table
+			correctiontable = new byte[256];
+			
+			// Fill table
+			for(int i = 0; i < 256; i++)
+			{
+				byte b;
+				float a = (float)i * gamma + bright;
+				if(a < 0f) b = 0; else if(a > 255f) b = 255; else b = (byte)a;
+				correctiontable[i] = b;
+			}
+		}
+		
+		// This applies color-correction over a block of pixel data
+		internal unsafe void ApplColorCorrection(PixelColor* pixels, int numpixels)
+		{
+			for(int i = 0; i < numpixels; i++)
+			{
+				pixels[i].r = correctiontable[pixels[i].r];
+				pixels[i].g = correctiontable[pixels[i].g];
+				pixels[i].b = correctiontable[pixels[i].b];
+			}
+		}
 		
 		// This clamps a value between 0 and 1
 		private float Saturate(float v)
@@ -231,17 +249,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				c.Blue = Saturate(o.Blue * DARK_MULTIPLIER + DARK_ADDITION);
 				darkcolors[i] = PixelColor.FromInt(c.ToArgb());
 			}
-		}
-		
-		// This applies colors to this collection
-		internal void Apply(ColorCollection collection)
-		{
-			// Copy all colors
-			for(int i = 0; i < NUM_COLORS; i++)
-				colors[i] = collection.colors[i];
-
-			// Rebuild assist colors
-			CreateAssistColors();
 		}
 		
 		// This saves colors to configuration

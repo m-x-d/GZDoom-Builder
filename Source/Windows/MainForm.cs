@@ -1695,6 +1695,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Update shortcut keys in menus
 				ApplyShortcutKeys();
 				
+				// Generate new color correction table
+				General.Colors.CreateCorrectionTable();
+				
 				// Let the plugins know
 				General.Plugins.ProgramReconfigure();
 
