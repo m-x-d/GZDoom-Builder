@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Load file
+				if(bitmap != null) bitmap.Dispose();
 				bitmap = (Bitmap)Bitmap.FromFile(filepathname);
 				
 				// Get width and height from image

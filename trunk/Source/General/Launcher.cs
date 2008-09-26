@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder
 			string p_wp = "", p_wf = "";
 			string p_ap = "", p_apq = "";
 			string p_l1 = "", p_l2 = "";
+			string p_nm = "";
 			
 			// Find the first IWAD file
 			if(General.Map.Data.FindFirstIWAD(out iwadloc))
@@ -155,6 +156,9 @@ namespace CodeImp.DoomBuilder
 				int.TryParse(numstr, out num);
 				if(first) p_l1 = num.ToString(); else p_l2 = num.ToString();
 			}
+
+			// No monsters?
+			if(!General.Settings.TestMonsters) p_nm = "-nomonsters";
 			
 			// Make sure all our placeholders are in uppercase
 			outp = outp.Replace("%f", "%F");
@@ -171,6 +175,9 @@ namespace CodeImp.DoomBuilder
 			outp = outp.Replace("%aP", "%AP");
 			outp = outp.Replace("%Ap", "%AP");
 			outp = outp.Replace("%s", "%S");
+			outp = outp.Replace("%nM", "%NM");
+			outp = outp.Replace("%Nm", "%NM");
+			outp = outp.Replace("%nm", "%NM");
 			
 			// Replace placeholders with actual values
 			outp = outp.Replace("%F", General.Map.Launcher.TempWAD);
@@ -182,6 +189,7 @@ namespace CodeImp.DoomBuilder
 			outp = outp.Replace("\"%AP\"", p_apq);
 			outp = outp.Replace("%AP", p_ap);
 			outp = outp.Replace("%S", skill.ToString());
+			outp = outp.Replace("%NM", p_nm);
 			
 			// Return result
 			return outp;

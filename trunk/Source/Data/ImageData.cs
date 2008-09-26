@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Background loading
 		private LinkedListNode<ImageData> loadingticket;
-		private int loadstate;		// true when loading, false when unloading
+		private int loadstate;
 		private bool temporary;
 		
 		// GDI bitmap
