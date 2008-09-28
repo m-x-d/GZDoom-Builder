@@ -75,33 +75,40 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Get bitmap
 			bmp = ReadAsBitmap(stream);
-			width = bmp.Size.Width;
-			height = bmp.Size.Height;
-
-			// Lock bitmap pixels
-			bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-			pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
-
-			// Go for all pixels in the original image
-			for(ox = 0; ox < width; ox++)
+			if(bmp != null)
 			{
-				for(oy = 0; oy < height; oy++)
+				width = bmp.Size.Width;
+				height = bmp.Size.Height;
+
+				// Lock bitmap pixels
+				bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+				pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
+
+				// Go for all pixels in the original image
+				for(ox = 0; ox < width; ox++)
 				{
-					// Copy this pixel?
-					if(pixels[oy * width + ox].a > 0.5f)
+					for(oy = 0; oy < height; oy++)
 					{
-						// Calculate target pixel and copy when within bounds
-						tx = x + ox;
-						ty = y + oy;
-						if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
-							target[ty * targetwidth + tx] = pixels[oy * width + ox];
+						// Copy this pixel?
+						if(pixels[oy * width + ox].a > 0.5f)
+						{
+							// Calculate target pixel and copy when within bounds
+							tx = x + ox;
+							ty = y + oy;
+							if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
+								target[ty * targetwidth + tx] = pixels[oy * width + ox];
+						}
 					}
 				}
-			}
 
-			// Done
-			bmp.UnlockBits(bmpdata);
-			bmp.Dispose();
+				// Done
+				bmp.UnlockBits(bmpdata);
+				bmp.Dispose();
+			}
+			else
+			{
+				throw new InvalidDataException();
+			}
 		}
 		
 		#endregion

@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Data
 			byte[] membytes;
 
 			// Checks
-			if(this.IsLoaded) return;
+			if(this.IsImageLoaded) return;
 
 			lock(this)
 			{
@@ -102,6 +102,9 @@ namespace CodeImp.DoomBuilder.Data
 					mem.Seek(0, SeekOrigin.Begin);
 					bitmap = reader.ReadAsBitmap(mem);
 					if(bitmap == null) return;
+
+					// Done
+					mem.Dispose();
 				}
 
 				// Pass on to base

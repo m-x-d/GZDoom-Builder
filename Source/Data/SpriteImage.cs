@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Data
 			byte[] membytes;
 
 			// Leave when already loaded
-			if(this.IsLoaded) return;
+			if(this.IsImageLoaded) return;
 
 			lock(this)
 			{
@@ -86,6 +86,9 @@ namespace CodeImp.DoomBuilder.Data
 					if(bitmap != null) bitmap.Dispose();
 					bitmap = reader.ReadAsBitmap(mem);
 					if(bitmap == null) return;
+
+					// Done
+					mem.Dispose();
 					
 					// Get width and height from image
 					width = bitmap.Size.Width;

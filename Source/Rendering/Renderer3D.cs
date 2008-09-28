@@ -136,9 +136,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Make the billboard matrix
 			billboard = Matrix.RotationYawPitchRoll(0f, anglexy, anglez - Angle2D.PIHALF);
-
-			// Apply matrices
-			ApplyMatrices();
 		}
 		
 		// This applies the matrices
@@ -168,6 +165,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+
+				// Matrices
+				ApplyMatrices();
 				
 				// Ready
 				return true;
@@ -233,23 +233,28 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Go for all geometry in this sector
 				foreach(VisualGeometry g in s.GeometryList)
 				{
+					ImageData curtexture;
+
+					// What texture to use?
+					if((g.Texture != null) && g.Texture.IsImageLoaded && !g.Texture.IsDisposed)
+						curtexture = g.Texture;
+					else
+						curtexture = General.Map.Data.Hourglass3D;
+					
 					// Change texture?
-					if(g.Texture != lasttexture)
+					if(curtexture != lasttexture)
 					{
 						// Now using this texture
-						lasttexture = g.Texture;
-						if(lasttexture != null)
-						{
-							// Load image and make texture
-							if(!lasttexture.IsLoaded) lasttexture.LoadImage();
-							if((lasttexture.Texture == null) || lasttexture.Texture.Disposed)
-								lasttexture.CreateTexture();
+						lasttexture = curtexture;
 
-							// Apply texture
-							graphics.Device.SetTexture(0, lasttexture.Texture);
-							graphics.Shaders.World3D.Texture1 = lasttexture.Texture;
-							graphics.Shaders.World3D.ApplySettings();
-						}
+						// Create Direct3D texture if still needed
+						if((curtexture.Texture == null) || curtexture.Texture.Disposed)
+							curtexture.CreateTexture();
+						
+						// Apply texture
+						graphics.Device.SetTexture(0, curtexture.Texture);
+						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
+						graphics.Shaders.World3D.ApplySettings();
 					}
 
 					// Render it!

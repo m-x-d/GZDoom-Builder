@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Set this texture as background
 				backgroundname = result;
 				backgroundsource = GridSetup.SOURCE_TEXTURES;
-				General.DisplayZoomedImage(backgroundimage, General.Map.Data.GetTextureBitmap(result));
+				General.DisplayZoomedImage(backgroundimage, General.Map.Data.GetTextureImage(result).GetPreview());
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Set this flat as background
 				backgroundname = result;
 				backgroundsource = GridSetup.SOURCE_FLATS;
-				General.DisplayZoomedImage(backgroundimage, General.Map.Data.GetFlatBitmap(result));
+				General.DisplayZoomedImage(backgroundimage, General.Map.Data.GetFlatImage(result).GetPreview());
 			}
 		}
 		

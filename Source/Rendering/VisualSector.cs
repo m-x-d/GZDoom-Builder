@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			geolist.Sort();
 			
 			// Count the number of vertices there are
-			foreach(VisualGeometry g in geolist) numverts += g.Vertices.Length;
+			foreach(VisualGeometry g in geolist) if(g.Vertices != null) numverts += g.Vertices.Length;
 			
 			// Any vertics?
 			if(numverts > 0)
@@ -152,7 +152,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				bufferstream = geobuffer.Lock(0, WorldVertex.Stride * numverts, LockFlags.Discard);
 				foreach(VisualGeometry g in geolist)
 				{
-					if(g.Vertices.Length > 0)
+					if((g.Vertices != null) && (g.Vertices.Length > 0))
 					{
 						bufferstream.WriteRange<WorldVertex>(g.Vertices);
 						g.VertexOffset = v;

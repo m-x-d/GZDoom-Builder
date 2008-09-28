@@ -51,13 +51,14 @@ namespace CodeImp.DoomBuilder.Data
 		protected bool usecolorcorrection;
 		
 		// Loading
-		private LinkedListNode<ImageData> processticket;
-		private ImageLoadState previewstate;
-		private ImageLoadState imagestate;
+		private volatile ImageLoadState previewstate;
+		private volatile ImageLoadState imagestate;
+		private volatile int previewindex;
+		protected volatile bool loadfailed;
 		
 		// References
-		private bool usedinmap;
-		private int references;
+		private volatile bool usedinmap;
+		private volatile int references;
 		
 		// GDI bitmap
 		protected Bitmap bitmap;
@@ -76,19 +77,21 @@ namespace CodeImp.DoomBuilder.Data
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
 		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
-		public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return new Bitmap(bitmap); else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
+		//public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return new Bitmap(bitmap); else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
+		public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return bitmap; else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
 		public Texture Texture { get { lock(this) { return texture; } } }
-		public bool IsPreviewLoaded { get { lock(this) { return (previewstate == ImageLoadState.Ready); } } }
-		public bool IsImageLoaded { get { lock(this) { return (imagestate == ImageLoadState.Ready); } } }
+		public bool IsPreviewLoaded { get { return (previewstate == ImageLoadState.Ready); } }
+		public bool IsImageLoaded { get { return (imagestate == ImageLoadState.Ready); } }
+		public bool LoadFailed { get { return loadfailed; } }
 		public bool IsDisposed { get { return isdisposed; } }
-		internal ImageLoadState ImageState { get { return imagestate; } set { imagestate = value; } }
-		internal ImageLoadState PreviewState { get { return previewstate; } set { previewstate = value; } }
-		internal LinkedListNode<ImageData> ProcessTicket { get { return processticket; } set { processticket = value; } }
-		internal bool IsReferenced { get { return (references > 0) || usedinmap; } }
-		internal bool UsedInMap { get { return usedinmap; } set { usedinmap = value; } }
+		public ImageLoadState ImageState { get { return imagestate; } internal set { imagestate = value; } }
+		public ImageLoadState PreviewState { get { return previewstate; } internal set { previewstate = value; } }
+		public bool IsReferenced { get { return (references > 0) || usedinmap; } }
+		public bool UsedInMap { get { return usedinmap; } }
 		public int MipMapLevels { get { return mipmaplevels; } set { mipmaplevels = value; } }
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
+		internal int PreviewIndex { get { return previewindex; } set { previewindex = value; } }
 		public float ScaledWidth { get { return scaledwidth; } }
 		public float ScaledHeight { get { return scaledheight; } }
 		
@@ -134,10 +137,21 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#region ================== Management
 		
+		// This sets the status of the texture usage in the map
+		internal void SetUsedInMap(bool used)
+		{
+			if(used != usedinmap)
+			{
+				usedinmap = used;
+				General.Map.Data.ProcessImage(this);
+			}
+		}
+		
 		// This adds a reference
 		public void AddReference()
 		{
 			references++;
+			if(references == 1) General.Map.Data.ProcessImage(this);
 		}
 		
 		// This removes a reference
@@ -145,6 +159,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			references--;
 			if(references < 0) General.Fail("FAIL! (references < 0)", "Somewhere this image is dereferenced more than it was referenced.");
+			if(references == 0) General.Map.Data.ProcessImage(this);
 		}
 		
 		// This sets the name
@@ -172,27 +187,41 @@ namespace CodeImp.DoomBuilder.Data
 			
 			lock(this)
 			{
-				// This applies brightness correction on the image
-				if((bitmap != null) && usecolorcorrection)
+				// Bitmap loaded successfully?
+				if(bitmap != null)
 				{
-					try
+					// This applies brightness correction on the image
+					if(usecolorcorrection)
 					{
-						// Try locking the bitmap
-						bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+						try
+						{
+							// Try locking the bitmap
+							bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+						}
+						catch(Exception e)
+						{
+							General.WriteLogLine("ERROR: Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
+						}
+
+						// Bitmap locked?
+						if(bmpdata != null)
+						{
+							// Apply color correction
+							PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
+							General.Colors.ApplColorCorrection(pixels, bmpdata.Width * bmpdata.Height);
+							bitmap.UnlockBits(bmpdata);
+						}
 					}
-					catch(Exception e)
-					{
-						General.WriteLogLine("ERROR: Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
-					}
-					
-					// Bitmap locked?
-					if(bmpdata != null)
-					{
-						// Apply color correction
-						PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
-						General.Colors.ApplColorCorrection(pixels, bmpdata.Width * bmpdata.Height);
-						bitmap.UnlockBits(bmpdata);
-					}
+				}
+				else
+				{
+					// Loading failed
+					// We still mark the image as ready so that it will
+					// not try loading again until Reload Resources is used
+					loadfailed = true;
+					bitmap = new Bitmap(Properties.Resources.Failed);
+					width = bitmap.Size.Width;
+					height = bitmap.Size.Height;
 				}
 				
 				// Image is ready
@@ -208,14 +237,18 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Only do this when texture is not created yet
-				if(((texture == null) || (texture.Disposed)) && this.IsLoaded)
+				if(((texture == null) || (texture.Disposed)) && this.IsImageLoaded)
 				{
+					Image img = bitmap;
+					if(loadfailed) img = Properties.Resources.Failed;
+					
 					// Write to memory stream and read from memory
 					memstream = new MemoryStream();
-					bitmap.Save(memstream, ImageFormat.Bmp);
+					img.Save(memstream, ImageFormat.Bmp);
 					memstream.Seek(0, SeekOrigin.Begin);
-					texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length, bitmap.Size.Width, bitmap.Size.Height, mipmaplevels,
-						Usage.None, Format.Unknown, Pool.Managed, Filter.Box, Filter.Box, 0);
+					texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
+									img.Size.Width, img.Size.Height, mipmaplevels, Usage.None, Format.Unknown,
+									Pool.Managed, Filter.Box, Filter.Box, 0);
 					memstream.Dispose();
 				}
 			}
@@ -229,6 +262,88 @@ namespace CodeImp.DoomBuilder.Data
 				// Trash it
 				if(texture != null) texture.Dispose();
 				texture = null;
+			}
+		}
+		
+		// This draws a preview
+		public virtual void DrawPreviewCentered(Graphics target, Rectangle targetview)
+		{
+			lock(this)
+			{
+				// Preview ready?
+				if(previewstate == ImageLoadState.Ready)
+				{
+					// Draw preview
+					General.Map.Data.Previews.DrawPreviewCentered(previewindex, target, targetview);
+				}
+				// Loading failed?
+				else if(loadfailed)
+				{
+					// Draw error bitmap
+					RectangleF targetpos = General.MakeZoomedRect(Properties.Resources.Failed.Size, targetview);
+					target.DrawImage(Properties.Resources.Hourglass, targetpos.Location);
+				}
+				else
+				{
+					// Draw loading bitmap
+					RectangleF targetpos = General.MakeZoomedRect(Properties.Resources.Hourglass.Size, targetview);
+					target.DrawImage(Properties.Resources.Hourglass, targetpos.Location);
+				}
+			}
+		}
+
+		// This draws a preview
+		public virtual void DrawPreview(Graphics target, Point targetpos)
+		{
+			lock(this)
+			{
+				// Preview ready?
+				if(previewstate == ImageLoadState.Ready)
+				{
+					// Draw preview
+					General.Map.Data.Previews.DrawPreview(previewindex, target, targetpos);
+				}
+				// Loading failed?
+				else if(loadfailed)
+				{
+					// Draw error bitmap
+					target.DrawImageUnscaled(Properties.Resources.Failed, targetpos);
+				}
+				else
+				{
+					// Draw loading bitmap
+					target.DrawImageUnscaled(Properties.Resources.Hourglass, targetpos);
+				}
+			}
+		}
+		
+		// This returns a preview image
+		public virtual Image GetPreview()
+		{
+			lock(this)
+			{
+				// Preview ready?
+				if(previewstate == ImageLoadState.Ready)
+				{
+					// Make a bitmap and return it
+					Bitmap bmp = new Bitmap(PreviewManager.IMAGE_WIDTH, PreviewManager.IMAGE_HEIGHT);
+					Graphics g = Graphics.FromImage(bmp);
+					g.Clear(Color.Transparent);
+					General.Map.Data.Previews.DrawPreview(previewindex, g, new Point(0, 0));
+					g.Dispose();
+					return bmp;
+				}
+				// Loading failed?
+				else if(loadfailed)
+				{
+					// Return error bitmap
+					return Properties.Resources.Failed;
+				}
+				else
+				{
+					// Return loading bitmap
+					return Properties.Resources.Hourglass;
+				}
 			}
 		}
 		

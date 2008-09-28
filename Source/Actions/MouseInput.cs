@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.Actions
 			// Set cooperative level
 			mouse.SetCooperativeLevel(source,
 				CooperativeLevel.Nonexclusive | CooperativeLevel.Foreground);
-
+			
 			// Aquire device
 			try { mouse.Acquire(); }
 			catch(Exception) { }
@@ -113,20 +113,30 @@ namespace CodeImp.DoomBuilder.Actions
 			float changex, changey;
 			
 			// Poll the device
-			Result result = mouse.Poll();
-			if(result.IsSuccess)
+			try
 			{
-				// Get the changes since previous poll
-				ms = mouse.GetCurrentState();
-				
-				// Calculate changes depending on sensitivity
-				changex = (float)ms.X * General.Settings.VisualMouseSensX;
-				changey = (float)ms.Y * General.Settings.VisualMouseSensY;
-				
-				// Return changes
-				return new Vector2D(changex, changey);
+				Result result = mouse.Poll();
+				if(result.IsSuccess)
+				{
+					// Get the changes since previous poll
+					ms = mouse.GetCurrentState();
+
+					// Calculate changes depending on sensitivity
+					changex = (float)ms.X * General.Settings.VisualMouseSensX;
+					changey = (float)ms.Y * General.Settings.VisualMouseSensY;
+
+					// Return changes
+					return new Vector2D(changex, changey);
+				}
+				else
+				{
+					// Reaquire device
+					try { mouse.Acquire(); }
+					catch(Exception) { }
+					return new Vector2D();
+				}
 			}
-			else
+			catch(DirectInputException)
 			{
 				// Reaquire device
 				try { mouse.Acquire(); }

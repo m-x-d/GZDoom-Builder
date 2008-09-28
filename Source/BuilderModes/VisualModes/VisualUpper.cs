@@ -74,7 +74,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				{
 					// Load texture
 					base.Texture = General.Map.Data.GetTextureImage(s.LongHighTexture);
-					base.Texture.LoadImage();
 				}
 				else
 				{

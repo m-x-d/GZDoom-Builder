@@ -51,13 +51,13 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads the image and returns a Bitmap
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
-			return new Bitmap(CodeImp.DoomBuilder.Properties.Resources.UnknownImage);
+			return new Bitmap(CodeImp.DoomBuilder.Properties.Resources.Failed);
 		}
 
 		// This reads the image and returns a Bitmap
 		public static Bitmap ReadAsBitmap()
 		{
-			return new Bitmap(CodeImp.DoomBuilder.Properties.Resources.UnknownImage);
+			return new Bitmap(CodeImp.DoomBuilder.Properties.Resources.Failed);
 		}
 
 		// This draws the picture to the given pixel color data

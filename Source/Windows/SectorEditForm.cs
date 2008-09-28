@@ -150,7 +150,10 @@ namespace CodeImp.DoomBuilder.Windows
 				// Custom fields
 				fieldslist.Apply(s.Fields);
 			}
-
+			
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+			
 			// Done
 			General.Map.IsChanged = true;
 			this.DialogResult = DialogResult.OK;

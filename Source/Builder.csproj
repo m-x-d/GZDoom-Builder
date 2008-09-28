@@ -600,6 +600,8 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Resources\Hourglass3D.png" />
+    <None Include="Resources\Failed.png" />
     <None Include="Resources\Monster2.png" />
     <None Include="Resources\Grid2_arrowup.png" />
     <None Include="Resources\Zoom_arrowup.png" />

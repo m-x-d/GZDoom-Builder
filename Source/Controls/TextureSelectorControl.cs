@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				// Set the image
-				return General.Map.Data.GetTextureBitmap(imagename);
+				return General.Map.Data.GetTextureImage(imagename).GetPreview();
 			}
 		}
 

@@ -38,6 +38,7 @@ using System.Drawing;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Types;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 #endregion
 
@@ -66,26 +67,6 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Constants
 
-		// Memory APIs
-		internal const uint MEM_COMMIT = 0x1000;
-		internal const uint MEM_RESERVE = 0x2000;
-		internal const uint MEM_DECOMMIT = 0x4000;
-		internal const uint MEM_RELEASE = 0x8000;
-		internal const uint MEM_RESET = 0x80000;
-		internal const uint MEM_TOP_DOWN = 0x100000;
-		internal const uint MEM_PHYSICAL = 0x400000;
-		internal const uint PAGE_NOACCESS = 0x01;
-		internal const uint PAGE_READONLY = 0x02;
-		internal const uint PAGE_READWRITE = 0x04;
-		internal const uint PAGE_WRITECOPY = 0x08;
-		internal const uint PAGE_EXECUTE = 0x10;
-		internal const uint PAGE_EXECUTE_READ = 0x20;
-		internal const uint PAGE_EXECUTE_READWRITE = 0x40;
-		internal const uint PAGE_EXECUTE_WRITECOPY = 0x80;
-		internal const uint PAGE_GUARD = 0x100;
-		internal const uint PAGE_NOCACHE = 0x200;
-		internal const uint PAGE_WRITECOMBINE = 0x400;
-		
 		// SendMessage API
 		internal const int CB_SETITEMHEIGHT = 0x153;
 		
@@ -460,6 +441,9 @@ namespace CodeImp.DoomBuilder
 
 			// Hook to DLL loading failure event
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+			
+			// Set current thread name
+			Thread.CurrentThread.Name = "Main Application";
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();

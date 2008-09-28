@@ -81,10 +81,9 @@ namespace CodeImp.DoomBuilder.Data
 			PixelColor* pixels;
 			Stream patchdata;
 			byte[] membytes;
-			bool failed = false;
 			
 			// Checks
-			if(this.IsLoaded) return;
+			if(this.IsImageLoaded) return;
 			if((width == 0) || (height == 0)) return;
 			
 			lock(this)
@@ -125,14 +124,23 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							// Data is in an unknown format!
 							General.WriteLogLine("WARNING: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
-							failed = true;
+							loadfailed = true;
 						}
 						else
 						{
 							// Draw the patch
 							mem.Seek(0, SeekOrigin.Begin);
-							reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y);
+							try { reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y); }
+							catch(InvalidDataException)
+							{
+								// Data cannot be read!
+								General.WriteLogLine("WARNING: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+								loadfailed = true;
+							}
 						}
+						
+						// Done
+						mem.Dispose();
 					}
 					else
 					{
@@ -144,11 +152,11 @@ namespace CodeImp.DoomBuilder.Data
 				// Done
 				bitmap.UnlockBits(bitmapdata);
 
-				// When failed, use the error picture
-				if(failed)
+				// Dispose bitmap if load failed
+				if(loadfailed && (bitmap != null))
 				{
 					bitmap.Dispose();
-					bitmap = UnknownImageReader.ReadAsBitmap();
+					bitmap = null;
 				}
 
 				// Pass on to base

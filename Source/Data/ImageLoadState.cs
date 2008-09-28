@@ -33,7 +33,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal enum ImageLoadState : int
+	public enum ImageLoadState : int
 	{
 		None,
 		Loading,

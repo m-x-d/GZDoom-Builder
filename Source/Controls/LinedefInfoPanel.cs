@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				// Set the image
-				panel.BackgroundImage = General.Map.Data.GetTextureBitmap(name);
+				panel.BackgroundImage = General.Map.Data.GetTextureImage(name).GetPreview();
 			}
 			
 			// Image not null?
