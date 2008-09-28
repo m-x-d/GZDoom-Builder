@@ -15,6 +15,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(disposing && (components != null))
 			{
+				CleanUp();
 				components.Dispose();
 			}
 			base.Dispose(disposing);

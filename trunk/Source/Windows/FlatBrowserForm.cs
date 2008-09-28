@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		public FlatBrowserForm()
 		{
-			Dictionary<long, long> useditems = new Dictionary<long,long>();
+			Cursor.Current = Cursors.WaitCursor;
 			
 			// Initialize
 			InitializeComponent();
@@ -57,43 +57,15 @@ namespace CodeImp.DoomBuilder.Windows
 			ListViewGroup used = browser.AddGroup("Used Flats");
 			ListViewGroup avail = browser.AddGroup("Available Flats");
 			
-			// Go through the map to find the used flats
-			foreach(Sector s in General.Map.Map.Sectors)
-			{
-				// Add floor flat
-				if(!useditems.ContainsKey(s.LongFloorTexture)) useditems.Add(s.LongFloorTexture, 0);
-
-				// Add ceiling flat
-				if(!useditems.ContainsKey(s.LongCeilTexture)) useditems.Add(s.LongCeilTexture, 0);
-			}
-
-			// When mixing textures with flats, include textures as well
-			if(General.Map.Config.MixTexturesFlats)
-			{
-				// Go through the map to find the used textures
-				foreach(Sidedef sd in General.Map.Map.Sidedefs)
-				{
-					// Add high texture
-					if(sd.HighTexture.Length > 0)
-						if(!useditems.ContainsKey(sd.LongHighTexture)) useditems.Add(sd.LongHighTexture, 0);
-
-					// Add mid texture
-					if(sd.LowTexture.Length > 0)
-						if(!useditems.ContainsKey(sd.LongMiddleTexture)) useditems.Add(sd.LongMiddleTexture, 0);
-
-					// Add low texture
-					if(sd.MiddleTexture.Length > 0)
-						if(!useditems.ContainsKey(sd.LongLowTexture)) useditems.Add(sd.LongLowTexture, 0);
-				}
-			}
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
 			
 			// Start adding
 			browser.BeginAdding();
 
 			// Add all used flats
 			foreach(ImageData img in General.Map.Data.Flats)
-				if(useditems.ContainsKey(img.LongName))
-					browser.Add(img.Name, img, img, used);
+				if(img.UsedInMap) browser.Add(img.Name, img, img, used);
 			
 			// Add all available flats
 			foreach(ImageData img in General.Map.Data.Flats)
@@ -136,6 +108,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Focus the textbox
 			browser.FocusTextbox();
+			Cursor.Current = Cursors.Default;
 		}
 
 		// Loading

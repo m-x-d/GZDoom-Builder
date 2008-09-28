@@ -61,7 +61,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
-			base.Texture.LoadImage();
 			
 			// Make vertices
 			verts = new WorldVertex[s.Vertices.Length];
@@ -73,8 +72,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				verts[i].c = -1;
 
 				// Grid aligned texture coordinates
-				verts[i].u = s.Vertices[i].x / base.Texture.ScaledWidth;
-				verts[i].v = s.Vertices[i].y / base.Texture.ScaledHeight;
+				if(base.Texture.IsImageLoaded)
+				{
+					verts[i].u = s.Vertices[i].x / base.Texture.ScaledWidth;
+					verts[i].v = s.Vertices[i].y / base.Texture.ScaledHeight;
+				}
+				else
+				{
+					verts[i].u = s.Vertices[i].x / 64;
+					verts[i].v = s.Vertices[i].y / 64;
+				}
 				
 				// Vertex coordinates
 				verts[i].x = s.Vertices[i].x;

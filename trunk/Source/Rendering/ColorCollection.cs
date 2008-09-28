@@ -178,7 +178,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			CreateAssistColors();
 			
 			// Create color correction table
-			General.Colors.CreateCorrectionTable();
+			CreateCorrectionTable();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

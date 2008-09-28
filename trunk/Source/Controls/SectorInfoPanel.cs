@@ -65,8 +65,8 @@ namespace CodeImp.DoomBuilder.Controls
 			brightness.Text = s.Brightness.ToString();
 			floorname.Text = s.FloorTexture;
 			ceilingname.Text = s.CeilTexture;
-			General.DisplayZoomedImage(floortex, General.Map.Data.GetFlatBitmap(s.FloorTexture));
-			General.DisplayZoomedImage(ceilingtex, General.Map.Data.GetFlatBitmap(s.CeilTexture));
+			General.DisplayZoomedImage(floortex, General.Map.Data.GetFlatImage(s.FloorTexture).GetPreview());
+			General.DisplayZoomedImage(ceilingtex, General.Map.Data.GetFlatImage(s.CeilTexture).GetPreview());
 
 			// Show the whole thing
 			this.Show();

@@ -1080,7 +1080,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(texture != null)
 				{
 					// Make sure the texture is loaded
-					if(!texture.IsLoaded) texture.LoadImage();
+					if(!texture.IsImageLoaded) texture.LoadImage();
 					if(texture.Texture == null) texture.CreateTexture();
 					t = texture.Texture;
 				}

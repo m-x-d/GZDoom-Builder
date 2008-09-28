@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.IO
 				if(writer != null) writer.Close();
 				if(reader != null) reader.Close();
 				if(file != null) file.Dispose();
-
+				
 				// Done
 				isdisposed = true;
 			}

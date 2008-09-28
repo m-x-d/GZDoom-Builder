@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override void LoadImage()
 		{
 			// Leave when already loaded
-			if(this.IsLoaded) return;
+			if(this.IsImageLoaded) return;
 
 			lock(this)
 			{

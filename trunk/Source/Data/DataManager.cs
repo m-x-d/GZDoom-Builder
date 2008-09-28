@@ -29,6 +29,7 @@ using System.Windows.Forms;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Config;
 using System.Threading;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -62,12 +63,14 @@ namespace CodeImp.DoomBuilder.Data
 		// Background loading
 		private Queue<ImageData> imageque;
 		private Thread backgroundloader;
+		private volatile bool updatedusedtextures;
 		
 		// Image previews
 		private PreviewManager previews;
 		
 		// Special images
 		private ImageData missingtexture3d;
+		private ImageData hourglass3d;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -77,21 +80,22 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		public Playpal Palette { get { return palette; } }
-		internal PreviewManager Previews { get { return previews; } }
+		public PreviewManager Previews { get { return previews; } }
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
 		public ICollection<ImageData> Flats { get { return flats.Values; } }
 		public List<string> TextureNames { get { return texturenames; } }
 		public List<string> FlatNames { get { return flatnames; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public ImageData MissingTexture3D { get { return missingtexture3d; } }
+		public ImageData Hourglass3D { get { return hourglass3d; } }
 		
 		public bool IsLoading
 		{
 			get
 			{
-				if(loadlist != null)
+				if(imageque != null)
 				{
-					return (backgroundloader != null) && backgroundloader.IsAlive && (loadlist.Count > 0);
+					return (backgroundloader != null) && backgroundloader.IsAlive && ((imageque.Count > 0) || previews.IsLoading);
 				}
 				else
 				{
@@ -113,6 +117,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Load special images
 			missingtexture3d = new ResourceImage("MissingTexture3D.png");
 			missingtexture3d.LoadImage();
+			hourglass3d = new ResourceImage("Hourglass3D.png");
+			hourglass3d.LoadImage();
 		}
 
 		// Disposer
@@ -163,7 +169,7 @@ namespace CodeImp.DoomBuilder.Data
 			sprites = new Dictionary<long, ImageData>();
 			texturenames = new List<string>();
 			flatnames = new List<string>();
-			loadlist = new LinkedList<ImageData>();
+			imageque = new Queue<ImageData>();
 			previews = new PreviewManager();
 			
 			// Go for all locations
@@ -252,7 +258,7 @@ namespace CodeImp.DoomBuilder.Data
 			sprites = null;
 			texturenames = null;
 			flatnames = null;
-			loadlist = null;
+			imageque = null;
 		}
 
 		#endregion
@@ -310,7 +316,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Start a low priority thread to load images in background
 			General.WriteLogLine("Starting background resource loading...");
 			backgroundloader = new Thread(new ThreadStart(BackgroundLoad));
-			backgroundloader.Name = "BackgroundLoader";
+			backgroundloader.Name = "Background Loader";
 			backgroundloader.Priority = ThreadPriority.Lowest;
 			backgroundloader.Start();
 		}
@@ -318,7 +324,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This stops background loading
 		private void StopBackgroundLoader()
 		{
-			LinkedListNode<ImageData> n;
+			ImageData img;
 			
 			General.WriteLogLine("Stopping background resource loading...");
 			if(backgroundloader != null)
@@ -328,14 +334,32 @@ namespace CodeImp.DoomBuilder.Data
 				backgroundloader.Join();
 
 				// Reset load states on all images in the list
-				n = loadlist.First;
-				while(n != null)
+				while(imageque.Count > 0)
 				{
-					n.Value.LoadState = ImageData.LOADSTATE_NONE;
-					n.Value.LoadingTicket = null;
-					n = n.Next;
+					img = imageque.Dequeue();
+					
+					switch(img.ImageState)
+					{
+						case ImageLoadState.Loading:
+							img.ImageState = ImageLoadState.None;
+							break;
+
+						case ImageLoadState.Unloading:
+							img.ImageState = ImageLoadState.Ready;
+							break;
+					}
+
+					switch(img.PreviewState)
+					{
+						case ImageLoadState.Loading:
+							img.PreviewState = ImageLoadState.None;
+							break;
+
+						case ImageLoadState.Unloading:
+							img.PreviewState = ImageLoadState.Ready;
+							break;
+					}
 				}
-				loadlist.Clear();
 				
 				// Done
 				backgroundloader = null;
@@ -350,11 +374,18 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				do
 				{
+					// Do we have to update the used-in-map status?
+					if(updatedusedtextures)
+					{
+						BackgroundUpdateUsedTextures();
+						updatedusedtextures = false;
+					}
+					
 					// Get next item
 					ImageData image = null;
 					lock(imageque)
 					{
-						// Fethc next image to process
+						// Fetch next image to process
 						if(imageque.Count > 0) image = imageque.Dequeue();
 					}
 					
@@ -362,23 +393,16 @@ namespace CodeImp.DoomBuilder.Data
 					if(image != null)
 					{
 						// Load this image?
-						if(image.ImageState == ImageLoadState.Loading)
+						if(image.IsReferenced && (image.ImageState != ImageLoadState.Ready))
 						{
-							// Still referenced?
-							if(image.IsReferenced)
-								image.LoadImage();
-							else
-								image.ImageState = ImageLoadState.None;
+							image.LoadImage();
 						}
 						
 						// Unload this image?
-						if(image.ImageState == ImageLoadState.Unloading)
+						if(!image.IsReferenced && (image.ImageState != ImageLoadState.None))
 						{
 							// Still unreferenced?
-							if(!image.IsReferenced)
-								image.UnloadImage();
-							else
-								image.ImageState = ImageLoadState.Ready;
+							image.UnloadImage();
 						}
 					}
 					
@@ -405,9 +429,6 @@ namespace CodeImp.DoomBuilder.Data
 							Thread.Sleep(50);
 						}
 					}
-					
-					// Done
-					image = null;
 				}
 				while(true);
 			}
@@ -438,6 +459,41 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Update icon
 			General.MainWindow.UpdateStatusIcon();
+		}
+
+		// This updates the used-in-map status on all textures and flats
+		private void BackgroundUpdateUsedTextures()
+		{
+			Dictionary<long, long> useditems = new Dictionary<long, long>();
+
+			// Go through the map to find the used textures
+			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+			{
+				// Add used textures to dictionary
+				if(sd.HighTexture.Length > 0) useditems[sd.LongHighTexture] = 0;
+				if(sd.LowTexture.Length > 0) useditems[sd.LongMiddleTexture] = 0;
+				if(sd.MiddleTexture.Length > 0) useditems[sd.LongLowTexture] = 0;
+			}
+
+			// Go through the map to find the used flats
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Add used flats to dictionary
+				useditems[s.LongFloorTexture] = 0;
+				useditems[s.LongCeilTexture] = 0;
+			}
+
+			// Set used on all textures
+			foreach(KeyValuePair<long, ImageData> i in textures)
+				i.Value.SetUsedInMap(useditems.ContainsKey(i.Key));
+
+			// Flats are not already included with the textures?
+			if(!General.Map.Config.MixTexturesFlats)
+			{
+				// Set used on all flats
+				foreach(KeyValuePair<long, ImageData> i in flats)
+					i.Value.SetUsedInMap(useditems.ContainsKey(i.Key));
+			}
 		}
 		
 		#endregion
@@ -505,6 +561,9 @@ namespace CodeImp.DoomBuilder.Data
 							flats.Remove(img.LongName);
 							flats.Add(img.LongName, img);
 						}
+						
+						// Add to preview manager
+						previews.AddImage(img);
 					}
 				}
 			}
@@ -554,6 +613,10 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 		
+
+		// BAD! These block while loading the image. That is not
+		// what our background loading system is for!
+		/*
 		// This returns a bitmap by string
 		public Bitmap GetTextureBitmap(string name)
 		{
@@ -587,6 +650,7 @@ namespace CodeImp.DoomBuilder.Data
 			img.CreateTexture();
 			return img.Texture;
 		}
+		*/
 		
 		#endregion
 
@@ -621,6 +685,9 @@ namespace CodeImp.DoomBuilder.Data
 							textures.Remove(img.LongName);
 							textures.Add(img.LongName, img);
 						}
+
+						// Add to preview manager
+						previews.AddImage(img);
 					}
 				}
 			}
@@ -670,6 +737,9 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 
+		// BAD! These block while loading the image. That is not
+		// what our background loading system is for!
+		/*
 		// This returns a bitmap by string
 		public Bitmap GetFlatBitmap(string name)
 		{
@@ -703,6 +773,7 @@ namespace CodeImp.DoomBuilder.Data
 			img.CreateTexture();
 			return img.Texture;
 		}
+		*/
 		
 		#endregion
 
@@ -736,6 +807,9 @@ namespace CodeImp.DoomBuilder.Data
 
 						// Add to collection
 						sprites.Add(ti.SpriteLongName, image);
+						
+						// Add to preview manager
+						previews.AddImage(image);
 					}
 				}
 			}
@@ -787,6 +861,9 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 
+		// BAD! These block while loading the image. That is not
+		// what our background loading system is for!
+		/*
 		// This returns a bitmap by string
 		public Bitmap GetSpriteBitmap(string name)
 		{
@@ -803,6 +880,7 @@ namespace CodeImp.DoomBuilder.Data
 			img.CreateTexture();
 			return img.Texture;
 		}
+		*/
 		
 		#endregion
 		
@@ -834,6 +912,13 @@ namespace CodeImp.DoomBuilder.Data
 			return false;
 		}
 
+		// This signals the background thread to update the
+		// used-in-map status on all textures and flats
+		public void UpdateUsedTextures()
+		{
+			updatedusedtextures = true;
+		}
+		
 		#endregion
 	}
 }

@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Actions;
 
 #endregion
 
@@ -215,6 +216,23 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		#region ================== Methods
 
+		[EndAction("reloadresources", BaseAction = true)]
+		public void ReloadResources()
+		{
+			foreach(KeyValuePair<Sector, BaseVisualSector> s in allsectors) s.Value.Dispose();
+			allsectors.Clear();
+			visiblesectors.Clear();
+		}
+		
+		// Mode engages
+		public override void OnEngage()
+		{
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+			
+			base.OnEngage();
+		}
+		
 		// This draws a frame
 		public override void OnRedrawDisplay()
 		{

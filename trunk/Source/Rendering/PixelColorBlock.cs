@@ -32,31 +32,20 @@ namespace CodeImp.DoomBuilder.Rendering
 {
 	public unsafe class PixelColorBlock
 	{
-		#region ================== API Declarations
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		private static unsafe extern void* VirtualAlloc(IntPtr lpAddress, UIntPtr dwSize, uint flAllocationType, uint flProtect);
-
-		[DllImport("kernel32.dll", SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private static unsafe extern bool VirtualFree(void* lpAddress, UIntPtr dwSize, uint dwFreeType);
-
-		#endregion
-
 		#region ================== Variables
 
 		private int width;
 		private int height;
-		private uint memorysize;
+		private int memorysize;
 		private PixelColor* memory;
-
+		
 		#endregion
 
 		#region ================== Properties
 
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
-		public uint Length { get { return memorysize; } }
+		public int Length { get { return memorysize; } }
 		public PixelColor this[int index] { get { return memory[index]; } set { memory[index] = value; } }
 		public PixelColor* Pointer { get { return memory; } }
 
@@ -69,12 +58,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Check input
 			if((width <= 0) || (height <= 0)) throw new ArgumentException("Cannot allocate a memory block of zero size!");
-
+			
 			// Initialize
 			this.width = width;
 			this.height = height;
-			this.memorysize = (uint)width * (uint)height * (uint)sizeof(PixelColor);
-			this.memory = (PixelColor*)VirtualAlloc(IntPtr.Zero, new UIntPtr(memorysize), General.MEM_COMMIT, General.PAGE_READWRITE);
+			this.memorysize = width * height * sizeof(PixelColor);
+			this.memory = (PixelColor*)Marshal.AllocCoTaskMem(memorysize);
 			if(this.memory == (PixelColor*)0) throw new OutOfMemoryException();
 			GC.AddMemoryPressure(memorysize);
 		}
@@ -83,7 +72,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		~PixelColorBlock()
 		{
 			// Terminate
-			VirtualFree((void*)memory, new UIntPtr(memorysize), General.MEM_RELEASE);
+			Marshal.FreeCoTaskMem(new IntPtr(memory));
 			GC.RemoveMemoryPressure(memorysize);
 			memorysize = 0;
 		}

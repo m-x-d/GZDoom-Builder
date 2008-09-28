@@ -81,6 +81,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Failed {
+            get {
+                object obj = ResourceManager.GetObject("Failed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap File {
             get {
                 object obj = ResourceManager.GetObject("File", resourceCulture);

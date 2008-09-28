@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		public TextureBrowserForm()
 		{
-			Dictionary<long, long> useditems = new Dictionary<long,long>();
+			Cursor.Current = Cursors.WaitCursor;
 			
 			// Initialize
 			InitializeComponent();
@@ -57,36 +57,9 @@ namespace CodeImp.DoomBuilder.Windows
 			ListViewGroup used = browser.AddGroup("Used Textures");
 			ListViewGroup avail = browser.AddGroup("Available Textures");
 			
-			// Go through the map to find the used textures
-			foreach(Sidedef sd in General.Map.Map.Sidedefs)
-			{
-				// Add high texture
-				if(sd.HighTexture.Length > 0)
-					if(!useditems.ContainsKey(sd.LongHighTexture)) useditems.Add(sd.LongHighTexture, 0);
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
 
-				// Add mid texture
-				if(sd.LowTexture.Length > 0)
-					if(!useditems.ContainsKey(sd.LongMiddleTexture)) useditems.Add(sd.LongMiddleTexture, 0);
-
-				// Add low texture
-				if(sd.MiddleTexture.Length > 0)
-					if(!useditems.ContainsKey(sd.LongLowTexture)) useditems.Add(sd.LongLowTexture, 0);
-			}
-
-			// When mixing textures with flats, include flats as well
-			if(General.Map.Config.MixTexturesFlats)
-			{
-				// Go through the map to find the used flats
-				foreach(Sector s in General.Map.Map.Sectors)
-				{
-					// Add floor flat
-					if(!useditems.ContainsKey(s.LongFloorTexture)) useditems.Add(s.LongFloorTexture, 0);
-
-					// Add ceil flat
-					if(!useditems.ContainsKey(s.LongCeilTexture)) useditems.Add(s.LongCeilTexture, 0);
-				}
-			}
-			
 			// Start adding
 			browser.BeginAdding();
 			
@@ -94,17 +67,12 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(ImageData img in General.Map.Data.Textures)
 			{
 				browser.Add(img.Name, img, img, avail);
-				img.Temporary = true;
 			}
-
+			
 			// Add all used textures and mark the images for permanent loading
 			foreach(ImageData img in General.Map.Data.Textures)
 			{
-				if(useditems.ContainsKey(img.LongName))
-				{
-					browser.Add(img.Name, img, img, used);
-					img.Temporary = false;
-				}
+				if(img.UsedInMap) browser.Add(img.Name, img, img, used);
 			}
 			
 			// Done adding
@@ -144,6 +112,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Focus the textbox
 			browser.FocusTextbox();
+			Cursor.Current = Cursors.Default;
 		}
 
 		// Loading

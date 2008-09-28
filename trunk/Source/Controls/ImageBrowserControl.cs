@@ -40,9 +40,6 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		#region ================== Constants
 
-		// Maximum loaded items
-		private const int MAX_LOADED_ITEMS = 200;
-		
 		#endregion
 		
 		#region ================== Delegates / Events
@@ -61,9 +58,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// All items
 		private List<ImageBrowserItem> items;
 		
-		// Loaded items
-		private LinkedList<ImageBrowserItem> loadeditems;
-		
 		#endregion
 
 		#region ================== Properties
@@ -81,7 +75,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
-			loadeditems = new LinkedList<ImageBrowserItem>();
 			
 			// Move textbox with label
 			objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
@@ -98,7 +91,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
-		// This cleans everything up (we can't override Dispose?)
+		// This cleans everything up
 		public virtual void CleanUp()
 		{
 			// Stop refresh timer
@@ -109,24 +102,16 @@ namespace CodeImp.DoomBuilder.Controls
 			list.SuspendLayout();
 			list.BeginUpdate();
 
-			// Go for all items
-			foreach(ImageBrowserItem i in list.Items)
-			{
-				// Queue image for unloading if only temporary
-				if(i.icon.IsLoaded && i.icon.Temporary) General.Map.Data.BackgroundLoadImage(i.icon, false);
-				
-				// Dispose item
-				i.Dispose();
-			}
+			// Dispose items
+			foreach(ImageBrowserItem i in list.Items) i.Dispose();
 
 			// Trash list items
 			list.Clear();
-			loadeditems.Clear();
 			
 			// Done updating list
-			updating = false;
 			list.EndUpdate();
 			list.ResumeLayout();
+			updating = false;
 		}
 
 		#endregion
@@ -136,67 +121,34 @@ namespace CodeImp.DoomBuilder.Controls
 		// Draw item
 		private void list_DrawItem(object sender, DrawListViewItemEventArgs e)
 		{
-			if(!updating) e.Graphics.DrawImageUnscaled((e.Item as ImageBrowserItem).GetImage(e.Bounds), e.Bounds);
+			if(!updating) (e.Item as ImageBrowserItem).Draw(e.Graphics, e.Bounds);
 		}
 
 		// Refresher
 		private void refreshtimer_Tick(object sender, EventArgs e)
 		{
+			bool allpreviewsloaded = true;
+			
 			// Go for all items
 			foreach(ImageBrowserItem i in list.Items)
 			{
-				// Bounds within view?
-				if(i.Bounds.IntersectsWith(list.ClientRectangle))
+				// Check if there are still previews that are not loaded
+				allpreviewsloaded &= i.IsPreviewLoaded;
+				
+				// Items needs to be redrawn?
+				if(i.CheckRedrawNeeded())
 				{
-					// Remove from loaded list if in there
-					if(i.LoadedTicket != null) loadeditems.Remove(i.LoadedTicket);
-					
-					// Image not loaded?
-					if(!i.icon.IsLoaded && !i.IsImageLoaded)
+					// Bounds within view?
+					if(i.Bounds.IntersectsWith(list.ClientRectangle))
 					{
-						// Queue for background loading
-						General.Map.Data.BackgroundLoadImage(i.icon, true);
-					}
-
-					// Items needs to be redrawn?
-					if(i.CheckRedrawNeeded(i.Bounds))
-					{
-						// Redraw item
-						i.GetImage(i.Bounds);
-
 						// Refresh item in list
 						list.RedrawItems(i.Index, i.Index, false);
 					}
-					else
-					{
-						// Queue for unloading if only temporary
-						if(i.icon.IsLoaded && i.icon.Temporary) General.Map.Data.BackgroundLoadImage(i.icon, false);
-					}
-
-					// Add to loaded list
-					i.LoadedTicket = loadeditems.AddLast(i);
-				}
-				else
-				{
-					// Queue for unloading if only temporary
-					if(i.icon.IsLoaded && i.icon.Temporary)
-						General.Map.Data.BackgroundLoadImage(i.icon, false);
-					else
-						General.Map.Data.BackgroundCancelImage(i.icon);
 				}
 			}
 
-			// More items laoded than allowed?
-			if(loadeditems.Count > MAX_LOADED_ITEMS)
-			{
-				// Unload items
-				for(int i = 0; i < (loadeditems.Count - MAX_LOADED_ITEMS); i++)
-				{
-					loadeditems.First.Value.ReleaseImage();
-					loadeditems.First.Value.LoadedTicket = null;
-					loadeditems.RemoveFirst();
-				}
-			}
+			// If all previews were loaded, stop this timer
+			if(allpreviewsloaded) refreshtimer.Stop();
 		}
 
 		#endregion

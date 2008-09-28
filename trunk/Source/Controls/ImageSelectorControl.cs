@@ -38,16 +38,32 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	public abstract partial class ImageSelectorControl : UserControl
 	{
-		// Properties
-		public string TextureName { get { return name.Text; } set { name.Text = value; } }
+		#region ================== Variables
+
+		private Bitmap bmp;
+
+		#endregion
+
+		#region ================== Properties
 		
+		public string TextureName { get { return name.Text; } set { name.Text = value; } }
+
+		#endregion
+
+		#region ================== Constructor / Destructor
+
 		// Constructor
 		public ImageSelectorControl()
 		{
 			// Initialize
 			InitializeComponent();
+			bmp = new Bitmap(PreviewManager.IMAGE_WIDTH, PreviewManager.IMAGE_HEIGHT);
 		}
 		
+		#endregion
+
+		#region ================== Events
+
 		// When resized
 		private void ImageSelectorControl_Resize(object sender, EventArgs e)
 		{
@@ -74,9 +90,27 @@ namespace CodeImp.DoomBuilder.Controls
 		// Name text changed
 		private void name_TextChanged(object sender, EventArgs e)
 		{
+			// Show it centered
 			General.DisplayZoomedImage(preview, FindImage(name.Text));
 		}
 
+		#endregion
+
+		#region ================== Methods
+		
+		// This redraws the image preview
+		private void ShowPreview(ImageData image)
+		{
+			// Draw preview image
+			Graphics g = Graphics.FromImage(bmp);
+			g.Clear(Color.Transparent);
+			image.DrawPreview(g, new Point(0, 0));
+			g.Dispose();
+
+			// Show it centered
+			General.DisplayZoomedImage(preview, bmp);
+		}
+		
 		// This must determine and return the image to show
 		protected abstract Image FindImage(string imagename);
 
@@ -98,5 +132,7 @@ namespace CodeImp.DoomBuilder.Controls
 				return original;
 			}
 		}
+
+		#endregion
 	}
 }

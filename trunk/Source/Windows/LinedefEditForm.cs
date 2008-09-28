@@ -399,6 +399,9 @@ namespace CodeImp.DoomBuilder.Windows
 				fieldslist.Apply(l.Fields);
 			}
 
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+			
 			// Done
 			General.Map.IsChanged = true;
 			this.DialogResult = DialogResult.OK;

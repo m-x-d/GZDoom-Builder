@@ -310,7 +310,7 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 
 					// Show image
-					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteBitmap(ti.Sprite));
+					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview());
 				}
 			}
 

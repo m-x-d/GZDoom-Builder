@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Failed loading picture
 				bmp = null;
 			}
-			
+
 			// Return result
 			return bmp;
 		}

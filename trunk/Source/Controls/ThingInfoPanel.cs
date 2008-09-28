@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.Controls
 			tag.Text = t.Tag.ToString();
 			angle.Text = t.AngleDeg.ToString() + "\u00B0";
 			spritename.Text = ti.Sprite;
-			General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteBitmap(ti.Sprite));
+			General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview());
 
 			// Arguments
 			if(act != null)
