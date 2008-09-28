@@ -211,11 +211,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This applies color-correction over a block of pixel data
 		internal unsafe void ApplColorCorrection(PixelColor* pixels, int numpixels)
 		{
-			for(int i = 0; i < numpixels; i++)
+			for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--)
 			{
-				pixels[i].r = correctiontable[pixels[i].r];
-				pixels[i].g = correctiontable[pixels[i].g];
-				pixels[i].b = correctiontable[pixels[i].b];
+				cp->r = correctiontable[cp->r];
+				cp->g = correctiontable[cp->g];
+				cp->b = correctiontable[cp->b];
 			}
 		}
 		
