@@ -1198,6 +1198,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
 
 			// Update buttons
+			buttontestmonsters.Enabled = (General.Map != null);
 			buttontestmonsters.Checked = General.Settings.TestMonsters;
 		}
 
