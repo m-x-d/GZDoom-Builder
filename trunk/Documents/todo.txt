@@ -1,7 +1,5 @@
 - Add more find/replace types
 
-- Adjust game configurations, see emails
-
 - Make sector gradient features
 
 - Make textureset filters
