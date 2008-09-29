@@ -1,20 +1,18 @@
 - Add more find/replace types
 
-- Seperate modes into their own Mode menu
-
-- Make plugin support for custom toolbar buttons / menu items (Tools menu?)
+- Adjust game configurations, see emails
 
 - Make sector gradient features
 
-- Make 3D Mode (config specific!)
-
 - Make textureset filters
-
-- Make texture alignment features
 
 - Make error checking feature
 
 - Make quick sector draw (square/circle) mode
+
+- Make 3D Mode (config specific!)
+
+- Make texture alignment features
 
 - Make script editor
 
@@ -23,6 +21,7 @@
 - Make dialog and editing mode help documentation
 
 - Make Plugin Development Kit
+	- Add general purpose events to editing modes and plugin main class
 	- Add proper XML comments to classes, properties and methods
 
 - Contact AlysiumX (AlysiumX@gmail.com) for official video tutorials
