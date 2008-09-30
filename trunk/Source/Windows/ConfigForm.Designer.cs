@@ -37,6 +37,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label9;
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label8;
+			System.Windows.Forms.Label label4;
 			this.labelparameters = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
@@ -58,6 +59,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listconfigs = new System.Windows.Forms.ListView();
 			this.columnname = new System.Windows.Forms.ColumnHeader();
 			this.testprogramdialog = new System.Windows.Forms.OpenFileDialog();
+			this.tabtextures = new System.Windows.Forms.TabPage();
+			this.listtextures = new System.Windows.Forms.ListBox();
+			this.addtextureset = new System.Windows.Forms.Button();
+			this.removetextureset = new System.Windows.Forms.Button();
+			this.copytexturesets = new System.Windows.Forms.Button();
+			this.pastetexturesets = new System.Windows.Forms.Button();
+			this.edittextureset = new System.Windows.Forms.Button();
+			this.restoretexturesets = new System.Windows.Forms.Button();
 			label5 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -66,10 +75,12 @@ namespace CodeImp.DoomBuilder.Windows
 			label9 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			label8 = new System.Windows.Forms.Label();
+			label4 = new System.Windows.Forms.Label();
 			this.tabs.SuspendLayout();
 			this.tabresources.SuspendLayout();
 			this.tabnodebuilder.SuspendLayout();
 			this.tabtesting.SuspendLayout();
+			this.tabtextures.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label5
@@ -193,9 +204,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.tabresources);
 			this.tabs.Controls.Add(this.tabnodebuilder);
 			this.tabs.Controls.Add(this.tabtesting);
+			this.tabs.Controls.Add(this.tabtextures);
 			this.tabs.Enabled = false;
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
+			this.tabs.ItemSize = new System.Drawing.Size(100, 19);
 			this.tabs.Location = new System.Drawing.Point(256, 12);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
@@ -417,6 +429,107 @@ namespace CodeImp.DoomBuilder.Windows
 			this.testprogramdialog.Filter = "Executable Files (*.exe)|*.exe|Batch Files (*.bat)|*.bat";
 			this.testprogramdialog.Title = "Browse Test Program";
 			// 
+			// tabtextures
+			// 
+			this.tabtextures.Controls.Add(this.restoretexturesets);
+			this.tabtextures.Controls.Add(this.edittextureset);
+			this.tabtextures.Controls.Add(this.pastetexturesets);
+			this.tabtextures.Controls.Add(this.copytexturesets);
+			this.tabtextures.Controls.Add(this.removetextureset);
+			this.tabtextures.Controls.Add(this.addtextureset);
+			this.tabtextures.Controls.Add(this.listtextures);
+			this.tabtextures.Controls.Add(label4);
+			this.tabtextures.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabtextures.Location = new System.Drawing.Point(4, 23);
+			this.tabtextures.Name = "tabtextures";
+			this.tabtextures.Size = new System.Drawing.Size(415, 318);
+			this.tabtextures.TabIndex = 3;
+			this.tabtextures.Text = "Textures";
+			this.tabtextures.UseVisualStyleBackColor = true;
+			// 
+			// label4
+			// 
+			label4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			label4.AutoEllipsis = true;
+			label4.Location = new System.Drawing.Point(12, 15);
+			label4.Name = "label4";
+			label4.Size = new System.Drawing.Size(394, 75);
+			label4.TabIndex = 24;
+			label4.Text = resources.GetString("label4.Text");
+			// 
+			// listtextures
+			// 
+			this.listtextures.ColumnWidth = 120;
+			this.listtextures.IntegralHeight = false;
+			this.listtextures.ItemHeight = 14;
+			this.listtextures.Location = new System.Drawing.Point(15, 93);
+			this.listtextures.MultiColumn = true;
+			this.listtextures.Name = "listtextures";
+			this.listtextures.ScrollAlwaysVisible = true;
+			this.listtextures.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.listtextures.Size = new System.Drawing.Size(382, 138);
+			this.listtextures.Sorted = true;
+			this.listtextures.TabIndex = 25;
+			// 
+			// addtextureset
+			// 
+			this.addtextureset.Location = new System.Drawing.Point(15, 237);
+			this.addtextureset.Name = "addtextureset";
+			this.addtextureset.Size = new System.Drawing.Size(67, 24);
+			this.addtextureset.TabIndex = 26;
+			this.addtextureset.Text = "Add...";
+			this.addtextureset.UseVisualStyleBackColor = true;
+			// 
+			// removetextureset
+			// 
+			this.removetextureset.Enabled = false;
+			this.removetextureset.Location = new System.Drawing.Point(161, 237);
+			this.removetextureset.Name = "removetextureset";
+			this.removetextureset.Size = new System.Drawing.Size(68, 24);
+			this.removetextureset.TabIndex = 27;
+			this.removetextureset.Text = "Remove";
+			this.removetextureset.UseVisualStyleBackColor = true;
+			// 
+			// copytexturesets
+			// 
+			this.copytexturesets.Enabled = false;
+			this.copytexturesets.Location = new System.Drawing.Point(275, 237);
+			this.copytexturesets.Name = "copytexturesets";
+			this.copytexturesets.Size = new System.Drawing.Size(58, 24);
+			this.copytexturesets.TabIndex = 28;
+			this.copytexturesets.Text = "Copy";
+			this.copytexturesets.UseVisualStyleBackColor = true;
+			// 
+			// pastetexturesets
+			// 
+			this.pastetexturesets.Enabled = false;
+			this.pastetexturesets.Location = new System.Drawing.Point(339, 237);
+			this.pastetexturesets.Name = "pastetexturesets";
+			this.pastetexturesets.Size = new System.Drawing.Size(58, 24);
+			this.pastetexturesets.TabIndex = 29;
+			this.pastetexturesets.Text = "Paste";
+			this.pastetexturesets.UseVisualStyleBackColor = true;
+			// 
+			// edittextureset
+			// 
+			this.edittextureset.Enabled = false;
+			this.edittextureset.Location = new System.Drawing.Point(88, 237);
+			this.edittextureset.Name = "edittextureset";
+			this.edittextureset.Size = new System.Drawing.Size(67, 24);
+			this.edittextureset.TabIndex = 30;
+			this.edittextureset.Text = "Edit...";
+			this.edittextureset.UseVisualStyleBackColor = true;
+			// 
+			// restoretexturesets
+			// 
+			this.restoretexturesets.Location = new System.Drawing.Point(15, 275);
+			this.restoretexturesets.Name = "restoretexturesets";
+			this.restoretexturesets.Size = new System.Drawing.Size(140, 24);
+			this.restoretexturesets.TabIndex = 31;
+			this.restoretexturesets.Text = "Add Default Categories";
+			this.restoretexturesets.UseVisualStyleBackColor = true;
+			// 
 			// ConfigForm
 			// 
 			this.AcceptButton = this.apply;
@@ -444,6 +557,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabnodebuilder.PerformLayout();
 			this.tabtesting.ResumeLayout(false);
 			this.tabtesting.PerformLayout();
+			this.tabtextures.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -471,5 +585,13 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox customparameters;
 		private CodeImp.DoomBuilder.Controls.ActionSelectorControl skill;
 		private System.Windows.Forms.Label labelparameters;
+		private System.Windows.Forms.TabPage tabtextures;
+		private System.Windows.Forms.Button addtextureset;
+		private System.Windows.Forms.ListBox listtextures;
+		private System.Windows.Forms.Button restoretexturesets;
+		private System.Windows.Forms.Button edittextureset;
+		private System.Windows.Forms.Button pastetexturesets;
+		private System.Windows.Forms.Button copytexturesets;
+		private System.Windows.Forms.Button removetextureset;
 	}
 }
