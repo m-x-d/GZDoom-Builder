@@ -104,10 +104,7 @@ namespace CodeImp.DoomBuilder.Config
 				// Make sure filter is in uppercase
 				string ss = s.ToUpperInvariant();
 				
-				// Replace the * with the regex code
-				ss = ss.Replace("*", ".*?");
-
-				// Escape other regex characters, except the ?
+				// Escape regex characters
 				ss = ss.Replace("+", "\\+");
 				ss = ss.Replace("\\", "\\\\");
 				ss = ss.Replace("|", "\\|");
@@ -120,20 +117,32 @@ namespace CodeImp.DoomBuilder.Config
 				ss = ss.Replace(".", "\\.");
 				ss = ss.Replace("#", "\\#");
 				ss = ss.Replace(" ", "\\ ");
-
+				
+				// Replace the * with the regex code for optional multiple characters
+				ss = ss.Replace("*", ".*?");
+				
+				// Replace the ? with the regex code for single character
+				ss = ss.Replace("?", ".");
+				
 				// When a filter has already added, insert a conditional OR operator
 				if(regexstr.Length > 0) regexstr.Append("|");
-
+				
 				// Open group without backreferencing
 				regexstr.Append("(?:");
-
+				
+				// Must be start of string
+				regexstr.Append("\\A");
+				
 				// Add the filter
 				regexstr.Append(ss);
-
+				
+				// Must be end of string
+				regexstr.Append("\\Z");
+				
 				// Close group
 				regexstr.Append(")");
 			}
-
+			
 			// Make the regex
 			regex = new Regex(regexstr.ToString(), RegexOptions.Compiled |
 												   RegexOptions.CultureInvariant);
@@ -154,6 +163,12 @@ namespace CodeImp.DoomBuilder.Config
 				// Doesn't match
 				return false;
 			}
+		}
+		
+		// This only checks if the given image is a match
+		internal virtual bool IsMatch(ImageData image)
+		{
+			return regex.IsMatch(image.Name.ToUpperInvariant());
 		}
 		
 		// Duplication

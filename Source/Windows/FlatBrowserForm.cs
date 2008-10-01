@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Map.Data.UpdateUsedTextures();
 			
 			// Start adding
-			browser.BeginAdding();
+			browser.BeginAdding(false);
 
 			// Add all used flats
 			foreach(ImageData img in General.Map.Data.Flats)

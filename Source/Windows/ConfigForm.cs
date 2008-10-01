@@ -92,13 +92,13 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Get config info of selected item
 				configinfo = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
-
+				
 				// Load the game configuration
 				gameconfig = new GameConfiguration(General.LoadGameConfiguration(configinfo.Filename));
 				
 				// Fill resources list
 				configdata.EditResourceLocationList(configinfo.Resources);
-
+				
 				// Go for all nodebuilder save items
 				nodebuildersave.SelectedIndex = -1;
 				for(int i = 0; i < nodebuildersave.Items.Count; i++)
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Windows
 						break;
 					}
 				}
-
+				
 				// Go for all nodebuilder save items
 				nodebuildertest.SelectedIndex = -1;
 				for(int i = 0; i < nodebuildertest.Items.Count; i++)
@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.Windows
 				skill.Value = skilllevel - 1;
 				skill.Value = skilllevel;
 				customparameters.Checked = configinfo.CustomParameters;
-
+				
 				// Fill texture sets list
 				listtextures.Items.Clear();
 				listtextures.Items.AddRange(configinfo.TextureSets.ToArray());
@@ -331,10 +331,10 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Leave when no configuration selected
 			if(configinfo == null) return;
-
+			
 			// Apply to selected configuration
 			configinfo.TestSkill = skill.Value;
-
+			
 			CreateParametersExample();
 		}
 
@@ -364,7 +364,20 @@ namespace CodeImp.DoomBuilder.Windows
 				form.ShowDialog(this);
 			}
 		}
-
+		
+		// Remove texture set
+		private void removetextureset_Click(object sender, EventArgs e)
+		{
+			// Texture Set selected?
+			if(listtextures.SelectedItem is DefinedTextureSet)
+			{
+				// Remove from config info and list
+				DefinedTextureSet s = (listtextures.SelectedItem as DefinedTextureSet);
+				configinfo.TextureSets.Remove(s);
+				listtextures.Items.Remove(s);
+			}
+		}
+		
 		// Texture Set selected/deselected
 		private void listtextures_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -372,6 +385,12 @@ namespace CodeImp.DoomBuilder.Windows
 			removetextureset.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
 			copytexturesets.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
 			pastetexturesets.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
+		}
+		
+		// Doubleclicking a texture set
+		private void listtextures_DoubleClick(object sender, EventArgs e)
+		{
+			edittextureset_Click(sender, e);
 		}
 	}
 }

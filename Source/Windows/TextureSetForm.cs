@@ -43,6 +43,12 @@ namespace CodeImp.DoomBuilder.Windows
 		public TextureSetForm()
 		{
 			InitializeComponent();
+			
+			// Show/hide components
+			matchesbutton.Visible = (General.Map != null);
+			nomatchesbutton.Visible = (General.Map != null);
+			matcheslist.Visible = (General.Map != null);
+			noresultlabel.Visible = (General.Map == null);
 		}
 		
 		// This initializes the set
@@ -50,10 +56,10 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Keep reference
 			textureset = set;
-
+			
 			// Set name
 			name.Text = set.Name;
-
+			
 			// Fill filters list
 			foreach(string s in set.Filters)
 				filters.Items.Add(s);
@@ -64,12 +70,13 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Apply name
 			textureset.Name = name.Text;
-
+			
 			// Apply filters
 			textureset.Filters.Clear();
 			foreach(ListViewItem i in filters.Items) textureset.Filters.Add(i.Text);
-
+			
 			// Done
+			matcheslist.CleanUp();
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}
@@ -78,9 +85,140 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cancel_Click(object sender, EventArgs e)
 		{
 			// Be gone.
+			matcheslist.CleanUp();
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
 		}
-
+		
+		// Add texture
+		private void addfilter_Click(object sender, EventArgs e)
+		{
+			ListViewItem i = new ListViewItem("");
+			filters.Items.Add(i);
+			i.BeginEdit();
+		}
+		
+		// Remove selected items
+		private void removefilter_Click(object sender, EventArgs e)
+		{
+			foreach(ListViewItem i in filters.SelectedItems) i.Remove();
+			
+			// Run the timer
+			filterstimer.Start();
+		}
+		
+		// Items selected/deselected
+		private void filters_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			removefilter.Enabled = (filters.SelectedItems.Count > 0);
+		}
+		
+		// Double clicking an item
+		private void filters_DoubleClick(object sender, EventArgs e)
+		{
+			// Edit item
+			if(filters.SelectedItems.Count == 1)
+				filters.SelectedItems[0].BeginEdit();
+		}
+		
+		// This removes empty items and makes others uppercase
+		private void filterstimer_Tick(object sender, EventArgs e)
+		{
+			// Stop timer
+			filterstimer.Stop();
+			
+			// Update labels
+			for(int i = filters.Items.Count - 1; i >= 0; i--)
+			{
+				// Empty label?
+				if((filters.Items[i].Text == null) ||
+				   (filters.Items[i].Text.Trim().Length == 0))
+				{
+					// Remove it
+					filters.Items.RemoveAt(i);
+				}
+				else
+				{
+					// Make uppercase
+					filters.Items[i].Text = filters.Items[i].Text.ToUpperInvariant();
+				}
+			}
+			
+			// Show example results if when we can
+			if(General.Map != null)
+			{
+				Cursor.Current = Cursors.AppStarting;
+				
+				// Make a set for comparing
+				DefinedTextureSet set = new DefinedTextureSet("");
+				foreach(ListViewItem i in filters.Items) set.Filters.Add(i.Text);
+				set.Reset();
+				
+				// Determine tooltip text
+				string tooltiptext = null;
+				if(nomatchesbutton.Checked) tooltiptext = "Doubleclick to include this texture";
+				
+				// Start adding
+				matcheslist.PreventSelection = matchesbutton.Checked;
+				matcheslist.BeginAdding(true);
+				
+				// Go for all textures
+				foreach(ImageData img in General.Map.Data.Textures)
+				{
+					bool ismatch = set.IsMatch(img);
+					if((ismatch && matchesbutton.Checked) || (!ismatch && nomatchesbutton.Checked))
+						matcheslist.Add(img.Name, img, img, null, tooltiptext);
+				}
+				
+				// If not already mixed, add flats as well
+				if(!General.Map.Config.MixTexturesFlats)
+				{
+					// Go for all flats
+					foreach(ImageData img in General.Map.Data.Flats)
+					{
+						bool ismatch = set.IsMatch(img);
+						if((ismatch && matchesbutton.Checked) || (!ismatch && nomatchesbutton.Checked))
+							matcheslist.Add(img.Name, img, img, null, tooltiptext);
+					}
+				}
+				
+				// Done adding
+				matcheslist.EndAdding();
+				Cursor.Current = Cursors.Default;
+			}
+		}
+		
+		// Done editing a filter
+		private void filters_AfterLabelEdit(object sender, LabelEditEventArgs e)
+		{
+			// Run the timer
+			filterstimer.Start();
+		}
+		
+		// When first shown
+		private void TextureSetForm_Shown(object sender, EventArgs e)
+		{
+			// Run the timer
+			filterstimer.Start();
+		}
+		
+		// Show (not) matches clicked
+		private void matchesbutton_Click(object sender, EventArgs e)
+		{
+			// Run the timer
+			filterstimer.Start();
+		}
+		
+		// Texture doubleclicked
+		private void matcheslist_SelectedItemDoubleClicked()
+		{
+			// Add texture name to the list
+			if(matcheslist.SelectedItem != null)
+				filters.Items.Add(matcheslist.SelectedItem.Text);
+			
+			// Run the timer
+			filterstimer.Start();
+		}
 	}
 }
+
