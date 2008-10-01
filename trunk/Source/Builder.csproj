@@ -346,6 +346,12 @@
     <Compile Include="Controls\TextureSelectorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Windows\TextureSetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\TextureSetForm.Designer.cs">
+      <DependentUpon>TextureSetForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ThingEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -639,6 +645,10 @@
     <EmbeddedResource Include="Windows\TextEditForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TextEditForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\TextureSetForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>TextureSetForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ThingEditForm.resx">
       <SubType>Designer</SubType>

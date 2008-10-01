@@ -50,14 +50,5 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		#endregion
-		
-		#region ================== Methods
-		
-		// This does absolutely nothing
-		internal override void WriteToConfig(Configuration cfg, string path)
-		{
-		}
-		
-		#endregion
 	}
 }

@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		// Variables
 		private GameConfiguration gameconfig;
+		private ConfigurationInfo configinfo;
 		
 		// Constructor
 		public ConfigForm()
@@ -81,7 +82,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Configuration item selected
 		private void listconfigs_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ConfigurationInfo ci;
 			NodebuilderInfo ni;
 			
 			// Item selected?
@@ -91,13 +91,13 @@ namespace CodeImp.DoomBuilder.Windows
 				tabs.Enabled = true;
 				
 				// Get config info of selected item
-				ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+				configinfo = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 
 				// Load the game configuration
-				gameconfig = new GameConfiguration(General.LoadGameConfiguration(ci.Filename));
+				gameconfig = new GameConfiguration(General.LoadGameConfiguration(configinfo.Filename));
 				
 				// Fill resources list
-				configdata.EditResourceLocationList(ci.Resources);
+				configdata.EditResourceLocationList(configinfo.Resources);
 
 				// Go for all nodebuilder save items
 				nodebuildersave.SelectedIndex = -1;
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Windows
 					ni = nodebuildersave.Items[i] as NodebuilderInfo;
 					
 					// Item matches configuration setting?
-					if(string.Compare(ni.Name, ci.NodebuilderSave, false) == 0)
+					if(string.Compare(ni.Name, configinfo.NodebuilderSave, false) == 0)
 					{
 						// Select this item
 						nodebuildersave.SelectedIndex = i;
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.Windows
 					ni = nodebuildertest.Items[i] as NodebuilderInfo;
 					
 					// Item matches configuration setting?
-					if(string.Compare(ni.Name, ci.NodebuilderTest, false) == 0)
+					if(string.Compare(ni.Name, configinfo.NodebuilderTest, false) == 0)
 					{
 						// Select this item
 						nodebuildertest.SelectedIndex = i;
@@ -136,13 +136,17 @@ namespace CodeImp.DoomBuilder.Windows
 				skill.AddInfo(gameconfig.Skills.ToArray());
 				
 				// Set test application and parameters
-				if(!ci.CustomParameters) ci.TestParameters = gameconfig.TestParameters;
-				testapplication.Text = ci.TestProgram;
-				testparameters.Text = ci.TestParameters;
-				int skilllevel = ci.TestSkill;
+				if(!configinfo.CustomParameters) configinfo.TestParameters = gameconfig.TestParameters;
+				testapplication.Text = configinfo.TestProgram;
+				testparameters.Text = configinfo.TestParameters;
+				int skilllevel = configinfo.TestSkill;
 				skill.Value = skilllevel - 1;
 				skill.Value = skilllevel;
-				customparameters.Checked = ci.CustomParameters;
+				customparameters.Checked = configinfo.CustomParameters;
+
+				// Fill texture sets list
+				listtextures.Items.Clear();
+				listtextures.Items.AddRange(configinfo.TextureSets.ToArray());
 			}
 		}
 
@@ -153,6 +157,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(listconfigs.SelectedItems.Count == 0)
 			{
 				// Disable panels
+				gameconfig = null;
+				configinfo = null;
 				configdata.FixedResourceLocationList(new DataLocationList());
 				configdata.EditResourceLocationList(new DataLocationList());
 				nodebuildersave.SelectedIndex = -1;
@@ -163,7 +169,6 @@ namespace CodeImp.DoomBuilder.Windows
 				skill.ClearInfo();
 				customparameters.Checked = false;
 				tabs.Enabled = false;
-				gameconfig = null;
 			}
 		}
 
@@ -176,69 +181,55 @@ namespace CodeImp.DoomBuilder.Windows
 		// Resource locations changed
 		private void resourcelocations_OnContentChanged()
 		{
-			ConfigurationInfo ci;
-			
 			// Leave when no configuration selected
-			if(listconfigs.SelectedItems.Count == 0) return;
+			if(configinfo == null) return;
 			
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
-			ci.Resources.Clear();
-			ci.Resources.AddRange(configdata.GetResources());
+			configinfo.Resources.Clear();
+			configinfo.Resources.AddRange(configdata.GetResources());
 		}
 
 		// Nodebuilder selection changed
 		private void nodebuildersave_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ConfigurationInfo ci;
-
 			// Leave when no configuration selected
-			if(listconfigs.SelectedItems.Count == 0) return;
+			if(configinfo == null) return;
 
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			if(nodebuildersave.SelectedItem != null)
-				ci.NodebuilderSave = (nodebuildersave.SelectedItem as NodebuilderInfo).Name;
+				configinfo.NodebuilderSave = (nodebuildersave.SelectedItem as NodebuilderInfo).Name;
 		}
 
 		// Nodebuilder selection changed
 		private void nodebuildertest_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			ConfigurationInfo ci;
-
 			// Leave when no configuration selected
-			if(listconfigs.SelectedItems.Count == 0) return;
+			if(configinfo == null) return;
 
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			if(nodebuildertest.SelectedItem != null)
-				ci.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Name;
+				configinfo.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Name;
 		}
 		
 		// Test application changed
 		private void testapplication_TextChanged(object sender, EventArgs e)
 		{
-			ConfigurationInfo ci;
-
 			// Leave when no configuration selected
-			if(listconfigs.SelectedItems.Count == 0) return;
+			if(configinfo == null) return;
 
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
-			ci.TestProgram = testapplication.Text;
+			configinfo.TestProgram = testapplication.Text;
 		}
 
 		// Test parameters changed
 		private void testparameters_TextChanged(object sender, EventArgs e)
 		{
-			ConfigurationInfo ci;
-
 			// Leave when no configuration selected
-			if(listconfigs.SelectedItems.Count == 0) return;
+			if(configinfo == null) return;
 
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
-			ci.TestParameters = testparameters.Text;
+			configinfo = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
+			configinfo.TestParameters = testparameters.Text;
 
 			// Show example result
 			CreateParametersExample();
@@ -308,14 +299,11 @@ namespace CodeImp.DoomBuilder.Windows
 		// Customize parameters (un)checked
 		private void customparameters_CheckedChanged(object sender, EventArgs e)
 		{
-			ConfigurationInfo ci;
-
 			// Leave when no configuration selected
-			if(listconfigs.SelectedItems.Count == 0) return;
+			if(configinfo == null) return;
 
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
-			ci.CustomParameters = customparameters.Checked;
+			configinfo.CustomParameters = customparameters.Checked;
 
 			// Update interface
 			labelparameters.Visible = customparameters.Checked;
@@ -341,16 +329,49 @@ namespace CodeImp.DoomBuilder.Windows
 		// Skill changes
 		private void skill_ValueChanges(object sender, EventArgs e)
 		{
-			ConfigurationInfo ci;
-
 			// Leave when no configuration selected
-			if(listconfigs.SelectedItems.Count == 0) return;
+			if(configinfo == null) return;
 
 			// Apply to selected configuration
-			ci = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
-			ci.TestSkill = skill.Value;
+			configinfo.TestSkill = skill.Value;
 
 			CreateParametersExample();
+		}
+
+		// Make new texture set
+		private void addtextureset_Click(object sender, EventArgs e)
+		{
+			DefinedTextureSet s = new DefinedTextureSet("New Texture Set");
+			TextureSetForm form = new TextureSetForm();
+			form.Setup(s);
+			if(form.ShowDialog(this) == DialogResult.OK)
+			{
+				// Add to texture sets
+				configinfo.TextureSets.Add(s);
+				listtextures.Items.Add(s);
+			}
+		}
+
+		// Edit texture set
+		private void edittextureset_Click(object sender, EventArgs e)
+		{
+			// Texture Set selected?
+			if(listtextures.SelectedItem is DefinedTextureSet)
+			{
+				DefinedTextureSet s = (listtextures.SelectedItem as DefinedTextureSet);
+				TextureSetForm form = new TextureSetForm();
+				form.Setup(s);
+				form.ShowDialog(this);
+			}
+		}
+
+		// Texture Set selected/deselected
+		private void listtextures_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			edittextureset.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
+			removetextureset.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
+			copytexturesets.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
+			pastetexturesets.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
 		}
 	}
 }

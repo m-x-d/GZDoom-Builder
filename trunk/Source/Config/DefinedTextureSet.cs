@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Config
 			foreach(DictionaryEntry de in dic)
 			{
 				// If not the name of this texture set, add value as filter
-				if(de.Key.ToString() != "name") filters.Add(de.Value.ToString());
+				if(de.Key.ToString() != "name") filters.Add(de.Value.ToString().ToUpperInvariant());
 			}
 		}
 		
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.Config
 			for(int i = 0; i < filters.Count; i++)
 			{
 				// Add filters
-				dic.Add(i.ToString(), filters[i]);
+				dic.Add("filter" + i.ToString(), filters[i].ToUpperInvariant());
 			}
 			
 			// Write to config
@@ -101,8 +101,11 @@ namespace CodeImp.DoomBuilder.Config
 			StringBuilder regexstr = new StringBuilder("");
 			foreach(string s in filters)
 			{
+				// Make sure filter is in uppercase
+				string ss = s.ToUpperInvariant();
+				
 				// Replace the * with the regex code
-				string ss = s.Replace("*", ".*?");
+				ss = ss.Replace("*", ".*?");
 
 				// Escape other regex characters, except the ?
 				ss = ss.Replace("+", "\\+");
@@ -133,8 +136,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Make the regex
 			regex = new Regex(regexstr.ToString(), RegexOptions.Compiled |
-												   RegexOptions.CultureInvariant |
-												   RegexOptions.IgnoreCase);
+												   RegexOptions.CultureInvariant);
 		}
 		
 		// This matches a name against the regex and adds a texture to
@@ -142,7 +144,7 @@ namespace CodeImp.DoomBuilder.Config
 		internal virtual bool Add(ImageData image)
 		{
 			// Check against regex
-			if(regex.IsMatch(image.Name))
+			if(regex.IsMatch(image.Name.ToUpperInvariant()))
 			{
 				// Matches! Add it.
 				return base.Add(image);
@@ -152,6 +154,22 @@ namespace CodeImp.DoomBuilder.Config
 				// Doesn't match
 				return false;
 			}
+		}
+		
+		// Duplication
+		internal override TextureSet Copy()
+		{
+			// Make a copy
+			DefinedTextureSet s = new DefinedTextureSet(this.name);
+			s.filters = new List<string>(this.filters);
+			return s;
+		}
+		
+		// This applies the filters and name of one set to this one
+		internal override void Apply(TextureSet set)
+		{
+			this.name = set.Name;
+			this.filters = new List<string>(set.Filters);
 		}
 		
 		#endregion

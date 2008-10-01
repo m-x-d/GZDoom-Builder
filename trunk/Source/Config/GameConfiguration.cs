@@ -98,6 +98,9 @@ namespace CodeImp.DoomBuilder.Config
 		// Enums
 		private Dictionary<string, EnumList> enums;
 		
+		// Default Texture Sets
+		private List<TextureSet> texturesets;
+		
 		#endregion
 
 		#region ================== Properties
@@ -157,6 +160,9 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Enums
 		public IDictionary<string, EnumList> Enums { get { return enums; } }
+
+		// Texture Sets
+		internal List<TextureSet> TextureSets { get { return texturesets; } }
 		
 		#endregion
 
@@ -184,7 +190,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.geneffectoptions = new List<GeneralizedOption>();
 			this.enums = new Dictionary<string, EnumList>();
 			this.skills = new List<SkillInfo>();
-
+			this.texturesets = new List<TextureSet>();
+			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
 			enginename = cfg.ReadSetting("engine", "");
@@ -243,6 +250,9 @@ namespace CodeImp.DoomBuilder.Config
 			sidedeffields = LoadUniversalFields("sidedef");
 			thingfields = LoadUniversalFields("thing");
 			vertexfields = LoadUniversalFields("vertex");
+
+			// Texture sets
+			LoadTextureSets();
 		}
 
 		// Destructor
@@ -575,6 +585,20 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					General.WriteLogLine("WARNING: Structure 'skills' contains invalid skill numbers!");
 				}
+			}
+		}
+		
+		// Texture Sets
+		private void LoadTextureSets()
+		{
+			IDictionary dic;
+
+			// Get sets
+			dic = cfg.ReadSetting("texturesets", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				TextureSet s = new DefinedTextureSet(cfg, "texturesets." + de.Key.ToString());
+				texturesets.Add(s);
 			}
 		}
 		

@@ -33,7 +33,7 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal abstract class TextureSet
+	public abstract class TextureSet
 	{
 		#region ================== Variables
 
@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Methods
 		
 		// This writes the texture set to configuration
-		internal abstract void WriteToConfig(Configuration cfg, string path);
+		internal virtual void WriteToConfig(Configuration cfg, string path) { }
 		
 		// This resets the matches and recreates the regex
 		internal virtual void Reset()
@@ -102,6 +102,10 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			return name;
 		}
+		
+		// This is optional
+		internal virtual TextureSet Copy() { return null; }
+		internal virtual void Apply(TextureSet set) { }
 		
 		#endregion
 	}
