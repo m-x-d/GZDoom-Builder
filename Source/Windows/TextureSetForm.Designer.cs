@@ -45,8 +45,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.nomatchesbutton = new System.Windows.Forms.RadioButton();
 			this.matchesbutton = new System.Windows.Forms.RadioButton();
-			this.noresultlabel = new System.Windows.Forms.Label();
 			this.matcheslist = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
+			this.noresultlabel = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -71,6 +71,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// filters
 			// 
+			this.filters.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.filters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.filtercolumn});
 			this.filters.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
@@ -79,7 +82,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filters.Location = new System.Drawing.Point(21, 110);
 			this.filters.Name = "filters";
 			this.filters.ShowGroups = false;
-			this.filters.Size = new System.Drawing.Size(219, 173);
+			this.filters.Size = new System.Drawing.Size(219, 280);
 			this.filters.TabIndex = 2;
 			this.filters.UseCompatibleStateImageBehavior = false;
 			this.filters.View = System.Windows.Forms.View.Details;
@@ -122,7 +125,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(414, 418);
+			this.apply.Location = new System.Drawing.Point(414, 515);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(105, 25);
 			this.apply.TabIndex = 6;
@@ -134,7 +137,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(525, 418);
+			this.cancel.Location = new System.Drawing.Point(525, 515);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(105, 25);
 			this.cancel.TabIndex = 7;
@@ -144,7 +147,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// addfilter
 			// 
-			this.addfilter.Location = new System.Drawing.Point(21, 289);
+			this.addfilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.addfilter.Location = new System.Drawing.Point(21, 396);
 			this.addfilter.Name = "addfilter";
 			this.addfilter.Size = new System.Drawing.Size(97, 24);
 			this.addfilter.TabIndex = 8;
@@ -154,8 +158,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// removefilter
 			// 
+			this.removefilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.removefilter.Enabled = false;
-			this.removefilter.Location = new System.Drawing.Point(135, 289);
+			this.removefilter.Location = new System.Drawing.Point(124, 396);
 			this.removefilter.Name = "removefilter";
 			this.removefilter.Size = new System.Drawing.Size(105, 24);
 			this.removefilter.TabIndex = 9;
@@ -175,7 +180,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox1.Controls.Add(this.filters);
 			this.groupBox1.Location = new System.Drawing.Point(12, 60);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(270, 333);
+			this.groupBox1.Size = new System.Drawing.Size(270, 440);
 			this.groupBox1.TabIndex = 10;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Filters ";
@@ -192,11 +197,11 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.nomatchesbutton);
 			this.groupBox2.Controls.Add(this.matchesbutton);
-			this.groupBox2.Controls.Add(this.noresultlabel);
 			this.groupBox2.Controls.Add(this.matcheslist);
+			this.groupBox2.Controls.Add(this.noresultlabel);
 			this.groupBox2.Location = new System.Drawing.Point(298, 60);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(332, 333);
+			this.groupBox2.Size = new System.Drawing.Size(332, 440);
 			this.groupBox2.TabIndex = 11;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Results ";
@@ -227,15 +232,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matchesbutton.UseVisualStyleBackColor = true;
 			this.matchesbutton.Click += new System.EventHandler(this.matchesbutton_Click);
 			// 
-			// noresultlabel
-			// 
-			this.noresultlabel.Location = new System.Drawing.Point(20, 110);
-			this.noresultlabel.Name = "noresultlabel";
-			this.noresultlabel.Size = new System.Drawing.Size(272, 43);
-			this.noresultlabel.TabIndex = 33;
-			this.noresultlabel.Text = "An example result cannot be displayed, because it requires a map to be loaded.";
-			this.noresultlabel.Visible = false;
-			// 
 			// matcheslist
 			// 
 			this.matcheslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -247,9 +243,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matcheslist.Location = new System.Drawing.Point(18, 55);
 			this.matcheslist.Name = "matcheslist";
 			this.matcheslist.PreventSelection = true;
-			this.matcheslist.Size = new System.Drawing.Size(298, 258);
+			this.matcheslist.Size = new System.Drawing.Size(298, 365);
 			this.matcheslist.TabIndex = 10;
 			this.matcheslist.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.matcheslist_SelectedItemDoubleClicked);
+			// 
+			// noresultlabel
+			// 
+			this.noresultlabel.Location = new System.Drawing.Point(15, 28);
+			this.noresultlabel.Name = "noresultlabel";
+			this.noresultlabel.Size = new System.Drawing.Size(272, 43);
+			this.noresultlabel.TabIndex = 33;
+			this.noresultlabel.Text = "An example result cannot be displayed, because it requires a map to be loaded.";
+			this.noresultlabel.Visible = false;
 			// 
 			// pictureBox1
 			// 
@@ -263,8 +268,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// TextureSetForm
 			// 
+			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(642, 455);
+			this.CancelButton = this.cancel;
+			this.ClientSize = new System.Drawing.Size(642, 552);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancel);
