@@ -40,6 +40,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private string selectedname;
 		private Point lastposition;
 		private Size lastsize;
+		private ListViewGroup usedgroup;
+		private ListViewGroup availgroup;
 		
 		// Properties
 		public string SelectedName { get { return selectedname; } }
@@ -48,36 +50,35 @@ namespace CodeImp.DoomBuilder.Windows
 		public TextureBrowserForm()
 		{
 			Cursor.Current = Cursors.WaitCursor;
+			ListViewItem item;
 			
 			// Initialize
 			InitializeComponent();
 			browser.ApplyColorSettings();
 			
-			// Make groups
-			ListViewGroup used = browser.AddGroup("Used Textures");
-			ListViewGroup avail = browser.AddGroup("Available Textures");
-			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
+			
+			// Fill texture sets list with normal texture sets
+			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets)
+			{
+				item = texturesets.Items.Add(ts.Name);
+				item.Tag = ts;
+			}
+			
+			// Sort and add other textures set
+			texturesets.Sort();
+			item = texturesets.Items.Add(General.Map.Data.OthersTextureSet.Name);
+			item.Tag = General.Map.Data.OthersTextureSet;
+			
+			// Select one
+			// TODO: Remember selection
+			texturesets.Items[0].Selected = true;
 
-			// Start adding
-			browser.BeginAdding(false);
-			
-			// Add all available textures and mark the images for temporary loading
-			foreach(ImageData img in General.Map.Data.Textures)
-			{
-				browser.Add(img.Name, img, img, avail);
-			}
-			
-			// Add all used textures and mark the images for permanent loading
-			foreach(ImageData img in General.Map.Data.Textures)
-			{
-				if(img.UsedInMap) browser.Add(img.Name, img, img, used);
-			}
-			
-			// Done adding
-			browser.EndAdding();
-			
+			// Make groups
+			usedgroup = browser.AddGroup("Used Textures");
+			availgroup = browser.AddGroup("Available Textures");
+
 			// Keep last position and size
 			lastposition = this.Location;
 			lastsize = this.Size;
@@ -198,6 +199,31 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Cancelled
 				return null;
+			}
+		}
+		
+		// Texture set selected
+		private void texturesets_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Anything slected?
+			if(texturesets.SelectedItems.Count > 0)
+			{
+				// Get the selected texture set
+				IFilledTextureSet set = (texturesets.SelectedItems[0].Tag as IFilledTextureSet);
+				
+				// Start adding
+				browser.BeginAdding(false);
+				
+				// Add all available textures and mark the images for temporary loading
+				foreach(ImageData img in set.Textures)
+					browser.Add(img.Name, img, img, availgroup);
+				
+				// Add all used textures and mark the images for permanent loading
+				foreach(ImageData img in set.Textures)
+					if(img.UsedInMap) browser.Add(img.Name, img, img, usedgroup);
+				
+				// Done adding
+				browser.EndAdding();
 			}
 		}
 	}

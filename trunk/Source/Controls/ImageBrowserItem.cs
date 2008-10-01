@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Display image
 		public ImageData icon;
-
+		
 		// Group
 		private ListViewGroup listgroup;
 		
@@ -68,13 +68,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Text = text;
 			this.icon = icon;
 			this.Tag = tag;
-		}
-		
-		// Disposer
-		public void Dispose()
-		{
-			icon = null;
-			listgroup = null;
 		}
 		
 		#endregion

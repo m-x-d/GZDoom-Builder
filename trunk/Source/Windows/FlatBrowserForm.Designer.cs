@@ -31,6 +31,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.texturesets = new System.Windows.Forms.ListView();
+			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			this.SuspendLayout();
 			// 
 			// browser
@@ -39,10 +41,12 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.browser.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browser.HideInputBox = false;
 			this.browser.LabelText = "Select or enter a flat name:";
-			this.browser.Location = new System.Drawing.Point(11, 9);
+			this.browser.Location = new System.Drawing.Point(187, 9);
 			this.browser.Name = "browser";
-			this.browser.Size = new System.Drawing.Size(689, 457);
+			this.browser.PreventSelection = false;
+			this.browser.Size = new System.Drawing.Size(525, 457);
 			this.browser.TabIndex = 0;
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
@@ -50,9 +54,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(588, 443);
+			this.cancel.Location = new System.Drawing.Point(612, 443);
 			this.cancel.Name = "cancel";
-			this.cancel.Size = new System.Drawing.Size(112, 25);
+			this.cancel.Size = new System.Drawing.Size(100, 25);
 			this.cancel.TabIndex = 22;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
@@ -61,24 +65,48 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(470, 443);
+			this.apply.Location = new System.Drawing.Point(506, 443);
 			this.apply.Name = "apply";
-			this.apply.Size = new System.Drawing.Size(112, 25);
+			this.apply.Size = new System.Drawing.Size(100, 25);
 			this.apply.TabIndex = 21;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
+			// 
+			// texturesets
+			// 
+			this.texturesets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+			this.texturesets.FullRowSelect = true;
+			this.texturesets.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+			this.texturesets.HideSelection = false;
+			this.texturesets.Location = new System.Drawing.Point(12, 9);
+			this.texturesets.MultiSelect = false;
+			this.texturesets.Name = "texturesets";
+			this.texturesets.Size = new System.Drawing.Size(166, 423);
+			this.texturesets.TabIndex = 24;
+			this.texturesets.UseCompatibleStateImageBehavior = false;
+			this.texturesets.View = System.Windows.Forms.View.Details;
+			this.texturesets.SelectedIndexChanged += new System.EventHandler(this.texturesets_SelectedIndexChanged);
+			// 
+			// columnHeader1
+			// 
+			this.columnHeader1.Text = "Name";
+			this.columnHeader1.Width = 141;
 			// 
 			// FlatBrowserForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(712, 478);
+			this.ClientSize = new System.Drawing.Size(724, 478);
+			this.Controls.Add(this.texturesets);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.browser);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FlatBrowserForm";
 			this.Opacity = 0;
@@ -86,11 +114,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Browse Flats";
+			this.Load += new System.EventHandler(this.FlatBrowserForm_Load);
 			this.Activated += new System.EventHandler(this.FlatBrowserForm_Activated);
 			this.Move += new System.EventHandler(this.FlatBrowserForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FlatBrowserForm_FormClosing);
 			this.ResizeEnd += new System.EventHandler(this.FlatBrowserForm_ResizeEnd);
-			this.Load += new System.EventHandler(this.FlatBrowserForm_Load);
 			this.ResumeLayout(false);
 
 		}
@@ -100,5 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ImageBrowserControl browser;
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
+		private System.Windows.Forms.ListView texturesets;
+		private System.Windows.Forms.ColumnHeader columnHeader1;
 	}
 }

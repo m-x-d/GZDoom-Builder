@@ -42,23 +42,21 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Variables
-
+		
 		// Data containers
 		private List<DataReader> containers;
-
+		
 		// Palette
 		private Playpal palette;
 		
-		// Textures
+		// Textures, Flats and Sprites
 		private Dictionary<long, ImageData> textures;
 		private List<string> texturenames;
-		
-		// Flats
 		private Dictionary<long, ImageData> flats;
 		private List<string> flatnames;
-		
-		// Sprites
 		private Dictionary<long, ImageData> sprites;
+		private List<MatchingTextureSet> texturesets;
+		private OthersTextureSet othertextures;
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -88,6 +86,8 @@ namespace CodeImp.DoomBuilder.Data
 		public bool IsDisposed { get { return isdisposed; } }
 		public ImageData MissingTexture3D { get { return missingtexture3d; } }
 		public ImageData Hourglass3D { get { return hourglass3d; } }
+		internal ICollection<MatchingTextureSet> TextureSets { get { return texturesets; } }
+		internal OthersTextureSet OthersTextureSet { get { return othertextures; } }
 		
 		public bool IsLoading
 		{
@@ -171,6 +171,14 @@ namespace CodeImp.DoomBuilder.Data
 			flatnames = new List<string>();
 			imageque = new Queue<ImageData>();
 			previews = new PreviewManager();
+			texturesets = new List<MatchingTextureSet>();
+			
+			// Load texture sets
+			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
+				texturesets.Add(new MatchingTextureSet(ts));
+			
+			// Other textures set
+			othertextures = new OthersTextureSet();
 			
 			// Go for all locations
 			foreach(DataLocation dl in locations)
@@ -213,20 +221,44 @@ namespace CodeImp.DoomBuilder.Data
 				// Add container
 				if(c != null) containers.Add(c);
 			}
-
+			
 			// Load stuff
 			LoadPalette();
 			texcount = LoadTextures();
 			flatcount = LoadFlats();
 			spritecount = LoadSprites();
-
+			
 			// Sort names
 			texturenames.Sort();
 			flatnames.Sort();
 			
+			// Add texture names to texture sets
+			foreach(KeyValuePair<long, ImageData> img in textures)
+			{
+				// Add to all sets where it matches
+				bool matchfound = false;
+				foreach(MatchingTextureSet ms in texturesets)
+					matchfound |= ms.AddTexture(img.Value);
+				
+				// If not matched in any set, add it to the others
+				othertextures.AddTexture(img.Value);
+			}
+			
+			// Add flat names to texture sets
+			foreach(KeyValuePair<long, ImageData> img in flats)
+			{
+				// Add to all sets where it matches
+				bool matchfound = false;
+				foreach(MatchingTextureSet ms in texturesets)
+					matchfound |= ms.AddFlat(img.Value);
+				
+				// If not matched in any set, add it to the others
+				othertextures.AddFlat(img.Value);
+			}
+			
 			// Start background loading
 			StartBackgroundLoader();
-
+			
 			// Output info
 			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + spritecount + " sprites");
 		}
@@ -246,11 +278,11 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<long, ImageData> i in flats) i.Value.Dispose();
 			foreach(KeyValuePair<long, ImageData> i in sprites) i.Value.Dispose();
 			palette = null;
-
+			
 			// Dispose containers
 			foreach(DataReader c in containers) c.Dispose();
 			containers.Clear();
-
+			
 			// Trash collections
 			containers = null;
 			textures = null;
@@ -260,7 +292,7 @@ namespace CodeImp.DoomBuilder.Data
 			flatnames = null;
 			imageque = null;
 		}
-
+		
 		#endregion
 		
 		#region ================== Suspend / Resume

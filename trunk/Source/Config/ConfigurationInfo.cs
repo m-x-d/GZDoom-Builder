@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool customparameters;
 		private int testskill;
 		private List<ThingsFilter> thingsfilters;
-		private List<TextureSet> texturesets;
+		private List<DefinedTextureSet> texturesets;
 		
 		#endregion
 
@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int TestSkill { get { return testskill; } set { testskill = value; } }
 		public bool CustomParameters { get { return customparameters; } set { customparameters = value; } }
 		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
-		public List<TextureSet> TextureSets { get { return texturesets; } }
+		public List<DefinedTextureSet> TextureSets { get { return texturesets; } }
 
 		#endregion
 
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			// Make list of texture sets
-			texturesets = new List<TextureSet>();
+			texturesets = new List<DefinedTextureSet>();
 			IDictionary sets = General.Settings.ReadSetting("configurations." + settingskey + ".texturesets", new Hashtable());
 			foreach(DictionaryEntry de in sets)
 			{
@@ -170,8 +170,8 @@ namespace CodeImp.DoomBuilder.Config
 			ci.testparameters = this.testparameters;
 			ci.customparameters = this.customparameters;
 			ci.testskill = this.testskill;
-			ci.texturesets = new List<TextureSet>();
-			foreach(TextureSet s in this.texturesets) ci.texturesets.Add(s.Copy());
+			ci.texturesets = new List<DefinedTextureSet>();
+			foreach(DefinedTextureSet s in this.texturesets) ci.texturesets.Add(s.Copy());
 			return ci;
 		}
 		
@@ -189,8 +189,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.testparameters = ci.testparameters;
 			this.customparameters = ci.customparameters;
 			this.testskill = ci.testskill;
-			this.texturesets = new List<TextureSet>();
-			foreach(TextureSet s in ci.texturesets) this.texturesets.Add(s.Copy());
+			this.texturesets = new List<DefinedTextureSet>();
+			foreach(DefinedTextureSet s in ci.texturesets) this.texturesets.Add(s.Copy());
 		}
 		
 		// This applies the defaults
@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(texturesets.Count == 0)
 			{
 				// Copy the default texture sets from the game configuration
-				foreach(TextureSet s in General.Map.Config.TextureSets)
+				foreach(DefinedTextureSet s in General.Map.Config.TextureSets)
 				{
 					// Add a copy to our list
 					texturesets.Add(s.Copy());

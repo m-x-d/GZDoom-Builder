@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Dictionary<string, EnumList> enums;
 		
 		// Default Texture Sets
-		private List<TextureSet> texturesets;
+		private List<DefinedTextureSet> texturesets;
 		
 		#endregion
 
@@ -162,7 +162,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary<string, EnumList> Enums { get { return enums; } }
 
 		// Texture Sets
-		internal List<TextureSet> TextureSets { get { return texturesets; } }
+		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
 		
 		#endregion
 
@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.geneffectoptions = new List<GeneralizedOption>();
 			this.enums = new Dictionary<string, EnumList>();
 			this.skills = new List<SkillInfo>();
-			this.texturesets = new List<TextureSet>();
+			this.texturesets = new List<DefinedTextureSet>();
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -597,7 +597,7 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("texturesets", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				TextureSet s = new DefinedTextureSet(cfg, "texturesets." + de.Key.ToString());
+				DefinedTextureSet s = new DefinedTextureSet(cfg, "texturesets." + de.Key.ToString());
 				texturesets.Add(s);
 			}
 		}

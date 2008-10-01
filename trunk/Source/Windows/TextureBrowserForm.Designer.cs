@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser.Location = new System.Drawing.Point(187, 9);
 			this.browser.Name = "browser";
 			this.browser.PreventSelection = false;
-			this.browser.Size = new System.Drawing.Size(513, 457);
+			this.browser.Size = new System.Drawing.Size(525, 457);
 			this.browser.TabIndex = 0;
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(600, 443);
+			this.cancel.Location = new System.Drawing.Point(612, 443);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(100, 25);
 			this.cancel.TabIndex = 22;
@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(494, 443);
+			this.apply.Location = new System.Drawing.Point(506, 443);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(100, 25);
 			this.apply.TabIndex = 21;
@@ -77,15 +77,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.texturesets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.texturesets.FullRowSelect = true;
 			this.texturesets.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.texturesets.HideSelection = false;
 			this.texturesets.Location = new System.Drawing.Point(12, 9);
+			this.texturesets.MultiSelect = false;
 			this.texturesets.Name = "texturesets";
 			this.texturesets.Size = new System.Drawing.Size(166, 423);
-			this.texturesets.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.texturesets.TabIndex = 23;
 			this.texturesets.UseCompatibleStateImageBehavior = false;
 			this.texturesets.View = System.Windows.Forms.View.Details;
+			this.texturesets.SelectedIndexChanged += new System.EventHandler(this.texturesets_SelectedIndexChanged);
 			// 
 			// columnHeader1
 			// 
@@ -97,12 +99,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(712, 478);
+			this.ClientSize = new System.Drawing.Size(724, 478);
 			this.Controls.Add(this.texturesets);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.browser);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TextureBrowserForm";
