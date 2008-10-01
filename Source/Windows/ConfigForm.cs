@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Variables
 		private GameConfiguration gameconfig;
 		private ConfigurationInfo configinfo;
+		private List<DefinedTextureSet> copiedsets;
 		
 		// Constructor
 		public ConfigForm()
@@ -146,10 +147,15 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Fill texture sets list
 				listtextures.Items.Clear();
-				listtextures.Items.AddRange(configinfo.TextureSets.ToArray());
+				foreach(DefinedTextureSet ts in configinfo.TextureSets)
+				{
+					ListViewItem item = listtextures.Items.Add(ts.Name);
+					item.Tag = ts;
+				}
+				listtextures.Sort();
 			}
 		}
-
+		
 		// Key released
 		private void listconfigs_KeyUp(object sender, KeyEventArgs e)
 		{
@@ -169,9 +175,10 @@ namespace CodeImp.DoomBuilder.Windows
 				skill.ClearInfo();
 				customparameters.Checked = false;
 				tabs.Enabled = false;
+				listtextures.Items.Clear();
 			}
 		}
-
+		
 		// Mouse released
 		private void listconfigs_MouseUp(object sender, MouseEventArgs e)
 		{
@@ -348,7 +355,9 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Add to texture sets
 				configinfo.TextureSets.Add(s);
-				listtextures.Items.Add(s);
+				ListViewItem item = listtextures.Items.Add(s.Name);
+				item.Tag = s;
+				listtextures.Sort();
 			}
 		}
 
@@ -356,12 +365,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private void edittextureset_Click(object sender, EventArgs e)
 		{
 			// Texture Set selected?
-			if(listtextures.SelectedItem is DefinedTextureSet)
+			if(listtextures.SelectedItems.Count > 0)
 			{
-				DefinedTextureSet s = (listtextures.SelectedItem as DefinedTextureSet);
+				DefinedTextureSet s = (listtextures.SelectedItems[0].Tag as DefinedTextureSet);
 				TextureSetForm form = new TextureSetForm();
 				form.Setup(s);
 				form.ShowDialog(this);
+				listtextures.SelectedItems[0].Text = s.Name;
+				listtextures.Sort();
 			}
 		}
 		
@@ -369,28 +380,78 @@ namespace CodeImp.DoomBuilder.Windows
 		private void removetextureset_Click(object sender, EventArgs e)
 		{
 			// Texture Set selected?
-			if(listtextures.SelectedItem is DefinedTextureSet)
+			if(listtextures.SelectedItems.Count > 0)
 			{
 				// Remove from config info and list
-				DefinedTextureSet s = (listtextures.SelectedItem as DefinedTextureSet);
+				DefinedTextureSet s = (listtextures.SelectedItems[0].Tag as DefinedTextureSet);
 				configinfo.TextureSets.Remove(s);
-				listtextures.Items.Remove(s);
+				listtextures.SelectedItems[0].Remove();
 			}
 		}
 		
 		// Texture Set selected/deselected
 		private void listtextures_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			edittextureset.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
-			removetextureset.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
-			copytexturesets.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
-			pastetexturesets.Enabled = (listtextures.SelectedItem is DefinedTextureSet);
+			edittextureset.Enabled = (listtextures.SelectedItems.Count > 0);
+			removetextureset.Enabled = (listtextures.SelectedItems.Count > 0);
+			copytexturesets.Enabled = (listtextures.SelectedItems.Count > 0);
 		}
 		
 		// Doubleclicking a texture set
 		private void listtextures_DoubleClick(object sender, EventArgs e)
 		{
 			edittextureset_Click(sender, e);
+		}
+		
+		// Copy selected texture sets
+		private void copytexturesets_Click(object sender, EventArgs e)
+		{
+			// Make copies
+			copiedsets = new List<DefinedTextureSet>();
+			foreach(ListViewItem item in listtextures.SelectedItems)
+			{
+				DefinedTextureSet s = (item.Tag as DefinedTextureSet);
+				copiedsets.Add(s.Copy());
+			}
+			
+			// Enable button
+			pastetexturesets.Enabled = true;
+		}
+		
+		// Paste copied texture sets
+		private void pastetexturesets_Click(object sender, EventArgs e)
+		{
+			if(copiedsets != null)
+			{
+				// Add copies
+				foreach(DefinedTextureSet ts in copiedsets)
+				{
+					DefinedTextureSet s = ts.Copy();
+					ListViewItem item = listtextures.Items.Add(s.Name);
+					item.Tag = s;
+					configinfo.TextureSets.Add(s);
+				}
+				listtextures.Sort();
+			}
+		}
+		
+		// This will add the default sets from game configuration
+		private void restoretexturesets_Click(object sender, EventArgs e)
+		{
+			// Ask nicely first
+			if(MessageBox.Show(this, "This will add the default Texture Sets from the Game Configuration. Do you want to continue?",
+				"Add Default Sets", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+			{
+				// Add copies
+				foreach(DefinedTextureSet ts in General.Map.Config.TextureSets)
+				{
+					DefinedTextureSet s = ts.Copy();
+					ListViewItem item = listtextures.Items.Add(s.Name);
+					item.Tag = s;
+					configinfo.TextureSets.Add(s);
+				}
+				listtextures.Sort();
+			}
 		}
 	}
 }

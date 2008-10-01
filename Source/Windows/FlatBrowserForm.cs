@@ -70,10 +70,14 @@ namespace CodeImp.DoomBuilder.Windows
 			texturesets.Sort();
 			item = texturesets.Items.Add(General.Map.Data.OthersTextureSet.Name);
 			item.Tag = General.Map.Data.OthersTextureSet;
+			
+			// Select the last one that was selected
+			string selectname = General.Settings.ReadSetting("browserwindow.flatstextureset", "");
+			foreach(ListViewItem i in texturesets.Items) if(i.Text == selectname) i.Selected = true;
 
-			// Select one
-			// TODO: Remember selection
-			texturesets.Items[0].Selected = true;
+			// None selected? Then select the first
+			if(texturesets.SelectedItems.Count == 0)
+				texturesets.Items[0].Selected = true;
 
 			// Make groups
 			usedgroup = browser.AddGroup("Used Textures");
@@ -180,7 +184,11 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.WriteSetting("browserwindow.sizewidth", lastsize.Width);
 			General.Settings.WriteSetting("browserwindow.sizeheight", lastsize.Height);
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
-
+			
+			// Save last selected texture set
+			if((texturesets.SelectedItems.Count > 0) && (texturesets.SelectedItems[0].Tag is MatchingTextureSet))
+				General.Settings.WriteSetting("browserwindow.flatstextureset", texturesets.SelectedItems[0].Text);
+			
 			// Clean up
 			browser.CleanUp();
 		}
