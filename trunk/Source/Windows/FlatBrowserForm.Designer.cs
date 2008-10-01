@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser.Location = new System.Drawing.Point(187, 9);
 			this.browser.Name = "browser";
 			this.browser.PreventSelection = false;
-			this.browser.Size = new System.Drawing.Size(525, 457);
+			this.browser.Size = new System.Drawing.Size(589, 457);
 			this.browser.TabIndex = 0;
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(612, 443);
+			this.cancel.Location = new System.Drawing.Point(676, 443);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(100, 25);
 			this.cancel.TabIndex = 22;
@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(506, 443);
+			this.apply.Location = new System.Drawing.Point(570, 443);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(100, 25);
 			this.apply.TabIndex = 21;
@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(724, 478);
+			this.ClientSize = new System.Drawing.Size(788, 478);
 			this.Controls.Add(this.texturesets);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -114,11 +114,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Browse Flats";
-			this.Load += new System.EventHandler(this.FlatBrowserForm_Load);
 			this.Activated += new System.EventHandler(this.FlatBrowserForm_Activated);
 			this.Move += new System.EventHandler(this.FlatBrowserForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FlatBrowserForm_FormClosing);
 			this.ResizeEnd += new System.EventHandler(this.FlatBrowserForm_ResizeEnd);
+			this.Load += new System.EventHandler(this.FlatBrowserForm_Load);
 			this.ResumeLayout(false);
 
 		}

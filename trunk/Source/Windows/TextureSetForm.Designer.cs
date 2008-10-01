@@ -81,9 +81,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filters.TabIndex = 2;
 			this.filters.UseCompatibleStateImageBehavior = false;
 			this.filters.View = System.Windows.Forms.View.Details;
-			this.filters.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.filters_AfterLabelEdit);
-			this.filters.SelectedIndexChanged += new System.EventHandler(this.filters_SelectedIndexChanged);
 			this.filters.DoubleClick += new System.EventHandler(this.filters_DoubleClick);
+			this.filters.SelectedIndexChanged += new System.EventHandler(this.filters_SelectedIndexChanged);
+			this.filters.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.filters_AfterLabelEdit);
 			// 
 			// filtercolumn
 			// 
@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(397, 418);
+			this.apply.Location = new System.Drawing.Point(414, 418);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(105, 25);
 			this.apply.TabIndex = 6;
@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(508, 418);
+			this.cancel.Location = new System.Drawing.Point(525, 418);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(105, 25);
 			this.cancel.TabIndex = 7;
@@ -163,6 +163,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.groupBox1.Controls.Add(this.removefilter);
 			this.groupBox1.Controls.Add(this.label4);
 			this.groupBox1.Controls.Add(this.addfilter);
@@ -183,13 +185,16 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox2.Controls.Add(this.nomatchesbutton);
 			this.groupBox2.Controls.Add(this.matchesbutton);
 			this.groupBox2.Controls.Add(this.noresultlabel);
 			this.groupBox2.Controls.Add(this.matcheslist);
 			this.groupBox2.Location = new System.Drawing.Point(298, 60);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(315, 333);
+			this.groupBox2.Size = new System.Drawing.Size(332, 333);
 			this.groupBox2.TabIndex = 11;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Results ";
@@ -231,13 +236,16 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// matcheslist
 			// 
+			this.matcheslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.matcheslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.matcheslist.HideInputBox = true;
 			this.matcheslist.LabelText = "Select or type object name:";
 			this.matcheslist.Location = new System.Drawing.Point(18, 55);
 			this.matcheslist.Name = "matcheslist";
 			this.matcheslist.PreventSelection = true;
-			this.matcheslist.Size = new System.Drawing.Size(281, 258);
+			this.matcheslist.Size = new System.Drawing.Size(298, 258);
 			this.matcheslist.TabIndex = 10;
 			this.matcheslist.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.matcheslist_SelectedItemDoubleClicked);
 			// 
@@ -246,7 +254,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(625, 455);
+			this.ClientSize = new System.Drawing.Size(642, 455);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
