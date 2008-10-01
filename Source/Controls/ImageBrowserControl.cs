@@ -130,12 +130,9 @@ namespace CodeImp.DoomBuilder.Controls
 				// Items needs to be redrawn?
 				if(i.CheckRedrawNeeded())
 				{
-					// Bounds within view?
-					if(i.Bounds.IntersectsWith(list.ClientRectangle))
-					{
-						// Refresh item in list
-						list.RedrawItems(i.Index, i.Index, false);
-					}
+					// Refresh item in list
+					//list.RedrawItems(i.Index, i.Index, false);
+					list.Invalidate();
 				}
 			}
 
@@ -243,25 +240,30 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Get selected item
 				lvi = list.SelectedItems[0];
+				Rectangle lvirect = list.GetItemRect(lvi.Index, ItemBoundsPortion.Entire);
+				spos = new Point(lvirect.Location.X + lvirect.Width / 2, lvirect.Y + lvirect.Height / 2);
 				
-				// Determine point to start searching from
-				switch(dir)
+				// Try finding 5 times in the given direction
+				for(int i = 0; i < 5; i++)
 				{
-					case SearchDirectionHint.Left: spos = new Point(lvi.Bounds.Left - 1, lvi.Bounds.Top + 1); break;
-					case SearchDirectionHint.Right: spos = new Point(lvi.Bounds.Left + 1, lvi.Bounds.Top + 1); break;
-					case SearchDirectionHint.Up: spos = new Point(lvi.Bounds.Left + 1, lvi.Bounds.Top - 1); break;
-					case SearchDirectionHint.Down: spos = new Point(lvi.Bounds.Left + 1, lvi.Bounds.Bottom + 1); break;
-					default: spos = new Point(0, 0); break;
-				}
-				
-				// Find next item
-				//lvi = list.SelectedItems[0].FindNearestItem(dir);
-				lvi = list.FindNearestItem(dir, spos);
-				if(lvi != null)
-				{
-					// Select next item
-					list.SelectedItems.Clear();
-					lvi.Selected = true;
+					// Move point in given direction
+					switch(dir)
+					{
+						case SearchDirectionHint.Left: spos.X -= list.TileSize.Width / 2; break;
+						case SearchDirectionHint.Right: spos.X += list.TileSize.Width / 2; break;
+						case SearchDirectionHint.Up: spos.Y -= list.TileSize.Height / 2; break;
+						case SearchDirectionHint.Down: spos.Y += list.TileSize.Height / 2; break;
+					}
+					
+					// Test position
+					lvi = list.GetItemAt(spos.X, spos.Y);
+					if(lvi != null)
+					{
+						// Select item
+						list.SelectedItems.Clear();
+						lvi.Selected = true;
+						break;
+					}
 				}
 				
 				// Make selection visible
@@ -281,8 +283,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(list.Items.Count > 0)
 			{
 				list.SelectedItems.Clear();
-				//lvi = list.FindNearestItem(SearchDirectionHint.Down, new Point(1, -100000));
-				lvi = list.Items[0];
+				lvi = list.GetItemAt(list.TileSize.Width / 2, list.TileSize.Height / 2);
 				if(lvi != null)
 				{
 					lvi.Selected = true;
