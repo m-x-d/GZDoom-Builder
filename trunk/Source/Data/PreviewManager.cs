@@ -44,8 +44,8 @@ namespace CodeImp.DoomBuilder.Data
 		internal const int IMAGE_HEIGHT = 64;
 
 		// How many previews on a single atlas?
-		private const int PREVIEWS_X = 16;
-		private const int PREVIEWS_Y = 16;
+		private const int PREVIEWS_X = 1;
+		private const int PREVIEWS_Y = 1;
 
 		#endregion
 
@@ -215,12 +215,19 @@ namespace CodeImp.DoomBuilder.Data
 			// Draw from atlas to target
 			lock(atlas)
 			{
-				RectangleF trect = new RectangleF((float)targetpos.X, (float)targetpos.Y,
-												  (float)IMAGE_WIDTH, (float)IMAGE_HEIGHT);
-				RectangleF srect = new RectangleF((float)GetLocalXIndex(previewindex) * IMAGE_WIDTH,
-												  (float)GetLocalYIndex(previewindex) * IMAGE_HEIGHT,
-												  (float)IMAGE_WIDTH, (float)IMAGE_HEIGHT);
-				target.DrawImage(atlas, trect, srect, GraphicsUnit.Pixel);
+				if((PREVIEWS_X == 1) && (PREVIEWS_Y == 1))
+				{
+					target.DrawImageUnscaled(atlas, targetpos.X, targetpos.Y);
+				}
+				else
+				{
+					RectangleF trect = new RectangleF((float)targetpos.X, (float)targetpos.Y,
+													  (float)IMAGE_WIDTH, (float)IMAGE_HEIGHT);
+					RectangleF srect = new RectangleF((float)GetLocalXIndex(previewindex) * IMAGE_WIDTH,
+													  (float)GetLocalYIndex(previewindex) * IMAGE_HEIGHT,
+													  (float)IMAGE_WIDTH, (float)IMAGE_HEIGHT);
+					target.DrawImage(atlas, trect, srect, GraphicsUnit.Pixel);
+				}
 			}
 		}
 		

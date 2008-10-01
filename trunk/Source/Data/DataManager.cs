@@ -241,7 +241,7 @@ namespace CodeImp.DoomBuilder.Data
 					matchfound |= ms.AddTexture(img.Value);
 				
 				// If not matched in any set, add it to the others
-				othertextures.AddTexture(img.Value);
+				if(!matchfound) othertextures.AddTexture(img.Value);
 			}
 			
 			// Add flat names to texture sets
@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.Data
 					matchfound |= ms.AddFlat(img.Value);
 				
 				// If not matched in any set, add it to the others
-				othertextures.AddFlat(img.Value);
+				if(!matchfound) othertextures.AddFlat(img.Value);
 			}
 			
 			// Start background loading
