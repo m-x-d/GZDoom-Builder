@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Map.Data.UpdateUsedTextures();
 
 			// Start adding
-			browser.BeginAdding();
+			browser.BeginAdding(false);
 			
 			// Add all available textures and mark the images for temporary loading
 			foreach(ImageData img in General.Map.Data.Textures)
@@ -118,6 +118,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Loading
 		private void TextureBrowserForm_Load(object sender, EventArgs e)
 		{
+			/*
 			// Position window from configuration settings
 			this.SuspendLayout();
 			this.Location = new Point(General.Settings.ReadSetting("browserwindow.positionx", this.Location.X),
@@ -126,7 +127,8 @@ namespace CodeImp.DoomBuilder.Windows
 								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
 			this.ResumeLayout(true);
-
+			*/
+			
 			// Normal windowstate?
 			if(this.WindowState == FormWindowState.Normal)
 			{

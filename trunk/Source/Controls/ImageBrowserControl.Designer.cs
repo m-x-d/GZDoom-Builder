@@ -71,17 +71,19 @@ namespace CodeImp.DoomBuilder.Controls
 			this.list.MultiSelect = false;
 			this.list.Name = "list";
 			this.list.OwnerDraw = true;
+			this.list.ShowItemToolTips = true;
 			this.list.Size = new System.Drawing.Size(518, 312);
 			this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.list.TabIndex = 1;
 			this.list.UseCompatibleStateImageBehavior = false;
 			this.list.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.list_DrawItem);
+			this.list.DoubleClick += new System.EventHandler(this.list_DoubleClick);
 			this.list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.list_ItemSelectionChanged);
 			// 
 			// images
 			// 
 			this.images.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-			this.images.ImageSize = new System.Drawing.Size(64, 64);
+			this.images.ImageSize = new System.Drawing.Size(40, 64);
 			this.images.TransparentColor = System.Drawing.Color.Transparent;
 			// 
 			// objectname

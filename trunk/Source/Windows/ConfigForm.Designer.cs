@@ -477,6 +477,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.removetextureset.TabIndex = 27;
 			this.removetextureset.Text = "Remove";
 			this.removetextureset.UseVisualStyleBackColor = true;
+			this.removetextureset.Click += new System.EventHandler(this.removetextureset_Click);
 			// 
 			// addtextureset
 			// 
@@ -501,6 +502,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listtextures.Sorted = true;
 			this.listtextures.TabIndex = 25;
 			this.listtextures.SelectedIndexChanged += new System.EventHandler(this.listtextures_SelectedIndexChanged);
+			this.listtextures.DoubleClick += new System.EventHandler(this.listtextures_DoubleClick);
 			// 
 			// listconfigs
 			// 

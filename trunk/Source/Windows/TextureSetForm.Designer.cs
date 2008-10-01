@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.label1 = new System.Windows.Forms.Label();
 			this.name = new System.Windows.Forms.TextBox();
 			this.filters = new System.Windows.Forms.ListView();
@@ -40,7 +41,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.addfilter = new System.Windows.Forms.Button();
 			this.removefilter = new System.Windows.Forms.Button();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.filterstimer = new System.Windows.Forms.Timer(this.components);
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.nomatchesbutton = new System.Windows.Forms.RadioButton();
+			this.matchesbutton = new System.Windows.Forms.RadioButton();
+			this.noresultlabel = new System.Windows.Forms.Label();
+			this.matcheslist = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
 			this.groupBox1.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -73,6 +81,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filters.TabIndex = 2;
 			this.filters.UseCompatibleStateImageBehavior = false;
 			this.filters.View = System.Windows.Forms.View.Details;
+			this.filters.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.filters_AfterLabelEdit);
+			this.filters.SelectedIndexChanged += new System.EventHandler(this.filters_SelectedIndexChanged);
+			this.filters.DoubleClick += new System.EventHandler(this.filters_DoubleClick);
 			// 
 			// filtercolumn
 			// 
@@ -109,7 +120,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(58, 417);
+			this.apply.Location = new System.Drawing.Point(397, 418);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(105, 25);
 			this.apply.TabIndex = 6;
@@ -121,7 +132,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(177, 417);
+			this.cancel.Location = new System.Drawing.Point(508, 418);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(105, 25);
 			this.cancel.TabIndex = 7;
@@ -137,15 +148,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.addfilter.TabIndex = 8;
 			this.addfilter.Text = "Add Texture";
 			this.addfilter.UseVisualStyleBackColor = true;
+			this.addfilter.Click += new System.EventHandler(this.addfilter_Click);
 			// 
 			// removefilter
 			// 
+			this.removefilter.Enabled = false;
 			this.removefilter.Location = new System.Drawing.Point(135, 289);
 			this.removefilter.Name = "removefilter";
 			this.removefilter.Size = new System.Drawing.Size(105, 24);
 			this.removefilter.TabIndex = 9;
 			this.removefilter.Text = "Remove Selection";
 			this.removefilter.UseVisualStyleBackColor = true;
+			this.removefilter.Click += new System.EventHandler(this.removefilter_Click);
 			// 
 			// groupBox1
 			// 
@@ -157,17 +171,83 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox1.Controls.Add(this.filters);
 			this.groupBox1.Location = new System.Drawing.Point(12, 60);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(269, 333);
+			this.groupBox1.Size = new System.Drawing.Size(270, 333);
 			this.groupBox1.TabIndex = 10;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Filters ";
+			// 
+			// filterstimer
+			// 
+			this.filterstimer.Interval = 1;
+			this.filterstimer.Tick += new System.EventHandler(this.filterstimer_Tick);
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.nomatchesbutton);
+			this.groupBox2.Controls.Add(this.matchesbutton);
+			this.groupBox2.Controls.Add(this.noresultlabel);
+			this.groupBox2.Controls.Add(this.matcheslist);
+			this.groupBox2.Location = new System.Drawing.Point(298, 60);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(315, 333);
+			this.groupBox2.TabIndex = 11;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = " Results ";
+			// 
+			// nomatchesbutton
+			// 
+			this.nomatchesbutton.Appearance = System.Windows.Forms.Appearance.Button;
+			this.nomatchesbutton.Location = new System.Drawing.Point(141, 25);
+			this.nomatchesbutton.Name = "nomatchesbutton";
+			this.nomatchesbutton.Size = new System.Drawing.Size(117, 24);
+			this.nomatchesbutton.TabIndex = 35;
+			this.nomatchesbutton.Text = "Show Not Matching";
+			this.nomatchesbutton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.nomatchesbutton.UseVisualStyleBackColor = true;
+			this.nomatchesbutton.Click += new System.EventHandler(this.matchesbutton_Click);
+			// 
+			// matchesbutton
+			// 
+			this.matchesbutton.Appearance = System.Windows.Forms.Appearance.Button;
+			this.matchesbutton.Checked = true;
+			this.matchesbutton.Location = new System.Drawing.Point(18, 25);
+			this.matchesbutton.Name = "matchesbutton";
+			this.matchesbutton.Size = new System.Drawing.Size(117, 24);
+			this.matchesbutton.TabIndex = 34;
+			this.matchesbutton.TabStop = true;
+			this.matchesbutton.Text = "Show Matches";
+			this.matchesbutton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.matchesbutton.UseVisualStyleBackColor = true;
+			this.matchesbutton.Click += new System.EventHandler(this.matchesbutton_Click);
+			// 
+			// noresultlabel
+			// 
+			this.noresultlabel.Location = new System.Drawing.Point(20, 110);
+			this.noresultlabel.Name = "noresultlabel";
+			this.noresultlabel.Size = new System.Drawing.Size(272, 43);
+			this.noresultlabel.TabIndex = 33;
+			this.noresultlabel.Text = "An example result cannot be displayed, because it requires a map to be loaded.";
+			this.noresultlabel.Visible = false;
+			// 
+			// matcheslist
+			// 
+			this.matcheslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.matcheslist.HideInputBox = true;
+			this.matcheslist.LabelText = "Select or type object name:";
+			this.matcheslist.Location = new System.Drawing.Point(18, 55);
+			this.matcheslist.Name = "matcheslist";
+			this.matcheslist.PreventSelection = true;
+			this.matcheslist.Size = new System.Drawing.Size(281, 258);
+			this.matcheslist.TabIndex = 10;
+			this.matcheslist.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.matcheslist_SelectedItemDoubleClicked);
 			// 
 			// TextureSetForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(294, 455);
+			this.ClientSize = new System.Drawing.Size(625, 455);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.name);
@@ -183,8 +263,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Texture Set";
+			this.Shown += new System.EventHandler(this.TextureSetForm_Shown);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+			this.groupBox2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -204,5 +286,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button addfilter;
 		private System.Windows.Forms.Button removefilter;
 		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Timer filterstimer;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private CodeImp.DoomBuilder.Controls.ImageBrowserControl matcheslist;
+		private System.Windows.Forms.Label noresultlabel;
+		private System.Windows.Forms.RadioButton nomatchesbutton;
+		private System.Windows.Forms.RadioButton matchesbutton;
 	}
 }

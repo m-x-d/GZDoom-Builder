@@ -45,15 +45,21 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Delegates / Events
 
 		public delegate void SelectedItemChangedDelegate();
+		public delegate void SelectedItemDoubleClickDelegate();
 
 		public event SelectedItemChangedDelegate SelectedItemChanged;
+		public event SelectedItemDoubleClickDelegate SelectedItemDoubleClicked;
 		
 		#endregion
 
 		#region ================== Variables
-
+		
+		// Properties
+		private bool preventselection;
+		
 		// States
 		private bool updating;
+		private int keepselected;
 		
 		// All items
 		private List<ImageBrowserItem> items;
@@ -62,6 +68,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Properties
 
+		public bool PreventSelection { get { return preventselection; } set { preventselection = value; } }
+		public bool HideInputBox { get { return splitter.Panel2Collapsed; } set { splitter.Panel2Collapsed = value; } }
 		public string LabelText { get { return label.Text; } set { label.Text = value; objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left; } }
 		public ListViewItem SelectedItem { get { if(list.SelectedItems.Count > 0) return list.SelectedItems[0]; else return null; } }
 		
@@ -182,12 +190,27 @@ namespace CodeImp.DoomBuilder.Controls
 				case Keys.Down: SelectNextItem(SearchDirectionHint.Down); e.SuppressKeyPress = true; break;
 			}
 		}
-
+		
 		// Selection changed
 		private void list_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-			// Raise event
-			if(SelectedItemChanged != null) SelectedItemChanged();
+			// Prevent selecting?
+			if(preventselection)
+			{
+				foreach(ListViewItem i in list.SelectedItems) i.Selected = false;
+			}
+			else
+			{
+				// Raise event
+				if(SelectedItemChanged != null) SelectedItemChanged();
+			}
+		}
+		
+		// Doublelicking an item
+		private void list_DoubleClick(object sender, EventArgs e)
+		{
+			if(!preventselection && (list.SelectedItems.Count > 0))
+				if(SelectedItemDoubleClicked != null) SelectedItemDoubleClicked();
 		}
 		
 		#endregion
@@ -198,7 +221,10 @@ namespace CodeImp.DoomBuilder.Controls
 		public void SelectItem(string name)
 		{
 			ListViewItem lvi;
-			
+
+			// Not when selecting is prevented
+			if(preventselection) return;
+
 			// Find item with this text
 			lvi = list.FindItemWithText(name);
 			if(lvi != null)
@@ -219,6 +245,9 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ListViewItem lvi;
 			Point spos;
+			
+			// Not when selecting is prevented
+			if(preventselection) return;
 			
 			// Nothing selected?
 			if(list.SelectedItems.Count == 0)
@@ -255,11 +284,14 @@ namespace CodeImp.DoomBuilder.Controls
 				if(list.SelectedItems.Count > 0) list.SelectedItems[0].EnsureVisible();
 			}
 		}
-
+		
 		// This selectes the first item
 		private void SelectFirstItem()
 		{
 			ListViewItem lvi;
+			
+			// Not when selecting is prevented
+			if(preventselection) return;
 			
 			// Select first
 			if(list.Items.Count > 0)
@@ -284,8 +316,16 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This begins adding items
-		public void BeginAdding()
+		public void BeginAdding(bool keepselectedindex)
 		{
+			if(keepselectedindex && (list.SelectedItems.Count > 0))
+				keepselected = list.SelectedIndices[0];
+			else
+				keepselected = -1;
+			
+			// Clean list
+			items.Clear();
+			
 			// Stop updating
 			refreshtimer.Enabled = false;
 		}
@@ -306,6 +346,16 @@ namespace CodeImp.DoomBuilder.Controls
 			ImageBrowserItem i = new ImageBrowserItem(text, image, tag);
 			i.ListGroup = group;
 			i.Group = group;
+			items.Add(i);
+		}
+		
+		// This adds an item
+		public void Add(string text, ImageData image, object tag, ListViewGroup group, string tooltiptext)
+		{
+			ImageBrowserItem i = new ImageBrowserItem(text, image, tag);
+			i.ListGroup = group;
+			i.Group = group;
+			i.ToolTipText = tooltiptext;
 			items.Add(i);
 		}
 
@@ -334,20 +384,33 @@ namespace CodeImp.DoomBuilder.Controls
 					showitems.Add(i);
 				}
 			}
-
+			
 			// Fill list
 			list.Items.AddRange(showitems.ToArray());
-
-			// Select first item?
-			if(selectfirst) SelectFirstItem();
 			
 			// Done updating list
 			updating = false;
 			list.EndUpdate();
 			list.ResumeLayout();
 			
+			// Make selection?
+			if(!preventselection && (list.Items.Count > 0))
+			{
+				// Select specific item?
+				if(keepselected > -1)
+				{
+					list.Items[keepselected].Selected = true;
+					list.Items[keepselected].EnsureVisible();
+				}
+				// Select first item?
+				else if(selectfirst)
+				{
+					SelectFirstItem();
+				}
+			}
+			
 			// Raise event
-			if(SelectedItemChanged != null) SelectedItemChanged();
+			if((SelectedItemChanged != null) && !preventselection) SelectedItemChanged();
 		}
 
 		// This validates an item
