@@ -28,11 +28,14 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FlatBrowserForm));
 			this.browser = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.texturesets = new System.Windows.Forms.ListView();
 			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+			this.smallimages = new System.Windows.Forms.ImageList(this.components);
 			this.SuspendLayout();
 			// 
 			// browser
@@ -43,10 +46,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browser.HideInputBox = false;
 			this.browser.LabelText = "Select or enter a flat name:";
-			this.browser.Location = new System.Drawing.Point(187, 9);
+			this.browser.Location = new System.Drawing.Point(197, 9);
 			this.browser.Name = "browser";
 			this.browser.PreventSelection = false;
-			this.browser.Size = new System.Drawing.Size(589, 510);
+			this.browser.Size = new System.Drawing.Size(590, 510);
 			this.browser.TabIndex = 0;
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
@@ -54,7 +57,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(676, 496);
+			this.cancel.Location = new System.Drawing.Point(687, 496);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(100, 25);
 			this.cancel.TabIndex = 22;
@@ -65,7 +68,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(570, 496);
+			this.apply.Location = new System.Drawing.Point(581, 496);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(100, 25);
 			this.apply.TabIndex = 21;
@@ -79,13 +82,15 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.texturesets.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
+			this.texturesets.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.texturesets.FullRowSelect = true;
 			this.texturesets.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
 			this.texturesets.HideSelection = false;
 			this.texturesets.Location = new System.Drawing.Point(12, 9);
 			this.texturesets.MultiSelect = false;
 			this.texturesets.Name = "texturesets";
-			this.texturesets.Size = new System.Drawing.Size(166, 476);
+			this.texturesets.Size = new System.Drawing.Size(176, 476);
+			this.texturesets.SmallImageList = this.smallimages;
 			this.texturesets.TabIndex = 24;
 			this.texturesets.UseCompatibleStateImageBehavior = false;
 			this.texturesets.View = System.Windows.Forms.View.Details;
@@ -94,14 +99,21 @@ namespace CodeImp.DoomBuilder.Windows
 			// columnHeader1
 			// 
 			this.columnHeader1.Text = "Name";
-			this.columnHeader1.Width = 141;
+			this.columnHeader1.Width = 152;
+			// 
+			// smallimages
+			// 
+			this.smallimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("smallimages.ImageStream")));
+			this.smallimages.TransparentColor = System.Drawing.Color.Transparent;
+			this.smallimages.Images.SetKeyName(0, "KnownTextureSet2.ico");
+			this.smallimages.Images.SetKeyName(1, "OthersTextureSet2.ico");
 			// 
 			// FlatBrowserForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(788, 531);
+			this.ClientSize = new System.Drawing.Size(799, 531);
 			this.Controls.Add(this.texturesets);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -132,5 +144,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button apply;
 		private System.Windows.Forms.ListView texturesets;
 		private System.Windows.Forms.ColumnHeader columnHeader1;
+		private System.Windows.Forms.ImageList smallimages;
 	}
 }

@@ -151,6 +151,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					ListViewItem item = listtextures.Items.Add(ts.Name);
 					item.Tag = ts;
+					item.ImageIndex = 0;
 				}
 				listtextures.Sort();
 			}
@@ -357,6 +358,7 @@ namespace CodeImp.DoomBuilder.Windows
 				configinfo.TextureSets.Add(s);
 				ListViewItem item = listtextures.Items.Add(s.Name);
 				item.Tag = s;
+				item.ImageIndex = 0;
 				listtextures.Sort();
 			}
 		}
@@ -429,6 +431,7 @@ namespace CodeImp.DoomBuilder.Windows
 					DefinedTextureSet s = ts.Copy();
 					ListViewItem item = listtextures.Items.Add(s.Name);
 					item.Tag = s;
+					item.ImageIndex = 0;
 					configinfo.TextureSets.Add(s);
 				}
 				listtextures.Sort();
@@ -448,6 +451,7 @@ namespace CodeImp.DoomBuilder.Windows
 					DefinedTextureSet s = ts.Copy();
 					ListViewItem item = listtextures.Items.Add(s.Name);
 					item.Tag = s;
+					item.ImageIndex = 0;
 					configinfo.TextureSets.Add(s);
 				}
 				listtextures.Sort();

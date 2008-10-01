@@ -611,6 +611,7 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\KnownTextureSet.png" />
     <EmbeddedResource Include="Resources\Hourglass3D.png" />
     <None Include="Resources\Failed.png" />
     <None Include="Resources\Monster2.png" />

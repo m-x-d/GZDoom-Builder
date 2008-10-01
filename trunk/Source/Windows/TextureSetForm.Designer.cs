@@ -47,14 +47,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matchesbutton = new System.Windows.Forms.RadioButton();
 			this.noresultlabel = new System.Windows.Forms.Label();
 			this.matcheslist = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(30, 24);
+			this.label1.Location = new System.Drawing.Point(36, 24);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(37, 14);
 			this.label1.TabIndex = 0;
@@ -62,9 +64,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// name
 			// 
-			this.name.Location = new System.Drawing.Point(73, 21);
+			this.name.Location = new System.Drawing.Point(79, 21);
 			this.name.Name = "name";
-			this.name.Size = new System.Drawing.Size(179, 20);
+			this.name.Size = new System.Drawing.Size(173, 20);
 			this.name.TabIndex = 1;
 			// 
 			// filters
@@ -249,12 +251,21 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matcheslist.TabIndex = 10;
 			this.matcheslist.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.matcheslist_SelectedItemDoubleClicked);
 			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.Image = global::CodeImp.DoomBuilder.Properties.Resources.KnownTextureSet;
+			this.pictureBox1.Location = new System.Drawing.Point(12, 23);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(19, 16);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+			this.pictureBox1.TabIndex = 12;
+			this.pictureBox1.TabStop = false;
+			// 
 			// TextureSetForm
 			// 
-			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(642, 455);
+			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -275,6 +286,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -300,5 +312,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label noresultlabel;
 		private System.Windows.Forms.RadioButton nomatchesbutton;
 		private System.Windows.Forms.RadioButton matchesbutton;
+		private System.Windows.Forms.PictureBox pictureBox1;
 	}
 }

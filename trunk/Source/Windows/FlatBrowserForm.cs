@@ -64,12 +64,14 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				item = texturesets.Items.Add(ts.Name);
 				item.Tag = ts;
+				item.ImageIndex = 0;
 			}
 
 			// Sort and add other textures set
 			texturesets.Sort();
 			item = texturesets.Items.Add(General.Map.Data.OthersTextureSet.Name);
 			item.Tag = General.Map.Data.OthersTextureSet;
+			item.ImageIndex = 1;
 			
 			// Select the last one that was selected
 			string selectname = General.Settings.ReadSetting("browserwindow.flatstextureset", "");
