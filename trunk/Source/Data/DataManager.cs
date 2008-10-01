@@ -231,6 +231,9 @@ namespace CodeImp.DoomBuilder.Data
 			// Sort names
 			texturenames.Sort();
 			flatnames.Sort();
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
 			
 			// Add texture names to texture sets
 			foreach(KeyValuePair<long, ImageData> img in textures)

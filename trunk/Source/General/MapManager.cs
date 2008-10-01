@@ -332,9 +332,6 @@ namespace CodeImp.DoomBuilder
 			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
 			
-			// Update the used textures
-			General.Map.Data.UpdateUsedTextures();
-			
 			// Bind any methods
 			General.Actions.BindMethods(this);
 
@@ -1022,9 +1019,6 @@ namespace CodeImp.DoomBuilder
 			data = new DataManager();
 			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
-
-			// Update the used textures
-			General.Map.Data.UpdateUsedTextures();
 			
 			// Apply new settings to map elements
 			map.UpdateConfiguration();

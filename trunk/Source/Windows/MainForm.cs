@@ -411,7 +411,10 @@ namespace CodeImp.DoomBuilder.Windows
 		// This returns the current status text
 		internal string GetCurrentSatus()
 		{
-			return statuslabel.Text;
+			if(statustype == StatusType.Busy)
+				return statuslabel.Text;
+			else
+				return null;
 		}
 		
 		// This shows a warning
@@ -482,21 +485,29 @@ namespace CodeImp.DoomBuilder.Windows
 		// This changes status text
 		public void DisplayStatus(string status)
 		{
-			// Stop warning timers
-			warningtimer.Stop();
-			warningflasher.Stop();
-			
-			// Update status description
-			statustype = StatusType.Busy;
-			if(statuslabel.Text != status)
-				statuslabel.Text = status;
-			
-			// Update icon as well
-			UpdateStatusIcon();
-			
-			// Refresh if needed
-			statusbar.Invalidate();
-			this.Update();
+			// Null is no busy status
+			if(status == null)
+			{
+				DisplayReady();
+			}
+			else
+			{
+				// Stop warning timers
+				warningtimer.Stop();
+				warningflasher.Stop();
+
+				// Update status description
+				statustype = StatusType.Busy;
+				if(statuslabel.Text != status)
+					statuslabel.Text = status;
+
+				// Update icon as well
+				UpdateStatusIcon();
+
+				// Refresh if needed
+				statusbar.Invalidate();
+				this.Update();
+			}
 		}
 
 		// This changes status text to Ready
