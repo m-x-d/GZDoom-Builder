@@ -2,8 +2,6 @@
 
 - Make sector gradient features
 
-- Make textureset filters
-
 - Make error checking feature
 
 - Make quick sector draw (square/circle) mode

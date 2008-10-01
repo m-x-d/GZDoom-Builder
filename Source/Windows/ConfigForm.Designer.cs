@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label3;
@@ -58,6 +59,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.testapplication = new System.Windows.Forms.TextBox();
 			this.tabtextures = new System.Windows.Forms.TabPage();
 			this.listtextures = new System.Windows.Forms.ListView();
+			this.smallimages = new System.Windows.Forms.ImageList(this.components);
 			this.restoretexturesets = new System.Windows.Forms.Button();
 			this.edittextureset = new System.Windows.Forms.Button();
 			this.pastetexturesets = new System.Windows.Forms.Button();
@@ -436,12 +438,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listtextures.Name = "listtextures";
 			this.listtextures.ShowGroups = false;
 			this.listtextures.Size = new System.Drawing.Size(382, 147);
+			this.listtextures.SmallImageList = this.smallimages;
 			this.listtextures.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listtextures.TabIndex = 32;
 			this.listtextures.UseCompatibleStateImageBehavior = false;
 			this.listtextures.View = System.Windows.Forms.View.List;
-			this.listtextures.SelectedIndexChanged += new System.EventHandler(this.listtextures_SelectedIndexChanged);
 			this.listtextures.DoubleClick += new System.EventHandler(this.listtextures_DoubleClick);
+			this.listtextures.SelectedIndexChanged += new System.EventHandler(this.listtextures_SelectedIndexChanged);
+			// 
+			// smallimages
+			// 
+			this.smallimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("smallimages.ImageStream")));
+			this.smallimages.TransparentColor = System.Drawing.Color.Transparent;
+			this.smallimages.Images.SetKeyName(0, "KnownTextureSet.ico");
 			// 
 			// restoretexturesets
 			// 
@@ -600,5 +609,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button copytexturesets;
 		private System.Windows.Forms.Button removetextureset;
 		private System.Windows.Forms.ListView listtextures;
+		private System.Windows.Forms.ImageList smallimages;
 	}
 }
