@@ -118,9 +118,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(28, 83);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(181, 14);
+			this.label4.Size = new System.Drawing.Size(185, 14);
 			this.label4.TabIndex = 5;
-			this.label4.Text = "* = matches one or more characters";
+			this.label4.Text = "* = matches zero or more characters";
 			// 
 			// apply
 			// 
