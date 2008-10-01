@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser.Location = new System.Drawing.Point(197, 9);
 			this.browser.Name = "browser";
 			this.browser.PreventSelection = false;
-			this.browser.Size = new System.Drawing.Size(590, 510);
+			this.browser.Size = new System.Drawing.Size(684, 610);
 			this.browser.TabIndex = 0;
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(687, 496);
+			this.cancel.Location = new System.Drawing.Point(781, 596);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(100, 25);
 			this.cancel.TabIndex = 22;
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(581, 496);
+			this.apply.Location = new System.Drawing.Point(675, 596);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(100, 25);
 			this.apply.TabIndex = 21;
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.texturesets.Location = new System.Drawing.Point(12, 9);
 			this.texturesets.MultiSelect = false;
 			this.texturesets.Name = "texturesets";
-			this.texturesets.Size = new System.Drawing.Size(176, 476);
+			this.texturesets.Size = new System.Drawing.Size(176, 576);
 			this.texturesets.SmallImageList = this.smallimages;
 			this.texturesets.TabIndex = 23;
 			this.texturesets.UseCompatibleStateImageBehavior = false;
@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(799, 531);
+			this.ClientSize = new System.Drawing.Size(893, 631);
 			this.Controls.Add(this.texturesets);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
