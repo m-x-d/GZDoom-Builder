@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Controls
 	internal partial class ImageBrowserControl : UserControl
 	{
 		#region ================== Constants
-
+		
 		#endregion
 		
 		#region ================== Delegates / Events
@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
-			
+
 			// Move textbox with label
 			objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
 		}

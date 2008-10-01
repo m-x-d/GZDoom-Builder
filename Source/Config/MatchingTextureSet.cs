@@ -130,6 +130,9 @@ namespace CodeImp.DoomBuilder.Config
 				regexstr.Append(")");
 			}
 
+			// No filters added? Then make a never-matching regex
+			if(this.filters.Count == 0) regexstr.Append("\\Z\\A");
+			
 			// Make the regex
 			regex = new Regex(regexstr.ToString(), RegexOptions.Compiled |
 												   RegexOptions.CultureInvariant);
