@@ -33,15 +33,12 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public abstract class TextureSet
+	public abstract class TextureSet : IComparable<TextureSet>
 	{
 		#region ================== Variables
 
 		protected string name;
 		protected List<string> filters;
-		
-		// Never stored, only used at run-time
-		protected Dictionary<long, ImageData> matches;
 		
 		#endregion
 		
@@ -64,48 +61,17 @@ namespace CodeImp.DoomBuilder.Config
 		
 		#region ================== Methods
 		
-		// This writes the texture set to configuration
-		internal virtual void WriteToConfig(Configuration cfg, string path) { }
-		
-		// This resets the matches and recreates the regex
-		internal virtual void Reset()
-		{
-			// Clear matches
-			matches = new Dictionary<long, ImageData>();
-		}
-		
-		// This adds a texture to this set
-		internal virtual bool Add(ImageData image)
-		{
-			// Can we add it?
-			if(!matches.ContainsKey(image.LongName))
-			{
-				// Add it
-				matches.Add(image.LongName, image);
-				return true;
-			}
-			else
-			{
-				// Can't add it
-				return false;
-			}
-		}
-		
-		// This tests if a texture is in this texturset
-		public virtual bool Exists(long longname)
-		{
-			return matches.ContainsKey(longname);
-		}
-		
 		// This returns the name
 		public override string ToString()
 		{
 			return name;
 		}
 		
-		// This is optional
-		internal virtual TextureSet Copy() { return null; }
-		internal virtual void Apply(TextureSet set) { }
+		// Comparer for sorting alphabetically
+		public int CompareTo(TextureSet other)
+		{
+			return string.Compare(this.name, other.name);
+		}
 		
 		#endregion
 	}

@@ -33,12 +33,9 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal class DefinedTextureSet : TextureSet
+	internal sealed class DefinedTextureSet : TextureSet
 	{
 		#region ================== Variables
-		
-		// Never stored, only used at run-time
-		private Regex regex;
 		
 		#endregion
 		
@@ -72,7 +69,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Methods
 		
 		// This writes the texture set to configuration
-		internal override void WriteToConfig(Configuration cfg, string path)
+		internal void WriteToConfig(Configuration cfg, string path)
 		{
 			IDictionary dic;
 			
@@ -92,87 +89,8 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting(path, dic);
 		}
 		
-		// This resets the matches and recreates the regex
-		internal override void Reset()
-		{
-			base.Reset();
-			
-			// Make the regex string that handles all filters
-			StringBuilder regexstr = new StringBuilder("");
-			foreach(string s in filters)
-			{
-				// Make sure filter is in uppercase
-				string ss = s.ToUpperInvariant();
-				
-				// Escape regex characters
-				ss = ss.Replace("+", "\\+");
-				ss = ss.Replace("\\", "\\\\");
-				ss = ss.Replace("|", "\\|");
-				ss = ss.Replace("{", "\\{");
-				ss = ss.Replace("[", "\\[");
-				ss = ss.Replace("(", "\\(");
-				ss = ss.Replace(")", "\\)");
-				ss = ss.Replace("^", "\\^");
-				ss = ss.Replace("$", "\\$");
-				ss = ss.Replace(".", "\\.");
-				ss = ss.Replace("#", "\\#");
-				ss = ss.Replace(" ", "\\ ");
-				
-				// Replace the * with the regex code for optional multiple characters
-				ss = ss.Replace("*", ".*?");
-				
-				// Replace the ? with the regex code for single character
-				ss = ss.Replace("?", ".");
-				
-				// When a filter has already added, insert a conditional OR operator
-				if(regexstr.Length > 0) regexstr.Append("|");
-				
-				// Open group without backreferencing
-				regexstr.Append("(?:");
-				
-				// Must be start of string
-				regexstr.Append("\\A");
-				
-				// Add the filter
-				regexstr.Append(ss);
-				
-				// Must be end of string
-				regexstr.Append("\\Z");
-				
-				// Close group
-				regexstr.Append(")");
-			}
-			
-			// Make the regex
-			regex = new Regex(regexstr.ToString(), RegexOptions.Compiled |
-												   RegexOptions.CultureInvariant);
-		}
-		
-		// This matches a name against the regex and adds a texture to
-		// the list if it matches. Returns true when matched and added.
-		internal virtual bool Add(ImageData image)
-		{
-			// Check against regex
-			if(regex.IsMatch(image.Name.ToUpperInvariant()))
-			{
-				// Matches! Add it.
-				return base.Add(image);
-			}
-			else
-			{
-				// Doesn't match
-				return false;
-			}
-		}
-		
-		// This only checks if the given image is a match
-		internal virtual bool IsMatch(ImageData image)
-		{
-			return regex.IsMatch(image.Name.ToUpperInvariant());
-		}
-		
 		// Duplication
-		internal override TextureSet Copy()
+		internal DefinedTextureSet Copy()
 		{
 			// Make a copy
 			DefinedTextureSet s = new DefinedTextureSet(this.name);
@@ -181,7 +99,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This applies the filters and name of one set to this one
-		internal override void Apply(TextureSet set)
+		internal void Apply(TextureSet set)
 		{
 			this.name = set.Name;
 			this.filters = new List<string>(set.Filters);

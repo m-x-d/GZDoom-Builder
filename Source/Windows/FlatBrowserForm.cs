@@ -40,6 +40,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private string selectedname;
 		private Point lastposition;
 		private Size lastsize;
+		private ListViewGroup usedgroup;
+		private ListViewGroup availgroup;
 		
 		// Properties
 		public string SelectedName { get { return selectedname; } }
@@ -48,31 +50,34 @@ namespace CodeImp.DoomBuilder.Windows
 		public FlatBrowserForm()
 		{
 			Cursor.Current = Cursors.WaitCursor;
+			ListViewItem item;
 			
 			// Initialize
 			InitializeComponent();
 			browser.ApplyColorSettings();
 			
-			// Make groups
-			ListViewGroup used = browser.AddGroup("Used Flats");
-			ListViewGroup avail = browser.AddGroup("Available Flats");
-			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
-			
-			// Start adding
-			browser.BeginAdding(false);
 
-			// Add all used flats
-			foreach(ImageData img in General.Map.Data.Flats)
-				if(img.UsedInMap) browser.Add(img.Name, img, img, used);
-			
-			// Add all available flats
-			foreach(ImageData img in General.Map.Data.Flats)
-				browser.Add(img.Name, img, img, avail);
-			
-			// Done adding
-			browser.EndAdding();
+			// Fill texture sets list with normal texture sets
+			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets)
+			{
+				item = texturesets.Items.Add(ts.Name);
+				item.Tag = ts;
+			}
+
+			// Sort and add other textures set
+			texturesets.Sort();
+			item = texturesets.Items.Add(General.Map.Data.OthersTextureSet.Name);
+			item.Tag = General.Map.Data.OthersTextureSet;
+
+			// Select one
+			// TODO: Remember selection
+			texturesets.Items[0].Selected = true;
+
+			// Make groups
+			usedgroup = browser.AddGroup("Used Textures");
+			availgroup = browser.AddGroup("Available Textures");
 			
 			// Keep last position and size
 			lastposition = this.Location;
@@ -114,6 +119,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Loading
 		private void FlatBrowserForm_Load(object sender, EventArgs e)
 		{
+			/*
 			// Position window from configuration settings
 			this.SuspendLayout();
 			this.Location = new Point(General.Settings.ReadSetting("browserwindow.positionx", this.Location.X),
@@ -122,7 +128,8 @@ namespace CodeImp.DoomBuilder.Windows
 								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
 			this.ResumeLayout(true);
-
+			*/
+			
 			// Normal windowstate?
 			if(this.WindowState == FormWindowState.Normal)
 			{
@@ -192,6 +199,31 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Cancelled
 				return null;
+			}
+		}
+		
+		// Texture set selected
+		private void texturesets_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Anything slected?
+			if(texturesets.SelectedItems.Count > 0)
+			{
+				// Get the selected texture set
+				IFilledTextureSet set = (texturesets.SelectedItems[0].Tag as IFilledTextureSet);
+				
+				// Start adding
+				browser.BeginAdding(false);
+
+				// Add all used flats
+				foreach(ImageData img in set.Flats)
+					if(img.UsedInMap) browser.Add(img.Name, img, img, usedgroup);
+
+				// Add all available flats
+				foreach(ImageData img in set.Flats)
+					browser.Add(img.Name, img, img, availgroup);
+
+				// Done adding
+				browser.EndAdding();
 			}
 		}
 	}

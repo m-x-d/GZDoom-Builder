@@ -150,9 +150,9 @@ namespace CodeImp.DoomBuilder.Windows
 				Cursor.Current = Cursors.AppStarting;
 				
 				// Make a set for comparing
-				DefinedTextureSet set = new DefinedTextureSet("");
-				foreach(ListViewItem i in filters.Items) set.Filters.Add(i.Text);
-				set.Reset();
+				List<string> filterslist = new List<string>(filters.Items.Count);
+				foreach(ListViewItem i in filters.Items) filterslist.Add(i.Text);
+				MatchingTextureSet set = new MatchingTextureSet(filterslist);
 				
 				// Determine tooltip text
 				string tooltiptext = null;

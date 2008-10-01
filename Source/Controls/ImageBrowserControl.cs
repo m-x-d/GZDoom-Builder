@@ -104,22 +104,6 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Stop refresh timer
 			refreshtimer.Enabled = false;
-
-			// Begin updating list
-			updating = true;
-			list.SuspendLayout();
-			list.BeginUpdate();
-
-			// Dispose items
-			foreach(ImageBrowserItem i in list.Items) i.Dispose();
-
-			// Trash list items
-			list.Clear();
-			
-			// Done updating list
-			list.EndUpdate();
-			list.ResumeLayout();
-			updating = false;
 		}
 
 		#endregion
@@ -366,7 +350,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Begin updating list
 			updating = true;
-			list.SuspendLayout();
+			//list.SuspendLayout();
 			list.BeginUpdate();
 			
 			// Clear list first
@@ -391,7 +375,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// Done updating list
 			updating = false;
 			list.EndUpdate();
-			list.ResumeLayout();
+			list.Invalidate();
+			//list.ResumeLayout();
 			
 			// Make selection?
 			if(!preventselection && (list.Items.Count > 0))
