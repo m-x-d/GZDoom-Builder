@@ -57,13 +57,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.testparameters = new System.Windows.Forms.TextBox();
 			this.testapplication = new System.Windows.Forms.TextBox();
 			this.tabtextures = new System.Windows.Forms.TabPage();
+			this.listtextures = new System.Windows.Forms.ListView();
 			this.restoretexturesets = new System.Windows.Forms.Button();
 			this.edittextureset = new System.Windows.Forms.Button();
 			this.pastetexturesets = new System.Windows.Forms.Button();
 			this.copytexturesets = new System.Windows.Forms.Button();
 			this.removetextureset = new System.Windows.Forms.Button();
 			this.addtextureset = new System.Windows.Forms.Button();
-			this.listtextures = new System.Windows.Forms.ListBox();
 			this.listconfigs = new System.Windows.Forms.ListView();
 			this.columnname = new System.Windows.Forms.ColumnHeader();
 			this.testprogramdialog = new System.Windows.Forms.OpenFileDialog();
@@ -412,13 +412,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabtextures
 			// 
+			this.tabtextures.Controls.Add(this.listtextures);
 			this.tabtextures.Controls.Add(this.restoretexturesets);
 			this.tabtextures.Controls.Add(this.edittextureset);
 			this.tabtextures.Controls.Add(this.pastetexturesets);
 			this.tabtextures.Controls.Add(this.copytexturesets);
 			this.tabtextures.Controls.Add(this.removetextureset);
 			this.tabtextures.Controls.Add(this.addtextureset);
-			this.tabtextures.Controls.Add(this.listtextures);
 			this.tabtextures.Controls.Add(label4);
 			this.tabtextures.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabtextures.Location = new System.Drawing.Point(4, 23);
@@ -428,6 +428,21 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtextures.Text = "Textures";
 			this.tabtextures.UseVisualStyleBackColor = true;
 			// 
+			// listtextures
+			// 
+			this.listtextures.FullRowSelect = true;
+			this.listtextures.HideSelection = false;
+			this.listtextures.Location = new System.Drawing.Point(15, 84);
+			this.listtextures.Name = "listtextures";
+			this.listtextures.ShowGroups = false;
+			this.listtextures.Size = new System.Drawing.Size(382, 147);
+			this.listtextures.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.listtextures.TabIndex = 32;
+			this.listtextures.UseCompatibleStateImageBehavior = false;
+			this.listtextures.View = System.Windows.Forms.View.List;
+			this.listtextures.SelectedIndexChanged += new System.EventHandler(this.listtextures_SelectedIndexChanged);
+			this.listtextures.DoubleClick += new System.EventHandler(this.listtextures_DoubleClick);
+			// 
 			// restoretexturesets
 			// 
 			this.restoretexturesets.Location = new System.Drawing.Point(15, 275);
@@ -436,6 +451,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.restoretexturesets.TabIndex = 31;
 			this.restoretexturesets.Text = "Add Default Sets";
 			this.restoretexturesets.UseVisualStyleBackColor = true;
+			this.restoretexturesets.Click += new System.EventHandler(this.restoretexturesets_Click);
 			// 
 			// edittextureset
 			// 
@@ -457,6 +473,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pastetexturesets.TabIndex = 29;
 			this.pastetexturesets.Text = "Paste";
 			this.pastetexturesets.UseVisualStyleBackColor = true;
+			this.pastetexturesets.Click += new System.EventHandler(this.pastetexturesets_Click);
 			// 
 			// copytexturesets
 			// 
@@ -467,6 +484,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.copytexturesets.TabIndex = 28;
 			this.copytexturesets.Text = "Copy";
 			this.copytexturesets.UseVisualStyleBackColor = true;
+			this.copytexturesets.Click += new System.EventHandler(this.copytexturesets_Click);
 			// 
 			// removetextureset
 			// 
@@ -488,21 +506,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.addtextureset.Text = "Add...";
 			this.addtextureset.UseVisualStyleBackColor = true;
 			this.addtextureset.Click += new System.EventHandler(this.addtextureset_Click);
-			// 
-			// listtextures
-			// 
-			this.listtextures.ColumnWidth = 120;
-			this.listtextures.IntegralHeight = false;
-			this.listtextures.ItemHeight = 14;
-			this.listtextures.Location = new System.Drawing.Point(15, 84);
-			this.listtextures.MultiColumn = true;
-			this.listtextures.Name = "listtextures";
-			this.listtextures.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.listtextures.Size = new System.Drawing.Size(382, 147);
-			this.listtextures.Sorted = true;
-			this.listtextures.TabIndex = 25;
-			this.listtextures.SelectedIndexChanged += new System.EventHandler(this.listtextures_SelectedIndexChanged);
-			this.listtextures.DoubleClick += new System.EventHandler(this.listtextures_DoubleClick);
 			// 
 			// listconfigs
 			// 
@@ -591,11 +594,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label labelparameters;
 		private System.Windows.Forms.TabPage tabtextures;
 		private System.Windows.Forms.Button addtextureset;
-		private System.Windows.Forms.ListBox listtextures;
 		private System.Windows.Forms.Button restoretexturesets;
 		private System.Windows.Forms.Button edittextureset;
 		private System.Windows.Forms.Button pastetexturesets;
 		private System.Windows.Forms.Button copytexturesets;
 		private System.Windows.Forms.Button removetextureset;
+		private System.Windows.Forms.ListView listtextures;
 	}
 }
