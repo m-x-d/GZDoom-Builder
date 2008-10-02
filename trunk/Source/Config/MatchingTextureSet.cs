@@ -33,7 +33,7 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal sealed class MatchingTextureSet : TextureSet, IFilledTextureSet
+	internal sealed class MatchingTextureSet : TextureSet, IFilledTextureSet, IComparable<MatchingTextureSet>
 	{
 		#region ================== Variables
 		
@@ -182,6 +182,12 @@ namespace CodeImp.DoomBuilder.Config
 		internal bool IsMatch(ImageData image)
 		{
 			return regex.IsMatch(image.Name.ToUpperInvariant());
+		}
+
+		// This compares it for sorting
+		public int CompareTo(MatchingTextureSet other)
+		{
+			return string.Compare(this.name, other.name);
 		}
 		
 		#endregion

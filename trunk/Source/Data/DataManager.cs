@@ -177,6 +177,9 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
 				texturesets.Add(new MatchingTextureSet(ts));
 			
+			// Sort the texture sets
+			texturesets.Sort();
+			
 			// Other textures set
 			othertextures = new OthersTextureSet();
 			
@@ -565,6 +568,7 @@ namespace CodeImp.DoomBuilder.Data
 			PatchNames pnames = new PatchNames();
 			PatchNames newpnames;
 			int counter = 0;
+			long firsttexture = 0;
 			
 			// Go for all opened containers
 			foreach(DataReader dr in containers)
@@ -587,6 +591,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(!textures.ContainsKey(img.LongName)) texturenames.Add(img.Name);
 						textures.Remove(img.LongName);
 						textures.Add(img.LongName, img);
+						if(firsttexture == 0) firsttexture = img.LongName;
 						counter++;
 						
 						// Also add as flat when using mixed resources
@@ -602,6 +607,11 @@ namespace CodeImp.DoomBuilder.Data
 					}
 				}
 			}
+			
+			// The first texture cannot be used, because in the game engine it
+			// has index 0 which means "no texture", so remove it from the list.
+			textures.Remove(firsttexture);
+			if(General.Map.Config.MixTexturesFlats) flats.Remove(firsttexture);
 			
 			// Output info
 			return counter;
