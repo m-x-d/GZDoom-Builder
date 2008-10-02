@@ -68,9 +68,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			for(int i = 0; i < s.Vertices.Length; i++)
 			{
 				// Use sector brightness for color shading
-				//pc = new PixelColor(255, unchecked((byte)s.Brightness), unchecked((byte)s.Brightness), unchecked((byte)s.Brightness));
-				//verts[i].c = pc.ToInt();
-				verts[i].c = -1;
+				PixelColor pc = new PixelColor(255, unchecked((byte)s.Brightness), unchecked((byte)s.Brightness), unchecked((byte)s.Brightness));
+				verts[i].c = pc.ToInt();
+				//verts[i].c = -1;
 
 				// Grid aligned texture coordinates
 				if(base.Texture.IsImageLoaded)
