@@ -446,7 +446,7 @@ namespace CodeImp.DoomBuilder.Windows
 				"Add Default Sets", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
 			{
 				// Add copies
-				foreach(DefinedTextureSet ts in General.Map.Config.TextureSets)
+				foreach(DefinedTextureSet ts in gameconfig.TextureSets)
 				{
 					DefinedTextureSet s = ts.Copy();
 					ListViewItem item = listtextures.Items.Add(s.Name);
