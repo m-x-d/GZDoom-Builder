@@ -67,8 +67,7 @@ namespace CodeImp.DoomBuilder.Windows
 				item.ImageIndex = 0;
 			}
 			
-			// Sort and add other textures set
-			texturesets.Sort();
+			// Add other textures set
 			item = texturesets.Items.Add(General.Map.Data.OthersTextureSet.Name);
 			item.Tag = General.Map.Data.OthersTextureSet;
 			item.ImageIndex = 1;

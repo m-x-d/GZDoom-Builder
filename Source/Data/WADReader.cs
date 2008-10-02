@@ -158,7 +158,7 @@ namespace CodeImp.DoomBuilder.Data
 					LoadTexturesRange(rangestart, rangeend, ref images, pnames);
 				}
 			}
-			
+
 			// Return result
 			return images;
 		}
