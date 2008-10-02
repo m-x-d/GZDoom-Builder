@@ -93,14 +93,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					v2 = s.Line.Start.Position;
 				}
 
+				// Use sector brightness for color shading
+				PixelColor pc = new PixelColor(255, unchecked((byte)s.Sector.Brightness), unchecked((byte)s.Sector.Brightness), unchecked((byte)s.Sector.Brightness));
+				
 				// Make vertices
 				verts = new WorldVertex[6];
-				verts[0] = new WorldVertex(v1.x, v1.y, geobottom, -1, 0.0f, 1.0f);
-				verts[1] = new WorldVertex(v1.x, v1.y, geotop, -1, 0.0f, 0.0f);
-				verts[2] = new WorldVertex(v2.x, v2.y, geotop, -1, 1.0f, 0.0f);
+				verts[0] = new WorldVertex(v1.x, v1.y, geobottom, pc.ToInt(), 0.0f, 1.0f);
+				verts[1] = new WorldVertex(v1.x, v1.y, geotop, pc.ToInt(), 0.0f, 0.0f);
+				verts[2] = new WorldVertex(v2.x, v2.y, geotop, pc.ToInt(), 1.0f, 0.0f);
 				verts[3] = verts[0];
 				verts[4] = verts[2];
-				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, -1, 1.0f, 1.0f);
+				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, pc.ToInt(), 1.0f, 1.0f);
 			}
 			else
 			{
