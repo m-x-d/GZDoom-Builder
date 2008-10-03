@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		#endregion
 		
 		#region ================== Constants
-
+		
 		#endregion
 
 		#region ================== Pathfinding
@@ -576,6 +576,60 @@ namespace CodeImp.DoomBuilder.Geometry
 			s.FloorHeight = General.Settings.DefaultFloorHeight;
 			s.CeilHeight = General.Settings.DefaultCeilingHeight;
 			s.Brightness = General.Settings.DefaultBrightness;
+		}
+		
+		#endregion
+		
+		#region ================== Sector Labels
+		
+		// This finds the ideal label position for a sector
+		public static Vector2D FindLabelPosition(Sector s, float resolution)
+		{
+			Vector2D foundpoint = new Vector2D();
+			float founddist = 0.0f;
+			
+			// Calculate grid numbers
+			RectangleF bbox = s.CreateBBox();
+			int nodesx = (int)(bbox.Width / resolution);
+			int nodesy = (int)(bbox.Height / resolution);
+			
+			// Make list of linedefs
+			List<Linedef> lines = new List<Linedef>(s.Sidedefs.Count);
+			foreach(Sidedef sd in s.Sidedefs) lines.Add(sd.Line);
+			
+			// Scan the polygon
+			for(int x = 0; x < nodesx; x++)
+			{
+				for(int y = 0; y < nodesy; y++)
+				{
+					// Calculate absolute point
+					Vector2D p = new Vector2D(bbox.X + (float)x * resolution,
+											  bbox.Y + (float)y * resolution);
+					
+					// Point inside sector?
+					Linedef ld = MapSet.NearestLinedef(lines, p);
+					Sidedef sd = (ld.SideOfLine(p) < 0) ? ld.Front : ld.Back;
+					if((sd != null) && (sd.Sector == s))
+					{
+						// Go for all linedefs to calculate the smallest distance
+						float mindist = int.MaxValue;
+						foreach(Linedef l in lines)
+						{
+							float dist = l.DistanceToSq(p, true);
+							if(dist < mindist) mindist = dist;
+						}
+						
+						// Better match?
+						if(mindist > founddist)
+						{
+							foundpoint = p;
+							founddist = mindist;
+						}
+					}
+				}
+			}
+			
+			return foundpoint;
 		}
 		
 		#endregion

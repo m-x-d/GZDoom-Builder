@@ -247,7 +247,31 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Methods
-
+		
+		// This creates a bounding box rectangle
+		// This requires the sector polygon to be up-to-date!
+		public RectangleF CreateBBox()
+		{
+			// Setup
+			float left = float.MaxValue;
+			float top = float.MaxValue;
+			float right = float.MinValue;
+			float bottom = float.MinValue;
+			
+			// Go for vertices
+			foreach(FlatVertex v in vertices)
+			{
+				// Update rect
+				if(v.x < left) left = v.x;
+				if(v.y < top) top = v.y;
+				if(v.x > right) right = v.x;
+				if(v.y > bottom) bottom = v.y;
+			}
+			
+			// Return rectangle
+			return new RectangleF(left, top, right - left, bottom - top);
+		}
+		
 		// This joins the sector with another sector
 		// This sector will be disposed
 		public void Join(Sector other)
