@@ -488,14 +488,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								{
 									// Find the shortest, closest path between these lines
 									List<List<LinedefSide>> paths = new List<List<LinedefSide>>(8);
-									paths.Add(SectorTools.FindClosestPath(l1, true, l2, true, true));
-									paths.Add(SectorTools.FindClosestPath(l1, true, l2, false, true));
-									paths.Add(SectorTools.FindClosestPath(l1, false, l2, true, true));
-									paths.Add(SectorTools.FindClosestPath(l1, false, l2, false, true));
-									paths.Add(SectorTools.FindClosestPath(l2, true, l1, true, true));
-									paths.Add(SectorTools.FindClosestPath(l2, true, l1, false, true));
-									paths.Add(SectorTools.FindClosestPath(l2, false, l1, true, true));
-									paths.Add(SectorTools.FindClosestPath(l2, false, l1, false, true));
+									paths.Add(Tools.FindClosestPath(l1, true, l2, true, true));
+									paths.Add(Tools.FindClosestPath(l1, true, l2, false, true));
+									paths.Add(Tools.FindClosestPath(l1, false, l2, true, true));
+									paths.Add(Tools.FindClosestPath(l1, false, l2, false, true));
+									paths.Add(Tools.FindClosestPath(l2, true, l1, true, true));
+									paths.Add(Tools.FindClosestPath(l2, true, l1, false, true));
+									paths.Add(Tools.FindClosestPath(l2, false, l1, true, true));
+									paths.Add(Tools.FindClosestPath(l2, false, l1, false, true));
 
 									foreach(List<LinedefSide> p in paths)
 										if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
@@ -591,7 +591,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Linedef ld in newlines)
 				{
 					// Find closest path starting with the front of this linedef
-					List<LinedefSide> pathlines = SectorTools.FindClosestPath(ld, true, true);
+					List<LinedefSide> pathlines = Tools.FindClosestPath(ld, true, true);
 					if(pathlines != null)
 					{
 						// Make polygon
@@ -606,7 +606,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							// flip the line if it is not helping.
 
 							// Find closest path starting with the back of this linedef
-							pathlines = SectorTools.FindClosestPath(ld, false, true);
+							pathlines = Tools.FindClosestPath(ld, false, true);
 							if(pathlines != null)
 							{
 								// Make polygon
@@ -658,13 +658,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(!frontsdone[i])
 					{
 						// Find a way to create a sector here
-						List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(ld, true);
+						List<LinedefSide> sectorlines = Tools.FindPotentialSectorAt(ld, true);
 						if(sectorlines != null)
 						{
 							sidescreated = true;
 							
 							// Make the new sector
-							Sector newsector = SectorTools.MakeSector(sectorlines);
+							Sector newsector = Tools.MakeSector(sectorlines);
 
 							// Go for all sidedefs in this new sector
 							foreach(Sidedef sd in newsector.Sidedefs)
@@ -690,7 +690,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(!backsdone[i])
 					{
 						// Find a way to create a sector here
-						List<LinedefSide> sectorlines = SectorTools.FindPotentialSectorAt(ld, false);
+						List<LinedefSide> sectorlines = Tools.FindPotentialSectorAt(ld, false);
 						if(sectorlines != null)
 						{
 							// We don't always want to create a new sector on the back sides
@@ -716,7 +716,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								sidescreated = true;
 
 								// Join the new sector
-								Sector newsector = SectorTools.JoinSector(sectorlines, joinsidedef);
+								Sector newsector = Tools.JoinSector(sectorlines, joinsidedef);
 
 								// Go for all sidedefs in this new sector
 								foreach(Sidedef sd in newsector.Sidedefs)

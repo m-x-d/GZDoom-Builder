@@ -33,10 +33,9 @@ using CodeImp.DoomBuilder.IO;
 namespace CodeImp.DoomBuilder.Geometry
 {
 	/// <summary>
-	/// This makes a sector from all surrounding lines from a given coordinate.
-	/// Automatically finds the sidedef/sector properties from surrounding sectors/sidedefs.
+	/// Tools to work with geometry.
 	/// </summary>
-	public static class SectorTools
+	public static class Tools
 	{
 		#region ================== Structures
 
@@ -53,6 +52,46 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		#endregion
 
+		#region ================== Polygons and Triangles
+
+		// Point inside the polygon?
+		// See: http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
+		public static bool PointInPolygon(ICollection<Vector2D> polygon, Vector2D point)
+		{
+			Vector2D v1 = General.GetByIndex<Vector2D>(polygon, polygon.Count - 1);
+			uint c = 0;
+
+			// Go for all vertices
+			foreach(Vector2D v2 in polygon)
+			{
+				// Determine min/max values
+				float miny = Math.Min(v1.y, v2.y);
+				float maxy = Math.Max(v1.y, v2.y);
+				float maxx = Math.Max(v1.x, v2.x);
+
+				// Check for intersection
+				if((point.y > miny) && (point.y <= maxy))
+				{
+					if(point.x <= maxx)
+					{
+						if(v1.y != v2.y)
+						{
+							float xint = (point.y - v1.y) * (v2.x - v1.x) / (v2.y - v1.y) + v1.x;
+							if((v1.x == v2.x) || (point.x <= xint)) c++;
+						}
+					}
+				}
+
+				// Move to next
+				v1 = v2;
+			}
+
+			// Inside this polygon?
+			return (c & 0x00000001UL) != 0;
+		}
+		
+		#endregion
+		
 		#region ================== Pathfinding
 
 		/// <summary>
@@ -587,47 +626,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			Vector2D foundpoint = new Vector2D();
 			float founddist = 0.0f;
-			
-			// Calculate grid numbers
-			RectangleF bbox = s.CreateBBox();
-			int nodesx = (int)(bbox.Width / resolution);
-			int nodesy = (int)(bbox.Height / resolution);
-			
-			// Make list of linedefs
-			List<Linedef> lines = new List<Linedef>(s.Sidedefs.Count);
-			foreach(Sidedef sd in s.Sidedefs) lines.Add(sd.Line);
-			
-			// Scan the polygon
-			for(int x = 0; x < nodesx; x++)
-			{
-				for(int y = 0; y < nodesy; y++)
-				{
-					// Calculate absolute point
-					Vector2D p = new Vector2D(bbox.X + (float)x * resolution,
-											  bbox.Y + (float)y * resolution);
-					
-					// Point inside sector?
-					Linedef ld = MapSet.NearestLinedef(lines, p);
-					Sidedef sd = (ld.SideOfLine(p) < 0) ? ld.Front : ld.Back;
-					if((sd != null) && (sd.Sector == s))
-					{
-						// Go for all linedefs to calculate the smallest distance
-						float mindist = int.MaxValue;
-						foreach(Linedef l in lines)
-						{
-							float dist = l.DistanceToSq(p, true);
-							if(dist < mindist) mindist = dist;
-						}
-						
-						// Better match?
-						if(mindist > founddist)
-						{
-							foundpoint = p;
-							founddist = mindist;
-						}
-					}
-				}
-			}
 			
 			return foundpoint;
 		}

@@ -432,10 +432,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This checks and returns the grip the mouse pointer is in
 		private Grip CheckMouseGrip()
 		{
-			// Make polygon from corners
-			Polygon rectpoly = new Polygon();
-			rectpoly.AddRange(corners);
-
 			if(PointInRectF(resizegrips[0], mousemappos))
 				return Grip.SizeN;
 			else if(PointInRectF(resizegrips[2], mousemappos))
@@ -452,7 +448,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return Grip.RotateRB;
 			else if(PointInRectF(rotategrips[3], mousemappos))
 				return Grip.RotateLB;
-			else if(rectpoly.Intersect(mousemappos))
+			else if(Tools.PointInPolygon(corners, mousemappos))
 				return Grip.Main;
 			else
 				return Grip.None;

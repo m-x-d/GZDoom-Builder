@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Find new sector
 						General.Interface.SetCursor(Cursors.AppStarting);
 						nearestside = newnearest;
-						allsides = SectorTools.FindPotentialSectorAt(mousemappos);
+						allsides = Tools.FindPotentialSectorAt(mousemappos);
 						if(allsides != null)
 						{
 							alllines = new List<Linedef>(allsides.Count);
@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.SetCursor(Cursors.WaitCursor);
 					General.Settings.FindDefaultDrawSettings();
 					General.Map.UndoRedo.CreateUndo("Make Sector", UndoGroup.None, 0);
-					Sector s = SectorTools.MakeSector(allsides);
+					Sector s = Tools.MakeSector(allsides);
 					General.Interface.SetCursor(Cursors.Default);
 					
 					// Quickly flash this sector to indicate it was created
@@ -334,7 +334,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.SetCursor(Cursors.WaitCursor);
 					General.Settings.FindDefaultDrawSettings();
 					General.Map.UndoRedo.CreateUndo("Make Sector", UndoGroup.None, 0);
-					Sector s = SectorTools.MakeSector(allsides);
+					Sector s = Tools.MakeSector(allsides);
 					General.Interface.SetCursor(Cursors.Default);
 
 					// Edit the sector
