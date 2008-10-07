@@ -268,9 +268,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					// Flip selection
-					highlighted.Selected = !highlighted.Selected;
-
 					// Make update lines selection
 					foreach(Sidedef sd in highlighted.Sidedefs)
 					{
@@ -278,7 +275,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
 						sd.Line.Selected = front | back;
 					}
-
+					
 					// Update display
 					if(renderer.StartPlotter(false))
 					{

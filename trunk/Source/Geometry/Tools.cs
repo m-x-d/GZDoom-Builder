@@ -625,6 +625,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static ICollection<Vector2D> FindLabelPositions(Sector s)
 		{
 			List<Vector2D> positions = new List<Vector2D>(2);
+			int islandoffset = 0;
 			
 			// Do we have a triangulation?
 			Triangulation triangles = s.Triangles;
@@ -637,17 +638,21 @@ namespace CodeImp.DoomBuilder.Geometry
 					List<Line2D> candidatelines = new List<Line2D>(triangles.IslandVertices[island] >> 1);
 					float founddistance = float.MinValue;
 					Vector2D foundposition = new Vector2D();
-
+					float minx = float.MaxValue;
+					float miny = float.MaxValue;
+					float maxx = float.MinValue;
+					float maxy = float.MinValue;
+					
 					// Make candidate lines that are not along sidedefs
 					// We do this before testing the candidate against the sidedefs so that
 					// we can collect the relevant sidedefs first in the same run
-					for(int i = 0; i < triangles.Vertices.Count; i += 3)
+					for(int i = 0; i < triangles.IslandVertices[island]; i += 3)
 					{
-						Vector2D v1 = triangles.Vertices[i + 2];
+						Vector2D v1 = triangles.Vertices[islandoffset + i + 2];
 						for(int k = 0; k < 3; k++)
 						{
-							Vector2D v2 = triangles.Vertices[i + k];
-							Sidedef sd = triangles.Sidedefs[i + k];
+							Vector2D v2 = triangles.Vertices[islandoffset + i + k];
+							Sidedef sd = triangles.Sidedefs[islandoffset + i + k];
 							
 							// Not along a sidedef? Then this line is across the sector
 							// and guaranteed to be inside the sector!
@@ -662,6 +667,12 @@ namespace CodeImp.DoomBuilder.Geometry
 								sides[sd] = sd.Line;
 							}
 							
+							// Make bbox of this island
+							minx = Math.Min(minx, v1.x);
+							miny = Math.Min(miny, v1.y);
+							maxx = Math.Max(maxx, v1.x);
+							maxy = Math.Max(maxy, v1.y);
+							
 							// Next
 							v1 = v2;
 						}
@@ -675,7 +686,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						{
 							// Get center point
 							Vector2D candidateposition = sourceline.GetCoordinatesAt(0.5f);
-
+							
 							// Check distance against other lines
 							float smallestdist = int.MaxValue;
 							foreach(KeyValuePair<Sidedef, Linedef> sd in sides)
@@ -692,17 +703,30 @@ namespace CodeImp.DoomBuilder.Geometry
 								founddistance = smallestdist;
 							}
 						}
-
+						
 						// No cceptable line found, just use the first!
 						positions.Add(foundposition);
 					}
 					else
 					{
-						// No candidate lines found. Just return the center point.
-						//RectangleF rect = s.CreateBBox();
-						//return new Vector2D(rect.X + (rect.Width * 0.5f), rect.Y + (rect.Height * 0.5f));
-						positions.Add(new Vector2D());
+						// No candidate lines found.
+						
+						// Check to see if the island is a triangle
+						if(triangles.IslandVertices[island] == 3)
+						{
+							// Use the center of the triangle
+							Vector2D v = triangles.Vertices[islandoffset] + triangles.Vertices[islandoffset + 1] + triangles.Vertices[islandoffset + 2];
+							positions.Add(v / 3.0f);
+						}
+						else
+						{
+							// Use the center of this island.
+							positions.Add(new Vector2D(minx + (maxx - minx) * 0.5f, miny + (maxy - miny) * 0.5f));
+						}
 					}
+					
+					// Done with this island
+					islandoffset += triangles.IslandVertices[island];
 				}
 			}
 			else
