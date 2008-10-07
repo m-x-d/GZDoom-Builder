@@ -54,6 +54,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 		// Highlighted item
 		private Sector highlighted;
+		
+		// Labels
+		private ICollection<Vector2D> labelpos;
 
 		#endregion
 
@@ -138,6 +141,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				renderer.Finish();
 			}
 
+			// Render labels
+			if(renderer.StartOverlay(true))
+			{
+				if(labelpos != null)
+				{
+					foreach(Vector2D v in labelpos)
+						renderer.RenderRectangleFilled(new RectangleF(v.x - 5, v.y - 5, 10, 10), General.Colors.Indication, true);
+				}
+
+				renderer.Finish();
+			}
+			
 			// Do not show things
 			if(renderer.StartThings(true))
 			{
@@ -160,15 +175,31 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Set new highlight
 				highlighted = s;
 
+				// Get label positions
+				if(s != null) labelpos = Tools.FindLabelPositions(s);
+				
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.PlotSector(highlighted, General.Colors.Highlight);
 
 				// Done
 				renderer.Finish();
-				renderer.Present();
 			}
 
+			// Render labels
+			if(renderer.StartOverlay(true))
+			{
+				if(labelpos != null)
+				{
+					foreach(Vector2D v in labelpos)
+						renderer.RenderRectangleFilled(new RectangleF(v.x - 5, v.y - 5, 10, 10), General.Colors.Indication, true);
+				}
+
+				renderer.Finish();
+			}
+			
+			renderer.Present();
+			
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
 				General.Interface.ShowSectorInfo(highlighted);
@@ -271,83 +302,28 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Edit button is used?
-				if(General.Interface.CheckActionActive(null, "classicedit"))
+				// Get a triangulator and bind events
+				Triangulation t = Triangulation.Create(highlighted);
+
+				// Start with a clear display
+				if(renderer.StartPlotter(true))
 				{
-					// Anything selected?
-					selected = General.Map.Map.GetSelectedSectors(true);
-					if(selected.Count > 0)
+					// Render lines and vertices
+					renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+					renderer.PlotVerticesSet(General.Map.Map.Vertices);
+
+					// Go for all triangle vertices
+					for(int i = 0; i < t.Vertices.Length; i += 3)
 					{
-						// Remove highlight
-						Highlight(null);
-
-						// Clear selection
-						General.Map.Map.ClearSelectedSectors();
-						General.Map.Map.ClearSelectedLinedefs();
-						General.Interface.RedrawDisplay();
-
-						// Get a triangulator and bind events
-						Triangulator t = new Triangulator();
-						t.OnShowLine = new Triangulator.ShowLine(ShowLine);
-						t.OnShowPolygon = new Triangulator.ShowPolygon(ShowPolygon);
-						t.OnShowPoint = new Triangulator.ShowPoint(ShowPoint);
-						t.OnShowEarClip = new Triangulator.ShowEarClip(ShowEarClip);
-
-						// Triangulate this now!
-						triangles = t.PerformTriangulation(General.GetByIndex<Sector>(selected, 0));
-
-						// Start with a clear display
-						if(renderer.StartPlotter(true))
-						{
-							// Render lines and vertices
-							renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-							renderer.PlotVerticesSet(General.Map.Map.Vertices);
-
-							// Go for all triangle vertices
-							for(int i = 0; i < triangles.Count; i += 3)
-							{
-								renderer.PlotLine(triangles[i + 0], triangles[i + 1], General.Colors.Selection);
-								renderer.PlotLine(triangles[i + 1], triangles[i + 2], General.Colors.Selection);
-								renderer.PlotLine(triangles[i + 2], triangles[i + 0], General.Colors.Selection);
-							}
-
-							// Done
-							renderer.Finish();
-							renderer.Present();
-							Thread.Sleep(200);
-						}
+						renderer.PlotLine(t.Vertices[i + 0], t.Vertices[i + 1], General.Colors.Selection);
+						renderer.PlotLine(t.Vertices[i + 1], t.Vertices[i + 2], General.Colors.Selection);
+						renderer.PlotLine(t.Vertices[i + 2], t.Vertices[i + 0], General.Colors.Selection);
 					}
-				}
-				else
-				{
-					// Get a triangulator and bind events
-					Triangulator t = new Triangulator();
 
-					// Triangulate the whole map!
-					triangles = new TriangleList();
-					foreach(Sector s in General.Map.Map.Sectors)
-						triangles.AddRange(t.PerformTriangulation(s));
-
-					// Start with a clear display
-					if(renderer.StartPlotter(true))
-					{
-						// Render lines and vertices
-						renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-						renderer.PlotVerticesSet(General.Map.Map.Vertices);
-
-						// Go for all triangle vertices
-						for(int i = 0; i < triangles.Count; i += 3)
-						{
-							renderer.PlotLine(triangles[i + 0], triangles[i + 1], General.Colors.Selection);
-							renderer.PlotLine(triangles[i + 1], triangles[i + 2], General.Colors.Selection);
-							renderer.PlotLine(triangles[i + 2], triangles[i + 0], General.Colors.Selection);
-						}
-
-						// Done
-						renderer.Finish();
-						renderer.Present();
-						Thread.Sleep(200);
-					}
+					// Done
+					renderer.Finish();
+					renderer.Present();
+					Thread.Sleep(200);
 				}
 			}
 		}

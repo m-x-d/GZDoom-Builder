@@ -63,8 +63,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 			
 			// Make vertices
-			verts = new WorldVertex[s.Vertices.Length];
-			for(int i = 0; i < s.Vertices.Length; i++)
+			verts = new WorldVertex[s.Triangles.Vertices.Length];
+			for(int i = 0; i < s.Triangles.Vertices.Length; i++)
 			{
 				// Use sector brightness for color shading
 				PixelColor pc = new PixelColor(255, unchecked((byte)s.Brightness), unchecked((byte)s.Brightness), unchecked((byte)s.Brightness));
@@ -74,18 +74,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Grid aligned texture coordinates
 				if(base.Texture.IsImageLoaded)
 				{
-					verts[i].u = s.Vertices[i].x / base.Texture.ScaledWidth;
-					verts[i].v = s.Vertices[i].y / base.Texture.ScaledHeight;
+					verts[i].u = s.Triangles.Vertices[i].x / base.Texture.ScaledWidth;
+					verts[i].v = s.Triangles.Vertices[i].y / base.Texture.ScaledHeight;
 				}
 				else
 				{
-					verts[i].u = s.Vertices[i].x / 64;
-					verts[i].v = s.Vertices[i].y / 64;
+					verts[i].u = s.Triangles.Vertices[i].x / 64;
+					verts[i].v = s.Triangles.Vertices[i].y / 64;
 				}
 				
 				// Vertex coordinates
-				verts[i].x = s.Vertices[i].x;
-				verts[i].y = s.Vertices[i].y;
+				verts[i].x = s.Triangles.Vertices[i].x;
+				verts[i].y = s.Triangles.Vertices[i].y;
 				verts[i].z = (float)s.FloorHeight;
 			}
 			

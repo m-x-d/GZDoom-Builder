@@ -596,7 +596,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Make polygon
 						LinedefTracePath tracepath = new LinedefTracePath(pathlines);
-						EarClipPolygon pathpoly = tracepath.MakePolygon();
+						EarClipPolygon pathpoly = tracepath.MakePolygon(true);
 
 						// Check if the front of the line is outside the polygon
 						if(!pathpoly.Intersect(ld.GetSidePoint(true)))
@@ -611,7 +611,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								// Make polygon
 								tracepath = new LinedefTracePath(pathlines);
-								pathpoly = tracepath.MakePolygon();
+								pathpoly = tracepath.MakePolygon(true);
 
 								// Check if the back of the line is inside the polygon
 								if(pathpoly.Intersect(ld.GetSidePoint(false)))

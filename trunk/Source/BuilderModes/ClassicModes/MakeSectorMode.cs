@@ -295,8 +295,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Quickly flash this sector to indicate it was created
 					General.Map.IsChanged = true;
 					General.Map.Map.Update();
-					flashpolygon = new FlatVertex[s.Vertices.Length];
-					s.Vertices.CopyTo(flashpolygon, 0);
+					flashpolygon = new FlatVertex[s.FlatVertices.Length];
+					s.FlatVertices.CopyTo(flashpolygon, 0);
 					flashintensity = 1.0f;
 					flashstarttime = (double)General.Clock.GetCurrentTime();
 					General.Interface.SetProcessorState(true);
@@ -344,8 +344,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Quickly flash this sector to indicate it was created
 						General.Map.IsChanged = true;
 						General.Map.Map.Update();
-						flashpolygon = new FlatVertex[s.Vertices.Length];
-						s.Vertices.CopyTo(flashpolygon, 0);
+						flashpolygon = new FlatVertex[s.FlatVertices.Length];
+						s.FlatVertices.CopyTo(flashpolygon, 0);
 						flashintensity = 1.0f;
 						flashstarttime = (double)General.Clock.GetCurrentTime();
 						General.Interface.SetProcessorState(true);

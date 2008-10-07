@@ -72,8 +72,8 @@ namespace CodeImp.DoomBuilder.Map
 		// Triangulation
 		private bool updateneeded;
 		private bool triangulationneeded;
-		private TriangleList triverts;
-		private FlatVertex[] vertices;
+		private Triangulation triangles;
+		private FlatVertex[] flatvertices;
 
 		#endregion
 
@@ -96,7 +96,8 @@ namespace CodeImp.DoomBuilder.Map
 		public bool Marked { get { return marked; } set { marked = value; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
-		public FlatVertex[] Vertices { get { return vertices; } }
+		public Triangulation Triangles { get { return triangles; } }
+		public FlatVertex[] FlatVertices { get { return flatvertices; } }
 
 		#endregion
 
@@ -214,10 +215,10 @@ namespace CodeImp.DoomBuilder.Map
 			if(updateneeded)
 			{
 				// Triangulate again?
-				if(triangulationneeded || (triverts == null))
+				if(triangulationneeded || (triangles == null))
 				{
 					// Triangulate sector
-					triverts = General.EarClipper.PerformTriangulation(this);
+					triangles = Triangulation.Create(this);
 				}
 				
 				// Brightness color (alpha is opaque)
@@ -228,15 +229,15 @@ namespace CodeImp.DoomBuilder.Map
 				int brightint = brightcolor.ToInt();
 				
 				// Make vertices
-				vertices = new FlatVertex[triverts.Count];
-				for(int i = 0; i < triverts.Count; i++)
+				flatvertices = new FlatVertex[triangles.Vertices.Length];
+				for(int i = 0; i < triangles.Vertices.Length; i++)
 				{
-					vertices[i].x = triverts[i].x;
-					vertices[i].y = triverts[i].y;
-					vertices[i].z = 1.0f;
-					vertices[i].c = brightint;
-					vertices[i].u = triverts[i].x;
-					vertices[i].v = triverts[i].y;
+					flatvertices[i].x = triangles.Vertices[i].x;
+					flatvertices[i].y = triangles.Vertices[i].y;
+					flatvertices[i].z = 1.0f;
+					flatvertices[i].c = brightint;
+					flatvertices[i].u = triangles.Vertices[i].x;
+					flatvertices[i].v = triangles.Vertices[i].y;
 				}
 				
 				// Updated
@@ -249,7 +250,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Methods
 		
 		// This creates a bounding box rectangle
-		// This requires the sector polygon to be up-to-date!
+		// This requires the sector triangulation to be up-to-date!
 		public RectangleF CreateBBox()
 		{
 			// Setup
@@ -259,7 +260,7 @@ namespace CodeImp.DoomBuilder.Map
 			float bottom = float.MinValue;
 			
 			// Go for vertices
-			foreach(FlatVertex v in vertices)
+			foreach(Vector2D v in triangles.Vertices)
 			{
 				// Update rect
 				if(v.x < left) left = v.x;

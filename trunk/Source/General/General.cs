@@ -112,9 +112,6 @@ namespace CodeImp.DoomBuilder
 		// States
 		private static bool debugbuild;
 
-		// Tools
-		private static Triangulator earclipper;
-
 		// Command line arguments
 		private static string[] cmdargs;
 		private static string autoloadfile = null;
@@ -144,7 +141,6 @@ namespace CodeImp.DoomBuilder
 		internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
-		internal static Triangulator EarClipper { get { return earclipper; } }
 		internal static TypesManager Types { get { return types; } }
 		internal static string AutoLoadFile { get { return autoloadfile; } }
 		internal static string AutoLoadMap { get { return autoloadmap; } }
@@ -505,9 +501,6 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Showing main interface window...");
 				mainwindow.Show();
 				mainwindow.Update();
-
-				// Create tools
-				earclipper = new Triangulator();
 
 				// Start Direct3D
 				General.WriteLogLine("Starting Direct3D graphics driver...");
