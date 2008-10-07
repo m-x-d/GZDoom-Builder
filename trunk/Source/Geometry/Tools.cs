@@ -622,9 +622,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Sector Labels
 		
 		// This finds the ideal label positions for a sector
-		public static ICollection<Vector2D> FindLabelPositions(Sector s)
+		public static List<LabelPositionInfo> FindLabelPositions(Sector s)
 		{
-			List<Vector2D> positions = new List<Vector2D>(2);
+			List<LabelPositionInfo> positions = new List<LabelPositionInfo>(2);
 			int islandoffset = 0;
 			
 			// Do we have a triangulation?
@@ -632,10 +632,10 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(triangles != null)
 			{
 				// Go for all islands
-				for(int island = 0; island < triangles.IslandVertices.Count; island++)
+				for(int i = 0; i < triangles.IslandVertices.Count; i++)
 				{
-					Dictionary<Sidedef, Linedef> sides = new Dictionary<Sidedef, Linedef>(triangles.IslandVertices[island] >> 1);
-					List<Line2D> candidatelines = new List<Line2D>(triangles.IslandVertices[island] >> 1);
+					Dictionary<Sidedef, Linedef> sides = new Dictionary<Sidedef, Linedef>(triangles.IslandVertices[i] >> 1);
+					List<Vector2D> candidatepositions = new List<Vector2D>(triangles.IslandVertices[i] >> 1);
 					float founddistance = float.MinValue;
 					Vector2D foundposition = new Vector2D();
 					float minx = float.MaxValue;
@@ -646,24 +646,26 @@ namespace CodeImp.DoomBuilder.Geometry
 					// Make candidate lines that are not along sidedefs
 					// We do this before testing the candidate against the sidedefs so that
 					// we can collect the relevant sidedefs first in the same run
-					for(int i = 0; i < triangles.IslandVertices[island]; i += 3)
+					for(int t = 0; t < triangles.IslandVertices[i]; t += 3)
 					{
-						Vector2D v1 = triangles.Vertices[islandoffset + i + 2];
-						for(int k = 0; k < 3; k++)
+						int triangleoffset = islandoffset + t;
+						Vector2D v1 = triangles.Vertices[triangleoffset + 2];
+						Sidedef sd = triangles.Sidedefs[triangleoffset + 2];
+						for(int v = 0; v < 3; v++)
 						{
-							Vector2D v2 = triangles.Vertices[islandoffset + i + k];
-							Sidedef sd = triangles.Sidedefs[islandoffset + i + k];
+							Vector2D v2 = triangles.Vertices[triangleoffset + v];
 							
 							// Not along a sidedef? Then this line is across the sector
 							// and guaranteed to be inside the sector!
 							if(sd == null)
 							{
 								// Make the line
-								candidatelines.Add(new Line2D(v1, v2));
+								candidatepositions.Add(v1 + (v2 - v1) * 0.5f);
 							}
 							else
 							{
-								// This sidedefs is part of this island and must be checked against
+								// This sidedefs is part of this island and must be checked
+								// so add it to the dictionary
 								sides[sd] = sd.Line;
 							}
 							
@@ -674,67 +676,68 @@ namespace CodeImp.DoomBuilder.Geometry
 							maxy = Math.Max(maxy, v1.y);
 							
 							// Next
+							sd = triangles.Sidedefs[triangleoffset + v];
 							v1 = v2;
 						}
 					}
 
 					// Any candidate lines found at all?
-					if(candidatelines.Count > 0)
+					if(candidatepositions.Count > 0)
 					{
 						// Start with the first line
-						foreach(Line2D sourceline in candidatelines)
+						foreach(Vector2D candidatepos in candidatepositions)
 						{
-							// Get center point
-							Vector2D candidateposition = sourceline.GetCoordinatesAt(0.5f);
-							
 							// Check distance against other lines
 							float smallestdist = int.MaxValue;
 							foreach(KeyValuePair<Sidedef, Linedef> sd in sides)
 							{
 								// Check the distance
-								float distance = sd.Value.DistanceToSq(candidateposition, true);
+								float distance = sd.Value.DistanceToSq(candidatepos, true);
 								smallestdist = Math.Min(smallestdist, distance);
 							}
 							
 							// Keep this candidate if it is better than previous
 							if(smallestdist > founddistance)
 							{
-								foundposition = candidateposition;
+								foundposition = candidatepos;
 								founddistance = smallestdist;
 							}
 						}
 						
 						// No cceptable line found, just use the first!
-						positions.Add(foundposition);
+						positions.Add(new LabelPositionInfo(foundposition, (float)Math.Sqrt(founddistance)));
 					}
 					else
 					{
 						// No candidate lines found.
 						
 						// Check to see if the island is a triangle
-						if(triangles.IslandVertices[island] == 3)
+						if(triangles.IslandVertices[i] == 3)
 						{
 							// Use the center of the triangle
-							Vector2D v = triangles.Vertices[islandoffset] + triangles.Vertices[islandoffset + 1] + triangles.Vertices[islandoffset + 2];
-							positions.Add(v / 3.0f);
+							// TODO: Use the 'incenter' instead, see http://mathworld.wolfram.com/Incenter.html
+							Vector2D v = (triangles.Vertices[islandoffset] + triangles.Vertices[islandoffset + 1] + triangles.Vertices[islandoffset + 2]) / 3.0f;
+							float d = Line2D.GetDistanceToLineSq(triangles.Vertices[islandoffset], triangles.Vertices[islandoffset + 1], v, false);
+							d = Math.Min(d, Line2D.GetDistanceToLineSq(triangles.Vertices[islandoffset + 1], triangles.Vertices[islandoffset + 2], v, false));
+							d = Math.Min(d, Line2D.GetDistanceToLineSq(triangles.Vertices[islandoffset + 2], triangles.Vertices[islandoffset], v, false));
+							positions.Add(new LabelPositionInfo(v, (float)Math.Sqrt(d)));
 						}
 						else
 						{
 							// Use the center of this island.
-							positions.Add(new Vector2D(minx + (maxx - minx) * 0.5f, miny + (maxy - miny) * 0.5f));
+							float d = Math.Min((maxx - minx) * 0.5f, (maxy - miny) * 0.5f);
+							positions.Add(new LabelPositionInfo(new Vector2D(minx + (maxx - minx) * 0.5f, miny + (maxy - miny) * 0.5f), d));
 						}
 					}
 					
 					// Done with this island
-					islandoffset += triangles.IslandVertices[island];
+					islandoffset += triangles.IslandVertices[i];
 				}
 			}
 			else
 			{
-				// No triangulation was made. Just return the center point.
-				//RectangleF rect = s.CreateBBox();
-				//return new Vector2D(rect.X + (rect.Width * 0.5f), rect.Y + (rect.Height * 0.5f));
-				positions.Add(new Vector2D());
+				// No triangulation was made. FAIL!
+				General.Fail("No triangulation exists for sector " + s, "Triangulation is required to create label positions for a sector.");
 			}
 			
 			// Done
