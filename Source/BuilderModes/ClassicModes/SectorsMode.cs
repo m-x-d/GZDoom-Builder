@@ -157,7 +157,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// TEST:
 			if(s != null)
 			{
-				labelpos = Tools.FindLabelPosition(s, 30.0f / renderer.Scale);
+				labelpos = Tools.FindLabelPositions(s, 30.0f / renderer.Scale);
 			}
 			
 			// If we're changing associations, then we
