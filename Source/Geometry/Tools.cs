@@ -631,7 +631,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(triangles != null)
 			{
 				// Go for all islands
-				for(int island = 0; island < triangles.IslandVertices.Length; island++)
+				for(int island = 0; island < triangles.IslandVertices.Count; island++)
 				{
 					Dictionary<Sidedef, Linedef> sides = new Dictionary<Sidedef, Linedef>(triangles.IslandVertices[island] >> 1);
 					List<Line2D> candidatelines = new List<Line2D>(triangles.IslandVertices[island] >> 1);
@@ -641,7 +641,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					// Make candidate lines that are not along sidedefs
 					// We do this before testing the candidate against the sidedefs so that
 					// we can collect the relevant sidedefs first in the same run
-					for(int i = 0; i < triangles.Vertices.Length; i += 3)
+					for(int i = 0; i < triangles.Vertices.Count; i += 3)
 					{
 						Vector2D v1 = triangles.Vertices[i + 2];
 						for(int k = 0; k < 3; k++)
