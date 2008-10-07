@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Map;
+using System.Collections.ObjectModel;
 
 #endregion
 
@@ -62,23 +63,23 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Variables
 
 		// Number of vertices per island
-		private int[] islandvertices;
+		private ReadOnlyCollection<int> islandvertices;
 		
 		// Vertices that result from the triangulation, 3 per triangle.
-		private Vector2D[] vertices;
+		private ReadOnlyCollection<Vector2D> vertices;
 
 		// These sidedefs match with the vertices. If a vertex is not the start
 		// along a sidedef, this list contains a null entry for that vertex.
-		private Sidedef[] sidedefs;
+		private ReadOnlyCollection<Sidedef> sidedefs;
 		
 		#endregion
 
 		#region ================== Properties
-
-		public int[] IslandVertices { get { return islandvertices; } }
-		public Vector2D[] Vertices { get { return vertices; } }
-		public Sidedef[] Sidedefs { get { return sidedefs; } }
-
+		
+		public ReadOnlyCollection<int> IslandVertices { get { return islandvertices; } }
+		public ReadOnlyCollection<Vector2D> Vertices { get { return vertices; } }
+		public ReadOnlyCollection<Sidedef> Sidedefs { get { return sidedefs; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -127,9 +128,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				islandslist.Add(DoEarClip(p, verticeslist, sidedefslist));
 
 			// Make arrays
-			islandvertices = islandslist.ToArray();
-			vertices = verticeslist.ToArray();
-			sidedefs = sidedefslist.ToArray();
+			islandvertices = Array.AsReadOnly<int>(islandslist.ToArray());
+			vertices = Array.AsReadOnly<Vector2D>(verticeslist.ToArray());
+			sidedefs = Array.AsReadOnly<Sidedef>(sidedefslist.ToArray());
 		}
 
 		#endregion
@@ -595,7 +596,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				t = GetTriangle(v);
 
 				// Add ear as triangle
-				AddTriangleToList(t, verticeslist, sidedefslist, (verts.Count > 3));
+				AddTriangleToList(t, verticeslist, sidedefslist, (verts.Count == 3));
 				countvertices += 3;
 				
 				// Remove this ear from all lists
@@ -694,7 +695,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			verticeslist.Add(triangle[1].Position);
 			sidedefslist.Add(triangle[1].Sidedef);
 			verticeslist.Add(triangle[2].Position);
-			if(last) sidedefslist.Add(null); else sidedefslist.Add(triangle[2].Sidedef);
+			if(!last) sidedefslist.Add(null); else sidedefslist.Add(triangle[2].Sidedef);
 
 			// Modify the first earclipvertex of this triangle, it no longer lies along a sidedef
 			triangle[0].Sidedef = null;

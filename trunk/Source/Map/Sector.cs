@@ -229,8 +229,8 @@ namespace CodeImp.DoomBuilder.Map
 				int brightint = brightcolor.ToInt();
 				
 				// Make vertices
-				flatvertices = new FlatVertex[triangles.Vertices.Length];
-				for(int i = 0; i < triangles.Vertices.Length; i++)
+				flatvertices = new FlatVertex[triangles.Vertices.Count];
+				for(int i = 0; i < triangles.Vertices.Count; i++)
 				{
 					flatvertices[i].x = triangles.Vertices[i].x;
 					flatvertices[i].y = triangles.Vertices[i].y;

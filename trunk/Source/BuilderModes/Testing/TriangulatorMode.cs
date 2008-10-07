@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 					// Go for all triangle vertices
-					for(int i = 0; i < t.Vertices.Length; i += 3)
+					for(int i = 0; i < t.Vertices.Count; i += 3)
 					{
 						renderer.PlotLine(t.Vertices[i + 0], t.Vertices[i + 1], General.Colors.Selection);
 						renderer.PlotLine(t.Vertices[i + 1], t.Vertices[i + 2], General.Colors.Selection);

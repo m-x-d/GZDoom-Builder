@@ -64,8 +64,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.Texture = General.Map.Data.GetFlatImage(s.LongCeilTexture);
 
 			// Make vertices
-			verts = new WorldVertex[s.Triangles.Vertices.Length];
-			for(int i = 0; i < s.Triangles.Vertices.Length; i++)
+			verts = new WorldVertex[s.Triangles.Vertices.Count];
+			for(int i = 0; i < s.Triangles.Vertices.Count; i++)
 			{
 				// Use sector brightness for color shading
 				PixelColor pc = new PixelColor(255, unchecked((byte)s.Brightness), unchecked((byte)s.Brightness), unchecked((byte)s.Brightness));
