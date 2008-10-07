@@ -56,9 +56,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected Sector highlighted;
 		private Association highlightasso = new Association();
 
-		// TEST:
-		private Vector2D labelpos;
-
 		// Interface
 		protected bool editpressed;
 
@@ -154,12 +151,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// New association highlights something?
 			if((s != null) && (s.Tag > 0)) completeredraw = true;
 
-			// TEST:
-			if(s != null)
-			{
-				labelpos = Tools.FindLabelPositions(s, 30.0f / renderer.Scale);
-			}
-			
 			// If we're changing associations, then we
 			// need to redraw the entire display
 			if(completeredraw)
@@ -190,7 +181,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Render highlighted item
 					if((highlighted != null) && !highlighted.IsDisposed)
 						renderer.PlotSector(highlighted, General.Colors.Highlight);
-					
+
 					/*
 					// Render highlighted things
 					if(highlighted != null)
@@ -200,15 +191,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Done
 					renderer.Finish();
+					renderer.Present();
 				}
-				
-				// TEST:
-				if(renderer.StartOverlay(true))
-				{
-					renderer.RenderRectangleFilled(new RectangleF(labelpos.x - 5, labelpos.y - 5, 10, 10), General.Colors.Indication, true);
-					renderer.Finish();
-				}
-				renderer.Present();
 			}
 
 			// Show highlight info
@@ -353,7 +337,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso);
 				if(selecting) RenderMultiSelection();
-				renderer.RenderRectangleFilled(new RectangleF(labelpos.x - 5, labelpos.y - 5, 10, 10), General.Colors.Indication, true);
 				renderer.Finish();
 			}
 
