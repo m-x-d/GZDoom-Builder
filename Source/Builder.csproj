@@ -124,7 +124,6 @@
     <Compile Include="Geometry\EarClipPolygon.cs" />
     <Compile Include="Geometry\SidedefAngleSorter.cs" />
     <Compile Include="Geometry\SidedefsTracePath.cs" />
-    <Compile Include="Geometry\TriangleList.cs" />
     <Compile Include="Geometry\Vector2D.cs" />
     <Compile Include="Geometry\Vector3D.cs" />
     <Compile Include="Data\TexturePatch.cs" />

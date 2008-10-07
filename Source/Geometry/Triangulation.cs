@@ -94,7 +94,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		private Triangulation(Sector s)
 		{
 			// Initialize
-			TriangleList triangles = new TriangleList();
 			List<EarClipPolygon> polys;
 			List<int> islandslist = new List<int>();
 			List<Vector2D> verticeslist = new List<Vector2D>();
