@@ -501,16 +501,18 @@ namespace CodeImp.DoomBuilder.Geometry
 				v1 = v2;
 				v2 = v2.Next;
 			}
-
+			
 			// Found anything?
 			if(insertbefore != null)
 			{
+				Sidedef sd = (insertbefore.Previous == null) ? insertbefore.List.Last.Value.Sidedef : insertbefore.Previous.Value.Sidedef;
+				
 				// Find the position where we have to split the outer polygon
 				split = new EarClipVertex(starttoright.GetCoordinatesAt(foundu), null);
-
+				
 				// Insert manual split vertices
-				p.AddBefore(insertbefore, new EarClipVertex(split, null));
-
+				p.AddBefore(insertbefore, new EarClipVertex(split, sd));
+				
 				// Start inserting from the start (do I make sense this time?)
 				v1 = start;
 				do
@@ -520,10 +522,9 @@ namespace CodeImp.DoomBuilder.Geometry
 					if(v1.Next != null) v1 = v1.Next; else v1 = v1.List.First;
 				}
 				while(v1 != start);
-
+				
 				// Insert manual split vertices
-				Sidedef sd = (insertbefore.Previous == null) ? insertbefore.List.Last.Value.Sidedef : insertbefore.Previous.Value.Sidedef;
-				p.AddBefore(insertbefore, new EarClipVertex(start.Value, null));
+				p.AddBefore(insertbefore, new EarClipVertex(start.Value, sd));
 				p.AddBefore(insertbefore, new EarClipVertex(split, sd));
 			}
 		}
@@ -696,7 +697,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			sidedefslist.Add(triangle[1].Sidedef);
 			verticeslist.Add(triangle[2].Position);
 			if(!last) sidedefslist.Add(null); else sidedefslist.Add(triangle[2].Sidedef);
-
+			
 			// Modify the first earclipvertex of this triangle, it no longer lies along a sidedef
 			triangle[0].Sidedef = null;
 		}

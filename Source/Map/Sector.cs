@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Rendering;
+using System.Collections.ObjectModel;
 
 #endregion
 
@@ -74,7 +75,8 @@ namespace CodeImp.DoomBuilder.Map
 		private bool triangulationneeded;
 		private Triangulation triangles;
 		private FlatVertex[] flatvertices;
-
+		private ReadOnlyCollection<LabelPositionInfo> labels;
+		
 		#endregion
 
 		#region ================== Properties
@@ -98,7 +100,8 @@ namespace CodeImp.DoomBuilder.Map
 		public Sector Clone { get { return clone; } set { clone = value; } }
 		public Triangulation Triangles { get { return triangles; } }
 		public FlatVertex[] FlatVertices { get { return flatvertices; } }
-
+		public ReadOnlyCollection<LabelPositionInfo> Labels { get { return labels; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -201,13 +204,13 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 		}
-
+		
 		// This attaches a thing and returns the listitem
 		public LinkedListNode<Thing> AttachThing(Thing t) { return things.AddLast(t); }
-
+		
 		// This detaches a thing
 		public void DetachThing(LinkedListNode<Thing> l) { if(!isdisposed) things.Remove(l); }
-
+		
 		// This updates the sector when changes have been made
 		public void UpdateCache()
 		{
@@ -219,6 +222,9 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					// Triangulate sector
 					triangles = Triangulation.Create(this);
+					
+					// Make label positions
+					labels = Array.AsReadOnly<LabelPositionInfo>(Tools.FindLabelPositions(this).ToArray());
 				}
 				
 				// Brightness color (alpha is opaque)

@@ -114,6 +114,7 @@
     <Compile Include="Actions\SpecialKeys.cs" />
     <Compile Include="Config\NodebuilderInfo.cs" />
     <Compile Include="Geometry\Angle2D.cs" />
+    <Compile Include="Geometry\LabelPositionInfo.cs" />
     <Compile Include="Geometry\LinedefsTracePath.cs" />
     <Compile Include="Geometry\LinedefAngleSorter.cs" />
     <Compile Include="Geometry\Tools.cs" />

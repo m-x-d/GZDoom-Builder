@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		private Sector highlighted;
 		
 		// Labels
-		private ICollection<Vector2D> labelpos;
+		private ICollection<LabelPositionInfo> labelpos;
 
 		#endregion
 
@@ -140,14 +140,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.PlotSector(highlighted, General.Colors.Highlight);
 				renderer.Finish();
 			}
-
+			
 			// Render labels
 			if(renderer.StartOverlay(true))
 			{
 				if(labelpos != null)
 				{
-					foreach(Vector2D v in labelpos)
-						renderer.RenderRectangleFilled(new RectangleF(v.x - 5, v.y - 5, 10, 10), General.Colors.Indication, true);
+					foreach(LabelPositionInfo lb in labelpos)
+						renderer.RenderRectangleFilled(new RectangleF(lb.position.x - lb.radius / 2, lb.position.y - lb.radius / 2, lb.radius, lb.radius), General.Colors.Indication, true);
 				}
 
 				renderer.Finish();
@@ -181,20 +181,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				// Render highlighted item
 				if((highlighted != null) && !highlighted.IsDisposed)
 					renderer.PlotSector(highlighted, General.Colors.Highlight);
-
+				
 				// Done
 				renderer.Finish();
 			}
-
+			
 			// Render labels
 			if(renderer.StartOverlay(true))
 			{
 				if(labelpos != null)
 				{
-					foreach(Vector2D v in labelpos)
-						renderer.RenderRectangleFilled(new RectangleF(v.x - 5, v.y - 5, 10, 10), General.Colors.Indication, true);
+					foreach(LabelPositionInfo lb in labelpos)
+						renderer.RenderRectangleFilled(new RectangleF(lb.position.x - lb.radius / 2, lb.position.y - lb.radius / 2, lb.radius, lb.radius), General.Colors.Indication, true);
 				}
-
+				
 				renderer.Finish();
 			}
 			
@@ -293,6 +293,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			ICollection<Sector> selected;
 			TriangleList triangles;
+			PixelColor c;
 			
 			base.OnMouseUp(e);
 			
@@ -301,22 +302,30 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				// Get a triangulator and bind events
 				Triangulation t = Triangulation.Create(highlighted);
-
+				
 				// Start with a clear display
 				if(renderer.StartPlotter(true))
 				{
 					// Render lines and vertices
 					renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 					renderer.PlotVerticesSet(General.Map.Map.Vertices);
-
-					// Go for all triangle vertices
+					
+					// Go for all triangle vertices to render the inside lines only
 					for(int i = 0; i < t.Vertices.Count; i += 3)
 					{
-						renderer.PlotLine(t.Vertices[i + 0], t.Vertices[i + 1], General.Colors.Selection);
-						renderer.PlotLine(t.Vertices[i + 1], t.Vertices[i + 2], General.Colors.Selection);
-						renderer.PlotLine(t.Vertices[i + 2], t.Vertices[i + 0], General.Colors.Selection);
+						if(t.Sidedefs[i + 0] == null) renderer.PlotLine(t.Vertices[i + 0], t.Vertices[i + 1], PixelColor.FromColor(Color.DeepSkyBlue));
+						if(t.Sidedefs[i + 1] == null) renderer.PlotLine(t.Vertices[i + 1], t.Vertices[i + 2], PixelColor.FromColor(Color.DeepSkyBlue));
+						if(t.Sidedefs[i + 2] == null) renderer.PlotLine(t.Vertices[i + 2], t.Vertices[i + 0], PixelColor.FromColor(Color.DeepSkyBlue));
 					}
-
+					
+					// Go for all triangle vertices to renderthe outside lines only
+					for(int i = 0; i < t.Vertices.Count; i += 3)
+					{
+						if(t.Sidedefs[i + 0] != null) renderer.PlotLine(t.Vertices[i + 0], t.Vertices[i + 1], PixelColor.FromColor(Color.Red));
+						if(t.Sidedefs[i + 1] != null) renderer.PlotLine(t.Vertices[i + 1], t.Vertices[i + 2], PixelColor.FromColor(Color.Red));
+						if(t.Sidedefs[i + 2] != null) renderer.PlotLine(t.Vertices[i + 2], t.Vertices[i + 0], PixelColor.FromColor(Color.Red));
+					}
+					
 					// Done
 					renderer.Finish();
 					renderer.Present();
