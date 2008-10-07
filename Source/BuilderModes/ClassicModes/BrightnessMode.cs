@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					*/
 					
 					// Render the geometry
-					renderer.RenderGeometry(s.Vertices, null, true);
+					renderer.RenderGeometry(s.FlatVertices, null, true);
 				}
 
 				if(selecting) RenderMultiSelection();

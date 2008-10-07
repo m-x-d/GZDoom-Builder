@@ -97,15 +97,18 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This makes a polygon from the path
-		public EarClipPolygon MakePolygon()
+		public EarClipPolygon MakePolygon(bool startfront)
 		{
 			EarClipPolygon p = new EarClipPolygon();
-			bool forward = true;
+			bool forward = startfront;
 			
 			// Any sides at all?
 			if(base.Count > 0)
 			{
-				p.AddLast(new EarClipVertex(base[0].Start.Position));
+				if(forward)
+					p.AddLast(new EarClipVertex(base[0].Start.Position, base[0].Front));
+				else
+					p.AddLast(new EarClipVertex(base[0].End.Position, base[0].Back));
 				
 				// Add all lines, but the first
 				for(int i = 1; i < base.Count; i++)
@@ -117,9 +120,9 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					// Add next vertex
 					if(forward)
-						p.AddLast(new EarClipVertex(base[i].Start.Position));
+						p.AddLast(new EarClipVertex(base[i].Start.Position, base[0].Front));
 					else
-						p.AddLast(new EarClipVertex(base[i].End.Position));
+						p.AddLast(new EarClipVertex(base[i].End.Position, base[0].Back));
 				}
 			}
 			

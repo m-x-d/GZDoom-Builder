@@ -85,9 +85,12 @@ namespace CodeImp.DoomBuilder.Geometry
 			ay = CalculateRelativeAngle(baseside, y);
 			
 			// Compare results
+			/*
 			if(ax < ay) return 1;
 			else if(ax > ay) return -1;
 			else return 0;
+			*/
+			return Math.Sign(ax - ay);
 		}
 	}
 }

@@ -117,7 +117,7 @@
     <Compile Include="Geometry\LinedefsTracePath.cs" />
     <Compile Include="Geometry\LinedefAngleSorter.cs" />
     <Compile Include="Geometry\Tools.cs" />
-    <Compile Include="Geometry\Triangulator.cs" />
+    <Compile Include="Geometry\Triangulation.cs" />
     <Compile Include="Geometry\EarClipVertex.cs" />
     <Compile Include="Geometry\Line2D.cs" />
     <Compile Include="Geometry\EarClipPolygon.cs" />

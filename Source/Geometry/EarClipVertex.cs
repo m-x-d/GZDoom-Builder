@@ -38,6 +38,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		// Position
 		private Vector2D pos;
 		
+		// Along a sidedef?
+		private Sidedef sidedef;
+		
 		// Lists
 		private LinkedListNode<EarClipVertex> vertslink;
 		private LinkedListNode<EarClipVertex> reflexlink;
@@ -51,26 +54,40 @@ namespace CodeImp.DoomBuilder.Geometry
 		internal LinkedListNode<EarClipVertex> MainListNode { get { return vertslink; } }
 		public bool IsReflex { get { return (reflexlink != null); } }
 		public bool IsEarTip { get { return (eartiplink != null); } }
-
+		internal Sidedef Sidedef { get { return sidedef; } set { sidedef = value; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
+		// Copy constructor
 		internal EarClipVertex(EarClipVertex v)
 		{
 			// Initialize
 			this.pos = v.pos;
+			this.sidedef = v.sidedef;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
+		// Copy constructor
+		internal EarClipVertex(EarClipVertex v, Sidedef sidedef)
+		{
+			// Initialize
+			this.pos = v.pos;
+			this.sidedef = sidedef;
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
 		// Constructor
-		internal EarClipVertex(Vector2D v)
+		internal EarClipVertex(Vector2D v, Sidedef sidedef)
 		{
 			// Initialize
 			this.pos = v;
+			this.sidedef = sidedef;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -82,6 +99,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			reflexlink = null;
 			eartiplink = null;
 			vertslink = null;
+			sidedef = null;
 		}
 		
 		#endregion

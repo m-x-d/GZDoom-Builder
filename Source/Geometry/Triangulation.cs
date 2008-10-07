@@ -35,8 +35,7 @@ namespace CodeImp.DoomBuilder.Geometry
 	/// Responsible for creating sector polygons.
 	/// Performs triangulation of sectors by using ear clipping.
 	/// </summary>
-	/// See: http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
-	public sealed class Triangulator
+	public sealed class Triangulation
 	{
 		#region ================== Delegates
 
@@ -62,32 +61,46 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Variables
 
+		// Number of vertices per island
+		private int[] islandvertices;
+		
+		// Vertices that result from the triangulation, 3 per triangle.
+		private Vector2D[] vertices;
+
+		// These sidedefs match with the vertices. If a vertex is not the start
+		// along a sidedef, this list contains a null entry for that vertex.
+		private Sidedef[] sidedefs;
+		
 		#endregion
 
 		#region ================== Properties
+
+		public int[] IslandVertices { get { return islandvertices; } }
+		public Vector2D[] Vertices { get { return vertices; } }
+		public Sidedef[] Sidedefs { get { return sidedefs; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
-		// Constructor
-		public Triangulator()
+		// I don't like using constructors that do more than simple initialization work
+		public static Triangulation Create(Sector sector)
 		{
-			// Initialize
-			
-			// We have no destructor
-			GC.SuppressFinalize(this);
+			return new Triangulation(sector);
 		}
 
-		#endregion
-
-		#region ================== Methods
-
-		// This triangulates a sector and stores it
-		public TriangleList PerformTriangulation(Sector sector)
+		// Constructor
+		private Triangulation(Sector s)
 		{
+			// Initialize
 			TriangleList triangles = new TriangleList();
 			List<EarClipPolygon> polys;
+			List<int> islandslist = new List<int>();
+			List<Vector2D> verticeslist = new List<Vector2D>();
+			List<Sidedef> sidedefslist = new List<Sidedef>();
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
 			
 			/*
 			 * This process is divided into several steps:
@@ -104,20 +117,23 @@ namespace CodeImp.DoomBuilder.Geometry
 			 */
 
 			// TRACING
-			polys = DoTrace(sector);
+			polys = DoTrace(s);
 			
 			// CUTTING
 			DoCutting(polys);
 			
 			// EAR-CLIPPING
-			foreach(EarClipPolygon p in polys) triangles.AddRange(DoEarClip(p));
+			foreach(EarClipPolygon p in polys)
+				islandslist.Add(DoEarClip(p, verticeslist, sidedefslist));
 
-			// Return result
-			return triangles;
+			// Make arrays
+			islandvertices = islandslist.ToArray();
+			vertices = verticeslist.ToArray();
+			sidedefs = sidedefslist.ToArray();
 		}
 
 		#endregion
-		
+
 		#region ================== Tracing
 
 		// This traces sector lines to create a polygon tree
@@ -489,10 +505,10 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(insertbefore != null)
 			{
 				// Find the position where we have to split the outer polygon
-				split = new EarClipVertex(starttoright.GetCoordinatesAt(foundu));
+				split = new EarClipVertex(starttoright.GetCoordinatesAt(foundu), null);
 
 				// Insert manual split vertices
-				p.AddBefore(insertbefore, new EarClipVertex(split));
+				p.AddBefore(insertbefore, new EarClipVertex(split, null));
 
 				// Start inserting from the start (do I make sense this time?)
 				v1 = start;
@@ -505,8 +521,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				while(v1 != start);
 
 				// Insert manual split vertices
-				p.AddBefore(insertbefore, new EarClipVertex(start.Value));
-				p.AddBefore(insertbefore, new EarClipVertex(split));
+				Sidedef sd = (insertbefore.Previous == null) ? insertbefore.List.Last.Value.Sidedef : insertbefore.Previous.Value.Sidedef;
+				p.AddBefore(insertbefore, new EarClipVertex(start.Value, null));
+				p.AddBefore(insertbefore, new EarClipVertex(split, sd));
 			}
 		}
 
@@ -516,15 +533,16 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		// This clips a polygon and returns the triangles
 		// The polygon may not have any holes or islands
-		private TriangleList DoEarClip(EarClipPolygon poly)
+		/// See: http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
+		private int DoEarClip(EarClipPolygon poly, List<Vector2D> verticeslist, List<Sidedef> sidedefslist)
 		{
 			LinkedList<EarClipVertex> verts = new LinkedList<EarClipVertex>();
 			List<EarClipVertex> convexes = new List<EarClipVertex>(poly.Count);
 			LinkedList<EarClipVertex> reflexes = new LinkedList<EarClipVertex>();
 			LinkedList<EarClipVertex> eartips = new LinkedList<EarClipVertex>();
-			TriangleList result = new TriangleList();
 			EarClipVertex v, v1, v2;
 			EarClipVertex[] t, t1, t2;
+			int countvertices = 0;
 			
 			// Go for all vertices to fill list
 			foreach(EarClipVertex vec in poly)
@@ -564,7 +582,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			// Go for all convex vertices to see if they are ear tips
 			foreach(EarClipVertex cv in convexes)
 			{
-				// Add when this a valid ear
+				// Add when this is a valid ear
 				t = GetTriangle(cv);
 				if(CheckValidEar(t, reflexes)) cv.AddEarTip(eartips);
 			}
@@ -577,7 +595,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				t = GetTriangle(v);
 
 				// Add ear as triangle
-				result.Add(t);
+				AddTriangleToList(t, verticeslist, sidedefslist, (verts.Count > 3));
+				countvertices += 3;
 				
 				// Remove this ear from all lists
 				v.Remove();
@@ -619,9 +638,9 @@ namespace CodeImp.DoomBuilder.Geometry
 			
 			// Dispose remaining vertices
 			foreach(EarClipVertex ecv in verts) ecv.Dispose();
-			
-			// Return result
-			return result;
+
+			// Return the number of vertices in the result
+			return countvertices;
 		}
 
 		// This checks if a given ear is a valid (no intersections from reflex vertices)
@@ -666,6 +685,21 @@ namespace CodeImp.DoomBuilder.Geometry
 				   (Line2D.GetSideOfLine(t[2].Position, t[0].Position, p) < 0.00001f);
 		}
 
+		// This adds an array of vertices
+		private void AddTriangleToList(EarClipVertex[] triangle, List<Vector2D> verticeslist, List<Sidedef> sidedefslist, bool last)
+		{
+			// Create triangle
+			verticeslist.Add(triangle[0].Position);
+			sidedefslist.Add(triangle[0].Sidedef);
+			verticeslist.Add(triangle[1].Position);
+			sidedefslist.Add(triangle[1].Sidedef);
+			verticeslist.Add(triangle[2].Position);
+			if(last) sidedefslist.Add(null); else sidedefslist.Add(triangle[2].Sidedef);
+
+			// Modify the first earclipvertex of this triangle, it no longer lies along a sidedef
+			triangle[0].Sidedef = null;
+		}
+		
 		#endregion
 	}
 }

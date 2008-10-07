@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					{
 						// Make polygon
 						LinedefTracePath tracepath = new LinedefTracePath(innerlines);
-						EarClipPolygon innerpoly = tracepath.MakePolygon();
+						EarClipPolygon innerpoly = tracepath.MakePolygon(true);
 
 						// Check if the front of the line is outside the polygon
 						if(!innerpoly.Intersect(foundline.GetSidePoint(foundlinefront)))
@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Make polygon
 					LinedefTracePath tracepath = new LinedefTracePath(pathlines);
-					EarClipPolygon poly = tracepath.MakePolygon();
+					EarClipPolygon poly = tracepath.MakePolygon(true);
 
 					// Check if the front of the line is inside the polygon
 					if(poly.Intersect(line.GetSidePoint(front)))
@@ -621,13 +621,100 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		#region ================== Sector Labels
 		
-		// This finds the ideal label position for a sector
-		public static Vector2D FindLabelPosition(Sector s, float resolution)
+		// This finds the ideal label positions for a sector
+		public static ICollection<Vector2D> FindLabelPositions(Sector s)
 		{
-			Vector2D foundpoint = new Vector2D();
-			float founddist = 0.0f;
+			List<Vector2D> positions = new List<Vector2D>(2);
 			
-			return foundpoint;
+			// Do we have a triangulation?
+			Triangulation triangles = s.Triangles;
+			if(triangles != null)
+			{
+				// Go for all islands
+				for(int island = 0; island < triangles.IslandVertices.Length; island++)
+				{
+					Dictionary<Sidedef, Linedef> sides = new Dictionary<Sidedef, Linedef>(triangles.IslandVertices[island] >> 1);
+					List<Line2D> candidatelines = new List<Line2D>(triangles.IslandVertices[island] >> 1);
+					float founddistance = float.MinValue;
+					Vector2D foundposition = new Vector2D();
+
+					// Make candidate lines that are not along sidedefs
+					// We do this before testing the candidate against the sidedefs so that
+					// we can collect the relevant sidedefs first in the same run
+					for(int i = 0; i < triangles.Vertices.Length; i += 3)
+					{
+						Vector2D v1 = triangles.Vertices[i + 2];
+						for(int k = 0; k < 3; k++)
+						{
+							Vector2D v2 = triangles.Vertices[i + k];
+							Sidedef sd = triangles.Sidedefs[i + k];
+							
+							// Not along a sidedef? Then this line is across the sector
+							// and guaranteed to be inside the sector!
+							if(sd == null)
+							{
+								// Make the line
+								candidatelines.Add(new Line2D(v1, v2));
+							}
+							else
+							{
+								// This sidedefs is part of this island and must be checked against
+								sides[sd] = sd.Line;
+							}
+							
+							// Next
+							v1 = v2;
+						}
+					}
+
+					// Any candidate lines found at all?
+					if(candidatelines.Count > 0)
+					{
+						// Start with the first line
+						foreach(Line2D sourceline in candidatelines)
+						{
+							// Get center point
+							Vector2D candidateposition = sourceline.GetCoordinatesAt(0.5f);
+
+							// Check distance against other lines
+							float smallestdist = int.MaxValue;
+							foreach(KeyValuePair<Sidedef, Linedef> sd in sides)
+							{
+								// Check the distance
+								float distance = sd.Value.DistanceToSq(candidateposition, true);
+								smallestdist = Math.Min(smallestdist, distance);
+							}
+							
+							// Keep this candidate if it is better than previous
+							if(smallestdist > founddistance)
+							{
+								foundposition = candidateposition;
+								founddistance = smallestdist;
+							}
+						}
+
+						// No cceptable line found, just use the first!
+						positions.Add(foundposition);
+					}
+					else
+					{
+						// No candidate lines found. Just return the center point.
+						//RectangleF rect = s.CreateBBox();
+						//return new Vector2D(rect.X + (rect.Width * 0.5f), rect.Y + (rect.Height * 0.5f));
+						positions.Add(new Vector2D());
+					}
+				}
+			}
+			else
+			{
+				// No triangulation was made. Just return the center point.
+				//RectangleF rect = s.CreateBBox();
+				//return new Vector2D(rect.X + (rect.Width * 0.5f), rect.Y + (rect.Height * 0.5f));
+				positions.Add(new Vector2D());
+			}
+			
+			// Done
+			return positions;
 		}
 		
 		#endregion
