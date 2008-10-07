@@ -292,7 +292,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		public override void OnMouseUp(MouseEventArgs e)
 		{
 			ICollection<Sector> selected;
-			TriangleList triangles;
 			PixelColor c;
 			
 			base.OnMouseUp(e);
