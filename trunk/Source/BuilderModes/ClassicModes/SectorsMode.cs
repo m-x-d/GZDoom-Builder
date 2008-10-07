@@ -262,7 +262,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Standard);
-
+			
 			// Convert geometry selection to sectors only
 			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedVertices(true, true);

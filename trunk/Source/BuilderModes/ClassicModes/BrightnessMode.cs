@@ -38,20 +38,27 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Sector Brightness",
+	[EditMode(DisplayName = "Brightness Mode",
 			  SwitchAction = "brightnessmode",
 			  ButtonDesc = "Brightness Mode",
 			  ButtonImage = "BrightnessMode.png",
-			  ButtonOrder = int.MinValue + 201)]
-
-	public class BrightnessMode : SectorsMode
+			  ButtonOrder = int.MinValue + 201,
+			  AllowCopyPaste = false)]
+	
+	public sealed class BrightnessMode : BaseClassicMode
 	{
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
+		
+		// Highlighted item
+		private Sector highlighted;
 
+		// Interface
+		private bool editpressed;
+		
 		#endregion
 
 		#region ================== Properties
@@ -80,48 +87,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
-		// Mode engages
-		public override void OnEngage()
-		{
-			base.OnEngage();
-
-			// Make customized presentation
-			CustomPresentation p = new CustomPresentation();
-			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
-			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
-			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
-			p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, Presentation.THINGS_BACK_ALPHA, false));
-			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
-			renderer.SetPresentation(p);
-		}
-
-		// This redraws the display
-		public override void OnRedrawDisplay()
-		{
-			// Render lines and vertices
-			if(renderer.StartPlotter(true))
-			{
-				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.PlotSector(highlighted, General.Colors.Highlight);
-				renderer.Finish();
-			}
-
-			// Render things
-			if(renderer.StartThings(true))
-			{
-				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
-				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
-				renderer.Finish();
-			}
-
-			// Render overlay
-			UpdateOverlay();
-
-			renderer.Present();
-		}
-
 		// This updates the overlay
 		private void UpdateOverlay()
 		{
@@ -133,7 +98,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Determine color by brightness
 					PixelColor brightnesscolor = new PixelColor(255, (byte)s.Brightness, (byte)s.Brightness, (byte)s.Brightness);
 					int brightnessint = brightnesscolor.ToInt();
-
+					
+					
+					// This was only to test if it would work
+					// It works, but it is very slow
 					/*
 					// Load texture image
 					ImageData texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
@@ -162,10 +130,136 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		// This highlights a new item
+		protected void Highlight(Sector s)
+		{
+			// Update display
+			if(renderer.StartPlotter(false))
+			{
+				// Undraw previous highlight
+				if((highlighted != null) && !highlighted.IsDisposed)
+					renderer.PlotSector(highlighted);
+				
+				// Set new highlight
+				highlighted = s;
+				
+				// Render highlighted item
+				if((highlighted != null) && !highlighted.IsDisposed)
+					renderer.PlotSector(highlighted, General.Colors.Highlight);
+				
+				// Done
+				renderer.Finish();
+				renderer.Present();
+			}
+			
+			// Show highlight info
+			if((highlighted != null) && !highlighted.IsDisposed)
+				General.Interface.ShowSectorInfo(highlighted);
+			else
+				General.Interface.HideInfo();
+		}
+		
 		#endregion
+		
+		#region ================== Events
+		
+		// Mode engages
+		public override void OnEngage()
+		{
+			base.OnEngage();
+			
+			// No selection
+			General.Map.Map.ClearAllMarks(false);
+			General.Map.Map.ClearAllSelected();
+			
+			// Make custom presentation
+			CustomPresentation p = new CustomPresentation();
+			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
+			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
+			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
+			p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, Presentation.THINGS_BACK_ALPHA, false));
+			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
+			renderer.SetPresentation(p);
+		}
+		
+		// This redraws the display
+		public override void OnRedrawDisplay()
+		{
+			// Render lines and vertices
+			if(renderer.StartPlotter(true))
+			{
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+				if((highlighted != null) && !highlighted.IsDisposed)
+					renderer.PlotSector(highlighted, General.Colors.Highlight);
+				renderer.Finish();
+			}
 
-		#region ================== Actions
+			// Render things
+			if(renderer.StartThings(true))
+			{
+				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
+				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
+				renderer.Finish();
+			}
 
+			// Render overlay
+			UpdateOverlay();
+
+			renderer.Present();
+		}
+
+		// Mouse moves
+		public override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			// Not holding any buttons?
+			if(e.Button == MouseButtons.None)
+			{
+				// Find the nearest linedef within highlight range
+				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
+				if(l != null)
+				{
+					// Check on which side of the linedef the mouse is
+					float side = l.SideOfLine(mousemappos);
+					if(side > 0)
+					{
+						// Is there a sidedef here?
+						if(l.Back != null)
+						{
+							// Highlight if not the same
+							if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+						}
+						else
+						{
+							// Highlight nothing
+							if(highlighted != null) Highlight(null);
+						}
+					}
+					else
+					{
+						// Is there a sidedef here?
+						if(l.Front != null)
+						{
+							// Highlight if not the same
+							if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
+						}
+						else
+						{
+							// Highlight nothing
+							if(highlighted != null) Highlight(null);
+						}
+					}
+				}
+				else
+				{
+					// Highlight nothing
+					if(highlighted != null) Highlight(null);
+				}
+			}
+		}
+		
 		#endregion
 	}
 }

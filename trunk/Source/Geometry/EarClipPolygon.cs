@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	public class EarClipPolygon : LinkedList<EarClipVertex>
+	public sealed class EarClipPolygon : LinkedList<EarClipVertex>
 	{
 		#region ================== Variables
 

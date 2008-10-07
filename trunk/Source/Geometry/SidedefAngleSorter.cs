@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	internal class SidedefAngleSorter : IComparer<Sidedef>
+	internal sealed class SidedefAngleSorter : IComparer<Sidedef>
 	{
 		// Variables
 		private Sidedef baseside;

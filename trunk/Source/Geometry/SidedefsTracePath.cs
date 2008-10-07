@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	public class SidedefsTracePath : List<Sidedef>
+	public sealed class SidedefsTracePath : List<Sidedef>
 	{
 		#region ================== Constants
 

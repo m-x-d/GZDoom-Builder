@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	public class LinedefTracePath : List<Linedef>
+	public sealed class LinedefTracePath : List<Linedef>
 	{
 		#region ================== Constants
 
