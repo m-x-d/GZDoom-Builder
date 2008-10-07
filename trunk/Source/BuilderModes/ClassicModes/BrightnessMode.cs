@@ -55,23 +55,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Highlighted item
 		private Sector highlighted;
-
+		
 		// Interface
 		private bool editpressed;
 		
+		// Labels
+		private Dictionary<Sector, TextLabel[]> labels;
+		
 		#endregion
-
+		
 		#region ================== Properties
-
+		
 		#endregion
-
+		
 		#region ================== Constructor / Disposer
-
+		
 		// Constructor
 		public BrightnessMode()
 		{
 		}
-
+		
 		// Disposer
 		public override void Dispose()
 		{
@@ -99,14 +102,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					PixelColor brightnesscolor = new PixelColor(255, (byte)s.Brightness, (byte)s.Brightness, (byte)s.Brightness);
 					int brightnessint = brightnesscolor.ToInt();
 					
-					
 					// This was only to test if it would work
 					// It works, but it is very slow
 					/*
 					// Load texture image
 					ImageData texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 					if(!texture.IsLoaded) texture.LoadImage();
-
+					
 					// Make vertices
 					FlatVertex[] verts = new FlatVertex[s.Vertices.Length];
 					s.Vertices.CopyTo(verts, 0);
@@ -115,7 +117,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						verts[i].u = verts[i].x / texture.ScaledWidth;
 						verts[i].v = verts[i].y / texture.ScaledHeight;
 					}
-
+					
 					// Render the geometry
 					renderer.RenderGeometry(verts, texture, true);
 					*/
@@ -123,9 +125,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Render the geometry
 					renderer.RenderGeometry(s.FlatVertices, null, true);
 				}
-
-				if(selecting) RenderMultiSelection();
-
+				
+				// Go for all sectors
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					// Render labels
+					TextLabel[] labelarray = labels[s];
+					foreach(TextLabel l in labelarray) renderer.RenderText(l);
+				}
+				
 				renderer.Finish();
 			}
 		}
@@ -177,9 +185,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
-			p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, Presentation.THINGS_BACK_ALPHA, false));
+			//p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, Presentation.THINGS_BACK_ALPHA, false));
 			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			renderer.SetPresentation(p);
+			
+			// Make text labels for sectors
+			labels = new Dictionary<Sector, TextLabel[]>(General.Map.Map.Sectors.Count);
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Setup labels
+				TextLabel[] labelarray = new TextLabel[s.Triangles.IslandVertices.Count];
+				for(int i = 0; i < s.Triangles.IslandVertices.Count; i++)
+				{
+					Vector2D v = s.Labels[i].position;
+					labelarray[i] = new TextLabel(20);
+					labelarray[i].TransformCoords = true;
+					labelarray[i].Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
+					labelarray[i].AlignX = TextAlignmentX.Center;
+					labelarray[i].AlignY = TextAlignmentY.Middle;
+					labelarray[i].Scale = 14f;
+					labelarray[i].Color = General.Colors.Highlight;
+					labelarray[i].Backcolor = General.Colors.Background;
+				}
+				labels.Add(s, labelarray);
+			}
 		}
 		
 		// This redraws the display
@@ -208,7 +237,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			renderer.Present();
 		}
-
+		
 		// Mouse moves
 		public override void OnMouseMove(MouseEventArgs e)
 		{
@@ -257,6 +286,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Highlight nothing
 					if(highlighted != null) Highlight(null);
 				}
+			}
+		}
+		
+		// Selecting with mouse
+		protected override void OnSelect()
+		{
+			base.OnSelect();
+			
+			// Sector highlighted?
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				// Show index on label
+				for(int i = 0; i < highlighted.Triangles.IslandVertices.Count; i++)
+				{
+					labels[highlighted][i].Text = highlighted.Index.ToString();
+				}
+				
+				UpdateOverlay();
+				renderer.Present();
 			}
 		}
 		
