@@ -561,7 +561,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							  (l.End.Position.x <= selectionrect.Right) &&
 							  (l.End.Position.y <= selectionrect.Bottom));
 			}
-
+			
 			// Go for all sectors
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
@@ -575,15 +575,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						break;
 					}
 				}
-
+				
 				// Sector completely selected?
-				s.Selected = allselected;
+				SelectSector(s, allselected);
 			}
-
+			
 			// Make sure all linedefs reflect selected sectors
-			foreach(Sector s in General.Map.Map.Sectors)
-				SelectSector(s, s.Selected);
-
+			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+				if(!sd.Sector.Selected && ((sd.Other == null) || !sd.Other.Sector.Selected))
+					sd.Line.Selected = false;
+			
+			// Fill the list with selected sectors (these are not in order, but we have no other choice)
+			orderedselection.Clear();
+			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
+			foreach(Sector s in selectedsectors) orderedselection.Add(s);
+			
 			base.OnEndMultiSelection();
 			if(renderer.StartOverlay(true)) renderer.Finish();
 			General.Interface.RedrawDisplay();

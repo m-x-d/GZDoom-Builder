@@ -62,23 +62,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Variables
-
+		
 		// Highlighted item
 		private Sector highlighted;
 		
 		// Interface
 		private bool editpressed;
-
+		
 		// The methods GetSelected* and MarkSelected* on the MapSet do not
 		// retain the order in which items were selected.
 		// This list keeps in order while sectors are selected/deselected.
 		protected List<Sector> orderedselection;
-
+		
 		// Labels
 		private Dictionary<Sector, TextLabel[]> labels;
-
+		
 		// Modifying
 		private ModifyMode mode;
+		private Point editstartpos;
+		private List<int> sectorbrightness;
 		
 		#endregion
 		
@@ -143,7 +145,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					*/
 					
 					// Render the geometry
-					renderer.RenderGeometry(s.FlatVertices, null, true);
+					FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
+					s.FlatVertices.CopyTo(verts, 0);
+					for(int i = 0; i < verts.Length; i++) verts[i].c = brightnessint;
+					renderer.RenderGeometry(verts, null, true);
 				}
 				
 				// Go for all sectors
@@ -151,7 +156,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Render labels
 					TextLabel[] labelarray = labels[s];
-					foreach(TextLabel l in labelarray) renderer.RenderText(l);
+					for(int i = 0; i < s.Labels.Count; i++)
+					{
+						TextLabel l = labelarray[i];
+						
+						// Render only when enough space for the label to see
+						float requiredsize = (l.TextSize.Height / 3) / renderer.Scale;
+						if(requiredsize < s.Labels[i].radius) renderer.RenderText(l);
+					}
 				}
 				
 				renderer.Finish();
@@ -236,6 +248,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Clear labels
 					TextLabel[] labelarray = labels[s];
 					foreach(TextLabel l in labelarray) l.Text = "";
+					
+					// Update all other labels
+					UpdateSelectedLabels();
 				}
 
 				// Selection changed?
@@ -261,6 +276,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Remove from list
 				orderedselection.Remove(s);
+			}
+		}
+		
+		// This updates labels from the selected sectors
+		private void UpdateSelectedLabels()
+		{
+			// Update labels for editing mode?
+			if(mode == ModifyMode.Adjusting)
+			{
+				// Go for all labels in all selected sectors
+				for(int i = 0; i < orderedselection.Count; i++)
+				{
+					Sector s = orderedselection[i];
+					TextLabel[] labelarray = labels[s];
+					foreach(TextLabel l in labelarray)
+					{
+						// Make sure the text and color are right
+						int labelnum = s.Brightness;
+						l.Text = labelnum.ToString();
+						l.Color = General.Colors.Indication;
+					}
+				}
+			}
+			// Updating for normal mode
+			else
+			{
+				// Go for all labels in all selected sectors
+				for(int i = 0; i < orderedselection.Count; i++)
+				{
+					Sector s = orderedselection[i];
+					TextLabel[] labelarray = labels[s];
+					foreach(TextLabel l in labelarray)
+					{
+						// Make sure the text and color are right
+						int labelnum = i + 1;
+						l.Text = labelnum.ToString();
+						l.Color = General.Colors.Selection;
+					}
+				}
 			}
 		}
 		
@@ -390,9 +444,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-
-			// Not holding any buttons?
-			if(e.Button == MouseButtons.None)
+			
+			// Not in any editing mode?
+			if((mode == ModifyMode.None) && (e.Button == MouseButtons.None))
 			{
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
@@ -435,40 +489,67 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(highlighted != null) Highlight(null);
 				}
 			}
+			// Adjusting mode?
+			else if(mode == ModifyMode.Adjusting)
+			{
+				// Calculate change in position
+				Point delta = Cursor.Position - new Size(editstartpos);
+				
+				// Adjust selected sectors
+				for(int i = 0; i < orderedselection.Count; i++)
+				{
+					Sector s = orderedselection[i];
+					int basebrightness = sectorbrightness[i];
+					
+					// Adjust brightness
+					s.Brightness = basebrightness - delta.Y;
+					if(s.Brightness > 255) s.Brightness = 255;
+					if(s.Brightness < 0) s.Brightness = 0;
+				}
+				
+				// Update
+				UpdateSelectedLabels();
+				UpdateOverlay();
+				renderer.Present();
+			}
 		}
 		
 		// Selecting with mouse
 		protected override void OnSelect()
 		{
-			// Item highlighted?
-			if((highlighted != null) && !highlighted.IsDisposed)
+			// Not modifying?
+			if(mode == ModifyMode.None)
 			{
-				// Flip selection
-				SelectSector(highlighted, !highlighted.Selected, true);
-
-				// Update display
-				if(renderer.StartPlotter(false))
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					// Redraw highlight to show selection
-					renderer.PlotSector(highlighted);
-					renderer.Finish();
-					renderer.Present();
+					// Flip selection
+					SelectSector(highlighted, !highlighted.Selected, true);
+
+					// Update display
+					if(renderer.StartPlotter(false))
+					{
+						// Redraw highlight to show selection
+						renderer.PlotSector(highlighted);
+						renderer.Finish();
+						renderer.Present();
+					}
+				}
+				else
+				{
+					// Start making a selection
+					StartMultiSelection();
 				}
 			}
-			else
-			{
-				// Start making a selection
-				StartMultiSelection();
-			}
-
+			
 			base.OnSelect();
 		}
 		
 		// End selection
 		protected override void OnEndSelect()
 		{
-			// Not stopping from multiselection?
-			if(!selecting)
+			// Not stopping from multiselection or modifying
+			if(!selecting && (mode == ModifyMode.None))
 			{
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
@@ -491,7 +572,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			base.OnEndSelect();
 		}
-
+		
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
@@ -521,14 +602,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						break;
 					}
 				}
-
+				
 				// Sector completely selected?
 				SelectSector(s, allselected, false);
 			}
-
+			
 			// Make sure all linedefs reflect selected sectors
-			foreach(Sector s in General.Map.Map.Sectors)
-				SelectSector(s, s.Selected, false);
+			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+				if(!sd.Sector.Selected && ((sd.Other == null) || !sd.Other.Sector.Selected))
+					sd.Line.Selected = false;
 			
 			base.OnEndMultiSelection();
 			General.Interface.RedrawDisplay();
@@ -547,6 +629,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 				renderer.Present();
 			}
+		}
+		
+		
+		// Editing
+		protected override void OnEdit()
+		{
+			base.OnEdit();
+			
+			// Start editing
+			mode = ModifyMode.Adjusting;
+			editstartpos = Cursor.Position;
+			
+			// Keep sector brightness offsets
+			sectorbrightness = new List<int>(orderedselection.Count);
+			foreach(Sector s in orderedselection) sectorbrightness.Add(s.Brightness);
+			
+			// Update
+			UpdateSelectedLabels();
+			UpdateOverlay();
+			renderer.Present();
+		}
+		
+		// Done editing
+		protected override void OnEndEdit()
+		{
+			base.OnEndEdit();
+			
+			// Stop editing
+			mode = ModifyMode.None;
+			sectorbrightness = null;
+
+			// Update
+			UpdateSelectedLabels();
+			UpdateOverlay();
+			renderer.Present();
 		}
 		
 		#endregion
