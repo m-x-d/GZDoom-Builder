@@ -120,9 +120,9 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					// Add next vertex
 					if(forward)
-						p.AddLast(new EarClipVertex(base[i].Start.Position, base[0].Front));
+						p.AddLast(new EarClipVertex(base[i].Start.Position, base[i].Front));
 					else
-						p.AddLast(new EarClipVertex(base[i].End.Position, base[0].Back));
+						p.AddLast(new EarClipVertex(base[i].End.Position, base[i].Back));
 				}
 			}
 			
