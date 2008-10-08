@@ -449,7 +449,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// Wait a bit and update icon
 						General.MainWindow.UpdateStatusIcon();
-						Thread.Sleep(1);
+						Thread.Sleep(0);
 					}
 					else
 					{
@@ -459,7 +459,7 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							// Wait a bit and update icon
 							General.MainWindow.UpdateStatusIcon();
-							Thread.Sleep(1);
+							Thread.Sleep(0);
 						}
 						else
 						{
