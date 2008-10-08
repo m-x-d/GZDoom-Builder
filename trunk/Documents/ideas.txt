@@ -7,19 +7,6 @@
 [15:51] <SoM> I've been doing a lot of detailing that would be made a lot easier with a feature like this
 [15:52] <CodeImp> i dont even think that should be an option, but normal behaviour
 
-===========================================================================================
-
-[20:55] <esselaptop> CodeImp_: i thought of another nice feature that i don't think DB has. in slade, you can middle-click (or bind it to something else) to select the nearest vertex. like, if you're drawing a line and you want to connect it to something that's off-grid, you can just put the mouse nearby the off-grid vertex and middle-click, and it'll snap to it.
-
-===========================================================================================
-
-Make Sector feature allows you to click somewhere and all surrounding lines will form a new sector. handy to split merged sectors.
-
-===========================================================================================
-
-typed linedef arguments
-the possible types are also defined in the configuration
-this allows a user to pick from a list instead of entering a number for the linedef args
 
 ===========================================================================================
 
@@ -46,7 +33,7 @@ Stemming from the same concept is FreeDraw, which I think is also a pretty simpl
 
 ===========================================================================================
 
-Plugin that adds a key to toggle between 3D mode and the previous mode. Some people may want that behaviour back. This inludes remapping keys so that the movement can be done with ESDF or WASD.
+Plugin that adds a key to toggle between 3D mode and the previous mode. Some people may want that behaviour back. When in 3D mode, the plugin should cancel any mode switches (but preferrably any action) that uses the WASD keys and give a seperate key (preferrably the same as 3D mode) to return to the previous mode.
 
 ===========================================================================================
 
@@ -57,3 +44,8 @@ Plugin that adds a key to toggle between 3D mode and the previous mode. Some peo
 [00:11] <CodeImp> or i'll add an option that makes them stay at the same size no matter the scale
 [00:11] <esselfortium> slade has the same problem, so i'd always have to switch into db1 when setting those up :p
 [00:11] <esselfortium> yes, that would be wonderful.
+
+===========================================================================================
+
+Option to only remove upper/lower textures when neither side of the line has a tag when drawing/merging.
+Option to never remove any upper/lower textures when drawing/merging.
