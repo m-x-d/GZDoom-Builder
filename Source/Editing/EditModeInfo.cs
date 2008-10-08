@@ -172,10 +172,14 @@ namespace CodeImp.DoomBuilder.Editing
 				newmode = plugin.CreateObjectA<EditMode>(type, args);
 
 				// Switch mode
-				General.Map.ChangeMode(newmode);
+				if(!General.Map.ChangeMode(newmode))
+				{
+					// When cancelled, dispose mode
+					newmode.Dispose();
+				}
 			}
 		}
-
+		
 		// String representation
 		public override string ToString()
 		{
