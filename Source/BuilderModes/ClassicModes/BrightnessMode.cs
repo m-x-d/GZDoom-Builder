@@ -538,7 +538,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Selecting with mouse
-		protected override void OnSelect()
+		protected override void OnSelectBegin()
 		{
 			// Not modifying?
 			if(mode == ModifyMode.None)
@@ -565,7 +565,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
-			base.OnSelect();
+			base.OnSelectBegin();
 		}
 		
 		// End selection
@@ -657,9 +657,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		
 		// Editing
-		protected override void OnEdit()
+		protected override void OnEditBegin()
 		{
-			base.OnEdit();
+			base.OnEditBegin();
 			
 			// No selection?
 			if(orderedselection.Count == 0)

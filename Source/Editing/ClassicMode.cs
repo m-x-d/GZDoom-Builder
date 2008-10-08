@@ -438,7 +438,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// (in Doom Builder 1, this was always the right mousebutton)
 		/// </summary>
 		[BeginAction("classicedit", BaseAction = true)]
-		protected virtual void OnEdit()
+		protected virtual void OnEditBegin()
 		{
 		}
 
@@ -456,7 +456,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// (in Doom Builder 1, this was always the left mousebutton)
 		/// </summary>
 		[BeginAction("classicselect", BaseAction = true)]
-		protected virtual void OnSelect()
+		protected virtual void OnSelectBegin()
 		{
 		}
 
