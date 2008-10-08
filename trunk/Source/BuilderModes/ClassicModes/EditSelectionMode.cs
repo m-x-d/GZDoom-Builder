@@ -946,10 +946,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// When edit button is released
-		protected override void OnEndEdit()
+		protected override void OnEditEnd()
 		{
-			base.OnEndEdit();
-			OnEndSelect();
+			base.OnEditEnd();
+			OnSelectEnd();
 		}
 
 		// When select button is pressed
@@ -1088,9 +1088,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// When selected button is released
-		protected override void OnEndSelect()
+		protected override void OnSelectEnd()
 		{
-			base.OnEndSelect();
+			base.OnSelectEnd();
 			
 			// Remove extension line
 			extensionline = new Line2D();

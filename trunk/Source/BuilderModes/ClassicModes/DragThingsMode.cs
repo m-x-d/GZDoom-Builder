@@ -349,12 +349,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// When edit button is released
-		protected override void OnEndEdit()
+		protected override void OnEditEnd()
 		{
 			// Just return to vertices mode, geometry will be merged on disengage.
 			General.Map.ChangeMode(basemode);
 
-			base.OnEndEdit();
+			base.OnEditEnd();
 		}
 
 		// Mouse moving

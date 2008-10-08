@@ -364,12 +364,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// When edit button is released
-		protected override void OnEndEdit()
+		protected override void OnEditEnd()
 		{
 			// Just return to base mode, Disengage will be called automatically.
 			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
 
-			base.OnEndEdit();
+			base.OnEditEnd();
 		}
 		
 		// Mouse moving
