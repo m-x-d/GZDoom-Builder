@@ -1,8 +1,7 @@
 - Add more find/replace types
 
-- Make sector gradient features
-
-- Categories for control keys!
+- Categories for control keys
+- Defaults for control keys
 
 - Make error checking feature
 
