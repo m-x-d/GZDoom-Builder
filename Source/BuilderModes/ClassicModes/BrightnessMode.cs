@@ -47,20 +47,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	
 	public sealed class BrightnessMode : BaseClassicMode
 	{
+		#region ================== Enums
+
+		private enum ModifyMode : int
+		{
+			None,
+			Adjusting
+		}
+
+		#endregion
+
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
-		
+
 		// Highlighted item
 		private Sector highlighted;
 		
 		// Interface
 		private bool editpressed;
-		
+
+		// The methods GetSelected* and MarkSelected* on the MapSet do not
+		// retain the order in which items were selected.
+		// This list keeps in order while sectors are selected/deselected.
+		protected List<Sector> orderedselection;
+
 		// Labels
 		private Dictionary<Sector, TextLabel[]> labels;
+
+		// Modifying
+		private ModifyMode mode;
 		
 		#endregion
 		
@@ -73,6 +91,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public BrightnessMode()
 		{
+			// Make ordered selection list
+			orderedselection = new List<Sector>();
 		}
 		
 		// Disposer
@@ -141,22 +161,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This highlights a new item
 		protected void Highlight(Sector s)
 		{
-			// Update display
-			if(renderer.StartPlotter(false))
+			// Highlight actually changes?
+			if(s != highlighted)
 			{
-				// Undraw previous highlight
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.PlotSector(highlighted);
-				
-				// Set new highlight
-				highlighted = s;
-				
-				// Render highlighted item
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.PlotSector(highlighted, General.Colors.Highlight);
-				
-				// Done
-				renderer.Finish();
+				// Update display
+				if(renderer.StartPlotter(false))
+				{
+					if((highlighted != null) && !highlighted.IsDisposed)
+					{
+						// Undraw previous highlight
+						renderer.PlotSector(highlighted);
+
+						// Change label color
+						TextLabel[] labelarray = labels[highlighted];
+						foreach(TextLabel l in labelarray) l.Color = General.Colors.Selection;
+					}
+
+					// Set new highlight
+					highlighted = s;
+
+					if((highlighted != null) && !highlighted.IsDisposed)
+					{
+						// Render highlighted item
+						renderer.PlotSector(highlighted, General.Colors.Highlight);
+
+						// Change label color
+						TextLabel[] labelarray = labels[highlighted];
+						foreach(TextLabel l in labelarray) l.Color = General.Colors.Highlight;
+					}
+
+					renderer.Finish();
+				}
+
+				UpdateOverlay();
 				renderer.Present();
 			}
 			
@@ -165,6 +202,66 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.ShowSectorInfo(highlighted);
 			else
 				General.Interface.HideInfo();
+		}
+
+		// This selectes or deselects a sector
+		protected void SelectSector(Sector s, bool selectstate, bool update)
+		{
+			bool selectionchanged = false;
+
+			if(!s.IsDisposed)
+			{
+				// Select the sector?
+				if(selectstate && !s.Selected)
+				{
+					orderedselection.Add(s);
+					s.Selected = true;
+					selectionchanged = true;
+					
+					// Setup labels
+					TextLabel[] labelarray = labels[s];
+					foreach(TextLabel l in labelarray)
+					{
+						l.Text = orderedselection.Count.ToString();
+						l.Color = General.Colors.Selection;
+					}
+				}
+				// Deselect the sector?
+				else if(!selectstate && s.Selected)
+				{
+					orderedselection.Remove(s);
+					s.Selected = false;
+					selectionchanged = true;
+					
+					// Clear labels
+					TextLabel[] labelarray = labels[s];
+					foreach(TextLabel l in labelarray) l.Text = "";
+				}
+
+				// Selection changed?
+				if(selectionchanged)
+				{
+					// Make update lines selection
+					foreach(Sidedef sd in s.Sidedefs)
+					{
+						bool front, back;
+						if(sd.Line.Front != null) front = sd.Line.Front.Sector.Selected; else front = false;
+						if(sd.Line.Back != null) back = sd.Line.Back.Sector.Selected; else back = false;
+						sd.Line.Selected = front | back;
+					}
+				}
+
+				if(update)
+				{
+					UpdateOverlay();
+					renderer.Present();
+				}
+			}
+			else
+			{
+				// Remove from list
+				orderedselection.Remove(s);
+			}
 		}
 		
 		#endregion
@@ -175,11 +272,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
-			
-			// No selection
-			General.Map.Map.ClearAllMarks(false);
-			General.Map.Map.ClearAllSelected();
-			
+
+			// Add toolbar button
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+
 			// Make custom presentation
 			CustomPresentation p = new CustomPresentation();
 			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
@@ -205,10 +301,62 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					labelarray[i].AlignY = TextAlignmentY.Middle;
 					labelarray[i].Scale = 14f;
 					labelarray[i].Color = General.Colors.Highlight;
-					labelarray[i].Backcolor = General.Colors.Background;
+					labelarray[i].Backcolor = General.Colors.Background.WithAlpha(80);
 				}
 				labels.Add(s, labelarray);
 			}
+
+			// Convert geometry selection to sectors only
+			General.Map.Map.ClearAllMarks(false);
+			General.Map.Map.MarkSelectedVertices(true, true);
+			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
+			foreach(Linedef l in lines) l.Selected = true;
+			General.Map.Map.ClearMarkedSectors(true);
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				if(!l.Selected)
+				{
+					if(l.Front != null) l.Front.Sector.Marked = false;
+					if(l.Back != null) l.Back.Sector.Marked = false;
+				}
+			}
+			General.Map.Map.ClearAllSelected();
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				if(s.Marked)
+				{
+					s.Selected = true;
+					foreach(Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
+				}
+			}
+			
+			// Fill the list with selected sectors (these are not in order, but we have no other choice)
+			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
+			General.Map.Map.ClearSelectedSectors();
+			foreach(Sector s in selectedsectors) SelectSector(s, true, false);
+		}
+
+		// When disengaged
+		public override void OnDisengage()
+		{
+			base.OnDisengage();
+
+			// Remove toolbar button
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+
+			// Going to EditSelectionMode?
+			if(General.Map.NewMode is EditSelectionMode)
+			{
+				// No selection made? But we have a highlight!
+				if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+				{
+					// Make the highlight the selection
+					SelectSector(highlighted, true, false);
+				}
+			}
+
+			// Hide highlight info
+			General.Interface.HideInfo();
 		}
 		
 		// This redraws the display
@@ -292,20 +440,138 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Selecting with mouse
 		protected override void OnSelect()
 		{
-			base.OnSelect();
-			
-			// Sector highlighted?
+			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Show index on label
-				for(int i = 0; i < highlighted.Triangles.IslandVertices.Count; i++)
+				// Flip selection
+				SelectSector(highlighted, !highlighted.Selected, true);
+
+				// Update display
+				if(renderer.StartPlotter(false))
 				{
-					labels[highlighted][i].Text = highlighted.Index.ToString();
+					// Redraw highlight to show selection
+					renderer.PlotSector(highlighted);
+					renderer.Finish();
+					renderer.Present();
 				}
-				
-				UpdateOverlay();
+			}
+			else
+			{
+				// Start making a selection
+				StartMultiSelection();
+			}
+
+			base.OnSelect();
+		}
+		
+		// End selection
+		protected override void OnEndSelect()
+		{
+			// Not stopping from multiselection?
+			if(!selecting)
+			{
+				// Item highlighted?
+				if((highlighted != null) && !highlighted.IsDisposed)
+				{
+					// Update display
+					if(renderer.StartPlotter(false))
+					{
+						// Render highlighted item
+						renderer.PlotSector(highlighted, General.Colors.Highlight);
+						renderer.Finish();
+					}
+
+					// Update overlay
+					TextLabel[] labelarray = labels[highlighted];
+					foreach(TextLabel l in labelarray) l.Color = General.Colors.Highlight;
+					UpdateOverlay();
+					renderer.Present();
+				}
+			}
+
+			base.OnEndSelect();
+		}
+
+		// This is called wheh selection ends
+		protected override void OnEndMultiSelection()
+		{
+			// Go for all lines
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
+							  (l.Start.Position.y >= selectionrect.Top) &&
+							  (l.Start.Position.x <= selectionrect.Right) &&
+							  (l.Start.Position.y <= selectionrect.Bottom) &&
+							  (l.End.Position.x >= selectionrect.Left) &&
+							  (l.End.Position.y >= selectionrect.Top) &&
+							  (l.End.Position.x <= selectionrect.Right) &&
+							  (l.End.Position.y <= selectionrect.Bottom));
+			}
+
+			// Go for all sectors
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Go for all sidedefs
+				bool allselected = true;
+				foreach(Sidedef sd in s.Sidedefs)
+				{
+					if(!sd.Line.Selected)
+					{
+						allselected = false;
+						break;
+					}
+				}
+
+				// Sector completely selected?
+				SelectSector(s, allselected, false);
+			}
+
+			// Make sure all linedefs reflect selected sectors
+			foreach(Sector s in General.Map.Map.Sectors)
+				SelectSector(s, s.Selected, false);
+			
+			base.OnEndMultiSelection();
+			General.Interface.RedrawDisplay();
+		}
+
+		// This is called when the selection is updated
+		protected override void OnUpdateMultiSelection()
+		{
+			base.OnUpdateMultiSelection();
+
+			// Render selection
+			UpdateOverlay();
+			if(renderer.StartOverlay(false))
+			{
+				RenderMultiSelection();
+				renderer.Finish();
 				renderer.Present();
 			}
+		}
+		
+		#endregion
+		
+		#region ================== Actions
+
+		[BeginAction("gradientbrightness")]
+		public void MakeGradientBrightness()
+		{
+		}
+
+		// This clears the selection
+		[BeginAction("clearselection", BaseAction = true)]
+		public void ClearSelection()
+		{
+			// Clear selection
+			General.Map.Map.ClearAllSelected();
+			orderedselection.Clear();
+			
+			// Clear labels
+			foreach(TextLabel[] labelarray in labels.Values)
+				foreach(TextLabel l in labelarray) l.Text = "";
+			
+			// Redraw
+			General.Interface.RedrawDisplay();
 		}
 		
 		#endregion

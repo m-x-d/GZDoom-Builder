@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripMenuItem LinedefsMenu { get { return linedefsmenu; } }
 		public ToolStripMenuItem SectorsMenu { get { return sectorsmenu; } }
 		public ToolStripMenuItem ThingsMenu { get { return thingsmenu; } }
+		public ToolStripButton MakeGradientBrightness { get { return buttonbrightnessgradient; } }
 
 		#endregion
 
@@ -69,8 +70,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < menustrip.Items.Count; i++) menus[i] = menustrip.Items[i];
 
 			// List all buttons
-			buttons = new ToolStripItem[toolstrip.Items.Count];
-			for(int i = 0; i < toolstrip.Items.Count; i++) buttons[i] = toolstrip.Items[i];
+			buttons = new ToolStripItem[globalstrip.Items.Count];
+			for(int i = 0; i < globalstrip.Items.Count; i++) buttons[i] = globalstrip.Items[i];
 		}
 		
 		#endregion

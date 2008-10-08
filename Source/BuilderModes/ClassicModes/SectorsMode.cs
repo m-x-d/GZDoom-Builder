@@ -77,10 +77,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Make ordered selection list
 			orderedselection = new List<Sector>();
-
-			// Fill the list with selected sectors (these are not in order, but we have no other choice)
-			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
-			foreach(Sector s in selectedsectors) orderedselection.Add(s);
 		}
 
 		// Disposer
@@ -285,7 +281,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					s.Selected = true;
 					foreach(Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
 				}
-			}		
+			}
+			
+			// Fill the list with selected sectors (these are not in order, but we have no other choice)
+			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
+			foreach(Sector s in selectedsectors) orderedselection.Add(s);
 		}
 		
 		// Mode disengages
@@ -785,6 +785,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
+			orderedselection.Clear();
 
 			// Redraw
 			General.Interface.RedrawDisplay();
