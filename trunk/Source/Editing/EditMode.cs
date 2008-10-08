@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		#endregion
 
-		#region ================== Methods
+		#region ================== Events
 
 		//
 		// Order in which events occur for the old and new modes:

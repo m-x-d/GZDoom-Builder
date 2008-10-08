@@ -193,12 +193,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Start select
-		protected override void OnSelect()
+		protected override void OnSelectBegin()
 		{
 			// Select pressed in this mode
 			selectpressed = true;
 			editside = nearestside;
-			base.OnEdit();
+			base.OnEditBegin();
 		}
 		
 		#endregion
@@ -313,12 +313,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Start editing
-		protected override void OnEdit()
+		protected override void OnEditBegin()
 		{
 			// Edit pressed in this mode
 			editpressed = true;
 			editside = nearestside;
-			base.OnEdit();
+			base.OnEditBegin();
 		}
 
 		// Done editing

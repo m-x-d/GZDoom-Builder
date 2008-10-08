@@ -185,7 +185,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Selection
-		protected override void OnSelect()
+		protected override void OnSelectBegin()
 		{
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				StartMultiSelection();
 			}
 
-			base.OnSelect();
+			base.OnSelectBegin();
 		}
 		
 		// End selection
@@ -233,7 +233,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Start editing
-		protected override void OnEdit()
+		protected override void OnEditBegin()
 		{
 			// Vertex highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
@@ -277,7 +277,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
-			base.OnEdit();
+			base.OnEditBegin();
 		}
 		
 		// Done editing

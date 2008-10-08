@@ -939,10 +939,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// When edit button is pressed
-		protected override void OnEdit()
+		protected override void OnEditBegin()
 		{
-			base.OnEdit();
-			OnSelect();
+			base.OnEditBegin();
+			OnSelectBegin();
 		}
 
 		// When edit button is released
@@ -953,9 +953,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// When select button is pressed
-		protected override void OnSelect()
+		protected override void OnSelectBegin()
 		{
-			base.OnSelect();
+			base.OnSelectBegin();
 			
 			// Used in many cases:
 			Vector2D center = offset + size * 0.5f;
