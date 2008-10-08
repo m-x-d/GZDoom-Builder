@@ -2,6 +2,8 @@
 
 - Make sector gradient features
 
+- Categories for control keys!
+
 - Make error checking feature
 
 - Make quick sector draw (square/circle) mode

@@ -43,8 +43,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingscwitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.rotatethingsccwitem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolstrip = new System.Windows.Forms.ToolStrip();
+			this.globalstrip = new System.Windows.Forms.ToolStrip();
+			this.manualstrip = new System.Windows.Forms.ToolStrip();
+			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
 			this.menustrip.SuspendLayout();
+			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// menustrip
@@ -168,19 +171,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.rotatethingsccwitem.Size = new System.Drawing.Size(204, 22);
 			this.rotatethingsccwitem.Text = "Rotate Counterclockwise";
 			// 
-			// toolstrip
+			// globalstrip
 			// 
-			this.toolstrip.Location = new System.Drawing.Point(0, 24);
-			this.toolstrip.Name = "toolstrip";
-			this.toolstrip.Size = new System.Drawing.Size(423, 25);
-			this.toolstrip.TabIndex = 1;
-			this.toolstrip.Text = "toolstrip";
+			this.globalstrip.Location = new System.Drawing.Point(0, 24);
+			this.globalstrip.Name = "globalstrip";
+			this.globalstrip.Size = new System.Drawing.Size(423, 25);
+			this.globalstrip.TabIndex = 1;
+			this.globalstrip.Text = "toolstrip";
+			// 
+			// manualstrip
+			// 
+			this.manualstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.buttonbrightnessgradient});
+			this.manualstrip.Location = new System.Drawing.Point(0, 49);
+			this.manualstrip.Name = "manualstrip";
+			this.manualstrip.Size = new System.Drawing.Size(423, 25);
+			this.manualstrip.TabIndex = 2;
+			this.manualstrip.Text = "toolStrip1";
+			// 
+			// buttonbrightnessgradient
+			// 
+			this.buttonbrightnessgradient.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonbrightnessgradient.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.BrightnessGradient;
+			this.buttonbrightnessgradient.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.buttonbrightnessgradient.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonbrightnessgradient.Name = "buttonbrightnessgradient";
+			this.buttonbrightnessgradient.Size = new System.Drawing.Size(23, 22);
+			this.buttonbrightnessgradient.Tag = "gradientbrightness";
+			this.buttonbrightnessgradient.Text = "Make Brightness Gradient";
 			// 
 			// MenusForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(423, 248);
-			this.Controls.Add(this.toolstrip);
+			this.Controls.Add(this.manualstrip);
+			this.Controls.Add(this.globalstrip);
 			this.Controls.Add(this.menustrip);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -193,6 +218,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Text = "MenusForm";
 			this.menustrip.ResumeLayout(false);
 			this.menustrip.PerformLayout();
+			this.manualstrip.ResumeLayout(false);
+			this.manualstrip.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -215,6 +242,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem rotatethingsccwitem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
 		private System.Windows.Forms.ToolStripMenuItem splitlinedefsitem;
-		private System.Windows.Forms.ToolStrip toolstrip;
+		private System.Windows.Forms.ToolStrip globalstrip;
+		private System.Windows.Forms.ToolStrip manualstrip;
+		private System.Windows.Forms.ToolStripButton buttonbrightnessgradient;
 	}
 }
