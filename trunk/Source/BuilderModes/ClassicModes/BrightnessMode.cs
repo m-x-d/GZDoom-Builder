@@ -161,7 +161,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						TextLabel l = labelarray[i];
 						
 						// Render only when enough space for the label to see
-						float requiredsize = (l.TextSize.Height / 3) / renderer.Scale;
+						float requiredsize = (l.TextSize.Height / 2) / renderer.Scale;
 						if(requiredsize < s.Labels[i].radius) renderer.RenderText(l);
 					}
 				}
@@ -265,9 +265,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						sd.Line.Selected = front | back;
 					}
 				}
-
+				
 				if(update)
 				{
+					UpdateOverlay();
 					UpdateOverlay();
 					renderer.Present();
 				}
@@ -388,6 +389,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
 			General.Map.Map.ClearSelectedSectors();
 			foreach(Sector s in selectedsectors) SelectSector(s, true, false);
+			
+			// Update
+			UpdateOverlay();
 		}
 
 		// When disengaged
@@ -613,6 +617,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					sd.Line.Selected = false;
 			
 			base.OnEndMultiSelection();
+			UpdateOverlay();
 			General.Interface.RedrawDisplay();
 		}
 
@@ -637,18 +642,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEdit();
 			
-			// Start editing
-			mode = ModifyMode.Adjusting;
-			editstartpos = Cursor.Position;
+			// No selection?
+			if(orderedselection.Count == 0)
+			{
+				// Make the highlight a selection if we have a highlight
+				if((highlighted != null) && !highlighted.IsDisposed)
+					SelectSector(highlighted, true, false);
+			}
 			
-			// Keep sector brightness offsets
-			sectorbrightness = new List<int>(orderedselection.Count);
-			foreach(Sector s in orderedselection) sectorbrightness.Add(s.Brightness);
-			
-			// Update
-			UpdateSelectedLabels();
-			UpdateOverlay();
-			renderer.Present();
+			// Anything selected?
+			if(orderedselection.Count > 0)
+			{
+				// Start editing
+				mode = ModifyMode.Adjusting;
+				editstartpos = Cursor.Position;
+				
+				// Keep sector brightness offsets
+				sectorbrightness = new List<int>(orderedselection.Count);
+				foreach(Sector s in orderedselection) sectorbrightness.Add(s.Brightness);
+				
+				// Update
+				UpdateSelectedLabels();
+				UpdateOverlay();
+				renderer.Present();
+			}
 		}
 		
 		// Done editing
@@ -659,22 +676,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Stop editing
 			mode = ModifyMode.None;
 			sectorbrightness = null;
-
+			
 			// Update
 			UpdateSelectedLabels();
 			UpdateOverlay();
 			renderer.Present();
+			
+			// If only one sector was selected, deselect it
+			if(orderedselection.Count == 1) SelectSector(orderedselection[0], false, true);
 		}
 		
 		#endregion
 		
 		#region ================== Actions
-
+		
 		[BeginAction("gradientbrightness")]
 		public void MakeGradientBrightness()
 		{
+			// Need at least 3 selected sectors
+			// The first and last are not modified
+			if(orderedselection.Count > 2)
+			{
+				float startbrightness = (float)orderedselection[0].Brightness;
+				float endbrightness = (float)orderedselection[orderedselection.Count - 1].Brightness;
+				float delta = endbrightness - startbrightness;
+				
+				// Go for all sectors in between first and last
+				for(int i = 1; i < (orderedselection.Count - 1); i++)
+				{
+					float u = (float)i / (float)(orderedselection.Count - 1);
+					float b = startbrightness + delta * u;
+					orderedselection[i].Brightness = (int)b;
+				}
+			}
+			
+			// Update
+			UpdateOverlay();
+			renderer.Present();
 		}
-
+		
 		// This clears the selection
 		[BeginAction("clearselection", BaseAction = true)]
 		public void ClearSelection()

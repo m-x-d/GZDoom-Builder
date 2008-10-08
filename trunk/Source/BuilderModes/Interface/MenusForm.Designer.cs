@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fliplinedefsitem
 			// 
 			this.fliplinedefsitem.Name = "fliplinedefsitem";
-			this.fliplinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.fliplinedefsitem.Size = new System.Drawing.Size(158, 22);
 			this.fliplinedefsitem.Tag = "fliplinedefs";
 			this.fliplinedefsitem.Text = "Flip Linedefs";
 			this.fliplinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// flipsidedefsitem
 			// 
 			this.flipsidedefsitem.Name = "flipsidedefsitem";
-			this.flipsidedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.flipsidedefsitem.Size = new System.Drawing.Size(158, 22);
 			this.flipsidedefsitem.Tag = "flipsidedefs";
 			this.flipsidedefsitem.Text = "Flip Sidedefs";
 			this.flipsidedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -95,24 +95,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(166, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(155, 6);
 			// 
 			// curvelinedefsitem
 			// 
 			this.curvelinedefsitem.Name = "curvelinedefsitem";
-			this.curvelinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.curvelinedefsitem.Size = new System.Drawing.Size(158, 22);
 			this.curvelinedefsitem.Tag = "curvelinesmode";
 			this.curvelinedefsitem.Text = "Curve Linedefs...";
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(166, 6);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(155, 6);
 			// 
 			// splitlinedefsitem
 			// 
 			this.splitlinedefsitem.Name = "splitlinedefsitem";
-			this.splitlinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.splitlinedefsitem.Size = new System.Drawing.Size(158, 22);
 			this.splitlinedefsitem.Tag = "splitlinedefs";
 			this.splitlinedefsitem.Text = "Split Linedefs";
 			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// joinsectorsitem
 			// 
 			this.joinsectorsitem.Name = "joinsectorsitem";
-			this.joinsectorsitem.Size = new System.Drawing.Size(154, 22);
+			this.joinsectorsitem.Size = new System.Drawing.Size(143, 22);
 			this.joinsectorsitem.Tag = "joinsectors";
 			this.joinsectorsitem.Text = "Join Sectors";
 			this.joinsectorsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// mergesectorsitem
 			// 
 			this.mergesectorsitem.Name = "mergesectorsitem";
-			this.mergesectorsitem.Size = new System.Drawing.Size(154, 22);
+			this.mergesectorsitem.Size = new System.Drawing.Size(143, 22);
 			this.mergesectorsitem.Tag = "mergesectors";
 			this.mergesectorsitem.Text = "Merge Sectors";
 			this.mergesectorsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(151, 6);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(140, 6);
 			// 
 			// thingsmenu
 			// 
@@ -162,13 +162,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// rotatethingscwitem
 			// 
 			this.rotatethingscwitem.Name = "rotatethingscwitem";
-			this.rotatethingscwitem.Size = new System.Drawing.Size(204, 22);
+			this.rotatethingscwitem.Size = new System.Drawing.Size(193, 22);
 			this.rotatethingscwitem.Text = "Rotate Clockwise";
 			// 
 			// rotatethingsccwitem
 			// 
 			this.rotatethingsccwitem.Name = "rotatethingsccwitem";
-			this.rotatethingsccwitem.Size = new System.Drawing.Size(204, 22);
+			this.rotatethingsccwitem.Size = new System.Drawing.Size(193, 22);
 			this.rotatethingsccwitem.Text = "Rotate Counterclockwise";
 			// 
 			// globalstrip
@@ -199,6 +199,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonbrightnessgradient.Size = new System.Drawing.Size(23, 22);
 			this.buttonbrightnessgradient.Tag = "gradientbrightness";
 			this.buttonbrightnessgradient.Text = "Make Brightness Gradient";
+			this.buttonbrightnessgradient.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MenusForm
 			// 
