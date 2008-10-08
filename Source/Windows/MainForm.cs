@@ -1375,26 +1375,26 @@ namespace CodeImp.DoomBuilder.Windows
 			// Go for all controls to find menu items
 			foreach(ToolStripItem item in items)
 			{
+				// Tag set for this item?
+				if((item.Tag != null) && (item.Tag is string))
+				{
+					// Get the action name
+					string actionname = item.Tag.ToString();
+
+					// Check if the tag doe not already begin with the assembly name
+					if(!(item.Tag as string).StartsWith(plugin.Name + "_", StringComparison.InvariantCultureIgnoreCase))
+					{
+						// Change the tag to a fully qualified action name
+						item.Tag = plugin.Name.ToLowerInvariant() + "_" + (item.Tag as string);
+					}
+				}
+
 				// This is a menu item?
 				if(item is ToolStripMenuItem)
 				{
 					// Get the item in proper type
 					ToolStripMenuItem menuitem = (item as ToolStripMenuItem);
-
-					// Tag set for this item?
-					if((menuitem.Tag != null) && (menuitem.Tag is string))
-					{
-						// Get the action name
-						string actionname = menuitem.Tag.ToString();
-
-						// Check if the tag doe not already begin with the assembly name
-						if(!(menuitem.Tag as string).StartsWith(plugin.Name + "_", StringComparison.InvariantCultureIgnoreCase))
-						{
-							// Change the tag to a fully qualified action name
-							menuitem.Tag = plugin.Name.ToLowerInvariant() + "_" + (menuitem.Tag as string);
-						}
-					}
-
+					
 					// Recursively perform operation on child menu items
 					RenameTagsToFullActions(menuitem.DropDownItems, plugin);
 				}
