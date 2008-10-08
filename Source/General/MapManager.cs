@@ -65,7 +65,6 @@ namespace CodeImp.DoomBuilder
 		private string filetitle;
 		private string filepathname;
 		private string temppath;
-		private bool cancelmodechange;
 
 		// Main objects
 		private MapSet map;
@@ -98,7 +97,6 @@ namespace CodeImp.DoomBuilder
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
 		public string TempPath { get { return temppath; } }
-		public bool CancelModeChange { get { return cancelmodechange; } set { cancelmodechange |= value; } }
 		internal MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
 		public EditMode Mode { get { return mode; } }
@@ -865,10 +863,10 @@ namespace CodeImp.DoomBuilder
 		// - Engage of new mode is called
 		// - Dispose of old mode is called
 		//
-		public void ChangeMode(EditMode nextmode)
+		// Returns false when cancelled
+		public bool ChangeMode(EditMode nextmode)
 		{
 			EditMode oldmode = mode;
-			cancelmodechange = false;
 			
 			// Log info
 			if(newmode != null)
@@ -889,56 +887,50 @@ namespace CodeImp.DoomBuilder
 				prevstablemode = null;
 			}
 			
-			// Let the plugins know beforehand
-			General.Plugins.ModeChanges(oldmode, newmode);
-
-			// Change cancelled?
-			if(cancelmodechange)
+			// Let the plugins know beforehand and check if not cancelled
+			if(General.Plugins.ModeChanges(oldmode, newmode))
 			{
-				General.WriteLogLine("Edit mode change cancelled.");
-				return;
-			}
-			
-			// Disenagage old mode
-			if(oldmode != null) oldmode.OnDisengage();
+				// Disenagage old mode
+				if(oldmode != null) oldmode.OnDisengage();
 
-			// Change cancelled?
-			if(cancelmodechange)
-			{
-				General.WriteLogLine("Edit mode change cancelled.");
-				return;
-			}
+				// Reset cursor
+				General.Interface.SetCursor(Cursors.Default);
+				
+				// Apply new mode
+				mode = newmode;
+				
+				// Engage new mode
+				if(newmode != null) newmode.OnEngage();
 
-			// Reset cursor
-			General.Interface.SetCursor(Cursors.Default);
-			
-			// Apply new mode
-			mode = newmode;
-			
-			// Engage new mode
-			if(newmode != null) newmode.OnEngage();
+				// Check appropriate button on interface
+				// And show the mode name
+				if(mode != null)
+				{
+					General.MainWindow.CheckEditModeButton(mode.EditModeButtonName);
+					General.MainWindow.DisplayModeName(mode.Attributes.DisplayName);
+				}
+				else
+				{
+					General.MainWindow.CheckEditModeButton("");
+					General.MainWindow.DisplayModeName("");
+				}
 
-			// Check appropriate button on interface
-			// And show the mode name
-			if(mode != null)
-			{
-				General.MainWindow.CheckEditModeButton(mode.EditModeButtonName);
-				General.MainWindow.DisplayModeName(mode.Attributes.DisplayName);
+				// Dispose old mode
+				if(oldmode != null) oldmode.Dispose();
+
+				// Done switching
+				newmode = null;
+				
+				// Redraw the display
+				General.MainWindow.RedrawDisplay();
+				return true;
 			}
 			else
 			{
-				General.MainWindow.CheckEditModeButton("");
-				General.MainWindow.DisplayModeName("");
+				// Cancelled
+				General.WriteLogLine("Edit mode change cancelled.");
+				return false;
 			}
-
-			// Dispose old mode
-			if(oldmode != null) oldmode.Dispose();
-
-			// Done switching
-			newmode = null;
-			
-			// Redraw the display
-			General.MainWindow.RedrawDisplay();
 		}
 		
 		// This changes mode by class name and optionally with arguments

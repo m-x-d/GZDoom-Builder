@@ -115,11 +115,13 @@ namespace CodeImp.DoomBuilder.Plugins
 
 		/// <summary>
 		/// This is called by the Doom Builder core when the editing mode changes.
+		/// Return false to abort the mode change.
 		/// </summary>
 		/// <param name="oldmode">The previous editing mode</param>
 		/// <param name="newmode">The new editing mode</param>
-		public virtual void OnModeChange(EditMode oldmode, EditMode newmode)
+		public virtual bool OnModeChange(EditMode oldmode, EditMode newmode)
 		{
+			return true;
 		}
 
 		/// <summary>

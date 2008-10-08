@@ -110,12 +110,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Events
-
+		
 		// When the editing mode changes
-		public override void OnModeChange(EditMode oldmode, EditMode newmode)
+		public override bool OnModeChange(EditMode oldmode, EditMode newmode)
 		{
 			// Show the correct menu for the new mode
 			menusform.ShowEditingModeMenu(newmode);
+			
+			return base.OnModeChange(oldmode, newmode);
 		}
 		
 		#endregion

@@ -208,9 +208,11 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 
-		public void ModeChanges(EditMode oldmode, EditMode newmode)
+		public bool ModeChanges(EditMode oldmode, EditMode newmode)
 		{
-			foreach(Plugin p in plugins) p.Plug.OnModeChange(oldmode, newmode);
+			bool result = true;
+			foreach(Plugin p in plugins) result &= p.Plug.OnModeChange(oldmode, newmode);
+			return result;
 		}
 
 
