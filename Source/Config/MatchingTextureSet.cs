@@ -105,11 +105,11 @@ namespace CodeImp.DoomBuilder.Config
 				ss = ss.Replace("#", "\\#");
 				ss = ss.Replace(" ", "\\ ");
 
-				// Replace the * with the regex code for optional multiple characters
-				ss = ss.Replace("*", ".*?");
-
 				// Replace the ? with the regex code for single character
 				ss = ss.Replace("?", ".");
+
+				// Replace the * with the regex code for optional multiple characters
+				ss = ss.Replace("*", ".*?");
 
 				// When a filter has already added, insert a conditional OR operator
 				if(regexstr.Length > 0) regexstr.Append("|");
