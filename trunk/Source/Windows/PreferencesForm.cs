@@ -55,6 +55,10 @@ namespace CodeImp.DoomBuilder.Windows
 			qualitydisplay.Checked = General.Settings.QualityDisplay;
 			squarethings.Checked = General.Settings.SquareThings;
 			
+			// Fill actions list with categories
+			foreach(KeyValuePair<string, string> c in General.Actions.Categories)
+				listactions.Groups.Add(c.Key, c.Value);
+			
 			// Fill list of actions
 			actions = General.Actions.GetAllActions();
 			foreach(Action a in actions)
@@ -63,6 +67,10 @@ namespace CodeImp.DoomBuilder.Windows
 				item = listactions.Items.Add(a.Name, a.Title, 0);
 				item.SubItems.Add(Action.GetShortcutKeyDesc(a.ShortcutKey));
 				item.SubItems[1].Tag = a.ShortcutKey;
+
+				// Put in category, if the category exists
+				if(General.Actions.Categories.ContainsKey(a.Category))
+					item.Group = listactions.Groups[a.Category];
 			}
 
 			// Fill combobox with special controls
