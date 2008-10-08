@@ -36,6 +36,7 @@ namespace CodeImp.DoomBuilder.Actions
 		private string shortname;
 		private string title;
 		private string description;
+		private string category;
 
 		// Shortcut key
 		private int key;
@@ -58,6 +59,7 @@ namespace CodeImp.DoomBuilder.Actions
 
 		public string Name { get { return name; } }
 		public string ShortName { get { return shortname; } }
+		public string Category { get { return category; } }
 		public string Title { get { return title; } }
 		public string Description { get { return description; } }
 		public int ShortcutKey { get { return key; } }
@@ -75,12 +77,13 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Action(string name, string shortname, string title, string description, int key,
+		public Action(string name, string shortname, string category, string title, string description, int key,
 					  bool allowkeys, bool allowmouse, bool allowscroll, bool disregardshift, bool repeat)
 		{
 			// Initialize
 			this.name = name;
 			this.shortname = shortname;
+			this.category = category;
 			this.title = title;
 			this.description = description;
 			this.begindelegates = new List<ActionDelegate>();

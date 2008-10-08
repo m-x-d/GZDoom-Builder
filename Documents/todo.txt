@@ -1,6 +1,5 @@
 - Add more find/replace types
 
-- Categories for control keys
 - Defaults for control keys
 
 - Make error checking feature

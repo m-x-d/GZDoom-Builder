@@ -45,6 +45,9 @@ namespace CodeImp.DoomBuilder.Actions
 		// Actions
 		private Dictionary<string, Action> actions;
 		
+		// Categories
+		private SortedDictionary<string, string> categories;
+		
 		// Keys state
 		private int modifiers;
 		private List<int> pressedkeys;
@@ -59,6 +62,7 @@ namespace CodeImp.DoomBuilder.Actions
 
 		#region ================== Properties
 
+		public SortedDictionary<string, string> Categories { get { return categories; } }
 		public Action this[string action] { get { if(actions.ContainsKey(action)) return actions[action]; else throw new ArgumentException("There is no such action \"" + action + "\""); } }
 		public bool IsDisposed { get { return isdisposed; } }
 
@@ -74,6 +78,7 @@ namespace CodeImp.DoomBuilder.Actions
 			actions = new Dictionary<string, Action>();
 			pressedkeys = new List<int>();
 			activeactions = new List<Action>();
+			categories = new SortedDictionary<string, string>();
 			
 			// Load all actions in this assembly
 			LoadActions(General.ThisAssembly);
@@ -105,7 +110,7 @@ namespace CodeImp.DoomBuilder.Actions
 			Stream actionsdata;
 			StreamReader actionsreader;
 			Configuration cfg;
-			string name, title, desc, shortname;
+			string cat, name, title, desc, shortname;
 			bool amouse, akeys, ascroll, debugonly, noshift, repeat;
 			string[] resnames;
 			AssemblyName asmname = asm.GetName();
@@ -129,6 +134,15 @@ namespace CodeImp.DoomBuilder.Actions
 					actionsreader.Dispose();
 					actionsdata.Dispose();
 
+					// Read the categories structure
+					IDictionary cats = cfg.ReadSetting("categories", new Hashtable());
+					foreach(DictionaryEntry c in cats)
+					{
+						// Make the category if not already added
+						if(!categories.ContainsKey(c.Key.ToString()))
+							categories.Add(c.Key.ToString(), c.Value.ToString());
+					}
+					
 					// Go for all objects in the configuration
 					foreach(DictionaryEntry a in cfg.Root)
 					{
@@ -136,6 +150,7 @@ namespace CodeImp.DoomBuilder.Actions
 						shortname = a.Key.ToString();
 						name = asmname.Name.ToLowerInvariant() + "_" + shortname;
 						title = cfg.ReadSetting(a.Key + ".title", "[" + name + "]");
+						cat = cfg.ReadSetting(a.Key + ".category", "");
 						desc = cfg.ReadSetting(a.Key + ".description", "");
 						akeys = cfg.ReadSetting(a.Key + ".allowkeys", true);
 						amouse = cfg.ReadSetting(a.Key + ".allowmouse", true);
@@ -144,11 +159,15 @@ namespace CodeImp.DoomBuilder.Actions
 						repeat = cfg.ReadSetting(a.Key + ".repeat", false);
 						debugonly = cfg.ReadSetting(a.Key + ".debugonly", false);
 
-						// Check if action should be included
-						if(General.DebugBuild || !debugonly)
+						// Not the categories structure?
+						if(shortname.ToLowerInvariant() != "categories")
 						{
-							// Create an action
-							CreateAction(name, shortname, title, desc, akeys, amouse, ascroll, noshift, repeat);
+							// Check if action should be included
+							if(General.DebugBuild || !debugonly)
+							{
+								// Create an action
+								CreateAction(name, shortname, cat, title, desc, akeys, amouse, ascroll, noshift, repeat);
+							}
 						}
 					}
 				}
@@ -156,7 +175,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// This manually creates an action
-		private void CreateAction(string name, string shortname, string title, string desc, bool allowkeys, bool allowmouse, bool allowscroll, bool disregardshift, bool repeat)
+		private void CreateAction(string name, string shortname, string category, string title, string desc, bool allowkeys, bool allowmouse, bool allowscroll, bool disregardshift, bool repeat)
 		{
 			// Action does not exist yet?
 			if(!actions.ContainsKey(name))
@@ -165,7 +184,7 @@ namespace CodeImp.DoomBuilder.Actions
 				int key = General.Settings.ReadSetting("shortcuts." + name, 0);
 
 				// Create an action
-				actions.Add(name, new Action(name, shortname, title, desc, key, allowkeys, allowmouse, allowscroll, disregardshift, repeat));
+				actions.Add(name, new Action(name, shortname, category, title, desc, key, allowkeys, allowmouse, allowscroll, disregardshift, repeat));
 			}
 			else
 			{
