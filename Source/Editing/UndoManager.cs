@@ -253,13 +253,14 @@ namespace CodeImp.DoomBuilder.Editing
 
 							// Change map set
 							General.Map.ChangeMapSet(u.map);
+							
+							// Done
+							General.Map.Mode.OnUndoEnd();
+							General.Plugins.OnUndoEnd();
 
 							// Update
 							General.MainWindow.RedrawDisplay();
 							General.MainWindow.UpdateInterface();
-
-							// Done
-							General.Plugins.OnUndoEnd();
 						}
 					}
 				}
@@ -311,12 +312,13 @@ namespace CodeImp.DoomBuilder.Editing
 						// Change map set
 						General.Map.ChangeMapSet(r.map);
 
+						// Done
+						General.Map.Mode.OnRedoEnd();
+						General.Plugins.OnRedoEnd();
+
 						// Update
 						General.MainWindow.RedrawDisplay();
 						General.MainWindow.UpdateInterface();
-
-						// Done
-						General.Plugins.OnRedoEnd();
 					}
 				}
 			}

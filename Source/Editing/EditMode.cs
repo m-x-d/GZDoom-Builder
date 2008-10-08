@@ -182,6 +182,8 @@ namespace CodeImp.DoomBuilder.Editing
 		// Return false to cancel undo action
 		public virtual bool OnUndoBegin() { return true; }
 		public virtual bool OnRedoBegin() { return true; }
+		public virtual void OnUndoEnd() { }
+		public virtual void OnRedoEnd() { }
 		
 		// Interface events
 		public virtual void OnMouseClick(MouseEventArgs e) { }
