@@ -371,7 +371,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// End selection
-		protected override void OnEndSelect()
+		protected override void OnSelectEnd()
 		{
 			// Not stopping from multiselection?
 			if(!selecting)
@@ -390,7 +390,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			base.OnEndSelect();
+			base.OnSelectEnd();
 		}
 
 		// Start editing
@@ -433,7 +433,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Done editing
-		protected override void OnEndEdit()
+		protected override void OnEditEnd()
 		{
 			// Edit pressed in this mode?
 			if(editpressed)
@@ -458,7 +458,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			editpressed = false;
-			base.OnEndEdit();
+			base.OnEditEnd();
 		}
 		
 		// Mouse moves

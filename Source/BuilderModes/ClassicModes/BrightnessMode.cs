@@ -569,7 +569,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// End selection
-		protected override void OnEndSelect()
+		protected override void OnSelectEnd()
 		{
 			// Not stopping from multiselection or modifying
 			if(!selecting && (mode == ModifyMode.None))
@@ -593,7 +593,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			base.OnEndSelect();
+			base.OnSelectEnd();
 		}
 		
 		// This is called wheh selection ends
@@ -691,9 +691,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Done editing
-		protected override void OnEndEdit()
+		protected override void OnEditEnd()
 		{
-			base.OnEndEdit();
+			base.OnEditEnd();
 			
 			// Stop editing
 			mode = ModifyMode.None;
