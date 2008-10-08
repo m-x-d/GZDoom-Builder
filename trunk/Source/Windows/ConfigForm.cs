@@ -382,7 +382,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void removetextureset_Click(object sender, EventArgs e)
 		{
 			// Texture Set selected?
-			if(listtextures.SelectedItems.Count > 0)
+			while(listtextures.SelectedItems.Count > 0)
 			{
 				// Remove from config info and list
 				DefinedTextureSet s = (listtextures.SelectedItems[0].Tag as DefinedTextureSet);
