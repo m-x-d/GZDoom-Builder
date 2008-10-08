@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			else if(ax > ay) return -1;
 			else return 0;
 			*/
-			return Math.Sign(ax - ay);
+			return Math.Sign(ay - ax);
 		}
 	}
 }
