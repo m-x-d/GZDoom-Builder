@@ -81,6 +81,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private ModifyMode mode;
 		private Point editstartpos;
 		private List<int> sectorbrightness;
+		private int undoticket;
 		
 		#endregion
 		
@@ -103,6 +104,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Dispose old labels
+				foreach(KeyValuePair<Sector, TextLabel[]> lbl in labels)
+					foreach(TextLabel l in lbl.Value) l.Dispose();
+				
 				// Dispose base
 				base.Dispose();
 			}
@@ -111,7 +116,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
-
+		
+		// This sets up new labels
+		private void SetupLabels()
+		{
+			if(labels != null)
+			{
+				// Dispose old labels
+				foreach(KeyValuePair<Sector, TextLabel[]> lbl in labels)
+					foreach(TextLabel l in lbl.Value) l.Dispose();
+			}
+			
+			// Make text labels for sectors
+			labels = new Dictionary<Sector, TextLabel[]>(General.Map.Map.Sectors.Count);
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Setup labels
+				TextLabel[] labelarray = new TextLabel[s.Triangles.IslandVertices.Count];
+				for(int i = 0; i < s.Triangles.IslandVertices.Count; i++)
+				{
+					Vector2D v = s.Labels[i].position;
+					labelarray[i] = new TextLabel(20);
+					labelarray[i].TransformCoords = true;
+					labelarray[i].Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
+					labelarray[i].AlignX = TextAlignmentX.Center;
+					labelarray[i].AlignY = TextAlignmentY.Middle;
+					labelarray[i].Scale = 14f;
+					labelarray[i].Color = General.Colors.Highlight;
+					labelarray[i].Backcolor = General.Colors.Background.WithAlpha(80);
+				}
+				labels.Add(s, labelarray);
+			}
+		}
+		
 		// This updates the overlay
 		private void UpdateOverlay()
 		{
@@ -341,25 +378,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(p);
 			
 			// Make text labels for sectors
-			labels = new Dictionary<Sector, TextLabel[]>(General.Map.Map.Sectors.Count);
-			foreach(Sector s in General.Map.Map.Sectors)
-			{
-				// Setup labels
-				TextLabel[] labelarray = new TextLabel[s.Triangles.IslandVertices.Count];
-				for(int i = 0; i < s.Triangles.IslandVertices.Count; i++)
-				{
-					Vector2D v = s.Labels[i].position;
-					labelarray[i] = new TextLabel(20);
-					labelarray[i].TransformCoords = true;
-					labelarray[i].Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
-					labelarray[i].AlignX = TextAlignmentX.Center;
-					labelarray[i].AlignY = TextAlignmentY.Middle;
-					labelarray[i].Scale = 14f;
-					labelarray[i].Color = General.Colors.Highlight;
-					labelarray[i].Backcolor = General.Colors.Background.WithAlpha(80);
-				}
-				labels.Add(s, labelarray);
-			}
+			SetupLabels();
 
 			// Convert geometry selection to sectors only
 			General.Map.Map.ClearAllMarks(false);
@@ -653,6 +672,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Anything selected?
 			if(orderedselection.Count > 0)
 			{
+				// Create undo
+				undoticket = General.Map.UndoRedo.CreateUndo("Adjust brightness", UndoGroup.None, 0);
+				
 				// Start editing
 				mode = ModifyMode.Adjusting;
 				editstartpos = Cursor.Position;
@@ -677,6 +699,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode = ModifyMode.None;
 			sectorbrightness = null;
 			
+			// Nothing changed? Then writhdraw the undo
+			if(editstartpos.Y == Cursor.Position.Y)
+				General.Map.UndoRedo.WithdrawUndo(undoticket);
+			
 			// Update
 			UpdateSelectedLabels();
 			UpdateOverlay();
@@ -684,6 +710,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// If only one sector was selected, deselect it
 			if(orderedselection.Count == 1) SelectSector(orderedselection[0], false, true);
+		}
+
+		// When undo is used
+		public override bool OnUndoBegin()
+		{
+			// Clear selection
+			General.Map.Map.ClearAllSelected();
+			orderedselection.Clear();
+			
+			return base.OnUndoBegin();
+		}
+		
+		// When undo is performed
+		public override void OnUndoEnd()
+		{
+			// Clear labels
+			SetupLabels();
+		}
+		
+		// When redo is used
+		public override bool OnRedoBegin()
+		{
+			// Clear selection
+			General.Map.Map.ClearAllSelected();
+			orderedselection.Clear();
+
+			return base.OnRedoBegin();
+		}
+		
+		// When redo is performed
+		public override void OnRedoEnd()
+		{
+			// Clear labels
+			SetupLabels();
 		}
 		
 		#endregion
