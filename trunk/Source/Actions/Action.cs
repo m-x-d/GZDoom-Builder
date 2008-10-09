@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -41,7 +42,8 @@ namespace CodeImp.DoomBuilder.Actions
 		// Shortcut key
 		private int key;
 		private int keymask;
-
+		private int defaultkey;
+		
 		// Shortcut options
 		private bool allowkeys;
 		private bool allowmouse;
@@ -64,6 +66,7 @@ namespace CodeImp.DoomBuilder.Actions
 		public string Description { get { return description; } }
 		public int ShortcutKey { get { return key; } }
 		public int ShortcutMask { get { return keymask; } }
+		public int DefaultShortcutKey { get { return defaultkey; } }
 		public bool AllowKeys { get { return allowkeys; } }
 		public bool AllowMouse { get { return allowmouse; } }
 		public bool AllowScroll { get { return allowscroll; } }
@@ -77,23 +80,23 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Action(string name, string shortname, string category, string title, string description, int key,
-					  bool allowkeys, bool allowmouse, bool allowscroll, bool disregardshift, bool repeat)
+		public Action(Configuration cfg, string name, string shortname, int key)
 		{
 			// Initialize
 			this.name = name;
 			this.shortname = shortname;
-			this.category = category;
-			this.title = title;
-			this.description = description;
+			this.title = cfg.ReadSetting(shortname + ".title", "[" + name + "]");
+			this.category = cfg.ReadSetting(shortname + ".category", "");
+			this.description = cfg.ReadSetting(shortname + ".description", "");
+			this.allowkeys = cfg.ReadSetting(shortname + ".allowkeys", true);
+			this.allowmouse = cfg.ReadSetting(shortname + ".allowmouse", true);
+			this.allowscroll = cfg.ReadSetting(shortname + ".allowscroll", false);
+			this.disregardshift = cfg.ReadSetting(shortname + ".disregardshift", false);
+			this.repeat = cfg.ReadSetting(shortname + ".repeat", false);
+			this.defaultkey = cfg.ReadSetting(shortname + ".default", 0);
 			this.begindelegates = new List<ActionDelegate>();
 			this.enddelegates = new List<ActionDelegate>();
-			this.allowkeys = allowkeys;
-			this.allowmouse = allowmouse;
-			this.allowscroll = allowscroll;
-			this.disregardshift = disregardshift;
-			this.repeat = repeat;
-
+				
 			if(disregardshift)
 			{
 				keymask = (int)Keys.Shift | (int)Keys.Control;
@@ -103,8 +106,15 @@ namespace CodeImp.DoomBuilder.Actions
 			{
 				keymask = ~0;
 			}
-			
-			this.key = key & keymask;
+
+			if(key == -1)
+			{
+				this.key = -1;
+			}
+			else
+			{
+				this.key = key & keymask;
+			}
 		}
 
 		// Destructor
