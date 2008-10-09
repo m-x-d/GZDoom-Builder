@@ -512,6 +512,10 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Loading plugins...");
 				plugins = new PluginManager();
 				plugins.LoadAllPlugins();
+
+				// Now that all settings have been combined (core & plugins) apply the defaults
+				General.WriteLogLine("Applying configuration settings...");
+				actions.ApplyDefaultShortcutKeys();
 				
 				// Load game configurations
 				General.WriteLogLine("Loading game configurations...");

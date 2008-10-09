@@ -149,14 +149,6 @@ namespace CodeImp.DoomBuilder.Actions
 						// Get action properties
 						shortname = a.Key.ToString();
 						name = asmname.Name.ToLowerInvariant() + "_" + shortname;
-						title = cfg.ReadSetting(a.Key + ".title", "[" + name + "]");
-						cat = cfg.ReadSetting(a.Key + ".category", "");
-						desc = cfg.ReadSetting(a.Key + ".description", "");
-						akeys = cfg.ReadSetting(a.Key + ".allowkeys", true);
-						amouse = cfg.ReadSetting(a.Key + ".allowmouse", true);
-						ascroll = cfg.ReadSetting(a.Key + ".allowscroll", false);
-						noshift = cfg.ReadSetting(a.Key + ".disregardshift", false);
-						repeat = cfg.ReadSetting(a.Key + ".repeat", false);
 						debugonly = cfg.ReadSetting(a.Key + ".debugonly", false);
 
 						// Not the categories structure?
@@ -166,7 +158,7 @@ namespace CodeImp.DoomBuilder.Actions
 							if(General.DebugBuild || !debugonly)
 							{
 								// Create an action
-								CreateAction(name, shortname, cat, title, desc, akeys, amouse, ascroll, noshift, repeat);
+								CreateAction(cfg, name, shortname);
 							}
 						}
 					}
@@ -175,16 +167,16 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// This manually creates an action
-		private void CreateAction(string name, string shortname, string category, string title, string desc, bool allowkeys, bool allowmouse, bool allowscroll, bool disregardshift, bool repeat)
+		private void CreateAction(Configuration cfg, string name, string shortname)
 		{
 			// Action does not exist yet?
 			if(!actions.ContainsKey(name))
 			{
 				// Read the key from configuration
-				int key = General.Settings.ReadSetting("shortcuts." + name, 0);
+				int key = General.Settings.ReadSetting("shortcuts." + name, -1);
 
 				// Create an action
-				actions.Add(name, new Action(name, shortname, category, title, desc, key, allowkeys, allowmouse, allowscroll, disregardshift, repeat));
+				actions.Add(name, new Action(cfg, name, shortname, key));
 			}
 			else
 			{
@@ -411,6 +403,35 @@ namespace CodeImp.DoomBuilder.Actions
 		#endregion
 
 		#region ================== Shortcut Keys
+		
+		// This applies default keys if they are not already in use
+		public void ApplyDefaultShortcutKeys()
+		{
+			// Find actions that have no key set
+			foreach(KeyValuePair<string, Action> a in actions)
+			{
+				// Check if the default key is not already used
+				bool keyused = false;
+				foreach(KeyValuePair<string, Action> d in actions)
+				{
+					// Check if the keys are the same
+					// Note that I use the mask of the source action to check if they match any combination
+					if((d.Value.ShortcutKey & a.Value.ShortcutMask) == (a.Value.DefaultShortcutKey & a.Value.ShortcutMask))
+					{
+						// No party.
+						keyused = true;
+						break;
+					}
+				}
+				
+				// Party?
+				if(!keyused)
+				{
+					// Apply the default key
+					a.Value.SetShortcutKey(a.Value.DefaultShortcutKey);
+				}
+			}
+		}
 		
 		// This checks if a given action is active
 		public bool CheckActionActive(Assembly asm, string actionname)
