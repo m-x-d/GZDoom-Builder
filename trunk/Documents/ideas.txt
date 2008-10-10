@@ -1,3 +1,4 @@
+
 [15:49] <SoM> if you split a linedef with a vertex, there should be an option that will align the second half of the split 
 [15:49] <SoM> so like, if I have a line that is 128 units long
 [15:49] <SoM> and I split them in half
@@ -49,3 +50,20 @@ Plugin that adds a key to toggle between 3D mode and the previous mode. Some peo
 
 Option to only remove upper/lower textures when neither side of the line has a tag when drawing/merging.
 Option to never remove any upper/lower textures when drawing/merging.
+
+===========================================================================================
+
+A feature that might be definitely of use in 3D Mode: "Drag Texture Offset", means simply by holding space and moving the mouse you can drag/move a texture on it's wall.
+
+===========================================================================================
+
+This is just a little idea that I had for DB2 that I think would make mapping easier... (at least for me!!)
+Say for example I have just selected 12 sectors to try out a particular ceiling flat on those sectors. Then I go into 3D mode to see how that texture looks. Say if I don't like that texture, I either have to go around in 3D mode and change the flat one sector at a time, or go back into normal mode and reselect all 12 sectors and change the flat like that.
+My idea was this. Once you have selected the group of sectors you wish to change, you could hit ctrl-1 and DB could "remember" that group of sectors, so that if you hit the "1" key, it would instantly reselect all 12 sectors.
+It is exactly like creating a group of soldiers/tanks/guns/archers in most RTS games. Ctrl-1 creates the specified group, 1 reselects the desired units.
+ctrl-2 could be a bunch of linedefs that all needed offsetting, go into 3D mode, see that they needed to be offset by a different amount, go back into lines mode, reselect the entire group and try again.
+I think the ability to quickly reselect groups of lines/sectors would be a huge benefit when choosing or offsetting textures, changing ceiling/floor heights etc etc.
+You could have ctrl groups in sectors, lines, vertices and even things mode.
+
+===========================================================================================
+
