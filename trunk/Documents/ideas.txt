@@ -13,6 +13,8 @@
 
 Slider to change transparency amount of doublesided lines
 
+Slider to change transparency amount of background image
+
 ===========================================================================================
 
 Draw association on top of highlight so that a highligted sector referring to it's own
@@ -64,6 +66,10 @@ It is exactly like creating a group of soldiers/tanks/guns/archers in most RTS g
 ctrl-2 could be a bunch of linedefs that all needed offsetting, go into 3D mode, see that they needed to be offset by a different amount, go back into lines mode, reselect the entire group and try again.
 I think the ability to quickly reselect groups of lines/sectors would be a huge benefit when choosing or offsetting textures, changing ceiling/floor heights etc etc.
 You could have ctrl groups in sectors, lines, vertices and even things mode.
+
+===========================================================================================
+
+Extend the background image feature so that images can be loaded from file. Also scalable and movable. This would allow the mapper to use a hand-drawn image as guidline for mapping.
 
 ===========================================================================================
 
