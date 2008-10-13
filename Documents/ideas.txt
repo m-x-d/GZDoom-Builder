@@ -73,3 +73,9 @@ Extend the background image feature so that images can be loaded from file. Also
 
 ===========================================================================================
 
+Map statistics plugin
+- Button on toolbar for stats window (stats also shown in text format for copy/paste)
+- Command-line processing that saves text stats to file
+
+===========================================================================================
+
