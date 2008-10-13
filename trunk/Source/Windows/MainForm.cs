@@ -205,6 +205,14 @@ namespace CodeImp.DoomBuilder.Windows
 		// Window is first shown
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
+			// Perform auto mapo loading action when the window is not delayed
+			if(!General.DelayMainWindow) PerformAutoMapLoading();
+		}
+
+		// Auto map loading that must be done when the window is first shown after loading
+		// but also before the window is shown when the -delaywindow parameter is given
+		internal void PerformAutoMapLoading()
+		{
 			// Check if the command line arguments tell us to load something
 			if(General.AutoLoadFile != null)
 			{
