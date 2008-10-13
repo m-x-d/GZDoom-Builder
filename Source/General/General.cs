@@ -117,6 +117,7 @@ namespace CodeImp.DoomBuilder
 		private static string autoloadfile = null;
 		private static string autoloadmap = null;
 		private static string autoloadconfig = null;
+		private static bool delaymainwindow;
 
 		#endregion
 
@@ -142,9 +143,10 @@ namespace CodeImp.DoomBuilder
 		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
 		internal static TypesManager Types { get { return types; } }
-		internal static string AutoLoadFile { get { return autoloadfile; } }
-		internal static string AutoLoadMap { get { return autoloadmap; } }
-		internal static string AutoLoadConfig { get { return autoloadconfig; } }
+		public static string AutoLoadFile { get { return autoloadfile; } }
+		public static string AutoLoadMap { get { return autoloadmap; } }
+		public static string AutoLoadConfig { get { return autoloadconfig; } }
+		public static bool DelayMainWindow { get { return delaymainwindow; } }
 		
 		#endregion
 
@@ -497,11 +499,14 @@ namespace CodeImp.DoomBuilder
 				mainwindow = new MainForm();
 				mainwindow.UpdateInterface();
 
-				// Show main window
-				General.WriteLogLine("Showing main interface window...");
-				mainwindow.Show();
-				mainwindow.Update();
-
+				if(!delaymainwindow)
+				{
+					// Show main window
+					General.WriteLogLine("Showing main interface window...");
+					mainwindow.Show();
+					mainwindow.Update();
+				}
+				
 				// Start Direct3D
 				General.WriteLogLine("Starting Direct3D graphics driver...");
 				try { D3DDevice.Startup(); }
@@ -540,6 +545,10 @@ namespace CodeImp.DoomBuilder
 				// Create types manager
 				General.WriteLogLine("Creating types manager...");
 				types = new TypesManager();
+				
+				// Do auto map loading when window is delayed
+				if(delaymainwindow)
+					mainwindow.PerformAutoMapLoading();
 				
 				// Run application from the main window
 				General.WriteLogLine("Startup done");
@@ -600,8 +609,14 @@ namespace CodeImp.DoomBuilder
 				// Get next arg
 				string curarg = argslist.Dequeue();
 				
+				// Delay window?
+				if(string.Compare(curarg, "-DELAYWINDOW", true) == 0)
+				{
+					// Delay showing the main window
+					delaymainwindow = true;
+				}
 				// Map name info?
-				if(string.Compare(curarg, "-MAP", true) == 0)
+				else if(string.Compare(curarg, "-MAP", true) == 0)
 				{
 					// Store next arg as map name information
 					autoloadmap = argslist.Dequeue();
@@ -638,6 +653,26 @@ namespace CodeImp.DoomBuilder
 		#endregion
 		
 		#region ================== Terminate
+
+		// This is for plugins to use
+		public static void Exit(bool properexit)
+		{
+			// Plugin wants to exit nicely?
+			if(properexit)
+			{
+				// Close dialog forms first
+				while((Form.ActiveForm != mainwindow) && (Form.ActiveForm != null))
+					Form.ActiveForm.Close();
+
+				// Close main window
+				mainwindow.Close();
+			}
+			else
+			{
+				// Terminate, no questions asked
+				Terminate(true);
+			}
+		}
 		
 		// This terminates the program
 		internal static void Terminate(bool properexit)
@@ -682,6 +717,9 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Immediate program termination");
 				Application.Exit();
 			}
+
+			// Die.
+			Process.GetCurrentProcess().Kill();
 		}
 		
 		#endregion
@@ -743,6 +781,9 @@ namespace CodeImp.DoomBuilder
 					mainwindow.DisplayStatus("Creating new map...");
 					Cursor.Current = Cursors.WaitCursor;
 
+					// Let the plugins know
+					plugins.OnMapNewBegin();
+
 					// Clear the display
 					mainwindow.ClearDisplay();
 
@@ -764,6 +805,9 @@ namespace CodeImp.DoomBuilder
 						// Show splash logo on display
 						mainwindow.ShowSplashDisplay();
 					}
+
+					// Let the plugins know
+					plugins.OnMapNewEnd();
 
 					// All done
 					mainwindow.RedrawDisplay();
@@ -866,6 +910,9 @@ namespace CodeImp.DoomBuilder
 			mainwindow.DisplayStatus("Opening map file...");
 			Cursor.Current = Cursors.WaitCursor;
 
+			// Let the plugins know
+			plugins.OnMapOpenBegin();
+
 			// Clear the display
 			mainwindow.ClearDisplay();
 
@@ -888,6 +935,9 @@ namespace CodeImp.DoomBuilder
 				// Show splash logo on display
 				mainwindow.ShowSplashDisplay();
 			}
+
+			// Let the plugins know
+			plugins.OnMapOpenEnd();
 
 			// All done
 			mainwindow.RedrawDisplay();

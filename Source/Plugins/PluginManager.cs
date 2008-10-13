@@ -283,6 +283,30 @@ namespace CodeImp.DoomBuilder.Plugins
 			foreach(Plugin p in plugins) p.Plug.OnRedoEnd();
 		}
 
+
+		public void OnMapOpenBegin()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapOpenBegin();
+		}
+
+
+		public void OnMapOpenEnd()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapOpenEnd();
+		}
+
+
+		public void OnMapNewBegin()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapNewBegin();
+		}
+
+
+		public void OnMapNewEnd()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapNewEnd();
+		}
+
 		
 		#endregion
 	}

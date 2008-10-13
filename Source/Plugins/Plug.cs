@@ -100,6 +100,34 @@ namespace CodeImp.DoomBuilder.Plugins
 		#region ================== Events
 
 		/// <summary>
+		/// Occurs before a map is opened.
+		/// </summary>
+		public virtual void OnMapOpenBegin()
+		{
+		}
+
+		/// <summary>
+		/// Occurs after a map is opened.
+		/// </summary>
+		public virtual void OnMapOpenEnd()
+		{
+		}
+
+		/// <summary>
+		/// Occurs before a new map is created.
+		/// </summary>
+		public virtual void OnMapNewBegin()
+		{
+		}
+
+		/// <summary>
+		/// Occurs after a new map is created.
+		/// </summary>
+		public virtual void OnMapNewEnd()
+		{
+		}
+
+		/// <summary>
 		/// This is called after the constructor to allow a plugin to initialize.
 		/// </summary>
 		public virtual void OnInitialize()
