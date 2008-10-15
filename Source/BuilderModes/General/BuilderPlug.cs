@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// When ceiling surface geometry is created for classic modes
 		public override void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
 		{
-			ImageData img = General.Map.Data.GetFlatImage(s.LongFloorTexture);
+			ImageData img = General.Map.Data.GetFlatImage(s.LongCeilTexture);
 			if(img != null)
 			{
 				// Make scalars

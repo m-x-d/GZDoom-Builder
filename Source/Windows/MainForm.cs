@@ -1252,10 +1252,21 @@ namespace CodeImp.DoomBuilder.Windows
 			buttontestmonsters.Enabled = (General.Map != null);
 			buttontestmonsters.Checked = General.Settings.TestMonsters;
 
-			// Only disable view mode buttons
-			if(General.Map == null)
+			// View mode buttons
+			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
 			{
-				for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++) viewmodes[i].Enabled = false;
+				// NOTE: We only disable them when no map is loaded, because they may
+				// need to be disabled for non-classic modes
+				if(General.Map == null)
+				{
+					viewmodes[i].Enabled = false;
+					viewmodes[i].Checked = false;
+				}
+				else
+				{
+					// Check the correct button
+					viewmodes[i].Checked = (i == (int)General.Map.CRenderer2D.ViewMode);
+				}
 			}
 		}
 
