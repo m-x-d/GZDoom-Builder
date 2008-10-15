@@ -142,8 +142,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					labelarray[i].AlignX = TextAlignmentX.Center;
 					labelarray[i].AlignY = TextAlignmentY.Middle;
 					labelarray[i].Scale = 14f;
-					labelarray[i].Color = General.Colors.Highlight;
-					labelarray[i].Backcolor = General.Colors.Background.WithAlpha(80);
+					labelarray[i].Color = General.Colors.Highlight.WithAlpha(255);
+					labelarray[i].Backcolor = General.Colors.Background.WithAlpha(255);
 				}
 				labels.Add(s, labelarray);
 			}
@@ -154,18 +154,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(renderer.StartOverlay(true))
 			{
-				// Go for all sectors
-				foreach(Sector s in General.Map.Map.Sectors)
+				// Editing a selection?
+				if(mode == ModifyMode.Adjusting)
 				{
-					// Determine color by brightness
-					PixelColor brightnesscolor = new PixelColor(255, (byte)s.Brightness, (byte)s.Brightness, (byte)s.Brightness);
-					int brightnessint = brightnesscolor.ToInt();
-					
-					// Render the geometry
-					FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
-					s.FlatVertices.CopyTo(verts, 0);
-					for(int i = 0; i < verts.Length; i++) verts[i].c = brightnessint;
-					renderer.RenderGeometry(verts, null, true);
+					// Go for all sectors that are being edited
+					foreach(Sector s in orderedselection)
+					{
+						// We use the overlay to dim the brightness of the sectors
+						PixelColor brightnesscolor = new PixelColor((byte)(255 - s.Brightness), 0, 0, 0);
+						int brightnessint = brightnesscolor.ToInt();
+
+						// Render the geometry
+						FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
+						s.FlatVertices.CopyTo(verts, 0);
+						for(int i = 0; i < verts.Length; i++) verts[i].c = brightnessint;
+						renderer.RenderGeometry(verts, null, true);
+					}
 				}
 				
 				// Go for all sectors
@@ -352,6 +356,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			CustomPresentation p = new CustomPresentation();
 			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
+			p.AddLayer(new PresentLayer(RendererLayer.Surface, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
 			//p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, Presentation.THINGS_BACK_ALPHA, false));
 			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
@@ -419,6 +424,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This redraws the display
 		public override void OnRedrawDisplay()
 		{
+			renderer.RedrawSurface();
+			
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
 			{
@@ -659,10 +666,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode = ModifyMode.Adjusting;
 				editstartpos = Cursor.Position;
 				
-				// Keep sector brightness offsets
+				// Keep sector brightness offsets and make the sector full brightness so we can use
+				// the overlay to adjust the brightness. The surface is only updated here and again
+				// with correct brightness when editing is done.
 				sectorbrightness = new List<int>(orderedselection.Count);
-				foreach(Sector s in orderedselection) sectorbrightness.Add(s.Brightness);
-				
+				foreach(Sector s in orderedselection)
+				{
+					int realbrightness = s.Brightness;
+					sectorbrightness.Add(realbrightness);
+					s.Brightness = 255;
+					s.UpdateCache();
+					s.Brightness = realbrightness;
+				}
+
+				// Update surface to render full bright sectors
+				renderer.RedrawSurface();
+
 				// Update
 				UpdateSelectedLabels();
 				UpdateOverlay();
@@ -684,8 +703,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.WithdrawUndo(undoticket);
 			
 			// Update
+			General.Map.Map.Update();
 			UpdateSelectedLabels();
-			UpdateOverlay();
+			General.Interface.RedrawDisplay();
 			renderer.Present();
 			
 			// If only one sector was selected, deselect it
