@@ -127,8 +127,11 @@
   <data name="UnknownImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\UnknownImage.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ViewNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ViewNormal.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Status1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status1.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -142,8 +145,17 @@
   <data name="Status2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="KnownTextureSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KnownTextureSet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Splash3_trans" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Splash3_trans.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OpenMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OpenMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ViewTextureFloor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ViewTextureFloor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Zoom_arrowup" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Zoom_arrowup.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -154,11 +166,11 @@
   <data name="Monster2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Monster2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="File" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NewMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mergegeometry" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\mergegeometry.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -175,17 +187,14 @@
   <data name="Undo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Undo.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Paste" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Paste.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Failed" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Failed.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MissingTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MissingTexture.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Zoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Zoom.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ViewBrightness" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ViewBrightness.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Test" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Test.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -196,11 +205,11 @@
   <data name="SlimDX_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SlimDX_small.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Paste" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Paste.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="WarningOff" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\WarningOff.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Splash3_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Splash3_small.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mergegeometry2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\mergegeometry2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -211,19 +220,22 @@
   <data name="Filter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Filter.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Splash3_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Splash3_small.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Folder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Folder.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Grid4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Grid4.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="OpenMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\OpenMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="MissingTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\MissingTexture.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Warning.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="KnownTextureSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\KnownTextureSet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ViewTextureCeiling" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ViewTextureCeiling.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

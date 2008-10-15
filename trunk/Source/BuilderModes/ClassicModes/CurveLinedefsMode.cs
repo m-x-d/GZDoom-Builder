@@ -227,6 +227,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Redrawing display
 		public override void OnRedrawDisplay()
 		{
+			renderer.RedrawSurface();
+
 			// Render lines
 			if(renderer.StartPlotter(true))
 			{

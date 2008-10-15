@@ -7,6 +7,9 @@ using System.Globalization;
 using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -98,6 +101,22 @@ namespace CodeImp.DoomBuilder.Plugins
 		#endregion
 
 		#region ================== Events
+
+		/// <summary>
+		/// This iscalled when the ceiling surface buffer is updated for a sector. The plugin can
+		/// modify the vertices to change how the surface is presented to the user.
+		/// </summary>
+		public virtual void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
+		{
+		}
+
+		/// <summary>
+		/// This iscalled when the floor surface buffer is updated for a sector. The plugin can
+		/// modify the vertices to change how the surface is presented to the user.
+		/// </summary>
+		public virtual void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
+		{
+		}
 
 		/// <summary>
 		/// Occurs before a map is opened.

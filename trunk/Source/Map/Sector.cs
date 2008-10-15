@@ -26,12 +26,14 @@ using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Rendering;
 using System.Collections.ObjectModel;
+using SlimDX.Direct3D9;
+using SlimDX;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Sector : MapElement
+	public sealed class Sector : MapElement, ID3DResource
 	{
 		#region ================== Constants
 
@@ -76,6 +78,8 @@ namespace CodeImp.DoomBuilder.Map
 		private Triangulation triangles;
 		private FlatVertex[] flatvertices;
 		private ReadOnlyCollection<LabelPositionInfo> labels;
+		private VertexBuffer flatceilingbuffer;
+		private VertexBuffer flatfloorbuffer;
 		
 		#endregion
 
@@ -100,6 +104,8 @@ namespace CodeImp.DoomBuilder.Map
 		public Sector Clone { get { return clone; } set { clone = value; } }
 		public Triangulation Triangles { get { return triangles; } }
 		public FlatVertex[] FlatVertices { get { return flatvertices; } }
+		internal VertexBuffer FlatCeilingBuffer { get { return flatceilingbuffer; } }
+		internal VertexBuffer FlatFloorBuffer { get { return flatfloorbuffer; } }
 		public ReadOnlyCollection<LabelPositionInfo> Labels { get { return labels; } }
 		
 		#endregion
@@ -120,7 +126,9 @@ namespace CodeImp.DoomBuilder.Map
 			this.longfloortexname = MapSet.EmptyLongName;
 			this.longceiltexname = MapSet.EmptyLongName;
 			this.triangulationneeded = true;
-			
+
+			General.Map.Graphics.RegisterResource(this);
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -144,7 +152,13 @@ namespace CodeImp.DoomBuilder.Map
 				// because a sidedef cannot exist without reference to its sector.
 				foreach(Sidedef sd in sidedefs) sd.Dispose();
 
+				General.Map.Graphics.UnregisterResource(this);
+
 				// Clean up
+				if(flatceilingbuffer != null) flatceilingbuffer.Dispose();
+				if(flatfloorbuffer != null) flatfloorbuffer.Dispose();
+				flatceilingbuffer = null;
+				flatfloorbuffer = null;
 				mainlistitem = null;
 				sidedefs = null;
 				things = null;
@@ -222,6 +236,7 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					// Triangulate sector
 					triangles = Triangulation.Create(this);
+					triangulationneeded = false;
 					
 					// Make label positions
 					labels = Array.AsReadOnly<LabelPositionInfo>(Tools.FindLabelPositions(this).ToArray());
@@ -248,7 +263,112 @@ namespace CodeImp.DoomBuilder.Map
 				
 				// Updated
 				updateneeded = false;
+
+				// Update buffers
+				UpdateFloorSurface();
+				UpdateCeilingSurface();
 			}
+		}
+
+		// This updates the buffer with flat vertices
+		public void UpdateFloorSurface()
+		{
+			// Trash buffer, if any
+			if(flatfloorbuffer != null)
+			{
+				flatfloorbuffer.Dispose();
+				flatfloorbuffer = null;
+			}
+
+			// Not updated?
+			if(updateneeded)
+			{
+				// Make sure the sector is up-to-date
+				// This will automatically call this function again
+				UpdateCache();
+			}
+			// Any vertices?
+			else if(flatvertices.Length > 0)
+			{
+				FlatVertex[] buffervertices = new FlatVertex[triangles.Vertices.Count];
+				flatvertices.CopyTo(buffervertices, 0);
+
+				// Raise event to allow plugins to modify this data
+				General.Plugins.OnSectorFloorSurfaceUpdate(this, ref buffervertices);
+
+				// Make the buffer
+				flatfloorbuffer = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffervertices.Length,
+											  Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+
+				// Fill it
+				DataStream bufferstream = flatfloorbuffer.Lock(0, FlatVertex.Stride * buffervertices.Length, LockFlags.Discard);
+				bufferstream.WriteRange<FlatVertex>(buffervertices);
+				flatfloorbuffer.Unlock();
+				bufferstream.Dispose();
+			}
+		}
+
+		// This updates the buffer with flat vertices
+		public void UpdateCeilingSurface()
+		{
+			// Trash buffer, if any
+			if(flatceilingbuffer != null)
+			{
+				flatceilingbuffer.Dispose();
+				flatceilingbuffer = null;
+			}
+
+			// Not updated?
+			if(updateneeded)
+			{
+				// Make sure the sector is up-to-date
+				// This will automatically call this function again
+				UpdateCache();
+			}
+			// Any vertices?
+			else if(flatvertices.Length > 0)
+			{
+				FlatVertex[] buffervertices = new FlatVertex[triangles.Vertices.Count];
+				flatvertices.CopyTo(buffervertices, 0);
+
+				// Raise event to allow plugins to modify this data
+				General.Plugins.OnSectorCeilingSurfaceUpdate(this, ref buffervertices);
+
+				// Make the buffer
+				flatceilingbuffer = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffervertices.Length,
+											  Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+
+				// Fill it
+				DataStream bufferstream = flatceilingbuffer.Lock(0, FlatVertex.Stride * buffervertices.Length, LockFlags.Discard);
+				bufferstream.WriteRange<FlatVertex>(buffervertices);
+				flatceilingbuffer.Unlock();
+				bufferstream.Dispose();
+			}
+		}
+
+		// Unload unstable resources
+		public void UnloadResource()
+		{
+			// Trash buffer, if any
+			if(flatfloorbuffer != null)
+			{
+				flatfloorbuffer.Dispose();
+				flatfloorbuffer = null;
+			}
+			
+			// Trash buffer, if any
+			if(flatceilingbuffer != null)
+			{
+				flatceilingbuffer.Dispose();
+				flatceilingbuffer = null;
+			}
+		}
+
+		// Reload unstable resources
+		public void ReloadResource()
+		{
+			UpdateFloorSurface();
+			UpdateCeilingSurface();
 		}
 		
 		#endregion

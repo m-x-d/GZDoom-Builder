@@ -109,6 +109,8 @@ namespace CodeImp.DoomBuilder
 		internal D3DDevice Graphics { get { return graphics; } }
 		public IRenderer2D Renderer2D { get { return renderer2d; } }
 		public IRenderer3D Renderer3D { get { return renderer3d; } }
+		internal Renderer2D CRenderer2D { get { return renderer2d; } }
+		internal Renderer3D CRenderer3D { get { return renderer3d; } }
 		public GameConfiguration Config { get { return config; } }
 		internal ConfigurationInfo ConfigSettings { get { return configinfo; } }
 		public GridSetup Grid { get { return grid; } }
@@ -235,14 +237,14 @@ namespace CodeImp.DoomBuilder
 			io.Write(map, TEMP_MAP_HEADER, 1);
 			CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
 			
-			// Update structures
-			map.Update();
-			thingsfilter.Update();
-			
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
 			data = new DataManager();
 			data.Load(configinfo.Resources, options.Resources);
+			
+			// Update structures
+			map.Update();
+			thingsfilter.Update();
 
 			// Bind any methods
 			General.Actions.BindMethods(this);
@@ -319,16 +321,16 @@ namespace CodeImp.DoomBuilder
 				General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
 				return false;
 			}
-
-			// Update structures
-			map.Update();
-			thingsfilter.Update();
 			
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
 			data = new DataManager();
 			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
+
+			// Update structures
+			map.Update();
+			thingsfilter.Update();
 			
 			// Bind any methods
 			General.Actions.BindMethods(this);
@@ -902,18 +904,8 @@ namespace CodeImp.DoomBuilder
 				// Engage new mode
 				if(newmode != null) newmode.OnEngage();
 
-				// Check appropriate button on interface
-				// And show the mode name
-				if(mode != null)
-				{
-					General.MainWindow.CheckEditModeButton(mode.EditModeButtonName);
-					General.MainWindow.DisplayModeName(mode.Attributes.DisplayName);
-				}
-				else
-				{
-					General.MainWindow.CheckEditModeButton("");
-					General.MainWindow.DisplayModeName("");
-				}
+				// Update the interface
+				General.MainWindow.EditModeChanged();
 
 				// Dispose old mode
 				if(oldmode != null) oldmode.Dispose();

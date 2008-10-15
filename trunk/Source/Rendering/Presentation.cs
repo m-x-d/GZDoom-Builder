@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Standard classic mode
 			standard = new Presentation();
 			standard.layers.Add(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
+			standard.layers.Add(new PresentLayer(RendererLayer.Surface, BlendingMode.Mask));
 			standard.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, THINGS_BACK_ALPHA));
 			standard.layers.Add(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			standard.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
@@ -73,6 +74,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Things classic mode
 			things = new Presentation();
 			things.layers.Add(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
+			things.layers.Add(new PresentLayer(RendererLayer.Surface, BlendingMode.Mask));
 			things.layers.Add(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			things.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			things.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 1f, false));
@@ -143,7 +145,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		Grid,
 		Things,
 		Geometry,
-		Overlay
+		Overlay,
+		Surface
 	}
 
 	// Blending modes

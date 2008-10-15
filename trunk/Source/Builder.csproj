@@ -140,6 +140,7 @@
     <Compile Include="Map\MapElement.cs" />
     <Compile Include="Map\UniFields.cs" />
     <Compile Include="Map\UniValue.cs" />
+    <Compile Include="Rendering\ViewMode.cs" />
     <Compile Include="Types\BoolHandler.cs" />
     <Compile Include="Types\ColorHandler.cs" />
     <Compile Include="Types\EnumBitsHandler.cs" />
@@ -610,6 +611,10 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\ViewBrightness.png" />
+    <None Include="Resources\ViewTextureCeiling.png" />
+    <None Include="Resources\ViewTextureFloor.png" />
+    <None Include="Resources\ViewNormal.png" />
     <None Include="Resources\KnownTextureSet.png" />
     <EmbeddedResource Include="Resources\Hourglass3D.png" />
     <None Include="Resources\Failed.png" />

@@ -21,40 +21,28 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Drawing;
-using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.IO;
+using System.Windows.Forms;
 using System.IO;
+using System.Reflection;
+using System.Drawing;
+using System.ComponentModel;
+using CodeImp.DoomBuilder.Map;
+using SlimDX.Direct3D9;
+using SlimDX;
+using CodeImp.DoomBuilder.Geometry;
+using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Data
+namespace CodeImp.DoomBuilder.Rendering
 {
-	public sealed class NullImage : ImageData
+	public enum ViewMode : int
 	{
-		#region ================== Constructor / Disposer
-
-		// Constructor
-		public NullImage()
-		{
-			// Initialize
-			this.width = 0;
-			this.height = 0;
-			SetName("");
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		#endregion
-
-		#region ================== Methods
-		
-		// Dont do anything
-		protected override void LocalLoadImage() { bitmap = CodeImp.DoomBuilder.Properties.Resources.UnknownImage; }
-		internal override void CreateTexture() { }
-
-		#endregion
+		Normal = 0,
+		Brightness = 1,
+		FloorTextures = 2,
+		CeilingTextures = 3
 	}
 }
