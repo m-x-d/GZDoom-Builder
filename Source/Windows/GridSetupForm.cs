@@ -68,6 +68,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show background offset
 			backoffsetx.Value = General.Map.Grid.BackgroundX;
 			backoffsety.Value = General.Map.Grid.BackgroundY;
+			backscalex.Value = (int)(General.Map.Grid.BackgroundScaleX * 100.0f);
+			backscaley.Value = (int)(General.Map.Grid.BackgroundScaleY * 100.0f);
 		}
 
 		// Show Background changed
@@ -76,9 +78,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// Enable/disable controls
 			selecttexture.Enabled = showbackground.Checked;
 			selectflat.Enabled = showbackground.Checked;
+			selectfile.Enabled = showbackground.Checked;
 			backoffset.Enabled = showbackground.Checked;
+			backscale.Enabled = showbackground.Checked;
 			backoffsetx.Enabled = showbackground.Checked;
 			backoffsety.Enabled = showbackground.Checked;
+			backscalex.Enabled = showbackground.Checked;
+			backscaley.Enabled = showbackground.Checked;
 		}
 
 		// Browse texture
@@ -93,7 +99,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Set this texture as background
 				backgroundname = result;
 				backgroundsource = GridSetup.SOURCE_TEXTURES;
-				General.DisplayZoomedImage(backgroundimage, General.Map.Data.GetTextureImage(result).GetPreview());
+				ImageData img = General.Map.Data.GetTextureImage(result);
+				img.LoadImage();
+				General.DisplayZoomedImage(backgroundimage, img.Bitmap);
 			}
 		}
 
@@ -109,7 +117,25 @@ namespace CodeImp.DoomBuilder.Windows
 				// Set this flat as background
 				backgroundname = result;
 				backgroundsource = GridSetup.SOURCE_FLATS;
-				General.DisplayZoomedImage(backgroundimage, General.Map.Data.GetFlatImage(result).GetPreview());
+				ImageData img = General.Map.Data.GetFlatImage(result);
+				img.LoadImage();
+				General.DisplayZoomedImage(backgroundimage, img.Bitmap);
+			}
+		}
+
+		// Browse file
+		private void selectfile_Click(object sender, EventArgs e)
+		{
+			// Browse for file
+			if(browsefile.ShowDialog(this) == DialogResult.OK)
+			{
+				// Set this file as background
+				backgroundname = browsefile.FileName;
+				backgroundsource = GridSetup.SOURCE_FILE;
+				ImageData img = new FileImage(backgroundname, backgroundname);
+				img.LoadImage();
+				General.DisplayZoomedImage(backgroundimage, new Bitmap(img.Bitmap));
+				img.Dispose();
 			}
 		}
 		
@@ -125,7 +151,8 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Apply
 			General.Map.Grid.SetGridSize((int)gridsize.Value);
-			General.Map.Grid.SetBackgroundOffset((int)backoffsetx.Value, (int)backoffsety.Value);
+			General.Map.Grid.SetBackgroundView((int)backoffsetx.Value, (int)backoffsety.Value,
+							(float)backscalex.Value / 100.0f, (float)backscaley.Value / 100.0f);
 			
 			// Background image?
 			if(showbackground.Checked)

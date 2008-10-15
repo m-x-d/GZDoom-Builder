@@ -102,13 +102,16 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public ImageData()
 		{
-			// We have no destructor
-			GC.SuppressFinalize(this);
-
 			// Defaults
 			usecolorcorrection = true;
 		}
 
+		// Destructor
+		~ImageData()
+		{
+			this.Dispose();
+		}
+		
 		// Disposer
 		public virtual void Dispose()
 		{
@@ -243,6 +246,8 @@ namespace CodeImp.DoomBuilder.Data
 					bitmap = new Bitmap(Properties.Resources.Failed);
 					width = bitmap.Size.Width;
 					height = bitmap.Size.Height;
+					scaledwidth = (float)bitmap.Size.Width * General.Map.Config.DefaultTextureScale;
+					scaledheight = (float)bitmap.Size.Height * General.Map.Config.DefaultTextureScale;
 				}
 				
 				// Image is ready

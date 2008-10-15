@@ -12,6 +12,9 @@
 
 - Make DECORATE support
 
+- Make plugin dependencies
+	(load BEFORE and load AFTER so that also their functions are called in that order)
+
 - Make dialog and editing mode help documentation
 
 - Make Plugin Development Kit

@@ -40,7 +40,21 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Initialize
 			SetName(resourcename);
+
+			// Temporarily load resource from memory
+			Stream bitmapdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + Name);
+			Bitmap bmp = (Bitmap)Image.FromStream(bitmapdata);
+
+			// Get width and height from image
+			width = bmp.Size.Width;
+			height = bmp.Size.Height;
+			scaledwidth = (float)bmp.Size.Width;
+			scaledheight = (float)bmp.Size.Height;
 			
+			// Done
+			bmp.Dispose();
+			bitmapdata.Dispose();
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}

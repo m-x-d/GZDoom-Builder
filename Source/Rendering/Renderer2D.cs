@@ -731,7 +731,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			Vector2D ltpos, rbpos;
 			Vector2D backoffset = new Vector2D((float)General.Map.Grid.BackgroundX, (float)General.Map.Grid.BackgroundY);
-			Vector2D backimagesize = new Vector2D((float)General.Map.Grid.Background.Width, (float)General.Map.Grid.Background.Height);
+			Vector2D backimagesize = new Vector2D((float)General.Map.Grid.Background.ScaledWidth, (float)General.Map.Grid.Background.ScaledHeight);
+			Vector2D backimagescale = new Vector2D(General.Map.Grid.BackgroundScaleX, General.Map.Grid.BackgroundScaleY);
+			
+			// Scale the background image size
+			backimagesize *= backimagescale;
 			
 			// Only if a background image is set
 			if((General.Map.Grid.Background != null) &&
