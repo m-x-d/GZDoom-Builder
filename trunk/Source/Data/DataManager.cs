@@ -70,6 +70,9 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData missingtexture3d;
 		private ImageData hourglass3d;
 		
+		// Used images
+		private Dictionary<long, long> usedimages;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -172,6 +175,7 @@ namespace CodeImp.DoomBuilder.Data
 			imageque = new Queue<ImageData>();
 			previews = new PreviewManager();
 			texturesets = new List<MatchingTextureSet>();
+			usedimages = new Dictionary<long, long>();
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -413,11 +417,7 @@ namespace CodeImp.DoomBuilder.Data
 				do
 				{
 					// Do we have to update the used-in-map status?
-					if(updatedusedtextures)
-					{
-						BackgroundUpdateUsedTextures();
-						updatedusedtextures = false;
-					}
+					if(updatedusedtextures) BackgroundUpdateUsedTextures();
 					
 					// Get next item
 					ImageData image = null;
@@ -502,40 +502,28 @@ namespace CodeImp.DoomBuilder.Data
 		// This updates the used-in-map status on all textures and flats
 		private void BackgroundUpdateUsedTextures()
 		{
-			Dictionary<long, long> useditems = new Dictionary<long, long>();
-
-			// TODO: Move the map scanning part to the application thread (into the
-			// UpdateUsedTextures function)
-			// We shouldn't do this in the background, because we're not supposed
-			// to access the map from this thread! The map could change!
-			
-			// Go through the map to find the used textures
-			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+			lock(usedimages)
 			{
-				// Add used textures to dictionary
-				if(sd.HighTexture.Length > 0) useditems[sd.LongHighTexture] = 0;
-				if(sd.LowTexture.Length > 0) useditems[sd.LongMiddleTexture] = 0;
-				if(sd.MiddleTexture.Length > 0) useditems[sd.LongLowTexture] = 0;
-			}
+				// Set used on all textures
+				foreach(KeyValuePair<long, ImageData> i in textures)
+				{
+					i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
+					if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+				}
 
-			// Go through the map to find the used flats
-			foreach(Sector s in General.Map.Map.Sectors)
-			{
-				// Add used flats to dictionary
-				useditems[s.LongFloorTexture] = 0;
-				useditems[s.LongCeilTexture] = 0;
-			}
+				// Flats are not already included with the textures?
+				if(!General.Map.Config.MixTexturesFlats)
+				{
+					// Set used on all flats
+					foreach(KeyValuePair<long, ImageData> i in flats)
+					{
+						i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
+						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+					}
+				}
 
-			// Set used on all textures
-			foreach(KeyValuePair<long, ImageData> i in textures)
-				i.Value.SetUsedInMap(useditems.ContainsKey(i.Key));
-
-			// Flats are not already included with the textures?
-			if(!General.Map.Config.MixTexturesFlats)
-			{
-				// Set used on all flats
-				foreach(KeyValuePair<long, ImageData> i in flats)
-					i.Value.SetUsedInMap(useditems.ContainsKey(i.Key));
+				// Done
+				updatedusedtextures = false;
 			}
 		}
 		
@@ -966,7 +954,30 @@ namespace CodeImp.DoomBuilder.Data
 		// used-in-map status on all textures and flats
 		public void UpdateUsedTextures()
 		{
-			updatedusedtextures = true;
+			lock(usedimages)
+			{
+				usedimages.Clear();
+
+				// Go through the map to find the used textures
+				foreach(Sidedef sd in General.Map.Map.Sidedefs)
+				{
+					// Add used textures to dictionary
+					if(sd.HighTexture.Length > 0) usedimages[sd.LongHighTexture] = 0;
+					if(sd.LowTexture.Length > 0) usedimages[sd.LongMiddleTexture] = 0;
+					if(sd.MiddleTexture.Length > 0) usedimages[sd.LongLowTexture] = 0;
+				}
+
+				// Go through the map to find the used flats
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					// Add used flats to dictionary
+					usedimages[s.LongFloorTexture] = 0;
+					usedimages[s.LongCeilTexture] = 0;
+				}
+				
+				// Notify the background thread that it needs to update the images
+				updatedusedtextures = true;
+			}
 		}
 		
 		#endregion
