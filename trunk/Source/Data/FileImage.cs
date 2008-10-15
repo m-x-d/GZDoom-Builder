@@ -45,6 +45,18 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			this.filepathname = filepathname;
 			SetName(name);
+
+			// Temporarily load file
+			Bitmap bmp = (Bitmap)Bitmap.FromFile(filepathname);
+
+			// Get width and height from image
+			width = bmp.Size.Width;
+			height = bmp.Size.Height;
+			scaledwidth = (float)bmp.Size.Width * General.Map.Config.DefaultTextureScale;
+			scaledheight = (float)bmp.Size.Height * General.Map.Config.DefaultTextureScale;
+
+			// Unload file
+			bmp.Dispose();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -69,6 +81,8 @@ namespace CodeImp.DoomBuilder.Data
 				// Get width and height from image
 				width = bitmap.Size.Width;
 				height = bitmap.Size.Height;
+				scaledwidth = (float)bitmap.Size.Width * General.Map.Config.DefaultTextureScale;
+				scaledheight = (float)bitmap.Size.Height * General.Map.Config.DefaultTextureScale;
 				
 				// Pass on to base
 				base.LocalLoadImage();

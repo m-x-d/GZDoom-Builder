@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		public const int SOURCE_TEXTURES = 0;
 		public const int SOURCE_FLATS = 1;
+		public const int SOURCE_FILE = 2;
 
 		#endregion
 
@@ -60,6 +61,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private int backsource;
 		private ImageData backimage = new NullImage();
 		private int backoffsetx, backoffsety;
+		private float backscalex, backscaley;
 
 		// Disposing
 		private bool isdisposed;
@@ -75,6 +77,8 @@ namespace CodeImp.DoomBuilder.Editing
 		internal ImageData Background { get { return backimage; } }
 		internal int BackgroundX { get { return backoffsetx; } }
 		internal int BackgroundY { get { return backoffsety; } }
+		internal float BackgroundScaleX { get { return backscalex; } }
+		internal float BackgroundScaleY { get { return backscaley; } }
 		internal bool Disposed { get { return isdisposed; } }
 		
 		#endregion
@@ -86,7 +90,9 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Initialize
 			SetGridSize(DEFAULT_GRID_SIZE);
-
+			backscalex = 1.0f;
+			backscaley = 1.0f;
+			
 			// Register actions
 			General.Actions.BindMethods(this);
 			
@@ -99,6 +105,9 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			if(!isdisposed)
 			{
+				// Dispose image if needed
+				if(backimage is FileImage) (backimage as FileImage).Dispose();
+				
 				// Clean up
 				backimage = null;
 
@@ -138,30 +147,38 @@ namespace CodeImp.DoomBuilder.Editing
 			LinkBackground();
 		}
 
-		// This sets the background offset
-		internal void SetBackgroundOffset(int offsetx, int offsety)
+		// This sets the background view
+		internal void SetBackgroundView(int offsetx, int offsety, float scalex, float scaley)
 		{
 			// Set background offset
 			this.backoffsetx = offsetx;
 			this.backoffsety = offsety;
+			this.backscalex = scalex;
+			this.backscaley = scaley;
 		}
 		
 		// This finds and links the background image
 		internal void LinkBackground()
 		{
-			// From textures?
-			if(backsource == SOURCE_TEXTURES)
-			{
-				// Get this texture
-				backimage = General.Map.Data.GetTextureImage(background);
-			}
-			// From flats?
-			else if(backsource == SOURCE_FLATS)
-			{
-				// Get this flat
-				backimage = General.Map.Data.GetFlatImage(background);
-			}
+			// Dispose image if needed
+			if(backimage is FileImage) (backimage as FileImage).Dispose();
 			
+			// Where to load background from?
+			switch(backsource)
+			{
+				case SOURCE_TEXTURES:
+					backimage = General.Map.Data.GetTextureImage(background);
+					break;
+
+				case SOURCE_FLATS:
+					backimage = General.Map.Data.GetFlatImage(background);
+					break;
+
+				case SOURCE_FILE:
+					backimage = new FileImage(background, background);
+					break;
+			}
+
 			// Make sure it is loaded
 			backimage.LoadImage();
 			backimage.CreateTexture();

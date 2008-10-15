@@ -32,6 +32,10 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.GroupBox groupBox2;
 			this.gridsize = new System.Windows.Forms.NumericUpDown();
+			this.backscaley = new System.Windows.Forms.NumericUpDown();
+			this.backscalex = new System.Windows.Forms.NumericUpDown();
+			this.backscale = new System.Windows.Forms.Label();
+			this.selectfile = new System.Windows.Forms.Button();
 			this.showbackground = new System.Windows.Forms.CheckBox();
 			this.backoffsety = new System.Windows.Forms.NumericUpDown();
 			this.backoffsetx = new System.Windows.Forms.NumericUpDown();
@@ -41,18 +45,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroundimage = new System.Windows.Forms.Panel();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.browsefile = new System.Windows.Forms.OpenFileDialog();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			label1 = new System.Windows.Forms.Label();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.gridsize)).BeginInit();
 			groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.backscaley)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.backscalex)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.backoffsety)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.backoffsetx)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
+			groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			groupBox1.Controls.Add(this.gridsize);
 			groupBox1.Controls.Add(label1);
 			groupBox1.Location = new System.Drawing.Point(12, 12);
@@ -96,6 +105,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox2
 			// 
+			groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
+			groupBox2.Controls.Add(this.backscaley);
+			groupBox2.Controls.Add(this.backscalex);
+			groupBox2.Controls.Add(this.backscale);
+			groupBox2.Controls.Add(this.selectfile);
 			groupBox2.Controls.Add(this.showbackground);
 			groupBox2.Controls.Add(this.backoffsety);
 			groupBox2.Controls.Add(this.backoffsetx);
@@ -105,10 +120,79 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Controls.Add(this.backgroundimage);
 			groupBox2.Location = new System.Drawing.Point(12, 89);
 			groupBox2.Name = "groupBox2";
-			groupBox2.Size = new System.Drawing.Size(285, 181);
+			groupBox2.Size = new System.Drawing.Size(285, 255);
 			groupBox2.TabIndex = 1;
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Background ";
+			// 
+			// backscaley
+			// 
+			this.backscaley.Enabled = false;
+			this.backscaley.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.backscaley.Location = new System.Drawing.Point(197, 209);
+			this.backscaley.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.backscaley.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.backscaley.Name = "backscaley";
+			this.backscaley.Size = new System.Drawing.Size(57, 20);
+			this.backscaley.TabIndex = 11;
+			this.backscaley.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// backscalex
+			// 
+			this.backscalex.Enabled = false;
+			this.backscalex.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.backscalex.Location = new System.Drawing.Point(134, 209);
+			this.backscalex.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+			this.backscalex.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.backscalex.Name = "backscalex";
+			this.backscalex.Size = new System.Drawing.Size(57, 20);
+			this.backscalex.TabIndex = 10;
+			this.backscalex.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			// 
+			// backscale
+			// 
+			this.backscale.AutoSize = true;
+			this.backscale.Enabled = false;
+			this.backscale.Location = new System.Drawing.Point(40, 211);
+			this.backscale.Name = "backscale";
+			this.backscale.Size = new System.Drawing.Size(88, 14);
+			this.backscale.TabIndex = 9;
+			this.backscale.Text = "Scale in percent:";
+			// 
+			// selectfile
+			// 
+			this.selectfile.Enabled = false;
+			this.selectfile.Location = new System.Drawing.Point(137, 122);
+			this.selectfile.Name = "selectfile";
+			this.selectfile.Size = new System.Drawing.Size(117, 25);
+			this.selectfile.TabIndex = 8;
+			this.selectfile.Text = "Select File...";
+			this.selectfile.UseVisualStyleBackColor = true;
+			this.selectfile.Click += new System.EventHandler(this.selectfile_Click);
 			// 
 			// showbackground
 			// 
@@ -125,7 +209,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.backoffsety.Enabled = false;
 			this.backoffsety.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.backoffsety.Location = new System.Drawing.Point(197, 137);
+			this.backoffsety.Location = new System.Drawing.Point(197, 172);
 			this.backoffsety.Maximum = new decimal(new int[] {
             4096,
             0,
@@ -139,7 +223,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.backoffsetx.Enabled = false;
 			this.backoffsetx.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.backoffsetx.Location = new System.Drawing.Point(134, 137);
+			this.backoffsetx.Location = new System.Drawing.Point(134, 172);
 			this.backoffsetx.Maximum = new decimal(new int[] {
             4096,
             0,
@@ -153,7 +237,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.backoffset.AutoSize = true;
 			this.backoffset.Enabled = false;
-			this.backoffset.Location = new System.Drawing.Point(25, 140);
+			this.backoffset.Location = new System.Drawing.Point(25, 175);
 			this.backoffset.Name = "backoffset";
 			this.backoffset.Size = new System.Drawing.Size(103, 14);
 			this.backoffset.TabIndex = 4;
@@ -162,7 +246,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// selectflat
 			// 
 			this.selectflat.Enabled = false;
-			this.selectflat.Location = new System.Drawing.Point(92, 91);
+			this.selectflat.Location = new System.Drawing.Point(137, 91);
 			this.selectflat.Name = "selectflat";
 			this.selectflat.Size = new System.Drawing.Size(117, 25);
 			this.selectflat.TabIndex = 3;
@@ -173,7 +257,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// selecttexture
 			// 
 			this.selecttexture.Enabled = false;
-			this.selecttexture.Location = new System.Drawing.Point(92, 60);
+			this.selecttexture.Location = new System.Drawing.Point(137, 60);
 			this.selecttexture.Name = "selecttexture";
 			this.selecttexture.Size = new System.Drawing.Size(117, 25);
 			this.selecttexture.TabIndex = 2;
@@ -188,13 +272,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroundimage.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.backgroundimage.Location = new System.Drawing.Point(28, 60);
 			this.backgroundimage.Name = "backgroundimage";
-			this.backgroundimage.Size = new System.Drawing.Size(58, 56);
+			this.backgroundimage.Size = new System.Drawing.Size(91, 87);
 			this.backgroundimage.TabIndex = 1;
 			// 
 			// cancel
 			// 
+			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(185, 283);
+			this.cancel.Location = new System.Drawing.Point(185, 357);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 22;
@@ -204,7 +289,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// apply
 			// 
-			this.apply.Location = new System.Drawing.Point(67, 283);
+			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.apply.Location = new System.Drawing.Point(67, 357);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 21;
@@ -212,12 +298,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// browsefile
+			// 
+			this.browsefile.Filter = "All supported images|*.bmp;*.jpg;*.png|All Files|*.*";
+			this.browsefile.RestoreDirectory = true;
+			this.browsefile.Title = "Select Background Image File";
+			// 
 			// GridSetupForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(309, 318);
+			this.ClientSize = new System.Drawing.Size(309, 392);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(groupBox2);
@@ -237,6 +329,8 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.gridsize)).EndInit();
 			groupBox2.ResumeLayout(false);
 			groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.backscaley)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.backscalex)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.backoffsety)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.backoffsetx)).EndInit();
 			this.ResumeLayout(false);
@@ -255,5 +349,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
 		private System.Windows.Forms.Label backoffset;
+		private System.Windows.Forms.Button selectfile;
+		private System.Windows.Forms.NumericUpDown backscaley;
+		private System.Windows.Forms.NumericUpDown backscalex;
+		private System.Windows.Forms.Label backscale;
+		private System.Windows.Forms.OpenFileDialog browsefile;
 	}
 }
