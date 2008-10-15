@@ -180,8 +180,29 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 		
+		// This loads theimage
+		public void LoadImage()
+		{
+			// Keep original dimensions
+			int oldwidth = width;
+			int oldheight = height;
+			float oldscaledwidth = scaledwidth;
+			float oldscaledheight = scaledheight;
+
+			// Do the loading
+			LocalLoadImage();
+
+			// Anything changed?
+			if((oldwidth != width) || (oldheight != height) ||
+			   (oldscaledwidth != scaledwidth) || (oldscaledheight != scaledheight))
+			{
+				// Notify the main thread about the change so that sectors can update their buffers
+				General.MainWindow.ImageDataLoaded(this);
+			}
+		}
+		
 		// This requests loading the image
-		public virtual void LoadImage()
+		protected virtual void LocalLoadImage()
 		{
 			BitmapData bmpdata = null;
 			

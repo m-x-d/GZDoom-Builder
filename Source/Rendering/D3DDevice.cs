@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Capabilities devicecaps;
 		private Device device;
 		private Viewport viewport;
-		private List<ID3DResource> resources;
+		private Dictionary<ID3DResource, ID3DResource> resources;
 		private ShaderManager shaders;
 		private Surface backbuffer;
 		private Surface depthbuffer;
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.rendertarget = rendertarget;
 
 			// Create resources list
-			resources = new List<ID3DResource>();
+			resources = new Dictionary<ID3DResource, ID3DResource>();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
-				foreach(ID3DResource res in resources) res.UnloadResource();
+				foreach(ID3DResource res in resources.Values) res.UnloadResource();
 				if(shaders != null) shaders.Dispose();
 				rendertarget = null;
 				if(backbuffer != null) backbuffer.Dispose();
@@ -342,7 +342,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal void RegisterResource(ID3DResource res)
 		{
 			// Add resource
-			resources.Add(res);
+			resources.Add(res, res);
 		}
 
 		// This unregisters a resource
@@ -364,7 +364,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			//if(coopresult.Name != "D3DERR_DEVICENOTRESET")
 			{
 				// Unload all Direct3D resources
-				foreach(ID3DResource res in resources) res.UnloadResource();
+				foreach(ID3DResource res in resources.Values) res.UnloadResource();
 
 				// Lose backbuffers
 				if(backbuffer != null) backbuffer.Dispose();
@@ -397,7 +397,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				SetupSettings();
 
 				// Reload all Direct3D resources
-				foreach(ID3DResource res in resources) res.ReloadResource();
+				foreach(ID3DResource res in resources.Values) res.ReloadResource();
 
 				// Success
 				return true;

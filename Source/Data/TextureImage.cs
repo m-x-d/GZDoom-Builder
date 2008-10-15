@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This loads the image
-		public override void LoadImage()
+		protected override void LocalLoadImage()
 		{
 			uint datalength = (uint)(width * height * sizeof(PixelColor));
 			IImageReader reader;
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				// Pass on to base
-				base.LoadImage();
+				base.LocalLoadImage();
 			}
 		}
 

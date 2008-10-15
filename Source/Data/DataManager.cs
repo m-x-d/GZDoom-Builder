@@ -504,6 +504,11 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			Dictionary<long, long> useditems = new Dictionary<long, long>();
 
+			// TODO: Move the map scanning part to the application thread (into the
+			// UpdateUsedTextures function)
+			// We shouldn't do this in the background, because we're not supposed
+			// to access the map from this thread! The map could change!
+			
 			// Go through the map to find the used textures
 			foreach(Sidedef sd in General.Map.Map.Sidedefs)
 			{

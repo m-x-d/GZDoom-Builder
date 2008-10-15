@@ -221,6 +221,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(viewchanged)
 			{
+				renderer.RedrawSurface();
+
 				// Render lines and vertices
 				if(renderer.StartPlotter(true))
 				{

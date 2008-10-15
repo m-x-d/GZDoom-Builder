@@ -36,6 +36,7 @@ using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Properties;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -62,7 +63,8 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Delegates
 
 		private delegate void CallUpdateStatusIcon();
-		
+		private delegate void CallImageDataLoaded(ImageData img);
+
 		#endregion
 
 		#region ================== Variables
@@ -87,6 +89,9 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
+		
+		// View mode buttons
+		private ToolStripButton[] viewmodes;
 		
 		// Edit modes
 		private List<ToolStripItem> editmodeitems;
@@ -123,6 +128,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// Setup controls
 			InitializeComponent();
 			editmodeitems = new List<ToolStripItem>();
+
+			// Make array from view mode buttons
+			viewmodes = new ToolStripButton[Renderer2D.NUM_VIEW_MODES];
+			viewmodes[(int)ViewMode.Normal] = buttonviewnormal;
+			viewmodes[(int)ViewMode.Brightness] = buttonviewbrightness;
+			viewmodes[(int)ViewMode.FloorTextures] = buttonviewfloors;
+			viewmodes[(int)ViewMode.CeilingTextures] = buttonviewceilings;
 			
 			// Visual Studio IDE doesn't let me set these in the designer :(
 			buttonzoom.Font = menufile.Font;
@@ -153,6 +165,26 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 		
 		#region ================== General
+
+		// Editing mode changed!
+		internal void EditModeChanged()
+		{
+			// Check appropriate button on interface
+			// And show the mode name
+			if(General.Map.Mode != null)
+			{
+				General.MainWindow.CheckEditModeButton(General.Map.Mode.EditModeButtonName);
+				General.MainWindow.DisplayModeName(General.Map.Mode.Attributes.DisplayName);
+			}
+			else
+			{
+				General.MainWindow.CheckEditModeButton("");
+				General.MainWindow.DisplayModeName("");
+			}
+
+			// View mode only matters in classic editing modes
+			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++) viewmodes[i].Enabled = (General.Map.Mode is ClassicMode);
+		}
 
 		// This makes a beep sound
 		public void MessageBeep(MessageBeepType type)
@@ -1219,6 +1251,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update buttons
 			buttontestmonsters.Enabled = (General.Map != null);
 			buttontestmonsters.Checked = General.Settings.TestMonsters;
+
+			// Only disable view mode buttons
+			if(General.Map == null)
+			{
+				for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++) viewmodes[i].Enabled = false;
+			}
 		}
 
 		// This checks one of the edit mode items (and unchecks all others)
@@ -1302,9 +1340,30 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions[modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly)].Begin();
 			this.Update();
 		}
-		
+
+		// This changes view mode
+		private void ViewModeButtonClick(object sender, EventArgs e)
+		{
+			int mode = 0;
+			
+			if((sender is ToolStripButton) && (General.Map != null))
+			{
+				ToolStripButton button = sender as ToolStripButton;
+				int.TryParse(button.Tag.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out mode);
+				
+				// Update all view buttons
+				for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++) viewmodes[i].Checked = (i == mode);
+
+				// Apply view mode
+				General.Map.CRenderer2D.SetViewMode((ViewMode)mode);
+
+				// Redraw
+				RedrawDisplay();
+			}
+		}
+
 		#endregion
-		
+
 		#region ================== Menus
 
 		// This adds a menu to the menus bar
@@ -1851,7 +1910,48 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		#region ================== Processor
+		#region ================== Processing
+
+		// This is called from the background thread when images are loaded
+		// but only when first loaded or when dimensions were changed
+		internal void ImageDataLoaded(ImageData img)
+		{
+			// From different thread?
+			if(this.InvokeRequired)
+			{
+				// Pass the call on to the application thread
+				CallImageDataLoaded call = new CallImageDataLoaded(ImageDataLoaded);
+				this.Invoke(call, img);
+			}
+			else
+			{
+				// Image is used in the map?
+				if(img.UsedInMap && !img.IsDisposed && (General.Map != null))
+				{
+					// Go for all setors
+					bool updated = false;
+					foreach(Sector s in General.Map.Map.Sectors)
+					{
+						// Update floor buffer if needed
+						if(s.LongFloorTexture == img.LongName)
+						{
+							s.UpdateFloorSurface();
+							updated = true;
+						}
+						
+						// Update ceiling buffer if needed
+						if(s.LongCeilTexture == img.LongName)
+						{
+							s.UpdateCeilingSurface();
+							updated = true;
+						}
+					}
+
+					// If we made updates, redraw the screen
+					if(updated) RedrawDisplay();
+				}
+			}
+		}
 
 		// This toggles the processor
 		public void SetProcessorState(bool on)

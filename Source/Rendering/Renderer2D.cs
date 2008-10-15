@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const int THING_SHINY = 1;
 		private const int THING_SQUARE = 2;
 		private const int NUM_THING_TEXTURES = 4;
+		internal const int NUM_VIEW_MODES = 4;
 		
 		#endregion
 
@@ -74,6 +75,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Texture plottertex;
 		private Texture thingstex;
 		private Texture overlaytex;
+		private Texture surfacetex;
 
 		// Locking data
 		private DataRectangle plotlocked;
@@ -110,6 +112,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private ResourceImage[] thingtexture;
 		
 		// View settings (world coordinates)
+		private ViewMode viewmode;
 		private float scale;
 		private float scaleinv;
 		private float offsetx;
@@ -135,6 +138,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public float TranslateY { get { return translatey; } }
 		public float Scale { get { return scale; } }
 		public int VertexSize { get { return vertexsize; } }
+		public ViewMode ViewMode { get { return viewmode; } }
 
 		#endregion
 
@@ -294,7 +298,17 @@ namespace CodeImp.DoomBuilder.Rendering
 						case RendererLayer.Overlay:
 							graphics.Device.SetTexture(0, overlaytex);
 							graphics.Shaders.Display2D.Texture1 = overlaytex;
-							graphics.Shaders.Display2D.SetSettings(1f / thingssize.Width, 1f / thingssize.Height, FSAA_FACTOR, layer.alpha);
+							graphics.Shaders.Display2D.SetSettings(1f / overlaysize.Width, 1f / overlaysize.Height, FSAA_FACTOR, layer.alpha);
+							graphics.Shaders.Display2D.BeginPass(aapass);
+							graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+							graphics.Shaders.Display2D.EndPass();
+							break;
+
+						// SURFACE
+						case RendererLayer.Surface:
+							graphics.Device.SetTexture(0, surfacetex);
+							graphics.Shaders.Display2D.Texture1 = surfacetex;
+							graphics.Shaders.Display2D.SetSettings(1f / overlaysize.Width, 1f / overlaysize.Height, FSAA_FACTOR, layer.alpha);
 							graphics.Shaders.Display2D.BeginPass(aapass);
 							graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
 							graphics.Shaders.Display2D.EndPass();
@@ -353,6 +367,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(plottertex != null) plottertex.Dispose();
 			if(thingstex != null) thingstex.Dispose();
 			if(overlaytex != null) overlaytex.Dispose();
+			if(surfacetex != null) surfacetex.Dispose();
 			if(backtex != null) backtex.Dispose();
 			if(screenverts != null) screenverts.Dispose();
 			plottertex = null;
@@ -360,6 +375,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			backtex = null;
 			screenverts = null;
 			overlaytex = null;
+			surfacetex = null;
 			
 			// Trash things batch buffer
 			if(thingsvertices != null) thingsvertices.Dispose();
@@ -393,6 +409,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingstex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 			backtex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 			overlaytex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+			surfacetex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 			
 			// Get the real surface sizes
 			sd = plottertex.GetLevelDescription(0);
@@ -456,8 +473,14 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 		
-		#region ================== Coordination
+		#region ================== View
 
+		// This changes view mode
+		public void SetViewMode(ViewMode mode)
+		{
+			viewmode = mode;
+		}
+		
 		// This changes view position
 		public void PositionView(float x, float y)
 		{
@@ -679,7 +702,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			
 			// Clean up things / overlay
-			if((renderlayer == RenderLayers.Things) || (renderlayer == RenderLayers.Overlay))
+			if((renderlayer == RenderLayers.Things) || (renderlayer == RenderLayers.Overlay) || (renderlayer == RenderLayers.Surface))
 			{
 				// Stop rendering
 				graphics.FinishRendering();
@@ -1067,6 +1090,131 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		#endregion
 
+		#region ================== Surface
+
+		// This redraws the surface
+		public void RedrawSurface()
+		{
+			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+			renderlayer = RenderLayers.Surface;
+
+			// Rendertargets available?
+			if(surfacetex != null)
+			{
+				// Set the rendertarget to the surface texture
+				targetsurface = surfacetex.GetSurfaceLevel(0);
+				if(graphics.StartRendering(true, General.Colors.Background.WithAlpha(0).ToColorValue(), targetsurface, null))
+				{
+					// Set transformations
+					UpdateTransformations();
+
+					// Render what must be rendered
+					switch(viewmode)
+					{
+						case ViewMode.Brightness: RenderSectorBrightness(General.Map.Map.Sectors); break;
+						case ViewMode.FloorTextures: RenderSectorFloors(General.Map.Map.Sectors); break;
+						case ViewMode.CeilingTextures: RenderSectorCeilings(General.Map.Map.Sectors); break;
+					}
+				}
+			}
+			
+			// Done
+			Finish();
+		}
+
+		// This renders all sector floors
+		private void RenderSectorFloors(ICollection<Sector> sectors)
+		{
+			// Set states
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			SetWorldTransformation(true);
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
+			
+			// Render all sectors
+			foreach(Sector s in sectors)
+				RenderSectorSurface(s, s.FlatFloorBuffer, s.LongFloorTexture);
+		}
+
+		// This renders all sector ceilings
+		private void RenderSectorCeilings(ICollection<Sector> sectors)
+		{
+			// Set states
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			SetWorldTransformation(true);
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
+
+			// Render all sectors
+			foreach(Sector s in sectors)
+				RenderSectorSurface(s, s.FlatCeilingBuffer, s.LongCeilTexture);
+		}
+
+		// This renders all sector brightness levels
+		private void RenderSectorBrightness(ICollection<Sector> sectors)
+		{
+			// Set states
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			SetWorldTransformation(true);
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
+
+			// Render all sectors
+			foreach(Sector s in sectors)
+				RenderSectorSurface(s, s.FlatFloorBuffer, 0);
+		}
+
+		// This renders the geometry and tecture of the sector
+		private void RenderSectorSurface(Sector s, VertexBuffer buffer, long longimagename)
+		{
+			Texture t = null;
+
+			if((buffer != null) && (s.FlatVertices != null) && (s.FlatVertices.Length > 0))
+			{
+				ImageData img = General.Map.Data.GetFlatImage(longimagename);
+				if(img != null)
+				{
+					// Is the texture loaded?
+					if(img.IsImageLoaded)
+					{
+						if(img.Texture == null) img.CreateTexture();
+						t = img.Texture;
+					}
+					else
+					{
+						t = whitetexture.Texture;
+					}
+				}
+				else
+				{
+					t = whitetexture.Texture;
+				}
+
+				// Set renderstates for rendering
+				graphics.Shaders.Display2D.Texture1 = t;
+				graphics.Device.SetTexture(0, t);
+				graphics.Device.SetStreamSource(0, buffer, 0, FlatVertex.Stride);
+
+				// Draw
+				graphics.Shaders.Display2D.Begin();
+				graphics.Shaders.Display2D.BeginPass(1);
+				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, s.FlatVertices.Length / 3);
+				graphics.Shaders.Display2D.EndPass();
+				graphics.Shaders.Display2D.End();
+			}
+		}
+
+		#endregion
+
 		#region ================== Overlay
 
 		// This renders geometry
@@ -1099,7 +1247,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetTexture(0, t);
 				SetWorldTransformation(transformcoords);
 				graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f);
-
+				
 				// Draw
 				graphics.Shaders.Display2D.Begin();
 				graphics.Shaders.Display2D.BeginPass(1);

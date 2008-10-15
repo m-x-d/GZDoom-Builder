@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Methods
 
 		// This loads the image
-		public override void LoadImage()
+		protected override void LocalLoadImage()
 		{
 			// Leave when already loaded
 			if(this.IsImageLoaded) return;
@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Data
 				height = bitmap.Size.Height;
 				
 				// Pass on to base
-				base.LoadImage();
+				base.LocalLoadImage();
 			}
 		}
 		

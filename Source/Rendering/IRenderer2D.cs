@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		float TranslateY { get; }
 		float Scale { get; }
 		int VertexSize { get; }
+		ViewMode ViewMode { get; }
 		
 		// Color methods
 		PixelColor DetermineLinedefColor(Linedef l);
@@ -77,5 +78,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords);
 		void RenderText(TextLabel text);
 		void RenderGeometry(FlatVertex[] vertices, ImageData texture, bool transformcoords);
+		void RedrawSurface();
 	}
 }

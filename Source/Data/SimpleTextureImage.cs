@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Methods
 
 		// This loads the image
-		public override void LoadImage()
+		protected override void LocalLoadImage()
 		{
 			IImageReader reader;
 			MemoryStream mem;
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				// Pass on to base
-				base.LoadImage();
+				base.LocalLoadImage();
 			}
 		}
 		

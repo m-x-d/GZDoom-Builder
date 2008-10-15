@@ -161,26 +161,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					PixelColor brightnesscolor = new PixelColor(255, (byte)s.Brightness, (byte)s.Brightness, (byte)s.Brightness);
 					int brightnessint = brightnesscolor.ToInt();
 					
-					// This was only to test if it would work
-					// It works, but it is very slow
-					/*
-					// Load texture image
-					ImageData texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
-					if(!texture.IsLoaded) texture.LoadImage();
-					
-					// Make vertices
-					FlatVertex[] verts = new FlatVertex[s.Vertices.Length];
-					s.Vertices.CopyTo(verts, 0);
-					for(int i = 0; i < verts.Length; i++)
-					{
-						verts[i].u = verts[i].x / texture.ScaledWidth;
-						verts[i].v = verts[i].y / texture.ScaledHeight;
-					}
-					
-					// Render the geometry
-					renderer.RenderGeometry(verts, texture, true);
-					*/
-					
 					// Render the geometry
 					FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
 					s.FlatVertices.CopyTo(verts, 0);

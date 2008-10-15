@@ -34,6 +34,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -111,6 +112,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 		
+		// When floor surface geometry is created for classic modes
+		public override void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
+		{
+			ImageData img = General.Map.Data.GetFlatImage(s.LongFloorTexture);
+			if(img != null)
+			{
+				// Make scalars
+				float sw = 1.0f / img.ScaledWidth;
+				float sh = 1.0f / img.ScaledHeight;
+				
+				// Make proper texture coordinates
+				for(int i = 0; i < vertices.Length; i++)
+				{
+					vertices[i].u = vertices[i].u * sw;
+					vertices[i].v = vertices[i].v * sw;
+				}
+			}
+		}
+
+		// When ceiling surface geometry is created for classic modes
+		public override void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
+		{
+			ImageData img = General.Map.Data.GetFlatImage(s.LongFloorTexture);
+			if(img != null)
+			{
+				// Make scalars
+				float sw = 1.0f / img.ScaledWidth;
+				float sh = 1.0f / img.ScaledHeight;
+
+				// Make proper texture coordinates
+				for(int i = 0; i < vertices.Length; i++)
+				{
+					vertices[i].u = vertices[i].u * sw;
+					vertices[i].v = vertices[i].v * sw;
+				}
+			}
+		}
+
 		// When the editing mode changes
 		public override bool OnModeChange(EditMode oldmode, EditMode newmode)
 		{

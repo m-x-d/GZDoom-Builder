@@ -111,7 +111,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Get the selection
 			FindReplaceObject[] selection = BuilderPlug.Me.FindReplaceForm.GetSelection();
-			
+
+			renderer.RedrawSurface();
+
 			// Render lines
 			if(renderer.StartPlotter(true))
 			{

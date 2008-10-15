@@ -873,7 +873,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnRedrawDisplay()
 		{
 			UpdateRectangleComponents();
-			
+
+			renderer.RedrawSurface();
+
 			// Render lines
 			if(renderer.StartPlotter(true))
 			{

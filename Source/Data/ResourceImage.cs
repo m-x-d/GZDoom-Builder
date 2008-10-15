@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Methods
 
 		// This loads the image
-		public override void LoadImage()
+		protected override void LocalLoadImage()
 		{
 			Stream bitmapdata;
 
@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Data
 				bitmapdata.Dispose();
 				
 				// Pass on to base
-				base.LoadImage();
+				base.LocalLoadImage();
 			}
 		}
 		

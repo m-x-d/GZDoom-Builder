@@ -24,6 +24,8 @@ using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Editing;
 using System.Reflection;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -305,6 +307,18 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void OnMapNewEnd()
 		{
 			foreach(Plugin p in plugins) p.Plug.OnMapNewEnd();
+		}
+
+
+		public void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
+		{
+			foreach(Plugin p in plugins) p.Plug.OnSectorCeilingSurfaceUpdate(s, ref vertices);
+		}
+
+
+		public void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
+		{
+			foreach(Plugin p in plugins) p.Plug.OnSectorFloorSurfaceUpdate(s, ref vertices);
 		}
 
 		
