@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private const double FLASH_DURATION = 500.0f;
+		private const double FLASH_DURATION = 300.0f;
 
 		#endregion
 
@@ -222,6 +222,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make customized presentation
 			CustomPresentation p = new CustomPresentation();
 			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
+			p.AddLayer(new PresentLayer(RendererLayer.Surface, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
 			p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, Presentation.THINGS_BACK_ALPHA, false));
@@ -260,6 +261,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This redraws the display
 		public override void OnRedrawDisplay()
 		{
+			renderer.RedrawSurface();
+			
 			// Render lines and vertices
 			DrawGeometry();
 
