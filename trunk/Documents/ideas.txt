@@ -79,3 +79,5 @@ Map statistics plugin
 
 ===========================================================================================
 
+A "Make Door" editing mode which allows you to quicly insert a door. On mousemove, show the door being made. Find the nearest line, then project two line along the normal of the nearest line. These will be the door lines. Find where they intersect another line. Then find the lines in between the two new lines that make up the doortrak. In between the two new lines, there may not be another line going from one doortrak to the other (or the door will fail).
+
