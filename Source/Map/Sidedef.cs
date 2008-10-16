@@ -59,9 +59,6 @@ namespace CodeImp.DoomBuilder.Map
 		private long longtexnamemid;
 		private long longtexnamelow;
 
-		// Selections
-		private bool marked;
-
 		#endregion
 
 		#region ================== Properties
@@ -80,7 +77,6 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongHighTexture { get { return longtexnamehigh; } }
 		public long LongMiddleTexture { get { return longtexnamemid; } }
 		public long LongLowTexture { get { return longtexnamelow; } }
-		public bool Marked { get { return marked; } set { marked = value; } }
 		
 		#endregion
 
@@ -157,7 +153,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.longtexnamehigh = longtexnamehigh;
 			s.longtexnamemid = longtexnamemid;
 			s.longtexnamelow = longtexnamelow;
-			CopyFieldsTo(s);
+			base.CopyPropertiesTo(s);
 		}
 		
 		// This copies textures to another sidedef

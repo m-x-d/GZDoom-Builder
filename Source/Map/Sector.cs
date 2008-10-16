@@ -33,7 +33,7 @@ using SlimDX;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Sector : MapElement, ID3DResource
+	public sealed class Sector : SelectableElement, ID3DResource
 	{
 		#region ================== Constants
 
@@ -65,10 +65,6 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int brightness;
 
-		// Selections
-		private bool selected;
-		private bool marked;
-
 		// Cloning
 		private Sector clone;
 		
@@ -98,8 +94,6 @@ namespace CodeImp.DoomBuilder.Map
 		public int Effect { get { return effect; } set { effect = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public int Brightness { get { return brightness; } set { brightness = value; updateneeded = true; } }
-		public bool Selected { get { return selected; } set { selected = value; } }
-		public bool Marked { get { return marked; } set { marked = value; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
 		public Triangulation Triangles { get { return triangles; } }
@@ -186,9 +180,8 @@ namespace CodeImp.DoomBuilder.Map
 			s.effect = effect;
 			s.tag = tag;
 			s.brightness = brightness;
-			s.selected = selected;
 			s.updateneeded = true;
-			CopyFieldsTo(s);
+			base.CopyPropertiesTo(s);
 		}
 		
 		// This attaches a sidedef and returns the listitem

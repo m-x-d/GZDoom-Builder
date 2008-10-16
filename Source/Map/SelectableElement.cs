@@ -30,63 +30,76 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public abstract class MapElement : IDisposable
+	public abstract class SelectableElement : MapElement
 	{
 		#region ================== Constants
-
+		
 		#endregion
-
+		
 		#region ================== Variables
-
-		// Univeral fields
-		private UniFields fields;
 		
-		// Marking
-		protected bool marked;
+		// Selected or not?
+		protected bool selected;
 		
-		// Disposing
-		protected bool isdisposed = false;
+		// Group bitmask
+		private int groups;
 		
 		#endregion
 		
 		#region ================== Properties
 		
-		public UniFields Fields { get { return fields; } }
-		public bool Marked { get { return marked; } set { marked = value; } }
-		public bool IsDisposed { get { return isdisposed; } }
+		public bool Selected { get { return selected; } set { selected = value; } }
 		
 		#endregion
-
+		
 		#region ================== Constructor / Disposer
-
+		
 		// Constructor
-		internal MapElement()
+		internal SelectableElement()
 		{
-			// Initialize
-			fields = new UniFields();
 		}
-
+		
 		// Disposer
-		public virtual void Dispose()
+		public override void Dispose()
 		{
 			if(!isdisposed)
 			{
 				// Clean up
-				fields = null;
+				
 				
 				// Done
-				isdisposed = true;
+				base.Dispose();
 			}
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Methods
-
+		
 		// This copies properties to any other element
-		public void CopyPropertiesTo(MapElement element)
+		new public void CopyPropertiesTo(SelectableElement element)
 		{
-			element.fields = new UniFields(this.fields);
+			element.groups = this.groups;
+			element.selected = this.selected;
+			base.CopyPropertiesTo(element);
+		}
+		
+		// This adds the element to one or more groups
+		public void AddToGroup(int groupsmask)
+		{
+			groups |= groupsmask;
+		}
+		
+		// This removes the elements from one or more groups
+		public void RemoveFromGroup(int groupsmask)
+		{
+			groups &= ~groupsmask;
+		}
+		
+		// This selects by group
+		public void SelectByGroup(int groupsmask)
+		{
+			selected = ((groups & groupsmask) != 0);
 		}
 		
 		#endregion
