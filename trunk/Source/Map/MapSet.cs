@@ -595,7 +595,47 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			foreach(Thing t in things) if(t.Marked == mark) t.Selected = select;
 		}
+		
+		// This selects geometry by group
+		public void SelectVerticesByGroup(int groupmask)
+		{
+			foreach(SelectableElement e in vertices) e.SelectByGroup(groupmask);
+		}
 
+		// This selects geometry by group
+		public void SelectLinedefsByGroup(int groupmask)
+		{
+			foreach(SelectableElement e in linedefs) e.SelectByGroup(groupmask);
+		}
+
+		// This selects geometry by group
+		public void SelectSectorsByGroup(int groupmask)
+		{
+			foreach(SelectableElement e in sectors) e.SelectByGroup(groupmask);
+		}
+
+		// This selects geometry by group
+		public void SelectThingsByGroup(int groupmask)
+		{
+			foreach(SelectableElement e in things) e.SelectByGroup(groupmask);
+		}
+		
+		// This adds the current selection to a group
+		public void AddSelectionToGroup(int groupmask)
+		{
+			foreach(SelectableElement e in vertices)
+				if(e.Selected) e.AddToGroup(groupmask);
+			
+			foreach(SelectableElement e in linedefs)
+				if(e.Selected) e.AddToGroup(groupmask);
+			
+			foreach(SelectableElement e in sectors)
+				if(e.Selected) e.AddToGroup(groupmask);
+			
+			foreach(SelectableElement e in things)
+				if(e.Selected) e.AddToGroup(groupmask);
+		}
+		
 		#endregion
 
 		#region ================== Marking

@@ -934,8 +934,64 @@ namespace CodeImp.DoomBuilder
 		
 		#endregion
 
-		#region ================== Methods
+		#region ================== Selection Groups
 		
+		// This adds selection to a group
+		private void AddSelectionToGroup(int groupindex)
+		{
+			General.Interface.SetCursor(Cursors.WaitCursor);
+			
+			// Make undo
+			undoredo.CreateUndo("Assign to group " + groupindex, UndoGroup.None, 0);
+			
+			// Make selection
+			map.AddSelectionToGroup(0x01 << groupindex);
+			
+			General.Interface.SetCursor(Cursors.Default);
+		}
+		
+		// This selects a group
+		private void SelectGroup(int groupindex)
+		{
+			// Select
+			int groupmask = 0x01 << groupindex;
+			map.SelectVerticesByGroup(groupmask);
+			map.SelectLinedefsByGroup(groupmask);
+			map.SelectSectorsByGroup(groupmask);
+			map.SelectThingsByGroup(groupmask);
+			
+			// Redraw to show selection
+			General.Interface.RedrawDisplay();
+		}
+		
+		// Select actions
+		[BeginAction("selectgroup1")] internal void SelectGroup1() { SelectGroup(0); }
+		[BeginAction("selectgroup2")] internal void SelectGroup2() { SelectGroup(1); }
+		[BeginAction("selectgroup3")] internal void SelectGroup3() { SelectGroup(2); }
+		[BeginAction("selectgroup4")] internal void SelectGroup4() { SelectGroup(3); }
+		[BeginAction("selectgroup5")] internal void SelectGroup5() { SelectGroup(4); }
+		[BeginAction("selectgroup6")] internal void SelectGroup6() { SelectGroup(5); }
+		[BeginAction("selectgroup7")] internal void SelectGroup7() { SelectGroup(6); }
+		[BeginAction("selectgroup8")] internal void SelectGroup8() { SelectGroup(7); }
+		[BeginAction("selectgroup9")] internal void SelectGroup9() { SelectGroup(8); }
+		[BeginAction("selectgroup10")] internal void SelectGroup10() { SelectGroup(9); }
+		
+		// Assign actions
+		[BeginAction("assigngroup1")] internal void AssignGroup1() { AddSelectionToGroup(0); }
+		[BeginAction("assigngroup2")] internal void AssignGroup2() { AddSelectionToGroup(1); }
+		[BeginAction("assigngroup3")] internal void AssignGroup3() { AddSelectionToGroup(2); }
+		[BeginAction("assigngroup4")] internal void AssignGroup4() { AddSelectionToGroup(3); }
+		[BeginAction("assigngroup5")] internal void AssignGroup5() { AddSelectionToGroup(4); }
+		[BeginAction("assigngroup6")] internal void AssignGroup6() { AddSelectionToGroup(5); }
+		[BeginAction("assigngroup7")] internal void AssignGroup7() { AddSelectionToGroup(6); }
+		[BeginAction("assigngroup8")] internal void AssignGroup8() { AddSelectionToGroup(7); }
+		[BeginAction("assigngroup9")] internal void AssignGroup9() { AddSelectionToGroup(8); }
+		[BeginAction("assigngroup10")] internal void AssignGroup10() { AddSelectionToGroup(9); }
+		
+		#endregion
+		
+		#region ================== Methods
+
 		// This changes thing filter
 		internal void ChangeThingFilter(ThingsFilter newfilter)
 		{
