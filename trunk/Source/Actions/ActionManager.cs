@@ -410,25 +410,34 @@ namespace CodeImp.DoomBuilder.Actions
 			// Find actions that have no key set
 			foreach(KeyValuePair<string, Action> a in actions)
 			{
-				// Check if the default key is not already used
-				bool keyused = false;
-				foreach(KeyValuePair<string, Action> d in actions)
+				// Key set?
+				if(a.Value.ShortcutKey == -1)
 				{
-					// Check if the keys are the same
-					// Note that I use the mask of the source action to check if they match any combination
-					if((d.Value.ShortcutKey & a.Value.ShortcutMask) == (a.Value.DefaultShortcutKey & a.Value.ShortcutMask))
+					// Check if the default key is not already used
+					bool keyused = false;
+					foreach(KeyValuePair<string, Action> d in actions)
+					{
+						// Check if the keys are the same
+						// Note that I use the mask of the source action to check if they match any combination
+						if((d.Value.ShortcutKey & a.Value.ShortcutMask) == (a.Value.DefaultShortcutKey & a.Value.ShortcutMask))
+						{
+							// No party.
+							keyused = true;
+							break;
+						}
+					}
+					
+					// Party?
+					if(!keyused)
+					{
+						// Apply the default key
+						a.Value.SetShortcutKey(a.Value.DefaultShortcutKey);
+					}
+					else
 					{
 						// No party.
-						keyused = true;
-						break;
+						a.Value.SetShortcutKey(0);
 					}
-				}
-				
-				// Party?
-				if(!keyused)
-				{
-					// Apply the default key
-					a.Value.SetShortcutKey(a.Value.DefaultShortcutKey);
 				}
 			}
 		}
