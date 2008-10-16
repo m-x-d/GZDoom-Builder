@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Linedef : MapElement
+	public sealed class Linedef : SelectableElement
 	{
 		#region ================== Constants
 
@@ -73,10 +73,6 @@ namespace CodeImp.DoomBuilder.Map
 		private int activate;
 		private int tag;
 		private int[] args;
-		
-		// Selections
-		private bool selected;
-		private bool marked;
 
 		#endregion
 
@@ -92,8 +88,6 @@ namespace CodeImp.DoomBuilder.Map
 		public int Action { get { return action; } set { action = value; } }
 		public int Activate { get { return activate; } set { activate = value; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
-		public bool Selected { get { return selected; } set { selected = value; } }
-		public bool Marked { get { return marked; } set { marked = value; } }
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
 		public float LengthInv { get { return lengthinv; } }
@@ -186,9 +180,9 @@ namespace CodeImp.DoomBuilder.Map
 			endvertexlistitem = end.AttachLinedef(this);
 			this.updateneeded = true;
 		}
-
+		
 		// This copies all properties to another line
-		public void CopyPropertiesTo(Linedef l)
+		new public void CopyPropertiesTo(Linedef l)
 		{
 			// Copy properties
 			l.action = action;
@@ -197,8 +191,7 @@ namespace CodeImp.DoomBuilder.Map
 			l.tag = tag;
 			l.updateneeded = true;
 			l.activate = activate;
-			l.selected = selected;
-			CopyFieldsTo(l);
+			base.CopyPropertiesTo(l);
 		}
 		
 		// This attaches a sidedef on the front

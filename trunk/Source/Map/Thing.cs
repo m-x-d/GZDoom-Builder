@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Thing : MapElement
+	public sealed class Thing : SelectableElement
 	{
 		#region ================== Constants
 
@@ -65,10 +65,6 @@ namespace CodeImp.DoomBuilder.Map
 		private float size;
 		private PixelColor color;
 		private float iconoffset;	// Arrow or dot coordinate offset on the texture
-		
-		// Selections
-		private bool selected;
-		private bool marked;
 
 		#endregion
 
@@ -82,8 +78,6 @@ namespace CodeImp.DoomBuilder.Map
 		public Dictionary<string, bool> Flags { get { return flags; } }
 		public int Action { get { return action; } set { action = value; } }
 		public int[] Args { get { return args; } }
-		public bool Selected { get { return selected; } set { selected = value; } }
-		public bool Marked { get { return marked; } set { marked = value; } }
 		public float Size { get { return size; } }
 		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }
@@ -152,8 +146,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.color = color;
 			t.iconoffset = iconoffset;
 			args.CopyTo(t.args, 0);
-			t.selected = selected;
-			CopyFieldsTo(t);
+			base.CopyPropertiesTo(t);
 		}
 		
 		// This determines which sector the thing is in and links it

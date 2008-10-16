@@ -30,7 +30,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Vertex : MapElement
+	public sealed class Vertex : SelectableElement
 	{
 		#region ================== Constants
 		
@@ -52,10 +52,6 @@ namespace CodeImp.DoomBuilder.Map
 
 		// References
 		private LinkedList<Linedef> linedefs;
-
-		// Selections
-		private bool selected;
-		private bool marked;
 		
 		// Cloning
 		private Vertex clone;
@@ -67,8 +63,6 @@ namespace CodeImp.DoomBuilder.Map
 		public MapSet Map { get { return map; } }
 		public ICollection<Linedef> Linedefs { get { return linedefs; } }
 		public Vector2D Position { get { return pos; } }
-		public bool Selected { get { return selected; } set { selected = value; } }
-		public bool Marked { get { return marked; } set { marked = value; } }
 		public Vertex Clone { get { return clone; } set { clone = value; } }
 
 		#endregion
@@ -148,8 +142,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Copy properties
 			v.pos = pos;
-			v.selected = selected;
-			CopyFieldsTo(v);
+			base.CopyPropertiesTo(v);
 		}
 		
 		// This returns the distance from given coordinates
