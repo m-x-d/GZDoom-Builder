@@ -69,15 +69,7 @@ You could have ctrl groups in sectors, lines, vertices and even things mode.
 
 ===========================================================================================
 
-Extend the background image feature so that images can be loaded from file. Also scalable and movable. This would allow the mapper to use a hand-drawn image as guidline for mapping.
-
-===========================================================================================
-
 Map statistics plugin
 - Button on toolbar for stats window (stats also shown in text format for copy/paste)
 - Command-line processing that saves text stats to file
-
-===========================================================================================
-
-A "Make Door" editing mode which allows you to quicly insert a door. On mousemove, show the door being made. Find the nearest line, then project two line along the normal of the nearest line. These will be the door lines. Find where they intersect another line. Then find the lines in between the two new lines that make up the doortrak. In between the two new lines, there may not be another line going from one doortrak to the other (or the door will fail).
 

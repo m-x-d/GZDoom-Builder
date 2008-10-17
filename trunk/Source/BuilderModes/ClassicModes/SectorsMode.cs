@@ -450,6 +450,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// When a single sector was selected, deselect it now
 					if(selected.Count == 1)
 					{
+						orderedselection.Clear();
 						General.Map.Map.ClearSelectedSectors();
 						General.Map.Map.ClearSelectedLinedefs();
 					}
@@ -686,6 +687,103 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		[BeginAction("makedoor")]
+		public void MakeDoor()
+		{
+			// Highlighted item not selected?
+			if(!highlighted.Selected)
+			{
+				if(highlighted != null)
+				{
+					// Make this the only selection
+					General.Map.Map.ClearSelectedSectors();
+					General.Map.Map.ClearSelectedLinedefs();
+					SelectSector(highlighted, true);
+					General.Interface.RedrawDisplay();
+				}
+			}
+			
+			// Anything selected?
+			if(orderedselection.Count > 0)
+			{
+				// Select a texture for the door
+				string texture = General.Interface.BrowseTexture(General.Interface, "");
+				
+				// Go for all selected sectors
+				foreach(Sector s in orderedselection)
+				{
+					// Lower the ceiling down to the floor
+					s.CeilHeight = s.FloorHeight;
+
+					// Make a unique tag (not sure if we need it yet, depends on the args)
+					int tag = General.Map.Map.GetNewTag();
+					
+					// Go for all it's sidedefs
+					foreach(Sidedef sd in s.Sidedefs)
+					{
+						// Singlesided?
+						if(sd.Other == null)
+						{
+							// Make this a doortrak
+							sd.SetTextureHigh("-");
+							sd.SetTextureMid(General.Map.Config.MakeDoorTrack);
+							sd.SetTextureLow("-");
+							
+							// Set upper/lower unpegged flags
+							sd.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
+							sd.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = true;
+						}
+						else
+						{
+							// Set texture
+							if(texture.Length > 0)
+							{
+								if(sd.IsFront)
+									sd.SetTextureHigh(texture);
+								else
+									sd.Other.SetTextureHigh(texture);
+							}
+							
+							// Get door linedef type from config
+							sd.Line.Action = General.Map.Config.MakeDoorAction;
+
+							// Set the linedef args
+							for(int i = 0; i < Linedef.NUM_ARGS; i++)
+							{
+								// A -1 arg indicates that the arg must be set to the new sector tag
+								// and only in this case we set the tag on the sector, because only
+								// then we know for sure that we need a tag.
+								if(General.Map.Config.MakeDoorArgs[i] == -1)
+								{
+									sd.Line.Args[i] = tag;
+									s.Tag = tag;
+								}
+								else
+								{
+									sd.Line.Args[i] = General.Map.Config.MakeDoorArgs[i];
+								}
+							}
+							
+							// Make sure the line is facing outwards
+							if(sd.IsFront)
+							{
+								sd.Line.FlipVertices();
+								sd.Line.FlipSidedefs();
+							}
+						}
+					}
+				}
+				
+				// When a single sector was selected, deselect it now
+				if(orderedselection.Count == 1)
+				{
+					orderedselection.Clear();
+					General.Map.Map.ClearSelectedSectors();
+					General.Map.Map.ClearSelectedLinedefs();
+				}
+			}
+		}
+		
 		[BeginAction("deleteitem", BaseAction = true)]
 		public void DeleteItem()
 		{
