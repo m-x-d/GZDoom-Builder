@@ -709,6 +709,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Select a texture for the door
 				string texture = General.Interface.BrowseTexture(General.Interface, "");
 				
+				// Create undo
+				General.Map.UndoRedo.CreateUndo("Make door (" + texture + ")", UndoGroup.None, 0);
+				
 				// Go for all selected sectors
 				foreach(Sector s in orderedselection)
 				{
