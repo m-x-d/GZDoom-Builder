@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				// Cancelled
-				return null;
+				return select;
 			}
 		}
 		

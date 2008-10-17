@@ -87,6 +87,18 @@ namespace CodeImp.DoomBuilder.Windows
 		int BrowseSectorEffect(IWin32Window owner, int initialvalue);
 
 		/// <summary>
+		/// This browses for a texture
+		/// </summary>
+		/// <returns>Returns the new texture name or the same texture name when cancelled</returns>
+		string BrowseTexture(IWin32Window owner, string initialvalue);
+
+		/// <summary>
+		/// This browses for a flat
+		/// </summary>
+		/// <returns>Returns the new flat name or the same flat name when cancelled</returns>
+		string BrowseFlat(IWin32Window owner, string initialvalue);
+
+		/// <summary>
 		/// This adds a menu to the Doom Builder menu strip.
 		/// <para>
 		/// NOTE: When the Tag property of menu items is set with a string, this changes the

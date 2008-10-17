@@ -1863,6 +1863,20 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Dialogs
 
+		// This browses for a texture
+		// Returns the new texture name or the same texture name when cancelled
+		public string BrowseTexture(IWin32Window owner, string initialvalue)
+		{
+			return TextureBrowserForm.Browse(owner, initialvalue);
+		}
+
+		// This browses for a flat
+		// Returns the new flat name or the same flat name when cancelled
+		public string BrowseFlat(IWin32Window owner, string initialvalue)
+		{
+			return FlatBrowserForm.Browse(owner, initialvalue);
+		}
+		
 		// This browses the lindef types
 		// Returns the new action or the same action when cancelled
 		public int BrowseLinedefActions(IWin32Window owner, int initialvalue)

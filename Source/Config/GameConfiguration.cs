@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -52,12 +53,17 @@ namespace CodeImp.DoomBuilder.Config
 		private string singlesidedflag;
 		private string doublesidedflag;
 		private string impassableflag;
+		private string upperunpeggedflag;
+		private string lowerunpeggedflag;
 		private bool mixtexturesflats;
 		private bool generalizedactions;
 		private bool generalizedeffects;
 		private int start3dmodethingtype;
 		private int linedefactivationsfilter;
 		private string testparameters;
+		private string makedoortrack;
+		private int makedooraction;
+		private int[] makedoorargs;
 		
 		// Skills
 		private List<SkillInfo> skills;
@@ -115,12 +121,17 @@ namespace CodeImp.DoomBuilder.Config
 		public string SingleSidedFlag { get { return singlesidedflag; } }
 		public string DoubleSidedFlag { get { return doublesidedflag; } }
 		public string ImpassableFlag { get { return impassableflag; } }
+		public string UpperUnpeggedFlag { get { return upperunpeggedflag; } }
+		public string LowerUnpeggedFlag { get { return lowerunpeggedflag; } }
 		public bool MixTexturesFlats { get { return mixtexturesflats; } }
 		public bool GeneralizedActions { get { return generalizedactions; } }
 		public bool GeneralizedEffects { get { return generalizedeffects; } }
 		public int Start3DModeThingType { get { return start3dmodethingtype; } }
 		public int LinedefActivationsFilter { get { return linedefactivationsfilter; } }
 		public string TestParameters { get { return testparameters; } }
+		public string MakeDoorTrack { get { return makedoortrack; } }
+		public int MakeDoorAction { get { return makedooraction; } }
+		public int[] MakeDoorArgs { get { return makedoorargs; } }
 		
 		// Skills
 		public List<SkillInfo> Skills { get { return skills; } }
@@ -191,6 +202,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.enums = new Dictionary<string, EnumList>();
 			this.skills = new List<SkillInfo>();
 			this.texturesets = new List<DefinedTextureSet>();
+			this.makedoorargs = new int[Linedef.NUM_ARGS];
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -204,6 +216,9 @@ namespace CodeImp.DoomBuilder.Config
 			start3dmodethingtype = cfg.ReadSetting("start3dmode", 0);
 			linedefactivationsfilter = cfg.ReadSetting("linedefactivationsfilter", 0);
 			testparameters = cfg.ReadSetting("testparameters", "");
+			makedoortrack = cfg.ReadSetting("makedoortrack", "-");
+			makedooraction = cfg.ReadSetting("makedooraction", 0);
+			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 			
 			// Flags have special (invariant culture) conversion
 			// because they are allowed to be written as integers in the configs
@@ -215,6 +230,10 @@ namespace CodeImp.DoomBuilder.Config
 			if(obj is int) doublesidedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else doublesidedflag = obj.ToString();
 			obj = cfg.ReadSettingObject("impassableflag", 0);
 			if(obj is int) impassableflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else impassableflag = obj.ToString();
+			obj = cfg.ReadSettingObject("upperunpeggedflag", 0);
+			if(obj is int) upperunpeggedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else upperunpeggedflag = obj.ToString();
+			obj = cfg.ReadSettingObject("lowerunpeggedflag", 0);
+			if(obj is int) lowerunpeggedflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else lowerunpeggedflag = obj.ToString();
 			
 			// Get map lumps
 			maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
