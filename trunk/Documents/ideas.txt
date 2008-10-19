@@ -73,3 +73,7 @@ Map statistics plugin
 - Button on toolbar for stats window (stats also shown in text format for copy/paste)
 - Command-line processing that saves text stats to file
 
+===========================================================================================
+
+So in a Hexen-format map, the default activation for a linedef special is "player walks over". Could DB2 be made smart enough to instead use "player presses use" for default activation method when the line is impassible?
+
