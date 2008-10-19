@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 using System.Drawing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
 
 #endregion
 
@@ -706,84 +707,105 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Anything selected?
 			if(orderedselection.Count > 0)
 			{
-				// Select a texture for the door
-				string texture = General.Interface.BrowseTexture(General.Interface, "");
+				string doortex = "";
+				string floortex = null;
+				string ceiltex = null;
 				
-				// Create undo
-				General.Map.UndoRedo.CreateUndo("Make door (" + texture + ")", UndoGroup.None, 0);
-				
-				// Go for all selected sectors
+				// Find ceiling and floor textures
 				foreach(Sector s in orderedselection)
 				{
-					// Lower the ceiling down to the floor
-					s.CeilHeight = s.FloorHeight;
-
-					// Make a unique tag (not sure if we need it yet, depends on the args)
-					int tag = General.Map.Map.GetNewTag();
+					if(floortex == null) floortex = s.FloorTexture; else if(floortex != s.FloorTexture) floortex = "";
+					if(ceiltex == null) ceiltex = s.CeilTexture; else if(ceiltex != s.CeilTexture) ceiltex = "";
+				}
+				
+				// Show the dialog
+				MakeDoorForm form = new MakeDoorForm();
+				if(form.Show(General.Interface, doortex, ceiltex, floortex) == DialogResult.OK)
+				{
+					doortex = form.DoorTexture;
+					ceiltex = form.CeilingTexture;
+					floortex = form.FloorTexture;
 					
-					// Go for all it's sidedefs
-					foreach(Sidedef sd in s.Sidedefs)
+					// Create undo
+					General.Map.UndoRedo.CreateUndo("Make door (" + doortex + ")", UndoGroup.None, 0);
+					
+					// Go for all selected sectors
+					foreach(Sector s in orderedselection)
 					{
-						// Singlesided?
-						if(sd.Other == null)
-						{
-							// Make this a doortrak
-							sd.SetTextureHigh("-");
-							sd.SetTextureMid(General.Map.Config.MakeDoorTrack);
-							sd.SetTextureLow("-");
-							
-							// Set upper/lower unpegged flags
-							sd.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
-							sd.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = true;
-						}
-						else
-						{
-							// Set texture
-							if(texture.Length > 0)
-							{
-								if(sd.IsFront)
-									sd.SetTextureHigh(texture);
-								else
-									sd.Other.SetTextureHigh(texture);
-							}
-							
-							// Get door linedef type from config
-							sd.Line.Action = General.Map.Config.MakeDoorAction;
+						// Lower the ceiling down to the floor
+						s.CeilHeight = s.FloorHeight;
 
-							// Set the linedef args
-							for(int i = 0; i < Linedef.NUM_ARGS; i++)
+						// Make a unique tag (not sure if we need it yet, depends on the args)
+						int tag = General.Map.Map.GetNewTag();
+
+						// Go for all it's sidedefs
+						foreach(Sidedef sd in s.Sidedefs)
+						{
+							// Singlesided?
+							if(sd.Other == null)
 							{
-								// A -1 arg indicates that the arg must be set to the new sector tag
-								// and only in this case we set the tag on the sector, because only
-								// then we know for sure that we need a tag.
-								if(General.Map.Config.MakeDoorArgs[i] == -1)
-								{
-									sd.Line.Args[i] = tag;
-									s.Tag = tag;
-								}
-								else
-								{
-									sd.Line.Args[i] = General.Map.Config.MakeDoorArgs[i];
-								}
+								// Make this a doortrak
+								sd.SetTextureHigh("-");
+								sd.SetTextureMid(General.Map.Config.MakeDoorTrack);
+								sd.SetTextureLow("-");
+
+								// Set upper/lower unpegged flags
+								sd.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
+								sd.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = true;
 							}
-							
-							// Make sure the line is facing outwards
-							if(sd.IsFront)
+							else
 							{
-								sd.Line.FlipVertices();
-								sd.Line.FlipSidedefs();
+								// Set textures
+								if(floortex.Length > 0) s.SetFloorTexture(floortex);
+								if(ceiltex.Length > 0) s.SetCeilTexture(ceiltex);
+								if(doortex.Length > 0) sd.Other.SetTextureHigh(doortex);
+
+								// Set upper/lower unpegged flags
+								sd.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
+								sd.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = false;
+								
+								// Get door linedef type from config
+								sd.Line.Action = General.Map.Config.MakeDoorAction;
+
+								// Set the linedef args
+								for(int i = 0; i < Linedef.NUM_ARGS; i++)
+								{
+									// A -1 arg indicates that the arg must be set to the new sector tag
+									// and only in this case we set the tag on the sector, because only
+									// then we know for sure that we need a tag.
+									if(General.Map.Config.MakeDoorArgs[i] == -1)
+									{
+										sd.Line.Args[i] = tag;
+										s.Tag = tag;
+									}
+									else
+									{
+										sd.Line.Args[i] = General.Map.Config.MakeDoorArgs[i];
+									}
+								}
+
+								// Make sure the line is facing outwards
+								if(sd.IsFront)
+								{
+									sd.Line.FlipVertices();
+									sd.Line.FlipSidedefs();
+								}
 							}
 						}
 					}
+					
+					// When a single sector was selected, deselect it now
+					if(orderedselection.Count == 1)
+					{
+						orderedselection.Clear();
+						General.Map.Map.ClearSelectedSectors();
+						General.Map.Map.ClearSelectedLinedefs();
+					}
 				}
 				
-				// When a single sector was selected, deselect it now
-				if(orderedselection.Count == 1)
-				{
-					orderedselection.Clear();
-					General.Map.Map.ClearSelectedSectors();
-					General.Map.Map.ClearSelectedLinedefs();
-				}
+				// Done
+				form.Dispose();
+				General.Interface.RedrawDisplay();
 			}
 		}
 		
