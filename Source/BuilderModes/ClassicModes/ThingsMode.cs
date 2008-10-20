@@ -324,6 +324,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
+			else
+			{
+				// Mouse in window?
+				if(mouseinside)
+				{
+					// Edit pressed in this mode
+					editpressed = true;
+
+					// Insert a new item and select it for dragging
+					Thing t = InsertThing(mousemappos);
+					General.Map.Map.ClearSelectedThings();
+					t.Selected = true;
+					Highlight(t);
+					General.Interface.RedrawDisplay();
+				}
+			}
 
 			base.OnEditBegin();
 		}
@@ -364,7 +380,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Not holding any buttons?
 			if(e.Button == MouseButtons.None)
 			{
-				// Find the nearest vertex within highlight range
+				// Find the nearest thing within highlight range
 				Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
 				
 				// Highlight if not the same
@@ -489,30 +505,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Mouse in window?
 			if(mouseinside)
 			{
-				// Create things at mouse position
-				Thing t = General.Map.Map.CreateThing();
-				General.Settings.ApplyDefaultThingSettings(t);
-				t.Move(mousemappos);
-				t.UpdateConfiguration();
+				// Insert new thing
+				InsertThing(mousemappos);
 				
-				// Update things filter so that it includes this thing
-				General.Map.ThingsFilter.Update();
-				
-				// Snap to grid enabled?
-				if(General.Interface.SnapToGrid)
-				{
-					// Snap to grid
-					t.SnapToGrid();
-				}
-				else
-				{
-					// Snap to map format accuracy
-					t.SnapToAccuracy();
-				}
-
 				// Redraw screen
 				General.Interface.RedrawDisplay();
 			}
+		}
+
+		// This creates a new thing
+		private Thing InsertThing(Vector2D pos)
+		{
+			// Create things at mouse position
+			Thing t = General.Map.Map.CreateThing();
+			General.Settings.ApplyDefaultThingSettings(t);
+			t.Move(pos);
+			t.UpdateConfiguration();
+
+			// Update things filter so that it includes this thing
+			General.Map.ThingsFilter.Update();
+
+			// Snap to grid enabled?
+			if(General.Interface.SnapToGrid)
+			{
+				// Snap to grid
+				t.SnapToGrid();
+			}
+			else
+			{
+				// Snap to map format accuracy
+				t.SnapToAccuracy();
+			}
+
+			return t;
 		}
 
 		[BeginAction("deleteitem", BaseAction = true)]
