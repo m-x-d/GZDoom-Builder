@@ -37,9 +37,11 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		// Variables
 		private MapOptions options;
+		private bool newmap;
 		
 		// Properties
 		public MapOptions Options { get { return options; } }
+		public bool IsForNewMap { get { return newmap; } set { newmap = value; } }
 		
 		// Constructor
 		public MapOptionsForm(MapOptions options)
@@ -98,50 +100,60 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			// Level name changed and the map exists in a source wad?
-			if((levelname.Text != options.CurrentName) && (General.Map != null) &&
-			   (General.Map.FilePathName != "") && File.Exists(General.Map.FilePathName))
+			// Next checks are only for maps that are already opened
+			if(!newmap)
 			{
-				// Open the source wad file to check for conflicting name
-				sourcewad = new WAD(General.Map.FilePathName, true);
-				conflictingname = (sourcewad.FindLumpIndex(levelname.Text) > -1);
-				sourcewad.Dispose();
-				
-				// Names conflict?
-				if(conflictingname)
+				// Now we check if the map name the user has given does already exist in the source WAD file
+				// We have to warn the user about that, because it would create a level name conflict in the WAD
+
+				// Level name changed and the map exists in a source wad?
+				if((levelname.Text != options.CurrentName) && (General.Map != null) &&
+				   (General.Map.FilePathName != "") && File.Exists(General.Map.FilePathName))
 				{
-					// Show warning!
-					if(General.ShowWarningMessage("The map name \"" + levelname.Text + "\" is already in use by another map or data lump in the source WAD file. Saving your map with this name will cause conflicting data lumps in the WAD file. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)
+					// Open the source wad file to check for conflicting name
+					sourcewad = new WAD(General.Map.FilePathName, true);
+					conflictingname = (sourcewad.FindLumpIndex(levelname.Text) > -1);
+					sourcewad.Dispose();
+
+					// Names conflict?
+					if(conflictingname)
 					{
-						return;
+						// Show warning!
+						if(General.ShowWarningMessage("The map name \"" + levelname.Text + "\" is already in use by another map or data lump in the source WAD file. Saving your map with this name will cause conflicting data lumps in the WAD file. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)
+						{
+							return;
+						}
 					}
 				}
-			}
-			
-			// Configuration changed?
-			if((options.ConfigFile != "") && (General.Configs[config.SelectedIndex].Filename != options.ConfigFile))
-			{
-				// Load the new cfg file
-				newcfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].Filename);
-				if(newcfg == null) return;
+
+				// When the user changed the configuration to one that has a different read/write interface,
+				// we have to warn the user that the map may not be compatible.
 				
-				// Check if the config uses a different IO interface
-				if(newcfg.ReadSetting("formatinterface", "") != General.Map.Config.FormatInterface)
+				// Configuration changed?
+				if((options.ConfigFile != "") && (General.Configs[config.SelectedIndex].Filename != options.ConfigFile))
 				{
-					// Warn the user about IO interface change
-					if(General.ShowWarningMessage("The game configuration you selected uses a different file format than your current map. Because your map was not designed for this format it may cause the map to work incorrectly in the game. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)
+					// Load the new cfg file
+					newcfg = General.LoadGameConfiguration(General.Configs[config.SelectedIndex].Filename);
+					if(newcfg == null) return;
+
+					// Check if the config uses a different IO interface
+					if(newcfg.ReadSetting("formatinterface", "") != General.Map.Config.FormatInterface)
 					{
-						// Reset to old configuration
-						for(int i = 0; i < config.Items.Count; i++)
+						// Warn the user about IO interface change
+						if(General.ShowWarningMessage("The game configuration you selected uses a different file format than your current map. Because your map was not designed for this format it may cause the map to work incorrectly in the game. Do you want to continue?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2) == DialogResult.No)
 						{
-							// Is this configuration the old config?
-							if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0)
+							// Reset to old configuration
+							for(int i = 0; i < config.Items.Count; i++)
 							{
-								// Select this item
-								config.SelectedIndex = i;
+								// Is this configuration the old config?
+								if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0)
+								{
+									// Select this item
+									config.SelectedIndex = i;
+								}
 							}
+							return;
 						}
-						return;
 					}
 				}
 			}

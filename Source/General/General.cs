@@ -775,6 +775,7 @@ namespace CodeImp.DoomBuilder
 			{
 				// Open map options dialog
 				optionswindow = new MapOptionsForm(newoptions);
+				optionswindow.IsForNewMap = true;
 				if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
 				{
 					// Display status
