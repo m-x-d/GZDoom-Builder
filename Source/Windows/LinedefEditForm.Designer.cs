@@ -341,7 +341,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfactivates.Columns = 2;
 			this.udmfactivates.Location = new System.Drawing.Point(56, 5);
 			this.udmfactivates.Name = "udmfactivates";
-			this.udmfactivates.Size = new System.Drawing.Size(401, 83);
+			this.udmfactivates.Size = new System.Drawing.Size(437, 83);
 			this.udmfactivates.TabIndex = 1;
 			// 
 			// argspanel
@@ -814,6 +814,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.fieldslist.Location = new System.Drawing.Point(11, 11);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
 			this.fieldslist.Name = "fieldslist";
