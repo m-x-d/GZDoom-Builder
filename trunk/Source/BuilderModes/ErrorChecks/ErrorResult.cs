@@ -95,6 +95,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			return "Unknown result";
 		}
+
+		// This is called for rendering
+		public virtual void PlotSelection(IRenderer2D renderer)
+		{
+		}
+
+		// This is called for rendering
+		public virtual void RenderThingsSelection(IRenderer2D renderer)
+		{
+		}
+
+		// This is called for rendering
+		public virtual void RenderOverlaySelection(IRenderer2D renderer)
+		{
+		}
 		
 		#endregion
 	}

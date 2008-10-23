@@ -38,7 +38,10 @@ namespace CodeImp.DoomBuilder.Config
 		public const int THING_BLOCKING_NONE = 0;
 		public const int THING_BLOCKING_FULL = 1;
 		public const int THING_BLOCKING_HEIGHT = 2;
-
+		public const int THING_ERROR_NONE = 0;
+		public const int THING_ERROR_INSIDE = 1;
+		public const int THING_ERROR_INSIDE_STUCKED = 2;
+		
 		#endregion
 
 		#region ================== Variables
@@ -119,7 +122,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.height = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".height", cat.Height);
 			this.hangs = (cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".hangs", cat.Hangs) != 0);
 			this.blocking = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".blocking", cat.Blocking);
-			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".errorcheck", cat.ErrorCheck);
+			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".error", cat.ErrorCheck);
 
 			// Safety
 			if(this.width < 8f) this.width = 8f;
