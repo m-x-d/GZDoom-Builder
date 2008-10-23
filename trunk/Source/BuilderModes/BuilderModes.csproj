@@ -35,6 +35,7 @@
   <ItemGroup>
     <Compile Include="ClassicModes\BaseClassicMode.cs" />
     <Compile Include="ClassicModes\BrightnessMode.cs" />
+    <Compile Include="ClassicModes\ErrorCheckMode.cs" />
     <Compile Include="ClassicModes\EditSelectionMode.cs" />
     <Compile Include="ClassicModes\CurveLinedefsMode.cs" />
     <Compile Include="ClassicModes\DragLinedefsMode.cs" />
@@ -55,6 +56,12 @@
     </Compile>
     <Compile Include="Interface\CurveLinedefsForm.Designer.cs">
       <DependentUpon>CurveLinedefsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\ErrorCheckForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Interface\ErrorCheckForm.Designer.cs">
+      <DependentUpon>ErrorCheckForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\FindReplaceForm.cs">
       <SubType>Form</SubType>
@@ -147,6 +154,10 @@
     <EmbeddedResource Include="Resources\BrightnessMode.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\ErrorCheckForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ErrorCheckForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\FindReplaceForm.resx">
       <DependentUpon>FindReplaceForm.cs</DependentUpon>
       <SubType>Designer</SubType>
