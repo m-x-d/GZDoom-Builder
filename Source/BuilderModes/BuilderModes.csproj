@@ -45,6 +45,7 @@
     <Compile Include="ClassicModes\FindReplaceMode.cs" />
     <Compile Include="ClassicModes\MakeSectorMode.cs" />
     <Compile Include="ErrorChecks\CheckStuckedThings.cs" />
+    <Compile Include="ErrorChecks\ResultStuckedThing.cs" />
     <Compile Include="ErrorChecks\ErrorResult.cs" />
     <Compile Include="ErrorChecks\ErrorCheckerAttribute.cs" />
     <Compile Include="ErrorChecks\ErrorChecker.cs" />

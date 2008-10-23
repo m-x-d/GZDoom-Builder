@@ -61,19 +61,79 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Go for all the things
 			foreach(Thing t in General.Map.Map.Things)
 			{
-				// Make square from thing
+				// Make square coordinates from thing
+				Vector2D lt = new Vector2D(t.Position.x - t.Size, t.Position.y - t.Size);
+				Vector2D rb = new Vector2D(t.Position.x + t.Size, t.Position.y + t.Size);
 				
-				// Go for all the lines
+				// Go for all the lines to see if this thing is stucked
+				bool stucked = false;
 				foreach(Linedef l in General.Map.Map.Linedefs)
 				{
-					// Test if the line intersects the square
+					// Test only single-sided lines
+					if(l.Back == null)
+					{
+						// Test if line ends are inside the thing
+						if(PointInRect(lt, rb, l.Start.Position) ||
+						   PointInRect(lt, rb, l.End.Position))
+						{
+							// Thing stucked in line!
+							stucked = true;
+						}
+						// Test if the line intersects the square
+						else if(Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, lt.y, rb.x, lt.y) ||
+								Line2D.GetIntersection(l.Start.Position, l.End.Position, rb.x, lt.y, rb.x, rb.y) ||
+								Line2D.GetIntersection(l.Start.Position, l.End.Position, rb.x, rb.y, lt.x, rb.y) ||
+								Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, rb.y, lt.x, lt.y))
+						{
+							// Thing stucked in line!
+							stucked = true;
+						}
+					}
+				}
+				
+				// Stucked?
+				if(stucked)
+				{
+					// Make result
+					ResultStuckedThing r = new ResultStuckedThing(t);
+					SubmitResult(r);
+				}
+				else
+				{
+					// Get the nearest line to see if the thing is outside the map
+					bool outside = false;
+					Linedef l = General.Map.Map.NearestLinedef(t.Position);
+					if(l.SideOfLine(t.Position) <= 0)
+					{
+						outside = (l.Front == null);
+					}
+					else
+					{
+						outside = (l.Back == null);
+					}
 					
+					// Outside the map?
+					if(outside)
+					{
+						// Make result
+						ResultStuckedThing r = new ResultStuckedThing(t);
+						SubmitResult(r);
+					}
 				}
 				
 				// Handle thread interruption
 				try { Thread.Sleep(0); }
 				catch(ThreadInterruptedException) { return; }
+				
+				// We are making progress!
+				AddProgress(1);
 			}
+		}
+		
+		// Point in rect?
+		private bool PointInRect(Vector2D lt, Vector2D rb, Vector2D p)
+		{
+			return (p.x >= lt.x) && (p.x <= rb.x) && (p.y >= lt.y) && (p.y <= rb.y);
 		}
 		
 		#endregion

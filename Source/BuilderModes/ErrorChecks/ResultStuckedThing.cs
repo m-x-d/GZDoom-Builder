@@ -38,62 +38,35 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ErrorChecker
+	public class ResultStuckedThing : ErrorResult
 	{
 		#region ================== Variables
-		
-		private int lastprogress;
-		private int totalprogress = -1;
+
+		private Thing thing;
 		
 		#endregion
 		
 		#region ================== Properties
-		
-		public int TotalProgress { get { return totalprogress; } }
 		
 		#endregion
 		
 		#region ================== Constructor / Destructor
 		
 		// Constructor
-		// Override this to determine and set the total progress
-		public ErrorChecker()
+		public ResultStuckedThing(Thing t)
 		{
+			// Initialize
+			this.thing = t;
 		}
 		
 		#endregion
 		
 		#region ================== Methods
 		
-		// Override this to run your check
-		// Use a Sleep and Try/Catch to handle thread interruption
-		public virtual void Run()
+		// This must return the string that is displayed in the listbox
+		public override string ToString()
 		{
-			if(totalprogress < 0) throw new InvalidOperationException("You must set the total progress through the SetTotalProgress method before this check can be performed!");
-			lastprogress = 0;
-		}
-		
-		// This submits a result to show in the results list
-		protected void SubmitResult(ErrorResult result)
-		{
-			BuilderPlug.Me.ErrorCheckForm.SubmitResult(result);
-		}
-		
-		// This reports a change in progress
-		protected void AddProgress(int amount)
-		{
-			// Make changes
-			if(amount < 0) amount = 0;
-			if((lastprogress + amount) > totalprogress) throw new InvalidOperationException("Cannot exceed total progress amount!");
-			lastprogress += amount;
-			BuilderPlug.Me.ErrorCheckForm.AddProgressValue(amount);
-		}
-		
-		// This sets the total progress
-		protected void SetTotalProgress(int totalprogress)
-		{
-			if(totalprogress < 0) throw new ArgumentOutOfRangeException("Total progress cannot be less than zero!");
-			this.totalprogress = totalprogress;
+			return "Stucked thing '" + General.Map.Config.GetThingInfo(thing.Type).Title + "' at " + thing.Position.x + ", " + thing.Position.y;
 		}
 		
 		#endregion

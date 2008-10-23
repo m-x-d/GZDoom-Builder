@@ -39,6 +39,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public partial class ErrorCheckForm : DelayedForm
 	{
+		#region ================== Delegates
+
+		private delegate void CallVoidMethodDeletage();
+		private delegate void CallIntMethodDelegate(int i);
+		private delegate void CallResultMethodDelegate(ErrorResult r);
+		
+		#endregion
+		
 		#region ================== Constants
 
 		// Constants
@@ -96,13 +104,75 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		#endregion
+
+		#region ================== Cross-Thread Calls
+
+		public void SubmitResult(ErrorResult result)
+		{
+			if(results.InvokeRequired)
+			{
+				CallResultMethodDelegate d = new CallResultMethodDelegate(SubmitResult);
+				try { progress.Invoke(d, result); }	catch(ThreadInterruptedException) { }
+			}
+			else
+			{
+				results.Items.Add(result);
+			}
+		}
 		
+		private void SetProgressMaximum(int maximum)
+		{
+			if(progress.InvokeRequired)
+			{
+				CallIntMethodDelegate d = new CallIntMethodDelegate(SetProgressMaximum);
+				try { progress.Invoke(d, maximum); } catch(ThreadInterruptedException) { }
+			}
+			else
+			{
+				progress.Maximum = maximum;
+			}
+		}
+		
+		public void AddProgressValue(int value)
+		{
+			if(progress.InvokeRequired)
+			{
+				CallIntMethodDelegate d = new CallIntMethodDelegate(AddProgressValue);
+				try { progress.Invoke(d, value); } catch(ThreadInterruptedException) { }
+			}
+			else
+			{
+				progress.Value += value;
+			}
+		}
+		
+		private void StopChecking()
+		{
+			if(this.InvokeRequired)
+			{
+				CallVoidMethodDeletage d = new CallVoidMethodDeletage(StopChecking);
+				this.Invoke(d);
+			}
+			else
+			{
+				checksthread = null;
+				running = false;
+				progress.Value = 0;
+				buttoncheck.Text = "Start Analysis";
+				Cursor.Current = Cursors.Default;
+			}
+		}
+		
+		#endregion
+
 		#region ================== Methods
-		
+
 		// This runs in a seperate thread to manage the checking threads
 		private void RunChecks()
 		{
 			List<ErrorChecker> checkers = new List<ErrorChecker>();
+			List<Thread> threads = new List<Thread>();
+			int maxthreads = Environment.ProcessorCount;
 			int totalprogress = 0;
 			int nextchecker = 0;
 			
@@ -145,16 +215,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Setup
-			progress.Maximum = totalprogress;
-			const int maxthreads = Environment.ProcessorCount;
-			List<Thread> threads = new List<Thread>(maxthreads);
+			SetProgressMaximum(totalprogress);
 			
 			// Continue while threads are running or checks are to be done
 			while((nextchecker < checkers.Count) || (threads.Count > 0))
 			{
 				// Start new thread when less than maximum number of
 				// threads running and there is more work to be done
-				while((threads.Count < maxthreads) && (checkers.Count > 0))
+				while((threads.Count < maxthreads) && (nextchecker < checkers.Count))
 				{
 					ErrorChecker c = checkers[nextchecker++];
 					Thread t = new Thread(new ThreadStart(c.Run));
@@ -165,7 +233,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				
 				// Remove threads that are done
-				for(int i = threads.Count; i >= 0; i--)
+				for(int i = threads.Count - 1; i >= 0; i--)
 					if(!threads[i].IsAlive) threads.RemoveAt(i);
 				
 				// Handle thread interruption
@@ -184,7 +252,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			checkers = null;
 			
 			// Done
-			progress.Value = 0;
+			StopChecking();
 		}
 		
 		#endregion
@@ -205,24 +273,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Start/stop
 		private void buttoncheck_Click(object sender, EventArgs e)
 		{
-			Cursor.Current = Cursors.WaitCursor;
-			
 			// Currently running?
 			if(running)
 			{
-				// Stop checking
+				Cursor.Current = Cursors.WaitCursor;
 				checksthread.Interrupt();
-				checksthread.Join();
-				checksthread = null;
-				running = false;
 			}
 			else
 			{
+				Cursor.Current = Cursors.WaitCursor;
+				
 				// Open the results panel
 				this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);
 				progress.Value = 0;
 				results.Items.Clear();
 				resultspanel.Visible = true;
+				buttoncheck.Text = "Abort Analysis";
 				
 				// Start checking
 				running = true;
@@ -230,9 +296,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				checksthread.Name = "Checking Management";
 				checksthread.Priority = ThreadPriority.Normal;
 				checksthread.Start();
+				
+				Cursor.Current = Cursors.Default;
 			}
-			
-			Cursor.Current = Cursors.Default;
 		}
 		
 		#endregion
