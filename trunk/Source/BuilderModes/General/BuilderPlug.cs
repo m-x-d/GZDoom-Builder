@@ -170,6 +170,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Tools
 		
+		// This finds all class types that inherits from the given type
+		public Type[] FindClasses(Type t)
+		{
+			List<Type> found = new List<Type>();
+			Type[] types;
+
+			// Get all exported types
+			types = Assembly.GetExecutingAssembly().GetTypes();
+			foreach(Type it in types)
+			{
+				// Compare types
+				if(t.IsAssignableFrom(it)) found.Add(it);
+			}
+
+			// Return list
+			return found.ToArray();
+		}
+		
 		// This renders the associated sectors/linedefs with the indication color
 		public void PlotAssociations(IRenderer2D renderer, Association asso)
 		{

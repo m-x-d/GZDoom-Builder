@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Map Analysis",
 			  SwitchAction = "errorcheckmode",
-			  Volatile = false)]
+			  Volatile = true)]
 
 	public sealed class ErrorCheckMode : BaseClassicMode
 	{
