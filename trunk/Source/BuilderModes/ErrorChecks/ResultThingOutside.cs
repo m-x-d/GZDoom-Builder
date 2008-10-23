@@ -38,64 +38,41 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ErrorResult
+	public class ResultThingOutside : ErrorResult
 	{
 		#region ================== Variables
-		
-		protected string description;
-		
+
+		private Thing thing;
+
 		#endregion
-		
+
 		#region ================== Properties
 		
-		public string Description { get { return description; } }
-		
-		// Override these properties to create buttons
-		public virtual int Buttons { get { return 0; } }
-		public virtual string Button1Text { get { return ""; } }
-		public virtual string Button2Text { get { return ""; } }
-		public virtual string Button3Text { get { return ""; } }
+		public override int Buttons { get { return 1; } }
+		public override string Button1Text { get { return "Delete Thing"; } }
 		
 		#endregion
-		
+
 		#region ================== Constructor / Destructor
-		
+
 		// Constructor
-		public ErrorResult()
+		public ResultThingOutside(Thing t)
 		{
 			// Initialize
+			this.thing = t;
+			this.description = "This thing is completely outside the map.";
 		}
-		
+
 		#endregion
-		
+
 		#region ================== Methods
-		
-		// When this result is selected
-		public virtual void Selected()
-		{
-		}
-		
-		// When the first button is clicked
-		public virtual void Button1Click()
-		{
-		}
-		
-		// When the second button is clicked
-		public virtual void Button2Click()
-		{
-		}
-		
-		// When the third button is clicked
-		public virtual void Button3Click()
-		{
-		}
-		
+
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Unknown result";
+			return "Thing '" + General.Map.Config.GetThingInfo(thing.Type).Title + "' is outside the map at " + thing.Position.x + ", " + thing.Position.y;
 		}
-		
+
 		#endregion
 	}
 }

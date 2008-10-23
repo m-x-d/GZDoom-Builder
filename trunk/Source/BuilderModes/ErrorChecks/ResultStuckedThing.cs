@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Initialize
 			this.thing = t;
+			this.description = "This thing is stucked in a wall (single-sided line) and will likely not be able to move around.";
 		}
 		
 		#endregion

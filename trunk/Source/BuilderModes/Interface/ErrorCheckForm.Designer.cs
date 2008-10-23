@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.results.Name = "results";
 			this.results.Size = new System.Drawing.Size(360, 164);
 			this.results.TabIndex = 2;
+			this.results.SelectedIndexChanged += new System.EventHandler(this.results_SelectedIndexChanged);
 			// 
 			// resultspanel
 			// 
@@ -101,6 +102,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fix3.Text = "Fix 3";
 			this.fix3.UseVisualStyleBackColor = true;
 			this.fix3.Visible = false;
+			this.fix3.Click += new System.EventHandler(this.fix3_Click);
 			// 
 			// fix2
 			// 
@@ -112,16 +114,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fix2.Text = "Fix 2";
 			this.fix2.UseVisualStyleBackColor = true;
 			this.fix2.Visible = false;
+			this.fix2.Click += new System.EventHandler(this.fix2_Click);
 			// 
 			// resultinfo
 			// 
 			this.resultinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.resultinfo.Location = new System.Drawing.Point(12, 208);
+			this.resultinfo.Enabled = false;
+			this.resultinfo.Location = new System.Drawing.Point(12, 206);
 			this.resultinfo.Name = "resultinfo";
-			this.resultinfo.Size = new System.Drawing.Size(358, 47);
+			this.resultinfo.Size = new System.Drawing.Size(358, 57);
 			this.resultinfo.TabIndex = 5;
-			this.resultinfo.Text = "label1";
+			this.resultinfo.Text = "Select a result from the list to see more information.\r\n";
 			// 
 			// fix1
 			// 
@@ -133,6 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fix1.Text = "Fix 1";
 			this.fix1.UseVisualStyleBackColor = true;
 			this.fix1.Visible = false;
+			this.fix1.Click += new System.EventHandler(this.fix1_Click);
 			// 
 			// progress
 			// 

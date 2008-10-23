@@ -61,6 +61,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#endregion
 
+		#region ================== Properties
+		
+		public ErrorResult SelectedResult { get { return results.SelectedItem as ErrorResult; } }
+		
+		#endregion
+
 		#region ================== Constructor / Show
 
 		// Constructor
@@ -105,40 +111,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#endregion
 
-		#region ================== Cross-Thread Calls
+		#region ================== Thread Calls
 
 		public void SubmitResult(ErrorResult result)
 		{
 			if(results.InvokeRequired)
 			{
 				CallResultMethodDelegate d = new CallResultMethodDelegate(SubmitResult);
-				try { progress.Invoke(d, result); }	catch(ThreadInterruptedException) { }
+				try { progress.Invoke(d, result); }
+				catch(ThreadInterruptedException) { }
 			}
 			else
 			{
 				results.Items.Add(result);
 			}
 		}
-		
+
 		private void SetProgressMaximum(int maximum)
 		{
 			if(progress.InvokeRequired)
 			{
 				CallIntMethodDelegate d = new CallIntMethodDelegate(SetProgressMaximum);
-				try { progress.Invoke(d, maximum); } catch(ThreadInterruptedException) { }
+				try { progress.Invoke(d, maximum); }
+				catch(ThreadInterruptedException) { }
 			}
 			else
 			{
 				progress.Maximum = maximum;
 			}
 		}
-		
+
 		public void AddProgressValue(int value)
 		{
 			if(progress.InvokeRequired)
 			{
 				CallIntMethodDelegate d = new CallIntMethodDelegate(AddProgressValue);
-				try { progress.Invoke(d, value); } catch(ThreadInterruptedException) { }
+				try { progress.Invoke(d, value); }
+				catch(ThreadInterruptedException) { }
 			}
 			else
 			{
@@ -146,6 +155,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		// This stops checking (only called from the checking management thread)
 		private void StopChecking()
 		{
 			if(this.InvokeRequired)
@@ -163,10 +173,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		// This starts checking
+		private void StartChecking()
+		{
+			if(running) return;
+			
+			Cursor.Current = Cursors.WaitCursor;
+			
+			// Open the results panel
+			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);
+			progress.Value = 0;
+			results.Items.Clear();
+			ClearSelectedResult();
+			resultspanel.Visible = true;
+			buttoncheck.Text = "Abort Analysis";
+			
+			// Start checking
+			running = true;
+			checksthread = new Thread(new ThreadStart(RunChecks));
+			checksthread.Name = "Checking Management";
+			checksthread.Priority = ThreadPriority.Normal;
+			checksthread.Start();
+			
+			Cursor.Current = Cursors.Default;
+		}
+
 		#endregion
 
 		#region ================== Methods
-
+		
+		// This clears the selected result
+		private void ClearSelectedResult()
+		{
+			results.SelectedIndex = -1;
+			resultinfo.Text = "Select a result from the list to see more information.";
+			resultinfo.Enabled = false;
+			fix1.Visible = false;
+			fix2.Visible = false;
+			fix3.Visible = false;
+		}
+		
 		// This runs in a seperate thread to manage the checking threads
 		private void RunChecks()
 		{
@@ -281,23 +327,86 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				Cursor.Current = Cursors.WaitCursor;
-				
-				// Open the results panel
-				this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);
-				progress.Value = 0;
-				results.Items.Clear();
-				resultspanel.Visible = true;
-				buttoncheck.Text = "Abort Analysis";
-				
-				// Start checking
-				running = true;
-				checksthread = new Thread(new ThreadStart(RunChecks));
-				checksthread.Name = "Checking Management";
-				checksthread.Priority = ThreadPriority.Normal;
-				checksthread.Start();
-				
-				Cursor.Current = Cursors.Default;
+				StartChecking();
+			}
+		}
+		
+		// Results selection changed
+		private void results_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(results.SelectedIndex >= 0)
+			{
+				ErrorResult r = (results.SelectedItem as ErrorResult);
+				resultinfo.Text = r.Description;
+				resultinfo.Enabled = true;
+				fix1.Text = r.Button1Text;
+				fix2.Text = r.Button2Text;
+				fix3.Text = r.Button3Text;
+				fix1.Visible = (r.Buttons >= 1);
+				fix2.Visible = (r.Buttons >= 2);
+				fix3.Visible = (r.Buttons >= 3);
+			}
+			else
+			{
+				ClearSelectedResult();
+			}
+		}
+		
+		// First button
+		private void fix1_Click(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(results.SelectedIndex >= 0)
+			{
+				if(running)
+				{
+					General.ShowWarningMessage("You must stop the analysis before you can make changes to your map!", MessageBoxButtons.OK);
+				}
+				else
+				{
+					ErrorResult r = (results.SelectedItem as ErrorResult);
+					r.Button1Click();
+					StartChecking();
+				}
+			}
+		}
+		
+		// Second button
+		private void fix2_Click(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(results.SelectedIndex >= 0)
+			{
+				if(running)
+				{
+					General.ShowWarningMessage("You must stop the analysis before you can make changes to your map!", MessageBoxButtons.OK);
+				}
+				else
+				{
+					ErrorResult r = (results.SelectedItem as ErrorResult);
+					r.Button2Click();
+					StartChecking();
+				}
+			}
+		}
+		
+		// Third button
+		private void fix3_Click(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(results.SelectedIndex >= 0)
+			{
+				if(running)
+				{
+					General.ShowWarningMessage("You must stop the analysis before you can make changes to your map!", MessageBoxButtons.OK);
+				}
+				else
+				{
+					ErrorResult r = (results.SelectedItem as ErrorResult);
+					r.Button3Click();
+					StartChecking();
+				}
 			}
 		}
 		

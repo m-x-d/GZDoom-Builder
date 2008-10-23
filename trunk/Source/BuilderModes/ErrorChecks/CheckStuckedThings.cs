@@ -95,8 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(stucked)
 				{
 					// Make result
-					ResultStuckedThing r = new ResultStuckedThing(t);
-					SubmitResult(r);
+					SubmitResult(new ResultStuckedThing(t));
 				}
 				else
 				{
@@ -116,8 +115,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(outside)
 					{
 						// Make result
-						ResultStuckedThing r = new ResultStuckedThing(t);
-						SubmitResult(r);
+						SubmitResult(new ResultThingOutside(t));
 					}
 				}
 				
