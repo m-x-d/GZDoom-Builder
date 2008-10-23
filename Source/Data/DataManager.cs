@@ -348,7 +348,7 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Background Loading
-
+		
 		// This starts background loading
 		private void StartBackgroundLoader()
 		{
@@ -360,9 +360,10 @@ namespace CodeImp.DoomBuilder.Data
 			backgroundloader = new Thread(new ThreadStart(BackgroundLoad));
 			backgroundloader.Name = "Background Loader";
 			backgroundloader.Priority = ThreadPriority.Lowest;
+			backgroundloader.IsBackground = true;
 			backgroundloader.Start();
 		}
-
+		
 		// This stops background loading
 		private void StopBackgroundLoader()
 		{
