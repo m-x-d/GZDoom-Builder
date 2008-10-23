@@ -67,7 +67,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Stucked thing '" + General.Map.Config.GetThingInfo(thing.Type).Title + "' at " + thing.Position.x + ", " + thing.Position.y;
+			return General.Map.Config.GetThingInfo(thing.Type).Title + " is stucked in a wall at " + thing.Position.x + ", " + thing.Position.y;
+		}
+
+		// Rendering
+		public override void RenderOverlaySelection(IRenderer2D renderer)
+		{
+			renderer.RenderThing(thing, renderer.DetermineThingColor(thing), 1.0f);
 		}
 		
 		#endregion

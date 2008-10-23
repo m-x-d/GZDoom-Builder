@@ -76,6 +76,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Standard);
 
+			// Save selection as marks
+			General.Map.Map.ClearAllMarks(false);
+			General.Map.Map.MarkAllSelectedGeometry(true, false);
+			General.Map.Map.ClearAllSelected();
+			
 			// Show toolbox window
 			BuilderPlug.Me.ErrorCheckForm.Show((Form)General.Interface);
 		}
@@ -88,8 +93,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Hide object info
 			General.Interface.HideInfo();
 			
+			// Restore selection
+			General.Map.Map.SelectMarkedGeometry(true, true);
+			General.Map.Map.ClearAllMarks(false);
+			
 			// Hide toolbox window
-			BuilderPlug.Me.ErrorCheckForm.Hide();
+			BuilderPlug.Me.ErrorCheckForm.CloseWindow();
 		}
 
 		// This applies the curves and returns to the base mode
@@ -118,7 +127,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				//if(selection != null) selection.PlotSelection(renderer);
+				if(selection != null) selection.PlotSelection(renderer);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				renderer.Finish();
 			}
@@ -127,14 +136,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
-				//if(selection != null) selection.RenderThingsSelection(renderer);
+				if(selection != null) selection.RenderThingsSelection(renderer);
 				renderer.Finish();
 			}
 			
 			// Render overlay
 			if(renderer.StartOverlay(true))
 			{
-				//if(selection != null) selection.RenderOverlaySelection(renderer);
+				if(selection != null) selection.RenderOverlaySelection(renderer);
 				renderer.Finish();
 			}
 			

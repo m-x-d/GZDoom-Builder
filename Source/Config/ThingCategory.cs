@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.height = cfg.ReadSetting("thingtypes." + name + ".height", 16);
 			this.hangs = cfg.ReadSetting("thingtypes." + name + ".hangs", 0);
 			this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
-			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".errorcheck", 0);
+			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", 1);
 			
 			// Safety
 			if(this.width < 8f) this.width = 8f;

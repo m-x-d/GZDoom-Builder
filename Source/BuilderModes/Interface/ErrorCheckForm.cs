@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 		
-		private bool running = false;
+		private volatile bool running = false;
 		private Thread checksthread;
 		
 		#endregion
@@ -166,10 +166,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				checksthread = null;
-				running = false;
 				progress.Value = 0;
 				buttoncheck.Text = "Start Analysis";
 				Cursor.Current = Cursors.Default;
+				running = false;
 			}
 		}
 		
@@ -187,6 +187,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ClearSelectedResult();
 			resultspanel.Visible = true;
 			buttoncheck.Text = "Abort Analysis";
+			General.Interface.RedrawDisplay();
 			
 			// Start checking
 			running = true;
@@ -202,6 +203,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 		
+		// This stops the checking
+		public void CloseWindow()
+		{
+			// Currently running?
+			if(running)
+			{
+				Cursor.Current = Cursors.WaitCursor;
+				checksthread.Interrupt();
+			}
+
+			ClearSelectedResult();
+			this.Hide();
+		}
+
 		// This clears the selected result
 		private void ClearSelectedResult()
 		{
@@ -351,6 +366,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				ClearSelectedResult();
 			}
+			
+			General.Interface.RedrawDisplay();
 		}
 		
 		// First button
