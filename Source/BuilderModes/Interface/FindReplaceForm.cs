@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			InitializeComponent();
 
 			// Find all find/replace types
-			Type[] findtypes = FindClasses(typeof(FindReplaceType));
+			Type[] findtypes = BuilderPlug.Me.FindClasses(typeof(FindReplaceType));
 			foreach(Type t in findtypes)
 			{
 				FindReplaceType finderinst;
@@ -245,24 +245,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				resultslist.Items.CopyTo(list, 0);
 				return list;
 			}
-		}
-
-		// This finds all class types that inherits from the given type
-		public Type[] FindClasses(Type t)
-		{
-			List<Type> found = new List<Type>();
-			Type[] types;
-
-			// Get all exported types
-			types = Assembly.GetExecutingAssembly().GetTypes();
-			foreach(Type it in types)
-			{
-				// Compare types
-				if(t.IsAssignableFrom(it)) found.Add(it);
-			}
-
-			// Return list
-			return found.ToArray();
 		}
 		
 		#endregion
