@@ -109,6 +109,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Redrawing display
 		public override void OnRedrawDisplay()
 		{
+			// Get the selection
+			ErrorResult selection = BuilderPlug.Me.ErrorCheckForm.SelectedResult;
+			
+			renderer.RedrawSurface();
+			
+			// Render lines
+			if(renderer.StartPlotter(true))
+			{
+				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+				//if(selection != null) selection.PlotSelection(renderer);
+				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+				renderer.Finish();
+			}
+			
+			// Render things
+			if(renderer.StartThings(true))
+			{
+				renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
+				//if(selection != null) selection.RenderThingsSelection(renderer);
+				renderer.Finish();
+			}
+			
+			// Render overlay
+			if(renderer.StartOverlay(true))
+			{
+				//if(selection != null) selection.RenderOverlaySelection(renderer);
+				renderer.Finish();
+			}
+			
+			renderer.Present();
 		}
 
 		#endregion
