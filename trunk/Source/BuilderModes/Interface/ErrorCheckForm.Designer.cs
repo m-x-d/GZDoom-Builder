@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.results.Location = new System.Drawing.Point(10, 34);
 			this.results.Margin = new System.Windows.Forms.Padding(1);
 			this.results.Name = "results";
-			this.results.Size = new System.Drawing.Size(360, 164);
+			this.results.Size = new System.Drawing.Size(360, 172);
 			this.results.TabIndex = 2;
 			this.results.SelectedIndexChanged += new System.EventHandler(this.results_SelectedIndexChanged);
 			// 
@@ -89,13 +89,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultspanel.Controls.Add(this.results);
 			this.resultspanel.Location = new System.Drawing.Point(0, 170);
 			this.resultspanel.Name = "resultspanel";
-			this.resultspanel.Size = new System.Drawing.Size(383, 306);
+			this.resultspanel.Size = new System.Drawing.Size(383, 326);
 			this.resultspanel.TabIndex = 3;
 			// 
 			// fix3
 			// 
 			this.fix3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix3.Location = new System.Drawing.Point(256, 269);
+			this.fix3.Location = new System.Drawing.Point(256, 289);
 			this.fix3.Name = "fix3";
 			this.fix3.Size = new System.Drawing.Size(114, 26);
 			this.fix3.TabIndex = 7;
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fix2
 			// 
 			this.fix2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix2.Location = new System.Drawing.Point(133, 269);
+			this.fix2.Location = new System.Drawing.Point(133, 289);
 			this.fix2.Name = "fix2";
 			this.fix2.Size = new System.Drawing.Size(114, 26);
 			this.fix2.TabIndex = 6;
@@ -121,16 +121,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.resultinfo.Enabled = false;
-			this.resultinfo.Location = new System.Drawing.Point(12, 206);
+			this.resultinfo.Location = new System.Drawing.Point(12, 212);
 			this.resultinfo.Name = "resultinfo";
-			this.resultinfo.Size = new System.Drawing.Size(358, 57);
+			this.resultinfo.Size = new System.Drawing.Size(358, 74);
 			this.resultinfo.TabIndex = 5;
-			this.resultinfo.Text = "Select a result from the list to see more information.\r\n";
+			this.resultinfo.Text = "Select a result from the list to see more information.";
 			// 
 			// fix1
 			// 
 			this.fix1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix1.Location = new System.Drawing.Point(10, 269);
+			this.fix1.Location = new System.Drawing.Point(10, 289);
 			this.fix1.Name = "fix1";
 			this.fix1.Size = new System.Drawing.Size(114, 26);
 			this.fix1.TabIndex = 4;
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// ErrorCheckForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(380, 475);
+			this.ClientSize = new System.Drawing.Size(380, 493);
 			this.Controls.Add(this.resultspanel);
 			this.Controls.Add(this.buttoncheck);
 			this.Controls.Add(this.checks);
