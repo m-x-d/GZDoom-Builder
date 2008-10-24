@@ -42,8 +42,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	[ErrorChecker("Check for stucked things", true)]
 	public class CheckStuckedThings : ErrorChecker
 	{
+		#region ================== Constants
+
+		private const float ALLOWED_STUCK_DISTANCE = 3.0f;
+
+		#endregion
+
 		#region ================== Constructor / Destructor
-		
+
 		// Constructor
 		public CheckStuckedThings()
 		{
@@ -69,8 +75,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					(info.Blocking > ThingTypeInfo.THING_BLOCKING_NONE))
 				{
 					// Make square coordinates from thing
-					Vector2D lt = new Vector2D(t.Position.x - t.Size, t.Position.y - t.Size);
-					Vector2D rb = new Vector2D(t.Position.x + t.Size, t.Position.y + t.Size);
+					float blockingsize = t.Size - ALLOWED_STUCK_DISTANCE;
+					Vector2D lt = new Vector2D(t.Position.x - blockingsize, t.Position.y - blockingsize);
+					Vector2D rb = new Vector2D(t.Position.x + blockingsize, t.Position.y + blockingsize);
 
 					// Go for all the lines to see if this thing is stucked
 					foreach(Linedef l in General.Map.Map.Linedefs)

@@ -561,7 +561,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Update cache values
 				General.Map.IsChanged = true;
-				General.Map.Map.Update();
+				General.Map.ThingsFilter.Update();
 
 				// Invoke a new mousemove so that the highlighted item updates
 				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);

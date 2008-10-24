@@ -79,6 +79,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.RenderThing(thing, renderer.DetermineThingColor(thing), 1.0f);
 		}
 		
+		// This removes the thing
+		public override bool Button1Click()
+		{
+			General.Map.UndoRedo.CreateUndo("Delete thing", UndoGroup.None, 0);
+			thing.Dispose();
+			General.Map.IsChanged = true;
+			General.Map.ThingsFilter.Update();
+			return true;
+		}
+		
 		#endregion
 	}
 }

@@ -39,6 +39,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public partial class ErrorCheckForm : DelayedForm
 	{
+		#region ================== Constants
+
+		// Constants
+		private const int RESULTS_WINDOW_HEIGHT = 500;
+
+		#endregion
+
 		#region ================== Delegates
 
 		private delegate void CallVoidMethodDeletage();
@@ -47,13 +54,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#endregion
 		
-		#region ================== Constants
-
-		// Constants
-		private const int RESULTS_WINDOW_HEIGHT = 536;
-
-		#endregion
-
 		#region ================== Variables
 		
 		private volatile bool running = false;
@@ -383,8 +383,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					r.Button1Click();
-					StartChecking();
+					if(r.Button1Click()) StartChecking(); else General.Interface.RedrawDisplay();
 				}
 			}
 		}
@@ -402,8 +401,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					r.Button2Click();
-					StartChecking();
+					if(r.Button2Click()) StartChecking(); else General.Interface.RedrawDisplay();
 				}
 			}
 		}
@@ -421,8 +419,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					r.Button3Click();
-					StartChecking();
+					if(r.Button3Click()) StartChecking(); else General.Interface.RedrawDisplay();
 				}
 			}
 		}
