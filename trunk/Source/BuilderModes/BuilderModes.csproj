@@ -46,6 +46,8 @@
     <Compile Include="ClassicModes\MakeSectorMode.cs" />
     <Compile Include="ErrorChecks\CheckStuckedThings.cs" />
     <Compile Include="ErrorChecks\CheckLineReferences.cs" />
+    <Compile Include="ErrorChecks\ResultLineNotSingleSided.cs" />
+    <Compile Include="ErrorChecks\ResultLineNotDoubleSided.cs" />
     <Compile Include="ErrorChecks\ResultLineMissingFront.cs" />
     <Compile Include="ErrorChecks\ResultLineMissingSides.cs" />
     <Compile Include="ErrorChecks\ResultStuckedThing.cs" />
