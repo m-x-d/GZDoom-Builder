@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private string displayname;
 		private bool defaultchecked;
+		private int cost;
 		
 		#endregion
 		
@@ -52,17 +53,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public string DisplayName { get { return displayname; } set { displayname = value; } }
 		public bool DefaultChecked { get { return defaultchecked; } set { defaultchecked = value; } }
+		public int Cost { get { return cost; } set { cost = value; } }
 		
 		#endregion
 		
 		#region ================== Constructor / Destructor
 		
 		// Constructor
-		public ErrorCheckerAttribute(string displayname, bool defaultchecked)
+		public ErrorCheckerAttribute(string displayname, bool defaultchecked, int cost)
 		{
 			// Initialize
 			this.displayname = displayname;
 			this.defaultchecked = defaultchecked;
+			this.cost = cost;
 		}
 		
 		#endregion

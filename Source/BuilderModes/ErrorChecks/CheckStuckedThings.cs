@@ -39,7 +39,7 @@ using System.Threading;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[ErrorChecker("Check for stucked things", true)]
+	[ErrorChecker("Check for stucked things", true, 1000)]
 	public class CheckStuckedThings : ErrorChecker
 	{
 		#region ================== Constants
@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float blockingsize = t.Size - ALLOWED_STUCK_DISTANCE;
 					Vector2D lt = new Vector2D(t.Position.x - blockingsize, t.Position.y - blockingsize);
 					Vector2D rb = new Vector2D(t.Position.x + blockingsize, t.Position.y + blockingsize);
-
+					
 					// Go for all the lines to see if this thing is stucked
 					foreach(Linedef l in General.Map.Map.Linedefs)
 					{
