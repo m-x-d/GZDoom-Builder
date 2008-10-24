@@ -192,7 +192,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Start checking
 			running = true;
 			checksthread = new Thread(new ThreadStart(RunChecks));
-			checksthread.Name = "Checking Management";
+			checksthread.Name = "Error Checking Management";
 			checksthread.Priority = ThreadPriority.Normal;
 			checksthread.Start();
 			
