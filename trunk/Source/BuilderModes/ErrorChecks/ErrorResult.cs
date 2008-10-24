@@ -70,24 +70,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Methods
 		
-		// When this result is selected
-		public virtual void Selected()
-		{
-		}
-		
 		// When the first button is clicked
-		public virtual void Button1Click()
+		// Return true when map geometry or things have been added/removed so that the checker can restart
+		public virtual bool Button1Click()
 		{
+			return false;
 		}
 		
 		// When the second button is clicked
-		public virtual void Button2Click()
+		// Return true when map geometry or things have been added/removed so that the checker can restart
+		public virtual bool Button2Click()
 		{
+			return false;
 		}
 		
 		// When the third button is clicked
-		public virtual void Button3Click()
+		// Return true when map geometry or things have been added/removed so that the checker can restart
+		public virtual bool Button3Click()
 		{
+			return false;
 		}
 		
 		// This must return the string that is displayed in the listbox

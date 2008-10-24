@@ -46,16 +46,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.checks.AutoScroll = true;
 			this.checks.Columns = 2;
-			this.checks.Location = new System.Drawing.Point(10, 10);
+			this.checks.Location = new System.Drawing.Point(10, 15);
 			this.checks.Margin = new System.Windows.Forms.Padding(1);
 			this.checks.Name = "checks";
-			this.checks.Size = new System.Drawing.Size(360, 148);
+			this.checks.Size = new System.Drawing.Size(360, 108);
 			this.checks.TabIndex = 0;
 			// 
 			// buttoncheck
 			// 
 			this.buttoncheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttoncheck.Location = new System.Drawing.Point(254, 169);
+			this.buttoncheck.Location = new System.Drawing.Point(254, 134);
 			this.buttoncheck.Margin = new System.Windows.Forms.Padding(1);
 			this.buttoncheck.Name = "buttoncheck";
 			this.buttoncheck.Size = new System.Drawing.Size(116, 25);
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultspanel.Controls.Add(this.fix1);
 			this.resultspanel.Controls.Add(this.progress);
 			this.resultspanel.Controls.Add(this.results);
-			this.resultspanel.Location = new System.Drawing.Point(0, 205);
+			this.resultspanel.Location = new System.Drawing.Point(0, 170);
 			this.resultspanel.Name = "resultspanel";
 			this.resultspanel.Size = new System.Drawing.Size(383, 306);
 			this.resultspanel.TabIndex = 3;
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// ErrorCheckForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(380, 511);
+			this.ClientSize = new System.Drawing.Size(380, 475);
 			this.Controls.Add(this.resultspanel);
 			this.Controls.Add(this.buttoncheck);
 			this.Controls.Add(this.checks);

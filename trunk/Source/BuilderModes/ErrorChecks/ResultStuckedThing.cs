@@ -47,7 +47,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Properties
-		
+
+		public override int Buttons { get { return 1; } }
+		public override string Button1Text { get { return "Delete Thing"; } }
+
 		#endregion
 		
 		#region ================== Constructor / Destructor
@@ -74,6 +77,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void RenderOverlaySelection(IRenderer2D renderer)
 		{
 			renderer.RenderThing(thing, renderer.DetermineThingColor(thing), 1.0f);
+		}
+
+		// This removes the thing
+		public override bool Button1Click()
+		{
+			General.Map.UndoRedo.CreateUndo("Delete thing", UndoGroup.None, 0);
+			thing.Dispose();
+			General.Map.IsChanged = true;
+			General.Map.ThingsFilter.Update();
+			return true;
 		}
 		
 		#endregion
