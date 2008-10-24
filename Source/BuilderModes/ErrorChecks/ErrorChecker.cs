@@ -38,6 +38,8 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
+	// NOTE: An ErrorChecker may NEVER modify the map, because it runs multithreaded.
+	// Do not even change element properties such as 'marked' and 'selected'!
 	public class ErrorChecker : IComparable<ErrorChecker>
 	{
 		#region ================== Variables
