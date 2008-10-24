@@ -78,12 +78,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Line is marked double-sided, but has only one side?
 				else if(l.IsFlagSet(General.Map.Config.DoubleSidedFlag) && (l.Back == null))
 				{
-					// ERROR: Linedef is incorrectly marked double-sided
+					SubmitResult(new ResultLineNotDoubleSided(l));
 				}
 				// Line is marked single-sided, and has two sides?
 				else if(!l.IsFlagSet(General.Map.Config.DoubleSidedFlag) && (l.Back != null))
 				{
-					// ERROR: Linedef is incorrectly marked single-sided
+					SubmitResult(new ResultLineNotSingleSided(l));
 				}
 				
 				// Handle thread interruption
