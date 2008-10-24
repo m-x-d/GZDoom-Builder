@@ -38,12 +38,13 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ErrorChecker
+	public class ErrorChecker : IComparable<ErrorChecker>
 	{
 		#region ================== Variables
 		
 		private int lastprogress;
 		private int totalprogress = -1;
+		protected ErrorCheckerAttribute attribs;
 		
 		#endregion
 		
@@ -59,6 +60,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Override this to determine and set the total progress
 		public ErrorChecker()
 		{
+			// Initialize
+			object[] attrs = this.GetType().GetCustomAttributes(typeof(ErrorCheckerAttribute), true);
+			attribs = (ErrorCheckerAttribute)attrs[0];
 		}
 		
 		#endregion
@@ -94,6 +98,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(totalprogress < 0) throw new ArgumentOutOfRangeException("Total progress cannot be less than zero!");
 			this.totalprogress = totalprogress;
+		}
+		
+		// This is for sorting by cost
+		public int CompareTo(ErrorChecker other)
+		{
+			return (other.attribs.Cost - this.attribs.Cost);
 		}
 		
 		#endregion

@@ -275,6 +275,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
+			// Sort the checkers with highest cost first
+			// See CompareTo method in ErrorChecker for sorting comparison
+			checkers.Sort();
+			
 			// Setup
 			SetProgressMaximum(totalprogress);
 			
