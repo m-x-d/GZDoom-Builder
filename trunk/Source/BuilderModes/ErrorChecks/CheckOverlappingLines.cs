@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public CheckOverlappingLines()
 		{
-			// Total progress is done when all things are checked
+			// Total progress is done when all lines are checked
 			SetTotalProgress(General.Map.Map.Linedefs.Count);
 		}
 		
