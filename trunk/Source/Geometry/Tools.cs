@@ -745,5 +745,430 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		#endregion
+
+		#region ================== Drawing
+		
+		/// <summary>
+		/// This draws lines with the given points. Note that this tool removes any existing geometry
+		/// marks and marks the new lines and vertices when done.
+		/// </summary>
+		public static void DrawLines(IList<DrawnVertex> points)
+		{
+			List<Vertex> newverts = new List<Vertex>();
+			List<Vertex> intersectverts = new List<Vertex>();
+			List<Linedef> newlines = new List<Linedef>();
+			List<Linedef> oldlines = new List<Linedef>(General.Map.Map.Linedefs);
+			List<Sidedef> insidesides = new List<Sidedef>();
+			List<Vertex> mergeverts = new List<Vertex>();
+			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
+			MapSet map = General.Map.Map;
+
+			General.Map.Map.ClearAllMarks(false);
+			
+			// Any points to do?
+			if(points.Count > 0)
+			{
+				/***************************************************\
+					STEP 1: Create the new geometry
+				\***************************************************/
+
+				// Make first vertex
+				Vertex v1 = map.CreateVertex(points[0].pos);
+				v1.Marked = true;
+
+				// Keep references
+				newverts.Add(v1);
+				if(points[0].stitch) mergeverts.Add(v1); else nonmergeverts.Add(v1);
+
+				// Go for all other points
+				for(int i = 1; i < points.Count; i++)
+				{
+					// Create vertex for point
+					Vertex v2 = map.CreateVertex(points[i].pos);
+					v2.Marked = true;
+
+					// Keep references
+					newverts.Add(v2);
+					if(points[i].stitch) mergeverts.Add(v2); else nonmergeverts.Add(v2);
+
+					// Create line between point and previous
+					Linedef ld = map.CreateLinedef(v1, v2);
+					ld.Marked = true;
+					ld.ApplySidedFlags();
+					ld.UpdateCache();
+					newlines.Add(ld);
+
+					// Should we split this line to merge with intersecting lines?
+					if(points[i - 1].stitch && points[i].stitch)
+					{
+						// Check if any other lines intersect this line
+						List<float> intersections = new List<float>();
+						Line2D measureline = ld.Line;
+						foreach(Linedef ld2 in map.Linedefs)
+						{
+							// Intersecting?
+							// We only keep the unit length from the start of the line and
+							// do the real splitting later, when all intersections are known
+							float u;
+							if(ld2.Line.GetIntersection(measureline, out u))
+							{
+								if(!float.IsNaN(u) && (u > 0.0f) && (u < 1.0f) && (ld2 != ld))
+									intersections.Add(u);
+							}
+						}
+
+						// Sort the intersections
+						intersections.Sort();
+
+						// Go for all found intersections
+						Linedef splitline = ld;
+						foreach(float u in intersections)
+						{
+							// Calculate exact coordinates where to split
+							// We use measureline for this, because the original line
+							// may already have changed in length due to a previous split
+							Vector2D splitpoint = measureline.GetCoordinatesAt(u);
+
+							// Make the vertex
+							Vertex splitvertex = map.CreateVertex(splitpoint);
+							splitvertex.Marked = true;
+							newverts.Add(splitvertex);
+							mergeverts.Add(splitvertex);			// <-- add to merge?
+							intersectverts.Add(splitvertex);
+
+							// The Split method ties the end of the original line to the given
+							// vertex and starts a new line at the given vertex, so continue
+							// splitting with the new line, because the intersections are sorted
+							// from low to high (beginning at the original line start)
+							splitline = splitline.Split(splitvertex);
+							splitline.ApplySidedFlags();
+							newlines.Add(splitline);
+						}
+					}
+
+					// Next
+					v1 = v2;
+				}
+
+				// Join merge vertices so that overlapping vertices in the draw become one.
+				MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
+
+				// We prefer a closed polygon, because then we can determine the interior properly
+				// Check if the two ends of the polygon are closed
+				bool drawingclosed = false;
+				if(newlines.Count > 0)
+				{
+					// When not closed, we will try to find a path to close it
+					Linedef firstline = newlines[0];
+					Linedef lastline = newlines[newlines.Count - 1];
+					drawingclosed = (firstline.Start == lastline.End);
+					if(!drawingclosed)
+					{
+						// First and last vertex stitch with geometry?
+						if(points[0].stitch && points[points.Count - 1].stitch)
+						{
+							// Find out where they will stitch
+							Linedef l1 = MapSet.NearestLinedefRange(oldlines, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+							Linedef l2 = MapSet.NearestLinedefRange(oldlines, lastline.End.Position, MapSet.STITCH_DISTANCE);
+							if((l1 != null) && (l2 != null))
+							{
+								List<LinedefSide> shortestpath = null;
+
+								// Same line?
+								if(l1 == l2)
+								{
+									// Then just connect the two
+									shortestpath = new List<LinedefSide>();
+									shortestpath.Add(new LinedefSide(l1, true));
+								}
+								else
+								{
+									// Find the shortest, closest path between these lines
+									List<List<LinedefSide>> paths = new List<List<LinedefSide>>(8);
+									paths.Add(Tools.FindClosestPath(l1, true, l2, true, true));
+									paths.Add(Tools.FindClosestPath(l1, true, l2, false, true));
+									paths.Add(Tools.FindClosestPath(l1, false, l2, true, true));
+									paths.Add(Tools.FindClosestPath(l1, false, l2, false, true));
+									paths.Add(Tools.FindClosestPath(l2, true, l1, true, true));
+									paths.Add(Tools.FindClosestPath(l2, true, l1, false, true));
+									paths.Add(Tools.FindClosestPath(l2, false, l1, true, true));
+									paths.Add(Tools.FindClosestPath(l2, false, l1, false, true));
+
+									foreach(List<LinedefSide> p in paths)
+										if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
+								}
+
+								// Found a path?
+								if(shortestpath != null)
+								{
+									// Check which direction the path goes in
+									if(shortestpath[0].Line == l1)
+									{
+										// Begin at start
+										v1 = firstline.Start;
+									}
+									else
+									{
+										// Begin at end
+										v1 = lastline.End;
+									}
+
+									// Go for all vertices in the path to make additional lines
+									for(int i = 1; i < shortestpath.Count; i++)
+									{
+										// Get the next position
+										Vector2D v2pos = shortestpath[i].Front ? shortestpath[i].Line.Start.Position : shortestpath[i].Line.End.Position;
+
+										// Make the new vertex
+										Vertex v2 = map.CreateVertex(v2pos);
+										v2.Marked = true;
+										mergeverts.Add(v2);
+
+										// Make the line
+										Linedef ld = map.CreateLinedef(v1, v2);
+										ld.Marked = true;
+										ld.ApplySidedFlags();
+										ld.UpdateCache();
+										newlines.Add(ld);
+
+										// Next
+										v1 = v2;
+									}
+
+									// Make the final line
+									Linedef lld;
+
+									// Check which direction the path goes in
+									if(shortestpath[0].Line == l1)
+									{
+										// Path stops at end
+										lld = map.CreateLinedef(v1, lastline.End);
+									}
+									else
+									{
+										// Path stops at begin
+										lld = map.CreateLinedef(v1, firstline.Start);
+									}
+
+									// Setup line
+									lld.Marked = true;
+									lld.ApplySidedFlags();
+									lld.UpdateCache();
+									newlines.Add(lld);
+
+									// Drawing is now closed
+									drawingclosed = true;
+
+									// Join merge vertices so that overlapping vertices in the draw become one.
+									MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
+								}
+							}
+						}
+					}
+				}
+
+				// Merge intersetion vertices with the new lines. This completes the
+				// self intersections for which splits were made above.
+				map.Update(true, false);
+				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null);
+				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
+
+				/***************************************************\
+					STEP 2: Merge the new geometry
+				\***************************************************/
+
+				// In step 3 we will make sectors on the front sides and join sectors on the
+				// back sides, but because the user could have drawn counterclockwise or just
+				// some weird polygon this could result in problems. The following code adjusts
+				// the direction of all new lines so that their front (right) side is facing
+				// the interior of the new drawn polygon.
+				map.Update(true, false);
+				foreach(Linedef ld in newlines)
+				{
+					// Find closest path starting with the front of this linedef
+					List<LinedefSide> pathlines = Tools.FindClosestPath(ld, true, true);
+					if(pathlines != null)
+					{
+						// Make polygon
+						LinedefTracePath tracepath = new LinedefTracePath(pathlines);
+						EarClipPolygon pathpoly = tracepath.MakePolygon(true);
+
+						// Check if the front of the line is outside the polygon
+						if(!pathpoly.Intersect(ld.GetSidePoint(true)))
+						{
+							// Now trace from the back side of the line to see if
+							// the back side lies in the interior. I don't want to
+							// flip the line if it is not helping.
+
+							// Find closest path starting with the back of this linedef
+							pathlines = Tools.FindClosestPath(ld, false, true);
+							if(pathlines != null)
+							{
+								// Make polygon
+								tracepath = new LinedefTracePath(pathlines);
+								pathpoly = tracepath.MakePolygon(true);
+
+								// Check if the back of the line is inside the polygon
+								if(pathpoly.Intersect(ld.GetSidePoint(false)))
+								{
+									// We must flip this linedef to face the interior
+									ld.FlipVertices();
+									ld.FlipSidedefs();
+									ld.UpdateCache();
+								}
+							}
+						}
+					}
+				}
+
+				// Mark only the vertices that should be merged
+				map.ClearMarkedVertices(false);
+				foreach(Vertex v in mergeverts) v.Marked = true;
+
+				// Before this point, the new geometry is not linked with the existing geometry.
+				// Now perform standard geometry stitching to merge the new geometry with the rest
+				// of the map. The marked vertices indicate the new geometry.
+				map.StitchGeometry();
+				map.Update(true, false);
+
+				// Find our new lines again, because they have been merged with the other geometry
+				// but their Marked property is copied where they have joined.
+				newlines = map.GetMarkedLinedefs(true);
+
+				/***************************************************\
+					STEP 3: Join and create new sectors
+				\***************************************************/
+
+				// The code below atempts to create sectors on the front sides of the drawn
+				// geometry and joins sectors on the back sides of the drawn geometry.
+				// This code does not change any geometry, it only makes/updates sidedefs.
+				bool sidescreated = false;
+				bool[] frontsdone = new bool[newlines.Count];
+				bool[] backsdone = new bool[newlines.Count];
+				for(int i = 0; i < newlines.Count; i++)
+				{
+					Linedef ld = newlines[i];
+
+					// Front not marked as done?
+					if(!frontsdone[i])
+					{
+						// Find a way to create a sector here
+						List<LinedefSide> sectorlines = Tools.FindPotentialSectorAt(ld, true);
+						if(sectorlines != null)
+						{
+							sidescreated = true;
+
+							// Make the new sector
+							Sector newsector = Tools.MakeSector(sectorlines);
+
+							// Go for all sidedefs in this new sector
+							foreach(Sidedef sd in newsector.Sidedefs)
+							{
+								// Keep list of sides inside created sectors
+								insidesides.Add(sd);
+
+								// Side matches with a side of our new lines?
+								int lineindex = newlines.IndexOf(sd.Line);
+								if(lineindex > -1)
+								{
+									// Mark this side as done
+									if(sd.IsFront)
+										frontsdone[lineindex] = true;
+									else
+										backsdone[lineindex] = true;
+								}
+							}
+						}
+					}
+
+					// Back not marked as done?
+					if(!backsdone[i])
+					{
+						// Find a way to create a sector here
+						List<LinedefSide> sectorlines = Tools.FindPotentialSectorAt(ld, false);
+						if(sectorlines != null)
+						{
+							// We don't always want to create a new sector on the back sides
+							// So first check if any of the surrounding lines originally have sidedefs
+							Sidedef joinsidedef = null;
+							foreach(LinedefSide ls in sectorlines)
+							{
+								if(ls.Front && (ls.Line.Front != null))
+								{
+									joinsidedef = ls.Line.Front;
+									break;
+								}
+								else if(!ls.Front && (ls.Line.Back != null))
+								{
+									joinsidedef = ls.Line.Back;
+									break;
+								}
+							}
+
+							// Join?
+							if(joinsidedef != null)
+							{
+								sidescreated = true;
+
+								// Join the new sector
+								Sector newsector = Tools.JoinSector(sectorlines, joinsidedef);
+
+								// Go for all sidedefs in this new sector
+								foreach(Sidedef sd in newsector.Sidedefs)
+								{
+									// Side matches with a side of our new lines?
+									int lineindex = newlines.IndexOf(sd.Line);
+									if(lineindex > -1)
+									{
+										// Mark this side as done
+										if(sd.IsFront)
+											frontsdone[lineindex] = true;
+										else
+											backsdone[lineindex] = true;
+									}
+								}
+							}
+						}
+					}
+				}
+
+				// Make corrections for backward linedefs
+				MapSet.FlipBackwardLinedefs(newlines);
+
+				// Remove all unneeded textures
+				// Shouldn't this already be done by the
+				// makesector/joinsector functions?
+				foreach(Linedef ld in newlines)
+				{
+					if(ld.Front != null) ld.Front.RemoveUnneededTextures(true);
+					if(ld.Back != null) ld.Back.RemoveUnneededTextures(true);
+				}
+				foreach(Sidedef sd in insidesides)
+				{
+					sd.RemoveUnneededTextures(true);
+				}
+
+				// Check if any of our new lines have sides
+				if(sidescreated)
+				{
+					// Then remove the lines which have no sides at all
+					for(int i = newlines.Count - 1; i >= 0; i--)
+					{
+						// Remove the line if it has no sides
+						if((newlines[i].Front == null) && (newlines[i].Back == null)) newlines[i].Dispose();
+					}
+				}
+				
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
+
+				// Mark new geometry only
+				General.Map.Map.ClearAllMarks(false);
+				foreach(Vertex v in newverts) v.Marked = true;
+				foreach(Linedef l in newlines) l.Marked = true;
+			}
+		}
+		
+		#endregion
 	}
 }

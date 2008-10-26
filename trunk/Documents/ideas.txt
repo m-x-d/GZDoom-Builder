@@ -77,3 +77,9 @@ Map statistics plugin
 
 So in a Hexen-format map, the default activation for a linedef special is "player walks over". Could DB2 be made smart enough to instead use "player presses use" for default activation method when the line is impassible?
 
+===========================================================================================
+
+Plugin to make a quick sector draw (square/circle) by drawing a single line
+
+===========================================================================================
+
