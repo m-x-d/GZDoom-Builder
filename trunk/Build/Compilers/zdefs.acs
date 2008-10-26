@@ -24,6 +24,11 @@
 #define TEXTURE_MIDDLE          1
 #define TEXTURE_BOTTOM          2
 
+// same information as combinable bit flags
+#define TEXFLAG_TOP				1
+#define TEXFLAG_MIDDLE			2
+#define TEXFLAG_BOTTOM			4
+
 #define GAME_SINGLE_PLAYER      0
 #define GAME_NET_COOPERATIVE    1
 #define GAME_NET_DEATHMATCH     2
@@ -44,6 +49,7 @@
 #define BLOCK_CREATURES         1
 #define BLOCK_EVERYTHING        2
 #define BLOCK_RAILING			3
+#define BLOCK_PLAYERS			4
 
 #define SCROLL                  0
 #define CARRY                   1
@@ -102,6 +108,63 @@
 #define PROP_WEAPONLEVEL2		11
 #define PROP_FLIGHT			12
 #define PROP_SPEED			15
+
+// Player input -------------------------------------------------------------
+
+// These are the original inputs sent by the player.
+#define INPUT_OLDBUTTONS		0
+#define INPUT_BUTTONS			1
+#define INPUT_PITCH				2
+#define INPUT_YAW				3
+#define INPUT_ROLL				4
+#define INPUT_FORWARDMOVE		5
+#define INPUT_SIDEMOVE			6
+#define INPUT_UPMOVE			7
+
+// These are the inputs, as modified by P_PlayerThink().
+// Most of the time, these will match the original inputs, but
+// they can be different if a player is frozen or using a
+// chainsaw.
+#define MODINPUT_OLDBUTTONS		8
+#define MODINPUT_BUTTONS		9
+#define MODINPUT_PITCH			10
+#define MODINPUT_YAW			11
+#define MODINPUT_ROLL			12
+#define MODINPUT_FORWARDMOVE	13
+#define MODINPUT_SIDEMOVE		14
+#define MODINPUT_UPMOVE			15
+
+// Player buttons -----------------------------------------------------------
+
+#define BT_ATTACK				1
+#define BT_USE					2
+#define BT_JUMP					4
+#define BT_CROUCH				8
+#define BT_TURN180				16
+#define BT_ALTATTACK			32
+#define BT_RELOAD				64
+#define BT_ZOOM					128
+
+#define BT_SPEED				256
+#define BT_STRAFE				512
+
+#define BT_MOVERIGHT			1024
+#define BT_MOVELEFT				2048
+#define BT_BACK					4096
+#define BT_FORWARD				8192
+#define BT_RIGHT				16384
+#define BT_LEFT					32768
+#define BT_LOOKUP				65536
+#define BT_LOOKDOWN				131072
+#define BT_MOVEUP				262144
+#define BT_MOVEDOWN				524288
+#define BT_SHOWSCORES			1048576
+
+// Do whatever you want with these.
+#define BT_USER1				2097152
+#define BT_USER2				4194304
+#define BT_USER3				8388608
+#define BT_USER4				16777216
 
 // Text colors --------------------------------------------------------------
 
@@ -171,6 +234,9 @@
 #define APROP_JumpZ			12
 #define APROP_ChaseGoal		13
 #define APROP_Frightened	14
+#define APROP_Gravity		15
+#define APROP_Friendly		16
+#define APROP_SpawnHealth	17
 #define APROP_SeeSound		5	// Sounds can only be set, not gotten
 #define APROP_AttackSound	6
 #define APROP_PainSound		7
@@ -226,6 +292,22 @@
 #define DAMAGE_NONPLAYERS			2
 #define DAMAGE_IN_AIR				4
 #define DAMAGE_SUBCLASSES_PROTECT	8
+
+// Flags for MorphActor -----------------------------------------------------
+
+#define MRF_OLDEFFECTS			0x00000000
+#define MRF_ADDSTAMINA			0x00000001
+#define MRF_FULLHEALTH			0x00000002
+#define MRF_UNDOBYTOMEOFPOWER	0x00000004
+#define MRF_UNDOBYCHAOSDEVICE	0x00000008
+#define MRF_FAILNOTELEFRAG		0x00000010
+#define MRF_FAILNOLAUGH			0x00000020
+#define MRF_WHENINVULNERABLE	0x00000040
+#define MRF_LOSEACTUALWEAPON	0x00000080
+#define MRF_NEWTIDBEHAVIOUR		0x00000100
+#define MRF_UNDOBYDEATH			0x00000200
+#define MRF_UNDOBYDEATHFORCED	0x00000400
+#define MRF_UNDOBYDEATHSAVES	0x00000800
 
 // Shared spawnable things from Hexen. You can spawn these in the other -----
 // games if you provide sprites for them, otherwise they'll be invisible. ---
@@ -362,7 +444,8 @@
 #define T_WIZARD                19
 #define T_IRONLICH              20
 #define T_ITEMHEALTHPOTION      23
-#define T_ITEMHEALTHFLASH       24
+#define T_ITEMHEALTHFLASH       24	// incorrect name but keep it for compatibility
+#define T_ITEMHEALTHFLASK       24
 #define T_ITEMHEALTHFULL        25
 #define T_CROSSBOW              27
 #define T_BLASTER               28
@@ -441,6 +524,90 @@
 #define T_REDTELEGLITTER        166
 #define T_BLUETELEGLITTER       167
 
+// Hexen Spawnable things (used for thingcount() and thing spawners) ------
+
+#define T_CENTAUR				1
+#define T_CENTAURLEADER			2
+#define T_DEMON1				3
+#define T_ETTIN					4
+#define T_FIREGARGOYLE			5
+#define T_WATERLURKER			6
+#define T_WATERLURKERLEADER		7
+#define T_WRAITH				8
+#define T_WRAITHBURIED			9
+#define T_FIREBALL1				10
+#define T_MANA1					11
+#define T_MANA2					12
+#define T_ITEMBOOTS				13
+#define T_ITEMPORK				14
+#define T_ITEMSUMMON			16
+#define T_ITEMTPORTOTHER		17
+#define T_BISHOP				19
+#define T_ICEGOLEM				20
+#define T_DRAGONSKINBRACERS		22
+#define T_ITEMBOOSTMANA			26
+#define T_FIGHTERAXE			27
+#define T_FIGHTERHAMMER			28
+#define T_FIGHTERSWORD1			29
+#define T_FIGHTERSWORD2			30
+#define T_FIGHTERSWORD3			31
+#define T_CLERICSTAFF			32
+#define T_CLERICHOLY1			33
+#define T_CLERICHOLY2			34
+#define T_CLERICHOLY3			35
+#define T_MAGESHARDS			36
+#define T_MAGESTAFF1			37
+#define T_MAGESTAFF2			38
+#define T_MAGESTAFF3			39
+#define T_ARROW					50
+#define T_DART					51
+#define T_POISONDART			52
+#define T_RIPPERBALL			53
+#define T_BLADE					64
+#define T_ICESHARD				65
+#define T_FLAME_SMALL			66
+#define T_FLAME_LARGE			67
+#define T_MESHARMOR				68
+#define T_FALCONSHIELD			69
+#define T_PLATINUMHELM			70
+#define T_AMULETOFWARDING		71
+#define T_ITEMFLECHETTE			72
+#define T_ITEMREPULSION			74
+#define T_MANA3					75
+#define T_PUZZSKULL				76
+#define T_PUZZGEMBIG			77
+#define T_PUZZGEMRED			78
+#define T_PUZZGEMGREEN1			79
+#define T_PUZZGEMGREEN2			80
+#define T_PUZZGEMBLUE1			81
+#define T_PUZZGEMBLUE2			82
+#define T_PUZZBOOK1				83
+#define T_PUZZBOOK2				84
+#define T_METALKEY				85
+#define T_SMALLMETALKEY			86
+#define T_AXEKEY				87
+#define T_FIREKEY				88
+#define T_EMERALDKEY				89
+#define T_MACEKEY				90
+#define T_SILVERKEY				91
+#define T_RUSTYKEY				92
+#define T_HORNKEY				93
+#define T_SERPENTKEY			94
+#define T_WATERDRIP				95
+#define T_TEMPSMALLFLAME		96
+#define T_PERMSMALLFLAME		97
+#define T_PERMLARGEFLAME		99
+#define T_DEMON_MASH			100
+#define T_DEMON2_MASH			101
+#define T_ETTIN_MASH			102
+#define T_CENTAUR_MASH			103
+#define T_THRUSTSPIKEUP			104
+#define T_THRUSTSPIKEDOWN		105
+#define T_FLESH_DRIP1			106
+#define T_FLESH_DRIP2			107
+#define T_SPARK_DRIP			108
+
+
 // Events when you have input grabbed
 
 #define EV_KeyDown				1	// data1: unshifted ASCII, data2: shifted ASCII
@@ -513,3 +680,8 @@
 #define CHANGELEVEL_NOMONSTERS 4
 #define CHANGELEVEL_CHANGESKILL 8
 #define CHANGELEVEL_NOINTERMISSION 16
+
+#define NO_CHANGE -32767.0
+
+#define SECF_SILENT 1
+#define SECF_NOFALLINGDAMAGE 2
