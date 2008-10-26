@@ -1,18 +1,14 @@
 - Add more find/replace types
 
-- Move the find/replace mode into the core so that plugins can easily add things to search for.
-
-- Make error checking feature (in the core)
-
-- Make quick sector draw (square/circle) mode
-
-- Make 3D Mode (config specific!)
-
-- Make texture alignment features
+- Add more error checks
 
 - Make script editor
 
 - Make DECORATE support
+
+- Make 3D Mode (config specific!)
+
+- Make texture alignment features
 
 - Make plugin dependencies
 	(load BEFORE and load AFTER so that also their functions are called in that order)
