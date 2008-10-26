@@ -1345,7 +1345,7 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("testaction")]
 		internal static void TestAction()
 		{
-			ThingEditForm t = new ThingEditForm();
+			ScriptEditTestForm t = new ScriptEditTestForm();
 			t.ShowDialog(mainwindow);
 			t.Dispose();
 		}

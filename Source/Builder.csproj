@@ -79,6 +79,11 @@
     <Compile Include="Controls\ArgumentBox.Designer.cs">
       <DependentUpon>ArgumentBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ScriptLineInfo.cs" />
+    <Compile Include="Controls\ScriptEditControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ScriptMarking.cs" />
     <Compile Include="Data\DirectoryReader.cs" />
     <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\FlatImage.cs" />
@@ -322,6 +327,12 @@
     </Compile>
     <Compile Include="Windows\ResourceOptionsForm.Designer.cs">
       <DependentUpon>ResourceOptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ScriptEditTestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ScriptEditTestForm.Designer.cs">
+      <DependentUpon>ScriptEditTestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\SectorEditForm.cs">
       <SubType>Form</SubType>
@@ -650,6 +661,10 @@
     <EmbeddedResource Include="Windows\CustomFieldsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CustomFieldsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ScriptEditTestForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ScriptEditTestForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\TextEditForm.resx">
       <SubType>Designer</SubType>
