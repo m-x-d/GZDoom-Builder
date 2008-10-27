@@ -162,6 +162,11 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			bool continueupdate = false;
 			int updateline = updatestartline;
+			int selstart = base.SelectionStart;
+			int sellength = base.SelectionLength;
+			General.LockWindowUpdate(base.Handle);
+			
+			if(updateendline > base.Lines.Length) updateendline = base.Lines.Length;
 			
 			// First make sure the lineinfo array is big enough
 			if(base.Lines.Length >= lineinfo.Length)
@@ -174,37 +179,104 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Start updating the range
 			// Or go beyond the range when the result has influence on the next line
-			while((updateline <= updateendline) || continueupdate)
+			while((updateline <= updateendline) || (continueupdate && (updateline < base.Lines.Length)))
 			{
 				continueupdate = UpdateLine(updateline++);
 			}
 
 			// Reset the range to current position/selection
-			int startline = base.GetLineFromCharIndex(base.SelectionStart);
-			int endline = base.GetLineFromCharIndex(base.SelectionStart + base.SelectionLength);
+			int startline = base.GetLineFromCharIndex(selstart);
+			int endline = base.GetLineFromCharIndex(selstart + sellength);
 			updatestartline = Math.Min(startline, endline);
 			updateendline = Math.Max(startline, endline);
+
+			// Restore selection
+			base.SelectionStart = selstart;
+			base.SelectionLength = sellength;
+			General.LockWindowUpdate(IntPtr.Zero);
 		}
 		
 		// This parses a single line to update the syntax highlighting
-		// Before calling this make sure the lineinfo array is resized correctly!
+		// NOTE: Before calling this make sure the lineinfo array is resized correctly!
+		// NOTE: This function changes the selection and does not prevent any redrawing!
 		// Returns true if the change continues on the next line (multi-line comment changes)
 		private bool UpdateLine(int lineindex)
 		{
 			// Get the start information
-			ScriptLineInfo startinfo = lineinfo[lineindex];
+			ScriptLineInfo info = lineinfo[lineindex];
 			ScriptLineInfo endinfo = lineinfo[lineindex + 1];
+			string text = base.Lines[lineindex];
+			int lineoffset = base.GetFirstCharIndexFromLine(lineindex);
+			int curpos = 0;
+			int prevpos = 0;
 			
 			// TODO: Scan the line
 			// TODO: Use regexes for this?
+
+			// TEST: Block comment only
+			int startcurpos;
+			do
+			{
+				startcurpos = curpos;
+				
+				// If we're in a block comment, we first have to find the block ending
+				if(info.startmarking == ScriptMarking.BlockComment)
+				{
+					int endpos = text.IndexOf("*/");
+					if(endpos > -1)
+					{
+						// Block comment ends here
+						curpos = endpos + 2;
+						base.SelectionStart = lineoffset + prevpos;
+						base.SelectionLength = lineoffset + curpos;
+						base.SelectionColor = General.Colors.Comments.ToColor();
+						info.startmarking = ScriptMarking.None;
+						prevpos = curpos;
+					}
+				}
+
+				// Out of the block comment?
+				if(info.startmarking != ScriptMarking.BlockComment)
+				{
+					int endpos = text.IndexOf("/*");
+					if(endpos > -1)
+					{
+						// Block comment starts here
+						curpos = endpos;
+						base.SelectionStart = lineoffset + prevpos;
+						base.SelectionLength = lineoffset + curpos;
+						base.SelectionColor = General.Colors.PlainText.ToColor();
+						info.startmarking = ScriptMarking.BlockComment;
+						prevpos = curpos;
+					}
+				}
+			}
+			while(startcurpos < curpos);
+			
+			// More to mark?
+			if(prevpos < text.Length)
+			{
+				if(info.startmarking == ScriptMarking.BlockComment)
+				{
+					base.SelectionStart = lineoffset + prevpos;
+					base.SelectionLength = lineoffset + text.Length;
+					base.SelectionColor = General.Colors.Comments.ToColor();
+				}
+				else
+				{
+					base.SelectionStart = lineoffset + prevpos;
+					base.SelectionLength = lineoffset + text.Length;
+					base.SelectionColor = General.Colors.PlainText.ToColor();
+				}
+			}
 			
 			// Update next line info
-			lineinfo[lineindex + 1] = endinfo;
+			lineinfo[lineindex + 1] = info;
 			
 			// Check if this changes anything on the next line
-			return ((startinfo.startmarking == ScriptMarking.BlockComment) &&
+			return ((info.startmarking == ScriptMarking.BlockComment) &&
 					(endinfo.startmarking != ScriptMarking.BlockComment)) ||
-				   ((startinfo.startmarking != ScriptMarking.BlockComment) &&
+				   ((info.startmarking != ScriptMarking.BlockComment) &&
 					(endinfo.startmarking == ScriptMarking.BlockComment));
 		}
 		

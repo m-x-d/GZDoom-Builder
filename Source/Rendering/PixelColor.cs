@@ -92,6 +92,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			return Color.FromArgb(a, r, g, b).ToArgb();
 		}
 
+		// To Color
+		public Color ToColor()
+		{
+			return Color.FromArgb(a, r, g, b);
+		}
+
 		// To ColorValue
 		public Color4 ToColorValue()
 		{

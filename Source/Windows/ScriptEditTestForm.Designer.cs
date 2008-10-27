@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// scriptedit
 			// 
+			this.scriptedit.Font = new System.Drawing.Font("Lucida Console", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.scriptedit.Location = new System.Drawing.Point(12, 12);
 			this.scriptedit.Name = "scriptedit";
 			this.scriptedit.Size = new System.Drawing.Size(643, 487);
