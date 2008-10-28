@@ -549,12 +549,16 @@ namespace CodeImp.DoomBuilder.Editing
         /// </summary>
         protected virtual void OnUpdateViewPanning()
         {
-            // Get the map coordinates of the last mouse posision (before it moved)
-            Vector2D lastmappos;
-            lastmappos = renderer2d.GetMapCoordinates(mouselastpos);
-
-            // Do the scroll
-            ScrollBy(lastmappos.x - mousemappos.x, lastmappos.y - mousemappos.y);
+			// We can only drag the map when the mouse pointer is inside
+			// otherwise we don't have coordinates where to drag the map to
+			if(mouseinside && !float.IsNaN(mouselastpos.x) && !float.IsNaN(mouselastpos.y))
+			{
+				// Get the map coordinates of the last mouse posision (before it moved)
+				Vector2D lastmappos = renderer2d.GetMapCoordinates(mouselastpos);
+				
+				// Do the scroll
+				ScrollBy(lastmappos.x - mousemappos.x, lastmappos.y - mousemappos.y);
+			}
         }
 		
 		#endregion
