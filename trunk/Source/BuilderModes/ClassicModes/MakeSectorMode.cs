@@ -144,39 +144,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Highlighting from a new sidedef?
 				Linedef nl = General.Map.Map.NearestLinedef(mousemappos);
-				float side = nl.SideOfLine(mousemappos);
-				newnearest = new LinedefSide(nl, (side <= 0.0f));
-				if(newnearest != nearestside)
+				if(nl != null)
 				{
-					// Only change when buttons are not pressed
-					if(!buttonspressed || (editside == newnearest))
+					float side = nl.SideOfLine(mousemappos);
+					newnearest = new LinedefSide(nl, (side <= 0.0f));
+					if(newnearest != nearestside)
 					{
-						// Find new sector
-						General.Interface.SetCursor(Cursors.AppStarting);
-						nearestside = newnearest;
-						allsides = Tools.FindPotentialSectorAt(mousemappos);
-						if(allsides != null)
+						// Only change when buttons are not pressed
+						if(!buttonspressed || (editside == newnearest))
 						{
-							alllines = new List<Linedef>(allsides.Count);
-							foreach(LinedefSide sd in allsides) alllines.Add(sd.Line);
+							// Find new sector
+							General.Interface.SetCursor(Cursors.AppStarting);
+							nearestside = newnearest;
+							allsides = Tools.FindPotentialSectorAt(mousemappos);
+							if(allsides != null)
+							{
+								alllines = new List<Linedef>(allsides.Count);
+								foreach(LinedefSide sd in allsides) alllines.Add(sd.Line);
+							}
+							else
+							{
+								alllines = null;
+							}
+							General.Interface.SetCursor(Cursors.Default);
 						}
 						else
 						{
+							// Don't highlight this one
+							nearestside = null;
+							allsides = null;
 							alllines = null;
 						}
-						General.Interface.SetCursor(Cursors.Default);
-					}
-					else
-					{
-						// Don't highlight this one
-						nearestside = null;
-						allsides = null;
-						alllines = null;
-					}
 
-					// Redraw overlay
-					DrawGeometry();
-					renderer.Present();
+						// Redraw overlay
+						DrawGeometry();
+						renderer.Present();
+					}
 				}
 			}
 			else
