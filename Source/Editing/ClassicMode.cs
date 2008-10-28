@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		// Mouse status
 		protected Vector2D mousepos;
+        protected Vector2D mouselastpos;
 		protected Vector2D mousemappos;
 		protected Vector2D mousedownpos;
 		protected Vector2D mousedownmappos;
@@ -72,6 +73,9 @@ namespace CodeImp.DoomBuilder.Editing
 		protected bool selecting;
 		private Vector2D selectstart;
 		protected RectangleF selectionrect;
+
+        // View panning
+        protected bool panning;
 		
 		#endregion
 
@@ -185,6 +189,21 @@ namespace CodeImp.DoomBuilder.Editing
 			mousemappos = renderer2d.GetMapCoordinates(mousepos);
 			General.MainWindow.UpdateCoordinates(mousemappos);
 		}
+
+        // This sets the view to be centered at x,y
+        private void ScrollTo(float x, float y)
+        {
+            // Scroll now
+            renderer2d.PositionView(x, y);
+            this.OnViewChanged();
+
+            // Redraw
+            General.MainWindow.RedrawDisplay();
+
+            // Determine new unprojected mouse coordinates
+            mousemappos = renderer2d.GetMapCoordinates(mousepos);
+            General.MainWindow.UpdateCoordinates(mousemappos);
+        }
 
 		// This zooms
 		private void ZoomBy(float deltaz)
@@ -327,6 +346,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Record last position
 			mouseinside = true;
+            mouselastpos = mousepos;
 			mousepos = new Vector2D(e.X, e.Y);
 			mousemappos = renderer2d.GetMapCoordinates(mousepos);
 			mousebuttons = e.Button;
@@ -354,6 +374,9 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Selecting?
 			if(selecting) OnUpdateMultiSelection();
+
+            // Panning?
+            if (panning) OnUpdateViewPanning();
 			
 			// Let the base class know
 			base.OnMouseMove(e);
@@ -520,10 +543,35 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer.RenderRectangle(selectionrect, SELECTION_BORDER_SIZE,
 				General.Colors.Highlight.WithAlpha(SELECTION_ALPHA), true);
 		}
+
+        /// <summary>
+        /// This is called automatically when the mouse is moved while panning
+        /// </summary>
+        protected virtual void OnUpdateViewPanning()
+        {
+            // Get the map coordinates of the last mouse posision (before it moved)
+            Vector2D lastmappos;
+            lastmappos = renderer2d.GetMapCoordinates(mouselastpos);
+
+            // Do the scroll
+            ScrollBy(lastmappos.x - mousemappos.x, lastmappos.y - mousemappos.y);
+        }
 		
 		#endregion
 		
 		#region ================== Actions
+
+        [BeginAction("pan_view", BaseAction = true)]
+        protected virtual void BeginViewPan()
+        {
+            panning = true;
+        }
+
+        [EndAction("pan_view", BaseAction = true)]
+        protected virtual void EndViewPan()
+        {
+            panning = false;
+        }
 
 		#endregion
 	}
