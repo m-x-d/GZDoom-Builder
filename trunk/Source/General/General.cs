@@ -68,7 +68,10 @@ namespace CodeImp.DoomBuilder
 		#region ================== Constants
 
 		// SendMessage API
+		internal const int WM_USER = 0x400;
 		internal const int CB_SETITEMHEIGHT = 0x153;
+		internal const int EM_GETSCROLLPOS = WM_USER + 221;
+		internal const int EM_SETSCROLLPOS = WM_USER + 222;
 		
 		// Files and Folders
 		private const string SETTINGS_FILE = "Builder.cfg";

@@ -26,12 +26,13 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	public partial class ScriptEditControl : RichTextBox
+	public unsafe partial class ScriptEditControl : RichTextBox
 	{
 		#region ================== Constants
 
@@ -49,12 +50,12 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// Line information
 		private ScriptLineInfo[] lineinfo;
-
+		
 		// Update timer
 		private Timer updatetimer;
 
 		#endregion
-
+		
 		#region ================== Properties
 		
 		// These prevent changing these properties
@@ -68,9 +69,9 @@ namespace CodeImp.DoomBuilder.Controls
 		public new float ZoomFactor { get { return base.ZoomFactor; } }
 
 		#endregion
-
+		
 		#region ================== Contructor
-
+		
 		// Constructor
 		public ScriptEditControl()
 		{
@@ -81,10 +82,10 @@ namespace CodeImp.DoomBuilder.Controls
 			base.AutoWordSelection = false;
 			base.EnableAutoDragDrop = false;
 			base.Multiline = true;
-			base.ShortcutsEnabled = false;
+			base.ShortcutsEnabled = true;
 			base.WordWrap = false;
 			base.ZoomFactor = 1.0f;
-
+			
 			// Initialize
 			if(!this.DesignMode)
 			{
@@ -95,7 +96,7 @@ namespace CodeImp.DoomBuilder.Controls
 				updatetimer.Tick += new EventHandler(OnUpdateTimerTick);
 			}
 		}
-
+		
 		// Disposer
 		protected override void Dispose(bool disposing)
 		{
@@ -125,19 +126,21 @@ namespace CodeImp.DoomBuilder.Controls
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-
+			
 			// Get selection/position
 			int startline = base.GetLineFromCharIndex(base.SelectionStart);
 			int endline = base.GetLineFromCharIndex(base.SelectionStart + base.SelectionLength);
 			
 			// Check in which range this keypress must update the highlighting.
 			// The range may only be increased, not decreased!
-			if(e.KeyData == Keys.Enter)
+			
+			// Newline must update surrounding lines also
+			if(e.KeyCode == Keys.Enter)
 			{
 				if(startline > 0) startline--;
 				if(endline < base.Lines.Length) endline++;
 			}
-
+			
 			// Update range
 			if(startline < updatestartline) updatestartline = startline;
 			if(endline < updatestartline) updatestartline = endline;
@@ -153,6 +156,35 @@ namespace CodeImp.DoomBuilder.Controls
 			// (Re)start timer!
 			updatetimer.Stop();
 			updatetimer.Start();
+		}
+		
+		// Key released
+		protected override void OnKeyUp(KeyEventArgs e)
+		{
+			base.OnKeyUp(e);
+			
+			// Get selection/position
+			int startline = base.GetLineFromCharIndex(base.SelectionStart);
+			int endline = base.GetLineFromCharIndex(base.SelectionStart + base.SelectionLength);
+			
+			// Check in which range this keypress must update the highlighting.
+			// The range may only be increased, not decreased!
+			
+			// Paste must do a complete update
+			if((e.KeyCode == Keys.V) && (e.Modifiers == Keys.Control))
+			{
+				// TODO: Somehow we have to figure out which lines were pasted in
+				// We could use the selection range from keydown event and compare
+				// it with current position
+				startline = 0;
+				endline = base.Lines.Length;
+			}
+			
+			// Update range
+			if(startline < updatestartline) updatestartline = startline;
+			if(endline < updatestartline) updatestartline = endline;
+			if(startline > updateendline) updateendline = startline;
+			if(endline > updateendline) updateendline = endline;
 		}
 		
 		// Time to update!
@@ -175,6 +207,11 @@ namespace CodeImp.DoomBuilder.Controls
 			int sellength = base.SelectionLength;
 			General.LockWindowUpdate(base.Handle);
 			
+			// Keep scroll position
+			Vector2D point = new Vector2D();
+			IntPtr pointptr = new IntPtr(&point);
+			General.SendMessage(base.Handle, General.EM_GETSCROLLPOS, 0, pointptr.ToInt32());
+			
 			if(updateendline > base.Lines.Length) updateendline = base.Lines.Length;
 			
 			// First make sure the lineinfo array is big enough
@@ -192,7 +229,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				continueupdate = UpdateLine(updateline++);
 			}
-
+			
 			// Reset the range to current position/selection
 			int startline = base.GetLineFromCharIndex(selstart);
 			int endline = base.GetLineFromCharIndex(selstart + sellength);
@@ -202,6 +239,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// Restore selection
 			base.SelectionStart = selstart;
 			base.SelectionLength = sellength;
+			
+			// Restore scroll position
+			General.SendMessage(base.Handle, General.EM_SETSCROLLPOS, 0, pointptr.ToInt32());
+			
+			// Done
 			General.LockWindowUpdate(IntPtr.Zero);
 		}
 		
@@ -237,7 +279,7 @@ namespace CodeImp.DoomBuilder.Controls
 						// Block comment ends here
 						curpos = endpos + 2;
 						base.SelectionStart = lineoffset + prevpos;
-						base.SelectionLength = lineoffset + curpos;
+						base.SelectionLength = curpos - prevpos;
 						base.SelectionColor = General.Colors.Comments.ToColor();
 						info.mark = ScriptMarking.None;
 						prevpos = curpos;
@@ -253,7 +295,7 @@ namespace CodeImp.DoomBuilder.Controls
 						// Block comment starts here
 						curpos = endpos;
 						base.SelectionStart = lineoffset + prevpos;
-						base.SelectionLength = lineoffset + curpos;
+						base.SelectionLength = curpos - prevpos;
 						base.SelectionColor = General.Colors.PlainText.ToColor();
 						info.mark = ScriptMarking.BlockComment;
 						prevpos = curpos;
@@ -268,13 +310,13 @@ namespace CodeImp.DoomBuilder.Controls
 				if(info.mark == ScriptMarking.BlockComment)
 				{
 					base.SelectionStart = lineoffset + prevpos;
-					base.SelectionLength = lineoffset + text.Length;
+					base.SelectionLength = text.Length - prevpos;
 					base.SelectionColor = General.Colors.Comments.ToColor();
 				}
 				else
 				{
 					base.SelectionStart = lineoffset + prevpos;
-					base.SelectionLength = lineoffset + text.Length;
+					base.SelectionLength = text.Length - prevpos;
 					base.SelectionColor = General.Colors.PlainText.ToColor();
 				}
 			}
