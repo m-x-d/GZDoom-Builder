@@ -34,12 +34,12 @@ namespace CodeImp.DoomBuilder.Controls
 	internal struct ScriptLineInfo
 	{
 		// Members
-		public ScriptMarking startmarking;
+		public ScriptMarking mark;
 
 		// Constructor
 		public ScriptLineInfo(ScriptMarking marking)
 		{
-			startmarking = marking;
+			mark = marking;
 		}
 	}
 }

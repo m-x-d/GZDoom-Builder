@@ -125,11 +125,20 @@ namespace CodeImp.DoomBuilder.Controls
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
+
+			// Get selection/position
+			int startline = base.GetLineFromCharIndex(base.SelectionStart);
+			int endline = base.GetLineFromCharIndex(base.SelectionStart + base.SelectionLength);
 			
 			// Check in which range this keypress must update the highlighting.
 			// The range may only be increased, not decreased!
-			int startline = base.GetLineFromCharIndex(base.SelectionStart);
-			int endline = base.GetLineFromCharIndex(base.SelectionStart + base.SelectionLength);
+			if(e.KeyData == Keys.Enter)
+			{
+				if(startline > 0) startline--;
+				if(endline < base.Lines.Length) endline++;
+			}
+
+			// Update range
 			if(startline < updatestartline) updatestartline = startline;
 			if(endline < updatestartline) updatestartline = endline;
 			if(startline > updateendline) updateendline = startline;
@@ -179,7 +188,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Start updating the range
 			// Or go beyond the range when the result has influence on the next line
-			while((updateline <= updateendline) || (continueupdate && (updateline < base.Lines.Length)))
+			while(((updateline <= updateendline) || continueupdate) && (updateline < base.Lines.Length))
 			{
 				continueupdate = UpdateLine(updateline++);
 			}
@@ -189,7 +198,7 @@ namespace CodeImp.DoomBuilder.Controls
 			int endline = base.GetLineFromCharIndex(selstart + sellength);
 			updatestartline = Math.Min(startline, endline);
 			updateendline = Math.Max(startline, endline);
-
+			
 			// Restore selection
 			base.SelectionStart = selstart;
 			base.SelectionLength = sellength;
@@ -220,9 +229,9 @@ namespace CodeImp.DoomBuilder.Controls
 				startcurpos = curpos;
 				
 				// If we're in a block comment, we first have to find the block ending
-				if(info.startmarking == ScriptMarking.BlockComment)
+				if(info.mark == ScriptMarking.BlockComment)
 				{
-					int endpos = text.IndexOf("*/");
+					int endpos = text.IndexOf("*/", curpos);
 					if(endpos > -1)
 					{
 						// Block comment ends here
@@ -230,15 +239,15 @@ namespace CodeImp.DoomBuilder.Controls
 						base.SelectionStart = lineoffset + prevpos;
 						base.SelectionLength = lineoffset + curpos;
 						base.SelectionColor = General.Colors.Comments.ToColor();
-						info.startmarking = ScriptMarking.None;
+						info.mark = ScriptMarking.None;
 						prevpos = curpos;
 					}
 				}
 
 				// Out of the block comment?
-				if(info.startmarking != ScriptMarking.BlockComment)
+				if(info.mark != ScriptMarking.BlockComment)
 				{
-					int endpos = text.IndexOf("/*");
+					int endpos = text.IndexOf("/*", curpos);
 					if(endpos > -1)
 					{
 						// Block comment starts here
@@ -246,7 +255,7 @@ namespace CodeImp.DoomBuilder.Controls
 						base.SelectionStart = lineoffset + prevpos;
 						base.SelectionLength = lineoffset + curpos;
 						base.SelectionColor = General.Colors.PlainText.ToColor();
-						info.startmarking = ScriptMarking.BlockComment;
+						info.mark = ScriptMarking.BlockComment;
 						prevpos = curpos;
 					}
 				}
@@ -256,7 +265,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// More to mark?
 			if(prevpos < text.Length)
 			{
-				if(info.startmarking == ScriptMarking.BlockComment)
+				if(info.mark == ScriptMarking.BlockComment)
 				{
 					base.SelectionStart = lineoffset + prevpos;
 					base.SelectionLength = lineoffset + text.Length;
@@ -270,14 +279,24 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 			
-			// Update next line info
-			lineinfo[lineindex + 1] = info;
-			
-			// Check if this changes anything on the next line
-			return ((info.startmarking == ScriptMarking.BlockComment) &&
-					(endinfo.startmarking != ScriptMarking.BlockComment)) ||
-				   ((info.startmarking != ScriptMarking.BlockComment) &&
-					(endinfo.startmarking == ScriptMarking.BlockComment));
+			// Check if the block content marking changes for next line
+			if((info.mark == ScriptMarking.BlockComment) && (endinfo.mark != ScriptMarking.BlockComment))
+			{
+				// Change marking that the next line begins with
+				lineinfo[lineindex + 1].mark = ScriptMarking.BlockComment;
+				return true;
+			}
+			else if((info.mark != ScriptMarking.BlockComment) && (endinfo.mark == ScriptMarking.BlockComment))
+			{
+				// Change marking that the next line begins with
+				lineinfo[lineindex + 1].mark = ScriptMarking.None;
+				return true;
+			}
+			else
+			{
+				// No change for the next line
+				return false;
+			}
 		}
 		
 		#endregion
