@@ -36,6 +36,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public ScriptEditTestForm()
 		{
 			InitializeComponent();
+			scriptedit.Initialize();
 		}
 	}
 }

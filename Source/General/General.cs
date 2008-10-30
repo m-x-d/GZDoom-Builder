@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder
 		[DllImport("user32.dll")]
 		internal static extern bool LockWindowUpdate(IntPtr hwnd);
 
-		[DllImport("kernel32.dll", EntryPoint="RtlZeroMemory", SetLastError=false)]
+		[DllImport("kernel32.dll", EntryPoint = "RtlZeroMemory", SetLastError = false)]
 		internal static extern void ZeroMemory(IntPtr dest, int size);
 
 		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
@@ -62,6 +62,23 @@ namespace CodeImp.DoomBuilder
 
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool MessageBeep(MessageBeepType type);
+
+		[DllImport("kernel32.dll")]
+		internal extern static IntPtr LoadLibrary(string filename);
+
+		[DllImport("kernel32.dll")]
+		internal extern static bool FreeLibrary(IntPtr moduleptr);
+
+		[DllImport("user32.dll")]
+		internal static extern IntPtr CreateWindowEx(uint exstyle, string classname, string windowname, uint style,
+												   int x, int y, int width, int height, IntPtr parentptr, int menu,
+												   IntPtr instanceptr, string param);
+
+		[DllImport("user32.dll")]
+		internal static extern bool DestroyWindow(IntPtr windowptr);
+
+		[DllImport("user32.dll")]
+		internal static extern int SetWindowPos(IntPtr windowptr, int insertafterptr, int x, int y, int cx, int cy, int flags);
 		
 		#endregion
 

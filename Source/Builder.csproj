@@ -79,11 +79,10 @@
     <Compile Include="Controls\ArgumentBox.Designer.cs">
       <DependentUpon>ArgumentBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ScriptLineInfo.cs" />
+    <Compile Include="Controls\ScriptEditConstants.cs" />
     <Compile Include="Controls\ScriptEditControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ScriptMarking.cs" />
     <Compile Include="Data\DirectoryReader.cs" />
     <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\FlatImage.cs" />
