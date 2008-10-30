@@ -32,7 +32,9 @@ using System.Runtime.InteropServices;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	// Most of this code is from ScintillaNET project, but heavily refactored
+	// This is only a wrapper for the Scintilla editor control. Most of this code is
+	// from ScintillaNET project, I only refactored it a bit. See the BuilderScriptControl
+	// for the script editor with Doom Builder features.
 	internal class ScriptEditControl : Control
 	{
 		#region ================== API Declarations
@@ -2134,7 +2136,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#endregion
 
-		#region ================== Contructor / Initializer / Disposer
+		#region ================== Contructor / Disposer
 
 		// Constructor
 		public ScriptEditControl()
@@ -2143,6 +2145,8 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Setup collections
 			ignoredkeys = new Dictionary<int, int>();
+
+			if(!this.DesignMode) Initialize();
 		}
 
 		// Initializer

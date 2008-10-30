@@ -23,19 +23,47 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using System.Diagnostics;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Map;
+using System.Drawing.Drawing2D;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Windows
+namespace CodeImp.DoomBuilder.Controls
 {
-	public partial class ScriptEditTestForm : Form
+	public partial class BuilderScriptControl : UserControl
 	{
-		public ScriptEditTestForm()
+		#region ================== Delegates / Events
+
+		#endregion
+
+		#region ================== Constants
+
+		#endregion
+
+		#region ================== Properties
+
+		#endregion
+
+		#region ================== Variables
+
+		#endregion
+
+		#region ================== Contructor / Disposer
+
+		// Constructor
+		public BuilderScriptControl()
 		{
+			// Initialize
 			InitializeComponent();
 		}
+
+		#endregion
+
+		#region ================== Methods
+
+		#endregion
+
+		#region ================== Events
+
+		#endregion
 	}
 }

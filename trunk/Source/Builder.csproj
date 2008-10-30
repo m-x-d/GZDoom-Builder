@@ -79,6 +79,12 @@
     <Compile Include="Controls\ArgumentBox.Designer.cs">
       <DependentUpon>ArgumentBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BuilderScriptControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BuilderScriptControl.Designer.cs">
+      <DependentUpon>BuilderScriptControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ScriptEditConstants.cs" />
     <Compile Include="Controls\ScriptEditControl.cs">
       <SubType>Component</SubType>
@@ -628,6 +634,10 @@
     <None Include="Resources\ViewTextureFloor.png" />
     <None Include="Resources\ViewNormal.png" />
     <None Include="Resources\KnownTextureSet.png" />
+    <EmbeddedResource Include="Controls\BuilderScriptControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>BuilderScriptControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Hourglass3D.png" />
     <None Include="Resources\Failed.png" />
     <None Include="Resources\Monster2.png" />
