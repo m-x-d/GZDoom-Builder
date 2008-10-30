@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 
-		#region ================== Static Methods
+		#region ================== Methods
 
 		// Construct from color
 		public static PixelColor FromColor(Color c)
@@ -84,6 +84,18 @@ namespace CodeImp.DoomBuilder.Rendering
 		public static PixelColor FromInt(int c)
 		{
 			return FromColor(Color.FromArgb(c));
+		}
+
+		// Return the inverse color
+		public PixelColor Inverse()
+		{
+			return new PixelColor((byte)(255 - a), (byte)(255 - r), (byte)(255 - g), (byte)(255 - b));
+		}
+
+		// Return the inverse color, but keep same alpha
+		public PixelColor InverseKeepAlpha()
+		{
+			return new PixelColor(a, (byte)(255 - r), (byte)(255 - g), (byte)(255 - b));
 		}
 
 		// To int
@@ -106,10 +118,6 @@ namespace CodeImp.DoomBuilder.Rendering
 							  (float)g * 0.00392156862745098f,
 							  (float)b * 0.00392156862745098f);
 		}
-
-		#endregion
-
-		#region ================== Methods
 
 		// This returns a new PixelColor with adjusted alpha
 		public PixelColor WithAlpha(byte a)

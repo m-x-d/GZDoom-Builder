@@ -54,6 +54,26 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
+
+			// Script editor properties
+			scriptedit.IsBackSpaceUnIndents = true;
+			scriptedit.IsBufferedDraw = true;
+			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
+			scriptedit.IsUseTabs = true;
+			scriptedit.IsViewEOL = false;
+			scriptedit.IsVScrollBar = true;
+			scriptedit.IsHScrollBar = true;
+			scriptedit.IsCaretLineVisible = false;
+			scriptedit.IsIndentationGuides = true;
+			scriptedit.IsMouseDownCaptures = true;
+			scriptedit.IsTabIndents = true;
+			scriptedit.IsUndoCollection = true;
+			scriptedit.EndOfLineMode = ScriptEndOfLine.CRLF;
+			scriptedit.EndAtLastLine = 1;
+			scriptedit.SetMarginWidthN(0, 16);
+			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
+			scriptedit.SetMarginWidthN(1, 42);
+			scriptedit.SetMarginTypeN(1, (int)ScriptMarginType.Number);
 		}
 
 		#endregion

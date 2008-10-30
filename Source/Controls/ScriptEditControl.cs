@@ -2201,7 +2201,8 @@ namespace CodeImp.DoomBuilder.Controls
 			base.OnResize(e);
 
 			// Resize control
-			General.SetWindowPos(controlptr, 0, base.Location.X, base.Location.Y, base.Width, base.Height, 0);
+			//General.SetWindowPos(controlptr, 0, base.Location.X, base.Location.Y, base.Width, base.Height, 0);
+			General.SetWindowPos(controlptr, 0, 0, 0, base.Width, base.Height, 0);
 		}
 		
 		#endregion
