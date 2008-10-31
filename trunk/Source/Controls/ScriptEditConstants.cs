@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	public struct NotifyHeader
+	internal struct NotifyHeader
 	{
 		// hwndFrom is really an environment specifc window handle or pointer
 		// but most clients of Scintilla.h do not have this type visible.
@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public uint code;
 	};
 
-	public struct SCNotification
+	internal struct SCNotification
 	{
 		public NotifyHeader nmhdr;
 		public int position;	// SCN_STYLENEEDED, SCN_MODIFIED, SCN_DWELLSTART, SCN_DWELLEND
