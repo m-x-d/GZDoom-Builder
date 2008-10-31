@@ -97,6 +97,7 @@ namespace CodeImp.DoomBuilder
 		private const string GAME_CONFIGS_DIR = "Configurations";
 		private const string COMPILERS_DIR = "Compilers";
 		private const string PLUGINS_DIR = "Plugins";
+		private const string SCRIPTS_DIR = "Scripting";
 		private const string SETUP_DIR = "Setup";
 
 		#endregion
@@ -111,6 +112,7 @@ namespace CodeImp.DoomBuilder
 		private static string temppath;
 		private static string configspath;
 		private static string compilerspath;
+		private static string scriptspath;
 		private static string pluginspath;
 		
 		// Main objects
@@ -128,6 +130,7 @@ namespace CodeImp.DoomBuilder
 		private static List<ConfigurationInfo> configs;
 		private static List<CompilerInfo> compilers;
 		private static List<NodebuilderInfo> nodebuilders;
+		private static Dictionary<string, ScriptConfiguration> scriptconfigs;
 		
 		// States
 		private static bool debugbuild;
@@ -157,6 +160,7 @@ namespace CodeImp.DoomBuilder
 		internal static List<ConfigurationInfo> Configs { get { return configs; } }
 		internal static List<NodebuilderInfo> Nodebuilders { get { return nodebuilders; } }
 		internal static List<CompilerInfo> Compilers { get { return compilers; } }
+		internal static Dictionary<string, ScriptConfiguration> ScriptConfigs { get { return scriptconfigs; } }
 		public static MapManager Map { get { return map; } }
 		internal static ActionManager Actions { get { return actions; } }
 		internal static PluginManager Plugins { get { return plugins; } }
@@ -369,6 +373,58 @@ namespace CodeImp.DoomBuilder
 			nodebuilders.Sort();
 		}
 
+		// This loads all script configurations
+		private static void LoadAllScriptConfigurations()
+		{
+			Configuration cfg;
+			string[] filenames;
+			
+			// Display status
+			mainwindow.DisplayStatus("Loading script configurations...");
+			
+			// Make collection
+			scriptconfigs = new Dictionary<string, ScriptConfiguration>();
+			
+			// Go for all cfg files in the scripts directory
+			filenames = Directory.GetFiles(scriptspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			foreach(string filepath in filenames)
+			{
+				try
+				{
+					// Try loading the configuration
+					cfg = new Configuration(filepath, true);
+					
+					// Check for erors
+					if(cfg.ErrorResult != 0)
+					{
+						// Error in configuration
+						ShowErrorMessage("Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\".\n" +
+										 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.OK);
+					}
+					else
+					{
+						try
+						{
+							// Make script configuration
+							ScriptConfiguration scfg = new ScriptConfiguration(cfg);
+							string filename = Path.GetFileName(filepath);
+							scriptconfigs.Add(filename, scfg);
+						}
+						catch(Exception e)
+						{
+							// Unable to load configuration
+							ShowErrorMessage("Unable to load the script configuration \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message, MessageBoxButtons.OK);
+						}
+					}
+				}
+				catch(Exception)
+				{
+					// Unable to load configuration
+					ShowErrorMessage("Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\".", MessageBoxButtons.OK);
+				}
+			}
+		}
+
 		// This loads all compiler configurations
 		private static void LoadAllCompilerConfigurations()
 		{
@@ -478,6 +534,7 @@ namespace CodeImp.DoomBuilder
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
 			pluginspath = Path.Combine(apppath, PLUGINS_DIR);
+			scriptspath = Path.Combine(apppath, SCRIPTS_DIR);
 			logfile = Path.Combine(settingspath, LOG_FILE);
 			
 			// Make program settings directory if missing
@@ -492,6 +549,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Configurations path:     " + configspath);
 			General.WriteLogLine("Compilers path:          " + compilerspath);
 			General.WriteLogLine("Plugins path:            " + pluginspath);
+			General.WriteLogLine("Scripts path:            " + scriptspath);
 			General.WriteLogLine("Command-line arguments:  " + args.Length);
 			for(int i = 0; i < args.Length; i++)
 				General.WriteLogLine("Argument " + i + ":   \"" + args[i] + "\"");
@@ -553,7 +611,11 @@ namespace CodeImp.DoomBuilder
 				// Load nodebuilder configurations
 				General.WriteLogLine("Loading nodebuilder configurations...");
 				LoadAllNodebuilderConfigurations();
-
+				
+				// Load script configurations
+				General.WriteLogLine("Loading script configurations...");
+				LoadAllScriptConfigurations();
+				
 				// Load color settings
 				General.WriteLogLine("Loading color settings...");
 				colors = new ColorCollection(settings.Config);

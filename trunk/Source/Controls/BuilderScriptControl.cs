@@ -79,7 +79,10 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Methods
-
+		
+		// This sets up the script editor with a script configuration
+		
+		
 		#endregion
 
 		#region ================== Events

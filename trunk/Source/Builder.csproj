@@ -46,6 +46,7 @@
   -->
   <ItemGroup>
     <Compile Include="Config\ArgumentInfo.cs" />
+    <Compile Include="Config\ScriptConfiguration.cs" />
     <Compile Include="Config\DefinedTextureSet.cs" />
     <Compile Include="Config\EnumItem.cs" />
     <Compile Include="Config\EnumList.cs" />
