@@ -24,12 +24,13 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Drawing.Drawing2D;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	public partial class BuilderScriptControl : UserControl
+	internal partial class BuilderScriptControl : UserControl
 	{
 		#region ================== Delegates / Events
 
@@ -81,7 +82,10 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Methods
 		
 		// This sets up the script editor with a script configuration
-		
+		public void SetupStyles(ScriptConfiguration config)
+		{
+			
+		}
 		
 		#endregion
 
