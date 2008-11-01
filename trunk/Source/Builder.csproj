@@ -630,6 +630,7 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Resources\Lexers.cfg" />
     <None Include="Resources\ViewBrightness.png" />
     <None Include="Resources\ViewTextureCeiling.png" />
     <None Include="Resources\ViewTextureFloor.png" />
