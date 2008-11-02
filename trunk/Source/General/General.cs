@@ -408,7 +408,7 @@ namespace CodeImp.DoomBuilder
 							// Make script configuration
 							ScriptConfiguration scfg = new ScriptConfiguration(cfg);
 							string filename = Path.GetFileName(filepath);
-							scriptconfigs.Add(filename, scfg);
+							scriptconfigs.Add(filename.ToLowerInvariant(), scfg);
 						}
 						catch(Exception e)
 						{
