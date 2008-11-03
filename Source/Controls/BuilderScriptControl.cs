@@ -30,6 +30,7 @@ using System.Reflection;
 using CodeImp.DoomBuilder.IO;
 using System.Collections;
 using System.Globalization;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -53,7 +54,10 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Variables
-
+		
+		// List of keywords and constants, sorted as uppercase
+		private string autocompletestring;
+		
 		#endregion
 
 		#region ================== Contructor / Disposer
@@ -63,31 +67,43 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
-
+			
 			// Script editor properties
+			// Unfortunately, these cannot be set using the designer
+			// because the control is not really loaded in design mode
+			scriptedit.AutoCMaximumHeight = 8;
+			scriptedit.AutoCSeparator = ' ';
+			scriptedit.AutoCTypeSeparator = ',';
+			scriptedit.CaretWidth = 2;
+			scriptedit.EndAtLastLine = 1;
+			scriptedit.EndOfLineMode = ScriptEndOfLine.CRLF;
+			scriptedit.IsAutoCGetChooseSingle = true;
+			scriptedit.IsAutoCGetIgnoreCase = true;
 			scriptedit.IsBackSpaceUnIndents = true;
 			scriptedit.IsBufferedDraw = true;
-			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
-			scriptedit.IsUseTabs = true;
-			scriptedit.IsViewEOL = false;
-			scriptedit.IsVScrollBar = true;
-			scriptedit.IsHScrollBar = true;
 			scriptedit.IsCaretLineVisible = false;
+			scriptedit.IsHScrollBar = true;
 			scriptedit.IsIndentationGuides = true;
 			scriptedit.IsMouseDownCaptures = true;
 			scriptedit.IsTabIndents = true;
 			scriptedit.IsUndoCollection = true;
-			scriptedit.EndOfLineMode = ScriptEndOfLine.CRLF;
-			scriptedit.EndAtLastLine = 1;
-			scriptedit.SetMarginWidthN(0, 16);
+			scriptedit.IsUseTabs = true;
+			scriptedit.IsViewEOL = false;
+			scriptedit.IsVScrollBar = true;
+			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
-			scriptedit.SetMarginWidthN(1, 42);
 			scriptedit.SetMarginTypeN(1, (int)ScriptMarginType.Number);
-			scriptedit.CaretWidth = 2;
+			scriptedit.SetMarginTypeN(2, (int)ScriptMarginType.Symbol);
+			scriptedit.SetMarginWidthN(0, 16);
+			scriptedit.SetMarginWidthN(1, 40);
+			scriptedit.SetMarginWidthN(2, 5);
+			//scriptedit.AddIgnoredKey(Keys.ControlKey, Keys.None);
+			//scriptedit.AddIgnoredKey(Keys.Space, Keys.None);
+			//scriptedit.AddIgnoredKey(Keys.Space, Keys.Control);
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Methods
 		
 		// This sets up the script editor with a script configuration
@@ -96,6 +112,7 @@ namespace CodeImp.DoomBuilder.Controls
 			Stream lexersdata;
 			StreamReader lexersreader;
 			Configuration lexercfg = new Configuration();
+			List<string> autocompletelist = new List<string>();
 			string[] resnames;
 			
 			// Find a resource named Actions.cfg
@@ -135,9 +152,19 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.CaretPeriod = SystemInformation.CaretBlinkTime;
 			scriptedit.CaretFore = General.Colors.ScriptBackground.Inverse().ToColorRef();
 			scriptedit.StyleBits = 7;
-
+			
 			// This applies the default style to all styles
 			scriptedit.StyleClearAll();
+			
+			// Set the default to something normal (this is used by the autocomplete list)
+			scriptedit.StyleSetFont(DEFAULT_STYLE, this.Font.Name);
+			scriptedit.StyleSetBold(DEFAULT_STYLE, this.Font.Bold);
+			scriptedit.StyleSetItalic(DEFAULT_STYLE, this.Font.Italic);
+			scriptedit.StyleSetUnderline(DEFAULT_STYLE, this.Font.Underline);
+			scriptedit.StyleSetSize(DEFAULT_STYLE, (int)Math.Round(this.Font.SizeInPoints));
+			
+			// Set style for linenumbers and margins
+			scriptedit.StyleSetBack((int)ScriptStylesCommon.LineNumber, General.Colors.ScriptBackground.ToColorRef());
 			
 			// Clear all keywords
 			for(int i = 0; i < 9; i++) scriptedit.KeyWords(i, null);
@@ -166,6 +193,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(keywordslist.Length > 0) keywordslist.Append(" ");
 					keywordslist.Append(k);
+					autocompletelist.Add(k);
 				}
 				string words = keywordslist.ToString();
 				scriptedit.KeyWords(keywordsindex, words.ToLowerInvariant());
@@ -180,16 +208,39 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(constantslist.Length > 0) constantslist.Append(" ");
 					constantslist.Append(c);
+					autocompletelist.Add(c);
 				}
 				string words = constantslist.ToString();
 				scriptedit.KeyWords(constantsindex, words.ToLowerInvariant());
 			}
+			
+			// Sort the autocomplete list
+			autocompletelist.Sort(StringComparer.CurrentCultureIgnoreCase);
+			autocompletestring = string.Join(" ", autocompletelist.ToArray());
 		}
 		
 		#endregion
-
+		
 		#region ================== Events
-
+		
+		// Key pressed down
+		private void scriptedit_KeyDown(object sender, KeyEventArgs e)
+		{
+			// CTRL+Space to autocomplete
+			if((e.KeyCode == Keys.Space) && (e.Modifiers == Keys.Control))
+			{
+				// Hide call tip if any
+				scriptedit.CallTipCancel();
+				
+				// Show autocomplete
+				int currentpos = scriptedit.CurrentPos;
+				int wordstartpos = scriptedit.WordStartPosition(currentpos, true);
+				scriptedit.AutoCShow(currentpos - wordstartpos, autocompletestring);
+				
+				e.Handled = true;
+			}
+		}
+		
 		#endregion
 	}
 }

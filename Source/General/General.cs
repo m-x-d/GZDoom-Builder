@@ -417,10 +417,10 @@ namespace CodeImp.DoomBuilder
 						}
 					}
 				}
-				catch(Exception)
+				catch(Exception e)
 				{
 					// Unable to load configuration
-					ShowErrorMessage("Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\".", MessageBoxButtons.OK);
+					ShowErrorMessage("Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message, MessageBoxButtons.OK);
 				}
 			}
 		}

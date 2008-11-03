@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private const uint WS_TABSTOP = (uint)0x00010000L;
 		private const int WM_NOTIFY = 0x004E;
 		private const int WM_KEYDOWN = 0x0100;
+		private const int WM_KEYUP = 0x0101;
 		
 		#endregion
 
@@ -298,6 +299,38 @@ namespace CodeImp.DoomBuilder.Controls
 			get
 			{
 				return (int)FastPerform(2445, 0, 0);
+			}
+		}
+
+		/// <summary>
+		/// Width of the the auto-completion list
+		/// </summary>
+		public int AutoCMaximumWidth
+		{
+			get
+			{
+				return (int)FastPerform(2209, 0, 0);
+			}
+			
+			set
+			{
+				FastPerform(2208, (uint)value, 0);
+			}
+		}
+
+		/// <summary>
+		/// Height of the the auto-completion list
+		/// </summary>
+		public int AutoCMaximumHeight
+		{
+			get
+			{
+				return (int)FastPerform(2211, 0, 0);
+			}
+
+			set
+			{
+				FastPerform(2210, (uint)value, 0);
 			}
 		}
 
@@ -2194,7 +2227,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Events
-
+		
 		// When resized
 		protected override void OnResize(EventArgs e)
 		{
@@ -2203,6 +2236,20 @@ namespace CodeImp.DoomBuilder.Controls
 			// Resize control
 			//General.SetWindowPos(controlptr, 0, base.Location.X, base.Location.Y, base.Width, base.Height, 0);
 			General.SetWindowPos(controlptr, 0, 0, 0, base.Width, base.Height, 0);
+		}
+		
+		// When a windows message is pre-processed
+		public override bool PreProcessMessage(ref Message m)
+		{
+			switch(m.Msg)
+			{
+				case WM_KEYUP:
+				case WM_KEYDOWN:
+					// Why do I have to call this for my events work properly?
+					// I should be able to call base.PreProcessMessage, but that doesn't raise my events!
+					return base.ProcessKeyEventArgs(ref m);
+			}
+			return false;
 		}
 		
 		#endregion
@@ -2241,7 +2288,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ignoredkeys.Add(key, key);
 		}
 
-		private void AddIgnoredKey(System.Windows.Forms.Keys key, System.Windows.Forms.Keys modifier)
+		public void AddIgnoredKey(System.Windows.Forms.Keys key, System.Windows.Forms.Keys modifier)
 		{
 			this.ignoredkeys.Add((int)key + (int)modifier, (int)key + (int)modifier);
 		}
@@ -2263,18 +2310,6 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				addShortcuts(parentForm.Menu);
 			}
-		}
-
-		public override bool PreProcessMessage(ref Message m)
-		{
-			switch(m.Msg)
-			{
-				case WM_KEYDOWN:
-					if(ignoredkeys.ContainsKey((int)Control.ModifierKeys + (int)m.WParam))
-						return base.PreProcessMessage(ref m);
-					break;
-			}
-			return false;
 		}
 
 		/// <summary>

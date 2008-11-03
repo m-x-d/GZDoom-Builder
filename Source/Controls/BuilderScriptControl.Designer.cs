@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.functionslist.Name = "functionslist";
 			this.functionslist.Size = new System.Drawing.Size(474, 21);
 			this.functionslist.TabIndex = 1;
+			this.functionslist.TabStop = false;
 			// 
 			// scriptedit
 			// 
@@ -124,6 +125,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.WrapVisualFlagsLocation = 0;
 			this.scriptedit.XOffset = 0;
 			this.scriptedit.ZoomLevel = 0;
+			this.scriptedit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.scriptedit_KeyDown);
 			// 
 			// scriptpanel
 			// 
