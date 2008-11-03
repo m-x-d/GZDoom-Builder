@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 		
+		// Script configuration
+		private ScriptConfiguration scriptconfig;
+		
 		// List of keywords and constants, sorted as uppercase
 		private string autocompletestring;
 		
@@ -115,6 +118,9 @@ namespace CodeImp.DoomBuilder.Controls
 			List<string> autocompletelist = new List<string>();
 			string[] resnames;
 			
+			// Keep script configuration
+			scriptconfig = config;
+			
 			// Find a resource named Actions.cfg
 			resnames = General.ThisAssembly.GetManifestResourceNames();
 			foreach(string rn in resnames)
@@ -136,9 +142,9 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Check if specified lexer exists and set the lexer to use
-			string lexername = "lexer" + config.Lexer.ToString(CultureInfo.InvariantCulture);
-			if(!lexercfg.SettingExists(lexername)) throw new InvalidOperationException("Unknown lexer " + config.Lexer + " specified in script configuration!");
-			scriptedit.Lexer = config.Lexer;
+			string lexername = "lexer" + scriptconfig.Lexer.ToString(CultureInfo.InvariantCulture);
+			if(!lexercfg.SettingExists(lexername)) throw new InvalidOperationException("Unknown lexer " + scriptconfig.Lexer + " specified in script configuration!");
+			scriptedit.Lexer = scriptconfig.Lexer;
 			
 			// Set the default style and settings
 			scriptedit.StyleSetFont(DEFAULT_STYLE, "Lucida Console");
@@ -189,7 +195,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(keywordsindex > -1)
 			{
 				StringBuilder keywordslist = new StringBuilder("");
-				foreach(string k in config.Keywords)
+				foreach(string k in scriptconfig.Keywords)
 				{
 					if(keywordslist.Length > 0) keywordslist.Append(" ");
 					keywordslist.Append(k);
@@ -204,7 +210,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(constantsindex > -1)
 			{
 				StringBuilder constantslist = new StringBuilder("");
-				foreach(string c in config.Constants)
+				foreach(string c in scriptconfig.Constants)
 				{
 					if(constantslist.Length > 0) constantslist.Append(" ");
 					constantslist.Append(c);
@@ -219,6 +225,18 @@ namespace CodeImp.DoomBuilder.Controls
 			autocompletestring = string.Join(" ", autocompletelist.ToArray());
 		}
 		
+		// This returns the current word (where the caret is at)
+		public string GetCurrentWord()
+		{
+			int wordstart = scriptedit.WordStartPosition(scriptedit.CurrentPos, true);
+			int wordend = scriptedit.WordEndPosition(scriptedit.CurrentPos, true);
+
+			if(wordstart > wordend)
+				return scriptedit.Text.Substring(wordstart, wordend - wordstart);
+			else
+				return "";
+		}
+
 		#endregion
 		
 		#region ================== Events

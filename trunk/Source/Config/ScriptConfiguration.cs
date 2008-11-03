@@ -53,6 +53,10 @@ namespace CodeImp.DoomBuilder.Config
 		private int insertcase;
 		private int lexer;
 		private string keywordhelp;
+		private string functionopen;
+		private string functionclose;
+		private string argumentdelimiter;
+		private string terminator;
 		
 		// Collections
 		private Dictionary<string, string> keywords;
@@ -74,6 +78,10 @@ namespace CodeImp.DoomBuilder.Config
 		public int InsertCase { get { return insertcase; } }
 		public int Lexer { get { return lexer; } }
 		public string KeywordHelp { get { return keywordhelp; } }
+		public string FunctionOpen { get { return functionopen; } }
+		public string FunctionClose { get { return functionclose; } }
+		public string ArgumentDelimiter { get { return argumentdelimiter; } }
+		public string Terminator { get { return terminator; } }
 		
 		// Collections
 		public Dictionary<string, string>.KeyCollection Keywords { get { return keywords.Keys; } }
@@ -105,6 +113,10 @@ namespace CodeImp.DoomBuilder.Config
 			insertcase = cfg.ReadSetting("insertcase", 0);
 			lexer = cfg.ReadSetting("lexer", 0);
 			keywordhelp = cfg.ReadSetting("keywordhelp", "");
+			functionopen = cfg.ReadSetting("functionopen", "");
+			functionclose = cfg.ReadSetting("functionclose", "");
+			argumentdelimiter = cfg.ReadSetting("argumentdelimiter", "");
+			terminator = cfg.ReadSetting("terminator", "");
 			
 			// Load keywords
 			dic = cfg.ReadSetting("keywords", new Hashtable());
