@@ -56,7 +56,9 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Collections
 		private Dictionary<string, string> keywords;
+		private Dictionary<string, string> lowerkeywords;
 		private List<string> constants;
+		private Dictionary<string, string> lowerconstants;
 		
 		#endregion
 
@@ -92,6 +94,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.cfg = cfg;
 			this.keywords = new Dictionary<string,string>();
 			this.constants = new List<string>();
+			this.lowerkeywords = new Dictionary<string, string>();
+			this.lowerconstants = new Dictionary<string, string>();
 			
 			// Read settings
 			compilername = cfg.ReadSetting("compiler", "");
@@ -105,12 +109,18 @@ namespace CodeImp.DoomBuilder.Config
 			// Load keywords
 			dic = cfg.ReadSetting("keywords", new Hashtable());
 			foreach(DictionaryEntry de in dic)
+			{
 				keywords.Add(de.Key.ToString(), de.Value.ToString());
+				lowerkeywords.Add(de.Key.ToString().ToLowerInvariant(), de.Key.ToString());
+			}
 			
 			// Load constants
 			dic = cfg.ReadSetting("constants", new Hashtable());
 			foreach(DictionaryEntry de in dic)
+			{
 				constants.Add(de.Key.ToString());
+				lowerconstants.Add(de.Key.ToString().ToLowerInvariant(), de.Key.ToString());
+			}
 			
 			// Compiler specified?
 			if(compilername.Length > 0)
@@ -135,6 +145,38 @@ namespace CodeImp.DoomBuilder.Config
 		#endregion
 
 		#region ================== Methods
+		
+		// This returns the correct case for a keyword
+		// Returns the same keyword as the input when it cannot be found
+		public string GetKeywordCase(string keyword)
+		{
+			if(lowerkeywords.ContainsKey(keyword.ToLowerInvariant()))
+				return lowerkeywords[keyword.ToLowerInvariant()];
+			else
+				return keyword;
+		}
+
+		// This returns the correct case for a constant
+		// Returns the same constant as the input when it cannot be found
+		public string GetConstantCase(string constant)
+		{
+			if(lowerconstants.ContainsKey(constant.ToLowerInvariant()))
+				return lowerconstants[constant.ToLowerInvariant()];
+			else
+				return constant;
+		}
+		
+		// This returns true when the given word is a keyword
+		public bool IsKeyword(string keyword)
+		{
+			return lowerkeywords.ContainsKey(keyword.ToLowerInvariant());
+		}
+
+		// This returns true when the given word is a contant
+		public bool IsConstant(string constant)
+		{
+			return lowerconstants.ContainsKey(constant.ToLowerInvariant());
+		}
 		
 		#endregion
 	}
