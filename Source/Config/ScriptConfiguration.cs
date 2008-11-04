@@ -93,6 +93,31 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Constructor / Disposer
 		
+		// This creates the default script configuration
+		// that is used for documents of unknown type
+		internal ScriptConfiguration()
+		{
+			// Initialize
+			this.cfg = new Configuration();
+			this.keywords = new Dictionary<string, string>();
+			this.constants = new List<string>();
+			this.lowerkeywords = new Dictionary<string, string>();
+			this.lowerconstants = new Dictionary<string, string>();
+
+			// Settings
+			lexer = 1;
+			casesensitive = false;
+			parameters = "";
+			resultlump = "";
+			insertcase = 0;
+			keywordhelp = "";
+			functionopen = "";
+			functionclose = "";
+			argumentdelimiter = "";
+			terminator = "";
+			functionregex = "";
+		}
+		
 		// Constructor
 		internal ScriptConfiguration(Configuration cfg)
 		{
