@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string functionclose;
 		private string argumentdelimiter;
 		private string terminator;
+		private string functionregex;
 		
 		// Collections
 		private Dictionary<string, string> keywords;
@@ -82,6 +83,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string FunctionClose { get { return functionclose; } }
 		public string ArgumentDelimiter { get { return argumentdelimiter; } }
 		public string Terminator { get { return terminator; } }
+		public string FunctionRegEx { get { return functionregex; } }
 		
 		// Collections
 		public ICollection<string> Keywords { get { return keywords.Keys; } }
@@ -116,6 +118,7 @@ namespace CodeImp.DoomBuilder.Config
 			functionclose = cfg.ReadSetting("functionclose", "");
 			argumentdelimiter = cfg.ReadSetting("argumentdelimiter", "");
 			terminator = cfg.ReadSetting("terminator", "");
+			functionregex = cfg.ReadSetting("functionregex", "");
 			
 			// Load keywords
 			dic = cfg.ReadSetting("keywords", new Hashtable());
