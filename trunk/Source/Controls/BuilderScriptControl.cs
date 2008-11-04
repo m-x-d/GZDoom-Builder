@@ -160,13 +160,13 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Set the default style and settings
 			scriptedit.StyleSetFont(DEFAULT_STYLE, "Lucida Console");
-			scriptedit.StyleSetBack(DEFAULT_STYLE, General.Colors.ScriptBackground.ToColorRef());
-			scriptedit.StyleSetBold(DEFAULT_STYLE, true);
+			scriptedit.StyleSetSize(DEFAULT_STYLE, 10);
+			scriptedit.StyleSetBold(DEFAULT_STYLE, false);
+			scriptedit.StyleSetItalic(DEFAULT_STYLE, false);
+			scriptedit.StyleSetUnderline(DEFAULT_STYLE, false);
 			scriptedit.StyleSetCase(DEFAULT_STYLE, ScriptCaseVisible.Mixed);
 			scriptedit.StyleSetFore(DEFAULT_STYLE, General.Colors.PlainText.ToColorRef());
-			scriptedit.StyleSetItalic(DEFAULT_STYLE, false);
-			scriptedit.StyleSetSize(DEFAULT_STYLE, 10);
-			scriptedit.StyleSetUnderline(DEFAULT_STYLE, false);
+			scriptedit.StyleSetBack(DEFAULT_STYLE, General.Colors.ScriptBackground.ToColorRef());
 			scriptedit.CaretPeriod = SystemInformation.CaretBlinkTime;
 			scriptedit.CaretFore = General.Colors.ScriptBackground.Inverse().ToColorRef();
 			scriptedit.StyleBits = 7;
