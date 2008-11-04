@@ -410,5 +410,15 @@ namespace CodeImp.DoomBuilder.Controls
 		HotspotDoubleClick = 2020,
 		CallTipClick = 2021
 	}
+	
+	internal enum ScriptStyleType
+	{
+		PlainText = 0,
+		Keyword = 1,
+		Constant = 2,
+		Comment = 3,
+		Literal = 4,
+		LineNumber = 5
+	}
 }
 

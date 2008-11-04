@@ -39,9 +39,10 @@ namespace CodeImp.DoomBuilder.Controls
 	internal partial class BuilderScriptControl : UserControl
 	{
 		#region ================== Constants
-
+		
 		private const string LEXERS_RESOURCE = "Lexers.cfg";
 		private const int DEFAULT_STYLE = (int)ScriptStylesCommon.Default;
+		private const int MAX_BACKTRACK_LENGTH = 200;
 		
 		#endregion
 
@@ -60,6 +61,14 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// List of keywords and constants, sorted as uppercase
 		private string autocompletestring;
+
+		// Style translation from Scintilla style to ScriptStyleType
+		private Dictionary<int, ScriptStyleType> stylelookup;
+		
+		// Current position information
+		private string curfunctionname = "";
+		private int curargumentindex = 0;
+		private int curfunctionstartpos = 0;
 		
 		#endregion
 
@@ -117,6 +126,9 @@ namespace CodeImp.DoomBuilder.Controls
 			Configuration lexercfg = new Configuration();
 			List<string> autocompletelist = new List<string>();
 			string[] resnames;
+			
+			// Make collections
+			stylelookup = new Dictionary<int, ScriptStyleType>();
 			
 			// Keep script configuration
 			scriptconfig = config;
@@ -177,7 +189,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Now go for all elements in the lexer configuration
 			// We are looking for the numeric keys, because these are the
-			// style index to set and the value is the color index to apply
+			// style index to set and the value is our ScriptStyleType
 			IDictionary dic = lexercfg.ReadSetting(lexername, new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
@@ -185,8 +197,22 @@ namespace CodeImp.DoomBuilder.Controls
 				int stylenum = -1;
 				if(int.TryParse(de.Key.ToString(), out stylenum))
 				{
+					// Add style to lookup table
+					stylelookup.Add(stylenum, (ScriptStyleType)(int)de.Value);
+					
 					// Apply color to style
-					scriptedit.StyleSetFore(stylenum, General.Colors.Colors[(int)de.Value].ToColorRef());
+					int colorindex = 0;
+					switch((ScriptStyleType)(int)de.Value)
+					{
+						case ScriptStyleType.PlainText: colorindex = ColorCollection.PLAINTEXT; break;
+						case ScriptStyleType.Comment: colorindex = ColorCollection.COMMENTS; break;
+						case ScriptStyleType.Constant: colorindex = ColorCollection.CONSTANTS; break;
+						case ScriptStyleType.Keyword: colorindex = ColorCollection.KEYWORDS; break;
+						case ScriptStyleType.LineNumber: colorindex = ColorCollection.LINENUMBERS; break;
+						case ScriptStyleType.Literal: colorindex = ColorCollection.LITERALS; break;
+						default: colorindex = ColorCollection.PLAINTEXT; break;
+					}
+					scriptedit.StyleSetFore(stylenum, General.Colors.Colors[colorindex].ToColorRef());
 				}
 			}
 			
@@ -225,6 +251,7 @@ namespace CodeImp.DoomBuilder.Controls
 			autocompletestring = string.Join(" ", autocompletelist.ToArray());
 		}
 		
+		
 		// This returns the current word (where the caret is at)
 		public string GetCurrentWord()
 		{
@@ -236,7 +263,141 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 				return "";
 		}
-
+		
+		
+		// This returns the ScriptStyleType for a given Scintilla style
+		private ScriptStyleType GetScriptStyle(int scintillastyle)
+		{
+			if(stylelookup.ContainsKey(scintillastyle))
+				return stylelookup[scintillastyle];
+			else
+				return ScriptStyleType.PlainText;
+		}
+		
+		
+		// This gathers information about the current caret position
+		private void UpdatePositionInfo()
+		{
+			int bracketlevel = 0;			// bracket level counting
+			int argindex = 0;				// function argument counting
+			int limitpos;					// lowest position we'll backtrack to
+			int pos = scriptedit.CurrentPos;
+			
+			// Reset position info
+			curfunctionname = "";
+			curargumentindex = 0;
+			curfunctionstartpos = 0;
+			
+			// Determine lowest backtrack position
+			limitpos = scriptedit.CurrentPos - MAX_BACKTRACK_LENGTH;
+			if(limitpos < 0) limitpos = 0;
+			
+			// We can only do this when we have function syntax information
+			if((scriptconfig.ArgumentDelimiter.Length == 0) || (scriptconfig.FunctionClose.Length == 0) ||
+			   (scriptconfig.FunctionOpen.Length == 0) || (scriptconfig.Terminator.Length == 0)) return;
+			
+			// Get int versions of the function syntax informantion
+			int argumentdelimiter = scriptconfig.ArgumentDelimiter[0];
+			int functionclose = scriptconfig.FunctionClose[0];
+			int functionopen = scriptconfig.FunctionOpen[0];
+			int terminator = scriptconfig.Terminator[0];
+			
+			// Continue backtracking until we reached the limitpos
+			while(pos >= limitpos)
+			{
+				// Backtrack 1 character
+				pos--;
+				
+				// Get the style and character at this position
+				ScriptStyleType curstyle = GetScriptStyle(scriptedit.StyleAt(pos));
+				int curchar = scriptedit.CharAt(pos);
+				
+				// Then meeting ) then increase bracket level
+				// When meeting ( then decrease bracket level
+				// When bracket level goes -1, then the next word should be the function name
+				// Only when at bracket level 0, count the comma's for argument index
+				
+				// TODO:
+				// Original code checked for scope character here and breaks if found
+				
+				// Check if in plain text or keyword
+				if((curstyle == ScriptStyleType.PlainText) || (curstyle == ScriptStyleType.Keyword))
+				{
+					// Closing bracket
+					if(curchar == functionclose)
+					{
+						bracketlevel++;
+					}
+					// Opening bracket
+					else if(curchar == functionopen)
+					{
+						bracketlevel--;
+						
+						// Out of the brackets?
+						if(bracketlevel < 0)
+						{
+							// Skip any whitespace before this bracket
+							do
+							{
+								// Backtrack 1 character
+								curchar = scriptedit.CharAt(--pos);
+							}
+							while((pos >= limitpos) && ((curchar == ' ') || (curchar == '\t') ||
+														(curchar == '\r') || (curchar == '\n')));
+							
+							// NOTE: We may need to set onlyWordCharacters argument in the
+							// following calls to false to get any argument delimiter included,
+							// but this may also cause a valid keyword to be combined with other
+							// surrounding characters that do not belong to the keyword.
+							
+							// Find the word before this bracket
+							int wordstart = scriptedit.WordStartPosition(pos, true);
+							int wordend = scriptedit.WordEndPosition(pos, true);
+							string word = scriptedit.Text.Substring(wordstart, wordend - wordstart);
+							if(word.Length > 0)
+							{
+								// Check if this is an argument delimiter
+								// I can't remember why I did this, but I'll probably stumble
+								// upon the problem if this doesn't work right (see note above)
+								if(word[0] == argumentdelimiter)
+								{
+									// We are now in the parent function
+									bracketlevel++;
+									argindex = 0;
+								}
+								// Now check if this is a keyword
+								else if(scriptconfig.IsKeyword(word))
+								{
+									// Found it!
+									curfunctionname = scriptconfig.GetKeywordCase(word);
+									curargumentindex = argindex;
+									curfunctionstartpos = wordstart;
+									break;
+								}
+								else
+								{
+									// Don't know this word
+									break;
+								}
+							}
+						}
+					}
+					// Argument delimiter
+					else if(curchar == argumentdelimiter)
+					{
+						// Only count these at brackt level 0
+						if(bracketlevel == 0) argindex++;
+					}
+					// Terminator
+					else if(curchar == terminator)
+					{
+						// Can't find anything, break now
+						break;
+					}
+				}
+			}
+		}
+		
 		#endregion
 		
 		#region ================== Events
@@ -256,6 +417,66 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptedit.AutoCShow(currentpos - wordstartpos, autocompletestring);
 				
 				e.Handled = true;
+			}
+		}
+		
+		// Key released
+		private void scriptedit_KeyUp(object sender, KeyEventArgs e)
+		{
+			bool showcalltip = false;
+			int highlightstart = 0;
+			int highlightend = 0;
+			
+			UpdatePositionInfo();
+			
+			// Call tip shown
+			if(scriptedit.IsCallTipActive)
+			{
+				// Should we hide the call tip?
+				if(curfunctionname.Length == 0)
+				{
+					// Hide the call tip
+					scriptedit.CallTipCancel();
+				}
+				else
+				{
+					// Update the call tip
+					showcalltip = true;
+				}
+			}
+			// No call tip
+			else
+			{
+				// Should we show a call tip?
+				showcalltip = (curfunctionname.Length > 0) && !scriptedit.IsAutoCActive;
+			}
+			
+			// Show or update call tip
+			if(showcalltip)
+			{
+				string functiondef = scriptconfig.GetFunctionDefinition(curfunctionname);
+				if(functiondef != null)
+				{
+					// Determine the range to highlight
+					int argsopenpos = functiondef.IndexOf(scriptconfig.FunctionOpen);
+					int argsclosepos = functiondef.LastIndexOf(scriptconfig.FunctionClose);
+					if((argsopenpos > -1) && (argsclosepos > -1))
+					{
+						string argsstr = functiondef.Substring(argsopenpos + 1, argsclosepos - argsopenpos - 1);
+						string[] args = argsstr.Split(scriptconfig.ArgumentDelimiter[0]);
+						if((curargumentindex >= 0) && (curargumentindex < args.Length))
+						{
+							int argoffset = 0;
+							for(int i = 0; i < curargumentindex; i++) argoffset += args[i].Length + 1;
+							highlightstart = argsopenpos + argoffset + 1;
+							highlightend = highlightstart + args[curargumentindex].Length;
+						}
+					}
+					
+					// Show tip
+					scriptedit.CallTipShow(curfunctionstartpos, functiondef);
+					scriptedit.CallTipSetHlt(highlightstart, highlightend);
+				}
 			}
 		}
 		

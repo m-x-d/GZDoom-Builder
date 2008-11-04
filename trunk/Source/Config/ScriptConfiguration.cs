@@ -84,8 +84,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string Terminator { get { return terminator; } }
 		
 		// Collections
-		public Dictionary<string, string>.KeyCollection Keywords { get { return keywords.Keys; } }
-		public Dictionary<string, string>.ValueCollection KeywordFunctions { get { return keywords.Values; } }
+		public ICollection<string> Keywords { get { return keywords.Keys; } }
 		public ICollection<string> Constants { get { return constants; } }
 		
 		#endregion
@@ -188,6 +187,17 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsConstant(string constant)
 		{
 			return lowerconstants.ContainsKey(constant.ToLowerInvariant());
+		}
+		
+		// This returns the function definition for a keyword
+		// Returns null when no function definition exists
+		// NOTE: The keyword parameter is case-sensitive!
+		public string GetFunctionDefinition(string keyword)
+		{
+			if(keywords.ContainsKey(keyword))
+				return keywords[keyword];
+			else
+				return null;
 		}
 		
 		#endregion
