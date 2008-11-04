@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Keep script configuration
 			scriptconfig = config;
 			
-			// Find a resource named Actions.cfg
+			// Find a resource named Lexers.cfg
 			resnames = General.ThisAssembly.GetManifestResourceNames();
 			foreach(string rn in resnames)
 			{
@@ -249,6 +249,12 @@ namespace CodeImp.DoomBuilder.Controls
 			// Sort the autocomplete list
 			autocompletelist.Sort(StringComparer.CurrentCultureIgnoreCase);
 			autocompletestring = string.Join(" ", autocompletelist.ToArray());
+
+			// Show/hide the functions bar
+			functionbar.Visible = (scriptconfig.FunctionRegEx.Length > 0);
+
+			// Rearrange the layout
+			this.PerformLayout();
 		}
 		
 		
@@ -401,7 +407,25 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Events
-		
+
+		// Layout needs to be re-organized
+		protected override void OnLayout(LayoutEventArgs e)
+		{
+			base.OnLayout(e);
+
+			// With or without functions bar?
+			if(functionbar.Visible)
+			{
+				scriptpanel.Top = functionbar.Bottom + 6;
+				scriptpanel.Height = this.ClientSize.Height - scriptpanel.Top;
+			}
+			else
+			{
+				scriptpanel.Top = 0;
+				scriptpanel.Height = this.ClientSize.Height;
+			}
+		}
+
 		// Key pressed down
 		private void scriptedit_KeyDown(object sender, KeyEventArgs e)
 		{

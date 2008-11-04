@@ -28,26 +28,26 @@ namespace CodeImp.DoomBuilder.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.functionslist = new System.Windows.Forms.ComboBox();
+			this.functionbar = new System.Windows.Forms.ComboBox();
 			this.scriptedit = new CodeImp.DoomBuilder.Controls.ScriptEditControl();
 			this.scriptpanel = new System.Windows.Forms.Panel();
 			this.scriptpanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// functionslist
+			// functionbar
 			// 
-			this.functionslist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			this.functionbar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.functionslist.FormattingEnabled = true;
-			this.functionslist.Items.AddRange(new object[] {
+			this.functionbar.FormattingEnabled = true;
+			this.functionbar.Items.AddRange(new object[] {
             "Function1",
             "Function2",
             "Function3"});
-			this.functionslist.Location = new System.Drawing.Point(0, 0);
-			this.functionslist.Name = "functionslist";
-			this.functionslist.Size = new System.Drawing.Size(474, 21);
-			this.functionslist.TabIndex = 1;
-			this.functionslist.TabStop = false;
+			this.functionbar.Location = new System.Drawing.Point(0, 0);
+			this.functionbar.Name = "functionbar";
+			this.functionbar.Size = new System.Drawing.Size(474, 21);
+			this.functionbar.TabIndex = 1;
+			this.functionbar.TabStop = false;
 			// 
 			// scriptedit
 			// 
@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.Controls.Add(this.scriptpanel);
-			this.Controls.Add(this.functionslist);
+			this.Controls.Add(this.functionbar);
 			this.Name = "BuilderScriptControl";
 			this.Size = new System.Drawing.Size(474, 408);
 			this.scriptpanel.ResumeLayout(false);
@@ -157,7 +157,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		private ScriptEditControl scriptedit;
-		private System.Windows.Forms.ComboBox functionslist;
+		private System.Windows.Forms.ComboBox functionbar;
 		private System.Windows.Forms.Panel scriptpanel;
 	}
 }
