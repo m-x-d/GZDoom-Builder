@@ -52,6 +52,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// scriptedit
 			// 
 			this.scriptedit.AnchorPosition = 0;
+			this.scriptedit.AutoCMaximumHeight = 0;
+			this.scriptedit.AutoCMaximumWidth = 0;
 			this.scriptedit.AutoCSeparator = 0;
 			this.scriptedit.AutoCTypeSeparator = 0;
 			this.scriptedit.BackColor = System.Drawing.SystemColors.Window;
@@ -125,6 +127,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.WrapVisualFlagsLocation = 0;
 			this.scriptedit.XOffset = 0;
 			this.scriptedit.ZoomLevel = 0;
+			this.scriptedit.KeyUp += new System.Windows.Forms.KeyEventHandler(this.scriptedit_KeyUp);
 			this.scriptedit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.scriptedit_KeyDown);
 			// 
 			// scriptpanel
