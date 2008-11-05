@@ -112,9 +112,10 @@ namespace CodeImp.DoomBuilder.Controls
 			//scriptedit.AddIgnoredKey(Keys.ControlKey, Keys.None);
 			//scriptedit.AddIgnoredKey(Keys.Space, Keys.None);
 			//scriptedit.AddIgnoredKey(Keys.Space, Keys.Control);
-
+			
 			// Setup with default script config
-			SetupStyles(new ScriptConfiguration());
+			// Disabled, the form designer doesn't like this
+			//SetupStyles(new ScriptConfiguration());
 		}
 		
 		#endregion

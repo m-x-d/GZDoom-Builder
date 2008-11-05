@@ -10,6 +10,8 @@
 
 - Make texture alignment features
 
+- Make Prefabs support
+
 - Make plugin dependencies
 	(load BEFORE and load AFTER so that also their functions are called in that order)
 

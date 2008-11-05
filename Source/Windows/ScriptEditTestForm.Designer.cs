@@ -28,25 +28,25 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.script = new CodeImp.DoomBuilder.Controls.BuilderScriptControl();
+			this.scripts = new CodeImp.DoomBuilder.Controls.ScriptEditorPanel();
 			this.SuspendLayout();
 			// 
-			// script
+			// scripts
 			// 
-			this.script.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.scripts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.script.Location = new System.Drawing.Point(12, 12);
-			this.script.Name = "script";
-			this.script.Size = new System.Drawing.Size(643, 487);
-			this.script.TabIndex = 0;
+			this.scripts.Location = new System.Drawing.Point(7, 12);
+			this.scripts.Name = "scripts";
+			this.scripts.Size = new System.Drawing.Size(653, 492);
+			this.scripts.TabIndex = 0;
 			// 
 			// ScriptEditTestForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(667, 511);
-			this.Controls.Add(this.script);
+			this.Controls.Add(this.scripts);
 			this.Name = "ScriptEditTestForm";
 			this.Text = "ScriptEditTestForm";
 			this.ResumeLayout(false);
@@ -55,7 +55,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		private CodeImp.DoomBuilder.Controls.BuilderScriptControl script;
+		private CodeImp.DoomBuilder.Controls.ScriptEditorPanel scripts;
+
 
 
 	}
