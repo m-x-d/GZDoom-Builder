@@ -86,8 +86,23 @@
     <Compile Include="Controls\BuilderScriptControl.Designer.cs">
       <DependentUpon>BuilderScriptControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ScriptDocumentTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ScriptEditConstants.cs" />
     <Compile Include="Controls\ScriptEditControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ScriptEditorPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ScriptEditorPanel.Designer.cs">
+      <DependentUpon>ScriptEditorPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ScriptFileDocumentTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ScriptLumpDocumentTab.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DirectoryReader.cs" />
@@ -630,6 +645,10 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Controls\ScriptEditorPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ScriptEditorPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Lexers.cfg" />
     <None Include="Resources\ViewBrightness.png" />
     <None Include="Resources\ViewTextureCeiling.png" />

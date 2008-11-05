@@ -26,16 +26,46 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Windows
+namespace CodeImp.DoomBuilder.Controls
 {
-	public partial class ScriptEditTestForm : Form
+	internal partial class ScriptEditorPanel : UserControl
 	{
-		public ScriptEditTestForm()
+		#region ================== Constants
+
+		#endregion
+
+		#region ================== Variables
+
+		#endregion
+
+		#region ================== Properties
+
+		#endregion
+
+		#region ================== Constructor
+
+		// Constructor
+		public ScriptEditorPanel()
 		{
 			InitializeComponent();
+			tabs.TabPages.Add(new ScriptFileDocumentTab());
+			tabs.TabPages.Add(new ScriptFileDocumentTab());
 		}
+
+		#endregion
+		
+		#region ================== Methods
+
+		#endregion
+
+		#region ================== Events
+
+		#endregion
 	}
 }
