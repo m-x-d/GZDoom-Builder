@@ -179,9 +179,23 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap NewScript {
+            get {
+                object obj = ResourceManager.GetObject("NewScript", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap OpenMap {
             get {
                 object obj = ResourceManager.GetObject("OpenMap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap OpenScript {
+            get {
+                object obj = ResourceManager.GetObject("OpenScript", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -207,9 +221,37 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap SaveAll {
+            get {
+                object obj = ResourceManager.GetObject("SaveAll", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap SaveMap {
             get {
                 object obj = ResourceManager.GetObject("SaveMap", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SaveScript {
+            get {
+                object obj = ResourceManager.GetObject("SaveScript", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScriptCompile {
+            get {
+                object obj = ResourceManager.GetObject("ScriptCompile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScriptPalette {
+            get {
+                object obj = ResourceManager.GetObject("ScriptPalette", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

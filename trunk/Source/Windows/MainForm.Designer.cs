@@ -599,6 +599,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonnewmap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonnewmap.Image = global::CodeImp.DoomBuilder.Properties.Resources.NewMap;
 			this.buttonnewmap.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonnewmap.Margin = new System.Windows.Forms.Padding(6, 1, 0, 2);
 			this.buttonnewmap.Name = "buttonnewmap";
 			this.buttonnewmap.Size = new System.Drawing.Size(23, 22);
 			this.buttonnewmap.Tag = "builder_newmap";

@@ -645,6 +645,12 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\ScriptCompile.png" />
+    <None Include="Resources\ScriptPalette.png" />
+    <None Include="Resources\SaveAll.png" />
+    <None Include="Resources\SaveScript.png" />
+    <None Include="Resources\OpenScript.png" />
+    <None Include="Resources\NewScript.png" />
     <EmbeddedResource Include="Controls\ScriptEditorPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ScriptEditorPanel.cs</DependentUpon>
