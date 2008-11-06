@@ -157,6 +157,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Make extensions array
 			extensions = extensionsstring.Split(',');
+			for(int i = 0; i < extensions.Length; i++) extensions[i] = extensions[i].Trim();
 			
 			// Load keywords
 			dic = cfg.ReadSetting("keywords", new Hashtable());
