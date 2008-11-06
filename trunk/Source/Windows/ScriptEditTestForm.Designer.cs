@@ -33,12 +33,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// scripts
 			// 
-			this.scripts.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.scripts.Location = new System.Drawing.Point(7, 12);
+			this.scripts.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.scripts.Location = new System.Drawing.Point(0, 0);
 			this.scripts.Name = "scripts";
-			this.scripts.Size = new System.Drawing.Size(653, 492);
+			this.scripts.Size = new System.Drawing.Size(667, 511);
 			this.scripts.TabIndex = 0;
 			// 
 			// ScriptEditTestForm

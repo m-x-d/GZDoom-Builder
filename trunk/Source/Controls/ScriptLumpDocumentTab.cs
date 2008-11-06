@@ -37,40 +37,47 @@ namespace CodeImp.DoomBuilder.Controls
 	internal sealed class ScriptLumpDocumentTab : ScriptDocumentTab
 	{
 		#region ================== Constants
-
+		
 		#endregion
-
+		
 		#region ================== Variables
-
+		
+		private string lumpname;
+		
 		#endregion
-
+		
 		#region ================== Properties
-
+		
+		public override bool ExplicitSave { get { return false; } }
+		public override bool IsClosable { get { return false; } }
+		
 		#endregion
-
+		
 		#region ================== Constructor / Disposer
-
+		
 		// Constructor
-		public ScriptLumpDocumentTab()
+		public ScriptLumpDocumentTab(string lumpname)
 		{
 			// Initialize
-
+			this.lumpname = lumpname;
+			
+			SetTitle(lumpname.ToUpper());
 		}
-
+		
 		// Disposer
 		protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Methods
-
+		
 		#endregion
-
+		
 		#region ================== Events
-
+		
 		#endregion
 	}
 }

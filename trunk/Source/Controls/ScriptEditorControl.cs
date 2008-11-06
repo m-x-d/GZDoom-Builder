@@ -51,7 +51,10 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Properties
-
+		
+		public string Text { get { return scriptedit.Text; } set { scriptedit.Text = value; } }
+		public bool IsChanged { get { return ischanged; } set { ischanged = value; } }
+		
 		#endregion
 
 		#region ================== Variables
@@ -69,6 +72,9 @@ namespace CodeImp.DoomBuilder.Controls
 		private string curfunctionname = "";
 		private int curargumentindex = 0;
 		private int curfunctionstartpos = 0;
+		
+		// Text has changed?
+		private bool ischanged;
 		
 		#endregion
 
@@ -113,6 +119,8 @@ namespace CodeImp.DoomBuilder.Controls
 			//scriptedit.AddIgnoredKey(Keys.Space, Keys.None);
 			//scriptedit.AddIgnoredKey(Keys.Space, Keys.Control);
 			
+			// Events
+			scriptedit.TextChanged += new EventHandler(scriptedit_TextChanged);
 			// Setup with default script config
 			// Disabled, the form designer doesn't like this
 			//SetupStyles(new ScriptConfiguration());
@@ -408,10 +416,22 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 		
+		// This clears all undo levels
+		public void ClearUndoRedo()
+		{
+			scriptedit.EmptyUndoBuffer();
+		}
+		
 		#endregion
 		
 		#region ================== Events
-
+		
+		// Text changes
+		private void scriptedit_TextChanged(object sender, EventArgs e)
+		{
+			ischanged = true;
+		}
+		
 		// Layout needs to be re-organized
 		protected override void OnLayout(LayoutEventArgs e)
 		{

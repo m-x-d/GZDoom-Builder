@@ -37,26 +37,31 @@ namespace CodeImp.DoomBuilder.Controls
 	internal abstract class ScriptDocumentTab : TabPage
 	{
 		#region ================== Constants
-
+		
 		private const int EDITOR_BORDER_TOP = 8;
 		private const int EDITOR_BORDER_BOTTOM = 4;
 		private const int EDITOR_BORDER_LEFT = 4;
 		private const int EDITOR_BORDER_RIGHT = 4;
-
+		
 		#endregion
-
+		
 		#region ================== Variables
-
+		
 		protected ScriptEditorControl editor;
-
+		
 		#endregion
-
+		
 		#region ================== Properties
-
+		
+		public virtual bool ExplicitSave { get { return true; } }
+		public virtual bool IsSaveAsRequired { get { return true; } }
+		public virtual bool IsClosable { get { return true; } }
+		public bool IsChanged { get { return editor.IsChanged; } }
+		
 		#endregion
-
+		
 		#region ================== Constructor
-
+		
 		// Constructor
 		public ScriptDocumentTab()
 		{
@@ -70,7 +75,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.TabIndex = 0;
 			this.Controls.Add(editor);
 		}
-
+		
 		// Disposer
 		protected override void Dispose(bool disposing)
 		{
@@ -80,11 +85,31 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
-
+		
+		// This saves the document (used for both explicit and implicit)
+		// Return true when successfully saved
+		public virtual bool Save()
+		{
+			return false;
+		}
+		
+		// This saves the document to a new file
+		// Return true when successfully saved
+		public virtual bool SaveAs(string filename)
+		{
+			return false;
+		}
+		
+		// Call this to set the tab title
+		protected void SetTitle(string title)
+		{
+			this.Text = title;
+		}
+		
 		#endregion
-
+		
 		#region ================== Events
-
+		
 		#endregion
 	}
 }
