@@ -27,12 +27,13 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
+using System.Collections.ObjectModel;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal class ScriptConfiguration
+	internal class ScriptConfiguration : IComparable<ScriptConfiguration>
 	{
 		#region ================== Constants
 
@@ -49,6 +50,8 @@ namespace CodeImp.DoomBuilder.Config
 		private string resultlump;
 		
 		// Editor settings
+		private string description;
+		private string[] extensions;
 		private bool casesensitive;
 		private int insertcase;
 		private int lexer;
@@ -75,6 +78,8 @@ namespace CodeImp.DoomBuilder.Config
 		public string ResultLump { get { return resultlump; } }
 		
 		// Editor settings
+		public string Description { get { return description; } }
+		public string[] Extensions { get { return extensions; } }
 		public bool CaseSensitive { get { return casesensitive; } }
 		public int InsertCase { get { return insertcase; } }
 		public int Lexer { get { return lexer; } }
@@ -116,12 +121,15 @@ namespace CodeImp.DoomBuilder.Config
 			argumentdelimiter = "";
 			terminator = "";
 			functionregex = "";
+			description = "Plain text";
+			extensions = new string[] { "txt" };
 		}
 		
 		// Constructor
 		internal ScriptConfiguration(Configuration cfg)
 		{
 			string compilername;
+			string extensionsstring;
 			IDictionary dic;
 			
 			// Initialize
@@ -132,6 +140,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.lowerconstants = new Dictionary<string, string>();
 			
 			// Read settings
+			description = cfg.ReadSetting("description", "Untitled script");
+			extensionsstring = cfg.ReadSetting("extensions", "");
 			compilername = cfg.ReadSetting("compiler", "");
 			parameters = cfg.ReadSetting("parameters", "");
 			resultlump = cfg.ReadSetting("resultlump", "");
@@ -144,6 +154,9 @@ namespace CodeImp.DoomBuilder.Config
 			argumentdelimiter = cfg.ReadSetting("argumentdelimiter", "");
 			terminator = cfg.ReadSetting("terminator", "");
 			functionregex = cfg.ReadSetting("functionregex", "");
+			
+			// Make extensions array
+			extensions = extensionsstring.Split(',');
 			
 			// Load keywords
 			dic = cfg.ReadSetting("keywords", new Hashtable());
@@ -226,6 +239,12 @@ namespace CodeImp.DoomBuilder.Config
 				return keywords[keyword];
 			else
 				return null;
+		}
+		
+		// This sorts by description
+		public int CompareTo(ScriptConfiguration other)
+		{
+			return string.Compare(this.description, other.description, true);
 		}
 		
 		#endregion
