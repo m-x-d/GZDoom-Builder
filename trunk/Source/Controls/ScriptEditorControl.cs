@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	internal partial class BuilderScriptControl : UserControl
+	internal partial class ScriptEditorControl : UserControl
 	{
 		#region ================== Constants
 		
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Contructor / Disposer
 
 		// Constructor
-		public BuilderScriptControl()
+		public ScriptEditorControl()
 		{
 			// Initialize
 			InitializeComponent();

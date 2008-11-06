@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Controls
 	// This is only a wrapper for the Scintilla editor control. Most of this code is
 	// from ScintillaNET project, I only refactored it a bit. See the BuilderScriptControl
 	// for the script editor with Doom Builder features.
-	internal class ScriptEditControl : Control
+	internal class ScintillaControl : Control
 	{
 		#region ================== API Declarations
 
@@ -62,38 +62,38 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Delegates / Events
 
-		public delegate void StyleNeededHandler(ScriptEditControl pSender, int position);
-		public delegate void CharAddedHandler(ScriptEditControl pSender, int ch);
-		public delegate void SavePointReachedHandler(ScriptEditControl pSender);
-		public delegate void SavePointLeftHandler(ScriptEditControl pSender);
-		public delegate void ModifyAttemptROHandler(ScriptEditControl pSender);
-		public delegate void KeyHandler(ScriptEditControl pSender, int ch, int modifiers);
-		public delegate void DoubleClickHandler(ScriptEditControl pSender);
-		public delegate void UpdateUIHandler(ScriptEditControl pSender);
-		public delegate void ModifiedHandler(ScriptEditControl pSender, int position, int modificationType, string text, int length, int linesAdded, int line, int foldLevelNow, int foldLevelPrev);
-		public delegate void MacroRecordHandler(ScriptEditControl pSender, int message, IntPtr wParam, IntPtr lParam);
-		public delegate void MarginClickHandler(ScriptEditControl pSender, int modifiers, int position, int margin);
-		public delegate void NeedShownHandler(ScriptEditControl pSender, int position, int length);
-		public delegate void PaintedHandler(ScriptEditControl pSender);
-		public delegate void UserListSelectionHandler(ScriptEditControl pSender, int listType, string text);
-		public delegate void URIDroppedHandler(ScriptEditControl pSender, string text);
-		public delegate void DwellStartHandler(ScriptEditControl pSender, int position);
-		public delegate void DwellEndHandler(ScriptEditControl pSender, int position);
-		public delegate void ZoomHandler(ScriptEditControl pSender);
-		public delegate void HotSpotClickHandler(ScriptEditControl pSender, int modifiers, int position);
-		public delegate void HotSpotDoubleClickHandler(ScriptEditControl pSender, int modifiers, int position);
-		public delegate void CallTipClickHandler(ScriptEditControl pSender, int position);
-		public delegate void TextInsertedHandler(ScriptEditControl pSender, int position, int length, int linesAdded);
-		public delegate void TextDeletedHandler(ScriptEditControl pSender, int position, int length, int linesAdded);
-		public delegate void StyleChangedHandler(ScriptEditControl pSender, int position, int length);
-		public delegate void FoldChangedHandler(ScriptEditControl pSender, int line, int foldLevelNow, int foldLevelPrev);
-		public delegate void UserPerformedHandler(ScriptEditControl pSender);
-		public delegate void UndoPerformedHandler(ScriptEditControl pSender);
-		public delegate void RedoPerformedHandler(ScriptEditControl pSender);
-		public delegate void LastStepInUndoRedoHandler(ScriptEditControl pSender);
-		public delegate void MarkerChangedHandler(ScriptEditControl pSender, int line);
-		public delegate void BeforeInsertHandler(ScriptEditControl pSender, int position, int length);
-		public delegate void BeforeDeleteHandler(ScriptEditControl pSender, int position, int length);
+		public delegate void StyleNeededHandler(ScintillaControl pSender, int position);
+		public delegate void CharAddedHandler(ScintillaControl pSender, int ch);
+		public delegate void SavePointReachedHandler(ScintillaControl pSender);
+		public delegate void SavePointLeftHandler(ScintillaControl pSender);
+		public delegate void ModifyAttemptROHandler(ScintillaControl pSender);
+		public delegate void KeyHandler(ScintillaControl pSender, int ch, int modifiers);
+		public delegate void DoubleClickHandler(ScintillaControl pSender);
+		public delegate void UpdateUIHandler(ScintillaControl pSender);
+		public delegate void ModifiedHandler(ScintillaControl pSender, int position, int modificationType, string text, int length, int linesAdded, int line, int foldLevelNow, int foldLevelPrev);
+		public delegate void MacroRecordHandler(ScintillaControl pSender, int message, IntPtr wParam, IntPtr lParam);
+		public delegate void MarginClickHandler(ScintillaControl pSender, int modifiers, int position, int margin);
+		public delegate void NeedShownHandler(ScintillaControl pSender, int position, int length);
+		public delegate void PaintedHandler(ScintillaControl pSender);
+		public delegate void UserListSelectionHandler(ScintillaControl pSender, int listType, string text);
+		public delegate void URIDroppedHandler(ScintillaControl pSender, string text);
+		public delegate void DwellStartHandler(ScintillaControl pSender, int position);
+		public delegate void DwellEndHandler(ScintillaControl pSender, int position);
+		public delegate void ZoomHandler(ScintillaControl pSender);
+		public delegate void HotSpotClickHandler(ScintillaControl pSender, int modifiers, int position);
+		public delegate void HotSpotDoubleClickHandler(ScintillaControl pSender, int modifiers, int position);
+		public delegate void CallTipClickHandler(ScintillaControl pSender, int position);
+		public delegate void TextInsertedHandler(ScintillaControl pSender, int position, int length, int linesAdded);
+		public delegate void TextDeletedHandler(ScintillaControl pSender, int position, int length, int linesAdded);
+		public delegate void StyleChangedHandler(ScintillaControl pSender, int position, int length);
+		public delegate void FoldChangedHandler(ScintillaControl pSender, int line, int foldLevelNow, int foldLevelPrev);
+		public delegate void UserPerformedHandler(ScintillaControl pSender);
+		public delegate void UndoPerformedHandler(ScintillaControl pSender);
+		public delegate void RedoPerformedHandler(ScintillaControl pSender);
+		public delegate void LastStepInUndoRedoHandler(ScintillaControl pSender);
+		public delegate void MarkerChangedHandler(ScintillaControl pSender, int line);
+		public delegate void BeforeInsertHandler(ScintillaControl pSender, int position, int length);
+		public delegate void BeforeDeleteHandler(ScintillaControl pSender, int position, int length);
 
 		public event StyleNeededHandler StyleNeeded;
 		public event CharAddedHandler CharAdded;
@@ -2172,7 +2172,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Contructor / Disposer
 
 		// Constructor
-		public ScriptEditControl()
+		public ScintillaControl()
 		{
 			this.BackColor = SystemColors.Window;
 			

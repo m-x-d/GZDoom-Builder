@@ -80,17 +80,17 @@
     <Compile Include="Controls\ArgumentBox.Designer.cs">
       <DependentUpon>ArgumentBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\BuilderScriptControl.cs">
+    <Compile Include="Controls\ScriptEditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\BuilderScriptControl.Designer.cs">
-      <DependentUpon>BuilderScriptControl.cs</DependentUpon>
+    <Compile Include="Controls\ScriptEditorControl.Designer.cs">
+      <DependentUpon>ScriptEditorControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ScriptDocumentTab.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ScriptEditConstants.cs" />
-    <Compile Include="Controls\ScriptEditControl.cs">
+    <Compile Include="Controls\ScintillaConstants.cs" />
+    <Compile Include="Controls\ScintillaControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ScriptEditorPanel.cs">
@@ -655,9 +655,9 @@
     <None Include="Resources\ViewTextureFloor.png" />
     <None Include="Resources\ViewNormal.png" />
     <None Include="Resources\KnownTextureSet.png" />
-    <EmbeddedResource Include="Controls\BuilderScriptControl.resx">
+    <EmbeddedResource Include="Controls\ScriptEditorControl.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>BuilderScriptControl.cs</DependentUpon>
+      <DependentUpon>ScriptEditorControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Hourglass3D.png" />
     <None Include="Resources\Failed.png" />

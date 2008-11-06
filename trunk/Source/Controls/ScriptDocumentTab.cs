@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 
-		protected BuilderScriptControl editor;
+		protected ScriptEditorControl editor;
 
 		#endregion
 
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public ScriptDocumentTab()
 		{
 			// Make the script control
-			editor = new BuilderScriptControl();
+			editor = new ScriptEditorControl();
 			editor.Location = new Point(EDITOR_BORDER_LEFT, EDITOR_BORDER_TOP);
 			editor.Size = new Size(this.ClientSize.Width - EDITOR_BORDER_LEFT - EDITOR_BORDER_RIGHT,
 								   this.ClientSize.Height - EDITOR_BORDER_TOP - EDITOR_BORDER_BOTTOM);

@@ -1,6 +1,6 @@
 namespace CodeImp.DoomBuilder.Controls
 {
-	partial class BuilderScriptControl
+	partial class ScriptEditorControl
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void InitializeComponent()
 		{
 			this.functionbar = new System.Windows.Forms.ComboBox();
-			this.scriptedit = new CodeImp.DoomBuilder.Controls.ScriptEditControl();
+			this.scriptedit = new CodeImp.DoomBuilder.Controls.ScintillaControl();
 			this.scriptpanel = new System.Windows.Forms.Panel();
 			this.scriptpanel.SuspendLayout();
 			this.SuspendLayout();
@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#endregion
 
-		private ScriptEditControl scriptedit;
+		private ScintillaControl scriptedit;
 		private System.Windows.Forms.ComboBox functionbar;
 		private System.Windows.Forms.Panel scriptpanel;
 	}
