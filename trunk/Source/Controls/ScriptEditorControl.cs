@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 		
 		public string Text { get { return scriptedit.Text; } set { scriptedit.Text = value; } }
-		public bool IsChanged { get { return ischanged; } set { ischanged = value; } }
+		public bool IsChanged { get { return scriptedit.CanUndo; } }
 		
 		#endregion
 
@@ -81,9 +81,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private string curfunctionname = "";
 		private int curargumentindex = 0;
 		private int curfunctionstartpos = 0;
-		
-		// Text has changed?
-		private bool ischanged;
 		
 		#endregion
 
@@ -118,7 +115,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.IsViewEOL = false;
 			scriptedit.IsVScrollBar = true;
 			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
-
+			
 			// Symbol margin
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
 			scriptedit.SetMarginWidthN(0, 20);
@@ -133,9 +130,6 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.SetMarginTypeN(2, (int)ScriptMarginType.Symbol);
 			scriptedit.SetMarginWidthN(2, 5);
 			scriptedit.SetMarginMaskN(2, 0);	// none
-			
-			// Events
-			scriptedit.TextChanged += new EventHandler(scriptedit_TextChanged);
 			
 			// Setup with default script config
 			// Disabled, the form designer doesn't like this
@@ -290,6 +284,8 @@ namespace CodeImp.DoomBuilder.Controls
 			functionbar.Visible = (scriptconfig.FunctionRegEx.Length > 0);
 
 			// Rearrange the layout
+			scriptedit.ClearDocumentStyle();
+			scriptedit.Text = scriptedit.Text;
 			this.PerformLayout();
 		}
 		
@@ -465,16 +461,40 @@ namespace CodeImp.DoomBuilder.Controls
 			// Register image
 			scriptedit.MarkerDefinePixmap((int)index, bigstring);
 		}
+
+		// Perform undo
+		public void Undo()
+		{
+			scriptedit.Undo();
+		}
+
+		// Perform redo
+		public void Redo()
+		{
+			scriptedit.Redo();
+		}
+
+		// Perform cut
+		public void Cut()
+		{
+			scriptedit.Cut();
+		}
+
+		// Perform copy
+		public void Copy()
+		{
+			scriptedit.Copy();
+		}
+
+		// Perform paste
+		public void Paste()
+		{
+			scriptedit.Paste();
+		}
 		
 		#endregion
 		
 		#region ================== Events
-		
-		// Text changes
-		private void scriptedit_TextChanged(object sender, EventArgs e)
-		{
-			ischanged = true;
-		}
 		
 		// Layout needs to be re-organized
 		protected override void OnLayout(LayoutEventArgs e)
@@ -500,8 +520,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// CTRL+Space to autocomplete
 			if((e.KeyCode == Keys.Space) && (e.Modifiers == Keys.Control))
 			{
-				scriptedit.MarkerAdd(scriptedit.LineFromPosition(scriptedit.CurrentPos), (int)ImageIndex.ScriptError);
-				
 				// Hide call tip if any
 				scriptedit.CallTipCancel();
 				

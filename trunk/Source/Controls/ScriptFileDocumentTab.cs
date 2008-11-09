@@ -62,10 +62,10 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Initialize
 			this.filepathname = "";
+			this.config = config;
 			editor.SetupStyles(config);
 			if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
 			SetTitle("Untitled" + ext);
-			editor.IsChanged = false;
 			editor.ClearUndoRedo();
 		}
 		
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Done
-			editor.IsChanged = false;
+			editor.ClearUndoRedo();
 			return true;
 		}
 		
@@ -110,6 +110,7 @@ namespace CodeImp.DoomBuilder.Controls
 			filepathname = filename;
 			if(this.Save())
 			{
+				SetTitle(Path.GetFileName(filepathname));
 				return true;
 			}
 			else
@@ -139,9 +140,23 @@ namespace CodeImp.DoomBuilder.Controls
 			// Setup
 			this.filepathname = filepathname;
 			SetTitle(Path.GetFileName(filepathname));
-			editor.IsChanged = false;
 			editor.ClearUndoRedo();
 			return true;
+		}
+
+		// This changes the script configurations
+		public override void ChangeScriptConfig(ScriptConfiguration newconfig)
+		{
+			string ext = "";
+
+			this.config = newconfig;
+			editor.SetupStyles(config);
+
+			if(filepathname.Length == 0)
+			{
+				if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
+				SetTitle("Untitled" + ext);
+			}
 		}
 		
 		#endregion

@@ -644,6 +644,7 @@
   <ItemGroup>
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
+    <None Include="Resources\Close.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\ScriptCompile.png" />
     <None Include="Resources\ScriptConstant.xpm" />
