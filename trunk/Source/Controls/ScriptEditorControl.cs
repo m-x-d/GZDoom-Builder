@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.IO;
 using System.Collections;
 using System.Globalization;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Properties;
 
 #endregion
 
@@ -43,6 +44,14 @@ namespace CodeImp.DoomBuilder.Controls
 		private const string LEXERS_RESOURCE = "Lexers.cfg";
 		private const int DEFAULT_STYLE = (int)ScriptStylesCommon.Default;
 		private const int MAX_BACKTRACK_LENGTH = 200;
+
+		// Index for registered images
+		private enum ImageIndex : int
+		{
+			ScriptConstant = 0,
+			ScriptKeyword = 1,
+			ScriptError = 2
+		}
 		
 		#endregion
 
@@ -91,7 +100,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// because the control is not really loaded in design mode
 			scriptedit.AutoCMaximumHeight = 8;
 			scriptedit.AutoCSeparator = ' ';
-			scriptedit.AutoCTypeSeparator = ',';
+			scriptedit.AutoCTypeSeparator = '?';
 			scriptedit.CaretWidth = 2;
 			scriptedit.EndAtLastLine = 1;
 			scriptedit.EndOfLineMode = ScriptEndOfLine.CRLF;
@@ -109,21 +118,33 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.IsViewEOL = false;
 			scriptedit.IsVScrollBar = true;
 			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
+
+			// Symbol margin
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
+			scriptedit.SetMarginWidthN(0, 20);
+			scriptedit.SetMarginMaskN(0, -1);	// all
+			
+			// Line numbers margin
 			scriptedit.SetMarginTypeN(1, (int)ScriptMarginType.Number);
-			scriptedit.SetMarginTypeN(2, (int)ScriptMarginType.Symbol);
-			scriptedit.SetMarginWidthN(0, 16);
 			scriptedit.SetMarginWidthN(1, 40);
+			scriptedit.SetMarginMaskN(1, 0);	// none
+
+			// Spacing margin
+			scriptedit.SetMarginTypeN(2, (int)ScriptMarginType.Symbol);
 			scriptedit.SetMarginWidthN(2, 5);
-			//scriptedit.AddIgnoredKey(Keys.ControlKey, Keys.None);
-			//scriptedit.AddIgnoredKey(Keys.Space, Keys.None);
-			//scriptedit.AddIgnoredKey(Keys.Space, Keys.Control);
+			scriptedit.SetMarginMaskN(2, 0);	// none
 			
 			// Events
 			scriptedit.TextChanged += new EventHandler(scriptedit_TextChanged);
+			
 			// Setup with default script config
 			// Disabled, the form designer doesn't like this
 			//SetupStyles(new ScriptConfiguration());
+
+			// Images
+			RegisterAutoCompleteImage(ImageIndex.ScriptConstant, Resources.ScriptConstant);
+			RegisterAutoCompleteImage(ImageIndex.ScriptKeyword, Resources.ScriptKeyword);
+			RegisterMarkerImage(ImageIndex.ScriptError, Resources.ScriptError);
 		}
 		
 		#endregion
@@ -138,6 +159,7 @@ namespace CodeImp.DoomBuilder.Controls
 			Configuration lexercfg = new Configuration();
 			List<string> autocompletelist = new List<string>();
 			string[] resnames;
+			int imageindex;
 			
 			// Make collections
 			stylelookup = new Dictionary<int, ScriptStyleType>();
@@ -229,6 +251,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Create the keywords list and apply it
+			imageindex = (int)ImageIndex.ScriptKeyword;
 			int keywordsindex = lexercfg.ReadSetting(lexername + ".keywordsindex", -1);
 			if(keywordsindex > -1)
 			{
@@ -237,13 +260,14 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(keywordslist.Length > 0) keywordslist.Append(" ");
 					keywordslist.Append(k);
-					autocompletelist.Add(k);
+					autocompletelist.Add(k + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
 				}
 				string words = keywordslist.ToString();
 				scriptedit.KeyWords(keywordsindex, words.ToLowerInvariant());
 			}
 
 			// Create the constants list and apply it
+			imageindex = (int)ImageIndex.ScriptConstant;
 			int constantsindex = lexercfg.ReadSetting(lexername + ".constantsindex", -1);
 			if(constantsindex > -1)
 			{
@@ -252,7 +276,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(constantslist.Length > 0) constantslist.Append(" ");
 					constantslist.Append(c);
-					autocompletelist.Add(c);
+					autocompletelist.Add(c + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
 				}
 				string words = constantslist.ToString();
 				scriptedit.KeyWords(constantsindex, words.ToLowerInvariant());
@@ -422,6 +446,26 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.EmptyUndoBuffer();
 		}
 		
+		// This registers an XPM image for the autocomplete list
+		private unsafe void RegisterAutoCompleteImage(ImageIndex index, byte[] imagedata)
+		{
+			// Convert to string
+			string bigstring = Encoding.UTF8.GetString(imagedata);
+			
+			// Register image
+			scriptedit.RegisterImage((int)index, bigstring);
+		}
+
+		// This registers an XPM image for the markes list
+		private unsafe void RegisterMarkerImage(ImageIndex index, byte[] imagedata)
+		{
+			// Convert to string
+			string bigstring = Encoding.UTF8.GetString(imagedata);
+
+			// Register image
+			scriptedit.MarkerDefinePixmap((int)index, bigstring);
+		}
+		
 		#endregion
 		
 		#region ================== Events
@@ -456,6 +500,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// CTRL+Space to autocomplete
 			if((e.KeyCode == Keys.Space) && (e.Modifiers == Keys.Control))
 			{
+				scriptedit.MarkerAdd(scriptedit.LineFromPosition(scriptedit.CurrentPos), (int)ImageIndex.ScriptError);
+				
 				// Hide call tip if any
 				scriptedit.CallTipCancel();
 				
