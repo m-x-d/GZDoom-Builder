@@ -68,11 +68,19 @@ namespace CodeImp.DoomBuilder.Controls
 			// Fill the list of new document types
 			foreach(ScriptConfiguration cfg in scriptconfigs)
 			{
+				// Button for new script menu
 				item = new ToolStripMenuItem(cfg.Description);
 				//item.Image = buttonnew.Image;
 				item.Tag = cfg;
 				item.Click += new EventHandler(buttonnew_Click);
 				buttonnew.DropDownItems.Add(item);
+				
+				// Button for script type menu
+				item = new ToolStripMenuItem(cfg.Description);
+				//item.Image = buttonnew.Image;
+				item.Tag = cfg;
+				item.Click += new EventHandler(buttonscriptconfig_Click);
+				buttonscriptconfig.DropDownItems.Add(item);
 			}
 			
 			// Setup supported extensions
@@ -89,16 +97,67 @@ namespace CodeImp.DoomBuilder.Controls
 					filterall += exts;
 				}
 			}
-			openfile.Filter = "Script files|" + filterall + "|" + filterseperate;
+			openfile.Filter = "Script files|" + filterall + "|" + filterseperate + "|All files|*.*";
+
+			// Done
+			UpdateToolbar();
 		}
 		
 		#endregion
 		
 		#region ================== Methods
+
+		// This updates the toolbar for the current status
+		private void UpdateToolbar()
+		{
+			int numscriptsopen = tabs.TabPages.Count;
+			ScriptDocumentTab t = null;
+			
+			// Get current script, if any are open
+			if(numscriptsopen > 0)
+				t = (tabs.SelectedTab as ScriptDocumentTab);
+			
+			// Enable/disable buttons
+			buttonsave.Enabled = (t != null) && t.ExplicitSave;
+			buttonsaveall.Enabled = (numscriptsopen > 0);
+			buttoncompile.Enabled = (t != null) && (t.Config.Compiler != null);
+			buttonscriptconfig.Enabled = (t != null) && t.IsReconfigurable;
+			buttonundo.Enabled = (t != null);
+			buttonredo.Enabled = (t != null);
+			buttoncopy.Enabled = (t != null);
+			buttoncut.Enabled = (t != null);
+			buttonpaste.Enabled = (t != null);
+			buttonclose.Enabled = (t != null) && t.IsClosable;
+			
+			if(t != null)
+			{
+				// Check the according script config in menu
+				foreach(ToolStripMenuItem item in buttonscriptconfig.DropDownItems)
+				{
+					ScriptConfiguration config = (item.Tag as ScriptConfiguration);
+					item.Checked = (config == t.Config);
+				}
+			}
+		}
 		
 		#endregion
 		
 		#region ================== Events
+
+		// When the user changes the script configuration
+		private void buttonscriptconfig_Click(object sender, EventArgs e)
+		{
+			// Get the tab and new script config
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			ScriptConfiguration scriptconfig = ((sender as ToolStripMenuItem).Tag as ScriptConfiguration);
+			
+			// Change script config
+			t.ChangeScriptConfig(scriptconfig);
+
+			// Done
+			UpdateToolbar();
+			t.Focus();
+		}
 		
 		// When new script is clicked
 		private void buttonnew_Click(object sender, EventArgs e)
@@ -111,7 +170,8 @@ namespace CodeImp.DoomBuilder.Controls
 			tabs.TabPages.Add(t);
 			tabs.SelectedTab = t;
 			
-			// Focus to script editor
+			// Done
+			UpdateToolbar();
 			t.Focus();
 		}
 		
@@ -145,10 +205,125 @@ namespace CodeImp.DoomBuilder.Controls
 					tabs.TabPages.Add(t);
 					tabs.SelectedTab = t;
 					
-					// Focus to script editor
+					// Done
+					UpdateToolbar();
 					t.Focus();
 				}
 			}
+		}
+
+		// Save script clicked
+		private void buttonsave_Click(object sender, EventArgs e)
+		{
+			// Save the current script
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			SaveScript(t);
+		}
+
+		// Save All clicked
+		private void buttonsaveall_Click(object sender, EventArgs e)
+		{
+			// Save all scripts
+			foreach(ScriptDocumentTab t in tabs.TabPages)
+			{
+				if(!SaveScript(t)) break;
+			}
+		}
+
+		// This is called by Save and Save All to save a script
+		// Returns false when cancelled by the user
+		private bool SaveScript(ScriptDocumentTab t)
+		{
+			// Do we have to do a save as?
+			if(t.IsSaveAsRequired)
+			{
+				// Setup save dialog
+				string scriptfilter = t.Config.Description + "|*." + string.Join(";*.", t.Config.Extensions);
+				savefile.Filter = scriptfilter + "|All files|*.*";
+				if(savefile.ShowDialog(this.ParentForm) == DialogResult.OK)
+				{
+					// Save to new filename
+					t.SaveAs(savefile.FileName);
+					return true;
+				}
+				else
+				{
+					// Cancelled
+					return false;
+				}
+			}
+			else
+			{
+				// Save to same filename
+				t.Save();
+				return true;
+			}
+		}
+
+		// A tab is selected
+		private void tabs_Selecting(object sender, TabControlCancelEventArgs e)
+		{
+			UpdateToolbar();
+		}
+
+		// This closes the current file
+		private void buttonclose_Click(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			if(t.IsChanged)
+			{
+				// Ask to save
+				DialogResult result = MessageBox.Show(this.ParentForm, "Do you want to save changes to " + t.Text + "?", "Close File", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+				if(result == DialogResult.Yes)
+				{
+					// Save file
+					if(!SaveScript(t)) return;
+				}
+				else if(result == DialogResult.Cancel)
+				{
+					// Cancel
+					return;
+				}
+			}
+			
+			// Close file
+			tabs.TabPages.Remove(t);
+			t.Dispose();
+		}
+
+		// Undo clicked
+		private void buttonundo_Click(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.Undo();
+		}
+
+		// Redo clicked
+		private void buttonredo_Click(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.Redo();
+		}
+
+		// Cut clicked
+		private void buttoncut_Click(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.Cut();
+		}
+
+		// Copy clicked
+		private void buttoncopy_Click(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.Copy();
+		}
+
+		// Paste clicked
+		private void buttonpaste_Click(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.Paste();
 		}
 		
 		#endregion

@@ -47,7 +47,11 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Variables
 		
+		// The script edit control
 		protected ScriptEditorControl editor;
+
+		// Derived classes must set this!
+		protected ScriptConfiguration config;
 		
 		#endregion
 		
@@ -56,7 +60,9 @@ namespace CodeImp.DoomBuilder.Controls
 		public virtual bool ExplicitSave { get { return true; } }
 		public virtual bool IsSaveAsRequired { get { return true; } }
 		public virtual bool IsClosable { get { return true; } }
+		public virtual bool IsReconfigurable { get { return true; } }
 		public bool IsChanged { get { return editor.IsChanged; } }
+		public ScriptConfiguration Config { get { return config; } }
 		
 		#endregion
 		
@@ -100,10 +106,45 @@ namespace CodeImp.DoomBuilder.Controls
 			return false;
 		}
 		
+		// This changes the script configurations
+		public virtual void ChangeScriptConfig(ScriptConfiguration newconfig)
+		{
+		}
+
 		// Call this to set the tab title
 		protected void SetTitle(string title)
 		{
 			this.Text = title;
+		}
+
+		// Perform undo
+		public void Undo()
+		{
+			editor.Undo();
+		}
+
+		// Perform redo
+		public void Redo()
+		{
+			editor.Redo();
+		}
+
+		// Perform cut
+		public void Cut()
+		{
+			editor.Cut();
+		}
+
+		// Perform copy
+		public void Copy()
+		{
+			editor.Copy();
+		}
+
+		// Perform paste
+		public void Paste()
+		{
+			editor.Paste();
 		}
 		
 		#endregion

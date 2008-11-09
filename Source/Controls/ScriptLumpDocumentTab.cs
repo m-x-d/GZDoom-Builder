@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		public override bool ExplicitSave { get { return false; } }
 		public override bool IsClosable { get { return false; } }
+		public override bool IsReconfigurable { get { return false; } }
 		
 		#endregion
 		
@@ -60,6 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			this.lumpname = lumpname;
+			this.config = new ScriptConfiguration(); // TODO: Figure out script config
 			
 			SetTitle(lumpname.ToUpper());
 		}
