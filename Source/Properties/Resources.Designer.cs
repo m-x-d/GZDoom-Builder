@@ -249,6 +249,27 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static byte[] ScriptConstant {
+            get {
+                object obj = ResourceManager.GetObject("ScriptConstant", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] ScriptError {
+            get {
+                object obj = ResourceManager.GetObject("ScriptError", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        internal static byte[] ScriptKeyword {
+            get {
+                object obj = ResourceManager.GetObject("ScriptKeyword", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ScriptPalette {
             get {
                 object obj = ResourceManager.GetObject("ScriptPalette", resourceCulture);

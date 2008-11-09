@@ -646,6 +646,9 @@
     <None Include="Resources\Cut.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\ScriptCompile.png" />
+    <None Include="Resources\ScriptConstant.xpm" />
+    <None Include="Resources\ScriptError.xpm" />
+    <None Include="Resources\ScriptKeyword.xpm" />
     <None Include="Resources\ScriptPalette.png" />
     <None Include="Resources\SaveAll.png" />
     <None Include="Resources\SaveScript.png" />

@@ -2215,6 +2215,10 @@ namespace CodeImp.DoomBuilder.Controls
 						
 					}
 					
+					// Clean up
+					// Why does this crash?
+					//ClearRegisteredImages();
+					
 					// Dispose unmanaged elements
 					if(controlptr != IntPtr.Zero) General.DestroyWindow(controlptr);
 					if(libraryptr != IntPtr.Zero) General.FreeLibrary(libraryptr);
