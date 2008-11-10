@@ -29,6 +29,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
+using System.IO;
 
 #endregion
 
@@ -49,6 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 		
 		public override bool ExplicitSave { get { return false; } }
+		public override bool IsSaveAsRequired { get { return false; } }
 		public override bool IsClosable { get { return false; } }
 		public override bool IsReconfigurable { get { return false; } }
 		
@@ -57,12 +59,24 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public ScriptLumpDocumentTab(string lumpname)
+		public ScriptLumpDocumentTab(string lumpname, ScriptConfiguration config)
 		{
 			// Initialize
 			this.lumpname = lumpname;
-			this.config = new ScriptConfiguration(); // TODO: Figure out script config
+			this.config = config;
+			editor.SetupStyles(config);
 			
+			// Load the lump data
+			MemoryStream stream = General.Map.GetLumpData(lumpname);
+			if(stream != null)
+			{
+				StreamReader reader = new StreamReader(stream);
+				stream.Seek(0, SeekOrigin.Begin);
+				editor.Text = reader.ReadToEnd();
+				editor.ClearUndoRedo();
+			}
+			
+			// Done
 			SetTitle(lumpname.ToUpper());
 		}
 		
@@ -75,6 +89,16 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
+		
+		// Implicit save
+		public override bool Save()
+		{
+			// Store the lump data
+			byte[] data = Encoding.ASCII.GetBytes(editor.Text);
+			MemoryStream stream = new MemoryStream(data);
+			General.Map.SetLumpData(lumpname, stream);
+			return true;
+		}
 		
 		#endregion
 		

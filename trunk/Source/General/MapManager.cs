@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder
 
 		// Status
 		private bool changed;
+		private bool scriptschanged;
 		
 		// Map information
 		private string filetitle;
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder
 		private CopyPasteManager copypaste;
 		private Launcher launcher;
 		private ThingsFilter thingsfilter;
+		private ScriptEditorForm scriptwindow;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -104,7 +106,7 @@ namespace CodeImp.DoomBuilder
 		public Type PreviousMode { get { return prevmode; } }
 		public Type PreviousStableMode { get { return prevstablemode; } }
 		public DataManager Data { get { return data; } }
-		public bool IsChanged { get { return changed; } set { changed |= value; } }
+		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		internal D3DDevice Graphics { get { return graphics; } }
 		public IRenderer2D Renderer2D { get { return renderer2d; } }
@@ -118,7 +120,8 @@ namespace CodeImp.DoomBuilder
 		public IMapSetIO FormatInterface { get { return io; } }
 		internal Launcher Launcher { get { return launcher; } }
 		public ThingsFilter ThingsFilter { get { return thingsfilter; } }
-
+		public bool IsScriptsWindowOpen { get { return (scriptwindow != null) && !scriptwindow.IsDisposed; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -143,17 +146,20 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// Disposer
-		internal void Dispose()
+		internal bool Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Close script editor
+				CloseScriptEditor(false);
+				
 				// Change to no mode
 				ChangeMode((EditMode)null);
 				
 				// Unbind any methods
 				General.Actions.UnbindMethods(this);
-
+				
 				// Dispose
 				if(grid != null) grid.Dispose();
 				if(launcher != null) launcher.Dispose();
@@ -183,6 +189,12 @@ namespace CodeImp.DoomBuilder
 				
 				// Done
 				isdisposed = true;
+				return true;
+			}
+			else
+			{
+				// Already closed
+				return true;
 			}
 		}
 
@@ -362,6 +374,9 @@ namespace CodeImp.DoomBuilder
 			string origmapname;
 			
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
+			
+			// If the scripts window is open, save the scripts first
+			if(IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
 			
 			// Make a copy of the map data
 			outputset = map.Clone();
@@ -1022,6 +1037,71 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("assigngroup8")] internal void AssignGroup8() { AddSelectionToGroup(7); }
 		[BeginAction("assigngroup9")] internal void AssignGroup9() { AddSelectionToGroup(8); }
 		[BeginAction("assigngroup10")] internal void AssignGroup10() { AddSelectionToGroup(9); }
+		
+		#endregion
+		
+		#region ================== Script Editor
+		
+		// Show the script editor
+		[BeginAction("openscripteditor")]
+		internal void ShowScriptEditor()
+		{
+			if(scriptwindow == null)
+			{
+				// Load the window
+				scriptwindow = new ScriptEditorForm();
+			}
+			
+			// Show the window
+			scriptwindow.Show();
+			scriptwindow.Focus();
+		}
+		
+		// This asks the user to save changes in script files
+		// Returns false when cancelled by the user
+		internal bool AskSaveScriptChanges()
+		{
+			// Window open?
+			if(scriptwindow != null)
+			{
+				// Ask to save changes
+				// This also saves implicitly
+				return scriptwindow.AskSaveAll();
+			}
+			else
+			{
+				// No problems
+				return true;
+			}
+		}
+		
+		// Close the script editor
+		// Specify true for the closing parameter when
+		// the window is already in the closing process
+		internal void CloseScriptEditor(bool closing)
+		{
+			if(scriptwindow != null)
+			{
+				if(!scriptwindow.IsDisposed)
+				{
+					// Remember if lumps are changed
+					scriptschanged |= scriptwindow.Editor.CheckImplicitChanges();
+					
+					// Close now
+					if(!closing) scriptwindow.Close();
+				}
+				
+				// Done
+				scriptwindow = null;
+			}
+		}
+		
+		// This checks if the scripts are changed
+		internal bool CheckScriptChanged()
+		{
+			// Check if lumps are changed			
+			return scriptschanged || scriptwindow.Editor.CheckImplicitChanges();
+		}
 		
 		#endregion
 		

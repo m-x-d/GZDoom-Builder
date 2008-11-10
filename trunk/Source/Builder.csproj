@@ -46,6 +46,7 @@
   -->
   <ItemGroup>
     <Compile Include="Config\ArgumentInfo.cs" />
+    <Compile Include="Config\MapLumpInfo.cs" />
     <Compile Include="Config\ScriptConfiguration.cs" />
     <Compile Include="Config\DefinedTextureSet.cs" />
     <Compile Include="Config\EnumItem.cs" />
@@ -349,11 +350,11 @@
     <Compile Include="Windows\ResourceOptionsForm.Designer.cs">
       <DependentUpon>ResourceOptionsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ScriptEditTestForm.cs">
+    <Compile Include="Windows\ScriptEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\ScriptEditTestForm.Designer.cs">
-      <DependentUpon>ScriptEditTestForm.cs</DependentUpon>
+    <Compile Include="Windows\ScriptEditorForm.Designer.cs">
+      <DependentUpon>ScriptEditorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\SectorEditForm.cs">
       <SubType>Form</SubType>
@@ -646,6 +647,7 @@
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
     <None Include="Resources\ScriptConstant.xpm" />
     <None Include="Resources\ScriptError.xpm" />
@@ -702,9 +704,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>CustomFieldsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ScriptEditTestForm.resx">
+    <EmbeddedResource Include="Windows\ScriptEditorForm.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>ScriptEditTestForm.cs</DependentUpon>
+      <DependentUpon>ScriptEditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\TextEditForm.resx">
       <SubType>Designer</SubType>

@@ -62,7 +62,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(691, 435);
 			this.tabs.TabIndex = 0;
+			this.tabs.TabStop = false;
 			this.tabs.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabs_Selecting);
+			this.tabs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tabs_MouseUp);
 			// 
 			// toolbar
 			// 

@@ -56,9 +56,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// Constructor
 		public ScriptEditorPanel()
 		{
-			ToolStripMenuItem item;
-			
 			InitializeComponent();
+		}
+		
+		// This initializes the control
+		public void Initialize()
+		{
+			ToolStripMenuItem item;
 			
 			// Make list of script configs
 			scriptconfigs = new List<ScriptConfiguration>(General.ScriptConfigs.Values);
@@ -98,7 +102,20 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 			openfile.Filter = "Script files|" + filterall + "|" + filterseperate + "|All files|*.*";
-
+			
+			// Load the script lumps
+			foreach(MapLumpInfo maplumpinfo in General.Map.Config.MapLumps.Values)
+			{
+				// Is this a script lump?
+				if(maplumpinfo.script != null)
+				{
+					// Load this!
+					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(maplumpinfo.name, maplumpinfo.script);
+					tabs.TabPages.Add(t);
+					tabs.SelectedIndex = 0;
+				}
+			}
+			
 			// Done
 			UpdateToolbar();
 		}
@@ -106,12 +123,91 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
-
+		
+		// This asks to save files and returns the result
+		public bool AskSaveAll()
+		{
+			foreach(ScriptDocumentTab t in tabs.TabPages)
+			{
+				if(t.ExplicitSave)
+				{
+					if(!CloseScript(t, true)) return false;
+				}
+			}
+			
+			return true;
+		}
+		
+		// This closes a script and returns true when closed
+		private bool CloseScript(ScriptDocumentTab t, bool saveonly)
+		{
+			if(t.IsChanged)
+			{
+				// Ask to save
+				DialogResult result = MessageBox.Show(this.ParentForm, "Do you want to save changes to " + t.Text + "?", "Close File", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+				if(result == DialogResult.Yes)
+				{
+					// Save file
+					if(!SaveScript(t)) return false;
+				}
+				else if(result == DialogResult.Cancel)
+				{
+					// Cancel
+					return false;
+				}
+			}
+			
+			if(!saveonly)
+			{
+				// Close file
+				tabs.TabPages.Remove(t);
+				t.Dispose();
+			}
+			return true;
+		}
+		
+		// This returns true when any of the implicit-save scripts are changed
+		public bool CheckImplicitChanges()
+		{
+			bool changes = false;
+			foreach(ScriptDocumentTab t in tabs.TabPages)
+			{
+				if(!t.ExplicitSave && t.IsChanged) changes = true;
+			}
+			return changes;
+		}
+		
+		// This forces the focus to the script editor
+		public void ForceFocus()
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			tabs.Focus();
+			if(t != null) t.Focus();
+		}
+		
+		// This does an implicit save on all documents that use implicit saving
+		// Call this to save the lumps before disposing the panel!
+		public void ImplicitSave()
+		{
+			// Save all scripts
+			foreach(ScriptDocumentTab t in tabs.TabPages)
+			{
+				if(!t.ExplicitSave) t.Save();
+			}
+			
+			UpdateToolbar();
+		}
+		
 		// This updates the toolbar for the current status
 		private void UpdateToolbar()
 		{
 			int numscriptsopen = tabs.TabPages.Count;
+			int explicitsavescripts = 0;
 			ScriptDocumentTab t = null;
+			
+			// Any explicit save scripts?
+			foreach(ScriptDocumentTab dt in tabs.TabPages)
+				if(dt.ExplicitSave) explicitsavescripts++;
 			
 			// Get current script, if any are open
 			if(numscriptsopen > 0)
@@ -119,7 +215,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Enable/disable buttons
 			buttonsave.Enabled = (t != null) && t.ExplicitSave;
-			buttonsaveall.Enabled = (numscriptsopen > 0);
+			buttonsaveall.Enabled = (explicitsavescripts > 0);
 			buttoncompile.Enabled = (t != null) && (t.Config.Compiler != null);
 			buttonscriptconfig.Enabled = (t != null) && t.IsReconfigurable;
 			buttonundo.Enabled = (t != null);
@@ -137,13 +233,16 @@ namespace CodeImp.DoomBuilder.Controls
 					ScriptConfiguration config = (item.Tag as ScriptConfiguration);
 					item.Checked = (config == t.Config);
 				}
+				
+				// Focus to script editor
+				ForceFocus();
 			}
 		}
 		
 		#endregion
 		
 		#region ================== Events
-
+		
 		// When the user changes the script configuration
 		private void buttonscriptconfig_Click(object sender, EventArgs e)
 		{
@@ -156,7 +255,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Done
 			UpdateToolbar();
-			t.Focus();
 		}
 		
 		// When new script is clicked
@@ -172,7 +270,6 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Done
 			UpdateToolbar();
-			t.Focus();
 		}
 		
 		// Open script clicked
@@ -207,7 +304,6 @@ namespace CodeImp.DoomBuilder.Controls
 					
 					// Done
 					UpdateToolbar();
-					t.Focus();
 				}
 			}
 		}
@@ -218,6 +314,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Save the current script
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			SaveScript(t);
+			UpdateToolbar();
 		}
 
 		// Save All clicked
@@ -226,8 +323,14 @@ namespace CodeImp.DoomBuilder.Controls
 			// Save all scripts
 			foreach(ScriptDocumentTab t in tabs.TabPages)
 			{
-				if(!SaveScript(t)) break;
+				// Use explicit save for this script?
+				if(t.ExplicitSave)
+				{
+					if(!SaveScript(t)) break;
+				}
 			}
+			
+			UpdateToolbar();
 		}
 
 		// This is called by Save and Save All to save a script
@@ -265,30 +368,13 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			UpdateToolbar();
 		}
-
+		
 		// This closes the current file
 		private void buttonclose_Click(object sender, EventArgs e)
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
-			if(t.IsChanged)
-			{
-				// Ask to save
-				DialogResult result = MessageBox.Show(this.ParentForm, "Do you want to save changes to " + t.Text + "?", "Close File", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-				if(result == DialogResult.Yes)
-				{
-					// Save file
-					if(!SaveScript(t)) return;
-				}
-				else if(result == DialogResult.Cancel)
-				{
-					// Cancel
-					return;
-				}
-			}
-			
-			// Close file
-			tabs.TabPages.Remove(t);
-			t.Dispose();
+			CloseScript(t, false);
+			UpdateToolbar();
 		}
 
 		// Undo clicked
@@ -296,6 +382,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Undo();
+			UpdateToolbar();
 		}
 
 		// Redo clicked
@@ -303,6 +390,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Redo();
+			UpdateToolbar();
 		}
 
 		// Cut clicked
@@ -310,6 +398,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Cut();
+			UpdateToolbar();
 		}
 
 		// Copy clicked
@@ -317,6 +406,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Copy();
+			UpdateToolbar();
 		}
 
 		// Paste clicked
@@ -324,6 +414,13 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Paste();
+			UpdateToolbar();
+		}
+		
+		// Mouse released on tabs
+		private void tabs_MouseUp(object sender, MouseEventArgs e)
+		{
+			ForceFocus();
 		}
 		
 		#endregion
