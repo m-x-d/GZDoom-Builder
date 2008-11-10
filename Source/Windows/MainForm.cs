@@ -1734,10 +1734,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Enable/disable items
 			itemreloadresources.Enabled = (General.Map != null);
+			itemscripteditor.Enabled = (General.Map != null);
 			
 			// Toolbar icons
 			thingfilters.Enabled = (General.Map != null);
 			buttonthingsfilter.Enabled = (General.Map != null);
+			buttonscripteditor.Enabled = (General.Map != null);
 			UpdateThingsFilters();
 		}
 		
@@ -1807,7 +1809,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Done
 			prefform.Dispose();
 		}
-
+		
 		#endregion
 		
 		#region ================== Info Panels

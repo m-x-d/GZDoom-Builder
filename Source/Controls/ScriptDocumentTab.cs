@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.Controls
 								   this.ClientSize.Height - EDITOR_BORDER_TOP - EDITOR_BORDER_BOTTOM);
 			editor.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			editor.Name = "editor";
+			editor.TabStop = true;
 			editor.TabIndex = 0;
 			this.Controls.Add(editor);
 		}
@@ -150,6 +151,26 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Events
+		
+		// Mouse released
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			base.OnMouseUp(e);
+
+			// Focus to the editor!
+			editor.Focus();
+			editor.GrabFocus();
+		}
+		
+		// Receiving focus?
+		protected override void OnGotFocus(EventArgs e)
+		{
+			base.OnGotFocus(e);
+			
+			// Focus to the editor!
+			editor.Focus();
+			editor.GrabFocus();
+		}
 		
 		#endregion
 	}

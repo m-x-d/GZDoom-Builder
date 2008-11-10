@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder
 		
 		// States
 		private static bool debugbuild;
-
+		
 		// Command line arguments
 		private static string[] cmdargs;
 		private static string autoloadfile = null;
@@ -590,15 +590,16 @@ namespace CodeImp.DoomBuilder
 				try { D3DDevice.Startup(); }
 				catch(Direct3D9NotFoundException) { AskDownloadDirectX(); return; }
 				catch(Direct3DX9NotFoundException) { AskDownloadDirectX(); return; }
-
+				
 				// Load plugin manager
 				General.WriteLogLine("Loading plugins...");
 				plugins = new PluginManager();
 				plugins.LoadAllPlugins();
-
+				
 				// Now that all settings have been combined (core & plugins) apply the defaults
 				General.WriteLogLine("Applying configuration settings...");
 				actions.ApplyDefaultShortcutKeys();
+				mainwindow.ApplyShortcutKeys();
 				
 				// Load game configurations
 				General.WriteLogLine("Loading game configurations...");
@@ -763,7 +764,7 @@ namespace CodeImp.DoomBuilder
 			if(properexit)
 			{
 				General.WriteLogLine("Termination requested");
-
+				
 				// Unbind static methods from actions
 				General.Actions.UnbindMethods(typeof(General));
 				
@@ -772,14 +773,14 @@ namespace CodeImp.DoomBuilder
 				
 				// Save action controls
 				actions.SaveSettings();
-
+				
 				// Save game configuration settings
 				foreach(ConfigurationInfo ci in configs) ci.SaveSettings();
-
+				
 				// Save settings configuration
 				General.WriteLogLine("Saving program configuration...");
 				settings.Save(Path.Combine(settingspath, SETTINGS_FILE));
-
+				
 				// Clean up
 				if(map != null) map.Dispose(); map = null;
 				if(mainwindow != null) mainwindow.Dispose();
@@ -848,10 +849,10 @@ namespace CodeImp.DoomBuilder
 		{
 			MapOptions newoptions = new MapOptions();
 			MapOptionsForm optionswindow;
-
+			
 			// Cancel volatile mode, if any
 			General.DisengageVolatileMode();
-
+			
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
 			{
@@ -863,10 +864,10 @@ namespace CodeImp.DoomBuilder
 					// Display status
 					mainwindow.DisplayStatus("Creating new map...");
 					Cursor.Current = Cursors.WaitCursor;
-
+					
 					// Let the plugins know
 					plugins.OnMapNewBegin();
-
+					
 					// Clear the display
 					mainwindow.ClearDisplay();
 
@@ -1165,24 +1166,47 @@ namespace CodeImp.DoomBuilder
 			DialogResult result;
 			
 			// Map open and not saved?
-			if((map != null) && map.IsChanged)
+			if(map != null)
 			{
-				// Ask to save changes
-				result = MessageBox.Show(mainwindow, "Do you want to save changes to " + map.FileTitle + " (" + map.Options.CurrentName + ")?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-				if(result == DialogResult.Yes)
+				if(map.IsChanged)
 				{
-					// Save map and return true on success
-					return SaveMap();
+					// Ask to save changes
+					result = MessageBox.Show(mainwindow, "Do you want to save changes to " + map.FileTitle + " (" + map.Options.CurrentName + ")?", Application.ProductName, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+					if(result == DialogResult.Yes)
+					{
+						// Save map
+						if(SaveMap())
+						{
+							// Ask to save changes to scripts
+							return map.AskSaveScriptChanges();
+						}
+						else
+						{
+							// Failed to save map
+							return false;
+						}
+					}
+					else if(result == DialogResult.Cancel)
+					{
+						// Abort
+						return false;
+					}
+					else
+					{
+						// Ask to save changes to scripts
+						return map.AskSaveScriptChanges();
+					}
 				}
-				else if(result == DialogResult.Cancel)
+				else
 				{
-					// Abort
-					return false;
+					// Ask to save changes to scripts
+					return map.AskSaveScriptChanges();
 				}
 			}
-			
-			// Continue
-			return true;
+			else
+			{
+				return true;
+			}
 		}
 		
 		#endregion
@@ -1423,11 +1447,11 @@ namespace CodeImp.DoomBuilder
 		}
 
 		#endregion
-
+		
 		[BeginAction("testaction")]
 		internal static void TestAction()
 		{
-			ScriptEditTestForm t = new ScriptEditTestForm();
+			ScriptEditorForm t = new ScriptEditorForm();
 			t.ShowDialog(mainwindow);
 			t.Dispose();
 		}

@@ -69,7 +69,8 @@ namespace CodeImp.DoomBuilder.Config
 		private List<SkillInfo> skills;
 
 		// Map lumps
-		private IDictionary maplumpnames;
+		private IDictionary maplumpnames;	// This is old, we should use maplumps instead
+		private Dictionary<string, MapLumpInfo> maplumps;
 		
 		// Texture/flat sources
 		private IDictionary textureranges;
@@ -138,6 +139,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Map lumps
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
+		public Dictionary<string, MapLumpInfo> MapLumps { get { return maplumps; } }
 
 		// Texture/flat sources
 		public IDictionary TextureRanges { get { return textureranges; } }
@@ -203,6 +205,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.skills = new List<SkillInfo>();
 			this.texturesets = new List<DefinedTextureSet>();
 			this.makedoorargs = new int[Linedef.NUM_ARGS];
+			this.maplumps = new Dictionary<string, MapLumpInfo>();
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -241,6 +244,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Get texture and flat sources
 			textureranges = cfg.ReadSetting("textures", new Hashtable());
 			flatranges = cfg.ReadSetting("flats", new Hashtable());
+			
+			// Map lumps
+			LoadMapLumps();
 			
 			// Skills
 			LoadSkills();
@@ -284,7 +290,22 @@ namespace CodeImp.DoomBuilder.Config
 		#endregion
 
 		#region ================== Loading
-
+		
+		// This loads the map lumps
+		private void LoadMapLumps()
+		{
+			IDictionary dic;
+			
+			// Get map lumps list
+			dic = cfg.ReadSetting("maplumpnames", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Make map lumps
+				MapLumpInfo lumpinfo = new MapLumpInfo(de.Key.ToString(), cfg);
+				maplumps.Add(de.Key.ToString(), lumpinfo);
+			}
+		}
+		
 		// This loads the enumerations
 		private void LoadEnums()
 		{

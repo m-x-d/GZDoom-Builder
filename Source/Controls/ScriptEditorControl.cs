@@ -492,6 +492,12 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.Paste();
 		}
 		
+		// This steals the focus (use with care!)
+		public void GrabFocus()
+		{
+			scriptedit.GrabFocus();
+		}
+		
 		#endregion
 		
 		#region ================== Events
