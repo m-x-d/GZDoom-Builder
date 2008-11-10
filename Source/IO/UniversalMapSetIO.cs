@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.IO
 			udmfwriter.Write(map, memstream, manager.Config.EngineName);
 
 			// Find insert position and remove old lump
-			int insertpos = MapManager.RemoveSpecificLump(wad, "TEXTMAP", position, "", manager.Config.MapLumpNames);
+			int insertpos = MapManager.RemoveSpecificLump(wad, "TEXTMAP", position, MapManager.TEMP_MAP_HEADER, manager.Config.MapLumpNames);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 

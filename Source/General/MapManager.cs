@@ -852,7 +852,7 @@ namespace CodeImp.DoomBuilder
 					}
 				}
 			}
-
+			
 			// Nothing found
 			return -1;
 		}
@@ -1099,8 +1099,16 @@ namespace CodeImp.DoomBuilder
 		// This checks if the scripts are changed
 		internal bool CheckScriptChanged()
 		{
-			// Check if lumps are changed			
-			return scriptschanged || scriptwindow.Editor.CheckImplicitChanges();
+			if(scriptwindow != null)
+			{
+				// Check if scripts are changed			
+				return scriptschanged || scriptwindow.Editor.CheckImplicitChanges();
+			}
+			else
+			{
+				// Check if scripts are changed			
+				return scriptschanged;
+			}
 		}
 		
 		#endregion
