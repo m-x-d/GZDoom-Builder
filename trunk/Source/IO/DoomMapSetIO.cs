@@ -375,7 +375,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "THINGS", position, "", maplumps);
+			insertpos = MapManager.RemoveSpecificLump(wad, "THINGS", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 			
@@ -407,7 +407,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "VERTEXES", position, "", maplumps);
+			insertpos = MapManager.RemoveSpecificLump(wad, "VERTEXES", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
@@ -462,7 +462,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "LINEDEFS", position, "", maplumps);
+			insertpos = MapManager.RemoveSpecificLump(wad, "LINEDEFS", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
@@ -498,7 +498,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "SIDEDEFS", position, "", maplumps);
+			insertpos = MapManager.RemoveSpecificLump(wad, "SIDEDEFS", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
@@ -535,7 +535,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 
 			// Find insert position and remove old lump
-			insertpos = MapManager.RemoveSpecificLump(wad, "SECTORS", position, "", maplumps);
+			insertpos = MapManager.RemoveSpecificLump(wad, "SECTORS", position, MapManager.TEMP_MAP_HEADER, maplumps);
 			if(insertpos == -1) insertpos = position + 1;
 			if(insertpos > wad.Lumps.Count) insertpos = wad.Lumps.Count;
 
