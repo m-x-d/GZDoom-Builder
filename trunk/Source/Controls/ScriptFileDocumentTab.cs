@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 		
 		public override bool IsSaveAsRequired { get { return (filepathname.Length == 0); } }
+		public override string Filename { get { return filepathname; } }
 		
 		#endregion
 		

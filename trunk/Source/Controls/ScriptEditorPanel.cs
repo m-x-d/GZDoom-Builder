@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
 using System.Globalization;
+using System.IO;
 
 #endregion
 
@@ -112,9 +113,22 @@ namespace CodeImp.DoomBuilder.Controls
 					// Load this!
 					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(maplumpinfo.name, maplumpinfo.script);
 					tabs.TabPages.Add(t);
-					tabs.SelectedIndex = 0;
 				}
 			}
+
+			// Load the files that were previously opened for this map
+			foreach(String filename in General.Map.Options.ScriptFiles)
+			{
+				// Does this file exist?
+				if(File.Exists(filename))
+				{
+					// Load this!
+					OpenFile(filename);
+				}
+			}
+
+			// Select the first tab
+			if(tabs.TabPages.Count > 0) tabs.SelectedIndex = 0;
 			
 			// Done
 			UpdateToolbar();
@@ -123,6 +137,17 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
+		
+		// This writes all explicitly opened files to the configuration
+		public void WriteOpenFilesToConfiguration()
+		{
+			List<string> files = new List<string>();
+			foreach(ScriptDocumentTab t in tabs.TabPages)
+			{
+				if(t.ExplicitSave) files.Add(t.Filename);
+			}
+			General.Map.Options.ScriptFiles = files;
+		}
 		
 		// This asks to save files and returns the result
 		public bool AskSaveAll()
@@ -238,6 +263,38 @@ namespace CodeImp.DoomBuilder.Controls
 				ForceFocus();
 			}
 		}
+
+		// This opens the given file
+		public void OpenFile(string filename)
+		{
+			ScriptConfiguration foundconfig = new ScriptConfiguration();
+
+			// Find the most suitable script configuration to use
+			foreach(ScriptConfiguration cfg in scriptconfigs)
+			{
+				foreach(string ext in cfg.Extensions)
+				{
+					// Use this configuration if the extension matches
+					if(filename.EndsWith("." + ext, true, CultureInfo.InvariantCulture))
+					{
+						foundconfig = cfg;
+						break;
+					}
+				}
+			}
+
+			// Create new document
+			ScriptFileDocumentTab t = new ScriptFileDocumentTab(foundconfig);
+			if(t.Open(filename))
+			{
+				// Add to tabs
+				tabs.TabPages.Add(t);
+				tabs.SelectedTab = t;
+
+				// Done
+				UpdateToolbar();
+			}
+		}
 		
 		#endregion
 		
@@ -278,33 +335,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// Show open file dialog
 			if(openfile.ShowDialog(this.ParentForm) == DialogResult.OK)
 			{
-				ScriptConfiguration foundconfig = new ScriptConfiguration();
-				
-				// Find the most suitable script configuration to use
-				foreach(ScriptConfiguration cfg in scriptconfigs)
-				{
-					foreach(string ext in cfg.Extensions)
-					{
-						// Use this configuration if the extension matches
-						if(openfile.FileName.EndsWith("." + ext, true, CultureInfo.InvariantCulture))
-						{
-							foundconfig = cfg;
-							break;
-						}
-					}
-				}
-				
-				// Create new document
-				ScriptFileDocumentTab t = new ScriptFileDocumentTab(foundconfig);
-				if(t.Open(openfile.FileName))
-				{
-					// Add to tabs
-					tabs.TabPages.Add(t);
-					tabs.SelectedTab = t;
-					
-					// Done
-					UpdateToolbar();
-				}
+				// TODO: Make multi-select possible
+				OpenFile(openfile.FileName);
 			}
 		}
 

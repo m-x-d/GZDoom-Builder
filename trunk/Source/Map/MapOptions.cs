@@ -51,12 +51,16 @@ namespace CodeImp.DoomBuilder.Map
 		// Additional resources
 		private DataLocationList resources;
 
+		// Script files opened
+		private List<string> scriptfiles;
+		
 		#endregion
 
 		#region ================== Properties
 
 		public string ConfigFile { get { return configfile; } set { configfile = value; } }
 		public DataLocationList Resources { get { return resources; } }
+		public List<string> ScriptFiles { get { return scriptfiles; } set { scriptfiles = value; } }
 		public string PreviousName { get { return previousname; } set { previousname = value; } }
 		public string CurrentName
 		{
@@ -86,6 +90,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.configfile = "";
 			this.resources = new DataLocationList();
 			this.mapconfig = new Configuration(true);
+			this.scriptfiles = new List<string>();
 		}
 
 		// Constructor to load from Doom Builder Map Settings Configuration
@@ -100,9 +105,12 @@ namespace CodeImp.DoomBuilder.Map
 			this.configfile = cfg.ReadSetting("gameconfig", "");
 			this.resources = new DataLocationList();
 			this.mapconfig = new Configuration(true);
+			this.scriptfiles = new List<string>();
 			
-			// Go for all items in the map info
+			// Read map configuration
 			this.mapconfig.Root = cfg.ReadSetting("maps." + mapname, new Hashtable());
+
+			// Resources
 			IDictionary reslist = this.mapconfig.ReadSetting("resources", new Hashtable());
 			foreach(DictionaryEntry mp in reslist)
 			{
@@ -123,12 +131,18 @@ namespace CodeImp.DoomBuilder.Map
 					AddResource(res);
 				}
 			}
+
+			// Scripts
+			IDictionary scplist = this.mapconfig.ReadSetting("scripts", new Hashtable());
+			foreach(DictionaryEntry mp in scplist)
+				scriptfiles.Add(mp.Value.ToString());
 		}
 
 		~MapOptions()
 		{
 			// Clean up
 			this.resources = null;
+			this.scriptfiles = null;
 		}
 		
 		#endregion
@@ -140,8 +154,12 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			Configuration wadcfg;
 			
-			// Write settings to config
+			// Write resources to config
 			resources.WriteToConfig(mapconfig, "resources");
+
+			// Write scripts to config
+			for(int i = 0; i < scriptfiles.Count; i++)
+				mapconfig.WriteSetting("scripts." + "file" + i.ToString(CultureInfo.InvariantCulture), scriptfiles[i]);
 
 			// Load the file or make a new file
 			if(File.Exists(settingsfile))
