@@ -33,59 +33,70 @@ namespace CodeImp.DoomBuilder.Config
 	internal class CompilerInfo
 	{
 		#region ================== Constants
-
+		
 		#endregion
-
+		
 		#region ================== Variables
-
+		
 		private string name;
 		private string programfile;
+		private string programinterface;
 		private List<string> files;
-
+		
 		#endregion
-
+		
 		#region ================== Properties
-
+		
 		public string Name { get { return name; } }
 		public string ProgramFile { get { return programfile; } }
+		public string ProgramInterface { get { return programinterface; } }
 		public List<string> Files { get { return files; } }
-
+		
 		#endregion
-
+		
 		#region ================== Constructor / Disposer
-
+		
 		// Constructor
 		public CompilerInfo(string filename, string name, Configuration cfg)
 		{
 			IDictionary cfgfiles;
-
+			
 			General.WriteLogLine("Registered compiler configuration '" + name + "' from '" + filename + "'");
-
+			
 			// Initialize
 			this.name = name;
 			this.files = new List<string>();
 			
-			// Read program file
+			// Read program file and interface
 			this.programfile = cfg.ReadSetting("compilers." + name + ".program", "");
-
+			this.programinterface = cfg.ReadSetting("compilers." + name + ".interface", "");
+			
 			// Make list of files required
 			cfgfiles = cfg.ReadSetting("compilers." + name, new Hashtable());
 			foreach(DictionaryEntry de in cfgfiles)
-				files.Add(de.Value.ToString());
+			{
+				if(de.Key.ToString() != "interface")
+					files.Add(de.Value.ToString());
+			}
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Methods
-
+		
 		// This copies all compiler files to a given destination
 		public void CopyRequiredFiles(string targetpath)
 		{
 			// Copy files
 			foreach(string f in files)
-				File.Copy(Path.Combine(General.CompilersPath, f), Path.Combine(targetpath, f), true);
+			{
+				string sourcefile = Path.Combine(General.CompilersPath, f);
+				string targetfile = Path.Combine(targetpath, f);
+				if(!File.Exists(sourcefile)) General.WriteLogLine("WARNING: The file '" + f + "' required by the '" + name + "' compiler is missing!");
+				File.Copy(sourcefile, targetfile, true);
+			}
 		}
-
+		
 		#endregion
 	}
 }
