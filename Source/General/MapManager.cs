@@ -1084,6 +1084,9 @@ namespace CodeImp.DoomBuilder
 			{
 				if(!scriptwindow.IsDisposed)
 				{
+					// Remember what files were open
+					scriptwindow.Editor.WriteOpenFilesToConfiguration();
+					
 					// Remember if lumps are changed
 					scriptschanged |= scriptwindow.Editor.CheckImplicitChanges();
 					

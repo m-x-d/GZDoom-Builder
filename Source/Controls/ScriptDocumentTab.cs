@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public virtual bool IsSaveAsRequired { get { return true; } }
 		public virtual bool IsClosable { get { return true; } }
 		public virtual bool IsReconfigurable { get { return true; } }
+		public virtual string Filename { get { return null; } }
 		public bool IsChanged { get { return editor.IsChanged; } }
 		public ScriptConfiguration Config { get { return config; } }
 		
