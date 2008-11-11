@@ -137,6 +137,8 @@
     <Compile Include="Config\ConfigurationInfo.cs" />
     <Compile Include="Editing\VisualMode.cs" />
     <Compile Include="General\Clock.cs" />
+    <Compile Include="General\Compiler.cs" />
+    <Compile Include="General\CompilerError.cs" />
     <Compile Include="General\MapManager.cs" />
     <Compile Include="Actions\SpecialKeys.cs" />
     <Compile Include="Config\NodebuilderInfo.cs" />
