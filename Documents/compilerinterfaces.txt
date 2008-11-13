@@ -27,3 +27,17 @@ With this interface you can use the following command-line parameters:
 %PT indicates the temporary directory path where the compiler is located.
 
 -------------------------------------------------------------------------------------
+NodesCompiler
+
+This compiler interface is made for nodebuilders.
+
+With this interface you can use the following command-line parameters:
+
+%FI indicates the input filename (no path included).
+
+%FO indicates the output filename (no path included).
+
+%PT indicates the temporary directory path where the compiler and input/output files
+are located. This is also the working directory for the compiler.
+
+-------------------------------------------------------------------------------------

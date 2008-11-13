@@ -409,6 +409,15 @@ namespace CodeImp.DoomBuilder.Controls
 			UpdateToolbar();
 		}
 
+		// Compile Script clicked
+		private void buttoncompile_Click(object sender, EventArgs e)
+		{
+			// First save all implicit scripts to the temporary wad file
+			ImplicitSave();
+			
+			// TODO: Now compile this lump
+		}
+
 		// Undo clicked
 		private void buttonundo_Click(object sender, EventArgs e)
 		{

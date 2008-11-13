@@ -34,6 +34,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Plugins;
+using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
@@ -1040,7 +1041,7 @@ namespace CodeImp.DoomBuilder
 		
 		#endregion
 		
-		#region ================== Script Editor
+		#region ================== Script Editing
 		
 		// Show the script editor
 		[BeginAction("openscripteditor")]
@@ -1112,6 +1113,30 @@ namespace CodeImp.DoomBuilder
 				// Check if scripts are changed			
 				return scriptschanged;
 			}
+		}
+		
+		// This compiles a script lump and returns any errors that may have occurred
+		internal CompilerError[] CompileLump(Lump scriptlump, bool showwarning)
+		{
+			DirectoryInfo tempdir;
+			CompilerError[] errors;
+			
+			// Determine the script configuration to use
+			ScriptConfiguration scriptconfig = config.MapLumps[scriptlump.Name].script;
+
+			// Initialize compiler
+			Compiler compiler = scriptconfig.Compiler.Create();
+
+			// Run compiler
+			compiler.Parameters = scriptconfig.Parameters;
+
+			errors = compiler.Errors;
+
+			// Clean up
+			compiler.Dispose();
+
+			// Done
+			return errors;
 		}
 		
 		#endregion

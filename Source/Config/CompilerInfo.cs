@@ -25,12 +25,13 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal class CompilerInfo
+	public sealed class CompilerInfo
 	{
 		#region ================== Constants
 		
@@ -57,7 +58,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public CompilerInfo(string filename, string name, Configuration cfg)
+		internal CompilerInfo(string filename, string name, Configuration cfg)
 		{
 			IDictionary cfgfiles;
 			
@@ -84,17 +85,10 @@ namespace CodeImp.DoomBuilder.Config
 		
 		#region ================== Methods
 		
-		// This copies all compiler files to a given destination
-		public void CopyRequiredFiles(string targetpath)
+		// This creates the actual compiler interface
+		internal Compiler Create()
 		{
-			// Copy files
-			foreach(string f in files)
-			{
-				string sourcefile = Path.Combine(General.CompilersPath, f);
-				string targetfile = Path.Combine(targetpath, f);
-				if(!File.Exists(sourcefile)) General.WriteLogLine("WARNING: The file '" + f + "' required by the '" + name + "' compiler is missing!");
-				File.Copy(sourcefile, targetfile, true);
-			}
+			return Compiler.Create(this);
 		}
 		
 		#endregion

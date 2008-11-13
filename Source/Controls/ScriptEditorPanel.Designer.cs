@@ -223,6 +223,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttoncompile.Name = "buttoncompile";
 			this.buttoncompile.Size = new System.Drawing.Size(23, 22);
 			this.buttoncompile.Text = "Compile Script";
+			this.buttoncompile.Click += new System.EventHandler(this.buttoncompile_Click);
 			// 
 			// buttonclose
 			// 
