@@ -23,10 +23,11 @@ using System.Globalization;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Reflection;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.General
+namespace CodeImp.DoomBuilder.Compilers
 {
 	public abstract class Compiler
 	{
@@ -66,6 +67,31 @@ namespace CodeImp.DoomBuilder.General
 		protected void ReportError(CompilerError err)
 		{
 			this.errors.Add(err);
+		}
+		
+		// This creates a compiler by interface name
+		internal static Compiler Create(string name)
+		{
+			// Make list of assemblies to search in
+			List<Assembly> asms = General.Plugins.GetPluginAssemblies();
+			asms.Add(General.ThisAssembly);
+			
+			try
+			{
+				
+				// TODO
+				
+			}
+			// Catch errors
+			catch(TargetInvocationException e)
+			{
+				// Throw the actual exception
+				Debug.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
+				Debug.WriteLine(e.InnerException.Source + " throws " + e.InnerException.GetType().Name + ":");
+				Debug.WriteLine(e.InnerException.Message);
+				Debug.WriteLine(e.InnerException.StackTrace);
+				throw e.InnerException;
+			}
 		}
 		
 		#endregion

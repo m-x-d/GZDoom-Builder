@@ -45,6 +45,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Compilers\AccCompiler.cs" />
     <Compile Include="Config\ArgumentInfo.cs" />
     <Compile Include="Config\MapLumpInfo.cs" />
     <Compile Include="Config\ScriptConfiguration.cs" />
@@ -137,8 +138,8 @@
     <Compile Include="Config\ConfigurationInfo.cs" />
     <Compile Include="Editing\VisualMode.cs" />
     <Compile Include="General\Clock.cs" />
-    <Compile Include="General\Compiler.cs" />
-    <Compile Include="General\CompilerError.cs" />
+    <Compile Include="Compilers\Compiler.cs" />
+    <Compile Include="Compilers\CompilerError.cs" />
     <Compile Include="General\MapManager.cs" />
     <Compile Include="Actions\SpecialKeys.cs" />
     <Compile Include="Config\NodebuilderInfo.cs" />

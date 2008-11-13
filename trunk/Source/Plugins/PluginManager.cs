@@ -87,7 +87,17 @@ namespace CodeImp.DoomBuilder.Plugins
 		#endregion
 
 		#region ================== Methods
-
+		
+		// This creates a list of assemblies
+		public List<Assembly> GetPluginAssemblies()
+		{
+			List<Assembly> asms = new List<Assembly>(plugins.Count);
+			foreach(Plugin p in plugins)
+				asms.Add(p.Assembly);
+			return asms;
+		}
+		
+		
 		// This loads all plugins
 		public void LoadAllPlugins()
 		{

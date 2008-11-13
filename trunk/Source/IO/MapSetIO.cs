@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Create IO class
 				result = (MapSetIO)General.ThisAssembly.CreateInstance(fullname, false,
 					BindingFlags.Default, null, args, CultureInfo.CurrentCulture, new object[0]);
-
+				
 				// Check result
 				if(result != null)
 				{
