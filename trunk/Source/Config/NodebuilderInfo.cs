@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				// Copy required files
 				General.WriteLogLine("Copying required files for compiler '" + compiler.Name + "'...");
-				compiler.CopyRequiredFiles(targetpath);
+				//compiler.CopyRequiredFiles(targetpath);
 			}
 			catch(Exception e)
 			{

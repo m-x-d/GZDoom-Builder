@@ -25,27 +25,39 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.IO;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Compilers
 {
-	internal sealed class AccCompiler : Compiler
+	internal sealed class NodesCompiler : Compiler
 	{
 		#region ================== Constants
-		
+
 		#endregion
-		
+
 		#region ================== Variables
-		
+
+		// Output file
+		private string outputfile;
+
 		#endregion
-		
-		#region ================== Constructor
-		
+
+		#region ================== Properties
+
+		public string OutputFile { get { return outputfile; } set { outputfile = value; } }
+
+		#endregion
+
+		#region ================== Constructor / Disposer
+
 		// Constructor
-		public AccCompiler(CompilerInfo info) : base(info)
+		public NodesCompiler(CompilerInfo info) : base(info)
 		{
+			// Initialize
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
 		}
 
 		// Disposer
@@ -60,19 +72,13 @@ namespace CodeImp.DoomBuilder.Compilers
 				base.Dispose();
 			}
 		}
-		
+
 		#endregion
-		
+
 		#region ================== Methods
-		
+
 		// This runs the compiler with a file as input.
 		public override bool CompileFile(string filename)
-		{
-			return true;
-		}
-
-		// This runs the compiler with lump data as input.
-		public override bool CompileLump(Stream lumpdata)
 		{
 			return true;
 		}
@@ -80,4 +86,3 @@ namespace CodeImp.DoomBuilder.Compilers
 		#endregion
 	}
 }
-
