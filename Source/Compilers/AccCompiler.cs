@@ -26,22 +26,43 @@ using System.Diagnostics;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.General
+namespace CodeImp.DoomBuilder.Compilers
 {
-	public struct CompilerError
+	public sealed class AccCompiler : Compiler
 	{
-		// Members
-		public string description;
-		public string filename;
-		public int linenumber;
+		#region ================== Constants
+		
+		#endregion
+		
+		#region ================== Variables
+		
+		#endregion
+		
+		#region ================== Properties
+		
+		#endregion
+		
+		#region ================== Constructor
 		
 		// Constructor
-		public CompilerError(string description, string filename, int linenumber)
+		public AccCompiler()
 		{
-			this.description = description;
-			this.filename = filename;
-			this.linenumber = linenumber;
 		}
+		
+		#endregion
+		
+		#region ================== Methods
+		
+		/// <summary>
+		/// This runs the compiler.
+		/// </summary>
+		/// <returns>Returns false when failed to start.</returns>
+		public override bool Run()
+		{
+			return true;
+		}
+		
+		#endregion
 	}
 }
 

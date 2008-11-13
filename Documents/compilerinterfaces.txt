@@ -1,0 +1,29 @@
+
+This describes the various compiler interfaces available. These can be used with
+the "interface" setting in a compiler configuration. Plugins can create their
+own interfaces by inheriting from the abstract Compiler class.
+
+
+-------------------------------------------------------------------------------------
+AccCompiler
+
+This compiler interface is made for Acc compilers, but can be used for any compiler
+which accepts a single script input file and writes a single output file.
+
+If this interface detects a file named "acs.err" created by the compiler, it will
+parse this file and treat the contents as compiler errors. In this case, the output
+file contents are not copied into the wad file.
+
+With this interface you can use the following command-line parameters:
+
+%FI indicates the input path and filename.
+
+%FO indicates the output path and filename.
+
+%PI indicates the path of the input file (without filename).
+
+%PO indicates the path of the output file (without filename).
+
+%PT indicates the temporary directory path where the compiler is located.
+
+-------------------------------------------------------------------------------------
