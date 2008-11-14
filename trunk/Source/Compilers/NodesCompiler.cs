@@ -25,12 +25,13 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
+using System.Windows.Forms;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Compilers
 {
-	internal sealed class NodesCompiler : Compiler
+	public sealed class NodesCompiler : Compiler
 	{
 		#region ================== Constants
 
@@ -80,6 +81,47 @@ namespace CodeImp.DoomBuilder.Compilers
 		// This runs the compiler with a file as input.
 		public override bool CompileFile(string filename)
 		{
+			ProcessStartInfo processinfo;
+			Process process;
+			TimeSpan deltatime;
+			
+			// Create parameters
+			string args = this.parameters;
+			args = args.Replace("%FI", filename);
+			args = args.Replace("%FO", outputfile);
+			
+			// Setup process info
+			processinfo = new ProcessStartInfo();
+			processinfo.Arguments = args;
+			processinfo.FileName = Path.Combine(this.tempdir.FullName, info.ProgramFile);
+			processinfo.CreateNoWindow = false;
+			processinfo.ErrorDialog = false;
+			processinfo.UseShellExecute = true;
+			processinfo.WindowStyle = ProcessWindowStyle.Hidden;
+			processinfo.WorkingDirectory = this.tempdir.FullName;
+			
+			// Output info
+			General.WriteLogLine("Running compiler...");
+			General.WriteLogLine("Program:    " + processinfo.FileName);
+			General.WriteLogLine("Arguments:  " + processinfo.Arguments);
+			
+			try
+			{
+				// Start the compiler
+				process = Process.Start(processinfo);
+			}
+			catch(Exception e)
+			{
+				// Unable to start the compiler
+				General.ShowErrorMessage("Unable to start the compiler (" + info.Name + "). " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+				return false;
+			}
+			
+			// Wait for compiler to complete
+			process.WaitForExit();
+			deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+			General.WriteLogLine("Compiler process has finished.");
+			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 			return true;
 		}
 		

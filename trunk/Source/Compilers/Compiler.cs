@@ -70,12 +70,15 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Initialize
 			this.info = info;
 			this.errors = new List<CompilerError>();
-
+			
+			General.WriteLogLine("Creating compiler '" + info.Name + "' on interface '" + this.GetType().Name + "'...");
+			
 			// Create temporary directory
 			tempdir = Directory.CreateDirectory(General.MakeTempDirname());
 			workingdir = tempdir.FullName;
 			
 			// Copy required files to the temp directory
+			General.WriteLogLine("Copying required files for compiler...");
 			CopyRequiredFiles();
 		}
 		
@@ -85,6 +88,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			if(!isdisposed)
 			{
 				// Remove temporary directory
+				General.WriteLogLine("Removing temporary compiler files...");
 				tempdir.Delete(true);
 				
 				// Disposed

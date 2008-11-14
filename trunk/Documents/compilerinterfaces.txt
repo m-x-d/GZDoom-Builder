@@ -14,7 +14,7 @@ If this interface detects a file named "acs.err" created by the compiler, it wil
 parse this file and treat the contents as compiler errors. In this case, the output
 file contents are not copied into the wad file.
 
-With this interface you can use the following command-line parameters:
+With this interface supports the following placeholders in command-line parameters:
 
 %FI indicates the input path and filename.
 
@@ -25,6 +25,8 @@ With this interface you can use the following command-line parameters:
 %PO indicates the path of the output file (without filename).
 
 %PT indicates the temporary directory path where the compiler is located.
+
+These placeholders are case-sensitive!
 
 -------------------------------------------------------------------------------------
 NodesCompiler
@@ -37,7 +39,7 @@ With this interface you can use the following command-line parameters:
 
 %FO indicates the output filename (no path included).
 
-%PT indicates the temporary directory path where the compiler and input/output files
-are located. This is also the working directory for the compiler.
+When %FO is not specified, the nodebuilder should output to %FI
+These placeholders are case-sensitive!
 
 -------------------------------------------------------------------------------------
