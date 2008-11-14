@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Config
 			string compilername;
 			
 			General.WriteLogLine("Registered nodebuilder configuration '" + name + "' from '" + filename + "'");
-
+			
 			// Initialize
 			this.name = name;
 			this.compiler = null;
@@ -111,20 +111,9 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This runs the nodebuilder
-		public NodesCompiler CreateCompiler()
+		public Compiler CreateCompiler()
 		{
-			Compiler c = compiler.Create();
-			if(c is NodesCompiler)
-			{
-				NodesCompiler ns = (c as NodesCompiler);
-				ns.Parameters = parameters;
-				return ns;
-			}
-			else
-			{
-				// Nodebuilders must use a NodesCompiler!
-				throw new ArgumentException("Cannot create compiler interface '" + compiler.ProgramInterface + "' for nodebuilder '" + name + "'. Nodebuilders must use a NodesCompiler compiler interface!");
-			}
+			return compiler.Create();
 		}
 		
 		#endregion

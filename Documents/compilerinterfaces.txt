@@ -20,11 +20,10 @@ With this interface supports the following placeholders in command-line paramete
 
 %FO indicates the output path and filename.
 
-%PI indicates the path of the input file (without filename).
-
-%PO indicates the path of the output file (without filename).
-
 %PT indicates the temporary directory path where the compiler is located.
+
+%PW indicates the path of the open wad file when compiled as internal script lump.
+If compiled as file, or the wad file is not saved, %PW is the same as %PT
 
 These placeholders are case-sensitive!
 

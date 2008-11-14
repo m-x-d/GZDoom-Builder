@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
+using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
@@ -79,6 +80,49 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
+		
+		// This compiles the script file
+		public override void Compile()
+		{
+			DirectoryInfo tempdir;
+			Compiler compiler;
+			string inputfile, outputfile;
+			
+			// List of errors
+			List<CompilerError> errors = new List<CompilerError>();
+			
+			try
+			{
+				// Initialize compiler
+				compiler = config.Compiler.Create();
+			}
+			catch(Exception e)
+			{
+				// Fail
+				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
+				return;
+			}
+			
+			// Make random output filename
+			outputfile = General.MakeTempFilename(compiler.Location, "tmp");
+				
+			// Run compiler
+			compiler.Parameters = config.Parameters;
+			compiler.InputFile = Path.GetFileName(filepathname);
+			compiler.OutputFile = Path.GetFileName(outputfile);
+			compiler.WorkingDirectory = Path.GetDirectoryName(filepathname);
+			if(compiler.Run())
+			{
+				// Fetch errors
+				errors.AddRange(compiler.Errors);
+			}
+			
+			// Dispose compiler
+			compiler.Dispose();
+			
+			// TODO: Feed errors to panel
+			
+		}
 		
 		// This saves the document (used for both explicit and implicit)
 		// Return true when successfully saved

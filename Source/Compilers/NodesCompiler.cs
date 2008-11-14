@@ -31,7 +31,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Compilers
 {
-	public sealed class NodesCompiler : Compiler
+	internal sealed class NodesCompiler : Compiler
 	{
 		#region ================== Constants
 
@@ -39,14 +39,9 @@ namespace CodeImp.DoomBuilder.Compilers
 
 		#region ================== Variables
 
-		// Output file
-		private string outputfile;
-
 		#endregion
 
 		#region ================== Properties
-
-		public string OutputFile { get { return outputfile; } set { outputfile = value; } }
 
 		#endregion
 
@@ -79,7 +74,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		#region ================== Methods
 
 		// This runs the compiler with a file as input.
-		public override bool CompileFile(string filename)
+		public override bool Run()
 		{
 			ProcessStartInfo processinfo;
 			Process process;
@@ -87,7 +82,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			
 			// Create parameters
 			string args = this.parameters;
-			args = args.Replace("%FI", filename);
+			args = args.Replace("%FI", inputfile);
 			args = args.Replace("%FO", outputfile);
 			
 			// Setup process info
@@ -98,7 +93,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			processinfo.ErrorDialog = false;
 			processinfo.UseShellExecute = true;
 			processinfo.WindowStyle = ProcessWindowStyle.Hidden;
-			processinfo.WorkingDirectory = this.tempdir.FullName;
+			processinfo.WorkingDirectory = this.workingdir;
 			
 			// Output info
 			General.WriteLogLine("Running compiler...");

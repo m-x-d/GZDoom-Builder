@@ -40,6 +40,8 @@ namespace CodeImp.DoomBuilder.Compilers
 		protected CompilerInfo info;
 		protected string parameters;
 		protected string workingdir;
+		protected string outputfile;
+		protected string inputfile;
 		
 		// Files
 		protected DirectoryInfo tempdir;
@@ -53,9 +55,11 @@ namespace CodeImp.DoomBuilder.Compilers
 		#endregion
 		
 		#region ================== Properties
-
+		
 		public string Parameters { get { return parameters; } set { parameters = value; } }
 		public string WorkingDirectory { get { return workingdir; } set { workingdir = value; } }
+		public string InputFile { get { return inputfile; } set { inputfile = value; } }
+		public string OutputFile { get { return outputfile; } set { outputfile = value; } }
 		public string Location { get { return tempdir.FullName; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public CompilerError[] Errors { get { return errors.ToArray(); } }
@@ -114,16 +118,10 @@ namespace CodeImp.DoomBuilder.Compilers
 		}
 		
 		/// <summary>
-		/// This runs the compiler with a file as input.
+		/// This runs the compiler.
 		/// </summary>
 		/// <returns>Returns false when failed to start.</returns>
-		public virtual bool CompileFile(string filename) { return false; }
-
-		/// <summary>
-		/// This runs the compiler with lump data as input.
-		/// </summary>
-		/// <returns>Returns false when failed to start.</returns>
-		public virtual bool CompileLump(Stream lumpdata) { return false; }
+		public virtual bool Run() { return false; }
 
 		/// <summary>
 		/// Use this to report an error.
@@ -151,8 +149,14 @@ namespace CodeImp.DoomBuilder.Compilers
 				// Go for all assemblies
 				foreach(Assembly a in asms)
 				{
+					Type[] types;
+					
 					// Find the class
-					Type[] types = a.GetExportedTypes();
+					if(a == General.ThisAssembly)
+						types = a.GetTypes();
+					else
+						types = a.GetExportedTypes();
+					
 					foreach(Type t in types)
 					{
 						if(t.IsSubclassOf(typeof(Compiler)) && (t.Name == info.ProgramInterface))
