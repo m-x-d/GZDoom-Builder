@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Compilers
 {
-	internal sealed class AccCompiler : Compiler
+	public sealed class AccCompiler : Compiler
 	{
 		#region ================== Constants
 		

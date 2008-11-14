@@ -1,6 +1,7 @@
 
 This describes the placeholders that can be used in the command-line parameter for
-testing settings (for launching the sourceport).
+testing settings (for launching the sourceport). These placeholders are not
+case-sensitive.
 
 
 -------------------------------------------------------------------------------------

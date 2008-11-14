@@ -540,7 +540,8 @@ namespace CodeImp.DoomBuilder
 		{
 			NodebuilderInfo nodebuilder;
 			string tempfile1, tempfile2;
-			bool lumpnodebuild, lumpallowempty, lumpscomplete;
+			bool lumpnodebuild, lumpallowempty;
+			bool lumpscomplete = false;
 			WAD buildwad;
 			int srcindex;
 
@@ -554,24 +555,19 @@ namespace CodeImp.DoomBuilder
 			}
 			else
 			{
-				// Make a temporary file for the nodebuilder
-				tempfile1 = General.MakeTempFilename(temppath);
-				General.WriteLogLine("Creating temporary build file: " + tempfile1);
-				buildwad = new WAD(tempfile1);
-
-				// Copy lumps to buildwad
-				General.WriteLogLine("Copying map lumps to temporary build file...");
-				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
-
-				// Close buildwad
-				buildwad.Dispose();
-
+				// Create the compiler interface that will run the nodebuilder
+				// This automatically creates a temporary directory for us
+				NodesCompiler compiler = nodebuilder.CreateCompiler();
+				
+				// Make temporary filename
+				tempfile1 = General.MakeTempFilename(compiler.Location);
+				
 				// Does the nodebuilder require an output file?
 				if(nodebuilder.HasSpecialOutputFile)
 				{
 					// Make a temporary output file for the nodebuilder
-					tempfile2 = General.MakeTempFilename(temppath);
-					General.WriteLogLine("Creating temporary output file: " + tempfile2);
+					tempfile2 = General.MakeTempFilename(compiler.Location);
+					General.WriteLogLine("Temporary output file: " + tempfile2);
 				}
 				else
 				{
@@ -579,12 +575,24 @@ namespace CodeImp.DoomBuilder
 					tempfile2 = tempfile1;
 				}
 
+				// Make the temporary WAD file
+				General.WriteLogLine("Creating temporary build file: " + tempfile1);
+				buildwad = new WAD(tempfile1);
+				
+				// Copy lumps to buildwad
+				General.WriteLogLine("Copying map lumps to temporary build file...");
+				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
+				
+				// Close buildwad
+				buildwad.Dispose();
+				
 				// Run the nodebuilder
-				if(nodebuilder.Run(temppath, Path.GetFileName(tempfile1), Path.GetFileName(tempfile2)))
+				compiler.OutputFile = Path.GetFileName(tempfile2);
+				if(compiler.CompileFile(Path.GetFileName(tempfile1)))
 				{
 					// Open the output file
 					buildwad = new WAD(tempfile2);
-
+					
 					// Find the map header in source
 					srcindex = buildwad.FindLumpIndex(BUILD_MAP_HEADER);
 					if(srcindex > -1)
@@ -634,21 +642,13 @@ namespace CodeImp.DoomBuilder
 					
 					// Done with the build wad
 					buildwad.Dispose();
-					
-					// Remove temp files
-					General.WriteLogLine("Removing temporary files...");
-					if(File.Exists(tempfile1)) File.Delete(tempfile1);
-					if(File.Exists(tempfile2)) File.Delete(tempfile2);
-					return lumpscomplete;
 				}
-				else
-				{
-					// Remove temp files
-					General.WriteLogLine("Removing temporary files...");
-					if(File.Exists(tempfile1)) File.Delete(tempfile1);
-					if(File.Exists(tempfile2)) File.Delete(tempfile2);
-					return false;
-				}
+				
+				// Clean up
+				compiler.Dispose();
+				
+				// Return result
+				return lumpscomplete;
 			}
 		}
 

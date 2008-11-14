@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
@@ -74,7 +75,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.parameters = cfg.ReadSetting("nodebuilders." + name + ".parameters", "");
 			
 			// Check for special output filename
-			this.specialoutputfile = this.parameters.Contains("%T");
+			this.specialoutputfile = this.parameters.Contains("%FO");
 			
 			// Find compiler
 			foreach(CompilerInfo c in General.Compilers)
@@ -87,7 +88,7 @@ namespace CodeImp.DoomBuilder.Config
 					break;
 				}
 			}
-
+			
 			// No compiler found?
 			if(this.compiler == null) throw new Exception("No such compiler defined: '" + compilername + "'");
 		}
@@ -102,7 +103,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Compare
 			return name.CompareTo(other.name);
 		}
-
+		
 		// String representation
 		public override string ToString()
 		{
@@ -110,66 +111,20 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This runs the nodebuilder
-		public bool Run(string targetpath, string inputfile, string outputfile)
+		public NodesCompiler CreateCompiler()
 		{
-			ProcessStartInfo processinfo;
-			Process process;
-			TimeSpan deltatime;
-			string args;
-
-			try
+			Compiler c = compiler.Create();
+			if(c is NodesCompiler)
 			{
-				// Copy required files
-				General.WriteLogLine("Copying required files for compiler '" + compiler.Name + "'...");
-				//compiler.CopyRequiredFiles(targetpath);
+				NodesCompiler ns = (c as NodesCompiler);
+				ns.Parameters = parameters;
+				return ns;
 			}
-			catch(Exception e)
+			else
 			{
-				// Unable to copy files
-				General.ShowErrorMessage("Unable to copy the required files for the compiler (" + compiler.Name + "). " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
-				return false;
+				// Nodebuilders must use a NodesCompiler!
+				throw new ArgumentException("Cannot create compiler interface '" + compiler.ProgramInterface + "' for nodebuilder '" + name + "'. Nodebuilders must use a NodesCompiler compiler interface!");
 			}
-			
-			// Make arguments
-			args = parameters;
-			args = args.Replace("%F", inputfile);
-			args = args.Replace("%H", outputfile);
-			
-			// Setup process info
-			processinfo = new ProcessStartInfo();
-			processinfo.Arguments = args;
-			processinfo.FileName = Path.Combine(targetpath, compiler.ProgramFile);
-			processinfo.CreateNoWindow = false;
-			processinfo.ErrorDialog = false;
-			processinfo.UseShellExecute = true;
-			processinfo.WindowStyle = ProcessWindowStyle.Hidden;
-			processinfo.WorkingDirectory = targetpath;
-			
-			// Output info
-			General.WriteLogLine("Running nodebuilder compiler '" + compiler.Name + "' with configuration '" + name + "'...");
-			General.WriteLogLine("Program:    " + processinfo.FileName);
-			General.WriteLogLine("Arguments:  " + processinfo.Arguments);
-
-			try
-			{
-				// Start the nodebuilder
-				process = Process.Start(processinfo);
-			}
-			catch(Exception e)
-			{
-				// Unable to start the nodebuilder
-				General.ShowErrorMessage("Unable to start the nodebuilder compiler (" + compiler.Name + ") . " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
-				return false;
-			}
-			
-			// Wait for nodebuilder to complete
-			process.WaitForExit();
-			deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
-			General.WriteLogLine("Nodebuilder compiler has finished.");
-			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
-			
-			// Success!
-			return true;
 		}
 		
 		#endregion
