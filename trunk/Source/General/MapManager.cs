@@ -89,6 +89,7 @@ namespace CodeImp.DoomBuilder
 		private Launcher launcher;
 		private ThingsFilter thingsfilter;
 		private ScriptEditorForm scriptwindow;
+		private List<CompilerError> errors;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -121,6 +122,7 @@ namespace CodeImp.DoomBuilder
 		public IMapSetIO FormatInterface { get { return io; } }
 		internal Launcher Launcher { get { return launcher; } }
 		public ThingsFilter ThingsFilter { get { return thingsfilter; } }
+		internal List<CompilerError> Errors { get { return errors; } }
 		public bool IsScriptsWindowOpen { get { return (scriptwindow != null) && !scriptwindow.IsDisposed; } }
 		
 		#endregion
@@ -557,7 +559,7 @@ namespace CodeImp.DoomBuilder
 			{
 				// Create the compiler interface that will run the nodebuilder
 				// This automatically creates a temporary directory for us
-				NodesCompiler compiler = nodebuilder.CreateCompiler();
+				Compiler compiler = nodebuilder.CreateCompiler();
 				
 				// Make temporary filename
 				tempfile1 = General.MakeTempFilename(compiler.Location);
@@ -587,8 +589,11 @@ namespace CodeImp.DoomBuilder
 				buildwad.Dispose();
 				
 				// Run the nodebuilder
+				compiler.Parameters = nodebuilder.Parameters;
+				compiler.InputFile = Path.GetFileName(tempfile1);
 				compiler.OutputFile = Path.GetFileName(tempfile2);
-				if(compiler.CompileFile(Path.GetFileName(tempfile1)))
+				compiler.WorkingDirectory = Path.GetDirectoryName(tempfile1);
+				if(compiler.Run())
 				{
 					// Open the output file
 					buildwad = new WAD(tempfile2);
@@ -1116,27 +1121,84 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This compiles a script lump and returns any errors that may have occurred
-		internal CompilerError[] CompileLump(Lump scriptlump, bool showwarning)
+		// Returns true when our code worked properly (even when the compiler returned errors)
+		internal bool CompileLump(string lumpname)
 		{
 			DirectoryInfo tempdir;
-			CompilerError[] errors;
+			Compiler compiler;
+			string inputfile, outputfile;
+			
+			// Find the lump
+			Lump lump = tempwad.FindLump(lumpname);
+			if(lump == null) throw new Exception("No such lump in temporary wad file '" + lumpname + "'.");
+			
+			// New list of errors
+			errors = new List<CompilerError>();
 			
 			// Determine the script configuration to use
-			ScriptConfiguration scriptconfig = config.MapLumps[scriptlump.Name].script;
-
-			// Initialize compiler
-			Compiler compiler = scriptconfig.Compiler.Create();
-
+			ScriptConfiguration scriptconfig = config.MapLumps[lump.Name].script;
+			
+			try
+			{
+				// Initialize compiler
+				compiler = scriptconfig.Compiler.Create();
+			}
+			catch(Exception e)
+			{
+				// Fail
+				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
+				return false;
+			}
+			
+			try
+			{
+				// Write lump data to temp script file in compiler's temp directory
+				inputfile = General.MakeTempFilename(compiler.Location, "tmp");
+				lump.Stream.Seek(0, SeekOrigin.Begin);
+				BinaryReader reader = new BinaryReader(lump.Stream);
+				File.WriteAllBytes(inputfile, reader.ReadBytes((int)lump.Stream.Length));
+			}
+			catch(Exception e)
+			{
+				// Fail
+				compiler.Dispose();
+				errors.Add(new CompilerError("Unable to write script to working file. " + e.GetType().Name + ": " + e.Message));
+				return false;
+			}
+			
+			// Make random output filename
+			outputfile = General.MakeTempFilename(compiler.Location, "tmp");
+			
 			// Run compiler
 			compiler.Parameters = scriptconfig.Parameters;
-
-			errors = compiler.Errors;
-
-			// Clean up
-			compiler.Dispose();
-
-			// Done
-			return errors;
+			compiler.InputFile = Path.GetFileName(inputfile);
+			compiler.OutputFile = Path.GetFileName(outputfile);
+			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
+			if(compiler.Run())
+			{
+				// Fetch errors
+				errors.AddRange(compiler.Errors);
+				
+				// Clean up
+				compiler.Dispose();
+				if(errors.Count == 0) errors = null;
+				
+				// Done
+				return true;
+			}
+			else
+			{
+				// Fail
+				compiler.Dispose();
+				errors = null;
+				return false;
+			}
+		}
+		
+		// This clears all compiler errors
+		internal void ClearCompilerErrors()
+		{
+			errors = null;
 		}
 		
 		#endregion

@@ -40,9 +40,9 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constants
 		
 		#endregion
-		
+
 		#region ================== Variables
-		
+
 		private string lumpname;
 		
 		#endregion
@@ -89,6 +89,13 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
+		
+		// Compile script
+		public override void Compile()
+		{
+			// Do it!
+			General.Map.CompileLump(lumpname);
+		}
 		
 		// Implicit save
 		public override bool Save()

@@ -30,10 +30,29 @@ namespace CodeImp.DoomBuilder.Compilers
 {
 	public struct CompilerError
 	{
+		// Constants
+		public const int NO_LINE_NUMBER = -1;
+		
 		// Members
 		public string description;
 		public string filename;
 		public int linenumber;
+		
+		// Constructor
+		public CompilerError(string description)
+		{
+			this.description = description;
+			this.filename = "";
+			this.linenumber = NO_LINE_NUMBER;
+		}
+		
+		// Constructor
+		public CompilerError(string description, string filename)
+		{
+			this.description = description;
+			this.filename = filename;
+			this.linenumber = NO_LINE_NUMBER;
+		}
 		
 		// Constructor
 		public CompilerError(string description, string filename, int linenumber)

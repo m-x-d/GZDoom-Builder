@@ -394,7 +394,7 @@ namespace CodeImp.DoomBuilder.Controls
 				return true;
 			}
 		}
-
+		
 		// A tab is selected
 		private void tabs_Selecting(object sender, TabControlCancelEventArgs e)
 		{
@@ -408,16 +408,19 @@ namespace CodeImp.DoomBuilder.Controls
 			CloseScript(t, false);
 			UpdateToolbar();
 		}
-
+		
 		// Compile Script clicked
 		private void buttoncompile_Click(object sender, EventArgs e)
 		{
 			// First save all implicit scripts to the temporary wad file
 			ImplicitSave();
 			
-			// TODO: Now compile this lump
+			// Compile script
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.Compile();
+			UpdateToolbar();
 		}
-
+		
 		// Undo clicked
 		private void buttonundo_Click(object sender, EventArgs e)
 		{
@@ -425,7 +428,7 @@ namespace CodeImp.DoomBuilder.Controls
 			t.Undo();
 			UpdateToolbar();
 		}
-
+		
 		// Redo clicked
 		private void buttonredo_Click(object sender, EventArgs e)
 		{
@@ -433,7 +436,7 @@ namespace CodeImp.DoomBuilder.Controls
 			t.Redo();
 			UpdateToolbar();
 		}
-
+		
 		// Cut clicked
 		private void buttoncut_Click(object sender, EventArgs e)
 		{
@@ -441,7 +444,7 @@ namespace CodeImp.DoomBuilder.Controls
 			t.Cut();
 			UpdateToolbar();
 		}
-
+		
 		// Copy clicked
 		private void buttoncopy_Click(object sender, EventArgs e)
 		{

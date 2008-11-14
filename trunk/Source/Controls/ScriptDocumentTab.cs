@@ -93,7 +93,12 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
-		
+
+		// This compiles the script
+		public virtual void Compile()
+		{
+		}
+
 		// This saves the document (used for both explicit and implicit)
 		// Return true when successfully saved
 		public virtual bool Save()
