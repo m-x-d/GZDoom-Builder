@@ -11,18 +11,19 @@ AppUpdatesURL=http://www.doombuilder.com/
 DefaultDirName={pf}\Doom Builder 2
 DefaultGroupName=Doom Builder
 AllowNoIcons=true
-InfoBeforeFile=E:\Projects\Doom Builder\Setup\disclaimer.txt
-OutputDir=E:\Projects\Doom Builder\Setup
+InfoBeforeFile=F:\Projects\Doom Builder\Setup\disclaimer.txt
+OutputDir=F:\Projects\Doom Builder\Setup
 OutputBaseFilename=builder2_setup
 Compression=lzma/ultra64
 SolidCompression=true
-SourceDir=E:\Projects\Doom Builder\Build
+SourceDir=F:\Projects\Doom Builder\Build
 SetupLogging=false
 AppMutex=doombuilder2
 PrivilegesRequired=poweruser
 ShowLanguageDialog=no
 LanguageDetectionMethod=none
 MinVersion=0,5.01.2600
+UninstallDisplayIcon={app}\Builder.exe
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -33,8 +34,9 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 [Files]
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
 Source: Builder.cfg; DestDir: {app}; Flags: ignoreversion
-Source: SlimDX.dll; DestDir: {app}; Flags: ignoreversion
 Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion
+Source: Scintilla.dll; DestDir: {app}; Flags: ignoreversion
+Source: GPL.txt; DestDir: {app}; Flags: ignoreversion
 Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion
 Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion
 Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion
@@ -48,8 +50,6 @@ Name: {group}\{cm:UninstallProgram,Doom Builder}; Filename: {uninstallexe}
 Name: {commondesktop}\Doom Builder; Filename: {app}\Builder.exe; Tasks: desktopicon
 
 [Run]
-Filename: {app}\Setup\vcredist_x86.exe; StatusMsg: Setup is updating required files...; Parameters: /Q
-Filename: {app}\Setup\dxwebsetup.exe; Parameters: /Q; StatusMsg: Setup is updating Microsoft DirectX....
 
 [UninstallDelete]
 Name: {localappdata}\Doom Builder; Type: filesandordirs
@@ -60,23 +60,21 @@ Root: HKLM; Subkey: SOFTWARE\CodeImp\Doom Builder\; ValueType: string; ValueName
 [Code]
 // Global variables
 var
-	//page_info_dx: TOutputMsgWizardPage;
-	//page_setup_dx: TOutputProgressWizardPage;
 	page_info_net: TOutputMsgWizardPage;
 	page_setup_net: TOutputProgressWizardPage;
-
-
+	page_setup_components: TOutputProgressWizardPage;
+	componentsinstalled: Boolean;
+	restartneeded: Boolean;
 
 
 // When the wizard initializes
 procedure InitializeWizard();
 begin
-	// Make custom pages
-	//page_info_dx := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft DirectX', '', 'Setup will now start the installation and/or update of your Microsoft DirectX version. Press Next to begin.');
-	//page_setup_dx := CreateOutputProgressPage('Installing Microsoft DirectX', 'Setup is installing Microsoft DirectX, please wait...');
-	//page_info_net := CreateOutputMsgPage(page_info_dx.ID, 'Installing Microsoft .NET Framework', '', 'Setup will now start the installation and/or update of your Microsoft .NET Framework. Press Next to begin.');
-	page_info_net := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft .NET Framework', '', 'Setup will now start the installation and/or update of your Microsoft .NET Framework. Press Next to begin.');
-	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework', 'Setup is installing Microsoft.NET Framework, please wait...');
+	restartneeded := false;
+	componentsinstalled := false;
+	page_info_net := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft .NET Framework', '', 'Setup has detected that your system is missing the required version of the Microsoft .NET Framework. Setup will now download and install or update your Microsoft .NET Framework. This requires an internet connection and may take some time to complete.' + #10 + #10 + 'Press Next to begin.');
+	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework', 'Setup is installing Microsoft .NET Framework, please wait.....');
+	page_setup_components := CreateOutputProgressPage('Installing Components', 'Setup is installing required components.....');
 end;
 
 
@@ -92,23 +90,35 @@ begin
 end;
 
 
+// This is called to determine if we need to restart
+function NeedRestart(): Boolean;
+begin
+	Result := restartneeded;
+end;
+
+
+// This is called when the current page changes
+procedure CurPageChanged(CurPageID: Integer);
+var
+	errorcode: Integer;
+begin
+	if(CurPageID = wpFinished) then
+		if(componentsinstalled = False) then
+		begin
+			page_setup_components.Show;
+			ShellExec('open', ExpandConstant('{app}\Setup\dxwebsetup.exe'), '/Q', '', SW_SHOW, ewWaitUntilTerminated, errorcode);
+			ShellExec('open', 'msiexec', ExpandConstant('/passive /i "{app}\Setup\slimdx.msi"'), '', SW_SHOW, ewWaitUntilTerminated, errorcode);
+			componentsinstalled := True;
+			page_setup_components.Hide;
+		end
+end;
+
+
 // This is called when the Next button is clicked
 function NextButtonClick(CurPage: Integer): Boolean;
 var
-	ErrorCode: Integer;
+	errorcode: Integer;
 begin
-
-	// Next pressed on DX info page?
-	//if(CurPage = page_info_dx.ID) then
-	//begin
-	//	// Show progress page and run setup
-	//	page_setup_dx.Show;
-	//	try
-	//		ShellExec('open', ExpandConstant('{app}\Setup\dxwebsetup.exe'), '', '/Q', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
-	//	finally
-	//		page_setup_dx.Hide;
-	//	end;
-	//end
 
 	// Next pressed on .NET info page?
 	if(CurPage = page_info_net.ID) then
@@ -116,7 +126,14 @@ begin
 		// Show progress page and run setup
 		page_setup_net.Show;
 		try
-			ShellExec('open', ExpandConstant('{app}\Setup\dotnetfx35setup.exe'), '', '/QB', SW_SHOW, ewWaitUntilTerminated, ErrorCode);
+		begin
+			ShellExec('open', ExpandConstant('{app}\Setup\dotnetfx35setup.exe'), '/qb /norestart', '', SW_SHOW, ewWaitUntilTerminated, errorcode);
+			if(errorcode = 3010) then
+			begin
+				restartneeded := True;
+				// Actually we should restart immediately here and tell the user to install again after restart
+			end
+		end
 		finally
 			page_setup_net.Hide;
 		end;
@@ -124,6 +141,15 @@ begin
 
 	Result := True;
 end;
+
+
+
+
+
+
+
+
+
 
 
 
