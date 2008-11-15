@@ -46,12 +46,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.ClientSize = new System.Drawing.Size(729, 578);
 			this.Controls.Add(this.editor);
+			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "ScriptEditorForm";
-			this.Opacity = 0;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Doom Builder Script Editor";
+			this.Load += new System.EventHandler(this.ScriptEditorForm_Load);
 			this.Shown += new System.EventHandler(this.ScriptEditorForm_Shown);
+			this.Move += new System.EventHandler(this.ScriptEditorForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptEditorForm_FormClosing);
+			this.ResizeEnd += new System.EventHandler(this.ScriptEditorForm_ResizeEnd);
 			this.ResumeLayout(false);
 
 		}

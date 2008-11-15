@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(12, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(720, 386);
+			this.tabs.Size = new System.Drawing.Size(720, 401);
 			this.tabs.TabIndex = 0;
 			this.tabs.TabStop = false;
 			this.tabs.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabs_Selecting);
@@ -261,6 +261,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.splitter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitter.IsSplitterFixed = true;
 			this.splitter.Location = new System.Drawing.Point(0, 25);
 			this.splitter.Name = "splitter";
 			this.splitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -274,7 +275,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.splitter.Panel2.Controls.Add(this.label1);
 			this.splitter.Panel2.Controls.Add(this.errorlist);
 			this.splitter.Size = new System.Drawing.Size(726, 538);
-			this.splitter.SplitterDistance = 397;
+			this.splitter.SplitterDistance = 412;
 			this.splitter.TabIndex = 2;
 			this.splitter.TabStop = false;
 			// 
@@ -309,7 +310,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.errorlist.MultiSelect = false;
 			this.errorlist.Name = "errorlist";
 			this.errorlist.ShowGroups = false;
-			this.errorlist.Size = new System.Drawing.Size(720, 115);
+			this.errorlist.Size = new System.Drawing.Size(720, 100);
 			this.errorlist.SmallImageList = this.errorimages;
 			this.errorlist.TabIndex = 0;
 			this.errorlist.TabStop = false;

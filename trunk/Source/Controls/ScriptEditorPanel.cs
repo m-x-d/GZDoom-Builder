@@ -134,9 +134,29 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// If the map has remembered any compile errors, then show them
 			ShowErrors(General.Map.Errors);
-
+			
 			// Done
 			UpdateToolbar();
+		}
+		
+		// This applies user preferences
+		public void ApplySettings()
+		{
+			// Apply settings
+			//int panel2size = General.Settings.ReadSetting("scriptspanel.splitter", splitter.ClientRectangle.Height - splitter.SplitterDistance);
+			//splitter.SplitterDistance = splitter.ClientRectangle.Height - panel2size;
+			errorlist.Columns[0].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn0width", errorlist.Columns[0].Width);
+			errorlist.Columns[1].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn1width", errorlist.Columns[1].Width);
+			errorlist.Columns[2].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn2width", errorlist.Columns[2].Width);
+		}
+		
+		// This saves user preferences
+		public void SaveSettings()
+		{
+			//General.Settings.WriteSetting("scriptspanel.splitter", splitter.ClientRectangle.Height - splitter.SplitterDistance);
+			General.Settings.WriteSetting("scriptspanel.errorscolumn0width", errorlist.Columns[0].Width);
+			General.Settings.WriteSetting("scriptspanel.errorscolumn1width", errorlist.Columns[1].Width);
+			General.Settings.WriteSetting("scriptspanel.errorscolumn2width", errorlist.Columns[2].Width);
 		}
 		
 		#endregion
@@ -493,6 +513,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Compile now
 			General.MainWindow.DisplayStatus("Compiling script " + t.Text + "...");
+			Cursor.Current = Cursors.WaitCursor;
 			t.Compile();
 
 			// Show warning
@@ -500,7 +521,8 @@ namespace CodeImp.DoomBuilder.Controls
 				General.MainWindow.DisplayWarning(compilererrors.Count.ToString() + " errors while compiling " + t.Text + "!");
 			else
 				General.MainWindow.DisplayReady();
-			
+
+			Cursor.Current = Cursors.Default;
 			UpdateToolbar();
 		}
 		
