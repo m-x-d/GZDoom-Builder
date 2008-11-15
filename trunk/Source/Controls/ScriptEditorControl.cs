@@ -145,6 +145,24 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Methods
 		
+		// This moves the caret to a given line and ensures the line is visible
+		public void MoveToLine(int linenumber)
+		{
+			scriptedit.GotoLine(linenumber);
+		}
+		
+		// This clears all marks
+		public void ClearMarks()
+		{
+			scriptedit.MarkerDeleteAll((int)ImageIndex.ScriptError);
+		}
+
+		// This adds a mark on the given line
+		public void AddMark(int linenumber)
+		{
+			scriptedit.MarkerAdd(linenumber, (int)ImageIndex.ScriptError);
+		}
+
 		// This sets up the script editor with a script configuration
 		public void SetupStyles(ScriptConfiguration config)
 		{

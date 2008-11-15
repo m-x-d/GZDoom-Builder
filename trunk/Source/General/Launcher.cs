@@ -261,8 +261,6 @@ namespace CodeImp.DoomBuilder
 
 				// Disable interface
 				General.MainWindow.DisplayStatus("Waiting for game application to finish...");
-				General.MainWindow.Enabled = false;
-				General.MainWindow.Activate();
 				
 				try
 				{
@@ -292,8 +290,6 @@ namespace CodeImp.DoomBuilder
 			catch(Exception) { }
 			
 			// Done
-			General.MainWindow.Activate();
-			General.MainWindow.Enabled = true;
 			General.MainWindow.DisplayReady();
 			Cursor.Current = oldcursor;
 		}

@@ -373,7 +373,7 @@ namespace CodeImp.DoomBuilder
 			Configuration mapsettings;
 			WAD targetwad;
 			int index;
-			bool includenodes;
+			bool includenodes = false;
 			string origmapname;
 			
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
@@ -407,18 +407,45 @@ namespace CodeImp.DoomBuilder
 			if(index == -1) index = 0;
 			io.Write(outputset, TEMP_MAP_HEADER, index);
 			
-			// Get the corresponding nodebuilder
-			if(savemode == SAVE_TEST) nodebuildername = configinfo.NodebuilderTest;
-				else nodebuildername = configinfo.NodebuilderSave;
+			// Only recompile scripts when the scripts have changed
+			// (not when only the map changed)
+			if(CheckScriptChanged())
+			{
+				if(!CompileScriptLumps())
+				{
+					// Compiler failure
+					if(errors.Count > 0)
+						General.ShowErrorMessage("Error while compiling scripts: " + errors[0].description, MessageBoxButtons.OK);
+					else
+						General.ShowErrorMessage("Unknown compiler error while compiling scripts!", MessageBoxButtons.OK);
+				}
+				else
+				{
+					if(errors != null)
+					{
+						if(scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
+						if(errors.Count > 0) General.ShowWarningMessage("The compiler was unable to compile all scripts in your map, due to script errors.", MessageBoxButtons.OK);
+					}
+				}
+			}
 			
-			// Build the nodes
-			oldstatus = General.MainWindow.GetCurrentSatus();
-			General.MainWindow.DisplayStatus("Building map nodes...");
-			if((nodebuildername != null) && (nodebuildername != ""))
-				includenodes = BuildNodes(nodebuildername, true);
-			else
-				includenodes = false;
-			General.MainWindow.DisplayStatus(oldstatus);
+			// Only rebuild nodes when the actual map has changed
+			// (not when only scripts have changed)
+			if(changed)
+			{
+				// Get the corresponding nodebuilder
+				if(savemode == SAVE_TEST) nodebuildername = configinfo.NodebuilderTest;
+					else nodebuildername = configinfo.NodebuilderSave;
+
+				// Build the nodes
+				oldstatus = General.MainWindow.GetCurrentSatus();
+				General.MainWindow.DisplayStatus("Building map nodes...");
+				if((nodebuildername != null) && (nodebuildername != ""))
+					includenodes = BuildNodes(nodebuildername, true);
+				else
+					includenodes = false;
+				General.MainWindow.DisplayStatus(oldstatus);
+			}
 			
 			// Suspend data resources
 			data.Suspend();
@@ -497,36 +524,46 @@ namespace CodeImp.DoomBuilder
 
 			// Resume data resources
 			data.Resume();
-
-			try
-			{
-				// Open or create the map settings
-				settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
-				options.WriteConfiguration(settingsfile);
-			}
-			catch(Exception e)
-			{
-				// Warning only
-				General.WriteLogLine("WARNING: " + e.GetType().Name + ": " + e.Message);
-				General.WriteLogLine("WARNING: Could not write the map settings configuration file!");
-			}
 			
-			// Was the map saved in a different file? And not for testing purpose?
-			if((savemode != SAVE_TEST) && (newfilepathname != filepathname))
+			// Not saved for testing purpose?
+			if(savemode != SAVE_TEST)
 			{
-				// Keep new filename
-				filepathname = newfilepathname;
-				filetitle = Path.GetFileName(filepathname);
+				// Saved in a different file?
+				if(newfilepathname != filepathname)
+				{
+					// Keep new filename
+					filepathname = newfilepathname;
+					filetitle = Path.GetFileName(filepathname);
+
+					// Reload resources
+					ReloadResources();
+				}
+
+				try
+				{
+					// Open or create the map settings
+					settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
+					options.WriteConfiguration(settingsfile);
+				}
+				catch(Exception e)
+				{
+					// Warning only
+					General.WriteLogLine("WARNING: " + e.GetType().Name + ": " + e.Message);
+					General.WriteLogLine("WARNING: Could not write the map settings configuration file!");
+				}
+
+				// Check for compile errors, if the scripts were compiled above
+				if(CheckScriptChanged() && (errors != null) && (errors.Count > 0))
+				{
+					// Show the errors in the script editor
+					ShowScriptEditor();
+					scriptwindow.Editor.ShowErrors(errors);
+				}
 				
 				// Changes saved
 				changed = false;
-				
-				// Reload resources
-				ReloadResources();
+				scriptschanged = false;
 			}
-			
-			// Reset changed status
-			if(savemode != SAVE_TEST) changed = false;
 			
 			// Success!
 			General.WriteLogLine("Map saving done");
@@ -1119,21 +1156,42 @@ namespace CodeImp.DoomBuilder
 				return scriptschanged;
 			}
 		}
+
+		// This compiles all lumps that require compiling and stores the results
+		// Returns true when our code worked properly (even when the compiler returned errors)
+		private bool CompileScriptLumps()
+		{
+			bool success = true;
+			errors = new List<CompilerError>();
+			
+			// Go for all the map lumps
+			foreach(MapLumpInfo lumpinfo in config.MapLumps.Values)
+			{
+				// Is this a script lump?
+				if(lumpinfo.script != null)
+				{
+					// Compile it now
+					success &= CompileLump(lumpinfo.name, false);
+				}
+			}
+			return success;
+		}
 		
 		// This compiles a script lump and returns any errors that may have occurred
 		// Returns true when our code worked properly (even when the compiler returned errors)
-		internal bool CompileLump(string lumpname)
+		internal bool CompileLump(string lumpname, bool clearerrors)
 		{
-			DirectoryInfo tempdir;
-			Compiler compiler;
 			string inputfile, outputfile;
+			Compiler compiler;
+			byte[] filedata;
 			
 			// Find the lump
 			Lump lump = tempwad.FindLump(lumpname);
 			if(lump == null) throw new Exception("No such lump in temporary wad file '" + lumpname + "'.");
 			
 			// New list of errors
-			errors = new List<CompilerError>();
+			if(clearerrors || (errors == null))
+				errors = new List<CompilerError>();
 			
 			// Determine the script configuration to use
 			ScriptConfiguration scriptconfig = config.MapLumps[lump.Name].script;
@@ -1176,8 +1234,47 @@ namespace CodeImp.DoomBuilder
 			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
 			if(compiler.Run())
 			{
-				// Fetch errors
-				errors.AddRange(compiler.Errors);
+				// Process errors
+				foreach(CompilerError e in compiler.Errors)
+				{
+					CompilerError newerror = e;
+					
+					// If the error's filename equals our temporary file,
+					// use the lump name instead and prefix it with ?
+					if(string.Compare(e.filename, inputfile, true) == 0)
+						newerror.filename = "?" + lumpname;
+
+					errors.Add(newerror);
+				}
+
+				// No errors?
+				if(compiler.Errors.Length == 0)
+				{
+					// Output file exists?
+					if(File.Exists(outputfile))
+					{
+						// Copy output file data into a lump?
+						if((scriptconfig.ResultLump != null) && (scriptconfig.ResultLump.Length > 0))
+						{
+							// Do that now then
+							try
+							{
+								filedata = File.ReadAllBytes(outputfile);
+							}
+							catch(Exception e)
+							{
+								// Fail
+								compiler.Dispose();
+								errors.Add(new CompilerError("Unable to read compiler output file. " + e.GetType().Name + ": " + e.Message));
+								return false;
+							}
+
+							// Store data
+							MemoryStream stream = new MemoryStream(filedata);
+							SetLumpData(scriptconfig.ResultLump, stream);
+						}
+					}
+				}
 				
 				// Clean up
 				compiler.Dispose();

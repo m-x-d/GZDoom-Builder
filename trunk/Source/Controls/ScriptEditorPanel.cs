@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
 using System.Globalization;
 using System.IO;
+using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
@@ -45,6 +46,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 		
 		private List<ScriptConfiguration> scriptconfigs;
+		private List<CompilerError> compilererrors;
 		
 		#endregion
 		
@@ -111,7 +113,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(maplumpinfo.script != null)
 				{
 					// Load this!
-					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(maplumpinfo.name, maplumpinfo.script);
+					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.name, maplumpinfo.script);
 					tabs.TabPages.Add(t);
 				}
 			}
@@ -130,6 +132,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// Select the first tab
 			if(tabs.TabPages.Count > 0) tabs.SelectedIndex = 0;
 			
+			// If the map has remembered any compile errors, then show them
+			ShowErrors(General.Map.Errors);
+
 			// Done
 			UpdateToolbar();
 		}
@@ -137,6 +142,59 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
+		
+		// This clears all error marks and hides the errors list
+		public void ClearErrors()
+		{
+			// Hide list
+			splitter.Panel2Collapsed = true;
+			errorlist.Items.Clear();
+
+			// Clear marks
+			foreach(ScriptDocumentTab t in tabs.TabPages)
+			{
+				t.ClearMarks();
+			}
+		}
+		
+		// This shows the errors panel with the given errors
+		// Also updates the scripts with markers for the given errors
+		public void ShowErrors(IEnumerable<CompilerError> errors)
+		{
+			// Copy list
+			if(errors != null)
+				compilererrors = new List<CompilerError>(errors);
+			else
+				compilererrors = new List<CompilerError>();
+			
+			// Fill list
+			errorlist.BeginUpdate();
+			errorlist.Items.Clear();
+			int listindex = 1;
+			foreach(CompilerError e in compilererrors)
+			{
+				ListViewItem ei = new ListViewItem(listindex.ToString());
+				ei.ImageIndex = 0;
+				ei.SubItems.Add(e.description);
+				if(e.filename.StartsWith("?"))
+					ei.SubItems.Add(e.filename.Replace("?", "") + " (line " + e.linenumber.ToString() + ")");
+				else
+					ei.SubItems.Add(Path.GetFileName(e.filename) + " (line " + e.linenumber.ToString() + ")");
+				ei.Tag = e;
+				errorlist.Items.Add(ei);
+				listindex++;
+			}
+			errorlist.EndUpdate();
+			
+			// Show marks on scripts
+			foreach(ScriptDocumentTab t in tabs.TabPages)
+			{
+				t.MarkScriptErrors(compilererrors);
+			}
+			
+			// Show/hide panel
+			splitter.Panel2Collapsed = (errorlist.Items.Count == 0);
+		}
 		
 		// This writes all explicitly opened files to the configuration
 		public void WriteOpenFilesToConfiguration()
@@ -264,8 +322,8 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
-		// This opens the given file
-		public void OpenFile(string filename)
+		// This opens the given file, returns null when failed
+		public ScriptFileDocumentTab OpenFile(string filename)
 		{
 			ScriptConfiguration foundconfig = new ScriptConfiguration();
 
@@ -284,15 +342,25 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Create new document
-			ScriptFileDocumentTab t = new ScriptFileDocumentTab(foundconfig);
+			ScriptFileDocumentTab t = new ScriptFileDocumentTab(this, foundconfig);
 			if(t.Open(filename))
 			{
+				// Mark any errors this script may have
+				if(compilererrors != null)
+					t.MarkScriptErrors(compilererrors);
+
 				// Add to tabs
 				tabs.TabPages.Add(t);
 				tabs.SelectedTab = t;
 
 				// Done
 				UpdateToolbar();
+				return t;
+			}
+			else
+			{
+				// Failed
+				return null;
 			}
 		}
 		
@@ -321,7 +389,7 @@ namespace CodeImp.DoomBuilder.Controls
 			ScriptConfiguration scriptconfig = ((sender as ToolStripMenuItem).Tag as ScriptConfiguration);
 			
 			// Create new document
-			ScriptFileDocumentTab t = new ScriptFileDocumentTab(scriptconfig);
+			ScriptFileDocumentTab t = new ScriptFileDocumentTab(this, scriptconfig);
 			tabs.TabPages.Add(t);
 			tabs.SelectedTab = t;
 			
@@ -415,9 +483,24 @@ namespace CodeImp.DoomBuilder.Controls
 			// First save all implicit scripts to the temporary wad file
 			ImplicitSave();
 			
-			// Compile script
+			// Get script
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			if(t.ExplicitSave && t.IsChanged)
+			{
+				// We can only compile when the script is saved
+				if(!SaveScript(t)) return;
+			}
+
+			// Compile now
+			General.MainWindow.DisplayStatus("Compiling script " + t.Text + "...");
 			t.Compile();
+
+			// Show warning
+			if((compilererrors != null) && (compilererrors.Count > 0))
+				General.MainWindow.DisplayWarning(compilererrors.Count.ToString() + " errors while compiling " + t.Text + "!");
+			else
+				General.MainWindow.DisplayReady();
+			
 			UpdateToolbar();
 		}
 		
@@ -465,6 +548,39 @@ namespace CodeImp.DoomBuilder.Controls
 		private void tabs_MouseUp(object sender, MouseEventArgs e)
 		{
 			ForceFocus();
+		}
+		
+		// User double-clicks and error in the list
+		private void errorlist_ItemActivate(object sender, EventArgs e)
+		{
+			// Anything selection?
+			if(errorlist.SelectedItems.Count > 0)
+			{
+				// Get the compiler error
+				CompilerError err = (CompilerError)errorlist.SelectedItems[0].Tag;
+				
+				// Show the tab with the script that matches
+				bool foundscript = false;
+				foreach(ScriptDocumentTab t in tabs.TabPages)
+				{
+					if(t.VerifyErrorForScript(err))
+					{
+						tabs.SelectedTab = t;
+						t.MoveToLine(err.linenumber);
+						foundscript = true;
+						break;
+					}
+				}
+
+				// If we don't have the script opened, see if we can find the file and open the script
+				if(!foundscript && File.Exists(err.filename))
+				{
+					ScriptDocumentTab t = OpenFile(err.filename);
+					if(t != null) t.MoveToLine(err.linenumber);
+				}
+				
+				ForceFocus();
+			}
 		}
 		
 		#endregion

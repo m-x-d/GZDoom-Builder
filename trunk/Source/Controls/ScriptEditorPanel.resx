@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <metadata name="tabs.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="toolbar.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <metadata name="toolbar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
@@ -125,5 +131,52 @@
   </metadata>
   <metadata name="savefile.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>194, 17</value>
+  </metadata>
+  <metadata name="splitter.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="label1.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="errorlist.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="errorimages.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>283, 17</value>
+  </metadata>
+  <data name="errorimages.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
+        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADI
+        BQAAAk1TRnQBSQFMAwEBAAEEAQABBAEAARABAAEQAQAE/wEhAQAI/wFCAU0BNgcAATYDAAEoAwABQAMA
+        ARADAAEBAQABIAYAARD/ACMAAc8B2AHyAf8BWwFzAbkB/wEkAT8BkwH/ARwBMgF4Af8BFQErAW8B/wEV
+        AS8BgAH/AUoBYAGkAf8BzwHYAfIB/9wAAYABlAHUAf8BLwFOAawB/wEdAUIBuAH/AQ0BPQHQAf8BBAE6
+        AeIB/wEDATcB3AH/AQcBNAG9Af8BCgErAZYB/wELASYBfQH/AWgBegGyAf/UAAGJAZ0B3AH/ATwBWwG7
+        Af8BHQFNAd0B/wEKAUUB+gH/AQgBQgH5Af8BSAFzAfgB/wFIAXMB+AH/AQEBOgHqAf8BAQE3AeQB/wEG
+        ATABtgH/AQsBJgF9Af8BaAF6AbIB/8wAAc8B2AHyAf8BUQFsAcYB/wEvAVsB4wH/ARwBUwH9Af8BHAFT
+        Af0B/wFXAYAB/gH/A/4B/wP+Af8BWgGBAfoB/wEBATsB7gH/AQEBNwHkAf8BBgEwAbYB/wELASYBfQH/
+        Ac8B2AHyAf/IAAGnAbYB5QH/AU4BcQHZAf8BLQFgAv8BLgFiAv8BLQFgAv8BZgGLAv8D/gH/A/4B/wFR
+        AXoB+wH/AQMBPwH4Af8BAQE7Ae4B/wEBATcB5AH/AQoBKwGWAf8BSgFgAaQB/8gAAXEBiQHVAf8BTQF0
+        Ae4B/wE/AW4C/wFCAXAC/wE/AW4C/wE6AWsC/wFqAY4C/wFhAYYC/wEcAVMB/QH/AQ4BSQH7Af8BAwE/
+        AfgB/wEBAToB6gH/AQcBNAG9Af8BFQEvAYAB/8gAAYEBlAHRAf8BUQF6AfsB/wFTAX0C/wFXAYAB/gH/
+        AVMBfQL/AWEBhgL/A/4B/wP+Af8BPwFuAv8BGQFRAfsB/wEKAUUB+gH/AQEBPAHzAf8BAwE3AdwB/wEV
+        ASsBbwH/yAABigGbAdQB/wFhAYYB+wH/AWYBiwL/AWoBjgL/AWYBiwL/AZcBsQL/A/4B/wP+Af8BegGa
+        Av8BIgFYAf0B/wEOAUkB+wH/AQMBPwH4Af8BBAE6AeIB/wEcATIBeAH/yAABiQGdAdwB/wF6AZYB8gH/
+        AXoBmgL/AX0BnAL/AXoBmgL/AbEBxAL/A/4B/wP+Af8BogG4Af4B/wEpAV0B/gH/ARkBUQH7Af8BCAFC
+        AfkB/wENAT0B0AH/ASQBPwGTAf/IAAGnAbYB5QH/AY0BowHlAf8BhwGkAv8BjQGoAv8BhwGkAv8BxQHT
+        Af4B/wP+Af8D/gH/AbUBxwH+Af8BLQFgAv8BHAFTAf0B/wEKAUUB+gH/AR0BQgG4Af8BZQF7AboB/8gA
+        Ac8B2AHyAf8BlwGnAd0B/wGVAasB8QH/AZcBsQL/AY0BqAL/AakBvgL/A/4B/wP+Af8BgwGhAv8BLgFi
+        Av8BHAFTAf0B/wEdAU0B3QH/AS8BTgGsAf8BzwHYAfIB/8wAAbQBwgHsAf8BmwGqAd0B/wGVAasB8QH/
+        AYcBpAL/AXoBmgL/AWYBiwL/AVMBfQL/AT8BbgL/AS4BYgL/AS8BWwHjAf8BPAFbAbsB/wF2AYwB1AH/
+        1AABtAHCAewB/wGXAacB3QH/AY0BowHlAf8BegGWAfIB/wFhAYYB+wH/AVEBegH7Af8BTQF0Ae4B/wFO
+        AXEB2QH/AVEBbAHGAf8BfwGVAdwB/9wAAcwB2AH+Af8BnQGtAeAB/wGJAZ0B3AH/AYoBmwHUAf8BgQGU
+        AdEB/wFxAYkB1QH/AYEBlAHRAf8BzAHYAf4B//8A0QABQgFNAT4HAAE+AwABKAMAAUADAAEQAwABAQEA
+        AQEFAAGAFwAD/wEAAv8GAAHwAQ8GAAHgAQcGAAHAAQMGAAGAAQEGAAGAAQEGAAGAAQEGAAGAAQEGAAGA
+        AQEGAAGAAQEGAAGAAQEGAAGAAQEGAAHAAQMGAAHgAQcGAAHwAQ8GAAL/BgAL
+</value>
+  </data>
+  <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
   </metadata>
 </root>

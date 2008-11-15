@@ -29,6 +29,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
@@ -53,6 +54,9 @@ namespace CodeImp.DoomBuilder.Controls
 		// Derived classes must set this!
 		protected ScriptConfiguration config;
 		
+		// The panel we're on
+		protected ScriptEditorPanel panel;
+		
 		#endregion
 		
 		#region ================== Properties
@@ -62,6 +66,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public virtual bool IsClosable { get { return true; } }
 		public virtual bool IsReconfigurable { get { return true; } }
 		public virtual string Filename { get { return null; } }
+		public ScriptEditorPanel Panel { get { return panel; } }
 		public bool IsChanged { get { return editor.IsChanged; } }
 		public ScriptConfiguration Config { get { return config; } }
 		
@@ -70,8 +75,11 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor
 		
 		// Constructor
-		public ScriptDocumentTab()
+		public ScriptDocumentTab(ScriptEditorPanel panel)
 		{
+			// Keep panel
+			this.panel = panel;
+			
 			// Make the script control
 			editor = new ScriptEditorControl();
 			editor.Location = new Point(EDITOR_BORDER_LEFT, EDITOR_BORDER_TOP);
@@ -93,6 +101,41 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
+
+		// This moves the caret to the given line
+		public virtual void MoveToLine(int linenumber)
+		{
+			editor.MoveToLine(linenumber);
+		}
+		
+		// This clears all marks
+		public virtual void ClearMarks()
+		{
+			editor.ClearMarks();
+		}
+		
+		// This creates error marks for errors that apply to this file
+		public virtual void MarkScriptErrors(IEnumerable<CompilerError> errors)
+		{
+			// Clear all marks
+			ClearMarks();
+			
+			// Go for all errors that apply to this script
+			foreach(CompilerError e in errors)
+			{
+				if(VerifyErrorForScript(e))
+				{
+					// Add a mark on the line where this error occurred
+					editor.AddMark(e.linenumber);
+				}
+			}
+		}
+		
+		// This verifies if the specified error applies to this script
+		public virtual bool VerifyErrorForScript(CompilerError e)
+		{
+			return false;
+		}
 
 		// This compiles the script
 		public virtual void Compile()

@@ -126,13 +126,13 @@ namespace CodeImp.DoomBuilder.Compilers
 			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 			
 			// Now find the error file
-			string errfile = Path.Combine(this.tempdir.FullName, ACS_ERROR_FILE);
+			string errfile = Path.Combine(this.workingdir, ACS_ERROR_FILE);
 			if(File.Exists(errfile))
 			{
 				try
 				{
 					// Regex to find error lines
-					Regex errlinematcher = new Regex("\\:[0-9]+\\:\\b", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+					Regex errlinematcher = new Regex(":[0-9]+: ", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 					
 					// Read all lines
 					string[] errlines = File.ReadAllLines(errfile);
@@ -149,6 +149,8 @@ namespace CodeImp.DoomBuilder.Compilers
 							string linenr = match.Value.Replace(":", "").Trim();
 							if(!int.TryParse(linenr, out err.linenumber))
 								err.linenumber = CompilerError.NO_LINE_NUMBER;
+							else
+								err.linenumber--;
 							
 							// Everything before the match is the filename
 							err.filename = linestr.Substring(0, match.Index);
