@@ -1089,6 +1089,8 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("openscripteditor")]
 		internal void ShowScriptEditor()
 		{
+			Cursor.Current = Cursors.WaitCursor;
+			
 			if(scriptwindow == null)
 			{
 				// Load the window
@@ -1098,6 +1100,7 @@ namespace CodeImp.DoomBuilder
 			// Show the window
 			scriptwindow.Show();
 			scriptwindow.Focus();
+			Cursor.Current = Cursors.Default;
 		}
 		
 		// This asks the user to save changes in script files

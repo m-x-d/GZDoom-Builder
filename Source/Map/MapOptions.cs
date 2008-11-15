@@ -158,6 +158,7 @@ namespace CodeImp.DoomBuilder.Map
 			resources.WriteToConfig(mapconfig, "resources");
 
 			// Write scripts to config
+			mapconfig.DeleteSetting("scripts");
 			for(int i = 0; i < scriptfiles.Count; i++)
 				mapconfig.WriteSetting("scripts." + "file" + i.ToString(CultureInfo.InvariantCulture), scriptfiles[i]);
 
