@@ -28,6 +28,8 @@ namespace CodeImp.DoomBuilder.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptEditorPanel));
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
 			this.buttonnew = new System.Windows.Forms.ToolStripDropDownButton();
@@ -47,7 +49,17 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttonclose = new System.Windows.Forms.ToolStripButton();
 			this.openfile = new System.Windows.Forms.OpenFileDialog();
 			this.savefile = new System.Windows.Forms.SaveFileDialog();
+			this.splitter = new System.Windows.Forms.SplitContainer();
+			this.label1 = new System.Windows.Forms.Label();
+			this.errorlist = new System.Windows.Forms.ListView();
+			this.colIndex = new System.Windows.Forms.ColumnHeader();
+			this.colDescription = new System.Windows.Forms.ColumnHeader();
+			this.colFile = new System.Windows.Forms.ColumnHeader();
+			this.errorimages = new System.Windows.Forms.ImageList(this.components);
 			this.toolbar.SuspendLayout();
+			this.splitter.Panel1.SuspendLayout();
+			this.splitter.Panel2.SuspendLayout();
+			this.splitter.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabs
@@ -55,12 +67,12 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabs.Location = new System.Drawing.Point(3, 33);
+			this.tabs.Location = new System.Drawing.Point(3, 8);
 			this.tabs.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(12, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(691, 435);
+			this.tabs.Size = new System.Drawing.Size(720, 386);
 			this.tabs.TabIndex = 0;
 			this.tabs.TabStop = false;
 			this.tabs.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabs_Selecting);
@@ -88,7 +100,7 @@ namespace CodeImp.DoomBuilder.Controls
             this.buttonclose});
 			this.toolbar.Location = new System.Drawing.Point(0, 0);
 			this.toolbar.Name = "toolbar";
-			this.toolbar.Size = new System.Drawing.Size(697, 25);
+			this.toolbar.Size = new System.Drawing.Size(726, 25);
 			this.toolbar.TabIndex = 1;
 			// 
 			// buttonnew
@@ -245,16 +257,100 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.savefile.Title = "Save Script As";
 			// 
+			// splitter
+			// 
+			this.splitter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+			this.splitter.Location = new System.Drawing.Point(0, 25);
+			this.splitter.Name = "splitter";
+			this.splitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitter.Panel1
+			// 
+			this.splitter.Panel1.Controls.Add(this.tabs);
+			// 
+			// splitter.Panel2
+			// 
+			this.splitter.Panel2.Controls.Add(this.label1);
+			this.splitter.Panel2.Controls.Add(this.errorlist);
+			this.splitter.Size = new System.Drawing.Size(726, 538);
+			this.splitter.SplitterDistance = 397;
+			this.splitter.TabIndex = 2;
+			this.splitter.TabStop = false;
+			// 
+			// label1
+			// 
+			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.label1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+			this.label1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+			this.label1.Location = new System.Drawing.Point(3, 0);
+			this.label1.Name = "label1";
+			this.label1.Padding = new System.Windows.Forms.Padding(1);
+			this.label1.Size = new System.Drawing.Size(720, 16);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "Errors";
+			// 
+			// errorlist
+			// 
+			this.errorlist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.errorlist.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colIndex,
+            this.colDescription,
+            this.colFile});
+			this.errorlist.FullRowSelect = true;
+			this.errorlist.GridLines = true;
+			this.errorlist.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.errorlist.LabelWrap = false;
+			this.errorlist.Location = new System.Drawing.Point(3, 19);
+			this.errorlist.MultiSelect = false;
+			this.errorlist.Name = "errorlist";
+			this.errorlist.ShowGroups = false;
+			this.errorlist.Size = new System.Drawing.Size(720, 115);
+			this.errorlist.SmallImageList = this.errorimages;
+			this.errorlist.TabIndex = 0;
+			this.errorlist.TabStop = false;
+			this.errorlist.UseCompatibleStateImageBehavior = false;
+			this.errorlist.View = System.Windows.Forms.View.Details;
+			this.errorlist.ItemActivate += new System.EventHandler(this.errorlist_ItemActivate);
+			// 
+			// colIndex
+			// 
+			this.colIndex.Text = "";
+			this.colIndex.Width = 45;
+			// 
+			// colDescription
+			// 
+			this.colDescription.Text = "Description";
+			this.colDescription.Width = 500;
+			// 
+			// colFile
+			// 
+			this.colFile.Text = "File";
+			this.colFile.Width = 150;
+			// 
+			// errorimages
+			// 
+			this.errorimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("errorimages.ImageStream")));
+			this.errorimages.TransparentColor = System.Drawing.Color.Transparent;
+			this.errorimages.Images.SetKeyName(0, "ScriptError3.png");
+			// 
 			// ScriptEditorPanel
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.BackColor = System.Drawing.SystemColors.Control;
+			this.Controls.Add(this.splitter);
 			this.Controls.Add(this.toolbar);
-			this.Controls.Add(this.tabs);
 			this.Name = "ScriptEditorPanel";
-			this.Size = new System.Drawing.Size(697, 471);
+			this.Size = new System.Drawing.Size(726, 563);
 			this.toolbar.ResumeLayout(false);
 			this.toolbar.PerformLayout();
+			this.splitter.Panel1.ResumeLayout(false);
+			this.splitter.Panel2.ResumeLayout(false);
+			this.splitter.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -281,5 +377,12 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripDropDownButton buttonscriptconfig;
 		private System.Windows.Forms.ToolStripButton buttonclose;
+		private System.Windows.Forms.SplitContainer splitter;
+		private System.Windows.Forms.ListView errorlist;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ColumnHeader colIndex;
+		private System.Windows.Forms.ColumnHeader colDescription;
+		private System.Windows.Forms.ColumnHeader colFile;
+		private System.Windows.Forms.ImageList errorimages;
 	}
 }

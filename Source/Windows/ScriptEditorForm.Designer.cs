@@ -38,13 +38,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.editor.Location = new System.Drawing.Point(0, 0);
 			this.editor.Name = "editor";
-			this.editor.Size = new System.Drawing.Size(729, 495);
+			this.editor.Size = new System.Drawing.Size(729, 578);
 			this.editor.TabIndex = 0;
 			// 
 			// ScriptEditorForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(729, 495);
+			this.ClientSize = new System.Drawing.Size(729, 578);
 			this.Controls.Add(this.editor);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "ScriptEditorForm";

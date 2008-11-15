@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public ScriptFileDocumentTab(ScriptConfiguration config)
+		public ScriptFileDocumentTab(ScriptEditorPanel panel, ScriptConfiguration config) : base(panel)
 		{
 			string ext = "";
 			
@@ -84,9 +84,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This compiles the script file
 		public override void Compile()
 		{
-			DirectoryInfo tempdir;
-			Compiler compiler;
 			string inputfile, outputfile;
+			Compiler compiler;
 			
 			// List of errors
 			List<CompilerError> errors = new List<CompilerError>();
@@ -103,25 +102,45 @@ namespace CodeImp.DoomBuilder.Controls
 				return;
 			}
 			
+			// Copy the source file into the temporary directory
+			inputfile = Path.Combine(compiler.Location, Path.GetFileName(filepathname));
+			File.Copy(filepathname, inputfile);
+			
 			// Make random output filename
 			outputfile = General.MakeTempFilename(compiler.Location, "tmp");
-				
+			
 			// Run compiler
 			compiler.Parameters = config.Parameters;
-			compiler.InputFile = Path.GetFileName(filepathname);
+			compiler.InputFile = Path.GetFileName(inputfile);
 			compiler.OutputFile = Path.GetFileName(outputfile);
-			compiler.WorkingDirectory = Path.GetDirectoryName(filepathname);
+			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
 			if(compiler.Run())
 			{
 				// Fetch errors
-				errors.AddRange(compiler.Errors);
+				foreach(CompilerError e in compiler.Errors)
+				{
+					CompilerError newerr = e;
+
+					// If the error's filename equals our temporary file,
+					// replace it with the original source filename
+					if(string.Compare(e.filename, inputfile, true) == 0)
+						newerr.filename = filepathname;
+
+					errors.Add(newerr);
+				}
 			}
 			
 			// Dispose compiler
 			compiler.Dispose();
 			
-			// TODO: Feed errors to panel
-			
+			// Feed errors to panel
+			panel.ShowErrors(errors);
+		}
+
+		// This checks if a script error applies to this script
+		public override bool VerifyErrorForScript(CompilerError e)
+		{
+			return (string.Compare(e.filename, filepathname, true) == 0);
 		}
 		
 		// This saves the document (used for both explicit and implicit)

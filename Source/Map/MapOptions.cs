@@ -169,7 +169,8 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Write configuration type information
 			wadcfg.WriteSetting("type", "Doom Builder Map Settings Configuration");
-
+			wadcfg.WriteSetting("gameconfig", configfile);
+			
 			// Update the settings file with this map configuration
 			wadcfg.WriteSetting("maps." + currentname, mapconfig.Root);
 

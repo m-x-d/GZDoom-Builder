@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
+using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
@@ -59,7 +60,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public ScriptLumpDocumentTab(string lumpname, ScriptConfiguration config)
+		public ScriptLumpDocumentTab(ScriptEditorPanel panel, string lumpname, ScriptConfiguration config) : base(panel)
 		{
 			// Initialize
 			this.lumpname = lumpname;
@@ -93,8 +94,11 @@ namespace CodeImp.DoomBuilder.Controls
 		// Compile script
 		public override void Compile()
 		{
-			// Do it!
-			General.Map.CompileLump(lumpname);
+			// Compile
+			General.Map.CompileLump(lumpname, true);
+
+			// Feed errors to panel
+			panel.ShowErrors(General.Map.Errors);
 		}
 		
 		// Implicit save
@@ -105,6 +109,12 @@ namespace CodeImp.DoomBuilder.Controls
 			MemoryStream stream = new MemoryStream(data);
 			General.Map.SetLumpData(lumpname, stream);
 			return true;
+		}
+
+		// This checks if a script error applies to this script
+		public override bool VerifyErrorForScript(CompilerError e)
+		{
+			return (string.Compare(e.filename, "?" + lumpname, true) == 0);
 		}
 		
 		#endregion
