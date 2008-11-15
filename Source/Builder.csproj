@@ -492,10 +492,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Build\Sharpzip.dll</HintPath>
     </Reference>
-    <Reference Include="SlimDX, Version=2.0.5.39, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Build\SlimDX.dll</HintPath>
-    </Reference>
+    <Reference Include="SlimDX, Version=2.0.6.40, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
