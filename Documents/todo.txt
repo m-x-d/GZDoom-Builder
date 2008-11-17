@@ -1,16 +1,16 @@
-- Add more find/replace types
-
-- Add more error checks
-
-- Make script editor
-
-- Make DECORATE support
-
 - Make 3D Mode (config specific!)
 
 - Make texture alignment features
 
 - Make Prefabs support
+
+- Make DECORATE support
+
+- Add more find/replace types
+
+- Add more error checks
+
+- Add more associations coloring
 
 - Make plugin dependencies
 	(load BEFORE and load AFTER so that also their functions are called in that order)

@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder
 			// Update structures
 			map.Update();
 			thingsfilter.Update();
-
+			
 			// Bind any methods
 			General.Actions.BindMethods(this);
 
@@ -268,6 +268,7 @@ namespace CodeImp.DoomBuilder
 			ChangeMode("VerticesMode");
 			ClassicMode cmode = (mode as ClassicMode);
 			cmode.SetZoom(0.5f);
+			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
 			// Success
 			General.WriteLogLine("Map creation done");
@@ -352,6 +353,7 @@ namespace CodeImp.DoomBuilder
 
 			// Set default mode
 			ChangeMode("VerticesMode");
+			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
 			// Center map in screen
 			if(General.Map.Mode is ClassicMode) (General.Map.Mode as ClassicMode).CenterInScreen();

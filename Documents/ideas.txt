@@ -11,12 +11,6 @@
 
 ===========================================================================================
 
-Slider to change transparency amount of doublesided lines
-
-Slider to change transparency amount of background image
-
-===========================================================================================
-
 Draw association on top of highlight so that a highligted sector referring to it's own
 lines still show the line association. But for a line referring to the sector the association
 should be drawn underneath the highlight or the highlight would be invisible.

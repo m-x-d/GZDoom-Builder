@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using System.Reflection;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -54,9 +55,19 @@ namespace CodeImp.DoomBuilder.Config
 		private float visualmousesensy;
 		private float visualviewrange;
 		private int imagebrightness;
+		private float doublesidedalpha;
+		private float backgroundalpha;
 		private bool qualitydisplay;
 		private bool squarethings;
 		private bool testmonsters;
+		private int defaultviewmode;
+		private bool classicbilinear;
+		private bool visualbilinear;
+		private int mousespeed;
+		private int movespeed;
+		private float viewdistance;
+		private bool invertyaxis;
+		private bool fixedaspect;
 
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -77,12 +88,22 @@ namespace CodeImp.DoomBuilder.Config
 		public bool BlackBrowsers { get { return blackbrowsers; } internal set { blackbrowsers = value; } }
 		public int VisualFOV { get { return visualfov; } internal set { visualfov = value; } }
 		public int ImageBrightness { get { return imagebrightness; } internal set { imagebrightness = value; } }
+		public float DoubleSidedAlpha { get { return doublesidedalpha; } internal set { doublesidedalpha = value; } }
+		public float BackgroundAlpha { get { return backgroundalpha; } internal set { backgroundalpha = value; } }
 		public float VisualMouseSensX { get { return visualmousesensx; } internal set { visualmousesensx = value; } }
 		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
 		public float VisualViewRange { get { return visualviewrange; } internal set { visualviewrange = value; } }
 		public bool QualityDisplay { get { return qualitydisplay; } internal set { qualitydisplay = value; } }
 		public bool SquareThings { get { return squarethings; } internal set { squarethings = value; } }
 		public bool TestMonsters { get { return testmonsters; } internal set { testmonsters = value; } }
+		public int DefaultViewMode { get { return defaultviewmode; } internal set { defaultviewmode = value; } }
+		public bool ClassicBilinear { get { return classicbilinear; } internal set { classicbilinear = value; } }
+		public bool VisualBilinear { get { return visualbilinear; } internal set { visualbilinear = value; } }
+		public int MouseSpeed { get { return mousespeed; } internal set { mousespeed = value; } }
+		public int MoveSpeed { get { return movespeed; } internal set { movespeed = value; } }
+		public float ViewDistance { get { return viewdistance; } internal set { viewdistance = value; } }
+		public bool InvertYAxis { get { return invertyaxis; } internal set { invertyaxis = value; } }
+		public bool FixedAspect { get { return fixedaspect; } internal set { fixedaspect = value; } }
 
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -122,9 +143,19 @@ namespace CodeImp.DoomBuilder.Config
 				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40f);
 				visualviewrange = cfg.ReadSetting("visualviewrange", 1000f);
 				imagebrightness = cfg.ReadSetting("imagebrightness", 3);
+				doublesidedalpha = cfg.ReadSetting("doublesidedalpha", 0.4f);
+				backgroundalpha = cfg.ReadSetting("backgroundalpha", 1.0f);
 				qualitydisplay = cfg.ReadSetting("qualitydisplay", true);
 				squarethings = cfg.ReadSetting("squarethings", false);
 				testmonsters = cfg.ReadSetting("testmonsters", true);
+				defaultviewmode = cfg.ReadSetting("defaultviewmode", (int)ViewMode.Normal);
+				classicbilinear = cfg.ReadSetting("classicbilinear", false);
+				visualbilinear = cfg.ReadSetting("visualbilinear", false);
+				mousespeed = cfg.ReadSetting("mousespeed", 100);
+				movespeed = cfg.ReadSetting("movespeed", 100);
+				viewdistance = cfg.ReadSetting("viewdistance", 3000.0f);
+				invertyaxis = cfg.ReadSetting("invertyaxis", false);
+				fixedaspect = cfg.ReadSetting("fixedaspect", true);
 				
 				// Success
 				return true;
@@ -150,6 +181,16 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("qualitydisplay", qualitydisplay);
 			cfg.WriteSetting("squarethings", squarethings);
 			cfg.WriteSetting("testmonsters", testmonsters);
+			cfg.WriteSetting("doublesidedalpha", doublesidedalpha);
+			cfg.WriteSetting("backgroundalpha", backgroundalpha);
+			cfg.WriteSetting("defaultviewmode", defaultviewmode);
+			cfg.WriteSetting("classicbilinear", classicbilinear);
+			cfg.WriteSetting("visualbilinear", visualbilinear);
+			cfg.WriteSetting("mousespeed", mousespeed);
+			cfg.WriteSetting("movespeed", movespeed);
+			cfg.WriteSetting("viewdistance", viewdistance);
+			cfg.WriteSetting("invertyaxis", invertyaxis);
+			cfg.WriteSetting("fixedaspect", fixedaspect);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

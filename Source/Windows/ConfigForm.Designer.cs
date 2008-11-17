@@ -223,9 +223,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.ItemSize = new System.Drawing.Size(100, 19);
 			this.tabs.Location = new System.Drawing.Point(256, 12);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(16, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(423, 345);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 18;
 			// 
 			// tabresources
@@ -443,8 +443,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listtextures.TabIndex = 32;
 			this.listtextures.UseCompatibleStateImageBehavior = false;
 			this.listtextures.View = System.Windows.Forms.View.List;
-			this.listtextures.DoubleClick += new System.EventHandler(this.listtextures_DoubleClick);
 			this.listtextures.SelectedIndexChanged += new System.EventHandler(this.listtextures_SelectedIndexChanged);
+			this.listtextures.DoubleClick += new System.EventHandler(this.listtextures_DoubleClick);
 			// 
 			// smallimages
 			// 

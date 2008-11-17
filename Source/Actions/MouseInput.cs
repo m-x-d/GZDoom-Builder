@@ -122,8 +122,8 @@ namespace CodeImp.DoomBuilder.Actions
 					ms = mouse.GetCurrentState();
 
 					// Calculate changes depending on sensitivity
-					changex = (float)ms.X * General.Settings.VisualMouseSensX;
-					changey = (float)ms.Y * General.Settings.VisualMouseSensY;
+					changex = (float)ms.X * General.Settings.VisualMouseSensX * (float)General.Settings.MouseSpeed * 0.01f;
+					changey = (float)ms.Y * General.Settings.VisualMouseSensY * (float)General.Settings.MouseSpeed * 0.01f;
 
 					// Return changes
 					return new Vector2D(changex, changey);

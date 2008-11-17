@@ -432,6 +432,14 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer2d.Present();
 		}
 
+		// This sets the view mode
+		private void SetViewMode(ViewMode mode)
+		{
+			General.Map.CRenderer2D.SetViewMode(mode);
+			General.MainWindow.UpdateInterface();
+			General.MainWindow.RedrawDisplay();
+		}
+		
 		#endregion
 
 		#region ================== Methods
@@ -576,6 +584,30 @@ namespace CodeImp.DoomBuilder.Editing
         {
             panning = false;
         }
+
+		[BeginAction("viewmodenormal", BaseAction = true)]
+		protected virtual void ViewModeNormal()
+		{
+			SetViewMode(ViewMode.Normal);
+		}
+
+		[BeginAction("viewmodebrightness", BaseAction = true)]
+		protected virtual void ViewModeBrightness()
+		{
+			SetViewMode(ViewMode.Brightness);
+		}
+
+		[BeginAction("viewmodefloors", BaseAction = true)]
+		protected virtual void ViewModeFloors()
+		{
+			SetViewMode(ViewMode.FloorTextures);
+		}
+
+		[BeginAction("viewmodeceilings", BaseAction = true)]
+		protected virtual void ViewModeCeilings()
+		{
+			SetViewMode(ViewMode.CeilingTextures);
+		}
 
 		#endregion
 	}

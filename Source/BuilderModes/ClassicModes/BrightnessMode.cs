@@ -354,7 +354,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Make custom presentation
 			CustomPresentation p = new CustomPresentation();
-			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask));
+			p.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask, General.Settings.BackgroundAlpha));
 			p.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Surface, BlendingMode.Mask));
 			p.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));

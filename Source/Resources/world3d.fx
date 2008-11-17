@@ -23,13 +23,17 @@ float4x4 worldviewproj;
 // Texture input
 texture texture1;
 
+// Filter settings
+dword minfiltersettings;
+dword magfiltersettings;
+
 // Texture sampler settings
 sampler2D texturesamp = sampler_state
 {
     Texture = <texture1>;
-    MagFilter = Linear;
-    MinFilter = Anisotropic;
-    MipFilter = Linear;
+    MagFilter = magfiltersettings;
+    MinFilter = minfiltersettings;
+    MipFilter = magfiltersettings;
 	AddressU = Wrap;
 	AddressV = Wrap;
 	MipMapLodBias = 0.0f;

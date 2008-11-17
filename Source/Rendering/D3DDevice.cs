@@ -206,6 +206,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			material.Diffuse = new Color4(Color.White);
 			material.Specular = new Color4(Color.White);
 			device.Material = material;
+			
+			// Shader settings
+			shaders.World3D.SetConstants(General.Settings.VisualBilinear, true);
+			
+			// Initialize presentations
+			Presentation.Initialize();
 		}
 
 		#endregion
@@ -291,9 +297,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			fonttexture.LoadImage();
 			fonttexture.MipMapLevels = 2;
 			fonttexture.CreateTexture();
-			
-			// Initialize presentations
-			Presentation.Initialize();
 			
 			// Initialize settings
 			SetupSettings();
@@ -393,12 +396,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Get the viewport
 				viewport = device.Viewport;
 
-				// Initialize settings
-				SetupSettings();
-
 				// Reload all Direct3D resources
 				foreach(ID3DResource res in resources.Values) res.ReloadResource();
 
+				// Re-apply settings
+				SetupSettings();
+				
 				// Success
 				return true;
 			}
