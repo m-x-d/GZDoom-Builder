@@ -123,6 +123,7 @@ namespace CodeImp.DoomBuilder
 		internal Launcher Launcher { get { return launcher; } }
 		public ThingsFilter ThingsFilter { get { return thingsfilter; } }
 		internal List<CompilerError> Errors { get { return errors; } }
+		internal ScriptEditorForm ScriptEditor { get { return scriptwindow; } }
 		public bool IsScriptsWindowOpen { get { return (scriptwindow != null) && !scriptwindow.IsDisposed; } }
 		
 		#endregion

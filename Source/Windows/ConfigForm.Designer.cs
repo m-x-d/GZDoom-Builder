@@ -223,7 +223,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.ItemSize = new System.Drawing.Size(100, 19);
 			this.tabs.Location = new System.Drawing.Point(256, 12);
 			this.tabs.Name = "tabs";
-			this.tabs.Padding = new System.Drawing.Point(16, 3);
+			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(423, 345);
 			this.tabs.TabIndex = 18;

@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Controls;
+using System.Globalization;
 
 #endregion
 
@@ -64,6 +65,27 @@ namespace CodeImp.DoomBuilder.Windows
 			viewdistance.Value = (int)(General.Settings.ViewDistance / 1000.0f);
 			invertyaxis.Checked = General.Settings.InvertYAxis;
 			fixedaspect.Checked = General.Settings.FixedAspect;
+			scriptfontbold.Checked = General.Settings.ScriptFontBold;
+			
+			// Fill fonts list
+			scriptfontname.BeginUpdate();
+			foreach(FontFamily ff in System.Drawing.FontFamily.Families)
+				scriptfontname.Items.Add(ff.Name);
+			scriptfontname.EndUpdate();
+			
+			// Select script font name
+			for(int i = 0; i < scriptfontname.Items.Count; i++)
+			{
+				if(string.Compare(scriptfontname.Items[i].ToString(), General.Settings.ScriptFontName, true) == 0)
+					scriptfontname.SelectedIndex = i;
+			}
+
+			// Select script font size
+			for(int i = 0; i < scriptfontsize.Items.Count; i++)
+			{
+				if(string.Compare(scriptfontsize.Items[i].ToString(), General.Settings.ScriptFontSize.ToString(CultureInfo.InvariantCulture), true) == 0)
+					scriptfontsize.SelectedIndex = i;
+			}
 			
 			// Fill actions list with categories
 			foreach(KeyValuePair<string, string> c in General.Actions.Categories)
@@ -320,6 +342,13 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ViewDistance = (float)viewdistance.Value * 1000.0f;
 			General.Settings.InvertYAxis = invertyaxis.Checked;
 			General.Settings.FixedAspect = fixedaspect.Checked;
+			General.Settings.ScriptFontBold = scriptfontbold.Checked;
+			General.Settings.ScriptFontName = scriptfontname.Text;
+
+			// Script font size
+			int fontsize = 8;
+			int.TryParse(scriptfontsize.Text, out fontsize);
+			General.Settings.ScriptFontSize = fontsize;
 			
 			// Apply control keys to actions
 			foreach(ListViewItem item in listactions.Items)
@@ -416,6 +445,67 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			int value = viewdistance.Value * 1000;
 			viewdistancelabel.Text = value.ToString() + " mp";
+		}
+
+		private void scriptfontname_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateScriptFontPreview();
+		}
+
+		private void scriptfontsize_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateScriptFontPreview();
+		}
+
+		private void scriptfontbold_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateScriptFontPreview();
+		}
+
+		// This updates the script font preview label
+		private void UpdateScriptFontPreview()
+		{
+			if((scriptfontname.SelectedIndex > -1) &&
+			   (scriptfontsize.SelectedIndex > -1))
+			{
+				scriptfontlabel.Text = scriptfontname.Text;
+				scriptfontlabel.BackColor = General.Colors.ScriptBackground.ToColor();
+				scriptfontlabel.ForeColor = General.Colors.PlainText.ToColor();
+				FontFamily ff = new FontFamily(scriptfontname.Text);
+				FontStyle style = FontStyle.Regular;
+				if(scriptfontbold.Checked)
+				{
+					// Prefer bold over regular
+					if(ff.IsStyleAvailable(FontStyle.Bold))
+						style = FontStyle.Bold;
+					else if(ff.IsStyleAvailable(FontStyle.Regular))
+						style = FontStyle.Regular;
+					else if(ff.IsStyleAvailable(FontStyle.Italic))
+						style = FontStyle.Italic;
+					else if(ff.IsStyleAvailable(FontStyle.Underline))
+						style = FontStyle.Underline;
+					else if(ff.IsStyleAvailable(FontStyle.Strikeout))
+						style = FontStyle.Strikeout;
+				}
+				else
+				{
+					// Prefer regular over bold
+					if(ff.IsStyleAvailable(FontStyle.Regular))
+						style = FontStyle.Regular;
+					else if(ff.IsStyleAvailable(FontStyle.Bold))
+						style = FontStyle.Bold;
+					else if(ff.IsStyleAvailable(FontStyle.Italic))
+						style = FontStyle.Italic;
+					else if(ff.IsStyleAvailable(FontStyle.Underline))
+						style = FontStyle.Underline;
+					else if(ff.IsStyleAvailable(FontStyle.Strikeout))
+						style = FontStyle.Strikeout;
+				}
+				int fontsize = 8;
+				int.TryParse(scriptfontsize.Text, out fontsize);
+				if(ff.IsStyleAvailable(style))
+					scriptfontlabel.Font = new Font(scriptfontname.Text, (float)fontsize, style);
+			}
 		}
 
 		#endregion

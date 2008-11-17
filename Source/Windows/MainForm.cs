@@ -791,7 +791,10 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				else
 				{
-					e.Graphics.Clear(Color.FromArgb(General.Colors.Background.ToInt()));
+					if(General.Colors != null)
+						e.Graphics.Clear(Color.FromArgb(General.Colors.Background.ToInt()));
+					else
+						e.Graphics.Clear(SystemColors.AppWorkspace);
 				}
 			}
 		}
@@ -1799,6 +1802,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.Map != null)
 				{
 					// Setup and reload stuff
+					General.Map.ScriptEditor.Editor.RefreshSettings();
 					General.Map.Graphics.SetupSettings();
 					General.Map.Map.UpdateConfiguration();
 					General.Map.ReloadResources();

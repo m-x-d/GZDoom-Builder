@@ -163,6 +163,13 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.MarkerAdd(linenumber, (int)ImageIndex.ScriptError);
 		}
 
+		// This refreshes the style setup
+		public void RefreshStyle()
+		{
+			// Re-setup with the same config
+			SetupStyles(scriptconfig);
+		}
+
 		// This sets up the script editor with a script configuration
 		public void SetupStyles(ScriptConfiguration config)
 		{
@@ -177,7 +184,7 @@ namespace CodeImp.DoomBuilder.Controls
 			stylelookup = new Dictionary<int, ScriptStyleType>();
 			
 			// Keep script configuration
-			scriptconfig = config;
+			if(scriptconfig != config) scriptconfig = config;
 			
 			// Find a resource named Lexers.cfg
 			resnames = General.ThisAssembly.GetManifestResourceNames();
@@ -205,9 +212,9 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.Lexer = scriptconfig.Lexer;
 			
 			// Set the default style and settings
-			scriptedit.StyleSetFont(DEFAULT_STYLE, "Lucida Console");
-			scriptedit.StyleSetSize(DEFAULT_STYLE, 10);
-			scriptedit.StyleSetBold(DEFAULT_STYLE, false);
+			scriptedit.StyleSetFont(DEFAULT_STYLE, General.Settings.ScriptFontName);
+			scriptedit.StyleSetSize(DEFAULT_STYLE, General.Settings.ScriptFontSize);
+			scriptedit.StyleSetBold(DEFAULT_STYLE, General.Settings.ScriptFontBold);
 			scriptedit.StyleSetItalic(DEFAULT_STYLE, false);
 			scriptedit.StyleSetUnderline(DEFAULT_STYLE, false);
 			scriptedit.StyleSetCase(DEFAULT_STYLE, ScriptCaseVisible.Mixed);
