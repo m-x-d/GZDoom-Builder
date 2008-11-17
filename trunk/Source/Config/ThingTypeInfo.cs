@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool hangs;
 		private int blocking;
 		private int errorcheck;
+		private bool fixedsize;
 		private ThingCategory category;
 		
 		#endregion
@@ -75,6 +76,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool Hangs { get { return hangs; } }
 		public int Blocking { get { return blocking; } }
 		public int ErrorCheck { get { return errorcheck; } }
+		public bool FixedSize { get { return fixedsize; } }
 		public ThingCategory Category { get { return category; } }
 		
 		#endregion
@@ -96,7 +98,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.hangs = false;
 			this.blocking = 0;
 			this.errorcheck = 0;
-
+			this.fixedsize = false;
+			
 			// Make long name for sprite lookup
 			this.spritelongname = Lump.MakeLongName(this.sprite);
 
@@ -123,7 +126,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.hangs = (cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".hangs", cat.Hangs) != 0);
 			this.blocking = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".blocking", cat.Blocking);
 			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".error", cat.ErrorCheck);
-
+			this.fixedsize = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedsize", cat.FixedSize);
+			
 			// Safety
 			if(this.width < 8f) this.width = 8f;
 			if(this.height < 8f) this.height = 8f;
@@ -154,6 +158,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.hangs = (cat.Hangs != 0);
 			this.blocking = cat.Blocking;
 			this.errorcheck = cat.ErrorCheck;
+			this.fixedsize = cat.FixedSize;
 
 			// Make long name for sprite lookup
 			this.spritelongname = Lump.MakeLongName(this.sprite);
