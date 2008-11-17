@@ -43,6 +43,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Property handlers
 		private EffectHandle texture1;
 		private EffectHandle worldviewproj;
+		private EffectHandle minfiltersettings;
+		private EffectHandle magfiltersettings;
 		
 		#endregion
 
@@ -66,6 +68,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				worldviewproj = effect.GetParameter(null, "worldviewproj");
 				texture1 = effect.GetParameter(null, "texture1");
+				minfiltersettings = effect.GetParameter(null, "minfiltersettings");
+				magfiltersettings = effect.GetParameter(null, "magfiltersettings");
 			}
 
 			// Initialize world vertex declaration
@@ -91,6 +95,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Clean up
 				if(texture1 != null) texture1.Dispose();
 				if(worldviewproj != null) worldviewproj.Dispose();
+				if(minfiltersettings != null) minfiltersettings.Dispose();
+				if(magfiltersettings != null) magfiltersettings.Dispose();
 
 				// Done
 				base.Dispose();
@@ -100,6 +106,24 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 
 		#region ================== Methods
+
+		// This sets the constant settings
+		public void SetConstants(bool bilinear, bool useanisotropic)
+		{
+			if(manager.Enabled)
+			{
+				if(bilinear)
+				{
+					effect.SetValue<int>(magfiltersettings, (int)TextureFilter.Linear);
+					if(useanisotropic) effect.SetValue<int>(minfiltersettings, (int)TextureFilter.Anisotropic);
+				}
+				else
+				{
+					effect.SetValue<int>(magfiltersettings, (int)TextureFilter.Point);
+					effect.SetValue<int>(minfiltersettings, (int)TextureFilter.Point);
+				}
+			}
+		}
 
 		#endregion
 	}

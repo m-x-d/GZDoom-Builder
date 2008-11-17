@@ -33,10 +33,11 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label1;
+			this.label14 = new System.Windows.Forms.Label();
+			this.defaultviewmode = new System.Windows.Forms.ComboBox();
+			this.classicbilinear = new System.Windows.Forms.CheckBox();
 			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
-			this.imagebrightnesslabel = new System.Windows.Forms.Label();
-			this.imagebrightness = new System.Windows.Forms.TrackBar();
 			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
 			this.colorgrid64 = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorgrid = new CodeImp.DoomBuilder.Controls.ColorControl();
@@ -52,6 +53,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.viewdistancelabel = new System.Windows.Forms.Label();
+			this.viewdistance = new System.Windows.Forms.TrackBar();
+			this.label13 = new System.Windows.Forms.Label();
+			this.fixedaspect = new System.Windows.Forms.CheckBox();
+			this.invertyaxis = new System.Windows.Forms.CheckBox();
+			this.movespeedlabel = new System.Windows.Forms.Label();
+			this.movespeed = new System.Windows.Forms.TrackBar();
+			this.label11 = new System.Windows.Forms.Label();
+			this.mousespeedlabel = new System.Windows.Forms.Label();
+			this.mousespeed = new System.Windows.Forms.TrackBar();
+			this.label9 = new System.Windows.Forms.Label();
+			this.fieldofviewlabel = new System.Windows.Forms.Label();
+			this.fieldofview = new System.Windows.Forms.TrackBar();
+			this.label4 = new System.Windows.Forms.Label();
+			this.visualbilinear = new System.Windows.Forms.CheckBox();
 			this.tabkeys = new System.Windows.Forms.TabPage();
 			this.listactions = new System.Windows.Forms.ListView();
 			this.columncontrolaction = new System.Windows.Forms.ColumnHeader();
@@ -63,6 +80,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actionkey = new System.Windows.Forms.TextBox();
 			this.actiondescription = new System.Windows.Forms.Label();
 			this.tabcolors = new System.Windows.Forms.TabPage();
+			this.imagebrightnesslabel = new System.Windows.Forms.Label();
+			this.imagebrightness = new System.Windows.Forms.TrackBar();
+			this.doublesidedalphalabel = new System.Windows.Forms.Label();
+			this.doublesidedalpha = new System.Windows.Forms.TrackBar();
+			this.label2 = new System.Windows.Forms.Label();
 			this.blackbrowsers = new System.Windows.Forms.CheckBox();
 			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
 			this.colorconstants = new CodeImp.DoomBuilder.Controls.ColorControl();
@@ -72,25 +94,26 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorcomments = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorplaintext = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.colorsgroup2 = new System.Windows.Forms.GroupBox();
-			this.colorselection3d = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.colorhighlight3d = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.colorcrosshair3d = new CodeImp.DoomBuilder.Controls.ColorControl();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			label1 = new System.Windows.Forms.Label();
 			groupBox1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
 			this.colorsgroup1.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabinterface.SuspendLayout();
+			this.groupBox2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.viewdistance)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.movespeed)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.mousespeed)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.fieldofview)).BeginInit();
 			this.tabkeys.SuspendLayout();
 			this.actioncontrolpanel.SuspendLayout();
 			this.tabcolors.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
 			this.colorsgroup3.SuspendLayout();
-			this.colorsgroup2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label7
@@ -122,22 +145,55 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
+			groupBox1.Controls.Add(this.label14);
+			groupBox1.Controls.Add(this.defaultviewmode);
+			groupBox1.Controls.Add(this.classicbilinear);
 			groupBox1.Controls.Add(this.squarethings);
 			groupBox1.Controls.Add(this.qualitydisplay);
-			groupBox1.Controls.Add(this.imagebrightnesslabel);
-			groupBox1.Controls.Add(this.imagebrightness);
-			groupBox1.Controls.Add(label1);
 			groupBox1.Location = new System.Drawing.Point(8, 8);
 			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(257, 196);
+			groupBox1.Size = new System.Drawing.Size(248, 363);
 			groupBox1.TabIndex = 6;
 			groupBox1.TabStop = false;
-			groupBox1.Text = " Graphics ";
+			groupBox1.Text = " Classic Modes ";
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(22, 41);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(71, 14);
+			this.label14.TabIndex = 14;
+			this.label14.Text = "Default view:";
+			// 
+			// defaultviewmode
+			// 
+			this.defaultviewmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.defaultviewmode.FormattingEnabled = true;
+			this.defaultviewmode.Items.AddRange(new object[] {
+            "Wireframe",
+            "Brightness Levels",
+            "Floor Textures",
+            "Ceiling Textures"});
+			this.defaultviewmode.Location = new System.Drawing.Point(99, 38);
+			this.defaultviewmode.Name = "defaultviewmode";
+			this.defaultviewmode.Size = new System.Drawing.Size(129, 22);
+			this.defaultviewmode.TabIndex = 13;
+			// 
+			// classicbilinear
+			// 
+			this.classicbilinear.AutoSize = true;
+			this.classicbilinear.Location = new System.Drawing.Point(25, 159);
+			this.classicbilinear.Name = "classicbilinear";
+			this.classicbilinear.Size = new System.Drawing.Size(136, 18);
+			this.classicbilinear.TabIndex = 12;
+			this.classicbilinear.Text = "Bilinear texture filtering";
+			this.classicbilinear.UseVisualStyleBackColor = true;
 			// 
 			// squarethings
 			// 
 			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(25, 150);
+			this.squarethings.Location = new System.Drawing.Point(25, 95);
 			this.squarethings.Name = "squarethings";
 			this.squarethings.Size = new System.Drawing.Size(93, 18);
 			this.squarethings.TabIndex = 11;
@@ -147,38 +203,20 @@ namespace CodeImp.DoomBuilder.Windows
 			// qualitydisplay
 			// 
 			this.qualitydisplay.AutoSize = true;
-			this.qualitydisplay.Location = new System.Drawing.Point(25, 126);
+			this.qualitydisplay.Location = new System.Drawing.Point(25, 127);
 			this.qualitydisplay.Name = "qualitydisplay";
 			this.qualitydisplay.Size = new System.Drawing.Size(118, 18);
 			this.qualitydisplay.TabIndex = 10;
 			this.qualitydisplay.Text = "High quality display";
 			this.qualitydisplay.UseVisualStyleBackColor = true;
 			// 
-			// imagebrightnesslabel
-			// 
-			this.imagebrightnesslabel.Location = new System.Drawing.Point(17, 75);
-			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
-			this.imagebrightnesslabel.Size = new System.Drawing.Size(205, 14);
-			this.imagebrightnesslabel.TabIndex = 8;
-			this.imagebrightnesslabel.Text = "0";
-			this.imagebrightnesslabel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-			// 
-			// imagebrightness
-			// 
-			this.imagebrightness.LargeChange = 2;
-			this.imagebrightness.Location = new System.Drawing.Point(17, 45);
-			this.imagebrightness.Name = "imagebrightness";
-			this.imagebrightness.Size = new System.Drawing.Size(205, 42);
-			this.imagebrightness.TabIndex = 7;
-			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
-			// 
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(22, 28);
+			label1.Location = new System.Drawing.Point(226, 248);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(148, 14);
-			label1.TabIndex = 6;
+			label1.TabIndex = 20;
 			label1.Text = "Texture and Flats brightness:";
 			// 
 			// colorsgroup1
@@ -195,10 +233,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.Controls.Add(this.colorlinedefs);
 			this.colorsgroup1.Location = new System.Drawing.Point(8, 8);
 			this.colorsgroup1.Name = "colorsgroup1";
-			this.colorsgroup1.Size = new System.Drawing.Size(185, 327);
+			this.colorsgroup1.Size = new System.Drawing.Size(185, 363);
 			this.colorsgroup1.TabIndex = 10;
 			this.colorsgroup1.TabStop = false;
-			this.colorsgroup1.Text = " Classic modes ";
+			this.colorsgroup1.Text = " Display ";
 			this.colorsgroup1.Visible = false;
 			// 
 			// colorgrid64
@@ -351,14 +389,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
 			this.tabs.Location = new System.Drawing.Point(11, 13);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(16, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(598, 406);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 18;
 			this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
 			// 
 			// tabinterface
 			// 
+			this.tabinterface.Controls.Add(this.groupBox2);
 			this.tabinterface.Controls.Add(groupBox1);
 			this.tabinterface.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabinterface.Location = new System.Drawing.Point(4, 23);
@@ -368,6 +407,181 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.viewdistancelabel);
+			this.groupBox2.Controls.Add(this.viewdistance);
+			this.groupBox2.Controls.Add(this.label13);
+			this.groupBox2.Controls.Add(this.fixedaspect);
+			this.groupBox2.Controls.Add(this.invertyaxis);
+			this.groupBox2.Controls.Add(this.movespeedlabel);
+			this.groupBox2.Controls.Add(this.movespeed);
+			this.groupBox2.Controls.Add(this.label11);
+			this.groupBox2.Controls.Add(this.mousespeedlabel);
+			this.groupBox2.Controls.Add(this.mousespeed);
+			this.groupBox2.Controls.Add(this.label9);
+			this.groupBox2.Controls.Add(this.fieldofviewlabel);
+			this.groupBox2.Controls.Add(this.fieldofview);
+			this.groupBox2.Controls.Add(this.label4);
+			this.groupBox2.Controls.Add(this.visualbilinear);
+			this.groupBox2.Location = new System.Drawing.Point(262, 8);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(320, 363);
+			this.groupBox2.TabIndex = 7;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = " Visual Modes ";
+			// 
+			// viewdistancelabel
+			// 
+			this.viewdistancelabel.AutoSize = true;
+			this.viewdistancelabel.Location = new System.Drawing.Point(259, 208);
+			this.viewdistancelabel.Name = "viewdistancelabel";
+			this.viewdistancelabel.Size = new System.Drawing.Size(48, 14);
+			this.viewdistancelabel.TabIndex = 30;
+			this.viewdistancelabel.Text = "1000 mp";
+			// 
+			// viewdistance
+			// 
+			this.viewdistance.LargeChange = 2;
+			this.viewdistance.Location = new System.Drawing.Point(103, 196);
+			this.viewdistance.Minimum = 1;
+			this.viewdistance.Name = "viewdistance";
+			this.viewdistance.Size = new System.Drawing.Size(150, 42);
+			this.viewdistance.TabIndex = 29;
+			this.viewdistance.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.viewdistance.Value = 1;
+			this.viewdistance.ValueChanged += new System.EventHandler(this.viewdistance_ValueChanged);
+			// 
+			// label13
+			// 
+			this.label13.AutoSize = true;
+			this.label13.Location = new System.Drawing.Point(17, 208);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(80, 14);
+			this.label13.TabIndex = 28;
+			this.label13.Text = "View distance:";
+			// 
+			// fixedaspect
+			// 
+			this.fixedaspect.AutoSize = true;
+			this.fixedaspect.Location = new System.Drawing.Point(28, 325);
+			this.fixedaspect.Name = "fixedaspect";
+			this.fixedaspect.Size = new System.Drawing.Size(133, 18);
+			this.fixedaspect.TabIndex = 27;
+			this.fixedaspect.Text = "Fixed 4:3 view aspect";
+			this.fixedaspect.UseVisualStyleBackColor = true;
+			// 
+			// invertyaxis
+			// 
+			this.invertyaxis.AutoSize = true;
+			this.invertyaxis.Location = new System.Drawing.Point(28, 293);
+			this.invertyaxis.Name = "invertyaxis";
+			this.invertyaxis.Size = new System.Drawing.Size(122, 18);
+			this.invertyaxis.TabIndex = 26;
+			this.invertyaxis.Text = "Invert mouse Y axis";
+			this.invertyaxis.UseVisualStyleBackColor = true;
+			// 
+			// movespeedlabel
+			// 
+			this.movespeedlabel.AutoSize = true;
+			this.movespeedlabel.Location = new System.Drawing.Point(259, 153);
+			this.movespeedlabel.Name = "movespeedlabel";
+			this.movespeedlabel.Size = new System.Drawing.Size(25, 14);
+			this.movespeedlabel.TabIndex = 25;
+			this.movespeedlabel.Text = "100";
+			// 
+			// movespeed
+			// 
+			this.movespeed.Location = new System.Drawing.Point(103, 141);
+			this.movespeed.Maximum = 20;
+			this.movespeed.Minimum = 1;
+			this.movespeed.Name = "movespeed";
+			this.movespeed.Size = new System.Drawing.Size(150, 42);
+			this.movespeed.TabIndex = 24;
+			this.movespeed.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.movespeed.Value = 1;
+			this.movespeed.ValueChanged += new System.EventHandler(this.movespeed_ValueChanged);
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(28, 153);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(69, 14);
+			this.label11.TabIndex = 23;
+			this.label11.Text = "Move speed:";
+			// 
+			// mousespeedlabel
+			// 
+			this.mousespeedlabel.AutoSize = true;
+			this.mousespeedlabel.Location = new System.Drawing.Point(259, 96);
+			this.mousespeedlabel.Name = "mousespeedlabel";
+			this.mousespeedlabel.Size = new System.Drawing.Size(25, 14);
+			this.mousespeedlabel.TabIndex = 22;
+			this.mousespeedlabel.Text = "100";
+			// 
+			// mousespeed
+			// 
+			this.mousespeed.Location = new System.Drawing.Point(103, 84);
+			this.mousespeed.Maximum = 20;
+			this.mousespeed.Minimum = 1;
+			this.mousespeed.Name = "mousespeed";
+			this.mousespeed.Size = new System.Drawing.Size(150, 42);
+			this.mousespeed.TabIndex = 21;
+			this.mousespeed.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.mousespeed.Value = 1;
+			this.mousespeed.ValueChanged += new System.EventHandler(this.mousespeed_ValueChanged);
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(22, 96);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(75, 14);
+			this.label9.TabIndex = 20;
+			this.label9.Text = "Mouse speed:";
+			// 
+			// fieldofviewlabel
+			// 
+			this.fieldofviewlabel.AutoSize = true;
+			this.fieldofviewlabel.Location = new System.Drawing.Point(259, 41);
+			this.fieldofviewlabel.Name = "fieldofviewlabel";
+			this.fieldofviewlabel.Size = new System.Drawing.Size(23, 14);
+			this.fieldofviewlabel.TabIndex = 19;
+			this.fieldofviewlabel.Text = "50°";
+			// 
+			// fieldofview
+			// 
+			this.fieldofview.LargeChange = 1;
+			this.fieldofview.Location = new System.Drawing.Point(103, 29);
+			this.fieldofview.Maximum = 17;
+			this.fieldofview.Minimum = 5;
+			this.fieldofview.Name = "fieldofview";
+			this.fieldofview.Size = new System.Drawing.Size(150, 42);
+			this.fieldofview.TabIndex = 18;
+			this.fieldofview.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.fieldofview.Value = 5;
+			this.fieldofview.ValueChanged += new System.EventHandler(this.fieldofview_ValueChanged);
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(25, 41);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(72, 14);
+			this.label4.TabIndex = 17;
+			this.label4.Text = "Field of view:";
+			// 
+			// visualbilinear
+			// 
+			this.visualbilinear.AutoSize = true;
+			this.visualbilinear.Location = new System.Drawing.Point(28, 261);
+			this.visualbilinear.Name = "visualbilinear";
+			this.visualbilinear.Size = new System.Drawing.Size(136, 18);
+			this.visualbilinear.TabIndex = 13;
+			this.visualbilinear.Text = "Bilinear texture filtering";
+			this.visualbilinear.UseVisualStyleBackColor = true;
 			// 
 			// tabkeys
 			// 
@@ -493,9 +707,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabcolors
 			// 
+			this.tabcolors.Controls.Add(this.imagebrightnesslabel);
+			this.tabcolors.Controls.Add(this.imagebrightness);
+			this.tabcolors.Controls.Add(label1);
+			this.tabcolors.Controls.Add(this.doublesidedalphalabel);
+			this.tabcolors.Controls.Add(this.doublesidedalpha);
+			this.tabcolors.Controls.Add(this.label2);
 			this.tabcolors.Controls.Add(this.blackbrowsers);
 			this.tabcolors.Controls.Add(this.colorsgroup3);
-			this.tabcolors.Controls.Add(this.colorsgroup2);
 			this.tabcolors.Controls.Add(this.colorsgroup1);
 			this.tabcolors.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabcolors.Location = new System.Drawing.Point(4, 23);
@@ -506,10 +725,57 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcolors.Text = "Colors";
 			this.tabcolors.UseVisualStyleBackColor = true;
 			// 
+			// imagebrightnesslabel
+			// 
+			this.imagebrightnesslabel.AutoSize = true;
+			this.imagebrightnesslabel.Location = new System.Drawing.Point(539, 248);
+			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
+			this.imagebrightnesslabel.Size = new System.Drawing.Size(31, 14);
+			this.imagebrightnesslabel.TabIndex = 22;
+			this.imagebrightnesslabel.Text = "+ 0 y";
+			// 
+			// imagebrightness
+			// 
+			this.imagebrightness.LargeChange = 3;
+			this.imagebrightness.Location = new System.Drawing.Point(379, 235);
+			this.imagebrightness.Name = "imagebrightness";
+			this.imagebrightness.Size = new System.Drawing.Size(154, 42);
+			this.imagebrightness.TabIndex = 21;
+			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
+			// 
+			// doublesidedalphalabel
+			// 
+			this.doublesidedalphalabel.AutoSize = true;
+			this.doublesidedalphalabel.Location = new System.Drawing.Point(539, 192);
+			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
+			this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
+			this.doublesidedalphalabel.TabIndex = 16;
+			this.doublesidedalphalabel.Text = "0%";
+			// 
+			// doublesidedalpha
+			// 
+			this.doublesidedalpha.LargeChange = 3;
+			this.doublesidedalpha.Location = new System.Drawing.Point(379, 180);
+			this.doublesidedalpha.Name = "doublesidedalpha";
+			this.doublesidedalpha.Size = new System.Drawing.Size(154, 42);
+			this.doublesidedalpha.TabIndex = 15;
+			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(212, 192);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(162, 14);
+			this.label2.TabIndex = 14;
+			this.label2.Text = "Doublesided lines transparency:";
+			// 
 			// blackbrowsers
 			// 
 			this.blackbrowsers.AutoSize = true;
-			this.blackbrowsers.Location = new System.Drawing.Point(8, 344);
+			this.blackbrowsers.Location = new System.Drawing.Point(215, 296);
 			this.blackbrowsers.Name = "blackbrowsers";
 			this.blackbrowsers.Size = new System.Drawing.Size(241, 18);
 			this.blackbrowsers.TabIndex = 13;
@@ -525,9 +791,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup3.Controls.Add(this.colorlinenumbers);
 			this.colorsgroup3.Controls.Add(this.colorcomments);
 			this.colorsgroup3.Controls.Add(this.colorplaintext);
-			this.colorsgroup3.Location = new System.Drawing.Point(392, 8);
+			this.colorsgroup3.Location = new System.Drawing.Point(199, 8);
 			this.colorsgroup3.Name = "colorsgroup3";
-			this.colorsgroup3.Size = new System.Drawing.Size(190, 327);
+			this.colorsgroup3.Size = new System.Drawing.Size(383, 153);
 			this.colorsgroup3.TabIndex = 12;
 			this.colorsgroup3.TabStop = false;
 			this.colorsgroup3.Text = " Script editor ";
@@ -538,7 +804,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorconstants.BackColor = System.Drawing.SystemColors.Control;
 			this.colorconstants.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorconstants.Label = "Constants:";
-			this.colorconstants.Location = new System.Drawing.Point(15, 201);
+			this.colorconstants.Location = new System.Drawing.Point(213, 85);
 			this.colorconstants.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorconstants.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorconstants.Name = "colorconstants";
@@ -550,7 +816,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorliterals.BackColor = System.Drawing.SystemColors.Control;
 			this.colorliterals.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorliterals.Label = "Literals:";
-			this.colorliterals.Location = new System.Drawing.Point(15, 172);
+			this.colorliterals.Location = new System.Drawing.Point(213, 56);
 			this.colorliterals.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorliterals.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorliterals.Name = "colorliterals";
@@ -574,7 +840,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorkeywords.BackColor = System.Drawing.SystemColors.Control;
 			this.colorkeywords.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorkeywords.Label = "Keywords:";
-			this.colorkeywords.Location = new System.Drawing.Point(15, 143);
+			this.colorkeywords.Location = new System.Drawing.Point(213, 27);
 			this.colorkeywords.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorkeywords.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorkeywords.Name = "colorkeywords";
@@ -617,55 +883,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
 			this.colorplaintext.TabIndex = 12;
 			// 
-			// colorsgroup2
-			// 
-			this.colorsgroup2.Controls.Add(this.colorselection3d);
-			this.colorsgroup2.Controls.Add(this.colorhighlight3d);
-			this.colorsgroup2.Controls.Add(this.colorcrosshair3d);
-			this.colorsgroup2.Location = new System.Drawing.Point(199, 8);
-			this.colorsgroup2.Name = "colorsgroup2";
-			this.colorsgroup2.Size = new System.Drawing.Size(187, 327);
-			this.colorsgroup2.TabIndex = 11;
-			this.colorsgroup2.TabStop = false;
-			this.colorsgroup2.Text = " 3D mode ";
-			this.colorsgroup2.Visible = false;
-			// 
-			// colorselection3d
-			// 
-			this.colorselection3d.BackColor = System.Drawing.SystemColors.Control;
-			this.colorselection3d.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.colorselection3d.Label = "Selection:";
-			this.colorselection3d.Location = new System.Drawing.Point(15, 85);
-			this.colorselection3d.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorselection3d.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorselection3d.Name = "colorselection3d";
-			this.colorselection3d.Size = new System.Drawing.Size(150, 23);
-			this.colorselection3d.TabIndex = 8;
-			// 
-			// colorhighlight3d
-			// 
-			this.colorhighlight3d.BackColor = System.Drawing.SystemColors.Control;
-			this.colorhighlight3d.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.colorhighlight3d.Label = "Highlight:";
-			this.colorhighlight3d.Location = new System.Drawing.Point(15, 56);
-			this.colorhighlight3d.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorhighlight3d.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorhighlight3d.Name = "colorhighlight3d";
-			this.colorhighlight3d.Size = new System.Drawing.Size(150, 23);
-			this.colorhighlight3d.TabIndex = 7;
-			// 
-			// colorcrosshair3d
-			// 
-			this.colorcrosshair3d.BackColor = System.Drawing.SystemColors.Control;
-			this.colorcrosshair3d.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.colorcrosshair3d.Label = "Crosshair:";
-			this.colorcrosshair3d.Location = new System.Drawing.Point(15, 27);
-			this.colorcrosshair3d.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorcrosshair3d.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorcrosshair3d.Name = "colorcrosshair3d";
-			this.colorcrosshair3d.Size = new System.Drawing.Size(150, 23);
-			this.colorcrosshair3d.TabIndex = 6;
-			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -688,17 +905,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Text = "Preferences";
 			groupBox1.ResumeLayout(false);
 			groupBox1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
 			this.colorsgroup1.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabinterface.ResumeLayout(false);
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.viewdistance)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.movespeed)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.mousespeed)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.fieldofview)).EndInit();
 			this.tabkeys.ResumeLayout(false);
 			this.actioncontrolpanel.ResumeLayout(false);
 			this.actioncontrolpanel.PerformLayout();
 			this.tabcolors.ResumeLayout(false);
 			this.tabcolors.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			this.colorsgroup3.ResumeLayout(false);
-			this.colorsgroup2.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -726,10 +949,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ColorControl colorvertices;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorbackcolor;
 		private System.Windows.Forms.GroupBox colorsgroup3;
-		private System.Windows.Forms.GroupBox colorsgroup2;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorselection3d;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorhighlight3d;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorcrosshair3d;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorscriptbackground;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorkeywords;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorlinenumbers;
@@ -745,8 +964,30 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.GroupBox colorsgroup1;
 		private System.Windows.Forms.CheckBox blackbrowsers;
 		private System.Windows.Forms.CheckBox qualitydisplay;
+		private System.Windows.Forms.CheckBox squarethings;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label doublesidedalphalabel;
+		private System.Windows.Forms.TrackBar doublesidedalpha;
 		private System.Windows.Forms.Label imagebrightnesslabel;
 		private System.Windows.Forms.TrackBar imagebrightness;
-		private System.Windows.Forms.CheckBox squarethings;
+		private System.Windows.Forms.CheckBox classicbilinear;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.CheckBox visualbilinear;
+		private System.Windows.Forms.Label fieldofviewlabel;
+		private System.Windows.Forms.TrackBar fieldofview;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label movespeedlabel;
+		private System.Windows.Forms.TrackBar movespeed;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label mousespeedlabel;
+		private System.Windows.Forms.TrackBar mousespeed;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.Label viewdistancelabel;
+		private System.Windows.Forms.TrackBar viewdistance;
+		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.CheckBox fixedaspect;
+		private System.Windows.Forms.CheckBox invertyaxis;
+		private System.Windows.Forms.ComboBox defaultviewmode;
+		private System.Windows.Forms.Label label14;
 	}
 }

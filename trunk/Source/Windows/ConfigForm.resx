@@ -234,6 +234,51 @@
   <metadata name="tabtextures.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <metadata name="restoretexturesets.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="edittextureset.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="pastetexturesets.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="copytexturesets.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="removetextureset.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="addtextureset.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="configdata.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="customparameters.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="skill.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="browsetestprogram.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="noresultlabel.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="testresult.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="labelresult.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="testparameters.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="testapplication.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <metadata name="smallimages.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>159, 17</value>
   </metadata>
@@ -241,7 +286,7 @@
     <value>
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0yLjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
-        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAABA
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAAA4
         CAAAAk1TRnQBSQFMAwEBAAEEAQABBAEAARMBAAEQAQAE/wEJAQAI/wFCAU0BNgEEBgABNgEEAgABKAMA
         AUwDAAEQAwABAQEAAQgFAAHAAQQYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
@@ -271,13 +316,13 @@
         AQABzAH/AWYBAAL/AZkBAAL/AcwBAAJmAf8BAAFmAf8BZgEAAWYC/wEAAf8CZgEAAf8BZgH/AQAC/wFm
         AQABIQEAAaUBAANfAQADdwEAA4YBAAOWAQADywEAA7IBAAPXAQAD3QEAA+MBAAPqAQAD8QEAA/gBAAHw
         AfsB/wEAAaQCoAEAA4ADAAH/AgAB/wMAAv8BAAH/AwAB/wEAAf8BAAL/AgAD/5sAAfcCrgFtAWwB6gJs
-        BGZAAAH3A/8C9QL0AxkBZkAAAbUC/wKTAZkBBwG7AbQCGQNmPgABtQL/AZMBmgF6AZ8BngG7AfQB8wFm
-        ARkBZj4AAbUC/wG7AQgCnwF+AXkC9AFsARkDZjwAAbUC/wLbAQkBCAF+AXkB9QH0AWwB8wFmARkBZjwA
-        AQcI/wL1AWwB9AFsARkBZjwAAgcEtQH3AbUC7QKRAfQBbAHzAWY+AAEHCP8C9QFsAfQBbD4AAgcEtQH3
-        AbUC7QKRAfQBbEAAAQcI/wL1AWxAAAIHBLUB9wG1Au0CkdIAAUIBTQE+BwABPgMAASgDAAFMAwABEAMA
-        AQEBAAEBBQABwBcAA/8BAAL/AeAJAAL/AeAJAAHAAQMB4AkAAcABAwHgCQABwAEAAeAJAAHAAQAB4AkA
-        AcABAAEgCQABwAEAASAJAAHAAQABIAkAAcABAAEgCQAB8AEAASAJAAHwAQABIAkAAfwBAAEgCQAB/AEA
-        ASAJAAL/AeAJAAL/AeAJAAs=
+        BGZAAAH3Bf8C9AMZAWZAAAG1Av8CkwGZAQcBuwG0AhkDZj4AAbUC/wGTAZoBegGfAZ4BuwH0AfMBZgEZ
+        AWY+AAG1Av8BuwEIAp8BfgF5AvQBbAEZA2Y8AAG1Av8C2wEJAQgBfgF5Af8B9AFsAfMBZgEZAWY8AAEH
+        Cv8BbAH0AWwBGQFmPAACBwS1AfcBtQLtApEB9AFsAfMBZj4AAQcK/wFsAfQBbD4AAgcEtQH3AbUC7QKR
+        AfQBbEAAAQcK/wFsQAACBwS1AfcBtQLtApHSAAFCAU0BPgcAAT4DAAEoAwABTAMAARADAAEBAQABAQUA
+        AcAXAAP/AQAC/wHgCQAC/wHgCQABwAEDAeAJAAHAAQMB4AkAAcABAAHgCQABwAEAAeAJAAHAAQABIAkA
+        AcABAAEgCQABwAEAASAJAAHAAQABIAkAAfABAAEgCQAB8AEAASAJAAH8AQABIAkAAfwBAAEgCQAC/wHg
+        CQAC/wHgCQAL
 </value>
   </data>
   <metadata name="restoretexturesets.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

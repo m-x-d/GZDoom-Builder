@@ -1245,6 +1245,24 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Tools
 
+		// This clamps a value
+		public static float Clamp(float value, float min, float max)
+		{
+			return Math.Min(Math.Max(min, value), max);
+		}
+
+		// This clamps a value
+		public static int Clamp(int value, int min, int max)
+		{
+			return Math.Min(Math.Max(min, value), max);
+		}
+
+		// This clamps a value
+		public static byte Clamp(byte value, byte min, byte max)
+		{
+			return Math.Min(Math.Max(min, value), max);
+		}
+		
 		// This returns an element from a collection by index
 		public static T GetByIndex<T>(ICollection<T> collection, int index)
 		{

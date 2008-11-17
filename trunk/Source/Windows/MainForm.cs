@@ -90,8 +90,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
 		
-		// View mode buttons
-		private ToolStripButton[] viewmodes;
+		// View modes
+		private ToolStripButton[] viewmodesbuttons;
+		private ToolStripMenuItem[] viewmodesitems;
 		
 		// Edit modes
 		private List<ToolStripItem> editmodeitems;
@@ -129,12 +130,17 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 			editmodeitems = new List<ToolStripItem>();
 
-			// Make array from view mode buttons
-			viewmodes = new ToolStripButton[Renderer2D.NUM_VIEW_MODES];
-			viewmodes[(int)ViewMode.Normal] = buttonviewnormal;
-			viewmodes[(int)ViewMode.Brightness] = buttonviewbrightness;
-			viewmodes[(int)ViewMode.FloorTextures] = buttonviewfloors;
-			viewmodes[(int)ViewMode.CeilingTextures] = buttonviewceilings;
+			// Make array for view modes
+			viewmodesbuttons = new ToolStripButton[Renderer2D.NUM_VIEW_MODES];
+			viewmodesbuttons[(int)ViewMode.Normal] = buttonviewnormal;
+			viewmodesbuttons[(int)ViewMode.Brightness] = buttonviewbrightness;
+			viewmodesbuttons[(int)ViewMode.FloorTextures] = buttonviewfloors;
+			viewmodesbuttons[(int)ViewMode.CeilingTextures] = buttonviewceilings;
+			viewmodesitems = new ToolStripMenuItem[Renderer2D.NUM_VIEW_MODES];
+			viewmodesitems[(int)ViewMode.Normal] = itemviewnormal;
+			viewmodesitems[(int)ViewMode.Brightness] = itemviewbrightness;
+			viewmodesitems[(int)ViewMode.FloorTextures] = itemviewfloors;
+			viewmodesitems[(int)ViewMode.CeilingTextures] = itemviewceilings;
 			
 			// Visual Studio IDE doesn't let me set these in the designer :(
 			buttonzoom.Font = menufile.Font;
@@ -183,7 +189,11 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// View mode only matters in classic editing modes
-			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++) viewmodes[i].Enabled = (General.Map.Mode is ClassicMode);
+			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
+			{
+				viewmodesitems[i].Enabled = (General.Map.Mode is ClassicMode);
+				viewmodesbuttons[i].Enabled = (General.Map.Mode is ClassicMode);
+			}
 		}
 
 		// This makes a beep sound
@@ -213,6 +223,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update menus and toolbar icons
 			UpdateFileMenu();
 			UpdateEditMenu();
+			UpdateViewMenu();
 			UpdateModeMenu();
 			UpdateToolsMenu();
 			UpdateToolbar();
@@ -577,6 +588,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(statusbar.InvokeRequired)
 			{
 				// Call to form thread
+				// TODO: This causes deadlocks! Instead of invoking immediately, send a message and handle that!
 				CallUpdateStatusIcon call = new CallUpdateStatusIcon(UpdateStatusIcon);
 				this.Invoke(call);
 			}
@@ -1251,23 +1263,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update buttons
 			buttontestmonsters.Enabled = (General.Map != null);
 			buttontestmonsters.Checked = General.Settings.TestMonsters;
-
-			// View mode buttons
-			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
-			{
-				// NOTE: We only disable them when no map is loaded, because they may
-				// need to be disabled for non-classic modes
-				if(General.Map == null)
-				{
-					viewmodes[i].Enabled = false;
-					viewmodes[i].Checked = false;
-				}
-				else
-				{
-					// Check the correct button
-					viewmodes[i].Checked = (i == (int)General.Map.CRenderer2D.ViewMode);
-				}
-			}
 		}
 
 		// This checks one of the edit mode items (and unchecks all others)
@@ -1350,27 +1345,6 @@ namespace CodeImp.DoomBuilder.Windows
 			modeinfo = (EditModeInfo)((sender as ToolStripItem).Tag);
 			General.Actions[modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly)].Begin();
 			this.Update();
-		}
-
-		// This changes view mode
-		private void ViewModeButtonClick(object sender, EventArgs e)
-		{
-			int mode = 0;
-			
-			if((sender is ToolStripButton) && (General.Map != null))
-			{
-				ToolStripButton button = sender as ToolStripButton;
-				int.TryParse(button.Tag.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out mode);
-				
-				// Update all view buttons
-				for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++) viewmodes[i].Checked = (i == mode);
-
-				// Apply view mode
-				General.Map.CRenderer2D.SetViewMode((ViewMode)mode);
-
-				// Redraw
-				RedrawDisplay();
-			}
 		}
 
 		#endregion
@@ -1702,6 +1676,34 @@ namespace CodeImp.DoomBuilder.Windows
 			itemautomerge.Checked = buttonautomerge.Checked;
 		}
 		
+		#endregion
+
+		#region ================== View Menu
+
+		// This sets up the modes menu
+		private void UpdateViewMenu()
+		{
+			// View mode items
+			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
+			{
+				// NOTE: We only disable them when no map is loaded, because they may
+				// need to be disabled for non-classic modes
+				if(General.Map == null)
+				{
+					viewmodesbuttons[i].Enabled = false;
+					viewmodesbuttons[i].Checked = false;
+					viewmodesitems[i].Enabled = false;
+					viewmodesitems[i].Checked = false;
+				}
+				else
+				{
+					// Check the correct item
+					viewmodesbuttons[i].Checked = (i == (int)General.Map.CRenderer2D.ViewMode);
+					viewmodesitems[i].Checked = (i == (int)General.Map.CRenderer2D.ViewMode);
+				}
+			}
+		}
+
 		#endregion
 
 		#region ================== Mode Menu

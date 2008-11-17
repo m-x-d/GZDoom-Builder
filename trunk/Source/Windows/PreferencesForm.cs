@@ -54,6 +54,16 @@ namespace CodeImp.DoomBuilder.Windows
 			imagebrightness.Value = General.Settings.ImageBrightness;
 			qualitydisplay.Checked = General.Settings.QualityDisplay;
 			squarethings.Checked = General.Settings.SquareThings;
+			doublesidedalpha.Value = (int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f);
+			defaultviewmode.SelectedIndex = General.Settings.DefaultViewMode;
+			classicbilinear.Checked = General.Settings.ClassicBilinear;
+			visualbilinear.Checked = General.Settings.VisualBilinear;
+			fieldofview.Value = General.Settings.VisualFOV / 10;
+			mousespeed.Value = General.Settings.MouseSpeed / 100;
+			movespeed.Value = General.Settings.MoveSpeed / 100;
+			viewdistance.Value = (int)(General.Settings.ViewDistance / 1000.0f);
+			invertyaxis.Checked = General.Settings.InvertYAxis;
+			fixedaspect.Checked = General.Settings.FixedAspect;
 			
 			// Fill actions list with categories
 			foreach(KeyValuePair<string, string> c in General.Actions.Categories)
@@ -115,9 +125,6 @@ namespace CodeImp.DoomBuilder.Windows
 			colorindication.Color = General.Colors.Indication;
 			colorgrid.Color = General.Colors.Grid;
 			colorgrid64.Color = General.Colors.Grid64;
-			colorcrosshair3d.Color = General.Colors.Crosshair3D;
-			colorhighlight3d.Color = General.Colors.Highlight3D;
-			colorselection3d.Color = General.Colors.Selection3D;
 			colorscriptbackground.Color = General.Colors.ScriptBackground;
 			colorlinenumbers.Color = General.Colors.LineNumbers;
 			colorplaintext.Color = General.Colors.PlainText;
@@ -303,6 +310,16 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ImageBrightness = imagebrightness.Value;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
 			General.Settings.SquareThings = squarethings.Checked;
+			General.Settings.DoubleSidedAlpha = 1.0f - (float)(doublesidedalpha.Value * 0.1f);
+			General.Settings.DefaultViewMode = defaultviewmode.SelectedIndex;
+			General.Settings.ClassicBilinear = classicbilinear.Checked;
+			General.Settings.VisualBilinear = visualbilinear.Checked;
+			General.Settings.VisualFOV = fieldofview.Value * 10;
+			General.Settings.MouseSpeed = mousespeed.Value * 100;
+			General.Settings.MoveSpeed = movespeed.Value * 100;
+			General.Settings.ViewDistance = (float)viewdistance.Value * 1000.0f;
+			General.Settings.InvertYAxis = invertyaxis.Checked;
+			General.Settings.FixedAspect = fixedaspect.Checked;
 			
 			// Apply control keys to actions
 			foreach(ListViewItem item in listactions.Items)
@@ -320,9 +337,6 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Colors.Indication = colorindication.Color;
 			General.Colors.Grid = colorgrid.Color;
 			General.Colors.Grid64 = colorgrid64.Color;
-			General.Colors.Crosshair3D = colorcrosshair3d.Color;
-			General.Colors.Highlight3D = colorhighlight3d.Color;
-			General.Colors.Selection3D = colorselection3d.Color;
 			General.Colors.ScriptBackground = colorscriptbackground.Color;
 			General.Colors.LineNumbers = colorlinenumbers.Color;
 			General.Colors.PlainText = colorplaintext.Color;
@@ -357,20 +371,51 @@ namespace CodeImp.DoomBuilder.Windows
 			if(tabs.SelectedTab != tabkeys) this.AcceptButton = apply; else this.AcceptButton = null;
 			if(tabs.SelectedTab != tabkeys) this.CancelButton = cancel; else this.CancelButton = null;
 			colorsgroup1.Visible = (tabs.SelectedTab == tabcolors);
-			colorsgroup2.Visible = (tabs.SelectedTab == tabcolors);
+			//colorsgroup2.Visible = (tabs.SelectedTab == tabcolors);
 			colorsgroup3.Visible = (tabs.SelectedTab == tabcolors);
+		}
+
+		#endregion
+
+		#region ================== Colors Panel
+
+		private void imagebrightness_ValueChanged(object sender, EventArgs e)
+		{
+			imagebrightnesslabel.Text = "+ " + imagebrightness.Value.ToString() + " y";
+		}
+
+		private void doublesidedalpha_ValueChanged(object sender, EventArgs e)
+		{
+			int percent = doublesidedalpha.Value * 10;
+			doublesidedalphalabel.Text = percent.ToString() + "%";
 		}
 
 		#endregion
 
 		#region ================== Interface Panel
 
-		private void imagebrightness_ValueChanged(object sender, EventArgs e)
+		private void fieldofview_ValueChanged(object sender, EventArgs e)
 		{
-			if(imagebrightness.Value > 0)
-				imagebrightnesslabel.Text = "+" + imagebrightness.Value.ToString();
-			else
-				imagebrightnesslabel.Text = imagebrightness.Value.ToString();
+			int value = fieldofview.Value * 10;
+			fieldofviewlabel.Text = value.ToString() + (char)176;
+		}
+
+		private void mousespeed_ValueChanged(object sender, EventArgs e)
+		{
+			int value = mousespeed.Value * 100;
+			mousespeedlabel.Text = value.ToString();
+		}
+
+		private void movespeed_ValueChanged(object sender, EventArgs e)
+		{
+			int value = movespeed.Value * 100;
+			movespeedlabel.Text = value.ToString();
+		}
+
+		private void viewdistance_ValueChanged(object sender, EventArgs e)
+		{
+			int value = viewdistance.Value * 1000;
+			viewdistancelabel.Text = value.ToString() + " mp";
 		}
 
 		#endregion

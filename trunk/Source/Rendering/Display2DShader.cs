@@ -44,7 +44,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private EffectHandle texture1;
 		private EffectHandle rendersettings;
 		private EffectHandle transformsettings;
-
+		private EffectHandle filtersettings;
+		
 		#endregion
 
 		#region ================== Properties
@@ -67,6 +68,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				texture1 = effect.GetParameter(null, "texture1");
 				rendersettings = effect.GetParameter(null, "rendersettings");
 				transformsettings = effect.GetParameter(null, "transformsettings");
+				filtersettings = effect.GetParameter(null, "filtersettings");
 			}
 			
 			// Initialize world vertex declaration
@@ -93,6 +95,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(texture1 != null) texture1.Dispose();
 				if(rendersettings != null) rendersettings.Dispose();
 				if(transformsettings != null) transformsettings.Dispose();
+				if(filtersettings != null) filtersettings.Dispose();
 				
 				// Done
 				base.Dispose();
@@ -104,7 +107,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Methods
 
 		// This sets the settings
-		public void SetSettings(float texelx, float texely, float fsaafactor, float alpha)
+		public void SetSettings(float texelx, float texely, float fsaafactor, float alpha, bool bilinear)
 		{
 			if(manager.Enabled)
 			{
@@ -113,6 +116,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				Matrix world = manager.D3DDevice.Device.GetTransform(TransformState.World);
 				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
 				effect.SetValue(transformsettings, Matrix.Multiply(world, view));
+				TextureFilter filter = TextureFilter.Point;
+				if(bilinear) filter = TextureFilter.Linear;
+				effect.SetValue<int>(filtersettings, (int)filter);
 			}
 		}
 
