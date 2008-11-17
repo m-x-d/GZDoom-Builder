@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Configuration
 		private float size;
 		private PixelColor color;
+		private bool fixedsize;
 		private float iconoffset;	// Arrow or dot coordinate offset on the texture
 
 		#endregion
@@ -81,6 +82,7 @@ namespace CodeImp.DoomBuilder.Map
 		public float Size { get { return size; } }
 		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }
+		public bool FixedSize { get { return fixedsize; } }
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
 
@@ -145,6 +147,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.size = size;
 			t.color = color;
 			t.iconoffset = iconoffset;
+			t.fixedsize = fixedsize;
 			args.CopyTo(t.args, 0);
 			base.CopyPropertiesTo(t);
 		}
@@ -251,7 +254,8 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Apply size
 			size = ti.Width;
-
+			fixedsize = ti.FixedSize;
+			
 			// Color valid?
 			if((ti.Color >= 0) && (ti.Color < ColorCollection.NUM_THING_COLORS))
 			{

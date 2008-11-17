@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int hangs;
 		private int blocking;
 		private int errorcheck;
+		private bool fixedsize;
 
 		// Disposing
 		private bool isdisposed = false;
@@ -76,6 +77,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int Hangs { get { return hangs; } }
 		public int Blocking { get { return blocking; } }
 		public int ErrorCheck { get { return errorcheck; } }
+		public bool FixedSize { get { return fixedsize; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public List<ThingTypeInfo> Things { get { return things; } }
 
@@ -104,6 +106,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.hangs = cfg.ReadSetting("thingtypes." + name + ".hangs", 0);
 			this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
 			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", 1);
+			this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", false);
 			
 			// Safety
 			if(this.width < 8f) this.width = 8f;

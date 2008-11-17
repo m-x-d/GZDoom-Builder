@@ -910,8 +910,16 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
 			
 			// Determine sizes
-			circlesize = (t.Size - THING_CIRCLE_SHRINK) * scale * THING_CIRCLE_SIZE;
-			arrowsize = (t.Size - THING_ARROW_SHRINK) * scale * THING_ARROW_SIZE;
+			if(t.FixedSize && (scale > 1.0f))
+			{
+				circlesize = (t.Size - THING_CIRCLE_SHRINK) * THING_CIRCLE_SIZE;
+				arrowsize = (t.Size - THING_ARROW_SHRINK) * THING_ARROW_SIZE;
+			}
+			else
+			{
+				circlesize = (t.Size - THING_CIRCLE_SHRINK) * scale * THING_CIRCLE_SIZE;
+				arrowsize = (t.Size - THING_ARROW_SHRINK) * scale * THING_ARROW_SIZE;
+			}
 			
 			// Check if the thing is actually on screen
 			if(((screenpos.x + circlesize) > 0.0f) && ((screenpos.x - circlesize) < (float)windowsize.Width) &&
