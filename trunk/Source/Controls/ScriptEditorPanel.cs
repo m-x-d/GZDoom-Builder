@@ -163,6 +163,15 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Methods
 		
+		// This refreshes all settings
+		public void RefreshSettings()
+		{
+			foreach(ScriptDocumentTab t in tabs.TabPages)
+			{
+				t.RefreshSettings();
+			}
+		}
+
 		// This clears all error marks and hides the errors list
 		public void ClearErrors()
 		{

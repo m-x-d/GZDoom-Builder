@@ -102,6 +102,12 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Methods
 
+		// This refreshes the style settings
+		public virtual void RefreshSettings()
+		{
+			editor.RefreshStyle();
+		}
+		
 		// This moves the caret to the given line
 		public virtual void MoveToLine(int linenumber)
 		{

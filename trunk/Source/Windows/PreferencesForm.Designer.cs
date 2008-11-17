@@ -53,6 +53,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.scriptfontlabel = new System.Windows.Forms.Label();
+			this.scriptfontsize = new System.Windows.Forms.ComboBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.scriptfontbold = new System.Windows.Forms.CheckBox();
+			this.scriptfontname = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.viewdistancelabel = new System.Windows.Forms.Label();
 			this.viewdistance = new System.Windows.Forms.TrackBar();
@@ -103,6 +111,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabinterface.SuspendLayout();
+			this.groupBox3.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.viewdistance)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.movespeed)).BeginInit();
@@ -152,7 +162,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.Controls.Add(this.qualitydisplay);
 			groupBox1.Location = new System.Drawing.Point(8, 8);
 			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(248, 363);
+			groupBox1.Size = new System.Drawing.Size(248, 189);
 			groupBox1.TabIndex = 6;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Classic Modes ";
@@ -183,7 +193,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// classicbilinear
 			// 
 			this.classicbilinear.AutoSize = true;
-			this.classicbilinear.Location = new System.Drawing.Point(25, 159);
+			this.classicbilinear.Location = new System.Drawing.Point(25, 151);
 			this.classicbilinear.Name = "classicbilinear";
 			this.classicbilinear.Size = new System.Drawing.Size(136, 18);
 			this.classicbilinear.TabIndex = 12;
@@ -193,7 +203,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// squarethings
 			// 
 			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(25, 95);
+			this.squarethings.Location = new System.Drawing.Point(25, 87);
 			this.squarethings.Name = "squarethings";
 			this.squarethings.Size = new System.Drawing.Size(93, 18);
 			this.squarethings.TabIndex = 11;
@@ -203,7 +213,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// qualitydisplay
 			// 
 			this.qualitydisplay.AutoSize = true;
-			this.qualitydisplay.Location = new System.Drawing.Point(25, 127);
+			this.qualitydisplay.Location = new System.Drawing.Point(25, 119);
 			this.qualitydisplay.Name = "qualitydisplay";
 			this.qualitydisplay.Size = new System.Drawing.Size(118, 18);
 			this.qualitydisplay.TabIndex = 10;
@@ -389,7 +399,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
 			this.tabs.Location = new System.Drawing.Point(11, 13);
 			this.tabs.Name = "tabs";
-			this.tabs.Padding = new System.Drawing.Point(16, 3);
+			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(598, 406);
 			this.tabs.TabIndex = 18;
@@ -397,6 +407,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabinterface
 			// 
+			this.tabinterface.Controls.Add(this.groupBox3);
 			this.tabinterface.Controls.Add(this.groupBox2);
 			this.tabinterface.Controls.Add(groupBox1);
 			this.tabinterface.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -407,6 +418,110 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
+			// 
+			// groupBox3
+			// 
+			this.groupBox3.Controls.Add(this.panel1);
+			this.groupBox3.Controls.Add(this.scriptfontsize);
+			this.groupBox3.Controls.Add(this.label8);
+			this.groupBox3.Controls.Add(this.scriptfontbold);
+			this.groupBox3.Controls.Add(this.scriptfontname);
+			this.groupBox3.Controls.Add(this.label3);
+			this.groupBox3.Location = new System.Drawing.Point(8, 203);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(248, 168);
+			this.groupBox3.TabIndex = 8;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = " Script Editor ";
+			// 
+			// panel1
+			// 
+			this.panel1.BackColor = System.Drawing.SystemColors.Window;
+			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.scriptfontlabel);
+			this.panel1.Location = new System.Drawing.Point(25, 109);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(203, 41);
+			this.panel1.TabIndex = 18;
+			// 
+			// scriptfontlabel
+			// 
+			this.scriptfontlabel.BackColor = System.Drawing.SystemColors.Window;
+			this.scriptfontlabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.scriptfontlabel.Location = new System.Drawing.Point(0, 0);
+			this.scriptfontlabel.Name = "scriptfontlabel";
+			this.scriptfontlabel.Size = new System.Drawing.Size(199, 37);
+			this.scriptfontlabel.TabIndex = 0;
+			this.scriptfontlabel.Text = "Font";
+			this.scriptfontlabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// scriptfontsize
+			// 
+			this.scriptfontsize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.scriptfontsize.FormattingEnabled = true;
+			this.scriptfontsize.Items.AddRange(new object[] {
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "14",
+            "16",
+            "18",
+            "20",
+            "22",
+            "24",
+            "26",
+            "28",
+            "36",
+            "48",
+            "72"});
+			this.scriptfontsize.Location = new System.Drawing.Point(59, 71);
+			this.scriptfontsize.Name = "scriptfontsize";
+			this.scriptfontsize.Size = new System.Drawing.Size(59, 22);
+			this.scriptfontsize.TabIndex = 17;
+			this.scriptfontsize.SelectedIndexChanged += new System.EventHandler(this.scriptfontsize_SelectedIndexChanged);
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(22, 74);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(31, 14);
+			this.label8.TabIndex = 16;
+			this.label8.Text = "Size:";
+			// 
+			// scriptfontbold
+			// 
+			this.scriptfontbold.AutoSize = true;
+			this.scriptfontbold.Location = new System.Drawing.Point(150, 73);
+			this.scriptfontbold.Name = "scriptfontbold";
+			this.scriptfontbold.Size = new System.Drawing.Size(47, 18);
+			this.scriptfontbold.TabIndex = 15;
+			this.scriptfontbold.Text = "Bold";
+			this.scriptfontbold.UseVisualStyleBackColor = true;
+			this.scriptfontbold.CheckedChanged += new System.EventHandler(this.scriptfontbold_CheckedChanged);
+			// 
+			// scriptfontname
+			// 
+			this.scriptfontname.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.scriptfontname.FormattingEnabled = true;
+			this.scriptfontname.Location = new System.Drawing.Point(59, 36);
+			this.scriptfontname.Name = "scriptfontname";
+			this.scriptfontname.Size = new System.Drawing.Size(169, 22);
+			this.scriptfontname.Sorted = true;
+			this.scriptfontname.TabIndex = 14;
+			this.scriptfontname.SelectedIndexChanged += new System.EventHandler(this.scriptfontname_SelectedIndexChanged);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(22, 39);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(31, 14);
+			this.label3.TabIndex = 0;
+			this.label3.Text = "Font:";
 			// 
 			// groupBox2
 			// 
@@ -465,7 +580,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// fixedaspect
 			// 
 			this.fixedaspect.AutoSize = true;
-			this.fixedaspect.Location = new System.Drawing.Point(28, 325);
+			this.fixedaspect.Location = new System.Drawing.Point(31, 328);
 			this.fixedaspect.Name = "fixedaspect";
 			this.fixedaspect.Size = new System.Drawing.Size(133, 18);
 			this.fixedaspect.TabIndex = 27;
@@ -475,7 +590,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// invertyaxis
 			// 
 			this.invertyaxis.AutoSize = true;
-			this.invertyaxis.Location = new System.Drawing.Point(28, 293);
+			this.invertyaxis.Location = new System.Drawing.Point(31, 296);
 			this.invertyaxis.Name = "invertyaxis";
 			this.invertyaxis.Size = new System.Drawing.Size(122, 18);
 			this.invertyaxis.TabIndex = 26;
@@ -576,7 +691,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// visualbilinear
 			// 
 			this.visualbilinear.AutoSize = true;
-			this.visualbilinear.Location = new System.Drawing.Point(28, 261);
+			this.visualbilinear.Location = new System.Drawing.Point(31, 264);
 			this.visualbilinear.Name = "visualbilinear";
 			this.visualbilinear.Size = new System.Drawing.Size(136, 18);
 			this.visualbilinear.TabIndex = 13;
@@ -908,6 +1023,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabinterface.ResumeLayout(false);
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
+			this.panel1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.viewdistance)).EndInit();
@@ -989,5 +1107,13 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox invertyaxis;
 		private System.Windows.Forms.ComboBox defaultviewmode;
 		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.CheckBox scriptfontbold;
+		private System.Windows.Forms.ComboBox scriptfontname;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.ComboBox scriptfontsize;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Label scriptfontlabel;
 	}
 }
