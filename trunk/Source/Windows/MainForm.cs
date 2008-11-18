@@ -37,6 +37,8 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Properties;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using System.Threading;
+using System.Runtime.InteropServices;
 
 #endregion
 
@@ -56,6 +58,17 @@ namespace CodeImp.DoomBuilder.Windows
 			Ready,
 			Busy,
 			Warning
+		}
+		
+		// Message pump
+		public enum ThreadMessages : int
+		{
+			// Sent by the background threat to update the status icon
+			UpdateStatusIcon = General.WM_USER + 1,
+			
+			// This is sent by the background thread when images are loaded
+			// but only when first loaded or when dimensions were changed
+			ImageDataLoaded = General.WM_USER + 2
 		}
 		
 		#endregion
@@ -106,6 +119,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private int warningflashcount;
 		private bool warningsignon;
 		
+		// Properties
+		private IntPtr windowptr;
+		
 		#endregion
 
 		#region ================== Properties
@@ -118,6 +134,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool SnapToGrid { get { return buttonsnaptogrid.Checked; } }
 		public bool AutoMerge { get { return buttonautomerge.Checked; } }
 		public bool MouseExclusive { get { return mouseexclusive; } }
+		new public IntPtr Handle { get { return windowptr; } }
 		
 		#endregion
 
@@ -129,7 +146,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Setup controls
 			InitializeComponent();
 			editmodeitems = new List<ToolStripItem>();
-
+			
+			// Fetch pointer
+			windowptr = base.Handle;
+			
 			// Make array for view modes
 			viewmodesbuttons = new ToolStripButton[Renderer2D.NUM_VIEW_MODES];
 			viewmodesbuttons[(int)ViewMode.Normal] = buttonviewnormal;
@@ -588,9 +608,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(statusbar.InvokeRequired)
 			{
 				// Call to form thread
-				// TODO: This causes deadlocks! Instead of invoking immediately, send a message and handle that!
-				CallUpdateStatusIcon call = new CallUpdateStatusIcon(UpdateStatusIcon);
-				this.Invoke(call);
+				// This may not be called from a different thread. Send a WM_NOTIFY message instead!
+				throw new Exception("This should not be called from any other thread than the main application thread!");
 			}
 			else
 			{
@@ -1686,6 +1705,10 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the modes menu
 		private void UpdateViewMenu()
 		{
+			// Menu items
+			itemthingsfilter.Enabled = (General.Map != null);
+			itemscripteditor.Enabled = (General.Map != null);
+			
 			// View mode items
 			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
 			{
@@ -1705,6 +1728,12 @@ namespace CodeImp.DoomBuilder.Windows
 					viewmodesitems[i].Checked = (i == (int)General.Map.CRenderer2D.ViewMode);
 				}
 			}
+			
+			// Toolbar icons
+			thingfilters.Enabled = (General.Map != null);
+			buttonthingsfilter.Enabled = (General.Map != null);
+			buttonscripteditor.Enabled = (General.Map != null);
+			UpdateThingsFilters();
 		}
 
 		#endregion
@@ -1739,13 +1768,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Enable/disable items
 			itemreloadresources.Enabled = (General.Map != null);
-			itemscripteditor.Enabled = (General.Map != null);
-			
-			// Toolbar icons
-			thingfilters.Enabled = (General.Map != null);
-			buttonthingsfilter.Enabled = (General.Map != null);
-			buttonscripteditor.Enabled = (General.Map != null);
-			UpdateThingsFilters();
 		}
 		
 		// Game Configuration action
@@ -1943,46 +1965,67 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
+		#region ================== Message Pump
+		
+		// This handles messages
+		protected override unsafe void WndProc(ref Message m)
+		{
+			// Notify message?
+			switch(m.Msg)
+			{
+				case (int)ThreadMessages.UpdateStatusIcon:
+					UpdateStatusIcon();
+					break;
+					
+				case (int)ThreadMessages.ImageDataLoaded:
+					string imagename = Marshal.PtrToStringAuto(m.WParam);
+					Marshal.FreeCoTaskMem(m.WParam);
+					if(General.Map != null)
+					{
+						ImageData img = General.Map.Data.GetFlatImage(imagename);
+						if(img != null) ImageDataLoaded(img);
+					}
+					break;
+					
+				default:
+					// Let the base handle the message
+					base.WndProc(ref m);
+					break;
+			}
+		}
+		
+		#endregion
+		
 		#region ================== Processing
-
+		
 		// This is called from the background thread when images are loaded
 		// but only when first loaded or when dimensions were changed
 		internal void ImageDataLoaded(ImageData img)
 		{
-			// From different thread?
-			if(this.InvokeRequired)
+			// Image is used in the map?
+			if((img != null) && img.UsedInMap && !img.IsDisposed)
 			{
-				// Pass the call on to the application thread
-				CallImageDataLoaded call = new CallImageDataLoaded(ImageDataLoaded);
-				this.Invoke(call, img);
-			}
-			else
-			{
-				// Image is used in the map?
-				if(img.UsedInMap && !img.IsDisposed && (General.Map != null))
+				// Go for all setors
+				bool updated = false;
+				foreach(Sector s in General.Map.Map.Sectors)
 				{
-					// Go for all setors
-					bool updated = false;
-					foreach(Sector s in General.Map.Map.Sectors)
+					// Update floor buffer if needed
+					if(s.LongFloorTexture == img.LongName)
 					{
-						// Update floor buffer if needed
-						if(s.LongFloorTexture == img.LongName)
-						{
-							s.UpdateFloorSurface();
-							updated = true;
-						}
-						
-						// Update ceiling buffer if needed
-						if(s.LongCeilTexture == img.LongName)
-						{
-							s.UpdateCeilingSurface();
-							updated = true;
-						}
+						s.UpdateFloorSurface();
+						updated = true;
 					}
-
-					// If we made updates, redraw the screen
-					if(updated) RedrawDisplay();
+					
+					// Update ceiling buffer if needed
+					if(s.LongCeilTexture == img.LongName)
+					{
+						s.UpdateCeilingSurface();
+						updated = true;
+					}
 				}
+				
+				// If we made updates, redraw the screen
+				if(updated) DelayedRedraw();
 			}
 		}
 

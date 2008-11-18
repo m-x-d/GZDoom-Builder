@@ -30,6 +30,7 @@ using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Config;
 using System.Threading;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -406,7 +407,7 @@ namespace CodeImp.DoomBuilder.Data
 				
 				// Done
 				backgroundloader = null;
-				General.MainWindow.UpdateStatusIcon();
+				General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
 			}
 		}
 		
@@ -449,7 +450,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(image != null)
 					{
 						// Wait a bit and update icon
-						General.MainWindow.UpdateStatusIcon();
+						General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
 						Thread.Sleep(0);
 					}
 					else
@@ -459,7 +460,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(previews.BackgroundLoad())
 						{
 							// Wait a bit and update icon
-							General.MainWindow.UpdateStatusIcon();
+							General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
 							Thread.Sleep(0);
 						}
 						else
@@ -497,7 +498,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Update icon
-			General.MainWindow.UpdateStatusIcon();
+			General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
 		}
 
 		// This updates the used-in-map status on all textures and flats
