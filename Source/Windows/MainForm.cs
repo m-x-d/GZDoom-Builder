@@ -1824,7 +1824,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.Map != null)
 				{
 					// Setup and reload stuff
-					General.Map.ScriptEditor.Editor.RefreshSettings();
+					if(General.Map.ScriptEditor != null) General.Map.ScriptEditor.Editor.RefreshSettings();
 					General.Map.Graphics.SetupSettings();
 					General.Map.Map.UpdateConfiguration();
 					General.Map.ReloadResources();

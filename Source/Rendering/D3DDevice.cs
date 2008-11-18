@@ -52,7 +52,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Settings
 		private int adapter;
-
+		private Filter postfilter;
+		
 		// Main objects
 		private static Direct3D d3d;
 		private RenderTargetControl rendertarget;
@@ -82,6 +83,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal Surface DepthBuffer { get { return depthbuffer; } }
 		internal TextFont Font { get { return font; } }
 		internal Texture FontTexture { get { return fonttexture.Texture; } }
+		internal Filter PostFilter { get { return postfilter; } }
 		
 		#endregion
 
@@ -210,6 +212,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Shader settings
 			shaders.World3D.SetConstants(General.Settings.VisualBilinear, true);
 			
+			// Texture loading filter
+			if(General.Settings.QualityDisplay)
+				postfilter = Filter.Box;
+			else
+				postfilter = Filter.Linear;
+			
 			// Initialize presentations
 			Presentation.Initialize();
 		}
@@ -292,6 +300,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			shaders = new ShaderManager(this);
 			
 			// Font
+			postfilter = Filter.Box;
 			font = new TextFont();
 			fonttexture = new ResourceImage("Font.png");
 			fonttexture.LoadImage();
