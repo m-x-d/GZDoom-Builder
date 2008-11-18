@@ -162,10 +162,20 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetTransform(TransformState.Projection, Matrix.Identity);
 			
 			// Sampler settings
-			device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
-			device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
-			device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Point);
-			device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
+			if(General.Settings.ClassicBilinear)
+			{
+				device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
+				device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
+				device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Linear);
+				device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
+			}
+			else
+			{
+				device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
+				device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
+				device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Point);
+				device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
+			}
 			
 			// Texture addressing
 			device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
