@@ -1,8 +1,18 @@
+There are no dates in this planning because I value
+quality over quantity. It is done when it's done.
+The order and included items may also change any time.
+=========================================================
+
 - Make 3D Mode (config specific!)
 
 - Make texture alignment features
 
 - Make Prefabs support
+
+=========================================================
+  BETA TESTING STARTS HERE
+  OFFICIAL MANUAL WRITING STARTS HERE
+=========================================================
 
 - Make DECORATE support
 
@@ -17,9 +27,13 @@
 
 - Make dialog and editing mode help documentation
 
-- Make Plugin Development Kit
-	- Add general purpose events to editing modes and plugin main class
-	- Add proper XML comments to classes, properties and methods
+=========================================================
+  RELEASABLE
+=========================================================
 
 - Contact AlysiumX (AlysiumX@gmail.com) for official video tutorials
 	(see http://www.youtube.com/view_play_list?p=6FDD1F9F674419E8)
+
+- Make Plugin Development Kit
+	- Add general purpose events to editing modes and plugin main class
+	- Add proper XML comments to classes, properties and methods
