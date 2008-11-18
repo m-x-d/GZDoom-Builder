@@ -28,6 +28,8 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -200,7 +202,8 @@ namespace CodeImp.DoomBuilder.Data
 			   (oldscaledwidth != scaledwidth) || (oldscaledheight != scaledheight))
 			{
 				// Notify the main thread about the change so that sectors can update their buffers
-				General.MainWindow.ImageDataLoaded(this);
+				IntPtr strptr = Marshal.StringToCoTaskMemAuto(this.name);
+				General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.ImageDataLoaded, strptr.ToInt32(), 0);
 			}
 		}
 		

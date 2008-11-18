@@ -103,11 +103,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This draws the geometry
 		private void DrawGeometry()
 		{
+			Dictionary<Sector, Sector> associates = new Dictionary<Sector, Sector>();
+			
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-
+				
+				// Render sector indication
+				if(allsides != null)
+				{
+					foreach(LinedefSide sd in allsides)
+					{
+						if(sd.Front)
+						{
+							if(sd.Line.Front != null)
+							{
+								if(!associates.ContainsKey(sd.Line.Front.Sector))
+								{
+									renderer.PlotSector(sd.Line.Front.Sector, General.Colors.Indication);
+									associates[sd.Line.Front.Sector] = sd.Line.Front.Sector;
+								}
+							}
+						}
+						else
+						{
+							if(sd.Line.Back != null)
+							{
+								if(!associates.ContainsKey(sd.Line.Back.Sector))
+								{
+									renderer.PlotSector(sd.Line.Back.Sector, General.Colors.Indication);
+									associates[sd.Line.Back.Sector] = sd.Line.Back.Sector;
+								}
+							}
+						}
+					}
+				}
+				
 				// Render highlight
 				if(alllines != null)
 				{
