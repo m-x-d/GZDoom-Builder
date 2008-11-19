@@ -32,10 +32,11 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using SlimDX;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.VisualModes
 {
 	/// <summary>
 	/// Provides specialized functionality for a visual (3D) Doom Builder editing mode.

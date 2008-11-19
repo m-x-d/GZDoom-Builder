@@ -30,6 +30,7 @@ using SlimDX;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
