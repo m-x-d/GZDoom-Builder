@@ -137,7 +137,8 @@
     <Compile Include="Actions\ActionManager.cs" />
     <Compile Include="Config\CompilerInfo.cs" />
     <Compile Include="Config\ConfigurationInfo.cs" />
-    <Compile Include="Editing\VisualMode.cs" />
+    <Compile Include="VisualModes\VisualBlockMap.cs" />
+    <Compile Include="VisualModes\VisualMode.cs" />
     <Compile Include="General\Clock.cs" />
     <Compile Include="Compilers\Compiler.cs" />
     <Compile Include="Compilers\CompilerError.cs" />
@@ -474,7 +475,7 @@
     <Compile Include="Rendering\TextAlignment.cs" />
     <Compile Include="Rendering\TextFont.cs" />
     <Compile Include="Rendering\TextLabel.cs" />
-    <Compile Include="Rendering\VisualGeometry.cs" />
+    <Compile Include="VisualModes\VisualGeometry.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
     <Compile Include="Rendering\PixelColorBlock.cs" />
     <Compile Include="Rendering\Plotter.cs" />
@@ -483,7 +484,7 @@
     <Compile Include="Rendering\Renderer3D.cs" />
     <Compile Include="Rendering\ShaderManager.cs" />
     <Compile Include="Rendering\Things2DShader.cs" />
-    <Compile Include="Rendering\VisualSector.cs" />
+    <Compile Include="VisualModes\VisualSector.cs" />
     <Compile Include="Rendering\World3DShader.cs" />
     <Compile Include="Rendering\WorldVertex.cs" />
   </ItemGroup>
@@ -648,6 +649,7 @@
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
     <Content Include="Resources\DB2.ico" />
+    <Compile Include="VisualModes\VisualBlockEntry.cs" />
     <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
     <None Include="Resources\ScriptConstant.xpm" />

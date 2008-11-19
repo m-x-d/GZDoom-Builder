@@ -34,10 +34,11 @@ using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Rendering
+namespace CodeImp.DoomBuilder.VisualModes
 {
 	public abstract class VisualGeometry : IComparable<VisualGeometry>
 	{
