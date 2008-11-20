@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldofview.Value = General.Settings.VisualFOV / 10;
 			mousespeed.Value = General.Settings.MouseSpeed / 100;
 			movespeed.Value = General.Settings.MoveSpeed / 100;
-			viewdistance.Value = (int)(General.Settings.ViewDistance / 1000.0f);
+			viewdistance.Value = (int)(General.Settings.ViewDistance / 200.0f);
 			invertyaxis.Checked = General.Settings.InvertYAxis;
 			fixedaspect.Checked = General.Settings.FixedAspect;
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;
@@ -158,6 +158,178 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Done
 			allowapplycontrol = true;
+		}
+
+		#endregion
+
+		#region ================== OK / Cancel
+
+		// OK clicked
+		private void apply_Click(object sender, EventArgs e)
+		{
+			// Apply interface
+			General.Settings.ImageBrightness = imagebrightness.Value;
+			General.Settings.QualityDisplay = qualitydisplay.Checked;
+			General.Settings.SquareThings = squarethings.Checked;
+			General.Settings.DoubleSidedAlpha = 1.0f - (float)(doublesidedalpha.Value * 0.1f);
+			General.Settings.DefaultViewMode = defaultviewmode.SelectedIndex;
+			General.Settings.ClassicBilinear = classicbilinear.Checked;
+			General.Settings.VisualBilinear = visualbilinear.Checked;
+			General.Settings.VisualFOV = fieldofview.Value * 10;
+			General.Settings.MouseSpeed = mousespeed.Value * 100;
+			General.Settings.MoveSpeed = movespeed.Value * 100;
+			General.Settings.ViewDistance = (float)viewdistance.Value * 200.0f;
+			General.Settings.InvertYAxis = invertyaxis.Checked;
+			General.Settings.FixedAspect = fixedaspect.Checked;
+			General.Settings.ScriptFontBold = scriptfontbold.Checked;
+			General.Settings.ScriptFontName = scriptfontname.Text;
+
+			// Script font size
+			int fontsize = 8;
+			int.TryParse(scriptfontsize.Text, out fontsize);
+			General.Settings.ScriptFontSize = fontsize;
+			
+			// Apply control keys to actions
+			foreach(ListViewItem item in listactions.Items)
+				General.Actions[item.Name].SetShortcutKey((int)item.SubItems[1].Tag);
+
+			// Apply the colors
+			// TODO: Make this automated by using the collection
+			General.Colors.Background = colorbackcolor.Color;
+			General.Colors.Vertices = colorvertices.Color;
+			General.Colors.Linedefs = colorlinedefs.Color;
+			General.Colors.Actions = colorspeciallinedefs.Color;
+			General.Colors.Sounds = colorsoundlinedefs.Color;
+			General.Colors.Highlight = colorhighlight.Color;
+			General.Colors.Selection = colorselection.Color;
+			General.Colors.Indication = colorindication.Color;
+			General.Colors.Grid = colorgrid.Color;
+			General.Colors.Grid64 = colorgrid64.Color;
+			General.Colors.ScriptBackground = colorscriptbackground.Color;
+			General.Colors.LineNumbers = colorlinenumbers.Color;
+			General.Colors.PlainText = colorplaintext.Color;
+			General.Colors.Comments = colorcomments.Color;
+			General.Colors.Keywords = colorkeywords.Color;
+			General.Colors.Literals = colorliterals.Color;
+			General.Colors.Constants = colorconstants.Color;
+			General.Colors.CreateAssistColors();
+			General.Settings.BlackBrowsers = blackbrowsers.Checked;
+			
+			// Close
+			this.DialogResult = DialogResult.OK;
+			this.Close();
+		}
+
+		// Cancel clicked
+		private void cancel_Click(object sender, EventArgs e)
+		{
+			// Close
+			this.DialogResult = DialogResult.Cancel;
+			this.Close();
+		}
+
+		#endregion
+
+		#region ================== Tabs
+
+		// Tab changes
+		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Enable/disable stuff with tabs
+			if(tabs.SelectedTab != tabkeys) this.AcceptButton = apply; else this.AcceptButton = null;
+			if(tabs.SelectedTab != tabkeys) this.CancelButton = cancel; else this.CancelButton = null;
+			colorsgroup1.Visible = (tabs.SelectedTab == tabcolors);
+			//colorsgroup2.Visible = (tabs.SelectedTab == tabcolors);
+			colorsgroup3.Visible = (tabs.SelectedTab == tabcolors);
+		}
+
+		#endregion
+
+		#region ================== Interface Panel
+
+		private void fieldofview_ValueChanged(object sender, EventArgs e)
+		{
+			int value = fieldofview.Value * 10;
+			fieldofviewlabel.Text = value.ToString() + (char)176;
+		}
+
+		private void mousespeed_ValueChanged(object sender, EventArgs e)
+		{
+			int value = mousespeed.Value * 100;
+			mousespeedlabel.Text = value.ToString();
+		}
+
+		private void movespeed_ValueChanged(object sender, EventArgs e)
+		{
+			int value = movespeed.Value * 100;
+			movespeedlabel.Text = value.ToString();
+		}
+
+		private void viewdistance_ValueChanged(object sender, EventArgs e)
+		{
+			int value = viewdistance.Value * 200;
+			viewdistancelabel.Text = value.ToString() + " mp";
+		}
+
+		private void scriptfontname_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateScriptFontPreview();
+		}
+
+		private void scriptfontsize_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			UpdateScriptFontPreview();
+		}
+
+		private void scriptfontbold_CheckedChanged(object sender, EventArgs e)
+		{
+			UpdateScriptFontPreview();
+		}
+
+		// This updates the script font preview label
+		private void UpdateScriptFontPreview()
+		{
+			if((scriptfontname.SelectedIndex > -1) &&
+			   (scriptfontsize.SelectedIndex > -1))
+			{
+				scriptfontlabel.Text = scriptfontname.Text;
+				scriptfontlabel.BackColor = General.Colors.ScriptBackground.ToColor();
+				scriptfontlabel.ForeColor = General.Colors.PlainText.ToColor();
+				FontFamily ff = new FontFamily(scriptfontname.Text);
+				FontStyle style = FontStyle.Regular;
+				if(scriptfontbold.Checked)
+				{
+					// Prefer bold over regular
+					if(ff.IsStyleAvailable(FontStyle.Bold))
+						style = FontStyle.Bold;
+					else if(ff.IsStyleAvailable(FontStyle.Regular))
+						style = FontStyle.Regular;
+					else if(ff.IsStyleAvailable(FontStyle.Italic))
+						style = FontStyle.Italic;
+					else if(ff.IsStyleAvailable(FontStyle.Underline))
+						style = FontStyle.Underline;
+					else if(ff.IsStyleAvailable(FontStyle.Strikeout))
+						style = FontStyle.Strikeout;
+				}
+				else
+				{
+					// Prefer regular over bold
+					if(ff.IsStyleAvailable(FontStyle.Regular))
+						style = FontStyle.Regular;
+					else if(ff.IsStyleAvailable(FontStyle.Bold))
+						style = FontStyle.Bold;
+					else if(ff.IsStyleAvailable(FontStyle.Italic))
+						style = FontStyle.Italic;
+					else if(ff.IsStyleAvailable(FontStyle.Underline))
+						style = FontStyle.Underline;
+					else if(ff.IsStyleAvailable(FontStyle.Strikeout))
+						style = FontStyle.Strikeout;
+				}
+				int fontsize = 8;
+				int.TryParse(scriptfontsize.Text, out fontsize);
+				if(ff.IsStyleAvailable(style))
+					scriptfontlabel.Font = new Font(scriptfontname.Text, (float)fontsize, style);
+			}
 		}
 
 		#endregion
@@ -323,89 +495,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		#region ================== OK / Cancel
-
-		// OK clicked
-		private void apply_Click(object sender, EventArgs e)
-		{
-			// Apply interface
-			General.Settings.ImageBrightness = imagebrightness.Value;
-			General.Settings.QualityDisplay = qualitydisplay.Checked;
-			General.Settings.SquareThings = squarethings.Checked;
-			General.Settings.DoubleSidedAlpha = 1.0f - (float)(doublesidedalpha.Value * 0.1f);
-			General.Settings.DefaultViewMode = defaultviewmode.SelectedIndex;
-			General.Settings.ClassicBilinear = classicbilinear.Checked;
-			General.Settings.VisualBilinear = visualbilinear.Checked;
-			General.Settings.VisualFOV = fieldofview.Value * 10;
-			General.Settings.MouseSpeed = mousespeed.Value * 100;
-			General.Settings.MoveSpeed = movespeed.Value * 100;
-			General.Settings.ViewDistance = (float)viewdistance.Value * 1000.0f;
-			General.Settings.InvertYAxis = invertyaxis.Checked;
-			General.Settings.FixedAspect = fixedaspect.Checked;
-			General.Settings.ScriptFontBold = scriptfontbold.Checked;
-			General.Settings.ScriptFontName = scriptfontname.Text;
-
-			// Script font size
-			int fontsize = 8;
-			int.TryParse(scriptfontsize.Text, out fontsize);
-			General.Settings.ScriptFontSize = fontsize;
-			
-			// Apply control keys to actions
-			foreach(ListViewItem item in listactions.Items)
-				General.Actions[item.Name].SetShortcutKey((int)item.SubItems[1].Tag);
-
-			// Apply the colors
-			// TODO: Make this automated by using the collection
-			General.Colors.Background = colorbackcolor.Color;
-			General.Colors.Vertices = colorvertices.Color;
-			General.Colors.Linedefs = colorlinedefs.Color;
-			General.Colors.Actions = colorspeciallinedefs.Color;
-			General.Colors.Sounds = colorsoundlinedefs.Color;
-			General.Colors.Highlight = colorhighlight.Color;
-			General.Colors.Selection = colorselection.Color;
-			General.Colors.Indication = colorindication.Color;
-			General.Colors.Grid = colorgrid.Color;
-			General.Colors.Grid64 = colorgrid64.Color;
-			General.Colors.ScriptBackground = colorscriptbackground.Color;
-			General.Colors.LineNumbers = colorlinenumbers.Color;
-			General.Colors.PlainText = colorplaintext.Color;
-			General.Colors.Comments = colorcomments.Color;
-			General.Colors.Keywords = colorkeywords.Color;
-			General.Colors.Literals = colorliterals.Color;
-			General.Colors.Constants = colorconstants.Color;
-			General.Colors.CreateAssistColors();
-			General.Settings.BlackBrowsers = blackbrowsers.Checked;
-			
-			// Close
-			this.DialogResult = DialogResult.OK;
-			this.Close();
-		}
-
-		// Cancel clicked
-		private void cancel_Click(object sender, EventArgs e)
-		{
-			// Close
-			this.DialogResult = DialogResult.Cancel;
-			this.Close();
-		}
-
-		#endregion
-
-		#region ================== Tabs
-
-		// Tab changes
-		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			// Enable/disable stuff with tabs
-			if(tabs.SelectedTab != tabkeys) this.AcceptButton = apply; else this.AcceptButton = null;
-			if(tabs.SelectedTab != tabkeys) this.CancelButton = cancel; else this.CancelButton = null;
-			colorsgroup1.Visible = (tabs.SelectedTab == tabcolors);
-			//colorsgroup2.Visible = (tabs.SelectedTab == tabcolors);
-			colorsgroup3.Visible = (tabs.SelectedTab == tabcolors);
-		}
-
-		#endregion
-
 		#region ================== Colors Panel
 
 		private void imagebrightness_ValueChanged(object sender, EventArgs e)
@@ -417,95 +506,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			int percent = doublesidedalpha.Value * 10;
 			doublesidedalphalabel.Text = percent.ToString() + "%";
-		}
-
-		#endregion
-
-		#region ================== Interface Panel
-
-		private void fieldofview_ValueChanged(object sender, EventArgs e)
-		{
-			int value = fieldofview.Value * 10;
-			fieldofviewlabel.Text = value.ToString() + (char)176;
-		}
-
-		private void mousespeed_ValueChanged(object sender, EventArgs e)
-		{
-			int value = mousespeed.Value * 100;
-			mousespeedlabel.Text = value.ToString();
-		}
-
-		private void movespeed_ValueChanged(object sender, EventArgs e)
-		{
-			int value = movespeed.Value * 100;
-			movespeedlabel.Text = value.ToString();
-		}
-
-		private void viewdistance_ValueChanged(object sender, EventArgs e)
-		{
-			int value = viewdistance.Value * 1000;
-			viewdistancelabel.Text = value.ToString() + " mp";
-		}
-
-		private void scriptfontname_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateScriptFontPreview();
-		}
-
-		private void scriptfontsize_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			UpdateScriptFontPreview();
-		}
-
-		private void scriptfontbold_CheckedChanged(object sender, EventArgs e)
-		{
-			UpdateScriptFontPreview();
-		}
-
-		// This updates the script font preview label
-		private void UpdateScriptFontPreview()
-		{
-			if((scriptfontname.SelectedIndex > -1) &&
-			   (scriptfontsize.SelectedIndex > -1))
-			{
-				scriptfontlabel.Text = scriptfontname.Text;
-				scriptfontlabel.BackColor = General.Colors.ScriptBackground.ToColor();
-				scriptfontlabel.ForeColor = General.Colors.PlainText.ToColor();
-				FontFamily ff = new FontFamily(scriptfontname.Text);
-				FontStyle style = FontStyle.Regular;
-				if(scriptfontbold.Checked)
-				{
-					// Prefer bold over regular
-					if(ff.IsStyleAvailable(FontStyle.Bold))
-						style = FontStyle.Bold;
-					else if(ff.IsStyleAvailable(FontStyle.Regular))
-						style = FontStyle.Regular;
-					else if(ff.IsStyleAvailable(FontStyle.Italic))
-						style = FontStyle.Italic;
-					else if(ff.IsStyleAvailable(FontStyle.Underline))
-						style = FontStyle.Underline;
-					else if(ff.IsStyleAvailable(FontStyle.Strikeout))
-						style = FontStyle.Strikeout;
-				}
-				else
-				{
-					// Prefer regular over bold
-					if(ff.IsStyleAvailable(FontStyle.Regular))
-						style = FontStyle.Regular;
-					else if(ff.IsStyleAvailable(FontStyle.Bold))
-						style = FontStyle.Bold;
-					else if(ff.IsStyleAvailable(FontStyle.Italic))
-						style = FontStyle.Italic;
-					else if(ff.IsStyleAvailable(FontStyle.Underline))
-						style = FontStyle.Underline;
-					else if(ff.IsStyleAvailable(FontStyle.Strikeout))
-						style = FontStyle.Strikeout;
-				}
-				int fontsize = 8;
-				int.TryParse(scriptfontsize.Text, out fontsize);
-				if(ff.IsStyleAvailable(style))
-					scriptfontlabel.Font = new Font(scriptfontname.Text, (float)fontsize, style);
-			}
 		}
 
 		#endregion

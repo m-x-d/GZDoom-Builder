@@ -72,6 +72,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private bool keyleft;
 		private bool keyright;
 
+		// Map
+		protected VisualBlockMap blockmap;
+		
 		#endregion
 
 		#region ================== Properties
@@ -93,6 +96,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.renderer3d = (Renderer3D)General.Map.Renderer3D;
 			this.campos = new Vector3D(0.0f, 0.0f, 96.0f);
 			this.camanglez = Angle2D.PI;
+			this.blockmap = new VisualBlockMap();
 		}
 
 		// Disposer
@@ -102,7 +106,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(!isdisposed)
 			{
 				// Clean up
-
+				blockmap.Dispose();
+				
 				// Done
 				base.Dispose();
 			}
@@ -116,6 +121,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+			
+			// Fill the blockmap
+			FillBlockMap();
 			
 			// Find a 3D Mode thing
 			foreach(Thing t in General.Map.Map.Things)
@@ -156,6 +164,23 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#endregion
 
+		#region ================== Events
+
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+
+			// Make new blockmap
+			if(blockmap != null)
+			{
+				blockmap.Dispose();
+				blockmap = new VisualBlockMap();
+				FillBlockMap();
+			}
+		}
+
+		#endregion
+		
 		#region ================== Input
 
 		// Mouse input
@@ -230,6 +255,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Processing
 
+		// This fills the blockmap
+		protected virtual void FillBlockMap()
+		{
+			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
+		}
+		
 		// Processing
 		public override void OnProcess()
 		{

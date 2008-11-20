@@ -552,9 +552,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.viewdistancelabel.AutoSize = true;
 			this.viewdistancelabel.Location = new System.Drawing.Point(259, 208);
 			this.viewdistancelabel.Name = "viewdistancelabel";
-			this.viewdistancelabel.Size = new System.Drawing.Size(48, 14);
+			this.viewdistancelabel.Size = new System.Drawing.Size(42, 14);
 			this.viewdistancelabel.TabIndex = 30;
-			this.viewdistancelabel.Text = "1000 mp";
+			this.viewdistancelabel.Text = "200 mp";
 			// 
 			// viewdistance
 			// 
