@@ -42,8 +42,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 	{
 		#region ================== Constants
 		
-		public const int BLOCK_SIZE_SHIFT = 6;
-		public const int BLOCK_SIZE = 2 << BLOCK_SIZE_SHIFT;
+		public const int BLOCK_SIZE_SHIFT = 7;
+		public const int BLOCK_SIZE = 1 << BLOCK_SIZE_SHIFT;
 		
 		#endregion
 		
@@ -124,10 +124,32 @@ namespace CodeImp.DoomBuilder.VisualModes
 			blockmap = new Dictionary<ulong,VisualBlockEntry>();
 		}
 		
+		// This returns a range of blocks in a square
+		public List<VisualBlockEntry> GetSquareRange(Vector2D pos, float radius)
+		{
+			// Calculate block coordinates
+			Point lt = GetBlockCoordinates(pos - radius);
+			Point rb = GetBlockCoordinates(pos + radius);
+			
+			// Go through the range to make a list
+			int entriescount = (rb.X - lt.X) * (rb.Y - lt.Y);
+			List<VisualBlockEntry> entries = new List<VisualBlockEntry>(entriescount);
+			for(int x = lt.X; x <= rb.X; x++)
+			{
+				for(int y = lt.Y; y <= rb.Y; y++)
+				{
+					entries.Add(GetBlock(new Point(x, y)));
+				}
+			}
+
+			// Return list
+			return entries;
+		}
+
 		#endregion
-		
+
 		#region ================== Advanced Methods
-		
+
 		// This puts a whole set of linedefs in the blocks they cross
 		public void AddLinedefsSet(ICollection<Linedef> lines)
 		{

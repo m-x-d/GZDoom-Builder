@@ -53,7 +53,6 @@ namespace CodeImp.DoomBuilder.Config
 		private int visualfov;
 		private float visualmousesensx;
 		private float visualmousesensy;
-		private float visualviewrange;
 		private int imagebrightness;
 		private float doublesidedalpha;
 		private float backgroundalpha;
@@ -95,7 +94,6 @@ namespace CodeImp.DoomBuilder.Config
 		public float BackgroundAlpha { get { return backgroundalpha; } internal set { backgroundalpha = value; } }
 		public float VisualMouseSensX { get { return visualmousesensx; } internal set { visualmousesensx = value; } }
 		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
-		public float VisualViewRange { get { return visualviewrange; } internal set { visualviewrange = value; } }
 		public bool QualityDisplay { get { return qualitydisplay; } internal set { qualitydisplay = value; } }
 		public bool SquareThings { get { return squarethings; } internal set { squarethings = value; } }
 		public bool TestMonsters { get { return testmonsters; } internal set { testmonsters = value; } }
@@ -147,7 +145,6 @@ namespace CodeImp.DoomBuilder.Config
 				visualfov = cfg.ReadSetting("visualfov", 80);
 				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40f);
 				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40f);
-				visualviewrange = cfg.ReadSetting("visualviewrange", 1000f);
 				imagebrightness = cfg.ReadSetting("imagebrightness", 3);
 				doublesidedalpha = cfg.ReadSetting("doublesidedalpha", 0.4f);
 				backgroundalpha = cfg.ReadSetting("backgroundalpha", 1.0f);
@@ -185,7 +182,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("visualfov", visualfov);
 			cfg.WriteSetting("visualmousesensx", visualmousesensx);
 			cfg.WriteSetting("visualmousesensy", visualmousesensy);
-			cfg.WriteSetting("visualviewrange", visualviewrange);
 			cfg.WriteSetting("imagebrightness", imagebrightness);
 			cfg.WriteSetting("qualitydisplay", qualitydisplay);
 			cfg.WriteSetting("squarethings", squarethings);

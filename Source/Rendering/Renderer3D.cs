@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constants
 
 		private const float PROJ_NEAR_PLANE = 1f;
-		private const float PROJ_FAR_PLANE = 2000f;
+		private const float PROJ_FAR_PLANE = 5000f;
 
 		#endregion
 
