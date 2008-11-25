@@ -649,6 +649,7 @@
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
     <Content Include="Resources\DB2.ico" />
+    <Compile Include="VisualModes\Clipper.cs" />
     <Compile Include="VisualModes\VisualBlockEntry.cs" />
     <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
