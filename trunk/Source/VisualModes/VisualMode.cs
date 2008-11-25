@@ -74,6 +74,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		// Map
 		protected VisualBlockMap blockmap;
+		protected Dictionary<Sector, VisualSector> allsectors;
+		protected Dictionary<Sector, VisualSector> visiblesectors;
 		
 		#endregion
 
@@ -97,6 +99,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.campos = new Vector3D(0.0f, 0.0f, 96.0f);
 			this.camanglez = Angle2D.PI;
 			this.blockmap = new VisualBlockMap();
+			this.allsectors = new Dictionary<Sector, VisualSector>(General.Map.Map.Sectors.Count);
+			this.visiblesectors = new Dictionary<Sector, VisualSector>(50);
 		}
 
 		// Disposer
@@ -106,7 +110,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(!isdisposed)
 			{
 				// Clean up
+				foreach(KeyValuePair<Sector, VisualSector> s in allsectors) s.Value.Dispose();
 				blockmap.Dispose();
+				visiblesectors = null;
+				allsectors = null;
+				blockmap = null;
 				
 				// Done
 				base.Dispose();
@@ -121,7 +129,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
-			
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
 			// Fill the blockmap
 			FillBlockMap();
 			
@@ -253,8 +264,160 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		#endregion
 
+		#region ================== Visibility Culling
+
+		// This preforms visibility culling
+		private void DoCulling()
+		{
+			Vector2D campos2d = (Vector2D)campos;
+			float viewdist = General.Settings.ViewDistance;
+			
+			// Get the blocks within view range and make a collection of all nearby linedefs
+			RectangleF viewrect = new RectangleF(campos.x - viewdist, campos.y - viewdist, viewdist * 2, viewdist * 2);
+			List<VisualBlockEntry> blocks = blockmap.GetSquareRange(viewrect);
+			List<Linedef> nearbylines = new List<Linedef>(blocks.Count);
+			foreach(VisualBlockEntry b in blocks) nearbylines.AddRange(b.Lines);
+			
+			// Find the sector to begin with
+			Sector start = FindStartSector((Vector2D)campos, nearbylines);
+
+			// Find visible sectors
+			visiblesectors = new Dictionary<Sector, VisualSector>(visiblesectors.Count);
+			if(start != null) ProcessVisibleSectors(start, (Vector2D)campos);
+		}
+
+		// This recursively finds and adds visible sectors
+		private void ProcessVisibleSectors(Sector start, Vector2D campos)
+		{
+			Stack<Sector> todo = new Stack<Sector>(50);
+			Dictionary<Sector, Sector> stackedsectors = new Dictionary<Sector, Sector>(50);
+			Clipper clipper = new Clipper(campos);
+			float viewdist2 = General.Settings.ViewDistance * General.Settings.ViewDistance;
+			
+			// TODO: Use sector markings instead of the stackedsectors dictionary?
+			
+			// This algorithm uses a breadth-first search for visible sectors
+			
+			// Continue until no more sectors to process
+			todo.Push(start);
+			stackedsectors.Add(start, start);
+			while(todo.Count > 0)
+			{
+				Sector s = todo.Pop();
+				VisualSector vs;
+
+				// Find the basesector and make it if needed
+				if(allsectors.ContainsKey(s))
+				{
+					// Take existing visualsector
+					vs = allsectors[s];
+				}
+				else
+				{
+					// Make new visualsector
+					vs = CreateVisualSector(s);
+					allsectors.Add(s, vs);
+				}
+
+				// Add sector to visibility list
+				visiblesectors.Add(s, vs);
+
+				// Go for all sidedefs in the sector
+				foreach(Sidedef sd in s.Sidedefs)
+				{
+					// Camera on the front of this side?
+					float side = sd.Line.SideOfLine(campos);
+					if(((side > 0) && sd.IsFront) ||
+					   ((side < 0) && !sd.IsFront))
+					{
+						// Sidedef blocking the view?
+						if((sd.Other == null) ||
+						   (sd.Other.Sector.FloorHeight >= (sd.Sector.CeilHeight - 0.0001f)) ||
+						   (sd.Other.Sector.CeilHeight <= (sd.Sector.FloorHeight + 0.0001f)) ||
+						   (sd.Other.Sector.FloorHeight >= (sd.Other.Sector.CeilHeight - 0.0001f)))
+						{
+							// This blocks the view
+							clipper.InsertRange(sd.Line.Start.Position, sd.Line.End.Position);
+						}
+					}
+				}
+
+				// Go for all sidedefs in the sector
+				foreach(Sidedef sd in s.Sidedefs)
+				{
+					// Doublesided and not referring to same sector?
+					if((sd.Other != null) && (sd.Other.Sector != sd.Sector))
+					{
+						// Get the other sector
+						Sector os = sd.Other.Sector;
+
+						// Sector not added yet?
+						if(!stackedsectors.ContainsKey(os))
+						{
+							// Within view range?
+							if(sd.Line.DistanceToSq(campos, true) < viewdist2)
+							{
+								// Can we see this sector?
+								if(clipper.TestRange(sd.Line.Start.Position, sd.Line.End.Position))
+								{
+									// Process this sector as well
+									todo.Push(os);
+									stackedsectors.Add(os, os);
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// Done
+			clipper.Dispose();
+		}
+		
+		// This finds the nearest sector to the camera
+		private Sector FindStartSector(Vector2D campos, List<Linedef> lines)
+		{
+			float side;
+			Linedef l;
+
+			// Get nearest linedef
+			l = MapSet.NearestLinedef(lines, campos);
+			if(l != null)
+			{
+				// Check if we are on front or back side
+				side = l.SideOfLine(campos);
+				if(side > 0)
+				{
+					// Is there a sidedef here?
+					if(l.Back != null)
+						return l.Back.Sector;
+					else if(l.Front != null)
+						return l.Front.Sector;
+					else
+						return null;
+				}
+				else
+				{
+					// Is there a sidedef here?
+					if(l.Front != null)
+						return l.Front.Sector;
+					else if(l.Back != null)
+						return l.Back.Sector;
+					else
+						return null;
+				}
+			}
+			else
+				return null;
+		}
+
+		#endregion
+
 		#region ================== Processing
 
+		// This creates a visual sector
+		protected abstract VisualSector CreateVisualSector(Sector s);
+		
 		// This fills the blockmap
 		protected virtual void FillBlockMap()
 		{
@@ -284,11 +447,39 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Apply new camera matrices
 			renderer.PositionAndLookAt(campos, camtarget);
+
+			// Visibility culling
+			DoCulling();
 			
 			// Now redraw
 			General.Interface.RedrawDisplay();
 		}
 		
+		#endregion
+		
+		#region ================== Rendering
+
+		// Call this to simply render all visible sectors
+		public override void OnRedrawDisplay()
+		{
+			// Render all visible sectors
+			foreach(KeyValuePair<Sector, VisualSector> vs in visiblesectors)
+				renderer.RenderGeometry(vs.Value);
+		}
+		
+		#endregion
+
+		#region ================== Actions
+		
+		[EndAction("reloadresources", BaseAction = true)]
+		public virtual void ReloadResources()
+		{
+			// Trash all visual sectors, because they are no longer valid
+			foreach(KeyValuePair<Sector, VisualSector> s in allsectors) s.Value.Dispose();
+			allsectors.Clear();
+			visiblesectors.Clear();
+		}
+
 		#endregion
 	}
 }

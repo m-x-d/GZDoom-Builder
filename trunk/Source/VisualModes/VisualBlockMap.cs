@@ -125,11 +125,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 		
 		// This returns a range of blocks in a square
-		public List<VisualBlockEntry> GetSquareRange(Vector2D pos, float radius)
+		public List<VisualBlockEntry> GetSquareRange(RectangleF rect)
 		{
 			// Calculate block coordinates
-			Point lt = GetBlockCoordinates(pos - radius);
-			Point rb = GetBlockCoordinates(pos + radius);
+			Point lt = GetBlockCoordinates(new Vector2D(rect.Left, rect.Top));
+			Point rb = GetBlockCoordinates(new Vector2D(rect.Right, rect.Bottom));
 			
 			// Go through the range to make a list
 			int entriescount = (rb.X - lt.X) * (rb.Y - lt.Y);
