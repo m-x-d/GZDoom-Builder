@@ -286,7 +286,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(start != null) ProcessVisibleSectors(start, (Vector2D)campos);
 		}
 
-		// This recursively finds and adds visible sectors
+		// This finds and adds visible sectors
 		private void ProcessVisibleSectors(Sector start, Vector2D campos)
 		{
 			Stack<Sector> todo = new Stack<Sector>(50);
@@ -357,8 +357,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 							// Within view range?
 							if(sd.Line.DistanceToSq(campos, true) < viewdist2)
 							{
+								Vector2D p = sd.Line.Start.Position;
+								if((p.x > s.BBox.Left + Linedef.SIDE_POINT_DISTANCE) &&
+								   (p.x < s.BBox.Right - Linedef.SIDE_POINT_DISTANCE) &&
+								   (p.y > s.BBox.Top + Linedef.SIDE_POINT_DISTANCE) &&
+								   (p.y < s.BBox.Bottom - Linedef.SIDE_POINT_DISTANCE))
+								{
+									// Sidedef is inside source sector, other sector always visible!
+									todo.Push(os);
+									stackedsectors.Add(os, os);
+								}
 								// Can we see this sector?
-								if(clipper.TestRange(sd.Line.Start.Position, sd.Line.End.Position))
+								else if(clipper.TestRange(sd.Line.Start.Position, sd.Line.End.Position))
 								{
 									// Process this sector as well
 									todo.Push(os);

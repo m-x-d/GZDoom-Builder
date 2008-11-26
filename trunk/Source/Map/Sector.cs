@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.Map
 		// Triangulation
 		private bool updateneeded;
 		private bool triangulationneeded;
+		private RectangleF bbox;
 		private Triangulation triangles;
 		private FlatVertex[] flatvertices;
 		private ReadOnlyCollection<LabelPositionInfo> labels;
@@ -95,6 +96,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public int Brightness { get { return brightness; } set { brightness = value; updateneeded = true; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
+		public RectangleF BBox { get { return bbox; } }
 		public Sector Clone { get { return clone; } set { clone = value; } }
 		public Triangulation Triangles { get { return triangles; } }
 		public FlatVertex[] FlatVertices { get { return flatvertices; } }
@@ -253,6 +255,9 @@ namespace CodeImp.DoomBuilder.Map
 					flatvertices[i].u = triangles.Vertices[i].x;
 					flatvertices[i].v = triangles.Vertices[i].y;
 				}
+
+				// Create bounding box
+				bbox = CreateBBox();
 				
 				// Updated
 				updateneeded = false;
@@ -405,7 +410,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// This creates a bounding box rectangle
 		// This requires the sector triangulation to be up-to-date!
-		public RectangleF CreateBBox()
+		private RectangleF CreateBBox()
 		{
 			// Setup
 			float left = float.MaxValue;
