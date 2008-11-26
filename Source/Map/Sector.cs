@@ -365,8 +365,43 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		#endregion
-
+		
 		#region ================== Methods
+		
+		// This checks if the given point is inside the sector polygon
+		public bool Intersect(Vector2D p)
+		{
+			uint c = 0;
+			
+			// Go for all sidedefs
+			foreach(Sidedef sd in sidedefs)
+			{
+				// Get vertices
+				Vector2D v1 = sd.Line.Start.Position;
+				Vector2D v2 = sd.Line.End.Position;
+				
+				// Determine min/max values
+				float miny = Math.Min(v1.y, v2.y);
+				float maxy = Math.Max(v1.y, v2.y);
+				float maxx = Math.Max(v1.x, v2.x);
+				
+				// Check for intersection
+				if((p.y > miny) && (p.y <= maxy))
+				{
+					if(p.x <= maxx)
+					{
+						if(v1.y != v2.y)
+						{
+							float xint = (p.y - v1.y) * (v2.x - v1.x) / (v2.y - v1.y) + v1.x;
+							if((v1.x == v2.x) || (p.x <= xint)) c++;
+						}
+					}
+				}
+			}
+			
+			// Inside this polygon?
+			return ((c & 0x00000001UL) != 0);
+		}
 		
 		// This creates a bounding box rectangle
 		// This requires the sector triangulation to be up-to-date!

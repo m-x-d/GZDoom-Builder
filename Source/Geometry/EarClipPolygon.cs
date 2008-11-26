@@ -80,7 +80,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		// See: http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
 		public bool Intersect(Vector2D p)
 		{
-			float miny, maxy, maxx, xint;
 			Vector2D v1 = base.Last.Value.Position;
 			Vector2D v2;
 			LinkedListNode<EarClipVertex> n = base.First;
@@ -93,9 +92,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				v2 = n.Value.Position;
 
 				// Determine min/max values
-				miny = Math.Min(v1.y, v2.y);
-				maxy = Math.Max(v1.y, v2.y);
-				maxx = Math.Max(v1.x, v2.x);
+				float miny = Math.Min(v1.y, v2.y);
+				float maxy = Math.Max(v1.y, v2.y);
+				float maxx = Math.Max(v1.x, v2.x);
 
 				// Check for intersection
 				if((p.y > miny) && (p.y <= maxy))
@@ -104,7 +103,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					{
 						if(v1.y != v2.y)
 						{
-							xint = (p.y - v1.y) * (v2.x - v1.x) / (v2.y - v1.y) + v1.x;
+							float xint = (p.y - v1.y) * (v2.x - v1.x) / (v2.y - v1.y) + v1.x;
 							if((v1.x == v2.x) || (p.x <= xint)) c++;
 						}
 					}
