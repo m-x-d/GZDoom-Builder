@@ -571,6 +571,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listmodes.Name = "listmodes";
 			this.listmodes.ShowGroups = false;
 			this.listmodes.Size = new System.Drawing.Size(442, 226);
+			this.listmodes.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listmodes.TabIndex = 26;
 			this.listmodes.UseCompatibleStateImageBehavior = false;
 			this.listmodes.View = System.Windows.Forms.View.Details;
