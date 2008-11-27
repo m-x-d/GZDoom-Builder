@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void OnPresentDisplay() { }
 
 		// Processing events
-		public virtual void OnProcess() { }
+		public virtual void OnProcess(double deltatime) { }
 		
 		#endregion
 	}

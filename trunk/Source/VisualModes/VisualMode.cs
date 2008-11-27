@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private const float MAX_ANGLEZ_LOW = 100f / Angle2D.PIDEG;
 		private const float MAX_ANGLEZ_HIGH = (360f - 100f) / Angle2D.PIDEG;
 		private const float CAMERA_SPEED = 6f;
+		private const double SECTOR_UPDATE_INTERVAL = 100d;
 		
 		#endregion
 
@@ -66,6 +67,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Vector3D camtarget;
 		private float camanglexy, camanglez;
 
+		// Processing
+		private double lastsectorupdatetime;
+		private Sector viewstartsector;
+		
 		// Input
 		private bool keyforward;
 		private bool keybackward;
@@ -279,11 +284,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 			foreach(VisualBlockEntry b in blocks) nearbylines.AddRange(b.Lines);
 			
 			// Find the sector to begin with
-			Sector start = FindStartSector((Vector2D)campos, nearbylines);
-
+			if(General.Clock.CurrentTime > (lastsectorupdatetime + SECTOR_UPDATE_INTERVAL))
+			{
+				lastsectorupdatetime = General.Clock.CurrentTime;
+				viewstartsector = FindStartSector((Vector2D)campos, nearbylines);
+			}
+			
 			// Find visible sectors
 			visiblesectors = new Dictionary<Sector, VisualSector>(visiblesectors.Count);
-			if(start != null) ProcessVisibleSectors(start, (Vector2D)campos);
+			if(viewstartsector != null) ProcessVisibleSectors(viewstartsector, (Vector2D)campos);
 		}
 
 		// This finds and adds visible sectors
@@ -435,12 +444,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 		
 		// Processing
-		public override void OnProcess()
+		public override void OnProcess(double deltatime)
 		{
 			Vector3D camvec;
 			Vector3D camvecstrafe;
 			
-			base.OnProcess();
+			base.OnProcess(deltatime);
 			
 			// Calculate camera direction vectors
 			camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);

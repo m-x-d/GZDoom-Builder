@@ -425,9 +425,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Processing
-		public override void OnProcess()
+		public override void OnProcess(double deltatime)
 		{
-			base.OnProcess();
+			base.OnProcess(deltatime);
 
 			// Process flash
 			if(flashpolygon != null)

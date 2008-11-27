@@ -122,6 +122,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// Properties
 		private IntPtr windowptr;
 		
+		// Processing
+		private double lastupdatetime;
+		
 		#endregion
 
 		#region ================== Properties
@@ -2033,12 +2036,16 @@ namespace CodeImp.DoomBuilder.Windows
 		public void SetProcessorState(bool on)
 		{
 			processor.Enabled = on;
+			if(on) lastupdatetime = General.Clock.GetCurrentTime();
 		}
 		
 		// Processor event
 		private void processor_Tick(object sender, EventArgs e)
 		{
 			Vector2D deltamouse;
+			double curtime = General.Clock.GetCurrentTime();
+			double deltatime = curtime - lastupdatetime;
+			lastupdatetime = curtime;
 			
 			// In exclusive mouse mode?
 			if(mouseinput != null)
@@ -2051,7 +2058,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Process signal
 			if((General.Map != null) && (General.Map.Mode != null))
-				General.Map.Mode.OnProcess();
+				General.Map.Mode.OnProcess(deltatime);
 		}
 
 		#endregion
