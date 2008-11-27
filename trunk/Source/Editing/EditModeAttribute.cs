@@ -35,19 +35,19 @@ namespace CodeImp.DoomBuilder.Editing
 	public class EditModeAttribute : Attribute
 	{
 		#region ================== Variables
-
+		
 		// Properties
 		private string switchaction = null;
 		private string buttonimage = null;
 		private string buttondesc = null;
 		private int buttonorder = 0;
-		private bool configspecific = false;
+		private bool optional = false;
 		private bool isvolatile = false;
 		private string displayname = "Unnamed Mode";
 		private bool allowcopypaste = true;
 		
 		#endregion
-
+		
 		#region ================== Properties
 
 		/// <summary>
@@ -75,11 +75,10 @@ namespace CodeImp.DoomBuilder.Editing
 		public int ButtonOrder { get { return buttonorder; } set { buttonorder = value; } }
 
 		/// <summary>
-		/// When set to true, this mode is only accessible from
-		/// the toolbar/menu when the game configuration specifies this mode by
-		/// class name in the "additionalmodes" structure.
+		/// When set to false, this mode will always be available for use and the user cannot
+		/// change this in the game configuration.
 		/// </summary>
-		public bool ConfigSpecific { get { return configspecific; } set { configspecific = value; } }
+		public bool Optional { get { return optional; } set { optional = value; } }
 
 		/// <summary>
 		/// When set to true, this mode is cancelled when core actions like

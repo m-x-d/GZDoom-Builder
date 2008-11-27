@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		// Just keep the base mode button checked
-		public override string EditModeButtonName { get { return General.Map.PreviousStableMode.Name; } }
+		public override string EditModeButtonName { get { return General.Map.Editing.PreviousStableMode.Name; } }
 
 		#endregion
 
@@ -162,7 +162,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 
 			// Return to base mode
-			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
+			General.Map.Editing.ChangeMode(General.Map.Editing.PreviousStableMode.Name);
 		}
 
 		// Mode engages
@@ -221,7 +221,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.IsChanged = true;
 			
 			// Return to base mode
-			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
+			General.Map.Editing.ChangeMode(General.Map.Editing.PreviousStableMode.Name);
 		}
 
 		// Redrawing display

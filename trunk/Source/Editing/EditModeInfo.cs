@@ -43,8 +43,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// Mode type
 		private Plugin plugin;
 		private Type type;
-		private bool configspecific;
-		private bool isvolatile;
+		private EditModeAttribute attribs;
 		
 		// Mode switching
 		private BeginActionAttribute switchactionattr = null;
@@ -65,8 +64,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public BeginActionAttribute SwitchAction { get { return switchactionattr; } }
 		public Image ButtonImage { get { return buttonimage; } }
 		public string ButtonDesc { get { return buttondesc; } }
-		public bool ConfigSpecific { get { return configspecific; } }
-		public bool Volatile { get { return isvolatile; } }
+		public EditModeAttribute Attributes { get { return attribs; } }
 		
 		#endregion
 
@@ -78,8 +76,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Initialize
 			this.plugin = plugin;
 			this.type = type;
-			this.configspecific = attr.ConfigSpecific;
-			this.isvolatile = attr.Volatile;
+			this.attribs = attr;
 			
 			// Make switch action info
 			if((attr.SwitchAction != null) && (attr.SwitchAction.Length > 0))
@@ -133,13 +130,13 @@ namespace CodeImp.DoomBuilder.Editing
 			if(General.Map != null)
 			{
 				// Not switching from volatile mode to volatile mode?
-				if((General.Map.Mode == null) || !General.Map.Mode.Attributes.Volatile || !this.isvolatile)
+				if((General.Map.Editing.Mode == null) || !General.Map.Editing.Mode.Attributes.Volatile || !this.attribs.Volatile)
 				{
 					// Create instance
 					newmode = plugin.CreateObject<EditMode>(type);
 
 					// Switch mode
-					General.Map.ChangeMode(newmode);
+					General.Map.Editing.ChangeMode(newmode);
 				}
 			}
 		}
@@ -156,7 +153,7 @@ namespace CodeImp.DoomBuilder.Editing
 				newmode = plugin.CreateObject<EditMode>(type);
 
 				// Switch mode
-				General.Map.ChangeMode(newmode);
+				General.Map.Editing.ChangeMode(newmode);
 			}
 		}
 
@@ -172,7 +169,7 @@ namespace CodeImp.DoomBuilder.Editing
 				newmode = plugin.CreateObjectA<EditMode>(type, args);
 
 				// Switch mode
-				if(!General.Map.ChangeMode(newmode))
+				if(!General.Map.Editing.ChangeMode(newmode))
 				{
 					// When cancelled, dispose mode
 					newmode.Dispose();

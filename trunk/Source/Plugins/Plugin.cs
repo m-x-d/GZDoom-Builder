@@ -24,6 +24,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -115,7 +116,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		#endregion
 
 		#region ================== Methods
-
+		
 		// This creates a stream to read a resource or returns null when not found
 		public Stream GetResourceStream(string resourcename)
 		{

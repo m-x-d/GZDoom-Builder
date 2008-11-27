@@ -40,7 +40,7 @@ using CodeImp.DoomBuilder.Compilers;
 
 namespace CodeImp.DoomBuilder
 {
-	public class MapManager
+	public sealed class MapManager
 	{
 		#region ================== Constants
 
@@ -75,10 +75,7 @@ namespace CodeImp.DoomBuilder
 		private ConfigurationInfo configinfo;
 		private GameConfiguration config;
 		private DataManager data;
-		private EditMode mode;
-		private EditMode newmode;
-		private Type prevmode;
-		private Type prevstablemode;
+		private EditingManager editing;
 		private D3DDevice graphics;
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
@@ -103,10 +100,7 @@ namespace CodeImp.DoomBuilder
 		public string TempPath { get { return temppath; } }
 		internal MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
-		public EditMode Mode { get { return mode; } }
-		public EditMode NewMode { get { return newmode; } }
-		public Type PreviousMode { get { return prevmode; } }
-		public Type PreviousStableMode { get { return prevstablemode; } }
+		public EditingManager Editing { get { return editing; } }
 		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -147,6 +141,7 @@ namespace CodeImp.DoomBuilder
 			copypaste = new CopyPasteManager();
 			launcher = new Launcher(this);
 			thingsfilter = new NullThingsFilter();
+			editing = new EditingManager();
 		}
 
 		// Disposer
@@ -159,7 +154,7 @@ namespace CodeImp.DoomBuilder
 				CloseScriptEditor(false);
 				
 				// Change to no mode
-				ChangeMode((EditMode)null);
+				editing.ChangeMode((EditMode)null);
 				
 				// Unbind any methods
 				General.Actions.UnbindMethods(this);
@@ -169,6 +164,7 @@ namespace CodeImp.DoomBuilder
 				if(launcher != null) launcher.Dispose();
 				if(copypaste != null) copypaste.Dispose();
 				if(undoredo != null) undoredo.Dispose();
+				if(editing != null) editing.Dispose();
 				General.WriteLogLine("Unloading data resources...");
 				if(data != null) data.Dispose();
 				General.WriteLogLine("Closing temporary file...");
@@ -179,6 +175,20 @@ namespace CodeImp.DoomBuilder
 				if(renderer2d != null) renderer2d.Dispose();
 				if(renderer3d != null) renderer3d.Dispose();
 				if(graphics != null) graphics.Dispose();
+				grid = null;
+				launcher = null;
+				copypaste = null;
+				undoredo = null;
+				editing = null;
+				data = null;
+				tempwad = null;
+				map = null;
+				renderer2d = null;
+				renderer3d = null;
+				graphics = null;
+				
+				// We may spend some time to clean things up here
+				GC.Collect();
 				
 				// Remove temp file
 				General.WriteLogLine("Removing temporary directory...");
@@ -187,9 +197,6 @@ namespace CodeImp.DoomBuilder
 					General.WriteLogLine(e.GetType().Name + ": " + e.Message);
 					General.WriteLogLine("Failed to remove temporary directory!");
 				}
-
-				// We may spend some time to clean things up here
-				GC.Collect();
 				
 				// Done
 				isdisposed = true;
@@ -233,7 +240,7 @@ namespace CodeImp.DoomBuilder
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 			configinfo.ApplyDefaults();
-			General.Plugins.GameConfigurationChanged();
+			editing.UpdateCurrentEditModes();
 			
 			// Create map data
 			map = new MapSet();
@@ -266,8 +273,8 @@ namespace CodeImp.DoomBuilder
 			General.Actions.BindMethods(this);
 
 			// Set default mode
-			ChangeMode("VerticesMode");
-			ClassicMode cmode = (mode as ClassicMode);
+			editing.ChangeMode("VerticesMode");
+			ClassicMode cmode = (editing.Mode as ClassicMode);
 			cmode.SetZoom(0.5f);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
@@ -305,7 +312,7 @@ namespace CodeImp.DoomBuilder
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 			configinfo.ApplyDefaults();
-			General.Plugins.GameConfigurationChanged();
+			editing.UpdateCurrentEditModes();
 			
 			// Create map data
 			map = new MapSet();
@@ -353,11 +360,11 @@ namespace CodeImp.DoomBuilder
 			General.Actions.BindMethods(this);
 
 			// Set default mode
-			ChangeMode("VerticesMode");
+			editing.ChangeMode("VerticesMode");
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
 			// Center map in screen
-			if(General.Map.Mode is ClassicMode) (General.Map.Mode as ClassicMode).CenterInScreen();
+			if(General.Map.Editing.Mode is ClassicMode) (General.Map.Editing.Mode as ClassicMode).CenterInScreen();
 			
 			// Success
 			General.WriteLogLine("Map loading done");
@@ -373,7 +380,6 @@ namespace CodeImp.DoomBuilder
 		{
 			MapSet outputset;
 			string nodebuildername, oldstatus, settingsfile;
-			Configuration mapsettings;
 			WAD targetwad;
 			int index;
 			bool includenodes = false;
@@ -929,107 +935,6 @@ namespace CodeImp.DoomBuilder
 		
 		#endregion
 
-		#region ================== Editing Modes
-		
-		/// <summary>
-		/// This cancels the current mode.
-		/// </summary>
-		[BeginAction("cancelmode")]
-		public void CancelMode()
-		{
-			// Let the mode know
-			mode.OnCancel();
-		}
-
-		/// <summary>
-		/// This accepts the changes in the current mode.
-		/// </summary>
-		[BeginAction("acceptmode")]
-		public void AcceptMode()
-		{
-			// Let the mode know
-			mode.OnAccept();
-		}
-
-		//
-		// This changes the editing mode.
-		// Order in which events occur for the old and new modes:
-		// 
-		// - Constructor of new mode is called
-		// - Disengage of old mode is called
-		// ----- Mode switches -----
-		// - Engage of new mode is called
-		// - Dispose of old mode is called
-		//
-		// Returns false when cancelled
-		public bool ChangeMode(EditMode nextmode)
-		{
-			EditMode oldmode = mode;
-			
-			// Log info
-			if(newmode != null)
-				General.WriteLogLine("Switching edit mode to " + newmode.GetType().Name + "...");
-			else
-				General.WriteLogLine("Stopping edit mode...");
-			
-			// Remember previous mode
-			newmode = nextmode;
-			if(mode != null)
-			{
-				prevmode = mode.GetType();
-				if(!mode.Attributes.Volatile) prevstablemode = prevmode;
-			}
-			else
-			{
-				prevmode = null;
-				prevstablemode = null;
-			}
-			
-			// Let the plugins know beforehand and check if not cancelled
-			if(General.Plugins.ModeChanges(oldmode, newmode))
-			{
-				// Disenagage old mode
-				if(oldmode != null) oldmode.OnDisengage();
-
-				// Reset cursor
-				General.Interface.SetCursor(Cursors.Default);
-				
-				// Apply new mode
-				mode = newmode;
-				
-				// Engage new mode
-				if(newmode != null) newmode.OnEngage();
-
-				// Update the interface
-				General.MainWindow.EditModeChanged();
-
-				// Dispose old mode
-				if(oldmode != null) oldmode.Dispose();
-
-				// Done switching
-				newmode = null;
-				
-				// Redraw the display
-				General.MainWindow.RedrawDisplay();
-				return true;
-			}
-			else
-			{
-				// Cancelled
-				General.WriteLogLine("Edit mode change cancelled.");
-				return false;
-			}
-		}
-		
-		// This changes mode by class name and optionally with arguments
-		public void ChangeMode(string classname, params object[] args)
-		{
-			EditModeInfo emi = General.Plugins.GetEditModeInfo(classname);
-			if(emi != null) emi.SwitchToMode(args);
-		}
-		
-		#endregion
-
 		#region ================== Selection Groups
 		
 		// This adds selection to a group
@@ -1368,7 +1273,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Reloading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-			General.Plugins.GameConfigurationChanged();
+			editing.UpdateCurrentEditModes();
 			
 			// Reload data resources
 			General.WriteLogLine("Reloading data resources...");
@@ -1415,7 +1320,7 @@ namespace CodeImp.DoomBuilder
 				configinfo = General.GetConfigurationInfo(options.ConfigFile);
 				config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 				configinfo.ApplyDefaults();
-				General.Plugins.GameConfigurationChanged();
+				editing.UpdateCurrentEditModes();
 				
 				// Setup new map format IO
 				General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");

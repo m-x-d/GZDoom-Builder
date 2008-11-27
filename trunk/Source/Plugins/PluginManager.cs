@@ -42,19 +42,16 @@ namespace CodeImp.DoomBuilder.Plugins
 		// Plugins
 		private List<Plugin> plugins;
 		
-		// Modes
-		private List<EditModeInfo> editmodes;
-		
 		// Disposing
 		private bool isdisposed = false;
 
 		#endregion
 
 		#region ================== Properties
-
-		public ICollection<EditModeInfo> EditModes { get { return editmodes; } }
+		
+		internal List<Plugin> Plugins { get { return plugins; } }
 		public bool IsDisposed { get { return isdisposed; } }
-
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -64,7 +61,6 @@ namespace CodeImp.DoomBuilder.Plugins
 		{
 			// Make lists
 			this.plugins = new List<Plugin>();
-			this.editmodes = new List<EditModeInfo>();
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -132,66 +128,8 @@ namespace CodeImp.DoomBuilder.Plugins
 					// Load actions
 					General.Actions.LoadActions(p.Assembly);
 					
-					// For all classes that inherit from EditMode
-					editclasses = p.FindClasses(typeof(EditMode));
-					foreach(Type t in editclasses)
-					{
-						// For all defined EditMode attributes
-						emattrs = (EditModeAttribute[])t.GetCustomAttributes(typeof(EditModeAttribute), false);
-						foreach(EditModeAttribute a in emattrs)
-						{
-							// Make edit mode information
-							editmodeinfo = new EditModeInfo(p, t, a);
-							editmodes.Add(editmodeinfo);
-						}
-					}
-					
 					// Plugin is now initialized
 					p.Plug.OnInitialize();
-				}
-			}
-
-			// Sort the list in order for buttons
-			editmodes.Sort();
-
-			// Go for all edit modes to add buttons
-			foreach(EditModeInfo emi in editmodes)
-			{
-				// Add all non-config-specific buttons to interface
-				if((emi.ButtonImage != null) && (emi.ButtonDesc != null) && !emi.ConfigSpecific)
-					General.MainWindow.AddEditModeButton(emi);
-			}
-		}
-		
-		// This returns specific editing mode info by name
-		public EditModeInfo GetEditModeInfo(string editmodename)
-		{
-			// Find the edit mode
-			foreach(EditModeInfo emi in editmodes)
-			{
-				// Mode matches class name?
-				if(emi.ToString() == editmodename) return emi;
-			}
-
-			// No such mode found
-			return null;
-		}
-		
-		// This is called when the game canfiguration is set or changed
-		public void GameConfigurationChanged()
-		{
-			// Remove all config-specific editing mode buttons from toolbar
-			General.MainWindow.RemoveSpecificEditModeButtons();
-
-			// Go for all edit modes to add buttons
-			foreach(EditModeInfo emi in editmodes)
-			{
-				// Add only non-config-specific buttons to interface
-				if((emi.ButtonImage != null) && (emi.ButtonDesc != null) && emi.ConfigSpecific)
-				{
-					// Add if this button is specified by the game config
-					if(General.Map.Config.IsEditModeSpecified(emi.Type.Name))
-						General.MainWindow.AddEditModeButton(emi);
 				}
 			}
 		}
