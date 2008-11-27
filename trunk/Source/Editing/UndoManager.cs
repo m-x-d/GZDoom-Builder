@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(General.Plugins.OnUndoBegin())
 			{
 				// Call UndoBegin event
-				if(General.Map.Editing.Mode.OnUndoBegin())
+				if(General.Editing.Mode.OnUndoBegin())
 				{
 					// Cancel volatile mode, if any
 					// This returns false when mode was not volatile
@@ -255,7 +255,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Map.ChangeMapSet(u.map);
 							
 							// Done
-							General.Map.Editing.Mode.OnUndoEnd();
+							General.Editing.Mode.OnUndoEnd();
 							General.Plugins.OnUndoEnd();
 
 							// Update
@@ -281,7 +281,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(General.Plugins.OnRedoBegin())
 			{
 				// Call RedoBegin event
-				if(General.Map.Editing.Mode.OnRedoBegin())
+				if(General.Editing.Mode.OnRedoBegin())
 				{
 					// Cancel volatile mode, if any
 					General.CancelVolatileMode();
@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.Editing
 						General.Map.ChangeMapSet(r.map);
 
 						// Done
-						General.Map.Editing.Mode.OnRedoEnd();
+						General.Editing.Mode.OnRedoEnd();
 						General.Plugins.OnRedoEnd();
 
 						// Update

@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// When these modes are active, then test against the base mode they will return to
 			if((mode is DragGeometryMode) || (mode is DragThingsMode) ||
 			   (mode is DrawGeometryMode) || (mode is CurveLinedefsMode))
-				sourcemode = General.Map.Editing.PreviousStableMode;
+				sourcemode = General.Editing.PreviousStableMode;
 			
 			// Final decision
 			if(sourcemode == typeof(LinedefsMode)) HideAllMenusExcept(linedefsmenu);

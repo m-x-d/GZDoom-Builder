@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 
 			// Return to this mode
-			General.Map.Editing.ChangeMode(new ThingsMode());
+			General.Editing.ChangeMode(new ThingsMode());
 		}
 
 		// Mode engages
@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Going to EditSelectionMode?
-			if(General.Map.Editing.NewMode is EditSelectionMode)
+			if(General.Editing.NewMode is EditSelectionMode)
 			{
 				// No selection made? But we have a highlight!
 				if((General.Map.Map.GetSelectedThings(true).Count == 0) && (highlighted != null))
@@ -417,7 +417,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Map.Editing.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos));
+					General.Editing.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos));
 				}
 			}
 		}

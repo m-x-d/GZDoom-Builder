@@ -29,6 +29,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
 using System.IO;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -63,7 +64,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if((General.Map != null) && (General.Map.ConfigSettings.Filename == ci.Filename))
 					lvi.Selected = true;
 			}
-
+			
 			// No skill
 			skill.Value = 0;
 			
@@ -72,6 +73,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill comboboxes with nodebuilders
 			nodebuildersave.Items.AddRange(General.Nodebuilders.ToArray());
 			nodebuildertest.Items.AddRange(General.Nodebuilders.ToArray());
+			
+			// Fill list of editing modes
+			foreach(EditModeInfo emi in General.Editing.ModesInfo)
+			{
+			}
 		}
 
 		// This shows a specific page

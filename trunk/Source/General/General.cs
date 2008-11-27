@@ -39,6 +39,7 @@ using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Types;
 using System.Collections.ObjectModel;
 using System.Threading;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -120,6 +121,7 @@ namespace CodeImp.DoomBuilder
 		private static MainForm mainwindow;
 		private static ProgramConfiguration settings;
 		private static MapManager map;
+		private static EditingManager editing;
 		private static ActionManager actions;
 		private static PluginManager plugins;
 		private static ColorCollection colors;
@@ -171,6 +173,7 @@ namespace CodeImp.DoomBuilder
 		public static string AutoLoadMap { get { return autoloadmap; } }
 		public static string AutoLoadConfig { get { return autoloadconfig; } }
 		public static bool DelayMainWindow { get { return delaymainwindow; } }
+		public static EditingManager Editing { get { return editing; } }
 		
 		#endregion
 
@@ -620,7 +623,7 @@ namespace CodeImp.DoomBuilder
 				// Load color settings
 				General.WriteLogLine("Loading color settings...");
 				colors = new ColorCollection(settings.Config);
-
+				
 				// Create application clock
 				General.WriteLogLine("Creating application clock...");
 				clock = new Clock();
@@ -628,6 +631,10 @@ namespace CodeImp.DoomBuilder
 				// Create types manager
 				General.WriteLogLine("Creating types manager...");
 				types = new TypesManager();
+				
+				// Create editing modes
+				General.WriteLogLine("Creating editing modes manager...");
+				editing = new EditingManager();
 				
 				// Do auto map loading when window is delayed
 				if(delaymainwindow)
@@ -783,6 +790,7 @@ namespace CodeImp.DoomBuilder
 				
 				// Clean up
 				if(map != null) map.Dispose(); map = null;
+				if(editing != null) editing.Dispose(); editing = null;
 				if(mainwindow != null) mainwindow.Dispose();
 				if(actions != null) actions.Dispose();
 				if(clock != null) clock.Dispose();
@@ -813,10 +821,10 @@ namespace CodeImp.DoomBuilder
 		public static bool CancelVolatileMode()
 		{
 			// Volatile mode?
-			if((map != null) & (map.Editing.Mode != null) && map.Editing.Mode.Attributes.Volatile)
+			if((map != null) & (editing.Mode != null) && editing.Mode.Attributes.Volatile)
 			{
 				// Cancel
-				map.Editing.Mode.OnCancel();
+				editing.Mode.OnCancel();
 				return true;
 			}
 			else
@@ -830,10 +838,10 @@ namespace CodeImp.DoomBuilder
 		public static bool DisengageVolatileMode()
 		{
 			// Volatile mode?
-			if((map != null) && (map.Editing.Mode != null) && map.Editing.Mode.Attributes.Volatile)
+			if((map != null) && (editing.Mode != null) && editing.Mode.Attributes.Volatile)
 			{
 				// Change back to normal mode
-				map.Editing.ChangeMode(map.Editing.PreviousStableMode.Name);
+				editing.ChangeMode(editing.PreviousStableMode.Name);
 				return true;
 			}
 			else

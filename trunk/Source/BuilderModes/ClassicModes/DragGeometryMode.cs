@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		// Just keep the base mode button checked
-		public override string EditModeButtonName { get { return General.Map.Editing.PreviousStableMode.Name; } }
+		public override string EditModeButtonName { get { return General.Editing.PreviousStableMode.Name; } }
 		
 		#endregion
 
@@ -283,7 +283,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 			
 			// Return to vertices mode
-			General.Map.Editing.ChangeMode(General.Map.Editing.PreviousStableMode.Name);
+			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 		}
 
 		// Mode engages
@@ -367,7 +367,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEditEnd()
 		{
 			// Just return to base mode, Disengage will be called automatically.
-			General.Map.Editing.ChangeMode(General.Map.Editing.PreviousStableMode.Name);
+			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 
 			base.OnEditEnd();
 		}

@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.OnCancel();
 
 			// Return to this mode
-			General.Map.Editing.ChangeMode(new SectorsMode());
+			General.Editing.ChangeMode(new SectorsMode());
 		}
 
 		// Mode engages
@@ -109,14 +109,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.OnDisengage();
 
 			// Check which mode we are switching to
-			if(General.Map.Editing.NewMode is VerticesMode)
+			if(General.Editing.NewMode is VerticesMode)
 			{
 				// Convert selection to vertices
 
 				// Clear selected sectors
 				General.Map.Map.ClearSelectedSectors();
 			}
-			else if(General.Map.Editing.NewMode is LinedefsMode)
+			else if(General.Editing.NewMode is LinedefsMode)
 			{
 				// Convert selection to linedefs
 

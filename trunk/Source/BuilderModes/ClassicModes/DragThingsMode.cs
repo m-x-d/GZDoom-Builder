@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 			
 			// Return to vertices mode
-			General.Map.Editing.ChangeMode(basemode);
+			General.Editing.ChangeMode(basemode);
 		}
 
 		// Mode engages
@@ -354,7 +354,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnEditEnd()
 		{
 			// Just return to vertices mode, geometry will be merged on disengage.
-			General.Map.Editing.ChangeMode(basemode);
+			General.Editing.ChangeMode(basemode);
 
 			base.OnEditEnd();
 		}

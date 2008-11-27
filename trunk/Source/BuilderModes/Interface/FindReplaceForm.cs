@@ -213,14 +213,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.CloseReason == CloseReason.UserClosing)
 			{
 				e.Cancel = true;
-				General.Map.Editing.CancelMode();
+				General.Editing.CancelMode();
 			}
 		}
 
 		// Close button clicked
 		private void closebutton_Click(object sender, EventArgs e)
 		{
-			General.Map.Editing.CancelMode();
+			General.Editing.CancelMode();
 		}
 
 		#endregion

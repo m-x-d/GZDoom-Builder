@@ -407,7 +407,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 
 			// Going to EditSelectionMode?
-			if(General.Map.Editing.NewMode is EditSelectionMode)
+			if(General.Editing.NewMode is EditSelectionMode)
 			{
 				// No selection made? But we have a highlight!
 				if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))

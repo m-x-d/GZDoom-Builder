@@ -130,13 +130,13 @@ namespace CodeImp.DoomBuilder.Editing
 			if(General.Map != null)
 			{
 				// Not switching from volatile mode to volatile mode?
-				if((General.Map.Editing.Mode == null) || !General.Map.Editing.Mode.Attributes.Volatile || !this.attribs.Volatile)
+				if((General.Editing.Mode == null) || !General.Editing.Mode.Attributes.Volatile || !this.attribs.Volatile)
 				{
 					// Create instance
 					newmode = plugin.CreateObject<EditMode>(type);
 
 					// Switch mode
-					General.Map.Editing.ChangeMode(newmode);
+					General.Editing.ChangeMode(newmode);
 				}
 			}
 		}
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Editing
 				newmode = plugin.CreateObject<EditMode>(type);
 
 				// Switch mode
-				General.Map.Editing.ChangeMode(newmode);
+				General.Editing.ChangeMode(newmode);
 			}
 		}
 
@@ -169,7 +169,7 @@ namespace CodeImp.DoomBuilder.Editing
 				newmode = plugin.CreateObjectA<EditMode>(type, args);
 
 				// Switch mode
-				if(!General.Map.Editing.ChangeMode(newmode))
+				if(!General.Editing.ChangeMode(newmode))
 				{
 					// When cancelled, dispose mode
 					newmode.Dispose();
