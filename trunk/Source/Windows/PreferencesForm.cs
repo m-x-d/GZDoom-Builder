@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldofview.Value = General.Settings.VisualFOV / 10;
 			mousespeed.Value = General.Settings.MouseSpeed / 100;
 			movespeed.Value = General.Settings.MoveSpeed / 100;
-			viewdistance.Value = (int)(General.Settings.ViewDistance / 200.0f);
+			viewdistance.Value = General.Clamp((int)(General.Settings.ViewDistance / 200.0f), viewdistance.Minimum, viewdistance.Maximum);
 			invertyaxis.Checked = General.Settings.InvertYAxis;
 			fixedaspect.Checked = General.Settings.FixedAspect;
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;

@@ -184,7 +184,7 @@
     <value>False</value>
   </metadata>
   <data name="label10.Text" xml:space="preserve">
-    <value>Here you can select the editing modes that you wish to use in this configuration. This is usefull in case there are plugins with additional editing modes that can be used instead of the original editing modes.</value>
+    <value>Here you can select the editing modes that you wish to use in this configuration. This is usefull in case there are plugins with additional editing modes that can be used as a replacement for the original editing modes.</value>
   </data>
   <metadata name="labelparameters.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

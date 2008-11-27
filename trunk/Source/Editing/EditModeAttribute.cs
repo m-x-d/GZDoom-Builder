@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private int buttonorder = 0;
 		private bool optional = false;
 		private bool isvolatile = false;
-		private string displayname = "Unnamed Mode";
+		private string displayname = "<unnamed mode>";
 		private bool allowcopypaste = true;
 		
 		#endregion

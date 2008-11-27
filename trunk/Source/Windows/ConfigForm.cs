@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Initialize
 			InitializeComponent();
-
+			
 			// Make list column header full width
 			columnname.Width = listconfigs.ClientRectangle.Width - SystemInformation.VerticalScrollBarWidth - 2;
 			
@@ -77,9 +77,16 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill list of editing modes
 			foreach(EditModeInfo emi in General.Editing.ModesInfo)
 			{
+				// Is this mode selectable by the user?
+				if(emi.ButtonImage != null)
+				{
+					lvi = listmodes.Items.Add(emi.Attributes.DisplayName);
+					lvi.Tag = emi;
+					lvi.SubItems.Add(emi.Plugin.Plug.Name);
+				}
 			}
 		}
-
+		
 		// This shows a specific page
 		public void ShowTab(int index)
 		{
@@ -160,6 +167,13 @@ namespace CodeImp.DoomBuilder.Windows
 					item.ImageIndex = 0;
 				}
 				listtextures.Sort();
+				
+				// Go for all the editing modes in the list
+				foreach(ListViewItem lvi in listmodes.Items)
+				{
+					EditModeInfo emi = (lvi.Tag as EditModeInfo);
+					lvi.Checked = configinfo.EditModes.Contains(emi.Type.FullName);
+				}
 			}
 		}
 		
@@ -208,7 +222,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Leave when no configuration selected
 			if(configinfo == null) return;
-
+			
 			// Apply to selected configuration
 			if(nodebuildersave.SelectedItem != null)
 				configinfo.NodebuilderSave = (nodebuildersave.SelectedItem as NodebuilderInfo).Name;
@@ -461,6 +475,27 @@ namespace CodeImp.DoomBuilder.Windows
 					configinfo.TextureSets.Add(s);
 				}
 				listtextures.Sort();
+			}
+		}
+		
+		// This is called when an editing mode item is checked or unchecked
+		private void listmodes_ItemChecked(object sender, ItemCheckedEventArgs e)
+		{
+			// Leave when no configuration selected
+			if(configinfo == null) return;
+			
+			// Apply changes
+			EditModeInfo emi = (e.Item.Tag as EditModeInfo);
+			bool currentstate = configinfo.EditModes.Contains(emi.Type.FullName);
+			if(e.Item.Checked && !currentstate)
+			{
+				// Add
+				configinfo.EditModes.Add(emi.Type.FullName);
+			}
+			else if(!e.Item.Checked && currentstate)
+			{
+				// Remove
+				configinfo.EditModes.Remove(emi.Type.FullName);
 			}
 		}
 	}
