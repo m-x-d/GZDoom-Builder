@@ -143,9 +143,24 @@ namespace CodeImp.DoomBuilder.Editing
 		// This is called when the editing modes must update
 		internal void UpdateCurrentEditModes()
 		{
-			// For now we use all the modes we can find
+			// Unbind editing mode switch actions
+			foreach(EditModeInfo emi in allmodes)
+				emi.UnbindSwitchAction();
+			
+			// Rebuild list of used modes
 			usedmodes.Clear();
-			usedmodes.AddRange(allmodes);
+			if(General.Map != null)
+			{
+				foreach(EditModeInfo emi in allmodes)
+				{
+					if(General.Map.ConfigSettings.EditModes.Contains(emi.Type.FullName))
+					{
+						// Add the mode to be used and bind switch action
+						usedmodes.Add(emi);
+						emi.BindSwitchAction();
+					}
+				}
+			}
 			
 			// Remove editing mode buttons from interface
 			General.MainWindow.RemoveEditModeButtons();

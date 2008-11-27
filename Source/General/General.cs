@@ -926,16 +926,17 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayStatus("Closing map...");
 				General.WriteLogLine("Unloading map...");
 				Cursor.Current = Cursors.WaitCursor;
-
+				
 				// Trash the current map
 				if(map != null) map.Dispose();
 				map = null;
-
+				
 				// Show splash logo on display
 				mainwindow.ShowSplashDisplay();
-
+				
 				// Done
 				Cursor.Current = Cursors.Default;
+				editing.UpdateCurrentEditModes();
 				mainwindow.RedrawDisplay();
 				mainwindow.HideInfo();
 				mainwindow.UpdateInterface();

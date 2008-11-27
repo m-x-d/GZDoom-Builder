@@ -78,16 +78,6 @@ namespace CodeImp.DoomBuilder.Editing
 			this.type = type;
 			this.attribs = attr;
 			
-			// Make switch action info
-			if((attr.SwitchAction != null) && (attr.SwitchAction.Length > 0))
-			{
-				switchactionattr = new BeginActionAttribute(attr.SwitchAction);
-				switchactiondel = new ActionDelegate(UserSwitchToMode);
-
-				// Bind switch action
-				General.Actions.BindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
-			}
-			
 			// Make button info
 			if((attr.ButtonImage != null) && (attr.ButtonDesc != null))
 			{
@@ -107,8 +97,8 @@ namespace CodeImp.DoomBuilder.Editing
 		// Disposer
 		public void Dispose()
 		{
-			// Unbind switch action
-			if(switchactiondel != null) General.Actions.UnbindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
+			// Dispose
+			UnbindSwitchAction();
 			buttonimage.Dispose();
 			buttonimagestream.Dispose();
 
@@ -119,7 +109,31 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 
 		#region ================== Methods
-
+		
+		// This binds the action to switch to this editing mode
+		public void BindSwitchAction()
+		{
+			// Make switch action info
+			if((switchactiondel == null) && (attribs.SwitchAction != null) && (attribs.SwitchAction.Length > 0))
+			{
+				switchactionattr = new BeginActionAttribute(attribs.SwitchAction);
+				switchactiondel = new ActionDelegate(UserSwitchToMode);
+				
+				// Bind switch action
+				General.Actions.BindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
+			}
+		}
+		
+		// This unbind the switch action
+		public void UnbindSwitchAction()
+		{
+			if(switchactiondel != null)
+			{
+				General.Actions.UnbindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
+				switchactiondel = null;
+			}
+		}
+		
 		// This switches to the mode by user command
 		// (when user presses shortcut key)
 		public void UserSwitchToMode()
