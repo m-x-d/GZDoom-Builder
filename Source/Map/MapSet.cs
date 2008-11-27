@@ -1385,13 +1385,12 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			Linedef closest = null;
 			float distance = float.MaxValue;
-			float d;
 
 			// Go for all linedefs in selection
 			foreach(Linedef l in selection)
 			{
 				// Calculate distance and check if closer than previous find
-				d = l.SafeDistanceToSq(pos, true);
+				float d = l.SafeDistanceToSq(pos, true);
 				if(d < distance)
 				{
 					// This one is closer

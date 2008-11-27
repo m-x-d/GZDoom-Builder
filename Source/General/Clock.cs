@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder
 		// Settings
 		private long timefrequency = FREQ_NO_QPC;
 		private double timescale;
-		private int currenttime;
+		private double currenttime;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder
 
 		// Settings
 		public bool IsUsingQPC { get { return (timefrequency != FREQ_NO_QPC); } }
-		public int CurrentTime { get { return currenttime; } }
+		public double CurrentTime { get { return currenttime; } }
 
 		// Disposing
 		public bool IsDisposed { get { return isdisposed; } }
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Methods
 
 		// This queries the system for the current time
-		public int GetCurrentTime()
+		public double GetCurrentTime()
 		{
 			// Only windows has QPC
 			//#if !LINUX
@@ -136,19 +136,19 @@ namespace CodeImp.DoomBuilder
 				QueryPerformanceCounter(ref timecount);
 				
 				// Calculate high resolution time in milliseconds
-				currenttime = (int)((double)timecount * timescale);
+				currenttime = (double)timecount * timescale;
 			}
 			else
 			{
 				// Use standard clock
-				currenttime = Environment.TickCount;
+				currenttime = (double)Environment.TickCount;
 			}
 			
 			/*
 			#else
 			
 			// In LINUX always use standard clock
-			currenttime = Environment.TickCount;
+			currenttime = (double)Environment.TickCount;
 			
 			#endif
 			*/
