@@ -153,7 +153,10 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				foreach(EditModeInfo emi in allmodes)
 				{
-					if(General.Map.ConfigSettings.EditModes.Contains(emi.Type.FullName))
+					// Include the mode when it is listed and enabled
+					// Also include the mode when it is not optional
+					if( (General.Map.ConfigSettings.EditModes.ContainsKey(emi.Type.FullName) &&
+					     General.Map.ConfigSettings.EditModes[emi.Type.FullName]) || !emi.IsOptional )
 					{
 						// Add the mode to be used and bind switch action
 						usedmodes.Add(emi);
@@ -188,11 +191,34 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			EditMode oldmode = mode;
 
-			// Log info
-			if(newmode != null)
-				General.WriteLogLine("Switching edit mode to " + newmode.GetType().Name + "...");
+			if(nextmode != null)
+			{
+				// Verify that this mode is usable
+				bool allowuse = false;
+				foreach(EditModeInfo emi in usedmodes)
+				{
+					if(emi.Type.FullName == nextmode.GetType().FullName)
+					{
+						allowuse = true;
+						break;
+					}
+				}
+
+				if(!allowuse)
+				{
+					General.Interface.MessageBeep(MessageBeepType.Error);
+					General.WriteLogLine("Attempt to switch to an invalid edit mode " + nextmode.GetType().Name + "!");
+					return false;
+				}
+				else
+				{
+					General.WriteLogLine("Switching edit mode to " + nextmode.GetType().Name + "...");
+				}
+			}
 			else
+			{
 				General.WriteLogLine("Stopping edit mode...");
+			}
 
 			// Remember previous mode
 			newmode = nextmode;

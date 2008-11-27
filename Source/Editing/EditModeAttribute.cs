@@ -39,12 +39,12 @@ namespace CodeImp.DoomBuilder.Editing
 		// Properties
 		private string switchaction = null;
 		private string buttonimage = null;
-		private string buttondesc = null;
 		private int buttonorder = 0;
-		private bool optional = false;
+		private bool optional = true;
 		private bool isvolatile = false;
 		private string displayname = "<unnamed mode>";
 		private bool allowcopypaste = true;
+		private bool usebydefault = false;
 		
 		#endregion
 		
@@ -64,11 +64,6 @@ namespace CodeImp.DoomBuilder.Editing
 		public string ButtonImage { get { return buttonimage; } set { buttonimage = value; } }
 
 		/// <summary>
-		/// Toolbar button and menu item description of this mode.
-		/// </summary>
-		public string ButtonDesc { get { return buttondesc; } set { buttondesc = value; } }
-
-		/// <summary>
 		/// Sorting number for the order of buttons on the toolbar. Buttons with
 		/// lower values will be more to the left than buttons with higher values.
 		/// </summary>
@@ -81,6 +76,13 @@ namespace CodeImp.DoomBuilder.Editing
 		public bool Optional { get { return optional; } set { optional = value; } }
 
 		/// <summary>
+		/// Set this to true to select this editing mode for use in all game configurations
+		/// by default. This only applies the first time and can still be changed by the user.
+		/// THIS OPTION MAY BE INTRUSIVE TO THE USER, USE WITH GREAT CARE!
+		/// </summary>
+		public bool UseByDefault { get { return usebydefault; } set { usebydefault = value; } }
+
+		/// <summary>
 		/// When set to true, this mode is cancelled when core actions like
 		/// undo and save are performed. The editing mode should then return to
 		/// a non-volatile mode.
@@ -88,8 +90,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public bool Volatile { get { return isvolatile; } set { isvolatile = value; } }
 
 		/// <summary>
-		/// Name to display on the button information bar when no specific element
-		/// information is displayed.
+		/// Name to display in the game configuration editing modes list and on the
+		/// information bar when the mode is currently active.
 		/// </summary>
 		public string DisplayName { get { return displayname; } set { displayname = value; } }
 

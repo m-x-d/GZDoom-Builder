@@ -99,7 +99,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="Testing\TriangulatorMode.cs" />
+    <Compile Include="Testing\TriangulatorMode.cs" />
     <Compile Include="ClassicModes\DragThingsMode.cs" />
     <Compile Include="General\LineLengthLabel.cs" />
     <Compile Include="VisualModes\BaseVisualMode.cs" />
@@ -110,7 +110,7 @@
     <Compile Include="VisualModes\VisualFloor.cs" />
     <Compile Include="VisualModes\VisualLower.cs" />
     <Compile Include="VisualModes\VisualMiddle.cs" />
-    <None Include="Testing\WAuthorMode.cs" />
+    <Compile Include="Testing\WAuthorMode.cs" />
     <Compile Include="Testing\WAuthorTools.cs">
       <SubType>Form</SubType>
     </Compile>

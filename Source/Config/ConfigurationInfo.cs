@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using CodeImp.DoomBuilder.Editing;
+using System.Collections.Specialized;
 
 #endregion
 
@@ -32,6 +33,13 @@ namespace CodeImp.DoomBuilder.Config
 {
 	internal class ConfigurationInfo : IComparable<ConfigurationInfo>
 	{
+		#region ================== Constants
+
+		private const string MODE_DISABLED_KEY = "disabled";
+		private const string MODE_ENABLED_KEY = "enabled";
+
+		#endregion
+		
 		#region ================== Variables
 
 		private string name;
@@ -47,7 +55,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int testskill;
 		private List<ThingsFilter> thingsfilters;
 		private List<DefinedTextureSet> texturesets;
-		private List<string> editmodes;
+		private Dictionary<string, bool> editmodes;
 		
 		#endregion
 
@@ -65,7 +73,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool CustomParameters { get { return customparameters; } set { customparameters = value; } }
 		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
 		public List<DefinedTextureSet> TextureSets { get { return texturesets; } }
-		internal List<string> EditModes { get { return editmodes; } }
+		internal Dictionary<string, bool> EditModes { get { return editmodes; } }
 		
 		#endregion
 
@@ -108,11 +116,14 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			
 			// Make list of edit modes
-			this.editmodes = new List<string>();
+			this.editmodes = new Dictionary<string, bool>();
 			IDictionary modes = General.Settings.ReadSetting("configurations." + settingskey + ".editmodes", new Hashtable());
 			foreach(DictionaryEntry de in modes)
 			{
-				editmodes.Add(de.Value.ToString());
+				if(de.Key.ToString().StartsWith(MODE_ENABLED_KEY))
+					editmodes.Add(de.Value.ToString(), true);
+				else if(de.Key.ToString().StartsWith(MODE_DISABLED_KEY))
+					editmodes.Add(de.Value.ToString(), false);
 			}
 		}
 		
@@ -159,10 +170,18 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			
 			// Write filters to configuration
-			for(int i = 0; i < editmodes.Count; i++)
+			ListDictionary modeslist = new ListDictionary();
+			int index = 0;
+			foreach(KeyValuePair<string, bool> em in editmodes)
 			{
-				General.Settings.WriteSetting("configurations." + settingskey + ".editmodes.mode" + i.ToString(CultureInfo.InvariantCulture), editmodes[i]);
+				if(em.Value)
+					modeslist.Add(MODE_ENABLED_KEY + index.ToString(CultureInfo.InvariantCulture), em.Key);
+				else
+					modeslist.Add(MODE_DISABLED_KEY + index.ToString(CultureInfo.InvariantCulture), em.Key);
+
+				index++;
 			}
+			General.Settings.WriteSetting("configurations." + settingskey + ".editmodes", modeslist);
 		}
 
 		// String representation
@@ -188,7 +207,7 @@ namespace CodeImp.DoomBuilder.Config
 			ci.testskill = this.testskill;
 			ci.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in this.texturesets) ci.texturesets.Add(s.Copy());
-			ci.editmodes = new List<string>(this.editmodes);
+			ci.editmodes = new Dictionary<string, bool>(this.editmodes);
 			return ci;
 		}
 		
@@ -208,20 +227,36 @@ namespace CodeImp.DoomBuilder.Config
 			this.testskill = ci.testskill;
 			this.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in ci.texturesets) this.texturesets.Add(s.Copy());
-			this.editmodes = new List<string>(ci.editmodes);
+			this.editmodes = new Dictionary<string, bool>(ci.editmodes);
 		}
 		
 		// This applies the defaults
-		public void ApplyDefaults()
+		public void ApplyDefaults(GameConfiguration gameconfig)
 		{
-			// No texture sets?
-			if(texturesets.Count == 0)
+			// We can only apply texture set defaults when the game configuration is specified
+			if(gameconfig != null)
 			{
-				// Copy the default texture sets from the game configuration
-				foreach(DefinedTextureSet s in General.Map.Config.TextureSets)
+				// No texture sets?
+				if(texturesets.Count == 0)
 				{
-					// Add a copy to our list
-					texturesets.Add(s.Copy());
+					// Copy the default texture sets from the game configuration
+					foreach(DefinedTextureSet s in gameconfig.TextureSets)
+					{
+						// Add a copy to our list
+						texturesets.Add(s.Copy());
+					}
+				}
+			}
+			
+			// Go for all available editing modes
+			foreach(EditModeInfo info in General.Editing.ModesInfo)
+			{
+				// Is this a mode thats is optional?
+				if(info.IsOptional)
+				{
+					// Add if not listed yet
+					if(!editmodes.ContainsKey(info.Type.FullName))
+						editmodes.Add(info.Type.FullName, info.Attributes.UseByDefault);
 				}
 			}
 		}

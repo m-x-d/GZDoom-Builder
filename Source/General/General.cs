@@ -599,15 +599,20 @@ namespace CodeImp.DoomBuilder
 				plugins = new PluginManager();
 				plugins.LoadAllPlugins();
 				
-				// Now that all settings have been combined (core & plugins) apply the defaults
-				General.WriteLogLine("Applying configuration settings...");
-				actions.ApplyDefaultShortcutKeys();
-				mainwindow.ApplyShortcutKeys();
-				
 				// Load game configurations
 				General.WriteLogLine("Loading game configurations...");
 				LoadAllGameConfigurations();
 
+				// Create editing modes
+				General.WriteLogLine("Creating editing modes manager...");
+				editing = new EditingManager();
+				
+				// Now that all settings have been combined (core & plugins) apply the defaults
+				General.WriteLogLine("Applying configuration settings...");
+				actions.ApplyDefaultShortcutKeys();
+				mainwindow.ApplyShortcutKeys();
+				foreach(ConfigurationInfo info in configs) info.ApplyDefaults(null);
+				
 				// Load compiler configurations
 				General.WriteLogLine("Loading compiler configurations...");
 				LoadAllCompilerConfigurations();
@@ -631,10 +636,6 @@ namespace CodeImp.DoomBuilder
 				// Create types manager
 				General.WriteLogLine("Creating types manager...");
 				types = new TypesManager();
-				
-				// Create editing modes
-				General.WriteLogLine("Creating editing modes manager...");
-				editing = new EditingManager();
 				
 				// Do auto map loading when window is delayed
 				if(delaymainwindow)

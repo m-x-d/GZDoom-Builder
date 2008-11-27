@@ -37,9 +37,11 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Drawing",
+	[EditMode(DisplayName = "Drawing Mode",
 			  SwitchAction = "drawlinesmode",
-			  Volatile = true)]
+			  Volatile = true,
+			  UseByDefault = true,
+			  Optional = false)]
 
 	public class DrawGeometryMode : BaseClassicMode
 	{

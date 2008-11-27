@@ -39,9 +39,11 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Edit Selection",
+	[EditMode(DisplayName = "Edit Selection Mode",
 			  SwitchAction = "editselectionmode",	// Action name used to switch to this mode
-			  Volatile = true)]
+			  Volatile = true,
+			  UseByDefault = true,
+			  Optional = false)]
 
 	public class EditSelectionMode : BaseClassicMode
 	{

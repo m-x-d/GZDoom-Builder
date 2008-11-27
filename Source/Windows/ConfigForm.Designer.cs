@@ -566,11 +566,11 @@ namespace CodeImp.DoomBuilder.Windows
             this.colmodeplugin});
 			this.listmodes.FullRowSelect = true;
 			this.listmodes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.listmodes.Location = new System.Drawing.Point(15, 76);
+			this.listmodes.Location = new System.Drawing.Point(15, 70);
 			this.listmodes.MultiSelect = false;
 			this.listmodes.Name = "listmodes";
 			this.listmodes.ShowGroups = false;
-			this.listmodes.Size = new System.Drawing.Size(442, 226);
+			this.listmodes.Size = new System.Drawing.Size(442, 233);
 			this.listmodes.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listmodes.TabIndex = 26;
 			this.listmodes.UseCompatibleStateImageBehavior = false;

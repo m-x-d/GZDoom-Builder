@@ -36,8 +36,10 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	[EditMode(SwitchAction = "wauthormode",
-			  ButtonDesc = "WadAuthor Mode",
+	#if DEBUG
+	
+	[EditMode(DisplayName = "WadAuthor Mode",
+			  SwitchAction = "wauthormode",
 			  ButtonImage = "WAuthor.png",
 			  ButtonOrder = int.MinValue + 4)]
 	
@@ -385,4 +387,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		
 		#endregion
 	}
+
+	#endif
 }

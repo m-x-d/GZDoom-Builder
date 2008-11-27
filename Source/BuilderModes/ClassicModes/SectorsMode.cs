@@ -39,11 +39,11 @@ using CodeImp.DoomBuilder.BuilderModes.Interface;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Sectors",
+	[EditMode(DisplayName = "Sectors Mode",
 			  SwitchAction = "sectorsmode",		// Action name used to switch to this mode
-			  ButtonDesc = "Sectors Mode",		// Description on the button in toolbar/menu
 		      ButtonImage = "SectorsMode.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 200)]	// Position of the button (lower is more to the left)
+			  ButtonOrder = int.MinValue + 200,	// Position of the button (lower is more to the left)
+			  UseByDefault = true)]
 
 	public class SectorsMode : BaseClassicMode
 	{
