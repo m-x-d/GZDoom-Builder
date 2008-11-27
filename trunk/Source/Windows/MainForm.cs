@@ -1323,6 +1323,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Done
 			editmodeitems.Clear();
+			UpdateSeperators();
 		}
 		
 		// This adds an editing mode button to the toolbar and edit menu
@@ -1339,6 +1340,7 @@ namespace CodeImp.DoomBuilder.Windows
 			item.Enabled = (General.Map != null);
 			toolbar.Items.Insert(index, item);
 			editmodeitems.Add(item);
+			UpdateSeperators();
 			
 			// Create menu item
 			index = menumode.DropDownItems.Count;
