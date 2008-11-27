@@ -95,9 +95,9 @@ namespace CodeImp.DoomBuilder.Editing
 			this.renderer2d = (Renderer2D)General.Map.Renderer2D;
 
 			// If the current mode is a ClassicMode, copy mouse properties
-			if(General.Map.Mode is ClassicMode)
+			if(General.Map.Editing.Mode is ClassicMode)
 			{
-				ClassicMode oldmode = General.Map.Mode as ClassicMode;
+				ClassicMode oldmode = General.Map.Editing.Mode as ClassicMode;
 
 				// Copy mouse properties
 				mousepos = oldmode.mousepos;

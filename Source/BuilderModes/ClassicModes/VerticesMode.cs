@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 			
 			// Return to this mode
-			General.Map.ChangeMode(new VerticesMode());
+			General.Map.Editing.ChangeMode(new VerticesMode());
 		}
 
 		// Mode engages
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Going to EditSelectionMode?
-			if(General.Map.NewMode is EditSelectionMode)
+			if(General.Map.Editing.NewMode is EditSelectionMode)
 			{
 				// No selection made? But we have a highlight!
 				if((General.Map.Map.GetSelectedVertices(true).Count == 0) && (highlighted != null))
@@ -275,7 +275,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Start drawing mode
 					DrawGeometryMode drawmode = new DrawGeometryMode();
 					drawmode.DrawPointAt(mousemappos, true);
-					General.Map.ChangeMode(drawmode);
+					General.Map.Editing.ChangeMode(drawmode);
 				}
 			}
 			
@@ -334,7 +334,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Map.ChangeMode(new DragVerticesMode(highlighted, mousedownmappos));
+					General.Map.Editing.ChangeMode(new DragVerticesMode(highlighted, mousedownmappos));
 				}
 			}
 		}

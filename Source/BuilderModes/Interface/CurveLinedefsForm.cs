@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.CloseReason == CloseReason.UserClosing)
 			{
 				// Just cancel
-				General.Map.CancelMode();
+				General.Map.Editing.CancelMode();
 				e.Cancel = true;
 			}
 		}
@@ -193,14 +193,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void cancel_Click(object sender, EventArgs e)
 		{
 			// Cancel now
-			General.Map.CancelMode();
+			General.Map.Editing.CancelMode();
 		}
 
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
 			// Apply now
-			General.Map.AcceptMode();
+			General.Map.Editing.AcceptMode();
 		}
 		
 		#endregion

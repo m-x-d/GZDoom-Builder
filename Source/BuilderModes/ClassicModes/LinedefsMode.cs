@@ -178,7 +178,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 
 			// Return to this mode
-			General.Map.ChangeMode(new LinedefsMode());
+			General.Map.Editing.ChangeMode(new LinedefsMode());
 		}
 
 		// Mode engages
@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Going to EditSelectionMode?
-			if(General.Map.NewMode is EditSelectionMode)
+			if(General.Map.Editing.NewMode is EditSelectionMode)
 			{
 				// No selection made? But we have a highlight!
 				if((General.Map.Map.GetSelectedLinedefs(true).Count == 0) && (highlighted != null))
@@ -343,7 +343,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Start drawing mode
 				DrawGeometryMode drawmode = new DrawGeometryMode();
 				drawmode.DrawPointAt(mousemappos, true);
-				General.Map.ChangeMode(drawmode);
+				General.Map.Editing.ChangeMode(drawmode);
 			}
 			
 			base.OnEditBegin();
@@ -419,7 +419,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Map.ChangeMode(new DragLinedefsMode(mousedownmappos));
+					General.Map.Editing.ChangeMode(new DragLinedefsMode(mousedownmappos));
 				}
 			}
 		}
@@ -633,7 +633,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selected.Count > 0)
 			{
 				// Go into curve linedefs mode
-				General.Map.ChangeMode(new CurveLinedefsMode(new LinedefsMode()));
+				General.Map.Editing.ChangeMode(new CurveLinedefsMode(new LinedefsMode()));
 			}
 		}
 		

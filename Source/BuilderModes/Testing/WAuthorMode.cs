@@ -39,8 +39,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 	[EditMode(SwitchAction = "wauthormode",
 			  ButtonDesc = "WadAuthor Mode",
 			  ButtonImage = "WAuthor.png",
-			  ButtonOrder = int.MinValue + 4,
-			  ConfigSpecific = true)]
+			  ButtonOrder = int.MinValue + 4)]
 	
 	public class WAuthorMode : ClassicMode
 	{
@@ -106,7 +105,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.OnCancel();
 
 			// Return to this mode
-			General.Map.ChangeMode(new WAuthorMode());
+			General.Map.Editing.ChangeMode(new WAuthorMode());
 		}
 
 		// Mode engages

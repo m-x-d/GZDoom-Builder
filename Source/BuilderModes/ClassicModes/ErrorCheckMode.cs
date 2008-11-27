@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 
 			// Return to base mode
-			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
+			General.Map.Editing.ChangeMode(General.Map.Editing.PreviousStableMode.Name);
 		}
 
 		// Mode engages
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.IsChanged = true;
 
 			// Return to base mode
-			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
+			General.Map.Editing.ChangeMode(General.Map.Editing.PreviousStableMode.Name);
 		}
 
 		// Redrawing display

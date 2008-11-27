@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		// Just keep the base mode button checked
-		public override string EditModeButtonName { get { return General.Map.PreviousStableMode.Name; } }
+		public override string EditModeButtonName { get { return General.Map.Editing.PreviousStableMode.Name; } }
 
 		public bool Pasting { get { return pasting; } set { pasting = value; } }
 		
@@ -690,7 +690,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayWarning("Please make a selection first!");
 				
 				// Cancel now
-				General.Map.CancelMode();
+				General.Map.Editing.CancelMode();
 			}
 		}
 
@@ -711,7 +711,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.Update(true, true);
 			
 			// Return to previous stable mode
-			General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
+			General.Map.Editing.ChangeMode(General.Map.Editing.PreviousStableMode.Name);
 		}
 
 		// When accepted
@@ -848,7 +848,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!modealreadyswitching)
 			{
 				// Return to previous stable mode
-				General.Map.ChangeMode(General.Map.PreviousStableMode.Name);
+				General.Map.Editing.ChangeMode(General.Map.Editing.PreviousStableMode.Name);
 			}
 		}
 		
@@ -1084,7 +1084,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Outside the selection?
 				default:
 					// Accept and be done with it
-					General.Map.AcceptMode();
+					General.Map.Editing.AcceptMode();
 					break;
 			}
 		}
@@ -1131,7 +1131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ClearSelection()
 		{
 			// Accept changes
-			General.Map.AcceptMode();
+			General.Map.Editing.AcceptMode();
 			General.Map.Map.ClearAllSelected();
 		}
 

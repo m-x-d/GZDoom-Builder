@@ -331,7 +331,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.CloseReason == CloseReason.UserClosing)
 			{
 				e.Cancel = true;
-				General.Map.CancelMode();
+				General.Map.Editing.CancelMode();
 			}
 		}
 		

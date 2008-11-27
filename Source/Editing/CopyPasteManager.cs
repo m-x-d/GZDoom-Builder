@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Editing
 				// Ask the editing mode to prepare selection for copying.
 				// The edit mode should mark all vertices, lines and sectors
 				// that need to be copied.
-				if(General.Map.Mode.OnCopyBegin())
+				if(General.Map.Editing.Mode.OnCopyBegin())
 				{
 					// Copy the marked geometry
 					// This links sidedefs that are not linked to a marked sector to a virtual sector
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 					// Done
 					memstream.Dispose();
-					General.Map.Mode.OnCopyEnd();
+					General.Map.Editing.Mode.OnCopyEnd();
 					General.Plugins.OnCopyEnd();
 					return true;
 				}
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Editing
 				if(General.Plugins.OnPasteBegin())
 				{
 					// Ask the editing mode to prepare selection for pasting.
-					if(General.Map.Mode.OnPasteBegin())
+					if(General.Map.Editing.Mode.OnPasteBegin())
 					{
 						// Read from clipboard
 						Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 						// Done
 						memstream.Dispose();
-						General.Map.Mode.OnPasteEnd();
+						General.Map.Editing.Mode.OnPasteEnd();
 						General.Plugins.OnPasteEnd();
 						return true;
 					}

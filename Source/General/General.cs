@@ -813,10 +813,10 @@ namespace CodeImp.DoomBuilder
 		public static bool CancelVolatileMode()
 		{
 			// Volatile mode?
-			if((map != null) & (map.Mode != null) && map.Mode.Attributes.Volatile)
+			if((map != null) & (map.Editing.Mode != null) && map.Editing.Mode.Attributes.Volatile)
 			{
 				// Cancel
-				map.Mode.OnCancel();
+				map.Editing.Mode.OnCancel();
 				return true;
 			}
 			else
@@ -830,10 +830,10 @@ namespace CodeImp.DoomBuilder
 		public static bool DisengageVolatileMode()
 		{
 			// Volatile mode?
-			if((map != null) && (map.Mode != null) && map.Mode.Attributes.Volatile)
+			if((map != null) && (map.Editing.Mode != null) && map.Editing.Mode.Attributes.Volatile)
 			{
 				// Change back to normal mode
-				map.ChangeMode(map.PreviousStableMode.Name);
+				map.Editing.ChangeMode(map.Editing.PreviousStableMode.Name);
 				return true;
 			}
 			else
