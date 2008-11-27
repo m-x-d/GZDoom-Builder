@@ -24,7 +24,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		#region ================== Constants
 
 		#endregion
-
+		
 		#region ================== Variables
 
 		// Internals
@@ -34,9 +34,9 @@ namespace CodeImp.DoomBuilder.Plugins
 		private bool isdisposed = false;
 
 		#endregion
-
+		
 		#region ================== Properties
-
+		
 		// Internals
 		internal Plugin Plugin { get { return plugin; } set { plugin = value; } }
 		
@@ -44,7 +44,13 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// Indicates if the plugin has been disposed.
 		/// </summary>
 		public bool IsDisposed { get { return isdisposed; } }
-
+		
+		/// <summary>
+		/// Override this to return a more descriptive name for your plugin.
+		/// Default is the library filename without extension.
+		/// </summary>
+		public virtual string Name { get { return plugin.Name; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer

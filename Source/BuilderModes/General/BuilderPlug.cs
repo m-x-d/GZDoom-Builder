@@ -60,14 +60,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Properties
-
+		
+		public override string Name { get { return "Doom Builder"; } }
 		public static BuilderPlug Me { get { return me; } }
-
+		
 		public MenusForm MenusForm { get { return menusform; } }
 		public CurveLinedefsForm CurveLinedefsForm { get { return curvelinedefsform; } }
 		public FindReplaceForm FindReplaceForm { get { return findreplaceform; } }
 		public ErrorCheckForm ErrorCheckForm { get { return errorcheckform; } }
-
+		
 		#endregion
 
 		#region ================== Initialize / Dispose

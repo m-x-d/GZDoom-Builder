@@ -68,12 +68,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.removetextureset = new System.Windows.Forms.Button();
 			this.addtextureset = new System.Windows.Forms.Button();
 			this.tabmodes = new System.Windows.Forms.TabPage();
-			this.listconfigs = new System.Windows.Forms.ListView();
-			this.columnname = new System.Windows.Forms.ColumnHeader();
-			this.testprogramdialog = new System.Windows.Forms.OpenFileDialog();
 			this.listmodes = new System.Windows.Forms.ListView();
 			this.colmodename = new System.Windows.Forms.ColumnHeader();
 			this.colmodeplugin = new System.Windows.Forms.ColumnHeader();
+			this.listconfigs = new System.Windows.Forms.ListView();
+			this.columnname = new System.Windows.Forms.ColumnHeader();
+			this.testprogramdialog = new System.Windows.Forms.OpenFileDialog();
 			label5 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -558,6 +558,34 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabmodes.Text = "Modes";
 			this.tabmodes.UseVisualStyleBackColor = true;
 			// 
+			// listmodes
+			// 
+			this.listmodes.CheckBoxes = true;
+			this.listmodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colmodename,
+            this.colmodeplugin});
+			this.listmodes.FullRowSelect = true;
+			this.listmodes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.listmodes.Location = new System.Drawing.Point(15, 76);
+			this.listmodes.MultiSelect = false;
+			this.listmodes.Name = "listmodes";
+			this.listmodes.ShowGroups = false;
+			this.listmodes.Size = new System.Drawing.Size(442, 226);
+			this.listmodes.TabIndex = 26;
+			this.listmodes.UseCompatibleStateImageBehavior = false;
+			this.listmodes.View = System.Windows.Forms.View.Details;
+			this.listmodes.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listmodes_ItemChecked);
+			// 
+			// colmodename
+			// 
+			this.colmodename.Text = "Editing Mode";
+			this.colmodename.Width = 179;
+			// 
+			// colmodeplugin
+			// 
+			this.colmodeplugin.Text = "Plugin";
+			this.colmodeplugin.Width = 221;
+			// 
 			// listconfigs
 			// 
 			this.listconfigs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -587,33 +615,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.testprogramdialog.Filter = "Executable Files (*.exe)|*.exe|Batch Files (*.bat)|*.bat";
 			this.testprogramdialog.Title = "Browse Test Program";
-			// 
-			// listmodes
-			// 
-			this.listmodes.CheckBoxes = true;
-			this.listmodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colmodename,
-            this.colmodeplugin});
-			this.listmodes.FullRowSelect = true;
-			this.listmodes.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.listmodes.Location = new System.Drawing.Point(15, 76);
-			this.listmodes.MultiSelect = false;
-			this.listmodes.Name = "listmodes";
-			this.listmodes.ShowGroups = false;
-			this.listmodes.Size = new System.Drawing.Size(442, 226);
-			this.listmodes.TabIndex = 26;
-			this.listmodes.UseCompatibleStateImageBehavior = false;
-			this.listmodes.View = System.Windows.Forms.View.Details;
-			// 
-			// colmodename
-			// 
-			this.colmodename.Text = "Editing Mode";
-			this.colmodename.Width = 179;
-			// 
-			// colmodeplugin
-			// 
-			this.colmodeplugin.Text = "Plugin";
-			this.colmodeplugin.Width = 221;
 			// 
 			// ConfigForm
 			// 
