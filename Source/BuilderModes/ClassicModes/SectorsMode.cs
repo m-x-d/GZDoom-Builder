@@ -251,7 +251,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnCancel();
 
 			// Return to this mode
-			General.Map.Editing.ChangeMode(new SectorsMode());
+			General.Editing.ChangeMode(new SectorsMode());
 		}
 
 		// Mode engages
@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 			
 			// Going to EditSelectionMode?
-			if(General.Map.Editing.NewMode is EditSelectionMode)
+			if(General.Editing.NewMode is EditSelectionMode)
 			{
 				// No selection made? But we have a highlight!
 				if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
@@ -429,7 +429,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Start drawing mode
 				DrawGeometryMode drawmode = new DrawGeometryMode();
 				drawmode.DrawPointAt(mousemappos, true);
-				General.Map.Editing.ChangeMode(drawmode);
+				General.Editing.ChangeMode(drawmode);
 			}
 			
 			base.OnEditBegin();
@@ -545,7 +545,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					General.Map.Editing.ChangeMode(new DragSectorsMode(mousedownmappos));
+					General.Editing.ChangeMode(new DragSectorsMode(mousedownmappos));
 				}
 			}
 		}

@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int testskill;
 		private List<ThingsFilter> thingsfilters;
 		private List<DefinedTextureSet> texturesets;
+		private List<string> editmodes;
 		
 		#endregion
 
@@ -64,7 +65,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool CustomParameters { get { return customparameters; } set { customparameters = value; } }
 		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
 		public List<DefinedTextureSet> TextureSets { get { return texturesets; } }
-
+		internal List<string> EditModes { get { return editmodes; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -104,8 +106,16 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				texturesets.Add(new DefinedTextureSet(General.Settings.Config, "configurations." + settingskey + ".texturesets." + de.Key));
 			}
+			
+			// Make list of edit modes
+			this.editmodes = new List<string>();
+			IDictionary modes = General.Settings.ReadSetting("configurations." + settingskey + ".editmodes", new Hashtable());
+			foreach(DictionaryEntry de in modes)
+			{
+				editmodes.Add(de.Value.ToString());
+			}
 		}
-
+		
 		// Constructor
 		private ConfigurationInfo()
 		{
@@ -133,7 +143,7 @@ namespace CodeImp.DoomBuilder.Config
 			General.Settings.WriteSetting("configurations." + settingskey + ".customparameters", customparameters);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testskill", testskill);
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
-
+			
 			// Write filters to configuration
 			for(int i = 0; i < thingsfilters.Count; i++)
 			{
@@ -146,6 +156,12 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				texturesets[i].WriteToConfig(General.Settings.Config,
 					"configurations." + settingskey + ".texturesets.set" + i.ToString(CultureInfo.InvariantCulture));
+			}
+			
+			// Write filters to configuration
+			for(int i = 0; i < editmodes.Count; i++)
+			{
+				General.Settings.WriteSetting("configurations." + settingskey + ".editmodes.mode" + i.ToString(CultureInfo.InvariantCulture), editmodes[i]);
 			}
 		}
 
@@ -172,6 +188,7 @@ namespace CodeImp.DoomBuilder.Config
 			ci.testskill = this.testskill;
 			ci.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in this.texturesets) ci.texturesets.Add(s.Copy());
+			ci.editmodes = new List<string>(this.editmodes);
 			return ci;
 		}
 		
@@ -191,6 +208,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.testskill = ci.testskill;
 			this.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in ci.texturesets) this.texturesets.Add(s.Copy());
+			this.editmodes = new List<string>(ci.editmodes);
 		}
 		
 		// This applies the defaults

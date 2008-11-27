@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		#region ================== Properties
 		
+		internal List<EditModeInfo> ModesInfo { get { return allmodes; } }
 		public EditMode Mode { get { return mode; } }
 		public EditMode NewMode { get { return newmode; } }
 		public Type PreviousMode { get { return prevmode; } }
@@ -100,6 +101,9 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Sort the modes in order for buttons
 			allmodes.Sort();
+			
+			// Update modes
+			UpdateCurrentEditModes();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

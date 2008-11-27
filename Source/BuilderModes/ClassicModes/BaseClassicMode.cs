@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Switch to EditSelectionMode
 			EditSelectionMode editmode = new EditSelectionMode();
 			editmode.Pasting = true;
-			General.Map.Editing.ChangeMode(editmode);
+			General.Editing.ChangeMode(editmode);
 		}
 
 		#endregion

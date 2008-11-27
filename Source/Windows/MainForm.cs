@@ -200,10 +200,10 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Check appropriate button on interface
 			// And show the mode name
-			if(General.Map.Editing.Mode != null)
+			if(General.Editing.Mode != null)
 			{
-				General.MainWindow.CheckEditModeButton(General.Map.Editing.Mode.EditModeButtonName);
-				General.MainWindow.DisplayModeName(General.Map.Editing.Mode.Attributes.DisplayName);
+				General.MainWindow.CheckEditModeButton(General.Editing.Mode.EditModeButtonName);
+				General.MainWindow.DisplayModeName(General.Editing.Mode.Attributes.DisplayName);
 			}
 			else
 			{
@@ -214,8 +214,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// View mode only matters in classic editing modes
 			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
 			{
-				viewmodesitems[i].Enabled = (General.Map.Editing.Mode is ClassicMode);
-				viewmodesbuttons[i].Enabled = (General.Map.Editing.Mode is ClassicMode);
+				viewmodesitems[i].Enabled = (General.Editing.Mode is ClassicMode);
+				viewmodesbuttons[i].Enabled = (General.Editing.Mode is ClassicMode);
 			}
 		}
 
@@ -691,7 +691,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map == null) return;
 
 			// In classic mode?
-			if(General.Map.Editing.Mode is ClassicMode)
+			if(General.Editing.Mode is ClassicMode)
 			{
 				// Requested from menu?
 				if(sender is ToolStripMenuItem)
@@ -700,7 +700,7 @@ namespace CodeImp.DoomBuilder.Windows
 					zoom = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
 
 					// Zoom now
-					(General.Map.Editing.Mode as ClassicMode).SetZoom((float)zoom / 100f);
+					(General.Editing.Mode as ClassicMode).SetZoom((float)zoom / 100f);
 				}
 			}
 		}
@@ -711,8 +711,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map == null) return;
 			
 			// In classic mode?
-			if(General.Map.Editing.Mode is ClassicMode)
-				(General.Map.Editing.Mode as ClassicMode).CenterInScreen();
+			if(General.Editing.Mode is ClassicMode)
+				(General.Editing.Mode as ClassicMode).CenterInScreen();
 		}
 
 		// This changes grid display
@@ -736,7 +736,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map == null) return;
 
 			// In classic mode?
-			if(General.Map.Editing.Mode is ClassicMode)
+			if(General.Editing.Mode is ClassicMode)
 			{
 				// Requested from menu?
 				if(sender is ToolStripMenuItem)
@@ -792,9 +792,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// This redraws the display on the next paint event
 		public void RedrawDisplay()
 		{
-			if((General.Map != null) && (General.Map.Editing.Mode != null))
+			if((General.Map != null) && (General.Editing.Mode != null))
 			{
-				General.Map.Editing.Mode.OnRedrawDisplay();
+				General.Editing.Mode.OnRedrawDisplay();
 			}
 			else
 			{
@@ -807,9 +807,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(General.Map != null)
 			{
-				if(General.Map.Editing.Mode != null)
+				if(General.Editing.Mode != null)
 				{
-					if(!displayresized) General.Map.Editing.Mode.OnPresentDisplay();
+					if(!displayresized) General.Editing.Mode.OnPresentDisplay();
 				}
 				else
 				{
@@ -867,10 +867,10 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// Mouse click
-		private void display_MouseClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnMouseClick(e); }
+		private void display_MouseClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseClick(e); }
 
 		// Mouse doubleclick
-		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnMouseDoubleClick(e); }
+		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseDoubleClick(e); }
 
 		// Mouse down
 		private void display_MouseDown(object sender, MouseEventArgs e)
@@ -891,27 +891,27 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions.KeyPressed(key);
 			
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnMouseDown(e);
+			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseDown(e);
 		}
 
 		// Mouse enters
 		private void display_MouseEnter(object sender, EventArgs e)
 		{
 			mouseinside = true;
-			if((General.Map != null) && (mouseinput == null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnMouseEnter(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseEnter(e);
 		}
 
 		// Mouse leaves
 		private void display_MouseLeave(object sender, EventArgs e)
 		{
 			mouseinside = false;
-			if((General.Map != null) && (mouseinput == null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnMouseLeave(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseLeave(e);
 		}
 
 		// Mouse moves
 		private void display_MouseMove(object sender, MouseEventArgs e)
 		{
-			if((General.Map != null) && (mouseinput == null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnMouseMove(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseMove(e);
 		}
 
 		// Mouse up
@@ -933,7 +933,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions.KeyReleased(key);
 
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnMouseUp(e);
+			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseUp(e);
 		}
 		
 		#endregion
@@ -1082,7 +1082,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions.KeyPressed((int)e.KeyData);
 
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnKeyDown(e);
+			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyDown(e);
 		}
 
 		// When a key is released
@@ -1103,7 +1103,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions.KeyReleased((int)e.KeyData);
 
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Map.Editing.Mode != null)) General.Map.Editing.Mode.OnKeyUp(e);
+			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyUp(e);
 		}
 
 		#endregion
@@ -1639,9 +1639,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Enable/disable items
 			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
 			itemredo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextRedo != null);
-			itemcut.Enabled = (General.Map != null) && General.Map.Editing.Mode.Attributes.AllowCopyPaste;
-			itemcopy.Enabled = (General.Map != null) && General.Map.Editing.Mode.Attributes.AllowCopyPaste;
-			itempaste.Enabled = (General.Map != null) && General.Map.Editing.Mode.Attributes.AllowCopyPaste;
+			itemcut.Enabled = (General.Map != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
+			itemcopy.Enabled = (General.Map != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
+			itempaste.Enabled = (General.Map != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			itemmapoptions.Enabled = (General.Map != null);
 			itemsnaptogrid.Enabled = (General.Map != null);
 			itemautomerge.Enabled = (General.Map != null);
@@ -2041,13 +2041,13 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Process mouse input
 				deltamouse = mouseinput.Process();
-				if((General.Map != null) && (General.Map.Editing.Mode != null))
-					General.Map.Editing.Mode.OnMouseInput(deltamouse);
+				if((General.Map != null) && (General.Editing.Mode != null))
+					General.Editing.Mode.OnMouseInput(deltamouse);
 			}
 			
 			// Process signal
-			if((General.Map != null) && (General.Map.Editing.Mode != null))
-				General.Map.Editing.Mode.OnProcess(deltatime);
+			if((General.Map != null) && (General.Editing.Mode != null))
+				General.Editing.Mode.OnProcess(deltatime);
 		}
 
 		#endregion

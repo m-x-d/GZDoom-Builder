@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.OnCancel();
 
 			// Return to this mode
-			General.Map.Editing.ChangeMode(new WAuthorMode());
+			General.Editing.ChangeMode(new WAuthorMode());
 		}
 
 		// Mode engages

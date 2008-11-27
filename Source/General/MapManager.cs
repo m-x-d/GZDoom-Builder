@@ -75,7 +75,6 @@ namespace CodeImp.DoomBuilder
 		private ConfigurationInfo configinfo;
 		private GameConfiguration config;
 		private DataManager data;
-		private EditingManager editing;
 		private D3DDevice graphics;
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
@@ -100,7 +99,6 @@ namespace CodeImp.DoomBuilder
 		public string TempPath { get { return temppath; } }
 		internal MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
-		public EditingManager Editing { get { return editing; } }
 		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -141,7 +139,6 @@ namespace CodeImp.DoomBuilder
 			copypaste = new CopyPasteManager();
 			launcher = new Launcher(this);
 			thingsfilter = new NullThingsFilter();
-			editing = new EditingManager();
 		}
 
 		// Disposer
@@ -154,7 +151,7 @@ namespace CodeImp.DoomBuilder
 				CloseScriptEditor(false);
 				
 				// Change to no mode
-				editing.ChangeMode((EditMode)null);
+				General.Editing.ChangeMode((EditMode)null);
 				
 				// Unbind any methods
 				General.Actions.UnbindMethods(this);
@@ -164,7 +161,6 @@ namespace CodeImp.DoomBuilder
 				if(launcher != null) launcher.Dispose();
 				if(copypaste != null) copypaste.Dispose();
 				if(undoredo != null) undoredo.Dispose();
-				if(editing != null) editing.Dispose();
 				General.WriteLogLine("Unloading data resources...");
 				if(data != null) data.Dispose();
 				General.WriteLogLine("Closing temporary file...");
@@ -179,7 +175,6 @@ namespace CodeImp.DoomBuilder
 				launcher = null;
 				copypaste = null;
 				undoredo = null;
-				editing = null;
 				data = null;
 				tempwad = null;
 				map = null;
@@ -240,7 +235,7 @@ namespace CodeImp.DoomBuilder
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 			configinfo.ApplyDefaults();
-			editing.UpdateCurrentEditModes();
+			General.Editing.UpdateCurrentEditModes();
 			
 			// Create map data
 			map = new MapSet();
@@ -273,8 +268,8 @@ namespace CodeImp.DoomBuilder
 			General.Actions.BindMethods(this);
 
 			// Set default mode
-			editing.ChangeMode("VerticesMode");
-			ClassicMode cmode = (editing.Mode as ClassicMode);
+			General.Editing.ChangeMode("VerticesMode");
+			ClassicMode cmode = (General.Editing.Mode as ClassicMode);
 			cmode.SetZoom(0.5f);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
@@ -312,7 +307,7 @@ namespace CodeImp.DoomBuilder
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 			configinfo.ApplyDefaults();
-			editing.UpdateCurrentEditModes();
+			General.Editing.UpdateCurrentEditModes();
 			
 			// Create map data
 			map = new MapSet();
@@ -360,11 +355,11 @@ namespace CodeImp.DoomBuilder
 			General.Actions.BindMethods(this);
 
 			// Set default mode
-			editing.ChangeMode("VerticesMode");
+			General.Editing.ChangeMode("VerticesMode");
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
 			// Center map in screen
-			if(General.Map.Editing.Mode is ClassicMode) (General.Map.Editing.Mode as ClassicMode).CenterInScreen();
+			if(General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
 			
 			// Success
 			General.WriteLogLine("Map loading done");
@@ -1273,7 +1268,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Reloading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-			editing.UpdateCurrentEditModes();
+			General.Editing.UpdateCurrentEditModes();
 			
 			// Reload data resources
 			General.WriteLogLine("Reloading data resources...");
@@ -1320,7 +1315,7 @@ namespace CodeImp.DoomBuilder
 				configinfo = General.GetConfigurationInfo(options.ConfigFile);
 				config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
 				configinfo.ApplyDefaults();
-				editing.UpdateCurrentEditModes();
+				General.Editing.UpdateCurrentEditModes();
 				
 				// Setup new map format IO
 				General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
