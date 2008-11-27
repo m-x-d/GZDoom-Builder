@@ -35,9 +35,10 @@ using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(SwitchAction = "visualmode",		// Action name used to switch to this mode
+	[EditMode(DisplayName = "Visual Mode",
+			  SwitchAction = "visualmode",		// Action name used to switch to this mode
 			  ButtonDesc = "Visual Mode",		// Description on the button in toolbar/menu
 			  ButtonImage = "VisualMode.png",	// Image resource name for the button
 			  ButtonOrder = 0)]					// Position of the button (lower is more to the left)

@@ -37,7 +37,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
 	internal class VisualUpper : VisualGeometry
 	{

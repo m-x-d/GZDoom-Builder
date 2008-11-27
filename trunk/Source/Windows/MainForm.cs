@@ -1639,9 +1639,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Enable/disable items
 			itemundo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextUndo != null);
 			itemredo.Enabled = (General.Map != null) && (General.Map.UndoRedo.NextRedo != null);
-			itemcut.Enabled = (General.Map != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
-			itemcopy.Enabled = (General.Map != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
-			itempaste.Enabled = (General.Map != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
+			itemcut.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
+			itemcopy.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
+			itempaste.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			itemmapoptions.Enabled = (General.Map != null);
 			itemsnaptogrid.Enabled = (General.Map != null);
 			itemautomerge.Enabled = (General.Map != null);
