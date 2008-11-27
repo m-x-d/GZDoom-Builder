@@ -38,11 +38,11 @@ using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Things",
+	[EditMode(DisplayName = "Things Mode",
 			  SwitchAction = "thingsmode",		// Action name used to switch to this mode
-			  ButtonDesc = "Things Mode",		// Description on the button in toolbar/menu
 		      ButtonImage = "ThingsMode.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 300)]	// Position of the button (lower is more to the left)
+			  ButtonOrder = int.MinValue + 300,	// Position of the button (lower is more to the left)
+			  UseByDefault = true)]
 
 	public class ThingsMode : BaseClassicMode
 	{

@@ -36,9 +36,10 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Find & Replace",
+	[EditMode(DisplayName = "Find & Replace Mode",
 			  SwitchAction = "findmode",
-			  Volatile = true)]
+			  Volatile = true,
+			  UseByDefault = true)]
 
 	public sealed class FindReplaceMode : BaseClassicMode
 	{

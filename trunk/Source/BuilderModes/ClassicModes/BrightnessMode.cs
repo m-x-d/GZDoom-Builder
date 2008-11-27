@@ -40,10 +40,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Brightness Mode",
 			  SwitchAction = "brightnessmode",
-			  ButtonDesc = "Brightness Mode",
 			  ButtonImage = "BrightnessMode.png",
 			  ButtonOrder = int.MinValue + 201,
-			  AllowCopyPaste = false)]
+			  AllowCopyPaste = false,
+			  UseByDefault = true)]
 	
 	public sealed class BrightnessMode : BaseClassicMode
 	{

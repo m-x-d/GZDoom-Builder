@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-			configinfo.ApplyDefaults();
+			configinfo.ApplyDefaults(config);
 			General.Editing.UpdateCurrentEditModes();
 			
 			// Create map data
@@ -306,7 +306,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Loading game configuration...");
 			configinfo = General.GetConfigurationInfo(options.ConfigFile);
 			config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-			configinfo.ApplyDefaults();
+			configinfo.ApplyDefaults(config);
 			General.Editing.UpdateCurrentEditModes();
 			
 			// Create map data
@@ -1314,7 +1314,7 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Loading game configuration...");
 				configinfo = General.GetConfigurationInfo(options.ConfigFile);
 				config = new GameConfiguration(General.LoadGameConfiguration(options.ConfigFile));
-				configinfo.ApplyDefaults();
+				configinfo.ApplyDefaults(config);
 				General.Editing.UpdateCurrentEditModes();
 				
 				// Setup new map format IO

@@ -36,9 +36,10 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Map Analysis",
+	[EditMode(DisplayName = "Map Analysis Mode",
 			  SwitchAction = "errorcheckmode",
-			  Volatile = true)]
+			  Volatile = true,
+			  UseByDefault = true)]
 
 	public sealed class ErrorCheckMode : BaseClassicMode
 	{

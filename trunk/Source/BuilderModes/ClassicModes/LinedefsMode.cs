@@ -38,11 +38,11 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Linedefs",
+	[EditMode(DisplayName = "Linedefs Mode",
 			  SwitchAction = "linedefsmode",	// Action name used to switch to this mode
-			  ButtonDesc = "Linedefs Mode",		// Description on the button in toolbar/menu
 			  ButtonImage = "LinesMode.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 100)]	// Position of the button (lower is more to the left)
+			  ButtonOrder = int.MinValue + 100,	// Position of the button (lower is more to the left)
+			  UseByDefault = true)]
 
 	public class LinedefsMode : BaseClassicMode
 	{

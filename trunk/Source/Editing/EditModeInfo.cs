@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		public Plugin Plugin { get { return plugin; } }
 		public Type Type { get { return type; } }
+		public bool IsOptional { get { return ((switchactionattr != null) || (buttonimage != null)) && attribs.Optional; } }
 		public BeginActionAttribute SwitchAction { get { return switchactionattr; } }
 		public Image ButtonImage { get { return buttonimage; } }
 		public string ButtonDesc { get { return buttondesc; } }
@@ -78,14 +79,18 @@ namespace CodeImp.DoomBuilder.Editing
 			this.type = type;
 			this.attribs = attr;
 			
+			// Make switch action info
+			if((attribs.SwitchAction != null) && (attribs.SwitchAction.Length > 0))
+				switchactionattr = new BeginActionAttribute(attribs.SwitchAction);
+			
 			// Make button info
-			if((attr.ButtonImage != null) && (attr.ButtonDesc != null))
+			if(attr.ButtonImage != null)
 			{
 				buttonimagestream = plugin.GetResourceStream(attr.ButtonImage);
 				if(buttonimagestream != null)
 				{
 					buttonimage = Image.FromStream(buttonimagestream);
-					buttondesc = attr.ButtonDesc;
+					buttondesc = attr.DisplayName;
 					buttonorder = attr.ButtonOrder;
 				}
 			}
@@ -113,13 +118,9 @@ namespace CodeImp.DoomBuilder.Editing
 		// This binds the action to switch to this editing mode
 		public void BindSwitchAction()
 		{
-			// Make switch action info
-			if((switchactiondel == null) && (attribs.SwitchAction != null) && (attribs.SwitchAction.Length > 0))
+			if((switchactiondel == null) && (switchactionattr != null))
 			{
-				switchactionattr = new BeginActionAttribute(attribs.SwitchAction);
 				switchactiondel = new ActionDelegate(UserSwitchToMode);
-				
-				// Bind switch action
 				General.Actions.BindBeginDelegate(plugin.Assembly, switchactiondel, switchactionattr);
 			}
 		}

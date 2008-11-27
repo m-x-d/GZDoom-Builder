@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(EditModeInfo emi in General.Editing.ModesInfo)
 			{
 				// Is this mode selectable by the user?
-				if(emi.ButtonImage != null)
+				if(emi.IsOptional)
 				{
 					lvi = listmodes.Items.Add(emi.Attributes.DisplayName);
 					lvi.Tag = emi;
@@ -109,6 +109,9 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Load the game configuration
 				gameconfig = new GameConfiguration(General.LoadGameConfiguration(configinfo.Filename));
+
+				// Set defaults
+				configinfo.ApplyDefaults(gameconfig);
 				
 				// Fill resources list
 				configdata.EditResourceLocationList(configinfo.Resources);
@@ -172,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(ListViewItem lvi in listmodes.Items)
 				{
 					EditModeInfo emi = (lvi.Tag as EditModeInfo);
-					lvi.Checked = configinfo.EditModes.Contains(emi.Type.FullName);
+					lvi.Checked = (configinfo.EditModes.ContainsKey(emi.Type.FullName) && configinfo.EditModes[emi.Type.FullName]);
 				}
 			}
 		}
@@ -486,16 +489,16 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Apply changes
 			EditModeInfo emi = (e.Item.Tag as EditModeInfo);
-			bool currentstate = configinfo.EditModes.Contains(emi.Type.FullName);
+			bool currentstate = (configinfo.EditModes.ContainsKey(emi.Type.FullName) && configinfo.EditModes[emi.Type.FullName]);
 			if(e.Item.Checked && !currentstate)
 			{
 				// Add
-				configinfo.EditModes.Add(emi.Type.FullName);
+				configinfo.EditModes[emi.Type.FullName] = true;
 			}
 			else if(!e.Item.Checked && currentstate)
 			{
 				// Remove
-				configinfo.EditModes.Remove(emi.Type.FullName);
+				configinfo.EditModes[emi.Type.FullName] = false;
 			}
 		}
 	}

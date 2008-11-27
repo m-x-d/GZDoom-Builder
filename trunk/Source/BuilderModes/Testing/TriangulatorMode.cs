@@ -39,8 +39,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
 	#if DEBUG
 	
-	[EditMode(SwitchAction = "triangulatormode",		// Action name used to switch to this mode
-			  ButtonDesc = "Triangulator Mode",			// Description on the button in toolbar/menu
+	[EditMode(DisplayName = "Triangulator Mode",
+			  SwitchAction = "triangulatormode",		// Action name used to switch to this mode
 			  ButtonImage = "TriangulatorMode.png",		// Image resource name for the button
 			  ButtonOrder = int.MaxValue)]				// Position of the button (lower is more to the left)
 

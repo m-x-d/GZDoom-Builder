@@ -37,11 +37,11 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Make Sectors",
+	[EditMode(DisplayName = "Make Sectors Mode",
 			  SwitchAction = "makesectormode",
-			  ButtonDesc = "Make Sectors Mode",		// Description on the button in toolbar/menu
 			  ButtonImage = "NewSector2.png",	// Image resource name for the button
-			  ButtonOrder = int.MinValue + 202)]	// Position of the button (lower is more to the left)
+			  ButtonOrder = int.MinValue + 202,	// Position of the button (lower is more to the left)
+			  UseByDefault = true)]
 
 	public class MakeSectorMode : BaseClassicMode
 	{
