@@ -346,7 +346,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 						   (sd.Other.Sector.FloorHeight >= (sd.Other.Sector.CeilHeight - 0.0001f)))
 						{
 							// This blocks the view
-							clipper.InsertRange(sd.Line.Start.Position, sd.Line.End.Position);
+							//clipper.InsertRange(sd.Line.Start.Position, sd.Line.End.Position);
 						}
 					}
 				}
@@ -366,18 +366,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 							// Within view range?
 							if(sd.Line.DistanceToSq(campos, true) < viewdist2)
 							{
-								Vector2D p = sd.Line.Start.Position;
-								if((p.x > s.BBox.Left + Linedef.SIDE_POINT_DISTANCE) &&
-								   (p.x < s.BBox.Right - Linedef.SIDE_POINT_DISTANCE) &&
-								   (p.y > s.BBox.Top + Linedef.SIDE_POINT_DISTANCE) &&
-								   (p.y < s.BBox.Bottom - Linedef.SIDE_POINT_DISTANCE))
-								{
-									// Sidedef is inside source sector, other sector always visible!
-									todo.Push(os);
-									stackedsectors.Add(os, os);
-								}
 								// Can we see this sector?
-								else if(clipper.TestRange(sd.Line.Start.Position, sd.Line.End.Position))
+								//if(clipper.TestRange(sd.Line.Start.Position, sd.Line.End.Position))
 								{
 									// Process this sector as well
 									todo.Push(os);
