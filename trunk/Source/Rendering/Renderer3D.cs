@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	{
 		#region ================== Constants
 
+		private const int RENDER_PASSES = 4;
 		private const float PROJ_NEAR_PLANE = 1f;
 
 		#endregion
@@ -56,8 +57,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Frustum
 		private ProjectedFrustum2D frustum;
 		
-		// Geometry, grouped by texture
-		private Dictionary<ImageData, BinaryHeap<VisualGeometry>> geometry;
+		// Geometry to be rendered.
+		// Each Dictionary in the array is a render pass.
+		// Each BinaryHeap in the Dictionary contains all geometry that needs
+		// to be rendered with the associated ImageData.
+		// The BinaryHeap sorts the geometry by sector to minimize stream switchs.
+		private Dictionary<ImageData, BinaryHeap<VisualGeometry>>[] geometry;
 		
 		#endregion
 
@@ -206,28 +211,76 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins rendering world geometry
 		public void StartGeometry()
 		{
-			// Renderstates
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
-			graphics.Device.SetRenderState(RenderState.ZEnable, true);
-			graphics.Device.SetRenderState(RenderState.ZWriteEnable, true);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-			
-			// Setup shader
-			graphics.Shaders.World3D.Begin();
-			graphics.Shaders.World3D.WorldViewProj = viewproj;
-			graphics.Shaders.World3D.BeginPass(0);
-
 			// Make collection
-			geometry = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>();
+			geometry = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>[RENDER_PASSES];
+			for(int i = 0; i < RENDER_PASSES; i++) geometry[i] = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>();
 		}
 
 		// This ends rendering world geometry
 		public void FinishGeometry()
 		{
-			// We now render the actual geometry collected
-			foreach(KeyValuePair<ImageData, BinaryHeap<VisualGeometry>> group in geometry)
+			// Initial renderstates
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
+			graphics.Device.SetRenderState(RenderState.ZEnable, true);
+			graphics.Device.SetRenderState(RenderState.ZWriteEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+
+			// SOLID PASS
+			graphics.Shaders.World3D.Begin();
+			graphics.Shaders.World3D.WorldViewProj = viewproj;
+			graphics.Shaders.World3D.BeginPass(0);
+			RenderSinglePass((int)RenderPass.Solid);
+			graphics.Shaders.World3D.EndPass();
+			graphics.Shaders.World3D.End();
+
+			// MASK PASS
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+			graphics.Shaders.World3D.Begin();
+			graphics.Shaders.World3D.WorldViewProj = viewproj;
+			graphics.Shaders.World3D.BeginPass(0);
+			RenderSinglePass((int)RenderPass.Mask);
+			graphics.Shaders.World3D.EndPass();
+			graphics.Shaders.World3D.End();
+
+			// ALPHA PASS
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+			graphics.Shaders.World3D.Begin();
+			graphics.Shaders.World3D.WorldViewProj = viewproj;
+			graphics.Shaders.World3D.BeginPass(0);
+			RenderSinglePass((int)RenderPass.Alpha);
+			graphics.Shaders.World3D.EndPass();
+			graphics.Shaders.World3D.End();
+
+			// ADDITIVE PASS
+			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
+			graphics.Shaders.World3D.Begin();
+			graphics.Shaders.World3D.WorldViewProj = viewproj;
+			graphics.Shaders.World3D.BeginPass(0);
+			RenderSinglePass((int)RenderPass.Additive);
+			graphics.Shaders.World3D.EndPass();
+			graphics.Shaders.World3D.End();
+			
+			// Remove references
+			graphics.Shaders.World3D.Texture1 = null;
+			
+			// Done
+			geometry = null;
+		}
+
+		// This performs a single render pass
+		private void RenderSinglePass(int pass)
+		{
+			// Get geometry for this pass
+			Dictionary<ImageData, BinaryHeap<VisualGeometry>> geo = geometry[pass];
+			
+			// Render the geometry collected
+			foreach(KeyValuePair<ImageData, BinaryHeap<VisualGeometry>> group in geo)
 			{
 				ImageData curtexture;
 
@@ -245,7 +298,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetTexture(0, curtexture.Texture);
 				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
 				graphics.Shaders.World3D.ApplySettings();
-
+				
 				// Go for all geometry that uses this texture
 				VisualSector sector = null;
 				foreach(VisualGeometry g in group.Value)
@@ -272,19 +325,14 @@ namespace CodeImp.DoomBuilder.Rendering
 					}	
 					
 					// Render!
-					if(sector != null) graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+					if(sector != null)
+					{
+						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+					}
 				}
 			}
-
-			// Remove references
-			graphics.Shaders.World3D.Texture1 = null;
-			
-			// Done
-			graphics.Shaders.World3D.EndPass();
-			graphics.Shaders.World3D.End();
-			geometry = null;
 		}
-
+		
 		// This finishes rendering
 		public void Finish()
 		{
@@ -297,21 +345,21 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		#region ================== Geometry
 		
-		// This renders a visual sector's geometry
+		// This collects a visual sector's geometry for rendering
 		public void RenderGeometry(VisualGeometry g)
 		{
 			// Must have a texture!
 			if(g.Texture != null)
 			{
 				// Texture group not yet collected?
-				if(!geometry.ContainsKey(g.Texture))
+				if(!geometry[g.RenderPassInt].ContainsKey(g.Texture))
 				{
 					// Create texture group
-					geometry.Add(g.Texture, new BinaryHeap<VisualGeometry>());
+					geometry[g.RenderPassInt].Add(g.Texture, new BinaryHeap<VisualGeometry>());
 				}
 
 				// Add geometry to texture group
-				geometry[g.Texture].Add(g);
+				geometry[g.RenderPassInt][g.Texture].Add(g);
 			}
 		}
 
