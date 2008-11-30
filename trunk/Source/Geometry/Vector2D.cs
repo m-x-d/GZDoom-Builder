@@ -234,6 +234,13 @@ namespace CodeImp.DoomBuilder.Geometry
 			Vector2D d = a - b;
 			return d.GetLength();
 		}
+
+		// This returns the manhattan distance between two points
+		public static float ManhattanDistance(Vector2D a, Vector2D b)
+		{
+			Vector2D d = a - b;
+			return Math.Abs(d.x) + Math.Abs(d.y);
+		}
 		
 		#endregion
 
