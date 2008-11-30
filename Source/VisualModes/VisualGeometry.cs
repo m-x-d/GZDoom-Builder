@@ -47,15 +47,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Texture
 		private ImageData texture;
 		
-		// State
-		private bool visible;
-		
 		// Vertices
 		private WorldVertex[] vertices;
 		private int triangles;
 		
 		// Sector
 		private VisualSector sector;
+		
+		// Rendering
+		private int renderpass;
 		
 		// Sector buffer info
 		private int vertexoffset;
@@ -68,16 +68,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal WorldVertex[] Vertices { get { return vertices; } }
 		internal int VertexOffset { get { return vertexoffset; } set { vertexoffset = value; } }
 		internal int Triangles { get { return triangles; } }
-		
+		internal int RenderPassInt { get { return renderpass; } }
+
+		/// <summary>
+		/// Render pass in which this geometry must be rendered. Default is Solid.
+		/// </summary>
+		public RenderPass RenderPass { get { return (RenderPass)renderpass; } set { renderpass = (int)value; } }
+
 		/// <summary>
 		/// Image to use as texture on this geometry.
 		/// </summary>
 		public ImageData Texture { get { return texture; } set { texture = value; } }
-
-		/// <summary>
-		/// Set to true to render this geometry, false to hide geometry.
-		/// </summary>
-		public bool Visible { get { return visible; } set { visible = value; } }
 
 		/// <summary>
 		/// Returns the VisualSector this geometry has been added to.
@@ -91,6 +92,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Constructor
 		public VisualGeometry()
 		{
+			// Defaults
+			renderpass = (int)RenderPass.Solid;
 		}
 
 		#endregion

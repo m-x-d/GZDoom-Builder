@@ -291,19 +291,23 @@ namespace CodeImp.DoomBuilder.VisualModes
 			{
 				foreach(Linedef ld in block.Lines)
 				{
-					// Add line if not added yet
-					visiblelines[ld] = ld;
-					
-					// Which side of the line is the camera on?
-					if(ld.SideOfLine(campos2d) < 0)
+					// Line not already processed?
+					if(!visiblelines.ContainsKey(ld))
 					{
-						// Do front of line
-						if(ld.Front != null) ProcessSidedef(ld.Front);
-					}
-					else
-					{
-						// Do back of line
-						if(ld.Back != null) ProcessSidedef(ld.Back);
+						// Add line if not added yet
+						visiblelines.Add(ld, ld);
+
+						// Which side of the line is the camera on?
+						if(ld.SideOfLine(campos2d) < 0)
+						{
+							// Do front of line
+							if(ld.Front != null) ProcessSidedef(ld.Front);
+						}
+						else
+						{
+							// Do back of line
+							if(ld.Back != null) ProcessSidedef(ld.Back);
+						}
 					}
 				}
 			}

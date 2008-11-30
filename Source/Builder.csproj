@@ -652,6 +652,7 @@
     <Content Include="Resources\DB2.ico" />
     <Compile Include="General\BinaryHeap.cs" />
     <Compile Include="Geometry\ProjectedFrustum2D.cs" />
+    <Compile Include="Rendering\RenderPasses.cs" />
     <Compile Include="VisualModes\Clipper.cs" />
     <Compile Include="VisualModes\VisualBlockEntry.cs" />
     <Compile Include="VisualModes\VisualSidedef.cs" />

@@ -58,6 +58,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public VisualMiddleDouble(Sidedef s) : base(s)
 		{
+			// Set render pass
+			this.RenderPass = RenderPass.Mask;
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
