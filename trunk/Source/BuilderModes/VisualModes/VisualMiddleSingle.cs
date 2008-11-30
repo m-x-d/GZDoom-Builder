@@ -39,7 +39,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal class VisualLower : VisualSidedef
+	internal class VisualMiddleSingle : VisualSidedef
 	{
 		#region ================== Constants
 
@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualLower(Sidedef s) : base(s)
+		public VisualMiddleSingle(Sidedef s) : base(s)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -66,19 +66,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool Setup()
 		{
 			// Calculate size of this wall part
-			float geotop = (float)Sidedef.Other.Sector.FloorHeight;
+			float geotop = (float)Sidedef.Sector.CeilHeight;
 			float geobottom = (float)Sidedef.Sector.FloorHeight;
 			float geoheight = geotop - geobottom;
 			if(geoheight > 0.001f)
 			{
 				Vector2D t1 = new Vector2D();
 				Vector2D t2 = new Vector2D();
-
+				
 				// Texture given?
-				if((Sidedef.LowTexture.Length > 0) && (Sidedef.LowTexture[0] != '-'))
+				if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
 				{
 					// Load texture
-					base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongLowTexture);
+					base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
 					if(base.Texture == null) base.Texture = General.Map.Data.MissingTexture3D;
 				}
 				else
@@ -95,8 +95,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// We just use pixels for coordinates for now
 				if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 				{
-					// When lower unpegged is set, the lower texture is bound to the bottom
-					t1.y = (float)Sidedef.Sector.CeilHeight - geotop;
+					// When lower unpegged is set, the middle texture is bound to the bottom
+					t1.y = tsz.y - geoheight;
 				}
 				t2.x = t1.x + Sidedef.Line.Length;
 				t2.y = t1.y + geoheight;
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				PixelColor pc = new PixelColor(255, unchecked((byte)Sidedef.Sector.Brightness),
 													unchecked((byte)Sidedef.Sector.Brightness),
 													unchecked((byte)Sidedef.Sector.Brightness));
-				
+
 				// Make vertices
 				WorldVertex[] verts = new WorldVertex[6];
 				verts[0] = new WorldVertex(v1.x, v1.y, geobottom, pc.ToInt(), t1.x, t2.y);

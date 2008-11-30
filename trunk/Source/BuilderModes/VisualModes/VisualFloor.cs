@@ -53,23 +53,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
-		#region ================== Constructor / Disposer
+		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualFloor(Sector s)
+		public VisualFloor()
+		{
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// This builds the geometry. Returns false when no geometry created.
+		public bool Setup(Sector s)
 		{
 			WorldVertex[] verts;
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 			if(base.Texture == null) base.Texture = General.Map.Data.MissingTexture3D;
-			
+
 			// Make vertices
 			verts = new WorldVertex[s.Triangles.Vertices.Count];
 			for(int i = 0; i < s.Triangles.Vertices.Count; i++)
 			{
 				// Use sector brightness for color shading
-				PixelColor pc = new PixelColor(255, unchecked((byte)s.Brightness), unchecked((byte)s.Brightness), unchecked((byte)s.Brightness));
+				PixelColor pc = new PixelColor(255, unchecked((byte)s.Brightness),
+													unchecked((byte)s.Brightness),
+													unchecked((byte)s.Brightness));
 				verts[i].c = pc.ToInt();
 				//verts[i].c = -1;
 
@@ -84,7 +93,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					verts[i].u = s.Triangles.Vertices[i].x / 64;
 					verts[i].v = s.Triangles.Vertices[i].y / 64;
 				}
-				
+
 				// Vertex coordinates
 				verts[i].x = s.Triangles.Vertices[i].x;
 				verts[i].y = s.Triangles.Vertices[i].y;
@@ -93,11 +102,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Apply vertices
 			base.SetVertices(verts);
-			
-			// We have no destructor
-			GC.SuppressFinalize(this);
+			return (verts.Length > 0);
 		}
-
+		
 		#endregion
 
 		#region ================== Methods

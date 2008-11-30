@@ -109,7 +109,7 @@
     <Compile Include="VisualModes\VisualCeiling.cs" />
     <Compile Include="VisualModes\VisualFloor.cs" />
     <Compile Include="VisualModes\VisualLower.cs" />
-    <Compile Include="VisualModes\VisualMiddle.cs" />
+    <Compile Include="VisualModes\VisualMiddleSingle.cs" />
     <Compile Include="Testing\WAuthorMode.cs" />
     <Compile Include="Testing\WAuthorTools.cs">
       <SubType>Form</SubType>
@@ -121,6 +121,7 @@
     <Compile Include="ClassicModes\SectorsMode.cs" />
     <Compile Include="ClassicModes\ThingsMode.cs" />
     <Compile Include="ClassicModes\VerticesMode.cs" />
+    <Compile Include="VisualModes\VisualMiddleDouble.cs" />
     <Compile Include="VisualModes\VisualUpper.cs" />
   </ItemGroup>
   <ItemGroup>
