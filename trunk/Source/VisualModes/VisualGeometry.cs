@@ -110,16 +110,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This compares for sorting
 		public int CompareTo(VisualGeometry other)
 		{
-			long thislongname, otherlongname;
-
-			// Get long names
-			if(this.texture != null) thislongname = this.texture.LongName; else thislongname = 0;
-			if(other.texture != null) otherlongname = other.texture.LongName; else otherlongname = 0;
-			
-			// Compare names
-			if(thislongname > otherlongname) return 1;
-			else if(thislongname < otherlongname) return -1;
-			else return 0;
+			// Compare sectors
+			return this.sector.Sector.Index - other.sector.Sector.Index;
 		}
 
 		#endregion

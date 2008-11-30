@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Geometry;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -56,7 +57,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private ProjectedFrustum2D frustum;
 		
 		// Geometry, grouped by texture
-		private Dictionary<ImageData, List<VisualGeometry>> geometry;
+		private Dictionary<ImageData, BinaryHeap<VisualGeometry>> geometry;
 		
 		#endregion
 
@@ -219,14 +220,14 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.BeginPass(0);
 
 			// Make collection
-			geometry = new Dictionary<ImageData, List<VisualGeometry>>();
+			geometry = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>();
 		}
 
 		// This ends rendering world geometry
 		public void FinishGeometry()
 		{
 			// We now render the actual geometry collected
-			foreach(KeyValuePair<ImageData, List<VisualGeometry>> group in geometry)
+			foreach(KeyValuePair<ImageData, BinaryHeap<VisualGeometry>> group in geometry)
 			{
 				ImageData curtexture;
 
@@ -246,18 +247,32 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.World3D.ApplySettings();
 
 				// Go for all geometry that uses this texture
+				VisualSector sector = null;
 				foreach(VisualGeometry g in group.Value)
 				{
-					// Update the sector if needed
-					if(g.Sector.NeedsUpdateGeo) g.Sector.Update();
-
-					// Only render when a vertexbuffer exists
-					if(g.Sector.GeometryBuffer != null)
+					// Changing sector?
+					if(!object.ReferenceEquals(g.Sector, sector))
 					{
-						// Render!
-						graphics.Device.SetStreamSource(0, g.Sector.GeometryBuffer, 0, WorldVertex.Stride);
-						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
-					}
+						// Update the sector if needed
+						if(g.Sector.NeedsUpdateGeo) g.Sector.Update();
+
+						// Only do this sector when a vertexbuffer is created
+						if(g.Sector.GeometryBuffer != null)
+						{
+							// Change current sector
+							sector = g.Sector;
+
+							// Set stream source
+							graphics.Device.SetStreamSource(0, sector.GeometryBuffer, 0, WorldVertex.Stride);
+						}
+						else
+						{
+							sector = null;
+						}
+					}	
+					
+					// Render!
+					if(sector != null) graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
 				}
 			}
 
@@ -292,7 +307,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(!geometry.ContainsKey(g.Texture))
 				{
 					// Create texture group
-					geometry.Add(g.Texture, new List<VisualGeometry>());
+					geometry.Add(g.Texture, new BinaryHeap<VisualGeometry>());
 				}
 
 				// Add geometry to texture group
