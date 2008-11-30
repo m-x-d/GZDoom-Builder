@@ -650,6 +650,7 @@
     <None Include="Resources\Close.png" />
     <Compile Include="Editing\EditingManager.cs" />
     <Content Include="Resources\DB2.ico" />
+    <Compile Include="General\BinaryHeap.cs" />
     <Compile Include="Geometry\ProjectedFrustum2D.cs" />
     <Compile Include="VisualModes\Clipper.cs" />
     <Compile Include="VisualModes\VisualBlockEntry.cs" />
