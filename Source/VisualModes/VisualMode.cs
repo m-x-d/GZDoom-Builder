@@ -46,10 +46,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Constants
 
 		private const float ANGLE_FROM_MOUSE = 0.0001f;
-		private const float MAX_ANGLEZ_LOW = 100f / Angle2D.PIDEG;
-		private const float MAX_ANGLEZ_HIGH = (360f - 100f) / Angle2D.PIDEG;
+		public const float MAX_ANGLEZ_LOW = 100f / Angle2D.PIDEG;
+		public const float MAX_ANGLEZ_HIGH = (360f - 100f) / Angle2D.PIDEG;
 		private const float CAMERA_SPEED = 6f;
-		private const double SECTOR_UPDATE_INTERVAL = 100d;
 		
 		#endregion
 
@@ -66,10 +65,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Vector3D campos;
 		private Vector3D camtarget;
 		private float camanglexy, camanglez;
-
-		// Processing
-		private double lastsectorupdatetime;
-		private Sector viewstartsector;
+		private Sector camsector;
 		
 		// Input
 		private bool keyforward;
@@ -80,7 +76,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Map
 		protected VisualBlockMap blockmap;
 		protected Dictionary<Sector, VisualSector> allsectors;
+		protected List<VisualBlockEntry> visibleblocks;
 		protected Dictionary<Sector, VisualSector> visiblesectors;
+		protected List<VisualGeometry> visiblegeometry;
 		
 		#endregion
 
@@ -88,6 +86,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		public Vector3D CameraPosition { get { return campos; } set { campos = value; } }
 		public Vector3D CameraTarget { get { return camtarget; } }
+		public Sector CameraSector { get { return camsector; } }
 		
 		#endregion
 
@@ -105,7 +104,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.camanglez = Angle2D.PI;
 			this.blockmap = new VisualBlockMap();
 			this.allsectors = new Dictionary<Sector, VisualSector>(General.Map.Map.Sectors.Count);
+			this.visibleblocks = new List<VisualBlockEntry>();
 			this.visiblesectors = new Dictionary<Sector, VisualSector>(50);
+			this.visiblegeometry = new List<VisualGeometry>(200);
 		}
 
 		// Disposer
@@ -118,6 +119,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 				foreach(KeyValuePair<Sector, VisualSector> s in allsectors) s.Value.Dispose();
 				blockmap.Dispose();
 				visiblesectors = null;
+				visiblegeometry = null;
+				visibleblocks = null;
 				allsectors = null;
 				blockmap = null;
 				
@@ -274,152 +277,126 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This preforms visibility culling
 		private void DoCulling()
 		{
+			Dictionary<Linedef, Linedef> visiblelines = new Dictionary<Linedef, Linedef>(200);
 			Vector2D campos2d = (Vector2D)campos;
 			float viewdist = General.Settings.ViewDistance;
 			
-			// Get the blocks within view range and make a collection of all nearby linedefs
-			RectangleF viewrect = new RectangleF(campos.x - viewdist, campos.y - viewdist, viewdist * 2, viewdist * 2);
-			List<VisualBlockEntry> blocks = blockmap.GetSquareRange(viewrect);
-			List<Linedef> nearbylines = new List<Linedef>(blocks.Count);
-			foreach(VisualBlockEntry b in blocks) nearbylines.AddRange(b.Lines);
+			// Get the blocks within view range
+			visibleblocks = blockmap.GetFrustumRange(renderer.Frustum2D);
 			
-			// Find the sector to begin with
-			if(General.Clock.CurrentTime > (lastsectorupdatetime + SECTOR_UPDATE_INTERVAL))
-			{
-				lastsectorupdatetime = General.Clock.CurrentTime;
-				viewstartsector = FindStartSector((Vector2D)campos, nearbylines);
-			}
-			
-			// Find visible sectors
+			// Fill visiblity collections
 			visiblesectors = new Dictionary<Sector, VisualSector>(visiblesectors.Count);
-			if(viewstartsector != null) ProcessVisibleSectors(viewstartsector, (Vector2D)campos);
+			visiblegeometry = new List<VisualGeometry>(visiblegeometry.Capacity);
+			foreach(VisualBlockEntry block in visibleblocks)
+			{
+				foreach(Linedef ld in block.Lines)
+				{
+					// Add line if not added yet
+					visiblelines[ld] = ld;
+					
+					// Which side of the line is the camera on?
+					if(ld.SideOfLine(campos2d) < 0)
+					{
+						// Do front of line
+						if(ld.Front != null) ProcessSidedef(ld.Front);
+					}
+					else
+					{
+						// Do back of line
+						if(ld.Back != null) ProcessSidedef(ld.Back);
+					}
+				}
+			}
+
+			// Find camera sector
+			Linedef nld = MapSet.NearestLinedef(visiblelines.Values, campos2d);
+			if(nld != null)
+			{
+				camsector = GetCameraSectorFromLinedef(nld);
+			}
+			else
+			{
+				// Exceptional case: no lines found in any nearby blocks!
+				// This could happen in the middle of an extremely large sector and in this case
+				// the above code will not have found any sectors/sidedefs for rendering.
+				// Here we handle this special case with brute-force. Let's find the sector
+				// the camera is in by searching the entire map and render that sector only.
+				nld = General.Map.Map.NearestLinedef(campos2d);
+				if(nld != null)
+				{
+					camsector = GetCameraSectorFromLinedef(nld);
+					if(camsector != null)
+					{
+						foreach(Sidedef sd in camsector.Sidedefs)
+						{
+							float side = sd.Line.SideOfLine(campos2d);
+							if(((side < 0) && sd.IsFront) ||
+							   ((side > 0) && !sd.IsFront))
+								ProcessSidedef(sd);
+						}
+					}
+					else
+					{
+						// Too far away from the map to see anything
+						camsector = null;
+					}
+				}
+				else
+				{
+					// Map is empty
+					camsector = null;
+				}
+			}
 		}
 
 		// This finds and adds visible sectors
-		private void ProcessVisibleSectors(Sector start, Vector2D campos)
+		private void ProcessSidedef(Sidedef sd)
 		{
-			Stack<Sector> todo = new Stack<Sector>(50);
-			Dictionary<Sector, Sector> stackedsectors = new Dictionary<Sector, Sector>(50);
-			Clipper clipper = new Clipper(campos);
-			float viewdist2 = General.Settings.ViewDistance * General.Settings.ViewDistance;
-			
-			// TODO: Use sector markings instead of the stackedsectors dictionary?
-			
-			// This algorithm uses a breadth-first search for visible sectors
-			
-			// Continue until no more sectors to process
-			todo.Push(start);
-			stackedsectors.Add(start, start);
-			while(todo.Count > 0)
+			VisualSector vs;
+
+			// Find the visualsector and make it if needed
+			if(allsectors.ContainsKey(sd.Sector))
 			{
-				Sector s = todo.Pop();
-				VisualSector vs;
-
-				// Find the basesector and make it if needed
-				if(allsectors.ContainsKey(s))
-				{
-					// Take existing visualsector
-					vs = allsectors[s];
-				}
-				else
-				{
-					// Make new visualsector
-					vs = CreateVisualSector(s);
-					allsectors.Add(s, vs);
-				}
-
-				// Add sector to visibility list
-				visiblesectors.Add(s, vs);
-
-				// Go for all sidedefs in the sector
-				foreach(Sidedef sd in s.Sidedefs)
-				{
-					// Camera on the front of this side?
-					float side = sd.Line.SideOfLine(campos);
-					if(((side > 0) && sd.IsFront) ||
-					   ((side < 0) && !sd.IsFront))
-					{
-						// Sidedef blocking the view?
-						if((sd.Other == null) ||
-						   (sd.Other.Sector.FloorHeight >= (sd.Sector.CeilHeight - 0.0001f)) ||
-						   (sd.Other.Sector.CeilHeight <= (sd.Sector.FloorHeight + 0.0001f)) ||
-						   (sd.Other.Sector.FloorHeight >= (sd.Other.Sector.CeilHeight - 0.0001f)))
-						{
-							// This blocks the view
-							//clipper.InsertRange(sd.Line.Start.Position, sd.Line.End.Position);
-						}
-					}
-				}
-
-				// Go for all sidedefs in the sector
-				foreach(Sidedef sd in s.Sidedefs)
-				{
-					// Doublesided and not referring to same sector?
-					if((sd.Other != null) && (sd.Other.Sector != sd.Sector))
-					{
-						// Get the other sector
-						Sector os = sd.Other.Sector;
-
-						// Sector not added yet?
-						if(!stackedsectors.ContainsKey(os))
-						{
-							// Within view range?
-							if(sd.Line.DistanceToSq(campos, true) < viewdist2)
-							{
-								// Can we see this sector?
-								//if(clipper.TestRange(sd.Line.Start.Position, sd.Line.End.Position))
-								{
-									// Process this sector as well
-									todo.Push(os);
-									stackedsectors.Add(os, os);
-								}
-							}
-						}
-					}
-				}
-			}
-
-			// Done
-			clipper.Dispose();
-		}
-		
-		// This finds the nearest sector to the camera
-		private Sector FindStartSector(Vector2D campos, List<Linedef> lines)
-		{
-			float side;
-			Linedef l;
-
-			// Get nearest linedef
-			l = MapSet.NearestLinedef(lines, campos);
-			if(l != null)
-			{
-				// Check if we are on front or back side
-				side = l.SideOfLine(campos);
-				if(side > 0)
-				{
-					// Is there a sidedef here?
-					if(l.Back != null)
-						return l.Back.Sector;
-					else if(l.Front != null)
-						return l.Front.Sector;
-					else
-						return null;
-				}
-				else
-				{
-					// Is there a sidedef here?
-					if(l.Front != null)
-						return l.Front.Sector;
-					else if(l.Back != null)
-						return l.Back.Sector;
-					else
-						return null;
-				}
+				// Take existing visualsector
+				vs = allsectors[sd.Sector];
 			}
 			else
-				return null;
+			{
+				// Make new visualsector
+				vs = CreateVisualSector(sd.Sector);
+				allsectors.Add(sd.Sector, vs);
+			}
+
+			// Add to visible sectors if not added yet
+			if(!visiblesectors.ContainsKey(sd.Sector))
+			{
+				visiblesectors.Add(sd.Sector, vs);
+				visiblegeometry.AddRange(vs.FixedGeometry);
+			}
+			
+			// Add sidedef geometry
+			visiblegeometry.AddRange(vs.GetSidedefGeometry(sd));
 		}
 
+		// This returns the camera sector from linedef
+		private Sector GetCameraSectorFromLinedef(Linedef ld)
+		{
+			if(ld.SideOfLine(campos) < 0)
+			{
+				if(ld.Front != null)
+					return ld.Front.Sector;
+				else
+					return null;
+			}
+			else
+			{
+				if(ld.Back != null)
+					return ld.Back.Sector;
+				else
+					return null;
+			}
+		}
+		
 		#endregion
 
 		#region ================== Processing
@@ -472,8 +449,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnRedrawDisplay()
 		{
 			// Render all visible sectors
-			foreach(KeyValuePair<Sector, VisualSector> vs in visiblesectors)
-				renderer.RenderGeometry(vs.Value);
+			foreach(VisualGeometry g in visiblegeometry)
+				renderer.RenderGeometry(g);
 		}
 		
 		#endregion
@@ -487,6 +464,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			foreach(KeyValuePair<Sector, VisualSector> s in allsectors) s.Value.Dispose();
 			allsectors.Clear();
 			visiblesectors.Clear();
+			visiblegeometry.Clear();
 		}
 
 		#endregion

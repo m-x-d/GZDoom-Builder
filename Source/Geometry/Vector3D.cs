@@ -217,8 +217,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			Vector2D xy = new Vector2D(x, y);
 
 			// Calculate and return the angle
-			return -(float)Math.Atan2(xy.GetLength(), z) + (float)Math.PI * 0.5f;
-			//return -(float)Math.Atan2(xy.GetLength(), z) - (float)Math.PI * 0.5f;
+			return (float)Math.Atan2(xy.GetLength(), z) + (float)Math.PI * 0.5f;
 		}
 
 		// This calculates the length

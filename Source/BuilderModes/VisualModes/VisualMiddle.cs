@@ -39,7 +39,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal class VisualMiddle : VisualGeometry
+	internal class VisualMiddle : VisualSidedef
 	{
 		#region ================== Constants
 
@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public VisualMiddle(Sidedef s)
+		public VisualMiddle(Sidedef s) : base(s)
 		{
 			WorldVertex[] verts;
 			float geotop;
@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Load texture
 						base.Texture = General.Map.Data.GetTextureImage(s.LongMiddleTexture);
+						if(base.Texture == null) base.Texture = General.Map.Data.MissingTexture3D;
 					}
 					else
 					{

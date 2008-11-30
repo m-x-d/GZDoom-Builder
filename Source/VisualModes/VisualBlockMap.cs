@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		public const int BLOCK_SIZE_SHIFT = 7;
 		public const int BLOCK_SIZE = 1 << BLOCK_SIZE_SHIFT;
+		public const float BLOCK_RADIUS = BLOCK_SIZE * Angle2D.SQRT2;
 		
 		#endregion
 		
@@ -96,8 +97,16 @@ namespace CodeImp.DoomBuilder.VisualModes
 			return new Point((int)v.x >> BLOCK_SIZE_SHIFT,
 							 (int)v.y >> BLOCK_SIZE_SHIFT);
 		}
-		
+
+		// This returns the block center in world coordinates
+		public Vector2D GetBlockCenter(Point p)
+		{
+			return new Vector2D((float)((p.X << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)),
+								(float)((p.Y << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)));
+		}
+
 		// This returns the key for a block at the given coordinates
+		// TODO: Could we just use the Point struct as key?
 		private ulong GetBlockKey(Point p)
 		{
 			return unchecked( ((ulong)(uint)p.X << 32) + (ulong)(uint)p.Y );
@@ -142,6 +151,39 @@ namespace CodeImp.DoomBuilder.VisualModes
 				}
 			}
 
+			// Return list
+			return entries;
+		}
+
+		// This returns a range of blocks in a frustum
+		public List<VisualBlockEntry> GetFrustumRange(ProjectedFrustum2D frustum)
+		{
+			// Make square range from frustum circle
+			// This will be the range in which we will test blocks
+			Point lt = GetBlockCoordinates(frustum.Center - frustum.Radius);
+			Point rb = GetBlockCoordinates(frustum.Center + frustum.Radius);
+
+			// Constants we need
+			float blockfrustumdistance2 = (frustum.Radius * frustum.Radius) + (BLOCK_RADIUS * BLOCK_RADIUS);
+			
+			// Go through the range to make a list
+			int entriescount = (rb.X - lt.X) * (rb.Y - lt.Y);
+			List<VisualBlockEntry> entries = new List<VisualBlockEntry>(entriescount);
+			for(int x = lt.X; x <= rb.X; x++)
+			{
+				for(int y = lt.Y; y <= rb.Y; y++)
+				{
+					// First check if the block circle is intersecting the frustum circle
+					Point block = new Point(x, y);
+					Vector2D blockcenter = GetBlockCenter(block);
+					if(Vector2D.DistanceSq(frustum.Center, blockcenter) < blockfrustumdistance2)
+					{
+						// Add the block if the block circle is inside the frustum
+						if(frustum.IntersectCircle(blockcenter, BLOCK_RADIUS)) entries.Add(GetBlock(block));
+					}
+				}
+			}
+			
 			// Return list
 			return entries;
 		}

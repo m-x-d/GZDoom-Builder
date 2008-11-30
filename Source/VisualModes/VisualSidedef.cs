@@ -33,27 +33,45 @@ using CodeImp.DoomBuilder.Geometry;
 using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Rendering
+namespace CodeImp.DoomBuilder.VisualModes
 {
-	public interface IRenderer3D
+	public abstract class VisualSidedef : VisualGeometry
 	{
-		// Properties
-		ProjectedFrustum2D Frustum2D { get; }
+		#region ================== Constants
 
-		// General methods
-		void PositionAndLookAt(Vector3D pos, Vector3D lookat);
+		#endregion
+
+		#region ================== Variables
+
+		// Original sidedef
+		private Sidedef sidedef;
+
+		#endregion
+
+		#region ================== Properties
+
+		public Sidedef Sidedef { get { return sidedef; } }
+
+		#endregion
+
+		#region ================== Constructor / Disposer
+
+		// Constructor
+		public VisualSidedef(Sidedef sd)
+		{
+			// Initialize
+			this.sidedef = sd;
+		}
 		
-		// Presenting methods
-		void Finish();
-		bool Start();
-		void StartGeometry();
-		void FinishGeometry();
+		#endregion
 
-		// Rendering methods
-		void RenderGeometry(VisualGeometry g);
+		#region ================== Methods
+		
+		#endregion
 	}
 }

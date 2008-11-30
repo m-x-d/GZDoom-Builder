@@ -243,14 +243,11 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates the line when changes have been made
 		public void UpdateCache()
 		{
-			Vector2D delta;
-			float l, t, r, b;
-			
 			// Update if needed
 			if(updateneeded)
 			{
 				// Delta vector
-				delta = end.Position - start.Position;
+				Vector2D delta = end.Position - start.Position;
 
 				// Recalculate values
 				lengthsq = delta.GetLengthSq();
@@ -258,10 +255,10 @@ namespace CodeImp.DoomBuilder.Map
 				if(length > 0f) lengthinv = 1f / length; else lengthinv = 1f / 0.0000000001f;
 				if(lengthsq > 0f) lengthsqinv = 1f / lengthsq; else lengthsqinv = 1f / 0.0000000001f;
 				angle = delta.GetAngle();
-				l = Math.Min(start.Position.x, end.Position.x);
-				t = Math.Min(start.Position.y, end.Position.y);
-				r = Math.Max(start.Position.x, end.Position.x);
-				b = Math.Max(start.Position.y, end.Position.y);
+				float l = Math.Min(start.Position.x, end.Position.x);
+				float t = Math.Min(start.Position.y, end.Position.y);
+				float r = Math.Max(start.Position.x, end.Position.x);
+				float b = Math.Max(start.Position.y, end.Position.y);
 				rect = new RectangleF(l, t, r - l, b - t);
 				
 				// Updated
