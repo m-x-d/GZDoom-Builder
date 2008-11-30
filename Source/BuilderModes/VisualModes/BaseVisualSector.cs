@@ -85,22 +85,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Forget old geometry
 			base.ClearGeometry();
 			
-			// Make the floor and ceiling
-			base.AddGeometry(new VisualFloor(base.Sector));
-			base.AddGeometry(new VisualCeiling(base.Sector));
+			// Create floor
+			VisualFloor vf = new VisualFloor();
+			if(vf.Setup(base.Sector)) base.AddGeometry(vf);
+
+			// Create ceiling
+			VisualCeiling vc = new VisualCeiling();
+			if(vc.Setup(base.Sector)) base.AddGeometry(vc);
 
 			// Go for all sidedefs
 			foreach(Sidedef sd in base.Sector.Sidedefs)
 			{
-				// Make middle wall
-				base.AddGeometry(new VisualMiddle(sd));
-				
-				// Check if upper and lower parts are possible at all
+				// Doublesided or singlesided?
 				if(sd.Other != null)
 				{
-					// Make upper and lower walls
-					base.AddGeometry(new VisualLower(sd));
-					base.AddGeometry(new VisualUpper(sd));
+					// Create upper part
+					VisualUpper vu = new VisualUpper(sd);
+					if(vu.Setup()) base.AddGeometry(vu);
+					
+					// Create lower part
+					VisualLower vl = new VisualLower(sd);
+					if(vl.Setup()) base.AddGeometry(vl);
+					
+					// Create middle part
+					VisualMiddleDouble vm = new VisualMiddleDouble(sd);
+					if(vm.Setup()) base.AddGeometry(vm);
+				}
+				else
+				{
+					// Create middle part
+					VisualMiddleSingle vm = new VisualMiddleSingle(sd);
+					if(vm.Setup()) base.AddGeometry(vm);
 				}
 			}
 		}

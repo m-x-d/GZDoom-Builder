@@ -53,10 +53,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
-		#region ================== Constructor / Disposer
+		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualCeiling(Sector s)
+		public VisualCeiling()
+		{
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// This builds the geometry. Returns false when no geometry created.
+		public bool Setup(Sector s)
 		{
 			WorldVertex[] verts;
 			WorldVertex v;
@@ -70,7 +77,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < s.Triangles.Vertices.Count; i++)
 			{
 				// Use sector brightness for color shading
-				PixelColor pc = new PixelColor(255, unchecked((byte)s.Brightness), unchecked((byte)s.Brightness), unchecked((byte)s.Brightness));
+				PixelColor pc = new PixelColor(255, unchecked((byte)s.Brightness),
+													unchecked((byte)s.Brightness),
+													unchecked((byte)s.Brightness));
 				verts[i].c = pc.ToInt();
 				//verts[i].c = -1;
 
@@ -106,11 +115,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Apply vertices
 			base.SetVertices(verts);
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
+			return (verts.Length > 0);
 		}
-
+		
 		#endregion
 
 		#region ================== Methods
