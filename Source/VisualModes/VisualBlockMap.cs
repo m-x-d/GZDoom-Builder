@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		#endregion
 		
-		#region ================== Basic Methods
+		#region ================== Methods
 		
 		// This returns the block coordinates
 		public Point GetBlockCoordinates(Vector2D v)
@@ -188,9 +188,88 @@ namespace CodeImp.DoomBuilder.VisualModes
 			return entries;
 		}
 
-		#endregion
+		// This returns all blocks along the given line
+		public List<VisualBlockEntry> GetLineBlocks(Vector2D v1, Vector2D v2)
+		{
+			float deltax, deltay;
+			float posx, posy;
+			Point pos, end;
+			int dirx, diry;
+			
+			// Estimate number of blocks we will go through and create list
+			int entriescount = (Vector2D.ManhattanDistance(v1, v2) * 2.0f) / BLOCK_SIZE;
+			List<VisualBlockEntry> entries = new List<VisualBlockEntry>(entriescount);
 
-		#region ================== Advanced Methods
+			// Find start and end block
+			pos = GetBlockCoordinates(v1);
+			end = GetBlockCoordinates(v2);
+
+			// Add this block
+			entries.Add(GetBlock(pos));
+
+			// Moving outside the block?
+			if(pos != end)
+			{
+				// Calculate current block edges
+				float cl = pos.X * BLOCK_SIZE;
+				float cr = (pos.X + 1) * BLOCK_SIZE;
+				float ct = pos.Y * BLOCK_SIZE;
+				float cb = (pos.Y + 1) * BLOCK_SIZE;
+
+				// Line directions
+				dirx = Math.Sign(v2.x - v1.x);
+				diry = Math.Sign(v2.y - v1.y);
+
+				// Calculate offset and delta movement over x
+				if(dirx >= 0)
+				{
+					posx = (cr - v1.x) / (v2.x - v1.x);
+					deltax = BLOCK_SIZE / (v2.x - v1.x);
+				}
+				else
+				{
+					// Calculate offset and delta movement over x
+					posx = (v1.x - cl) / (v1.x - v2.x);
+					deltax = BLOCK_SIZE / (v1.x - v2.x);
+				}
+
+				// Calculate offset and delta movement over y
+				if(diry >= 0)
+				{
+					posy = (cb - v1.y) / (v2.y - v1.y);
+					deltay = BLOCK_SIZE / (v2.y - v1.y);
+				}
+				else
+				{
+					posy = (v1.y - ct) / (v1.y - v2.y);
+					deltay = BLOCK_SIZE / (v1.y - v2.y);
+				}
+
+				// Continue while not reached the end
+				while(pos != end)
+				{
+					// Check in which direction to move
+					if(posx < posy)
+					{
+						// Move horizontally
+						posx += deltax;
+						if(pos.X != end.X) pos.X += dirx;
+					}
+					else
+					{
+						// Move vertically
+						posy += deltay;
+						if(pos.Y != end.Y) pos.Y += diry;
+					}
+
+					// Add lines to this block
+					entries.Add(GetBlock(pos));
+				}
+			}
+
+			// Return list
+			return entries;
+		}
 
 		// This puts a whole set of linedefs in the blocks they cross
 		public void AddLinedefsSet(ICollection<Linedef> lines)
