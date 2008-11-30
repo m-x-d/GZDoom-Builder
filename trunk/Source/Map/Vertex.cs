@@ -154,8 +154,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns the distance from given coordinates
 		public float DistanceTo(Vector2D p)
 		{
-			Vector2D delta = p - pos;
-			return delta.GetLength();
+			return Vector2D.Distance(p, pos);
 		}
 
 		// This finds the line closest to the specified position

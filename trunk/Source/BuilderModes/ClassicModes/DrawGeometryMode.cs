@@ -217,8 +217,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all drawn points
 				foreach(DrawnVertex v in points)
 				{
-					Vector2D delta = mousemappos - v.pos;
-					if(delta.GetLengthSq() < (vrange * vrange))
+					if(Vector2D.DistanceSq(mousemappos, v.pos) < (vrange * vrange))
 					{
 						p.pos = v.pos;
 						p.stitch = true;

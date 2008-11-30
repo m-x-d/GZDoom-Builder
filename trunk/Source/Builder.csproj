@@ -650,8 +650,10 @@
     <None Include="Resources\Close.png" />
     <Compile Include="Editing\EditingManager.cs" />
     <Content Include="Resources\DB2.ico" />
+    <Compile Include="Geometry\ProjectedFrustum2D.cs" />
     <Compile Include="VisualModes\Clipper.cs" />
     <Compile Include="VisualModes\VisualBlockEntry.cs" />
+    <Compile Include="VisualModes\VisualSidedef.cs" />
     <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
     <None Include="Resources\ScriptConstant.xpm" />

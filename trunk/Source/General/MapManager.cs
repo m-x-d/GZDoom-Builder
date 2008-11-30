@@ -1208,6 +1208,16 @@ namespace CodeImp.DoomBuilder
 		
 		#region ================== Methods
 
+		// This updates everything after the configuration or settings have been changed
+		internal void UpdateConfiguration()
+		{
+			// Update map
+			map.UpdateConfiguration();
+
+			// Update settings
+			renderer3d.CreateProjection();
+		}
+		
 		// This changes thing filter
 		internal void ChangeThingFilter(ThingsFilter newfilter)
 		{

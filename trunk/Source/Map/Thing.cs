@@ -296,15 +296,13 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns the distance from given coordinates
 		public float DistanceToSq(Vector2D p)
 		{
-			Vector2D delta = p - (Vector2D)pos;
-			return delta.GetLengthSq();
+			return Vector2D.DistanceSq(p, pos);
 		}
 
 		// This returns the distance from given coordinates
 		public float DistanceTo(Vector2D p)
 		{
-			Vector2D delta = p - (Vector2D)pos;
-			return delta.GetLength();
+			return Vector2D.Distance(p, pos);
 		}
 
 		#endregion

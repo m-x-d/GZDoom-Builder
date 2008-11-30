@@ -221,6 +221,20 @@ namespace CodeImp.DoomBuilder.Geometry
 			return -(float)Math.Atan2(-(a.y - b.y), (a.x - b.x)) + (float)Math.PI * 0.5f;
 		}
 
+		// This returns the square distance between two points
+		public static float DistanceSq(Vector2D a, Vector2D b)
+		{
+			Vector2D d = a - b;
+			return d.GetLengthSq();
+		}
+
+		// This returns the distance between two points
+		public static float Distance(Vector2D a, Vector2D b)
+		{
+			Vector2D d = a - b;
+			return d.GetLength();
+		}
+		
 		#endregion
 
 		#region ================== Methods

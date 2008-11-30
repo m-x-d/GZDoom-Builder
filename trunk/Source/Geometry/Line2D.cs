@@ -215,6 +215,12 @@ namespace CodeImp.DoomBuilder.Geometry
 		public float GetLength() { return Line2D.GetLength(v2.x - v1.x, v2.y - v1.y); }
 		public float GetLengthSq() { return Line2D.GetLengthSq(v2.x - v1.x, v2.y - v1.y); }
 
+		// Output
+		public override string ToString()
+		{
+			return "(" + v1 + ") - (" + v2 + ")";
+		}
+		
 		public bool GetIntersection(float x3, float y3, float x4, float y4)
 		{
 			return Line2D.GetIntersection(v1, v2, x3, y3, x4, y4);

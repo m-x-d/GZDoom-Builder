@@ -49,7 +49,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Variables
 
 		// Geometry
-		private List<VisualGeometry> geolist;
+		private List<VisualGeometry> fixedgeometry;
+		private List<VisualGeometry> allgeometry;
+		private Dictionary<Sidedef, List<VisualGeometry>> sidedefgeometry;
 		private VertexBuffer geobuffer;
 		private bool updategeo;
 		
@@ -63,7 +65,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Properties
 
-		internal List<VisualGeometry> GeometryList { get { return geolist; } }
+		internal List<VisualGeometry> FixedGeometry { get { return fixedgeometry; } }
+		internal List<VisualGeometry> AllGeometry { get { return allgeometry; } }
 		internal VertexBuffer GeometryBuffer { get { return geobuffer; } }
 		internal bool NeedsUpdateGeo { get { return updategeo; } set { updategeo |= value; } }
 		public bool IsDisposed { get { return isdisposed; } }
@@ -78,7 +81,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			// Initialize
 			this.sector = s;
-			geolist = new List<VisualGeometry>();
+			allgeometry = new List<VisualGeometry>();
+			fixedgeometry = new List<VisualGeometry>();
+			sidedefgeometry = new Dictionary<Sidedef, List<VisualGeometry>>();
 
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
@@ -91,7 +96,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(!isdisposed)
 			{
 				// Clean up
-				foreach(VisualGeometry g in geolist) g.Sector = null;
+				foreach(VisualGeometry g in allgeometry) g.Sector = null;
 				if(geobuffer != null) geobuffer.Dispose();
 				geobuffer = null;
 
@@ -136,11 +141,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(geobuffer != null) geobuffer.Dispose();
 			geobuffer = null;
 			
-			// Sort the geo list by texture
-			geolist.Sort();
-			
 			// Count the number of vertices there are
-			foreach(VisualGeometry g in geolist) if(g.Vertices != null) numverts += g.Vertices.Length;
+			foreach(VisualGeometry g in allgeometry) if(g.Vertices != null) numverts += g.Vertices.Length;
 			
 			// Any vertics?
 			if(numverts > 0)
@@ -151,7 +153,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 				// Fill the buffer
 				bufferstream = geobuffer.Lock(0, WorldVertex.Stride * numverts, LockFlags.Discard);
-				foreach(VisualGeometry g in geolist)
+				foreach(VisualGeometry g in allgeometry)
 				{
 					if((g.Vertices != null) && (g.Vertices.Length > 0))
 					{
@@ -168,20 +170,47 @@ namespace CodeImp.DoomBuilder.VisualModes
 			updategeo = false;
 		}
 
-		// This adds geometry
+		/// <summary>
+		/// This adds geometry for this sector. If the geometry inherits from VisualSidedef then it
+		/// will be added to the SidedefGeometry, otherwise it will be added as FixedGeometry.
+		/// </summary>
 		public void AddGeometry(VisualGeometry geo)
 		{
+			updategeo = true;
 			geo.Sector = this;
-			geolist.Add(geo);
+			allgeometry.Add(geo);
+			if(geo is VisualSidedef)
+			{
+				VisualSidedef geoside = (geo as VisualSidedef);
+				if(!sidedefgeometry.ContainsKey(geoside.Sidedef))
+					sidedefgeometry[geoside.Sidedef] = new List<VisualGeometry>(3);
+				sidedefgeometry[geoside.Sidedef].Add(geoside);
+			}
+			else
+			{
+				fixedgeometry.Add(geo);
+			}
+		}
+
+		/// <summary>
+		/// This removes all geometry.
+		/// </summary>
+		public void ClearGeometry()
+		{
+			foreach(VisualGeometry g in allgeometry) g.Sector = null;
+			allgeometry.Clear();
+			fixedgeometry.Clear();
+			sidedefgeometry.Clear();
 			updategeo = true;
 		}
 
-		// This removes all geometry
-		public void ClearGeometry()
+		// This gets the geometry list for the specified sidedef
+		public List<VisualGeometry> GetSidedefGeometry(Sidedef sd)
 		{
-			foreach(VisualGeometry g in geolist) g.Sector = null;
-			geolist.Clear();
-			updategeo = true;
+			if(sidedefgeometry.ContainsKey(sd))
+				return sidedefgeometry[sd];
+			else
+				return new List<VisualGeometry>();
 		}
 		
 		#endregion

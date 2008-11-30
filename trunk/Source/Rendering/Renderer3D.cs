@@ -41,7 +41,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constants
 
 		private const float PROJ_NEAR_PLANE = 1f;
-		private const float PROJ_FAR_PLANE = 5000f;
 
 		#endregion
 
@@ -53,9 +52,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Matrix billboard;
 		private Matrix viewproj;
 		
+		// Frustum
+		private ProjectedFrustum2D frustum;
+		
+		// Geometry, grouped by texture
+		private Dictionary<ImageData, List<VisualGeometry>> geometry;
+		
 		#endregion
 
 		#region ================== Properties
+
+		public ProjectedFrustum2D Frustum2D { get { return frustum; } }
 
 		#endregion
 
@@ -66,6 +73,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Initialize
 			CreateProjection();
+
+			// Dummy frustum
+			frustum = new ProjectedFrustum2D(new Vector2D(), 0.0f, 0.0f, PROJ_NEAR_PLANE,
+				General.Settings.ViewDistance, Angle2D.DegToRad((float)General.Settings.VisualFOV));
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -107,15 +118,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This creates the projection
 		internal void CreateProjection()
 		{
-			// Calculate FOV
-			float fov = Angle2D.DegToRad((float)General.Settings.VisualFOV);
-			
 			// Calculate aspect
 			float aspect = (float)General.Map.Graphics.RenderTarget.ClientSize.Width /
 						   (float)General.Map.Graphics.RenderTarget.ClientSize.Height;
+
+			// The DirectX PerspectiveFovRH matrix method calculates the scaling in X and Y as follows:
+			// yscale = 1 / tan(fovY / 2)
+			// xscale = yscale / aspect
+			// The fov specified in the method is the FOV over Y, but we want the user to specify the FOV
+			// over X, so calculate what it would be over Y first;
+			float fov = Angle2D.DegToRad((float)General.Settings.VisualFOV);
+			float reversefov = 1.0f / (float)Math.Tan(fov / 2.0f);
+			float reversefovy = reversefov * aspect;
+			float fovy = (float)Math.Atan(1.0f / reversefovy) * 2.0f;
 			
 			// Make the projection matrix
-			projection = Matrix.PerspectiveFovRH(fov, aspect, PROJ_NEAR_PLANE, PROJ_FAR_PLANE);
+			projection = Matrix.PerspectiveFovRH(fovy, aspect, PROJ_NEAR_PLANE, General.Settings.ViewDistance);
 
 			// Apply matrices
 			ApplyMatrices();
@@ -131,12 +149,16 @@ namespace CodeImp.DoomBuilder.Rendering
 			delta = lookat - pos;
 			anglexy = delta.GetAngleXY();
 			anglez = delta.GetAngleZ();
+
+			// Create frustum
+			frustum = new ProjectedFrustum2D(pos, anglexy, anglez, PROJ_NEAR_PLANE,
+				General.Settings.ViewDistance, Angle2D.DegToRad((float)General.Settings.VisualFOV));
 			
 			// Make the view matrix
 			view = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));
 
 			// Make the billboard matrix
-			billboard = Matrix.RotationYawPitchRoll(0f, anglexy, anglez - Angle2D.PIHALF);
+			billboard = Matrix.RotationYawPitchRoll(0f, anglexy, anglez - Angle2D.PI);
 		}
 		
 		// This applies the matrices
@@ -195,14 +217,57 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.Begin();
 			graphics.Shaders.World3D.WorldViewProj = viewproj;
 			graphics.Shaders.World3D.BeginPass(0);
+
+			// Make collection
+			geometry = new Dictionary<ImageData, List<VisualGeometry>>();
 		}
 
 		// This ends rendering world geometry
 		public void FinishGeometry()
 		{
+			// We now render the actual geometry collected
+			foreach(KeyValuePair<ImageData, List<VisualGeometry>> group in geometry)
+			{
+				ImageData curtexture;
+
+				// What texture to use?
+				if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
+					curtexture = group.Key;
+				else
+					curtexture = General.Map.Data.Hourglass3D;
+
+				// Create Direct3D texture if still needed
+				if((curtexture.Texture == null) || curtexture.Texture.Disposed)
+					curtexture.CreateTexture();
+
+				// Apply texture
+				graphics.Device.SetTexture(0, curtexture.Texture);
+				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
+				graphics.Shaders.World3D.ApplySettings();
+
+				// Go for all geometry that uses this texture
+				foreach(VisualGeometry g in group.Value)
+				{
+					// Update the sector if needed
+					if(g.Sector.NeedsUpdateGeo) g.Sector.Update();
+
+					// Only render when a vertexbuffer exists
+					if(g.Sector.GeometryBuffer != null)
+					{
+						// Render!
+						graphics.Device.SetStreamSource(0, g.Sector.GeometryBuffer, 0, WorldVertex.Stride);
+						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+					}
+				}
+			}
+
+			// Remove references
+			graphics.Shaders.World3D.Texture1 = null;
+			
 			// Done
 			graphics.Shaders.World3D.EndPass();
 			graphics.Shaders.World3D.End();
+			geometry = null;
 		}
 
 		// This finishes rendering
@@ -218,52 +283,20 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Geometry
 		
 		// This renders a visual sector's geometry
-		public void RenderGeometry(VisualSector s)
+		public void RenderGeometry(VisualGeometry g)
 		{
-			ImageData lasttexture = null;
-			
-			// Update the sector if needed
-			if(s.NeedsUpdateGeo) s.Update();
-			
-			// Only render when a vertexbuffer exists
-			if(s.GeometryBuffer != null)
+			// Must have a texture!
+			if(g.Texture != null)
 			{
-				// Set the buffer
-				graphics.Device.SetStreamSource(0, s.GeometryBuffer, 0, WorldVertex.Stride);
-
-				// Go for all geometry in this sector
-				foreach(VisualGeometry g in s.GeometryList)
+				// Texture group not yet collected?
+				if(!geometry.ContainsKey(g.Texture))
 				{
-					ImageData curtexture;
-
-					// What texture to use?
-					if((g.Texture != null) && g.Texture.IsImageLoaded && !g.Texture.IsDisposed)
-						curtexture = g.Texture;
-					else
-						curtexture = General.Map.Data.Hourglass3D;
-					
-					// Change texture?
-					if(curtexture != lasttexture)
-					{
-						// Now using this texture
-						lasttexture = curtexture;
-
-						// Create Direct3D texture if still needed
-						if((curtexture.Texture == null) || curtexture.Texture.Disposed)
-							curtexture.CreateTexture();
-						
-						// Apply texture
-						graphics.Device.SetTexture(0, curtexture.Texture);
-						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
-						graphics.Shaders.World3D.ApplySettings();
-					}
-
-					// Render it!
-					graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+					// Create texture group
+					geometry.Add(g.Texture, new List<VisualGeometry>());
 				}
 
-				// Remove references
-				graphics.Shaders.World3D.Texture1 = null;
+				// Add geometry to texture group
+				geometry[g.Texture].Add(g);
 			}
 		}
 

@@ -62,6 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
+			if(base.Texture == null) base.Texture = General.Map.Data.MissingTexture3D;
 			
 			// Make vertices
 			verts = new WorldVertex[s.Triangles.Vertices.Count];
