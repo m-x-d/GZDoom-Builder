@@ -100,8 +100,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Begin with geometry
 				renderer.StartGeometry();
 
-				// This renders all visible sectors
-				base.OnRedrawDisplay();
+				// This adds all visible geometry for rendering
+				AddGeometry();
 
 				// Done rendering geometry
 				renderer.FinishGeometry();

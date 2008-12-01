@@ -24,36 +24,24 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-using System.Drawing;
-using System.ComponentModel;
+using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D9;
-using SlimDX;
+using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
-using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Data;
+using System.Drawing;
+using SlimDX;
 using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Rendering
+namespace CodeImp.DoomBuilder.VisualModes
 {
-	public interface IRenderer3D
+	public struct VisualPickResult
 	{
-		// Properties
-		ProjectedFrustum2D Frustum2D { get; }
-
-		// General methods
-		void PositionAndLookAt(Vector3D pos, Vector3D lookat);
-		
-		// Presenting methods
-		void Finish();
-		bool Start();
-		void StartGeometry();
-		void FinishGeometry();
-
-		// Rendering methods
-		void AddGeometry(VisualGeometry g);
+		// Members
+		public VisualGeometry geometry;
+		public Vector3D hitpos;
 	}
 }

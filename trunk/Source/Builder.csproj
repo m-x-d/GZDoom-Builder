@@ -655,6 +655,7 @@
     <Compile Include="Rendering\RenderPasses.cs" />
     <Compile Include="VisualModes\Clipper.cs" />
     <Compile Include="VisualModes\VisualBlockEntry.cs" />
+    <Compile Include="VisualModes\VisualPickResult.cs" />
     <Compile Include="VisualModes\VisualSidedef.cs" />
     <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
