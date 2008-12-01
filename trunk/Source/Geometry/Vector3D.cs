@@ -271,7 +271,13 @@ namespace CodeImp.DoomBuilder.Geometry
 			// Normalize, then scale
 			return this.GetNormal().GetScaled(l);
 		}
-
+		
+		// This checks if the vector is normalized
+		public bool IsNormalized()
+		{
+			return (Math.Abs(GetLengthSq() - 1.0f) < 0.0001f);
+		}
+		
 		// Output
 		public override string ToString()
 		{
