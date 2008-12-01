@@ -346,7 +346,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Geometry
 		
 		// This collects a visual sector's geometry for rendering
-		public void RenderGeometry(VisualGeometry g)
+		public void AddGeometry(VisualGeometry g)
 		{
 			// Must have a texture!
 			if(g.Texture != null)

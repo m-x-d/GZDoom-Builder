@@ -446,15 +446,33 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 		
 		#endregion
-		
+
+		#region ================== Object Picking
+
+		// This picks an object from the scene
+		public VisualPickResult PickObject(Vector3D from, Vector3D to)
+		{
+			VisualPickResult result = new VisualPickResult();
+			
+			// Pick geometry
+			List<VisualBlockEntry> blocks = blockmap.GetLineBlocks(from, to);
+
+			// TODO
+
+			// Done
+			return result;
+		}
+
+		#endregion
+
 		#region ================== Rendering
 
 		// Call this to simply render all visible sectors
-		public override void OnRedrawDisplay()
+		protected virtual void AddGeometry()
 		{
 			// Render all visible sectors
 			foreach(VisualGeometry g in visiblegeometry)
-				renderer.RenderGeometry(g);
+				renderer.AddGeometry(g);
 		}
 		
 		#endregion

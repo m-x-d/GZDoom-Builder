@@ -197,7 +197,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			int dirx, diry;
 			
 			// Estimate number of blocks we will go through and create list
-			int entriescount = (Vector2D.ManhattanDistance(v1, v2) * 2.0f) / BLOCK_SIZE;
+			int entriescount = (int)(Vector2D.ManhattanDistance(v1, v2) * 2.0f) / BLOCK_SIZE;
 			List<VisualBlockEntry> entries = new List<VisualBlockEntry>(entriescount);
 
 			// Find start and end block
