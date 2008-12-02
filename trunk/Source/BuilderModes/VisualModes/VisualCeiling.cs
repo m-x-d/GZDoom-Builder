@@ -47,6 +47,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		private float pickrayu;
+		private Vector3D pickintersect;
+
 		#endregion
 
 		#region ================== Properties
@@ -121,7 +124,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
+		
+		// This performs a fast test in object picking
+		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
+		{
+			float planez = (float)Sector.Sector.CeilHeight;
 
+			// Check if line crosses the z height
+			if((from.z < planez) && (to.z > planez))
+			{
+				// Calculate intersection point using the z height
+				pickrayu = (planez - from.z) / (to.z - from.z);
+				pickintersect = from + (to - from) * pickrayu;
+				
+				// Intersection point within bbox?
+				RectangleF bbox = Sector.Sector.BBox;
+				return ((pickintersect.x >= bbox.Left) && (pickintersect.x <= bbox.Right) &&
+						(pickintersect.y >= bbox.Top) && (pickintersect.y <= bbox.Bottom));
+			}
+			else
+			{
+				// Not even crossing the z height (or not in the right direction)
+				return false;
+			}
+		}
+		
+		// This performs an accurate test for object picking
+		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
+		{
+			u_ray = pickrayu;
+			
+			// Check on which side of the nearest sidedef we are
+			Sidedef sd = MapSet.NearestSidedef(Sector.Sector.Sidedefs, pickintersect);
+			float side = sd.Line.SideOfLine(pickintersect);
+			return (((side <= 0.0f) && sd.IsFront) || ((side > 0.0f) && !sd.IsFront));
+		}
+		
 		#endregion
 	}
 }

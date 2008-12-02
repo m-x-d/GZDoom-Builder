@@ -1380,6 +1380,29 @@ namespace CodeImp.DoomBuilder.Map
 			return splitsdone;
 		}
 		
+		// This finds the side closest to the specified position
+		public static Sidedef NearestSidedef(ICollection<Sidedef> selection, Vector2D pos)
+		{
+			Sidedef closest = null;
+			float distance = float.MaxValue;
+			
+			// Go for all sidedefs in selection
+			foreach(Sidedef sd in selection)
+			{
+				// Calculate distance and check if closer than previous find
+				float d = sd.Line.SafeDistanceToSq(pos, true);
+				if(d < distance)
+				{
+					// This one is closer
+					closest = sd;
+					distance = d;
+				}
+			}
+			
+			// Return result
+			return closest;
+		}
+		
 		// This finds the line closest to the specified position
 		public static Linedef NearestLinedef(ICollection<Linedef> selection, Vector2D pos)
 		{

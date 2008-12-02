@@ -453,23 +453,31 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public VisualPickResult PickObject(Vector3D from, Vector3D to)
 		{
 			VisualPickResult result = new VisualPickResult();
-			Vector2D from2d = from;
-			Vector2D to2d = to;
-
+			Line2D ray2d = new Line2D(from, to);
+			
 			// Setup no result
 			result.geometry = null;
 			result.hitpos = new Vector3D();
-			result.u_ray = float.MaxValue;
+			result.u_ray = 1.0f;
 			
 			// Find all blocks we are intersecting
 			List<VisualBlockEntry> blocks = blockmap.GetLineBlocks(from, to);
-
-			// Go for all lines to see which ones we intersect
-			// We will collect geometry from the sectors and sidedefs
-			Line2D ray2d = new Line2D(from2d, to2d);
+			
+			// Make collections
 			Dictionary<Linedef, Linedef> lines = new Dictionary<Linedef, Linedef>(blocks.Count * 10);
 			Dictionary<Sector, VisualSector> sectors = new Dictionary<Sector, VisualSector>(blocks.Count * 10);
 			List<VisualGeometry> potentialgeometry = new List<VisualGeometry>(blocks.Count * 10);
+			
+			// Add geometry from the camera sector
+			if((camsector != null) && allsectors.ContainsKey(camsector))
+			{
+				VisualSector vs = allsectors[camsector];
+				sectors.Add(camsector, vs);
+				potentialgeometry.AddRange(vs.FixedGeometry);
+			}
+			
+			// Go for all lines to see which ones we intersect
+			// We will collect geometry from the sectors and sidedefs
 			foreach(VisualBlockEntry b in blocks)
 			{
 				foreach(Linedef ld in b.Lines)
@@ -478,13 +486,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 					if(!lines.ContainsKey(ld))
 					{
 						lines.Add(ld, ld);
-
+						
 						// Intersecting?
 						float u;
 						if(ld.Line.GetIntersection(ray2d, out u))
 						{
 							// Check on which side we are
-							float side = ld.SideOfLine(from2d);
+							float side = ld.SideOfLine(ray2d.v1);
 							
 							// Calculate intersection point
 							Vector3D intersect = from + to * u;
@@ -513,10 +521,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 										int previndex = potentialgeometry.Count;
 										potentialgeometry.AddRange(vs.GetSidedefGeometry(ld.Front));
 										for(int i = previndex; i < potentialgeometry.Count; i++)
-										{
-											potentialgeometry[i].PickIntersect = intersect;
-											potentialgeometry[i].PickRayU = u;
-										}
+											potentialgeometry[i].SetPickResults(intersect, u);
 									}
 								}
 							}
@@ -542,10 +547,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 										int previndex = potentialgeometry.Count;
 										potentialgeometry.AddRange(vs.GetSidedefGeometry(ld.Back));
 										for(int i = previndex; i < potentialgeometry.Count; i++)
-										{
-											potentialgeometry[i].PickIntersect = intersect;
-											potentialgeometry[i].PickRayU = u;
-										}
+											potentialgeometry[i].SetPickResults(intersect, u);
 									}
 								}
 							}
@@ -553,7 +555,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					}
 				}
 			}
-
+			
 			// Now we have a list of potential geometry that lies along the trace line.
 			// We still don't know what geometry actually hits, but we ruled out that which doesn't get even close.
 			// This is still too much for accurate intersection testing, so we do a fast reject pass first.
@@ -573,17 +575,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 				if(g.PickAccurate(from, to, direction, ref u))
 				{
 					// Closer than previous find?
-					if(u < result.u_ray)
+					if((u > 0.0f) && (u < result.u_ray))
 					{
 						result.u_ray = u;
 						result.geometry = g;
 					}
 				}
 			}
-
+			
 			// Setup final result
 			result.hitpos = from + to * result.u_ray;
-
+			
 			// Done
 			return result;
 		}
