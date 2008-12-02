@@ -51,11 +51,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Original sidedef
 		private Sidedef sidedef;
 
+		// Intersection point for current pick test
+		private Vector3D pickintersect;
+		private float pickrayu;
+		
 		#endregion
 
 		#region ================== Properties
 
 		public Sidedef Sidedef { get { return sidedef; } }
+		new public Vector3D PickIntersect { get { return pickintersect; } internal set { pickintersect = value; } }
+		new public float PickRayU { get { return pickrayu; } internal set { pickrayu = value; } }
 
 		#endregion
 

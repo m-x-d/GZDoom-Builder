@@ -47,6 +47,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		private float top;
+		private float bottom;
+
 		#endregion
 
 		#region ================== Properties
@@ -136,6 +139,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				verts[4] = verts[2];
 				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, pc.ToInt(), t2.x, t2.y);
 
+				// Keep properties
+				this.top = geotop;
+				this.bottom = geobottom;
+				
 				// Apply vertices
 				base.SetVertices(verts);
 				return true;
@@ -151,6 +158,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// This performs a fast test in object picking
+		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
+		{
+			// We can't do any faster than the accurate pick
+			return true;
+		}
+
+		// This performs an accurate test for object picking
+		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
+		{
+			// Check if point is between top and bottom
+			u_ray = PickRayU;
+			return (PickIntersect.z >= bottom) && (PickIntersect.z <= top);
+		}
+		
 		#endregion
 	}
 }

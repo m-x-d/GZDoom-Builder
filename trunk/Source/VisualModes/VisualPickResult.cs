@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 	{
 		// Members
 		public VisualGeometry geometry;
+		public float u_ray;
 		public Vector3D hitpos;
 	}
 }
