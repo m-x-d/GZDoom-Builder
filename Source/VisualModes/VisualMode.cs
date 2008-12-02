@@ -301,12 +301,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 						if(ld.SideOfLine(campos2d) < 0)
 						{
 							// Do front of line
-							if(ld.Front != null) ProcessSidedef(ld.Front);
+							if(ld.Front != null) ProcessSidedefCulling(ld.Front);
 						}
 						else
 						{
 							// Do back of line
-							if(ld.Back != null) ProcessSidedef(ld.Back);
+							if(ld.Back != null) ProcessSidedefCulling(ld.Back);
 						}
 					}
 				}
@@ -336,7 +336,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 							float side = sd.Line.SideOfLine(campos2d);
 							if(((side < 0) && sd.IsFront) ||
 							   ((side > 0) && !sd.IsFront))
-								ProcessSidedef(sd);
+								ProcessSidedefCulling(sd);
 						}
 					}
 					else
@@ -354,7 +354,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		// This finds and adds visible sectors
-		private void ProcessSidedef(Sidedef sd)
+		private void ProcessSidedefCulling(Sidedef sd)
 		{
 			VisualSector vs;
 
@@ -453,16 +453,141 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public VisualPickResult PickObject(Vector3D from, Vector3D to)
 		{
 			VisualPickResult result = new VisualPickResult();
+			Vector2D from2d = from;
+			Vector2D to2d = to;
+
+			// Setup no result
+			result.geometry = null;
+			result.hitpos = new Vector3D();
+			result.u_ray = float.MaxValue;
 			
-			// Pick geometry
+			// Find all blocks we are intersecting
 			List<VisualBlockEntry> blocks = blockmap.GetLineBlocks(from, to);
 
-			// TODO
+			// Go for all lines to see which ones we intersect
+			// We will collect geometry from the sectors and sidedefs
+			Line2D ray2d = new Line2D(from2d, to2d);
+			Dictionary<Linedef, Linedef> lines = new Dictionary<Linedef, Linedef>(blocks.Count * 10);
+			Dictionary<Sector, VisualSector> sectors = new Dictionary<Sector, VisualSector>(blocks.Count * 10);
+			List<VisualGeometry> potentialgeometry = new List<VisualGeometry>(blocks.Count * 10);
+			foreach(VisualBlockEntry b in blocks)
+			{
+				foreach(Linedef ld in b.Lines)
+				{
+					// Make sure we don't test a line twice
+					if(!lines.ContainsKey(ld))
+					{
+						lines.Add(ld, ld);
+
+						// Intersecting?
+						float u;
+						if(ld.Line.GetIntersection(ray2d, out u))
+						{
+							// Check on which side we are
+							float side = ld.SideOfLine(from2d);
+							
+							// Calculate intersection point
+							Vector3D intersect = from + to * u;
+							
+							// We must add the sectors of both sides of the line
+							// If we wouldn't, then aiming at a sector that is just within range
+							// could result in an incorrect hit (because the far line of the
+							// sector may not be included in this loop)
+							if(ld.Front != null)
+							{
+								// Find the visualsector
+								if(allsectors.ContainsKey(ld.Front.Sector))
+								{
+									VisualSector vs = allsectors[ld.Front.Sector];
+									
+									// Add sector if not already added
+									if(!sectors.ContainsKey(ld.Front.Sector))
+									{
+										sectors.Add(ld.Front.Sector, vs);
+										potentialgeometry.AddRange(vs.FixedGeometry);
+									}
+									
+									// Add sidedef if on the front side
+									if(side < 0.0f)
+									{
+										int previndex = potentialgeometry.Count;
+										potentialgeometry.AddRange(vs.GetSidedefGeometry(ld.Front));
+										for(int i = previndex; i < potentialgeometry.Count; i++)
+										{
+											potentialgeometry[i].PickIntersect = intersect;
+											potentialgeometry[i].PickRayU = u;
+										}
+									}
+								}
+							}
+							
+							// Add back side also
+							if(ld.Back != null)
+							{
+								// Find the visualsector
+								if(allsectors.ContainsKey(ld.Back.Sector))
+								{
+									VisualSector vs = allsectors[ld.Back.Sector];
+
+									// Add sector if not already added
+									if(!sectors.ContainsKey(ld.Back.Sector))
+									{
+										sectors.Add(ld.Back.Sector, vs);
+										potentialgeometry.AddRange(vs.FixedGeometry);
+									}
+
+									// Add sidedef if on the front side
+									if(side > 0.0f)
+									{
+										int previndex = potentialgeometry.Count;
+										potentialgeometry.AddRange(vs.GetSidedefGeometry(ld.Back));
+										for(int i = previndex; i < potentialgeometry.Count; i++)
+										{
+											potentialgeometry[i].PickIntersect = intersect;
+											potentialgeometry[i].PickRayU = u;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// Now we have a list of potential geometry that lies along the trace line.
+			// We still don't know what geometry actually hits, but we ruled out that which doesn't get even close.
+			// This is still too much for accurate intersection testing, so we do a fast reject pass first.
+			Vector3D direction = to - from;
+			direction = direction.GetNormal();
+			List<VisualGeometry> likelygeometry = new List<VisualGeometry>(potentialgeometry.Count);
+			foreach(VisualGeometry g in potentialgeometry)
+			{
+				if(g.PickFastReject(from, to, direction)) likelygeometry.Add(g);
+			}
+			
+			// Now we do an accurate intersection test for all resulting geometry
+			// We keep only the closest hit!
+			foreach(VisualGeometry g in likelygeometry)
+			{
+				float u = result.u_ray;
+				if(g.PickAccurate(from, to, direction, ref u))
+				{
+					// Closer than previous find?
+					if(u < result.u_ray)
+					{
+						result.u_ray = u;
+						result.geometry = g;
+					}
+				}
+			}
+
+			// Setup final result
+			result.hitpos = from + to * result.u_ray;
 
 			// Done
 			return result;
 		}
-
+		
 		#endregion
 
 		#region ================== Rendering

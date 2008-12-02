@@ -112,5 +112,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		#endregion
+
+		#region ================== Methods
+
+		// TEST:
+		public override void OnMouseDown(MouseEventArgs e)
+		{
+			// Make ray
+			Vector3D start = CameraPosition;
+			Vector3D delta = CameraTarget.GetFixedLength(General.Settings.ViewDistance);
+			VisualPickResult pick = PickObject(start, start + delta);
+
+			// Any result?
+			if(pick.geometry != null)
+			{
+				if(pick.geometry is VisualMiddleSingle)
+				{
+					VisualMiddleSingle sd = (pick.geometry as VisualMiddleSingle);
+					General.Interface.ShowLinedefInfo(sd.Sidedef.Line);
+				}
+			}
+			else
+			{
+				General.Interface.HideInfo();
+			}
+		}
+
+		#endregion
 	}
 }
