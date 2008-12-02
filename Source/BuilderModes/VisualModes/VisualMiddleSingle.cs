@@ -157,20 +157,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
-
+		
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
-			// We can't do any faster than the accurate pick
-			return true;
+			// Check if intersection point is between top and bottom
+			return (pickintersect.z >= bottom) && (pickintersect.z <= top);
 		}
-
+		
 		// This performs an accurate test for object picking
 		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
 		{
-			// Check if point is between top and bottom
-			u_ray = PickRayU;
-			return (PickIntersect.z >= bottom) && (PickIntersect.z <= top);
+			// The fast reject pass is already as accurate as it gets,
+			// so we just return the intersection distance here
+			u_ray = pickrayu;
+			return true;
 		}
 		
 		#endregion

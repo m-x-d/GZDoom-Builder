@@ -70,11 +70,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal int Triangles { get { return triangles; } }
 		internal int RenderPassInt { get { return renderpass; } }
 
-		// These are only here so that we can call this on all geometry
-		// but it is only implemented in the VisualSidedef class
-		internal Vector3D PickIntersect { set { } }
-		internal float PickRayU { set { } }
-		
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
 		/// </summary>
@@ -122,6 +117,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			return this.sector.Sector.Index - other.sector.Sector.Index;
 		}
 
+		// This is only here so that we can call this on all geometry
+		// but it is only implemented in the VisualSidedef class
+		internal virtual void SetPickResults(Vector3D intersect, float u)
+		{
+		}
+		
 		/// <summary>
 		/// This is called when the geometry must be tested for line intersection. This should reject
 		/// as fast as possible to rule out all geometry that certainly does not touch the line.

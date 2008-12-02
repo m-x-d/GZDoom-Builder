@@ -52,16 +52,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Sidedef sidedef;
 
 		// Intersection point for current pick test
-		private Vector3D pickintersect;
-		private float pickrayu;
+		protected Vector3D pickintersect;
+		protected float pickrayu;
 		
 		#endregion
 
 		#region ================== Properties
 
 		public Sidedef Sidedef { get { return sidedef; } }
-		new public Vector3D PickIntersect { get { return pickintersect; } internal set { pickintersect = value; } }
-		new public float PickRayU { get { return pickrayu; } internal set { pickrayu = value; } }
 
 		#endregion
 
@@ -77,6 +75,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 
 		#region ================== Methods
+		
+		// This keeps the results for a sidedef intersection
+		internal override void SetPickResults(Vector3D intersect, float u)
+		{
+			this.pickintersect = intersect;
+			this.pickrayu = u;
+		}
 		
 		#endregion
 	}
