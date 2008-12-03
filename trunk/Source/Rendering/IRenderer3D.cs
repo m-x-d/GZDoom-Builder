@@ -55,5 +55,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Rendering methods
 		void AddGeometry(VisualGeometry g);
+		void RenderCrosshair();
 	}
 }

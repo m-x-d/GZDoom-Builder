@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		private const int RENDER_PASSES = 4;
 		private const float PROJ_NEAR_PLANE = 1f;
-
+		private const float CROSSHAIR_SCALE = 0.1f;
 		#endregion
 
 		#region ================== Variables
@@ -56,6 +56,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Frustum
 		private ProjectedFrustum2D frustum;
+		
+		// Crosshair
+		private FlatVertex[] crosshairverts;
 		
 		// Geometry to be rendered.
 		// Each Dictionary in the array is a render pass.
@@ -103,12 +106,13 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 
-		#region ================== Methods
+		#region ================== Management
 
 		// This is called before a device is reset
 		// (when resized or display adapter was changed)
 		public override void UnloadResource()
 		{
+			crosshairverts = null;
 		}
 		
 		// This is called resets when the device is reset
@@ -117,9 +121,42 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 		}
 
+		// This makes screen vertices for display
+		private void CreateCrosshairVerts(Size texturesize)
+		{
+			// Determine coordinates
+			float width = (float)General.Map.Graphics.Viewport.Width;
+			float height = (float)General.Map.Graphics.Viewport.Height;
+			float size = (float)height * CROSSHAIR_SCALE;
+			RectangleF rect = new RectangleF((width - size) / 2, (height - size) / 2, size, size);
+			
+			// Make vertices
+			crosshairverts = new FlatVertex[4];
+			crosshairverts[0].x = rect.Left;
+			crosshairverts[0].y = rect.Top;
+			crosshairverts[0].c = -1;
+			crosshairverts[0].u = 1f / texturesize.Width;
+			crosshairverts[0].v = 1f / texturesize.Height;
+			crosshairverts[1].x = rect.Right;
+			crosshairverts[1].y = rect.Top;
+			crosshairverts[1].c = -1;
+			crosshairverts[1].u = 1f - 1f / texturesize.Width;
+			crosshairverts[1].v = 1f / texturesize.Height;
+			crosshairverts[2].x = rect.Left;
+			crosshairverts[2].y = rect.Bottom;
+			crosshairverts[2].c = -1;
+			crosshairverts[2].u = 1f / texturesize.Width;
+			crosshairverts[2].v = 1f - 1f / texturesize.Height;
+			crosshairverts[3].x = rect.Right;
+			crosshairverts[3].y = rect.Bottom;
+			crosshairverts[3].c = -1;
+			crosshairverts[3].u = 1f - 1f / texturesize.Width;
+			crosshairverts[3].v = 1f - 1f / texturesize.Height;
+		}
+		
 		#endregion
 
-		#region ================== General
+		#region ================== Presentation
 
 		// This creates the projection
 		internal void CreateProjection()
@@ -178,7 +215,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#endregion
 
-		#region ================== Presenting
+		#region ================== Start / Finish
 
 		// This starts rendering
 		public bool Start()
@@ -197,6 +234,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// Matrices
 				ApplyMatrices();
+
+				// Create crosshair vertices
+				if(crosshairverts == null)
+					CreateCrosshairVerts(new Size(General.Map.Data.Crosshair3D.Width, General.Map.Data.Crosshair3D.Height));
 				
 				// Ready
 				return true;
@@ -226,23 +267,19 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-
-			// SOLID PASS
 			graphics.Shaders.World3D.Begin();
 			graphics.Shaders.World3D.WorldViewProj = viewproj;
+
+			// SOLID PASS
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Solid);
 			graphics.Shaders.World3D.EndPass();
-			graphics.Shaders.World3D.End();
 
 			// MASK PASS
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-			graphics.Shaders.World3D.Begin();
-			graphics.Shaders.World3D.WorldViewProj = viewproj;
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Mask);
 			graphics.Shaders.World3D.EndPass();
-			graphics.Shaders.World3D.End();
 
 			// ALPHA PASS
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
@@ -250,26 +287,21 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
 			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
-			graphics.Shaders.World3D.Begin();
-			graphics.Shaders.World3D.WorldViewProj = viewproj;
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Alpha);
 			graphics.Shaders.World3D.EndPass();
-			graphics.Shaders.World3D.End();
 
 			// ADDITIVE PASS
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
-			graphics.Shaders.World3D.Begin();
-			graphics.Shaders.World3D.WorldViewProj = viewproj;
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Additive);
 			graphics.Shaders.World3D.EndPass();
-			graphics.Shaders.World3D.End();
 			
 			// Remove references
 			graphics.Shaders.World3D.Texture1 = null;
 			
 			// Done
+			graphics.Shaders.World3D.End();
 			geometry = null;
 		}
 
@@ -343,7 +375,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		#endregion
 		
-		#region ================== Geometry
+		#region ================== Rendering
 		
 		// This collects a visual sector's geometry for rendering
 		public void AddGeometry(VisualGeometry g)
@@ -363,6 +395,33 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 
+		// This renders the crosshair
+		public void RenderCrosshair()
+		{
+			// Set renderstates
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
+			graphics.Device.SetTransform(TransformState.View, Matrix.Identity);
+			
+			// Draw
+			graphics.Shaders.Display2D.Begin();
+			if(General.Map.Data.Crosshair3D.Texture == null) General.Map.Data.Crosshair3D.CreateTexture();
+			graphics.Device.SetTexture(0, General.Map.Data.Crosshair3D.Texture);
+			graphics.Shaders.Display2D.Texture1 = General.Map.Data.Crosshair3D.Texture;
+			graphics.Shaders.Display2D.SetSettings(1.0f, 1.0f, 0.0f, 1.0f, true);
+			graphics.Shaders.Display2D.BeginPass(1);
+			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, crosshairverts);
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
+		}
+		
 		#endregion
 	}
 }

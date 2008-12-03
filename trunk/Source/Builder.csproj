@@ -649,6 +649,7 @@
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
     <Compile Include="Editing\EditingManager.cs" />
+    <EmbeddedResource Include="Resources\Crosshair.png" />
     <Content Include="Resources\DB2.ico" />
     <Compile Include="General\BinaryHeap.cs" />
     <Compile Include="Geometry\Plane.cs" />

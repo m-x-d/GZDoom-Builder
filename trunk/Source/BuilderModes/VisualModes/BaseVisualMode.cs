@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 		
 		// Object picking interval
-		private double PICK_INTERVAL = 200.0d;
+		private double PICK_INTERVAL = 100.0d;
 		
 		#endregion
 		
@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This picks a new target
 		private void PickTarget()
 		{
-			// Make ray
+			// Find the object we are aiming at
 			Vector3D start = CameraPosition;
 			Vector3D delta = CameraTarget - CameraPosition;
 			delta = delta.GetFixedLength(General.Settings.ViewDistance);
@@ -110,27 +110,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Object changed?
 			if(newtarget.geometry != target.geometry)
 			{
-				// Hide previous info
-				General.Interface.HideInfo();
-				
 				// Any result?
 				if(newtarget.geometry != null)
 				{
 					if(newtarget.geometry is VisualSidedef)
 					{
+						if(!(target.geometry is VisualSidedef)) General.Interface.HideInfo();
 						VisualSidedef vsd = (newtarget.geometry as VisualSidedef);
 						General.Interface.ShowLinedefInfo(vsd.Sidedef.Line);
 					}
 					else if(newtarget.geometry is VisualFloor)
 					{
+						if(!(target.geometry is VisualFloor) && !(target.geometry is VisualCeiling)) General.Interface.HideInfo();
 						VisualFloor vf = (newtarget.geometry as VisualFloor);
 						General.Interface.ShowSectorInfo(vf.Sector.Sector);
 					}
 					else if(newtarget.geometry is VisualCeiling)
 					{
+						if(!(target.geometry is VisualFloor) && !(target.geometry is VisualCeiling)) General.Interface.HideInfo();
 						VisualCeiling vc = (newtarget.geometry as VisualCeiling);
 						General.Interface.ShowSectorInfo(vc.Sector.Sector);
 					}
+					else
+					{
+						General.Interface.HideInfo();
+					}
+				}
+				else
+				{
+					General.Interface.HideInfo();
 				}
 			}
 			
@@ -170,6 +178,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Done rendering geometry
 				renderer.FinishGeometry();
+				
+				// Render crosshair
+				renderer.RenderCrosshair();
 				
 				// Present!
 				renderer.Finish();
