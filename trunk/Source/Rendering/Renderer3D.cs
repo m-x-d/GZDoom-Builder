@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const int RENDER_PASSES = 4;
 		private const float PROJ_NEAR_PLANE = 1f;
 		private const float CROSSHAIR_SCALE = 0.06f;
+		private const float FOG_RANGE = 0.9f;
+		
 		#endregion
 
 		#region ================== Variables
@@ -254,6 +256,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				graphics.Device.SetRenderState(RenderState.FogEnable, false);
+				graphics.Device.SetRenderState(RenderState.FogDensity, 1.0f);
+				graphics.Device.SetRenderState(RenderState.FogColor, General.Colors.Background.ToInt());
+				graphics.Device.SetRenderState(RenderState.FogStart, General.Settings.ViewDistance * FOG_RANGE);
+				graphics.Device.SetRenderState(RenderState.FogEnd, General.Settings.ViewDistance);
+				graphics.Device.SetRenderState(RenderState.FogTableMode, FogMode.Linear);
+				graphics.Device.SetRenderState(RenderState.RangeFogEnable, false);
 
 				// Matrices
 				ApplyMatrices3D();
@@ -446,6 +455,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, crosshairverts);
 			graphics.Shaders.Display2D.EndPass();
 			graphics.Shaders.Display2D.End();
+		}
+
+		// This switches fog on and off
+		public void SetFogMode(bool usefog)
+		{
+			graphics.Device.SetRenderState(RenderState.FogEnable, usefog);
 		}
 		
 		#endregion

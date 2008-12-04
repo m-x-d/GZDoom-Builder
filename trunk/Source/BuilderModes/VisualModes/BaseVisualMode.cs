@@ -48,7 +48,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 		
 		// Object picking interval
-		private double PICK_INTERVAL = 100.0d;
+		private const double PICK_INTERVAL = 100.0d;
+		private const float PICK_RANGE = 0.98f;
 		
 		#endregion
 		
@@ -104,7 +105,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Find the object we are aiming at
 			Vector3D start = CameraPosition;
 			Vector3D delta = CameraTarget - CameraPosition;
-			delta = delta.GetFixedLength(General.Settings.ViewDistance);
+			delta = delta.GetFixedLength(General.Settings.ViewDistance * PICK_RANGE);
 			VisualPickResult newtarget = PickObject(start, start + delta);
 			
 			// Object changed?
@@ -170,6 +171,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Start drawing
 			if(renderer.Start())
 			{
+				// Use fog!
+				renderer.SetFogMode(true);
+				
 				// Begin with geometry
 				renderer.StartGeometry();
 				

@@ -204,6 +204,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Renderstates that count for this whole sequence
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
 				graphics.Device.SetRenderState(RenderState.ZEnable, false);
+				graphics.Device.SetRenderState(RenderState.FogEnable, false);
 				graphics.Device.SetStreamSource(0, screenverts, 0, sizeof(FlatVertex));
 				graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 				graphics.Shaders.Display2D.Begin();
@@ -590,7 +591,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Plotter;
-
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			
 			// Rendertargets available?
 			if(plottertex != null)
 			{
@@ -625,7 +627,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Things;
-
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			
 			// Rendertargets available?
 			if(thingstex != null)
 			{
@@ -663,7 +666,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Overlay;
-
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			
 			// Rendertargets available?
 			if(overlaytex != null)
 			{
