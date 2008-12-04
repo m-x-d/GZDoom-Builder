@@ -454,6 +454,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			VisualPickResult result = new VisualPickResult();
 			Line2D ray2d = new Line2D(from, to);
+			Vector3D delta = to - from;
 			
 			// Setup no result
 			result.geometry = null;
@@ -495,7 +496,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 							float side = ld.SideOfLine(ray2d.v1);
 							
 							// Calculate intersection point
-							Vector3D intersect = from + to * u;
+							Vector3D intersect = from + delta * u;
 							
 							// We must add the sectors of both sides of the line
 							// If we wouldn't, then aiming at a sector that is just within range
