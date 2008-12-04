@@ -24,23 +24,19 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-using System.Drawing;
-using System.ComponentModel;
-using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D9;
-using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
-using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.VisualModes
+namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public abstract class VisualSidedef : VisualGeometry
+	internal class BaseVisualGeometry : VisualGeometry
 	{
 		#region ================== Constants
 
@@ -48,41 +44,32 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Variables
 
-		// Original sidedef
-		private Sidedef sidedef;
-
-		// Intersection point for current pick test
-		protected Vector3D pickintersect;
-		protected float pickrayu;
-		
 		#endregion
 
 		#region ================== Properties
 
-		public Sidedef Sidedef { get { return sidedef; } }
-
 		#endregion
 
-		#region ================== Constructor / Disposer
+		#region ================== Constructor / Destructor
 
 		// Constructor
-		public VisualSidedef(Sidedef sd)
+		public BaseVisualGeometry() : base()
 		{
-			// Initialize
-			this.sidedef = sd;
 		}
-		
+
+		// Constructor for sidedefs
+		public BaseVisualGeometry(Sidedef sd) : base(sd)
+		{
+		}
+
 		#endregion
 
 		#region ================== Methods
-		
-		// This keeps the results for a sidedef intersection
-		internal override void SetPickResults(Vector3D intersect, float u)
-		{
-			this.pickintersect = intersect;
-			this.pickrayu = u;
-		}
-		
+
+		#endregion
+
+		#region ================== Events
+
 		#endregion
 	}
 }

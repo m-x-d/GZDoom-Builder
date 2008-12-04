@@ -39,7 +39,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal class VisualUpper : VisualSidedef
+	internal class VisualUpper : BaseVisualGeometry
 	{
 		#region ================== Constants
 

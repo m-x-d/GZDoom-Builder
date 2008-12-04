@@ -51,11 +51,23 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private WorldVertex[] vertices;
 		private int triangles;
 		
-		// Sector
+		// Elements that this geometry is bound to
+		// Only the sector is required, sidedef is only for walls
 		private VisualSector sector;
+		private Sidedef sidedef;
+
+		/// <summary>
+		/// Absolute intersecting coordinates are set during object picking. This is not set if the geometry is not bound to a sidedef.
+		/// </summary>
+		protected Vector3D pickintersect;
+
+		/// <summary>
+		/// Distance unit along the object picking ray is set during object picking. (0.0 is at camera, 1.0f is at far plane) This is not set if the geometry is not bound to a sidedef.
+		/// </summary>
+		protected float pickrayu;
 		
 		// Rendering
-		private int renderpass;
+		private int renderpass = (int)RenderPass.Solid;
 		
 		// Sector buffer info
 		private int vertexoffset;
@@ -85,15 +97,29 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// </summary>
 		public VisualSector Sector { get { return sector; } internal set { sector = value; } }
 		
+		/// <summary>
+		/// Returns the Sidedef that this geometry is created for. Null for geometry that is sector-wide.
+		/// </summary>
+		public Sidedef Sidedef { get { return sidedef; } }
+
 		#endregion
 
 		#region ================== Constructor / Destructor
 		
-		// Constructor
+		/// <summary>
+		/// This creates sector-global visual geometry. This geometry is always visible when any of the sector is visible.
+		/// </summary>
 		public VisualGeometry()
 		{
-			// Defaults
-			renderpass = (int)RenderPass.Solid;
+		}
+
+		/// <summary>
+		/// This creates visual geometry that is bound to a sidedef. This geometry is only visible when the sidedef is visible. It is automatically back-face culled during rendering and automatically XY intersection tested as well as back-face culled during object picking.
+		/// </summary>
+		/// <param name="sd"></param>
+		public VisualGeometry(Sidedef sd)
+		{
+			this.sidedef = sd;
 		}
 
 		#endregion
@@ -117,10 +143,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			return this.sector.Sector.Index - other.sector.Sector.Index;
 		}
 
-		// This is only here so that we can call this on all geometry
-		// but it is only implemented in the VisualSidedef class
-		internal virtual void SetPickResults(Vector3D intersect, float u)
+		// This keeps the results for a sidedef intersection
+		internal void SetPickResults(Vector3D intersect, float u)
 		{
+			this.pickintersect = intersect;
+			this.pickrayu = u;
 		}
 		
 		/// <summary>

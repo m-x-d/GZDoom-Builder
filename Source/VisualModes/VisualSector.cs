@@ -179,12 +179,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			updategeo = true;
 			geo.Sector = this;
 			allgeometry.Add(geo);
-			if(geo is VisualSidedef)
+			if(geo.Sidedef != null)
 			{
-				VisualSidedef geoside = (geo as VisualSidedef);
-				if(!sidedefgeometry.ContainsKey(geoside.Sidedef))
-					sidedefgeometry[geoside.Sidedef] = new List<VisualGeometry>(3);
-				sidedefgeometry[geoside.Sidedef].Add(geoside);
+				if(!sidedefgeometry.ContainsKey(geo.Sidedef))
+					sidedefgeometry[geo.Sidedef] = new List<VisualGeometry>(3);
+				sidedefgeometry[geo.Sidedef].Add(geo);
 			}
 			else
 			{

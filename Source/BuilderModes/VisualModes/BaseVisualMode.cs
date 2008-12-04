@@ -114,23 +114,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Any result?
 				if(newtarget.geometry != null)
 				{
-					if(newtarget.geometry is VisualSidedef)
+					if(newtarget.geometry.Sidedef != null)
 					{
-						if(!(target.geometry is VisualSidedef)) General.Interface.HideInfo();
-						VisualSidedef vsd = (newtarget.geometry as VisualSidedef);
-						General.Interface.ShowLinedefInfo(vsd.Sidedef.Line);
+						if((target.geometry != null) && (target.geometry.Sidedef == null)) General.Interface.HideInfo();
+						General.Interface.ShowLinedefInfo(newtarget.geometry.Sidedef.Line);
 					}
-					else if(newtarget.geometry is VisualFloor)
+					else if(newtarget.geometry.Sidedef == null)
 					{
-						if(!(target.geometry is VisualFloor) && !(target.geometry is VisualCeiling)) General.Interface.HideInfo();
-						VisualFloor vf = (newtarget.geometry as VisualFloor);
-						General.Interface.ShowSectorInfo(vf.Sector.Sector);
-					}
-					else if(newtarget.geometry is VisualCeiling)
-					{
-						if(!(target.geometry is VisualFloor) && !(target.geometry is VisualCeiling)) General.Interface.HideInfo();
-						VisualCeiling vc = (newtarget.geometry as VisualCeiling);
-						General.Interface.ShowSectorInfo(vc.Sector.Sector);
+						if((target.geometry == null) || (target.geometry.Sidedef != null)) General.Interface.HideInfo();
+						General.Interface.ShowSectorInfo(newtarget.geometry.Sector.Sector);
 					}
 					else
 					{
