@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			float div = (y4 - y3) * (v2.x - v1.x) - (x4 - x3) * (v2.y - v1.y);
 
 			// Can this be tested?
-			if((div > 0.000001f) || (div < -0.000001f))
+			if(div != 0.0f)
 			{
 				// Calculate the intersection distance from the line
 				u_line = ((x4 - x3) * (v1.y - y3) - (y4 - y3) * (v1.x - x3)) / div;
