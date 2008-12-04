@@ -102,6 +102,7 @@
     <Compile Include="Testing\TriangulatorMode.cs" />
     <Compile Include="ClassicModes\DragThingsMode.cs" />
     <Compile Include="General\LineLengthLabel.cs" />
+    <Compile Include="VisualModes\BaseVisualGeometry.cs" />
     <Compile Include="VisualModes\BaseVisualMode.cs" />
     <Compile Include="VisualModes\BaseVisualSector.cs" />
     <Compile Include="ClassicModes\DragVerticesMode.cs" />
