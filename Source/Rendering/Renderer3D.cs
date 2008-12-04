@@ -43,16 +43,20 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		private const int RENDER_PASSES = 4;
 		private const float PROJ_NEAR_PLANE = 1f;
-		private const float CROSSHAIR_SCALE = 0.1f;
+		private const float CROSSHAIR_SCALE = 0.06f;
 		#endregion
 
 		#region ================== Variables
 
 		// Matrices
 		private Matrix projection;
-		private Matrix view;
+		private Matrix view3d;
 		private Matrix billboard;
 		private Matrix viewproj;
+		private Matrix view2d;
+		
+		// Window size
+		private Size windowsize;
 		
 		// Frustum
 		private ProjectedFrustum2D frustum;
@@ -82,11 +86,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Initialize
 			CreateProjection();
-
+			CreateMatrices2D();
+			
 			// Dummy frustum
 			frustum = new ProjectedFrustum2D(new Vector2D(), 0.0f, 0.0f, PROJ_NEAR_PLANE,
 				General.Settings.ViewDistance, Angle2D.DegToRad((float)General.Settings.VisualFOV));
-			
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -119,14 +124,15 @@ namespace CodeImp.DoomBuilder.Rendering
 		// (when resized or display adapter was changed)
 		public override void ReloadResource()
 		{
+			CreateMatrices2D();
 		}
 
 		// This makes screen vertices for display
 		private void CreateCrosshairVerts(Size texturesize)
 		{
 			// Determine coordinates
-			float width = (float)General.Map.Graphics.Viewport.Width;
-			float height = (float)General.Map.Graphics.Viewport.Height;
+			float width = (float)windowsize.Width;
+			float height = (float)windowsize.Height;
 			float size = (float)height * CROSSHAIR_SCALE;
 			RectangleF rect = new RectangleF((width - size) / 2, (height - size) / 2, size, size);
 			
@@ -179,7 +185,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			projection = Matrix.PerspectiveFovRH(fovy, aspect, PROJ_NEAR_PLANE, General.Settings.ViewDistance);
 
 			// Apply matrices
-			ApplyMatrices();
+			ApplyMatrices3D();
 		}
 		
 		// This creates matrices for a camera view
@@ -198,21 +204,38 @@ namespace CodeImp.DoomBuilder.Rendering
 				General.Settings.ViewDistance, Angle2D.DegToRad((float)General.Settings.VisualFOV));
 			
 			// Make the view matrix
-			view = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));
+			view3d = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));
 
 			// Make the billboard matrix
 			billboard = Matrix.RotationYawPitchRoll(0f, anglexy, anglez - Angle2D.PI);
 		}
+
+		// This creates 2D view matrix
+		private void CreateMatrices2D()
+		{
+			windowsize = graphics.RenderTarget.ClientSize;
+			Matrix scaling = Matrix.Scaling((1f / (float)windowsize.Width) * 2f, (1f / (float)windowsize.Height) * -2f, 1f);
+			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
+			view2d = Matrix.Multiply(translate, scaling);
+		}
 		
 		// This applies the matrices
-		private void ApplyMatrices()
+		private void ApplyMatrices3D()
 		{
-			viewproj = view * projection;
+			viewproj = view3d * projection;
 			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 			graphics.Device.SetTransform(TransformState.Projection, projection);
-			graphics.Device.SetTransform(TransformState.View, view);
+			graphics.Device.SetTransform(TransformState.View, view3d);
 		}
 
+		// This sets the appropriate view matrix
+		public void ApplyMatrices2D()
+		{
+			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
+			graphics.Device.SetTransform(TransformState.View, view2d);
+		}
+		
 		#endregion
 
 		#region ================== Start / Finish
@@ -233,7 +256,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 
 				// Matrices
-				ApplyMatrices();
+				ApplyMatrices3D();
 
 				// Create crosshair vertices
 				if(crosshairverts == null)
@@ -270,6 +293,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.Begin();
 			graphics.Shaders.World3D.WorldViewProj = viewproj;
 
+			// Matrices
+			ApplyMatrices3D();
+			
 			// SOLID PASS
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Solid);
@@ -408,7 +434,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
-			graphics.Device.SetTransform(TransformState.View, Matrix.Identity);
+			ApplyMatrices2D();
 			
 			// Draw
 			graphics.Shaders.Display2D.Begin();
