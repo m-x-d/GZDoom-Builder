@@ -70,6 +70,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 
+		public virtual void OnSelectBegin() { }
+		public virtual void OnSelectEnd() { }
+		public virtual void OnEditBegin() { }
+		public virtual void OnEditEnd() { }
+
 		#endregion
 	}
 }
