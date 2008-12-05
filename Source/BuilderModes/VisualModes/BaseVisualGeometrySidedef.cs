@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal abstract class BaseVisualGeometry : VisualGeometry
+	internal abstract class BaseVisualGeometrySidedef : BaseVisualGeometry
 	{
 		#region ================== Constants
 
@@ -44,40 +44,55 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		protected float top;
+		protected float bottom;
+		
 		#endregion
 
 		#region ================== Properties
 
 		#endregion
 
-		#region ================== Constructor / Setup
+		#region ================== Constructor / Destructor
 
-		// Constructor
-		public BaseVisualGeometry(VisualSector vs) : base(vs)
-		{
-		}
-		
 		// Constructor for sidedefs
-		public BaseVisualGeometry(VisualSector vs, Sidedef sd) : base(vs, sd)
+		public BaseVisualGeometrySidedef(VisualSector vs, Sidedef sd) : base(vs, sd)
 		{
 		}
-		
-		// This is for setting up new geometry
-		public abstract bool Setup();
 
 		#endregion
 
 		#region ================== Methods
+
+		// This performs a fast test in object picking
+		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
+		{
+			// Check if intersection point is between top and bottom
+			return (pickintersect.z >= bottom) && (pickintersect.z <= top);
+		}
+
+		// This performs an accurate test for object picking
+		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
+		{
+			// The fast reject pass is already as accurate as it gets,
+			// so we just return the intersection distance here
+			u_ray = pickrayu;
+			return true;
+		}
 		
 		#endregion
 
 		#region ================== Events
-
-		public virtual void OnSelectBegin() { }
-		public virtual void OnSelectEnd() { }
-		public virtual void OnEditBegin() { }
-		public virtual void OnEditEnd() { }
-
+		
+		// Edit button released
+		public override void OnEditEnd()
+		{
+			List<Linedef> lines = new List<Linedef>();
+			lines.Add(this.Sidedef.Line);
+			DialogResult result = General.Interface.ShowEditLinedefs(lines);
+			if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+		}
+		
 		#endregion
 	}
 }

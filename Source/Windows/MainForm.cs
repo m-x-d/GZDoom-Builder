@@ -977,10 +977,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Release and show the mouse
 				Cursor.Clip = originalclip;
+				Cursor.Position = display.PointToScreen(new Point(display.ClientSize.Width / 2, display.ClientSize.Height / 2));
 				Cursor.Show();
 			}
 		}
-
+		
 		// This requests exclusive mouse input
 		public void StartExclusiveMouseInput()
 		{

@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal abstract class BaseVisualGeometry : VisualGeometry
+	internal abstract class BaseVisualGeometrySector : BaseVisualGeometry
 	{
 		#region ================== Constants
 
@@ -50,34 +50,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
-		#region ================== Constructor / Setup
+		#region ================== Constructor / Destructor
 
 		// Constructor
-		public BaseVisualGeometry(VisualSector vs) : base(vs)
+		public BaseVisualGeometrySector(VisualSector vs) : base(vs)
 		{
 		}
-		
-		// Constructor for sidedefs
-		public BaseVisualGeometry(VisualSector vs, Sidedef sd) : base(vs, sd)
-		{
-		}
-		
-		// This is for setting up new geometry
-		public abstract bool Setup();
 
 		#endregion
 
 		#region ================== Methods
-		
+
 		#endregion
 
 		#region ================== Events
-
-		public virtual void OnSelectBegin() { }
-		public virtual void OnSelectEnd() { }
-		public virtual void OnEditBegin() { }
-		public virtual void OnEditEnd() { }
-
+		
+		// Edit button released
+		public override void OnEditEnd()
+		{
+			List<Sector> sectors = new List<Sector>();
+			sectors.Add(this.Sector.Sector);
+			DialogResult result = General.Interface.ShowEditSectors(sectors);
+			if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+		}
+		
 		#endregion
 	}
 }
