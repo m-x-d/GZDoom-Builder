@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Object picking
 		private VisualPickResult target;
 		private double lastpicktime;
+		private bool locktarget;
 		
 		#endregion
 		
@@ -97,6 +98,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override VisualSector CreateVisualSector(Sector s)
 		{
 			return new BaseVisualSector(s);
+		}
+		
+		// This locks the target so that it isn't changed until unlocked
+		public void LockTarget()
+		{
+			locktarget = true;
+		}
+		
+		// This unlocks the target so that is changes to the aimed geometry again
+		public void UnlockTarget()
+		{
+			locktarget = false;
 		}
 		
 		// This picks a new target
@@ -152,7 +165,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Time to pick a new target?
 			if(General.Clock.CurrentTime > (lastpicktime + PICK_INTERVAL))
 			{
-				PickTarget();
+				if(!locktarget) PickTarget();
 				lastpicktime = General.Clock.CurrentTime;
 			}
 		}
@@ -183,6 +196,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		#endregion
+
+		#region ================== Actions
+
+		[BeginAction("visualselect", BaseAction = true)]
+		public void BeginSelect()
+		{
+			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnSelectBegin();
+		}
+
+		[EndAction("visualselect", BaseAction = true)]
+		public void EndSelect()
+		{
+			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnSelectEnd();
+		}
+
+		[BeginAction("visualedit", BaseAction = true)]
+		public void BeginEdit()
+		{
+			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnEditBegin();
+		}
+
+		[EndAction("visualedit", BaseAction = true)]
+		public void EndEdit()
+		{
+			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnEditEnd();
+		}
+
 		#endregion
 	}
 }
