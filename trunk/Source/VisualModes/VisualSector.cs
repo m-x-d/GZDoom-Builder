@@ -177,7 +177,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public void AddGeometry(VisualGeometry geo)
 		{
 			updategeo = true;
-			geo.Sector = this;
 			allgeometry.Add(geo);
 			if(geo.Sidedef != null)
 			{

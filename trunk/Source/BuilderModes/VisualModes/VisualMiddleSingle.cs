@@ -39,16 +39,13 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal class VisualMiddleSingle : BaseVisualGeometry
+	internal sealed class VisualMiddleSingle : BaseVisualGeometrySidedef
 	{
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
-
-		private float top;
-		private float bottom;
 
 		#endregion
 
@@ -59,14 +56,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualMiddleSingle(Sidedef s) : base(s)
+		public VisualMiddleSingle(VisualSector vs, Sidedef s) : base(vs, s)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public bool Setup()
+		public override bool Setup()
 		{
 			// Calculate size of this wall part
 			float geotop = (float)Sidedef.Sector.CeilHeight;
@@ -140,8 +137,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, pc.ToInt(), t2.x, t2.y);
 
 				// Keep properties
-				this.top = geotop;
-				this.bottom = geobottom;
+				base.top = geotop;
+				base.bottom = geobottom;
 				
 				// Apply vertices
 				base.SetVertices(verts);
@@ -157,22 +154,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
-		
-		// This performs a fast test in object picking
-		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
-		{
-			// Check if intersection point is between top and bottom
-			return (pickintersect.z >= bottom) && (pickintersect.z <= top);
-		}
-		
-		// This performs an accurate test for object picking
-		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
-		{
-			// The fast reject pass is already as accurate as it gets,
-			// so we just return the intersection distance here
-			u_ray = pickrayu;
-			return true;
-		}
 		
 		#endregion
 	}

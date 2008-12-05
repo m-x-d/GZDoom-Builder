@@ -86,12 +86,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.ClearGeometry();
 			
 			// Create floor
-			VisualFloor vf = new VisualFloor();
-			if(vf.Setup(base.Sector)) base.AddGeometry(vf);
+			VisualFloor vf = new VisualFloor(this);
+			if(vf.Setup()) base.AddGeometry(vf);
 
 			// Create ceiling
-			VisualCeiling vc = new VisualCeiling();
-			if(vc.Setup(base.Sector)) base.AddGeometry(vc);
+			VisualCeiling vc = new VisualCeiling(this);
+			if(vc.Setup()) base.AddGeometry(vc);
 
 			// Go for all sidedefs
 			foreach(Sidedef sd in base.Sector.Sidedefs)
@@ -100,21 +100,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(sd.Other != null)
 				{
 					// Create upper part
-					VisualUpper vu = new VisualUpper(sd);
+					VisualUpper vu = new VisualUpper(this, sd);
 					if(vu.Setup()) base.AddGeometry(vu);
 					
 					// Create lower part
-					VisualLower vl = new VisualLower(sd);
+					VisualLower vl = new VisualLower(this, sd);
 					if(vl.Setup()) base.AddGeometry(vl);
 					
 					// Create middle part
-					VisualMiddleDouble vm = new VisualMiddleDouble(sd);
+					VisualMiddleDouble vm = new VisualMiddleDouble(this, sd);
 					if(vm.Setup()) base.AddGeometry(vm);
 				}
 				else
 				{
 					// Create middle part
-					VisualMiddleSingle vm = new VisualMiddleSingle(sd);
+					VisualMiddleSingle vm = new VisualMiddleSingle(this, sd);
 					if(vm.Setup()) base.AddGeometry(vm);
 				}
 			}

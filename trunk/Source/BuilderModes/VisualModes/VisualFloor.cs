@@ -39,16 +39,13 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal class VisualFloor : BaseVisualGeometry
+	internal sealed class VisualFloor : BaseVisualGeometrySector
 	{
 		#region ================== Constants
 
 		#endregion
 
 		#region ================== Variables
-		
-		private float pickrayu;
-		private Vector3D pickintersect;
 		
 		#endregion
 
@@ -59,16 +56,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualFloor()
+		public VisualFloor(VisualSector vs) : base(vs)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public bool Setup(Sector s)
+		public override bool Setup()
 		{
 			WorldVertex[] verts;
+			Sector s = base.Sector.Sector;
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
