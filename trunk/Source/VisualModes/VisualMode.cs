@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private const float ANGLE_FROM_MOUSE = 0.0001f;
 		public const float MAX_ANGLEZ_LOW = 100f / Angle2D.PIDEG;
 		public const float MAX_ANGLEZ_HIGH = (360f - 100f) / Angle2D.PIDEG;
-		private const float CAMERA_SPEED = 6f;
+		private const double MOVE_SPEED_MULTIPLIER = 0.001d;
 		
 		#endregion
 
@@ -72,6 +72,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private bool keybackward;
 		private bool keyleft;
 		private bool keyright;
+		private bool doublespeed;
 
 		// Map
 		protected VisualBlockMap blockmap;
@@ -269,6 +270,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			keyright = false;
 		}
+
+		[BeginAction("movedoublespeed", BaseAction = true)]
+		public virtual void BeginDoubleSpeed()
+		{
+			doublespeed = true;
+		}
+
+		[EndAction("movedoublespeed", BaseAction = true)]
+		public virtual void EndDoubleSpeed()
+		{
+			doublespeed = false;
+		}
 		
 		#endregion
 
@@ -399,50 +412,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 				else
 					return null;
 			}
-		}
-		
-		#endregion
-
-		#region ================== Processing
-
-		// This creates a visual sector
-		protected abstract VisualSector CreateVisualSector(Sector s);
-		
-		// This fills the blockmap
-		protected virtual void FillBlockMap()
-		{
-			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
-		}
-		
-		// Processing
-		public override void OnProcess(double deltatime)
-		{
-			Vector3D camvec;
-			Vector3D camvecstrafe;
-			
-			base.OnProcess(deltatime);
-			
-			// Calculate camera direction vectors
-			camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);
-			camvecstrafe = Vector3D.FromAngleXY(camanglexy + Angle2D.PIHALF);
-			
-			// Move the camera
-			if(keyforward) campos += camvec * CAMERA_SPEED;
-			if(keybackward) campos -= camvec * CAMERA_SPEED;
-			if(keyleft) campos -= camvecstrafe * CAMERA_SPEED;
-			if(keyright) campos += camvecstrafe * CAMERA_SPEED;
-			
-			// Target the camera
-			camtarget = campos + camvec;
-			
-			// Apply new camera matrices
-			renderer.PositionAndLookAt(campos, camtarget);
-
-			// Visibility culling
-			DoCulling();
-			
-			// Now redraw
-			General.Interface.RedrawDisplay();
 		}
 		
 		#endregion
@@ -589,6 +558,52 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Done
 			return result;
+		}
+		
+		#endregion
+
+		#region ================== Processing
+
+		// This creates a visual sector
+		protected abstract VisualSector CreateVisualSector(Sector s);
+		
+		// This fills the blockmap
+		protected virtual void FillBlockMap()
+		{
+			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
+		}
+		
+		// Processing
+		public override void OnProcess(double deltatime)
+		{
+			Vector3D camvec;
+			Vector3D camvecstrafe;
+			double multiplier;
+			
+			base.OnProcess(deltatime);
+			
+			// Calculate camera direction vectors
+			camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);
+			camvecstrafe = Vector3D.FromAngleXY(camanglexy + Angle2D.PIHALF);
+			
+			// Move the camera
+			if(doublespeed) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
+			if(keyforward) campos += camvec * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keybackward) campos -= camvec * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyleft) campos -= camvecstrafe * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyright) campos += camvecstrafe * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			
+			// Target the camera
+			camtarget = campos + camvec;
+			
+			// Apply new camera matrices
+			renderer.PositionAndLookAt(campos, camtarget);
+
+			// Visibility culling
+			DoCulling();
+			
+			// Now redraw
+			General.Interface.RedrawDisplay();
 		}
 		
 		#endregion
