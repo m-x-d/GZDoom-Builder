@@ -591,7 +591,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Plotter;
-			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
 			// Rendertargets available?
 			if(plottertex != null)
@@ -627,7 +627,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Things;
-			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
 			// Rendertargets available?
 			if(thingstex != null)
@@ -666,7 +666,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
 			renderlayer = RenderLayers.Overlay;
-			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
 			// Rendertargets available?
 			if(overlaytex != null)
