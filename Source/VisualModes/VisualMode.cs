@@ -186,9 +186,53 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Events
 
+		public override bool OnUndoBegin()
+		{
+			renderer.SetCrosshairBusy(true);
+			General.Interface.RedrawDisplay();
+			
+			return base.OnUndoBegin();
+		}
+
 		public override void OnUndoEnd()
 		{
 			base.OnUndoEnd();
+
+			allsectors.Clear();
+			visiblesectors.Clear();
+			visibleblocks.Clear();
+			visiblegeometry.Clear();
+			
+			// Make new blockmap
+			if(blockmap != null)
+			{
+				blockmap.Dispose();
+				blockmap = new VisualBlockMap();
+				FillBlockMap();
+			}
+
+			// Visibility culling
+			DoCulling();
+			
+			renderer.SetCrosshairBusy(false);
+		}
+
+		public override bool OnRedoBegin()
+		{
+			renderer.SetCrosshairBusy(true);
+			General.Interface.RedrawDisplay();
+
+			return base.OnRedoBegin();
+		}
+
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+
+			allsectors.Clear();
+			visiblesectors.Clear();
+			visibleblocks.Clear();
+			visiblegeometry.Clear();
 
 			// Make new blockmap
 			if(blockmap != null)
@@ -197,6 +241,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 				blockmap = new VisualBlockMap();
 				FillBlockMap();
 			}
+
+			// Visibility culling
+			DoCulling();
+			
+			renderer.SetCrosshairBusy(false);
 		}
 
 		#endregion

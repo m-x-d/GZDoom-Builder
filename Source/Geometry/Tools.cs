@@ -737,7 +737,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			else
 			{
 				// No triangulation was made. FAIL!
-				General.Fail("No triangulation exists for sector " + s, "Triangulation is required to create label positions for a sector.");
+				General.Fail("No triangulation exists for sector " + s + " Triangulation is required to create label positions for a sector.");
 			}
 			
 			// Done

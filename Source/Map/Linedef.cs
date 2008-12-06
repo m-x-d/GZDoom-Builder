@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
 using System.Drawing;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -74,6 +75,9 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int[] args;
 
+		// Clone
+		private int serializedindex;
+		
 		#endregion
 
 		#region ================== Properties
@@ -95,6 +99,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int AngleDeg { get { return (int)(angle * Angle2D.PIDEG); } }
 		public RectangleF Rect { get { return rect; } }
 		public int[] Args { get { return args; } }
+		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
 
 		#endregion
 
@@ -115,6 +120,27 @@ namespace CodeImp.DoomBuilder.Map
 			// Attach to vertices
 			startvertexlistitem = start.AttachLinedef(this);
 			endvertexlistitem = end.AttachLinedef(this);
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Constructor
+		internal Linedef(MapSet map, LinkedListNode<Linedef> listitem, Vertex start, Vertex end, IReadWriteStream stream)
+		{
+			// Initialize
+			this.map = map;
+			this.mainlistitem = listitem;
+			this.start = start;
+			this.end = end;
+			this.updateneeded = true;
+			this.args = new int[NUM_ARGS];
+
+			// Attach to vertices
+			startvertexlistitem = start.AttachLinedef(this);
+			endvertexlistitem = end.AttachLinedef(this);
+
+			ReadWrite(stream);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -158,6 +184,40 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Management
+
+		// Serialize / deserialize
+		internal void ReadWrite(IReadWriteStream s)
+		{
+			base.ReadWrite(s);
+			
+			if(s.IsWriting)
+			{
+				s.wInt(flags.Count);
+				
+				foreach(KeyValuePair<string, bool> f in flags)
+				{
+					s.wString(f.Key);
+					s.wBool(f.Value);
+				}
+			}
+			else
+			{
+				int c; s.rInt(out c);
+
+				flags = new Dictionary<string, bool>(c);
+				for(int i = 0; i < c; i++)
+				{
+					string t; s.rString(out t);
+					bool b; s.rBool(out b);
+					flags.Add(t, b);
+				}
+			}
+
+			s.rwInt(ref action);
+			s.rwInt(ref activate);
+			s.rwInt(ref tag);
+			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
+		}
 
 		// This sets new start vertex
 		public void SetStartVertex(Vertex v)
@@ -276,7 +336,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(front != null) front.Sector.UpdateNeeded = true;
 			if(back != null) back.Sector.UpdateNeeded = true;
 		}
-
+		
 		#endregion
 		
 		#region ================== Methods

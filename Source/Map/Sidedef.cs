@@ -107,6 +107,27 @@ namespace CodeImp.DoomBuilder.Map
 			GC.SuppressFinalize(this);
 		}
 
+		// Constructor
+		internal Sidedef(MapSet map, LinkedListNode<Sidedef> listitem, Linedef l, bool front, Sector s, IReadWriteStream stream)
+		{
+			// Initialize
+			this.map = map;
+			this.mainlistitem = listitem;
+			this.linedef = l;
+			this.sector = s;
+
+			// Attach to the linedef
+			if(front) l.AttachFront(this); else l.AttachBack(this);
+
+			// Attach to sector
+			sectorlistitem = s.AttachSidedef(this);
+
+			ReadWrite(stream);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
 		// Disposer
 		public override void Dispose()
 		{
@@ -141,6 +162,21 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
+		// Serialize / deserialize
+		internal void ReadWrite(IReadWriteStream s)
+		{
+			base.ReadWrite(s);
+			
+			s.rwInt(ref offsetx);
+			s.rwInt(ref offsety);
+			s.rwString(ref texnamehigh);
+			s.rwString(ref texnamemid);
+			s.rwString(ref texnamelow);
+			s.rwLong(ref longtexnamehigh);
+			s.rwLong(ref longtexnamemid);
+			s.rwLong(ref longtexnamelow);
+		}
+		
 		// This copies all properties to another sidedef
 		public void CopyPropertiesTo(Sidedef s)
 		{

@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Cloning
 		private Sector clone;
+		private int serializedindex;
 		
 		// Triangulation
 		private bool updateneeded;
@@ -97,7 +98,8 @@ namespace CodeImp.DoomBuilder.Map
 		public int Brightness { get { return brightness; } set { brightness = value; updateneeded = true; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public RectangleF BBox { get { return bbox; } }
-		public Sector Clone { get { return clone; } set { clone = value; } }
+		internal Sector Clone { get { return clone; } set { clone = value; } }
+		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
 		public Triangulation Triangles { get { return triangles; } }
 		public FlatVertex[] FlatVertices { get { return flatvertices; } }
 		internal VertexBuffer FlatCeilingBuffer { get { return flatceilingbuffer; } }
@@ -123,6 +125,24 @@ namespace CodeImp.DoomBuilder.Map
 			this.longceiltexname = MapSet.EmptyLongName;
 			this.triangulationneeded = true;
 
+			General.Map.Graphics.RegisterResource(this);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Constructor
+		internal Sector(MapSet map, LinkedListNode<Sector> listitem, IReadWriteStream stream)
+		{
+			// Initialize
+			this.map = map;
+			this.mainlistitem = listitem;
+			this.sidedefs = new LinkedList<Sidedef>();
+			this.things = new LinkedList<Thing>();
+			this.triangulationneeded = true;
+
+			ReadWrite(stream);
+			
 			General.Map.Graphics.RegisterResource(this);
 
 			// We have no destructor
@@ -169,6 +189,23 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
+		// Serialize / deserialize
+		internal void ReadWrite(IReadWriteStream s)
+		{
+			base.ReadWrite(s);
+			
+			s.rwInt(ref index);
+			s.rwInt(ref floorheight);
+			s.rwInt(ref ceilheight);
+			s.rwString(ref floortexname);
+			s.rwString(ref ceiltexname);
+			s.rwLong(ref longfloortexname);
+			s.rwLong(ref longceiltexname);
+			s.rwInt(ref effect);
+			s.rwInt(ref tag);
+			s.rwInt(ref brightness);
+		}
+		
 		// This copies all properties to another sector
 		public void CopyPropertiesTo(Sector s)
 		{

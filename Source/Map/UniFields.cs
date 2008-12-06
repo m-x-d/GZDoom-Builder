@@ -16,7 +16,12 @@ namespace CodeImp.DoomBuilder.Map
 		public UniFields() : base(2)
 		{
 		}
-		
+
+		// New constructor
+		public UniFields(int capacity) : base(capacity)
+		{
+		}
+
 		// Copy constructor
 		public UniFields(UniFields copyfrom) : base(copyfrom)
 		{

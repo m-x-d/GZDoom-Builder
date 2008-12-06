@@ -29,6 +29,7 @@ using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Types;
+using System.IO;
 
 #endregion
 
@@ -103,6 +104,25 @@ namespace CodeImp.DoomBuilder.Map
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Constructor for map to deserialize
+		internal MapSet(MemoryStream stream)
+		{
+			// Initialize
+			vertices = new LinkedList<Vertex>();
+			linedefs = new LinkedList<Linedef>();
+			sidedefs = new LinkedList<Sidedef>();
+			sectors = new LinkedList<Sector>();
+			things = new LinkedList<Thing>();
+			indexholes = new List<int>();
+			lastsectorindex = 0;
+
+			// Deserialize
+			Deserialize(stream);
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -357,6 +377,26 @@ namespace CodeImp.DoomBuilder.Map
 			return v;
 		}
 
+		// This creates a new vertex
+		private Vertex CreateVertex(IReadWriteStream stream)
+		{
+			LinkedListNode<Vertex> listitem;
+			Vertex v;
+
+			// Make a list item
+			listitem = new LinkedListNode<Vertex>(null);
+
+			// Make the vertex
+			v = new Vertex(this, listitem, stream);
+			listitem.Value = v;
+
+			// Add vertex to the list
+			vertices.AddLast(listitem);
+
+			// Return result
+			return v;
+		}
+
 		// This creates a new linedef
 		public Linedef CreateLinedef(Vertex start, Vertex end)
 		{
@@ -377,6 +417,26 @@ namespace CodeImp.DoomBuilder.Map
 			return l;
 		}
 
+		// This creates a new linedef
+		private Linedef CreateLinedef(Vertex start, Vertex end, IReadWriteStream stream)
+		{
+			LinkedListNode<Linedef> listitem;
+			Linedef l;
+
+			// Make a list item
+			listitem = new LinkedListNode<Linedef>(null);
+
+			// Make the linedef
+			l = new Linedef(this, listitem, start, end, stream);
+			listitem.Value = l;
+
+			// Add linedef to the list
+			linedefs.AddLast(listitem);
+
+			// Return result
+			return l;
+		}
+
 		// This creates a new sidedef
 		public Sidedef CreateSidedef(Linedef l, bool front, Sector s)
 		{
@@ -388,6 +448,26 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Make the sidedef
 			sd = new Sidedef(this, listitem, l, front, s);
+			listitem.Value = sd;
+
+			// Add sidedef to the list
+			sidedefs.AddLast(listitem);
+
+			// Return result
+			return sd;
+		}
+
+		// This creates a new sidedef
+		private Sidedef CreateSidedef(Linedef l, bool front, Sector s, IReadWriteStream stream)
+		{
+			LinkedListNode<Sidedef> listitem;
+			Sidedef sd;
+
+			// Make a list item
+			listitem = new LinkedListNode<Sidedef>(null);
+
+			// Make the sidedef
+			sd = new Sidedef(this, listitem, l, front, s, stream);
 			listitem.Value = sd;
 
 			// Add sidedef to the list
@@ -439,6 +519,26 @@ namespace CodeImp.DoomBuilder.Map
 			return s;
 		}
 
+		// This creates a new sector
+		private Sector CreateSector(IReadWriteStream stream)
+		{
+			LinkedListNode<Sector> listitem;
+			Sector s;
+
+			// Make a list item
+			listitem = new LinkedListNode<Sector>(null);
+
+			// Make the sector
+			s = new Sector(this, listitem, stream);
+			listitem.Value = s;
+
+			// Add sector to the list
+			sectors.AddLast(listitem);
+
+			// Return result
+			return s;
+		}
+
 		// This creates a new thing
 		public Thing CreateThing()
 		{
@@ -463,6 +563,227 @@ namespace CodeImp.DoomBuilder.Map
 		public void AddSectorIndexHole(int index)
 		{
 			indexholes.Add(index);
+		}
+
+		#endregion
+
+		#region ================== Serialization
+
+		// This serializes the MapSet
+		internal MemoryStream Serialize()
+		{
+			MemoryStream stream = new MemoryStream(1000000);
+			SerializerStream serializer = new SerializerStream(stream);
+			
+			// Write private data
+			serializer.wInt(lastsectorindex);
+			serializer.wInt(indexholes.Count);
+			foreach(int i in indexholes) serializer.wInt(i);
+
+			// Write map data
+			WriteVertices(serializer);
+			WriteSectors(serializer);
+			WriteLinedefs(serializer);
+			WriteSidedefs(serializer);
+			WriteThings(serializer);
+
+			return stream;
+		}
+
+		// This serializes things
+		private void WriteThings(SerializerStream stream)
+		{
+			stream.wInt(things.Count);
+			
+			// Go for all things
+			foreach(Thing t in things)
+			{
+				t.ReadWrite(stream);
+			}
+		}
+
+		// This serializes vertices
+		private void WriteVertices(SerializerStream stream)
+		{
+			stream.wInt(vertices.Count);
+
+			// Go for all vertices
+			int index = 0;
+			foreach(Vertex v in vertices)
+			{
+				v.SerializedIndex = index++;
+				
+				v.ReadWrite(stream);
+			}
+		}
+
+		// This serializes linedefs
+		private void WriteLinedefs(SerializerStream stream)
+		{
+			stream.wInt(linedefs.Count);
+
+			// Go for all lines
+			int index = 0;
+			foreach(Linedef l in linedefs)
+			{
+				l.SerializedIndex = index++;
+				
+				stream.wInt(l.Start.SerializedIndex);
+				
+				stream.wInt(l.End.SerializedIndex);
+
+				l.ReadWrite(stream);
+			}
+		}
+
+		// This serializes sidedefs
+		private void WriteSidedefs(SerializerStream stream)
+		{
+			stream.wInt(sidedefs.Count);
+
+			// Go for all sidedefs
+			foreach(Sidedef sd in sidedefs)
+			{
+				stream.wInt(sd.Line.SerializedIndex);
+				
+				stream.wInt(sd.Sector.SerializedIndex);
+
+				stream.wBool(sd.IsFront);
+
+				sd.ReadWrite(stream);
+			}
+		}
+
+		// This serializes sectors
+		private void WriteSectors(SerializerStream stream)
+		{
+			stream.wInt(sectors.Count);
+
+			// Go for all sectors
+			int index = 0;
+			foreach(Sector s in sectors)
+			{
+				s.SerializedIndex = index++;
+
+				s.ReadWrite(stream);
+			}
+		}
+
+		#endregion
+
+		#region ================== Deserialization
+
+		// This serializes the MapSet
+		private void Deserialize(MemoryStream stream)
+		{
+			stream.Seek(0, SeekOrigin.Begin);
+			DeserializerStream deserializer = new DeserializerStream(stream);
+			
+			// Read private data
+			int c;
+			deserializer.rInt(out lastsectorindex);
+			deserializer.rInt(out c);
+			indexholes = new List<int>(c);
+			for(int i = 0; i < c; i++)
+			{
+				int index; deserializer.rInt(out index);
+				indexholes.Add(index);
+			}
+
+			// Read map data
+			Vertex[] verticesarray = ReadVertices(deserializer);
+			Sector[] sectorsarray = ReadSectors(deserializer);
+			Linedef[] linedefsarray = ReadLinedefs(deserializer, verticesarray);
+			ReadSidedefs(deserializer, linedefsarray, sectorsarray);
+			ReadThings(deserializer);
+		}
+
+		// This deserializes things
+		private void ReadThings(DeserializerStream stream)
+		{
+			int c; stream.rInt(out c);
+
+			// Go for all things
+			for(int i = 0; i < c; i++)
+			{
+				Thing t = CreateThing();
+				t.ReadWrite(stream);
+			}
+		}
+
+		// This deserializes vertices
+		private Vertex[] ReadVertices(DeserializerStream stream)
+		{
+			int c; stream.rInt(out c);
+
+			Vertex[] array = new Vertex[c];
+
+			// Go for all vertices
+			for(int i = 0; i < c; i++)
+			{
+				array[i] = CreateVertex(stream);
+			}
+
+			return array;
+		}
+
+		// This deserializes linedefs
+		private Linedef[] ReadLinedefs(DeserializerStream stream, Vertex[] verticesarray)
+		{
+			int c; stream.rInt(out c);
+
+			Linedef[] array = new Linedef[c];
+
+			// Go for all lines
+			for(int i = 0; i < c; i++)
+			{
+				int start, end;
+				
+				stream.rInt(out start);
+
+				stream.rInt(out end);
+
+				array[i] = CreateLinedef(verticesarray[start], verticesarray[end], stream);
+			}
+
+			return array;
+		}
+
+		// This deserializes sidedefs
+		private void ReadSidedefs(DeserializerStream stream, Linedef[] linedefsarray, Sector[] sectorsarray)
+		{
+			int c; stream.rInt(out c);
+
+			// Go for all sidedefs
+			for(int i = 0; i < c; i++)
+			{
+				int lineindex, sectorindex;
+				bool front;
+				
+				stream.rInt(out lineindex);
+
+				stream.rInt(out sectorindex);
+
+				stream.rBool(out front);
+
+				CreateSidedef(linedefsarray[lineindex], front, sectorsarray[sectorindex], stream);
+			}
+		}
+
+		// This deserializes sectors
+		private Sector[] ReadSectors(DeserializerStream stream)
+		{
+			int c; stream.rInt(out c);
+
+			Sector[] array = new Sector[c];
+
+			// Go for all sectors
+			for(int i = 0; i < c; i++)
+			{
+				array[i] = CreateSector(stream);
+			}
+
+			return array;
 		}
 
 		#endregion

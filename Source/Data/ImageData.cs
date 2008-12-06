@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Data
 		public void RemoveReference()
 		{
 			references--;
-			if(references < 0) General.Fail("FAIL! (references < 0)", "Somewhere this image is dereferenced more than it was referenced.");
+			if(references < 0) General.Fail("FAIL! (references < 0) Somewhere this image is dereferenced more than it was referenced.");
 			if(references == 0) General.Map.Data.ProcessImage(this);
 		}
 		

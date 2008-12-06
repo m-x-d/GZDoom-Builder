@@ -37,24 +37,24 @@ namespace CodeImp.DoomBuilder.Editing
 {
 	internal class UndoSnapshot
 	{
-		public MapSet map;
+		public MemoryStream mapdata;
 		public string description;
 		public int ticketid;			// For safe withdrawing
 
 		// Constructor
-		public UndoSnapshot(string description, MapSet map, int ticketid)
+		public UndoSnapshot(string description, MemoryStream mapdata, int ticketid)
 		{
 			this.ticketid = ticketid;
 			this.description = description;
-			this.map = map;
+			this.mapdata = mapdata;
 		}
 
 		// Constructor
-		public UndoSnapshot(UndoSnapshot info, MapSet map)
+		public UndoSnapshot(UndoSnapshot info, MemoryStream mapdata)
 		{
 			this.ticketid = info.ticketid;
 			this.description = info.description;
-			this.map = map;
+			this.mapdata = mapdata;
 		}
 	}
 }

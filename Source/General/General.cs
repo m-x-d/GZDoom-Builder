@@ -1224,9 +1224,9 @@ namespace CodeImp.DoomBuilder
 		#region ================== Debug
 		
 		// This shows a major failure
-		public static void Fail(string message, string detailedmessage)
+		public static void Fail(string message)
 		{
-			Debug.Fail(message, detailedmessage);
+			Debug.Fail(message);
 		}
 		
 		// This outputs log information

@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Crosshair
 		private FlatVertex[] crosshairverts;
+		private bool crosshairbusy;
 		
 		// Geometry to be rendered.
 		// Each Dictionary in the array is a render pass.
@@ -445,11 +446,22 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
 			ApplyMatrices2D();
 			
+			// Texture
+			if(crosshairbusy)
+			{
+				if(General.Map.Data.CrosshairBusy3D.Texture == null) General.Map.Data.CrosshairBusy3D.CreateTexture();
+				graphics.Device.SetTexture(0, General.Map.Data.CrosshairBusy3D.Texture);
+				graphics.Shaders.Display2D.Texture1 = General.Map.Data.CrosshairBusy3D.Texture;
+			}
+			else
+			{
+				if(General.Map.Data.Crosshair3D.Texture == null) General.Map.Data.Crosshair3D.CreateTexture();
+				graphics.Device.SetTexture(0, General.Map.Data.Crosshair3D.Texture);
+				graphics.Shaders.Display2D.Texture1 = General.Map.Data.Crosshair3D.Texture;
+			}
+			
 			// Draw
 			graphics.Shaders.Display2D.Begin();
-			if(General.Map.Data.Crosshair3D.Texture == null) General.Map.Data.Crosshair3D.CreateTexture();
-			graphics.Device.SetTexture(0, General.Map.Data.Crosshair3D.Texture);
-			graphics.Shaders.Display2D.Texture1 = General.Map.Data.Crosshair3D.Texture;
 			graphics.Shaders.Display2D.SetSettings(1.0f, 1.0f, 0.0f, 1.0f, true);
 			graphics.Shaders.Display2D.BeginPass(1);
 			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, crosshairverts);
@@ -461,6 +473,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void SetFogMode(bool usefog)
 		{
 			graphics.Device.SetRenderState(RenderState.FogEnable, usefog);
+		}
+
+		// This siwtches crosshair busy icon on and off
+		public void SetCrosshairBusy(bool busy)
+		{
+			crosshairbusy = busy;
 		}
 		
 		#endregion

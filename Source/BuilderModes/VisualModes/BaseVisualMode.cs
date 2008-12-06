@@ -219,6 +219,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
+		// After undo
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+			PickTarget();
+		}
+
+		// After redo
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+			PickTarget();
+		}
+
 		#endregion
 
 		#region ================== Actions
