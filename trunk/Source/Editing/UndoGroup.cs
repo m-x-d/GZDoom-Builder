@@ -32,8 +32,10 @@ namespace CodeImp.DoomBuilder.Editing
 {
 	public enum UndoGroup : int
 	{
-		None = 0,
-		FloorTextureChange = 1,
-		CeilingTextureChange = 2
+		None,
+		FloorTextureChange,
+		CeilingTextureChange,
+		FloorHeightChange,
+		CeilingHeightChange,
 	}
 }

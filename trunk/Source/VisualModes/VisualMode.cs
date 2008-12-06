@@ -567,6 +567,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This creates a visual sector
 		protected abstract VisualSector CreateVisualSector(Sector s);
 		
+		// This returns a visual sector
+		protected VisualSector GetVisualSector(Sector s)
+		{
+			return allsectors[s];
+		}
+
+		// This returns true when a visual sector has been created for the specified sector
+		protected bool VisualSectorExists(Sector s)
+		{
+			return allsectors.ContainsKey(s);
+		}
+
 		// This fills the blockmap
 		protected virtual void FillBlockMap()
 		{

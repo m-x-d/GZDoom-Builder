@@ -109,7 +109,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Methods
-		
+
+		// This changes the height
+		public override void ChangeHeight(int amount)
+		{
+			General.Map.UndoRedo.CreateUndo("Change floor height", UndoGroup.FloorHeightChange, this.Sector.Sector.Index);
+			this.Sector.Sector.FloorHeight += amount;
+		}
+
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{

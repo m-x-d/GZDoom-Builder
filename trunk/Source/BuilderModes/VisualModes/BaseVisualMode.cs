@@ -151,6 +151,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply new target
 			target = newtarget;
 		}
+
+		// This changes the target's height
+		private void ChangeTargetHeight(int amount)
+		{
+			if(target.geometry is BaseVisualGeometrySector)
+			{
+				BaseVisualGeometrySector vgs = (target.geometry as BaseVisualGeometrySector);
+				vgs.ChangeHeight(amount);
+
+				// Rebuild sector
+				(vgs.Sector as BaseVisualSector).Rebuild();
+
+				// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
+				foreach(Sidedef sd in vgs.Sector.Sector.Sidedefs)
+				{
+					if((sd.Other != null) && VisualSectorExists(sd.Other.Sector))
+					{
+						BaseVisualSector bvs = (BaseVisualSector)GetVisualSector(sd.Other.Sector);
+						bvs.Rebuild();
+					}
+				}
+			}
+		}
 		
 		#endregion
 		
@@ -224,6 +247,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnEditEnd();
 		}
 
+		[BeginAction("raisesector8")]
+		public void RaiseSector8()
+		{
+			ChangeTargetHeight(8);
+		}
+
+		[BeginAction("lowersector8")]
+		public void LowerSector8()
+		{
+			ChangeTargetHeight(-8);
+		}
+
+		[BeginAction("raisesector1")]
+		public void RaiseSector1()
+		{
+			ChangeTargetHeight(1);
+		}
+
+		[BeginAction("lowersector1")]
+		public void LowerSector1()
+		{
+			ChangeTargetHeight(-1);
+		}
+		
 		#endregion
 	}
 }
