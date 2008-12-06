@@ -96,7 +96,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(!isdisposed)
 			{
 				// Clean up
-				foreach(VisualGeometry g in allgeometry) g.Sector = null;
 				if(geobuffer != null) geobuffer.Dispose();
 				geobuffer = null;
 
@@ -195,7 +194,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// </summary>
 		public void ClearGeometry()
 		{
-			foreach(VisualGeometry g in allgeometry) g.Sector = null;
 			allgeometry.Clear();
 			fixedgeometry.Clear();
 			sidedefgeometry.Clear();

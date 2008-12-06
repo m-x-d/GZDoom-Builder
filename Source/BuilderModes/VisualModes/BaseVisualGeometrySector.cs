@@ -61,6 +61,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// This changes the height
+		public abstract void ChangeHeight(int amount);
+
 		#endregion
 
 		#region ================== Events

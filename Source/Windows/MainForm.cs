@@ -351,6 +351,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Resume any exclusive mouse input
 			ResumeExclusiveMouseInput();
+			display.Focus();
 		}
 		
 		// Window loses focus

@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Actions
 		// The action to bind to
 		protected string action;
 		protected bool baseaction;
+		protected string library;
 
 		#endregion
 
@@ -47,6 +48,12 @@ namespace CodeImp.DoomBuilder.Actions
 		/// Set to true to indicate this is a core Doom Builder action when used within a plugin.
 		/// </summary>
 		public bool BaseAction { get { return baseaction; } set { baseaction = value; } }
+
+		/// <summary>
+		/// Set this to the name of the plugin library when this action is defined by another plugin. The library name is the filename without extension.
+		/// </summary>
+		public string Library { get { return library; } set { library = value; } }
+
 		internal string ActionName { get { return action; } }
 
 		#endregion
@@ -62,6 +69,7 @@ namespace CodeImp.DoomBuilder.Actions
 			// Initialize
 			this.action = action;
 			this.baseaction = false;
+			this.library = "";
 		}
 
 		#endregion
@@ -73,25 +81,14 @@ namespace CodeImp.DoomBuilder.Actions
 		{
 			string asmname;
 
-			if(baseaction)
+			if(library.Length > 0)
+				asmname = library.ToLowerInvariant();
+			else if(baseaction)
 				asmname = General.ThisAssembly.GetName().Name.ToLowerInvariant();
 			else
 				asmname = asm.GetName().Name.ToLowerInvariant();
 
 			return asmname + "_" + action;
-		}
-
-		// This makes the proper name
-		public string GetFullActionName(Assembly asm, bool baseaction, string actionname)
-		{
-			string asmname;
-
-			if(baseaction)
-				asmname = General.ThisAssembly.GetName().Name.ToLowerInvariant();
-			else
-				asmname = asm.GetName().Name.ToLowerInvariant();
-
-			return asmname + "_" + actionname;
 		}
 
 		#endregion
