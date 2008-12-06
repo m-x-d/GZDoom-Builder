@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private void ClearRedos()
 		{
 			// Dispose all redos
-			foreach(UndoSnapshot u in redos) u.map.Dispose();
+			foreach(UndoSnapshot u in redos) u.mapdata.Dispose();
 			redos.Clear();
 		}
 
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private void ClearUndos()
 		{
 			// Dispose all undos
-			foreach(UndoSnapshot u in undos) u.map.Dispose();
+			foreach(UndoSnapshot u in undos) u.mapdata.Dispose();
 			undos.Clear();
 		}
 
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Remove one and dispose map
 				u = list[list.Count - 1];
-				u.map.Dispose();
+				u.mapdata.Dispose();
 				list.RemoveAt(list.Count - 1);
 			}
 		}
@@ -163,10 +163,10 @@ namespace CodeImp.DoomBuilder.Editing
 				if(++ticketid == int.MaxValue) ticketid = 1;
 
 				General.WriteLogLine("Creating undo snapshot \"" + description + "\", Group " + group + ", Tag " + grouptag + ", Ticket ID " + ticketid + "...");
-				
-				// Make a snapshot
-				u = new UndoSnapshot(description, General.Map.Map.Clone(), ticketid);
 
+				// Make a snapshot
+				u = new UndoSnapshot(description, General.Map.Map.Serialize(), ticketid);
+				
 				// Put it on the stack
 				undos.Insert(0, u);
 				LimitUndoRedoLevel(undos);
@@ -202,6 +202,7 @@ namespace CodeImp.DoomBuilder.Editing
 					General.WriteLogLine("Withdrawing undo snapshot \"" + undos[0].description + "\", Ticket ID " + ticket + "...");
 
 					// Remove the last made undo
+					undos[0].mapdata.Dispose();
 					undos.RemoveAt(0);
 					
 					// Update
@@ -218,18 +219,18 @@ namespace CodeImp.DoomBuilder.Editing
 			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
 			
-			// Let the plugins know
-			if(General.Plugins.OnUndoBegin())
+			// Anything to undo?
+			if(undos.Count > 0)
 			{
-				// Call UndoBegin event
-				if(General.Editing.Mode.OnUndoBegin())
+				// Let the plugins know
+				if(General.Plugins.OnUndoBegin())
 				{
-					// Cancel volatile mode, if any
-					// This returns false when mode was not volatile
-					if(!General.CancelVolatileMode())
+					// Call UndoBegin event
+					if(General.Editing.Mode.OnUndoBegin())
 					{
-						// Anything to undo?
-						if(undos.Count > 0)
+						// Cancel volatile mode, if any
+						// This returns false when mode was not volatile
+						if(!General.CancelVolatileMode())
 						{
 							// Get undo snapshot
 							u = undos[0];
@@ -238,7 +239,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.WriteLogLine("Performing undo \"" + u.description + "\", Ticket ID " + u.ticketid + "...");
 
 							// Make a snapshot for redo
-							r = new UndoSnapshot(u, General.Map.Map.Clone());
+							r = new UndoSnapshot(u, General.Map.Map.Serialize());
 
 							// Put it on the stack
 							redos.Insert(0, r);
@@ -246,14 +247,14 @@ namespace CodeImp.DoomBuilder.Editing
 
 							// Reset grouping
 							lastgroup = UndoGroup.None;
+							
+							// Change map set
+							General.Map.ChangeMapSet(new MapSet(u.mapdata));
 
 							// Remove selection
-							u.map.ClearAllMarks(false);
-							u.map.ClearAllSelected();
+							General.Map.Map.ClearAllMarks(false);
+							General.Map.Map.ClearAllSelected();
 
-							// Change map set
-							General.Map.ChangeMapSet(u.map);
-							
 							// Done
 							General.Editing.Mode.OnUndoEnd();
 							General.Plugins.OnUndoEnd();
@@ -277,18 +278,18 @@ namespace CodeImp.DoomBuilder.Editing
 			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
 			
-			// Let the plugins know
-			if(General.Plugins.OnRedoBegin())
+			// Anything to redo?
+			if(redos.Count > 0)
 			{
-				// Call RedoBegin event
-				if(General.Editing.Mode.OnRedoBegin())
+				// Let the plugins know
+				if(General.Plugins.OnRedoBegin())
 				{
-					// Cancel volatile mode, if any
-					General.CancelVolatileMode();
-
-					// Anything to redo?
-					if(redos.Count > 0)
+					// Call RedoBegin event
+					if(General.Editing.Mode.OnRedoBegin())
 					{
+						// Cancel volatile mode, if any
+						General.CancelVolatileMode();
+
 						// Get redo snapshot
 						r = redos[0];
 						redos.RemoveAt(0);
@@ -296,7 +297,7 @@ namespace CodeImp.DoomBuilder.Editing
 						General.WriteLogLine("Performing redo \"" + r.description + "\", Ticket ID " + r.ticketid + "...");
 
 						// Make a snapshot for undo
-						u = new UndoSnapshot(r, General.Map.Map.Clone());
+						u = new UndoSnapshot(r, General.Map.Map.Serialize());
 
 						// Put it on the stack
 						undos.Insert(0, u);
@@ -305,12 +306,12 @@ namespace CodeImp.DoomBuilder.Editing
 						// Reset grouping
 						lastgroup = UndoGroup.None;
 
-						// Remove selection
-						r.map.ClearAllMarks(false);
-						r.map.ClearAllSelected();
-
 						// Change map set
-						General.Map.ChangeMapSet(r.map);
+						General.Map.ChangeMapSet(new MapSet(r.mapdata));
+
+						// Remove selection
+						General.Map.Map.ClearAllMarks(false);
+						General.Map.Map.ClearAllSelected();
 
 						// Done
 						General.Editing.Mode.OnRedoEnd();

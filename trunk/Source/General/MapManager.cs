@@ -1246,6 +1246,7 @@ namespace CodeImp.DoomBuilder
 			// Apply
 			map.Dispose();
 			map = newmap;
+			map.UpdateConfiguration();
 			map.Update();
 			thingsfilter.Update();
 		}

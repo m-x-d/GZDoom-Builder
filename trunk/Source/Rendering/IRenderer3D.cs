@@ -57,5 +57,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		void AddGeometry(VisualGeometry g);
 		void RenderCrosshair();
 		void SetFogMode(bool usefog);
+		void SetCrosshairBusy(bool busy);
 	}
 }

@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			#if DEBUG
 				if(!normal.IsNormalized())
-					General.Fail("Attempt to create a plane with a vector that is not normalized!", "");
+					General.Fail("Attempt to create a plane with a vector that is not normalized!");
 			#endif
 			this.normal = normal;
 			this.offset = offset;
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			#if DEBUG
 				if(!normal.IsNormalized())
-					General.Fail("Attempt to create a plane with a vector that is not normalized!", "");
+					General.Fail("Attempt to create a plane with a vector that is not normalized!");
 			#endif
 			this.normal = normal;
 			this.offset = -Vector3D.DotProduct(normal, position);

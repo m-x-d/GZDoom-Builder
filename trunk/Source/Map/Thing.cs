@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
 using System.Drawing;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -59,7 +60,6 @@ namespace CodeImp.DoomBuilder.Map
 		private int tag;
 		private int action;
 		private int[] args;
-		private int x, y, zoffset;
 
 		// Configuration
 		private float size;
@@ -132,6 +132,42 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Management
+
+		// Serialize / deserialize
+		internal void ReadWrite(IReadWriteStream s)
+		{
+			base.ReadWrite(s);
+
+			if(s.IsWriting)
+			{
+				s.wInt(flags.Count);
+				
+				foreach(KeyValuePair<string, bool> f in flags)
+				{
+					s.wString(f.Key);
+					s.wBool(f.Value);
+				}
+			}
+			else
+			{
+				int c; s.rInt(out c);
+
+				flags = new Dictionary<string, bool>(c);
+				for(int i = 0; i < c; i++)
+				{
+					string t; s.rString(out t);
+					bool b; s.rBool(out b);
+					flags.Add(t, b);
+				}
+			}
+
+			s.rwInt(ref type);
+			s.rwVector3D(ref pos);
+			s.rwFloat(ref angle);
+			s.rwInt(ref tag);
+			s.rwInt(ref action);
+			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
+		}
 
 		// This copies all properties to another thing
 		public void CopyPropertiesTo(Thing t)
@@ -210,7 +246,7 @@ namespace CodeImp.DoomBuilder.Map
 		public void Move(Vector2D newpos)
 		{
 			// Change position
-			this.pos = new Vector3D(newpos.x, newpos.y, zoffset);
+			this.pos = new Vector3D(newpos.x, newpos.y, pos.z);
 		}
 
 		// This moves the thing

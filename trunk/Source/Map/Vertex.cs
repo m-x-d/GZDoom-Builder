@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
 using System.Drawing;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -55,7 +56,8 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Cloning
 		private Vertex clone;
-
+		private int serializedindex;
+		
 		#endregion
 
 		#region ================== Properties
@@ -63,7 +65,8 @@ namespace CodeImp.DoomBuilder.Map
 		public MapSet Map { get { return map; } }
 		public ICollection<Linedef> Linedefs { get { return linedefs; } }
 		public Vector2D Position { get { return pos; } }
-		public Vertex Clone { get { return clone; } set { clone = value; } }
+		internal Vertex Clone { get { return clone; } set { clone = value; } }
+		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
 
 		#endregion
 
@@ -78,6 +81,20 @@ namespace CodeImp.DoomBuilder.Map
 			this.mainlistitem = listitem;
 			this.pos = pos;
 			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Constructor
+		internal Vertex(MapSet map, LinkedListNode<Vertex> listitem, IReadWriteStream stream)
+		{
+			// Initialize
+			this.map = map;
+			this.linedefs = new LinkedList<Linedef>();
+			this.mainlistitem = listitem;
+
+			ReadWrite(stream);
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -133,6 +150,14 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
+		// Serialize / deserialize
+		internal void ReadWrite(IReadWriteStream s)
+		{
+			base.ReadWrite(s);
+			
+			s.rwVector2D(ref pos);
+		}
+
 		#endregion
 		
 		#region ================== Methods
@@ -170,7 +195,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(float.IsNaN(pos.x) || float.IsNaN(pos.y) ||
 			   float.IsInfinity(pos.x) || float.IsInfinity(pos.y))
 			{
-				General.Fail("Invalid vertex position!", "The given vertex coordinates cannot be NaN or Infinite.");
+				General.Fail("Invalid vertex position! The given vertex coordinates cannot be NaN or Infinite.");
 			}
 			#endif
 			

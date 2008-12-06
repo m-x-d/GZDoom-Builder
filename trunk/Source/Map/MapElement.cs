@@ -25,6 +25,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
 using System.Drawing;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -82,6 +83,32 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Methods
+
+		// Serialize / deserialize
+		internal void ReadWrite(IReadWriteStream s)
+		{
+			int c = fields.Count;
+			s.rwInt(ref c);
+
+			if(s.IsWriting)
+			{
+				foreach(KeyValuePair<string, UniValue> f in fields)
+				{
+					s.wString(f.Key);
+					f.Value.ReadWrite(s);
+				}
+			}
+			else
+			{
+				fields = new UniFields(c);
+				for(int i = 0; i < c; i++)
+				{
+					string t; s.rString(out t);
+					UniValue v = new UniValue(); v.ReadWrite(s);
+					fields.Add(t, v);
+				}
+			}
+		}
 
 		// This copies properties to any other element
 		public void CopyPropertiesTo(MapElement element)

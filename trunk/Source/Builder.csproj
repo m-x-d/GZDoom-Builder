@@ -650,10 +650,14 @@
     <None Include="Resources\Close.png" />
     <Compile Include="Editing\EditingManager.cs" />
     <EmbeddedResource Include="Resources\Crosshair.png" />
+    <EmbeddedResource Include="Resources\CrosshairBusy.png" />
     <Content Include="Resources\DB2.ico" />
     <Compile Include="General\BinaryHeap.cs" />
     <Compile Include="Geometry\Plane.cs" />
     <Compile Include="Geometry\ProjectedFrustum2D.cs" />
+    <Compile Include="IO\DeserializerStream.cs" />
+    <Compile Include="IO\IReadWriteStream.cs" />
+    <Compile Include="IO\SerializerStream.cs" />
     <Compile Include="Rendering\RenderPasses.cs" />
     <Compile Include="VisualModes\VisualBlockEntry.cs" />
     <Compile Include="VisualModes\VisualPickResult.cs" />

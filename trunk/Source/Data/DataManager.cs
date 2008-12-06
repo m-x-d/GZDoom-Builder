@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData missingtexture3d;
 		private ImageData hourglass3d;
 		private ImageData crosshair;
+		private ImageData crosshairbusy;
 		
 		// Used images
 		private Dictionary<long, long> usedimages;
@@ -92,6 +93,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData MissingTexture3D { get { return missingtexture3d; } }
 		public ImageData Hourglass3D { get { return hourglass3d; } }
 		public ImageData Crosshair3D { get { return crosshair; } }
+		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
 		internal ICollection<MatchingTextureSet> TextureSets { get { return texturesets; } }
 		internal OthersTextureSet OthersTextureSet { get { return othertextures; } }
 		
@@ -127,6 +129,8 @@ namespace CodeImp.DoomBuilder.Data
 			hourglass3d.LoadImage();
 			crosshair = new ResourceImage("Crosshair.png");
 			crosshair.LoadImage();
+			crosshairbusy = new ResourceImage("CrosshairBusy.png");
+			crosshairbusy.LoadImage();
 		}
 
 		// Disposer
@@ -143,6 +147,8 @@ namespace CodeImp.DoomBuilder.Data
 				hourglass3d = null;
 				crosshair.Dispose();
 				crosshair = null;
+				crosshairbusy.Dispose();
+				crosshairbusy = null;
 				
 				// Done
 				isdisposed = true;

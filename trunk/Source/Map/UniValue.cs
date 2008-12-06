@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -102,6 +103,63 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Methods
 
+		// Serialize / deserialize
+		internal void ReadWrite(IReadWriteStream s)
+		{
+			s.rwInt(ref type);
+			switch((UniversalType)type)
+			{
+				case UniversalType.AngleDegrees:
+				case UniversalType.Float:
+				{
+					float v = (float)value;
+					s.rwFloat(ref v);
+					value = v;
+					break;
+				}
+
+				case UniversalType.AngleRadians:
+				case UniversalType.Color:
+				case UniversalType.EnumBits:
+				case UniversalType.EnumOption:
+				case UniversalType.EnumStrings:
+				case UniversalType.Integer:
+				case UniversalType.LinedefTag:
+				case UniversalType.LinedefType:
+				case UniversalType.SectorEffect:
+				case UniversalType.SectorTag:
+				case UniversalType.ThingTag:
+				{
+					int v = (int)value;
+					s.rwInt(ref v);
+					value = v;
+					break;
+				}
+
+				case UniversalType.Boolean:
+				{
+					bool v = (bool)value;
+					s.rwBool(ref v);
+					value = v;
+					break;
+				}
+				
+				case UniversalType.Flat:
+				case UniversalType.String:
+				case UniversalType.Texture:
+				{
+					string v = (string)value;
+					s.rwString(ref v);
+					value = v;
+					break;
+				}
+				
+				default:
+					General.Fail("Unknown field type to read/write!");
+					break;
+			}
+		}
+		
 		// This validates a UDMF field name and returns the valid part
 		public static string ValidateName(string name)
 		{
