@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private const float ALLOWED_STUCK_DISTANCE = 3.0f;
+		private const float ALLOWED_STUCK_DISTANCE = 6.0f;
 
 		#endregion
 
