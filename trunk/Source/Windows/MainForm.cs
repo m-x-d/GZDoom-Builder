@@ -603,6 +603,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Refresh if needed
 			statusbar.Invalidate();
 			this.Update();
+			if(display.Enabled) display.Focus();
 		}
 		
 		// This updates the status icon
