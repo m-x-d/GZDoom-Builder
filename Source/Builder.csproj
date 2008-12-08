@@ -661,6 +661,7 @@
     <Compile Include="Rendering\RenderPasses.cs" />
     <Compile Include="VisualModes\VisualBlockEntry.cs" />
     <Compile Include="VisualModes\VisualPickResult.cs" />
+    <Compile Include="VisualModes\VisualThing.cs" />
     <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
     <None Include="Resources\ScriptConstant.xpm" />

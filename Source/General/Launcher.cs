@@ -291,6 +291,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Done
 			General.MainWindow.DisplayReady();
+			General.MainWindow.FocusDisplay();
 			Cursor.Current = oldcursor;
 		}
 
