@@ -268,6 +268,12 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		#region ================== Window
 		
+		// This sets the focus on the display for correct key input
+		public bool FocusDisplay()
+		{
+			return display.Focus();
+		}
+
 		// Window is first shown
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
@@ -603,7 +609,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Refresh if needed
 			statusbar.Invalidate();
 			this.Update();
-			if(display.Enabled) display.Focus();
 		}
 		
 		// This updates the status icon
