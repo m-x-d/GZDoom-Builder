@@ -76,8 +76,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		// Map
 		protected VisualBlockMap blockmap;
+		protected Dictionary<Thing, VisualThing> allthings;
 		protected Dictionary<Sector, VisualSector> allsectors;
 		protected List<VisualBlockEntry> visibleblocks;
+		protected List<VisualThing> visiblethings;
 		protected Dictionary<Sector, VisualSector> visiblesectors;
 		protected List<VisualGeometry> visiblegeometry;
 		
@@ -105,11 +107,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.camanglez = Angle2D.PI;
 			this.blockmap = new VisualBlockMap();
 			this.allsectors = new Dictionary<Sector, VisualSector>(General.Map.Map.Sectors.Count);
+			this.allthings = new Dictionary<Thing,VisualThing>(General.Map.Map.Things.Count);
 			this.visibleblocks = new List<VisualBlockEntry>();
 			this.visiblesectors = new Dictionary<Sector, VisualSector>(50);
 			this.visiblegeometry = new List<VisualGeometry>(200);
+			this.visiblethings = new List<VisualThing>(100);
 		}
-
+		
 		// Disposer
 		public override void Dispose()
 		{
@@ -122,7 +126,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 				visiblesectors = null;
 				visiblegeometry = null;
 				visibleblocks = null;
+				visiblethings = null;
 				allsectors = null;
+				allthings = null;
 				blockmap = null;
 				
 				// Done
@@ -199,9 +205,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			base.OnUndoEnd();
 
 			allsectors.Clear();
+			allthings.Clear();
 			visiblesectors.Clear();
 			visibleblocks.Clear();
 			visiblegeometry.Clear();
+			visiblethings.Clear();
 			
 			// Make new blockmap
 			if(blockmap != null)
@@ -230,10 +238,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			base.OnRedoEnd();
 
 			allsectors.Clear();
+			allthings.Clear();
 			visiblesectors.Clear();
 			visibleblocks.Clear();
 			visiblegeometry.Clear();
-
+			visiblethings.Clear();
+			
 			// Make new blockmap
 			if(blockmap != null)
 			{
@@ -335,7 +345,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 
 		#region ================== Visibility Culling
-
+		
 		// This preforms visibility culling
 		private void DoCulling()
 		{
@@ -349,8 +359,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Fill visiblity collections
 			visiblesectors = new Dictionary<Sector, VisualSector>(visiblesectors.Count);
 			visiblegeometry = new List<VisualGeometry>(visiblegeometry.Capacity);
+			visiblethings = new List<VisualThing>(visiblethings.Capacity);
 			foreach(VisualBlockEntry block in visibleblocks)
 			{
+				// Lines
 				foreach(Linedef ld in block.Lines)
 				{
 					// Line not already processed?
@@ -358,7 +370,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					{
 						// Add line if not added yet
 						visiblelines.Add(ld, ld);
-
+						
 						// Which side of the line is the camera on?
 						if(ld.SideOfLine(campos2d) < 0)
 						{
@@ -372,8 +384,27 @@ namespace CodeImp.DoomBuilder.VisualModes
 						}
 					}
 				}
+				
+				// Things
+				foreach(Thing t in block.Things)
+				{
+					VisualThing vt;
+					
+					if(allthings.ContainsKey(t))
+					{
+						vt = allthings[t];
+					}
+					else
+					{
+						// Create new visual thing
+						vt = CreateVisualThing(t);
+						allthings.Add(t, vt);
+					}
+					
+					visiblethings.Add(vt);
+				}
 			}
-
+			
 			// Find camera sector
 			Linedef nld = MapSet.NearestLinedef(visiblelines.Values, campos2d);
 			if(nld != null)
@@ -419,7 +450,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private void ProcessSidedefCulling(Sidedef sd)
 		{
 			VisualSector vs;
-
+			
 			// Find the visualsector and make it if needed
 			if(allsectors.ContainsKey(sd.Sector))
 			{
@@ -432,7 +463,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				vs = CreateVisualSector(sd.Sector);
 				allsectors.Add(sd.Sector, vs);
 			}
-
+			
 			// Add to visible sectors if not added yet
 			if(!visiblesectors.ContainsKey(sd.Sector))
 			{
@@ -475,7 +506,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			Vector3D delta = to - from;
 			
 			// Setup no result
-			result.geometry = null;
+			result.picked = null;
 			result.hitpos = new Vector3D();
 			result.u_ray = 1.0f;
 			
@@ -485,14 +516,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Make collections
 			Dictionary<Linedef, Linedef> lines = new Dictionary<Linedef, Linedef>(blocks.Count * 10);
 			Dictionary<Sector, VisualSector> sectors = new Dictionary<Sector, VisualSector>(blocks.Count * 10);
-			List<VisualGeometry> potentialgeometry = new List<VisualGeometry>(blocks.Count * 10);
+			List<IVisualPickable> pickables = new List<IVisualPickable>(blocks.Count * 10);
 			
 			// Add geometry from the camera sector
 			if((camsector != null) && allsectors.ContainsKey(camsector))
 			{
 				VisualSector vs = allsectors[camsector];
 				sectors.Add(camsector, vs);
-				potentialgeometry.AddRange(vs.FixedGeometry);
+				foreach(VisualGeometry g in vs.FixedGeometry) pickables.Add(g);
 			}
 			
 			// Go for all lines to see which ones we intersect
@@ -531,16 +562,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 									if(!sectors.ContainsKey(ld.Front.Sector))
 									{
 										sectors.Add(ld.Front.Sector, vs);
-										potentialgeometry.AddRange(vs.FixedGeometry);
+										foreach(VisualGeometry g in vs.FixedGeometry) pickables.Add(g);
 									}
 									
 									// Add sidedef if on the front side
 									if(side < 0.0f)
 									{
-										int previndex = potentialgeometry.Count;
-										potentialgeometry.AddRange(vs.GetSidedefGeometry(ld.Front));
-										for(int i = previndex; i < potentialgeometry.Count; i++)
-											potentialgeometry[i].SetPickResults(intersect, u);
+										List<VisualGeometry> sidedefgeo = vs.GetSidedefGeometry(ld.Front);
+										foreach(VisualGeometry g in sidedefgeo)
+										{
+											g.SetPickResults(intersect, u);
+											pickables.Add(g);
+										}
 									}
 								}
 							}
@@ -557,16 +590,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 									if(!sectors.ContainsKey(ld.Back.Sector))
 									{
 										sectors.Add(ld.Back.Sector, vs);
-										potentialgeometry.AddRange(vs.FixedGeometry);
+										foreach(VisualGeometry g in vs.FixedGeometry) pickables.Add(g);
 									}
 
 									// Add sidedef if on the front side
 									if(side > 0.0f)
 									{
-										int previndex = potentialgeometry.Count;
-										potentialgeometry.AddRange(vs.GetSidedefGeometry(ld.Back));
-										for(int i = previndex; i < potentialgeometry.Count; i++)
-											potentialgeometry[i].SetPickResults(intersect, u);
+										List<VisualGeometry> sidedefgeo = vs.GetSidedefGeometry(ld.Back);
+										foreach(VisualGeometry g in sidedefgeo)
+										{
+											g.SetPickResults(intersect, u);
+											pickables.Add(g);
+										}
 									}
 								}
 							}
@@ -580,24 +615,24 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// This is still too much for accurate intersection testing, so we do a fast reject pass first.
 			Vector3D direction = to - from;
 			direction = direction.GetNormal();
-			List<VisualGeometry> likelygeometry = new List<VisualGeometry>(potentialgeometry.Count);
-			foreach(VisualGeometry g in potentialgeometry)
+			List<IVisualPickable> potentialpicks = new List<IVisualPickable>(pickables.Count);
+			foreach(IVisualPickable p in pickables)
 			{
-				if(g.PickFastReject(from, to, direction)) likelygeometry.Add(g);
+				if(p.PickFastReject(from, to, direction)) potentialpicks.Add(p);
 			}
 			
 			// Now we do an accurate intersection test for all resulting geometry
 			// We keep only the closest hit!
-			foreach(VisualGeometry g in likelygeometry)
+			foreach(IVisualPickable p in potentialpicks)
 			{
 				float u = result.u_ray;
-				if(g.PickAccurate(from, to, direction, ref u))
+				if(p.PickAccurate(from, to, direction, ref u))
 				{
 					// Closer than previous find?
 					if((u > 0.0f) && (u < result.u_ray))
 					{
 						result.u_ray = u;
-						result.geometry = g;
+						result.picked = p;
 					}
 				}
 			}
@@ -615,6 +650,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		// This creates a visual sector
 		protected abstract VisualSector CreateVisualSector(Sector s);
+
+		// This creates a visual thing
+		protected abstract VisualThing CreateVisualThing(Thing t);
 		
 		// This returns a visual sector
 		protected VisualSector GetVisualSector(Sector s)
@@ -632,6 +670,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected virtual void FillBlockMap()
 		{
 			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
+			blockmap.AddThingsSet(General.Map.Map.Things);
 		}
 		
 		// Processing

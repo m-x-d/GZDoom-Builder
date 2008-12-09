@@ -109,6 +109,7 @@
     <Compile Include="VisualModes\BaseVisualSector.cs" />
     <Compile Include="ClassicModes\DragVerticesMode.cs" />
     <Compile Include="ClassicModes\LinedefsMode.cs" />
+    <Compile Include="VisualModes\BaseVisualThing.cs" />
     <Compile Include="VisualModes\VisualCeiling.cs" />
     <Compile Include="VisualModes\VisualFloor.cs" />
     <Compile Include="VisualModes\VisualLower.cs" />

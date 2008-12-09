@@ -44,21 +44,24 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		// Members
 		private List<Linedef> lines;
+		private List<Thing> things;
 		
 		#endregion
-
+		
 		#region ================== Properties
 		
 		public List<Linedef> Lines { get { return lines; } }
+		public List<Thing> Things { get { return things; } }
 		
 		#endregion
 		
 		#region ================== Constructor
-
+		
 		// Constructor for empty block
 		internal VisualBlockEntry()
 		{
-			lines = new List<Linedef>();
+			lines = new List<Linedef>(2);
+			things = new List<Thing>(2);
 		}
 		
 		#endregion
