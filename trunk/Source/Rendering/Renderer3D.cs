@@ -73,7 +73,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		// to be rendered with the associated ImageData.
 		// The BinaryHeap sorts the geometry by sector to minimize stream switchs.
 		private Dictionary<ImageData, BinaryHeap<VisualGeometry>>[] geometry;
-		
+
+		// Things to be rendered.
+		// Each Dictionary in the array is a render pass.
+		// Each VisualThing is inserted in the Dictionary by their texture image.
+		private Dictionary<ImageData, List<VisualThing>>[] things;
+
 		#endregion
 
 		#region ================== Properties
@@ -210,9 +215,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			view3d = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));
 
 			// Make the billboard matrix
-			billboard = Matrix.RotationYawPitchRoll(0f, anglexy, anglez - Angle2D.PI);
+			Vector3D lookat2d = new Vector3D(lookat.x, lookat.y, 0.0f);
+			Vector3D campos2d = new Vector3D(pos.x, pos.y, 0.0f);
+			Vector3D delta2d = lookat2d - campos2d;
+			billboard = Matrix.Billboard(D3DDevice.V3(lookat2d), D3DDevice.V3(campos2d), new Vector3(0f, 0f, 1f), D3DDevice.V3(delta2d.GetNormal()));
 		}
-
+		
 		// This creates 2D view matrix
 		private void CreateMatrices2D()
 		{
@@ -287,7 +295,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Make collection
 			geometry = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>[RENDER_PASSES];
-			for(int i = 0; i < RENDER_PASSES; i++) geometry[i] = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>();
+			things = new Dictionary<ImageData, List<VisualThing>>[RENDER_PASSES];
+			for(int i = 0; i < RENDER_PASSES; i++)
+			{
+				geometry[i] = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>();
+				things[i] = new Dictionary<ImageData, List<VisualThing>>();
+			}
 		}
 
 		// This ends rendering world geometry
@@ -307,17 +320,20 @@ namespace CodeImp.DoomBuilder.Rendering
 			ApplyMatrices3D();
 			
 			// SOLID PASS
+			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Solid);
 			graphics.Shaders.World3D.EndPass();
 
 			// MASK PASS
+			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Mask);
 			graphics.Shaders.World3D.EndPass();
 
 			// ALPHA PASS
+			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
@@ -328,6 +344,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.EndPass();
 
 			// ADDITIVE PASS
+			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Additive);
@@ -345,10 +362,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void RenderSinglePass(int pass)
 		{
 			// Get geometry for this pass
-			Dictionary<ImageData, BinaryHeap<VisualGeometry>> geo = geometry[pass];
+			Dictionary<ImageData, BinaryHeap<VisualGeometry>> geopass = geometry[pass];
 			
 			// Render the geometry collected
-			foreach(KeyValuePair<ImageData, BinaryHeap<VisualGeometry>> group in geo)
+			foreach(KeyValuePair<ImageData, BinaryHeap<VisualGeometry>> group in geopass)
 			{
 				ImageData curtexture;
 
@@ -399,6 +416,54 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 				}
 			}
+
+			// Get things for this pass
+			Dictionary<ImageData, List<VisualThing>> thingspass = things[pass];
+			
+			// Render things collected
+			foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
+			{
+				ImageData curtexture;
+
+				// What texture to use?
+				if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
+					curtexture = group.Key;
+				else
+					curtexture = General.Map.Data.Hourglass3D;
+
+				// Create Direct3D texture if still needed
+				if((curtexture.Texture == null) || curtexture.Texture.Disposed)
+					curtexture.CreateTexture();
+
+				// Apply texture
+				graphics.Device.SetTexture(0, curtexture.Texture);
+				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
+				graphics.Shaders.World3D.ApplySettings();
+
+				// Render all things with this texture
+				foreach(VisualThing t in group.Value)
+				{
+					// Update buffer if needed
+					if(t.NeedsUpdateGeo) t.Update();
+
+					// Only do this sector when a vertexbuffer is created
+					if(t.GeometryBuffer != null)
+					{
+						// Create the matrix for positioning / rotation
+						Matrix transform = t.Orientation;
+						if(t.Billboard) transform = Matrix.Multiply(transform, billboard);
+						transform = Matrix.Multiply(transform, t.Position);
+						graphics.Device.SetTransform(TransformState.World, transform);
+						graphics.Shaders.World3D.ApplySettings();
+						
+						// Apply buffer
+						graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
+
+						// Render!
+						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
+					}
+				}
+			}
 		}
 		
 		// This finishes rendering
@@ -414,7 +479,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Rendering
 		
 		// This collects a visual sector's geometry for rendering
-		public void AddGeometry(VisualGeometry g)
+		public void AddSectorGeometry(VisualGeometry g)
 		{
 			// Must have a texture!
 			if(g.Texture != null)
@@ -425,9 +490,27 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Create texture group
 					geometry[g.RenderPassInt].Add(g.Texture, new BinaryHeap<VisualGeometry>());
 				}
-
+				
 				// Add geometry to texture group
 				geometry[g.RenderPassInt][g.Texture].Add(g);
+			}
+		}
+
+		// This collects a visual sector's geometry for rendering
+		public void AddThingGeometry(VisualThing t)
+		{
+			// Must have a texture!
+			if(t.Texture != null)
+			{
+				// Texture group not yet collected?
+				if(!things[t.RenderPassInt].ContainsKey(t.Texture))
+				{
+					// Create texture group
+					things[t.RenderPassInt].Add(t.Texture, new List<VisualThing>());
+				}
+
+				// Add geometry to texture group
+				things[t.RenderPassInt][t.Texture].Add(t);
 			}
 		}
 

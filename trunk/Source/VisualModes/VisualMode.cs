@@ -648,43 +648,71 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Processing
 
-		// This creates a visual sector
+		/// <summary>
+		/// Implement this to create an instance of your VisualSector implementation.
+		/// </summary>
 		protected abstract VisualSector CreateVisualSector(Sector s);
 
-		// This creates a visual thing
+		/// <summary>
+		/// Implement this to create an instance of your VisualThing implementation.
+		/// </summary>
 		protected abstract VisualThing CreateVisualThing(Thing t);
 		
-		// This returns a visual sector
+		/// <summary>
+		/// This returns the VisualSector for the given Sector.
+		/// </summary>
 		protected VisualSector GetVisualSector(Sector s)
 		{
 			return allsectors[s];
 		}
+		
+		/// <summary>
+		/// This returns the VisualThing for the given Thing.
+		/// </summary>
+		protected VisualThing GetVisualThing(Thing t)
+		{
+			return allthings[t];
+		}
 
-		// This returns true when a visual sector has been created for the specified sector
+		/// <summary>
+		/// Returns True when a VisualSector has been created for the specified Sector.
+		/// </summary>
 		protected bool VisualSectorExists(Sector s)
 		{
 			return allsectors.ContainsKey(s);
 		}
 
-		// This fills the blockmap
+		/// <summary>
+		/// Returns True when a VisualThing has been created for the specified Thing.
+		/// </summary>
+		protected bool VisualThingExists(Thing t)
+		{
+			return allthings.ContainsKey(t);
+		}
+
+		/// <summary>
+		/// This is called when the blockmap needs to be refilled, because it was invalidated.
+		/// This usually happens when geometry is changed by undo, redo, cut or paste actions.
+		/// Lines and Things are added to the block map by the base implementation.
+		/// </summary>
 		protected virtual void FillBlockMap()
 		{
 			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
 			blockmap.AddThingsSet(General.Map.Map.Things);
 		}
 		
-		// Processing
+		/// <summary>
+		/// While this mode is active, this is called continuously to process whatever needs processing.
+		/// </summary>
 		public override void OnProcess(double deltatime)
 		{
-			Vector3D camvec;
-			Vector3D camvecstrafe;
 			double multiplier;
 			
 			base.OnProcess(deltatime);
 			
 			// Calculate camera direction vectors
-			camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);
-			camvecstrafe = Vector3D.FromAngleXY(camanglexy + Angle2D.PIHALF);
+			Vector3D camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);
+			Vector3D camvecstrafe = Vector3D.FromAngleXY(camanglexy + Angle2D.PIHALF);
 			
 			// Move the camera
 			if(doublespeed) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
@@ -715,7 +743,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			// Render all visible sectors
 			foreach(VisualGeometry g in visiblegeometry)
-				renderer.AddGeometry(g);
+				renderer.AddSectorGeometry(g);
 		}
 		
 		#endregion

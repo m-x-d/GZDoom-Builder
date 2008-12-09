@@ -40,7 +40,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
-	public abstract class VisualThing : IVisualPickable, ID3DResource, IComparable<VisualThing>
+	public abstract class VisualThing : IVisualPickable, ID3DResource
 	{
 		#region ================== Constants
 		
@@ -55,12 +55,16 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private ImageData texture;
 		
 		// Geometry
-		private WorldVertex[] spritevertices;
-		private WorldVertex[] cagevertices;
+		private WorldVertex[] vertices;
 		private VertexBuffer geobuffer;
 		private bool updategeo;
-		private int spritetriangles;
-		private int cagetriangles;
+		private int triangles;
+		
+		// Rendering
+		private int renderpass;
+		private Matrix orientation;
+		private Matrix position;
+		private bool billboard;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -71,11 +75,35 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		internal VertexBuffer GeometryBuffer { get { return geobuffer; } }
 		internal bool NeedsUpdateGeo { get { return updategeo; } }
-		internal int SpriteTriangles { get { return spritetriangles; } }
-		internal int CageTriangles { get { return cagetriangles; } }
-		internal int CageOffset { get { return spritevertices.Length; } }
-		
+		internal int Triangles { get { return triangles; } }
+		internal int RenderPassInt { get { return renderpass; } }
+		internal Matrix Orientation { get { return orientation; } }
+		internal Matrix Position { get { return position; } }
+
+		/// <summary>
+		/// Set to True to use billboarding for this thing. When using billboarding,
+		/// the geometry will be rotated on the XY plane to face the camera.
+		/// </summary>
+		public bool Billboard { get { return billboard; } set { billboard = value; } }
+
+		/// <summary>
+		/// Returns the Thing that this VisualThing is created for.
+		/// </summary>
 		public Thing Thing { get { return thing; } }
+
+		/// <summary>
+		/// Render pass in which this geometry must be rendered. Default is Solid.
+		/// </summary>
+		public RenderPass RenderPass { get { return (RenderPass)renderpass; } set { renderpass = (int)value; } }
+		
+		/// <summary>
+		/// Image to use as texture on the geometry.
+		/// </summary>
+		public ImageData Texture { get { return texture; } set { texture = value; } }
+
+		/// <summary>
+		/// Disposed or not?
+		/// </summary>
 		public bool IsDisposed { get { return isdisposed; } }
 		
 		#endregion
@@ -87,6 +115,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			// Initialize
 			this.thing = t;
+			this.renderpass = (int)RenderPass.Mask;
+			this.billboard = true;
+			this.orientation = Matrix.Identity;
 			
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
@@ -131,30 +162,30 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Make new geometry
 			//Update();
 		}
-		
-		// This compares for sorting by sprite
-		public int CompareTo(VisualThing other)
+
+		/// <summary>
+		/// This sets the position to use for the thing geometry.
+		/// </summary>
+		public void SetPosition(Vector3D pos)
 		{
-			return Math.Sign(this.texture.LongName - other.texture.LongName);
+			position = Matrix.Translation(D3DDevice.V3(pos));
+		}
+
+		/// <summary>
+		/// This sets the orientation to use for the thing geometry. When using this, you may want to turn off billboarding.
+		/// </summary>
+		public void SetOrientation(Vector3D angles)
+		{
+			orientation = Matrix.RotationYawPitchRoll(angles.z, angles.y, angles.x);
 		}
 		
 		// This sets the vertices for the thing sprite
-		protected void SetSpriteVertices(ICollection<WorldVertex> verts)
+		protected void SetVertices(ICollection<WorldVertex> verts)
 		{
 			// Copy vertices
-			spritevertices = new WorldVertex[verts.Count];
-			verts.CopyTo(spritevertices, 0);
-			spritetriangles = spritevertices.Length / 3;
-			updategeo = true;
-		}
-		
-		// This sets the vertices for the thing cage
-		protected void SetCageVertices(ICollection<WorldVertex> verts)
-		{
-			// Copy vertices
-			cagevertices = new WorldVertex[verts.Count];
-			verts.CopyTo(cagevertices, 0);
-			cagetriangles = cagevertices.Length / 3;
+			vertices = new WorldVertex[verts.Count];
+			verts.CopyTo(vertices, 0);
+			triangles = vertices.Length / 3;
 			updategeo = true;
 		}
 
@@ -165,20 +196,16 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(geobuffer != null) geobuffer.Dispose();
 			geobuffer = null;
 			
-			// Count the number of vertices there are
-			int numverts = spritevertices.Length + cagevertices.Length;
-			
 			// Any vertics?
-			if(numverts > 0)
+			if(vertices.Length > 0)
 			{
 				// Make a new buffer
-				geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * numverts,
+				geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vertices.Length,
 											 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 				
 				// Fill the buffer
-				DataStream bufferstream = geobuffer.Lock(0, WorldVertex.Stride * numverts, LockFlags.Discard);
-				bufferstream.WriteRange<WorldVertex>(spritevertices);
-				bufferstream.WriteRange<WorldVertex>(cagevertices);
+				DataStream bufferstream = geobuffer.Lock(0, WorldVertex.Stride * vertices.Length, LockFlags.Discard);
+				bufferstream.WriteRange<WorldVertex>(vertices);
 				geobuffer.Unlock();
 				bufferstream.Dispose();
 			}
