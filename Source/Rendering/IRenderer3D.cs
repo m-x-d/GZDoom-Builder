@@ -54,7 +54,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		void FinishGeometry();
 
 		// Rendering methods
-		void AddGeometry(VisualGeometry g);
+		void AddSectorGeometry(VisualGeometry g);
+		void AddThingGeometry(VisualThing t);
 		void RenderCrosshair();
 		void SetFogMode(bool usefog);
 		void SetCrosshairBusy(bool busy);
