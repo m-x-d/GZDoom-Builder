@@ -69,6 +69,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal List<VisualGeometry> AllGeometry { get { return allgeometry; } }
 		internal VertexBuffer GeometryBuffer { get { return geobuffer; } }
 		internal bool NeedsUpdateGeo { get { return updategeo; } set { updategeo |= value; } }
+		
 		public bool IsDisposed { get { return isdisposed; } }
 		public Sector Sector { get { return sector; } }
 		

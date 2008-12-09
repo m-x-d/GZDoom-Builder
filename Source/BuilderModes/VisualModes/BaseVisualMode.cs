@@ -100,6 +100,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return new BaseVisualSector(s);
 		}
 		
+		// This creates a visual thing
+		protected override VisualThing CreateVisualThing(Thing t)
+		{
+			return new BaseVisualThing(t);
+		}
+		
 		// This locks the target so that it isn't changed until unlocked
 		public void LockTarget()
 		{
@@ -122,24 +128,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			VisualPickResult newtarget = PickObject(start, start + delta);
 			
 			// Object changed?
-			if(newtarget.geometry != target.geometry)
+			if(newtarget.picked != target.picked)
 			{
 				// Any result?
-				if(newtarget.geometry != null)
+				if(newtarget.picked != null)
 				{
-					if(newtarget.geometry.Sidedef != null)
+					VisualGeometry prevgeo = null;
+					if((target.picked != null) && (target.picked is VisualGeometry))
+						prevgeo = (target.picked as VisualGeometry);
+					
+					// Geometry picked?
+					if(newtarget.picked is VisualGeometry)
 					{
-						if((target.geometry != null) && (target.geometry.Sidedef == null)) General.Interface.HideInfo();
-						General.Interface.ShowLinedefInfo(newtarget.geometry.Sidedef.Line);
-					}
-					else if(newtarget.geometry.Sidedef == null)
-					{
-						if((target.geometry == null) || (target.geometry.Sidedef != null)) General.Interface.HideInfo();
-						General.Interface.ShowSectorInfo(newtarget.geometry.Sector.Sector);
-					}
-					else
-					{
-						General.Interface.HideInfo();
+						VisualGeometry pickedgeo = (newtarget.picked as VisualGeometry);
+						
+						if(pickedgeo.Sidedef != null)
+						{
+							if((prevgeo != null) && (prevgeo.Sidedef == null)) General.Interface.HideInfo();
+							General.Interface.ShowLinedefInfo(pickedgeo.Sidedef.Line);
+						}
+						else if(pickedgeo.Sidedef == null)
+						{
+							if((prevgeo == null) || (prevgeo.Sidedef != null)) General.Interface.HideInfo();
+							General.Interface.ShowSectorInfo(pickedgeo.Sector.Sector);
+						}
+						else
+						{
+							General.Interface.HideInfo();
+						}
 					}
 				}
 				else
@@ -155,9 +171,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the target's height
 		private void ChangeTargetHeight(int amount)
 		{
-			if(target.geometry is BaseVisualGeometrySector)
+			if(target.picked is BaseVisualGeometrySector)
 			{
-				BaseVisualGeometrySector vgs = (target.geometry as BaseVisualGeometrySector);
+				BaseVisualGeometrySector vgs = (target.picked as BaseVisualGeometrySector);
 				vgs.ChangeHeight(amount);
 
 				// Rebuild sector
@@ -240,25 +256,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("visualselect", BaseAction = true)]
 		public void BeginSelect()
 		{
-			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnSelectBegin();
+			if(target.picked != null) (target.picked as BaseVisualGeometry).OnSelectBegin();
 		}
 
 		[EndAction("visualselect", BaseAction = true)]
 		public void EndSelect()
 		{
-			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnSelectEnd();
+			if(target.picked != null) (target.picked as BaseVisualGeometry).OnSelectEnd();
 		}
 
 		[BeginAction("visualedit", BaseAction = true)]
 		public void BeginEdit()
 		{
-			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnEditBegin();
+			if(target.picked != null) (target.picked as BaseVisualGeometry).OnEditBegin();
 		}
 
 		[EndAction("visualedit", BaseAction = true)]
 		public void EndEdit()
 		{
-			if(target.geometry != null) (target.geometry as BaseVisualGeometry).OnEditEnd();
+			if(target.picked != null) (target.picked as BaseVisualGeometry).OnEditEnd();
 		}
 
 		[BeginAction("raisesector8")]

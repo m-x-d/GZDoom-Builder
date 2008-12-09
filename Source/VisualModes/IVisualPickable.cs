@@ -24,25 +24,25 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
+using System.ComponentModel;
+using CodeImp.DoomBuilder.Map;
+using SlimDX.Direct3D9;
 using SlimDX;
+using CodeImp.DoomBuilder.Geometry;
+using System.Drawing.Imaging;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
-	public struct VisualPickResult
+	public interface IVisualPickable
 	{
-		// Members
-		public IVisualPickable picked;
-		public float u_ray;
-		public Vector3D hitpos;
+		bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir);
+		bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray);
 	}
 }

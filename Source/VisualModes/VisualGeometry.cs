@@ -40,7 +40,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
-	public abstract class VisualGeometry : IComparable<VisualGeometry>
+	public abstract class VisualGeometry : IVisualPickable, IComparable<VisualGeometry>
 	{
 		#region ================== Variables
 

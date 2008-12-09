@@ -28,21 +28,40 @@ using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
-using System.Drawing;
-using SlimDX;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.VisualModes
+namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public struct VisualPickResult
+	internal class BaseVisualThing : VisualThing
 	{
-		// Members
-		public IVisualPickable picked;
-		public float u_ray;
-		public Vector3D hitpos;
+		#region ================== Constants
+
+		#endregion
+
+		#region ================== Variables
+
+		#endregion
+
+		#region ================== Properties
+
+		#endregion
+
+		#region ================== Constructor / Disposer
+
+		// Constructor
+		public BaseVisualThing(Thing t) : base(t)
+		{
+			
+		}
+
+		#endregion
+
+		#region ================== Methods
+
+		#endregion
 	}
 }

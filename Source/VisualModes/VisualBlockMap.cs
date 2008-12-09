@@ -271,6 +271,20 @@ namespace CodeImp.DoomBuilder.VisualModes
 			return entries;
 		}
 
+		// This puts a thing in the blockmap
+		public void AddThingsSet(ICollection<Thing> things)
+		{
+			foreach(Thing t in things) AddThing(t);
+		}
+		
+		// This puts a thing in the blockmap
+		public void AddThing(Thing t)
+		{
+			Point p = GetBlockCoordinates(t.Position);
+			VisualBlockEntry block = GetBlock(p);
+			block.Things.Add(t);
+		}
+		
 		// This puts a whole set of linedefs in the blocks they cross
 		public void AddLinedefsSet(ICollection<Linedef> lines)
 		{
