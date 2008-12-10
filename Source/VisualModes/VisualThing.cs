@@ -118,6 +118,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.renderpass = (int)RenderPass.Mask;
 			this.billboard = true;
 			this.orientation = Matrix.Identity;
+			this.position = Matrix.Identity;
 			
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
@@ -188,9 +189,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 			triangles = vertices.Length / 3;
 			updategeo = true;
 		}
-
-		// This updates the visual sector
-		public void Update()
+		
+		// This updates the visual thing
+		public virtual void Update()
 		{
 			// Trash geometry buffer
 			if(geobuffer != null) geobuffer.Dispose();

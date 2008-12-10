@@ -174,7 +174,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
-
+			DisposeVisuals();
+			
 			// Do we have a 3D Mode thing?
 			if(modething != null)
 			{
@@ -203,9 +204,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnUndoEnd()
 		{
 			base.OnUndoEnd();
-
-			allsectors.Clear();
-			allthings.Clear();
+			
+			DisposeVisuals();
 			visiblesectors.Clear();
 			visibleblocks.Clear();
 			visiblegeometry.Clear();
@@ -236,9 +236,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnRedoEnd()
 		{
 			base.OnRedoEnd();
-
-			allsectors.Clear();
-			allthings.Clear();
+			
+			DisposeVisuals();
 			visiblesectors.Clear();
 			visibleblocks.Clear();
 			visiblegeometry.Clear();
@@ -398,10 +397,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 					{
 						// Create new visual thing
 						vt = CreateVisualThing(t);
-						allthings.Add(t, vt);
+						if(vt != null) allthings.Add(t, vt);
 					}
 					
-					visiblethings.Add(vt);
+					if(vt != null)
+					{
+						visiblethings.Add(vt);
+					}
 				}
 			}
 			
@@ -461,18 +463,21 @@ namespace CodeImp.DoomBuilder.VisualModes
 			{
 				// Make new visualsector
 				vs = CreateVisualSector(sd.Sector);
-				allsectors.Add(sd.Sector, vs);
+				if(vs != null) allsectors.Add(sd.Sector, vs);
 			}
 			
-			// Add to visible sectors if not added yet
-			if(!visiblesectors.ContainsKey(sd.Sector))
+			if(vs != null)
 			{
-				visiblesectors.Add(sd.Sector, vs);
-				visiblegeometry.AddRange(vs.FixedGeometry);
+				// Add to visible sectors if not added yet
+				if(!visiblesectors.ContainsKey(sd.Sector))
+				{
+					visiblesectors.Add(sd.Sector, vs);
+					visiblegeometry.AddRange(vs.FixedGeometry);
+				}
+				
+				// Add sidedef geometry
+				visiblegeometry.AddRange(vs.GetSidedefGeometry(sd));
 			}
-			
-			// Add sidedef geometry
-			visiblegeometry.AddRange(vs.GetSidedefGeometry(sd));
 		}
 
 		// This returns the camera sector from linedef
@@ -647,7 +652,20 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 
 		#region ================== Processing
-
+		
+		// This disposes all visual sectors and things
+		private void DisposeVisuals()
+		{
+			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
+				vs.Value.Dispose();
+				
+			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
+				vt.Value.Dispose();
+				
+			allsectors.Clear();
+			allthings.Clear();
+		}
+		
 		/// <summary>
 		/// Implement this to create an instance of your VisualSector implementation.
 		/// </summary>
@@ -744,6 +762,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Render all visible sectors
 			foreach(VisualGeometry g in visiblegeometry)
 				renderer.AddSectorGeometry(g);
+			
+			// Render all visible things
+			foreach(VisualThing t in visiblethings)
+				renderer.AddThingGeometry(t);
+				
+			General.WriteLogLine("Things: " + visiblethings.Count);
 		}
 		
 		#endregion

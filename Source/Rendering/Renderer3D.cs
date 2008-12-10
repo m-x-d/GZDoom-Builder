@@ -54,8 +54,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Matrix projection;
 		private Matrix view3d;
 		private Matrix billboard;
-		private Matrix viewproj;
+		private Matrix worldviewproj;
 		private Matrix view2d;
+		private Matrix world;
 		
 		// Window size
 		private Size windowsize;
@@ -213,12 +214,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Make the view matrix
 			view3d = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));
-
+			
 			// Make the billboard matrix
-			Vector3D lookat2d = new Vector3D(lookat.x, lookat.y, 0.0f);
-			Vector3D campos2d = new Vector3D(pos.x, pos.y, 0.0f);
-			Vector3D delta2d = lookat2d - campos2d;
-			billboard = Matrix.Billboard(D3DDevice.V3(lookat2d), D3DDevice.V3(campos2d), new Vector3(0f, 0f, 1f), D3DDevice.V3(delta2d.GetNormal()));
+			billboard = Matrix.RotationZ(anglexy + Angle2D.PI);
 		}
 		
 		// This creates 2D view matrix
@@ -233,8 +231,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This applies the matrices
 		private void ApplyMatrices3D()
 		{
-			viewproj = view3d * projection;
-			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			worldviewproj = world * view3d * projection;
+			graphics.Shaders.World3D.WorldViewProj = worldviewproj;
+			graphics.Device.SetTransform(TransformState.World, world);
 			graphics.Device.SetTransform(TransformState.Projection, projection);
 			graphics.Device.SetTransform(TransformState.View, view3d);
 		}
@@ -242,7 +241,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets the appropriate view matrix
 		public void ApplyMatrices2D()
 		{
-			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			graphics.Device.SetTransform(TransformState.World, world);
 			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
 			graphics.Device.SetTransform(TransformState.View, view2d);
 		}
@@ -274,6 +273,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.RangeFogEnable, false);
 
 				// Matrices
+				world = Matrix.Identity;
 				ApplyMatrices3D();
 
 				// Create crosshair vertices
@@ -314,26 +314,25 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			graphics.Shaders.World3D.Begin();
-			graphics.Shaders.World3D.WorldViewProj = viewproj;
 
-			// Matrices
-			ApplyMatrices3D();
-			
 			// SOLID PASS
-			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			world = Matrix.Identity;
+			ApplyMatrices3D();
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Solid);
 			graphics.Shaders.World3D.EndPass();
 
 			// MASK PASS
-			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			world = Matrix.Identity;
+			ApplyMatrices3D();
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Mask);
 			graphics.Shaders.World3D.EndPass();
 
 			// ALPHA PASS
-			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			world = Matrix.Identity;
+			ApplyMatrices3D();
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
@@ -344,7 +343,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.EndPass();
 
 			// ADDITIVE PASS
-			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+			world = Matrix.Identity;
+			ApplyMatrices3D();
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
 			graphics.Shaders.World3D.BeginPass(0);
 			RenderSinglePass((int)RenderPass.Additive);
@@ -424,41 +424,41 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
 			{
 				ImageData curtexture;
-
+				
 				// What texture to use?
 				if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
 					curtexture = group.Key;
 				else
 					curtexture = General.Map.Data.Hourglass3D;
-
+				
 				// Create Direct3D texture if still needed
 				if((curtexture.Texture == null) || curtexture.Texture.Disposed)
 					curtexture.CreateTexture();
-
+				
 				// Apply texture
 				graphics.Device.SetTexture(0, curtexture.Texture);
 				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
 				graphics.Shaders.World3D.ApplySettings();
-
+				
 				// Render all things with this texture
 				foreach(VisualThing t in group.Value)
 				{
 					// Update buffer if needed
 					if(t.NeedsUpdateGeo) t.Update();
-
+					
 					// Only do this sector when a vertexbuffer is created
 					if(t.GeometryBuffer != null)
 					{
 						// Create the matrix for positioning / rotation
-						Matrix transform = t.Orientation;
-						if(t.Billboard) transform = Matrix.Multiply(transform, billboard);
-						transform = Matrix.Multiply(transform, t.Position);
-						graphics.Device.SetTransform(TransformState.World, transform);
+						world = t.Orientation;
+						if(t.Billboard) world = Matrix.Multiply(world, billboard);
+						world = Matrix.Multiply(world, t.Position);
+						ApplyMatrices3D();
 						graphics.Shaders.World3D.ApplySettings();
 						
 						// Apply buffer
 						graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
-
+						
 						// Render!
 						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
 					}
