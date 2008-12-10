@@ -237,20 +237,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
-		// After undo
-		public override void OnUndoEnd()
+		// After resources were reloaded
+		protected override void ResourcesReloaded()
 		{
-			base.OnUndoEnd();
+			base.ResourcesReloaded();
 			PickTarget();
 		}
-
-		// After redo
-		public override void OnRedoEnd()
-		{
-			base.OnRedoEnd();
-			PickTarget();
-		}
-
+		
 		#endregion
 
 		#region ================== Actions

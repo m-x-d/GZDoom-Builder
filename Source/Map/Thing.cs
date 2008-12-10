@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Map
 				mainlistitem.List.Remove(mainlistitem);
 
 				// Remove from sector
-				if(sector != null) sector.DetachThing(sectorlistitem);
+				//if(sector != null) sector.DetachThing(sectorlistitem);
 				
 				// Clean up
 				mainlistitem = null;
@@ -215,7 +215,7 @@ namespace CodeImp.DoomBuilder.Map
 			if((sector != null) && (newsector != sector))
 			{
 				// Remove from current sector
-				sector.DetachThing(sectorlistitem);
+				//sector.DetachThing(sectorlistitem);
 				sectorlistitem = null;
 				sector = null;
 			}
@@ -225,7 +225,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Attach to new sector
 				sector = newsector;
-				sectorlistitem = sector.AttachThing(this);
+				//sectorlistitem = sector.AttachThing(this);
 			}
 		}
 		

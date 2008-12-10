@@ -174,7 +174,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
-			DisposeVisuals();
+			
+			// Dispose
+			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
+				vs.Value.Dispose();
+
+			// Dispose
+			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
+				vt.Value.Dispose();	
 			
 			// Do we have a 3D Mode thing?
 			if(modething != null)
@@ -197,31 +204,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
-			
 			return base.OnUndoBegin();
 		}
 
 		public override void OnUndoEnd()
 		{
 			base.OnUndoEnd();
-			
-			DisposeVisuals();
-			visiblesectors.Clear();
-			visibleblocks.Clear();
-			visiblegeometry.Clear();
-			visiblethings.Clear();
-			
-			// Make new blockmap
-			if(blockmap != null)
-			{
-				blockmap.Dispose();
-				blockmap = new VisualBlockMap();
-				FillBlockMap();
-			}
-
-			// Visibility culling
-			DoCulling();
-			
+			ResourcesReloaded();
 			renderer.SetCrosshairBusy(false);
 		}
 
@@ -229,34 +218,22 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
-
 			return base.OnRedoBegin();
 		}
 
 		public override void OnRedoEnd()
 		{
 			base.OnRedoEnd();
-			
-			DisposeVisuals();
-			visiblesectors.Clear();
-			visibleblocks.Clear();
-			visiblegeometry.Clear();
-			visiblethings.Clear();
-			
-			// Make new blockmap
-			if(blockmap != null)
-			{
-				blockmap.Dispose();
-				blockmap = new VisualBlockMap();
-				FillBlockMap();
-			}
-
-			// Visibility culling
-			DoCulling();
-			
+			ResourcesReloaded();
 			renderer.SetCrosshairBusy(false);
 		}
 
+		public override void OnReloadResources()
+		{
+			base.OnReloadResources();
+			ResourcesReloaded();
+		}
+		
 		#endregion
 		
 		#region ================== Input
@@ -653,17 +630,37 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Processing
 		
-		// This disposes all visual sectors and things
-		private void DisposeVisuals()
+		/// <summary>
+		/// This disposes all resources and rebuilds the ones needed. 
+		/// This usually happens when geometry is changed by undo, redo, cut or paste actions.
+		/// </summary>
+		protected virtual void ResourcesReloaded()
 		{
+			// Dispose
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 				vs.Value.Dispose();
 				
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
 				vt.Value.Dispose();
 				
+			// Clear collections
 			allsectors.Clear();
 			allthings.Clear();
+			visiblesectors.Clear();
+			visibleblocks.Clear();
+			visiblegeometry.Clear();
+			visiblethings.Clear();
+			
+			// Make new blockmap
+			if(blockmap != null)
+			{
+				blockmap.Dispose();
+				blockmap = new VisualBlockMap();
+				FillBlockMap();
+			}
+
+			// Visibility culling (this re-creates the needed resources)
+			DoCulling();
 		}
 		
 		/// <summary>
@@ -679,34 +676,22 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// This returns the VisualSector for the given Sector.
 		/// </summary>
-		protected VisualSector GetVisualSector(Sector s)
-		{
-			return allsectors[s];
-		}
+		protected VisualSector GetVisualSector(Sector s) { return allsectors[s]; }
 		
 		/// <summary>
 		/// This returns the VisualThing for the given Thing.
 		/// </summary>
-		protected VisualThing GetVisualThing(Thing t)
-		{
-			return allthings[t];
-		}
+		protected VisualThing GetVisualThing(Thing t) { return allthings[t]; }
 
 		/// <summary>
 		/// Returns True when a VisualSector has been created for the specified Sector.
 		/// </summary>
-		protected bool VisualSectorExists(Sector s)
-		{
-			return allsectors.ContainsKey(s);
-		}
+		protected bool VisualSectorExists(Sector s) { return allsectors.ContainsKey(s); }
 
 		/// <summary>
 		/// Returns True when a VisualThing has been created for the specified Thing.
 		/// </summary>
-		protected bool VisualThingExists(Thing t)
-		{
-			return allthings.ContainsKey(t);
-		}
+		protected bool VisualThingExists(Thing t) { return allthings.ContainsKey(t); }
 
 		/// <summary>
 		/// This is called when the blockmap needs to be refilled, because it was invalidated.
@@ -766,23 +751,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Render all visible things
 			foreach(VisualThing t in visiblethings)
 				renderer.AddThingGeometry(t);
-				
-			General.WriteLogLine("Things: " + visiblethings.Count);
 		}
 		
 		#endregion
 
 		#region ================== Actions
-		
-		[EndAction("reloadresources", BaseAction = true)]
-		public virtual void ReloadResources()
-		{
-			// Trash all visual sectors, because they are no longer valid
-			foreach(KeyValuePair<Sector, VisualSector> s in allsectors) s.Value.Dispose();
-			allsectors.Clear();
-			visiblesectors.Clear();
-			visiblegeometry.Clear();
-		}
 
 		#endregion
 	}

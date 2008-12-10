@@ -259,8 +259,7 @@ namespace CodeImp.DoomBuilder.Windows
 			string asmname;
 			
 			this.Update();
-			General.Actions[(sender as ToolStripItem).Tag.ToString()].Begin();
-			General.Actions[(sender as ToolStripItem).Tag.ToString()].End();
+			General.Actions.InvokeAction((sender as ToolStripItem).Tag.ToString());
 			this.Update();
 		}
 		
@@ -1367,7 +1366,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			this.Update();
 			modeinfo = (EditModeInfo)((sender as ToolStripItem).Tag);
-			General.Actions[modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly)].Begin();
+			General.Actions.InvokeAction(modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly));
 			this.Update();
 		}
 
@@ -1795,7 +1794,7 @@ namespace CodeImp.DoomBuilder.Windows
 				General.Plugins.ProgramReconfigure();
 
 				// Reload resources if a map is open
-				if(General.Map != null) General.Map.ReloadResources();
+				if(General.Map != null) General.Actions.InvokeAction("builder_reloadresources");
 
 				// Redraw display
 				RedrawDisplay();
@@ -1825,11 +1824,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Map opened?
 				if(General.Map != null)
 				{
-					// Setup and reload stuff
+					// Reload resources!
 					if(General.Map.ScriptEditor != null) General.Map.ScriptEditor.Editor.RefreshSettings();
 					General.Map.Graphics.SetupSettings();
 					General.Map.UpdateConfiguration();
-					General.Map.ReloadResources();
+					General.Actions.InvokeAction("builder_reloadresources");
 				}
 				
 				// Redraw display

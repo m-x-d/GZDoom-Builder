@@ -204,6 +204,9 @@ namespace CodeImp.DoomBuilder.Editing
 		// Processing events
 		public virtual void OnProcess(double deltatime) { }
 		
+		// Generic events
+		public virtual void OnReloadResources() { }
+		
 		#endregion
 	}
 }

@@ -130,7 +130,6 @@ namespace CodeImp.DoomBuilder.Data
 					
 					// Done
 					usedinmap = false;
-					references = 0;
 					imagestate = ImageLoadState.None;
 					previewstate = ImageLoadState.None;
 					isdisposed = true;
