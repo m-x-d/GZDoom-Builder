@@ -399,6 +399,22 @@ namespace CodeImp.DoomBuilder.Actions
 				General.Settings.WriteSetting("shortcuts." + a.Key, a.Value.ShortcutKey);
 			}
 		}
+
+		// This invokes the Begin and End of the given action
+		public bool InvokeAction(string actionname)
+		{
+			if(Exists(actionname))
+			{
+				Action a = actions[actionname];
+				a.Begin();
+				a.End();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 		
 		#endregion
 

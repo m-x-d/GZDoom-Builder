@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#endregion
 		
-		#region ================== Constructor / Disposer
+		#region ================== Constructor / Setup
 		
 		// Constructor
 		public BaseVisualThing(Thing t) : base(t)
@@ -80,11 +80,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(sprite != null)
 			{
-				// Color to modulate sprite with (god knows what we could use this for)
-				PixelColor pc = new PixelColor(255, 255, 255, 255);
-				
 				// Find the sector in which the thing resides
 				Thing.DetermineSector();
+
+				PixelColor pc;
+				if(Thing.Sector != null)
+				{
+					// Use sector brightness for color shading
+					pc = new PixelColor(255, unchecked((byte)Thing.Sector.Brightness),
+											 unchecked((byte)Thing.Sector.Brightness),
+											 unchecked((byte)Thing.Sector.Brightness));
+				}
+				else
+				{
+					// Full brightness
+					pc = new PixelColor(255, 255, 255, 255);
+				}
 				
 				// Check if the texture is loaded
 				isloaded = sprite.IsImageLoaded;
@@ -148,7 +159,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!IsDisposed)
 			{
-				if(sprite != null) sprite.RemoveReference();
+				if(sprite != null)
+				{
+					sprite.RemoveReference();
+					sprite = null;
+				}
 			}
 			
 			base.Dispose();

@@ -1293,8 +1293,11 @@ namespace CodeImp.DoomBuilder
 			// Re-link the background image
 			grid.LinkBackground();
 			
-			// Inform all plugins that the resource are reloaded
+			// Inform all plugins that the resources are reloaded
 			General.Plugins.ReloadResources();
+			
+			// Inform editing mode that the resources are reloaded
+			if(General.Editing.Mode != null) General.Editing.Mode.OnReloadResources();
 			
 			// Reset status
 			General.MainWindow.DisplayStatus(oldstatus);

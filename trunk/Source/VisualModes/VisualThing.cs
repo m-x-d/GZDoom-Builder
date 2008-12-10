@@ -193,26 +193,30 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This updates the visual thing
 		public virtual void Update()
 		{
-			// Trash geometry buffer
-			if(geobuffer != null) geobuffer.Dispose();
-			geobuffer = null;
-			
-			// Any vertics?
-			if(vertices.Length > 0)
+			// Do we need to update the geometry buffer?
+			if(updategeo)
 			{
-				// Make a new buffer
-				geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vertices.Length,
-											 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
-				
-				// Fill the buffer
-				DataStream bufferstream = geobuffer.Lock(0, WorldVertex.Stride * vertices.Length, LockFlags.Discard);
-				bufferstream.WriteRange<WorldVertex>(vertices);
-				geobuffer.Unlock();
-				bufferstream.Dispose();
+				// Trash geometry buffer
+				if(geobuffer != null) geobuffer.Dispose();
+				geobuffer = null;
+
+				// Any vertics?
+				if(vertices.Length > 0)
+				{
+					// Make a new buffer
+					geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vertices.Length,
+												 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+
+					// Fill the buffer
+					DataStream bufferstream = geobuffer.Lock(0, WorldVertex.Stride * vertices.Length, LockFlags.Discard);
+					bufferstream.WriteRange<WorldVertex>(vertices);
+					geobuffer.Unlock();
+					bufferstream.Dispose();
+				}
+
+				// Done
+				updategeo = false;
 			}
-			
-			// Done
-			updategeo = false;
 		}
 		
 		/// <summary>

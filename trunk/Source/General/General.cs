@@ -1226,7 +1226,9 @@ namespace CodeImp.DoomBuilder
 		// This shows a major failure
 		public static void Fail(string message)
 		{
+			General.WriteLogLine("FAIL: " + message);
 			Debug.Fail(message);
+			Terminate(false);
 		}
 		
 		// This outputs log information

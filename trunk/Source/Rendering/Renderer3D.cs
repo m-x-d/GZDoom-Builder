@@ -444,7 +444,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				foreach(VisualThing t in group.Value)
 				{
 					// Update buffer if needed
-					if(t.NeedsUpdateGeo) t.Update();
+					t.Update();
 					
 					// Only do this sector when a vertexbuffer is created
 					if(t.GeometryBuffer != null)
