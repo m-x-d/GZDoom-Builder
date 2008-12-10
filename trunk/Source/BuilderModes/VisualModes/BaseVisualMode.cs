@@ -97,13 +97,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This creates a visual sector
 		protected override VisualSector CreateVisualSector(Sector s)
 		{
-			return new BaseVisualSector(s);
+			BaseVisualSector vs = new BaseVisualSector(s);
+			return vs;
 		}
 		
 		// This creates a visual thing
 		protected override VisualThing CreateVisualThing(Thing t)
 		{
-			return new BaseVisualThing(t);
+			BaseVisualThing vt = new BaseVisualThing(t);
+			if(vt.Setup()) return vt; else return null;
 		}
 		
 		// This locks the target so that it isn't changed until unlocked
@@ -167,7 +169,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply new target
 			target = newtarget;
 		}
-
+		
 		// This changes the target's height
 		private void ChangeTargetHeight(int amount)
 		{

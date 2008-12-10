@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Data
 					lumpdata.Read(membytes, 0, (int)lumpdata.Length);
 					mem = new MemoryStream(membytes);
 					mem.Seek(0, SeekOrigin.Begin);
-
+					
 					// Get a reader for the data
 					reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
 					if(reader is UnknownImageReader)
@@ -80,19 +80,21 @@ namespace CodeImp.DoomBuilder.Data
 						// Data is in an unknown format!
 						General.WriteLogLine("WARNING: Sprite lump '" + Name + "' data format could not be read!");
 					}
-
+					
 					// Read data as bitmap
 					mem.Seek(0, SeekOrigin.Begin);
 					if(bitmap != null) bitmap.Dispose();
 					bitmap = reader.ReadAsBitmap(mem);
 					if(bitmap == null) return;
-
+					
 					// Done
 					mem.Dispose();
 					
 					// Get width and height from image
 					width = bitmap.Size.Width;
 					height = bitmap.Size.Height;
+					scaledwidth = (float)bitmap.Size.Width;
+					scaledheight = (float)bitmap.Size.Height;
 				}
 				else
 				{
