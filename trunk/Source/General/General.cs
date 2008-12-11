@@ -100,6 +100,7 @@ namespace CodeImp.DoomBuilder
 		private const string PLUGINS_DIR = "Plugins";
 		private const string SCRIPTS_DIR = "Scripting";
 		private const string SETUP_DIR = "Setup";
+		private const string SPRITES_DIR = "Sprites";
 
 		#endregion
 
@@ -115,6 +116,7 @@ namespace CodeImp.DoomBuilder
 		private static string compilerspath;
 		private static string scriptspath;
 		private static string pluginspath;
+		private static string spritespath;
 		
 		// Main objects
 		private static Assembly thisasm;
@@ -154,6 +156,7 @@ namespace CodeImp.DoomBuilder
 		public static string ConfigsPath { get { return configspath; } }
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
+		public static string SpritesPath { get { return spritespath; } }
 		public static ICollection<string> CommandArgs { get { return Array.AsReadOnly<string>(cmdargs); } }
 		internal static MainForm MainWindow { get { return mainwindow; } }
 		public static IMainForm Interface { get { return mainwindow; } }
@@ -538,6 +541,7 @@ namespace CodeImp.DoomBuilder
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
 			pluginspath = Path.Combine(apppath, PLUGINS_DIR);
 			scriptspath = Path.Combine(apppath, SCRIPTS_DIR);
+			spritespath = Path.Combine(apppath, SPRITES_DIR);
 			logfile = Path.Combine(settingspath, LOG_FILE);
 			
 			// Make program settings directory if missing
@@ -553,6 +557,7 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Compilers path:          " + compilerspath);
 			General.WriteLogLine("Plugins path:            " + pluginspath);
 			General.WriteLogLine("Scripts path:            " + scriptspath);
+			General.WriteLogLine("Sprites path:            " + spritespath);
 			General.WriteLogLine("Command-line arguments:  " + args.Length);
 			for(int i = 0; i < args.Length; i++)
 				General.WriteLogLine("Argument " + i + ":   \"" + args[i] + "\"");

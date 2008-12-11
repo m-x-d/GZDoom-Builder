@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = index;
 			this.category = null;
 			this.title = "<" + index.ToString(CultureInfo.InvariantCulture) + ">";
-			this.sprite = "";
+			this.sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 			this.color = 0;
 			this.arrow = true;
 			this.width = 16f;
@@ -99,10 +99,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = 0;
 			this.errorcheck = 0;
 			this.fixedsize = false;
+			this.spritelongname = long.MaxValue;
 			
-			// Make long name for sprite lookup
-			this.spritelongname = Lump.MakeLongName(this.sprite);
-
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -133,7 +131,10 @@ namespace CodeImp.DoomBuilder.Config
 			if(this.height < 8f) this.height = 8f;
 			
 			// Make long name for sprite lookup
-			this.spritelongname = Lump.MakeLongName(this.sprite);
+			if(this.sprite.Length <= 8)
+				this.spritelongname = Lump.MakeLongName(this.sprite);
+			else
+				this.spritelongname = long.MaxValue;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -161,7 +162,10 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = cat.FixedSize;
 
 			// Make long name for sprite lookup
-			this.spritelongname = Lump.MakeLongName(this.sprite);
+			if(this.sprite.Length <= 8)
+				this.spritelongname = Lump.MakeLongName(this.sprite);
+			else
+				this.spritelongname = long.MaxValue;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);

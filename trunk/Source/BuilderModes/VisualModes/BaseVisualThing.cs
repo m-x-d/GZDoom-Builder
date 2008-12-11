@@ -107,18 +107,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float radius = sprite.ScaledWidth * 0.5f;
 					float height = sprite.ScaledHeight;
 					
-					// Determine texture coordinates
-					Vector2D t1 = new Vector2D(1.0f / sprite.ScaledWidth, 1.0f / sprite.ScaledHeight);
-					Vector2D t2 = new Vector2D(1.0f - t1.x, 1.0f - t1.y);
-					
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, pc.ToInt(), t1.x, t2.y);
-					verts[1] = new WorldVertex(-radius, 0.0f, height, pc.ToInt(), t1.x, t1.y);
-					verts[2] = new WorldVertex(+radius, 0.0f, height, pc.ToInt(), t2.x, t1.y);
+					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, pc.ToInt(), 0.0f, 1.0f);
+					verts[1] = new WorldVertex(-radius, 0.0f, height, pc.ToInt(), 0.0f, 0.0f);
+					verts[2] = new WorldVertex(+radius, 0.0f, height, pc.ToInt(), 1.0f, 0.0f);
 					verts[3] = verts[0];
 					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, pc.ToInt(), t2.x, t2.y);
+					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, pc.ToInt(), 1.0f, 1.0f);
 					SetVertices(verts);
 				}
 				else
@@ -129,18 +125,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float radius = info.Width * 0.5f;
 					float height = info.Height;
 					
-					// Determine texture coordinates
-					Vector2D t1 = new Vector2D(1.0f / base.Texture.ScaledWidth, 1.0f / base.Texture.ScaledHeight);
-					Vector2D t2 = new Vector2D(1.0f - t1.x, 1.0f - t1.y);
-					
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, pc.ToInt(), t1.x, t2.y);
-					verts[1] = new WorldVertex(-radius, 0.0f, height, pc.ToInt(), t1.x, t1.y);
-					verts[2] = new WorldVertex(+radius, 0.0f, height, pc.ToInt(), t2.x, t1.y);
+					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, pc.ToInt(), 0.0f, 1.0f);
+					verts[1] = new WorldVertex(-radius, 0.0f, height, pc.ToInt(), 0.0f, 0.0f);
+					verts[2] = new WorldVertex(+radius, 0.0f, height, pc.ToInt(), 1.0f, 0.0f);
 					verts[3] = verts[0];
 					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, pc.ToInt(), t2.x, t2.y);
+					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, pc.ToInt(), 1.0f, 1.0f);
 					SetVertices(verts);
 				}
 			}

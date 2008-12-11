@@ -135,9 +135,24 @@ namespace CodeImp.DoomBuilder.Controls
 			position.Text = t.Position.x.ToString() + ", " + t.Position.y.ToString() + ", " + zinfo;
 			tag.Text = t.Tag.ToString();
 			angle.Text = t.AngleDeg.ToString() + "\u00B0";
-			spritename.Text = ti.Sprite;
-			General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview());
-
+			
+			// Sprite
+			if(ti.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) && (ti.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))
+			{
+				spritename.Text = "";
+				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).Bitmap);
+			}
+			else if(ti.Sprite.Length <= 8)
+			{
+				spritename.Text = ti.Sprite;
+				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview());
+			}
+			else
+			{
+				spritename.Text = "";
+				spritetex.BackgroundImage = null;
+			}
+			
 			// Arguments
 			if(act != null)
 			{
