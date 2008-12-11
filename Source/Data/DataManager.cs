@@ -39,7 +39,9 @@ namespace CodeImp.DoomBuilder.Data
 	public sealed class DataManager
 	{
 		#region ================== Constants
-
+		
+		public const string INTERNAL_PREFIX = "internal:";
+		
 		#endregion
 
 		#region ================== Variables
@@ -72,6 +74,7 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData hourglass3d;
 		private ImageData crosshair;
 		private ImageData crosshairbusy;
+		private Dictionary<string, ImageData> internalsprites;
 		
 		// Used images
 		private Dictionary<long, long> usedimages;
@@ -191,6 +194,7 @@ namespace CodeImp.DoomBuilder.Data
 			previews = new PreviewManager();
 			texturesets = new List<MatchingTextureSet>();
 			usedimages = new Dictionary<long, long>();
+			internalsprites = new Dictionary<string, ImageData>();
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -249,6 +253,7 @@ namespace CodeImp.DoomBuilder.Data
 			texcount = LoadTextures();
 			flatcount = LoadFlats();
 			spritecount = LoadSprites();
+			LoadInternalSprites();
 			
 			// Sort names
 			texturenames.Sort();
@@ -287,7 +292,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Output info
 			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + spritecount + " sprites");
 		}
-
+		
 		// This unloads all data
 		internal void Unload()
 		{
@@ -316,6 +321,7 @@ namespace CodeImp.DoomBuilder.Data
 			texturenames = null;
 			flatnames = null;
 			imageque = null;
+			internalsprites = null;
 		}
 		
 		#endregion
@@ -843,7 +849,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(ThingTypeInfo ti in General.Map.Config.Things)
 			{
 				// Sprite not added to collection yet?
-				if(!sprites.ContainsKey(ti.SpriteLongName))
+				if(!sprites.ContainsKey(ti.SpriteLongName) && (ti.Sprite.Length <= 8))
 				{
 					// Go for all opened containers
 					for(int i = containers.Count - 1; i >= 0; i--)
@@ -871,46 +877,92 @@ namespace CodeImp.DoomBuilder.Data
 			// Output info
 			return sprites.Count;
 		}
-
+		
+		// This loads the internal sprites
+		private void LoadInternalSprites()
+		{
+			// Add sprite icon files from directory
+			string[] files = Directory.GetFiles(General.SpritesPath, "*.png", SearchOption.TopDirectoryOnly);
+			foreach(string spritefile in files)
+			{
+				ImageData img = new FileImage(Path.GetFileNameWithoutExtension(spritefile).ToLowerInvariant(), spritefile);
+				img.LoadImage();
+				internalsprites.Add(img.Name, img);
+			}
+			
+			// Add some internal resources
+			if(!internalsprites.ContainsKey("nothing"))
+			{
+				ImageData img = new ResourceImage("Nothing.png");
+				img.LoadImage();
+				internalsprites.Add("nothing", img);
+			}
+			
+			if(!internalsprites.ContainsKey("unknownthing"))
+			{
+				ImageData img = new ResourceImage("UnknownThing.png");
+				img.LoadImage();
+				internalsprites.Add("unknownthing", img);
+			}
+		}
+		
 		// This returns an image by long
 		public ImageData GetSpriteImage(string name)
 		{
-			Stream spritedata = null;
-			long longname = Lump.MakeLongName(name);
-			SpriteImage image;
-
-			// Sprite already loaded?
-			if(sprites.ContainsKey(longname))
+			// Is this referring to an internal sprite image?
+			if((name.Length > INTERNAL_PREFIX.Length) && name.ToLowerInvariant().StartsWith(INTERNAL_PREFIX))
 			{
-				// Return exiting sprite
-				return sprites[longname];
-			}
-			else
-			{
-				// Go for all opened containers
-				for(int i = containers.Count - 1; i >= 0; i--)
+				// Get the internal sprite
+				string internalname = name.Substring(INTERNAL_PREFIX.Length).ToLowerInvariant();
+				if(internalsprites.ContainsKey(internalname))
 				{
-					// This contain provides this sprite?
-					spritedata = containers[i].GetSpriteData(name);
-					if(spritedata != null) break;
-				}
-
-				// Found anything?
-				if(spritedata != null)
-				{
-					// Make new sprite image
-					image = new SpriteImage(name);
-
-					// Add to collection
-					sprites.Add(longname, image);
-
-					// Return result
-					return image;
+					return internalsprites[internalname];
 				}
 				else
 				{
-					// Return null image
 					return new NullImage();
+				}
+			}
+			else
+			{
+				// Get the long name
+				long longname = Lump.MakeLongName(name);
+
+				// Sprite already loaded?
+				if(sprites.ContainsKey(longname))
+				{
+					// Return exiting sprite
+					return sprites[longname];
+				}
+				else
+				{
+					Stream spritedata = null;
+					
+					// Go for all opened containers
+					for(int i = containers.Count - 1; i >= 0; i--)
+					{
+						// This contain provides this sprite?
+						spritedata = containers[i].GetSpriteData(name);
+						if(spritedata != null) break;
+					}
+					
+					// Found anything?
+					if(spritedata != null)
+					{
+						// Make new sprite image
+						SpriteImage image = new SpriteImage(name);
+
+						// Add to collection
+						sprites.Add(longname, image);
+
+						// Return result
+						return image;
+					}
+					else
+					{
+						// Return null image
+						return new NullImage();
+					}
 				}
 			}
 		}
