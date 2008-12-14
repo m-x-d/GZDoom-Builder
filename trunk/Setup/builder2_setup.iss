@@ -43,6 +43,7 @@ Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: Plugins\BuilderModes.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Setup\*; DestDir: {app}\Setup; Flags: ignoreversion
+Source: Sprites\*; DestDir: {app}\Sprites; Flags: ignoreversion
 
 [Icons]
 Name: {group}\Doom Builder; Filename: {app}\Builder.exe
