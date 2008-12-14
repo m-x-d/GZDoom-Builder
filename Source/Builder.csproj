@@ -652,6 +652,7 @@
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Resources\ThingBox.png" />
     <EmbeddedResource Include="Resources\Nothing.png" />
     <EmbeddedResource Include="Resources\UnknownThing.png" />
     <Compile Include="VisualModes\IVisualPickable.cs" />

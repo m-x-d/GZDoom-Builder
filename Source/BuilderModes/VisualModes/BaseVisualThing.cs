@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.Texture = General.Map.Data.Hourglass3D;
 					
 					// Determine sprite size
-					float radius = info.Width * 0.5f;
+					float radius = info.Width;
 					float height = info.Height;
 					
 					// Make vertices
@@ -137,10 +137,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
-			// Setup position
+			// Setup position and size
 			Vector3D pos = Thing.Position;
 			if(Thing.Sector != null) pos.z += Thing.Sector.FloorHeight;
 			SetPosition(pos);
+			SetCageSize(info.Width, info.Height);
+			SetCageColor(Thing.Color);
 			
 			// Done
 			return true;
