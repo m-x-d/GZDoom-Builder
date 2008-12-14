@@ -49,6 +49,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private ThingTypeInfo info;
 		private bool isloaded;
 		private ImageData sprite;
+		private float cageradius2;
+		private Vector2D pos2d;
 		
 		#endregion
 		
@@ -143,6 +145,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetPosition(pos);
 			SetCageSize(info.Width, info.Height);
 			SetCageColor(Thing.Color);
+
+			// Keep info for object picking
+			cageradius2 = info.Width * Angle2D.SQRT2;
+			cageradius2 = cageradius2 * cageradius2;
+			pos2d = Thing.Position;
 			
 			// Done
 			return true;
@@ -181,6 +188,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Let the base update
 			base.Update();
+		}
+
+		// This performs a fast test in object picking
+		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
+		{
+			float distance2 = Line2D.GetDistanceToLineSq(from, to, pos2d, false);
+			return (distance2 <= cageradius2);
+		}
+
+		// This performs an accurate test for object picking
+		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
+		{
+			return false;
 		}
 		
 		#endregion
