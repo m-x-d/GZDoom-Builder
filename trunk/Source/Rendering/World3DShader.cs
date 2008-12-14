@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private EffectHandle worldviewproj;
 		private EffectHandle minfiltersettings;
 		private EffectHandle magfiltersettings;
+		private EffectHandle modulatecolor;
 		
 		#endregion
 
@@ -70,6 +71,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				texture1 = effect.GetParameter(null, "texture1");
 				minfiltersettings = effect.GetParameter(null, "minfiltersettings");
 				magfiltersettings = effect.GetParameter(null, "magfiltersettings");
+				modulatecolor = effect.GetParameter(null, "modulatecolor");
 			}
 
 			// Initialize world vertex declaration
@@ -97,6 +99,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(worldviewproj != null) worldviewproj.Dispose();
 				if(minfiltersettings != null) minfiltersettings.Dispose();
 				if(magfiltersettings != null) magfiltersettings.Dispose();
+				if(modulatecolor != null) modulatecolor.Dispose();
 
 				// Done
 				base.Dispose();
@@ -125,6 +128,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 
+		// This sets the modulation color
+		public void SetModulateColor(int modcolor)
+		{
+			effect.SetValue<Color4>(modulatecolor, new Color4(modcolor));
+		}
+		
 		#endregion
 	}
 }

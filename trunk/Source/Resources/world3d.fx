@@ -17,6 +17,9 @@ struct PixelData
     float2 uv		: TEXCOORD0;
 };
 
+// Modulation color
+float4 modulatecolor;
+
 // Matrix for final transformation
 float4x4 worldviewproj;
 
@@ -59,7 +62,7 @@ float4 ps_main(PixelData pd) : COLOR
 	float4 tcolor = tex2D(texturesamp, pd.uv);
 	
 	// Blend texture color and vertex color
-    return tcolor * pd.color;
+    return tcolor * pd.color * modulatecolor;
 }
 
 // Technique for shader model 2.0

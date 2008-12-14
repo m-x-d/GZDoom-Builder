@@ -57,12 +57,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Matrix worldviewproj;
 		private Matrix view2d;
 		private Matrix world;
+		private Vector3D cameraposition;
 		
 		// Window size
 		private Size windowsize;
 		
 		// Frustum
 		private ProjectedFrustum2D frustum;
+		
+		// Thing cage
+		private VertexBuffer thingcage;
 		
 		// Crosshair
 		private FlatVertex[] crosshairverts;
@@ -80,6 +84,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Each VisualThing is inserted in the Dictionary by their texture image.
 		private Dictionary<ImageData, List<VisualThing>>[] things;
 
+		// Things to be rendered, sorted by distance from camera
+		private BinaryHeap<VisualThing> thingsbydistance;
+
 		#endregion
 
 		#region ================== Properties
@@ -96,6 +103,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize
 			CreateProjection();
 			CreateMatrices2D();
+			SetupThingCage();
 			
 			// Dummy frustum
 			frustum = new ProjectedFrustum2D(new Vector2D(), 0.0f, 0.0f, PROJ_NEAR_PLANE,
@@ -112,7 +120,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(!isdisposed)
 			{
 				// Clean up
-
+				if(thingcage != null) thingcage.Dispose();
+				thingcage = null;
+				
 				// Done
 				base.Dispose();
 			}
@@ -127,6 +137,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		public override void UnloadResource()
 		{
 			crosshairverts = null;
+			if(thingcage != null) thingcage.Dispose();
+			thingcage = null;
 		}
 		
 		// This is called resets when the device is reset
@@ -134,6 +146,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public override void ReloadResource()
 		{
 			CreateMatrices2D();
+			SetupThingCage();
 		}
 
 		// This makes screen vertices for display
@@ -171,6 +184,84 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		#endregion
 
+		#region ================== Thing Cage
+
+		// This sets up the thing cage
+		private void SetupThingCage()
+		{
+			const int totalvertices = 36;
+			WorldVertex[] tv = new WorldVertex[totalvertices];
+			float x0 = -1.0f;
+			float x1 = 1.0f;
+			float y0 = -1.0f;
+			float y1 = 1.0f;
+			float z0 = 0.0f;
+			float z1 = 1.0f;
+			float u0 = 0.0f;
+			float u1 = 1.0f;
+			float v0 = 0.0f;
+			float v1 = 1.0f;
+			int c = -1;
+			
+			// Front
+			tv[0] = new WorldVertex(x0, y0, z0, c, u0, v0);
+			tv[1] = new WorldVertex(x0, y0, z1, c, u0, v1);
+			tv[2] = new WorldVertex(x1, y0, z0, c, u1, v0);
+			tv[3] = new WorldVertex(x1, y0, z0, c, u1, v0);
+			tv[4] = new WorldVertex(x0, y0, z1, c, u0, v1);
+			tv[5] = new WorldVertex(x1, y0, z1, c, u1, v1);
+
+			// Right
+			tv[6] = new WorldVertex(x1, y0, z0, c, u0, v0);
+			tv[7] = new WorldVertex(x1, y0, z1, c, u0, v1);
+			tv[8] = new WorldVertex(x1, y1, z0, c, u1, v0);
+			tv[9] = new WorldVertex(x1, y1, z0, c, u1, v0);
+			tv[10] = new WorldVertex(x1, y0, z1, c, u0, v1);
+			tv[11] = new WorldVertex(x1, y1, z1, c, u1, v1);
+
+			// Back
+			tv[12] = new WorldVertex(x1, y1, z0, c, u0, v0);
+			tv[13] = new WorldVertex(x1, y1, z1, c, u0, v1);
+			tv[14] = new WorldVertex(x0, y1, z0, c, u1, v0);
+			tv[15] = new WorldVertex(x0, y1, z0, c, u1, v0);
+			tv[16] = new WorldVertex(x1, y1, z1, c, u0, v1);
+			tv[17] = new WorldVertex(x0, y1, z1, c, u1, v1);
+
+			// Left
+			tv[18] = new WorldVertex(x0, y1, z0, c, u0, v1);
+			tv[19] = new WorldVertex(x0, y1, z1, c, u0, v0);
+			tv[20] = new WorldVertex(x0, y0, z1, c, u1, v0);
+			tv[21] = new WorldVertex(x0, y1, z0, c, u1, v0);
+			tv[22] = new WorldVertex(x0, y0, z1, c, u0, v1);
+			tv[23] = new WorldVertex(x0, y0, z0, c, u1, v1);
+
+			// Top
+			tv[24] = new WorldVertex(x0, y0, z1, c, u0, v0);
+			tv[25] = new WorldVertex(x0, y1, z1, c, u0, v1);
+			tv[26] = new WorldVertex(x1, y0, z1, c, u1, v0);
+			tv[27] = new WorldVertex(x1, y0, z1, c, u1, v0);
+			tv[28] = new WorldVertex(x0, y1, z1, c, u0, v1);
+			tv[29] = new WorldVertex(x1, y1, z1, c, u1, v1);
+
+			// Bottom
+			tv[30] = new WorldVertex(x1, y0, z0, c, u1, v0);
+			tv[31] = new WorldVertex(x0, y1, z0, c, u0, v1);
+			tv[32] = new WorldVertex(x0, y0, z0, c, u0, v0);
+			tv[33] = new WorldVertex(x1, y0, z0, c, u1, v0);
+			tv[34] = new WorldVertex(x1, y1, z0, c, u1, v1);
+			tv[35] = new WorldVertex(x0, y1, z0, c, u0, v1);
+
+			// Create vertexbuffer
+			thingcage = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * totalvertices,
+										 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+			DataStream bufferstream = thingcage.Lock(0, WorldVertex.Stride * totalvertices, LockFlags.Discard);
+			bufferstream.WriteRange<WorldVertex>(tv);
+			thingcage.Unlock();
+			bufferstream.Dispose();
+		}
+
+		#endregion
+		
 		#region ================== Presentation
 
 		// This creates the projection
@@ -204,6 +295,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			float anglexy, anglez;
 			
 			// Calculate delta vector
+			cameraposition = pos;
 			delta = lookat - pos;
 			anglexy = delta.GetAngleXY();
 			anglez = delta.GetAngleZ();
@@ -253,6 +345,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This starts rendering
 		public bool Start()
 		{
+			// Create thing box texture if needed
+			if(General.Map.Data.ThingBox.Texture == null)
+				General.Map.Data.ThingBox.CreateTexture();
+			
 			// Start drawing
 			if(graphics.StartRendering(true, General.Colors.Background.ToColorValue(), graphics.BackBuffer, graphics.DepthBuffer))
 			{
@@ -263,7 +359,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 				graphics.Device.SetRenderState(RenderState.FogEnable, false);
 				graphics.Device.SetRenderState(RenderState.FogDensity, 1.0f);
 				graphics.Device.SetRenderState(RenderState.FogColor, General.Colors.Background.ToInt());
@@ -271,6 +366,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.FogEnd, General.Settings.ViewDistance);
 				graphics.Device.SetRenderState(RenderState.FogTableMode, FogMode.Linear);
 				graphics.Device.SetRenderState(RenderState.RangeFogEnable, false);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				graphics.Shaders.World3D.SetModulateColor(-1);
 
 				// Matrices
 				world = Matrix.Identity;
@@ -296,6 +393,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Make collection
 			geometry = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>[RENDER_PASSES];
 			things = new Dictionary<ImageData, List<VisualThing>>[RENDER_PASSES];
+			thingsbydistance = new BinaryHeap<VisualThing>();
 			for(int i = 0; i < RENDER_PASSES; i++)
 			{
 				geometry[i] = new Dictionary<ImageData, BinaryHeap<VisualGeometry>>();
@@ -342,6 +440,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			RenderSinglePass((int)RenderPass.Alpha);
 			graphics.Shaders.World3D.EndPass();
 
+			// THINGS
+			RenderThingCages();
+			
 			// ADDITIVE PASS
 			world = Matrix.Identity;
 			ApplyMatrices3D();
@@ -356,6 +457,41 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Done
 			graphics.Shaders.World3D.End();
 			geometry = null;
+		}
+
+		// This renders all thing cages
+		private void RenderThingCages()
+		{
+			// Set renderstates
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+			graphics.Device.SetStreamSource(0, thingcage, 0, WorldVertex.Stride);
+			graphics.Device.SetTexture(0, General.Map.Data.ThingBox.Texture);
+			graphics.Shaders.World3D.Texture1 = General.Map.Data.ThingBox.Texture;
+
+			graphics.Shaders.World3D.BeginPass(0);
+			foreach(VisualThing t in thingsbydistance)
+			{
+				// Setup matrix
+				world = Matrix.Multiply(t.CageScales, t.Position);
+				ApplyMatrices3D();
+
+				// Setup color
+				graphics.Shaders.World3D.SetModulateColor(t.CageColor);
+				graphics.Device.SetRenderState(RenderState.TextureFactor, t.CageColor);
+
+				// Render!
+				graphics.Shaders.World3D.ApplySettings();
+				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, 12);
+			}
+
+			// Done
+			graphics.Shaders.World3D.EndPass();
+			graphics.Shaders.World3D.SetModulateColor(-1);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 		}
 
 		// This performs a single render pass
@@ -502,6 +638,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Must have a texture!
 			if(t.Texture != null)
 			{
+				// Make sure the distance to camera is calculated
+				t.CalculateCameraDistance(cameraposition);
+				thingsbydistance.Add(t);
+				
 				// Texture group not yet collected?
 				if(!things[t.RenderPassInt].ContainsKey(t.Texture))
 				{

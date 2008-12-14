@@ -40,7 +40,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
-	public abstract class VisualThing : IVisualPickable, ID3DResource
+	public abstract class VisualThing : IVisualPickable, ID3DResource, IComparable<VisualThing>
 	{
 		#region ================== Constants
 		
@@ -64,7 +64,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private int renderpass;
 		private Matrix orientation;
 		private Matrix position;
+		private Matrix cagescales;
 		private bool billboard;
+		private Vector2D pos2d;
+		private float cameradistance;
+		private int cagecolor;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -79,6 +83,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal int RenderPassInt { get { return renderpass; } }
 		internal Matrix Orientation { get { return orientation; } }
 		internal Matrix Position { get { return position; } }
+		internal Matrix CageScales { get { return cagescales; } }
+		internal int CageColor { get { return cagecolor; } }
 
 		/// <summary>
 		/// Set to True to use billboarding for this thing. When using billboarding,
@@ -119,6 +125,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.billboard = true;
 			this.orientation = Matrix.Identity;
 			this.position = Matrix.Identity;
+			this.cagescales = Matrix.Identity;
 			
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
@@ -146,6 +153,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		#region ================== Methods
 		
+		// This sets the distance from the camera
+		internal void CalculateCameraDistance(Vector2D campos)
+		{
+			cameradistance = Vector2D.DistanceSq(pos2d, campos);
+		}
+		
 		// This is called before a device is reset
 		// (when resized or display adapter was changed)
 		public void UnloadResource()
@@ -165,10 +178,27 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		/// <summary>
+		/// Sets the size of the cage around the thing geometry.
+		/// </summary>
+		public void SetCageSize(float radius, float height)
+		{
+			cagescales = Matrix.Scaling(radius, radius, height);
+		}
+
+		/// <summary>
+		/// Sets the color of the cage around the thing geometry.
+		/// </summary>
+		public void SetCageColor(PixelColor color)
+		{
+			cagecolor = color.ToInt();
+		}
+
+		/// <summary>
 		/// This sets the position to use for the thing geometry.
 		/// </summary>
 		public void SetPosition(Vector3D pos)
 		{
+			pos2d = new Vector2D(pos);
 			position = Matrix.Translation(D3DDevice.V3(pos));
 		}
 
@@ -235,6 +265,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public virtual bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
 		{
 			return false;
+		}
+		
+		/// <summary>
+		/// This sorts things by distance from the camera. Farthest first.
+		/// </summary>
+		public int CompareTo(VisualThing other)
+		{
+			return Math.Sign(this.cameradistance - other.cameradistance);
 		}
 		
 		#endregion
