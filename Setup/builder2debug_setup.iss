@@ -45,6 +45,7 @@ Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion
 Source: Plugins\BuilderModes.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\BuilderModes.pdb; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Setup\*; DestDir: {app}\Setup; Flags: ignoreversion
+Source: Sprites\*; DestDir: {app}\Sprites; Flags: ignoreversion
 
 [Icons]
 Name: {group}\Doom Builder; Filename: {app}\Builder.exe
