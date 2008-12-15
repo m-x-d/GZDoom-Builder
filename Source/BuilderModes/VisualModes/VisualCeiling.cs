@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public override bool Setup()
+		public bool Setup()
 		{
 			WorldVertex[] verts;
 			WorldVertex v;
