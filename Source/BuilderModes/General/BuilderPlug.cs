@@ -57,6 +57,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private FindReplaceForm findreplaceform;
 		private ErrorCheckForm errorcheckform;
 
+		// Settings
+		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
+		
 		#endregion
 
 		#region ================== Properties
@@ -68,6 +71,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public CurveLinedefsForm CurveLinedefsForm { get { return curvelinedefsform; } }
 		public FindReplaceForm FindReplaceForm { get { return findreplaceform; } }
 		public ErrorCheckForm ErrorCheckForm { get { return errorcheckform; } }
+		public int ShowVisualThings { get { return showvisualthings; } set { showvisualthings = value; } }
 		
 		#endregion
 
@@ -79,6 +83,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Setup
 			me = this;
 
+			// Settings
+			this.showvisualthings = 2;
+			
 			// Load menus form and register it
 			menusform = new MenusForm();
 			menusform.Register();

@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Thing cage
 		private VertexBuffer thingcage;
+		private bool renderthingcages;
 		
 		// Crosshair
 		private FlatVertex[] crosshairverts;
@@ -92,7 +93,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Properties
 
 		public ProjectedFrustum2D Frustum2D { get { return frustum; } }
-
+		public bool DrawThingCages { get { return renderthingcages; } set { renderthingcages = value; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -104,6 +106,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			CreateProjection();
 			CreateMatrices2D();
 			SetupThingCage();
+			renderthingcages = true;
 			
 			// Dummy frustum
 			frustum = new ProjectedFrustum2D(new Vector2D(), 0.0f, 0.0f, PROJ_NEAR_PLANE,
@@ -441,7 +444,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.EndPass();
 
 			// THINGS
-			RenderThingCages();
+			if(renderthingcages) RenderThingCages();
 			
 			// ADDITIVE PASS
 			world = Matrix.Identity;

@@ -67,6 +67,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private float camanglexy, camanglez;
 		private Sector camsector;
 		
+		// Options
+		private bool processgeometry;
+		private bool processthings;
+		
 		// Input
 		private bool keyforward;
 		private bool keybackward;
@@ -90,6 +94,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public Vector3D CameraPosition { get { return campos; } set { campos = value; } }
 		public Vector3D CameraTarget { get { return camtarget; } }
 		public Sector CameraSector { get { return camsector; } }
+		public bool ProcessGeometry { get { return processgeometry; } set { processgeometry = value; } }
+		public bool ProcessThings { get { return processthings; } set { processthings = value; } }
 		
 		#endregion
 
@@ -112,6 +118,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.visiblesectors = new Dictionary<Sector, VisualSector>(50);
 			this.visiblegeometry = new List<VisualGeometry>(200);
 			this.visiblethings = new List<VisualThing>(100);
+			this.processgeometry = true;
+			this.processthings = true;
 		}
 		
 		// Disposer
@@ -329,98 +337,109 @@ namespace CodeImp.DoomBuilder.VisualModes
 			Vector2D campos2d = (Vector2D)campos;
 			float viewdist = General.Settings.ViewDistance;
 			
-			// Get the blocks within view range
-			visibleblocks = blockmap.GetFrustumRange(renderer.Frustum2D);
-			
-			// Fill visiblity collections
+			// Make collections
 			visiblesectors = new Dictionary<Sector, VisualSector>(visiblesectors.Count);
 			visiblegeometry = new List<VisualGeometry>(visiblegeometry.Capacity);
 			visiblethings = new List<VisualThing>(visiblethings.Capacity);
+
+			// Get the blocks within view range
+			visibleblocks = blockmap.GetFrustumRange(renderer.Frustum2D);
+			
+			// Fill collections with geometry and things
 			foreach(VisualBlockEntry block in visibleblocks)
 			{
-				// Lines
-				foreach(Linedef ld in block.Lines)
+				if(processgeometry)
 				{
-					// Line not already processed?
-					if(!visiblelines.ContainsKey(ld))
+					// Lines
+					foreach(Linedef ld in block.Lines)
 					{
-						// Add line if not added yet
-						visiblelines.Add(ld, ld);
-						
-						// Which side of the line is the camera on?
-						if(ld.SideOfLine(campos2d) < 0)
+						// Line not already processed?
+						if(!visiblelines.ContainsKey(ld))
 						{
-							// Do front of line
-							if(ld.Front != null) ProcessSidedefCulling(ld.Front);
+							// Add line if not added yet
+							visiblelines.Add(ld, ld);
+
+							// Which side of the line is the camera on?
+							if(ld.SideOfLine(campos2d) < 0)
+							{
+								// Do front of line
+								if(ld.Front != null) ProcessSidedefCulling(ld.Front);
+							}
+							else
+							{
+								// Do back of line
+								if(ld.Back != null) ProcessSidedefCulling(ld.Back);
+							}
+						}
+					}
+				}
+
+				if(processthings)
+				{
+					// Things
+					foreach(Thing t in block.Things)
+					{
+						VisualThing vt;
+
+						if(allthings.ContainsKey(t))
+						{
+							vt = allthings[t];
 						}
 						else
 						{
-							// Do back of line
-							if(ld.Back != null) ProcessSidedefCulling(ld.Back);
+							// Create new visual thing
+							vt = CreateVisualThing(t);
+							if(vt != null) allthings.Add(t, vt);
+						}
+
+						if(vt != null)
+						{
+							visiblethings.Add(vt);
 						}
 					}
 				}
-				
-				// Things
-				foreach(Thing t in block.Things)
-				{
-					VisualThing vt;
-					
-					if(allthings.ContainsKey(t))
-					{
-						vt = allthings[t];
-					}
-					else
-					{
-						// Create new visual thing
-						vt = CreateVisualThing(t);
-						if(vt != null) allthings.Add(t, vt);
-					}
-					
-					if(vt != null)
-					{
-						visiblethings.Add(vt);
-					}
-				}
 			}
-			
-			// Find camera sector
-			Linedef nld = MapSet.NearestLinedef(visiblelines.Values, campos2d);
-			if(nld != null)
+
+			if(processgeometry)
 			{
-				camsector = GetCameraSectorFromLinedef(nld);
-			}
-			else
-			{
-				// Exceptional case: no lines found in any nearby blocks!
-				// This could happen in the middle of an extremely large sector and in this case
-				// the above code will not have found any sectors/sidedefs for rendering.
-				// Here we handle this special case with brute-force. Let's find the sector
-				// the camera is in by searching the entire map and render that sector only.
-				nld = General.Map.Map.NearestLinedef(campos2d);
+				// Find camera sector
+				Linedef nld = MapSet.NearestLinedef(visiblelines.Values, campos2d);
 				if(nld != null)
 				{
 					camsector = GetCameraSectorFromLinedef(nld);
-					if(camsector != null)
+				}
+				else
+				{
+					// Exceptional case: no lines found in any nearby blocks!
+					// This could happen in the middle of an extremely large sector and in this case
+					// the above code will not have found any sectors/sidedefs for rendering.
+					// Here we handle this special case with brute-force. Let's find the sector
+					// the camera is in by searching the entire map and render that sector only.
+					nld = General.Map.Map.NearestLinedef(campos2d);
+					if(nld != null)
 					{
-						foreach(Sidedef sd in camsector.Sidedefs)
+						camsector = GetCameraSectorFromLinedef(nld);
+						if(camsector != null)
 						{
-							float side = sd.Line.SideOfLine(campos2d);
-							if(((side < 0) && sd.IsFront) ||
-							   ((side > 0) && !sd.IsFront))
-								ProcessSidedefCulling(sd);
+							foreach(Sidedef sd in camsector.Sidedefs)
+							{
+								float side = sd.Line.SideOfLine(campos2d);
+								if(((side < 0) && sd.IsFront) ||
+								   ((side > 0) && !sd.IsFront))
+									ProcessSidedefCulling(sd);
+							}
+						}
+						else
+						{
+							// Too far away from the map to see anything
+							camsector = null;
 						}
 					}
 					else
 					{
-						// Too far away from the map to see anything
+						// Map is empty
 						camsector = null;
 					}
-				}
-				else
-				{
-					// Map is empty
-					camsector = null;
 				}
 			}
 		}
@@ -739,22 +758,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Now redraw
 			General.Interface.RedrawDisplay();
-		}
-		
-		#endregion
-
-		#region ================== Rendering
-
-		// Call this to simply render all visible sectors
-		protected virtual void AddGeometry()
-		{
-			// Render all visible sectors
-			foreach(VisualGeometry g in visiblegeometry)
-				renderer.AddSectorGeometry(g);
-			
-			// Render all visible things
-			foreach(VisualThing t in visiblethings)
-				renderer.AddThingGeometry(t);
 		}
 		
 		#endregion
