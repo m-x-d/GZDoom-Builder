@@ -51,6 +51,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private ImageData sprite;
 		private float cageradius2;
 		private Vector2D pos2d;
+		private Vector3D boxp1;
+		private Vector3D boxp2;
 		
 		#endregion
 		
@@ -80,23 +82,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the thing geometry. Returns false when nothing was created.
 		public virtual bool Setup()
 		{
+			PixelColor sectorcolor = new PixelColor(255, 255, 255, 255);
+			
 			if(sprite != null)
 			{
 				// Find the sector in which the thing resides
 				Thing.DetermineSector();
-
-				PixelColor pc;
 				if(Thing.Sector != null)
 				{
 					// Use sector brightness for color shading
-					pc = new PixelColor(255, unchecked((byte)Thing.Sector.Brightness),
+					sectorcolor = new PixelColor(255, unchecked((byte)Thing.Sector.Brightness),
 											 unchecked((byte)Thing.Sector.Brightness),
 											 unchecked((byte)Thing.Sector.Brightness));
-				}
-				else
-				{
-					// Full brightness
-					pc = new PixelColor(255, 255, 255, 255);
 				}
 				
 				// Check if the texture is loaded
@@ -111,12 +108,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, pc.ToInt(), 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius, 0.0f, height, pc.ToInt(), 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius, 0.0f, height, pc.ToInt(), 1.0f, 0.0f);
+					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor.ToInt(), 0.0f, 1.0f);
+					verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor.ToInt(), 0.0f, 0.0f);
+					verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor.ToInt(), 1.0f, 0.0f);
 					verts[3] = verts[0];
 					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, pc.ToInt(), 1.0f, 1.0f);
+					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor.ToInt(), 1.0f, 1.0f);
 					SetVertices(verts);
 				}
 				else
@@ -129,12 +126,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, pc.ToInt(), 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius, 0.0f, height, pc.ToInt(), 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius, 0.0f, height, pc.ToInt(), 1.0f, 0.0f);
+					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor.ToInt(), 0.0f, 1.0f);
+					verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor.ToInt(), 0.0f, 0.0f);
+					verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor.ToInt(), 1.0f, 0.0f);
 					verts[3] = verts[0];
 					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, pc.ToInt(), 1.0f, 1.0f);
+					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor.ToInt(), 1.0f, 1.0f);
 					SetVertices(verts);
 				}
 			}
@@ -145,11 +142,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetPosition(pos);
 			SetCageSize(info.Width, info.Height);
 			SetCageColor(Thing.Color);
-
+			
 			// Keep info for object picking
 			cageradius2 = info.Width * Angle2D.SQRT2;
 			cageradius2 = cageradius2 * cageradius2;
-			pos2d = Thing.Position;
+			pos2d = pos;
+			boxp1 = new Vector3D(pos.x - info.Width, pos.y - info.Width, pos.z);
+			boxp2 = new Vector3D(pos.x + info.Width, pos.y + info.Width, pos.z + info.Height);
 			
 			// Done
 			return true;
@@ -200,7 +199,92 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This performs an accurate test for object picking
 		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
 		{
-			return false;
+			// TEST
+			//u_ray = Line2D.GetNearestOnLine(from, to, pos2d);
+			//return true;
+			
+			Vector3D delta = to - from;
+			float tfar = float.MaxValue;
+			float tnear = float.MinValue;
+			
+			// Ray-Box intersection code
+			// See http://www.masm32.com/board/index.php?PHPSESSID=eee672d82a12b8b8f1871268f652be82&topic=9941.0
+			
+			// Check X slab
+			if(delta.x == 0.0f)
+			{
+				if(from.x > boxp2.x || from.x < boxp1.x)
+				{
+					// Ray is parallel to the planes & outside slab
+					return false;
+				}
+			}
+			else
+			{
+				float tmp = 1.0f / delta.x;
+				float t1 = (boxp1.x - from.x) * tmp;
+				float t2 = (boxp2.x - from.x) * tmp;
+				if(t1 > t2) General.Swap<float>(ref t1, ref t2);
+				if(t1 > tnear) tnear = t1;
+				if(t2 < tfar) tfar = t2;
+				if(tnear > tfar || tfar < 0.0f)
+				{
+					// Ray missed box or box is behind ray
+					return false;
+				}
+			}
+			
+			// Check Y slab
+			if(delta.y == 0.0f)
+			{
+				if(from.y > boxp2.y || from.y < boxp1.y)
+				{
+					// Ray is parallel to the planes & outside slab
+					return false;
+				}
+			}
+			else
+			{
+				float tmp = 1.0f / delta.y;
+				float t1 = (boxp1.y - from.y) * tmp;
+				float t2 = (boxp2.y - from.y) * tmp;
+				if(t1 > t2) General.Swap<float>(ref t1, ref t2);
+				if(t1 > tnear) tnear = t1;
+				if(t2 < tfar) tfar = t2;
+				if(tnear > tfar || tfar < 0.0f)
+				{
+					// Ray missed box or box is behind ray
+					return false;
+				}
+			}
+			
+			// Check Z slab
+			if(delta.z == 0.0f)
+			{
+				if(from.z > boxp2.z || from.z < boxp1.z)
+				{
+					// Ray is parallel to the planes & outside slab
+					return false;
+				}
+			}
+			else
+			{
+				float tmp = 1.0f / delta.z;
+				float t1 = (boxp1.z - from.z) * tmp;
+				float t2 = (boxp2.z - from.z) * tmp;
+				if(t1 > t2) General.Swap<float>(ref t1, ref t2);
+				if(t1 > tnear) tnear = t1;
+				if(t2 < tfar) tfar = t2;
+				if(tnear > tfar || tfar < 0.0f)
+				{
+					// Ray missed box or box is behind ray
+					return false;
+				}
+			}
+			
+			// Set interpolation point
+			u_ray = (tnear > 0.0f) ? tnear : tfar;
+			return true;
 		}
 		
 		#endregion

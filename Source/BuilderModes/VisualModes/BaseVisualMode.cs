@@ -136,8 +136,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(newtarget.picked != null)
 				{
 					VisualGeometry prevgeo = null;
+					VisualThing prevthing = null;
 					if((target.picked != null) && (target.picked is VisualGeometry))
 						prevgeo = (target.picked as VisualGeometry);
+					else if(target.picked is VisualThing)
+						prevthing = (target.picked as VisualThing);
 					
 					// Geometry picked?
 					if(newtarget.picked is VisualGeometry)
@@ -146,7 +149,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						
 						if(pickedgeo.Sidedef != null)
 						{
-							if((prevgeo != null) && (prevgeo.Sidedef == null)) General.Interface.HideInfo();
+							if((prevgeo == null) || (prevgeo.Sidedef == null)) General.Interface.HideInfo();
 							General.Interface.ShowLinedefInfo(pickedgeo.Sidedef.Line);
 						}
 						else if(pickedgeo.Sidedef == null)
@@ -158,6 +161,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							General.Interface.HideInfo();
 						}
+					}
+					// Thing picked?
+					if(newtarget.picked is VisualThing)
+					{
+						VisualThing pickedthing = (newtarget.picked as VisualThing);
+						
+						if(prevthing == null) General.Interface.HideInfo();
+						General.Interface.ShowThingInfo(pickedthing.Thing);
 					}
 				}
 				else

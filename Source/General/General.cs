@@ -1261,7 +1261,15 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		#region ================== Tools
-
+		
+		// This swaps two pointers
+		public static void Swap<T>(ref T a, ref T b)
+		{
+			T t = a;
+			a = b;
+			b = t;
+		}
+		
 		// This clamps a value
 		public static float Clamp(float value, float min, float max)
 		{
