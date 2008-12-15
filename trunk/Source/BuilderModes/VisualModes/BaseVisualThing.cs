@@ -65,15 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public BaseVisualThing(Thing t) : base(t)
 		{
-			// Find thing information
-			info = General.Map.Config.GetThingInfo(Thing.Type);
-			
-			// Find sprite texture
-			if(info.Sprite.Length > 0)
-			{
-				sprite = General.Map.Data.GetSpriteImage(info.Sprite);
-				if(sprite != null) sprite.AddReference();
-			}
+			Rebuild();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -173,6 +165,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Methods
 		
+		// This forces to rebuild the whole thing
+		public void Rebuild()
+		{
+			// Find thing information
+			info = General.Map.Config.GetThingInfo(Thing.Type);
+
+			// Find sprite texture
+			if(info.Sprite.Length > 0)
+			{
+				sprite = General.Map.Data.GetSpriteImage(info.Sprite);
+				if(sprite != null) sprite.AddReference();
+			}
+			
+			// Setup visual thing
+			Setup();
+		}
+		
 		// This updates the thing when needed
 		public override void Update()
 		{
@@ -199,10 +208,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This performs an accurate test for object picking
 		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
 		{
-			// TEST
-			//u_ray = Line2D.GetNearestOnLine(from, to, pos2d);
-			//return true;
-			
 			Vector3D delta = to - from;
 			float tfar = float.MaxValue;
 			float tnear = float.MinValue;
@@ -224,7 +229,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float tmp = 1.0f / delta.x;
 				float t1 = (boxp1.x - from.x) * tmp;
 				float t2 = (boxp2.x - from.x) * tmp;
-				if(t1 > t2) General.Swap<float>(ref t1, ref t2);
+				if(t1 > t2) General.Swap(ref t1, ref t2);
 				if(t1 > tnear) tnear = t1;
 				if(t2 < tfar) tfar = t2;
 				if(tnear > tfar || tfar < 0.0f)
@@ -248,7 +253,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float tmp = 1.0f / delta.y;
 				float t1 = (boxp1.y - from.y) * tmp;
 				float t2 = (boxp2.y - from.y) * tmp;
-				if(t1 > t2) General.Swap<float>(ref t1, ref t2);
+				if(t1 > t2) General.Swap(ref t1, ref t2);
 				if(t1 > tnear) tnear = t1;
 				if(t2 < tfar) tfar = t2;
 				if(tnear > tfar || tfar < 0.0f)
@@ -272,7 +277,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float tmp = 1.0f / delta.z;
 				float t1 = (boxp1.z - from.z) * tmp;
 				float t2 = (boxp2.z - from.z) * tmp;
-				if(t1 > t2) General.Swap<float>(ref t1, ref t2);
+				if(t1 > t2) General.Swap(ref t1, ref t2);
 				if(t1 > tnear) tnear = t1;
 				if(t2 < tfar) tfar = t2;
 				if(tnear > tfar || tfar < 0.0f)
@@ -295,7 +300,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectBegin() { }
 		public virtual void OnSelectEnd() { }
 		public virtual void OnEditBegin() { }
-		public virtual void OnEditEnd() { }
+
+		// Edit button released
+		public virtual void OnEditEnd()
+		{
+			List<Thing> things = new List<Thing>();
+			things.Add(this.Thing);
+			DialogResult result = General.Interface.ShowEditThings(things);
+			if(result == DialogResult.OK) this.Rebuild();
+		}
 		
 		#endregion
 	}
