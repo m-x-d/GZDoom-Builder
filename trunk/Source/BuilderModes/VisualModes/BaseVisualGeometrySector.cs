@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal abstract class BaseVisualGeometrySector : BaseVisualGeometry
+	internal abstract class BaseVisualGeometrySector : VisualGeometry, IVisualEventReceiver
 	{
 		#region ================== Constants
 
@@ -67,9 +67,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Events
+
+		// Unused
+		public virtual void OnSelectBegin() { }
+		public virtual void OnSelectEnd() { }
+		public virtual void OnEditBegin() { }
 		
 		// Edit button released
-		public override void OnEditEnd()
+		public virtual void OnEditEnd()
 		{
 			List<Sector> sectors = new List<Sector>();
 			sectors.Add(this.Sector.Sector);

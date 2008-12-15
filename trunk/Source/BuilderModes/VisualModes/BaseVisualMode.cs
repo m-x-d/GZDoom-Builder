@@ -262,25 +262,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("visualselect", BaseAction = true)]
 		public void BeginSelect()
 		{
-			if(target.picked != null) (target.picked as BaseVisualGeometry).OnSelectBegin();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectBegin();
 		}
 
 		[EndAction("visualselect", BaseAction = true)]
 		public void EndSelect()
 		{
-			if(target.picked != null) (target.picked as BaseVisualGeometry).OnSelectEnd();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectEnd();
 		}
 
 		[BeginAction("visualedit", BaseAction = true)]
 		public void BeginEdit()
 		{
-			if(target.picked != null) (target.picked as BaseVisualGeometry).OnEditBegin();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditBegin();
 		}
 
 		[EndAction("visualedit", BaseAction = true)]
 		public void EndEdit()
 		{
-			if(target.picked != null) (target.picked as BaseVisualGeometry).OnEditEnd();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditEnd();
 		}
 
 		[BeginAction("raisesector8")]

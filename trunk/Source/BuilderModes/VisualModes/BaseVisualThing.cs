@@ -38,7 +38,7 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal class BaseVisualThing : VisualThing
+	internal class BaseVisualThing : VisualThing, IVisualEventReceiver
 	{
 		#region ================== Constants
 		
@@ -286,6 +286,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			u_ray = (tnear > 0.0f) ? tnear : tfar;
 			return true;
 		}
+		
+		#endregion
+
+		#region ================== Events
+
+		// Unused
+		public virtual void OnSelectBegin() { }
+		public virtual void OnSelectEnd() { }
+		public virtual void OnEditBegin() { }
+		public virtual void OnEditEnd() { }
 		
 		#endregion
 	}

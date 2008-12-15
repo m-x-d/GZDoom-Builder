@@ -36,48 +36,12 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal abstract class BaseVisualGeometry : VisualGeometry
+	internal interface IVisualEventReceiver
 	{
-		#region ================== Constants
-
-		#endregion
-
-		#region ================== Variables
-
-		#endregion
-
-		#region ================== Properties
-
-		#endregion
-
-		#region ================== Constructor / Setup
-
-		// Constructor
-		public BaseVisualGeometry(VisualSector vs) : base(vs)
-		{
-		}
-		
-		// Constructor for sidedefs
-		public BaseVisualGeometry(VisualSector vs, Sidedef sd) : base(vs, sd)
-		{
-		}
-		
-		// This is for setting up new geometry
-		public abstract bool Setup();
-
-		#endregion
-
-		#region ================== Methods
-		
-		#endregion
-
-		#region ================== Events
-
-		public virtual void OnSelectBegin() { }
-		public virtual void OnSelectEnd() { }
-		public virtual void OnEditBegin() { }
-		public virtual void OnEditEnd() { }
-
-		#endregion
+		// The events that must be handled
+		void OnSelectBegin();
+		void OnSelectEnd();
+		void OnEditBegin();
+		void OnEditEnd();
 	}
 }

@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal abstract class BaseVisualGeometrySidedef : BaseVisualGeometry
+	internal abstract class BaseVisualGeometrySidedef : VisualGeometry, IVisualEventReceiver
 	{
 		#region ================== Constants
 
@@ -83,9 +83,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Events
+
+		// Unused
+		public virtual void OnSelectBegin() { }
+		public virtual void OnSelectEnd() { }
+		public virtual void OnEditBegin() { }
 		
 		// Edit button released
-		public override void OnEditEnd()
+		public virtual void OnEditEnd()
 		{
 			List<Linedef> lines = new List<Linedef>();
 			lines.Add(this.Sidedef.Line);
