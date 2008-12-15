@@ -211,6 +211,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Processing
 		public override void OnProcess(double deltatime)
 		{
+			// Process things?
+			base.ProcessThings = (BuilderPlug.Me.ShowVisualThings != 0);
+			
 			// Do processing
 			base.OnProcess(deltatime);
 			
@@ -233,9 +236,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Begin with geometry
 				renderer.StartGeometry();
-				
-				// This adds all visible geometry for rendering
-				AddGeometry();
+
+				// Render all visible sectors
+				foreach(VisualGeometry g in visiblegeometry)
+					renderer.AddSectorGeometry(g);
+
+				if(BuilderPlug.Me.ShowVisualThings != 0)
+				{
+					// Render things in cages?
+					renderer.DrawThingCages = ((BuilderPlug.Me.ShowVisualThings & 2) != 0);
+					
+					// Render all visible things
+					foreach(VisualThing t in visiblethings)
+						renderer.AddThingGeometry(t);
+				}
 				
 				// Done rendering geometry
 				renderer.FinishGeometry();
@@ -305,6 +319,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerSector1()
 		{
 			ChangeTargetHeight(-1);
+		}
+
+		[BeginAction("showvisualthings")]
+		public void ShowVisualThings()
+		{
+			BuilderPlug.Me.ShowVisualThings++;
+			if(BuilderPlug.Me.ShowVisualThings > 2) BuilderPlug.Me.ShowVisualThings = 0;
 		}
 		
 		#endregion

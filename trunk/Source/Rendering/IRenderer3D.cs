@@ -43,7 +43,8 @@ namespace CodeImp.DoomBuilder.Rendering
 	{
 		// Properties
 		ProjectedFrustum2D Frustum2D { get; }
-
+		bool DrawThingCages { get; set; }
+		
 		// General methods
 		void PositionAndLookAt(Vector3D pos, Vector3D lookat);
 		
