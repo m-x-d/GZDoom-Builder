@@ -592,6 +592,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 				}
 			}
 			
+			// Add all the visible things
+			foreach(VisualThing vt in visiblethings)
+				pickables.Add(vt);
+			
 			// Now we have a list of potential geometry that lies along the trace line.
 			// We still don't know what geometry actually hits, but we ruled out that which doesn't get even close.
 			// This is still too much for accurate intersection testing, so we do a fast reject pass first.
