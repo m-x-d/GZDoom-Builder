@@ -216,14 +216,14 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			groupfloorceiling.Controls.Add(this.sectorheight);
 			groupfloorceiling.Controls.Add(label7);
-			groupfloorceiling.Controls.Add(label6);
-			groupfloorceiling.Controls.Add(this.ceilingheight);
 			groupfloorceiling.Controls.Add(label5);
 			groupfloorceiling.Controls.Add(this.floorheight);
 			groupfloorceiling.Controls.Add(label2);
 			groupfloorceiling.Controls.Add(label4);
 			groupfloorceiling.Controls.Add(this.floortex);
 			groupfloorceiling.Controls.Add(this.ceilingtex);
+			groupfloorceiling.Controls.Add(label6);
+			groupfloorceiling.Controls.Add(this.ceilingheight);
 			groupfloorceiling.Location = new System.Drawing.Point(7, 6);
 			groupfloorceiling.Name = "groupfloorceiling";
 			groupfloorceiling.Size = new System.Drawing.Size(436, 161);
@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label6
 			// 
 			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(33, 69);
+			label6.Location = new System.Drawing.Point(33, 40);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(73, 14);
 			label6.TabIndex = 19;
@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.ceilingheight.Location = new System.Drawing.Point(112, 66);
+			this.ceilingheight.Location = new System.Drawing.Point(112, 37);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(68, 20);
 			this.ceilingheight.TabIndex = 18;
@@ -273,7 +273,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label5
 			// 
 			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(40, 40);
+			label5.Location = new System.Drawing.Point(40, 69);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(66, 14);
 			label5.TabIndex = 17;
@@ -285,7 +285,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.floorheight.Location = new System.Drawing.Point(112, 37);
+			this.floorheight.Location = new System.Drawing.Point(112, 66);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(68, 20);
 			this.floorheight.TabIndex = 16;
