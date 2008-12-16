@@ -342,8 +342,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Start drawing mode
 				DrawGeometryMode drawmode = new DrawGeometryMode();
-				drawmode.DrawPointAt(mousemappos, true);
-				General.Editing.ChangeMode(drawmode);
+				bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+				bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+				DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, new List<DrawnVertex>());
+				drawmode.DrawPointAt(v.pos, v.stitch);
 			}
 			
 			base.OnEditBegin();

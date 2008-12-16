@@ -203,9 +203,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Done
 			renderer.Present();
 		}
-
-		// This gets the aligned and snapped draw position
-		private DrawnVertex GetCurrentPosition()
+		
+		// This returns the aligned and snapped draw position
+		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, IRenderer2D renderer, List<DrawnVertex> points)
 		{
 			DrawnVertex p = new DrawnVertex();
 
@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(snaptonearest)
 			{
 				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
-
+				
 				// Go for all drawn points
 				foreach(DrawnVertex v in points)
 				{
@@ -224,7 +224,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						return p;
 					}
 				}
-
+				
 				// Try the nearest vertex
 				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
 				if(nv != null)
@@ -271,7 +271,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
-
+			
 			// Snap to grid?
 			if(snaptogrid)
 			{
@@ -288,7 +288,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return p;
 			}
 		}
-
+		
+		// This gets the aligned and snapped draw position
+		private DrawnVertex GetCurrentPosition()
+		{
+			return GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, points);
+		}
+		
 		// This draws a point at a specific location
 		public void DrawPointAt(Vector2D pos, bool stitch)
 		{
@@ -435,7 +441,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				DrawPointAt(newpoint.pos, newpoint.stitch);
 			}
 		}
-
+		
 		// Remove a point
 		[BeginAction("removepoint")]
 		public void RemovePoint()
@@ -449,7 +455,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			Update();
 		}
-
+		
 		// Finish drawing
 		[BeginAction("finishdraw")]
 		public void FinishDraw()
@@ -457,7 +463,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Accept the changes
 			General.Editing.AcceptMode();
 		}
-
+		
 		#endregion
 	}
 }
