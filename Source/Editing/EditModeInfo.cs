@@ -27,6 +27,7 @@ using System.Reflection;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Plugins;
 using System.Drawing;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
@@ -140,22 +141,31 @@ namespace CodeImp.DoomBuilder.Editing
 		public void UserSwitchToMode()
 		{
 			EditMode newmode;
-
+			
 			// Only when a map is opened
 			if(General.Map != null)
 			{
 				// Not switching from volatile mode to volatile mode?
 				if((General.Editing.Mode == null) || !General.Editing.Mode.Attributes.Volatile || !this.attribs.Volatile)
 				{
-					// Create instance
-					newmode = plugin.CreateObject<EditMode>(type);
-
-					// Switch mode
-					General.Editing.ChangeMode(newmode);
+					// When in VisualMode and switching to the same VisualMode, then we switch back to the previous classic mode
+					if((General.Editing.Mode is VisualMode) && (type == General.Editing.Mode.GetType()))
+					{
+						// Switch back to last classic mode
+						General.Editing.ChangeMode(General.Editing.PreviousClassicMode.Name);
+					}
+					else
+					{
+						// Create instance
+						newmode = plugin.CreateObject<EditMode>(type);
+						
+						// Switch mode
+						General.Editing.ChangeMode(newmode);
+					}
 				}
 			}
 		}
-
+		
 		// This switches to the mode
 		public void SwitchToMode()
 		{
