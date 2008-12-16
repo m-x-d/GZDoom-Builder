@@ -32,6 +32,7 @@ using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Plugins;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
@@ -56,6 +57,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private EditMode newmode;
 		private Type prevmode;
 		private Type prevstablemode;
+		private Type prevclassicmode;
 
 		// Disposing
 		private bool isdisposed = false;
@@ -69,6 +71,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public EditMode NewMode { get { return newmode; } }
 		public Type PreviousMode { get { return prevmode; } }
 		public Type PreviousStableMode { get { return prevstablemode; } }
+		public Type PreviousClassicMode { get { return prevclassicmode; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		
 		#endregion
@@ -123,9 +126,43 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		#endregion
+
+		#region ================== Switch Actions
+		
+		// This unbinds all editing mode switch actions
+		private void UnbindSwitchActions()
+		{
+			foreach(EditModeInfo emi in allmodes)
+			{
+				emi.UnbindSwitchAction();
+			}
+		}
+		
+		// This binds all editing mode switch actions for the available modes only
+		private void BindAvailableSwitchActions()
+		{
+			// In case of VisualMode, we only bind the switch action
+			// of the VisualMode to switch back to the previous mode
+			if(mode is VisualMode)
+			{
+				// Bind only the switch action for this mode
+				EditModeInfo info = GetEditModeInfo(mode.GetType());
+				info.BindSwitchAction();
+			}
+			else
+			{
+				// Bind all available mode swtich actions
+				foreach(EditModeInfo emi in usedmodes)
+				{
+					emi.BindSwitchAction();
+				}
+			}
+		}
+		
+		#endregion
 		
 		#region ================== Methods
-		
+
 		// This returns specific editing mode info by name
 		internal EditModeInfo GetEditModeInfo(string editmodename)
 		{
@@ -140,12 +177,25 @@ namespace CodeImp.DoomBuilder.Editing
 			return null;
 		}
 		
+		// This returns specific editing mode info by name
+		internal EditModeInfo GetEditModeInfo(Type modetype)
+		{
+			// Find the edit mode
+			foreach(EditModeInfo emi in usedmodes)
+			{
+				// Mode matches class name?
+				if(emi.Type == modetype) return emi;
+			}
+			
+			// No such mode found
+			return null;
+		}
+		
 		// This is called when the editing modes must update
 		internal void UpdateCurrentEditModes()
 		{
 			// Unbind editing mode switch actions
-			foreach(EditModeInfo emi in allmodes)
-				emi.UnbindSwitchAction();
+			UnbindSwitchActions();
 			
 			// Rebuild list of used modes
 			usedmodes.Clear();
@@ -160,10 +210,12 @@ namespace CodeImp.DoomBuilder.Editing
 					{
 						// Add the mode to be used and bind switch action
 						usedmodes.Add(emi);
-						emi.BindSwitchAction();
 					}
 				}
 			}
+			
+			// Bind switch action for used modes
+			BindAvailableSwitchActions();
 			
 			// Remove editing mode buttons from interface
 			General.MainWindow.RemoveEditModeButtons();
@@ -219,44 +271,50 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				General.WriteLogLine("Stopping edit mode...");
 			}
-
+			
 			// Remember previous mode
 			newmode = nextmode;
 			if(mode != null)
 			{
 				prevmode = mode.GetType();
 				if(!mode.Attributes.Volatile) prevstablemode = prevmode;
+				if(mode is ClassicMode) prevclassicmode = prevmode;
 			}
 			else
 			{
 				prevmode = null;
 				prevstablemode = null;
+				prevclassicmode = null;
 			}
-
+			
 			// Let the plugins know beforehand and check if not cancelled
 			if(General.Plugins.ModeChanges(oldmode, newmode))
 			{
 				// Disenagage old mode
 				if(oldmode != null) oldmode.OnDisengage();
-
+				
 				// Reset cursor
 				General.Interface.SetCursor(Cursors.Default);
-
+				
 				// Apply new mode
 				mode = newmode;
-
+				
 				// Engage new mode
 				if(newmode != null) newmode.OnEngage();
-
+				
+				// Bind new switch actions
+				UnbindSwitchActions();
+				BindAvailableSwitchActions();
+				
 				// Update the interface
 				General.MainWindow.EditModeChanged();
-
+				
 				// Dispose old mode
 				if(oldmode != null) oldmode.Dispose();
-
+				
 				// Done switching
 				newmode = null;
-
+				
 				// Redraw the display
 				General.MainWindow.RedrawDisplay();
 				return true;
