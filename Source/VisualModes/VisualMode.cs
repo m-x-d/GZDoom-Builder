@@ -93,6 +93,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		public Vector3D CameraPosition { get { return campos; } set { campos = value; } }
 		public Vector3D CameraTarget { get { return camtarget; } }
+		public float CameraAngleXY { get { return camanglexy; } }
+		public float CameraAngleZ { get { return camanglez; } }
 		public Sector CameraSector { get { return camsector; } }
 		public bool ProcessGeometry { get { return processgeometry; } set { processgeometry = value; } }
 		public bool ProcessThings { get { return processthings; } set { processthings = value; } }

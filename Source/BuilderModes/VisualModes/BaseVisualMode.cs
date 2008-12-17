@@ -120,6 +120,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			locktarget = false;
 		}
 		
+		// This picks a new target, if not locked
+		private void PickTargetUnlocked()
+		{
+			if(!locktarget) PickTarget();
+		}
+		
 		// This picks a new target
 		private void PickTarget()
 		{
@@ -220,7 +226,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Time to pick a new target?
 			if(General.Clock.CurrentTime > (lastpicktime + PICK_INTERVAL))
 			{
-				if(!locktarget) PickTarget();
+				PickTargetUnlocked();
 				lastpicktime = General.Clock.CurrentTime;
 			}
 		}
@@ -269,13 +275,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PickTarget();
 		}
 		
+		// Mouse moves
+		public override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+		}
+		
 		#endregion
 
 		#region ================== Actions
-
+		
 		[BeginAction("visualselect", BaseAction = true)]
 		public void BeginSelect()
 		{
+			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectBegin();
 		}
 
@@ -288,6 +301,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("visualedit", BaseAction = true)]
 		public void BeginEdit()
 		{
+			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditBegin();
 		}
 
@@ -300,24 +314,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("raisesector8")]
 		public void RaiseSector8()
 		{
+			PickTargetUnlocked();
 			ChangeTargetHeight(8);
 		}
 
 		[BeginAction("lowersector8")]
 		public void LowerSector8()
 		{
+			PickTargetUnlocked();
 			ChangeTargetHeight(-8);
 		}
 
 		[BeginAction("raisesector1")]
 		public void RaiseSector1()
 		{
+			PickTargetUnlocked();
 			ChangeTargetHeight(1);
 		}
-
+		
 		[BeginAction("lowersector1")]
 		public void LowerSector1()
 		{
+			PickTargetUnlocked();
 			ChangeTargetHeight(-1);
 		}
 
