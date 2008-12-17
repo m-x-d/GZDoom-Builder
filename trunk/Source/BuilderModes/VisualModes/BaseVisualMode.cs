@@ -229,6 +229,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				PickTargetUnlocked();
 				lastpicktime = General.Clock.CurrentTime;
 			}
+			
+			// The mouse is always in motion
+			MouseEventArgs args = new MouseEventArgs(General.Interface.MouseButtons, 0, 0, 0, 0);
+			OnMouseMove(args);
 		}
 		
 		// This draws a frame
@@ -279,6 +283,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnMouseMove(e);
 		}
 		
 		#endregion
@@ -288,6 +293,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("visualselect", BaseAction = true)]
 		public void BeginSelect()
 		{
+			General.WriteLogLine("BeginSelect");
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectBegin();
 		}
@@ -295,6 +301,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[EndAction("visualselect", BaseAction = true)]
 		public void EndSelect()
 		{
+			General.WriteLogLine("EndSelect");
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectEnd();
 		}
 

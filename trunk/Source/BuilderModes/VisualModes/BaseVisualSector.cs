@@ -45,10 +45,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 		
 		protected BaseVisualMode mode;
+
+		protected VisualFloor floor;
+		protected VisualCeiling ceiling;
+		protected Dictionary<Sidedef, VisualSidedefParts> sides;
 		
 		#endregion
 
 		#region ================== Properties
+
+		public VisualFloor Floor { get { return floor; } }
+		public VisualCeiling Ceiling { get { return ceiling; } }
 
 		#endregion
 
@@ -73,7 +80,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!IsDisposed)
 			{
 				// Clean up
-
+				sides = null;
+				floor = null;
+				ceiling = null;
+				
 				// Dispose base
 				base.Dispose();
 			}
@@ -90,14 +100,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.ClearGeometry();
 			
 			// Create floor
-			VisualFloor vf = new VisualFloor(mode, this);
-			if(vf.Setup()) base.AddGeometry(vf);
+			floor = new VisualFloor(mode, this);
+			if(floor.Setup()) base.AddGeometry(floor);
 
 			// Create ceiling
-			VisualCeiling vc = new VisualCeiling(mode, this);
-			if(vc.Setup()) base.AddGeometry(vc);
+			ceiling = new VisualCeiling(mode, this);
+			if(ceiling.Setup()) base.AddGeometry(ceiling);
 
 			// Go for all sidedefs
+			sides = new Dictionary<Sidedef, VisualSidedefParts>(base.Sector.Sidedefs.Count);
 			foreach(Sidedef sd in base.Sector.Sidedefs)
 			{
 				// Doublesided or singlesided?
@@ -114,14 +125,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Create middle part
 					VisualMiddleDouble vm = new VisualMiddleDouble(mode, this, sd);
 					if(vm.Setup()) base.AddGeometry(vm);
+
+					// Store
+					sides.Add(sd, new VisualSidedefParts(vu, vl, vm));
 				}
 				else
 				{
 					// Create middle part
 					VisualMiddleSingle vm = new VisualMiddleSingle(mode, this, sd);
 					if(vm.Setup()) base.AddGeometry(vm);
+					
+					// Store
+					sides.Add(sd, new VisualSidedefParts(vm));
 				}
 			}
+		}
+		
+		// This returns the visual sidedef parts for a given sidedef
+		public VisualSidedefParts GetSidedefParts(Sidedef sd)
+		{
+			if(sides.ContainsKey(sd))
+				return sides[sd];
+			else
+				return new VisualSidedefParts();
 		}
 		
 		#endregion

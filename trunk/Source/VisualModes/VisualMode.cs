@@ -93,8 +93,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		public Vector3D CameraPosition { get { return campos; } set { campos = value; } }
 		public Vector3D CameraTarget { get { return camtarget; } }
-		public float CameraAngleXY { get { return camanglexy; } }
-		public float CameraAngleZ { get { return camanglez; } }
+		public float CameraAngleXY { get { return camanglexy; } set { camanglexy = value; } }
+		public float CameraAngleZ { get { return camanglez; } set { camanglez = value; } }
 		public Sector CameraSector { get { return camsector; } }
 		public bool ProcessGeometry { get { return processgeometry; } set { processgeometry = value; } }
 		public bool ProcessThings { get { return processthings; } set { processthings = value; } }
@@ -256,7 +256,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Change camera angles with the mouse changes
 			camanglexy -= delta.x * ANGLE_FROM_MOUSE;
 			camanglez += delta.y * ANGLE_FROM_MOUSE;
-			
+
 			// Normalize angles
 			camanglexy = Angle2D.Normalized(camanglexy);
 			camanglez = Angle2D.Normalized(camanglez);
@@ -264,8 +264,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Limit vertical angle
 			if(camanglez < MAX_ANGLEZ_LOW) camanglez = MAX_ANGLEZ_LOW;
 			if(camanglez > MAX_ANGLEZ_HIGH) camanglez = MAX_ANGLEZ_HIGH;
-			
-			General.MainWindow.UpdateCoordinates(new Vector2D(camanglexy, camanglez));
 		}
 
 		[BeginAction("moveforward", BaseAction = true)]
