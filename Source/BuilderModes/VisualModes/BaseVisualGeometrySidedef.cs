@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		protected BaseVisualMode mode;
+
 		protected float top;
 		protected float bottom;
 		
@@ -54,12 +56,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Constructor / Destructor
-
+		
 		// Constructor for sidedefs
-		public BaseVisualGeometrySidedef(VisualSector vs, Sidedef sd) : base(vs, sd)
+		public BaseVisualGeometrySidedef(BaseVisualMode mode, VisualSector vs, Sidedef sd) : base(vs, sd)
 		{
+			this.mode = mode;
 		}
-
+		
 		#endregion
 
 		#region ================== Methods

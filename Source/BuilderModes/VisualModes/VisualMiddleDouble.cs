@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualMiddleDouble(VisualSector vs, Sidedef s) : base(vs, s)
+		public VisualMiddleDouble(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
 			// Set render pass
 			this.RenderPass = RenderPass.Mask;

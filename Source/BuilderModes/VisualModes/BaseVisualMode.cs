@@ -97,14 +97,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This creates a visual sector
 		protected override VisualSector CreateVisualSector(Sector s)
 		{
-			BaseVisualSector vs = new BaseVisualSector(s);
+			BaseVisualSector vs = new BaseVisualSector(this, s);
 			return vs;
 		}
 		
 		// This creates a visual thing
 		protected override VisualThing CreateVisualThing(Thing t)
 		{
-			BaseVisualThing vt = new BaseVisualThing(t);
+			BaseVisualThing vt = new BaseVisualThing(this, t);
 			if(vt.Setup()) return vt; else return null;
 		}
 		
