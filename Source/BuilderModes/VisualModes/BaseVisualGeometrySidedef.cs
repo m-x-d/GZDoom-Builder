@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 		
 		public bool IsDraggingUV { get { return uvdragging; } }
+		new public BaseVisualSector Sector { get { return (BaseVisualSector)base.Sector; } }
 		
 		#endregion
 		
@@ -77,6 +78,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mode = mode;
 			this.deltaz = new Vector3D(0.0f, 0.0f, 1.0f);
 			this.deltaxy = (sd.Line.End.Position - sd.Line.Start.Position) * sd.Line.LengthInv;
+			if(!sd.IsFront) this.deltaxy = -this.deltaxy;
 		}
 		
 		#endregion
@@ -104,11 +106,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Events
 		
 		// Unused
-		public virtual void OnSelectBegin() { }
-		public virtual void OnSelectEnd() { }
+		public virtual void OnEditBegin() { }
 		
-		// Edit button pressed
-		public virtual void OnEditBegin()
+		// Select button pressed
+		public virtual void OnSelectBegin()
 		{
 			dragstartanglexy = mode.CameraAngleXY;
 			dragstartanglez = mode.CameraAngleZ;
@@ -117,8 +118,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			startoffsety = Sidedef.OffsetY;
 		}
 		
-		// Edit button released
-		public virtual void OnEditEnd()
+		// Select button released
+		public virtual void OnSelectEnd()
 		{
 			// Was dragging?
 			if(uvdragging)
@@ -129,11 +130,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				List<Linedef> lines = new List<Linedef>();
-				lines.Add(this.Sidedef.Line);
-				DialogResult result = General.Interface.ShowEditLinedefs(lines);
-				if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+				// Add/remove selection
 			}
+		}
+		
+		// Edit button released
+		public virtual void OnEditEnd()
+		{
+			List<Linedef> lines = new List<Linedef>();
+			lines.Add(this.Sidedef.Line);
+			DialogResult result = General.Interface.ShowEditLinedefs(lines);
+			if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
 		}
 		
 		// Mouse moves
@@ -146,15 +153,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				// Check if tolerance is exceeded to start UV dragging
-				float deltaxy = mode.CameraAngleXY - dragstartanglexy;
-				float deltaz = mode.CameraAngleZ - dragstartanglez;
-				if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
+				// Select button pressed?
+				if(General.Interface.CheckActionActive(General.ThisAssembly, "visualselect"))
 				{
-					// Start drag now
-					uvdragging = true;
-					mode.LockTarget();
-					UpdateDragUV();
+					// Check if tolerance is exceeded to start UV dragging
+					float deltaxy = mode.CameraAngleXY - dragstartanglexy;
+					float deltaz = mode.CameraAngleZ - dragstartanglez;
+					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
+					{
+						// Start drag now
+						uvdragging = true;
+						mode.LockTarget();
+						UpdateDragUV();
+					}
 				}
 			}
 		}
@@ -175,13 +186,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector3D dragdeltaz = dragdelta * deltaz;
 			float offsetx = dragdeltaxy.GetLength();
 			float offsety = dragdeltaz.GetLength();
+			if((Math.Sign(dragdeltaxy.x) < 0) || (Math.Sign(dragdeltaxy.y) < 0) || (Math.Sign(dragdeltaxy.z) < 0)) offsetx = -offsetx;
+			if((Math.Sign(dragdeltaz.x) < 0) || (Math.Sign(dragdeltaz.y) < 0) || (Math.Sign(dragdeltaz.z) < 0)) offsety = -offsety;
 			
 			// Apply offsets
-			Sidedef.OffsetX = startoffsetx + (int)Math.Round(offsetx);
+			Sidedef.OffsetX = startoffsetx - (int)Math.Round(offsetx);
 			Sidedef.OffsetY = startoffsety + (int)Math.Round(offsety);
 			
-			// TODO: Update sidedef geometry
-			
+			// Update sidedef geometry
+			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+			if(parts.lower != null) parts.lower.Setup();
+			if(parts.middledouble != null) parts.middledouble.Setup();
+			if(parts.middlesingle != null) parts.middlesingle.Setup();
+			if(parts.upper != null) parts.upper.Setup();
 		}
 		
 		#endregion

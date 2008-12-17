@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Properties
 
-		internal static Assembly ThisAssembly { get { return thisasm; } }
+		public static Assembly ThisAssembly { get { return thisasm; } }
 		public static string AppPath { get { return apppath; } }
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }

@@ -48,7 +48,8 @@ namespace CodeImp.DoomBuilder.Windows
 		bool AutoMerge { get; }
 		bool SnapToGrid { get; }
 		bool MouseExclusive { get; }
-
+		MouseButtons MouseButtons { get; }
+		
 		// Methods
 		void DisplayReady();
 		void DisplayStatus(string status);

@@ -126,6 +126,7 @@
     <Compile Include="ClassicModes\ThingsMode.cs" />
     <Compile Include="ClassicModes\VerticesMode.cs" />
     <Compile Include="VisualModes\VisualMiddleDouble.cs" />
+    <Compile Include="VisualModes\VisualSidedefParts.cs" />
     <Compile Include="VisualModes\VisualUpper.cs" />
   </ItemGroup>
   <ItemGroup>

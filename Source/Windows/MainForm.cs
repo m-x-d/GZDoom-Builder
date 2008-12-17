@@ -92,6 +92,7 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Input
 		private bool shift, ctrl, alt;
+		private MouseButtons mousebuttons;
 		private MouseInput mouseinput;
 		private Rectangle originalclip;
 		private bool mouseexclusive;
@@ -132,6 +133,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool ShiftState { get { return shift; } }
 		public bool CtrlState { get { return ctrl; } }
 		public bool AltState { get { return alt; } }
+		public MouseButtons MouseButtons { get { return mousebuttons; } }
 		public bool MouseInDisplay { get { return mouseinside; } }
 		internal RenderTargetControl Display { get { return display; } }
 		public bool SnapToGrid { get { return buttonsnaptogrid.Checked; } }
@@ -364,6 +366,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Release all pressed keys
 			General.Actions.ReleaseAllKeys();
+			mousebuttons = MouseButtons.None;
 
 			// Stop exclusive mouse input
 			BreakExclusiveMouseInput();
@@ -873,15 +876,24 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// Mouse click
-		private void display_MouseClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseClick(e); }
+		private void display_MouseClick(object sender, MouseEventArgs e)
+		{
+			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseClick(e);
+		}
 
 		// Mouse doubleclick
-		private void display_MouseDoubleClick(object sender, MouseEventArgs e) { if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseDoubleClick(e); }
+		private void display_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseDoubleClick(e);
+		}
 
 		// Mouse down
 		private void display_MouseDown(object sender, MouseEventArgs e)
 		{
 			int key = 0;
+			
+			// Apply button
+			mousebuttons |= e.Button;
 			
 			// Create key
 			switch(e.Button)
@@ -925,6 +937,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			int key = 0;
 
+			// Apply button
+			mousebuttons &= ~e.Button;
+			
 			// Create key
 			switch(e.Button)
 			{
