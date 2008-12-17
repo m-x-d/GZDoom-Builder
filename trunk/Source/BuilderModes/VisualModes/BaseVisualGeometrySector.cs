@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		protected BaseVisualMode mode;
+
 		#endregion
 
 		#region ================== Properties
@@ -53,8 +55,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public BaseVisualGeometrySector(VisualSector vs) : base(vs)
+		public BaseVisualGeometrySector(BaseVisualMode mode, VisualSector vs) : base(vs)
 		{
+			this.mode = mode;
 		}
 
 		#endregion

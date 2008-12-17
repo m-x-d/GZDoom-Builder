@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualFloor(VisualSector vs) : base(vs)
+		public VisualFloor(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);

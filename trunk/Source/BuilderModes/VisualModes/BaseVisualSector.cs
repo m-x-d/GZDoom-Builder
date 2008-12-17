@@ -43,7 +43,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Variables
-
+		
+		protected BaseVisualMode mode;
+		
 		#endregion
 
 		#region ================== Properties
@@ -53,8 +55,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public BaseVisualSector(Sector s) : base(s)
+		public BaseVisualSector(BaseVisualMode mode, Sector s) : base(s)
 		{
+			this.mode = mode;
+			
 			// Initialize
 			Rebuild();
 			
@@ -86,11 +90,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.ClearGeometry();
 			
 			// Create floor
-			VisualFloor vf = new VisualFloor(this);
+			VisualFloor vf = new VisualFloor(mode, this);
 			if(vf.Setup()) base.AddGeometry(vf);
 
 			// Create ceiling
-			VisualCeiling vc = new VisualCeiling(this);
+			VisualCeiling vc = new VisualCeiling(mode, this);
 			if(vc.Setup()) base.AddGeometry(vc);
 
 			// Go for all sidedefs
@@ -100,21 +104,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(sd.Other != null)
 				{
 					// Create upper part
-					VisualUpper vu = new VisualUpper(this, sd);
+					VisualUpper vu = new VisualUpper(mode, this, sd);
 					if(vu.Setup()) base.AddGeometry(vu);
 					
 					// Create lower part
-					VisualLower vl = new VisualLower(this, sd);
+					VisualLower vl = new VisualLower(mode, this, sd);
 					if(vl.Setup()) base.AddGeometry(vl);
 					
 					// Create middle part
-					VisualMiddleDouble vm = new VisualMiddleDouble(this, sd);
+					VisualMiddleDouble vm = new VisualMiddleDouble(mode, this, sd);
 					if(vm.Setup()) base.AddGeometry(vm);
 				}
 				else
 				{
 					// Create middle part
-					VisualMiddleSingle vm = new VisualMiddleSingle(this, sd);
+					VisualMiddleSingle vm = new VisualMiddleSingle(mode, this, sd);
 					if(vm.Setup()) base.AddGeometry(vm);
 				}
 			}

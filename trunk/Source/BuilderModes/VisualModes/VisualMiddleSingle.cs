@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualMiddleSingle(VisualSector vs, Sidedef s) : base(vs, s)
+		public VisualMiddleSingle(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);

@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Variables
+
+		protected BaseVisualMode mode;
 		
 		private ThingTypeInfo info;
 		private bool isloaded;
@@ -63,8 +65,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Setup
 		
 		// Constructor
-		public BaseVisualThing(Thing t) : base(t)
+		public BaseVisualThing(BaseVisualMode mode, Thing t) : base(t)
 		{
+			this.mode = mode;
+			
 			Rebuild();
 			
 			// We have no destructor
@@ -128,9 +132,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
-			// Setup position and size
+			// Determine position
 			Vector3D pos = Thing.Position;
-			if(Thing.Sector != null) pos.z += Thing.Sector.FloorHeight;
+			if(info.Hangs)
+			{
+				// Hang from ceiling
+				if(Thing.Sector != null) pos.z = Thing.Sector.CeilHeight - info.Height;
+				if(Thing.Position.z > 0) pos.z -= Thing.Position.z;
+				
+				// Check if below floor
+				if((Thing.Sector != null) && (pos.z < Thing.Sector.FloorHeight))
+				{
+					// Put thing on the floor
+					pos.z = Thing.Sector.FloorHeight;
+				}
+			}
+			else
+			{
+				// Stand on floor
+				if(Thing.Sector != null) pos.z = Thing.Sector.FloorHeight;
+				if(Thing.Position.z > 0) pos.z += Thing.Position.z;
+				
+				// Check if above ceiling
+				if((Thing.Sector != null) && ((pos.z + info.Height) > Thing.Sector.CeilHeight))
+				{
+					// Put thing against ceiling
+					pos.z = Thing.Sector.CeilHeight - info.Height;
+				}
+			}
+			
+			// Apply settings
 			SetPosition(pos);
 			SetCageSize(info.Width, info.Height);
 			SetCageColor(Thing.Color);
