@@ -43,5 +43,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnSelectEnd();
 		void OnEditBegin();
 		void OnEditEnd();
+		void OnMouseMove(MouseEventArgs e);
 	}
 }
