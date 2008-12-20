@@ -117,8 +117,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.Texture = General.Map.Data.Hourglass3D;
 					
 					// Determine sprite size
-					float radius = info.Width;
-					float height = info.Height;
+					float radius = Math.Min(info.Width, info.Height / 2f);
+					float height = Math.Min(info.Width * 2f, info.Height);
 					
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
