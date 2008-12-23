@@ -76,6 +76,23 @@ namespace CodeImp.DoomBuilder.Geometry
 			foreach(EarClipVertex v in p) base.AddLast(v);
 		}
 		
+		// This creates a bounding box from the outer polygon
+		public RectangleF CreateBBox()
+		{
+			float left = float.MaxValue;
+			float right = float.MinValue;
+			float top = float.MaxValue;
+			float bottom = float.MinValue;
+			foreach(EarClipVertex v in this)
+			{
+				if(v.Position.x < left) left = v.Position.x;
+				if(v.Position.x > right) right = v.Position.x;
+				if(v.Position.y < top) top = v.Position.y;
+				if(v.Position.y > bottom) bottom = v.Position.y;
+			}
+			return new RectangleF(left, top, right - left, bottom - top);
+		}
+		
 		// Point inside the polygon?
 		// See: http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
 		public bool Intersect(Vector2D p)

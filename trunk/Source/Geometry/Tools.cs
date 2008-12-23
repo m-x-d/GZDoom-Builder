@@ -133,6 +133,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			Linedef foundline;
 			float foundangle = 0f;
 			bool foundlinefront;
+			RectangleF bbox = p.CreateBBox();
 			
 			do
 			{
@@ -142,28 +143,33 @@ namespace CodeImp.DoomBuilder.Geometry
 				foundv = null;
 				foreach(Vertex v in General.Map.Map.Vertices)
 				{
-					// More to the right?
-					if((foundv == null) || (v.Position.x >= foundv.Position.x))
+					// Inside the polygon bounding box?
+					if((v.Position.x >= bbox.Left) && (v.Position.x <= bbox.Right) &&
+					   (v.Position.x >= bbox.Top) && (v.Position.x <= bbox.Bottom))
 					{
-						// Vertex is inside the polygon?
-						if(p.Intersect(v.Position))
+						// More to the right?
+						if((foundv == null) || (v.Position.x >= foundv.Position.x))
 						{
-							// Vertex has lines attached?
-							if(v.Linedefs.Count > 0)
+							// Vertex is inside the polygon?
+							if(p.Intersect(v.Position))
 							{
-								// Go for all lines to see if the vertex is not of the polygon itsself
-								vvalid = true;
-								foreach(LinedefSide ls in alllines)
+								// Vertex has lines attached?
+								if(v.Linedefs.Count > 0)
 								{
-									if((ls.Line.Start == v) || (ls.Line.End == v))
+									// Go for all lines to see if the vertex is not of the polygon itsself
+									vvalid = true;
+									foreach(LinedefSide ls in alllines)
 									{
-										vvalid = false;
-										break;
+										if((ls.Line.Start == v) || (ls.Line.End == v))
+										{
+											vvalid = false;
+											break;
+										}
 									}
-								}
 
-								// Valid vertex?
-								if(vvalid) foundv = v;
+									// Valid vertex?
+									if(vvalid) foundv = v;
+								}
 							}
 						}
 					}
