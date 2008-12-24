@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 		
-		private const float DRAG_ANGLE_TOLERANCE = 0.02f;
+		private const float DRAG_ANGLE_TOLERANCE = 0.1f;
 		
 		#endregion
 
@@ -60,6 +60,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int startoffsetx;
 		private int startoffsety;
 		protected bool uvdragging;
+
+		// Undo/redo
+		private int undoticket;
 		
 		#endregion
 		
@@ -162,6 +165,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float deltaz = mode.CameraAngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
+						General.Map.UndoRedo.CreateUndo("Change texture offsets");
+
 						// Start drag now
 						uvdragging = true;
 						mode.LockTarget();
@@ -211,6 +216,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Rebuild sector
 			Sector.Rebuild();
+
+			// Go for all things in this sector
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				if(t.Sector == Sector.Sector)
+				{
+					if(mode.VisualThingExists(t))
+					{
+						// Update thing
+						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+						vt.Setup();
+					}
+				}
+			}
+		}
+		
+		// Texture offset change
+		public virtual void OnChangeTextureOffset(int horizontal, int vertical)
+		{
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = General.Map.UndoRedo.CreateUndo("Change texture offsets");
+			
+			// Apply offsets
+			Sidedef.OffsetX -= horizontal;
+			Sidedef.OffsetY -= vertical;
+
+			// Update sidedef geometry
+			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+			if(parts.lower != null) parts.lower.Setup();
+			if(parts.middledouble != null) parts.middledouble.Setup();
+			if(parts.middlesingle != null) parts.middlesingle.Setup();
+			if(parts.upper != null) parts.upper.Setup();
 		}
 		
 		#endregion

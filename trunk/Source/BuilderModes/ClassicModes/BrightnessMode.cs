@@ -660,7 +660,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(orderedselection.Count > 0)
 			{
 				// Create undo
-				undoticket = General.Map.UndoRedo.CreateUndo("Adjust brightness", UndoGroup.None, 0);
+				undoticket = General.Map.UndoRedo.CreateUndo("Adjust brightness");
 				
 				// Start editing
 				mode = ModifyMode.Adjusting;

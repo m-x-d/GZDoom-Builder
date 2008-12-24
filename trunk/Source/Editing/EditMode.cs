@@ -206,6 +206,8 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		// Generic events
 		public virtual void OnReloadResources() { }
+		public virtual void OnMapSetChangeBegin() { }
+		public virtual void OnMapSetChangeEnd() { }
 		
 		#endregion
 	}

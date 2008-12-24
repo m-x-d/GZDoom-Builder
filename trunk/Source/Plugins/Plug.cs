@@ -153,6 +153,20 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 		/// <summary>
+		/// Occurs before the MapSet is changed. This means that the active MapSet will be disposed and changed to a new one.
+		/// </summary>
+		public virtual void OnMapSetChangeBegin()
+		{
+		}
+
+		/// <summary>
+		/// Occurs after the MapSet is changed.
+		/// </summary>
+		public virtual void OnMapSetChangeEnd()
+		{
+		}
+
+		/// <summary>
 		/// This is called after the constructor to allow a plugin to initialize.
 		/// </summary>
 		public virtual void OnInitialize()

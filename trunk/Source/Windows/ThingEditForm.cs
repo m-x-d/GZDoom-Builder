@@ -331,7 +331,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Make undo
 			if(things.Count > 1) undodesc = things.Count + " things";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc, UndoGroup.None, 0);
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 			
 			// Go for all the things
 			foreach(Thing t in things)

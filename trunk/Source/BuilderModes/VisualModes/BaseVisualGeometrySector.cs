@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectEnd() { }
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
+		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
 		
 		// Edit button released
 		public virtual void OnEditEnd()
@@ -96,6 +97,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Rebuild sector
 			Sector.Rebuild();
 			
+			// Go for all things in this sector
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				if(t.Sector == Sector.Sector)
+				{
+					if(mode.VisualThingExists(t))
+					{
+						// Update thing
+						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+						vt.Setup();
+					}
+				}
+			}
+
 			// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
 			foreach(Sidedef sd in Sector.Sector.Sidedefs)
 			{
@@ -116,6 +131,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Rebuild sector
 			Sector.Rebuild();
+
+			// Go for all things in this sector
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				if(t.Sector == Sector.Sector)
+				{
+					if(mode.VisualThingExists(t))
+					{
+						// Update thing
+						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+						vt.Setup();
+					}
+				}
+			}
 		}
 		
 		#endregion

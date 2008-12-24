@@ -938,7 +938,7 @@ namespace CodeImp.DoomBuilder
 			General.Interface.SetCursor(Cursors.WaitCursor);
 			
 			// Make undo
-			undoredo.CreateUndo("Assign to group " + groupindex, UndoGroup.None, 0);
+			undoredo.CreateUndo("Assign to group " + groupindex);
 			
 			// Make selection
 			map.AddSelectionToGroup(0x01 << groupindex);
@@ -1240,6 +1240,10 @@ namespace CodeImp.DoomBuilder
 		// This sets a new mapset for editing
 		internal void ChangeMapSet(MapSet newmap)
 		{
+			// Let the plugin and editing mode know
+			General.Plugins.OnMapSetChangeBegin();
+			if(General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeBegin();
+			
 			// Can't have a selection in an old map set
 			map.ClearAllSelected();
 
@@ -1249,6 +1253,10 @@ namespace CodeImp.DoomBuilder
 			map.UpdateConfiguration();
 			map.Update();
 			thingsfilter.Update();
+			
+			// Let the plugin and editing mode know
+			General.Plugins.OnMapSetChangeEnd();
+			if(General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeEnd();
 		}
 		
 		// This reloads resources

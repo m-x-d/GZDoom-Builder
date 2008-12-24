@@ -343,6 +343,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(-8);
 		}
+
+		[BeginAction("movetextureleft")]
+		public void MoveTextureLeft()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(-1, 0);
+		}
+
+		[BeginAction("movetextureright")]
+		public void MoveTextureRight()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(1, 0);
+		}
+
+		[BeginAction("movetextureup")]
+		public void MoveTextureUp()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, -1);
+		}
+
+		[BeginAction("movetexturedown")]
+		public void MoveTextureDown()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, 1);
+		}
 		
 		#endregion
 	}

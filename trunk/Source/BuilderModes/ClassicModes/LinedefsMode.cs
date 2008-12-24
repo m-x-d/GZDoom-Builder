@@ -545,9 +545,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
-					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " linedefs", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " linedefs");
 				else
-					General.Map.UndoRedo.CreateUndo("Delete linedef", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Delete linedef");
 				
 				// Dispose selected linedefs
 				foreach(Linedef ld in selected) ld.Dispose();
@@ -577,9 +577,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
-					General.Map.UndoRedo.CreateUndo("Split " + selected.Count + " linedefs", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Split " + selected.Count + " linedefs");
 				else
-					General.Map.UndoRedo.CreateUndo("Split linedef", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Split linedef");
 				
 				// Go for all linedefs to split
 				foreach(Linedef ld in selected)
@@ -648,9 +648,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
-					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " linedefs", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " linedefs");
 				else
-					General.Map.UndoRedo.CreateUndo("Flip linedef", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Flip linedef");
 
 				// Flip all selected linedefs
 				foreach(Linedef l in selected)
@@ -674,9 +674,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
-					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " sidedefs", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " sidedefs");
 				else
-					General.Map.UndoRedo.CreateUndo("Flip sidedef", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Flip sidedef");
 
 				// Flip sidedefs in all selected linedefs
 				foreach(Linedef l in selected)

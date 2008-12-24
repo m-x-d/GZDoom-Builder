@@ -308,7 +308,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Make undo
 			if(lines.Count > 1) undodesc = lines.Count + " linedefs";
-			General.Map.UndoRedo.CreateUndo("Edit " + undodesc, UndoGroup.None, 0);
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 
 			// Go for all the lines
 			foreach(Linedef l in lines)

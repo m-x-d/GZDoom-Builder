@@ -35,14 +35,20 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	internal class UndoSnapshot
+	public class UndoSnapshot
 	{
-		public MemoryStream mapdata;
-		public string description;
-		public int ticketid;			// For safe withdrawing
+		// Variables
+		private MemoryStream mapdata;
+		private string description;
+		private int ticketid;			// For safe withdrawing
 
+		// Properties
+		internal MemoryStream MapData { get { return mapdata; } }
+		public string Description { get { return description; } }
+		public int TicketID { get { return ticketid; } }
+		
 		// Constructor
-		public UndoSnapshot(string description, MemoryStream mapdata, int ticketid)
+		internal UndoSnapshot(string description, MemoryStream mapdata, int ticketid)
 		{
 			this.ticketid = ticketid;
 			this.description = description;
@@ -50,11 +56,18 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Constructor
-		public UndoSnapshot(UndoSnapshot info, MemoryStream mapdata)
+		internal UndoSnapshot(UndoSnapshot info, MemoryStream mapdata)
 		{
 			this.ticketid = info.ticketid;
 			this.description = info.description;
 			this.mapdata = mapdata;
+		}
+
+		// Disposer
+		public void Dispose()
+		{
+			if(mapdata != null) mapdata.Dispose();
+			mapdata = null;
 		}
 	}
 }

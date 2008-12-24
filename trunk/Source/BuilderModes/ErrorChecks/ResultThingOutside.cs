@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This removes the thing
 		public override bool Button1Click()
 		{
-			General.Map.UndoRedo.CreateUndo("Delete thing", UndoGroup.None, 0);
+			General.Map.UndoRedo.CreateUndo("Delete thing");
 			thing.Dispose();
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();

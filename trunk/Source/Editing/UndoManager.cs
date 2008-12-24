@@ -61,8 +61,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		internal UndoSnapshot NextUndo { get { if(undos.Count > 0) return undos[0]; else return null; } }
-		internal UndoSnapshot NextRedo { get { if(redos.Count > 0) return redos[0]; else return null; } }
+		public UndoSnapshot NextUndo { get { if(undos.Count > 0) return undos[0]; else return null; } }
+		public UndoSnapshot NextRedo { get { if(redos.Count > 0) return redos[0]; else return null; } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private void ClearRedos()
 		{
 			// Dispose all redos
-			foreach(UndoSnapshot u in redos) u.mapdata.Dispose();
+			foreach(UndoSnapshot u in redos) u.Dispose();
 			redos.Clear();
 		}
 
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private void ClearUndos()
 		{
 			// Dispose all undos
-			foreach(UndoSnapshot u in undos) u.mapdata.Dispose();
+			foreach(UndoSnapshot u in undos) u.Dispose();
 			undos.Clear();
 		}
 
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Remove one and dispose map
 				u = list[list.Count - 1];
-				u.mapdata.Dispose();
+				u.Dispose();
 				list.RemoveAt(list.Count - 1);
 			}
 		}
@@ -147,6 +147,12 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			ClearRedos();
 			General.MainWindow.UpdateInterface();
+		}
+		
+		// This makes an undo and returns the unique ticket id
+		public int CreateUndo(string description)
+		{
+			return CreateUndo(description, UndoGroup.None, 0);
 		}
 		
 		// This makes an undo and returns the unique ticket id
@@ -197,12 +203,12 @@ namespace CodeImp.DoomBuilder.Editing
 			if(undos.Count > 0)
 			{
 				// Check if the ticket id matches
-				if(ticket == undos[0].ticketid)
+				if(ticket == undos[0].TicketID)
 				{
-					General.WriteLogLine("Withdrawing undo snapshot \"" + undos[0].description + "\", Ticket ID " + ticket + "...");
+					General.WriteLogLine("Withdrawing undo snapshot \"" + undos[0].Description + "\", Ticket ID " + ticket + "...");
 
 					// Remove the last made undo
-					undos[0].mapdata.Dispose();
+					undos[0].Dispose();
 					undos.RemoveAt(0);
 					
 					// Update
@@ -236,7 +242,7 @@ namespace CodeImp.DoomBuilder.Editing
 							u = undos[0];
 							undos.RemoveAt(0);
 
-							General.WriteLogLine("Performing undo \"" + u.description + "\", Ticket ID " + u.ticketid + "...");
+							General.WriteLogLine("Performing undo \"" + u.Description + "\", Ticket ID " + u.TicketID + "...");
 
 							// Make a snapshot for redo
 							r = new UndoSnapshot(u, General.Map.Map.Serialize());
@@ -249,7 +255,7 @@ namespace CodeImp.DoomBuilder.Editing
 							lastgroup = UndoGroup.None;
 							
 							// Change map set
-							General.Map.ChangeMapSet(new MapSet(u.mapdata));
+							General.Map.ChangeMapSet(new MapSet(u.MapData));
 
 							// Remove selection
 							General.Map.Map.ClearAllMarks(false);
@@ -294,7 +300,7 @@ namespace CodeImp.DoomBuilder.Editing
 						r = redos[0];
 						redos.RemoveAt(0);
 
-						General.WriteLogLine("Performing redo \"" + r.description + "\", Ticket ID " + r.ticketid + "...");
+						General.WriteLogLine("Performing redo \"" + r.Description + "\", Ticket ID " + r.TicketID + "...");
 
 						// Make a snapshot for undo
 						u = new UndoSnapshot(r, General.Map.Map.Serialize());
@@ -307,7 +313,7 @@ namespace CodeImp.DoomBuilder.Editing
 						lastgroup = UndoGroup.None;
 
 						// Change map set
-						General.Map.ChangeMapSet(new MapSet(r.mapdata));
+						General.Map.ChangeMapSet(new MapSet(r.MapData));
 
 						// Remove selection
 						General.Map.Map.ClearAllMarks(false);
