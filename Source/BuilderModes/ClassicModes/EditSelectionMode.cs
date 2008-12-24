@@ -736,7 +736,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					t.Move(thingpos[index++]);
 
 				// Make undo
-				General.Map.UndoRedo.CreateUndo("Edit selection", UndoGroup.None, 0);
+				General.Map.UndoRedo.CreateUndo("Edit selection");
 				
 				// Mark selected geometry
 				General.Map.Map.ClearAllMarks(false);

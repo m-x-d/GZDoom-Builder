@@ -256,6 +256,18 @@ namespace CodeImp.DoomBuilder.Plugins
 		{
 			foreach(Plugin p in plugins) p.Plug.OnMapNewEnd();
 		}
+		
+
+		public void OnMapSetChangeBegin()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapSetChangeBegin();
+		}
+
+
+		public void OnMapSetChangeEnd()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapSetChangeEnd();
+		}
 
 
 		public void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices)

@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnAccept()
 		{
 			// Create undo
-			General.Map.UndoRedo.CreateUndo("Curve linedefs", UndoGroup.None, 0);
+			General.Map.UndoRedo.CreateUndo("Curve linedefs");
 			
 			// Go for all selected lines
 			foreach(Linedef ld in selectedlines)

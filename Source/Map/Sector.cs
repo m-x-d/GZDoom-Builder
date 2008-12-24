@@ -49,9 +49,6 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Sidedefs
 		private LinkedList<Sidedef> sidedefs;
-
-		// Things
-		//private LinkedList<Thing> things;
 		
 		// Properties
 		private int index;
@@ -85,7 +82,6 @@ namespace CodeImp.DoomBuilder.Map
 
 		public MapSet Map { get { return map; } }
 		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
-		//public ICollection<Thing> Things { get { return things; } }
 		public int Index { get { return index; } }
 		public int FloorHeight { get { return floorheight; } set { floorheight = value; } }
 		public int CeilHeight { get { return ceilheight; } set { ceilheight = value; } }
@@ -117,7 +113,6 @@ namespace CodeImp.DoomBuilder.Map
 			this.map = map;
 			this.mainlistitem = listitem;
 			this.sidedefs = new LinkedList<Sidedef>();
-			//this.things = new LinkedList<Thing>();
 			this.index = index;
 			this.floortexname = "-";
 			this.ceiltexname = "-";
@@ -138,7 +133,6 @@ namespace CodeImp.DoomBuilder.Map
 			this.map = map;
 			this.mainlistitem = listitem;
 			this.sidedefs = new LinkedList<Sidedef>();
-			//this.things = new LinkedList<Thing>();
 			this.triangulationneeded = true;
 
 			ReadWrite(stream);
@@ -177,7 +171,6 @@ namespace CodeImp.DoomBuilder.Map
 				flatfloorbuffer = null;
 				mainlistitem = null;
 				sidedefs = null;
-				//things = null;
 				map = null;
 
 				// Dispose base
@@ -250,12 +243,6 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 		}
-		
-		// This attaches a thing and returns the listitem
-		//public LinkedListNode<Thing> AttachThing(Thing t) { return things.AddLast(t); }
-		
-		// This detaches a thing
-		//public void DetachThing(LinkedListNode<Thing> l) { if(!isdisposed) things.Remove(l); }
 		
 		// This updates the sector when changes have been made
 		public void UpdateCache()

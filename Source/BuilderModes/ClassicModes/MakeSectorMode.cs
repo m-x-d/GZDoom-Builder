@@ -326,7 +326,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Make the sector
 					General.Interface.SetCursor(Cursors.WaitCursor);
 					General.Settings.FindDefaultDrawSettings();
-					General.Map.UndoRedo.CreateUndo("Make Sector", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Make Sector");
 					Sector s = Tools.MakeSector(allsides);
 					General.Interface.SetCursor(Cursors.Default);
 					
@@ -371,7 +371,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Make the sector
 					General.Interface.SetCursor(Cursors.WaitCursor);
 					General.Settings.FindDefaultDrawSettings();
-					General.Map.UndoRedo.CreateUndo("Make Sector", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Make Sector");
 					Sector s = Tools.MakeSector(allsides);
 					General.Interface.SetCursor(Cursors.Default);
 

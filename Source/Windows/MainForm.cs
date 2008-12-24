@@ -1690,13 +1690,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Determine undo description
 			if(itemundo.Enabled)
-				itemundo.Text = "Undo " + General.Map.UndoRedo.NextUndo.description;
+				itemundo.Text = "Undo " + General.Map.UndoRedo.NextUndo.Description;
 			else
 				itemundo.Text = "Undo";
 
 			// Determine redo description
 			if(itemredo.Enabled)
-				itemredo.Text = "Redo " + General.Map.UndoRedo.NextRedo.description;
+				itemredo.Text = "Redo " + General.Map.UndoRedo.NextRedo.Description;
 			else
 				itemredo.Text = "Redo";
 			

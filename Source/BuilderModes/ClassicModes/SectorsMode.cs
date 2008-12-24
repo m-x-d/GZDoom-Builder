@@ -730,7 +730,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					floortex = form.FloorTexture;
 					
 					// Create undo
-					General.Map.UndoRedo.CreateUndo("Make door (" + doortex + ")", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Make door (" + doortex + ")");
 					
 					// Go for all selected sectors
 					foreach(Sector s in orderedselection)
@@ -824,9 +824,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
-					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " sectors", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " sectors");
 				else
-					General.Map.UndoRedo.CreateUndo("Delete sector", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Delete sector");
 
 				// Dispose selected sectors
 				foreach(Sector s in selected)
@@ -874,7 +874,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(count > 1)
 			{
 				// Make undo
-				General.Map.UndoRedo.CreateUndo("Join " + count + " sectors", UndoGroup.None, 0);
+				General.Map.UndoRedo.CreateUndo("Join " + count + " sectors");
 
 				// Merge
 				JoinMergeSectors(false);
@@ -898,7 +898,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(count > 1)
 			{
 				// Make undo
-				General.Map.UndoRedo.CreateUndo("Merge " + count + " sectors", UndoGroup.None, 0);
+				General.Map.UndoRedo.CreateUndo("Merge " + count + " sectors");
 
 				// Merge
 				JoinMergeSectors(true);

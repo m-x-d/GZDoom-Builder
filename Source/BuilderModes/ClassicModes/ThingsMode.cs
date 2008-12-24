@@ -552,9 +552,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
-					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " things", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " things");
 				else
-					General.Map.UndoRedo.CreateUndo("Delete thing", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Delete thing");
 
 				// Dispose selected things
 				foreach(Thing t in selected) t.Dispose();

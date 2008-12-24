@@ -252,7 +252,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(l != null)
 				{
 					// Create undo
-					General.Map.UndoRedo.CreateUndo("Split linedef", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Split linedef");
 
 					// Create vertex at nearest point on line
 					Vector2D nearestpos = l.NearestOnLine(mousemappos);
@@ -457,9 +457,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
-					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
 				else
-					General.Map.UndoRedo.CreateUndo("Delete vertex", UndoGroup.None, 0);
+					General.Map.UndoRedo.CreateUndo("Delete vertex");
 
 				// Dispose selected vertices
 				foreach(Vertex v in selected) v.Dispose();

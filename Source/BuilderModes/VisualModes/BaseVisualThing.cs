@@ -56,6 +56,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector3D boxp1;
 		private Vector3D boxp2;
 		
+		// Undo/redo
+		private int undoticket;
+		
 		#endregion
 		
 		#region ================== Properties
@@ -93,6 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				
 				// Check if the texture is loaded
+				sprite.LoadImage();
 				isloaded = sprite.IsImageLoaded;
 				if(isloaded)
 				{
@@ -332,8 +336,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectEnd() { }
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
-		public virtual void OnChangeTargetHeight(int amount) { }
 		public virtual void OnChangeTargetBrightness(int amount) { }
+		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
 
 		// Edit button released
 		public virtual void OnEditEnd()
@@ -342,6 +346,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			things.Add(this.Thing);
 			DialogResult result = General.Interface.ShowEditThings(things);
 			if(result == DialogResult.OK) this.Rebuild();
+		}
+		
+		// Raise/lower thing
+		public virtual void OnChangeTargetHeight(int amount)
+		{
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = General.Map.UndoRedo.CreateUndo("Change thing height");
+
+			Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
+
+			this.Setup();
 		}
 		
 		#endregion

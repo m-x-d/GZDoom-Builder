@@ -46,5 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnMouseMove(MouseEventArgs e);
 		void OnChangeTargetHeight(int amount);
 		void OnChangeTargetBrightness(int amount);
+		void OnChangeTextureOffset(int horizontal, int vertical);
 	}
 }
