@@ -892,6 +892,11 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			int key = 0;
 			
+			int mod = 0;
+			if(alt) mod |= (int)Keys.Alt;
+			if(shift) mod |= (int)Keys.Shift;
+			if(ctrl) mod |= (int)Keys.Control;
+			
 			// Apply button
 			mousebuttons |= e.Button;
 			
@@ -906,7 +911,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			// Invoke any actions associated with this key
-			General.Actions.KeyPressed(key);
+			General.Actions.KeyPressed(key | mod);
 			
 			// Invoke on editing mode
 			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseDown(e);
@@ -936,7 +941,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private void display_MouseUp(object sender, MouseEventArgs e)
 		{
 			int key = 0;
-
+			
+			int mod = 0;
+			if(alt) mod |= (int)Keys.Alt;
+			if(shift) mod |= (int)Keys.Shift;
+			if(ctrl) mod |= (int)Keys.Control;
+			
 			// Apply button
 			mousebuttons &= ~e.Button;
 			
@@ -949,9 +959,9 @@ namespace CodeImp.DoomBuilder.Windows
 				case MouseButtons.XButton1: key = (int)Keys.XButton1; break;
 				case MouseButtons.XButton2: key = (int)Keys.XButton2; break;
 			}
-
+			
 			// Invoke any actions associated with this key
-			General.Actions.KeyReleased(key);
+			General.Actions.KeyReleased(key | mod);
 
 			// Invoke on editing mode
 			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseUp(e);
@@ -1065,21 +1075,26 @@ namespace CodeImp.DoomBuilder.Windows
 		// When the mouse wheel is changed
 		protected override void OnMouseWheel(MouseEventArgs e)
 		{
+			int mod = 0;
+			if(alt) mod |= (int)Keys.Alt;
+			if(shift) mod |= (int)Keys.Shift;
+			if(ctrl) mod |= (int)Keys.Control;
+			
 			// Scrollwheel up?
 			if(e.Delta > 0)
 			{
 				// Invoke actions for scrollwheel
 				//for(int i = 0; i < e.Delta; i += 120)
-				General.Actions.KeyPressed((int)SpecialKeys.MScrollUp);
-				General.Actions.KeyReleased((int)SpecialKeys.MScrollUp);
+				General.Actions.KeyPressed((int)SpecialKeys.MScrollUp | mod);
+				General.Actions.KeyReleased((int)SpecialKeys.MScrollUp | mod);
 			}
 			// Scrollwheel down?
 			else if(e.Delta < 0)
 			{
 				// Invoke actions for scrollwheel
 				//for(int i = 0; i > e.Delta; i -= 120)
-				General.Actions.KeyPressed((int)SpecialKeys.MScrollDown);
-				General.Actions.KeyReleased((int)SpecialKeys.MScrollDown);
+				General.Actions.KeyPressed((int)SpecialKeys.MScrollDown | mod);
+				General.Actions.KeyReleased((int)SpecialKeys.MScrollDown | mod);
 			}
 			
 			// Let the base know

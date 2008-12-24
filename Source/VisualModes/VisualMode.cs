@@ -699,22 +699,22 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// This returns the VisualSector for the given Sector.
 		/// </summary>
-		protected VisualSector GetVisualSector(Sector s) { return allsectors[s]; }
+		public VisualSector GetVisualSector(Sector s) { return allsectors[s]; }
 		
 		/// <summary>
 		/// This returns the VisualThing for the given Thing.
 		/// </summary>
-		protected VisualThing GetVisualThing(Thing t) { return allthings[t]; }
+		public VisualThing GetVisualThing(Thing t) { return allthings[t]; }
 
 		/// <summary>
 		/// Returns True when a VisualSector has been created for the specified Sector.
 		/// </summary>
-		protected bool VisualSectorExists(Sector s) { return allsectors.ContainsKey(s); }
+		public bool VisualSectorExists(Sector s) { return allsectors.ContainsKey(s); }
 
 		/// <summary>
 		/// Returns True when a VisualThing has been created for the specified Thing.
 		/// </summary>
-		protected bool VisualThingExists(Thing t) { return allthings.ContainsKey(t); }
+		public bool VisualThingExists(Thing t) { return allthings.ContainsKey(t); }
 
 		/// <summary>
 		/// This is called when the blockmap needs to be refilled, because it was invalidated.

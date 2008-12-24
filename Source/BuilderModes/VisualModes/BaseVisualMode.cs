@@ -187,29 +187,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			target = newtarget;
 		}
 		
-		// This changes the target's height
-		private void ChangeTargetHeight(int amount)
-		{
-			if(target.picked is BaseVisualGeometrySector)
-			{
-				BaseVisualGeometrySector vgs = (target.picked as BaseVisualGeometrySector);
-				vgs.ChangeHeight(amount);
-
-				// Rebuild sector
-				(vgs.Sector as BaseVisualSector).Rebuild();
-
-				// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
-				foreach(Sidedef sd in vgs.Sector.Sector.Sidedefs)
-				{
-					if((sd.Other != null) && VisualSectorExists(sd.Other.Sector))
-					{
-						BaseVisualSector bvs = (BaseVisualSector)GetVisualSector(sd.Other.Sector);
-						bvs.Rebuild();
-					}
-				}
-			}
-		}
-		
 		#endregion
 		
 		#region ================== Events
@@ -322,28 +299,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseSector8()
 		{
 			PickTargetUnlocked();
-			ChangeTargetHeight(8);
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(8);
 		}
 
 		[BeginAction("lowersector8")]
 		public void LowerSector8()
 		{
 			PickTargetUnlocked();
-			ChangeTargetHeight(-8);
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(-8);
 		}
 
 		[BeginAction("raisesector1")]
 		public void RaiseSector1()
 		{
 			PickTargetUnlocked();
-			ChangeTargetHeight(1);
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(1);
 		}
 		
 		[BeginAction("lowersector1")]
 		public void LowerSector1()
 		{
 			PickTargetUnlocked();
-			ChangeTargetHeight(-1);
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(-1);
 		}
 
 		[BeginAction("showvisualthings")]
@@ -351,6 +328,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			BuilderPlug.Me.ShowVisualThings++;
 			if(BuilderPlug.Me.ShowVisualThings > 2) BuilderPlug.Me.ShowVisualThings = 0;
+		}
+
+		[BeginAction("raisebrightness8")]
+		public void RaiseBrightness8()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(8);
+		}
+
+		[BeginAction("lowerbrightness8")]
+		public void LowerBrightness8()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(-8);
 		}
 		
 		#endregion

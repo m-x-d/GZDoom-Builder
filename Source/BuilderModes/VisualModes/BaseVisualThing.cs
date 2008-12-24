@@ -332,6 +332,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectEnd() { }
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
+		public virtual void OnChangeTargetHeight(int amount) { }
+		public virtual void OnChangeTargetBrightness(int amount) { }
 
 		// Edit button released
 		public virtual void OnEditEnd()
