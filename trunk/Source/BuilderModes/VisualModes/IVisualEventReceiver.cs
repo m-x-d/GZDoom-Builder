@@ -44,5 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnEditBegin();
 		void OnEditEnd();
 		void OnMouseMove(MouseEventArgs e);
+		void OnChangeTargetHeight(int amount);
+		void OnChangeTargetBrightness(int amount);
 	}
 }

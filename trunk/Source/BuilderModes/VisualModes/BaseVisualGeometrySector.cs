@@ -49,7 +49,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Properties
-
+		
+		new public BaseVisualSector Sector { get { return (BaseVisualSector)base.Sector; } }
+		
 		#endregion
 
 		#region ================== Constructor / Destructor
@@ -65,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This changes the height
-		public abstract void ChangeHeight(int amount);
+		protected abstract void ChangeHeight(int amount);
 
 		#endregion
 
@@ -84,6 +86,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			sectors.Add(this.Sector.Sector);
 			DialogResult result = General.Interface.ShowEditSectors(sectors);
 			if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+		}
+
+		// Sector height change
+		public virtual void OnChangeTargetHeight(int amount)
+		{
+			ChangeHeight(amount);
+			
+			// Rebuild sector
+			Sector.Rebuild();
+			
+			// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
+			foreach(Sidedef sd in Sector.Sector.Sidedefs)
+			{
+				if((sd.Other != null) && mode.VisualSectorExists(sd.Other.Sector))
+				{
+					BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
+					bvs.Rebuild();
+				}
+			}
+		}
+		
+		// Sector brightness change
+		public virtual void OnChangeTargetBrightness(int amount)
+		{
+			// Change brightness
+			General.Map.UndoRedo.CreateUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.Index);
+			Sector.Sector.Brightness = General.Clamp(Sector.Sector.Brightness + amount, 0, 255);
+			
+			// Rebuild sector
+			Sector.Rebuild();
 		}
 		
 		#endregion

@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This changes the height
-		public override void ChangeHeight(int amount)
+		protected override void ChangeHeight(int amount)
 		{
 			General.Map.UndoRedo.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, this.Sector.Sector.Index);
 			this.Sector.Sector.CeilHeight += amount;

@@ -35,5 +35,6 @@ namespace CodeImp.DoomBuilder.Editing
 		None,
 		FloorHeightChange,
 		CeilingHeightChange,
+		SectorBrightnessChange,
 	}
 }

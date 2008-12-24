@@ -107,6 +107,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Unused
 		public virtual void OnEditBegin() { }
+		public virtual void OnChangeTargetHeight(int amount) { }
 		
 		// Select button pressed
 		public virtual void OnSelectBegin()
@@ -199,6 +200,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(parts.middledouble != null) parts.middledouble.Setup();
 			if(parts.middlesingle != null) parts.middlesingle.Setup();
 			if(parts.upper != null) parts.upper.Setup();
+		}
+		
+		// Sector brightness change
+		public virtual void OnChangeTargetBrightness(int amount)
+		{
+			// Change brightness
+			General.Map.UndoRedo.CreateUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.Index);
+			Sector.Sector.Brightness = General.Clamp(Sector.Sector.Brightness + amount, 0, 255);
+			
+			// Rebuild sector
+			Sector.Rebuild();
 		}
 		
 		#endregion
