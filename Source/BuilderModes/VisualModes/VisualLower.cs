@@ -154,6 +154,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
+
+		// Return texture name
+		public override string GetTextureName()
+		{
+			return this.Sidedef.LowTexture;
+		}
+		
+		// This changes the texture
+		protected override void SetTexture(string texturename)
+		{
+			this.Sidedef.SetTextureLow(texturename);
+			General.Map.Data.UpdateUsedTextures();
+			this.Setup();
+		}
 		
 		#endregion
 	}

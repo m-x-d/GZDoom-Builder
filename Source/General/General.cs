@@ -674,7 +674,7 @@ namespace CodeImp.DoomBuilder
 			// Cancel loading map from command-line parameters, if any.
 			// This causes problems, because when the window is shown, the map will
 			// be loaded and DirectX is initialized (which we seem to be missing)
-			autoloadfile = null;
+			CancelAutoMapLoad();
 			
 			// Ask the user to download DirectX
 			if(MessageBox.Show("This application requires the latest version of Microsoft DirectX installed on your computer." + Environment.NewLine +
@@ -744,6 +744,12 @@ namespace CodeImp.DoomBuilder
 					}
 				}
 			}
+		}
+		
+		// This cancels automatic map loading
+		internal static void CancelAutoMapLoad()
+		{
+			autoloadfile = null;
 		}
 		
 		#endregion
@@ -1334,7 +1340,9 @@ namespace CodeImp.DoomBuilder
 			Cursor.Current = Cursors.Default;
 			
 			// Show message
-			result = MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Error);
+			IWin32Window window = null;
+			if((Form.ActiveForm != null) && Form.ActiveForm.Visible) window = Form.ActiveForm;
+			result = MessageBox.Show(window, message, Application.ProductName, buttons, MessageBoxIcon.Error);
 
 			// Restore old cursor
 			Cursor.Current = oldcursor;
@@ -1363,7 +1371,9 @@ namespace CodeImp.DoomBuilder
 			Cursor.Current = Cursors.Default;
 
 			// Show message
-			result = MessageBox.Show(Form.ActiveForm, message, Application.ProductName, buttons, MessageBoxIcon.Warning, defaultbutton);
+			IWin32Window window = null;
+			if((Form.ActiveForm != null) && Form.ActiveForm.Visible) window = Form.ActiveForm;
+			result = MessageBox.Show(window, message, Application.ProductName, buttons, MessageBoxIcon.Warning, defaultbutton);
 
 			// Restore old cursor
 			Cursor.Current = oldcursor;
