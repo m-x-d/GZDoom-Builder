@@ -3,11 +3,13 @@ quality over quantity. It is done when it's done.
 The order and included items may also change any time.
 =========================================================
 
-- Make 3D Mode (config specific!)
-
 - Make texture alignment features
 
 - Make Prefabs support
+
+- Make Directory Resources support
+
+- Make PK3 Resources support
 
 =========================================================
   BETA TESTING STARTS HERE

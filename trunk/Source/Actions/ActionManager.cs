@@ -129,39 +129,49 @@ namespace CodeImp.DoomBuilder.Actions
 					// Load configuration from stream
 					cfg = new Configuration();
 					cfg.InputConfiguration(actionsreader.ReadToEnd());
-
-					// Done with the resource
-					actionsreader.Dispose();
-					actionsdata.Dispose();
-
-					// Read the categories structure
-					IDictionary cats = cfg.ReadSetting("categories", new Hashtable());
-					foreach(DictionaryEntry c in cats)
+					if(cfg.ErrorResult != 0)
 					{
-						// Make the category if not already added
-						if(!categories.ContainsKey(c.Key.ToString()))
-							categories.Add(c.Key.ToString(), c.Value.ToString());
+						string errordesc = "Error in Actions configuration on line " + cfg.ErrorLine + ": " + cfg.ErrorDescription;
+						General.CancelAutoMapLoad();
+						General.WriteLogLine("ERROR: Unable to read Actions configuration from assembly " + Path.GetFileName(asm.Location) + "!");
+						General.WriteLogLine(errordesc);
+						General.ShowErrorMessage("Unable to read Actions configuration from assembly " + Path.GetFileName(asm.Location) + "!\n" + errordesc, MessageBoxButtons.OK);
 					}
-					
-					// Go for all objects in the configuration
-					foreach(DictionaryEntry a in cfg.Root)
+					else
 					{
-						// Get action properties
-						shortname = a.Key.ToString();
-						name = asmname.Name.ToLowerInvariant() + "_" + shortname;
-						debugonly = cfg.ReadSetting(a.Key + ".debugonly", false);
-
-						// Not the categories structure?
-						if(shortname.ToLowerInvariant() != "categories")
+						// Read the categories structure
+						IDictionary cats = cfg.ReadSetting("categories", new Hashtable());
+						foreach(DictionaryEntry c in cats)
 						{
-							// Check if action should be included
-							if(General.DebugBuild || !debugonly)
+							// Make the category if not already added
+							if(!categories.ContainsKey(c.Key.ToString()))
+								categories.Add(c.Key.ToString(), c.Value.ToString());
+						}
+
+						// Go for all objects in the configuration
+						foreach(DictionaryEntry a in cfg.Root)
+						{
+							// Get action properties
+							shortname = a.Key.ToString();
+							name = asmname.Name.ToLowerInvariant() + "_" + shortname;
+							debugonly = cfg.ReadSetting(a.Key + ".debugonly", false);
+
+							// Not the categories structure?
+							if(shortname.ToLowerInvariant() != "categories")
 							{
-								// Create an action
-								CreateAction(cfg, name, shortname);
+								// Check if action should be included
+								if(General.DebugBuild || !debugonly)
+								{
+									// Create an action
+									CreateAction(cfg, name, shortname);
+								}
 							}
 						}
 					}
+					
+					// Done with the resource
+					actionsreader.Dispose();
+					actionsdata.Dispose();
 				}
 			}
 		}

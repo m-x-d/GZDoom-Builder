@@ -111,6 +111,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Unused
 		public virtual void OnEditBegin() { }
 		public virtual void OnChangeTargetHeight(int amount) { }
+		protected virtual void SetTexture(string texturename) { }
+		
+		// Select texture
+		public virtual void OnSelectTexture()
+		{
+			string oldtexture = GetTextureName();
+			string newtexture = General.Interface.BrowseTexture(General.Interface, oldtexture);
+			if(newtexture != oldtexture)
+			{
+				General.Map.UndoRedo.CreateUndo("Change texture " + newtexture);
+				SetTexture(newtexture);
+			}
+		}
+		
+		// Paste texture
+		public virtual void OnPasteTexture()
+		{
+			General.Map.UndoRedo.CreateUndo("Paste texture " + mode.CopiedTexture);
+			SetTexture(mode.CopiedTexture);
+		}
+
+		// Copy texture
+		public virtual void OnCopyTexture()
+		{
+			mode.CopiedTexture = GetTextureName();
+			if(General.Map.Config.MixTexturesFlats) mode.CopiedFlat = GetTextureName();
+		}
+
+		// Return texture name
+		public virtual string GetTextureName() { return ""; }
 		
 		// Select button pressed
 		public virtual void OnSelectBegin()
@@ -141,10 +171,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit button released
 		public virtual void OnEditEnd()
 		{
-			List<Linedef> lines = new List<Linedef>();
-			lines.Add(this.Sidedef.Line);
-			DialogResult result = General.Interface.ShowEditLinedefs(lines);
-			if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+			// Not using any modifier buttons
+			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
+			{
+				List<Linedef> lines = new List<Linedef>();
+				lines.Add(this.Sidedef.Line);
+				DialogResult result = General.Interface.ShowEditLinedefs(lines);
+				if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+			}
 		}
 		
 		// Mouse moves

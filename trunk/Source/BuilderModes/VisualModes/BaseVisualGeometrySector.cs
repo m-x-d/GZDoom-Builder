@@ -79,14 +79,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
+		protected virtual void SetTexture(string texturename) { }
+
+		// Select texture
+		public virtual void OnSelectTexture()
+		{
+			string oldtexture = GetTextureName();
+			string newtexture = General.Interface.BrowseFlat(General.Interface, oldtexture);
+			if(newtexture != oldtexture)
+			{
+				General.Map.UndoRedo.CreateUndo("Change flat " + newtexture);
+				SetTexture(newtexture);
+			}
+		}
+		
+		// Copy texture
+		public virtual void OnCopyTexture()
+		{
+			mode.CopiedFlat = GetTextureName();
+			if(General.Map.Config.MixTexturesFlats) mode.CopiedTexture = GetTextureName();
+		}
+		
+		public virtual void OnPasteTexture() { }
+
+		// Return texture name
+		public virtual string GetTextureName() { return ""; }
 		
 		// Edit button released
 		public virtual void OnEditEnd()
 		{
-			List<Sector> sectors = new List<Sector>();
-			sectors.Add(this.Sector.Sector);
-			DialogResult result = General.Interface.ShowEditSectors(sectors);
-			if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+			// Not using any modifier buttons
+			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
+			{
+				List<Sector> sectors = new List<Sector>();
+				sectors.Add(this.Sector.Sector);
+				DialogResult result = General.Interface.ShowEditSectors(sectors);
+				if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+			}
 		}
 
 		// Sector height change

@@ -110,6 +110,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Methods
 
+		// Paste texture
+		public override void OnPasteTexture()
+		{
+			General.Map.UndoRedo.CreateUndo("Paste floor " + mode.CopiedFlat);
+			SetTexture(mode.CopiedFlat);
+			this.Setup();
+		}
+
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{
@@ -150,6 +158,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef sd = MapSet.NearestSidedef(Sector.Sector.Sidedefs, pickintersect);
 			float side = sd.Line.SideOfLine(pickintersect);
 			return (((side <= 0.0f) && sd.IsFront) || ((side > 0.0f) && !sd.IsFront));
+		}
+
+		// Return texture name
+		public override string GetTextureName()
+		{
+			return this.Sector.Sector.FloorTexture;
+		}
+
+		// This changes the texture
+		protected override void SetTexture(string texturename)
+		{
+			this.Sector.Sector.SetFloorTexture(texturename);
+			General.Map.Data.UpdateUsedTextures();
+			this.Setup();
 		}
 		
 		#endregion

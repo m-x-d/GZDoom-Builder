@@ -60,9 +60,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private double lastpicktime;
 		private bool locktarget;
 		
+		// Texture copying
+		private string copiedtexture;
+		private string copiedflat;
+		
 		#endregion
 		
 		#region ================== Properties
+
+		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
+		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
 
 		#endregion
 		
@@ -370,6 +377,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, 1);
+		}
+
+		[BeginAction("textureselect")]
+		public void TextureSelect()
+		{
+			PickTargetUnlocked();
+			renderer.SetCrosshairBusy(true);
+			General.Interface.RedrawDisplay();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectTexture();
+			renderer.SetCrosshairBusy(false);
+		}
+
+		[BeginAction("texturecopy")]
+		public void TextureCopy()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyTexture();
+		}
+
+		[BeginAction("texturepaste")]
+		public void TexturePaste()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnPasteTexture();
 		}
 		
 		#endregion

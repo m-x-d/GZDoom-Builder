@@ -338,14 +338,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnMouseMove(MouseEventArgs e) { }
 		public virtual void OnChangeTargetBrightness(int amount) { }
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
+		public virtual void OnSelectTexture() { }
+		public virtual void OnCopyTexture() { }
+		public virtual void OnPasteTexture() { }
+
+		// Return texture name
+		public virtual string GetTextureName() { return ""; }
 
 		// Edit button released
 		public virtual void OnEditEnd()
 		{
-			List<Thing> things = new List<Thing>();
-			things.Add(this.Thing);
-			DialogResult result = General.Interface.ShowEditThings(things);
-			if(result == DialogResult.OK) this.Rebuild();
+			// Not using any modifier buttons
+			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
+			{
+				List<Thing> things = new List<Thing>();
+				things.Add(this.Thing);
+				DialogResult result = General.Interface.ShowEditThings(things);
+				if(result == DialogResult.OK) this.Rebuild();
+			}
 		}
 		
 		// Raise/lower thing

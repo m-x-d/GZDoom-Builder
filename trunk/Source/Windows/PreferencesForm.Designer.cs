@@ -382,6 +382,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// apply
 			// 
+			this.apply.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.apply.Location = new System.Drawing.Point(379, 428);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
@@ -1003,7 +1004,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.CancelButton = this.cancel;
+			this.CancelButton = this.apply;
 			this.ClientSize = new System.Drawing.Size(619, 464);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
