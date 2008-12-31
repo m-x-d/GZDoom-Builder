@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -214,7 +215,6 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Actions
 
 		// This shows the grid setup dialog
-		[BeginAction("gridsetup")]
 		internal void ShowGridSetup()
 		{
 			// Show preferences dialog
@@ -228,7 +228,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Done
 			gridform.Dispose();
 		}
-
+		
 		// This changes grid size
 		[BeginAction("gridinc")]
 		internal void IncreaseGrid()

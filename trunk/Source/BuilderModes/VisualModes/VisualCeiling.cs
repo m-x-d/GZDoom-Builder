@@ -126,9 +126,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Paste texture
 		public override void OnPasteTexture()
 		{
-			General.Map.UndoRedo.CreateUndo("Paste ceiling " + mode.CopiedFlat);
-			SetTexture(mode.CopiedFlat);
-			this.Setup();
+			if(mode.CopiedFlat != null)
+			{
+				General.Map.UndoRedo.CreateUndo("Paste ceiling " + mode.CopiedFlat);
+				SetTexture(mode.CopiedFlat);
+				this.Setup();
+			}
 		}
 		
 		// This changes the height

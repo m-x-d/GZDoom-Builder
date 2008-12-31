@@ -553,11 +553,6 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Application path:        " + apppath);
 			General.WriteLogLine("Temporary path:          " + temppath);
 			General.WriteLogLine("Local settings path:     " + settingspath);
-			General.WriteLogLine("Configurations path:     " + configspath);
-			General.WriteLogLine("Compilers path:          " + compilerspath);
-			General.WriteLogLine("Plugins path:            " + pluginspath);
-			General.WriteLogLine("Scripts path:            " + scriptspath);
-			General.WriteLogLine("Sprites path:            " + spritespath);
 			General.WriteLogLine("Command-line arguments:  " + args.Length);
 			for(int i = 0; i < args.Length; i++)
 				General.WriteLogLine("Argument " + i + ":   \"" + args[i] + "\"");

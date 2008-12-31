@@ -46,6 +46,23 @@ namespace CodeImp.DoomBuilder.Geometry
 			public string newtexlow;
 		}
 
+		private struct SidedefAlignJob
+		{
+			public Sidedef sidedef;
+			
+			public int offsetx;
+
+			// This is an absolute height in world space. Subtract the
+			// ceiling height to get the correct Y offset.
+			public int offsety;
+
+			// When this is true, the previous sidedef was on the left of
+			// this one and the texture X offset of this sidedef can be set
+			// directly. When this is false, the length of this sidedef
+			// must be subtracted from the X offset first.
+			public bool forward;
+		}
+		
 		#endregion
 		
 		#region ================== Constants
@@ -1173,6 +1190,119 @@ namespace CodeImp.DoomBuilder.Geometry
 				foreach(Vertex v in newverts) v.Marked = true;
 				foreach(Linedef l in newlines) l.Marked = true;
 			}
+		}
+		
+		#endregion
+		
+		#region ================== Texture Alignment
+
+		// This performs texture alignment along all walls that match with the same texture
+		// NOTE: This method uses the sidedefs marking to indicate which sides have been aligned
+		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
+		// Setting resetsidemarks to false is usefull to align only within a specific selection
+		// (set the marked property to true for the sidedefs outside the selection)
+		public static void AutoAlignTextures(Sidedef start, long texturelongname, bool alignx, bool aligny, bool resetsidemarks)
+		{
+			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
+			
+			// Mark all sidedefs false (they will be marked true when the texture is aligned)
+			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
+			
+			// Begin with first sidedef
+			SidedefAlignJob first = new SidedefAlignJob();
+			first.sidedef = start;
+			first.offsetx = start.OffsetX;
+			first.offsety = start.OffsetY + start.Sector.CeilHeight;
+			first.forward = true;
+			todo.Push(first);
+			
+			// Continue until nothing more to align
+			while(todo.Count > 0)
+			{
+				// Get the align job to do
+				SidedefAlignJob j = todo.Pop();
+				
+				if(j.forward)
+				{
+					Vertex v;
+					
+					// Apply alignment
+					if(alignx) j.sidedef.OffsetX = j.offsetx;
+					if(aligny) j.sidedef.OffsetY = j.offsety - j.sidedef.Sector.CeilHeight;
+					int forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length);
+					int backwardoffset = j.offsetx;
+					j.sidedef.Marked = true;
+					
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.offsety, texturelongname);
+
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.offsety, texturelongname);
+				}
+				else
+				{
+					Vertex v;
+
+					// Apply alignment
+					if(alignx) j.sidedef.OffsetX = j.offsetx - (int)Math.Round(j.sidedef.Line.Length);
+					if(aligny) j.sidedef.OffsetY = j.offsety - j.sidedef.Sector.CeilHeight;
+					int forwardoffset = j.offsetx;
+					int backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length);
+					j.sidedef.Marked = true;
+
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.offsety, texturelongname);
+
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.offsety, texturelongname);
+				}
+			}
+		}
+
+		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
+		private static void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, int offsetx, int offsety, long texturelongname)
+		{
+			foreach(Linedef ld in v.Linedefs)
+			{
+				Sidedef side1 = forward ? ld.Front : ld.Back;
+				Sidedef side2 = forward ? ld.Back : ld.Front;
+				if((ld.Start == v) && (side1 != null) && !side1.Marked)
+				{
+					if(SidedefTextureMatch(side1, texturelongname))
+					{
+						SidedefAlignJob nj = new SidedefAlignJob();
+						nj.forward = forward;
+						nj.offsetx = offsetx;
+						nj.offsety = offsety;
+						nj.sidedef = side1;
+						stack.Push(nj);
+					}
+				}
+				else if((ld.End == v) && (side2 != null) && !side2.Marked)
+				{
+					if(SidedefTextureMatch(side2, texturelongname))
+					{
+						SidedefAlignJob nj = new SidedefAlignJob();
+						nj.forward = forward;
+						nj.offsetx = offsetx;
+						nj.offsety = offsety;
+						nj.sidedef = side2;
+						stack.Push(nj);
+					}
+				}
+			}
+		}
+		
+		// This checks if any of the sidedef texture match the given texture
+		private static bool SidedefTextureMatch(Sidedef sd, long texturelongname)
+		{
+			return (sd.LongHighTexture == texturelongname) ||
+				   (sd.LongLowTexture == texturelongname) ||
+				   (sd.LongMiddleTexture == texturelongname);
 		}
 		
 		#endregion

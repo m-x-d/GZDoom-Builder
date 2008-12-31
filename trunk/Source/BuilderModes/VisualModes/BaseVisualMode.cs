@@ -47,9 +47,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 		
-		// Object picking interval
+		// Object picking
 		private const double PICK_INTERVAL = 100.0d;
 		private const float PICK_RANGE = 0.98f;
+
+		// Gravity
+		private const float GRAVITY = -0.06f;
+		private const float CAMERA_FLOOR_OFFSET = 41f;		// same as in doom
+		private const float CAMERA_CEILING_OFFSET = 10f;
 		
 		#endregion
 		
@@ -63,6 +68,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Texture copying
 		private string copiedtexture;
 		private string copiedflat;
+		
+		// Gravity vector
+		private Vector3D gravity;
 		
 		#endregion
 		
@@ -79,6 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public BaseVisualMode()
 		{
 			// Initialize
+			this.gravity = new Vector3D(0.0f, 0.0f, 0.0f);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -203,6 +212,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Process things?
 			base.ProcessThings = (BuilderPlug.Me.ShowVisualThings != 0);
+			
+			// Setup the move multiplier depending on gravity
+			Vector3D movemultiplier = new Vector3D(1.0f, 1.0f, 1.0f);
+			if(BuilderPlug.Me.UseGravity) movemultiplier.z = 0.0f;
+			base.MoveMultiplier = movemultiplier;
+			
+			// Apply gravity?
+			if(BuilderPlug.Me.UseGravity && (CameraSector != null))
+			{
+				// Camera below floor level?
+				if(base.CameraPosition.z <= (CameraSector.FloorHeight + CAMERA_FLOOR_OFFSET + 0.1f))
+				{
+					// Stay above floor
+					gravity = new Vector3D(0.0f, 0.0f, 0.0f);
+					base.CameraPosition = new Vector3D(base.CameraPosition.x, base.CameraPosition.y,
+													   CameraSector.FloorHeight + CAMERA_FLOOR_OFFSET);
+				}
+				else
+				{
+					// Fall down
+					gravity += new Vector3D(0.0f, 0.0f, (float)(GRAVITY * deltatime));
+					base.CameraPosition = base.CameraPosition + gravity;
+				}
+				
+				// Camera above ceiling level?
+				if(base.CameraPosition.z >= (CameraSector.CeilHeight - CAMERA_CEILING_OFFSET - 0.1f))
+				{
+					// Stay below ceiling
+					base.CameraPosition = new Vector3D(base.CameraPosition.x, base.CameraPosition.y,
+													   CameraSector.CeilHeight - CAMERA_CEILING_OFFSET);
+				}
+			}
+			else
+			{
+				gravity = new Vector3D(0.0f, 0.0f, 0.0f);
+			}
 			
 			// Do processing
 			base.OnProcess(deltatime);
@@ -401,6 +446,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnPasteTexture();
+		}
+
+		[BeginAction("visualautoalignx")]
+		public void TextureAutoAlignX()
+		{
+			PickTargetUnlocked();
+			renderer.SetCrosshairBusy(true);
+			General.Interface.RedrawDisplay();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(true, false);
+			renderer.SetCrosshairBusy(false);
+		}
+
+		[BeginAction("visualautoaligny")]
+		public void TextureAutoAlignY()
+		{
+			PickTargetUnlocked();
+			renderer.SetCrosshairBusy(true);
+			General.Interface.RedrawDisplay();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(false, true);
+			renderer.SetCrosshairBusy(false);
+		}
+
+		[BeginAction("toggleupperunpegged")]
+		public void ToggleUpperUnpegged()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleUpperUnpegged();
+		}
+
+		[BeginAction("togglelowerunpegged")]
+		public void ToggleLowerUnpegged()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleLowerUnpegged();
+		}
+
+		[BeginAction("togglegravity")]
+		public void ToggleGravity()
+		{
+			BuilderPlug.Me.UseGravity = !BuilderPlug.Me.UseGravity;
 		}
 		
 		#endregion

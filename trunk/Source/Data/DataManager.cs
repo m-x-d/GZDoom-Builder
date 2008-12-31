@@ -1053,6 +1053,12 @@ namespace CodeImp.DoomBuilder.Data
 				updatedusedtextures = true;
 			}
 		}
+
+		// This returns the long name for a string
+		public long GetLongImageName(string name)
+		{
+			return Lump.MakeLongName(name);
+		}
 		
 		#endregion
 	}

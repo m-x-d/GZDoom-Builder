@@ -150,16 +150,18 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This makes an undo and returns the unique ticket id
+		// Also automatically indicates that the map is changed
 		public int CreateUndo(string description)
 		{
 			return CreateUndo(description, UndoGroup.None, 0);
 		}
 		
 		// This makes an undo and returns the unique ticket id
+		// Also automatically indicates that the map is changed
 		public int CreateUndo(string description, UndoGroup group, int grouptag)
 		{
 			UndoSnapshot u;
-			
+
 			// Not the same as previous group?
 			if((group == UndoGroup.None) ||
 			   (group != lastgroup) ||
@@ -183,6 +185,9 @@ namespace CodeImp.DoomBuilder.Editing
 				// Keep grouping info
 				lastgroup = group;
 				lastgrouptag = grouptag;
+				
+				// Map changes!
+				General.Map.IsChanged = true;
 
 				// Update
 				General.MainWindow.UpdateInterface();
