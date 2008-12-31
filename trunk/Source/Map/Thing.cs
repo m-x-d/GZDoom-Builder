@@ -228,6 +228,77 @@ namespace CodeImp.DoomBuilder.Map
 				//sectorlistitem = sector.AttachThing(this);
 			}
 		}
+
+		// This translates the flags into UDMF fields
+		internal void TranslateToUDMF()
+		{
+			// First make a single integer with all flags
+			int bits = 0;
+			int flagbit = 0;
+			foreach(KeyValuePair<string, bool> f in flags)
+				if(int.TryParse(f.Key, out flagbit) && f.Value) bits |= flagbit;
+
+			// Now make the new flags
+			flags.Clear();
+			foreach(FlagTranslation f in General.Map.Config.ThingFlagsTranslation)
+			{
+				// Flag found in bits?
+				if((bits & f.Flag) == f.Flag)
+				{
+					// Add fields and remove bits
+					bits &= ~f.Flag;
+					for(int i = 0; i < f.Fields.Count; i++)
+						flags.Add(f.Fields[i], f.FieldValues[i]);
+				}
+				else
+				{
+					// Add fields with inverted value
+					for(int i = 0; i < f.Fields.Count; i++)
+						flags.Add(f.Fields[i], !f.FieldValues[i]);
+				}
+			}
+		}
+
+		// This translates UDMF fields back into the normal flags
+		internal void TranslateFromUDMF()
+		{
+			// Make copy of the flags
+			Dictionary<string, bool> oldfields = new Dictionary<string, bool>(flags);
+
+			// Make the flags
+			flags.Clear();
+			foreach(KeyValuePair<string, string> f in General.Map.Config.ThingFlags)
+			{
+				// Flag must be numeric
+				int flagbit = 0;
+				if(int.TryParse(f.Key, out flagbit))
+				{
+					foreach(FlagTranslation ft in General.Map.Config.ThingFlagsTranslation)
+					{
+						if(ft.Flag == flagbit)
+						{
+							// Only set this flag when the fields match
+							bool fieldsmatch = true;
+							for(int i = 0; i < ft.Fields.Count; i++)
+							{
+								if(!oldfields.ContainsKey(ft.Fields[i]) || (oldfields[ft.Fields[i]] != ft.FieldValues[i]))
+								{
+									fieldsmatch = false;
+									break;
+								}
+							}
+
+							// Field match? Then add the flag.
+							if(fieldsmatch)
+							{
+								flags.Add(f.Key, true);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
 		
 		#endregion
 		

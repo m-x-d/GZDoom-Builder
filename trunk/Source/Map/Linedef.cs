@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
@@ -335,6 +336,108 @@ namespace CodeImp.DoomBuilder.Map
 			// Update sectors as well
 			if(front != null) front.Sector.UpdateNeeded = true;
 			if(back != null) back.Sector.UpdateNeeded = true;
+		}
+		
+		// This translates the flags and activations into UDMF fields
+		internal void TranslateToUDMF()
+		{
+			// First make a single integer with all bits from activation and flags
+			int bits = activate;
+			int flagbit = 0;
+			foreach(KeyValuePair<string, bool> f in flags)
+				if(int.TryParse(f.Key, out flagbit) && f.Value) bits |= flagbit;
+			
+			// Now make the new flags
+			flags.Clear();
+			foreach(FlagTranslation f in General.Map.Config.LinedefFlagsTranslation)
+			{
+				// Flag found in bits?
+				if((bits & f.Flag) == f.Flag)
+				{
+					// Add fields and remove bits
+					bits &= ~f.Flag;
+					for(int i = 0; i < f.Fields.Count; i++)
+						flags.Add(f.Fields[i], f.FieldValues[i]);
+				}
+				else
+				{
+					// Add fields with inverted value
+					for(int i = 0; i < f.Fields.Count; i++)
+						flags.Add(f.Fields[i], !f.FieldValues[i]);
+				}
+			}
+		}
+		
+		// This translates UDMF fields back into the normal flags and activations
+		internal void TranslateFromUDMF()
+		{
+			// Make copy of the flags
+			Dictionary<string, bool> oldfields = new Dictionary<string, bool>(flags);
+
+			// Make the flags
+			flags.Clear();
+			foreach(KeyValuePair<string, string> f in General.Map.Config.LinedefFlags)
+			{
+				// Flag must be numeric
+				int flagbit = 0;
+				if(int.TryParse(f.Key, out flagbit))
+				{
+					foreach(FlagTranslation ft in General.Map.Config.LinedefFlagsTranslation)
+					{
+						if(ft.Flag == flagbit)
+						{
+							// Only set this flag when the fields match
+							bool fieldsmatch = true;
+							for(int i = 0; i < ft.Fields.Count; i++)
+							{
+								if(!oldfields.ContainsKey(ft.Fields[i]) || (oldfields[ft.Fields[i]] != ft.FieldValues[i]))
+								{
+									fieldsmatch = false;
+									break;
+								}
+							}
+							
+							// Field match? Then add the flag.
+							if(fieldsmatch)
+							{
+								flags.Add(f.Key, true);
+								break;
+							}
+						}
+					}
+				}
+			}
+			
+			// Make the activation
+			foreach(LinedefActivateInfo a in General.Map.Config.LinedefActivates)
+			{
+				bool foundactivation = false;
+				foreach(FlagTranslation ft in General.Map.Config.LinedefFlagsTranslation)
+				{
+					if(ft.Flag == a.Index)
+					{
+						// Only set this activation when the fields match
+						bool fieldsmatch = true;
+						for(int i = 0; i < ft.Fields.Count; i++)
+						{
+							if(!oldfields.ContainsKey(ft.Fields[i]) || (oldfields[ft.Fields[i]] != ft.FieldValues[i]))
+							{
+								fieldsmatch = false;
+								break;
+							}
+						}
+
+						// Field match? Then add the flag.
+						if(fieldsmatch)
+						{
+							activate = a.Index;
+							foundactivation = true;
+							break;
+						}
+					}
+				}
+				if(foundactivation) break;
+			}
 		}
 		
 		#endregion

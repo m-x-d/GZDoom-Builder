@@ -81,6 +81,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Dictionary<string, string> thingflags;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> things;
+		private List<FlagTranslation> thingflagstranslation;
 		
 		// Linedefs
 		private Dictionary<string, string> linedefflags;
@@ -89,6 +90,7 @@ namespace CodeImp.DoomBuilder.Config
 		private List<LinedefActionCategory> actioncategories;
 		private List<LinedefActivateInfo> linedefactivates;
 		private List<GeneralizedCategory> genactioncategories;
+		private List<FlagTranslation> linedefflagstranslation;
 		
 		// Sectors
 		private Dictionary<int, SectorEffectInfo> sectoreffects;
@@ -150,6 +152,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary<string, string> ThingFlags { get { return thingflags; } }
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> Things { get { return things.Values; } }
+		public List<FlagTranslation> ThingFlagsTranslation { get { return thingflagstranslation; } }
 		
 		// Linedefs
 		public IDictionary<string, string> LinedefFlags { get { return linedefflags; } }
@@ -158,6 +161,7 @@ namespace CodeImp.DoomBuilder.Config
 		public List<LinedefActionCategory> ActionCategories { get { return actioncategories; } }
 		public List<LinedefActivateInfo> LinedefActivates { get { return linedefactivates; } }
 		public List<GeneralizedCategory> GenActionCategories { get { return genactioncategories; } }
+		public List<FlagTranslation> LinedefFlagsTranslation { get { return linedefflagstranslation; } }
 
 		// Sectors
 		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
@@ -206,6 +210,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.texturesets = new List<DefinedTextureSet>();
 			this.makedoorargs = new int[Linedef.NUM_ARGS];
 			this.maplumps = new Dictionary<string, MapLumpInfo>();
+			this.thingflagstranslation = new List<FlagTranslation>();
+			this.linedefflagstranslation = new List<FlagTranslation>();
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -389,30 +395,15 @@ namespace CodeImp.DoomBuilder.Config
 			// Get linedef flags
 			dic = cfg.ReadSetting("linedefflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
-			{
-				/*
-				// Try paring the bit value
-				if(int.TryParse(de.Key.ToString(),
-					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
-					CultureInfo.InvariantCulture, out bitvalue))
-				{
-					// Check for conflict and add to list
-					if((bitvalue & bitflagscheck) == 0)
-						linedefflags.Add(bitvalue, de.Value.ToString());
-					else
-						General.WriteLogLine("WARNING: Structure 'linedefflags' contains conflicting bit flag keys. Make sure all keys are unique integers and powers of 2!");
-						
-					// Update bit flags checking value
-					bitflagscheck |= bitvalue;
-				}
-				else
-				{
-					General.WriteLogLine("WARNING: Structure 'linedefflags' contains invalid keys!");
-				}
-				*/
-				
 				linedefflags.Add(de.Key.ToString(), de.Value.ToString());
-			}
+
+			// Get translations
+			dic = cfg.ReadSetting("linedefflagstranslation", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+				linedefflagstranslation.Add(new FlagTranslation(de));
+
+			// Sort the translation flags, because they must be compared highest first!
+			linedefflagstranslation.Sort();
 		}
 
 		// Linedef actions and action categories
@@ -584,6 +575,14 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("thingflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				thingflags.Add(de.Key.ToString(), de.Value.ToString());
+			
+			// Get translations
+			dic = cfg.ReadSetting("thingflagstranslation", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+				thingflagstranslation.Add(new FlagTranslation(de));
+
+			// Sort the translation flags, because they must be compared highest first!
+			thingflagstranslation.Sort();
 		}
 
 		// Default thing flags

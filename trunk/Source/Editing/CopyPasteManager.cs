@@ -103,6 +103,9 @@ namespace CodeImp.DoomBuilder.Editing
 					// This links sidedefs that are not linked to a marked sector to a virtual sector
 					MapSet copyset = General.Map.Map.CloneMarked();
 					
+					// Convert flags and activations to UDMF fields, if needed
+					if(!(General.Map.FormatInterface is UniversalMapSetIO)) copyset.TranslateToUDMF();
+					
 					// Write data to stream
 					MemoryStream memstream = new MemoryStream();
 					UniversalStreamWriter writer = new UniversalStreamWriter();
@@ -150,9 +153,12 @@ namespace CodeImp.DoomBuilder.Editing
 						UniversalStreamReader reader = new UniversalStreamReader();
 						reader.StrictChecking = false;
 						reader.Read(General.Map.Map, memstream);
-
+						
 						// The new geometry is not marked, so invert the marks to get it marked
 						General.Map.Map.InvertAllMarks();
+
+						// Convert UDMF fields back to flags and activations, if needed
+						if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
 
 						// Done
 						memstream.Dispose();
