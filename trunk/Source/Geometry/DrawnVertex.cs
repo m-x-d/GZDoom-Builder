@@ -39,5 +39,6 @@ namespace CodeImp.DoomBuilder.Geometry
 	{
 		public Vector2D pos;
 		public bool stitch;
+		public bool stitchline;
 	}
 }

@@ -822,7 +822,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					newlines.Add(ld);
 
 					// Should we split this line to merge with intersecting lines?
-					if(points[i - 1].stitch && points[i].stitch)
+					if(points[i - 1].stitchline && points[i].stitchline)
 					{
 						// Check if any other lines intersect this line
 						List<float> intersections = new List<float>();

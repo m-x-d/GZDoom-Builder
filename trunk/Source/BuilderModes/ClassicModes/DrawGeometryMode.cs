@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 1; i < points.Count; i++)
 					{
 						// Determine line color
-						if(lastp.stitch && points[i].stitch) color = stitchcolor;
+						if(lastp.stitchline && points[i].stitchline) color = stitchcolor;
 						else color = losecolor;
 
 						// Render line
@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Determine line color
-					if(lastp.stitch && snaptonearest) color = stitchcolor;
+					if(lastp.stitchline && snaptonearest) color = stitchcolor;
 					else color = losecolor;
 
 					// Render line to cursor
@@ -177,11 +177,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Render vertices
 					for(int i = 0; i < points.Count; i++)
 					{
-						// Determine line color
+						// Determine vertex color
 						if(points[i].stitch) color = stitchcolor;
 						else color = losecolor;
 
-						// Render line
+						// Render vertex
 						renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 					}
 				}
@@ -208,12 +208,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, IRenderer2D renderer, List<DrawnVertex> points)
 		{
 			DrawnVertex p = new DrawnVertex();
+			float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
 
 			// Snap to nearest?
 			if(snaptonearest)
 			{
-				float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
-				
 				// Go for all drawn points
 				foreach(DrawnVertex v in points)
 				{
@@ -221,16 +220,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						p.pos = v.pos;
 						p.stitch = true;
+						p.stitchline = true;
 						return p;
 					}
 				}
-				
+
 				// Try the nearest vertex
 				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
 				if(nv != null)
 				{
 					p.pos = nv.Position;
 					p.stitch = true;
+					p.stitchline = true;
 					return p;
 				}
 
@@ -260,6 +261,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Align to the closest grid intersection
 						p.pos = found_coord;
 						p.stitch = true;
+						p.stitchline = true;
 						return p;
 					}
 					else
@@ -267,17 +269,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Aligned to line
 						p.pos = nl.NearestOnLine(mousemappos);
 						p.stitch = true;
+						p.stitchline = true;
 						return p;
 					}
 				}
 			}
-			
+			else
+			{
+				// Always snap to the first drawn vertex so that the user can finish a complete sector without stitching
+				if(points.Count > 0)
+				{
+					if(Vector2D.DistanceSq(mousemappos, points[0].pos) < (vrange * vrange))
+					{
+						p.pos = points[0].pos;
+						p.stitch = true;
+						p.stitchline = false;
+						return p;
+					}
+				}
+			}
+
 			// Snap to grid?
 			if(snaptogrid)
 			{
 				// Aligned to grid
 				p.pos = General.Map.Grid.SnappedToGrid(mousemappos);
 				p.stitch = snaptonearest;
+				p.stitchline = snaptonearest;
 				return p;
 			}
 			else
@@ -285,6 +303,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Normal position
 				p.pos = mousemappos;
 				p.stitch = snaptonearest;
+				p.stitchline = snaptonearest;
 				return p;
 			}
 		}
@@ -296,11 +315,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This draws a point at a specific location
-		public void DrawPointAt(Vector2D pos, bool stitch)
+		public void DrawPointAt(DrawnVertex p)
+		{
+			DrawPointAt(p.pos, p.stitch, p.stitchline);
+		}
+		
+		// This draws a point at a specific location
+		public void DrawPointAt(Vector2D pos, bool stitch, bool stitchline)
 		{
 			DrawnVertex newpoint = new DrawnVertex();
 			newpoint.pos = pos;
 			newpoint.stitch = stitch;
+			newpoint.stitchline = stitchline;
 			points.Add(newpoint);
 			labels.Add(new LineLengthLabel());
 			labels[labels.Count - 1].Start = newpoint.pos;
@@ -308,7 +334,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Update();
 
 			// Check if point stitches with the first
-			if((points.Count > 1) && (points[points.Count - 1].stitch))
+			if((points.Count > 1) && points[points.Count - 1].stitch)
 			{
 				Vector2D p1 = points[0].pos;
 				Vector2D p2 = points[points.Count - 1].pos;
@@ -438,7 +464,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Interface.MouseInDisplay)
 			{
 				DrawnVertex newpoint = GetCurrentPosition();
-				DrawPointAt(newpoint.pos, newpoint.stitch);
+				DrawPointAt(newpoint);
 			}
 		}
 		
