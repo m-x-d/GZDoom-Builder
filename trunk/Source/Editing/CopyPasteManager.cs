@@ -161,6 +161,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Done
 			memstream.Dispose();
 			General.Map.Map.UpdateConfiguration();
+			General.Map.ThingsFilter.Update();
 			General.Editing.Mode.OnPasteEnd();
 			General.Plugins.OnPasteEnd();
 		}
@@ -240,6 +241,7 @@ namespace CodeImp.DoomBuilder.Editing
 						// Done
 						memstream.Dispose();
 						General.Map.Map.UpdateConfiguration();
+						General.Map.ThingsFilter.Update();
 						General.Editing.Mode.OnPasteEnd();
 						General.Plugins.OnPasteEnd();
 						return true;
