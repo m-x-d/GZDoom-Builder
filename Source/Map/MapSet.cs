@@ -2039,6 +2039,21 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// TODO: Make this happen
 		}
+
+		// This converts flags and activations to UDMF fields
+		internal void TranslateToUDMF()
+		{
+			foreach(Linedef l in linedefs) l.TranslateToUDMF();
+			foreach(Thing t in things) t.TranslateToUDMF();
+		}
+
+		// This converts UDMF fields back into flags and activations
+		// NOTE: Only converts the marked items
+		internal void TranslateFromUDMF()
+		{
+			foreach(Linedef l in linedefs) if(l.Marked) l.TranslateFromUDMF();
+			foreach(Thing t in things) if(t.Marked) t.TranslateFromUDMF();
+		}
 		
 		// This removes unused vertices
 		public void RemoveUnusedVertices()

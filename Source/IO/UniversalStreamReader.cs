@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		public bool SetKnownCustomTypes { get { return setknowncustomtypes; } set { setknowncustomtypes = value; } }
 		public bool StrictChecking { get { return strictchecking; } set { strictchecking = value; } }
-
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -172,7 +172,12 @@ namespace CodeImp.DoomBuilder.IO
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
 					stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false);
-
+				foreach(FlagTranslation ft in General.Map.Config.ThingFlagsTranslation)
+				{
+					foreach(string field in ft.Fields)
+						stringflags[field] = GetCollectionEntry<bool>(c, field, false, false);
+				}
+				
 				// Create new item
 				Thing t = map.CreateThing();
 				t.Update(type, x, y, height, Angle2D.DegToRad(angledeg), stringflags, tag, special, args);
@@ -214,11 +219,16 @@ namespace CodeImp.DoomBuilder.IO
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.LinedefFlags)
 					stringflags[flag.Key] = GetCollectionEntry<bool>(lc, flag.Key, false, false);
-
+				foreach(FlagTranslation ft in General.Map.Config.LinedefFlagsTranslation)
+				{
+					foreach(string field in ft.Fields)
+						stringflags[field] = GetCollectionEntry<bool>(lc, field, false, false);
+				}
+				
 				// Activations
 				foreach(LinedefActivateInfo activate in General.Map.Config.LinedefActivates)
 					stringflags[activate.Key] = GetCollectionEntry<bool>(lc, activate.Key, false, false);
-
+				
 				// Create new item
 				Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
 				l.Update(stringflags, 0, tag, special, args);

@@ -648,6 +648,7 @@
     <None Include="Resources\Copy.png" />
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
+    <Compile Include="Config\FlagTranslation.cs" />
     <Compile Include="Editing\EditingManager.cs" />
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
