@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Settings
 		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
+		private bool usegravity;
 		
 		#endregion
 
@@ -72,6 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public FindReplaceForm FindReplaceForm { get { return findreplaceform; } }
 		public ErrorCheckForm ErrorCheckForm { get { return errorcheckform; } }
 		public int ShowVisualThings { get { return showvisualthings; } set { showvisualthings = value; } }
+		public bool UseGravity { get { return usegravity; } set { usegravity = value; } }
 		
 		#endregion
 
@@ -85,6 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Settings
 			this.showvisualthings = 2;
+			this.usegravity = false;
 			
 			// Load menus form and register it
 			menusform = new MenusForm();

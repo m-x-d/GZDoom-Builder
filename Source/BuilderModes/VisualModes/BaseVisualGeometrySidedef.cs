@@ -113,6 +113,85 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnChangeTargetHeight(int amount) { }
 		protected virtual void SetTexture(string texturename) { }
 		
+		// Toggle upper-unpegged
+		public virtual void OnToggleUpperUnpegged()
+		{
+			if(this.Sidedef.Line.Flags.ContainsKey(General.Map.Config.UpperUnpeggedFlag) &&
+			   this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag])
+			{
+				// Remove flag
+				General.Map.UndoRedo.CreateUndo("Remove upper-unpegged setting");
+				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
+			}
+			else
+			{
+				// Add flag
+				General.Map.UndoRedo.CreateUndo("Set upper-unpegged setting");
+				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = true;
+			}
+			
+			// Update sidedef geometry
+			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+			if(parts.lower != null) parts.lower.Setup();
+			if(parts.middledouble != null) parts.middledouble.Setup();
+			if(parts.middlesingle != null) parts.middlesingle.Setup();
+			if(parts.upper != null) parts.upper.Setup();
+		}
+
+		// Toggle lower-unpegged
+		public virtual void OnToggleLowerUnpegged()
+		{
+			if(this.Sidedef.Line.Flags.ContainsKey(General.Map.Config.LowerUnpeggedFlag) &&
+			   this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag])
+			{
+				// Remove flag
+				General.Map.UndoRedo.CreateUndo("Remove lower-unpegged setting");
+				this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = false;
+			}
+			else
+			{
+				// Add flag
+				General.Map.UndoRedo.CreateUndo("Set lower-unpegged setting");
+				this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = true;
+			}
+			
+			// Update sidedef geometry
+			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+			if(parts.lower != null) parts.lower.Setup();
+			if(parts.middledouble != null) parts.middledouble.Setup();
+			if(parts.middlesingle != null) parts.middlesingle.Setup();
+			if(parts.upper != null) parts.upper.Setup();
+		}
+		
+		// Auto-align texture X offsets
+		public virtual void OnTextureAlign(bool alignx, bool aligny)
+		{
+			General.Map.UndoRedo.CreateUndo("Auto-align textures");
+			
+			// Get the texture long name
+			string texname = GetTextureName();
+			long longtexname = General.Map.Data.GetLongImageName(texname);
+
+			// Do the alignment
+			Tools.AutoAlignTextures(this.Sidedef, longtexname, alignx, aligny, true);
+
+			// Get the changed sidedefs
+			List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
+			foreach(Sidedef sd in changes)
+			{
+				// Update the parts for this sidedef!
+				if(mode.VisualSectorExists(sd.Sector))
+				{
+					BaseVisualSector vs = (mode.GetVisualSector(sd.Sector) as BaseVisualSector);
+					VisualSidedefParts parts = vs.GetSidedefParts(sd);
+					if(parts.lower != null) parts.lower.Setup();
+					if(parts.middledouble != null) parts.middledouble.Setup();
+					if(parts.middlesingle != null) parts.middlesingle.Setup();
+					if(parts.upper != null) parts.upper.Setup();
+				}
+			}
+		}
+		
 		// Select texture
 		public virtual void OnSelectTexture()
 		{
@@ -128,8 +207,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Paste texture
 		public virtual void OnPasteTexture()
 		{
-			General.Map.UndoRedo.CreateUndo("Paste texture " + mode.CopiedTexture);
-			SetTexture(mode.CopiedTexture);
+			if(mode.CopiedTexture != null)
+			{
+				General.Map.UndoRedo.CreateUndo("Paste texture " + mode.CopiedTexture);
+				SetTexture(mode.CopiedTexture);
+			}
 		}
 
 		// Copy texture

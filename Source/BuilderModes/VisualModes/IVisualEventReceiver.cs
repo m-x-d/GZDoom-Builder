@@ -50,7 +50,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnSelectTexture();
 		void OnCopyTexture();
 		void OnPasteTexture();
-
+		void OnTextureAlign(bool alignx, bool aligny);
+		void OnToggleUpperUnpegged();
+		void OnToggleLowerUnpegged();
+		
 		// Other methods
 		string GetTextureName();
 	}

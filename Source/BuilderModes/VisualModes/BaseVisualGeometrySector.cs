@@ -79,6 +79,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
+		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
+		public virtual void OnToggleUpperUnpegged() { }
+		public virtual void OnToggleLowerUnpegged() { }
 		protected virtual void SetTexture(string texturename) { }
 
 		// Select texture

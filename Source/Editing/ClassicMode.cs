@@ -573,6 +573,12 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		#region ================== Actions
 
+		[BeginAction("gridsetup", BaseAction = true)]
+		protected void ShowGridSetup()
+		{
+			General.Map.Grid.ShowGridSetup();
+		}
+		
         [BeginAction("pan_view", BaseAction = true)]
         protected virtual void BeginViewPan()
         {

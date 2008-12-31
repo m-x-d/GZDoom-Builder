@@ -341,7 +341,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectTexture() { }
 		public virtual void OnCopyTexture() { }
 		public virtual void OnPasteTexture() { }
-
+		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
+		public virtual void OnToggleUpperUnpegged() { }
+		public virtual void OnToggleLowerUnpegged() { }
+		
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }
 

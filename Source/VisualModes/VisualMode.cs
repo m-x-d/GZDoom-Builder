@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Camera
 		private Vector3D campos;
 		private Vector3D camtarget;
+		private Vector3D movemultiplier;
 		private float camanglexy, camanglez;
 		private Sector camsector;
 		
@@ -98,6 +99,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public Sector CameraSector { get { return camsector; } }
 		public bool ProcessGeometry { get { return processgeometry; } set { processgeometry = value; } }
 		public bool ProcessThings { get { return processthings; } set { processthings = value; } }
+		public Vector3D MoveMultiplier { get { return movemultiplier; } set { movemultiplier = value; } }
 		
 		#endregion
 
@@ -112,6 +114,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.renderer = General.Map.Renderer3D;
 			this.renderer3d = (Renderer3D)General.Map.Renderer3D;
 			this.campos = new Vector3D(0.0f, 0.0f, 96.0f);
+			this.movemultiplier = new Vector3D(1.0f, 1.0f, 1.0f);
 			this.camanglez = Angle2D.PI;
 			this.blockmap = new VisualBlockMap();
 			this.allsectors = new Dictionary<Sector, VisualSector>(General.Map.Map.Sectors.Count);
@@ -742,10 +745,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Move the camera
 			if(doublespeed) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
-			if(keyforward) campos += camvec * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keybackward) campos -= camvec * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keyleft) campos -= camvecstrafe * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keyright) campos += camvecstrafe * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyforward) campos += camvec * movemultiplier * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keybackward) campos -= camvec * movemultiplier * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyleft) campos -= camvecstrafe * movemultiplier * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyright) campos += camvecstrafe * movemultiplier * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
 			
 			// Target the camera
 			camtarget = campos + camvec;
