@@ -111,6 +111,7 @@ namespace CodeImp.DoomBuilder
 		internal ConfigurationInfo ConfigSettings { get { return configinfo; } }
 		public GridSetup Grid { get { return grid; } }
 		public UndoManager UndoRedo { get { return undoredo; } }
+		internal CopyPasteManager CopyPaste { get { return copypaste; } }
 		public IMapSetIO FormatInterface { get { return io; } }
 		internal Launcher Launcher { get { return launcher; } }
 		public ThingsFilter ThingsFilter { get { return thingsfilter; } }

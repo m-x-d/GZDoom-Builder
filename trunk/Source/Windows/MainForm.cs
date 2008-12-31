@@ -250,6 +250,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateEditMenu();
 			UpdateViewMenu();
 			UpdateModeMenu();
+			UpdatePrefabsMenu();
 			UpdateToolsMenu();
 			UpdateToolbar();
 			UpdateSkills();
@@ -1792,6 +1793,23 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
+		#region ================== Prefabs Menu
+
+		// This sets up the prefabs menu
+		private void UpdatePrefabsMenu()
+		{
+			// Enable/disable items
+			itemcreateprefab.Enabled = (General.Map != null);
+			iteminsertprefabfile.Enabled = (General.Map != null);
+			iteminsertpreviousprefab.Enabled = (General.Map != null) && General.Map.CopyPaste.IsPreviousPrefabAvailable;
+			
+			// Toolbar icons
+			buttoninsertprefabfile.Enabled = (General.Map != null);
+			buttoninsertpreviousprefab.Enabled = (General.Map != null) && General.Map.CopyPaste.IsPreviousPrefabAvailable;
+		}
+		
+		#endregion
+		
 		#region ================== Tools Menu
 
 		// This sets up the tools menu

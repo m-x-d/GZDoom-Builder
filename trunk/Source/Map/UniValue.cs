@@ -112,7 +112,8 @@ namespace CodeImp.DoomBuilder.Map
 				case UniversalType.AngleDegrees:
 				case UniversalType.Float:
 				{
-					float v = (float)value;
+					float v = 0.0f;
+					try { v = (float)value; } catch(NullReferenceException e) { }
 					s.rwFloat(ref v);
 					value = v;
 					break;
@@ -130,7 +131,8 @@ namespace CodeImp.DoomBuilder.Map
 				case UniversalType.SectorTag:
 				case UniversalType.ThingTag:
 				{
-					int v = (int)value;
+					int v = 0;
+					try { v = (int)value; } catch(NullReferenceException e) { }
 					s.rwInt(ref v);
 					value = v;
 					break;
@@ -138,7 +140,8 @@ namespace CodeImp.DoomBuilder.Map
 
 				case UniversalType.Boolean:
 				{
-					bool v = (bool)value;
+					bool v = false;
+					try { v = (bool)value; } catch(NullReferenceException e) { }
 					s.rwBool(ref v);
 					value = v;
 					break;
