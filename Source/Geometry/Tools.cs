@@ -162,7 +162,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Inside the polygon bounding box?
 					if((v.Position.x >= bbox.Left) && (v.Position.x <= bbox.Right) &&
-					   (v.Position.x >= bbox.Top) && (v.Position.x <= bbox.Bottom))
+					   (v.Position.y >= bbox.Top) && (v.Position.y <= bbox.Bottom))
 					{
 						// More to the right?
 						if((foundv == null) || (v.Position.x >= foundv.Position.x))
