@@ -299,7 +299,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// action
 			// 
-			this.action.BackColor = System.Drawing.SystemColors.Control;
+			this.action.BackColor = System.Drawing.Color.Transparent;
 			this.action.Cursor = System.Windows.Forms.Cursors.Default;
 			this.action.Empty = false;
 			this.action.GeneralizedCategories = null;
@@ -557,7 +557,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabsidedefs.Location = new System.Drawing.Point(4, 23);
 			this.tabsidedefs.Name = "tabsidedefs";
 			this.tabsidedefs.Padding = new System.Windows.Forms.Padding(5);
-			this.tabsidedefs.Size = new System.Drawing.Size(533, 530);
+			this.tabsidedefs.Size = new System.Drawing.Size(533, 538);
 			this.tabsidedefs.TabIndex = 1;
 			this.tabsidedefs.Text = "Sidedefs";
 			this.tabsidedefs.UseVisualStyleBackColor = true;
@@ -578,8 +578,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.splitter.Panel2.Controls.Add(this.backside);
 			this.splitter.Panel2.Controls.Add(this.backgroup);
-			this.splitter.Size = new System.Drawing.Size(523, 520);
-			this.splitter.SplitterDistance = 253;
+			this.splitter.Size = new System.Drawing.Size(523, 528);
+			this.splitter.SplitterDistance = 256;
 			this.splitter.TabIndex = 3;
 			// 
 			// frontside
@@ -613,7 +613,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.Enabled = false;
 			this.frontgroup.Location = new System.Drawing.Point(3, 3);
 			this.frontgroup.Name = "frontgroup";
-			this.frontgroup.Size = new System.Drawing.Size(517, 247);
+			this.frontgroup.Size = new System.Drawing.Size(517, 250);
 			this.frontgroup.TabIndex = 0;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
@@ -720,7 +720,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.Enabled = false;
 			this.backgroup.Location = new System.Drawing.Point(3, 3);
 			this.backgroup.Name = "backgroup";
-			this.backgroup.Size = new System.Drawing.Size(519, 257);
+			this.backgroup.Size = new System.Drawing.Size(519, 262);
 			this.backgroup.TabIndex = 1;
 			this.backgroup.TabStop = false;
 			this.backgroup.Text = "     ";
@@ -803,7 +803,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcustom.Location = new System.Drawing.Point(4, 23);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(533, 530);
+			this.tabcustom.Size = new System.Drawing.Size(533, 538);
 			this.tabcustom.TabIndex = 2;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -818,7 +818,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Location = new System.Drawing.Point(11, 11);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
 			this.fieldslist.Name = "fieldslist";
-			this.fieldslist.Size = new System.Drawing.Size(511, 508);
+			this.fieldslist.Size = new System.Drawing.Size(511, 516);
 			this.fieldslist.TabIndex = 0;
 			// 
 			// LinedefEditForm

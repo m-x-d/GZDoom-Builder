@@ -37,20 +37,20 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label8;
 			System.Windows.Forms.GroupBox groupfloorceiling;
 			System.Windows.Forms.Label label7;
-			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label4;
+			System.Windows.Forms.Label label6;
 			this.tag = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.newtag = new System.Windows.Forms.Button();
 			this.browseeffect = new System.Windows.Forms.Button();
 			this.brightness = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.effect = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.sectorheight = new System.Windows.Forms.Label();
-			this.ceilingheight = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.floorheight = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.floortex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.ceilingtex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
+			this.ceilingheight = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
@@ -68,10 +68,10 @@ namespace CodeImp.DoomBuilder.Windows
 			label8 = new System.Windows.Forms.Label();
 			groupfloorceiling = new System.Windows.Forms.GroupBox();
 			label7 = new System.Windows.Forms.Label();
-			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
+			label6 = new System.Windows.Forms.Label();
 			groupaction.SuspendLayout();
 			groupeffect.SuspendLayout();
 			groupfloorceiling.SuspendLayout();
@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// effect
 			// 
-			this.effect.BackColor = System.Drawing.SystemColors.Control;
+			this.effect.BackColor = System.Drawing.Color.Transparent;
 			this.effect.Cursor = System.Windows.Forms.Cursors.Default;
 			this.effect.Empty = false;
 			this.effect.GeneralizedCategories = null;
@@ -250,26 +250,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.Text = "Sector height:";
 			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label6
-			// 
-			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(33, 40);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(73, 14);
-			label6.TabIndex = 19;
-			label6.Text = "Ceiling height:";
-			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// ceilingheight
-			// 
-			this.ceilingheight.AllowNegative = true;
-			this.ceilingheight.AllowRelative = true;
-			this.ceilingheight.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.ceilingheight.Location = new System.Drawing.Point(112, 37);
-			this.ceilingheight.Name = "ceilingheight";
-			this.ceilingheight.Size = new System.Drawing.Size(68, 20);
-			this.ceilingheight.TabIndex = 18;
-			// 
 			// label5
 			// 
 			label5.AutoSize = true;
@@ -323,6 +303,26 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingtex.Size = new System.Drawing.Size(83, 105);
 			this.ceilingtex.TabIndex = 12;
 			this.ceilingtex.TextureName = "";
+			// 
+			// label6
+			// 
+			label6.AutoSize = true;
+			label6.Location = new System.Drawing.Point(33, 40);
+			label6.Name = "label6";
+			label6.Size = new System.Drawing.Size(73, 14);
+			label6.TabIndex = 19;
+			label6.Text = "Ceiling height:";
+			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// ceilingheight
+			// 
+			this.ceilingheight.AllowNegative = true;
+			this.ceilingheight.AllowRelative = true;
+			this.ceilingheight.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.ceilingheight.Location = new System.Drawing.Point(112, 37);
+			this.ceilingheight.Name = "ceilingheight";
+			this.ceilingheight.Size = new System.Drawing.Size(68, 20);
+			this.ceilingheight.TabIndex = 18;
 			// 
 			// cancel
 			// 

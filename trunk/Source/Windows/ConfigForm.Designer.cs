@@ -353,7 +353,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// skill
 			// 
-			this.skill.BackColor = System.Drawing.SystemColors.Control;
+			this.skill.BackColor = System.Drawing.Color.Transparent;
 			this.skill.Cursor = System.Windows.Forms.Cursors.Default;
 			this.skill.Empty = false;
 			this.skill.GeneralizedCategories = null;
