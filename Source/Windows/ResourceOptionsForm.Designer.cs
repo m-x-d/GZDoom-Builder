@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.browsedir.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsedir.Image = global::CodeImp.DoomBuilder.Properties.Resources.Folder;
-			this.browsedir.Location = new System.Drawing.Point(316, 36);
+			this.browsedir.Location = new System.Drawing.Point(315, 36);
 			this.browsedir.Name = "browsedir";
 			this.browsedir.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsedir.Size = new System.Drawing.Size(30, 23);
@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dirlocation.Location = new System.Drawing.Point(17, 37);
 			this.dirlocation.Name = "dirlocation";
 			this.dirlocation.ReadOnly = true;
-			this.dirlocation.Size = new System.Drawing.Size(293, 20);
+			this.dirlocation.Size = new System.Drawing.Size(292, 20);
 			this.dirlocation.TabIndex = 4;
 			// 
 			// pk3filetab
