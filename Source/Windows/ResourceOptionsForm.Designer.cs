@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label2
 			// 
 			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(15, 75);
+			label2.Location = new System.Drawing.Point(15, 20);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(104, 14);
 			label2.TabIndex = 3;
@@ -154,28 +154,28 @@ namespace CodeImp.DoomBuilder.Windows
 			// dir_flats
 			// 
 			this.dir_flats.AutoSize = true;
-			this.dir_flats.Location = new System.Drawing.Point(17, 45);
+			this.dir_flats.Location = new System.Drawing.Point(17, 98);
 			this.dir_flats.Name = "dir_flats";
-			this.dir_flats.Size = new System.Drawing.Size(126, 18);
+			this.dir_flats.Size = new System.Drawing.Size(205, 18);
 			this.dir_flats.TabIndex = 7;
-			this.dir_flats.Text = "Load images as flats";
+			this.dir_flats.Text = "Load images in directory root as flats";
 			this.dir_flats.UseVisualStyleBackColor = true;
 			// 
 			// dir_textures
 			// 
 			this.dir_textures.AutoSize = true;
-			this.dir_textures.Location = new System.Drawing.Point(17, 21);
+			this.dir_textures.Location = new System.Drawing.Point(17, 72);
 			this.dir_textures.Name = "dir_textures";
-			this.dir_textures.Size = new System.Drawing.Size(145, 18);
+			this.dir_textures.Size = new System.Drawing.Size(224, 18);
 			this.dir_textures.TabIndex = 6;
-			this.dir_textures.Text = "Load images as textures";
+			this.dir_textures.Text = "Load images in directory root as textures";
 			this.dir_textures.UseVisualStyleBackColor = true;
 			// 
 			// browsedir
 			// 
 			this.browsedir.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsedir.Image = global::CodeImp.DoomBuilder.Properties.Resources.Folder;
-			this.browsedir.Location = new System.Drawing.Point(316, 91);
+			this.browsedir.Location = new System.Drawing.Point(316, 36);
 			this.browsedir.Name = "browsedir";
 			this.browsedir.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsedir.Size = new System.Drawing.Size(30, 23);
@@ -186,7 +186,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// dirlocation
 			// 
 			this.dirlocation.BackColor = System.Drawing.SystemColors.Control;
-			this.dirlocation.Location = new System.Drawing.Point(17, 92);
+			this.dirlocation.Location = new System.Drawing.Point(17, 37);
 			this.dirlocation.Name = "dirlocation";
 			this.dirlocation.ReadOnly = true;
 			this.dirlocation.Size = new System.Drawing.Size(293, 20);

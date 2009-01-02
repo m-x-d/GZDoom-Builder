@@ -39,8 +39,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		// Source
-		private bool readtextures;
-		private bool readflats;
+		private bool roottextures;
+		private bool rootflats;
 
 		#endregion
 
@@ -54,8 +54,8 @@ namespace CodeImp.DoomBuilder.Data
 		public DirectoryReader(DataLocation dl) : base(dl)
 		{
 			// Initialize
-			this.readtextures = dl.textures;
-			this.readflats = dl.flats;
+			this.roottextures = dl.textures;
+			this.rootflats = dl.flats;
 
 			General.WriteLogLine("Opening directory resource '" + location.location + "'");
 
@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Should we load the images in this directory as textures?
-			if(readtextures) return LoadDirectoryImages(); else return null;
+			if(roottextures) return LoadDirectoryImages(); else return null;
 		}
 
 		#endregion
@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Should we load the images in this directory as flats?
-			if(readflats) return LoadDirectoryImages(); else return null;
+			if(rootflats) return LoadDirectoryImages(); else return null;
 		}
 
 		#endregion
