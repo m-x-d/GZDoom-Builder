@@ -114,12 +114,6 @@ namespace CodeImp.DoomBuilder.Windows
 						// No valid directory specified
 						MessageBox.Show(this, "Please select a valid directory resource.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 					}
-					// At least one of the checkboxes must be checked
-					else if(!dir_flats.Checked && !dir_textures.Checked)
-					{
-						// Must select one of the checkboxes
-						MessageBox.Show(this, "Please choose to load the images as texture or flats, or both.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-					}
 					else
 					{
 						// Apply settings
