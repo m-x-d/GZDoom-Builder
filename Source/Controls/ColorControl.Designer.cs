@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// button
 			// 
+			this.button.BackColor = System.Drawing.SystemColors.Control;
 			this.button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.button.Image = global::CodeImp.DoomBuilder.Properties.Resources.ColorPick;
@@ -62,10 +63,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.button.Padding = new System.Windows.Forms.Padding(0, 0, 2, 3);
 			this.button.Size = new System.Drawing.Size(26, 23);
 			this.button.TabIndex = 2;
-			this.button.UseVisualStyleBackColor = true;
+			this.button.UseVisualStyleBackColor = false;
+			this.button.MouseMove += new System.Windows.Forms.MouseEventHandler(this.button_MouseMove);
 			this.button.Click += new System.EventHandler(this.button_Click);
 			this.button.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button_MouseDown);
-			this.button.MouseMove += new System.Windows.Forms.MouseEventHandler(this.button_MouseMove);
 			this.button.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button_MouseUp);
 			// 
 			// dialog
@@ -75,7 +76,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// ColorControl
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.BackColor = System.Drawing.SystemColors.Control;
+			this.BackColor = System.Drawing.Color.Transparent;
 			this.Controls.Add(this.button);
 			this.Controls.Add(this.panel);
 			this.Controls.Add(this.label);
