@@ -2029,7 +2029,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case (int)ThreadMessages.ImageDataLoaded:
 					string imagename = Marshal.PtrToStringAuto(m.WParam);
 					Marshal.FreeCoTaskMem(m.WParam);
-					if(General.Map != null)
+					if((General.Map != null) && (General.Map.Data != null))
 					{
 						ImageData img = General.Map.Data.GetFlatImage(imagename);
 						if(img != null) ImageDataLoaded(img);

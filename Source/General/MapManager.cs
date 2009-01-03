@@ -275,6 +275,7 @@ namespace CodeImp.DoomBuilder
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
 			// Success
+			this.changed = false;
 			General.WriteLogLine("Map creation done");
 			return true;
 		}
@@ -349,6 +350,7 @@ namespace CodeImp.DoomBuilder
 			data.Load(configinfo.Resources, options.Resources, maplocation);
 
 			// Update structures
+			map.SnapAllToAccuracy();
 			map.Update();
 			thingsfilter.Update();
 			
@@ -363,6 +365,7 @@ namespace CodeImp.DoomBuilder
 			if(General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
 			
 			// Success
+			this.changed = false;
 			General.WriteLogLine("Map loading done");
 			return true;
 		}
@@ -1252,6 +1255,7 @@ namespace CodeImp.DoomBuilder
 			map.Dispose();
 			map = newmap;
 			map.UpdateConfiguration();
+			map.SnapAllToAccuracy();
 			map.Update();
 			thingsfilter.Update();
 			
@@ -1293,8 +1297,15 @@ namespace CodeImp.DoomBuilder
 			// Reload data resources
 			General.WriteLogLine("Reloading data resources...");
 			data = new DataManager();
-			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
-			data.Load(configinfo.Resources, options.Resources, maplocation);
+			if(!string.IsNullOrEmpty(filepathname))
+			{
+				maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
+				data.Load(configinfo.Resources, options.Resources, maplocation);
+			}
+			else
+			{
+				data.Load(configinfo.Resources, options.Resources);
+			}
 			
 			// Apply new settings to map elements
 			map.UpdateConfiguration();

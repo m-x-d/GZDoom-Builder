@@ -333,6 +333,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					editpressed = true;
 
 					// Insert a new item and select it for dragging
+					General.Map.UndoRedo.CreateUndo("Insert thing");
 					Thing t = InsertThing(mousemappos);
 					General.Map.Map.ClearSelectedThings();
 					t.Selected = true;

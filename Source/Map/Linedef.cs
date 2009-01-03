@@ -468,6 +468,7 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Update required (angle changed)
 			NeedUpdate();
+			General.Map.IsChanged = true;
 		}
 
 		// This flips the sidedefs
@@ -477,6 +478,8 @@ namespace CodeImp.DoomBuilder.Map
 			Sidedef sd = front;
 			front = back;
 			back = sd;
+			
+			General.Map.IsChanged = true;
 		}
 		
 		// This returns a point for testing on one side
@@ -521,6 +524,8 @@ namespace CodeImp.DoomBuilder.Map
 				flags[General.Map.Config.SingleSidedFlag] = true;
 				flags[General.Map.Config.DoubleSidedFlag] = false;
 			}
+			
+			General.Map.IsChanged = true;
 		}
 
 		// This returns all points at which the line intersects with the grid
@@ -697,6 +702,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			// Return result
+			General.Map.IsChanged = true;
 			return nl;
 		}
 		
@@ -867,6 +873,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// I got killed by the other.
 			this.Dispose();
+			General.Map.IsChanged = true;
 		}
 		
 		// This changes sidedefs (used for joining lines)

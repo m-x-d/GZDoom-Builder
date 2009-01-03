@@ -197,8 +197,8 @@ namespace CodeImp.DoomBuilder.Data
 			LocalLoadImage();
 
 			// Anything changed?
-			if((oldwidth != width) || (oldheight != height) ||
-			   (oldscaledwidth != scaledwidth) || (oldscaledheight != scaledheight))
+			//if((oldwidth != width) || (oldheight != height) ||
+			//   (oldscaledwidth != scaledwidth) || (oldscaledheight != scaledheight))
 			{
 				// Notify the main thread about the change so that sectors can update their buffers
 				IntPtr strptr = Marshal.StringToCoTaskMemAuto(this.name);

@@ -394,6 +394,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cached values
 				General.Map.Map.Update();
 
+				// Update the used textures
+				General.Map.Data.UpdateUsedTextures();
+
 				// Map is changed
 				General.Map.IsChanged = true;
 			}

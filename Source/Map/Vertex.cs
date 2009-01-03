@@ -188,19 +188,24 @@ namespace CodeImp.DoomBuilder.Map
 		// This moves the vertex
 		public void Move(Vector2D newpos)
 		{
-			// Change position
-			pos = newpos;
-			
-			#if DEBUG
-			if(float.IsNaN(pos.x) || float.IsNaN(pos.y) ||
-			   float.IsInfinity(pos.x) || float.IsInfinity(pos.y))
+			// Do we actually move?
+			if(newpos != pos)
 			{
-				General.Fail("Invalid vertex position! The given vertex coordinates cannot be NaN or Infinite.");
+				// Change position
+				pos = newpos;
+
+				#if DEBUG
+				if(float.IsNaN(pos.x) || float.IsNaN(pos.y) ||
+				   float.IsInfinity(pos.x) || float.IsInfinity(pos.y))
+				{
+					General.Fail("Invalid vertex position! The given vertex coordinates cannot be NaN or Infinite.");
+				}
+				#endif
+
+				// Let all lines know they need an update
+				foreach(Linedef l in linedefs) l.NeedUpdate();
+				General.Map.IsChanged = true;
 			}
-			#endif
-			
-			// Let all lines know they need an update
-			foreach(Linedef l in linedefs) l.NeedUpdate();
 		}
 
 		// This snaps the vertex to the map format accuracy
@@ -247,6 +252,8 @@ namespace CodeImp.DoomBuilder.Map
 				// Dispose manually
 				this.Dispose();
 			}
+
+			General.Map.IsChanged = true;
 		}
 
 		#endregion
