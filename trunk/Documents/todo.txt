@@ -3,9 +3,9 @@ quality over quantity. It is done when it's done.
 The order and included items may also change any time.
 =========================================================
 
-- Make Directory Resources support 
+- Create menus for different modes
 
-- Make PK3 Resources support
+- Create gradient ceiling/floor heights feature
 
 =========================================================
   BETA TESTING STARTS HERE

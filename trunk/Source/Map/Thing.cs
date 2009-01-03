@@ -315,6 +315,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Change position
 			this.pos = newpos;
+			General.Map.IsChanged = true;
 		}
 
 		// This moves the thing
@@ -323,6 +324,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Change position
 			this.pos = new Vector3D(newpos.x, newpos.y, pos.z);
+			General.Map.IsChanged = true;
 		}
 
 		// This moves the thing
@@ -331,6 +333,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Change position
 			this.pos = new Vector3D(x, y, zoffset);
+			General.Map.IsChanged = true;
 		}
 		
 		// This rotates the thing
@@ -338,6 +341,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Change angle
 			this.angle = newangle;
+			General.Map.IsChanged = true;
 		}
 		
 		// This updates all properties

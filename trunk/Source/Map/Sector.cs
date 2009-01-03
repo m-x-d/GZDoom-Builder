@@ -474,6 +474,8 @@ namespace CodeImp.DoomBuilder.Map
 				// Dispose manually
 				this.Dispose();
 			}
+			
+			General.Map.IsChanged = true;
 		}
 		
 		#endregion
@@ -500,6 +502,7 @@ namespace CodeImp.DoomBuilder.Map
 			floortexname = name;
 			longfloortexname = Lump.MakeLongName(name);
 			updateneeded = true;
+			General.Map.IsChanged = true;
 		}
 
 		// This sets texture
@@ -508,6 +511,7 @@ namespace CodeImp.DoomBuilder.Map
 			ceiltexname = name;
 			longceiltexname = Lump.MakeLongName(name);
 			updateneeded = true;
+			General.Map.IsChanged = true;
 		}
 		
 		#endregion

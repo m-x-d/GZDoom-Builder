@@ -85,6 +85,9 @@ namespace CodeImp.DoomBuilder.Editing
 			allmodes = new List<EditModeInfo>();
 			usedmodes = new List<EditModeInfo>();
 			
+			// Bind any methods
+			General.Actions.BindMethods(this);
+			
 			// Make list of all editing modes we can find
 			foreach(Plugin p in General.Plugins.Plugins)
 			{
@@ -118,6 +121,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Unbind any methods
+				General.Actions.UnbindMethods(this);
+				
 				// Clean up
 				
 				// Done

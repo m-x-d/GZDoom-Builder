@@ -241,6 +241,8 @@ namespace CodeImp.DoomBuilder.Map
 				s.offsetx = offsetx;
 				s.offsety = offsety;
 			}
+
+			General.Map.IsChanged = true;
 		}
 		
 		#endregion
@@ -254,18 +256,21 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				this.texnamehigh = "-";
 				this.longtexnamehigh = MapSet.EmptyLongName;
+				General.Map.IsChanged = true;
 			}
 
 			if(!MiddleRequired() && removemiddle)
 			{
 				this.texnamemid = "-";
 				this.longtexnamemid = MapSet.EmptyLongName;
+				General.Map.IsChanged = true;
 			}
 			
 			if(!LowRequired())
 			{
 				this.texnamelow = "-";
 				this.longtexnamelow = MapSet.EmptyLongName;
+				General.Map.IsChanged = true;
 			}
 		}
 		
@@ -326,6 +331,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			texnamehigh = name;
 			longtexnamehigh = Lump.MakeLongName(name);
+			General.Map.IsChanged = true;
 		}
 
 		// This sets texture
@@ -333,6 +339,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			texnamemid = name;
 			longtexnamemid = Lump.MakeLongName(name);
+			General.Map.IsChanged = true;
 		}
 
 		// This sets texture
@@ -340,6 +347,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			texnamelow = name;
 			longtexnamelow = Lump.MakeLongName(name);
+			General.Map.IsChanged = true;
 		}
 
 		// This changes sector
@@ -353,6 +361,8 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Attach to sector
 			sectorlistitem = sector.AttachSidedef(this);
+
+			General.Map.IsChanged = true;
 		}
 		
 		#endregion
