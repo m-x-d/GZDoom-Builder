@@ -744,18 +744,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				Cursor.Current = Cursors.AppStarting;
 
-				// Reset geometry in original position
-				if(linesflipped) FlipLinedefs();		// Flip linedefs back if they were flipped
-				int index = 0;
-				foreach(Vertex v in selectedvertices)
-					v.Move(vertexpos[index++]);
+				if(!pasting)
+				{
+					// Reset geometry in original position to create an undo
+					if(linesflipped) FlipLinedefs();		// Flip linedefs back if they were flipped
+					int index = 0;
+					foreach(Vertex v in selectedvertices)
+						v.Move(vertexpos[index++]);
 
-				index = 0;
-				foreach(Thing t in selectedthings)
-					t.Move(thingpos[index++]);
+					index = 0;
+					foreach(Thing t in selectedthings)
+						t.Move(thingpos[index++]);
 
-				// Make undo
-				General.Map.UndoRedo.CreateUndo("Edit selection");
+					// Make undo
+					General.Map.UndoRedo.CreateUndo("Edit selection");
+				}
 				
 				// Mark selected geometry
 				General.Map.Map.ClearAllMarks(false);

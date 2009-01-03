@@ -137,6 +137,9 @@ namespace CodeImp.DoomBuilder.Editing
 		// This pastes a prefab. Returns false when paste was cancelled.
 		internal void PastePrefab(Stream filedata)
 		{
+			// Create undo
+			General.Map.UndoRedo.CreateUndo("Insert prefab");
+
 			// Decompress stream
 			MemoryStream decompressed = new MemoryStream((int)filedata.Length * 3);
 			filedata.Seek(0, SeekOrigin.Begin);
@@ -220,6 +223,9 @@ namespace CodeImp.DoomBuilder.Editing
 					// Ask the editing mode to prepare selection for pasting.
 					if(General.Editing.Mode.OnPasteBegin())
 					{
+						// Create undo
+						General.Map.UndoRedo.CreateUndo("Paste");
+						
 						// Read from clipboard
 						Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
 						memstream.Seek(0, SeekOrigin.Begin);
