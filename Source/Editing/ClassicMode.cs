@@ -275,7 +275,8 @@ namespace CodeImp.DoomBuilder.Editing
 			float bottom = float.MinValue;
 			float scalew, scaleh, scale;
 			float width, height;
-
+			bool anything = false;
+			
 			// Go for all vertices
 			foreach(Vertex v in General.Map.Map.Vertices)
 			{
@@ -287,22 +288,49 @@ namespace CodeImp.DoomBuilder.Editing
 					if(v.Position.x > right) right = v.Position.x;
 					if(v.Position.y < top) top = v.Position.y;
 					if(v.Position.y > bottom) bottom = v.Position.y;
+					anything = true;
 				}
 			}
 
-			// Calculate width/height
-			width = (right - left);
-			height = (bottom - top);
+			// Not already found something to center in view?
+			if(!anything)
+			{
+				// Go for all things
+				foreach(Thing t in General.Map.Map.Things)
+				{
+					// Adjust boundaries by vertices
+					if(t.Position.x < left) left = t.Position.x;
+					if(t.Position.x > right) right = t.Position.x;
+					if(t.Position.y < top) top = t.Position.y;
+					if(t.Position.y > bottom) bottom = t.Position.y;
+					anything = true;
+				}
+			}
+			
+			// Anything found to center in view?
+			if(anything)
+			{
+				// Calculate width/height
+				width = (right - left);
+				height = (bottom - top);
 
-			// Calculate scale to view map at
-			scalew = (float)General.Map.Graphics.RenderTarget.ClientSize.Width / (width * 1.1f);
-			scaleh = (float)General.Map.Graphics.RenderTarget.ClientSize.Height / (height * 1.1f);
-			if(scalew < scaleh) scale = scalew; else scale = scaleh;
+				// Calculate scale to view map at
+				scalew = (float)General.Map.Graphics.RenderTarget.ClientSize.Width / (width * 1.1f);
+				scaleh = (float)General.Map.Graphics.RenderTarget.ClientSize.Height / (height * 1.1f);
+				if(scalew < scaleh) scale = scalew; else scale = scaleh;
 
-			// Change the view to see the whole map
-			renderer2d.ScaleView(scale);
-			renderer2d.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
-			this.OnViewChanged();
+				// Change the view to see the whole map
+				renderer2d.ScaleView(scale);
+				renderer2d.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
+				this.OnViewChanged();
+			}
+			else
+			{
+				// Default view
+				renderer2d.ScaleView(0.5f);
+				renderer2d.PositionView(0.0f, 0.0f);
+				this.OnViewChanged();
+			}
 			
 			// Redraw
 			//General.Map.Map.Update();
