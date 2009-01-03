@@ -850,6 +850,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						else
 						{
+							// If the line only has a back side left, flip the line and sides
+							if((lines[i].Front == null) && (lines[i].Back != null))
+							{
+								lines[i].FlipVertices();
+								lines[i].FlipSidedefs();
+							}
+							
 							// Update sided flags
 							lines[i].ApplySidedFlags();
 						}
