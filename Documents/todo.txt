@@ -3,7 +3,7 @@ quality over quantity. It is done when it's done.
 The order and included items may also change any time.
 =========================================================
 
-- Make Directory Resources support
+- Make Directory Resources support 
 
 - Make PK3 Resources support
 
