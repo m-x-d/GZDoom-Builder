@@ -96,6 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Selection
 		private ICollection<Vertex> selectedvertices;
 		private ICollection<Thing> selectedthings;
+		private ICollection<Linedef> selectedlines;
 		private List<Vector2D> vertexpos;
 		private List<Vector2D> thingpos;
 		private ICollection<Vertex> unselectedvertices;
@@ -107,6 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D size;
 		private Vector2D baseoffset;
 		private Vector2D basesize;
+		private bool linesflipped;
 		
 		// Modifying Modes
 		private ModifyMode mode;
@@ -495,6 +497,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				t.Move(TransformedPoint(thingpos[index++]));
 			}
 
+			// This checks if the lines should be flipped
+			bool shouldbeflipped = (size.x < 0.0f) ^ (size.y < 0.0f);
+			if(shouldbeflipped != linesflipped) FlipLinedefs();
+			
 			General.Map.Map.Update(true, false);
 		}
 		
@@ -574,6 +580,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 											gripsize, gripsize);
 		}
 		
+		// This flips all linedefs in the selection (used for mirroring)
+		private void FlipLinedefs()
+		{
+			// Flip linedefs
+			foreach(Linedef ld in selectedlines)
+				ld.FlipVertices();
+			
+			// Done
+			linesflipped = !linesflipped;
+		}
+		
 		#endregion
 
 		#region ================== Events
@@ -598,6 +615,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Vertex v in selectedvertices) v.Selected = true;
 			ICollection<Linedef> markedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 			foreach(Linedef l in markedlines) l.Selected = true;
+			selectedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 			unselectedlines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
 			
 			// Array to keep original coordinates
@@ -727,6 +745,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Cursor.Current = Cursors.AppStarting;
 
 				// Reset geometry in original position
+				if(linesflipped) FlipLinedefs();		// Flip linedefs back if they were flipped
 				int index = 0;
 				foreach(Vertex v in selectedvertices)
 					v.Move(vertexpos[index++]);
