@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(sprite != null)
 			{
 				// Find the sector in which the thing resides
-				Thing.DetermineSector();
+				Thing.DetermineSector(mode.BlockMap);
 				if(Thing.Sector != null)
 				{
 					// Use sector brightness for color shading

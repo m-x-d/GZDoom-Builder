@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
 using System.Drawing;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
@@ -50,7 +51,6 @@ namespace CodeImp.DoomBuilder.Map
 
 		// List items
 		private LinkedListNode<Thing> mainlistitem;
-		private LinkedListNode<Thing> sectorlistitem;
 		
 		// Properties
 		private int type;
@@ -120,7 +120,6 @@ namespace CodeImp.DoomBuilder.Map
 				
 				// Clean up
 				mainlistitem = null;
-				sectorlistitem = null;
 				map = null;
 				sector = null;
 
@@ -191,7 +190,6 @@ namespace CodeImp.DoomBuilder.Map
 		// This determines which sector the thing is in and links it
 		public void DetermineSector()
 		{
-			Sector newsector = null;
 			Linedef nl;
 
 			// Find the nearest linedef on the map
@@ -202,30 +200,37 @@ namespace CodeImp.DoomBuilder.Map
 				if(nl.SideOfLine(pos) < 0f)
 				{
 					// Front side
-					if(nl.Front != null) newsector = nl.Front.Sector;
+					if(nl.Front != null) sector = nl.Front.Sector; else sector = null;
 				}
 				else
 				{
 					// Back side
-					if(nl.Back != null) newsector = nl.Back.Sector;
+					if(nl.Back != null) sector = nl.Back.Sector; else sector = null;
 				}
 			}
-
-			// Currently attached to a sector and sector changes?
-			if((sector != null) && (newsector != sector))
+			else
 			{
-				// Remove from current sector
-				//sector.DetachThing(sectorlistitem);
-				sectorlistitem = null;
 				sector = null;
 			}
+		}
 
-			// Attach to new sector?
-			if((newsector != null) && (newsector != sector))
+		// This determines which sector the thing is in and links it
+		public void DetermineSector(VisualBlockMap blockmap)
+		{
+			Linedef nl;
+
+			// Find nearest sectors using the blockmap
+			List<Sector> possiblesectors = blockmap.GetBlock(blockmap.GetBlockCoordinates(pos)).Sectors;
+
+			// Check in which sector we are
+			sector = null;
+			foreach(Sector s in possiblesectors)
 			{
-				// Attach to new sector
-				sector = newsector;
-				//sectorlistitem = sector.AttachThing(this);
+				if(s.Intersect(pos))
+				{
+					sector = s;
+					break;
+				}
 			}
 		}
 

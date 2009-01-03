@@ -100,6 +100,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public bool ProcessGeometry { get { return processgeometry; } set { processgeometry = value; } }
 		public bool ProcessThings { get { return processthings; } set { processthings = value; } }
 		public Vector3D MoveMultiplier { get { return movemultiplier; } set { movemultiplier = value; } }
+		public VisualBlockMap BlockMap { get { return blockmap; } }
 		
 		#endregion
 
@@ -728,6 +729,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
 			blockmap.AddThingsSet(General.Map.Map.Things);
+			blockmap.AddSectorsSet(General.Map.Map.Sectors);
 		}
 		
 		/// <summary>
