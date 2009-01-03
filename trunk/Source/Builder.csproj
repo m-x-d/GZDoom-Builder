@@ -650,6 +650,8 @@
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
     <Compile Include="Config\FlagTranslation.cs" />
+    <Compile Include="Data\PK3FileImage.cs" />
+    <Compile Include="Data\PK3StructuredReader.cs" />
     <Compile Include="Editing\EditingManager.cs" />
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />

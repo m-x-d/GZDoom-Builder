@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Set this file as background
 				backgroundname = browsefile.FileName;
 				backgroundsource = GridSetup.SOURCE_FILE;
-				ImageData img = new FileImage(backgroundname, backgroundname);
+				ImageData img = new FileImage(backgroundname, backgroundname, false, 1.0f, 1.0f);
 				img.LoadImage();
 				General.DisplayZoomedImage(backgroundimage, new Bitmap(img.Bitmap));
 				img.Dispose();

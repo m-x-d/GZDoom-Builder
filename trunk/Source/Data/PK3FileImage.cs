@@ -30,10 +30,11 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public sealed class FileImage : ImageData
+	public sealed class PK3FileImage : ImageData
 	{
 		#region ================== Variables
 
+		private PK3Reader datareader;
 		private string filepathname;
 		private int probableformat;
 		private float scalex;
@@ -44,9 +45,10 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public FileImage(string name, string filepathname, bool asflat)
+		internal PK3FileImage(PK3Reader datareader, string name, string filepathname, bool asflat)
 		{
 			// Initialize
+			this.datareader = datareader;
 			this.filepathname = filepathname;
 			SetName(name);
 
@@ -67,24 +69,6 @@ namespace CodeImp.DoomBuilder.Data
 			GC.SuppressFinalize(this);
 		}
 
-		// Constructor
-		public FileImage(string name, string filepathname, bool asflat, float scalex, float scaley)
-		{
-			// Initialize
-			this.filepathname = filepathname;
-			this.scalex = scalex;
-			this.scaley = scaley;
-			SetName(name);
-
-			if(asflat)
-				probableformat = ImageDataFormat.DOOMFLAT;
-			else
-				probableformat = ImageDataFormat.DOOMPICTURE;
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -99,7 +83,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				MemoryStream filedata = new MemoryStream(File.ReadAllBytes(filepathname));
+				MemoryStream filedata = datareader.ExtractFile(filepathname);
 
 				// Get a reader for the data
 				IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);

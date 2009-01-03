@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.IO
 
 			fixed(void* bp = namebytes)
 			{
-				General.CopyMemory(&value, bp, new UIntPtr(bytes));
+				General.CopyMemory(&value, bp, bytes);
 			}
 
 			return value;

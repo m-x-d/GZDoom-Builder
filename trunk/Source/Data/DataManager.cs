@@ -243,9 +243,11 @@ namespace CodeImp.DoomBuilder.Data
 							break;
 					}
 				}
-				catch(Exception)
+				catch(Exception e)
 				{
 					// Unable to load resource
+					General.WriteLogLine("ERROR while creating data reader. " + e.GetType().Name + ": " + e.Message);
+					General.WriteLogLine(e.StackTrace);
 					General.ShowErrorMessage("Unable to load resources from location \"" + dl.location + "\". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
 					continue;
 				}	
@@ -361,9 +363,11 @@ namespace CodeImp.DoomBuilder.Data
 					General.WriteLogLine("Resumed data resource '" + d.Location.location + "'");
 					d.Resume();
 				}
-				catch(Exception)
+				catch(Exception e)
 				{
 					// Unable to load resource
+					General.WriteLogLine("ERROR while resuming data reader. " + e.GetType().Name + ": " + e.Message);
+					General.WriteLogLine(e.StackTrace);
 					General.ShowErrorMessage("Unable to load resources from location \"" + d.Location.location + "\". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
 				}
 			}
@@ -891,7 +895,7 @@ namespace CodeImp.DoomBuilder.Data
 			string[] files = Directory.GetFiles(General.SpritesPath, "*.png", SearchOption.TopDirectoryOnly);
 			foreach(string spritefile in files)
 			{
-				ImageData img = new FileImage(Path.GetFileNameWithoutExtension(spritefile).ToLowerInvariant(), spritefile);
+				ImageData img = new FileImage(Path.GetFileNameWithoutExtension(spritefile).ToLowerInvariant(), spritefile, false);
 				img.LoadImage();
 				internalsprites.Add(img.Name, img);
 			}

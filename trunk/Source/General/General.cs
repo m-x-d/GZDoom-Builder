@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder
 		internal static extern void ZeroMemory(IntPtr dest, int size);
 
 		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
-		internal static extern unsafe void CopyMemory(void* dst, void* src, UIntPtr length);
+		internal static extern unsafe void CopyMemory(void* dst, void* src, uint length);
 
 		[DllImport("user32.dll", EntryPoint = "SendMessage", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
 		internal static extern int SendMessage(IntPtr hwnd, uint Msg, int wParam, int lParam);
