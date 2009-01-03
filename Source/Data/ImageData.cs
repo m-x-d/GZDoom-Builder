@@ -192,7 +192,7 @@ namespace CodeImp.DoomBuilder.Data
 			int oldheight = height;
 			float oldscaledwidth = scaledwidth;
 			float oldscaledheight = scaledheight;
-
+			
 			// Do the loading
 			LocalLoadImage();
 

@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.IO
 					targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
 					// Copy the pixels
-					General.CopyMemory((void*)targetdata, (void*)pixeldata.Pointer, new UIntPtr((uint)(width * height * sizeof(PixelColor))));
+					General.CopyMemory(targetdata, pixeldata.Pointer, (uint)(width * height * sizeof(PixelColor)));
 
 					// Done
 					bmp.UnlockBits(bitmapdata);

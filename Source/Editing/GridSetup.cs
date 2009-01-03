@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.Editing
 					break;
 
 				case SOURCE_FILE:
-					backimage = new FileImage(background, background);
+					backimage = new FileImage(background, background, false, 1.0f, 1.0f);
 					break;
 			}
 

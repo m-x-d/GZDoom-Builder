@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads a set of textures
-		private void LoadTextureSet(Stream texturedata, ref List<ImageData> images, PatchNames pnames)
+		public static void LoadTextureSet(Stream texturedata, ref List<ImageData> images, PatchNames pnames)
 		{
 			BinaryReader reader = new BinaryReader(texturedata);
 			int flags, width, height, patches, px, py, pi;

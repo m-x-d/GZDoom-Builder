@@ -80,6 +80,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Get the patch data stream
+				if(bitmap != null) bitmap.Dispose(); bitmap = null;
 				patchdata = General.Map.Data.GetPatchData(lumpname);
 				if(patchdata != null)
 				{
@@ -92,16 +93,31 @@ namespace CodeImp.DoomBuilder.Data
 
 					// Get a reader for the data
 					reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
-					if(reader is UnknownImageReader)
+					if(!(reader is UnknownImageReader))
 					{
-						// Data is in an unknown format!
-						General.WriteLogLine("WARNING: Image lump '" + lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+						// Load the image
+						mem.Seek(0, SeekOrigin.Begin);
+						try { bitmap = reader.ReadAsBitmap(mem); }
+						catch(InvalidDataException)
+						{
+							// Data cannot be read!
+							bitmap = null;
+						}
 					}
 					
-					// Load the image
-					mem.Seek(0, SeekOrigin.Begin);
-					bitmap = reader.ReadAsBitmap(mem);
-					if(bitmap == null) return;
+					// Not loaded?
+					if(bitmap == null)
+					{
+						General.WriteLogLine("WARNING: Image lump '" + lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+						loadfailed = true;
+						return;
+					}
+
+					// Get width and height from image
+					width = bitmap.Size.Width;
+					height = bitmap.Size.Height;
+					scaledwidth = (float)width * scalex;
+					scaledheight = (float)height * scaley;
 
 					// Done
 					mem.Dispose();
