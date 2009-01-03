@@ -105,5 +105,54 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		#endregion
+
+		#region ================== Actions
+
+		[BeginAction("placevisualstart")]
+		public void PlaceVisualStartThing()
+		{
+			bool onefound = false;
+			
+			// Not during volatile mode
+			if(this.Attributes.Volatile) return;
+			
+			// Mouse must be inside window
+			if(!mouseinside) return;
+			
+			// Go for all things
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				if(t.Type == General.Map.Config.Start3DModeThingType)
+				{
+					if(!onefound)
+					{
+						// Move this thing
+						t.Move(mousemappos);
+						onefound = true;
+					}
+					else
+					{
+						// One was already found and moved, delete this one
+						t.Dispose();
+					}
+				}
+			}
+			
+			// No thing found?
+			if(!onefound)
+			{
+				// Make a new one
+				Thing t = General.Map.Map.CreateThing();
+				t.Type = General.Map.Config.Start3DModeThingType;
+				t.Move(mousemappos);
+				t.UpdateConfiguration();
+				General.Map.ThingsFilter.Update();
+			}
+
+			// Redraw display to show changes
+			General.Interface.RedrawDisplay();
+		}
+
+		#endregion
 	}
 }

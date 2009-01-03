@@ -392,6 +392,16 @@ namespace CodeImp.DoomBuilder
 			// Make a copy of the map data
 			outputset = map.Clone();
 
+			// Remove all flags from all 3D Start things
+			foreach(Thing t in outputset.Things)
+			{
+				if(t.Type == config.Start3DModeThingType)
+				{
+					List<string> flagkeys = new List<string>(t.Flags.Keys);
+					foreach(string k in flagkeys) t.Flags[k] = false;
+				}
+			}
+
 			// Do we need sidedefs compression?
 			if(map.Sidedefs.Count > io.MaxSidedefs)
 			{
