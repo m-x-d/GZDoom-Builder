@@ -120,7 +120,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!mouseinside) return;
 			
 			// Go for all things
-			foreach(Thing t in General.Map.Map.Things)
+			List<Thing> things = new List<Thing>(General.Map.Map.Things);
+			foreach(Thing t in things)
 			{
 				if(t.Type == General.Map.Config.Start3DModeThingType)
 				{

@@ -83,6 +83,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PixelColor sectorcolor = new PixelColor(255, 255, 255, 255);
 			
+			// Must have a width!
+			if(info.Width < 0.1f) return false;
+			
 			if(sprite != null)
 			{
 				// Find the sector in which the thing resides
