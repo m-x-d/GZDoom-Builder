@@ -271,7 +271,7 @@ namespace CodeImp.DoomBuilder
 			// Set default mode
 			General.Editing.ChangeMode("VerticesMode");
 			ClassicMode cmode = (General.Editing.Mode as ClassicMode);
-			cmode.SetZoom(0.5f);
+			if(cmode != null) cmode.SetZoom(0.5f);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
 			// Success
