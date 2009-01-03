@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Members
 		private List<Linedef> lines;
 		private List<Thing> things;
+		private List<Sector> sectors;
 		
 		#endregion
 		
@@ -52,6 +53,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		public List<Linedef> Lines { get { return lines; } }
 		public List<Thing> Things { get { return things; } }
+		public List<Sector> Sectors { get { return sectors; } }
 		
 		#endregion
 		
@@ -62,6 +64,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			lines = new List<Linedef>(2);
 			things = new List<Thing>(2);
+			sectors = new List<Sector>(2);
 		}
 		
 		#endregion
