@@ -37,7 +37,6 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constants
 
 		public const int NUM_ARGS = 5;
-		public static readonly int[] EMPTY_ARGS = new int[NUM_ARGS];
 
 		#endregion
 
@@ -178,12 +177,11 @@ namespace CodeImp.DoomBuilder.Map
 			t.flags = new Dictionary<string,bool>(flags);
 			t.tag = tag;
 			t.action = action;
-			t.args = EMPTY_ARGS;
+			t.args = (int[])args.Clone();
 			t.size = size;
 			t.color = color;
 			t.iconoffset = iconoffset;
 			t.fixedsize = fixedsize;
-			args.CopyTo(t.args, 0);
 			base.CopyPropertiesTo(t);
 		}
 		

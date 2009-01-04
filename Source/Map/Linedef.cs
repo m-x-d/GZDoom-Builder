@@ -38,7 +38,6 @@ namespace CodeImp.DoomBuilder.Map
 
 		public const float SIDE_POINT_DISTANCE = 0.001f;
 		public const int NUM_ARGS = 5;
-		public static readonly int[] EMPTY_ARGS = new int[NUM_ARGS];
 		
 		#endregion
 
