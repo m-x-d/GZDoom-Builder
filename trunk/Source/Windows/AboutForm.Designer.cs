@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.builderlink = new System.Windows.Forms.LinkLabel();
 			this.version = new System.Windows.Forms.Label();
 			this.slimdxlogo = new System.Windows.Forms.PictureBox();
+			this.copyversion = new System.Windows.Forms.Button();
 			pictureBox1 = new System.Windows.Forms.PictureBox();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -55,9 +56,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			label1.Location = new System.Drawing.Point(15, 119);
+			label1.Location = new System.Drawing.Point(15, 144);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(335, 50);
+			label1.Size = new System.Drawing.Size(355, 50);
 			label1.TabIndex = 2;
 			label1.Text = "Doom Builder is designed and programmed by Pascal vd Heiden.\r\nSeveral game config" +
 				"urations were written by various members of the Doom community. See the website " +
@@ -66,7 +67,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label2
 			// 
 			label2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			label2.Location = new System.Drawing.Point(15, 233);
+			label2.Location = new System.Drawing.Point(15, 262);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(213, 29);
 			label2.TabIndex = 8;
@@ -75,7 +76,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// close
 			// 
 			this.close.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.close.Location = new System.Drawing.Point(234, 237);
+			this.close.Location = new System.Drawing.Point(265, 266);
 			this.close.Name = "close";
 			this.close.Size = new System.Drawing.Size(116, 25);
 			this.close.TabIndex = 3;
@@ -85,7 +86,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// builderlink
 			// 
 			this.builderlink.AutoSize = true;
-			this.builderlink.Location = new System.Drawing.Point(12, 169);
+			this.builderlink.Location = new System.Drawing.Point(12, 194);
 			this.builderlink.Name = "builderlink";
 			this.builderlink.Size = new System.Drawing.Size(121, 14);
 			this.builderlink.TabIndex = 5;
@@ -97,7 +98,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.version.AutoSize = true;
 			this.version.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.version.Location = new System.Drawing.Point(15, 98);
+			this.version.Location = new System.Drawing.Point(15, 106);
 			this.version.Name = "version";
 			this.version.Size = new System.Drawing.Size(138, 14);
 			this.version.TabIndex = 6;
@@ -106,19 +107,30 @@ namespace CodeImp.DoomBuilder.Windows
 			// slimdxlogo
 			// 
 			this.slimdxlogo.Image = global::CodeImp.DoomBuilder.Properties.Resources.SlimDX_small;
-			this.slimdxlogo.Location = new System.Drawing.Point(10, 210);
+			this.slimdxlogo.Location = new System.Drawing.Point(10, 239);
 			this.slimdxlogo.Name = "slimdxlogo";
 			this.slimdxlogo.Size = new System.Drawing.Size(80, 20);
 			this.slimdxlogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.slimdxlogo.TabIndex = 7;
 			this.slimdxlogo.TabStop = false;
 			// 
+			// copyversion
+			// 
+			this.copyversion.Location = new System.Drawing.Point(265, 101);
+			this.copyversion.Name = "copyversion";
+			this.copyversion.Size = new System.Drawing.Size(116, 25);
+			this.copyversion.TabIndex = 9;
+			this.copyversion.Text = "Copy Version";
+			this.copyversion.UseVisualStyleBackColor = true;
+			this.copyversion.Click += new System.EventHandler(this.copyversion_Click);
+			// 
 			// AboutForm
 			// 
 			this.AcceptButton = this.close;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.close;
-			this.ClientSize = new System.Drawing.Size(358, 270);
+			this.ClientSize = new System.Drawing.Size(393, 303);
+			this.Controls.Add(this.copyversion);
 			this.Controls.Add(label2);
 			this.Controls.Add(this.slimdxlogo);
 			this.Controls.Add(this.version);
@@ -149,5 +161,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.LinkLabel builderlink;
 		private System.Windows.Forms.Label version;
 		private System.Windows.Forms.PictureBox slimdxlogo;
+		private System.Windows.Forms.Button copyversion;
 	}
 }

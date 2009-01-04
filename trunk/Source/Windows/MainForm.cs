@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Constants
 		
 		private const string STATUS_READY_TEXT = "Ready.";
+		private const string STATUS_LOADING_TEXT = "Loading resources...";
 		private const int MAX_RECENT_FILES = 8;
 		private const int MAX_RECENT_FILES_PIXELS = 250;
 		private const int WARNING_FLASH_COUNT = 5;
@@ -613,15 +614,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// Stop warning timers
 			warningtimer.Stop();
 			warningflasher.Stop();
-
-			// Display ready status description
+			
+			// Update icon, this also sets the ready text
 			statustype = StatusType.Ready;
-			if(statuslabel.Text != STATUS_READY_TEXT)
-				statuslabel.Text = STATUS_READY_TEXT;
-			
-			// Update icon as well
 			UpdateStatusIcon();
-			
+
 			// Refresh if needed
 			statusbar.Invalidate();
 			this.Update();
@@ -650,17 +647,20 @@ namespace CodeImp.DoomBuilder.Windows
 						{
 							// Display semi-ready icon
 							statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status1;
+							if(statuslabel.Text != STATUS_LOADING_TEXT) statuslabel.Text = STATUS_LOADING_TEXT;
 						}
 						else
 						{
 							// Display ready icon
 							statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status0;
+							if(statuslabel.Text != STATUS_READY_TEXT) statuslabel.Text = STATUS_READY_TEXT;
 						}
 					}
 					else
 					{
 						// Display ready icon
 						statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status0;
+						if(statuslabel.Text != STATUS_READY_TEXT) statuslabel.Text = STATUS_READY_TEXT;
 					}
 				}
 				else if(statustype == StatusType.Busy)

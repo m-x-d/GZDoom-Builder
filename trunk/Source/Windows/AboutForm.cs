@@ -92,5 +92,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Clean up
 			if(p != null) p.Dispose();
 		}
+
+		// This copies the version number to clipboard
+		private void copyversion_Click(object sender, EventArgs e)
+		{
+			Clipboard.Clear();
+			Clipboard.SetText(Application.ProductVersion);
+		}
 	}
 }
