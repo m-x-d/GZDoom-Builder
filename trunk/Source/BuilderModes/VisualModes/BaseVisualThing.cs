@@ -83,9 +83,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PixelColor sectorcolor = new PixelColor(255, 255, 255, 255);
 			
-			// Must have a width!
-			if(info.Width < 0.1f) return false;
-			
+			// Must have a width and height!
+			if((info.Width < 0.1f) || (info.Height < 0.1f)) return false;
+
 			if(sprite != null)
 			{
 				// Find the sector in which the thing resides
@@ -97,18 +97,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 											 unchecked((byte)Thing.Sector.Brightness),
 											 unchecked((byte)Thing.Sector.Brightness));
 				}
-				
+
 				// Check if the texture is loaded
 				sprite.LoadImage();
 				isloaded = sprite.IsImageLoaded;
 				if(isloaded)
 				{
 					base.Texture = sprite;
-					
+
 					// Determine sprite size
 					float radius = sprite.ScaledWidth * 0.5f;
 					float height = sprite.ScaledHeight;
-					
+
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
 					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor.ToInt(), 0.0f, 1.0f);
@@ -122,11 +122,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					base.Texture = General.Map.Data.Hourglass3D;
-					
+
 					// Determine sprite size
 					float radius = Math.Min(info.Width, info.Height / 2f);
 					float height = Math.Min(info.Width * 2f, info.Height);
-					
+
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
 					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor.ToInt(), 0.0f, 1.0f);
@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetPosition(pos);
 			SetCageSize(info.Width, info.Height);
 			SetCageColor(Thing.Color);
-			
+
 			// Keep info for object picking
 			cageradius2 = info.Width * Angle2D.SQRT2;
 			cageradius2 = cageradius2 * cageradius2;

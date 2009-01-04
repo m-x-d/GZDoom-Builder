@@ -93,8 +93,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 			this.color = 0;
 			this.arrow = true;
-			this.width = 16f;
-			this.height = 16f;
+			this.width = 10f;
+			this.height = 20f;
 			this.hangs = false;
 			this.blocking = 0;
 			this.errorcheck = 0;
@@ -128,7 +128,6 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Safety
 			if(this.width < 8f) this.width = 8f;
-			if(this.height < 8f) this.height = 8f;
 			
 			// Make long name for sprite lookup
 			if(this.sprite.Length <= 8)

@@ -638,13 +638,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This collects a visual sector's geometry for rendering
 		public void AddThingGeometry(VisualThing t)
 		{
+			// Make sure the distance to camera is calculated
+			t.CalculateCameraDistance(cameraposition);
+			thingsbydistance.Add(t);
+			
 			// Must have a texture!
 			if(t.Texture != null)
 			{
-				// Make sure the distance to camera is calculated
-				t.CalculateCameraDistance(cameraposition);
-				thingsbydistance.Add(t);
-				
 				// Texture group not yet collected?
 				if(!things[t.RenderPassInt].ContainsKey(t.Texture))
 				{
