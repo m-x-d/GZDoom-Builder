@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 		
-		private const float DRAG_ANGLE_TOLERANCE = 0.1f;
+		private const float DRAG_ANGLE_TOLERANCE = 0.06f;
 		
 		#endregion
 
@@ -321,7 +321,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(parts.middledouble != null) parts.middledouble.Setup();
 			if(parts.middlesingle != null) parts.middlesingle.Setup();
 			if(parts.upper != null) parts.upper.Setup();
-			mode.RefreshTargetInfo();
+			mode.ShowTargetInfo();
 		}
 		
 		// Sector brightness change
