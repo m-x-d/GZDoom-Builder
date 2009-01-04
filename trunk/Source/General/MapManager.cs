@@ -475,6 +475,15 @@ namespace CodeImp.DoomBuilder
 
 			try
 			{
+				// Backup existing file, if any
+				if(File.Exists(newfilepathname))
+				{
+					if(File.Exists(newfilepathname + ".backup3")) File.Delete(newfilepathname + ".backup3");
+					if(File.Exists(newfilepathname + ".backup2")) File.Move(newfilepathname + ".backup2", newfilepathname + ".backup3");
+					if(File.Exists(newfilepathname + ".backup1")) File.Move(newfilepathname + ".backup1", newfilepathname + ".backup2");
+					File.Copy(newfilepathname, newfilepathname + ".backup1");
+				}
+				
 				// Except when saving INTO another file,
 				// kill the target file if it is different from source file
 				if((savemode != SAVE_INTO) && (newfilepathname != filepathname))

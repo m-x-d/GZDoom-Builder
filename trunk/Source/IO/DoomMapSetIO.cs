@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.IO
 				
 				// Create new item
 				t = map.CreateThing();
-				t.Update(type, x, y, 0, angle, stringflags, 0, 0, Thing.EMPTY_ARGS);
+				t.Update(type, x, y, 0, angle, stringflags, 0, 0, new int[Thing.NUM_ARGS]);
 				//t.DetermineSector();
 				t.UpdateConfiguration();
 			}
@@ -274,7 +274,7 @@ namespace CodeImp.DoomBuilder.IO
 
 				// Create new item
 				l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-				l.Update(stringflags, 0, tag, action, Linedef.EMPTY_ARGS);
+				l.Update(stringflags, 0, tag, action, new int[Linedef.NUM_ARGS]);
 				l.UpdateCache();
 
 				// Line has a front side?
