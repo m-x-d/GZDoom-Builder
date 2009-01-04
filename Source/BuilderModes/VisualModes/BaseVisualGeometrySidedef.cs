@@ -113,6 +113,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnChangeTargetHeight(int amount) { }
 		protected virtual void SetTexture(string texturename) { }
 		
+		// Reset texture offsets
+		public virtual void OnResetTextureOffset()
+		{
+			General.Map.UndoRedo.CreateUndo("Reset texture offsets");
+
+			// Apply offsets
+			Sidedef.OffsetX = 0;
+			Sidedef.OffsetY = 0;
+
+			// Update sidedef geometry
+			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+			if(parts.lower != null) parts.lower.Setup();
+			if(parts.middledouble != null) parts.middledouble.Setup();
+			if(parts.middlesingle != null) parts.middlesingle.Setup();
+			if(parts.upper != null) parts.upper.Setup();
+		}
+		
 		// Toggle upper-unpegged
 		public virtual void OnToggleUpperUnpegged()
 		{

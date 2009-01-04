@@ -28,7 +28,7 @@ The order and included items may also change any time.
 =========================================================
 
 - Contact AlysiumX (AlysiumX@gmail.com) for official video tutorials
-	(see http://www.youtube.com/view_play_list?p=6FDD1F9F674419E8)
+	(see http://doomvideos.com/, http://www.youtube.com/view_play_list?p=6FDD1F9F674419E8)
 
 - Make Plugin Development Kit
 	- Add general purpose events to editing modes and plugin main class

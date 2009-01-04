@@ -498,6 +498,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			renderer.FullBrightness = !renderer.FullBrightness;
 		}
+
+		[BeginAction("resettexture")]
+		public void ResetTexture()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnResetTextureOffset();
+			ShowTargetInfo();
+		}
 		
 		#endregion
 	}
