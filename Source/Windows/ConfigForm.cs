@@ -68,7 +68,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// No skill
 			skill.Value = 0;
 			
-			// TODO: Nodebuilders are allowed to be empty
+			// Nodebuilders are allowed to be empty
+			nodebuildersave.Items.Add(new NodebuilderInfo());
+			nodebuildertest.Items.Add(new NodebuilderInfo());
 			
 			// Fill comboboxes with nodebuilders
 			nodebuildersave.Items.AddRange(General.Nodebuilders.ToArray());
@@ -132,7 +134,7 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 				
-				// Go for all nodebuilder save items
+				// Go for all nodebuilder test items
 				nodebuildertest.SelectedIndex = -1;
 				for(int i = 0; i < nodebuildertest.Items.Count; i++)
 				{

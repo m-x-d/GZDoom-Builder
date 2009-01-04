@@ -389,42 +389,6 @@ namespace CodeImp.DoomBuilder
 			// If the scripts window is open, save the scripts first
 			if(IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
 			
-			// Make a copy of the map data
-			outputset = map.Clone();
-
-			// Remove all flags from all 3D Start things
-			foreach(Thing t in outputset.Things)
-			{
-				if(t.Type == config.Start3DModeThingType)
-				{
-					List<string> flagkeys = new List<string>(t.Flags.Keys);
-					foreach(string k in flagkeys) t.Flags[k] = false;
-				}
-			}
-
-			// Do we need sidedefs compression?
-			if(map.Sidedefs.Count > io.MaxSidedefs)
-			{
-				// Compress sidedefs
-				outputset.CompressSidedefs();
-
-				// Check if it still doesnt fit
-				if(map.Sidedefs.Count > io.MaxSidedefs)
-				{
-					// Problem! Can't save the map like this!
-					General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
-					return false;
-				}
-			}
-			
-			// TODO: Check for more limitations
-			
-			// Write to temporary file
-			General.WriteLogLine("Writing map data structures to file...");
-			index = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
-			if(index == -1) index = 0;
-			io.Write(outputset, TEMP_MAP_HEADER, index);
-			
 			// Only recompile scripts when the scripts have changed
 			// (not when only the map changed)
 			if(CheckScriptChanged())
@@ -447,22 +411,63 @@ namespace CodeImp.DoomBuilder
 				}
 			}
 			
-			// Only rebuild nodes when the actual map has changed
+			// Only write the map and rebuild nodes when the actual map has changed
 			// (not when only scripts have changed)
 			if(changed)
 			{
+				// Make a copy of the map data
+				outputset = map.Clone();
+
+				// Remove all flags from all 3D Start things
+				foreach(Thing t in outputset.Things)
+				{
+					if(t.Type == config.Start3DModeThingType)
+					{
+						List<string> flagkeys = new List<string>(t.Flags.Keys);
+						foreach(string k in flagkeys) t.Flags[k] = false;
+					}
+				}
+
+				// Do we need sidedefs compression?
+				if(map.Sidedefs.Count > io.MaxSidedefs)
+				{
+					// Compress sidedefs
+					outputset.CompressSidedefs();
+
+					// Check if it still doesnt fit
+					if(map.Sidedefs.Count > io.MaxSidedefs)
+					{
+						// Problem! Can't save the map like this!
+						General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
+						return false;
+					}
+				}
+				
+				// TODO: Check for more limitations
+				
+				// Write to temporary file
+				General.WriteLogLine("Writing map data structures to file...");
+				index = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
+				if(index == -1) index = 0;
+				io.Write(outputset, TEMP_MAP_HEADER, index);
+				outputset.Dispose();
+				
 				// Get the corresponding nodebuilder
-				if(savemode == SAVE_TEST) nodebuildername = configinfo.NodebuilderTest;
-					else nodebuildername = configinfo.NodebuilderSave;
+				nodebuildername = savemode == SAVE_TEST ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
 
 				// Build the nodes
 				oldstatus = General.MainWindow.GetCurrentSatus();
 				General.MainWindow.DisplayStatus("Building map nodes...");
-				if((nodebuildername != null) && (nodebuildername != ""))
+				if(!string.IsNullOrEmpty(nodebuildername))
 					includenodes = BuildNodes(nodebuildername, true);
 				else
 					includenodes = false;
 				General.MainWindow.DisplayStatus(oldstatus);
+			}
+			else
+			{
+				// Check if we have nodebuilder lumps
+				includenodes = VerifyNodebuilderLumps(tempwad, TEMP_MAP_HEADER);
 			}
 			
 			// Suspend data resources
@@ -508,8 +513,7 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Determine original map name
-			if(options.PreviousName != "") origmapname = options.PreviousName;
-				else origmapname = options.CurrentName;
+			origmapname = options.PreviousName != "" ? options.PreviousName : options.CurrentName;
 
 			// Copy map lumps to target file
 			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
@@ -597,10 +601,8 @@ namespace CodeImp.DoomBuilder
 		{
 			NodebuilderInfo nodebuilder;
 			string tempfile1, tempfile2;
-			bool lumpnodebuild, lumpallowempty;
 			bool lumpscomplete = false;
 			WAD buildwad;
-			int srcindex;
 
 			// Find the nodebuilder
 			nodebuilder = General.GetNodebuilderByName(nodebuildername);
@@ -618,6 +620,17 @@ namespace CodeImp.DoomBuilder
 				
 				// Make temporary filename
 				tempfile1 = General.MakeTempFilename(compiler.Location);
+
+				// Make the temporary WAD file
+				General.WriteLogLine("Creating temporary build file: " + tempfile1);
+				buildwad = new WAD(tempfile1);
+				
+				// Copy lumps to buildwad
+				General.WriteLogLine("Copying map lumps to temporary build file...");
+				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
+				
+				// Close buildwad
+				buildwad.Dispose();
 				
 				// Does the nodebuilder require an output file?
 				if(nodebuilder.HasSpecialOutputFile)
@@ -631,17 +644,6 @@ namespace CodeImp.DoomBuilder
 					// Output file is same as input file
 					tempfile2 = tempfile1;
 				}
-
-				// Make the temporary WAD file
-				General.WriteLogLine("Creating temporary build file: " + tempfile1);
-				buildwad = new WAD(tempfile1);
-				
-				// Copy lumps to buildwad
-				General.WriteLogLine("Copying map lumps to temporary build file...");
-				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
-				
-				// Close buildwad
-				buildwad.Dispose();
 				
 				// Run the nodebuilder
 				compiler.Parameters = nodebuilder.Parameters;
@@ -653,38 +655,8 @@ namespace CodeImp.DoomBuilder
 					// Open the output file
 					buildwad = new WAD(tempfile2);
 					
-					// Find the map header in source
-					srcindex = buildwad.FindLumpIndex(BUILD_MAP_HEADER);
-					if(srcindex > -1)
-					{
-						// Go for all the map lump names
-						lumpscomplete = true;
-						foreach(DictionaryEntry ml in config.MapLumpNames)
-						{
-							// Read lump settings from map config
-							lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
-							lumpallowempty = config.ReadSetting("maplumpnames." + ml.Key + ".allowempty", false);
-
-							// Check if this lump should exist
-							if(lumpnodebuild && !lumpallowempty)
-							{
-								// Find the lump in the source
-								if(buildwad.FindLump(ml.Key.ToString(), srcindex, srcindex + config.MapLumpNames.Count + 2) == null)
-								{
-									// Missing a lump!
-									lumpscomplete = false;
-									break;
-								}
-							}
-						}
-					}
-					else
-					{
-						// Cannot find header
-						lumpscomplete = false;
-					}
-					
 					// Output lumps complete?
+					lumpscomplete = VerifyNodebuilderLumps(buildwad, BUILD_MAP_HEADER);
 					if(lumpscomplete)
 					{
 						// Copy nodebuilder lumps to temp file
@@ -712,6 +684,40 @@ namespace CodeImp.DoomBuilder
 			}
 		}
 
+		// This verifies if the nodebuilder lumps exist in a WAD file
+		private bool VerifyNodebuilderLumps(WAD wad, string mapheader)
+		{
+			bool lumpscomplete = false;
+			
+			// Find the map header in source
+			int srcindex = wad.FindLumpIndex(mapheader);
+			if(srcindex > -1)
+			{
+				// Go for all the map lump names
+				lumpscomplete = true;
+				foreach(DictionaryEntry ml in config.MapLumpNames)
+				{
+					// Read lump settings from map config
+					bool lumpnodebuild = config.ReadSetting("maplumpnames." + ml.Key + ".nodebuild", false);
+					bool lumpallowempty = config.ReadSetting("maplumpnames." + ml.Key + ".allowempty", false);
+
+					// Check if this lump should exist
+					if(lumpnodebuild && !lumpallowempty)
+					{
+						// Find the lump in the source
+						if(wad.FindLump(ml.Key.ToString(), srcindex, srcindex + config.MapLumpNames.Count + 2) == null)
+						{
+							// Missing a lump!
+							lumpscomplete = false;
+							break;
+						}
+					}
+				}
+			}
+
+			return lumpscomplete;
+		}
+		
 		#endregion
 
 		#region ================== Lumps

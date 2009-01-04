@@ -3,7 +3,11 @@ quality over quantity. It is done when it's done.
 The order and included items may also change any time.
 =========================================================
 
-- Fix up nodebuilder configurations and all user to choose no nodebuilder.
+- Offsets in info panel are not updated when dragging textue or changing texture offsets.
+
+- Full brightness option in Visual Mode
+
+- Info panel should be collapsable
 
 - Create menus for different modes
 
@@ -18,6 +22,8 @@ The order and included items may also change any time.
 - Edit Selection mode does not take size of things into account.
 
 - Set up forum for bug reports and development.
+
+- Test map nomonsters option in same menu
 
 =========================================================
   BETA TESTING STARTS HERE
