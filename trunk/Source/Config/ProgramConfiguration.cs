@@ -361,7 +361,7 @@ namespace CodeImp.DoomBuilder.Config
 				if(General.Map.Map.Sectors.Count > 0)
 				{
 					foundone = true;
-					defaultfloortexture = General.GetByIndex<Sector>(General.Map.Map.Sectors, 0).FloorTexture;
+					defaultfloortexture = General.GetByIndex(General.Map.Map.Sectors, 0).FloorTexture;
 				}
 
 				// Pick the first FLOOR from the list.
@@ -391,7 +391,7 @@ namespace CodeImp.DoomBuilder.Config
 				if(General.Map.Map.Sectors.Count > 0)
 				{
 					foundone = true;
-					defaultceiltexture = General.GetByIndex<Sector>(General.Map.Map.Sectors, 0).CeilTexture;
+					defaultceiltexture = General.GetByIndex(General.Map.Map.Sectors, 0).CeilTexture;
 				}
 
 				// Pick the first FLOOR from the list.

@@ -461,8 +461,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 					General.Map.UndoRedo.CreateUndo("Delete vertex");
 
-				// Dispose selected vertices
-				foreach(Vertex v in selected) v.Dispose();
+				// Go for all vertices that need to be removed
+				foreach(Vertex v in selected)
+				{
+					// If the vertex only has 2 linedefs attached, then merge the linedefs
+					if(v.Linedefs.Count == 2)
+					{
+						Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
+						Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
+						Vertex v1 = (ld1.Start == v) ? ld1.End : ld1.Start;
+						Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+						if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
+						//if(ld2.Start == v) ld2.SetStartVertex(v1); else ld2.SetEndVertex(v1);
+						//ld1.Join(ld2);
+						ld2.Dispose();
+					}
+					
+					// Trash vertex
+					v.Dispose();
+				}
 
 				// Update cache values
 				General.Map.IsChanged = true;

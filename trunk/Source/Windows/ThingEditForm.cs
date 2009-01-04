@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Set all options to the first thing properties
 			////////////////////////////////////////////////////////////////////////
 
-			ft = General.GetByIndex<Thing>(things, 0);
+			ft = General.GetByIndex(things, 0);
 			
 			// Set type index
 			typeid.Text = ft.Type.ToString();

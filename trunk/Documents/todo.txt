@@ -3,9 +3,21 @@ quality over quantity. It is done when it's done.
 The order and included items may also change any time.
 =========================================================
 
+- Fix up nodebuilder configurations and all user to choose no nodebuilder.
+
 - Create menus for different modes
 
 - Create gradient ceiling/floor heights feature
+
+- Fix flats alignment in Visual Mode (possibly also in Classic Modes)
+
+- Fix flat texture coordinates in Classic Modes (some flats/textures on floors appear stretched or shrinked)
+
+- Right-click in empty space in Linedefs mode does weird.
+
+- Edit Selection mode does not take size of things into account.
+
+- Set up forum for bug reports and development.
 
 =========================================================
   BETA TESTING STARTS HERE

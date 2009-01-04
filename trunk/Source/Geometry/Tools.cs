@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// See: http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
 		public static bool PointInPolygon(ICollection<Vector2D> polygon, Vector2D point)
 		{
-			Vector2D v1 = General.GetByIndex<Vector2D>(polygon, polygon.Count - 1);
+			Vector2D v1 = General.GetByIndex(polygon, polygon.Count - 1);
 			uint c = 0;
 
 			// Go for all vertices

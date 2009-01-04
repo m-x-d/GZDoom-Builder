@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Windows
 			////////////////////////////////////////////////////////////////////////
 
 			// Get first sector
-			sc = General.GetByIndex<Sector>(sectors, 0);
+			sc = General.GetByIndex(sectors, 0);
 
 			// Effects
 			effect.Value = sc.Effect;
