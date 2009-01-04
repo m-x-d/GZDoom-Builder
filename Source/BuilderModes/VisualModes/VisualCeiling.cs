@@ -88,12 +88,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(base.Texture.IsImageLoaded)
 				{
 					verts[i].u = s.Triangles.Vertices[i].x / base.Texture.ScaledWidth;
-					verts[i].v = s.Triangles.Vertices[i].y / base.Texture.ScaledHeight;
+					verts[i].v = -s.Triangles.Vertices[i].y / base.Texture.ScaledHeight;
 				}
 				else
 				{
 					verts[i].u = s.Triangles.Vertices[i].x / 64;
-					verts[i].v = s.Triangles.Vertices[i].y / 64;
+					verts[i].v = -s.Triangles.Vertices[i].y / 64;
 				}
 				
 				// Vertex coordinates

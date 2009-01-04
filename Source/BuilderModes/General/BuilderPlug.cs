@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
 		{
 			ImageData img = General.Map.Data.GetFlatImage(s.LongFloorTexture);
-			if(img != null)
+			if((img != null) && img.IsImageLoaded)
 			{
 				// Make scalars
 				float sw = 1.0f / img.ScaledWidth;
@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < vertices.Length; i++)
 				{
 					vertices[i].u = vertices[i].u * sw;
-					vertices[i].v = vertices[i].v * sw;
+					vertices[i].v = -vertices[i].v * sh;
 				}
 			}
 		}
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
 		{
 			ImageData img = General.Map.Data.GetFlatImage(s.LongCeilTexture);
-			if(img != null)
+			if((img != null) && img.IsImageLoaded)
 			{
 				// Make scalars
 				float sw = 1.0f / img.ScaledWidth;
@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < vertices.Length; i++)
 				{
 					vertices[i].u = vertices[i].u * sw;
-					vertices[i].v = vertices[i].v * sw;
+					vertices[i].v = -vertices[i].v * sh;
 				}
 			}
 		}

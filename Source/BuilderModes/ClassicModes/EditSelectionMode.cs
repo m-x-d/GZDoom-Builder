@@ -99,6 +99,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private ICollection<Linedef> selectedlines;
 		private List<Vector2D> vertexpos;
 		private List<Vector2D> thingpos;
+		private List<float> thingangle;
 		private ICollection<Vertex> unselectedvertices;
 		private ICollection<Linedef> unselectedlines;
 
@@ -494,6 +495,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			index = 0;
 			foreach(Thing t in selectedthings)
 			{
+				t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
 				t.Move(TransformedPoint(thingpos[index++]));
 			}
 
@@ -621,6 +623,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Array to keep original coordinates
 			vertexpos = new List<Vector2D>(selectedvertices.Count);
 			thingpos = new List<Vector2D>(selectedthings.Count);
+			thingangle = new List<float>(selectedthings.Count);
 
 			// A selection must be made!
 			if((selectedvertices.Count > 0) || (selectedthings.Count > 0))
@@ -647,13 +650,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Thing t in selectedthings)
 				{
 					// Find left-top and right-bottom
-					if(t.Position.x < offset.x) offset.x = t.Position.x;
-					if(t.Position.y < offset.y) offset.y = t.Position.y;
-					if(t.Position.x > right.x) right.x = t.Position.x;
-					if(t.Position.y > right.y) right.y = t.Position.y;
+					if((t.Position.x - t.Size) < offset.x) offset.x = t.Position.x - t.Size;
+					if((t.Position.y - t.Size) < offset.y) offset.y = t.Position.y - t.Size;
+					if((t.Position.x + t.Size) > right.x) right.x = t.Position.x + t.Size;
+					if((t.Position.y + t.Size) > right.y) right.y = t.Position.y + t.Size;
 
 					// Keep original coordinates
 					thingpos.Add(t.Position);
+					thingangle.Add(t.Angle);
 				}
 				
 				// Calculate size
@@ -726,7 +730,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			index = 0;
 			foreach(Thing t in selectedthings)
+			{
+				t.Rotate(thingangle[index]);
 				t.Move(thingpos[index++]);
+			}
 			
 			General.Map.Map.Update(true, true);
 			
@@ -754,7 +761,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					index = 0;
 					foreach(Thing t in selectedthings)
+					{
+						t.Rotate(thingangle[index]);
 						t.Move(thingpos[index++]);
+					}
 
 					// Make undo
 					General.Map.UndoRedo.CreateUndo("Edit selection");
