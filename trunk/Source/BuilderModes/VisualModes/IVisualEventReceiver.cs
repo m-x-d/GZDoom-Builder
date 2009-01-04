@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnChangeTargetHeight(int amount);
 		void OnChangeTargetBrightness(int amount);
 		void OnChangeTextureOffset(int horizontal, int vertical);
+		void OnResetTextureOffset();
 		void OnSelectTexture();
 		void OnCopyTexture();
 		void OnPasteTexture();

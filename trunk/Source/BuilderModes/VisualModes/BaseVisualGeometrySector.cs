@@ -82,6 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
+		public virtual void OnResetTextureOffset() { }
 		protected virtual void SetTexture(string texturename) { }
 
 		// Select texture
