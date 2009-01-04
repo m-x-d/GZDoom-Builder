@@ -1915,6 +1915,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			modename.Visible = false;
 			linedefinfo.ShowInfo(l);
+			if(vertexinfo.Visible) vertexinfo.Hide();
+			if(sectorinfo.Visible) sectorinfo.Hide();
+			if(thinginfo.Visible) thinginfo.Hide();
 		}
 
 		// Show vertex info
@@ -1922,6 +1925,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			modename.Visible = false;
 			vertexinfo.ShowInfo(v);
+			if(linedefinfo.Visible) linedefinfo.Hide();
+			if(sectorinfo.Visible) sectorinfo.Hide();
+			if(thinginfo.Visible) thinginfo.Hide();
 		}
 
 		// Show sector info
@@ -1929,6 +1935,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			modename.Visible = false;
 			sectorinfo.ShowInfo(s);
+			if(linedefinfo.Visible) linedefinfo.Hide();
+			if(vertexinfo.Visible) vertexinfo.Hide();
+			if(thinginfo.Visible) thinginfo.Hide();
 		}
 
 		// Show thing info
@@ -1936,6 +1945,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			modename.Visible = false;
 			thinginfo.ShowInfo(t);
+			if(linedefinfo.Visible) linedefinfo.Hide();
+			if(vertexinfo.Visible) vertexinfo.Hide();
+			if(sectorinfo.Visible) sectorinfo.Hide();
 		}
 
 		#endregion
