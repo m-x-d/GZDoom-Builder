@@ -3,18 +3,12 @@ quality over quantity. It is done when it's done.
 The order and included items may also change any time.
 =========================================================
 
-- Create menus for different modes
-
-- Create gradient ceiling/floor heights feature
-
-- Set up forum for bug reports and development.
-
-- Test map nomonsters option in same menu
-
 =========================================================
   BETA TESTING STARTS HERE
   OFFICIAL MANUAL WRITING STARTS HERE
 =========================================================
+
+- Create gradient ceiling/floor heights feature
 
 - Make DECORATE support
 

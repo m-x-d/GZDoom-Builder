@@ -118,7 +118,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
 			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-			this.buttontestmonsters = new System.Windows.Forms.ToolStripButton();
 			this.buttontest = new System.Windows.Forms.ToolStripSplitButton();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
@@ -749,7 +748,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonsnaptogrid,
             this.buttonautomerge,
             this.toolStripSeparator5,
-            this.buttontestmonsters,
             this.buttontest,
             this.toolStripSeparator6});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
@@ -1004,19 +1002,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
 			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
-			// 
-			// buttontestmonsters
-			// 
-			this.buttontestmonsters.Checked = true;
-			this.buttontestmonsters.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.buttontestmonsters.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttontestmonsters.Image = global::CodeImp.DoomBuilder.Properties.Resources.Monster2;
-			this.buttontestmonsters.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-			this.buttontestmonsters.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttontestmonsters.Name = "buttontestmonsters";
-			this.buttontestmonsters.Size = new System.Drawing.Size(23, 22);
-			this.buttontestmonsters.Text = "Test with monsters";
-			this.buttontestmonsters.Click += new System.EventHandler(this.buttontestmonsters_Click);
 			// 
 			// buttontest
 			// 
@@ -1565,7 +1550,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itempaste;
 		private System.Windows.Forms.ToolStripStatusLabel configlabel;
 		private System.Windows.Forms.ToolStripMenuItem menumode;
-		private System.Windows.Forms.ToolStripButton buttontestmonsters;
 		private System.Windows.Forms.ToolStripButton buttonviewnormal;
 		private System.Windows.Forms.ToolStripButton buttonviewbrightness;
 		private System.Windows.Forms.ToolStripButton buttonviewfloors;

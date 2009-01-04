@@ -179,6 +179,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Monster3 {
+            get {
+                object obj = ResourceManager.GetObject("Monster3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap NewMap {
             get {
                 object obj = ResourceManager.GetObject("NewMap", resourceCulture);
