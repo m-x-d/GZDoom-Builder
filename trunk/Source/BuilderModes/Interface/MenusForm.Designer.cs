@@ -40,9 +40,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.joinsectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-			this.thingsmenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.rotatethingscwitem = new System.Windows.Forms.ToolStripMenuItem();
-			this.rotatethingsccwitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
@@ -54,8 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.menustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.linedefsmenu,
-            this.sectorsmenu,
-            this.thingsmenu});
+            this.sectorsmenu});
 			this.menustrip.Location = new System.Drawing.Point(0, 0);
 			this.menustrip.Name = "menustrip";
 			this.menustrip.Size = new System.Drawing.Size(423, 24);
@@ -79,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fliplinedefsitem
 			// 
 			this.fliplinedefsitem.Name = "fliplinedefsitem";
-			this.fliplinedefsitem.Size = new System.Drawing.Size(158, 22);
+			this.fliplinedefsitem.Size = new System.Drawing.Size(169, 22);
 			this.fliplinedefsitem.Tag = "fliplinedefs";
 			this.fliplinedefsitem.Text = "Flip Linedefs";
 			this.fliplinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -87,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// flipsidedefsitem
 			// 
 			this.flipsidedefsitem.Name = "flipsidedefsitem";
-			this.flipsidedefsitem.Size = new System.Drawing.Size(158, 22);
+			this.flipsidedefsitem.Size = new System.Drawing.Size(169, 22);
 			this.flipsidedefsitem.Tag = "flipsidedefs";
 			this.flipsidedefsitem.Text = "Flip Sidedefs";
 			this.flipsidedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -95,24 +91,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(155, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(166, 6);
 			// 
 			// curvelinedefsitem
 			// 
 			this.curvelinedefsitem.Name = "curvelinedefsitem";
-			this.curvelinedefsitem.Size = new System.Drawing.Size(158, 22);
+			this.curvelinedefsitem.Size = new System.Drawing.Size(169, 22);
 			this.curvelinedefsitem.Tag = "curvelinesmode";
 			this.curvelinedefsitem.Text = "Curve Linedefs...";
+			this.curvelinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(155, 6);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(166, 6);
 			// 
 			// splitlinedefsitem
 			// 
 			this.splitlinedefsitem.Name = "splitlinedefsitem";
-			this.splitlinedefsitem.Size = new System.Drawing.Size(158, 22);
+			this.splitlinedefsitem.Size = new System.Drawing.Size(169, 22);
 			this.splitlinedefsitem.Tag = "splitlinedefs";
 			this.splitlinedefsitem.Text = "Split Linedefs";
 			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -131,7 +128,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// joinsectorsitem
 			// 
 			this.joinsectorsitem.Name = "joinsectorsitem";
-			this.joinsectorsitem.Size = new System.Drawing.Size(143, 22);
+			this.joinsectorsitem.Size = new System.Drawing.Size(154, 22);
 			this.joinsectorsitem.Tag = "joinsectors";
 			this.joinsectorsitem.Text = "Join Sectors";
 			this.joinsectorsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -139,7 +136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// mergesectorsitem
 			// 
 			this.mergesectorsitem.Name = "mergesectorsitem";
-			this.mergesectorsitem.Size = new System.Drawing.Size(143, 22);
+			this.mergesectorsitem.Size = new System.Drawing.Size(154, 22);
 			this.mergesectorsitem.Tag = "mergesectors";
 			this.mergesectorsitem.Text = "Merge Sectors";
 			this.mergesectorsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -147,29 +144,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(140, 6);
-			// 
-			// thingsmenu
-			// 
-			this.thingsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.rotatethingscwitem,
-            this.rotatethingsccwitem});
-			this.thingsmenu.Name = "thingsmenu";
-			this.thingsmenu.Size = new System.Drawing.Size(50, 20);
-			this.thingsmenu.Text = "Things";
-			this.thingsmenu.Visible = false;
-			// 
-			// rotatethingscwitem
-			// 
-			this.rotatethingscwitem.Name = "rotatethingscwitem";
-			this.rotatethingscwitem.Size = new System.Drawing.Size(193, 22);
-			this.rotatethingscwitem.Text = "Rotate Clockwise";
-			// 
-			// rotatethingsccwitem
-			// 
-			this.rotatethingsccwitem.Name = "rotatethingsccwitem";
-			this.rotatethingsccwitem.Size = new System.Drawing.Size(193, 22);
-			this.rotatethingsccwitem.Text = "Rotate Counterclockwise";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(151, 6);
 			// 
 			// globalstrip
 			// 
@@ -231,7 +206,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.MenuStrip menustrip;
 		private System.Windows.Forms.ToolStripMenuItem linedefsmenu;
 		private System.Windows.Forms.ToolStripMenuItem sectorsmenu;
-		private System.Windows.Forms.ToolStripMenuItem thingsmenu;
 		private System.Windows.Forms.ToolStripMenuItem fliplinedefsitem;
 		private System.Windows.Forms.ToolStripMenuItem flipsidedefsitem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
@@ -239,8 +213,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem joinsectorsitem;
 		private System.Windows.Forms.ToolStripMenuItem mergesectorsitem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
-		private System.Windows.Forms.ToolStripMenuItem rotatethingscwitem;
-		private System.Windows.Forms.ToolStripMenuItem rotatethingsccwitem;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
 		private System.Windows.Forms.ToolStripMenuItem splitlinedefsitem;
 		private System.Windows.Forms.ToolStrip globalstrip;

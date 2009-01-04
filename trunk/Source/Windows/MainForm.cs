@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private int mouseexclusivebreaklevel;
 		
 		// Skills
-		private ToolStripMenuItem[] skills;
+		private ToolStripItem[] skills;
 		
 		// Last info on panels
 		private object lastinfoobject;
@@ -1179,13 +1179,34 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null)
 			{
 				// Make the new skills list
-				skills = new ToolStripMenuItem[General.Map.Config.Skills.Count];
+				skills = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + 1];
+				int addindex = 0;
+				
+				// Positive skills are with monsters
 				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
 				{
-					skills[i] = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
-					skills[i].Image = buttontest.Image;
-					skills[i].Click += new EventHandler(TestSkill_Click);
-					skills[i].Tag = General.Map.Config.Skills[i].Index;
+					ToolStripMenuItem menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
+					menuitem.Image = Properties.Resources.Monster2;
+					menuitem.Click += new EventHandler(TestSkill_Click);
+					menuitem.Tag = General.Map.Config.Skills[i].Index;
+					menuitem.Checked = (General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == General.Map.Config.Skills[i].Index));
+					skills[addindex++] = menuitem;
+				}
+
+				// Add seperator
+				skills[addindex] = new ToolStripSeparator();
+				skills[addindex].Padding = new Padding(0, 3, 0, 3);
+				addindex++;
+
+				// Negative skills are without monsters
+				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
+				{
+					ToolStripMenuItem menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
+					menuitem.Image = Properties.Resources.Monster3;
+					menuitem.Click += new EventHandler(TestSkill_Click);
+					menuitem.Tag = -General.Map.Config.Skills[i].Index;
+					menuitem.Checked = (!General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == General.Map.Config.Skills[i].Index));
+					skills[addindex++] = menuitem;
 				}
 				
 				// Add to list
@@ -1197,14 +1218,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private void TestSkill_Click(object sender, EventArgs e)
 		{
 			int skill = (int)((sender as ToolStripMenuItem).Tag);
-			General.Map.Launcher.TestAtSkill(skill);
-		}
-
-		// Toggle monster testing
-		private void buttontestmonsters_Click(object sender, EventArgs e)
-		{
-			General.Settings.TestMonsters = !General.Settings.TestMonsters;
-			buttontestmonsters.Checked = General.Settings.TestMonsters;
+			General.Settings.TestMonsters = (skill > 0);
+			General.Map.ConfigSettings.TestSkill = Math.Abs(skill);
+			General.Map.Launcher.TestAtSkill(Math.Abs(skill));
+			UpdateSkills();
 		}
 		
 		// This loses focus
@@ -1343,10 +1360,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Enable/disable all edit mode items
 			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
-
-			// Update buttons
-			buttontestmonsters.Enabled = (General.Map != null);
-			buttontestmonsters.Checked = General.Settings.TestMonsters;
 		}
 
 		// This checks one of the edit mode items (and unchecks all others)

@@ -52,7 +52,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public ToolStripMenuItem LinedefsMenu { get { return linedefsmenu; } }
 		public ToolStripMenuItem SectorsMenu { get { return sectorsmenu; } }
-		public ToolStripMenuItem ThingsMenu { get { return thingsmenu; } }
 		public ToolStripButton MakeGradientBrightness { get { return buttonbrightnessgradient; } }
 
 		#endregion
@@ -119,17 +118,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ShowEditingModeMenu(EditMode mode)
 		{
 			Type sourcemode = typeof(object);
-			if(mode != null) sourcemode = mode.GetType();
-			
-			// When these modes are active, then test against the base mode they will return to
-			if((mode is DragGeometryMode) || (mode is DragThingsMode) ||
-			   (mode is DrawGeometryMode) || (mode is CurveLinedefsMode))
-				sourcemode = General.Editing.PreviousStableMode;
+			if(mode != null)
+			{
+				sourcemode = mode.GetType();
+
+				// When in a volatile mode, check against the last stable mode
+				if(mode.Attributes.Volatile) sourcemode = General.Editing.PreviousStableMode;
+			}
 			
 			// Final decision
 			if(sourcemode == typeof(LinedefsMode)) HideAllMenusExcept(linedefsmenu);
 			else if(sourcemode == typeof(SectorsMode)) HideAllMenusExcept(sectorsmenu);
-			else if(sourcemode == typeof(ThingsMode)) HideAllMenusExcept(thingsmenu);
 			else HideAllMenus();
 		}
 
