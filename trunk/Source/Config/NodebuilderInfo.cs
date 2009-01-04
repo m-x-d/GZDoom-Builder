@@ -92,6 +92,17 @@ namespace CodeImp.DoomBuilder.Config
 			// No compiler found?
 			if(this.compiler == null) throw new Exception("No such compiler defined: '" + compilername + "'");
 		}
+
+		// Constructor for "none" nodebuilder
+		public NodebuilderInfo()
+		{
+			// Initialize
+			this.name = "";
+			this.compiler = null;
+			this.title = "[do not build nodes]";
+			this.parameters = "";
+			this.specialoutputfile = false;
+		}
 		
 		#endregion
 
