@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Windows
 			////////////////////////////////////////////////////////////////////////
 
 			// Get first line
-			fl = General.GetByIndex<Linedef>(lines, 0);
+			fl = General.GetByIndex(lines, 0);
 			
 			// Flags
 			foreach(CheckBox c in flags.Checkboxes)

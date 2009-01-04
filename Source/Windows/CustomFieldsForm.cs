@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldslist.Setup(elementname);
 
 			// Setup from first element
-			MapElement fe = General.GetByIndex<MapElement>(elements, 0);
+			MapElement fe = General.GetByIndex(elements, 0);
 			fieldslist.SetValues(fe.Fields, true);
 			
 			// Setup from all elements
