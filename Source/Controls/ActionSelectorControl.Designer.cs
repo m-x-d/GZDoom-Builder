@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.number.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			this.number.TextChanged += new System.EventHandler(this.number_TextChanged);
 			this.number.KeyDown += new System.Windows.Forms.KeyEventHandler(this.number_KeyDown);
+			this.number.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.number_KeyPress);
 			// 
 			// list
 			// 
