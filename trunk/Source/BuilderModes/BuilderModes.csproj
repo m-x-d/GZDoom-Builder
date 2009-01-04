@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CodeImp.DoomBuilder.BuilderModes</RootNamespace>
     <AssemblyName>BuilderModes</AssemblyName>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -205,4 +206,11 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PreBuildEvent>"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M Debug $(ConfigurationName)
+"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M Release $(ConfigurationName)
+</PreBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
