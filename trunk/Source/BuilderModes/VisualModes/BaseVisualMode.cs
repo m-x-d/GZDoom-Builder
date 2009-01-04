@@ -349,11 +349,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Actions
-		
+
 		[BeginAction("visualselect", BaseAction = true)]
 		public void BeginSelect()
 		{
-			General.WriteLogLine("BeginSelect");
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectBegin();
 		}
@@ -361,7 +360,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[EndAction("visualselect", BaseAction = true)]
 		public void EndSelect()
 		{
-			General.WriteLogLine("EndSelect");
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectEnd();
 		}
 
@@ -535,6 +533,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ToggleGravity()
 		{
 			BuilderPlug.Me.UseGravity = !BuilderPlug.Me.UseGravity;
+		}
+
+		[BeginAction("togglebrightness")]
+		public void ToggleBrightness()
+		{
+			renderer.FullBrightness = !renderer.FullBrightness;
 		}
 		
 		#endregion
