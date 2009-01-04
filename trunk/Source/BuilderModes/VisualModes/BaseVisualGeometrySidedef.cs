@@ -321,6 +321,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(parts.middledouble != null) parts.middledouble.Setup();
 			if(parts.middlesingle != null) parts.middlesingle.Setup();
 			if(parts.upper != null) parts.upper.Setup();
+			mode.RefreshTargetInfo();
 		}
 		
 		// Sector brightness change
