@@ -272,7 +272,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// </summary>
 		public int CompareTo(VisualThing other)
 		{
-			return Math.Sign(this.cameradistance - other.cameradistance);
+			return Math.Sign(other.cameradistance - this.cameradistance);
 		}
 		
 		#endregion

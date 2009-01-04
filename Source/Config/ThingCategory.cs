@@ -101,8 +101,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.sorted = (cfg.ReadSetting("thingtypes." + name + ".sort", 0) != 0);
 			this.color = cfg.ReadSetting("thingtypes." + name + ".color", 0);
 			this.arrow = cfg.ReadSetting("thingtypes." + name + ".arrow", 0);
-			this.width = cfg.ReadSetting("thingtypes." + name + ".width", 16);
-			this.height = cfg.ReadSetting("thingtypes." + name + ".height", 16);
+			this.width = cfg.ReadSetting("thingtypes." + name + ".width", 10);
+			this.height = cfg.ReadSetting("thingtypes." + name + ".height", 20);
 			this.hangs = cfg.ReadSetting("thingtypes." + name + ".hangs", 0);
 			this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
 			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", 1);
@@ -110,7 +110,6 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Safety
 			if(this.width < 8f) this.width = 8f;
-			if(this.height < 8f) this.height = 8f;
 			
 			// Go for all items in category
 			dic = cfg.ReadSetting("thingtypes." + name, new Hashtable());
