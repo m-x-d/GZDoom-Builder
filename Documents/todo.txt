@@ -3,10 +3,6 @@ quality over quantity. It is done when it's done.
 The order and included items may also change any time.
 =========================================================
 
-- Offsets in info panel are not updated when dragging textue or changing texture offsets.
-
-- Full brightness option in Visual Mode
-
 - Info panel should be collapsable
 
 - Create menus for different modes

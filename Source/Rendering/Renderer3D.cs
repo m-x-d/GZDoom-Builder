@@ -58,6 +58,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Matrix view2d;
 		private Matrix world;
 		private Vector3D cameraposition;
+		private int shaderpass;
+		
+		// Options
+		private bool fullbrightness;
 		
 		// Window size
 		private Size windowsize;
@@ -94,6 +98,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		public ProjectedFrustum2D Frustum2D { get { return frustum; } }
 		public bool DrawThingCages { get { return renderthingcages; } set { renderthingcages = value; } }
+		public bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } }
 		
 		#endregion
 
@@ -376,6 +381,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				world = Matrix.Identity;
 				ApplyMatrices3D();
 
+				// Determine shader pass to use
+				if(fullbrightness) shaderpass = 1; else shaderpass = 0;
+
 				// Create crosshair vertices
 				if(crosshairverts == null)
 					CreateCrosshairVerts(new Size(General.Map.Data.Crosshair3D.Width, General.Map.Data.Crosshair3D.Height));
@@ -419,7 +427,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// SOLID PASS
 			world = Matrix.Identity;
 			ApplyMatrices3D();
-			graphics.Shaders.World3D.BeginPass(0);
+			graphics.Shaders.World3D.BeginPass(shaderpass);
 			RenderSinglePass((int)RenderPass.Solid);
 			graphics.Shaders.World3D.EndPass();
 
@@ -427,7 +435,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			world = Matrix.Identity;
 			ApplyMatrices3D();
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-			graphics.Shaders.World3D.BeginPass(0);
+			graphics.Shaders.World3D.BeginPass(shaderpass);
 			RenderSinglePass((int)RenderPass.Mask);
 			graphics.Shaders.World3D.EndPass();
 
@@ -439,7 +447,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
 			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
-			graphics.Shaders.World3D.BeginPass(0);
+			graphics.Shaders.World3D.BeginPass(shaderpass);
 			RenderSinglePass((int)RenderPass.Alpha);
 			graphics.Shaders.World3D.EndPass();
 
@@ -450,7 +458,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			world = Matrix.Identity;
 			ApplyMatrices3D();
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
-			graphics.Shaders.World3D.BeginPass(0);
+			graphics.Shaders.World3D.BeginPass(shaderpass);
 			RenderSinglePass((int)RenderPass.Additive);
 			graphics.Shaders.World3D.EndPass();
 			
@@ -475,7 +483,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetTexture(0, General.Map.Data.ThingBox.Texture);
 			graphics.Shaders.World3D.Texture1 = General.Map.Data.ThingBox.Texture;
 
-			graphics.Shaders.World3D.BeginPass(0);
+			graphics.Shaders.World3D.BeginPass(shaderpass);
 			foreach(VisualThing t in thingsbydistance)
 			{
 				// Setup matrix

@@ -56,21 +56,38 @@ PixelData vs_main(VertexData vd)
     return pd;
 }
 
-// Pixel shader
+// Normal pixel shader
 float4 ps_main(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
 	
-	// Blend texture color and vertex color
+	// Blend texture color, vertex color and modulation color
     return tcolor * pd.color * modulatecolor;
+}
+
+// Full-bright pixel shader
+float4 ps_fullbright(PixelData pd) : COLOR
+{
+	float4 tcolor = tex2D(texturesamp, pd.uv);
+	
+	// Blend texture color and modulation color
+    return tcolor * modulatecolor;
 }
 
 // Technique for shader model 2.0
 technique SM20
 {
+	// Normal
     pass p0
     {
 	    VertexShader = compile vs_2_0 vs_main();
 	    PixelShader = compile ps_2_0 ps_main();
+    }
+    
+    // Full brightness mode
+    pass p1
+    {
+	    VertexShader = compile vs_2_0 vs_main();
+	    PixelShader = compile ps_2_0 ps_fullbright();
     }
 }
