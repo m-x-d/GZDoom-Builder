@@ -148,6 +148,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.xposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.yposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panelinfo = new System.Windows.Forms.Panel();
+			this.labelcollapsedinfo = new System.Windows.Forms.Label();
+			this.buttontoggleinfo = new System.Windows.Forms.Button();
 			this.modename = new System.Windows.Forms.Label();
 			this.vertexinfo = new CodeImp.DoomBuilder.Controls.VertexInfoPanel();
 			this.thinginfo = new CodeImp.DoomBuilder.Controls.ThingInfoPanel();
@@ -1296,6 +1298,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// panelinfo
 			// 
+			this.panelinfo.Controls.Add(this.labelcollapsedinfo);
+			this.panelinfo.Controls.Add(this.buttontoggleinfo);
 			this.panelinfo.Controls.Add(this.modename);
 			this.panelinfo.Controls.Add(this.vertexinfo);
 			this.panelinfo.Controls.Add(this.thinginfo);
@@ -1306,6 +1310,33 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelinfo.Name = "panelinfo";
 			this.panelinfo.Size = new System.Drawing.Size(1012, 106);
 			this.panelinfo.TabIndex = 4;
+			// 
+			// labelcollapsedinfo
+			// 
+			this.labelcollapsedinfo.AutoSize = true;
+			this.labelcollapsedinfo.Font = new System.Drawing.Font("Verdana", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelcollapsedinfo.Location = new System.Drawing.Point(2, 2);
+			this.labelcollapsedinfo.Name = "labelcollapsedinfo";
+			this.labelcollapsedinfo.Size = new System.Drawing.Size(137, 13);
+			this.labelcollapsedinfo.TabIndex = 6;
+			this.labelcollapsedinfo.Text = "Collapsed Descriptions";
+			this.labelcollapsedinfo.Visible = false;
+			// 
+			// buttontoggleinfo
+			// 
+			this.buttontoggleinfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttontoggleinfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.buttontoggleinfo.Font = new System.Drawing.Font("Marlett", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
+			this.buttontoggleinfo.Location = new System.Drawing.Point(988, 1);
+			this.buttontoggleinfo.Name = "buttontoggleinfo";
+			this.buttontoggleinfo.Size = new System.Drawing.Size(22, 19);
+			this.buttontoggleinfo.TabIndex = 5;
+			this.buttontoggleinfo.TabStop = false;
+			this.buttontoggleinfo.Tag = "builder_toggleinfopanel";
+			this.buttontoggleinfo.Text = "6";
+			this.buttontoggleinfo.UseVisualStyleBackColor = true;
+			this.buttontoggleinfo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.buttontoggleinfo.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttontoggleinfo_MouseUp);
 			// 
 			// modename
 			// 
@@ -1559,5 +1590,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem iteminsertpreviousprefab;
 		private System.Windows.Forms.ToolStripButton buttoninsertprefabfile;
 		private System.Windows.Forms.ToolStripButton buttoninsertpreviousprefab;
+		private System.Windows.Forms.Button buttontoggleinfo;
+		private System.Windows.Forms.Label labelcollapsedinfo;
 	}
 }

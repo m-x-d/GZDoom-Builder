@@ -151,11 +151,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			delta = delta.GetFixedLength(General.Settings.ViewDistance * PICK_RANGE);
 			VisualPickResult newtarget = PickObject(start, start + delta);
 			
-			// Show info
-			if(newtarget.picked != target.picked) ShowTargetInfo();
+			// Should we update the info on panels?
+			bool updateinfo = (newtarget.picked != target.picked);
 			
 			// Apply new target
 			target = newtarget;
+
+			// Show target info
+			if(updateinfo) ShowTargetInfo();
 		}
 
 		// This shows the picked target information

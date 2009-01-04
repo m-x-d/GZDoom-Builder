@@ -52,6 +52,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private const int MAX_RECENT_FILES = 8;
 		private const int MAX_RECENT_FILES_PIXELS = 250;
 		private const int WARNING_FLASH_COUNT = 5;
+		private const int EXPANDED_INFO_HEIGHT = 106;
+		private const int COLLAPSED_INFO_HEIGHT = 20;
 		
 		private enum StatusType : int
 		{
@@ -101,6 +103,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// Skills
 		private ToolStripMenuItem[] skills;
 		
+		// Last info on panels
+		private object lastinfoobject;
+		
 		// Recent files
 		private ToolStripMenuItem[] recentitems;
 		
@@ -140,6 +145,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool AutoMerge { get { return buttonautomerge.Checked; } }
 		public bool MouseExclusive { get { return mouseexclusive; } }
 		new public IntPtr Handle { get { return windowptr; } }
+		public bool IsInfoPanelExpanded { get { return (panelinfo.Height == EXPANDED_INFO_HEIGHT); } }
 		
 		#endregion
 
@@ -262,7 +268,14 @@ namespace CodeImp.DoomBuilder.Windows
 			string asmname;
 			
 			this.Update();
-			General.Actions.InvokeAction((sender as ToolStripItem).Tag.ToString());
+			
+			if(sender is ToolStripItem)
+				General.Actions.InvokeAction((sender as ToolStripItem).Tag.ToString());
+			else if(sender is Button)
+				General.Actions.InvokeAction((sender as Button).Tag.ToString());
+			else
+				General.Fail("InvokeTaggedAction used on an unexpected control.");
+			
 			this.Update();
 		}
 		
@@ -850,6 +863,14 @@ namespace CodeImp.DoomBuilder.Windows
 					General.Map.Graphics.Reset();
 				}
 
+				// This is a dirty trick to give the display a new mousemove event with correct arguments
+				if(mouseinside)
+				{
+					Point mousepos = Cursor.Position;
+					Cursor.Position = new Point(mousepos.X + 1, mousepos.Y + 1);
+					Cursor.Position = mousepos;
+				}
+				
 				// Redraw now
 				RedrawDisplay();
 			}
@@ -1891,9 +1912,50 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		#region ================== Info Panels
 
+		// This toggles the panel expanded / collapsed
+		[BeginAction("toggleinfopanel")]
+		internal void ToggleInfoPanel()
+		{
+			if(IsInfoPanelExpanded)
+			{
+				panelinfo.Height = COLLAPSED_INFO_HEIGHT;
+				buttontoggleinfo.Text = "5";	// Arrow up
+				if(linedefinfo.Visible) linedefinfo.Hide();
+				if(vertexinfo.Visible) vertexinfo.Hide();
+				if(sectorinfo.Visible) sectorinfo.Hide();
+				if(thinginfo.Visible) thinginfo.Hide();
+				modename.Visible = false;
+				labelcollapsedinfo.Visible = true;
+			}
+			else
+			{
+				panelinfo.Height = EXPANDED_INFO_HEIGHT;
+				buttontoggleinfo.Text = "6";	// Arrow down
+				labelcollapsedinfo.Visible = false;
+				if(lastinfoobject is Vertex) ShowVertexInfo(lastinfoobject as Vertex);
+				else if(lastinfoobject is Linedef) ShowLinedefInfo(lastinfoobject as Linedef);
+				else if(lastinfoobject is Sector) ShowSectorInfo(lastinfoobject as Sector);
+				else if(lastinfoobject is Thing) ShowThingInfo(lastinfoobject as Thing);
+				else HideInfo();
+			}
+
+			FocusDisplay();
+		}
+
+		// Mouse released on info panel toggle button
+		private void buttontoggleinfo_MouseUp(object sender, MouseEventArgs e)
+		{
+			FocusDisplay();
+		}
+		
 		// This displays the current mode name
 		internal void DisplayModeName(string name)
 		{
+			if(lastinfoobject == null)
+			{
+				labelcollapsedinfo.Text = name;
+				labelcollapsedinfo.Refresh();
+			}
 			modename.Text = name;
 			modename.Refresh();
 		}
@@ -1902,52 +1964,91 @@ namespace CodeImp.DoomBuilder.Windows
 		public void HideInfo()
 		{
 			// Hide them all
+			lastinfoobject = null;
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
-			modename.Visible = (General.Map != null);
+			labelcollapsedinfo.Text = modename.Text;
+			labelcollapsedinfo.Refresh();
+			modename.Visible = ((General.Map != null) && IsInfoPanelExpanded);
 			modename.Refresh();
 		}
 		
 		// Show linedef info
 		public void ShowLinedefInfo(Linedef l)
 		{
+			lastinfoobject = l;
 			modename.Visible = false;
-			linedefinfo.ShowInfo(l);
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
+			if(IsInfoPanelExpanded) linedefinfo.ShowInfo(l);
+
+			// Show info on collapsed label
+			if(General.Map.Config.LinedefActions.ContainsKey(l.Action))
+			{
+				LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
+				labelcollapsedinfo.Text = act.ToString();
+			}
+			else if(l.Action == 0)
+				labelcollapsedinfo.Text = l.Action.ToString() + " - None";
+			else
+				labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
+			
+			labelcollapsedinfo.Refresh();
 		}
 
 		// Show vertex info
 		public void ShowVertexInfo(Vertex v)
 		{
+			lastinfoobject = v;
 			modename.Visible = false;
-			vertexinfo.ShowInfo(v);
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
+			if(IsInfoPanelExpanded) vertexinfo.ShowInfo(v);
+
+			// Show info on collapsed label
+			labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
+			labelcollapsedinfo.Refresh();
 		}
 
 		// Show sector info
 		public void ShowSectorInfo(Sector s)
 		{
+			lastinfoobject = s;
 			modename.Visible = false;
-			sectorinfo.ShowInfo(s);
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(thinginfo.Visible) thinginfo.Hide();
+			if(IsInfoPanelExpanded) sectorinfo.ShowInfo(s);
+
+			// Show info on collapsed label
+			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
+				labelcollapsedinfo.Text = General.Map.Config.SectorEffects[s.Effect].ToString();
+			else if(s.Effect == 0)
+				labelcollapsedinfo.Text = s.Effect.ToString() + " - Normal";
+			else
+				labelcollapsedinfo.Text = s.Effect.ToString() + " - Unknown";
+
+			labelcollapsedinfo.Refresh();
 		}
 
 		// Show thing info
 		public void ShowThingInfo(Thing t)
 		{
+			lastinfoobject = t;
 			modename.Visible = false;
-			thinginfo.ShowInfo(t);
 			if(linedefinfo.Visible) linedefinfo.Hide();
 			if(vertexinfo.Visible) vertexinfo.Hide();
 			if(sectorinfo.Visible) sectorinfo.Hide();
+			if(IsInfoPanelExpanded) thinginfo.ShowInfo(t);
+
+			// Show info on collapsed label
+			ThingTypeInfo ti = General.Map.Config.GetThingInfo(t.Type);
+			labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
+			labelcollapsedinfo.Refresh();
 		}
 
 		#endregion
