@@ -210,6 +210,17 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
+		// Keys pressed in number box
+		private void number_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			// Not numeric or control key?
+			if(((e.KeyChar < 48) || (e.KeyChar > 57)) && (e.KeyChar != 8))
+			{
+				// Cancel this
+				e.Handled = true;
+			}
+		}
+		
 		// Selection made
 		private void list_SelectionChangeCommitted(object sender, EventArgs e)
 		{
