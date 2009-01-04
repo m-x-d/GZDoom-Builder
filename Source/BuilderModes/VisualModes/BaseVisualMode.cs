@@ -202,6 +202,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply new target
 			target = newtarget;
 		}
+
+		// This shows the picked target information
+		public void RefreshTargetInfo()
+		{
+			// Any result?
+			if(target.picked != null)
+			{
+				// Geometry picked?
+				if(target.picked is VisualGeometry)
+				{
+					VisualGeometry pickedgeo = (target.picked as VisualGeometry);
+
+					if(pickedgeo.Sidedef != null)
+						General.Interface.ShowLinedefInfo(pickedgeo.Sidedef.Line);
+					else if(pickedgeo.Sidedef == null)
+						General.Interface.ShowSectorInfo(pickedgeo.Sector.Sector);
+					else
+						General.Interface.HideInfo();
+				}
+				// Thing picked?
+				if(target.picked is VisualThing)
+				{
+					VisualThing pickedthing = (target.picked as VisualThing);
+					General.Interface.ShowThingInfo(pickedthing.Thing);
+				}
+			}
+			else
+			{
+				General.Interface.HideInfo();
+			}
+		}
 		
 		#endregion
 		
@@ -345,6 +376,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void EndEdit()
 		{
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditEnd();
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("raisesector8")]
@@ -352,6 +384,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(8);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("lowersector8")]
@@ -359,6 +392,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(-8);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("raisesector1")]
@@ -366,6 +400,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(1);
+			RefreshTargetInfo();
 		}
 		
 		[BeginAction("lowersector1")]
@@ -373,6 +408,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(-1);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("showvisualthings")]
@@ -387,6 +423,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(8);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("lowerbrightness8")]
@@ -394,6 +431,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(-8);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("movetextureleft")]
@@ -401,6 +439,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(-1, 0);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("movetextureright")]
@@ -408,6 +447,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(1, 0);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("movetextureup")]
@@ -415,6 +455,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, -1);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("movetexturedown")]
@@ -422,6 +463,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, 1);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("textureselect")]
@@ -432,6 +474,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectTexture();
 			renderer.SetCrosshairBusy(false);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("texturecopy")]
@@ -439,6 +482,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyTexture();
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("texturepaste")]
@@ -446,6 +490,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnPasteTexture();
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("visualautoalignx")]
@@ -456,6 +501,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(true, false);
 			renderer.SetCrosshairBusy(false);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("visualautoaligny")]
@@ -466,6 +512,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(false, true);
 			renderer.SetCrosshairBusy(false);
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("toggleupperunpegged")]
@@ -473,6 +520,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleUpperUnpegged();
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("togglelowerunpegged")]
@@ -480,6 +528,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleLowerUnpegged();
+			RefreshTargetInfo();
 		}
 
 		[BeginAction("togglegravity")]
