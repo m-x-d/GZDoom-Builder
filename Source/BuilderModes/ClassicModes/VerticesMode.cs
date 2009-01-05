@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 
 		public const float VERTEX_HIGHLIGHT_RANGE = 20f;
-		public const float LINEDEF_SPLIT_RANGE = 8f;
+		public const float LINEDEF_SPLIT_RANGE = 12f;
 
 		#endregion
 
@@ -237,6 +237,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Start editing
 		protected override void OnEditBegin()
 		{
+			bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+			
 			// Vertex highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
@@ -247,23 +250,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_SPLIT_RANGE / renderer.Scale);
-
-				// Found a line?
 				if(l != null)
 				{
 					// Create undo
 					General.Map.UndoRedo.CreateUndo("Split linedef");
 
-					// Create vertex at nearest point on line
-					Vector2D nearestpos = l.NearestOnLine(mousemappos);
-					Vertex v = General.Map.Map.CreateVertex(nearestpos);
+					Vector2D insertpos;
+
+					// Snip to grid also?
+					if(snaptogrid)
+					{
+						// Find all points where the grid intersects the line
+						List<Vector2D> points = l.GetGridIntersections();
+						insertpos = mousemappos;
+						float distance = float.MaxValue;
+						foreach(Vector2D p in points)
+						{
+							float pdist = Vector2D.DistanceSq(p, mousemappos);
+							if(pdist < distance)
+							{
+								insertpos = p;
+								distance = pdist;
+							}
+						}
+					}
+					else
+					{
+						// Just use the nearest point on line
+						insertpos = l.NearestOnLine(mousemappos);
+					}
+
+					// Make the vertex
+					Vertex v = General.Map.Map.CreateVertex(insertpos);
 
 					// Snap to map format accuracy
 					v.SnapToAccuracy();
 
 					// Split the line with this vertex
 					l.Split(v);
-
+					
+					// Update
+					General.Map.Map.Update();
+					
 					// Highlight it
 					Highlight(v);
 
@@ -274,8 +302,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Start drawing mode
 					DrawGeometryMode drawmode = new DrawGeometryMode();
-					bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
-					bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 					DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, new List<DrawnVertex>());
 					drawmode.DrawPointAt(v);
 					General.Editing.ChangeMode(drawmode);
@@ -422,24 +448,69 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("insertitem", BaseAction = true)]
 		public virtual void InsertVertex()
 		{
+			bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+
 			// Mouse in window?
 			if(mouseinside)
 			{
-				// Create vertex at mouse position
-				Vertex v = General.Map.Map.CreateVertex(mousemappos);
+				Vector2D insertpos;
+				Linedef l = null;
+				
+				// Create undo
+				General.Map.UndoRedo.CreateUndo("Insert vertex");
 
-				// Snap to grid enabled?
-				if(General.Interface.SnapToGrid)
+				// Snap to geometry?
+				l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_SPLIT_RANGE / renderer.Scale);
+				if(snaptonearest && (l != null))
+				{
+					// Snip to grid also?
+					if(snaptogrid)
+					{
+						// Find all points where the grid intersects the line
+						List<Vector2D> points = l.GetGridIntersections();
+						insertpos = mousemappos;
+						float distance = float.MaxValue;
+						foreach(Vector2D p in points)
+						{
+							float pdist = Vector2D.DistanceSq(p, mousemappos);
+							if(pdist < distance)
+							{
+								insertpos = p;
+								distance = pdist;
+							}
+						}
+					}
+					else
+					{
+						// Just use the nearest point on line
+						insertpos = l.NearestOnLine(mousemappos);
+					}
+				}
+				// Snap to grid?
+				else if(snaptogrid)
 				{
 					// Snap to grid
-					v.SnapToGrid();
+					insertpos = General.Map.Grid.SnappedToGrid(mousemappos);
 				}
 				else
 				{
-					// Snap to map format accuracy
-					v.SnapToAccuracy();
+					// Just insert here, don't snap to anything
+					insertpos = mousemappos;
 				}
+				
+				// Make the vertex
+				Vertex v = General.Map.Map.CreateVertex(insertpos);
 
+				// Snap to map format accuracy
+				v.SnapToAccuracy();
+
+				// Split the line with this vertex
+				if(snaptonearest && (l != null)) l.Split(v);
+
+				// Update
+				General.Map.Map.Update();
+				
 				// Redraw screen
 				General.Interface.RedrawDisplay();
 			}
