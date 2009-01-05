@@ -473,6 +473,9 @@ namespace CodeImp.DoomBuilder
 			// Suspend data resources
 			data.Suspend();
 
+			// Determine original map name
+			origmapname = (options.PreviousName != "") ? options.PreviousName : options.CurrentName;
+			
 			try
 			{
 				// Backup existing file, if any
@@ -503,8 +506,31 @@ namespace CodeImp.DoomBuilder
 					if(File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
 				}
 				
-				// Open the target file
-				targetwad = new WAD(newfilepathname);
+				// If the target file exists, we need to rebuild it
+				if(File.Exists(newfilepathname))
+				{
+					// Move the target file aside
+					string origwadfile = newfilepathname + ".temp";
+					File.Move(newfilepathname, origwadfile);
+
+					// Open original file
+					WAD origwad = new WAD(origwadfile, true);
+					
+					// Create new target file
+					targetwad = new WAD(newfilepathname);
+
+					// Copy all lumps, except the original map
+					CopyAllLumpsExceptMap(origwad, targetwad, origmapname);
+					
+					// Close original file and delete it
+					origwad.Dispose();
+					File.Delete(origwadfile);
+				}
+				else
+				{
+					// Create new target file
+					targetwad = new WAD(newfilepathname);
+				}
 			}
 			catch(IOException)
 			{
@@ -521,9 +547,6 @@ namespace CodeImp.DoomBuilder
 				return false;
 			}
 			
-			// Determine original map name
-			origmapname = options.PreviousName != "" ? options.PreviousName : options.CurrentName;
-
 			// Copy map lumps to target file
 			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
 
@@ -815,6 +838,37 @@ namespace CodeImp.DoomBuilder
 						// Move insert index
 						insertindex = targetindex;
 					}
+				}
+			}
+		}
+		
+		// This copies all lumps, except those of a specific map
+		private void CopyAllLumpsExceptMap(WAD source, WAD target, string sourcemapname)
+		{
+			// Go for all lumps
+			bool skipping = false;
+			foreach(Lump srclump in source.Lumps)
+			{
+				// Check if we should stop skipping lumps here
+				if(skipping && !config.MapLumpNames.Contains(srclump.Name))
+				{
+					// Stop skipping
+					skipping = false;
+				}
+				
+				// Check if we should start skipping lumps here
+				if(!skipping && (srclump.Name == sourcemapname))
+				{
+					// We have encountered the map header, start skipping!
+					skipping = true;
+				}
+
+				// Not skipping this lump?
+				if(!skipping)
+				{
+					// Copy lump over!
+					Lump tgtlump = target.Insert(srclump.Name, target.Lumps.Count, srclump.Length);
+					srclump.CopyTo(tgtlump);
 				}
 			}
 		}
