@@ -207,6 +207,8 @@ namespace CodeImp.DoomBuilder.Config
 			ci.testskill = this.testskill;
 			ci.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in this.texturesets) ci.texturesets.Add(s.Copy());
+			ci.thingsfilters = new List<ThingsFilter>();
+			foreach(ThingsFilter f in this.thingsfilters) ci.thingsfilters.Add(new ThingsFilter(f));
 			ci.editmodes = new Dictionary<string, bool>(this.editmodes);
 			return ci;
 		}
@@ -227,13 +229,15 @@ namespace CodeImp.DoomBuilder.Config
 			this.testskill = ci.testskill;
 			this.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in ci.texturesets) this.texturesets.Add(s.Copy());
+			this.thingsfilters = new List<ThingsFilter>();
+			foreach(ThingsFilter f in ci.thingsfilters) this.thingsfilters.Add(new ThingsFilter(f));
 			this.editmodes = new Dictionary<string, bool>(ci.editmodes);
 		}
 		
 		// This applies the defaults
 		public void ApplyDefaults(GameConfiguration gameconfig)
 		{
-			// We can only apply texture set defaults when the game configuration is specified
+			// Some of the defaults can only be applied from game configuration
 			if(gameconfig != null)
 			{
 				// No texture sets?
@@ -244,6 +248,16 @@ namespace CodeImp.DoomBuilder.Config
 					{
 						// Add a copy to our list
 						texturesets.Add(s.Copy());
+					}
+				}
+				
+				// No things filters?
+				if(thingsfilters.Count == 0)
+				{
+					// Copy the things filters from game configuration
+					foreach(ThingsFilter f in gameconfig.ThingsFilters)
+					{
+						thingsfilters.Add(new ThingsFilter(f));
 					}
 				}
 			}
