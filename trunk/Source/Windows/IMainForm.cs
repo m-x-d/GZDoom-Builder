@@ -26,6 +26,7 @@ using System.IO;
 using System.Reflection;
 using System.Drawing;
 using System.ComponentModel;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Map;
 using SlimDX.Direct3D9;
 using SlimDX;
@@ -122,6 +123,8 @@ namespace CodeImp.DoomBuilder.Windows
 		/// that you want to invoke.</param>
 		/// <param name="e">Unused.</param>
 		void InvokeTaggedAction(object sender, EventArgs e);
+
+		Action GetActionByFullName(string fullname);
 
 		void AddButton(ToolStripItem button);
 		void RemoveButton(ToolStripItem button);

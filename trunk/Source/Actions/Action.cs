@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Actions
 {
-	internal class Action
+	public class Action
 	{
 		#region ================== Variables
 
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Action(Configuration cfg, string name, string shortname, int key)
+		internal Action(Configuration cfg, string name, string shortname, int key)
 		{
 			// Initialize
 			this.name = name;
@@ -198,39 +198,46 @@ namespace CodeImp.DoomBuilder.Actions
 
 		#region ================== Methods
 
+		// This invokes the action
+		public void Invoke()
+		{
+			this.Begin();
+			this.End();
+		}
+		
 		// This sets a new key for the action
-		public void SetShortcutKey(int key)
+		internal void SetShortcutKey(int key)
 		{
 			// Make it so.
 			this.key = key & keymask;
 		}
 		
 		// This binds a delegate to this action
-		public void BindBegin(ActionDelegate method)
+		internal void BindBegin(ActionDelegate method)
 		{
 			begindelegates.Add(method);
 		}
 
 		// This removes a delegate from this action
-		public void UnbindBegin(ActionDelegate method)
+		internal void UnbindBegin(ActionDelegate method)
 		{
 			begindelegates.Remove(method);
 		}
 
 		// This binds a delegate to this action
-		public void BindEnd(ActionDelegate method)
+		internal void BindEnd(ActionDelegate method)
 		{
 			enddelegates.Add(method);
 		}
 
 		// This removes a delegate from this action
-		public void UnbindEnd(ActionDelegate method)
+		internal void UnbindEnd(ActionDelegate method)
 		{
 			enddelegates.Remove(method);
 		}
 
 		// This raises events for this action
-		public void Begin()
+		internal void Begin()
 		{
 			List<ActionDelegate> delegateslist;
 			
@@ -246,7 +253,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// This raises events for this action
-		public void End()
+		internal void End()
 		{
 			List<ActionDelegate> delegateslist;
 
