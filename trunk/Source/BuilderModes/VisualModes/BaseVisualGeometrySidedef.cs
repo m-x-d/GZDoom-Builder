@@ -291,7 +291,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Select button pressed?
-				if(General.Interface.CheckActionActive(General.ThisAssembly, "visualselect"))
+				if(General.Actions.CheckActionActive(General.ThisAssembly, "visualselect"))
 				{
 					// Check if tolerance is exceeded to start UV dragging
 					float deltaxy = mode.CameraAngleXY - dragstartanglexy;

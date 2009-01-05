@@ -280,16 +280,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Update();
 		}
 		
-		// This returns the action for a given name
-		// Returns null when the action does not exists
-		public Action GetActionByFullName(string fullname)
-		{
-			if(General.Actions.Exists(fullname))
-				return General.Actions.GetActionByName(fullname);
-			else
-				return null;
-		}
-		
 		#endregion
 		
 		#region ================== Window
@@ -1002,15 +992,6 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Input
-
-		// This checks if a given action is active
-		public bool CheckActionActive(Assembly assembly, string actionname)
-		{
-			if(assembly == null)
-				return General.Actions.CheckActionActive(General.ThisAssembly, actionname);
-			else
-				return General.Actions.CheckActionActive(assembly, actionname);
-		}
 		
 		// This is a tool to lock the mouse in exclusive mode
 		private void StartMouseExclusive()

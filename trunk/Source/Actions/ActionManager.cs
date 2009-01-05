@@ -32,7 +32,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Actions
 {
-	internal class ActionManager
+	public class ActionManager
 	{
 		#region ================== Constants
 
@@ -62,8 +62,8 @@ namespace CodeImp.DoomBuilder.Actions
 
 		#region ================== Properties
 
-		public SortedDictionary<string, string> Categories { get { return categories; } }
-		public Action this[string action] { get { if(actions.ContainsKey(action)) return actions[action]; else throw new ArgumentException("There is no such action \"" + action + "\""); } }
+		internal SortedDictionary<string, string> Categories { get { return categories; } }
+		internal Action this[string action] { get { if(actions.ContainsKey(action)) return actions[action]; else throw new ArgumentException("There is no such action \"" + action + "\""); } }
 		public bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ActionManager()
+		internal ActionManager()
 		{
 			// Initialize
 			General.WriteLogLine("Starting action manager...");
@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// Disposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Actions
 
 		// This loads all actions from an assembly
-		public void LoadActions(Assembly asm)
+		internal void LoadActions(Assembly asm)
 		{
 			Stream actionsdata;
 			StreamReader actionsreader;
@@ -392,7 +392,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// This returns a list of all actions
-		public Action[] GetAllActions()
+		internal Action[] GetAllActions()
 		{
 			Action[] list = new Action[actions.Count];
 			actions.Values.CopyTo(list, 0);
@@ -406,7 +406,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 		
 		// This saves the control settings
-		public void SaveSettings()
+		internal void SaveSettings()
 		{
 			// Go for all actions
 			foreach(KeyValuePair<string, Action> a in actions)
@@ -435,7 +435,7 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Shortcut Keys
 		
 		// This applies default keys if they are not already in use
-		public void ApplyDefaultShortcutKeys()
+		internal void ApplyDefaultShortcutKeys()
 		{
 			// Find actions that have no key set
 			foreach(KeyValuePair<string, Action> a in actions)
@@ -487,7 +487,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 		
 		// Removes all shortcut keys
-		public void RemoveShortcutKeys()
+		internal void RemoveShortcutKeys()
 		{
 			// Clear all keys
 			foreach(KeyValuePair<string, Action> a in actions)
@@ -495,7 +495,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 		
 		// This notifies a key has been pressed
-		public void KeyPressed(int key)
+		internal void KeyPressed(int key)
 		{
 			int strippedkey = key & ~((int)Keys.Alt | (int)Keys.Shift | (int)Keys.Control);
 			if((strippedkey == (int)Keys.ShiftKey) || (strippedkey == (int)Keys.ControlKey)) key = strippedkey;
@@ -513,7 +513,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// This notifies a key has been released
-		public void KeyReleased(int key)
+		internal void KeyReleased(int key)
 		{
 			int strippedkey = key & ~((int)Keys.Alt | (int)Keys.Shift | (int)Keys.Control);
 			List<Action> keepactions = new List<Action>();
@@ -526,7 +526,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// This releases all pressed keys
-		public void ReleaseAllKeys()
+		internal void ReleaseAllKeys()
 		{
 			// Clear pressed keys
 			pressedkeys.Clear();
@@ -536,7 +536,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 		
 		// This updates the modifiers
-		public void UpdateModifiers(int mods)
+		internal void UpdateModifiers(int mods)
 		{
 			// Update modifiers
 			modifiers = mods;
@@ -546,7 +546,7 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 		
 		// This will call the associated actions for a keypress
-		private void BeginActionByKey(int key, bool repeated)
+		internal void BeginActionByKey(int key, bool repeated)
 		{
 			// Get all actions for which a begin is bound
 			List<Action> boundactions = new List<Action>(actions.Count);

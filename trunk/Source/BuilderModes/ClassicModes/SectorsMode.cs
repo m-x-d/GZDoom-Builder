@@ -534,7 +534,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDragStart(e);
 
 			// Edit button used?
-			if(General.Interface.CheckActionActive(null, "classicedit"))
+			if(General.Actions.CheckActionActive(null, "classicedit"))
 			{
 				// Anything highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)
