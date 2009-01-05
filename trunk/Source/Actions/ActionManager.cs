@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder.Actions
 		// Begun actions
 		private List<Action> activeactions;
 		
+		// Exclusive invokation
+		private bool exclusiverequested;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -65,7 +68,8 @@ namespace CodeImp.DoomBuilder.Actions
 		internal SortedDictionary<string, string> Categories { get { return categories; } }
 		internal Action this[string action] { get { if(actions.ContainsKey(action)) return actions[action]; else throw new ArgumentException("There is no such action \"" + action + "\""); } }
 		public bool IsDisposed { get { return isdisposed; } }
-
+		internal bool ExclusiveRequested { get { return exclusiverequested; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -647,6 +651,35 @@ namespace CodeImp.DoomBuilder.Actions
 
 			// Return result;
 			return actionnames.ToArray();
+		}
+		
+		#endregion
+
+		#region ================== Exclusive Invokation
+
+		// This resets the exclusive request
+		internal void ResetExclusiveRequest()
+		{
+			exclusiverequested = false;
+		}
+		
+		/// <summary>
+		/// This asks for exclusive invokation of the current BeginAction or EndAction.
+		/// Returns true when successull, false when denied (already given to another caller)
+		/// </summary>
+		public bool RequestExclusiveInvokation()
+		{
+			if(exclusiverequested)
+			{
+				// Already given out
+				return false;
+			}
+			else
+			{
+				// Success
+				exclusiverequested = true;
+				return true;
+			}
 		}
 		
 		#endregion

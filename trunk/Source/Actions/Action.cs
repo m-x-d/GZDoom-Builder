@@ -248,7 +248,9 @@ namespace CodeImp.DoomBuilder.Actions
 				delegateslist = new List<ActionDelegate>(begindelegates);
 				
 				// Invoke all the delegates
+				General.Actions.ResetExclusiveRequest();
 				foreach(ActionDelegate ad in delegateslist) ad.Invoke();
+				General.Actions.ResetExclusiveRequest();
 			}
 		}
 
@@ -264,7 +266,9 @@ namespace CodeImp.DoomBuilder.Actions
 				delegateslist = new List<ActionDelegate>(enddelegates);
 
 				// Invoke all the delegates
+				General.Actions.ResetExclusiveRequest();
 				foreach(ActionDelegate ad in delegateslist) ad.Invoke();
+				General.Actions.ResetExclusiveRequest();
 			}
 		}
 
