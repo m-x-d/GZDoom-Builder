@@ -263,7 +263,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			bool front, back;
 
 			// Edit button is used?
-			if(General.Interface.CheckActionActive(null, "classicedit"))
+			if(General.Actions.CheckActionActive(null, "classicedit"))
 			{
 				// Item highlighted?
 				if((highlighted != null) && !highlighted.IsDisposed)

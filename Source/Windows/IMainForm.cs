@@ -70,7 +70,6 @@ namespace CodeImp.DoomBuilder.Windows
 		void StopExclusiveMouseInput();
 		void BreakExclusiveMouseInput();
 		void ResumeExclusiveMouseInput();
-		bool CheckActionActive(Assembly assembly, string actionname);
 		void SetCursor(Cursor cursor);
 		void DisplayWarning(string warning);
 		void HideWarning();
@@ -123,8 +122,6 @@ namespace CodeImp.DoomBuilder.Windows
 		/// that you want to invoke.</param>
 		/// <param name="e">Unused.</param>
 		void InvokeTaggedAction(object sender, EventArgs e);
-
-		Action GetActionByFullName(string fullname);
 
 		void AddButton(ToolStripItem button);
 		void RemoveButton(ToolStripItem button);

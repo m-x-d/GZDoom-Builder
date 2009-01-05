@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder
 		internal static List<CompilerInfo> Compilers { get { return compilers; } }
 		internal static Dictionary<string, ScriptConfiguration> ScriptConfigs { get { return scriptconfigs; } }
 		public static MapManager Map { get { return map; } }
-		internal static ActionManager Actions { get { return actions; } }
+		public static ActionManager Actions { get { return actions; } }
 		internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
