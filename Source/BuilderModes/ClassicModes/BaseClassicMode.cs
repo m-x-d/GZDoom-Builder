@@ -104,6 +104,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Editing.ChangeMode(editmode);
 		}
 
+		// Double-clicking
+		public override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			base.OnMouseDoubleClick(e);
+
+			int k = 0;
+			if(e.Button == MouseButtons.Left) k = (int)Keys.LButton;
+			if(e.Button == MouseButtons.Middle) k = (int)Keys.MButton;
+			if(e.Button == MouseButtons.Right) k = (int)Keys.RButton;
+			if(e.Button == MouseButtons.XButton1) k = (int)Keys.XButton1;
+			if(e.Button == MouseButtons.XButton2) k = (int)Keys.XButton2;
+			
+			// Double select-click? Make that the same as single edit-click
+			if(General.Interface.GetActionByFullName("builder_classicselect").KeyMatches(k))
+			{
+				Action a = General.Interface.GetActionByFullName("builder_classicedit");
+				if(a != null) a.Invoke();
+			}
+		}
+		
 		#endregion
 
 		#region ================== Actions

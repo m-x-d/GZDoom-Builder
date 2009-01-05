@@ -398,6 +398,12 @@ namespace CodeImp.DoomBuilder.Actions
 			actions.Values.CopyTo(list, 0);
 			return list;
 		}
+
+		// This returns the specified action
+		public Action GetActionByName(string fullname)
+		{
+			return actions[fullname];
+		}
 		
 		// This saves the control settings
 		public void SaveSettings()
@@ -415,9 +421,7 @@ namespace CodeImp.DoomBuilder.Actions
 		{
 			if(Exists(actionname))
 			{
-				Action a = actions[actionname];
-				a.Begin();
-				a.End();
+				actions[actionname].Invoke();
 				return true;
 			}
 			else

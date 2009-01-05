@@ -280,6 +280,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Update();
 		}
 		
+		// This returns the action for a given name
+		// Returns null when the action does not exists
+		public Action GetActionByFullName(string fullname)
+		{
+			if(General.Actions.Exists(fullname))
+				return General.Actions.GetActionByName(fullname);
+			else
+				return null;
+		}
+		
 		#endregion
 		
 		#region ================== Window
