@@ -27,6 +27,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -107,8 +108,9 @@ namespace CodeImp.DoomBuilder.Config
 		// Enums
 		private Dictionary<string, EnumList> enums;
 		
-		// Default Texture Sets
+		// Defaults
 		private List<DefinedTextureSet> texturesets;
+		private List<ThingsFilter> thingfilters;
 		
 		#endregion
 
@@ -178,8 +180,9 @@ namespace CodeImp.DoomBuilder.Config
 		// Enums
 		public IDictionary<string, EnumList> Enums { get { return enums; } }
 
-		// Texture Sets
+		// Defaults
 		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
+		internal List<ThingsFilter> ThingsFilters { get { return thingfilters; } }
 		
 		#endregion
 
@@ -212,6 +215,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.maplumps = new Dictionary<string, MapLumpInfo>();
 			this.thingflagstranslation = new List<FlagTranslation>();
 			this.linedefflagstranslation = new List<FlagTranslation>();
+			this.thingfilters = new List<ThingsFilter>();
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -282,8 +286,9 @@ namespace CodeImp.DoomBuilder.Config
 			thingfields = LoadUniversalFields("thing");
 			vertexfields = LoadUniversalFields("vertex");
 
-			// Texture sets
+			// Defaults
 			LoadTextureSets();
+			LoadThingFilters();
 		}
 
 		// Destructor
@@ -638,6 +643,20 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				DefinedTextureSet s = new DefinedTextureSet(cfg, "texturesets." + de.Key.ToString());
 				texturesets.Add(s);
+			}
+		}
+		
+		// Thing Filters
+		private void LoadThingFilters()
+		{
+			IDictionary dic;
+
+			// Get sets
+			dic = cfg.ReadSetting("thingsfilters", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				ThingsFilter f = new ThingsFilter(cfg, "thingsfilters." + de.Key.ToString());
+				thingfilters.Add(f);
 			}
 		}
 		
