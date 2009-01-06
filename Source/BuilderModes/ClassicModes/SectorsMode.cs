@@ -448,19 +448,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 				if(selected.Count > 0)
 				{
-					// Show sector edit dialog
-					General.Interface.ShowEditSectors(selected);
-
-					// When a single sector was selected, deselect it now
-					if(selected.Count == 1)
+					if(General.Interface.HasFocus)
 					{
-						orderedselection.Clear();
-						General.Map.Map.ClearSelectedSectors();
-						General.Map.Map.ClearSelectedLinedefs();
-					}
+						// Show sector edit dialog
+						General.Interface.ShowEditSectors(selected);
 
-					// Update entire display
-					General.Interface.RedrawDisplay();
+						// When a single sector was selected, deselect it now
+						if(selected.Count == 1)
+						{
+							orderedselection.Clear();
+							General.Map.Map.ClearSelectedSectors();
+							General.Map.Map.ClearSelectedLinedefs();
+						}
+
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 

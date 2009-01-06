@@ -37,6 +37,7 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private bool allowapplycontrol = false;
+		private bool disregardshift = false;
 
 		#endregion
 
@@ -104,36 +105,6 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.Actions.Categories.ContainsKey(a.Category))
 					item.Group = listactions.Groups[a.Category];
 			}
-
-			// Fill combobox with special controls
-			actioncontrol.Items.Add(new KeyControl(Keys.LButton, "LButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.MButton, "MButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.RButton, "RButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton1, "XButton1"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton2, "XButton2"));
-			actioncontrol.Items.Add(new KeyControl(SpecialKeys.MScrollUp, "ScrollUp"));
-			actioncontrol.Items.Add(new KeyControl(SpecialKeys.MScrollDown, "ScrollDown"));
-			actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift, "Shift+LButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift, "Shift+MButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift, "Shift+RButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift, "Shift+XButton1"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift, "Shift+XButton2"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift, "Shift+ScrollUp"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift, "Shift+ScrollDown"));
-			actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Control, "Ctrl+LButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Control, "Ctrl+MButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Control, "Ctrl+RButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Control, "Ctrl+XButton1"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Control, "Ctrl+XButton2"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control, "Ctrl+ScrollUp"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control, "Ctrl+ScrollDown"));
-			actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Control, "Ctrl+Shift+LButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift | Keys.Control, "Ctrl+Shift+MButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift | Keys.Control, "Ctrl+Shift+RButton"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift | Keys.Control, "Ctrl+Shift+XButton1"));
-			actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift | Keys.Control, "Ctrl+Shift+XButton2"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollUp"));
-			actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollDown"));
 
 			// Set the colors
 			// TODO: Make this automated by using the collection
@@ -335,7 +306,67 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 		
 		#region ================== Controls Panel
-
+		
+		// This fills the list of available controls for the specified action
+		private void FillControlsList(Action a)
+		{
+			actioncontrol.Items.Clear();
+			
+			// Fill combobox with special controls
+			if(a.AllowMouse)
+			{
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton, "LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton, "MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton, "RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1, "XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2, "XButton2"));
+			}
+			if(a.AllowScroll)
+			{
+				actioncontrol.Items.Add(new KeyControl(SpecialKeys.MScrollUp, "ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl(SpecialKeys.MScrollDown, "ScrollDown"));
+			}
+			if(a.AllowMouse && !a.DisregardShift)
+			{
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift, "Shift+LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift, "Shift+MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift, "Shift+RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift, "Shift+XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift, "Shift+XButton2"));
+			}
+			if(a.AllowScroll && !a.DisregardShift)
+			{
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift, "Shift+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift, "Shift+ScrollDown"));
+			}
+			if(a.AllowMouse && !a.DisregardShift)
+			{
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Control, "Ctrl+LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Control, "Ctrl+MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Control, "Ctrl+RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Control, "Ctrl+XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Control, "Ctrl+XButton2"));
+			}
+			if(a.AllowScroll && !a.DisregardShift)
+			{
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control, "Ctrl+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control, "Ctrl+ScrollDown"));
+			}
+			if(a.AllowMouse && !a.DisregardShift)
+			{
+				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Control, "Ctrl+Shift+LButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift | Keys.Control, "Ctrl+Shift+MButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.RButton | Keys.Shift | Keys.Control, "Ctrl+Shift+RButton"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift | Keys.Control, "Ctrl+Shift+XButton1"));
+				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift | Keys.Control, "Ctrl+Shift+XButton2"));
+			}
+			if(a.AllowScroll && !a.DisregardShift)
+			{
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollUp"));
+				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollDown"));
+			}
+		}
+		
 		// Item selected
 		private void listactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
@@ -352,14 +383,19 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get the selected action
 				action = General.Actions[listactions.SelectedItems[0].Name];
 				key = (int)listactions.SelectedItems[0].SubItems[1].Tag;
-
+				disregardshift = action.DisregardShift;
+				
 				// Enable panel
 				actioncontrolpanel.Enabled = true;
 				actiontitle.Text = action.Title;
 				actiondescription.Text = action.Description;
 				actioncontrol.SelectedIndex = -1;
 				actionkey.Text = "";
-
+				disregardshiftlabel.Visible = disregardshift;
+				
+				// Fill special controls list
+				FillControlsList(action);
+				
 				// See if the key is in the combobox
 				for(int i = 0; i < actioncontrol.Items.Count; i++)
 				{
@@ -392,6 +428,7 @@ namespace CodeImp.DoomBuilder.Windows
 				actiondescription.Text = "";
 				actionkey.Text = "";
 				actioncontrol.SelectedIndex = -1;
+				disregardshiftlabel.Visible = false;
 			}
 		}
 
@@ -418,15 +455,18 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Begin updating
 				allowapplycontrol = false;
-
+				
+				// Remove modifier keys from the key if needed
+				if(disregardshift) key &= ~(int)Keys.Modifiers;
+				
 				// Deselect anything from the combobox
 				actioncontrol.SelectedIndex = -1;
-
+				
 				// Apply the key combination
 				listactions.SelectedItems[0].SubItems[1].Text = Action.GetShortcutKeyDesc(key);
 				listactions.SelectedItems[0].SubItems[1].Tag = key;
 				actionkey.Text = Action.GetShortcutKeyDesc(key);
-
+				
 				// Done
 				allowapplycontrol = true;
 			}

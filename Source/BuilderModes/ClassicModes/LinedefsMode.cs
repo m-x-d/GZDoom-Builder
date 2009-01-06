@@ -362,14 +362,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
 				if(selected.Count > 0)
 				{
-					// Show line edit dialog
-					General.Interface.ShowEditLinedefs(selected);
+					if(General.Interface.HasFocus)
+					{
+						// Show line edit dialog
+						General.Interface.ShowEditLinedefs(selected);
 
-					// When a single line was selected, deselect it now
-					if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
+						// When a single line was selected, deselect it now
+						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 
-					// Update entire display
-					General.Interface.RedrawDisplay();
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 

@@ -212,12 +212,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Select texture
 		public virtual void OnSelectTexture()
 		{
-			string oldtexture = GetTextureName();
-			string newtexture = General.Interface.BrowseTexture(General.Interface, oldtexture);
-			if(newtexture != oldtexture)
+			if(General.Interface.HasFocus)
 			{
-				General.Map.UndoRedo.CreateUndo("Change texture " + newtexture);
-				SetTexture(newtexture);
+				string oldtexture = GetTextureName();
+				string newtexture = General.Interface.BrowseTexture(General.Interface, oldtexture);
+				if(newtexture != oldtexture)
+				{
+					General.Map.UndoRedo.CreateUndo("Change texture " + newtexture);
+					SetTexture(newtexture);
+				}
 			}
 		}
 		
@@ -273,10 +276,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Not using any modifier buttons
 			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
 			{
-				List<Linedef> lines = new List<Linedef>();
-				lines.Add(this.Sidedef.Line);
-				DialogResult result = General.Interface.ShowEditLinedefs(lines);
-				if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+				if(General.Interface.HasFocus)
+				{
+					List<Linedef> lines = new List<Linedef>();
+					lines.Add(this.Sidedef.Line);
+					DialogResult result = General.Interface.ShowEditLinedefs(lines);
+					if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+				}
 			}
 		}
 		

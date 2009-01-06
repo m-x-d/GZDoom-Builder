@@ -88,6 +88,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actionkey = new System.Windows.Forms.TextBox();
 			this.actiondescription = new System.Windows.Forms.Label();
 			this.tabcolors = new System.Windows.Forms.TabPage();
+			this.imagebrightness = new Dotnetrix.Controls.TrackBar();
+			this.doublesidedalpha = new Dotnetrix.Controls.TrackBar();
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
 			this.doublesidedalphalabel = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
@@ -100,8 +102,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorcomments = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorplaintext = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.doublesidedalpha = new Dotnetrix.Controls.TrackBar();
-			this.imagebrightness = new Dotnetrix.Controls.TrackBar();
+			this.disregardshiftlabel = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -121,9 +122,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabkeys.SuspendLayout();
 			this.actioncontrolpanel.SuspendLayout();
 			this.tabcolors.SuspendLayout();
-			this.colorsgroup3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
+			this.colorsgroup3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label7
@@ -555,7 +556,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.viewdistance.Maximum = 15;
 			this.viewdistance.Minimum = 1;
 			this.viewdistance.Name = "viewdistance";
-			this.viewdistance.Size = new System.Drawing.Size(150, 45);
+			this.viewdistance.Size = new System.Drawing.Size(150, 42);
 			this.viewdistance.TabIndex = 34;
 			this.viewdistance.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.viewdistance.Value = 1;
@@ -567,7 +568,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.movespeed.Maximum = 20;
 			this.movespeed.Minimum = 1;
 			this.movespeed.Name = "movespeed";
-			this.movespeed.Size = new System.Drawing.Size(150, 45);
+			this.movespeed.Size = new System.Drawing.Size(150, 42);
 			this.movespeed.TabIndex = 33;
 			this.movespeed.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.movespeed.Value = 1;
@@ -579,7 +580,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mousespeed.Maximum = 20;
 			this.mousespeed.Minimum = 1;
 			this.mousespeed.Name = "mousespeed";
-			this.mousespeed.Size = new System.Drawing.Size(150, 45);
+			this.mousespeed.Size = new System.Drawing.Size(150, 42);
 			this.mousespeed.TabIndex = 32;
 			this.mousespeed.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.mousespeed.Value = 1;
@@ -592,7 +593,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldofview.Maximum = 17;
 			this.fieldofview.Minimum = 5;
 			this.fieldofview.Name = "fieldofview";
-			this.fieldofview.Size = new System.Drawing.Size(150, 45);
+			this.fieldofview.Size = new System.Drawing.Size(150, 42);
 			this.fieldofview.TabIndex = 31;
 			this.fieldofview.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.fieldofview.Value = 5;
@@ -752,6 +753,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actioncontrolpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actioncontrolpanel.Controls.Add(this.disregardshiftlabel);
 			this.actioncontrolpanel.Controls.Add(this.actioncontrol);
 			this.actioncontrolpanel.Controls.Add(label7);
 			this.actioncontrolpanel.Controls.Add(this.actiontitle);
@@ -841,6 +843,26 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcolors.TabIndex = 2;
 			this.tabcolors.Text = "Colors";
 			this.tabcolors.UseVisualStyleBackColor = true;
+			// 
+			// imagebrightness
+			// 
+			this.imagebrightness.LargeChange = 3;
+			this.imagebrightness.Location = new System.Drawing.Point(379, 235);
+			this.imagebrightness.Name = "imagebrightness";
+			this.imagebrightness.Size = new System.Drawing.Size(154, 42);
+			this.imagebrightness.TabIndex = 33;
+			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
+			// 
+			// doublesidedalpha
+			// 
+			this.doublesidedalpha.LargeChange = 3;
+			this.doublesidedalpha.Location = new System.Drawing.Point(379, 180);
+			this.doublesidedalpha.Name = "doublesidedalpha";
+			this.doublesidedalpha.Size = new System.Drawing.Size(154, 42);
+			this.doublesidedalpha.TabIndex = 32;
+			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
 			// 
 			// imagebrightnesslabel
 			// 
@@ -980,25 +1002,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
 			this.colorplaintext.TabIndex = 12;
 			// 
-			// doublesidedalpha
+			// disregardshiftlabel
 			// 
-			this.doublesidedalpha.LargeChange = 3;
-			this.doublesidedalpha.Location = new System.Drawing.Point(379, 180);
-			this.doublesidedalpha.Name = "doublesidedalpha";
-			this.doublesidedalpha.Size = new System.Drawing.Size(154, 45);
-			this.doublesidedalpha.TabIndex = 32;
-			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
-			// 
-			// imagebrightness
-			// 
-			this.imagebrightness.LargeChange = 3;
-			this.imagebrightness.Location = new System.Drawing.Point(379, 235);
-			this.imagebrightness.Name = "imagebrightness";
-			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
-			this.imagebrightness.TabIndex = 33;
-			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
+			this.disregardshiftlabel.Location = new System.Drawing.Point(20, 263);
+			this.disregardshiftlabel.Name = "disregardshiftlabel";
+			this.disregardshiftlabel.Size = new System.Drawing.Size(229, 73);
+			this.disregardshiftlabel.TabIndex = 9;
+			this.disregardshiftlabel.Text = "The selected actions uses modifier keys (Shift, Alt and Control) to modify it\'s b" +
+				"ehavior. Therefor, no combination with these modifiers can be used for this acti" +
+				"on.";
+			this.disregardshiftlabel.Visible = false;
 			// 
 			// PreferencesForm
 			// 
@@ -1039,9 +1052,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.PerformLayout();
 			this.tabcolors.ResumeLayout(false);
 			this.tabcolors.PerformLayout();
-			this.colorsgroup3.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
+			this.colorsgroup3.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1117,5 +1130,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dotnetrix.Controls.TrackBar viewdistance;
 		private Dotnetrix.Controls.TrackBar doublesidedalpha;
 		private Dotnetrix.Controls.TrackBar imagebrightness;
+		private System.Windows.Forms.Label disregardshiftlabel;
 	}
 }
