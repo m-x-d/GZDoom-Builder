@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This begins a pass
-		public void BeginPass(int index)
+		public virtual void BeginPass(int index)
 		{
 			if(manager.Enabled && General.Settings.QualityDisplay) effect.BeginPass(index);
 		}

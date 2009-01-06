@@ -517,6 +517,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Matrix scaling = Matrix.Scaling((1f / (float)windowsize.Width) * 2f, (1f / (float)windowsize.Height) * -2f, 1f);
 			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
 			graphics.Device.SetTransform(TransformState.View, Matrix.Multiply(translate, scaling));
+			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
 		}
 
 		// This sets the world matrix for transformation
@@ -1019,6 +1020,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+				graphics.Device.SetRenderState(RenderState.FogEnable, false);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, alphacolor.ToArgb());
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
 
@@ -1147,6 +1149,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(true);
 			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
 			
@@ -1164,6 +1167,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(true);
 			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
 
@@ -1181,6 +1185,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(true);
 			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
 
@@ -1259,6 +1264,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				graphics.Device.SetRenderState(RenderState.FogEnable, false);
 				graphics.Shaders.Display2D.Texture1 = t;
 				graphics.Device.SetTexture(0, t);
 				SetWorldTransformation(transformcoords);
@@ -1288,6 +1294,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+				graphics.Device.SetRenderState(RenderState.FogEnable, false);
 				graphics.Shaders.Display2D.Texture1 = graphics.FontTexture;
 				SetWorldTransformation(false);
 				graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, true);
@@ -1352,6 +1359,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(false);
 			graphics.Device.SetTexture(0, whitetexture.Texture);
 			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
@@ -1390,6 +1398,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(false);
 			graphics.Device.SetTexture(0, whitetexture.Texture);
 			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
@@ -1443,6 +1452,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(false);
 			graphics.Device.SetTexture(0, whitetexture.Texture);
 			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
