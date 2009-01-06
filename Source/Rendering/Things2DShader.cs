@@ -116,6 +116,68 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 		
+		// This sets up the render pipeline
+		public override void BeginPass(int index)
+		{
+			Device device = manager.D3DDevice.Device;
+
+			if(!manager.Enabled || !General.Settings.QualityDisplay)
+			{
+				// Sampler settings
+				if(General.Settings.ClassicBilinear)
+				{
+					device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
+					device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
+					device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Linear);
+					device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
+				}
+				else
+				{
+					device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
+					device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
+					device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Point);
+					device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
+				}
+
+				// Texture addressing
+				device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
+				device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+				device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
+
+				// First texture stage
+				device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
+				device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
+				device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.Diffuse);
+				device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
+				device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
+
+				// Second texture stage
+				device.SetTextureStageState(1, TextureStage.ColorOperation, TextureOperation.Modulate);
+				device.SetTextureStageState(1, TextureStage.ColorArg1, TextureArgument.Current);
+				device.SetTextureStageState(1, TextureStage.ColorArg2, TextureArgument.TFactor);
+				device.SetTextureStageState(1, TextureStage.ResultArg, TextureArgument.Current);
+				device.SetTextureStageState(1, TextureStage.TexCoordIndex, 0);
+
+				// No more further stages
+				device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.Disable);
+
+				// First alpha stage
+				device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
+				device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
+				device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.Diffuse);
+
+				// Second alpha stage
+				device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Modulate);
+				device.SetTextureStageState(1, TextureStage.AlphaArg1, TextureArgument.Current);
+				device.SetTextureStageState(1, TextureStage.AlphaArg2, TextureArgument.TFactor);
+
+				// No more further stages
+				device.SetTextureStageState(2, TextureStage.AlphaOperation, TextureOperation.Disable);
+			}
+
+			base.BeginPass(index);
+		}
+		
 		#endregion
 	}
 }

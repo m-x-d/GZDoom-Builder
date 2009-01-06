@@ -131,28 +131,35 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void SetupSettings()
 		{
 			// Setup renderstates
-			device.SetRenderState(RenderState.AlphaRef, 0x0000007E);
+			device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			device.SetRenderState(RenderState.AlphaBlendEnable, false);
 			device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
-			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
+			device.SetRenderState(RenderState.AlphaRef, 0x0000007E);
+			device.SetRenderState(RenderState.AlphaTestEnable, false);
 			device.SetRenderState(RenderState.Ambient, Color.White.ToArgb());
 			device.SetRenderState(RenderState.AmbientMaterialSource, ColorSource.Material);
-			device.SetRenderState(RenderState.ColorWriteEnable, ColorWriteEnable.Red | ColorWriteEnable.Green | ColorWriteEnable.Blue | ColorWriteEnable.Alpha);
+			device.SetRenderState(RenderState.AntialiasedLineEnable, false);
+			device.SetRenderState(RenderState.Clipping, true);
 			device.SetRenderState(RenderState.ColorVertex, false);
+			device.SetRenderState(RenderState.ColorWriteEnable, ColorWriteEnable.Red | ColorWriteEnable.Green | ColorWriteEnable.Blue | ColorWriteEnable.Alpha);
+			device.SetRenderState(RenderState.CullMode, Cull.None);
+			device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 			device.SetRenderState(RenderState.DiffuseMaterialSource, ColorSource.Color1);
+			device.SetRenderState(RenderState.DitherEnable, true);
 			device.SetRenderState(RenderState.FillMode, FillMode.Solid);
 			device.SetRenderState(RenderState.FogEnable, false);
+			device.SetRenderState(RenderState.FogTableMode, FogMode.Linear);
 			device.SetRenderState(RenderState.Lighting, false);
 			device.SetRenderState(RenderState.LocalViewer, false);
 			device.SetRenderState(RenderState.NormalizeNormals, false);
+			device.SetRenderState(RenderState.PointSpriteEnable, false);
+			device.SetRenderState(RenderState.RangeFogEnable, false);
+			device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 			device.SetRenderState(RenderState.SpecularEnable, false);
 			device.SetRenderState(RenderState.StencilEnable, false);
-			device.SetRenderState(RenderState.PointSpriteEnable, false);
-			device.SetRenderState(RenderState.DitherEnable, true);
-			device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			device.SetRenderState(RenderState.TextureFactor, -1);
 			device.SetRenderState(RenderState.ZEnable, false);
 			device.SetRenderState(RenderState.ZWriteEnable, false);
-			device.SetRenderState(RenderState.Clipping, true);
-			device.SetRenderState(RenderState.CullMode, Cull.None);
 			device.PixelShader = null;
 			device.VertexShader = null;
 
