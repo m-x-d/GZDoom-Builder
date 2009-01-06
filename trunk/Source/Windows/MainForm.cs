@@ -147,6 +147,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool MouseExclusive { get { return mouseexclusive; } }
 		new public IntPtr Handle { get { return windowptr; } }
 		public bool IsInfoPanelExpanded { get { return (panelinfo.Height == EXPANDED_INFO_HEIGHT); } }
+		public bool HasFocus { get { return this.Focused; } }
 		
 		#endregion
 

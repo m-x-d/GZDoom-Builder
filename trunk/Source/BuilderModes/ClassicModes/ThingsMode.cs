@@ -355,17 +355,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Thing> selected = General.Map.Map.GetSelectedThings(true);
 				if(selected.Count > 0)
 				{
-					// Show thing edit dialog
-					General.Interface.ShowEditThings(selected);
+					if(General.Interface.HasFocus)
+					{
+						// Show thing edit dialog
+						General.Interface.ShowEditThings(selected);
 
-					// When a single thing was selected, deselect it now
-					if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
+						// When a single thing was selected, deselect it now
+						if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
 
-					// Update things filter
-					General.Map.ThingsFilter.Update();
-					
-					// Update entire display
-					General.Interface.RedrawDisplay();
+						// Update things filter
+						General.Map.ThingsFilter.Update();
+						
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 

@@ -358,10 +358,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Not using any modifier buttons
 			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
 			{
-				List<Thing> things = new List<Thing>();
-				things.Add(this.Thing);
-				DialogResult result = General.Interface.ShowEditThings(things);
-				if(result == DialogResult.OK) this.Rebuild();
+				if(General.Interface.HasFocus)
+				{
+					List<Thing> things = new List<Thing>();
+					things.Add(this.Thing);
+					DialogResult result = General.Interface.ShowEditThings(things);
+					if(result == DialogResult.OK) this.Rebuild();
+				}
 			}
 		}
 		
