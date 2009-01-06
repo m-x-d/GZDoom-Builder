@@ -479,13 +479,15 @@ namespace CodeImp.DoomBuilder.Actions
 		// This checks if a given action is active
 		public bool CheckActionActive(Assembly asm, string actionname)
 		{
+			if(asm == null) asm = General.ThisAssembly;
+			
 			// Find active action
 			string fullname = asm.GetName().Name.ToLowerInvariant() + "_" + actionname;
 			foreach(Action a in activeactions)
 			{
 				if(a.Name == fullname) return true;
 			}
-
+			
 			// No such active action
 			return false;
 		}
