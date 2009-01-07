@@ -244,19 +244,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Tag must be above zero
 			if(asso.tag <= 0) return;
-
-			// Linedefs
-			foreach(Linedef l in General.Map.Map.Linedefs)
+			
+			// Doom style referencing to sectors?
+			if(General.Map.Config.LineTagIndicatesSectors && (asso.type == UniversalType.SectorTag))
 			{
-				// Known action on this line?
-				if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
+				// Linedefs
+				foreach(Linedef l in General.Map.Map.Linedefs)
 				{
-					LinedefActionInfo action = General.Map.Config.LinedefActions[l.Action];
-					if((action.Args[0].Type == (int)asso.type) && (l.Args[0] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
-					if((action.Args[1].Type == (int)asso.type) && (l.Args[1] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
-					if((action.Args[2].Type == (int)asso.type) && (l.Args[2] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
-					if((action.Args[3].Type == (int)asso.type) && (l.Args[3] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
-					if((action.Args[4].Type == (int)asso.type) && (l.Args[4] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+					// Any action on this line?
+					if(l.Action > 0)
+					{
+						if(l.Tag == asso.tag) renderer.PlotLinedef(l, General.Colors.Indication);
+					}
+				}
+			}
+			else
+			{
+				// Linedefs
+				foreach(Linedef l in General.Map.Map.Linedefs)
+				{
+					// Known action on this line?
+					if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
+					{
+						LinedefActionInfo action = General.Map.Config.LinedefActions[l.Action];
+						if((action.Args[0].Type == (int)asso.type) && (l.Args[0] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+						if((action.Args[1].Type == (int)asso.type) && (l.Args[1] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+						if((action.Args[2].Type == (int)asso.type) && (l.Args[2] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+						if((action.Args[3].Type == (int)asso.type) && (l.Args[3] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+						if((action.Args[4].Type == (int)asso.type) && (l.Args[4] == asso.tag)) renderer.PlotLinedef(l, General.Colors.Indication);
+					}
 				}
 			}
 		}
