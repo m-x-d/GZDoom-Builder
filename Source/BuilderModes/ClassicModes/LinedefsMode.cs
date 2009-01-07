@@ -362,7 +362,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
 				if(selected.Count > 0)
 				{
-					if(General.Interface.HasFocus)
+					if(General.Interface.IsActiveWindow)
 					{
 						// Show line edit dialog
 						General.Interface.ShowEditLinedefs(selected);

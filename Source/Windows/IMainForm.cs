@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Windows
 		bool SnapToGrid { get; }
 		bool MouseExclusive { get; }
 		MouseButtons MouseButtons { get; }
-		bool HasFocus { get; }
+		bool IsActiveWindow { get; }
 		
 		// Methods
 		void DisplayReady();

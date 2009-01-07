@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Not using any modifier buttons
 			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
 			{
-				if(General.Interface.HasFocus)
+				if(General.Interface.IsActiveWindow)
 				{
 					List<Thing> things = new List<Thing>();
 					things.Add(this.Thing);

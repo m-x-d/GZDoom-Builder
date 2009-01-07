@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Select texture
 		public virtual void OnSelectTexture()
 		{
-			if(General.Interface.HasFocus)
+			if(General.Interface.IsActiveWindow)
 			{
 				string oldtexture = GetTextureName();
 				string newtexture = General.Interface.BrowseFlat(General.Interface, oldtexture);
@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Not using any modifier buttons
 			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
 			{
-				if(General.Interface.HasFocus)
+				if(General.Interface.IsActiveWindow)
 				{
 					List<Sector> sectors = new List<Sector>();
 					sectors.Add(this.Sector.Sector);

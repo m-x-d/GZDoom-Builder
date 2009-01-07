@@ -89,6 +89,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private Point lastposition;
 		private Size lastsize;
 		private bool displayresized = true;
+		private bool windowactive;
 		
 		// Mouse in display
 		private bool mouseinside;
@@ -147,7 +148,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool MouseExclusive { get { return mouseexclusive; } }
 		new public IntPtr Handle { get { return windowptr; } }
 		public bool IsInfoPanelExpanded { get { return (panelinfo.Height == EXPANDED_INFO_HEIGHT); } }
-		public bool HasFocus { get { return this.Focused; } }
+		public bool IsActiveWindow { get { return windowactive; } }
 		
 		#endregion
 
@@ -372,6 +373,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Window receives focus
 		private void MainForm_Activated(object sender, EventArgs e)
 		{
+			windowactive = true;
+			
 			// Resume any exclusive mouse input
 			ResumeExclusiveMouseInput();
 			display.Focus();
@@ -380,6 +383,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Window loses focus
 		private void MainForm_Deactivate(object sender, EventArgs e)
 		{
+			windowactive = false;
+			
 			// Release all pressed keys
 			General.Actions.ReleaseAllKeys();
 			mousebuttons = MouseButtons.None;

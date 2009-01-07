@@ -448,7 +448,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
 				if(selected.Count > 0)
 				{
-					if(General.Interface.HasFocus)
+					if(General.Interface.IsActiveWindow)
 					{
 						// Show sector edit dialog
 						General.Interface.ShowEditSectors(selected);
