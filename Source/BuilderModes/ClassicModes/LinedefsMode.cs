@@ -83,46 +83,54 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Often we can get away by simply undrawing the previous
 			// highlight and drawing the new highlight. But if associations
 			// are or were drawn we need to redraw the entire display.
-
+			
 			// Previous association highlights something?
 			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
-
+			
 			// Set highlight association
 			if(l != null)
 				highlightasso.Set(l.Tag, UniversalType.LinedefTag);
 			else
 				highlightasso.Set(0, 0);
-
-			// New association highlights something?
-			if((l != null) && (l.Tag > 0)) completeredraw = true;
-
+			
 			if(l != null)
 			{
-				// Check if we can find the linedefs action
-				if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
-					action = General.Map.Config.LinedefActions[l.Action];
-			}
-
-			// Determine linedef associations
-			for(int i = 0; i < Linedef.NUM_ARGS; i++)
-			{
-				// Previous association highlights something?
-				if((association[i].type == UniversalType.SectorTag) ||
-				   (association[i].type == UniversalType.LinedefTag) ||
-				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
-
-				// Make new association
-				if(action != null)
-					association[i].Set(l.Args[i], action.Args[i].Type);
-				else
-					association[i].Set(0, 0);
-
 				// New association highlights something?
-				if((association[i].type == UniversalType.SectorTag) ||
-				   (association[i].type == UniversalType.LinedefTag) ||
-				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
-			}
+				if(l.Tag > 0) completeredraw = true;
+				
+				// Use the line tag to highlight sectors (Doom style)
+				if(General.Map.Config.LineTagIndicatesSectors)
+				{
+					association[0].Set(l.Tag, UniversalType.SectorTag);
+				}
+				else
+				{
+					// Check if we can find the linedefs action
+					if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
+						action = General.Map.Config.LinedefActions[l.Action];
+					
+					// Determine linedef associations
+					for(int i = 0; i < Linedef.NUM_ARGS; i++)
+					{
+						// Previous association highlights something?
+						if((association[i].type == UniversalType.SectorTag) ||
+						   (association[i].type == UniversalType.LinedefTag) ||
+						   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
 
+						// Make new association
+						if(action != null)
+							association[i].Set(l.Args[i], action.Args[i].Type);
+						else
+							association[i].Set(0, 0);
+
+						// New association highlights something?
+						if((association[i].type == UniversalType.SectorTag) ||
+						   (association[i].type == UniversalType.LinedefTag) ||
+						   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+					}
+				}
+			}
+			
 			// If we're changing associations, then we
 			// need to redraw the entire display
 			if(completeredraw)
