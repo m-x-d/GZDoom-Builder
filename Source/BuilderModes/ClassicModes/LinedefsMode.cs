@@ -92,42 +92,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				highlightasso.Set(l.Tag, UniversalType.LinedefTag);
 			else
 				highlightasso.Set(0, 0);
-			
-			if(l != null)
+
+			// New association highlights something?
+			if((l != null) && (l.Tag > 0)) completeredraw = true;
+
+			// Use the line tag to highlight sectors (Doom style)
+			if(General.Map.Config.LineTagIndicatesSectors)
 			{
-				// New association highlights something?
-				if(l.Tag > 0) completeredraw = true;
-				
-				// Use the line tag to highlight sectors (Doom style)
-				if(General.Map.Config.LineTagIndicatesSectors)
-				{
+				if(l != null)
 					association[0].Set(l.Tag, UniversalType.SectorTag);
-				}
 				else
+					association[0].Set(0, 0);
+			}
+			else
+			{
+				if(l != null)
 				{
 					// Check if we can find the linedefs action
 					if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
 						action = General.Map.Config.LinedefActions[l.Action];
-					
-					// Determine linedef associations
-					for(int i = 0; i < Linedef.NUM_ARGS; i++)
-					{
-						// Previous association highlights something?
-						if((association[i].type == UniversalType.SectorTag) ||
-						   (association[i].type == UniversalType.LinedefTag) ||
-						   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+				}
+				
+				// Determine linedef associations
+				for(int i = 0; i < Linedef.NUM_ARGS; i++)
+				{
+					// Previous association highlights something?
+					if((association[i].type == UniversalType.SectorTag) ||
+					   (association[i].type == UniversalType.LinedefTag) ||
+					   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
 
-						// Make new association
-						if(action != null)
-							association[i].Set(l.Args[i], action.Args[i].Type);
-						else
-							association[i].Set(0, 0);
+					// Make new association
+					if(action != null)
+						association[i].Set(l.Args[i], action.Args[i].Type);
+					else
+						association[i].Set(0, 0);
 
-						// New association highlights something?
-						if((association[i].type == UniversalType.SectorTag) ||
-						   (association[i].type == UniversalType.LinedefTag) ||
-						   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
-					}
+					// New association highlights something?
+					if((association[i].type == UniversalType.SectorTag) ||
+					   (association[i].type == UniversalType.LinedefTag) ||
+					   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
 				}
 			}
 			

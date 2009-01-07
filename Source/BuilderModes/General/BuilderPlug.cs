@@ -215,9 +215,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else if(asso.type == UniversalType.LinedefTag)
 			{
 				foreach(Linedef l in General.Map.Map.Linedefs)
-				{
 					if(l.Tag == asso.tag) renderer.PlotLinedef(l, General.Colors.Indication);
-				}
 			}
 		}
 		
@@ -232,9 +230,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(asso.type == UniversalType.ThingTag)
 			{
 				foreach(Thing t in General.Map.Map.Things)
-				{
 					if(t.Tag == asso.tag) renderer.RenderThing(t, General.Colors.Indication, 1.0f);
-				}
 			}
 		}
 		
