@@ -355,7 +355,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Thing> selected = General.Map.Map.GetSelectedThings(true);
 				if(selected.Count > 0)
 				{
-					if(General.Interface.HasFocus)
+					if(General.Interface.IsActiveWindow)
 					{
 						// Show thing edit dialog
 						General.Interface.ShowEditThings(selected);
