@@ -177,10 +177,13 @@ namespace CodeImp.DoomBuilder.IO
 					foreach(string field in ft.Fields)
 						stringflags[field] = GetCollectionEntry<bool>(c, field, false, false);
 				}
+
+				// Translate angle
+				float angle = (float)(angledeg + 90) / Angle2D.PIDEG;
 				
 				// Create new item
 				Thing t = map.CreateThing();
-				t.Update(type, x, y, height, Angle2D.DegToRad(angledeg), stringflags, tag, special, args);
+				t.Update(type, x, y, height, angle, stringflags, tag, special, args);
 				//t.DetermineSector();
 				t.UpdateConfiguration();
 
