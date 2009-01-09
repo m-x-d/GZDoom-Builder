@@ -67,10 +67,13 @@ namespace CodeImp.DoomBuilder.Windows
 				item.ImageIndex = 0;
 			}
 			
-			// Add other textures set
+			// Add special textures sets
 			item = texturesets.Items.Add(General.Map.Data.OthersTextureSet.Name);
 			item.Tag = General.Map.Data.OthersTextureSet;
 			item.ImageIndex = 1;
+			item = texturesets.Items.Add(General.Map.Data.AllTextureSet.Name);
+			item.Tag = General.Map.Data.AllTextureSet;
+			item.ImageIndex = 2;
 			
 			// Select the last one that was selected
 			string selectname = General.Settings.ReadSetting("browserwindow.texturestextureset", "");

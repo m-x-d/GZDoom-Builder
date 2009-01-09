@@ -33,12 +33,12 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal sealed class OthersTextureSet : TextureSet, IFilledTextureSet
+	internal sealed class AllTextureSet : TextureSet, IFilledTextureSet
 	{
 		#region ================== Constants
-		
-		public const string NAME = "Others";
-		
+
+		public const string NAME = "All";
+
 		#endregion
 
 		#region ================== Variables
@@ -50,26 +50,26 @@ namespace CodeImp.DoomBuilder.Config
 		#endregion
 
 		#region ================== Properties
-		
+
 		public ICollection<ImageData> Textures { get { return textures; } }
 		public ICollection<ImageData> Flats { get { return flats; } }
-		
+
 		#endregion
 
 		#region ================== Constructor / Destructor
 
 		// New texture set constructor
-		public OthersTextureSet()
+		public AllTextureSet()
 		{
 			this.name = NAME;
 			this.textures = new List<ImageData>();
 			this.flats = new List<ImageData>();
 		}
-		
+
 		#endregion
 
 		#region ================== Methods
-		
+
 		internal void AddTexture(ImageData image)
 		{
 			textures.Add(image);

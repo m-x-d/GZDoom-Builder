@@ -107,6 +107,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.smallimages.TransparentColor = System.Drawing.Color.Transparent;
 			this.smallimages.Images.SetKeyName(0, "KnownTextureSet2.ico");
 			this.smallimages.Images.SetKeyName(1, "OthersTextureSet2.ico");
+			this.smallimages.Images.SetKeyName(2, "AllTextureSet2.ico");
 			// 
 			// TextureBrowserForm
 			// 
@@ -128,11 +129,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Browse Textures";
+			this.Load += new System.EventHandler(this.TextureBrowserForm_Load);
 			this.Activated += new System.EventHandler(this.TextureBrowserForm_Activated);
 			this.Move += new System.EventHandler(this.TextureBrowserForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextureBrowserForm_FormClosing);
 			this.ResizeEnd += new System.EventHandler(this.TextureBrowserForm_ResizeEnd);
-			this.Load += new System.EventHandler(this.TextureBrowserForm_Load);
 			this.ResumeLayout(false);
 
 		}
