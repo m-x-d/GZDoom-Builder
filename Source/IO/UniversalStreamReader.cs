@@ -232,17 +232,37 @@ namespace CodeImp.DoomBuilder.IO
 				foreach(LinedefActivateInfo activate in General.Map.Config.LinedefActivates)
 					stringflags[activate.Key] = GetCollectionEntry<bool>(lc, activate.Key, false, false);
 				
-				// Create new item
-				Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-				l.Update(stringflags, 0, tag, special, args);
-				l.UpdateCache();
+				// Create new linedef
+				if(vertexlink.ContainsKey(v1) && vertexlink.ContainsKey(v2))
+				{
+					Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
+					l.Update(stringflags, 0, tag, special, args);
+					l.UpdateCache();
 
-				// Custom fields
-				ReadCustomFields(lc, l, "linedef");
+					// Custom fields
+					ReadCustomFields(lc, l, "linedef");
 
-				// Read sidedefs and connect them to the line
-				if(s1 > -1) ReadSidedef(map, sidescolls[s1], l, true, sectorlink);
-				if(s2 > -1) ReadSidedef(map, sidescolls[s2], l, false, sectorlink);
+					// Read sidedefs and connect them to the line
+					if(s1 > -1)
+					{
+						if(s1 < sidescolls.Count)
+							ReadSidedef(map, sidescolls[s1], l, true, sectorlink);
+						else
+							General.WriteLogLine("WARNING: Linedef references invalid sidedef! Sidedef has been removed.");
+					}
+					
+					if(s2 > -1)
+					{
+						if(s2 < sidescolls.Count)
+							ReadSidedef(map, sidescolls[s2], l, false, sectorlink);
+						else
+							General.WriteLogLine("WARNING: Linedef references invalid sidedef! Sidedef has been removed.");
+					}
+				}
+				else
+				{
+					General.WriteLogLine("WARNING: Linedef references one or more invalid vertices! Linedef has been removed.");
+				}
 			}
 		}
 
@@ -259,11 +279,18 @@ namespace CodeImp.DoomBuilder.IO
 			int sector = GetCollectionEntry<int>(sc, "sector", true, 0);
 
 			// Create sidedef
-			Sidedef s = map.CreateSidedef(ld, front, sectorlink[sector]);
-			s.Update(offsetx, offsety, thigh, tmid, tlow);
+			if(sectorlink.ContainsKey(sector))
+			{
+				Sidedef s = map.CreateSidedef(ld, front, sectorlink[sector]);
+				s.Update(offsetx, offsety, thigh, tmid, tlow);
 
-			// Custom fields
-			ReadCustomFields(sc, s, "sidedef");
+				// Custom fields
+				ReadCustomFields(sc, s, "sidedef");
+			}
+			else
+			{
+				General.WriteLogLine("WARNING: Sidedef references invalid sector " + sector + "! Sidedef has been removed.");
+			}
 		}
 
 		// This reads the sectors
