@@ -397,7 +397,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("movetextureleft")]
-		public void MoveTextureLeft()
+		public void MoveTextureLeft1()
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(-1, 0);
@@ -405,7 +405,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("movetextureright")]
-		public void MoveTextureRight()
+		public void MoveTextureRight1()
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(1, 0);
@@ -413,7 +413,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("movetextureup")]
-		public void MoveTextureUp()
+		public void MoveTextureUp1()
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, -1);
@@ -421,10 +421,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("movetexturedown")]
-		public void MoveTextureDown()
+		public void MoveTextureDown1()
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, 1);
+			ShowTargetInfo();
+		}
+
+		[BeginAction("movetextureleft8")]
+		public void MoveTextureLeft8()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(-8, 0);
+			ShowTargetInfo();
+		}
+
+		[BeginAction("movetextureright8")]
+		public void MoveTextureRight8()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(8, 0);
+			ShowTargetInfo();
+		}
+
+		[BeginAction("movetextureup8")]
+		public void MoveTextureUp8()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, -8);
+			ShowTargetInfo();
+		}
+
+		[BeginAction("movetexturedown8")]
+		public void MoveTextureDown8()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, 8);
 			ShowTargetInfo();
 		}
 
