@@ -240,6 +240,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Events
 
+		// When the mapset changes (undo/redo)
+		public override void OnMapSetChangeBegin()
+		{
+			// No valid region
+			nearestside = null;
+			allsides = null;
+			alllines = null;
+			
+			base.OnMapSetChangeBegin();
+		}
+
 		// Cancel mode
 		public override void OnCancel()
 		{
@@ -333,6 +344,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Quickly flash this sector to indicate it was created
 					General.Map.IsChanged = true;
 					General.Map.Map.Update();
+					General.Interface.RedrawDisplay();
 					flashpolygon = new FlatVertex[s.FlatVertices.Length];
 					s.FlatVertices.CopyTo(flashpolygon, 0);
 					flashintensity = 1.0f;
