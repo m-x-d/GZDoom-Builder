@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<long, ImageData> sprites;
 		private List<MatchingTextureSet> texturesets;
 		private OthersTextureSet othertextures;
+		private AllTextureSet alltextures;
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -101,6 +102,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData ThingBox { get { return thingbox; } }
 		internal ICollection<MatchingTextureSet> TextureSets { get { return texturesets; } }
 		internal OthersTextureSet OthersTextureSet { get { return othertextures; } }
+		internal AllTextureSet AllTextureSet { get { return alltextures; } }
 		
 		public bool IsLoading
 		{
@@ -209,8 +211,9 @@ namespace CodeImp.DoomBuilder.Data
 			// Sort the texture sets
 			texturesets.Sort();
 			
-			// Other textures set
+			// Special textures sets
 			othertextures = new OthersTextureSet();
+			alltextures = new AllTextureSet();
 			
 			// Go for all locations
 			foreach(DataLocation dl in locations)
@@ -280,6 +283,9 @@ namespace CodeImp.DoomBuilder.Data
 				
 				// If not matched in any set, add it to the others
 				if(!matchfound) othertextures.AddTexture(img.Value);
+
+				// Add to all
+				alltextures.AddTexture(img.Value);
 			}
 			
 			// Add flat names to texture sets
@@ -292,6 +298,9 @@ namespace CodeImp.DoomBuilder.Data
 				
 				// If not matched in any set, add it to the others
 				if(!matchfound) othertextures.AddFlat(img.Value);
+				
+				// Add to all
+				alltextures.AddFlat(img.Value);
 			}
 			
 			// Start background loading
