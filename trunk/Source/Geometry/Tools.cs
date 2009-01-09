@@ -441,12 +441,16 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Sector Making
 
 		// This makes the sector from the given lines and sides
-		public static Sector MakeSector(List<LinedefSide> alllines)
+		// If nearbylines is not null, then this method will find the default
+		// properties from the nearest line in this collection when the
+		// default properties can't be found in the alllines collection.
+		public static Sector MakeSector(List<LinedefSide> alllines, List<Linedef> nearbylines)
 		{
 			Sector newsector = General.Map.Map.CreateSector();
 			Sector sourcesector = null;
 			SidedefSettings sourceside = new SidedefSettings();
 			bool removeuselessmiddle;
+			bool foundsidedefaults = false;
 			
 			// Check if any of the sides already has a sidedef
 			// Then we use information from that sidedef to make the others
@@ -459,6 +463,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Copy sidedef information if not already found
 						if(sourcesector == null) sourcesector = ls.Line.Front.Sector;
 						TakeSidedefSettings(ref sourceside, ls.Line.Front);
+						foundsidedefaults = true;
 						break;
 					}
 				}
@@ -469,11 +474,12 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Copy sidedef information if not already found
 						if(sourcesector == null) sourcesector = ls.Line.Back.Sector;
 						TakeSidedefSettings(ref sourceside, ls.Line.Back);
+						foundsidedefaults = true;
 						break;
 					}
 				}
 			}
-
+			
 			// Now do the same for the other sides
 			// Note how information is only copied when not already found
 			// so this won't override information from the sides searched above
@@ -486,6 +492,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Copy sidedef information if not already found
 						if(sourcesector == null) sourcesector = ls.Line.Back.Sector;
 						TakeSidedefSettings(ref sourceside, ls.Line.Back);
+						foundsidedefaults = true;
 						break;
 					}
 				}
@@ -496,7 +503,30 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Copy sidedef information if not already found
 						if(sourcesector == null) sourcesector = ls.Line.Front.Sector;
 						TakeSidedefSettings(ref sourceside, ls.Line.Front);
+						foundsidedefaults = true;
 						break;
+					}
+				}
+			}
+			
+			// Use default settings from neares linedef, if settings have been found yet
+			if( (nearbylines != null) && (alllines.Count > 0) && (!foundsidedefaults || (sourcesector == null)) )
+			{
+				Vector2D testpoint = alllines[0].Line.GetSidePoint(alllines[0].Front);
+				Linedef nearest = MapSet.NearestLinedef(nearbylines, testpoint);
+				if(nearest != null)
+				{
+					Sidedef defaultside;
+					float side = nearest.SideOfLine(testpoint);
+					if(side < 0.0f)
+						defaultside = nearest.Front;
+					else
+						defaultside = nearest.Back;
+
+					if(defaultside != null)
+					{
+						if(sourcesector == null) sourcesector = defaultside.Sector;
+						TakeSidedefSettings(ref sourceside, defaultside);
 					}
 				}
 			}
@@ -1057,7 +1087,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Find our new lines again, because they have been merged with the other geometry
 				// but their Marked property is copied where they have joined.
 				newlines = map.GetMarkedLinedefs(true);
-
+				
 				/***************************************************\
 					STEP 3: Join and create new sectors
 				\***************************************************/
@@ -1082,7 +1112,7 @@ namespace CodeImp.DoomBuilder.Geometry
 							sidescreated = true;
 
 							// Make the new sector
-							Sector newsector = Tools.MakeSector(sectorlines);
+							Sector newsector = Tools.MakeSector(sectorlines, oldlines);
 
 							// Go for all sidedefs in this new sector
 							foreach(Sidedef sd in newsector.Sidedefs)
