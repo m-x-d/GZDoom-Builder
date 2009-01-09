@@ -227,13 +227,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		// Start select
-		protected override void OnSelectBegin()
+		// This makes this highlighted potential sector
+		private Sector MakeSector()
 		{
-			// Select pressed in this mode
-			selectpressed = true;
-			editside = nearestside;
-			base.OnEditBegin();
+			General.Interface.SetCursor(Cursors.WaitCursor);
+			General.Settings.FindDefaultDrawSettings();
+			General.Map.UndoRedo.CreateUndo("Make Sector");
+
+			// Mark the lines we are going to use for this sector
+			General.Map.Map.ClearAllMarks(true);
+			foreach(LinedefSide ls in allsides) ls.Line.Marked = false;
+			List<Linedef> oldlines = General.Map.Map.GetMarkedLinedefs(true);
+
+			// Make the sector
+			Sector s = Tools.MakeSector(allsides, oldlines);
+			General.Interface.SetCursor(Cursors.Default);
+			return s;
 		}
 		
 		#endregion
@@ -325,6 +334,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.Present();
 		}
 
+		// Start select
+		protected override void OnSelectBegin()
+		{
+			// Select pressed in this mode
+			selectpressed = true;
+			editside = nearestside;
+			base.OnEditBegin();
+		}
+		
 		// Done selecting
 		protected override void OnSelectEnd()
 		{
@@ -335,11 +353,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(allsides != null)
 				{
 					// Make the sector
-					General.Interface.SetCursor(Cursors.WaitCursor);
-					General.Settings.FindDefaultDrawSettings();
-					General.Map.UndoRedo.CreateUndo("Make Sector");
-					Sector s = Tools.MakeSector(allsides);
-					General.Interface.SetCursor(Cursors.Default);
+					Sector s = MakeSector();
 					
 					// Quickly flash this sector to indicate it was created
 					General.Map.IsChanged = true;
@@ -381,11 +395,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(allsides != null)
 				{
 					// Make the sector
-					General.Interface.SetCursor(Cursors.WaitCursor);
-					General.Settings.FindDefaultDrawSettings();
-					General.Map.UndoRedo.CreateUndo("Make Sector");
-					Sector s = Tools.MakeSector(allsides);
-					General.Interface.SetCursor(Cursors.Default);
+					Sector s = MakeSector();
 
 					// Edit the sector
 					List<Sector> secs = new List<Sector>(); secs.Add(s);
