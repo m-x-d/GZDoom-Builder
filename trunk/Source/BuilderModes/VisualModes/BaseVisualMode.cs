@@ -240,6 +240,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Do processing
 			base.OnProcess(deltatime);
+
+			// Process visible geometry
+			foreach(IVisualEventReceiver g in visiblegeometry)
+			{
+				g.OnProcess(deltatime);
+			}
 			
 			// Time to pick a new target?
 			if(General.Clock.CurrentTime > (lastpicktime + PICK_INTERVAL))

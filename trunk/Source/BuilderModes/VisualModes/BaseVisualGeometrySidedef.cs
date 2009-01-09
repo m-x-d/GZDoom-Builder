@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -50,6 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected float top;
 		protected float bottom;
+		protected long setuponloadedtexture;
 		
 		// UV dragging
 		private float dragstartanglexy;
@@ -112,6 +114,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnEditBegin() { }
 		public virtual void OnChangeTargetHeight(int amount) { }
 		protected virtual void SetTexture(string texturename) { }
+		public abstract bool Setup();
+		
+		// Processing
+		public virtual void OnProcess(double deltatime)
+		{
+			// If the texture was not loaded, but is loaded now, then re-setup geometry
+			if(setuponloadedtexture != 0)
+			{
+				ImageData t = General.Map.Data.GetTextureImage(setuponloadedtexture);
+				if(t != null)
+				{
+					if(t.IsImageLoaded)
+					{
+						setuponloadedtexture = 0;
+						Setup();
+					}
+				}
+			}
+		}
 		
 		// Reset texture offsets
 		public virtual void OnResetTextureOffset()
