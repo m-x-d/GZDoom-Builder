@@ -340,6 +340,7 @@ namespace CodeImp.DoomBuilder.Editing
 						General.ShowErrorMessage("Error while writing prefab to file! See log file for error details.", MessageBoxButtons.OK);
 					}
 				}
+				data.Dispose();
 			}
 			else
 			{
@@ -348,7 +349,6 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 			
 			// Done
-			data.Dispose();
 			General.MainWindow.UpdateInterface();
 			Cursor.Current = oldcursor;
 		}
