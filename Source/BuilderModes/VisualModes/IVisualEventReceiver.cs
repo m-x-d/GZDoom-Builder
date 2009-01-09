@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnTextureAlign(bool alignx, bool aligny);
 		void OnToggleUpperUnpegged();
 		void OnToggleLowerUnpegged();
+		void OnProcess(double deltatime);
 		
 		// Other methods
 		string GetTextureName();

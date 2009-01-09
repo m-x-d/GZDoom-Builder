@@ -63,15 +63,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public bool Setup()
+		public override bool Setup()
 		{
 			WorldVertex[] verts;
 			Sector s = base.Sector.Sector;
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
-			if(base.Texture == null) base.Texture = General.Map.Data.MissingTexture3D;
-
+			if(base.Texture == null)
+			{
+				base.Texture = General.Map.Data.MissingTexture3D;
+				setuponloadedtexture = s.LongFloorTexture;
+			}
+			else
+			{
+				if(!base.Texture.IsImageLoaded)
+					setuponloadedtexture = s.LongFloorTexture;
+			}
+			
 			// Make vertices
 			verts = new WorldVertex[s.Triangles.Vertices.Count];
 			for(int i = 0; i < s.Triangles.Vertices.Count; i++)
@@ -109,7 +118,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Methods
-
+		
 		// Paste texture
 		public override void OnPasteTexture()
 		{

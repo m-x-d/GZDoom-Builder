@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public bool Setup()
+		public override bool Setup()
 		{
 			// Calculate size of this wall part
 			float geotop = (float)Sidedef.Sector.CeilHeight;
@@ -79,12 +79,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Load texture
 					base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
-					if(base.Texture == null) base.Texture = General.Map.Data.MissingTexture3D;
+					if(base.Texture == null)
+					{
+						base.Texture = General.Map.Data.MissingTexture3D;
+						setuponloadedtexture = Sidedef.LongMiddleTexture;
+					}
+					else
+					{
+						if(!base.Texture.IsImageLoaded)
+							setuponloadedtexture = Sidedef.LongMiddleTexture;
+					}
 				}
 				else
 				{
 					// Use missing texture
 					base.Texture = General.Map.Data.MissingTexture3D;
+					setuponloadedtexture = 0;
 				}
 
 				// Get texture scaled size
