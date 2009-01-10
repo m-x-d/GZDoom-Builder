@@ -268,8 +268,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Select button pressed
 		public virtual void OnSelectBegin()
 		{
-			dragstartanglexy = mode.CameraAngleXY;
-			dragstartanglez = mode.CameraAngleZ;
+			dragstartanglexy = General.Map.VisualCamera.AngleXY;
+			dragstartanglez = General.Map.VisualCamera.AngleZ;
 			dragorigin = pickintersect;
 			startoffsetx = Sidedef.OffsetX;
 			startoffsety = Sidedef.OffsetY;
@@ -321,8 +321,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Actions.CheckActionActive(General.ThisAssembly, "visualselect"))
 				{
 					// Check if tolerance is exceeded to start UV dragging
-					float deltaxy = mode.CameraAngleXY - dragstartanglexy;
-					float deltaz = mode.CameraAngleZ - dragstartanglez;
+					float deltaxy = General.Map.VisualCamera.AngleXY - dragstartanglexy;
+					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
 						General.Map.UndoRedo.CreateUndo("Change texture offsets");
@@ -342,9 +342,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float u_ray;
 			
 			// Calculate intersection position
-			Line2D ray = new Line2D(mode.CameraPosition, mode.CameraTarget);
+			Line2D ray = new Line2D(General.Map.VisualCamera.Position, General.Map.VisualCamera.Target);
 			Sidedef.Line.Line.GetIntersection(ray, out u_ray);
-			Vector3D intersect = mode.CameraPosition + (mode.CameraTarget - mode.CameraPosition) * u_ray;
+			Vector3D intersect = General.Map.VisualCamera.Position + (General.Map.VisualCamera.Target - General.Map.VisualCamera.Position) * u_ray;
 			
 			// Calculate offsets
 			Vector3D dragdelta = intersect - dragorigin;

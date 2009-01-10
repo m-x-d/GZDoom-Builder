@@ -685,6 +685,7 @@
     <Compile Include="IO\SerializerStream.cs" />
     <Compile Include="Rendering\RenderPasses.cs" />
     <Compile Include="VisualModes\VisualBlockEntry.cs" />
+    <Compile Include="VisualModes\VisualCamera.cs" />
     <Compile Include="VisualModes\VisualPickResult.cs" />
     <Compile Include="VisualModes\VisualThing.cs" />
     <None Include="Resources\Script2.png" />
