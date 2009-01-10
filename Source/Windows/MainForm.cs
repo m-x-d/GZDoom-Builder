@@ -1985,6 +1985,15 @@ namespace CodeImp.DoomBuilder.Windows
 			modename.Refresh();
 		}
 		
+		// This refreshes info
+		public void RefreshInfo()
+		{
+			if(lastinfoobject is Vertex) ShowVertexInfo(lastinfoobject as Vertex);
+			else if(lastinfoobject is Linedef) ShowLinedefInfo(lastinfoobject as Linedef);
+			else if(lastinfoobject is Sector) ShowSectorInfo(lastinfoobject as Sector);
+			else if(lastinfoobject is Thing) ShowThingInfo(lastinfoobject as Thing);
+		}
+		
 		// Show linedef info
 		public void ShowLinedefInfo(Linedef l)
 		{

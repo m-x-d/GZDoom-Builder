@@ -657,8 +657,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("fliplinedefs")]
 		public void FlipLinedefs()
 		{
-			// Any selected lines?
+			// No selected lines?
 			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if(selected.Count == 0)
+			{
+				// Anything highlighted?
+				if(highlighted != null)
+				{
+					// Select the highlighted item
+					highlighted.Selected = true;
+					selected.Add(highlighted);
+				}
+			}
+
+			// Any selected lines?
 			if(selected.Count > 0)
 			{
 				// Make undo
@@ -673,9 +685,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					l.FlipVertices();
 					l.FlipSidedefs();
 				}
+				
+				// Remove selection if only one was selected
+				if(selected.Count == 1)
+				{
+					foreach(Linedef ld in selected) ld.Selected = false;
+					selected.Clear();
+				}
 
 				// Redraw
 				General.Map.IsChanged = true;
+				General.Interface.RefreshInfo();
 				General.Interface.RedrawDisplay();
 			}
 		}
@@ -683,8 +703,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("flipsidedefs")]
 		public void FlipSidedefs()
 		{
-			// Any selected lines?
+			// No selected lines?
 			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if(selected.Count == 0)
+			{
+				// Anything highlighted?
+				if(highlighted != null)
+				{
+					// Select the highlighted item
+					highlighted.Selected = true;
+					selected.Add(highlighted);
+				}
+			}
+
+			// Any selected lines?
 			if(selected.Count > 0)
 			{
 				// Make undo
@@ -697,10 +729,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Linedef l in selected)
 				{
 					l.FlipSidedefs();
+					if(l.Front != null) l.Front.Sector.UpdateNeeded = true;
+					if(l.Back != null) l.Back.Sector.UpdateNeeded = true;
+				}
+
+				// Remove selection if only one was selected
+				if(selected.Count == 1)
+				{
+					foreach(Linedef ld in selected) ld.Selected = false;
+					selected.Clear();
 				}
 
 				// Redraw
+				General.Map.Map.Update();
 				General.Map.IsChanged = true;
+				General.Interface.RefreshInfo();
 				General.Interface.RedrawDisplay();
 			}
 		}
