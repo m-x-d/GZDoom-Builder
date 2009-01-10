@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		// This applies the position and angle from the 3D Camera Thing
 		// Returns false when it couldn't find a 3D Camera Thing
-		public bool PositionAtThing()
+		public virtual bool PositionAtThing()
 		{
 			Thing modething = null;
 
@@ -105,13 +105,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Found one?
 			if(modething != null)
 			{
-				int z = 0;
-				if(sector != null)
-					z = (int)position.z - sector.FloorHeight;
-
-				// Position camera here
 				modething.DetermineSector();
-				position = modething.Position + new Vector3D(0.0f, 0.0f, 96.0f);
+				float z = modething.Position.z;
+				if(modething.Sector != null)
+					z = modething.Position.z + (float)modething.Sector.FloorHeight;
+				
+				// Position camera here
+				position = new Vector3D(modething.Position.x, modething.Position.y, z + 41.0f);
 				anglexy = modething.Angle + Angle2D.PI;
 				anglez = Angle2D.PI;
 				return true;
@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		// This applies the camera position and angle to the 3D Camera Thing
 		// Returns false when it couldn't find a 3D Camera Thing
-		public bool ApplyToThing()
+		public virtual bool ApplyToThing()
 		{
 			Thing modething = null;
 			
