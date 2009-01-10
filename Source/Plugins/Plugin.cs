@@ -69,10 +69,18 @@ namespace CodeImp.DoomBuilder.Plugins
 			// Initialize
 			name = Path.GetFileNameWithoutExtension(filename);
 			General.WriteLogLine("Loading plugin '" + name + "' from '" + Path.GetFileName(filename) + "'...");
-			
-			// Load assembly
-			asm = Assembly.LoadFile(filename);
 
+			try
+			{
+				// Load assembly
+				asm = Assembly.LoadFile(filename);
+			}
+			catch(Exception)
+			{
+				General.WriteLogLine("ERROR: Could not load plugin '" + name + "', the DLL file could not be read!");
+				throw new InvalidProgramException();
+			}
+			
 			// Find the class that inherits from Plugin
 			Type t = FindSingleClass(typeof(Plug));
 			if(t != null)
