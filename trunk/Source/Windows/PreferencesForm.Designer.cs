@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.classicbilinear = new System.Windows.Forms.CheckBox();
 			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
+			this.keyusedlabel = new System.Windows.Forms.Label();
 			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
 			this.colorgrid64 = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorgrid = new CodeImp.DoomBuilder.Controls.ColorControl();
@@ -82,6 +83,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.columncontrolaction = new System.Windows.Forms.ColumnHeader();
 			this.columncontrolkey = new System.Windows.Forms.ColumnHeader();
 			this.actioncontrolpanel = new System.Windows.Forms.GroupBox();
+			this.keyusedlist = new System.Windows.Forms.ListBox();
+			this.disregardshiftlabel = new System.Windows.Forms.Label();
 			this.actioncontrol = new System.Windows.Forms.ComboBox();
 			this.actiontitle = new System.Windows.Forms.Label();
 			this.actioncontrolclear = new System.Windows.Forms.Button();
@@ -102,7 +105,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorcomments = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorplaintext = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.disregardshiftlabel = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -130,7 +132,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label7
 			// 
 			label7.AutoSize = true;
-			label7.Location = new System.Drawing.Point(20, 183);
+			label7.Location = new System.Drawing.Point(20, 172);
 			label7.Name = "label7";
 			label7.Size = new System.Drawing.Size(187, 14);
 			label7.TabIndex = 7;
@@ -229,6 +231,16 @@ namespace CodeImp.DoomBuilder.Windows
 			label1.Size = new System.Drawing.Size(148, 14);
 			label1.TabIndex = 20;
 			label1.Text = "Texture and Flats brightness:";
+			// 
+			// keyusedlabel
+			// 
+			this.keyusedlabel.AutoSize = true;
+			this.keyusedlabel.Location = new System.Drawing.Point(20, 277);
+			this.keyusedlabel.Name = "keyusedlabel";
+			this.keyusedlabel.Size = new System.Drawing.Size(222, 14);
+			this.keyusedlabel.TabIndex = 10;
+			this.keyusedlabel.Text = "Key combination also used by these actions:";
+			this.keyusedlabel.Visible = false;
 			// 
 			// colorsgroup1
 			// 
@@ -753,6 +765,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actioncontrolpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actioncontrolpanel.Controls.Add(this.keyusedlist);
+			this.actioncontrolpanel.Controls.Add(this.keyusedlabel);
 			this.actioncontrolpanel.Controls.Add(this.disregardshiftlabel);
 			this.actioncontrolpanel.Controls.Add(this.actioncontrol);
 			this.actioncontrolpanel.Controls.Add(label7);
@@ -771,12 +785,36 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.TabStop = false;
 			this.actioncontrolpanel.Text = " Action control ";
 			// 
+			// keyusedlist
+			// 
+			this.keyusedlist.BackColor = System.Drawing.SystemColors.Control;
+			this.keyusedlist.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.keyusedlist.FormattingEnabled = true;
+			this.keyusedlist.ItemHeight = 14;
+			this.keyusedlist.Location = new System.Drawing.Point(33, 294);
+			this.keyusedlist.Name = "keyusedlist";
+			this.keyusedlist.SelectionMode = System.Windows.Forms.SelectionMode.None;
+			this.keyusedlist.Size = new System.Drawing.Size(232, 42);
+			this.keyusedlist.Sorted = true;
+			this.keyusedlist.TabIndex = 11;
+			this.keyusedlist.Visible = false;
+			// 
+			// disregardshiftlabel
+			// 
+			this.disregardshiftlabel.Location = new System.Drawing.Point(20, 224);
+			this.disregardshiftlabel.Name = "disregardshiftlabel";
+			this.disregardshiftlabel.Size = new System.Drawing.Size(245, 47);
+			this.disregardshiftlabel.TabIndex = 9;
+			this.disregardshiftlabel.Text = "The selected actions uses Shift, Alt and Control to modify it\'s behavior, these m" +
+				"odifiers can not be used in a key combination for this action.";
+			this.disregardshiftlabel.Visible = false;
+			// 
 			// actioncontrol
 			// 
 			this.actioncontrol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.actioncontrol.FormattingEnabled = true;
 			this.actioncontrol.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.actioncontrol.Location = new System.Drawing.Point(23, 204);
+			this.actioncontrol.Location = new System.Drawing.Point(23, 190);
 			this.actioncontrol.Name = "actioncontrol";
 			this.actioncontrol.Size = new System.Drawing.Size(197, 22);
 			this.actioncontrol.TabIndex = 8;
@@ -796,7 +834,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// actioncontrolclear
 			// 
-			this.actioncontrolclear.Location = new System.Drawing.Point(193, 140);
+			this.actioncontrolclear.Location = new System.Drawing.Point(193, 138);
 			this.actioncontrolclear.Name = "actioncontrolclear";
 			this.actioncontrolclear.Size = new System.Drawing.Size(63, 25);
 			this.actioncontrolclear.TabIndex = 6;
@@ -808,7 +846,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// actionkey
 			// 
 			this.actionkey.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.actionkey.Location = new System.Drawing.Point(23, 142);
+			this.actionkey.Location = new System.Drawing.Point(23, 140);
 			this.actionkey.Name = "actionkey";
 			this.actionkey.Size = new System.Drawing.Size(163, 20);
 			this.actionkey.TabIndex = 5;
@@ -818,9 +856,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// actiondescription
 			// 
 			this.actiondescription.AutoEllipsis = true;
-			this.actiondescription.Location = new System.Drawing.Point(20, 52);
+			this.actiondescription.Location = new System.Drawing.Point(20, 50);
 			this.actiondescription.Name = "actiondescription";
-			this.actiondescription.Size = new System.Drawing.Size(245, 70);
+			this.actiondescription.Size = new System.Drawing.Size(245, 71);
 			this.actiondescription.TabIndex = 3;
 			this.actiondescription.UseMnemonic = false;
 			// 
@@ -1002,17 +1040,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
 			this.colorplaintext.TabIndex = 12;
 			// 
-			// disregardshiftlabel
-			// 
-			this.disregardshiftlabel.Location = new System.Drawing.Point(20, 263);
-			this.disregardshiftlabel.Name = "disregardshiftlabel";
-			this.disregardshiftlabel.Size = new System.Drawing.Size(229, 73);
-			this.disregardshiftlabel.TabIndex = 9;
-			this.disregardshiftlabel.Text = "The selected actions uses modifier keys (Shift, Alt and Control) to modify it\'s b" +
-				"ehavior. Therefor, no combination with these modifiers can be used for this acti" +
-				"on.";
-			this.disregardshiftlabel.Visible = false;
-			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1131,5 +1158,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dotnetrix.Controls.TrackBar doublesidedalpha;
 		private Dotnetrix.Controls.TrackBar imagebrightness;
 		private System.Windows.Forms.Label disregardshiftlabel;
+		private System.Windows.Forms.ListBox keyusedlist;
+		private System.Windows.Forms.Label keyusedlabel;
 	}
 }

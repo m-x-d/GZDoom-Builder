@@ -307,6 +307,49 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		#region ================== Controls Panel
 		
+		// This updates the used keys info
+		private void UpdateKeyUsedActions()
+		{
+			List<string> usedactions = new List<string>();
+			
+			// Anything selected?
+			if(listactions.SelectedItems.Count > 0)
+			{
+				// Get info
+				int thiskey = (int)listactions.SelectedItems[0].SubItems[1].Tag;
+				
+				// Find actions with same key
+				foreach(ListViewItem item in listactions.Items)
+				{
+					// Don't count the selected action
+					if(item != listactions.SelectedItems[0])
+					{
+						Action a = General.Actions[item.Name];
+						int akey = (int)item.SubItems[1].Tag;
+						
+						// Check if the key combination matches
+						if((thiskey & a.ShortcutMask) == (akey & a.ShortcutMask))
+							usedactions.Add(General.Actions.Categories[a.Category] + ": " + a.Title);
+					}
+				}
+			}
+			
+			// Update info
+			if(usedactions.Count == 0)
+			{
+				keyusedlabel.Visible = false;
+				keyusedlist.Visible = false;
+				keyusedlist.Items.Clear();
+			}
+			else
+			{
+				keyusedlist.Items.Clear();
+				foreach(string a in usedactions) keyusedlist.Items.Add(a);
+				keyusedlabel.Visible = true;
+				keyusedlist.Visible = true;
+			}
+		}
+		
 		// This fills the list of available controls for the specified action
 		private void FillControlsList(Action a)
 		{
@@ -407,7 +450,10 @@ namespace CodeImp.DoomBuilder.Windows
 				// Otherwise display the key in the textbox
 				if(actioncontrol.SelectedIndex == -1)
 					actionkey.Text = Action.GetShortcutKeyDesc(key);
-
+				
+				// Show actions with same key
+				UpdateKeyUsedActions();
+				
 				// Focus to the input box
 				actionkey.Focus();
 
@@ -430,6 +476,9 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.SelectedIndex = -1;
 				disregardshiftlabel.Visible = false;
 			}
+			
+			// Show actions with same key
+			UpdateKeyUsedActions();
 		}
 
 		// Mouse released
@@ -467,6 +516,9 @@ namespace CodeImp.DoomBuilder.Windows
 				listactions.SelectedItems[0].SubItems[1].Tag = key;
 				actionkey.Text = Action.GetShortcutKeyDesc(key);
 				
+				// Show actions with same key
+				UpdateKeyUsedActions();
+				
 				// Done
 				allowapplycontrol = true;
 			}
@@ -503,7 +555,10 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply the key combination
 				listactions.SelectedItems[0].SubItems[1].Text = Action.GetShortcutKeyDesc(key.key);
 				listactions.SelectedItems[0].SubItems[1].Tag = key.key;
-
+				
+				// Show actions with same key
+				UpdateKeyUsedActions();
+				
 				// Focus to the input box
 				actionkey.Focus();
 
@@ -525,7 +580,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Apply the key combination
 			listactions.SelectedItems[0].SubItems[1].Text = "";
 			listactions.SelectedItems[0].SubItems[1].Tag = (int)0;
-
+			
+			// Show actions with same key
+			UpdateKeyUsedActions();
+			
 			// Focus to the input box
 			actionkey.Focus();
 
