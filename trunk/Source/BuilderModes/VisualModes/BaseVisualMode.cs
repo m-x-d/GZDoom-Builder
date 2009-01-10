@@ -146,8 +146,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void PickTarget()
 		{
 			// Find the object we are aiming at
-			Vector3D start = CameraPosition;
-			Vector3D delta = CameraTarget - CameraPosition;
+			Vector3D start = General.Map.VisualCamera.Position;
+			Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
 			delta = delta.GetFixedLength(General.Settings.ViewDistance * PICK_RANGE);
 			VisualPickResult newtarget = PickObject(start, start + delta);
 			
@@ -205,32 +205,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Setup the move multiplier depending on gravity
 			Vector3D movemultiplier = new Vector3D(1.0f, 1.0f, 1.0f);
 			if(BuilderPlug.Me.UseGravity) movemultiplier.z = 0.0f;
-			base.MoveMultiplier = movemultiplier;
+			General.Map.VisualCamera.MoveMultiplier = movemultiplier;
 			
 			// Apply gravity?
-			if(BuilderPlug.Me.UseGravity && (CameraSector != null))
+			if(BuilderPlug.Me.UseGravity && (General.Map.VisualCamera.Sector != null))
 			{
 				// Camera below floor level?
-				if(base.CameraPosition.z <= (CameraSector.FloorHeight + CAMERA_FLOOR_OFFSET + 0.1f))
+				if(General.Map.VisualCamera.Position.z <= (General.Map.VisualCamera.Sector.FloorHeight + CAMERA_FLOOR_OFFSET + 0.1f))
 				{
 					// Stay above floor
 					gravity = new Vector3D(0.0f, 0.0f, 0.0f);
-					base.CameraPosition = new Vector3D(base.CameraPosition.x, base.CameraPosition.y,
-													   CameraSector.FloorHeight + CAMERA_FLOOR_OFFSET);
+					General.Map.VisualCamera.Position = new Vector3D(General.Map.VisualCamera.Position.x,
+																	 General.Map.VisualCamera.Position.y,
+																	 General.Map.VisualCamera.Sector.FloorHeight + CAMERA_FLOOR_OFFSET);
 				}
 				else
 				{
 					// Fall down
 					gravity += new Vector3D(0.0f, 0.0f, (float)(GRAVITY * deltatime));
-					base.CameraPosition = base.CameraPosition + gravity;
+					General.Map.VisualCamera.Position += gravity;
 				}
 				
 				// Camera above ceiling level?
-				if(base.CameraPosition.z >= (CameraSector.CeilHeight - CAMERA_CEILING_OFFSET - 0.1f))
+				if(General.Map.VisualCamera.Position.z >= (General.Map.VisualCamera.Sector.CeilHeight - CAMERA_CEILING_OFFSET - 0.1f))
 				{
 					// Stay below ceiling
-					base.CameraPosition = new Vector3D(base.CameraPosition.x, base.CameraPosition.y,
-													   CameraSector.CeilHeight - CAMERA_CEILING_OFFSET);
+					General.Map.VisualCamera.Position = new Vector3D(General.Map.VisualCamera.Position.x,
+																	 General.Map.VisualCamera.Position.y,
+																	 General.Map.VisualCamera.Sector.CeilHeight - CAMERA_CEILING_OFFSET);
 				}
 			}
 			else

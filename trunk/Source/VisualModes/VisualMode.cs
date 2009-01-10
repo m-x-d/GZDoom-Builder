@@ -45,9 +45,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 	{
 		#region ================== Constants
 
-		private const float ANGLE_FROM_MOUSE = 0.0001f;
-		public const float MAX_ANGLEZ_LOW = 100f / Angle2D.PIDEG;
-		public const float MAX_ANGLEZ_HIGH = (360f - 100f) / Angle2D.PIDEG;
 		private const double MOVE_SPEED_MULTIPLIER = 0.001d;
 		
 		#endregion
@@ -60,13 +57,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Graphics
 		protected IRenderer3D renderer;
 		private Renderer3D renderer3d;
-		
-		// Camera
-		private Vector3D campos;
-		private Vector3D camtarget;
-		private Vector3D movemultiplier;
-		private float camanglexy, camanglez;
-		private Sector camsector;
 		
 		// Options
 		private bool processgeometry;
@@ -92,14 +82,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		#region ================== Properties
 
-		public Vector3D CameraPosition { get { return campos; } set { campos = value; } }
-		public Vector3D CameraTarget { get { return camtarget; } }
-		public float CameraAngleXY { get { return camanglexy; } set { camanglexy = value; } }
-		public float CameraAngleZ { get { return camanglez; } set { camanglez = value; } }
-		public Sector CameraSector { get { return camsector; } }
 		public bool ProcessGeometry { get { return processgeometry; } set { processgeometry = value; } }
 		public bool ProcessThings { get { return processthings; } set { processthings = value; } }
-		public Vector3D MoveMultiplier { get { return movemultiplier; } set { movemultiplier = value; } }
 		public VisualBlockMap BlockMap { get { return blockmap; } }
 		
 		#endregion
@@ -114,9 +98,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Initialize
 			this.renderer = General.Map.Renderer3D;
 			this.renderer3d = (Renderer3D)General.Map.Renderer3D;
-			this.campos = new Vector3D(0.0f, 0.0f, 96.0f);
-			this.movemultiplier = new Vector3D(1.0f, 1.0f, 1.0f);
-			this.camanglez = Angle2D.PI;
 			this.blockmap = new VisualBlockMap();
 			this.allsectors = new Dictionary<Sector, VisualSector>(General.Map.Map.Sectors.Count);
 			this.allthings = new Dictionary<Thing,VisualThing>(General.Map.Map.Things.Count);
@@ -161,24 +142,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
-
+			
 			// Fill the blockmap
 			FillBlockMap();
 			
-			// Find a 3D Mode thing
-			foreach(Thing t in General.Map.Map.Things)
-				if(t.Type == General.Map.Config.Start3DModeThingType) modething = t;
-			
-			// Found one?
-			if(modething != null)
-			{
-				// Position camera here
-				modething.DetermineSector();
-				campos = modething.Position + new Vector3D(0.0f, 0.0f, 96.0f);
-				camanglexy = modething.Angle + Angle2D.PI;
-				camanglez = Angle2D.PI;
-			}
-
 			// Start special input mode
 			General.Interface.SetProcessorState(true);
 			General.Interface.StartExclusiveMouseInput();
@@ -197,13 +164,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
 				vt.Value.Dispose();	
 			
-			// Do we have a 3D Mode thing?
-			if(modething != null)
-			{
-				// Position the thing to match camera
-				modething.Move((int)campos.x, (int)campos.y, 0);
-				modething.Rotate(camanglexy - Angle2D.PI);
-			}
+			// Apply camera position to thing
+			General.Map.VisualCamera.ApplyToThing();
+			
+			// Do not leave the sector on the camera
+			General.Map.VisualCamera.Sector = null;
 			
 			// Stop special input mode
 			General.Interface.SetProcessorState(false);
@@ -256,18 +221,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnMouseInput(Vector2D delta)
 		{
 			base.OnMouseInput(delta);
-
-			// Change camera angles with the mouse changes
-			camanglexy -= delta.x * ANGLE_FROM_MOUSE;
-			camanglez += delta.y * ANGLE_FROM_MOUSE;
-
-			// Normalize angles
-			camanglexy = Angle2D.Normalized(camanglexy);
-			camanglez = Angle2D.Normalized(camanglez);
-
-			// Limit vertical angle
-			if(camanglez < MAX_ANGLEZ_LOW) camanglez = MAX_ANGLEZ_LOW;
-			if(camanglez > MAX_ANGLEZ_HIGH) camanglez = MAX_ANGLEZ_HIGH;
+			General.Map.VisualCamera.ProcessMouseInput(delta);
 		}
 
 		[BeginAction("moveforward", BaseAction = true)]
@@ -338,7 +292,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private void DoCulling()
 		{
 			Dictionary<Linedef, Linedef> visiblelines = new Dictionary<Linedef, Linedef>(200);
-			Vector2D campos2d = (Vector2D)campos;
+			Vector2D campos2d = (Vector2D)General.Map.VisualCamera.Position;
 			float viewdist = General.Settings.ViewDistance;
 			
 			// Make collections
@@ -410,7 +364,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				Linedef nld = MapSet.NearestLinedef(visiblelines.Values, campos2d);
 				if(nld != null)
 				{
-					camsector = GetCameraSectorFromLinedef(nld);
+					General.Map.VisualCamera.Sector = GetCameraSectorFromLinedef(nld);
 				}
 				else
 				{
@@ -422,10 +376,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 					nld = General.Map.Map.NearestLinedef(campos2d);
 					if(nld != null)
 					{
-						camsector = GetCameraSectorFromLinedef(nld);
-						if(camsector != null)
+						General.Map.VisualCamera.Sector = GetCameraSectorFromLinedef(nld);
+						if(General.Map.VisualCamera.Sector != null)
 						{
-							foreach(Sidedef sd in camsector.Sidedefs)
+							foreach(Sidedef sd in General.Map.VisualCamera.Sector.Sidedefs)
 							{
 								float side = sd.Line.SideOfLine(campos2d);
 								if(((side < 0) && sd.IsFront) ||
@@ -436,13 +390,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 						else
 						{
 							// Too far away from the map to see anything
-							camsector = null;
+							General.Map.VisualCamera.Sector = null;
 						}
 					}
 					else
 					{
 						// Map is empty
-						camsector = null;
+						General.Map.VisualCamera.Sector = null;
 					}
 				}
 			}
@@ -483,7 +437,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This returns the camera sector from linedef
 		private Sector GetCameraSectorFromLinedef(Linedef ld)
 		{
-			if(ld.SideOfLine(campos) < 0)
+			if(ld.SideOfLine(General.Map.VisualCamera.Position) < 0)
 			{
 				if(ld.Front != null)
 					return ld.Front.Sector;
@@ -524,10 +478,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 			List<IVisualPickable> pickables = new List<IVisualPickable>(blocks.Count * 10);
 			
 			// Add geometry from the camera sector
-			if((camsector != null) && allsectors.ContainsKey(camsector))
+			if((General.Map.VisualCamera.Sector != null) && allsectors.ContainsKey(General.Map.VisualCamera.Sector))
 			{
-				VisualSector vs = allsectors[camsector];
-				sectors.Add(camsector, vs);
+				VisualSector vs = allsectors[General.Map.VisualCamera.Sector];
+				sectors.Add(General.Map.VisualCamera.Sector, vs);
 				foreach(VisualGeometry g in vs.FixedGeometry) pickables.Add(g);
 			}
 			
@@ -741,22 +695,24 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			base.OnProcess(deltatime);
 			
-			// Calculate camera direction vectors
-			Vector3D camvec = Vector3D.FromAngleXYZ(camanglexy, camanglez);
-			Vector3D camvecstrafe = Vector3D.FromAngleXY(camanglexy + Angle2D.PIHALF);
+			// Camera vectors
+			Vector3D camvec = Vector3D.FromAngleXYZ(General.Map.VisualCamera.AngleXY, General.Map.VisualCamera.AngleZ);
+			Vector3D camvecstrafe = Vector3D.FromAngleXY(General.Map.VisualCamera.AngleXY + Angle2D.PIHALF);
+			Vector3D cammovemul = General.Map.VisualCamera.MoveMultiplier;
+			Vector3D camdeltapos = new Vector3D();
 			
 			// Move the camera
 			if(doublespeed) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
-			if(keyforward) campos += camvec * movemultiplier * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keybackward) campos -= camvec * movemultiplier * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keyleft) campos -= camvecstrafe * movemultiplier * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
-			if(keyright) campos += camvecstrafe * movemultiplier * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyforward) camdeltapos += camvec * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keybackward) camdeltapos -= camvec * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyleft) camdeltapos -= camvecstrafe * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
+			if(keyright) camdeltapos += camvecstrafe * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
 			
-			// Target the camera
-			camtarget = campos + camvec;
+			// Move the camera
+			General.Map.VisualCamera.ProcessMovement(camdeltapos);
 			
 			// Apply new camera matrices
-			renderer.PositionAndLookAt(campos, camtarget);
+			renderer.PositionAndLookAt(General.Map.VisualCamera.Position, General.Map.VisualCamera.Target);
 
 			// Visibility culling
 			DoCulling();

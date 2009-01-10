@@ -35,6 +35,7 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder
 		private ThingsFilter thingsfilter;
 		private ScriptEditorForm scriptwindow;
 		private List<CompilerError> errors;
+		private VisualCamera visualcamera;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -117,6 +119,7 @@ namespace CodeImp.DoomBuilder
 		public ThingsFilter ThingsFilter { get { return thingsfilter; } }
 		internal List<CompilerError> Errors { get { return errors; } }
 		internal ScriptEditorForm ScriptEditor { get { return scriptwindow; } }
+		public VisualCamera VisualCamera { get { return visualcamera; } set { visualcamera = value; } }
 		public bool IsScriptsWindowOpen { get { return (scriptwindow != null) && !scriptwindow.IsDisposed; } }
 		
 		#endregion
@@ -172,6 +175,7 @@ namespace CodeImp.DoomBuilder
 				if(renderer2d != null) renderer2d.Dispose();
 				if(renderer3d != null) renderer3d.Dispose();
 				if(graphics != null) graphics.Dispose();
+				visualcamera = null;
 				grid = null;
 				launcher = null;
 				copypaste = null;
@@ -268,7 +272,8 @@ namespace CodeImp.DoomBuilder
 			// Bind any methods
 			General.Actions.BindMethods(this);
 
-			// Set default mode
+			// Set defaults
+			this.visualcamera = new VisualCamera();
 			General.Editing.ChangeMode("VerticesMode");
 			ClassicMode cmode = (General.Editing.Mode as ClassicMode);
 			if(cmode != null) cmode.SetZoom(0.5f);
@@ -292,7 +297,7 @@ namespace CodeImp.DoomBuilder
 			this.filepathname = filepathname;
 			this.changed = false;
 			this.options = options;
-
+			
 			General.WriteLogLine("Opening map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
 
 			// Initiate graphics
@@ -357,7 +362,8 @@ namespace CodeImp.DoomBuilder
 			// Bind any methods
 			General.Actions.BindMethods(this);
 
-			// Set default mode
+			// Set defaults
+			this.visualcamera = new VisualCamera();
 			General.Editing.ChangeMode("VerticesMode");
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 
@@ -1326,7 +1332,8 @@ namespace CodeImp.DoomBuilder
 			// Let the plugin and editing mode know
 			General.Plugins.OnMapSetChangeBegin();
 			if(General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeBegin();
-			
+			this.visualcamera.Sector = null;
+
 			// Can't have a selection in an old map set
 			map.ClearAllSelected();
 
