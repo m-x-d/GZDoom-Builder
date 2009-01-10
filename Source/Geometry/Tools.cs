@@ -27,6 +27,7 @@ using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -1231,7 +1232,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to align only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		public static void AutoAlignTextures(Sidedef start, long texturelongname, bool alignx, bool aligny, bool resetsidemarks)
+		public static void AutoAlignTextures(Sidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks)
 		{
 			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
 			
@@ -1263,13 +1264,21 @@ namespace CodeImp.DoomBuilder.Geometry
 					int backwardoffset = j.offsetx;
 					j.sidedef.Marked = true;
 					
+					// Wrap the value within the width of the texture (to prevent ridiculous values)
+					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
+					if(texture.IsImageLoaded)
+					{
+						j.sidedef.OffsetX %= texture.Width;
+						j.sidedef.OffsetY %= texture.Height;
+					}
+					
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.offsety, texturelongname);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.offsety, texture.LongName);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.offsety, texturelongname);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.offsety, texture.LongName);
 				}
 				else
 				{
@@ -1282,13 +1291,21 @@ namespace CodeImp.DoomBuilder.Geometry
 					int backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length);
 					j.sidedef.Marked = true;
 
+					// Wrap the value within the width of the texture (to prevent ridiculous values)
+					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
+					if(texture.IsImageLoaded)
+					{
+						j.sidedef.OffsetX %= texture.Width;
+						j.sidedef.OffsetY %= texture.Height;
+					}
+
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.offsety, texturelongname);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.offsety, texture.LongName);
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.offsety, texturelongname);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.offsety, texture.LongName);
 				}
 			}
 		}

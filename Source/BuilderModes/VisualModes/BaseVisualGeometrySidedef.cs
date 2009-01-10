@@ -206,12 +206,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.Map.UndoRedo.CreateUndo("Auto-align textures");
 			
-			// Get the texture long name
-			string texname = GetTextureName();
-			long longtexname = General.Map.Data.GetLongImageName(texname);
-
+			// Make sure the texture is loaded (we need the texture size)
+			if(!base.Texture.IsImageLoaded) base.Texture.LoadImage();
+			
 			// Do the alignment
-			Tools.AutoAlignTextures(this.Sidedef, longtexname, alignx, aligny, true);
+			Tools.AutoAlignTextures(this.Sidedef, base.Texture, alignx, aligny, true);
 
 			// Get the changed sidedefs
 			List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
