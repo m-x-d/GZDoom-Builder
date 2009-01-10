@@ -895,6 +895,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.IsChanged = true;
 
 				// Redraw display
+				General.Map.Map.Update();
 				General.Interface.RedrawDisplay();
 			}
 		}
@@ -919,6 +920,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.IsChanged = true;
 
 				// Redraw display
+				General.Map.Map.Update();
 				General.Interface.RedrawDisplay();
 			}
 		}
