@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Windows
 		void ShowThingInfo(Thing t);
 		void ShowVertexInfo(Vertex v);
 		void HideInfo();
+		void RefreshInfo();
 		void UpdateCoordinates(Vector2D coords);
 		bool Focus();
 		void SetProcessorState(bool on);
