@@ -78,13 +78,19 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns all files in a given directory
 		protected override string[] GetAllFiles(string path)
 		{
-			return Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
+			if(Directory.Exists(path))
+				return Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
+			else
+				return new string[0];
 		}
 
 		// This returns all files in a given directory that match the given extension
 		protected override string[] GetFilesWithExt(string path, string extension)
 		{
-			return Directory.GetFiles(path, "*." + extension, SearchOption.TopDirectoryOnly);
+			if(Directory.Exists(path))
+				return Directory.GetFiles(path, "*." + extension, SearchOption.TopDirectoryOnly);
+			else
+				return new string[0];
 		}
 
 		// This finds the first file that has the specific name, regardless of file extension
