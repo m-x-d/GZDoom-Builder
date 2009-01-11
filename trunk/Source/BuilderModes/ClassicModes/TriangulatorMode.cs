@@ -142,6 +142,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			}
 			
 			// Render labels
+			/*
 			if(renderer.StartOverlay(true))
 			{
 				if(labelpos != null)
@@ -152,6 +153,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 				renderer.Finish();
 			}
+			*/
 			
 			// Do not show things
 			if(renderer.StartThings(true))
@@ -159,6 +161,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				renderer.Finish();
 			}
 
+			renderer.RedrawSurface();
+			
 			renderer.Present();
 		}
 
@@ -187,6 +191,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			}
 			
 			// Render labels
+			/*
 			if(renderer.StartOverlay(true))
 			{
 				if(labelpos != null)
@@ -197,6 +202,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				
 				renderer.Finish();
 			}
+			*/
 			
 			renderer.Present();
 			
@@ -299,8 +305,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
+				Sector s = highlighted;
+				
+				// Remove highlight to avoid confusion
+				Highlight(null);
+				
 				// Get a triangulator and bind events
-				Triangulation t = Triangulation.Create(highlighted);
+				Triangulation t = new Triangulation();
+				t.OnShowPolygon = ShowPolygon;
+				t.OnShowEarClip = ShowEarClip;
+				//t.OnShowRemaining = ShowRemaining;
+				t.Triangulate(s);
 				
 				// Start with a clear display
 				if(renderer.StartPlotter(true))
@@ -392,15 +407,53 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This shows a polygon
-		private void ShowPolygon(EarClipPolygon p, PixelColor c)
+		private void ShowPolygon(EarClipPolygon p)
+		{
+			LinkedListNode<EarClipVertex> v = p.First;
+			LinkedListNode<EarClipVertex> v2 = p.Last;
+			
+			// Go for all vertices in the polygon
+			while(v != null)
+			{
+				for(int a = 0; a < 10; a++)
+				{
+					OnRedrawDisplay();
+					Thread.Sleep(10);
+					
+					// Start with a clear display
+					if(renderer.StartPlotter(true))
+					{
+						// Render lines and vertices
+						renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+						renderer.PlotVerticesSet(General.Map.Map.Vertices);
+						
+						// Show line
+						renderer.PlotLine(v.Value.Position, v2.Value.Position, PixelColor.FromColor(Color.Orange));
+						
+						// Done
+						renderer.Finish();
+						renderer.Present();
+					}
+
+					// Wait a bit
+					Thread.Sleep(60);
+				}
+				
+				v2 = v;
+				v = v.Next;
+			}
+		}
+
+		// This shows a polygon
+		private void ShowRemaining(LinkedList<EarClipVertex> remains)
 		{
 			LinkedListNode<EarClipVertex> v;
-			
-			for(int a = 0; a < 5; a++)
+
+			for(int a = 0; a < 100; a++)
 			{
 				OnRedrawDisplay();
 				Thread.Sleep(10);
-				
+
 				// Start with a clear display
 				if(renderer.StartPlotter(true))
 				{
@@ -409,24 +462,24 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 					// Go for all vertices in the polygon
-					v = p.First;
+					v = remains.First;
 					while(v != null)
 					{
 						// Show the line
-						if(v.Next != null) renderer.PlotLine(v.Value.Position, v.Next.Value.Position, c);
+						if(v.Next != null) renderer.PlotLine(v.Value.Position, v.Next.Value.Position, PixelColor.FromColor(Color.Yellow));
 						v = v.Next;
 					}
-					
+
 					// Show last line as well
-					renderer.PlotLine(p.Last.Value.Position, p.First.Value.Position, c);
-					
+					renderer.PlotLine(remains.Last.Value.Position, remains.First.Value.Position, PixelColor.FromColor(Color.Yellow));
+
 					// Done
 					renderer.Finish();
 					renderer.Present();
 				}
 
 				// Wait a bit
-				Thread.Sleep(50);
+				Thread.Sleep(60);
 			}
 		}
 
@@ -449,7 +502,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					foreach(EarClipVertex v in remains)
 					{
 						// Show the line
-						if(prev != null) renderer.PlotLine(v.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+						if(prev != null) renderer.PlotLine(v.Position, prev.Position, PixelColor.FromColor(Color.Yellow));
 						if(prev == null) first = v;
 						prev = v;
 						
@@ -458,13 +511,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						else
 							renderer.PlotVertexAt(v.Position, ColorCollection.VERTICES);
 					}
-					if(first != null) renderer.PlotLine(first.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+					if(first != null) renderer.PlotLine(first.Position, prev.Position, PixelColor.FromColor(Color.Yellow));
 
 					if(found != null)
 					{
-						renderer.PlotLine(found[0].Position, found[1].Position, PixelColor.FromColor(Color.SkyBlue));
-						renderer.PlotLine(found[1].Position, found[2].Position, PixelColor.FromColor(Color.SkyBlue));
-						renderer.PlotLine(found[2].Position, found[0].Position, PixelColor.FromColor(Color.SkyBlue));
+						renderer.PlotLine(found[0].Position, found[1].Position, PixelColor.FromColor(Color.BlueViolet));
+						renderer.PlotLine(found[1].Position, found[2].Position, PixelColor.FromColor(Color.BlueViolet));
+						renderer.PlotLine(found[2].Position, found[0].Position, PixelColor.FromColor(Color.BlueViolet));
 						renderer.PlotVertexAt(found[1].Position, ColorCollection.INDICATION);
 					}
 					
@@ -472,7 +525,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.Finish();
 					renderer.Present();
 				}
-				Thread.Sleep(10);
+				Thread.Sleep(50);
 
 				// Start with a clear display
 				if(renderer.StartPlotter(true))
@@ -486,7 +539,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					foreach(EarClipVertex v in remains)
 					{
 						// Show the line
-						if(prev != null) renderer.PlotLine(v.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+						if(prev != null) renderer.PlotLine(v.Position, prev.Position, PixelColor.FromColor(Color.Yellow));
 						if(prev == null) first = v;
 						prev = v;
 
@@ -495,13 +548,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						else
 							renderer.PlotVertexAt(v.Position, ColorCollection.VERTICES);
 					}
-					if(first != null) renderer.PlotLine(first.Position, prev.Position, PixelColor.FromColor(Color.OrangeRed));
+					if(first != null) renderer.PlotLine(first.Position, prev.Position, PixelColor.FromColor(Color.Yellow));
 
 					// Done
 					renderer.Finish();
 					renderer.Present();
 				}
-				Thread.Sleep(20);
+				Thread.Sleep(10);
 			}
 		}
 		
