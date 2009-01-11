@@ -40,20 +40,22 @@ namespace CodeImp.DoomBuilder.Geometry
 	{
 		#region ================== Delegates
 
+		#if DEBUG
+		
 		// For debugging purpose only!
 		// These are not called in a release build
-		public delegate void ShowLine(Vector2D v1, Vector2D v2, PixelColor c);
-		public delegate void ShowPolygon(EarClipPolygon p, PixelColor c);
-		public delegate void ShowPoint(Vector2D v, int c);
+		public delegate void ShowPolygon(EarClipPolygon p);
 		public delegate void ShowEarClip(EarClipVertex[] found, LinkedList<EarClipVertex> remaining);
+		public delegate void ShowRemaining(LinkedList<EarClipVertex> remaining);
 		
 		// For debugging purpose only!
 		// These are not called in a release build
-		public ShowLine OnShowLine;
 		public ShowPolygon OnShowPolygon;
-		public ShowPoint OnShowPoint;
 		public ShowEarClip OnShowEarClip;
+		public ShowRemaining OnShowRemaining;
 		
+		#endif
+
 		#endregion
 
 		#region ================== Constants
@@ -84,14 +86,21 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Constructor / Disposer
 
-		// I don't like using constructors that do more than simple initialization work
+		// Constructor
 		public static Triangulation Create(Sector sector)
 		{
-			return new Triangulation(sector);
+			Triangulation t = new Triangulation();
+			t.Triangulate(sector);
+			return t;
 		}
 
 		// Constructor
-		private Triangulation(Sector s)
+		public Triangulation()
+		{
+		}
+
+		// This performs the triangulation
+		public void Triangulate(Sector s)
 		{
 			// Initialize
 			List<EarClipPolygon> polys;
@@ -185,9 +194,6 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					// Create the polygon
 					newpoly = path.MakePolygon();
-					#if DEBUG
-					if(OnShowPolygon != null) OnShowPolygon(newpoly, General.Colors.Selection);
-					#endif
 					
 					// Determine where this polygon goes in our tree
 					foreach(EarClipPolygon p in root)
@@ -278,18 +284,6 @@ namespace CodeImp.DoomBuilder.Geometry
 				nextpath = new SidedefsTracePath(history, s);
 				if(s.Line.Start == fromhere) nextvertex = s.Line.End; else nextvertex = s.Line.Start;
 				
-				// TEST
-				#if DEBUG
-				if(s.IsFront)
-				{
-					if(OnShowLine != null) OnShowLine(s.Line.Start.Position, s.Line.End.Position, PixelColor.FromColor(Color.Chartreuse));
-				}
-				else
-				{
-					if(OnShowLine != null) OnShowLine(s.Line.Start.Position, s.Line.End.Position, PixelColor.FromColor(Color.DeepSkyBlue));
-				}
-				#endif
-				
 				result = DoTracePath(nextpath, nextvertex, findme, sector, sides);
 				if(result != null) return result;
 			}
@@ -301,7 +295,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This removes all sidedefs which has a sidedefs on the other side
 		// of the same line that refers to the same sector. These are removed
 		// because they are useless and make the triangulation inefficient.
-		private static void RemoveDoubleSidedefReferences(Dictionary<Sidedef, bool> todosides, ICollection<Sidedef> sides)
+		private void RemoveDoubleSidedefReferences(Dictionary<Sidedef, bool> todosides, ICollection<Sidedef> sides)
 		{
 			// Go for all sides
 			foreach(Sidedef sd in sides)
@@ -320,7 +314,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This finds the right-most vertex to start tracing with
-		private static Vertex FindRightMostVertex(Dictionary<Sidedef, bool> sides, Dictionary<Vertex, Vertex> ignores)
+		private Vertex FindRightMostVertex(Dictionary<Sidedef, bool> sides, Dictionary<Vertex, Vertex> ignores)
 		{
 			Vertex found = null;
 			
@@ -422,7 +416,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		// This finds the right-most vertex in an inner polygon to use for cut startpoint.
-		private static LinkedListNode<EarClipVertex> FindRightMostVertex(EarClipPolygon p)
+		private LinkedListNode<EarClipVertex> FindRightMostVertex(EarClipPolygon p)
 		{
 			LinkedListNode<EarClipVertex> found = p.First;
 			LinkedListNode<EarClipVertex> v = found.Next;
@@ -439,22 +433,29 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This finds the cut coordinates and splits the other poly with inner vertices
-		private static void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p, EarClipPolygon inner)
+		private void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p, EarClipPolygon inner)
 		{
-			Line2D starttoright = new Line2D(start.Value.Position, start.Value.Position + new Vector2D(1000.0f, 0.0f));
 			LinkedListNode<EarClipVertex> v1, v2;
 			LinkedListNode<EarClipVertex> insertbefore = null;
 			float u, ul, foundu = float.MaxValue;
 			EarClipVertex split;
+			
+			// Create a line from start that goes beyond the right most vertex of p
+			LinkedListNode<EarClipVertex> pr = FindRightMostVertex(p);
+			float startx = start.Value.Position.x;
+			float endx = pr.Value.Position.x + 10.0f;
+			Line2D starttoright = new Line2D(start.Value.Position, new Vector2D(endx, start.Value.Position.y));
 			
 			// Go for all lines in the outer polygon
 			v1 = p.Last;
 			v2 = p.First;
 			while(v2 != null)
 			{
-				// Check if the line is to the right of start
-				if((v1.Value.Position.x > start.Value.Position.x) ||
-				   (v2.Value.Position.x > start.Value.Position.x))
+				// Check if the line goes between startx and endx
+				if(((v1.Value.Position.x > startx) ||
+				    (v2.Value.Position.x > startx)) &&
+				   ((v1.Value.Position.x < endx) ||
+				    (v2.Value.Position.x < endx)))
 				{
 					// Find intersection
 					Line2D pl = new Line2D(v1.Value.Position, v2.Value.Position);
@@ -471,24 +472,19 @@ namespace CodeImp.DoomBuilder.Geometry
 							ul = starttoright.GetNearestOnLine(v2.Value.Position);
 
 							// Rule out vertices before the scan line
-							if(u < 0) u = float.MaxValue;
-							if(ul < 0) ul = float.MaxValue;
-
-							// Choose closest of both vertices
+							if(u < 0.0f) u = float.MaxValue;
+							if(ul < 0.0f) ul = float.MaxValue;
+							
+							// v1 must be closer, because we must cut in so that it stays a clockwise polygon
 							if((u < ul) && (u < foundu))
 							{
-								insertbefore = v2;
+								insertbefore = v1;
 								foundu = u;
-							}
-							else if((u > ul) && (ul < foundu))
-							{
-								insertbefore = v2;
-								foundu = ul;
 							}
 						}
 					}
 					// Found a closer match?
-					else if((ul >= 0) && (ul <= 1) && (u > 0) && (u < foundu))
+					else if((ul >= 0.0f) && (ul <= 1.0f) && (u > 0.0f) && (u <= foundu))
 					{
 						// Found a closer intersection
 						insertbefore = v2;
@@ -524,7 +520,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				
 				// Insert manual split vertices
 				p.AddBefore(insertbefore, new EarClipVertex(start.Value, sd));
-				p.AddBefore(insertbefore, new EarClipVertex(split, sd));
+				if(split.Position != insertbefore.Value.Position)
+					p.AddBefore(insertbefore, new EarClipVertex(split, sd));
 			}
 		}
 
@@ -544,11 +541,11 @@ namespace CodeImp.DoomBuilder.Geometry
 			EarClipVertex v, v1, v2;
 			EarClipVertex[] t, t1, t2;
 			int countvertices = 0;
-			
+
 			// Go for all vertices to fill list
 			foreach(EarClipVertex vec in poly)
 				vec.SetVertsLink(verts.AddLast(vec));
-			
+
 			// Optimization: Vertices which have lines with the
 			// same angle are useless. Remove them!
 			v = verts.First.Value;
@@ -572,7 +569,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Next!
 				v = v1;
 			}
-			
+
 			// Go for all vertices to determine reflex or convex
 			foreach(EarClipVertex vv in verts)
 			{
@@ -595,15 +592,19 @@ namespace CodeImp.DoomBuilder.Geometry
 				v = eartips.First.Value;
 				t = GetTriangle(v);
 
-				// Add ear as triangle
-				AddTriangleToList(t, verticeslist, sidedefslist, (verts.Count == 3));
-				countvertices += 3;
+				// Only save this triangle when it has an area
+				if(TriangleHasArea(t))
+				{
+					// Add ear as triangle
+					AddTriangleToList(t, verticeslist, sidedefslist, (verts.Count == 3));
+					countvertices += 3;
+				}
 				
 				// Remove this ear from all lists
 				v.Remove();
 				v1 = t[0];
 				v2 = t[2];
-
+				
 				// Test first neighbour
 				t1 = GetTriangle(v1);
 				if(IsReflex(t1))
@@ -650,9 +651,12 @@ namespace CodeImp.DoomBuilder.Geometry
 			// Go for all reflex vertices
 			foreach(EarClipVertex rv in reflexes)
 			{
-				// Return false on intersection
-				if(PointInsideTriangle(t, rv.Position) &&
-				   (rv != t[0]) && (rv != t[1]) && (rv != t[2])) return false;
+				// Not one of the triangle corners?
+				if((rv.Position != t[0].Position) && (rv.Position != t[1].Position) && (rv.Position != t[2].Position))
+				{
+					// Return false on intersection
+					if(PointInsideTriangle(t, rv.MainListNode)) return false;
+				}
 			}
 
 			// Valid ear!
@@ -660,7 +664,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This returns the 3-vertex array triangle for an ear
-		private static EarClipVertex[] GetTriangle(EarClipVertex v)
+		private EarClipVertex[] GetTriangle(EarClipVertex v)
 		{
 			EarClipVertex[] t = new EarClipVertex[3];
 			if(v.MainListNode.Previous == null) t[0] = v.MainListNode.List.Last.Value; else t[0] = v.MainListNode.Previous.Value;
@@ -670,22 +674,88 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This checks if a vertex is reflex (corner > 180 deg) or convex (corner < 180 deg)
-		private static bool IsReflex(EarClipVertex[] t)
+		private bool IsReflex(EarClipVertex[] t)
 		{
 			// Return true when corner is > 180 deg
-			//return (Line2D.GetSideOfLine(t[0].Position, t[2].Position, t[1].Position) < 0.00001f);
-			return (Line2D.GetSideOfLine(t[0].Position, t[2].Position, t[1].Position) < 0);
+			return (Line2D.GetSideOfLine(t[0].Position, t[2].Position, t[1].Position) < 0.0f);
 		}
 		
 		// This checks if a point is inside a triangle
+		// When the point is on an edge of the triangle, it depends on the lines
+		// adjacent to the point if it is considered inside or not
 		// NOTE: vertices in t must be in clockwise order!
-		private static bool PointInsideTriangle(EarClipVertex[] t, Vector2D p)
+		private bool PointInsideTriangle(EarClipVertex[] t, LinkedListNode<EarClipVertex> p)
 		{
-			return (Line2D.GetSideOfLine(t[0].Position, t[1].Position, p) < 0.00001f) &&
-				   (Line2D.GetSideOfLine(t[1].Position, t[2].Position, p) < 0.00001f) &&
-				   (Line2D.GetSideOfLine(t[2].Position, t[0].Position, p) < 0.00001f);
+			// If the triangle has no area, there can never be a point inside
+			if(TriangleHasArea(t))
+			{
+				float lineside01 = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p.Value.Position);
+				float lineside12 = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p.Value.Position);
+				float lineside20 = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p.Value.Position);
+
+				// If any of the lineside results are 0 then that means the point lies on that edge and we
+				// need to test if the lines adjacent to the point are in the triangle or not.
+				// If the lines are intersecting the triangle, we also consider the point inside.
+				if((lineside01 == 0.0f) || (lineside12 == 0.0f) || (lineside20 == 0.0f))
+				{
+					LinkedListNode<EarClipVertex> p1 = p.Previous ?? p.List.Last;
+					LinkedListNode<EarClipVertex> p2 = p.Next ?? p.List.First;
+
+					if(LineInsideTriangle(t, p.Value.Position, p1.Value.Position)) return true;
+					if(LineInsideTriangle(t, p.Value.Position, p2.Value.Position)) return true;
+					return false;
+				}
+				else
+				{
+					return (lineside01 < 0.0f) && (lineside12 < 0.0f) && (lineside20 < 0.0f);
+				}
+			}
+			else
+			{
+				return false;
+			}
 		}
 
+		// This checks if a line is inside a triangle (touching the triangle is allowed)
+		// NOTE: Does NOT check if p1 is inside the triangle, because we only use the
+		// method when point-in-triangle is already tested for p1
+		private bool LineInsideTriangle(EarClipVertex[] t, Vector2D p1, Vector2D p2)
+		{
+			// Test if p2 is inside the triangle
+			if((Line2D.GetSideOfLine(t[0].Position, t[1].Position, p2) < 0.0f) &&
+			   (Line2D.GetSideOfLine(t[1].Position, t[2].Position, p2) < 0.0f) &&
+			   (Line2D.GetSideOfLine(t[2].Position, t[0].Position, p2) < 0.0f))
+			{
+				// Line is inside triangle, because p2 is
+				return true;
+			}
+			else
+			{
+				// Test for line intersections
+				Line2D p = new Line2D(p1, p2);
+				Line2D t01 = new Line2D(t[0].Position, t[1].Position);
+				Line2D t12 = new Line2D(t[1].Position, t[2].Position);
+				Line2D t20 = new Line2D(t[2].Position, t[0].Position);
+				float pu, pt;
+
+				// Test intersections
+				t01.GetIntersection(p, out pu, out pt);
+				if(!float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt > 0.0f) && (pt < 1.0f)) return true;
+				t12.GetIntersection(p, out pu, out pt);
+				if(!float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt > 0.0f) && (pt < 1.0f)) return true;
+				t20.GetIntersection(p, out pu, out pt);
+				return !float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt > 0.0f) && (pt < 1.0f);
+			}
+		}
+		
+		// This checks if the triangle has an area greater than 0
+		private bool TriangleHasArea(EarClipVertex[] t)
+		{
+			return ((t[0].Position.x * (t[1].Position.y - t[2].Position.y) +
+					 t[1].Position.x * (t[2].Position.y - t[0].Position.y) +
+					 t[2].Position.x * (t[0].Position.y - t[1].Position.y)) != 0.0f);
+		}
+		
 		// This adds an array of vertices
 		private void AddTriangleToList(EarClipVertex[] triangle, List<Vector2D> verticeslist, List<Sidedef> sidedefslist, bool last)
 		{
