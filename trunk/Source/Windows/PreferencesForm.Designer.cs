@@ -69,7 +69,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldofview = new Dotnetrix.Controls.TrackBar();
 			this.viewdistancelabel = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
-			this.fixedaspect = new System.Windows.Forms.CheckBox();
 			this.invertyaxis = new System.Windows.Forms.CheckBox();
 			this.movespeedlabel = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
@@ -545,7 +544,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Controls.Add(this.fieldofview);
 			this.groupBox2.Controls.Add(this.viewdistancelabel);
 			this.groupBox2.Controls.Add(this.label13);
-			this.groupBox2.Controls.Add(this.fixedaspect);
 			this.groupBox2.Controls.Add(this.invertyaxis);
 			this.groupBox2.Controls.Add(this.movespeedlabel);
 			this.groupBox2.Controls.Add(this.label11);
@@ -628,16 +626,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label13.Size = new System.Drawing.Size(80, 14);
 			this.label13.TabIndex = 28;
 			this.label13.Text = "View distance:";
-			// 
-			// fixedaspect
-			// 
-			this.fixedaspect.AutoSize = true;
-			this.fixedaspect.Location = new System.Drawing.Point(31, 328);
-			this.fixedaspect.Name = "fixedaspect";
-			this.fixedaspect.Size = new System.Drawing.Size(133, 18);
-			this.fixedaspect.TabIndex = 27;
-			this.fixedaspect.Text = "Fixed 4:3 view aspect";
-			this.fixedaspect.UseVisualStyleBackColor = true;
 			// 
 			// invertyaxis
 			// 
@@ -1139,7 +1127,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.Label viewdistancelabel;
 		private System.Windows.Forms.Label label13;
-		private System.Windows.Forms.CheckBox fixedaspect;
 		private System.Windows.Forms.CheckBox invertyaxis;
 		private System.Windows.Forms.ComboBox defaultviewmode;
 		private System.Windows.Forms.Label label14;

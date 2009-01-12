@@ -45,7 +45,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float PROJ_NEAR_PLANE = 1f;
 		private const float CROSSHAIR_SCALE = 0.06f;
 		private const float FOG_RANGE = 0.9f;
-		private const float FIXED_ASPECT = 4.0f / 3.0f;
 		
 		#endregion
 
@@ -276,18 +275,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This creates the projection
 		internal void CreateProjection()
 		{
-			float aspect;
-			
-			// Determine aspect to use
-			if(General.Settings.FixedAspect)
-			{
-				aspect = FIXED_ASPECT;
-			}
-			else
-			{
-				aspect = (float)General.Map.Graphics.RenderTarget.ClientSize.Width /
-						 (float)General.Map.Graphics.RenderTarget.ClientSize.Height;
-			}
+			// Calculate aspect
+			float aspect = (float)General.Map.Graphics.RenderTarget.ClientSize.Width /
+						   (float)General.Map.Graphics.RenderTarget.ClientSize.Height;
 			
 			// The DirectX PerspectiveFovRH matrix method calculates the scaling in X and Y as follows:
 			// yscale = 1 / tan(fovY / 2)
