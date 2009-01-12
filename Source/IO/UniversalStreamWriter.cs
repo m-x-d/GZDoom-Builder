@@ -270,16 +270,13 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all things
 			foreach(Thing t in things)
 			{
-				// Calculate angle for UDMF
-				int angle = (int)(t.Angle * Angle2D.PIDEG) - 90;
-				
 				// Make collection
 				UniversalCollection coll = new UniversalCollection();
 				if(t.Tag != 0) coll.Add("id", t.Tag);
 				coll.Add("x", t.Position.x);
 				coll.Add("y", t.Position.y);
 				if(t.Position.z != 0.0f) coll.Add("height", (float)t.Position.z);
-				coll.Add("angle", angle);
+				coll.Add("angle", Angle2D.RealToDoom(t.Angle));
 				coll.Add("type", t.Type);
 				if(t.Action != 0) coll.Add("special", t.Action);
 				if(t.Args[0] != 0) coll.Add("arg0", t.Args[0]);

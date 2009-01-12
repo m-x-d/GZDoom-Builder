@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Geometry;
 using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Data;
@@ -128,13 +129,13 @@ namespace CodeImp.DoomBuilder.Controls
 				zvalue = t.Position.z;
 				if(zvalue >= 0.0f) zinfo = "+" + zvalue.ToString(); else zinfo = zvalue.ToString();
 			}
-			
+
 			// Thing info
 			type.Text = t.Type + " - " + ti.Title;
 			action.Text = actioninfo;
 			position.Text = t.Position.x.ToString() + ", " + t.Position.y.ToString() + ", " + zinfo;
 			tag.Text = t.Tag.ToString();
-			angle.Text = t.AngleDeg.ToString() + "\u00B0";
+			angle.Text = Angle2D.RealToDoom(t.Angle).ToString() + "\u00B0";
 			
 			// Sprite
 			if(ti.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) && (ti.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))

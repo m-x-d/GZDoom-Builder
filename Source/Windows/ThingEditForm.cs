@@ -101,7 +101,6 @@ namespace CodeImp.DoomBuilder.Windows
 		public void Setup(ICollection<Thing> things)
 		{
 			Thing ft;
-			int angledeg;
 
 			// Keep this list
 			this.things = things;
@@ -135,10 +134,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(ft.Flags.ContainsKey(c.Tag.ToString())) c.Checked = ft.Flags[c.Tag.ToString()];
 			
 			// Coordination
-			angledeg = ft.AngleDeg - 90;
-			if(angledeg < 0) angledeg += 360;
-			if(angledeg >= 360) angledeg -= 360;
-			angle.Text = angledeg.ToString();
+			angle.Text = Angle2D.RealToDoom(ft.Angle).ToString();
 			height.Text = ((int)ft.Position.z).ToString();
 
 			// Action/tags
@@ -182,9 +178,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Coordination
-				angledeg = t.AngleDeg - 90;
-				if(angledeg < 0) angledeg += 360;
-				if(angledeg >= 360) angledeg -= 360;
+				int angledeg = Angle2D.RealToDoom(t.Angle);
 				if(angledeg.ToString() != angle.Text) angle.Text = "";
 				if(((int)t.Position.z).ToString() != height.Text) height.Text = "";
 
@@ -340,7 +334,7 @@ namespace CodeImp.DoomBuilder.Windows
 				t.Type = typeid.GetResult(t.Type);
 				
 				// Coordination
-				t.Rotate(Angle2D.DegToRad((float)(angle.GetResult(t.AngleDeg - 90) + 90)));
+				t.Rotate(Angle2D.DoomToReal(angle.GetResult(Angle2D.RealToDoom(t.Angle))));
 				t.Move(t.Position.x, t.Position.y, (float)height.GetResult((int)t.Position.z));
 				
 				// Apply all flags
