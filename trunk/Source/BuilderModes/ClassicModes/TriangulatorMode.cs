@@ -407,7 +407,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This shows a polygon
-		private void ShowPolygon(EarClipPolygon p)
+		private void ShowPolygon(LinkedList<EarClipVertex> p)
 		{
 			LinkedListNode<EarClipVertex> v = p.First;
 			LinkedListNode<EarClipVertex> v2 = p.Last;
@@ -417,8 +417,23 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				for(int a = 0; a < 10; a++)
 				{
-					OnRedrawDisplay();
-					Thread.Sleep(10);
+
+					// Start with a clear display
+					if(renderer.StartPlotter(true))
+					{
+						// Render lines and vertices
+						renderer.PlotLinedefSet(General.Map.Map.Linedefs);
+						renderer.PlotVerticesSet(General.Map.Map.Vertices);
+
+						// Show line
+						renderer.PlotLine(v.Value.Position, v2.Value.Position, PixelColor.FromColor(Color.White));
+
+						// Done
+						renderer.Finish();
+						renderer.Present();
+					}
+					
+					Thread.Sleep(20);
 					
 					// Start with a clear display
 					if(renderer.StartPlotter(true))
@@ -428,7 +443,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						renderer.PlotVerticesSet(General.Map.Map.Vertices);
 						
 						// Show line
-						renderer.PlotLine(v.Value.Position, v2.Value.Position, PixelColor.FromColor(Color.Orange));
+						renderer.PlotLine(v.Value.Position, v2.Value.Position, PixelColor.FromColor(Color.Red));
 						
 						// Done
 						renderer.Finish();
@@ -554,7 +569,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.Finish();
 					renderer.Present();
 				}
-				Thread.Sleep(10);
+				Thread.Sleep(20);
 			}
 		}
 		

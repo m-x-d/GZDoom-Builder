@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		// For debugging purpose only!
 		// These are not called in a release build
-		public delegate void ShowPolygon(EarClipPolygon p);
+		public delegate void ShowPolygon(LinkedList<EarClipVertex> p);
 		public delegate void ShowEarClip(EarClipVertex[] found, LinkedList<EarClipVertex> remaining);
 		public delegate void ShowRemaining(LinkedList<EarClipVertex> remaining);
 		
@@ -538,6 +538,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			List<EarClipVertex> convexes = new List<EarClipVertex>(poly.Count);
 			LinkedList<EarClipVertex> reflexes = new LinkedList<EarClipVertex>();
 			LinkedList<EarClipVertex> eartips = new LinkedList<EarClipVertex>();
+			LinkedListNode<EarClipVertex> n1, n2;
 			EarClipVertex v, v1, v2;
 			EarClipVertex[] t, t1, t2;
 			int countvertices = 0;
@@ -546,16 +547,35 @@ namespace CodeImp.DoomBuilder.Geometry
 			foreach(EarClipVertex vec in poly)
 				vec.SetVertsLink(verts.AddLast(vec));
 
+			// Remove any zero-length lines, these will give problems
+			n1 = verts.First;
+			do
+			{
+				// Continue until adjacent zero-length lines are removed
+				n2 = n1.Next ?? verts.First;
+				Vector2D d = n1.Value.Position - n2.Value.Position;
+				while((Math.Abs(d.x) < 0.00001f) && (Math.Abs(d.y) < 0.00001f))
+				{
+					n2.Value.Remove();
+					n2 = n1.Next ?? verts.First;
+					d = n1.Value.Position - n2.Value.Position;
+				}
+
+				// Next!
+				n1 = n2;
+			}
+			while(n1 != verts.First);
+			
 			// Optimization: Vertices which have lines with the
 			// same angle are useless. Remove them!
-			v = verts.First.Value;
-			while(v != null)
+			n1 = verts.First;
+			while(n1 != null)
 			{
 				// Get the next vertex
-				if(v.MainListNode.Next != null) v1 = v.MainListNode.Next.Value; else v1 = null;
+				n2 = n1.Next;
 				
 				// Get triangle for v
-				t = GetTriangle(v);
+				t = GetTriangle(n1.Value);
 				
 				// Check if both lines have the same angle
 				Line2D a = new Line2D(t[0].Position, t[1].Position);
@@ -563,11 +583,11 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(Math.Abs(Angle2D.Difference(a.GetAngle(), b.GetAngle())) < 0.00001f)
 				{
 					// Same angles, remove vertex
-					v.Remove();
+					n1.Value.Remove();
 				}
 				
 				// Next!
-				v = v1;
+				n1 = n2;
 			}
 
 			// Go for all vertices to determine reflex or convex
@@ -585,6 +605,10 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(CheckValidEar(t, reflexes)) cv.AddEarTip(eartips);
 			}
 
+			#if DEBUG
+			if(OnShowPolygon != null) OnShowPolygon(verts);
+			#endif
+			
 			// Process ears until done
 			while((eartips.Count > 0) && (verts.Count > 2))
 			{
@@ -604,6 +628,13 @@ namespace CodeImp.DoomBuilder.Geometry
 				v.Remove();
 				v1 = t[0];
 				v2 = t[2];
+
+				#if DEBUG
+				if(TriangleHasArea(t))
+				{
+					if(OnShowEarClip != null) OnShowEarClip(t, verts);
+				}
+				#endif
 				
 				// Test first neighbour
 				t1 = GetTriangle(v1);
@@ -637,6 +668,10 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(!v1.IsReflex && CheckValidEar(t1, reflexes)) v1.AddEarTip(eartips); else v1.RemoveEarTip();
 				if(!v2.IsReflex && CheckValidEar(t2, reflexes)) v2.AddEarTip(eartips); else v2.RemoveEarTip();
 			}
+
+			#if DEBUG
+			if(OnShowRemaining != null) OnShowRemaining(verts);
+			#endif
 			
 			// Dispose remaining vertices
 			foreach(EarClipVertex ecv in verts) ecv.Dispose();
@@ -667,9 +702,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		private EarClipVertex[] GetTriangle(EarClipVertex v)
 		{
 			EarClipVertex[] t = new EarClipVertex[3];
-			if(v.MainListNode.Previous == null) t[0] = v.MainListNode.List.Last.Value; else t[0] = v.MainListNode.Previous.Value;
+			t[0] = (v.MainListNode.Previous == null) ? v.MainListNode.List.Last.Value : v.MainListNode.Previous.Value;
 			t[1] = v;
-			if(v.MainListNode.Next == null) t[2] = v.MainListNode.List.First.Value; else t[2] = v.MainListNode.Next.Value;
+			t[2] = (v.MainListNode.Next == null) ? v.MainListNode.List.First.Value : v.MainListNode.Next.Value;
 			return t;
 		}
 		
