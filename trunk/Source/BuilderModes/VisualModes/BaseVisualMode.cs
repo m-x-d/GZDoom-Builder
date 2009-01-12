@@ -76,6 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Properties
 
+		public IRenderer3D Renderer { get { return renderer; } }
 		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
 		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
 
@@ -544,6 +545,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnResetTextureOffset();
+			ShowTargetInfo();
+		}
+
+		[BeginAction("floodfilltextures")]
+		public void FloodfillTextures()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureFloodfill();
 			ShowTargetInfo();
 		}
 		
