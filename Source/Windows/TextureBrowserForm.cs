@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.Windows
 			item.ImageIndex = 2;
 			
 			// Select the last one that was selected
-			string selectname = General.Settings.ReadSetting("browserwindow.texturestextureset", "");
+			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
 			foreach(ListViewItem i in texturesets.Items) if(i.Text == selectname) i.Selected = true;
 			
 			// None selected? Then select the first
@@ -190,8 +190,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
 			
 			// Save last selected texture set
-			if((texturesets.SelectedItems.Count > 0) && (texturesets.SelectedItems[0].Tag is MatchingTextureSet))
-				General.Settings.WriteSetting("browserwindow.texturestextureset", texturesets.SelectedItems[0].Text);
+			if(texturesets.SelectedItems.Count > 0)
+				General.Settings.WriteSetting("browserwindow.textureset", texturesets.SelectedItems[0].Text);
 			
 			// Clean up
 			browser.CleanUp();
