@@ -36,7 +36,6 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label9;
 			System.Windows.Forms.Label label8;
 			System.Windows.Forms.GroupBox groupfloorceiling;
-			System.Windows.Forms.Label label7;
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label4;
@@ -47,6 +46,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.brightness = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.effect = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.sectorheight = new System.Windows.Forms.Label();
+			this.sectorheightlabel = new System.Windows.Forms.Label();
 			this.floorheight = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.floortex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.ceilingtex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
@@ -67,7 +67,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label9 = new System.Windows.Forms.Label();
 			label8 = new System.Windows.Forms.Label();
 			groupfloorceiling = new System.Windows.Forms.GroupBox();
-			label7 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
@@ -215,7 +214,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupfloorceiling.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			groupfloorceiling.Controls.Add(this.sectorheight);
-			groupfloorceiling.Controls.Add(label7);
+			groupfloorceiling.Controls.Add(this.sectorheightlabel);
 			groupfloorceiling.Controls.Add(label5);
 			groupfloorceiling.Controls.Add(this.floorheight);
 			groupfloorceiling.Controls.Add(label2);
@@ -240,15 +239,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorheight.TabIndex = 21;
 			this.sectorheight.Text = "0";
 			// 
-			// label7
+			// sectorheightlabel
 			// 
-			label7.AutoSize = true;
-			label7.Location = new System.Drawing.Point(32, 99);
-			label7.Name = "label7";
-			label7.Size = new System.Drawing.Size(74, 14);
-			label7.TabIndex = 20;
-			label7.Text = "Sector height:";
-			label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.sectorheightlabel.AutoSize = true;
+			this.sectorheightlabel.Location = new System.Drawing.Point(32, 99);
+			this.sectorheightlabel.Name = "sectorheightlabel";
+			this.sectorheightlabel.Size = new System.Drawing.Size(74, 14);
+			this.sectorheightlabel.TabIndex = 20;
+			this.sectorheightlabel.Text = "Sector height:";
+			this.sectorheightlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label5
 			// 
@@ -269,6 +268,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(68, 20);
 			this.floorheight.TabIndex = 16;
+			this.floorheight.TextChanged += new System.EventHandler(this.floorheight_TextChanged);
 			// 
 			// label2
 			// 
@@ -323,6 +323,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(68, 20);
 			this.ceilingheight.TabIndex = 18;
+			this.ceilingheight.TextChanged += new System.EventHandler(this.ceilingheight_TextChanged);
 			// 
 			// cancel
 			// 
@@ -470,5 +471,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.NumericTextbox tag;
 		private System.Windows.Forms.Button newtag;
 		private System.Windows.Forms.Button browseeffect;
+		private System.Windows.Forms.Label sectorheightlabel;
 	}
 }
