@@ -499,9 +499,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Show zoom on main window
 			General.MainWindow.UpdateZoom(scale);
-			
-			// Recalculate linedefs (normal lengths must be adjusted)
-			foreach(Linedef l in General.Map.Map.Linedefs) l.NeedUpdate();
 		}
 
 		// This updates some maths
