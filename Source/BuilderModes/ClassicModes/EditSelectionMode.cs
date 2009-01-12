@@ -872,6 +872,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cached values
 				General.Map.Map.Update();
 
+				// Clear selection
+				General.Map.Map.ClearAllSelected();
+				
 				// Done
 				selectedvertices = new List<Vertex>();
 				selectedthings = new List<Thing>();

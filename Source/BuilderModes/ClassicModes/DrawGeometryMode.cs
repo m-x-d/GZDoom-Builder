@@ -387,9 +387,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Make the drawing
 				Tools.DrawLines(points);
 				
-				// Make selection from marked (new) geometry
+				// Clear selection
 				General.Map.Map.ClearAllSelected();
-				General.Map.Map.SelectMarkedGeometry(true, true);
 				
 				// Update cached values
 				General.Map.Map.Update();
