@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				   (General.Map.Map.GetMarkedThings(true).Count > 0);
 		}
 
-		// This is called when something is pasted.
+		// This is called when something was pasted.
 		public override void OnPasteEnd()
 		{
 			General.Map.Map.ClearAllSelected();

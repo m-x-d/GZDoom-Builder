@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.IO
 			UniversalParser textmap = new UniversalParser();
 			textmap.StrictChecking = strictchecking;
 			
-			try
+			//try
 			{
 				// Read UDMF from stream
 				textmap.InputConfiguration(reader.ReadToEnd());
@@ -135,9 +135,9 @@ namespace CodeImp.DoomBuilder.IO
 					ReadThings(map, textmap);
 				}
 			}
-			catch(Exception e)
+			//catch(Exception e)
 			{
-				General.ShowErrorMessage("Unexpected error reading UDMF map data. " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+				//General.ShowErrorMessage("Unexpected error reading UDMF map data. " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 			}
 
 			return map;
@@ -384,7 +384,7 @@ namespace CodeImp.DoomBuilder.IO
 						type = General.Map.Options.GetUniversalFieldType(elementname, e.Key, type);
 
 					// Make custom field
-					element.Fields.Add(e.Key, new UniValue(type, e.Value));
+					element.Fields[e.Key] = new UniValue(type, e.Value);
 				}
 			}
 		}
