@@ -65,7 +65,6 @@ namespace CodeImp.DoomBuilder.Windows
 			movespeed.Value = General.Settings.MoveSpeed / 100;
 			viewdistance.Value = General.Clamp((int)(General.Settings.ViewDistance / 200.0f), viewdistance.Minimum, viewdistance.Maximum);
 			invertyaxis.Checked = General.Settings.InvertYAxis;
-			fixedaspect.Checked = General.Settings.FixedAspect;
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;
 			
 			// Fill fonts list
@@ -151,7 +150,6 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.MoveSpeed = movespeed.Value * 100;
 			General.Settings.ViewDistance = (float)viewdistance.Value * 200.0f;
 			General.Settings.InvertYAxis = invertyaxis.Checked;
-			General.Settings.FixedAspect = fixedaspect.Checked;
 			General.Settings.ScriptFontBold = scriptfontbold.Checked;
 			General.Settings.ScriptFontName = scriptfontname.Text;
 

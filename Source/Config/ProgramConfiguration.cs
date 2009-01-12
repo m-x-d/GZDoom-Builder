@@ -66,7 +66,6 @@ namespace CodeImp.DoomBuilder.Config
 		private int movespeed;
 		private float viewdistance;
 		private bool invertyaxis;
-		private bool fixedaspect;
 		private string scriptfontname;
 		private int scriptfontsize;
 		private bool scriptfontbold;
@@ -104,7 +103,6 @@ namespace CodeImp.DoomBuilder.Config
 		public int MoveSpeed { get { return movespeed; } internal set { movespeed = value; } }
 		public float ViewDistance { get { return viewdistance; } internal set { viewdistance = value; } }
 		public bool InvertYAxis { get { return invertyaxis; } internal set { invertyaxis = value; } }
-		public bool FixedAspect { get { return fixedaspect; } internal set { fixedaspect = value; } }
 		public string ScriptFontName { get { return scriptfontname; } internal set { scriptfontname = value; } }
 		public int ScriptFontSize { get { return scriptfontsize; } internal set { scriptfontsize = value; } }
 		public bool ScriptFontBold { get { return scriptfontbold; } internal set { scriptfontbold = value; } }
@@ -158,7 +156,6 @@ namespace CodeImp.DoomBuilder.Config
 				movespeed = cfg.ReadSetting("movespeed", 100);
 				viewdistance = cfg.ReadSetting("viewdistance", 3000.0f);
 				invertyaxis = cfg.ReadSetting("invertyaxis", false);
-				fixedaspect = cfg.ReadSetting("fixedaspect", true);
 				scriptfontname = cfg.ReadSetting("scriptfontname", "Lucida Console");
 				scriptfontsize = cfg.ReadSetting("scriptfontsize", 10);
 				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
@@ -195,7 +192,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("movespeed", movespeed);
 			cfg.WriteSetting("viewdistance", viewdistance);
 			cfg.WriteSetting("invertyaxis", invertyaxis);
-			cfg.WriteSetting("fixedaspect", fixedaspect);
 			cfg.WriteSetting("scriptfontname", scriptfontname);
 			cfg.WriteSetting("scriptfontsize", scriptfontsize);
 			cfg.WriteSetting("scriptfontbold", scriptfontbold);
