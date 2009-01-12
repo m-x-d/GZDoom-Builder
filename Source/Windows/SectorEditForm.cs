@@ -120,6 +120,54 @@ namespace CodeImp.DoomBuilder.Windows
 				// Custom fields
 				fieldslist.SetValues(s.Fields, false);
 			}
+
+			// Show sector height
+			UpdateSectorHeight();
+		}
+
+		// This updates the sector height field
+		private void UpdateSectorHeight()
+		{
+			bool showheight = true;
+			int delta = 0;
+			Sector first = null;
+			
+			// Check all selected sectors
+			foreach(Sector s in sectors)
+			{
+				if(first == null)
+				{
+					// First sector in list
+					delta = s.CeilHeight - s.FloorHeight;
+					showheight = true;
+					first = s;
+				}
+				else
+				{
+					if(delta != (s.CeilHeight - s.FloorHeight))
+					{
+						// We can't show heights because the delta
+						// heights for the sectors is different
+						showheight = false;
+						break;
+					}
+				}
+			}
+
+			if(showheight)
+			{
+				int fh = floorheight.GetResult(first.FloorHeight);
+				int ch = ceilingheight.GetResult(first.CeilHeight);
+				int height = ch - fh;
+				sectorheight.Text = height.ToString();
+				sectorheight.Visible = true;
+				sectorheightlabel.Visible = true;
+			}
+			else
+			{
+				sectorheight.Visible = false;
+				sectorheightlabel.Visible = false;
+			}
 		}
 
 		// OK clicked
@@ -178,6 +226,18 @@ namespace CodeImp.DoomBuilder.Windows
 		private void browseeffect_Click(object sender, EventArgs e)
 		{
 			effect.Value = EffectBrowserForm.BrowseEffect(this, effect.Value);
+		}
+
+		// Ceiling height changes
+		private void ceilingheight_TextChanged(object sender, EventArgs e)
+		{
+			UpdateSectorHeight();
+		}
+
+		// Floor height changes
+		private void floorheight_TextChanged(object sender, EventArgs e)
+		{
+			UpdateSectorHeight();
 		}
 	}
 }
