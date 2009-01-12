@@ -40,6 +40,18 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#region ================== Methods
 
+		// This converts doom angle to real angle
+		public static float DoomToReal(int doomangle)
+		{
+			return Normalized(DegToRad((float)(doomangle + 90)));
+		}
+
+		// This converts real angle to doom angle
+		public static int RealToDoom(float realangle)
+		{
+			return (int)Math.Round(RadToDeg(Normalized(realangle - PIHALF)));
+		}
+
 		// This converts degrees to radians
 		public static float DegToRad(float deg)
 		{

@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Read properties from stream
 				x = reader.ReadInt16();
 				y = reader.ReadInt16();
-				angle = (float)(reader.ReadInt16() + 90) / Angle2D.PIDEG;
+				angle = Angle2D.DoomToReal(reader.ReadInt16());
 				type = reader.ReadUInt16();
 				flags = reader.ReadUInt16();
 				
@@ -400,11 +400,11 @@ namespace CodeImp.DoomBuilder.IO
 					int fnum;
 					if(f.Value && int.TryParse(f.Key, out fnum)) flags |= fnum;
 				}
-				
+
 				// Write properties to stream
 				writer.Write((Int16)t.Position.x);
 				writer.Write((Int16)t.Position.y);
-				writer.Write((Int16)((t.Angle * Angle2D.PIDEG) - 90));
+				writer.Write((Int16)Angle2D.RealToDoom(t.Angle));
 				writer.Write((UInt16)t.Type);
 				writer.Write((UInt16)flags);
 			}
