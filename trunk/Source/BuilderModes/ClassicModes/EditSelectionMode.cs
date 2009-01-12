@@ -723,16 +723,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnCancel();
 
-			// Reset geometry in original position
-			int index = 0;
-			foreach(Vertex v in selectedvertices)
-				v.Move(vertexpos[index++]);
-
-			index = 0;
-			foreach(Thing t in selectedthings)
+			// Paste operation?
+			if(pasting)
 			{
-				t.Rotate(thingangle[index]);
-				t.Move(thingpos[index++]);
+				// Remove the geometry
+				int index = 0;
+				foreach(Vertex v in selectedvertices)
+					v.Dispose();
+
+				index = 0;
+				foreach(Thing t in selectedthings)
+					t.Dispose();
+			}
+			else
+			{
+				// Reset geometry in original position
+				int index = 0;
+				foreach(Vertex v in selectedvertices)
+					v.Move(vertexpos[index++]);
+
+				index = 0;
+				foreach(Thing t in selectedthings)
+				{
+					t.Rotate(thingangle[index]);
+					t.Move(thingpos[index++]);
+				}
 			}
 			
 			General.Map.Map.Update(true, true);
