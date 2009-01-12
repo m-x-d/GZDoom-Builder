@@ -315,19 +315,21 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Get info
 				int thiskey = (int)listactions.SelectedItems[0].SubItems[1].Tag;
-				
-				// Find actions with same key
-				foreach(ListViewItem item in listactions.Items)
+				if(thiskey != 0)
 				{
-					// Don't count the selected action
-					if(item != listactions.SelectedItems[0])
+					// Find actions with same key
+					foreach(ListViewItem item in listactions.Items)
 					{
-						Action a = General.Actions[item.Name];
-						int akey = (int)item.SubItems[1].Tag;
-						
-						// Check if the key combination matches
-						if((thiskey & a.ShortcutMask) == (akey & a.ShortcutMask))
-							usedactions.Add(General.Actions.Categories[a.Category] + ": " + a.Title);
+						// Don't count the selected action
+						if(item != listactions.SelectedItems[0])
+						{
+							Action a = General.Actions[item.Name];
+							int akey = (int)item.SubItems[1].Tag;
+
+							// Check if the key combination matches
+							if((thiskey & a.ShortcutMask) == (akey & a.ShortcutMask))
+								usedactions.Add(a.Title + "  (" + General.Actions.Categories[a.Category] + ")");
+						}
 					}
 				}
 			}

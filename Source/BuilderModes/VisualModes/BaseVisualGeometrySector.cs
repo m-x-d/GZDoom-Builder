@@ -87,6 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnToggleLowerUnpegged() { }
 		public virtual void OnResetTextureOffset() { }
 		protected virtual void SetTexture(string texturename) { }
+		public virtual void OnTextureFloodfill() { }
 
 		// Processing
 		public virtual void OnProcess(double deltatime)

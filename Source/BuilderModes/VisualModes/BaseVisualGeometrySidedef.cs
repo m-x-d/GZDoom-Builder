@@ -200,6 +200,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(parts.middlesingle != null) parts.middlesingle.Setup();
 			if(parts.upper != null) parts.upper.Setup();
 		}
+
+		// Flood-fill textures
+		public virtual void OnTextureFloodfill()
+		{
+			if(General.Interface.IsActiveWindow)
+			{
+				string oldtexture = GetTextureName();
+				string newtexture = General.Interface.BrowseTexture(General.Interface, oldtexture);
+				if(newtexture != oldtexture)
+				{
+					General.Map.UndoRedo.CreateUndo("Flood-fill textures with " + newtexture);
+					
+					mode.Renderer.SetCrosshairBusy(true);
+					General.Interface.RedrawDisplay();
+
+					// Get the texture
+					ImageData newtextureimage = General.Map.Data.GetTextureImage(newtexture);
+					if(newtextureimage != null)
+					{
+						// Do the alignment
+						Tools.FloodfillTextures(this.Sidedef, base.Texture, newtextureimage, true);
+
+						// Get the changed sidedefs
+						List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
+						foreach(Sidedef sd in changes)
+						{
+							// Update the parts for this sidedef!
+							if(mode.VisualSectorExists(sd.Sector))
+							{
+								BaseVisualSector vs = (mode.GetVisualSector(sd.Sector) as BaseVisualSector);
+								VisualSidedefParts parts = vs.GetSidedefParts(sd);
+								if(parts.lower != null) parts.lower.Setup();
+								if(parts.middledouble != null) parts.middledouble.Setup();
+								if(parts.middlesingle != null) parts.middlesingle.Setup();
+								if(parts.upper != null) parts.upper.Setup();
+							}
+						}
+
+						General.Map.Data.UpdateUsedTextures();
+						mode.Renderer.SetCrosshairBusy(false);
+						mode.ShowTargetInfo();
+					}
+				}
+			}
+		}
 		
 		// Auto-align texture X offsets
 		public virtual void OnTextureAlign(bool alignx, bool aligny)

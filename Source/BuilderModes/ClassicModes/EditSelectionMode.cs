@@ -885,6 +885,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.SnapAllToAccuracy();
 				
 				// Update cached values
+				General.Map.Data.UpdateUsedTextures();
 				General.Map.Map.Update();
 
 				// Clear selection

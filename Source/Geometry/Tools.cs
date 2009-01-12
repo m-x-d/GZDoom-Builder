@@ -63,7 +63,15 @@ namespace CodeImp.DoomBuilder.Geometry
 			// must be subtracted from the X offset first.
 			public bool forward;
 		}
-		
+
+		private struct SidedefFillJob
+		{
+			public Sidedef sidedef;
+
+			// Moving forward along the sidedef?
+			public bool forward;
+		}
+
 		#endregion
 		
 		#region ================== Constants
@@ -1224,7 +1232,104 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		#endregion
-		
+
+		#region ================== Texture Floodfill
+
+		// This performs texture floodfill along all walls that match with the same texture
+		// NOTE: This method uses the sidedefs marking to indicate which sides have been filled
+		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
+		// Setting resetsidemarks to false is usefull to fill only within a specific selection
+		// (set the marked property to true for the sidedefs outside the selection)
+		public static void FloodfillTextures(Sidedef start, ImageData texture, ImageData filltexture, bool resetsidemarks)
+		{
+			Stack<SidedefFillJob> todo = new Stack<SidedefFillJob>(50);
+
+			// Begin with first sidedef
+			if(SidedefTextureMatch(start, texture.LongName))
+			{
+				SidedefFillJob first = new SidedefFillJob();
+				first.sidedef = start;
+				first.forward = true;
+				todo.Push(first);
+			}
+			
+			// Continue until nothing more to align
+			while(todo.Count > 0)
+			{
+				// Get the align job to do
+				SidedefFillJob j = todo.Pop();
+
+				if(j.forward)
+				{
+					Vertex v;
+
+					// Apply texturing
+					if(j.sidedef.LongHighTexture == texture.LongName) j.sidedef.SetTextureHigh(filltexture.Name);
+					if(j.sidedef.LongMiddleTexture == texture.LongName) j.sidedef.SetTextureMid(filltexture.Name);
+					if(j.sidedef.LongLowTexture == texture.LongName) j.sidedef.SetTextureLow(filltexture.Name);
+					j.sidedef.Marked = true;
+					
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForFloodfill(todo, v, true, texture.LongName);
+
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForFloodfill(todo, v, false, texture.LongName);
+				}
+				else
+				{
+					Vertex v;
+
+					// Apply texturing
+					if(j.sidedef.LongHighTexture == texture.LongName) j.sidedef.SetTextureHigh(filltexture.Name);
+					if(j.sidedef.LongMiddleTexture == texture.LongName) j.sidedef.SetTextureMid(filltexture.Name);
+					if(j.sidedef.LongLowTexture == texture.LongName) j.sidedef.SetTextureLow(filltexture.Name);
+					j.sidedef.Marked = true;
+					
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForFloodfill(todo, v, false, texture.LongName);
+
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForFloodfill(todo, v, true, texture.LongName);
+				}
+			}
+		}
+
+		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
+		private static void AddSidedefsForFloodfill(Stack<SidedefFillJob> stack, Vertex v, bool forward, long texturelongname)
+		{
+			foreach(Linedef ld in v.Linedefs)
+			{
+				Sidedef side1 = forward ? ld.Front : ld.Back;
+				Sidedef side2 = forward ? ld.Back : ld.Front;
+				if((ld.Start == v) && (side1 != null) && !side1.Marked)
+				{
+					if(SidedefTextureMatch(side1, texturelongname))
+					{
+						SidedefFillJob nj = new SidedefFillJob();
+						nj.forward = forward;
+						nj.sidedef = side1;
+						stack.Push(nj);
+					}
+				}
+				else if((ld.End == v) && (side2 != null) && !side2.Marked)
+				{
+					if(SidedefTextureMatch(side2, texturelongname))
+					{
+						SidedefFillJob nj = new SidedefFillJob();
+						nj.forward = forward;
+						nj.sidedef = side2;
+						stack.Push(nj);
+					}
+				}
+			}
+		}
+
+		#endregion
+
 		#region ================== Texture Alignment
 
 		// This performs texture alignment along all walls that match with the same texture
