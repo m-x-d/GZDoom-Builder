@@ -68,7 +68,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			// Change camera angles with the mouse changes
 			anglexy -= delta.x * ANGLE_FROM_MOUSE;
-			anglez += delta.y * ANGLE_FROM_MOUSE;
+			if(General.Settings.InvertYAxis)
+				anglez -= delta.y * ANGLE_FROM_MOUSE;
+			else
+				anglez += delta.y * ANGLE_FROM_MOUSE;
 
 			// Normalize angles
 			anglexy = Angle2D.Normalized(anglexy);
