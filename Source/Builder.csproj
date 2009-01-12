@@ -774,7 +774,7 @@
     <PreBuildEvent>"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M "Debug" "$(ConfigurationName)"
 "$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release" "$(ConfigurationName)"
 "$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Debug with revision lookup" "$(ConfigurationName)"</PreBuildEvent>
-    <PostBuildEvent>"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs"
-</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release" "$(ConfigurationName)"
+"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Debug with revision lookup" "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
