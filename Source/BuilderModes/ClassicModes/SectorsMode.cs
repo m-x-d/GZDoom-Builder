@@ -122,9 +122,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
+			// Find the first sector that is not disposed
+			Sector first = null;
+			foreach(Sector s in orderedselection)
+				if(!s.IsDisposed) { first = s; break; }
+			
 			// Join all selected sectors with the first
-			for(int i = 1; i < orderedselection.Count; i++)
-				orderedselection[i].Join(orderedselection[0]);
+			for(int i = 0; i < orderedselection.Count; i++)
+				if((orderedselection[i] != first) && !orderedselection[i].IsDisposed)
+					orderedselection[i].Join(first);
 		}
 
 		// This highlights a new item
