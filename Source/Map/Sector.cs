@@ -312,21 +312,24 @@ namespace CodeImp.DoomBuilder.Map
 			// Any vertices?
 			else if(flatvertices.Length > 0)
 			{
-				FlatVertex[] buffervertices = new FlatVertex[triangles.Vertices.Count];
-				flatvertices.CopyTo(buffervertices, 0);
+				if(General.Map.Graphics.CheckAvailability())
+				{
+					FlatVertex[] buffervertices = new FlatVertex[triangles.Vertices.Count];
+					flatvertices.CopyTo(buffervertices, 0);
 
-				// Raise event to allow plugins to modify this data
-				General.Plugins.OnSectorFloorSurfaceUpdate(this, ref buffervertices);
+					// Raise event to allow plugins to modify this data
+					General.Plugins.OnSectorFloorSurfaceUpdate(this, ref buffervertices);
 
-				// Make the buffer
-				flatfloorbuffer = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffervertices.Length,
-											  Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+					// Make the buffer
+					flatfloorbuffer = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffervertices.Length,
+												  Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 
-				// Fill it
-				DataStream bufferstream = flatfloorbuffer.Lock(0, FlatVertex.Stride * buffervertices.Length, LockFlags.Discard);
-				bufferstream.WriteRange<FlatVertex>(buffervertices);
-				flatfloorbuffer.Unlock();
-				bufferstream.Dispose();
+					// Fill it
+					DataStream bufferstream = flatfloorbuffer.Lock(0, FlatVertex.Stride * buffervertices.Length, LockFlags.Discard);
+					bufferstream.WriteRange<FlatVertex>(buffervertices);
+					flatfloorbuffer.Unlock();
+					bufferstream.Dispose();
+				}
 			}
 		}
 
@@ -350,21 +353,24 @@ namespace CodeImp.DoomBuilder.Map
 			// Any vertices?
 			else if(flatvertices.Length > 0)
 			{
-				FlatVertex[] buffervertices = new FlatVertex[triangles.Vertices.Count];
-				flatvertices.CopyTo(buffervertices, 0);
+				if(General.Map.Graphics.CheckAvailability())
+				{
+					FlatVertex[] buffervertices = new FlatVertex[triangles.Vertices.Count];
+					flatvertices.CopyTo(buffervertices, 0);
 
-				// Raise event to allow plugins to modify this data
-				General.Plugins.OnSectorCeilingSurfaceUpdate(this, ref buffervertices);
+					// Raise event to allow plugins to modify this data
+					General.Plugins.OnSectorCeilingSurfaceUpdate(this, ref buffervertices);
 
-				// Make the buffer
-				flatceilingbuffer = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffervertices.Length,
-											  Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+					// Make the buffer
+					flatceilingbuffer = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffervertices.Length,
+												  Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 
-				// Fill it
-				DataStream bufferstream = flatceilingbuffer.Lock(0, FlatVertex.Stride * buffervertices.Length, LockFlags.Discard);
-				bufferstream.WriteRange<FlatVertex>(buffervertices);
-				flatceilingbuffer.Unlock();
-				bufferstream.Dispose();
+					// Fill it
+					DataStream bufferstream = flatceilingbuffer.Lock(0, FlatVertex.Stride * buffervertices.Length, LockFlags.Discard);
+					bufferstream.WriteRange<FlatVertex>(buffervertices);
+					flatceilingbuffer.Unlock();
+					bufferstream.Dispose();
+				}
 			}
 		}
 
