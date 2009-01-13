@@ -276,7 +276,7 @@ namespace CodeImp.DoomBuilder.Data
 					memstream.Seek(0, SeekOrigin.Begin);
 					texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
 									img.Size.Width, img.Size.Height, mipmaplevels, Usage.None, Format.Unknown,
-									Pool.Managed, General.Map.Graphics.PostFilter, General.Map.Graphics.PostFilter, 0);
+									Pool.Managed, General.Map.Graphics.PostFilter, General.Map.Graphics.MipGenerateFilter, 0);
 					memstream.Dispose();
 				}
 			}

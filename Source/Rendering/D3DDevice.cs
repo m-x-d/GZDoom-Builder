@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Settings
 		private int adapter;
 		private Filter postfilter;
+		private Filter mipgeneratefilter;
 		
 		// Main objects
 		private static Direct3D d3d;
@@ -84,6 +85,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal TextFont Font { get { return font; } }
 		internal Texture FontTexture { get { return fonttexture.Texture; } }
 		internal Filter PostFilter { get { return postfilter; } }
+		internal Filter MipGenerateFilter { get { return mipgeneratefilter; } }
 		
 		#endregion
 
@@ -229,11 +231,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Shader settings
 			shaders.World3D.SetConstants(General.Settings.VisualBilinear, true);
 			
-			// Texture loading filter
+			// Texture filters
 			if(General.Settings.QualityDisplay)
-				postfilter = Filter.Box;
+			{
+				postfilter = Filter.Point;
+				mipgeneratefilter = Filter.Box;
+			}
 			else
-				postfilter = Filter.Linear;
+			{
+				postfilter = Filter.Point;
+				mipgeneratefilter = Filter.Point;
+			}
 			
 			// Initialize presentations
 			Presentation.Initialize();
