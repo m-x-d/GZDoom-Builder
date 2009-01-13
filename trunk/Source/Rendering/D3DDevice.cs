@@ -447,26 +447,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public bool StartRendering(bool clear, Color4 backcolor, Surface target, Surface depthbuffer)
 		{
-			// When minimized, do not render anything
-			if(General.MainWindow.WindowState != FormWindowState.Minimized)
+			// Check if we can render
+			if(CheckAvailability())
 			{
-				// Test the cooperative level
-				Result coopresult = device.TestCooperativeLevel();
-				
-				// Check if device must be reset
-				if(!coopresult.IsSuccess)
-				{
-					// Should we reset?
-					if(coopresult.Name == "D3DERR_DEVICENOTRESET")
-					{
-						// Device is lost and must be reset now
-						Reset();
-					}
-					
-					// Impossible to render at this point
-					return false;
-				}
-
 				// Set rendertarget
 				device.DepthStencilSurface = depthbuffer;
 				device.SetRenderTarget(0, target);
@@ -512,6 +495,41 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			// Errors are not a problem here
 			catch(Exception) { }
+		}
+		
+		// This checks if we can use the hardware at this moment
+		public bool CheckAvailability()
+		{
+			// When minimized, the hardware is not available
+			if(General.MainWindow.WindowState != FormWindowState.Minimized)
+			{
+				// Test the cooperative level
+				Result coopresult = device.TestCooperativeLevel();
+
+				// Check if device must be reset
+				if(!coopresult.IsSuccess)
+				{
+					// Should we reset?
+					if(coopresult.Name == "D3DERR_DEVICENOTRESET")
+					{
+						// Device is lost and must be reset now
+						Reset();
+					}
+
+					// Impossible to render at this point
+					return false;
+				}
+				else
+				{
+					// Read to go!
+					return true;
+				}
+			}
+			else
+			{
+				// Minimized
+				return false;
+			}
 		}
 		
 		#endregion

@@ -271,7 +271,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(loadfailed) img = Properties.Resources.Failed;
 					
 					// Write to memory stream and read from memory
-					memstream = new MemoryStream();
+					memstream = new MemoryStream((img.Size.Width * img.Size.Height * 4) + 4096);
 					img.Save(memstream, ImageFormat.Bmp);
 					memstream.Seek(0, SeekOrigin.Begin);
 					texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
