@@ -173,11 +173,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.resourceitems.UseCompatibleStateImageBehavior = false;
 			this.resourceitems.View = System.Windows.Forms.View.Details;
 			this.resourceitems.ClientSizeChanged += new System.EventHandler(this.resourceitems_ClientSizeChanged);
-			this.resourceitems.DragDrop += new System.Windows.Forms.DragEventHandler(this.resourceitems_DragDrop);
-			this.resourceitems.DoubleClick += new System.EventHandler(this.resourceitems_DoubleClick);
-			this.resourceitems.DragOver += new System.Windows.Forms.DragEventHandler(this.resourceitems_DragOver);
 			this.resourceitems.SizeChanged += new System.EventHandler(this.resources_SizeChanged);
+			this.resourceitems.DoubleClick += new System.EventHandler(this.resourceitems_DoubleClick);
+			this.resourceitems.DragDrop += new System.Windows.Forms.DragEventHandler(this.resourceitems_DragDrop);
 			this.resourceitems.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.resourceitems_ItemSelectionChanged);
+			this.resourceitems.DragOver += new System.Windows.Forms.DragEventHandler(this.resourceitems_DragOver);
 			// 
 			// column
 			// 
