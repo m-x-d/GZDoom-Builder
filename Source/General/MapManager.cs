@@ -1091,9 +1091,15 @@ namespace CodeImp.DoomBuilder
 			
 			// Show the window
 			if(General.Settings.ScriptOnTop)
+			{
+				if(scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
 				scriptwindow.Show(General.MainWindow);
+			}
 			else
+			{
+				if(scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
 				scriptwindow.Show();
+			}
 			scriptwindow.Focus();
 			Cursor.Current = Cursors.Default;
 		}
