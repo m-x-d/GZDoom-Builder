@@ -929,15 +929,64 @@ namespace CodeImp.DoomBuilder.Geometry
 						// First and last vertex stitch with geometry?
 						if(points[0].stitch && points[points.Count - 1].stitch)
 						{
-							// Find out where they will stitch
+							List<LinedefSide> startpoints = new List<LinedefSide>();
+							List<LinedefSide> endpoints = new List<LinedefSide>();
+							
+							// Find out where the start will stitch and create test points
 							Linedef l1 = MapSet.NearestLinedefRange(oldlines, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+							if(l1 != null)
+							{
+								startpoints.Add(new LinedefSide(l1, true));
+								startpoints.Add(new LinedefSide(l1, false));
+							}
+							else
+							{
+								// Not stitched with a linedef, so check if it will stitch with a vertex
+								Vertex v = MapSet.NearestVertexSquareRange(nonmergeverts, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+								if((v != null) && (v.Linedefs.Count > 0))
+								{
+									// Now we take the two linedefs with adjacent angles to the drawn line
+									List<Linedef> lines = new List<Linedef>(v.Linedefs);
+									lines.Sort(new LinedefAngleSorter(firstline, true, firstline.End));
+									startpoints.Add(new LinedefSide(lines[0], true));
+									startpoints.Add(new LinedefSide(lines[0], false));
+									lines.Sort(new LinedefAngleSorter(firstline, false, firstline.End));
+									startpoints.Add(new LinedefSide(lines[0], true));
+									startpoints.Add(new LinedefSide(lines[0], false));
+								}
+							}
+
+							// Find out where the end will stitch and create test points
 							Linedef l2 = MapSet.NearestLinedefRange(oldlines, lastline.End.Position, MapSet.STITCH_DISTANCE);
-							if((l1 != null) && (l2 != null))
+							if(l1 != null)
+							{
+								endpoints.Add(new LinedefSide(l2, true));
+								endpoints.Add(new LinedefSide(l2, false));
+							}
+							else
+							{
+								// Not stitched with a linedef, so check if it will stitch with a vertex
+								Vertex v = MapSet.NearestVertexSquareRange(nonmergeverts, lastline.End.Position, MapSet.STITCH_DISTANCE);
+								if((v != null) && (v.Linedefs.Count > 0))
+								{
+									// Now we take the two linedefs with adjacent angles to the drawn line
+									List<Linedef> lines = new List<Linedef>(v.Linedefs);
+									lines.Sort(new LinedefAngleSorter(firstline, true, lastline.Start));
+									endpoints.Add(new LinedefSide(lines[0], true));
+									endpoints.Add(new LinedefSide(lines[0], false));
+									lines.Sort(new LinedefAngleSorter(firstline, false, lastline.Start));
+									endpoints.Add(new LinedefSide(lines[0], true));
+									endpoints.Add(new LinedefSide(lines[0], false));
+								}
+							}
+
+							// Found any start and end points?
+							if((startpoints.Count > 0) && (endpoints.Count > 0))
 							{
 								List<LinedefSide> shortestpath = null;
 
 								// Same line?
-								if(l1 == l2)
+								if((l1 == l2) && (l1 != null))
 								{
 									// Then just connect the two
 									shortestpath = new List<LinedefSide>();
@@ -945,36 +994,40 @@ namespace CodeImp.DoomBuilder.Geometry
 								}
 								else
 								{
-									// Find the shortest, closest path between these lines
-									List<List<LinedefSide>> paths = new List<List<LinedefSide>>(8);
-									paths.Add(Tools.FindClosestPath(l1, true, l2, true, true));
-									paths.Add(Tools.FindClosestPath(l1, true, l2, false, true));
-									paths.Add(Tools.FindClosestPath(l1, false, l2, true, true));
-									paths.Add(Tools.FindClosestPath(l1, false, l2, false, true));
-									paths.Add(Tools.FindClosestPath(l2, true, l1, true, true));
-									paths.Add(Tools.FindClosestPath(l2, true, l1, false, true));
-									paths.Add(Tools.FindClosestPath(l2, false, l1, true, true));
-									paths.Add(Tools.FindClosestPath(l2, false, l1, false, true));
-
-									foreach(List<LinedefSide> p in paths)
-										if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
+									// Find the shortest, closest path between start and end points
+									foreach(LinedefSide startp in startpoints)
+									{
+										foreach(LinedefSide endp in endpoints)
+										{
+											List<LinedefSide> p;
+											p = Tools.FindClosestPath(startp.Line, startp.Front, endp.Line, endp.Front, true);
+											if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
+											p = Tools.FindClosestPath(endp.Line, endp.Front, startp.Line, startp.Front, true);
+											if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
+										}
+									}
 								}
 
 								// Found a path?
 								if(shortestpath != null)
 								{
 									// Check which direction the path goes in
-									if(shortestpath[0].Line == l1)
+									bool pathforward = false;
+									foreach(LinedefSide startp in startpoints)
 									{
-										// Begin at start
-										v1 = firstline.Start;
-									}
-									else
-									{
-										// Begin at end
-										v1 = lastline.End;
+                                        if(shortestpath[0].Line == startp.Line)
+										{
+											pathforward = true;
+											break;
+										}
 									}
 
+									// Begin at first vertex in path
+									if(pathforward)
+										v1 = firstline.Start;
+									else
+										v1 = lastline.End;
+									
 									// Go for all vertices in the path to make additional lines
 									for(int i = 1; i < shortestpath.Count; i++)
 									{
@@ -999,19 +1052,11 @@ namespace CodeImp.DoomBuilder.Geometry
 
 									// Make the final line
 									Linedef lld;
-
-									// Check which direction the path goes in
-									if(shortestpath[0].Line == l1)
-									{
-										// Path stops at end
+									if(pathforward)
 										lld = map.CreateLinedef(v1, lastline.End);
-									}
 									else
-									{
-										// Path stops at begin
 										lld = map.CreateLinedef(v1, firstline.Start);
-									}
-
+									
 									// Setup line
 									lld.Marked = true;
 									lld.ApplySidedFlags();
