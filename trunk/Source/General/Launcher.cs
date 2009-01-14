@@ -144,6 +144,7 @@ namespace CodeImp.DoomBuilder
 						int num = 0;
 						int.TryParse(numstr, out num);
 						if(first) p_l1 = num.ToString(); else p_l2 = num.ToString();
+						numstr = "";
 						first = false;
 					}
 				}
