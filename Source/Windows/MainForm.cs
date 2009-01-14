@@ -274,8 +274,8 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			if(sender is ToolStripItem)
 				General.Actions.InvokeAction((sender as ToolStripItem).Tag.ToString());
-			else if(sender is Button)
-				General.Actions.InvokeAction((sender as Button).Tag.ToString());
+			else if(sender is Control)
+				General.Actions.InvokeAction((sender as Control).Tag.ToString());
 			else
 				General.Fail("InvokeTaggedAction used on an unexpected control.");
 			

@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Data;
@@ -136,7 +137,7 @@ namespace CodeImp.DoomBuilder.Controls
 			ShowErrors(General.Map.Errors);
 			
 			// Done
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// This applies user preferences
@@ -307,11 +308,11 @@ namespace CodeImp.DoomBuilder.Controls
 				if(!t.ExplicitSave) t.Save();
 			}
 			
-			UpdateToolbar();
+			UpdateToolbar(false);
 		}
 		
 		// This updates the toolbar for the current status
-		private void UpdateToolbar()
+		private void UpdateToolbar(bool focuseditor)
 		{
 			int numscriptsopen = tabs.TabPages.Count;
 			int explicitsavescripts = 0;
@@ -347,7 +348,7 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 				
 				// Focus to script editor
-				ForceFocus();
+				if(focuseditor) ForceFocus();
 			}
 		}
 
@@ -383,7 +384,7 @@ namespace CodeImp.DoomBuilder.Controls
 				tabs.SelectedTab = t;
 
 				// Done
-				UpdateToolbar();
+				UpdateToolbar(true);
 				return t;
 			}
 			else
@@ -391,6 +392,26 @@ namespace CodeImp.DoomBuilder.Controls
 				// Failed
 				return null;
 			}
+		}
+
+		// This saves the current open script
+		public void ExplicitSaveCurrentTab()
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			if((t != null) && t.ExplicitSave)
+			{
+				buttonsave_Click(this, EventArgs.Empty);
+			}
+			else
+			{
+				General.MessageBeep(MessageBeepType.Default);
+			}
+		}
+		
+		// This opens a script
+		public void OpenBrowseScript()
+		{
+			buttonopen_Click(this, EventArgs.Empty);
 		}
 		
 		#endregion
@@ -408,7 +429,7 @@ namespace CodeImp.DoomBuilder.Controls
 			t.ChangeScriptConfig(scriptconfig);
 
 			// Done
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// When new script is clicked
@@ -423,7 +444,7 @@ namespace CodeImp.DoomBuilder.Controls
 			tabs.SelectedTab = t;
 			
 			// Done
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// Open script clicked
@@ -443,7 +464,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Save the current script
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			SaveScript(t);
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 
 		// Save All clicked
@@ -459,7 +480,7 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 			
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 
 		// This is called by Save and Save All to save a script
@@ -495,7 +516,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// A tab is selected
 		private void tabs_Selecting(object sender, TabControlCancelEventArgs e)
 		{
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// This closes the current file
@@ -503,7 +524,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			CloseScript(t, false);
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// Compile Script clicked
@@ -532,7 +553,7 @@ namespace CodeImp.DoomBuilder.Controls
 				General.MainWindow.DisplayReady();
 
 			Cursor.Current = Cursors.Default;
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// Undo clicked
@@ -540,7 +561,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Undo();
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// Redo clicked
@@ -548,7 +569,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Redo();
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// Cut clicked
@@ -556,7 +577,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Cut();
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// Copy clicked
@@ -564,7 +585,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Copy();
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 
 		// Paste clicked
@@ -572,7 +593,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Paste();
-			UpdateToolbar();
+			UpdateToolbar(true);
 		}
 		
 		// Mouse released on tabs

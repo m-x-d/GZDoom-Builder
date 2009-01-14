@@ -1090,7 +1090,10 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Show the window
-			scriptwindow.Show();
+			if(General.Settings.ScriptOnTop)
+				scriptwindow.Show(General.MainWindow);
+			else
+				scriptwindow.Show();
 			scriptwindow.Focus();
 			Cursor.Current = Cursors.Default;
 		}
@@ -1179,111 +1182,121 @@ namespace CodeImp.DoomBuilder
 			string inputfile, outputfile;
 			Compiler compiler;
 			byte[] filedata;
+			string reallumpname = lumpname;
 			
 			// Find the lump
-			Lump lump = tempwad.FindLump(lumpname);
-			if(lump == null) throw new Exception("No such lump in temporary wad file '" + lumpname + "'.");
+			if(lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
+			Lump lump = tempwad.FindLump(reallumpname);
+			if(lump == null) throw new Exception("No such lump in temporary wad file '" + reallumpname + "'.");
 			
 			// New list of errors
 			if(clearerrors || (errors == null))
 				errors = new List<CompilerError>();
 			
 			// Determine the script configuration to use
-			ScriptConfiguration scriptconfig = config.MapLumps[lump.Name].script;
-			
-			try
+			ScriptConfiguration scriptconfig = config.MapLumps[lumpname].script;
+			if(scriptconfig.Compiler != null)
 			{
-				// Initialize compiler
-				compiler = scriptconfig.Compiler.Create();
-			}
-			catch(Exception e)
-			{
-				// Fail
-				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
-				return false;
-			}
-			
-			try
-			{
-				// Write lump data to temp script file in compiler's temp directory
-				inputfile = General.MakeTempFilename(compiler.Location, "tmp");
-				lump.Stream.Seek(0, SeekOrigin.Begin);
-				BinaryReader reader = new BinaryReader(lump.Stream);
-				File.WriteAllBytes(inputfile, reader.ReadBytes((int)lump.Stream.Length));
-			}
-			catch(Exception e)
-			{
-				// Fail
-				compiler.Dispose();
-				errors.Add(new CompilerError("Unable to write script to working file. " + e.GetType().Name + ": " + e.Message));
-				return false;
-			}
-			
-			// Make random output filename
-			outputfile = General.MakeTempFilename(compiler.Location, "tmp");
-			
-			// Run compiler
-			compiler.Parameters = scriptconfig.Parameters;
-			compiler.InputFile = Path.GetFileName(inputfile);
-			compiler.OutputFile = Path.GetFileName(outputfile);
-			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
-			if(compiler.Run())
-			{
-				// Process errors
-				foreach(CompilerError e in compiler.Errors)
+				try
 				{
-					CompilerError newerror = e;
-					
-					// If the error's filename equals our temporary file,
-					// use the lump name instead and prefix it with ?
-					if(string.Compare(e.filename, inputfile, true) == 0)
-						newerror.filename = "?" + lumpname;
-
-					errors.Add(newerror);
+					// Initialize compiler
+					compiler = scriptconfig.Compiler.Create();
+				}
+				catch(Exception e)
+				{
+					// Fail
+					errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
+					return false;
 				}
 
-				// No errors?
-				if(compiler.Errors.Length == 0)
+				try
 				{
-					// Output file exists?
-					if(File.Exists(outputfile))
-					{
-						// Copy output file data into a lump?
-						if((scriptconfig.ResultLump != null) && (scriptconfig.ResultLump.Length > 0))
-						{
-							// Do that now then
-							try
-							{
-								filedata = File.ReadAllBytes(outputfile);
-							}
-							catch(Exception e)
-							{
-								// Fail
-								compiler.Dispose();
-								errors.Add(new CompilerError("Unable to read compiler output file. " + e.GetType().Name + ": " + e.Message));
-								return false;
-							}
+					// Write lump data to temp script file in compiler's temp directory
+					inputfile = General.MakeTempFilename(compiler.Location, "tmp");
+					lump.Stream.Seek(0, SeekOrigin.Begin);
+					BinaryReader reader = new BinaryReader(lump.Stream);
+					File.WriteAllBytes(inputfile, reader.ReadBytes((int)lump.Stream.Length));
+				}
+				catch(Exception e)
+				{
+					// Fail
+					compiler.Dispose();
+					errors.Add(new CompilerError("Unable to write script to working file. " + e.GetType().Name + ": " + e.Message));
+					return false;
+				}
 
-							// Store data
-							MemoryStream stream = new MemoryStream(filedata);
-							SetLumpData(scriptconfig.ResultLump, stream);
+				// Make random output filename
+				outputfile = General.MakeTempFilename(compiler.Location, "tmp");
+
+				// Run compiler
+				compiler.Parameters = scriptconfig.Parameters;
+				compiler.InputFile = Path.GetFileName(inputfile);
+				compiler.OutputFile = Path.GetFileName(outputfile);
+				compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
+				if(compiler.Run())
+				{
+					// Process errors
+					foreach(CompilerError e in compiler.Errors)
+					{
+						CompilerError newerror = e;
+
+						// If the error's filename equals our temporary file,
+						// use the lump name instead and prefix it with ?
+						if(string.Compare(e.filename, inputfile, true) == 0)
+							newerror.filename = "?" + reallumpname;
+
+						errors.Add(newerror);
+					}
+
+					// No errors?
+					if(compiler.Errors.Length == 0)
+					{
+						// Output file exists?
+						if(File.Exists(outputfile))
+						{
+							// Copy output file data into a lump?
+							if((scriptconfig.ResultLump != null) && (scriptconfig.ResultLump.Length > 0))
+							{
+								// Do that now then
+								try
+								{
+									filedata = File.ReadAllBytes(outputfile);
+								}
+								catch(Exception e)
+								{
+									// Fail
+									compiler.Dispose();
+									errors.Add(new CompilerError("Unable to read compiler output file. " + e.GetType().Name + ": " + e.Message));
+									return false;
+								}
+
+								// Store data
+								MemoryStream stream = new MemoryStream(filedata);
+								SetLumpData(scriptconfig.ResultLump, stream);
+							}
 						}
 					}
+
+					// Clean up
+					compiler.Dispose();
+					if(errors.Count == 0) errors = null;
+
+					// Done
+					return true;
 				}
-				
-				// Clean up
-				compiler.Dispose();
-				if(errors.Count == 0) errors = null;
-				
-				// Done
-				return true;
+				else
+				{
+					// Fail
+					compiler.Dispose();
+					errors = null;
+					return false;
+				}
 			}
 			else
 			{
-				// Fail
-				compiler.Dispose();
-				errors = null;
-				return false;
+				// No compiler to run for this script type
+				if(errors.Count == 0) errors = null;
+				return true;
 			}
 		}
 		

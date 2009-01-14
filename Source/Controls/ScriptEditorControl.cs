@@ -57,6 +57,12 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Delegates / Events
 
+		public delegate void ExplicitSaveTabDelegate();
+		public delegate void OpenScriptBrowserDelegate();
+
+		public event ExplicitSaveTabDelegate OnExplicitSaveTab;
+		public event OpenScriptBrowserDelegate OnOpenScriptBrowser;
+
 		#endregion
 
 		#region ================== Properties
@@ -548,6 +554,45 @@ namespace CodeImp.DoomBuilder.Controls
 		// Key pressed down
 		private void scriptedit_KeyDown(object sender, KeyEventArgs e)
 		{
+			// These key combinations put odd characters in the script, so I disabled them
+			if((e.KeyCode == Keys.Q) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.W) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.E) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.R) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.Y) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.U) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.I) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.P) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.A) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			if((e.KeyCode == Keys.D) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.F) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.G) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.H) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.J) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.K) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.L) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.Z) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			if((e.KeyCode == Keys.X) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			if((e.KeyCode == Keys.C) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			if((e.KeyCode == Keys.V) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
+			if((e.KeyCode == Keys.B) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.N) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			if((e.KeyCode == Keys.M) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+			
+			// CTRL+S for save
+			if((e.KeyCode == Keys.S) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			{
+				if(OnExplicitSaveTab != null) OnExplicitSaveTab();
+				e.Handled = true;
+			}
+
+			// CTRL+O for open
+			if((e.KeyCode == Keys.O) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			{
+				if(OnOpenScriptBrowser != null) OnOpenScriptBrowser();
+				e.Handled = true;
+			}
+
 			// CTRL+Space to autocomplete
 			if((e.KeyCode == Keys.Space) && (e.Modifiers == Keys.Control))
 			{

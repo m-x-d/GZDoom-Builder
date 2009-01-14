@@ -69,6 +69,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string scriptfontname;
 		private int scriptfontsize;
 		private bool scriptfontbold;
+		private bool scriptontop;
 
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -106,6 +107,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string ScriptFontName { get { return scriptfontname; } internal set { scriptfontname = value; } }
 		public int ScriptFontSize { get { return scriptfontsize; } internal set { scriptfontsize = value; } }
 		public bool ScriptFontBold { get { return scriptfontbold; } internal set { scriptfontbold = value; } }
+		public bool ScriptOnTop { get { return scriptontop; } internal set { scriptontop = value; } }
 
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -159,6 +161,7 @@ namespace CodeImp.DoomBuilder.Config
 				scriptfontname = cfg.ReadSetting("scriptfontname", "Lucida Console");
 				scriptfontsize = cfg.ReadSetting("scriptfontsize", 10);
 				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
+				scriptontop = cfg.ReadSetting("scriptontop", true);
 				
 				// Success
 				return true;
@@ -195,6 +198,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("scriptfontname", scriptfontname);
 			cfg.WriteSetting("scriptfontsize", scriptfontsize);
 			cfg.WriteSetting("scriptfontbold", scriptfontbold);
+			cfg.WriteSetting("scriptontop", scriptontop);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

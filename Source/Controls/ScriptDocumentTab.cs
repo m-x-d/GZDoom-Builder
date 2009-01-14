@@ -90,11 +90,19 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.TabStop = true;
 			editor.TabIndex = 0;
 			this.Controls.Add(editor);
+
+			// Bind events
+			editor.OnExplicitSaveTab += panel.ExplicitSaveCurrentTab;
+			editor.OnOpenScriptBrowser += panel.OpenBrowseScript;
 		}
 		
 		// Disposer
 		protected override void Dispose(bool disposing)
 		{
+			// Remove events
+			editor.OnExplicitSaveTab -= panel.ExplicitSaveCurrentTab;
+			editor.OnOpenScriptBrowser -= panel.OpenBrowseScript;
+			
 			base.Dispose(disposing);
 		}
 		
