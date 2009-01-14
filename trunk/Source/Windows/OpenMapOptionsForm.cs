@@ -305,6 +305,10 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 			
+			// Collect information
+			ConfigurationInfo configinfo = General.Configs[config.SelectedIndex];
+			DataLocationList locations = datalocations.GetResources();
+			
 			// No map selected?
 			if(mapslist.SelectedItems.Count == 0)
 			{
@@ -313,12 +317,23 @@ namespace CodeImp.DoomBuilder.Windows
 				mapslist.Focus();
 				return;
 			}
-
+			
+			// Check if we should warn the user for missing resources
+			if((wadfile.Type != WAD.TYPE_IWAD) && (locations.Count == 0) && (configinfo.Resources.Count == 0))
+			{
+				if(MessageBox.Show(this, "You are about to load a map without selecting any resources. Textures, flats and " +
+										 "sprites may not be shown correctly or may not show up at all. Do you want to continue?", Application.ProductName,
+										 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
+				{
+					return;
+				}
+			}
+			
 			// Apply changes
 			options.ClearResources();
-			options.ConfigFile = General.Configs[config.SelectedIndex].Filename;
+			options.ConfigFile = configinfo.Filename;
 			options.CurrentName = mapslist.SelectedItems[0].Text;
-			options.CopyResources(datalocations.GetResources());
+			options.CopyResources(locations);
 
 			// Hide window
 			wadfile.Dispose();
