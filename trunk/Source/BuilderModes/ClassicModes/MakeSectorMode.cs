@@ -233,14 +233,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.SetCursor(Cursors.WaitCursor);
 			General.Settings.FindDefaultDrawSettings();
 			General.Map.UndoRedo.CreateUndo("Make Sector");
-
+			
 			// Mark the lines we are going to use for this sector
 			General.Map.Map.ClearAllMarks(true);
 			foreach(LinedefSide ls in allsides) ls.Line.Marked = false;
 			List<Linedef> oldlines = General.Map.Map.GetMarkedLinedefs(true);
-
+			
 			// Make the sector
 			Sector s = Tools.MakeSector(allsides, oldlines);
+			
+			// Now we go for all the lines along the sector to
+			// see if they only have a back side. In that case we want
+			// to flip the linedef to that it only has a front side.
+			foreach(Sidedef sd in s.Sidedefs)
+			{
+				if((sd.Line.Front == null) && (sd.Line.Back != null))
+				{
+					// Flip linedef
+					sd.Line.FlipVertices();
+					sd.Line.FlipSidedefs();
+				}
+			}
+			
+			General.Map.Data.UpdateUsedTextures();
 			General.Interface.SetCursor(Cursors.Default);
 			return s;
 		}
