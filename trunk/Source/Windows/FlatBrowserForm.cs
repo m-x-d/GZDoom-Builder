@@ -238,5 +238,11 @@ namespace CodeImp.DoomBuilder.Windows
 				browser.EndAdding();
 			}
 		}
+
+		// Item double clicked
+		private void browser_SelectedItemDoubleClicked()
+		{
+			if(apply.Enabled) apply_Click(this, EventArgs.Empty);
+		}
 	}
 }

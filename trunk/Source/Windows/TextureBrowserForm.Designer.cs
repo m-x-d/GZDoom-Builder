@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser.PreventSelection = false;
 			this.browser.Size = new System.Drawing.Size(684, 610);
 			this.browser.TabIndex = 0;
+			this.browser.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.browser_SelectedItemDoubleClicked);
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
 			// cancel
