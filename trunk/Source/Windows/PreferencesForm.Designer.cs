@@ -55,6 +55,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.scriptontop = new System.Windows.Forms.CheckBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.scriptfontlabel = new System.Windows.Forms.Label();
 			this.scriptfontsize = new System.Windows.Forms.ComboBox();
@@ -164,7 +165,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.Controls.Add(this.qualitydisplay);
 			groupBox1.Location = new System.Drawing.Point(8, 8);
 			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(248, 189);
+			groupBox1.Size = new System.Drawing.Size(248, 160);
 			groupBox1.TabIndex = 6;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Classic Modes ";
@@ -195,7 +196,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// classicbilinear
 			// 
 			this.classicbilinear.AutoSize = true;
-			this.classicbilinear.Location = new System.Drawing.Point(25, 151);
+			this.classicbilinear.Location = new System.Drawing.Point(25, 124);
 			this.classicbilinear.Name = "classicbilinear";
 			this.classicbilinear.Size = new System.Drawing.Size(136, 18);
 			this.classicbilinear.TabIndex = 12;
@@ -205,7 +206,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// squarethings
 			// 
 			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(25, 87);
+			this.squarethings.Location = new System.Drawing.Point(25, 76);
 			this.squarethings.Name = "squarethings";
 			this.squarethings.Size = new System.Drawing.Size(93, 18);
 			this.squarethings.TabIndex = 11;
@@ -215,7 +216,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// qualitydisplay
 			// 
 			this.qualitydisplay.AutoSize = true;
-			this.qualitydisplay.Location = new System.Drawing.Point(25, 119);
+			this.qualitydisplay.Location = new System.Drawing.Point(25, 100);
 			this.qualitydisplay.Name = "qualitydisplay";
 			this.qualitydisplay.Size = new System.Drawing.Size(118, 18);
 			this.qualitydisplay.TabIndex = 10;
@@ -434,18 +435,29 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.scriptontop);
 			this.groupBox3.Controls.Add(this.panel1);
 			this.groupBox3.Controls.Add(this.scriptfontsize);
 			this.groupBox3.Controls.Add(this.label8);
 			this.groupBox3.Controls.Add(this.scriptfontbold);
 			this.groupBox3.Controls.Add(this.scriptfontname);
 			this.groupBox3.Controls.Add(this.label3);
-			this.groupBox3.Location = new System.Drawing.Point(8, 203);
+			this.groupBox3.Location = new System.Drawing.Point(8, 174);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(248, 168);
+			this.groupBox3.Size = new System.Drawing.Size(248, 197);
 			this.groupBox3.TabIndex = 8;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Script Editor ";
+			// 
+			// scriptontop
+			// 
+			this.scriptontop.AutoSize = true;
+			this.scriptontop.Location = new System.Drawing.Point(25, 160);
+			this.scriptontop.Name = "scriptontop";
+			this.scriptontop.Size = new System.Drawing.Size(178, 18);
+			this.scriptontop.TabIndex = 19;
+			this.scriptontop.Text = "Always on top of main window";
+			this.scriptontop.UseVisualStyleBackColor = true;
 			// 
 			// panel1
 			// 
@@ -454,7 +466,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panel1.Controls.Add(this.scriptfontlabel);
 			this.panel1.Location = new System.Drawing.Point(25, 109);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(203, 41);
+			this.panel1.Size = new System.Drawing.Size(203, 38);
 			this.panel1.TabIndex = 18;
 			// 
 			// scriptfontlabel
@@ -463,7 +475,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptfontlabel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.scriptfontlabel.Location = new System.Drawing.Point(0, 0);
 			this.scriptfontlabel.Name = "scriptfontlabel";
-			this.scriptfontlabel.Size = new System.Drawing.Size(199, 37);
+			this.scriptfontlabel.Size = new System.Drawing.Size(199, 34);
 			this.scriptfontlabel.TabIndex = 0;
 			this.scriptfontlabel.Text = "Font";
 			this.scriptfontlabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -630,7 +642,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// invertyaxis
 			// 
 			this.invertyaxis.AutoSize = true;
-			this.invertyaxis.Location = new System.Drawing.Point(31, 296);
+			this.invertyaxis.Location = new System.Drawing.Point(31, 288);
 			this.invertyaxis.Name = "invertyaxis";
 			this.invertyaxis.Size = new System.Drawing.Size(122, 18);
 			this.invertyaxis.TabIndex = 26;
@@ -1147,5 +1159,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label disregardshiftlabel;
 		private System.Windows.Forms.ListBox keyusedlist;
 		private System.Windows.Forms.Label keyusedlabel;
+		private System.Windows.Forms.CheckBox scriptontop;
 	}
 }

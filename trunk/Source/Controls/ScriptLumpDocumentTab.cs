@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		private string lumpname;
+		private bool ismapheader;
 		
 		#endregion
 		
@@ -63,12 +64,22 @@ namespace CodeImp.DoomBuilder.Controls
 		public ScriptLumpDocumentTab(ScriptEditorPanel panel, string lumpname, ScriptConfiguration config) : base(panel)
 		{
 			// Initialize
-			this.lumpname = lumpname;
+			if(lumpname == MapManager.CONFIG_MAP_HEADER)
+			{
+				this.lumpname = MapManager.TEMP_MAP_HEADER;
+				this.ismapheader = true;
+			}
+			else
+			{
+				this.lumpname = lumpname;
+				this.ismapheader = false;
+			}
+			
 			this.config = config;
 			editor.SetupStyles(config);
 			
 			// Load the lump data
-			MemoryStream stream = General.Map.GetLumpData(lumpname);
+			MemoryStream stream = General.Map.GetLumpData(this.lumpname);
 			if(stream != null)
 			{
 				StreamReader reader = new StreamReader(stream);
@@ -78,7 +89,10 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Done
-			SetTitle(lumpname.ToUpper());
+			if(ismapheader)
+				SetTitle(General.Map.Options.CurrentName);
+			else
+				SetTitle(this.lumpname.ToUpper());
 		}
 		
 		// Disposer
@@ -95,7 +109,10 @@ namespace CodeImp.DoomBuilder.Controls
 		public override void Compile()
 		{
 			// Compile
-			General.Map.CompileLump(lumpname, true);
+			if(ismapheader)
+				General.Map.CompileLump(MapManager.CONFIG_MAP_HEADER, true);
+			else
+				General.Map.CompileLump(lumpname, true);
 
 			// Feed errors to panel
 			panel.ShowErrors(General.Map.Errors);
@@ -108,6 +125,7 @@ namespace CodeImp.DoomBuilder.Controls
 			byte[] data = Encoding.ASCII.GetBytes(editor.Text);
 			MemoryStream stream = new MemoryStream(data);
 			General.Map.SetLumpData(lumpname, stream);
+			editor.ClearUndoRedo();
 			return true;
 		}
 
