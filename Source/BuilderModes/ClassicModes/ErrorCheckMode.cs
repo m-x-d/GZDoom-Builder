@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Map Analysis Mode",
 			  SwitchAction = "errorcheckmode",
+			  ButtonImage = "MapAnalysisMode.png",
+			  ButtonOrder = 200,
 			  Volatile = true,
 			  UseByDefault = true)]
 

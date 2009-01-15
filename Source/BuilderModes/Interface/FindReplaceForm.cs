@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
-		#region ================== Constructor / Show
+		#region ================== Constructor
 
 		// Constructor
 		public FindReplaceForm()
@@ -101,24 +101,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Select first
 			searchtypes.SelectedIndex = 0;
-		}
-
-		// This shows the window
-		public void Show(Form owner)
-		{
-			// First time showing?
-			//if((this.Location.X == 0) && (this.Location.Y == 0))
-			{
-				// Position at left-top of owner
-				this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
-			}
-
-			// Close results part
-			resultspanel.Visible = false;
-			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top);
-			
-			// Show window
-			base.Show(owner);
 		}
 		
 		#endregion
@@ -227,6 +209,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// This shows the window
+		public void Show(Form owner)
+		{
+			// First time showing?
+			//if((this.Location.X == 0) && (this.Location.Y == 0))
+			{
+				// Position at left-top of owner
+				this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
+			}
+
+			// Close results part
+			resultspanel.Visible = false;
+			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top);
+
+			// Show window
+			base.Show(owner);
+		}
+
+		// This hides the window
+		new public void Hide()
+		{
+			base.Hide();
+			
+			// Clear search results
+			resultslist.Items.Clear();
+		}
+		
 		// This returns the selected item(s)
 		internal FindReplaceObject[] GetSelection()
 		{

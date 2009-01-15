@@ -1400,6 +1400,8 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			ToolStripItem item;
 			int index;
+
+			string controlname = modeinfo.ButtonDesc.Replace("&", "&&");
 			
 			// Create a button
 			index = toolbar.Items.IndexOf(buttoneditmodesseperator);
@@ -1413,7 +1415,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Create menu item
 			index = menumode.DropDownItems.Count;
-			item = new ToolStripMenuItem(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
+			item = new ToolStripMenuItem(controlname, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
 			item.Tag = modeinfo;
 			item.Enabled = (General.Map != null);
 			menumode.DropDownItems.Insert(index, item);
