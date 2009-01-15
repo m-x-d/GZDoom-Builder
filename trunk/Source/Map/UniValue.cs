@@ -124,7 +124,6 @@ namespace CodeImp.DoomBuilder.Map
 				case UniversalType.Color:
 				case UniversalType.EnumBits:
 				case UniversalType.EnumOption:
-				case UniversalType.EnumStrings:
 				case UniversalType.Integer:
 				case UniversalType.LinedefTag:
 				case UniversalType.LinedefType:
@@ -151,6 +150,7 @@ namespace CodeImp.DoomBuilder.Map
 				case UniversalType.Flat:
 				case UniversalType.String:
 				case UniversalType.Texture:
+				case UniversalType.EnumStrings:
 				{
 					string v = (string)value;
 					s.rwString(ref v);
