@@ -535,10 +535,27 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Get script
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
-			if(t.ExplicitSave && t.IsChanged)
+
+			// Check if it must be saved as a new file
+			if(t.ExplicitSave && t.IsSaveAsRequired)
 			{
-				// We can only compile when the script is saved
-				if(!SaveScript(t)) return;
+				// Save the script first!
+				if(MessageBox.Show(this.ParentForm, "You must save your script before you can compile it. Do you want to save your script now?", "Compile Script", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+				{
+					if(!SaveScript(t)) return;
+				}
+				else
+				{
+					return;
+				}
+			}
+			else
+			{
+				if(t.ExplicitSave && t.IsChanged)
+				{
+					// We can only compile when the script is saved
+					if(!SaveScript(t)) return;
+				}
 			}
 
 			// Compile now
