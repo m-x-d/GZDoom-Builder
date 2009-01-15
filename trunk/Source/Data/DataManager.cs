@@ -861,28 +861,18 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the sprites
 		private int LoadSprites()
 		{
-			Stream spritedata = null;
-			SpriteImage image;
-			
 			// Go for all things
 			foreach(ThingTypeInfo ti in General.Map.Config.Things)
 			{
 				// Sprite not added to collection yet?
 				if(!sprites.ContainsKey(ti.SpriteLongName) && (ti.Sprite.Length <= 8))
 				{
-					// Go for all opened containers
-					for(int i = containers.Count - 1; i >= 0; i--)
-					{
-						// This contain provides this sprite?
-						spritedata = containers[i].GetSpriteData(ti.Sprite);
-						if(spritedata != null) break;
-					}
-
-					// Found anything?
+					// Find sprite data
+					Stream spritedata = GetSpriteData(ti.Sprite);
 					if(spritedata != null)
 					{
 						// Make new sprite image
-						image = new SpriteImage(ti.Sprite);
+						SpriteImage image = new SpriteImage(ti.Sprite);
 
 						// Add to collection
 						sprites.Add(ti.SpriteLongName, image);
@@ -895,6 +885,24 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Output info
 			return sprites.Count;
+		}
+
+		// This returns a specific patch stream
+		internal Stream GetSpriteData(string pname)
+		{
+			if(!string.IsNullOrEmpty(pname))
+			{
+				// Go for all opened containers
+				for(int i = containers.Count - 1; i >= 0; i--)
+				{
+					// This contain provides this patch?
+					Stream spritedata = containers[i].GetSpriteData(pname);
+					if(spritedata != null) return spritedata;
+				}
+			}
+			
+			// No such patch found
+			return null;
 		}
 		
 		// This loads the internal sprites
