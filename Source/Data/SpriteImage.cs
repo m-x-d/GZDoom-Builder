@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Get the lump data stream
-				lumpdata = General.Map.Data.GetPatchData(Name);
+				lumpdata = General.Map.Data.GetSpriteData(Name);
 				if(lumpdata != null)
 				{
 					// Copy lump data to memory
