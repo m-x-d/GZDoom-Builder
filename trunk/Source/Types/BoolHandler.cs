@@ -76,16 +76,10 @@ namespace CodeImp.DoomBuilder.Types
 			{
 				this.value = false;
 			}
-			// already bool?
-			else if(value is bool)
+			// Compatible type?
+			else if((value is int) || (value is float) || (value is bool))
 			{
-				this.value = (bool)value;
-			}
-			// int or float?
-			else if((value is int) || (value is float))
-			{
-				// Set directly
-				this.value = (Math.Abs((float)value) > 0.0001f);
+				this.value = Convert.ToBoolean(value);
 			}
 			// string?
 			else if(value is string)

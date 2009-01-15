@@ -58,11 +58,11 @@ namespace CodeImp.DoomBuilder.Types
 			{
 				this.value = 0;
 			}
-			// Already an int or float?
-			else if((value is int) || (value is float))
+			// Compatible type?
+			else if((value is int) || (value is float) || (value is bool))
 			{
 				// Set directly
-				this.value = (int)value;
+				this.value = Convert.ToInt32(value);
 			}
 			else
 			{
