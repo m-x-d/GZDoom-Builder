@@ -20,6 +20,7 @@ all supported data types:
 14 = thing tag (integer) *
 15 = linedef tag (integer) *
 16 = enum option (string)
+17 = angle in degrees (float)
 
 - Only types indicates with * are usable for standard hexen args
 - When no type is specified, the default type is 0 (integer)

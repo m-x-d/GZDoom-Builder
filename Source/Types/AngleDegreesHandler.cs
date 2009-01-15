@@ -26,15 +26,15 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Windows;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(UniversalType.LinedefType, "Linedef Action", true)]
-	internal class LinedefTypeHandler : TypeHandler
+	[TypeHandler(UniversalType.AngleDegrees, "Degrees (Integer)", true)]
+	internal class AngleDegreesHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -60,20 +60,20 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void Browse(IWin32Window parent)
 		{
-			this.value = ActionBrowserForm.BrowseAction(parent, this.value);
+			value = AngleForm.ShowDialog(parent, value);
 		}
-		
+
 		public override void SetValue(object value)
 		{
 			int result;
-
+			
 			// Null?
 			if(value == null)
 			{
 				this.value = 0;
 			}
-			// Already an int or float?
-			else if((value is int) || (value is float))
+			// Already an int?
+			else if(value is int)
 			{
 				// Set directly
 				this.value = (int)value;

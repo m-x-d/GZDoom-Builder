@@ -109,7 +109,8 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref type);
 			switch((UniversalType)type)
 			{
-				case UniversalType.AngleDegrees:
+				case UniversalType.AngleRadians:
+				case UniversalType.AngleDegreesFloat:
 				case UniversalType.Float:
 				{
 					float v = 0.0f;
@@ -118,8 +119,8 @@ namespace CodeImp.DoomBuilder.Map
 					value = v;
 					break;
 				}
-
-				case UniversalType.AngleRadians:
+				
+				case UniversalType.AngleDegrees:
 				case UniversalType.Color:
 				case UniversalType.EnumBits:
 				case UniversalType.EnumOption:

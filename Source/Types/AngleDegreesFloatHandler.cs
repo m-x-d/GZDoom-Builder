@@ -26,15 +26,15 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Windows;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(UniversalType.LinedefType, "Linedef Action", true)]
-	internal class LinedefTypeHandler : TypeHandler
+	[TypeHandler(UniversalType.AngleDegreesFloat, "Degrees (Decimal)", true)]
+	internal class AngleDegreesFloatHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private int value;
+		private float value;
 
 		#endregion
 
@@ -60,34 +60,36 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void Browse(IWin32Window parent)
 		{
-			this.value = ActionBrowserForm.BrowseAction(parent, this.value);
+			int oldvalue = (int)Math.Round(value);
+			int newvalue = AngleForm.ShowDialog(parent, oldvalue);
+			if(newvalue != oldvalue) value = (float)newvalue;
 		}
 		
 		public override void SetValue(object value)
 		{
-			int result;
+			float result;
 
 			// Null?
 			if(value == null)
 			{
-				this.value = 0;
+				this.value = 0.0f;
 			}
 			// Already an int or float?
 			else if((value is int) || (value is float))
 			{
 				// Set directly
-				this.value = (int)value;
+				this.value = (float)value;
 			}
 			else
 			{
 				// Try parsing as string
-				if(int.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.CurrentCulture, out result))
+				if(float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out result))
 				{
 					this.value = result;
 				}
 				else
 				{
-					this.value = 0;
+					this.value = 0.0f;
 				}
 			}
 		}
@@ -99,7 +101,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override int GetIntValue()
 		{
-			return this.value;
+			return (int)this.value;
 		}
 
 		public override string GetStringValue()

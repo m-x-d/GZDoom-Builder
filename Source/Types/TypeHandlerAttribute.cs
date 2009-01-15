@@ -57,10 +57,10 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public TypeHandlerAttribute(int index, string name, bool customusable)
+		public TypeHandlerAttribute(UniversalType index, string name, bool customusable)
 		{
 			// Initialize
-			this.index = index;
+			this.index = (int)index;
 			this.name = name;
 			this.customusable = customusable;
 		}

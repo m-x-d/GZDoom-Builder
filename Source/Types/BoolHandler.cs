@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(3, "Boolean", true)]
+	[TypeHandler(UniversalType.Boolean, "Boolean", true)]
 	internal class BoolHandler : TypeHandler
 	{
 		#region ================== Constants

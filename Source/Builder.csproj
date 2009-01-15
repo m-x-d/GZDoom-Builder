@@ -676,6 +676,12 @@
     <EmbeddedResource Include="Resources\ThingBox.png" />
     <EmbeddedResource Include="Resources\Nothing.png" />
     <EmbeddedResource Include="Resources\UnknownThing.png" />
+    <Compile Include="Types\AngleDegreesFloatHandler.cs" />
+    <Compile Include="Types\AngleDegreesHandler.cs" />
+    <Compile Include="Types\AngleRadiansHandler.cs" />
+    <Compile Include="Types\LinedefTagHandler.cs" />
+    <Compile Include="Types\SectorTagHandler.cs" />
+    <Compile Include="Types\ThingTagHandler.cs" />
     <Compile Include="VisualModes\IVisualPickable.cs" />
     <Compile Include="General\BinaryHeap.cs" />
     <Compile Include="Geometry\Plane.cs" />
@@ -688,6 +694,12 @@
     <Compile Include="VisualModes\VisualCamera.cs" />
     <Compile Include="VisualModes\VisualPickResult.cs" />
     <Compile Include="VisualModes\VisualThing.cs" />
+    <Compile Include="Windows\AngleForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\AngleForm.Designer.cs">
+      <DependentUpon>AngleForm.cs</DependentUpon>
+    </Compile>
     <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
     <None Include="Resources\ScriptConstant.xpm" />
@@ -735,6 +747,10 @@
     <EmbeddedResource Include="Controls\ClickableNumericTextbox.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ClickableNumericTextbox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\AngleForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AngleForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\BitFlagsForm.resx">
       <SubType>Designer</SubType>

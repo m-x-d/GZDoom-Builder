@@ -32,7 +32,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(2, "Text", true)]
+	[TypeHandler(UniversalType.String, "Text", true)]
 	internal class StringHandler : TypeHandler
 	{
 		#region ================== Constants
