@@ -385,6 +385,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actions.Name = "actions";
 			this.actions.Size = new System.Drawing.Size(379, 351);
 			this.actions.TabIndex = 0;
+			this.actions.DoubleClick += new System.EventHandler(this.actions_DoubleClick);
 			// 
 			// tabs
 			// 

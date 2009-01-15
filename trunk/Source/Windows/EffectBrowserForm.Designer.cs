@@ -315,6 +315,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.effects.TabIndex = 0;
 			this.effects.UseCompatibleStateImageBehavior = false;
 			this.effects.View = System.Windows.Forms.View.Details;
+			this.effects.DoubleClick += new System.EventHandler(this.effects_DoubleClick);
 			// 
 			// colnumber
 			// 

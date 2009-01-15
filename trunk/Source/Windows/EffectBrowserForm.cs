@@ -179,5 +179,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
 		}
+		
+		// Double-clicked on item
+		private void effects_DoubleClick(object sender, EventArgs e)
+		{
+			// Effect selected?
+			if((effects.SelectedItems.Count > 0) && (effects.SelectedItems[0].Tag is SectorEffectInfo))
+			{
+				if(apply.Enabled) apply_Click(this, EventArgs.Empty);
+			}
+		}
 	}
 }
