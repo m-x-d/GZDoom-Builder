@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(16, "Setting", false)]
+	[TypeHandler(UniversalType.EnumStrings, "Setting", false)]
 	internal class EnumStringsHandler : TypeHandler
 	{
 		#region ================== Constants

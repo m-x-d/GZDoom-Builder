@@ -33,7 +33,7 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(12, "Options", false)]
+	[TypeHandler(UniversalType.EnumBits, "Options", false)]
 	internal class EnumBitsHandler : TypeHandler
 	{
 		#region ================== Constants

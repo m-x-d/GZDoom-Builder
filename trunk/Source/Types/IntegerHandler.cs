@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(0, "Integer", true)]
+	[TypeHandler(UniversalType.Integer, "Integer", true)]
 	internal class IntegerHandler : TypeHandler
 	{
 		#region ================== Constants
