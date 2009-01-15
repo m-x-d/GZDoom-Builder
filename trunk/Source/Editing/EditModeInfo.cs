@@ -145,23 +145,26 @@ namespace CodeImp.DoomBuilder.Editing
 			// Only when a map is opened
 			if(General.Map != null)
 			{
-				// Not switching from volatile mode to volatile mode?
-				if((General.Editing.Mode == null) || !General.Editing.Mode.Attributes.Volatile || !this.attribs.Volatile)
+				// Switching from volatile mode to volatile mode?
+				if((General.Editing.Mode != null) && General.Editing.Mode.Attributes.Volatile && this.attribs.Volatile)
 				{
-					// When in VisualMode and switching to the same VisualMode, then we switch back to the previous classic mode
-					if((General.Editing.Mode is VisualMode) && (type == General.Editing.Mode.GetType()))
-					{
-						// Switch back to last classic mode
-						General.Editing.ChangeMode(General.Editing.PreviousClassicMode.Name);
-					}
-					else
-					{
-						// Create instance
-						newmode = plugin.CreateObject<EditMode>(type);
-						
-						// Switch mode
-						General.Editing.ChangeMode(newmode);
-					}
+					// First cancel previous volatile mode
+					General.CancelVolatileMode();
+				}
+				
+				// When in VisualMode and switching to the same VisualMode, then we switch back to the previous classic mode
+				if((General.Editing.Mode is VisualMode) && (type == General.Editing.Mode.GetType()))
+				{
+					// Switch back to last classic mode
+					General.Editing.ChangeMode(General.Editing.PreviousClassicMode.Name);
+				}
+				else
+				{
+					// Create instance
+					newmode = plugin.CreateObject<EditMode>(type);
+					
+					// Switch mode
+					General.Editing.ChangeMode(newmode);
 				}
 			}
 		}

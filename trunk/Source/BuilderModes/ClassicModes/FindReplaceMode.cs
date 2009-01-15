@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Find & Replace Mode",
 			  SwitchAction = "findmode",
+			  ButtonImage = "FindMode.png",
+			  ButtonOrder = 100,
 			  Volatile = true,
 			  UseByDefault = true)]
 

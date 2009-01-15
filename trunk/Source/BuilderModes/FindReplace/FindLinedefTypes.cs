@@ -91,6 +91,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
 				if(!int.TryParse(replacewith, out replaceaction)) replacewith = null;
+				if(replaceaction < 0) replacewith = null;
+				if(replaceaction > Int16.MaxValue) replacewith = null;
+				if(replacewith == null)
+				{
+					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return objs.ToArray();
+				}
 			}
 
 			// Interpret the number given

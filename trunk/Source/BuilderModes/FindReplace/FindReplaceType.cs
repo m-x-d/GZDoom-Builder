@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void RenderOverlaySelection(IRenderer2D renderer, FindReplaceObject[] selection)
 		{
 		}
-
+		
 		#endregion
 	}
 }
