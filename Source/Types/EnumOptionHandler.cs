@@ -87,10 +87,10 @@ namespace CodeImp.DoomBuilder.Types
 			}
 			else
 			{
-				// Value is an integer?
-				if(value is int)
+				// Compatible type?
+				if((value is int) || (value is float) || (value is bool))
 				{
-					int intvalue = (int)value;
+					int intvalue = Convert.ToInt32(value);
 
 					// First try to match the value against the enum values
 					foreach(EnumItem item in list)

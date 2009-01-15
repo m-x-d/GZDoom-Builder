@@ -68,17 +68,17 @@ namespace CodeImp.DoomBuilder.Types
 		public override void SetValue(object value)
 		{
 			float result;
-
+			
 			// Null?
 			if(value == null)
 			{
 				this.value = 0.0f;
 			}
-			// Already an int or float?
-			else if((value is int) || (value is float))
+			// Compatible type?
+			else if((value is int) || (value is float) || (value is bool))
 			{
 				// Set directly
-				this.value = (float)value;
+				this.value = Convert.ToSingle(value);
 			}
 			else
 			{
