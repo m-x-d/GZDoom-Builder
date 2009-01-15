@@ -38,6 +38,9 @@ namespace CodeImp.DoomBuilder.Config
 		private const string MODE_DISABLED_KEY = "disabled";
 		private const string MODE_ENABLED_KEY = "enabled";
 
+		// The { and } are invalid key names in a configuration so this ensures this string is unique
+		private const string MISSING_NODEBUILDER = "{missing nodebuilder}";
+
 		#endregion
 		
 		#region ================== Variables
@@ -91,8 +94,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.defaultlumpname = cfg.ReadSetting("defaultlumpname", "");
 			
 			// Load settings from program configuration
-			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", "");
-			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", "");
+			this.nodebuildersave = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildersave", MISSING_NODEBUILDER);
+			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", MISSING_NODEBUILDER);
 			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
 			this.customparameters = General.Settings.ReadSetting("configurations." + settingskey + ".customparameters", false);
@@ -240,6 +243,10 @@ namespace CodeImp.DoomBuilder.Config
 			// Some of the defaults can only be applied from game configuration
 			if(gameconfig != null)
 			{
+				// No nodebuildes set?
+				if(nodebuildersave == MISSING_NODEBUILDER) nodebuildersave = gameconfig.DefaultSaveCompiler;
+				if(nodebuildertest == MISSING_NODEBUILDER) nodebuildertest = gameconfig.DefaultTestCompiler;
+				
 				// No texture sets?
 				if(texturesets.Count == 0)
 				{
