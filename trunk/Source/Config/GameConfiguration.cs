@@ -49,6 +49,8 @@ namespace CodeImp.DoomBuilder.Config
 		private string enginename;
 		private float defaulttexturescale;
 		private float defaultflatscale;
+		private string defaultsavecompiler;
+		private string defaulttestcompiler;
 		private string formatinterface;
 		private string soundlinedefflag;
 		private string singlesidedflag;
@@ -120,6 +122,8 @@ namespace CodeImp.DoomBuilder.Config
 		// General settings
 		public string Name { get { return configname; } }
 		public string EngineName { get { return enginename; } }
+		public string DefaultSaveCompiler { get { return defaultsavecompiler; } }
+		public string DefaultTestCompiler { get { return defaulttestcompiler; } }
 		public float DefaultTextureScale { get { return defaulttexturescale; } }
 		public float DefaultFlatScale { get { return defaultflatscale; } }
 		public string FormatInterface { get { return formatinterface; } }
@@ -222,6 +226,8 @@ namespace CodeImp.DoomBuilder.Config
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
 			enginename = cfg.ReadSetting("engine", "");
+			defaultsavecompiler = cfg.ReadSetting("defaultsavecompiler", "");
+			defaulttestcompiler = cfg.ReadSetting("defaulttestcompiler", "");
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
 			defaultflatscale = cfg.ReadSetting("defaultflatscale", 1f);
 			formatinterface = cfg.ReadSetting("formatinterface", "");
