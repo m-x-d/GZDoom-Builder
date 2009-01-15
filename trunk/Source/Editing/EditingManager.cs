@@ -248,7 +248,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public bool ChangeMode(EditMode nextmode)
 		{
 			EditMode oldmode = mode;
-
+			
 			if(nextmode != null)
 			{
 				// Verify that this mode is usable
@@ -270,12 +270,12 @@ namespace CodeImp.DoomBuilder.Editing
 				}
 				else
 				{
-					General.WriteLogLine("Switching edit mode to " + nextmode.GetType().Name + "...");
+					General.WriteLogLine("Preparing to change editing mode to " + nextmode.GetType().Name + "...");
 				}
 			}
 			else
 			{
-				General.WriteLogLine("Stopping edit mode...");
+				General.WriteLogLine("Stopping editing mode...");
 			}
 			
 			// Remember previous mode
@@ -283,8 +283,11 @@ namespace CodeImp.DoomBuilder.Editing
 			if(mode != null)
 			{
 				prevmode = mode.GetType();
-				if(!mode.Attributes.Volatile) prevstablemode = prevmode;
-				if(mode is ClassicMode) prevclassicmode = prevmode;
+				if(!mode.Attributes.Volatile)
+				{
+					prevstablemode = prevmode;
+					if(mode is ClassicMode) prevclassicmode = prevmode;
+				}
 			}
 			else
 			{
@@ -303,6 +306,8 @@ namespace CodeImp.DoomBuilder.Editing
 				General.Interface.SetCursor(Cursors.Default);
 				
 				// Apply new mode
+				General.WriteLogLine("Editing mode changes from " + TypeNameOrNull(oldmode) + " to " + TypeNameOrNull(nextmode));
+				General.WriteLogLine("Previous stable mode is " + TypeNameOrNull(prevstablemode) + ", previous classic mode is " + TypeNameOrNull(prevclassicmode));
 				mode = newmode;
 				
 				// Engage new mode
@@ -319,6 +324,7 @@ namespace CodeImp.DoomBuilder.Editing
 				if(oldmode != null) oldmode.Dispose();
 				
 				// Done switching
+				General.WriteLogLine("Editing mode change complete.");
 				newmode = null;
 				
 				// Redraw the display
@@ -328,7 +334,7 @@ namespace CodeImp.DoomBuilder.Editing
 			else
 			{
 				// Cancelled
-				General.WriteLogLine("Edit mode change cancelled.");
+				General.WriteLogLine("Editing mode change cancelled.");
 				return false;
 			}
 		}
@@ -338,6 +344,18 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			EditModeInfo emi = GetEditModeInfo(classname);
 			if(emi != null) emi.SwitchToMode(args);
+		}
+
+		// This returns the type name as string
+		private string TypeNameOrNull(Type type)
+		{
+			return (type != null) ? type.Name : "NULL";
+		}
+
+		// This returns the type name as string
+		private string TypeNameOrNull(object obj)
+		{
+			return (obj != null) ? obj.GetType().Name : "NULL";
 		}
 		
 		#endregion
