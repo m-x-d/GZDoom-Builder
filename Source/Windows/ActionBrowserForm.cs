@@ -260,5 +260,15 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 		}
+		
+		// Double clicking on item
+		private void actions_DoubleClick(object sender, EventArgs e)
+		{
+			// Action node selected?
+			if((actions.SelectedNode != null) && (actions.SelectedNode.Tag is LinedefActionInfo))
+			{
+				if(apply.Enabled) apply_Click(this, EventArgs.Empty);
+			}
+		}
 	}
 }
