@@ -64,8 +64,11 @@ namespace CodeImp.DoomBuilder.Windows
 			formshowtimer.Dispose();
 			formshowtimer = null;
 			
-			// Make the form visible
-			this.Opacity = 100;
+			if(!this.IsDisposed)
+			{
+				// Make the form visible
+				this.Opacity = 100;
+			}
 		}
 
 		// Block this
