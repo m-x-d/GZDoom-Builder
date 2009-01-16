@@ -75,22 +75,16 @@ namespace CodeImp.DoomBuilder.Compilers
 			ProcessStartInfo processinfo;
 			Process process;
 			TimeSpan deltatime;
-			string waddir = null;
 			int line = 0;
-			
-			// Find wad directory
-			if(General.Map.FilePathName.Length > 0)
-				waddir = Path.GetDirectoryName(General.Map.FilePathName);
-			
-			// When no luck, use temp path
-			if(waddir == null) waddir = this.tempdir.FullName;
+			string sourcedir = Path.GetDirectoryName(sourcefile);
 			
 			// Create parameters
 			string args = this.parameters;
 			args = args.Replace("%FI", inputfile);
 			args = args.Replace("%FO", outputfile);
+			args = args.Replace("%FS", sourcefile);
 			args = args.Replace("%PT", this.tempdir.FullName);
-			args = args.Replace("%PW", waddir);
+			args = args.Replace("%PS", sourcedir);
 			
 			// Setup process info
 			processinfo = new ProcessStartInfo();

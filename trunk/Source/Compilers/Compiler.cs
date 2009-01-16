@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		protected CompilerInfo info;
 		protected string parameters;
 		protected string workingdir;
+		protected string sourcefile;
 		protected string outputfile;
 		protected string inputfile;
 		
@@ -58,6 +59,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		
 		public string Parameters { get { return parameters; } set { parameters = value; } }
 		public string WorkingDirectory { get { return workingdir; } set { workingdir = value; } }
+		public string SourceFile { get { return sourcefile; } set { sourcefile = value; } }
 		public string InputFile { get { return inputfile; } set { inputfile = value; } }
 		public string OutputFile { get { return outputfile; } set { outputfile = value; } }
 		public string Location { get { return tempdir.FullName; } }

@@ -638,7 +638,7 @@ namespace CodeImp.DoomBuilder
 		private bool BuildNodes(string nodebuildername, bool failaswarning)
 		{
 			NodebuilderInfo nodebuilder;
-			string tempfile1, tempfile2;
+			string tempfile1, tempfile2, sourcefile;
 			bool lumpscomplete = false;
 			WAD buildwad;
 
@@ -662,7 +662,13 @@ namespace CodeImp.DoomBuilder
 				// Make the temporary WAD file
 				General.WriteLogLine("Creating temporary build file: " + tempfile1);
 				buildwad = new WAD(tempfile1);
-				
+
+				// Determine source file
+				if(filepathname.Length > 0)
+					sourcefile = filepathname;
+				else
+					sourcefile = tempwad.Filename;
+
 				// Copy lumps to buildwad
 				General.WriteLogLine("Copying map lumps to temporary build file...");
 				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
@@ -687,6 +693,7 @@ namespace CodeImp.DoomBuilder
 				compiler.Parameters = nodebuilder.Parameters;
 				compiler.InputFile = Path.GetFileName(tempfile1);
 				compiler.OutputFile = Path.GetFileName(tempfile2);
+				compiler.SourceFile = sourcefile;
 				compiler.WorkingDirectory = Path.GetDirectoryName(tempfile1);
 				if(compiler.Run())
 				{
@@ -1185,7 +1192,7 @@ namespace CodeImp.DoomBuilder
 		// Returns true when our code worked properly (even when the compiler returned errors)
 		internal bool CompileLump(string lumpname, bool clearerrors)
 		{
-			string inputfile, outputfile;
+			string inputfile, outputfile, sourcefile;
 			Compiler compiler;
 			byte[] filedata;
 			string reallumpname = lumpname;
@@ -1194,6 +1201,12 @@ namespace CodeImp.DoomBuilder
 			if(lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
 			Lump lump = tempwad.FindLump(reallumpname);
 			if(lump == null) throw new Exception("No such lump in temporary wad file '" + reallumpname + "'.");
+			
+			// Determine source file
+			if(filepathname.Length > 0)
+				sourcefile = filepathname;
+			else
+				sourcefile = tempwad.Filename;
 			
 			// New list of errors
 			if(clearerrors || (errors == null))
@@ -1230,14 +1243,15 @@ namespace CodeImp.DoomBuilder
 					errors.Add(new CompilerError("Unable to write script to working file. " + e.GetType().Name + ": " + e.Message));
 					return false;
 				}
-
+				
 				// Make random output filename
 				outputfile = General.MakeTempFilename(compiler.Location, "tmp");
-
+				
 				// Run compiler
 				compiler.Parameters = scriptconfig.Parameters;
 				compiler.InputFile = Path.GetFileName(inputfile);
 				compiler.OutputFile = Path.GetFileName(outputfile);
+				compiler.SourceFile = sourcefile;
 				compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
 				if(compiler.Run())
 				{

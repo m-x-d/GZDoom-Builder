@@ -16,14 +16,19 @@ file contents are not copied into the wad file.
 
 With this interface supports the following placeholders in command-line parameters:
 
-%FI indicates the input path and filename.
+%FI indicates the input path and filename (temporary location for compiler).
 
-%FO indicates the output path and filename.
+%FO indicates the output path and filename (temporary location for compiler).
+
+%FS indicates the path and filename of the original file.
 
 %PT indicates the temporary directory path where the compiler is located.
 
-%PW indicates the path of the open wad file when compiled as internal script lump.
-If compiled as file, or the wad file is not saved, %PW is the same as %PT
+%PS indicates the path of the original file.
+
+The 'original file' is the saved location of the WAD file when the script is an
+internal lump. If the wad file is not saved, %PW is the same as %PT and %FS is the
+path and filename of the temporary wad file.
 
 These placeholders are case-sensitive!
 

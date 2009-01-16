@@ -108,11 +108,12 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Make random output filename
 			outputfile = General.MakeTempFilename(compiler.Location, "tmp");
-			
+
 			// Run compiler
 			compiler.Parameters = config.Parameters;
 			compiler.InputFile = Path.GetFileName(inputfile);
 			compiler.OutputFile = Path.GetFileName(outputfile);
+			compiler.SourceFile = filepathname;
 			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
 			if(compiler.Run())
 			{
