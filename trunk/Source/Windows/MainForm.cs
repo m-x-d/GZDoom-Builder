@@ -1133,19 +1133,23 @@ namespace CodeImp.DoomBuilder.Windows
 			if(shift) mod |= (int)Keys.Shift;
 			if(ctrl) mod |= (int)Keys.Control;
 			
-			// Invoke any actions associated with this key
-			General.Actions.UpdateModifiers(mod);
-			General.Actions.KeyPressed((int)e.KeyData);
-
-			// Invoke on editing mode
-			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyDown(e);
+			// Don't process any keys when they are meant for the things filter drop down box
+			if(!thingfilters.DroppedDown)
+			{
+				// Invoke any actions associated with this key
+				General.Actions.UpdateModifiers(mod);
+				General.Actions.KeyPressed((int)e.KeyData);
+				
+				// Invoke on editing mode
+				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyDown(e);
+			}
 		}
 
 		// When a key is released
 		private void MainForm_KeyUp(object sender, KeyEventArgs e)
 		{
 			int mod = 0;
-
+			
 			// Keep key modifiers
 			alt = e.Alt;
 			shift = e.Shift;
@@ -1153,13 +1157,17 @@ namespace CodeImp.DoomBuilder.Windows
 			if(alt) mod |= (int)Keys.Alt;
 			if(shift) mod |= (int)Keys.Shift;
 			if(ctrl) mod |= (int)Keys.Control;
-
-			// Invoke any actions associated with this key
-			General.Actions.UpdateModifiers(mod);
-			General.Actions.KeyReleased((int)e.KeyData);
-
-			// Invoke on editing mode
-			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyUp(e);
+			
+			// Don't process any keys when they are meant for the things filter drop down box
+			if(!thingfilters.DroppedDown)
+			{
+				// Invoke any actions associated with this key
+				General.Actions.UpdateModifiers(mod);
+				General.Actions.KeyReleased((int)e.KeyData);
+				
+				// Invoke on editing mode
+				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyUp(e);
+			}
 		}
 
 		#endregion
@@ -1237,9 +1245,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Change filter
 				General.Map.ChangeThingFilter(thingfilters.SelectedItem as ThingsFilter);
 			}
-
+			
 			// Lose focus
-			LoseFocus(sender, e);
+			if(!thingfilters.DroppedDown) LoseFocus(sender, e);
 		}
 		
 		// This updates the things filter on the toolbar
