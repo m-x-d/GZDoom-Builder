@@ -93,11 +93,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(Thing.Sector != null)
 				{
 					// Use sector brightness for color shading
-					sectorcolor = new PixelColor(255, unchecked((byte)Thing.Sector.Brightness),
-											 unchecked((byte)Thing.Sector.Brightness),
-											 unchecked((byte)Thing.Sector.Brightness));
+					byte brightness = (byte)General.Clamp(Thing.Sector.Brightness, 0, 255);
+					sectorcolor = new PixelColor(255, brightness, brightness, brightness);
 				}
-
+				
 				// Check if the texture is loaded
 				sprite.LoadImage();
 				isloaded = sprite.IsImageLoaded;

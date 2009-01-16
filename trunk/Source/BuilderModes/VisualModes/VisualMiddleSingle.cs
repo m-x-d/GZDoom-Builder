@@ -65,6 +65,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
+			byte brightness = (byte)General.Clamp(Sidedef.Sector.Brightness, 0, 255);
+
 			// Calculate size of this wall part
 			float geotop = (float)Sidedef.Sector.CeilHeight;
 			float geobottom = (float)Sidedef.Sector.FloorHeight;
@@ -133,9 +135,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Use sector brightness for color shading
-				PixelColor pc = new PixelColor(255, unchecked((byte)Sidedef.Sector.Brightness),
-													unchecked((byte)Sidedef.Sector.Brightness),
-													unchecked((byte)Sidedef.Sector.Brightness));
+				PixelColor pc = new PixelColor(255, brightness, brightness, brightness);
 
 				// Make vertices
 				WorldVertex[] verts = new WorldVertex[6];
