@@ -958,7 +958,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 							// Find out where the end will stitch and create test points
 							Linedef l2 = MapSet.NearestLinedefRange(oldlines, lastline.End.Position, MapSet.STITCH_DISTANCE);
-							if(l1 != null)
+							if(l2 != null)
 							{
 								endpoints.Add(new LinedefSide(l2, true));
 								endpoints.Add(new LinedefSide(l2, false));
