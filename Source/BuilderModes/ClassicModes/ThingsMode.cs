@@ -510,6 +510,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(mouseinside)
 			{
 				// Insert new thing
+				General.Map.UndoRedo.CreateUndo("Insert thing");
 				InsertThing(mousemappos);
 				
 				// Redraw screen
