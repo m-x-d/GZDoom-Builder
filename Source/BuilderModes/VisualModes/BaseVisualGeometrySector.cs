@@ -173,12 +173,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
+			Dictionary<Sector, int> rebuilt = new Dictionary<Sector, int>();
 			foreach(Sidedef sd in Sector.Sector.Sidedefs)
 			{
-				if((sd.Other != null) && mode.VisualSectorExists(sd.Other.Sector))
+				if((sd.Other != null) && !rebuilt.ContainsKey(sd.Other.Sector))
 				{
-					BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
-					bvs.Rebuild();
+					if(mode.VisualSectorExists(sd.Other.Sector))
+					{
+						BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
+						rebuilt.Add(sd.Other.Sector, 1);
+						bvs.Rebuild();
+					}
 				}
 			}
 		}
