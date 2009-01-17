@@ -446,13 +446,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This creates a new vertex at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
-		public virtual void InsertVertex()
+		public virtual void InsertVertexAction() { VerticesMode.InsertVertex(mousemappos, renderer.Scale); }
+		public static void InsertVertex(Vector2D mousemappos, float rendererscale)
 		{
 			bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
 			// Mouse in window?
-			if(mouseinside)
+			if(General.Interface.MouseInDisplay)
 			{
 				Vector2D insertpos;
 				Linedef l = null;
@@ -461,7 +462,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Insert vertex");
 
 				// Snap to geometry?
-				l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_SPLIT_RANGE / renderer.Scale);
+				l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_SPLIT_RANGE / rendererscale);
 				if(snaptonearest && (l != null))
 				{
 					// Snip to grid also?
