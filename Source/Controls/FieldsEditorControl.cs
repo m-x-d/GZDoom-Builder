@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Update new row
 			SetupNewRowStyle();
 		}
-
+		
 		// This sets up the fields and values from a UniFields object
 		// When first is true, the values are applied unconditionally
 		// When first is false, the values in the grid are erased when
@@ -149,20 +149,9 @@ namespace CodeImp.DoomBuilder.Controls
 							foundrow = true;
 							break;
 						}
-
-						// Is this row defined previously?
-						if(frow.IsDefined)
-						{
-							// Check if this row can not be found in the fields at all
-							if(!fromfields.ContainsKey(frow.Name))
-							{
-								// It is not defined in these fields, clear the value
-								frow.Clear();
-							}
-						}
 					}
 				}
-
+				
 				// Row not found?
 				if(!foundrow)
 				{
@@ -175,7 +164,28 @@ namespace CodeImp.DoomBuilder.Controls
 					if(!first) frow.Clear();
 				}
 			}
+			
+			// Now check for rows that the givens fields do NOT have
+			foreach(DataGridViewRow row in fieldslist.Rows)
+			{
+				// Row is a field?
+				if(row is FieldsEditorRow)
+				{
+					FieldsEditorRow frow = row as FieldsEditorRow;
 
+					// Is this row defined previously?
+					if(frow.IsDefined)
+					{
+						// Check if this row can not be found in the fields at all
+						if(!fromfields.ContainsKey(frow.Name))
+						{
+							// It is not defined in these fields, clear the value
+							frow.Clear();
+						}
+					}
+				}
+			}
+			
 			// Sort fields
 			Sort();
 		}
