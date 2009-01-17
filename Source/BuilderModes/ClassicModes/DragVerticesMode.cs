@@ -101,6 +101,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Disenagaging
 		public override void OnDisengage()
 		{
+			// Select vertices from marks
+			General.Map.Map.ClearSelectedVertices();
+			General.Map.Map.SelectMarkedVertices(true, true);
+			
+			// Perform normal disengage
 			base.OnDisengage();
 			
 			// When not cancelled

@@ -1271,6 +1271,28 @@ namespace CodeImp.DoomBuilder.Map
 			return new RectangleF(l, t, r - l, b - t);
 		}
 
+		// This increases and existing area with the given vertices
+		public static RectangleF IncreaseArea(RectangleF area, ICollection<Vertex> verts)
+		{
+			float l = area.Left;
+			float t = area.Top;
+			float r = area.Right;
+			float b = area.Bottom;
+			
+			// Go for all vertices
+			foreach(Vertex v in verts)
+			{
+				// Adjust boundaries by vertices
+				if(v.Position.x < l) l = v.Position.x;
+				if(v.Position.x > r) r = v.Position.x;
+				if(v.Position.y < t) t = v.Position.y;
+				if(v.Position.y > b) b = v.Position.y;
+			}
+			
+			// Return a rect
+			return new RectangleF(l, t, r - l, b - t);
+		}
+
 		// This creates an area from linedefs
 		public static RectangleF CreateArea(ICollection<Linedef> lines)
 		{
@@ -1368,42 +1390,42 @@ namespace CodeImp.DoomBuilder.Map
 			RectangleF editarea;
 			int stitches = 0;
 			int stitchundo;
-
+			
 			// Find vertices
 			movingverts = General.Map.Map.GetMarkedVertices(true);
 			fixedverts = General.Map.Map.GetMarkedVertices(false);
 			
 			// Find lines that moved during the drag
 			movinglines = LinedefsFromMarkedVertices(false, true, true);
-
+			
 			// Find all non-moving lines
 			fixedlines = LinedefsFromMarkedVertices(true, false, false);
-
+			
 			// Determine area in which we are editing
 			editarea = MapSet.CreateArea(movinglines);
-			editarea.Inflate(MapSet.STITCH_DISTANCE * 2.0f,
-							 MapSet.STITCH_DISTANCE * 2.0f);
-
+			editarea = MapSet.IncreaseArea(editarea, movingverts);
+			editarea.Inflate(1.0f, 1.0f);
+			
 			// Join nearby vertices
 			stitches += MapSet.JoinVertices(fixedverts, movingverts, true, MapSet.STITCH_DISTANCE);
-
+			
 			// Update cached values of lines because we need their length/angle
 			Update(true, false);
-
+			
 			// Split moving lines with unselected vertices
 			nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
 			stitches += MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, MapSet.STITCH_DISTANCE, movinglines);
-
+			
 			// Split non-moving lines with selected vertices
 			fixedlines = MapSet.FilterByArea(fixedlines, ref editarea);
 			stitches += MapSet.SplitLinesByVertices(fixedlines, movingverts, MapSet.STITCH_DISTANCE, movinglines);
-
+			
 			// Remove looped linedefs
 			stitches += MapSet.RemoveLoopedLinedefs(movinglines);
-
+			
 			// Join overlapping lines
 			stitches += MapSet.JoinOverlappingLines(movinglines);
-
+			
 			return stitches;
 		}
 		
