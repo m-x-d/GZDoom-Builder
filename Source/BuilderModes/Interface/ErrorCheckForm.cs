@@ -309,8 +309,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Stop all running threads
 			foreach(Thread t in threads)
 			{
-				t.Interrupt();
-				t.Join();
+				while(t.IsAlive)
+				{
+					try
+					{ 
+						t.Interrupt();
+						t.Join(1);
+					}
+					catch(ThreadInterruptedException)
+					{
+						// We have to continue, we can't just leave the other threads running!
+					}
+				}
 			}
 			
 			// Dispose all checkers
