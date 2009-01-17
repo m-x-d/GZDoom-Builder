@@ -202,6 +202,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Close button clicked
 		private void closebutton_Click(object sender, EventArgs e)
 		{
+			General.Interface.Focus();
 			General.Editing.CancelMode();
 		}
 
