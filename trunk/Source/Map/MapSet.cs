@@ -572,7 +572,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This serializes the MapSet
 		internal MemoryStream Serialize()
 		{
-			MemoryStream stream = new MemoryStream(1000000);
+			MemoryStream stream = new MemoryStream(512000);
 			SerializerStream serializer = new SerializerStream(stream);
 			
 			// Write private data
