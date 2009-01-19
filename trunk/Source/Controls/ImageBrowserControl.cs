@@ -83,7 +83,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
-
+			list.TileSize = new Size(PreviewManager.IMAGE_WIDTH + 26, PreviewManager.IMAGE_HEIGHT + 26);
+			
 			// Move textbox with label
 			objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
 		}
