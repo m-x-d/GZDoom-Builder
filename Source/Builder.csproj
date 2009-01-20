@@ -667,7 +667,7 @@
     <Compile Include="Data\PK3StructuredReader.cs" />
     <Compile Include="Decorate\ActorStructure.cs" />
     <Compile Include="Decorate\DecorateParser.cs" />
-    <Compile Include="Decorate\StatesStructure.cs" />
+    <Compile Include="Decorate\StateStructure.cs" />
     <Compile Include="Editing\EditingManager.cs" />
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
