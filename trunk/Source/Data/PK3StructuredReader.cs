@@ -337,6 +337,36 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		#endregion
+
+		#region ================== Decorate
+
+		// This finds and returns a sprite stream
+		public override Stream GetDecorateData(string pname)
+		{
+			string pfilename = pname.Replace('\\', '^');
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in any of the wad files
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				Stream sprite = wads[i].GetDecorateData(pname);
+				if(sprite != null) return sprite;
+			}
+
+			// Find in root directory
+			string filename = FindFirstFile(rootpath, pfilename);
+			if((filename != null) && FileExists(filename))
+			{
+				return LoadFile(filename);
+			}
+
+			// Nothing found
+			return null;
+		}
+
+		#endregion
 		
 		#region ================== Methods
 		

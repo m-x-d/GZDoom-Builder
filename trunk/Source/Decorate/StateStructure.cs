@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		// Constructor
 		internal StateStructure(DecorateParser parser)
 		{
-			string lasttoken;
+			string lasttoken = "";
 			firstsprite = null;
 			
 			// Skip whitespace

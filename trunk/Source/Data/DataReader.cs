@@ -123,5 +123,12 @@ namespace CodeImp.DoomBuilder.Data
 		public virtual Stream GetSpriteData(string pname) { return null; }
 		
 		#endregion
+
+		#region ================== Decorate
+
+		// When implemented, this returns the decorate lump
+		public virtual Stream GetDecorateData(string pname) { return null; }
+
+		#endregion
 	}
 }
