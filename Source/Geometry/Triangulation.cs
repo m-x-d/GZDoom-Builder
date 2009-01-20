@@ -558,7 +558,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					n2.Value.Remove();
 					n2 = n1.Next ?? verts.First;
-					d = n1.Value.Position - n2.Value.Position;
+					if(n2 != null) d = n1.Value.Position - n2.Value.Position; else break;
 				}
 
 				// Next!

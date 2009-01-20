@@ -423,5 +423,22 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		#endregion
+
+		#region ================== Sprite
+
+		// This finds and returns a sprite stream
+		public override Stream GetDecorateData(string pname)
+		{
+			Lump lump;
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find the lump
+			lump = file.FindLump(pname);
+			if(lump != null) return lump.Stream; else return null;
+		}
+
+		#endregion
 	}
 }

@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		public Dictionary<string, bool> Flags { get { return flags; } }
 		public int Radius { get { return radius; } }
 		public int Height { get { return height; } }
+		public int DoomEdNum { get { return doomednum; } }
 		
 		#endregion
 		
@@ -75,7 +76,6 @@ namespace CodeImp.DoomBuilder.Decorate
 		{
 			// Initialize
 			flags = new Dictionary<string, bool>();
-			properties = new Dictionary<string, object>();
 			states = new List<StateStructure>();
 			
 			// Parse tokens before entering the actor scope
