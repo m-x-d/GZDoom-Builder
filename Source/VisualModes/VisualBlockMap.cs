@@ -329,66 +329,101 @@ namespace CodeImp.DoomBuilder.VisualModes
 			pos = GetBlockCoordinates(v1);
 			end = GetBlockCoordinates(v2);
 			
-			// Add lines to this block
-			GetBlock(pos).Lines.Add(line);
-			
-			// Moving outside the block?
-			if(pos != end)
+			// Horizontal straight line?
+			if(pos.Y == end.Y)
 			{
-				// Calculate current block edges
-				float cl = pos.X * BLOCK_SIZE;
-				float cr = (pos.X + 1) * BLOCK_SIZE;
-				float ct = pos.Y * BLOCK_SIZE;
-				float cb = (pos.Y + 1) * BLOCK_SIZE;
-				
-				// Line directions
+				// Simple loop
 				dirx = Math.Sign(v2.x - v1.x);
+				for(int x = pos.X; x != end.X; x += dirx)
+				{
+					GetBlock(new Point(x, pos.Y)).Lines.Add(line);
+				}
+				GetBlock(end).Lines.Add(line);
+			}
+			// Vertical straight line?
+			else if(pos.X == end.X)
+			{
+				// Simple loop
 				diry = Math.Sign(v2.y - v1.y);
-				
-				// Calculate offset and delta movement over x
-				if(dirx >= 0)
+				for(int y = pos.Y; y != end.Y; y += diry)
 				{
-					posx = (cr - v1.x) / (v2.x - v1.x);
-					deltax = BLOCK_SIZE / (v2.x - v1.x);
+					GetBlock(new Point(pos.X, y)).Lines.Add(line);
 				}
-				else
+				GetBlock(end).Lines.Add(line);
+			}
+			else
+			{
+				// Add lines to this block
+				GetBlock(pos).Lines.Add(line);
+				
+				// Moving outside the block?
+				if(pos != end)
 				{
+					// Calculate current block edges
+					float cl = pos.X * BLOCK_SIZE;
+					float cr = (pos.X + 1) * BLOCK_SIZE;
+					float ct = pos.Y * BLOCK_SIZE;
+					float cb = (pos.Y + 1) * BLOCK_SIZE;
+					
+					// Line directions
+					dirx = Math.Sign(v2.x - v1.x);
+					diry = Math.Sign(v2.y - v1.y);
+					
 					// Calculate offset and delta movement over x
-					posx = (v1.x - cl) / (v1.x - v2.x);
-					deltax = BLOCK_SIZE / (v1.x - v2.x);
-				}
-				
-				// Calculate offset and delta movement over y
-				if(diry >= 0)
-				{
-					posy = (cb - v1.y) / (v2.y - v1.y);
-					deltay = BLOCK_SIZE / (v2.y - v1.y);
-				}
-				else
-				{
-					posy = (v1.y - ct) / (v1.y - v2.y);
-					deltay = BLOCK_SIZE / (v1.y - v2.y);
-				}
-				
-				// Continue while not reached the end
-				while(pos != end)
-				{
-					// Check in which direction to move
-					if(posx < posy)
+					if(dirx == 0)
 					{
-						// Move horizontally
-						posx += deltax;
-						if(pos.X != end.X) pos.X += dirx;
+						posx = float.MaxValue;
+						deltax = float.MaxValue;
+					}
+					else if(dirx > 0)
+					{
+						posx = (cr - v1.x) / (v2.x - v1.x);
+						deltax = BLOCK_SIZE / (v2.x - v1.x);
 					}
 					else
 					{
-						// Move vertically
-						posy += deltay;
-						if(pos.Y != end.Y) pos.Y += diry;
+						// Calculate offset and delta movement over x
+						posx = (v1.x - cl) / (v1.x - v2.x);
+						deltax = BLOCK_SIZE / (v1.x - v2.x);
 					}
 					
-					// Add lines to this block
-					GetBlock(pos).Lines.Add(line);
+					// Calculate offset and delta movement over y
+					if(diry == 0)
+					{
+						posy = float.MaxValue;
+						deltay = float.MaxValue;
+					}
+					else if(diry > 0)
+					{
+						posy = (cb - v1.y) / (v2.y - v1.y);
+						deltay = BLOCK_SIZE / (v2.y - v1.y);
+					}
+					else
+					{
+						posy = (v1.y - ct) / (v1.y - v2.y);
+						deltay = BLOCK_SIZE / (v1.y - v2.y);
+					}
+					
+					// Continue while not reached the end
+					while(pos != end)
+					{
+						// Check in which direction to move
+						if(posx < posy)
+						{
+							// Move horizontally
+							posx += deltax;
+							if(pos.X != end.X) pos.X += dirx;
+						}
+						else
+						{
+							// Move vertically
+							posy += deltay;
+							if(pos.Y != end.Y) pos.Y += diry;
+						}
+						
+						// Add lines to this block
+						GetBlock(pos).Lines.Add(line);
+					}
 				}
 			}
 		}
