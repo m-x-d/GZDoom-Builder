@@ -206,7 +206,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void Rebuild()
 		{
 			// Find thing information
-			info = General.Map.Config.GetThingInfo(Thing.Type);
+			info = General.Map.Data.GetThingInfo(Thing.Type);
 
 			// Find sprite texture
 			if(info.Sprite.Length > 0)

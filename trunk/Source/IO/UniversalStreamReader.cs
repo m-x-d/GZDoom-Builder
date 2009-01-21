@@ -181,8 +181,6 @@ namespace CodeImp.DoomBuilder.IO
 				// Create new item
 				Thing t = map.CreateThing();
 				t.Update(type, x, y, height, Angle2D.DoomToReal(angledeg), stringflags, tag, special, args);
-				//t.DetermineSector();
-				t.UpdateConfiguration();
 
 				// Custom fields
 				ReadCustomFields(c, t, "thing");

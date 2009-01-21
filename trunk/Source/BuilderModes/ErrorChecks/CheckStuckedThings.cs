@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Go for all the things
 			foreach(Thing t in General.Map.Map.Things)
 			{
-				ThingTypeInfo info = General.Map.Config.GetThingInfo(t.Type);
+				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
 				bool stucked = false;
 				
 				// Check this thing for getting stucked?

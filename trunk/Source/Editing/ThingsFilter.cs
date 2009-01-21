@@ -195,7 +195,7 @@ namespace CodeImp.DoomBuilder.Editing
 				bool qualifies;
 
 				// Get thing info
-				ThingTypeInfo ti = General.Map.Config.GetThingInfo(t.Type);
+				ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 
 				// Check if thing is in unknown category
 				if(ti.Category == null)

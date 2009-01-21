@@ -33,8 +33,16 @@ namespace CodeImp.DoomBuilder.Decorate
 {
 	public sealed class DecorateParser
 	{
-		#region ================== Constants
+		#region ================== Delegates
 		
+		public delegate void IncludeDelegate(string includefile);
+		
+		public IncludeDelegate OnInclude;
+		
+		#endregion
+		
+		#region ================== Constants
+
 		// Parsing
 		private const string WHITESPACE = "\n \t\r";
 		private const string SPECIALTOKEN = ":{}+-\n";
@@ -85,8 +93,10 @@ namespace CodeImp.DoomBuilder.Decorate
 		// Returns false on errors
 		public bool Parse(Stream stream)
 		{
-			datastream = stream;
-			datareader = new StreamReader(datastream, Encoding.ASCII);
+			Stream localstream = stream;
+			StreamReader localreader = new StreamReader(localstream, Encoding.ASCII);
+			datastream = localstream;
+			datareader = localreader;
 			datastream.Seek(0, SeekOrigin.Begin);
 			
 			// Continue until at the end of the stream
@@ -102,6 +112,24 @@ namespace CodeImp.DoomBuilder.Decorate
 						// Read actor structure
 						ActorStructure actor = new ActorStructure(this);
 						if(this.HasError) break;
+					}
+					else if(objdeclaration == "#include")
+					{
+						// Include a file
+						SkipWhitespace(true);
+						string filename = ReadToken();
+						if(!string.IsNullOrEmpty(filename))
+						{
+							if(OnInclude != null) OnInclude(filename);
+							datastream = localstream;
+							datareader = localreader;
+							if(HasError) break;
+						}
+						else
+						{
+							ReportError("Expected file name to include");
+							break;
+						}
 					}
 					else
 					{
@@ -143,14 +171,15 @@ namespace CodeImp.DoomBuilder.Decorate
 		internal bool SkipWhitespace(bool skipnewline)
 		{
 			int offset = skipnewline ? 1 : 0;
+			char[] cb = new char[1];
 			int c;
 			
 			do
 			{
-				c = datareader.Read();
+				c = datareader.Read(cb, 0, 1);
 				if(c == -1) return false;
 			}
-			while(WHITESPACE.IndexOf(unchecked((char)c), offset) > -1);
+			while(WHITESPACE.IndexOf(unchecked(cb[0]), offset) > -1);
 			
 			// Go one character back so we can read this non-whitespace character again
 			datastream.Seek(-1, SeekOrigin.Current);
@@ -162,6 +191,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		internal string ReadToken()
 		{
 			string token = "";
+			bool quotedstring = false;
 			int c;
 			
 			// Return null when the end of the stream has been reached
@@ -169,12 +199,12 @@ namespace CodeImp.DoomBuilder.Decorate
 			
 			// Start reading
 			c = datareader.Read();
-			while((c != -1) && !IsWhitespace(unchecked((char)c)))
+			while((c != -1) && (!IsWhitespace(unchecked((char)c)) || quotedstring))
 			{
 				char cc = unchecked((char)c);
 				
 				// Special token?
-				if(IsSpecialToken(cc))
+				if(!quotedstring && IsSpecialToken(cc))
 				{
 					// Not reading a token yet?
 					if(token.Length == 0)
@@ -193,6 +223,12 @@ namespace CodeImp.DoomBuilder.Decorate
 				}
 				else
 				{
+					// Quote to end the string?
+					if(quotedstring && (cc == '"')) quotedstring = false;
+					
+					// First character is a quote?
+					if((token.Length == 0) && (cc == '"')) quotedstring = true;
+					
 					token += cc;
 				}
 				

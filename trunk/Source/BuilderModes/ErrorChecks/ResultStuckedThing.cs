@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return General.Map.Config.GetThingInfo(thing.Type).Title + " is stucked in a wall at " + thing.Position.x + ", " + thing.Position.y;
+			return General.Map.Data.GetThingInfo(thing.Type).Title + " is stucked in a wall at " + thing.Position.x + ", " + thing.Position.y;
 		}
 
 		// Rendering

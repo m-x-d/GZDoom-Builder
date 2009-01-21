@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Go for all predefined categories
 			typelist.Nodes.Clear();
 			nodes = new List<TreeNode>();
-			foreach(ThingCategory tc in General.Map.Config.ThingCategories)
+			foreach(ThingCategory tc in General.Map.Data.ThingCategories)
 			{
 				// Create category
 				TreeNode cn = typelist.Nodes.Add(tc.Name, tc.Title);
@@ -283,7 +283,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(typeid.Text.Length > 0)
 			{
 				// Get the info
-				ThingTypeInfo ti = General.Map.Config.GetThingInfoEx(typeid.GetResult(0));
+				ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(typeid.GetResult(0));
 				if(ti != null)
 				{
 					knownthing = true;
