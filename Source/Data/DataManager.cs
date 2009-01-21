@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Data containers
 		private List<DataReader> containers;
+		private DataReader currentreader;
 		
 		// Palette
 		private Playpal palette;
@@ -1044,22 +1045,25 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Load Decorate info cumulatively (the last Decorate is added to the previous)
 				// I'm not sure if this is the right thing to do though.
+				currentreader = dr;
 				Stream decodata = dr.GetDecorateData("DECORATE");
 				if(decodata != null)
 				{
 					// Parse the data
 					decodata.Seek(0, SeekOrigin.Begin);
-					parser.Parse(decodata);
+					parser.Parse(decodata, "DECORATE");
 					
 					// Check for errors
 					if(parser.HasError)
 					{
 						General.WriteLogLine("ERROR: Unable to parse DECORATE data from location " + dr.Location.location + "!");
-						General.WriteLogLine(parser.ErrorDescription + " on line " + parser.ErrorLine);
+						General.WriteLogLine("ERROR: " + parser.ErrorDescription + " on line " + parser.ErrorLine + " in '" + parser.ErrorSource + "'");
 						break;
 					}
 				}
 			}
+
+			currentreader = null;
 			
 			if(!parser.HasError)
 			{
@@ -1073,10 +1077,15 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This loads Decorate data from a specific file or lump name
-		private void LoadDecorateFromLocation(string location)
+		private void LoadDecorateFromLocation(DecorateParser parser, string location)
 		{
-			// TODO
-			int t = 5;
+			General.WriteLogLine("Including DECORATE resource '" + location + "'...");
+			Stream decodata = currentreader.GetDecorateData(location);
+			if(decodata != null)
+			{
+				// Parse this data
+				parser.Parse(decodata, location);
+			}
 		}
 		
 		// This gets thing information by index

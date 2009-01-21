@@ -343,8 +343,6 @@ namespace CodeImp.DoomBuilder.Data
 		// This finds and returns a sprite stream
 		public override Stream GetDecorateData(string pname)
 		{
-			string pfilename = pname.Replace('\\', '^');
-
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
@@ -356,10 +354,13 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Find in root directory
-			string filename = FindFirstFile(rootpath, pfilename);
-			if((filename != null) && FileExists(filename))
+			string filename = Path.GetFileName(pname);
+			string pathname = Path.GetDirectoryName(pname);
+			string fullpath = Path.Combine(rootpath, pathname);
+			string foundfile = filename.IndexOf('.') > -1 ? FindFirstFileWithExt(fullpath, filename) : FindFirstFile(fullpath, filename);
+			if((foundfile != null) && FileExists(foundfile))
 			{
-				return LoadFile(filename);
+				return LoadFile(foundfile);
 			}
 
 			// Nothing found
@@ -429,6 +430,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This must find the first file that has the specific name, regardless of file extension
 		protected abstract string FindFirstFile(string path, string beginswith);
+
+		// This must find the first file that has the specific name
+		protected abstract string FindFirstFileWithExt(string path, string beginswith);
 		
 		// This must load an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!

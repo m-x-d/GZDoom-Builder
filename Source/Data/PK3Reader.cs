@@ -163,6 +163,21 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 
+		// This finds the first file that has the specific name
+		protected override string FindFirstFileWithExt(string path, string beginswith)
+		{
+			string lowpath = path.ToLowerInvariant();
+			string lowbegin = beginswith.ToLowerInvariant();
+			foreach(string f in fileslist)
+			{
+				if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
+				   (string.Compare(Path.GetFileName(f), lowbegin) == 0))
+					return f;
+			}
+			
+			return null;
+		}
+
 		// This loads an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
 		protected override MemoryStream LoadFile(string filename)

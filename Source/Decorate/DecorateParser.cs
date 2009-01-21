@@ -34,8 +34,8 @@ namespace CodeImp.DoomBuilder.Decorate
 	public sealed class DecorateParser
 	{
 		#region ================== Delegates
-		
-		public delegate void IncludeDelegate(string includefile);
+
+		public delegate void IncludeDelegate(DecorateParser parser, string includefile);
 		
 		public IncludeDelegate OnInclude;
 		
@@ -56,21 +56,24 @@ namespace CodeImp.DoomBuilder.Decorate
 		
 		// Input data stream
 		private Stream datastream;
-		private StreamReader datareader;
+		private BinaryReader datareader;
+		private string sourcename;
 		
 		// Error report
 		private int errorline;
 		private string errordesc;
+		private string errorsource;
 		
 		#endregion
 		
 		#region ================== Properties
 		
 		internal Stream DataStream { get { return datastream; } }
-		internal StreamReader DataReader { get { return datareader; } }
+		internal BinaryReader DataReader { get { return datareader; } }
 		public ICollection<ActorStructure> Actors { get { return actors; } }
 		public int ErrorLine { get { return errorline; } }
 		public string ErrorDescription { get { return errordesc; } }
+		public string ErrorSource { get { return errorsource; } }
 		public bool HasError { get { return (errordesc != null); } }
 		
 		#endregion
@@ -91,12 +94,14 @@ namespace CodeImp.DoomBuilder.Decorate
 		
 		// This parses the given decorate stream
 		// Returns false on errors
-		public bool Parse(Stream stream)
+		public bool Parse(Stream stream, string sourcefilename)
 		{
 			Stream localstream = stream;
-			StreamReader localreader = new StreamReader(localstream, Encoding.ASCII);
+			string localsourcename = sourcefilename;
+			BinaryReader localreader = new BinaryReader(localstream, Encoding.ASCII);
 			datastream = localstream;
 			datareader = localreader;
+			sourcename = localsourcename;
 			datastream.Seek(0, SeekOrigin.Begin);
 			
 			// Continue until at the end of the stream
@@ -112,6 +117,8 @@ namespace CodeImp.DoomBuilder.Decorate
 						// Read actor structure
 						ActorStructure actor = new ActorStructure(this);
 						if(this.HasError) break;
+						General.WriteLogLine("Added actor '" + actor.Name + "' from '" + localsourcename + "'");
+						actors.Add(actor);
 					}
 					else if(objdeclaration == "#include")
 					{
@@ -120,9 +127,16 @@ namespace CodeImp.DoomBuilder.Decorate
 						string filename = ReadToken();
 						if(!string.IsNullOrEmpty(filename))
 						{
-							if(OnInclude != null) OnInclude(filename);
+							// Strip the quotes
+							filename = filename.Replace("\"", "");
+
+							// Callback to parse this file now
+							if(OnInclude != null) OnInclude(this, filename);
+
+							// Set our buffers back to continue parsing
 							datastream = localstream;
 							datareader = localreader;
+							sourcename = localsourcename;
 							if(HasError) break;
 						}
 						else
@@ -134,8 +148,23 @@ namespace CodeImp.DoomBuilder.Decorate
 					else
 					{
 						// Unknown structure!
-						ReportError("Unknown declaration type '" + objdeclaration + "'");
-						break;
+						// Best we can do now is just find the first { and the follow the scopes until the matching } is found
+						string token2;
+						do
+						{
+							SkipWhitespace(true);
+							token2 = ReadToken();
+						}
+						while(token2 != "{");
+						int scopelevel = 1;
+						do
+						{
+							SkipWhitespace(true);
+							token2 = ReadToken();
+							if(token2 == "{") scopelevel++;
+							if(token2 == "}") scopelevel--;
+						}
+						while(scopelevel > 0);
 					}
 				}
 			}
@@ -170,16 +199,45 @@ namespace CodeImp.DoomBuilder.Decorate
 		// Returns false when the end of the stream is reached
 		internal bool SkipWhitespace(bool skipnewline)
 		{
-			int offset = skipnewline ? 1 : 0;
-			char[] cb = new char[1];
-			int c;
+			int offset = skipnewline ? 0 : 1;
+			char c;
 			
 			do
 			{
-				c = datareader.Read(cb, 0, 1);
-				if(c == -1) return false;
+				if(datastream.Position == datastream.Length) return false;
+				c = (char)datareader.ReadByte();
+
+				// Check if this is comment
+				if(c == '/')
+				{
+					char c2 = (char)datareader.ReadByte();
+					if(c2 == '/')
+					{
+						// Skip entire line
+						char c3;
+						do { c3 = (char)datareader.ReadByte(); } while(c3 != '\n');
+						c = ' ';
+					}
+					else if(c2 == '*')
+					{
+						// Skip until */
+						char c4, c3 = '\0';
+						do
+						{
+							c4 = c3;
+							c3 = (char)datareader.ReadByte();
+						}
+						while((c4 != '*') || (c3 != '/'));
+						c = ' ';
+					}
+					else
+					{
+						// Not a comment, rewind from reading c2
+						datastream.Seek(-1, SeekOrigin.Current);
+					}
+				}
 			}
-			while(WHITESPACE.IndexOf(unchecked(cb[0]), offset) > -1);
+			while(WHITESPACE.IndexOf(c, offset) > -1);
 			
 			// Go one character back so we can read this non-whitespace character again
 			datastream.Seek(-1, SeekOrigin.Current);
@@ -192,25 +250,22 @@ namespace CodeImp.DoomBuilder.Decorate
 		{
 			string token = "";
 			bool quotedstring = false;
-			int c;
-			
+
 			// Return null when the end of the stream has been reached
-			if(datareader.EndOfStream) return null;
+			if(datastream.Position == datastream.Length) return null;
 			
 			// Start reading
-			c = datareader.Read();
-			while((c != -1) && (!IsWhitespace(unchecked((char)c)) || quotedstring))
+			char c = (char)datareader.ReadByte();
+			while(!IsWhitespace(c) || quotedstring || IsSpecialToken(c))
 			{
-				char cc = unchecked((char)c);
-				
 				// Special token?
-				if(!quotedstring && IsSpecialToken(cc))
+				if(!quotedstring && IsSpecialToken(c))
 				{
 					// Not reading a token yet?
 					if(token.Length == 0)
 					{
 						// This is our whole token
-						token += cc;
+						token += c;
 						break;
 					}
 					else
@@ -224,16 +279,19 @@ namespace CodeImp.DoomBuilder.Decorate
 				else
 				{
 					// Quote to end the string?
-					if(quotedstring && (cc == '"')) quotedstring = false;
+					if(quotedstring && (c == '"')) quotedstring = false;
 					
 					// First character is a quote?
-					if((token.Length == 0) && (cc == '"')) quotedstring = true;
+					if((token.Length == 0) && (c == '"')) quotedstring = true;
 					
-					token += cc;
+					token += c;
 				}
 				
 				// Next character
-				c = datareader.Read();
+				if(datastream.Position < datastream.Length)
+					c = (char)datareader.Read();
+				else
+					break;
 			}
 			
 			return token;
@@ -243,14 +301,17 @@ namespace CodeImp.DoomBuilder.Decorate
 		internal void ReportError(string message)
 		{
 			long position = datastream.Position;
+			long readpos = 0;
 			int linenumber = 1;
 			
 			// Find the line on which we found this error
 			datastream.Seek(0, SeekOrigin.Begin);
-			while(datastream.Position < position)
+			StreamReader textreader = new StreamReader(datastream, Encoding.ASCII);
+			while(readpos < position)
 			{
-				string line = datareader.ReadLine();
+				string line = textreader.ReadLine();
 				if(line == null) break;
+				readpos += line.Length + 2;
 				linenumber++;
 			}
 			
@@ -260,6 +321,7 @@ namespace CodeImp.DoomBuilder.Decorate
 			// Set error information
 			errordesc = message;
 			errorline = linenumber;
+			errorsource = sourcename;
 		}
 		
 		#endregion
