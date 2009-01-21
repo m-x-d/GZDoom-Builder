@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal StateStructure(DecorateParser parser)
+		internal StateStructure(DecorateParser parser, string statename)
 		{
 			string lasttoken = "";
 			firstsprite = null;
@@ -68,8 +68,7 @@ namespace CodeImp.DoomBuilder.Decorate
 				// One of the flow control statements?
 				if((token == "loop") || (token == "stop") || (token == "wait") || (token == "fail"))
 				{
-					// Then we leave
-					break;
+					// Ignore flow control
 				}
 				// Label?
 				else if(token == ":")
@@ -83,6 +82,9 @@ namespace CodeImp.DoomBuilder.Decorate
 				// End of scope?
 				else if(token == "}")
 				{
+					// Rewind so that this scope end can be read again
+					parser.DataStream.Seek(-1, SeekOrigin.Current);
+
 					// Done here
 					return;
 				}
@@ -101,6 +103,15 @@ namespace CodeImp.DoomBuilder.Decorate
 					if(spriteframes == null)
 					{
 						parser.ReportError("Unexpected end of structure");
+						return;
+					}
+					// Label?
+					else if(spriteframes == ":")
+					{
+						// Rewind so that this label can be read again
+						parser.DataStream.Seek(-(token.Length + 1), SeekOrigin.Current);
+
+						// Done here
 						return;
 					}
 					

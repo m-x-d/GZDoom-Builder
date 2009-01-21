@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		#region ================== Variables
 		
 		// Declaration
+		private string classname;
 		private string inheritclass;
 		private string replaceclass;
 		private int doomednum = -1;
@@ -63,6 +64,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		#region ================== Properties
 		
 		public Dictionary<string, bool> Flags { get { return flags; } }
+		public string Name { get { return classname; } }
 		public int Radius { get { return radius; } }
 		public int Height { get { return height; } }
 		public int DoomEdNum { get { return doomednum; } }
@@ -77,6 +79,15 @@ namespace CodeImp.DoomBuilder.Decorate
 			// Initialize
 			flags = new Dictionary<string, bool>();
 			states = new List<StateStructure>();
+			
+			// First next token is the class name
+			parser.SkipWhitespace(true);
+			classname = parser.ReadToken();
+			if(string.IsNullOrEmpty(classname))
+			{
+				parser.ReportError("Expected actor class name");
+				return;
+			}
 			
 			// Parse tokens before entering the actor scope
 			while(parser.SkipWhitespace(true))
@@ -96,7 +107,7 @@ namespace CodeImp.DoomBuilder.Decorate
 							return;
 						}
 					}
-					else if(replaceclass == "replaces")
+					else if(token == "replaces")
 					{
 						// The next token must be the class to replace
 						parser.SkipWhitespace(true);
@@ -119,7 +130,7 @@ namespace CodeImp.DoomBuilder.Decorate
 						if(!int.TryParse(token, out doomednum))
 						{
 							// Not numeric!
-							parser.ReportError("Expected numeric editor thing number");
+							parser.ReportError("Expected numeric editor thing number or start of actor scope");
 							return;
 						}
 					}
@@ -184,7 +195,7 @@ namespace CodeImp.DoomBuilder.Decorate
 									if(labeltoken == ":")
 									{
 										// Parse actor state
-										StateStructure st = new StateStructure(parser);
+										StateStructure st = new StateStructure(parser, statename);
 										states.Add(st);
 										if(parser.HasError) return;
 									}
@@ -227,7 +238,7 @@ namespace CodeImp.DoomBuilder.Decorate
 						if(!string.IsNullOrEmpty(value))
 						{
 							// Try parsing as integer value
-							int intvalue = 0;
+							int intvalue;
 							int.TryParse(value, out intvalue);
 							
 							// Set the property
