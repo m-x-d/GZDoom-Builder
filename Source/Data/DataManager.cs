@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Config;
 using System.Threading;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Decorate;
 
 #endregion
 
@@ -81,6 +82,10 @@ namespace CodeImp.DoomBuilder.Data
 		// Used images
 		private Dictionary<long, long> usedimages;
 		
+		// Things combined with things created from Decorate
+		private List<ThingCategory> thingcategories;
+		private Dictionary<int, ThingTypeInfo> thingtypes;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -100,6 +105,8 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData Crosshair3D { get { return crosshair; } }
 		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
 		public ImageData ThingBox { get { return thingbox; } }
+		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
+		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
 		internal ICollection<MatchingTextureSet> TextureSets { get { return texturesets; } }
 		internal OthersTextureSet OthersTextureSet { get { return othertextures; } }
 		internal AllTextureSet AllTextureSet { get { return alltextures; } }
@@ -188,7 +195,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads all data resources
 		internal void Load(DataLocationList locations)
 		{
-			int texcount, flatcount, spritecount;
+			int texcount, flatcount, spritecount, thingcount;
 			DataReader c;
 			
 			// Create collections
@@ -203,6 +210,8 @@ namespace CodeImp.DoomBuilder.Data
 			texturesets = new List<MatchingTextureSet>();
 			usedimages = new Dictionary<long, long>();
 			internalsprites = new Dictionary<string, ImageData>();
+			thingcategories = General.Map.Config.GetThingCategories();
+			thingtypes = General.Map.Config.GetThingTypes();
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -263,6 +272,7 @@ namespace CodeImp.DoomBuilder.Data
 			LoadPalette();
 			texcount = LoadTextures();
 			flatcount = LoadFlats();
+			thingcount = LoadDecorateThings();
 			spritecount = LoadSprites();
 			LoadInternalSprites();
 			
@@ -307,7 +317,7 @@ namespace CodeImp.DoomBuilder.Data
 			StartBackgroundLoader();
 			
 			// Output info
-			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + spritecount + " sprites");
+			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + spritecount + " sprites, " + thingcount + " decorate things");
 		}
 		
 		// This unloads all data
@@ -603,7 +613,7 @@ namespace CodeImp.DoomBuilder.Data
 			PatchNames newpnames;
 			int counter = 0;
 			long firsttexture = 0;
-			
+
 			// Go for all opened containers
 			foreach(DataReader dr in containers)
 			{
@@ -862,7 +872,7 @@ namespace CodeImp.DoomBuilder.Data
 		private int LoadSprites()
 		{
 			// Go for all things
-			foreach(ThingTypeInfo ti in General.Map.Config.Things)
+			foreach(ThingTypeInfo ti in General.Map.Data.ThingTypes)
 			{
 				// Sprite not added to collection yet?
 				if(!sprites.ContainsKey(ti.SpriteLongName) && (ti.Sprite.Length <= 8))
@@ -1014,6 +1024,93 @@ namespace CodeImp.DoomBuilder.Data
 			return img.Texture;
 		}
 		*/
+		
+		#endregion
+
+		#region ================== Things
+		
+		// This loads the things from Decorate
+		private int LoadDecorateThings()
+		{
+			DecorateParser parser;
+			int counter = 0;
+			
+			// Create the parser
+			parser = new DecorateParser();
+			parser.OnInclude = LoadDecorateFromLocation;
+			
+			// Go for all opened containers
+			foreach(DataReader dr in containers)
+			{
+				// Load Decorate info cumulatively (the last Decorate is added to the previous)
+				// I'm not sure if this is the right thing to do though.
+				Stream decodata = dr.GetDecorateData("DECORATE");
+				if(decodata != null)
+				{
+					// Parse the data
+					decodata.Seek(0, SeekOrigin.Begin);
+					parser.Parse(decodata);
+					
+					// Check for errors
+					if(parser.HasError)
+					{
+						General.WriteLogLine("ERROR: Unable to parse DECORATE data from location " + dr.Location.location + "!");
+						General.WriteLogLine(parser.ErrorDescription + " on line " + parser.ErrorLine);
+						break;
+					}
+				}
+			}
+			
+			if(!parser.HasError)
+			{
+				// Go for all actors in the decorate
+				// TODO
+				counter = parser.Actors.Count;
+			}
+			
+			// Output info
+			return counter;
+		}
+		
+		// This loads Decorate data from a specific file or lump name
+		private void LoadDecorateFromLocation(string location)
+		{
+			// TODO
+			int t = 5;
+		}
+		
+		// This gets thing information by index
+		public ThingTypeInfo GetThingInfo(int thingtype)
+		{
+			// Index in config?
+			if(thingtypes.ContainsKey(thingtype))
+			{
+				// Return from config
+				return thingtypes[thingtype];
+			}
+			else
+			{
+				// Create unknown thing info
+				return new ThingTypeInfo(thingtype);
+			}
+		}
+
+		// This gets thing information by index
+		// Returns null when thing type info could not be found
+		public ThingTypeInfo GetThingInfoEx(int thingtype)
+		{
+			// Index in config?
+			if(thingtypes.ContainsKey(thingtype))
+			{
+				// Return from config
+				return thingtypes[thingtype];
+			}
+			else
+			{
+				// No such thing type known
+				return null;
+			}
+		}
 		
 		#endregion
 		

@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Controls
 			spritepanel.Left = infopanel.Left + infopanel.Width + infopanel.Margin.Right + spritepanel.Margin.Left;
 			
 			// Lookup thing info
-			ti = General.Map.Config.GetThingInfo(t.Type);
+			ti = General.Map.Data.GetThingInfo(t.Type);
 
 			// Get thing action information
 			if(General.Map.Config.LinedefActions.ContainsKey(t.Action))

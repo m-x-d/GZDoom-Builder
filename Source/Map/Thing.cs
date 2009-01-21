@@ -364,7 +364,7 @@ namespace CodeImp.DoomBuilder.Map
 			ThingTypeInfo ti;
 			
 			// Lookup settings
-			ti = General.Map.Config.GetThingInfo(type);
+			ti = General.Map.Data.GetThingInfo(type);
 
 			// Apply size
 			size = ti.Width;

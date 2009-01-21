@@ -266,6 +266,7 @@ namespace CodeImp.DoomBuilder
 			data.Load(configinfo.Resources, options.Resources);
 			
 			// Update structures
+			map.UpdateConfiguration();
 			map.Update();
 			thingsfilter.Update();
 			
@@ -355,6 +356,7 @@ namespace CodeImp.DoomBuilder
 			data.Load(configinfo.Resources, options.Resources, maplocation);
 
 			// Update structures
+			map.UpdateConfiguration();
 			map.SnapAllToAccuracy();
 			map.Update();
 			thingsfilter.Update();

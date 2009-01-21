@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Fill the categories combobox
 			filtercategory.Items.Add("(any category)");
-			filtercategory.Items.AddRange(General.Map.Config.ThingCategories.ToArray());
+			filtercategory.Items.AddRange(General.Map.Data.ThingCategories.ToArray());
 
 			// Fill checkboxes list
 			foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)

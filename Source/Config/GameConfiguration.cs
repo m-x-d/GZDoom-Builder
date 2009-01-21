@@ -158,8 +158,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Things
 		public ICollection<string> DefaultThingFlags { get { return defaultthingflags; } }
 		public IDictionary<string, string> ThingFlags { get { return thingflags; } }
-		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
-		public ICollection<ThingTypeInfo> Things { get { return things.Values; } }
 		public List<FlagTranslation> ThingFlagsTranslation { get { return thingflagstranslation; } }
 		
 		// Linedefs
@@ -683,37 +681,16 @@ namespace CodeImp.DoomBuilder.Config
 		public byte ReadSetting(string setting, byte defaultsetting) { return cfg.ReadSetting(setting, defaultsetting); }
 		public IDictionary ReadSetting(string setting, IDictionary defaultsetting) { return cfg.ReadSetting(setting, defaultsetting); }
 		
-		// This gets thing information by index
-		public ThingTypeInfo GetThingInfo(int thingtype)
+		// This gets a list of things categories
+		internal List<ThingCategory> GetThingCategories()
 		{
-			// Index in config?
-			if(things.ContainsKey(thingtype))
-			{
-				// Return from config
-				return things[thingtype];
-			}
-			else
-			{
-				// Create unknown thing info
-				return new ThingTypeInfo(thingtype);
-			}
+			return new List<ThingCategory>(thingcategories);
 		}
-
-		// This gets thing information by index
-		// Returns null when thing type info could not be found
-		public ThingTypeInfo GetThingInfoEx(int thingtype)
+		
+		// This gets a list of things
+		internal Dictionary<int, ThingTypeInfo> GetThingTypes()
 		{
-			// Index in config?
-			if(things.ContainsKey(thingtype))
-			{
-				// Return from config
-				return things[thingtype];
-			}
-			else
-			{
-				// No such thing type known
-				return null;
-			}
+			return new Dictionary<int, ThingTypeInfo>(things);
 		}
 		
 		// This checks if an action is generalized or predefined

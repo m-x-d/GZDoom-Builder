@@ -2075,7 +2075,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(IsInfoPanelExpanded) thinginfo.ShowInfo(t);
 
 			// Show info on collapsed label
-			ThingTypeInfo ti = General.Map.Config.GetThingInfo(t.Type);
+			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 			labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
 			labelcollapsedinfo.Refresh();
 		}
