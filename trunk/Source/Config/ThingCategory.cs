@@ -179,6 +179,12 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Methods
 
+		// This sorts the category, if preferred
+		internal void SortIfNeeded()
+		{
+			if(sorted) things.Sort();
+		}
+		
 		// This adds a thing to the category
 		internal void AddThing(ThingTypeInfo t)
 		{

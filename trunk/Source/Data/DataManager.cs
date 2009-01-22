@@ -235,7 +235,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Make DataLocation.type of type Type and assign the
 				// types of the desired reader classes.
 
-				try
+				//try
 				{
 					// Choose container type
 					switch(dl.type)
@@ -256,6 +256,7 @@ namespace CodeImp.DoomBuilder.Data
 							break;
 					}
 				}
+				/*
 				catch(Exception e)
 				{
 					// Unable to load resource
@@ -264,6 +265,7 @@ namespace CodeImp.DoomBuilder.Data
 					General.ShowErrorMessage("Unable to load resources from location \"" + dl.location + "\". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
 					continue;
 				}	
+				*/
 				
 				// Add container
 				if(c != null) containers.Add(c);
@@ -280,6 +282,9 @@ namespace CodeImp.DoomBuilder.Data
 			// Sort names
 			texturenames.Sort();
 			flatnames.Sort();
+
+			// Sort things
+			foreach(ThingCategory tc in thingcategories) tc.SortIfNeeded();
 
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
@@ -666,7 +671,10 @@ namespace CodeImp.DoomBuilder.Data
 		internal Stream GetPatchData(string pname)
 		{
 			Stream patch;
-
+			if(pname.ToUpperInvariant() == "WALL57_1")
+			{
+				int t = 5;
+			}
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{

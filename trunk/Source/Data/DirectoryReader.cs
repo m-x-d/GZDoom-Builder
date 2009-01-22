@@ -24,6 +24,7 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.IO;
 
 #endregion
@@ -32,15 +33,22 @@ namespace CodeImp.DoomBuilder.Data
 {
 	internal sealed class DirectoryReader : PK3StructuredReader
 	{
-		#region ================== Constructor / Disposer
+		#region ================== Variables
+
+		private DirectoryFilesList files;
+
+		#endregion
 		
+		#region ================== Constructor / Disposer
+
 		// Constructor
 		public DirectoryReader(DataLocation dl) : base(dl)
 		{
 			General.WriteLogLine("Opening directory resource '" + location.location + "'");
 			
 			// Initialize
-			Initialize(dl.location);
+			files = new DirectoryFilesList(dl.location, true);
+			Initialize();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -66,74 +74,53 @@ namespace CodeImp.DoomBuilder.Data
 		// This creates an image
 		protected override ImageData CreateImage(string name, string filename, bool flat)
 		{
-			return new FileImage(name, filename, flat);
+			return new FileImage(name, Path.Combine(location.location, filename), flat);
 		}
 
 		// This returns true if the specified file exists
 		protected override bool FileExists(string filename)
 		{
-			return File.Exists(filename);
+			return files.FileExists(filename);
 		}
 		
 		// This returns all files in a given directory
 		protected override string[] GetAllFiles(string path, bool subfolders)
 		{
-			if(Directory.Exists(path))
-			{
-				if(subfolders)
-					return Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-				else
-					return Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
-			}
-			else
-				return new string[0];
+			return files.GetAllFiles(path, subfolders).ToArray();
 		}
 
 		// This returns all files in a given directory that match the given extension
 		protected override string[] GetFilesWithExt(string path, string extension, bool subfolders)
 		{
-			if(Directory.Exists(path))
-			{
-				if(subfolders)
-					return Directory.GetFiles(path, "*." + extension, SearchOption.AllDirectories);
-				else
-					return Directory.GetFiles(path, "*." + extension, SearchOption.TopDirectoryOnly);
-			}
-			else
-				return new string[0];
+			return files.GetAllFiles(path, extension, subfolders).ToArray();
+		}
+
+		// This finds the first file that has the specific name, regardless of file extension
+		protected override string FindFirstFile(string beginswith, bool subfolders)
+		{
+			return files.GetFirstFile(beginswith, subfolders);
 		}
 
 		// This finds the first file that has the specific name, regardless of file extension
 		protected override string FindFirstFile(string path, string beginswith, bool subfolders)
 		{
-			string[] files = GetAllFiles(path, subfolders);
-			foreach(string f in files)
-			{
-				if(string.Compare(Path.GetFileNameWithoutExtension(f), beginswith, true) == 0)
-					return f;
-			}
-			
-			return null;
+			return files.GetFirstFile(path, beginswith, subfolders);
 		}
 
 		// This finds the first file that has the specific name
 		protected override string FindFirstFileWithExt(string path, string beginswith, bool subfolders)
 		{
-			string[] files = GetAllFiles(path, subfolders);
-			foreach(string f in files)
-			{
-				if(string.Compare(Path.GetFileName(f), beginswith, true) == 0)
-					return f;
-			}
-			
-			return null;
+			string title = Path.GetFileNameWithoutExtension(beginswith);
+			string ext = Path.GetExtension(beginswith);
+			if(ext.Length > 1) ext = ext.Substring(1); else ext = "";
+			return files.GetFirstFile(path, title, subfolders, ext);
 		}
 		
 		// This loads an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
 		protected override MemoryStream LoadFile(string filename)
 		{
-			return new MemoryStream(File.ReadAllBytes(filename));
+			return new MemoryStream(File.ReadAllBytes(Path.Combine(location.location, filename)));
 		}
 
 		// This creates a temp file for the speciied file and return the absolute path to the temp file
@@ -142,7 +129,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Just copy the file
 			string tempfile = General.MakeTempFilename(General.Map.TempPath, "wad");
-			File.Copy(filename, tempfile);
+			File.Copy(Path.Combine(location.location, filename), tempfile);
 			return tempfile;
 		}
 
