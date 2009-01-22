@@ -48,14 +48,6 @@ namespace CodeImp.DoomBuilder.Data
 		private bool roottextures;
 		private bool rootflats;
 		
-		// Paths
-		protected string rootpath;
-		protected string patchespath;
-		protected string texturespath;
-		protected string flatspath;
-		protected string hirespath;
-		protected string spritespath;
-		
 		// WAD files that must be loaded as well
 		private List<WADReader> wads;
 		
@@ -76,18 +68,10 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// Call this to initialize this class
-		protected virtual void Initialize(string rootpath)
+		protected virtual void Initialize()
 		{
-			// Initialize
-			this.rootpath = rootpath;
-			this.patchespath = Path.Combine(rootpath, PATCHES_DIR);
-			this.texturespath = Path.Combine(rootpath, TEXTURES_DIR);
-			this.flatspath = Path.Combine(rootpath, FLATS_DIR);
-			this.hirespath = Path.Combine(rootpath, HIRES_DIR);
-			this.spritespath = Path.Combine(rootpath, SPRITES_DIR);
-			
 			// Load all WAD files in the root as WAD resources
-			string[] wadfiles = GetFilesWithExt(rootpath, "wad", false);
+			string[] wadfiles = GetFilesWithExt("", "wad", false);
 			wads = new List<WADReader>(wadfiles.Length);
 			foreach(string w in wadfiles)
 			{
@@ -181,19 +165,19 @@ namespace CodeImp.DoomBuilder.Data
 			// Should we load the images in this directory as textures?
 			if(roottextures)
 			{
-				collection = LoadDirectoryImages(rootpath, false);
+				collection = LoadDirectoryImages("", false);
 				AddImagesToList(images, collection);
 			}
 			
 			// TODO: Add support for hires texture here
 			
 			// Add images from texture directory
-			collection = LoadDirectoryImages(texturespath, false);
+			collection = LoadDirectoryImages(TEXTURES_DIR, false);
 			AddImagesToList(images, collection);
 
 			// Load TEXTURE1 lump file
 			List<ImageData> imgset = new List<ImageData>();
-			string texture1file = FindFirstFile(rootpath, "TEXTURE1", false);
+			string texture1file = FindFirstFile("TEXTURE1", false);
 			if((texture1file != null) && FileExists(texture1file))
 			{
 				MemoryStream filedata = LoadFile(texture1file);
@@ -202,7 +186,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Load TEXTURE2 lump file
-			string texture2file = FindFirstFile(rootpath, "TEXTURE2", false);
+			string texture2file = FindFirstFile("TEXTURE2", false);
 			if((texture2file != null) && FileExists(texture2file))
 			{
 				MemoryStream filedata = LoadFile(texture2file);
@@ -234,7 +218,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// If none of the wads provides patch names, let's see if we can
-			string pnamesfile = FindFirstFile(rootpath, "PNAMES", false);
+			string pnamesfile = FindFirstFile("PNAMES", false);
 			if((pnamesfile != null) && FileExists(pnamesfile))
 			{
 				MemoryStream pnamesdata = LoadFile(pnamesfile);
@@ -261,7 +245,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Find in patches directory
-			string filename = FindFirstFile(patchespath, pname, true);
+			string filename = FindFirstFile(PATCHES_DIR, pname, true);
 			if((filename != null) && FileExists(filename))
 			{
 				return LoadFile(filename);
@@ -295,12 +279,12 @@ namespace CodeImp.DoomBuilder.Data
 			// Should we load the images in this directory as flats?
 			if(rootflats)
 			{
-				collection = LoadDirectoryImages(rootpath, true);
+				collection = LoadDirectoryImages("", true);
 				AddImagesToList(images, collection);
 			}
 			
 			// Add images from flats directory
-			collection = LoadDirectoryImages(flatspath, true);
+			collection = LoadDirectoryImages(FLATS_DIR, true);
 			AddImagesToList(images, collection);
 			
 			return images;
@@ -326,7 +310,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Find in sprites directory
-			string filename = FindFirstFile(spritespath, pfilename, true);
+			string filename = FindFirstFile(SPRITES_DIR, pfilename, true);
 			if((filename != null) && FileExists(filename))
 			{
 				return LoadFile(filename);
@@ -351,7 +335,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Find in sprites directory
-			string filename = FindFirstFile(spritespath, pfilename, true);
+			string filename = FindFirstFile(SPRITES_DIR, pfilename, true);
 			if((filename != null) && FileExists(filename))
 			{
 				return true;
@@ -381,8 +365,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Find in root directory
 			string filename = Path.GetFileName(pname);
 			string pathname = Path.GetDirectoryName(pname);
-			string fullpath = Path.Combine(rootpath, pathname);
-			string foundfile = filename.IndexOf('.') > -1 ? FindFirstFileWithExt(fullpath, filename, false) : FindFirstFile(fullpath, filename, false);
+			string foundfile = (filename.IndexOf('.') > -1) ? FindFirstFileWithExt(pathname, filename, false) : FindFirstFile(pathname, filename, false);
 			if((foundfile != null) && FileExists(foundfile))
 			{
 				return LoadFile(foundfile);
@@ -454,6 +437,9 @@ namespace CodeImp.DoomBuilder.Data
 		protected abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);
 
 		// This must find the first file that has the specific name, regardless of file extension
+		protected abstract string FindFirstFile(string beginswith, bool subfolders);
+
+		// This must find the first file that has the specific name, regardless of file extension
 		protected abstract string FindFirstFile(string path, string beginswith, bool subfolders);
 
 		// This must find the first file that has the specific name
@@ -466,6 +452,26 @@ namespace CodeImp.DoomBuilder.Data
 		// This must create a temp file for the speciied file and return the absolute path to the temp file
 		// NOTE: Callers are responsible for removing the temp file when done!
 		protected abstract string CreateTempFile(string filename);
+
+		// This makes the path relative to the directory, if needed
+		protected virtual string MakeRelativePath(string anypath)
+		{
+			if(Path.IsPathRooted(anypath))
+			{
+				// Make relative
+				string lowpath = anypath.ToLowerInvariant();
+				string lowlocation = location.location.ToLowerInvariant();
+				if((lowpath.Length > (lowlocation.Length + 1)) && lowpath.StartsWith(lowlocation))
+					return anypath.Substring(lowlocation.Length + 1);
+				else
+					return anypath;
+			}
+			else
+			{
+				// Path is already relative
+				return anypath;
+			}
+		}
 		
 		#endregion
 	}

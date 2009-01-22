@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Decorate;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class ThingTypeInfo
+	public class ThingTypeInfo : IComparable<ThingTypeInfo>
 	{
 		#region ================== Constants
 
@@ -228,6 +228,12 @@ namespace CodeImp.DoomBuilder.Config
 			// Options
 			hangs = actor.GetFlagValue("spawnceiling", false);
 			blocking = actor.GetFlagValue("solid", false) ? 2 : 0;
+		}
+
+		// This is used for sorting
+		public int CompareTo(ThingTypeInfo other)
+		{
+			return string.Compare(this.title, other.title, true);
 		}
 		
 		#endregion

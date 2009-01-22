@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Variables
 
-		private List<string> fileslist;
+		private DirectoryFilesList files;
 
 		#endregion
 
@@ -50,22 +50,25 @@ namespace CodeImp.DoomBuilder.Data
 			ZipInputStream zipstream = OpenPK3File();
 			
 			// Make list of all files
-			fileslist = new List<string>();
+			List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>();
 			ZipEntry entry = zipstream.GetNextEntry();
 			while(entry != null)
 			{
-				if(entry.IsFile) fileslist.Add(entry.Name.ToLowerInvariant());
+				if(entry.IsFile) fileentries.Add(new DirectoryFileEntry(entry.Name));
 				
 				// Next
 				entry = zipstream.GetNextEntry();
 			}
+
+			// Make files list
+			files = new DirectoryFilesList(fileentries);
 
 			// Done with the zip file
 			zipstream.Close();
 			zipstream.Dispose();
 			
 			// Initialize without path (because we use paths relative to the PK3 file)
-			Initialize("");
+			Initialize();
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -109,120 +112,40 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns true if the specified file exists
 		protected override bool FileExists(string filename)
 		{
-			string lowfile = filename.ToLowerInvariant();
-			foreach(string f in fileslist)
-			{
-				if((string.Compare(f, lowfile) == 0)) return true;
-			}
-
-			return false;
+			return files.FileExists(filename);
 		}
-		
+
 		// This returns all files in a given directory
 		protected override string[] GetAllFiles(string path, bool subfolders)
 		{
-			List<string> matches = new List<string>();
-			string lowpath = path.ToLowerInvariant();
-			if(subfolders)
-			{
-				foreach(string f in fileslist)
-				{
-					if(Path.GetDirectoryName(f).StartsWith(lowpath, true, CultureInfo.InvariantCulture) &&
-					   (Path.GetFileName(f).Length > 0))
-						matches.Add(f);
-				}
-			}
-			else
-			{
-				foreach(string f in fileslist)
-				{
-					if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
-					   (Path.GetFileName(f).Length > 0))
-						matches.Add(f);
-				}
-			}
-			
-			return matches.ToArray();
+			return files.GetAllFiles(path, subfolders).ToArray();
 		}
 
 		// This returns all files in a given directory that match the given extension
 		protected override string[] GetFilesWithExt(string path, string extension, bool subfolders)
 		{
-			List<string> matches = new List<string>();
-			string lowpath = path.ToLowerInvariant();
-			string lowext = "." + extension.ToLowerInvariant();
-			if(subfolders)
-			{
-				foreach(string f in fileslist)
-				{
-					if(Path.GetDirectoryName(f).StartsWith(lowpath, true, CultureInfo.InvariantCulture) && f.EndsWith(lowext))
-						matches.Add(f);
-				}
-			}
-			else
-			{
-				foreach(string f in fileslist)
-				{
-					if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) && f.EndsWith(lowext))
-						matches.Add(f);
-				}
-			}
-			
-			return matches.ToArray();
+			return files.GetAllFiles(path, extension, subfolders).ToArray();
+		}
+
+		// This finds the first file that has the specific name, regardless of file extension
+		protected override string FindFirstFile(string beginswith, bool subfolders)
+		{
+			return files.GetFirstFile(beginswith, subfolders);
 		}
 
 		// This finds the first file that has the specific name, regardless of file extension
 		protected override string FindFirstFile(string path, string beginswith, bool subfolders)
 		{
-			string lowpath = path.ToLowerInvariant();
-			string lowbegin = beginswith.ToLowerInvariant();
-			if(subfolders)
-			{
-				foreach(string f in fileslist)
-				{
-					if(Path.GetDirectoryName(f).StartsWith(lowpath, true, CultureInfo.InvariantCulture) &&
-					   (string.Compare(Path.GetFileNameWithoutExtension(f), lowbegin) == 0))
-						return f;
-				}
-			}
-			else
-			{
-				foreach(string f in fileslist)
-				{
-					if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
-					   (string.Compare(Path.GetFileNameWithoutExtension(f), lowbegin) == 0))
-						return f;
-				}
-			}
-			
-			return null;
+			return files.GetFirstFile(path, beginswith, subfolders);
 		}
 
 		// This finds the first file that has the specific name
 		protected override string FindFirstFileWithExt(string path, string beginswith, bool subfolders)
 		{
-			string lowpath = path.ToLowerInvariant();
-			string lowbegin = beginswith.ToLowerInvariant();
-			if(subfolders)
-			{
-				foreach(string f in fileslist)
-				{
-					if(Path.GetDirectoryName(f).StartsWith(lowpath, true, CultureInfo.InvariantCulture) &&
-					   (string.Compare(Path.GetFileName(f), lowbegin) == 0))
-						return f;
-				}
-			}
-			else
-			{
-				foreach(string f in fileslist)
-				{
-					if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
-					   (string.Compare(Path.GetFileName(f), lowbegin) == 0))
-						return f;
-				}
-			}
-			
-			return null;
+			string title = Path.GetFileNameWithoutExtension(beginswith);
+			string ext = Path.GetExtension(beginswith);
+			if(ext.Length > 1) ext = ext.Substring(1); else ext = "";
+			return files.GetFirstFile(path, title, subfolders, ext);
 		}
 
 		// This loads an entire file in memory and returns the stream
@@ -238,19 +161,24 @@ namespace CodeImp.DoomBuilder.Data
 			ZipEntry entry = zipstream.GetNextEntry();
 			while(entry != null)
 			{
-				// Is this the entry we are looking for?
-				if(string.Compare(entry.Name, filename, true) == 0)
+				if(entry.IsFile)
 				{
-					int expectedsize = (int)entry.Size;
-					if(expectedsize < 1) expectedsize = 1024;
-					filedata = new MemoryStream(expectedsize);
-					int readsize = zipstream.Read(copybuffer, 0, copybuffer.Length);
-					while(readsize > 0)
+					string entryname = entry.Name.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+					
+					// Is this the entry we are looking for?
+					if(string.Compare(entryname, filename, true) == 0)
 					{
-						filedata.Write(copybuffer, 0, readsize);
-						readsize = zipstream.Read(copybuffer, 0, copybuffer.Length);
+						int expectedsize = (int)entry.Size;
+						if(expectedsize < 1) expectedsize = 1024;
+						filedata = new MemoryStream(expectedsize);
+						int readsize = zipstream.Read(copybuffer, 0, copybuffer.Length);
+						while(readsize > 0)
+						{
+							filedata.Write(copybuffer, 0, readsize);
+							readsize = zipstream.Read(copybuffer, 0, copybuffer.Length);
+						}
+						break;
 					}
-					break;
 				}
 				
 				// Next
