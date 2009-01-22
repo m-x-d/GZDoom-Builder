@@ -1142,6 +1142,12 @@ namespace CodeImp.DoomBuilder.Geometry
 				// but their Marked property is copied where they have joined.
 				newlines = map.GetMarkedLinedefs(true);
 				
+				// Remove any disposed old lines
+				List<Linedef> prevoldlines = oldlines;
+				oldlines = new List<Linedef>(prevoldlines.Count);
+				foreach(Linedef ld in prevoldlines)
+					if(!ld.IsDisposed) oldlines.Add(ld);
+				
 				/***************************************************\
 					STEP 3: Join and create new sectors
 				\***************************************************/
