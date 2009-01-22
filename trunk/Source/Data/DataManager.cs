@@ -671,10 +671,7 @@ namespace CodeImp.DoomBuilder.Data
 		internal Stream GetPatchData(string pname)
 		{
 			Stream patch;
-			if(pname.ToUpperInvariant() == "WALL57_1")
-			{
-				int t = 5;
-			}
+
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
