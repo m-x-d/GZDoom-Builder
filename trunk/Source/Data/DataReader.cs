@@ -102,6 +102,9 @@ namespace CodeImp.DoomBuilder.Data
 		// When implemented, this returns the patch lump
 		public virtual Stream GetPatchData(string pname) { return null; }
 
+		// When implemented, this returns the texture lump
+		public virtual Stream GetTextureData(string pname) { return null; }
+
 		// When implemented, this loads the textures
 		public virtual ICollection<ImageData> LoadTextures(PatchNames pnames) { return null; }
 

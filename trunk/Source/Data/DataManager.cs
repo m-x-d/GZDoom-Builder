@@ -683,6 +683,23 @@ namespace CodeImp.DoomBuilder.Data
 			// No such patch found
 			return null;
 		}
+
+		// This returns a specific texture stream
+		internal Stream GetTextureData(string pname)
+		{
+			Stream patch;
+
+			// Go for all opened containers
+			for(int i = containers.Count - 1; i >= 0; i--)
+			{
+				// This contain provides this patch?
+				patch = containers[i].GetTextureData(pname);
+				if(patch != null) return patch;
+			}
+
+			// No such patch found
+			return null;
+		}
 		
 		// This returns an image by string
 		public ImageData GetTextureImage(string name)
