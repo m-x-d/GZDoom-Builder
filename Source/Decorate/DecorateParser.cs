@@ -42,17 +42,20 @@ namespace CodeImp.DoomBuilder.Decorate
 		#endregion
 		
 		#region ================== Constants
-
+		
 		// Parsing
 		private const string WHITESPACE = "\n \t\r";
-		private const string SPECIALTOKEN = ":{}+-\n";
+		private const string SPECIALTOKEN = ":{}+-\n;";
 		
 		#endregion
 		
 		#region ================== Variables
 		
-		// Objects
-		private List<ActorStructure> actors;
+		// These are actors we want to keep
+		private Dictionary<string, ActorStructure> actors;
+		
+		// These are all parsed actors, also those from other games
+		private Dictionary<string, ActorStructure> archivedactors;
 		
 		// Input data stream
 		private Stream datastream;
@@ -70,7 +73,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		
 		internal Stream DataStream { get { return datastream; } }
 		internal BinaryReader DataReader { get { return datareader; } }
-		public ICollection<ActorStructure> Actors { get { return actors; } }
+		public ICollection<ActorStructure> Actors { get { return actors.Values; } }
 		public int ErrorLine { get { return errorline; } }
 		public string ErrorDescription { get { return errordesc; } }
 		public string ErrorSource { get { return errorsource; } }
@@ -84,14 +87,15 @@ namespace CodeImp.DoomBuilder.Decorate
 		public DecorateParser()
 		{
 			// Initialize
-			actors = new List<ActorStructure>();
+			actors = new Dictionary<string, ActorStructure>();
+			archivedactors = new Dictionary<string, ActorStructure>();
 			errordesc = null;
 		}
 		
 		#endregion
-		
-		#region ================== Methods
-		
+
+		#region ================== Parsing
+
 		// This parses the given decorate stream
 		// Returns false on errors
 		public bool Parse(Stream stream, string sourcefilename)
@@ -117,8 +121,26 @@ namespace CodeImp.DoomBuilder.Decorate
 						// Read actor structure
 						ActorStructure actor = new ActorStructure(this);
 						if(this.HasError) break;
-						General.WriteLogLine("Added actor '" + actor.Name + "' from '" + localsourcename + "'");
-						actors.Add(actor);
+						
+						// Add the actor
+						archivedactors[actor.ClassName.ToLowerInvariant()] = actor;
+						if(actor.CheckActorSupported())
+							actors[actor.ClassName.ToLowerInvariant()] = actor;
+						
+						// Replace an actor?
+						if(actor.ReplacesClass != null)
+						{
+							if(GetArchivedActorByName(actor.ReplacesClass) != null)
+								archivedactors[actor.ReplacesClass.ToLowerInvariant()] = actor;
+							else
+								General.WriteLogLine("WARNING: Unable to find the DECORATE class '" + actor.ReplacesClass + "' to replace, while parsing '" + actor.ClassName + "'");
+							
+							if(actor.CheckActorSupported())
+							{
+								if(GetActorByName(actor.ReplacesClass) != null)
+									actors[actor.ReplacesClass.ToLowerInvariant()] = actor;
+							}
+						}
 					}
 					else if(objdeclaration == "#include")
 					{
@@ -145,22 +167,34 @@ namespace CodeImp.DoomBuilder.Decorate
 							break;
 						}
 					}
+					else if((objdeclaration == "const") || (objdeclaration == "native"))
+					{
+						// We don't need this, ignore up to the first next ;
+						while(SkipWhitespace(true))
+						{
+							string t = ReadToken();
+							if((t == ";") || (t == null)) break;
+						}
+					}
 					else
 					{
 						// Unknown structure!
-						// Best we can do now is just find the first { and the follow the scopes until the matching } is found
+						// Best we can do now is just find the first { and then
+						// follow the scopes until the matching } is found
 						string token2;
 						do
 						{
-							SkipWhitespace(true);
+							if(!SkipWhitespace(true)) break;
 							token2 = ReadToken();
+							if(token2 == null) break;
 						}
 						while(token2 != "{");
 						int scopelevel = 1;
 						do
 						{
-							SkipWhitespace(true);
+							if(!SkipWhitespace(true)) break;
 							token2 = ReadToken();
+							if(token2 == null) break;
 							if(token2 == "{") scopelevel++;
 							if(token2 == "}") scopelevel--;
 						}
@@ -322,6 +356,32 @@ namespace CodeImp.DoomBuilder.Decorate
 			errordesc = message;
 			errorline = linenumber;
 			errorsource = sourcename;
+		}
+		
+		#endregion
+		
+		#region ================== Methods
+		
+		// This returns an actor by name
+		// Returns null when actor cannot be found
+		public ActorStructure GetActorByName(string name)
+		{
+			name = name.ToLowerInvariant();
+			if(actors.ContainsKey(name))
+				return actors[name];
+			else
+				return null;
+		}
+
+		// This returns an actor by name
+		// Returns null when actor cannot be found
+		internal ActorStructure GetArchivedActorByName(string name)
+		{
+			name = name.ToLowerInvariant();
+			if(archivedactors.ContainsKey(name))
+				return archivedactors[name];
+			else
+				return null;
 		}
 		
 		#endregion

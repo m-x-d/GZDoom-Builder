@@ -421,10 +421,23 @@ namespace CodeImp.DoomBuilder.Data
 			lump = file.FindLump(pname);
 			if(lump != null) return lump.Stream; else return null;
 		}
-
+		
+		// This checks if the given sprite exists
+		public override bool GetSpriteExists(string pname)
+		{
+			Lump lump;
+			
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+			
+			// Find the lump
+			lump = file.FindLump(pname);
+			return (lump != null);
+		}
+		
 		#endregion
 
-		#region ================== Sprite
+		#region ================== Things
 
 		// This finds and returns a sprite stream
 		public override Stream GetDecorateData(string pname)

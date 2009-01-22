@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Decorate;
 
 #endregion
 
@@ -170,10 +171,65 @@ namespace CodeImp.DoomBuilder.Config
 			GC.SuppressFinalize(this);
 		}
 
+		// Constructor
+		internal ThingTypeInfo(ThingCategory cat, ActorStructure actor)
+		{
+			// Initialize
+			this.index = actor.DoomEdNum;
+			this.category = cat;
+			this.title = "Unnamed";
+			
+			// Read properties
+			this.sprite = cat.Sprite;
+			this.color = cat.Color;
+			this.arrow = (cat.Arrow != 0);
+			this.width = cat.Width;
+			this.height = cat.Height;
+			this.hangs = (cat.Hangs != 0);
+			this.blocking = cat.Blocking;
+			this.errorcheck = cat.ErrorCheck;
+			this.fixedsize = cat.FixedSize;
+			
+			// Apply settings from actor
+			ModifyByDecorateActor(actor);
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
 		#endregion
 
 		#region ================== Methods
-
+		
+		// This updates the properties from a decorate actor
+		internal void ModifyByDecorateActor(ActorStructure actor)
+		{
+			// Set the title
+			if(actor.Tag != null)
+				title = actor.Tag;
+			else
+				title = actor.ClassName;
+			
+			// Set sprite
+			sprite = actor.FindSuitableSprite();
+			
+			if(this.sprite.Length <= 8)
+				this.spritelongname = Lump.MakeLongName(this.sprite);
+			else
+				this.spritelongname = long.MaxValue;
+			
+			// Size
+			width = actor.Radius;
+			height = actor.Height;
+			
+			// Safety
+			if(this.width < 8f) this.width = 8f;
+			
+			// Options
+			hangs = actor.GetFlagValue("spawnceiling", false);
+			blocking = actor.GetFlagValue("solid", false) ? 2 : 0;
+		}
+		
 		#endregion
 	}
 }
