@@ -36,11 +36,27 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
+		#region ================== Structures
+
+		private struct LumpRange
+		{
+			public int start;
+			public int end;
+		}
+
+		#endregion
+
 		#region ================== Variables
 
 		// Source
 		private WAD file;
 		private bool is_iwad;
+
+		// Lump ranges
+		private List<LumpRange> flatranges;
+		private List<LumpRange> patchranges;
+		private List<LumpRange> spriteranges;
+		private List<LumpRange> textureranges;
 		
 		#endregion
 
@@ -60,6 +76,16 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			file = new WAD(location.location, true);
 			is_iwad = (file.Type == WAD.TYPE_IWAD);
+			patchranges = new List<LumpRange>();
+			spriteranges = new List<LumpRange>();
+			flatranges = new List<LumpRange>();
+			textureranges = new List<LumpRange>();
+			
+			// Find ranges
+			FindRanges(patchranges, General.Map.Config.PatchRanges, "patches");
+			FindRanges(spriteranges, General.Map.Config.SpriteRanges, "sprites");
+			FindRanges(flatranges, General.Map.Config.FlatRanges, "flats");
+			FindRanges(textureranges, General.Map.Config.TextureRanges, "textures");
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -98,6 +124,37 @@ namespace CodeImp.DoomBuilder.Data
 			file = new WAD(location.location, true);
 			is_iwad = (file.Type == WAD.TYPE_IWAD);
 			base.Resume();
+		}
+
+		// This fills a ranges list
+		private void FindRanges(List<LumpRange> ranges, IDictionary rangeinfos, string rangename)
+		{
+			foreach(DictionaryEntry r in rangeinfos)
+			{
+				// Read start and end
+				string rangestart = General.Map.Config.ReadSetting(rangename + "." + r.Key + ".start", "");
+				string rangeend = General.Map.Config.ReadSetting(rangename + "." + r.Key + ".end", "");
+				if((rangestart.Length > 0) && (rangeend.Length > 0))
+				{
+					// Find ranges
+					int startindex = file.FindLumpIndex(rangestart);
+					while(startindex > -1)
+					{
+						LumpRange range = new LumpRange();
+						range.start = startindex;
+						range.end = file.FindLumpIndex(rangeend, startindex);
+						if(range.end > -1)
+						{
+							ranges.Add(range);
+							startindex = file.FindLumpIndex(rangestart, range.end);
+						}
+						else
+						{
+							startindex = -1;
+						}
+					}
+				}
+			}
 		}
 		
 		#endregion
@@ -147,16 +204,10 @@ namespace CodeImp.DoomBuilder.Data
 			if(lump != null) LoadTextureSet(lump.Stream, ref images, pnames);
 			
 			// Read ranges from configuration
-			foreach(DictionaryEntry r in General.Map.Config.TextureRanges)
+			foreach(LumpRange range in textureranges)
 			{
-				// Read start and end
-				rangestart = General.Map.Config.ReadSetting("textures." + r.Key + ".start", "");
-				rangeend = General.Map.Config.ReadSetting("textures." + r.Key + ".end", "");
-				if((rangestart.Length > 0) && (rangeend.Length > 0))
-				{
-					// Load texture range
-					LoadTexturesRange(rangestart, rangeend, ref images, pnames);
-				}
+				// Load texture range
+				LoadTexturesRange(range.start, range.end, ref images, pnames);
 			}
 
 			// Return result
@@ -164,39 +215,23 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This loads a range of textures
-		private void LoadTexturesRange(string startlump, string endlump, ref List<ImageData> images, PatchNames pnames)
+		private void LoadTexturesRange(int startindex, int endindex, ref List<ImageData> images, PatchNames pnames)
 		{
-			int startindex, endindex;
-			float defaultscale;
-			SimpleTextureImage image;
-			
 			// Determine default scale
-			defaultscale = General.Map.Config.DefaultTextureScale;
+			float defaultscale = General.Map.Config.DefaultTextureScale;
 			
-			// Continue until no more start can be found
-			startindex = file.FindLumpIndex(startlump);
-			while(startindex > -1)
+			// Go for all lumps between start and end exclusive
+			for(int i = startindex + 1; i < endindex; i++)
 			{
-				// Find end index
-				endindex = file.FindLumpIndex(endlump, startindex + 1);
-				if(endindex == -1) endindex = file.Lumps.Count - 1;
-				
-				// Go for all lumps between start and end exclusive
-				for(int i = startindex + 1; i < endindex; i++)
+				// Lump not zero length?
+				if(file.Lumps[i].Length > 0)
 				{
-					// Lump not zero length?
-					if(file.Lumps[i].Length > 0)
-					{
-						// Make the image
-						image = new SimpleTextureImage(file.Lumps[i].Name, file.Lumps[i].Name, defaultscale, defaultscale);
-						
-						// Add image to collection
-						images.Add(image);
-					}
+					// Make the image
+					SimpleTextureImage image = new SimpleTextureImage(file.Lumps[i].Name, file.Lumps[i].Name, defaultscale, defaultscale);
+					
+					// Add image to collection
+					images.Add(image);
 				}
-				
-				// Find the next start
-				startindex = file.FindLumpIndex(startlump, endindex);
 			}
 		}
 
@@ -319,9 +354,32 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			// Find the lump
-			lump = file.FindLump(pname);
-			if(lump != null) return lump.Stream; else return null;
+			// Find the lump in ranges
+			foreach(LumpRange range in patchranges)
+			{
+				lump = file.FindLump(pname, range.start, range.end);
+				if(lump != null) return lump.Stream;
+			}
+
+			return null;
+		}
+
+		// This finds and returns a texture stream
+		public override Stream GetTextureData(string pname)
+		{
+			Lump lump;
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find the lump in ranges
+			foreach(LumpRange range in textureranges)
+			{
+				lump = file.FindLump(pname, range.start, range.end);
+				if(lump != null) return lump.Stream;
+			}
+
+			return null;
 		}
 		
 		#endregion
@@ -400,9 +458,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			// Find the lump
-			lump = file.FindLump(pname);
-			if(lump != null) return lump.Stream; else return null;
+			// Find the lump in ranges
+			foreach(LumpRange range in flatranges)
+			{
+				lump = file.FindLump(pname, range.start, range.end);
+				if(lump != null) return lump.Stream;
+			}
+			
+			return null;
 		}
 		
 		#endregion
@@ -417,9 +480,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			// Find the lump
-			lump = file.FindLump(pname);
-			if(lump != null) return lump.Stream; else return null;
+			// Find the lump in ranges
+			foreach(LumpRange range in spriteranges)
+			{
+				lump = file.FindLump(pname, range.start, range.end);
+				if(lump != null) return lump.Stream;
+			}
+
+			return null;
 		}
 		
 		// This checks if the given sprite exists
@@ -429,10 +497,15 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
-			
-			// Find the lump
-			lump = file.FindLump(pname);
-			return (lump != null);
+
+			// Find the lump in ranges
+			foreach(LumpRange range in spriteranges)
+			{
+				lump = file.FindLump(pname, range.start, range.end);
+				if(lump != null) return true;
+			}
+
+			return false;
 		}
 		
 		#endregion
