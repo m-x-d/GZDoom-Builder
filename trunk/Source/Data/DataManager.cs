@@ -915,6 +915,23 @@ namespace CodeImp.DoomBuilder.Data
 			// No such patch found
 			return null;
 		}
+
+		// This tests if a given sprite can be found
+		internal bool GetSpriteExists(string pname)
+		{
+			if(!string.IsNullOrEmpty(pname))
+			{
+				// Go for all opened containers
+				for(int i = containers.Count - 1; i >= 0; i--)
+				{
+					// This contain provides this patch?
+					if(containers[i].GetSpriteExists(pname)) return true;
+				}
+			}
+			
+			// No such patch found
+			return false;
+		}
 		
 		// This loads the internal sprites
 		private void LoadInternalSprites()
@@ -1036,40 +1053,83 @@ namespace CodeImp.DoomBuilder.Data
 			DecorateParser parser;
 			int counter = 0;
 			
-			// Create the parser
-			parser = new DecorateParser();
-			parser.OnInclude = LoadDecorateFromLocation;
-			
-			// Go for all opened containers
-			foreach(DataReader dr in containers)
+			// Only load these when the game configuration supports the use of decorate
+			if(!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
 			{
-				// Load Decorate info cumulatively (the last Decorate is added to the previous)
-				// I'm not sure if this is the right thing to do though.
-				currentreader = dr;
-				Stream decodata = dr.GetDecorateData("DECORATE");
-				if(decodata != null)
+				// Create the parser
+				parser = new DecorateParser();
+				parser.OnInclude = LoadDecorateFromLocation;
+				
+				// Go for all opened containers
+				foreach(DataReader dr in containers)
 				{
-					// Parse the data
-					decodata.Seek(0, SeekOrigin.Begin);
-					parser.Parse(decodata, "DECORATE");
-					
-					// Check for errors
-					if(parser.HasError)
+					// Load Decorate info cumulatively (the last Decorate is added to the previous)
+					// I'm not sure if this is the right thing to do though.
+					currentreader = dr;
+					Stream decodata = dr.GetDecorateData("DECORATE");
+					if(decodata != null)
 					{
-						General.WriteLogLine("ERROR: Unable to parse DECORATE data from location " + dr.Location.location + "!");
-						General.WriteLogLine("ERROR: " + parser.ErrorDescription + " on line " + parser.ErrorLine + " in '" + parser.ErrorSource + "'");
-						break;
+						// Parse the data
+						decodata.Seek(0, SeekOrigin.Begin);
+						parser.Parse(decodata, "DECORATE");
+						
+						// Check for errors
+						if(parser.HasError)
+						{
+							General.WriteLogLine("ERROR: Unable to parse DECORATE data from location " + dr.Location.location + "!");
+							General.WriteLogLine("ERROR: " + parser.ErrorDescription + " on line " + parser.ErrorLine + " in '" + parser.ErrorSource + "'");
+							break;
+						}
 					}
 				}
-			}
-
-			currentreader = null;
-			
-			if(!parser.HasError)
-			{
-				// Go for all actors in the decorate
-				// TODO
-				counter = parser.Actors.Count;
+				
+				currentreader = null;
+				
+				if(!parser.HasError)
+				{
+					// Find the decorate category
+					ThingCategory cat = null;
+					foreach(ThingCategory c in thingcategories)
+					{
+						if(c.Name == "decorate")
+						{
+							cat = c;
+							break;
+						}
+					}
+					
+					// Go for all actors in the decorate to make things or update things
+					foreach(ActorStructure actor in parser.Actors)
+					{
+						// Check if we want to add this actor
+						if(actor.DoomEdNum > 0)
+						{
+							// Check if we can find this thing in our existing collection
+							if(thingtypes.ContainsKey(actor.DoomEdNum))
+							{
+								// Update the thing
+								thingtypes[actor.DoomEdNum].ModifyByDecorateActor(actor);
+							}
+							else
+							{
+								// Make the decorate category if needed
+								if(cat == null)
+								{
+									cat = new ThingCategory("decorate", "Decorate");
+									thingcategories.Add(cat);
+								}
+								
+								// Add new thing
+								ThingTypeInfo t = new ThingTypeInfo(cat, actor);
+								cat.AddThing(t);
+								thingtypes.Add(t.Index, t);
+							}
+							
+							// Count
+							counter++;
+						}
+					}
+				}
 			}
 			
 			// Output info
@@ -1079,7 +1139,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads Decorate data from a specific file or lump name
 		private void LoadDecorateFromLocation(DecorateParser parser, string location)
 		{
-			General.WriteLogLine("Including DECORATE resource '" + location + "'...");
+			//General.WriteLogLine("Including DECORATE resource '" + location + "'...");
 			Stream decodata = currentreader.GetDecorateData(location);
 			if(decodata != null)
 			{

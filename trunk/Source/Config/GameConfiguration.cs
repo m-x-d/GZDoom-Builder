@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int makedooraction;
 		private int[] makedoorargs;
 		private bool linetagindicatesectors;
+		private string decorategames;
 		
 		// Skills
 		private List<SkillInfo> skills;
@@ -143,6 +144,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int MakeDoorAction { get { return makedooraction; } }
 		public int[] MakeDoorArgs { get { return makedoorargs; } }
 		public bool LineTagIndicatesSectors { get { return linetagindicatesectors ; } }
+		public string DecorateGames { get { return decorategames; } }
 		
 		// Skills
 		public List<SkillInfo> Skills { get { return skills; } }
@@ -238,6 +240,7 @@ namespace CodeImp.DoomBuilder.Config
 			makedoortrack = cfg.ReadSetting("makedoortrack", "-");
 			makedooraction = cfg.ReadSetting("makedooraction", 0);
 			linetagindicatesectors = cfg.ReadSetting("linetagindicatesectors", false);
+			decorategames = cfg.ReadSetting("decorategames", "");
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 			
 			// Flags have special (invariant culture) conversion

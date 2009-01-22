@@ -119,60 +119,107 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This returns all files in a given directory
-		protected override string[] GetAllFiles(string path)
+		protected override string[] GetAllFiles(string path, bool subfolders)
 		{
 			List<string> matches = new List<string>();
 			string lowpath = path.ToLowerInvariant();
-			foreach(string f in fileslist)
+			if(subfolders)
 			{
-				if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
-				   (Path.GetFileName(f).Length > 0))
-					matches.Add(f);
+				foreach(string f in fileslist)
+				{
+					if(Path.GetDirectoryName(f).StartsWith(lowpath, true, CultureInfo.InvariantCulture) &&
+					   (Path.GetFileName(f).Length > 0))
+						matches.Add(f);
+				}
+			}
+			else
+			{
+				foreach(string f in fileslist)
+				{
+					if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
+					   (Path.GetFileName(f).Length > 0))
+						matches.Add(f);
+				}
 			}
 			
 			return matches.ToArray();
 		}
 
 		// This returns all files in a given directory that match the given extension
-		protected override string[] GetFilesWithExt(string path, string extension)
+		protected override string[] GetFilesWithExt(string path, string extension, bool subfolders)
 		{
 			List<string> matches = new List<string>();
 			string lowpath = path.ToLowerInvariant();
 			string lowext = "." + extension.ToLowerInvariant();
-			foreach(string f in fileslist)
+			if(subfolders)
 			{
-				if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) && f.EndsWith(lowext))
-					matches.Add(f);
+				foreach(string f in fileslist)
+				{
+					if(Path.GetDirectoryName(f).StartsWith(lowpath, true, CultureInfo.InvariantCulture) && f.EndsWith(lowext))
+						matches.Add(f);
+				}
 			}
-
+			else
+			{
+				foreach(string f in fileslist)
+				{
+					if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) && f.EndsWith(lowext))
+						matches.Add(f);
+				}
+			}
+			
 			return matches.ToArray();
 		}
 
 		// This finds the first file that has the specific name, regardless of file extension
-		protected override string FindFirstFile(string path, string beginswith)
+		protected override string FindFirstFile(string path, string beginswith, bool subfolders)
 		{
 			string lowpath = path.ToLowerInvariant();
 			string lowbegin = beginswith.ToLowerInvariant();
-			foreach(string f in fileslist)
+			if(subfolders)
 			{
-				if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
-				   (string.Compare(Path.GetFileNameWithoutExtension(f), lowbegin) == 0))
-					return f;
+				foreach(string f in fileslist)
+				{
+					if(Path.GetDirectoryName(f).StartsWith(lowpath, true, CultureInfo.InvariantCulture) &&
+					   (string.Compare(Path.GetFileNameWithoutExtension(f), lowbegin) == 0))
+						return f;
+				}
 			}
-
+			else
+			{
+				foreach(string f in fileslist)
+				{
+					if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
+					   (string.Compare(Path.GetFileNameWithoutExtension(f), lowbegin) == 0))
+						return f;
+				}
+			}
+			
 			return null;
 		}
 
 		// This finds the first file that has the specific name
-		protected override string FindFirstFileWithExt(string path, string beginswith)
+		protected override string FindFirstFileWithExt(string path, string beginswith, bool subfolders)
 		{
 			string lowpath = path.ToLowerInvariant();
 			string lowbegin = beginswith.ToLowerInvariant();
-			foreach(string f in fileslist)
+			if(subfolders)
 			{
-				if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
-				   (string.Compare(Path.GetFileName(f), lowbegin) == 0))
-					return f;
+				foreach(string f in fileslist)
+				{
+					if(Path.GetDirectoryName(f).StartsWith(lowpath, true, CultureInfo.InvariantCulture) &&
+					   (string.Compare(Path.GetFileName(f), lowbegin) == 0))
+						return f;
+				}
+			}
+			else
+			{
+				foreach(string f in fileslist)
+				{
+					if((string.Compare(Path.GetDirectoryName(f), lowpath) == 0) &&
+					   (string.Compare(Path.GetFileName(f), lowbegin) == 0))
+						return f;
+				}
 			}
 			
 			return null;

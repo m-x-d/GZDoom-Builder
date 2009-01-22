@@ -84,7 +84,31 @@ namespace CodeImp.DoomBuilder.Config
 		#endregion
 
 		#region ================== Constructor / Disposer
-
+		
+		// Constructor
+		internal ThingCategory(string name, string title)
+		{
+			// Initialize
+			this.name = name;
+			this.title = title;
+			this.things = new List<ThingTypeInfo>();
+			
+			// Set default properties
+			this.sprite = "";
+			this.sorted = true;
+			this.color = 18;
+			this.arrow = 1;
+			this.width = 10;
+			this.height = 20;
+			this.hangs = 0;
+			this.blocking = 0;
+			this.errorcheck = 1;
+			this.fixedsize = false;
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+		
 		// Constructor
 		internal ThingCategory(Configuration cfg, string name)
 		{

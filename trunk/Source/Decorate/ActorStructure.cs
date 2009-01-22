@@ -35,6 +35,8 @@ namespace CodeImp.DoomBuilder.Decorate
 	{
 		#region ================== Constants
 		
+		private readonly string[] SPRITE_POSTFIXES = new string[] {"2C8", "2D8", "2A8", "2B8", "1C1", "1D1", "1A1", "1B1", "A2", "A1", "A0", "2", "1", "0" };
+		
 		#endregion
 		
 		#region ================== Variables
@@ -43,6 +45,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		private string classname;
 		private string inheritclass;
 		private string replaceclass;
+		private List<string> games;
 		private int doomednum = -1;
 		
 		// Flags
@@ -55,19 +58,24 @@ namespace CodeImp.DoomBuilder.Decorate
 		// nothing that tells you if it is a value or another property)
 		private int radius;
 		private int height;
+		private string tag;
 		
 		// States
-		private List<StateStructure> states;
+		private Dictionary<string, StateStructure> states;
 		
 		#endregion
 		
 		#region ================== Properties
 		
 		public Dictionary<string, bool> Flags { get { return flags; } }
-		public string Name { get { return classname; } }
+		public string ClassName { get { return classname; } }
+		public string InheritsClass { get { return inheritclass; } }
+		public string ReplacesClass { get { return replaceclass; } }
+		public List<string> Games { get { return games; } }
+		public int DoomEdNum { get { return doomednum; } }
 		public int Radius { get { return radius; } }
 		public int Height { get { return height; } }
-		public int DoomEdNum { get { return doomednum; } }
+		public string Tag { get { return tag; } }
 		
 		#endregion
 		
@@ -78,7 +86,11 @@ namespace CodeImp.DoomBuilder.Decorate
 		{
 			// Initialize
 			flags = new Dictionary<string, bool>();
-			states = new List<StateStructure>();
+			states = new Dictionary<string, StateStructure>();
+			inheritclass = "actor";
+			replaceclass = null;
+			games = new List<string>();
+			tag = null;
 			
 			// First next token is the class name
 			parser.SkipWhitespace(true);
@@ -88,7 +100,7 @@ namespace CodeImp.DoomBuilder.Decorate
 				parser.ReportError("Expected actor class name");
 				return;
 			}
-			
+
 			// Parse tokens before entering the actor scope
 			while(parser.SkipWhitespace(true))
 			{
@@ -106,6 +118,15 @@ namespace CodeImp.DoomBuilder.Decorate
 							parser.ReportError("Expected class name to inherit from");
 							return;
 						}
+						else
+						{
+							// Find the actor to inherit from
+							ActorStructure other = parser.GetArchivedActorByName(inheritclass);
+							if(other != null)
+								InheritFrom(other);
+							else
+								General.WriteLogLine("WARNING: Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + "'");
+						}
 					}
 					else if(token == "replaces")
 					{
@@ -117,6 +138,10 @@ namespace CodeImp.DoomBuilder.Decorate
 							parser.ReportError("Expected class name to replace");
 							return;
 						}
+					}
+					else if(token == "native")
+					{
+						// Igore this token
 					}
 					else if(token == "{")
 					{
@@ -143,6 +168,7 @@ namespace CodeImp.DoomBuilder.Decorate
 			}
 			
 			// Now parse the contents of actor structure
+			string previoustoken = "";
 			while(parser.SkipWhitespace(true))
 			{
 				string token = parser.ReadToken();
@@ -157,7 +183,7 @@ namespace CodeImp.DoomBuilder.Decorate
 					{
 						// Add the flag with its value
 						flagname = flagname.ToLowerInvariant();
-						flags.Add(flagname, flagvalue);
+						flags[flagname] = flagvalue;
 					}
 					else
 					{
@@ -165,51 +191,55 @@ namespace CodeImp.DoomBuilder.Decorate
 						return;
 					}
 				}
+				else if((token == "action") || (token == "native"))
+				{
+					// We don't need this, ignore up to the first next ;
+					while(parser.SkipWhitespace(true))
+					{
+						string t = parser.ReadToken();
+						if((t == ";") || (t == null)) break;
+					}
+				}
 				else if(token == "states")
 				{
 					// Now parse actor states until we reach the end of the states structure
 					while(parser.SkipWhitespace(true))
 					{
-						string statename = parser.ReadToken();
-						if(!string.IsNullOrEmpty(statename))
+						string statetoken = parser.ReadToken();
+						if(!string.IsNullOrEmpty(statetoken))
 						{
 							// Start of scope?
-							if(statename == "{")
+							if(statetoken == "{")
 							{
 								// This is fine
 							}
 							// End of scope?
-							else if(statename == "}")
+							else if(statetoken == "}")
 							{
 								// Done with the states,
 								// break out of this parse loop
 								break;
 							}
-							else
+							// State label?
+							else if(statetoken == ":")
 							{
-								// Next token must be a :
-								parser.SkipWhitespace(true);
-								string labeltoken = parser.ReadToken();
-								if(!string.IsNullOrEmpty(statename))
+								if(!string.IsNullOrEmpty(previoustoken))
 								{
-									if(labeltoken == ":")
-									{
-										// Parse actor state
-										StateStructure st = new StateStructure(parser, statename);
-										states.Add(st);
-										if(parser.HasError) return;
-									}
-									else
-									{
-										parser.ReportError("Expected state label colon");
-										return;
-									}
+									// Parse actor state
+									StateStructure st = new StateStructure(parser, previoustoken);
+									if(parser.HasError) return;
+									states[previoustoken.ToLowerInvariant()] = st;
 								}
 								else
 								{
 									parser.ReportError("Unexpected end of structure");
 									return;
 								}
+							}
+							else
+							{
+								// Keep token
+								previoustoken = statetoken;
 							}
 						}
 						else
@@ -225,42 +255,153 @@ namespace CodeImp.DoomBuilder.Decorate
 					// break out of this parse loop
 					break;
 				}
-				else
+				// Known property with a single value?
+				else if((token == "radius") || (token == "height") || (token == "tag"))
 				{
-					// This must be a property
-					
-					// Is this a known property?
-					if((token == "radius") || (token == "height"))
+					// Next token is the property value to set
+					parser.SkipWhitespace(true);
+					string value = parser.ReadToken();
+					if(!string.IsNullOrEmpty(value))
 					{
-						// Next token is the property value to set
-						parser.SkipWhitespace(true);
-						string value = parser.ReadToken();
-						if(!string.IsNullOrEmpty(value))
+						// Try parsing as integer value
+						int intvalue;
+						int.TryParse(value, out intvalue);
+						
+						// Set the property
+						switch(token)
 						{
-							// Try parsing as integer value
-							int intvalue;
-							int.TryParse(value, out intvalue);
-							
-							// Set the property
-							if(token == "radius")
-								radius = intvalue;
-							else if(token == "height")
-								height = intvalue;
-						}
-						else
-						{
-							// Can't find the property value!
-							parser.ReportError("Expected a value for property '" + token + "'");
-							return;
+							case "radius": radius = intvalue; break;
+							case "height": height = intvalue; break;
+							case "tag": tag = value; break;
 						}
 					}
+					else
+					{
+						// Can't find the property value!
+						parser.ReportError("Expected a value for property '" + token + "'");
+						return;
+					}
 				}
+				// Monster property?
+				else if(token == "monster")
+				{
+					// This sets certain flags we are interested in
+					flags["solid"] = true;
+				}
+				// Game property?
+				else if(token == "game")
+				{
+					// Include all tokens on the same line
+					games.Clear();
+					while(parser.SkipWhitespace(false))
+					{
+						string v = parser.ReadToken();
+						if(v == null)
+						{
+							parser.ReportError("Unexpected end of structure");
+							return;
+						}
+						if(v == "\n") break;
+						games.Add(v.ToLowerInvariant());
+					}
+				}
+				
+				// Keep token
+				previoustoken = token;
 			}
 		}
 		
 		#endregion
 		
 		#region ================== Methods
+		
+		// This is called to inherit properties from another actor
+		private void InheritFrom(ActorStructure baseactor)
+		{
+			this.flags = new Dictionary<string, bool>(baseactor.flags);
+			this.height = baseactor.height;
+			this.radius = baseactor.radius;
+			this.games = new List<string>(baseactor.games);
+			this.states = new Dictionary<string, StateStructure>(baseactor.states);
+		}
+		
+		// This returns the status of a flag
+		public bool GetFlagValue(string flag, bool defaultvalue)
+		{
+			if(flags.ContainsKey(flag))
+				return flags[flag];
+			else
+				return defaultvalue;
+		}
+		
+		// This checks if this actor is meant for the current decorate game support
+		public bool CheckActorSupported()
+		{
+			// Check if we want to include this actor
+			string includegames = General.Map.Config.DecorateGames.ToLowerInvariant();
+			bool includeactor = (games.Count == 0);
+			foreach(string g in games)
+				includeactor |= includegames.Contains(g);
+			
+			return includeactor;
+		}
+		
+		// This finds the best suitable sprite to use
+		public string FindSuitableSprite()
+		{
+			string sprite = "";
+			
+			// Try the idle state
+			if(states.ContainsKey("idle"))
+			{
+				StateStructure s = states["idle"];
+				if(!string.IsNullOrEmpty(s.FirstSprite))
+					sprite = s.FirstSprite;
+			}
+			
+			// Try the see state
+			if(string.IsNullOrEmpty(sprite) && states.ContainsKey("see"))
+			{
+				StateStructure s = states["see"];
+				if(!string.IsNullOrEmpty(s.FirstSprite))
+					sprite = s.FirstSprite;
+			}
+
+			// Try the inactive state
+			if(string.IsNullOrEmpty(sprite) && states.ContainsKey("inactive"))
+			{
+				StateStructure s = states["inactive"];
+				if(!string.IsNullOrEmpty(s.FirstSprite))
+					sprite = s.FirstSprite;
+			}
+			
+			// Still no sprite found? then just pick the first we can find
+			if(string.IsNullOrEmpty(sprite))
+			{
+				foreach(StateStructure s in states.Values)
+				{
+					if(!string.IsNullOrEmpty(s.FirstSprite))
+					{
+						sprite = s.FirstSprite;
+						break;
+					}
+				}
+			}
+			
+			if(!string.IsNullOrEmpty(sprite))
+			{
+				// The sprite name is not actually complete, we still have to append
+				// the direction characters to it. Find an existing sprite with direction.
+				foreach(string postfix in SPRITE_POSTFIXES)
+				{
+					if(General.Map.Data.GetSpriteExists(sprite + postfix))
+						return sprite + postfix;
+				}
+			}
+			
+			// No sprite found
+			return "";
+		}
 		
 		#endregion
 	}

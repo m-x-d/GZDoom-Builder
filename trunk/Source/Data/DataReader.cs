@@ -118,9 +118,12 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 		
 		#region ================== Sprites
-
+		
 		// When implemented, this returns the sprite lump
 		public virtual Stream GetSpriteData(string pname) { return null; }
+
+		// When implemented, this checks if the given sprite lump exists
+		public virtual bool GetSpriteExists(string pname) { return false; }
 		
 		#endregion
 

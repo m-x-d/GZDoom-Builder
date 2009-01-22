@@ -76,27 +76,37 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This returns all files in a given directory
-		protected override string[] GetAllFiles(string path)
+		protected override string[] GetAllFiles(string path, bool subfolders)
 		{
 			if(Directory.Exists(path))
-				return Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
+			{
+				if(subfolders)
+					return Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+				else
+					return Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly);
+			}
 			else
 				return new string[0];
 		}
 
 		// This returns all files in a given directory that match the given extension
-		protected override string[] GetFilesWithExt(string path, string extension)
+		protected override string[] GetFilesWithExt(string path, string extension, bool subfolders)
 		{
 			if(Directory.Exists(path))
-				return Directory.GetFiles(path, "*." + extension, SearchOption.TopDirectoryOnly);
+			{
+				if(subfolders)
+					return Directory.GetFiles(path, "*." + extension, SearchOption.AllDirectories);
+				else
+					return Directory.GetFiles(path, "*." + extension, SearchOption.TopDirectoryOnly);
+			}
 			else
 				return new string[0];
 		}
 
 		// This finds the first file that has the specific name, regardless of file extension
-		protected override string FindFirstFile(string path, string beginswith)
+		protected override string FindFirstFile(string path, string beginswith, bool subfolders)
 		{
-			string[] files = GetAllFiles(path);
+			string[] files = GetAllFiles(path, subfolders);
 			foreach(string f in files)
 			{
 				if(string.Compare(Path.GetFileNameWithoutExtension(f), beginswith, true) == 0)
@@ -107,9 +117,9 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds the first file that has the specific name
-		protected override string FindFirstFileWithExt(string path, string beginswith)
+		protected override string FindFirstFileWithExt(string path, string beginswith, bool subfolders)
 		{
-			string[] files = GetAllFiles(path);
+			string[] files = GetAllFiles(path, subfolders);
 			foreach(string f in files)
 			{
 				if(string.Compare(Path.GetFileName(f), beginswith, true) == 0)

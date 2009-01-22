@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.spritespath = Path.Combine(rootpath, SPRITES_DIR);
 			
 			// Load all WAD files in the root as WAD resources
-			string[] wadfiles = GetFilesWithExt(rootpath, "wad");
+			string[] wadfiles = GetFilesWithExt(rootpath, "wad", false);
 			wads = new List<WADReader>(wadfiles.Length);
 			foreach(string w in wadfiles)
 			{
@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Load TEXTURE1 lump file
 			List<ImageData> imgset = new List<ImageData>();
-			string texture1file = FindFirstFile(rootpath, "TEXTURE1");
+			string texture1file = FindFirstFile(rootpath, "TEXTURE1", false);
 			if((texture1file != null) && FileExists(texture1file))
 			{
 				MemoryStream filedata = LoadFile(texture1file);
@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Load TEXTURE2 lump file
-			string texture2file = FindFirstFile(rootpath, "TEXTURE2");
+			string texture2file = FindFirstFile(rootpath, "TEXTURE2", false);
 			if((texture2file != null) && FileExists(texture2file))
 			{
 				MemoryStream filedata = LoadFile(texture2file);
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// If none of the wads provides patch names, let's see if we can
-			string pnamesfile = FindFirstFile(rootpath, "PNAMES");
+			string pnamesfile = FindFirstFile(rootpath, "PNAMES", false);
 			if((pnamesfile != null) && FileExists(pnamesfile))
 			{
 				MemoryStream pnamesdata = LoadFile(pnamesfile);
@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Find in patches directory
-			string filename = FindFirstFile(patchespath, pname);
+			string filename = FindFirstFile(patchespath, pname, true);
 			if((filename != null) && FileExists(filename))
 			{
 				return LoadFile(filename);
@@ -326,7 +326,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Find in sprites directory
-			string filename = FindFirstFile(spritespath, pfilename);
+			string filename = FindFirstFile(spritespath, pfilename, true);
 			if((filename != null) && FileExists(filename))
 			{
 				return LoadFile(filename);
@@ -334,6 +334,31 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Nothing found
 			return null;
+		}
+
+		// This checks if the given sprite exists
+		public override bool GetSpriteExists(string pname)
+		{
+			string pfilename = pname.Replace('\\', '^');
+			
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+			
+			// Find in any of the wad files
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				if(wads[i].GetSpriteExists(pname)) return true;
+			}
+			
+			// Find in sprites directory
+			string filename = FindFirstFile(spritespath, pfilename, true);
+			if((filename != null) && FileExists(filename))
+			{
+				return true;
+			}
+			
+			// Nothing found
+			return false;
 		}
 		
 		#endregion
@@ -357,7 +382,7 @@ namespace CodeImp.DoomBuilder.Data
 			string filename = Path.GetFileName(pname);
 			string pathname = Path.GetDirectoryName(pname);
 			string fullpath = Path.Combine(rootpath, pathname);
-			string foundfile = filename.IndexOf('.') > -1 ? FindFirstFileWithExt(fullpath, filename) : FindFirstFile(fullpath, filename);
+			string foundfile = filename.IndexOf('.') > -1 ? FindFirstFileWithExt(fullpath, filename, false) : FindFirstFile(fullpath, filename, false);
 			if((foundfile != null) && FileExists(foundfile))
 			{
 				return LoadFile(foundfile);
@@ -377,9 +402,9 @@ namespace CodeImp.DoomBuilder.Data
 			List<ImageData> images = new List<ImageData>();
 			string[] files;
 			string name;
-
+			
 			// Go for all files
-			files = GetAllFiles(path);
+			files = GetAllFiles(path, false);
 			foreach(string f in files)
 			{
 				// Make the texture name from filename without extension
@@ -423,16 +448,16 @@ namespace CodeImp.DoomBuilder.Data
 		protected abstract bool FileExists(string filename);
 		
 		// This must return all files in a given directory
-		protected abstract string[] GetAllFiles(string path);
+		protected abstract string[] GetAllFiles(string path, bool subfolders);
 
 		// This must return all files in a given directory that match the given extension
-		protected abstract string[] GetFilesWithExt(string path, string extension);
+		protected abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);
 
 		// This must find the first file that has the specific name, regardless of file extension
-		protected abstract string FindFirstFile(string path, string beginswith);
+		protected abstract string FindFirstFile(string path, string beginswith, bool subfolders);
 
 		// This must find the first file that has the specific name
-		protected abstract string FindFirstFileWithExt(string path, string beginswith);
+		protected abstract string FindFirstFileWithExt(string path, string beginswith, bool subfolders);
 		
 		// This must load an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
