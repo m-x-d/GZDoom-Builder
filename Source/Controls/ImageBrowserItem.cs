@@ -96,9 +96,10 @@ namespace CodeImp.DoomBuilder.Controls
 			g.PixelOffsetMode = PixelOffsetMode.None;
 
 			// Determine coordinates
-			SizeF textsize = g.MeasureString(this.Text, this.ListView.Font, bounds.Width);
-			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - PreviewManager.IMAGE_WIDTH) >> 1),
-				bounds.Top + ((bounds.Height - PreviewManager.IMAGE_HEIGHT - (int)textsize.Height) >> 1), PreviewManager.IMAGE_WIDTH, PreviewManager.IMAGE_HEIGHT);
+			SizeF textsize = g.MeasureString(this.Text, this.ListView.Font, bounds.Width * 2);
+			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - General.Map.Data.Previews.ImageWidth) >> 1),
+				bounds.Top + ((bounds.Height - General.Map.Data.Previews.ImageHeight - (int)textsize.Height) >> 1),
+				General.Map.Data.Previews.ImageWidth, General.Map.Data.Previews.ImageHeight);
 			PointF textpos = new PointF(bounds.Left + ((float)bounds.Width - textsize.Width) * 0.5f, bounds.Bottom - textsize.Height - 2);
 
 			// Determine colors

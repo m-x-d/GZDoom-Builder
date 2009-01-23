@@ -38,10 +38,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		// Image format
 		private const PixelFormat IMAGE_FORMAT = PixelFormat.Format32bppArgb;
-		
+
 		// Dimensions of a single preview image
-		internal const int IMAGE_WIDTH = 64;
-		internal const int IMAGE_HEIGHT = 64;
+		public static readonly int[] PREVIEW_SIZES = new int[] { 48, 64, 80, 96, 112, 128 };
 
 		// How many previews on a single atlas?
 		private const int PREVIEWS_X = 1;
@@ -50,7 +49,11 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Variables
-
+		
+		// Dimensions of a single preview image
+		private int imagewidth = 64;
+		private int imageheight = 64;
+		
 		// Atlases
 		private List<Bitmap> atlases;
 		
@@ -68,8 +71,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		// Constants
-		public int ImageWidth { get { return IMAGE_WIDTH; } }
-		public int ImageHeight { get { return IMAGE_HEIGHT; } }
+		public int ImageWidth { get { return imagewidth; } }
+		public int ImageHeight { get { return imageheight; } }
 		
 		// Disposing
 		internal bool IsDisposed { get { return isdisposed; } }
@@ -94,6 +97,8 @@ namespace CodeImp.DoomBuilder.Data
 			atlases = new List<Bitmap>();
 			imageque = new Queue<ImageData>();
 			nextpreviewindex = 0;
+			imagewidth = PREVIEW_SIZES[General.Settings.PreviewImageSize];
+			imageheight = PREVIEW_SIZES[General.Settings.PreviewImageSize];
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -143,7 +148,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			lock(atlases)
 			{
-				Bitmap b = new Bitmap(IMAGE_WIDTH * PREVIEWS_X, IMAGE_HEIGHT * PREVIEWS_Y, IMAGE_FORMAT);
+				Bitmap b = new Bitmap(imagewidth * PREVIEWS_X, imageheight * PREVIEWS_Y, IMAGE_FORMAT);
 				Graphics g = Graphics.FromImage(b);
 				g.Clear(Color.Transparent);
 				g.Dispose();
@@ -184,7 +189,7 @@ namespace CodeImp.DoomBuilder.Data
 					g.InterpolationMode = InterpolationMode.HighQualityBicubic;
 					g.SmoothingMode = SmoothingMode.HighQuality;
 					g.PixelOffsetMode = PixelOffsetMode.None;
-					Rectangle atlasrect = new Rectangle(localx * IMAGE_WIDTH, localy * IMAGE_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT);
+					Rectangle atlasrect = new Rectangle(localx * imagewidth, localy * imageheight, imagewidth, imageheight);
 					RectangleF imgrect = General.MakeZoomedRect(new Size(img.Width, img.Height), atlasrect);
 					g.DrawImage(img.Bitmap, imgrect);
 					g.Dispose();
@@ -222,10 +227,10 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					RectangleF trect = new RectangleF((float)targetpos.X, (float)targetpos.Y,
-													  (float)IMAGE_WIDTH, (float)IMAGE_HEIGHT);
-					RectangleF srect = new RectangleF((float)GetLocalXIndex(previewindex) * IMAGE_WIDTH,
-													  (float)GetLocalYIndex(previewindex) * IMAGE_HEIGHT,
-													  (float)IMAGE_WIDTH, (float)IMAGE_HEIGHT);
+													  (float)imagewidth, (float)imageheight);
+					RectangleF srect = new RectangleF((float)GetLocalXIndex(previewindex) * imagewidth,
+													  (float)GetLocalYIndex(previewindex) * imageheight,
+													  (float)imagewidth, (float)imageheight);
 					target.DrawImage(atlas, trect, srect, GraphicsUnit.Pixel);
 				}
 			}
@@ -243,9 +248,9 @@ namespace CodeImp.DoomBuilder.Data
 			lock(atlas)
 			{
 				RectangleF trect = General.MakeZoomedRect(new Size(64, 64), targetview);
-				RectangleF srect = new RectangleF((float)GetLocalXIndex(previewindex) * IMAGE_WIDTH,
-												  (float)GetLocalYIndex(previewindex) * IMAGE_HEIGHT,
-												  (float)IMAGE_WIDTH, (float)IMAGE_HEIGHT);
+				RectangleF srect = new RectangleF((float)GetLocalXIndex(previewindex) * imagewidth,
+												  (float)GetLocalYIndex(previewindex) * imageheight,
+												  (float)imagewidth, (float)imageheight);
 				target.DrawImage(atlas, trect, srect, GraphicsUnit.Pixel);
 			}
 		}
