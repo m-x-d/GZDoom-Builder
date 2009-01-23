@@ -335,11 +335,15 @@ namespace CodeImp.DoomBuilder.Data
 				else if(loadfailed)
 				{
 					// Draw error bitmap
+					targetpos = new Point(targetpos.X + ((General.Map.Data.Previews.ImageWidth - Properties.Resources.Hourglass.Width) >> 1),
+										  targetpos.Y + ((General.Map.Data.Previews.ImageHeight - Properties.Resources.Hourglass.Height) >> 1));
 					target.DrawImageUnscaled(Properties.Resources.Failed, targetpos);
 				}
 				else
 				{
 					// Draw loading bitmap
+					targetpos = new Point(targetpos.X + ((General.Map.Data.Previews.ImageWidth - Properties.Resources.Hourglass.Width) >> 1),
+										  targetpos.Y + ((General.Map.Data.Previews.ImageHeight - Properties.Resources.Hourglass.Height) >> 1));
 					target.DrawImageUnscaled(Properties.Resources.Hourglass, targetpos);
 				}
 			}
