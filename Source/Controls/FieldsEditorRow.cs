@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This is true when the field is defined. Cannot be false when this field
 		// is not fixed, because non-fixed fields are deleted from the list when undefined.
 		private bool isdefined;
-		
+
 		// Type
 		private TypeHandler fieldtype;
 		
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public bool IsFixed { get { return isfixed; } }
 		public bool IsDefined { get { return isdefined; } }
-		public bool IsEmpty { get { return (this.Cells[2].Value.ToString().Length == 0); } }
+		public bool IsEmpty { get { return (this.Cells[2].Value == null) || (this.Cells[2].Value.ToString().Length == 0); } }
 		public string Name { get { return this.Cells[0].Value.ToString(); } }
 		public TypeHandler TypeHandler { get { return fieldtype; } }
 		public UniversalFieldInfo Info { get { return fieldinfo; } }
@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Anything in the box?
-			if(this.Cells[2].Value.ToString().Length > 0)
+			if((this.Cells[2].Value != null) && (this.Cells[2].Value.ToString().Length > 0))
 			{
 				// Validate value
 				fieldtype.SetValue(this.Cells[2].Value);
@@ -252,7 +252,7 @@ namespace CodeImp.DoomBuilder.Controls
 				this.Cells[1].Value = fieldtype.GetDisplayType();
 			}
 		}
-
+		
 		// This clears the field
 		public void Clear()
 		{
@@ -263,7 +263,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public object GetResult(object value)
 		{
 			// Anything in the box?
-			if(this.Cells[2].Value.ToString().Length > 0)
+			if((this.Cells[2].Value != null) && (this.Cells[2].Value.ToString().Length > 0))
 			{
 				// Return validated value
 				fieldtype.SetValue(this.Cells[2].Value);

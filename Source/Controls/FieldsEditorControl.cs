@@ -141,10 +141,11 @@ namespace CodeImp.DoomBuilder.Controls
 								if(!frow.TypeHandler.GetValue().Equals(f.Value.Value))
 								{
 									// Clear the value in the row
+									frow.Define(f.Value.Value);
 									frow.Clear();
 								}
 							}
-
+							
 							// Done
 							foundrow = true;
 							break;
@@ -158,7 +159,7 @@ namespace CodeImp.DoomBuilder.Controls
 					// Make new row
 					FieldsEditorRow frow = new FieldsEditorRow(fieldslist, f.Key, f.Value.Type, f.Value.Value);
 					fieldslist.Rows.Insert(fieldslist.Rows.Count - 1, frow);
-
+					
 					// When not the first, clear the field
 					// because the others did not define this one
 					if(!first) frow.Clear();
@@ -230,24 +231,20 @@ namespace CodeImp.DoomBuilder.Controls
 				if(row is FieldsEditorRow)
 				{
 					FieldsEditorRow frow = row as FieldsEditorRow;
-
-					// Field is defined?
-					if(frow.IsDefined)
+					
+					// Field is defined and not empty?
+					if(frow.IsDefined && !frow.IsEmpty)
 					{
-						// Only apply when not empty
-						if(!frow.IsEmpty)
-						{
-							// Apply field
-							object oldvalue = null;
-							if(tofields.ContainsKey(frow.Name)) oldvalue = tofields[frow.Name].Value;
-							tofields[frow.Name] = new UniValue(frow.TypeHandler.Index, frow.GetResult(oldvalue));
+						// Apply field
+						object oldvalue = null;
+						if(tofields.ContainsKey(frow.Name)) oldvalue = tofields[frow.Name].Value;
+						tofields[frow.Name] = new UniValue(frow.TypeHandler.Index, frow.GetResult(oldvalue));
 
-							// Custom row?
-							if(!frow.IsFixed)
-							{
-								// Write type to map configuration
-								General.Map.Options.SetUniversalFieldType(elementname, frow.Name, frow.TypeHandler.Index);
-							}
+						// Custom row?
+						if(!frow.IsFixed)
+						{
+							// Write type to map configuration
+							General.Map.Options.SetUniversalFieldType(elementname, frow.Name, frow.TypeHandler.Index);
 						}
 					}
 				}
