@@ -354,7 +354,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(previewstate == ImageLoadState.Ready)
 				{
 					// Make a bitmap and return it
-					Bitmap bmp = new Bitmap(PreviewManager.IMAGE_WIDTH, PreviewManager.IMAGE_HEIGHT);
+					Bitmap bmp = new Bitmap(General.Map.Data.Previews.ImageWidth, General.Map.Data.Previews.ImageHeight);
 					Graphics g = Graphics.FromImage(bmp);
 					g.Clear(Color.Transparent);
 					General.Map.Data.Previews.DrawPreview(previewindex, g, new Point(0, 0));

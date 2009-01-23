@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
-			bmp = new Bitmap(PreviewManager.IMAGE_WIDTH, PreviewManager.IMAGE_HEIGHT);
+			bmp = new Bitmap(General.Map.Data.Previews.ImageWidth, General.Map.Data.Previews.ImageHeight);
 		}
 		
 		#endregion

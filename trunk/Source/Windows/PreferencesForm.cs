@@ -27,6 +27,7 @@ using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Controls;
 using System.Globalization;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -54,12 +55,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Interface
 			imagebrightness.Value = General.Settings.ImageBrightness;
-			qualitydisplay.Checked = General.Settings.QualityDisplay;
 			squarethings.Checked = General.Settings.SquareThings;
 			doublesidedalpha.Value = (int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f);
 			defaultviewmode.SelectedIndex = General.Settings.DefaultViewMode;
-			classicbilinear.Checked = General.Settings.ClassicBilinear;
-			visualbilinear.Checked = General.Settings.VisualBilinear;
 			fieldofview.Value = General.Settings.VisualFOV / 10;
 			mousespeed.Value = General.Settings.MouseSpeed / 100;
 			movespeed.Value = General.Settings.MoveSpeed / 100;
@@ -67,6 +65,7 @@ namespace CodeImp.DoomBuilder.Windows
 			invertyaxis.Checked = General.Settings.InvertYAxis;
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;
 			scriptontop.Checked = General.Settings.ScriptOnTop;
+			previewsize.Value = General.Settings.PreviewImageSize;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -126,6 +125,9 @@ namespace CodeImp.DoomBuilder.Windows
 			colorliterals.Color = General.Colors.Literals;
 			colorconstants.Color = General.Colors.Constants;
 			blackbrowsers.Checked = General.Settings.BlackBrowsers;
+			classicbilinear.Checked = General.Settings.ClassicBilinear;
+			visualbilinear.Checked = General.Settings.VisualBilinear;
+			qualitydisplay.Checked = General.Settings.QualityDisplay;
 
 			// Done
 			allowapplycontrol = true;
@@ -140,12 +142,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
-			General.Settings.QualityDisplay = qualitydisplay.Checked;
 			General.Settings.SquareThings = squarethings.Checked;
 			General.Settings.DoubleSidedAlpha = 1.0f - (float)(doublesidedalpha.Value * 0.1f);
 			General.Settings.DefaultViewMode = defaultviewmode.SelectedIndex;
-			General.Settings.ClassicBilinear = classicbilinear.Checked;
-			General.Settings.VisualBilinear = visualbilinear.Checked;
 			General.Settings.VisualFOV = fieldofview.Value * 10;
 			General.Settings.MouseSpeed = mousespeed.Value * 100;
 			General.Settings.MoveSpeed = movespeed.Value * 100;
@@ -154,6 +153,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptFontBold = scriptfontbold.Checked;
 			General.Settings.ScriptFontName = scriptfontname.Text;
 			General.Settings.ScriptOnTop = scriptontop.Checked;
+			General.Settings.PreviewImageSize = previewsize.Value;
 
 			// Script font size
 			int fontsize = 8;
@@ -185,6 +185,9 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Colors.Constants = colorconstants.Color;
 			General.Colors.CreateAssistColors();
 			General.Settings.BlackBrowsers = blackbrowsers.Checked;
+			General.Settings.ClassicBilinear = classicbilinear.Checked;
+			General.Settings.VisualBilinear = visualbilinear.Checked;
+			General.Settings.QualityDisplay = qualitydisplay.Checked;
 			
 			// Close
 			this.DialogResult = DialogResult.OK;
@@ -218,6 +221,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Interface Panel
 
+		private void previewsize_ValueChanged(object sender, EventArgs e)
+		{
+			int size = PreviewManager.PREVIEW_SIZES[previewsize.Value];
+			previewsizelabel.Text = size.ToString() + " x " + size.ToString();
+		}
+		
 		private void fieldofview_ValueChanged(object sender, EventArgs e)
 		{
 			int value = fieldofview.Value * 10;
