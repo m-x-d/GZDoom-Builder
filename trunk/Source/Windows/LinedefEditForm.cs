@@ -161,6 +161,9 @@ namespace CodeImp.DoomBuilder.Windows
 				fronthigh.TextureName = fl.Front.HighTexture;
 				frontmid.TextureName = fl.Front.MiddleTexture;
 				frontlow.TextureName = fl.Front.LowTexture;
+				fronthigh.Required = fl.Front.HighRequired();
+				frontmid.Required = fl.Front.MiddleRequired();
+				frontlow.Required = fl.Front.LowRequired();
 				frontsector.Text = fl.Front.Sector.Index.ToString();
 				frontoffsetx.Text = fl.Front.OffsetX.ToString();
 				frontoffsety.Text = fl.Front.OffsetY.ToString();
@@ -172,6 +175,9 @@ namespace CodeImp.DoomBuilder.Windows
 				backhigh.TextureName = fl.Back.HighTexture;
 				backmid.TextureName = fl.Back.MiddleTexture;
 				backlow.TextureName = fl.Back.LowTexture;
+				backhigh.Required = fl.Back.HighRequired();
+				backmid.Required = fl.Back.MiddleRequired();
+				backlow.Required = fl.Back.LowRequired();
 				backsector.Text = fl.Back.Sector.Index.ToString();
 				backoffsetx.Text = fl.Back.OffsetX.ToString();
 				backoffsety.Text = fl.Back.OffsetY.ToString();
@@ -254,6 +260,9 @@ namespace CodeImp.DoomBuilder.Windows
 					if(fronthigh.TextureName != l.Front.HighTexture) fronthigh.TextureName = "";
 					if(frontmid.TextureName != l.Front.MiddleTexture) frontmid.TextureName = "";
 					if(frontlow.TextureName != l.Front.LowTexture) frontlow.TextureName = "";
+					if(fronthigh.Required != l.Front.HighRequired()) fronthigh.Required = false;
+					if(frontmid.Required != l.Front.MiddleRequired()) frontmid.Required = false;
+					if(frontlow.Required != l.Front.LowRequired()) frontlow.Required = false;
 					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = "";
 					if(frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
 					if(frontoffsety.Text != l.Front.OffsetY.ToString()) frontoffsety.Text = "";
@@ -266,6 +275,9 @@ namespace CodeImp.DoomBuilder.Windows
 					if(backhigh.TextureName != l.Back.HighTexture) backhigh.TextureName = "";
 					if(backmid.TextureName != l.Back.MiddleTexture) backmid.TextureName = "";
 					if(backlow.TextureName != l.Back.LowTexture) backlow.TextureName = "";
+					if(backhigh.Required != l.Back.HighRequired()) backhigh.Required = false;
+					if(backmid.Required != l.Back.MiddleRequired()) backmid.Required = false;
+					if(backlow.Required != l.Back.LowRequired()) backlow.Required = false;
 					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = "";
 					if(backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
 					if(backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
@@ -275,6 +287,14 @@ namespace CodeImp.DoomBuilder.Windows
 				// Custom fields
 				fieldslist.SetValues(l.Fields, false);
 			}
+			
+			// Refresh controls so that they show their image
+			backhigh.Refresh();
+			backmid.Refresh();
+			backlow.Refresh();
+			fronthigh.Refresh();
+			frontmid.Refresh();
+			frontlow.Refresh();
 		}
 		
 		// Front side (un)checked
