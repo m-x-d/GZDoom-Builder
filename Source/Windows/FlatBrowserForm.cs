@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	internal partial class FlatBrowserForm : DelayedForm
+	internal partial class FlatBrowserForm : Form
 	{
 		// Variables
 		private string selectedname;
@@ -90,6 +90,18 @@ namespace CodeImp.DoomBuilder.Windows
 			// Keep last position and size
 			lastposition = this.Location;
 			lastsize = this.Size;
+			
+			// Position window from configuration settings
+			this.SuspendLayout();
+			/*
+			this.Location = new Point(General.Settings.ReadSetting("browserwindow.positionx", this.Location.X),
+									  General.Settings.ReadSetting("browserwindow.positiony", this.Location.Y));
+			*/
+			this.Size = new Size(General.Settings.ReadSetting("browserwindow.sizewidth", this.Size.Width),
+								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
+			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
+			if(this.WindowState == FormWindowState.Normal) this.StartPosition = FormStartPosition.CenterParent;
+			this.ResumeLayout(true);
 		}
 
 		// Selection changed
@@ -127,17 +139,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Loading
 		private void FlatBrowserForm_Load(object sender, EventArgs e)
 		{
-			/*
-			// Position window from configuration settings
-			this.SuspendLayout();
-			this.Location = new Point(General.Settings.ReadSetting("browserwindow.positionx", this.Location.X),
-									  General.Settings.ReadSetting("browserwindow.positiony", this.Location.Y));
-			this.Size = new Size(General.Settings.ReadSetting("browserwindow.sizewidth", this.Size.Width),
-								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
-			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
-			this.ResumeLayout(true);
-			*/
-			
 			// Normal windowstate?
 			if(this.WindowState == FormWindowState.Normal)
 			{
