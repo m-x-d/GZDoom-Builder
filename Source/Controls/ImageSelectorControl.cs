@@ -74,29 +74,36 @@ namespace CodeImp.DoomBuilder.Controls
 			name.Width = this.ClientSize.Width;
 			name.Top = this.ClientSize.Height - name.Height;
 		}
-
+		
 		// Layout change
 		private void ImageSelectorControl_Layout(object sender, LayoutEventArgs e)
 		{
 			ImageSelectorControl_Resize(sender, EventArgs.Empty);
 		}
-
+		
 		// Image clicked
 		private void preview_Click(object sender, EventArgs e)
 		{
 			name.Text = BrowseImage(name.Text);
 		}
-
+		
 		// Name text changed
 		private void name_TextChanged(object sender, EventArgs e)
 		{
 			// Show it centered
 			General.DisplayZoomedImage(preview, FindImage(name.Text));
 		}
-
+		
 		#endregion
 
 		#region ================== Methods
+		
+		// This refreshes the control
+		new public void Refresh()
+		{
+			General.DisplayZoomedImage(preview, FindImage(name.Text));
+			base.Refresh();
+		}
 		
 		// This redraws the image preview
 		private void ShowPreview(ImageData image)
