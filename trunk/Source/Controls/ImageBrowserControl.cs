@@ -139,6 +139,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// If all previews were loaded, stop this timer
 			if(allpreviewsloaded) refreshtimer.Stop();
+			
+			UpdateTextureSizeLabel();
 		}
 
 		#endregion
@@ -186,6 +188,8 @@ namespace CodeImp.DoomBuilder.Controls
 				// Raise event
 				if(SelectedItemChanged != null) SelectedItemChanged();
 			}
+
+			UpdateTextureSizeLabel();
 		}
 		
 		// Doublelicking an item
@@ -193,6 +197,20 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(!preventselection && (list.SelectedItems.Count > 0))
 				if(SelectedItemDoubleClicked != null) SelectedItemDoubleClicked();
+		}
+		
+		// Control is resized
+		private void ImageBrowserControl_Resize(object sender, EventArgs e)
+		{
+			UpdateTextureSizeLabel();
+		}
+
+		// This hides the texture size label
+		private void texturesizetimer_Tick(object sender, EventArgs e)
+		{
+			texturesizetimer.Stop();
+			texturesize.Visible = false;
+			texturesizelabel.Visible = false;
 		}
 		
 		#endregion
@@ -220,6 +238,8 @@ namespace CodeImp.DoomBuilder.Controls
 					lvi.EnsureVisible();
 				}
 			}
+
+			UpdateTextureSizeLabel();
 		}
 		
 		// This performs item sleection by keys
@@ -270,6 +290,8 @@ namespace CodeImp.DoomBuilder.Controls
 				// Make selection visible
 				if(list.SelectedItems.Count > 0) list.SelectedItems[0].EnsureVisible();
 			}
+			
+			UpdateTextureSizeLabel();
 		}
 		
 		// This selectes the first item
@@ -291,6 +313,8 @@ namespace CodeImp.DoomBuilder.Controls
 					lvi.EnsureVisible();
 				}
 			}
+
+			UpdateTextureSizeLabel();
 		}
 		
 		// This adds a group
@@ -398,6 +422,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Raise event
 			if((SelectedItemChanged != null) && !preventselection) SelectedItemChanged();
+			UpdateTextureSizeLabel();
 		}
 
 		// This validates an item
@@ -410,6 +435,27 @@ namespace CodeImp.DoomBuilder.Controls
 		public void FocusTextbox()
 		{
 			objectname.Focus();
+		}
+		
+		// This updates the texture size label
+		private void UpdateTextureSizeLabel()
+		{
+			if((list.SelectedItems.Count == 0) ||
+			   (splitter.Panel2.ClientSize.Width < (texturesize.Location.X + texturesize.Size.Width)))
+			{
+				texturesizetimer.Start();
+			}
+			else
+			{
+				texturesizetimer.Stop();
+				ImageBrowserItem lvi = (list.SelectedItems[0] as ImageBrowserItem);
+				if(lvi.icon.IsPreviewLoaded)
+					texturesize.Text = lvi.icon.Width + " x " + lvi.icon.Height;
+				else
+					texturesize.Text = "unknown";
+				texturesize.Visible = true;
+				texturesizelabel.Visible = true;
+			}
 		}
 		
 		#endregion

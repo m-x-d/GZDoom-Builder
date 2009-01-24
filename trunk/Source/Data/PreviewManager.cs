@@ -42,10 +42,6 @@ namespace CodeImp.DoomBuilder.Data
 		// Dimensions of a single preview image
 		public static readonly int[] PREVIEW_SIZES = new int[] { 48, 64, 80, 96, 112, 128 };
 
-		// How many previews on a single atlas?
-		private const int PREVIEWS_X = 1;
-		private const int PREVIEWS_Y = 1;
-
 		#endregion
 
 		#region ================== Variables
@@ -54,11 +50,8 @@ namespace CodeImp.DoomBuilder.Data
 		private int imagewidth = 64;
 		private int imageheight = 64;
 		
-		// Atlases
-		private List<Bitmap> atlases;
-		
-		// Next preview index
-		private int nextpreviewindex;
+		// Images
+		private List<Bitmap> images;
 		
 		// Processing
 		private Queue<ImageData> imageque;
@@ -94,9 +87,8 @@ namespace CodeImp.DoomBuilder.Data
 		internal PreviewManager()
 		{
 			// Initialize
-			atlases = new List<Bitmap>();
+			images = new List<Bitmap>();
 			imageque = new Queue<ImageData>();
-			nextpreviewindex = 0;
 			imagewidth = PREVIEW_SIZES[General.Settings.PreviewImageSize];
 			imageheight = PREVIEW_SIZES[General.Settings.PreviewImageSize];
 			
@@ -111,8 +103,8 @@ namespace CodeImp.DoomBuilder.Data
 			if(!isdisposed)
 			{
 				// Clean up
-				foreach(Bitmap b in atlases) b.Dispose();
-				atlases = null;
+				foreach(Bitmap b in images) b.Dispose();
+				images = null;
 				
 				// Done
 				isdisposed = true;
@@ -123,85 +115,52 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#region ================== Private Methods
 		
-		// Returns atlas index for the given preview index
-		private int GetAtlasIndex(int previewindex)
-		{
-			return previewindex / (PREVIEWS_X * PREVIEWS_Y);
-		}
-
-		// Returns local X index for the given preview index
-		private int GetLocalXIndex(int previewindex)
-		{
-			int localindex = previewindex - GetAtlasIndex(previewindex) * (PREVIEWS_X * PREVIEWS_Y);
-			return localindex % PREVIEWS_Y;
-		}
-
-		// Returns local Y index for the given preview index
-		private int GetLocalYIndex(int previewindex)
-		{
-			int localindex = previewindex - GetAtlasIndex(previewindex) * (PREVIEWS_X * PREVIEWS_Y);
-			return localindex / PREVIEWS_X;
-		}
-		
-		// This makes a new atlas
-		private void MakeNewAtlas()
-		{
-			lock(atlases)
-			{
-				Bitmap b = new Bitmap(imagewidth * PREVIEWS_X, imageheight * PREVIEWS_Y, IMAGE_FORMAT);
-				Graphics g = Graphics.FromImage(b);
-				g.Clear(Color.Transparent);
-				g.Dispose();
-				atlases.Add(b);
-			}
-		}
-		
 		// This makes a preview for the given image and updates the image settings
 		private void MakeImagePreview(ImageData img)
 		{
-			Bitmap atlas;
-			
-			// Numbers
-			int atlasindex = GetAtlasIndex(nextpreviewindex);
-			int localx = GetLocalXIndex(nextpreviewindex);
-			int localy = GetLocalYIndex(nextpreviewindex);
-
-			lock(atlases)
-			{
-				// Do we have to make a new atlas?
-				if(atlasindex > (atlases.Count - 1)) MakeNewAtlas();
-				
-				// Get the atlas we need
-				atlas = atlases[atlasindex];
-			}
+			Bitmap preview;
+			Graphics g;
 			
 			lock(img)
 			{
 				// Load image if needed
 				if(!img.IsImageLoaded) img.LoadImage();
 
-				lock(atlas)
-				{
-					// Draw image onto atlas
-					Graphics g = Graphics.FromImage(atlas);
-					g.PageUnit = GraphicsUnit.Pixel;
-					g.CompositingQuality = CompositingQuality.HighQuality;
-					g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-					g.SmoothingMode = SmoothingMode.HighQuality;
-					g.PixelOffsetMode = PixelOffsetMode.None;
-					Rectangle atlasrect = new Rectangle(localx * imagewidth, localy * imageheight, imagewidth, imageheight);
-					RectangleF imgrect = General.MakeZoomedRect(new Size(img.Width, img.Height), atlasrect);
-					g.DrawImage(img.Bitmap, imgrect);
-					g.Dispose();
-				}
+				// Determine preview size
+				float scalex = (img.Width > imagewidth) ? ((float)imagewidth / (float)img.Width) : 1.0f;
+				float scaley = (img.Height > imageheight) ? ((float)imageheight / (float)img.Height) : 1.0f;
+				float scale = Math.Min(scalex, scaley);
+				int previewwidth = (int)((float)img.Width * scale);
+				int previewheight = (int)((float)img.Height * scale);
+				
+				// Make new image
+				preview = new Bitmap(previewwidth, previewheight, IMAGE_FORMAT);
+				g = Graphics.FromImage(preview);
+				g.PageUnit = GraphicsUnit.Pixel;
+				g.CompositingQuality = CompositingQuality.HighQuality;
+				g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				g.SmoothingMode = SmoothingMode.HighQuality;
+				g.PixelOffsetMode = PixelOffsetMode.None;
+				g.Clear(Color.Transparent);
+				
+				// Draw image onto atlas
+				Rectangle atlasrect = new Rectangle(0, 0, previewwidth, previewheight);
+				RectangleF imgrect = General.MakeZoomedRect(new Size(img.Width, img.Height), atlasrect);
+				g.DrawImage(img.Bitmap, imgrect);
+				g.Dispose();
 				
 				// Unload image if no longer needed
 				if(!img.IsReferenced) img.UnloadImage();
 				
-				// Set numbers
-				img.PreviewIndex = nextpreviewindex;
-				img.PreviewState = ImageLoadState.Ready;
-				nextpreviewindex++;
+				lock(images)
+				{
+					// Set numbers
+					img.PreviewIndex = images.Count;
+					img.PreviewState = ImageLoadState.Ready;
+					
+					// Add to previews list
+					images.Add(preview);
+				}
 			}
 		}
 
@@ -212,46 +171,34 @@ namespace CodeImp.DoomBuilder.Data
 		// This draws a preview centered in a target
 		internal void DrawPreview(int previewindex, Graphics target, Point targetpos)
 		{
-			Bitmap atlas;
+			Bitmap image;
 
-			// Get the atlas we need
-			lock(atlases) { atlas = atlases[GetAtlasIndex(previewindex)]; }
+			// Get the preview we need
+			lock(images) { image = images[previewindex]; }
 
+			// Adjust offset for the size of the preview image
+			targetpos.X += (imagewidth - image.Width) >> 1;
+			targetpos.Y += (imageheight - image.Height) >> 1;
+			
 			// Draw from atlas to target
-			lock(atlas)
+			lock(image)
 			{
-				if((PREVIEWS_X == 1) && (PREVIEWS_Y == 1))
-				{
-					target.DrawImageUnscaled(atlas, targetpos.X, targetpos.Y);
-				}
-				else
-				{
-					RectangleF trect = new RectangleF((float)targetpos.X, (float)targetpos.Y,
-													  (float)imagewidth, (float)imageheight);
-					RectangleF srect = new RectangleF((float)GetLocalXIndex(previewindex) * imagewidth,
-													  (float)GetLocalYIndex(previewindex) * imageheight,
-													  (float)imagewidth, (float)imageheight);
-					target.DrawImage(atlas, trect, srect, GraphicsUnit.Pixel);
-				}
+				target.DrawImageUnscaled(image, targetpos.X, targetpos.Y);
 			}
 		}
-		
-		// This draws a preview centered in a target
-		internal void DrawPreviewCentered(int previewindex, Graphics target, Rectangle targetview)
+
+		// This returns a copy of the preview
+		internal Bitmap GetPreviewCopy(int previewindex)
 		{
-			Bitmap atlas;
+			Bitmap image;
 
-			// Get the atlas we need
-			lock(atlases) { atlas = atlases[GetAtlasIndex(previewindex)]; }
+			// Get the preview we need
+			lock(images) { image = images[previewindex]; }
 
-			// Draw from atlas to target
-			lock(atlas)
+			// Make a copy
+			lock(image)
 			{
-				RectangleF trect = General.MakeZoomedRect(new Size(64, 64), targetview);
-				RectangleF srect = new RectangleF((float)GetLocalXIndex(previewindex) * imagewidth,
-												  (float)GetLocalYIndex(previewindex) * imageheight,
-												  (float)imagewidth, (float)imageheight);
-				target.DrawImage(atlas, trect, srect, GraphicsUnit.Pixel);
+				return new Bitmap(image);
 			}
 		}
 
@@ -293,10 +240,10 @@ namespace CodeImp.DoomBuilder.Data
 		#if DEBUG
 		internal void DumpAtlases()
 		{
-			lock(atlases)
+			lock(images)
 			{
 				int index = 0;
-				foreach(Bitmap a in atlases)
+				foreach(Bitmap a in images)
 				{
 					lock(a)
 					{
