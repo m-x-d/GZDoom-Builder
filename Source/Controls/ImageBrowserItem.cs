@@ -97,9 +97,9 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Determine coordinates
 			SizeF textsize = g.MeasureString(this.Text, this.ListView.Font, bounds.Width * 2);
-			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - General.Map.Data.Previews.ImageWidth) >> 1),
-				bounds.Top + ((bounds.Height - General.Map.Data.Previews.ImageHeight - (int)textsize.Height) >> 1),
-				General.Map.Data.Previews.ImageWidth, General.Map.Data.Previews.ImageHeight);
+			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - General.Map.Data.Previews.MaxImageWidth) >> 1),
+				bounds.Top + ((bounds.Height - General.Map.Data.Previews.MaxImageHeight - (int)textsize.Height) >> 1),
+				General.Map.Data.Previews.MaxImageWidth, General.Map.Data.Previews.MaxImageHeight);
 			PointF textpos = new PointF(bounds.Left + ((float)bounds.Width - textsize.Width) * 0.5f, bounds.Bottom - textsize.Height - 2);
 
 			// Determine colors

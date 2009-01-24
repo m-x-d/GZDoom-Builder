@@ -77,28 +77,38 @@ namespace CodeImp.DoomBuilder.Data
 					if(reader is UnknownImageReader)
 					{
 						// Data is in an unknown format!
-						General.WriteLogLine("WARNING: Flat lump '" + Name + "' data format could not be read!");
+						General.WriteLogLine("ERROR: Flat lump '" + Name + "' data format could not be read!");
+						bitmap = null;
 					}
-
-					// Read data as bitmap
-					mem.Seek(0, SeekOrigin.Begin);
-					if(bitmap != null) bitmap.Dispose();
-					bitmap = reader.ReadAsBitmap(mem);
-					if(bitmap == null) return;
+					else
+					{
+						// Read data as bitmap
+						mem.Seek(0, SeekOrigin.Begin);
+						if(bitmap != null) bitmap.Dispose();
+						bitmap = reader.ReadAsBitmap(mem);
+					}
 
 					// Done
 					mem.Dispose();
-					
-					// Get width and height from image
-					width = bitmap.Size.Width;
-					height = bitmap.Size.Height;
-					scaledwidth = (float)width * General.Map.Config.DefaultFlatScale;
-					scaledheight = (float)height * General.Map.Config.DefaultFlatScale;
+
+					if(bitmap != null)
+					{
+						// Get width and height from image
+						width = bitmap.Size.Width;
+						height = bitmap.Size.Height;
+						scaledwidth = (float)width * General.Map.Config.DefaultFlatScale;
+						scaledheight = (float)height * General.Map.Config.DefaultFlatScale;
+					}
+					else
+					{
+						loadfailed = true;
+					}
 				}
 				else
 				{
 					// Missing a patch lump!
-					General.WriteLogLine("WARNING: Missing flat lump '" + Name + "'!");
+					General.WriteLogLine("ERROR: Missing flat lump '" + Name + "'!");
+					loadfailed = true;
 				}
 
 				// Pass on to base

@@ -74,6 +74,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Special images
 		private ImageData missingtexture3d;
+		private ImageData unknowntexture3d;
 		private ImageData hourglass3d;
 		private ImageData crosshair;
 		private ImageData crosshairbusy;
@@ -102,6 +103,7 @@ namespace CodeImp.DoomBuilder.Data
 		public List<string> FlatNames { get { return flatnames; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public ImageData MissingTexture3D { get { return missingtexture3d; } }
+		public ImageData UnknownTexture3D { get { return unknowntexture3d; } }
 		public ImageData Hourglass3D { get { return hourglass3d; } }
 		public ImageData Crosshair3D { get { return crosshair; } }
 		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
@@ -140,6 +142,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Load special images
 			missingtexture3d = new ResourceImage("MissingTexture3D.png");
 			missingtexture3d.LoadImage();
+			unknowntexture3d = new ResourceImage("UnknownTexture3D.png");
+			unknowntexture3d.LoadImage();
 			hourglass3d = new ResourceImage("Hourglass3D.png");
 			hourglass3d.LoadImage();
 			crosshair = new ResourceImage("Crosshair.png");
@@ -160,6 +164,8 @@ namespace CodeImp.DoomBuilder.Data
 				Unload();
 				missingtexture3d.Dispose();
 				missingtexture3d = null;
+				unknowntexture3d.Dispose();
+				unknowntexture3d = null;
 				hourglass3d.Dispose();
 				hourglass3d = null;
 				crosshair.Dispose();
@@ -721,7 +727,7 @@ namespace CodeImp.DoomBuilder.Data
 			else
 			{
 				// Return null image
-				return new NullImage();
+				return new UnknownImage(Properties.Resources.UnknownImage);
 			}
 		}
 		
@@ -845,7 +851,7 @@ namespace CodeImp.DoomBuilder.Data
 			else
 			{
 				// Return null image
-				return new NullImage();
+				return new UnknownImage(Properties.Resources.UnknownImage);
 			}
 		}
 
@@ -997,7 +1003,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				else
 				{
-					return new NullImage();
+					return new UnknownImage(Properties.Resources.UnknownImage);
 				}
 			}
 			else
@@ -1038,7 +1044,7 @@ namespace CodeImp.DoomBuilder.Data
 					else
 					{
 						// Return null image
-						return new NullImage();
+						return new UnknownImage(Properties.Resources.UnknownImage);
 					}
 				}
 			}

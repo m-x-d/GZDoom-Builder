@@ -70,6 +70,9 @@ namespace CodeImp.DoomBuilder.Data
 
 			lock(this)
 			{
+				// No failure checking here. I anything fails here, it is not the user's fault,
+				// because the resources this loads are in the assembly.
+				
 				// Get resource from memory
 				bitmapdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + Name);
 				if(bitmap != null) bitmap.Dispose();

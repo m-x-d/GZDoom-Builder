@@ -75,7 +75,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				Vector2D t1 = new Vector2D();
 				Vector2D t2 = new Vector2D();
+
+				if(Sidedef.MiddleTexture == "FOOBAR")
+				{
+					int g = 5;
+				}
 				
+
 				// Texture given?
 				if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
 				{

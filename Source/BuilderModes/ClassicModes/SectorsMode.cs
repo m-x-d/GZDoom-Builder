@@ -458,7 +458,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Show sector edit dialog
 						General.Interface.ShowEditSectors(selected);
-
+						General.Map.Map.Update();
+						
 						// When a single sector was selected, deselect it now
 						if(selected.Count == 1)
 						{

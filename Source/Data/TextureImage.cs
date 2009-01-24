@@ -76,9 +76,9 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			uint datalength = (uint)(width * height * sizeof(PixelColor));
 			IImageReader reader;
-			BitmapData bitmapdata;
+			BitmapData bitmapdata = null;
 			MemoryStream mem;
-			PixelColor* pixels;
+			PixelColor* pixels = (PixelColor*)0;
 			Stream patchdata;
 			byte[] membytes;
 			
@@ -101,57 +101,61 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					// Unable to make bitmap
 					General.WriteLogLine("ERROR: Unable to load texture image '" + this.Name + "'. " + e.GetType().Name + ": " + e.Message);
-					return;
+					loadfailed = true;
 				}
-				
-				// Go for all patches
-				foreach(TexturePatch p in patches)
+
+				if(!loadfailed)
 				{
-					// Get the patch data stream
-					patchdata = General.Map.Data.GetPatchData(p.lumpname);
-					if(patchdata != null)
+					// Go for all patches
+					foreach(TexturePatch p in patches)
 					{
-						// Copy patch data to memory
-						patchdata.Seek(0, SeekOrigin.Begin);
-						membytes = new byte[(int)patchdata.Length];
-						patchdata.Read(membytes, 0, (int)patchdata.Length);
-						mem = new MemoryStream(membytes);
-						mem.Seek(0, SeekOrigin.Begin);
-						
-						// Get a reader for the data
-						reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
-						if(reader is UnknownImageReader)
+						// Get the patch data stream
+						patchdata = General.Map.Data.GetPatchData(p.lumpname);
+						if(patchdata != null)
 						{
-							// Data is in an unknown format!
-							General.WriteLogLine("WARNING: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
-							loadfailed = true;
+							// Copy patch data to memory
+							patchdata.Seek(0, SeekOrigin.Begin);
+							membytes = new byte[(int)patchdata.Length];
+							patchdata.Read(membytes, 0, (int)patchdata.Length);
+							mem = new MemoryStream(membytes);
+							mem.Seek(0, SeekOrigin.Begin);
+
+							// Get a reader for the data
+							reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
+							if(reader is UnknownImageReader)
+							{
+								// Data is in an unknown format!
+								General.WriteLogLine("ERROR: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+								loadfailed = true;
+							}
+							else
+							{
+								// Draw the patch
+								mem.Seek(0, SeekOrigin.Begin);
+								try { reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y); }
+								catch(InvalidDataException)
+								{
+									// Data cannot be read!
+									General.WriteLogLine("ERROR: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+									loadfailed = true;
+								}
+							}
+
+							// Done
+							mem.Dispose();
 						}
 						else
 						{
-							// Draw the patch
-							mem.Seek(0, SeekOrigin.Begin);
-							try { reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y); }
-							catch(InvalidDataException)
-							{
-								// Data cannot be read!
-								General.WriteLogLine("WARNING: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
-								loadfailed = true;
-							}
+							// Missing a patch lump!
+							General.WriteLogLine("ERROR: Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'!");
+							loadfailed = true;
 						}
-						
-						// Done
-						mem.Dispose();
 					}
-					else
-					{
-						// Missing a patch lump!
-						General.WriteLogLine("WARNING: Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'!");
-					}
+
+					// Done
+					bitmap.UnlockBits(bitmapdata);
 				}
-
-				// Done
-				bitmap.UnlockBits(bitmapdata);
-
+				
 				// Dispose bitmap if load failed
 				if(loadfailed && (bitmap != null))
 				{
