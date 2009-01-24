@@ -372,12 +372,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Raise/lower thing
 		public virtual void OnChangeTargetHeight(int amount)
 		{
-			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-				undoticket = General.Map.UndoRedo.CreateUndo("Change thing height");
+			if(General.Map.FormatInterface.GetType().Name != "DoomMapSetIO")
+			{
+				if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+					undoticket = General.Map.UndoRedo.CreateUndo("Change thing height");
 
-			Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
+				Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
 
-			this.Setup();
+				this.Setup();
+			}
 		}
 		
 		#endregion
