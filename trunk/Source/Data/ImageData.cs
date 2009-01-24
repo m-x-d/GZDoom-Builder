@@ -80,8 +80,6 @@ namespace CodeImp.DoomBuilder.Data
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
 		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
-		//public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return new Bitmap(bitmap); else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
-		public Bitmap Bitmap { get { lock(this) { if(bitmap != null) return bitmap; else return CodeImp.DoomBuilder.Properties.Resources.Hourglass; } } }
 		public Texture Texture { get { lock(this) { return texture; } } }
 		public bool IsPreviewLoaded { get { return (previewstate == ImageLoadState.Ready); } }
 		public bool IsImageLoaded { get { return (imagestate == ImageLoadState.Ready); } }
@@ -184,8 +182,30 @@ namespace CodeImp.DoomBuilder.Data
 				imagestate = ImageLoadState.None;
 			}
 		}
+
+		// This returns the bitmap image
+		public Bitmap GetBitmap()
+		{
+			lock(this)
+			{
+				// Image loaded successfully?
+				if(!loadfailed && (imagestate == ImageLoadState.Ready) && (bitmap != null))
+				{
+					return bitmap;
+				}
+				// Image loading failed?
+				else if(loadfailed)
+				{
+					return Properties.Resources.Failed;
+				}
+				else
+				{
+					return Properties.Resources.Hourglass;
+				}
+			}
+		}
 		
-		// This loads theimage
+		// This loads the image
 		public void LoadImage()
 		{
 			// Keep original dimensions
@@ -240,7 +260,7 @@ namespace CodeImp.DoomBuilder.Data
 						catch(Exception e)
 						{
 							bitmap = oldbitmap;
-							General.WriteLogLine("ERROR: Cannot lock image '" + name + "' for pixel format conversion. " + e.GetType().Name + ": " + e.Message);
+							General.WriteLogLine("WARNING: Cannot lock image '" + name + "' for pixel format conversion. " + e.GetType().Name + ": " + e.Message);
 						}
 					}
 					
@@ -254,7 +274,7 @@ namespace CodeImp.DoomBuilder.Data
 						}
 						catch(Exception e)
 						{
-							General.WriteLogLine("ERROR: Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
+							General.WriteLogLine("WARNING: Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
 						}
 
 						// Bitmap locked?
@@ -274,10 +294,22 @@ namespace CodeImp.DoomBuilder.Data
 					// not try loading again until Reload Resources is used
 					loadfailed = true;
 					bitmap = new Bitmap(Properties.Resources.Failed);
+				}
+
+				if(bitmap != null)
+				{
 					width = bitmap.Size.Width;
 					height = bitmap.Size.Height;
-					scaledwidth = (float)bitmap.Size.Width * General.Map.Config.DefaultTextureScale;
-					scaledheight = (float)bitmap.Size.Height * General.Map.Config.DefaultTextureScale;
+					if((General.Map != null) && (General.Map.Config != null))
+					{
+						scaledwidth = (float)bitmap.Size.Width * General.Map.Config.DefaultTextureScale;
+						scaledheight = (float)bitmap.Size.Height * General.Map.Config.DefaultTextureScale;
+					}
+					else
+					{
+						scaledwidth = (float)bitmap.Size.Width;
+						scaledheight = (float)bitmap.Size.Height;
+					}
 				}
 				
 				// Image is ready
@@ -293,7 +325,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Only do this when texture is not created yet
-				if(((texture == null) || (texture.Disposed)) && this.IsImageLoaded)
+				if(((texture == null) || (texture.Disposed)) && this.IsImageLoaded && !loadfailed)
 				{
 					Image img = bitmap;
 					if(loadfailed) img = Properties.Resources.Failed;
@@ -327,7 +359,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Preview ready?
-				if(previewstate == ImageLoadState.Ready)
+				if(!loadfailed && (previewstate == ImageLoadState.Ready))
 				{
 					// Draw preview
 					General.Map.Data.Previews.DrawPreview(previewindex, target, targetpos);
@@ -336,15 +368,15 @@ namespace CodeImp.DoomBuilder.Data
 				else if(loadfailed)
 				{
 					// Draw error bitmap
-					targetpos = new Point(targetpos.X + ((General.Map.Data.Previews.ImageWidth - Properties.Resources.Hourglass.Width) >> 1),
-										  targetpos.Y + ((General.Map.Data.Previews.ImageHeight - Properties.Resources.Hourglass.Height) >> 1));
+					targetpos = new Point(targetpos.X + ((General.Map.Data.Previews.MaxImageWidth - Properties.Resources.Hourglass.Width) >> 1),
+										  targetpos.Y + ((General.Map.Data.Previews.MaxImageHeight - Properties.Resources.Hourglass.Height) >> 1));
 					target.DrawImageUnscaled(Properties.Resources.Failed, targetpos);
 				}
 				else
 				{
 					// Draw loading bitmap
-					targetpos = new Point(targetpos.X + ((General.Map.Data.Previews.ImageWidth - Properties.Resources.Hourglass.Width) >> 1),
-										  targetpos.Y + ((General.Map.Data.Previews.ImageHeight - Properties.Resources.Hourglass.Height) >> 1));
+					targetpos = new Point(targetpos.X + ((General.Map.Data.Previews.MaxImageWidth - Properties.Resources.Hourglass.Width) >> 1),
+										  targetpos.Y + ((General.Map.Data.Previews.MaxImageHeight - Properties.Resources.Hourglass.Height) >> 1));
 					target.DrawImageUnscaled(Properties.Resources.Hourglass, targetpos);
 				}
 			}

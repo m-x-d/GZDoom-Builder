@@ -124,7 +124,7 @@
     <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\FlatImage.cs" />
     <Compile Include="Data\ImageLoadState.cs" />
-    <Compile Include="Data\NullImage.cs" />
+    <Compile Include="Data\UnknownImage.cs" />
     <Compile Include="Data\PatchNames.cs" />
     <Compile Include="Data\PK3Reader.cs" />
     <Compile Include="Data\Playpal.cs" />
@@ -672,6 +672,7 @@
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Resources\UnknownTexture3D.png" />
     <None Include="Resources\Monster3.png" />
     <None Include="Resources\Monster2.png" />
     <None Include="Resources\Prefab2.png" />

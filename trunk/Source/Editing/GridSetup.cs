@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// Background
 		private string background = "";
 		private int backsource;
-		private ImageData backimage = new NullImage();
+		private ImageData backimage = new UnknownImage(null);
 		private int backoffsetx, backoffsety;
 		private float backscalex, backscaley;
 

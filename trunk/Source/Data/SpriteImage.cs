@@ -78,28 +78,37 @@ namespace CodeImp.DoomBuilder.Data
 					if(reader is UnknownImageReader)
 					{
 						// Data is in an unknown format!
-						General.WriteLogLine("WARNING: Sprite lump '" + Name + "' data format could not be read!");
+						General.WriteLogLine("ERROR: Sprite lump '" + Name + "' data format could not be read!");
+						bitmap = null;
 					}
-					
-					// Read data as bitmap
-					mem.Seek(0, SeekOrigin.Begin);
-					if(bitmap != null) bitmap.Dispose();
-					bitmap = reader.ReadAsBitmap(mem);
-					if(bitmap == null) return;
+					else
+					{
+						// Read data as bitmap
+						mem.Seek(0, SeekOrigin.Begin);
+						if(bitmap != null) bitmap.Dispose();
+						bitmap = reader.ReadAsBitmap(mem);
+					}
 					
 					// Done
 					mem.Dispose();
-					
-					// Get width and height from image
-					width = bitmap.Size.Width;
-					height = bitmap.Size.Height;
-					scaledwidth = (float)bitmap.Size.Width;
-					scaledheight = (float)bitmap.Size.Height;
+
+					if(bitmap != null)
+					{
+						// Get width and height from image
+						width = bitmap.Size.Width;
+						height = bitmap.Size.Height;
+						scaledwidth = (float)bitmap.Size.Width;
+						scaledheight = (float)bitmap.Size.Height;
+					}
+					else
+					{
+						loadfailed = true;
+					}
 				}
 				else
 				{
 					// Missing a patch lump!
-					General.WriteLogLine("WARNING: Missing sprite lump '" + Name + "'!");
+					General.WriteLogLine("ERROR: Missing sprite lump '" + Name + "'!");
 				}
 
 				// Pass on to base

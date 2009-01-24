@@ -102,17 +102,17 @@ namespace CodeImp.DoomBuilder.Data
 				// Not loaded?
 				if(bitmap == null)
 				{
-					General.WriteLogLine("WARNING: Image file '" + filepathname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+					General.WriteLogLine("ERROR: Image file '" + filepathname + "' data format could not be read, while loading texture '" + this.Name + "'!");
 					loadfailed = true;
-					filedata.Dispose();
-					return;
 				}
-				
-				// Get width and height from image
-				width = bitmap.Size.Width;
-				height = bitmap.Size.Height;
-				scaledwidth = (float)bitmap.Size.Width * scalex;
-				scaledheight = (float)bitmap.Size.Height * scaley;
+				else
+				{
+					// Get width and height from image
+					width = bitmap.Size.Width;
+					height = bitmap.Size.Height;
+					scaledwidth = (float)bitmap.Size.Width * scalex;
+					scaledheight = (float)bitmap.Size.Height * scaley;
+				}
 				
 				// Pass on to base
 				filedata.Dispose();

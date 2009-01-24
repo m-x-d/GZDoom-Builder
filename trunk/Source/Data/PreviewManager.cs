@@ -47,8 +47,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 		
 		// Dimensions of a single preview image
-		private int imagewidth = 64;
-		private int imageheight = 64;
+		private int maxpreviewwidth = 64;
+		private int maxpreviewheight = 64;
 		
 		// Images
 		private List<Bitmap> images;
@@ -64,8 +64,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		// Constants
-		public int ImageWidth { get { return imagewidth; } }
-		public int ImageHeight { get { return imageheight; } }
+		public int MaxImageWidth { get { return maxpreviewwidth; } }
+		public int MaxImageHeight { get { return maxpreviewheight; } }
 		
 		// Disposing
 		internal bool IsDisposed { get { return isdisposed; } }
@@ -89,8 +89,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			images = new List<Bitmap>();
 			imageque = new Queue<ImageData>();
-			imagewidth = PREVIEW_SIZES[General.Settings.PreviewImageSize];
-			imageheight = PREVIEW_SIZES[General.Settings.PreviewImageSize];
+			maxpreviewwidth = PREVIEW_SIZES[General.Settings.PreviewImageSize];
+			maxpreviewheight = PREVIEW_SIZES[General.Settings.PreviewImageSize];
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -118,6 +118,8 @@ namespace CodeImp.DoomBuilder.Data
 		// This makes a preview for the given image and updates the image settings
 		private void MakeImagePreview(ImageData img)
 		{
+			int previewwidth, previewheight;
+			int imagewidth, imageheight;
 			Bitmap preview;
 			Graphics g;
 			
@@ -125,13 +127,23 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Load image if needed
 				if(!img.IsImageLoaded) img.LoadImage();
-
+				if(!img.LoadFailed)
+				{
+					imagewidth = img.Width;
+					imageheight = img.Height;
+				}
+				else
+				{
+					imagewidth = img.GetBitmap().Size.Width;
+					imageheight = img.GetBitmap().Size.Height;
+				}
+				
 				// Determine preview size
-				float scalex = (img.Width > imagewidth) ? ((float)imagewidth / (float)img.Width) : 1.0f;
-				float scaley = (img.Height > imageheight) ? ((float)imageheight / (float)img.Height) : 1.0f;
+				float scalex = (img.Width > maxpreviewwidth) ? ((float)maxpreviewwidth / (float)imagewidth) : 1.0f;
+				float scaley = (img.Height > maxpreviewheight) ? ((float)maxpreviewheight / (float)imageheight) : 1.0f;
 				float scale = Math.Min(scalex, scaley);
-				int previewwidth = (int)((float)img.Width * scale);
-				int previewheight = (int)((float)img.Height * scale);
+				previewwidth = (int)((float)imagewidth * scale);
+				previewheight = (int)((float)imageheight * scale);
 				
 				// Make new image
 				preview = new Bitmap(previewwidth, previewheight, IMAGE_FORMAT);
@@ -145,8 +157,8 @@ namespace CodeImp.DoomBuilder.Data
 				
 				// Draw image onto atlas
 				Rectangle atlasrect = new Rectangle(0, 0, previewwidth, previewheight);
-				RectangleF imgrect = General.MakeZoomedRect(new Size(img.Width, img.Height), atlasrect);
-				g.DrawImage(img.Bitmap, imgrect);
+				RectangleF imgrect = General.MakeZoomedRect(new Size(imagewidth, imageheight), atlasrect);
+				g.DrawImage(img.GetBitmap(), imgrect);
 				g.Dispose();
 				
 				// Unload image if no longer needed
@@ -177,8 +189,8 @@ namespace CodeImp.DoomBuilder.Data
 			lock(images) { image = images[previewindex]; }
 
 			// Adjust offset for the size of the preview image
-			targetpos.X += (imagewidth - image.Width) >> 1;
-			targetpos.Y += (imageheight - image.Height) >> 1;
+			targetpos.X += (maxpreviewwidth - image.Width) >> 1;
+			targetpos.Y += (maxpreviewheight - image.Height) >> 1;
 			
 			// Draw from atlas to target
 			lock(image)

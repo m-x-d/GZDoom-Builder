@@ -104,25 +104,31 @@ namespace CodeImp.DoomBuilder.Data
 							bitmap = null;
 						}
 					}
-					
+
 					// Not loaded?
 					if(bitmap == null)
 					{
-						General.WriteLogLine("WARNING: Image lump '" + lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+						General.WriteLogLine("ERROR: Image lump '" + lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
 						loadfailed = true;
-						return;
 					}
-
-					// Get width and height from image
-					width = bitmap.Size.Width;
-					height = bitmap.Size.Height;
-					scaledwidth = (float)width * scalex;
-					scaledheight = (float)height * scaley;
+					else
+					{
+						// Get width and height from image
+						width = bitmap.Size.Width;
+						height = bitmap.Size.Height;
+						scaledwidth = (float)width * scalex;
+						scaledheight = (float)height * scaley;
+					}
 
 					// Done
 					mem.Dispose();
 				}
-
+				else
+				{
+					General.WriteLogLine("ERROR: Image lump '" + lumpname + "' could not be found, while loading texture '" + this.Name + "'!");
+					loadfailed = true;
+				}
+				
 				// Pass on to base
 				base.LocalLoadImage();
 			}

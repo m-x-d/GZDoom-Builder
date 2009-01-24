@@ -517,7 +517,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				ImageData curtexture;
 
 				// What texture to use?
-				if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
+				if(group.Key is UnknownImage)
+					curtexture = General.Map.Data.UnknownTexture3D;
+				else if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
 					curtexture = group.Key;
 				else
 					curtexture = General.Map.Data.Hourglass3D;
@@ -571,43 +573,46 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
 			{
 				ImageData curtexture;
-				
-				// What texture to use?
-				if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
-					curtexture = group.Key;
-				else
-					curtexture = General.Map.Data.Hourglass3D;
-				
-				// Create Direct3D texture if still needed
-				if((curtexture.Texture == null) || curtexture.Texture.Disposed)
-					curtexture.CreateTexture();
-				
-				// Apply texture
-				graphics.Device.SetTexture(0, curtexture.Texture);
-				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
-				graphics.Shaders.World3D.ApplySettings();
-				
-				// Render all things with this texture
-				foreach(VisualThing t in group.Value)
+
+				if(!(group.Key is UnknownImage))
 				{
-					// Update buffer if needed
-					t.Update();
-					
-					// Only do this sector when a vertexbuffer is created
-					if(t.GeometryBuffer != null)
+					// What texture to use?
+					if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
+						curtexture = group.Key;
+					else
+						curtexture = General.Map.Data.Hourglass3D;
+
+					// Create Direct3D texture if still needed
+					if((curtexture.Texture == null) || curtexture.Texture.Disposed)
+						curtexture.CreateTexture();
+
+					// Apply texture
+					graphics.Device.SetTexture(0, curtexture.Texture);
+					graphics.Shaders.World3D.Texture1 = curtexture.Texture;
+					graphics.Shaders.World3D.ApplySettings();
+
+					// Render all things with this texture
+					foreach(VisualThing t in group.Value)
 					{
-						// Create the matrix for positioning / rotation
-						world = t.Orientation;
-						if(t.Billboard) world = Matrix.Multiply(world, billboard);
-						world = Matrix.Multiply(world, t.Position);
-						ApplyMatrices3D();
-						graphics.Shaders.World3D.ApplySettings();
-						
-						// Apply buffer
-						graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
-						
-						// Render!
-						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
+						// Update buffer if needed
+						t.Update();
+
+						// Only do this sector when a vertexbuffer is created
+						if(t.GeometryBuffer != null)
+						{
+							// Create the matrix for positioning / rotation
+							world = t.Orientation;
+							if(t.Billboard) world = Matrix.Multiply(world, billboard);
+							world = Matrix.Multiply(world, t.Position);
+							ApplyMatrices3D();
+							graphics.Shaders.World3D.ApplySettings();
+
+							// Apply buffer
+							graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
+
+							// Render!
+							graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
+						}
 					}
 				}
 			}

@@ -741,7 +741,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Only if a background image is set
 			if((General.Map.Grid.Background != null) &&
-			   !(General.Map.Grid.Background is NullImage))
+			   !(General.Map.Grid.Background is UnknownImage))
 			{
 				// Make vertices
 				backimageverts = CreateScreenVerts(windowsize);
@@ -1201,8 +1201,14 @@ namespace CodeImp.DoomBuilder.Rendering
 				ImageData img = General.Map.Data.GetFlatImage(longimagename);
 				if(img != null)
 				{
+					// Texture unknown?
+					if(img is UnknownImage)
+					{
+						General.Map.Data.UnknownTexture3D.CreateTexture();
+						t = General.Map.Data.UnknownTexture3D.Texture;
+					}
 					// Is the texture loaded?
-					if(img.IsImageLoaded)
+					else if(img.IsImageLoaded && !img.LoadFailed)
 					{
 						if(img.Texture == null) img.CreateTexture();
 						t = img.Texture;
