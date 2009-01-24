@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Text;
 using System.Drawing;
@@ -216,6 +217,33 @@ namespace CodeImp.DoomBuilder.Data
 				// Bitmap loaded successfully?
 				if(bitmap != null)
 				{
+					// Bitmap has incorrect format?
+					if(bitmap.PixelFormat != PixelFormat.Format32bppArgb)
+					{
+						General.WriteLogLine("WARNING: Image '" + name + "' does not have A8R8G8B8 pixel format. Conversion was needed!");
+						Bitmap oldbitmap = bitmap;
+						try
+						{
+							// Convert to desired pixel format
+							bitmap = new Bitmap(oldbitmap.Size.Width, oldbitmap.Size.Height, PixelFormat.Format32bppArgb);
+							Graphics g = Graphics.FromImage(bitmap);
+							g.PageUnit = GraphicsUnit.Pixel;
+							g.CompositingQuality = CompositingQuality.HighQuality;
+							g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+							g.SmoothingMode = SmoothingMode.HighQuality;
+							g.PixelOffsetMode = PixelOffsetMode.None;
+							g.Clear(Color.Transparent);
+							g.DrawImageUnscaled(oldbitmap, new Point(0, 0));
+							g.Dispose();
+							oldbitmap.Dispose();
+						}
+						catch(Exception e)
+						{
+							bitmap = oldbitmap;
+							General.WriteLogLine("ERROR: Cannot lock image '" + name + "' for pixel format conversion. " + e.GetType().Name + ": " + e.Message);
+						}
+					}
+					
 					// This applies brightness correction on the image
 					if(usecolorcorrection)
 					{
@@ -292,33 +320,6 @@ namespace CodeImp.DoomBuilder.Data
 				texture = null;
 			}
 		}
-		
-		// This draws a preview
-		public virtual void DrawPreviewCentered(Graphics target, Rectangle targetview)
-		{
-			lock(this)
-			{
-				// Preview ready?
-				if(previewstate == ImageLoadState.Ready)
-				{
-					// Draw preview
-					General.Map.Data.Previews.DrawPreviewCentered(previewindex, target, targetview);
-				}
-				// Loading failed?
-				else if(loadfailed)
-				{
-					// Draw error bitmap
-					RectangleF targetpos = General.MakeZoomedRect(Properties.Resources.Failed.Size, targetview);
-					target.DrawImage(Properties.Resources.Hourglass, targetpos.Location);
-				}
-				else
-				{
-					// Draw loading bitmap
-					RectangleF targetpos = General.MakeZoomedRect(Properties.Resources.Hourglass.Size, targetview);
-					target.DrawImage(Properties.Resources.Hourglass, targetpos.Location);
-				}
-			}
-		}
 
 		// This draws a preview
 		public virtual void DrawPreview(Graphics target, Point targetpos)
@@ -357,13 +358,8 @@ namespace CodeImp.DoomBuilder.Data
 				// Preview ready?
 				if(previewstate == ImageLoadState.Ready)
 				{
-					// Make a bitmap and return it
-					Bitmap bmp = new Bitmap(General.Map.Data.Previews.ImageWidth, General.Map.Data.Previews.ImageHeight);
-					Graphics g = Graphics.FromImage(bmp);
-					g.Clear(Color.Transparent);
-					General.Map.Data.Previews.DrawPreview(previewindex, g, new Point(0, 0));
-					g.Dispose();
-					return bmp;
+					// Make a copy
+					return General.Map.Data.Previews.GetPreviewCopy(previewindex);
 				}
 				// Loading failed?
 				else if(loadfailed)

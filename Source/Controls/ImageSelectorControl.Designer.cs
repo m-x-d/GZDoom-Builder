@@ -15,7 +15,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(disposing && (components != null))
 			{
-				bmp.Dispose();
+				if(bmp != null) bmp.Dispose();
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -42,7 +42,12 @@ namespace CodeImp.DoomBuilder.Controls
 			this.preview.Name = "preview";
 			this.preview.Size = new System.Drawing.Size(68, 60);
 			this.preview.TabIndex = 1;
+			this.preview.MouseLeave += new System.EventHandler(this.preview_MouseLeave);
+			this.preview.MouseMove += new System.Windows.Forms.MouseEventHandler(this.preview_MouseMove);
 			this.preview.Click += new System.EventHandler(this.preview_Click);
+			this.preview.MouseDown += new System.Windows.Forms.MouseEventHandler(this.preview_MouseDown);
+			this.preview.MouseUp += new System.Windows.Forms.MouseEventHandler(this.preview_MouseUp);
+			this.preview.MouseEnter += new System.EventHandler(this.preview_MouseEnter);
 			// 
 			// name
 			// 

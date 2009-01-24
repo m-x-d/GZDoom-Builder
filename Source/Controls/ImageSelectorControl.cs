@@ -28,6 +28,7 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Rendering;
+using SlimDX;
 using SlimDX.Direct3D9;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
@@ -41,7 +42,11 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		private Bitmap bmp;
-
+		private bool ispressed;
+		private bool ismouseinside;
+		private MouseButtons button;
+		protected bool allowclear;
+		
 		#endregion
 
 		#region ================== Properties
@@ -57,7 +62,6 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
-			bmp = new Bitmap(General.Map.Data.Previews.ImageWidth, General.Map.Data.Previews.ImageHeight);
 		}
 		
 		#endregion
@@ -68,7 +72,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private void ImageSelectorControl_Resize(object sender, EventArgs e)
 		{
 			// Fixed size
-			//this.ClientSize = new Size(preview.Left + preview.Width, name.Top + name.Height);
 			preview.Width = this.ClientSize.Width;
 			preview.Height = this.ClientSize.Height - name.Height - 4;
 			name.Width = this.ClientSize.Width;
@@ -84,14 +87,70 @@ namespace CodeImp.DoomBuilder.Controls
 		// Image clicked
 		private void preview_Click(object sender, EventArgs e)
 		{
-			name.Text = BrowseImage(name.Text);
+			ispressed = false;
+			preview.BackColor = SystemColors.Highlight;
+			ShowPreview(FindImage(name.Text));
+			if(button == MouseButtons.Right)
+			{
+				if(allowclear) name.Text = "-";
+			}
+			else if(button == MouseButtons.Left)
+			{
+				name.Text = BrowseImage(name.Text);
+			}
 		}
 		
 		// Name text changed
 		private void name_TextChanged(object sender, EventArgs e)
 		{
 			// Show it centered
-			General.DisplayZoomedImage(preview, FindImage(name.Text));
+			ShowPreview(FindImage(name.Text));
+		}
+		
+		// Mouse pressed
+		private void preview_MouseDown(object sender, MouseEventArgs e)
+		{
+			button = e.Button;
+			if((button == MouseButtons.Left) || ((button == MouseButtons.Right) && allowclear))
+			{
+				ispressed = true;
+				preview.BackColor = AdjustedColor(SystemColors.Highlight, 0.2f);
+				ShowPreview(FindImage(name.Text));
+			}
+		}
+
+		// Mouse released
+		private void preview_MouseUp(object sender, MouseEventArgs e)
+		{
+			ispressed = false;
+			ShowPreview(FindImage(name.Text));
+		}
+
+		// Mouse leaves
+		private void preview_MouseLeave(object sender, EventArgs e)
+		{
+			ispressed = false;
+			ismouseinside = false;
+			preview.BackColor = SystemColors.AppWorkspace;
+		}
+		
+		// Mouse enters
+		private void preview_MouseEnter(object sender, EventArgs e)
+		{
+			ismouseinside = true;
+			preview.BackColor = SystemColors.Highlight;
+			ShowPreview(FindImage(name.Text));
+		}
+
+		// Mouse moves
+		private void preview_MouseMove(object sender, MouseEventArgs e)
+		{
+			if(!ismouseinside)
+			{
+				ismouseinside = true;
+				preview.BackColor = SystemColors.Highlight;
+				ShowPreview(FindImage(name.Text));
+			}
 		}
 		
 		#endregion
@@ -101,21 +160,27 @@ namespace CodeImp.DoomBuilder.Controls
 		// This refreshes the control
 		new public void Refresh()
 		{
-			General.DisplayZoomedImage(preview, FindImage(name.Text));
+			ShowPreview(FindImage(name.Text));
 			base.Refresh();
 		}
 		
 		// This redraws the image preview
-		private void ShowPreview(ImageData image)
+		private void ShowPreview(Image image)
 		{
-			// Draw preview image
-			Graphics g = Graphics.FromImage(bmp);
-			g.Clear(Color.Transparent);
-			image.DrawPreview(g, new Point(0, 0));
-			g.Dispose();
-
-			// Show it centered
-			General.DisplayZoomedImage(preview, bmp);
+			// Dispose old image
+			preview.BackgroundImage = null;
+			if(bmp != null)
+			{
+				bmp.Dispose();
+				bmp = null;
+			}
+			
+			if(image != null)
+			{
+				// Show it centered
+				General.DisplayZoomedImage(preview, image);
+				preview.Refresh();
+			}
 		}
 		
 		// This must determine and return the image to show
@@ -140,6 +205,26 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
+		// This brightens or darkens a color
+		private Color AdjustedColor(Color c, float amount)
+		{
+			Color4 cc = new Color4(c);
+
+			// Adjust color
+			cc.Red = Saturate((cc.Red * (1f + amount)) + (amount * 0.5f));
+			cc.Green = Saturate((cc.Green * (1f + amount)) + (amount * 0.5f));
+			cc.Blue = Saturate((cc.Blue * (1f + amount)) + (amount * 0.5f));
+
+			// Return result
+			return Color.FromArgb(cc.ToArgb());
+		}
+
+		// This clamps a value between 0 and 1
+		private float Saturate(float v)
+		{
+			if(v < 0f) return 0f; else if(v > 1f) return 1f; else return v;
+		}
+		
 		#endregion
 	}
 }
