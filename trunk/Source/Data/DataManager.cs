@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.Data
 		private Queue<ImageData> imageque;
 		private Thread backgroundloader;
 		private volatile bool updatedusedtextures;
+		private bool notifiedbusy;
 		
 		// Image previews
 		private PreviewManager previews;
@@ -467,6 +468,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				
 				// Done
+				notifiedbusy = false;
 				backgroundloader = null;
 				General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
 			}
@@ -511,7 +513,11 @@ namespace CodeImp.DoomBuilder.Data
 					if(image != null)
 					{
 						// Wait a bit and update icon
-						General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+						if(!notifiedbusy)
+						{
+							notifiedbusy = true;
+							General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+						}
 						Thread.Sleep(0);
 					}
 					else
@@ -521,11 +527,21 @@ namespace CodeImp.DoomBuilder.Data
 						if(previews.BackgroundLoad())
 						{
 							// Wait a bit and update icon
-							General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+							if(!notifiedbusy)
+							{
+								notifiedbusy = true;
+								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+							}
 							Thread.Sleep(0);
 						}
 						else
 						{
+							if(notifiedbusy)
+							{
+								notifiedbusy = false;
+								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+							}
+							
 							// Wait longer to release CPU resources
 							Thread.Sleep(50);
 						}
