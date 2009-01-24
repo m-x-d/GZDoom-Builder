@@ -249,8 +249,8 @@ namespace CodeImp.DoomBuilder.Data
 							Graphics g = Graphics.FromImage(bitmap);
 							g.PageUnit = GraphicsUnit.Pixel;
 							g.CompositingQuality = CompositingQuality.HighQuality;
-							g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-							g.SmoothingMode = SmoothingMode.HighQuality;
+							g.InterpolationMode = InterpolationMode.NearestNeighbor;
+							g.SmoothingMode = SmoothingMode.None;
 							g.PixelOffsetMode = PixelOffsetMode.None;
 							g.Clear(Color.Transparent);
 							g.DrawImageUnscaled(oldbitmap, new Point(0, 0));
