@@ -823,21 +823,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								// Find out in which sector this was pasted
 								Vector2D testpoint = s.Line.GetSidePoint(!s.IsFront);
 								Linedef nl = MapSet.NearestLinedef(General.Map.Map.GetMarkedLinedefs(false), testpoint);
-								if(nl.SideOfLine(testpoint) <= 0)
-									joinsidedef = nl.Front;
-								else
-									joinsidedef = nl.Back;
-								
-								// Join?
-								if(joinsidedef != null)
+								if(nl != null)
 								{
-									// Join!
-									s.ChangeSector(joinsidedef.Sector);
-									s.Marked = false;
-									joined = true;
-									
-									// If we have no parent sector yet, then this is it!
-									if(parent == null) parent = joinsidedef.Sector;
+									if(nl.SideOfLine(testpoint) <= 0)
+										joinsidedef = nl.Front;
+									else
+										joinsidedef = nl.Back;
+
+									// Join?
+									if(joinsidedef != null)
+									{
+										// Join!
+										s.ChangeSector(joinsidedef.Sector);
+										s.Marked = false;
+										joined = true;
+
+										// If we have no parent sector yet, then this is it!
+										if(parent == null) parent = joinsidedef.Sector;
+									}
 								}
 							}
 							
