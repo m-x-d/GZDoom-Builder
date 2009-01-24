@@ -131,6 +131,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < orderedselection.Count; i++)
 				if((orderedselection[i] != first) && !orderedselection[i].IsDisposed)
 					orderedselection[i].Join(first);
+
+			// Clear selection
+			General.Map.Map.ClearAllSelected();
+			orderedselection.Clear();
 		}
 
 		// This highlights a new item
