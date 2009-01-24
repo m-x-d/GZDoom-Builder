@@ -251,13 +251,13 @@ namespace CodeImp.DoomBuilder.Map
 					// Add fields and remove bits
 					bits &= ~f.Flag;
 					for(int i = 0; i < f.Fields.Count; i++)
-						flags.Add(f.Fields[i], f.FieldValues[i]);
+						flags[f.Fields[i]] = f.FieldValues[i];
 				}
 				else
 				{
 					// Add fields with inverted value
 					for(int i = 0; i < f.Fields.Count; i++)
-						flags.Add(f.Fields[i], !f.FieldValues[i]);
+						flags[f.Fields[i]] = !f.FieldValues[i];
 				}
 			}
 		}
