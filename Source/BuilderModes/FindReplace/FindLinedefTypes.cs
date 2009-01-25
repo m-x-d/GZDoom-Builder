@@ -133,10 +133,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(FindReplaceObject o in selection)
 			{
-				renderer.PlotLinedef(o.Linedef, General.Colors.Highlight);
+				renderer.PlotLinedef(o.Linedef, General.Colors.Selection);
 			}
 		}
 
+		// Edit objects
+		public override void EditObjects(FindReplaceObject[] selection)
+		{
+			List<Linedef> lines = new List<Linedef>(selection.Length);
+			foreach(FindReplaceObject o in selection) lines.Add(o.Linedef);
+			General.Interface.ShowEditLinedefs(lines);
+		}
+		
 		#endregion
 	}
 }
