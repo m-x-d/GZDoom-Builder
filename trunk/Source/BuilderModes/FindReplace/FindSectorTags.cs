@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				foreach(Sidedef sd in o.Sector.Sidedefs)
 				{
-					renderer.PlotLinedef(sd.Line, General.Colors.Highlight);
+					renderer.PlotLinedef(sd.Line, General.Colors.Selection);
 				}
 			}
 		}

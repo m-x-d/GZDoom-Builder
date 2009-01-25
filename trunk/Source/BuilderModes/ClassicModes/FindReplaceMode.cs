@@ -121,7 +121,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				BuilderPlug.Me.FindReplaceForm.Finder.PlotSelection(renderer, selection);
+				if(BuilderPlug.Me.FindReplaceForm.Finder != null)
+					BuilderPlug.Me.FindReplaceForm.Finder.PlotSelection(renderer, selection);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				renderer.Finish();
 			}
@@ -130,14 +131,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
-				BuilderPlug.Me.FindReplaceForm.Finder.RenderThingsSelection(renderer, selection);
+				if(BuilderPlug.Me.FindReplaceForm.Finder != null)
+					BuilderPlug.Me.FindReplaceForm.Finder.RenderThingsSelection(renderer, selection);
 				renderer.Finish();
 			}
 			
 			// Render overlay
 			if(renderer.StartOverlay(true))
 			{
-				BuilderPlug.Me.FindReplaceForm.Finder.RenderOverlaySelection(renderer, selection);
+				if(BuilderPlug.Me.FindReplaceForm.Finder != null)
+					BuilderPlug.Me.FindReplaceForm.Finder.RenderOverlaySelection(renderer, selection);
 				renderer.Finish();
 			}
 

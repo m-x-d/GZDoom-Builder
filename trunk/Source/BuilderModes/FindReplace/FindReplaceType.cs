@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		public FindReplaceAttribute Attributes { get { return attribs; } }
+		public bool AllowDelete { get { return false; } }
 
 		#endregion
 
@@ -111,6 +112,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This is called for rendering
 		public virtual void RenderOverlaySelection(IRenderer2D renderer, FindReplaceObject[] selection)
+		{
+		}
+		
+		// This is called when the objects are to be edited
+		public virtual void EditObjects(FindReplaceObject[] selection)
+		{
+		}
+
+		// This is called when the objects are to be deleted
+		public virtual void DeleteObjects(FindReplaceObject[] selection)
 		{
 		}
 		

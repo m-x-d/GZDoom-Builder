@@ -43,6 +43,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultslist = new System.Windows.Forms.ListBox();
 			this.resultscount = new System.Windows.Forms.Label();
 			this.resultspanel = new System.Windows.Forms.Panel();
+			this.deletebutton = new System.Windows.Forms.Button();
+			this.editbutton = new System.Windows.Forms.Button();
 			this.groupreplace = new System.Windows.Forms.GroupBox();
 			this.doreplace = new System.Windows.Forms.CheckBox();
 			label1 = new System.Windows.Forms.Label();
@@ -170,8 +172,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// resultslist
 			// 
-			this.resultslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
+			this.resultslist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.resultslist.FormattingEnabled = true;
 			this.resultslist.IntegralHeight = false;
@@ -179,8 +180,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultslist.Location = new System.Drawing.Point(9, 31);
 			this.resultslist.Margin = new System.Windows.Forms.Padding(1);
 			this.resultslist.Name = "resultslist";
-			this.resultslist.Size = new System.Drawing.Size(341, 187);
+			this.resultslist.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+			this.resultslist.Size = new System.Drawing.Size(341, 203);
 			this.resultslist.TabIndex = 9;
+			this.resultslist.MouseUp += new System.Windows.Forms.MouseEventHandler(this.resultslist_MouseUp);
 			this.resultslist.SelectedIndexChanged += new System.EventHandler(this.resultslist_SelectedIndexChanged);
 			// 
 			// resultscount
@@ -194,13 +197,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// resultspanel
 			// 
+			this.resultspanel.Controls.Add(this.deletebutton);
+			this.resultspanel.Controls.Add(this.editbutton);
 			this.resultspanel.Controls.Add(this.resultscount);
 			this.resultspanel.Controls.Add(this.resultslist);
 			this.resultspanel.Location = new System.Drawing.Point(-1, 198);
 			this.resultspanel.Name = "resultspanel";
-			this.resultspanel.Size = new System.Drawing.Size(362, 230);
+			this.resultspanel.Size = new System.Drawing.Size(362, 275);
 			this.resultspanel.TabIndex = 11;
 			this.resultspanel.Visible = false;
+			// 
+			// deletebutton
+			// 
+			this.deletebutton.Location = new System.Drawing.Point(131, 241);
+			this.deletebutton.Name = "deletebutton";
+			this.deletebutton.Size = new System.Drawing.Size(109, 25);
+			this.deletebutton.TabIndex = 12;
+			this.deletebutton.Text = "Delete Selection";
+			this.deletebutton.UseVisualStyleBackColor = true;
+			this.deletebutton.Click += new System.EventHandler(this.deletebutton_Click);
+			// 
+			// editbutton
+			// 
+			this.editbutton.Location = new System.Drawing.Point(9, 241);
+			this.editbutton.Name = "editbutton";
+			this.editbutton.Size = new System.Drawing.Size(109, 25);
+			this.editbutton.TabIndex = 11;
+			this.editbutton.Text = "Edit Selection";
+			this.editbutton.UseVisualStyleBackColor = true;
+			this.editbutton.Click += new System.EventHandler(this.editbutton_Click);
 			// 
 			// groupreplace
 			// 
@@ -232,7 +257,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.AcceptButton = this.findbutton;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.closebutton;
-			this.ClientSize = new System.Drawing.Size(358, 425);
+			this.ClientSize = new System.Drawing.Size(358, 472);
 			this.Controls.Add(this.doreplace);
 			this.Controls.Add(this.groupreplace);
 			this.Controls.Add(this.closebutton);
@@ -246,6 +271,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Controls.Add(this.resultspanel);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.KeyPreview = true;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "FindReplaceForm";
@@ -254,7 +280,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Find and Replace";
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FindReplaceForm_KeyUp);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FindReplaceForm_FormClosing);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FindReplaceForm_KeyDown);
 			this.resultspanel.ResumeLayout(false);
 			this.resultspanel.PerformLayout();
 			this.groupreplace.ResumeLayout(false);
@@ -280,5 +308,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.Panel resultspanel;
 		private System.Windows.Forms.GroupBox groupreplace;
 		private System.Windows.Forms.CheckBox doreplace;
+		private System.Windows.Forms.Button editbutton;
+		private System.Windows.Forms.Button deletebutton;
 	}
 }

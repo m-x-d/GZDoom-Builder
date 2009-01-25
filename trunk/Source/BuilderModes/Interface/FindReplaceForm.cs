@@ -41,15 +41,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 		
-		// Constants
-		private const int RESULTS_WINDOW_HEIGHT = 447;
-
 		#endregion
 
 		#region ================== Variables
 
+		private FindReplaceType newfinder;
 		private FindReplaceType finder;
-
+		bool controlpressed = false;
+		bool shiftpressed = false;
+		bool suppressevents = false;
+		
 		#endregion
 
 		#region ================== Properties
@@ -126,23 +127,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void searchtypes_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// Create instance of the selected type
-			finder  = (FindReplaceType)searchtypes.SelectedItem;
+			newfinder = (FindReplaceType)searchtypes.SelectedItem;
 			
 			// Now setup the interface
-			browsefind.Enabled = finder.Attributes.BrowseButton;
-			browsereplace.Enabled = finder.Attributes.BrowseButton;
+			browsefind.Enabled = newfinder.Attributes.BrowseButton;
+			browsereplace.Enabled = newfinder.Attributes.BrowseButton;
 		}
 
 		// Browse find button clicked
 		private void browsefind_Click(object sender, EventArgs e)
 		{
-			findinput.Text = finder.Browse(findinput.Text);
+			findinput.Text = newfinder.Browse(findinput.Text);
 		}
 
 		// Browse replacement clicked
 		private void browsereplace_Click(object sender, EventArgs e)
 		{
-			replaceinput.Text = finder.Browse(replaceinput.Text);
+			replaceinput.Text = newfinder.Browse(replaceinput.Text);
 		}
 
 		// Find / Replace clicked
@@ -150,9 +151,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Reset results
 			resultslist.Items.Clear();
-
+			
 			// Hide object information
 			General.Interface.HideInfo();
+
+			// Keep the finder we used for the search
+			finder = newfinder;
+
+			// Enable/disable buttons
+			editbutton.Enabled = false;
+			deletebutton.Visible = finder.AllowDelete;
+			deletebutton.Enabled = false;
 
 			// Perform the search / replace and show the results
 			if(doreplace.Checked)
@@ -177,17 +186,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Found item selected
 		private void resultslist_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// Anything selected?
-			if(resultslist.SelectedIndex > -1)
+			if(!suppressevents)
 			{
-				// Let the finder know
-				finder.ObjectSelected((FindReplaceObject)resultslist.SelectedItem);
-				
+				// Anything selected?
+				if(resultslist.SelectedIndex > -1)
+				{
+					// Let the finder know
+					finder.ObjectSelected((FindReplaceObject)resultslist.SelectedItem);
+				}
+
+				// Enable/disable buttons
+				editbutton.Enabled = (resultslist.SelectedIndex > -1);
+				deletebutton.Enabled = (resultslist.SelectedIndex > -1);
+
 				// Redraw the screen, this will show the selection
 				General.Interface.RedrawDisplay();
 			}
 		}
 
+		// Mouse released
+		private void resultslist_MouseUp(object sender, MouseEventArgs e)
+		{
+			// Right-clicked?
+			if(e.Button == MouseButtons.Right)
+			{
+				int index = resultslist.IndexFromPoint(e.Location);
+				if(index != ListBox.NoMatches)
+				{
+					// Select the right-clicked item, if not selected
+					if(!resultslist.SelectedIndices.Contains(index))
+					{
+						if(!controlpressed && !shiftpressed) resultslist.SelectedItems.Clear();
+						resultslist.SelectedIndices.Add(index);
+						Update();
+					}
+
+					// Edit selected objects
+					editbutton_Click(this, EventArgs.Empty);
+				}
+			}
+			
+			// Enable/disable buttons
+			editbutton.Enabled = (resultslist.SelectedIndex > -1);
+			deletebutton.Enabled = (resultslist.SelectedIndex > -1);
+		}
+		
 		// Window closing
 		private void FindReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -206,6 +249,68 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Editing.CancelMode();
 		}
 
+		// Key pressed
+		private void FindReplaceForm_KeyDown(object sender, KeyEventArgs e)
+		{
+			// Keep modifiers
+			controlpressed = e.Control;
+			shiftpressed = e.Shift;
+
+			// Enable/disable buttons
+			editbutton.Enabled = (resultslist.SelectedIndex > -1);
+			deletebutton.Enabled = (resultslist.SelectedIndex > -1);
+		}
+
+		// Key released
+		private void FindReplaceForm_KeyUp(object sender, KeyEventArgs e)
+		{
+			// Keep modifiers
+			controlpressed = e.Control;
+			shiftpressed = e.Shift;
+
+			// Enable/disable buttons
+			editbutton.Enabled = (resultslist.SelectedIndex > -1);
+			deletebutton.Enabled = (resultslist.SelectedIndex > -1);
+		}
+
+		// Edit Selection
+		private void editbutton_Click(object sender, EventArgs e)
+		{
+			FindReplaceObject[] items = GetSelection();
+			if(items.Length > 0)
+			{
+				// Edit selected objects
+				suppressevents = true;
+				finder.EditObjects(items);
+				suppressevents = false;
+				resultslist_SelectedIndexChanged(sender, e);
+				
+				// Redraw the screen, this will show the selection
+				General.Interface.RedrawDisplay();
+			}
+		}
+
+		// Delete Selection
+		private void deletebutton_Click(object sender, EventArgs e)
+		{
+			// Delete selected objects
+			FindReplaceObject[] items = GetSelection();
+			if(items.Length > 0)
+			{
+				suppressevents = true;
+				finder.DeleteObjects(items);
+				foreach(FindReplaceObject obj in items)
+				{
+					resultslist.Items.Remove(obj);
+				}
+				suppressevents = false;
+				resultslist_SelectedIndexChanged(sender, e);
+				
+				// Redraw the screen, this will show the selection
+				General.Interface.RedrawDisplay();
+			}
+		}
+		
 		#endregion
 
 		#region ================== Methods
@@ -243,9 +348,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Anything selected?
 			if(resultslist.SelectedIndex > -1)
 			{
-				// Return selected object
-				FindReplaceObject[] list = new FindReplaceObject[1];
-				list[0] = (FindReplaceObject)resultslist.SelectedItem;
+				// Return selected objects
+				FindReplaceObject[] list = new FindReplaceObject[resultslist.SelectedItems.Count];
+				int index = 0;
+				foreach(object obj in resultslist.SelectedItems)
+				{
+					list[index++] = (FindReplaceObject)obj;
+				}
 				return list;
 			}
 			else
