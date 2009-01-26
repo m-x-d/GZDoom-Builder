@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	public sealed class FindReplaceMode : BaseClassicMode
 	{
 		#region ================== Constants
-
+		
 		#endregion
 
 		#region ================== Variables

@@ -154,15 +154,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Hide object information
 			General.Interface.HideInfo();
-
+			General.Map.Map.ClearAllSelected();
+			
 			// Keep the finder we used for the search
 			finder = newfinder;
-
+			
 			// Enable/disable buttons
 			editbutton.Enabled = false;
 			deletebutton.Visible = finder.AllowDelete;
 			deletebutton.Enabled = false;
-
+			suppressevents = true;
+			resultslist.BeginUpdate();
+			
 			// Perform the search / replace and show the results
 			if(doreplace.Checked)
 			{
@@ -175,26 +178,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				resultscount.Text = resultslist.Items.Count + " items found.";
 			}
 			
+			// Select all results
+			for(int i = 0; i < resultslist.Items.Count; i++)
+				resultslist.SelectedIndices.Add(i);
+			
 			// Open results part of window
 			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);
 			resultspanel.Visible = true;
+			resultslist.EndUpdate();
+			suppressevents = false;
 			
 			// Redraw the screen, this will show the selection
 			General.Interface.RedrawDisplay();
 		}
-
+		
 		// Found item selected
 		private void resultslist_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if(!suppressevents)
 			{
-				// Anything selected?
-				if(resultslist.SelectedIndex > -1)
-				{
-					// Let the finder know
-					finder.ObjectSelected((FindReplaceObject)resultslist.SelectedItem);
-				}
-
+				// Let the finder know about the selection
+				FindReplaceObject[] selection = GetSelection();
+				finder.ObjectSelected(selection);
+				
 				// Enable/disable buttons
 				editbutton.Enabled = (resultslist.SelectedIndex > -1);
 				deletebutton.Enabled = (resultslist.SelectedIndex > -1);
@@ -345,25 +351,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This returns the selected item(s)
 		internal FindReplaceObject[] GetSelection()
 		{
-			// Anything selected?
-			if(resultslist.SelectedIndex > -1)
+			// Return selected objects
+			FindReplaceObject[] list = new FindReplaceObject[resultslist.SelectedItems.Count];
+			int index = 0;
+			foreach(object obj in resultslist.SelectedItems)
 			{
-				// Return selected objects
-				FindReplaceObject[] list = new FindReplaceObject[resultslist.SelectedItems.Count];
-				int index = 0;
-				foreach(object obj in resultslist.SelectedItems)
-				{
-					list[index++] = (FindReplaceObject)obj;
-				}
-				return list;
+				list[index++] = (FindReplaceObject)obj;
 			}
-			else
-			{
-				// Return all objects
-				FindReplaceObject[] list = new FindReplaceObject[resultslist.Items.Count];
-				resultslist.Items.CopyTo(list, 0);
-				return list;
-			}
+			return list;
 		}
 		
 		#endregion

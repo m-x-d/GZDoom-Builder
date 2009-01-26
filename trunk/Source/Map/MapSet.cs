@@ -1248,7 +1248,13 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Areas
-
+		
+		// This creates an initial, undefined area
+		public static RectangleF CreateEmptyArea()
+		{
+			return new RectangleF(float.MaxValue / 2, float.MaxValue / 2, -float.MaxValue, -float.MaxValue);
+		}
+		
 		// This creates an area from vertices
 		public static RectangleF CreateArea(ICollection<Vertex> verts)
 		{
@@ -1288,6 +1294,46 @@ namespace CodeImp.DoomBuilder.Map
 				if(v.Position.y < t) t = v.Position.y;
 				if(v.Position.y > b) b = v.Position.y;
 			}
+			
+			// Return a rect
+			return new RectangleF(l, t, r - l, b - t);
+		}
+
+		// This increases and existing area with the given vertices
+		public static RectangleF IncreaseArea(RectangleF area, ICollection<Vector2D> verts)
+		{
+			float l = area.Left;
+			float t = area.Top;
+			float r = area.Right;
+			float b = area.Bottom;
+			
+			// Go for all vertices
+			foreach(Vector2D v in verts)
+			{
+				// Adjust boundaries by vertices
+				if(v.x < l) l = v.x;
+				if(v.x > r) r = v.x;
+				if(v.y < t) t = v.y;
+				if(v.y > b) b = v.y;
+			}
+			
+			// Return a rect
+			return new RectangleF(l, t, r - l, b - t);
+		}
+
+		// This increases and existing area with the given vertices
+		public static RectangleF IncreaseArea(RectangleF area, Vector2D vert)
+		{
+			float l = area.Left;
+			float t = area.Top;
+			float r = area.Right;
+			float b = area.Bottom;
+			
+			// Adjust boundaries by vertices
+			if(vert.x < l) l = vert.x;
+			if(vert.x > r) r = vert.x;
+			if(vert.y < t) t = vert.y;
+			if(vert.y > b) b = vert.y;
 			
 			// Return a rect
 			return new RectangleF(l, t, r - l, b - t);

@@ -121,9 +121,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject obj)
+		public override void ObjectSelected(FindReplaceObject[] selection)
 		{
-			General.Interface.ShowSectorInfo(obj.Sector);
+			if(selection.Length == 1)
+				General.Interface.ShowSectorInfo(selection[0].Sector);
+			else
+				General.Interface.HideInfo();
+
+			General.Map.Map.ClearAllSelected();
+			foreach(FindReplaceObject obj in selection) obj.Sector.Selected = true;
 		}
 
 		// Render selection
