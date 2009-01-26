@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private const float SCALE_MIN = 0.01f;
 		private const float SELECTION_BORDER_SIZE = 2f;
 		private const int SELECTION_ALPHA = 200;
+		private const float CENTER_VIEW_PADDING = 0.06f;
 
 		#endregion
 
@@ -273,8 +274,6 @@ namespace CodeImp.DoomBuilder.Editing
 			float top = float.MaxValue;
 			float right = float.MinValue;
 			float bottom = float.MinValue;
-			float scalew, scaleh, scale;
-			float width, height;
 			bool anything = false;
 			
 			// Go for all vertices
@@ -310,36 +309,54 @@ namespace CodeImp.DoomBuilder.Editing
 			// Anything found to center in view?
 			if(anything)
 			{
-				// Calculate width/height
-				width = (right - left);
-				height = (bottom - top);
-
-				// Calculate scale to view map at
-				scalew = (float)General.Map.Graphics.RenderTarget.ClientSize.Width / (width * 1.1f);
-				scaleh = (float)General.Map.Graphics.RenderTarget.ClientSize.Height / (height * 1.1f);
-				if(scalew < scaleh) scale = scalew; else scale = scaleh;
-
-				// Change the view to see the whole map
-				renderer2d.ScaleView(scale);
-				renderer2d.PositionView(left + (right - left) * 0.5f, top + (bottom - top) * 0.5f);
-				this.OnViewChanged();
+				RectangleF area = new RectangleF(left, top, (right - left), (bottom - top));
+				CenterOnArea(area, CENTER_VIEW_PADDING);
 			}
 			else
 			{
 				// Default view
-				renderer2d.ScaleView(0.5f);
-				renderer2d.PositionView(0.0f, 0.0f);
-				this.OnViewChanged();
+				SetDefaultZoom();
 			}
+		}
+		
+		// This zooms and moves to view the given area
+		public void CenterOnArea(RectangleF area, float padding)
+		{
+			float scalew, scaleh, scale;
+			
+			// Add size to the area for better overview
+			area.Inflate(area.Width * padding, area.Height * padding);
+			
+			// Calculate scale to view map at
+			scalew = (float)General.Map.Graphics.RenderTarget.ClientSize.Width / area.Width;
+			scaleh = (float)General.Map.Graphics.RenderTarget.ClientSize.Height / area.Height;
+			if(scalew < scaleh) scale = scalew; else scale = scaleh;
+			
+			// Change the view to see the whole map
+			renderer2d.ScaleView(scale);
+			renderer2d.PositionView(area.Left + area.Width * 0.5f, area.Top + area.Height * 0.5f);
+			this.OnViewChanged();
 			
 			// Redraw
-			//General.Map.Map.Update();
+			General.MainWindow.RedrawDisplay();
+			
+			// Give a new mousemove event to update coordinates
+			if(mouseinside) OnMouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
+		}
+		
+		// This sets up the default view
+		public void SetDefaultZoom()
+		{
+			// View middle of map at 50% zoom
+			renderer2d.ScaleView(0.5f);
+			renderer2d.PositionView(0.0f, 0.0f);
+			this.OnViewChanged();
 			General.MainWindow.RedrawDisplay();
 
 			// Give a new mousemove event to update coordinates
 			if(mouseinside) OnMouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
 		}
-
+		
 		/// <summary>
 		/// This is called when the view changes (scroll/zoom), before the display is redrawn.
 		/// </summary>

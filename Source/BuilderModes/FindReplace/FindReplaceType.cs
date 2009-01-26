@@ -80,7 +80,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return "";
 		}
 		
-		
 		// This is called to perform a search (and replace)
 		// Must return a list of items to show in the results list
 		// replacewith is null when not replacing
@@ -96,7 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This is called when a specific object is selected from the list
-		public virtual void ObjectSelected(FindReplaceObject obj)
+		public virtual void ObjectSelected(FindReplaceObject[] selection)
 		{
 		}
 		
@@ -123,6 +122,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the objects are to be deleted
 		public virtual void DeleteObjects(FindReplaceObject[] selection)
 		{
+		}
+		
+		// Call this to zoom in on the given selection
+		public virtual void ZoomToSelection(ICollection<FindReplaceObject> selection)
+		{
+			List<Vector2D> points = new List<Vector2D>();
+			RectangleF area = MapSet.CreateEmptyArea();
+			
+			// Add all points to a list
+			foreach(FindReplaceObject o in selection) o.AddViewPoints(points);
+			
+			// Make a view area from the points
+			foreach(Vector2D p in points) area = MapSet.IncreaseArea(area, p);
+			
+			// Make the area square, using the largest side
+			if(area.Width > area.Height)
+			{
+				float delta = area.Width - area.Height;
+				area.Y -= delta * 0.5f;
+				area.Height += delta;
+			}
+			else
+			{
+				float delta = area.Height - area.Width;
+				area.X -= delta * 0.5f;
+				area.Width += delta;
+			}
+			
+			// Add padding
+			area.Inflate(100f, 100f);
+			
+			// Zoom to area
+			ClassicMode editmode = (General.Editing.Mode as ClassicMode);
+			editmode.CenterOnArea(area, 1f);
 		}
 		
 		#endregion

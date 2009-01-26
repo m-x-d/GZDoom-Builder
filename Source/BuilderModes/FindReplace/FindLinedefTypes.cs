@@ -121,11 +121,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return objs.ToArray();
 		}
-
+		
 		// This is called when a specific object is selected from the list
-		public override void ObjectSelected(FindReplaceObject obj)
+		public override void ObjectSelected(FindReplaceObject[] selection)
 		{
-			General.Interface.ShowLinedefInfo(obj.Linedef);
+			if(selection.Length == 1)
+			{
+				ZoomToSelection(selection);
+				General.Interface.ShowLinedefInfo(selection[0].Linedef);
+			}
+			else
+				General.Interface.HideInfo();
+			
+			General.Map.Map.ClearAllSelected();
+			foreach(FindReplaceObject obj in selection) obj.Linedef.Selected = true;
 		}
 
 		// Render selection

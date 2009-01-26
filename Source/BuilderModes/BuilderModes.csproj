@@ -54,6 +54,7 @@
     <Compile Include="ClassicModes\DrawGeometryMode.cs" />
     <Compile Include="ClassicModes\FindReplaceMode.cs" />
     <Compile Include="ClassicModes\MakeSectorMode.cs" />
+    <Compile Include="ClassicModes\TriangulatorMode.cs" />
     <Compile Include="ErrorChecks\CheckStuckedThings.cs" />
     <Compile Include="ErrorChecks\CheckLineReferences.cs" />
     <Compile Include="ErrorChecks\CheckOverlappingLines.cs" />

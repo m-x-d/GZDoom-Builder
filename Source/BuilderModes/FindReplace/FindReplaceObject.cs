@@ -75,6 +75,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return title;
 		}
 		
+		// This adds the vertices of the object used for view area calculation
+		public void AddViewPoints(IList<Vector2D> points)
+		{
+			if(obj is Vertex)
+			{
+				points.Add((obj as Vertex).Position);
+			}
+			else if(obj is Linedef)
+			{
+				points.Add((obj as Linedef).Start.Position);
+				points.Add((obj as Linedef).End.Position);
+			}
+			else if(obj is Sector)
+			{
+				Sector s = (obj as Sector);
+				foreach(Sidedef sd in s.Sidedefs)
+				{
+					points.Add(sd.Line.Start.Position);
+					points.Add(sd.Line.End.Position);
+				}
+			}
+			else if(obj is Thing)
+			{
+				Thing t = (obj as Thing);
+				Vector2D p = (Vector2D)t.Position;
+				points.Add(p);
+				points.Add(p + new Vector2D(t.Size, t.Size));
+				points.Add(p + new Vector2D(t.Size, -t.Size));
+				points.Add(p + new Vector2D(-t.Size, t.Size));
+				points.Add(p + new Vector2D(-t.Size, -t.Size));
+			}
+		}
+		
 		#endregion
 	}
 }
