@@ -61,6 +61,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Initialize
 			this.line1 = l1;
 			this.line2 = l2;
+			this.viewobjects.Add(l1);
+			this.viewobjects.Add(l2);
 			this.description = "These linedefs are overlapping and they do not reference the same sector on all sides. Overlapping lines is only allowed when they reference the same sector on all sides.";
 		}
 		

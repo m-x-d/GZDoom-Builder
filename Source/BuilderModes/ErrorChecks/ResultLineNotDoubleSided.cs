@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Initialize
 			this.line = l;
+			this.viewobjects.Add(l);
 			this.description = "This linedef is marked as double-sided, but is missing the back sidedef. Click Make Single-Sided to remove the double-sided flag from the line.";
 			
 			// One solution is to remove the double-sided flag

@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Zoom to area
 			ClassicMode editmode = (General.Editing.Mode as ClassicMode);
-			editmode.CenterOnArea(area, 1f);
+			editmode.CenterOnArea(area, 0.6f);
 		}
 		
 		#endregion

@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Initialize
 			this.thing = t;
+			this.viewobjects.Add(t);
 			this.description = "This thing is completely outside the map.";
 		}
 

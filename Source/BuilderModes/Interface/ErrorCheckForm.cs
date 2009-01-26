@@ -375,6 +375,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				fix1.Visible = (r.Buttons >= 1);
 				fix2.Visible = (r.Buttons >= 2);
 				fix3.Visible = (r.Buttons >= 3);
+				r.ZoomToObject();
 			}
 			else
 			{

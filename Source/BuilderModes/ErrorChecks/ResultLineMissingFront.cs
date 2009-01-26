@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Initialize
 			this.line = l;
+			this.viewobjects.Add(l);
 			this.description = "This linedef has a back sidedef, but is missing a front sidedef. " +
 							   "A line must have at least a front side and optionally a back side! " +
 							   "Click Flip Linedef if the line is supposed to be single-sided.";

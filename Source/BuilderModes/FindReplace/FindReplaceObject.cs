@@ -101,10 +101,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Thing t = (obj as Thing);
 				Vector2D p = (Vector2D)t.Position;
 				points.Add(p);
-				points.Add(p + new Vector2D(t.Size, t.Size));
-				points.Add(p + new Vector2D(t.Size, -t.Size));
-				points.Add(p + new Vector2D(-t.Size, t.Size));
-				points.Add(p + new Vector2D(-t.Size, -t.Size));
+				points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
+				points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
+				points.Add(p + new Vector2D(-t.Size * 2.0f, t.Size * 2.0f));
+				points.Add(p + new Vector2D(-t.Size * 2.0f, -t.Size * 2.0f));
 			}
 		}
 		
