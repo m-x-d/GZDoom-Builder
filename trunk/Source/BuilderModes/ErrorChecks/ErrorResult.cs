@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Config;
+using System.Drawing;
 
 #endregion
 
@@ -43,6 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 		
 		protected string description;
+		protected List<MapElement> viewobjects;
 		
 		#endregion
 		
@@ -64,6 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ErrorResult()
 		{
 			// Initialize
+			viewobjects = new List<MapElement>(1);
 		}
 		
 		#endregion
@@ -110,6 +113,74 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called for rendering
 		public virtual void RenderOverlaySelection(IRenderer2D renderer)
 		{
+		}
+		
+		// Call this to zoom in on the given selection
+		public void ZoomToObject()
+		{
+			List<Vector2D> points = new List<Vector2D>();
+			RectangleF area = MapSet.CreateEmptyArea();
+			
+			// Add all points to a list
+			foreach(MapElement obj in viewobjects)
+			{
+				if(obj is Vertex)
+				{
+					points.Add((obj as Vertex).Position);
+				}
+				else if(obj is Linedef)
+				{
+					points.Add((obj as Linedef).Start.Position);
+					points.Add((obj as Linedef).End.Position);
+				}
+				else if(obj is Sector)
+				{
+					Sector s = (obj as Sector);
+					foreach(Sidedef sd in s.Sidedefs)
+					{
+						points.Add(sd.Line.Start.Position);
+						points.Add(sd.Line.End.Position);
+					}
+				}
+				else if(obj is Thing)
+				{
+					Thing t = (obj as Thing);
+					Vector2D p = (Vector2D)t.Position;
+					points.Add(p);
+					points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
+					points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
+					points.Add(p + new Vector2D(-t.Size * 2.0f, t.Size * 2.0f));
+					points.Add(p + new Vector2D(-t.Size * 2.0f, -t.Size * 2.0f));
+				}
+				else
+				{
+					General.Fail("Unknown object given to zoom in on.");
+				}
+			}
+			
+			// Make a view area from the points
+			foreach(Vector2D p in points) area = MapSet.IncreaseArea(area, p);
+			
+			// Make the area square, using the largest side
+			if(area.Width > area.Height)
+			{
+				float delta = area.Width - area.Height;
+				area.Y -= delta * 0.5f;
+				area.Height += delta;
+			}
+			else
+			{
+				float delta = area.Height - area.Width;
+				area.X -= delta * 0.5f;
+				area.Width += delta;
+			}
+			
+			// Add padding
+			area.Inflate(100f, 100f);
+			
+			// Zoom to area
+			ClassicMode editmode = (General.Editing.Mode as ClassicMode);
+			editmode.CenterOnArea(area, 0.6f);
 		}
 		
 		#endregion
