@@ -184,6 +184,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultslist.Size = new System.Drawing.Size(341, 203);
 			this.resultslist.TabIndex = 9;
 			this.resultslist.MouseUp += new System.Windows.Forms.MouseEventHandler(this.resultslist_MouseUp);
+			this.resultslist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.resultslist_MouseDoubleClick);
 			this.resultslist.SelectedIndexChanged += new System.EventHandler(this.resultslist_SelectedIndexChanged);
 			// 
 			// resultscount
