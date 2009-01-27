@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private string switchaction = null;
 		private string buttonimage = null;
 		private int buttonorder = 0;
+		private string buttongroup = "~none";
 		private bool optional = true;
 		private bool isvolatile = false;
 		private string displayname = "<unnamed mode>";
@@ -68,6 +69,11 @@ namespace CodeImp.DoomBuilder.Editing
 		/// lower values will be more to the left than buttons with higher values.
 		/// </summary>
 		public int ButtonOrder { get { return buttonorder; } set { buttonorder = value; } }
+
+		/// <summary>
+		/// Grouping name for buttons on the toolbar. Groups are sorted alphabetically.
+		/// </summary>
+		public string ButtonGroup { get { return buttongroup; } set { buttongroup = value; } }
 
 		/// <summary>
 		/// When set to false, this mode will always be available for use and the user cannot

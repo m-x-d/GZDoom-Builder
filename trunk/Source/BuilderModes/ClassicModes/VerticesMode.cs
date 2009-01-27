@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "verticesmode",	// Action name used to switch to this mode
 		      ButtonImage = "VerticesMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 0,	// Position of the button (lower is more to the left)
+			  ButtonGroup = "000_editing",
 			  UseByDefault = true)]
 
 	public class VerticesMode : BaseClassicMode

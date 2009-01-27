@@ -1317,7 +1317,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Insert the button at the end of the toolbar
 			toolbar.Items.Add(button);
-			UpdateSeperators();
+			UpdateSeparators();
 		}
 
 		// Removes a button
@@ -1328,34 +1328,44 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Remove button
 			toolbar.Items.Remove(button);
-			UpdateSeperators();
+			UpdateSeparators();
 		}
 
 		// This handle visibility changes in the toolbar buttons
 		private void ToolbarButtonVisibleChanged(object sender, EventArgs e)
 		{
 			// Update the seeprators
-			UpdateSeperators();
+			UpdateSeparators();
 		}
 
+		// This hides redundant seperators and shows single seperators
+		internal void UpdateSeparators()
+		{
+			UpdateToolStripSeparators(toolbar.Items, false);
+			UpdateToolStripSeparators(menumode.DropDownItems, true);
+		}
+		
 		// This updates the seperators
 		// Hides redundant seperators and shows single seperators
-		private void UpdateSeperators()
+		private void UpdateToolStripSeparators(ToolStripItemCollection items, bool defaultvisible)
 		{
 			ToolStripItem pvi = null;
-			foreach(ToolStripItem i in toolbar.Items)
+			foreach(ToolStripItem i in items)
 			{
+				bool separatorvisible = false;
+				
 				// This is a seperator?
 				if(i is ToolStripSeparator)
 				{
 					// Make visible when previous item was not a seperator
-					i.Visible = !(pvi is ToolStripSeparator);
+					separatorvisible = !(pvi is ToolStripSeparator) && (pvi != null);
+					i.Visible = separatorvisible;
 				}
-
+				
 				// Keep as previous visible item
-				if(i.Visible) pvi = i;
+				if(i.Visible || separatorvisible || (defaultvisible && !(i is ToolStripSeparator))) pvi = i;
 			}
-
+			
 			// Hide last item if it is a seperator
 			if(pvi is ToolStripSeparator) pvi.Visible = false;
 		}
@@ -1396,11 +1406,35 @@ namespace CodeImp.DoomBuilder.Windows
 				// Remove it and restart
 				toolbar.Items.Remove(i);
 				menumode.DropDownItems.Remove(i);
+				i.Dispose();
 			}
 			
 			// Done
 			editmodeitems.Clear();
-			UpdateSeperators();
+			UpdateSeparators();
+		}
+		
+		// This adds an editing mode seperator on the toolbar and menu
+		internal void AddEditModeSeperator()
+		{
+			ToolStripSeparator item;
+			int index;
+			
+			// Create a button
+			index = toolbar.Items.IndexOf(buttoneditmodesseperator);
+			item = new ToolStripSeparator();
+			item.Margin = new Padding(6, 0, 6, 0);
+			toolbar.Items.Insert(index, item);
+			editmodeitems.Add(item);
+			
+			// Create menu item
+			index = menumode.DropDownItems.Count;
+			item = new ToolStripSeparator();
+			item.Margin = new Padding(0, 3, 0, 3);
+			menumode.DropDownItems.Insert(index, item);
+			editmodeitems.Add(item);
+			
+			UpdateSeparators();
 		}
 		
 		// This adds an editing mode button to the toolbar and edit menu
@@ -1416,19 +1450,19 @@ namespace CodeImp.DoomBuilder.Windows
 			item = new ToolStripButton(modeinfo.ButtonDesc, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
 			item.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			item.Tag = modeinfo;
-			item.Enabled = (General.Map != null);
 			toolbar.Items.Insert(index, item);
 			editmodeitems.Add(item);
-			UpdateSeperators();
 			
 			// Create menu item
 			index = menumode.DropDownItems.Count;
 			item = new ToolStripMenuItem(controlname, modeinfo.ButtonImage, new EventHandler(EditModeButtonHandler));
 			item.Tag = modeinfo;
-			item.Enabled = (General.Map != null);
 			menumode.DropDownItems.Insert(index, item);
 			editmodeitems.Add(item);
+			item.Visible = true;
+			
 			ApplyShortcutKeys(menumode.DropDownItems);
+			UpdateSeparators();
 		}
 
 		// This handles edit mode button clicks
@@ -1816,6 +1850,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the modes menu
 		private void UpdateModeMenu()
 		{
+			menumode.Visible = (General.Map != null);
 		}
 		
 		#endregion

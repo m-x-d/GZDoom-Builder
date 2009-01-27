@@ -46,6 +46,9 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		#region ================== Variables
 		
+		// All editing mode groups, sorted alphabetically
+		private List<string> groups;
+		
 		// All editing modes available
 		private List<EditModeInfo> allmodes;
 		
@@ -84,6 +87,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Initialize
 			allmodes = new List<EditModeInfo>();
 			usedmodes = new List<EditModeInfo>();
+			groups = new List<string>();
 			
 			// Bind any methods
 			General.Actions.BindMethods(this);
@@ -100,13 +104,19 @@ namespace CodeImp.DoomBuilder.Editing
 					foreach(EditModeAttribute a in emattrs)
 					{
 						// Make edit mode information
-						allmodes.Add(new EditModeInfo(p, t, a));
+						EditModeInfo modeinfo = new EditModeInfo(p, t, a);
+						allmodes.Add(modeinfo);
+						
+						// Add group if not added yet
+						if(!groups.Contains(modeinfo.Attributes.ButtonGroup))
+							groups.Add(modeinfo.Attributes.ButtonGroup);
 					}
 				}
 			}
 			
-			// Sort the modes in order for buttons
+			// Sort the lists
 			allmodes.Sort();
+			groups.Sort();
 			
 			// Update modes
 			UpdateCurrentEditModes();
@@ -226,11 +236,18 @@ namespace CodeImp.DoomBuilder.Editing
 			// Remove editing mode buttons from interface
 			General.MainWindow.RemoveEditModeButtons();
 			
-			// Go for all used edit modes to add buttons
-			foreach(EditModeInfo emi in usedmodes)
+			// Go for all the editing mode groups
+			foreach(string grp in groups)
 			{
-				if((emi.ButtonImage != null) && (emi.ButtonDesc != null))
-					General.MainWindow.AddEditModeButton(emi);
+				General.MainWindow.AddEditModeSeperator();
+				
+				// Go for all used edit modes to add buttons
+				foreach(EditModeInfo emi in usedmodes)
+				{
+					if((emi.ButtonImage != null) && (emi.ButtonDesc != null) &&
+					   (emi.Attributes.ButtonGroup == grp))
+						General.MainWindow.AddEditModeButton(emi);
+				}
 			}
 		}
 		

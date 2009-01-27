@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "visualmode",		// Action name used to switch to this mode
 			  ButtonImage = "VisualMode.png",	// Image resource name for the button
 			  ButtonOrder = 0,					// Position of the button (lower is more to the left)
+			  ButtonGroup = "001_visual",
 			  UseByDefault = true)]
 
 	public class BaseVisualMode : VisualMode

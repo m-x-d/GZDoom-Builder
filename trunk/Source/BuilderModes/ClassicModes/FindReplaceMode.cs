@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "findmode",
 			  ButtonImage = "FindMode.png",
 			  ButtonOrder = 100,
+			  ButtonGroup = "002_tools",
 			  Volatile = true,
 			  UseByDefault = true)]
 
