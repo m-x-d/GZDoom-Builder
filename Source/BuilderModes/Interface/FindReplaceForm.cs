@@ -188,6 +188,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			resultslist.EndUpdate();
 			suppressevents = false;
 			
+			// Enable/disable buttons
+			editbutton.Enabled = (resultslist.SelectedIndex > -1);
+			deletebutton.Enabled = (resultslist.SelectedIndex > -1);
+			
 			// Redraw the screen, this will show the selection
 			General.Interface.RedrawDisplay();
 		}
@@ -226,7 +230,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						resultslist.SelectedIndices.Add(index);
 						Update();
 					}
-
+					
 					// Edit selected objects
 					editbutton_Click(this, EventArgs.Empty);
 				}
@@ -237,6 +241,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			deletebutton.Enabled = (resultslist.SelectedIndex > -1);
 		}
 		
+		// Double clicked
+		private void resultslist_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			resultslist_MouseUp(sender, new MouseEventArgs(MouseButtons.Right, 1, e.X, e.Y, e.Delta));
+		}
+		
 		// Window closing
 		private void FindReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
@@ -244,6 +254,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.CloseReason == CloseReason.UserClosing)
 			{
 				e.Cancel = true;
+				General.Interface.Focus();
 				General.Editing.CancelMode();
 			}
 		}

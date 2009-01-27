@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Windows
             0,
             0});
 			this.gridsize.Minimum = new decimal(new int[] {
-            2,
+            1,
             0,
             0,
             0});

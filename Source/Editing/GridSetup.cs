@@ -233,8 +233,8 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("gridinc")]
 		internal void IncreaseGrid()
 		{
-			// Not lower than 2
-			if(gridsize >= 4)
+			// Not lower than 1
+			if(gridsize >= 2)
 			{
 				// Change grid
 				SetGridSize(gridsize >> 1);
