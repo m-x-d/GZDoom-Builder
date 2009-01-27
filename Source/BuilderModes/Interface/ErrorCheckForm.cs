@@ -341,6 +341,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.CloseReason == CloseReason.UserClosing)
 			{
 				e.Cancel = true;
+				General.Interface.Focus();
 				General.Editing.CancelMode();
 			}
 		}
@@ -358,6 +359,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				StartChecking();
 			}
+		}
+
+		// Close
+		private void closebutton_Click(object sender, EventArgs e)
+		{
+			General.Interface.Focus();
+			General.Editing.CancelMode();
 		}
 		
 		// Results selection changed

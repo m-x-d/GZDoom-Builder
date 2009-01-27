@@ -37,6 +37,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultinfo = new System.Windows.Forms.Label();
 			this.fix1 = new System.Windows.Forms.Button();
 			this.progress = new System.Windows.Forms.ProgressBar();
+			this.closebutton = new System.Windows.Forms.Button();
 			this.resultspanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -150,10 +151,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.progress.TabIndex = 3;
 			this.progress.Value = 30;
 			// 
+			// closebutton
+			// 
+			this.closebutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.closebutton.Location = new System.Drawing.Point(-500, 134);
+			this.closebutton.Name = "closebutton";
+			this.closebutton.Size = new System.Drawing.Size(116, 25);
+			this.closebutton.TabIndex = 4;
+			this.closebutton.Text = "Close";
+			this.closebutton.UseVisualStyleBackColor = true;
+			this.closebutton.Click += new System.EventHandler(this.closebutton_Click);
+			// 
 			// ErrorCheckForm
 			// 
+			this.AcceptButton = this.buttoncheck;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.CancelButton = this.closebutton;
 			this.ClientSize = new System.Drawing.Size(380, 493);
+			this.Controls.Add(this.closebutton);
 			this.Controls.Add(this.resultspanel);
 			this.Controls.Add(this.buttoncheck);
 			this.Controls.Add(this.checks);
@@ -184,5 +199,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.Button fix2;
 		private System.Windows.Forms.Label resultinfo;
 		private System.Windows.Forms.Button fix1;
+		private System.Windows.Forms.Button closebutton;
 	}
 }
