@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "errorcheckmode",
 			  ButtonImage = "MapAnalysisMode.png",
 			  ButtonOrder = 200,
+			  ButtonGroup = "002_tools",
 			  Volatile = true,
 			  UseByDefault = true)]
 

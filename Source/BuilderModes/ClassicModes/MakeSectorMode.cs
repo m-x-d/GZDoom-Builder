@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "makesectormode",
 			  ButtonImage = "NewSector2.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 202,	// Position of the button (lower is more to the left)
+			  ButtonGroup = "000_editing",
 			  UseByDefault = true)]
 
 	public class MakeSectorMode : BaseClassicMode

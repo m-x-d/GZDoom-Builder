@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "linedefsmode",	// Action name used to switch to this mode
 			  ButtonImage = "LinesMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 100,	// Position of the button (lower is more to the left)
+			  ButtonGroup = "000_editing",
 			  UseByDefault = true)]
 
 	public class LinedefsMode : BaseClassicMode

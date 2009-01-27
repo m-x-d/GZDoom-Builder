@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  SwitchAction = "sectorsmode",		// Action name used to switch to this mode
 		      ButtonImage = "SectorsMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 200,	// Position of the button (lower is more to the left)
+			  ButtonGroup = "000_editing",
 			  UseByDefault = true)]
 
 	public class SectorsMode : BaseClassicMode
