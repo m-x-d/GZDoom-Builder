@@ -42,7 +42,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private bool allownegative = false;		// Allow negative numbers
 		private bool allowrelative = false;		// Allow ++ and -- prefix for relative changes
-
+		private bool controlpressed = false;
+		
 		#endregion
 
 		#region ================== Properties
@@ -64,6 +65,20 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Methods
 
+		// Key pressed
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			controlpressed = e.Control;
+			base.OnKeyDown(e);
+		}
+
+		// Key released
+		protected override void OnKeyUp(KeyEventArgs e)
+		{
+			controlpressed = e.Control;
+			base.OnKeyUp(e);
+		}
+		
 		// When a key is pressed
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
@@ -77,6 +92,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Determine allowed chars
 			if(allownegative) allowedchars += "-";
 			if(allowrelative) allowedchars += "+-";
+			if(controlpressed) allowedchars += "\u0018\u0003\u0016";
 			
 			// Check if key is not allowed
 			if(allowedchars.IndexOf(e.KeyChar) == -1)

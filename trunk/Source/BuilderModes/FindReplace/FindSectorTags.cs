@@ -124,7 +124,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void ObjectSelected(FindReplaceObject[] selection)
 		{
 			if(selection.Length == 1)
+			{
+				ZoomToSelection(selection);
 				General.Interface.ShowSectorInfo(selection[0].Sector);
+			}
 			else
 				General.Interface.HideInfo();
 
@@ -142,6 +145,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.PlotLinedef(sd.Line, General.Colors.Selection);
 				}
 			}
+		}
+
+		// Edit objects
+		public override void EditObjects(FindReplaceObject[] selection)
+		{
+			List<Sector> sectors = new List<Sector>(selection.Length);
+			foreach(FindReplaceObject o in selection) sectors.Add(o.Sector);
+			General.Interface.ShowEditSectors(sectors);
 		}
 		
 		#endregion

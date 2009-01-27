@@ -37,13 +37,14 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// Variables
 		private List<GeneralizedCategory> generalizedcategories;
+		private bool controlpressed = false;
 		
 		// Constants
 		private const string NUMBER_SEPERATOR = "\t";
 		
 		// Properties
 		public bool Empty { get { return (number.Text.Length == 0); } set { if(value) number.Text = ""; } }
-		public int Value { get { if(number.Text.Length > 0) return int.Parse(number.Text); else return 0; } set { number.Text = value.ToString(); } }
+		public int Value { get { return GetValue(); } set { number.Text = value.ToString(); } }
 		public List<GeneralizedCategory> GeneralizedCategories { get { return generalizedcategories; } set { generalizedcategories = value; } }
 		
 		// Constructor
@@ -51,6 +52,23 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
+		}
+
+		// This returns the numeric value
+		public int GetValue()
+		{
+			int val = 0;
+
+			if(number.Text.Length > 0)
+			{
+				try
+				{
+					val = Convert.ToInt32(number.Text);
+				}
+				catch(Exception e) { }
+			}
+			
+			return val;
 		}
 
 		// This clears all information
@@ -200,6 +218,11 @@ namespace CodeImp.DoomBuilder.Controls
 		// Keys pressed in number box
 		private void number_KeyDown(object sender, KeyEventArgs e)
 		{
+			controlpressed = e.Control;
+
+			// Allow CTRL+X, CTRL+C and CTRL+V
+			if(controlpressed && ((e.KeyCode == Keys.X) || (e.KeyCode == Keys.C) || (e.KeyCode == Keys.V))) return;
+
 			// Not numeric or control key?
 			if(((e.KeyValue < 48) || (e.KeyValue > 57)) &&
 			   (e.KeyCode != Keys.Back) && (e.KeyCode != Keys.Left) &&
@@ -213,6 +236,9 @@ namespace CodeImp.DoomBuilder.Controls
 		// Keys pressed in number box
 		private void number_KeyPress(object sender, KeyPressEventArgs e)
 		{
+			// Allow CTRL+X, CTRL+C and CTRL+V
+			if(controlpressed && ((e.KeyChar == '\u0018') || (e.KeyChar == '\u0003') || (e.KeyChar == '\u0016'))) return;
+			
 			// Not numeric or control key?
 			if(((e.KeyChar < 48) || (e.KeyChar > 57)) && (e.KeyChar != 8))
 			{
