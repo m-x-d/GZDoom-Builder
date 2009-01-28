@@ -682,6 +682,8 @@
     <EmbeddedResource Include="Resources\UnknownThing.png" />
     <Compile Include="IO\DirectoryFileEntry.cs" />
     <Compile Include="IO\DirectoryFilesList.cs" />
+    <Compile Include="Map\BlockEntry.cs" />
+    <Compile Include="Map\BlockMap.cs" />
     <Compile Include="Types\AngleDegreesFloatHandler.cs" />
     <Compile Include="Types\AngleDegreesHandler.cs" />
     <Compile Include="Types\AngleRadiansHandler.cs" />

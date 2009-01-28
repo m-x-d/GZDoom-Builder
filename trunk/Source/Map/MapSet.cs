@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Sidedef> sidedefs;
 		private LinkedList<Sector> sectors;
 		private LinkedList<Thing> things;
-
+		
 		// Statics
 		private static long emptylongname;
 		private static UniValue virtualsectorvalue;
