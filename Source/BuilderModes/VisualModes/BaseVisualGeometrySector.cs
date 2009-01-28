@@ -70,7 +70,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
+		
+		// This updates the secotr and neightbours if needed
+		protected void UpdateSectorGeometry(bool includeneighbours)
+		{
+			// Rebuild sector
+			Sector.Rebuild();
 
+			// Go for all things in this sector
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				if(t.Sector == Sector.Sector)
+				{
+					if(mode.VisualThingExists(t))
+					{
+						// Update thing
+						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+						vt.Setup();
+					}
+				}
+			}
+			
+			if(includeneighbours)
+			{
+				// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
+				Dictionary<Sector, int> rebuilt = new Dictionary<Sector, int>();
+				foreach(Sidedef sd in Sector.Sector.Sidedefs)
+				{
+					if((sd.Other != null) && !rebuilt.ContainsKey(sd.Other.Sector))
+					{
+						if(mode.VisualSectorExists(sd.Other.Sector))
+						{
+							BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
+							rebuilt.Add(sd.Other.Sector, 1);
+							bvs.Rebuild();
+						}
+					}
+				}
+			}
+		}
+		
 		#endregion
 
 		#region ================== Events
@@ -145,7 +184,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					List<Sector> sectors = new List<Sector>();
 					sectors.Add(this.Sector.Sector);
 					DialogResult result = General.Interface.ShowEditSectors(sectors);
-					if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+					if(result == DialogResult.OK)
+					{
+						// Rebuild sector
+						UpdateSectorGeometry(true);
+					}
 				}
 			}
 		}
@@ -154,38 +197,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnChangeTargetHeight(int amount)
 		{
 			ChangeHeight(amount);
-			
-			// Rebuild sector
-			Sector.Rebuild();
-			
-			// Go for all things in this sector
-			foreach(Thing t in General.Map.Map.Things)
-			{
-				if(t.Sector == Sector.Sector)
-				{
-					if(mode.VisualThingExists(t))
-					{
-						// Update thing
-						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
-						vt.Setup();
-					}
-				}
-			}
 
-			// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
-			Dictionary<Sector, int> rebuilt = new Dictionary<Sector, int>();
-			foreach(Sidedef sd in Sector.Sector.Sidedefs)
-			{
-				if((sd.Other != null) && !rebuilt.ContainsKey(sd.Other.Sector))
-				{
-					if(mode.VisualSectorExists(sd.Other.Sector))
-					{
-						BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
-						rebuilt.Add(sd.Other.Sector, 1);
-						bvs.Rebuild();
-					}
-				}
-			}
+			// Rebuild sector
+			UpdateSectorGeometry(true);
 		}
 		
 		// Sector brightness change
@@ -196,21 +210,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sector.Sector.Brightness = General.Clamp(Sector.Sector.Brightness + amount, 0, 255);
 			
 			// Rebuild sector
-			Sector.Rebuild();
-
-			// Go for all things in this sector
-			foreach(Thing t in General.Map.Map.Things)
-			{
-				if(t.Sector == Sector.Sector)
-				{
-					if(mode.VisualThingExists(t))
-					{
-						// Update thing
-						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
-						vt.Setup();
-					}
-				}
-			}
+			UpdateSectorGeometry(false);
 		}
 		
 		#endregion
