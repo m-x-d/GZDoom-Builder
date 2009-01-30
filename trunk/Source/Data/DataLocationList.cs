@@ -57,8 +57,8 @@ namespace CodeImp.DoomBuilder.Data
 					// Copy information from Configuration to ResourceLocation
 					if(rlinfo.Contains("type") && (rlinfo["type"] is int)) res.type = (int)rlinfo["type"];
 					if(rlinfo.Contains("location") && (rlinfo["location"] is string)) res.location = (string)rlinfo["location"];
-					if(rlinfo.Contains("textures") && (rlinfo["textures"] is int)) res.textures = General.Int2Bool((int)rlinfo["textures"]);
-					if(rlinfo.Contains("flats") && (rlinfo["flats"] is int)) res.flats = General.Int2Bool((int)rlinfo["flats"]);
+					if(rlinfo.Contains("textures") && (rlinfo["textures"] is int)) res.option1 = General.Int2Bool((int)rlinfo["textures"]);
+					if(rlinfo.Contains("flats") && (rlinfo["flats"] is int)) res.option2 = General.Int2Bool((int)rlinfo["flats"]);
 
 					// Add resource
 					Add(res);
@@ -92,8 +92,8 @@ namespace CodeImp.DoomBuilder.Data
 				rlinfo = new ListDictionary();
 				rlinfo.Add("type", this[i].type);
 				rlinfo.Add("location", this[i].location);
-				rlinfo.Add("textures", General.Bool2Int(this[i].textures));
-				rlinfo.Add("flats", General.Bool2Int(this[i].flats));
+				rlinfo.Add("textures", General.Bool2Int(this[i].option1));
+				rlinfo.Add("flats", General.Bool2Int(this[i].option2));
 
 				// Add structure
 				resinfo.Add("resource" + i.ToString(CultureInfo.InvariantCulture), rlinfo);

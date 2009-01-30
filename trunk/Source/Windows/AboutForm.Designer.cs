@@ -85,13 +85,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// builderlink
 			// 
+			this.builderlink.ActiveLinkColor = System.Drawing.Color.RoyalBlue;
 			this.builderlink.AutoSize = true;
+			this.builderlink.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+			this.builderlink.LinkColor = System.Drawing.Color.RoyalBlue;
 			this.builderlink.Location = new System.Drawing.Point(12, 194);
 			this.builderlink.Name = "builderlink";
 			this.builderlink.Size = new System.Drawing.Size(121, 14);
 			this.builderlink.TabIndex = 5;
 			this.builderlink.TabStop = true;
 			this.builderlink.Text = "www.doombuilder.com";
+			this.builderlink.VisitedLinkColor = System.Drawing.Color.RoyalBlue;
 			this.builderlink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.builderlink_LinkClicked);
 			// 
 			// version

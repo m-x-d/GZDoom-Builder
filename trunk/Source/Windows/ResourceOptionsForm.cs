@@ -55,13 +55,14 @@ namespace CodeImp.DoomBuilder.Windows
 				// Setup for WAD File
 				case DataLocation.RESOURCE_WAD:
 					wadlocation.Text = res.location;
+					strictpatches.Checked = res.option1;
 					break;
 
 				// Setup for Directory
 				case DataLocation.RESOURCE_DIRECTORY:
 					dirlocation.Text = res.location;
-					dir_textures.Checked = res.textures;
-					dir_flats.Checked = res.flats;
+					dir_textures.Checked = res.option1;
+					dir_flats.Checked = res.option2;
 					break;
 					
 				// Setup for PK3 File
@@ -95,8 +96,8 @@ namespace CodeImp.DoomBuilder.Windows
 						// Apply settings
 						res.type = DataLocation.RESOURCE_WAD;
 						res.location = wadlocation.Text;
-						res.textures = false;
-						res.flats = false;
+						res.option1 = strictpatches.Checked;
+						res.option2 = false;
 
 						// Done
 						this.DialogResult = DialogResult.OK;
@@ -119,8 +120,8 @@ namespace CodeImp.DoomBuilder.Windows
 						// Apply settings
 						res.type = DataLocation.RESOURCE_DIRECTORY;
 						res.location = dirlocation.Text;
-						res.textures = dir_textures.Checked;
-						res.flats = dir_flats.Checked;
+						res.option1 = dir_textures.Checked;
+						res.option2 = dir_flats.Checked;
 
 						// Done
 						this.DialogResult = DialogResult.OK;
@@ -143,8 +144,8 @@ namespace CodeImp.DoomBuilder.Windows
 						// Apply settings
 						res.type = DataLocation.RESOURCE_PK3;
 						res.location = pk3location.Text;
-						res.textures = false;
-						res.flats = false;
+						res.option1 = false;
+						res.option2 = false;
 
 						// Done
 						this.DialogResult = DialogResult.OK;
@@ -193,6 +194,12 @@ namespace CodeImp.DoomBuilder.Windows
 				// Use this file
 				pk3location.Text = pk3filedialog.FileName;
 			}
+		}
+
+		// Link clicked
+		private void link_Click(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			General.OpenWebsite((sender as LinkLabel).Text);
 		}
 	}
 }

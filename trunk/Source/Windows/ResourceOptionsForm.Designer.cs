@@ -31,16 +31,23 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label3;
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ResourceOptionsForm));
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.wadfiletab = new System.Windows.Forms.TabPage();
+			this.label6 = new System.Windows.Forms.Label();
+			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.browsewad = new System.Windows.Forms.Button();
 			this.wadlocation = new System.Windows.Forms.TextBox();
 			this.directorytab = new System.Windows.Forms.TabPage();
+			this.directorylink = new System.Windows.Forms.LinkLabel();
+			this.label5 = new System.Windows.Forms.Label();
 			this.dir_flats = new System.Windows.Forms.CheckBox();
 			this.dir_textures = new System.Windows.Forms.CheckBox();
 			this.browsedir = new System.Windows.Forms.Button();
 			this.dirlocation = new System.Windows.Forms.TextBox();
 			this.pk3filetab = new System.Windows.Forms.TabPage();
+			this.pk3link = new System.Windows.Forms.LinkLabel();
+			this.label4 = new System.Windows.Forms.Label();
 			this.browsepk3 = new System.Windows.Forms.Button();
 			this.pk3location = new System.Windows.Forms.TextBox();
 			this.cancel = new System.Windows.Forms.Button();
@@ -86,7 +93,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabs
 			// 
-			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.wadfiletab);
 			this.tabs.Controls.Add(this.directorytab);
@@ -96,12 +104,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Location = new System.Drawing.Point(9, 11);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(369, 161);
+			this.tabs.Size = new System.Drawing.Size(369, 242);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
 			// wadfiletab
 			// 
+			this.wadfiletab.Controls.Add(this.label6);
+			this.wadfiletab.Controls.Add(this.strictpatches);
 			this.wadfiletab.Controls.Add(this.browsewad);
 			this.wadfiletab.Controls.Add(this.wadlocation);
 			this.wadfiletab.Controls.Add(label1);
@@ -109,10 +119,28 @@ namespace CodeImp.DoomBuilder.Windows
 			this.wadfiletab.Location = new System.Drawing.Point(4, 23);
 			this.wadfiletab.Name = "wadfiletab";
 			this.wadfiletab.Padding = new System.Windows.Forms.Padding(3);
-			this.wadfiletab.Size = new System.Drawing.Size(361, 134);
+			this.wadfiletab.Size = new System.Drawing.Size(361, 215);
 			this.wadfiletab.TabIndex = 0;
 			this.wadfiletab.Text = "From WAD File";
 			this.wadfiletab.UseVisualStyleBackColor = true;
+			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(14, 109);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(344, 58);
+			this.label6.TabIndex = 8;
+			this.label6.Text = resources.GetString("label6.Text");
+			// 
+			// strictpatches
+			// 
+			this.strictpatches.AutoSize = true;
+			this.strictpatches.Location = new System.Drawing.Point(17, 72);
+			this.strictpatches.Name = "strictpatches";
+			this.strictpatches.Size = new System.Drawing.Size(298, 18);
+			this.strictpatches.TabIndex = 7;
+			this.strictpatches.Text = "Strictly load patches between P_START and P_END only";
+			this.strictpatches.UseVisualStyleBackColor = true;
 			// 
 			// browsewad
 			// 
@@ -137,6 +165,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// directorytab
 			// 
+			this.directorytab.Controls.Add(this.directorylink);
+			this.directorytab.Controls.Add(this.label5);
 			this.directorytab.Controls.Add(this.dir_flats);
 			this.directorytab.Controls.Add(this.dir_textures);
 			this.directorytab.Controls.Add(this.browsedir);
@@ -146,10 +176,37 @@ namespace CodeImp.DoomBuilder.Windows
 			this.directorytab.Location = new System.Drawing.Point(4, 23);
 			this.directorytab.Name = "directorytab";
 			this.directorytab.Padding = new System.Windows.Forms.Padding(3);
-			this.directorytab.Size = new System.Drawing.Size(361, 134);
+			this.directorytab.Size = new System.Drawing.Size(361, 215);
 			this.directorytab.TabIndex = 1;
 			this.directorytab.Text = "From Directory";
 			this.directorytab.UseVisualStyleBackColor = true;
+			// 
+			// directorylink
+			// 
+			this.directorylink.ActiveLinkColor = System.Drawing.Color.RoyalBlue;
+			this.directorylink.AutoSize = true;
+			this.directorylink.DisabledLinkColor = System.Drawing.SystemColors.GrayText;
+			this.directorylink.LinkArea = new System.Windows.Forms.LinkArea(0, 55);
+			this.directorylink.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+			this.directorylink.LinkColor = System.Drawing.Color.RoyalBlue;
+			this.directorylink.Location = new System.Drawing.Point(14, 184);
+			this.directorylink.Name = "directorylink";
+			this.directorylink.Size = new System.Drawing.Size(311, 14);
+			this.directorylink.TabIndex = 9;
+			this.directorylink.TabStop = true;
+			this.directorylink.Text = "http://www.zdoom.org/wiki/Using_ZIPs_as_WAD_replacement";
+			this.directorylink.VisitedLinkColor = System.Drawing.Color.RoyalBlue;
+			this.directorylink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.link_Click);
+			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(14, 135);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(341, 49);
+			this.label5.TabIndex = 8;
+			this.label5.Text = "The directory is expected to use the ZDoom PK3 directory structure. With the opti" +
+				"ons above you can choose to load textures or flats from the directory root in ca" +
+				"se the sourceport supports this.";
 			// 
 			// dir_flats
 			// 
@@ -194,16 +251,43 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pk3filetab
 			// 
+			this.pk3filetab.Controls.Add(this.pk3link);
+			this.pk3filetab.Controls.Add(this.label4);
 			this.pk3filetab.Controls.Add(this.browsepk3);
 			this.pk3filetab.Controls.Add(this.pk3location);
 			this.pk3filetab.Controls.Add(label3);
 			this.pk3filetab.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.pk3filetab.Location = new System.Drawing.Point(4, 23);
 			this.pk3filetab.Name = "pk3filetab";
-			this.pk3filetab.Size = new System.Drawing.Size(361, 134);
+			this.pk3filetab.Size = new System.Drawing.Size(361, 215);
 			this.pk3filetab.TabIndex = 2;
 			this.pk3filetab.Text = "From PK3 File";
 			this.pk3filetab.UseVisualStyleBackColor = true;
+			// 
+			// pk3link
+			// 
+			this.pk3link.ActiveLinkColor = System.Drawing.Color.RoyalBlue;
+			this.pk3link.AutoSize = true;
+			this.pk3link.DisabledLinkColor = System.Drawing.SystemColors.GrayText;
+			this.pk3link.LinkArea = new System.Windows.Forms.LinkArea(0, 55);
+			this.pk3link.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+			this.pk3link.LinkColor = System.Drawing.Color.RoyalBlue;
+			this.pk3link.Location = new System.Drawing.Point(14, 111);
+			this.pk3link.Name = "pk3link";
+			this.pk3link.Size = new System.Drawing.Size(311, 14);
+			this.pk3link.TabIndex = 7;
+			this.pk3link.TabStop = true;
+			this.pk3link.Text = "http://www.zdoom.org/wiki/Using_ZIPs_as_WAD_replacement";
+			this.pk3link.VisitedLinkColor = System.Drawing.Color.RoyalBlue;
+			this.pk3link.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.link_Click);
+			// 
+			// label4
+			// 
+			this.label4.Location = new System.Drawing.Point(15, 83);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(343, 28);
+			this.label4.TabIndex = 6;
+			this.label4.Text = "The PK3 file is expected to use the ZDoom PK3 directory structure.";
 			// 
 			// browsepk3
 			// 
@@ -229,7 +313,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(266, 192);
+			this.cancel.Location = new System.Drawing.Point(266, 273);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 15;
@@ -240,7 +324,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(148, 192);
+			this.apply.Location = new System.Drawing.Point(148, 273);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 14;
@@ -267,7 +351,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(386, 226);
+			this.ClientSize = new System.Drawing.Size(386, 307);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -311,5 +395,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button browsepk3;
 		private System.Windows.Forms.TextBox pk3location;
 		private System.Windows.Forms.OpenFileDialog pk3filedialog;
+		private System.Windows.Forms.LinkLabel pk3link;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.LinkLabel directorylink;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.CheckBox strictpatches;
+		private System.Windows.Forms.Label label6;
 	}
 }
