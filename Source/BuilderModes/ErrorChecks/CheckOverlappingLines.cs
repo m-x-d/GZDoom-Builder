@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void Run()
 		{
 			Dictionary<Linedef, Linedef> donelines = new Dictionary<Linedef, Linedef>();
+			BlockMap blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
 			
 			// Go for all the liendefs
 			foreach(Linedef l in General.Map.Map.Linedefs)
@@ -71,36 +72,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!donelines.ContainsKey(l))
 				{
 					// And go for all the linedefs that could overlap
-					foreach(Linedef d in General.Map.Map.Linedefs)
+					List<BlockEntry> blocks = blockmap.GetLineBlocks(l.Start.Position, l.End.Position);
+					Dictionary<Linedef, Linedef> doneblocklines = new Dictionary<Linedef, Linedef>(blocks.Count * 3);
+					foreach(BlockEntry b in blocks)
 					{
-						// Not the same line?
-						if(!object.ReferenceEquals(l, d))
+						foreach(Linedef d in b.Lines)
 						{
-							float lu, du;
-
-							// Check if the lines touch. Note that I don't include 0.0 and 1.0 here because
-							// the lines may be touching at the ends when sharing the same vertex.
-							if(l.Line.GetIntersection(d.Line, out du, out lu))
+							// Not the same line and not already checked
+							if(!object.ReferenceEquals(l, d) && !doneblocklines.ContainsKey(d))
 							{
-								if((lu > 0.0f) && (lu < 1.0f) && (du > 0.0f) && (du < 1.0f))
+								float lu, du;
+								
+								// Check if the lines touch. Note that I don't include 0.0 and 1.0 here because
+								// the lines may be touching at the ends when sharing the same vertex.
+								if(l.Line.GetIntersection(d.Line, out du, out lu))
 								{
-									// Check if not the same sector on all sides
-									Sector samesector = null;
-									if(l.Front != null) samesector = l.Front.Sector;
-									else if(l.Back != null) samesector = l.Back.Sector;
-									else if(d.Front != null) samesector = d.Front.Sector;
-									else if(d.Back != null) samesector = d.Back.Sector;
-									if((l.Front == null) || (l.Front.Sector != samesector)) samesector = null;
-									else if((l.Back == null) || (l.Back.Sector != samesector)) samesector = null;
-									else if((d.Front == null) || (d.Front.Sector != samesector)) samesector = null;
-									else if((d.Back == null) || (d.Back.Sector != samesector)) samesector = null;
-
-									if(samesector == null)
+									if((lu > 0.0f) && (lu < 1.0f) && (du > 0.0f) && (du < 1.0f))
 									{
-										SubmitResult(new ResultLineOverlapping(l, d));
-										donelines[d] = d;
+										// Check if not the same sector on all sides
+										Sector samesector = null;
+										if(l.Front != null) samesector = l.Front.Sector;
+											else if(l.Back != null) samesector = l.Back.Sector;
+											else if(d.Front != null) samesector = d.Front.Sector;
+											else if(d.Back != null) samesector = d.Back.Sector;
+										if((l.Front == null) || (l.Front.Sector != samesector)) samesector = null;
+											else if((l.Back == null) || (l.Back.Sector != samesector)) samesector = null;
+											else if((d.Front == null) || (d.Front.Sector != samesector)) samesector = null;
+											else if((d.Back == null) || (d.Back.Sector != samesector)) samesector = null;
+
+										if(samesector == null)
+										{
+											SubmitResult(new ResultLineOverlapping(l, d));
+											donelines[d] = d;
+										}
 									}
 								}
+								
+								// Checked
+								doneblocklines.Add(d, d);
 							}
 						}
 					}

@@ -34,6 +34,7 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Config;
 using System.Threading;
+using System.Drawing;
 
 #endregion
 
@@ -64,6 +65,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This runs the check
 		public override void Run()
 		{
+			BlockMap blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
+			
 			// Go for all the things
 			foreach(Thing t in General.Map.Map.Things)
 			{
@@ -80,26 +83,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					Vector2D rb = new Vector2D(t.Position.x + blockingsize, t.Position.y + blockingsize);
 					
 					// Go for all the lines to see if this thing is stucked
-					foreach(Linedef l in General.Map.Map.Linedefs)
+					List<BlockEntry> blocks = blockmap.GetSquareRange(new RectangleF(lt.x, lt.y, (rb.x - lt.x), (rb.y - lt.y)));
+					Dictionary<Linedef, Linedef> doneblocklines = new Dictionary<Linedef, Linedef>(blocks.Count * 3);
+					foreach(BlockEntry b in blocks)
 					{
-						// Test only single-sided lines
-						if(l.Back == null)
+						foreach(Linedef l in b.Lines)
 						{
-							// Test if line ends are inside the thing
-							if(PointInRect(lt, rb, l.Start.Position) ||
-							   PointInRect(lt, rb, l.End.Position))
+							// Only test when sinlge-sided and not already checked
+							if((l.Back == null) && !doneblocklines.ContainsKey(l))
 							{
-								// Thing stucked in line!
-								stucked = true;
-							}
-							// Test if the line intersects the square
-							else if(Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, lt.y, rb.x, lt.y) ||
-									Line2D.GetIntersection(l.Start.Position, l.End.Position, rb.x, lt.y, rb.x, rb.y) ||
-									Line2D.GetIntersection(l.Start.Position, l.End.Position, rb.x, rb.y, lt.x, rb.y) ||
-									Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, rb.y, lt.x, lt.y))
-							{
-								// Thing stucked in line!
-								stucked = true;
+								// Test if line ends are inside the thing
+								if(PointInRect(lt, rb, l.Start.Position) ||
+								   PointInRect(lt, rb, l.End.Position))
+								{
+									// Thing stucked in line!
+									stucked = true;
+								}
+								// Test if the line intersects the square
+								else if(Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, lt.y, rb.x, lt.y) ||
+										Line2D.GetIntersection(l.Start.Position, l.End.Position, rb.x, lt.y, rb.x, rb.y) ||
+										Line2D.GetIntersection(l.Start.Position, l.End.Position, rb.x, rb.y, lt.x, rb.y) ||
+										Line2D.GetIntersection(l.Start.Position, l.End.Position, lt.x, rb.y, lt.x, lt.y))
+								{
+									// Thing stucked in line!
+									stucked = true;
+								}
+								
+								// Checked
+								doneblocklines.Add(l, l);
 							}
 						}
 					}

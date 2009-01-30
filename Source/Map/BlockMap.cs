@@ -52,8 +52,6 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Blocks
 		protected BlockEntry[,] blockmap;
-		protected Point lefttop;
-		protected Point rightbottom;
 		protected Size size;
 		protected RectangleF range;
 		
@@ -65,27 +63,28 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 		
 		public bool IsDisposed { get { return isdisposed; } }
+		public Size Size { get { return size; } }
+		public RectangleF Range { get { return range; } }
+		public int BlockSize { get { return BLOCK_SIZE; } }
 		
 		#endregion
 		
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		internal BlockMap(RectangleF range)
+		public BlockMap(RectangleF range)
 		{
 			// Initialize
 			this.range = range;
-			lefttop = new Point((int)range.Left >> BLOCK_SIZE_SHIFT, (int)range.Top >> BLOCK_SIZE_SHIFT);
-			rightbottom = new Point((int)range.Right >> BLOCK_SIZE_SHIFT, (int)range.Bottom >> BLOCK_SIZE_SHIFT);
-			int width = (rightbottom.X - lefttop.X) + 1;
-			int height = (rightbottom.Y - lefttop.Y) + 1;
-			size = new Size(width, height);
-			blockmap = new BlockEntry[width, height];
+			Point lefttop = new Point((int)range.Left >> BLOCK_SIZE_SHIFT, (int)range.Top >> BLOCK_SIZE_SHIFT);
+			Point rightbottom = new Point((int)range.Right >> BLOCK_SIZE_SHIFT, (int)range.Bottom >> BLOCK_SIZE_SHIFT);
+			size = new Size((rightbottom.X - lefttop.X) + 1, (rightbottom.Y - lefttop.Y) + 1);
+			blockmap = new BlockEntry[size.Width, size.Height];
 			Clear();
 		}
 		
 		// Disposer
-		internal void Dispose()
+		public void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -105,15 +104,15 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns the block coordinates
 		protected Point GetBlockCoordinates(Vector2D v)
 		{
-			return new Point(((int)v.x >> BLOCK_SIZE_SHIFT) - lefttop.X,
-							 ((int)v.y >> BLOCK_SIZE_SHIFT) - lefttop.Y);
+			return new Point((int)(v.x - range.Left) >> BLOCK_SIZE_SHIFT,
+							 (int)(v.y - range.Top) >> BLOCK_SIZE_SHIFT);
 		}
 
 		// This returns the block center in world coordinates
 		protected Vector2D GetBlockCenter(Point p)
 		{
-			return new Vector2D((float)(((p.X + lefttop.X) << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)),
-								(float)(((p.Y + lefttop.Y) << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)));
+			return new Vector2D((float)((p.X << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)) + range.Left,
+								(float)((p.Y << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)) + range.Top);
 		}
 		
 		// This returns true when the given block is inside range
@@ -148,7 +147,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This clears the blockmap
-		public void Clear()
+		public virtual void Clear()
 		{
 			for(int x = 0; x < size.Width; x++)
 			{
@@ -160,7 +159,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This returns a range of blocks in a square
-		public List<BlockEntry> GetSquareRange(RectangleF rect)
+		public virtual List<BlockEntry> GetSquareRange(RectangleF rect)
 		{
 			// Calculate block coordinates
 			Point lt = GetBlockCoordinates(new Vector2D(rect.Left, rect.Top));
@@ -186,7 +185,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This returns all blocks along the given line
-		public List<BlockEntry> GetLineBlocks(Vector2D v1, Vector2D v2)
+		public virtual List<BlockEntry> GetLineBlocks(Vector2D v1, Vector2D v2)
 		{
 			float deltax, deltay;
 			float posx, posy;
@@ -200,95 +199,136 @@ namespace CodeImp.DoomBuilder.Map
 			// Find start and end block
 			pos = GetBlockCoordinates(v1);
 			end = GetBlockCoordinates(v2);
-
-			// Add this block
-			if(IsInRange(pos)) entries.Add(blockmap[pos.X, pos.Y]);
-
-			// Moving outside the block?
-			if(pos != end)
+			
+			// Horizontal straight line?
+			if(pos.Y == end.Y)
 			{
-				// Calculate current block edges
-				float cl = pos.X * BLOCK_SIZE;
-				float cr = (pos.X + 1) * BLOCK_SIZE;
-				float ct = pos.Y * BLOCK_SIZE;
-				float cb = (pos.Y + 1) * BLOCK_SIZE;
-
-				// Line directions
-				dirx = Math.Sign(v2.x - v1.x);
-				diry = Math.Sign(v2.y - v1.y);
-
-				// Calculate offset and delta movement over x
-				if(dirx >= 0)
+				// Simple loop
+				pos.X = CropToRangeX(pos.X);
+				end.X = CropToRangeX(end.X);
+				if(IsInRange(new Point(pos.X, pos.Y)))
 				{
-					posx = (cr - v1.x) / (v2.x - v1.x);
-					deltax = BLOCK_SIZE / (v2.x - v1.x);
-				}
-				else
-				{
-					// Calculate offset and delta movement over x
-					posx = (v1.x - cl) / (v1.x - v2.x);
-					deltax = BLOCK_SIZE / (v1.x - v2.x);
-				}
-
-				// Calculate offset and delta movement over y
-				if(diry >= 0)
-				{
-					posy = (cb - v1.y) / (v2.y - v1.y);
-					deltay = BLOCK_SIZE / (v2.y - v1.y);
-				}
-				else
-				{
-					posy = (v1.y - ct) / (v1.y - v2.y);
-					deltay = BLOCK_SIZE / (v1.y - v2.y);
-				}
-
-				// Continue while not reached the end
-				while(pos != end)
-				{
-					// Check in which direction to move
-					if(posx < posy)
+					dirx = Math.Sign(v2.x - v1.x);
+					if(dirx != 0)
 					{
-						// Move horizontally
-						posx += deltax;
-						if(pos.X != end.X) pos.X += dirx;
+						for(int x = pos.X; x != end.X; x += dirx)
+						{
+							entries.Add(blockmap[x, pos.Y]);
+						}
+					}
+					entries.Add(blockmap[end.X, end.Y]);
+				}
+			}
+			// Vertical straight line?
+			else if(pos.X == end.X)
+			{
+				// Simple loop
+				pos.Y = CropToRangeY(pos.Y);
+				end.Y = CropToRangeY(end.Y);
+				if(IsInRange(new Point(pos.X, pos.Y)))
+				{
+					diry = Math.Sign(v2.y - v1.y);
+					if(diry != 0)
+					{
+						for(int y = pos.Y; y != end.Y; y += diry)
+						{
+							entries.Add(blockmap[pos.X, y]);
+						}
+					}
+					entries.Add(blockmap[end.X, end.Y]);
+				}
+			}
+			else
+			{
+				// Add this block
+				if(IsInRange(pos)) entries.Add(blockmap[pos.X, pos.Y]);
+
+				// Moving outside the block?
+				if(pos != end)
+				{
+					// Calculate current block edges
+					float cl = pos.X * BLOCK_SIZE;
+					float cr = (pos.X + 1) * BLOCK_SIZE;
+					float ct = pos.Y * BLOCK_SIZE;
+					float cb = (pos.Y + 1) * BLOCK_SIZE;
+
+					// Line directions
+					dirx = Math.Sign(v2.x - v1.x);
+					diry = Math.Sign(v2.y - v1.y);
+
+					// Calculate offset and delta movement over x
+					if(dirx >= 0)
+					{
+						posx = (cr - v1.x) / (v2.x - v1.x);
+						deltax = BLOCK_SIZE / (v2.x - v1.x);
 					}
 					else
 					{
-						// Move vertically
-						posy += deltay;
-						if(pos.Y != end.Y) pos.Y += diry;
+						// Calculate offset and delta movement over x
+						posx = (v1.x - cl) / (v1.x - v2.x);
+						deltax = BLOCK_SIZE / (v1.x - v2.x);
 					}
-					
-					// Add lines to this block
-					if(IsInRange(pos)) entries.Add(blockmap[pos.X, pos.Y]);
+
+					// Calculate offset and delta movement over y
+					if(diry >= 0)
+					{
+						posy = (cb - v1.y) / (v2.y - v1.y);
+						deltay = BLOCK_SIZE / (v2.y - v1.y);
+					}
+					else
+					{
+						posy = (v1.y - ct) / (v1.y - v2.y);
+						deltay = BLOCK_SIZE / (v1.y - v2.y);
+					}
+
+					// Continue while not reached the end
+					while(pos != end)
+					{
+						// Check in which direction to move
+						if(posx < posy)
+						{
+							// Move horizontally
+							posx += deltax;
+							if(pos.X != end.X) pos.X += dirx;
+						}
+						else
+						{
+							// Move vertically
+							posy += deltay;
+							if(pos.Y != end.Y) pos.Y += diry;
+						}
+						
+						// Add lines to this block
+						if(IsInRange(pos)) entries.Add(blockmap[pos.X, pos.Y]);
+					}
 				}
 			}
-
+			
 			// Return list
 			return entries;
 		}
 
 		// This puts a thing in the blockmap
-		public void AddThingsSet(ICollection<Thing> things)
+		public virtual void AddThingsSet(ICollection<Thing> things)
 		{
 			foreach(Thing t in things) AddThing(t);
 		}
 		
 		// This puts a thing in the blockmap
-		public void AddThing(Thing t)
+		public virtual void AddThing(Thing t)
 		{
 			Point p = GetBlockCoordinates(t.Position);
 			if(IsInRange(p)) blockmap[p.X, p.Y].Things.Add(t);
 		}
 
 		// This puts a secotr in the blockmap
-		public void AddSectorsSet(ICollection<Sector> sectors)
+		public virtual void AddSectorsSet(ICollection<Sector> sectors)
 		{
 			foreach(Sector s in sectors) AddSector(s);
 		}
 
 		// This puts a sector in the blockmap
-		public void AddSector(Sector s)
+		public virtual void AddSector(Sector s)
 		{
 			Point p1 = GetBlockCoordinates(new Vector2D(s.BBox.Left, s.BBox.Top));
 			Point p2 = GetBlockCoordinates(new Vector2D(s.BBox.Right, s.BBox.Bottom));
@@ -304,13 +344,13 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This puts a whole set of linedefs in the blocks they cross
-		public void AddLinedefsSet(ICollection<Linedef> lines)
+		public virtual void AddLinedefsSet(ICollection<Linedef> lines)
 		{
 			foreach(Linedef l in lines) AddLinedef(l);
 		}
 		
 		// This puts a single linedef in all blocks it crosses
-		public void AddLinedef(Linedef line)
+		public virtual void AddLinedef(Linedef line)
 		{
 			Vector2D v1, v2;
 			float deltax, deltay;
@@ -335,9 +375,12 @@ namespace CodeImp.DoomBuilder.Map
 				if(IsInRange(new Point(pos.X, pos.Y)))
 				{
 					dirx = Math.Sign(v2.x - v1.x);
-					for(int x = pos.X; x != end.X; x += dirx)
+					if(dirx != 0)
 					{
-						blockmap[x, pos.Y].Lines.Add(line);
+						for(int x = pos.X; x != end.X; x += dirx)
+						{
+							blockmap[x, pos.Y].Lines.Add(line);
+						}
 					}
 					blockmap[end.X, end.Y].Lines.Add(line);
 				}
@@ -351,9 +394,12 @@ namespace CodeImp.DoomBuilder.Map
 				if(IsInRange(new Point(pos.X, pos.Y)))
 				{
 					diry = Math.Sign(v2.y - v1.y);
-					for(int y = pos.Y; y != end.Y; y += diry)
+					if(diry != 0)
 					{
-						blockmap[pos.X, y].Lines.Add(line);
+						for(int y = pos.Y; y != end.Y; y += diry)
+						{
+							blockmap[pos.X, y].Lines.Add(line);
+						}
 					}
 					blockmap[end.X, end.Y].Lines.Add(line);
 				}
