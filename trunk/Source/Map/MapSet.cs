@@ -1300,6 +1300,28 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This increases and existing area with the given vertices
+		public static RectangleF IncreaseArea(RectangleF area, ICollection<Thing> things)
+		{
+			float l = area.Left;
+			float t = area.Top;
+			float r = area.Right;
+			float b = area.Bottom;
+			
+			// Go for all vertices
+			foreach(Thing th in things)
+			{
+				// Adjust boundaries by vertices
+				if(th.Position.x < l) l = th.Position.x;
+				if(th.Position.x > r) r = th.Position.x;
+				if(th.Position.y < t) t = th.Position.y;
+				if(th.Position.y > b) b = th.Position.y;
+			}
+			
+			// Return a rect
+			return new RectangleF(l, t, r - l, b - t);
+		}
+
+		// This increases and existing area with the given vertices
 		public static RectangleF IncreaseArea(RectangleF area, ICollection<Vector2D> verts)
 		{
 			float l = area.Left;

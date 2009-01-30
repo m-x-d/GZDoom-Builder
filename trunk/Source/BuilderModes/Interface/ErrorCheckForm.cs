@@ -58,15 +58,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private volatile bool running = false;
 		private Thread checksthread;
+		private BlockMap blockmap;
 		
 		#endregion
 
 		#region ================== Properties
 		
 		public ErrorResult SelectedResult { get { return results.SelectedItem as ErrorResult; } }
+		public BlockMap BlockMap { get { return blockmap; } }
 		
 		#endregion
-
+		
 		#region ================== Constructor / Show
 
 		// Constructor
@@ -110,7 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		#endregion
-
+		
 		#region ================== Thread Calls
 
 		public void SubmitResult(ErrorResult result)
@@ -170,6 +172,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				buttoncheck.Text = "Start Analysis";
 				Cursor.Current = Cursors.Default;
 				running = false;
+				blockmap.Dispose();
+				blockmap = null;
 			}
 		}
 		
@@ -179,6 +183,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(running) return;
 			
 			Cursor.Current = Cursors.WaitCursor;
+			
+			// Make blockmap
+			RectangleF area = MapSet.CreateArea(General.Map.Map.Vertices);
+			area = MapSet.IncreaseArea(area, General.Map.Map.Things);
+			blockmap = new BlockMap(area);
+			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
+			blockmap.AddSectorsSet(General.Map.Map.Sectors);
+			blockmap.AddThingsSet(General.Map.Map.Things);
 			
 			// Open the results panel
 			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);
