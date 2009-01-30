@@ -36,17 +36,17 @@ namespace CodeImp.DoomBuilder.Data
 		// Members
 		public int type;
 		public string location;
-		public bool textures;
-		public bool flats;
+		public bool option1;
+		public bool option2;
 		
 		// Constructor
-		public DataLocation(int type, string location, bool textures, bool flats)
+		public DataLocation(int type, string location, bool option1, bool option2)
 		{
 			// Initialize
 			this.type = type;
 			this.location = location;
-			this.textures = textures;
-			this.flats = flats;
+			this.option1 = option1;
+			this.option2 = option2;
 		}
 
 		// This displays the struct as string

@@ -63,8 +63,8 @@ namespace CodeImp.DoomBuilder.Data
 		public PK3StructuredReader(DataLocation dl) : base(dl)
 		{
 			// Initialize
-			this.roottextures = dl.textures;
-			this.rootflats = dl.flats;
+			this.roottextures = dl.option1;
+			this.rootflats = dl.option2;
 		}
 		
 		// Call this to initialize this class

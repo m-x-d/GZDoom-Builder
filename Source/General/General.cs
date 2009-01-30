@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Actions;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Config;
+using Microsoft.Win32;
 using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Plugins;
@@ -1494,6 +1495,48 @@ namespace CodeImp.DoomBuilder
 								  source.Width * scale, source.Height * scale);
 		}
 
+		// This opens a URL in the default browser
+		public static void OpenWebsite(string url)
+		{
+			RegistryKey key = null;
+			Process p = null;
+			string browser;
+
+			try
+			{
+				// Get the registry key where default browser is stored
+				key = Registry.ClassesRoot.OpenSubKey(@"HTTP\shell\open\command", false);
+
+				// Trim off quotes
+				browser = key.GetValue(null).ToString().ToLower().Replace("\"", "");
+
+				// String doesnt end in EXE?
+				if(!browser.EndsWith("exe"))
+				{
+					// Get rid of everything after the ".exe"
+					browser = browser.Substring(0, browser.LastIndexOf(".exe") + 4);
+				}
+			}
+			finally
+			{
+				// Clean up
+				if(key != null) key.Close();
+			}
+
+			try
+			{
+				// Fork a process
+				p = new Process();
+				p.StartInfo.FileName = browser;
+				p.StartInfo.Arguments = url;
+				p.Start();
+			}
+			catch(Exception) { }
+
+			// Clean up
+			if(p != null) p.Dispose();
+		}
+		
 		#endregion
 		
 		[BeginAction("testaction")]

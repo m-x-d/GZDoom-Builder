@@ -51,7 +51,8 @@ namespace CodeImp.DoomBuilder.Data
 		// Source
 		private WAD file;
 		private bool is_iwad;
-
+		private bool strictpatches;
+		
 		// Lump ranges
 		private List<LumpRange> flatranges;
 		private List<LumpRange> patchranges;
@@ -76,6 +77,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			file = new WAD(location.location, true);
 			is_iwad = (file.Type == WAD.TYPE_IWAD);
+			strictpatches = dl.option1;
 			patchranges = new List<LumpRange>();
 			spriteranges = new List<LumpRange>();
 			flatranges = new List<LumpRange>();
@@ -354,13 +356,23 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			// Find the lump in ranges
-			foreach(LumpRange range in patchranges)
+			// Strictly read patches only between P_START and P_END?
+			if(strictpatches)
 			{
-				lump = file.FindLump(pname, range.start, range.end);
+				// Find the lump in ranges
+				foreach(LumpRange range in patchranges)
+				{
+					lump = file.FindLump(pname, range.start, range.end);
+					if(lump != null) return lump.Stream;
+				}
+			}
+			else
+			{
+				// Find the lump anywhere
+				lump = file.FindLump(pname);
 				if(lump != null) return lump.Stream;
 			}
-
+			
 			return null;
 		}
 
