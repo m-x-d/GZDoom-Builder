@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Map
 		protected BlockEntry[,] blockmap;
 		protected Size size;
 		protected RectangleF range;
+		protected Vector2D rangelefttop;
 		
 		// State
 		private bool isdisposed;
@@ -76,6 +77,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Initialize
 			this.range = range;
+			rangelefttop = new Vector2D(range.Left, range.Top);
 			Point lefttop = new Point((int)range.Left >> BLOCK_SIZE_SHIFT, (int)range.Top >> BLOCK_SIZE_SHIFT);
 			Point rightbottom = new Point((int)range.Right >> BLOCK_SIZE_SHIFT, (int)range.Bottom >> BLOCK_SIZE_SHIFT);
 			size = new Size((rightbottom.X - lefttop.X) + 1, (rightbottom.Y - lefttop.Y) + 1);
@@ -199,7 +201,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Find start and end block
 			pos = GetBlockCoordinates(v1);
 			end = GetBlockCoordinates(v2);
-			
+			v1 -= rangelefttop;
+			v2 -= rangelefttop;
+
 			// Horizontal straight line?
 			if(pos.Y == end.Y)
 			{
@@ -365,6 +369,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Find start and end block
 			pos = GetBlockCoordinates(v1);
 			end = GetBlockCoordinates(v2);
+			v1 -= rangelefttop;
+			v2 -= rangelefttop;
 			
 			// Horizontal straight line?
 			if(pos.Y == end.Y)

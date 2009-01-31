@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		private const int PROGRESS_STEP = 100;
+
 		#endregion
 
 		#region ================== Constructor / Destructor
@@ -52,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public CheckOverlappingLines()
 		{
 			// Total progress is done when all lines are checked
-			SetTotalProgress(General.Map.Map.Linedefs.Count);
+			SetTotalProgress(General.Map.Map.Linedefs.Count / PROGRESS_STEP);
 		}
 		
 		#endregion
@@ -64,7 +66,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Dictionary<Linedef, Linedef> donelines = new Dictionary<Linedef, Linedef>();
 			BlockMap blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
-			
+			int progress = 0;
+			int stepprogress = 0;
+
 			// Go for all the liendefs
 			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
@@ -118,9 +122,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Handle thread interruption
 				try { Thread.Sleep(0); }
 				catch(ThreadInterruptedException) { return; }
-				
+
 				// We are making progress!
-				AddProgress(1);
+				if((++progress / PROGRESS_STEP) > stepprogress)
+				{
+					stepprogress = (progress / PROGRESS_STEP);
+					AddProgress(1);
+				}
 			}
 		}
 		

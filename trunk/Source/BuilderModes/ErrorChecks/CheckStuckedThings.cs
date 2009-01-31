@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		private const int PROGRESS_STEP = 10;
 		private const float ALLOWED_STUCK_DISTANCE = 6.0f;
 
 		#endregion
@@ -55,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public CheckStuckedThings()
 		{
 			// Total progress is done when all things are checked
-			SetTotalProgress(General.Map.Map.Things.Count);
+			SetTotalProgress(General.Map.Map.Things.Count / PROGRESS_STEP);
 		}
 		
 		#endregion
@@ -66,6 +67,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void Run()
 		{
 			BlockMap blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
+			int progress = 0;
+			int stepprogress = 0;
 			
 			// Go for all the things
 			foreach(Thing t in General.Map.Map.Things)
@@ -151,9 +154,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Handle thread interruption
 				try { Thread.Sleep(0); }
 				catch(ThreadInterruptedException) { return; }
-				
+
 				// We are making progress!
-				AddProgress(1);
+				if((++progress / PROGRESS_STEP) > stepprogress)
+				{
+					stepprogress = (progress / PROGRESS_STEP);
+					AddProgress(1);
+				}
 			}
 		}
 		
