@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		private int PROGRESS_STEP = 1000;
+
 		#endregion
 
 		#region ================== Constructor / Destructor
@@ -52,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public CheckLineReferences()
 		{
 			// Total progress is done when all lines are checked
-			SetTotalProgress(General.Map.Map.Linedefs.Count);
+			SetTotalProgress(General.Map.Map.Linedefs.Count / PROGRESS_STEP);
 		}
 		
 		#endregion
@@ -62,6 +64,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This runs the check
 		public override void Run()
 		{
+			int progress = 0;
+			int stepprogress = 0;
+			
 			// Go for all the liendefs
 			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
@@ -89,9 +94,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Handle thread interruption
 				try { Thread.Sleep(0); }
 				catch(ThreadInterruptedException) { return; }
-				
+
 				// We are making progress!
-				AddProgress(1);
+				if((++progress / PROGRESS_STEP) > stepprogress)
+				{
+					stepprogress = (progress / PROGRESS_STEP);
+					AddProgress(1);
+				}
 			}
 		}
 		
