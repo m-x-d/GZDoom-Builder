@@ -89,6 +89,7 @@ namespace CodeImp.DoomBuilder
 		// SendMessage API
 		internal const int WM_USER = 0x400;
 		internal const int CB_SETITEMHEIGHT = 0x153;
+		internal const int CB_SHOWDROPDOWN = 0x14F;
 		internal const int EM_GETSCROLLPOS = WM_USER + 221;
 		internal const int EM_SETSCROLLPOS = WM_USER + 222;
 		
@@ -1313,7 +1314,7 @@ namespace CodeImp.DoomBuilder
 		// Convert bool to integer
 		internal static int Bool2Int(bool v)
 		{
-			if(v) return 1; else return 0;
+			return v ? 1 : 0;
 		}
 
 		// Convert integer to bool
@@ -1410,7 +1411,7 @@ namespace CodeImp.DoomBuilder
 		internal static string MakeTempDirname()
 		{
 			string dirname;
-			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
+			const string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
 			Random rnd = new Random();
 			int i;
 
@@ -1539,6 +1540,7 @@ namespace CodeImp.DoomBuilder
 		
 		#endregion
 		
+		/*
 		[BeginAction("testaction")]
 		internal static void TestAction()
 		{
@@ -1546,6 +1548,7 @@ namespace CodeImp.DoomBuilder
 			t.ShowDialog(mainwindow);
 			t.Dispose();
 		}
+		*/
 	}
 }
 

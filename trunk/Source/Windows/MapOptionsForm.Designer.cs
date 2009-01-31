@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.panelres = new System.Windows.Forms.GroupBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
+			this.strictpatches = new System.Windows.Forms.CheckBox();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
@@ -86,7 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			panelsettings.Controls.Add(label1);
 			panelsettings.Location = new System.Drawing.Point(12, 12);
 			panelsettings.Name = "panelsettings";
-			panelsettings.Size = new System.Drawing.Size(367, 118);
+			panelsettings.Size = new System.Drawing.Size(397, 118);
 			panelsettings.TabIndex = 10;
 			panelsettings.TabStop = false;
 			panelsettings.Text = " Settings ";
@@ -102,8 +103,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// config
 			// 
+			this.config.DropDownHeight = 206;
 			this.config.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.config.FormattingEnabled = true;
+			this.config.IntegralHeight = false;
 			this.config.Location = new System.Drawing.Point(129, 31);
 			this.config.Name = "config";
 			this.config.Size = new System.Drawing.Size(213, 22);
@@ -112,9 +115,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label4
 			// 
-			label4.Location = new System.Drawing.Point(15, 161);
+			label4.Location = new System.Drawing.Point(15, 190);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(336, 34);
+			label4.Size = new System.Drawing.Size(349, 34);
 			label4.TabIndex = 17;
 			label4.Text = "Drag items to change order (lower items override higher items). Grayed items are " +
 				"loaded according to the game configuration.";
@@ -122,7 +125,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(149, 355);
+			this.apply.Location = new System.Drawing.Point(179, 392);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 12;
@@ -134,7 +137,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(267, 355);
+			this.cancel.Location = new System.Drawing.Point(297, 392);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 13;
@@ -146,30 +149,41 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.panelres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label4);
 			this.panelres.Location = new System.Drawing.Point(12, 141);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(367, 198);
+			this.panelres.Size = new System.Drawing.Size(397, 230);
 			this.panelres.TabIndex = 14;
 			this.panelres.TabStop = false;
-			this.panelres.Text = " Custom Resources ";
+			this.panelres.Text = " Resources ";
 			// 
 			// datalocations
 			// 
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
 			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.datalocations.Location = new System.Drawing.Point(15, 28);
+			this.datalocations.Location = new System.Drawing.Point(15, 57);
 			this.datalocations.Name = "datalocations";
-			this.datalocations.Size = new System.Drawing.Size(336, 130);
+			this.datalocations.Size = new System.Drawing.Size(368, 130);
 			this.datalocations.TabIndex = 18;
+			// 
+			// strictpatches
+			// 
+			this.strictpatches.AutoSize = true;
+			this.strictpatches.Location = new System.Drawing.Point(15, 27);
+			this.strictpatches.Name = "strictpatches";
+			this.strictpatches.Size = new System.Drawing.Size(352, 18);
+			this.strictpatches.TabIndex = 20;
+			this.strictpatches.Text = "Strictly load patches between P_START and P_END only for this file";
+			this.strictpatches.UseVisualStyleBackColor = true;
 			// 
 			// MapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(391, 392);
+			this.ClientSize = new System.Drawing.Size(421, 429);
 			this.Controls.Add(this.panelres);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -187,6 +201,7 @@ namespace CodeImp.DoomBuilder.Windows
 			panelsettings.ResumeLayout(false);
 			panelsettings.PerformLayout();
 			this.panelres.ResumeLayout(false);
+			this.panelres.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -199,6 +214,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.GroupBox panelres;
 		private CodeImp.DoomBuilder.Controls.ResourceListEditor datalocations;
+		private System.Windows.Forms.CheckBox strictpatches;
 
 
 	}

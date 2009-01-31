@@ -101,6 +101,9 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 				mapsettings = new Configuration(true);
 			
+			// Check strict patches box
+			strictpatches.Checked = mapsettings.ReadSetting("strictpatches", false);
+			
 			// Check what game configuration is preferred
 			gameconfig = mapsettings.ReadSetting("gameconfig", "");
 
@@ -333,6 +336,7 @@ namespace CodeImp.DoomBuilder.Windows
 			options.ClearResources();
 			options.ConfigFile = configinfo.Filename;
 			options.CurrentName = mapslist.SelectedItems[0].Text;
+			options.StrictPatches = strictpatches.Checked;
 			options.CopyResources(locations);
 
 			// Hide window

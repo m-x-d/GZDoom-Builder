@@ -71,6 +71,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Set the level name
 			levelname.Text = options.CurrentName;
 
+			// Set strict patches loading
+			strictpatches.Checked = options.StrictPatches;
+
 			// Fill the resources list
 			datalocations.EditResourceLocationList(options.Resources);
 		}
@@ -162,6 +165,7 @@ namespace CodeImp.DoomBuilder.Windows
 			options.ClearResources();
 			options.ConfigFile = General.Configs[config.SelectedIndex].Filename;
 			options.CurrentName = levelname.Text.Trim().ToUpper();
+			options.StrictPatches = strictpatches.Checked;
 			options.CopyResources(datalocations.GetResources());
 
 			// Hide window
