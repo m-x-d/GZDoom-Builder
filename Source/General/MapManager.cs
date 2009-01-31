@@ -352,7 +352,7 @@ namespace CodeImp.DoomBuilder
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
 			data = new DataManager();
-			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
+			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
 
 			// Update structures

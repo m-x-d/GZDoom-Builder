@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.config = new System.Windows.Forms.ComboBox();
 			this.mapslist = new System.Windows.Forms.ListView();
+			this.strictpatches = new System.Windows.Forms.CheckBox();
 			columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -62,16 +63,16 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			label2.Location = new System.Drawing.Point(12, 57);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(365, 30);
+			label2.Size = new System.Drawing.Size(396, 30);
 			label2.TabIndex = 16;
 			label2.Text = "With the above selected configuration, the maps shown below were found in the cho" +
 				"sen WAD file. Please select the map to load for editing.";
 			// 
 			// label3
 			// 
-			label3.Location = new System.Drawing.Point(14, 161);
+			label3.Location = new System.Drawing.Point(14, 193);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(336, 34);
+			label3.Size = new System.Drawing.Size(347, 34);
 			label3.TabIndex = 17;
 			label3.Text = "Drag items to change order (lower items override higher items). Grayed items are " +
 				"loaded according to the game configuration.";
@@ -80,27 +81,29 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.panelres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label3);
-			this.panelres.Location = new System.Drawing.Point(12, 214);
+			this.panelres.Location = new System.Drawing.Point(12, 215);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(365, 198);
+			this.panelres.Size = new System.Drawing.Size(396, 231);
 			this.panelres.TabIndex = 11;
 			this.panelres.TabStop = false;
-			this.panelres.Text = " Custom Resources ";
+			this.panelres.Text = " Resources ";
 			// 
 			// datalocations
 			// 
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
-			this.datalocations.Location = new System.Drawing.Point(14, 26);
+			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.datalocations.Location = new System.Drawing.Point(14, 58);
 			this.datalocations.Name = "datalocations";
-			this.datalocations.Size = new System.Drawing.Size(336, 127);
+			this.datalocations.Size = new System.Drawing.Size(368, 127);
 			this.datalocations.TabIndex = 18;
 			// 
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(147, 428);
+			this.apply.Location = new System.Drawing.Point(178, 462);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 12;
@@ -112,7 +115,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(265, 428);
+			this.cancel.Location = new System.Drawing.Point(296, 462);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 13;
@@ -122,11 +125,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// config
 			// 
+			this.config.DropDownHeight = 206;
 			this.config.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.config.FormattingEnabled = true;
+			this.config.IntegralHeight = false;
 			this.config.Location = new System.Drawing.Point(141, 21);
 			this.config.Name = "config";
-			this.config.Size = new System.Drawing.Size(213, 22);
+			this.config.Size = new System.Drawing.Size(242, 22);
 			this.config.TabIndex = 15;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 
@@ -144,7 +149,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist.MultiSelect = false;
 			this.mapslist.Name = "mapslist";
 			this.mapslist.ShowGroups = false;
-			this.mapslist.Size = new System.Drawing.Size(365, 110);
+			this.mapslist.Size = new System.Drawing.Size(396, 110);
 			this.mapslist.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.mapslist.TabIndex = 18;
 			this.mapslist.UseCompatibleStateImageBehavior = false;
@@ -152,12 +157,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist.DoubleClick += new System.EventHandler(this.mapslist_DoubleClick);
 			this.mapslist.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.mapslist_ItemSelectionChanged);
 			// 
+			// strictpatches
+			// 
+			this.strictpatches.AutoSize = true;
+			this.strictpatches.Location = new System.Drawing.Point(14, 27);
+			this.strictpatches.Name = "strictpatches";
+			this.strictpatches.Size = new System.Drawing.Size(352, 18);
+			this.strictpatches.TabIndex = 19;
+			this.strictpatches.Text = "Strictly load patches between P_START and P_END only for this file";
+			this.strictpatches.UseVisualStyleBackColor = true;
+			// 
 			// OpenMapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(389, 465);
+			this.ClientSize = new System.Drawing.Size(420, 499);
 			this.Controls.Add(this.mapslist);
 			this.Controls.Add(label2);
 			this.Controls.Add(this.config);
@@ -177,6 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Text = "Open Map Options";
 			this.Shown += new System.EventHandler(this.OpenMapOptionsForm_Shown);
 			this.panelres.ResumeLayout(false);
+			this.panelres.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -190,6 +206,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.GroupBox panelres;
 		private System.Windows.Forms.ListView mapslist;
 		private CodeImp.DoomBuilder.Controls.ResourceListEditor datalocations;
+		private System.Windows.Forms.CheckBox strictpatches;
 
 
 	}
