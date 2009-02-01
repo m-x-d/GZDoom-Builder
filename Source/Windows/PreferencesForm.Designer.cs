@@ -15,6 +15,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(disposing && (components != null))
 			{
+				controller = null;
 				components.Dispose();
 			}
 			base.Dispose(disposing);
@@ -1086,7 +1087,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.apply;
 			this.ClientSize = new System.Drawing.Size(682, 486);
 			this.Controls.Add(this.cancel);

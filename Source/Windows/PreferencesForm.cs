@@ -37,6 +37,7 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		#region ================== Variables
 
+		private PreferencesController controller;
 		private bool allowapplycontrol = false;
 		private bool disregardshift = false;
 
@@ -129,6 +130,14 @@ namespace CodeImp.DoomBuilder.Windows
 			visualbilinear.Checked = General.Settings.VisualBilinear;
 			qualitydisplay.Checked = General.Settings.QualityDisplay;
 
+			// Allow plugins to add tabs
+			this.SuspendLayout();
+			controller = new PreferencesController(this);
+			controller.AllowAddTab = true;
+			General.Plugins.OnShowPreferences(controller);
+			controller.AllowAddTab = false;
+			this.ResumeLayout(true);
+			
 			// Done
 			allowapplycontrol = true;
 		}
@@ -140,6 +149,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			// Let the plugins know
+			controller.RaiseAccept();
+			
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
 			General.Settings.SquareThings = squarethings.Checked;
@@ -188,7 +200,10 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ClassicBilinear = classicbilinear.Checked;
 			General.Settings.VisualBilinear = visualbilinear.Checked;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
-			
+
+			// Let the plugins know we're closing
+			General.Plugins.OnClosePreferences(controller);
+
 			// Close
 			this.DialogResult = DialogResult.OK;
 			this.Close();
@@ -197,6 +212,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// Cancel clicked
 		private void cancel_Click(object sender, EventArgs e)
 		{
+			// Let the plugins know
+			controller.RaiseCancel();
+
+			// Let the plugins know we're closing
+			General.Plugins.OnClosePreferences(controller);
+
 			// Close
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
@@ -205,6 +226,12 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Tabs
+
+		// This adds a tab page
+		public void AddTabPage(TabPage tab)
+		{
+			tabs.TabPages.Add(tab);
+		}
 
 		// Tab changes
 		private void tabs_SelectedIndexChanged(object sender, EventArgs e)

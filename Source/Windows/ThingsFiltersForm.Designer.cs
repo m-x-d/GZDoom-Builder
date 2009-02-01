@@ -192,7 +192,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// ThingsFiltersForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(624, 418);
 			this.Controls.Add(this.cancel);

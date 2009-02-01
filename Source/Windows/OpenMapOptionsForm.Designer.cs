@@ -33,12 +33,12 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label3;
 			this.panelres = new System.Windows.Forms.GroupBox();
+			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
 			this.apply = new System.Windows.Forms.Button();
 			this.cancel = new System.Windows.Forms.Button();
 			this.config = new System.Windows.Forms.ComboBox();
 			this.mapslist = new System.Windows.Forms.ListView();
-			this.strictpatches = new System.Windows.Forms.CheckBox();
 			columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -90,6 +90,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.TabIndex = 11;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
+			// 
+			// strictpatches
+			// 
+			this.strictpatches.AutoSize = true;
+			this.strictpatches.Location = new System.Drawing.Point(14, 27);
+			this.strictpatches.Name = "strictpatches";
+			this.strictpatches.Size = new System.Drawing.Size(352, 18);
+			this.strictpatches.TabIndex = 19;
+			this.strictpatches.Text = "Strictly load patches between P_START and P_END only for this file";
+			this.strictpatches.UseVisualStyleBackColor = true;
 			// 
 			// datalocations
 			// 
@@ -157,20 +167,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist.DoubleClick += new System.EventHandler(this.mapslist_DoubleClick);
 			this.mapslist.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.mapslist_ItemSelectionChanged);
 			// 
-			// strictpatches
-			// 
-			this.strictpatches.AutoSize = true;
-			this.strictpatches.Location = new System.Drawing.Point(14, 27);
-			this.strictpatches.Name = "strictpatches";
-			this.strictpatches.Size = new System.Drawing.Size(352, 18);
-			this.strictpatches.TabIndex = 19;
-			this.strictpatches.Text = "Strictly load patches between P_START and P_END only for this file";
-			this.strictpatches.UseVisualStyleBackColor = true;
-			// 
 			// OpenMapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(420, 499);
 			this.Controls.Add(this.mapslist);

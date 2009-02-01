@@ -165,7 +165,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// ErrorCheckForm
 			// 
 			this.AcceptButton = this.buttoncheck;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.closebutton;
 			this.ClientSize = new System.Drawing.Size(380, 493);
 			this.Controls.Add(this.closebutton);

@@ -83,14 +83,13 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			items = new List<ImageBrowserItem>();
-			list.TileSize = new Size(General.Map.Data.Previews.MaxImageWidth + 26, General.Map.Data.Previews.MaxImageHeight + 26);
 			
 			// Move textbox with label
 			objectname.Left = label.Right + label.Margin.Right + objectname.Margin.Left;
 		}
 		
-		// This applies the color settings
-		public void ApplyColorSettings()
+		// This applies the application settings
+		public void ApplySettings()
 		{
 			// Force black background?
 			if(General.Settings.BlackBrowsers)
@@ -98,6 +97,9 @@ namespace CodeImp.DoomBuilder.Controls
 				list.BackColor = Color.Black;
 				list.ForeColor = Color.White;
 			}
+
+			// Size of preview images
+			list.TileSize = new Size(General.Map.Data.Previews.MaxImageWidth + 26, General.Map.Data.Previews.MaxImageHeight + 26);
 		}
 
 		// This cleans everything up

@@ -393,9 +393,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cached values
 				General.Map.Map.Update();
 
+				// Edit new sectors?
+				List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
+				if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
+					General.Interface.ShowEditSectors(newsectors);
+				
 				// Update the used textures
 				General.Map.Data.UpdateUsedTextures();
-
+				
 				// Map is changed
 				General.Map.IsChanged = true;
 			}

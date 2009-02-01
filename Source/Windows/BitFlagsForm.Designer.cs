@@ -71,7 +71,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// BitFlagsForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(206, 232);
 			this.Controls.Add(this.cancel);

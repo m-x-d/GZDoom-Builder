@@ -38,8 +38,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.cancel = new System.Windows.Forms.Button();
 			this.panelres = new System.Windows.Forms.GroupBox();
-			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
 			this.strictpatches = new System.Windows.Forms.CheckBox();
+			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
@@ -159,15 +159,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
 			// 
-			// datalocations
-			// 
-			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
-			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.datalocations.Location = new System.Drawing.Point(15, 57);
-			this.datalocations.Name = "datalocations";
-			this.datalocations.Size = new System.Drawing.Size(368, 130);
-			this.datalocations.TabIndex = 18;
-			// 
 			// strictpatches
 			// 
 			this.strictpatches.AutoSize = true;
@@ -178,10 +169,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.strictpatches.Text = "Strictly load patches between P_START and P_END only for this file";
 			this.strictpatches.UseVisualStyleBackColor = true;
 			// 
+			// datalocations
+			// 
+			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
+			this.datalocations.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.datalocations.Location = new System.Drawing.Point(15, 57);
+			this.datalocations.Name = "datalocations";
+			this.datalocations.Size = new System.Drawing.Size(368, 130);
+			this.datalocations.TabIndex = 18;
+			// 
 			// MapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(421, 429);
 			this.Controls.Add(this.panelres);
