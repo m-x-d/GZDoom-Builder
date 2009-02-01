@@ -812,7 +812,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		/// <summary>
 		/// This draws lines with the given points. Note that this tool removes any existing geometry
-		/// marks and marks the new lines and vertices when done.
+		/// marks and marks the new lines and vertices when done. Also marks the sectors that were added.
 		/// </summary>
 		public static void DrawLines(IList<DrawnVertex> points)
 		{
@@ -1173,7 +1173,8 @@ namespace CodeImp.DoomBuilder.Geometry
 
 							// Make the new sector
 							Sector newsector = Tools.MakeSector(sectorlines, oldlines);
-
+							newsector.Marked = true;
+							
 							// Go for all sidedefs in this new sector
 							foreach(Sidedef sd in newsector.Sidedefs)
 							{
@@ -1276,7 +1277,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				General.Map.Map.SnapAllToAccuracy();
 
 				// Mark new geometry only
-				General.Map.Map.ClearAllMarks(false);
+				General.Map.Map.ClearMarkedLinedefs(false);
+				General.Map.Map.ClearMarkedVertices(false);
 				foreach(Vertex v in newverts) v.Marked = true;
 				foreach(Linedef l in newlines) l.Marked = true;
 			}

@@ -708,6 +708,7 @@
     <Compile Include="Windows\AngleForm.Designer.cs">
       <DependentUpon>AngleForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\PreferencesController.cs" />
     <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
     <None Include="Resources\ScriptConstant.xpm" />

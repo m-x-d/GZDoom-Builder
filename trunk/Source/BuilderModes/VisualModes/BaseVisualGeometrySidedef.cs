@@ -112,7 +112,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Unused
 		public virtual void OnEditBegin() { }
-		public virtual void OnChangeTargetHeight(int amount) { }
 		protected virtual void SetTexture(string texturename) { }
 		public abstract bool Setup();
 		
@@ -131,6 +130,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						Setup();
 					}
 				}
+			}
+		}
+		
+		// Change target height
+		public virtual void OnChangeTargetHeight(int amount)
+		{
+			switch(BuilderPlug.Me.ChangeHeightBySidedef)
+			{
+				// Change ceiling
+				case 1:
+					this.Sector.Ceiling.OnChangeTargetHeight(amount);
+					break;
+
+				// Change floor
+				case 2:
+					this.Sector.Floor.OnChangeTargetHeight(amount);
+					break;
 			}
 		}
 		

@@ -86,9 +86,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filters.TabIndex = 2;
 			this.filters.UseCompatibleStateImageBehavior = false;
 			this.filters.View = System.Windows.Forms.View.Details;
-			this.filters.DoubleClick += new System.EventHandler(this.filters_DoubleClick);
-			this.filters.SelectedIndexChanged += new System.EventHandler(this.filters_SelectedIndexChanged);
 			this.filters.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.filters_AfterLabelEdit);
+			this.filters.SelectedIndexChanged += new System.EventHandler(this.filters_SelectedIndexChanged);
+			this.filters.DoubleClick += new System.EventHandler(this.filters_DoubleClick);
 			// 
 			// filtercolumn
 			// 
@@ -269,7 +269,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// TextureSetForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(642, 552);
 			this.Controls.Add(this.pictureBox1);

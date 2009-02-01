@@ -256,7 +256,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// FindReplaceForm
 			// 
 			this.AcceptButton = this.findbutton;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.closebutton;
 			this.ClientSize = new System.Drawing.Size(358, 472);
 			this.Controls.Add(this.doreplace);

@@ -10,6 +10,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -270,6 +271,20 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// Called by the Doom Builder core when the user has redone the action.
 		/// </summary>
 		public virtual void OnRedoEnd()
+		{
+		}
+
+		/// <summary>
+		/// Called when the user opens the Preferences dialog.
+		/// </summary>
+		public virtual void OnShowPreferences(PreferencesController controller)
+		{
+		}
+
+		/// <summary>
+		/// Called when the user closes the Preferences dialog by either accepting the changes or cancelling.
+		/// </summary>
+		public virtual void OnClosePreferences(PreferencesController controller)
 		{
 		}
 

@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.fieldslist.Location = new System.Drawing.Point(10, 10);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(1);
 			this.fieldslist.Name = "fieldslist";
@@ -73,7 +74,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// CustomFieldsForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(526, 371);
 			this.Controls.Add(this.cancel);

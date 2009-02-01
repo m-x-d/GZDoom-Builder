@@ -247,7 +247,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorheightlabel.Size = new System.Drawing.Size(74, 14);
 			this.sectorheightlabel.TabIndex = 20;
 			this.sectorheightlabel.Text = "Sector height:";
-			this.sectorheightlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label5
 			// 
@@ -257,7 +256,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label5.Size = new System.Drawing.Size(66, 14);
 			label5.TabIndex = 17;
 			label5.Text = "Floor height:";
-			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// floorheight
 			// 
@@ -312,7 +310,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label6.Size = new System.Drawing.Size(73, 14);
 			label6.TabIndex = 19;
 			label6.Text = "Ceiling height:";
-			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// ceilingheight
 			// 
@@ -422,7 +419,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// SectorEditForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(477, 458);
 			this.Controls.Add(this.tabs);

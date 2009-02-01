@@ -103,9 +103,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
 			this.tabs.Location = new System.Drawing.Point(9, 11);
 			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(369, 242);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
 			// wadfiletab
@@ -204,9 +204,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label5.Name = "label5";
 			this.label5.Size = new System.Drawing.Size(341, 49);
 			this.label5.TabIndex = 8;
-			this.label5.Text = "The directory is expected to use the ZDoom PK3 directory structure. With the opti" +
-				"ons above you can choose to load textures or flats from the directory root in ca" +
-				"se the sourceport supports this.";
+			this.label5.Text = "The directory may use the ZDoom PK3 directory structure, or you can choose to use" +
+				" the options above to load texture or flat images from the directory root.";
 			// 
 			// dir_flats
 			// 
@@ -349,7 +348,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// ResourceOptionsForm
 			// 
 			this.AcceptButton = this.apply;
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(386, 307);
 			this.Controls.Add(this.cancel);

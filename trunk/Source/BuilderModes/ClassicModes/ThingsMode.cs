@@ -62,6 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Interface
 		private bool editpressed;
+		private bool thinginserted;
 		
 		#endregion
 
@@ -301,12 +302,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Start editing
 		protected override void OnEditBegin()
 		{
+			thinginserted = false;
+			
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
 				// Edit pressed in this mode
 				editpressed = true;
-
+				
 				// Highlighted item not selected?
 				if(!highlighted.Selected)
 				{
@@ -332,7 +335,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Edit pressed in this mode
 					editpressed = true;
-
+					thinginserted = true;
+					
 					// Insert a new item and select it for dragging
 					General.Map.UndoRedo.CreateUndo("Insert thing");
 					Thing t = InsertThing(mousemappos);
@@ -358,17 +362,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(General.Interface.IsActiveWindow)
 					{
-						// Show thing edit dialog
-						General.Interface.ShowEditThings(selected);
+						// Edit only when preferred
+						if(!thinginserted || BuilderPlug.Me.EditNewThing)
+						{
+							// Show thing edit dialog
+							General.Interface.ShowEditThings(selected);
 
-						// When a single thing was selected, deselect it now
-						if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
+							// When a single thing was selected, deselect it now
+							if(selected.Count == 1) General.Map.Map.ClearSelectedThings();
 
-						// Update things filter
-						General.Map.ThingsFilter.Update();
-						
-						// Update entire display
-						General.Interface.RedrawDisplay();
+							// Update things filter
+							General.Map.ThingsFilter.Update();
+
+							// Update entire display
+							General.Interface.RedrawDisplay();
+						}
 					}
 				}
 			}
@@ -512,8 +520,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Insert new thing
 				General.Map.UndoRedo.CreateUndo("Insert thing");
-				InsertThing(mousemappos);
+				Thing t = InsertThing(mousemappos);
 				
+				// Edit the thing?
+				if(BuilderPlug.Me.EditNewThing)
+				{
+					// Redraw screen
+					General.Interface.RedrawDisplay();
+
+					List<Thing> things = new List<Thing>(1);
+					things.Add(t);
+					General.Interface.ShowEditThings(things);
+				}
+
+				// Update things filter
+				General.Map.ThingsFilter.Update();
+
 				// Redraw screen
 				General.Interface.RedrawDisplay();
 			}

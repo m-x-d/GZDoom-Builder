@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Initialize
 			InitializeComponent();
-			browser.ApplyColorSettings();
+			browser.ApplySettings();
 			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();

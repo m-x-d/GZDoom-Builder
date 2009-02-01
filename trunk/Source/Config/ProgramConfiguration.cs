@@ -280,6 +280,16 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ReadPluginSetting(string setting, bool defaultsetting) { return cfg.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
 		public byte ReadPluginSetting(string setting, byte defaultsetting) { return cfg.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
 		public IDictionary ReadPluginSetting(string setting, IDictionary defaultsetting) { return cfg.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+
+		// ReadPluginSetting with specific plugin
+		public string ReadPluginSetting(string pluginname, string setting, string defaultsetting) { return cfg.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public int ReadPluginSetting(string pluginname, string setting, int defaultsetting) { return cfg.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public float ReadPluginSetting(string pluginname, string setting, float defaultsetting) { return cfg.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public short ReadPluginSetting(string pluginname, string setting, short defaultsetting) { return cfg.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public long ReadPluginSetting(string pluginname, string setting, long defaultsetting) { return cfg.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public bool ReadPluginSetting(string pluginname, string setting, bool defaultsetting) { return cfg.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public byte ReadPluginSetting(string pluginname, string setting, byte defaultsetting) { return cfg.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public IDictionary ReadPluginSetting(string pluginname, string setting, IDictionary defaultsetting) { return cfg.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
 		
 		// WritePluginSetting
 		public bool WritePluginSetting(string setting, object settingvalue) { return cfg.WriteSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, settingvalue); }

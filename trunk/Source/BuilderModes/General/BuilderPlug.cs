@@ -56,10 +56,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private CurveLinedefsForm curvelinedefsform;
 		private FindReplaceForm findreplaceform;
 		private ErrorCheckForm errorcheckform;
+		private PreferencesForm preferencesform;
 
 		// Settings
 		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
 		private bool usegravity;
+		private int changeheightbysidedef;		// 0 = nothing, 1 = change ceiling, 2 = change floor
+		private bool editnewthing;
+		private bool editnewsector;
 		
 		#endregion
 
@@ -72,8 +76,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public CurveLinedefsForm CurveLinedefsForm { get { return curvelinedefsform; } }
 		public FindReplaceForm FindReplaceForm { get { return findreplaceform; } }
 		public ErrorCheckForm ErrorCheckForm { get { return errorcheckform; } }
+		public PreferencesForm PreferencesForm { get { return preferencesform; } }
+
+		// Settings
 		public int ShowVisualThings { get { return showvisualthings; } set { showvisualthings = value; } }
 		public bool UseGravity { get { return usegravity; } set { usegravity = value; } }
+		public int ChangeHeightBySidedef { get { return changeheightbysidedef; } }
+		public bool EditNewThing { get { return editnewthing; } }
+		public bool EditNewSector { get { return editnewsector; } }
 		
 		#endregion
 
@@ -86,8 +96,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			me = this;
 
 			// Settings
-			this.showvisualthings = 2;
-			this.usegravity = false;
+			showvisualthings = 2;
+			usegravity = false;
+			changeheightbysidedef = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
+			editnewthing = General.Settings.ReadPluginSetting("editnewthing", true);
+			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
 			
 			// Load menus form and register it
 			menusform = new MenusForm();
@@ -175,6 +188,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			menusform.ShowEditingModeMenu(newmode);
 			
 			return base.OnModeChange(oldmode, newmode);
+		}
+
+		// When the Preferences dialog is shown
+		public override void OnShowPreferences(PreferencesController controller)
+		{
+			base.OnShowPreferences(controller);
+
+			// Load preferences
+			preferencesform = new PreferencesForm();
+			preferencesform.Setup(controller);
+		}
+
+		// When the Preferences dialog is closed
+		public override void OnClosePreferences(PreferencesController controller)
+		{
+			base.OnClosePreferences(controller);
+
+			// Apply settings that could have been changed
+			changeheightbysidedef = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
+			editnewthing = General.Settings.ReadPluginSetting("editnewthing", true);
+			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
+			
+			// Unload preferences
+			preferencesform.Dispose();
+			preferencesform = null;
 		}
 		
 		#endregion

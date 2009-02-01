@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Editing;
 using System.Reflection;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -281,6 +282,17 @@ namespace CodeImp.DoomBuilder.Plugins
 			foreach(Plugin p in plugins) p.Plug.OnSectorFloorSurfaceUpdate(s, ref vertices);
 		}
 
+		
+		public void OnShowPreferences(PreferencesController controller)
+		{
+			foreach(Plugin p in plugins) p.Plug.OnShowPreferences(controller);
+		}
+
+
+		public void OnClosePreferences(PreferencesController controller)
+		{
+			foreach(Plugin p in plugins) p.Plug.OnClosePreferences(controller);
+		}
 		
 		#endregion
 	}
