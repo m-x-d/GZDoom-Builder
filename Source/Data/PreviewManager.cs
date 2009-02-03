@@ -144,7 +144,9 @@ namespace CodeImp.DoomBuilder.Data
 				float scale = Math.Min(scalex, scaley);
 				previewwidth = (int)((float)imagewidth * scale);
 				previewheight = (int)((float)imageheight * scale);
-				
+				if(previewwidth < 1) previewwidth = 1;
+				if(previewheight < 1) previewheight = 1;
+
 				// Make new image
 				preview = new Bitmap(previewwidth, previewheight, IMAGE_FORMAT);
 				g = Graphics.FromImage(preview);
@@ -158,6 +160,16 @@ namespace CodeImp.DoomBuilder.Data
 				// Draw image onto atlas
 				Rectangle atlasrect = new Rectangle(0, 0, previewwidth, previewheight);
 				RectangleF imgrect = General.MakeZoomedRect(new Size(imagewidth, imageheight), atlasrect);
+				if(imgrect.Width < 1.0f)
+				{
+					imgrect.X -= 0.5f - imgrect.Width * 0.5f;
+					imgrect.Width = 1.0f;
+				}
+				if(imgrect.Height < 1.0f)
+				{
+					imgrect.Y -= 0.5f - imgrect.Height * 0.5f;
+					imgrect.Height = 1.0f;
+				}
 				g.DrawImage(img.GetBitmap(), imgrect);
 				g.Dispose();
 				
