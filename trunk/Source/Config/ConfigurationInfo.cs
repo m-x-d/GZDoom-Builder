@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Config
 		private DataLocationList resources;
 		private string testprogram;
 		private string testparameters;
+		private bool testshortpaths;
 		private bool customparameters;
 		private int testskill;
 		private List<ThingsFilter> thingsfilters;
@@ -72,6 +73,7 @@ namespace CodeImp.DoomBuilder.Config
 		public DataLocationList Resources { get { return resources; } }
 		public string TestProgram { get { return testprogram; } set { testprogram = value; } }
 		public string TestParameters { get { return testparameters; } set { testparameters = value; } }
+		public bool TestShortPaths { get { return testshortpaths; } set { testshortpaths = value; } }
 		public int TestSkill { get { return testskill; } set { testskill = value; } }
 		public bool CustomParameters { get { return customparameters; } set { customparameters = value; } }
 		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
@@ -98,6 +100,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.nodebuildertest = General.Settings.ReadSetting("configurations." + settingskey + ".nodebuildertest", MISSING_NODEBUILDER);
 			this.testprogram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
 			this.testparameters = General.Settings.ReadSetting("configurations." + settingskey + ".testparameters", "");
+			this.testshortpaths = General.Settings.ReadSetting("configurations." + settingskey + ".testshortpaths", false);
 			this.customparameters = General.Settings.ReadSetting("configurations." + settingskey + ".customparameters", false);
 			this.testskill = General.Settings.ReadSetting("configurations." + settingskey + ".testskill", 3);
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
@@ -154,6 +157,7 @@ namespace CodeImp.DoomBuilder.Config
 			General.Settings.WriteSetting("configurations." + settingskey + ".nodebuildertest", nodebuildertest);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testprogram", testprogram);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testparameters", testparameters);
+			General.Settings.WriteSetting("configurations." + settingskey + ".testshortpaths", testshortpaths);
 			General.Settings.WriteSetting("configurations." + settingskey + ".customparameters", customparameters);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testskill", testskill);
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
@@ -206,6 +210,7 @@ namespace CodeImp.DoomBuilder.Config
 			ci.resources.AddRange(this.resources);
 			ci.testprogram = this.testprogram;
 			ci.testparameters = this.testparameters;
+			ci.testshortpaths = this.testshortpaths;
 			ci.customparameters = this.customparameters;
 			ci.testskill = this.testskill;
 			ci.texturesets = new List<DefinedTextureSet>();
@@ -228,6 +233,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.resources.AddRange(ci.resources);
 			this.testprogram = ci.testprogram;
 			this.testparameters = ci.testparameters;
+			this.testshortpaths = ci.testshortpaths;
 			this.customparameters = ci.customparameters;
 			this.testskill = ci.testskill;
 			this.texturesets = new List<DefinedTextureSet>();

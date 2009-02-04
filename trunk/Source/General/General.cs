@@ -82,6 +82,9 @@ namespace CodeImp.DoomBuilder
 		[DllImport("user32.dll")]
 		internal static extern int SetWindowPos(IntPtr windowptr, int insertafterptr, int x, int y, int cx, int cy, int flags);
 		
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern uint GetShortPathName([MarshalAs(UnmanagedType.LPTStr)] string longpath, [MarshalAs(UnmanagedType.LPTStr)]StringBuilder shortpath, uint buffersize);
+		
 		#endregion
 
 		#region ================== Constants
@@ -1536,6 +1539,15 @@ namespace CodeImp.DoomBuilder
 
 			// Clean up
 			if(p != null) p.Dispose();
+		}
+		
+		// This returns the short path name for a file
+		public static string GetShortFilePath(string longpath)
+		{
+			int maxlen = 256;
+			StringBuilder shortname = new StringBuilder(maxlen);
+			uint len = GetShortPathName(longpath, shortname, (uint)maxlen);
+			return shortname.ToString();
 		}
 		
 		#endregion

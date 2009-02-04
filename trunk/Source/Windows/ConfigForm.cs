@@ -155,9 +155,14 @@ namespace CodeImp.DoomBuilder.Windows
 				skill.AddInfo(gameconfig.Skills.ToArray());
 				
 				// Set test application and parameters
-				if(!configinfo.CustomParameters) configinfo.TestParameters = gameconfig.TestParameters;
+				if(!configinfo.CustomParameters)
+				{
+					configinfo.TestParameters = gameconfig.TestParameters;
+					configinfo.TestShortPaths = gameconfig.TestShortPaths;
+				}
 				testapplication.Text = configinfo.TestProgram;
 				testparameters.Text = configinfo.TestParameters;
+				shortpaths.Checked = configinfo.TestShortPaths;
 				int skilllevel = configinfo.TestSkill;
 				skill.Value = skilllevel - 1;
 				skill.Value = skilllevel;
@@ -197,6 +202,7 @@ namespace CodeImp.DoomBuilder.Windows
 				nodebuildertest.SelectedIndex = -1;
 				testapplication.Text = "";
 				testparameters.Text = "";
+				shortpaths.Checked = false;
 				skill.Value = 0;
 				skill.ClearInfo();
 				customparameters.Checked = false;
@@ -275,7 +281,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null)
 			{
 				// Make converted parameters
-				testresult.Text = General.Map.Launcher.ConvertParameters(testparameters.Text, skill.Value);
+				testresult.Text = General.Map.Launcher.ConvertParameters(testparameters.Text, skill.Value, shortpaths.Checked);
 			}
 		}
 		
@@ -341,6 +347,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update interface
 			labelparameters.Visible = customparameters.Checked;
 			testparameters.Visible = customparameters.Checked;
+			shortpaths.Visible = customparameters.Checked;
 
 			// Check if a map is loaded
 			if(General.Map != null)
@@ -358,7 +365,19 @@ namespace CodeImp.DoomBuilder.Windows
 				noresultlabel.Visible = customparameters.Checked;
 			}
 		}
-
+		
+		// Use short paths changed
+		private void shortpaths_CheckedChanged(object sender, EventArgs e)
+		{
+			// Leave when no configuration selected
+			if(configinfo == null) return;
+			
+			// Apply to selected configuration
+			configinfo.TestShortPaths = shortpaths.Checked;
+			
+			CreateParametersExample();
+		}
+		
 		// Skill changes
 		private void skill_ValueChanges(object sender, EventArgs e)
 		{

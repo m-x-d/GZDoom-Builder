@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder
 		// This takes the unconverted parameters (with placeholders) and converts it
 		// to parameters with full paths, names and numbers where placeholders were put.
 		// The tempfile must be the full path and filename to the PWAD file to test.
-		public string ConvertParameters(string parameters, int skill)
+		public string ConvertParameters(string parameters, int skill, bool shortpaths)
 		{
 			string outp = parameters;
 			DataLocation iwadloc;
@@ -94,6 +94,10 @@ namespace CodeImp.DoomBuilder
 			string p_ap = "", p_apq = "";
 			string p_l1 = "", p_l2 = "";
 			string p_nm = "";
+			string f = tempwad;
+			
+			// Make short path if needed
+			if(shortpaths) f = General.GetShortFilePath(f);
 			
 			// Find the first IWAD file
 			if(General.Map.Data.FindFirstIWAD(out iwadloc))
@@ -101,6 +105,11 @@ namespace CodeImp.DoomBuilder
 				// %WP and %WF result in IWAD file
 				p_wp = iwadloc.location;
 				p_wf = Path.GetFileName(p_wp);
+				if(shortpaths)
+				{
+					p_wp = General.GetShortFilePath(p_wp);
+					p_wf = General.GetShortFilePath(p_wf);
+				}
 			}
 			
 			// Make a list of all data locations, including map location
@@ -116,8 +125,16 @@ namespace CodeImp.DoomBuilder
 				if((dl.type == DataLocation.RESOURCE_WAD) && (dl.location != iwadloc.location))
 				{
 					// Add to string of files
-					p_ap += dl.location + " ";
-					p_apq += "\"" + dl.location + "\" ";
+					if(shortpaths)
+					{
+						p_ap += General.GetShortFilePath(dl.location) + " ";
+						p_apq += "\"" + General.GetShortFilePath(dl.location) + "\" ";
+					}
+					else
+					{
+						p_ap += dl.location + " ";
+						p_apq += "\"" + dl.location + "\" ";
+					}
 				}
 			}
 
@@ -181,7 +198,7 @@ namespace CodeImp.DoomBuilder
 			outp = outp.Replace("%nm", "%NM");
 			
 			// Replace placeholders with actual values
-			outp = outp.Replace("%F", General.Map.Launcher.TempWAD);
+			outp = outp.Replace("%F", tempwad);
 			outp = outp.Replace("%WP", p_wp);
 			outp = outp.Replace("%WF", p_wf);
 			outp = outp.Replace("%L1", p_l1);
@@ -236,6 +253,7 @@ namespace CodeImp.DoomBuilder
 			{
 				// Set parameters to the default ones
 				General.Map.ConfigSettings.TestParameters = General.Map.Config.TestParameters;
+				General.Map.ConfigSettings.TestShortPaths = General.Map.Config.TestShortPaths;
 			}
 
 			// Save map to temporary file
@@ -244,7 +262,7 @@ namespace CodeImp.DoomBuilder
 			if(General.Map.SaveMap(tempwad, MapManager.SAVE_TEST))
 			{
 				// Make arguments
-				args = ConvertParameters(General.Map.ConfigSettings.TestParameters, skill);
+				args = ConvertParameters(General.Map.ConfigSettings.TestParameters, skill, General.Map.ConfigSettings.TestShortPaths);
 
 				// Setup process info
 				processinfo = new ProcessStartInfo();
