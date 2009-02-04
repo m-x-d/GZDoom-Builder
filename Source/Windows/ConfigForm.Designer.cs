@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.nodebuildertest = new System.Windows.Forms.ComboBox();
 			this.nodebuildersave = new System.Windows.Forms.ComboBox();
 			this.tabtesting = new System.Windows.Forms.TabPage();
+			this.shortpaths = new System.Windows.Forms.CheckBox();
 			this.customparameters = new System.Windows.Forms.CheckBox();
 			this.skill = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.browsetestprogram = new System.Windows.Forms.Button();
@@ -96,7 +97,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(12, 288);
+			label5.Location = new System.Drawing.Point(12, 276);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(312, 14);
 			label5.TabIndex = 19;
@@ -209,7 +210,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(617, 368);
+			this.cancel.Location = new System.Drawing.Point(617, 381);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 17;
@@ -220,7 +221,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(499, 368);
+			this.apply.Location = new System.Drawing.Point(499, 381);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 16;
@@ -245,7 +246,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(481, 345);
+			this.tabs.Size = new System.Drawing.Size(481, 358);
 			this.tabs.TabIndex = 18;
 			// 
 			// tabresources
@@ -257,7 +258,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabresources.Location = new System.Drawing.Point(4, 23);
 			this.tabresources.Name = "tabresources";
 			this.tabresources.Padding = new System.Windows.Forms.Padding(6);
-			this.tabresources.Size = new System.Drawing.Size(473, 318);
+			this.tabresources.Size = new System.Drawing.Size(473, 331);
 			this.tabresources.TabIndex = 0;
 			this.tabresources.Text = "Resources";
 			this.tabresources.UseVisualStyleBackColor = true;
@@ -271,7 +272,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.configdata.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.configdata.Location = new System.Drawing.Point(15, 55);
 			this.configdata.Name = "configdata";
-			this.configdata.Size = new System.Drawing.Size(440, 220);
+			this.configdata.Size = new System.Drawing.Size(440, 208);
 			this.configdata.TabIndex = 20;
 			this.configdata.OnContentChanged += new CodeImp.DoomBuilder.Controls.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
 			// 
@@ -286,7 +287,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabnodebuilder.Location = new System.Drawing.Point(4, 23);
 			this.tabnodebuilder.Name = "tabnodebuilder";
 			this.tabnodebuilder.Padding = new System.Windows.Forms.Padding(6);
-			this.tabnodebuilder.Size = new System.Drawing.Size(473, 318);
+			this.tabnodebuilder.Size = new System.Drawing.Size(473, 331);
 			this.tabnodebuilder.TabIndex = 1;
 			this.tabnodebuilder.Text = "Nodebuilder";
 			this.tabnodebuilder.UseVisualStyleBackColor = true;
@@ -319,6 +320,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabtesting
 			// 
+			this.tabtesting.Controls.Add(this.shortpaths);
 			this.tabtesting.Controls.Add(this.customparameters);
 			this.tabtesting.Controls.Add(this.skill);
 			this.tabtesting.Controls.Add(label8);
@@ -335,10 +337,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtesting.Location = new System.Drawing.Point(4, 23);
 			this.tabtesting.Name = "tabtesting";
 			this.tabtesting.Padding = new System.Windows.Forms.Padding(6);
-			this.tabtesting.Size = new System.Drawing.Size(473, 318);
+			this.tabtesting.Size = new System.Drawing.Size(473, 331);
 			this.tabtesting.TabIndex = 2;
 			this.tabtesting.Text = "Testing";
 			this.tabtesting.UseVisualStyleBackColor = true;
+			// 
+			// shortpaths
+			// 
+			this.shortpaths.AutoSize = true;
+			this.shortpaths.Location = new System.Drawing.Point(87, 203);
+			this.shortpaths.Name = "shortpaths";
+			this.shortpaths.Size = new System.Drawing.Size(276, 18);
+			this.shortpaths.TabIndex = 37;
+			this.shortpaths.Text = "Use short paths and file names (MSDOS 8.3 format)";
+			this.shortpaths.UseVisualStyleBackColor = true;
+			this.shortpaths.Visible = false;
+			this.shortpaths.CheckedChanged += new System.EventHandler(this.shortpaths_CheckedChanged);
 			// 
 			// customparameters
 			// 
@@ -380,7 +394,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// noresultlabel
 			// 
-			this.noresultlabel.Location = new System.Drawing.Point(84, 220);
+			this.noresultlabel.Location = new System.Drawing.Point(84, 236);
 			this.noresultlabel.Name = "noresultlabel";
 			this.noresultlabel.Size = new System.Drawing.Size(272, 43);
 			this.noresultlabel.TabIndex = 32;
@@ -392,7 +406,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.testresult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.testresult.BackColor = System.Drawing.SystemColors.Control;
-			this.testresult.Location = new System.Drawing.Point(86, 217);
+			this.testresult.Location = new System.Drawing.Point(86, 233);
 			this.testresult.Multiline = true;
 			this.testresult.Name = "testresult";
 			this.testresult.ReadOnly = true;
@@ -403,7 +417,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelresult
 			// 
 			this.labelresult.AutoSize = true;
-			this.labelresult.Location = new System.Drawing.Point(38, 220);
+			this.labelresult.Location = new System.Drawing.Point(38, 236);
 			this.labelresult.Name = "labelresult";
 			this.labelresult.Size = new System.Drawing.Size(40, 14);
 			this.labelresult.TabIndex = 30;
@@ -446,7 +460,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtextures.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabtextures.Location = new System.Drawing.Point(4, 23);
 			this.tabtextures.Name = "tabtextures";
-			this.tabtextures.Size = new System.Drawing.Size(473, 318);
+			this.tabtextures.Size = new System.Drawing.Size(473, 331);
 			this.tabtextures.TabIndex = 3;
 			this.tabtextures.Text = "Textures";
 			this.tabtextures.UseVisualStyleBackColor = true;
@@ -461,7 +475,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listtextures.Location = new System.Drawing.Point(15, 84);
 			this.listtextures.Name = "listtextures";
 			this.listtextures.ShowGroups = false;
-			this.listtextures.Size = new System.Drawing.Size(442, 147);
+			this.listtextures.Size = new System.Drawing.Size(442, 142);
 			this.listtextures.SmallImageList = this.smallimages;
 			this.listtextures.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listtextures.TabIndex = 32;
@@ -479,7 +493,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// restoretexturesets
 			// 
 			this.restoretexturesets.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.restoretexturesets.Location = new System.Drawing.Point(15, 275);
+			this.restoretexturesets.Location = new System.Drawing.Point(15, 270);
 			this.restoretexturesets.Name = "restoretexturesets";
 			this.restoretexturesets.Size = new System.Drawing.Size(140, 24);
 			this.restoretexturesets.TabIndex = 31;
@@ -491,7 +505,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.edittextureset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.edittextureset.Enabled = false;
-			this.edittextureset.Location = new System.Drawing.Point(88, 237);
+			this.edittextureset.Location = new System.Drawing.Point(88, 232);
 			this.edittextureset.Name = "edittextureset";
 			this.edittextureset.Size = new System.Drawing.Size(67, 24);
 			this.edittextureset.TabIndex = 30;
@@ -503,7 +517,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.pastetexturesets.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.pastetexturesets.Enabled = false;
-			this.pastetexturesets.Location = new System.Drawing.Point(399, 237);
+			this.pastetexturesets.Location = new System.Drawing.Point(399, 232);
 			this.pastetexturesets.Name = "pastetexturesets";
 			this.pastetexturesets.Size = new System.Drawing.Size(58, 24);
 			this.pastetexturesets.TabIndex = 29;
@@ -515,7 +529,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.copytexturesets.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.copytexturesets.Enabled = false;
-			this.copytexturesets.Location = new System.Drawing.Point(335, 237);
+			this.copytexturesets.Location = new System.Drawing.Point(335, 232);
 			this.copytexturesets.Name = "copytexturesets";
 			this.copytexturesets.Size = new System.Drawing.Size(58, 24);
 			this.copytexturesets.TabIndex = 28;
@@ -527,7 +541,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.removetextureset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.removetextureset.Enabled = false;
-			this.removetextureset.Location = new System.Drawing.Point(161, 237);
+			this.removetextureset.Location = new System.Drawing.Point(161, 232);
 			this.removetextureset.Name = "removetextureset";
 			this.removetextureset.Size = new System.Drawing.Size(68, 24);
 			this.removetextureset.TabIndex = 27;
@@ -538,7 +552,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// addtextureset
 			// 
 			this.addtextureset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.addtextureset.Location = new System.Drawing.Point(15, 237);
+			this.addtextureset.Location = new System.Drawing.Point(15, 232);
 			this.addtextureset.Name = "addtextureset";
 			this.addtextureset.Size = new System.Drawing.Size(67, 24);
 			this.addtextureset.TabIndex = 26;
@@ -553,13 +567,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabmodes.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabmodes.Location = new System.Drawing.Point(4, 23);
 			this.tabmodes.Name = "tabmodes";
-			this.tabmodes.Size = new System.Drawing.Size(473, 318);
+			this.tabmodes.Size = new System.Drawing.Size(473, 331);
 			this.tabmodes.TabIndex = 4;
 			this.tabmodes.Text = "Modes";
 			this.tabmodes.UseVisualStyleBackColor = true;
 			// 
 			// listmodes
 			// 
+			this.listmodes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listmodes.CheckBoxes = true;
 			this.listmodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colmodename,
@@ -589,6 +606,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// listconfigs
 			// 
+			this.listconfigs.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.listconfigs.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnname});
 			this.listconfigs.FullRowSelect = true;
@@ -598,7 +617,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listconfigs.MultiSelect = false;
 			this.listconfigs.Name = "listconfigs";
 			this.listconfigs.ShowGroups = false;
-			this.listconfigs.Size = new System.Drawing.Size(230, 345);
+			this.listconfigs.Size = new System.Drawing.Size(230, 358);
 			this.listconfigs.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listconfigs.TabIndex = 19;
 			this.listconfigs.UseCompatibleStateImageBehavior = false;
@@ -623,7 +642,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(740, 403);
+			this.ClientSize = new System.Drawing.Size(740, 416);
 			this.Controls.Add(this.listconfigs);
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
@@ -687,5 +706,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ListView listmodes;
 		private System.Windows.Forms.ColumnHeader colmodename;
 		private System.Windows.Forms.ColumnHeader colmodeplugin;
+		private System.Windows.Forms.CheckBox shortpaths;
 	}
 }

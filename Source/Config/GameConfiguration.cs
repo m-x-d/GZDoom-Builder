@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int start3dmodethingtype;
 		private int linedefactivationsfilter;
 		private string testparameters;
+		private bool testshortpaths;
 		private string makedoortrack;
 		private int makedooraction;
 		private int[] makedoorargs;
@@ -142,6 +143,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int Start3DModeThingType { get { return start3dmodethingtype; } }
 		public int LinedefActivationsFilter { get { return linedefactivationsfilter; } }
 		public string TestParameters { get { return testparameters; } }
+		public bool TestShortPaths { get { return testshortpaths; } }
 		public string MakeDoorTrack { get { return makedoortrack; } }
 		public int MakeDoorAction { get { return makedooraction; } }
 		public int[] MakeDoorArgs { get { return makedoorargs; } }
@@ -241,6 +243,7 @@ namespace CodeImp.DoomBuilder.Config
 			start3dmodethingtype = cfg.ReadSetting("start3dmode", 0);
 			linedefactivationsfilter = cfg.ReadSetting("linedefactivationsfilter", 0);
 			testparameters = cfg.ReadSetting("testparameters", "");
+			testshortpaths = cfg.ReadSetting("testshortpaths", false);
 			makedoortrack = cfg.ReadSetting("makedoortrack", "-");
 			makedooraction = cfg.ReadSetting("makedooraction", 0);
 			linetagindicatesectors = cfg.ReadSetting("linetagindicatesectors", false);

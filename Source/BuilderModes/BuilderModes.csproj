@@ -58,6 +58,8 @@
     <Compile Include="ErrorChecks\CheckStuckedThings.cs" />
     <Compile Include="ErrorChecks\CheckLineReferences.cs" />
     <Compile Include="ErrorChecks\CheckOverlappingLines.cs" />
+    <Compile Include="ErrorChecks\CheckClosedSectors.cs" />
+    <Compile Include="ErrorChecks\ResultSectorUnclosed.cs" />
     <Compile Include="ErrorChecks\ResultLineOverlapping.cs" />
     <Compile Include="ErrorChecks\ResultLineNotSingleSided.cs" />
     <Compile Include="ErrorChecks\ResultLineNotDoubleSided.cs" />
