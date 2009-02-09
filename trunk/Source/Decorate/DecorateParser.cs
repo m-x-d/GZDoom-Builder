@@ -247,10 +247,20 @@ namespace CodeImp.DoomBuilder.Decorate
 					char c2 = (char)datareader.ReadByte();
 					if(c2 == '/')
 					{
-						// Skip entire line
-						char c3;
-						do { c3 = (char)datareader.ReadByte(); } while(c3 != '\n');
-						c = ' ';
+						// Check if not a special comment with a token
+						char c3 = (char)datareader.ReadByte();
+						if(c3 != '$')
+						{
+							// Skip entire line
+							char c4;
+							do { c4 = (char)datareader.ReadByte(); } while(c4 != '\n');
+							c = ' ';
+						}
+						else
+						{
+							// Not a comment
+							c = c3;
+						}
 					}
 					else if(c2 == '*')
 					{
@@ -329,6 +339,31 @@ namespace CodeImp.DoomBuilder.Decorate
 			}
 			
 			return token;
+		}
+
+		// This reads the rest of the line
+		// Returns null when the end of the stream has been reached
+		internal string ReadLine()
+		{
+			string token = "";
+
+			// Return null when the end of the stream has been reached
+			if(datastream.Position == datastream.Length) return null;
+
+			// Start reading
+			char c = (char)datareader.ReadByte();
+			while(c != '\n')
+			{
+				token += c;
+				
+				// Next character
+				if(datastream.Position < datastream.Length)
+					c = (char)datareader.Read();
+				else
+					break;
+			}
+
+			return token.Trim();
 		}
 		
 		// This reports an error
