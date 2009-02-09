@@ -150,6 +150,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void PlotSelection(IRenderer2D renderer)
 		{
 			renderer.PlotLinedef(line, General.Colors.Selection);
+			renderer.PlotVertex(line.Start, ColorCollection.VERTICES);
+			renderer.PlotVertex(line.End, ColorCollection.VERTICES);
 		}
 		
 		// Fix a single side

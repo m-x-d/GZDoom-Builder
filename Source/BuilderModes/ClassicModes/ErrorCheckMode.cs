@@ -131,8 +131,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				if(selection != null) selection.PlotSelection(renderer);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+				if(selection != null) selection.PlotSelection(renderer);
 				renderer.Finish();
 			}
 			
