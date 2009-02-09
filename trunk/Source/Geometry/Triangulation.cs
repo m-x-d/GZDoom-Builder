@@ -230,7 +230,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			SidedefsTracePath result;
 			Vertex nextvertex;
 			List<Sidedef> allsides;
-			SidedefAngleSorter sorter;
 			
 			// Found the vertex we are tracing to?
 			if(fromhere == findme) return history;
@@ -272,7 +271,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				// more than 2 lines/sides of the same sector. We must continue tracing along
 				// the first next smallest delta angle! This sorts the smallest delta angle to
 				// the top of the list.
-				sorter = new SidedefAngleSorter(history[history.Count - 1], fromhere);
+				SidedefAngleSorter sorter = new SidedefAngleSorter(history[history.Count - 1], fromhere);
 				allsides.Sort(sorter);
 			}
 			

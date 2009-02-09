@@ -38,32 +38,30 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ResultLineOverlapping : ErrorResult
+	public class ResultSectorUnclosed : ErrorResult
 	{
 		#region ================== Variables
 		
-		private Linedef line1;
-		private Linedef line2;
+		private Sector sector;
+		private List<Vertex> vertices;
 		
 		#endregion
 		
 		#region ================== Properties
 
-		public override int Buttons { get { return 0; } }
-		
 		#endregion
 		
 		#region ================== Constructor / Destructor
 		
 		// Constructor
-		public ResultLineOverlapping(Linedef l1, Linedef l2)
+		public ResultSectorUnclosed(Sector s, List<Vertex> v)
 		{
 			// Initialize
-			this.line1 = l1;
-			this.line2 = l2;
-			this.viewobjects.Add(l1);
-			this.viewobjects.Add(l2);
-			this.description = "These linedefs are overlapping and they do not reference the same sector on all sides. Overlapping lines is only allowed when they reference the same sector on all sides.";
+			this.sector = s;
+			this.vertices = new List<Vertex>(v);
+			this.viewobjects.Add(s);
+			foreach(Vertex vv in v) this.viewobjects.Add(vv);
+			this.description = "This sector is not a closed region and could cause problems with clipping and rendering in the game. The 'leaks' in the sector are indicated by the colored vertices.";
 		}
 		
 		#endregion
@@ -73,18 +71,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Linedefs are overlapping and references different sectors";
+			return "Sector " + sector.Index + " is not closed";
 		}
 		
 		// Rendering
 		public override void PlotSelection(IRenderer2D renderer)
 		{
-			renderer.PlotLinedef(line1, General.Colors.Selection);
-			renderer.PlotLinedef(line2, General.Colors.Selection);
-			renderer.PlotVertex(line1.Start, ColorCollection.VERTICES);
-			renderer.PlotVertex(line1.End, ColorCollection.VERTICES);
-			renderer.PlotVertex(line2.Start, ColorCollection.VERTICES);
-			renderer.PlotVertex(line2.End, ColorCollection.VERTICES);
+			renderer.PlotSector(sector, General.Colors.Selection);
+			foreach(Vertex v in vertices)
+				renderer.PlotVertex(v, ColorCollection.SELECTION);
 		}
 		
 		#endregion
