@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.IO
 			{
 				List<string> files = new List<string>(entries.Length);
 				for(int i = 0; i < entries.Length; i++)
-					if(entries[i].path == path) files.Add(entries[i].filepathname);
+					if(entries[i].path.StartsWith(path)) files.Add(entries[i].filepathname);
 				return files;
 			}
 			else

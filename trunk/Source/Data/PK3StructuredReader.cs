@@ -34,22 +34,22 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Constants
 
-		private const string PATCHES_DIR = "patches";
-		private const string TEXTURES_DIR = "textures";
-		private const string FLATS_DIR = "flats";
-		private const string HIRES_DIR = "hires";
-		private const string SPRITES_DIR = "sprites";
+		protected const string PATCHES_DIR = "patches";
+		protected const string TEXTURES_DIR = "textures";
+		protected const string FLATS_DIR = "flats";
+		protected const string HIRES_DIR = "hires";
+		protected const string SPRITES_DIR = "sprites";
 		
 		#endregion
 
 		#region ================== Variables
 		
 		// Source
-		private bool roottextures;
-		private bool rootflats;
+		protected bool roottextures;
+		protected bool rootflats;
 		
 		// WAD files that must be loaded as well
-		private List<WADReader> wads;
+		protected List<WADReader> wads;
 		
 		#endregion
 
@@ -165,14 +165,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Should we load the images in this directory as textures?
 			if(roottextures)
 			{
-				collection = LoadDirectoryImages("", false);
+				collection = LoadDirectoryImages("", false, false);
 				AddImagesToList(images, collection);
 			}
 			
 			// TODO: Add support for hires texture here
 			
 			// Add images from texture directory
-			collection = LoadDirectoryImages(TEXTURES_DIR, false);
+			collection = LoadDirectoryImages(TEXTURES_DIR, false, true);
 			AddImagesToList(images, collection);
 
 			// Load TEXTURE1 lump file
@@ -229,56 +229,6 @@ namespace CodeImp.DoomBuilder.Data
 			
 			return null;
 		}
-		
-		// This finds and returns a patch stream
-		public override Stream GetPatchData(string pname)
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-			
-			// Find in any of the wad files
-			// Note the backward order, because the last wad's images have priority
-			for(int i = wads.Count - 1; i >= 0; i--)
-			{
-				Stream data = wads[i].GetPatchData(pname);
-				if(data != null) return data;
-			}
-			
-			// Find in patches directory
-			string filename = FindFirstFile(PATCHES_DIR, pname, true);
-			if((filename != null) && FileExists(filename))
-			{
-				return LoadFile(filename);
-			}
-			
-			// Nothing found
-			return null;
-		}
-
-		// This finds and returns a textue stream
-		public override Stream GetTextureData(string pname)
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			// Find in any of the wad files
-			// Note the backward order, because the last wad's images have priority
-			for(int i = wads.Count - 1; i >= 0; i--)
-			{
-				Stream data = wads[i].GetTextureData(pname);
-				if(data != null) return data;
-			}
-
-			// Find in patches directory
-			string filename = FindFirstFile(TEXTURES_DIR, pname, true);
-			if((filename != null) && FileExists(filename))
-			{
-				return LoadFile(filename);
-			}
-
-			// Nothing found
-			return null;
-		}
 
 		#endregion
 
@@ -304,70 +254,15 @@ namespace CodeImp.DoomBuilder.Data
 			// Should we load the images in this directory as flats?
 			if(rootflats)
 			{
-				collection = LoadDirectoryImages("", true);
+				collection = LoadDirectoryImages("", true, false);
 				AddImagesToList(images, collection);
 			}
 			
 			// Add images from flats directory
-			collection = LoadDirectoryImages(FLATS_DIR, true);
+			collection = LoadDirectoryImages(FLATS_DIR, true, true);
 			AddImagesToList(images, collection);
 			
 			return images;
-		}
-		
-		#endregion
-		
-		#region ================== Sprites
-
-		// This finds and returns a sprite stream
-		public override Stream GetSpriteData(string pname)
-		{
-			string pfilename = pname.Replace('\\', '^');
-			
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			// Find in any of the wad files
-			for(int i = wads.Count - 1; i >= 0; i--)
-			{
-				Stream sprite = wads[i].GetSpriteData(pname);
-				if(sprite != null) return sprite;
-			}
-			
-			// Find in sprites directory
-			string filename = FindFirstFile(SPRITES_DIR, pfilename, true);
-			if((filename != null) && FileExists(filename))
-			{
-				return LoadFile(filename);
-			}
-			
-			// Nothing found
-			return null;
-		}
-
-		// This checks if the given sprite exists
-		public override bool GetSpriteExists(string pname)
-		{
-			string pfilename = pname.Replace('\\', '^');
-			
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-			
-			// Find in any of the wad files
-			for(int i = wads.Count - 1; i >= 0; i--)
-			{
-				if(wads[i].GetSpriteExists(pname)) return true;
-			}
-			
-			// Find in sprites directory
-			string filename = FindFirstFile(SPRITES_DIR, pfilename, true);
-			if((filename != null) && FileExists(filename))
-			{
-				return true;
-			}
-			
-			// Nothing found
-			return false;
 		}
 		
 		#endregion
@@ -405,14 +300,14 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Methods
 		
 		// This loads the images in this directory
-		private ICollection<ImageData> LoadDirectoryImages(string path, bool flats)
+		private ICollection<ImageData> LoadDirectoryImages(string path, bool flats, bool includesubdirs)
 		{
 			List<ImageData> images = new List<ImageData>();
 			string[] files;
 			string name;
 			
 			// Go for all files
-			files = GetAllFiles(path, false);
+			files = GetAllFiles(path, includesubdirs);
 			foreach(string f in files)
 			{
 				// Make the texture name from filename without extension
