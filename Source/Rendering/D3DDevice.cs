@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			else
 			{
 				postfilter = Filter.Point;
-				mipgeneratefilter = Filter.Point;
+				mipgeneratefilter = Filter.Box;
 			}
 			
 			// Initialize presentations
