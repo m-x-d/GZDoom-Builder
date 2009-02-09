@@ -1131,23 +1131,14 @@ namespace CodeImp.DoomBuilder.Data
 				
 				if(!parser.HasError)
 				{
-					// Find the decorate category
-					ThingCategory cat = null;
-					foreach(ThingCategory c in thingcategories)
-					{
-						if(c.Name == "decorate")
-						{
-							cat = c;
-							break;
-						}
-					}
-					
 					// Go for all actors in the decorate to make things or update things
 					foreach(ActorStructure actor in parser.Actors)
 					{
 						// Check if we want to add this actor
 						if(actor.DoomEdNum > 0)
 						{
+							string catname = actor.Category.ToLowerInvariant();
+							
 							// Check if we can find this thing in our existing collection
 							if(thingtypes.ContainsKey(actor.DoomEdNum))
 							{
@@ -1156,10 +1147,17 @@ namespace CodeImp.DoomBuilder.Data
 							}
 							else
 							{
-								// Make the decorate category if needed
+								// Find the category to put the actor in
+								ThingCategory cat = null;
+								foreach(ThingCategory c in thingcategories)
+								{
+									if(c.Name == catname) cat = c;
+								}
+								
+								// Make the category if needed
 								if(cat == null)
 								{
-									cat = new ThingCategory("decorate", "Decorate");
+									cat = new ThingCategory(catname, actor.Category);
 									thingcategories.Add(cat);
 								}
 								

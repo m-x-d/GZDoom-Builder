@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		private int radius;
 		private int height;
 		private string tag;
+		private string category;
 		
 		// States
 		private Dictionary<string, StateStructure> states;
@@ -76,6 +77,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		public int Radius { get { return radius; } }
 		public int Height { get { return height; } }
 		public string Tag { get { return tag; } }
+		public string Category { get { return category; } }
 		
 		#endregion
 		
@@ -89,6 +91,7 @@ namespace CodeImp.DoomBuilder.Decorate
 			states = new Dictionary<string, StateStructure>();
 			inheritclass = "actor";
 			replaceclass = null;
+			category = "Decorate";
 			games = new List<string>();
 			tag = null;
 			
@@ -304,6 +307,13 @@ namespace CodeImp.DoomBuilder.Decorate
 						if(v == "\n") break;
 						games.Add(v.ToLowerInvariant());
 					}
+				}
+				// Category property?
+				else if(token == "$category")
+				{
+					// The rest of the line is the category name
+					if(parser.SkipWhitespace(false))
+						category = parser.ReadLine();
 				}
 				
 				// Keep token
