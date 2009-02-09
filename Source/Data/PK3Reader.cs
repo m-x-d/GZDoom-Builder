@@ -100,9 +100,118 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		#endregion
+
+		#region ================== Textures
+
+		// This finds and returns a patch stream
+		public override Stream GetPatchData(string pname)
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in any of the wad files
+			// Note the backward order, because the last wad's images have priority
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				Stream data = wads[i].GetPatchData(pname);
+				if(data != null) return data;
+			}
+
+			// Find in patches directory
+			string filename = FindFirstFile(PATCHES_DIR, pname, true);
+			if((filename != null) && FileExists(filename))
+			{
+				return LoadFile(filename);
+			}
+
+			// Nothing found
+			return null;
+		}
+
+		// This finds and returns a textue stream
+		public override Stream GetTextureData(string pname)
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in any of the wad files
+			// Note the backward order, because the last wad's images have priority
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				Stream data = wads[i].GetTextureData(pname);
+				if(data != null) return data;
+			}
+
+			// Find in patches directory
+			string filename = FindFirstFile(TEXTURES_DIR, pname, true);
+			if((filename != null) && FileExists(filename))
+			{
+				return LoadFile(filename);
+			}
+
+			// Nothing found
+			return null;
+		}
+
+		#endregion
+
+		#region ================== Sprites
+
+		// This finds and returns a sprite stream
+		public override Stream GetSpriteData(string pname)
+		{
+			string pfilename = pname.Replace('\\', '^');
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in any of the wad files
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				Stream sprite = wads[i].GetSpriteData(pname);
+				if(sprite != null) return sprite;
+			}
+
+			// Find in sprites directory
+			string filename = FindFirstFile(SPRITES_DIR, pfilename, true);
+			if((filename != null) && FileExists(filename))
+			{
+				return LoadFile(filename);
+			}
+
+			// Nothing found
+			return null;
+		}
+
+		// This checks if the given sprite exists
+		public override bool GetSpriteExists(string pname)
+		{
+			string pfilename = pname.Replace('\\', '^');
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in any of the wad files
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				if(wads[i].GetSpriteExists(pname)) return true;
+			}
+
+			// Find in sprites directory
+			string filename = FindFirstFile(SPRITES_DIR, pfilename, true);
+			if((filename != null) && FileExists(filename))
+			{
+				return true;
+			}
+
+			// Nothing found
+			return false;
+		}
+
+		#endregion
 		
 		#region ================== Methods
-		
+
 		// This creates an image
 		protected override ImageData CreateImage(string name, string filename, bool flat)
 		{
