@@ -244,16 +244,18 @@ namespace CodeImp.DoomBuilder.Decorate
 				// Check if this is comment
 				if(c == '/')
 				{
+					if(datastream.Position == datastream.Length) return false;
 					char c2 = (char)datareader.ReadByte();
 					if(c2 == '/')
 					{
 						// Check if not a special comment with a token
+						if(datastream.Position == datastream.Length) return false;
 						char c3 = (char)datareader.ReadByte();
 						if(c3 != '$')
 						{
 							// Skip entire line
-							char c4;
-							do { c4 = (char)datareader.ReadByte(); } while(c4 != '\n');
+							char c4 = ' ';
+							while((c4 != '\n') && (datastream.Position < datastream.Length)) { c4 = (char)datareader.ReadByte(); }
 							c = ' ';
 						}
 						else
