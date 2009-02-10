@@ -19,6 +19,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private const float ANGLE_FROM_MOUSE = 0.0001f;
 		public const float MAX_ANGLEZ_LOW = 100f / Angle2D.PIDEG;
 		public const float MAX_ANGLEZ_HIGH = (360f - 100f) / Angle2D.PIDEG;
+		public const float THING_Z_OFFSET = 41.0f;
 		
 		#endregion
 
@@ -100,7 +101,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public virtual bool PositionAtThing()
 		{
 			Thing modething = null;
-
+			Vector3D delta;
+			
 			// Find a 3D Mode thing
 			foreach(Thing t in General.Map.Map.Things)
 				if(t.Type == General.Map.Config.Start3DModeThingType) modething = t;
@@ -114,9 +116,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 					z = modething.Position.z + (float)modething.Sector.FloorHeight;
 				
 				// Position camera here
-				position = new Vector3D(modething.Position.x, modething.Position.y, z + 41.0f);
-				anglexy = modething.Angle + Angle2D.PI;
-				anglez = Angle2D.PI;
+				Vector3D wantedposition = new Vector3D(modething.Position.x, modething.Position.y, z + THING_Z_OFFSET);
+				delta = position - wantedposition;
+				if(delta.GetLength() > 1.0f) position = wantedposition;
+				
+				// Change angle
+				float wantedanglexy = modething.Angle + Angle2D.PI;
+				if(anglexy != wantedanglexy)
+				{
+					anglexy = wantedanglexy;
+					anglez = Angle2D.PI;
+				}
 				return true;
 			}
 			else
@@ -143,7 +153,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					z = (int)position.z - sector.FloorHeight;
 
 				// Position the thing to match camera
-				modething.Move((int)position.x, (int)position.y, z);
+				modething.Move((int)position.x, (int)position.y, z - THING_Z_OFFSET);
 				modething.Rotate(anglexy - Angle2D.PI);
 				return true;
 			}
