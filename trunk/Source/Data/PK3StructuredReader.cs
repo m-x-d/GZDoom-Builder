@@ -135,7 +135,16 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(WADReader wr in wads)
 			{
 				Playpal wadpalette = wr.LoadPalette();
-				if(wadpalette != null) palette = wadpalette;
+				if(wadpalette != null) return wadpalette;
+			}
+			
+			// Find in root directory
+			string foundfile = FindFirstFile("PLAYPAL", false);
+			if((foundfile != null) && FileExists(foundfile))
+			{
+				MemoryStream stream = LoadFile(foundfile);
+				palette = new Playpal(stream);
+				stream.Dispose();
 			}
 			
 			// Done

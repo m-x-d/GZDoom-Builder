@@ -84,13 +84,20 @@ namespace CodeImp.DoomBuilder.Data
 				Stream data = wads[i].GetPatchData(pname);
 				if(data != null) return data;
 			}
-
-			// Find in patches directory
-			string path = Path.Combine(PATCHES_DIR, Path.GetDirectoryName(pname));
-			string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-			if((filename != null) && FileExists(filename))
+			
+			try
 			{
-				return LoadFile(filename);
+				// Find in patches directory
+				string path = Path.Combine(PATCHES_DIR, Path.GetDirectoryName(pname));
+				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+				if((filename != null) && FileExists(filename))
+				{
+					return LoadFile(filename);
+				}
+			}
+			catch(Exception e)
+			{
+				General.WriteLogLine("ERROR: " + e.GetType().Name + " while loading patch '" + pname + "' from directory: " + e.Message);
 			}
 
 			// Nothing found
@@ -110,13 +117,20 @@ namespace CodeImp.DoomBuilder.Data
 				Stream data = wads[i].GetTextureData(pname);
 				if(data != null) return data;
 			}
-
-			// Find in patches directory
-			string path = Path.Combine(TEXTURES_DIR, Path.GetDirectoryName(pname));
-			string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-			if((filename != null) && FileExists(filename))
+			
+			try
 			{
-				return LoadFile(filename);
+				// Find in patches directory
+				string path = Path.Combine(TEXTURES_DIR, Path.GetDirectoryName(pname));
+				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+				if((filename != null) && FileExists(filename))
+				{
+					return LoadFile(filename);
+				}
+			}
+			catch(Exception e)
+			{
+				General.WriteLogLine("ERROR: " + e.GetType().Name + " while loading texture '" + pname + "' from directory: " + e.Message);
 			}
 
 			// Nothing found
@@ -139,15 +153,22 @@ namespace CodeImp.DoomBuilder.Data
 				Stream sprite = wads[i].GetSpriteData(pname);
 				if(sprite != null) return sprite;
 			}
-
-			// Find in sprites directory
-			string path = Path.Combine(SPRITES_DIR, Path.GetDirectoryName(pname));
-			string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-			if((filename != null) && FileExists(filename))
+			
+			try
 			{
-				return LoadFile(filename);
+				// Find in sprites directory
+				string path = Path.Combine(SPRITES_DIR, Path.GetDirectoryName(pname));
+				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+				if((filename != null) && FileExists(filename))
+				{
+					return LoadFile(filename);
+				}
 			}
-
+			catch(Exception e)
+			{
+				General.WriteLogLine("ERROR: " + e.GetType().Name + " while loading sprite '" + pname + "' from directory: " + e.Message);
+			}
+			
 			// Nothing found
 			return null;
 		}
@@ -165,13 +186,20 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Find in sprites directory
-			string path = Path.Combine(SPRITES_DIR, Path.GetDirectoryName(pname));
-			string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-			if((filename != null) && FileExists(filename))
+			try
 			{
-				return true;
+				string path = Path.Combine(SPRITES_DIR, Path.GetDirectoryName(pname));
+				string filename = FindFirstFile(path, Path.GetFileName(pname), true);
+				if((filename != null) && FileExists(filename))
+				{
+					return true;
+				}
 			}
-
+			catch(Exception e)
+			{
+				General.WriteLogLine("ERROR: " + e.GetType().Name + " while checking sprite '" + pname + "' existance in directory: " + e.Message);
+			}
+			
 			// Nothing found
 			return false;
 		}
