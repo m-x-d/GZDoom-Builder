@@ -139,7 +139,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
-
+			
+			General.Map.VisualCamera.PositionAtThing();
+			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 			
