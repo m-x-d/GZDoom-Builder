@@ -121,10 +121,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Paste texture
 		public override void OnPasteTexture()
 		{
-			if(mode.CopiedFlat != null)
+			if(BuilderPlug.Me.CopiedFlat != null)
 			{
-				General.Map.UndoRedo.CreateUndo("Paste floor " + mode.CopiedFlat);
-				SetTexture(mode.CopiedFlat);
+				General.Map.UndoRedo.CreateUndo("Paste floor " + BuilderPlug.Me.CopiedFlat);
+				SetTexture(BuilderPlug.Me.CopiedFlat);
 				this.Setup();
 			}
 		}

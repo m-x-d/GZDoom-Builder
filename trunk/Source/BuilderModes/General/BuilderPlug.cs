@@ -64,6 +64,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int changeheightbysidedef;		// 0 = nothing, 1 = change ceiling, 2 = change floor
 		private bool editnewthing;
 		private bool editnewsector;
+		private string copiedtexture;
+		private string copiedflat;
 		
 		#endregion
 
@@ -84,6 +86,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int ChangeHeightBySidedef { get { return changeheightbysidedef; } }
 		public bool EditNewThing { get { return editnewthing; } }
 		public bool EditNewSector { get { return editnewsector; } }
+		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
+		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
 		
 		#endregion
 

@@ -66,10 +66,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private double lastpicktime;
 		private bool locktarget;
 		
-		// Texture copying
-		private string copiedtexture;
-		private string copiedflat;
-		
 		// Gravity vector
 		private Vector3D gravity;
 		
@@ -78,8 +74,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		public IRenderer3D Renderer { get { return renderer; } }
-		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
-		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
 
 		#endregion
 		
