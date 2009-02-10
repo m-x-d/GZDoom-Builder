@@ -164,8 +164,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy texture
 		public virtual void OnCopyTexture()
 		{
-			mode.CopiedFlat = GetTextureName();
-			if(General.Map.Config.MixTexturesFlats) mode.CopiedTexture = GetTextureName();
+			BuilderPlug.Me.CopiedFlat = GetTextureName();
+			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedTexture = GetTextureName();
 		}
 		
 		public virtual void OnPasteTexture() { }

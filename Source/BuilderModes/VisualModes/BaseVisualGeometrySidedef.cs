@@ -308,18 +308,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Paste texture
 		public virtual void OnPasteTexture()
 		{
-			if(mode.CopiedTexture != null)
+			if(BuilderPlug.Me.CopiedTexture != null)
 			{
-				General.Map.UndoRedo.CreateUndo("Paste texture " + mode.CopiedTexture);
-				SetTexture(mode.CopiedTexture);
+				General.Map.UndoRedo.CreateUndo("Paste texture " + BuilderPlug.Me.CopiedTexture);
+				SetTexture(BuilderPlug.Me.CopiedTexture);
 			}
 		}
 
 		// Copy texture
 		public virtual void OnCopyTexture()
 		{
-			mode.CopiedTexture = GetTextureName();
-			if(General.Map.Config.MixTexturesFlats) mode.CopiedFlat = GetTextureName();
+			BuilderPlug.Me.CopiedTexture = GetTextureName();
+			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedFlat = GetTextureName();
 		}
 
 		// Return texture name
