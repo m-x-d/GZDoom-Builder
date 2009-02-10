@@ -1284,7 +1284,7 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Create output structure and write to file
 			string data = OutputConfiguration(newline, whitespace);
-			byte[] baData= Encoding.ASCII.GetBytes(data);
+			byte[] baData= Encoding.UTF8.GetBytes(data);
 			fstream.Write(baData, 0, baData.Length);
 			fstream.Flush();
 			fstream.Close();
@@ -1322,7 +1322,7 @@ namespace CodeImp.DoomBuilder.IO
 				fstream.Close();
 				
 				// Convert byte array to string
-				string data = Encoding.ASCII.GetString(fbuffer);
+				string data = Encoding.UTF8.GetString(fbuffer);
 				
 				// Load the configuration from this data
 				return InputConfiguration(data, sorted);
