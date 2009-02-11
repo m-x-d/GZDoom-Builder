@@ -121,6 +121,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.IsViewEOL = false;
 			scriptedit.IsVScrollBar = true;
 			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
+			scriptedit.TabWidth = 4;
 			
 			// Symbol margin
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
@@ -229,6 +230,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.CaretPeriod = SystemInformation.CaretBlinkTime;
 			scriptedit.CaretFore = General.Colors.ScriptBackground.Inverse().ToColorRef();
 			scriptedit.StyleBits = 7;
+			scriptedit.TabWidth = 4;
 			
 			// This applies the default style to all styles
 			scriptedit.StyleClearAll();
@@ -550,7 +552,7 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptpanel.Height = this.ClientSize.Height;
 			}
 		}
-
+		
 		// Key pressed down
 		private void scriptedit_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -614,6 +616,21 @@ namespace CodeImp.DoomBuilder.Controls
 			bool showcalltip = false;
 			int highlightstart = 0;
 			int highlightend = 0;
+			
+			// Enter pressed?
+			if((e.KeyCode == Keys.Enter) && (e.Modifiers == Keys.None))
+			{
+				// Get the current line index and heck if its not the first line
+				int curline = scriptedit.LineFromPosition(scriptedit.CurrentPos);
+				if(curline > 0)
+				{
+					// Apply identation of the previous line to this line
+					int ident = scriptedit.GetLineIndentation(curline - 1);
+					int tabs = ident / scriptedit.TabWidth;
+					scriptedit.SetLineIndentation(curline, ident);
+					scriptedit.SetSel(scriptedit.SelectionStart + tabs, scriptedit.SelectionStart + tabs);
+				}
+			}
 			
 			UpdatePositionInfo();
 			
