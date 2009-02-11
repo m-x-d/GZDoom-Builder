@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder.Decorate
 		{
 			string token = "";
 			bool quotedstring = false;
-
+			
 			// Return null when the end of the stream has been reached
 			if(datastream.Position == datastream.Length) return null;
 			
@@ -324,13 +324,42 @@ namespace CodeImp.DoomBuilder.Decorate
 				}
 				else
 				{
-					// Quote to end the string?
-					if(quotedstring && (c == '"')) quotedstring = false;
-					
-					// First character is a quote?
-					if((token.Length == 0) && (c == '"')) quotedstring = true;
-					
-					token += c;
+					// Quote?
+					if(c == '"')
+					{
+						// Quote to end the string?
+						if(quotedstring) quotedstring = false;
+						
+						// First character is a quote?
+						if(token.Length == 0) quotedstring = true;
+						
+						token += c;
+					}
+					// Potential comment?
+					else if(c == '/')
+					{
+						// Check the next byte
+						if(datastream.Position == datastream.Length) return token;
+						char c2 = (char)datareader.ReadByte();
+						if((c2 == '/') || (c2 == '*'))
+						{
+							// This is a comment start, so the token ends here
+							// Go two characters back so we can read this comment again
+							datastream.Seek(-2, SeekOrigin.Current);
+							break;
+						}
+						else
+						{
+							// Not a comment
+							// Go one character back so we can read this char again
+							datastream.Seek(-1, SeekOrigin.Current);
+							token += c;
+						}
+					}
+					else
+					{
+						token += c;
+					}
 				}
 				
 				// Next character
