@@ -93,6 +93,8 @@ namespace CodeImp.DoomBuilder.Decorate
 			replaceclass = null;
 			category = "Decorate";
 			games = new List<string>();
+			radius = 10;
+			height = 20;
 			tag = null;
 			
 			// First next token is the class name
