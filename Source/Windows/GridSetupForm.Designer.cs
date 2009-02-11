@@ -300,7 +300,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// browsefile
 			// 
-			this.browsefile.Filter = "All supported images|*.bmp;*.jpg;*.png|All Files|*.*";
+			this.browsefile.Filter = "All supported images|*.bmp;*.gif;*.png|All Files|*.*";
 			this.browsefile.RestoreDirectory = true;
 			this.browsefile.Title = "Select Background Image File";
 			// 
