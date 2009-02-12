@@ -666,6 +666,7 @@
     <Compile Include="Data\PK3FileImage.cs" />
     <Compile Include="Data\PK3StructuredReader.cs" />
     <Compile Include="ZDoom\ActorStructure.cs" />
+    <Compile Include="ZDoom\ZDTextParser.cs" />
     <Compile Include="ZDoom\DecorateParser.cs" />
     <Compile Include="ZDoom\StateStructure.cs" />
     <Compile Include="Editing\EditingManager.cs" />
