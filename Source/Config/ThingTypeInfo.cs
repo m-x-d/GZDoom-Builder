@@ -26,7 +26,7 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Decorate;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 

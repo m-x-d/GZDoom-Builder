@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Config;
 using System.Threading;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.Decorate;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 
