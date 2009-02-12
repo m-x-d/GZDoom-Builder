@@ -29,7 +29,7 @@ using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Decorate
+namespace CodeImp.DoomBuilder.ZDoom
 {
 	public sealed class DecorateParser
 	{
