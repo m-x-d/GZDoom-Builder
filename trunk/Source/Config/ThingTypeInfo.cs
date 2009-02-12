@@ -211,7 +211,8 @@ namespace CodeImp.DoomBuilder.Config
 				title = actor.ClassName;
 			
 			// Set sprite
-			sprite = actor.FindSuitableSprite();
+			string suitablesprite = actor.FindSuitableSprite();
+			if(!string.IsNullOrEmpty(suitablesprite)) sprite = suitablesprite;
 			
 			if(this.sprite.Length <= 8)
 				this.spritelongname = Lump.MakeLongName(this.sprite);
@@ -219,15 +220,16 @@ namespace CodeImp.DoomBuilder.Config
 				this.spritelongname = long.MaxValue;
 			
 			// Size
-			width = actor.Radius;
-			height = actor.Height;
+			if(actor.RadiusFound) width = actor.Radius;
+			if(actor.HeightFound) height = actor.Height;
 			
 			// Safety
 			if(this.width < 8f) this.width = 8f;
 			
 			// Options
-			hangs = actor.GetFlagValue("spawnceiling", false);
-			blocking = actor.GetFlagValue("solid", false) ? 2 : 0;
+			hangs = actor.GetFlagValue("spawnceiling", hangs);
+			int blockvalue = (blocking > 0) ? blocking : 2;
+			blocking = actor.GetFlagValue("solid", (blocking != 0)) ? blockvalue : 0;
 		}
 
 		// This is used for sorting

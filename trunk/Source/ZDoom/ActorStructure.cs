@@ -58,6 +58,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// nothing that tells you if it is a value or another property)
 		private int radius;
 		private int height;
+		private bool radiusfound;
+		private bool heightfound;
 		private string tag;
 		private string category;
 		
@@ -76,6 +78,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public int DoomEdNum { get { return doomednum; } }
 		public int Radius { get { return radius; } }
 		public int Height { get { return height; } }
+		public bool RadiusFound { get { return radiusfound; } }
+		public bool HeightFound { get { return heightfound; } }
 		public string Tag { get { return tag; } }
 		public string Category { get { return category; } }
 		
@@ -275,8 +279,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						// Set the property
 						switch(token)
 						{
-							case "radius": radius = intvalue; break;
-							case "height": height = intvalue; break;
+							case "radius": radius = intvalue; radiusfound = true;  break;
+							case "height": height = intvalue; heightfound = true; break;
 							case "tag": tag = value; break;
 						}
 					}
@@ -335,6 +339,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 			this.radius = baseactor.radius;
 			this.games = new List<string>(baseactor.games);
 			this.states = new Dictionary<string, StateStructure>(baseactor.states);
+		}
+
+		// This returns the status of a flag
+		public bool HasFlagValue(string flag)
+		{
+			return flags.ContainsKey(flag);
 		}
 		
 		// This returns the status of a flag
