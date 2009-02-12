@@ -1148,10 +1148,18 @@ namespace CodeImp.DoomBuilder.Data
 							else
 							{
 								// Find the category to put the actor in
+								// First search by Title, then search by Name
 								ThingCategory cat = null;
 								foreach(ThingCategory c in thingcategories)
 								{
-									if(c.Name == catname) cat = c;
+									if(c.Title.ToLowerInvariant() == catname) cat = c;
+								}
+								if(cat == null)
+								{
+									foreach(ThingCategory c in thingcategories)
+									{
+										if(c.Name.ToLowerInvariant() == catname) cat = c;
+									}
 								}
 								
 								// Make the category if needed
