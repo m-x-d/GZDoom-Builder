@@ -160,6 +160,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			List<ImageData> images = new List<ImageData>();
 			ICollection<ImageData> collection;
+			List<ImageData> imgset = new List<ImageData>();
 			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -184,8 +185,21 @@ namespace CodeImp.DoomBuilder.Data
 			collection = LoadDirectoryImages(TEXTURES_DIR, false, true);
 			AddImagesToList(images, collection);
 
+			// Load TEXTURES lump file
+			imgset.Clear();
+			string texturesfile = FindFirstFile("TEXTURES", false);
+			if((texturesfile != null) && FileExists(texturesfile))
+			{
+				MemoryStream filedata = LoadFile(texturesfile);
+				WADReader.LoadHighresTextures(filedata, texturesfile, ref imgset);
+				filedata.Dispose();
+			}
+
+			// Add images from TEXTURES lump files
+			AddImagesToList(images, imgset);
+			
 			// Load TEXTURE1 lump file
-			List<ImageData> imgset = new List<ImageData>();
+			imgset.Clear();
 			string texture1file = FindFirstFile("TEXTURE1", false);
 			if((texture1file != null) && FileExists(texture1file))
 			{
@@ -205,7 +219,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Add images from TEXTURE1 and TEXTURE2 lump files
 			AddImagesToList(images, imgset);
-			
+
 			return images;
 		}
 		
@@ -238,7 +252,7 @@ namespace CodeImp.DoomBuilder.Data
 			
 			return null;
 		}
-
+		
 		#endregion
 
 		#region ================== Flats
