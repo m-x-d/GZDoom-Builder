@@ -66,6 +66,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Constructor
 		public DecorateParser()
 		{
+			// Syntax
+			whitespace = "\n \t\r";
+			specialtokens = ":{}+-\n;";
+			
 			// Initialize
 			actors = new Dictionary<string, ActorStructure>();
 			archivedactors = new Dictionary<string, ActorStructure>();

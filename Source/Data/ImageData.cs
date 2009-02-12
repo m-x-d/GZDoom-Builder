@@ -300,15 +300,20 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					width = bitmap.Size.Width;
 					height = bitmap.Size.Height;
-					if((General.Map != null) && (General.Map.Config != null))
+
+					// Do we still have to set a scale?
+					if((scaledwidth == 0.0f) && (scaledheight == 0.0f))
 					{
-						scaledwidth = (float)bitmap.Size.Width * General.Map.Config.DefaultTextureScale;
-						scaledheight = (float)bitmap.Size.Height * General.Map.Config.DefaultTextureScale;
-					}
-					else
-					{
-						scaledwidth = (float)bitmap.Size.Width;
-						scaledheight = (float)bitmap.Size.Height;
+						if((General.Map != null) && (General.Map.Config != null))
+						{
+							scaledwidth = (float)bitmap.Size.Width * General.Map.Config.DefaultTextureScale;
+							scaledheight = (float)bitmap.Size.Height * General.Map.Config.DefaultTextureScale;
+						}
+						else
+						{
+							scaledwidth = (float)bitmap.Size.Width;
+							scaledheight = (float)bitmap.Size.Height;
+						}
 					}
 				}
 				
