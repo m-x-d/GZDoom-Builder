@@ -65,6 +65,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backmidtex = new System.Windows.Forms.Panel();
 			this.backhighname = new System.Windows.Forms.Label();
 			this.backhightex = new System.Windows.Forms.Panel();
+			this.unpegged = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -83,10 +85,39 @@ namespace CodeImp.DoomBuilder.Controls
 			label1.TabIndex = 0;
 			label1.Text = "Action:";
 			// 
+			// label4
+			// 
+			label4.AutoSize = true;
+			label4.Location = new System.Drawing.Point(24, 77);
+			label4.Name = "label4";
+			label4.Size = new System.Drawing.Size(28, 14);
+			label4.TabIndex = 4;
+			label4.Text = "Tag:";
+			// 
+			// label3
+			// 
+			label3.AutoSize = true;
+			label3.Location = new System.Drawing.Point(14, 58);
+			label3.Name = "label3";
+			label3.Size = new System.Drawing.Size(38, 14);
+			label3.TabIndex = 3;
+			label3.Text = "Angle:";
+			// 
+			// label2
+			// 
+			label2.AutoSize = true;
+			label2.Location = new System.Drawing.Point(9, 39);
+			label2.Name = "label2";
+			label2.Size = new System.Drawing.Size(43, 14);
+			label2.TabIndex = 2;
+			label2.Text = "Length:";
+			// 
 			// infopanel
 			// 
 			this.infopanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.infopanel.Controls.Add(this.unpegged);
+			this.infopanel.Controls.Add(this.label6);
 			this.infopanel.Controls.Add(this.arg5);
 			this.infopanel.Controls.Add(this.arglbl5);
 			this.infopanel.Controls.Add(this.arglbl4);
@@ -124,6 +155,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arg5.Size = new System.Drawing.Size(83, 14);
 			this.arg5.TabIndex = 27;
 			this.arg5.Text = "Arg 1:";
+			this.arg5.UseMnemonic = false;
 			// 
 			// arglbl5
 			// 
@@ -135,6 +167,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arglbl5.TabIndex = 22;
 			this.arglbl5.Text = "Arg 1:";
 			this.arglbl5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arglbl5.UseMnemonic = false;
 			// 
 			// arglbl4
 			// 
@@ -146,6 +179,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arglbl4.TabIndex = 21;
 			this.arglbl4.Text = "Arg 1:";
 			this.arglbl4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arglbl4.UseMnemonic = false;
 			// 
 			// arg4
 			// 
@@ -155,6 +189,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arg4.Size = new System.Drawing.Size(83, 14);
 			this.arg4.TabIndex = 26;
 			this.arg4.Text = "Arg 1:";
+			this.arg4.UseMnemonic = false;
 			// 
 			// arglbl3
 			// 
@@ -166,6 +201,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arglbl3.TabIndex = 20;
 			this.arglbl3.Text = "Arg 1:";
 			this.arglbl3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arglbl3.UseMnemonic = false;
 			// 
 			// arglbl2
 			// 
@@ -177,6 +213,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arglbl2.TabIndex = 19;
 			this.arglbl2.Text = "Arg 1:";
 			this.arglbl2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arglbl2.UseMnemonic = false;
 			// 
 			// arg3
 			// 
@@ -186,6 +223,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arg3.Size = new System.Drawing.Size(83, 14);
 			this.arg3.TabIndex = 25;
 			this.arg3.Text = "Arg 1:";
+			this.arg3.UseMnemonic = false;
 			// 
 			// arglbl1
 			// 
@@ -197,6 +235,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arglbl1.TabIndex = 18;
 			this.arglbl1.Text = "Arg 1:";
 			this.arglbl1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arglbl1.UseMnemonic = false;
 			// 
 			// arg2
 			// 
@@ -206,6 +245,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arg2.Size = new System.Drawing.Size(83, 14);
 			this.arg2.TabIndex = 24;
 			this.arg2.Text = "Arg 1:";
+			this.arg2.UseMnemonic = false;
 			// 
 			// backoffset
 			// 
@@ -224,6 +264,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.arg1.Size = new System.Drawing.Size(83, 14);
 			this.arg1.TabIndex = 23;
 			this.arg1.Text = "Arg 1:";
+			this.arg1.UseMnemonic = false;
 			// 
 			// backoffsetlabel
 			// 
@@ -279,33 +320,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.length.TabIndex = 5;
 			this.length.Text = "1024";
 			// 
-			// label4
-			// 
-			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(24, 77);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(28, 14);
-			label4.TabIndex = 4;
-			label4.Text = "Tag:";
-			// 
-			// label3
-			// 
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(14, 58);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(38, 14);
-			label3.TabIndex = 3;
-			label3.Text = "Angle:";
-			// 
-			// label2
-			// 
-			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(9, 39);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(43, 14);
-			label2.TabIndex = 2;
-			label2.Text = "Length:";
-			// 
 			// action
 			// 
 			this.action.AutoEllipsis = true;
@@ -315,6 +329,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.action.Size = new System.Drawing.Size(205, 14);
 			this.action.TabIndex = 1;
 			this.action.Text = "0 - Big Door that goes Wobbly Wobbly";
+			this.action.UseMnemonic = false;
 			// 
 			// frontpanel
 			// 
@@ -341,6 +356,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontlowname.TabIndex = 5;
 			this.frontlowname.Text = "BIGDOOR6";
 			this.frontlowname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.frontlowname.UseMnemonic = false;
 			// 
 			// frontlowtex
 			// 
@@ -360,6 +376,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontmidname.TabIndex = 3;
 			this.frontmidname.Text = "BIGDOOR6";
 			this.frontmidname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.frontmidname.UseMnemonic = false;
 			// 
 			// frontmidtex
 			// 
@@ -379,6 +396,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fronthighname.TabIndex = 1;
 			this.fronthighname.Text = "BIGDOOR6";
 			this.fronthighname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.fronthighname.UseMnemonic = false;
 			// 
 			// fronthightex
 			// 
@@ -415,6 +433,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backlowname.TabIndex = 5;
 			this.backlowname.Text = "BIGDOOR6";
 			this.backlowname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.backlowname.UseMnemonic = false;
 			// 
 			// backlowtex
 			// 
@@ -434,6 +453,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backmidname.TabIndex = 3;
 			this.backmidname.Text = "BIGDOOR6";
 			this.backmidname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.backmidname.UseMnemonic = false;
 			// 
 			// backmidtex
 			// 
@@ -453,6 +473,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backhighname.TabIndex = 1;
 			this.backhighname.Text = "BIGDOOR6";
 			this.backhighname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.backhighname.UseMnemonic = false;
 			// 
 			// backhightex
 			// 
@@ -463,6 +484,25 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backhightex.Name = "backhightex";
 			this.backhightex.Size = new System.Drawing.Size(68, 60);
 			this.backhightex.TabIndex = 0;
+			// 
+			// unpegged
+			// 
+			this.unpegged.AutoSize = true;
+			this.unpegged.Location = new System.Drawing.Point(180, 39);
+			this.unpegged.Name = "unpegged";
+			this.unpegged.Size = new System.Drawing.Size(32, 14);
+			this.unpegged.TabIndex = 29;
+			this.unpegged.Text = "None";
+			this.unpegged.UseMnemonic = false;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(118, 39);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(59, 14);
+			this.label6.TabIndex = 28;
+			this.label6.Text = "Unpegged:";
 			// 
 			// LinedefInfoPanel
 			// 
@@ -519,6 +559,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label arg2;
 		private System.Windows.Forms.Label arg1;
 		private System.Windows.Forms.GroupBox infopanel;
+		private System.Windows.Forms.Label unpegged;
+		private System.Windows.Forms.Label label6;
 
 	}
 }

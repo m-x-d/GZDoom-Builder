@@ -56,7 +56,9 @@ namespace CodeImp.DoomBuilder.Controls
 			string actioninfo = "";
 			LinedefActionInfo act = null;
 			TypeHandler th;
-
+			bool upperunpegged, lowerunpegged;
+			string peggedness;
+			
 			// Show/hide stuff depending on format
 			if(General.Map.FormatInterface.GetType() == typeof(DoomMapSetIO))
 			{
@@ -102,12 +104,25 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 				actioninfo = l.Action.ToString() + " - Unknown";
 			
+			// Determine peggedness
+			upperunpegged = l.Flags[General.Map.Config.UpperUnpeggedFlag];
+			lowerunpegged = l.Flags[General.Map.Config.LowerUnpeggedFlag];
+			if(upperunpegged && lowerunpegged)
+				peggedness = "Upper & Lower";
+			else if(upperunpegged)
+				peggedness = "Upper";
+			else if(lowerunpegged)
+				peggedness = "Lower";
+			else
+				peggedness = "None";
+			
 			// Linedef info
 			action.Text = actioninfo;
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg.ToString() + "\u00B0";
 			tag.Text = l.Tag.ToString();
-
+			unpegged.Text = peggedness;
+			
 			// Arguments
 			if(act != null)
 			{
