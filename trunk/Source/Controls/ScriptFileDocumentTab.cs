@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.Controls
 			try
 			{
 				// Write the file
-				File.WriteAllText(filepathname, editor.Text);
+				File.WriteAllBytes(filepathname, editor.GetText());
 			}
 			catch(Exception e)
 			{
@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.Controls
 			try
 			{
 				// Read the file
-				editor.Text = File.ReadAllText(filepathname);
+				editor.SetText(File.ReadAllBytes(filepathname));
 			}
 			catch(Exception e)
 			{

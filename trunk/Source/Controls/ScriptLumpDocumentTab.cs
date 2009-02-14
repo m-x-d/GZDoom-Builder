@@ -82,9 +82,7 @@ namespace CodeImp.DoomBuilder.Controls
 			MemoryStream stream = General.Map.GetLumpData(this.lumpname);
 			if(stream != null)
 			{
-				StreamReader reader = new StreamReader(stream);
-				stream.Seek(0, SeekOrigin.Begin);
-				editor.Text = reader.ReadToEnd();
+				editor.SetText(stream.ToArray());
 				editor.ClearUndoRedo();
 			}
 			
@@ -122,8 +120,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public override bool Save()
 		{
 			// Store the lump data
-			byte[] data = Encoding.ASCII.GetBytes(editor.Text);
-			MemoryStream stream = new MemoryStream(data);
+			MemoryStream stream = new MemoryStream(editor.GetText());
 			General.Map.SetLumpData(lumpname, stream);
 			editor.ClearUndoRedo();
 			return true;

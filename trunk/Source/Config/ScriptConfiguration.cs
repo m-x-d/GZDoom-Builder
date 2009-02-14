@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Editor settings
 		private string description;
+		private int codepage;
 		private string[] extensions;
 		private bool casesensitive;
 		private int insertcase;
@@ -79,6 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Editor settings
 		public string Description { get { return description; } }
+		public int CodePage { get { return codepage; } }
 		public string[] Extensions { get { return extensions; } }
 		public bool CaseSensitive { get { return casesensitive; } }
 		public int InsertCase { get { return insertcase; } }
@@ -112,6 +114,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Settings
 			lexer = 1;
 			casesensitive = false;
+			codepage = 65001;
 			parameters = "";
 			resultlump = "";
 			insertcase = 0;
@@ -141,6 +144,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Read settings
 			description = cfg.ReadSetting("description", "Untitled script");
+			codepage = cfg.ReadSetting("codepage", 0);
 			extensionsstring = cfg.ReadSetting("extensions", "");
 			compilername = cfg.ReadSetting("compiler", "");
 			parameters = cfg.ReadSetting("parameters", "");
