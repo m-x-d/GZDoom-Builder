@@ -67,7 +67,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Properties
 		
-		public string Text { get { return scriptedit.Text; } set { scriptedit.Text = value; } }
 		public bool IsChanged { get { return scriptedit.CanUndo; } }
 		
 		#endregion
@@ -234,7 +233,10 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// This applies the default style to all styles
 			scriptedit.StyleClearAll();
-			
+
+			// Set the code page to use
+			scriptedit.CodePage = scriptconfig.CodePage;
+
 			// Set the default to something normal (this is used by the autocomplete list)
 			scriptedit.StyleSetFont(DEFAULT_STYLE, this.Font.Name);
 			scriptedit.StyleSetBold(DEFAULT_STYLE, this.Font.Bold);
@@ -530,7 +532,17 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			scriptedit.GrabFocus();
 		}
-		
+
+		public byte[] GetText()
+		{
+			return scriptedit.GetText(scriptedit.TextSize);
+		}
+
+		public void SetText(byte[] text)
+		{
+			scriptedit.SetText(text);
+		}
+
 		#endregion
 		
 		#region ================== Events
