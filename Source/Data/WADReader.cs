@@ -26,6 +26,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.ZDoom;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -213,6 +214,15 @@ namespace CodeImp.DoomBuilder.Data
 				LoadTexturesRange(range.start, range.end, ref images, pnames);
 			}
 
+			// Load TEXTURES lump file
+			lump = file.FindLump("TEXTURES");
+			if(lump != null)
+			{
+				MemoryStream filedata = new MemoryStream(lump.Stream.ReadAllBytes());
+				WADReader.LoadHighresTextures(filedata, "TEXTURES", ref images, null, null);
+				filedata.Dispose();
+			}
+
 			// Return result
 			return images;
 		}
@@ -239,31 +249,18 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads the texture definitions from a TEXTURES lump
-		public static void LoadHighresTextures(Stream stream, string filename, ref List<ImageData> images)
+		public static void LoadHighresTextures(Stream stream, string filename, ref List<ImageData> images, Dictionary<long, ImageData> textures, Dictionary<long, ImageData> flats)
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
 			parser.Parse(stream, filename);
 
-			// Determine default scale
-			float defaultscale = General.Map.Config.DefaultTextureScale;
-			
 			// Make the textures
 			foreach(TextureStructure t in parser.Textures)
 			{
-				float scalex, scaley;
-				if(t.XScale == 0.0f) scalex = defaultscale; else scalex = 1f / t.XScale;
-				if(t.YScale == 0.0f) scaley = defaultscale; else scaley = 1f / t.YScale;
-				TextureImage image = new TextureImage(t.Name.ToUpperInvariant(), t.Width, t.Height, scalex, scaley);
-
-				// Add patches
-				foreach(PatchStructure p in t.Patches)
-				{
-					image.AddPatch(new TexturePatch(p.Name.ToUpperInvariant(), p.OffsetX, p.OffsetY));
-				}
-
 				// Add the texture
-				images.Add(image);
+				ImageData img = t.MakeImage(textures, flats);
+				images.Add(img);
 			}
 		}
 		

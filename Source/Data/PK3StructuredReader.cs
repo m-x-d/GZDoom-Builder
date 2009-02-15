@@ -158,7 +158,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		public override ICollection<ImageData> LoadTextures(PatchNames pnames)
 		{
-			List<ImageData> images = new List<ImageData>();
+			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
 			ICollection<ImageData> collection;
 			List<ImageData> imgset = new List<ImageData>();
 			
@@ -184,19 +184,6 @@ namespace CodeImp.DoomBuilder.Data
 			// Add images from texture directory
 			collection = LoadDirectoryImages(TEXTURES_DIR, false, true);
 			AddImagesToList(images, collection);
-
-			// Load TEXTURES lump file
-			imgset.Clear();
-			string texturesfile = FindFirstFile("TEXTURES", false);
-			if((texturesfile != null) && FileExists(texturesfile))
-			{
-				MemoryStream filedata = LoadFile(texturesfile);
-				WADReader.LoadHighresTextures(filedata, texturesfile, ref imgset);
-				filedata.Dispose();
-			}
-
-			// Add images from TEXTURES lump files
-			AddImagesToList(images, imgset);
 			
 			// Load TEXTURE1 lump file
 			imgset.Clear();
@@ -220,7 +207,20 @@ namespace CodeImp.DoomBuilder.Data
 			// Add images from TEXTURE1 and TEXTURE2 lump files
 			AddImagesToList(images, imgset);
 
-			return images;
+			// Load TEXTURES lump file
+			imgset.Clear();
+			string texturesfile = FindFirstFile("TEXTURES", false);
+			if((texturesfile != null) && FileExists(texturesfile))
+			{
+				MemoryStream filedata = LoadFile(texturesfile);
+				WADReader.LoadHighresTextures(filedata, texturesfile, ref imgset, images, null);
+				filedata.Dispose();
+			}
+
+			// Add images from TEXTURES lump file
+			AddImagesToList(images, imgset);
+			
+			return new List<ImageData>(images.Values);
 		}
 		
 		// This returns the patch names from the PNAMES lump
@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		public override ICollection<ImageData> LoadFlats()
 		{
-			List<ImageData> images = new List<ImageData>();
+			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
 			ICollection<ImageData> collection;
 			
 			// Error when suspended
@@ -284,8 +284,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Add images from flats directory
 			collection = LoadDirectoryImages(FLATS_DIR, true, true);
 			AddImagesToList(images, collection);
-			
-			return images;
+
+			return new List<ImageData>(images.Values);
 		}
 		
 		#endregion
@@ -346,24 +346,14 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This copies images from a collection unless they already exist in the list
-		private void AddImagesToList(List<ImageData> targetlist, ICollection<ImageData> sourcelist)
+		private void AddImagesToList(Dictionary<long, ImageData> targetlist, ICollection<ImageData> sourcelist)
 		{
 			// Go for all source images
 			foreach(ImageData src in sourcelist)
 			{
 				// Check if exists in target list
-				bool alreadyexists = false;
-				foreach(ImageData tgt in targetlist)
-				{
-					if(tgt.LongName == src.LongName)
-					{
-						alreadyexists = true;
-						break;
-					}
-				}
-				
-				// Add source image to target list
-				if(!alreadyexists) targetlist.Add(src);
+				if(!targetlist.ContainsKey(src.LongName))
+					targetlist.Add(src.LongName, src);
 			}
 		}
 		

@@ -31,7 +31,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal sealed unsafe class TextureImage : ImageData
+	internal sealed unsafe class HighResImage : ImageData
 	{
 		#region ================== Variables
 
@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public TextureImage(string name, int width, int height, float scalex, float scaley)
+		public HighResImage(string name, int width, int height, float scalex, float scaley)
 		{
 			// Initialize
 			this.width = width;
@@ -75,11 +75,9 @@ namespace CodeImp.DoomBuilder.Data
 		protected override void LocalLoadImage()
 		{
 			IImageReader reader;
-			BitmapData bitmapdata = null;
 			MemoryStream mem;
-			PixelColor* pixels = (PixelColor*)0;
-			Stream patchdata;
 			byte[] membytes;
+			Graphics g = null;
 			
 			// Checks
 			if(this.IsImageLoaded) return;
@@ -92,9 +90,11 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					if(bitmap != null) bitmap.Dispose();
 					bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-					bitmapdata = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-					pixels = (PixelColor*)bitmapdata.Scan0.ToPointer();
+					BitmapData bitmapdata = bitmap.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+					PixelColor* pixels = (PixelColor*)bitmapdata.Scan0.ToPointer();
 					General.ZeroMemory(new IntPtr(pixels), width * height * sizeof(PixelColor));
+					bitmap.UnlockBits(bitmapdata);
+					g = Graphics.FromImage(bitmap);
 				}
 				catch(Exception e)
 				{
@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(TexturePatch p in patches)
 					{
 						// Get the patch data stream
-						patchdata = General.Map.Data.GetPatchData(p.lumpname);
+						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname);
 						if(patchdata != null)
 						{
 							// Copy patch data to memory
@@ -129,14 +129,47 @@ namespace CodeImp.DoomBuilder.Data
 							}
 							else
 							{
-								// Draw the patch
+								// Get the patch
 								mem.Seek(0, SeekOrigin.Begin);
-								try { reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y); }
+								Bitmap patchbmp = null;
+								try { patchbmp = reader.ReadAsBitmap(mem); }
 								catch(InvalidDataException)
 								{
 									// Data cannot be read!
 									General.WriteLogLine("ERROR: Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
 									loadfailed = true;
+								}
+								if(patchbmp != null)
+								{
+									// Adjust patch alpha
+									if(p.alpha < 1.0f)
+									{
+										BitmapData bmpdata = null;
+										try
+										{
+											bmpdata = patchbmp.LockBits(new Rectangle(0, 0, patchbmp.Size.Width, patchbmp.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+										}
+										catch(Exception e)
+										{
+											General.WriteLogLine("ERROR: Cannot lock image '" + p.lumpname + "' for alpha adjustment. " + e.GetType().Name + ": " + e.Message);
+										}
+
+										if(bmpdata != null)
+										{
+											PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
+											int numpixels = bmpdata.Width * bmpdata.Height;
+											for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--)
+											{
+												cp->a = (byte)((((float)cp->a * PixelColor.BYTE_TO_FLOAT) * p.alpha) * 255.0f);
+											}
+											patchbmp.UnlockBits(bmpdata);
+										}
+									}
+									
+									// Draw the patch on the texture image
+									Rectangle tgtrect = new Rectangle(p.x, p.y, patchbmp.Size.Width, patchbmp.Size.Height);
+									g.DrawImageUnscaledAndClipped(patchbmp, tgtrect);
+									patchbmp.Dispose();
 								}
 							}
 
@@ -150,9 +183,6 @@ namespace CodeImp.DoomBuilder.Data
 							loadfailed = true;
 						}
 					}
-
-					// Done
-					bitmap.UnlockBits(bitmapdata);
 				}
 				
 				// Dispose bitmap if load failed

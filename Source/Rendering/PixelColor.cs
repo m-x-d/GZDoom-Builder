@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	{
 		#region ================== Constants
 		
-		private const float BYTE_TO_FLOAT = 0.00392156862745098f;
+		public const float BYTE_TO_FLOAT = 0.00392156862745098f;
 		
 		#endregion
 

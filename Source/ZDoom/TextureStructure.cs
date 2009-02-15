@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -253,6 +254,30 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 		}
 
+		// This makes a HighResImage texture for this texture
+		internal HighResImage MakeImage(Dictionary<long, ImageData> textures, Dictionary<long, ImageData> flats)
+		{
+			float scalex, scaley;
+			
+			// Determine default scale
+			float defaultscale = General.Map.Config.DefaultTextureScale;
+
+			// Determine scale for texture
+			if(xscale == 0.0f) scalex = defaultscale; else scalex = 1f / xscale;
+			if(yscale == 0.0f) scaley = defaultscale; else scaley = 1f / yscale;
+
+			// Make texture
+			HighResImage tex = new HighResImage(name, width, height, scalex, scaley);
+
+			// Add patches
+			foreach(PatchStructure p in patches)
+			{
+				tex.AddPatch(new TexturePatch(p.Name.ToUpperInvariant(), p.OffsetX, p.OffsetY, p.FlipX, p.FlipY, 0, new PixelColor(0, 0, 0, 0), p.Alpha, 0));
+			}
+			
+			return tex;
+		}
+		
 		#endregion
 	}
 }
