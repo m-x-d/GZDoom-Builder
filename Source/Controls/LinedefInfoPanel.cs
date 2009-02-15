@@ -105,8 +105,8 @@ namespace CodeImp.DoomBuilder.Controls
 				actioninfo = l.Action.ToString() + " - Unknown";
 			
 			// Determine peggedness
-			upperunpegged = l.Flags[General.Map.Config.UpperUnpeggedFlag];
-			lowerunpegged = l.Flags[General.Map.Config.LowerUnpeggedFlag];
+			upperunpegged = l.IsFlagSet(General.Map.Config.UpperUnpeggedFlag);
+			lowerunpegged = l.IsFlagSet(General.Map.Config.LowerUnpeggedFlag);
 			if(upperunpegged && lowerunpegged)
 				peggedness = "Upper & Lower";
 			else if(upperunpegged)
