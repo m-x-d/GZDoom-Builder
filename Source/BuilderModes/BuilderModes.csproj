@@ -77,6 +77,7 @@
     <Compile Include="FindReplace\FindSectorTags.cs" />
     <Compile Include="General\Association.cs" />
     <Compile Include="General\BuilderPlug.cs" />
+    <Compile Include="General\CopyStructures.cs" />
     <Compile Include="Interface\CurveLinedefsForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -32,6 +32,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.VisualModes;
+using System.Drawing;
 
 #endregion
 
@@ -314,14 +315,61 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				SetTexture(BuilderPlug.Me.CopiedTexture);
 			}
 		}
-
+		
+		// Paste texture offsets
+		public virtual void OnPasteTextureOffsets()
+		{
+			General.Map.UndoRedo.CreateUndo("Paste texture offsets");
+			Sidedef.OffsetX = BuilderPlug.Me.CopiedOffsets.X;
+			Sidedef.OffsetY = BuilderPlug.Me.CopiedOffsets.Y;
+			
+			// Update sidedef geometry
+			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+			if(parts.lower != null) parts.lower.Setup();
+			if(parts.middledouble != null) parts.middledouble.Setup();
+			if(parts.middlesingle != null) parts.middlesingle.Setup();
+			if(parts.upper != null) parts.upper.Setup();
+		}
+		
 		// Copy texture
 		public virtual void OnCopyTexture()
 		{
 			BuilderPlug.Me.CopiedTexture = GetTextureName();
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedFlat = GetTextureName();
 		}
+		
+		// Copy texture offsets
+		public virtual void OnCopyTextureOffsets()
+		{
+			BuilderPlug.Me.CopiedOffsets = new Point(Sidedef.OffsetX, Sidedef.OffsetY);
+		}
 
+		// Copy properties
+		public virtual void OnCopyProperties()
+		{
+			BuilderPlug.Me.CopiedSidedefProps = new SidedefProperties(Sidedef);
+		}
+
+		// Paste properties
+		public virtual void OnPasteProperties()
+		{
+			if(BuilderPlug.Me.CopiedSidedefProps != null)
+			{
+				General.Map.UndoRedo.CreateUndo("Paste sidedef properties");
+				BuilderPlug.Me.CopiedSidedefProps.Apply(Sidedef);
+				
+				// Update sectors on both sides
+				BaseVisualSector front = (BaseVisualSector)mode.GetVisualSector(Sidedef.Sector);
+				if(front != null) front.Rebuild();
+				if(Sidedef.Other != null)
+				{
+					BaseVisualSector back = (BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector);
+					if(back != null) back.Rebuild();
+				}
+				mode.ShowTargetInfo();
+			}
+		}
+		
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }
 		

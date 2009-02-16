@@ -550,6 +550,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureFloodfill();
 			ShowTargetInfo();
 		}
+
+		[BeginAction("texturecopyoffsets")]
+		public void TextureCopyOffsets()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyTextureOffsets();
+			ShowTargetInfo();
+		}
+
+		[BeginAction("texturepasteoffsets")]
+		public void TexturePasteOffsets()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnPasteTextureOffsets();
+			ShowTargetInfo();
+		}
+
+		[BeginAction("copyproperties")]
+		public void CopyProperties()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyProperties();
+			ShowTargetInfo();
+		}
+
+		[BeginAction("pasteproperties")]
+		public void PasteProperties()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnPasteProperties();
+			ShowTargetInfo();
+		}
 		
 		#endregion
 	}

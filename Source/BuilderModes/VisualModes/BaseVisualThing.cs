@@ -343,6 +343,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectTexture() { }
 		public virtual void OnCopyTexture() { }
 		public virtual void OnPasteTexture() { }
+		public virtual void OnCopyTextureOffsets() { }
+		public virtual void OnPasteTextureOffsets() { }
 		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
@@ -352,7 +354,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }
-
+		
+		// Copy properties
+		public virtual void OnCopyProperties()
+		{
+			BuilderPlug.Me.CopiedThingProps = new ThingProperties(Thing);
+		}
+		
+		// Paste properties
+		public virtual void OnPasteProperties()
+		{
+			if(BuilderPlug.Me.CopiedThingProps != null)
+			{
+				General.Map.UndoRedo.CreateUndo("Paste thing properties");
+				BuilderPlug.Me.CopiedThingProps.Apply(Thing);
+				Thing.UpdateConfiguration();
+				this.Rebuild();
+				mode.ShowTargetInfo();
+			}
+		}
+		
 		// Edit button released
 		public virtual void OnEditEnd()
 		{
