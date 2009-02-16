@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Config
 		private long spritelongname;
 		private int color;
 		private bool arrow;
-		private float width;
+		private float radius;
 		private float height;
 		private bool hangs;
 		private int blocking;
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Config
 		public long SpriteLongName { get { return spritelongname; } }
 		public int Color { get { return color; } }
 		public bool Arrow { get { return arrow; } }
-		public float Width { get { return width; } }
+		public float Radius { get { return radius; } }
 		public float Height { get { return height; } }
 		public bool Hangs { get { return hangs; } }
 		public int Blocking { get { return blocking; } }
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 			this.color = 0;
 			this.arrow = true;
-			this.width = 10f;
+			this.radius = 10f;
 			this.height = 20f;
 			this.hangs = false;
 			this.blocking = 0;
@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.sprite = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".sprite", cat.Sprite);
 			this.color = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".color", cat.Color);
 			this.arrow = (cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".arrow", cat.Arrow) != 0);
-			this.width = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".width", cat.Width);
+			this.radius = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".width", cat.Radius);
 			this.height = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".height", cat.Height);
 			this.hangs = (cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".hangs", cat.Hangs) != 0);
 			this.blocking = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".blocking", cat.Blocking);
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedsize", cat.FixedSize);
 			
 			// Safety
-			if(this.width < 8f) this.width = 8f;
+			if(this.radius < 8f) this.radius = 8f;
 			
 			// Make long name for sprite lookup
 			if(this.sprite.Length <= 8)
@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.sprite = cat.Sprite;
 			this.color = cat.Color;
 			this.arrow = (cat.Arrow != 0);
-			this.width = cat.Width;
+			this.radius = cat.Radius;
 			this.height = cat.Height;
 			this.hangs = (cat.Hangs != 0);
 			this.blocking = cat.Blocking;
@@ -183,7 +183,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.sprite = cat.Sprite;
 			this.color = cat.Color;
 			this.arrow = (cat.Arrow != 0);
-			this.width = cat.Width;
+			this.radius = cat.Radius;
 			this.height = cat.Height;
 			this.hangs = (cat.Hangs != 0);
 			this.blocking = cat.Blocking;
@@ -220,11 +220,11 @@ namespace CodeImp.DoomBuilder.Config
 				this.spritelongname = long.MaxValue;
 			
 			// Size
-			if(actor.RadiusFound) width = actor.Radius;
+			if(actor.RadiusFound) radius = actor.Radius;
 			if(actor.HeightFound) height = actor.Height;
 			
 			// Safety
-			if(this.width < 8f) this.width = 8f;
+			if(this.radius < 8f) this.radius = 8f;
 			
 			// Options
 			hangs = actor.GetFlagValue("spawnceiling", hangs);

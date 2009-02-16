@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.Windows
 					knownthing = true;
 
 					// Size
-					sizelabel.Text = ti.Width + " x " + ti.Height;
+					sizelabel.Text = (ti.Radius * 2) + " x " + ti.Height;
 
 					// Hangs from ceiling
 					if(ti.Hangs) positionlabel.Text = "Ceiling"; else positionlabel.Text = "Floor";
