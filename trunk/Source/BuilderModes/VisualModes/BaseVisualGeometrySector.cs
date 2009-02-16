@@ -125,6 +125,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
 		public virtual void OnResetTextureOffset() { }
+		public virtual void OnCopyTextureOffsets() { }
+		public virtual void OnPasteTextureOffsets() { }
 		protected virtual void SetTexture(string texturename) { }
 		public virtual void OnTextureFloodfill() { }
 
@@ -143,6 +145,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						Setup();
 					}
 				}
+			}
+		}
+		
+		// Copy properties
+		public virtual void OnCopyProperties()
+		{
+			BuilderPlug.Me.CopiedSectorProps = new SectorProperties(Sector.Sector);
+		}
+		
+		// Paste properties
+		public virtual void OnPasteProperties()
+		{
+			if(BuilderPlug.Me.CopiedSectorProps != null)
+			{
+				General.Map.UndoRedo.CreateUndo("Paste sector properties");
+				BuilderPlug.Me.CopiedSectorProps.Apply(Sector.Sector);
+				UpdateSectorGeometry(true);
+				mode.ShowTargetInfo();
 			}
 		}
 		

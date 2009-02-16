@@ -66,6 +66,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool editnewsector;
 		private string copiedtexture;
 		private string copiedflat;
+		private Point copiedoffsets;
+		private SectorProperties copiedsectorprops;
+		private SidedefProperties copiedsidedefprops;
+		private ThingProperties copiedthingprops;
 		
 		#endregion
 
@@ -88,6 +92,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool EditNewSector { get { return editnewsector; } }
 		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
 		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
+		public Point CopiedOffsets { get { return copiedoffsets; } set { copiedoffsets = value; } }
+		public SectorProperties CopiedSectorProps { get { return copiedsectorprops; } set { copiedsectorprops = value; } }
+		public SidedefProperties CopiedSidedefProps { get { return copiedsidedefprops; } set { copiedsidedefprops = value; } }
+		public ThingProperties CopiedThingProps { get { return copiedthingprops; } set { copiedthingprops = value; } }
 		
 		#endregion
 
