@@ -58,6 +58,60 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorpanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
+			// label13
+			// 
+			label13.AutoSize = true;
+			label13.Location = new System.Drawing.Point(111, 77);
+			label13.Name = "label13";
+			label13.Size = new System.Drawing.Size(62, 14);
+			label13.TabIndex = 14;
+			label13.Text = "Brightness:";
+			// 
+			// label5
+			// 
+			label5.AutoSize = true;
+			label5.Location = new System.Drawing.Point(133, 58);
+			label5.Name = "label5";
+			label5.Size = new System.Drawing.Size(40, 14);
+			label5.TabIndex = 8;
+			label5.Text = "Height:";
+			// 
+			// label4
+			// 
+			label4.AutoSize = true;
+			label4.Location = new System.Drawing.Point(24, 77);
+			label4.Name = "label4";
+			label4.Size = new System.Drawing.Size(28, 14);
+			label4.TabIndex = 4;
+			label4.Text = "Tag:";
+			// 
+			// label3
+			// 
+			label3.AutoSize = true;
+			label3.Location = new System.Drawing.Point(18, 58);
+			label3.Name = "label3";
+			label3.Size = new System.Drawing.Size(34, 14);
+			label3.TabIndex = 3;
+			label3.Text = "Floor:";
+			// 
+			// label2
+			// 
+			label2.AutoSize = true;
+			label2.Location = new System.Drawing.Point(11, 39);
+			label2.Name = "label2";
+			label2.Size = new System.Drawing.Size(41, 14);
+			label2.TabIndex = 2;
+			label2.Text = "Ceiling:";
+			// 
+			// label1
+			// 
+			label1.AutoSize = true;
+			label1.Location = new System.Drawing.Point(13, 19);
+			label1.Name = "label1";
+			label1.Size = new System.Drawing.Size(39, 14);
+			label1.TabIndex = 0;
+			label1.Text = "Effect:";
+			// 
 			// sectorinfo
 			// 
 			this.sectorinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -90,15 +144,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.brightness.TabIndex = 17;
 			this.brightness.Text = "0";
 			// 
-			// label13
-			// 
-			label13.AutoSize = true;
-			label13.Location = new System.Drawing.Point(111, 77);
-			label13.Name = "label13";
-			label13.Size = new System.Drawing.Size(62, 14);
-			label13.TabIndex = 14;
-			label13.Text = "Brightness:";
-			// 
 			// height
 			// 
 			this.height.AutoSize = true;
@@ -107,15 +152,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.height.Size = new System.Drawing.Size(13, 14);
 			this.height.TabIndex = 11;
 			this.height.Text = "0";
-			// 
-			// label5
-			// 
-			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(133, 58);
-			label5.Name = "label5";
-			label5.Size = new System.Drawing.Size(40, 14);
-			label5.TabIndex = 8;
-			label5.Text = "Height:";
 			// 
 			// tag
 			// 
@@ -144,33 +180,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceiling.TabIndex = 5;
 			this.ceiling.Text = "1024";
 			// 
-			// label4
-			// 
-			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(24, 77);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(28, 14);
-			label4.TabIndex = 4;
-			label4.Text = "Tag:";
-			// 
-			// label3
-			// 
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(18, 58);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(34, 14);
-			label3.TabIndex = 3;
-			label3.Text = "Floor:";
-			// 
-			// label2
-			// 
-			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(11, 39);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(41, 14);
-			label2.TabIndex = 2;
-			label2.Text = "Ceiling:";
-			// 
 			// effect
 			// 
 			this.effect.AutoSize = true;
@@ -180,22 +189,13 @@ namespace CodeImp.DoomBuilder.Controls
 			this.effect.TabIndex = 1;
 			this.effect.Text = "0 - Whacky Pool of Fluid";
 			// 
-			// label1
-			// 
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(13, 19);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(39, 14);
-			label1.TabIndex = 0;
-			label1.Text = "Effect:";
-			// 
 			// ceilingpanel
 			// 
 			this.ceilingpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.ceilingpanel.Controls.Add(this.ceilingname);
 			this.ceilingpanel.Controls.Add(this.ceilingtex);
-			this.ceilingpanel.Location = new System.Drawing.Point(236, 0);
+			this.ceilingpanel.Location = new System.Drawing.Point(335, 0);
 			this.ceilingpanel.Name = "ceilingpanel";
 			this.ceilingpanel.Size = new System.Drawing.Size(93, 100);
 			this.ceilingpanel.TabIndex = 3;
@@ -227,7 +227,7 @@ namespace CodeImp.DoomBuilder.Controls
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.floorpanel.Controls.Add(this.floorname);
 			this.floorpanel.Controls.Add(this.floortex);
-			this.floorpanel.Location = new System.Drawing.Point(335, 0);
+			this.floorpanel.Location = new System.Drawing.Point(236, 0);
 			this.floorpanel.Name = "floorpanel";
 			this.floorpanel.Size = new System.Drawing.Size(93, 100);
 			this.floorpanel.TabIndex = 4;
