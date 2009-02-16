@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PixelColor sectorcolor = new PixelColor(255, 255, 255, 255);
 			
 			// Must have a width and height!
-			if((info.Width < 0.1f) || (info.Height < 0.1f)) return false;
+			if((info.Radius < 0.1f) || (info.Height < 0.1f)) return false;
 
 			if(sprite != null)
 			{
@@ -123,8 +123,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.Texture = General.Map.Data.Hourglass3D;
 
 					// Determine sprite size
-					float radius = Math.Min(info.Width, info.Height / 2f);
-					float height = Math.Min(info.Width * 2f, info.Height);
+					float radius = Math.Min(info.Radius, info.Height / 2f);
+					float height = Math.Min(info.Radius * 2f, info.Height);
 
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
@@ -169,15 +169,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Apply settings
 			SetPosition(pos);
-			SetCageSize(info.Width, info.Height);
+			SetCageSize(info.Radius, info.Height);
 			SetCageColor(Thing.Color);
 
 			// Keep info for object picking
-			cageradius2 = info.Width * Angle2D.SQRT2;
+			cageradius2 = info.Radius * Angle2D.SQRT2;
 			cageradius2 = cageradius2 * cageradius2;
 			pos2d = pos;
-			boxp1 = new Vector3D(pos.x - info.Width, pos.y - info.Width, pos.z);
-			boxp2 = new Vector3D(pos.x + info.Width, pos.y + info.Width, pos.z + info.Height);
+			boxp1 = new Vector3D(pos.x - info.Radius, pos.y - info.Radius, pos.z);
+			boxp2 = new Vector3D(pos.x + info.Radius, pos.y + info.Radius, pos.z + info.Height);
 			
 			// Done
 			return true;

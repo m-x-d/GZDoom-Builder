@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string sprite;
 		private int color;
 		private int arrow;
-		private float width;
+		private float radius;
 		private float height;
 		private int hangs;
 		private int blocking;
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool Sorted { get { return sorted; } }
 		public int Color { get { return color; } }
 		public int Arrow { get { return arrow; } }
-		public float Width { get { return width; } }
+		public float Radius { get { return radius; } }
 		public float Height { get { return height; } }
 		public int Hangs { get { return hangs; } }
 		public int Blocking { get { return blocking; } }
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.sorted = true;
 			this.color = 18;
 			this.arrow = 1;
-			this.width = 10;
+			this.radius = 10;
 			this.height = 20;
 			this.hangs = 0;
 			this.blocking = 0;
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.sorted = (cfg.ReadSetting("thingtypes." + name + ".sort", 0) != 0);
 			this.color = cfg.ReadSetting("thingtypes." + name + ".color", 0);
 			this.arrow = cfg.ReadSetting("thingtypes." + name + ".arrow", 0);
-			this.width = cfg.ReadSetting("thingtypes." + name + ".width", 10);
+			this.radius = cfg.ReadSetting("thingtypes." + name + ".width", 10);
 			this.height = cfg.ReadSetting("thingtypes." + name + ".height", 20);
 			this.hangs = cfg.ReadSetting("thingtypes." + name + ".hangs", 0);
 			this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", false);
 			
 			// Safety
-			if(this.width < 8f) this.width = 8f;
+			if(this.radius < 8f) this.radius = 8f;
 			
 			// Go for all items in category
 			dic = cfg.ReadSetting("thingtypes." + name, new Hashtable());

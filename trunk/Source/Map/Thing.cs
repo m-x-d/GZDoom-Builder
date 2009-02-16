@@ -367,7 +367,7 @@ namespace CodeImp.DoomBuilder.Map
 			ti = General.Map.Data.GetThingInfo(type);
 
 			// Apply size
-			size = ti.Width;
+			size = ti.Radius;
 			fixedsize = ti.FixedSize;
 			
 			// Color valid?
