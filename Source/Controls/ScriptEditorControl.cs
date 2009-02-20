@@ -320,7 +320,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Rearrange the layout
 			scriptedit.ClearDocumentStyle();
-			scriptedit.Text = scriptedit.Text;
+			scriptedit.SetText(scriptedit.GetText(scriptedit.TextSize));
 			this.PerformLayout();
 		}
 		
@@ -330,9 +330,14 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			int wordstart = scriptedit.WordStartPosition(scriptedit.CurrentPos, true);
 			int wordend = scriptedit.WordEndPosition(scriptedit.CurrentPos, true);
-
+			
+			// Decode the text
+			byte[] scripttextdata = scriptedit.GetText(scriptedit.TextSize);
+			Encoding encoder = Encoding.GetEncoding(scriptedit.CodePage);
+			string scripttext = encoder.GetString(scripttextdata);
+			
 			if(wordstart > wordend)
-				return scriptedit.Text.Substring(wordstart, wordend - wordstart);
+				return scripttext.Substring(wordstart, wordend - wordstart);
 			else
 				return "";
 		}
@@ -355,6 +360,11 @@ namespace CodeImp.DoomBuilder.Controls
 			int argindex = 0;				// function argument counting
 			int limitpos;					// lowest position we'll backtrack to
 			int pos = scriptedit.CurrentPos;
+			
+			// Decode the text
+			byte[] scripttextdata = scriptedit.GetText(scriptedit.TextSize);
+			Encoding encoder = Encoding.GetEncoding(scriptedit.CodePage);
+			string scripttext = encoder.GetString(scripttextdata);
 			
 			// Reset position info
 			curfunctionname = "";
@@ -426,7 +436,7 @@ namespace CodeImp.DoomBuilder.Controls
 							// Find the word before this bracket
 							int wordstart = scriptedit.WordStartPosition(pos, true);
 							int wordend = scriptedit.WordEndPosition(pos, true);
-							string word = scriptedit.Text.Substring(wordstart, wordend - wordstart);
+							string word = scripttext.Substring(wordstart, wordend - wordstart);
 							if(word.Length > 0)
 							{
 								// Check if this is an argument delimiter
