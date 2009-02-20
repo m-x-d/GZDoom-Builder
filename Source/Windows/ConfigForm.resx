@@ -154,7 +154,7 @@
     <value>False</value>
   </metadata>
   <data name="label10.Text" xml:space="preserve">
-    <value>Here you can select the editing modes that you wish to use in this configuration. This is usefull in case there are plugins with additional editing modes that can be used as a replacement for the original editing modes.</value>
+    <value>Here you can select the editing modes that you wish to use in this configuration. This is useful in case there are plugins with additional editing modes that can be used as a replacement for the original editing modes.</value>
   </data>
   <metadata name="smallimages.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>159, 17</value>

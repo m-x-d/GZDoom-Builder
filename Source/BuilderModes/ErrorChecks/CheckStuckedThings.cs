@@ -40,7 +40,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[ErrorChecker("Check for stucked things", true, 1000)]
+	[ErrorChecker("Check for stuck things", true, 1000)]
 	public class CheckStuckedThings : ErrorChecker
 	{
 		#region ================== Constants
