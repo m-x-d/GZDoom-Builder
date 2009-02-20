@@ -103,6 +103,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.AutoCMaximumHeight = 8;
 			scriptedit.AutoCSeparator = ' ';
 			scriptedit.AutoCTypeSeparator = '?';
+			scriptedit.AutoCSetFillUps("\r\n();[]");	// I should put this in the script configs
 			scriptedit.CaretWidth = 2;
 			scriptedit.EndAtLastLine = 1;
 			scriptedit.EndOfLineMode = ScriptEndOfLine.CRLF;
@@ -114,13 +115,13 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.IsHScrollBar = true;
 			scriptedit.IsIndentationGuides = true;
 			scriptedit.IsMouseDownCaptures = true;
-			scriptedit.IsTabIndents = true;
+			scriptedit.IsTabIndents = false;
 			scriptedit.IsUndoCollection = true;
 			scriptedit.IsUseTabs = true;
 			scriptedit.IsViewEOL = false;
 			scriptedit.IsVScrollBar = true;
 			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
-			scriptedit.TabWidth = 4;
+			scriptedit.TabWidth = 4;					// This should be in the preferences dialog
 			
 			// Symbol margin
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
@@ -229,7 +230,11 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.CaretPeriod = SystemInformation.CaretBlinkTime;
 			scriptedit.CaretFore = General.Colors.ScriptBackground.Inverse().ToColorRef();
 			scriptedit.StyleBits = 7;
+			
+			// These don't work?
 			scriptedit.TabWidth = 4;
+			scriptedit.IsUseTabs = true;
+			scriptedit.Indent = 0;
 			
 			// This applies the default style to all styles
 			scriptedit.StyleClearAll();
@@ -649,8 +654,11 @@ namespace CodeImp.DoomBuilder.Controls
 					// Apply identation of the previous line to this line
 					int ident = scriptedit.GetLineIndentation(curline - 1);
 					int tabs = ident / scriptedit.TabWidth;
-					scriptedit.SetLineIndentation(curline, ident);
-					scriptedit.SetSel(scriptedit.SelectionStart + tabs, scriptedit.SelectionStart + tabs);
+					if(scriptedit.GetLineIndentation(curline) == 0)
+					{
+						scriptedit.SetLineIndentation(curline, ident);
+						scriptedit.SetSel(scriptedit.SelectionStart + tabs, scriptedit.SelectionStart + tabs);
+					}
 				}
 			}
 			
