@@ -584,7 +584,9 @@ namespace CodeImp.DoomBuilder.Map
 			int sidedefindex = 0;
 			foreach(Sidedef sd in sidedefs)
 				sd.SerializedIndex = sidedefindex++;
-			
+
+			serializer.Begin();
+
 			// Write private data
 			serializer.wInt(lastsectorindex);
 			serializer.wInt(indexholes.Count);
@@ -596,9 +598,11 @@ namespace CodeImp.DoomBuilder.Map
 			WriteLinedefs(serializer);
 			WriteSidedefs(serializer);
 			WriteThings(serializer);
-			
+
+			serializer.End();
+
 			// Reallocate to keep only the used memory
-			stream.Capacity = stream.Length;
+			stream.Capacity = (int)stream.Length;
 			
 			return stream;
 		}
@@ -691,7 +695,9 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			stream.Seek(0, SeekOrigin.Begin);
 			DeserializerStream deserializer = new DeserializerStream(stream);
-			
+
+			deserializer.Begin();
+
 			// Read private data
 			int c;
 			deserializer.rInt(out lastsectorindex);
@@ -709,7 +715,9 @@ namespace CodeImp.DoomBuilder.Map
 			Linedef[] linedefsarray = ReadLinedefs(deserializer, verticesarray);
 			ReadSidedefs(deserializer, linedefsarray, sectorsarray);
 			ReadThings(deserializer);
-			
+
+			deserializer.End();
+
 			// Make table of sidedef indices
 			sidedefindices = new Sidedef[sidedefs.Count];
 			foreach(Sidedef sd in sidedefs)

@@ -36,6 +36,10 @@ namespace CodeImp.DoomBuilder.IO
 		// Properties
 		bool IsWriting { get; }
 		
+		// Management
+		void Begin();
+		void End();
+		
 		// Bidirectional members
 		void rwInt(ref int v);
 		void rwByte(ref byte v);
