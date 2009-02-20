@@ -59,6 +59,9 @@ namespace CodeImp.DoomBuilder.Map
 		private List<int> indexholes;
 		private int lastsectorindex;
 		
+		// Sidedef indexing for (de)serialization
+		private Sidedef[] sidedefindices;
+		
 		// Map structures
 		private LinkedList<Vertex> vertices;
 		private LinkedList<Linedef> linedefs;
@@ -87,6 +90,8 @@ namespace CodeImp.DoomBuilder.Map
 		public static long EmptyLongName { get { return emptylongname; } }
 		public static string VirtualSectorField { get { return VIRTUAL_SECTOR_FIELD; } }
 		public static UniValue VirtualSectorValue { get { return virtualsectorvalue; } }
+		
+		internal Sidedef[] SidedefIndices { get { return sidedefindices; } }
 		
 		#endregion
 
@@ -572,7 +577,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This serializes the MapSet
 		internal MemoryStream Serialize()
 		{
-			MemoryStream stream = new MemoryStream(512000);
+			MemoryStream stream = new MemoryStream(20000000);	// Yes that is about 20 MB.
 			SerializerStream serializer = new SerializerStream(stream);
 			
 			// Index the sidedefs
@@ -591,7 +596,10 @@ namespace CodeImp.DoomBuilder.Map
 			WriteLinedefs(serializer);
 			WriteSidedefs(serializer);
 			WriteThings(serializer);
-
+			
+			// Reallocate to keep only the used memory
+			stream.Capacity = stream.Length;
+			
 			return stream;
 		}
 
@@ -701,8 +709,17 @@ namespace CodeImp.DoomBuilder.Map
 			Linedef[] linedefsarray = ReadLinedefs(deserializer, verticesarray);
 			ReadSidedefs(deserializer, linedefsarray, sectorsarray);
 			ReadThings(deserializer);
+			
+			// Make table of sidedef indices
+			sidedefindices = new Sidedef[sidedefs.Count];
+			foreach(Sidedef sd in sidedefs)
+				sidedefindices[sd.SerializedIndex] = sd;
+				
+			// Call PostDeserialize
+			foreach(Sector s in sectors)
+				s.PostDeserialize(this);
 		}
-
+		
 		// This deserializes things
 		private void ReadThings(DeserializerStream stream)
 		{

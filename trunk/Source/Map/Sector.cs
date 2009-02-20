@@ -197,6 +197,42 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref effect);
 			s.rwInt(ref tag);
 			s.rwInt(ref brightness);
+			
+			// Use a new triangulator when reading from stream
+			if(!s.IsWriting && (triangles == null)) triangles = new Triangulation();
+			triangles.ReadWrite(s);
+			
+			if(s.IsWriting)
+			{
+				s.wInt(labels.Count);
+				for(int i = 0; i < labels.Count; i++)
+				{
+					s.wVector2D(labels[i].position);
+					s.wFloat(labels[i].radius);
+				}
+			}
+			else
+			{
+				int c; s.rInt(out c);
+				LabelPositionInfo[] labelsarray = new LabelPositionInfo[c];
+				for(int i = 0; i < c; i++)
+				{
+					s.rVector2D(out labelsarray[i].position);
+					s.rFloat(out labelsarray[i].radius);
+				}
+				labels = Array.AsReadOnly<LabelPositionInfo>(labelsarray);
+			}
+		}
+		
+		// After deserialization
+		internal void PostDeserialize(MapSet map)
+		{
+			triangles.PostDeserialize(map);
+			
+			// We need to rebuild the vertex buffer,
+			// but the triangulation was deserialized
+			updateneeded = true;
+			triangulationneeded = false;
 		}
 		
 		// This copies all properties to another sector
