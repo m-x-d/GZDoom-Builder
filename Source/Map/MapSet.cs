@@ -575,6 +575,11 @@ namespace CodeImp.DoomBuilder.Map
 			MemoryStream stream = new MemoryStream(512000);
 			SerializerStream serializer = new SerializerStream(stream);
 			
+			// Index the sidedefs
+			int sidedefindex = 0;
+			foreach(Sidedef sd in sidedefs)
+				sd.SerializedIndex = sidedefindex++;
+			
 			// Write private data
 			serializer.wInt(lastsectorindex);
 			serializer.wInt(indexholes.Count);

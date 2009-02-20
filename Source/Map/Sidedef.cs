@@ -59,6 +59,9 @@ namespace CodeImp.DoomBuilder.Map
 		private long longtexnamemid;
 		private long longtexnamelow;
 
+		// Clone
+		private int serializedindex;
+		
 		#endregion
 
 		#region ================== Properties
@@ -77,6 +80,7 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongHighTexture { get { return longtexnamehigh; } }
 		public long LongMiddleTexture { get { return longtexnamemid; } }
 		public long LongLowTexture { get { return longtexnamelow; } }
+		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
 		
 		#endregion
 
