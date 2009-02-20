@@ -192,12 +192,12 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref ceilheight);
 			s.rwString(ref floortexname);
 			s.rwString(ref ceiltexname);
-			s.rwLong(ref longfloortexname);
-			s.rwLong(ref longceiltexname);
+			//s.rwLong(ref longfloortexname);
+			//s.rwLong(ref longceiltexname);
 			s.rwInt(ref effect);
 			s.rwInt(ref tag);
 			s.rwInt(ref brightness);
-			
+
 			// Use a new triangulator when reading from stream
 			if(!s.IsWriting && (triangles == null)) triangles = new Triangulation();
 			triangles.ReadWrite(s);
@@ -213,6 +213,9 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			else
 			{
+				longfloortexname = Lump.MakeLongName(floortexname);
+				longceiltexname = Lump.MakeLongName(ceiltexname);
+				
 				int c; s.rInt(out c);
 				LabelPositionInfo[] labelsarray = new LabelPositionInfo[c];
 				for(int i = 0; i < c; i++)
