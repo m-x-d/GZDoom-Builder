@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		private Stream stream;
 		private BinaryReader reader;
+		private string[] stringstable;
 
 		#endregion
 
@@ -64,6 +65,27 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Methods
 
+		// Management
+		public void Begin()
+		{
+			// First 4 bytes are reserved for the offset of the strings table
+			int offset = reader.ReadInt32();
+			stream.Seek(offset, SeekOrigin.Begin);
+			
+			// Read the strings
+			List<string> strings = new List<string>();
+			while(stream.Position < (int)stream.Length)
+				strings.Add(reader.ReadString());
+			stringstable = strings.ToArray();
+
+			// Back to start
+			stream.Seek(4, SeekOrigin.Begin);
+		}
+		
+		public void End()
+		{
+		}
+
 		// Bidirectional
 		public void rwInt(ref int v) { v = reader.ReadInt32(); }
 
@@ -71,7 +93,11 @@ namespace CodeImp.DoomBuilder.IO
 
 		public void rwShort(ref short v) { v = reader.ReadInt16(); }
 
-		public void rwString(ref string v) { v = reader.ReadString(); }
+		public void rwString(ref string v)
+		{
+			ushort index = reader.ReadUInt16();
+			v = stringstable[index];
+		}
 
 		public void rwLong(ref long v) { v = reader.ReadInt64(); }
 
@@ -136,7 +162,11 @@ namespace CodeImp.DoomBuilder.IO
 
 		public void rShort(out short v) { v = reader.ReadInt16(); }
 
-		public void rString(out string v) { v = reader.ReadString(); }
+		public void rString(out string v)
+		{
+			ushort index = reader.ReadUInt16();
+			v = stringstable[index];
+		}
 
 		public void rLong(out long v) { v = reader.ReadInt64(); }
 

@@ -41,7 +41,8 @@ namespace CodeImp.DoomBuilder.IO
 
 		private Stream stream;
 		private BinaryWriter writer;
-		
+		private Dictionary<string, ushort> stringstable;
+
 		#endregion
 
 		#region ================== Properties
@@ -58,11 +59,33 @@ namespace CodeImp.DoomBuilder.IO
 			// Initialize
 			this.stream = stream;
 			this.writer = new BinaryWriter(stream);
+			this.stringstable = new Dictionary<string, ushort>();
 		}
 
 		#endregion
 
 		#region ================== Methods
+
+		// Management
+		public void Begin()
+		{
+			// First 4 bytes are reserved for the offset of the strings table
+			const int offset = 0;
+			writer.Write(offset);
+		}
+
+		public void End()
+		{
+			// Write the offset bytes
+			int offset = (int)writer.BaseStream.Length;
+			writer.Seek(0, SeekOrigin.Begin);
+			writer.Write(offset);
+
+			// Write the strings
+			writer.Seek(0, SeekOrigin.End);
+			foreach(KeyValuePair<string, ushort> str in stringstable)
+				writer.Write(str.Key);
+		}
 
 		// Bidirectional
 		public void rwInt(ref int v) { writer.Write(v); }
@@ -71,7 +94,15 @@ namespace CodeImp.DoomBuilder.IO
 
 		public void rwShort(ref short v) { writer.Write(v); }
 
-		public void rwString(ref string v) { writer.Write(v); }
+		public void rwString(ref string v)
+		{
+			ushort index;
+			if(stringstable.ContainsKey(v))
+				index = stringstable[v];
+			else
+				index = stringstable[v] = (ushort)stringstable.Count;
+			writer.Write(index);
+		}
 
 		public void rwLong(ref long v) { writer.Write(v); }
 
@@ -105,7 +136,15 @@ namespace CodeImp.DoomBuilder.IO
 
 		public void wShort(short v) { writer.Write(v); }
 
-		public void wString(string v) { writer.Write(v); }
+		public void wString(string v)
+		{
+			ushort index;
+			if(stringstable.ContainsKey(v))
+				index = stringstable[v];
+			else
+				index = stringstable[v] = (ushort)stringstable.Count;
+			writer.Write(index);
+		}
 
 		public void wLong(long v) { writer.Write(v); }
 
