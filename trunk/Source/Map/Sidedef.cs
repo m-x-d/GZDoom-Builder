@@ -176,9 +176,15 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwString(ref texnamehigh);
 			s.rwString(ref texnamemid);
 			s.rwString(ref texnamelow);
-			s.rwLong(ref longtexnamehigh);
-			s.rwLong(ref longtexnamemid);
-			s.rwLong(ref longtexnamelow);
+			//s.rwLong(ref longtexnamehigh);
+			//s.rwLong(ref longtexnamemid);
+			//s.rwLong(ref longtexnamelow);
+			if(!s.IsWriting)
+			{
+				longtexnamehigh = Lump.MakeLongName(texnamehigh);
+				longtexnamemid = Lump.MakeLongName(texnamemid);
+				longtexnamelow = Lump.MakeLongName(texnamelow);
+			}
 		}
 		
 		// This copies all properties to another sidedef
