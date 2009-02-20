@@ -27,6 +27,7 @@ using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Map;
 using System.Collections.ObjectModel;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -74,8 +75,11 @@ namespace CodeImp.DoomBuilder.Geometry
 		// along a sidedef, this list contains a null entry for that vertex.
 		private ReadOnlyCollection<Sidedef> sidedefs;
 		
+		// Temporary array for the sidedefs deserialization
+		private int[] sidedefindices;
+		
 		#endregion
-
+		
 		#region ================== Properties
 		
 		public ReadOnlyCollection<int> IslandVertices { get { return islandvertices; } }
@@ -83,7 +87,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public ReadOnlyCollection<Sidedef> Sidedefs { get { return sidedefs; } }
 		
 		#endregion
-
+		
 		#region ================== Constructor / Disposer
 
 		// Constructor
@@ -142,7 +146,72 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		#endregion
-
+		
+		#region ================== Serialization
+		
+		// Serialize / deserialize
+		internal void ReadWrite(IReadWriteStream s)
+		{
+			if(s.IsWriting)
+			{
+				s.wInt(islandvertices.Count);
+				for(int i = 0; i < islandvertices.Count; i++) s.wInt(islandvertices[i]);
+				
+				s.wInt(vertices.Count);
+				for(int i = 0; i < vertices.Count; i++) s.wVector2D(vertices[i]);
+				
+				s.wInt(sidedefs.Count);
+				for(int i = 0; i < sidedefs.Count; i++)
+				{
+					if(sidedefs[i] != null)
+						s.wInt(sidedefs[i].SerializedIndex);
+					else
+						s.wInt(-1);
+				}
+			}
+			else
+			{
+				int c;
+				
+				s.rInt(out c);
+				int[] islandverticeslist = new int[c];
+				for(int i = 0; i < c; i++) s.rInt(out islandverticeslist[i]);
+				islandvertices = Array.AsReadOnly<int>(islandverticeslist);
+				
+				s.rInt(out c);
+				Vector2D[] verticeslist = new Vector2D[c];
+				for(int i = 0; i < c; i++) s.rVector2D(out verticeslist[i]);
+				vertices = Array.AsReadOnly<Vector2D>(verticeslist);
+				
+				s.rInt(out c);
+				sidedefindices = new int[c];
+				for(int i = 0; i < c; i++) s.rInt(out sidedefindices[i]);
+			}
+		}
+		
+		// After deserialization we need to find the actual sidedefs back
+		internal void PostDeserialize(MapSet map)
+		{
+			// Find our sidedefs
+			List<Sidedef> sides = new List<Sidedef>(sidedefindices.Length);
+			for(int i = 0; i < sidedefindices.Length; i++)
+			{
+				if(sidedefindices[i] >= 0)
+					sides.Add(map.SidedefIndices[sidedefindices[i]]);
+				else
+					sides.Add(null);
+			}
+			
+			// We don't need this array any longer
+			sidedefindices = null;
+			
+			// Keep readonly array
+			sidedefs = Array.AsReadOnly<Sidedef>(sides.ToArray());
+		}
+		
+		
+		#endregion
+		
 		#region ================== Tracing
 
 		// This traces sector lines to create a polygon tree
