@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
@@ -54,6 +55,10 @@ namespace CodeImp.DoomBuilder.Editing
 		// Unique tickets
 		private int ticketid;
 		
+		// Background thread
+		private volatile bool dobackgroundwork;
+		private Thread backgroundthread;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -80,6 +85,13 @@ namespace CodeImp.DoomBuilder.Editing
 			// Bind any methods
 			General.Actions.BindMethods(this);
 
+			// Start background thread
+			backgroundthread = new Thread(new ThreadStart(BackgroundThread));
+			backgroundthread.Name = "Background Loader";
+			backgroundthread.Priority = ThreadPriority.Lowest;
+			backgroundthread.IsBackground = true;
+			backgroundthread.Start();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -92,6 +104,11 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Unbind any methods
 				General.Actions.UnbindMethods(this);
+
+				// Stop the thread and wait for it to end
+				backgroundthread.Interrupt();
+				backgroundthread.Join();
+				backgroundthread = null;
 				
 				// Clean up
 				ClearUndos();
@@ -110,17 +127,23 @@ namespace CodeImp.DoomBuilder.Editing
 		// This clears the redos
 		private void ClearRedos()
 		{
-			// Dispose all redos
-			foreach(UndoSnapshot u in redos) u.Dispose();
-			redos.Clear();
+			lock(redos)
+			{
+				// Dispose all redos
+				foreach(UndoSnapshot u in redos) u.Dispose();
+				redos.Clear();
+			}
 		}
 
 		// This clears the undos
 		private void ClearUndos()
 		{
-			// Dispose all undos
-			foreach(UndoSnapshot u in undos) u.Dispose();
-			undos.Clear();
+			lock(undos)
+			{
+				// Dispose all undos
+				foreach(UndoSnapshot u in undos) u.Dispose();
+				undos.Clear();
+			}
 		}
 
 		// This checks and removes a level when the limit is reached
@@ -138,6 +161,68 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
+		// Background thread
+		private void BackgroundThread()
+		{
+			while(true)
+			{
+				if(dobackgroundwork)
+				{
+					// First set dobackgroundwork to false before performing the work so
+					// that it can be set to true again when another pass is needed
+					dobackgroundwork = false;
+
+					int undolevel = 0;
+					UndoSnapshot snapshot;
+					while(true)
+					{
+						// Get the next snapshot or leave
+						lock(undos)
+						{
+							if(undolevel < undos.Count)
+								snapshot = undos[undolevel];
+							else
+								break;
+						}
+
+						// Write to file or load from file, if needed
+						if(snapshot.StoreOnDisk && !snapshot.IsOnDisk)
+							snapshot.WriteToFile();
+						else if(!snapshot.StoreOnDisk && snapshot.IsOnDisk)
+							snapshot.RestoreFromFile();
+
+						// Next
+						undolevel++;
+					}
+
+					int redolevel = 0;
+					while(true)
+					{
+						// Get the next snapshot or leave
+						lock(redos)
+						{
+							if(redolevel < redos.Count)
+								snapshot = redos[redolevel];
+							else
+								break;
+						}
+
+						// Write to file or load from file, if needed
+						if(snapshot.StoreOnDisk && !snapshot.IsOnDisk)
+							snapshot.WriteToFile();
+						else if(!snapshot.StoreOnDisk && snapshot.IsOnDisk)
+							snapshot.RestoreFromFile();
+
+						// Next
+						redolevel++;
+					}
+				}
+
+				try { Thread.Sleep(30); }
+				catch(ThreadInterruptedException) { break; }
+			}
+		}
+		
 		#endregion
 		
 		#region ================== Public Methods
@@ -174,10 +259,17 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// Make a snapshot
 				u = new UndoSnapshot(description, General.Map.Map.Serialize(), ticketid);
-				
-				// Put it on the stack
-				undos.Insert(0, u);
-				LimitUndoRedoLevel(undos);
+
+				lock(undos)
+				{
+					// The current top of the stack can now be written to disk
+					// because it is no longer the next immediate undo level
+					if(undos.Count > 0) undos[0].StoreOnDisk = true;
+					
+					// Put it on the stack
+					undos.Insert(0, u);
+					LimitUndoRedoLevel(undos);
+				}
 				
 				// Clear all redos
 				ClearRedos();
@@ -190,6 +282,7 @@ namespace CodeImp.DoomBuilder.Editing
 				General.Map.IsChanged = true;
 
 				// Update
+				dobackgroundwork = true;
 				General.MainWindow.UpdateInterface();
 
 				// Done
@@ -212,11 +305,19 @@ namespace CodeImp.DoomBuilder.Editing
 				{
 					General.WriteLogLine("Withdrawing undo snapshot \"" + undos[0].Description + "\", Ticket ID " + ticket + "...");
 
-					// Remove the last made undo
-					undos[0].Dispose();
-					undos.RemoveAt(0);
+					lock(undos)
+					{
+						// Remove the last made undo
+						undos[0].Dispose();
+						undos.RemoveAt(0);
+						
+						// Make the current top of the stack load into memory
+						// because it just became the next immediate undo level
+						if(undos.Count > 0) undos[0].StoreOnDisk = false;
+					}
 					
 					// Update
+					dobackgroundwork = true;
 					General.MainWindow.UpdateInterface();
 				}
 			}
@@ -243,23 +344,38 @@ namespace CodeImp.DoomBuilder.Editing
 						// This returns false when mode was not volatile
 						if(!General.CancelVolatileMode())
 						{
-							// Get undo snapshot
-							u = undos[0];
-							undos.RemoveAt(0);
+							lock(undos)
+							{
+								// Get undo snapshot
+								u = undos[0];
+								undos.RemoveAt(0);
+
+								// Make the current top of the stack load into memory
+								// because it just became the next immediate undo level
+								if(undos.Count > 0) undos[0].StoreOnDisk = false;
+							}
 
 							General.WriteLogLine("Performing undo \"" + u.Description + "\", Ticket ID " + u.TicketID + "...");
 
 							// Make a snapshot for redo
 							r = new UndoSnapshot(u, General.Map.Map.Serialize());
 
-							// Put it on the stack
-							redos.Insert(0, r);
-							LimitUndoRedoLevel(redos);
-
+							lock(redos)
+							{
+								// The current top of the stack can now be written to disk
+								// because it is no longer the next immediate undo level
+								if(redos.Count > 0) redos[0].StoreOnDisk = true;
+								
+								// Put it on the stack
+								redos.Insert(0, r);
+								LimitUndoRedoLevel(redos);
+							}
+							
 							// Reset grouping
 							lastgroup = UndoGroup.None;
 							
 							// Change map set
+							if(u.IsOnDisk) { u.StoreOnDisk = false; u.RestoreFromFile(); }
 							General.Map.ChangeMapSet(new MapSet(u.MapData));
 
 							// Remove selection
@@ -271,6 +387,7 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Plugins.OnUndoEnd();
 
 							// Update
+							dobackgroundwork = true;
 							General.MainWindow.RedrawDisplay();
 							General.MainWindow.UpdateInterface();
 						}
@@ -301,23 +418,38 @@ namespace CodeImp.DoomBuilder.Editing
 						// Cancel volatile mode, if any
 						General.CancelVolatileMode();
 
-						// Get redo snapshot
-						r = redos[0];
-						redos.RemoveAt(0);
+						lock(redos)
+						{
+							// Get redo snapshot
+							r = redos[0];
+							redos.RemoveAt(0);
+							
+							// Make the current top of the stack load into memory
+							// because it just became the next immediate undo level
+							if(redos.Count > 0) redos[0].StoreOnDisk = false;
+						}
 
 						General.WriteLogLine("Performing redo \"" + r.Description + "\", Ticket ID " + r.TicketID + "...");
 
 						// Make a snapshot for undo
 						u = new UndoSnapshot(r, General.Map.Map.Serialize());
 
-						// Put it on the stack
-						undos.Insert(0, u);
-						LimitUndoRedoLevel(undos);
+						lock(undos)
+						{
+							// The current top of the stack can now be written to disk
+							// because it is no longer the next immediate undo level
+							if(undos.Count > 0) undos[0].StoreOnDisk = true;
 
+							// Put it on the stack
+							undos.Insert(0, u);
+							LimitUndoRedoLevel(undos);
+						}
+						
 						// Reset grouping
 						lastgroup = UndoGroup.None;
 
 						// Change map set
+						if(r.IsOnDisk) { r.StoreOnDisk = false; r.RestoreFromFile(); }
 						General.Map.ChangeMapSet(new MapSet(r.MapData));
 
 						// Remove selection
