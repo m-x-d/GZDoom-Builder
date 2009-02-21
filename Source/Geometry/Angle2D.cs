@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static float Normalized(float a)
 		{
 			while(a < 0f) a += PI2;
-			while(a > PI2) a -= PI2;
+			while(a >= PI2) a -= PI2;
 			return a;
 		}
 
