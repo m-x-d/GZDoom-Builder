@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
+using ICSharpCode.SharpZipLib.BZip2;
 
 #endregion
 
@@ -37,37 +38,119 @@ namespace CodeImp.DoomBuilder.Editing
 {
 	public class UndoSnapshot
 	{
-		// Variables
+		#region ================== Variables
+
 		private MemoryStream mapdata;
+		private string filename;
 		private string description;
 		private int ticketid;			// For safe withdrawing
+		private volatile bool storeondisk;
+		private volatile bool isondisk;
+		private bool isdisposed;
+		
+		#endregion
 
-		// Properties
+		#region ================== Properties
+
 		internal MemoryStream MapData { get { return mapdata; } }
 		public string Description { get { return description; } }
 		public int TicketID { get { return ticketid; } }
+		public bool StoreOnDisk { get { return storeondisk; } set { storeondisk = value; } }
+		public bool IsOnDisk { get { return isondisk; } }
 		
+		#endregion
+
+		#region ================== Constructor / Disposer
+
 		// Constructor
 		internal UndoSnapshot(string description, MemoryStream mapdata, int ticketid)
 		{
+			if(mapdata == null) General.Fail("Argument cannot be null!");
 			this.ticketid = ticketid;
 			this.description = description;
 			this.mapdata = mapdata;
+			this.filename = null;
 		}
 
 		// Constructor
 		internal UndoSnapshot(UndoSnapshot info, MemoryStream mapdata)
 		{
+			if(mapdata == null) General.Fail("Argument cannot be null!");
 			this.ticketid = info.ticketid;
 			this.description = info.description;
 			this.mapdata = mapdata;
+			this.filename = null;
 		}
 
 		// Disposer
 		public void Dispose()
 		{
-			if(mapdata != null) mapdata.Dispose();
-			mapdata = null;
+			lock(this)
+			{
+				isdisposed = true;
+				if(mapdata != null) mapdata.Dispose();
+				mapdata = null;
+				if(isondisk) File.Delete(filename);
+				isondisk = false;
+			}
 		}
+
+		#endregion
+		
+		#region ================== Methods
+
+		// This moves the snapshot from memory to harddisk
+		public void WriteToFile()
+		{
+			lock(this)
+			{
+				if(isdisposed) return;
+				if(isondisk) return;
+				isondisk = true;
+				
+				// Compress data
+				mapdata.Seek(0, SeekOrigin.Begin);
+				MemoryStream outstream = new MemoryStream((int)mapdata.Length);
+				BZip2.Compress(mapdata, outstream, 300000);
+
+				// Make temporary file
+				filename = General.MakeTempFilename(General.Map.TempPath, "snapshot");
+
+				// Write data to file
+				File.WriteAllBytes(filename, outstream.GetBuffer());
+
+				// Remove data from memory
+				mapdata.Dispose();
+				mapdata = null;
+				outstream.Dispose();
+			}
+		}
+
+		// This loads the snapshot from harddisk into memory
+		public void RestoreFromFile()
+		{
+			lock(this)
+			{
+				if(isdisposed) return;
+				if(!isondisk) return;
+				isondisk = false;
+
+				// Read the file data
+				MemoryStream instream = new MemoryStream(File.ReadAllBytes(filename));
+				
+				// Decompress data
+				MemoryStream outstream = new MemoryStream((int)instream.Length * 4);
+				instream.Seek(0, SeekOrigin.Begin);
+				BZip2.Decompress(instream, outstream);
+				mapdata = new MemoryStream(outstream.GetBuffer());
+				
+				// Clean up
+				instream.Dispose();
+				File.Delete(filename);
+				filename = null;
+			}
+		}
+		
+		#endregion
 	}
 }
