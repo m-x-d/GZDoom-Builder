@@ -128,7 +128,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnCopyTextureOffsets() { }
 		public virtual void OnPasteTextureOffsets() { }
 		protected virtual void SetTexture(string texturename) { }
-		public virtual void OnTextureFloodfill() { }
 
 		// Processing
 		public virtual void OnProcess(double deltatime)
@@ -143,6 +142,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						setuponloadedtexture = 0;
 						Setup();
+					}
+				}
+			}
+		}
+
+		// Flood-fill textures
+		public virtual void OnTextureFloodfill()
+		{
+			if(BuilderPlug.Me.CopiedFlat != null)
+			{
+				string oldtexture = GetTextureName();
+				long oldtexturelong = Lump.MakeLongName(oldtexture);
+				string newtexture = BuilderPlug.Me.CopiedFlat;
+				if(newtexture != oldtexture)
+				{
+					General.Map.UndoRedo.CreateUndo("Flood-fill flats with " + newtexture);
+
+					mode.Renderer.SetCrosshairBusy(true);
+					General.Interface.RedrawDisplay();
+
+					// Get the texture
+					ImageData newtextureimage = General.Map.Data.GetFlatImage(newtexture);
+					if(newtextureimage != null)
+					{
+						bool fillceilings = (this is VisualCeiling);
+						
+						// Do the fill
+						Tools.FloodfillFlats(this.Sector.Sector, fillceilings, oldtexturelong, newtextureimage, true);
+
+						// Get the changed sectors
+						List<Sector> changes = General.Map.Map.GetMarkedSectors(true);
+						foreach(Sector s in changes)
+						{
+							// Update the visual sector
+							if(mode.VisualSectorExists(s))
+							{
+								BaseVisualSector vs = (mode.GetVisualSector(s) as BaseVisualSector);
+								if(fillceilings)
+									vs.Ceiling.Setup();
+								else
+									vs.Floor.Setup();
+							}
+						}
+
+						General.Map.Data.UpdateUsedTextures();
+						mode.Renderer.SetCrosshairBusy(false);
+						mode.ShowTargetInfo();
 					}
 				}
 			}
