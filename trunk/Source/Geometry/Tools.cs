@@ -1286,6 +1286,61 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		#endregion
 
+		#region ================== Flat Floodfill
+
+		// This performs flat floodfill over sector floors or ceilings that match with the same flat
+		// NOTE: This method uses the sectors marking to indicate which sides have been filled
+		// When resetsectormarks is set to true, all sectors will first be marked false (not aligned).
+		// Setting resetsectormarks to false is usefull to fill only within a specific selection
+		// (set the marked property to true for the sectors outside the selection)
+		public static void FloodfillFlats(Sector start, bool fillceilings, long originalflat, ImageData fillflat, bool resetsectormarks)
+		{
+			Stack<Sector> todo = new Stack<Sector>(50);
+
+			// Mark all sectors false (they will be marked true when the flat is modified)
+			if(resetsectormarks) General.Map.Map.ClearMarkedSectors(false);
+			
+			// Begin with first sector
+			if(((start.LongFloorTexture == originalflat) && !fillceilings) ||
+			   ((start.LongCeilTexture == originalflat) && fillceilings))
+			{
+				todo.Push(start);
+			}
+
+			// Continue until nothing more to align
+			while(todo.Count > 0)
+			{
+				// Get the sector to do
+				Sector s = todo.Pop();
+				
+				// Apply new flat
+				if(fillceilings)
+					s.SetCeilTexture(fillflat.Name);
+				else
+					s.SetFloorTexture(fillflat.Name);
+				s.Marked = true;
+				
+				// Go for all sidedefs to add neighbouring sectors
+				foreach(Sidedef sd in s.Sidedefs)
+				{
+					// Sector on the other side of the line that we haven't checked yet?
+					if((sd.Other != null) && !sd.Other.Sector.Marked)
+					{
+						Sector os = sd.Other.Sector;
+						
+						// Check if texture matches
+						if(((os.LongFloorTexture == originalflat) && !fillceilings) ||
+						   ((os.LongCeilTexture == originalflat) && fillceilings))
+						{
+							todo.Push(os);
+						}
+					}
+				}
+			}
+		}
+
+		#endregion
+
 		#region ================== Texture Floodfill
 
 		// This performs texture floodfill along all walls that match with the same texture
@@ -1297,6 +1352,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			Stack<SidedefFillJob> todo = new Stack<SidedefFillJob>(50);
 
+			// Mark all sidedefs false (they will be marked true when the texture is aligned)
+			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
+			
 			// Begin with first sidedef
 			if(SidedefTextureMatch(start, originaltexture))
 			{

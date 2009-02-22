@@ -192,6 +192,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			base.OnUndoEnd();
 			ResourcesReloaded();
+			General.Map.Data.UpdateUsedTextures();
 			renderer.SetCrosshairBusy(false);
 		}
 
@@ -206,6 +207,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			base.OnRedoEnd();
 			ResourcesReloaded();
+			General.Map.Data.UpdateUsedTextures();
 			renderer.SetCrosshairBusy(false);
 		}
 
