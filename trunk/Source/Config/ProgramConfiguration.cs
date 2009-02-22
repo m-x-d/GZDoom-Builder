@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool scriptfontbold;
 		private bool scriptontop;
 		private int previewimagesize;
+		private int autoscrollspeed;
 
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -110,6 +111,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ScriptFontBold { get { return scriptfontbold; } internal set { scriptfontbold = value; } }
 		public bool ScriptOnTop { get { return scriptontop; } internal set { scriptontop = value; } }
 		public int PreviewImageSize { get { return previewimagesize; } internal set { previewimagesize = value; } }
+		public int AutoScrollSpeed { get { return autoscrollspeed; } internal set { autoscrollspeed = value; } }
 
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -165,6 +167,7 @@ namespace CodeImp.DoomBuilder.Config
 				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
 				scriptontop = cfg.ReadSetting("scriptontop", true);
 				previewimagesize = cfg.ReadSetting("previewimagesize", 1);
+				autoscrollspeed = cfg.ReadSetting("autoscrollspeed", 0);
 				
 				// Success
 				return true;
@@ -203,6 +206,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("scriptfontbold", scriptfontbold);
 			cfg.WriteSetting("scriptontop", scriptontop);
 			cfg.WriteSetting("previewimagesize", previewimagesize);
+			cfg.WriteSetting("autoscrollspeed", autoscrollspeed);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

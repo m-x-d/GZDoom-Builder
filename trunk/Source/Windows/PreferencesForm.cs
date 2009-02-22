@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.Windows
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;
 			scriptontop.Checked = General.Settings.ScriptOnTop;
 			previewsize.Value = General.Settings.PreviewImageSize;
+			autoscrollspeed.Value = General.Settings.AutoScrollSpeed;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -166,6 +167,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptFontName = scriptfontname.Text;
 			General.Settings.ScriptOnTop = scriptontop.Checked;
 			General.Settings.PreviewImageSize = previewsize.Value;
+			General.Settings.AutoScrollSpeed = autoscrollspeed.Value;
 
 			// Script font size
 			int fontsize = 8;
@@ -293,6 +295,14 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateScriptFontPreview();
 		}
 
+		private void autoscrollspeed_ValueChanged(object sender, EventArgs e)
+		{
+			if(autoscrollspeed.Value == 0)
+				autoscrollspeedlabel.Text = "Off";
+			else
+				autoscrollspeedlabel.Text = autoscrollspeed.Value.ToString() + "x";
+		}
+		
 		// This updates the script font preview label
 		private void UpdateScriptFontPreview()
 		{

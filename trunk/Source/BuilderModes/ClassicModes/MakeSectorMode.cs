@@ -326,7 +326,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.HideInfo();
 
 			// Stop processing
-			General.Interface.SetProcessorState(false);
+			General.Interface.DisableProcessing();
 		}
 
 		// This redraws the display
@@ -379,7 +379,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					s.FlatVertices.CopyTo(flashpolygon, 0);
 					flashintensity = 1.0f;
 					flashstarttime = (double)General.Clock.GetCurrentTime();
-					General.Interface.SetProcessorState(true);
+					General.Interface.EnableProcessing();
 
 					// Redraw overlay
 					DrawGeometry();
@@ -424,7 +424,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						s.FlatVertices.CopyTo(flashpolygon, 0);
 						flashintensity = 1.0f;
 						flashstarttime = (double)General.Clock.GetCurrentTime();
-						General.Interface.SetProcessorState(true);
+						General.Interface.EnableProcessing();
 					}
 					else
 					{
@@ -485,7 +485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// End of flash, trash the polygon
 					flashpolygon = null;
 					flashintensity = 0.0f;
-					General.Interface.SetProcessorState(false);
+					General.Interface.DisableProcessing();
 				}
 
 				// Redraw overlay

@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			FillBlockMap();
 			
 			// Start special input mode
-			General.Interface.SetProcessorState(true);
+			General.Interface.EnableProcessing();
 			General.Interface.StartExclusiveMouseInput();
 		}
 
@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			General.Map.VisualCamera.Sector = null;
 			
 			// Stop special input mode
-			General.Interface.SetProcessorState(false);
+			General.Interface.DisableProcessing();
 			General.Interface.StopExclusiveMouseInput();
 		}
 

@@ -290,6 +290,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+			EnableAutoPanning();
 			renderer.SetPresentation(Presentation.Standard);
 		}
 		
@@ -297,6 +298,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
+			DisableAutoPanning();
 			
 			// When not cancelled
 			if(!cancelled)

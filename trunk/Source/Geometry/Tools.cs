@@ -609,6 +609,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					{
 						General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
 						ApplyDefaultsToSidedef(ls.Line.Front, sourceside);
+						ls.Line.ApplySidedFlags();
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else
@@ -624,6 +625,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					{
 						General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
 						ApplyDefaultsToSidedef(ls.Line.Back, sourceside);
+						ls.Line.ApplySidedFlags();
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else
@@ -632,9 +634,6 @@ namespace CodeImp.DoomBuilder.Geometry
 						ls.Line.Back.ChangeSector(original.Sector);
 					}
 				}
-
-				// Update line
-				ls.Line.ApplySidedFlags();
 			}
 
 			// Return the new sector
@@ -1171,9 +1170,22 @@ namespace CodeImp.DoomBuilder.Geometry
 						{
 							sidescreated = true;
 
+							// When none of the linedef sides exist yet, this is a true new
+							// sector and should be marked for editing
+							bool istruenewsector = true;
+							foreach(LinedefSide ls in sectorlines)
+							{
+								if((ls.Front && (ls.Line.Front != null)) ||
+								   (!ls.Front && (ls.Line.Back != null)))
+								{
+									istruenewsector = false;
+									break;
+								}
+							}
+							
 							// Make the new sector
 							Sector newsector = Tools.MakeSector(sectorlines, oldlines);
-							newsector.Marked = true;
+							if(istruenewsector) newsector.Marked = true;
 							
 							// Go for all sidedefs in this new sector
 							foreach(Sidedef sd in newsector.Sidedefs)
