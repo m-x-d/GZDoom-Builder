@@ -1293,12 +1293,12 @@ namespace CodeImp.DoomBuilder.Geometry
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to fill only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		public static void FloodfillTextures(Sidedef start, ImageData texture, ImageData filltexture, bool resetsidemarks)
+		public static void FloodfillTextures(Sidedef start, long originaltexture, ImageData filltexture, bool resetsidemarks)
 		{
 			Stack<SidedefFillJob> todo = new Stack<SidedefFillJob>(50);
 
 			// Begin with first sidedef
-			if(SidedefTextureMatch(start, texture.LongName))
+			if(SidedefTextureMatch(start, originaltexture))
 			{
 				SidedefFillJob first = new SidedefFillJob();
 				first.sidedef = start;
@@ -1317,36 +1317,36 @@ namespace CodeImp.DoomBuilder.Geometry
 					Vertex v;
 
 					// Apply texturing
-					if(j.sidedef.LongHighTexture == texture.LongName) j.sidedef.SetTextureHigh(filltexture.Name);
-					if(j.sidedef.LongMiddleTexture == texture.LongName) j.sidedef.SetTextureMid(filltexture.Name);
-					if(j.sidedef.LongLowTexture == texture.LongName) j.sidedef.SetTextureLow(filltexture.Name);
+					if(j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
+					if(j.sidedef.LongMiddleTexture == originaltexture) j.sidedef.SetTextureMid(filltexture.Name);
+					if(j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
 					j.sidedef.Marked = true;
 					
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForFloodfill(todo, v, true, texture.LongName);
+					AddSidedefsForFloodfill(todo, v, true, originaltexture);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForFloodfill(todo, v, false, texture.LongName);
+					AddSidedefsForFloodfill(todo, v, false, originaltexture);
 				}
 				else
 				{
 					Vertex v;
 
 					// Apply texturing
-					if(j.sidedef.LongHighTexture == texture.LongName) j.sidedef.SetTextureHigh(filltexture.Name);
-					if(j.sidedef.LongMiddleTexture == texture.LongName) j.sidedef.SetTextureMid(filltexture.Name);
-					if(j.sidedef.LongLowTexture == texture.LongName) j.sidedef.SetTextureLow(filltexture.Name);
+					if(j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
+					if(j.sidedef.LongMiddleTexture == originaltexture) j.sidedef.SetTextureMid(filltexture.Name);
+					if(j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
 					j.sidedef.Marked = true;
 					
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForFloodfill(todo, v, false, texture.LongName);
+					AddSidedefsForFloodfill(todo, v, false, originaltexture);
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForFloodfill(todo, v, true, texture.LongName);
+					AddSidedefsForFloodfill(todo, v, true, originaltexture);
 				}
 			}
 		}
@@ -1505,9 +1505,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This checks if any of the sidedef texture match the given texture
 		private static bool SidedefTextureMatch(Sidedef sd, long texturelongname)
 		{
-			return (sd.LongHighTexture == texturelongname) ||
-				   (sd.LongLowTexture == texturelongname) ||
-				   (sd.LongMiddleTexture == texturelongname);
+			return ((sd.LongHighTexture == texturelongname) && sd.HighRequired()) ||
+				   ((sd.LongLowTexture == texturelongname) && sd.LowRequired()) ||
+				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || (sd.MiddleTexture[0] != '-'))) ;
 		}
 		
 		#endregion
