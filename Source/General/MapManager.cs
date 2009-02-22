@@ -151,6 +151,9 @@ namespace CodeImp.DoomBuilder
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Stop processing
+				General.MainWindow.StopProcessing();
+				
 				// Close script editor
 				CloseScriptEditor(false);
 				

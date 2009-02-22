@@ -355,10 +355,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
+			EnableAutoPanning();
 			renderer.SetPresentation(Presentation.Standard);
 			
 			// Set cursor
 			General.Interface.SetCursor(Cursors.Cross);
+		}
+
+		// Disengaging
+		public override void OnDisengage()
+		{
+			base.OnDisengage();
+			DisableAutoPanning();
 		}
 		
 		// Cancelled

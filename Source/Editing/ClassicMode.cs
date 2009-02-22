@@ -48,6 +48,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private const float SELECTION_BORDER_SIZE = 2f;
 		private const int SELECTION_ALPHA = 200;
 		private const float CENTER_VIEW_PADDING = 0.06f;
+		private const float AUTOPAN_BORDER_SIZE = 100.0f;
 
 		#endregion
 
@@ -77,6 +78,7 @@ namespace CodeImp.DoomBuilder.Editing
 
         // View panning
         protected bool panning;
+		private bool autopanenabled;
 		
 		#endregion
 
@@ -364,8 +366,73 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 		}
 		
-		#endregion
+		// This enabled automatic panning, if preferred
+		protected void EnableAutoPanning()
+		{
+			if(General.Settings.AutoScrollSpeed > 0)
+			{
+				if(!autopanenabled)
+				{
+					autopanenabled = true;
+					General.MainWindow.EnableProcessing();
+				}
+			}
+		}
+
+		// This disabls automatic panning
+		protected void DisableAutoPanning()
+		{
+			if(autopanenabled)
+			{
+				autopanenabled = false;
+				General.MainWindow.DisableProcessing();
+			}
+		}
 		
+		#endregion
+
+		#region ================== Processing
+
+		// Processing
+		public override void OnProcess(double deltatime)
+		{
+			base.OnProcess(deltatime);
+
+			if(autopanenabled)
+			{
+				Vector2D panamount = new Vector2D();
+				
+				// How much to pan the view in X?
+				if(mousepos.x < AUTOPAN_BORDER_SIZE)
+					panamount.x = -AUTOPAN_BORDER_SIZE + mousepos.x;
+				else if(mousepos.x > (General.MainWindow.Display.ClientSize.Width - AUTOPAN_BORDER_SIZE))
+					panamount.x = mousepos.x - (General.MainWindow.Display.ClientSize.Width - AUTOPAN_BORDER_SIZE);
+
+				// How much to pan the view in Y?
+				if(mousepos.y < AUTOPAN_BORDER_SIZE)
+					panamount.y = AUTOPAN_BORDER_SIZE - mousepos.y;
+				else if(mousepos.y > (General.MainWindow.Display.ClientSize.Height - AUTOPAN_BORDER_SIZE))
+					panamount.y = -(mousepos.y - (General.MainWindow.Display.ClientSize.Height - AUTOPAN_BORDER_SIZE));
+
+				// Do any panning?
+				if(panamount.GetManhattanLength() > 0.0f)
+				{
+					// Scale and power this for nicer usability
+					Vector2D pansign = panamount.GetSign();
+					panamount = (panamount * panamount) * pansign * 0.0001f * (float)General.Settings.AutoScrollSpeed / renderer.Scale;
+					
+					// Multiply by delta time
+					panamount.x = (float)((double)panamount.x * deltatime);
+					panamount.y = (float)((double)panamount.y * deltatime);
+
+					// Pan the view
+					ScrollBy(panamount.x, panamount.y);
+				}
+			}
+		}
+
+		#endregion
+
 		#region ================== Input
 
 		// Mouse leaves the display

@@ -131,6 +131,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private IntPtr windowptr;
 		
 		// Processing
+		private int processingcount;
 		private double lastupdatetime;
 		
 		#endregion
@@ -442,7 +443,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 					// Stop exclusive mode, if any is active
 					StopExclusiveMouseInput();
-					SetProcessorState(false);
+					StopProcessing();
 
 					// Unbind methods
 					General.Actions.UnbindMethods(this);
@@ -2255,11 +2256,35 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
-		// This toggles the processor
-		public void SetProcessorState(bool on)
+		public void EnableProcessing()
 		{
-			processor.Enabled = on;
-			if(on) lastupdatetime = General.Clock.GetCurrentTime();
+			// Increase count
+			processingcount++;
+
+			// If not already enabled, enable processing now
+			if(!processor.Enabled)
+			{
+				processor.Enabled = true;
+				lastupdatetime = General.Clock.GetCurrentTime();
+			}
+		}
+
+		public void DisableProcessing()
+		{
+			// Increase count
+			processingcount--;
+			if(processingcount < 0) processingcount = 0;
+			
+			// Turn off
+			if(processor.Enabled && (processingcount == 0))
+				processor.Enabled = false;
+		}
+
+		internal void StopProcessing()
+		{
+			// Turn off
+			processingcount = 0;
+			processor.Enabled = false;
 		}
 		
 		// Processor event

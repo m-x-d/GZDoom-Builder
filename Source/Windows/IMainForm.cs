@@ -67,7 +67,8 @@ namespace CodeImp.DoomBuilder.Windows
 		void RefreshInfo();
 		void UpdateCoordinates(Vector2D coords);
 		bool Focus();
-		void SetProcessorState(bool on);
+		void EnableProcessing();
+		void DisableProcessing();
 		void StartExclusiveMouseInput();
 		void StopExclusiveMouseInput();
 		void BreakExclusiveMouseInput();

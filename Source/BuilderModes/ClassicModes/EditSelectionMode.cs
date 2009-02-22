@@ -120,6 +120,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Line2D resizeaxis;
 		private int stickcorner;
 		private float rotategripangle;
+		private bool autopanning;
 		
 		// Rectangle components
 		private Vector2D[] originalcorners; // lefttop, righttop, rightbottom, leftbottom
@@ -1038,6 +1039,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					dragoffset = mousemappos - offset;
 					mode = ModifyMode.Dragging;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Resize
@@ -1064,6 +1068,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					Highlight(null);
 					mode = ModifyMode.Resizing;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Resize
@@ -1077,6 +1084,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					stickcorner = 0;
 					Highlight(null);
 					mode = ModifyMode.Resizing;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Resize
@@ -1090,6 +1100,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					stickcorner = 0;
 					Highlight(null);
 					mode = ModifyMode.Resizing;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Resize
@@ -1103,6 +1116,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					stickcorner = 1;
 					Highlight(null);
 					mode = ModifyMode.Resizing;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Rotate
@@ -1111,6 +1127,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					rotategripangle = delta.GetAngle() - rotation;
 					Highlight(null);
 					mode = ModifyMode.Rotating;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Rotate
@@ -1119,6 +1138,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					rotategripangle = delta.GetAngle() - rotation;
 					Highlight(null);
 					mode = ModifyMode.Rotating;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Rotate
@@ -1127,6 +1149,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					rotategripangle = delta.GetAngle() - rotation;
 					Highlight(null);
 					mode = ModifyMode.Rotating;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Rotate
@@ -1135,6 +1160,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					rotategripangle = delta.GetAngle() - rotation;
 					Highlight(null);
 					mode = ModifyMode.Rotating;
+
+					EnableAutoPanning();
+					autopanning = true;
 					break;
 
 				// Outside the selection?
@@ -1152,6 +1180,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Remove extension line
 			extensionline = new Line2D();
+
+			if(autopanning)
+			{
+				DisableAutoPanning();
+				autopanning = false;
+			}
 			
 			// No modifying mode
 			mode = ModifyMode.None;
