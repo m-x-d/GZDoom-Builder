@@ -373,11 +373,18 @@ namespace CodeImp.DoomBuilder.Editing
 							
 							// Reset grouping
 							lastgroup = UndoGroup.None;
-							
-							// Change map set
-							if(u.IsOnDisk) { u.StoreOnDisk = false; u.RestoreFromFile(); }
-							General.Map.ChangeMapSet(new MapSet(u.MapData));
 
+							lock(u)
+							{
+								// Change map set
+								if(u.IsOnDisk)
+								{
+									u.StoreOnDisk = false;
+									u.RestoreFromFile();
+								}
+								General.Map.ChangeMapSet(new MapSet(u.MapData));
+							}
+							
 							// Remove selection
 							General.Map.Map.ClearAllMarks(false);
 							General.Map.Map.ClearAllSelected();
@@ -448,10 +455,17 @@ namespace CodeImp.DoomBuilder.Editing
 						// Reset grouping
 						lastgroup = UndoGroup.None;
 
-						// Change map set
-						if(r.IsOnDisk) { r.StoreOnDisk = false; r.RestoreFromFile(); }
-						General.Map.ChangeMapSet(new MapSet(r.MapData));
-
+						lock(r)
+						{
+							// Change map set
+							if(r.IsOnDisk)
+							{
+								r.StoreOnDisk = false;
+								r.RestoreFromFile();
+							}
+							General.Map.ChangeMapSet(new MapSet(r.MapData));
+						}
+						
 						// Remove selection
 						General.Map.Map.ClearAllMarks(false);
 						General.Map.Map.ClearAllSelected();
