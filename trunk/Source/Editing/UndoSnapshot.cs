@@ -52,10 +52,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		internal MemoryStream MapData { get { return mapdata; } }
 		public string Description { get { return description; } }
 		public int TicketID { get { return ticketid; } }
-		public bool StoreOnDisk { get { return storeondisk; } set { storeondisk = value; } }
+		internal bool StoreOnDisk { get { return storeondisk; } set { storeondisk = value; } }
 		public bool IsOnDisk { get { return isondisk; } }
 		
 		#endregion
@@ -83,7 +82,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Disposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			lock(this)
 			{
@@ -99,8 +98,21 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		#region ================== Methods
 
+		// This returns the map data
+		internal MemoryStream GetMapData()
+		{
+			lock(this)
+			{
+				// Restore into memory if needed
+				if(isondisk) RestoreFromFile();
+				
+				// Return a copy of the buffer
+				return new MemoryStream(mapdata.ToArray());
+			}
+		}
+		
 		// This moves the snapshot from memory to harddisk
-		public void WriteToFile()
+		internal void WriteToFile()
 		{
 			lock(this)
 			{
@@ -117,7 +129,7 @@ namespace CodeImp.DoomBuilder.Editing
 				filename = General.MakeTempFilename(General.Map.TempPath, "snapshot");
 
 				// Write data to file
-				File.WriteAllBytes(filename, outstream.GetBuffer());
+				File.WriteAllBytes(filename, outstream.ToArray());
 
 				// Remove data from memory
 				mapdata.Dispose();
@@ -127,7 +139,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This loads the snapshot from harddisk into memory
-		public void RestoreFromFile()
+		internal void RestoreFromFile()
 		{
 			lock(this)
 			{
@@ -142,7 +154,7 @@ namespace CodeImp.DoomBuilder.Editing
 				MemoryStream outstream = new MemoryStream((int)instream.Length * 4);
 				instream.Seek(0, SeekOrigin.Begin);
 				BZip2.Decompress(instream, outstream);
-				mapdata = new MemoryStream(outstream.GetBuffer());
+				mapdata = new MemoryStream(outstream.ToArray());
 				
 				// Clean up
 				instream.Dispose();

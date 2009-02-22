@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Start background thread
 			backgroundthread = new Thread(new ThreadStart(BackgroundThread));
-			backgroundthread.Name = "Background Loader";
+			backgroundthread.Name = "Snapshot Compressor";
 			backgroundthread.Priority = ThreadPriority.Lowest;
 			backgroundthread.IsBackground = true;
 			backgroundthread.Start();
@@ -374,16 +374,10 @@ namespace CodeImp.DoomBuilder.Editing
 							// Reset grouping
 							lastgroup = UndoGroup.None;
 
-							lock(u)
-							{
-								// Change map set
-								if(u.IsOnDisk)
-								{
-									u.StoreOnDisk = false;
-									u.RestoreFromFile();
-								}
-								General.Map.ChangeMapSet(new MapSet(u.MapData));
-							}
+							// Change map set
+							MemoryStream data = u.GetMapData();
+							General.Map.ChangeMapSet(new MapSet(data));
+							data.Dispose();
 							
 							// Remove selection
 							General.Map.Map.ClearAllMarks(false);
@@ -407,7 +401,7 @@ namespace CodeImp.DoomBuilder.Editing
 		
 		// This performs a redo
 		[BeginAction("redo")]
-		internal void PerformRedo()
+		public void PerformRedo()
 		{
 			UndoSnapshot u, r;
 			Cursor oldcursor = Cursor.Current;
@@ -455,16 +449,10 @@ namespace CodeImp.DoomBuilder.Editing
 						// Reset grouping
 						lastgroup = UndoGroup.None;
 
-						lock(r)
-						{
-							// Change map set
-							if(r.IsOnDisk)
-							{
-								r.StoreOnDisk = false;
-								r.RestoreFromFile();
-							}
-							General.Map.ChangeMapSet(new MapSet(r.MapData));
-						}
+						// Change map set
+						MemoryStream data = r.GetMapData();
+						General.Map.ChangeMapSet(new MapSet(data));
+						data.Dispose();
 						
 						// Remove selection
 						General.Map.Map.ClearAllMarks(false);
