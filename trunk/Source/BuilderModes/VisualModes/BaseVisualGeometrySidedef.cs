@@ -221,10 +221,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Flood-fill textures
 		public virtual void OnTextureFloodfill()
 		{
-			if(General.Interface.IsActiveWindow)
+			if(BuilderPlug.Me.CopiedTexture != null)
 			{
 				string oldtexture = GetTextureName();
-				string newtexture = General.Interface.BrowseTexture(General.Interface, oldtexture);
+				long oldtexturelong = Lump.MakeLongName(oldtexture);
+				string newtexture = BuilderPlug.Me.CopiedTexture;
 				if(newtexture != oldtexture)
 				{
 					General.Map.UndoRedo.CreateUndo("Flood-fill textures with " + newtexture);
@@ -237,7 +238,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(newtextureimage != null)
 					{
 						// Do the alignment
-						Tools.FloodfillTextures(this.Sidedef, base.Texture, newtextureimage, true);
+						Tools.FloodfillTextures(this.Sidedef, oldtexturelong, newtextureimage, true);
 
 						// Get the changed sidedefs
 						List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);

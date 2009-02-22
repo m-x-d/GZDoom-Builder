@@ -27,12 +27,12 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal class Lump
+	public class Lump
 	{
 		#region ================== Methods
 
 		// Allowed characters in a map lump name
-		public const string MAP_LUMP_NAME_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
+		internal const string MAP_LUMP_NAME_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_";
 
 		#endregion
 
@@ -58,21 +58,21 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Properties
 
-		public WAD Owner { get { return owner; } }
-		public string Name { get { return name; } }
-		public long LongName { get { return longname; } }
-		public byte[] FixedName { get { return fixedname; } }
-		public int Offset { get { return offset; } }
-		public int Length { get { return length; } }
-		public ClippedStream Stream { get { return stream; } }
-		public bool IsDisposed { get { return isdisposed; } }
+		internal WAD Owner { get { return owner; } }
+		internal string Name { get { return name; } }
+		internal long LongName { get { return longname; } }
+		internal byte[] FixedName { get { return fixedname; } }
+		internal int Offset { get { return offset; } }
+		internal int Length { get { return length; } }
+		internal ClippedStream Stream { get { return stream; } }
+		internal bool IsDisposed { get { return isdisposed; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public Lump(Stream data, WAD owner, byte[] fixedname, int offset, int length)
+		internal Lump(Stream data, WAD owner, byte[] fixedname, int offset, int length)
 		{
 			// Initialize
 			this.stream = new ClippedStream(data, offset, length);
@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// Disposer
-		public void Dispose()
+		internal void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This copies lump data to another lump
-		public void CopyTo(Lump lump)
+		internal void CopyTo(Lump lump)
 		{
 			BinaryReader reader;
 
@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 		
 		// This renames the lump
-		public void Rename(string newname)
+		internal void Rename(string newname)
 		{
 			// Make name
 			this.fixedname = MakeFixedName(newname, WAD.ENCODING);
