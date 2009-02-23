@@ -163,6 +163,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Write resources to config
 			resources.WriteToConfig(mapconfig, "resources");
 
+			// Write grid settings
+			General.Map.Grid.WriteToConfig(mapconfig, "grid");
+
 			// Write scripts to config
 			mapconfig.DeleteSetting("scripts");
 			for(int i = 0; i < scriptfiles.Count; i++)
@@ -229,6 +232,12 @@ namespace CodeImp.DoomBuilder.Map
 			// Clear this list
 			resources.Clear();
 			resources.AddRange(fromlist);
+		}
+
+		// This loads the grid settings
+		internal void ApplyGridSettings()
+		{
+			General.Map.Grid.ReadFromConfig(mapconfig, "grid");
 		}
 		
 		// This displays the current map name

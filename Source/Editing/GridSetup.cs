@@ -124,6 +124,36 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Methods
 
+		// Write settings to configuration
+		internal void WriteToConfig(Configuration cfg, string path)
+		{
+			// Write settings
+			cfg.WriteSetting(path + ".background", background);
+			cfg.WriteSetting(path + ".backsource", backsource);
+			cfg.WriteSetting(path + ".backoffsetx", backoffsetx);
+			cfg.WriteSetting(path + ".backoffsety", backoffsety);
+			cfg.WriteSetting(path + ".backscalex", backscalex);
+			cfg.WriteSetting(path + ".backscaley", backscaley);
+			cfg.WriteSetting(path + ".gridsize", gridsize);
+		}
+
+		// Read settings from configuration
+		internal void ReadFromConfig(Configuration cfg, string path)
+		{
+			// Read settings
+			background = cfg.ReadSetting(path + ".background", "");
+			backsource = cfg.ReadSetting(path + ".backsource", 0);
+			backoffsetx = cfg.ReadSetting(path + ".backoffsetx", 0);
+			backoffsety = cfg.ReadSetting(path + ".backoffsety", 0);
+			backscalex = cfg.ReadSetting(path + ".backscalex", 1.0f);
+			backscaley = cfg.ReadSetting(path + ".backscaley", 1.0f);
+			gridsize = cfg.ReadSetting(path + ".gridsize", DEFAULT_GRID_SIZE);
+
+			// Setup
+			SetGridSize(gridsize);
+			LinkBackground();
+		}
+
 		// This sets the grid size
 		internal void SetGridSize(int size)
 		{
