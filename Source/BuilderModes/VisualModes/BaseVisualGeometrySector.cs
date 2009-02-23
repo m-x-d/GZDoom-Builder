@@ -127,6 +127,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnResetTextureOffset() { }
 		public virtual void OnCopyTextureOffsets() { }
 		public virtual void OnPasteTextureOffsets() { }
+		public virtual void OnInsert() { }
+		public virtual void OnDelete() { }
 		protected virtual void SetTexture(string texturename) { }
 
 		// Processing

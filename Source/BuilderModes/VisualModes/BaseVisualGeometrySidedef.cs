@@ -116,6 +116,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected virtual void SetTexture(string texturename) { }
 		public abstract bool Setup();
 		
+		// Insert middle texture
+		public virtual void OnInsert()
+		{
+			// No middle texture yet?
+			if(!Sidedef.MiddleRequired() && (string.IsNullOrEmpty(Sidedef.MiddleTexture) || (Sidedef.MiddleTexture[0] == '-')))
+			{
+				// Make it now
+				General.Map.UndoRedo.CreateUndo("Create middle texture");
+				General.Settings.FindDefaultDrawSettings();
+				Sidedef.SetTextureMid(General.Settings.DefaultTexture);
+
+				// Update
+				Sector.Rebuild();
+				
+				// Other side as well
+				if(string.IsNullOrEmpty(Sidedef.Other.MiddleTexture) || (Sidedef.Other.MiddleTexture[0] == '-'))
+				{
+					Sidedef.Other.SetTextureMid(General.Settings.DefaultTexture);
+
+					// Update
+					VisualSector othersector = mode.GetVisualSector(Sidedef.Other.Sector);
+					if(othersector is BaseVisualSector) (othersector as BaseVisualSector).Rebuild();
+				}
+			}
+		}
+
+		// Delete texture
+		public virtual void OnDelete()
+		{
+			// Remove texture
+			General.Map.UndoRedo.CreateUndo("Delete texture");
+			SetTexture("-");
+
+			// Update
+			Sector.Rebuild();
+		}
+		
 		// Processing
 		public virtual void OnProcess(double deltatime)
 		{
