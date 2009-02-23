@@ -1382,16 +1382,17 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Get the align job to do
 				SidedefFillJob j = todo.Pop();
 
+				// Apply texturing
+				if(j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
+				if(((j.sidedef.MiddleTexture[0] != '-') || j.sidedef.MiddleRequired()) &&
+				   (j.sidedef.LongMiddleTexture == originaltexture)) j.sidedef.SetTextureMid(filltexture.Name);
+				if(j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
+				j.sidedef.Marked = true;
+				
 				if(j.forward)
 				{
 					Vertex v;
 
-					// Apply texturing
-					if(j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
-					if(j.sidedef.LongMiddleTexture == originaltexture) j.sidedef.SetTextureMid(filltexture.Name);
-					if(j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
-					j.sidedef.Marked = true;
-					
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
 					AddSidedefsForFloodfill(todo, v, true, originaltexture);
@@ -1404,12 +1405,6 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					Vertex v;
 
-					// Apply texturing
-					if(j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture.Name);
-					if(j.sidedef.LongMiddleTexture == originaltexture) j.sidedef.SetTextureMid(filltexture.Name);
-					if(j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture.Name);
-					j.sidedef.Marked = true;
-					
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
 					AddSidedefsForFloodfill(todo, v, false, originaltexture);
