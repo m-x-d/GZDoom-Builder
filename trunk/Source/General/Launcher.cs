@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder
 			outp = outp.Replace("%nm", "%NM");
 			
 			// Replace placeholders with actual values
-			outp = outp.Replace("%F", tempwad);
+			outp = outp.Replace("%F", f);
 			outp = outp.Replace("%WP", p_wp);
 			outp = outp.Replace("%WF", p_wf);
 			outp = outp.Replace("%L1", p_l1);
