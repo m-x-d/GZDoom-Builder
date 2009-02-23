@@ -60,6 +60,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnToggleUpperUnpegged();
 		void OnToggleLowerUnpegged();
 		void OnProcess(double deltatime);
+		void OnInsert();
+		void OnDelete();
 		
 		// Other methods
 		string GetTextureName();

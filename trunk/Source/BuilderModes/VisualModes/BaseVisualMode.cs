@@ -583,6 +583,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ShowTargetInfo();
 		}
 		
+		[BeginAction("insertitem", BaseAction = true)]
+		public void Insert()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnInsert();
+			ShowTargetInfo();
+		}
+
+		[BeginAction("deleteitem", BaseAction = true)]
+		public void Delete()
+		{
+			PickTargetUnlocked();
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnDelete();
+			ShowTargetInfo();
+		}
+		
 		#endregion
 	}
 }
