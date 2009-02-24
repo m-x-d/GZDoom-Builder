@@ -262,25 +262,31 @@ namespace CodeImp.DoomBuilder.Map
 		// This removes textures that are not required
 		public void RemoveUnneededTextures(bool removemiddle)
 		{
-			if(!HighRequired())
+			// Check if the line or sectors have no action or tags because
+			// if they do, any texture on this side could be needed
+			if((linedef.Tag <= 0) && (linedef.Action == 0) && (sector.Tag <= 0) &&
+			   ((Other == null) || (Other.sector.Tag <= 0)))
 			{
-				this.texnamehigh = "-";
-				this.longtexnamehigh = MapSet.EmptyLongName;
-				General.Map.IsChanged = true;
-			}
+				if(!HighRequired())
+				{
+					this.texnamehigh = "-";
+					this.longtexnamehigh = MapSet.EmptyLongName;
+					General.Map.IsChanged = true;
+				}
 
-			if(!MiddleRequired() && removemiddle)
-			{
-				this.texnamemid = "-";
-				this.longtexnamemid = MapSet.EmptyLongName;
-				General.Map.IsChanged = true;
-			}
-			
-			if(!LowRequired())
-			{
-				this.texnamelow = "-";
-				this.longtexnamelow = MapSet.EmptyLongName;
-				General.Map.IsChanged = true;
+				if(!MiddleRequired() && removemiddle)
+				{
+					this.texnamemid = "-";
+					this.longtexnamemid = MapSet.EmptyLongName;
+					General.Map.IsChanged = true;
+				}
+
+				if(!LowRequired())
+				{
+					this.texnamelow = "-";
+					this.longtexnamelow = MapSet.EmptyLongName;
+					General.Map.IsChanged = true;
+				}
 			}
 		}
 		
