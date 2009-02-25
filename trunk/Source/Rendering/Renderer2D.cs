@@ -1198,31 +1198,38 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			if((buffer != null) && (s.FlatVertices != null) && (s.FlatVertices.Length > 0))
 			{
-				ImageData img = General.Map.Data.GetFlatImage(longimagename);
-				if(img != null)
+				if(longimagename == 0)
 				{
-					// Texture unknown?
-					if(img is UnknownImage)
+					t = whitetexture.Texture;
+				}
+				else
+				{
+					ImageData img = General.Map.Data.GetFlatImage(longimagename);
+					if(img != null)
 					{
-						General.Map.Data.UnknownTexture3D.CreateTexture();
-						t = General.Map.Data.UnknownTexture3D.Texture;
-					}
-					// Is the texture loaded?
-					else if(img.IsImageLoaded && !img.LoadFailed)
-					{
-						if(img.Texture == null) img.CreateTexture();
-						t = img.Texture;
+						// Texture unknown?
+						if(img is UnknownImage)
+						{
+							General.Map.Data.UnknownTexture3D.CreateTexture();
+							t = General.Map.Data.UnknownTexture3D.Texture;
+						}
+						// Is the texture loaded?
+						else if(img.IsImageLoaded && !img.LoadFailed)
+						{
+							if(img.Texture == null) img.CreateTexture();
+							t = img.Texture;
+						}
+						else
+						{
+							t = whitetexture.Texture;
+						}
 					}
 					else
 					{
 						t = whitetexture.Texture;
 					}
 				}
-				else
-				{
-					t = whitetexture.Texture;
-				}
-
+				
 				// Set renderstates for rendering
 				graphics.Shaders.Display2D.Texture1 = t;
 				graphics.Device.SetTexture(0, t);
