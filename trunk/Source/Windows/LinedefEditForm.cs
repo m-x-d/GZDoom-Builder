@@ -329,7 +329,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Make undo
 			if(lines.Count > 1) undodesc = lines.Count + " linedefs";
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
-
+			
 			// Go for all the lines
 			foreach(Linedef l in lines)
 			{
@@ -353,14 +353,25 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Action/tags
-				if(!action.Empty) l.Action = action.Value;
 				l.Tag = tag.GetResult(l.Tag);
-				l.Args[0] = arg0.GetResult(l.Args[0]);
-				l.Args[1] = arg1.GetResult(l.Args[1]);
-				l.Args[2] = arg2.GetResult(l.Args[2]);
-				l.Args[3] = arg3.GetResult(l.Args[3]);
-				l.Args[4] = arg4.GetResult(l.Args[4]);
-
+				if(!action.Empty) l.Action = action.Value;
+				if(l.Action != 0)
+				{
+					l.Args[0] = arg0.GetResult(l.Args[0]);
+					l.Args[1] = arg1.GetResult(l.Args[1]);
+					l.Args[2] = arg2.GetResult(l.Args[2]);
+					l.Args[3] = arg3.GetResult(l.Args[3]);
+					l.Args[4] = arg4.GetResult(l.Args[4]);
+				}
+				else
+				{
+					l.Args[0] = 0;
+					l.Args[1] = 0;
+					l.Args[2] = 0;
+					l.Args[3] = 0;
+					l.Args[4] = 0;
+				}
+				
 				// Remove front side?
 				if((l.Front != null) && (frontside.CheckState == CheckState.Unchecked))
 				{
