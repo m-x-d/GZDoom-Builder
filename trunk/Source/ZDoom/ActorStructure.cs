@@ -62,6 +62,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private bool heightfound;
 		private string tag;
 		private string category;
+		private string sprite;
 		
 		// States
 		private Dictionary<string, StateStructure> states;
@@ -96,6 +97,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			inheritclass = "actor";
 			replaceclass = null;
 			category = "Decorate";
+			sprite = null;
 			games = new List<string>();
 			radius = 10;
 			height = 20;
@@ -314,6 +316,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 						games.Add(v.ToLowerInvariant());
 					}
 				}
+				// Sprite property?
+				else if(token == "$sprite")
+				{
+					// The rest of the line is the sprite name
+					if(parser.SkipWhitespace(false))
+						sprite = parser.ReadLine();
+				}
 				// Category property?
 				else if(token == "$category")
 				{
@@ -373,51 +382,59 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			string sprite = "";
 			
-			// Try the idle state
-			if(states.ContainsKey("idle"))
-			{
-				StateStructure s = states["idle"];
-				if(!string.IsNullOrEmpty(s.FirstSprite))
-					sprite = s.FirstSprite;
-			}
-			
-			// Try the see state
-			if(string.IsNullOrEmpty(sprite) && states.ContainsKey("see"))
-			{
-				StateStructure s = states["see"];
-				if(!string.IsNullOrEmpty(s.FirstSprite))
-					sprite = s.FirstSprite;
-			}
-
-			// Try the inactive state
-			if(string.IsNullOrEmpty(sprite) && states.ContainsKey("inactive"))
-			{
-				StateStructure s = states["inactive"];
-				if(!string.IsNullOrEmpty(s.FirstSprite))
-					sprite = s.FirstSprite;
-			}
-			
-			// Still no sprite found? then just pick the first we can find
-			if(string.IsNullOrEmpty(sprite))
-			{
-				foreach(StateStructure s in states.Values)
-				{
-					if(!string.IsNullOrEmpty(s.FirstSprite))
-					{
-						sprite = s.FirstSprite;
-						break;
-					}
-				}
-			}
-			
+			// Sprite forced?
 			if(!string.IsNullOrEmpty(sprite))
 			{
-				// The sprite name is not actually complete, we still have to append
-				// the direction characters to it. Find an existing sprite with direction.
-				foreach(string postfix in SPRITE_POSTFIXES)
+				return sprite;
+			}
+			else
+			{
+				// Try the idle state
+				if(states.ContainsKey("idle"))
 				{
-					if(General.Map.Data.GetSpriteExists(sprite + postfix))
-						return sprite + postfix;
+					StateStructure s = states["idle"];
+					if(!string.IsNullOrEmpty(s.FirstSprite))
+						sprite = s.FirstSprite;
+				}
+				
+				// Try the see state
+				if(string.IsNullOrEmpty(sprite) && states.ContainsKey("see"))
+				{
+					StateStructure s = states["see"];
+					if(!string.IsNullOrEmpty(s.FirstSprite))
+						sprite = s.FirstSprite;
+				}
+
+				// Try the inactive state
+				if(string.IsNullOrEmpty(sprite) && states.ContainsKey("inactive"))
+				{
+					StateStructure s = states["inactive"];
+					if(!string.IsNullOrEmpty(s.FirstSprite))
+						sprite = s.FirstSprite;
+				}
+				
+				// Still no sprite found? then just pick the first we can find
+				if(string.IsNullOrEmpty(sprite))
+				{
+					foreach(StateStructure s in states.Values)
+					{
+						if(!string.IsNullOrEmpty(s.FirstSprite))
+						{
+							sprite = s.FirstSprite;
+							break;
+						}
+					}
+				}
+				
+				if(!string.IsNullOrEmpty(sprite))
+				{
+					// The sprite name is not actually complete, we still have to append
+					// the direction characters to it. Find an existing sprite with direction.
+					foreach(string postfix in SPRITE_POSTFIXES)
+					{
+						if(General.Map.Data.GetSpriteExists(sprite + postfix))
+							return sprite + postfix;
+					}
 				}
 			}
 			
