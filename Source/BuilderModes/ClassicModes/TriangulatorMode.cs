@@ -355,7 +355,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				OnRedrawDisplay();
 				Thread.Sleep(20);
-
+				Application.DoEvents();
+				
 				// Start with a clear display
 				if(renderer.StartPlotter(true))
 				{
@@ -452,6 +453,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 
 					// Wait a bit
 					Thread.Sleep(60);
+					Application.DoEvents();
 				}
 				
 				v2 = v;
@@ -468,7 +470,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			{
 				OnRedrawDisplay();
 				Thread.Sleep(10);
-
+				Application.DoEvents();
+				
 				// Start with a clear display
 				if(renderer.StartPlotter(true))
 				{
@@ -541,6 +544,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.Present();
 				}
 				Thread.Sleep(50);
+				Application.DoEvents();
 
 				// Start with a clear display
 				if(renderer.StartPlotter(true))

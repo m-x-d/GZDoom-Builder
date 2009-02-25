@@ -505,7 +505,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			LinkedListNode<EarClipVertex> v1, v2;
 			LinkedListNode<EarClipVertex> insertbefore = null;
-			float u, ul, foundu = float.MaxValue;
+			float u, ul, bonus, foundu = float.MaxValue;
 			EarClipVertex split;
 			
 			// Create a line from start that goes beyond the right most vertex of p
@@ -513,6 +513,9 @@ namespace CodeImp.DoomBuilder.Geometry
 			float startx = start.Value.Position.x;
 			float endx = pr.Value.Position.x + 10.0f;
 			Line2D starttoright = new Line2D(start.Value.Position, new Vector2D(endx, start.Value.Position.y));
+			
+			// Calculate a small bonus (half mappixel)
+			bonus = starttoright.GetNearestOnLine(new Vector2D(start.Value.Position.x + 0.5f, start.Value.Position.y));
 			
 			// Go for all lines in the outer polygon
 			v1 = p.Last;
@@ -535,20 +538,28 @@ namespace CodeImp.DoomBuilder.Geometry
 						// is overlapping the cut scan line.
 						if(v1.Value.Position.y == start.Value.Position.y)
 						{
+							// This is an exceptional situation which causes a bit of a problem, because
+							// this could be a previously made cut, which overlaps another line from the
+							// same cut and we have to determine which of the two we will join with. If we
+							// pick the wrong one, the polygon is no longer valid and triangulation will fail.
+							
 							// Calculate distance of each vertex in units
 							u = starttoright.GetNearestOnLine(v1.Value.Position);
 							ul = starttoright.GetNearestOnLine(v2.Value.Position);
-
+							
 							// Rule out vertices before the scan line
 							if(u < 0.0f) u = float.MaxValue;
 							if(ul < 0.0f) ul = float.MaxValue;
 							
-							// v1 must be closer, because we must cut in so that it stays a clockwise polygon
-							if((u < ul) && (u < foundu))
+							// v2 must be closer, because we must cut in so that it stays a clockwise polygon
+							// We give a small bonus to ensure this choice is preferred over the other lines
+							// that end in the same location
+							if((ul < u) && ((ul - bonus) < foundu))
 							{
-								insertbefore = v1;
-								foundu = u;
+								insertbefore = v2.Next ?? v2.List.First;
+								foundu = (ul - bonus);
 							}
+							
 						}
 					}
 					// Found a closer match?
