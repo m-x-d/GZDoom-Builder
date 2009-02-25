@@ -681,7 +681,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This creates a new vertex at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
-		public virtual void InsertVertexAction() { VerticesMode.InsertVertex(mousemappos, renderer.Scale); }
+		public virtual void InsertVertexAction()
+		{
+			// Start drawing mode
+			DrawGeometryMode drawmode = new DrawGeometryMode();
+			if(mouseinside)
+			{
+				bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+				bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+				DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, new List<DrawnVertex>());
+				drawmode.DrawPointAt(v);
+			}
+			General.Editing.ChangeMode(drawmode);
+		}
 
 		[BeginAction("makedoor")]
 		public void MakeDoor()
