@@ -159,6 +159,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.processor = new System.Windows.Forms.Timer(this.components);
 			this.statusflasher = new System.Windows.Forms.Timer(this.components);
 			this.statusresetter = new System.Windows.Forms.Timer(this.components);
+			this.errorsAndWarningsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -647,6 +648,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.menutools.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemreloadresources,
+            this.errorsAndWarningsToolStripMenuItem,
             this.toolStripMenuItem8,
             this.configurationToolStripMenuItem,
             this.preferencesToolStripMenuItem,
@@ -1420,6 +1422,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.statusresetter.Tick += new System.EventHandler(this.statusresetter_Tick);
 			// 
+			// errorsAndWarningsToolStripMenuItem
+			// 
+			this.errorsAndWarningsToolStripMenuItem.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
+			this.errorsAndWarningsToolStripMenuItem.Name = "errorsAndWarningsToolStripMenuItem";
+			this.errorsAndWarningsToolStripMenuItem.Size = new System.Drawing.Size(196, 22);
+			this.errorsAndWarningsToolStripMenuItem.Text = "Errors and Warnings...";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1577,5 +1586,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button buttontoggleinfo;
 		private System.Windows.Forms.Label labelcollapsedinfo;
 		private System.Windows.Forms.Timer statusresetter;
+		private System.Windows.Forms.ToolStripMenuItem errorsAndWarningsToolStripMenuItem;
 	}
 }

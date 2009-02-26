@@ -283,7 +283,7 @@ namespace CodeImp.DoomBuilder
 			ClassicMode cmode = (General.Editing.Mode as ClassicMode);
 			if(cmode != null) cmode.SetZoom(0.5f);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
-
+			
 			// Success
 			this.changed = false;
 			General.WriteLogLine("Map creation done");
