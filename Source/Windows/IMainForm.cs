@@ -54,7 +54,8 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Methods
 		void DisplayReady();
-		void DisplayStatus(string status);
+		void DisplayStatus(StatusType type, string message);
+		void DisplayStatus(StatusInfo newstatus);
 		void RedrawDisplay();
 		DialogResult ShowEditLinedefs(ICollection<Linedef> lines);
 		DialogResult ShowEditSectors(ICollection<Sector> sectors);
@@ -74,8 +75,6 @@ namespace CodeImp.DoomBuilder.Windows
 		void BreakExclusiveMouseInput();
 		void ResumeExclusiveMouseInput();
 		void SetCursor(Cursor cursor);
-		void DisplayWarning(string warning);
-		void HideWarning();
 		void MessageBeep(MessageBeepType type);
 		
 		/// <summary>

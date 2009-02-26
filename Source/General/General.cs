@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder
 			string name, fullfilename;
 			
 			// Display status
-			mainwindow.DisplayStatus("Loading game configurations...");
+			mainwindow.DisplayStatus(StatusType.Busy, "Loading game configurations...");
 
 			// Make array
 			configs = new List<ConfigurationInfo>();
@@ -329,7 +329,7 @@ namespace CodeImp.DoomBuilder
 			string[] filenames;
 			
 			// Display status
-			mainwindow.DisplayStatus("Loading nodebuilder configurations...");
+			mainwindow.DisplayStatus(StatusType.Busy, "Loading nodebuilder configurations...");
 
 			// Make array
 			nodebuilders = new List<NodebuilderInfo>();
@@ -391,7 +391,7 @@ namespace CodeImp.DoomBuilder
 			string[] filenames;
 			
 			// Display status
-			mainwindow.DisplayStatus("Loading script configurations...");
+			mainwindow.DisplayStatus(StatusType.Busy, "Loading script configurations...");
 			
 			// Make collection
 			scriptconfigs = new Dictionary<string, ScriptConfiguration>();
@@ -444,7 +444,7 @@ namespace CodeImp.DoomBuilder
 			string[] filenames;
 
 			// Display status
-			mainwindow.DisplayStatus("Loading compiler configurations...");
+			mainwindow.DisplayStatus(StatusType.Busy, "Loading compiler configurations...");
 
 			// Make array
 			compilers = new List<CompilerInfo>();
@@ -882,7 +882,7 @@ namespace CodeImp.DoomBuilder
 				if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
 				{
 					// Display status
-					mainwindow.DisplayStatus("Creating new map...");
+					mainwindow.DisplayStatus(StatusType.Busy, "Creating new map...");
 					Cursor.Current = Cursors.WaitCursor;
 					
 					// Let the plugins know
@@ -935,7 +935,7 @@ namespace CodeImp.DoomBuilder
 			if(General.AskSaveMap())
 			{
 				// Display status
-				mainwindow.DisplayStatus("Closing map...");
+				mainwindow.DisplayStatus(StatusType.Busy, "Closing map...");
 				General.WriteLogLine("Unloading map...");
 				Cursor.Current = Cursors.WaitCursor;
 				
@@ -1012,7 +1012,7 @@ namespace CodeImp.DoomBuilder
 		internal static void OpenMapFileWithOptions(string filename, MapOptions options)
 		{
 			// Display status
-			mainwindow.DisplayStatus("Opening map file...");
+			mainwindow.DisplayStatus(StatusType.Busy, "Opening map file...");
 			Cursor.Current = Cursors.WaitCursor;
 
 			// Let the plugins know
@@ -1072,7 +1072,7 @@ namespace CodeImp.DoomBuilder
 			else
 			{
 				// Display status
-				mainwindow.DisplayStatus("Saving map file...");
+				mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Save the map
@@ -1116,7 +1116,7 @@ namespace CodeImp.DoomBuilder
 			if(savefile.ShowDialog(mainwindow) == DialogResult.OK)
 			{
 				// Display status
-				mainwindow.DisplayStatus("Saving map file...");
+				mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Save the map
@@ -1160,7 +1160,7 @@ namespace CodeImp.DoomBuilder
 			if(savefile.ShowDialog(mainwindow) == DialogResult.OK)
 			{
 				// Display status
-				mainwindow.DisplayStatus("Saving map file...");
+				mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Save the map

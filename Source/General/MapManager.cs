@@ -391,7 +391,8 @@ namespace CodeImp.DoomBuilder
 		internal bool SaveMap(string newfilepathname, int savemode)
 		{
 			MapSet outputset;
-			string nodebuildername, oldstatus, settingsfile;
+			string nodebuildername, settingsfile;
+			StatusInfo oldstatus;
 			WAD targetwad;
 			int index;
 			bool includenodes = false;
@@ -469,8 +470,8 @@ namespace CodeImp.DoomBuilder
 				nodebuildername = savemode == SAVE_TEST ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
 
 				// Build the nodes
-				oldstatus = General.MainWindow.GetCurrentSatus();
-				General.MainWindow.DisplayStatus("Building map nodes...");
+				oldstatus = General.MainWindow.Status;
+				General.MainWindow.DisplayStatus(StatusType.Busy, "Building map nodes...");
 				if(!string.IsNullOrEmpty(nodebuildername))
 					includenodes = BuildNodes(nodebuildername, true);
 				else
@@ -1395,15 +1396,15 @@ namespace CodeImp.DoomBuilder
 		internal void ReloadResources()
 		{
 			DataLocation maplocation;
-			string oldstatus;
+			StatusInfo oldstatus;
 			Cursor oldcursor;
 			
 			// Keep old display info
-			oldstatus = General.MainWindow.GetCurrentSatus();
+			oldstatus = General.MainWindow.Status;
 			oldcursor = Cursor.Current;
 			
 			// Show status
-			General.MainWindow.DisplayStatus("Reloading data resources...");
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading data resources...");
 			Cursor.Current = Cursors.WaitCursor;
 			
 			// Clean up

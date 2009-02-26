@@ -559,15 +559,15 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Compile now
-			General.MainWindow.DisplayStatus("Compiling script " + t.Text + "...");
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Compiling script " + t.Text + "...");
 			Cursor.Current = Cursors.WaitCursor;
 			t.Compile();
 
 			// Show warning
 			if((compilererrors != null) && (compilererrors.Count > 0))
-				General.MainWindow.DisplayWarning(compilererrors.Count.ToString() + " errors while compiling " + t.Text + "!");
+				General.MainWindow.DisplayStatus(StatusType.Warning, compilererrors.Count.ToString() + " errors while compiling " + t.Text + "!");
 			else
-				General.MainWindow.DisplayReady();
+				General.MainWindow.DisplayStatus(StatusType.Info, "Script " + t.Text + " compiled without errors.");
 
 			Cursor.Current = Cursors.Default;
 			UpdateToolbar(true);

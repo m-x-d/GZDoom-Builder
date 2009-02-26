@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Data;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -279,7 +280,7 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Program parameters:  " + processinfo.Arguments);
 
 				// Disable interface
-				General.MainWindow.DisplayStatus("Waiting for game application to finish...");
+				General.MainWindow.DisplayStatus(StatusType.Busy, "Waiting for game application to finish...");
 				
 				try
 				{

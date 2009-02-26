@@ -48,26 +48,40 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		#region ================== Constants
 		
-		private const string STATUS_READY_TEXT = "Ready.";
-		private const string STATUS_LOADING_TEXT = "Loading resources...";
 		private const int MAX_RECENT_FILES = 8;
 		private const int MAX_RECENT_FILES_PIXELS = 250;
-		private const int WARNING_FLASH_COUNT = 5;
 		private const int EXPANDED_INFO_HEIGHT = 106;
 		private const int COLLAPSED_INFO_HEIGHT = 20;
 		
-		private enum StatusType : int
+		// Status bar
+		private const string STATUS_READY_TEXT = "Ready.";
+		private const string STATUS_LOADING_TEXT = "Loading resources...";
+		private const int WARNING_FLASH_COUNT = 10;
+		private const int WARNING_FLASH_INTERVAL = 100;
+		private const int WARNING_RESET_DELAY = 3000;
+		private const int ACTION_FLASH_COUNT = 1;
+		private const int ACTION_FLASH_INTERVAL = 100;
+		
+		private readonly Image[,] STATUS_IMAGES = new Image[2, 4]
 		{
-			Ready,
-			Busy,
-			Warning
-		}
+			// Normal versions
+			{
+			  Properties.Resources.Status0, Properties.Resources.Status1,
+			  Properties.Resources.Status2, Properties.Resources.Warning
+			},
+			
+			// Flashing versions
+			{
+			  Properties.Resources.Status10, Properties.Resources.Status11,
+			  Properties.Resources.Status12, Properties.Resources.WarningOff
+			}
+		};
 		
 		// Message pump
 		public enum ThreadMessages : int
 		{
-			// Sent by the background threat to update the status icon
-			UpdateStatusIcon = General.WM_USER + 1,
+			// Sent by the background threat to update the status
+			UpdateStatus = General.WM_USER + 1,
 			
 			// This is sent by the background thread when images are loaded
 			// but only when first loaded or when dimensions were changed
@@ -123,9 +137,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool updatingfilters;
 		
 		// Statusbar
-		private StatusType statustype;
-		private int warningflashcount;
-		private bool warningsignon;
+		private StatusInfo status;
+		private int statusflashcount;
+		private bool statusflashicon;
 		
 		// Properties
 		private IntPtr windowptr;
@@ -150,6 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 		new public IntPtr Handle { get { return windowptr; } }
 		public bool IsInfoPanelExpanded { get { return (panelinfo.Height == EXPANDED_INFO_HEIGHT); } }
 		public bool IsActiveWindow { get { return windowactive; } }
+		public StatusInfo Status { get { return status; } }
 		
 		#endregion
 
@@ -438,8 +453,9 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					General.WriteLogLine("Closing main interface window...");
 					
-					// Hide warning to stop timers
-					HideWarning();
+					// Stop timers
+					statusflasher.Stop();
+					statusresetter.Stop();
 
 					// Stop exclusive mode, if any is active
 					StopExclusiveMouseInput();
@@ -513,168 +529,107 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateStatusIcon();
 		}
 		
-		// This returns the current status text
-		internal string GetCurrentSatus()
+		// This flashes the status icon
+		private void statusflasher_Tick(object sender, EventArgs e)
 		{
-			if(statustype == StatusType.Busy)
-				return statuslabel.Text;
-			else
-				return null;
+			statusflashicon = !statusflashicon;
+			UpdateStatusIcon();
+			statusflashcount--;
+			if(statusflashcount == 0) statusflasher.Stop();
 		}
 		
-		// This shows a warning
-		public void DisplayWarning(string warning)
+		// This resets the status to ready
+		private void statusresetter_Tick(object sender, EventArgs e)
 		{
-			MessageBeep(MessageBeepType.Warning);
-			if(statuslabel.Text != warning) statuslabel.Text = warning;
-			statustype = StatusType.Warning;
-			statuslabel.Image = Resources.Warning;
-			warningflashcount = 0;
-			warningsignon = true;
-			warningtimer.Stop();
-			warningtimer.Interval = 3000;
-			warningtimer.Start();
-			warningflasher.Start();
-			
-			// Refresh if needed
-			statusbar.Invalidate();
-			this.Update();
-		}
-		
-		// This hides any warning
-		public void HideWarning()
-		{
-			if(statustype == StatusType.Warning)
-			{
-				warningtimer.Stop();
-				warningflasher.Stop();
-				DisplayReady();
-			}
-		}
-		
-		// This flashes the warning sign
-		private void warningflasher_Tick(object sender, EventArgs e)
-		{
-			if(statustype == StatusType.Warning)
-			{
-				// Warning sign on?
-				if(warningsignon)
-				{
-					// Turn it off or should we stop?
-					if(warningflashcount < WARNING_FLASH_COUNT)
-					{
-						statuslabel.Image = Resources.WarningOff;
-						warningsignon = false;
-					}
-					else
-					{
-						warningflasher.Stop();
-					}
-				}
-				else
-				{
-					// Turn it on and count the flash
-					statuslabel.Image = Resources.Warning;
-					warningsignon = true;
-					warningflashcount++;
-				}
-			}
-		}
-		
-		// Warning timed out
-		private void warningtimer_Tick(object sender, EventArgs e)
-		{
-			HideWarning();
+			DisplayReady();
 		}
 		
 		// This changes status text
-		public void DisplayStatus(string status)
+		public void DisplayStatus(StatusType type, string message) { DisplayStatus(new StatusInfo(type, message)); }
+		public void DisplayStatus(StatusInfo newstatus)
 		{
-			// Null is no busy status
-			if(status == null)
+			// Stop timers
+			statusresetter.Stop();
+			statusflasher.Stop();
+			statusflashicon = false;
+			
+			// Determine what to do specifically for this status type
+			switch(newstatus.type)
 			{
-				DisplayReady();
+				// When no particular information is to be displayed.
+				// The messages displayed depends on running background processes.
+				case StatusType.Ready:
+					if((General.Map != null) && (General.Map.Data != null) && General.Map.Data.IsLoading)
+						newstatus.message = STATUS_LOADING_TEXT;
+					else
+						newstatus.message = STATUS_READY_TEXT;
+					break;
+					
+				// Shows action information and flashes up the status icon once.	
+				case StatusType.Action:
+					MessageBeep(MessageBeepType.Warning);
+					statusflashicon = true;
+					statusflasher.Interval = ACTION_FLASH_INTERVAL;
+					statusflashcount = ACTION_FLASH_COUNT;
+					statusflasher.Start();
+					break;
+					
+				// Shows a warning, makes a warning sound and flashes a warning icon.
+				case StatusType.Warning:
+					MessageBeep(MessageBeepType.Warning);
+					statusflasher.Interval = WARNING_FLASH_INTERVAL;
+					statusflashcount = WARNING_FLASH_COUNT;
+					statusflasher.Start();
+					statusresetter.Interval = WARNING_RESET_DELAY;
+					statusresetter.Start();
+					break;
 			}
-			else
-			{
-				// Stop warning timers
-				warningtimer.Stop();
-				warningflasher.Stop();
-
-				// Update status description
-				statustype = StatusType.Busy;
-				if(statuslabel.Text != status)
-					statuslabel.Text = status;
-
-				// Update icon as well
-				UpdateStatusIcon();
-
-				// Refresh if needed
-				statusbar.Invalidate();
-				this.Update();
-			}
+			
+			// Update status description
+			status = newstatus;
+			if(statuslabel.Text != status.message)
+				statuslabel.Text = status.message;
+			
+			// Update icon as well
+			UpdateStatusIcon();
+			
+			// Refresh
+			statusbar.Invalidate();
+			this.Update();
 		}
-
+		
 		// This changes status text to Ready
 		public void DisplayReady()
 		{
-			// Stop warning timers
-			warningtimer.Stop();
-			warningflasher.Stop();
-			
-			// Update icon, this also sets the ready text
-			statustype = StatusType.Ready;
-			UpdateStatusIcon();
-
-			// Refresh if needed
-			statusbar.Invalidate();
-			this.Update();
+			DisplayStatus(StatusType.Ready, null);
 		}
 		
 		// This updates the status icon
 		internal void UpdateStatusIcon()
 		{
-			// From another thread?
-			if(statusbar.InvokeRequired)
+			int statusicon = 0;
+			int statusflashindex = statusflashicon ? 1 : 0;
+			
+			// Loading icon?
+			if((General.Map != null) && (General.Map.Data != null) && General.Map.Data.IsLoading)
+				statusicon = 1;
+			
+			// Status type
+			switch(status.type)
 			{
-				// Call to form thread
-				// This may not be called from a different thread. Send a WM_NOTIFY message instead!
-				throw new Exception("This should not be called from any other thread than the main application thread!");
-			}
-			else
-			{
-				// Ready status?
-				if(statustype == StatusType.Ready)
-				{
-					// Map open?
-					if((General.Map != null) && (General.Map.Data != null))
-					{
-						// Check if loading in the background
-						if(General.Map.Data.IsLoading)
-						{
-							// Display semi-ready icon
-							statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status1;
-							if(statuslabel.Text != STATUS_LOADING_TEXT) statuslabel.Text = STATUS_LOADING_TEXT;
-						}
-						else
-						{
-							// Display ready icon
-							statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status0;
-							if(statuslabel.Text != STATUS_READY_TEXT) statuslabel.Text = STATUS_READY_TEXT;
-						}
-					}
-					else
-					{
-						// Display ready icon
-						statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status0;
-						if(statuslabel.Text != STATUS_READY_TEXT) statuslabel.Text = STATUS_READY_TEXT;
-					}
-				}
-				else if(statustype == StatusType.Busy)
-				{
-					// Display busy icon
-					statuslabel.Image = CodeImp.DoomBuilder.Properties.Resources.Status2;
-				}
+				case StatusType.Ready:
+				case StatusType.Info:
+				case StatusType.Action:
+					statuslabel.Image = STATUS_IMAGES[statusflashindex, statusicon];
+					break;
+				
+				case StatusType.Busy:
+					statuslabel.Image = STATUS_IMAGES[statusflashindex, 2];
+					break;
+					
+				case StatusType.Warning:
+					statuslabel.Image = STATUS_IMAGES[statusflashindex, 3];
+					break;
 			}
 		}
 		
@@ -2200,8 +2155,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Notify message?
 			switch(m.Msg)
 			{
-				case (int)ThreadMessages.UpdateStatusIcon:
-					UpdateStatusIcon();
+				case (int)ThreadMessages.UpdateStatus:
+					DisplayStatus(status);
 					break;
 					
 				case (int)ThreadMessages.ImageDataLoaded:

@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			foreach(string fn in filenames)
 			{
 				// Load plugin from this file
-				General.MainWindow.DisplayStatus("Loading plugin '" + Path.GetFileName(fn) + "'...");
+				General.MainWindow.DisplayStatus(StatusType.Busy, "Loading plugin '" + Path.GetFileName(fn) + "'...");
 				try
 				{
 					p = new Plugin(fn);

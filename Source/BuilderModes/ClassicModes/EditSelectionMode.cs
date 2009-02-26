@@ -712,7 +712,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				General.Interface.DisplayWarning("Please make a selection first!");
+				General.Interface.DisplayStatus(StatusType.Warning, "Please make a selection first!");
 				
 				// Cancel now
 				General.Editing.CancelMode();
