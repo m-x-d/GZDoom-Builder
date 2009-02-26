@@ -134,6 +134,7 @@ namespace CodeImp.DoomBuilder
 		private static ColorCollection colors;
 		private static TypesManager types;
 		private static Clock clock;
+		private static ErrorLogger errorlogger;
 		
 		// Configurations
 		private static List<ConfigurationInfo> configs;
@@ -182,6 +183,7 @@ namespace CodeImp.DoomBuilder
 		public static string AutoLoadConfig { get { return autoloadconfig; } }
 		public static bool DelayMainWindow { get { return delaymainwindow; } }
 		public static EditingManager Editing { get { return editing; } }
+		public static ErrorLogger ErrorLogger { get { return errorlogger; } }
 		
 		#endregion
 
@@ -571,6 +573,9 @@ namespace CodeImp.DoomBuilder
 			if(settings.Load(Path.Combine(settingspath, SETTINGS_FILE),
 							 Path.Combine(apppath, SETTINGS_FILE)))
 			{
+				// Create error logger
+				errorlogger = new ErrorLogger();
+				
 				// Create action manager
 				actions = new ActionManager();
 				
@@ -894,6 +899,9 @@ namespace CodeImp.DoomBuilder
 					// Trash the current map, if any
 					if(map != null) map.Dispose();
 
+					// Set this to false so we can see if errors are added
+					General.ErrorLogger.HasChanged = false;
+					
 					// Create map manager with given options
 					map = new MapManager();
 					if(map.InitializeNewMap(newoptions))
@@ -917,7 +925,12 @@ namespace CodeImp.DoomBuilder
 					mainwindow.RedrawDisplay();
 					mainwindow.UpdateInterface();
 					mainwindow.HideInfo();
-					mainwindow.DisplayReady();
+					
+					if(errorlogger.HasChanged)
+						mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during loading!");
+					else
+						mainwindow.DisplayReady();
+					
 					Cursor.Current = Cursors.Default;
 				}
 			}
@@ -942,6 +955,9 @@ namespace CodeImp.DoomBuilder
 				// Trash the current map
 				if(map != null) map.Dispose();
 				map = null;
+				
+				// Clear errors
+				General.ErrorLogger.Clear();
 				
 				// Show splash logo on display
 				mainwindow.ShowSplashDisplay();
@@ -1024,6 +1040,9 @@ namespace CodeImp.DoomBuilder
 			// Trash the current map, if any
 			if(map != null) map.Dispose();
 
+			// Set this to false so we can see if errors are added
+			General.ErrorLogger.HasChanged = false;
+
 			// Create map manager with given options
 			map = new MapManager();
 			if(map.InitializeOpenMap(filename, options))
@@ -1048,7 +1067,12 @@ namespace CodeImp.DoomBuilder
 			mainwindow.RedrawDisplay();
 			mainwindow.UpdateInterface();
 			mainwindow.HideInfo();
-			mainwindow.DisplayReady();
+			
+			if(errorlogger.HasChanged)
+				mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during loading!");
+			else
+				mainwindow.DisplayReady();
+			
 			Cursor.Current = Cursors.Default;
 		}
 		
@@ -1075,6 +1099,9 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
 				Cursor.Current = Cursors.WaitCursor;
 
+				// Set this to false so we can see if errors are added
+				General.ErrorLogger.HasChanged = false;
+				
 				// Save the map
 				if(map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL))
 				{
@@ -1085,7 +1112,12 @@ namespace CodeImp.DoomBuilder
 
 				// All done
 				mainwindow.UpdateInterface();
-				mainwindow.DisplayReady();
+
+				if(errorlogger.HasChanged)
+					mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during saving!");
+				else
+					mainwindow.DisplayReady();
+
 				Cursor.Current = Cursors.Default;
 			}
 
@@ -1119,6 +1151,9 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
 				Cursor.Current = Cursors.WaitCursor;
 
+				// Set this to false so we can see if errors are added
+				General.ErrorLogger.HasChanged = false;
+				
 				// Save the map
 				if(map.SaveMap(savefile.FileName, MapManager.SAVE_AS))
 				{
@@ -1129,7 +1164,12 @@ namespace CodeImp.DoomBuilder
 
 				// All done
 				mainwindow.UpdateInterface();
-				mainwindow.DisplayReady();
+
+				if(errorlogger.HasChanged)
+					mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during loading!");
+				else
+					mainwindow.DisplayReady();
+
 				Cursor.Current = Cursors.Default;
 			}
 
@@ -1163,6 +1203,9 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
 				Cursor.Current = Cursors.WaitCursor;
 
+				// Set this to false so we can see if errors are added
+				General.ErrorLogger.HasChanged = false;
+				
 				// Save the map
 				if(map.SaveMap(savefile.FileName, MapManager.SAVE_INTO))
 				{
@@ -1173,7 +1216,12 @@ namespace CodeImp.DoomBuilder
 
 				// All done
 				mainwindow.UpdateInterface();
-				mainwindow.DisplayReady();
+
+				if(errorlogger.HasChanged)
+					mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during loading!");
+				else
+					mainwindow.DisplayReady();
+
 				Cursor.Current = Cursors.Default;
 			}
 

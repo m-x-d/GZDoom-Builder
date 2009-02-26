@@ -1851,6 +1851,13 @@ namespace CodeImp.DoomBuilder.Windows
 			itemreloadresources.Enabled = (General.Map != null);
 		}
 		
+		// Errors and Warnings
+		[BeginAction("showerrors")]
+		internal void ShowErrors()
+		{
+			// TODO
+		}
+		
 		// Game Configuration action
 		[BeginAction("configuration")]
 		internal void ShowConfiguration()
