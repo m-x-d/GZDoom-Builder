@@ -666,6 +666,7 @@
     <Compile Include="Data\HighResImage.cs" />
     <Compile Include="Data\PK3FileImage.cs" />
     <Compile Include="Data\PK3StructuredReader.cs" />
+    <Compile Include="Windows\StatusInfo.cs" />
     <Compile Include="ZDoom\ActorStructure.cs" />
     <Compile Include="ZDoom\PatchStructure.cs" />
     <Compile Include="ZDoom\TexturesParser.cs" />
@@ -677,6 +678,9 @@
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Status11.png" />
+    <None Include="Resources\Status10.png" />
+    <None Include="Resources\Status12.png" />
     <EmbeddedResource Include="Resources\UnknownTexture3D.png" />
     <None Include="Resources\Monster3.png" />
     <None Include="Resources\Monster2.png" />

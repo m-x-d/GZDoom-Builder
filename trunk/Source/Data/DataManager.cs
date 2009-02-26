@@ -470,7 +470,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Done
 				notifiedbusy = false;
 				backgroundloader = null;
-				General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+				General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
 			}
 		}
 		
@@ -516,7 +516,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(!notifiedbusy)
 						{
 							notifiedbusy = true;
-							General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+							General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
 						}
 						Thread.Sleep(0);
 					}
@@ -530,7 +530,7 @@ namespace CodeImp.DoomBuilder.Data
 							if(!notifiedbusy)
 							{
 								notifiedbusy = true;
-								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
 							}
 							Thread.Sleep(0);
 						}
@@ -539,7 +539,7 @@ namespace CodeImp.DoomBuilder.Data
 							if(notifiedbusy)
 							{
 								notifiedbusy = false;
-								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
 							}
 							
 							// Wait longer to release CPU resources
@@ -575,7 +575,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Update icon
-			General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatusIcon, 0, 0);
+			General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
 		}
 
 		// This updates the used-in-map status on all textures and flats

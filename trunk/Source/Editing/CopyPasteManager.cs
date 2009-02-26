@@ -138,8 +138,9 @@ namespace CodeImp.DoomBuilder.Editing
 		internal void PastePrefab(Stream filedata)
 		{
 			// Create undo
+			General.MainWindow.DisplayStatus(StatusType.Action, "Inserted prefab.");
 			General.Map.UndoRedo.CreateUndo("Insert prefab");
-
+			
 			// Decompress stream
 			MemoryStream decompressed = new MemoryStream((int)filedata.Length * 3);
 			filedata.Seek(0, SeekOrigin.Begin);
@@ -149,7 +150,7 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Mark all current geometry
 			General.Map.Map.ClearAllMarks(true);
-
+			
 			// Read data stream
 			UniversalStreamReader reader = new UniversalStreamReader();
 			reader.StrictChecking = false;
@@ -157,10 +158,10 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// The new geometry is not marked, so invert the marks to get it marked
 			General.Map.Map.InvertAllMarks();
-
+			
 			// Convert UDMF fields back to flags and activations, if needed
 			if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
-
+			
 			// Done
 			memstream.Dispose();
 			General.Map.Map.UpdateConfiguration();
@@ -170,7 +171,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This performs the copy. Returns false when copy was cancelled.
-		private bool DoCopySelection()
+		private bool DoCopySelection(string desc)
 		{
 			// Let the plugins know
 			if(General.Plugins.OnCopyBegin())
@@ -180,6 +181,8 @@ namespace CodeImp.DoomBuilder.Editing
 				// that need to be copied.
 				if(General.Editing.Mode.OnCopyBegin())
 				{
+					General.MainWindow.DisplayStatus(StatusType.Action, desc);
+					
 					// Copy the marked geometry
 					// This links sidedefs that are not linked to a marked sector to a virtual sector
 					MapSet copyset = General.Map.Map.CloneMarked();
@@ -224,6 +227,7 @@ namespace CodeImp.DoomBuilder.Editing
 					if(General.Editing.Mode.OnPasteBegin())
 					{
 						// Create undo
+						General.MainWindow.DisplayStatus(StatusType.Action, "Pasted selected elements.");
 						General.Map.UndoRedo.CreateUndo("Paste");
 						
 						// Read from clipboard
@@ -273,7 +277,7 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("copyselection")]
 		public void CopySelection()
 		{
-			DoCopySelection();
+			DoCopySelection("Copied selected elements.");
 		}
 		
 		// This cuts the current selection
@@ -281,7 +285,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public void CutSelection()
 		{
 			// Copy selected geometry
-			if(DoCopySelection())
+			if(DoCopySelection("Cut selected elements."))
 			{
 				// Get the delete action and check if it's bound
 				Action deleteitem = General.Actions["builder_deleteitem"];
@@ -294,7 +298,7 @@ namespace CodeImp.DoomBuilder.Editing
 				else
 				{
 					// Action not bound
-					General.Interface.DisplayWarning("Cannot remove that in this mode.");
+					General.Interface.DisplayStatus(StatusType.Warning, "Cannot remove that in this mode.");
 				}
 			}
 		}
