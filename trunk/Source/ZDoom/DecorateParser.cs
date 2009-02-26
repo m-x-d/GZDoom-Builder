@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(GetArchivedActorByName(actor.ReplacesClass) != null)
 								archivedactors[actor.ReplacesClass.ToLowerInvariant()] = actor;
 							else
-								General.WriteLogLine("WARNING: Unable to find the DECORATE class '" + actor.ReplacesClass + "' to replace, while parsing '" + actor.ClassName + "'");
+								General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + actor.ReplacesClass + "' to replace, while parsing '" + actor.ClassName + "'");
 							
 							if(actor.CheckActorSupported())
 							{

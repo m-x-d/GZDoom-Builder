@@ -243,7 +243,7 @@ namespace CodeImp.DoomBuilder.IO
 						if(s1 < sidescolls.Count)
 							ReadSidedef(map, sidescolls[s1], l, true, sectorlink);
 						else
-							General.WriteLogLine("WARNING: Linedef references invalid sidedef! Sidedef has been removed.");
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef! Sidedef has been removed.");
 					}
 					
 					if(s2 > -1)
@@ -251,12 +251,12 @@ namespace CodeImp.DoomBuilder.IO
 						if(s2 < sidescolls.Count)
 							ReadSidedef(map, sidescolls[s2], l, false, sectorlink);
 						else
-							General.WriteLogLine("WARNING: Linedef references invalid sidedef! Sidedef has been removed.");
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef! Sidedef has been removed.");
 					}
 				}
 				else
 				{
-					General.WriteLogLine("WARNING: Linedef references one or more invalid vertices! Linedef has been removed.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Linedef references one or more invalid vertices! Linedef has been removed.");
 				}
 			}
 		}
@@ -284,7 +284,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			else
 			{
-				General.WriteLogLine("WARNING: Sidedef references invalid sector " + sector + "! Sidedef has been removed.");
+				General.ErrorLogger.Add(ErrorType.Warning, "Sidedef references invalid sector " + sector + "! Sidedef has been removed.");
 			}
 		}
 

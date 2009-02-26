@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder
 		
 		private List<ErrorItem> errors;
 		private volatile bool changed;
+		private volatile bool erroradded;
+		private volatile bool warningadded;
 		
 		#endregion
 
@@ -45,6 +47,8 @@ namespace CodeImp.DoomBuilder
 		
 		public bool HasErrors { get { return (errors.Count > 0); } }
 		public bool HasChanged { get { return changed; } set { changed = value; } }
+		public bool IsErrorAdded { get { return erroradded; } set { erroradded = value; } }
+		public bool IsWarningAdded { get { return warningadded; } set { warningadded = value; } }
 		
 		#endregion
 
@@ -65,18 +69,35 @@ namespace CodeImp.DoomBuilder
 		{
 			lock(this)
 			{
-				errors.Clear();
 				changed = false;
+				erroradded = false;
+				warningadded = false;
+				errors.Clear();
 			}
 		}
 		
 		// This adds a new error
-		public void AddError(ErrorType type, string message)
+		public void Add(ErrorType type, string message)
 		{
+			string prefix = "";
+			
 			lock(this)
 			{
 				errors.Add(new ErrorItem(type, message));
+				switch(type)
+				{
+					case ErrorType.Error:
+						erroradded = true;
+						prefix = "ERROR: ";
+						break;
+						
+					case ErrorType.Warning:
+						warningadded = true;
+						prefix = "WARNING: ";
+						break;
+				}
 				changed = true;
+				General.WriteLogLine(prefix + message);
 			}
 		}
 		

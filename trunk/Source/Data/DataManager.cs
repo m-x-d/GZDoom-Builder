@@ -267,13 +267,13 @@ namespace CodeImp.DoomBuilder.Data
 				catch(Exception e)
 				{
 					// Unable to load resource
-					General.WriteLogLine("ERROR while creating data reader. " + e.GetType().Name + ": " + e.Message);
+					General.ErrorLogger.Add(ErrorType.Error, "Error while creating data reader. " + e.GetType().Name + ": " + e.Message);
 					General.WriteLogLine(e.StackTrace);
 					General.ShowErrorMessage("Unable to load resources from location \"" + dl.location + "\". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
 					continue;
 				}	
 				*/
-				
+
 				// Add container
 				if(c != null) containers.Add(c);
 			}
@@ -398,7 +398,7 @@ namespace CodeImp.DoomBuilder.Data
 				catch(Exception e)
 				{
 					// Unable to load resource
-					General.WriteLogLine("ERROR while resuming data reader. " + e.GetType().Name + ": " + e.Message);
+					General.ErrorLogger.Add(ErrorType.Error, "Error while resuming data reader. " + e.GetType().Name + ": " + e.Message);
 					General.WriteLogLine(e.StackTrace);
 					General.ShowErrorMessage("Unable to load resources from location \"" + d.Location.location + "\". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
 				}
@@ -624,7 +624,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Make empty palette when still no palette found
 			if(palette == null)
 			{
-				General.WriteLogLine("WARNING: None of the loaded resources define a color palette!");
+				General.ErrorLogger.Add(ErrorType.Warning, "None of the loaded resources define a color palette!");
 				palette = new Playpal();
 			}
 		}
@@ -1120,8 +1120,9 @@ namespace CodeImp.DoomBuilder.Data
 						// Check for errors
 						if(parser.HasError)
 						{
-							General.WriteLogLine("ERROR: Unable to parse DECORATE data from location " + dr.Location.location + "!");
-							General.WriteLogLine("ERROR: " + parser.ErrorDescription + " on line " + parser.ErrorLine + " in '" + parser.ErrorSource + "'");
+							General.ErrorLogger.Add(ErrorType.Error, "Unable to parse DECORATE data from location " +
+								dr.Location.location + "! " + parser.ErrorDescription + " on line " + parser.ErrorLine +
+								" in '" + parser.ErrorSource + "'");
 							break;
 						}
 					}

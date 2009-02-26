@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(other != null)
 								InheritFrom(other);
 							else
-								General.WriteLogLine("WARNING: Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + "'");
+								General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + "'");
 						}
 					}
 					else if(token == "replaces")

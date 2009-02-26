@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.WriteLogLine("WARNING: Map lump '" + name + "' specifies unknown script configuration '" + scriptconfig + "'. Using plain text instead.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Map lump '" + name + "' specifies unknown script configuration '" + scriptconfig + "'. Using plain text instead.");
 					this.script = new ScriptConfiguration();
 				}
 			}

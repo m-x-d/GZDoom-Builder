@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Set the flag
 			if(!int.TryParse(de.Key.ToString(), out flag))
-				General.WriteLogLine("WARNING: Invalid flag translation key in configuration (must be numeric)");
+				General.ErrorLogger.Add(ErrorType.Warning, "Invalid flag translation key in configuration (must be numeric)");
 
 			// Set the fields
 			string[] fieldstrings = de.Value.ToString().Split(',');

@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			{
 				string sourcefile = Path.Combine(General.CompilersPath, f);
 				string targetfile = Path.Combine(tempdir.FullName, f);
-				if(!File.Exists(sourcefile)) General.WriteLogLine("ERROR: The file '" + f + "' required by the '" + info.Name + "' compiler is missing!");
+				if(!File.Exists(sourcefile)) General.ErrorLogger.Add(ErrorType.Error, "The file '" + f + "' required by the '" + info.Name + "' compiler is missing!");
 				File.Copy(sourcefile, targetfile, true);
 			}
 		}

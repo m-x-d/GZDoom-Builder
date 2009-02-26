@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Bitmap has incorrect format?
 					if(bitmap.PixelFormat != PixelFormat.Format32bppArgb)
 					{
-						General.WriteLogLine("WARNING: Image '" + name + "' does not have A8R8G8B8 pixel format. Conversion was needed!");
+						General.ErrorLogger.Add(ErrorType.Warning, "Image '" + name + "' does not have A8R8G8B8 pixel format. Conversion was needed!");
 						Bitmap oldbitmap = bitmap;
 						try
 						{
@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.Data
 						catch(Exception e)
 						{
 							bitmap = oldbitmap;
-							General.WriteLogLine("WARNING: Cannot lock image '" + name + "' for pixel format conversion. " + e.GetType().Name + ": " + e.Message);
+							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image '" + name + "' for pixel format conversion. " + e.GetType().Name + ": " + e.Message);
 						}
 					}
 					
@@ -274,7 +274,7 @@ namespace CodeImp.DoomBuilder.Data
 						}
 						catch(Exception e)
 						{
-							General.WriteLogLine("WARNING: Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
+							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
 						}
 
 						// Bitmap locked?
