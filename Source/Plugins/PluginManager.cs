@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				}
 				catch(InvalidProgramException)
 				{
-					General.WriteLogLine("WARNING: Plugin file '" + Path.GetFileName(fn) + "' was not loaded.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Plugin file '" + Path.GetFileName(fn) + "' was not loaded.");
 					p = null;
 				}
 

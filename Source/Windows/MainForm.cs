@@ -58,9 +58,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private const string STATUS_LOADING_TEXT = "Loading resources...";
 		private const int WARNING_FLASH_COUNT = 10;
 		private const int WARNING_FLASH_INTERVAL = 100;
-		private const int WARNING_RESET_DELAY = 3000;
+		private const int WARNING_RESET_DELAY = 4000;
+		private const int INFO_RESET_DELAY = 4000;
 		private const int ACTION_FLASH_COUNT = 1;
 		private const int ACTION_FLASH_INTERVAL = 100;
+		private const int ACTION_RESET_DELAY = 4000;
 		
 		private readonly Image[,] STATUS_IMAGES = new Image[2, 4]
 		{
@@ -564,14 +566,21 @@ namespace CodeImp.DoomBuilder.Windows
 					else
 						newstatus.message = STATUS_READY_TEXT;
 					break;
+
+				// Shows information without flashing the icon.
+				case StatusType.Info:
+					statusresetter.Interval = INFO_RESET_DELAY;
+					statusresetter.Start();
+					break;
 					
 				// Shows action information and flashes up the status icon once.	
 				case StatusType.Action:
-					MessageBeep(MessageBeepType.Warning);
 					statusflashicon = true;
 					statusflasher.Interval = ACTION_FLASH_INTERVAL;
 					statusflashcount = ACTION_FLASH_COUNT;
 					statusflasher.Start();
+					statusresetter.Interval = ACTION_RESET_DELAY;
+					statusresetter.Start();
 					break;
 					
 				// Shows a warning, makes a warning sound and flashes a warning icon.
@@ -1855,7 +1864,9 @@ namespace CodeImp.DoomBuilder.Windows
 		[BeginAction("showerrors")]
 		internal void ShowErrors()
 		{
-			// TODO
+			ErrorsForm errform = new ErrorsForm();
+			errform.ShowDialog(this);
+			errform.Dispose();
 		}
 		
 		// Game Configuration action

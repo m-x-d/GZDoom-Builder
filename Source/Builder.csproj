@@ -668,6 +668,12 @@
     <Compile Include="Data\PK3StructuredReader.cs" />
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
+    <Compile Include="Windows\ErrorsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ErrorsForm.Designer.cs">
+      <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\StatusInfo.cs" />
     <Compile Include="ZDoom\ActorStructure.cs" />
     <Compile Include="ZDoom\PatchStructure.cs" />
@@ -779,6 +785,10 @@
     <EmbeddedResource Include="Windows\CustomFieldsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CustomFieldsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ErrorsForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ErrorsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ScriptEditorForm.resx">
       <SubType>Designer</SubType>

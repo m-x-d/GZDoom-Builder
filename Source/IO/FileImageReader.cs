@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.IO
 			catch(Exception e)
 			{
 				// Unable to make bitmap
-				General.WriteLogLine("ERROR: Unable to make file image. " + e.GetType().Name + ": " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to make file image. " + e.GetType().Name + ": " + e.Message);
 				return null;
 			}
 		}

@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.WriteLogLine("ERROR: " + e.GetType().Name + " while loading patch '" + pname + "' from directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading patch '" + pname + "' from directory: " + e.Message);
 			}
 
 			// Nothing found
@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.WriteLogLine("ERROR: " + e.GetType().Name + " while loading texture '" + pname + "' from directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading texture '" + pname + "' from directory: " + e.Message);
 			}
 
 			// Nothing found
@@ -166,7 +166,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.WriteLogLine("ERROR: " + e.GetType().Name + " while loading sprite '" + pname + "' from directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading sprite '" + pname + "' from directory: " + e.Message);
 			}
 			
 			// Nothing found
@@ -197,7 +197,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.WriteLogLine("ERROR: " + e.GetType().Name + " while checking sprite '" + pname + "' existance in directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while checking sprite '" + pname + "' existance in directory: " + e.Message);
 			}
 			
 			// Nothing found

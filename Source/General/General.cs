@@ -744,7 +744,7 @@ namespace CodeImp.DoomBuilder
 						else
 						{
 							// Note in the log that we cannot find this file
-							General.WriteLogLine("WARNING: Cannot find the specified file \"" + curarg + "\"");
+							General.ErrorLogger.Add(ErrorType.Warning, "Cannot find the specified file \"" + curarg + "\"");
 						}
 					}
 				}
@@ -900,7 +900,7 @@ namespace CodeImp.DoomBuilder
 					if(map != null) map.Dispose();
 
 					// Set this to false so we can see if errors are added
-					General.ErrorLogger.HasChanged = false;
+					General.ErrorLogger.IsErrorAdded = false;
 					
 					// Create map manager with given options
 					map = new MapManager();
@@ -925,9 +925,9 @@ namespace CodeImp.DoomBuilder
 					mainwindow.RedrawDisplay();
 					mainwindow.UpdateInterface();
 					mainwindow.HideInfo();
-					
-					if(errorlogger.HasChanged)
-						mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during loading!");
+
+					if(errorlogger.IsErrorAdded)
+						mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
 					else
 						mainwindow.DisplayReady();
 					
@@ -1041,7 +1041,7 @@ namespace CodeImp.DoomBuilder
 			if(map != null) map.Dispose();
 
 			// Set this to false so we can see if errors are added
-			General.ErrorLogger.HasChanged = false;
+			General.ErrorLogger.IsErrorAdded = false;
 
 			// Create map manager with given options
 			map = new MapManager();
@@ -1067,9 +1067,9 @@ namespace CodeImp.DoomBuilder
 			mainwindow.RedrawDisplay();
 			mainwindow.UpdateInterface();
 			mainwindow.HideInfo();
-			
-			if(errorlogger.HasChanged)
-				mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during loading!");
+
+			if(errorlogger.IsErrorAdded)
+				mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
 			else
 				mainwindow.DisplayReady();
 			
@@ -1100,7 +1100,7 @@ namespace CodeImp.DoomBuilder
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Set this to false so we can see if errors are added
-				General.ErrorLogger.HasChanged = false;
+				General.ErrorLogger.IsErrorAdded = false;
 				
 				// Save the map
 				if(map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL))
@@ -1113,8 +1113,8 @@ namespace CodeImp.DoomBuilder
 				// All done
 				mainwindow.UpdateInterface();
 
-				if(errorlogger.HasChanged)
-					mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during saving!");
+				if(errorlogger.IsErrorAdded)
+					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
 				else
 					mainwindow.DisplayReady();
 
@@ -1152,7 +1152,7 @@ namespace CodeImp.DoomBuilder
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Set this to false so we can see if errors are added
-				General.ErrorLogger.HasChanged = false;
+				General.ErrorLogger.IsErrorAdded = false;
 				
 				// Save the map
 				if(map.SaveMap(savefile.FileName, MapManager.SAVE_AS))
@@ -1165,8 +1165,8 @@ namespace CodeImp.DoomBuilder
 				// All done
 				mainwindow.UpdateInterface();
 
-				if(errorlogger.HasChanged)
-					mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during loading!");
+				if(errorlogger.IsErrorAdded)
+					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
 				else
 					mainwindow.DisplayReady();
 
@@ -1204,7 +1204,7 @@ namespace CodeImp.DoomBuilder
 				Cursor.Current = Cursors.WaitCursor;
 
 				// Set this to false so we can see if errors are added
-				General.ErrorLogger.HasChanged = false;
+				General.ErrorLogger.IsErrorAdded = false;
 				
 				// Save the map
 				if(map.SaveMap(savefile.FileName, MapManager.SAVE_INTO))
@@ -1217,8 +1217,8 @@ namespace CodeImp.DoomBuilder
 				// All done
 				mainwindow.UpdateInterface();
 
-				if(errorlogger.HasChanged)
-					mainwindow.DisplayStatus(StatusType.Warning, "Errors or warnings during loading!");
+				if(errorlogger.IsErrorAdded)
+					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
 				else
 					mainwindow.DisplayReady();
 
