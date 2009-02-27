@@ -754,6 +754,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("gradientbrightness")]
 		public void MakeGradientBrightness()
 		{
+			General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected sectors.");
+			General.Map.UndoRedo.CreateUndo("Gradient brightness");
+			
 			// Need at least 3 selected sectors
 			// The first and last are not modified
 			if(orderedselection.Count > 2)
@@ -774,6 +777,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update
 			UpdateOverlay();
 			renderer.Present();
+			General.Map.IsChanged = true;
 		}
 		
 		// This clears the selection

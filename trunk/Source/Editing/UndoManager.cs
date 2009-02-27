@@ -356,6 +356,7 @@ namespace CodeImp.DoomBuilder.Editing
 							}
 
 							General.WriteLogLine("Performing undo \"" + u.Description + "\", Ticket ID " + u.TicketID + "...");
+							General.Interface.DisplayStatus(StatusType.Action, u.Description + " undone.");
 
 							// Make a snapshot for redo
 							r = new UndoSnapshot(u, General.Map.Map.Serialize());
@@ -431,6 +432,7 @@ namespace CodeImp.DoomBuilder.Editing
 						}
 
 						General.WriteLogLine("Performing redo \"" + r.Description + "\", Ticket ID " + r.TicketID + "...");
+						General.Interface.DisplayStatus(StatusType.Action, r.Description + " redone.");
 
 						// Make a snapshot for undo
 						u = new UndoSnapshot(r, General.Map.Map.Serialize());

@@ -527,12 +527,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ToggleGravity()
 		{
 			BuilderPlug.Me.UseGravity = !BuilderPlug.Me.UseGravity;
+			string onoff = BuilderPlug.Me.UseGravity ? "ON" : "OFF";
+			General.Interface.DisplayStatus(StatusType.Action, "Gravity is now " + onoff + ".");
 		}
 
 		[BeginAction("togglebrightness")]
 		public void ToggleBrightness()
 		{
 			renderer.FullBrightness = !renderer.FullBrightness;
+			string onoff = renderer.FullBrightness ? "ON" : "OFF";
+			General.Interface.DisplayStatus(StatusType.Action, "Brightness levels are now " + onoff + ".");
 		}
 
 		[BeginAction("resettexture")]

@@ -508,7 +508,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				v.SnapToAccuracy();
 
 				// Split the line with this vertex
-				if(snaptonearest && (l != null)) l.Split(v);
+				if(snaptonearest && (l != null))
+				{
+					General.Interface.DisplayStatus("Split a linedef.");
+					l.Split(v);
+				}
+				else
+				{
+					General.Interface.DisplayStatus("Inserted a vertex.");
+				}
 
 				// Update
 				General.Map.Map.Update();
@@ -530,9 +538,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
+				{
 					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " vertices");
+					General.Interface.DisplayStatus("Deleted " + selected.Count + " vertices.");
+				}
 				else
+				{
 					General.Map.UndoRedo.CreateUndo("Delete vertex");
+					General.Interface.DisplayStatus("Deleted a vertex.");
+				}
 
 				// Go for all vertices that need to be removed
 				foreach(Vertex v in selected)

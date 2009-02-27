@@ -1116,7 +1116,7 @@ namespace CodeImp.DoomBuilder
 				if(errorlogger.IsErrorAdded)
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
 				else
-					mainwindow.DisplayReady();
+					mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
 
 				Cursor.Current = Cursors.Default;
 			}
@@ -1168,7 +1168,7 @@ namespace CodeImp.DoomBuilder
 				if(errorlogger.IsErrorAdded)
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
 				else
-					mainwindow.DisplayReady();
+					mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
 
 				Cursor.Current = Cursors.Default;
 			}
@@ -1220,7 +1220,7 @@ namespace CodeImp.DoomBuilder
 				if(errorlogger.IsErrorAdded)
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
 				else
-					mainwindow.DisplayReady();
+					mainwindow.DisplayStatus(StatusType.Info, "Map saved into " + map.FileTitle + ".");
 
 				Cursor.Current = Cursors.Default;
 			}

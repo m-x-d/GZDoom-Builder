@@ -1760,6 +1760,8 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			buttonsnaptogrid.Checked = !buttonsnaptogrid.Checked;
 			itemsnaptogrid.Checked = buttonsnaptogrid.Checked;
+			string onoff = buttonsnaptogrid.Checked ? "ON" : "OFF";
+			DisplayStatus(StatusType.Action, "Snap to grid is now " + onoff + " by default.");
 		}
 
 		// Action to toggle auto merge
@@ -1768,6 +1770,8 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			buttonautomerge.Checked = !buttonautomerge.Checked;
 			itemautomerge.Checked = buttonautomerge.Checked;
+			string onoff = buttonautomerge.Checked ? "ON" : "OFF";
+			DisplayStatus(StatusType.Action, "Snap to geometry is now " + onoff + " by default.");
 		}
 		
 		#endregion

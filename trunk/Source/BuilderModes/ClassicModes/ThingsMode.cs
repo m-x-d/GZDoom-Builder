@@ -533,6 +533,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Interface.ShowEditThings(things);
 				}
 
+				General.Interface.DisplayStatus("Inserted a new thing.");
+
 				// Update things filter
 				General.Map.ThingsFilter.Update();
 
@@ -580,9 +582,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
+				{
 					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " things");
+					General.Interface.DisplayStatus("Deleted " + selected.Count + " things.");
+				}
 				else
+				{
 					General.Map.UndoRedo.CreateUndo("Delete thing");
+					General.Interface.DisplayStatus("Deleted thing.");
+				}
 
 				// Dispose selected things
 				foreach(Thing t in selected) t.Dispose();

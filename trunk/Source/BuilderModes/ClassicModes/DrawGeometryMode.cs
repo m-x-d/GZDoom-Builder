@@ -391,7 +391,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("Line draw");
-
+				
+				// Make an analysis and show info
+				string[] adjectives = new string[]
+				{ "beautiful", "lovely", "romantic", "stylish", "cheerful", "comical",
+				  "awesome", "accurate", "adorable", "adventurous", "attractive", "cute",
+				  "elegant", "glamorous", "gorgeous", "handsome", "magnificent", "unusual",
+				  "outstanding", "mysterious", "amusing", "charming", "fantastic", "jolly" };
+				string word = adjectives[points.Count % adjectives.Length];
+				string very = (points.Count > adjectives.Length) ? "very " : "";
+				General.Interface.DisplayStatus(StatusType.Action, "Created a " + very + word + " drawing.");
+				
 				// Make the drawing
 				Tools.DrawLines(points);
 				
