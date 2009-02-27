@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// Constructor
-		internal ThingCategory(Configuration cfg, string name)
+		internal ThingCategory(Configuration cfg, string name, IDictionary<string, EnumList> enums)
 		{
 			IDictionary dic;
 			int index;
@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Config
 					if(de.Value is IDictionary)
 					{
 						// Create this thing
-						things.Add(new ThingTypeInfo(this, index, cfg));
+						things.Add(new ThingTypeInfo(this, index, cfg, enums));
 					}
 					// Check if the item value is a string
 					else if(de.Value is string)

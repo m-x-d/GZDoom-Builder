@@ -27,6 +27,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.ZDoom;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -61,6 +62,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int errorcheck;
 		private bool fixedsize;
 		private ThingCategory category;
+		private ArgumentInfo[] args;
 		
 		#endregion
 
@@ -79,6 +81,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int ErrorCheck { get { return errorcheck; } }
 		public bool FixedSize { get { return fixedsize; } }
 		public ThingCategory Category { get { return category; } }
+		public ArgumentInfo[] Args { get { return args; } }
 		
 		#endregion
 
@@ -101,20 +104,22 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = 0;
 			this.fixedsize = false;
 			this.spritelongname = long.MaxValue;
+			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// Constructor
-		internal ThingTypeInfo(ThingCategory cat, int index, Configuration cfg)
+		internal ThingTypeInfo(ThingCategory cat, int index, Configuration cfg, IDictionary<string, EnumList> enums)
 		{
 			string key = index.ToString(CultureInfo.InvariantCulture);
 			
 			// Initialize
 			this.index = index;
 			this.category = cat;
-
+			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			
 			// Read properties
 			this.title = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".title", "<" + key + ">");
 			this.sprite = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".sprite", cat.Sprite);
@@ -126,6 +131,10 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".blocking", cat.Blocking);
 			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".error", cat.ErrorCheck);
 			this.fixedsize = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedsize", cat.FixedSize);
+			
+			// Read the args
+			for(int i = 0; i < Linedef.NUM_ARGS; i++)
+				this.args[i] = new ArgumentInfo(cfg, "thingtypes." + cat.Name + "." + key, i, enums);
 			
 			// Safety
 			if(this.radius < 8f) this.radius = 8f;
@@ -149,7 +158,9 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = index;
 			this.category = cat;
 			this.title = title;
-
+			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
+			
 			// Read properties
 			this.sprite = cat.Sprite;
 			this.color = cat.Color;
@@ -178,6 +189,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = actor.DoomEdNum;
 			this.category = cat;
 			this.title = "Unnamed";
+			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			
 			// Read properties
 			this.sprite = cat.Sprite;

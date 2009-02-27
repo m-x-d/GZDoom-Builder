@@ -389,7 +389,7 @@ namespace CodeImp.DoomBuilder.Config
 			foreach(DictionaryEntry de in dic)
 			{
 				// Make a category
-				thingcat = new ThingCategory(cfg, de.Key.ToString());
+				thingcat = new ThingCategory(cfg, de.Key.ToString(), enums);
 
 				// Add all things in category to the big list
 				foreach(ThingTypeInfo t in thingcat.Things)
