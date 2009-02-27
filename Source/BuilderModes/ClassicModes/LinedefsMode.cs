@@ -550,9 +550,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
+				{
 					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " linedefs");
+					General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " linedefs.");
+				}
 				else
+				{
 					General.Map.UndoRedo.CreateUndo("Delete linedef");
+					General.Interface.DisplayStatus(StatusType.Action, "Deleted a linedef.");
+				}
 				
 				// Dispose selected linedefs
 				foreach(Linedef ld in selected) ld.Dispose();
@@ -582,9 +588,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
+				{
 					General.Map.UndoRedo.CreateUndo("Split " + selected.Count + " linedefs");
+					General.Interface.DisplayStatus("Split " + selected.Count + " linedefs.");
+				}
 				else
+				{
 					General.Map.UndoRedo.CreateUndo("Split linedef");
+					General.Interface.DisplayStatus(StatusType.Action, "Split a linedef.");
+				}
 				
 				// Go for all linedefs to split
 				foreach(Linedef ld in selected)
@@ -665,9 +677,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
+				{
 					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " linedefs");
+					General.Interface.DisplayStatus("Flipped " + selected.Count + " linedefs.");
+				}
 				else
+				{
 					General.Map.UndoRedo.CreateUndo("Flip linedef");
+					General.Interface.DisplayStatus("Flipped a linedef.");
+				}
 
 				// Flip all selected linedefs
 				foreach(Linedef l in selected)
@@ -711,9 +729,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				if(selected.Count > 1)
+				{
 					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " sidedefs");
+					General.Interface.DisplayStatus("Flipped " + selected.Count + " sidedefs.");
+				}
 				else
-					General.Map.UndoRedo.CreateUndo("Flip sidedef");
+				{
+					General.Map.UndoRedo.CreateUndo("Flip sidedefs");
+					General.Interface.DisplayStatus("Flipped sidedefs.");
+				}
 
 				// Flip sidedefs in all selected linedefs
 				foreach(Linedef l in selected)
