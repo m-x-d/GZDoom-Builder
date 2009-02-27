@@ -347,22 +347,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				t.Tag = tag.GetResult(t.Tag);
 				if(!action.Empty) t.Action = action.Value;
-				if(t.Action != 0)
-				{
-					t.Args[0] = arg0.GetResult(t.Args[0]);
-					t.Args[1] = arg1.GetResult(t.Args[1]);
-					t.Args[2] = arg2.GetResult(t.Args[2]);
-					t.Args[3] = arg3.GetResult(t.Args[3]);
-					t.Args[4] = arg4.GetResult(t.Args[4]);
-				}
-				else
-				{
-					t.Args[0] = 0;
-					t.Args[1] = 0;
-					t.Args[2] = 0;
-					t.Args[3] = 0;
-					t.Args[4] = 0;
-				}
+				t.Args[0] = arg0.GetResult(t.Args[0]);
+				t.Args[1] = arg1.GetResult(t.Args[1]);
+				t.Args[2] = arg2.GetResult(t.Args[2]);
+				t.Args[3] = arg3.GetResult(t.Args[3]);
+				t.Args[4] = arg4.GetResult(t.Args[4]);
 				
 				// Custom fields
 				fieldslist.Apply(t.Fields);
