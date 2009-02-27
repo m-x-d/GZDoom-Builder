@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.Data
 							g.SmoothingMode = SmoothingMode.None;
 							g.PixelOffsetMode = PixelOffsetMode.None;
 							g.Clear(Color.Transparent);
-							g.DrawImageUnscaled(oldbitmap, new Point(0, 0));
+							g.DrawImage(oldbitmap, 0, 0, oldbitmap.Size.Width, oldbitmap.Size.Height);
 							g.Dispose();
 							oldbitmap.Dispose();
 						}
