@@ -42,11 +42,13 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		public StatusType type;
 		public string message;
+		internal bool displayed;
 		
 		internal StatusInfo(StatusType type, string message)
 		{
 			this.type = type;
 			this.message = message;
+			this.displayed = false;
 		}
 	}
 	

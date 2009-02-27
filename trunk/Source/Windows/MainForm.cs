@@ -60,8 +60,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private const int WARNING_FLASH_INTERVAL = 100;
 		private const int WARNING_RESET_DELAY = 4000;
 		private const int INFO_RESET_DELAY = 4000;
-		private const int ACTION_FLASH_COUNT = 1;
-		private const int ACTION_FLASH_INTERVAL = 100;
+		private const int ACTION_FLASH_COUNT = 3;
+		private const int ACTION_FLASH_INTERVAL = 50;
 		private const int ACTION_RESET_DELAY = 4000;
 		
 		private readonly Image[,] STATUS_IMAGES = new Image[2, 4]
@@ -551,9 +551,12 @@ namespace CodeImp.DoomBuilder.Windows
 		public void DisplayStatus(StatusInfo newstatus)
 		{
 			// Stop timers
-			statusresetter.Stop();
-			statusflasher.Stop();
-			statusflashicon = false;
+			if(!newstatus.displayed)
+			{
+				statusresetter.Stop();
+				statusflasher.Stop();
+				statusflashicon = false;
+			}
 			
 			// Determine what to do specifically for this status type
 			switch(newstatus.type)
@@ -569,33 +572,43 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Shows information without flashing the icon.
 				case StatusType.Info:
-					statusresetter.Interval = INFO_RESET_DELAY;
-					statusresetter.Start();
+					if(!newstatus.displayed)
+					{
+						statusresetter.Interval = INFO_RESET_DELAY;
+						statusresetter.Start();
+					}
 					break;
 					
 				// Shows action information and flashes up the status icon once.	
 				case StatusType.Action:
-					statusflashicon = true;
-					statusflasher.Interval = ACTION_FLASH_INTERVAL;
-					statusflashcount = ACTION_FLASH_COUNT;
-					statusflasher.Start();
-					statusresetter.Interval = ACTION_RESET_DELAY;
-					statusresetter.Start();
+					if(!newstatus.displayed)
+					{
+						statusflashicon = true;
+						statusflasher.Interval = ACTION_FLASH_INTERVAL;
+						statusflashcount = ACTION_FLASH_COUNT;
+						statusflasher.Start();
+						statusresetter.Interval = ACTION_RESET_DELAY;
+						statusresetter.Start();
+					}
 					break;
 					
 				// Shows a warning, makes a warning sound and flashes a warning icon.
 				case StatusType.Warning:
-					MessageBeep(MessageBeepType.Warning);
-					statusflasher.Interval = WARNING_FLASH_INTERVAL;
-					statusflashcount = WARNING_FLASH_COUNT;
-					statusflasher.Start();
-					statusresetter.Interval = WARNING_RESET_DELAY;
-					statusresetter.Start();
+					if(!newstatus.displayed)
+					{
+						MessageBeep(MessageBeepType.Warning);
+						statusflasher.Interval = WARNING_FLASH_INTERVAL;
+						statusflashcount = WARNING_FLASH_COUNT;
+						statusflasher.Start();
+						statusresetter.Interval = WARNING_RESET_DELAY;
+						statusresetter.Start();
+					}
 					break;
 			}
 			
 			// Update status description
 			status = newstatus;
+			status.displayed = true;
 			if(statuslabel.Text != status.message)
 				statuslabel.Text = status.message;
 			

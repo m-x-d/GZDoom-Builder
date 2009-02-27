@@ -590,7 +590,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(selected.Count > 1)
 				{
 					General.Map.UndoRedo.CreateUndo("Split " + selected.Count + " linedefs");
-					General.Interface.DisplayStatus("Split " + selected.Count + " linedefs.");
+					General.Interface.DisplayStatus(StatusType.Action, "Split " + selected.Count + " linedefs.");
 				}
 				else
 				{
@@ -679,12 +679,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(selected.Count > 1)
 				{
 					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " linedefs");
-					General.Interface.DisplayStatus("Flipped " + selected.Count + " linedefs.");
+					General.Interface.DisplayStatus(StatusType.Action, "Flipped " + selected.Count + " linedefs.");
 				}
 				else
 				{
 					General.Map.UndoRedo.CreateUndo("Flip linedef");
-					General.Interface.DisplayStatus("Flipped a linedef.");
+					General.Interface.DisplayStatus(StatusType.Action, "Flipped a linedef.");
 				}
 
 				// Flip all selected linedefs
@@ -731,12 +731,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(selected.Count > 1)
 				{
 					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " sidedefs");
-					General.Interface.DisplayStatus("Flipped " + selected.Count + " sidedefs.");
+					General.Interface.DisplayStatus(StatusType.Action, "Flipped " + selected.Count + " sidedefs.");
 				}
 				else
 				{
 					General.Map.UndoRedo.CreateUndo("Flip sidedefs");
-					General.Interface.DisplayStatus("Flipped sidedefs.");
+					General.Interface.DisplayStatus(StatusType.Action, "Flipped sidedefs.");
 				}
 
 				// Flip sidedefs in all selected linedefs

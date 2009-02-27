@@ -159,17 +159,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				string newtexture = BuilderPlug.Me.CopiedFlat;
 				if(newtexture != oldtexture)
 				{
-					General.Map.UndoRedo.CreateUndo("Flood-fill flats with " + newtexture);
-
-					mode.Renderer.SetCrosshairBusy(true);
-					General.Interface.RedrawDisplay();
-
 					// Get the texture
 					ImageData newtextureimage = General.Map.Data.GetFlatImage(newtexture);
 					if(newtextureimage != null)
 					{
 						bool fillceilings = (this is VisualCeiling);
 						
+						if(fillceilings)
+						{
+							General.Map.UndoRedo.CreateUndo("Flood-fill ceilings with " + newtexture);
+							General.Interface.DisplayStatus(StatusType.Action, "Flood-filled ceilings with " + newtexture + ".");
+						}
+						else
+						{
+							General.Map.UndoRedo.CreateUndo("Flood-fill floors with " + newtexture);
+							General.Interface.DisplayStatus(StatusType.Action, "Flood-filled floors with " + newtexture + ".");
+						}
+
+						mode.Renderer.SetCrosshairBusy(true);
+						General.Interface.RedrawDisplay();
+
 						// Do the fill
 						Tools.FloodfillFlats(this.Sector.Sector, fillceilings, oldtexturelong, newtextureimage, true);
 
@@ -200,6 +209,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnCopyProperties()
 		{
 			BuilderPlug.Me.CopiedSectorProps = new SectorProperties(Sector.Sector);
+			General.Interface.DisplayStatus(StatusType.Action, "Copied sector properties.");
 		}
 		
 		// Paste properties
@@ -208,6 +218,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedSectorProps != null)
 			{
 				General.Map.UndoRedo.CreateUndo("Paste sector properties");
+				General.Interface.DisplayStatus(StatusType.Action, "Pasted sector properties.");
 				BuilderPlug.Me.CopiedSectorProps.Apply(Sector.Sector);
 				UpdateSectorGeometry(true);
 				mode.ShowTargetInfo();
@@ -234,6 +245,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			BuilderPlug.Me.CopiedFlat = GetTextureName();
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedTexture = GetTextureName();
+			General.Interface.DisplayStatus(StatusType.Action, "Copied flat " + GetTextureName() + ".");
 		}
 		
 		public virtual void OnPasteTexture() { }
@@ -276,6 +288,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Change brightness
 			General.Map.UndoRedo.CreateUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.Index);
 			Sector.Sector.Brightness = General.Clamp(Sector.Sector.Brightness + amount, 0, 255);
+			General.Interface.DisplayStatus(StatusType.Action, "Changed sector brightness to " + Sector.Sector.Brightness + ".");
 			
 			// Rebuild sector
 			UpdateSectorGeometry(false);

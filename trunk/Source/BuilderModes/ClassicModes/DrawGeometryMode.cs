@@ -399,8 +399,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				  "elegant", "glamorous", "gorgeous", "handsome", "magnificent", "unusual",
 				  "outstanding", "mysterious", "amusing", "charming", "fantastic", "jolly" };
 				string word = adjectives[points.Count % adjectives.Length];
-				string very = (points.Count > adjectives.Length) ? "very " : "";
-				General.Interface.DisplayStatus(StatusType.Action, "Created a " + very + word + " drawing.");
+				word = (points.Count > adjectives.Length) ? "very " + word : word;
+				string a = ((word[0] == 'a') || (word[0] == 'e') || (word[0] == 'o')) ? "an " : "a ";
+				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " drawing.");
 				
 				// Make the drawing
 				Tools.DrawLines(points);
