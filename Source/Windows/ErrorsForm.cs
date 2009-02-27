@@ -105,7 +105,23 @@ namespace CodeImp.DoomBuilder.Windows
 			General.ErrorLogger.Clear();
 			list.Items.Clear();
 		}
-
+		
+		// Copy selection
+		private void copyselected_Click(object sender, EventArgs e)
+		{
+			StringBuilder str = new StringBuilder("");
+			if(list.SelectedItems.Count > 0)
+			{
+				Clipboard.Clear();
+				foreach(ListViewItem lvi in list.SelectedItems)
+				{
+					if(str.Length > 0) str.Append("\r\n");
+					str.Append(lvi.Text);
+				}
+				Clipboard.SetText(str.ToString());
+			}
+		}
+		
 		#endregion
 	}
 }
