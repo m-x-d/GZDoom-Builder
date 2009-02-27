@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.copyselected.TabIndex = 1;
 			this.copyselected.Text = "Copy Selection";
 			this.copyselected.UseVisualStyleBackColor = true;
+			this.copyselected.Click += new System.EventHandler(this.copyselected_Click);
 			// 
 			// clearlist
 			// 
