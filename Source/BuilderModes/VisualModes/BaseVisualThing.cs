@@ -361,6 +361,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnCopyProperties()
 		{
 			BuilderPlug.Me.CopiedThingProps = new ThingProperties(Thing);
+			General.Interface.DisplayStatus(StatusType.Action, "Copied thing properties.");
 		}
 		
 		// Paste properties
@@ -369,6 +370,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedThingProps != null)
 			{
 				General.Map.UndoRedo.CreateUndo("Paste thing properties");
+				General.Interface.DisplayStatus(StatusType.Action, "Pasted thing properties.");
 				BuilderPlug.Me.CopiedThingProps.Apply(Thing);
 				Thing.UpdateConfiguration();
 				this.Rebuild();
@@ -401,6 +403,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					undoticket = General.Map.UndoRedo.CreateUndo("Change thing height");
 
 				Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
+
+				General.Interface.DisplayStatus(StatusType.Action, "Changed thing height to " + Thing.Position.z + ".");
 
 				this.Setup();
 			}

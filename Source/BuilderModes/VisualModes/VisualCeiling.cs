@@ -34,6 +34,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -137,6 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedFlat != null)
 			{
 				General.Map.UndoRedo.CreateUndo("Paste ceiling " + BuilderPlug.Me.CopiedFlat);
+				General.Interface.DisplayStatus(StatusType.Action, "Pasted flat " + BuilderPlug.Me.CopiedFlat + " on ceiling.");
 				SetTexture(BuilderPlug.Me.CopiedFlat);
 				this.Setup();
 			}
@@ -147,6 +149,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.Map.UndoRedo.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, this.Sector.Sector.Index);
 			this.Sector.Sector.CeilHeight += amount;
+			General.Interface.DisplayStatus(StatusType.Action, "Changed ceiling height to " + Sector.Sector.CeilHeight + ".");
 		}
 		
 		// This performs a fast test in object picking

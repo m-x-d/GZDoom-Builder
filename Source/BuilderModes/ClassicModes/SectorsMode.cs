@@ -735,7 +735,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					
 					// Create undo
 					General.Map.UndoRedo.CreateUndo("Make door (" + doortex + ")");
-					General.Interface.DisplayStatus("Created a " + doortex + " door.");
+					General.Interface.DisplayStatus(StatusType.Action, "Created a " + doortex + " door.");
 					
 					// Go for all selected sectors
 					foreach(Sector s in orderedselection)
@@ -831,12 +831,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(selected.Count > 1)
 				{
 					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " sectors");
-					General.Interface.DisplayStatus("Deleted " + selected.Count + " sectors.");
+					General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " sectors.");
 				}
 				else
 				{
 					General.Map.UndoRedo.CreateUndo("Delete sector");
-					General.Interface.DisplayStatus("Deleted sector.");
+					General.Interface.DisplayStatus(StatusType.Action, "Deleted sector.");
 				}
 
 				// Dispose selected sectors
@@ -893,7 +893,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				General.Map.UndoRedo.CreateUndo("Join " + count + " sectors");
-				General.Interface.DisplayStatus("Joined " + count + " sectors.");
+				General.Interface.DisplayStatus(StatusType.Action, "Joined " + count + " sectors.");
 
 				// Merge
 				JoinMergeSectors(false);
@@ -919,7 +919,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make undo
 				General.Map.UndoRedo.CreateUndo("Merge " + count + " sectors");
-				General.Interface.DisplayStatus("Merged " + count + " sectors.");
+				General.Interface.DisplayStatus(StatusType.Action, "Merged " + count + " sectors.");
 
 				// Merge
 				JoinMergeSectors(true);

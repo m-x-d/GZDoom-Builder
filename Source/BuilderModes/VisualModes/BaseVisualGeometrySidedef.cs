@@ -124,6 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make it now
 				General.Map.UndoRedo.CreateUndo("Create middle texture");
+				General.Interface.DisplayStatus(StatusType.Action, "Created middle texture.");
 				General.Settings.FindDefaultDrawSettings();
 				Sidedef.SetTextureMid(General.Settings.DefaultTexture);
 
@@ -147,6 +148,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Remove texture
 			General.Map.UndoRedo.CreateUndo("Delete texture");
+			General.Interface.DisplayStatus(StatusType.Action, "Deleted a texture.");
 			SetTexture("-");
 
 			// Update
@@ -192,6 +194,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnResetTextureOffset()
 		{
 			General.Map.UndoRedo.CreateUndo("Reset texture offsets");
+			General.Interface.DisplayStatus(StatusType.Action, "Texture offsets reset.");
 
 			// Apply offsets
 			Sidedef.OffsetX = 0;
@@ -213,12 +216,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Remove flag
 				General.Map.UndoRedo.CreateUndo("Remove upper-unpegged setting");
+				General.Interface.DisplayStatus(StatusType.Action, "Removed upper-unpegged setting.");
 				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
 			}
 			else
 			{
 				// Add flag
 				General.Map.UndoRedo.CreateUndo("Set upper-unpegged setting");
+				General.Interface.DisplayStatus(StatusType.Action, "Set upper-unpegged setting.");
 				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = true;
 			}
 			
@@ -238,12 +243,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Remove flag
 				General.Map.UndoRedo.CreateUndo("Remove lower-unpegged setting");
+				General.Interface.DisplayStatus(StatusType.Action, "Removed lower-unpegged setting.");
 				this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = false;
 			}
 			else
 			{
 				// Add flag
 				General.Map.UndoRedo.CreateUndo("Set lower-unpegged setting");
+				General.Interface.DisplayStatus(StatusType.Action, "Set lower-unpegged setting.");
 				this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = true;
 			}
 			
@@ -266,6 +273,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(newtexture != oldtexture)
 				{
 					General.Map.UndoRedo.CreateUndo("Flood-fill textures with " + newtexture);
+					General.Interface.DisplayStatus(StatusType.Action, "Flood-filled textures with " + newtexture + ".");
 					
 					mode.Renderer.SetCrosshairBusy(true);
 					General.Interface.RedrawDisplay();
@@ -305,6 +313,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnTextureAlign(bool alignx, bool aligny)
 		{
 			General.Map.UndoRedo.CreateUndo("Auto-align textures");
+			General.Interface.DisplayStatus(StatusType.Action, "Auto-aligned textures.");
 			
 			// Make sure the texture is loaded (we need the texture size)
 			if(!base.Texture.IsImageLoaded) base.Texture.LoadImage();
@@ -350,6 +359,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedTexture != null)
 			{
 				General.Map.UndoRedo.CreateUndo("Paste texture " + BuilderPlug.Me.CopiedTexture);
+				General.Interface.DisplayStatus(StatusType.Action, "Pasted texture " + BuilderPlug.Me.CopiedTexture + ".");
 				SetTexture(BuilderPlug.Me.CopiedTexture);
 			}
 		}
@@ -360,6 +370,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.UndoRedo.CreateUndo("Paste texture offsets");
 			Sidedef.OffsetX = BuilderPlug.Me.CopiedOffsets.X;
 			Sidedef.OffsetY = BuilderPlug.Me.CopiedOffsets.Y;
+			General.Interface.DisplayStatus(StatusType.Action, "Pasted texture offsets " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
@@ -374,18 +385,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			BuilderPlug.Me.CopiedTexture = GetTextureName();
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedFlat = GetTextureName();
+			General.Interface.DisplayStatus(StatusType.Action, "Copied texture " + GetTextureName() + ".");
 		}
 		
 		// Copy texture offsets
 		public virtual void OnCopyTextureOffsets()
 		{
 			BuilderPlug.Me.CopiedOffsets = new Point(Sidedef.OffsetX, Sidedef.OffsetY);
+			General.Interface.DisplayStatus(StatusType.Action, "Copied texture offsets " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
 		}
 
 		// Copy properties
 		public virtual void OnCopyProperties()
 		{
 			BuilderPlug.Me.CopiedSidedefProps = new SidedefProperties(Sidedef);
+			General.Interface.DisplayStatus(StatusType.Action, "Copied sidedef properties.");
 		}
 
 		// Paste properties
@@ -394,6 +408,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedSidedefProps != null)
 			{
 				General.Map.UndoRedo.CreateUndo("Paste sidedef properties");
+				General.Interface.DisplayStatus(StatusType.Action, "Pasted sidedef properties.");
 				BuilderPlug.Me.CopiedSidedefProps.Apply(Sidedef);
 				
 				// Update sectors on both sides
@@ -520,6 +535,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Change brightness
 			General.Map.UndoRedo.CreateUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.Index);
 			Sector.Sector.Brightness = General.Clamp(Sector.Sector.Brightness + amount, 0, 255);
+			General.Interface.DisplayStatus(StatusType.Action, "Changed sector brightness to " + Sector.Sector.Brightness + ".");
 			
 			// Rebuild sector
 			Sector.Rebuild();
@@ -549,6 +565,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef.OffsetX -= horizontal;
 			Sidedef.OffsetY -= vertical;
 
+			General.Interface.DisplayStatus(StatusType.Action, "Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
 			if(parts.lower != null) parts.lower.Setup();
