@@ -92,6 +92,16 @@ namespace CodeImp.DoomBuilder.Config
 			}
 		}
 
+		// Constructor for unknown argument info
+		internal ArgumentInfo(int argindex)
+		{
+			// Read
+			this.used = false;
+			this.title = "Argument " + (argindex + 1);
+			this.type = 0;
+			this.enumlist = new EnumList();
+		}
+
 		#endregion
 
 		#region ================== Methods

@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private ICollection<Thing> things;
 		private List<TreeNode> nodes;
+		private ThingTypeInfo thinginfo;
 		
 		#endregion
 
@@ -210,31 +211,33 @@ namespace CodeImp.DoomBuilder.Windows
 		private void action_ValueChanges(object sender, EventArgs e)
 		{
 			int showaction = 0;
+			ArgumentInfo[] arginfo;
 
-			// Only when line type is known
+			// Only when line type is known, otherwise use the thing arguments
 			if(General.Map.Config.LinedefActions.ContainsKey(action.Value)) showaction = action.Value;
-
+			if((showaction == 0) && (thinginfo != null)) arginfo = thinginfo.Args; else arginfo = General.Map.Config.LinedefActions[showaction].Args;
+			
 			// Change the argument descriptions
-			arg0label.Text = General.Map.Config.LinedefActions[showaction].Args[0].Title + ":";
-			arg1label.Text = General.Map.Config.LinedefActions[showaction].Args[1].Title + ":";
-			arg2label.Text = General.Map.Config.LinedefActions[showaction].Args[2].Title + ":";
-			arg3label.Text = General.Map.Config.LinedefActions[showaction].Args[3].Title + ":";
-			arg4label.Text = General.Map.Config.LinedefActions[showaction].Args[4].Title + ":";
-			arg0label.Enabled = General.Map.Config.LinedefActions[showaction].Args[0].Used;
-			arg1label.Enabled = General.Map.Config.LinedefActions[showaction].Args[1].Used;
-			arg2label.Enabled = General.Map.Config.LinedefActions[showaction].Args[2].Used;
-			arg3label.Enabled = General.Map.Config.LinedefActions[showaction].Args[3].Used;
-			arg4label.Enabled = General.Map.Config.LinedefActions[showaction].Args[4].Used;
+			arg0label.Text = arginfo[0].Title + ":";
+			arg1label.Text = arginfo[1].Title + ":";
+			arg2label.Text = arginfo[2].Title + ":";
+			arg3label.Text = arginfo[3].Title + ":";
+			arg4label.Text = arginfo[4].Title + ":";
+			arg0label.Enabled = arginfo[0].Used;
+			arg1label.Enabled = arginfo[1].Used;
+			arg2label.Enabled = arginfo[2].Used;
+			arg3label.Enabled = arginfo[3].Used;
+			arg4label.Enabled = arginfo[4].Used;
 			if(arg0label.Enabled) arg0.ForeColor = SystemColors.WindowText; else arg0.ForeColor = SystemColors.GrayText;
 			if(arg1label.Enabled) arg1.ForeColor = SystemColors.WindowText; else arg1.ForeColor = SystemColors.GrayText;
 			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
 			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
 			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
-			arg0.Setup(General.Map.Config.LinedefActions[showaction].Args[0]);
-			arg1.Setup(General.Map.Config.LinedefActions[showaction].Args[1]);
-			arg2.Setup(General.Map.Config.LinedefActions[showaction].Args[2]);
-			arg3.Setup(General.Map.Config.LinedefActions[showaction].Args[3]);
-			arg4.Setup(General.Map.Config.LinedefActions[showaction].Args[4]);
+			arg0.Setup(arginfo[0]);
+			arg1.Setup(arginfo[1]);
+			arg2.Setup(arginfo[2]);
+			arg3.Setup(arginfo[3]);
+			arg4.Setup(arginfo[4]);
 		}
 
 		// Browse Action clicked
@@ -283,19 +286,19 @@ namespace CodeImp.DoomBuilder.Windows
 			if(typeid.Text.Length > 0)
 			{
 				// Get the info
-				ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(typeid.GetResult(0));
-				if(ti != null)
+				thinginfo = General.Map.Data.GetThingInfoEx(typeid.GetResult(0));
+				if(thinginfo != null)
 				{
 					knownthing = true;
 
 					// Size
-					sizelabel.Text = (ti.Radius * 2) + " x " + ti.Height;
+					sizelabel.Text = (thinginfo.Radius * 2) + " x " + thinginfo.Height;
 
 					// Hangs from ceiling
-					if(ti.Hangs) positionlabel.Text = "Ceiling"; else positionlabel.Text = "Floor";
+					if(thinginfo.Hangs) positionlabel.Text = "Ceiling"; else positionlabel.Text = "Floor";
 
 					// Blocking
-					switch(ti.Blocking)
+					switch(thinginfo.Blocking)
 					{
 						case ThingTypeInfo.THING_BLOCKING_NONE: blockinglabel.Text = "No"; break;
 						case ThingTypeInfo.THING_BLOCKING_FULL: blockinglabel.Text = "Completely"; break;
@@ -304,10 +307,14 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 
 					// Show image
-					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview());
+					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetPreview());
 				}
 			}
-
+			else
+			{
+				thinginfo = null;
+			}
+			
 			// No known thing?
 			if(!knownthing)
 			{
@@ -316,6 +323,9 @@ namespace CodeImp.DoomBuilder.Windows
 				blockinglabel.Text = "-";
 				General.DisplayZoomedImage(spritetex, null);
 			}
+			
+			// Update arguments
+			action_ValueChanges(sender, e);
 		}
 
 		// Apply clicked
