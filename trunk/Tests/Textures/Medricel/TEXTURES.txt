@@ -1323,3 +1323,21 @@ texture MTFRS3, 128, 128		//
 {
 	
 }
+
+texture OHSHIT, 128, 128
+{
+   Patch STONE, 0, 0
+   Patch AG128_2, 32, 0
+   {
+      Style Add
+   }
+   Patch TLITE6_5, 0, 0
+   {
+      Style Add
+   }
+   patch TLITE6_5, 64, 0
+   {
+      Style Add
+   }
+}
+
