@@ -118,12 +118,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return;
 			}
 
-			// Next token should be the beginning of the texture scope
+			// Next token is the beginning of the texture scope.
+			// If not, then the patch info ends here.
 			parser.SkipWhitespace(true);
 			tokenstr = parser.ReadToken();
 			if(tokenstr != "{")
 			{
-				parser.ReportError("Expected begin of structure");
+				// Rewind so this structure can be read again
+				parser.DataStream.Seek(-tokenstr.Length, SeekOrigin.Current);
 				return;
 			}
 
