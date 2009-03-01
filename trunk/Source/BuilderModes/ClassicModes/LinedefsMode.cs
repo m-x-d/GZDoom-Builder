@@ -702,6 +702,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Redraw
+				General.Map.Map.Update();
 				General.Map.IsChanged = true;
 				General.Interface.RefreshInfo();
 				General.Interface.RedrawDisplay();
