@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.IO;
 using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
@@ -42,6 +43,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private Size lastsize;
 		private ListViewGroup usedgroup;
 		private ListViewGroup availgroup;
+		private ListViewItem selectedset;
 		
 		// Properties
 		public string SelectedName { get { return selectedname; } }
@@ -77,11 +79,10 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Select the last one that was selected
 			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
-			foreach(ListViewItem i in texturesets.Items) if(i.Text == selectname) i.Selected = true;
+			foreach(ListViewItem i in texturesets.Items) if(i.Text == selectname) selectedset = i;
 
 			// None selected? Then select the first
-			if(texturesets.SelectedItems.Count == 0)
-				texturesets.Items[0].Selected = true;
+			if(selectedset == null) selectedset = texturesets.Items[0];
 
 			// Make groups
 			usedgroup = browser.AddGroup("Used Textures");
@@ -104,6 +105,51 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ResumeLayout(true);
 		}
 
+		// This fills the lists and selects the given texture
+		public void Setup(string selectflat)
+		{
+			if(!string.IsNullOrEmpty(selectflat))
+			{
+				// We prefer selecting the texture using the Texture Set that was previously selected
+				if(texturesets.SelectedItems.Count > 0)
+				{
+					if(SelectFlatInSet(texturesets.SelectedItems[0], selectflat)) return;
+				}
+
+				// Otherwise, go from top to bottom to find the texture
+				foreach(ListViewItem i in texturesets.Items)
+				{
+					if(SelectFlatInSet(i, selectflat)) return;
+				}
+			}
+
+			// Select texture set and fill list
+			selectedset.Selected = true;
+			selectedset.EnsureVisible();
+			FillImagesList(selectflat);
+		}
+
+		// This selects a Texture Set and the texture if it can be found
+		private bool SelectFlatInSet(ListViewItem setitem, string selectflat)
+		{
+			long longname = Lump.MakeLongName(selectflat);
+			IFilledTextureSet set = (setitem.Tag as IFilledTextureSet);
+			foreach(ImageData img in set.Textures)
+			{
+				if(img.LongName == longname)
+				{
+					// Texture found in this set! Select it now.
+					selectedset = setitem;
+					selectedset.Selected = true;
+					selectedset.EnsureVisible();
+					FillImagesList(selectflat);
+					return true;
+				}
+			}
+
+			return false;
+		}
+		
 		// Selection changed
 		private void browser_SelectedItemChanged()
 		{
@@ -203,6 +249,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public static string Browse(IWin32Window parent, string select)
 		{
 			FlatBrowserForm browser = new FlatBrowserForm();
+			browser.Setup(select);
 			if(browser.ShowDialog(parent) == DialogResult.OK)
 			{
 				// Return result
@@ -221,22 +268,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Anything slected?
 			if(texturesets.SelectedItems.Count > 0)
 			{
-				// Get the selected texture set
-				IFilledTextureSet set = (texturesets.SelectedItems[0].Tag as IFilledTextureSet);
-				
-				// Start adding
-				browser.BeginAdding(false);
-
-				// Add all used flats
-				foreach(ImageData img in set.Flats)
-					if(img.UsedInMap) browser.Add(img.Name, img, img, usedgroup);
-
-				// Add all available flats
-				foreach(ImageData img in set.Flats)
-					browser.Add(img.Name, img, img, availgroup);
-
-				// Done adding
-				browser.EndAdding();
+				// Not the same?
+				if(texturesets.SelectedItems[0] != selectedset)
+				{
+					selectedset = texturesets.SelectedItems[0];
+					FillImagesList(null);
+				}
 			}
 		}
 
@@ -244,6 +281,31 @@ namespace CodeImp.DoomBuilder.Windows
 		private void browser_SelectedItemDoubleClicked()
 		{
 			if(apply.Enabled) apply_Click(this, EventArgs.Empty);
+		}
+
+		// This fills the list of textures, depending on the selected texture set
+		private void FillImagesList(string selectflat)
+		{
+			// Get the selected texture set
+			IFilledTextureSet set = (selectedset.Tag as IFilledTextureSet);
+
+			// Start adding
+			browser.BeginAdding(false);
+
+			// Add all used flats
+			foreach(ImageData img in set.Flats)
+				if(img.UsedInMap) browser.Add(img.Name, img, img, usedgroup);
+
+			// Add all available flats
+			foreach(ImageData img in set.Flats)
+				browser.Add(img.Name, img, img, availgroup);
+
+			// Done adding
+			browser.EndAdding();
+
+			// Select texture
+			if(!string.IsNullOrEmpty(selectflat))
+				browser.SelectItem(selectflat, usedgroup);
 		}
 	}
 }
