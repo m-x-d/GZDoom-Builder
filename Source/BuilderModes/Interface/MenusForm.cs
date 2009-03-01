@@ -53,6 +53,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripMenuItem LinedefsMenu { get { return linedefsmenu; } }
 		public ToolStripMenuItem SectorsMenu { get { return sectorsmenu; } }
 		public ToolStripButton MakeGradientBrightness { get { return buttonbrightnessgradient; } }
+		public ToolStripButton FlipSelectionV { get { return buttonflipselectionv; } }
+		public ToolStripButton FlipSelectionH { get { return buttonflipselectionh; } }
 
 		#endregion
 
