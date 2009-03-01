@@ -110,8 +110,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// ErrorsForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.close;
 			this.ClientSize = new System.Drawing.Size(756, 453);
 			this.Controls.Add(this.close);

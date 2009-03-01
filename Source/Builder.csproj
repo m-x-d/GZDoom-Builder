@@ -674,6 +674,12 @@
     <Compile Include="Windows\ErrorsForm.Designer.cs">
       <DependentUpon>ErrorsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ScriptFindReplaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ScriptFindReplaceForm.Designer.cs">
+      <DependentUpon>ScriptFindReplaceForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\StatusInfo.cs" />
     <Compile Include="ZDoom\ActorStructure.cs" />
     <Compile Include="ZDoom\PatchStructure.cs" />
@@ -794,6 +800,10 @@
     <EmbeddedResource Include="Windows\ScriptEditorForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ScriptEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ScriptFindReplaceForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ScriptFindReplaceForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\TextEditForm.resx">
       <SubType>Designer</SubType>
