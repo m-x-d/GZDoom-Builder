@@ -103,6 +103,21 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
+			// Collect information
+			ConfigurationInfo configinfo = General.Configs[config.SelectedIndex];
+			DataLocationList locations = datalocations.GetResources();
+			
+			// When making a new map, check if we should warn the user for missing resources
+			if(newmap && (locations.Count == 0) && (configinfo.Resources.Count == 0))
+			{
+				if(MessageBox.Show(this, "You are about to make a map without selecting any resources. Textures, flats and " +
+										 "sprites may not be shown correctly or may not show up at all. Do you want to continue?", Application.ProductName,
+										 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.No)
+				{
+					return;
+				}
+			}
+
 			// Next checks are only for maps that are already opened
 			if(!newmap)
 			{
