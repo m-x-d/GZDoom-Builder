@@ -181,9 +181,11 @@ namespace CodeImp.DoomBuilder.Windows
 			label4.AutoEllipsis = true;
 			label4.Location = new System.Drawing.Point(12, 15);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(445, 75);
+			label4.Size = new System.Drawing.Size(458, 46);
 			label4.TabIndex = 24;
-			label4.Text = resources.GetString("label4.Text");
+			label4.Text = "Texture Sets are a way to group textures and flats into categories, so that you c" +
+				"an easily find a texture for the specific style or purpose you need by selecting" +
+				" one of the categories.";
 			// 
 			// label10
 			// 
@@ -472,10 +474,10 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.listtextures.FullRowSelect = true;
 			this.listtextures.HideSelection = false;
-			this.listtextures.Location = new System.Drawing.Point(15, 84);
+			this.listtextures.Location = new System.Drawing.Point(15, 64);
 			this.listtextures.Name = "listtextures";
 			this.listtextures.ShowGroups = false;
-			this.listtextures.Size = new System.Drawing.Size(442, 142);
+			this.listtextures.Size = new System.Drawing.Size(442, 175);
 			this.listtextures.SmallImageList = this.smallimages;
 			this.listtextures.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listtextures.TabIndex = 32;
@@ -493,7 +495,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// restoretexturesets
 			// 
 			this.restoretexturesets.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.restoretexturesets.Location = new System.Drawing.Point(15, 270);
+			this.restoretexturesets.Location = new System.Drawing.Point(15, 283);
 			this.restoretexturesets.Name = "restoretexturesets";
 			this.restoretexturesets.Size = new System.Drawing.Size(140, 24);
 			this.restoretexturesets.TabIndex = 31;
@@ -505,7 +507,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.edittextureset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.edittextureset.Enabled = false;
-			this.edittextureset.Location = new System.Drawing.Point(88, 232);
+			this.edittextureset.Location = new System.Drawing.Point(88, 245);
 			this.edittextureset.Name = "edittextureset";
 			this.edittextureset.Size = new System.Drawing.Size(67, 24);
 			this.edittextureset.TabIndex = 30;
@@ -517,7 +519,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.pastetexturesets.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.pastetexturesets.Enabled = false;
-			this.pastetexturesets.Location = new System.Drawing.Point(399, 232);
+			this.pastetexturesets.Location = new System.Drawing.Point(399, 245);
 			this.pastetexturesets.Name = "pastetexturesets";
 			this.pastetexturesets.Size = new System.Drawing.Size(58, 24);
 			this.pastetexturesets.TabIndex = 29;
@@ -529,7 +531,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.copytexturesets.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.copytexturesets.Enabled = false;
-			this.copytexturesets.Location = new System.Drawing.Point(335, 232);
+			this.copytexturesets.Location = new System.Drawing.Point(335, 245);
 			this.copytexturesets.Name = "copytexturesets";
 			this.copytexturesets.Size = new System.Drawing.Size(58, 24);
 			this.copytexturesets.TabIndex = 28;
@@ -541,7 +543,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.removetextureset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.removetextureset.Enabled = false;
-			this.removetextureset.Location = new System.Drawing.Point(161, 232);
+			this.removetextureset.Location = new System.Drawing.Point(161, 245);
 			this.removetextureset.Name = "removetextureset";
 			this.removetextureset.Size = new System.Drawing.Size(68, 24);
 			this.removetextureset.TabIndex = 27;
@@ -552,7 +554,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// addtextureset
 			// 
 			this.addtextureset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.addtextureset.Location = new System.Drawing.Point(15, 232);
+			this.addtextureset.Location = new System.Drawing.Point(15, 245);
 			this.addtextureset.Name = "addtextureset";
 			this.addtextureset.Size = new System.Drawing.Size(67, 24);
 			this.addtextureset.TabIndex = 26;

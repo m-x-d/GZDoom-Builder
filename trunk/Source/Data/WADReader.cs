@@ -115,6 +115,12 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Management
 
+		// Return a short name for this data location
+		public override string GetTitle()
+		{
+			return Path.GetFileName(location.location);
+		}
+
 		// This suspends use of this resource
 		public override void Suspend()
 		{
@@ -222,6 +228,10 @@ namespace CodeImp.DoomBuilder.Data
 				WADReader.LoadHighresTextures(filedata, "TEXTURES", ref images, null, null);
 				filedata.Dispose();
 			}
+
+			// Add images to the container-specific texture set
+			foreach(ImageData img in images)
+				textureset.AddTexture(img);
 
 			// Return result
 			return images;
@@ -446,6 +456,10 @@ namespace CodeImp.DoomBuilder.Data
 					LoadFlatsRange(rangestart, rangeend, ref images);
 				}
 			}
+
+			// Add images to the container-specific texture set
+			foreach(ImageData img in images)
+				textureset.AddFlat(img);
 
 			// Return result
 			return images;

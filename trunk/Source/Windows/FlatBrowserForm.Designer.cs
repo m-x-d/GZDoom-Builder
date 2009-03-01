@@ -30,29 +30,13 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FlatBrowserForm));
-			this.browser = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.texturesets = new System.Windows.Forms.ListView();
 			this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			this.smallimages = new System.Windows.Forms.ImageList(this.components);
+			this.browser = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
 			this.SuspendLayout();
-			// 
-			// browser
-			// 
-			this.browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.browser.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browser.HideInputBox = false;
-			this.browser.LabelText = "Select or enter a flat name:";
-			this.browser.Location = new System.Drawing.Point(197, 9);
-			this.browser.Name = "browser";
-			this.browser.PreventSelection = false;
-			this.browser.Size = new System.Drawing.Size(684, 610);
-			this.browser.TabIndex = 0;
-			this.browser.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.browser_SelectedItemDoubleClicked);
-			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
 			// cancel
 			// 
@@ -107,8 +91,26 @@ namespace CodeImp.DoomBuilder.Windows
 			this.smallimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("smallimages.ImageStream")));
 			this.smallimages.TransparentColor = System.Drawing.Color.Transparent;
 			this.smallimages.Images.SetKeyName(0, "KnownTextureSet2.ico");
-			this.smallimages.Images.SetKeyName(1, "OthersTextureSet2.ico");
-			this.smallimages.Images.SetKeyName(2, "AllTextureSet2.ico");
+			this.smallimages.Images.SetKeyName(1, "AllTextureSet2.ico");
+			this.smallimages.Images.SetKeyName(2, "FileTextureSet.ico");
+			this.smallimages.Images.SetKeyName(3, "FolderTextureSet.ico");
+			this.smallimages.Images.SetKeyName(4, "PK3TextureSet.ico");
+			// 
+			// browser
+			// 
+			this.browser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.browser.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browser.HideInputBox = false;
+			this.browser.LabelText = "Select or enter a flat name:";
+			this.browser.Location = new System.Drawing.Point(197, 9);
+			this.browser.Name = "browser";
+			this.browser.PreventSelection = false;
+			this.browser.Size = new System.Drawing.Size(684, 610);
+			this.browser.TabIndex = 0;
+			this.browser.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.browser_SelectedItemDoubleClicked);
+			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
 			// FlatBrowserForm
 			// 

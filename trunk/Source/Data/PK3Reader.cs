@@ -212,6 +212,12 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#region ================== Methods
 
+		// Return a short name for this data location
+		public override string GetTitle()
+		{
+			return Path.GetFileName(location.location);
+		}
+
 		// This creates an image
 		protected override ImageData CreateImage(string name, string filename, bool flat)
 		{
