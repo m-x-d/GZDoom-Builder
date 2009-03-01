@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Actions
 					{
 						string errordesc = "Error in Actions configuration on line " + cfg.ErrorLine + ": " + cfg.ErrorDescription;
 						General.CancelAutoMapLoad();
-						General.ErrorLogger.Add(ErrorType.Error, "Unable to read Actions configuration from assembly " + Path.GetFileName(asm.Location) + "!");
+						General.ErrorLogger.Add(ErrorType.Error, "Unable to read Actions configuration from assembly " + Path.GetFileName(asm.Location));
 						General.WriteLogLine(errordesc);
 						General.ShowErrorMessage("Unable to read Actions configuration from assembly " + Path.GetFileName(asm.Location) + "!\n" + errordesc, MessageBoxButtons.OK);
 					}
@@ -195,7 +195,7 @@ namespace CodeImp.DoomBuilder.Actions
 			else
 			{
 				// Action already exists!
-				General.ErrorLogger.Add(ErrorType.Warning, "Action '" + name + "' already exists. Action names must be unique!");
+				General.ErrorLogger.Add(ErrorType.Warning, "Action '" + name + "' already exists. Action names must be unique.");
 			}
 		}
 
@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.Actions
 					if(Exists(actionname))
 						actions[actionname].BindEnd(del);
 					else
-						throw new ArgumentException("Could not bind " + m.ReflectedType.Name + "." + m.Name + " to action \"" + actionname + "\", that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
+						throw new ArgumentException("Could not bind " + m.ReflectedType.Name + "." + m.Name + " to action \"" + actionname + "\", that action does not exist. Refer to, or edit Actions.cfg for all available application actions.");
 				}
 			}
 		}
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.Actions
 			if(Exists(actionname))
 				actions[actionname].BindBegin(d);
 			else
-				General.ErrorLogger.Add(ErrorType.Warning, "Could not bind delegate for " + d.Method.Name + " to action \"" + a.ActionName + "\" (" + actionname + "), that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
+				General.ErrorLogger.Add(ErrorType.Warning, "Could not bind delegate for " + d.Method.Name + " to action \"" + a.ActionName + "\" (" + actionname + "), that action does not exist. Refer to, or edit Actions.cfg for all available application actions.");
 		}
 
 		// This binds a delegate manually
@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.Actions
 			if(Exists(actionname))
 				actions[actionname].BindEnd(d);
 			else
-				General.ErrorLogger.Add(ErrorType.Warning, "Could not bind delegate for " + d.Method.Name + " to action \"" + a.ActionName + "\" (" + actionname + "), that action does not exist! Refer to, or edit Actions.cfg for all available application actions.");
+				General.ErrorLogger.Add(ErrorType.Warning, "Could not bind delegate for " + d.Method.Name + " to action \"" + a.ActionName + "\" (" + actionname + "), that action does not exist. Refer to, or edit Actions.cfg for all available application actions.");
 		}
 
 		// This unbinds all methods marked with this attribute

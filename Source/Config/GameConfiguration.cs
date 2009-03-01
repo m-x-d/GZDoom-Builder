@@ -370,7 +370,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				catch(Exception)
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Unable to read universal field definition 'universalfields." + elementname + "." + de.Key + "'!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Unable to read universal field definition 'universalfields." + elementname + "." + de.Key + "'");
 				}
 			}
 
@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder.Config
 					}
 					else
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once! (as '" + things[t.Index].Title + "' and '" + t.Title + "')");
+						General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as '" + things[t.Index].Title + "' and '" + t.Title + "')");
 					}
 				}
 
@@ -478,7 +478,7 @@ namespace CodeImp.DoomBuilder.Config
 						else
 						{
 							// Failure
-							General.ErrorLogger.Add(ErrorType.Warning, "Structure 'linedeftypes' contains invalid types! (all types must be expanded structures)");
+							General.ErrorLogger.Add(ErrorType.Warning, "Structure 'linedeftypes' contains invalid types (all types must be expanded structures)");
 						}
 					}
 				}
@@ -530,7 +530,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'gen_linedeftypes' contains invalid entries!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'gen_linedeftypes' contains invalid entries");
 				}
 			}
 		}
@@ -560,7 +560,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'sectortypes' contains invalid keys!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'sectortypes' contains invalid keys");
 				}
 			}
 
@@ -585,7 +585,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'gen_sectortypes' contains invalid entries!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'gen_sectortypes' contains invalid entries");
 				}
 			}
 		}
@@ -625,7 +625,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'defaultthingflags' contains unknown thing flags!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'defaultthingflags' contains unknown thing flags");
 				}
 			}
 		}
@@ -646,7 +646,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'skills' contains invalid skill numbers!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'skills' contains invalid skill numbers");
 				}
 			}
 		}

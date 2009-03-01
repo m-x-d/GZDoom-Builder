@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.Controls
 			catch(Exception e)
 			{
 				// Failed
-				General.ErrorLogger.Add(ErrorType.Error, "Cannot open file '" + filepathname + "' for writing.");
+				General.ErrorLogger.Add(ErrorType.Error, "Cannot open file '" + filepathname + "' for writing");
 				General.WriteLogLine(e.GetType().Name + ": " + e.Message);
 				General.ShowErrorMessage("Unable to open file \"" + filepathname + "\" for writing. Make sure the path exists and that the file is not in use by another application.", MessageBoxButtons.OK);
 				return false;
@@ -196,7 +196,7 @@ namespace CodeImp.DoomBuilder.Controls
 			catch(Exception e)
 			{
 				// Failed
-				General.ErrorLogger.Add(ErrorType.Error, "Cannot open file '" + filepathname + "' for reading.");
+				General.ErrorLogger.Add(ErrorType.Error, "Cannot open file '" + filepathname + "' for reading");
 				General.WriteLogLine(e.GetType().Name + ": " + e.Message);
 				General.ShowErrorMessage("Unable to open file \"" + filepathname + "\" for reading. Make sure the path exists and that the file is not in use by another application.", MessageBoxButtons.OK);
 				return false;
