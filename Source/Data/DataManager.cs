@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Data
 		private List<string> flatnames;
 		private Dictionary<long, ImageData> sprites;
 		private List<MatchingTextureSet> texturesets;
-		private OthersTextureSet othertextures;
+		private List<ResourceTextureSet> resourcetextures;
 		private AllTextureSet alltextures;
 		
 		// Background loading
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.Data
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
 		internal ICollection<MatchingTextureSet> TextureSets { get { return texturesets; } }
-		internal OthersTextureSet OthersTextureSet { get { return othertextures; } }
+		internal ICollection<ResourceTextureSet> ResourceTextureSets { get { return resourcetextures; } }
 		internal AllTextureSet AllTextureSet { get { return alltextures; } }
 		
 		public bool IsLoading
@@ -229,8 +229,8 @@ namespace CodeImp.DoomBuilder.Data
 			texturesets.Sort();
 			
 			// Special textures sets
-			othertextures = new OthersTextureSet();
 			alltextures = new AllTextureSet();
+			resourcetextures = new List<ResourceTextureSet>();
 			
 			// Go for all locations
 			foreach(DataLocation dl in locations)
@@ -275,7 +275,11 @@ namespace CodeImp.DoomBuilder.Data
 				*/
 
 				// Add container
-				if(c != null) containers.Add(c);
+				if(c != null)
+				{
+					containers.Add(c);
+					resourcetextures.Add(c.TextureSet);
+				}
 			}
 			
 			// Load stuff
@@ -303,9 +307,6 @@ namespace CodeImp.DoomBuilder.Data
 				bool matchfound = false;
 				foreach(MatchingTextureSet ms in texturesets)
 					matchfound |= ms.AddTexture(img.Value);
-				
-				// If not matched in any set, add it to the others
-				if(!matchfound) othertextures.AddTexture(img.Value);
 
 				// Add to all
 				alltextures.AddTexture(img.Value);
@@ -318,9 +319,6 @@ namespace CodeImp.DoomBuilder.Data
 				bool matchfound = false;
 				foreach(MatchingTextureSet ms in texturesets)
 					matchfound |= ms.AddFlat(img.Value);
-				
-				// If not matched in any set, add it to the others
-				if(!matchfound) othertextures.AddFlat(img.Value);
 				
 				// Add to all
 				alltextures.AddFlat(img.Value);

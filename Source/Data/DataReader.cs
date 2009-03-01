@@ -24,6 +24,7 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
 
@@ -38,6 +39,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected DataLocation location;
 		protected bool issuspended = false;
 		protected bool isdisposed = false;
+		protected ResourceTextureSet textureset;
 
 		#endregion
 
@@ -46,6 +48,7 @@ namespace CodeImp.DoomBuilder.Data
 		public DataLocation Location { get { return location; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool IsSuspended { get { return issuspended; } }
+		public ResourceTextureSet TextureSet { get { return textureset; } }
 
 		#endregion
 
@@ -56,6 +59,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Keep information
 			location = dl;
+			textureset = new ResourceTextureSet(GetTitle(), dl.type);
 		}
 
 		// Disposer
@@ -65,6 +69,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(!isdisposed)
 			{
 				// Done
+				textureset = null;
 				isdisposed = true;
 			}
 		}
@@ -72,6 +77,9 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Management
+
+		// This returns a short name
+		public abstract string GetTitle();
 
 		// This suspends use of this resource
 		public virtual void Suspend()

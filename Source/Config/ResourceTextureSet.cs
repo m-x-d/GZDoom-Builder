@@ -33,11 +33,9 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Config
 {
-	internal sealed class OthersTextureSet : TextureSet, IFilledTextureSet
+	internal sealed class ResourceTextureSet : TextureSet, IFilledTextureSet
 	{
 		#region ================== Constants
-		
-		public const string NAME = "Others";
 		
 		#endregion
 
@@ -46,6 +44,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Matching textures and flats
 		private List<ImageData> textures;
 		private List<ImageData> flats;
+		private int locationtype;
 
 		#endregion
 
@@ -53,15 +52,17 @@ namespace CodeImp.DoomBuilder.Config
 		
 		public ICollection<ImageData> Textures { get { return textures; } }
 		public ICollection<ImageData> Flats { get { return flats; } }
+		public int LocationType { get { return locationtype; } }
 		
 		#endregion
 
 		#region ================== Constructor / Destructor
 
 		// New texture set constructor
-		public OthersTextureSet()
+		public ResourceTextureSet(string name, int locationtype)
 		{
-			this.name = NAME;
+			this.name = name;
+			this.locationtype = locationtype;
 			this.textures = new List<ImageData>();
 			this.flats = new List<ImageData>();
 		}

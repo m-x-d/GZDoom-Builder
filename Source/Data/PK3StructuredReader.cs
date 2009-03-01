@@ -179,8 +179,6 @@ namespace CodeImp.DoomBuilder.Data
 				AddImagesToList(images, collection);
 			}
 			
-			// TODO: Add support for hires texture here
-			
 			// Add images from texture directory
 			collection = LoadDirectoryImages(TEXTURES_DIR, false, true);
 			AddImagesToList(images, collection);
@@ -219,6 +217,10 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Add images from TEXTURES lump file
 			AddImagesToList(images, imgset);
+			
+			// Add images to the container-specific texture set
+			foreach(ImageData img in images.Values)
+				textureset.AddTexture(img);
 			
 			return new List<ImageData>(images.Values);
 		}
@@ -284,6 +286,10 @@ namespace CodeImp.DoomBuilder.Data
 			// Add images from flats directory
 			collection = LoadDirectoryImages(FLATS_DIR, true, true);
 			AddImagesToList(images, collection);
+
+			// Add images to the container-specific texture set
+			foreach(ImageData img in images.Values)
+				textureset.AddFlat(img);
 
 			return new List<ImageData>(images.Values);
 		}
