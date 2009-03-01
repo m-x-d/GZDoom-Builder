@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			heightbysidedef.SelectedIndex = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
 			editnewthing.Checked = General.Settings.ReadPluginSetting("editnewthing", true);
 			editnewsector.Checked = General.Settings.ReadPluginSetting("editnewsector", false);
+			additiveselect.Checked = General.Settings.ReadPluginSetting("additiveselect", false);
 		}
 
 		#endregion
@@ -72,6 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("changeheightbysidedef", heightbysidedef.SelectedIndex);
 			General.Settings.WritePluginSetting("editnewthing", editnewthing.Checked);
 			General.Settings.WritePluginSetting("editnewsector", editnewsector.Checked);
+			General.Settings.WritePluginSetting("additiveselect", additiveselect.Checked);
 		}
 
 		// When Cancel is pressed on the preferences dialog

@@ -602,19 +602,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			// Go for all lines
-			foreach(Linedef l in General.Map.Map.Linedefs)
+			if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 			{
-				l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
-							  (l.Start.Position.y >= selectionrect.Top) &&
-							  (l.Start.Position.x <= selectionrect.Right) &&
-							  (l.Start.Position.y <= selectionrect.Bottom) &&
-							  (l.End.Position.x >= selectionrect.Left) &&
-							  (l.End.Position.y >= selectionrect.Top) &&
-							  (l.End.Position.x <= selectionrect.Right) &&
-							  (l.End.Position.y <= selectionrect.Bottom));
+				// Go for all lines
+				foreach(Linedef l in General.Map.Map.Linedefs)
+				{
+					l.Selected |= ((l.Start.Position.x >= selectionrect.Left) &&
+								   (l.Start.Position.y >= selectionrect.Top) &&
+								   (l.Start.Position.x <= selectionrect.Right) &&
+								   (l.Start.Position.y <= selectionrect.Bottom) &&
+								   (l.End.Position.x >= selectionrect.Left) &&
+								   (l.End.Position.y >= selectionrect.Top) &&
+								   (l.End.Position.x <= selectionrect.Right) &&
+								   (l.End.Position.y <= selectionrect.Bottom));
+				}
 			}
-
+			else
+			{
+				// Go for all lines
+				foreach(Linedef l in General.Map.Map.Linedefs)
+				{
+					l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
+								  (l.Start.Position.y >= selectionrect.Top) &&
+								  (l.Start.Position.x <= selectionrect.Right) &&
+								  (l.Start.Position.y <= selectionrect.Bottom) &&
+								  (l.End.Position.x >= selectionrect.Left) &&
+								  (l.End.Position.y >= selectionrect.Top) &&
+								  (l.End.Position.x <= selectionrect.Right) &&
+								  (l.End.Position.y <= selectionrect.Bottom));
+				}
+			}
+			
 			// Go for all sectors
 			foreach(Sector s in General.Map.Map.Sectors)
 			{

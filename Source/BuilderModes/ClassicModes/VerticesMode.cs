@@ -372,15 +372,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			// Go for all vertices
-			foreach(Vertex v in General.Map.Map.Vertices)
+			if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 			{
-				v.Selected = ((v.Position.x >= selectionrect.Left) &&
-							  (v.Position.y >= selectionrect.Top) &&
-							  (v.Position.x <= selectionrect.Right) &&
-							  (v.Position.y <= selectionrect.Bottom));
+				// Go for all vertices
+				foreach(Vertex v in General.Map.Map.Vertices)
+				{
+					v.Selected |= ((v.Position.x >= selectionrect.Left) &&
+								   (v.Position.y >= selectionrect.Top) &&
+								   (v.Position.x <= selectionrect.Right) &&
+								   (v.Position.y <= selectionrect.Bottom));
+				}
 			}
-
+			else
+			{
+				// Go for all vertices
+				foreach(Vertex v in General.Map.Map.Vertices)
+				{
+					v.Selected = ((v.Position.x >= selectionrect.Left) &&
+								  (v.Position.y >= selectionrect.Top) &&
+								  (v.Position.x <= selectionrect.Right) &&
+								  (v.Position.y <= selectionrect.Bottom));
+				}
+			}
+			
 			base.OnEndMultiSelection();
 
 			// Clear overlay
