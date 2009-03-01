@@ -67,6 +67,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap FlipSelectionH {
+            get {
+                object obj = ResourceManager.GetObject("FlipSelectionH", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap FlipSelectionV {
+            get {
+                object obj = ResourceManager.GetObject("FlipSelectionV", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap treeview {
             get {
                 object obj = ResourceManager.GetObject("treeview", resourceCulture);

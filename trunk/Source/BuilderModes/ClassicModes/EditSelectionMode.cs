@@ -603,6 +603,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 
+			// Add toolbar buttons
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
+
 			// Convert geometry selection
 			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedVertices(true, true);
@@ -917,6 +921,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnDisengage();
 
+			// Remove toolbar buttons
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
+			
 			// When not cancelled manually, we assume it is accepted
 			if(!cancelled)
 			{
@@ -1226,6 +1234,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Accept changes
 			General.Editing.AcceptMode();
 			General.Map.Map.ClearAllSelected();
+		}
+
+		// Flip vertically
+		[BeginAction("flipselectionv")]
+		public void FlipVertically()
+		{
+			// Flip the selection
+			offset.y += size.y;
+			size.y = -size.y;
+			
+			// Update
+			UpdateGeometry();
+			UpdateRectangleComponents();
+			General.Interface.RedrawDisplay();
+		}
+
+		// Flip horizontally
+		[BeginAction("flipselectionh")]
+		public void FlipHorizontally()
+		{
+			// Flip the selection
+			offset.x += size.x;
+			size.x = -size.x;
+
+			// Update
+			UpdateGeometry();
+			UpdateRectangleComponents();
+			General.Interface.RedrawDisplay();
 		}
 
 		#endregion
