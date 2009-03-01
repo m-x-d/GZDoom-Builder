@@ -82,6 +82,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string defaultceiltexture;
 		private int defaultthingtype = 1;
 		private float defaultthingangle = 0.0f;
+		private List<string> defaultthingflags;
 		
 		#endregion
 
@@ -131,6 +132,7 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
+			defaultthingflags = new List<string>();
 		}
 
 		#endregion
@@ -316,12 +318,18 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Default Settings
 
+		// This sets the default thing flags
+		public void SetDefaultThingFlags(ICollection<string> setflags)
+		{
+			defaultthingflags = new List<string>(setflags);
+		}
+
 		// This applies default settings to a thing
 		public void ApplyDefaultThingSettings(Thing t)
 		{
 			t.Type = defaultthingtype;
 			t.Rotate(defaultthingangle);
-			foreach(string f in General.Map.Config.DefaultThingFlags) t.Flags[f] = true;
+			foreach(string f in defaultthingflags) t.Flags[f] = true;
 		}
 		
 		// This attempts to find the default drawing settings

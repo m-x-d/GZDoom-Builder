@@ -283,6 +283,7 @@ namespace CodeImp.DoomBuilder
 			ClassicMode cmode = (General.Editing.Mode as ClassicMode);
 			if(cmode != null) cmode.SetZoom(0.5f);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
+			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
 			
 			// Success
 			this.changed = false;
@@ -373,6 +374,7 @@ namespace CodeImp.DoomBuilder
 			this.visualcamera = new VisualCamera();
 			General.Editing.ChangeMode("VerticesMode");
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
+			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
 
 			// Center map in screen
 			if(General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();

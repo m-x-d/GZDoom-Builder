@@ -331,6 +331,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			List<string> defaultflags = new List<string>();
 			string undodesc = "thing";
 
 			// Make undo
@@ -371,8 +372,11 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Set as defaults
+			foreach(CheckBox c in flags.Checkboxes)
+				if(c.CheckState == CheckState.Checked) defaultflags.Add(c.Tag.ToString());
 			General.Settings.DefaultThingType = typeid.GetResult(General.Settings.DefaultThingType);
 			General.Settings.DefaultThingAngle = Angle2D.DegToRad((float)angle.GetResult((int)Angle2D.RadToDeg(General.Settings.DefaultThingAngle) - 90) + 90);
+			General.Settings.SetDefaultThingFlags(defaultflags);
 			
 			// Done
 			General.Map.IsChanged = true;
