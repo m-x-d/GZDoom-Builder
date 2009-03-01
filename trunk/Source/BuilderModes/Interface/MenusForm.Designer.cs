@@ -43,6 +43,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
+			this.selectsinglesideditem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
+			this.selectdoublesideditem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
@@ -61,6 +64,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// linedefsmenu
 			// 
 			this.linedefsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectsinglesideditem,
+            this.selectdoublesideditem,
+            this.toolStripMenuItem4,
             this.fliplinedefsitem,
             this.flipsidedefsitem,
             this.toolStripMenuItem1,
@@ -75,7 +81,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fliplinedefsitem
 			// 
 			this.fliplinedefsitem.Name = "fliplinedefsitem";
-			this.fliplinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.fliplinedefsitem.Size = new System.Drawing.Size(202, 22);
 			this.fliplinedefsitem.Tag = "fliplinedefs";
 			this.fliplinedefsitem.Text = "Flip Linedefs";
 			this.fliplinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -83,7 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// flipsidedefsitem
 			// 
 			this.flipsidedefsitem.Name = "flipsidedefsitem";
-			this.flipsidedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.flipsidedefsitem.Size = new System.Drawing.Size(202, 22);
 			this.flipsidedefsitem.Tag = "flipsidedefs";
 			this.flipsidedefsitem.Text = "Flip Sidedefs";
 			this.flipsidedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -91,12 +97,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(166, 6);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(199, 6);
 			// 
 			// curvelinedefsitem
 			// 
 			this.curvelinedefsitem.Name = "curvelinedefsitem";
-			this.curvelinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.curvelinedefsitem.Size = new System.Drawing.Size(202, 22);
 			this.curvelinedefsitem.Tag = "curvelinesmode";
 			this.curvelinedefsitem.Text = "Curve Linedefs...";
 			this.curvelinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -104,12 +110,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(166, 6);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(199, 6);
 			// 
 			// splitlinedefsitem
 			// 
 			this.splitlinedefsitem.Name = "splitlinedefsitem";
-			this.splitlinedefsitem.Size = new System.Drawing.Size(169, 22);
+			this.splitlinedefsitem.Size = new System.Drawing.Size(202, 22);
 			this.splitlinedefsitem.Tag = "splitlinedefs";
 			this.splitlinedefsitem.Text = "Split Linedefs";
 			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -176,6 +182,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonbrightnessgradient.Text = "Make Brightness Gradient";
 			this.buttonbrightnessgradient.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// selectsinglesideditem
+			// 
+			this.selectsinglesideditem.Name = "selectsinglesideditem";
+			this.selectsinglesideditem.Size = new System.Drawing.Size(202, 22);
+			this.selectsinglesideditem.Tag = "selectsinglesided";
+			this.selectsinglesideditem.Text = "Select Single-sided only";
+			this.selectsinglesideditem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripMenuItem4
+			// 
+			this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+			this.toolStripMenuItem4.Size = new System.Drawing.Size(199, 6);
+			// 
+			// selectdoublesideditem
+			// 
+			this.selectdoublesideditem.Name = "selectdoublesideditem";
+			this.selectdoublesideditem.Size = new System.Drawing.Size(202, 22);
+			this.selectdoublesideditem.Tag = "selectdoublesided";
+			this.selectdoublesideditem.Text = "Select Double-sided only";
+			this.selectdoublesideditem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -219,5 +246,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStrip globalstrip;
 		private System.Windows.Forms.ToolStrip manualstrip;
 		private System.Windows.Forms.ToolStripButton buttonbrightnessgradient;
+		private System.Windows.Forms.ToolStripMenuItem selectsinglesideditem;
+		private System.Windows.Forms.ToolStripMenuItem selectdoublesideditem;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
 	}
 }
