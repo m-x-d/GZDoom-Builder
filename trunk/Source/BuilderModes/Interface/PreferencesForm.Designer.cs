@@ -30,10 +30,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.taboptions = new System.Windows.Forms.TabPage();
+			this.editnewsector = new System.Windows.Forms.CheckBox();
+			this.editnewthing = new System.Windows.Forms.CheckBox();
 			this.heightbysidedef = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.editnewthing = new System.Windows.Forms.CheckBox();
-			this.editnewsector = new System.Windows.Forms.CheckBox();
+			this.additiveselect = new System.Windows.Forms.CheckBox();
 			this.tabs.SuspendLayout();
 			this.taboptions.SuspendLayout();
 			this.SuspendLayout();
@@ -53,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// taboptions
 			// 
+			this.taboptions.Controls.Add(this.additiveselect);
 			this.taboptions.Controls.Add(this.editnewsector);
 			this.taboptions.Controls.Add(this.editnewthing);
 			this.taboptions.Controls.Add(this.heightbysidedef);
@@ -65,6 +67,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.taboptions.TabIndex = 0;
 			this.taboptions.Text = "Editing";
 			this.taboptions.UseVisualStyleBackColor = true;
+			// 
+			// editnewsector
+			// 
+			this.editnewsector.AutoSize = true;
+			this.editnewsector.Location = new System.Drawing.Point(21, 81);
+			this.editnewsector.Name = "editnewsector";
+			this.editnewsector.Size = new System.Drawing.Size(271, 18);
+			this.editnewsector.TabIndex = 3;
+			this.editnewsector.Text = "Edit sector properties when drawing a new sector";
+			this.editnewsector.UseVisualStyleBackColor = true;
+			// 
+			// editnewthing
+			// 
+			this.editnewthing.AutoSize = true;
+			this.editnewthing.Location = new System.Drawing.Point(21, 55);
+			this.editnewthing.Name = "editnewthing";
+			this.editnewthing.Size = new System.Drawing.Size(256, 18);
+			this.editnewthing.TabIndex = 2;
+			this.editnewthing.Text = "Edit thing properties when inserting a new thing";
+			this.editnewthing.UseVisualStyleBackColor = true;
 			// 
 			// heightbysidedef
 			// 
@@ -88,25 +110,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label1.TabIndex = 0;
 			this.label1.Text = "When sector height changes are used on a wall in Visual Mode:";
 			// 
-			// editnewthing
+			// additiveselect
 			// 
-			this.editnewthing.AutoSize = true;
-			this.editnewthing.Location = new System.Drawing.Point(21, 55);
-			this.editnewthing.Name = "editnewthing";
-			this.editnewthing.Size = new System.Drawing.Size(256, 18);
-			this.editnewthing.TabIndex = 2;
-			this.editnewthing.Text = "Edit thing properties when inserting a new thing";
-			this.editnewthing.UseVisualStyleBackColor = true;
-			// 
-			// editnewsector
-			// 
-			this.editnewsector.AutoSize = true;
-			this.editnewsector.Location = new System.Drawing.Point(21, 81);
-			this.editnewsector.Name = "editnewsector";
-			this.editnewsector.Size = new System.Drawing.Size(271, 18);
-			this.editnewsector.TabIndex = 3;
-			this.editnewsector.Text = "Edit sector properties when drawing a new sector";
-			this.editnewsector.UseVisualStyleBackColor = true;
+			this.additiveselect.AutoSize = true;
+			this.additiveselect.Location = new System.Drawing.Point(21, 119);
+			this.additiveselect.Name = "additiveselect";
+			this.additiveselect.Size = new System.Drawing.Size(211, 18);
+			this.additiveselect.TabIndex = 4;
+			this.additiveselect.Text = "Additive selecting without holding shift";
+			this.additiveselect.UseVisualStyleBackColor = true;
 			// 
 			// PreferencesForm
 			// 
@@ -135,5 +147,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ComboBox heightbysidedef;
 		private System.Windows.Forms.CheckBox editnewsector;
 		private System.Windows.Forms.CheckBox editnewthing;
+		private System.Windows.Forms.CheckBox additiveselect;
 	}
 }

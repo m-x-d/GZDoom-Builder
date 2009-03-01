@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int changeheightbysidedef;		// 0 = nothing, 1 = change ceiling, 2 = change floor
 		private bool editnewthing;
 		private bool editnewsector;
+		private bool additiveselect;
 		private string copiedtexture;
 		private string copiedflat;
 		private Point copiedoffsets;
@@ -90,6 +91,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int ChangeHeightBySidedef { get { return changeheightbysidedef; } }
 		public bool EditNewThing { get { return editnewthing; } }
 		public bool EditNewSector { get { return editnewsector; } }
+		public bool AdditiveSelect { get { return additiveselect; } }
 		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
 		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
 		public Point CopiedOffsets { get { return copiedoffsets; } set { copiedoffsets = value; } }
@@ -110,9 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Settings
 			showvisualthings = 2;
 			usegravity = false;
-			changeheightbysidedef = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
-			editnewthing = General.Settings.ReadPluginSetting("editnewthing", true);
-			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
+			LoadSettings();
 			
 			// Load menus form and register it
 			menusform = new MenusForm();
@@ -153,8 +153,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
+		#region ================== Methods
+
+		// This loads the plugin settings
+		private void LoadSettings()
+		{
+			changeheightbysidedef = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
+			editnewthing = General.Settings.ReadPluginSetting("editnewthing", true);
+			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
+			additiveselect = General.Settings.ReadPluginSetting("additiveselect", false);
+		}
+
+		#endregion
+
 		#region ================== Events
-		
+
 		// When floor surface geometry is created for classic modes
 		public override void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
 		{
@@ -218,9 +231,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnClosePreferences(controller);
 
 			// Apply settings that could have been changed
-			changeheightbysidedef = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
-			editnewthing = General.Settings.ReadPluginSetting("editnewthing", true);
-			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
+			LoadSettings();
 			
 			// Unload preferences
 			preferencesform.Dispose();
