@@ -220,25 +220,46 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Methods
 
 		// This selects an item by name
-		public void SelectItem(string name)
+		public void SelectItem(string name, ListViewGroup preferredgroup)
 		{
-			ListViewItem lvi;
+			ListViewItem lvi = null;
 
 			// Not when selecting is prevented
 			if(preventselection) return;
 
-			// Find item with this text
-			lvi = list.FindItemWithText(name);
+			// Search in preferred group first
+			if(preferredgroup != null)
+			{
+				foreach(ListViewItem item in list.Items)
+				{
+					if((item.Group == preferredgroup) && (string.Compare(item.Text, name, true) == 0))
+					{
+						lvi = item;
+						break;
+					}
+				}
+			}
+
+			// If nothing found yet, search all items
+			if(lvi == null)
+			{
+				foreach(ListViewItem item in list.Items)
+				{
+					if(string.Compare(item.Text, name, true) == 0)
+					{
+						lvi = item;
+						break;
+					}
+				}
+			}
+			
+			// Select the item
 			if(lvi != null)
 			{
-				// Does the text really match?
-				if(lvi.Text == name)
-				{
-					// Select this item
-					list.SelectedItems.Clear();
-					lvi.Selected = true;
-					lvi.EnsureVisible();
-				}
+				// Select this item
+				list.SelectedItems.Clear();
+				lvi.Selected = true;
+				lvi.EnsureVisible();
 			}
 
 			UpdateTextureSizeLabel();
