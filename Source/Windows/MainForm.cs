@@ -897,7 +897,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void display_MouseDown(object sender, MouseEventArgs e)
 		{
 			int key = 0;
-			
+
 			int mod = 0;
 			if(alt) mod |= (int)Keys.Alt;
 			if(shift) mod |= (int)Keys.Shift;
@@ -2201,6 +2201,14 @@ namespace CodeImp.DoomBuilder.Windows
 					{
 						ImageData img = General.Map.Data.GetFlatImage(imagename);
 						if(img != null) ImageDataLoaded(img);
+					}
+					break;
+
+				case General.WM_SYSCOMMAND:
+					// We don't want to open a menu when ALT is pressed
+					if(m.WParam.ToInt32() != General.SC_KEYMENU)
+					{
+						base.WndProc(ref m);
 					}
 					break;
 					
