@@ -412,7 +412,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Make the sector
 					Sector s = MakeSector();
-
+					General.Map.Map.Update();
+					
 					// Edit the sector
 					List<Sector> secs = new List<Sector>(); secs.Add(s);
 					if(General.Interface.ShowEditSectors(secs) == DialogResult.OK)
