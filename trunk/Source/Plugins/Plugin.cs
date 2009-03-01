@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			}
 			catch(Exception)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin '" + name + "', the DLL file could not be read!");
+				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin '" + name + "', the DLL file could not be read.");
 				throw new InvalidProgramException();
 			}
 			
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				if(FindClasses(typeof(Plug)).Length > 1)
 				{
 					// Show a warning
-					General.ErrorLogger.Add(ErrorType.Warning, "Plugin '" + name + "' has more than one plug!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Plugin '" + name + "' has more than one plug.");
 				}
 				
 				// Make plug instance
@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			else
 			{
 				// How can we plug something in without a plug?
-				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin '" + name + "', plugin is missing the plug!");
+				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin '" + name + "', plugin is missing the plug.");
 				throw new InvalidProgramException();
 			}
 			
@@ -189,14 +189,14 @@ namespace CodeImp.DoomBuilder.Plugins
 			catch(TargetInvocationException e)
 			{
 				// Error!
-				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'!");
+				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'");
 				General.WriteLogLine(e.InnerException.GetType().Name + ": " + e.InnerException.Message);
 				return default(T);
 			}
 			catch(Exception e)
 			{
 				// Error!
-				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'!");
+				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'");
 				General.WriteLogLine(e.GetType().Name + ": " + e.Message);
 				return default(T);
 			}

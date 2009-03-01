@@ -299,12 +299,12 @@ namespace CodeImp.DoomBuilder.IO
 							}
 							else
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Sidedef references invalid sector " + sc + "! Sidedef has been removed.");
+								General.ErrorLogger.Add(ErrorType.Warning, "Sidedef references invalid sector " + sc + ". Sidedef has been removed.");
 							}
 						}
 						else
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef! Sidedef has been removed.");
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef. Sidedef has been removed.");
 						}
 					}
 
@@ -330,18 +330,18 @@ namespace CodeImp.DoomBuilder.IO
 							}
 							else
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Sidedef references invalid sector " + sc + "! Sidedef has been removed.");
+								General.ErrorLogger.Add(ErrorType.Warning, "Sidedef references invalid sector " + sc + ". Sidedef has been removed.");
 							}
 						}
 						else
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef! Sidedef has been removed.");
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef. Sidedef has been removed.");
 						}
 					}
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Linedef references one or more invalid vertices! Linedef has been removed.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Linedef references one or more invalid vertices. Linedef has been removed.");
 				}
 			}
 

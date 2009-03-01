@@ -617,7 +617,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Warning only
 					General.ErrorLogger.Add(ErrorType.Warning, e.GetType().Name + ": " + e.Message);
-					General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file");
 				}
 
 				// Check for compile errors, if the scripts were compiled above
@@ -965,7 +965,7 @@ namespace CodeImp.DoomBuilder
 						}
 						else
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, ml.Key.ToString() + " should be copied but was not found!");
+							General.ErrorLogger.Add(ErrorType.Warning, ml.Key.ToString() + " should be read but was not found in the WAD file");
 						}
 					}
 				}

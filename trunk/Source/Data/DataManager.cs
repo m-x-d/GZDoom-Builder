@@ -624,7 +624,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Make empty palette when still no palette found
 			if(palette == null)
 			{
-				General.ErrorLogger.Add(ErrorType.Warning, "None of the loaded resources define a color palette!");
+				General.ErrorLogger.Add(ErrorType.Warning, "None of the loaded resources define a color palette. Did you forget to configure an IWAD for this configuration?");
 				palette = new Playpal();
 			}
 		}
@@ -1121,7 +1121,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(parser.HasError)
 						{
 							General.ErrorLogger.Add(ErrorType.Error, "Unable to parse DECORATE data from location " +
-								dr.Location.location + "! " + parser.ErrorDescription + " on line " + parser.ErrorLine +
+								dr.Location.location + ". " + parser.ErrorDescription + " on line " + parser.ErrorLine +
 								" in '" + parser.ErrorSource + "'");
 							break;
 						}

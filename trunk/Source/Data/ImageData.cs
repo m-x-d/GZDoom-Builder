@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Bitmap has incorrect format?
 					if(bitmap.PixelFormat != PixelFormat.Format32bppArgb)
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, "Image '" + name + "' does not have A8R8G8B8 pixel format. Conversion was needed!");
+						//General.ErrorLogger.Add(ErrorType.Warning, "Image '" + name + "' does not have A8R8G8B8 pixel format. Conversion was needed.");
 						Bitmap oldbitmap = bitmap;
 						try
 						{

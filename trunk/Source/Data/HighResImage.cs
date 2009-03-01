@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.Data
 							if(reader is UnknownImageReader)
 							{
 								// Data is in an unknown format!
-								General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+								General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'");
 								loadfailed = true;
 							}
 							else
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.Data
 								catch(InvalidDataException)
 								{
 									// Data cannot be read!
-									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'!");
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'");
 									loadfailed = true;
 								}
 								if(patchbmp != null)
@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.Data
 						else
 						{
 							// Missing a patch lump!
-							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'!");
+							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'");
 							loadfailed = true;
 						}
 					}

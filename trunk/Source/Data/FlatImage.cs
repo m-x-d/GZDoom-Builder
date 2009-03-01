@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(reader is UnknownImageReader)
 					{
 						// Data is in an unknown format!
-						General.ErrorLogger.Add(ErrorType.Error, "Flat lump '" + Name + "' data format could not be read!");
+						General.ErrorLogger.Add(ErrorType.Error, "Flat lump '" + Name + "' data format could not be read");
 						bitmap = null;
 					}
 					else
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Missing a patch lump!
-					General.ErrorLogger.Add(ErrorType.Error, "Missing flat lump '" + Name + "'!");
+					General.ErrorLogger.Add(ErrorType.Error, "Missing flat lump '" + Name + "'");
 					loadfailed = true;
 				}
 

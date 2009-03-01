@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(reader is UnknownImageReader)
 					{
 						// Data is in an unknown format!
-						General.ErrorLogger.Add(ErrorType.Error, "Sprite lump '" + Name + "' data format could not be read!");
+						General.ErrorLogger.Add(ErrorType.Error, "Sprite lump '" + Name + "' data format could not be read");
 						bitmap = null;
 					}
 					else
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Missing a patch lump!
-					General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump '" + Name + "'!");
+					General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump '" + Name + "'");
 				}
 
 				// Pass on to base
