@@ -529,6 +529,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Actions
 
+		// This keeps only the single-sided lines selected
+		[BeginAction("selectsinglesided")]
+		public void SelectSingleSided()
+		{
+			int counter = 0;
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			foreach(Linedef ld in selected)
+			{
+				if((ld.Front != null) && (ld.Back != null))
+					ld.Selected = false;
+				else
+					counter++;
+			}
+			
+			General.Interface.DisplayStatus(StatusType.Action, "Selected only single-sided linedefs (" + counter + ")");
+			General.Interface.RedrawDisplay();
+		}
+
+		// This keeps only the double-sided lines selected
+		[BeginAction("selectdoublesided")]
+		public void SelectDoubleSided()
+		{
+			int counter = 0;
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			foreach(Linedef ld in selected)
+			{
+				if((ld.Front == null) || (ld.Back == null))
+					ld.Selected = false;
+				else
+					counter++;
+			}
+
+			General.Interface.DisplayStatus(StatusType.Action, "Selected only double-sided linedefs (" + counter + ")");
+			General.Interface.RedrawDisplay();
+		}
+
 		// This clears the selection
 		[BeginAction("clearselection", BaseAction = true)]
 		public void ClearSelection()
