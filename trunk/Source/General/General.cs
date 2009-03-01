@@ -91,6 +91,8 @@ namespace CodeImp.DoomBuilder
 
 		// SendMessage API
 		internal const int WM_USER = 0x400;
+		internal const int WM_SYSCOMMAND = 0x112;
+		internal const int SC_KEYMENU = 0xF100;
 		internal const int CB_SETITEMHEIGHT = 0x153;
 		internal const int CB_SHOWDROPDOWN = 0x14F;
 		internal const int EM_GETSCROLLPOS = WM_USER + 221;
