@@ -283,13 +283,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Sector brightness change
-		public virtual void OnChangeTargetBrightness(int amount)
+		public virtual void OnChangeTargetBrightness(bool up)
 		{
-			// Change brightness
 			General.Map.UndoRedo.CreateUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.Index);
-			Sector.Sector.Brightness = General.Clamp(Sector.Sector.Brightness + amount, 0, 255);
-			General.Interface.DisplayStatus(StatusType.Action, "Changed sector brightness to " + Sector.Sector.Brightness + ".");
 			
+			if(up)
+				Sector.Sector.Brightness = General.Map.Config.BrightnessLevels.GetNextHigher(Sector.Sector.Brightness);
+			else
+				Sector.Sector.Brightness = General.Map.Config.BrightnessLevels.GetNextLower(Sector.Sector.Brightness);
+			
+			General.Interface.DisplayStatus(StatusType.Action, "Changed sector brightness to " + Sector.Sector.Brightness + ".");
+
+			Sector.Sector.UpdateCache();
+
 			// Rebuild sector
 			UpdateSectorGeometry(false);
 		}

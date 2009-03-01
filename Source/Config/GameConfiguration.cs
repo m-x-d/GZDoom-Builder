@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Dictionary<int, SectorEffectInfo> sectoreffects;
 		private List<SectorEffectInfo> sortedsectoreffects;
 		private List<GeneralizedOption> geneffectoptions;
+		private BrightnessList brightnesslevels;
 
 		// Universal fields
 		private List<UniversalFieldInfo> linedeffields;
@@ -181,6 +182,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
 		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
 		public List<GeneralizedOption> GenEffectOptions { get { return geneffectoptions; } }
+		public BrightnessList BrightnessLevels { get { return brightnesslevels; } }
 
 		// Universal fields
 		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
@@ -228,6 +230,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.thingflagstranslation = new List<FlagTranslation>();
 			this.linedefflagstranslation = new List<FlagTranslation>();
 			this.thingfilters = new List<ThingsFilter>();
+			this.brightnesslevels = new BrightnessList();
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -295,6 +298,7 @@ namespace CodeImp.DoomBuilder.Config
 			LoadLinedefGeneralizedActions();
 
 			// Sectors
+			LoadBrightnessLevels();
 			LoadSectorEffects();
 			LoadSectorGeneralizedEffects();
 			
@@ -566,6 +570,33 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Sort the actions list
 			sortedsectoreffects.Sort();
+		}
+
+		// Brightness levels
+		private void LoadBrightnessLevels()
+		{
+			IDictionary dic;
+			int level;
+
+			// Get brightness levels structure
+			dic = cfg.ReadSetting("sectorbrightness", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				// Try paring the level
+				if(int.TryParse(de.Key.ToString(),
+					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
+					CultureInfo.InvariantCulture, out level))
+				{
+					brightnesslevels.Add(level);
+				}
+				else
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'sectorbrightness' contains invalid keys");
+				}
+			}
+
+			// Sort the list
+			brightnesslevels.Sort();
 		}
 
 		// Sector generalized effects

@@ -685,6 +685,7 @@
     <Compile Include="Editing\EditingManager.cs" />
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
+    <Compile Include="Config\BrightnessList.cs" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\Status11.png" />
     <None Include="Resources\Status10.png" />

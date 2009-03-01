@@ -338,7 +338,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectEnd() { }
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
-		public virtual void OnChangeTargetBrightness(int amount) { }
+		public virtual void OnChangeTargetBrightness(bool up) { }
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
 		public virtual void OnSelectTexture() { }
 		public virtual void OnCopyTexture() { }

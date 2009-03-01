@@ -505,17 +505,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Calculate change in position
 				Point delta = Cursor.Position - new Size(editstartpos);
-				
-				// Adjust selected sectors
-				for(int i = 0; i < orderedselection.Count; i++)
+
+				if(General.Interface.ShiftState)
 				{
-					Sector s = orderedselection[i];
-					int basebrightness = sectorbrightness[i];
-					
-					// Adjust brightness
-					s.Brightness = basebrightness - delta.Y;
-					if(s.Brightness > 255) s.Brightness = 255;
-					if(s.Brightness < 0) s.Brightness = 0;
+					// Adjust selected sectors
+					for(int i = 0; i < orderedselection.Count; i++)
+					{
+						Sector s = orderedselection[i];
+						int basebrightness = sectorbrightness[i];
+
+						// Adjust brightness
+						s.Brightness = basebrightness - delta.Y;
+						if(s.Brightness > 255) s.Brightness = 255;
+						if(s.Brightness < 0) s.Brightness = 0;
+					}
+				}
+				else
+				{
+					// Adjust selected sectors
+					for(int i = 0; i < orderedselection.Count; i++)
+					{
+						Sector s = orderedselection[i];
+						int basebrightness = sectorbrightness[i];
+
+						// Adjust brightness
+						s.Brightness = General.Map.Config.BrightnessLevels.GetNearest(basebrightness - delta.Y);
+					}
 				}
 				
 				// Update
@@ -775,8 +790,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Update
+			General.Map.Map.Update();
 			UpdateOverlay();
 			renderer.Present();
+			General.Interface.RedrawDisplay();
 			General.Map.IsChanged = true;
 		}
 		

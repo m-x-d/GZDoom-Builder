@@ -382,7 +382,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseBrightness8()
 		{
 			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(8);
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(true);
 			ShowTargetInfo();
 		}
 
@@ -390,7 +390,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerBrightness8()
 		{
 			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(-8);
+			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(false);
 			ShowTargetInfo();
 		}
 
