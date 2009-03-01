@@ -817,7 +817,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							vsector = s.Sector;
 							
 							// Not virtual on both sides?
-							if((s.Other != null) && !s.Other.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
+							// Pascal 3-1-08: I can't remember why I have this check here, but it causes problems when
+							// pasting a single linedef that refers to the same sector on both sides (the line then
+							// loses both its sidedefs because it doesn't join any sector)
+							//if((s.Other != null) && !s.Other.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))
 							{
 								Sidedef joinsidedef = null;
 								
