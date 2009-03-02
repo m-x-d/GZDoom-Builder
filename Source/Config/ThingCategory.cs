@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", false);
 			
 			// Safety
-			if(this.radius < 8f) this.radius = 8f;
+			if(this.radius < 4f) this.radius = 8f;
 			
 			// Go for all items in category
 			dic = cfg.ReadSetting("thingtypes." + name, new Hashtable());
