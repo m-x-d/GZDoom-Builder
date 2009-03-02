@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Config
 				this.args[i] = new ArgumentInfo(cfg, "thingtypes." + cat.Name + "." + key, i, enums);
 			
 			// Safety
-			if(this.radius < 8f) this.radius = 8f;
+			if(this.radius < 4f) this.radius = 8f;
 			
 			// Make long name for sprite lookup
 			if(this.sprite.Length <= 8)
@@ -172,6 +172,9 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
 
+			// Safety
+			if(this.radius < 4f) this.radius = 8f;
+			
 			// Make long name for sprite lookup
 			if(this.sprite.Length <= 8)
 				this.spritelongname = Lump.MakeLongName(this.sprite);
@@ -202,6 +205,9 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cat.Blocking;
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
+
+			// Safety
+			if(this.radius < 4f) this.radius = 8f;
 			
 			// Apply settings from actor
 			ModifyByDecorateActor(actor);
@@ -237,7 +243,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(actor.HeightFound) height = actor.Height;
 			
 			// Safety
-			if(this.radius < 8f) this.radius = 8f;
+			if(this.radius < 4f) this.radius = 8f;
 			
 			// Options
 			hangs = actor.GetFlagValue("spawnceiling", hangs);
