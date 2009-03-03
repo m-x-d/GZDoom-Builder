@@ -48,7 +48,10 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		private List<ScriptConfiguration> scriptconfigs;
 		private List<CompilerError> compilererrors;
-		
+
+		// Windows
+		private ScriptFindReplaceForm findreplaceform;
+
 		#endregion
 		
 		#region ================== Properties
@@ -165,7 +168,15 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
-		
+
+		// This opens the Find & Replace sub window
+		public void OpenFindAndReplace()
+		{
+			if(findreplaceform == null)
+				findreplaceform = new ScriptFindReplaceForm();
+			findreplaceform.Show(this.ParentForm);
+		}
+
 		// This refreshes all settings
 		public void RefreshSettings()
 		{
@@ -419,7 +430,14 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Events
-		
+
+		// Called when the window that contains this panel closes
+		public void OnClose()
+		{
+			// Close the sub windows now
+			if(findreplaceform != null) findreplaceform.Dispose();
+		}
+
 		// When the user changes the script configuration
 		private void buttonscriptconfig_Click(object sender, EventArgs e)
 		{

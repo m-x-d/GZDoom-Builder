@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 using Microsoft.Win32;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Data;
@@ -94,6 +95,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Bind events
 			editor.OnExplicitSaveTab += panel.ExplicitSaveCurrentTab;
 			editor.OnOpenScriptBrowser += panel.OpenBrowseScript;
+			editor.OnOpenFindAndReplace += panel.OpenFindAndReplace;
 		}
 		
 		// Disposer
@@ -102,6 +104,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Remove events
 			editor.OnExplicitSaveTab -= panel.ExplicitSaveCurrentTab;
 			editor.OnOpenScriptBrowser -= panel.OpenBrowseScript;
+			editor.OnOpenFindAndReplace -= panel.OpenFindAndReplace;
 			
 			base.Dispose(disposing);
 		}
@@ -214,7 +217,46 @@ namespace CodeImp.DoomBuilder.Controls
 		// Find next result
 		public bool FindNext(FindReplaceOptions options)
 		{
-			
+			byte[] data = editor.GetText();
+			string text = Encoding.GetEncoding(config.CodePage).GetString(data);
+			StringComparison mode = options.CaseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
+			int startpos = Math.Max(editor.SelectionStart, editor.SelectionEnd);
+
+			while(true)
+			{
+				int result = text.IndexOf(options.FindText, startpos, mode);
+				if(result > -1)
+				{
+					// Check to see if it is the whole word
+					if(options.WholeWord)
+					{
+						
+					}
+					
+					// Still ok?
+					if(result > -1)
+					{
+						// Select the result
+						editor.SelectionStart = result;
+						editor.SelectionEnd = result + options.FindText.Length;
+						editor.EnsureLineVisible(editor.LineFromPosition(editor.SelectionEnd));
+						return true;
+					}
+				}
+				else
+				{
+					// If we haven't tried from the start, try from the start now
+					if(startpos > 0)
+					{
+						startpos = 0;
+					}
+					else
+					{
+						// Can't find it
+						return false;
+					}
+				}
+			}
 		}
 		
 		#endregion

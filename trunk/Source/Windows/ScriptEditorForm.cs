@@ -150,6 +150,9 @@ namespace CodeImp.DoomBuilder.Windows
 					e.Cancel = true;
 				}
 			}
+
+			// Not cancelling?
+			if(!e.Cancel) editor.OnClose();
 		}
 
 		// Window resized

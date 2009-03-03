@@ -50,5 +50,25 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		#endregion
+
+		#region ================== Events
+
+		// Find Next
+		private void findnextbutton_Click(object sender, EventArgs e)
+		{
+			FindReplaceOptions options = new FindReplaceOptions();
+			options.FindText = findtext.Text;
+			options.CaseSensitive = casesensitive.Checked;
+			options.WholeWord = wordonly.Checked;
+			options.ReplaceWith = replacetext.Text;
+			
+			if(!General.Map.ScriptEditor.Editor.ActiveTab.FindNext(options))
+			{
+				// No such thing
+				General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findtext.Text + "\".");
+			}
+		}
+
+		#endregion
 	}
 }

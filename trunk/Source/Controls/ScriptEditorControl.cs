@@ -59,15 +59,20 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public delegate void ExplicitSaveTabDelegate();
 		public delegate void OpenScriptBrowserDelegate();
+		public delegate void OpenFindReplaceDelegate();
 
 		public event ExplicitSaveTabDelegate OnExplicitSaveTab;
 		public event OpenScriptBrowserDelegate OnOpenScriptBrowser;
+		public event OpenFindReplaceDelegate OnOpenFindAndReplace;
 
 		#endregion
 
 		#region ================== Properties
 		
 		public bool IsChanged { get { return scriptedit.CanUndo; } }
+		public int Position { get { return scriptedit.CurrentPos; } set { scriptedit.CurrentPos = value; } }
+		public int SelectionStart { get { return scriptedit.SelectionStart; } set { scriptedit.SelectionStart = value; } }
+		public int SelectionEnd { get { return scriptedit.SelectionEnd; } set { scriptedit.SelectionEnd = value; } }
 		
 		#endregion
 
@@ -156,6 +161,19 @@ namespace CodeImp.DoomBuilder.Controls
 		public void MoveToLine(int linenumber)
 		{
 			scriptedit.GotoLine(linenumber);
+			EnsureLineVisible(linenumber);
+		}
+
+		// This makes sure a line is visible
+		public void EnsureLineVisible(int linenumber)
+		{
+			scriptedit.EnsureVisibleEnforcePolicy(linenumber);
+		}
+
+		// This returns the line for a position
+		public int LineFromPosition(int position)
+		{
+			return scriptedit.LineFromPosition(position);
 		}
 		
 		// This clears all marks
@@ -594,7 +612,6 @@ namespace CodeImp.DoomBuilder.Controls
 			if((e.KeyCode == Keys.P) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 			if((e.KeyCode == Keys.A) && ((e.Modifiers & Keys.Control) == Keys.Control) && ((e.Modifiers & Keys.Shift) == Keys.Shift)) e.Handled = true;
 			if((e.KeyCode == Keys.D) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			if((e.KeyCode == Keys.F) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 			if((e.KeyCode == Keys.G) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 			if((e.KeyCode == Keys.H) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 			if((e.KeyCode == Keys.J) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
@@ -607,7 +624,14 @@ namespace CodeImp.DoomBuilder.Controls
 			if((e.KeyCode == Keys.B) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 			if((e.KeyCode == Keys.N) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 			if((e.KeyCode == Keys.M) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
-			
+
+			// CTRL+F for find & replace
+			if((e.KeyCode == Keys.F) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			{
+				if(OnOpenFindAndReplace != null) OnOpenFindAndReplace();
+				e.Handled = true;
+			}
+
 			// CTRL+S for save
 			if((e.KeyCode == Keys.S) && ((e.Modifiers & Keys.Control) == Keys.Control))
 			{
