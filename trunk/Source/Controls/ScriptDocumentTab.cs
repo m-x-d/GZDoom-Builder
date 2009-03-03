@@ -58,9 +58,9 @@ namespace CodeImp.DoomBuilder.Controls
 		protected ScriptEditorPanel panel;
 		
 		#endregion
-		
+
 		#region ================== Properties
-		
+
 		public virtual bool ExplicitSave { get { return true; } }
 		public virtual bool IsSaveAsRequired { get { return true; } }
 		public virtual bool IsClosable { get { return true; } }
@@ -209,6 +209,12 @@ namespace CodeImp.DoomBuilder.Controls
 		public void Paste()
 		{
 			editor.Paste();
+		}
+		
+		// Find next result
+		public bool FindNext(FindReplaceOptions options)
+		{
+			
 		}
 		
 		#endregion
