@@ -53,6 +53,8 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Properties
 		
+		public ScriptDocumentTab ActiveTab { get { return (tabs.SelectedTab as ScriptDocumentTab); } }
+		
 		#endregion
 		
 		#region ================== Constructor

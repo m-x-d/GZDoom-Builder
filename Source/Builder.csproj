@@ -674,6 +674,7 @@
     <Compile Include="Windows\ErrorsForm.Designer.cs">
       <DependentUpon>ErrorsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\FindReplaceOptions.cs" />
     <Compile Include="Windows\ScriptFindReplaceForm.cs">
       <SubType>Form</SubType>
     </Compile>
