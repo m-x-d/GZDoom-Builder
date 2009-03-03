@@ -111,6 +111,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.findnextbutton.TabIndex = 7;
 			this.findnextbutton.Text = "Find Next";
 			this.findnextbutton.UseVisualStyleBackColor = true;
+			this.findnextbutton.Click += new System.EventHandler(this.findnextbutton_Click);
 			// 
 			// replaceallbutton
 			// 
