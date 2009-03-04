@@ -96,6 +96,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnExplicitSaveTab += panel.ExplicitSaveCurrentTab;
 			editor.OnOpenScriptBrowser += panel.OpenBrowseScript;
 			editor.OnOpenFindAndReplace += panel.OpenFindAndReplace;
+			editor.OnFindNext += panel.FindNext;
 		}
 		
 		// Disposer
@@ -105,6 +106,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnExplicitSaveTab -= panel.ExplicitSaveCurrentTab;
 			editor.OnOpenScriptBrowser -= panel.OpenBrowseScript;
 			editor.OnOpenFindAndReplace -= panel.OpenFindAndReplace;
+			editor.OnFindNext -= panel.FindNext;
 			
 			base.Dispose(disposing);
 		}
@@ -221,7 +223,8 @@ namespace CodeImp.DoomBuilder.Controls
 			string text = Encoding.GetEncoding(config.CodePage).GetString(data);
 			StringComparison mode = options.CaseSensitive ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase;
 			int startpos = Math.Max(editor.SelectionStart, editor.SelectionEnd);
-
+			bool wrapped = false;
+			
 			while(true)
 			{
 				int result = text.IndexOf(options.FindText, startpos, mode);
@@ -230,7 +233,13 @@ namespace CodeImp.DoomBuilder.Controls
 					// Check to see if it is the whole word
 					if(options.WholeWord)
 					{
-						
+						// Veryfy that we have found a whole word
+						string foundword = editor.GetWordAt(result + 1);
+						if(foundword.Length != options.FindText.Length)
+						{
+							startpos = result + 1;
+							result = -1;
+						}
 					}
 					
 					// Still ok?
@@ -246,9 +255,10 @@ namespace CodeImp.DoomBuilder.Controls
 				else
 				{
 					// If we haven't tried from the start, try from the start now
-					if(startpos > 0)
+					if((startpos > 0) && !wrapped)
 					{
 						startpos = 0;
+						wrapped = true;
 					}
 					else
 					{

@@ -49,9 +49,10 @@ namespace CodeImp.DoomBuilder.Controls
 		private List<ScriptConfiguration> scriptconfigs;
 		private List<CompilerError> compilererrors;
 
-		// Windows
+		// Find/Replace
 		private ScriptFindReplaceForm findreplaceform;
-
+		private FindReplaceOptions findoptions;
+		
 		#endregion
 		
 		#region ================== Properties
@@ -169,7 +170,41 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Methods
 
-		// This opens the Find & Replace sub window
+		// Find Next
+		public void FindNext(FindReplaceOptions options)
+		{
+			// Save the options
+			findoptions = options;
+			FindNext();
+		}
+
+		// Find Next with saved options
+		public void FindNext()
+		{
+			if(!string.IsNullOrEmpty(findoptions.FindText))
+			{
+				if(!ActiveTab.FindNext(findoptions))
+				{
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
+				}
+			}
+			else
+			{
+				General.MessageBeep(MessageBeepType.Default);
+			}
+		}
+		
+		// This closed the Find & Replace subwindow
+		public void CloseFindReplace(bool closing)
+		{
+			if(findreplaceform != null)
+			{
+				if(!closing) findreplaceform.Close();
+				findreplaceform = null;
+			}
+		}
+
+		// This opens the Find & Replace subwindow
 		public void OpenFindAndReplace()
 		{
 			if(findreplaceform == null)

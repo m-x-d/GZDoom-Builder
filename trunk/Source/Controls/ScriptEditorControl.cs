@@ -60,10 +60,12 @@ namespace CodeImp.DoomBuilder.Controls
 		public delegate void ExplicitSaveTabDelegate();
 		public delegate void OpenScriptBrowserDelegate();
 		public delegate void OpenFindReplaceDelegate();
+		public delegate void FindNextDelegate();
 
 		public event ExplicitSaveTabDelegate OnExplicitSaveTab;
 		public event OpenScriptBrowserDelegate OnOpenScriptBrowser;
 		public event OpenFindReplaceDelegate OnOpenFindAndReplace;
+		public event FindNextDelegate OnFindNext;
 
 		#endregion
 
@@ -351,15 +353,22 @@ namespace CodeImp.DoomBuilder.Controls
 		// This returns the current word (where the caret is at)
 		public string GetCurrentWord()
 		{
-			int wordstart = scriptedit.WordStartPosition(scriptedit.CurrentPos, true);
-			int wordend = scriptedit.WordEndPosition(scriptedit.CurrentPos, true);
-			
+			return GetWordAt(scriptedit.CurrentPos);
+		}
+
+
+		// This returns the word at the given position
+		public string GetWordAt(int position)
+		{
+			int wordstart = scriptedit.WordStartPosition(position, true);
+			int wordend = scriptedit.WordEndPosition(position, true);
+
 			// Decode the text
 			byte[] scripttextdata = scriptedit.GetText(scriptedit.TextSize);
 			Encoding encoder = Encoding.GetEncoding(scriptedit.CodePage);
 			string scripttext = encoder.GetString(scripttextdata);
-			
-			if(wordstart > wordend)
+
+			if(wordstart < wordend)
 				return scripttext.Substring(wordstart, wordend - wordstart);
 			else
 				return "";
@@ -624,6 +633,13 @@ namespace CodeImp.DoomBuilder.Controls
 			if((e.KeyCode == Keys.B) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 			if((e.KeyCode == Keys.N) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
 			if((e.KeyCode == Keys.M) && ((e.Modifiers & Keys.Control) == Keys.Control)) e.Handled = true;
+
+			// F3 for Find Next
+			if((e.KeyCode == Keys.F3) && (e.Modifiers == Keys.None))
+			{
+				if(OnFindNext != null) OnFindNext();
+				e.Handled = true;
+			}
 
 			// CTRL+F for find & replace
 			if((e.KeyCode == Keys.F) && ((e.Modifiers & Keys.Control) == Keys.Control))

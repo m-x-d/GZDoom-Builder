@@ -35,6 +35,8 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		#region ================== Variables
 
+		private bool appclose;
+
 		#endregion
 
 		#region ================== Properties
@@ -51,22 +53,49 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		#region ================== Events
+		#region ================== Methods
 
-		// Find Next
-		private void findnextbutton_Click(object sender, EventArgs e)
+		// This makes the Find & Replace options
+		private FindReplaceOptions MakeOptions()
 		{
 			FindReplaceOptions options = new FindReplaceOptions();
 			options.FindText = findtext.Text;
 			options.CaseSensitive = casesensitive.Checked;
 			options.WholeWord = wordonly.Checked;
 			options.ReplaceWith = replacetext.Text;
-			
-			if(!General.Map.ScriptEditor.Editor.ActiveTab.FindNext(options))
+			return options;
+		}
+
+		// Close the window
+		new public void Close()
+		{
+			appclose = true;
+			base.Close();
+		}
+
+		#endregion
+
+		#region ================== Events
+
+		// Form is closing
+		private void ScriptFindReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if(!appclose)
 			{
-				// No such thing
-				General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findtext.Text + "\".");
+				General.Map.ScriptEditor.Editor.CloseFindReplace(true);
 			}
+		}
+
+		// Find Next
+		private void findnextbutton_Click(object sender, EventArgs e)
+		{
+			General.Map.ScriptEditor.Editor.FindNext(MakeOptions());
+		}
+
+		// Close
+		private void closebutton_Click(object sender, EventArgs e)
+		{
+			General.Map.ScriptEditor.Editor.CloseFindReplace(false);
 		}
 
 		#endregion
