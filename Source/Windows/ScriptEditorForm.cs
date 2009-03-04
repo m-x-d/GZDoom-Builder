@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Windows
 			appclose = true;
 			base.Close();
 		}
-		
+
 		#endregion
 		
 		#region ================== Events

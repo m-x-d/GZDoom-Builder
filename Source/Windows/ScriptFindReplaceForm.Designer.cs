@@ -131,6 +131,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.closebutton.TabIndex = 9;
 			this.closebutton.Text = "Close";
 			this.closebutton.UseVisualStyleBackColor = true;
+			this.closebutton.Click += new System.EventHandler(this.closebutton_Click);
 			// 
 			// replacebutton
 			// 
@@ -163,6 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "ScriptFindReplaceForm";
 			this.Text = "Find and Replace";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptFindReplaceForm_FormClosing);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
