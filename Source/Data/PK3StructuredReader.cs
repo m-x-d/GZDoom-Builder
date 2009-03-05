@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.Data
 			if((texture1file != null) && FileExists(texture1file))
 			{
 				MemoryStream filedata = LoadFile(texture1file);
-				WADReader.LoadTextureSet(filedata, ref imgset, pnames);
+				WADReader.LoadTextureSet("TEXTURE1", filedata, ref imgset, pnames);
 				filedata.Dispose();
 			}
 
@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder.Data
 			if((texture2file != null) && FileExists(texture2file))
 			{
 				MemoryStream filedata = LoadFile(texture2file);
-				WADReader.LoadTextureSet(filedata, ref imgset, pnames);
+				WADReader.LoadTextureSet("TEXTURE2", filedata, ref imgset, pnames);
 				filedata.Dispose();
 			}
 
@@ -342,9 +342,16 @@ namespace CodeImp.DoomBuilder.Data
 				// Make the texture name from filename without extension
 				name = Path.GetFileNameWithoutExtension(f).ToUpperInvariant();
 				if(name.Length > 8) name = name.Substring(0, 8);
-				
-				// Add image to list
-				images.Add(CreateImage(name, f, flats));
+				if(name.Length > 0)
+				{
+					// Add image to list
+					images.Add(CreateImage(name, f, flats));
+				}
+				else
+				{
+					// Can't load image without name
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load unnamed texture from \"" + path + "\"");
+				}
 			}
 			
 			// Return result
