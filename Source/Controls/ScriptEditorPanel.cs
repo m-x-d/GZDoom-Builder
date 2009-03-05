@@ -181,12 +181,55 @@ namespace CodeImp.DoomBuilder.Controls
 		// Find Next with saved options
 		public void FindNext()
 		{
-			if(!string.IsNullOrEmpty(findoptions.FindText))
+			if(!string.IsNullOrEmpty(findoptions.FindText) && (ActiveTab != null))
 			{
 				if(!ActiveTab.FindNext(findoptions))
 				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
 				}
+			}
+			else
+			{
+				General.MessageBeep(MessageBeepType.Default);
+			}
+		}
+		
+		// Replace if possible
+		public void Replace(FindReplaceOptions options)
+		{
+			if(!string.IsNullOrEmpty(findoptions.FindText) && (options.ReplaceWith != null) && (ActiveTab != null))
+			{
+				if(string.Compare(ActiveTab.GetSelectedText(), options.FindText, !options.CaseSensitive) == 0)
+				{
+					// Replace selection
+					ActiveTab.ReplaceSelection(options.ReplaceWith);
+				}
+			}
+			else
+			{
+				General.MessageBeep(MessageBeepType.Default);
+			}
+		}
+		
+		// Replace all
+		public void ReplaceAll(FindReplaceOptions options)
+		{
+			int replacements = 0;
+			findoptions = options;
+			if(!string.IsNullOrEmpty(findoptions.FindText) && (options.ReplaceWith != null) && (ActiveTab != null))
+			{
+				// Continue finding and replacing until nothing more found
+				while(ActiveTab.FindNext(findoptions))
+				{
+					Replace(findoptions);
+					replacements++;
+				}
+				
+				// Show result
+				if(replacements == 0)
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
+				else
+					General.MainWindow.DisplayStatus(StatusType.Info, "Replaced " + replacements + " occurences of \"" + findoptions.FindText + "\" with \"" + findoptions.ReplaceWith + "\".");
 			}
 			else
 			{

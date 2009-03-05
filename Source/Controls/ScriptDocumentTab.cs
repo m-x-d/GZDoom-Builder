@@ -269,6 +269,23 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 		
+		// This replaces the selection with the given text
+		public void ReplaceSelection(string replacement)
+		{
+			editor.ReplaceSelection(replacement);
+		}
+		
+		// This returns the selected text
+		public string GetSelectedText()
+		{
+			byte[] data = editor.GetText();
+			string text = Encoding.GetEncoding(config.CodePage).GetString(data);
+			if(editor.SelectionStart < editor.SelectionEnd)
+				return text.Substring(editor.SelectionStart, editor.SelectionEnd - editor.SelectionStart);
+			else
+				return "";
+		}
+		
 		#endregion
 		
 		#region ================== Events
