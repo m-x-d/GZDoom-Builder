@@ -101,6 +101,8 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else if(l.Action == 0)
 				actioninfo = l.Action.ToString() + " - None";
+			else if(GameConfiguration.IsGeneralized(l.Action, General.Map.Config.GenActionCategories))
+				actioninfo = l.Action.ToString() + " - Generalized (" + General.Map.Config.GetGeneralizedActionCategory(l.Action) + ")";
 			else
 				actioninfo = l.Action.ToString() + " - Unknown";
 			
