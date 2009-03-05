@@ -159,6 +159,24 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Methods
 		
+		// This replaces the selection with the given text
+		public void ReplaceSelection(string replacement)
+		{
+			Encoding encoder = Encoding.GetEncoding(scriptedit.CodePage);
+			string text = encoder.GetString(GetText());
+			
+			// Make new text
+			StringBuilder newtext = new StringBuilder(text.Length + replacement.Length);
+			newtext.Append(text.Substring(0, scriptedit.SelectionStart));
+			newtext.Append(replacement);
+			newtext.Append(text.Substring(scriptedit.SelectionEnd));
+			
+			// Adjust selection
+			scriptedit.SelectionEnd = scriptedit.SelectionStart + replacement.Length;
+			
+			SetText(encoder.GetBytes(newtext.ToString()));
+		}
+		
 		// This moves the caret to a given line and ensures the line is visible
 		public void MoveToLine(int linenumber)
 		{

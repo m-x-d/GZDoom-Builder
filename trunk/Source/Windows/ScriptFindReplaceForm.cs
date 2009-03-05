@@ -91,7 +91,22 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			General.Map.ScriptEditor.Editor.FindNext(MakeOptions());
 		}
-
+		
+		// Replace
+		private void replacebutton_Click(object sender, EventArgs e)
+		{
+			FindReplaceOptions options = MakeOptions();
+			
+			General.Map.ScriptEditor.Editor.Replace(options);
+			General.Map.ScriptEditor.Editor.FindNext(options);
+		}
+		
+		// Replace All
+		private void replaceallbutton_Click(object sender, EventArgs e)
+		{
+			General.Map.ScriptEditor.Editor.ReplaceAll(MakeOptions());
+		}
+		
 		// Close
 		private void closebutton_Click(object sender, EventArgs e)
 		{
