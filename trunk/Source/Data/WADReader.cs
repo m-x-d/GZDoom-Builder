@@ -209,9 +209,9 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Load two sets of textures, if available
 			lump = file.FindLump("TEXTURE1");
-			if(lump != null) LoadTextureSet(lump.Stream, ref images, pnames);
+			if(lump != null) LoadTextureSet("TEXTURE1", lump.Stream, ref images, pnames);
 			lump = file.FindLump("TEXTURE2");
-			if(lump != null) LoadTextureSet(lump.Stream, ref images, pnames);
+			if(lump != null) LoadTextureSet("TEXTURE2", lump.Stream, ref images, pnames);
 			
 			// Read ranges from configuration
 			foreach(LumpRange range in textureranges)
@@ -255,6 +255,11 @@ namespace CodeImp.DoomBuilder.Data
 					// Add image to collection
 					images.Add(image);
 				}
+				else
+				{
+					// Can't load image without name
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load unnamed texture from lump index " + i);
+				}
 			}
 		}
 
@@ -268,14 +273,22 @@ namespace CodeImp.DoomBuilder.Data
 			// Make the textures
 			foreach(TextureStructure t in parser.Textures)
 			{
-				// Add the texture
-				ImageData img = t.MakeImage(textures, flats);
-				images.Add(img);
+				if(t.Name.Length > 0)
+				{
+					// Add the texture
+					ImageData img = t.MakeImage(textures, flats);
+					images.Add(img);
+				}
+				else
+				{
+					// Can't load image without name
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load unnamed texture from \"" + filename + "\"");
+				}
 			}
 		}
 		
 		// This loads a set of textures
-		public static void LoadTextureSet(Stream texturedata, ref List<ImageData> images, PatchNames pnames)
+		public static void LoadTextureSet(string sourcename, Stream texturedata, ref List<ImageData> images, PatchNames pnames)
 		{
 			BinaryReader reader = new BinaryReader(texturedata);
 			int flags, width, height, patches, px, py, pi;
@@ -283,7 +296,7 @@ namespace CodeImp.DoomBuilder.Data
 			byte scalebytex, scalebytey;
 			float scalex, scaley, defaultscale;
 			byte[] namebytes;
-			TextureImage image;
+			TextureImage image = null;
 			bool strifedata;
 
 			// Determine default scale
@@ -330,10 +343,19 @@ namespace CodeImp.DoomBuilder.Data
 				if((width > 0) && (height > 0) && (patches > 0) &&
 				   (scalex != 0) || (scaley != 0))
 				{
-					// Make the image object
-					image = new TextureImage(Lump.MakeNormalName(namebytes, WAD.ENCODING),
-											 width, height, scalex, scaley);
-
+					string texname = Lump.MakeNormalName(namebytes, WAD.ENCODING);
+					if(texname.Length > 0)
+					{
+						// Make the image object
+						image = new TextureImage(Lump.MakeNormalName(namebytes, WAD.ENCODING),
+												 width, height, scalex, scaley);
+					}
+					else
+					{
+						// Can't load image without name
+						General.ErrorLogger.Add(ErrorType.Error, "Can't load unnamed texture from \"" + sourcename + "\"");
+					}
+					
 					// Go for all patches in texture
 					for(int p = 0; p < patches; p++)
 					{
@@ -344,10 +366,18 @@ namespace CodeImp.DoomBuilder.Data
 						if(!strifedata) texturedata.Seek(4, SeekOrigin.Current);
 						
 						// Validate data
-						if((pi >= 0) && (pi < pnames.Length) && (pnames[pi].Length > 0))
+						if((pi >= 0) && (pi < pnames.Length))
 						{
-							// Create patch on image
-							image.AddPatch(new TexturePatch(pnames[pi], px, py));
+							if(pnames[pi].Length > 0)
+							{
+								// Create patch on image
+								if(image != null) image.AddPatch(new TexturePatch(pnames[pi], px, py));
+							}
+							else
+							{
+								// Can't load image without name
+								General.ErrorLogger.Add(ErrorType.Error, "Can't use unnamed patch referenced in \"" + sourcename + "\"");
+							}
 						}
 					}
 					
