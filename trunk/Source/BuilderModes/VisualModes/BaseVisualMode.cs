@@ -536,7 +536,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			renderer.FullBrightness = !renderer.FullBrightness;
 			string onoff = renderer.FullBrightness ? "ON" : "OFF";
-			General.Interface.DisplayStatus(StatusType.Action, "Brightness levels are now " + onoff + ".");
+			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + onoff + ".");
 		}
 
 		[BeginAction("resettexture")]
