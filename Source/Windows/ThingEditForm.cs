@@ -71,10 +71,22 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize custom fields editor
 			fieldslist.Setup("thing");
 
-			// Not a UDMF map?
-			if(!General.Map.IsType(typeof(UniversalMapSetIO)))
+			// UDMF map?
+			if(General.Map.IsType(typeof(UniversalMapSetIO)))
+			{
+			}
+			// Hexen map?
+			else if(General.Map.IsType(typeof(HexenMapSetIO)))
 			{
 				tabs.TabPages.Remove(tabcustom);
+			}
+			// Doom map?
+			else
+			{
+				tabs.TabPages.Remove(tabcustom);
+				tabs.TabPages.Remove(tabeffects);
+				height.Visible = false;
+				heightlabel.Visible = false;
 			}
 			
 			// Go for all predefined categories

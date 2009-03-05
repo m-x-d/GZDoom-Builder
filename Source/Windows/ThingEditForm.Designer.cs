@@ -37,7 +37,6 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Monsters");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ThingEditForm));
 			System.Windows.Forms.GroupBox groupBox2;
-			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.Label taglabel;
 			System.Windows.Forms.Label label7;
@@ -48,6 +47,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.typelist = new System.Windows.Forms.TreeView();
 			this.thingimages = new System.Windows.Forms.ImageList(this.components);
 			this.height = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.heightlabel = new System.Windows.Forms.Label();
 			this.angle = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.anglecontrol = new CodeImp.DoomBuilder.Controls.AngleControl();
 			this.tabs = new System.Windows.Forms.TabControl();
@@ -84,7 +84,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			groupBox2 = new System.Windows.Forms.GroupBox();
-			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			taglabel = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
@@ -252,7 +251,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			groupBox2.Controls.Add(this.height);
-			groupBox2.Controls.Add(label6);
+			groupBox2.Controls.Add(this.heightlabel);
 			groupBox2.Controls.Add(label5);
 			groupBox2.Controls.Add(this.angle);
 			groupBox2.Controls.Add(this.anglecontrol);
@@ -273,15 +272,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.height.Size = new System.Drawing.Size(50, 20);
 			this.height.TabIndex = 10;
 			// 
-			// label6
+			// heightlabel
 			// 
-			label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(12, 66);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(50, 14);
-			label6.TabIndex = 9;
-			label6.Text = "Z Height:";
+			this.heightlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.heightlabel.AutoSize = true;
+			this.heightlabel.Location = new System.Drawing.Point(12, 66);
+			this.heightlabel.Name = "heightlabel";
+			this.heightlabel.Size = new System.Drawing.Size(50, 14);
+			this.heightlabel.TabIndex = 9;
+			this.heightlabel.Text = "Z Height:";
 			// 
 			// label5
 			// 
@@ -733,5 +732,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg0;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg3;
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg4;
+		private System.Windows.Forms.Label heightlabel;
 	}
 }
