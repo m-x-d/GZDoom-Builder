@@ -1797,6 +1797,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Menu items
 			itemthingsfilter.Enabled = (General.Map != null);
 			itemscripteditor.Enabled = (General.Map != null);
+			itemfittoscreen.Enabled = (General.Map != null);
+			menuzoom.Enabled = (General.Map != null);
 			
 			// View mode items
 			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)

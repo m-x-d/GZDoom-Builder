@@ -78,6 +78,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemviewbrightness = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemviewfloors = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemviewceilings = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+			this.menuzoom = new System.Windows.Forms.ToolStripMenuItem();
+			this.item2zoom200 = new System.Windows.Forms.ToolStripMenuItem();
+			this.item2zoom100 = new System.Windows.Forms.ToolStripMenuItem();
+			this.item2zoom50 = new System.Windows.Forms.ToolStripMenuItem();
+			this.item2zoom25 = new System.Windows.Forms.ToolStripMenuItem();
+			this.item2zoom10 = new System.Windows.Forms.ToolStripMenuItem();
+			this.item2zoom5 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemfittoscreen = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem10 = new System.Windows.Forms.ToolStripSeparator();
 			this.itemscripteditor = new System.Windows.Forms.ToolStripMenuItem();
 			this.menumode = new System.Windows.Forms.ToolStripMenuItem();
@@ -525,6 +534,9 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemviewbrightness,
             this.itemviewfloors,
             this.itemviewceilings,
+            this.toolStripMenuItem2,
+            this.menuzoom,
+            this.itemfittoscreen,
             this.toolStripMenuItem10,
             this.itemscripteditor});
 			this.menuview.Name = "menuview";
@@ -581,6 +593,81 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemviewceilings.Tag = "builder_viewmodeceilings";
 			this.itemviewceilings.Text = "Ceiling Textures";
 			this.itemviewceilings.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(207, 6);
+			// 
+			// menuzoom
+			// 
+			this.menuzoom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.item2zoom200,
+            this.item2zoom100,
+            this.item2zoom50,
+            this.item2zoom25,
+            this.item2zoom10,
+            this.item2zoom5});
+			this.menuzoom.Image = global::CodeImp.DoomBuilder.Properties.Resources.Zoom;
+			this.menuzoom.Name = "menuzoom";
+			this.menuzoom.Size = new System.Drawing.Size(210, 22);
+			this.menuzoom.Text = "Zoom";
+			// 
+			// item2zoom200
+			// 
+			this.item2zoom200.Name = "item2zoom200";
+			this.item2zoom200.Size = new System.Drawing.Size(114, 22);
+			this.item2zoom200.Tag = "200";
+			this.item2zoom200.Text = "200%";
+			this.item2zoom200.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// item2zoom100
+			// 
+			this.item2zoom100.Name = "item2zoom100";
+			this.item2zoom100.Size = new System.Drawing.Size(114, 22);
+			this.item2zoom100.Tag = "100";
+			this.item2zoom100.Text = "100%";
+			this.item2zoom100.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// item2zoom50
+			// 
+			this.item2zoom50.Name = "item2zoom50";
+			this.item2zoom50.Size = new System.Drawing.Size(114, 22);
+			this.item2zoom50.Tag = "50";
+			this.item2zoom50.Text = "50%";
+			this.item2zoom50.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// item2zoom25
+			// 
+			this.item2zoom25.Name = "item2zoom25";
+			this.item2zoom25.Size = new System.Drawing.Size(114, 22);
+			this.item2zoom25.Tag = "25";
+			this.item2zoom25.Text = "25%";
+			this.item2zoom25.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// item2zoom10
+			// 
+			this.item2zoom10.Name = "item2zoom10";
+			this.item2zoom10.Size = new System.Drawing.Size(114, 22);
+			this.item2zoom10.Tag = "10";
+			this.item2zoom10.Text = "10%";
+			this.item2zoom10.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// item2zoom5
+			// 
+			this.item2zoom5.Name = "item2zoom5";
+			this.item2zoom5.Size = new System.Drawing.Size(114, 22);
+			this.item2zoom5.Tag = "5";
+			this.item2zoom5.Text = "5%";
+			this.item2zoom5.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemfittoscreen
+			// 
+			this.itemfittoscreen.Name = "itemfittoscreen";
+			this.itemfittoscreen.Size = new System.Drawing.Size(210, 22);
+			this.itemfittoscreen.Tag = "builder_centerinscreen";
+			this.itemfittoscreen.Text = "Fit to screen";
+			this.itemfittoscreen.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripMenuItem10
 			// 
@@ -1043,8 +1130,8 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttongrid,
             toolStripSeparator1,
             this.zoomlabel,
-            this.buttonzoom,
             toolStripSeparator9,
+            this.buttonzoom,
             this.xposlabel,
             this.poscommalabel,
             this.yposlabel});
@@ -1589,5 +1676,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label labelcollapsedinfo;
 		private System.Windows.Forms.Timer statusresetter;
 		private System.Windows.Forms.ToolStripMenuItem itemshowerrors;
+		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+		private System.Windows.Forms.ToolStripMenuItem menuzoom;
+		private System.Windows.Forms.ToolStripMenuItem item2zoom5;
+		private System.Windows.Forms.ToolStripMenuItem item2zoom10;
+		private System.Windows.Forms.ToolStripMenuItem itemfittoscreen;
+		private System.Windows.Forms.ToolStripMenuItem item2zoom200;
+		private System.Windows.Forms.ToolStripMenuItem item2zoom100;
+		private System.Windows.Forms.ToolStripMenuItem item2zoom50;
+		private System.Windows.Forms.ToolStripMenuItem item2zoom25;
 	}
 }
