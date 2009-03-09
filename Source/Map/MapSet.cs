@@ -1277,8 +1277,137 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#endregion
 
-		#region ================== Areas
+		#region ================== Indexing
 		
+		/// <summary>
+		/// Returns the vertex at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// </summary>
+		public Vertex GetVertexByIndex(int index)
+		{
+			if(index < vertices.Count)
+				return General.GetByIndex<Vertex>(vertices, index);
+			else
+				return null;
+		}
+
+		/// <summary>
+		/// Returns the linedef at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// </summary>
+		public Linedef GetLinedefByIndex(int index)
+		{
+			if(index < linedefs.Count)
+				return General.GetByIndex<Linedef>(linedefs, index);
+			else
+				return null;
+		}
+
+		/// <summary>
+		/// Returns the sidedef at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// </summary>
+		public Sidedef GetSidedefByIndex(int index)
+		{
+			if(index < sidedefs.Count)
+				return General.GetByIndex<Sidedef>(sidedefs, index);
+			else
+				return null;
+		}
+
+		/// <summary>
+		/// Returns the sector at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// </summary>
+		public Sector GetSectorByIndex(int index)
+		{
+			if(index < sectors.Count)
+				return General.GetByIndex<Sector>(sectors, index);
+			else
+				return null;
+		}
+
+		/// <summary>
+		/// Returns the thing at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// </summary>
+		public Sector GetThingByIndex(int index)
+		{
+			if(index < things.Count)
+				return General.GetByIndex<Thing>(things, index);
+			else
+				return null;
+		}
+
+		/// <summary>
+		/// Returns the index of the specified vertex. Returns -1 when the vertex is not in this map. This is a O(n) operation.
+		/// </summary>
+		public int GetIndexForVertex(Vertex v)
+		{
+			int index = 0;
+			foreach(LinkedListNode<Vertex> vn in vertices)
+			{
+				if(object.ReferenceEquals(vn, v)) return index;
+				index++;
+			}
+			return -1;
+		}
+
+		/// <summary>
+		/// Returns the index of the specified linedef. Returns -1 when the linedef is not in this map. This is a O(n) operation.
+		/// </summary>
+		public int GetIndexForLinedef(Linedef l)
+		{
+			int index = 0;
+			foreach(LinkedListNode<Linedef> ln in linedefs)
+			{
+				if(object.ReferenceEquals(ln, l)) return index;
+				index++;
+			}
+			return -1;
+		}
+
+		/// <summary>
+		/// Returns the index of the specified sidedef. Returns -1 when the sidedef is not in this map. This is a O(n) operation.
+		/// </summary>
+		public int GetIndexForSidedef(Sidedef sd)
+		{
+			int index = 0;
+			foreach(LinkedListNode<Sidedef> sn in sidedefs)
+			{
+				if(object.ReferenceEquals(sn, sd)) return index;
+				index++;
+			}
+			return -1;
+		}
+
+		/// <summary>
+		/// Returns the index of the specified sector. Returns -1 when the sector is not in this map. This is a O(n) operation.
+		/// </summary>
+		public int GetIndexForSector(Sector s)
+		{
+			int index = 0;
+			foreach(LinkedListNode<Sector> sn in sectors)
+			{
+				if(object.ReferenceEquals(sn, s)) return index;
+				index++;
+			}
+			return -1;
+		}
+
+		/// <summary>
+		/// Returns the index of the specified thing. Returns -1 when the thing is not in this map. This is a O(n) operation.
+		/// </summary>
+		public int GetIndexForThing(Thing t)
+		{
+			int index = 0;
+			foreach(LinkedListNode<Thing> tn in things)
+			{
+				if(object.ReferenceEquals(tn, t)) return index;
+				index++;
+			}
+			return -1;
+		}
+		
+		#endregion
+		
+		#region ================== Areas
+
 		// This creates an initial, undefined area
 		public static RectangleF CreateEmptyArea()
 		{
@@ -2037,21 +2166,6 @@ namespace CodeImp.DoomBuilder.Map
 			// Problem: all tags used!
 			// Lets ignore this problem for now, who needs 65-thousand tags?!
 			return 0;
-		}
-		
-		// This returns the sector with the given index or null when the index is not in use
-		// TODO: Speed this up by keeping sector references with indices in a dictionary?
-		public Sector GetSectorByIndex(int index)
-		{
-			// Go for all sectors
-			foreach(Sector s in sectors)
-			{
-				// Return sector when index matches
-				if(s.Index == index) return s;
-			}
-			
-			// Nothing found
-			return null;
 		}
 
 		// This makes a list of lines related to marked vertices
