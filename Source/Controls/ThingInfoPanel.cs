@@ -131,6 +131,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Thing info
+			infopanel.Text = " Thing " + t.Map.GetIndexForThing(t) + " ";
 			type.Text = t.Type + " - " + ti.Title;
 			action.Text = actioninfo;
 			position.Text = t.Position.x.ToString() + ", " + t.Position.y.ToString() + ", " + zinfo;

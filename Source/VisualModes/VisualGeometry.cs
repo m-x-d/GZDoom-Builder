@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public int CompareTo(VisualGeometry other)
 		{
 			// Compare sectors
-			return this.sector.Sector.Index - other.sector.Sector.Index;
+			return this.sector.Sector.FixedIndex - other.sector.Sector.FixedIndex;
 		}
 
 		// This keeps the results for a sidedef intersection

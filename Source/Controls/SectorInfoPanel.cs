@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Controls
 				effectinfo = s.Effect.ToString() + " - Unknown";
 
 			// Sector info
-			sectorinfo.Text = " Sector " + s.Index.ToString() + " ";
+			sectorinfo.Text = " Sector " + s.Map.GetIndexForSector(s) + " ";
 			effect.Text = effectinfo;
 			ceiling.Text = s.CeilHeight.ToString();
 			floor.Text = s.FloorHeight.ToString();

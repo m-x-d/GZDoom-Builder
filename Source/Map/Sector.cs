@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Sidedef> sidedefs;
 		
 		// Properties
-		private int index;
+		private int fixedindex;
 		private int floorheight;
 		private int ceilheight;
 		private string floortexname;
@@ -82,7 +82,11 @@ namespace CodeImp.DoomBuilder.Map
 
 		public MapSet Map { get { return map; } }
 		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
-		public int Index { get { return index; } }
+
+		/// <summary>
+		/// An unique index that does not change when other sectors are removed.
+		/// </summary>
+		public int FixedIndex { get { return fixedindex; } }
 		public int FloorHeight { get { return floorheight; } set { floorheight = value; } }
 		public int CeilHeight { get { return ceilheight; } set { ceilheight = value; } }
 		public string FloorTexture { get { return floortexname; } }
@@ -113,7 +117,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.map = map;
 			this.mainlistitem = listitem;
 			this.sidedefs = new LinkedList<Sidedef>();
-			this.index = index;
+			this.fixedindex = index;
 			this.floortexname = "-";
 			this.ceiltexname = "-";
 			this.longfloortexname = MapSet.EmptyLongName;
@@ -156,7 +160,7 @@ namespace CodeImp.DoomBuilder.Map
 				mainlistitem.List.Remove(mainlistitem);
 
 				// Register the index as free
-				map.AddSectorIndexHole(index);
+				map.AddSectorIndexHole(fixedindex);
 				
 				// Dispose the sidedefs that are attached to this sector
 				// because a sidedef cannot exist without reference to its sector.
@@ -187,7 +191,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			base.ReadWrite(s);
 			
-			s.rwInt(ref index);
+			s.rwInt(ref fixedindex);
 			s.rwInt(ref floorheight);
 			s.rwInt(ref ceilheight);
 			s.rwString(ref floortexname);

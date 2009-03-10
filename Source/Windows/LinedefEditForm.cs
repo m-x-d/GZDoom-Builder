@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 				fronthigh.Required = fl.Front.HighRequired();
 				frontmid.Required = fl.Front.MiddleRequired();
 				frontlow.Required = fl.Front.LowRequired();
-				frontsector.Text = fl.Front.Sector.Index.ToString();
+				frontsector.Text = fl.Map.GetIndexForSector(fl.Front.Sector).ToString();
 				frontoffsetx.Text = fl.Front.OffsetX.ToString();
 				frontoffsety.Text = fl.Front.OffsetY.ToString();
 			}
@@ -178,7 +178,7 @@ namespace CodeImp.DoomBuilder.Windows
 				backhigh.Required = fl.Back.HighRequired();
 				backmid.Required = fl.Back.MiddleRequired();
 				backlow.Required = fl.Back.LowRequired();
-				backsector.Text = fl.Back.Sector.Index.ToString();
+				backsector.Text = fl.Map.GetIndexForSector(fl.Back.Sector).ToString();
 				backoffsetx.Text = fl.Back.OffsetX.ToString();
 				backoffsety.Text = fl.Back.OffsetY.ToString();
 			}
@@ -263,7 +263,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(fronthigh.Required != l.Front.HighRequired()) fronthigh.Required = false;
 					if(frontmid.Required != l.Front.MiddleRequired()) frontmid.Required = false;
 					if(frontlow.Required != l.Front.LowRequired()) frontlow.Required = false;
-					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = "";
+					if(frontsector.Text != l.Map.GetIndexForSector(l.Front.Sector).ToString()) frontsector.Text = "";
 					if(frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
 					if(frontoffsety.Text != l.Front.OffsetY.ToString()) frontoffsety.Text = "";
 					if(General.Map.IsType(typeof(UniversalMapSetIO))) customfrontbutton.Visible = true;
@@ -278,7 +278,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(backhigh.Required != l.Back.HighRequired()) backhigh.Required = false;
 					if(backmid.Required != l.Back.MiddleRequired()) backmid.Required = false;
 					if(backlow.Required != l.Back.LowRequired()) backlow.Required = false;
-					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = "";
+					if(backsector.Text != l.Map.GetIndexForSector(l.Back.Sector).ToString()) backsector.Text = "";
 					if(backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
 					if(backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
 					if(General.Map.IsType(typeof(UniversalMapSetIO))) custombackbutton.Visible = true;
@@ -381,7 +381,7 @@ namespace CodeImp.DoomBuilder.Windows
 				else if(frontside.CheckState == CheckState.Checked)
 				{
 					// Make sure we have a valid sector (make a new one if needed)
-					if(l.Front != null) index = l.Front.Sector.Index; else index = -1;
+					if(l.Front != null) index = l.Map.GetIndexForSector(l.Front.Sector); else index = -1;
 					s = General.Map.Map.GetSectorByIndex(frontsector.GetResult(index));
 					if(s == null) s = General.Map.Map.CreateSector();
 					
@@ -408,7 +408,7 @@ namespace CodeImp.DoomBuilder.Windows
 				else if(backside.CheckState == CheckState.Checked)
 				{
 					// Make sure we have a valid sector (make a new one if needed)
-					if(l.Back != null) index = l.Back.Sector.Index; else index = -1;
+					if(l.Back != null) index = l.Map.GetIndexForSector(l.Back.Sector); else index = -1;
 					s = General.Map.Map.GetSectorByIndex(backsector.GetResult(index));
 					if(s == null) s = General.Map.Map.CreateSector();
 
