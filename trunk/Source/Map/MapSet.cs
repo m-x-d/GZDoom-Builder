@@ -1326,7 +1326,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>
 		/// Returns the thing at the specified index. Returns null when index is out of range. This is a O(n) operation.
 		/// </summary>
-		public Sector GetThingByIndex(int index)
+		public Thing GetThingByIndex(int index)
 		{
 			if(index < things.Count)
 				return General.GetByIndex<Thing>(things, index);
@@ -1340,7 +1340,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int GetIndexForVertex(Vertex v)
 		{
 			int index = 0;
-			foreach(LinkedListNode<Vertex> vn in vertices)
+			foreach(Vertex vn in vertices)
 			{
 				if(object.ReferenceEquals(vn, v)) return index;
 				index++;
@@ -1354,7 +1354,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int GetIndexForLinedef(Linedef l)
 		{
 			int index = 0;
-			foreach(LinkedListNode<Linedef> ln in linedefs)
+			foreach(Linedef ln in linedefs)
 			{
 				if(object.ReferenceEquals(ln, l)) return index;
 				index++;
@@ -1368,7 +1368,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int GetIndexForSidedef(Sidedef sd)
 		{
 			int index = 0;
-			foreach(LinkedListNode<Sidedef> sn in sidedefs)
+			foreach(Sidedef sn in sidedefs)
 			{
 				if(object.ReferenceEquals(sn, sd)) return index;
 				index++;
@@ -1382,7 +1382,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int GetIndexForSector(Sector s)
 		{
 			int index = 0;
-			foreach(LinkedListNode<Sector> sn in sectors)
+			foreach(Sector sn in sectors)
 			{
 				if(object.ReferenceEquals(sn, s)) return index;
 				index++;
@@ -1396,7 +1396,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int GetIndexForThing(Thing t)
 		{
 			int index = 0;
-			foreach(LinkedListNode<Thing> tn in things)
+			foreach(Thing tn in things)
 			{
 				if(object.ReferenceEquals(tn, t)) return index;
 				index++;

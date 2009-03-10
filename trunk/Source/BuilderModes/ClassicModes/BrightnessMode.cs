@@ -291,7 +291,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(update)
 				{
 					UpdateOverlay();
-					UpdateOverlay();
 					renderer.Present();
 				}
 			}

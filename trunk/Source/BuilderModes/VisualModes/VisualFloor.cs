@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{
-			General.Map.UndoRedo.CreateUndo("Change floor height", UndoGroup.FloorHeightChange, this.Sector.Sector.Index);
+			General.Map.UndoRedo.CreateUndo("Change floor height", UndoGroup.FloorHeightChange, this.Sector.Sector.FixedIndex);
 			this.Sector.Sector.FloorHeight += amount;
 			General.Interface.DisplayStatus(StatusType.Action, "Changed floor height to " + Sector.Sector.FloorHeight + ".");
 		}

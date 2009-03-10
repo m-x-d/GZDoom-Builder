@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="ClassicModes\BaseClassicMode.cs" />
     <Compile Include="ClassicModes\BrightnessMode.cs" />
+    <Compile Include="ClassicModes\HeightsMode.cs" />
     <Compile Include="ClassicModes\ErrorCheckMode.cs" />
     <Compile Include="ClassicModes\EditSelectionMode.cs" />
     <Compile Include="ClassicModes\CurveLinedefsMode.cs" />
@@ -223,6 +224,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\FlipSelectionV.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\HeightsMode.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

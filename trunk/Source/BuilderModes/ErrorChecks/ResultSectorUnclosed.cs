@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private Sector sector;
 		private List<Vertex> vertices;
+		private int index;
 		
 		#endregion
 		
@@ -62,6 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.viewobjects.Add(s);
 			foreach(Vertex vv in v) this.viewobjects.Add(vv);
 			this.description = "This sector is not a closed region and could cause problems with clipping and rendering in the game. The 'leaks' in the sector are indicated by the colored vertices.";
+			this.index = s.Map.GetIndexForSector(s);
 		}
 		
 		#endregion
@@ -71,7 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Sector " + sector.Index + " is not closed";
+			return "Sector " + index + " is not closed";
 		}
 		
 		// Rendering

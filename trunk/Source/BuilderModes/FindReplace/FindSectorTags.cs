@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(replacewith != null) s.Tag = replacetag;
 						
 						// Add to list
-						objs.Add(new FindReplaceObject(s, "Sector " + s.Index));
+						objs.Add(new FindReplaceObject(s, "Sector " + s.Map.GetIndexForSector(s)));
 					}
 				}
 			}

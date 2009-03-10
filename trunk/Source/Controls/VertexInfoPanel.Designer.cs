@@ -28,24 +28,23 @@ namespace CodeImp.DoomBuilder.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label1;
+			this.vertexinfo = new System.Windows.Forms.GroupBox();
 			this.position = new System.Windows.Forms.Label();
-			groupBox1 = new System.Windows.Forms.GroupBox();
 			label1 = new System.Windows.Forms.Label();
-			groupBox1.SuspendLayout();
+			this.vertexinfo.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// groupBox1
+			// vertexinfo
 			// 
-			groupBox1.Controls.Add(this.position);
-			groupBox1.Controls.Add(label1);
-			groupBox1.Location = new System.Drawing.Point(0, 0);
-			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(163, 100);
-			groupBox1.TabIndex = 0;
-			groupBox1.TabStop = false;
-			groupBox1.Text = " Vertex ";
+			this.vertexinfo.Controls.Add(this.position);
+			this.vertexinfo.Controls.Add(label1);
+			this.vertexinfo.Location = new System.Drawing.Point(0, 0);
+			this.vertexinfo.Name = "vertexinfo";
+			this.vertexinfo.Size = new System.Drawing.Size(163, 100);
+			this.vertexinfo.TabIndex = 0;
+			this.vertexinfo.TabStop = false;
+			this.vertexinfo.Text = " Vertex ";
 			// 
 			// position
 			// 
@@ -68,14 +67,14 @@ namespace CodeImp.DoomBuilder.Controls
 			// VertexInfoPanel
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.Controls.Add(groupBox1);
+			this.Controls.Add(this.vertexinfo);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "VertexInfoPanel";
 			this.Size = new System.Drawing.Size(393, 100);
-			groupBox1.ResumeLayout(false);
-			groupBox1.PerformLayout();
+			this.vertexinfo.ResumeLayout(false);
+			this.vertexinfo.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -83,6 +82,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		private System.Windows.Forms.Label position;
+		private System.Windows.Forms.GroupBox vertexinfo;
 
 	}
 }
