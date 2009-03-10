@@ -47,6 +47,8 @@ namespace CodeImp.DoomBuilder.Config
 		private string name;
 		private string title;
 		private ArgumentInfo[] args;
+		private bool isgeneralized;
+		private bool isknown;
 		
 		#endregion
 
@@ -57,6 +59,9 @@ namespace CodeImp.DoomBuilder.Config
 		public string Category { get { return category; } }
 		public string Name { get { return name; } }
 		public string Title { get { return title; } }
+		public bool IsGeneralized { get { return isgeneralized; } }
+		public bool IsKnown { get { return isknown; } }
+		public bool IsNull { get { return (index == 0); } }
 		public ArgumentInfo[] Args { get { return args; } }
 
 		#endregion
@@ -72,6 +77,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = index;
 			this.category = categoryname;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			this.isgeneralized = false;
+			this.isknown = true;
 			
 			// Read settings
 			this.name = cfg.ReadSetting(actionsetting + ".title", "Unnamed");
@@ -85,6 +92,15 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
+		}
+		
+		// Constructor for generalized type display
+		internal LinedefActionInfo(int index, string title, bool isknown, bool isgeneralized)
+		{
+			this.index = index;
+			this.isgeneralized = isgeneralized;
+			this.isknown = isknown;
+			this.title = title;
 		}
 
 		#endregion

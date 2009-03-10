@@ -162,6 +162,14 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Methods
 
+		/// <summary>
+		/// Returns the index of this vertex. This is a O(n) operation.
+		/// </summary>
+		public int GetIndex()
+		{
+			return map.GetIndexForVertex(this);
+		}
+		
 		// This copies all properties to another thing
 		public void CopyPropertiesTo(Vertex v)
 		{

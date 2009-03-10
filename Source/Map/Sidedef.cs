@@ -201,6 +201,15 @@ namespace CodeImp.DoomBuilder.Map
 			s.longtexnamelow = longtexnamelow;
 			base.CopyPropertiesTo(s);
 		}
+
+		/// <summary>
+		/// Returns the index of this sidedef. This is a O(n) operation.
+		/// </summary>
+		public int GetIndex()
+		{
+			return map.GetIndexForSidedef(this);
+		}
+		
 		
 		// This copies textures to another sidedef
 		// And possibly also the offsets
@@ -258,7 +267,7 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Methods
-
+		
 		// This removes textures that are not required
 		public void RemoveUnneededTextures(bool removemiddle)
 		{

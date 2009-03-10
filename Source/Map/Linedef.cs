@@ -219,6 +219,14 @@ namespace CodeImp.DoomBuilder.Map
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
 		}
 
+		/// <summary>
+		/// Returns the index of this linedef. This is a O(n) operation.
+		/// </summary>
+		public int GetIndex()
+		{
+			return map.GetIndexForLinedef(this);
+		}
+		
 		// This sets new start vertex
 		public void SetStartVertex(Vertex v)
 		{

@@ -258,6 +258,14 @@ namespace CodeImp.DoomBuilder.Map
 			s.updateneeded = true;
 			base.CopyPropertiesTo(s);
 		}
+
+		/// <summary>
+		/// Returns the index of this sector. This is a O(n) operation.
+		/// </summary>
+		public int GetIndex()
+		{
+			return map.GetIndexForSector(this);
+		}
 		
 		// This attaches a sidedef and returns the listitem
 		public LinkedListNode<Sidedef> AttachSidedef(Sidedef sd)

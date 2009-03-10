@@ -50,7 +50,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public object Object { get { return obj; } set { obj = value; } }
 		public Sector Sector { get { return (Sector)obj; } }
 		public Linedef Linedef { get { return (Linedef)obj; } }
+		public Sidedef Sidedef { get { return (Sidedef)obj; } }
 		public Thing Thing { get { return (Thing)obj; } }
+		public Vertex Vertex { get { return (Vertex)obj; } }
 		public string Title { get { return title; } set { title = value; } }
 
 		#endregion
@@ -86,6 +88,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				points.Add((obj as Linedef).Start.Position);
 				points.Add((obj as Linedef).End.Position);
+			}
+			else if(obj is Sidedef)
+			{
+				points.Add((obj as Sidedef).Line.Start.Position);
+				points.Add((obj as Sidedef).Line.End.Position);
 			}
 			else if(obj is Sector)
 			{

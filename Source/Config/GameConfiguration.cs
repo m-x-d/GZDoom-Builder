@@ -556,7 +556,7 @@ namespace CodeImp.DoomBuilder.Config
 					CultureInfo.InvariantCulture, out actionnumber))
 				{
 					// Make effects
-					si = new SectorEffectInfo(actionnumber, de.Value.ToString());
+					si = new SectorEffectInfo(actionnumber, de.Value.ToString(), true, false);
 					
 					// Add action to category and sorted list
 					sortedsectoreffects.Add(si);
@@ -776,6 +776,46 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsEditModeSpecified(string classname)
 		{
 			return cfg.SettingExists("editingmodes." + classname.ToString(CultureInfo.InvariantCulture));
+		}
+		
+		// This returns information on a linedef type
+		public LinedefActionInfo GetLinedefActionInfo(int action)
+		{
+			// Known type?
+			if(linedefactions.ContainsKey(action))
+			{
+				return linedefactions[action];
+			}
+			else if(action == 0)
+			{
+				return new LinedefActionInfo(0, "None", true, false);
+			}
+			else if(IsGeneralized(action, genactioncategories))
+			{
+				return new LinedefActionInfo(action, "Generalized (" + GetGeneralizedActionCategory(action) + ")", true, true);
+			}
+			else
+			{
+				return new LinedefActionInfo(action, "Unknown", false, false);
+			}
+		}
+
+		// This returns information on a sector effect
+		public SectorEffectInfo GetSectorEffectInfo(int effect)
+		{
+			// Known type?
+			if(sectoreffects.ContainsKey(effect))
+			{
+				return sectoreffects[effect];
+			}
+			else if(effect == 0)
+			{
+				return new SectorEffectInfo(0, "None", true, false);
+			}
+			else
+			{
+				return new SectorEffectInfo(effect, "Unknown", false, false);
+			}
 		}
 		
 		#endregion
