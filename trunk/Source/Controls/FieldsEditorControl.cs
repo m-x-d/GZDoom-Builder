@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public FieldsEditorControl()
 		{
 			InitializeComponent();
+			enumscombo.Visible = false;
 		}
 
 		#endregion

@@ -682,6 +682,12 @@
       <DependentUpon>ScriptFindReplaceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\StatusInfo.cs" />
+    <Compile Include="Windows\VertexEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\VertexEditForm.Designer.cs">
+      <DependentUpon>VertexEditForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ZDoom\ActorStructure.cs" />
     <Compile Include="ZDoom\PatchStructure.cs" />
     <Compile Include="ZDoom\TexturesParser.cs" />
@@ -827,6 +833,10 @@
     <EmbeddedResource Include="Resources\Thing2D_2.png" />
     <EmbeddedResource Include="Resources\White.png" />
     <EmbeddedResource Include="Resources\Font.cfg" />
+    <EmbeddedResource Include="Windows\VertexEditForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>VertexEditForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M "Debug" "$(ConfigurationName)"

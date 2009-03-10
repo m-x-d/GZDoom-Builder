@@ -123,7 +123,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<Vertex> vertices = new List<Vertex>(selection.Length);
 			foreach(FindReplaceObject o in selection) vertices.Add(o.Vertex);
-			// TODO: General.Interface.ShowEditVertices(vertices);
+			General.Interface.ShowEditVertices(vertices);
+			General.Map.Map.Update();
 		}
 
 		#endregion

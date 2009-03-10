@@ -246,6 +246,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Edit pressed in this mode
 				editpressed = true;
+
+				// Highlighted item not selected?
+				if(!highlighted.Selected)
+				{
+					// Make this the only selection
+					General.Map.Map.ClearSelectedVertices();
+					highlighted.Selected = true;
+					General.Interface.RedrawDisplay();
+				}
+
+				// Update display
+				if(renderer.StartPlotter(false))
+				{
+					// Redraw highlight to show selection
+					renderer.PlotVertex(highlighted, renderer.DetermineVertexColor(highlighted));
+					renderer.Finish();
+					renderer.Present();
+				}
 			}
 			else
 			{
@@ -315,6 +333,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Done editing
 		protected override void OnEditEnd()
 		{
+			// Edit pressed in this mode?
+			if(editpressed)
+			{
+				// Anything selected?
+				ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
+				if(selected.Count > 0)
+				{
+					if(General.Interface.IsActiveWindow)
+					{
+						// Show line edit dialog
+						General.Interface.ShowEditVertices(selected);
+						General.Map.Map.Update();
+
+						// When a single vertex was selected, deselect it now
+						if(selected.Count == 1) General.Map.Map.ClearSelectedVertices();
+
+						// Update entire display
+						General.Interface.RedrawDisplay();
+					}
+				}
+			}
+
 			editpressed = false;
 			base.OnEditEnd();
 		}

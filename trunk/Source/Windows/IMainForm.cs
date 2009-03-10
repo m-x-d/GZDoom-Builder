@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Windows
 		void DisplayStatus(StatusType type, string message);
 		void DisplayStatus(StatusInfo newstatus);
 		void RedrawDisplay();
+		DialogResult ShowEditVertices(ICollection<Vertex> vertices);
 		DialogResult ShowEditLinedefs(ICollection<Linedef> lines);
 		DialogResult ShowEditSectors(ICollection<Sector> sectors);
 		DialogResult ShowEditThings(ICollection<Thing> things);
