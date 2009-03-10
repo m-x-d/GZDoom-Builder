@@ -2139,6 +2139,20 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			return EffectBrowserForm.BrowseEffect(owner, initialvalue);
 		}
+
+		// This shows the dialog to edit vertices
+		public DialogResult ShowEditVertices(ICollection<Vertex> vertices)
+		{
+			DialogResult result;
+
+			// Show sector edit dialog
+			VertexEditForm f = new VertexEditForm();
+			f.Setup(vertices);
+			result = f.ShowDialog(this);
+			f.Dispose();
+
+			return result;
+		}
 		
 		// This shows the dialog to edit lines
 		public DialogResult ShowEditLinedefs(ICollection<Linedef> lines)

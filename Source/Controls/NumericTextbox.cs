@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private bool allownegative = false;		// Allow negative numbers
 		private bool allowrelative = false;		// Allow ++ and -- prefix for relative changes
+		private bool allowdecimal = false;		// Allow decimal (float) numbers
 		private bool controlpressed = false;
 		
 		#endregion
@@ -50,6 +51,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public bool AllowNegative { get { return allownegative; } set { allownegative = value; } }
 		public bool AllowRelative { get { return allowrelative; } set { allowrelative = value; } }
+		public bool AllowDecimal { get { return allowdecimal; } set { allowdecimal = value; } }
 
 		#endregion
 
@@ -90,9 +92,10 @@ namespace CodeImp.DoomBuilder.Controls
 			char otherprefix;
 			
 			// Determine allowed chars
-			if(allownegative) allowedchars += "-";
+			if(allownegative) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NegativeSign;
 			if(allowrelative) allowedchars += "+-";
 			if(controlpressed) allowedchars += "\u0018\u0003\u0016";
+			if(allowdecimal) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.CurrencyDecimalSeparator;
 			
 			// Check if key is not allowed
 			if(allowedchars.IndexOf(e.KeyChar) == -1)
@@ -169,7 +172,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Strip prefixes
 			textpart = textpart.Replace("+", "");
-			textpart = textpart.Replace("-", "");
+			if(!allownegative) textpart = textpart.Replace("-", "");
 			
 			// No numbers left?
 			if(textpart.Length == 0)
@@ -186,11 +189,11 @@ namespace CodeImp.DoomBuilder.Controls
 		public int GetResult(int original)
 		{
 			string textpart = this.Text;
-			int result = 0;
+			int result;
 
 			// Strip prefixes
 			textpart = textpart.Replace("+", "");
-			textpart = textpart.Replace("-", "");
+			if(!allownegative) textpart = textpart.Replace("-", "");
 			
 			// Any numbers left?
 			if(textpart.Length > 0)
@@ -212,7 +215,47 @@ namespace CodeImp.DoomBuilder.Controls
 				else
 				{
 					// Return the new value
-					if(int.TryParse(this.Text, out result)) return result; else return 0;
+					return int.TryParse(this.Text, out result) ? result : 0;
+				}
+			}
+			else
+			{
+				// Nothing given, keep original value
+				return original;
+			}
+		}
+
+		// This determines the result value
+		public float GetResultFloat(float original)
+		{
+			string textpart = this.Text;
+			float result;
+
+			// Strip prefixes
+			textpart = textpart.Replace("+", "");
+			if(!allownegative) textpart = textpart.Replace("-", "");
+
+			// Any numbers left?
+			if(textpart.Length > 0)
+			{
+				// Prefixed with ++?
+				if(this.Text.StartsWith("++"))
+				{
+					// Add number to original
+					if(!float.TryParse(textpart, out result)) result = 0;
+					return original + result;
+				}
+				// Prefixed with --?
+				else if(this.Text.StartsWith("--"))
+				{
+					// Subtract number from original
+					if(!float.TryParse(textpart, out result)) result = 0;
+					return original - result;
+				}
+				else
+				{
+					// Return the new value
+					return float.TryParse(this.Text, out result) ? result : 0;
 				}
 			}
 			else
