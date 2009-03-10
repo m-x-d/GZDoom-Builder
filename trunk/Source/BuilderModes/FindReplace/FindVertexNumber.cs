@@ -31,14 +31,13 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Config;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Linedef Types", BrowseButton = true)]
-	internal class FindLinedefTypes : FindReplaceType
+	[FindReplace("Vertex by Number", BrowseButton = false, Replacable = false)]
+	internal class FindVertexNumber : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -55,14 +54,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindLinedefTypes()
+		public FindVertexNumber()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindLinedefTypes()
+		~FindVertexNumber()
 		{
 		}
 
@@ -73,9 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			int num = 0;
-			int.TryParse(initialvalue, out num);
-			return General.Interface.BrowseLinedefActions(BuilderPlug.Me.FindReplaceForm, num).ToString();
+			return "";
 		}
 
 
@@ -86,60 +83,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
-			// Interpret the replacement
-			int replaceaction = 0;
-			if(replacewith != null)
-			{
-				// If it cannot be interpreted, set replacewith to null (not replacing at all)
-				if(!int.TryParse(replacewith, out replaceaction)) replacewith = null;
-				if(replaceaction < 0) replacewith = null;
-				if(replaceaction > Int16.MaxValue) replacewith = null;
-				if(replacewith == null)
-				{
-					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return objs.ToArray();
-				}
-			}
-
 			// Interpret the number given
-			int action = 0;
-			if(int.TryParse(value, out action))
+			int index = 0;
+			if(int.TryParse(value, out index))
 			{
-				// Go for all linedefs
-				foreach(Linedef l in General.Map.Map.Linedefs)
-				{
-					// Action matches?
-					if(l.Action == action)
-					{
-						// Replace
-						if(replacewith != null) l.Action = replaceaction;
-
-						// Add to list
-						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
-						if(!info.IsNull)
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.GetIndex() + " (" + info.Title + ")"));
-						else
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.GetIndex()));
-					}
-				}
+				Vertex v = General.Map.Map.GetVertexByIndex(index);
+				if(v != null) objs.Add(new FindReplaceObject(v, "Vertex " + index));
 			}
-
+			
 			return objs.ToArray();
 		}
-		
+
 		// This is called when a specific object is selected from the list
 		public override void ObjectSelected(FindReplaceObject[] selection)
 		{
 			if(selection.Length == 1)
 			{
 				ZoomToSelection(selection);
-				General.Interface.ShowLinedefInfo(selection[0].Linedef);
+				General.Interface.ShowVertexInfo(selection[0].Vertex);
 			}
 			else
 				General.Interface.HideInfo();
-			
+
 			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Linedef.Selected = true;
+			foreach(FindReplaceObject obj in selection) obj.Vertex.Selected = true;
 		}
 
 		// Render selection
@@ -147,18 +114,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(FindReplaceObject o in selection)
 			{
-				renderer.PlotLinedef(o.Linedef, General.Colors.Selection);
+				renderer.PlotVertex(o.Vertex, ColorCollection.SELECTION);
 			}
 		}
 
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Linedef> lines = new List<Linedef>(selection.Length);
-			foreach(FindReplaceObject o in selection) lines.Add(o.Linedef);
-			General.Interface.ShowEditLinedefs(lines);
+			List<Vertex> vertices = new List<Vertex>(selection.Length);
+			foreach(FindReplaceObject o in selection) vertices.Add(o.Vertex);
+			// TODO: General.Interface.ShowEditVertices(vertices);
 		}
-		
+
 		#endregion
 	}
 }

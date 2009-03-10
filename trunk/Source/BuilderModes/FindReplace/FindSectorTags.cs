@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -111,8 +112,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Replace
 						if(replacewith != null) s.Tag = replacetag;
 						
-						// Add to list
-						objs.Add(new FindReplaceObject(s, "Sector " + s.Map.GetIndexForSector(s)));
+						SectorEffectInfo info = General.Map.Config.GetSectorEffectInfo(s.Effect);
+						if(!info.IsNull)
+							objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (" + info.Title + ")"));
+						else
+							objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex()));
 					}
 				}
 			}

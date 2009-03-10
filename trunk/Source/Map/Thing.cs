@@ -184,6 +184,14 @@ namespace CodeImp.DoomBuilder.Map
 			t.fixedsize = fixedsize;
 			base.CopyPropertiesTo(t);
 		}
+
+		/// <summary>
+		/// Returns the index of the specified thing. This is a O(n) operation.
+		/// </summary>
+		public int GetIndex()
+		{
+			return map.GetIndexForThing(this);
+		}
 		
 		// This determines which sector the thing is in and links it
 		public void DetermineSector()

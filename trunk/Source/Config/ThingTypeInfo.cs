@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool fixedsize;
 		private ThingCategory category;
 		private ArgumentInfo[] args;
+		private bool isknown;
 		
 		#endregion
 
@@ -82,6 +83,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool FixedSize { get { return fixedsize; } }
 		public ThingCategory Category { get { return category; } }
 		public ArgumentInfo[] Args { get { return args; } }
+		public bool IsKnown { get { return isknown; } }
+		public bool IsNull { get { return (index == 0); } }
 		
 		#endregion
 
@@ -105,6 +108,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = false;
 			this.spritelongname = long.MaxValue;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			this.isknown = false;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -119,6 +123,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = index;
 			this.category = cat;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			this.isknown = true;
 			
 			// Read properties
 			this.title = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".title", "<" + key + ">");
@@ -158,6 +163,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = index;
 			this.category = cat;
 			this.title = title;
+			this.isknown = true;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			
@@ -192,6 +198,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = actor.DoomEdNum;
 			this.category = cat;
 			this.title = "Unnamed";
+			this.isknown = true;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			

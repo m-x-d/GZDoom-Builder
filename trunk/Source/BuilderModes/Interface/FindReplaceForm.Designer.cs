@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label2;
-			System.Windows.Forms.Label label3;
+			this.replacelabel = new System.Windows.Forms.Label();
 			this.searchtypes = new System.Windows.Forms.ComboBox();
 			this.findinput = new System.Windows.Forms.TextBox();
 			this.browsefind = new System.Windows.Forms.Button();
@@ -49,7 +49,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.doreplace = new System.Windows.Forms.CheckBox();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
-			label3 = new System.Windows.Forms.Label();
 			this.resultspanel.SuspendLayout();
 			this.groupreplace.SuspendLayout();
 			this.SuspendLayout();
@@ -72,14 +71,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			label2.TabIndex = 2;
 			label2.Text = "Find what:";
 			// 
-			// label3
+			// replacelabel
 			// 
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(12, 28);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(73, 14);
-			label3.TabIndex = 6;
-			label3.Text = "Replace with:";
+			this.replacelabel.AutoSize = true;
+			this.replacelabel.Location = new System.Drawing.Point(12, 28);
+			this.replacelabel.Name = "replacelabel";
+			this.replacelabel.Size = new System.Drawing.Size(73, 14);
+			this.replacelabel.TabIndex = 6;
+			this.replacelabel.Text = "Replace with:";
 			// 
 			// searchtypes
 			// 
@@ -233,7 +232,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupreplace.Controls.Add(this.keepselection);
 			this.groupreplace.Controls.Add(this.replaceinput);
 			this.groupreplace.Controls.Add(this.browsereplace);
-			this.groupreplace.Controls.Add(label3);
+			this.groupreplace.Controls.Add(this.replacelabel);
 			this.groupreplace.Enabled = false;
 			this.groupreplace.Location = new System.Drawing.Point(9, 108);
 			this.groupreplace.Name = "groupreplace";
@@ -312,5 +311,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.CheckBox doreplace;
 		private System.Windows.Forms.Button editbutton;
 		private System.Windows.Forms.Button deletebutton;
+		private System.Windows.Forms.Label replacelabel;
 	}
 }

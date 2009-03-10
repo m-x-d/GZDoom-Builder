@@ -228,6 +228,13 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\HeightsMode.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FindReplace\FindLinedefNumber.cs" />
+    <Compile Include="FindReplace\FindSectorNumber.cs" />
+    <Compile Include="FindReplace\FindSidedefNumber.cs" />
+    <Compile Include="FindReplace\FindThingNumber.cs" />
+    <Compile Include="FindReplace\FindVertexNumber.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

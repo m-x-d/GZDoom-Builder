@@ -132,8 +132,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Now setup the interface
 			browsefind.Enabled = newfinder.Attributes.BrowseButton;
 			browsereplace.Enabled = newfinder.Attributes.BrowseButton;
+			if(!newfinder.Attributes.Replacable) doreplace.Checked = false;
+			doreplace.Enabled = newfinder.Attributes.Replacable;
 		}
-
+		
 		// Browse find button clicked
 		private void browsefind_Click(object sender, EventArgs e)
 		{

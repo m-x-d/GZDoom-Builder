@@ -37,8 +37,8 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Linedef Types", BrowseButton = true)]
-	internal class FindLinedefTypes : FindReplaceType
+	[FindReplace("Linedef by Number", BrowseButton = false, Replacable = false)]
+	internal class FindLinedefNumber : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -55,14 +55,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindLinedefTypes()
+		public FindLinedefNumber()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindLinedefTypes()
+		~FindLinedefNumber()
 		{
 		}
 
@@ -73,9 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			int num = 0;
-			int.TryParse(initialvalue, out num);
-			return General.Interface.BrowseLinedefActions(BuilderPlug.Me.FindReplaceForm, num).ToString();
+			return "";
 		}
 
 
@@ -86,47 +84,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
-			// Interpret the replacement
-			int replaceaction = 0;
-			if(replacewith != null)
-			{
-				// If it cannot be interpreted, set replacewith to null (not replacing at all)
-				if(!int.TryParse(replacewith, out replaceaction)) replacewith = null;
-				if(replaceaction < 0) replacewith = null;
-				if(replaceaction > Int16.MaxValue) replacewith = null;
-				if(replacewith == null)
-				{
-					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return objs.ToArray();
-				}
-			}
-
 			// Interpret the number given
-			int action = 0;
-			if(int.TryParse(value, out action))
+			int index = 0;
+			if(int.TryParse(value, out index))
 			{
-				// Go for all linedefs
-				foreach(Linedef l in General.Map.Map.Linedefs)
+				Linedef l = General.Map.Map.GetLinedefByIndex(index);
+				if(l != null)
 				{
-					// Action matches?
-					if(l.Action == action)
-					{
-						// Replace
-						if(replacewith != null) l.Action = replaceaction;
-
-						// Add to list
-						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
-						if(!info.IsNull)
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.GetIndex() + " (" + info.Title + ")"));
-						else
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.GetIndex()));
-					}
+					LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
+					if(!info.IsNull)
+						objs.Add(new FindReplaceObject(l, "Linedef " + index + " (" + info.Title + ")"));
+					else
+						objs.Add(new FindReplaceObject(l, "Linedef " + index));
 				}
 			}
-
+			
 			return objs.ToArray();
 		}
-		
+
 		// This is called when a specific object is selected from the list
 		public override void ObjectSelected(FindReplaceObject[] selection)
 		{
@@ -137,7 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 				General.Interface.HideInfo();
-			
+
 			General.Map.Map.ClearAllSelected();
 			foreach(FindReplaceObject obj in selection) obj.Linedef.Selected = true;
 		}
@@ -154,11 +129,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Linedef> lines = new List<Linedef>(selection.Length);
-			foreach(FindReplaceObject o in selection) lines.Add(o.Linedef);
-			General.Interface.ShowEditLinedefs(lines);
+			List<Linedef> linedefs = new List<Linedef>(selection.Length);
+			foreach(FindReplaceObject o in selection) linedefs.Add(o.Linedef);
+			General.Interface.ShowEditLinedefs(linedefs);
 		}
-		
+
 		#endregion
 	}
 }

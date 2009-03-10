@@ -53,7 +53,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This shows the info
 		public void ShowInfo(Linedef l)
 		{
-			string actioninfo = "";
 			LinedefActionInfo act = null;
 			TypeHandler th;
 			bool upperunpegged, lowerunpegged;
@@ -94,17 +93,7 @@ namespace CodeImp.DoomBuilder.Controls
 			backpanel.Left = frontpanel.Left + frontpanel.Width + frontpanel.Margin.Right + backpanel.Margin.Left;
 			
 			// Get line action information
-			if(General.Map.Config.LinedefActions.ContainsKey(l.Action))
-			{
-				act = General.Map.Config.LinedefActions[l.Action];
-				actioninfo = act.ToString();
-			}
-			else if(l.Action == 0)
-				actioninfo = l.Action.ToString() + " - None";
-			else if(GameConfiguration.IsGeneralized(l.Action, General.Map.Config.GenActionCategories))
-				actioninfo = l.Action.ToString() + " - Generalized (" + General.Map.Config.GetGeneralizedActionCategory(l.Action) + ")";
-			else
-				actioninfo = l.Action.ToString() + " - Unknown";
+			LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
 			
 			// Determine peggedness
 			upperunpegged = l.IsFlagSet(General.Map.Config.UpperUnpeggedFlag);
@@ -120,7 +109,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Linedef info
 			infopanel.Text = " Lindedef " + l.Map.GetIndexForLinedef(l) + " ";
-			action.Text = actioninfo;
+			action.Text = info.ToString();
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg.ToString() + "\u00B0";
 			tag.Text = l.Tag.ToString();
