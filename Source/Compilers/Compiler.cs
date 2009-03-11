@@ -93,9 +93,30 @@ namespace CodeImp.DoomBuilder.Compilers
 		{
 			if(!isdisposed)
 			{
-				// Remove temporary directory
-				General.WriteLogLine("Removing temporary compiler files...");
-				tempdir.Delete(true);
+				Exception deleteerror = null;
+				double starttime = General.Clock.GetCurrentTime();
+				
+				do
+				{
+					try
+					{
+						// Remove temporary directory
+						General.WriteLogLine("Removing temporary compiler files...");
+						tempdir.Delete(true);
+						deleteerror = null;
+					}
+					catch(Exception e)
+					{
+						deleteerror = e;
+					}
+
+					// Bail out when it takes too long
+					if((General.Clock.GetCurrentTime() - starttime) > 2000) break;
+				}
+				while(deleteerror != null);
+				
+				// Throw error if we have one
+				if(deleteerror != null) throw deleteerror;
 				
 				// Disposed
 				isdisposed = true;
