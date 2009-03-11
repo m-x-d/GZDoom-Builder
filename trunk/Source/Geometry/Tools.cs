@@ -946,10 +946,10 @@ namespace CodeImp.DoomBuilder.Geometry
 								{
 									// Now we take the two linedefs with adjacent angles to the drawn line
 									List<Linedef> lines = new List<Linedef>(v.Linedefs);
-									lines.Sort(new LinedefAngleSorter(firstline, true, firstline.End));
+									lines.Sort(new LinedefAngleSorter(firstline, true, firstline.Start));
 									startpoints.Add(new LinedefSide(lines[0], true));
 									startpoints.Add(new LinedefSide(lines[0], false));
-									lines.Sort(new LinedefAngleSorter(firstline, false, firstline.End));
+									lines.Sort(new LinedefAngleSorter(firstline, false, firstline.Start));
 									startpoints.Add(new LinedefSide(lines[0], true));
 									startpoints.Add(new LinedefSide(lines[0], false));
 								}
@@ -970,10 +970,10 @@ namespace CodeImp.DoomBuilder.Geometry
 								{
 									// Now we take the two linedefs with adjacent angles to the drawn line
 									List<Linedef> lines = new List<Linedef>(v.Linedefs);
-									lines.Sort(new LinedefAngleSorter(firstline, true, lastline.Start));
+									lines.Sort(new LinedefAngleSorter(firstline, true, lastline.End));
 									endpoints.Add(new LinedefSide(lines[0], true));
 									endpoints.Add(new LinedefSide(lines[0], false));
-									lines.Sort(new LinedefAngleSorter(firstline, false, lastline.Start));
+									lines.Sort(new LinedefAngleSorter(firstline, false, lastline.End));
 									endpoints.Add(new LinedefSide(lines[0], true));
 									endpoints.Add(new LinedefSide(lines[0], false));
 								}

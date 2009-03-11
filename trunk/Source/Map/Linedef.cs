@@ -905,6 +905,12 @@ namespace CodeImp.DoomBuilder.Map
 				sd.Marked = newside.Marked;
 			}
 		}
+
+		// String representation
+		public override string ToString()
+		{
+			return "Linedef " + GetIndex();
+		}
 		
 		#endregion
 
