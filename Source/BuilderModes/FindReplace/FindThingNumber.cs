@@ -37,7 +37,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Thing by Number", BrowseButton = false, Replacable = false)]
+	[FindReplace("Thing Index", BrowseButton = false, Replacable = false)]
 	internal class FindThingNumber : FindReplaceType
 	{
 		#region ================== Constants

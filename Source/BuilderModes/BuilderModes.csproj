@@ -230,10 +230,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FindReplace\FindLinedefNumber.cs" />
+    <Compile Include="FindReplace\FindLinedefSectorRef.cs" />
     <Compile Include="FindReplace\FindLinedefTags.cs" />
+    <Compile Include="FindReplace\FindSectorEffect.cs" />
+    <Compile Include="FindReplace\FindSectorFlat.cs" />
+    <Compile Include="FindReplace\FindSidedefTexture.cs" />
+    <Compile Include="FindReplace\FindLinedefThingRef.cs" />
     <Compile Include="FindReplace\FindSectorNumber.cs" />
     <Compile Include="FindReplace\FindSidedefNumber.cs" />
+    <Compile Include="FindReplace\FindThingAction.cs" />
     <Compile Include="FindReplace\FindThingNumber.cs" />
+    <Compile Include="FindReplace\FindThingType.cs" />
     <Compile Include="FindReplace\FindVertexNumber.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

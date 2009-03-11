@@ -31,13 +31,14 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Vertex Index", BrowseButton = false, Replacable = false)]
-	internal class FindVertexNumber : FindReplaceType
+	[FindReplace("Sidedef Texture", BrowseButton = true)]
+	internal class FindSidedefTexture : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -54,14 +55,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindVertexNumber()
+		public FindSidedefTexture()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindVertexNumber()
+		~FindSidedefTexture()
 		{
 		}
 
@@ -72,7 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			return "";
+			return General.Interface.BrowseTexture(BuilderPlug.Me.FindReplaceForm, initialvalue);
 		}
 
 
@@ -83,13 +84,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
-			// Interpret the number given
-			int index = 0;
-			if(int.TryParse(value, out index))
+			// Interpret the replacement
+			if(replacewith != null)
 			{
-				Vertex v = General.Map.Map.GetVertexByIndex(index);
-				if(v != null) objs.Add(new FindReplaceObject(v, "Vertex " + index));
+				// If it cannot be interpreted, set replacewith to null (not replacing at all)
+				if(replacewith.Length < 0) replacewith = null;
+				if(replacewith.Length > 8) replacewith = null;
+				if(replacewith == null)
+				{
+					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return objs.ToArray();
+				}
 			}
+			
+			// Interpret the find
+			long longfind = Lump.MakeLongName(value.Trim());
+			
+			// Go for all sidedefs
+			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+			{
+				string side = sd.IsFront ? "front" : "back";
+				
+				if(sd.LongHighTexture == longfind)
+				{
+					// Replace and add to list
+					if(replacewith != null) sd.SetTextureHigh(replacewith);
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.GetIndex() + " (" + side + ", high)"));
+				}
+				
+				if(sd.LongMiddleTexture == longfind)
+				{
+					// Replace and add to list
+					if(replacewith != null) sd.SetTextureMid(replacewith);
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.GetIndex() + " (" + side + ", middle)"));
+				}
+
+				if(sd.LongLowTexture == longfind)
+				{
+					// Replace and add to list
+					if(replacewith != null) sd.SetTextureLow(replacewith);
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.GetIndex() + " (" + side + ", low)"));
+				}
+			}
+			
+			// When replacing, make sure we keep track of used textures
+			if(replacewith != null) General.Map.Data.UpdateUsedTextures();
 			
 			return objs.ToArray();
 		}
@@ -100,13 +139,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selection.Length == 1)
 			{
 				ZoomToSelection(selection);
-				General.Interface.ShowVertexInfo(selection[0].Vertex);
+				General.Interface.ShowLinedefInfo(selection[0].Sidedef.Line);
 			}
 			else
 				General.Interface.HideInfo();
 
 			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Vertex.Selected = true;
+			foreach(FindReplaceObject obj in selection) obj.Sidedef.Line.Selected = true;
 		}
 
 		// Render selection
@@ -114,17 +153,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(FindReplaceObject o in selection)
 			{
-				renderer.PlotVertex(o.Vertex, ColorCollection.SELECTION);
+				renderer.PlotLinedef(o.Sidedef.Line, General.Colors.Selection);
 			}
 		}
 
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Vertex> vertices = new List<Vertex>(selection.Length);
-			foreach(FindReplaceObject o in selection) vertices.Add(o.Vertex);
-			General.Interface.ShowEditVertices(vertices);
-			General.Map.Map.Update();
+			List<Linedef> linedefs = new List<Linedef>(selection.Length);
+			foreach(FindReplaceObject o in selection) linedefs.Add(o.Sidedef.Line);
+			General.Interface.ShowEditLinedefs(linedefs);
 		}
 
 		#endregion

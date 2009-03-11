@@ -31,13 +31,14 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Vertex Index", BrowseButton = false, Replacable = false)]
-	internal class FindVertexNumber : FindReplaceType
+	[FindReplace("Thing Type", BrowseButton = true)]
+	internal class FindThingType : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -54,14 +55,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindVertexNumber()
+		public FindThingType()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindVertexNumber()
+		~FindThingType()
 		{
 		}
 
@@ -72,7 +73,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			return "";
+			int type;
+			int.TryParse(initialvalue, out type);
+			//TODO: type = General.Interface.BrowseThingType(BuilderPlug.Me.FindReplaceForm, type);
+			return type.ToString();
 		}
 
 
@@ -83,12 +87,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
-			// Interpret the number given
-			int index = 0;
-			if(int.TryParse(value, out index))
+			// Interpret the replacement
+			int replacetype = 0;
+			if(replacewith != null)
 			{
-				Vertex v = General.Map.Map.GetVertexByIndex(index);
-				if(v != null) objs.Add(new FindReplaceObject(v, "Vertex " + index));
+				// If it cannot be interpreted, set replacewith to null (not replacing at all)
+				if(!int.TryParse(replacewith, out replacetype)) replacewith = null;
+				if(replacetype < 0) replacewith = null;
+				if(replacetype > Int16.MaxValue) replacewith = null;
+				if(replacewith == null)
+				{
+					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return objs.ToArray();
+				}
+			}
+
+			// Interpret the number given
+			int findtype = 0;
+			if(int.TryParse(value, out findtype))
+			{
+				// Go for all things
+				foreach(Thing t in General.Map.Map.Things)
+				{
+					// Match?
+					if(t.Type == findtype)
+					{
+						// Replace
+						if(replacewith != null)
+						{
+							t.Type = replacetype;
+							t.UpdateConfiguration();
+						}
+						
+						// Add to list
+						ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+						objs.Add(new FindReplaceObject(t, "Thing " + t.GetIndex() + " (" + ti.Title + ")"));
+					}
+				}
 			}
 			
 			return objs.ToArray();
@@ -100,31 +135,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selection.Length == 1)
 			{
 				ZoomToSelection(selection);
-				General.Interface.ShowVertexInfo(selection[0].Vertex);
+				General.Interface.ShowThingInfo(selection[0].Thing);
 			}
 			else
 				General.Interface.HideInfo();
 
 			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Vertex.Selected = true;
+			foreach(FindReplaceObject obj in selection) obj.Thing.Selected = true;
 		}
 
 		// Render selection
-		public override void PlotSelection(IRenderer2D renderer, FindReplaceObject[] selection)
+		public override void RenderThingsSelection(IRenderer2D renderer, FindReplaceObject[] selection)
 		{
 			foreach(FindReplaceObject o in selection)
 			{
-				renderer.PlotVertex(o.Vertex, ColorCollection.SELECTION);
+				renderer.RenderThing(o.Thing, General.Colors.Selection, 1.0f);
 			}
 		}
 
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Vertex> vertices = new List<Vertex>(selection.Length);
-			foreach(FindReplaceObject o in selection) vertices.Add(o.Vertex);
-			General.Interface.ShowEditVertices(vertices);
-			General.Map.Map.Update();
+			List<Thing> things = new List<Thing>(selection.Length);
+			foreach(FindReplaceObject o in selection) things.Add(o.Thing);
+			General.Interface.ShowEditThings(things);
 		}
 
 		#endregion

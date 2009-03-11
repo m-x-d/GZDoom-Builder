@@ -37,7 +37,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Linedef Types", BrowseButton = true)]
+	[FindReplace("Linedef Actions", BrowseButton = true)]
 	internal class FindLinedefTypes : FindReplaceType
 	{
 		#region ================== Constants

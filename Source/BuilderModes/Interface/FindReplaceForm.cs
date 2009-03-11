@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private FindReplaceType newfinder;
 		private FindReplaceType finder;
+		private List<FindReplaceType> findtypeslist;
 		bool controlpressed = false;
 		bool shiftpressed = false;
 		bool suppressevents = false;
@@ -69,6 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Find all find/replace types
 			Type[] findtypes = BuilderPlug.Me.FindClasses(typeof(FindReplaceType));
+			findtypeslist = new List<FindReplaceType>(findtypes.Length);
 			foreach(Type t in findtypes)
 			{
 				FindReplaceType finderinst;
@@ -94,14 +96,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.WriteLogLine(ex.GetType().Name + ": " + ex.Message);
 						throw ex;
 					}
-
+					
 					// Add the finder to the list
-					searchtypes.Items.Add(finderinst);
+					findtypeslist.Add(finderinst);
 				}
 			}
-
-			// Select first
-			searchtypes.SelectedIndex = 0;
 		}
 		
 		#endregion
@@ -343,7 +342,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Position at left-top of owner
 				this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
 			}
-
+			
+			// Re-fill the search types list
+			searchtypes.Items.Clear();
+			foreach(FindReplaceType t in findtypeslist)
+			{
+				// Check if it should be visible
+				if(t.DetermineVisiblity())
+				{
+					searchtypes.Items.Add(t);
+				}
+			}
+			
+			// Select previously selected item
+			for(int i = 0; i < searchtypes.Items.Count; i++)
+			{
+				if(searchtypes.Items[i] == newfinder)
+					searchtypes.SelectedIndex = i;
+			}
+			
+			// Select first if none was selected
+			if(searchtypes.SelectedIndex < 0)
+				searchtypes.SelectedIndex = 0;
+			
 			// Close results part
 			resultspanel.Visible = false;
 			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top);

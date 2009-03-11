@@ -70,6 +70,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		// This is called to test if the item should be displayed
+		public override bool DetermineVisiblity()
+		{
+			return (General.Map.FormatInterface.GetType().Name == "DoomMapSetIO") ||
+				   (General.Map.FormatInterface.GetType().Name == "UniversalMapSetIO");
+		}
+		
+		
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{

@@ -37,7 +37,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Sector by Number", BrowseButton = false, Replacable = false)]
+	[FindReplace("Sector Index", BrowseButton = false, Replacable = false)]
 	internal class FindSectorNumber : FindReplaceType
 	{
 		#region ================== Constants
