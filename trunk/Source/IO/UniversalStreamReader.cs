@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.IO
 				if(textmap.ErrorResult != 0)
 				{
 					// Show parse error
-					General.ShowErrorMessage("Error while parsing UDMF map data:\n" + textmap.ErrorDescription, MessageBoxButtons.OK);
+					General.ShowErrorMessage("Error on line " + textmap.ErrorLine + " while parsing UDMF map data:\n" + textmap.ErrorDescription, MessageBoxButtons.OK);
 				}
 				else
 				{
