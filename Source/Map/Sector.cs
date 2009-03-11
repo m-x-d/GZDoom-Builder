@@ -534,6 +534,12 @@ namespace CodeImp.DoomBuilder.Map
 			
 			General.Map.IsChanged = true;
 		}
+
+		// String representation
+		public override string ToString()
+		{
+			return "Sector " + GetIndex();
+		}
 		
 		#endregion
 
