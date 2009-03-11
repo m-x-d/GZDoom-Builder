@@ -374,8 +374,51 @@ namespace CodeImp.DoomBuilder.IO
 					// Check if number ends here
 					if(c == ';')
 					{
+						// Hexadecimal?
+						if((val.Length > 2) && val.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+						{
+							int ival = 0;
+							long lval = 0;
+
+							// Convert to int
+							try
+							{
+								// Convert to value
+								ival = System.Convert.ToInt32(val.Substring(2).Trim(), 16);
+
+								// Add it to struct
+								cs.Add(new UniversalEntry(key.Trim(), ival));
+							}
+							catch(System.OverflowException)
+							{
+								// Too large for Int32, try Int64
+								try
+								{
+									// Convert to value
+									lval = System.Convert.ToInt64(val.Substring(2).Trim(), 16);
+
+									// Add it to struct
+									cs.Add(new UniversalEntry(key.Trim(), lval));
+								}
+								catch(System.OverflowException)
+								{
+									// Too large for Int64, return error
+									RaiseError(line, ERROR_VALUETOOBIG);
+								}
+								catch(System.FormatException)
+								{
+									// ERROR: Invalid value in assignment
+									RaiseError(line, ERROR_VALUEINVALID);
+								}
+							}
+							catch(System.FormatException)
+							{
+								// ERROR: Invalid value in assignment
+								RaiseError(line, ERROR_VALUEINVALID);
+							}
+						}
 						// Floating point?
-						if(val.IndexOf(".") > -1)
+						else if(val.IndexOf(".") > -1)
 						{
 							float fval = 0;
 							
