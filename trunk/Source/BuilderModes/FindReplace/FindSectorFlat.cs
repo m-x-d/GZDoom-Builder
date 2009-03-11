@@ -31,13 +31,14 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Vertex Index", BrowseButton = false, Replacable = false)]
-	internal class FindVertexNumber : FindReplaceType
+	[FindReplace("Sector Flat", BrowseButton = true)]
+	internal class FindSectorFlat : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -54,14 +55,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindVertexNumber()
+		public FindSectorFlat()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindVertexNumber()
+		~FindSectorFlat()
 		{
 		}
 
@@ -72,7 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			return "";
+			return General.Interface.BrowseFlat(BuilderPlug.Me.FindReplaceForm, initialvalue);
 		}
 
 
@@ -83,13 +84,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
-			// Interpret the number given
-			int index = 0;
-			if(int.TryParse(value, out index))
+			// Interpret the replacement
+			if(replacewith != null)
 			{
-				Vertex v = General.Map.Map.GetVertexByIndex(index);
-				if(v != null) objs.Add(new FindReplaceObject(v, "Vertex " + index));
+				// If it cannot be interpreted, set replacewith to null (not replacing at all)
+				if(replacewith.Length < 0) replacewith = null;
+				if(replacewith.Length > 8) replacewith = null;
+				if(replacewith == null)
+				{
+					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return objs.ToArray();
+				}
 			}
+			
+			// Interpret the find
+			long longfind = Lump.MakeLongName(value.Trim());
+			
+			// Go for all sectors
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Flat matches?
+				if(s.LongCeilTexture == longfind)
+				{
+					// Replace and add to list
+					if(replacewith != null) s.SetCeilTexture(replacewith);
+					objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (ceiling)"));
+				}
+				
+				if(s.LongFloorTexture == longfind)
+				{
+					// Replace and add to list
+					if(replacewith != null) s.SetFloorTexture(replacewith);
+					objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (floor)"));
+				}
+			}
+			
+			// When replacing, make sure we keep track of used textures
+			if(replacewith != null) General.Map.Data.UpdateUsedTextures();
 			
 			return objs.ToArray();
 		}
@@ -100,13 +131,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selection.Length == 1)
 			{
 				ZoomToSelection(selection);
-				General.Interface.ShowVertexInfo(selection[0].Vertex);
+				General.Interface.ShowSectorInfo(selection[0].Sector);
 			}
 			else
 				General.Interface.HideInfo();
 
 			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Vertex.Selected = true;
+			foreach(FindReplaceObject obj in selection) obj.Sector.Selected = true;
 		}
 
 		// Render selection
@@ -114,17 +145,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(FindReplaceObject o in selection)
 			{
-				renderer.PlotVertex(o.Vertex, ColorCollection.SELECTION);
+				foreach(Sidedef sd in o.Sector.Sidedefs)
+				{
+					renderer.PlotLinedef(sd.Line, General.Colors.Selection);
+				}
 			}
 		}
 
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Vertex> vertices = new List<Vertex>(selection.Length);
-			foreach(FindReplaceObject o in selection) vertices.Add(o.Vertex);
-			General.Interface.ShowEditVertices(vertices);
-			General.Map.Map.Update();
+			List<Sector> sectors = new List<Sector>(selection.Length);
+			foreach(FindReplaceObject o in selection) sectors.Add(o.Sector);
+			General.Interface.ShowEditSectors(sectors);
 		}
 
 		#endregion

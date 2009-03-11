@@ -87,6 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.searchtypes.Location = new System.Drawing.Point(100, 12);
 			this.searchtypes.Name = "searchtypes";
 			this.searchtypes.Size = new System.Drawing.Size(139, 22);
+			this.searchtypes.Sorted = true;
 			this.searchtypes.TabIndex = 1;
 			this.searchtypes.SelectedIndexChanged += new System.EventHandler(this.searchtypes_SelectedIndexChanged);
 			// 

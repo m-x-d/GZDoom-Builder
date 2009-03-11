@@ -73,7 +73,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
-
+		
+		// This is called to test if the item should be displayed
+		public virtual bool DetermineVisiblity()
+		{
+			return true;
+		}
+		
 		// This is called when the browse button is pressed
 		public virtual string Browse(string initialvalue)
 		{

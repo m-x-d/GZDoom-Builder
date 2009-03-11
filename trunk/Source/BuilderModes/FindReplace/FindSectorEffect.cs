@@ -31,13 +31,14 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Vertex Index", BrowseButton = false, Replacable = false)]
-	internal class FindVertexNumber : FindReplaceType
+	[FindReplace("Sector Effect", BrowseButton = true)]
+	internal class FindSectorEffect : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -54,14 +55,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindVertexNumber()
+		public FindSectorEffect()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindVertexNumber()
+		~FindSectorEffect()
 		{
 		}
 
@@ -72,7 +73,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			return "";
+			int effect;
+			int.TryParse(initialvalue, out effect);
+			effect = General.Interface.BrowseSectorEffect(BuilderPlug.Me.FindReplaceForm, effect);
+			return effect.ToString();
 		}
 
 
@@ -83,14 +87,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
-			// Interpret the number given
-			int index = 0;
-			if(int.TryParse(value, out index))
+			// Interpret the replacement
+			int replaceeffect = 0;
+			if(replacewith != null)
 			{
-				Vertex v = General.Map.Map.GetVertexByIndex(index);
-				if(v != null) objs.Add(new FindReplaceObject(v, "Vertex " + index));
+				// If it cannot be interpreted, set replacewith to null (not replacing at all)
+				if(!int.TryParse(replacewith, out replaceeffect)) replacewith = null;
+				if(replaceeffect < 0) replacewith = null;
+				if(replaceeffect > Int16.MaxValue) replacewith = null;
+				if(replacewith == null)
+				{
+					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return objs.ToArray();
+				}
 			}
-			
+
+			// Interpret the number given
+			int effect = 0;
+			if(int.TryParse(value, out effect))
+			{
+				// Go for all sectors
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					// Tag matches?
+					if(s.Effect == effect)
+					{
+						// Replace
+						if(replacewith != null) s.Effect = replaceeffect;
+						
+						SectorEffectInfo info = General.Map.Config.GetSectorEffectInfo(s.Effect);
+						if(!info.IsNull)
+							objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (" + info.Title + ")"));
+						else
+							objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex()));
+					}
+				}
+			}
+
 			return objs.ToArray();
 		}
 
@@ -100,13 +133,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selection.Length == 1)
 			{
 				ZoomToSelection(selection);
-				General.Interface.ShowVertexInfo(selection[0].Vertex);
+				General.Interface.ShowSectorInfo(selection[0].Sector);
 			}
 			else
 				General.Interface.HideInfo();
 
 			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Vertex.Selected = true;
+			foreach(FindReplaceObject obj in selection) obj.Sector.Selected = true;
 		}
 
 		// Render selection
@@ -114,17 +147,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(FindReplaceObject o in selection)
 			{
-				renderer.PlotVertex(o.Vertex, ColorCollection.SELECTION);
+				foreach(Sidedef sd in o.Sector.Sidedefs)
+				{
+					renderer.PlotLinedef(sd.Line, General.Colors.Selection);
+				}
 			}
 		}
 
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Vertex> vertices = new List<Vertex>(selection.Length);
-			foreach(FindReplaceObject o in selection) vertices.Add(o.Vertex);
-			General.Interface.ShowEditVertices(vertices);
-			General.Map.Map.Update();
+			List<Sector> sectors = new List<Sector>(selection.Length);
+			foreach(FindReplaceObject o in selection) sectors.Add(o.Sector);
+			General.Interface.ShowEditSectors(sectors);
 		}
 
 		#endregion

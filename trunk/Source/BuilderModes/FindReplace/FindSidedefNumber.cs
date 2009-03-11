@@ -36,7 +36,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Sidedef by Number", BrowseButton = false, Replacable = false)]
+	[FindReplace("Sidedef Index", BrowseButton = false, Replacable = false)]
 	internal class FindSidedefNumber : FindReplaceType
 	{
 		#region ================== Constants

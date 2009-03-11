@@ -31,13 +31,15 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Vertex Index", BrowseButton = false, Replacable = false)]
-	internal class FindVertexNumber : FindReplaceType
+	[FindReplace("Linedef Thing Reference", BrowseButton = false)]
+	internal class FindLinedefThingRef : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -54,20 +56,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindVertexNumber()
+		public FindLinedefThingRef()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindVertexNumber()
+		~FindLinedefThingRef()
 		{
 		}
 
 		#endregion
 
 		#region ================== Methods
+
+		// This is called to test if the item should be displayed
+		public override bool DetermineVisiblity()
+		{
+			return (General.Map.FormatInterface.GetType().Name == "HexenMapSetIO") ||
+				   (General.Map.FormatInterface.GetType().Name == "UniversalMapSetIO");
+		}
+
 
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
@@ -83,14 +93,60 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
-			// Interpret the number given
-			int index = 0;
-			if(int.TryParse(value, out index))
+			// Interpret the replacement
+			int replacetag = 0;
+			if(replacewith != null)
 			{
-				Vertex v = General.Map.Map.GetVertexByIndex(index);
-				if(v != null) objs.Add(new FindReplaceObject(v, "Vertex " + index));
+				// If it cannot be interpreted, set replacewith to null (not replacing at all)
+				if(!int.TryParse(replacewith, out replacetag)) replacewith = null;
+				if(replacetag < 0) replacewith = null;
+				if(replacetag > 255) replacewith = null;
+				if(replacewith == null)
+				{
+					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return objs.ToArray();
+				}
 			}
-			
+
+			// Interpret the number given
+			int tag = 0;
+			if(int.TryParse(value, out tag))
+			{
+				// Go for all linedefs
+				foreach(Linedef l in General.Map.Map.Linedefs)
+				{
+					bool addline = false;
+
+					LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
+					if(info.IsKnown && !info.IsNull)
+					{
+						// Go for all args
+						for(int i = 0; i < Linedef.NUM_ARGS; i++)
+						{
+							// Argument type matches?
+							if(info.Args[i].Used && (info.Args[i].Type == (int)UniversalType.ThingTag))
+							{
+								if(l.Args[i] == tag)
+								{
+									// Replace
+									if(replacewith != null) l.Args[i] = replacetag;
+									addline = true;
+								}
+							}
+						}
+					}
+
+					if(addline)
+					{
+						// Add to list
+						if(!info.IsNull)
+							objs.Add(new FindReplaceObject(l, "Linedef " + l.GetIndex() + " (" + info.Title + ")"));
+						else
+							objs.Add(new FindReplaceObject(l, "Linedef " + l.GetIndex()));
+					}
+				}
+			}
+
 			return objs.ToArray();
 		}
 
@@ -100,13 +156,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selection.Length == 1)
 			{
 				ZoomToSelection(selection);
-				General.Interface.ShowVertexInfo(selection[0].Vertex);
+				General.Interface.ShowLinedefInfo(selection[0].Linedef);
 			}
 			else
 				General.Interface.HideInfo();
 
 			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Vertex.Selected = true;
+			foreach(FindReplaceObject obj in selection) obj.Linedef.Selected = true;
 		}
 
 		// Render selection
@@ -114,17 +170,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(FindReplaceObject o in selection)
 			{
-				renderer.PlotVertex(o.Vertex, ColorCollection.SELECTION);
+				renderer.PlotLinedef(o.Linedef, General.Colors.Selection);
 			}
 		}
 
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Vertex> vertices = new List<Vertex>(selection.Length);
-			foreach(FindReplaceObject o in selection) vertices.Add(o.Vertex);
-			General.Interface.ShowEditVertices(vertices);
-			General.Map.Map.Update();
+			List<Linedef> lines = new List<Linedef>(selection.Length);
+			foreach(FindReplaceObject o in selection) lines.Add(o.Linedef);
+			General.Interface.ShowEditLinedefs(lines);
 		}
 
 		#endregion
