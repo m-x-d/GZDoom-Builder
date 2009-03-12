@@ -53,7 +53,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This shows the info
 		public void ShowInfo(Linedef l)
 		{
-			LinedefActionInfo act = null;
 			TypeHandler th;
 			bool upperunpegged, lowerunpegged;
 			string peggedness;
@@ -93,7 +92,7 @@ namespace CodeImp.DoomBuilder.Controls
 			backpanel.Left = frontpanel.Left + frontpanel.Width + frontpanel.Margin.Right + backpanel.Margin.Left;
 			
 			// Get line action information
-			LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
+			LinedefActionInfo act = General.Map.Config.GetLinedefActionInfo(l.Action);
 			
 			// Determine peggedness
 			upperunpegged = l.IsFlagSet(General.Map.Config.UpperUnpeggedFlag);
@@ -109,64 +108,38 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Linedef info
 			infopanel.Text = " Lindedef " + l.Map.GetIndexForLinedef(l) + " ";
-			action.Text = info.ToString();
+			action.Text = act.ToString();
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg.ToString() + "\u00B0";
 			tag.Text = l.Tag.ToString();
 			unpegged.Text = peggedness;
 			
 			// Arguments
-			if(act != null)
-			{
-				arglbl1.Text = act.Args[0].Title + ":";
-				arglbl2.Text = act.Args[1].Title + ":";
-				arglbl3.Text = act.Args[2].Title + ":";
-				arglbl4.Text = act.Args[3].Title + ":";
-				arglbl5.Text = act.Args[4].Title + ":";
-				arglbl1.Enabled = act.Args[0].Used;
-				arglbl2.Enabled = act.Args[1].Used;
-				arglbl3.Enabled = act.Args[2].Used;
-				arglbl4.Enabled = act.Args[3].Used;
-				arglbl5.Enabled = act.Args[4].Used;
-				arg1.Enabled = act.Args[0].Used;
-				arg2.Enabled = act.Args[1].Used;
-				arg3.Enabled = act.Args[2].Used;
-				arg4.Enabled = act.Args[3].Used;
-				arg5.Enabled = act.Args[4].Used;
-				th = General.Types.GetArgumentHandler(act.Args[0]);
-				th.SetValue(l.Args[0]); arg1.Text = th.GetStringValue();
-				th = General.Types.GetArgumentHandler(act.Args[1]);
-				th.SetValue(l.Args[1]); arg2.Text = th.GetStringValue();
-				th = General.Types.GetArgumentHandler(act.Args[2]);
-				th.SetValue(l.Args[2]); arg3.Text = th.GetStringValue();
-				th = General.Types.GetArgumentHandler(act.Args[3]);
-				th.SetValue(l.Args[3]); arg4.Text = th.GetStringValue();
-				th = General.Types.GetArgumentHandler(act.Args[4]);
-				th.SetValue(l.Args[4]); arg5.Text = th.GetStringValue();
-			}
-			else
-			{
-				arglbl1.Text = "Argument 1:";
-				arglbl2.Text = "Argument 2:";
-				arglbl3.Text = "Argument 3:";
-				arglbl4.Text = "Argument 4:";
-				arglbl5.Text = "Argument 5:";
-				arglbl1.Enabled = false;
-				arglbl2.Enabled = false;
-				arglbl3.Enabled = false;
-				arglbl4.Enabled = false;
-				arglbl5.Enabled = false;
-				arg1.Enabled = false;
-				arg2.Enabled = false;
-				arg3.Enabled = false;
-				arg4.Enabled = false;
-				arg5.Enabled = false;
-				arg1.Text = "-";
-				arg2.Text = "-";
-				arg3.Text = "-";
-				arg4.Text = "-";
-				arg5.Text = "-";
-			}
+			arglbl1.Text = act.Args[0].Title + ":";
+			arglbl2.Text = act.Args[1].Title + ":";
+			arglbl3.Text = act.Args[2].Title + ":";
+			arglbl4.Text = act.Args[3].Title + ":";
+			arglbl5.Text = act.Args[4].Title + ":";
+			arglbl1.Enabled = act.Args[0].Used;
+			arglbl2.Enabled = act.Args[1].Used;
+			arglbl3.Enabled = act.Args[2].Used;
+			arglbl4.Enabled = act.Args[3].Used;
+			arglbl5.Enabled = act.Args[4].Used;
+			arg1.Enabled = act.Args[0].Used;
+			arg2.Enabled = act.Args[1].Used;
+			arg3.Enabled = act.Args[2].Used;
+			arg4.Enabled = act.Args[3].Used;
+			arg5.Enabled = act.Args[4].Used;
+			th = General.Types.GetArgumentHandler(act.Args[0]);
+			th.SetValue(l.Args[0]); arg1.Text = th.GetStringValue();
+			th = General.Types.GetArgumentHandler(act.Args[1]);
+			th.SetValue(l.Args[1]); arg2.Text = th.GetStringValue();
+			th = General.Types.GetArgumentHandler(act.Args[2]);
+			th.SetValue(l.Args[2]); arg3.Text = th.GetStringValue();
+			th = General.Types.GetArgumentHandler(act.Args[3]);
+			th.SetValue(l.Args[3]); arg4.Text = th.GetStringValue();
+			th = General.Types.GetArgumentHandler(act.Args[4]);
+			th.SetValue(l.Args[4]); arg5.Text = th.GetStringValue();
 
 			// Front side available?
 			if(l.Front != null)
