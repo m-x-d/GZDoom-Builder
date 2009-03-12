@@ -181,6 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// typeid
 			// 
+			this.typeid.AllowDecimal = false;
 			this.typeid.AllowNegative = false;
 			this.typeid.AllowRelative = false;
 			this.typeid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -264,6 +265,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// height
 			// 
+			this.height.AllowDecimal = false;
 			this.height.AllowNegative = true;
 			this.height.AllowRelative = true;
 			this.height.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -294,6 +296,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// angle
 			// 
+			this.angle.AllowDecimal = false;
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
 			this.angle.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -410,7 +413,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
 			this.tabeffects.Size = new System.Drawing.Size(633, 352);
 			this.tabeffects.TabIndex = 1;
-			this.tabeffects.Text = "Effects";
+			this.tabeffects.Text = "Action";
 			this.tabeffects.UseVisualStyleBackColor = true;
 			// 
 			// actiongroup
@@ -590,6 +593,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tag
 			// 
+			this.tag.AllowDecimal = false;
 			this.tag.AllowNegative = false;
 			this.tag.AllowRelative = true;
 			this.tag.ImeMode = System.Windows.Forms.ImeMode.Off;
