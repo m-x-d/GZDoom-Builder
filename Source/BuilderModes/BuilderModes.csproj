@@ -229,6 +229,9 @@
     <EmbeddedResource Include="Resources\HeightsMode.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
+    <Compile Include="FindReplace\FindThingSectorRef.cs" />
+    <Compile Include="FindReplace\FindThingTag.cs" />
     <Compile Include="FindReplace\FindLinedefNumber.cs" />
     <Compile Include="FindReplace\FindLinedefSectorRef.cs" />
     <Compile Include="FindReplace\FindLinedefTags.cs" />
@@ -240,6 +243,7 @@
     <Compile Include="FindReplace\FindSidedefNumber.cs" />
     <Compile Include="FindReplace\FindThingAction.cs" />
     <Compile Include="FindReplace\FindThingNumber.cs" />
+    <Compile Include="FindReplace\FindThingThingRef.cs" />
     <Compile Include="FindReplace\FindThingType.cs" />
     <Compile Include="FindReplace\FindVertexNumber.cs" />
   </ItemGroup>

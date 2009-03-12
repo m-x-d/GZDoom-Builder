@@ -37,8 +37,8 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Sidedef Texture", BrowseButton = true)]
-	internal class FindSidedefTexture : FindReplaceType
+	[FindReplace("Any Texture or Flat", BrowseButton = true)]
+	internal class FindAnyTextureFlat : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -55,20 +55,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindSidedefTexture()
+		public FindAnyTextureFlat()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindSidedefTexture()
+		~FindAnyTextureFlat()
 		{
 		}
 
 		#endregion
 
 		#region ================== Methods
+
+		// This is called to test if the item should be displayed
+		public override bool DetermineVisiblity()
+		{
+			return General.Map.Config.MixTexturesFlats;
+		}
+
 
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
@@ -96,9 +103,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					return objs.ToArray();
 				}
 			}
-			
+
 			// Interpret the find
 			long longfind = Lump.MakeLongName(value.Trim());
+
+			// Go for all sectors
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Flat matches?
+				if(s.LongCeilTexture == longfind)
+				{
+					// Replace and add to list
+					if(replacewith != null) s.SetCeilTexture(replacewith);
+					objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (ceiling)"));
+				}
+
+				if(s.LongFloorTexture == longfind)
+				{
+					// Replace and add to list
+					if(replacewith != null) s.SetFloorTexture(replacewith);
+					objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (floor)"));
+				}
+			}
 			
 			// Go for all sidedefs
 			foreach(Sidedef sd in General.Map.Map.Sidedefs)
@@ -129,7 +155,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// When replacing, make sure we keep track of used textures
 			if(replacewith != null) General.Map.Data.UpdateUsedTextures();
-			
+
 			return objs.ToArray();
 		}
 
@@ -139,13 +165,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selection.Length == 1)
 			{
 				ZoomToSelection(selection);
-				General.Interface.ShowLinedefInfo(selection[0].Sidedef.Line);
+				if(selection[0].Object is Sector)
+					General.Interface.ShowSectorInfo(selection[0].Sector);
+				else if(selection[0].Object is Sidedef)
+					General.Interface.ShowLinedefInfo(selection[0].Sidedef.Line);
 			}
 			else
 				General.Interface.HideInfo();
-
+			
 			General.Map.Map.ClearAllSelected();
-			foreach(FindReplaceObject obj in selection) obj.Sidedef.Line.Selected = true;
+			foreach(FindReplaceObject obj in selection)
+			{
+				if(obj.Object is Sector)
+					obj.Sector.Selected = true;
+				else if(obj.Object is Sidedef)
+					obj.Sidedef.Line.Selected = true;
+			}
 		}
 
 		// Render selection
@@ -153,16 +188,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(FindReplaceObject o in selection)
 			{
-				renderer.PlotLinedef(o.Sidedef.Line, General.Colors.Selection);
+				if(o.Object is Sector)
+				{
+					foreach(Sidedef sd in o.Sector.Sidedefs)
+					{
+						renderer.PlotLinedef(sd.Line, General.Colors.Selection);
+					}
+				}
+				else if(o.Object is Sidedef)
+				{
+					renderer.PlotLinedef(o.Sidedef.Line, General.Colors.Selection);
+				}
 			}
 		}
 
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Linedef> linedefs = new List<Linedef>(selection.Length);
-			foreach(FindReplaceObject o in selection) linedefs.Add(o.Sidedef.Line);
-			General.Interface.ShowEditLinedefs(linedefs);
+			List<Sector> sectors = new List<Sector>(selection.Length);
+			List<Linedef> lines = new List<Linedef>(selection.Length);
+			foreach(FindReplaceObject o in selection)
+			{
+				if(o.Object is Sector)
+					sectors.Add(o.Sector);
+				else
+					lines.Add(o.Sidedef.Line);
+			}
+			if(sectors.Count > 0) General.Interface.ShowEditSectors(sectors);
+			if(lines.Count > 0) General.Interface.ShowEditLinedefs(lines);
 		}
 
 		#endregion

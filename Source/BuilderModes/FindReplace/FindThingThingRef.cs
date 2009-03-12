@@ -32,13 +32,14 @@ using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Thing Action", BrowseButton = true)]
-	internal class FindThingAction : FindReplaceType
+	[FindReplace("Thing Thing Reference", BrowseButton = false)]
+	internal class FindThingThingRef : FindReplaceType
 	{
 		#region ================== Constants
 
@@ -55,14 +56,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public FindThingAction()
+		public FindThingThingRef()
 		{
 			// Initialize
 
 		}
 
 		// Destructor
-		~FindThingAction()
+		~FindThingThingRef()
 		{
 		}
 
@@ -81,10 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			int action;
-			int.TryParse(initialvalue, out action);
-			action = General.Interface.BrowseLinedefActions(BuilderPlug.Me.FindReplaceForm, action);
-			return action.ToString();
+			return "";
 		}
 
 
@@ -96,13 +94,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<FindReplaceObject> objs = new List<FindReplaceObject>();
 
 			// Interpret the replacement
-			int replaceaction = 0;
+			int replacetag = 0;
 			if(replacewith != null)
 			{
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
-				if(!int.TryParse(replacewith, out replaceaction)) replacewith = null;
-				if(replaceaction < 0) replacewith = null;
-				if(replaceaction > Int16.MaxValue) replacewith = null;
+				if(!int.TryParse(replacewith, out replacetag)) replacewith = null;
+				if(replacetag < 0) replacewith = null;
+				if(replacetag > 255) replacewith = null;
 				if(replacewith == null)
 				{
 					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -111,18 +109,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Interpret the number given
-			int findaction = 0;
-			if(int.TryParse(value, out findaction))
+			int tag = 0;
+			if(int.TryParse(value, out tag))
 			{
 				// Go for all things
 				foreach(Thing t in General.Map.Map.Things)
 				{
-					// Match?
-					if(t.Action == findaction)
-					{
-						// Replace
-						if(replacewith != null) t.Action = replaceaction;
+					bool addthing = false;
 
+					LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(t.Action);
+					if(info.IsKnown && !info.IsNull)
+					{
+						// Go for all args
+						for(int i = 0; i < Linedef.NUM_ARGS; i++)
+						{
+							// Argument type matches?
+							if(info.Args[i].Used && (info.Args[i].Type == (int)UniversalType.ThingTag))
+							{
+								if(t.Args[i] == tag)
+								{
+									// Replace
+									if(replacewith != null) t.Args[i] = replacetag;
+									addthing = true;
+								}
+							}
+						}
+					}
+
+					if(addthing)
+					{
 						// Add to list
 						ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 						objs.Add(new FindReplaceObject(t, "Thing " + t.GetIndex() + " (" + ti.Title + ")"));
