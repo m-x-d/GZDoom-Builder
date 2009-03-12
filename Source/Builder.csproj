@@ -663,6 +663,12 @@
     <None Include="Resources\Close.png" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
+    <Compile Include="Controls\ThingBrowserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ThingBrowserControl.Designer.cs">
+      <DependentUpon>ThingBrowserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data\HighResImage.cs" />
     <Compile Include="Data\PK3FileImage.cs" />
     <Compile Include="Data\PK3StructuredReader.cs" />
@@ -682,6 +688,12 @@
       <DependentUpon>ScriptFindReplaceForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\StatusInfo.cs" />
+    <Compile Include="Windows\ThingBrowserForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ThingBrowserForm.Designer.cs">
+      <DependentUpon>ThingBrowserForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\VertexEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -696,6 +708,10 @@
     <Compile Include="ZDoom\DecorateParser.cs" />
     <Compile Include="ZDoom\StateStructure.cs" />
     <Compile Include="Editing\EditingManager.cs" />
+    <EmbeddedResource Include="Controls\ThingBrowserControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThingBrowserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
     <Compile Include="Config\BrightnessList.cs" />
@@ -819,6 +835,10 @@
     <EmbeddedResource Include="Windows\TextureSetForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>TextureSetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ThingBrowserForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ThingBrowserForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ThingEditForm.resx">
       <SubType>Designer</SubType>

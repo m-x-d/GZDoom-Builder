@@ -311,7 +311,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.effects.Location = new System.Drawing.Point(6, 6);
 			this.effects.MultiSelect = false;
 			this.effects.Name = "effects";
-			this.effects.Size = new System.Drawing.Size(382, 397);
+			this.effects.Size = new System.Drawing.Size(379, 397);
 			this.effects.TabIndex = 0;
 			this.effects.UseCompatibleStateImageBehavior = false;
 			this.effects.View = System.Windows.Forms.View.Details;

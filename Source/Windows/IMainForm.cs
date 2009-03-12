@@ -103,6 +103,12 @@ namespace CodeImp.DoomBuilder.Windows
 		string BrowseFlat(IWin32Window owner, string initialvalue);
 
 		/// <summary>
+		/// THis browses for a thing type
+		/// </summary>
+		/// <returns>Returns the new thing type or the same thing type when cancelled</returns>
+		int BrowseThingType(IWin32Window owner, int initialvalue);
+		
+		/// <summary>
 		/// This adds a menu to the Doom Builder menu strip.
 		/// <para>
 		/// NOTE: When the Tag property of menu items is set with a string, this changes the

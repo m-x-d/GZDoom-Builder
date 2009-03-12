@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			int type;
 			int.TryParse(initialvalue, out type);
-			//TODO: type = General.Interface.BrowseThingType(BuilderPlug.Me.FindReplaceForm, type);
+			type = General.Interface.BrowseThingType(BuilderPlug.Me.FindReplaceForm, type);
 			return type.ToString();
 		}
 
