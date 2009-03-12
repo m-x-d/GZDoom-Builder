@@ -89,25 +89,8 @@ namespace CodeImp.DoomBuilder.Windows
 				heightlabel.Visible = false;
 			}
 			
-			// Go for all predefined categories
-			typelist.Nodes.Clear();
-			nodes = new List<TreeNode>();
-			foreach(ThingCategory tc in General.Map.Data.ThingCategories)
-			{
-				// Create category
-				TreeNode cn = typelist.Nodes.Add(tc.Name, tc.Title);
-				if((tc.Color >= 0) && (tc.Color < thingimages.Images.Count)) cn.ImageIndex = tc.Color;
-				cn.SelectedImageIndex = cn.ImageIndex;
-				foreach(ThingTypeInfo ti in tc.Things)
-				{
-					// Create thing
-					TreeNode n = cn.Nodes.Add(ti.Title);
-					if((ti.Color >= 0) && (ti.Color < thingimages.Images.Count)) n.ImageIndex = ti.Color;
-					n.SelectedImageIndex = n.ImageIndex;
-					n.Tag = ti;
-					nodes.Add(n);
-				}
-			}
+			// Setup types list
+			thingtype.Setup();
 		}
 
 		// This sets up the form to edit the given things
@@ -125,23 +108,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			ft = General.GetByIndex(things, 0);
 			
-			// Set type index
-			typeid.Text = ft.Type.ToString();
+			// Set type
+			thingtype.SelectType(ft.Type);
 			
-			// Select node
-			typelist.SelectedNode = null;
-			foreach(TreeNode n in nodes)
-			{
-				// Matching node?
-				if((n.Tag as ThingTypeInfo).Index == ft.Type)
-				{
-					// Select this
-					n.Parent.Expand();
-					typelist.SelectedNode = n;
-					n.EnsureVisible();
-				}
-			}
-
 			// Flags
 			foreach(CheckBox c in flags.Checkboxes)
 				if(ft.Flags.ContainsKey(c.Tag.ToString())) c.Checked = ft.Flags[c.Tag.ToString()];
@@ -169,13 +138,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Go for all things
 			foreach(Thing t in things)
 			{
-				// Selected node does not match?
-				if((typelist.SelectedNode != null) &&
-				   ((typelist.SelectedNode.Tag as ThingTypeInfo).Index != t.Type))
-					typelist.SelectedNode = null;
-
-				// Type index
-				if(t.Type.ToString() != typeid.Text) typeid.Text = "";
+				// Type does not match?
+				if((thingtype.GetSelectedInfo() != null) &&
+				   (thingtype.GetSelectedInfo().Index != t.Type))
+					thingtype.ClearSelectedType();
 				
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes)
@@ -219,6 +185,15 @@ namespace CodeImp.DoomBuilder.Windows
 			tag.Text = General.Map.Map.GetNewTag().ToString();
 		}
 
+		// Selected type changes
+		private void thingtype_OnTypeChanged(ThingTypeInfo value)
+		{
+			if(value != null)
+				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(value.Sprite).GetPreview());
+			else
+				General.DisplayZoomedImage(spritetex, null);
+		}
+		
 		// Action changes
 		private void action_ValueChanges(object sender, EventArgs e)
 		{
@@ -270,76 +245,6 @@ namespace CodeImp.DoomBuilder.Windows
 			angle.Text = anglecontrol.Value.ToString();
 		}
 
-		// Thing type selection changed
-		private void typelist_AfterSelect(object sender, TreeViewEventArgs e)
-		{
-			// Anything selected?
-			if(typelist.SelectedNode != null)
-			{
-				TreeNode n = typelist.SelectedNode;
-				
-				// Node is a child node?
-				if((n.Nodes.Count == 0) && (n.Tag != null) && (n.Tag is ThingTypeInfo))
-				{
-					ThingTypeInfo ti = (n.Tag as ThingTypeInfo);
-
-					// Show info
-					typeid.Text = ti.Index.ToString();
-				}
-			}
-		}
-
-		// Thing type index changed
-		private void typeid_TextChanged(object sender, EventArgs e)
-		{
-			bool knownthing = false;
-
-			// Any text?
-			if(typeid.Text.Length > 0)
-			{
-				// Get the info
-				thinginfo = General.Map.Data.GetThingInfoEx(typeid.GetResult(0));
-				if(thinginfo != null)
-				{
-					knownthing = true;
-
-					// Size
-					sizelabel.Text = (thinginfo.Radius * 2) + " x " + thinginfo.Height;
-
-					// Hangs from ceiling
-					if(thinginfo.Hangs) positionlabel.Text = "Ceiling"; else positionlabel.Text = "Floor";
-
-					// Blocking
-					switch(thinginfo.Blocking)
-					{
-						case ThingTypeInfo.THING_BLOCKING_NONE: blockinglabel.Text = "No"; break;
-						case ThingTypeInfo.THING_BLOCKING_FULL: blockinglabel.Text = "Completely"; break;
-						case ThingTypeInfo.THING_BLOCKING_HEIGHT: blockinglabel.Text = "True-Height"; break;
-						default: blockinglabel.Text = "Unknown"; break;
-					}
-
-					// Show image
-					General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetPreview());
-				}
-			}
-			else
-			{
-				thinginfo = null;
-			}
-			
-			// No known thing?
-			if(!knownthing)
-			{
-				sizelabel.Text = "-";
-				positionlabel.Text = "-";
-				blockinglabel.Text = "-";
-				General.DisplayZoomedImage(spritetex, null);
-			}
-			
-			// Update arguments
-			action_ValueChanges(sender, e);
-		}
-
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
@@ -354,7 +259,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Thing t in things)
 			{
 				// Thing type index
-				t.Type = typeid.GetResult(t.Type);
+				t.Type = thingtype.GetResult(t.Type);
 				
 				// Coordination
 				t.Rotate(Angle2D.DoomToReal(angle.GetResult(Angle2D.RealToDoom(t.Angle))));
@@ -386,7 +291,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Set as defaults
 			foreach(CheckBox c in flags.Checkboxes)
 				if(c.CheckState == CheckState.Checked) defaultflags.Add(c.Tag.ToString());
-			General.Settings.DefaultThingType = typeid.GetResult(General.Settings.DefaultThingType);
+			General.Settings.DefaultThingType = thingtype.GetResult(General.Settings.DefaultThingType);
 			General.Settings.DefaultThingAngle = Angle2D.DegToRad((float)angle.GetResult((int)Angle2D.RadToDeg(General.Settings.DefaultThingAngle) - 90) + 90);
 			General.Settings.SetDefaultThingFlags(defaultflags);
 			

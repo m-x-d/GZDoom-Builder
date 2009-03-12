@@ -2140,6 +2140,13 @@ namespace CodeImp.DoomBuilder.Windows
 			return EffectBrowserForm.BrowseEffect(owner, initialvalue);
 		}
 
+		// This browses thing types
+		// Returns the new thing type or the same thing type when cancelled
+		public int BrowseThingType(IWin32Window owner, int initialvalue)
+		{
+			return ThingBrowserForm.BrowseThing(owner, initialvalue);
+		}
+
 		// This shows the dialog to edit vertices
 		public DialogResult ShowEditVertices(ICollection<Vertex> vertices)
 		{
