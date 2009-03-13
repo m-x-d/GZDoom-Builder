@@ -653,9 +653,17 @@ namespace CodeImp.DoomBuilder
 				if(delaymainwindow)
 					mainwindow.PerformAutoMapLoading();
 				
-				// Run application from the main window
+				// All done
 				General.WriteLogLine("Startup done");
 				mainwindow.DisplayReady();
+				
+				// Show any errors if preferred
+				if(!delaymainwindow && General.Settings.ShowErrorsWindow && errorlogger.IsErrorAdded)
+				{
+					mainwindow.ShowErrors();
+				}
+				
+				// Run application from the main window
 				Application.Run(mainwindow);
 			}
 			else
@@ -929,7 +937,11 @@ namespace CodeImp.DoomBuilder
 					mainwindow.HideInfo();
 
 					if(errorlogger.IsErrorAdded)
+					{
+						// Show any errors if preferred
 						mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
+						if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+					}
 					else
 						mainwindow.DisplayReady();
 					
@@ -1071,7 +1083,11 @@ namespace CodeImp.DoomBuilder
 			mainwindow.HideInfo();
 
 			if(errorlogger.IsErrorAdded)
+			{
+				// Show any errors if preferred
 				mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
+				if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+			}
 			else
 				mainwindow.DisplayReady();
 			
@@ -1116,7 +1132,11 @@ namespace CodeImp.DoomBuilder
 				mainwindow.UpdateInterface();
 
 				if(errorlogger.IsErrorAdded)
+				{
+					// Show any errors if preferred
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
+					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+				}
 				else
 					mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
 
@@ -1168,7 +1188,11 @@ namespace CodeImp.DoomBuilder
 				mainwindow.UpdateInterface();
 
 				if(errorlogger.IsErrorAdded)
+				{
+					// Show any errors if preferred
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
+					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+				}
 				else
 					mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
 
@@ -1220,7 +1244,11 @@ namespace CodeImp.DoomBuilder
 				mainwindow.UpdateInterface();
 
 				if(errorlogger.IsErrorAdded)
+				{
+					// Show any errors if preferred
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
+					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+				}
 				else
 					mainwindow.DisplayStatus(StatusType.Info, "Map saved into " + map.FileTitle + ".");
 

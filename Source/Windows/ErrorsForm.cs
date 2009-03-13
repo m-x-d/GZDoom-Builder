@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Windows
 			list.Items.Clear();
 			FillList();
 			checkerrors.Start();
+			checkshow.Checked = General.Settings.ShowErrorsWindow;
 		}
 
 		#endregion
@@ -87,6 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void ErrorsForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			checkerrors.Stop();
+			General.Settings.ShowErrorsWindow = checkshow.Checked;
 		}
 
 		// Checking for more errors

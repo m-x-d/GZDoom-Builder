@@ -37,6 +37,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.clearlist = new System.Windows.Forms.Button();
 			this.close = new System.Windows.Forms.Button();
 			this.checkerrors = new System.Windows.Forms.Timer(this.components);
+			this.checkshow = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// list
@@ -108,12 +109,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.checkerrors.Interval = 1000;
 			this.checkerrors.Tick += new System.EventHandler(this.checkerrors_Tick);
 			// 
+			// checkshow
+			// 
+			this.checkshow.AutoSize = true;
+			this.checkshow.Location = new System.Drawing.Point(301, 420);
+			this.checkshow.Name = "checkshow";
+			this.checkshow.Size = new System.Drawing.Size(213, 18);
+			this.checkshow.TabIndex = 4;
+			this.checkshow.Text = "Show this window when errors occur";
+			this.checkshow.UseVisualStyleBackColor = true;
+			// 
 			// ErrorsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.close;
 			this.ClientSize = new System.Drawing.Size(756, 453);
+			this.Controls.Add(this.checkshow);
 			this.Controls.Add(this.close);
 			this.Controls.Add(this.clearlist);
 			this.Controls.Add(this.copyselected);
@@ -127,6 +139,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Text = "Errors and Warnings";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ErrorsForm_FormClosing);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -139,5 +152,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ColumnHeader colmessage;
 		private System.Windows.Forms.ImageList images;
 		private System.Windows.Forms.Timer checkerrors;
+		private System.Windows.Forms.CheckBox checkshow;
 	}
 }
