@@ -34,7 +34,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 	public sealed class StateStructure
 	{
 		#region ================== Constants
-
+		
+		// Some odd thing in ZDoom
+		private const string IGNORE_SPRITE = "TNT1A0";
+		
 		#endregion
 
 		#region ================== Variables
@@ -121,6 +124,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 						// Make the sprite name
 						firstsprite = token + spriteframes[0];
 						firstsprite = firstsprite.ToUpperInvariant();
+						
+						// Ignore some odd ZDoom thing
+						if(IGNORE_SPRITE.StartsWith(firstsprite))
+							firstsprite = null;
 					}
 					
 					// Continue until the end of the line
