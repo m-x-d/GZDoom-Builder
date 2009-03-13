@@ -390,6 +390,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 							// Update
 							dobackgroundwork = true;
+							General.Map.Data.UpdateUsedTextures();
 							General.MainWindow.RedrawDisplay();
 							General.MainWindow.UpdateInterface();
 						}
@@ -465,6 +466,8 @@ namespace CodeImp.DoomBuilder.Editing
 						General.Plugins.OnRedoEnd();
 
 						// Update
+						dobackgroundwork = true;
+						General.Map.Data.UpdateUsedTextures();
 						General.MainWindow.RedrawDisplay();
 						General.MainWindow.UpdateInterface();
 					}
