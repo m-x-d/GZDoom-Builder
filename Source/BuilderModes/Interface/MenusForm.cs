@@ -52,7 +52,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public ToolStripMenuItem LinedefsMenu { get { return linedefsmenu; } }
 		public ToolStripMenuItem SectorsMenu { get { return sectorsmenu; } }
+		public ToolStripButton ViewSelectionNumbers { get { return buttonselectionnumbers; } }
+		public ToolStripSeparator SeparatorSectors1 { get { return separatorsectors1; } }
 		public ToolStripButton MakeGradientBrightness { get { return buttonbrightnessgradient; } }
+		public ToolStripButton MakeGradientFloors { get { return buttonfloorgradient; } }
+		public ToolStripButton MakeGradientCeilings { get { return buttonceilinggradient; } }
 		public ToolStripButton FlipSelectionV { get { return buttonflipselectionv; } }
 		public ToolStripButton FlipSelectionH { get { return buttonflipselectionh; } }
 
@@ -66,6 +70,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Initialize
 			InitializeComponent();
 
+			// Apply settings
+			buttonselectionnumbers.Checked = BuilderPlug.Me.ViewSelectionNumbers;
+			
 			// List all menus
 			menus = new ToolStripItem[menustrip.Items.Count];
 			for(int i = 0; i < menustrip.Items.Count; i++) menus[i] = menustrip.Items[i];
@@ -138,6 +145,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void InvokeTaggedAction(object sender, EventArgs e)
 		{
 			General.Interface.InvokeTaggedAction(sender, e);
+		}
+
+		// View selection numbers clicked
+		private void buttonselectionnumbers_Click(object sender, EventArgs e)
+		{
+			BuilderPlug.Me.ViewSelectionNumbers = buttonselectionnumbers.Checked;
+			General.Interface.RedrawDisplay();
 		}
 		
 		#endregion

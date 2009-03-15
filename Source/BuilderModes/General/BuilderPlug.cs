@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private SectorProperties copiedsectorprops;
 		private SidedefProperties copiedsidedefprops;
 		private ThingProperties copiedthingprops;
+		private bool viewselectionnumbers;
 		
 		#endregion
 
@@ -98,6 +99,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public SectorProperties CopiedSectorProps { get { return copiedsectorprops; } set { copiedsectorprops = value; } }
 		public SidedefProperties CopiedSidedefProps { get { return copiedsidedefprops; } set { copiedsidedefprops = value; } }
 		public ThingProperties CopiedThingProps { get { return copiedthingprops; } set { copiedthingprops = value; } }
+		public bool ViewSelectionNumbers { get { return viewselectionnumbers; } set { viewselectionnumbers = value; } }
 		
 		#endregion
 
@@ -162,6 +164,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			editnewthing = General.Settings.ReadPluginSetting("editnewthing", true);
 			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
 			additiveselect = General.Settings.ReadPluginSetting("additiveselect", false);
+			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
 		}
 
 		#endregion

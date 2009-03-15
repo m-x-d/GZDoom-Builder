@@ -67,6 +67,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap CeilsGradient {
+            get {
+                object obj = ResourceManager.GetObject("CeilsGradient", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap FlipSelectionH {
             get {
                 object obj = ResourceManager.GetObject("FlipSelectionH", resourceCulture);
@@ -81,9 +88,23 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap FloorsGradient {
+            get {
+                object obj = ResourceManager.GetObject("FloorsGradient", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap treeview {
             get {
                 object obj = ResourceManager.GetObject("treeview", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ViewSelectionIndex {
+            get {
+                object obj = ResourceManager.GetObject("ViewSelectionIndex", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
