@@ -101,6 +101,9 @@ namespace CodeImp.DoomBuilder.Config
 			this.isgeneralized = isgeneralized;
 			this.isknown = isknown;
 			this.title = title;
+			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			for(int i = 0; i < Linedef.NUM_ARGS; i++)
+				this.args[i] = new ArgumentInfo(i);
 		}
 
 		#endregion
