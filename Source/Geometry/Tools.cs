@@ -458,7 +458,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			Sector newsector = General.Map.Map.CreateSector();
 			Sector sourcesector = null;
 			SidedefSettings sourceside = new SidedefSettings();
-			bool removeuselessmiddle;
 			bool foundsidedefaults = false;
 			
 			// Check if any of the sides already has a sidedef
@@ -560,7 +559,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				// We may only remove a useless middle texture when
 				// the line was previously singlesided
-				removeuselessmiddle = (ls.Line.Back == null) || (ls.Line.Front == null);
+				bool removeuselessmiddle = (ls.Line.Back == null) || (ls.Line.Front == null);
 				
 				if(ls.Front)
 				{
@@ -610,6 +609,9 @@ namespace CodeImp.DoomBuilder.Geometry
 						General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
 						ApplyDefaultsToSidedef(ls.Line.Front, sourceside);
 						ls.Line.ApplySidedFlags();
+						
+						// We must remove the (now useless) middle texture on the other side
+						if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(true, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else
@@ -626,6 +628,9 @@ namespace CodeImp.DoomBuilder.Geometry
 						General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
 						ApplyDefaultsToSidedef(ls.Line.Back, sourceside);
 						ls.Line.ApplySidedFlags();
+
+						// We must remove the (now useless) middle texture on the other side
+						if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(true, true);
 					}
 					// Added 23-9-08, can we do this or will it break things?
 					else
