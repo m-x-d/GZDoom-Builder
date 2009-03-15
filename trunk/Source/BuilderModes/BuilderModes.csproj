@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="ClassicModes\BaseClassicMode.cs" />
     <Compile Include="ClassicModes\BrightnessMode.cs" />
-    <Compile Include="ClassicModes\HeightsMode.cs" />
     <Compile Include="ClassicModes\ErrorCheckMode.cs" />
     <Compile Include="ClassicModes\EditSelectionMode.cs" />
     <Compile Include="ClassicModes\CurveLinedefsMode.cs" />
@@ -246,6 +245,15 @@
     <Compile Include="FindReplace\FindThingThingRef.cs" />
     <Compile Include="FindReplace\FindThingType.cs" />
     <Compile Include="FindReplace\FindVertexNumber.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ViewSelectionIndex.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\FloorsGradient.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CeilsGradient.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

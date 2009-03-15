@@ -87,7 +87,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Properties
-		
+
+		public ICollection<Sector> OrderedSelection { get { return orderedselection; } }
+
 		#endregion
 		
 		#region ================== Constructor / Disposer
@@ -117,6 +119,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
+		
+		// This sets the ordered selection
+		public void SetOrderedSelection(ICollection<Sector> list)
+		{
+			orderedselection = new List<Sector>(list);
+		}
 		
 		// This sets up new labels
 		private void SetupLabels()
@@ -172,19 +180,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.RenderGeometry(verts, null, true);
 					}
 				}
-				
-				// Go for all sectors
-				foreach(Sector s in General.Map.Map.Sectors)
+
+				if(BuilderPlug.Me.ViewSelectionNumbers)
 				{
-					// Render labels
-					TextLabel[] labelarray = labels[s];
-					for(int i = 0; i < s.Labels.Count; i++)
+					// Go for all sectors
+					foreach(Sector s in orderedselection)
 					{
-						TextLabel l = labelarray[i];
-						
-						// Render only when enough space for the label to see
-						float requiredsize = (l.TextSize.Height / 2) / renderer.Scale;
-						if(requiredsize < s.Labels[i].radius) renderer.RenderText(l);
+						// Render labels
+						TextLabel[] labelarray = labels[s];
+						for(int i = 0; i < s.Labels.Count; i++)
+						{
+							TextLabel l = labelarray[i];
+
+							// Render only when enough space for the label to see
+							float requiredsize = (l.TextSize.Height / 2) / renderer.Scale;
+							if(requiredsize < s.Labels[i].radius) renderer.RenderText(l);
+						}
 					}
 				}
 				
@@ -349,7 +360,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 
-			// Add toolbar button
+			// Add toolbar buttons
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 
 			// Make custom presentation
@@ -388,13 +401,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
 				}
 			}
-			
+
 			// Fill the list with selected sectors (these are not in order, but we have no other choice)
 			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
-			General.Map.Map.ClearSelectedSectors();
-			foreach(Sector s in selectedsectors) SelectSector(s, true, false);
+			if(orderedselection.Count < selectedsectors.Count)
+			{
+				General.Map.Map.ClearSelectedSectors();
+				foreach(Sector s in selectedsectors) SelectSector(s, true, false);
+			}
 			
 			// Update
+			UpdateSelectedLabels();
 			UpdateOverlay();
 		}
 
@@ -403,7 +420,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnDisengage();
 
-			// Remove toolbar button
+			// Remove toolbar buttons
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 
 			// Going to EditSelectionMode?
@@ -415,6 +434,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Make the highlight the selection
 					SelectSector(highlighted, true, false);
 				}
+			}
+			// Going to SectorsMode?
+			else if(General.Editing.NewMode is SectorsMode)
+			{
+				// Pass on the ordered selection
+				(General.Editing.NewMode as SectorsMode).SetOrderedSelection(orderedselection);
 			}
 
 			// Hide highlight info

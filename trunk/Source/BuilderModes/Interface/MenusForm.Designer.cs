@@ -45,7 +45,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
+			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
+			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
+			this.buttonfloorgradient = new System.Windows.Forms.ToolStripButton();
+			this.buttonceilinggradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionh = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionv = new System.Windows.Forms.ToolStripButton();
 			this.menustrip.SuspendLayout();
@@ -186,7 +190,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// manualstrip
 			// 
 			this.manualstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.buttonselectionnumbers,
+            this.separatorsectors1,
             this.buttonbrightnessgradient,
+            this.buttonfloorgradient,
+            this.buttonceilinggradient,
             this.buttonflipselectionh,
             this.buttonflipselectionv});
 			this.manualstrip.Location = new System.Drawing.Point(0, 49);
@@ -194,6 +202,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.manualstrip.Size = new System.Drawing.Size(423, 25);
 			this.manualstrip.TabIndex = 2;
 			this.manualstrip.Text = "toolStrip1";
+			// 
+			// buttonselectionnumbers
+			// 
+			this.buttonselectionnumbers.CheckOnClick = true;
+			this.buttonselectionnumbers.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonselectionnumbers.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.ViewSelectionIndex;
+			this.buttonselectionnumbers.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonselectionnumbers.Name = "buttonselectionnumbers";
+			this.buttonselectionnumbers.Size = new System.Drawing.Size(23, 22);
+			this.buttonselectionnumbers.Text = "View Selection Numbering";
+			this.buttonselectionnumbers.Click += new System.EventHandler(this.buttonselectionnumbers_Click);
+			// 
+			// separatorsectors1
+			// 
+			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors1.Name = "separatorsectors1";
+			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonbrightnessgradient
 			// 
@@ -206,6 +231,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonbrightnessgradient.Tag = "gradientbrightness";
 			this.buttonbrightnessgradient.Text = "Make Brightness Gradient";
 			this.buttonbrightnessgradient.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonfloorgradient
+			// 
+			this.buttonfloorgradient.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonfloorgradient.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.FloorsGradient;
+			this.buttonfloorgradient.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonfloorgradient.Name = "buttonfloorgradient";
+			this.buttonfloorgradient.Size = new System.Drawing.Size(23, 22);
+			this.buttonfloorgradient.Tag = "gradientfloors";
+			this.buttonfloorgradient.Text = "Make Floor Heights Gradient";
+			this.buttonfloorgradient.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonceilinggradient
+			// 
+			this.buttonceilinggradient.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonceilinggradient.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.CeilsGradient;
+			this.buttonceilinggradient.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonceilinggradient.Name = "buttonceilinggradient";
+			this.buttonceilinggradient.Size = new System.Drawing.Size(23, 22);
+			this.buttonceilinggradient.Tag = "gradientceilings";
+			this.buttonceilinggradient.Text = "Make Ceiling Heights Gradient";
+			this.buttonceilinggradient.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonflipselectionh
 			// 
@@ -277,5 +324,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
 		private System.Windows.Forms.ToolStripButton buttonflipselectionh;
 		private System.Windows.Forms.ToolStripButton buttonflipselectionv;
+		private System.Windows.Forms.ToolStripButton buttonselectionnumbers;
+		private System.Windows.Forms.ToolStripSeparator separatorsectors1;
+		private System.Windows.Forms.ToolStripButton buttonfloorgradient;
+		private System.Windows.Forms.ToolStripButton buttonceilinggradient;
 	}
 }
