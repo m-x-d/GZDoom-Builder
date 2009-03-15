@@ -559,7 +559,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				// We may only remove a useless middle texture when
 				// the line was previously singlesided
-				bool removeuselessmiddle = (ls.Line.Back == null) || (ls.Line.Front == null);
+				bool wassinglesided = (ls.Line.Back == null) || (ls.Line.Front == null);
 				
 				if(ls.Front)
 				{
@@ -577,9 +577,13 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				// Update line
-				if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(removeuselessmiddle);
-				if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(removeuselessmiddle);
-				ls.Line.ApplySidedFlags();
+				if(ls.Line.Front != null) ls.Line.Front.RemoveUnneededTextures(wassinglesided);
+				if(ls.Line.Back != null) ls.Line.Back.RemoveUnneededTextures(wassinglesided);
+
+				// Apply single/double sided flags if the double-sided-ness changed
+				if( (wassinglesided && ((ls.Line.Front != null) && (ls.Line.Back != null))) ||
+					(!wassinglesided && ((ls.Line.Front == null) || (ls.Line.Back == null))))
+					ls.Line.ApplySidedFlags();
 			}
 
 			// Return the new sector
@@ -1265,19 +1269,6 @@ namespace CodeImp.DoomBuilder.Geometry
 
 				// Make corrections for backward linedefs
 				MapSet.FlipBackwardLinedefs(newlines);
-
-				// Remove all unneeded textures
-				// Shouldn't this already be done by the
-				// makesector/joinsector functions?
-				foreach(Linedef ld in newlines)
-				{
-					if(ld.Front != null) ld.Front.RemoveUnneededTextures(true);
-					if(ld.Back != null) ld.Back.RemoveUnneededTextures(true);
-				}
-				foreach(Sidedef sd in insidesides)
-				{
-					sd.RemoveUnneededTextures(true);
-				}
 
 				// Check if any of our new lines have sides
 				if(sidescreated)
