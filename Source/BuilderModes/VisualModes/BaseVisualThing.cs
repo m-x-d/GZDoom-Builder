@@ -102,20 +102,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				isloaded = sprite.IsImageLoaded;
 				if(isloaded)
 				{
+					float offsetx = 0.0f;
+					float offsety = 0.0f;
+					
 					base.Texture = sprite;
 
-					// Determine sprite size
+					// Determine sprite size and offset
 					float radius = sprite.ScaledWidth * 0.5f;
 					float height = sprite.ScaledHeight;
+					if(sprite is SpriteImage)
+					{
+						offsetx = (sprite as SpriteImage).OffsetX - radius;
+						offsety = (sprite as SpriteImage).OffsetY - height;
+					}
 
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor.ToInt(), 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor.ToInt(), 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor.ToInt(), 1.0f, 0.0f);
+					verts[0] = new WorldVertex(-radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor.ToInt(), 0.0f, 1.0f);
+					verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 0.0f, 0.0f);
+					verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 1.0f, 0.0f);
 					verts[3] = verts[0];
 					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor.ToInt(), 1.0f, 1.0f);
+					verts[5] = new WorldVertex(+radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor.ToInt(), 1.0f, 1.0f);
 					SetVertices(verts);
 				}
 				else

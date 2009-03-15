@@ -101,14 +101,22 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns null on failure
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
+			int x, y;
+			return ReadAsBitmap(stream, out x, out y);
+		}
+		
+		// This creates a Bitmap from the given data
+		// Returns null on failure
+		public Bitmap ReadAsBitmap(Stream stream, out int offsetx, out int offsety)
+		{
 			BitmapData bitmapdata;
 			PixelColorBlock pixeldata;
 			PixelColor* targetdata;
-			int width, height, x, y;
+			int width, height;
 			Bitmap bmp;
 
 			// Read pixel data
-			pixeldata = ReadAsPixelData(stream, out width, out height, out x, out y);
+			pixeldata = ReadAsPixelData(stream, out width, out height, out offsetx, out offsety);
 			if(pixeldata != null)
 			{
 				// Create bitmap and lock pixels

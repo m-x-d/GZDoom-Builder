@@ -83,6 +83,15 @@ namespace CodeImp.DoomBuilder.IO
 
 		// This creates a Bitmap from the given data
 		// Returns null on failure
+		public Bitmap ReadAsBitmap(Stream stream, out int offsetx, out int offsety)
+		{
+			offsetx = 0;
+			offsety = 0;
+			return ReadAsBitmap(stream);
+		}
+		
+		// This creates a Bitmap from the given data
+		// Returns null on failure
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
 			BitmapData bitmapdata;

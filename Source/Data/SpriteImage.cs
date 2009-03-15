@@ -31,12 +31,26 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal sealed class SpriteImage : ImageData
+	public sealed class SpriteImage : ImageData
 	{
+		#region ================== Variables
+
+		protected int offsetx;
+		protected int offsety;
+		
+		#endregion
+
+		#region ================== Properties
+
+		public int OffsetX { get { return offsetx; } }
+		public int OffsetY { get { return offsety; } }
+		
+		#endregion
+		
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public SpriteImage(string name)
+		internal SpriteImage(string name)
 		{
 			// Initialize
 			SetName(name);
@@ -86,7 +100,7 @@ namespace CodeImp.DoomBuilder.Data
 						// Read data as bitmap
 						mem.Seek(0, SeekOrigin.Begin);
 						if(bitmap != null) bitmap.Dispose();
-						bitmap = reader.ReadAsBitmap(mem);
+						bitmap = reader.ReadAsBitmap(mem, out offsetx, out offsety);
 					}
 					
 					// Done
