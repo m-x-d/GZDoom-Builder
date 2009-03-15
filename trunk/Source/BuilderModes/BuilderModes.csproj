@@ -228,6 +228,8 @@
     <EmbeddedResource Include="Resources\HeightsMode.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ErrorChecks\CheckUnknownTextures.cs" />
+    <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
     <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
     <Compile Include="FindReplace\FindThingSectorRef.cs" />
     <Compile Include="FindReplace\FindThingTag.cs" />
