@@ -698,6 +698,9 @@ namespace CodeImp.DoomBuilder.Map
 				nsd = map.CreateSidedef(nl, true, front.Sector);
 				front.CopyPropertiesTo(nsd);
 				nsd.Marked = front.Marked;
+
+				// Make texture offset adjustments
+				nsd.OffsetX += (int)Vector2D.Distance(this.start.Position, this.end.Position);
 			}
 
 			// Copy back sidedef if exists
@@ -706,6 +709,9 @@ namespace CodeImp.DoomBuilder.Map
 				nsd = map.CreateSidedef(nl, false, back.Sector);
 				back.CopyPropertiesTo(nsd);
 				nsd.Marked = back.Marked;
+				
+				// Make texture offset adjustments
+				back.OffsetX += (int)Vector2D.Distance(nl.start.Position, nl.end.Position);
 			}
 
 			// Return result
@@ -751,6 +757,9 @@ namespace CodeImp.DoomBuilder.Map
 					JoinChangeSidedefs(other, false, front);
 					JoinChangeSidedefs(other, true, back);
 				}
+
+				// Copy my properties to the other
+				this.CopyPropertiesTo(other);
 			}
 			else
 			{
@@ -865,18 +874,20 @@ namespace CodeImp.DoomBuilder.Map
 						}
 					}
 				}
+				
+				// Apply single/double sided flags if the double-sided-ness changed
+				if( (!l1was2s && ((other.Front != null) && (other.Back != null))) ||
+					(l1was2s && ((other.Front == null) || (other.Back == null))) )
+					other.ApplySidedFlags();
+				
+				// Remove unneeded textures
+				if(other.front != null) other.front.RemoveUnneededTextures(!(l1was2s && l2was2s));
+				if(other.back != null) other.back.RemoveUnneededTextures(!(l1was2s && l2was2s));
 			}
 			
 			// If either of the two lines was selected, keep the other selected
 			if(this.selected) other.selected = true;
 			if(this.marked) other.marked = true;
-			
-			// Apply single/double sided flags
-			other.ApplySidedFlags();
-			
-			// Remove unneeded textures
-			if(other.front != null) other.front.RemoveUnneededTextures(!(l1was2s && l2was2s));
-			if(other.back != null) other.back.RemoveUnneededTextures(!(l1was2s && l2was2s));
 			
 			// I got killed by the other.
 			this.Dispose();
