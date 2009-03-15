@@ -214,6 +214,11 @@ namespace CodeImp.DoomBuilder.Controls
 			resoptions.StartPosition = FormStartPosition.Manual;
 			startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 			startposition = this.RectangleToScreen(startposition);
+			Screen screen = Screen.FromPoint(startposition.Location);
+			if(startposition.X + resoptions.Size.Width > screen.WorkingArea.Right)
+				startposition.X = screen.WorkingArea.Right - resoptions.Size.Width;
+			if(startposition.Y + resoptions.Size.Height > screen.WorkingArea.Bottom)
+				startposition.Y = screen.WorkingArea.Bottom - resoptions.Size.Height;
 			resoptions.Location = startposition.Location;
 			if(resoptions.ShowDialog(this) == DialogResult.OK)
 			{
@@ -244,6 +249,11 @@ namespace CodeImp.DoomBuilder.Controls
 				resoptions.StartPosition = FormStartPosition.Manual;
 				startposition = new Rectangle(dialogoffset.X, dialogoffset.Y, 1, 1);
 				startposition = this.RectangleToScreen(startposition);
+				Screen screen = Screen.FromPoint(startposition.Location);
+				if(startposition.X + resoptions.Size.Width > screen.WorkingArea.Right)
+					startposition.X = screen.WorkingArea.Right - resoptions.Size.Width;
+				if(startposition.Y + resoptions.Size.Height > screen.WorkingArea.Bottom)
+					startposition.Y = screen.WorkingArea.Bottom - resoptions.Size.Height;
 				resoptions.Location = startposition.Location;
 				if(resoptions.ShowDialog(this) == DialogResult.OK)
 				{
