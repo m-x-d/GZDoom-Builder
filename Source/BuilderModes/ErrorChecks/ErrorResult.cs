@@ -133,6 +133,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					points.Add((obj as Linedef).Start.Position);
 					points.Add((obj as Linedef).End.Position);
 				}
+				else if(obj is Sidedef)
+				{
+					points.Add((obj as Sidedef).Line.Start.Position);
+					points.Add((obj as Sidedef).Line.End.Position);
+				}
 				else if(obj is Sector)
 				{
 					Sector s = (obj as Sector);
