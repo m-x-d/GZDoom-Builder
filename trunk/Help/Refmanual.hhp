@@ -5,6 +5,7 @@ Compiled file=..\Build\Refmanual.chm
 Contents file=Contents.hhc
 Default Font=Verdana,10,0
 Default Window=default
+Default topic=introduction.html
 Display compile progress=Yes
 Full-text search=Yes
 Index file=Index.hhk
@@ -22,6 +23,7 @@ editingmodes.html
 userinterface.html
 actions.html
 configurations.html
+mainwindow.jpg
 
 [INFOTYPES]
 
