@@ -37,6 +37,9 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	internal partial class TextureBrowserForm : Form
 	{
+		// Constants
+		private const int COLUMN_WIDTH_COUNT = 52;
+		
 		// Variables
 		private string selectedname;
 		private Point lastposition;
@@ -61,18 +64,28 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 			
+			// Resize columns to maximize available width
+			countcolumn.Width = COLUMN_WIDTH_COUNT;
+			namecolumn.Width = texturesets.ClientRectangle.Width - SystemInformation.VerticalScrollBarWidth - countcolumn.Width - 2;
+			
 			// Fill texture sets list with normal texture sets
 			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets)
 			{
 				item = texturesets.Items.Add(ts.Name);
 				item.Tag = ts;
 				item.ImageIndex = 0;
+				item.UseItemStyleForSubItems = false;
+				item.SubItems.Add(ts.Textures.Count.ToString(), item.ForeColor,
+						item.BackColor, new Font(item.Font, FontStyle.Regular));
 			}
 			
 			// Add special textures sets
 			item = texturesets.Items.Add(General.Map.Data.AllTextureSet.Name);
 			item.Tag = General.Map.Data.AllTextureSet;
 			item.ImageIndex = 1;
+			item.UseItemStyleForSubItems = false;
+			item.SubItems.Add(General.Map.Data.AllTextureSet.Textures.Count.ToString(),
+				item.ForeColor, item.BackColor, new Font(item.Font, FontStyle.Regular));
 
 			// Add container-specific texture sets
 			foreach(ResourceTextureSet ts in General.Map.Data.ResourceTextureSets)
@@ -80,6 +93,9 @@ namespace CodeImp.DoomBuilder.Windows
 				item = texturesets.Items.Add(ts.Name);
 				item.Tag = ts;
 				item.ImageIndex = 2 + ts.LocationType;
+				item.UseItemStyleForSubItems = false;
+				item.SubItems.Add(ts.Textures.Count.ToString(), item.ForeColor,
+						item.BackColor, new Font(item.Font, FontStyle.Regular));
 			}
 			
 			// Select the last one that was selected
