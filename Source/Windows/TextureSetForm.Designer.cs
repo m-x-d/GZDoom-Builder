@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(414, 515);
+			this.apply.Location = new System.Drawing.Point(503, 515);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(105, 25);
 			this.apply.TabIndex = 6;
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(525, 515);
+			this.cancel.Location = new System.Drawing.Point(614, 515);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(105, 25);
 			this.cancel.TabIndex = 7;
@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Controls.Add(this.noresultlabel);
 			this.groupBox2.Location = new System.Drawing.Point(298, 60);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(332, 440);
+			this.groupBox2.Size = new System.Drawing.Size(421, 440);
 			this.groupBox2.TabIndex = 11;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Results ";
@@ -243,7 +243,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matcheslist.Location = new System.Drawing.Point(18, 55);
 			this.matcheslist.Name = "matcheslist";
 			this.matcheslist.PreventSelection = true;
-			this.matcheslist.Size = new System.Drawing.Size(298, 365);
+			this.matcheslist.Size = new System.Drawing.Size(387, 365);
 			this.matcheslist.TabIndex = 10;
 			this.matcheslist.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.matcheslist_SelectedItemDoubleClicked);
 			// 
@@ -272,7 +272,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(642, 552);
+			this.ClientSize = new System.Drawing.Size(731, 552);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancel);

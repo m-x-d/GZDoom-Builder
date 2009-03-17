@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public TextureSetForm()
 		{
 			InitializeComponent();
+			matcheslist.ApplySettings();
 			
 			// Show/hide components
 			matchesbutton.Visible = (General.Map != null);
