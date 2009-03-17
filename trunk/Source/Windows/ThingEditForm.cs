@@ -188,10 +188,15 @@ namespace CodeImp.DoomBuilder.Windows
 		// Selected type changes
 		private void thingtype_OnTypeChanged(ThingTypeInfo value)
 		{
+			// Update preview image
+			thinginfo = value;
 			if(value != null)
 				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(value.Sprite).GetPreview());
 			else
 				General.DisplayZoomedImage(spritetex, null);
+			
+			// Update arguments
+			action_ValueChanges(this, EventArgs.Empty);
 		}
 		
 		// Action changes
