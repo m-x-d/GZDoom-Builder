@@ -1179,6 +1179,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			UpdateOverlay();
 			renderer.Present();
 			General.Interface.RedrawDisplay();
+			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
 
@@ -1207,6 +1208,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Update
+			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
 
@@ -1226,6 +1228,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Update
+			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
 
@@ -1245,6 +1248,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Update
+			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
 
@@ -1264,6 +1268,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Update
+			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
 
@@ -1283,6 +1288,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Update
+			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
 
@@ -1311,6 +1317,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Update
+			General.Interface.RefreshInfo();
 			General.Map.IsChanged = true;
 		}
 
