@@ -717,9 +717,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Apply new camera matrices
 			renderer.PositionAndLookAt(General.Map.VisualCamera.Position, General.Map.VisualCamera.Target);
-
+			
 			// Visibility culling
 			DoCulling();
+			
+			// Update labels in main window
+			General.MainWindow.UpdateCoordinates((Vector2D)General.Map.VisualCamera.Position);
 			
 			// Now redraw
 			General.Interface.RedrawDisplay();
