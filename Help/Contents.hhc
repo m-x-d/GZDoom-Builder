@@ -23,7 +23,11 @@
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Main Window">
-			<param name="Local" value="mainwindow.html">
+			<param name="Local" value="w_mainwindow.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Game Configurations Window">
+			<param name="Local" value="w_gameconfigurations.html">
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
