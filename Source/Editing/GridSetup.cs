@@ -132,8 +132,8 @@ namespace CodeImp.DoomBuilder.Editing
 			cfg.WriteSetting(path + ".backsource", backsource);
 			cfg.WriteSetting(path + ".backoffsetx", backoffsetx);
 			cfg.WriteSetting(path + ".backoffsety", backoffsety);
-			cfg.WriteSetting(path + ".backscalex", backscalex);
-			cfg.WriteSetting(path + ".backscaley", backscaley);
+			cfg.WriteSetting(path + ".backscalex", (int)(backscalex * 100.0f));
+			cfg.WriteSetting(path + ".backscaley", (int)(backscaley * 100.0f));
 			cfg.WriteSetting(path + ".gridsize", gridsize);
 		}
 
@@ -145,8 +145,8 @@ namespace CodeImp.DoomBuilder.Editing
 			backsource = cfg.ReadSetting(path + ".backsource", 0);
 			backoffsetx = cfg.ReadSetting(path + ".backoffsetx", 0);
 			backoffsety = cfg.ReadSetting(path + ".backoffsety", 0);
-			backscalex = cfg.ReadSetting(path + ".backscalex", 1.0f);
-			backscaley = cfg.ReadSetting(path + ".backscaley", 1.0f);
+			backscalex = (float)cfg.ReadSetting(path + ".backscalex", 100) / 100.0f;
+			backscaley = (float)cfg.ReadSetting(path + ".backscaley", 100) / 100.0f;
 			gridsize = cfg.ReadSetting(path + ".gridsize", DEFAULT_GRID_SIZE);
 
 			// Setup
