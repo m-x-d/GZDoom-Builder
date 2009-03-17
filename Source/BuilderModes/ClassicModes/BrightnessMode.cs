@@ -558,6 +558,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				
 				// Update
+				General.Interface.RefreshInfo();
 				UpdateSelectedLabels();
 				UpdateOverlay();
 				renderer.Present();
@@ -763,6 +764,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update
 			General.Map.Map.Update();
 			UpdateSelectedLabels();
+			General.Interface.RefreshInfo();
 			General.Interface.RedrawDisplay();
 			renderer.Present();
 			
