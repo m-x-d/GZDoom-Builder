@@ -113,6 +113,13 @@ namespace CodeImp.DoomBuilder.Data
 						height = bitmap.Size.Height;
 						scaledwidth = (float)bitmap.Size.Width;
 						scaledheight = (float)bitmap.Size.Height;
+						
+						// Make offset corrections if the offset was not given
+						if((offsetx == int.MinValue) || (offsety == int.MinValue))
+						{
+							offsetx = (int)(scaledwidth * 0.5f);
+							offsety = (int)scaledheight;
+						}
 					}
 					else
 					{

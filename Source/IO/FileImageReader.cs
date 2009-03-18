@@ -52,8 +52,8 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns null on failure
 		public Bitmap ReadAsBitmap(Stream stream, out int offsetx, out int offsety)
 		{
-			offsetx = 0;
-			offsety = 0;
+			offsetx = int.MinValue;
+			offsety = int.MinValue;
 			return ReadAsBitmap(stream);
 		}
 
