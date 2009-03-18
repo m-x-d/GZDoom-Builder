@@ -29,6 +29,10 @@
 			<param name="Name" value="Game Configurations Window">
 			<param name="Local" value="w_gameconfigurations.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Errors and Warnings Window">
+			<param name="Local" value="w_errorsandwarnings.html">
+			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Editing Modes">
