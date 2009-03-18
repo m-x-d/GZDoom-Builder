@@ -33,6 +33,10 @@
 			<param name="Name" value="Errors and Warnings Window">
 			<param name="Local" value="w_errorsandwarnings.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Image Browser Window">
+			<param name="Local" value="w_imagesbrowser.html">
+			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Editing Modes">
