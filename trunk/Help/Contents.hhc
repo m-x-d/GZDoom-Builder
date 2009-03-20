@@ -37,6 +37,14 @@
 			<param name="Name" value="Image Browser Window">
 			<param name="Local" value="w_imagesbrowser.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Grid Setup Window">
+			<param name="Local" value="w_gridsetup.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Linedef Properties Window">
+			<param name="Local" value="w_linedefedit.html">
+			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Editing Modes">
