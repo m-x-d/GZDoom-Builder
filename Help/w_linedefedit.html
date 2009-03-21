@@ -13,12 +13,28 @@
 	<param name="keyword" value="Linedef Properties Window">
 	<param name="keyword" value="Linedef">
 	<param name="keyword" value="Sidedef">
+	<param name="keyword" value="Action">
+	<param name="keyword" value="Special Linedef">
+	<param name="keyword" value="Tag">
 	</object>
 	
 	<div id="title"><h1>Linedef Properties Window</h1></div>
 	
 	<div id="contents">
 	<p>
+		With this dialog window you can edit all linedef properties. When a selection of multiple linedefs is made, some fields may appear grayed or empty in case they are different for some of the selected elements. Setting a value in grayed or empty field will apply this to the entire selection.
+		
+		<h2>Properties</h2>
+		On this tab you will find all the general settings for the linedef. These setting apply to both sides of the linedef, unless specified otherwise.<br/>
+		<br/>
+		The <b>Settings</b> area provides options for the line such as <i>Impassable</i> which blocks players and monsters from crossing the line, and <i>Doublesided</i> which is automatically set or unset by Doom Builder to indicate if the line has one or two sidedefs. Depending on the game configuration, this area can feature many more options for the behaviour of the linedef.<br/>
+		<br/>
+		Below that is the <b>Action</b> area, which allows you to set a special action that is executed on a specific trigger method such as a switch or proximity trigger. In Hexen format, the action can take some arguments and the trigger method can be specified independently from the action. In UDMF format, the trigger method can be any combination of methods.<br/>
+		<br/>
+		In Doom and UDMF formats, the line can also be tagged with a number that identifies the linedef. This number can then be used by Thing actions or scripts to perform actions on the linedef.
+		<h2>Sidedefs</h2>
+		
+		<h2>Custom</h2>
 		
 	</p>
 	</div>

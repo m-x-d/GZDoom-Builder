@@ -14,7 +14,10 @@ body
 	clear: both;
 	margin: 0 0 0 0;
 	padding: 0;
-	height: 45px;
+	height: 47px;
+	border-bottom-style: solid;
+	border-bottom-color: #ffffff;
+	border-bottom-width: 2px;
 }
 
 #contents
@@ -22,6 +25,9 @@ body
 	background: #ffffff;
 	padding: 0 10px 10px 10px;
 	line-height: 1.6em;
+	border-top-style: solid;
+	border-top-color: #f4f4f4;
+	border-top-width: 2px;
 }
 
 h1
