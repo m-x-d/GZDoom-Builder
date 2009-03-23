@@ -503,7 +503,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool OnCopyBegin()
 		{
 			// No selection made? But we have a highlight!
-			if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+			if((General.Map.Map.GetSelectedLinedefs(true).Count == 0) && (highlighted != null))
 			{
 				// Make the highlight the selection
 				highlighted.Selected = true;
@@ -516,7 +516,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool OnPasteBegin()
 		{
 			// No selection made? But we have a highlight!
-			if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+			if((General.Map.Map.GetSelectedLinedefs(true).Count == 0) && (highlighted != null))
 			{
 				// Make the highlight the selection
 				highlighted.Selected = true;
