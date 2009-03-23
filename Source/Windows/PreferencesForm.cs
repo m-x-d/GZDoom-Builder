@@ -28,6 +28,7 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Controls;
 using System.Globalization;
 using CodeImp.DoomBuilder.Data;
+using System.IO;
 
 #endregion
 
@@ -655,5 +656,38 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		#endregion
+		
+		/*
+		// This writes all action help files using a template and some basic info from the actions.
+		// Also writes actioncontents.txt with all files to be inserted into Contents.hhc.
+		// Only used during development. Actual button to call this has been removed.
+		private void gobutton_Click(object sender, EventArgs e)
+		{
+			string template = File.ReadAllText(Path.Combine(General.AppPath, "..\\Help\\a_template.html"));
+			StringBuilder contents = new StringBuilder("\t<UL>\r\n");
+			string filename;
+			
+			// Go for all actions
+			Action[] actions = General.Actions.GetAllActions();
+			foreach(Action a in actions)
+			{
+				StringBuilder actionhtml = new StringBuilder(template);
+				actionhtml.Replace("ACTIONTITLE", a.Title);
+				actionhtml.Replace("ACTIONDESCRIPTION", a.Description);
+				actionhtml.Replace("ACTIONCATEGORY", General.Actions.Categories[a.Category]);
+				filename = Path.Combine(General.AppPath, "..\\Help\\a_" + a.Name + ".html");
+				File.WriteAllText(filename, actionhtml.ToString());
+				
+				contents.Append("\t\t<LI> <OBJECT type=\"text/sitemap\">\r\n");
+				contents.Append("\t\t\t<param name=\"Name\" value=\"" + a.Title + "\">\r\n");
+				contents.Append("\t\t\t<param name=\"Local\" value=\"a_" + a.Name + ".html\">\r\n");
+				contents.Append("\t\t\t</OBJECT>\r\n");
+			}
+			
+			contents.Append("\t</UL>\r\n");
+			filename = Path.Combine(General.AppPath, "..\\Help\\actioncontents.txt");
+			File.WriteAllText(filename, contents.ToString());
+		}
+		*/
 	}
 }
