@@ -34,6 +34,9 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label1;
+			this.autoscrollspeed = new Dotnetrix.Controls.TrackBar();
+			this.autoscrollspeedlabel = new System.Windows.Forms.Label();
+			this.label15 = new System.Windows.Forms.Label();
 			this.previewsize = new Dotnetrix.Controls.TrackBar();
 			this.previewsizelabel = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
@@ -91,6 +94,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actionkey = new System.Windows.Forms.TextBox();
 			this.actiondescription = new System.Windows.Forms.Label();
 			this.tabcolors = new System.Windows.Forms.TabPage();
+			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.visualbilinear = new System.Windows.Forms.CheckBox();
 			this.classicbilinear = new System.Windows.Forms.CheckBox();
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
@@ -108,16 +112,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorcomments = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorplaintext = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.squarethings = new System.Windows.Forms.CheckBox();
-			this.autoscrollspeed = new Dotnetrix.Controls.TrackBar();
-			this.autoscrollspeedlabel = new System.Windows.Forms.Label();
-			this.label15 = new System.Windows.Forms.Label();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			label1 = new System.Windows.Forms.Label();
 			groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.previewsize)).BeginInit();
 			this.colorsgroup1.SuspendLayout();
 			this.tabs.SuspendLayout();
@@ -135,7 +136,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
 			this.colorsgroup3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// label7
@@ -182,13 +182,42 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
 			// 
+			// autoscrollspeed
+			// 
+			this.autoscrollspeed.LargeChange = 1;
+			this.autoscrollspeed.Location = new System.Drawing.Point(126, 133);
+			this.autoscrollspeed.Maximum = 5;
+			this.autoscrollspeed.Name = "autoscrollspeed";
+			this.autoscrollspeed.Size = new System.Drawing.Size(92, 45);
+			this.autoscrollspeed.TabIndex = 37;
+			this.autoscrollspeed.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.autoscrollspeed.ValueChanged += new System.EventHandler(this.autoscrollspeed_ValueChanged);
+			// 
+			// autoscrollspeedlabel
+			// 
+			this.autoscrollspeedlabel.AutoSize = true;
+			this.autoscrollspeedlabel.Location = new System.Drawing.Point(224, 145);
+			this.autoscrollspeedlabel.Name = "autoscrollspeedlabel";
+			this.autoscrollspeedlabel.Size = new System.Drawing.Size(23, 14);
+			this.autoscrollspeedlabel.TabIndex = 36;
+			this.autoscrollspeedlabel.Text = "Off";
+			// 
+			// label15
+			// 
+			this.label15.AutoSize = true;
+			this.label15.Location = new System.Drawing.Point(28, 145);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(92, 14);
+			this.label15.TabIndex = 35;
+			this.label15.Text = "Autoscroll speed:";
+			// 
 			// previewsize
 			// 
 			this.previewsize.LargeChange = 1;
 			this.previewsize.Location = new System.Drawing.Point(126, 84);
 			this.previewsize.Maximum = 5;
 			this.previewsize.Name = "previewsize";
-			this.previewsize.Size = new System.Drawing.Size(92, 42);
+			this.previewsize.Size = new System.Drawing.Size(92, 45);
 			this.previewsize.TabIndex = 34;
 			this.previewsize.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.previewsize.Value = 5;
@@ -594,7 +623,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.viewdistance.Maximum = 15;
 			this.viewdistance.Minimum = 1;
 			this.viewdistance.Name = "viewdistance";
-			this.viewdistance.Size = new System.Drawing.Size(150, 42);
+			this.viewdistance.Size = new System.Drawing.Size(150, 45);
 			this.viewdistance.TabIndex = 34;
 			this.viewdistance.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.viewdistance.Value = 1;
@@ -606,7 +635,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.movespeed.Maximum = 20;
 			this.movespeed.Minimum = 1;
 			this.movespeed.Name = "movespeed";
-			this.movespeed.Size = new System.Drawing.Size(150, 42);
+			this.movespeed.Size = new System.Drawing.Size(150, 45);
 			this.movespeed.TabIndex = 33;
 			this.movespeed.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.movespeed.Value = 1;
@@ -618,7 +647,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mousespeed.Maximum = 20;
 			this.mousespeed.Minimum = 1;
 			this.mousespeed.Name = "mousespeed";
-			this.mousespeed.Size = new System.Drawing.Size(150, 42);
+			this.mousespeed.Size = new System.Drawing.Size(150, 45);
 			this.mousespeed.TabIndex = 32;
 			this.mousespeed.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.mousespeed.Value = 1;
@@ -631,7 +660,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldofview.Maximum = 17;
 			this.fieldofview.Minimum = 5;
 			this.fieldofview.Name = "fieldofview";
-			this.fieldofview.Size = new System.Drawing.Size(150, 42);
+			this.fieldofview.Size = new System.Drawing.Size(150, 45);
 			this.fieldofview.TabIndex = 31;
 			this.fieldofview.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.fieldofview.Value = 5;
@@ -893,6 +922,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcolors.Text = "Appearance";
 			this.tabcolors.UseVisualStyleBackColor = true;
 			// 
+			// squarethings
+			// 
+			this.squarethings.AutoSize = true;
+			this.squarethings.Location = new System.Drawing.Point(448, 326);
+			this.squarethings.Name = "squarethings";
+			this.squarethings.Size = new System.Drawing.Size(93, 18);
+			this.squarethings.TabIndex = 37;
+			this.squarethings.Text = "Square things";
+			this.squarethings.UseVisualStyleBackColor = true;
+			// 
 			// visualbilinear
 			// 
 			this.visualbilinear.AutoSize = true;
@@ -928,7 +967,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagebrightness.LargeChange = 3;
 			this.imagebrightness.Location = new System.Drawing.Point(379, 229);
 			this.imagebrightness.Name = "imagebrightness";
-			this.imagebrightness.Size = new System.Drawing.Size(154, 42);
+			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
 			this.imagebrightness.TabIndex = 33;
 			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
@@ -938,7 +977,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.doublesidedalpha.LargeChange = 3;
 			this.doublesidedalpha.Location = new System.Drawing.Point(379, 176);
 			this.doublesidedalpha.Name = "doublesidedalpha";
-			this.doublesidedalpha.Size = new System.Drawing.Size(154, 42);
+			this.doublesidedalpha.Size = new System.Drawing.Size(154, 45);
 			this.doublesidedalpha.TabIndex = 32;
 			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
@@ -1081,45 +1120,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
 			this.colorplaintext.TabIndex = 12;
 			// 
-			// squarethings
-			// 
-			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(448, 326);
-			this.squarethings.Name = "squarethings";
-			this.squarethings.Size = new System.Drawing.Size(93, 18);
-			this.squarethings.TabIndex = 37;
-			this.squarethings.Text = "Square things";
-			this.squarethings.UseVisualStyleBackColor = true;
-			// 
-			// autoscrollspeed
-			// 
-			this.autoscrollspeed.LargeChange = 1;
-			this.autoscrollspeed.Location = new System.Drawing.Point(126, 133);
-			this.autoscrollspeed.Maximum = 5;
-			this.autoscrollspeed.Name = "autoscrollspeed";
-			this.autoscrollspeed.Size = new System.Drawing.Size(92, 42);
-			this.autoscrollspeed.TabIndex = 37;
-			this.autoscrollspeed.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.autoscrollspeed.ValueChanged += new System.EventHandler(this.autoscrollspeed_ValueChanged);
-			// 
-			// autoscrollspeedlabel
-			// 
-			this.autoscrollspeedlabel.AutoSize = true;
-			this.autoscrollspeedlabel.Location = new System.Drawing.Point(224, 145);
-			this.autoscrollspeedlabel.Name = "autoscrollspeedlabel";
-			this.autoscrollspeedlabel.Size = new System.Drawing.Size(23, 14);
-			this.autoscrollspeedlabel.TabIndex = 36;
-			this.autoscrollspeedlabel.Text = "Off";
-			// 
-			// label15
-			// 
-			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(28, 145);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(92, 14);
-			this.label15.TabIndex = 35;
-			this.label15.Text = "Autoscroll speed:";
-			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1143,6 +1143,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Text = "Preferences";
 			groupBox1.ResumeLayout(false);
 			groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.previewsize)).EndInit();
 			this.colorsgroup1.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
@@ -1164,7 +1165,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			this.colorsgroup3.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).EndInit();
 			this.ResumeLayout(false);
 
 		}
