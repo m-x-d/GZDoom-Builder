@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Make DataLocation.type of type Type and assign the
 				// types of the desired reader classes.
 
-				//try
+				try
 				{
 					// Choose container type
 					switch(dl.type)
@@ -263,7 +263,6 @@ namespace CodeImp.DoomBuilder.Data
 							break;
 					}
 				}
-				/*
 				catch(Exception e)
 				{
 					// Unable to load resource
@@ -272,7 +271,6 @@ namespace CodeImp.DoomBuilder.Data
 					General.ShowErrorMessage("Unable to load resources from location \"" + dl.location + "\". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
 					continue;
 				}	
-				*/
 
 				// Add container
 				if(c != null)
