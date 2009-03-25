@@ -378,7 +378,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Show line edit dialog
 						General.Interface.ShowEditLinedefs(selected);
-
+						General.Map.Map.Update();
+						
 						// When a single line was selected, deselect it now
 						if(selected.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 
