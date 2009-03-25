@@ -131,7 +131,15 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets the modulation color
 		public void SetModulateColor(int modcolor)
 		{
-			effect.SetValue<Color4>(modulatecolor, new Color4(modcolor));
+			if(manager.Enabled)
+			{
+				effect.SetValue<Color4>(modulatecolor, new Color4(modcolor));
+			}
+			else
+			{
+				Device device = manager.D3DDevice.Device;
+				device.SetRenderState(RenderState.TextureFactor, modcolor);
+			}
 		}
 
 		// This sets up the render pipeline
