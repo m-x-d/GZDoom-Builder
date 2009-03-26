@@ -45,13 +45,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
-			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
 			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonfloorgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonceilinggradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionh = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionv = new System.Windows.Forms.ToolStripButton();
+			this.buttoncurvelinedefs = new System.Windows.Forms.ToolStripButton();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
@@ -196,12 +197,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.buttonfloorgradient,
             this.buttonceilinggradient,
             this.buttonflipselectionh,
-            this.buttonflipselectionv});
+            this.buttonflipselectionv,
+            this.buttoncurvelinedefs});
 			this.manualstrip.Location = new System.Drawing.Point(0, 49);
 			this.manualstrip.Name = "manualstrip";
 			this.manualstrip.Size = new System.Drawing.Size(423, 25);
 			this.manualstrip.TabIndex = 2;
 			this.manualstrip.Text = "toolStrip1";
+			// 
+			// separatorsectors1
+			// 
+			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors1.Name = "separatorsectors1";
+			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonselectionnumbers
 			// 
@@ -213,12 +221,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonselectionnumbers.Size = new System.Drawing.Size(23, 22);
 			this.buttonselectionnumbers.Text = "View Selection Numbering";
 			this.buttonselectionnumbers.Click += new System.EventHandler(this.buttonselectionnumbers_Click);
-			// 
-			// separatorsectors1
-			// 
-			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.separatorsectors1.Name = "separatorsectors1";
-			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonbrightnessgradient
 			// 
@@ -276,6 +278,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonflipselectionv.Text = "Flip Selection Vertically";
 			this.buttonflipselectionv.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// buttoncurvelinedefs
+			// 
+			this.buttoncurvelinedefs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttoncurvelinedefs.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.CurveLines;
+			this.buttoncurvelinedefs.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttoncurvelinedefs.Name = "buttoncurvelinedefs";
+			this.buttoncurvelinedefs.Size = new System.Drawing.Size(23, 22);
+			this.buttoncurvelinedefs.Tag = "curvelinesmode";
+			this.buttoncurvelinedefs.Text = "Curve Linedefs";
+			this.buttoncurvelinedefs.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -328,5 +341,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripSeparator separatorsectors1;
 		private System.Windows.Forms.ToolStripButton buttonfloorgradient;
 		private System.Windows.Forms.ToolStripButton buttonceilinggradient;
+		private System.Windows.Forms.ToolStripButton buttoncurvelinedefs;
 	}
 }

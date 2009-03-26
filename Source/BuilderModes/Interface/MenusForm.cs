@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripButton MakeGradientCeilings { get { return buttonceilinggradient; } }
 		public ToolStripButton FlipSelectionV { get { return buttonflipselectionv; } }
 		public ToolStripButton FlipSelectionH { get { return buttonflipselectionh; } }
+		public ToolStripButton CurveLinedefs { get { return buttoncurvelinedefs; } }
 
 		#endregion
 
