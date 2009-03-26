@@ -10,16 +10,38 @@
 <body>
 	
 	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-	<param name="keyword" value="Open Map Window">
+	<param name="keyword" value="Script Editor Window">
 	</object>
 	
 	<div id="title"><h1>Script Editor Window</h1></div>
 	
 	<div id="contents">
-	<p>The script editor is a powerfull text editor with syntax highlighting and autocomplete. It allows you to open and edit multiple documents at the same time, even if they are not in your map.</p>
+	<p>The script editor is a powerfull text editor with syntax highlighting and autocomplete. It allows you to open and edit multiple documents at the same time, even if they do not reside in your map.</p>
 	<img src="w_scripteditor.png" />
 	<p>
-		
+		Each opened script has it's own tab page. When there are text lumps in the map format (such as the SCRIPTS lump in Hexen formats), they will be opened automatically and cannot be closed.
+		<h2>Shortcut Keys</h2>
+		<table border="0" cellspacing="6" width="90%">
+		<tr>
+			<td width="50" valign="top"><b>CTRL+O</b></td>
+			<td>Browse for a script file to open.</td>
+		</tr>
+		<tr>
+			<td valign="top"><b>CTRL+S</b></td>
+			<td>Save the current script to file. This does not work for internal script lumps, save the map to save the internal script lumps.</td>
+		</tr>
+		<tr>
+			<td valign="top"><b>CTRL+Space</b></td>
+			<td>Autocompletes the current word. If there is more than one possibility, it will pop up a list of keywords to choose from.</td>
+		</tr>
+		<tr>
+			<td valign="top"><b>CTRL+F</b></td>
+			<td>Opens the Find and Replace dialog window.</td>
+		</tr>
+		<tr>
+			<td valign="top"><b>CTRL+F3</b></td>
+			<td>Finds the next occurence of the most recent search with the Find and Replace dialog window.</td>
+		</tr>
 	</p>
 	</div>
 </body>
