@@ -124,6 +124,9 @@
   <data name="ViewSelectionIndex" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewSelectionIndex.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="CeilsGradient" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CeilsGradient.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="BrightnessGradient" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BrightnessGradient.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -136,7 +139,7 @@
   <data name="FlipSelectionV" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FlipSelectionV.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="CeilsGradient" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\CeilsGradient.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CurveLines" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CurveLines.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

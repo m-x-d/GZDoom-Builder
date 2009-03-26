@@ -199,6 +199,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Standard);
 			
+			// Add toolbar buttons
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
+			
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedVertices(true, true);
@@ -212,6 +215,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnDisengage()
 		{
 			base.OnDisengage();
+
+			// Remove toolbar buttons
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
 
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)
