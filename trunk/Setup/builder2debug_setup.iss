@@ -39,7 +39,7 @@ Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion
 Source: Scintilla.dll; DestDir: {app}; Flags: ignoreversion
 Source: Trackbar.dll; DestDir: {app}; Flags: ignoreversion
 Source: GPL.txt; DestDir: {app}; Flags: ignoreversion
-Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion
+Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion recursesubdirs
 Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion
 Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
