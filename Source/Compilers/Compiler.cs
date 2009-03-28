@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Copy files
 			foreach(string f in info.Files)
 			{
-				string sourcefile = Path.Combine(General.CompilersPath, f);
+				string sourcefile = Path.Combine(info.Path, f);
 				string targetfile = Path.Combine(tempdir.FullName, f);
 				if(!File.Exists(sourcefile)) General.ErrorLogger.Add(ErrorType.Error, "The file '" + f + "' required by the '" + info.Name + "' compiler is missing.");
 				File.Copy(sourcefile, targetfile, true);

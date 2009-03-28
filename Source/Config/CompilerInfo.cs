@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string name;
 		private string programfile;
 		private string programinterface;
+		private string path;
 		private List<string> files;
 		
 		#endregion
@@ -49,6 +50,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 		
 		public string Name { get { return name; } }
+		public string Path { get { return path; } }
 		public string ProgramFile { get { return programfile; } }
 		public string ProgramInterface { get { return programinterface; } }
 		public List<string> Files { get { return files; } }
@@ -58,13 +60,14 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		internal CompilerInfo(string filename, string name, Configuration cfg)
+		internal CompilerInfo(string filename, string name, string path, Configuration cfg)
 		{
 			IDictionary cfgfiles;
 			
 			General.WriteLogLine("Registered compiler configuration '" + name + "' from '" + filename + "'");
 			
 			// Initialize
+			this.path = path;
 			this.name = name;
 			this.files = new List<string>();
 			

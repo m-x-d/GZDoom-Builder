@@ -339,7 +339,7 @@ namespace CodeImp.DoomBuilder
 			nodebuilders = new List<NodebuilderInfo>();
 
 			// Go for all cfg files in the compilers directory
-			filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.AllDirectories);
 			foreach(string filepath in filenames)
 			{
 				try
@@ -454,7 +454,7 @@ namespace CodeImp.DoomBuilder
 			compilers = new List<CompilerInfo>();
 
 			// Go for all cfg files in the compilers directory
-			filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.AllDirectories);
 			foreach(string filepath in filenames)
 			{
 				try
@@ -479,7 +479,7 @@ namespace CodeImp.DoomBuilder
 							if(de.Value is IDictionary)
 							{
 								// Make compiler info
-								compilers.Add(new CompilerInfo(Path.GetFileName(filepath), de.Key.ToString(), cfg));
+								compilers.Add(new CompilerInfo(Path.GetFileName(filepath), de.Key.ToString(), Path.GetDirectoryName(filepath), cfg));
 							}
 						}
 					}
