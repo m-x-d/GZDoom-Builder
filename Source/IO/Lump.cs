@@ -140,11 +140,16 @@ namespace CodeImp.DoomBuilder.IO
 		// This makes the fixed name from normal name
 		public static byte[] MakeFixedName(string name, Encoding encoding)
 		{
+			// Make uppercase name and count bytes
+			string uppername = name.Trim().ToUpper();
+			int bytes = encoding.GetByteCount(uppername);
+			if(bytes < 8) bytes = 8;
+			
 			// Make 8 bytes, all zeros
-			byte[] fixedname = new byte[8];
+			byte[] fixedname = new byte[bytes];
 
 			// Write the name in bytes
-			encoding.GetBytes(name.Trim().ToUpper(), 0, name.Length, fixedname, 0);
+			encoding.GetBytes(uppername, 0, name.Length, fixedname, 0);
 
 			// Return result
 			return fixedname;
