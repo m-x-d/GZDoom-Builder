@@ -362,35 +362,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetupLabels();
 
 			// Convert geometry selection to sectors only
-			General.Map.Map.ClearAllMarks(false);
-			General.Map.Map.MarkSelectedVertices(true, true);
-			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
-			foreach(Linedef l in lines) l.Selected = true;
-			General.Map.Map.ClearMarkedSectors(true);
-			foreach(Linedef l in General.Map.Map.Linedefs)
-			{
-				if(!l.Selected)
-				{
-					if(l.Front != null) l.Front.Sector.Marked = false;
-					if(l.Back != null) l.Back.Sector.Marked = false;
-				}
-			}
-			General.Map.Map.ClearSelectedLinedefs();
-			General.Map.Map.ClearSelectedVertices();
-			foreach(Sector s in General.Map.Map.Sectors)
-			{
-				if(s.Marked)
-				{
-					s.Selected = true;
-					foreach(Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
-				}
-				else
-				{
-					s.Selected = false;
-				}
-			}
+			General.Map.Map.ConvertSelection(SelectionType.Sectors);
 			
 			// Update
+			General.Map.Map.SelectionType = SelectionType.Sectors;
 			UpdateSelectedLabels();
 			UpdateOverlay();
 		}
@@ -404,6 +379,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+
+			// Keep only sectors selected
+			General.Map.Map.ClearSelectedLinedefs();
 
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)

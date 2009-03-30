@@ -675,6 +675,7 @@
     <Compile Include="General\CRC.cs" />
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
+    <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Windows\ErrorsForm.cs">
       <SubType>Form</SubType>
     </Compile>

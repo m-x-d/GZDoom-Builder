@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(removelines)
 			{
 				// Go for all selected linedefs
-				ICollection<Linedef> selectedlines = General.Map.Map.GetSelectedLinedefs(true);
+				List<Linedef> selectedlines = new List<Linedef>(General.Map.Map.GetSelectedLinedefs(true));
 				foreach(Linedef ld in selectedlines)
 				{
 					// Front and back side?
@@ -206,7 +206,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
-			orderedselection.Clear();
+			
+			// Make text labels for sectors
+			SetupLabels();
+			UpdateSelectedLabels();
 		}
 
 		// This highlights a new item
@@ -401,33 +404,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
 			
 			// Convert geometry selection to sectors only
-			General.Map.Map.ClearAllMarks(false);
-			General.Map.Map.MarkSelectedVertices(true, true);
-			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
-			foreach(Linedef l in lines) l.Selected = true;
-			General.Map.Map.ClearMarkedSectors(true);
-			foreach(Linedef l in General.Map.Map.Linedefs)
-			{
-				if(!l.Selected)
-				{
-					if(l.Front != null) l.Front.Sector.Marked = false;
-					if(l.Back != null) l.Back.Sector.Marked = false;
-				}
-			}
-			General.Map.Map.ClearSelectedLinedefs();
-			General.Map.Map.ClearSelectedVertices();
-			foreach(Sector s in General.Map.Map.Sectors)
-			{
-				if(s.Marked)
-				{
-					s.Selected = true;
-					foreach(Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
-				}
-				else
-				{
-					s.Selected = false;
-				}
-			}
+			General.Map.Map.ConvertSelection(SelectionType.Sectors);
 
 			// Make text labels for sectors
 			SetupLabels();
@@ -448,7 +425,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientFloors);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
-
+			
+			// Keep only sectors selected
+			General.Map.Map.ClearSelectedLinedefs();
+			
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)
 			{
@@ -1001,7 +981,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void DeleteItem()
 		{
 			// Make list of selected sectors
-			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+			List<Sector> selected = new List<Sector>(General.Map.Map.GetSelectedSectors(true));
 			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
 
 			// Anything to do?
@@ -1057,7 +1037,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cache values
 				General.Map.IsChanged = true;
 				General.Map.Map.Update();
-
+				
+				// Make text labels for sectors
+				SetupLabels();
+				UpdateSelectedLabels();
+				
 				// Redraw screen
 				General.Interface.RedrawDisplay();
 			}
