@@ -311,10 +311,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					selectionchanged = true;
 					
 					// Setup labels
+					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 					TextLabel[] labelarray = labels[s];
 					foreach(TextLabel l in labelarray)
 					{
-						l.Text = General.Map.Map.GetSelectedSectors(true).Count.ToString();
+						l.Text = orderedselection.Count.ToString();
 						l.Color = General.Colors.Selection;
 					}
 				}
@@ -413,13 +414,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(l.Back != null) l.Back.Sector.Marked = false;
 				}
 			}
-			General.Map.Map.ClearAllSelected();
+			General.Map.Map.ClearSelectedLinedefs();
+			General.Map.Map.ClearSelectedVertices();
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
 				if(s.Marked)
 				{
 					s.Selected = true;
 					foreach(Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
+				}
+				else
+				{
+					s.Selected = false;
 				}
 			}
 

@@ -70,11 +70,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Interface
 		private bool editpressed;
 		
-		// The methods GetSelected* and MarkSelected* on the MapSet do not
-		// retain the order in which items were selected.
-		// This list keeps in order while sectors are selected/deselected.
-		protected List<Sector> orderedselection;
-		
 		// Labels
 		private Dictionary<Sector, TextLabel[]> labels;
 		
@@ -88,8 +83,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Properties
 
-		public ICollection<Sector> OrderedSelection { get { return orderedselection; } }
-
 		#endregion
 		
 		#region ================== Constructor / Disposer
@@ -97,8 +90,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public BrightnessMode()
 		{
-			// Make ordered selection list
-			orderedselection = new List<Sector>();
 		}
 		
 		// Disposer
@@ -119,12 +110,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
-		
-		// This sets the ordered selection
-		public void SetOrderedSelection(ICollection<Sector> list)
-		{
-			orderedselection = new List<Sector>(list);
-		}
 		
 		// This sets up new labels
 		private void SetupLabels()
@@ -167,6 +152,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(mode == ModifyMode.Adjusting)
 				{
 					// Go for all sectors that are being edited
+					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 					foreach(Sector s in orderedselection)
 					{
 						// We use the overlay to dim the brightness of the sectors
@@ -184,6 +170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(BuilderPlug.Me.ViewSelectionNumbers)
 				{
 					// Go for all sectors
+					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 					foreach(Sector s in orderedselection)
 					{
 						// Render labels
@@ -259,11 +246,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Select the sector?
 				if(selectstate && !s.Selected)
 				{
-					orderedselection.Add(s);
 					s.Selected = true;
 					selectionchanged = true;
 					
 					// Setup labels
+					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 					TextLabel[] labelarray = labels[s];
 					foreach(TextLabel l in labelarray)
 					{
@@ -274,7 +261,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Deselect the sector?
 				else if(!selectstate && s.Selected)
 				{
-					orderedselection.Remove(s);
 					s.Selected = false;
 					selectionchanged = true;
 					
@@ -305,11 +291,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 				}
 			}
-			else
-			{
-				// Remove from list
-				orderedselection.Remove(s);
-			}
 		}
 		
 		// This updates labels from the selected sectors
@@ -319,9 +300,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(mode == ModifyMode.Adjusting)
 			{
 				// Go for all labels in all selected sectors
-				for(int i = 0; i < orderedselection.Count; i++)
+				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+				foreach(Sector s in orderedselection)
 				{
-					Sector s = orderedselection[i];
 					TextLabel[] labelarray = labels[s];
 					foreach(TextLabel l in labelarray)
 					{
@@ -336,17 +317,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Go for all labels in all selected sectors
-				for(int i = 0; i < orderedselection.Count; i++)
+				int index = 0;
+				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+				foreach(Sector s in orderedselection)
 				{
-					Sector s = orderedselection[i];
 					TextLabel[] labelarray = labels[s];
 					foreach(TextLabel l in labelarray)
 					{
 						// Make sure the text and color are right
-						int labelnum = i + 1;
+						int labelnum = index + 1;
 						l.Text = labelnum.ToString();
 						l.Color = General.Colors.Selection;
 					}
+					index++;
 				}
 			}
 		}
@@ -392,7 +375,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(l.Back != null) l.Back.Sector.Marked = false;
 				}
 			}
-			General.Map.Map.ClearAllSelected();
+			General.Map.Map.ClearSelectedLinedefs();
+			General.Map.Map.ClearSelectedVertices();
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
 				if(s.Marked)
@@ -400,14 +384,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					s.Selected = true;
 					foreach(Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
 				}
-			}
-
-			// Fill the list with selected sectors (these are not in order, but we have no other choice)
-			ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
-			if(orderedselection.Count < selectedsectors.Count)
-			{
-				General.Map.Map.ClearSelectedSectors();
-				foreach(Sector s in selectedsectors) SelectSector(s, true, false);
+				else
+				{
+					s.Selected = false;
+				}
 			}
 			
 			// Update
@@ -527,27 +507,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Interface.ShiftState)
 				{
 					// Adjust selected sectors
-					for(int i = 0; i < orderedselection.Count; i++)
+					int index = 0;
+					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+					foreach(Sector s in orderedselection)
 					{
-						Sector s = orderedselection[i];
-						int basebrightness = sectorbrightness[i];
+						int basebrightness = sectorbrightness[index];
 
 						// Adjust brightness
 						s.Brightness = basebrightness - delta.Y;
 						if(s.Brightness > 255) s.Brightness = 255;
 						if(s.Brightness < 0) s.Brightness = 0;
+						index++;
 					}
 				}
 				else
 				{
 					// Adjust selected sectors
-					for(int i = 0; i < orderedselection.Count; i++)
+					int index = 0;
+					ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+					foreach(Sector s in orderedselection)
 					{
-						Sector s = orderedselection[i];
-						int basebrightness = sectorbrightness[i];
+						int basebrightness = sectorbrightness[index];
 
 						// Adjust brightness
 						s.Brightness = General.Map.Config.BrightnessLevels.GetNearest(basebrightness - delta.Y);
+						index++;
 					}
 				}
 				
@@ -702,6 +686,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEditBegin();
 			
 			// No selection?
+			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 			if(orderedselection.Count == 0)
 			{
 				// Make the highlight a selection if we have a highlight
@@ -763,7 +748,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.Present();
 			
 			// If only one sector was selected, deselect it
-			if(orderedselection.Count == 1) SelectSector(orderedselection[0], false, true);
+			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+			if(orderedselection.Count == 1) SelectSector(General.GetByIndex(orderedselection, 0), false, true);
 		}
 
 		// When undo is used
@@ -771,7 +757,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
-			orderedselection.Clear();
 			
 			return base.OnUndoBegin();
 		}
@@ -788,7 +773,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
-			orderedselection.Clear();
 
 			return base.OnRedoBegin();
 		}
@@ -812,18 +796,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Need at least 3 selected sectors
 			// The first and last are not modified
+			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 			if(orderedselection.Count > 2)
 			{
-				float startbrightness = (float)orderedselection[0].Brightness;
-				float endbrightness = (float)orderedselection[orderedselection.Count - 1].Brightness;
+				float startbrightness = (float)General.GetByIndex(orderedselection, 0).Brightness;
+				float endbrightness = (float)General.GetByIndex(orderedselection, orderedselection.Count - 1).Brightness;
 				float delta = endbrightness - startbrightness;
 				
 				// Go for all sectors in between first and last
-				for(int i = 1; i < (orderedselection.Count - 1); i++)
+				int index = 0;
+				foreach(Sector s in orderedselection)
 				{
-					float u = (float)i / (float)(orderedselection.Count - 1);
+					float u = (float)index / (float)(orderedselection.Count - 1);
 					float b = startbrightness + delta * u;
-					orderedselection[i].Brightness = (int)b;
+					s.Brightness = (int)b;
+					index++;
 				}
 			}
 			
@@ -841,7 +828,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
-			orderedselection.Clear();
 			
 			// Clear labels
 			foreach(TextLabel[] labelarray in labels.Values)
