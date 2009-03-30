@@ -68,7 +68,13 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedList<Sidedef> sidedefs;
 		private LinkedList<Sector> sectors;
 		private LinkedList<Thing> things;
-		
+
+		// Selected elements
+		private LinkedList<Vertex> sel_vertices;
+		private LinkedList<Linedef> sel_linedefs;
+		private LinkedList<Sector> sel_sectors;
+		private LinkedList<Thing> sel_things;
+
 		// Statics
 		private static long emptylongname;
 		private static UniValue virtualsectorvalue;
@@ -86,6 +92,11 @@ namespace CodeImp.DoomBuilder.Map
 		public ICollection<Sector> Sectors { get { return sectors; } }
 		public ICollection<Thing> Things { get { return things; } }
 		public bool IsDisposed { get { return isdisposed; } }
+
+		internal LinkedList<Vertex> SelectedVertices { get { return sel_vertices; } }
+		internal LinkedList<Linedef> SelectedLinedefs { get { return sel_linedefs; } }
+		internal LinkedList<Sector> SelectedSectors { get { return sel_sectors; } }
+		internal LinkedList<Thing> SelectedThings { get { return sel_things; } }
 		
 		public static long EmptyLongName { get { return emptylongname; } }
 		public static string VirtualSectorField { get { return VIRTUAL_SECTOR_FIELD; } }
@@ -106,6 +117,10 @@ namespace CodeImp.DoomBuilder.Map
 			sidedefs = new LinkedList<Sidedef>();
 			sectors = new LinkedList<Sector>();
 			things = new LinkedList<Thing>();
+			sel_vertices = new LinkedList<Vertex>();
+			sel_linedefs = new LinkedList<Linedef>();
+			sel_sectors = new LinkedList<Sector>();
+			sel_things = new LinkedList<Thing>();
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 			
@@ -122,6 +137,10 @@ namespace CodeImp.DoomBuilder.Map
 			sidedefs = new LinkedList<Sidedef>();
 			sectors = new LinkedList<Sector>();
 			things = new LinkedList<Thing>();
+			sel_vertices = new LinkedList<Vertex>();
+			sel_linedefs = new LinkedList<Linedef>();
+			sel_sectors = new LinkedList<Sector>();
+			sel_things = new LinkedList<Thing>();
 			indexholes = new List<int>();
 			lastsectorindex = 0;
 
@@ -169,6 +188,10 @@ namespace CodeImp.DoomBuilder.Map
 				sidedefs = null;
 				sectors = null;
 				things = null;
+				sel_vertices = null;
+				sel_linedefs = null;
+				sel_sectors = null;
+				sel_things = null;
 				indexholes = null;
 				
 				// Done
@@ -861,57 +884,89 @@ namespace CodeImp.DoomBuilder.Map
 		// This clears selected vertices
 		public void ClearSelectedVertices()
 		{
+			sel_vertices.Clear();
 			foreach(Vertex v in vertices) v.Selected = false;
 		}
 
 		// This clears selected things
 		public void ClearSelectedThings()
 		{
+			sel_things.Clear();
 			foreach(Thing t in things) t.Selected = false;
 		}
 
 		// This clears selected linedefs
 		public void ClearSelectedLinedefs()
 		{
+			sel_linedefs.Clear();
 			foreach(Linedef l in linedefs) l.Selected = false;
 		}
 
 		// This clears selected sectors
 		public void ClearSelectedSectors()
 		{
+			sel_sectors.Clear();
 			foreach(Sector s in sectors) s.Selected = false;
 		}
 
 		// Returns a collection of vertices that match a selected state
 		public ICollection<Vertex> GetSelectedVertices(bool selected)
 		{
-			List<Vertex> list = new List<Vertex>(things.Count >> 1);
-			foreach(Vertex v in vertices) if(v.Selected == selected) list.Add(v);
-			return list;
+			if(selected)
+			{
+				return sel_vertices;
+			}
+			else
+			{
+				List<Vertex> list = new List<Vertex>(vertices.Count - sel_vertices.Count);
+				foreach(Vertex v in vertices) if(!v.Selected) list.Add(v);
+				return list;
+			}
 		}
 
 		// Returns a collection of things that match a selected state
 		public ICollection<Thing> GetSelectedThings(bool selected)
 		{
-			List<Thing> list = new List<Thing>(things.Count >> 1);
-			foreach(Thing t in things) if(t.Selected == selected) list.Add(t);
-			return list;
+			if(selected)
+			{
+				return sel_things;
+			}
+			else
+			{
+				List<Thing> list = new List<Thing>(things.Count - sel_things.Count);
+				foreach(Thing t in things) if(!t.Selected) list.Add(t);
+				return list;
+			}
 		}
 
 		// Returns a collection of linedefs that match a selected state
 		public ICollection<Linedef> GetSelectedLinedefs(bool selected)
 		{
-			List<Linedef> list = new List<Linedef>(linedefs.Count >> 1);
-			foreach(Linedef l in linedefs) if(l.Selected == selected) list.Add(l);
-			return list;
+			if(selected)
+			{
+				return sel_linedefs;
+			}
+			else
+			{
+				List<Linedef> list = new List<Linedef>(linedefs.Count - sel_linedefs.Count);
+				foreach(Linedef l in linedefs) if(!l.Selected) list.Add(l);
+				return list;
+			}
 		}
 
 		// Returns a collection of sectors that match a selected state
 		public ICollection<Sector> GetSelectedSectors(bool selected)
 		{
-			List<Sector> list = new List<Sector>(sectors.Count >> 1);
-			foreach(Sector s in sectors) if(s.Selected == selected) list.Add(s);
-			return list;
+			if(selected)
+			{
+				return sel_sectors;
+			}
+			else
+			{
+				List<Sector> list = new List<Sector>(sectors.Count - sel_sectors.Count);
+				foreach(Sector s in sectors) if(!s.Selected) list.Add(s);
+				return list;
+			}
 		}
 
 		// This selects geometry based on the marking

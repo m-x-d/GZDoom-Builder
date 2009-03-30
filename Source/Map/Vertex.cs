@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// List items
 		private LinkedListNode<Vertex> mainlistitem;
+		private LinkedListNode<Vertex> selecteditem;
 
 		// Position
 		private Vector2D pos;
@@ -156,6 +157,21 @@ namespace CodeImp.DoomBuilder.Map
 			base.ReadWrite(s);
 			
 			s.rwVector2D(ref pos);
+		}
+
+		// Selected
+		protected override void DoSelect()
+		{
+			base.DoSelect();
+			selecteditem = map.SelectedVertices.AddLast(this);
+		}
+
+		// Deselect
+		protected override void DoUnselect()
+		{
+			base.DoUnselect();
+			if(selecteditem.List != null) selecteditem.List.Remove(selecteditem);
+			selecteditem = null;
 		}
 
 		#endregion

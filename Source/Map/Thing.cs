@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// List items
 		private LinkedListNode<Thing> mainlistitem;
+		private LinkedListNode<Thing> selecteditem;
 		
 		// Properties
 		private int type;
@@ -309,6 +310,21 @@ namespace CodeImp.DoomBuilder.Map
 					}
 				}
 			}
+		}
+
+		// Selected
+		protected override void DoSelect()
+		{
+			base.DoSelect();
+			selecteditem = map.SelectedThings.AddLast(this);
+		}
+
+		// Deselect
+		protected override void DoUnselect()
+		{
+			base.DoUnselect();
+			if(selecteditem.List != null) selecteditem.List.Remove(selecteditem);
+			selecteditem = null;
 		}
 		
 		#endregion
