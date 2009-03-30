@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Map
 		private LinkedListNode<Linedef> mainlistitem;
 		private LinkedListNode<Linedef> startvertexlistitem;
 		private LinkedListNode<Linedef> endvertexlistitem;
+		private LinkedListNode<Linedef> selecteditem;
 		
 		// Vertices
 		private Vertex start;
@@ -445,6 +446,21 @@ namespace CodeImp.DoomBuilder.Map
 				}
 				if(foundactivation) break;
 			}
+		}
+
+		// Selected
+		protected override void DoSelect()
+		{
+			base.DoSelect();
+			selecteditem = map.SelectedLinedefs.AddLast(this);
+		}
+
+		// Deselect
+		protected override void DoUnselect()
+		{
+			base.DoUnselect();
+			if(selecteditem.List != null) selecteditem.List.Remove(selecteditem);
+			selecteditem = null;
 		}
 		
 		#endregion

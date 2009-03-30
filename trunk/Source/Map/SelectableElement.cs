@@ -47,8 +47,8 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 		
 		#region ================== Properties
-		
-		public bool Selected { get { return selected; } set { selected = value; } }
+
+		public bool Selected { get { return selected; } set { if(value && !selected) DoSelect(); else if(!value && selected) DoUnselect(); } }
 		
 		#endregion
 		
@@ -64,8 +64,8 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			if(!isdisposed)
 			{
-				// Clean up
-				
+				// Remove from selection
+				if(selected) Selected = false;
 				
 				// Done
 				base.Dispose();
@@ -75,12 +75,24 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 		
 		#region ================== Methods
+
+		// This makes the selection
+		protected virtual void DoSelect()
+		{
+			selected = true;
+		}
+
+		// This removes the selection
+		protected virtual void DoUnselect()
+		{
+			selected = false;
+		}
 		
 		// This copies properties to any other element
-		new public void CopyPropertiesTo(SelectableElement element)
+		public void CopyPropertiesTo(SelectableElement element)
 		{
 			element.groups = this.groups;
-			element.selected = this.selected;
+			element.Selected = this.selected;
 			base.CopyPropertiesTo(element);
 		}
 		
@@ -99,7 +111,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This selects by group
 		public void SelectByGroup(int groupsmask)
 		{
-			selected = ((groups & groupsmask) != 0);
+			this.Selected = ((groups & groupsmask) != 0);
 		}
 		
 		#endregion

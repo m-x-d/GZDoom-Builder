@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// List items
 		private LinkedListNode<Sector> mainlistitem;
+		private LinkedListNode<Sector> selecteditem;
 		
 		// Sidedefs
 		private LinkedList<Sidedef> sidedefs;
@@ -448,6 +449,21 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			UpdateFloorSurface();
 			UpdateCeilingSurface();
+		}
+
+		// Selected
+		protected override void DoSelect()
+		{
+			base.DoSelect();
+			selecteditem = map.SelectedSectors.AddLast(this);
+		}
+
+		// Deselect
+		protected override void DoUnselect()
+		{
+			base.DoUnselect();
+			if(selecteditem.List != null) selecteditem.List.Remove(selecteditem);
+			selecteditem = null;
 		}
 		
 		#endregion

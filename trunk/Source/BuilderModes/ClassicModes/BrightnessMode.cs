@@ -435,12 +435,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					SelectSector(highlighted, true, false);
 				}
 			}
-			// Going to SectorsMode?
-			else if(General.Editing.NewMode is SectorsMode)
-			{
-				// Pass on the ordered selection
-				(General.Editing.NewMode as SectorsMode).SetOrderedSelection(orderedselection);
-			}
 
 			// Hide highlight info
 			General.Interface.HideInfo();
