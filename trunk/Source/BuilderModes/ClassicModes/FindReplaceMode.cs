@@ -79,7 +79,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Standard);
-
+			General.Map.Map.SelectionType = SelectionType.All;
+			
 			// Show toolbox window
 			BuilderPlug.Me.FindReplaceForm.Show((Form)General.Interface);
 		}

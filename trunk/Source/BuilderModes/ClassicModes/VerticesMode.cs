@@ -84,21 +84,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Mode engages
 		public override void OnEngage()
 		{
-			ICollection<Vertex> verts;
-			
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Standard);
 
 			// Convert geometry selection to vertices only
-			General.Map.Map.ClearAllMarks(false);
-			General.Map.Map.MarkSelectedLinedefs(true, true);
-			General.Map.Map.MarkSelectedSectors(true, true);
-			verts = General.Map.Map.GetVerticesFromLinesMarks(true);
-			foreach(Vertex v in verts) v.Selected = true;
-			verts = General.Map.Map.GetVerticesFromSectorsMarks(true);
-			foreach(Vertex v in verts) v.Selected = true;
-			General.Map.Map.ClearSelectedSectors();
-			General.Map.Map.ClearSelectedLinedefs();
+			General.Map.Map.ConvertSelection(SelectionType.Vertices);
 		}
 
 		// Mode disengages

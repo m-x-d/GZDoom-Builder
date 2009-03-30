@@ -612,8 +612,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.MarkSelectedVertices(true, true);
 			General.Map.Map.MarkSelectedThings(true, true);
 			General.Map.Map.MarkSelectedLinedefs(true, true);
+			General.Map.Map.MarkSelectedSectors(true, true);
 			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 			foreach(Vertex v in verts) v.Marked = true;
+			ICollection<Sector> sects = General.Map.Map.GetSelectedSectors(true);
+			foreach(Sector s in sects)
+			{
+				foreach(Sidedef sd in s.Sidedefs)
+				{
+					sd.Line.Marked = true;
+					sd.Line.Start.Marked = true;
+					sd.Line.End.Marked = true;
+				}
+			}
 			selectedvertices = General.Map.Map.GetMarkedVertices(true);
 			selectedthings = General.Map.Map.GetMarkedThings(true);
 			unselectedvertices = General.Map.Map.GetMarkedVertices(false);

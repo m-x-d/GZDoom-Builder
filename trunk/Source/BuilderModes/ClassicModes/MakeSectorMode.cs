@@ -299,6 +299,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			p.AddLayer(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, Presentation.THINGS_BACK_ALPHA, false));
 			p.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			renderer.SetPresentation(p);
+			General.Map.Map.SelectionType = SelectionType.All;
 		}
 
 		// Mode disengages

@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkAllSelectedGeometry(true, false);
 			General.Map.Map.ClearAllSelected();
+			General.Map.Map.SelectionType = SelectionType.All;
 			
 			// Show toolbox window
 			BuilderPlug.Me.ErrorCheckForm.Show((Form)General.Interface);
