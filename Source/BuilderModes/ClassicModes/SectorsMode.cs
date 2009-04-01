@@ -124,8 +124,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
 				// Setup labels
-				TextLabel[] labelarray = new TextLabel[s.Triangles.IslandVertices.Count];
-				for(int i = 0; i < s.Triangles.IslandVertices.Count; i++)
+				TextLabel[] labelarray = new TextLabel[s.Labels.Count];
+				for(int i = 0; i < s.Labels.Count; i++)
 				{
 					Vector2D v = s.Labels[i].position;
 					labelarray[i] = new TextLabel(20);
@@ -206,6 +206,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Clear selection
 			General.Map.Map.ClearAllSelected();
+			
+			// Update
+			General.Map.Map.Update();
 			
 			// Make text labels for sectors
 			SetupLabels();
@@ -1068,7 +1071,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.IsChanged = true;
 
 				// Redraw display
-				General.Map.Map.Update();
 				General.Interface.RedrawDisplay();
 			}
 		}
@@ -1094,7 +1096,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.IsChanged = true;
 
 				// Redraw display
-				General.Map.Map.Update();
 				General.Interface.RedrawDisplay();
 			}
 		}
