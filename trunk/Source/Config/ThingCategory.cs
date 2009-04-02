@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int blocking;
 		private int errorcheck;
 		private bool fixedsize;
+		private bool absolutez;
 
 		// Disposing
 		private bool isdisposed = false;
@@ -79,6 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int ErrorCheck { get { return errorcheck; } }
 		public bool FixedSize { get { return fixedsize; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public bool AbsoluteZ { get { return absolutez; } }
 		public List<ThingTypeInfo> Things { get { return things; } }
 
 		#endregion
@@ -104,6 +106,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = 0;
 			this.errorcheck = 1;
 			this.fixedsize = false;
+			this.absolutez = false;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -131,6 +134,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
 			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", 1);
 			this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", false);
+			this.absolutez = cfg.ReadSetting("thingtypes." + name + ".absolutez", false);
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
