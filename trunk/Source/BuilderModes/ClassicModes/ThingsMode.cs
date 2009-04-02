@@ -584,9 +584,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void DeleteItem()
 		{
 			// Make list of selected things
-			ICollection<Thing> selected = General.Map.Map.GetSelectedThings(true);
+			List<Thing> selected = new List<Thing>(General.Map.Map.GetSelectedThings(true));
 			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
-
+			
 			// Anything to do?
 			if(selected.Count > 0)
 			{
