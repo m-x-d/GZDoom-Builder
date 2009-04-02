@@ -110,24 +110,32 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Determine z info to show
 			t.DetermineSector();
-			if(t.Sector != null)
+			if(ti.AbsoluteZ)
 			{
-				// Hangs from ceiling?
-				if(ti.Hangs)
-				{
-					zvalue = (float)t.Sector.CeilHeight + t.Position.z;
-					zinfo = zvalue.ToString();
-				}
-				else
-				{
-					zvalue = (float)t.Sector.FloorHeight + t.Position.z;
-					zinfo = zvalue.ToString();
-				}
+				zvalue = t.Position.z;
+				zinfo = zvalue.ToString();
 			}
 			else
 			{
-				zvalue = t.Position.z;
-				if(zvalue >= 0.0f) zinfo = "+" + zvalue.ToString(); else zinfo = zvalue.ToString();
+				if(t.Sector != null)
+				{
+					// Hangs from ceiling?
+					if(ti.Hangs)
+					{
+						zvalue = (float)t.Sector.CeilHeight + t.Position.z;
+						zinfo = zvalue.ToString();
+					}
+					else
+					{
+						zvalue = (float)t.Sector.FloorHeight + t.Position.z;
+						zinfo = zvalue.ToString();
+					}
+				}
+				else
+				{
+					zvalue = t.Position.z;
+					if(zvalue >= 0.0f) zinfo = "+" + zvalue.ToString(); else zinfo = zvalue.ToString();
+				}
 			}
 
 			// Thing info

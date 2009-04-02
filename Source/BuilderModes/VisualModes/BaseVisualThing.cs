@@ -148,7 +148,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Determine position
 			Vector3D pos = Thing.Position;
-			if(info.Hangs)
+			if(info.AbsoluteZ)
+			{
+				// Absolute Z position
+				pos.z = Thing.Position.z;
+			}
+			else if(info.Hangs)
 			{
 				// Hang from ceiling
 				if(Thing.Sector != null) pos.z = Thing.Sector.CeilHeight - info.Height;

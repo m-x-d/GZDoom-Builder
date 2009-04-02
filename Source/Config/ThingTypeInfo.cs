@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Config
 		private ThingCategory category;
 		private ArgumentInfo[] args;
 		private bool isknown;
+		private bool absolutez;
 		
 		#endregion
 
@@ -85,6 +86,7 @@ namespace CodeImp.DoomBuilder.Config
 		public ArgumentInfo[] Args { get { return args; } }
 		public bool IsKnown { get { return isknown; } }
 		public bool IsNull { get { return (index == 0); } }
+		public bool AbsoluteZ { get { return absolutez; } }
 		
 		#endregion
 
@@ -109,6 +111,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.spritelongname = long.MaxValue;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = false;
+			this.absolutez = false;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -136,6 +139,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".blocking", cat.Blocking);
 			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".error", cat.ErrorCheck);
 			this.fixedsize = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedsize", cat.FixedSize);
+			this.absolutez = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".absolutez", cat.AbsoluteZ);
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -177,6 +181,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cat.Blocking;
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
+			this.absolutez = cat.AbsoluteZ;
 
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
@@ -212,6 +217,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.blocking = cat.Blocking;
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
+			this.absolutez = cat.AbsoluteZ;
 
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
