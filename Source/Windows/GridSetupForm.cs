@@ -68,8 +68,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show background offset
 			backoffsetx.Value = General.Map.Grid.BackgroundX;
 			backoffsety.Value = General.Map.Grid.BackgroundY;
-			backscalex.Value = (int)(General.Map.Grid.BackgroundScaleX * 100.0f);
-			backscaley.Value = (int)(General.Map.Grid.BackgroundScaleY * 100.0f);
+			int scalex = (int)(General.Map.Grid.BackgroundScaleX * 100.0f);
+			int scaley = (int)(General.Map.Grid.BackgroundScaleY * 100.0f);
+			backscalex.Value = General.Clamp(scalex, (int)backscalex.Minimum, (int)backscalex.Maximum);
+			backscaley.Value = General.Clamp(scaley, (int)backscaley.Minimum, (int)backscaley.Maximum);
 		}
 
 		// Show Background changed
