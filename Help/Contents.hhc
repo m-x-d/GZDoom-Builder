@@ -61,6 +61,22 @@
 			<param name="Name" value="Preferences Window">
 			<param name="Local" value="w_preferences.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Resource Options Window">
+			<param name="Local" value="w_resourceoptions.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Script Editor Window">
+			<param name="Local" value="w_scripteditor.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Sector Properties Window">
+			<param name="Local" value="w_sectoredit.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Texture Sets Window">
+			<param name="Local" value="w_textureset.html">
+			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Editing Modes">
