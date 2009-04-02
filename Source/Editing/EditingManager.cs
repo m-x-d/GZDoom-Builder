@@ -386,7 +386,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public void CancelMode()
 		{
 			// Let the mode know
-			mode.OnCancel();
+			if(mode != null)
+				mode.OnCancel();
 		}
 		
 		/// <summary>
@@ -396,7 +397,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public void AcceptMode()
 		{
 			// Let the mode know
-			mode.OnAccept();
+			if(mode != null)
+				mode.OnAccept();
 		}
 		
 		#endregion

@@ -1029,7 +1029,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			if(selected)
 			{
-				return sel_vertices;
+				return new List<Vertex>(sel_vertices);
 			}
 			else
 			{
@@ -1044,7 +1044,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			if(selected)
 			{
-				return sel_things;
+				return new List<Thing>(sel_things);
 			}
 			else
 			{
@@ -1059,7 +1059,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			if(selected)
 			{
-				return sel_linedefs;
+				return new List<Linedef>(sel_linedefs);
 			}
 			else
 			{
@@ -1074,7 +1074,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			if(selected)
 			{
-				return sel_sectors;
+				return new List<Sector>(sel_sectors);
 			}
 			else
 			{
