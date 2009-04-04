@@ -444,6 +444,7 @@ namespace CodeImp.DoomBuilder
 		private static void LoadAllCompilerConfigurations()
 		{
 			Configuration cfg;
+			Dictionary<string, CompilerInfo> addedcompilers = new Dictionary<string,CompilerInfo>();
 			IDictionary compilerslist;
 			string[] filenames;
 
@@ -479,7 +480,16 @@ namespace CodeImp.DoomBuilder
 							if(de.Value is IDictionary)
 							{
 								// Make compiler info
-								compilers.Add(new CompilerInfo(Path.GetFileName(filepath), de.Key.ToString(), Path.GetDirectoryName(filepath), cfg));
+								CompilerInfo info = new CompilerInfo(Path.GetFileName(filepath), de.Key.ToString(), Path.GetDirectoryName(filepath), cfg);
+								if(!addedcompilers.ContainsKey(info.Name))
+								{
+									compilers.Add(info);
+									addedcompilers.Add(info.Name, info);
+								}
+								else
+								{
+									errorlogger.Add(ErrorType.Error, "Compiler \"" + info.Name + "\" is defined more than once. The first definition in " + addedcompilers[info.Name].FileName + " will be used.");
+								}
 							}
 						}
 					}
@@ -658,9 +668,10 @@ namespace CodeImp.DoomBuilder
 				mainwindow.DisplayReady();
 				
 				// Show any errors if preferred
-				if(!delaymainwindow && General.Settings.ShowErrorsWindow && errorlogger.IsErrorAdded)
+				if(errorlogger.IsErrorAdded)
 				{
-					mainwindow.ShowErrors();
+					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during program statup!");
+					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
 				}
 				
 				// Run application from the main window
