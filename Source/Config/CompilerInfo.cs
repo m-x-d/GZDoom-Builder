@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		#region ================== Variables
 		
+		private string filename;
 		private string name;
 		private string programfile;
 		private string programinterface;
@@ -48,7 +49,8 @@ namespace CodeImp.DoomBuilder.Config
 		#endregion
 		
 		#region ================== Properties
-		
+
+		public string FileName { get { return filename; } }
 		public string Name { get { return name; } }
 		public string Path { get { return path; } }
 		public string ProgramFile { get { return programfile; } }
@@ -67,6 +69,7 @@ namespace CodeImp.DoomBuilder.Config
 			General.WriteLogLine("Registered compiler configuration '" + name + "' from '" + filename + "'");
 			
 			// Initialize
+			this.filename = filename;
 			this.path = path;
 			this.name = name;
 			this.files = new List<string>();
