@@ -99,5 +99,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
 		}
+
+		// Help requested
+		private void CustomFieldsForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_customfields.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

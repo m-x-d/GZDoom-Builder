@@ -328,5 +328,12 @@ namespace CodeImp.DoomBuilder.Windows
 			if(!string.IsNullOrEmpty(selectflat))
 				browser.SelectItem(selectflat, usedgroup);
 		}
+
+		// Help requested
+		private void FlatBrowserForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_imagesbrowser.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

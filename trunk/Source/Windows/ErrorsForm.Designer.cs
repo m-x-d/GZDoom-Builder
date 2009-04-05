@@ -138,6 +138,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Errors and Warnings";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ErrorsForm_FormClosing);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ErrorsForm_HelpRequested);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

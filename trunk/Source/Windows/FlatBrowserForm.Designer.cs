@@ -142,6 +142,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Activated += new System.EventHandler(this.FlatBrowserForm_Activated);
 			this.Move += new System.EventHandler(this.FlatBrowserForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FlatBrowserForm_FormClosing);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.FlatBrowserForm_HelpRequested);
 			this.ResizeEnd += new System.EventHandler(this.FlatBrowserForm_ResizeEnd);
 			this.ResumeLayout(false);
 

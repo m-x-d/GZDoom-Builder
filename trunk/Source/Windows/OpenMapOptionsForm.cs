@@ -414,5 +414,12 @@ namespace CodeImp.DoomBuilder.Windows
 				datalocations.EditResourceLocationList(listedlocations);
 			}
 		}
+
+		// Help
+		private void OpenMapOptionsForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_openmapoptions.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

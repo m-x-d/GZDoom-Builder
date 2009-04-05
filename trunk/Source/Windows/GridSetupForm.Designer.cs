@@ -325,6 +325,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Custom Grid Setup";
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.GridSetupForm_HelpRequested);
 			groupBox1.ResumeLayout(false);
 			groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.gridsize)).EndInit();

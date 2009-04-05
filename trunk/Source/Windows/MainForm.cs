@@ -281,6 +281,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateToolsMenu();
 			UpdateToolbar();
 			UpdateSkills();
+			UpdateHelpMenu();
 		}
 		
 		// Generic event that invokes the tagged action
@@ -1121,6 +1122,27 @@ namespace CodeImp.DoomBuilder.Windows
 				// Invoke on editing mode
 				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyDown(e);
 			}
+
+			// F1 pressed?
+			if((e.KeyCode == Keys.F1) && (e.Modifiers == Keys.None))
+			{
+				// No action bound to F1?
+				Action[] f1actions = General.Actions.GetActionsByKey((int)e.KeyData);
+				if(f1actions.Length == 0)
+				{
+					// If we don't have any map open, show the Main Window help
+					// otherwise, give the help request to the editing mode so it
+					// can open the appropriate help file.
+					if((General.Map == null) || (General.Editing.Mode == null))
+					{
+						General.ShowHelp("introduction.html");
+					}
+					else
+					{
+						General.Editing.Mode.OnHelp();
+					}
+				}
+			}
 		}
 
 		// When a key is released
@@ -1840,7 +1862,13 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Help Menu
-
+		
+		// This sets up the help menu
+		private void UpdateHelpMenu()
+		{
+			itemhelpeditmode.Enabled = ((General.Map != null) && (General.Editing.Mode != null));
+		}
+		
 		// About clicked
 		private void itemhelpabout_Click(object sender, EventArgs e)
 		{
@@ -1851,6 +1879,19 @@ namespace CodeImp.DoomBuilder.Windows
 			aboutform.ShowDialog(this);
 		}
 
+		// Reference Manual clicked
+		private void itemhelprefmanual_Click(object sender, EventArgs e)
+		{
+			General.ShowHelp("introduction.html");
+		}
+
+		// About this Editing Mode
+		private void itemhelpeditmode_Click(object sender, EventArgs e)
+		{
+			if((General.Map != null) && (General.Editing.Mode != null))
+				General.Editing.Mode.OnHelp();
+		}
+		
 		#endregion
 
 		#region ================== Prefabs Menu

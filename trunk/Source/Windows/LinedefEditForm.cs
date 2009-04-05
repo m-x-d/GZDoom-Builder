@@ -511,5 +511,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Edit these
 			CustomFieldsForm.ShowDialog(this, "Back side custom fields", "sidedef", sides, General.Map.Config.SidedefFields);
 		}
+
+		// Help!
+		private void LinedefEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_linedefedit.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

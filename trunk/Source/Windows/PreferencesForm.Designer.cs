@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.autoscrollspeed.Location = new System.Drawing.Point(126, 133);
 			this.autoscrollspeed.Maximum = 5;
 			this.autoscrollspeed.Name = "autoscrollspeed";
-			this.autoscrollspeed.Size = new System.Drawing.Size(92, 45);
+			this.autoscrollspeed.Size = new System.Drawing.Size(92, 42);
 			this.autoscrollspeed.TabIndex = 37;
 			this.autoscrollspeed.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.autoscrollspeed.ValueChanged += new System.EventHandler(this.autoscrollspeed_ValueChanged);
@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.previewsize.Location = new System.Drawing.Point(126, 84);
 			this.previewsize.Maximum = 5;
 			this.previewsize.Name = "previewsize";
-			this.previewsize.Size = new System.Drawing.Size(92, 45);
+			this.previewsize.Size = new System.Drawing.Size(92, 42);
 			this.previewsize.TabIndex = 34;
 			this.previewsize.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.previewsize.Value = 5;
@@ -623,7 +623,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.viewdistance.Maximum = 15;
 			this.viewdistance.Minimum = 1;
 			this.viewdistance.Name = "viewdistance";
-			this.viewdistance.Size = new System.Drawing.Size(150, 45);
+			this.viewdistance.Size = new System.Drawing.Size(150, 42);
 			this.viewdistance.TabIndex = 34;
 			this.viewdistance.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.viewdistance.Value = 1;
@@ -635,7 +635,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.movespeed.Maximum = 20;
 			this.movespeed.Minimum = 1;
 			this.movespeed.Name = "movespeed";
-			this.movespeed.Size = new System.Drawing.Size(150, 45);
+			this.movespeed.Size = new System.Drawing.Size(150, 42);
 			this.movespeed.TabIndex = 33;
 			this.movespeed.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.movespeed.Value = 1;
@@ -647,7 +647,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mousespeed.Maximum = 20;
 			this.mousespeed.Minimum = 1;
 			this.mousespeed.Name = "mousespeed";
-			this.mousespeed.Size = new System.Drawing.Size(150, 45);
+			this.mousespeed.Size = new System.Drawing.Size(150, 42);
 			this.mousespeed.TabIndex = 32;
 			this.mousespeed.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.mousespeed.Value = 1;
@@ -660,7 +660,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldofview.Maximum = 17;
 			this.fieldofview.Minimum = 5;
 			this.fieldofview.Name = "fieldofview";
-			this.fieldofview.Size = new System.Drawing.Size(150, 45);
+			this.fieldofview.Size = new System.Drawing.Size(150, 42);
 			this.fieldofview.TabIndex = 31;
 			this.fieldofview.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.fieldofview.Value = 5;
@@ -967,7 +967,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagebrightness.LargeChange = 3;
 			this.imagebrightness.Location = new System.Drawing.Point(379, 229);
 			this.imagebrightness.Name = "imagebrightness";
-			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
+			this.imagebrightness.Size = new System.Drawing.Size(154, 42);
 			this.imagebrightness.TabIndex = 33;
 			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
@@ -977,7 +977,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.doublesidedalpha.LargeChange = 3;
 			this.doublesidedalpha.Location = new System.Drawing.Point(379, 176);
 			this.doublesidedalpha.Name = "doublesidedalpha";
-			this.doublesidedalpha.Size = new System.Drawing.Size(154, 45);
+			this.doublesidedalpha.Size = new System.Drawing.Size(154, 42);
 			this.doublesidedalpha.TabIndex = 32;
 			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
@@ -1141,6 +1141,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Preferences";
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.PreferencesForm_HelpRequested);
 			groupBox1.ResumeLayout(false);
 			groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).EndInit();

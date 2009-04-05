@@ -454,6 +454,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tag
 			// 
+			this.tag.AllowDecimal = false;
 			this.tag.AllowNegative = false;
 			this.tag.AllowRelative = true;
 			this.tag.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -631,6 +632,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontsector
 			// 
+			this.frontsector.AllowDecimal = false;
 			this.frontsector.AllowNegative = false;
 			this.frontsector.AllowRelative = false;
 			this.frontsector.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -669,6 +671,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontoffsety
 			// 
+			this.frontoffsety.AllowDecimal = false;
 			this.frontoffsety.AllowNegative = true;
 			this.frontoffsety.AllowRelative = true;
 			this.frontoffsety.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -680,6 +683,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontoffsetx
 			// 
+			this.frontoffsetx.AllowDecimal = false;
 			this.frontoffsetx.AllowNegative = true;
 			this.frontoffsetx.AllowRelative = true;
 			this.frontoffsetx.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -738,6 +742,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// backsector
 			// 
+			this.backsector.AllowDecimal = false;
 			this.backsector.AllowNegative = false;
 			this.backsector.AllowRelative = false;
 			this.backsector.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -776,6 +781,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// backoffsety
 			// 
+			this.backoffsety.AllowDecimal = false;
 			this.backoffsety.AllowNegative = true;
 			this.backoffsety.AllowRelative = true;
 			this.backoffsety.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -787,6 +793,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// backoffsetx
 			// 
+			this.backoffsetx.AllowDecimal = false;
 			this.backoffsetx.AllowNegative = true;
 			this.backoffsetx.AllowRelative = true;
 			this.backoffsetx.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -841,6 +848,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Linedef";
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.LinedefEditForm_HelpRequested);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
 			this.hexenpanel.ResumeLayout(false);

@@ -211,6 +211,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Things Filters";
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ThingsFiltersForm_HelpRequested);
 			this.filtergroup.ResumeLayout(false);
 			this.filtergroup.PerformLayout();
 			this.ResumeLayout(false);

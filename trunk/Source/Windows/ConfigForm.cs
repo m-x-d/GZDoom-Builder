@@ -522,5 +522,12 @@ namespace CodeImp.DoomBuilder.Windows
 				configinfo.EditModes[emi.Type.FullName] = false;
 			}
 		}
+
+		// Help requested
+		private void ConfigForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_gameconfigurations.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

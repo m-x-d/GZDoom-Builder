@@ -201,6 +201,13 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 		}
 
+		// Help
+		private void ThingsFiltersForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_thingsfilter.html");
+			hlpevent.Handled = true;
+		}
+
 		#endregion	
 
 		#region ================== Filter Settings

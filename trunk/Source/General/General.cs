@@ -84,7 +84,13 @@ namespace CodeImp.DoomBuilder
 		
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		private static extern uint GetShortPathName([MarshalAs(UnmanagedType.LPTStr)] string longpath, [MarshalAs(UnmanagedType.LPTStr)]StringBuilder shortpath, uint buffersize);
-		
+
+		[DllImport("user32.dll")]
+		internal static extern int SetScrollInfo(IntPtr windowptr, int bar, IntPtr scrollinfo, bool redraw);
+
+		[DllImport("user32.dll")]
+		internal static extern int GetScrollInfo(IntPtr windowptr, int bar, IntPtr scrollinfo);
+
 		#endregion
 
 		#region ================== Constants
@@ -97,6 +103,15 @@ namespace CodeImp.DoomBuilder
 		internal const int CB_SHOWDROPDOWN = 0x14F;
 		internal const int EM_GETSCROLLPOS = WM_USER + 221;
 		internal const int EM_SETSCROLLPOS = WM_USER + 222;
+		internal const int SB_HORZ = 0;
+		internal const int SB_VERT = 1;
+		internal const int SB_CTL = 2;
+		internal const int SIF_RANGE = 0x1;
+		internal const int SIF_PAGE = 0x2;
+		internal const int SIF_POS = 0x4;
+		internal const int SIF_DISABLENOSCROLL = 0x8;
+		internal const int SIF_TRACKPOS = 0x16;
+		internal const int SIF_ALL = SIF_RANGE + SIF_PAGE + SIF_POS + SIF_TRACKPOS;
 		
 		// Files and Folders
 		private const string SETTINGS_FILE = "Builder.cfg";
@@ -108,6 +123,19 @@ namespace CodeImp.DoomBuilder
 		private const string SCRIPTS_DIR = "Scripting";
 		private const string SETUP_DIR = "Setup";
 		private const string SPRITES_DIR = "Sprites";
+		private const string HELP_FILE = "Refmanual.chm";
+
+		// SCROLLINFO structure
+		internal struct ScrollInfo
+		{
+			public int size;		// size of this structure
+			public uint mask;		// combination of SIF_ constants
+			public int min;			// minimum scrolling position
+			public int max;			// maximum scrolling position
+			public uint page;		// page size (scroll bar uses this value to determine the appropriate size of the proportional scroll box)
+			public int pos;			// position of the scroll box
+			public int trackpos;	// immediate position of a scroll box that the user is dragging
+		}
 
 		#endregion
 
@@ -1469,6 +1497,12 @@ namespace CodeImp.DoomBuilder
 
 			// Return result
 			return result;
+		}
+
+		// This shows the reference manual
+		public static void ShowHelp(string pagefile)
+		{
+			Help.ShowHelp(mainwindow, Path.Combine(apppath, HELP_FILE), HelpNavigator.Topic, pagefile);
 		}
 		
 		// This returns a unique temp filename

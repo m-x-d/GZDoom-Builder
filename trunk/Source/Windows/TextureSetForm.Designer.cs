@@ -291,6 +291,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Texture Set";
 			this.Shown += new System.EventHandler(this.TextureSetForm_Shown);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.TextureSetForm_HelpRequested);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);

@@ -192,6 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Open Map Options";
 			this.Shown += new System.EventHandler(this.OpenMapOptionsForm_Shown);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.OpenMapOptionsForm_HelpRequested);
 			this.panelres.ResumeLayout(false);
 			this.panelres.PerformLayout();
 			this.ResumeLayout(false);
