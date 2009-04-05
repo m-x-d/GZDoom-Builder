@@ -231,5 +231,12 @@ namespace CodeImp.DoomBuilder.Windows
 				e.Handled = true;
 			}
 		}
+
+		// Help
+		private void MapOptionsForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_mapoptions.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

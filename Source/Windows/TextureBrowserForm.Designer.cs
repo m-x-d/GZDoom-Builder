@@ -142,6 +142,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Activated += new System.EventHandler(this.TextureBrowserForm_Activated);
 			this.Move += new System.EventHandler(this.TextureBrowserForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextureBrowserForm_FormClosing);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.TextureBrowserForm_HelpRequested);
 			this.ResizeEnd += new System.EventHandler(this.TextureBrowserForm_ResizeEnd);
 			this.ResumeLayout(false);
 

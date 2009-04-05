@@ -113,6 +113,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tag
 			// 
+			this.tag.AllowDecimal = false;
 			this.tag.AllowNegative = false;
 			this.tag.AllowRelative = true;
 			this.tag.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -171,6 +172,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// brightness
 			// 
+			this.brightness.AllowDecimal = false;
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
 			this.brightness.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -259,6 +261,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// floorheight
 			// 
+			this.floorheight.AllowDecimal = false;
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -313,6 +316,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// ceilingheight
 			// 
+			this.ceilingheight.AllowDecimal = false;
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -436,6 +440,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Sector";
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.SectorEditForm_HelpRequested);
 			groupaction.ResumeLayout(false);
 			groupaction.PerformLayout();
 			groupeffect.ResumeLayout(false);

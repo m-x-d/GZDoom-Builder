@@ -313,6 +313,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
 		}
+
+		// Help
+		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_thingeditor.html");
+			hlpevent.Handled = true;
+		}
 		
 		#endregion
 	}

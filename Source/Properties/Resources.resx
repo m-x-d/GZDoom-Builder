@@ -127,8 +127,14 @@
   <data name="UnknownImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\UnknownImage.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Status11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Status11.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Status10" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Status10.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ViewNormal" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewNormal.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -139,6 +145,9 @@
   <data name="ScriptError" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ScriptError.xpm;System.Byte[], mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Script2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Script2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Cut" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Cut.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -148,14 +157,20 @@
   <data name="Status2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Copy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Copy.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="KnownTextureSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\KnownTextureSet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="NewScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\NewScript.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Status12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Status12.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Redo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Redo.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="OpenMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\OpenMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SaveAll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SaveAll.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ViewTextureFloor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewTextureFloor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -166,14 +181,17 @@
   <data name="treeview" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\treeview.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ColorPick" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ColorPick.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Monster2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Monster2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="File" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NewMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="mergegeometry" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\mergegeometry.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ScriptPalette" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ScriptPalette.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="NewMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NewMap2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -193,6 +211,12 @@
   <data name="Status0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Status0.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Prefab" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Prefab.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Splash3_trans" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Splash3_trans.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Zoom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Zoom.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -201,6 +225,9 @@
   </data>
   <data name="Test" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Test.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Monster3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Monster3.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Properties" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Properties.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -214,23 +241,23 @@
   <data name="ViewTextureCeiling" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ViewTextureCeiling.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Splash3_trans" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Splash3_trans.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Help" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Help.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="KnownTextureSet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\KnownTextureSet.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Splash3_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Splash3_small.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="mergegeometry2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\mergegeometry2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ScriptPalette" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ScriptPalette.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Prefab2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Prefab2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SaveAll" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SaveAll.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="mergegeometry" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mergegeometry.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Splash3_small" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Splash3_small.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ColorPick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ColorPick.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Filter" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Filter.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -240,9 +267,6 @@
   </data>
   <data name="ScriptCompile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ScriptCompile.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SaveScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SaveScript.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="OpenScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\OpenScript.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -259,34 +283,16 @@
   <data name="MissingTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MissingTexture.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="OpenMap" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\OpenMap.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Warning" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Warning.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="NewScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\NewScript.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SaveScript" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SaveScript.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Script2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Script2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Prefab" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Prefab.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Prefab2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Prefab2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Monster2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Monster2.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Monster3" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Monster3.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Status10" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Status10.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Status11" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Status11.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Status12" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Status12.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Question" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Question.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

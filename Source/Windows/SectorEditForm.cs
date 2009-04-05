@@ -239,5 +239,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			UpdateSectorHeight();
 		}
+
+		// Help
+		private void SectorEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_sectoredit.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

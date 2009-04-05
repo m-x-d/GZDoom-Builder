@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Select texture set and fill list
 			selectedset.Selected = true;
 			selectedset.EnsureVisible();
-			FillImagesList(selecttexture);
+			//FillImagesList(selecttexture);
 		}
 
 		// This selects a Texture Set and the texture if it can be found
@@ -327,6 +327,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// Select texture
 			if(!string.IsNullOrEmpty(selecttexture))
 				browser.SelectItem(selecttexture, usedgroup);
+		}
+
+		// Help
+		private void TextureBrowserForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_imagesbrowser.html");
+			hlpevent.Handled = true;
 		}
 	}
 }

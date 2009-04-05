@@ -220,6 +220,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// Run the timer
 			filterstimer.Start();
 		}
+
+		// Help
+		private void TextureSetForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_textureset.html");
+			hlpevent.Handled = true;
+		}
 	}
 }
 

@@ -656,6 +656,16 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		#endregion
+
+		// Help
+		private void PreferencesForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			if(!actionkey.Focused)
+			{
+				General.ShowHelp("w_preferences.html");
+				hlpevent.Handled = true;
+			}
+		}
 		
 		/*
 		// This writes all action help files using a template and some basic info from the actions.

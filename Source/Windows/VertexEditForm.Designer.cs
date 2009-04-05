@@ -198,6 +198,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Opacity = 0;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Vertex";
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.VertexEditForm_HelpRequested);
 			tabproperties.ResumeLayout(false);
 			this.groupposition.ResumeLayout(false);
 			this.groupposition.PerformLayout();

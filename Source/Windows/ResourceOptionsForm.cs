@@ -201,5 +201,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			General.OpenWebsite((sender as LinkLabel).Text);
 		}
+
+		// Help
+		private void ResourceOptionsForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_resourceoptions.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

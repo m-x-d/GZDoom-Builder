@@ -178,6 +178,13 @@ namespace CodeImp.DoomBuilder.Windows
 				lastsize = this.Size;
 			}
 		}
+
+		// Help
+		private void ScriptEditorForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_scripteditor.html");
+			hlpevent.Handled = true;
+		}
 		
 		#endregion
 	}

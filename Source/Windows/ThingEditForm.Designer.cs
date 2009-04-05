@@ -536,6 +536,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Thing";
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ThingEditForm_HelpRequested);
 			groupBox1.ResumeLayout(false);
 			groupBox2.ResumeLayout(false);
 			groupBox2.PerformLayout();

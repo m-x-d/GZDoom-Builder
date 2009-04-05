@@ -172,5 +172,12 @@ namespace CodeImp.DoomBuilder.Windows
 			DialogResult = DialogResult.OK;
 			this.Close();
 		}
+
+		// Help
+		private void GridSetupForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_gridsetup.html");
+			hlpevent.Handled = true;
+		}
 	}
 }

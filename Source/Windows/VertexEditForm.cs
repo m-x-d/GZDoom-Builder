@@ -159,6 +159,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Close();
 		}
 
+		// Help requested
+		private void VertexEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_vertexeditor.html");
+			hlpevent.Handled = true;
+		}
+
 		#endregion
 	}
 }

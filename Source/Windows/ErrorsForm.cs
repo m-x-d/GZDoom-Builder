@@ -123,6 +123,13 @@ namespace CodeImp.DoomBuilder.Windows
 				Clipboard.SetText(str.ToString());
 			}
 		}
+
+		// Help requested
+		private void ErrorsForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("w_errorsandwarnings.html");
+			hlpevent.Handled = true;
+		}
 		
 		#endregion
 	}

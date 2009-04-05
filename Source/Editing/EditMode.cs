@@ -160,6 +160,9 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Actions.UnbindMethods(this);
 		}
 
+		// Called when the user presses F1 for Help
+		public virtual void OnHelp() { }
+
 		// This forces the mode to cancel and return to the "parent" mode
 		public virtual void OnCancel() { }
 		public virtual void OnAccept() { }

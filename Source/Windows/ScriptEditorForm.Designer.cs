@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Shown += new System.EventHandler(this.ScriptEditorForm_Shown);
 			this.Move += new System.EventHandler(this.ScriptEditorForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptEditorForm_FormClosing);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ScriptEditorForm_HelpRequested);
 			this.ResizeEnd += new System.EventHandler(this.ScriptEditorForm_ResizeEnd);
 			this.ResumeLayout(false);
 
