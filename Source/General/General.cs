@@ -256,16 +256,16 @@ namespace CodeImp.DoomBuilder
 				if(cfg.ErrorResult != 0)
 				{
 					// Error in configuration
-					ShowErrorMessage("Unable to load the game configuration file \"" + filename + "\".\n" +
-									 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.OK);
+					errorlogger.Add(ErrorType.Error, "Unable to load the game configuration file \"" + filename + "\". " +
+													 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					return null;
 				}
 				// Check if this is a Doom Builder 2 config
 				else if(cfg.ReadSetting("type", "") != "Doom Builder 2 Game Configuration")
 				{
 					// Old configuration
-					ShowErrorMessage("Unable to load the game configuration file \"" + filename + "\".\n" +
-									 "This configuration is not a Doom Builder 2 game configuration.", MessageBoxButtons.OK);
+					errorlogger.Add(ErrorType.Error, "Unable to load the game configuration file \"" + filename + "\". " +
+													 "This configuration is not a Doom Builder 2 game configuration.");
 					return null;
 				}
 				else
@@ -314,7 +314,7 @@ namespace CodeImp.DoomBuilder
 			catch(Exception)
 			{
 				// Unable to load configuration
-				ShowErrorMessage("Unable to load the game configuration file \"" + filename + "\".", MessageBoxButtons.OK);
+				errorlogger.Add(ErrorType.Error, "Unable to load the game configuration file \"" + filename + "\".");
 				return null;
 			}
 		}
@@ -379,8 +379,8 @@ namespace CodeImp.DoomBuilder
 					if(cfg.ErrorResult != 0)
 					{
 						// Error in configuration
-						ShowErrorMessage("Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".\n" +
-										 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.OK);
+						errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\". " +
+										                 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					}
 					else
 					{
@@ -399,7 +399,7 @@ namespace CodeImp.DoomBuilder
 								catch(Exception e)
 								{
 									// Unable to load configuration
-									ShowErrorMessage("Unable to load the nodebuilder configuration '" + de.Key.ToString() + "' from \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message, MessageBoxButtons.OK);
+									errorlogger.Add(ErrorType.Error, "Unable to load the nodebuilder configuration '" + de.Key.ToString() + "' from \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message);
 								}
 							}
 						}
@@ -408,7 +408,7 @@ namespace CodeImp.DoomBuilder
 				catch(Exception)
 				{
 					// Unable to load configuration
-					ShowErrorMessage("Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".", MessageBoxButtons.OK);
+					errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".");
 				}
 			}
 
@@ -441,8 +441,8 @@ namespace CodeImp.DoomBuilder
 					if(cfg.ErrorResult != 0)
 					{
 						// Error in configuration
-						ShowErrorMessage("Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\".\n" +
-										 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.OK);
+						errorlogger.Add(ErrorType.Error, "Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\". " +
+														"Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					}
 					else
 					{
@@ -456,14 +456,14 @@ namespace CodeImp.DoomBuilder
 						catch(Exception e)
 						{
 							// Unable to load configuration
-							ShowErrorMessage("Unable to load the script configuration \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message, MessageBoxButtons.OK);
+							errorlogger.Add(ErrorType.Error, "Unable to load the script configuration \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message);
 						}
 					}
 				}
 				catch(Exception e)
 				{
 					// Unable to load configuration
-					ShowErrorMessage("Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message, MessageBoxButtons.OK);
+					errorlogger.Add(ErrorType.Error, "Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message);
 				}
 			}
 		}
@@ -495,8 +495,8 @@ namespace CodeImp.DoomBuilder
 					if(cfg.ErrorResult != 0)
 					{
 						// Error in configuration
-						ShowErrorMessage("Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".\n" +
-										 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.OK);
+						errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\". " +
+														 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					}
 					else
 					{
@@ -525,7 +525,7 @@ namespace CodeImp.DoomBuilder
 				catch(Exception)
 				{
 					// Unable to load configuration
-					ShowErrorMessage("Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".", MessageBoxButtons.OK);
+					errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".");
 				}
 			}
 		}
