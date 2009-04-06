@@ -67,8 +67,9 @@ namespace CodeImp.DoomBuilder.Plugins
 		public Plugin(string filename)
 		{
 			// Initialize
+			string shortfilename = Path.GetFileName(filename);
 			name = Path.GetFileNameWithoutExtension(filename);
-			General.WriteLogLine("Loading plugin '" + name + "' from '" + Path.GetFileName(filename) + "'...");
+			General.WriteLogLine("Loading plugin '" + name + "' from '" + shortfilename + "'...");
 
 			try
 			{
@@ -77,7 +78,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			}
 			catch(Exception)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin '" + name + "', the DLL file could not be read.");
+				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin \"" + shortfilename + "\", the DLL file could not be read. This file is not supposed to be in the Plugins subdirectory.");
 				throw new InvalidProgramException();
 			}
 			
@@ -89,7 +90,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				if(FindClasses(typeof(Plug)).Length > 1)
 				{
 					// Show a warning
-					General.ErrorLogger.Add(ErrorType.Warning, "Plugin '" + name + "' has more than one plug.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Plugin \"" + shortfilename + "\" has more than one plug.");
 				}
 				
 				// Make plug instance
@@ -99,7 +100,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			else
 			{
 				// How can we plug something in without a plug?
-				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin '" + name + "', plugin is missing the plug.");
+				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin \"" + shortfilename + "\", plugin is missing the plug. This file is not supposed to be in the Plugins subdirectory.");
 				throw new InvalidProgramException();
 			}
 			
