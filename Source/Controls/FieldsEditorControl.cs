@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// Constants
 		private const string ADD_FIELD_TEXT = "   (click to add custom field)";
+		private const string FIELD_PREFIX_SUGGESTION = "user_";
 
 		#endregion
 		
@@ -293,9 +294,15 @@ namespace CodeImp.DoomBuilder.Controls
 		private void fieldslist_CellClick(object sender, DataGridViewCellEventArgs e)
 		{
 			ApplyEnums(true);
-			
-			// Edit immediately
-			if(fieldslist.SelectedCells.Count > 0) fieldslist.BeginEdit(true);
+
+			// Anything selected
+			if(fieldslist.SelectedCells.Count > 0)
+			{
+				if(e.RowIndex == fieldslist.NewRowIndex)
+					fieldslist.BeginEdit(false);
+				else if(e.ColumnIndex > 0)
+					fieldslist.BeginEdit(true);
+			}
 		}
 
 		// Cell doubleclicked
@@ -319,7 +326,12 @@ namespace CodeImp.DoomBuilder.Controls
 						lasteditfieldname = frow.Name;
 						fieldslist.CurrentCell = fieldslist.SelectedRows[0].Cells[0];
 						fieldslist.CurrentCell.ReadOnly = false;
-						fieldslist.BeginEdit(true);
+
+						if((e.RowIndex == fieldslist.NewRowIndex) ||
+						   frow.Name.StartsWith(FIELD_PREFIX_SUGGESTION, true, CultureInfo.InvariantCulture))
+							fieldslist.BeginEdit(false);
+						else
+							fieldslist.BeginEdit(true);
 					}
 				}
 			}
@@ -351,7 +363,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Remove all text
 					fieldslist.Rows[e.RowIndex].Cells[0].Style.ForeColor = SystemColors.WindowText;
-					fieldslist.Rows[e.RowIndex].Cells[0].Value = "";
+					fieldslist.Rows[e.RowIndex].Cells[0].Value = FIELD_PREFIX_SUGGESTION;
 				}
 			}
 			// Value cell?
@@ -426,7 +438,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(frow == null)
 				{
 					// Name given?
-					if(row.Cells[0].Value != null)
+					if((row.Cells[0].Value != null) && (row.Cells[0].Value.ToString() != FIELD_PREFIX_SUGGESTION))
 					{
 						// Make a valid UDMF field name
 						string validname = UniValue.ValidateName(row.Cells[0].Value.ToString());

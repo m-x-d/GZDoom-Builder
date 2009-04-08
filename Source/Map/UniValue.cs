@@ -37,6 +37,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constants
 
 		private const string NAME_CHARS = "abcdefghijklmnopqrstuvwxyz0123456789_";
+		private const string START_CHARS = "abcdefghijklmnopqrstuvwxyz_";
 		
 		#endregion
 
@@ -172,7 +173,8 @@ namespace CodeImp.DoomBuilder.Map
 			string validname = "";
 			for(int c = 0; c < fieldname.Length; c++)
 			{
-				if(NAME_CHARS.IndexOf(fieldname[c]) > -1) validname += fieldname[c];
+				string valid_chars = (validname.Length > 0) ? NAME_CHARS : START_CHARS;
+				if(valid_chars.IndexOf(fieldname[c]) > -1) validname += fieldname[c];
 			}
 			return validname;
 		}
