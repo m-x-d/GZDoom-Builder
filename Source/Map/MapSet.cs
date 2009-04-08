@@ -39,9 +39,6 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
-		// Highest tag
-		public const int HIGHEST_TAG = 65534;
-
 		// Stiching distance
 		public const float STITCH_DISTANCE = 0.001f;
 		
@@ -2317,8 +2314,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns the next unused tag number
 		public int GetNewTag()
 		{
-			bool[] usedtags = new bool[HIGHEST_TAG+1];
-			usedtags.Initialize();
+			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
 			
 			// Check all sectors
 			foreach(Sector s in sectors) usedtags[s.Tag] = true;
@@ -2330,14 +2326,14 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Thing t in things) usedtags[t.Tag] = true;
 			
 			// Now find the first unused index
-			for(int i = 1; i <= HIGHEST_TAG; i++)
-				if(usedtags[i] == false) return i;
+			for(int i = 1; i <= General.Map.FormatInterface.HighestTag; i++)
+				if(!usedtags.ContainsKey(i)) return i;
 			
 			// Problem: all tags used!
 			// Lets ignore this problem for now, who needs 65-thousand tags?!
 			return 0;
 		}
-
+		
 		// This makes a list of lines related to marked vertices
 		// A line is unstable when one vertex is marked and the other isn't.
 		public ICollection<Linedef> LinedefsFromMarkedVertices(bool includeunselected, bool includestable, bool includeunstable)

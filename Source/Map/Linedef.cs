@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Dictionary<string, bool> Flags { get { return flags; } }
 		public int Action { get { return action; } set { action = value; } }
 		public int Activate { get { return activate; } set { activate = value; } }
-		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
+		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > General.Map.FormatInterface.HighestTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
 		public float LengthInv { get { return lengthinv; } }

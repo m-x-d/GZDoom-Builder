@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
 				if(!int.TryParse(replacewith, out replacetag)) replacewith = null;
 				if(replacetag < 0) replacewith = null;
-				if(replacetag > MapSet.HIGHEST_TAG) replacewith = null;
+				if(replacetag > General.Map.FormatInterface.HighestTag) replacewith = null;
 				if(replacewith == null)
 				{
 					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);

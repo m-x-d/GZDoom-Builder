@@ -127,6 +127,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			string undodesc = "vertex";
+
+			// Verify the coordinates
+			if((positionx.GetResultFloat(0.0f) < General.Map.FormatInterface.MinCoordinate) || (positionx.GetResultFloat(0.0f) > General.Map.FormatInterface.MaxCoordinate) ||
+			   (positiony.GetResultFloat(0.0f) < General.Map.FormatInterface.MinCoordinate) || (positiony.GetResultFloat(0.0f) > General.Map.FormatInterface.MaxCoordinate))
+			{
+				General.ShowWarningMessage("Vertex coordinates must be between " + General.Map.FormatInterface.MinCoordinate + " and " + General.Map.FormatInterface.MaxCoordinate + ".", MessageBoxButtons.OK);
+				return;
+			}
 			
 			// Make undo
 			if(vertices.Count > 1) undodesc = vertices.Count + " vertices";
@@ -137,8 +145,8 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Apply position
 				Vector2D p = new Vector2D();
-				p.x = positionx.GetResultFloat(v.Position.x);
-				p.y = positiony.GetResultFloat(v.Position.y);
+				p.x = General.Clamp(positionx.GetResultFloat(v.Position.x), (float)General.Map.FormatInterface.MinCoordinate, (float)General.Map.FormatInterface.MaxCoordinate);
+				p.y = General.Clamp(positiony.GetResultFloat(v.Position.y), (float)General.Map.FormatInterface.MinCoordinate, (float)General.Map.FormatInterface.MaxCoordinate);
 				v.Move(p);
 				
 				// Custom fields

@@ -55,11 +55,9 @@ namespace CodeImp.DoomBuilder.Windows
 			floortex.Initialize();
 			ceilingtex.Initialize();
 
-			// Not a UDMF map?
-			if(!General.Map.IsType(typeof(UniversalMapSetIO)))
-			{
+			// Custom fields?
+			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);
-			}
 			
 			// Initialize custom fields editor
 			fieldslist.Setup("sector");
@@ -174,7 +172,28 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			string undodesc = "sector";
+			
+			// Verify the tag
+			if((tag.GetResult(0) < 0) || (tag.GetResult(0) > General.Map.FormatInterface.HighestTag))
+			{
+				General.ShowWarningMessage("Sector tag must be between 0 and " + General.Map.FormatInterface.HighestTag + ".", MessageBoxButtons.OK);
+				return;
+			}
 
+			// Verify the effect
+			if((effect.Value < 0) || (effect.Value > General.Map.FormatInterface.HighestEffect))
+			{
+				General.ShowWarningMessage("Sector effect must be between 0 and " + General.Map.FormatInterface.HighestEffect + ".", MessageBoxButtons.OK);
+				return;
+			}
+
+			// Verify the brightness
+			if((brightness.GetResult(0) < 0) || (brightness.GetResult(0) > General.Map.FormatInterface.HighestBrightness))
+			{
+				General.ShowWarningMessage("Sector brightness must be between 0 and " + General.Map.FormatInterface.HighestBrightness + ".", MessageBoxButtons.OK);
+				return;
+			}
+			
 			// Make undo
 			if(sectors.Count > 1) undodesc = sectors.Count + " sectors";
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
@@ -184,7 +203,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Effects
 				if(!effect.Empty) s.Effect = effect.Value;
-				s.Brightness = brightness.GetResult(s.Brightness);
+				s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), 0, General.Map.FormatInterface.HighestBrightness);
 
 				// Floor/Ceiling
 				s.FloorHeight = floorheight.GetResult(s.FloorHeight);
@@ -193,7 +212,7 @@ namespace CodeImp.DoomBuilder.Windows
 				s.SetCeilTexture(ceilingtex.GetResult(s.CeilTexture));
 
 				// Action
-				s.Tag = tag.GetResult(s.Tag);
+				s.Tag = General.Clamp(tag.GetResult(s.Tag), 0, General.Map.FormatInterface.HighestTag);
 
 				// Custom fields
 				fieldslist.Apply(s.Fields);

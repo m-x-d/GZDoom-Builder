@@ -49,9 +49,30 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Properties
 
 		public abstract int MaxSidedefs { get; }
+		public abstract int MaxVertices { get; }
+		public abstract int MaxLinedefs { get; }
+		public abstract int MaxSectors { get; }
+		public abstract int MaxThings { get; }
+		public abstract int MinTextureOffset { get; }
+		public abstract int MaxTextureOffset { get; }
 		public abstract int VertexDecimals { get; }
 		public abstract string DecimalsFormat { get; }
-
+		public abstract bool HasLinedefTag { get; }
+		public abstract bool HasThingTag { get; }
+		public abstract bool HasThingAction { get; }
+		public abstract bool HasCustomFields { get; }
+		public abstract bool HasThingHeight { get; }
+		public abstract bool HasActionArgs { get; }
+		public abstract bool HasMixedActivations { get; }
+		public abstract bool HasPresetActivations { get; }
+		public abstract int HighestTag { get; }
+		public abstract int HighestAction { get; }
+		public abstract int HighestEffect { get; }
+		public abstract int HighestBrightness { get; }
+		public abstract int HighestThingType { get; }
+		public abstract double MaxCoordinate { get; }
+		public abstract double MinCoordinate { get; }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer

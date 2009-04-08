@@ -46,9 +46,30 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Properties
 
-		public override int MaxSidedefs { get { return 65534; } }
+		public override int MaxSidedefs { get { return ushort.MaxValue; } }
+		public override int MaxVertices { get { return ushort.MaxValue; } }
+		public override int MaxLinedefs { get { return ushort.MaxValue; } }
+		public override int MaxSectors { get { return ushort.MaxValue; } }
+		public override int MaxThings { get { return ushort.MaxValue; } }
+		public override int MinTextureOffset { get { return short.MinValue; } }
+		public override int MaxTextureOffset { get { return short.MaxValue; } }
 		public override int VertexDecimals { get { return 0; } }
 		public override string DecimalsFormat { get { return "0"; } }
+		public override bool HasLinedefTag { get { return true; } }
+		public override bool HasThingTag { get { return false; } }
+		public override bool HasThingAction { get { return false; } }
+		public override bool HasCustomFields { get { return false; } }
+		public override bool HasThingHeight { get { return false; } }
+		public override bool HasActionArgs { get { return false; } }
+		public override bool HasMixedActivations { get { return false; } }
+		public override bool HasPresetActivations { get { return false; } }
+		public override int HighestTag { get { return ushort.MaxValue; } }
+		public override int HighestEffect { get { return ushort.MaxValue; } }
+		public override int HighestBrightness { get { return short.MaxValue; } }
+		public override int HighestAction { get { return ushort.MaxValue; } }
+		public override int HighestThingType { get { return ushort.MaxValue; } }
+		public override double MaxCoordinate { get { return (double)short.MaxValue; } }
+		public override double MinCoordinate { get { return (double)short.MinValue; } }
 		
 		#endregion
 

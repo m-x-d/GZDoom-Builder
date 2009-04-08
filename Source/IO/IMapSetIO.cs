@@ -35,5 +35,26 @@ namespace CodeImp.DoomBuilder.IO
 		int MaxSidedefs { get; }
 		int VertexDecimals { get; }
 		string DecimalsFormat { get; }
+		int MaxVertices { get; }
+		int MaxLinedefs { get; }
+		int MaxSectors { get; }
+		int MaxThings { get; }
+		int MinTextureOffset { get; }
+		int MaxTextureOffset { get; }
+		bool HasLinedefTag { get; }
+		bool HasThingTag { get; }
+		bool HasThingAction { get; }
+		bool HasCustomFields { get; }
+		bool HasThingHeight { get; }
+		bool HasActionArgs { get; }
+		bool HasMixedActivations { get; }
+		bool HasPresetActivations { get; }
+		int HighestTag { get; }
+		int HighestAction { get; }
+		int HighestEffect { get; }
+		int HighestBrightness { get; }
+		int HighestThingType { get; }
+		double MaxCoordinate { get; }
+		double MinCoordinate { get; }
 	}
 }

@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.Map
 		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }
 		public bool FixedSize { get { return fixedsize; } }
-		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > MapSet.HIGHEST_TAG)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
+		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > General.Map.FormatInterface.HighestTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
 
 		#endregion
