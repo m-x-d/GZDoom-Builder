@@ -98,9 +98,30 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Properties
 
 		public override int MaxSidedefs { get { return int.MaxValue; } }
+		public override int MaxVertices { get { return int.MaxValue; } }
+		public override int MaxLinedefs { get { return int.MaxValue; } }
+		public override int MaxSectors { get { return int.MaxValue; } }
+		public override int MaxThings { get { return int.MaxValue; } }
+		public override int MinTextureOffset { get { return int.MinValue; } }
+		public override int MaxTextureOffset { get { return int.MaxValue; } }
 		public override int VertexDecimals { get { return 3; } }
 		public override string DecimalsFormat { get { return "0.000"; } }
-
+		public override bool HasLinedefTag { get { return true; } }
+		public override bool HasThingTag { get { return true; } }
+		public override bool HasThingAction { get { return true; } }
+		public override bool HasCustomFields { get { return true; } }
+		public override bool HasThingHeight { get { return true; } }
+		public override bool HasActionArgs { get { return true; } }
+		public override bool HasMixedActivations { get { return true; } }
+		public override bool HasPresetActivations { get { return false; } }
+		public override int HighestTag { get { return int.MaxValue; } }
+		public override int HighestAction { get { return int.MaxValue; } }
+		public override int HighestEffect { get { return int.MaxValue; } }
+		public override int HighestBrightness { get { return int.MaxValue; } }
+		public override int HighestThingType { get { return int.MaxValue; } }
+		public override double MaxCoordinate { get { return (double)float.MaxValue; } }
+		public override double MinCoordinate { get { return (double)float.MinValue; } }
+		
 		#endregion
 
 		#region ================== Reading

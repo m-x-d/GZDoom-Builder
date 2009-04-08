@@ -71,23 +71,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize custom fields editor
 			fieldslist.Setup("thing");
 
-			// UDMF map?
-			if(General.Map.IsType(typeof(UniversalMapSetIO)))
-			{
-			}
-			// Hexen map?
-			else if(General.Map.IsType(typeof(HexenMapSetIO)))
-			{
+			// Custom fields?
+			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);
-			}
-			// Doom map?
-			else
-			{
-				tabs.TabPages.Remove(tabcustom);
+			
+			// Tag/Effects?
+			if(!General.Map.FormatInterface.HasThingAction && !General.Map.FormatInterface.HasThingTag)
 				tabs.TabPages.Remove(tabeffects);
-				height.Visible = false;
-				heightlabel.Visible = false;
-			}
+			
+			// Thing height?
+			height.Visible = General.Map.FormatInterface.HasThingHeight;
+			heightlabel.Visible = General.Map.FormatInterface.HasThingHeight;
 			
 			// Setup types list
 			thingtype.Setup();
@@ -256,6 +250,27 @@ namespace CodeImp.DoomBuilder.Windows
 			List<string> defaultflags = new List<string>();
 			string undodesc = "thing";
 
+			// Verify the tag
+			if(General.Map.FormatInterface.HasThingTag && ((tag.GetResult(0) < 0) || (tag.GetResult(0) > General.Map.FormatInterface.HighestTag)))
+			{
+				General.ShowWarningMessage("Thing tag must be between 0 and " + General.Map.FormatInterface.HighestTag + ".", MessageBoxButtons.OK);
+				return;
+			}
+
+			// Verify the type
+			if(((thingtype.GetResult(0) < 0) || (thingtype.GetResult(0) > General.Map.FormatInterface.HighestThingType)))
+			{
+				General.ShowWarningMessage("Thing type must be between 0 and " + General.Map.FormatInterface.HighestThingType + ".", MessageBoxButtons.OK);
+				return;
+			}
+
+			// Verify the action
+			if(General.Map.FormatInterface.HasThingAction && ((action.Value < 0) || (action.Value > General.Map.FormatInterface.HighestAction)))
+			{
+				General.ShowWarningMessage("Thing action must be between 0 and " + General.Map.FormatInterface.HighestAction + ".", MessageBoxButtons.OK);
+				return;
+			}
+
 			// Make undo
 			if(things.Count > 1) undodesc = things.Count + " things";
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
@@ -264,7 +279,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Thing t in things)
 			{
 				// Thing type index
-				t.Type = thingtype.GetResult(t.Type);
+				t.Type = General.Clamp(thingtype.GetResult(t.Type), 0, General.Map.FormatInterface.HighestThingType);
 				
 				// Coordination
 				t.Rotate(Angle2D.DoomToReal(angle.GetResult(Angle2D.RealToDoom(t.Angle))));

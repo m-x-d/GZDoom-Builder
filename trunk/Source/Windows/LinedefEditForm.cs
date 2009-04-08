@@ -71,35 +71,34 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize custom fields editor
 			fieldslist.Setup("linedef");
 			
-			// THE CODE BELOW IS ABSOLUTELY UGLY
-			// I should make different controls for each format
-			// that handle linedef properties
-			
-			// UDMF map?
-			if(General.Map.IsType(typeof(UniversalMapSetIO)))
-			{
+			// Mixed activations? (UDMF)
+			if(General.Map.FormatInterface.HasMixedActivations)
 				udmfpanel.Visible = true;
-				argspanel.Visible = true;
-			}
-			// Hexen map?
-			else if(General.Map.IsType(typeof(HexenMapSetIO)))
-			{
-				tabs.TabPages.Remove(tabcustom);
+			else if(General.Map.FormatInterface.HasPresetActivations)
 				hexenpanel.Visible = true;
+			
+			// Action arguments?
+			if(General.Map.FormatInterface.HasActionArgs)
 				argspanel.Visible = true;
+			
+			// Custom fields?
+			if(!General.Map.FormatInterface.HasCustomFields)
+				tabs.TabPages.Remove(tabcustom);
+			
+			// Arrange panels
+			if(hexenpanel.Visible || argspanel.Visible)
+			{
 				actiongroup.Height = 210;
 				this.Height = 510;
 			}
-			// Doom map?
-			else
+			else if(!udmfpanel.Visible && !argspanel.Visible && !hexenpanel.Visible)
 			{
-				tabs.TabPages.Remove(tabcustom);
 				actiongroup.Height = 68;
 				this.Height = 470;
 			}
-
-			// ID group?
-			if(!General.Map.IsType(typeof(HexenMapSetIO)))
+			
+			// Tag?
+			if(General.Map.FormatInterface.HasLinedefTag)
 			{
 				// Match position after the action group
 				idgroup.Top = actiongroup.Bottom + actiongroup.Margin.Bottom + idgroup.Margin.Top;
@@ -109,7 +108,7 @@ namespace CodeImp.DoomBuilder.Windows
 				idgroup.Visible = false;
 			}
 		}
-
+		
 		// This sets up the form to edit the given lines
 		public void Setup(ICollection<Linedef> lines)
 		{
@@ -326,6 +325,30 @@ namespace CodeImp.DoomBuilder.Windows
 			Sector s;
 			int index;
 			
+			// Verify the tag
+			if(General.Map.FormatInterface.HasLinedefTag && ((tag.GetResult(0) < 0) || (tag.GetResult(0) > General.Map.FormatInterface.HighestTag)))
+			{
+				General.ShowWarningMessage("Linedef tag must be between 0 and " + General.Map.FormatInterface.HighestTag + ".", MessageBoxButtons.OK);
+				return;
+			}
+			
+			// Verify the action
+			if((action.Value < 0) || (action.Value > General.Map.FormatInterface.HighestAction))
+			{
+				General.ShowWarningMessage("Linedef action must be between 0 and " + General.Map.FormatInterface.HighestAction + ".", MessageBoxButtons.OK);
+				return;
+			}
+			
+			// Verify texture offsets
+			if((backoffsetx.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (backoffsetx.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset) ||
+			   (backoffsety.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (backoffsety.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset) ||
+			   (frontoffsetx.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (frontoffsetx.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset) ||
+			   (frontoffsety.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (frontoffsety.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset))
+			{
+				General.ShowWarningMessage("Texture offset must be between " + General.Map.FormatInterface.MinTextureOffset + " and " + General.Map.FormatInterface.HighestAction + ".", MessageBoxButtons.OK);
+				return;
+			}
+			
 			// Make undo
 			if(lines.Count > 1) undodesc = lines.Count + " linedefs";
 			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
@@ -353,7 +376,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Action/tags
-				l.Tag = tag.GetResult(l.Tag);
+				l.Tag = General.Clamp(tag.GetResult(l.Tag), 0, General.Map.FormatInterface.HighestTag);
 				if(!action.Empty) l.Action = action.Value;
 				if(l.Action != 0)
 				{
@@ -392,8 +415,8 @@ namespace CodeImp.DoomBuilder.Windows
 					if(l.Front.Sector != s) l.Front.ChangeSector(s);
 
 					// Apply settings
-					l.Front.OffsetX = frontoffsetx.GetResult(l.Front.OffsetX);
-					l.Front.OffsetY = frontoffsety.GetResult(l.Front.OffsetY);
+					l.Front.OffsetX = General.Clamp(frontoffsetx.GetResult(l.Front.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+					l.Front.OffsetY = General.Clamp(frontoffsety.GetResult(l.Front.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
 					l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
 					l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
 					l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
@@ -419,8 +442,8 @@ namespace CodeImp.DoomBuilder.Windows
 					if(l.Back.Sector != s) l.Back.ChangeSector(s);
 
 					// Apply settings
-					l.Back.OffsetX = backoffsetx.GetResult(l.Back.OffsetX);
-					l.Back.OffsetY = backoffsety.GetResult(l.Back.OffsetY);
+					l.Back.OffsetX = General.Clamp(backoffsetx.GetResult(l.Back.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+					l.Back.OffsetY = General.Clamp(backoffsety.GetResult(l.Back.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
 					l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
 					l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
 					l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
