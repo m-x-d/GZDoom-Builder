@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Controls
 			float zvalue;
 
 			// Show/hide stuff depending on format
-			if(General.Map.FormatInterface.GetType() == typeof(DoomMapSetIO))
+			if(General.Map.FormatInterface.HasActionArgs)
 			{
 				arglbl1.Visible = false;
 				arglbl2.Visible = false;

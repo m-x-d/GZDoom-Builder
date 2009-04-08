@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override bool HasActionArgs { get { return false; } }
 		public override bool HasMixedActivations { get { return false; } }
 		public override bool HasPresetActivations { get { return false; } }
+		public override bool HasBuiltInActivations { get { return true; } }
 		public override int HighestTag { get { return ushort.MaxValue; } }
 		public override int HighestEffect { get { return ushort.MaxValue; } }
 		public override int HighestBrightness { get { return short.MaxValue; } }

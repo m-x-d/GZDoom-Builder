@@ -61,11 +61,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill universal fields list
 			fieldslist.ListFixedFields(General.Map.Config.VertexFields);
 
-			// Not a UDMF map?
-			if(!General.Map.IsType(typeof(UniversalMapSetIO)))
-			{
+			// Custom fields?
+			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);
-			}
 			
 			// Decimals allowed?
 			if(General.Map.FormatInterface.VertexDecimals > 0)
