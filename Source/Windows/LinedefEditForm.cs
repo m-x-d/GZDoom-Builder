@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(frontsector.Text != l.Map.GetIndexForSector(l.Front.Sector).ToString()) frontsector.Text = "";
 					if(frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
 					if(frontoffsety.Text != l.Front.OffsetY.ToString()) frontoffsety.Text = "";
-					if(General.Map.IsType(typeof(UniversalMapSetIO))) customfrontbutton.Visible = true;
+					if(General.Map.FormatInterface.HasCustomFields) customfrontbutton.Visible = true;
 				}
 
 				// Back settings
@@ -280,7 +280,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(backsector.Text != l.Map.GetIndexForSector(l.Back.Sector).ToString()) backsector.Text = "";
 					if(backoffsetx.Text != l.Back.OffsetX.ToString()) backoffsetx.Text = "";
 					if(backoffsety.Text != l.Back.OffsetY.ToString()) backoffsety.Text = "";
-					if(General.Map.IsType(typeof(UniversalMapSetIO))) custombackbutton.Visible = true;
+					if(General.Map.FormatInterface.HasCustomFields) custombackbutton.Visible = true;
 				}
 				
 				// Custom fields

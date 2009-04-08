@@ -73,8 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called to test if the item should be displayed
 		public override bool DetermineVisiblity()
 		{
-			return (General.Map.FormatInterface.GetType().Name == "DoomMapSetIO") ||
-				   (General.Map.FormatInterface.GetType().Name == "UniversalMapSetIO");
+			return General.Map.FormatInterface.HasLinedefTag;
 		}
 		
 		

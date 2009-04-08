@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Windows
 									   option5label, option6label, option7label };
 			
 			// Show prefixes panel only for doom type maps
-			if(!General.Map.IsType(typeof(DoomMapSetIO)))
+			if(General.Map.FormatInterface.HasBuiltInActivations)
 			{
 				prefixespanel.Visible = false;
 				actions.Height += actions.Top - prefixespanel.Top;

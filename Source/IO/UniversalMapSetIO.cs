@@ -114,6 +114,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override bool HasActionArgs { get { return true; } }
 		public override bool HasMixedActivations { get { return true; } }
 		public override bool HasPresetActivations { get { return false; } }
+		public override bool HasBuiltInActivations { get { return false; } }
 		public override int HighestTag { get { return int.MaxValue; } }
 		public override int HighestAction { get { return int.MaxValue; } }
 		public override int HighestEffect { get { return int.MaxValue; } }

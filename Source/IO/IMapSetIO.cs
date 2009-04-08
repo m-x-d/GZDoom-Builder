@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.IO
 		bool HasActionArgs { get; }
 		bool HasMixedActivations { get; }
 		bool HasPresetActivations { get; }
+		bool HasBuiltInActivations { get; }
 		int HighestTag { get; }
 		int HighestAction { get; }
 		int HighestEffect { get; }
