@@ -129,12 +129,14 @@ namespace CodeImp.DoomBuilder.Windows
 		// This fills the lists and selects the given texture
 		public void Setup(string selectflat)
 		{
+			bool fillrequired = (selectedset.Index == 0);
+
 			if(!string.IsNullOrEmpty(selectflat))
 			{
 				// We prefer selecting the texture using the Texture Set that was previously selected
-				if(texturesets.SelectedItems.Count > 0)
+				if(selectedset != null)
 				{
-					if(SelectFlatInSet(texturesets.SelectedItems[0], selectflat)) return;
+					if(SelectFlatInSet(selectedset, selectflat)) return;
 				}
 
 				// Otherwise, go from top to bottom to find the texture
@@ -143,11 +145,11 @@ namespace CodeImp.DoomBuilder.Windows
 					if(SelectFlatInSet(i, selectflat)) return;
 				}
 			}
-
+			
 			// Select texture set and fill list
 			selectedset.Selected = true;
 			selectedset.EnsureVisible();
-			FillImagesList(selectflat);
+			if(fillrequired) FillImagesList(selectflat);
 		}
 
 		// This selects a Texture Set and the texture if it can be found
@@ -181,8 +183,16 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			// Set selected name and close
-			selectedname = browser.SelectedItem.Text;
-			DialogResult = DialogResult.OK;
+			if(browser.SelectedItem != null)
+			{
+				selectedname = browser.SelectedItem.Text;
+				DialogResult = DialogResult.OK;
+			}
+			else
+			{
+				selectedname = "";
+				DialogResult = DialogResult.Cancel;
+			}
 			this.Close();
 		}
 
