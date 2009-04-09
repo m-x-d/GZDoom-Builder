@@ -442,6 +442,13 @@ namespace CodeImp.DoomBuilder.Rendering
 			stream.WriteRange<FlatVertex>(verts);
 			screenverts.Unlock();
 			stream.Dispose();
+			
+			// Force update of view
+			lastgridscale = -1f;
+			lastgridsize = 0;
+			lastgridx = 0.0f;
+			lastgridy = 0.0f;
+			UpdateTransformations();
 		}
 
 		// This makes screen vertices for display
