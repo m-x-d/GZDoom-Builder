@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.Map
 		public void Join(Vertex other)
 		{
 			// If either of the two vertices was selected, keep the other selected
-			if(this.selected) other.selected = true;
+			if(this.Selected) other.Selected = true;
 			if(this.marked) other.marked = true;
 
 			// Any linedefs to move?

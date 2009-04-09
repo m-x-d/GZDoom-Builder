@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Variables
 		
 		// Selected or not?
-		protected bool selected;
+		private bool selected;
 		
 		// Group bitmask
 		private int groups;
