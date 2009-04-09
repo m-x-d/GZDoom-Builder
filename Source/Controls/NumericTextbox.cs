@@ -190,10 +190,10 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			string textpart = this.Text;
 			int result;
-
+			
 			// Strip prefixes
 			textpart = textpart.Replace("+", "");
-			if(!allownegative) textpart = textpart.Replace("-", "");
+			textpart = textpart.Replace("-", "");
 			
 			// Any numbers left?
 			if(textpart.Length > 0)
@@ -210,12 +210,14 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Subtract number from original
 					if(!int.TryParse(textpart, out result)) result = 0;
-					return original - result;
+					int newvalue = original - result;
+					if(!allownegative && (newvalue < 0)) newvalue = 0;
+					return newvalue;
 				}
 				else
 				{
 					// Return the new value
-					return int.TryParse(this.Text, out result) ? result : 0;
+					return int.TryParse(this.Text, out result) ? result : original;
 				}
 			}
 			else
@@ -233,7 +235,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Strip prefixes
 			textpart = textpart.Replace("+", "");
-			if(!allownegative) textpart = textpart.Replace("-", "");
+			textpart = textpart.Replace("-", "");
 
 			// Any numbers left?
 			if(textpart.Length > 0)
@@ -250,12 +252,14 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Subtract number from original
 					if(!float.TryParse(textpart, out result)) result = 0;
-					return original - result;
+					float newvalue = original - result;
+					if(!allownegative && (newvalue < 0)) newvalue = 0;
+					return newvalue;
 				}
 				else
 				{
 					// Return the new value
-					return float.TryParse(this.Text, out result) ? result : 0;
+					return float.TryParse(this.Text, out result) ? result : original;
 				}
 			}
 			else

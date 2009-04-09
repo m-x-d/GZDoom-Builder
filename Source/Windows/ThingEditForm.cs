@@ -251,23 +251,23 @@ namespace CodeImp.DoomBuilder.Windows
 			string undodesc = "thing";
 
 			// Verify the tag
-			if(General.Map.FormatInterface.HasThingTag && ((tag.GetResult(0) < 0) || (tag.GetResult(0) > General.Map.FormatInterface.HighestTag)))
+			if(General.Map.FormatInterface.HasThingTag && ((tag.GetResult(0) < General.Map.FormatInterface.MinTag) || (tag.GetResult(0) > General.Map.FormatInterface.MaxTag)))
 			{
-				General.ShowWarningMessage("Thing tag must be between 0 and " + General.Map.FormatInterface.HighestTag + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Thing tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
 				return;
 			}
 
 			// Verify the type
-			if(((thingtype.GetResult(0) < 0) || (thingtype.GetResult(0) > General.Map.FormatInterface.HighestThingType)))
+			if(((thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) || (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType)))
 			{
-				General.ShowWarningMessage("Thing type must be between 0 and " + General.Map.FormatInterface.HighestThingType + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Thing type must be between " + General.Map.FormatInterface.MinThingType + " and " + General.Map.FormatInterface.MaxThingType + ".", MessageBoxButtons.OK);
 				return;
 			}
 
 			// Verify the action
-			if(General.Map.FormatInterface.HasThingAction && ((action.Value < 0) || (action.Value > General.Map.FormatInterface.HighestAction)))
+			if(General.Map.FormatInterface.HasThingAction && ((action.Value < General.Map.FormatInterface.MinAction) || (action.Value > General.Map.FormatInterface.MaxAction)))
 			{
-				General.ShowWarningMessage("Thing action must be between 0 and " + General.Map.FormatInterface.HighestAction + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Thing action must be between " + General.Map.FormatInterface.MinAction + " and " + General.Map.FormatInterface.MaxAction + ".", MessageBoxButtons.OK);
 				return;
 			}
 
@@ -279,7 +279,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Thing t in things)
 			{
 				// Thing type index
-				t.Type = General.Clamp(thingtype.GetResult(t.Type), 0, General.Map.FormatInterface.HighestThingType);
+				t.Type = General.Clamp(thingtype.GetResult(t.Type), General.Map.FormatInterface.MinThingType, General.Map.FormatInterface.MaxThingType);
 				
 				// Coordination
 				t.Rotate(Angle2D.DoomToReal(angle.GetResult(Angle2D.RealToDoom(t.Angle))));

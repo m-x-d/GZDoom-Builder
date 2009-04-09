@@ -64,11 +64,16 @@ namespace CodeImp.DoomBuilder.IO
 		public override bool HasMixedActivations { get { return false; } }
 		public override bool HasPresetActivations { get { return true; } }
 		public override bool HasBuiltInActivations { get { return false; } }
-		public override int HighestTag { get { return ushort.MaxValue; } }
-		public override int HighestAction { get { return byte.MaxValue; } }
-		public override int HighestEffect { get { return ushort.MaxValue; } }
-		public override int HighestBrightness { get { return short.MaxValue; } }
-		public override int HighestThingType { get { return ushort.MaxValue; } }
+		public override int MaxTag { get { return ushort.MaxValue; } }
+		public override int MinTag { get { return ushort.MinValue; } }
+		public override int MaxAction { get { return byte.MaxValue; } }
+		public override int MinAction { get { return byte.MinValue; } }
+		public override int MaxEffect { get { return ushort.MaxValue; } }
+		public override int MinEffect { get { return ushort.MinValue; } }
+		public override int MaxBrightness { get { return short.MaxValue; } }
+		public override int MinBrightness { get { return short.MinValue; } }
+		public override int MaxThingType { get { return ushort.MaxValue; } }
+		public override int MinThingType { get { return ushort.MinValue; } }
 		public override double MaxCoordinate { get { return (double)short.MaxValue; } }
 		public override double MinCoordinate { get { return (double)short.MinValue; } }
 		

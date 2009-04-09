@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongFloorTexture { get { return longfloortexname; } }
 		public long LongCeilTexture { get { return longceiltexname; } }
 		public int Effect { get { return effect; } set { effect = value; } }
-		public int Tag { get { return tag; } set { tag = value; if((tag < 0) || (tag > General.Map.FormatInterface.HighestTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
+		public int Tag { get { return tag; } set { tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public int Brightness { get { return brightness; } set { brightness = value; updateneeded = true; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public RectangleF BBox { get { return bbox; } }
