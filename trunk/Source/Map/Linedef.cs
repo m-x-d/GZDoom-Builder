@@ -705,7 +705,7 @@ namespace CodeImp.DoomBuilder.Map
 			nl = map.CreateLinedef(v, end);
 			CopyPropertiesTo(nl);
 			SetEndVertex(v);
-			nl.selected = this.selected;
+			nl.Selected = this.Selected;
 			nl.marked = this.marked;
 			
 			// Copy front sidedef if exists
@@ -902,7 +902,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			
 			// If either of the two lines was selected, keep the other selected
-			if(this.selected) other.selected = true;
+			if(this.Selected) other.Selected = true;
 			if(this.marked) other.marked = true;
 			
 			// I got killed by the other.
