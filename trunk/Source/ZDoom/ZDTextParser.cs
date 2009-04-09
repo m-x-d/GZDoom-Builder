@@ -111,6 +111,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return false;
 		}
 		
+		// This removes beginning and ending quotes from a token
+		internal string StripTokenQuotes(string token)
+		{
+			// Remove first character, if it is a quote
+			if(!string.IsNullOrEmpty(token) && (token[0] == '"'))
+				token = token.Substring(1);
+			
+			// Remove last character, if it is a quote
+			if(!string.IsNullOrEmpty(token) && (token[token.Length - 1] == '"'))
+				token = token.Substring(0, token.Length - 1);
+			
+			return token;
+		}
+		
 		// This skips whitespace on the stream, placing the read
 		// position right before the first non-whitespace character
 		// Returns false when the end of the stream is reached
