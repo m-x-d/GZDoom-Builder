@@ -566,6 +566,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// splitter
 			// 
 			this.splitter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitter.IsSplitterFixed = true;
 			this.splitter.Location = new System.Drawing.Point(5, 5);
 			this.splitter.Name = "splitter";
 			this.splitter.Orientation = System.Windows.Forms.Orientation.Horizontal;

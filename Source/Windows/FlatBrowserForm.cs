@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// This fills the lists and selects the given texture
 		public void Setup(string selectflat)
 		{
-			bool fillrequired = (selectedset.Index == 0);
+			bool fillrequired = (texturesets.SelectedItems.Count == 0) || (selectedset == texturesets.SelectedItems[0]);
 
 			if(!string.IsNullOrEmpty(selectflat))
 			{
