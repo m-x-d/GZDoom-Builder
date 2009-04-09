@@ -86,12 +86,14 @@ namespace CodeImp.DoomBuilder.Windows
 				tabs.TabPages.Remove(tabcustom);
 			
 			// Arrange panels
-			if(hexenpanel.Visible || argspanel.Visible)
+			if(General.Map.FormatInterface.HasPresetActivations)
 			{
 				actiongroup.Height = 210;
 				this.Height = 510;
 			}
-			else if(!udmfpanel.Visible && !argspanel.Visible && !hexenpanel.Visible)
+			else if(!General.Map.FormatInterface.HasMixedActivations &&
+				    !General.Map.FormatInterface.HasActionArgs &&
+				    !General.Map.FormatInterface.HasPresetActivations)
 			{
 				actiongroup.Height = 68;
 				this.Height = 470;
