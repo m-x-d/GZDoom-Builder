@@ -84,6 +84,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Custom fields?
 			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);
+			customfrontbutton.Visible = General.Map.FormatInterface.HasCustomFields;
+			custombackbutton.Visible = General.Map.FormatInterface.HasCustomFields;
 			
 			// Arrange panels
 			if(General.Map.FormatInterface.HasPresetActivations)
@@ -267,7 +269,6 @@ namespace CodeImp.DoomBuilder.Windows
 					if(frontsector.Text != l.Map.GetIndexForSector(l.Front.Sector).ToString()) frontsector.Text = "";
 					if(frontoffsetx.Text != l.Front.OffsetX.ToString()) frontoffsetx.Text = "";
 					if(frontoffsety.Text != l.Front.OffsetY.ToString()) frontoffsety.Text = "";
-					if(General.Map.FormatInterface.HasCustomFields) customfrontbutton.Visible = true;
 				}
 
 				// Back settings
