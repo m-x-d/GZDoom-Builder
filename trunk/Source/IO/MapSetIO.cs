@@ -66,11 +66,16 @@ namespace CodeImp.DoomBuilder.IO
 		public abstract bool HasMixedActivations { get; }
 		public abstract bool HasPresetActivations { get; }
 		public abstract bool HasBuiltInActivations { get; }
-		public abstract int HighestTag { get; }
-		public abstract int HighestAction { get; }
-		public abstract int HighestEffect { get; }
-		public abstract int HighestBrightness { get; }
-		public abstract int HighestThingType { get; }
+		public abstract int MaxTag { get; }
+		public abstract int MinTag { get; }
+		public abstract int MaxAction { get; }
+		public abstract int MinAction { get; }
+		public abstract int MaxEffect { get; }
+		public abstract int MinEffect { get; }
+		public abstract int MaxBrightness { get; }
+		public abstract int MinBrightness { get; }
+		public abstract int MaxThingType { get; }
+		public abstract int MinThingType { get; }
 		public abstract double MaxCoordinate { get; }
 		public abstract double MinCoordinate { get; }
 		

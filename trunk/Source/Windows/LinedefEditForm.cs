@@ -328,16 +328,16 @@ namespace CodeImp.DoomBuilder.Windows
 			int index;
 			
 			// Verify the tag
-			if(General.Map.FormatInterface.HasLinedefTag && ((tag.GetResult(0) < 0) || (tag.GetResult(0) > General.Map.FormatInterface.HighestTag)))
+			if(General.Map.FormatInterface.HasLinedefTag && ((tag.GetResult(0) < General.Map.FormatInterface.MinTag) || (tag.GetResult(0) > General.Map.FormatInterface.MaxTag)))
 			{
-				General.ShowWarningMessage("Linedef tag must be between 0 and " + General.Map.FormatInterface.HighestTag + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Linedef tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
 				return;
 			}
 			
 			// Verify the action
-			if((action.Value < 0) || (action.Value > General.Map.FormatInterface.HighestAction))
+			if((action.Value < General.Map.FormatInterface.MinAction) || (action.Value > General.Map.FormatInterface.MaxAction))
 			{
-				General.ShowWarningMessage("Linedef action must be between 0 and " + General.Map.FormatInterface.HighestAction + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Linedef action must be between " + General.Map.FormatInterface.MinAction + " and " + General.Map.FormatInterface.MaxAction + ".", MessageBoxButtons.OK);
 				return;
 			}
 			
@@ -347,7 +347,7 @@ namespace CodeImp.DoomBuilder.Windows
 			   (frontoffsetx.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (frontoffsetx.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset) ||
 			   (frontoffsety.GetResult(0) < General.Map.FormatInterface.MinTextureOffset) || (frontoffsety.GetResult(0) > General.Map.FormatInterface.MaxTextureOffset))
 			{
-				General.ShowWarningMessage("Texture offset must be between " + General.Map.FormatInterface.MinTextureOffset + " and " + General.Map.FormatInterface.HighestAction + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Texture offset must be between " + General.Map.FormatInterface.MinTextureOffset + " and " + General.Map.FormatInterface.MaxTextureOffset + ".", MessageBoxButtons.OK);
 				return;
 			}
 			
@@ -378,7 +378,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Action/tags
-				l.Tag = General.Clamp(tag.GetResult(l.Tag), 0, General.Map.FormatInterface.HighestTag);
+				l.Tag = General.Clamp(tag.GetResult(l.Tag), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
 				if(!action.Empty) l.Action = action.Value;
 				if(l.Action != 0)
 				{

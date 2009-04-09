@@ -174,23 +174,23 @@ namespace CodeImp.DoomBuilder.Windows
 			string undodesc = "sector";
 			
 			// Verify the tag
-			if((tag.GetResult(0) < 0) || (tag.GetResult(0) > General.Map.FormatInterface.HighestTag))
+			if((tag.GetResult(0) < General.Map.FormatInterface.MinTag) || (tag.GetResult(0) > General.Map.FormatInterface.MaxTag))
 			{
-				General.ShowWarningMessage("Sector tag must be between 0 and " + General.Map.FormatInterface.HighestTag + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Sector tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
 				return;
 			}
 
 			// Verify the effect
-			if((effect.Value < 0) || (effect.Value > General.Map.FormatInterface.HighestEffect))
+			if((effect.Value < General.Map.FormatInterface.MinEffect) || (effect.Value > General.Map.FormatInterface.MaxEffect))
 			{
-				General.ShowWarningMessage("Sector effect must be between 0 and " + General.Map.FormatInterface.HighestEffect + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Sector effect must be between " + General.Map.FormatInterface.MinEffect + " and " + General.Map.FormatInterface.MaxEffect + ".", MessageBoxButtons.OK);
 				return;
 			}
 
 			// Verify the brightness
-			if((brightness.GetResult(0) < 0) || (brightness.GetResult(0) > General.Map.FormatInterface.HighestBrightness))
+			if((brightness.GetResult(0) < General.Map.FormatInterface.MinBrightness) || (brightness.GetResult(0) > General.Map.FormatInterface.MaxBrightness))
 			{
-				General.ShowWarningMessage("Sector brightness must be between 0 and " + General.Map.FormatInterface.HighestBrightness + ".", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Sector brightness must be between " + General.Map.FormatInterface.MinBrightness + " and " + General.Map.FormatInterface.MaxBrightness + ".", MessageBoxButtons.OK);
 				return;
 			}
 			
@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Effects
 				if(!effect.Empty) s.Effect = effect.Value;
-				s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), 0, General.Map.FormatInterface.HighestBrightness);
+				s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 
 				// Floor/Ceiling
 				s.FloorHeight = floorheight.GetResult(s.FloorHeight);
@@ -212,7 +212,7 @@ namespace CodeImp.DoomBuilder.Windows
 				s.SetCeilTexture(ceilingtex.GetResult(s.CeilTexture));
 
 				// Action
-				s.Tag = General.Clamp(tag.GetResult(s.Tag), 0, General.Map.FormatInterface.HighestTag);
+				s.Tag = General.Clamp(tag.GetResult(s.Tag), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
 
 				// Custom fields
 				fieldslist.Apply(s.Fields);

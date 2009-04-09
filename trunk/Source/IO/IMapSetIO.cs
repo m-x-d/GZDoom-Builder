@@ -50,11 +50,16 @@ namespace CodeImp.DoomBuilder.IO
 		bool HasMixedActivations { get; }
 		bool HasPresetActivations { get; }
 		bool HasBuiltInActivations { get; }
-		int HighestTag { get; }
-		int HighestAction { get; }
-		int HighestEffect { get; }
-		int HighestBrightness { get; }
-		int HighestThingType { get; }
+		int MaxTag { get; }
+		int MinTag { get; }
+		int MaxAction { get; }
+		int MinAction { get; }
+		int MaxEffect { get; }
+		int MinEffect { get; }
+		int MaxBrightness { get; }
+		int MinBrightness { get; }
+		int MaxThingType { get; }
+		int MinThingType { get; }
 		double MaxCoordinate { get; }
 		double MinCoordinate { get; }
 	}

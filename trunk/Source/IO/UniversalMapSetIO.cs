@@ -115,11 +115,16 @@ namespace CodeImp.DoomBuilder.IO
 		public override bool HasMixedActivations { get { return true; } }
 		public override bool HasPresetActivations { get { return false; } }
 		public override bool HasBuiltInActivations { get { return false; } }
-		public override int HighestTag { get { return int.MaxValue; } }
-		public override int HighestAction { get { return int.MaxValue; } }
-		public override int HighestEffect { get { return int.MaxValue; } }
-		public override int HighestBrightness { get { return int.MaxValue; } }
-		public override int HighestThingType { get { return int.MaxValue; } }
+		public override int MaxTag { get { return int.MaxValue; } }
+		public override int MinTag { get { return int.MinValue; } }
+		public override int MaxAction { get { return int.MaxValue; } }
+		public override int MinAction { get { return int.MinValue; } }
+		public override int MaxEffect { get { return int.MaxValue; } }
+		public override int MinEffect { get { return int.MinValue; } }
+		public override int MaxBrightness { get { return int.MaxValue; } }
+		public override int MinBrightness { get { return int.MinValue; } }
+		public override int MaxThingType { get { return int.MaxValue; } }
+		public override int MinThingType { get { return int.MinValue; } }
 		public override double MaxCoordinate { get { return (double)float.MaxValue; } }
 		public override double MinCoordinate { get { return (double)float.MinValue; } }
 		
