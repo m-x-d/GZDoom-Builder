@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			
 			// First next token is the class name
 			parser.SkipWhitespace(true);
-			classname = parser.ReadToken();
+			classname = parser.StripTokenQuotes(parser.ReadToken());
 			if(string.IsNullOrEmpty(classname))
 			{
 				parser.ReportError("Expected actor class name");
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					{
 						// The next token must be the class to inherit from
 						parser.SkipWhitespace(true);
-						inheritclass = parser.ReadToken();
+						inheritclass = parser.StripTokenQuotes(parser.ReadToken());
 						if(string.IsNullOrEmpty(inheritclass) || parser.IsSpecialToken(inheritclass))
 						{
 							parser.ReportError("Expected class name to inherit from");
@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					{
 						// The next token must be the class to replace
 						parser.SkipWhitespace(true);
-						replaceclass = parser.ReadToken();
+						replaceclass = parser.StripTokenQuotes(parser.ReadToken());
 						if(string.IsNullOrEmpty(replaceclass) || parser.IsSpecialToken(replaceclass))
 						{
 							parser.ReportError("Expected class name to replace");

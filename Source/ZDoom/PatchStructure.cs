@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			// First token is the class name
 			parser.SkipWhitespace(true);
-			name = parser.ReadToken();
+			name = parser.StripTokenQuotes(parser.ReadToken());
 			if(string.IsNullOrEmpty(name))
 			{
 				parser.ReportError("Expected patch name");
