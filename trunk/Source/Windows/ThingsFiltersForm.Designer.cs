@@ -125,9 +125,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label3.AutoSize = true;
 			this.label3.Location = new System.Drawing.Point(15, 106);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(77, 14);
+			this.label3.Size = new System.Drawing.Size(89, 14);
 			this.label3.TabIndex = 4;
-			this.label3.Text = "Filter by fields:";
+			this.label3.Text = "Filter by settings:";
 			// 
 			// filtercategory
 			// 
