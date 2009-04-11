@@ -288,7 +288,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(DoCopySelection("Cut selected elements."))
 			{
 				// Get the delete action and check if it's bound
-				Action deleteitem = General.Actions["builder_deleteitem"];
+				Actions.Action deleteitem = General.Actions["builder_deleteitem"];
 				if(deleteitem.BeginBound)
 				{
 					// Perform delete action

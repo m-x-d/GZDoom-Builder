@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Double select-click? Make that the same as single edit-click
 			if(General.Actions.GetActionByName("builder_classicselect").KeyMatches(k))
 			{
-				Action a = General.Actions.GetActionByName("builder_classicedit");
+				Actions.Action a = General.Actions.GetActionByName("builder_classicedit");
 				if(a != null) a.Invoke();
 			}
 		}
