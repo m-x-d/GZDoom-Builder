@@ -107,6 +107,10 @@
 			<param name="Name" value="Linedefs Mode">
 			<param name="Local" value="e_linedefs.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Sectors Mode">
+			<param name="Local" value="e_sectors.html">
+			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Actions">
