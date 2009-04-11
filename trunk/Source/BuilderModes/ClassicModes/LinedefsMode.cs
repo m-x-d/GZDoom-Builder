@@ -184,6 +184,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Events
 
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_linedefs.html");
+		}
+
 		// Cancel mode
 		public override void OnCancel()
 		{

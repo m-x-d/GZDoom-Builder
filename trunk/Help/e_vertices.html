@@ -6,8 +6,9 @@
 	
 	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 	<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
+	<script type="text/javascript" src="scripts.js"></script>
 </head>
-<body>
+<body onresize="autoadjustheight('classiccontrols')">
 	
 	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
 	<param name="keyword" value="Vertices Mode">
@@ -33,13 +34,14 @@
 		</tr>
 		<tr>
 			<td valign="top"><b>Delete</b></td>
-			<td>Deletes the selected vertices.</td>
+			<td>Deletes the selected vertices. Note that this may also remove attached linedefs and break your sectors.</td>
 		</tr>
 		<tr>
 			<td valign="top"><b>C</b></td>
 			<td>Clears the selection.</td>
 		</tr>
 		</table>
+		<iframe src="classiccontrols.html" frameborder="0" width="100%" id="classiccontrols" scrolling="no" onload="autoadjustheight('classiccontrols')"></iframe>
 	</p>
 	</div>
 </body>

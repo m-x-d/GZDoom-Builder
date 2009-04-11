@@ -72,6 +72,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Methods
 
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_vertices.html");
+		}
+
 		// Cancel mode
 		public override void OnCancel()
 		{

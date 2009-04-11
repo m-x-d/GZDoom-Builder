@@ -30,6 +30,14 @@ body
 	border-top-width: 2px;
 }
 
+#iframecontents
+{
+	background: #ffffff;
+	padding: 0 0 0 0;
+	line-height: 1.6em;
+	border-top-style: none;
+}
+
 h1
 {
 	padding: 10px 10px 10px 10px;
