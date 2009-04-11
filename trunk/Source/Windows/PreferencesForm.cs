@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		public PreferencesForm()
 		{
-			Action[] actions;
+			Actions.Action[] actions;
 			ListViewItem item;
 			
 			// Initialize
@@ -96,11 +96,11 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Fill list of actions
 			actions = General.Actions.GetAllActions();
-			foreach(Action a in actions)
+			foreach(Actions.Action a in actions)
 			{
 				// Create item
 				item = listactions.Items.Add(a.Name, a.Title, 0);
-				item.SubItems.Add(Action.GetShortcutKeyDesc(a.ShortcutKey));
+				item.SubItems.Add(Actions.Action.GetShortcutKeyDesc(a.ShortcutKey));
 				item.SubItems[1].Tag = a.ShortcutKey;
 
 				// Put in category, if the category exists
@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder.Windows
 						// Don't count the selected action
 						if(item != listactions.SelectedItems[0])
 						{
-							Action a = General.Actions[item.Name];
+							Actions.Action a = General.Actions[item.Name];
 							int akey = (int)item.SubItems[1].Tag;
 
 							// Check if the key combination matches
@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// This fills the list of available controls for the specified action
-		private void FillControlsList(Action a)
+		private void FillControlsList(Actions.Action a)
 		{
 			actioncontrol.Items.Clear();
 			
@@ -462,7 +462,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Item selected
 		private void listactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-			Action action;
+			Actions.Action action;
 			KeyControl keycontrol;
 			int key;
 
@@ -498,7 +498,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Otherwise display the key in the textbox
 				if(actioncontrol.SelectedIndex == -1)
-					actionkey.Text = Action.GetShortcutKeyDesc(key);
+					actionkey.Text = Actions.Action.GetShortcutKeyDesc(key);
 				
 				// Show actions with same key
 				UpdateKeyUsedActions();
@@ -561,9 +561,9 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.SelectedIndex = -1;
 				
 				// Apply the key combination
-				listactions.SelectedItems[0].SubItems[1].Text = Action.GetShortcutKeyDesc(key);
+				listactions.SelectedItems[0].SubItems[1].Text = Actions.Action.GetShortcutKeyDesc(key);
 				listactions.SelectedItems[0].SubItems[1].Tag = key;
-				actionkey.Text = Action.GetShortcutKeyDesc(key);
+				actionkey.Text = Actions.Action.GetShortcutKeyDesc(key);
 				
 				// Show actions with same key
 				UpdateKeyUsedActions();
@@ -602,7 +602,7 @@ namespace CodeImp.DoomBuilder.Windows
 				key = (KeyControl)actioncontrol.SelectedItem;
 
 				// Apply the key combination
-				listactions.SelectedItems[0].SubItems[1].Text = Action.GetShortcutKeyDesc(key.key);
+				listactions.SelectedItems[0].SubItems[1].Text = Actions.Action.GetShortcutKeyDesc(key.key);
 				listactions.SelectedItems[0].SubItems[1].Tag = key.key;
 				
 				// Show actions with same key

@@ -1127,7 +1127,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if((e.KeyCode == Keys.F1) && (e.Modifiers == Keys.None))
 			{
 				// No action bound to F1?
-				Action[] f1actions = General.Actions.GetActionsByKey((int)e.KeyData);
+				Actions.Action[] f1actions = General.Actions.GetActionsByKey((int)e.KeyData);
 				if(f1actions.Length == 0)
 				{
 					// If we don't have any map open, show the Main Window help
@@ -1527,7 +1527,7 @@ namespace CodeImp.DoomBuilder.Windows
 						if(General.Actions.Exists(actionname))
 						{
 							// Put the action shortcut key on the menu item
-							menuitem.ShortcutKeyDisplayString = Action.GetShortcutKeyDesc(General.Actions[actionname].ShortcutKey);
+							menuitem.ShortcutKeyDisplayString = Actions.Action.GetShortcutKeyDesc(General.Actions[actionname].ShortcutKey);
 						}
 					}
 					// Edit mode info set for this item?
@@ -1539,7 +1539,7 @@ namespace CodeImp.DoomBuilder.Windows
 						if(General.Actions.Exists(actionname))
 						{
 							// Put the action shortcut key on the menu item
-							menuitem.ShortcutKeyDisplayString = Action.GetShortcutKeyDesc(General.Actions[actionname].ShortcutKey);
+							menuitem.ShortcutKeyDisplayString = Actions.Action.GetShortcutKeyDesc(General.Actions[actionname].ShortcutKey);
 						}
 					}
 
