@@ -2326,7 +2326,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Thing t in things) usedtags[t.Tag] = true;
 			
 			// Now find the first unused index
-			for(int i = General.Map.FormatInterface.MinTag + 1; i <= General.Map.FormatInterface.MaxTag; i++)
+			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
 				if(!usedtags.ContainsKey(i)) return i;
 			
 			// Problem: all tags used!
