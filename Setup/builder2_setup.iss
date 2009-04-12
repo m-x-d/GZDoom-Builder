@@ -34,6 +34,7 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 [Files]
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
 Source: Builder.cfg; DestDir: {app}; Flags: ignoreversion
+Source: Refmanual.chm; DestDir: {app}; Flags: ignoreversion
 Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion
 Source: Scintilla.dll; DestDir: {app}; Flags: ignoreversion
 Source: Trackbar.dll; DestDir: {app}; Flags: ignoreversion
