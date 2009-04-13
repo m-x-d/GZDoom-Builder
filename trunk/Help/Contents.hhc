@@ -113,16 +113,6 @@
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Actions">
-		<param name="Local" value="actions.html">
-		</OBJECT>
-	<UL>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="About Actions">
-			<param name="Local" value="actions.html">
-			</OBJECT>
-	</UL>
-	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Configurations">
 		<param name="Local" value="configurations.html">
 		</OBJECT>
