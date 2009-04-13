@@ -178,6 +178,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Setup controls
 			InitializeComponent();
 			editmodeitems = new List<ToolStripItem>();
+			labelcollapsedinfo.Text = "";
 			
 			// Fetch pointer
 			windowptr = base.Handle;
@@ -387,6 +388,10 @@ namespace CodeImp.DoomBuilder.Windows
 				lastposition = this.Location;
 				lastsize = this.Size;
 			}
+
+			// Info panel state?
+			bool expandedpanel = General.Settings.ReadSetting("mainwindow.expandedinfopanel", true);
+			if(expandedpanel != IsInfoPanelExpanded) ToggleInfoPanel();
 		}
 
 		// Window receives focus
@@ -479,6 +484,7 @@ namespace CodeImp.DoomBuilder.Windows
 					General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
 					General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
 					General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
+					General.Settings.WriteSetting("mainwindow.expandedinfopanel", IsInfoPanelExpanded);
 
 					// Save recent files
 					SaveRecentFiles();
@@ -1821,6 +1827,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemscripteditor.Enabled = (General.Map != null);
 			itemfittoscreen.Enabled = (General.Map != null);
 			menuzoom.Enabled = (General.Map != null);
+			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			
 			// View mode items
 			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
@@ -2015,12 +2022,14 @@ namespace CodeImp.DoomBuilder.Windows
 				if(thinginfo.Visible) thinginfo.Hide();
 				modename.Visible = false;
 				labelcollapsedinfo.Visible = true;
+				itemtoggleinfo.Checked = false;
 			}
 			else
 			{
 				panelinfo.Height = EXPANDED_INFO_HEIGHT;
 				buttontoggleinfo.Text = "6";	// Arrow down
 				labelcollapsedinfo.Visible = false;
+				itemtoggleinfo.Checked = true;
 				if(lastinfoobject is Vertex) ShowVertexInfo(lastinfoobject as Vertex);
 				else if(lastinfoobject is Linedef) ShowLinedefInfo(lastinfoobject as Linedef);
 				else if(lastinfoobject is Sector) ShowSectorInfo(lastinfoobject as Sector);

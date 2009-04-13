@@ -267,11 +267,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(226, 242);
+			label1.Location = new System.Drawing.Point(225, 242);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(148, 14);
 			label1.TabIndex = 20;
 			label1.Text = "Texture and Flats brightness:";
+			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// keyusedlabel
 			// 
@@ -985,7 +986,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// imagebrightnesslabel
 			// 
 			this.imagebrightnesslabel.AutoSize = true;
-			this.imagebrightnesslabel.Location = new System.Drawing.Point(539, 242);
+			this.imagebrightnesslabel.Location = new System.Drawing.Point(540, 242);
 			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
 			this.imagebrightnesslabel.Size = new System.Drawing.Size(31, 14);
 			this.imagebrightnesslabel.TabIndex = 22;
@@ -994,7 +995,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// doublesidedalphalabel
 			// 
 			this.doublesidedalphalabel.AutoSize = true;
-			this.doublesidedalphalabel.Location = new System.Drawing.Point(539, 188);
+			this.doublesidedalphalabel.Location = new System.Drawing.Point(540, 188);
 			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
 			this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
 			this.doublesidedalphalabel.TabIndex = 16;
@@ -1003,11 +1004,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(211, 188);
+			this.label2.Location = new System.Drawing.Point(226, 188);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(162, 14);
+			this.label2.Size = new System.Drawing.Size(147, 14);
 			this.label2.TabIndex = 14;
-			this.label2.Text = "Doublesided lines transparency:";
+			this.label2.Text = "Passable lines transparency:";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// blackbrowsers
 			// 

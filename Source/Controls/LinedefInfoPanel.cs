@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Controls
 				peggedness = "None";
 			
 			// Linedef info
-			infopanel.Text = " Lindedef " + l.Map.GetIndexForLinedef(l) + " ";
+			infopanel.Text = " Linedef " + l.Map.GetIndexForLinedef(l) + " ";
 			action.Text = act.ToString();
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg.ToString() + "\u00B0";
