@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -210,6 +211,19 @@ namespace CodeImp.DoomBuilder.Map
 			return map.GetIndexForSidedef(this);
 		}
 		
+		// This creates a checksum from the sidedef properties
+		// Used for faster sidedefs compression
+		public uint GetChecksum()
+		{
+			CRC crc = new CRC();
+			crc.Add(sector.FixedIndex);
+			crc.Add(offsetx);
+			crc.Add(offsety);
+			crc.Add(longtexnamehigh);
+			crc.Add(longtexnamelow);
+			crc.Add(longtexnamemid);
+			return (uint)(crc.Value & 0x00000000FFFFFFFF);
+		}
 		
 		// This copies textures to another sidedef
 		// And possibly also the offsets
@@ -392,7 +406,8 @@ namespace CodeImp.DoomBuilder.Map
 			sector = newsector;
 			
 			// Attach to sector
-			sectorlistitem = sector.AttachSidedef(this);
+			if(sector != null)
+				sectorlistitem = sector.AttachSidedef(this);
 
 			General.Map.IsChanged = true;
 		}

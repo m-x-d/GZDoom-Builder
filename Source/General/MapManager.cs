@@ -448,8 +448,11 @@ namespace CodeImp.DoomBuilder
 				if(map.Sidedefs.Count > io.MaxSidedefs)
 				{
 					// Compress sidedefs
+					oldstatus = General.MainWindow.Status;
+					General.MainWindow.DisplayStatus(StatusType.Busy, "Compressing sidedefs...");
 					outputset.CompressSidedefs();
-
+					General.MainWindow.DisplayStatus(oldstatus);
+					
 					// Check if it still doesnt fit
 					if(map.Sidedefs.Count > io.MaxSidedefs)
 					{
