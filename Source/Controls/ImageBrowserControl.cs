@@ -232,23 +232,10 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				foreach(ListViewItem item in list.Items)
 				{
-					if((item.Group == preferredgroup) && (string.Compare(item.Text, name, true) == 0))
-					{
-						lvi = item;
-						break;
-					}
-				}
-			}
-
-			// If nothing found yet, search all items
-			if(lvi == null)
-			{
-				foreach(ListViewItem item in list.Items)
-				{
 					if(string.Compare(item.Text, name, true) == 0)
 					{
 						lvi = item;
-						break;
+						if(item.Group == preferredgroup) break;
 					}
 				}
 			}

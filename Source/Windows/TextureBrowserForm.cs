@@ -47,15 +47,18 @@ namespace CodeImp.DoomBuilder.Windows
 		private ListViewGroup usedgroup;
 		private ListViewGroup availgroup;
 		private ListViewItem selectedset;
+		private string selecttextureonfill;
 		
 		// Properties
 		public string SelectedName { get { return selectedname; } }
 		
 		// Constructor
-		public TextureBrowserForm()
+		public TextureBrowserForm(string selecttexture)
 		{
 			Cursor.Current = Cursors.WaitCursor;
 			ListViewItem item;
+			bool foundselecttexture = false;
+			long longname = Lump.MakeLongName(selecttexture);
 			
 			// Initialize
 			InitializeComponent();
@@ -100,11 +103,48 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Select the last one that was selected
 			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
-			foreach(ListViewItem i in texturesets.Items) if(i.Text == selectname) selectedset = i;
+			foreach(ListViewItem i in texturesets.Items)
+			{
+				if(i.Text == selectname)
+				{
+					i.Selected = true;
+					IFilledTextureSet set = (i.Tag as IFilledTextureSet);
+					foreach(ImageData img in set.Textures)
+					{
+						if(img.LongName == longname)
+						{
+							i.Selected = true;
+							foundselecttexture = true;
+							break;
+						}
+					}
+					break;
+				}
+			}
+			
+			// If the selected texture was not found in the last-selected set, try finding it in the other sets
+			if(!foundselecttexture)
+			{
+				foreach(ListViewItem i in texturesets.Items)
+				{
+					IFilledTextureSet set = (i.Tag as IFilledTextureSet);
+					foreach(ImageData img in set.Textures)
+					{
+						if(img.LongName == longname)
+						{
+							i.Selected = true;
+							break;
+						}
+					}
+				}
+			}
 			
 			// None selected? Then select the first
-			if(selectedset == null) selectedset = texturesets.Items[0];
+			if(texturesets.SelectedItems.Count == 0)
+				texturesets.Items[0].Selected = true;
 
+			selecttextureonfill = selecttexture;
+			
 			// Make groups
 			usedgroup = browser.AddGroup("Used Textures");
 			availgroup = browser.AddGroup("Available Textures");
@@ -124,53 +164,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
 			if(this.WindowState == FormWindowState.Normal) this.StartPosition = FormStartPosition.CenterParent;
 			this.ResumeLayout(true);
-		}
-
-		// This fills the lists and selects the given texture
-		public void Setup(string selecttexture)
-		{
-			bool fillrequired = (texturesets.SelectedItems.Count == 0) || (selectedset == texturesets.SelectedItems[0]);
-			
-			if(!string.IsNullOrEmpty(selecttexture))
-			{
-				// We prefer selecting the texture using the Texture Set that was previously selected
-				if(selectedset != null)
-				{
-					if(SelectTextureInSet(selectedset, selecttexture)) return;
-				}
-
-				// Otherwise, go from top to bottom to find the texture
-				foreach(ListViewItem i in texturesets.Items)
-				{
-					if(SelectTextureInSet(i, selecttexture)) return;
-				}
-			}
-			
-			// Select texture set and fill list
-			selectedset.Selected = true;
-			selectedset.EnsureVisible();
-			if(fillrequired) FillImagesList(selecttexture);
-		}
-
-		// This selects a Texture Set and the texture if it can be found
-		private bool SelectTextureInSet(ListViewItem setitem, string selecttexture)
-		{
-			long longname = Lump.MakeLongName(selecttexture);
-			IFilledTextureSet set = (setitem.Tag as IFilledTextureSet);
-			foreach(ImageData img in set.Textures)
-			{
-				if(img.LongName == longname)
-				{
-					// Texture found in this set! Select it now.
-					selectedset = setitem;
-					selectedset.Selected = true;
-					selectedset.EnsureVisible();
-					FillImagesList(selecttexture);
-					return true;
-				}
-			}
-			
-			return false;
 		}
 
 		// Selection changed
@@ -279,8 +272,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Returns null when cancelled.
 		public static string Browse(IWin32Window parent, string select)
 		{
-			TextureBrowserForm browser = new TextureBrowserForm();
-			browser.Setup(select);
+			TextureBrowserForm browser = new TextureBrowserForm(select);
 			if(browser.ShowDialog(parent) == DialogResult.OK)
 			{
 				// Return result
@@ -299,12 +291,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Anything slected?
 			if(texturesets.SelectedItems.Count > 0)
 			{
-				// Not the same?
-				if(texturesets.SelectedItems[0] != selectedset)
-				{
-					selectedset = texturesets.SelectedItems[0];
-					FillImagesList(null);
-				}
+				selectedset = texturesets.SelectedItems[0];
+				FillImagesList();
 			}
 		}
 
@@ -315,7 +303,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// This fills the list of textures, depending on the selected texture set
-		private void FillImagesList(string selecttexture)
+		private void FillImagesList()
 		{
 			// Get the selected texture set
 			IFilledTextureSet set = (selectedset.Tag as IFilledTextureSet);
@@ -333,10 +321,6 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Done adding
 			browser.EndAdding();
-
-			// Select texture
-			if(!string.IsNullOrEmpty(selecttexture))
-				browser.SelectItem(selecttexture, usedgroup);
 		}
 
 		// Help
@@ -344,6 +328,16 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			General.ShowHelp("w_imagesbrowser.html");
 			hlpevent.Handled = true;
+		}
+
+		private void TextureBrowserForm_Shown(object sender, EventArgs e)
+		{
+			// Select texture
+			if(!string.IsNullOrEmpty(selecttextureonfill))
+			{
+				browser.SelectItem(selecttextureonfill, usedgroup);
+				selecttextureonfill = null;
+			}
 		}
 	}
 }

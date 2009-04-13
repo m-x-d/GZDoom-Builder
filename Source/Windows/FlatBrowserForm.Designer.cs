@@ -139,6 +139,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Browse Flats";
 			this.Load += new System.EventHandler(this.FlatBrowserForm_Load);
+			this.Shown += new System.EventHandler(this.FlatBrowserForm_Shown);
 			this.Activated += new System.EventHandler(this.FlatBrowserForm_Activated);
 			this.Move += new System.EventHandler(this.FlatBrowserForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FlatBrowserForm_FormClosing);
