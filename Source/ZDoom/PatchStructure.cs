@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(tokenstr != "{")
 			{
 				// Rewind so this structure can be read again
-				parser.DataStream.Seek(-tokenstr.Length, SeekOrigin.Current);
+				parser.DataStream.Seek(-tokenstr.Length - 1, SeekOrigin.Current);
 				return;
 			}
 
