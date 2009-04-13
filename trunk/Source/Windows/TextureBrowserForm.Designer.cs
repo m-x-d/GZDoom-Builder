@@ -139,6 +139,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Browse Textures";
 			this.Load += new System.EventHandler(this.TextureBrowserForm_Load);
+			this.Shown += new System.EventHandler(this.TextureBrowserForm_Shown);
 			this.Activated += new System.EventHandler(this.TextureBrowserForm_Activated);
 			this.Move += new System.EventHandler(this.TextureBrowserForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextureBrowserForm_FormClosing);
