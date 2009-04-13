@@ -62,6 +62,14 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Methods
 
+		public void Add(long value)
+		{
+			uint lo = (uint)((ulong)value & 0x00000000FFFFFFFF);
+			uint hi = (uint)(((ulong)value & 0xFFFFFFFF00000000) >> 32);
+			crc.Update(unchecked((int)lo));
+			crc.Update(unchecked((int)hi));
+		}
+
 		public void Add(int value)
 		{
 			crc.Update(value);

@@ -2435,9 +2435,98 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This performs sidedefs compression
-		public void CompressSidedefs()
+		// Note: Only use this for saving, because this messes up the expected data structure horribly.
+		internal void CompressSidedefs()
 		{
-			// TODO: Make this happen
+			Dictionary<uint, List<Sidedef>> storedsides = new Dictionary<uint, List<Sidedef>>(sidedefs.Count);
+			int originalsidescount = sidedefs.Count;
+			double starttime = General.Clock.GetCurrentTime();
+			
+			LinkedListNode<Sidedef> sn = sidedefs.First;
+			while(sn != null)
+			{
+				Sidedef stored = null;
+				LinkedListNode<Sidedef> nextsn = sn.Next;
+				
+				// Check if checksum is stored
+				bool samesidedef = false;
+				uint checksum = sn.Value.GetChecksum();
+				bool checksumstored = storedsides.ContainsKey(checksum);
+				if(checksumstored)
+				{
+					List<Sidedef> othersides = storedsides[checksum];
+					foreach(Sidedef os in othersides)
+					{
+						// They must be in the same sector
+						if(sn.Value.Sector == os.Sector)
+						{
+							// Check if sidedefs are really the same
+							stored = os;
+							MemoryStream sidemem = new MemoryStream(1024);
+							SerializerStream sidedata = new SerializerStream(sidemem);
+							MemoryStream othermem = new MemoryStream(1024);
+							SerializerStream otherdata = new SerializerStream(othermem);
+							sn.Value.ReadWrite(sidedata);
+							os.ReadWrite(otherdata);
+							if(sidemem.Length == othermem.Length)
+							{
+								samesidedef = true;
+								sidemem.Seek(0, SeekOrigin.Begin);
+								othermem.Seek(0, SeekOrigin.Begin);
+								for(int i = 0; i < sidemem.Length; i++)
+								{
+									if(sidemem.ReadByte() != othermem.ReadByte())
+									{
+										samesidedef = false;
+										break;
+									}
+								}
+							}
+							
+							if(samesidedef) break;
+						}
+					}
+				}
+
+				// Same sidedef?
+				if(samesidedef)
+				{
+					// Replace with stored sidedef
+					bool isfront = sn.Value.IsFront;
+					sn.Value.Line.DetachSidedef(sn.Value);
+					if(isfront)
+						sn.Value.Line.AttachFront(stored);
+					else
+						sn.Value.Line.AttachBack(stored);
+					
+					// Remove the sidedef
+					sn.Value.ChangeSector(null);
+					sidedefs.Remove(sn);
+				}
+				else
+				{
+					// Store this new one
+					if(checksumstored)
+					{
+						storedsides[checksum].Add(sn.Value);
+					}
+					else
+					{
+						List<Sidedef> newlist = new List<Sidedef>(4);
+						newlist.Add(sn.Value);
+						storedsides.Add(checksum, newlist);
+					}
+				}
+				
+				// Next
+				sn = nextsn;
+			}
+
+			// Output info
+			double endtime = General.Clock.GetCurrentTime();
+			double deltatimesec = (endtime - starttime) / 1000.0d;
+			float ratio = 100.0f - (((float)sidedefs.Count / (float)originalsidescount) * 100.0f);
+			General.WriteLogLine("Sidedefs compressed: " + sidedefs.Count + " remaining out of " + originalsidescount + " (" + ratio.ToString("########0.00") + "%) in " + deltatimesec.ToString("########0.00") + " seconds");
 		}
 
 		// This converts flags and activations to UDMF fields
