@@ -284,6 +284,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Text = "Find and Replace";
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FindReplaceForm_KeyUp);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FindReplaceForm_FormClosing);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.FindReplaceForm_HelpRequested);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FindReplaceForm_KeyDown);
 			this.resultspanel.ResumeLayout(false);
 			this.resultspanel.PerformLayout();

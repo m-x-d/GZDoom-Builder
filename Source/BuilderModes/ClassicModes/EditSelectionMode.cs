@@ -598,6 +598,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_editselection.html");
+		}
+
 		// Mode engages
 		public override void OnEngage()
 		{

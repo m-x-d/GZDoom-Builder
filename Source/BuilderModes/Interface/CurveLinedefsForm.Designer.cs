@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// vertices
 			// 
+			this.vertices.AllowDecimal = false;
 			this.vertices.AllowNegative = false;
 			this.vertices.AllowRelative = false;
 			this.vertices.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -88,6 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// distance
 			// 
+			this.distance.AllowDecimal = false;
 			this.distance.AllowNegative = false;
 			this.distance.AllowRelative = false;
 			this.distance.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -101,6 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// angle
 			// 
+			this.angle.AllowDecimal = false;
 			this.angle.AllowNegative = false;
 			this.angle.AllowRelative = false;
 			this.angle.ImeMode = System.Windows.Forms.ImeMode.Off;
@@ -226,6 +229,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Curve Linedefs";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CurveLinedefsForm_FormClosing);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.CurveLinedefsForm_HelpRequested);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

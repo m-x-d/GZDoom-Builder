@@ -202,6 +202,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply now
 			General.Editing.AcceptMode();
 		}
+
+		private void CurveLinedefsForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("e_curvelinedefs.html");
+		}
 		
 		#endregion
 	}

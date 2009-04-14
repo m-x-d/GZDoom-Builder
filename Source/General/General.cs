@@ -1502,9 +1502,30 @@ namespace CodeImp.DoomBuilder
 		// This shows the reference manual
 		public static void ShowHelp(string pagefile)
 		{
-			Help.ShowHelp(mainwindow, Path.Combine(apppath, HELP_FILE), HelpNavigator.Topic, pagefile);
+			ShowHelp(pagefile, HELP_FILE);
 		}
-		
+
+		// This shows the reference manual
+		public static void ShowHelp(string pagefile, string chmfile)
+		{
+			// Check if the file can be found in the root
+			string filepathname = Path.Combine(apppath, chmfile);
+			if(!File.Exists(filepathname))
+			{
+				// Check if the file exists in the plugins directory
+				filepathname = Path.Combine(pluginspath, chmfile);
+				if(!File.Exists(filepathname))
+				{
+					// Fail
+					WriteLogLine("ERROR: Can't find the help file \"" + chmfile + "\"");
+					return;
+				}
+			}
+			
+			// Show help file
+			Help.ShowHelp(mainwindow, filepathname, HelpNavigator.Topic, pagefile);
+		}
+
 		// This returns a unique temp filename
 		internal static string MakeTempFilename(string tempdir)
 		{

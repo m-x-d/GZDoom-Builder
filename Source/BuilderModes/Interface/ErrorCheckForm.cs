@@ -458,6 +458,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 		}
+
+		private void ErrorCheckForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("e_mapanalysis.html");
+		}
 		
 		#endregion
 	}

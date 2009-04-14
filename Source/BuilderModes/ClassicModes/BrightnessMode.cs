@@ -337,7 +337,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Events
-		
+
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_brightness.html");
+		}
+
 		// Mode engages
 		public override void OnEngage()
 		{

@@ -90,6 +90,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 				this.Close();
 			}
 		}
+
+		private void MakeDoorForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("e_sectors.html");
+		}
 		
 		#endregion
 	}
