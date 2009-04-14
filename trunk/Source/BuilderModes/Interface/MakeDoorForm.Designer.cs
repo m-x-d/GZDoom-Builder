@@ -137,6 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Make Door";
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.MakeDoorForm_HelpRequested);
 			this.ResumeLayout(false);
 
 		}

@@ -184,6 +184,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Map Analysis";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ErrorCheckForm_FormClosing);
+			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ErrorCheckForm_HelpRequested);
 			this.resultspanel.ResumeLayout(false);
 			this.ResumeLayout(false);
 

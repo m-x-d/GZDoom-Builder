@@ -64,6 +64,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_findreplace.html");
+		}
+
 		// Cancelled
 		public override void OnCancel()
 		{

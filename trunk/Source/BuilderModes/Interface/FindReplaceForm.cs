@@ -328,6 +328,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RedrawDisplay();
 			}
 		}
+
+		private void FindReplaceForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			General.ShowHelp("e_findreplace.html");
+		}
 		
 		#endregion
 

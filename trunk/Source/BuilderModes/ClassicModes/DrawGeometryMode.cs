@@ -351,6 +351,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_drawgeometry.html");
+		}
+
 		// Engaging
 		public override void OnEngage()
 		{

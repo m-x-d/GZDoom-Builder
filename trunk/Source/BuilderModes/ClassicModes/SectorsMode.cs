@@ -383,7 +383,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Events
-		
+
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_sectors.html");
+		}
+
 		// Cancel mode
 		public override void OnCancel()
 		{
