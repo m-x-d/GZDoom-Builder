@@ -100,8 +100,20 @@
 			<param name="Local" value="editingmodes.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Vertices Mode">
-			<param name="Local" value="e_vertices.html">
+			<param name="Name" value="Brightness Mode">
+			<param name="Local" value="e_brightness.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Curve Linedefs Mode">
+			<param name="Local" value="e_curvelinedefs.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Draw Geometry Mode">
+			<param name="Local" value="e_drawgeometry.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Edit Selection Mode">
+			<param name="Local" value="e_editselection.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Linedefs Mode">
@@ -110,6 +122,14 @@
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Sectors Mode">
 			<param name="Local" value="e_sectors.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Things Mode">
+			<param name="Local" value="e_things.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Vertices Mode">
+			<param name="Local" value="e_vertices.html">
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
