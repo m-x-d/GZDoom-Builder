@@ -116,8 +116,16 @@
 			<param name="Local" value="e_editselection.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Find &amp; Replace Mode">
+			<param name="Local" value="e_findreplace.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Linedefs Mode">
 			<param name="Local" value="e_linedefs.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Map Analysis Mode">
+			<param name="Local" value="e_mapanalysis.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Sectors Mode">
