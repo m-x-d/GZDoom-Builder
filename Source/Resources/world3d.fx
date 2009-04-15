@@ -20,6 +20,9 @@ struct PixelData
 // Modulation color
 float4 modulatecolor;
 
+// Highlight color
+float4 highlightcolor;
+
 // Matrix for final transformation
 float4x4 worldviewproj;
 
@@ -74,6 +77,30 @@ float4 ps_fullbright(PixelData pd) : COLOR
     return tcolor * modulatecolor;
 }
 
+// Normal pixel shader with highlight
+float4 ps_main_highlight(PixelData pd) : COLOR
+{
+	float4 tcolor = tex2D(texturesamp, pd.uv);
+	
+	// Blend texture color, vertex color and modulation color
+	float4 ncolor = tcolor * pd.color * modulatecolor;
+	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
+	
+    return ncolor + hcolor * highlightcolor.a;
+}
+
+// Full-bright pixel shader with highlight
+float4 ps_fullbright_highlight(PixelData pd) : COLOR
+{
+	float4 tcolor = tex2D(texturesamp, pd.uv);
+	
+	// Blend texture color and modulation color
+	float4 ncolor = tcolor * modulatecolor;
+	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
+	
+    return ncolor + hcolor * highlightcolor.a;
+}
+
 // Technique for shader model 2.0
 technique SM20
 {
@@ -89,5 +116,19 @@ technique SM20
     {
 	    VertexShader = compile vs_2_0 vs_main();
 	    PixelShader = compile ps_2_0 ps_fullbright();
+    }
+	
+	// Normal with highlight
+    pass p2
+    {
+	    VertexShader = compile vs_2_0 vs_main();
+	    PixelShader = compile ps_2_0 ps_main_highlight();
+    }
+    
+    // Full brightness mode with highlight
+    pass p3
+    {
+	    VertexShader = compile vs_2_0 vs_main();
+	    PixelShader = compile ps_2_0 ps_fullbright_highlight();
     }
 }

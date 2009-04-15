@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void FinishGeometry();
 
 		// Rendering methods
+		void SetHighlightedObject(IVisualPickable obj);
 		void AddSectorGeometry(VisualGeometry g);
 		void AddThingGeometry(VisualThing t);
 		void RenderCrosshair();
