@@ -604,6 +604,9 @@ namespace CodeImp.DoomBuilder
 			for(int i = 0; i < args.Length; i++)
 				General.WriteLogLine("Argument " + i + ":   \"" + args[i] + "\"");
 			
+            // Set path to 7-Zip library
+            SevenZip.SevenZipExtractor.SetLibraryPath(Path.Combine(apppath, "7zx.dll"));
+
 			// Parse command-line arguments
 			ParseCommandLineArgs(args);
 			
