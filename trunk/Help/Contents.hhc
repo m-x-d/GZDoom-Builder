@@ -124,6 +124,10 @@
 			<param name="Local" value="e_linedefs.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Make Sectors Mode">
+			<param name="Local" value="e_makesectors.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Map Analysis Mode">
 			<param name="Local" value="e_mapanalysis.html">
 			</OBJECT>
@@ -138,6 +142,10 @@
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Vertices Mode">
 			<param name="Local" value="e_vertices.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Visual Mode">
+			<param name="Local" value="e_visual.html">
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
