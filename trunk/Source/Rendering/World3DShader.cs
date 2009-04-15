@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private EffectHandle minfiltersettings;
 		private EffectHandle magfiltersettings;
 		private EffectHandle modulatecolor;
+		private EffectHandle highlightcolor;
 		
 		#endregion
 
@@ -72,6 +73,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				minfiltersettings = effect.GetParameter(null, "minfiltersettings");
 				magfiltersettings = effect.GetParameter(null, "magfiltersettings");
 				modulatecolor = effect.GetParameter(null, "modulatecolor");
+				highlightcolor = effect.GetParameter(null, "highlightcolor");
 			}
 
 			// Initialize world vertex declaration
@@ -100,6 +102,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(minfiltersettings != null) minfiltersettings.Dispose();
 				if(magfiltersettings != null) magfiltersettings.Dispose();
 				if(modulatecolor != null) modulatecolor.Dispose();
+				if(highlightcolor != null) highlightcolor.Dispose();
 
 				// Done
 				base.Dispose();
@@ -113,17 +116,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets the constant settings
 		public void SetConstants(bool bilinear, bool useanisotropic)
 		{
-			if(manager.Enabled)
+			if(manager.Enabled && General.Settings.QualityDisplay)
 			{
 				if(bilinear)
 				{
-					effect.SetValue<int>(magfiltersettings, (int)TextureFilter.Linear);
+					effect.SetValue(magfiltersettings, (int)TextureFilter.Linear);
 					if(useanisotropic) effect.SetValue<int>(minfiltersettings, (int)TextureFilter.Anisotropic);
 				}
 				else
 				{
-					effect.SetValue<int>(magfiltersettings, (int)TextureFilter.Point);
-					effect.SetValue<int>(minfiltersettings, (int)TextureFilter.Point);
+					effect.SetValue(magfiltersettings, (int)TextureFilter.Point);
+					effect.SetValue(minfiltersettings, (int)TextureFilter.Point);
 				}
 			}
 		}
@@ -131,14 +134,23 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets the modulation color
 		public void SetModulateColor(int modcolor)
 		{
-			if(manager.Enabled)
+			if(manager.Enabled && General.Settings.QualityDisplay)
 			{
-				effect.SetValue<Color4>(modulatecolor, new Color4(modcolor));
+				effect.SetValue(modulatecolor, new Color4(modcolor));
 			}
 			else
 			{
 				Device device = manager.D3DDevice.Device;
 				device.SetRenderState(RenderState.TextureFactor, modcolor);
+			}
+		}
+
+		// This sets the highlight color
+		public void SetHighlightColor(int hicolor)
+		{
+			if(manager.Enabled && General.Settings.QualityDisplay)
+			{
+				effect.SetValue(highlightcolor, new Color4(hicolor));
 			}
 		}
 

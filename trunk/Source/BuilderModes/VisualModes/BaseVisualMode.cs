@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constants
 		
 		// Object picking
-		private const double PICK_INTERVAL = 100.0d;
+		private const double PICK_INTERVAL = 80.0d;
 		private const float PICK_RANGE = 0.98f;
 
 		// Gravity
@@ -265,6 +265,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Use fog!
 				renderer.SetFogMode(true);
+
+				// Set target for highlighting
+				renderer.SetHighlightedObject(target.picked);
 				
 				// Begin with geometry
 				renderer.StartGeometry();
