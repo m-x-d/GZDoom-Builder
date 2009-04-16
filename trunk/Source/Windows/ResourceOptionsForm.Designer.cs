@@ -342,7 +342,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pk3filedialog
 			// 
-			this.pk3filedialog.Filter = "Doom PK3 Files (*.pk3)|*.pk3";
+			this.pk3filedialog.Filter = "Doom PK3 Files (*.pk3 *.pk7)|*.pk3;*.pk7";
 			this.pk3filedialog.Title = "Browse PK3 File";
 			// 
 			// ResourceOptionsForm
