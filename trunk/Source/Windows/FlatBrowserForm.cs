@@ -81,14 +81,6 @@ namespace CodeImp.DoomBuilder.Windows
 				item.SubItems.Add(ts.Textures.Count.ToString(), item.ForeColor,
 						item.BackColor, new Font(item.Font, FontStyle.Regular));
 			}
-
-			// Add special textures sets
-			item = texturesets.Items.Add(General.Map.Data.AllTextureSet.Name);
-			item.Tag = General.Map.Data.AllTextureSet;
-			item.ImageIndex = 1;
-			item.UseItemStyleForSubItems = false;
-			item.SubItems.Add(General.Map.Data.AllTextureSet.Textures.Count.ToString(),
-				item.ForeColor, item.BackColor, new Font(item.Font, FontStyle.Regular));
 			
 			// Add container-specific texture sets
 			foreach(ResourceTextureSet ts in General.Map.Data.ResourceTextureSets)
@@ -101,13 +93,20 @@ namespace CodeImp.DoomBuilder.Windows
 						item.BackColor, new Font(item.Font, FontStyle.Regular));
 			}
 
+			// Add All textures set
+			item = texturesets.Items.Add(General.Map.Data.AllTextureSet.Name);
+			item.Tag = General.Map.Data.AllTextureSet;
+			item.ImageIndex = 1;
+			item.UseItemStyleForSubItems = false;
+			item.SubItems.Add(General.Map.Data.AllTextureSet.Textures.Count.ToString(),
+				item.ForeColor, item.BackColor, new Font(item.Font, FontStyle.Regular));
+
 			// Select the last one that was selected
 			string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
 			foreach(ListViewItem i in texturesets.Items)
 			{
 				if(i.Text == selectname)
 				{
-					i.Selected = true;
 					IFilledTextureSet set = (i.Tag as IFilledTextureSet);
 					foreach(ImageData img in set.Textures)
 					{
@@ -133,14 +132,29 @@ namespace CodeImp.DoomBuilder.Windows
 						if(img.LongName == longname)
 						{
 							i.Selected = true;
+							foundselecttexture = true;
 							break;
 						}
 					}
 				}
 			}
 
-			// None selected? Then select the first
-			if(texturesets.SelectedItems.Count == 0)
+			// Texture still now found? Then just select the last used set
+			if(!foundselecttexture)
+			{
+				foreach(ListViewItem i in texturesets.Items)
+				{
+					if(i.Text == selectname)
+					{
+						i.Selected = true;
+						foundselecttexture = true;
+						break;
+					}
+				}
+			}
+
+			// Still none found? Then select the first
+			if(!foundselecttexture)
 				texturesets.Items[0].Selected = true;
 
 			selecttextureonfill = selecttexture;
