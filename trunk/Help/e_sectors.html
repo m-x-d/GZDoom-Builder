@@ -14,6 +14,7 @@
 	<param name="keyword" value="Sectors Mode">
 	<param name="keyword" value="Join Sectors">
 	<param name="keyword" value="Merge Sectors">
+	<param name="keyword" value="Stairs">
 	</object>
 	
 	<div id="title"><h1>Sectors Mode</h1></div>
@@ -53,20 +54,32 @@
 			<td>Create a door from the selected or highlighted sectors. This will show a dialog which allows you to choose textures and flats for the door.</td>
 		</tr>
 		<tr>
-			<td valign="top"><b>Control+ScrollDown</b></td>
-			<td>Lowers the ceiling of the selected or highlighted sectors by 8 mappixels.</td>
-		</tr>
-		<tr>
-			<td valign="top"><b>Control+ScrollUp</b></td>
-			<td>Raises the ceiling of the selected or highlighted sectors by 8 mappixels.</td>
+			<td valign="top"><b>G</b></td>
+			<td>Make gradient brightness levels from first selected sector to last selected sector.</td>
 		</tr>
 		<tr>
 			<td valign="top"><b>Shift+ScrollDown</b></td>
-			<td>Lowers the floors of the selected or highlighted sectors by 8 mappixels.</td>
+			<td>Lowers the ceiling of the selected or highlighted sectors by 8 mappixels.</td>
 		</tr>
 		<tr>
 			<td valign="top"><b>Shift+ScrollUp</b></td>
+			<td>Raises the ceiling of the selected or highlighted sectors by 8 mappixels.</td>
+		</tr>
+		<tr>
+			<td valign="top"><b>Shift+G</b></td>
+			<td>Make gradient ceiling heights from first selected sector to last selected sector.</td>
+		</tr>
+		<tr>
+			<td valign="top"><b>Control+ScrollDown</b></td>
+			<td>Lowers the floors of the selected or highlighted sectors by 8 mappixels.</td>
+		</tr>
+		<tr>
+			<td valign="top"><b>Control+ScrollUp</b></td>
 			<td>Raises the floors of the selected or highlighted sectors by 8 mappixels.</td>
+		</tr>
+		<tr>
+			<td valign="top"><b>Control+G</b></td>
+			<td>Make gradient floor heights (stairs) from first selected sector to last selected sector.</td>
 		</tr>
 		</table>
 		<iframe src="classiccontrols.html" frameborder="0" width="100%" id="classiccontrols" scrolling="no" onload="autoadjustheight('classiccontrols')"></iframe>
