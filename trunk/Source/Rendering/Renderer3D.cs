@@ -388,7 +388,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// Highlight
 				double time = General.Clock.GetCurrentTime();
-				highlightglow = (float)Math.Sin(time / 100.0f) * 0.3f + 0.5f;
+				highlightglow = (float)Math.Sin(time / 100.0f) * 0.3f + 0.4f;
 
 				// Determine shader pass to use
 				if(fullbrightness) shaderpass = 1; else shaderpass = 0;
