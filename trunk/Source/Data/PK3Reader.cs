@@ -93,8 +93,20 @@ namespace CodeImp.DoomBuilder.Data
 		private SevenZipExtractor OpenPK3File()
 		{
 			FileStream filestream = File.Open(location.location, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            InArchiveFormat tryas;
 			filestream.Seek(0, SeekOrigin.Begin);
-			return new SevenZipExtractor(filestream, InArchiveFormat.Zip);
+            tryas = InArchiveFormat.Zip;
+            if (filestream.ReadByte() == (byte)'7' &&
+                filestream.ReadByte() == (byte)'z' &&
+                filestream.ReadByte() == 0xBC &&
+                filestream.ReadByte() == 0xAF &&
+                filestream.ReadByte() == 0x27 &&
+                filestream.ReadByte() == 0x1C)
+            {
+                tryas = InArchiveFormat.SevenZip;
+            }
+			filestream.Seek(0, SeekOrigin.Begin);
+			return new SevenZipExtractor(filestream, tryas);
 		}
 
 		#endregion
