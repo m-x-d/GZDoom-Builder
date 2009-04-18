@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Save selection as marks
 			General.Map.Map.ClearAllMarks(false);
-			General.Map.Map.MarkAllSelectedGeometry(true, false);
+			General.Map.Map.MarkAllSelectedGeometry(true, false, false, false, false);
 			General.Map.Map.ClearAllSelected();
 			General.Map.Map.SelectionType = SelectionType.All;
 			

@@ -1398,7 +1398,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// When sidedefsfromsectors is true, then the sidedefs are marked according to the
 		/// marked sectors. Otherwise the sidedefs are marked according to the marked linedefs.
 		/// </summary>
-		public void MarkAllSelectedGeometry(bool mark, bool sidedefsfromsectors)
+		public void MarkAllSelectedGeometry(bool mark, bool linedefsfromvertices, bool verticesfromlinedefs, bool sectorsfromlinedefs, bool sidedefsfromsectors)
 		{
 			General.Map.Map.ClearAllMarks(!mark);
 
@@ -1410,25 +1410,34 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Linedefs from vertices
 			// We do this before "vertices from lines" because otherwise we get lines marked that we didn't select
-			ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(!mark, mark, !mark);
-			foreach(Linedef l in lines) l.Marked = mark;
-
+			if(linedefsfromvertices)
+			{
+				ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(!mark, mark, !mark);
+				foreach(Linedef l in lines) l.Marked = mark;
+			}
+			
 			// Vertices from linedefs
-			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(mark);
-			foreach(Vertex v in verts) v.Marked = mark;
-
+			if(verticesfromlinedefs)
+			{
+				ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(mark);
+				foreach(Vertex v in verts) v.Marked = mark;
+			}
+			
 			// Mark sectors from linedefs (note: this must be the first to mark
 			// sectors, because this clears the sector marks!)
-			General.Map.Map.ClearMarkedSectors(mark);
-			foreach(Linedef l in General.Map.Map.Linedefs)
+			if(sectorsfromlinedefs)
 			{
-				if(!l.Selected)
+				General.Map.Map.ClearMarkedSectors(mark);
+				foreach(Linedef l in General.Map.Map.Linedefs)
 				{
-					if(l.Front != null) l.Front.Sector.Marked = !mark;
-					if(l.Back != null) l.Back.Sector.Marked = !mark;
+					if(!l.Selected)
+					{
+						if(l.Front != null) l.Front.Sector.Marked = !mark;
+						if(l.Back != null) l.Back.Sector.Marked = !mark;
+					}
 				}
 			}
-
+			
 			// Direct sectors
 			General.Map.Map.MarkSelectedSectors(true, mark);
 

@@ -808,7 +808,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Mark selected geometry
 				General.Map.Map.ClearAllMarks(false);
-				General.Map.Map.MarkAllSelectedGeometry(true, false);
+				General.Map.Map.MarkAllSelectedGeometry(true, true, true, true, false);
 				
 				// Move geometry to new position
 				UpdateGeometry();
