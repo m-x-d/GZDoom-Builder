@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Controls
 			string peggedness;
 			
 			// Show/hide stuff depending on format
-			if(General.Map.FormatInterface.HasActionArgs)
+			if(!General.Map.FormatInterface.HasActionArgs)
 			{
 				arglbl1.Visible = false;
 				arglbl2.Visible = false;
