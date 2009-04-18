@@ -26,6 +26,7 @@ using System.IO;
 using System.Reflection;
 using System.Drawing;
 using System.ComponentModel;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using SlimDX.Direct3D9;
 using SlimDX;
@@ -1127,6 +1128,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				targetsurface = surfacetex.GetSurfaceLevel(0);
 				if(graphics.StartRendering(true, General.Colors.Background.WithAlpha(0).ToColorValue(), targetsurface, null))
 				{
+					// Make sure anything we need is loaded
+					General.Map.Data.UnknownTexture3D.CreateTexture();
+
 					// Set transformations
 					UpdateTransformations();
 
@@ -1202,7 +1206,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void RenderSectorSurface(Sector s, VertexBuffer buffer, long longimagename)
 		{
 			Texture t = null;
-
+			
 			if((buffer != null) && (s.FlatVertices != null) && (s.FlatVertices.Length > 0))
 			{
 				if(longimagename == 0)
@@ -1217,7 +1221,6 @@ namespace CodeImp.DoomBuilder.Rendering
 						// Texture unknown?
 						if(img is UnknownImage)
 						{
-							General.Map.Data.UnknownTexture3D.CreateTexture();
 							t = General.Map.Data.UnknownTexture3D.Texture;
 						}
 						// Is the texture loaded?
