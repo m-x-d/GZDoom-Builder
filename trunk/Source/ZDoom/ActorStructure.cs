@@ -348,6 +348,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 			this.radius = baseactor.radius;
 			this.games = new List<string>(baseactor.games);
 			this.states = new Dictionary<string, StateStructure>(baseactor.states);
+			this.sprite = baseactor.sprite;
+			this.category = baseactor.category;
+			this.radiusfound = baseactor.radiusfound;
+			this.heightfound = baseactor.heightfound;
+			//this.tag = baseactor.tag;		// do we want to inherit this?
 		}
 
 		// This returns the status of a flag
@@ -380,7 +385,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// This finds the best suitable sprite to use
 		public string FindSuitableSprite()
 		{
-			string sprite = "";
+			string result = "";
 			
 			// Sprite forced?
 			if(!string.IsNullOrEmpty(sprite))
@@ -394,46 +399,46 @@ namespace CodeImp.DoomBuilder.ZDoom
 				{
 					StateStructure s = states["idle"];
 					if(!string.IsNullOrEmpty(s.FirstSprite))
-						sprite = s.FirstSprite;
+						result = s.FirstSprite;
 				}
 				
 				// Try the see state
-				if(string.IsNullOrEmpty(sprite) && states.ContainsKey("see"))
+				if(string.IsNullOrEmpty(result) && states.ContainsKey("see"))
 				{
 					StateStructure s = states["see"];
 					if(!string.IsNullOrEmpty(s.FirstSprite))
-						sprite = s.FirstSprite;
+						result = s.FirstSprite;
 				}
 
 				// Try the inactive state
-				if(string.IsNullOrEmpty(sprite) && states.ContainsKey("inactive"))
+				if(string.IsNullOrEmpty(result) && states.ContainsKey("inactive"))
 				{
 					StateStructure s = states["inactive"];
 					if(!string.IsNullOrEmpty(s.FirstSprite))
-						sprite = s.FirstSprite;
+						result = s.FirstSprite;
 				}
 				
 				// Still no sprite found? then just pick the first we can find
-				if(string.IsNullOrEmpty(sprite))
+				if(string.IsNullOrEmpty(result))
 				{
 					foreach(StateStructure s in states.Values)
 					{
 						if(!string.IsNullOrEmpty(s.FirstSprite))
 						{
-							sprite = s.FirstSprite;
+							result = s.FirstSprite;
 							break;
 						}
 					}
 				}
 				
-				if(!string.IsNullOrEmpty(sprite))
+				if(!string.IsNullOrEmpty(result))
 				{
 					// The sprite name is not actually complete, we still have to append
 					// the direction characters to it. Find an existing sprite with direction.
 					foreach(string postfix in SPRITE_POSTFIXES)
 					{
-						if(General.Map.Data.GetSpriteExists(sprite + postfix))
-							return sprite + postfix;
+						if(General.Map.Data.GetSpriteExists(result + postfix))
+							return result + postfix;
 					}
 				}
 			}
