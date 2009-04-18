@@ -89,6 +89,10 @@ namespace CodeImp.DoomBuilder.Data
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> thingtypes;
 		
+		// Timing
+		private double loadstarttime;
+		private double loadfinishtime;
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -451,6 +455,10 @@ namespace CodeImp.DoomBuilder.Data
 		// This starts background loading
 		private void StartBackgroundLoader()
 		{
+			// Timing
+			loadstarttime = General.Clock.GetCurrentTime();
+			loadfinishtime = 0;
+			
 			// If a loader is already running, stop it first
 			if(backgroundloader != null) StopBackgroundLoader();
 
@@ -576,6 +584,14 @@ namespace CodeImp.DoomBuilder.Data
 							{
 								notifiedbusy = false;
 								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
+							}
+							
+							// Timing
+							if(loadfinishtime == 0)
+							{
+								loadfinishtime = General.Clock.GetCurrentTime();
+								double deltatimesec = (loadfinishtime - loadstarttime) / 1000.0d;
+								General.WriteLogLine("Resources loading took " + deltatimesec.ToString("########0.00") + " seconds");
 							}
 							
 							// Wait longer to release CPU resources
