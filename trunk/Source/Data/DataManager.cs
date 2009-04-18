@@ -204,6 +204,8 @@ namespace CodeImp.DoomBuilder.Data
 		internal void Load(DataLocationList locations)
 		{
 			int texcount, flatcount, spritecount, thingcount;
+			Dictionary<long, ImageData> texturesonly = new Dictionary<long, ImageData>();
+			Dictionary<long, ImageData> flatsonly = new Dictionary<long, ImageData>();
 			DataReader c;
 			
 			// Create collections
@@ -282,11 +284,49 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Load stuff
 			LoadPalette();
-			texcount = LoadTextures();
-			flatcount = LoadFlats();
+			texcount = LoadTextures(texturesonly);
+			flatcount = LoadFlats(flatsonly);
 			thingcount = LoadDecorateThings();
 			spritecount = LoadSprites();
 			LoadInternalSprites();
+
+			// Process textures
+			foreach(KeyValuePair<long, ImageData> t in texturesonly)
+			{
+				textures.Add(t.Key, t.Value);
+				texturenames.Add(t.Value.Name);
+			}
+
+			// Process flats
+			foreach(KeyValuePair<long, ImageData> f in flatsonly)
+			{
+				flats.Add(f.Key, f.Value);
+				flatnames.Add(f.Value.Name);
+			}
+
+			// Mixed textures and flats?
+			if(General.Map.Config.MixTexturesFlats)
+			{
+				// Add textures to flats
+				foreach(KeyValuePair<long, ImageData> t in texturesonly)
+				{
+					if(!flats.ContainsKey(t.Key))
+					{
+						flats.Add(t.Key, t.Value);
+						flatnames.Add(t.Value.Name);
+					}
+				}
+
+				// Add flats to textures
+				foreach(KeyValuePair<long, ImageData> f in flatsonly)
+				{
+					if(!textures.ContainsKey(f.Key))
+					{
+						textures.Add(f.Key, f.Value);
+						texturenames.Add(f.Value.Name);
+					}
+				}
+			}
 			
 			// Sort names
 			texturenames.Sort();
@@ -586,17 +626,13 @@ namespace CodeImp.DoomBuilder.Data
 					if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
 				}
 
-				// Flats are not already included with the textures?
-				if(!General.Map.Config.MixTexturesFlats)
+				// Set used on all flats
+				foreach(KeyValuePair<long, ImageData> i in flats)
 				{
-					// Set used on all flats
-					foreach(KeyValuePair<long, ImageData> i in flats)
-					{
-						i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
-						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
-					}
+					i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
+					if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
 				}
-
+				
 				// Done
 				updatedusedtextures = false;
 			}
@@ -630,7 +666,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 		
 		// This loads the textures
-		private int LoadTextures()
+		private int LoadTextures(Dictionary<long, ImageData> list)
 		{
 			ICollection<ImageData> images;
 			PatchNames pnames = new PatchNames();
@@ -656,19 +692,10 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(ImageData img in images)
 					{
 						// Add or replace in textures list
-						if(!textures.ContainsKey(img.LongName)) texturenames.Add(img.Name);
-						textures.Remove(img.LongName);
-						textures.Add(img.LongName, img);
+						list.Remove(img.LongName);
+						list.Add(img.LongName, img);
 						if(firsttexture == 0) firsttexture = img.LongName;
 						counter++;
-						
-						// Also add as flat when using mixed resources
-						if(General.Map.Config.MixTexturesFlats)
-						{
-							if(!flats.ContainsKey(img.LongName)) flatnames.Add(img.Name);
-							flats.Remove(img.LongName);
-							flats.Add(img.LongName, img);
-						}
 						
 						// Add to preview manager
 						previews.AddImage(img);
@@ -678,8 +705,7 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// The first texture cannot be used, because in the game engine it
 			// has index 0 which means "no texture", so remove it from the list.
-			textures.Remove(firsttexture);
-			if(General.Map.Config.MixTexturesFlats) flats.Remove(firsttexture);
+			list.Remove(firsttexture);
 			
 			// Output info
 			return counter;
@@ -787,7 +813,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Flats
 
 		// This loads the flats
-		private int LoadFlats()
+		private int LoadFlats(Dictionary<long, ImageData> list)
 		{
 			ICollection<ImageData> images;
 			int counter = 0;
@@ -803,18 +829,9 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(ImageData img in images)
 					{
 						// Add or replace in flats list
-						if(!flats.ContainsKey(img.LongName)) flatnames.Add(img.Name);
-						flats.Remove(img.LongName);
-						flats.Add(img.LongName, img);
+						list.Remove(img.LongName);
+						list.Add(img.LongName, img);
 						counter++;
-
-						// Also add as texture when using mixed resources
-						if(General.Map.Config.MixTexturesFlats)
-						{
-							if(!textures.ContainsKey(img.LongName)) texturenames.Add(img.Name);
-							textures.Remove(img.LongName);
-							textures.Add(img.LongName, img);
-						}
 
 						// Add to preview manager
 						previews.AddImage(img);
