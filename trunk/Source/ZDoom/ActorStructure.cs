@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					else
 					{
 						// Check if numeric
-						if(!int.TryParse(token, out doomednum))
+						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum))
 						{
 							// Not numeric!
 							parser.ReportError("Expected numeric editor thing number or start of actor scope");
@@ -276,7 +276,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					{
 						// Try parsing as integer value
 						int intvalue;
-						int.TryParse(value, out intvalue);
+						int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out intvalue);
 						
 						// Set the property
 						switch(token)
