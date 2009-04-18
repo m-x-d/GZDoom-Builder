@@ -30,17 +30,13 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			System.Windows.Forms.PictureBox pictureBox1;
 			System.Windows.Forms.Label label1;
-			System.Windows.Forms.Label label2;
 			this.close = new System.Windows.Forms.Button();
 			this.builderlink = new System.Windows.Forms.LinkLabel();
 			this.version = new System.Windows.Forms.Label();
-			this.slimdxlogo = new System.Windows.Forms.PictureBox();
 			this.copyversion = new System.Windows.Forms.Button();
 			pictureBox1 = new System.Windows.Forms.PictureBox();
 			label1 = new System.Windows.Forms.Label();
-			label2 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(pictureBox1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.slimdxlogo)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// pictureBox1
@@ -55,28 +51,22 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label1
 			// 
+			label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			label1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			label1.Location = new System.Drawing.Point(15, 144);
+			label1.Location = new System.Drawing.Point(15, 149);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(355, 50);
+			label1.Size = new System.Drawing.Size(349, 50);
 			label1.TabIndex = 2;
 			label1.Text = "Doom Builder is designed and programmed by Pascal vd Heiden.\r\nSeveral game config" +
 				"urations were written by various members of the Doom community. See the website " +
 				"for a complete list of credits.";
 			// 
-			// label2
-			// 
-			label2.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			label2.Location = new System.Drawing.Point(15, 262);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(213, 29);
-			label2.TabIndex = 8;
-			label2.Text = "Doom Builder is powered by SlimDX,\r\na DirectX API for Microsoft .NET 2.0";
-			// 
 			// close
 			// 
+			this.close.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.close.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.close.Location = new System.Drawing.Point(265, 266);
+			this.close.Location = new System.Drawing.Point(265, 243);
 			this.close.Name = "close";
 			this.close.Size = new System.Drawing.Size(116, 25);
 			this.close.TabIndex = 3;
@@ -89,7 +79,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.builderlink.AutoSize = true;
 			this.builderlink.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
 			this.builderlink.LinkColor = System.Drawing.Color.RoyalBlue;
-			this.builderlink.Location = new System.Drawing.Point(12, 194);
+			this.builderlink.Location = new System.Drawing.Point(12, 207);
 			this.builderlink.Name = "builderlink";
 			this.builderlink.Size = new System.Drawing.Size(121, 14);
 			this.builderlink.TabIndex = 5;
@@ -108,18 +98,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.version.TabIndex = 6;
 			this.version.Text = "Doom Builder some version";
 			// 
-			// slimdxlogo
-			// 
-			this.slimdxlogo.Image = global::CodeImp.DoomBuilder.Properties.Resources.SlimDX_small;
-			this.slimdxlogo.Location = new System.Drawing.Point(10, 239);
-			this.slimdxlogo.Name = "slimdxlogo";
-			this.slimdxlogo.Size = new System.Drawing.Size(80, 20);
-			this.slimdxlogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-			this.slimdxlogo.TabIndex = 7;
-			this.slimdxlogo.TabStop = false;
-			// 
 			// copyversion
 			// 
+			this.copyversion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.copyversion.Location = new System.Drawing.Point(265, 101);
 			this.copyversion.Name = "copyversion";
 			this.copyversion.Size = new System.Drawing.Size(116, 25);
@@ -134,10 +115,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.close;
-			this.ClientSize = new System.Drawing.Size(393, 303);
+			this.ClientSize = new System.Drawing.Size(393, 280);
 			this.Controls.Add(this.copyversion);
-			this.Controls.Add(label2);
-			this.Controls.Add(this.slimdxlogo);
 			this.Controls.Add(this.version);
 			this.Controls.Add(this.builderlink);
 			this.Controls.Add(this.close);
@@ -154,7 +133,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "About Doom Builder";
 			((System.ComponentModel.ISupportInitialize)(pictureBox1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.slimdxlogo)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -165,7 +143,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button close;
 		private System.Windows.Forms.LinkLabel builderlink;
 		private System.Windows.Forms.Label version;
-		private System.Windows.Forms.PictureBox slimdxlogo;
 		private System.Windows.Forms.Button copyversion;
 	}
 }
