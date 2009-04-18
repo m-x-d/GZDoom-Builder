@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Next is the texture width
 			parser.SkipWhitespace(true);
 			tokenstr = parser.ReadToken();
-			if(string.IsNullOrEmpty(tokenstr) || !int.TryParse(tokenstr, out width))
+			if(string.IsNullOrEmpty(tokenstr) || !int.TryParse(tokenstr, NumberStyles.Integer, CultureInfo.InvariantCulture, out width))
 			{
 				parser.ReportError("Expected width in pixels");
 				return;
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Next is the texture height
 			parser.SkipWhitespace(true);
 			tokenstr = parser.ReadToken();
-			if(string.IsNullOrEmpty(tokenstr) || !int.TryParse(tokenstr, out height))
+			if(string.IsNullOrEmpty(tokenstr) || !int.TryParse(tokenstr, NumberStyles.Integer, CultureInfo.InvariantCulture, out height))
 			{
 				parser.ReportError("Expected height in pixels");
 				return;
@@ -205,7 +205,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(!string.IsNullOrEmpty(strvalue))
 			{
 				// Try parsing as value
-				if(!float.TryParse(strvalue, out value))
+				if(!float.TryParse(strvalue, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
 				{
 					parser.ReportError("Expected numeric value for property '" + propertyname + "'");
 					return false;
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(!string.IsNullOrEmpty(strvalue))
 			{
 				// Try parsing as value
-				if(!int.TryParse(strvalue, out value))
+				if(!int.TryParse(strvalue, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
 				{
 					parser.ReportError("Expected integral value for property '" + propertyname + "'");
 					return false;
