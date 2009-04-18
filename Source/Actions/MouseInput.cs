@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Variables
 
 		// Mouse input
+		private DirectInput dinput;
 		private Device<MouseState> mouse;
 		
 		// Disposing
@@ -58,10 +59,10 @@ namespace CodeImp.DoomBuilder.Actions
 		public MouseInput(Control source)
 		{
 			// Initialize
-			DirectInput.Initialize();
-
+			dinput = new DirectInput();
+			
 			// Start mouse input
-			mouse = new Device<MouseState>(SystemGuid.Mouse);
+			mouse = new Device<MouseState>(dinput, SystemGuid.Mouse);
 			if(mouse == null) throw new Exception("No mouse device found.");
 			
 			// Set mouse input settings
@@ -88,10 +89,11 @@ namespace CodeImp.DoomBuilder.Actions
 				// Dispose
 				mouse.Unacquire();
 				mouse.Dispose();
-				DirectInput.Terminate();
+				dinput.Dispose();
 				
 				// Clean up
 				mouse = null;
+				dinput = null;
 				
 				// Done
 				isdisposed = true;
