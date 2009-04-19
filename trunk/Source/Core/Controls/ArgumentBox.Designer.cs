@@ -1,0 +1,77 @@
+namespace CodeImp.DoomBuilder.Controls
+{
+	partial class ArgumentBox
+	{
+		/// <summary> 
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
+
+		/// <summary> 
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if(disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
+
+		#region Component Designer generated code
+
+		/// <summary> 
+		/// Required method for Designer support - do not modify 
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+			this.combobox = new System.Windows.Forms.ComboBox();
+			this.button = new System.Windows.Forms.Button();
+			this.SuspendLayout();
+			// 
+			// combobox
+			// 
+			this.combobox.DropDownWidth = 130;
+			this.combobox.Location = new System.Drawing.Point(0, 1);
+			this.combobox.Name = "combobox";
+			this.combobox.Size = new System.Drawing.Size(149, 22);
+			this.combobox.TabIndex = 0;
+			this.combobox.Validating += new System.ComponentModel.CancelEventHandler(this.combobox_Validating);
+			// 
+			// button
+			// 
+			this.button.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.button.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
+			this.button.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
+			this.button.Location = new System.Drawing.Point(153, 0);
+			this.button.Name = "button";
+			this.button.Padding = new System.Windows.Forms.Padding(0, 0, 1, 2);
+			this.button.Size = new System.Drawing.Size(30, 24);
+			this.button.TabIndex = 3;
+			this.button.UseVisualStyleBackColor = true;
+			this.button.Visible = false;
+			this.button.Click += new System.EventHandler(this.button_Click);
+			// 
+			// ArgumentBox
+			// 
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.Controls.Add(this.button);
+			this.Controls.Add(this.combobox);
+			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Name = "ArgumentBox";
+			this.Size = new System.Drawing.Size(268, 64);
+			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.ArgumentBox_Layout);
+			this.Resize += new System.EventHandler(this.ArgumentBox_Resize);
+			this.ResumeLayout(false);
+
+		}
+
+		#endregion
+
+		private System.Windows.Forms.ComboBox combobox;
+		private System.Windows.Forms.Button button;
+	}
+}
