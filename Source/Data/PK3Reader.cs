@@ -19,14 +19,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
-using SevenZip;
+using ICSharpCode.SharpZipLib.Zip;
 
 #endregion
 
@@ -48,21 +47,24 @@ namespace CodeImp.DoomBuilder.Data
 			General.WriteLogLine("Opening PK3 resource '" + location.location + "'");
 			
 			// Open the zip file
-			SevenZipExtractor zipstream = OpenPK3File();
-
-            // Make list of all files
-            ReadOnlyCollection<ArchiveFileInfo> filedata = zipstream.ArchiveFileData;
-            List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>(filedata.Count);
+			ZipInputStream zipstream = OpenPK3File();
 			
-			foreach(ArchiveFileInfo entry in filedata)
+			// Make list of all files
+			List<DirectoryFileEntry> fileentries = new List<DirectoryFileEntry>();
+			ZipEntry entry = zipstream.GetNextEntry();
+			while(entry != null)
 			{
-				if(!entry.IsDirectory) fileentries.Add(new DirectoryFileEntry(entry.FileName));
+				if(entry.IsFile) fileentries.Add(new DirectoryFileEntry(entry.Name));
+				
+				// Next
+				entry = zipstream.GetNextEntry();
 			}
 
 			// Make files list
 			files = new DirectoryFilesList(fileentries);
 
 			// Done with the zip file
+			zipstream.Close();
 			zipstream.Dispose();
 			
 			// Initialize without path (because we use paths relative to the PK3 file)
@@ -90,23 +92,11 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Management
 
 		// This opens the zip file for reading
-		private SevenZipExtractor OpenPK3File()
+		private ZipInputStream OpenPK3File()
 		{
 			FileStream filestream = File.Open(location.location, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            InArchiveFormat tryas;
 			filestream.Seek(0, SeekOrigin.Begin);
-            tryas = InArchiveFormat.Zip;
-            if (filestream.ReadByte() == (byte)'7' &&
-                filestream.ReadByte() == (byte)'z' &&
-                filestream.ReadByte() == 0xBC &&
-                filestream.ReadByte() == 0xAF &&
-                filestream.ReadByte() == 0x27 &&
-                filestream.ReadByte() == 0x1C)
-            {
-                tryas = InArchiveFormat.SevenZip;
-            }
-			filestream.Seek(0, SeekOrigin.Begin);
-			return new SevenZipExtractor(filestream, tryas);
+			return new ZipInputStream(filestream);
 		}
 
 		#endregion
@@ -278,28 +268,40 @@ namespace CodeImp.DoomBuilder.Data
 		protected override MemoryStream LoadFile(string filename)
 		{
 			MemoryStream filedata = null;
+			byte[] copybuffer = new byte[4096];
 
 			// Open the zip file
-			SevenZipExtractor zipstream = OpenPK3File();
-            ReadOnlyCollection<ArchiveFileInfo> fileinfo = zipstream.ArchiveFileData;
+			ZipInputStream zipstream = OpenPK3File();
 
-			foreach(ArchiveFileInfo entry in fileinfo)
+			ZipEntry entry = zipstream.GetNextEntry();
+			while(entry != null)
 			{
-				if(!entry.IsDirectory)
+				if(entry.IsFile)
 				{
-					string entryname = entry.FileName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+					string entryname = entry.Name.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 					
 					// Is this the entry we are looking for?
 					if(string.Compare(entryname, filename, true) == 0)
 					{
-						filedata = new MemoryStream((int)entry.Size);
-                        zipstream.ExtractFile(entry.Index, filedata, true);
+						int expectedsize = (int)entry.Size;
+						if(expectedsize < 1) expectedsize = 1024;
+						filedata = new MemoryStream(expectedsize);
+						int readsize = zipstream.Read(copybuffer, 0, copybuffer.Length);
+						while(readsize > 0)
+						{
+							filedata.Write(copybuffer, 0, readsize);
+							readsize = zipstream.Read(copybuffer, 0, copybuffer.Length);
+						}
 						break;
 					}
 				}
+				
+				// Next
+				entry = zipstream.GetNextEntry();
 			}
 
 			// Done with the zip file
+			zipstream.Close();
 			zipstream.Dispose();
 			
 			// Nothing found?

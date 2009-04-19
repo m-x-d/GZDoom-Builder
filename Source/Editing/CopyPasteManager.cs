@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
-using SevenZip;
+using ICSharpCode.SharpZipLib.BZip2;
 
 #endregion
 
@@ -120,8 +120,7 @@ namespace CodeImp.DoomBuilder.Editing
 					// Compress the stream
 					MemoryStream compressed = new MemoryStream((int)memstream.Length);
 					memstream.Seek(0, SeekOrigin.Begin);
-                    SevenZipCompressor compressor = new SevenZipCompressor(true);
-                    compressor.CompressStream(memstream, compressed, OutArchiveFormat.BZip2);
+					BZip2.Compress(memstream, compressed, 900000);
 
 					// Done
 					memstream.Dispose();
@@ -145,11 +144,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Decompress stream
 			MemoryStream decompressed = new MemoryStream((int)filedata.Length * 3);
 			filedata.Seek(0, SeekOrigin.Begin);
-            SevenZipExtractor decompressor = new SevenZipExtractor(filedata, InArchiveFormat.BZip2);
-            decompressor.ExtractFile(0, decompressed);
+			BZip2.Decompress(filedata, decompressed);
 			MemoryStream memstream = new MemoryStream(decompressed.ToArray());
 			decompressed.Dispose();
-            decompressor.Dispose();
 			
 			// Mark all current geometry
 			General.Map.Map.ClearAllMarks(true);
