@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
-using SevenZip;
+using ICSharpCode.SharpZipLib.BZip2;
 
 #endregion
 
@@ -123,8 +123,7 @@ namespace CodeImp.DoomBuilder.Editing
 				// Compress data
 				mapdata.Seek(0, SeekOrigin.Begin);
 				MemoryStream outstream = new MemoryStream((int)mapdata.Length);
-                SevenZipCompressor compressor = new SevenZipCompressor(true);
-                compressor.CompressStream(mapdata, outstream, OutArchiveFormat.BZip2);
+				BZip2.Compress(mapdata, outstream, 300000);
 
 				// Make temporary file
 				filename = General.MakeTempFilename(General.Map.TempPath, "snapshot");
@@ -154,12 +153,10 @@ namespace CodeImp.DoomBuilder.Editing
 				// Decompress data
 				MemoryStream outstream = new MemoryStream((int)instream.Length * 4);
 				instream.Seek(0, SeekOrigin.Begin);
-                SevenZipExtractor decompressor = new SevenZipExtractor(instream, InArchiveFormat.BZip2);
-                decompressor.ExtractFile(0, outstream);
+				BZip2.Decompress(instream, outstream);
 				mapdata = new MemoryStream(outstream.ToArray());
 				
 				// Clean up
-                decompressor.Dispose();
 				instream.Dispose();
 				File.Delete(filename);
 				filename = null;

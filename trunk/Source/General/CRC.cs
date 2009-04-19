@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using ICSharpCode.SharpZipLib.Checksums;
 
 #endregion
 
@@ -32,19 +33,17 @@ namespace CodeImp.DoomBuilder
 	{
 		#region ================== Constants
 
-        private static readonly uint[] Table;
-
 		#endregion
 
 		#region ================== Variables
 
-		private uint _value = 0xFFFFFFFF;
+		private Crc32 crc;
 
 		#endregion
 
 		#region ================== Properties
 
-		public long Value { get { return _value ^ 0xFFFFFFFF; } }
+		public long Value { get { return crc.Value; } }
 
 		#endregion
 
@@ -53,25 +52,11 @@ namespace CodeImp.DoomBuilder
 		// Constructor
 		public CRC()
 		{
+			crc = new Crc32();
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
-
-        static CRC()
-        {
-            Table = new uint[256];
-            const uint kPoly = 0xEDB88320;
-            for (uint i = 0; i < 256; i++)
-            {
-                uint r = i;
-                for (int j = 0; j < 8; j++)
-                    if ((r & 1) != 0)
-                        r = (r >> 1) ^ kPoly;
-                    else
-                        r >>= 1;
-                Table[i] = r;
-            }
-        }
 
 		#endregion
 
@@ -81,29 +66,25 @@ namespace CodeImp.DoomBuilder
 		{
 			uint lo = (uint)((ulong)value & 0x00000000FFFFFFFF);
 			uint hi = (uint)(((ulong)value & 0xFFFFFFFF00000000) >> 32);
-			Add(unchecked((int)lo));
-			Add(unchecked((int)hi));
+			crc.Update(unchecked((int)lo));
+			crc.Update(unchecked((int)hi));
 		}
 
 		public void Add(int value)
 		{
-            _value = Table[(((byte)(_value)) ^ (value & 0xFF))] ^ (_value >> 8);
-            _value = Table[(((byte)(_value)) ^ ((value >> 8) & 0xFF))] ^ (_value >> 8);
-            _value = Table[(((byte)(_value)) ^ ((value >> 16) & 0xFF))] ^ (_value >> 8);
-            _value = Table[(((byte)(_value)) ^ ((value >> 24) & 0xFF))] ^ (_value >> 8);
+			crc.Update(value);
 		}
 
 		public void Add(byte[] data)
 		{
-            for (uint i = 0; i < data.Length; i++)
-                _value = Table[(((byte)(_value)) ^ data[i])] ^ (_value >> 8);
-        }
+			crc.Update(data);
+		}
 
 		public void Reset()
 		{
-            _value = 0xFFFFFFFF;
+			crc.Reset();
 		}
 
-        #endregion
-    }
+		#endregion
+	}
 }
