@@ -13,6 +13,10 @@
 		<param name="Local" value="introduction.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Terminology">
+		<param name="Local" value="terminology.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="User Interface">
 		<param name="Local" value="userinterface.html">
 		</OBJECT>
