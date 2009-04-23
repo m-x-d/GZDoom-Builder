@@ -1109,17 +1109,22 @@ namespace CodeImp.DoomBuilder
 				scriptwindow = new ScriptEditorForm();
 			}
 			
-			// Show the window
-			if(General.Settings.ScriptOnTop)
+			// Window not yet visible?
+			if(!scriptwindow.Visible)
 			{
-				if(scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
-				scriptwindow.Show(General.MainWindow);
+				// Show the window
+				if(General.Settings.ScriptOnTop)
+				{
+					if(scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
+					scriptwindow.Show(General.MainWindow);
+				}
+				else
+				{
+					if(scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
+					scriptwindow.Show();
+				}
 			}
-			else
-			{
-				if(scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
-				scriptwindow.Show();
-			}
+			scriptwindow.Activate();
 			scriptwindow.Focus();
 			Cursor.Current = Cursors.Default;
 		}
