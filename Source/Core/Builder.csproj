@@ -727,6 +727,7 @@
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
     <Compile Include="Config\BrightnessList.cs" />
     <None Include="Resources\Builder16.png" />
+    <None Include="Resources\CLogo.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\Question.png" />
     <None Include="Resources\Help.png" />

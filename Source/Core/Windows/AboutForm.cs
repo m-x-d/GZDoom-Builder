@@ -51,6 +51,12 @@ namespace CodeImp.DoomBuilder.Windows
 			General.OpenWebsite("http://" + builderlink.Text);
 		}
 
+		// Launch CodeImp website
+		private void codeimplink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			General.OpenWebsite("http://" + codeimplink.Text);
+		}
+
 		// This copies the version number to clipboard
 		private void copyversion_Click(object sender, EventArgs e)
 		{
