@@ -183,19 +183,19 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// directorylink
 			// 
-			this.directorylink.ActiveLinkColor = System.Drawing.Color.RoyalBlue;
+			this.directorylink.ActiveLinkColor = System.Drawing.Color.Firebrick;
 			this.directorylink.AutoSize = true;
 			this.directorylink.DisabledLinkColor = System.Drawing.SystemColors.GrayText;
 			this.directorylink.LinkArea = new System.Windows.Forms.LinkArea(0, 55);
 			this.directorylink.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-			this.directorylink.LinkColor = System.Drawing.Color.RoyalBlue;
+			this.directorylink.LinkColor = System.Drawing.Color.Firebrick;
 			this.directorylink.Location = new System.Drawing.Point(14, 184);
 			this.directorylink.Name = "directorylink";
 			this.directorylink.Size = new System.Drawing.Size(311, 14);
 			this.directorylink.TabIndex = 9;
 			this.directorylink.TabStop = true;
 			this.directorylink.Text = "http://www.zdoom.org/wiki/Using_ZIPs_as_WAD_replacement";
-			this.directorylink.VisitedLinkColor = System.Drawing.Color.RoyalBlue;
+			this.directorylink.VisitedLinkColor = System.Drawing.Color.Firebrick;
 			this.directorylink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.link_Click);
 			// 
 			// label5
@@ -265,19 +265,19 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pk3link
 			// 
-			this.pk3link.ActiveLinkColor = System.Drawing.Color.RoyalBlue;
+			this.pk3link.ActiveLinkColor = System.Drawing.Color.Firebrick;
 			this.pk3link.AutoSize = true;
 			this.pk3link.DisabledLinkColor = System.Drawing.SystemColors.GrayText;
 			this.pk3link.LinkArea = new System.Windows.Forms.LinkArea(0, 55);
 			this.pk3link.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-			this.pk3link.LinkColor = System.Drawing.Color.RoyalBlue;
+			this.pk3link.LinkColor = System.Drawing.Color.Firebrick;
 			this.pk3link.Location = new System.Drawing.Point(14, 111);
 			this.pk3link.Name = "pk3link";
 			this.pk3link.Size = new System.Drawing.Size(311, 14);
 			this.pk3link.TabIndex = 7;
 			this.pk3link.TabStop = true;
 			this.pk3link.Text = "http://www.zdoom.org/wiki/Using_ZIPs_as_WAD_replacement";
-			this.pk3link.VisitedLinkColor = System.Drawing.Color.RoyalBlue;
+			this.pk3link.VisitedLinkColor = System.Drawing.Color.Firebrick;
 			this.pk3link.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.link_Click);
 			// 
 			// label4
