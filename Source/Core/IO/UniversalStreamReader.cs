@@ -404,7 +404,8 @@ namespace CodeImp.DoomBuilder.IO
 					   (e.Value.GetType() == typeof(int)))
 					{
 						// Make it a float
-						result = (T)e.Value;
+						object fvalue = (float)(int)e.Value;
+						result = (T)fvalue;
 					}
 					else
 					{
