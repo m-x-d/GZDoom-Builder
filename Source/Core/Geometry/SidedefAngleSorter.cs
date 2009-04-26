@@ -78,18 +78,16 @@ namespace CodeImp.DoomBuilder.Geometry
 		// Comparer
 		public int Compare(Sidedef x, Sidedef y)
 		{
-			float ax, ay;
+			// Somehow, in a release build without debugger attached,
+			// the code above is not always the same when x == y... don't ask.
+			if(x == y)
+				return 0;
 			
 			// Calculate angles
-			ax = CalculateRelativeAngle(baseside, x);
-			ay = CalculateRelativeAngle(baseside, y);
+			float ax = CalculateRelativeAngle(baseside, x);
+			float ay = CalculateRelativeAngle(baseside, y);
 			
 			// Compare results
-			/*
-			if(ax < ay) return 1;
-			else if(ax > ay) return -1;
-			else return 0;
-			*/
 			return Math.Sign(ay - ax);
 		}
 	}
