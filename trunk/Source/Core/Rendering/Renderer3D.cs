@@ -382,6 +382,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.World3D.SetModulateColor(-1);
 				graphics.Shaders.World3D.SetHighlightColor(0);
 
+				// Texture addressing
+				graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
+
 				// Matrices
 				world = Matrix.Identity;
 				ApplyMatrices3D();
@@ -591,72 +596,84 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Get things for this pass
 			Dictionary<ImageData, List<VisualThing>> thingspass = things[pass];
-			
-			// Render things collected
-			foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
+			if(thingspass.Count > 0)
 			{
-				ImageData curtexture;
+				// Texture addressing
+				graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Clamp);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Clamp);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Clamp);
 
-				if(!(group.Key is UnknownImage))
+				// Render things collected
+				foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
 				{
-					// What texture to use?
-					if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
-						curtexture = group.Key;
-					else
-						curtexture = General.Map.Data.Hourglass3D;
+					ImageData curtexture;
 
-					// Create Direct3D texture if still needed
-					if((curtexture.Texture == null) || curtexture.Texture.Disposed)
-						curtexture.CreateTexture();
-
-					// Apply texture
-					graphics.Device.SetTexture(0, curtexture.Texture);
-					graphics.Shaders.World3D.Texture1 = curtexture.Texture;
-					graphics.Shaders.World3D.ApplySettings();
-
-					// Render all things with this texture
-					foreach(VisualThing t in group.Value)
+					if(!(group.Key is UnknownImage))
 					{
-						// Update buffer if needed
-						t.Update();
+						// What texture to use?
+						if((group.Key != null) && group.Key.IsImageLoaded && !group.Key.IsDisposed)
+							curtexture = group.Key;
+						else
+							curtexture = General.Map.Data.Hourglass3D;
 
-						// Only do this sector when a vertexbuffer is created
-						if(t.GeometryBuffer != null)
+						// Create Direct3D texture if still needed
+						if((curtexture.Texture == null) || curtexture.Texture.Disposed)
+							curtexture.CreateTexture();
+
+						// Apply texture
+						graphics.Device.SetTexture(0, curtexture.Texture);
+						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
+						graphics.Shaders.World3D.ApplySettings();
+
+						// Render all things with this texture
+						foreach(VisualThing t in group.Value)
 						{
-							// Highlight this object?
-							if(t == highlighted)
+							// Update buffer if needed
+							t.Update();
+
+							// Only do this sector when a vertexbuffer is created
+							if(t.GeometryBuffer != null)
 							{
-								// Temporarely switch shader and use a highlight color
-								graphics.Shaders.World3D.EndPass();
-								Color4 highlight = General.Colors.Highlight.ToColorValue();
-								highlight.Alpha = highlightglow;
-								graphics.Shaders.World3D.SetHighlightColor(highlight.ToArgb());
-								graphics.Shaders.World3D.BeginPass(shaderpass + 2);
-							}
+								// Highlight this object?
+								if(t == highlighted)
+								{
+									// Temporarely switch shader and use a highlight color
+									graphics.Shaders.World3D.EndPass();
+									Color4 highlight = General.Colors.Highlight.ToColorValue();
+									highlight.Alpha = highlightglow;
+									graphics.Shaders.World3D.SetHighlightColor(highlight.ToArgb());
+									graphics.Shaders.World3D.BeginPass(shaderpass + 2);
+								}
 
-							// Create the matrix for positioning / rotation
-							world = t.Orientation;
-							if(t.Billboard) world = Matrix.Multiply(world, billboard);
-							world = Matrix.Multiply(world, t.Position);
-							ApplyMatrices3D();
-							graphics.Shaders.World3D.ApplySettings();
+								// Create the matrix for positioning / rotation
+								world = t.Orientation;
+								if(t.Billboard) world = Matrix.Multiply(world, billboard);
+								world = Matrix.Multiply(world, t.Position);
+								ApplyMatrices3D();
+								graphics.Shaders.World3D.ApplySettings();
 
-							// Apply buffer
-							graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
+								// Apply buffer
+								graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
 
-							// Render!
-							graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
+								// Render!
+								graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
 
-							// Reset highlight settings
-							if(t == highlighted)
-							{
-								graphics.Shaders.World3D.EndPass();
-								graphics.Shaders.World3D.SetHighlightColor(0);
-								graphics.Shaders.World3D.BeginPass(shaderpass);
+								// Reset highlight settings
+								if(t == highlighted)
+								{
+									graphics.Shaders.World3D.EndPass();
+									graphics.Shaders.World3D.SetHighlightColor(0);
+									graphics.Shaders.World3D.BeginPass(shaderpass);
+								}
 							}
 						}
 					}
 				}
+				
+				// Texture addressing
+				graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
 			}
 
 			// Done rendering with this shader
