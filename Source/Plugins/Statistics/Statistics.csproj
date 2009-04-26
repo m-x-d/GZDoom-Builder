@@ -40,7 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release with revision lookup|x86' ">
-    <OutputPath>bin\x86\Release with revision lookup\</OutputPath>
+    <OutputPath>..\..\..\Build\Plugins\</OutputPath>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>

@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Initialize
 			InitializeComponent();
-
+			
 			// Interface
 			imagebrightness.Value = General.Settings.ImageBrightness;
 			squarethings.Checked = General.Settings.SquareThings;

@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.searchtypes.Name = "searchtypes";
 			this.searchtypes.Size = new System.Drawing.Size(139, 22);
 			this.searchtypes.Sorted = true;
-			this.searchtypes.TabIndex = 1;
+			this.searchtypes.TabIndex = 0;
 			this.searchtypes.SelectedIndexChanged += new System.EventHandler(this.searchtypes_SelectedIndexChanged);
 			// 
 			// findinput
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.findinput.Location = new System.Drawing.Point(100, 48);
 			this.findinput.Name = "findinput";
 			this.findinput.Size = new System.Drawing.Size(106, 20);
-			this.findinput.TabIndex = 3;
+			this.findinput.TabIndex = 1;
 			// 
 			// browsefind
 			// 
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.browsefind.Name = "browsefind";
 			this.browsefind.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsefind.Size = new System.Drawing.Size(27, 23);
-			this.browsefind.TabIndex = 4;
+			this.browsefind.TabIndex = 2;
 			this.browsefind.UseVisualStyleBackColor = true;
 			this.browsefind.Click += new System.EventHandler(this.browsefind_Click);
 			// 
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.withinselection.Location = new System.Drawing.Point(100, 75);
 			this.withinselection.Name = "withinselection";
 			this.withinselection.Size = new System.Drawing.Size(139, 18);
-			this.withinselection.TabIndex = 5;
+			this.withinselection.TabIndex = 3;
 			this.withinselection.Text = "Within current selection";
 			this.withinselection.UseVisualStyleBackColor = true;
 			// 
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.keepselection.Location = new System.Drawing.Point(91, 52);
 			this.keepselection.Name = "keepselection";
 			this.keepselection.Size = new System.Drawing.Size(135, 18);
-			this.keepselection.TabIndex = 9;
+			this.keepselection.TabIndex = 2;
 			this.keepselection.Text = "Keep current selection";
 			this.keepselection.UseVisualStyleBackColor = true;
 			// 
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.browsereplace.Name = "browsereplace";
 			this.browsereplace.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsereplace.Size = new System.Drawing.Size(27, 23);
-			this.browsereplace.TabIndex = 8;
+			this.browsereplace.TabIndex = 1;
 			this.browsereplace.UseVisualStyleBackColor = true;
 			this.browsereplace.Click += new System.EventHandler(this.browsereplace_Click);
 			// 
@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.replaceinput.Location = new System.Drawing.Point(91, 25);
 			this.replaceinput.Name = "replaceinput";
 			this.replaceinput.Size = new System.Drawing.Size(106, 20);
-			this.replaceinput.TabIndex = 7;
+			this.replaceinput.TabIndex = 0;
 			// 
 			// findbutton
 			// 
@@ -182,7 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultslist.Name = "resultslist";
 			this.resultslist.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
 			this.resultslist.Size = new System.Drawing.Size(341, 203);
-			this.resultslist.TabIndex = 9;
+			this.resultslist.TabIndex = 0;
 			this.resultslist.MouseUp += new System.Windows.Forms.MouseEventHandler(this.resultslist_MouseUp);
 			this.resultslist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.resultslist_MouseDoubleClick);
 			this.resultslist.SelectedIndexChanged += new System.EventHandler(this.resultslist_SelectedIndexChanged);
@@ -205,7 +205,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultspanel.Location = new System.Drawing.Point(-1, 198);
 			this.resultspanel.Name = "resultspanel";
 			this.resultspanel.Size = new System.Drawing.Size(362, 275);
-			this.resultspanel.TabIndex = 11;
+			this.resultspanel.TabIndex = 6;
 			this.resultspanel.Visible = false;
 			// 
 			// deletebutton
@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.deletebutton.Location = new System.Drawing.Point(131, 241);
 			this.deletebutton.Name = "deletebutton";
 			this.deletebutton.Size = new System.Drawing.Size(109, 25);
-			this.deletebutton.TabIndex = 12;
+			this.deletebutton.TabIndex = 2;
 			this.deletebutton.Text = "Delete Selection";
 			this.deletebutton.UseVisualStyleBackColor = true;
 			this.deletebutton.Click += new System.EventHandler(this.deletebutton_Click);
@@ -223,7 +223,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.editbutton.Location = new System.Drawing.Point(9, 241);
 			this.editbutton.Name = "editbutton";
 			this.editbutton.Size = new System.Drawing.Size(109, 25);
-			this.editbutton.TabIndex = 11;
+			this.editbutton.TabIndex = 1;
 			this.editbutton.Text = "Edit Selection";
 			this.editbutton.UseVisualStyleBackColor = true;
 			this.editbutton.Click += new System.EventHandler(this.editbutton_Click);
@@ -238,7 +238,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupreplace.Location = new System.Drawing.Point(9, 108);
 			this.groupreplace.Name = "groupreplace";
 			this.groupreplace.Size = new System.Drawing.Size(256, 84);
-			this.groupreplace.TabIndex = 12;
+			this.groupreplace.TabIndex = 5;
 			this.groupreplace.TabStop = false;
 			this.groupreplace.Text = "          ";
 			// 
@@ -248,7 +248,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.doreplace.Location = new System.Drawing.Point(24, 105);
 			this.doreplace.Name = "doreplace";
 			this.doreplace.Size = new System.Drawing.Size(65, 18);
-			this.doreplace.TabIndex = 13;
+			this.doreplace.TabIndex = 4;
 			this.doreplace.Text = "Replace";
 			this.doreplace.UseVisualStyleBackColor = true;
 			this.doreplace.CheckedChanged += new System.EventHandler(this.doreplace_CheckedChanged);

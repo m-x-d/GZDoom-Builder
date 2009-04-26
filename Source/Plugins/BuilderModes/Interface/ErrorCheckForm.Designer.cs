@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.results.Margin = new System.Windows.Forms.Padding(1);
 			this.results.Name = "results";
 			this.results.Size = new System.Drawing.Size(360, 172);
-			this.results.TabIndex = 2;
+			this.results.TabIndex = 0;
 			this.results.SelectedIndexChanged += new System.EventHandler(this.results_SelectedIndexChanged);
 			// 
 			// resultspanel
@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultspanel.Location = new System.Drawing.Point(0, 170);
 			this.resultspanel.Name = "resultspanel";
 			this.resultspanel.Size = new System.Drawing.Size(383, 326);
-			this.resultspanel.TabIndex = 3;
+			this.resultspanel.TabIndex = 2;
 			// 
 			// fix3
 			// 
@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fix3.Location = new System.Drawing.Point(256, 289);
 			this.fix3.Name = "fix3";
 			this.fix3.Size = new System.Drawing.Size(114, 26);
-			this.fix3.TabIndex = 7;
+			this.fix3.TabIndex = 3;
 			this.fix3.Text = "Fix 3";
 			this.fix3.UseVisualStyleBackColor = true;
 			this.fix3.Visible = false;
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fix2.Location = new System.Drawing.Point(133, 289);
 			this.fix2.Name = "fix2";
 			this.fix2.Size = new System.Drawing.Size(114, 26);
-			this.fix2.TabIndex = 6;
+			this.fix2.TabIndex = 2;
 			this.fix2.Text = "Fix 2";
 			this.fix2.UseVisualStyleBackColor = true;
 			this.fix2.Visible = false;
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fix1.Location = new System.Drawing.Point(10, 289);
 			this.fix1.Name = "fix1";
 			this.fix1.Size = new System.Drawing.Size(114, 26);
-			this.fix1.TabIndex = 4;
+			this.fix1.TabIndex = 1;
 			this.fix1.Text = "Fix 1";
 			this.fix1.UseVisualStyleBackColor = true;
 			this.fix1.Visible = false;

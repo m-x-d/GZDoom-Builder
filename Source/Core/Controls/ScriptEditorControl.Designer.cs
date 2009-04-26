@@ -116,6 +116,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.Status = 0;
 			this.scriptedit.StyleBits = 0;
 			this.scriptedit.TabIndex = 0;
+			this.scriptedit.TabStop = false;
 			this.scriptedit.TabWidth = 0;
 			this.scriptedit.TargetEnd = 0;
 			this.scriptedit.TargetStart = 0;
@@ -142,12 +143,12 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptpanel.Size = new System.Drawing.Size(474, 381);
 			this.scriptpanel.TabIndex = 2;
 			// 
-			// BuilderScriptControl
+			// ScriptEditorControl
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
 			this.Controls.Add(this.scriptpanel);
 			this.Controls.Add(this.functionbar);
-			this.Name = "BuilderScriptControl";
+			this.Name = "ScriptEditorControl";
 			this.Size = new System.Drawing.Size(474, 408);
 			this.scriptpanel.ResumeLayout(false);
 			this.ResumeLayout(false);

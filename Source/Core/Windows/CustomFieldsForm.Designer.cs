@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Margin = new System.Windows.Forms.Padding(1);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 19;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Margin = new System.Windows.Forms.Padding(1);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 18;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

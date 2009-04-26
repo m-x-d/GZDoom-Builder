@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
             0});
 			this.gridsize.Name = "gridsize";
 			this.gridsize.Size = new System.Drawing.Size(79, 20);
-			this.gridsize.TabIndex = 1;
+			this.gridsize.TabIndex = 0;
 			this.gridsize.Value = new decimal(new int[] {
             32,
             0,
@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.Windows
             0});
 			this.backscaley.Name = "backscaley";
 			this.backscaley.Size = new System.Drawing.Size(57, 20);
-			this.backscaley.TabIndex = 11;
+			this.backscaley.TabIndex = 7;
 			this.backscaley.Value = new decimal(new int[] {
             1,
             0,
@@ -166,7 +166,7 @@ namespace CodeImp.DoomBuilder.Windows
             0});
 			this.backscalex.Name = "backscalex";
 			this.backscalex.Size = new System.Drawing.Size(57, 20);
-			this.backscalex.TabIndex = 10;
+			this.backscalex.TabIndex = 6;
 			this.backscalex.Value = new decimal(new int[] {
             1,
             0,
@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.selectfile.Location = new System.Drawing.Point(137, 122);
 			this.selectfile.Name = "selectfile";
 			this.selectfile.Size = new System.Drawing.Size(117, 25);
-			this.selectfile.TabIndex = 8;
+			this.selectfile.TabIndex = 3;
 			this.selectfile.Text = "Select File...";
 			this.selectfile.UseVisualStyleBackColor = true;
 			this.selectfile.Click += new System.EventHandler(this.selectfile_Click);
@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.showbackground.Location = new System.Drawing.Point(28, 29);
 			this.showbackground.Name = "showbackground";
 			this.showbackground.Size = new System.Drawing.Size(146, 18);
-			this.showbackground.TabIndex = 7;
+			this.showbackground.TabIndex = 0;
 			this.showbackground.Text = "Show background image";
 			this.showbackground.UseVisualStyleBackColor = true;
 			this.showbackground.CheckedChanged += new System.EventHandler(this.showbackground_CheckedChanged);
@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.Windows
             0});
 			this.backoffsety.Name = "backoffsety";
 			this.backoffsety.Size = new System.Drawing.Size(57, 20);
-			this.backoffsety.TabIndex = 6;
+			this.backoffsety.TabIndex = 5;
 			// 
 			// backoffsetx
 			// 
@@ -231,7 +231,7 @@ namespace CodeImp.DoomBuilder.Windows
             0});
 			this.backoffsetx.Name = "backoffsetx";
 			this.backoffsetx.Size = new System.Drawing.Size(57, 20);
-			this.backoffsetx.TabIndex = 5;
+			this.backoffsetx.TabIndex = 4;
 			// 
 			// backoffset
 			// 
@@ -249,7 +249,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.selectflat.Location = new System.Drawing.Point(137, 91);
 			this.selectflat.Name = "selectflat";
 			this.selectflat.Size = new System.Drawing.Size(117, 25);
-			this.selectflat.TabIndex = 3;
+			this.selectflat.TabIndex = 2;
 			this.selectflat.Text = "Select Flat...";
 			this.selectflat.UseVisualStyleBackColor = true;
 			this.selectflat.Click += new System.EventHandler(this.selectflat_Click);
@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.selecttexture.Location = new System.Drawing.Point(137, 60);
 			this.selecttexture.Name = "selecttexture";
 			this.selecttexture.Size = new System.Drawing.Size(117, 25);
-			this.selecttexture.TabIndex = 2;
+			this.selecttexture.TabIndex = 1;
 			this.selecttexture.Text = "Select Texture...";
 			this.selecttexture.UseVisualStyleBackColor = true;
 			this.selecttexture.Click += new System.EventHandler(this.selecttexture_Click);
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(185, 357);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 22;
+			this.cancel.TabIndex = 3;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -293,7 +293,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(67, 357);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 21;
+			this.apply.TabIndex = 2;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

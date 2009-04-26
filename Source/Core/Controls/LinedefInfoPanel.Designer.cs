@@ -33,6 +33,8 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
 			this.infopanel = new System.Windows.Forms.GroupBox();
+			this.unpegged = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
 			this.arg5 = new System.Windows.Forms.Label();
 			this.arglbl5 = new System.Windows.Forms.Label();
 			this.arglbl4 = new System.Windows.Forms.Label();
@@ -65,8 +67,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backmidtex = new System.Windows.Forms.Panel();
 			this.backhighname = new System.Windows.Forms.Label();
 			this.backhightex = new System.Windows.Forms.Panel();
-			this.unpegged = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -146,6 +146,25 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.TabIndex = 1;
 			this.infopanel.TabStop = false;
 			this.infopanel.Text = " Linedef ";
+			// 
+			// unpegged
+			// 
+			this.unpegged.AutoSize = true;
+			this.unpegged.Location = new System.Drawing.Point(180, 39);
+			this.unpegged.Name = "unpegged";
+			this.unpegged.Size = new System.Drawing.Size(32, 14);
+			this.unpegged.TabIndex = 29;
+			this.unpegged.Text = "None";
+			this.unpegged.UseMnemonic = false;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(118, 39);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(59, 14);
+			this.label6.TabIndex = 28;
+			this.label6.Text = "Unpegged:";
 			// 
 			// arg5
 			// 
@@ -484,25 +503,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backhightex.Name = "backhightex";
 			this.backhightex.Size = new System.Drawing.Size(68, 60);
 			this.backhightex.TabIndex = 0;
-			// 
-			// unpegged
-			// 
-			this.unpegged.AutoSize = true;
-			this.unpegged.Location = new System.Drawing.Point(180, 39);
-			this.unpegged.Name = "unpegged";
-			this.unpegged.Size = new System.Drawing.Size(32, 14);
-			this.unpegged.TabIndex = 29;
-			this.unpegged.Text = "None";
-			this.unpegged.UseMnemonic = false;
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(118, 39);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(59, 14);
-			this.label6.TabIndex = 28;
-			this.label6.Text = "Unpegged:";
 			// 
 			// LinedefInfoPanel
 			// 

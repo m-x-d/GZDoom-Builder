@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupposition.Location = new System.Drawing.Point(7, 6);
 			this.groupposition.Name = "groupposition";
 			this.groupposition.Size = new System.Drawing.Size(415, 194);
-			this.groupposition.TabIndex = 24;
+			this.groupposition.TabIndex = 0;
 			this.groupposition.TabStop = false;
 			this.groupposition.Text = " Position ";
 			// 
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positiony.Location = new System.Drawing.Point(211, 36);
 			this.positiony.Name = "positiony";
 			this.positiony.Size = new System.Drawing.Size(95, 20);
-			this.positiony.TabIndex = 22;
+			this.positiony.TabIndex = 1;
 			// 
 			// label6
 			// 
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.positionx.Location = new System.Drawing.Point(68, 36);
 			this.positionx.Name = "positionx";
 			this.positionx.Size = new System.Drawing.Size(95, 20);
-			this.positionx.TabIndex = 20;
+			this.positionx.TabIndex = 0;
 			// 
 			// tabs
 			// 
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(334, 259);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 21;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(215, 259);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 20;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

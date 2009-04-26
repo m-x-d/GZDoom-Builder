@@ -91,7 +91,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.Location = new System.Drawing.Point(6, 6);
 			groupBox1.Name = "groupBox1";
 			groupBox1.Size = new System.Drawing.Size(269, 340);
-			groupBox1.TabIndex = 1;
+			groupBox1.TabIndex = 0;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Thing ";
 			// 
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Location = new System.Drawing.Point(397, 241);
 			groupBox2.Name = "groupBox2";
 			groupBox2.Size = new System.Drawing.Size(230, 105);
-			groupBox2.TabIndex = 21;
+			groupBox2.TabIndex = 2;
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Coordination ";
 			// 
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.height.Location = new System.Drawing.Point(68, 63);
 			this.height.Name = "height";
 			this.height.Size = new System.Drawing.Size(50, 20);
-			this.height.TabIndex = 10;
+			this.height.TabIndex = 1;
 			// 
 			// heightlabel
 			// 
@@ -160,17 +160,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.angle.Location = new System.Drawing.Point(68, 28);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(50, 20);
-			this.angle.TabIndex = 1;
+			this.angle.TabIndex = 0;
 			this.angle.TextChanged += new System.EventHandler(this.angle_TextChanged);
 			// 
 			// anglecontrol
 			// 
 			this.anglecontrol.BackColor = System.Drawing.SystemColors.Control;
+			this.anglecontrol.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.anglecontrol.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.anglecontrol.Location = new System.Drawing.Point(141, 15);
+			this.anglecontrol.Location = new System.Drawing.Point(138, 13);
 			this.anglecontrol.Name = "anglecontrol";
-			this.anglecontrol.Size = new System.Drawing.Size(80, 80);
-			this.anglecontrol.TabIndex = 0;
+			this.anglecontrol.Size = new System.Drawing.Size(84, 84);
+			this.anglecontrol.TabIndex = 2;
 			this.anglecontrol.Value = 0;
 			this.anglecontrol.ButtonClicked += new System.EventHandler(this.anglecontrol_ButtonClicked);
 			// 
@@ -207,7 +208,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(641, 379);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-			this.tabs.TabIndex = 2;
+			this.tabs.TabIndex = 0;
 			// 
 			// tabproperties
 			// 
@@ -244,7 +245,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsgroup.Location = new System.Drawing.Point(284, 6);
 			this.settingsgroup.Name = "settingsgroup";
 			this.settingsgroup.Size = new System.Drawing.Size(343, 229);
-			this.settingsgroup.TabIndex = 0;
+			this.settingsgroup.TabIndex = 1;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Settings ";
 			// 
@@ -316,7 +317,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg2.Location = new System.Drawing.Point(179, 63);
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(93, 24);
-			this.arg2.TabIndex = 32;
+			this.arg2.TabIndex = 2;
 			// 
 			// arg1
 			// 
@@ -324,7 +325,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg1.Location = new System.Drawing.Point(179, 37);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(93, 24);
-			this.arg1.TabIndex = 31;
+			this.arg1.TabIndex = 1;
 			// 
 			// arg0
 			// 
@@ -332,7 +333,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg0.Location = new System.Drawing.Point(179, 11);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(93, 24);
-			this.arg0.TabIndex = 30;
+			this.arg0.TabIndex = 0;
 			// 
 			// arg3
 			// 
@@ -340,7 +341,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg3.Location = new System.Drawing.Point(425, 11);
 			this.arg3.Name = "arg3";
 			this.arg3.Size = new System.Drawing.Size(93, 24);
-			this.arg3.TabIndex = 29;
+			this.arg3.TabIndex = 3;
 			// 
 			// arg4
 			// 
@@ -348,7 +349,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg4.Location = new System.Drawing.Point(425, 37);
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(93, 24);
-			this.arg4.TabIndex = 28;
+			this.arg4.TabIndex = 4;
 			// 
 			// arg1label
 			// 
@@ -409,7 +410,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
 			this.action.Size = new System.Drawing.Size(462, 21);
-			this.action.TabIndex = 5;
+			this.action.TabIndex = 0;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
 			// 
@@ -421,7 +422,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browseaction.Size = new System.Drawing.Size(30, 23);
-			this.browseaction.TabIndex = 3;
+			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
@@ -444,7 +445,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.Location = new System.Drawing.Point(6, 6);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(621, 66);
-			this.groupBox3.TabIndex = 21;
+			this.groupBox3.TabIndex = 0;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Identification ";
 			// 
@@ -457,14 +458,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tag.Location = new System.Drawing.Point(62, 28);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(68, 20);
-			this.tag.TabIndex = 7;
+			this.tag.TabIndex = 0;
 			// 
 			// newtag
 			// 
 			this.newtag.Location = new System.Drawing.Point(136, 27);
 			this.newtag.Name = "newtag";
 			this.newtag.Size = new System.Drawing.Size(76, 23);
-			this.newtag.TabIndex = 8;
+			this.newtag.TabIndex = 1;
 			this.newtag.Text = "New Tag";
 			this.newtag.UseVisualStyleBackColor = true;
 			this.newtag.Click += new System.EventHandler(this.newtag_Click);
@@ -500,7 +501,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(539, 406);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 19;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -511,7 +512,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(420, 406);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 18;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

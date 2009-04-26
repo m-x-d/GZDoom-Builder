@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Initialize
 			InitializeComponent();
-
+			
 			// Fill flags list
 			foreach(KeyValuePair<string, string> tf in General.Map.Config.ThingFlags)
 				flags.Add(tf.Value, tf.Key);

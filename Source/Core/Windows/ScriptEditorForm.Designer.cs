@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.editor.Name = "editor";
 			this.editor.Size = new System.Drawing.Size(729, 578);
 			this.editor.TabIndex = 0;
+			this.editor.TabStop = false;
 			// 
 			// ScriptEditorForm
 			// 

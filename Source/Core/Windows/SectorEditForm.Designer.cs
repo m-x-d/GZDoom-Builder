@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupaction.Location = new System.Drawing.Point(7, 290);
 			groupaction.Name = "groupaction";
 			groupaction.Size = new System.Drawing.Size(436, 71);
-			groupaction.TabIndex = 5;
+			groupaction.TabIndex = 2;
 			groupaction.TabStop = false;
 			groupaction.Text = " Identification ";
 			// 
@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tag.Location = new System.Drawing.Point(89, 28);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(53, 20);
-			this.tag.TabIndex = 10;
+			this.tag.TabIndex = 0;
 			// 
 			// taglabel
 			// 
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.newtag.Location = new System.Drawing.Point(148, 27);
 			this.newtag.Name = "newtag";
 			this.newtag.Size = new System.Drawing.Size(76, 23);
-			this.newtag.TabIndex = 11;
+			this.newtag.TabIndex = 1;
 			this.newtag.Text = "New Tag";
 			this.newtag.UseVisualStyleBackColor = true;
 			this.newtag.Click += new System.EventHandler(this.newtag_Click);
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupeffect.Location = new System.Drawing.Point(7, 176);
 			groupeffect.Name = "groupeffect";
 			groupeffect.Size = new System.Drawing.Size(436, 105);
-			groupeffect.TabIndex = 4;
+			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
 			groupeffect.Text = " Effects ";
 			// 
@@ -165,7 +165,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseeffect.Name = "browseeffect";
 			this.browseeffect.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browseeffect.Size = new System.Drawing.Size(30, 23);
-			this.browseeffect.TabIndex = 18;
+			this.browseeffect.TabIndex = 1;
 			this.browseeffect.Text = " ";
 			this.browseeffect.UseVisualStyleBackColor = true;
 			this.browseeffect.Click += new System.EventHandler(this.browseeffect_Click);
@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.brightness.Location = new System.Drawing.Point(89, 63);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(53, 20);
-			this.brightness.TabIndex = 17;
+			this.brightness.TabIndex = 2;
 			// 
 			// label9
 			// 
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.effect.Location = new System.Drawing.Point(89, 28);
 			this.effect.Name = "effect";
 			this.effect.Size = new System.Drawing.Size(290, 21);
-			this.effect.TabIndex = 1;
+			this.effect.TabIndex = 0;
 			this.effect.Value = 402;
 			// 
 			// label8
@@ -228,7 +228,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupfloorceiling.Location = new System.Drawing.Point(7, 6);
 			groupfloorceiling.Name = "groupfloorceiling";
 			groupfloorceiling.Size = new System.Drawing.Size(436, 161);
-			groupfloorceiling.TabIndex = 3;
+			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
 			groupfloorceiling.Text = "Floor and Ceiling ";
 			// 
@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.Location = new System.Drawing.Point(112, 66);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(68, 20);
-			this.floorheight.TabIndex = 16;
+			this.floorheight.TabIndex = 1;
 			this.floorheight.TextChanged += new System.EventHandler(this.floorheight_TextChanged);
 			// 
 			// label2
@@ -294,7 +294,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floortex.Location = new System.Drawing.Point(237, 37);
 			this.floortex.Name = "floortex";
 			this.floortex.Size = new System.Drawing.Size(83, 105);
-			this.floortex.TabIndex = 13;
+			this.floortex.TabIndex = 2;
 			this.floortex.TextureName = "";
 			// 
 			// ceilingtex
@@ -302,7 +302,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingtex.Location = new System.Drawing.Point(332, 37);
 			this.ceilingtex.Name = "ceilingtex";
 			this.ceilingtex.Size = new System.Drawing.Size(83, 105);
-			this.ceilingtex.TabIndex = 12;
+			this.ceilingtex.TabIndex = 3;
 			this.ceilingtex.TextureName = "";
 			// 
 			// label6
@@ -323,7 +323,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.Location = new System.Drawing.Point(112, 37);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(68, 20);
-			this.ceilingheight.TabIndex = 18;
+			this.ceilingheight.TabIndex = 0;
 			this.ceilingheight.TextChanged += new System.EventHandler(this.ceilingheight_TextChanged);
 			// 
 			// cancel
@@ -333,7 +333,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(355, 423);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 19;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -344,7 +344,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(236, 423);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 18;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -363,7 +363,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(457, 396);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-			this.tabs.TabIndex = 20;
+			this.tabs.TabIndex = 0;
 			// 
 			// tabproperties
 			// 

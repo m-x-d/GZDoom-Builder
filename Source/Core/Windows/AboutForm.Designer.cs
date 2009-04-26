@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.close.Location = new System.Drawing.Point(265, 243);
 			this.close.Name = "close";
 			this.close.Size = new System.Drawing.Size(116, 25);
-			this.close.TabIndex = 3;
+			this.close.TabIndex = 5;
 			this.close.Text = "Close";
 			this.close.UseVisualStyleBackColor = true;
 			// 
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.builderlink.Location = new System.Drawing.Point(12, 219);
 			this.builderlink.Name = "builderlink";
 			this.builderlink.Size = new System.Drawing.Size(121, 14);
-			this.builderlink.TabIndex = 5;
+			this.builderlink.TabIndex = 3;
 			this.builderlink.TabStop = true;
 			this.builderlink.Text = "www.doombuilder.com";
 			this.builderlink.VisitedLinkColor = System.Drawing.Color.Firebrick;
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.version.Location = new System.Drawing.Point(15, 118);
 			this.version.Name = "version";
 			this.version.Size = new System.Drawing.Size(138, 14);
-			this.version.TabIndex = 6;
+			this.version.TabIndex = 0;
 			this.version.Text = "Doom Builder some version";
 			// 
 			// copyversion
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.copyversion.Location = new System.Drawing.Point(265, 113);
 			this.copyversion.Name = "copyversion";
 			this.copyversion.Size = new System.Drawing.Size(116, 25);
-			this.copyversion.TabIndex = 9;
+			this.copyversion.TabIndex = 1;
 			this.copyversion.Text = "Copy Version";
 			this.copyversion.UseVisualStyleBackColor = true;
 			this.copyversion.Click += new System.EventHandler(this.copyversion_Click);
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.codeimplink.Location = new System.Drawing.Point(12, 239);
 			this.codeimplink.Name = "codeimplink";
 			this.codeimplink.Size = new System.Drawing.Size(103, 14);
-			this.codeimplink.TabIndex = 11;
+			this.codeimplink.TabIndex = 4;
 			this.codeimplink.TabStop = true;
 			this.codeimplink.Text = "www.codeimp.com";
 			this.codeimplink.VisitedLinkColor = System.Drawing.Color.Firebrick;
