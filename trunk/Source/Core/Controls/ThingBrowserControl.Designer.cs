@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typeid.Location = new System.Drawing.Point(46, 272);
 			this.typeid.Name = "typeid";
 			this.typeid.Size = new System.Drawing.Size(68, 20);
-			this.typeid.TabIndex = 11;
+			this.typeid.TabIndex = 1;
 			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
 			// 
 			// typelist
@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.Controls
             treeNode1});
 			this.typelist.SelectedImageIndex = 0;
 			this.typelist.Size = new System.Drawing.Size(304, 261);
-			this.typelist.TabIndex = 9;
+			this.typelist.TabIndex = 0;
 			this.typelist.DoubleClick += new System.EventHandler(this.typelist_DoubleClick);
 			this.typelist.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.typelist_AfterSelect);
 			// 

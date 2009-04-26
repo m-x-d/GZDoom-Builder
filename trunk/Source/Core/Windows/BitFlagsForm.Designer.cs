@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(106, 198);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(91, 25);
-			this.cancel.TabIndex = 24;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(9, 198);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(91, 25);
-			this.apply.TabIndex = 23;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

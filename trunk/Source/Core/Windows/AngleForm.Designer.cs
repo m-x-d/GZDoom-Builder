@@ -37,9 +37,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.angle.BackColor = System.Drawing.SystemColors.Control;
 			this.angle.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.angle.Location = new System.Drawing.Point(62, 22);
+			this.angle.Location = new System.Drawing.Point(60, 22);
 			this.angle.Name = "angle";
-			this.angle.Size = new System.Drawing.Size(80, 80);
+			this.angle.Size = new System.Drawing.Size(84, 84);
 			this.angle.TabIndex = 0;
 			this.angle.Value = 0;
 			// 
@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(105, 131);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(91, 25);
-			this.cancel.TabIndex = 26;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(8, 131);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(91, 25);
-			this.apply.TabIndex = 25;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

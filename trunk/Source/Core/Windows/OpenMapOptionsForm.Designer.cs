@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.Location = new System.Drawing.Point(12, 215);
 			this.panelres.Name = "panelres";
 			this.panelres.Size = new System.Drawing.Size(396, 231);
-			this.panelres.TabIndex = 11;
+			this.panelres.TabIndex = 2;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
 			// 
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.datalocations.Location = new System.Drawing.Point(14, 58);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 127);
-			this.datalocations.TabIndex = 18;
+			this.datalocations.TabIndex = 0;
 			// 
 			// apply
 			// 
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(178, 462);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 12;
+			this.apply.TabIndex = 3;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(296, 462);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 13;
+			this.cancel.TabIndex = 4;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.config.Location = new System.Drawing.Point(141, 21);
 			this.config.Name = "config";
 			this.config.Size = new System.Drawing.Size(242, 22);
-			this.config.TabIndex = 15;
+			this.config.TabIndex = 0;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 
 			// mapslist
@@ -161,7 +161,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist.ShowGroups = false;
 			this.mapslist.Size = new System.Drawing.Size(396, 110);
 			this.mapslist.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.mapslist.TabIndex = 18;
+			this.mapslist.TabIndex = 1;
 			this.mapslist.UseCompatibleStateImageBehavior = false;
 			this.mapslist.View = System.Windows.Forms.View.List;
 			this.mapslist.DoubleClick += new System.EventHandler(this.mapslist_DoubleClick);

@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.name.Location = new System.Drawing.Point(79, 21);
 			this.name.Name = "name";
 			this.name.Size = new System.Drawing.Size(173, 20);
-			this.name.TabIndex = 1;
+			this.name.TabIndex = 0;
 			// 
 			// filters
 			// 
@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filters.Name = "filters";
 			this.filters.ShowGroups = false;
 			this.filters.Size = new System.Drawing.Size(219, 280);
-			this.filters.TabIndex = 2;
+			this.filters.TabIndex = 0;
 			this.filters.UseCompatibleStateImageBehavior = false;
 			this.filters.View = System.Windows.Forms.View.Details;
 			this.filters.AfterLabelEdit += new System.Windows.Forms.LabelEditEventHandler(this.filters_AfterLabelEdit);
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(503, 515);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(105, 25);
-			this.apply.TabIndex = 6;
+			this.apply.TabIndex = 3;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(614, 515);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(105, 25);
-			this.cancel.TabIndex = 7;
+			this.cancel.TabIndex = 4;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.addfilter.Location = new System.Drawing.Point(21, 396);
 			this.addfilter.Name = "addfilter";
 			this.addfilter.Size = new System.Drawing.Size(97, 24);
-			this.addfilter.TabIndex = 8;
+			this.addfilter.TabIndex = 1;
 			this.addfilter.Text = "Add Texture";
 			this.addfilter.UseVisualStyleBackColor = true;
 			this.addfilter.Click += new System.EventHandler(this.addfilter_Click);
@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.removefilter.Location = new System.Drawing.Point(124, 396);
 			this.removefilter.Name = "removefilter";
 			this.removefilter.Size = new System.Drawing.Size(105, 24);
-			this.removefilter.TabIndex = 9;
+			this.removefilter.TabIndex = 2;
 			this.removefilter.Text = "Remove Selection";
 			this.removefilter.UseVisualStyleBackColor = true;
 			this.removefilter.Click += new System.EventHandler(this.removefilter_Click);
@@ -181,7 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox1.Location = new System.Drawing.Point(12, 60);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(270, 440);
-			this.groupBox1.TabIndex = 10;
+			this.groupBox1.TabIndex = 1;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Filters ";
 			// 
@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Location = new System.Drawing.Point(298, 60);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(421, 440);
-			this.groupBox2.TabIndex = 11;
+			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Results ";
 			// 
@@ -212,7 +212,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.nomatchesbutton.Location = new System.Drawing.Point(141, 25);
 			this.nomatchesbutton.Name = "nomatchesbutton";
 			this.nomatchesbutton.Size = new System.Drawing.Size(117, 24);
-			this.nomatchesbutton.TabIndex = 35;
+			this.nomatchesbutton.TabIndex = 1;
 			this.nomatchesbutton.Text = "Show Not Matching";
 			this.nomatchesbutton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.nomatchesbutton.UseVisualStyleBackColor = true;
@@ -225,7 +225,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matchesbutton.Location = new System.Drawing.Point(18, 25);
 			this.matchesbutton.Name = "matchesbutton";
 			this.matchesbutton.Size = new System.Drawing.Size(117, 24);
-			this.matchesbutton.TabIndex = 34;
+			this.matchesbutton.TabIndex = 0;
 			this.matchesbutton.TabStop = true;
 			this.matchesbutton.Text = "Show Matches";
 			this.matchesbutton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -244,7 +244,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matcheslist.Name = "matcheslist";
 			this.matcheslist.PreventSelection = true;
 			this.matcheslist.Size = new System.Drawing.Size(387, 365);
-			this.matcheslist.TabIndex = 10;
+			this.matcheslist.TabIndex = 2;
 			this.matcheslist.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.matcheslist_SelectedItemDoubleClicked);
 			// 
 			// noresultlabel

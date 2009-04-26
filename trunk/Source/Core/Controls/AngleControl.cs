@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Size changed
 		private void AngleControl_Resize(object sender, EventArgs e)
 		{
-			this.Size = new Size(80, 80);
+			this.Size = new Size(84, 84);
 		}
 
 		// Redraw the control
@@ -116,9 +116,9 @@ namespace CodeImp.DoomBuilder.Controls
 			e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 			e.Graphics.InterpolationMode = InterpolationMode.High;
 			e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-			e.Graphics.Clear(SystemColors.Control);
+			e.Graphics.Clear(this.BackColor);
 			Pen linepen = new Pen(SystemColors.ControlText, LINE_THICKNESS);
-			PointF start = new PointF(40f, 40f);
+			PointF start = new PointF(42, 42);
 			if((rad >= 0) && (rad < 360))
 			{
 				PointF end = new PointF(start.X + (float)Math.Sin(rad + Angle2D.PIHALF) * LINE_LENGTH,

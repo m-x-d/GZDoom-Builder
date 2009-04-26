@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option7.Location = new System.Drawing.Point(118, 280);
 			this.option7.Name = "option7";
 			this.option7.Size = new System.Drawing.Size(199, 22);
-			this.option7.TabIndex = 9;
+			this.option7.TabIndex = 7;
 			this.option7.Visible = false;
 			// 
 			// option7label
@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option6.Location = new System.Drawing.Point(118, 244);
 			this.option6.Name = "option6";
 			this.option6.Size = new System.Drawing.Size(199, 22);
-			this.option6.TabIndex = 8;
+			this.option6.TabIndex = 6;
 			this.option6.Visible = false;
 			// 
 			// option6label
@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option5.Location = new System.Drawing.Point(118, 208);
 			this.option5.Name = "option5";
 			this.option5.Size = new System.Drawing.Size(199, 22);
-			this.option5.TabIndex = 7;
+			this.option5.TabIndex = 5;
 			this.option5.Visible = false;
 			// 
 			// option5label
@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option4.Location = new System.Drawing.Point(118, 172);
 			this.option4.Name = "option4";
 			this.option4.Size = new System.Drawing.Size(199, 22);
-			this.option4.TabIndex = 6;
+			this.option4.TabIndex = 4;
 			this.option4.Visible = false;
 			// 
 			// option4label
@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option3.Location = new System.Drawing.Point(118, 136);
 			this.option3.Name = "option3";
 			this.option3.Size = new System.Drawing.Size(199, 22);
-			this.option3.TabIndex = 5;
+			this.option3.TabIndex = 3;
 			this.option3.Visible = false;
 			// 
 			// option3label
@@ -195,7 +195,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option2.Location = new System.Drawing.Point(118, 100);
 			this.option2.Name = "option2";
 			this.option2.Size = new System.Drawing.Size(199, 22);
-			this.option2.TabIndex = 4;
+			this.option2.TabIndex = 2;
 			this.option2.Visible = false;
 			// 
 			// option2label
@@ -215,7 +215,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option1.Location = new System.Drawing.Point(118, 64);
 			this.option1.Name = "option1";
 			this.option1.Size = new System.Drawing.Size(199, 22);
-			this.option1.TabIndex = 3;
+			this.option1.TabIndex = 1;
 			this.option1.Visible = false;
 			// 
 			// option1label
@@ -235,7 +235,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option0.Location = new System.Drawing.Point(118, 28);
 			this.option0.Name = "option0";
 			this.option0.Size = new System.Drawing.Size(199, 22);
-			this.option0.TabIndex = 2;
+			this.option0.TabIndex = 0;
 			this.option0.Visible = false;
 			// 
 			// option0label
@@ -255,7 +255,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(297, 459);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 27);
-			this.cancel.TabIndex = 11;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -266,7 +266,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(177, 459);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 27);
-			this.apply.TabIndex = 10;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -286,7 +286,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(399, 436);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-			this.tabs.TabIndex = 12;
+			this.tabs.TabIndex = 0;
 			// 
 			// tabeffects
 			// 

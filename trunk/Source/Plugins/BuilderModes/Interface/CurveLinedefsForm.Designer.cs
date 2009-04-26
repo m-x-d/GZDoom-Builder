@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.vertices.Location = new System.Drawing.Point(78, 12);
 			this.vertices.Name = "vertices";
 			this.vertices.Size = new System.Drawing.Size(45, 20);
-			this.vertices.TabIndex = 3;
+			this.vertices.TabIndex = 0;
 			this.vertices.Text = "8";
 			this.vertices.TextChanged += new System.EventHandler(this.vertices_TextChanged);
 			this.vertices.Leave += new System.EventHandler(this.vertices_Leave);
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.distance.Location = new System.Drawing.Point(78, 44);
 			this.distance.Name = "distance";
 			this.distance.Size = new System.Drawing.Size(45, 20);
-			this.distance.TabIndex = 4;
+			this.distance.TabIndex = 2;
 			this.distance.Text = "128";
 			this.distance.TextChanged += new System.EventHandler(this.distance_TextChanged);
 			this.distance.Leave += new System.EventHandler(this.distance_Leave);
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.angle.Location = new System.Drawing.Point(78, 76);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(45, 20);
-			this.angle.TabIndex = 5;
+			this.angle.TabIndex = 4;
 			this.angle.Text = "180";
 			this.angle.TextChanged += new System.EventHandler(this.angle_TextChanged);
 			this.angle.Leave += new System.EventHandler(this.angle_Leave);
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.verticesbar.Minimum = -200;
 			this.verticesbar.Name = "verticesbar";
 			this.verticesbar.Size = new System.Drawing.Size(19, 24);
-			this.verticesbar.TabIndex = 6;
+			this.verticesbar.TabIndex = 1;
 			this.verticesbar.Value = -8;
 			this.verticesbar.ValueChanged += new System.EventHandler(this.verticesbar_ValueChanged);
 			// 
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.distancebar.Name = "distancebar";
 			this.distancebar.Size = new System.Drawing.Size(19, 24);
 			this.distancebar.SmallChange = 8;
-			this.distancebar.TabIndex = 7;
+			this.distancebar.TabIndex = 3;
 			this.distancebar.Value = -128;
 			this.distancebar.ValueChanged += new System.EventHandler(this.distancebar_ValueChanged);
 			// 
@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.anglebar.Name = "anglebar";
 			this.anglebar.Size = new System.Drawing.Size(19, 24);
 			this.anglebar.SmallChange = 5;
-			this.anglebar.TabIndex = 8;
+			this.anglebar.TabIndex = 5;
 			this.anglebar.Value = -180;
 			this.anglebar.ValueChanged += new System.EventHandler(this.anglebar_ValueChanged);
 			// 
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.cancel.Location = new System.Drawing.Point(84, 167);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(70, 25);
-			this.cancel.TabIndex = 22;
+			this.cancel.TabIndex = 9;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -171,7 +171,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.apply.Location = new System.Drawing.Point(7, 167);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(70, 25);
-			this.apply.TabIndex = 21;
+			this.apply.TabIndex = 8;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -182,7 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.circular.Location = new System.Drawing.Point(22, 108);
 			this.circular.Name = "circular";
 			this.circular.Size = new System.Drawing.Size(122, 18);
-			this.circular.TabIndex = 23;
+			this.circular.TabIndex = 6;
 			this.circular.Text = "Fixed circular curve";
 			this.circular.UseVisualStyleBackColor = true;
 			this.circular.CheckedChanged += new System.EventHandler(this.circular_CheckedChanged);
@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.backwards.Location = new System.Drawing.Point(22, 132);
 			this.backwards.Name = "backwards";
 			this.backwards.Size = new System.Drawing.Size(113, 18);
-			this.backwards.TabIndex = 24;
+			this.backwards.TabIndex = 7;
 			this.backwards.Text = "Curve backwards";
 			this.backwards.UseVisualStyleBackColor = true;
 			this.backwards.CheckedChanged += new System.EventHandler(this.backwards_CheckedChanged);

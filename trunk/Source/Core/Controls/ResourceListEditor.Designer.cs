@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.editresource.Location = new System.Drawing.Point(0, 0);
 			this.editresource.Name = "editresource";
 			this.editresource.Size = new System.Drawing.Size(136, 24);
-			this.editresource.TabIndex = 18;
+			this.editresource.TabIndex = 0;
 			this.editresource.Text = "Resource options...";
 			this.editresource.UseVisualStyleBackColor = true;
 			this.editresource.Click += new System.EventHandler(this.editresource_Click);
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.deleteresource.Location = new System.Drawing.Point(0, 0);
 			this.deleteresource.Name = "deleteresource";
 			this.deleteresource.Size = new System.Drawing.Size(88, 24);
-			this.deleteresource.TabIndex = 19;
+			this.deleteresource.TabIndex = 0;
 			this.deleteresource.Text = "Remove";
 			this.deleteresource.UseVisualStyleBackColor = true;
 			this.deleteresource.Click += new System.EventHandler(this.deleteresource_Click);
@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.Controls
 			buttonsbar1.Panel2.Controls.Add(buttonsbar2);
 			buttonsbar1.Size = new System.Drawing.Size(350, 24);
 			buttonsbar1.SplitterDistance = 118;
-			buttonsbar1.TabIndex = 21;
+			buttonsbar1.TabIndex = 0;
 			// 
 			// addresource
 			// 
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.addresource.Location = new System.Drawing.Point(0, 0);
 			this.addresource.Name = "addresource";
 			this.addresource.Size = new System.Drawing.Size(118, 24);
-			this.addresource.TabIndex = 17;
+			this.addresource.TabIndex = 0;
 			this.addresource.Text = "Add resource...";
 			this.addresource.UseVisualStyleBackColor = true;
 			this.addresource.Click += new System.EventHandler(this.addresource_Click);
@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.splitContainer1.Panel2MinSize = 24;
 			this.splitContainer1.Size = new System.Drawing.Size(350, 166);
 			this.splitContainer1.SplitterDistance = 138;
-			this.splitContainer1.TabIndex = 22;
+			this.splitContainer1.TabIndex = 0;
 			// 
 			// resourceitems
 			// 
@@ -169,7 +169,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.resourceitems.ShowItemToolTips = true;
 			this.resourceitems.Size = new System.Drawing.Size(350, 138);
 			this.resourceitems.SmallImageList = this.images;
-			this.resourceitems.TabIndex = 20;
+			this.resourceitems.TabIndex = 0;
 			this.resourceitems.UseCompatibleStateImageBehavior = false;
 			this.resourceitems.View = System.Windows.Forms.View.Details;
 			this.resourceitems.ClientSizeChanged += new System.EventHandler(this.resourceitems_ClientSizeChanged);

@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.button.Name = "button";
 			this.button.Padding = new System.Windows.Forms.Padding(0, 0, 1, 2);
 			this.button.Size = new System.Drawing.Size(30, 24);
-			this.button.TabIndex = 3;
+			this.button.TabIndex = 1;
 			this.button.UseVisualStyleBackColor = true;
 			this.button.Visible = false;
 			this.button.Click += new System.EventHandler(this.button_Click);

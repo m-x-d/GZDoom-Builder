@@ -39,12 +39,13 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttons.Minimum = 1;
 			this.buttons.Name = "buttons";
 			this.buttons.Size = new System.Drawing.Size(18, 24);
-			this.buttons.TabIndex = 7;
+			this.buttons.TabIndex = 1;
 			this.buttons.Value = 1;
 			this.buttons.ValueChanged += new System.EventHandler(this.buttons_ValueChanged);
 			// 
 			// textbox
 			// 
+			this.textbox.AllowDecimal = false;
 			this.textbox.AllowNegative = false;
 			this.textbox.AllowRelative = false;
 			this.textbox.ImeMode = System.Windows.Forms.ImeMode.Off;

@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.strictpatches.Location = new System.Drawing.Point(17, 72);
 			this.strictpatches.Name = "strictpatches";
 			this.strictpatches.Size = new System.Drawing.Size(298, 18);
-			this.strictpatches.TabIndex = 7;
+			this.strictpatches.TabIndex = 2;
 			this.strictpatches.Text = "Strictly load patches between P_START and P_END only";
 			this.strictpatches.UseVisualStyleBackColor = true;
 			// 
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browsewad.Name = "browsewad";
 			this.browsewad.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsewad.Size = new System.Drawing.Size(30, 23);
-			this.browsewad.TabIndex = 2;
+			this.browsewad.TabIndex = 1;
 			this.browsewad.Text = " ";
 			this.browsewad.UseVisualStyleBackColor = true;
 			this.browsewad.Click += new System.EventHandler(this.browsewad_Click);
@@ -161,7 +161,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.wadlocation.Name = "wadlocation";
 			this.wadlocation.ReadOnly = true;
 			this.wadlocation.Size = new System.Drawing.Size(292, 20);
-			this.wadlocation.TabIndex = 1;
+			this.wadlocation.TabIndex = 0;
 			// 
 			// directorytab
 			// 
@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dir_flats.Location = new System.Drawing.Point(17, 98);
 			this.dir_flats.Name = "dir_flats";
 			this.dir_flats.Size = new System.Drawing.Size(205, 18);
-			this.dir_flats.TabIndex = 7;
+			this.dir_flats.TabIndex = 3;
 			this.dir_flats.Text = "Load images in directory root as flats";
 			this.dir_flats.UseVisualStyleBackColor = true;
 			// 
@@ -223,7 +223,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dir_textures.Location = new System.Drawing.Point(17, 72);
 			this.dir_textures.Name = "dir_textures";
 			this.dir_textures.Size = new System.Drawing.Size(224, 18);
-			this.dir_textures.TabIndex = 6;
+			this.dir_textures.TabIndex = 2;
 			this.dir_textures.Text = "Load images in directory root as textures";
 			this.dir_textures.UseVisualStyleBackColor = true;
 			// 
@@ -235,7 +235,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browsedir.Name = "browsedir";
 			this.browsedir.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsedir.Size = new System.Drawing.Size(30, 23);
-			this.browsedir.TabIndex = 5;
+			this.browsedir.TabIndex = 1;
 			this.browsedir.UseVisualStyleBackColor = true;
 			this.browsedir.Click += new System.EventHandler(this.browsedir_Click);
 			// 
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dirlocation.Name = "dirlocation";
 			this.dirlocation.ReadOnly = true;
 			this.dirlocation.Size = new System.Drawing.Size(292, 20);
-			this.dirlocation.TabIndex = 4;
+			this.dirlocation.TabIndex = 0;
 			// 
 			// pk3filetab
 			// 
@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browsepk3.Name = "browsepk3";
 			this.browsepk3.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsepk3.Size = new System.Drawing.Size(30, 23);
-			this.browsepk3.TabIndex = 5;
+			this.browsepk3.TabIndex = 1;
 			this.browsepk3.UseVisualStyleBackColor = true;
 			this.browsepk3.Click += new System.EventHandler(this.browsepk3_Click);
 			// 
@@ -306,7 +306,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pk3location.Name = "pk3location";
 			this.pk3location.ReadOnly = true;
 			this.pk3location.Size = new System.Drawing.Size(292, 20);
-			this.pk3location.TabIndex = 4;
+			this.pk3location.TabIndex = 0;
 			// 
 			// cancel
 			// 
@@ -315,7 +315,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(266, 273);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 15;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -326,7 +326,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(148, 273);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 14;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

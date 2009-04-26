@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			panelsettings.Location = new System.Drawing.Point(12, 12);
 			panelsettings.Name = "panelsettings";
 			panelsettings.Size = new System.Drawing.Size(397, 118);
-			panelsettings.TabIndex = 10;
+			panelsettings.TabIndex = 0;
 			panelsettings.TabStop = false;
 			panelsettings.Text = " Settings ";
 			// 
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.levelname.Location = new System.Drawing.Point(129, 73);
 			this.levelname.Name = "levelname";
 			this.levelname.Size = new System.Drawing.Size(94, 20);
-			this.levelname.TabIndex = 8;
+			this.levelname.TabIndex = 1;
 			this.levelname.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.levelname_KeyPress);
 			// 
 			// config
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.config.Location = new System.Drawing.Point(129, 31);
 			this.config.Name = "config";
 			this.config.Size = new System.Drawing.Size(213, 22);
-			this.config.TabIndex = 6;
+			this.config.TabIndex = 0;
 			this.config.SelectedIndexChanged += new System.EventHandler(this.config_SelectedIndexChanged);
 			// 
 			// label4
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(179, 392);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 12;
+			this.apply.TabIndex = 2;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(297, 392);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 13;
+			this.cancel.TabIndex = 3;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelres.Location = new System.Drawing.Point(12, 141);
 			this.panelres.Name = "panelres";
 			this.panelres.Size = new System.Drawing.Size(397, 230);
-			this.panelres.TabIndex = 14;
+			this.panelres.TabIndex = 1;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
 			// 
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.datalocations.Location = new System.Drawing.Point(15, 57);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 130);
-			this.datalocations.TabIndex = 18;
+			this.datalocations.TabIndex = 0;
 			// 
 			// MapOptionsForm
 			// 

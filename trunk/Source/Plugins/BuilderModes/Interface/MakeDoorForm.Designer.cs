@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.ceilingtexture.Location = new System.Drawing.Point(135, 34);
 			this.ceilingtexture.Name = "ceilingtexture";
 			this.ceilingtexture.Size = new System.Drawing.Size(96, 115);
-			this.ceilingtexture.TabIndex = 3;
+			this.ceilingtexture.TabIndex = 1;
 			this.ceilingtexture.TextureName = "";
 			// 
 			// floortexture
@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.floortexture.Location = new System.Drawing.Point(248, 34);
 			this.floortexture.Name = "floortexture";
 			this.floortexture.Size = new System.Drawing.Size(96, 115);
-			this.floortexture.TabIndex = 5;
+			this.floortexture.TabIndex = 2;
 			this.floortexture.TextureName = "";
 			// 
 			// label3
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.cancel.Location = new System.Drawing.Point(187, 180);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 15;
+			this.cancel.TabIndex = 4;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.apply.Location = new System.Drawing.Point(69, 180);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 14;
+			this.apply.TabIndex = 3;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

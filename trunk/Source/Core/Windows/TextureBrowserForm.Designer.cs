@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(781, 596);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(100, 25);
-			this.cancel.TabIndex = 22;
+			this.cancel.TabIndex = 3;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(675, 596);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(100, 25);
-			this.apply.TabIndex = 21;
+			this.apply.TabIndex = 2;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.texturesets.Name = "texturesets";
 			this.texturesets.Size = new System.Drawing.Size(200, 576);
 			this.texturesets.SmallImageList = this.smallimages;
-			this.texturesets.TabIndex = 23;
+			this.texturesets.TabIndex = 0;
 			this.texturesets.UseCompatibleStateImageBehavior = false;
 			this.texturesets.View = System.Windows.Forms.View.Details;
 			this.texturesets.SelectedIndexChanged += new System.EventHandler(this.texturesets_SelectedIndexChanged);
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser.Name = "browser";
 			this.browser.PreventSelection = false;
 			this.browser.Size = new System.Drawing.Size(663, 610);
-			this.browser.TabIndex = 0;
+			this.browser.TabIndex = 1;
 			this.browser.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.browser_SelectedItemDoubleClicked);
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 

@@ -245,7 +245,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(439, 592);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 17;
+			this.cancel.TabIndex = 2;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -256,7 +256,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(320, 592);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 16;
+			this.apply.TabIndex = 1;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -274,7 +274,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.Location = new System.Drawing.Point(8, 177);
 			this.actiongroup.Name = "actiongroup";
 			this.actiongroup.Size = new System.Drawing.Size(517, 281);
-			this.actiongroup.TabIndex = 18;
+			this.actiongroup.TabIndex = 1;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
 			// 
@@ -285,7 +285,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel.Location = new System.Drawing.Point(6, 139);
 			this.hexenpanel.Name = "hexenpanel";
 			this.hexenpanel.Size = new System.Drawing.Size(505, 49);
-			this.hexenpanel.TabIndex = 13;
+			this.hexenpanel.TabIndex = 3;
 			this.hexenpanel.Visible = false;
 			// 
 			// activation
@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.activation.Location = new System.Drawing.Point(56, 13);
 			this.activation.Name = "activation";
 			this.activation.Size = new System.Drawing.Size(437, 22);
-			this.activation.TabIndex = 11;
+			this.activation.TabIndex = 0;
 			// 
 			// action
 			// 
@@ -306,7 +306,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.Location = new System.Drawing.Point(62, 27);
 			this.action.Name = "action";
 			this.action.Size = new System.Drawing.Size(401, 21);
-			this.action.TabIndex = 5;
+			this.action.TabIndex = 0;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
 			// 
@@ -318,7 +318,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browseaction.Size = new System.Drawing.Size(30, 23);
-			this.browseaction.TabIndex = 3;
+			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
@@ -329,7 +329,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfpanel.Location = new System.Drawing.Point(6, 143);
 			this.udmfpanel.Name = "udmfpanel";
 			this.udmfpanel.Size = new System.Drawing.Size(505, 132);
-			this.udmfpanel.TabIndex = 12;
+			this.udmfpanel.TabIndex = 4;
 			this.udmfpanel.Visible = false;
 			// 
 			// udmfactivates
@@ -342,7 +342,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.udmfactivates.Location = new System.Drawing.Point(56, 5);
 			this.udmfactivates.Name = "udmfactivates";
 			this.udmfactivates.Size = new System.Drawing.Size(437, 123);
-			this.udmfactivates.TabIndex = 1;
+			this.udmfactivates.TabIndex = 0;
 			// 
 			// argspanel
 			// 
@@ -359,7 +359,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.argspanel.Location = new System.Drawing.Point(6, 54);
 			this.argspanel.Name = "argspanel";
 			this.argspanel.Size = new System.Drawing.Size(505, 83);
-			this.argspanel.TabIndex = 13;
+			this.argspanel.TabIndex = 2;
 			this.argspanel.Visible = false;
 			// 
 			// arg2
@@ -368,7 +368,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg2.Location = new System.Drawing.Point(123, 55);
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(93, 24);
-			this.arg2.TabIndex = 41;
+			this.arg2.TabIndex = 2;
 			// 
 			// arg1
 			// 
@@ -376,7 +376,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg1.Location = new System.Drawing.Point(123, 29);
 			this.arg1.Name = "arg1";
 			this.arg1.Size = new System.Drawing.Size(93, 24);
-			this.arg1.TabIndex = 40;
+			this.arg1.TabIndex = 1;
 			// 
 			// arg0
 			// 
@@ -384,7 +384,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg0.Location = new System.Drawing.Point(123, 3);
 			this.arg0.Name = "arg0";
 			this.arg0.Size = new System.Drawing.Size(93, 24);
-			this.arg0.TabIndex = 39;
+			this.arg0.TabIndex = 0;
 			// 
 			// arg3
 			// 
@@ -392,7 +392,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg3.Location = new System.Drawing.Point(364, 3);
 			this.arg3.Name = "arg3";
 			this.arg3.Size = new System.Drawing.Size(93, 24);
-			this.arg3.TabIndex = 38;
+			this.arg3.TabIndex = 3;
 			// 
 			// arg4
 			// 
@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg4.Location = new System.Drawing.Point(364, 29);
 			this.arg4.Name = "arg4";
 			this.arg4.Size = new System.Drawing.Size(93, 24);
-			this.arg4.TabIndex = 37;
+			this.arg4.TabIndex = 4;
 			// 
 			// arg1label
 			// 
@@ -461,14 +461,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tag.Location = new System.Drawing.Point(62, 28);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(68, 20);
-			this.tag.TabIndex = 7;
+			this.tag.TabIndex = 0;
 			// 
 			// newtag
 			// 
 			this.newtag.Location = new System.Drawing.Point(136, 27);
 			this.newtag.Name = "newtag";
 			this.newtag.Size = new System.Drawing.Size(76, 23);
-			this.newtag.TabIndex = 8;
+			this.newtag.TabIndex = 1;
 			this.newtag.Text = "New Tag";
 			this.newtag.UseVisualStyleBackColor = true;
 			this.newtag.Click += new System.EventHandler(this.newtag_Click);
@@ -481,7 +481,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsgroup.Location = new System.Drawing.Point(8, 8);
 			this.settingsgroup.Name = "settingsgroup";
 			this.settingsgroup.Size = new System.Drawing.Size(517, 163);
-			this.settingsgroup.TabIndex = 19;
+			this.settingsgroup.TabIndex = 0;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Settings ";
 			// 
@@ -521,7 +521,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(541, 565);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-			this.tabs.TabIndex = 20;
+			this.tabs.TabIndex = 0;
 			// 
 			// tabproperties
 			// 
@@ -547,7 +547,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.idgroup.Location = new System.Drawing.Point(8, 464);
 			this.idgroup.Name = "idgroup";
 			this.idgroup.Size = new System.Drawing.Size(517, 66);
-			this.idgroup.TabIndex = 20;
+			this.idgroup.TabIndex = 2;
 			this.idgroup.TabStop = false;
 			this.idgroup.Text = " Identification ";
 			// 
@@ -616,7 +616,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.Location = new System.Drawing.Point(3, 3);
 			this.frontgroup.Name = "frontgroup";
 			this.frontgroup.Size = new System.Drawing.Size(517, 250);
-			this.frontgroup.TabIndex = 0;
+			this.frontgroup.TabIndex = 1;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
 			// 
@@ -625,7 +625,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.customfrontbutton.Location = new System.Drawing.Point(82, 124);
 			this.customfrontbutton.Name = "customfrontbutton";
 			this.customfrontbutton.Size = new System.Drawing.Size(115, 25);
-			this.customfrontbutton.TabIndex = 15;
+			this.customfrontbutton.TabIndex = 3;
 			this.customfrontbutton.Text = "Custom fields...";
 			this.customfrontbutton.UseVisualStyleBackColor = true;
 			this.customfrontbutton.Visible = false;
@@ -640,7 +640,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontsector.Location = new System.Drawing.Point(103, 37);
 			this.frontsector.Name = "frontsector";
 			this.frontsector.Size = new System.Drawing.Size(94, 20);
-			this.frontsector.TabIndex = 14;
+			this.frontsector.TabIndex = 0;
 			this.frontsector.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// frontlow
@@ -649,7 +649,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontlow.Name = "frontlow";
 			this.frontlow.Required = false;
 			this.frontlow.Size = new System.Drawing.Size(83, 112);
-			this.frontlow.TabIndex = 12;
+			this.frontlow.TabIndex = 6;
 			this.frontlow.TextureName = "";
 			// 
 			// frontmid
@@ -658,7 +658,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontmid.Name = "frontmid";
 			this.frontmid.Required = false;
 			this.frontmid.Size = new System.Drawing.Size(83, 112);
-			this.frontmid.TabIndex = 11;
+			this.frontmid.TabIndex = 5;
 			this.frontmid.TextureName = "";
 			// 
 			// fronthigh
@@ -667,7 +667,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fronthigh.Name = "fronthigh";
 			this.fronthigh.Required = false;
 			this.fronthigh.Size = new System.Drawing.Size(83, 112);
-			this.fronthigh.TabIndex = 10;
+			this.fronthigh.TabIndex = 4;
 			this.fronthigh.TextureName = "";
 			// 
 			// frontoffsety
@@ -679,7 +679,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontoffsety.Location = new System.Drawing.Point(152, 76);
 			this.frontoffsety.Name = "frontoffsety";
 			this.frontoffsety.Size = new System.Drawing.Size(45, 20);
-			this.frontoffsety.TabIndex = 9;
+			this.frontoffsety.TabIndex = 2;
 			this.frontoffsety.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// frontoffsetx
@@ -691,7 +691,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontoffsetx.Location = new System.Drawing.Point(103, 76);
 			this.frontoffsetx.Name = "frontoffsetx";
 			this.frontoffsetx.Size = new System.Drawing.Size(45, 20);
-			this.frontoffsetx.TabIndex = 8;
+			this.frontoffsetx.TabIndex = 1;
 			this.frontoffsetx.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// backside
@@ -700,7 +700,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backside.Location = new System.Drawing.Point(17, 1);
 			this.backside.Name = "backside";
 			this.backside.Size = new System.Drawing.Size(74, 18);
-			this.backside.TabIndex = 2;
+			this.backside.TabIndex = 0;
 			this.backside.Text = "Back Side";
 			this.backside.UseVisualStyleBackColor = true;
 			this.backside.CheckStateChanged += new System.EventHandler(this.backside_CheckStateChanged);
@@ -735,7 +735,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.custombackbutton.Location = new System.Drawing.Point(82, 124);
 			this.custombackbutton.Name = "custombackbutton";
 			this.custombackbutton.Size = new System.Drawing.Size(115, 25);
-			this.custombackbutton.TabIndex = 18;
+			this.custombackbutton.TabIndex = 3;
 			this.custombackbutton.Text = "Custom fields...";
 			this.custombackbutton.UseVisualStyleBackColor = true;
 			this.custombackbutton.Visible = false;
@@ -750,7 +750,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backsector.Location = new System.Drawing.Point(103, 37);
 			this.backsector.Name = "backsector";
 			this.backsector.Size = new System.Drawing.Size(94, 20);
-			this.backsector.TabIndex = 17;
+			this.backsector.TabIndex = 0;
 			this.backsector.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// backlow
@@ -759,7 +759,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backlow.Name = "backlow";
 			this.backlow.Required = false;
 			this.backlow.Size = new System.Drawing.Size(83, 112);
-			this.backlow.TabIndex = 15;
+			this.backlow.TabIndex = 6;
 			this.backlow.TextureName = "";
 			// 
 			// backmid
@@ -768,7 +768,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backmid.Name = "backmid";
 			this.backmid.Required = false;
 			this.backmid.Size = new System.Drawing.Size(83, 112);
-			this.backmid.TabIndex = 14;
+			this.backmid.TabIndex = 5;
 			this.backmid.TextureName = "";
 			// 
 			// backhigh
@@ -777,7 +777,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backhigh.Name = "backhigh";
 			this.backhigh.Required = false;
 			this.backhigh.Size = new System.Drawing.Size(83, 112);
-			this.backhigh.TabIndex = 13;
+			this.backhigh.TabIndex = 4;
 			this.backhigh.TextureName = "";
 			// 
 			// backoffsety
@@ -789,7 +789,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backoffsety.Location = new System.Drawing.Point(152, 76);
 			this.backoffsety.Name = "backoffsety";
 			this.backoffsety.Size = new System.Drawing.Size(45, 20);
-			this.backoffsety.TabIndex = 9;
+			this.backoffsety.TabIndex = 2;
 			this.backoffsety.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// backoffsetx
@@ -801,7 +801,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backoffsetx.Location = new System.Drawing.Point(103, 76);
 			this.backoffsetx.Name = "backoffsetx";
 			this.backoffsetx.Size = new System.Drawing.Size(45, 20);
-			this.backoffsetx.TabIndex = 8;
+			this.backoffsetx.TabIndex = 1;
 			this.backoffsetx.Enter += new System.EventHandler(this.SelectAllText);
 			// 
 			// tabcustom

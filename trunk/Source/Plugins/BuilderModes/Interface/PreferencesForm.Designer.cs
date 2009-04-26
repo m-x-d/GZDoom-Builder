@@ -30,11 +30,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.taboptions = new System.Windows.Forms.TabPage();
+			this.additiveselect = new System.Windows.Forms.CheckBox();
 			this.editnewsector = new System.Windows.Forms.CheckBox();
 			this.editnewthing = new System.Windows.Forms.CheckBox();
 			this.heightbysidedef = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
-			this.additiveselect = new System.Windows.Forms.CheckBox();
 			this.tabs.SuspendLayout();
 			this.taboptions.SuspendLayout();
 			this.SuspendLayout();
@@ -68,13 +68,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.taboptions.Text = "Editing";
 			this.taboptions.UseVisualStyleBackColor = true;
 			// 
+			// additiveselect
+			// 
+			this.additiveselect.AutoSize = true;
+			this.additiveselect.Location = new System.Drawing.Point(21, 107);
+			this.additiveselect.Name = "additiveselect";
+			this.additiveselect.Size = new System.Drawing.Size(211, 18);
+			this.additiveselect.TabIndex = 3;
+			this.additiveselect.Text = "Additive selecting without holding shift";
+			this.additiveselect.UseVisualStyleBackColor = true;
+			// 
 			// editnewsector
 			// 
 			this.editnewsector.AutoSize = true;
 			this.editnewsector.Location = new System.Drawing.Point(21, 81);
 			this.editnewsector.Name = "editnewsector";
 			this.editnewsector.Size = new System.Drawing.Size(271, 18);
-			this.editnewsector.TabIndex = 3;
+			this.editnewsector.TabIndex = 2;
 			this.editnewsector.Text = "Edit sector properties when drawing a new sector";
 			this.editnewsector.UseVisualStyleBackColor = true;
 			// 
@@ -84,7 +94,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.editnewthing.Location = new System.Drawing.Point(21, 55);
 			this.editnewthing.Name = "editnewthing";
 			this.editnewthing.Size = new System.Drawing.Size(256, 18);
-			this.editnewthing.TabIndex = 2;
+			this.editnewthing.TabIndex = 1;
 			this.editnewthing.Text = "Edit thing properties when inserting a new thing";
 			this.editnewthing.UseVisualStyleBackColor = true;
 			// 
@@ -96,10 +106,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
             "Do nothing",
             "Change the ceiling height",
             "Change the floor height"});
-			this.heightbysidedef.Location = new System.Drawing.Point(339, 16);
+			this.heightbysidedef.Location = new System.Drawing.Point(353, 16);
 			this.heightbysidedef.Name = "heightbysidedef";
 			this.heightbysidedef.Size = new System.Drawing.Size(199, 22);
-			this.heightbysidedef.TabIndex = 1;
+			this.heightbysidedef.TabIndex = 0;
 			// 
 			// label1
 			// 
@@ -109,16 +119,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label1.Size = new System.Drawing.Size(315, 14);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "When sector height changes are used on a wall in Visual Mode:";
-			// 
-			// additiveselect
-			// 
-			this.additiveselect.AutoSize = true;
-			this.additiveselect.Location = new System.Drawing.Point(21, 119);
-			this.additiveselect.Name = "additiveselect";
-			this.additiveselect.Size = new System.Drawing.Size(211, 18);
-			this.additiveselect.TabIndex = 4;
-			this.additiveselect.Text = "Additive selecting without holding shift";
-			this.additiveselect.UseVisualStyleBackColor = true;
+			this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// PreferencesForm
 			// 

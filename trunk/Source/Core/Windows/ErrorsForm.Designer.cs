@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.close.Location = new System.Drawing.Point(622, 416);
 			this.close.Name = "close";
 			this.close.Size = new System.Drawing.Size(122, 25);
-			this.close.TabIndex = 3;
+			this.close.TabIndex = 4;
 			this.close.Text = "Close";
 			this.close.UseVisualStyleBackColor = true;
 			this.close.Click += new System.EventHandler(this.close_Click);
@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.checkshow.Location = new System.Drawing.Point(301, 420);
 			this.checkshow.Name = "checkshow";
 			this.checkshow.Size = new System.Drawing.Size(213, 18);
-			this.checkshow.TabIndex = 4;
+			this.checkshow.TabIndex = 3;
 			this.checkshow.Text = "Show this window when errors occur";
 			this.checkshow.UseVisualStyleBackColor = true;
 			// 

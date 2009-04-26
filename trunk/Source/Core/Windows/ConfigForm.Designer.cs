@@ -215,7 +215,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(617, 381);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 17;
+			this.cancel.TabIndex = 3;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(499, 381);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 16;
+			this.apply.TabIndex = 2;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -249,7 +249,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(481, 358);
-			this.tabs.TabIndex = 18;
+			this.tabs.TabIndex = 1;
 			// 
 			// tabresources
 			// 
@@ -275,7 +275,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.configdata.Location = new System.Drawing.Point(15, 55);
 			this.configdata.Name = "configdata";
 			this.configdata.Size = new System.Drawing.Size(440, 208);
-			this.configdata.TabIndex = 20;
+			this.configdata.TabIndex = 0;
 			this.configdata.OnContentChanged += new CodeImp.DoomBuilder.Controls.ResourceListEditor.ContentChanged(this.resourcelocations_OnContentChanged);
 			// 
 			// tabnodebuilder
@@ -304,7 +304,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.nodebuildertest.Name = "nodebuildertest";
 			this.nodebuildertest.Size = new System.Drawing.Size(288, 22);
 			this.nodebuildertest.Sorted = true;
-			this.nodebuildertest.TabIndex = 25;
+			this.nodebuildertest.TabIndex = 1;
 			this.nodebuildertest.SelectedIndexChanged += new System.EventHandler(this.nodebuildertest_SelectedIndexChanged);
 			// 
 			// nodebuildersave
@@ -317,7 +317,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.nodebuildersave.Name = "nodebuildersave";
 			this.nodebuildersave.Size = new System.Drawing.Size(288, 22);
 			this.nodebuildersave.Sorted = true;
-			this.nodebuildersave.TabIndex = 23;
+			this.nodebuildersave.TabIndex = 0;
 			this.nodebuildersave.SelectedIndexChanged += new System.EventHandler(this.nodebuildersave_SelectedIndexChanged);
 			// 
 			// tabtesting
@@ -350,7 +350,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.shortpaths.Location = new System.Drawing.Point(87, 203);
 			this.shortpaths.Name = "shortpaths";
 			this.shortpaths.Size = new System.Drawing.Size(276, 18);
-			this.shortpaths.TabIndex = 37;
+			this.shortpaths.TabIndex = 5;
 			this.shortpaths.Text = "Use short paths and file names (MSDOS 8.3 format)";
 			this.shortpaths.UseVisualStyleBackColor = true;
 			this.shortpaths.Visible = false;
@@ -362,7 +362,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.customparameters.Location = new System.Drawing.Point(86, 132);
 			this.customparameters.Name = "customparameters";
 			this.customparameters.Size = new System.Drawing.Size(134, 18);
-			this.customparameters.TabIndex = 36;
+			this.customparameters.TabIndex = 3;
 			this.customparameters.Text = "Customize parameters";
 			this.customparameters.UseVisualStyleBackColor = true;
 			this.customparameters.CheckedChanged += new System.EventHandler(this.customparameters_CheckedChanged);
@@ -376,7 +376,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.skill.Location = new System.Drawing.Point(87, 94);
 			this.skill.Name = "skill";
 			this.skill.Size = new System.Drawing.Size(329, 21);
-			this.skill.TabIndex = 35;
+			this.skill.TabIndex = 2;
 			this.skill.Value = 402;
 			this.skill.ValueChanges += new System.EventHandler(this.skill_ValueChanges);
 			// 
@@ -389,7 +389,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browsetestprogram.Name = "browsetestprogram";
 			this.browsetestprogram.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
 			this.browsetestprogram.Size = new System.Drawing.Size(30, 23);
-			this.browsetestprogram.TabIndex = 33;
+			this.browsetestprogram.TabIndex = 1;
 			this.browsetestprogram.Text = " ";
 			this.browsetestprogram.UseVisualStyleBackColor = true;
 			this.browsetestprogram.Click += new System.EventHandler(this.browsetestprogram_Click);
@@ -413,7 +413,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.testresult.Name = "testresult";
 			this.testresult.ReadOnly = true;
 			this.testresult.Size = new System.Drawing.Size(366, 79);
-			this.testresult.TabIndex = 31;
+			this.testresult.TabIndex = 6;
 			this.testresult.Visible = false;
 			// 
 			// labelresult
@@ -434,7 +434,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.testparameters.Multiline = true;
 			this.testparameters.Name = "testparameters";
 			this.testparameters.Size = new System.Drawing.Size(366, 41);
-			this.testparameters.TabIndex = 28;
+			this.testparameters.TabIndex = 4;
 			this.testparameters.Visible = false;
 			this.testparameters.TextChanged += new System.EventHandler(this.testparameters_TextChanged);
 			// 
@@ -446,7 +446,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.testapplication.Name = "testapplication";
 			this.testapplication.ReadOnly = true;
 			this.testapplication.Size = new System.Drawing.Size(330, 20);
-			this.testapplication.TabIndex = 25;
+			this.testapplication.TabIndex = 0;
 			this.testapplication.TextChanged += new System.EventHandler(this.testapplication_TextChanged);
 			// 
 			// tabtextures
@@ -480,7 +480,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listtextures.Size = new System.Drawing.Size(442, 175);
 			this.listtextures.SmallImageList = this.smallimages;
 			this.listtextures.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listtextures.TabIndex = 32;
+			this.listtextures.TabIndex = 0;
 			this.listtextures.UseCompatibleStateImageBehavior = false;
 			this.listtextures.View = System.Windows.Forms.View.List;
 			this.listtextures.SelectedIndexChanged += new System.EventHandler(this.listtextures_SelectedIndexChanged);
@@ -498,7 +498,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.restoretexturesets.Location = new System.Drawing.Point(15, 283);
 			this.restoretexturesets.Name = "restoretexturesets";
 			this.restoretexturesets.Size = new System.Drawing.Size(140, 24);
-			this.restoretexturesets.TabIndex = 31;
+			this.restoretexturesets.TabIndex = 6;
 			this.restoretexturesets.Text = "Add Default Sets";
 			this.restoretexturesets.UseVisualStyleBackColor = true;
 			this.restoretexturesets.Click += new System.EventHandler(this.restoretexturesets_Click);
@@ -510,7 +510,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.edittextureset.Location = new System.Drawing.Point(88, 245);
 			this.edittextureset.Name = "edittextureset";
 			this.edittextureset.Size = new System.Drawing.Size(67, 24);
-			this.edittextureset.TabIndex = 30;
+			this.edittextureset.TabIndex = 2;
 			this.edittextureset.Text = "Edit...";
 			this.edittextureset.UseVisualStyleBackColor = true;
 			this.edittextureset.Click += new System.EventHandler(this.edittextureset_Click);
@@ -522,7 +522,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pastetexturesets.Location = new System.Drawing.Point(399, 245);
 			this.pastetexturesets.Name = "pastetexturesets";
 			this.pastetexturesets.Size = new System.Drawing.Size(58, 24);
-			this.pastetexturesets.TabIndex = 29;
+			this.pastetexturesets.TabIndex = 5;
 			this.pastetexturesets.Text = "Paste";
 			this.pastetexturesets.UseVisualStyleBackColor = true;
 			this.pastetexturesets.Click += new System.EventHandler(this.pastetexturesets_Click);
@@ -534,7 +534,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.copytexturesets.Location = new System.Drawing.Point(335, 245);
 			this.copytexturesets.Name = "copytexturesets";
 			this.copytexturesets.Size = new System.Drawing.Size(58, 24);
-			this.copytexturesets.TabIndex = 28;
+			this.copytexturesets.TabIndex = 4;
 			this.copytexturesets.Text = "Copy";
 			this.copytexturesets.UseVisualStyleBackColor = true;
 			this.copytexturesets.Click += new System.EventHandler(this.copytexturesets_Click);
@@ -546,7 +546,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.removetextureset.Location = new System.Drawing.Point(161, 245);
 			this.removetextureset.Name = "removetextureset";
 			this.removetextureset.Size = new System.Drawing.Size(68, 24);
-			this.removetextureset.TabIndex = 27;
+			this.removetextureset.TabIndex = 3;
 			this.removetextureset.Text = "Remove";
 			this.removetextureset.UseVisualStyleBackColor = true;
 			this.removetextureset.Click += new System.EventHandler(this.removetextureset_Click);
@@ -557,7 +557,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.addtextureset.Location = new System.Drawing.Point(15, 245);
 			this.addtextureset.Name = "addtextureset";
 			this.addtextureset.Size = new System.Drawing.Size(67, 24);
-			this.addtextureset.TabIndex = 26;
+			this.addtextureset.TabIndex = 1;
 			this.addtextureset.Text = "Add...";
 			this.addtextureset.UseVisualStyleBackColor = true;
 			this.addtextureset.Click += new System.EventHandler(this.addtextureset_Click);
@@ -591,7 +591,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listmodes.ShowGroups = false;
 			this.listmodes.Size = new System.Drawing.Size(442, 233);
 			this.listmodes.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listmodes.TabIndex = 26;
+			this.listmodes.TabIndex = 0;
 			this.listmodes.UseCompatibleStateImageBehavior = false;
 			this.listmodes.View = System.Windows.Forms.View.Details;
 			this.listmodes.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.listmodes_ItemChecked);
@@ -621,7 +621,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listconfigs.ShowGroups = false;
 			this.listconfigs.Size = new System.Drawing.Size(230, 358);
 			this.listconfigs.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listconfigs.TabIndex = 19;
+			this.listconfigs.TabIndex = 0;
 			this.listconfigs.UseCompatibleStateImageBehavior = false;
 			this.listconfigs.View = System.Windows.Forms.View.Details;
 			this.listconfigs.SelectedIndexChanged += new System.EventHandler(this.listconfigs_SelectedIndexChanged);

@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listfilters.ShowGroups = false;
 			this.listfilters.Size = new System.Drawing.Size(202, 323);
 			this.listfilters.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.listfilters.TabIndex = 20;
+			this.listfilters.TabIndex = 0;
 			this.listfilters.UseCompatibleStateImageBehavior = false;
 			this.listfilters.View = System.Windows.Forms.View.Details;
 			this.listfilters.SelectedIndexChanged += new System.EventHandler(this.listfilters_SelectedIndexChanged);
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.addfilter.Location = new System.Drawing.Point(12, 341);
 			this.addfilter.Name = "addfilter";
 			this.addfilter.Size = new System.Drawing.Size(98, 25);
-			this.addfilter.TabIndex = 21;
+			this.addfilter.TabIndex = 1;
 			this.addfilter.Text = "New Filter";
 			this.addfilter.UseVisualStyleBackColor = true;
 			this.addfilter.Click += new System.EventHandler(this.addfilter_Click);
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.deletefilter.Location = new System.Drawing.Point(116, 341);
 			this.deletefilter.Name = "deletefilter";
 			this.deletefilter.Size = new System.Drawing.Size(98, 25);
-			this.deletefilter.TabIndex = 22;
+			this.deletefilter.TabIndex = 2;
 			this.deletefilter.Text = "Delete Selected";
 			this.deletefilter.UseVisualStyleBackColor = true;
 			this.deletefilter.Click += new System.EventHandler(this.deletefilter_Click);
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filtergroup.Location = new System.Drawing.Point(232, 12);
 			this.filtergroup.Name = "filtergroup";
 			this.filtergroup.Size = new System.Drawing.Size(382, 354);
-			this.filtergroup.TabIndex = 23;
+			this.filtergroup.TabIndex = 3;
 			this.filtergroup.TabStop = false;
 			this.filtergroup.Text = " Filter settings ";
 			// 
@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filterfields.Location = new System.Drawing.Point(18, 125);
 			this.filterfields.Name = "filterfields";
 			this.filterfields.Size = new System.Drawing.Size(329, 198);
-			this.filterfields.TabIndex = 5;
+			this.filterfields.TabIndex = 2;
 			// 
 			// label3
 			// 
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filtercategory.Location = new System.Drawing.Point(115, 66);
 			this.filtercategory.Name = "filtercategory";
 			this.filtercategory.Size = new System.Drawing.Size(232, 22);
-			this.filtercategory.TabIndex = 3;
+			this.filtercategory.TabIndex = 1;
 			this.filtercategory.SelectedIndexChanged += new System.EventHandler(this.filtercategory_SelectedIndexChanged);
 			// 
 			// label2
@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filtername.MaxLength = 50;
 			this.filtername.Name = "filtername";
 			this.filtername.Size = new System.Drawing.Size(232, 20);
-			this.filtername.TabIndex = 1;
+			this.filtername.TabIndex = 0;
 			this.filtername.Validating += new System.ComponentModel.CancelEventHandler(this.filtername_Validating);
 			// 
 			// label1
@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(502, 383);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 25;
+			this.cancel.TabIndex = 5;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -184,7 +184,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(384, 383);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 24;
+			this.apply.TabIndex = 4;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);

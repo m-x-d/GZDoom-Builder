@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.list.MaxDropDownItems = 15;
 			this.list.Name = "list";
 			this.list.Size = new System.Drawing.Size(251, 21);
-			this.list.TabIndex = 2;
+			this.list.TabIndex = 1;
 			this.list.TabStop = false;
 			this.list.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.list_DrawItem);
 			this.list.SelectionChangeCommitted += new System.EventHandler(this.list_SelectionChangeCommitted);
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.numberpanel.Location = new System.Drawing.Point(0, 0);
 			this.numberpanel.Name = "numberpanel";
 			this.numberpanel.Size = new System.Drawing.Size(53, 21);
-			this.numberpanel.TabIndex = 3;
+			this.numberpanel.TabIndex = 0;
 			// 
 			// ActionSelectorControl
 			// 
