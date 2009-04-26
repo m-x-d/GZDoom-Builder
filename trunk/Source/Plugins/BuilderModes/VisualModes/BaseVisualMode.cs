@@ -192,6 +192,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Events
 		
+		// Help!
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_visual.html");
+		}
+		
 		// Processing
 		public override void OnProcess(double deltatime)
 		{

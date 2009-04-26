@@ -265,6 +265,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Events
 
+		public override void OnHelp()
+		{
+			General.ShowHelp("e_makesectors.html");
+		}
+
 		// When the mapset changes (undo/redo)
 		public override void OnMapSetChangeBegin()
 		{
