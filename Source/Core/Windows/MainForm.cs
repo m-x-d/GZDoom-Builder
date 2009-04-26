@@ -269,7 +269,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Show normal caption
 				this.Text = Application.ProductName;
 			}
-			
+
 			// Update the status bar
 			UpdateStatusbar();
 			
@@ -398,7 +398,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void MainForm_Activated(object sender, EventArgs e)
 		{
 			windowactive = true;
-			
+
 			// Resume any exclusive mouse input
 			ResumeExclusiveMouseInput();
 			display.Focus();
@@ -412,6 +412,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Release all pressed keys
 			General.Actions.ReleaseAllKeys();
 			mousebuttons = MouseButtons.None;
+			shift = false;
+			ctrl = false;
+			alt = false;
 
 			// Stop exclusive mouse input
 			BreakExclusiveMouseInput();
