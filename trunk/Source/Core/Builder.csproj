@@ -54,6 +54,15 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release with revision lookup|x86' ">
+    <OutputPath>bin\x86\Release with revision lookup\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\Build\Builder.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -875,9 +884,10 @@
   </ItemGroup>
   <PropertyGroup>
     <PreBuildEvent>"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M "Debug" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release" "$(ConfigurationName)"
+"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M "Release" "$(ConfigurationName)"
+"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release with revision lookup" "$(ConfigurationName)"
 "$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Debug with revision lookup" "$(ConfigurationName)"</PreBuildEvent>
-    <PostBuildEvent>"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release" "$(ConfigurationName)"
+    <PostBuildEvent>"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release with revision lookup" "$(ConfigurationName)"
 "$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Debug with revision lookup" "$(ConfigurationName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
