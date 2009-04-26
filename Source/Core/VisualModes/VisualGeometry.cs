@@ -50,6 +50,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Vertices
 		private WorldVertex[] vertices;
 		private int triangles;
+
+		// Desired modulate color
+		private PixelColor modulatecolor;
+		private Color4 modcolor4;
 		
 		// Elements that this geometry is bound to
 		// Only the sector is required, sidedef is only for walls
@@ -81,6 +85,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal int VertexOffset { get { return vertexoffset; } set { vertexoffset = value; } }
 		internal int Triangles { get { return triangles; } }
 		internal int RenderPassInt { get { return renderpass; } }
+		internal Color4 ModColor4 { get { return modcolor4; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
@@ -91,6 +96,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// Image to use as texture on this geometry.
 		/// </summary>
 		public ImageData Texture { get { return texture; } set { texture = value; } }
+
+		/// <summary>
+		/// Color to modulate the texture pixels with.
+		/// </summary>
+		public PixelColor ModulateColor { get { return modulatecolor; } set { modcolor4 = value.ToColorValue(); modulatecolor = value; } }
 
 		/// <summary>
 		/// Returns the VisualSector this geometry has been added to.
@@ -112,6 +122,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public VisualGeometry(VisualSector vs)
 		{
 			this.sector = vs;
+			this.ModulateColor = new PixelColor(255, 255, 255, 255);
 		}
 
 		/// <summary>
@@ -122,6 +133,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			this.sector = vs;
 			this.sidedef = sd;
+			this.ModulateColor = new PixelColor(255, 255, 255, 255);
 		}
 
 		#endregion

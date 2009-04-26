@@ -40,8 +40,6 @@ sampler2D texturesamp = sampler_state
     MagFilter = magfiltersettings;
     MinFilter = minfiltersettings;
     MipFilter = magfiltersettings;
-	AddressU = Wrap;
-	AddressV = Wrap;
 	MipMapLodBias = 0.0f;
 };
 
