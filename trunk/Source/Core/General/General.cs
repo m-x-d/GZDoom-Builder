@@ -1057,6 +1057,8 @@ namespace CodeImp.DoomBuilder
 				// Open map file
 				OpenMapFile(openfile.FileName);
 			}
+
+			openfile.Dispose();
 		}
 		
 		// This opens the specified file
@@ -1214,7 +1216,7 @@ namespace CodeImp.DoomBuilder
 
 				// Set this to false so we can see if errors are added
 				General.ErrorLogger.IsErrorAdded = false;
-				
+
 				// Save the map
 				if(map.SaveMap(savefile.FileName, MapManager.SAVE_AS))
 				{
@@ -1237,7 +1239,8 @@ namespace CodeImp.DoomBuilder
 
 				Cursor.Current = Cursors.Default;
 			}
-
+			
+			savefile.Dispose();
 			return result;
 		}
 
@@ -1294,6 +1297,7 @@ namespace CodeImp.DoomBuilder
 				Cursor.Current = Cursors.Default;
 			}
 
+			savefile.Dispose();
 			return result;
 		}
 		
