@@ -154,10 +154,12 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			// Still none found? Then select the first
-			if(!foundselecttexture)
-				texturesets.Items[0].Selected = true;
+			// WARNING: Some strange behavior of the listview here!
+			// When you leave this line out, the list becomes very slow.
+			// Also, this does not change the item selected previously.
+			texturesets.Items[0].Selected = true;
 
+			// Texture to select when list is filled
 			selecttextureonfill = selecttexture;
 			
 			// Make groups
