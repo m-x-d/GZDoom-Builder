@@ -842,8 +842,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.disregardshiftlabel.Name = "disregardshiftlabel";
 			this.disregardshiftlabel.Size = new System.Drawing.Size(245, 47);
 			this.disregardshiftlabel.TabIndex = 9;
-			this.disregardshiftlabel.Text = "The selected actions uses Shift, Alt and Control to modify it\'s behavior, these m" +
-				"odifiers can not be used in a key combination for this action.";
+			this.disregardshiftlabel.Text = "The selected actions uses Shift, Alt and Control to modify its behavior. These mo" +
+				"difiers can not be used in a key combination for this action.";
 			this.disregardshiftlabel.Visible = false;
 			// 
 			// actioncontrol
