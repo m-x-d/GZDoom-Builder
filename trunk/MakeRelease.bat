@@ -17,8 +17,8 @@ CALL "%programfiles%\Microsoft Visual Studio 9.0\Common7\Tools\vsvars32.bat"
 
 MKDIR "Release"
 
-svn revert "Source\Core\Properties\AssemblyInfo.cs"
-svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs"
+svn revert "Source\Core\Properties\AssemblyInfo.cs" > NUL
+svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
 
 ECHO.
 ECHO Writing SVN log file...
@@ -39,10 +39,12 @@ IF NOT EXIST "Build\Refmanual.chm" GOTO FAIL
 ECHO.
 ECHO Looking up current repository revision numbers...
 ECHO.
-VersionFromSVN.exe "Source\Core\Properties\AssemblyInfo.cs"
+IF EXIST "setenv.bat" DEL /F /Q "setenv.bat" > NUL
+VersionFromSVN.exe "Source\Core\Properties\AssemblyInfo.cs" "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" -O "setenv.bat"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
-VersionFromSVN.exe "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs"
-IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
+
+CALL "setenv.bat"
+DEL /F /Q "setenv.bat"
 
 ECHO.
 ECHO Compiling Doom Builder core...
@@ -63,17 +65,22 @@ IF NOT EXIST "Build\Plugins\BuilderModes.dll" GOTO FILEFAIL
 ECHO.
 ECHO Building Setup Installer...
 ECHO.
-IF EXIST "Release\builder2_setup.exe" DEL /F /Q "Release\builder2_setup.exe" > NUL
+IF EXIST "Release\*.exe" DEL /F /Q "Release\*.exe" > NUL
 "%programfiles%\Inno Setup 5\iscc.exe" "Setup\builder2_setup.iss"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Release\builder2_setup.exe" GOTO FILEFAIL
 
-svn revert "Source\Core\Properties\AssemblyInfo.cs"
-svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs"
+REN "Release\builder2_setup.exe" builder2_setup_%REVISIONNUMBER%.exe
+
+svn revert "Source\Core\Properties\AssemblyInfo.cs" > NUL
+svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
 
 ECHO.
 ECHO.     BUILD DONE !
 ECHO.
+ECHO.     Revision:  %REVISIONNUMBER%
+ECHO.
+PAUSE > NUL
 GOTO LEAVE
 
 :ERRORFAIL
