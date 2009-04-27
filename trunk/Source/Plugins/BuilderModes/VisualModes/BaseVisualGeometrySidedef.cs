@@ -233,6 +233,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(parts.middledouble != null) parts.middledouble.Setup();
 			if(parts.middlesingle != null) parts.middlesingle.Setup();
 			if(parts.upper != null) parts.upper.Setup();
+
+			// Update other sidedef geometry
+			if(Sidedef.Other != null)
+			{
+				BaseVisualSector othersector = (BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector);
+				parts = othersector.GetSidedefParts(Sidedef.Other);
+				if(parts.lower != null) parts.lower.Setup();
+				if(parts.middledouble != null) parts.middledouble.Setup();
+				if(parts.middlesingle != null) parts.middlesingle.Setup();
+				if(parts.upper != null) parts.upper.Setup();
+			}
 		}
 
 		// Toggle lower-unpegged
@@ -260,6 +271,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(parts.middledouble != null) parts.middledouble.Setup();
 			if(parts.middlesingle != null) parts.middlesingle.Setup();
 			if(parts.upper != null) parts.upper.Setup();
+
+			// Update other sidedef geometry
+			if(Sidedef.Other != null)
+			{
+				BaseVisualSector othersector = (BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector);
+				parts = othersector.GetSidedefParts(Sidedef.Other);
+				if(parts.lower != null) parts.lower.Setup();
+				if(parts.middledouble != null) parts.middledouble.Setup();
+				if(parts.middlesingle != null) parts.middlesingle.Setup();
+				if(parts.upper != null) parts.upper.Setup();
+			}
 		}
 
 		// Flood-fill textures
