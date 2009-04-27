@@ -34,22 +34,6 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug with revision lookup|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\..\..\Build\Plugins\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release with revision lookup|x86' ">
-    <OutputPath>..\..\..\Build\Plugins\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <Optimize>true</Optimize>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -284,11 +268,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M "Debug" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M "Release" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release with revision lookup" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Debug with revision lookup" "$(ConfigurationName)"</PreBuildEvent>
-    <PostBuildEvent>"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release with revision lookup" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Debug with revision lookup" "$(ConfigurationName)"</PostBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
