@@ -174,6 +174,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				running = false;
 				blockmap.Dispose();
 				blockmap = null;
+				
+				// When no results found, show "no results" and disable the list
+				if(results.Items.Count == 0)
+				{
+					results.Items.Add(new ResultNoErrors());
+					results.Enabled = false;
+				}
 			}
 		}
 		
@@ -196,6 +203,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);
 			progress.Value = 0;
 			results.Items.Clear();
+			results.Enabled = true;
 			ClearSelectedResult();
 			resultspanel.Visible = true;
 			buttoncheck.Text = "Abort Analysis";
