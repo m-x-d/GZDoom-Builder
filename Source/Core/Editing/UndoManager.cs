@@ -323,6 +323,42 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
+		// This changes the description of previously made undo
+		public void SetUndoDescription(int ticket, string description)
+		{
+			// Anything to undo?
+			if(undos.Count > 0)
+			{
+				// Check if the ticket id matches
+				if(ticket == undos[0].TicketID)
+				{
+					lock(undos)
+					{
+						undos[0].Description = description;
+					}
+					
+					// Update
+					General.MainWindow.UpdateInterface();
+				}
+			}
+		}
+
+		// This changes the grouping settings
+		public void SetUndoGrouping(int ticket, UndoGroup group, int grouptag)
+		{
+			// Anything to undo?
+			if(undos.Count > 0)
+			{
+				// Check if the ticket id matches
+				if(ticket == undos[0].TicketID)
+				{
+					// Keep grouping info
+					lastgroup = group;
+					lastgrouptag = grouptag;
+				}
+			}
+		}
+
 		// This performs an undo
 		[BeginAction("undo")]
 		public void PerformUndo()

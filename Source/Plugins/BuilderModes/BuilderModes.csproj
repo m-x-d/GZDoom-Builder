@@ -247,6 +247,7 @@
     <Compile Include="FindReplace\FindThingThingRef.cs" />
     <Compile Include="FindReplace\FindThingType.cs" />
     <Compile Include="FindReplace\FindVertexNumber.cs" />
+    <Compile Include="VisualModes\VisualActionResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ViewSelectionIndex.png" />

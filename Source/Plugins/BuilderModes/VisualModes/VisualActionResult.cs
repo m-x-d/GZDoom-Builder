@@ -1,4 +1,4 @@
-
+﻿
 #region ================== Copyright (c) 2007 Pascal vd Heiden
 
 /*
@@ -24,26 +24,20 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-using System.Drawing;
-using System.ComponentModel;
-using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D9;
-using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
-using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.VisualModes
+namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public interface IVisualPickable
+	internal struct VisualActionResult
 	{
-		bool Selected { get; set; }
-		bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir);
-		bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray);
+		public string displaystatus;
 	}
 }

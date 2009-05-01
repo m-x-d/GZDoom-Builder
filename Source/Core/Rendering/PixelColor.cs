@@ -130,6 +130,15 @@ namespace CodeImp.DoomBuilder.Rendering
 							  (float)g * BYTE_TO_FLOAT,
 							  (float)b * BYTE_TO_FLOAT);
 		}
+
+		// To ColorValue
+		public Color4 ToColorValue(float withalpha)
+		{
+			return new Color4(withalpha,
+							  (float)r * BYTE_TO_FLOAT,
+							  (float)g * BYTE_TO_FLOAT,
+							  (float)b * BYTE_TO_FLOAT);
+		}
 		
 		// This returns a new PixelColor with adjusted alpha
 		public PixelColor WithAlpha(byte a)

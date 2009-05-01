@@ -8,6 +8,8 @@ ECHO.       - Microsoft HTML Help compiler
 ECHO.       - Inno Setup 5
 ECHO.
 ECHO.     You have to commit your work before using this script.
+ECHO.     Results will be in the 'Release' directory. Anything currently in
+ECHO.     the 'Release' directory may be overwritten.
 ECHO.
 ECHO.
 PAUSE
@@ -87,14 +89,14 @@ GOTO LEAVE
 ECHO.
 ECHO.     BUILD FAILED (Tool returned error)
 ECHO.
-PAUSE
+PAUSE > NUL
 GOTO LEAVE
 
 :FILEFAIL
 ECHO.
 ECHO.     BUILD FAILED (Output file was not built)
 ECHO.
-PAUSE
+PAUSE > NUL
 GOTO LEAVE
 
 :LEAVE

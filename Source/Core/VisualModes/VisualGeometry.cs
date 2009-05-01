@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private PixelColor modulatecolor;
 		private Color4 modcolor4;
 		
+		// Selected?
+		protected bool selected;
+		
 		// Elements that this geometry is bound to
 		// Only the sector is required, sidedef is only for walls
 		private VisualSector sector;
@@ -111,6 +114,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// Returns the Sidedef that this geometry is created for. Null for geometry that is sector-wide.
 		/// </summary>
 		public Sidedef Sidedef { get { return sidedef; } }
+
+		/// <summary>
+		/// Selected or not? This is only used by the core to determine what color to draw it with.
+		/// </summary>
+		public bool Selected { get { return selected; } set { selected = value; } }
 
 		#endregion
 

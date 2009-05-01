@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sidedef.SetTextureMid(General.Settings.DefaultTexture);
 
 				// Update
-				Sector.Rebuild();
+				Sector.Changed = true;
 				
 				// Other side as well
 				if(string.IsNullOrEmpty(Sidedef.Other.MiddleTexture) || (Sidedef.Other.MiddleTexture[0] == '-'))
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Update
 					VisualSector othersector = mode.GetVisualSector(Sidedef.Other.Sector);
-					if(othersector is BaseVisualSector) (othersector as BaseVisualSector).Rebuild();
+					if(othersector is BaseVisualSector) (othersector as BaseVisualSector).Changed = true;
 				}
 			}
 		}
@@ -152,7 +152,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SetTexture("-");
 
 			// Update
-			Sector.Rebuild();
+			Sector.Changed = true;
 		}
 		
 		// Processing
@@ -435,11 +435,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Update sectors on both sides
 				BaseVisualSector front = (BaseVisualSector)mode.GetVisualSector(Sidedef.Sector);
-				if(front != null) front.Rebuild();
+				if(front != null) front.Changed = true;
 				if(Sidedef.Other != null)
 				{
 					BaseVisualSector back = (BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector);
-					if(back != null) back.Rebuild();
+					if(back != null) back.Changed = true;
 				}
 				mode.ShowTargetInfo();
 			}
@@ -471,6 +471,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Add/remove selection
+				this.selected = !this.selected;
 			}
 		}
 		
@@ -485,7 +486,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					List<Linedef> lines = new List<Linedef>();
 					lines.Add(this.Sidedef.Line);
 					DialogResult result = General.Interface.ShowEditLinedefs(lines);
-					if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Rebuild();
+					if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Changed = true;
 				}
 			}
 		}
@@ -567,7 +568,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sector.Sector.UpdateCache();
 			
 			// Rebuild sector
-			Sector.Rebuild();
+			Sector.Changed = true;
 
 			// Go for all things in this sector
 			foreach(Thing t in General.Map.Map.Things)
@@ -578,7 +579,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Update thing
 						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
-						vt.Setup();
+						vt.Changed = true;
 					}
 				}
 			}
