@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Mouse must be inside window
 			if(!mouseinside) return;
 			
-			General.Interface.DisplayStatus(StatusType.Action, "Places Visual Mode camera start thing.");
+			General.Interface.DisplayStatus(StatusType.Action, "Placed Visual Mode camera start thing.");
 			
 			// Go for all things
 			List<Thing> things = new List<Thing>(General.Map.Map.Things);

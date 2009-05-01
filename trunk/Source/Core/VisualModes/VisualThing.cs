@@ -69,7 +69,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Vector2D pos2d;
 		private float cameradistance;
 		private int cagecolor;
-		
+
+		// Selected?
+		protected bool selected;
+
 		// Disposing
 		private bool isdisposed = false;
 		
@@ -111,6 +114,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// Disposed or not?
 		/// </summary>
 		public bool IsDisposed { get { return isdisposed; } }
+
+		/// <summary>
+		/// Selected or not? This is only used by the core to determine what color to draw it with.
+		/// </summary>
+		public bool Selected { get { return selected; } set { selected = value; } }
 		
 		#endregion
 		

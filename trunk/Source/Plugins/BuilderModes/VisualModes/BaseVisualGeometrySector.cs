@@ -47,13 +47,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected BaseVisualMode mode;
 		protected long setuponloadedtexture;
+
+		// This is only used to see if this object has already received a change
+		// in a multiselection. The Changed property on the BaseVisualSector is
+		// used to indicate a rebuild is needed.
+		protected bool changed;
 		
 		#endregion
 
 		#region ================== Properties
 		
 		new public BaseVisualSector Sector { get { return (BaseVisualSector)base.Sector; } }
-		
+		public bool Changed { get { return changed; } set { changed |= value; } }
+
 		#endregion
 
 		#region ================== Constructor / Destructor
@@ -75,7 +81,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected void UpdateSectorGeometry(bool includeneighbours)
 		{
 			// Rebuild sector
-			Sector.Rebuild();
+			Sector.Changed = true;
 
 			// Go for all things in this sector
 			foreach(Thing t in General.Map.Map.Things)
@@ -86,7 +92,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Update thing
 						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
-						vt.Setup();
+						vt.Changed = true;
 					}
 				}
 			}
@@ -94,16 +100,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(includeneighbours)
 			{
 				// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
-				Dictionary<Sector, int> rebuilt = new Dictionary<Sector, int>();
 				foreach(Sidedef sd in Sector.Sector.Sidedefs)
 				{
-					if((sd.Other != null) && !rebuilt.ContainsKey(sd.Other.Sector))
+					if(sd.Other != null)
 					{
 						if(mode.VisualSectorExists(sd.Other.Sector))
 						{
 							BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
-							rebuilt.Add(sd.Other.Sector, 1);
-							bvs.Rebuild();
+							bvs.Changed = true;
 						}
 					}
 				}
@@ -116,8 +120,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Unused
 		public abstract bool Setup();
-		public virtual void OnSelectBegin() { }
-		public virtual void OnSelectEnd() { }
+		public virtual void OnSelectBegin(){ }
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
@@ -131,6 +134,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnDelete() { }
 		protected virtual void SetTexture(string texturename) { }
 
+		// Select or deselect
+		public virtual void OnSelectEnd()
+		{
+			this.selected = !this.selected;
+		}
+		
 		// Processing
 		public virtual void OnProcess(double deltatime)
 		{

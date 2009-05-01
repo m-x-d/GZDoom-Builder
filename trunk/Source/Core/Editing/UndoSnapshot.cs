@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		public string Description { get { return description; } }
+		public string Description { get { return description; } set { description = value; } }
 		public int TicketID { get { return ticketid; } }
 		internal bool StoreOnDisk { get { return storeondisk; } set { storeondisk = value; } }
 		public bool IsOnDisk { get { return isondisk; } }

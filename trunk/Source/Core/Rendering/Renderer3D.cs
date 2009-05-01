@@ -514,6 +514,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This performs a single render pass
 		private void RenderSinglePass(int pass)
 		{
+			int currentshaderpass = shaderpass;
+			int highshaderpass = shaderpass + 2;
+			
 			// Get geometry for this pass
 			Dictionary<ImageData, BinaryHeap<VisualGeometry>> geopass = geometry[pass];
 
@@ -569,27 +572,26 @@ namespace CodeImp.DoomBuilder.Rendering
 					
 					if(sector != null)
 					{
-						// Highlight this object?
-						if(g == highlighted)
+						// Determine the shader pass we want to use for this object
+						int wantedshaderpass = ((g == highlighted) || g.Selected) ? highshaderpass : shaderpass;
+						
+						// Switch shader pass?
+						if(currentshaderpass != wantedshaderpass)
 						{
-							// Temporarely switch shader and use a highlight color
 							graphics.Shaders.World3D.EndPass();
-							Color4 highlight = General.Colors.Highlight.ToColorValue();
-							highlight.Alpha = highlightglow;
-							graphics.Shaders.World3D.SetHighlightColor(highlight.ToArgb());
-							graphics.Shaders.World3D.BeginPass(shaderpass + 2);
+							graphics.Shaders.World3D.BeginPass(wantedshaderpass);
+							currentshaderpass = wantedshaderpass;
 						}
+						
+						// Set the color to use
+						Color4 highlightcolor = new Color4(0);
+						if(g.Selected) highlightcolor = General.Colors.Selection.ToColorValue(highlightglow);
+						if(g == highlighted) highlightcolor = Color4.Lerp(highlightcolor, General.Colors.Highlight.ToColorValue(), highlightglow);
+						graphics.Shaders.World3D.SetHighlightColor(highlightcolor.ToArgb());
+						graphics.Shaders.World3D.ApplySettings();
 						
 						// Render!
 						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
-						
-						// Reset highlight settings
-						if(g == highlighted)
-						{
-							graphics.Shaders.World3D.EndPass();
-							graphics.Shaders.World3D.SetHighlightColor(0);
-							graphics.Shaders.World3D.BeginPass(shaderpass);
-						}
 					}
 				}
 			}
@@ -634,16 +636,22 @@ namespace CodeImp.DoomBuilder.Rendering
 							// Only do this sector when a vertexbuffer is created
 							if(t.GeometryBuffer != null)
 							{
-								// Highlight this object?
-								if(t == highlighted)
+								// Determine the shader pass we want to use for this object
+								int wantedshaderpass = ((t == highlighted) || t.Selected) ? highshaderpass : shaderpass;
+
+								// Switch shader pass?
+								if(currentshaderpass != wantedshaderpass)
 								{
-									// Temporarely switch shader and use a highlight color
 									graphics.Shaders.World3D.EndPass();
-									Color4 highlight = General.Colors.Highlight.ToColorValue();
-									highlight.Alpha = highlightglow;
-									graphics.Shaders.World3D.SetHighlightColor(highlight.ToArgb());
-									graphics.Shaders.World3D.BeginPass(shaderpass + 2);
+									graphics.Shaders.World3D.BeginPass(wantedshaderpass);
+									currentshaderpass = wantedshaderpass;
 								}
+
+								// Set the color to use
+								Color4 highlightcolor = new Color4(0);
+								if(t.Selected) highlightcolor = General.Colors.Selection.ToColorValue(highlightglow);
+								if(t == highlighted) highlightcolor = Color4.Lerp(highlightcolor, General.Colors.Highlight.ToColorValue(), highlightglow);
+								graphics.Shaders.World3D.SetHighlightColor(highlightcolor.ToArgb());
 
 								// Create the matrix for positioning / rotation
 								world = t.Orientation;
@@ -657,14 +665,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 								// Render!
 								graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
-
-								// Reset highlight settings
-								if(t == highlighted)
-								{
-									graphics.Shaders.World3D.EndPass();
-									graphics.Shaders.World3D.SetHighlightColor(0);
-									graphics.Shaders.World3D.BeginPass(shaderpass);
-								}
 							}
 						}
 					}

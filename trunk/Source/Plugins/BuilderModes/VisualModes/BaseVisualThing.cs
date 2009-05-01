@@ -58,10 +58,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Undo/redo
 		private int undoticket;
-		
+
+		// If this is set to true, the thing will be rebuilt after the action is performed.
+		protected bool changed;
+
 		#endregion
 		
 		#region ================== Properties
+
+		public bool Changed { get { return changed; } set { changed |= value; } }
 		
 		#endregion
 		
@@ -193,6 +198,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			boxp2 = new Vector3D(pos.x + info.Radius, pos.y + info.Radius, pos.z + info.Height);
 			
 			// Done
+			changed = false;
 			return true;
 		}
 		
@@ -348,7 +354,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Unused
 		public virtual void OnSelectBegin() { }
-		public virtual void OnSelectEnd() { }
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
 		public virtual void OnChangeTargetBrightness(bool up) { }
@@ -369,6 +374,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }
+
+		// Select or deselect
+		public virtual void OnSelectEnd()
+		{
+			this.selected = !this.selected;
+		}
 		
 		// Copy properties
 		public virtual void OnCopyProperties()
@@ -419,7 +430,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				General.Interface.DisplayStatus(StatusType.Action, "Changed thing height to " + Thing.Position.z + ".");
 
-				this.Setup();
+				this.Changed = true;
 			}
 		}
 		
