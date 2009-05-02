@@ -73,18 +73,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// on an object that was not selected. In this case the previous selection
 		// is cleared and the targeted object is temporarely selected to perform
 		// the action on. After the action is completed, the object is deselected.
-		private bool temporaryselection;
+		private bool singleselection;
 		
-		// Actions
-		private int lastchangeoffsetticket;
+		// We keep these to determine if we need to make a new undo level
+		private bool selectionchanged;
+		private Action lastaction;
+		private VisualActionResult actionresult;
 
 		#endregion
 		
 		#region ================== Properties
 
 		public IRenderer3D Renderer { get { return renderer; } }
-
-		public bool IsTemporarySelection { get { return temporaryselection; } }
+		
+		public bool IsSingleSelection { get { return singleselection; } }
+		public bool SelectionChanged { get { return selectionchanged; } set { selectionchanged |= value; } }
 
 		#endregion
 		
@@ -118,9 +121,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 		
 		// This is called before an action is performed
-		private void PreAction(string multiundodescription)
+		private void PreAction(string multiundodescription, bool multiseparateundo, UndoGroup singleundogroup)
 		{
 			int undogrouptag = 0;
+			actionresult = new VisualActionResult();
 			
 			PickTargetUnlocked();
 			
@@ -128,23 +132,67 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// current selection and make a temporary selection for the target.
 			if(!target.picked.Selected)
 			{
-				temporaryselection = true;
+				// Single object, no selection
+				singleselection = true;
 				ClearSelection();
 				target.picked.Selected = true;
-				
-				if(target.picked is BaseVisualGeometrySector)
-					undogrouptag = (target.picked as BaseVisualGeometrySector).Sector.Sector.FixedIndex;
 			}
-			
-			// Make an undo level
-			//lastundoticket = General.Map.UndoRedo.CreateUndo(multiundodescription, undogroup, undogrouptag);
+			else
+			{
+				// Check if we should make a new undo level
+				// We don't want to do this if this is the same action with the same
+				// selection and the action wants to group the undo levels
+				if((lastaction != General.Actions.Current) || selectionchanged || multiseparateundo)
+				{
+					General.Map.UndoRedo.CreateUndo(multiundodescription, UndoGroup.None, 0);
+				}
+			}
 		}
-
+		
 		// This is called after an action is performed
-		private void PostAction(VisualActionResult result)
+		private void PostAction()
 		{
+			if(!string.IsNullOrEmpty(actionresult.displaystatus))
+				General.Interface.DisplayStatus(StatusType.Action, actionresult.displaystatus);
+			
+			lastaction = General.Actions.Current;
+			selectionchanged = false;
+			
 			UpdateChangedObjects();
 			ShowTargetInfo();
+		}
+		
+		// This sets the result for an action
+		public void SetActionResult(VisualActionResult result)
+		{
+			actionresult = result;
+		}
+
+		// This sets the result for an action
+		public void SetActionResult(string displaystatus)
+		{
+			actionresult = new VisualActionResult();
+			actionresult.displaystatus = displaystatus;
+		}
+		
+		// This creates an undo, when only a single selection is made
+		// When a multi-selection is made, the undo is created by the PreAction function
+		public int CreateSingleUndo(string description, UndoGroup group, int grouptag)
+		{
+			if(singleselection)
+				return General.Map.UndoRedo.CreateUndo(description, group, grouptag);
+			else
+				return 0;
+		}
+
+		// This creates an undo, when only a single selection is made
+		// When a multi-selection is made, the undo is created by the PreAction function
+		public int CreateSingleUndo(string description)
+		{
+			if(singleselection)
+				return General.Map.UndoRedo.CreateUndo(description);
+			else
+				return 0;
 		}
 
 		// This creates a visual sector
