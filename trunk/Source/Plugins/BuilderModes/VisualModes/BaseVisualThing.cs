@@ -379,13 +379,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectEnd()
 		{
 			this.selected = !this.selected;
+			mode.SelectionChanged = true;
 		}
 		
 		// Copy properties
 		public virtual void OnCopyProperties()
 		{
 			BuilderPlug.Me.CopiedThingProps = new ThingProperties(Thing);
-			General.Interface.DisplayStatus(StatusType.Action, "Copied thing properties.");
+			mode.SetActionResult("Copied thing properties.");
 		}
 		
 		// Paste properties
@@ -393,8 +394,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedThingProps != null)
 			{
-				General.Map.UndoRedo.CreateUndo("Paste thing properties");
-				General.Interface.DisplayStatus(StatusType.Action, "Pasted thing properties.");
+				mode.CreateSingleUndo("Paste thing properties");
+				mode.SetActionResult("Pasted thing properties.");
 				BuilderPlug.Me.CopiedThingProps.Apply(Thing);
 				Thing.UpdateConfiguration();
 				this.Rebuild();
@@ -424,11 +425,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.FormatInterface.HasThingHeight)
 			{
 				if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-					undoticket = General.Map.UndoRedo.CreateUndo("Change thing height");
+					undoticket = mode.CreateSingleUndo("Change thing height");
 
 				Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
 
-				General.Interface.DisplayStatus(StatusType.Action, "Changed thing height to " + Thing.Position.z + ".");
+				mode.SetActionResult("Changed thing height to " + Thing.Position.z + ".");
 
 				this.Changed = true;
 			}

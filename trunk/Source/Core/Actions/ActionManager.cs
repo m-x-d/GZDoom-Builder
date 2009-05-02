@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Actions
 		
 		// Begun actions
 		private List<Action> activeactions;
+		private Action currentaction;
 		
 		// Exclusive invokation
 		private bool exclusiverequested;
@@ -69,6 +70,11 @@ namespace CodeImp.DoomBuilder.Actions
 		internal Action this[string action] { get { if(actions.ContainsKey(action)) return actions[action]; else throw new ArgumentException("There is no such action \"" + action + "\""); } }
 		public bool IsDisposed { get { return isdisposed; } }
 		internal bool ExclusiveRequested { get { return exclusiverequested; } }
+		
+		/// <summary>
+		/// Current executing action. This returns Null when no action is invoked.
+		/// </summary>
+		public Action Current { get { return currentaction; } internal set { currentaction = value; } }
 		
 		#endregion
 
