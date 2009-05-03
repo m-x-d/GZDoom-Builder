@@ -232,16 +232,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			shaders.World3D.SetConstants(General.Settings.VisualBilinear, true);
 			
 			// Texture filters
-			if(General.Settings.QualityDisplay)
-			{
-				postfilter = Filter.Point;
-				mipgeneratefilter = Filter.Box;
-			}
-			else
-			{
-				postfilter = Filter.Point;
-				mipgeneratefilter = Filter.Box;
-			}
+			postfilter = Filter.Point;
+			mipgeneratefilter = Filter.Box;
 			
 			// Initialize presentations
 			Presentation.Initialize();

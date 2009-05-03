@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets the constant settings
 		public void SetConstants(bool bilinear, bool useanisotropic)
 		{
-			if(manager.Enabled && General.Settings.QualityDisplay)
+			if(manager.Enabled)
 			{
 				if(bilinear)
 				{
@@ -134,21 +134,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets the modulation color
 		public void SetModulateColor(int modcolor)
 		{
-			if(manager.Enabled && General.Settings.QualityDisplay)
+			if(manager.Enabled)
 			{
 				effect.SetValue(modulatecolor, new Color4(modcolor));
-			}
-			else
-			{
-				Device device = manager.D3DDevice.Device;
-				device.SetRenderState(RenderState.TextureFactor, modcolor);
 			}
 		}
 
 		// This sets the highlight color
 		public void SetHighlightColor(int hicolor)
 		{
-			if(manager.Enabled && General.Settings.QualityDisplay)
+			if(manager.Enabled)
 			{
 				effect.SetValue(highlightcolor, new Color4(hicolor));
 			}
@@ -159,7 +154,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			Device device = manager.D3DDevice.Device;
 
-			if(!manager.Enabled || !General.Settings.QualityDisplay)
+			if(!manager.Enabled)
 			{
 				// Sampler settings
 				if(General.Settings.VisualBilinear)

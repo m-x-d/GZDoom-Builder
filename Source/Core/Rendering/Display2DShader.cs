@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			Device device = manager.D3DDevice.Device;
 
-			if(!manager.Enabled || !General.Settings.QualityDisplay)
+			if(!manager.Enabled)
 			{
 				// Sampler settings
 				if(General.Settings.ClassicBilinear)

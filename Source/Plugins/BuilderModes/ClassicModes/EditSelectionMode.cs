@@ -801,7 +801,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						t.Rotate(thingangle[index]);
 						t.Move(thingpos[index++]);
 					}
-
+					General.Map.Map.Update(true, true);
+					
 					// Make undo
 					General.Map.UndoRedo.CreateUndo("Edit selection");
 				}
@@ -1218,6 +1219,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode = ModifyMode.None;
 			
 			// Redraw
+			General.Map.Map.Update();
 			General.Interface.RedrawDisplay();
 		}
 
