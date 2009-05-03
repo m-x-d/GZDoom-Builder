@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Compile effect
 				fx = Effect.FromStream(General.Map.Graphics.Device, fxdata, null, null, null, ShaderFlags.None, null, out errors);
-				if((errors != null) && (errors != ""))
+				if(!string.IsNullOrEmpty(errors))
 				{
 					throw new Exception("Errors in effect file " + fxfile + ": " + errors);
 				}
@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					// Compile effect
 					fx = Effect.FromStream(General.Map.Graphics.Device, fxdata, null, null, null, ShaderFlags.Debug, null, out errors);
-					if((errors != null) && (errors != ""))
+					if(!string.IsNullOrEmpty(errors))
 					{
 						throw new Exception("Errors in effect file " + fxfile + ": " + errors);
 					}
@@ -155,31 +155,31 @@ namespace CodeImp.DoomBuilder.Rendering
 			General.Map.Graphics.Device.VertexDeclaration = vertexdecl;
 
 			// Set effect
-			if(manager.Enabled && General.Settings.QualityDisplay) effect.Begin(FX.DoNotSaveState);
+			if(manager.Enabled) effect.Begin(FX.DoNotSaveState);
 		}
 
 		// This begins a pass
 		public virtual void BeginPass(int index)
 		{
-			if(manager.Enabled && General.Settings.QualityDisplay) effect.BeginPass(index);
+			if(manager.Enabled) effect.BeginPass(index);
 		}
 
 		// This ends a pass
 		public void EndPass()
 		{
-			if(manager.Enabled && General.Settings.QualityDisplay) effect.EndPass();
+			if(manager.Enabled) effect.EndPass();
 		}
 		
 		// This ends te shader
 		public void End()
 		{
-			if(manager.Enabled && General.Settings.QualityDisplay) effect.End();
+			if(manager.Enabled) effect.End();
 		}
 
 		// This applies properties during a pass
 		public void ApplySettings()
 		{
-			if(manager.Enabled && General.Settings.QualityDisplay) effect.CommitChanges();
+			if(manager.Enabled) effect.CommitChanges();
 		}
 		
 		#endregion

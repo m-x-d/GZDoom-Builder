@@ -248,7 +248,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					// Check which pass to use
-					if(layer.antialiasing) aapass = 0; else aapass = 1;
+					if(layer.antialiasing && General.Settings.QualityDisplay) aapass = 0; else aapass = 1;
 
 					// Render layer
 					switch(layer.layer)
