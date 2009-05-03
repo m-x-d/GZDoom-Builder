@@ -1057,6 +1057,7 @@ namespace CodeImp.DoomBuilder
 			// Make selection
 			map.AddSelectionToGroup(0x01 << groupindex);
 			
+			General.Interface.DisplayStatus(StatusType.Action, "Assigned selection to group " + groupindex);
 			General.Interface.SetCursor(Cursors.Default);
 		}
 		
@@ -1071,6 +1072,7 @@ namespace CodeImp.DoomBuilder
 			map.SelectThingsByGroup(groupmask);
 			
 			// Redraw to show selection
+			General.Interface.DisplayStatus(StatusType.Action, "Selected group " + groupindex);
 			General.Interface.RedrawDisplay();
 		}
 		

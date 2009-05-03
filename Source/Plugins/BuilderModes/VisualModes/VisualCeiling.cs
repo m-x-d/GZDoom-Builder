@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedFlat != null)
 			{
-				mode.CreateSingleUndo("Paste ceiling " + BuilderPlug.Me.CopiedFlat);
+				mode.CreateUndo("Paste ceiling " + BuilderPlug.Me.CopiedFlat);
 				mode.SetActionResult("Pasted flat " + BuilderPlug.Me.CopiedFlat + " on ceiling.");
 				SetTexture(BuilderPlug.Me.CopiedFlat);
 				this.Setup();
@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{
-			mode.CreateSingleUndo("Change ceiling height", UndoGroup.CeilingHeightChange, this.Sector.Sector.FixedIndex);
+			mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, this.Sector.Sector.FixedIndex);
 			this.Sector.Sector.CeilHeight += amount;
 			mode.SetActionResult("Changed ceiling height to " + Sector.Sector.CeilHeight + ".");
 		}

@@ -62,6 +62,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnProcess(double deltatime);
 		void OnInsert();
 		void OnDelete();
+
+		// Assist functions
+		void ApplyTexture(string texture);
+		void ApplyUpperUnpegged(bool set);
+		void ApplyLowerUnpegged(bool set);
 		
 		// Other methods
 		string GetTextureName();
