@@ -543,7 +543,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Apply texture
 				graphics.Device.SetTexture(0, curtexture.Texture);
 				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
-				graphics.Shaders.World3D.ApplySettings();
 				
 				// Go for all geometry that uses this texture
 				VisualSector sector = null;
@@ -625,7 +624,6 @@ namespace CodeImp.DoomBuilder.Rendering
 						// Apply texture
 						graphics.Device.SetTexture(0, curtexture.Texture);
 						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
-						graphics.Shaders.World3D.ApplySettings();
 
 						// Render all things with this texture
 						foreach(VisualThing t in group.Value)
