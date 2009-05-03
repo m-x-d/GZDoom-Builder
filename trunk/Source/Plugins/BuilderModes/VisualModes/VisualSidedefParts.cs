@@ -61,5 +61,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.middledouble = null;
 			this.middlesingle = m;
 		}
+
+		// This calls Setup() on all parts
+		public void SetupAllParts()
+		{
+			if(lower != null) lower.Setup();
+			if(middledouble != null) middledouble.Setup();
+			if(middlesingle != null) middlesingle.Setup();
+			if(upper != null) upper.Setup();
+		}
 	}
 }

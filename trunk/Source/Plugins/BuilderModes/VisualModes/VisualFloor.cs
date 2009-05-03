@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedFlat != null)
 			{
-				mode.CreateSingleUndo("Paste floor " + BuilderPlug.Me.CopiedFlat);
+				mode.CreateUndo("Paste floor " + BuilderPlug.Me.CopiedFlat);
 				mode.SetActionResult("Pasted flat " + BuilderPlug.Me.CopiedFlat + " on floor.");
 				SetTexture(BuilderPlug.Me.CopiedFlat);
 				this.Setup();
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{
-			mode.CreateSingleUndo("Change floor height", UndoGroup.FloorHeightChange, this.Sector.Sector.FixedIndex);
+			mode.CreateUndo("Change floor height", UndoGroup.FloorHeightChange, this.Sector.Sector.FixedIndex);
 			this.Sector.Sector.FloorHeight += amount;
 			mode.SetActionResult("Changed floor height to " + Sector.Sector.FloorHeight + ".");
 		}

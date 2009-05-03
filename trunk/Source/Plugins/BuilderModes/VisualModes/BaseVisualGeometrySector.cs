@@ -133,6 +133,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnInsert() { }
 		public virtual void OnDelete() { }
 		protected virtual void SetTexture(string texturename) { }
+		public virtual void ApplyUpperUnpegged(bool set) { }
+		public virtual void ApplyLowerUnpegged(bool set) { }
 
 		// Select or deselect
 		public virtual void OnSelectEnd()
@@ -177,12 +179,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						
 						if(fillceilings)
 						{
-							mode.CreateSingleUndo("Flood-fill ceilings with " + newtexture);
+							mode.CreateUndo("Flood-fill ceilings with " + newtexture);
 							mode.SetActionResult("Flood-filled ceilings with " + newtexture + ".");
 						}
 						else
 						{
-							mode.CreateSingleUndo("Flood-fill floors with " + newtexture);
+							mode.CreateUndo("Flood-fill floors with " + newtexture);
 							mode.SetActionResult("Flood-filled floors with " + newtexture + ".");
 						}
 
@@ -227,7 +229,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedSectorProps != null)
 			{
-				mode.CreateSingleUndo("Paste sector properties");
+				mode.CreateUndo("Paste sector properties");
 				mode.SetActionResult("Pasted sector properties.");
 				BuilderPlug.Me.CopiedSectorProps.Apply(Sector.Sector);
 				UpdateSectorGeometry(true);
@@ -244,10 +246,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				string newtexture = General.Interface.BrowseFlat(General.Interface, oldtexture);
 				if(newtexture != oldtexture)
 				{
-					mode.CreateSingleUndo("Change flat " + newtexture);
-					SetTexture(newtexture);
+					mode.ApplySelectTexture(newtexture, true);
 				}
 			}
+		}
+
+		// Apply Texture
+		public virtual void ApplyTexture(string texture)
+		{
+			mode.CreateUndo("Change flat " + texture);
+			SetTexture(texture);
 		}
 		
 		// Copy texture
@@ -271,13 +279,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(General.Interface.IsActiveWindow)
 				{
-					List<Sector> sectors = new List<Sector>();
-					sectors.Add(this.Sector.Sector);
+					List<Sector> sectors = mode.GetSelectedSectors();
 					DialogResult result = General.Interface.ShowEditSectors(sectors);
 					if(result == DialogResult.OK)
 					{
 						// Rebuild sector
-						UpdateSectorGeometry(true);
+						foreach(Sector s in sectors)
+						{
+							VisualSector vs = mode.GetVisualSector(s);
+							if(vs != null)
+								(vs as BaseVisualSector).Changed = true;
+						}
 					}
 				}
 			}
@@ -286,6 +298,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Sector height change
 		public virtual void OnChangeTargetHeight(int amount)
 		{
+			changed = true;
+			
 			ChangeHeight(amount);
 
 			// Rebuild sector
@@ -295,7 +309,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Sector brightness change
 		public virtual void OnChangeTargetBrightness(bool up)
 		{
-			mode.CreateSingleUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.FixedIndex);
+			mode.CreateUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.FixedIndex);
 			
 			if(up)
 				Sector.Sector.Brightness = General.Map.Config.BrightnessLevels.GetNextHigher(Sector.Sector.Brightness);

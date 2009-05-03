@@ -63,7 +63,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int startoffsetx;
 		private int startoffsety;
 		protected bool uvdragging;
-
+		private int prevoffsetx;		// We have to provide delta offsets, but I don't
+		private int prevoffsety;		// want to calculate with delta offsets to prevent
+										// inaccuracy in the dragging.
 		// Undo/redo
 		private int undoticket;
 		
@@ -123,7 +125,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!Sidedef.MiddleRequired() && (string.IsNullOrEmpty(Sidedef.MiddleTexture) || (Sidedef.MiddleTexture[0] == '-')))
 			{
 				// Make it now
-				mode.CreateSingleUndo("Create middle texture");
+				mode.CreateUndo("Create middle texture");
 				mode.SetActionResult("Created middle texture.");
 				General.Settings.FindDefaultDrawSettings();
 				Sidedef.SetTextureMid(General.Settings.DefaultTexture);
@@ -147,7 +149,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnDelete()
 		{
 			// Remove texture
-			mode.CreateSingleUndo("Delete texture");
+			mode.CreateUndo("Delete texture");
 			mode.SetActionResult("Deleted a texture.");
 			SetTexture("-");
 
@@ -180,12 +182,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Change ceiling
 				case 1:
-					this.Sector.Ceiling.OnChangeTargetHeight(amount);
+					if(!this.Sector.Ceiling.Changed)
+						this.Sector.Ceiling.OnChangeTargetHeight(amount);
 					break;
 
 				// Change floor
 				case 2:
-					this.Sector.Floor.OnChangeTargetHeight(amount);
+					if(!this.Sector.Floor.Changed)
+						this.Sector.Floor.OnChangeTargetHeight(amount);
 					break;
 			}
 		}
@@ -193,7 +197,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Reset texture offsets
 		public virtual void OnResetTextureOffset()
 		{
-			mode.CreateSingleUndo("Reset texture offsets");
+			mode.CreateUndo("Reset texture offsets");
 			mode.SetActionResult("Texture offsets reset.");
 
 			// Apply offsets
@@ -202,10 +206,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			if(parts.lower != null) parts.lower.Setup();
-			if(parts.middledouble != null) parts.middledouble.Setup();
-			if(parts.middlesingle != null) parts.middlesingle.Setup();
-			if(parts.upper != null) parts.upper.Setup();
+			parts.SetupAllParts();
 		}
 		
 		// Toggle upper-unpegged
@@ -215,34 +216,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			   this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag])
 			{
 				// Remove flag
-				mode.CreateSingleUndo("Remove upper-unpegged setting");
-				mode.SetActionResult("Removed upper-unpegged setting.");
-				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
+				mode.ApplyUpperUnpegged(false);
 			}
 			else
 			{
 				// Add flag
-				mode.CreateSingleUndo("Set upper-unpegged setting");
-				mode.SetActionResult("Set upper-unpegged setting.");
-				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = true;
-			}
-			
-			// Update sidedef geometry
-			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			if(parts.lower != null) parts.lower.Setup();
-			if(parts.middledouble != null) parts.middledouble.Setup();
-			if(parts.middlesingle != null) parts.middlesingle.Setup();
-			if(parts.upper != null) parts.upper.Setup();
-
-			// Update other sidedef geometry
-			if(Sidedef.Other != null)
-			{
-				BaseVisualSector othersector = (BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector);
-				parts = othersector.GetSidedefParts(Sidedef.Other);
-				if(parts.lower != null) parts.lower.Setup();
-				if(parts.middledouble != null) parts.middledouble.Setup();
-				if(parts.middlesingle != null) parts.middlesingle.Setup();
-				if(parts.upper != null) parts.upper.Setup();
+				mode.ApplyUpperUnpegged(true);
 			}
 		}
 
@@ -253,36 +232,79 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			   this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag])
 			{
 				// Remove flag
-				mode.CreateSingleUndo("Remove lower-unpegged setting");
+				mode.ApplyLowerUnpegged(false);
+			}
+			else
+			{
+				// Add flag
+				mode.ApplyLowerUnpegged(true);
+			}
+		}
+
+		
+		// This sets the Upper Unpegged flag
+		public virtual void ApplyUpperUnpegged(bool set)
+		{
+			if(!set)
+			{
+				// Remove flag
+				mode.CreateUndo("Remove upper-unpegged setting");
+				mode.SetActionResult("Removed upper-unpegged setting.");
+				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
+			}
+			else
+			{
+				// Add flag
+				mode.CreateUndo("Set upper-unpegged setting");
+				mode.SetActionResult("Set upper-unpegged setting.");
+				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = true;
+			}
+
+			// Update sidedef geometry
+			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+			parts.SetupAllParts();
+			
+			// Update other sidedef geometry
+			if(Sidedef.Other != null)
+			{
+				BaseVisualSector othersector = (BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector);
+				parts = othersector.GetSidedefParts(Sidedef.Other);
+				parts.SetupAllParts();
+			}
+		}
+		
+		
+		// This sets the Lower Unpegged flag
+		public virtual void ApplyLowerUnpegged(bool set)
+		{
+			if(!set)
+			{
+				// Remove flag
+				mode.CreateUndo("Remove lower-unpegged setting");
 				mode.SetActionResult("Removed lower-unpegged setting.");
 				this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = false;
 			}
 			else
 			{
 				// Add flag
-				mode.CreateSingleUndo("Set lower-unpegged setting");
+				mode.CreateUndo("Set lower-unpegged setting");
 				mode.SetActionResult("Set lower-unpegged setting.");
 				this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = true;
 			}
-			
+
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			if(parts.lower != null) parts.lower.Setup();
-			if(parts.middledouble != null) parts.middledouble.Setup();
-			if(parts.middlesingle != null) parts.middlesingle.Setup();
-			if(parts.upper != null) parts.upper.Setup();
+			parts.SetupAllParts();
 
 			// Update other sidedef geometry
 			if(Sidedef.Other != null)
 			{
 				BaseVisualSector othersector = (BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector);
 				parts = othersector.GetSidedefParts(Sidedef.Other);
-				if(parts.lower != null) parts.lower.Setup();
-				if(parts.middledouble != null) parts.middledouble.Setup();
-				if(parts.middlesingle != null) parts.middlesingle.Setup();
-				if(parts.upper != null) parts.upper.Setup();
+				parts.SetupAllParts();
 			}
 		}
+
 
 		// Flood-fill textures
 		public virtual void OnTextureFloodfill()
@@ -294,7 +316,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				string newtexture = BuilderPlug.Me.CopiedTexture;
 				if(newtexture != oldtexture)
 				{
-					mode.CreateSingleUndo("Flood-fill textures with " + newtexture);
+					mode.CreateUndo("Flood-fill textures with " + newtexture);
 					mode.SetActionResult("Flood-filled textures with " + newtexture + ".");
 					
 					mode.Renderer.SetCrosshairBusy(true);
@@ -316,10 +338,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								BaseVisualSector vs = (mode.GetVisualSector(sd.Sector) as BaseVisualSector);
 								VisualSidedefParts parts = vs.GetSidedefParts(sd);
-								if(parts.lower != null) parts.lower.Setup();
-								if(parts.middledouble != null) parts.middledouble.Setup();
-								if(parts.middlesingle != null) parts.middlesingle.Setup();
-								if(parts.upper != null) parts.upper.Setup();
+								parts.SetupAllParts();
 							}
 						}
 
@@ -334,7 +353,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Auto-align texture X offsets
 		public virtual void OnTextureAlign(bool alignx, bool aligny)
 		{
-			mode.CreateSingleUndo("Auto-align textures");
+			mode.CreateUndo("Auto-align textures");
 			mode.SetActionResult("Auto-aligned textures.");
 			
 			// Make sure the texture is loaded (we need the texture size)
@@ -352,10 +371,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					BaseVisualSector vs = (mode.GetVisualSector(sd.Sector) as BaseVisualSector);
 					VisualSidedefParts parts = vs.GetSidedefParts(sd);
-					if(parts.lower != null) parts.lower.Setup();
-					if(parts.middledouble != null) parts.middledouble.Setup();
-					if(parts.middlesingle != null) parts.middlesingle.Setup();
-					if(parts.upper != null) parts.upper.Setup();
+					parts.SetupAllParts();
 				}
 			}
 		}
@@ -369,10 +385,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				string newtexture = General.Interface.BrowseTexture(General.Interface, oldtexture);
 				if(newtexture != oldtexture)
 				{
-					mode.CreateSingleUndo("Change texture " + newtexture);
-					SetTexture(newtexture);
+					mode.ApplySelectTexture(newtexture, false);
 				}
 			}
+		}
+
+		// Apply Texture
+		public virtual void ApplyTexture(string texture)
+		{
+			mode.CreateUndo("Change texture " + texture);
+			SetTexture(texture);
 		}
 		
 		// Paste texture
@@ -380,7 +402,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedTexture != null)
 			{
-				mode.CreateSingleUndo("Paste texture " + BuilderPlug.Me.CopiedTexture);
+				mode.CreateUndo("Paste texture " + BuilderPlug.Me.CopiedTexture);
 				mode.SetActionResult("Pasted texture " + BuilderPlug.Me.CopiedTexture + ".");
 				SetTexture(BuilderPlug.Me.CopiedTexture);
 			}
@@ -389,17 +411,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Paste texture offsets
 		public virtual void OnPasteTextureOffsets()
 		{
-			mode.CreateSingleUndo("Paste texture offsets");
+			mode.CreateUndo("Paste texture offsets");
 			Sidedef.OffsetX = BuilderPlug.Me.CopiedOffsets.X;
 			Sidedef.OffsetY = BuilderPlug.Me.CopiedOffsets.Y;
 			mode.SetActionResult("Pasted texture offsets " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			if(parts.lower != null) parts.lower.Setup();
-			if(parts.middledouble != null) parts.middledouble.Setup();
-			if(parts.middlesingle != null) parts.middlesingle.Setup();
-			if(parts.upper != null) parts.upper.Setup();
+			parts.SetupAllParts();
 		}
 		
 		// Copy texture
@@ -429,7 +448,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedSidedefProps != null)
 			{
-				mode.CreateSingleUndo("Paste sidedef properties");
+				mode.CreateUndo("Paste sidedef properties");
 				mode.SetActionResult("Pasted sidedef properties.");
 				BuilderPlug.Me.CopiedSidedefProps.Apply(Sidedef);
 				
@@ -456,6 +475,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dragorigin = pickintersect;
 			startoffsetx = Sidedef.OffsetX;
 			startoffsety = Sidedef.OffsetY;
+			prevoffsetx = Sidedef.OffsetX;
+			prevoffsety = Sidedef.OffsetY;
 		}
 		
 		// Select button released
@@ -484,10 +505,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(General.Interface.IsActiveWindow)
 				{
-					List<Linedef> lines = new List<Linedef>();
-					lines.Add(this.Sidedef.Line);
-					DialogResult result = General.Interface.ShowEditLinedefs(lines);
-					if(result == DialogResult.OK) (this.Sector as BaseVisualSector).Changed = true;
+					List<Linedef> linedefs = mode.GetSelectedLinedefs();
+					DialogResult result = General.Interface.ShowEditLinedefs(linedefs);
+					if(result == DialogResult.OK)
+					{
+						foreach(Linedef l in linedefs)
+						{
+							if(l.Front != null)
+							{
+								VisualSector vs = mode.GetVisualSector(l.Front.Sector);
+								if(vs != null)
+									(vs as BaseVisualSector).Changed = true;
+							}
+							
+							if(l.Back != null)
+							{
+								VisualSector vs = mode.GetVisualSector(l.Back.Sector);
+								if(vs != null)
+									(vs as BaseVisualSector).Changed = true;
+							}
+						}
+					}
 				}
 			}
 		}
@@ -510,7 +548,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
-						mode.CreateSingleUndo("Change texture offsets");
+						mode.CreateUndo("Change texture offsets");
 
 						// Start drag now
 						uvdragging = true;
@@ -541,46 +579,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((Math.Sign(dragdeltaz.x) < 0) || (Math.Sign(dragdeltaz.y) < 0) || (Math.Sign(dragdeltaz.z) < 0)) offsety = -offsety;
 			
 			// Apply offsets
-			Sidedef.OffsetX = startoffsetx - (int)Math.Round(offsetx);
-			Sidedef.OffsetY = startoffsety + (int)Math.Round(offsety);
+			int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
+			int newoffsety = startoffsety + (int)Math.Round(offsety);
+			mode.ApplyTextureOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
+			prevoffsetx = newoffsetx;
+			prevoffsety = newoffsety;
 			
-			// Update sidedef geometry
-			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			if(parts.lower != null) parts.lower.Setup();
-			if(parts.middledouble != null) parts.middledouble.Setup();
-			if(parts.middlesingle != null) parts.middlesingle.Setup();
-			if(parts.upper != null) parts.upper.Setup();
 			mode.ShowTargetInfo();
 		}
 		
 		// Sector brightness change
 		public virtual void OnChangeTargetBrightness(bool up)
 		{
-			// Change brightness
-			mode.CreateSingleUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.FixedIndex);
-			
-			if(up)
-				Sector.Sector.Brightness = General.Map.Config.BrightnessLevels.GetNextHigher(Sector.Sector.Brightness);
-			else
-				Sector.Sector.Brightness = General.Map.Config.BrightnessLevels.GetNextLower(Sector.Sector.Brightness);
-			
-			mode.SetActionResult("Changed sector brightness to " + Sector.Sector.Brightness + ".");
-			
-			Sector.Sector.UpdateCache();
-			
-			// Rebuild sector
-			Sector.Changed = true;
-
-			// Go for all things in this sector
-			foreach(Thing t in General.Map.Map.Things)
+			if(!Sector.Changed)
 			{
-				if(t.Sector == Sector.Sector)
+				// Change brightness
+				mode.CreateUndo("Change sector brightness", UndoGroup.SectorBrightnessChange, Sector.Sector.FixedIndex);
+
+				if(up)
+					Sector.Sector.Brightness = General.Map.Config.BrightnessLevels.GetNextHigher(Sector.Sector.Brightness);
+				else
+					Sector.Sector.Brightness = General.Map.Config.BrightnessLevels.GetNextLower(Sector.Sector.Brightness);
+				
+				mode.SetActionResult("Changed sector brightness to " + Sector.Sector.Brightness + ".");
+
+				Sector.Sector.UpdateCache();
+				
+				// Rebuild sector
+				Sector.Changed = true;
+
+				// Go for all things in this sector
+				foreach(Thing t in General.Map.Map.Things)
 				{
-					if(mode.VisualThingExists(t))
+					if(t.Sector == Sector.Sector)
 					{
-						// Update thing
-						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
-						vt.Changed = true;
+						if(mode.VisualThingExists(t))
+						{
+							// Update thing
+							BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+							vt.Changed = true;
+						}
 					}
 				}
 			}
@@ -590,7 +628,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnChangeTextureOffset(int horizontal, int vertical)
 		{
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-				undoticket = mode.CreateSingleUndo("Change texture offsets");
+				undoticket = mode.CreateUndo("Change texture offsets");
 			
 			// Apply offsets
 			Sidedef.OffsetX -= horizontal;
@@ -600,10 +638,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			if(parts.lower != null) parts.lower.Setup();
-			if(parts.middledouble != null) parts.middledouble.Setup();
-			if(parts.middlesingle != null) parts.middlesingle.Setup();
-			if(parts.upper != null) parts.upper.Setup();
+			parts.SetupAllParts();
 		}
 		
 		#endregion

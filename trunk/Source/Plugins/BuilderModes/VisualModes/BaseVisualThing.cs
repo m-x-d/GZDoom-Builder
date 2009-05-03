@@ -371,6 +371,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnTextureFloodfill() { }
 		public virtual void OnInsert() { }
 		public virtual void OnDelete() { }
+		public virtual void ApplyTexture(string texture) { }
+		public virtual void ApplyUpperUnpegged(bool set) { }
+		public virtual void ApplyLowerUnpegged(bool set) { }
 		
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }
@@ -394,7 +397,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedThingProps != null)
 			{
-				mode.CreateSingleUndo("Paste thing properties");
+				mode.CreateUndo("Paste thing properties");
 				mode.SetActionResult("Pasted thing properties.");
 				BuilderPlug.Me.CopiedThingProps.Apply(Thing);
 				Thing.UpdateConfiguration();
@@ -411,10 +414,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(General.Interface.IsActiveWindow)
 				{
-					List<Thing> things = new List<Thing>();
-					things.Add(this.Thing);
+					List<Thing> things = mode.GetSelectedThings();
 					DialogResult result = General.Interface.ShowEditThings(things);
-					if(result == DialogResult.OK) this.Rebuild();
+					if(result == DialogResult.OK)
+					{
+						foreach(Thing t in things)
+						{
+							VisualThing vt = mode.GetVisualThing(t);
+							if(vt != null)
+								(vt as BaseVisualThing).Changed = true;
+						}
+					}
 				}
 			}
 		}
@@ -425,7 +435,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.FormatInterface.HasThingHeight)
 			{
 				if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
-					undoticket = mode.CreateSingleUndo("Change thing height");
+					undoticket = mode.CreateUndo("Change thing height");
 
 				Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
 

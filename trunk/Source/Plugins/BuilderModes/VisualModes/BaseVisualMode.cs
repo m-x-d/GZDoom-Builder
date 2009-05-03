@@ -77,9 +77,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// We keep these to determine if we need to make a new undo level
 		private bool selectionchanged;
-		private Action lastaction;
+		private Actions.Action lastaction;
 		private VisualActionResult actionresult;
+		private bool undocreated;
 
+		// List of selected objects when an action is performed
+		private List<IVisualEventReceiver> selectedobjects;
+		
 		#endregion
 		
 		#region ================== Properties
@@ -121,32 +125,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 		
 		// This is called before an action is performed
-		private void PreAction(string multiundodescription, bool multiseparateundo, UndoGroup singleundogroup)
+		private void PreAction(bool groupmultiselectionundo)
 		{
-			int undogrouptag = 0;
 			actionresult = new VisualActionResult();
 			
 			PickTargetUnlocked();
 			
 			// If the action is not performed on a selected object, clear the
 			// current selection and make a temporary selection for the target.
-			if(!target.picked.Selected)
+			if((target.picked != null) && !target.picked.Selected)
 			{
 				// Single object, no selection
 				singleselection = true;
 				ClearSelection();
 				target.picked.Selected = true;
+				undocreated = false;
 			}
 			else
 			{
+				singleselection = false;
+				
 				// Check if we should make a new undo level
 				// We don't want to do this if this is the same action with the same
 				// selection and the action wants to group the undo levels
-				if((lastaction != General.Actions.Current) || selectionchanged || multiseparateundo)
+				if((lastaction != General.Actions.Current) || selectionchanged || !groupmultiselectionundo)
 				{
-					General.Map.UndoRedo.CreateUndo(multiundodescription, UndoGroup.None, 0);
+					// We want to create a new undo level, but not just yet
+					undocreated = false;
+				}
+				else
+				{
+					// We don't want to make a new undo level (changes will be combined)
+					undocreated = true;
 				}
 			}
+			
+			MakeSelectedObjectsList();
+		}
+
+		// Called before an action is performed. This does not make an undo level or change selection.
+		private void PreActionNoChange()
+		{
+			actionresult = new VisualActionResult();
+			singleselection = false;
+			undocreated = false;
+			MakeSelectedObjectsList();
 		}
 		
 		// This is called after an action is performed
@@ -157,6 +180,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			lastaction = General.Actions.Current;
 			selectionchanged = false;
+			
+			if(singleselection)
+				ClearSelection();
 			
 			UpdateChangedObjects();
 			ShowTargetInfo();
@@ -177,22 +203,55 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This creates an undo, when only a single selection is made
 		// When a multi-selection is made, the undo is created by the PreAction function
-		public int CreateSingleUndo(string description, UndoGroup group, int grouptag)
+		public int CreateUndo(string description, UndoGroup group, int grouptag)
 		{
-			if(singleselection)
-				return General.Map.UndoRedo.CreateUndo(description, group, grouptag);
+			if(!undocreated)
+			{
+				undocreated = true;
+
+				if(singleselection)
+					return General.Map.UndoRedo.CreateUndo(description, group, grouptag);
+				else
+					return General.Map.UndoRedo.CreateUndo(description, UndoGroup.None, 0);
+			}
 			else
+			{
 				return 0;
+			}
 		}
 
 		// This creates an undo, when only a single selection is made
 		// When a multi-selection is made, the undo is created by the PreAction function
-		public int CreateSingleUndo(string description)
+		public int CreateUndo(string description)
 		{
-			if(singleselection)
-				return General.Map.UndoRedo.CreateUndo(description);
-			else
-				return 0;
+			return CreateUndo(description, UndoGroup.None, 0);
+		}
+
+		// This makes a list of the selected object
+		private void MakeSelectedObjectsList()
+		{
+			// Make list of selected objects
+			selectedobjects = new List<IVisualEventReceiver>();
+			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
+			{
+				BaseVisualSector bvs = (BaseVisualSector)vs.Value;
+				if((bvs.Floor != null) && bvs.Floor.Selected) selectedobjects.Add(bvs.Floor);
+				if((bvs.Ceiling != null) && bvs.Ceiling.Selected) selectedobjects.Add(bvs.Ceiling);
+				foreach(Sidedef sd in vs.Key.Sidedefs)
+				{
+					List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);
+					foreach(VisualGeometry sdg in sidedefgeos)
+					{
+						if(sdg.Selected) selectedobjects.Add((sdg as IVisualEventReceiver));
+					}
+				}
+			}
+
+			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
+			{
+				BaseVisualThing bvt = (BaseVisualThing)vt.Value;
+				if(bvt.Selected) selectedobjects.Add(bvt);
+			}
 		}
 
 		// This creates a visual sector
@@ -424,11 +483,106 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#endregion
 
+		#region ================== Action Assist
+
+		// Because some actions can only be called on a single (the targeted) object because
+		// they show a dialog window or something, these functions help applying the result
+		// to all compatible selected objects.
+		
+		// Apply texture offsets
+		public void ApplyTextureOffsetChange(int dx, int dy)
+		{
+			foreach(IVisualEventReceiver i in selectedobjects)
+			{
+				i.OnChangeTextureOffset(dx, dy);
+			}
+		}
+
+		// Apply upper unpegged flag
+		public void ApplyUpperUnpegged(bool set)
+		{
+			foreach(IVisualEventReceiver i in selectedobjects)
+			{
+				i.ApplyUpperUnpegged(set);
+			}
+		}
+
+		// Apply lower unpegged flag
+		public void ApplyLowerUnpegged(bool set)
+		{
+			foreach(IVisualEventReceiver i in selectedobjects)
+			{
+				i.ApplyLowerUnpegged(set);
+			}
+		}
+
+		// Apply texture change
+		public void ApplySelectTexture(string texture, bool flat)
+		{
+			if(General.Map.Config.MixTexturesFlats)
+			{
+				// Apply on all compatible types
+				foreach(IVisualEventReceiver i in selectedobjects)
+				{
+					i.ApplyTexture(texture);
+				}
+			}
+			else
+			{
+				// We don't want to mix textures and flats, so apply only on the same type
+				foreach(IVisualEventReceiver i in selectedobjects)
+				{
+					if(((i is BaseVisualGeometrySector) && flat) ||
+					   ((i is BaseVisualGeometrySidedef) && !flat))
+					{
+						i.ApplyTexture(texture);
+					}
+				}
+			}
+		}
+
+		// This returns all selected sectors
+		public List<Sector> GetSelectedSectors()
+		{
+			List<Sector> sectors = new List<Sector>();
+			foreach(IVisualEventReceiver i in selectedobjects)
+			{
+				if(i is BaseVisualGeometrySector) sectors.Add((i as BaseVisualGeometrySector).Sector.Sector);
+			}
+			return sectors;
+		}
+
+		// This returns all selected linedefs
+		public List<Linedef> GetSelectedLinedefs()
+		{
+			List<Linedef> linedefs = new List<Linedef>();
+			foreach(IVisualEventReceiver i in selectedobjects)
+			{
+				if(i is BaseVisualGeometrySidedef) linedefs.Add((i as BaseVisualGeometrySidedef).Sidedef.Line);
+			}
+			return linedefs;
+		}
+
+		// This returns all selected things
+		public List<Thing> GetSelectedThings()
+		{
+			List<Thing> things = new List<Thing>();
+			foreach(IVisualEventReceiver i in selectedobjects)
+			{
+				if(i is BaseVisualThing) things.Add((i as BaseVisualThing).Thing);
+			}
+			return things;
+		}
+
+		#endregion
+
 		#region ================== Actions
 
 		[BeginAction("clearselection", BaseAction = true)]
 		public void ClearSelection()
 		{
+			selectedobjects = new List<IVisualEventReceiver>();
+			
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
 				BaseVisualSector bvs = (BaseVisualSector)vs.Value;
@@ -454,68 +608,66 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("visualselect", BaseAction = true)]
 		public void BeginSelect()
 		{
+			PreActionNoChange();
 			PickTargetUnlocked();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectBegin();
-			UpdateChangedObjects();
+			PostAction();
 		}
 
 		[EndAction("visualselect", BaseAction = true)]
 		public void EndSelect()
 		{
+			PreActionNoChange();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectEnd();
-			UpdateChangedObjects();
+			PostAction();
 		}
 
 		[BeginAction("visualedit", BaseAction = true)]
 		public void BeginEdit()
 		{
-			PickTargetUnlocked();
+			PreAction(false);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditBegin();
-			UpdateChangedObjects();
+			PostAction();
 		}
 
 		[EndAction("visualedit", BaseAction = true)]
 		public void EndEdit()
 		{
+			PreAction(false);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditEnd();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("raisesector8")]
 		public void RaiseSector8()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(8);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(8);
+			PostAction();
 		}
 
 		[BeginAction("lowersector8")]
 		public void LowerSector8()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(-8);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(-8);
+			PostAction();
 		}
 
 		[BeginAction("raisesector1")]
 		public void RaiseSector1()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(1);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(1);
+			PostAction();
 		}
 		
 		[BeginAction("lowersector1")]
 		public void LowerSector1()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetHeight(-1);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(-1);
+			PostAction();
 		}
 
 		[BeginAction("showvisualthings")]
@@ -528,163 +680,149 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("raisebrightness8")]
 		public void RaiseBrightness8()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(true);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetBrightness(true);
+			PostAction();
 		}
 
 		[BeginAction("lowerbrightness8")]
 		public void LowerBrightness8()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTargetBrightness(false);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetBrightness(false);
+			PostAction();
 		}
 
 		[BeginAction("movetextureleft")]
 		public void MoveTextureLeft1()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(-1, 0);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(-1, 0);
+			PostAction();
 		}
 
 		[BeginAction("movetextureright")]
 		public void MoveTextureRight1()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(1, 0);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(1, 0);
+			PostAction();
 		}
 
 		[BeginAction("movetextureup")]
 		public void MoveTextureUp1()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, -1);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, -1);
+			PostAction();
 		}
 
 		[BeginAction("movetexturedown")]
 		public void MoveTextureDown1()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, 1);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, 1);
+			PostAction();
 		}
 
 		[BeginAction("movetextureleft8")]
 		public void MoveTextureLeft8()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(-8, 0);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(-8, 0);
+			PostAction();
 		}
 
 		[BeginAction("movetextureright8")]
 		public void MoveTextureRight8()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(8, 0);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(8, 0);
+			PostAction();
 		}
 
 		[BeginAction("movetextureup8")]
 		public void MoveTextureUp8()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, -8);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, -8);
+			PostAction();
 		}
 
 		[BeginAction("movetexturedown8")]
 		public void MoveTextureDown8()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnChangeTextureOffset(0, 8);
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, 8);
+			PostAction();
 		}
 
 		[BeginAction("textureselect")]
 		public void TextureSelect()
 		{
-			PickTargetUnlocked();
+			PreAction(false);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectTexture();
 			UpdateChangedObjects();
 			renderer.SetCrosshairBusy(false);
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("texturecopy")]
 		public void TextureCopy()
 		{
-			PickTargetUnlocked();
+			PreActionNoChange();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyTexture();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("texturepaste")]
 		public void TexturePaste()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnPasteTexture();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(false);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteTexture();
+			PostAction();
 		}
 
 		[BeginAction("visualautoalignx")]
 		public void TextureAutoAlignX()
 		{
-			PickTargetUnlocked();
+			PreAction(false);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(true, false);
 			UpdateChangedObjects();
 			renderer.SetCrosshairBusy(false);
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("visualautoaligny")]
 		public void TextureAutoAlignY()
 		{
-			PickTargetUnlocked();
+			PreAction(false);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(false, true);
 			UpdateChangedObjects();
 			renderer.SetCrosshairBusy(false);
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("toggleupperunpegged")]
 		public void ToggleUpperUnpegged()
 		{
-			PickTargetUnlocked();
+			PreAction(false);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleUpperUnpegged();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("togglelowerunpegged")]
 		public void ToggleLowerUnpegged()
 		{
-			PickTargetUnlocked();
+			PreAction(false);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleLowerUnpegged();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("togglegravity")]
@@ -706,73 +844,65 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("resettexture")]
 		public void ResetTexture()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnResetTextureOffset();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(true);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnResetTextureOffset();
+			PostAction();
 		}
 
 		[BeginAction("floodfilltextures")]
 		public void FloodfillTextures()
 		{
-			PickTargetUnlocked();
+			PreAction(false);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureFloodfill();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("texturecopyoffsets")]
 		public void TextureCopyOffsets()
 		{
-			PickTargetUnlocked();
+			PreActionNoChange();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyTextureOffsets();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("texturepasteoffsets")]
 		public void TexturePasteOffsets()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnPasteTextureOffsets();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(false);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteTextureOffsets();
+			PostAction();
 		}
 
 		[BeginAction("copyproperties")]
 		public void CopyProperties()
 		{
-			PickTargetUnlocked();
+			PreActionNoChange();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyProperties();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PostAction();
 		}
 
 		[BeginAction("pasteproperties")]
 		public void PasteProperties()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnPasteProperties();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(false);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteProperties();
+			PostAction();
 		}
 		
 		[BeginAction("insertitem", BaseAction = true)]
 		public void Insert()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnInsert();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(false);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnInsert();
+			PostAction();
 		}
 
 		[BeginAction("deleteitem", BaseAction = true)]
 		public void Delete()
 		{
-			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnDelete();
-			UpdateChangedObjects();
-			ShowTargetInfo();
+			PreAction(false);
+			foreach(IVisualEventReceiver i in selectedobjects) i.OnDelete();
+			PostAction();
 		}
 		
 		#endregion
