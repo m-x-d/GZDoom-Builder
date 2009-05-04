@@ -854,6 +854,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// toolbar
 			// 
+			this.toolbar.AutoSize = false;
 			this.toolbar.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buttonnewmap,

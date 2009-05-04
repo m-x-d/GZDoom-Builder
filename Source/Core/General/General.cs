@@ -165,6 +165,7 @@ namespace CodeImp.DoomBuilder
 		private static TypesManager types;
 		private static Clock clock;
 		private static ErrorLogger errorlogger;
+		private static Mutex appmutex;
 		
 		// Configurations
 		private static List<ConfigurationInfo> configs;
@@ -565,12 +566,16 @@ namespace CodeImp.DoomBuilder
 			// Enable OS visual styles
 			Application.EnableVisualStyles();
 			Application.DoEvents();		// This must be here to work around a .NET bug
-
+			ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new TanColorTable());
+			
 			// Hook to DLL loading failure event
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 			
 			// Set current thread name
 			Thread.CurrentThread.Name = "Main Application";
+
+			// Application is running
+			appmutex = new Mutex(false, "doombuilder2");
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();
