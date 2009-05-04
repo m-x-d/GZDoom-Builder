@@ -667,6 +667,7 @@
     <Compile Include="Controls\ThingBrowserControl.Designer.cs">
       <DependentUpon>ThingBrowserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Data\ColorImage.cs" />
     <Compile Include="Data\HighResImage.cs" />
     <Compile Include="Data\PK3FileImage.cs" />
     <Compile Include="Data\PK3StructuredReader.cs" />

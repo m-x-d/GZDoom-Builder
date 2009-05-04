@@ -177,7 +177,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!string.IsNullOrEmpty(actionresult.displaystatus))
 				General.Interface.DisplayStatus(StatusType.Action, actionresult.displaystatus);
-			
+
+			// Reset changed flags
+			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
+			{
+				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
+				bvs.Floor.Changed = false;
+				bvs.Ceiling.Changed = false;
+			}
+
 			lastaction = General.Actions.Current;
 			selectionchanged = false;
 			
@@ -348,7 +356,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
 			{
 				BaseVisualThing bvt = (BaseVisualThing)vt.Value;
-				if(bvt.Changed) bvt.Setup();
+				if(bvt.Changed) bvt.Rebuild();
 			}
 		}
 		
@@ -492,9 +500,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply texture offsets
 		public void ApplyTextureOffsetChange(int dx, int dy)
 		{
+			Dictionary<Sidedef, int> donesides = new Dictionary<Sidedef, int>(selectedobjects.Count);
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
-				i.OnChangeTextureOffset(dx, dy);
+				if(i is BaseVisualGeometrySidedef)
+				{
+					if(!donesides.ContainsKey((i as BaseVisualGeometrySidedef).Sidedef))
+					{
+						i.OnChangeTextureOffset(dx, dy);
+						donesides.Add((i as BaseVisualGeometrySidedef).Sidedef, 0);
+					}
+				}
 			}
 		}
 

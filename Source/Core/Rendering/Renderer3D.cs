@@ -80,6 +80,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Highlighting
 		private IVisualPickable highlighted;
 		private float highlightglow;
+		private ColorImage highlightimage;
+		private ColorImage selectionimage;
 		
 		// Geometry to be rendered.
 		// Each Dictionary in the array is a render pass.
@@ -115,6 +117,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			CreateProjection();
 			CreateMatrices2D();
 			SetupThingCage();
+			SetupTextures();
 			renderthingcages = true;
 			
 			// Dummy frustum
@@ -133,7 +136,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Clean up
 				if(thingcage != null) thingcage.Dispose();
+				if(selectionimage != null) selectionimage.Dispose();
+				if(highlightimage != null) highlightimage.Dispose();
 				thingcage = null;
+				selectionimage = null;
+				highlightimage = null;
 				
 				// Done
 				base.Dispose();
@@ -150,7 +157,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			crosshairverts = null;
 			if(thingcage != null) thingcage.Dispose();
+			if(selectionimage != null) selectionimage.Dispose();
+			if(highlightimage != null) highlightimage.Dispose();
 			thingcage = null;
+			selectionimage = null;
+			highlightimage = null;
 		}
 		
 		// This is called resets when the device is reset
@@ -159,6 +170,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			CreateMatrices2D();
 			SetupThingCage();
+			SetupTextures();
 		}
 
 		// This makes screen vertices for display
@@ -196,8 +208,23 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		#endregion
 
-		#region ================== Thing Cage
+		#region ================== Resources
 
+		// This loads the textures for highlight and selection if we need them
+		private void SetupTextures()
+		{
+			if(!graphics.Shaders.Enabled)
+			{
+				highlightimage = new ColorImage(General.Colors.Highlight, 32, 32);
+				highlightimage.LoadImage();
+				highlightimage.CreateTexture();
+				
+				selectionimage = new ColorImage(General.Colors.Selection, 32, 32);
+				selectionimage.LoadImage();
+				selectionimage.CreateTexture();
+			}
+		}
+		
 		// This sets up the thing cage
 		private void SetupThingCage()
 		{
@@ -357,7 +384,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This starts rendering
 		public bool Start()
 		{
-			// Create thing box texture if needed
+			// Create texture
 			if(General.Map.Data.ThingBox.Texture == null)
 				General.Map.Data.ThingBox.CreateTexture();
 			
@@ -392,9 +419,16 @@ namespace CodeImp.DoomBuilder.Rendering
 				ApplyMatrices3D();
 
 				// Highlight
-				double time = General.Clock.GetCurrentTime();
-				highlightglow = (float)Math.Sin(time / 100.0f) * 0.3f + 0.4f;
-
+				if(General.Settings.AnimateVisualSelection)
+				{
+					double time = General.Clock.GetCurrentTime();
+					highlightglow = (float)Math.Sin(time / 100.0f) * 0.3f + 0.4f;
+				}
+				else
+				{
+					highlightglow = 0.6f;
+				}
+				
 				// Determine shader pass to use
 				if(fullbrightness) shaderpass = 1; else shaderpass = 0;
 
@@ -541,7 +575,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					curtexture.CreateTexture();
 
 				// Apply texture
-				graphics.Device.SetTexture(0, curtexture.Texture);
+				if(!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, curtexture.Texture);
 				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
 				
 				// Go for all geometry that uses this texture
@@ -582,12 +616,20 @@ namespace CodeImp.DoomBuilder.Rendering
 							currentshaderpass = wantedshaderpass;
 						}
 						
-						// Set the color to use
-						Color4 highlightcolor = new Color4(0);
-						if(g.Selected) highlightcolor = General.Colors.Selection.ToColorValue(highlightglow);
-						if(g == highlighted) highlightcolor = Color4.Lerp(highlightcolor, General.Colors.Highlight.ToColorValue(), highlightglow);
-						graphics.Shaders.World3D.SetHighlightColor(highlightcolor.ToArgb());
-						graphics.Shaders.World3D.ApplySettings();
+						// Set the colors to use
+						if(!graphics.Shaders.Enabled)
+						{
+							graphics.Device.SetTexture(2, g.Selected ? selectionimage.Texture : null);
+							graphics.Device.SetTexture(3, (g == highlighted) ? highlightimage.Texture : null);
+						}
+						else
+						{
+							Color4 highlightcolor = new Color4(1f, 0f, 0f, 0f);
+							if(g.Selected) highlightcolor = General.Colors.Selection.ToColorValue(highlightglow);
+							if(g == highlighted) highlightcolor = Color4.Lerp(highlightcolor, General.Colors.Highlight.ToColorValue(), highlightglow);
+							graphics.Shaders.World3D.SetHighlightColor(highlightcolor.ToArgb());
+							graphics.Shaders.World3D.ApplySettings();
+						}
 						
 						// Render!
 						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
@@ -622,7 +664,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							curtexture.CreateTexture();
 
 						// Apply texture
-						graphics.Device.SetTexture(0, curtexture.Texture);
+						if(!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, curtexture.Texture);
 						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
 
 						// Render all things with this texture
@@ -645,11 +687,19 @@ namespace CodeImp.DoomBuilder.Rendering
 									currentshaderpass = wantedshaderpass;
 								}
 
-								// Set the color to use
-								Color4 highlightcolor = new Color4(0);
-								if(t.Selected) highlightcolor = General.Colors.Selection.ToColorValue(highlightglow);
-								if(t == highlighted) highlightcolor = Color4.Lerp(highlightcolor, General.Colors.Highlight.ToColorValue(), highlightglow);
-								graphics.Shaders.World3D.SetHighlightColor(highlightcolor.ToArgb());
+								// Set the colors to use
+								if(!graphics.Shaders.Enabled)
+								{
+									graphics.Device.SetTexture(2, t.Selected ? selectionimage.Texture : null);
+									graphics.Device.SetTexture(3, (t == highlighted) ? highlightimage.Texture : null);
+								}
+								else
+								{
+									Color4 highlightcolor = new Color4(1f, 0f, 0f, 0f);
+									if(t.Selected) highlightcolor = General.Colors.Selection.ToColorValue(highlightglow);
+									if(t == highlighted) highlightcolor = Color4.Lerp(highlightcolor, General.Colors.Highlight.ToColorValue(), highlightglow);
+									graphics.Shaders.World3D.SetHighlightColor(highlightcolor.ToArgb());
+								}
 
 								// Create the matrix for positioning / rotation
 								world = t.Orientation;

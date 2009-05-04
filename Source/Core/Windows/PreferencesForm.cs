@@ -69,6 +69,7 @@ namespace CodeImp.DoomBuilder.Windows
 			scriptontop.Checked = General.Settings.ScriptOnTop;
 			previewsize.Value = General.Settings.PreviewImageSize;
 			autoscrollspeed.Value = General.Settings.AutoScrollSpeed;
+			animatevisualselection.Checked = General.Settings.AnimateVisualSelection;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -169,7 +170,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptOnTop = scriptontop.Checked;
 			General.Settings.PreviewImageSize = previewsize.Value;
 			General.Settings.AutoScrollSpeed = autoscrollspeed.Value;
-
+			General.Settings.AnimateVisualSelection = animatevisualselection.Checked;
+			
 			// Script font size
 			int fontsize = 8;
 			int.TryParse(scriptfontsize.Text, out fontsize);
