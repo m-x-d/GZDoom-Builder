@@ -24,6 +24,8 @@ ShowLanguageDialog=no
 LanguageDetectionMethod=none
 MinVersion=0,5.01.2600
 UninstallDisplayIcon={app}\Builder.exe
+WizardImageFile=..\Setup\WizModernImage-IS.bmp
+WizardSmallImageFile=..\Setup\WizModernSmallImage-IS.bmp
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
