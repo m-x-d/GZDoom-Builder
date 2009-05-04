@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				rendertarget = null;
 				if(backbuffer != null) backbuffer.Dispose();
 				if(depthbuffer != null) depthbuffer.Dispose();
-				device.Dispose();
+				if(device != null) device.Dispose();
 				if(font != null) font.Dispose();
 				if(fonttexture != null) fonttexture.Dispose();
 				
