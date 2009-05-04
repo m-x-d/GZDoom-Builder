@@ -176,10 +176,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
 				device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
 				device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
-
+				
 				// First texture stage
-				if(index == 0)
+				if((index == 0) || (index == 2))
 				{
+					// Normal
 					device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
 					device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
 					device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.Diffuse);
@@ -188,11 +189,17 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 				else
 				{
+					// Full brightness
 					device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.SelectArg1);
 					device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
 					device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
 					device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
 				}
+
+				// First alpha stage
+				device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
+				device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
+				device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.Diffuse);
 				
 				// Second texture stage
 				device.SetTextureStageState(1, TextureStage.ColorOperation, TextureOperation.Modulate);
@@ -201,21 +208,48 @@ namespace CodeImp.DoomBuilder.Rendering
 				device.SetTextureStageState(1, TextureStage.ResultArg, TextureArgument.Current);
 				device.SetTextureStageState(1, TextureStage.TexCoordIndex, 0);
 
-				// No more further stages
-				device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.Disable);
-
-				// First alpha stage
-				device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
-				device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
-				device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.Diffuse);
-
 				// Second alpha stage
 				device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Modulate);
 				device.SetTextureStageState(1, TextureStage.AlphaArg1, TextureArgument.Current);
 				device.SetTextureStageState(1, TextureStage.AlphaArg2, TextureArgument.TFactor);
 
-				// No more further stages
-				device.SetTextureStageState(2, TextureStage.AlphaOperation, TextureOperation.Disable);
+				// Highlight?
+				if(index > 1)
+				{
+					// Third texture stage
+					device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.AddSigned);
+					device.SetTextureStageState(2, TextureStage.ColorArg1, TextureArgument.Current);
+					device.SetTextureStageState(2, TextureStage.ColorArg2, TextureArgument.Texture);
+					device.SetTextureStageState(2, TextureStage.ColorArg0, TextureArgument.Texture);
+					device.SetTextureStageState(2, TextureStage.ResultArg, TextureArgument.Current);
+					device.SetTextureStageState(2, TextureStage.TexCoordIndex, 0);
+
+					// Third alpha stage
+					device.SetTextureStageState(2, TextureStage.AlphaOperation, TextureOperation.SelectArg1);
+					device.SetTextureStageState(2, TextureStage.AlphaArg1, TextureArgument.Current);
+
+					// Fourth texture stage
+					device.SetTextureStageState(3, TextureStage.ColorOperation, TextureOperation.AddSigned);
+					device.SetTextureStageState(3, TextureStage.ColorArg1, TextureArgument.Current);
+					device.SetTextureStageState(3, TextureStage.ColorArg2, TextureArgument.Texture);
+					device.SetTextureStageState(3, TextureStage.ColorArg0, TextureArgument.Texture);
+					device.SetTextureStageState(3, TextureStage.ResultArg, TextureArgument.Current);
+					device.SetTextureStageState(3, TextureStage.TexCoordIndex, 0);
+
+					// Fourth alpha stage
+					device.SetTextureStageState(3, TextureStage.AlphaOperation, TextureOperation.SelectArg1);
+					device.SetTextureStageState(3, TextureStage.AlphaArg1, TextureArgument.Current);
+
+					// No more further stages
+					device.SetTextureStageState(4, TextureStage.ColorOperation, TextureOperation.Disable);
+					device.SetTextureStageState(4, TextureStage.AlphaOperation, TextureOperation.Disable);
+				}
+				else
+				{
+					// No more further stages
+					device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.Disable);
+					device.SetTextureStageState(2, TextureStage.AlphaOperation, TextureOperation.Disable);
+				}
 			}
 
 			base.BeginPass(index);

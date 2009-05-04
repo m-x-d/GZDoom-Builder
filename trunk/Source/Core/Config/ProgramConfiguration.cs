@@ -73,6 +73,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int previewimagesize;
 		private int autoscrollspeed;
 		private bool showerrorswindow;
+		private bool animatevisualselection;
 
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -115,6 +116,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int PreviewImageSize { get { return previewimagesize; } internal set { previewimagesize = value; } }
 		public int AutoScrollSpeed { get { return autoscrollspeed; } internal set { autoscrollspeed = value; } }
 		public bool ShowErrorsWindow { get { return showerrorswindow; } internal set { showerrorswindow = value; } }
+		public bool AnimateVisualSelection { get { return animatevisualselection; } internal set { animatevisualselection = value; } }
 
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -173,6 +175,7 @@ namespace CodeImp.DoomBuilder.Config
 				previewimagesize = cfg.ReadSetting("previewimagesize", 1);
 				autoscrollspeed = cfg.ReadSetting("autoscrollspeed", 0);
 				showerrorswindow = cfg.ReadSetting("showerrorswindow", true);
+				animatevisualselection = cfg.ReadSetting("animatevisualselection", true);
 				
 				// Success
 				return true;
@@ -213,6 +216,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("previewimagesize", previewimagesize);
 			cfg.WriteSetting("autoscrollspeed", autoscrollspeed);
 			cfg.WriteSetting("showerrorswindow", showerrorswindow);
+			cfg.WriteSetting("animatevisualselection", animatevisualselection);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

@@ -112,6 +112,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorcomments = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorplaintext = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.animatevisualselection = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -901,6 +902,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabcolors
 			// 
+			this.tabcolors.Controls.Add(this.animatevisualselection);
 			this.tabcolors.Controls.Add(this.squarethings);
 			this.tabcolors.Controls.Add(this.visualbilinear);
 			this.tabcolors.Controls.Add(this.classicbilinear);
@@ -1122,6 +1124,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
 			this.colorplaintext.TabIndex = 2;
 			// 
+			// animatevisualselection
+			// 
+			this.animatevisualselection.AutoSize = true;
+			this.animatevisualselection.Location = new System.Drawing.Point(448, 356);
+			this.animatevisualselection.Name = "animatevisualselection";
+			this.animatevisualselection.Size = new System.Drawing.Size(188, 18);
+			this.animatevisualselection.TabIndex = 23;
+			this.animatevisualselection.Text = "Animate selection in visual modes";
+			this.animatevisualselection.UseVisualStyleBackColor = true;
+			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1252,5 +1264,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dotnetrix.Controls.TrackBar autoscrollspeed;
 		private System.Windows.Forms.Label autoscrollspeedlabel;
 		private System.Windows.Forms.Label label15;
+		private System.Windows.Forms.CheckBox animatevisualselection;
 	}
 }
