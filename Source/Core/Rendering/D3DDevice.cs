@@ -268,20 +268,20 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Use default adapter
 			this.adapter = 0; // Manager.Adapters.Default.Adapter;
 
-			// Make present parameters
-			displaypp = CreatePresentParameters(adapter);
-
-			// Determine device type for compatability with NVPerfHUD
-			if(d3d.Adapters[adapter].Details.Description.EndsWith(NVPERFHUD_ADAPTER))
-				devtype = DeviceType.Reference;
-			else
-				devtype = DeviceType.Hardware;
-
-			// Get the device capabilities
-			devicecaps = d3d.GetDeviceCaps(adapter, devtype);
-
 			try
 			{
+				// Make present parameters
+				displaypp = CreatePresentParameters(adapter);
+
+				// Determine device type for compatability with NVPerfHUD
+				if(d3d.Adapters[adapter].Details.Description.EndsWith(NVPERFHUD_ADAPTER))
+					devtype = DeviceType.Reference;
+				else
+					devtype = DeviceType.Hardware;
+
+				// Get the device capabilities
+				devicecaps = d3d.GetDeviceCaps(adapter, devtype);
+
 				// Check if this adapter supports TnL
 				if((devicecaps.DeviceCaps & DeviceCaps.HWTransformAndLight) != 0)
 				{
@@ -299,7 +299,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			catch(Exception)
 			{
 				// Failed
-				MessageBox.Show(General.MainWindow, "Unable to initialize the Direct3D video device. Another application may have taken exclusive mode on this video device.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(General.MainWindow, "Unable to initialize the Direct3D video device. Another application may have taken exclusive mode on this video device or the device does not support Direct3D at all.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
 

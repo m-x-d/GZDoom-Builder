@@ -75,7 +75,7 @@ procedure InitializeWizard();
 begin
 	restartneeded := false;
 	componentsinstalled := false;
-	page_info_net := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft .NET Framework', '', 'Setup has detected that your system is missing the required version of the Microsoft .NET Framework. Setup will now download and install or update your Microsoft .NET Framework. This requires an internet connection and may take some time to complete.' + #10 + #10 + 'Press Next to begin.');
+	page_info_net := CreateOutputMsgPage(wpInstalling, 'Installing Microsoft .NET Framework', '', 'Setup has detected that your system is missing the required version of the Microsoft .NET Framework. Setup will now download and install or update your Microsoft .NET Framework. This requires an internet connection and may take several minutes to complete.' + #10 + #10 + 'WARNING: The installer will download the Microsoft .NET Framework from the internet, but the progress bar will not go forward until the download is complete. You may send Microsoft an angry letter about this bug.' + #10 + #10 + 'Press Next to begin.');
 	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework', 'Setup is installing Microsoft .NET Framework, please wait.....');
 	page_setup_components := CreateOutputProgressPage('Installing Components', 'Setup is installing required components.....');
 end;
@@ -144,6 +144,7 @@ begin
 
 	Result := True;
 end;
+
 
 
 
