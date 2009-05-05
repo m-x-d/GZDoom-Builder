@@ -77,14 +77,15 @@ namespace CodeImp.DoomBuilder.Controls
 			this.list.OwnerDraw = true;
 			this.list.ShowItemToolTips = true;
 			this.list.Size = new System.Drawing.Size(518, 312);
-			this.list.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.list.TabIndex = 1;
+			this.list.TabStop = false;
 			this.list.TileSize = new System.Drawing.Size(90, 90);
 			this.list.UseCompatibleStateImageBehavior = false;
 			this.list.View = System.Windows.Forms.View.Tile;
 			this.list.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.list_DrawItem);
 			this.list.DoubleClick += new System.EventHandler(this.list_DoubleClick);
 			this.list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.list_ItemSelectionChanged);
+			this.list.KeyDown += new System.Windows.Forms.KeyEventHandler(this.list_KeyDown);
 			// 
 			// texturesize
 			// 
@@ -112,6 +113,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.objectname.Name = "objectname";
 			this.objectname.Size = new System.Drawing.Size(122, 20);
 			this.objectname.TabIndex = 0;
+			this.objectname.TabStop = false;
 			this.objectname.TextChanged += new System.EventHandler(this.objectname_TextChanged);
 			this.objectname.KeyDown += new System.Windows.Forms.KeyEventHandler(this.objectname_KeyDown);
 			// 

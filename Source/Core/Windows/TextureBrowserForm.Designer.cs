@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(100, 25);
 			this.cancel.TabIndex = 3;
+			this.cancel.TabStop = false;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -58,6 +59,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(100, 25);
 			this.apply.TabIndex = 2;
+			this.apply.TabStop = false;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -79,6 +81,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.texturesets.Size = new System.Drawing.Size(200, 576);
 			this.texturesets.SmallImageList = this.smallimages;
 			this.texturesets.TabIndex = 0;
+			this.texturesets.TabStop = false;
 			this.texturesets.UseCompatibleStateImageBehavior = false;
 			this.texturesets.View = System.Windows.Forms.View.Details;
 			this.texturesets.SelectedIndexChanged += new System.EventHandler(this.texturesets_SelectedIndexChanged);
@@ -117,6 +120,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browser.PreventSelection = false;
 			this.browser.Size = new System.Drawing.Size(663, 610);
 			this.browser.TabIndex = 1;
+			this.browser.TabStop = false;
 			this.browser.SelectedItemDoubleClicked += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemDoubleClickDelegate(this.browser_SelectedItemDoubleClicked);
 			this.browser.SelectedItemChanged += new CodeImp.DoomBuilder.Controls.ImageBrowserControl.SelectedItemChangedDelegate(this.browser_SelectedItemChanged);
 			// 
@@ -132,6 +136,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.browser);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KeyPreview = true;
 			this.MinimizeBox = false;
 			this.Name = "TextureBrowserForm";
 			this.ShowIcon = false;
