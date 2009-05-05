@@ -1210,7 +1210,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerFloors8()
 		{
 			General.Interface.DisplayStatus(StatusType.Action, "Lowered floor heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Floor heights change", UndoGroup.FloorHeightChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC());
 
 			// Change heights
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
@@ -1230,7 +1230,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseFloors8()
 		{
 			General.Interface.DisplayStatus(StatusType.Action, "Raised floor heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Floor heights change", UndoGroup.FloorHeightChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Floor heights change", this, UndoGroup.FloorHeightChange, CreateSelectionCRC());
 
 			// Change heights
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
@@ -1250,7 +1250,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerCeilings8()
 		{
 			General.Interface.DisplayStatus(StatusType.Action, "Lowered ceiling heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Ceiling heights change", UndoGroup.CeilingHeightChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC());
 
 			// Change heights
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
@@ -1270,7 +1270,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseCeilings8()
 		{
 			General.Interface.DisplayStatus(StatusType.Action, "Raised ceiling heights by 8mp.");
-			General.Map.UndoRedo.CreateUndo("Ceiling heights change", UndoGroup.CeilingHeightChange, CreateSelectionCRC());
+			General.Map.UndoRedo.CreateUndo("Ceiling heights change", this, UndoGroup.CeilingHeightChange, CreateSelectionCRC());
 
 			// Change heights
 			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
