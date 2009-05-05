@@ -37,7 +37,7 @@ using SlimDX;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	internal class ImageBrowserItem : ListViewItem
+	internal class ImageBrowserItem : ListViewItem, IComparable<ImageBrowserItem>
 	{
 		#region ================== Variables
 
@@ -143,7 +143,13 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(v < 0f) return 0f; else if(v > 1f) return 1f; else return v;
 		}
-		
+
+		// Comparer
+		public int CompareTo(ImageBrowserItem other)
+		{
+			return this.Text.CompareTo(other.Text);
+		}
+
 		#endregion
 	}
 }

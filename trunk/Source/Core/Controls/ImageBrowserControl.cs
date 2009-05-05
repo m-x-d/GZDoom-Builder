@@ -63,6 +63,9 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// All items
 		private List<ImageBrowserItem> items;
+
+		// Items visible in the list
+		private List<ImageBrowserItem> visibleitems;
 		
 		#endregion
 
@@ -163,7 +166,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
-		// Key pressed
+		// Key pressed in textbox
 		private void objectname_KeyDown(object sender, KeyEventArgs e)
 		{
 			// Check what key is pressed
@@ -174,6 +177,19 @@ namespace CodeImp.DoomBuilder.Controls
 				case Keys.Right: SelectNextItem(SearchDirectionHint.Right); e.SuppressKeyPress = true; break;
 				case Keys.Up: SelectNextItem(SearchDirectionHint.Up); e.SuppressKeyPress = true;  break;
 				case Keys.Down: SelectNextItem(SearchDirectionHint.Down); e.SuppressKeyPress = true; break;
+
+				// Tab
+				case Keys.Tab: GoToNextSameTexture(); e.SuppressKeyPress = true; break;
+			}
+		}
+
+		// Key pressed in list
+		private void list_KeyDown(object sender, KeyEventArgs e)
+		{
+			if(e.KeyData == Keys.Tab)
+			{
+				GoToNextSameTexture();
+				e.SuppressKeyPress = true;
 			}
 		}
 		
@@ -218,6 +234,41 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Methods
+
+		// This selects the next texture with the same name as the selected texture
+		public void GoToNextSameTexture()
+		{
+			if(list.SelectedItems.Count > 0)
+			{
+				ListViewItem selected = list.SelectedItems[0];
+				bool foundselected = false;
+				foreach(ListViewItem n in visibleitems)
+				{
+					if((n.Text == selected.Text) && foundselected)
+					{
+						// This is the next item
+						n.Selected = true;
+						n.EnsureVisible();
+						return;
+					}
+					
+					if(n == selected)
+						foundselected = true;
+				}
+
+				// Start from the top
+				foreach(ListViewItem n in visibleitems)
+				{
+					if((n.Text == selected.Text) && foundselected)
+					{
+						// This is the next item
+						n.Selected = true;
+						n.EnsureVisible();
+						return;
+					}
+				}
+			}
+		}
 
 		// This selects an item by name
 		public void SelectItem(string name, ListViewGroup preferredgroup)
@@ -382,7 +433,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This fills the list based on the objectname filter
 		private void RefillList(bool selectfirst)
 		{
-			List<ListViewItem> showitems = new List<ListViewItem>();
+			visibleitems = new List<ImageBrowserItem>();
 			
 			// Begin updating list
 			updating = true;
@@ -401,12 +452,15 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					i.Group = i.ListGroup;
 					i.Selected = false;
-					showitems.Add(i);
+					visibleitems.Add(i);
 				}
 			}
 			
 			// Fill list
-			list.Items.AddRange(showitems.ToArray());
+			visibleitems.Sort();
+			ListViewItem[] array = new ListViewItem[visibleitems.Count];
+			for(int i = 0; i < visibleitems.Count; i++) array[i] = visibleitems[i];
+			list.Items.AddRange(array);
 			
 			// Done updating list
 			updating = false;
