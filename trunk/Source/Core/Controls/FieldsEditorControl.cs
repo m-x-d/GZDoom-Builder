@@ -321,7 +321,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(e.ColumnIndex == 0)
 				{
 					// Not a fixed field?
-					if(!frow.IsFixed)
+					if((frow != null) && !frow.IsFixed)
 					{
 						lasteditfieldname = frow.Name;
 						fieldslist.CurrentCell = fieldslist.SelectedRows[0].Cells[0];

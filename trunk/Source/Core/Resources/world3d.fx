@@ -84,7 +84,7 @@ float4 ps_main_highlight(PixelData pd) : COLOR
 	float4 ncolor = tcolor * pd.color * modulatecolor;
 	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
 	
-    return ncolor + hcolor * highlightcolor.a;
+    return lerp(ncolor, hcolor, highlightcolor.a);
 }
 
 // Full-bright pixel shader with highlight
@@ -96,7 +96,7 @@ float4 ps_fullbright_highlight(PixelData pd) : COLOR
 	float4 ncolor = tcolor * modulatecolor;
 	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
 	
-    return ncolor + hcolor * highlightcolor.a;
+    return lerp(ncolor, hcolor, highlightcolor.a);
 }
 
 // Technique for shader model 2.0
