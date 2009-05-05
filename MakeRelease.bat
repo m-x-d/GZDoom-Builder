@@ -36,7 +36,7 @@ ECHO.
 IF EXIST "Build\Refmanual.chm" DEL /F /Q "Build\Refmanual.chm" > NUL
 "%programfiles%\HTML Help Workshop\hhc" Help\Refmanual.hhp
 IF %ERRORLEVEL% NEQ 1 GOTO ERRORFAIL
-IF NOT EXIST "Build\Refmanual.chm" GOTO FAIL
+IF NOT EXIST "Build\Refmanual.chm" GOTO FILEFAIL
 
 ECHO.
 ECHO Looking up current repository revision numbers...
@@ -44,6 +44,7 @@ ECHO.
 IF EXIST "setenv.bat" DEL /F /Q "setenv.bat" > NUL
 VersionFromSVN.exe "Source\Core\Properties\AssemblyInfo.cs" "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" -O "setenv.bat"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
+IF NOT EXIST "setenv.bat" GOTO FILEFAIL
 
 CALL "setenv.bat"
 DEL /F /Q "setenv.bat"
