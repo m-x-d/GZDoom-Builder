@@ -567,35 +567,62 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
-		// This returns all selected sectors
+		// This returns all selected sectors, no doubles
 		public List<Sector> GetSelectedSectors()
 		{
+			Dictionary<Sector, int> added = new Dictionary<Sector, int>();
 			List<Sector> sectors = new List<Sector>();
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
-				if(i is BaseVisualGeometrySector) sectors.Add((i as BaseVisualGeometrySector).Sector.Sector);
+				if(i is BaseVisualGeometrySector)
+				{
+					Sector s = (i as BaseVisualGeometrySector).Sector.Sector;
+					if(!added.ContainsKey(s))
+					{
+						sectors.Add(s);
+						added.Add(s, 0);
+					}
+				}
 			}
 			return sectors;
 		}
 
-		// This returns all selected linedefs
+		// This returns all selected linedefs, no doubles
 		public List<Linedef> GetSelectedLinedefs()
 		{
+			Dictionary<Linedef, int> added = new Dictionary<Linedef, int>();
 			List<Linedef> linedefs = new List<Linedef>();
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
-				if(i is BaseVisualGeometrySidedef) linedefs.Add((i as BaseVisualGeometrySidedef).Sidedef.Line);
+				if(i is BaseVisualGeometrySidedef)
+				{
+					Linedef l = (i as BaseVisualGeometrySidedef).Sidedef.Line;
+					if(!added.ContainsKey(l))
+					{
+						linedefs.Add(l);
+						added.Add(l, 0);
+					}
+				}
 			}
 			return linedefs;
 		}
 
-		// This returns all selected things
+		// This returns all selected things, no doubles
 		public List<Thing> GetSelectedThings()
 		{
+			Dictionary<Thing, int> added = new Dictionary<Thing, int>();
 			List<Thing> things = new List<Thing>();
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
-				if(i is BaseVisualThing) things.Add((i as BaseVisualThing).Thing);
+				if(i is BaseVisualThing)
+				{
+					Thing t = (i as BaseVisualThing).Thing;
+					if(!added.ContainsKey(t))
+					{
+						things.Add(t);
+						added.Add(t, 0);
+					}
+				}
 			}
 			return things;
 		}

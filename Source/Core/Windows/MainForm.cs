@@ -399,9 +399,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			windowactive = true;
 
-			// Resume any exclusive mouse input
 			ResumeExclusiveMouseInput();
-			display.Focus();
+			ReleaseAllKeys();
+			FocusDisplay();
 		}
 		
 		// Window loses focus
@@ -409,15 +409,8 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			windowactive = false;
 			
-			// Release all pressed keys
-			General.Actions.ReleaseAllKeys();
-			mousebuttons = MouseButtons.None;
-			shift = false;
-			ctrl = false;
-			alt = false;
-
-			// Stop exclusive mouse input
 			BreakExclusiveMouseInput();
+			ReleaseAllKeys();
 		}
 		
 		// Window is moved
@@ -1077,6 +1070,16 @@ namespace CodeImp.DoomBuilder.Windows
 				if(mouseexclusivebreaklevel == 0)
 					StartMouseExclusive();
 			}
+		}
+
+		// This releases all keys
+		internal void ReleaseAllKeys()
+		{
+			General.Actions.ReleaseAllKeys();
+			mousebuttons = MouseButtons.None;
+			shift = false;
+			ctrl = false;
+			alt = false;
 		}
 		
 		// When the mouse wheel is changed

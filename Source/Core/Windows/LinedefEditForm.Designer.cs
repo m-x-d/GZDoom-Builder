@@ -697,7 +697,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backside
 			// 
 			this.backside.AutoSize = true;
-			this.backside.Location = new System.Drawing.Point(17, 1);
+			this.backside.Location = new System.Drawing.Point(15, 1);
 			this.backside.Name = "backside";
 			this.backside.Size = new System.Drawing.Size(74, 18);
 			this.backside.TabIndex = 0;
