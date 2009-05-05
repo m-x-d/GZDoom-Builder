@@ -105,7 +105,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.heightbysidedef.Items.AddRange(new object[] {
             "Do nothing",
             "Change the ceiling height",
-            "Change the floor height"});
+            "Change the floor height",
+            "Change both floor and ceiling height"});
 			this.heightbysidedef.Location = new System.Drawing.Point(353, 16);
 			this.heightbysidedef.Name = "heightbysidedef";
 			this.heightbysidedef.Size = new System.Drawing.Size(199, 22);

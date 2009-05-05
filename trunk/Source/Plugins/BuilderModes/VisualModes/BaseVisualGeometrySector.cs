@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 		
 		new public BaseVisualSector Sector { get { return (BaseVisualSector)base.Sector; } }
-		public bool Changed { get { return changed; } set { changed |= value; } }
+		public bool Changed { get { return changed; } set { changed = value; } }
 
 		#endregion
 

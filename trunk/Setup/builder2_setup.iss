@@ -35,7 +35,6 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 Source: Setup\dotnetfx35setup.exe; DestDir: {tmp}; Flags: dontcopy
-Source: Setup\dxwebsetup.exe; DestDir: {tmp}; Flags: dontcopy
 Source: Setup\slimdx.msi; DestDir: {tmp}; Flags: dontcopy
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
 Source: Builder.cfg; DestDir: {app}; Flags: ignoreversion
@@ -148,8 +147,6 @@ begin
 		if(componentsinstalled = false) then
 		begin
 			page_setup_components.Show;
-			ExtractTemporaryFile('dxwebsetup.exe');
-			Exec(ExpandConstant('{tmp}\dxwebsetup.exe'), '/Q', '', SW_SHOW, ewWaitUntilTerminated, errorcode);
 			ExtractTemporaryFile('slimdx.msi');
 			ShellExec('open', 'msiexec', ExpandConstant('/passive /i "{tmp}\slimdx.msi"'), '', SW_SHOW, ewWaitUntilTerminated, errorcode);
 			componentsinstalled := true;
@@ -215,6 +212,7 @@ begin
 
 	Result := True;
 end;
+
 
 
 
