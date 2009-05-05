@@ -25,6 +25,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -49,7 +50,8 @@ namespace CodeImp.DoomBuilder.Editing
 		private List<UndoSnapshot> redos;
 
 		// Grouping
-		private UndoGroup lastgroup;
+		private Plugin lastgroupplugin;
+		private int lastgroupid;
 		private int lastgrouptag;
 		
 		// Unique tickets
@@ -233,29 +235,47 @@ namespace CodeImp.DoomBuilder.Editing
 			ClearRedos();
 			General.MainWindow.UpdateInterface();
 		}
-		
-		// This makes an undo and returns the unique ticket id
-		// Also automatically indicates that the map is changed
+
+		/// <summary>
+		/// This makes an undo and returns the unique ticket id. Also automatically indicates that the map is changed.
+		/// </summary>
+		/// <param name="description">Any description you want the undo to be named. Should be something related to the changes you are about to make.</param>
+		/// <returns>Ticket ID that identifies the created undo level.</returns>
 		public int CreateUndo(string description)
 		{
-			return CreateUndo(description, UndoGroup.None, 0);
+			return CreateUndo(description, null, 0, 0);
 		}
 		
-		// This makes an undo and returns the unique ticket id
-		// Also automatically indicates that the map is changed
-		public int CreateUndo(string description, UndoGroup group, int grouptag)
+		/// <summary>
+		/// This makes an undo and returns the unique ticket id. Also automatically indicates that the map is changed.
+		/// </summary>
+		/// <param name="description">Any description you want the undo to be named. Should be something related to the changes you are about to make.</param>
+		/// <param name="groupsource">The object creating the undo. All objects from within the same plugin are equal, so it is safe to just use 'this' everywhere. This is only used for undo grouping and you can use 'null' if you don't want undo grouping.</param>
+		/// <param name="groupid">The undo group id you want this undo level to group with (undos only group together if the previous undo has the same source, id and tag). Group 0 indicates no grouping.</param>
+		/// <param name="grouptag">The undo group tag you want this undo level to group with (undos only group together if the previous undo has the same source, id and tag). Use at your own discretion.</param>
+		/// <returns>Ticket ID that identifies the created undo level. Returns -1 when no undo level was created.</returns>
+		public int CreateUndo(string description, object groupsource, int groupid, int grouptag)
 		{
 			UndoSnapshot u;
+			Plugin p = null;
+			string groupsourcename = "Null";
+			
+			// Figure out the source plugin
+			if(groupsource != null)
+			{
+				p = General.Plugins.FindPluginByAssembly(groupsource.GetType().Assembly);
+				if(p != null) groupsourcename = p.Name;
+			}
 
-			// Not the same as previous group?
-			if((group == UndoGroup.None) ||
-			   (group != lastgroup) ||
+			// Not the same as previous group, or no grouping desired...
+			if((p == null) || (lastgroupplugin == null) || (p != lastgroupplugin) ||
+			   (groupid == 0) || (lastgroupid == 0) || (groupid != lastgroupid) ||
 			   (grouptag != lastgrouptag))
 			{
 				// Next ticket id
 				if(++ticketid == int.MaxValue) ticketid = 1;
 
-				General.WriteLogLine("Creating undo snapshot \"" + description + "\", Group " + group + ", Tag " + grouptag + ", Ticket ID " + ticketid + "...");
+				General.WriteLogLine("Creating undo snapshot \"" + description + "\", Source " + groupsourcename + ", Group " + groupid + ", Tag " + grouptag + ", Ticket ID " + ticketid + "...");
 
 				// Make a snapshot
 				u = new UndoSnapshot(description, General.Map.Map.Serialize(), ticketid);
@@ -275,7 +295,8 @@ namespace CodeImp.DoomBuilder.Editing
 				ClearRedos();
 
 				// Keep grouping info
-				lastgroup = group;
+				lastgroupplugin = p;
+				lastgroupid = groupid;
 				lastgrouptag = grouptag;
 				
 				// Map changes!
@@ -319,42 +340,6 @@ namespace CodeImp.DoomBuilder.Editing
 					// Update
 					dobackgroundwork = true;
 					General.MainWindow.UpdateInterface();
-				}
-			}
-		}
-
-		// This changes the description of previously made undo
-		public void SetUndoDescription(int ticket, string description)
-		{
-			// Anything to undo?
-			if(undos.Count > 0)
-			{
-				// Check if the ticket id matches
-				if(ticket == undos[0].TicketID)
-				{
-					lock(undos)
-					{
-						undos[0].Description = description;
-					}
-					
-					// Update
-					General.MainWindow.UpdateInterface();
-				}
-			}
-		}
-
-		// This changes the grouping settings
-		public void SetUndoGrouping(int ticket, UndoGroup group, int grouptag)
-		{
-			// Anything to undo?
-			if(undos.Count > 0)
-			{
-				// Check if the ticket id matches
-				if(ticket == undos[0].TicketID)
-				{
-					// Keep grouping info
-					lastgroup = group;
-					lastgrouptag = grouptag;
 				}
 			}
 		}
@@ -409,7 +394,7 @@ namespace CodeImp.DoomBuilder.Editing
 							}
 							
 							// Reset grouping
-							lastgroup = UndoGroup.None;
+							lastgroupplugin = null;
 
 							// Change map set
 							MemoryStream data = u.GetMapData();
@@ -486,7 +471,7 @@ namespace CodeImp.DoomBuilder.Editing
 						}
 						
 						// Reset grouping
-						lastgroup = UndoGroup.None;
+						lastgroupplugin = null;
 
 						// Change map set
 						MemoryStream data = r.GetMapData();

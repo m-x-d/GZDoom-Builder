@@ -470,6 +470,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Select button pressed
 		public virtual void OnSelectBegin()
 		{
+			mode.LockTarget();
 			dragstartanglexy = General.Map.VisualCamera.AngleXY;
 			dragstartanglez = General.Map.VisualCamera.AngleZ;
 			dragorigin = pickintersect;
@@ -482,11 +483,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Select button released
 		public virtual void OnSelectEnd()
 		{
+			mode.UnlockTarget();
+			
 			// Was dragging?
 			if(uvdragging)
 			{
 				// Dragging stops now
-				mode.UnlockTarget();
 				uvdragging = false;
 			}
 			else
@@ -548,11 +550,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
 					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
 					{
+						mode.PreAction(UndoGroup.TextureOffsetChange);
 						mode.CreateUndo("Change texture offsets");
 
 						// Start drag now
 						uvdragging = true;
-						mode.LockTarget();
 						UpdateDragUV();
 					}
 				}

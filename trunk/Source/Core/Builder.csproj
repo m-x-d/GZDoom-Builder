@@ -135,7 +135,6 @@
     <Compile Include="Editing\GridSetup.cs" />
     <Compile Include="Editing\NullThingsFilter.cs" />
     <Compile Include="Editing\ThingsFilter.cs" />
-    <Compile Include="Editing\UndoGroup.cs" />
     <Compile Include="Editing\UndoManager.cs" />
     <Compile Include="Editing\UndoSnapshot.cs" />
     <Compile Include="Editing\ClassicMode.cs" />

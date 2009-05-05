@@ -28,13 +28,15 @@ using CodeImp.DoomBuilder.Map;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Editing
+namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public enum UndoGroup : int
+	public class UndoGroup
 	{
-		None,
-		FloorHeightChange,
-		CeilingHeightChange,
-		SectorBrightnessChange
+		public const int None = 0;
+		public const int FloorHeightChange = 1;
+		public const int CeilingHeightChange = 2;
+		public const int SectorBrightnessChange = 3;
+		public const int TextureOffsetChange = 4;
+		public const int SectorHeightChange = 5;
 	}
 }

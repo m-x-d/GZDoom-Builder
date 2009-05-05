@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// We keep these to determine if we need to make a new undo level
 		private bool selectionchanged;
-		private Actions.Action lastaction;
+		private int lastundogroup;
 		private VisualActionResult actionresult;
 		private bool undocreated;
 
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 		
 		// This is called before an action is performed
-		private void PreAction(bool groupmultiselectionundo)
+		public void PreAction(int multiselectionundogroup)
 		{
 			actionresult = new VisualActionResult();
 			
@@ -148,9 +148,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Check if we should make a new undo level
 				// We don't want to do this if this is the same action with the same
 				// selection and the action wants to group the undo levels
-				if((lastaction != General.Actions.Current) || selectionchanged || !groupmultiselectionundo)
+				if((lastundogroup != multiselectionundogroup) || (lastundogroup == UndoGroup.None) ||
+				   (multiselectionundogroup == UndoGroup.None) || selectionchanged)
 				{
 					// We want to create a new undo level, but not just yet
+					lastundogroup = multiselectionundogroup;
 					undocreated = false;
 				}
 				else
@@ -186,7 +188,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				bvs.Ceiling.Changed = false;
 			}
 
-			lastaction = General.Actions.Current;
 			selectionchanged = false;
 			
 			if(singleselection)
@@ -211,16 +212,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This creates an undo, when only a single selection is made
 		// When a multi-selection is made, the undo is created by the PreAction function
-		public int CreateUndo(string description, UndoGroup group, int grouptag)
+		public int CreateUndo(string description, int group, int grouptag)
 		{
 			if(!undocreated)
 			{
 				undocreated = true;
 
 				if(singleselection)
-					return General.Map.UndoRedo.CreateUndo(description, group, grouptag);
+					return General.Map.UndoRedo.CreateUndo(description, this, group, grouptag);
 				else
-					return General.Map.UndoRedo.CreateUndo(description, UndoGroup.None, 0);
+					return General.Map.UndoRedo.CreateUndo(description, this, UndoGroup.None, 0);
 			}
 			else
 			{
@@ -489,6 +490,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnMouseMove(e);
 		}
 		
+		// Undo performed
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+
+			// We can't group with this undo level anymore
+			lastundogroup = UndoGroup.None;
+		}
+		
 		#endregion
 
 		#region ================== Action Assist
@@ -641,7 +651,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("visualedit", BaseAction = true)]
 		public void BeginEdit()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditBegin();
 			PostAction();
 		}
@@ -649,7 +659,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[EndAction("visualedit", BaseAction = true)]
 		public void EndEdit()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditEnd();
 			PostAction();
 		}
@@ -657,7 +667,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("raisesector8")]
 		public void RaiseSector8()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.SectorHeightChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(8);
 			PostAction();
 		}
@@ -665,7 +675,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("lowersector8")]
 		public void LowerSector8()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.SectorHeightChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(-8);
 			PostAction();
 		}
@@ -673,7 +683,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("raisesector1")]
 		public void RaiseSector1()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.SectorHeightChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(1);
 			PostAction();
 		}
@@ -681,7 +691,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("lowersector1")]
 		public void LowerSector1()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.SectorHeightChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(-1);
 			PostAction();
 		}
@@ -696,7 +706,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("raisebrightness8")]
 		public void RaiseBrightness8()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.SectorBrightnessChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetBrightness(true);
 			PostAction();
 		}
@@ -704,7 +714,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("lowerbrightness8")]
 		public void LowerBrightness8()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.SectorBrightnessChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetBrightness(false);
 			PostAction();
 		}
@@ -712,7 +722,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetextureleft")]
 		public void MoveTextureLeft1()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.TextureOffsetChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(-1, 0);
 			PostAction();
 		}
@@ -720,7 +730,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetextureright")]
 		public void MoveTextureRight1()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.TextureOffsetChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(1, 0);
 			PostAction();
 		}
@@ -728,7 +738,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetextureup")]
 		public void MoveTextureUp1()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.TextureOffsetChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, -1);
 			PostAction();
 		}
@@ -736,7 +746,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetexturedown")]
 		public void MoveTextureDown1()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.TextureOffsetChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, 1);
 			PostAction();
 		}
@@ -744,7 +754,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetextureleft8")]
 		public void MoveTextureLeft8()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.TextureOffsetChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(-8, 0);
 			PostAction();
 		}
@@ -752,7 +762,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetextureright8")]
 		public void MoveTextureRight8()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.TextureOffsetChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(8, 0);
 			PostAction();
 		}
@@ -760,7 +770,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetextureup8")]
 		public void MoveTextureUp8()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.TextureOffsetChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, -8);
 			PostAction();
 		}
@@ -768,7 +778,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetexturedown8")]
 		public void MoveTextureDown8()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.TextureOffsetChange);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, 8);
 			PostAction();
 		}
@@ -776,7 +786,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("textureselect")]
 		public void TextureSelect()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectTexture();
@@ -796,7 +806,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("texturepaste")]
 		public void TexturePaste()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteTexture();
 			PostAction();
 		}
@@ -804,7 +814,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("visualautoalignx")]
 		public void TextureAutoAlignX()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(true, false);
@@ -816,7 +826,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("visualautoaligny")]
 		public void TextureAutoAlignY()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(false, true);
@@ -828,7 +838,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("toggleupperunpegged")]
 		public void ToggleUpperUnpegged()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleUpperUnpegged();
 			PostAction();
 		}
@@ -836,7 +846,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("togglelowerunpegged")]
 		public void ToggleLowerUnpegged()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleLowerUnpegged();
 			PostAction();
 		}
@@ -860,7 +870,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("resettexture")]
 		public void ResetTexture()
 		{
-			PreAction(true);
+			PreAction(UndoGroup.None);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnResetTextureOffset();
 			PostAction();
 		}
@@ -868,7 +878,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("floodfilltextures")]
 		public void FloodfillTextures()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureFloodfill();
 			PostAction();
 		}
@@ -884,7 +894,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("texturepasteoffsets")]
 		public void TexturePasteOffsets()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteTextureOffsets();
 			PostAction();
 		}
@@ -900,7 +910,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("pasteproperties")]
 		public void PasteProperties()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteProperties();
 			PostAction();
 		}
@@ -908,7 +918,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("insertitem", BaseAction = true)]
 		public void Insert()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnInsert();
 			PostAction();
 		}
@@ -916,7 +926,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("deleteitem", BaseAction = true)]
 		public void Delete()
 		{
-			PreAction(false);
+			PreAction(UndoGroup.None);
 			foreach(IVisualEventReceiver i in selectedobjects) i.OnDelete();
 			PostAction();
 		}
