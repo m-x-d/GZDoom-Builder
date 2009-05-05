@@ -187,7 +187,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				bvs.Floor.Changed = false;
 				bvs.Ceiling.Changed = false;
 			}
-
+			
 			selectionchanged = false;
 			
 			if(singleselection)
