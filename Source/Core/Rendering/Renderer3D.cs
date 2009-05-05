@@ -80,6 +80,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Highlighting
 		private IVisualPickable highlighted;
 		private float highlightglow;
+		private float highlightglowinv;
 		private ColorImage highlightimage;
 		private ColorImage selectionimage;
 		
@@ -422,11 +423,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(General.Settings.AnimateVisualSelection)
 				{
 					double time = General.Clock.GetCurrentTime();
-					highlightglow = (float)Math.Sin(time / 100.0f) * 0.3f + 0.4f;
+					highlightglow = (float)Math.Sin(time / 100.0f) * 0.1f + 0.2f;
+					highlightglowinv = -(float)Math.Sin(time / 100.0f) * 0.1f + 0.2f;
 				}
 				else
 				{
-					highlightglow = 0.6f;
+					highlightglow = 0.2f;
+					highlightglowinv = 0.2f;
 				}
 				
 				// Determine shader pass to use
@@ -624,10 +627,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 						else
 						{
-							Color4 highlightcolor = new Color4(1f, 0f, 0f, 0f);
-							if(g.Selected) highlightcolor = General.Colors.Selection.ToColorValue(highlightglow);
-							if(g == highlighted) highlightcolor = Color4.Lerp(highlightcolor, General.Colors.Highlight.ToColorValue(), highlightglow);
-							graphics.Shaders.World3D.SetHighlightColor(highlightcolor.ToArgb());
+							graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((g == highlighted), g.Selected).ToArgb());
 							graphics.Shaders.World3D.ApplySettings();
 						}
 						
@@ -695,10 +695,7 @@ namespace CodeImp.DoomBuilder.Rendering
 								}
 								else
 								{
-									Color4 highlightcolor = new Color4(1f, 0f, 0f, 0f);
-									if(t.Selected) highlightcolor = General.Colors.Selection.ToColorValue(highlightglow);
-									if(t == highlighted) highlightcolor = Color4.Lerp(highlightcolor, General.Colors.Highlight.ToColorValue(), highlightglow);
-									graphics.Shaders.World3D.SetHighlightColor(highlightcolor.ToArgb());
+									graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted), t.Selected).ToArgb());
 								}
 
 								// Create the matrix for positioning / rotation
@@ -726,6 +723,14 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Done rendering with this shader
 			graphics.Shaders.World3D.EndPass();
+		}
+
+		// This calculates the highlight/selection color
+		public Color4 CalculateHighlightColor(bool ishighlighted, bool isselected)
+		{
+			Color4 highlightcolor = isselected ? General.Colors.Selection.ToColorValue() : General.Colors.Highlight.ToColorValue();
+			highlightcolor.Alpha = ishighlighted ? highlightglowinv : highlightglow;
+			return highlightcolor;
 		}
 		
 		// This finishes rendering
