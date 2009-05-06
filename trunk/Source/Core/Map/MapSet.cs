@@ -2137,7 +2137,17 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Calculate distance and check if closer than previous find
 				float d = sd.Line.SafeDistanceToSq(pos, true);
-				if(d < distance)
+				if(d == distance)
+				{
+					// Same distance, so only pick the one that is on the right side of the line
+					float side = sd.Line.SideOfLine(pos);
+					if(((side <= 0.0f) && sd.IsFront) || ((side > 0.0f) && !sd.IsFront))
+					{
+						closest = sd;
+						distance = d;
+					}
+				}
+				else if(d < distance)
 				{
 					// This one is closer
 					closest = sd;

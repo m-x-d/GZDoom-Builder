@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float side = sd.Line.SideOfLine(pickintersect);
 			return (((side <= 0.0f) && sd.IsFront) || ((side > 0.0f) && !sd.IsFront));
 		}
-
+		
 		// Return texture name
 		public override string GetTextureName()
 		{
