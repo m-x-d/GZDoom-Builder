@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.IsCaretLineVisible = false;
 			this.scriptedit.IsFocus = false;
 			this.scriptedit.IsHScrollBar = false;
-			this.scriptedit.IsIndentationGuides = false;
+			this.scriptedit.IndentationGuides = 0;
 			this.scriptedit.IsMouseDownCaptures = false;
 			this.scriptedit.IsOvertype = false;
 			this.scriptedit.IsReadOnly = false;

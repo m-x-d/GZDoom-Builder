@@ -247,6 +247,14 @@ namespace CodeImp.DoomBuilder.Controls
 		Document = 3
 	}
 
+	internal enum ScriptIdentGuides
+	{
+		None = 0,
+		Real = 1,
+		LookForward = 2,
+		LookBoth = 3
+	}
+
 	internal enum ScriptEdgeVisualStyle
 	{
 		None = 0,
