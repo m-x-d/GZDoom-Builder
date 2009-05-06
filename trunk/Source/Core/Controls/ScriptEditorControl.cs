@@ -120,15 +120,16 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.IsBufferedDraw = true;
 			scriptedit.IsCaretLineVisible = false;
 			scriptedit.IsHScrollBar = true;
-			scriptedit.IsIndentationGuides = true;
+			scriptedit.IndentationGuides = (int)ScriptIdentGuides.None;
 			scriptedit.IsMouseDownCaptures = true;
-			scriptedit.IsTabIndents = false;
+			scriptedit.IsTabIndents = true;
 			scriptedit.IsUndoCollection = true;
 			scriptedit.IsUseTabs = true;
 			scriptedit.IsViewEOL = false;
 			scriptedit.IsVScrollBar = true;
 			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
 			scriptedit.TabWidth = 4;					// This should be in the preferences dialog
+			scriptedit.Indent = 4;
 			
 			// Symbol margin
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
@@ -271,8 +272,10 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// These don't work?
 			scriptedit.TabWidth = 4;
-			scriptedit.IsUseTabs = true;
-			scriptedit.Indent = 0;
+			scriptedit.IsUseTabs = false;
+			scriptedit.IsTabIndents = true;
+			scriptedit.Indent = 4;
+			scriptedit.IsBackSpaceUnIndents = true;
 			
 			// This applies the default style to all styles
 			scriptedit.StyleClearAll();
@@ -711,7 +714,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Apply identation of the previous line to this line
 					int ident = scriptedit.GetLineIndentation(curline - 1);
-					int tabs = ident / scriptedit.TabWidth;
+					int tabs = ident ;// / scriptedit.Indent;
 					if(scriptedit.GetLineIndentation(curline) == 0)
 					{
 						scriptedit.SetLineIndentation(curline, ident);
