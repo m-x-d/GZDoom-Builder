@@ -329,6 +329,38 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		/// <summary>
+		/// Spacing above a line
+		/// </summary>
+		public int ExtraAscent
+		{
+			get
+			{
+				return (int)FastPerform(2526, 0, 0);
+			}
+
+			set
+			{
+				FastPerform(2525, (uint)value, 0);
+			}
+		}
+
+		/// <summary>
+		/// Spacing below a line
+		/// </summary>
+		public int ExtraDescent
+		{
+			get
+			{
+				return (int)FastPerform(2528, 0, 0);
+			}
+
+			set
+			{
+				FastPerform(2527, (uint)value, 0);
+			}
+		}
+
+		/// <summary>
 		/// Returns the number of characters in the document.
 		/// 
 		/// </summary>
