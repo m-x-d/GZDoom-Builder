@@ -1886,11 +1886,22 @@ namespace CodeImp.DoomBuilder.Map
 							// Not the same line?
 							if(l1 != l2)
 							{
+								bool flipresult = (l1.End == l2.Start);
+								
 								// Merge these two linedefs
 								//while(lines.Remove(l1));
 								//l1.Join(l2);
 								while(lines.Remove(l2)) ;
 								l2.Join(l1);
+
+								// The flipping is purely a cosmetic to preserve orientation
+								// when drawing new lines over older lines
+								if(flipresult)
+								{
+									l1.FlipVertices();
+									l1.FlipSidedefs();
+								}
+								
 								joinsdone++;
 								joined = true;
 								break;
@@ -1911,11 +1922,22 @@ namespace CodeImp.DoomBuilder.Map
 							// Not the same line?
 							if(l1 != l2)
 							{
+								bool flipresult = (l1.End == l2.Start);
+
 								// Merge these two linedefs
 								//while(lines.Remove(l1));
 								//l1.Join(l2);
 								while(lines.Remove(l2)) ;
 								l2.Join(l1);
+
+								// The flipping is purely a cosmetic to preserve orientation
+								// when drawing new lines over older lines
+								if(flipresult)
+								{
+									l1.FlipVertices();
+									l1.FlipSidedefs();
+								}
+								
 								joinsdone++;
 								joined = true;
 								break;
