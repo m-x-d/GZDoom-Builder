@@ -423,13 +423,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(General.Settings.AnimateVisualSelection)
 				{
 					double time = General.Clock.GetCurrentTime();
-					highlightglow = (float)Math.Sin(time / 100.0f) * 0.1f + 0.2f;
-					highlightglowinv = -(float)Math.Sin(time / 100.0f) * 0.1f + 0.2f;
+					highlightglow = (float)Math.Sin(time / 100.0f) * 0.1f + 0.4f;
+					highlightglowinv = -(float)Math.Sin(time / 100.0f) * 0.1f + 0.4f;
 				}
 				else
 				{
-					highlightglow = 0.2f;
-					highlightglowinv = 0.2f;
+					highlightglow = 0.4f;
+					highlightglowinv = 0.3f;
 				}
 				
 				// Determine shader pass to use
