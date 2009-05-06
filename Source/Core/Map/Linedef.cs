@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.Map
 		private int activate;
 		private int tag;
 		private int[] args;
+		private bool frontinterior;		// for drawing only
 
 		// Clone
 		private int serializedindex;
@@ -101,6 +102,7 @@ namespace CodeImp.DoomBuilder.Map
 		public RectangleF Rect { get { return rect; } }
 		public int[] Args { get { return args; } }
 		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
+		internal bool FrontInterior { get { return frontinterior; } set { frontinterior = value; } }
 
 		#endregion
 
@@ -488,6 +490,9 @@ namespace CodeImp.DoomBuilder.Map
 			LinkedListNode<Linedef> vn = startvertexlistitem;
 			startvertexlistitem = endvertexlistitem;
 			endvertexlistitem = vn;
+
+			// For drawing, the interior now lies on the other side
+			frontinterior = !frontinterior;
 
 			// Update required (angle changed)
 			NeedUpdate();

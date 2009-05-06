@@ -827,6 +827,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
 			List<Linedef> newlines = new List<Linedef>();
+			List<bool> newlinescw = new List<bool>();
 			List<Linedef> oldlines = new List<Linedef>(General.Map.Map.Linedefs);
 			List<Sidedef> insidesides = new List<Sidedef>();
 			List<Vertex> mergeverts = new List<Vertex>();
@@ -839,7 +840,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(points.Count > 0)
 			{
 				/***************************************************\
-					STEP 1: Create the new geometry
+					Create the drawing
 				\***************************************************/
 
 				// Make first vertex
@@ -922,6 +923,10 @@ namespace CodeImp.DoomBuilder.Geometry
 
 				// Join merge vertices so that overlapping vertices in the draw become one.
 				MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
+
+				/***************************************************\
+					Find a way to close the drawing
+				\***************************************************/
 
 				// We prefer a closed polygon, because then we can determine the interior properly
 				// Check if the two ends of the polygon are closed
@@ -1089,14 +1094,13 @@ namespace CodeImp.DoomBuilder.Geometry
 				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
 
 				/***************************************************\
-					STEP 2: Merge the new geometry
+					Determine drawing interior
 				\***************************************************/
 
-				// In step 3 we will make sectors on the front sides and join sectors on the
-				// back sides, but because the user could have drawn counterclockwise or just
-				// some weird polygon this could result in problems. The following code adjusts
-				// the direction of all new lines so that their front (right) side is facing
-				// the interior of the new drawn polygon.
+				// In step 3 we will make sectors on the interior sides and join sectors on the
+				// exterior sides, but because the user could have drawn counterclockwise or just
+				// some weird polygon. The following code figures out the interior side of all
+				// new lines.
 				map.Update(true, false);
 				foreach(Linedef ld in newlines)
 				{
@@ -1107,9 +1111,9 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Make polygon
 						LinedefTracePath tracepath = new LinedefTracePath(pathlines);
 						EarClipPolygon pathpoly = tracepath.MakePolygon(true);
-
+						
 						// Check if the front of the line is outside the polygon
-						if(!pathpoly.Intersect(ld.GetSidePoint(true)))
+						if((pathpoly.CalculateArea() > 0.001f) && !pathpoly.Intersect(ld.GetSidePoint(true)))
 						{
 							// Now trace from the back side of the line to see if
 							// the back side lies in the interior. I don't want to
@@ -1123,18 +1127,28 @@ namespace CodeImp.DoomBuilder.Geometry
 								tracepath = new LinedefTracePath(pathlines);
 								pathpoly = tracepath.MakePolygon(true);
 
-								// Check if the back of the line is inside the polygon
-								if(pathpoly.Intersect(ld.GetSidePoint(false)))
-								{
-									// We must flip this linedef to face the interior
-									ld.FlipVertices();
-									ld.FlipSidedefs();
-									ld.UpdateCache();
-								}
+								// Check if the front of the line is inside the polygon
+								ld.FrontInterior = (pathpoly.CalculateArea() < 0.001f) || pathpoly.Intersect(ld.GetSidePoint(true));
+							}
+							else
+							{
+								ld.FrontInterior = true;
 							}
 						}
+						else
+						{
+							ld.FrontInterior = true;
+						}
+					}
+					else
+					{
+						ld.FrontInterior = true;
 					}
 				}
+
+				/***************************************************\
+					Merge the new geometry
+				\***************************************************/
 
 				// Mark only the vertices that should be merged
 				map.ClearMarkedVertices(false);
@@ -1157,11 +1171,11 @@ namespace CodeImp.DoomBuilder.Geometry
 					if(!ld.IsDisposed) oldlines.Add(ld);
 				
 				/***************************************************\
-					STEP 3: Join and create new sectors
+					Join and create new sectors
 				\***************************************************/
 
-				// The code below atempts to create sectors on the front sides of the drawn
-				// geometry and joins sectors on the back sides of the drawn geometry.
+				// The code below atempts to create sectors on the interior sides of the drawn
+				// geometry and joins sectors on the other sides of the drawn geometry.
 				// This code does not change any geometry, it only makes/updates sidedefs.
 				bool sidescreated = false;
 				bool[] frontsdone = new bool[newlines.Count];
@@ -1170,11 +1184,11 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					Linedef ld = newlines[i];
 
-					// Front not marked as done?
-					if(!frontsdone[i])
+					// Interior not done yet?
+					if((ld.FrontInterior && !frontsdone[i]) || (!ld.FrontInterior && !backsdone[i]))
 					{
 						// Find a way to create a sector here
-						List<LinedefSide> sectorlines = Tools.FindPotentialSectorAt(ld, true);
+						List<LinedefSide> sectorlines = Tools.FindPotentialSectorAt(ld, ld.FrontInterior);
 						if(sectorlines != null)
 						{
 							sidescreated = true;
@@ -1216,15 +1230,14 @@ namespace CodeImp.DoomBuilder.Geometry
 						}
 					}
 
-					// Back not marked as done?
-					if(!backsdone[i])
+					// Exterior not done yet?
+					if((ld.FrontInterior && !backsdone[i]) || (!ld.FrontInterior && !frontsdone[i]))
 					{
 						// Find a way to create a sector here
-						List<LinedefSide> sectorlines = Tools.FindPotentialSectorAt(ld, false);
+						List<LinedefSide> sectorlines = Tools.FindPotentialSectorAt(ld, !ld.FrontInterior);
 						if(sectorlines != null)
 						{
-							// We don't always want to create a new sector on the back sides
-							// So first check if any of the surrounding lines originally have sidedefs
+							// Check if any of the surrounding lines originally have sidedefs we can join
 							Sidedef joinsidedef = null;
 							foreach(LinedefSide ls in sectorlines)
 							{
@@ -1266,6 +1279,10 @@ namespace CodeImp.DoomBuilder.Geometry
 						}
 					}
 				}
+
+				/***************************************************\
+					Corrections and clean up
+				\***************************************************/
 
 				// Make corrections for backward linedefs
 				MapSet.FlipBackwardLinedefs(newlines);
