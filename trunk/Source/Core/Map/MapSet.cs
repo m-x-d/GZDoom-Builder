@@ -1887,22 +1887,26 @@ namespace CodeImp.DoomBuilder.Map
 							if(l1 != l2)
 							{
 								bool oppositedirection = (l1.End == l2.Start);
+								bool l2marked = l2.Marked;
 								
 								// Merge these two linedefs
 								while(lines.Remove(l2)) ;
 								l2.Join(l1);
 
-								// The flipping is purely a cosmetic to preserve orientation
-								// when drawing new lines over older lines
-								if(oppositedirection)
+								if(l2marked)
 								{
-									l1.FlipVertices();
-									l1.FlipSidedefs();
+									// The flipping is purely a cosmetic to preserve orientation
+									// when drawing new lines over older lines
+									if(oppositedirection)
+									{
+										l1.FlipVertices();
+										l1.FlipSidedefs();
+									}
+									
+									// Direction is now the same, so the interior side is also the same
+									// We have to copy the interior side to preserve this for drawing
+									l1.FrontInterior = l2.FrontInterior;
 								}
-
-								// Direction is now the same, so the interior side is also the same
-								// We have to copy the interior side to preserve this for drawing
-								l1.FrontInterior = l2.FrontInterior;
 								
 								joinsdone++;
 								joined = true;
@@ -1925,22 +1929,26 @@ namespace CodeImp.DoomBuilder.Map
 							if(l1 != l2)
 							{
 								bool oppositedirection = (l1.Start == l2.End);
-
+								bool l2marked = l2.Marked;
+								
 								// Merge these two linedefs
 								while(lines.Remove(l2)) ;
 								l2.Join(l1);
 
-								// The flipping is purely a cosmetic to preserve orientation
-								// when drawing new lines over older lines
-								if(oppositedirection)
+								if(l2marked)
 								{
-									l1.FlipVertices();
-									l1.FlipSidedefs();
-								}
+									// The flipping is purely a cosmetic to preserve orientation
+									// when drawing new lines over older lines
+									if(oppositedirection)
+									{
+										l1.FlipVertices();
+										l1.FlipSidedefs();
+									}
 
-								// Direction is now the same, so the interior side is also the same
-								// We have to copy the interior side to preserve this for drawing
-								l1.FrontInterior = l2.FrontInterior;
+									// Direction is now the same, so the interior side is also the same
+									// We have to copy the interior side to preserve this for drawing
+									l1.FrontInterior = l2.FrontInterior;
+								}
 
 								joinsdone++;
 								joined = true;

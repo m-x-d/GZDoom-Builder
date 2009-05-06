@@ -130,6 +130,8 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
 			scriptedit.TabWidth = 4;					// This should be in the preferences dialog
 			scriptedit.Indent = 4;
+			scriptedit.ExtraAscent = 1;
+			scriptedit.ExtraDescent = 1;
 			
 			// Symbol margin
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
