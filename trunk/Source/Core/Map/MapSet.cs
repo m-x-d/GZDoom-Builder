@@ -1886,21 +1886,23 @@ namespace CodeImp.DoomBuilder.Map
 							// Not the same line?
 							if(l1 != l2)
 							{
-								bool flipresult = (l1.End == l2.Start);
+								bool oppositedirection = (l1.End == l2.Start);
 								
 								// Merge these two linedefs
-								//while(lines.Remove(l1));
-								//l1.Join(l2);
 								while(lines.Remove(l2)) ;
 								l2.Join(l1);
 
 								// The flipping is purely a cosmetic to preserve orientation
 								// when drawing new lines over older lines
-								if(flipresult)
+								if(oppositedirection)
 								{
 									l1.FlipVertices();
 									l1.FlipSidedefs();
 								}
+
+								// Direction is now the same, so the interior side is also the same
+								// We have to copy the interior side to preserve this for drawing
+								l1.FrontInterior = l2.FrontInterior;
 								
 								joinsdone++;
 								joined = true;
@@ -1922,22 +1924,24 @@ namespace CodeImp.DoomBuilder.Map
 							// Not the same line?
 							if(l1 != l2)
 							{
-								bool flipresult = (l1.End == l2.Start);
+								bool oppositedirection = (l1.Start == l2.End);
 
 								// Merge these two linedefs
-								//while(lines.Remove(l1));
-								//l1.Join(l2);
 								while(lines.Remove(l2)) ;
 								l2.Join(l1);
 
 								// The flipping is purely a cosmetic to preserve orientation
 								// when drawing new lines over older lines
-								if(flipresult)
+								if(oppositedirection)
 								{
 									l1.FlipVertices();
 									l1.FlipSidedefs();
 								}
-								
+
+								// Direction is now the same, so the interior side is also the same
+								// We have to copy the interior side to preserve this for drawing
+								l1.FrontInterior = l2.FrontInterior;
+
 								joinsdone++;
 								joined = true;
 								break;

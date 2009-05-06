@@ -75,6 +75,27 @@ namespace CodeImp.DoomBuilder.Geometry
 			// Initialize
 			foreach(EarClipVertex v in p) base.AddLast(v);
 		}
+
+		// This calculates the area
+		public float CalculateArea()
+		{
+			// Multiply the x coordinate of each vertex by the y coordinate of the next vertex.
+			// Multiply the y coordinate of each vertex by the x coordinate of the next vertex.
+			// Subtract these.
+			float result = 0.0f;
+			int firstcalculated = 0;
+			LinkedListNode<EarClipVertex> n1 = base.First;
+			while(firstcalculated < 2)
+			{
+				LinkedListNode<EarClipVertex> n2 = n1.Next ?? base.First;
+				float a = n1.Value.Position.x * n2.Value.Position.y;
+				float b = n1.Value.Position.y * n2.Value.Position.x;
+				result += a - b;
+				n1 = n2;
+				if(n2 == base.First) firstcalculated++;
+			}
+			return Math.Abs(result / 2.0f);
+		}
 		
 		// This creates a bounding box from the outer polygon
 		public RectangleF CreateBBox()
