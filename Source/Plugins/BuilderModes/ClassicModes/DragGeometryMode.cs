@@ -316,6 +316,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Stitch geometry
 				if(snaptonearest) General.Map.Map.StitchGeometry();
+
+				// Make corrections for backward linedefs
+				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
 				
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();
