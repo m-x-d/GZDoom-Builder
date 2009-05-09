@@ -519,19 +519,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return base.OnCopyBegin();
 		}
 
-		// When pasting
-		public override bool OnPasteBegin()
-		{
-			// No selection made? But we have a highlight!
-			if((General.Map.Map.GetSelectedLinedefs(true).Count == 0) && (highlighted != null))
-			{
-				// Make the highlight the selection
-				highlighted.Selected = true;
-			}
-
-			return base.OnPasteBegin();
-		}
-		
 		#endregion
 
 		#region ================== Actions

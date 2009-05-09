@@ -951,6 +951,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				modealreadyswitching = true;
 				this.OnAccept();
 			}
+
+			// Update
+			General.Map.ThingsFilter.Update();
+			General.Interface.RedrawDisplay();
 			
 			// Hide highlight info
 			General.Interface.HideInfo();

@@ -797,19 +797,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return base.OnCopyBegin();
 		}
 
-		// When pasting
-		public override bool OnPasteBegin()
-		{
-			// No selection made? But we have a highlight!
-			if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
-			{
-				// Make the highlight the selection
-				SelectSector(highlighted, true, true);
-			}
-
-			return base.OnPasteBegin();
-		}
-
 		// When undo is used
 		public override bool OnUndoBegin()
 		{
