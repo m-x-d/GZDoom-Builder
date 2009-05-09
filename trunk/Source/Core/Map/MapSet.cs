@@ -1066,6 +1066,31 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
+		// Returns a collection of sidedefs that match a selected linedefs state
+		public ICollection<Sidedef> GetSidedefsFromSelectedLinedefs(bool selected)
+		{
+			if(selected)
+			{
+				List<Sidedef> list = new List<Sidedef>(sel_linedefs.Count);
+				foreach(Linedef ld in sel_linedefs)
+				{
+					if(ld.Front != null) list.Add(ld.Front);
+					if(ld.Back != null) list.Add(ld.Back);
+				}
+				return list;
+			}
+			else
+			{
+				List<Sidedef> list = new List<Sidedef>(linedefs.Count - sel_linedefs.Count);
+				foreach(Linedef ld in linedefs)
+				{
+					if(!ld.Selected && (ld.Front != null)) list.Add(ld.Front);
+					if(!ld.Selected && (ld.Back != null)) list.Add(ld.Back);
+				}
+				return list;
+			}
+		}
+
 		// Returns a collection of sectors that match a selected state
 		public ICollection<Sector> GetSelectedSectors(bool selected)
 		{

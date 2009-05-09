@@ -106,8 +106,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int effect = 0;
 			if(int.TryParse(value, out effect))
 			{
+				// Where to search?
+				ICollection<Sector> list = withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors;
+
 				// Go for all sectors
-				foreach(Sector s in General.Map.Map.Sectors)
+				foreach(Sector s in list)
 				{
 					// Tag matches?
 					if(s.Effect == effect)

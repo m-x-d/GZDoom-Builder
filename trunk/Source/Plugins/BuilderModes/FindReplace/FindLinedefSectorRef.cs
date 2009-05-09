@@ -111,8 +111,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int tag = 0;
 			if(int.TryParse(value, out tag))
 			{
+				// Where to search?
+				ICollection<Linedef> list = withinselection ? General.Map.Map.GetSelectedLinedefs(true) : General.Map.Map.Linedefs;
+				
 				// Go for all linedefs
-				foreach(Linedef l in General.Map.Map.Linedefs)
+				foreach(Linedef l in list)
 				{
 					bool addline = false;
 
