@@ -674,7 +674,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make the highlight a selection if we have a highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
+				{
 					SelectSector(highlighted, true, false);
+					orderedselection.Add(highlighted);
+				}
 			}
 			
 			// Anything selected?
