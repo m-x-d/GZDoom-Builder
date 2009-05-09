@@ -106,9 +106,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Interpret the find
 			long longfind = Lump.MakeLongName(value.Trim());
-
+			
+			// Where to search?
+			ICollection<Sector> seclist = withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors;
+			ICollection<Sidedef> sidelist = withinselection ? General.Map.Map.GetSidedefsFromSelectedLinedefs(true) : General.Map.Map.Sidedefs;
+			
 			// Go for all sectors
-			foreach(Sector s in General.Map.Map.Sectors)
+			foreach(Sector s in seclist)
 			{
 				// Flat matches?
 				if(s.LongCeilTexture == longfind)
@@ -127,7 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Go for all sidedefs
-			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+			foreach(Sidedef sd in sidelist)
 			{
 				string side = sd.IsFront ? "front" : "back";
 				

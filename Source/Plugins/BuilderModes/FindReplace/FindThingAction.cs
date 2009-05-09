@@ -113,8 +113,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int findaction = 0;
 			if(int.TryParse(value, out findaction))
 			{
+				// Where to search?
+				ICollection<Thing> list = withinselection ? General.Map.Map.GetSelectedThings(true) : General.Map.Map.Things;
+
 				// Go for all things
-				foreach(Thing t in General.Map.Map.Things)
+				foreach(Thing t in list)
 				{
 					// Match?
 					if(t.Action == findaction)

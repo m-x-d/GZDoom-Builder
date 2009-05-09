@@ -99,9 +99,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Interpret the find
 			long longfind = Lump.MakeLongName(value.Trim());
-			
+
+			// Where to search?
+			ICollection<Sidedef> list = withinselection ? General.Map.Map.GetSidedefsFromSelectedLinedefs(true) : General.Map.Map.Sidedefs;
+
 			// Go for all sidedefs
-			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+			foreach(Sidedef sd in list)
 			{
 				string side = sd.IsFront ? "front" : "back";
 				
