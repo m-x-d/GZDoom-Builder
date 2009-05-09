@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Perform the search / replace and show the results
 			if(doreplace.Checked)
 			{
-				resultslist.Items.AddRange(finder.Find(findinput.Text, withinselection.Checked, replaceinput.Text, keepselection.Checked));
+				resultslist.Items.AddRange(finder.Find(findinput.Text, withinselection.Checked, replaceinput.Text, false));
 				resultscount.Text = resultslist.Items.Count + " items found and replaced.";
 			}
 			else

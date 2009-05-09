@@ -35,7 +35,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.findinput = new System.Windows.Forms.TextBox();
 			this.browsefind = new System.Windows.Forms.Button();
 			this.withinselection = new System.Windows.Forms.CheckBox();
-			this.keepselection = new System.Windows.Forms.CheckBox();
 			this.browsereplace = new System.Windows.Forms.Button();
 			this.replaceinput = new System.Windows.Forms.TextBox();
 			this.findbutton = new System.Windows.Forms.Button();
@@ -120,16 +119,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.withinselection.Text = "Within current selection";
 			this.withinselection.UseVisualStyleBackColor = true;
 			// 
-			// keepselection
-			// 
-			this.keepselection.AutoSize = true;
-			this.keepselection.Location = new System.Drawing.Point(91, 52);
-			this.keepselection.Name = "keepselection";
-			this.keepselection.Size = new System.Drawing.Size(135, 18);
-			this.keepselection.TabIndex = 2;
-			this.keepselection.Text = "Keep current selection";
-			this.keepselection.UseVisualStyleBackColor = true;
-			// 
 			// browsereplace
 			// 
 			this.browsereplace.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -172,7 +161,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// resultslist
 			// 
-			this.resultslist.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+			this.resultslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.resultslist.FormattingEnabled = true;
 			this.resultslist.IntegralHeight = false;
@@ -181,7 +171,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultslist.Margin = new System.Windows.Forms.Padding(1);
 			this.resultslist.Name = "resultslist";
 			this.resultslist.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-			this.resultslist.Size = new System.Drawing.Size(341, 203);
+			this.resultslist.Size = new System.Drawing.Size(341, 212);
 			this.resultslist.TabIndex = 0;
 			this.resultslist.MouseUp += new System.Windows.Forms.MouseEventHandler(this.resultslist_MouseUp);
 			this.resultslist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.resultslist_MouseDoubleClick);
@@ -202,15 +192,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultspanel.Controls.Add(this.editbutton);
 			this.resultspanel.Controls.Add(this.resultscount);
 			this.resultspanel.Controls.Add(this.resultslist);
-			this.resultspanel.Location = new System.Drawing.Point(-1, 198);
+			this.resultspanel.Location = new System.Drawing.Point(-1, 188);
 			this.resultspanel.Name = "resultspanel";
-			this.resultspanel.Size = new System.Drawing.Size(362, 275);
+			this.resultspanel.Size = new System.Drawing.Size(362, 285);
 			this.resultspanel.TabIndex = 6;
 			this.resultspanel.Visible = false;
 			// 
 			// deletebutton
 			// 
-			this.deletebutton.Location = new System.Drawing.Point(131, 241);
+			this.deletebutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.deletebutton.Location = new System.Drawing.Point(131, 250);
 			this.deletebutton.Name = "deletebutton";
 			this.deletebutton.Size = new System.Drawing.Size(109, 25);
 			this.deletebutton.TabIndex = 2;
@@ -220,7 +211,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// editbutton
 			// 
-			this.editbutton.Location = new System.Drawing.Point(9, 241);
+			this.editbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.editbutton.Location = new System.Drawing.Point(9, 250);
 			this.editbutton.Name = "editbutton";
 			this.editbutton.Size = new System.Drawing.Size(109, 25);
 			this.editbutton.TabIndex = 1;
@@ -230,14 +222,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// groupreplace
 			// 
-			this.groupreplace.Controls.Add(this.keepselection);
 			this.groupreplace.Controls.Add(this.replaceinput);
 			this.groupreplace.Controls.Add(this.browsereplace);
 			this.groupreplace.Controls.Add(this.replacelabel);
 			this.groupreplace.Enabled = false;
 			this.groupreplace.Location = new System.Drawing.Point(9, 108);
 			this.groupreplace.Name = "groupreplace";
-			this.groupreplace.Size = new System.Drawing.Size(256, 84);
+			this.groupreplace.Size = new System.Drawing.Size(256, 64);
 			this.groupreplace.TabIndex = 5;
 			this.groupreplace.TabStop = false;
 			this.groupreplace.Text = "          ";
@@ -301,7 +292,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.TextBox findinput;
 		private System.Windows.Forms.Button browsefind;
 		private System.Windows.Forms.CheckBox withinselection;
-		private System.Windows.Forms.CheckBox keepselection;
 		private System.Windows.Forms.Button browsereplace;
 		private System.Windows.Forms.TextBox replaceinput;
 		private System.Windows.Forms.Button findbutton;
