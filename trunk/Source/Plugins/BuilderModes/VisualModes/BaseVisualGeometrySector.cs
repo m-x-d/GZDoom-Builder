@@ -77,43 +77,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
 		
-		// This updates the secotr and neightbours if needed
-		protected void UpdateSectorGeometry(bool includeneighbours)
-		{
-			// Rebuild sector
-			Sector.Changed = true;
-
-			// Go for all things in this sector
-			foreach(Thing t in General.Map.Map.Things)
-			{
-				if(t.Sector == Sector.Sector)
-				{
-					if(mode.VisualThingExists(t))
-					{
-						// Update thing
-						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
-						vt.Changed = true;
-					}
-				}
-			}
-			
-			if(includeneighbours)
-			{
-				// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
-				foreach(Sidedef sd in Sector.Sector.Sidedefs)
-				{
-					if(sd.Other != null)
-					{
-						if(mode.VisualSectorExists(sd.Other.Sector))
-						{
-							BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
-							bvs.Changed = true;
-						}
-					}
-				}
-			}
-		}
-		
 		#endregion
 
 		#region ================== Events
@@ -232,7 +195,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.CreateUndo("Paste sector properties");
 				mode.SetActionResult("Pasted sector properties.");
 				BuilderPlug.Me.CopiedSectorProps.Apply(Sector.Sector);
-				UpdateSectorGeometry(true);
+				Sector.UpdateSectorGeometry(true);
 				mode.ShowTargetInfo();
 			}
 		}
@@ -288,7 +251,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							VisualSector vs = mode.GetVisualSector(s);
 							if(vs != null)
-								(vs as BaseVisualSector).Changed = true;
+								(vs as BaseVisualSector).UpdateSectorGeometry(true);
 						}
 					}
 				}
@@ -303,7 +266,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ChangeHeight(amount);
 
 			// Rebuild sector
-			UpdateSectorGeometry(true);
+			Sector.UpdateSectorGeometry(true);
 		}
 		
 		// Sector brightness change
@@ -321,7 +284,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sector.Sector.UpdateCache();
 
 			// Rebuild sector
-			UpdateSectorGeometry(false);
+			Sector.UpdateSectorGeometry(false);
 		}
 		
 		#endregion

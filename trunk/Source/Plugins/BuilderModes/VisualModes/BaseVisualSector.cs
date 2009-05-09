@@ -96,7 +96,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Methods
+		
+		// Thisvirtuals the secotr and neightbours if needed
+		public void UpdateSectorGeometry(bool includeneighbours)
+		{
+			// Rebuild sector
+			this.Changed = true;
 
+			// Go for all things in this sector
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				if(t.Sector == this.Sector)
+				{
+					if(mode.VisualThingExists(t))
+					{
+						// Update thing
+						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+						vt.Changed = true;
+					}
+				}
+			}
+
+			if(includeneighbours)
+			{
+				// Also rebuild surrounding sectors, because outside sidedefs may need to be adjusted
+				foreach(Sidedef sd in this.Sector.Sidedefs)
+				{
+					if(sd.Other != null)
+					{
+						if(mode.VisualSectorExists(sd.Other.Sector))
+						{
+							BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
+							bvs.Changed = true;
+						}
+					}
+				}
+			}
+		}
+		
 		// This (re)builds the visual sector, calculating all geometry from scratch
 		public void Rebuild()
 		{
