@@ -1258,23 +1258,28 @@ namespace CodeImp.DoomBuilder.Geometry
 							{
 								sidescreated = true;
 
-								// Join the new sector
-								Sector newsector = Tools.JoinSector(sectorlines, joinsidedef);
-
-								// Go for all sidedefs in this new sector
-								foreach(Sidedef sd in newsector.Sidedefs)
+								// We only want to modify our new lines when joining a sector
+								// (or it may break nearby self-referencing sectors)
+								List<LinedefSide> newsectorlines = new List<LinedefSide>(sectorlines.Count);
+								foreach(LinedefSide sd in sectorlines)
 								{
 									// Side matches with a side of our new lines?
 									int lineindex = newlines.IndexOf(sd.Line);
 									if(lineindex > -1)
 									{
+										// Add to list
+										newsectorlines.Add(sd);
+										
 										// Mark this side as done
-										if(sd.IsFront)
+										if(sd.Front)
 											frontsdone[lineindex] = true;
 										else
 											backsdone[lineindex] = true;
 									}
 								}
+								
+								// Have our new lines join the existing sector
+								Tools.JoinSector(newsectorlines, joinsidedef);
 							}
 						}
 					}
