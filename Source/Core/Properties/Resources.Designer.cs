@@ -95,6 +95,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ErrorLarge {
+            get {
+                object obj = ResourceManager.GetObject("ErrorLarge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Failed {
             get {
                 object obj = ResourceManager.GetObject("Failed", resourceCulture);
@@ -455,6 +462,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap Warning {
             get {
                 object obj = ResourceManager.GetObject("Warning", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap WarningLarge {
+            get {
+                object obj = ResourceManager.GetObject("WarningLarge", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

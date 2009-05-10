@@ -29,46 +29,17 @@ namespace CodeImp.DoomBuilder.Windows
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ErrorsForm));
-			this.list = new System.Windows.Forms.ListView();
-			this.colmessage = new System.Windows.Forms.ColumnHeader();
-			this.images = new System.Windows.Forms.ImageList(this.components);
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.copyselected = new System.Windows.Forms.Button();
 			this.clearlist = new System.Windows.Forms.Button();
 			this.close = new System.Windows.Forms.Button();
 			this.checkerrors = new System.Windows.Forms.Timer(this.components);
 			this.checkshow = new System.Windows.Forms.CheckBox();
+			this.grid = new System.Windows.Forms.DataGridView();
+			this.iconcolumn = new System.Windows.Forms.DataGridViewImageColumn();
+			this.textcolumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
 			this.SuspendLayout();
-			// 
-			// list
-			// 
-			this.list.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colmessage});
-			this.list.FullRowSelect = true;
-			this.list.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.list.HideSelection = false;
-			this.list.Location = new System.Drawing.Point(12, 12);
-			this.list.Name = "list";
-			this.list.Size = new System.Drawing.Size(732, 395);
-			this.list.SmallImageList = this.images;
-			this.list.TabIndex = 0;
-			this.list.UseCompatibleStateImageBehavior = false;
-			this.list.View = System.Windows.Forms.View.Details;
-			// 
-			// colmessage
-			// 
-			this.colmessage.Text = "";
-			this.colmessage.Width = 702;
-			// 
-			// images
-			// 
-			this.images.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("images.ImageStream")));
-			this.images.TransparentColor = System.Drawing.Color.Transparent;
-			this.images.Images.SetKeyName(0, "ErrorLarge.png");
-			this.images.Images.SetKeyName(1, "WarningLarge.png");
 			// 
 			// copyselected
 			// 
@@ -119,6 +90,60 @@ namespace CodeImp.DoomBuilder.Windows
 			this.checkshow.Text = "Show this window when errors occur";
 			this.checkshow.UseVisualStyleBackColor = true;
 			// 
+			// grid
+			// 
+			this.grid.AllowUserToAddRows = false;
+			this.grid.AllowUserToDeleteRows = false;
+			this.grid.AllowUserToResizeColumns = false;
+			this.grid.AllowUserToResizeRows = false;
+			this.grid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.grid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+			this.grid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+			this.grid.BackgroundColor = System.Drawing.SystemColors.Window;
+			this.grid.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.grid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
+			this.grid.ClipboardCopyMode = System.Windows.Forms.DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+			this.grid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.grid.ColumnHeadersVisible = false;
+			this.grid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.iconcolumn,
+            this.textcolumn});
+			this.grid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+			this.grid.Location = new System.Drawing.Point(12, 12);
+			this.grid.Name = "grid";
+			this.grid.ReadOnly = true;
+			this.grid.RowHeadersVisible = false;
+			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopLeft;
+			dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(2, 4, 2, 5);
+			this.grid.RowsDefaultCellStyle = dataGridViewCellStyle1;
+			this.grid.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.grid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+			this.grid.ShowCellErrors = false;
+			this.grid.ShowCellToolTips = false;
+			this.grid.ShowEditingIcon = false;
+			this.grid.ShowRowErrors = false;
+			this.grid.Size = new System.Drawing.Size(732, 395);
+			this.grid.StandardTab = true;
+			this.grid.TabIndex = 5;
+			// 
+			// iconcolumn
+			// 
+			this.iconcolumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+			this.iconcolumn.HeaderText = "Icon";
+			this.iconcolumn.MinimumWidth = 20;
+			this.iconcolumn.Name = "iconcolumn";
+			this.iconcolumn.ReadOnly = true;
+			this.iconcolumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+			this.iconcolumn.Width = 24;
+			// 
+			// textcolumn
+			// 
+			this.textcolumn.HeaderText = "Text";
+			this.textcolumn.Name = "textcolumn";
+			this.textcolumn.ReadOnly = true;
+			// 
 			// ErrorsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -129,7 +154,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.close);
 			this.Controls.Add(this.clearlist);
 			this.Controls.Add(this.copyselected);
-			this.Controls.Add(this.list);
+			this.Controls.Add(this.grid);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -137,8 +162,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Name = "ErrorsForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Errors and Warnings";
+			this.Shown += new System.EventHandler(this.ErrorsForm_Shown);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ErrorsForm_FormClosing);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ErrorsForm_HelpRequested);
+			((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -146,13 +173,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		private System.Windows.Forms.ListView list;
 		private System.Windows.Forms.Button copyselected;
 		private System.Windows.Forms.Button clearlist;
 		private System.Windows.Forms.Button close;
-		private System.Windows.Forms.ColumnHeader colmessage;
-		private System.Windows.Forms.ImageList images;
 		private System.Windows.Forms.Timer checkerrors;
 		private System.Windows.Forms.CheckBox checkshow;
+		private System.Windows.Forms.DataGridView grid;
+		private System.Windows.Forms.DataGridViewImageColumn iconcolumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn textcolumn;
 	}
 }

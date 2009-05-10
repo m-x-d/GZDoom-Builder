@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				if(FindClasses(typeof(Plug)).Length > 1)
 				{
 					// Show a warning
-					General.ErrorLogger.Add(ErrorType.Warning, "Plugin \"" + shortfilename + "\" has more than one plug.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Plugin \"" + shortfilename + "\" has more than one plug. The following class is used to create in instance: " + t.FullName);
 				}
 				
 				// Make plug instance
@@ -190,15 +190,13 @@ namespace CodeImp.DoomBuilder.Plugins
 			catch(TargetInvocationException e)
 			{
 				// Error!
-				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'");
-				General.WriteLogLine(e.InnerException.GetType().Name + ": " + e.InnerException.Message);
+				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "' " + e.InnerException.GetType().Name + " at target: " + e.InnerException.Message);
 				return default(T);
 			}
 			catch(Exception e)
 			{
 				// Error!
-				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'");
-				General.WriteLogLine(e.GetType().Name + ": " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "' " + e.GetType().Name + ": " + e.Message);
 				return default(T);
 			}
 		}

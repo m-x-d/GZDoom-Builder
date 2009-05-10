@@ -341,6 +341,7 @@ namespace CodeImp.DoomBuilder.Editing
 					{
 						Cursor.Current = oldcursor;
 						General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while writing prefab to file: " + e.Message);
+						General.WriteLog(e.StackTrace);
 						General.ShowErrorMessage("Error while writing prefab to file! See log file for error details.", MessageBoxButtons.OK);
 					}
 				}
@@ -392,6 +393,7 @@ namespace CodeImp.DoomBuilder.Editing
 						{
 							Cursor.Current = oldcursor;
 							General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while reading prefab from file: " + e.Message);
+							General.WriteLog(e.StackTrace);
 							General.ShowErrorMessage("Error while reading prefab from file! See log file for error details.", MessageBoxButtons.OK);
 						}
 
@@ -440,6 +442,7 @@ namespace CodeImp.DoomBuilder.Editing
 							{
 								Cursor.Current = oldcursor;
 								General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while reading prefab from file: " + e.Message);
+								General.WriteLog(e.StackTrace);
 								General.ShowErrorMessage("Error while reading prefab from file! See log file for error details.", MessageBoxButtons.OK);
 							}
 

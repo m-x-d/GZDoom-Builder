@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Not loaded?
 					if(bitmap == null)
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Image lump '" + lumpname + "' data format could not be read, while loading texture '" + this.Name + "'");
+						General.ErrorLogger.Add(ErrorType.Error, "Image lump '" + lumpname + "' data format could not be read, while loading texture '" + this.Name + "'. Does this lump contain valid picture data at all?");
 						loadfailed = true;
 					}
 					else
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Image lump '" + lumpname + "' could not be found, while loading texture '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Error, "Image lump '" + lumpname + "' could not be found, while loading texture '" + this.Name + "'. Did you forget to include required resources?");
 					loadfailed = true;
 				}
 				

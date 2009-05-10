@@ -349,7 +349,7 @@ namespace CodeImp.DoomBuilder
 			try { map = io.Read(map, TEMP_MAP_HEADER); }
 			catch(Exception e)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + ": " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
 				General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
 				return false;
 			}
@@ -621,8 +621,7 @@ namespace CodeImp.DoomBuilder
 				catch(Exception e)
 				{
 					// Warning only
-					General.ErrorLogger.Add(ErrorType.Warning, e.GetType().Name + ": " + e.Message);
-					General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file");
+					General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file. " + e.GetType().Name + ": " + e.Message);
 				}
 
 				// Check for compile errors, if the scripts were compiled above
@@ -974,7 +973,7 @@ namespace CodeImp.DoomBuilder
 							// the game configs that are trivial and don't need to be found.
 							if(lumprequired)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, ml.Key.ToString() + " (required lump) should be read but was not found in the WAD file");
+								General.ErrorLogger.Add(ErrorType.Warning, ml.Key.ToString() + " (required lump) should be read but was not found in the WAD file.");
 							}
 						}
 					}
@@ -1410,6 +1409,23 @@ namespace CodeImp.DoomBuilder
 		
 		// This reloads resources
 		[BeginAction("reloadresources")]
+		internal void DoReloadResource()
+		{
+			// Set this to false so we can see if errors are added
+			General.ErrorLogger.IsErrorAdded = false;
+
+			ReloadResources();
+
+			if(General.ErrorLogger.IsErrorAdded)
+			{
+				// Show any errors if preferred
+				General.MainWindow.DisplayStatus(StatusType.Warning, "There were errors during resources loading!");
+				if(General.Settings.ShowErrorsWindow) General.MainWindow.ShowErrors();
+			}
+			else
+				General.MainWindow.DisplayReady();
+
+		}
 		internal void ReloadResources()
 		{
 			DataLocation maplocation;

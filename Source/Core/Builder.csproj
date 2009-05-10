@@ -719,6 +719,8 @@
     <None Include="Resources\Builder16.png" />
     <None Include="Resources\CLogo.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\ErrorLarge.png" />
+    <None Include="Resources\WarningLarge.png" />
     <None Include="Resources\Question.png" />
     <None Include="Resources\Help.png" />
     <None Include="Resources\Status11.png" />
