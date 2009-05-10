@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.Data
 						catch(Exception e)
 						{
 							bitmap = oldbitmap;
-							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image '" + name + "' for pixel format conversion. " + e.GetType().Name + ": " + e.Message);
+							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image '" + name + "' for pixel format conversion. The image may not be displayed correctly.\n" + e.GetType().Name + ": " + e.Message);
 						}
 					}
 					
@@ -274,7 +274,7 @@ namespace CodeImp.DoomBuilder.Data
 						}
 						catch(Exception e)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image '" + name + "' for color correction. " + e.GetType().Name + ": " + e.Message);
+							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image '" + name + "' for color correction. The image may not be displayed correctly.\n" + e.GetType().Name + ": " + e.Message);
 						}
 
 						// Bitmap locked?

@@ -46,7 +46,6 @@ namespace CodeImp.DoomBuilder.Windows
 		public ErrorsForm()
 		{
 			InitializeComponent();
-			list.Items.Clear();
 			FillList();
 			checkerrors.Start();
 			checkshow.Checked = General.Settings.ShowErrorsWindow;
@@ -60,18 +59,21 @@ namespace CodeImp.DoomBuilder.Windows
 		private void FillList()
 		{
 			// Fill the list with the items we don't have yet
-			list.BeginUpdate();
 			General.ErrorLogger.HasChanged = false;
 			List<ErrorItem> errors = General.ErrorLogger.GetErrors();
-			int startindex = list.Items.Count;
+			int startindex = grid.Rows.Count;
 			for(int i = startindex; i < errors.Count; i++)
 			{
 				ErrorItem e = errors[i];
-				int icon = (e.type == ErrorType.Error) ? 0 : 1;
-				ListViewItem item = new ListViewItem(e.message, icon);
-				list.Items.Add(item);
+				Image icon = (e.type == ErrorType.Error) ? Properties.Resources.ErrorLarge : Properties.Resources.WarningLarge;
+				int index = grid.Rows.Add();
+				DataGridViewRow row = grid.Rows[index];
+				row.Cells[0].Value = icon;
+				row.Cells[0].Style.Alignment = DataGridViewContentAlignment.TopCenter;
+				row.Cells[0].Style.Padding = new Padding(0, 5, 0, 0);
+				row.Cells[1].Value = e.message;
+				row.Cells[1].Style.WrapMode = DataGridViewTriState.True;
 			}
-			list.EndUpdate();
 		}
 
 		#endregion
@@ -105,20 +107,23 @@ namespace CodeImp.DoomBuilder.Windows
 		private void clearlist_Click(object sender, EventArgs e)
 		{
 			General.ErrorLogger.Clear();
-			list.Items.Clear();
+			grid.Rows.Clear();
 		}
 		
 		// Copy selection
 		private void copyselected_Click(object sender, EventArgs e)
 		{
 			StringBuilder str = new StringBuilder("");
-			if(list.SelectedItems.Count > 0)
+			if(grid.SelectedCells.Count > 0)
 			{
 				Clipboard.Clear();
-				foreach(ListViewItem lvi in list.SelectedItems)
+				foreach(DataGridViewCell c in grid.SelectedCells)
 				{
-					if(str.Length > 0) str.Append("\r\n");
-					str.Append(lvi.Text);
+					if(c.ValueType != typeof(Image))
+					{
+						if(str.Length > 0) str.Append("\r\n");
+						str.Append(c.Value.ToString());
+					}
 				}
 				Clipboard.SetText(str.ToString());
 			}
@@ -132,5 +137,12 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		#endregion
+
+		private void ErrorsForm_Shown(object sender, EventArgs e)
+		{
+			if(grid.Rows.Count > 0)
+				grid.Rows[0].Selected = false;
+
+		}
 	}
 }

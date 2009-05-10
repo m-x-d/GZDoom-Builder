@@ -312,10 +312,11 @@ namespace CodeImp.DoomBuilder
 					return cfg;
 				}
 			}
-			catch(Exception)
+			catch(Exception e)
 			{
 				// Unable to load configuration
-				errorlogger.Add(ErrorType.Error, "Unable to load the game configuration file \"" + filename + "\".");
+				errorlogger.Add(ErrorType.Error, "Unable to load the game configuration file \"" + filename + "\". " + e.GetType().Name + ": " + e.Message);
+				General.WriteLog(e.StackTrace);
 				return null;
 			}
 		}
@@ -465,6 +466,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Unable to load configuration
 					errorlogger.Add(ErrorType.Error, "Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message);
+					General.WriteLog(e.StackTrace);
 				}
 			}
 		}
@@ -523,10 +525,11 @@ namespace CodeImp.DoomBuilder
 						}
 					}
 				}
-				catch(Exception)
+				catch(Exception e)
 				{
 					// Unable to load configuration
-					errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\".");
+					errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\". " + e.GetType().Name + ": " + e.Message);
+					General.WriteLog(e.StackTrace);
 				}
 			}
 		}

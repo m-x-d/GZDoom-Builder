@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure '" + fullpath + "." + name + "' contains invalid entries");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure '" + fullpath + "." + name + "' contains invalid entries. The keys must be numeric.");
 				}
 			}
 			

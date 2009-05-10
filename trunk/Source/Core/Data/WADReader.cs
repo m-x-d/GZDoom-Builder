@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Can't load image without name
-					General.ErrorLogger.Add(ErrorType.Error, "Can't load unnamed texture from lump index " + i);
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed texture from lump index " + i + ". Please consider giving names to your resources.");
 				}
 			}
 		}
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Can't load image without name
-					General.ErrorLogger.Add(ErrorType.Error, "Can't load unnamed texture from \"" + filename + "\"");
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed texture from \"" + filename + "\". Please consider giving names to your resources.");
 				}
 			}
 		}
@@ -353,7 +353,7 @@ namespace CodeImp.DoomBuilder.Data
 					else
 					{
 						// Can't load image without name
-						General.ErrorLogger.Add(ErrorType.Error, "Can't load unnamed texture from \"" + sourcename + "\"");
+						General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed texture from \"" + sourcename + "\". Please consider giving names to your resources.");
 					}
 					
 					// Go for all patches in texture
@@ -376,7 +376,7 @@ namespace CodeImp.DoomBuilder.Data
 							else
 							{
 								// Can't load image without name
-								General.ErrorLogger.Add(ErrorType.Error, "Can't use unnamed patch referenced in \"" + sourcename + "\"");
+								General.ErrorLogger.Add(ErrorType.Error, "Can't use an unnamed patch referenced in \"" + sourcename + "\". Please consider giving names to your resources.");
 							}
 						}
 					}

@@ -350,7 +350,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Can't load image without name
-					General.ErrorLogger.Add(ErrorType.Error, "Can't load unnamed texture from \"" + path + "\"");
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed texture from \"" + path + "\". Please consider giving names to your resources.");
 				}
 			}
 			
