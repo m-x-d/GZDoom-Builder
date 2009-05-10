@@ -262,55 +262,64 @@ namespace CodeImp.DoomBuilder
 			tempwad = General.MakeTempFilename(General.Map.TempPath, "wad");
 			if(General.Map.SaveMap(tempwad, MapManager.SAVE_TEST))
 			{
-				// Make arguments
-				args = ConvertParameters(General.Map.ConfigSettings.TestParameters, skill, General.Map.ConfigSettings.TestShortPaths);
-
-				// Setup process info
-				processinfo = new ProcessStartInfo();
-				processinfo.Arguments = args;
-				processinfo.FileName = General.Map.ConfigSettings.TestProgram;
-				processinfo.CreateNoWindow = false;
-				processinfo.ErrorDialog = false;
-				processinfo.UseShellExecute = true;
-				processinfo.WindowStyle = ProcessWindowStyle.Normal;
-				processinfo.WorkingDirectory = Path.GetDirectoryName(processinfo.FileName);
-
-				// Output info
-				General.WriteLogLine("Running test program: " + processinfo.FileName);
-				General.WriteLogLine("Program parameters:  " + processinfo.Arguments);
-
-				// Disable interface
-				General.MainWindow.DisplayStatus(StatusType.Busy, "Waiting for game application to finish...");
-				
-				try
+				// No compiler errors?
+				if(General.Map.Errors.Count == 0)
 				{
-					// Start the program
-					process = Process.Start(processinfo);
+					// Make arguments
+					args = ConvertParameters(General.Map.ConfigSettings.TestParameters, skill, General.Map.ConfigSettings.TestShortPaths);
 
-					// Wait for program to complete
-					while(!process.WaitForExit(10))
+					// Setup process info
+					processinfo = new ProcessStartInfo();
+					processinfo.Arguments = args;
+					processinfo.FileName = General.Map.ConfigSettings.TestProgram;
+					processinfo.CreateNoWindow = false;
+					processinfo.ErrorDialog = false;
+					processinfo.UseShellExecute = true;
+					processinfo.WindowStyle = ProcessWindowStyle.Normal;
+					processinfo.WorkingDirectory = Path.GetDirectoryName(processinfo.FileName);
+
+					// Output info
+					General.WriteLogLine("Running test program: " + processinfo.FileName);
+					General.WriteLogLine("Program parameters:  " + processinfo.Arguments);
+
+					// Disable interface
+					General.MainWindow.DisplayStatus(StatusType.Busy, "Waiting for game application to finish...");
+
+					try
 					{
-						General.MainWindow.Update();
+						// Start the program
+						process = Process.Start(processinfo);
+
+						// Wait for program to complete
+						while(!process.WaitForExit(10))
+						{
+							General.MainWindow.Update();
+						}
+
+						// Done
+						deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+						General.WriteLogLine("Test program has finished.");
+						General.WriteLogLine("Run time: " + deltatime.TotalSeconds.ToString("###########0.00") + " seconds");
+					}
+					catch(Exception e)
+					{
+						// Unable to start the program
+						General.ShowErrorMessage("Unable to start the test program, " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK); ;
 					}
 					
-					// Done
-					deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
-					General.WriteLogLine("Test program has finished.");
-					General.WriteLogLine("Run time: " + deltatime.TotalSeconds.ToString("###########0.00") + " seconds");
+					General.MainWindow.DisplayReady();
 				}
-				catch(Exception e)
+				else
 				{
-					// Unable to start the program
-					General.ShowErrorMessage("Unable to start the test program, " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK); ;
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Unable to test the map due to script errors.");
 				}
 			}
-
+			
 			// Remove temporary file
 			try { File.Delete(tempwad); }
 			catch(Exception) { }
 			
 			// Done
-			General.MainWindow.DisplayReady();
 			General.MainWindow.FocusDisplay();
 			Cursor.Current = oldcursor;
 		}

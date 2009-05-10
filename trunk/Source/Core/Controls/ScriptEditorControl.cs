@@ -69,15 +69,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#endregion
 
-		#region ================== Properties
-		
-		public bool IsChanged { get { return scriptedit.CanUndo; } }
-		public int Position { get { return scriptedit.CurrentPos; } set { scriptedit.CurrentPos = value; } }
-		public int SelectionStart { get { return scriptedit.SelectionStart; } set { scriptedit.SelectionStart = value; } }
-		public int SelectionEnd { get { return scriptedit.SelectionEnd; } set { scriptedit.SelectionEnd = value; } }
-		
-		#endregion
-
 		#region ================== Variables
 		
 		// Script configuration
@@ -93,6 +84,18 @@ namespace CodeImp.DoomBuilder.Controls
 		private string curfunctionname = "";
 		private int curargumentindex = 0;
 		private int curfunctionstartpos = 0;
+		
+		// Status
+		private bool changed;
+		
+		#endregion
+
+		#region ================== Properties
+
+		public bool IsChanged { get { return changed; } set { changed = value; } }
+		public int Position { get { return scriptedit.CurrentPos; } set { scriptedit.CurrentPos = value; } }
+		public int SelectionStart { get { return scriptedit.SelectionStart; } set { scriptedit.SelectionStart = value; } }
+		public int SelectionEnd { get { return scriptedit.SelectionEnd; } set { scriptedit.SelectionEnd = value; } }
 		
 		#endregion
 
@@ -132,7 +135,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.Indent = 4;
 			scriptedit.ExtraAscent = 1;
 			scriptedit.ExtraDescent = 1;
-			
+
 			// Symbol margin
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
 			scriptedit.SetMarginWidthN(0, 20);
@@ -156,6 +159,10 @@ namespace CodeImp.DoomBuilder.Controls
 			RegisterAutoCompleteImage(ImageIndex.ScriptConstant, Resources.ScriptConstant);
 			RegisterAutoCompleteImage(ImageIndex.ScriptKeyword, Resources.ScriptKeyword);
 			RegisterMarkerImage(ImageIndex.ScriptError, Resources.ScriptError);
+
+			// Events
+			scriptedit.ModEventMask = 0x7FFFF;	// Which events to receive (see also ScriptModificationFlags)
+			scriptedit.Modified += new ScintillaControl.ModifiedHandler(scriptedit_Modified);
 		}
 		
 		#endregion
@@ -641,6 +648,12 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptpanel.Top = 0;
 				scriptpanel.Height = this.ClientSize.Height;
 			}
+		}
+
+		// Script modified
+		private void scriptedit_Modified(ScintillaControl pSender, int position, int modificationType, string text, int length, int linesAdded, int line, int foldLevelNow, int foldLevelPrev)
+		{
+			changed = true;
 		}
 		
 		// Key pressed down

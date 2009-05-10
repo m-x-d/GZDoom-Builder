@@ -115,8 +115,12 @@ namespace CodeImp.DoomBuilder.Compilers
 				}
 				while(deleteerror != null);
 				
-				// Throw error if we have one
-				if(deleteerror != null) throw deleteerror;
+				// Report error if we have one
+				if(deleteerror != null)
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to remove temporary compiler files. " + deleteerror.GetType().Name + ": " + deleteerror.Message);
+					General.WriteLogLine(deleteerror.StackTrace);
+				}
 				
 				// Disposed
 				isdisposed = true;

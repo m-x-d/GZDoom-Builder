@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Done
-			editor.ClearUndoRedo();
+			editor.IsChanged = false;
 			return true;
 		}
 		

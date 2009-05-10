@@ -143,6 +143,7 @@ namespace CodeImp.DoomBuilder
 			copypaste = new CopyPasteManager();
 			launcher = new Launcher(this);
 			thingsfilter = new NullThingsFilter();
+			errors = new List<CompilerError>();
 		}
 
 		// Disposer
@@ -399,15 +400,19 @@ namespace CodeImp.DoomBuilder
 			int index;
 			bool includenodes = false;
 			string origmapname;
+			bool success = true;
 			
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
+			
+			// Scripts changed?
+			bool scriptschanged = CheckScriptChanged();
 			
 			// If the scripts window is open, save the scripts first
 			if(IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
 			
 			// Only recompile scripts when the scripts have changed
 			// (not when only the map changed)
-			if(CheckScriptChanged())
+			if(scriptschanged)
 			{
 				if(!CompileScriptLumps())
 				{
@@ -417,15 +422,12 @@ namespace CodeImp.DoomBuilder
 					else
 						General.ShowErrorMessage("Unknown compiler error while compiling scripts!", MessageBoxButtons.OK);
 				}
-				else
-				{
-					if(errors != null)
-					{
-						if(scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
-						if(errors.Count > 0) General.ShowWarningMessage("The compiler was unable to compile all scripts in your map, due to script errors.", MessageBoxButtons.OK);
-					}
-				}
 			}
+
+			// Show script window if there are any errors and we are going to test the map
+			// and always update the errors on the scripts window.
+			if((errors.Count > 0) && (scriptwindow == null) && (savemode == SAVE_TEST)) ShowScriptEditor();
+			if(scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
 			
 			// Only write the map and rebuild nodes when the actual map has changed
 			// (not when only scripts have changed)
@@ -623,14 +625,6 @@ namespace CodeImp.DoomBuilder
 					// Warning only
 					General.ErrorLogger.Add(ErrorType.Warning, "Could not write the map settings configuration file. " + e.GetType().Name + ": " + e.Message);
 				}
-
-				// Check for compile errors, if the scripts were compiled above
-				if(CheckScriptChanged() && (errors != null) && (errors.Count > 0))
-				{
-					// Show the errors in the script editor
-					ShowScriptEditor();
-					scriptwindow.Editor.ShowErrors(errors);
-				}
 				
 				// Changes saved
 				changed = false;
@@ -639,7 +633,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Success!
 			General.WriteLogLine("Map saving done");
-			return true;
+			return success;
 		}
 		
 		#endregion
@@ -1152,6 +1146,13 @@ namespace CodeImp.DoomBuilder
 				return true;
 			}
 		}
+
+		// This applies the changed status for internal scripts
+		internal void ApplyScriptChanged()
+		{
+			// Remember if lumps are changed
+			scriptschanged |= scriptwindow.Editor.CheckImplicitChanges();
+		}
 		
 		// Close the script editor
 		// Specify true for the closing parameter when
@@ -1164,9 +1165,6 @@ namespace CodeImp.DoomBuilder
 				{
 					// Remember what files were open
 					scriptwindow.Editor.WriteOpenFilesToConfiguration();
-					
-					// Remember if lumps are changed
-					scriptschanged |= scriptwindow.Editor.CheckImplicitChanges();
 					
 					// Close now
 					if(!closing) scriptwindow.Close();
@@ -1197,7 +1195,7 @@ namespace CodeImp.DoomBuilder
 		private bool CompileScriptLumps()
 		{
 			bool success = true;
-			errors = new List<CompilerError>();
+			errors.Clear();
 			
 			// Go for all the map lumps
 			foreach(MapLumpInfo lumpinfo in config.MapLumps.Values)
@@ -1233,8 +1231,7 @@ namespace CodeImp.DoomBuilder
 				sourcefile = tempwad.Filename;
 			
 			// New list of errors
-			if(clearerrors || (errors == null))
-				errors = new List<CompilerError>();
+			if(clearerrors) errors.Clear();
 			
 			// Determine the script configuration to use
 			ScriptConfiguration scriptconfig = config.MapLumps[lumpname].script;
@@ -1299,7 +1296,7 @@ namespace CodeImp.DoomBuilder
 						if(File.Exists(outputfile))
 						{
 							// Copy output file data into a lump?
-							if((scriptconfig.ResultLump != null) && (scriptconfig.ResultLump.Length > 0))
+							if(!string.IsNullOrEmpty(scriptconfig.ResultLump))
 							{
 								// Do that now then
 								try
@@ -1323,8 +1320,7 @@ namespace CodeImp.DoomBuilder
 
 					// Clean up
 					compiler.Dispose();
-					if(errors.Count == 0) errors = null;
-
+					
 					// Done
 					return true;
 				}
@@ -1339,7 +1335,6 @@ namespace CodeImp.DoomBuilder
 			else
 			{
 				// No compiler to run for this script type
-				if(errors.Count == 0) errors = null;
 				return true;
 			}
 		}
@@ -1347,7 +1342,7 @@ namespace CodeImp.DoomBuilder
 		// This clears all compiler errors
 		internal void ClearCompilerErrors()
 		{
-			errors = null;
+			errors.Clear();
 		}
 		
 		#endregion
