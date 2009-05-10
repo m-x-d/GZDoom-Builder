@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Store the lump data
 			MemoryStream stream = new MemoryStream(editor.GetText());
 			General.Map.SetLumpData(lumpname, stream);
-			editor.ClearUndoRedo();
+			editor.IsChanged = false;
 			return true;
 		}
 

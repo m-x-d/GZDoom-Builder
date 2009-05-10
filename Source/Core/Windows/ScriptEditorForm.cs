@@ -138,6 +138,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Only when closed by the user
 			if(!appclose)
 			{
+				// Remember if scipts are changed
+				General.Map.ApplyScriptChanged();
+				
 				// Ask to save scripts
 				if(AskSaveAll())
 				{
