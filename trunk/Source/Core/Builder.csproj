@@ -719,6 +719,7 @@
     <None Include="Resources\Builder16.png" />
     <None Include="Resources\CLogo.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\ScriptHelp.png" />
     <None Include="Resources\ErrorLarge.png" />
     <None Include="Resources\WarningLarge.png" />
     <None Include="Resources\Question.png" />

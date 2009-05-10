@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttonscriptconfig = new System.Windows.Forms.ToolStripDropDownButton();
 			this.buttoncompile = new System.Windows.Forms.ToolStripButton();
 			this.buttonclose = new System.Windows.Forms.ToolStripButton();
+			this.buttonkeywordhelp = new System.Windows.Forms.ToolStripButton();
 			this.openfile = new System.Windows.Forms.OpenFileDialog();
 			this.savefile = new System.Windows.Forms.SaveFileDialog();
 			this.splitter = new System.Windows.Forms.SplitContainer();
@@ -97,7 +98,8 @@ namespace CodeImp.DoomBuilder.Controls
             this.toolStripSeparator3,
             this.buttonscriptconfig,
             this.buttoncompile,
-            this.buttonclose});
+            this.buttonclose,
+            this.buttonkeywordhelp});
 			this.toolbar.Location = new System.Drawing.Point(0, 0);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(726, 25);
@@ -249,6 +251,17 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttonclose.Text = "Close File";
 			this.buttonclose.Click += new System.EventHandler(this.buttonclose_Click);
 			// 
+			// buttonkeywordhelp
+			// 
+			this.buttonkeywordhelp.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonkeywordhelp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonkeywordhelp.Image = global::CodeImp.DoomBuilder.Properties.Resources.ScriptHelp;
+			this.buttonkeywordhelp.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonkeywordhelp.Name = "buttonkeywordhelp";
+			this.buttonkeywordhelp.Size = new System.Drawing.Size(23, 22);
+			this.buttonkeywordhelp.Text = "Keyword Help";
+			this.buttonkeywordhelp.Click += new System.EventHandler(this.buttonkeywordhelp_Click);
+			// 
 			// openfile
 			// 
 			this.openfile.Title = "Open Script";
@@ -385,5 +398,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ColumnHeader colDescription;
 		private System.Windows.Forms.ColumnHeader colFile;
 		private System.Windows.Forms.ImageList errorimages;
+		private System.Windows.Forms.ToolStripButton buttonkeywordhelp;
 	}
 }
