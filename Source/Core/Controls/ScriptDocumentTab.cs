@@ -115,6 +115,12 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Methods
 
+		// This launches keyword help website
+		public void LaunchKeywordHelp()
+		{
+			editor.LaunchKeywordHelp();
+		}
+		
 		// This refreshes the style settings
 		public virtual void RefreshSettings()
 		{

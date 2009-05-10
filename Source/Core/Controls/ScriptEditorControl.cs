@@ -162,6 +162,19 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Methods
 		
+		// This launches keyword help website
+		public void LaunchKeywordHelp()
+		{
+			string helpsite = scriptconfig.KeywordHelp;
+			string currentword = GetCurrentWord();
+			if(!string.IsNullOrEmpty(currentword) && (currentword.Length > 1) && !string.IsNullOrEmpty(helpsite))
+			{
+				currentword = scriptconfig.GetKeywordCase(currentword);
+				helpsite = helpsite.Replace("%K", currentword);
+				General.OpenWebsite(helpsite);
+			}
+		}
+		
 		// This replaces the selection with the given text
 		public void ReplaceSelection(string replacement)
 		{
@@ -661,6 +674,13 @@ namespace CodeImp.DoomBuilder.Controls
 			if((e.KeyCode == Keys.F3) && (e.Modifiers == Keys.None))
 			{
 				if(OnFindNext != null) OnFindNext();
+				e.Handled = true;
+			}
+
+			// F2 for Keyword Help
+			if((e.KeyCode == Keys.F2) && (e.Modifiers == Keys.None))
+			{
+				LaunchKeywordHelp();
 				e.Handled = true;
 			}
 

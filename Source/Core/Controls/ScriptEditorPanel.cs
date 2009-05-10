@@ -421,6 +421,7 @@ namespace CodeImp.DoomBuilder.Controls
 			buttonsave.Enabled = (t != null) && t.ExplicitSave;
 			buttonsaveall.Enabled = (explicitsavescripts > 0);
 			buttoncompile.Enabled = (t != null) && (t.Config.Compiler != null);
+			buttonkeywordhelp.Enabled = (t != null) && !string.IsNullOrEmpty(t.Config.KeywordHelp);
 			buttonscriptconfig.Enabled = (t != null) && t.IsReconfigurable;
 			buttonundo.Enabled = (t != null);
 			buttonredo.Enabled = (t != null);
@@ -514,6 +515,14 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Close the sub windows now
 			if(findreplaceform != null) findreplaceform.Dispose();
+		}
+
+		// Keyword help requested
+		private void buttonkeywordhelp_Click(object sender, EventArgs e)
+		{
+			// Get script
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.LaunchKeywordHelp();
 		}
 
 		// When the user changes the script configuration

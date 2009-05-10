@@ -326,6 +326,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ScriptHelp {
+            get {
+                object obj = ResourceManager.GetObject("ScriptHelp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static byte[] ScriptKeyword {
             get {
                 object obj = ResourceManager.GetObject("ScriptKeyword", resourceCulture);
