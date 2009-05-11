@@ -151,11 +151,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void findbutton_Click(object sender, EventArgs e)
 		{
 			// Reset results
+			suppressevents = true;
 			resultslist.Items.Clear();
 			
 			// Hide object information
 			General.Interface.HideInfo();
-			General.Map.Map.ClearAllSelected();
 			
 			// Keep the finder we used for the search
 			finder = newfinder;
@@ -164,7 +164,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			editbutton.Enabled = false;
 			deletebutton.Visible = finder.AllowDelete;
 			deletebutton.Enabled = false;
-			suppressevents = true;
 			resultslist.BeginUpdate();
 			
 			// Perform the search / replace and show the results
@@ -180,8 +179,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Select all results
+			General.Map.Map.ClearAllSelected();
 			for(int i = 0; i < resultslist.Items.Count; i++)
 				resultslist.SelectedIndices.Add(i);
+			
+			// Let the finder know about the selection
+			FindReplaceObject[] selection = GetSelection();
+			finder.ObjectSelected(selection);
 			
 			// Open results part of window
 			this.Size = new Size(this.Width, this.Height - this.ClientSize.Height + resultspanel.Top + resultspanel.Height);
