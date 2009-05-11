@@ -86,6 +86,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 			General.Map.Map.SelectionType = SelectionType.All;
 			
+			// Select linedefs by sectors
+			foreach(Linedef ld in General.Map.Map.Linedefs)
+			{
+				bool front, back;
+				if(ld.Front != null) front = ld.Front.Sector.Selected; else front = false;
+				if(ld.Back != null) back = ld.Back.Sector.Selected; else back = false;
+				ld.Selected = front | back;
+			}
+			
 			// Show toolbox window
 			BuilderPlug.Me.FindReplaceForm.Show((Form)General.Interface);
 		}
