@@ -102,7 +102,8 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Size of preview images
-			list.TileSize = new Size(General.Map.Data.Previews.MaxImageWidth + 26, General.Map.Data.Previews.MaxImageHeight + 26);
+			if(General.Map != null)
+				list.TileSize = new Size(General.Map.Data.Previews.MaxImageWidth + 26, General.Map.Data.Previews.MaxImageHeight + 26);
 		}
 
 		// This cleans everything up
