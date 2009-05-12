@@ -207,8 +207,9 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads all data resources
 		internal void Load(DataLocationList locations)
 		{
-			int texcount, flatcount, spritecount, thingcount;
+			int texcount, flatcount, spritecount, thingcount, colormapcount;
 			Dictionary<long, ImageData> texturesonly = new Dictionary<long, ImageData>();
+			Dictionary<long, ImageData> colormapsonly = new Dictionary<long, ImageData>();
 			Dictionary<long, ImageData> flatsonly = new Dictionary<long, ImageData>();
 			DataReader c;
 			
@@ -289,10 +290,18 @@ namespace CodeImp.DoomBuilder.Data
 			LoadPalette();
 			texcount = LoadTextures(texturesonly);
 			flatcount = LoadFlats(flatsonly);
+			colormapcount = LoadColormaps(colormapsonly);
 			thingcount = LoadDecorateThings();
 			spritecount = LoadSprites();
 			LoadInternalSprites();
-
+			
+			// Process colormaps (we just put them in as textures)
+			foreach(KeyValuePair<long, ImageData> t in colormapsonly)
+			{
+				textures.Add(t.Key, t.Value);
+				texturenames.Add(t.Value.Name);
+			}
+			
 			// Process textures
 			foreach(KeyValuePair<long, ImageData> t in texturesonly)
 			{
@@ -369,7 +378,7 @@ namespace CodeImp.DoomBuilder.Data
 			StartBackgroundLoader();
 			
 			// Output info
-			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + spritecount + " sprites, " + thingcount + " decorate things");
+			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + colormapcount + " colormaps, " + spritecount + " sprites, " + thingcount + " decorate things");
 		}
 		
 		// This unloads all data
@@ -677,8 +686,60 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
+		#region ================== Colormaps
+
+		// This loads the colormaps
+		private int LoadColormaps(Dictionary<long, ImageData> list)
+		{
+			ICollection<ImageData> images;
+			int counter = 0;
+
+			// Go for all opened containers
+			foreach(DataReader dr in containers)
+			{
+				// Load colormaps
+				images = dr.LoadColormaps();
+				if(images != null)
+				{
+					// Go for all colormaps
+					foreach(ImageData img in images)
+					{
+						// Add or replace in flats list
+						list.Remove(img.LongName);
+						list.Add(img.LongName, img);
+						counter++;
+
+						// Add to preview manager
+						previews.AddImage(img);
+					}
+				}
+			}
+
+			// Output info
+			return counter;
+		}
+
+		// This returns a specific colormap stream
+		internal Stream GetColormapData(string pname)
+		{
+			Stream colormap;
+
+			// Go for all opened containers
+			for(int i = containers.Count - 1; i >= 0; i--)
+			{
+				// This contain provides this flat?
+				colormap = containers[i].GetColormapData(pname);
+				if(colormap != null) return colormap;
+			}
+
+			// No such patch found
+			return null;
+		}
+
+		#endregion
+
 		#region ================== Textures
-		
+
 		// This loads the textures
 		private int LoadTextures(Dictionary<long, ImageData> list)
 		{
@@ -758,7 +819,7 @@ namespace CodeImp.DoomBuilder.Data
 			// No such patch found
 			return null;
 		}
-		
+
 		// This returns an image by string
 		public ImageData GetTextureImage(string name)
 		{

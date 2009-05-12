@@ -153,6 +153,31 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 
+		// This finds and returns a colormap stream
+		public override Stream GetColormapData(string pname)
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in any of the wad files
+			// Note the backward order, because the last wad's images have priority
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				Stream data = wads[i].GetColormapData(pname);
+				if(data != null) return data;
+			}
+
+			// Find in patches directory
+			string filename = FindFirstFile(COLORMAPS_DIR, pname, true);
+			if((filename != null) && FileExists(filename))
+			{
+				return LoadFile(filename);
+			}
+
+			// Nothing found
+			return null;
+		}
+
 		#endregion
 
 		#region ================== Sprites
@@ -219,9 +244,23 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This creates an image
-		protected override ImageData CreateImage(string name, string filename, bool flat)
+		protected override ImageData CreateImage(string name, string filename, int imagetype)
 		{
-			return new PK3FileImage(this, name, filename, flat);
+			switch(imagetype)
+			{
+				case ImageDataFormat.DOOMFLAT:
+					return new PK3FileImage(this, name, filename, true);
+
+				case ImageDataFormat.DOOMPICTURE:
+					return new PK3FileImage(this, name, filename, false);
+
+				case ImageDataFormat.DOOMCOLORMAP:
+					return new ColormapImage(name);
+					
+				default:
+					throw new ArgumentException("Invalid image format specified!");
+					return null;
+			}
 		}
 
 		// This returns true if the specified file exists
