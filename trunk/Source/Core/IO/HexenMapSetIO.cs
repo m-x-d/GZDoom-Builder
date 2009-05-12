@@ -315,75 +315,83 @@ namespace CodeImp.DoomBuilder.IO
 				// Create new linedef
 				if(vertexlink.ContainsKey(v1) && vertexlink.ContainsKey(v2))
 				{
-					l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-					l.Update(stringflags, (flags & manager.Config.LinedefActivationsFilter), 0, action, args);
-					l.UpdateCache();
-
-					// Line has a front side?
-					if(s1 != ushort.MaxValue)
+					// Check if not zero-length
+					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
 					{
-						// Read front sidedef
-						sidedefsmem.Seek(s1 * 30, SeekOrigin.Begin);
-						if((s1 * 30L) <= (sidedefsmem.Length - 30L))
-						{
-							offsetx = readside.ReadInt16();
-							offsety = readside.ReadInt16();
-							thigh = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
-							tlow = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
-							tmid = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
-							sc = readside.ReadUInt16();
+						l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
+						l.Update(stringflags, (flags & manager.Config.LinedefActivationsFilter), 0, action, args);
+						l.UpdateCache();
 
-							// Create front sidedef
-							if(sectorlink.ContainsKey(sc))
+						// Line has a front side?
+						if(s1 != ushort.MaxValue)
+						{
+							// Read front sidedef
+							sidedefsmem.Seek(s1 * 30, SeekOrigin.Begin);
+							if((s1 * 30L) <= (sidedefsmem.Length - 30L))
 							{
-								s = map.CreateSidedef(l, true, sectorlink[sc]);
-								s.Update(offsetx, offsety, thigh, tmid, tlow);
+								offsetx = readside.ReadInt16();
+								offsety = readside.ReadInt16();
+								thigh = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
+								tlow = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
+								tmid = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
+								sc = readside.ReadUInt16();
+
+								// Create front sidedef
+								if(sectorlink.ContainsKey(sc))
+								{
+									s = map.CreateSidedef(l, true, sectorlink[sc]);
+									s.Update(offsetx, offsety, thigh, tmid, tlow);
+								}
+								else
+								{
+									General.ErrorLogger.Add(ErrorType.Warning, "Sidedef " + s1 + " references invalid sector " + sc + ". Sidedef has been removed.");
+								}
 							}
 							else
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Sidedef references invalid sector " + sc + ". Sidedef has been removed.");
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid sidedef " + s1 + ". Sidedef has been removed.");
 							}
 						}
-						else
+
+						// Line has a back side?
+						if(s2 != ushort.MaxValue)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef. Sidedef has been removed.");
+							// Read back sidedef
+							sidedefsmem.Seek(s2 * 30, SeekOrigin.Begin);
+							if((s2 * 30L) <= (sidedefsmem.Length - 30L))
+							{
+								offsetx = readside.ReadInt16();
+								offsety = readside.ReadInt16();
+								thigh = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
+								tlow = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
+								tmid = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
+								sc = readside.ReadUInt16();
+
+								// Create back sidedef
+								if(sectorlink.ContainsKey(sc))
+								{
+									s = map.CreateSidedef(l, false, sectorlink[sc]);
+									s.Update(offsetx, offsety, thigh, tmid, tlow);
+								}
+								else
+								{
+									General.ErrorLogger.Add(ErrorType.Warning, "Sidedef " + s2 + " references invalid sector " + sc + ". Sidedef has been removed.");
+								}
+							}
+							else
+							{
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid sidedef " + s2 + ". Sidedef has been removed.");
+							}
 						}
 					}
-
-					// Line has a back side?
-					if(s2 != ushort.MaxValue)
+					else
 					{
-						// Read back sidedef
-						sidedefsmem.Seek(s2 * 30, SeekOrigin.Begin);
-						if((s2 * 30L) <= (sidedefsmem.Length - 30L))
-						{
-							offsetx = readside.ReadInt16();
-							offsety = readside.ReadInt16();
-							thigh = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
-							tlow = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
-							tmid = Lump.MakeNormalName(readside.ReadBytes(8), WAD.ENCODING);
-							sc = readside.ReadUInt16();
-
-							// Create back sidedef
-							if(sectorlink.ContainsKey(sc))
-							{
-								s = map.CreateSidedef(l, false, sectorlink[sc]);
-								s.Update(offsetx, offsety, thigh, tmid, tlow);
-							}
-							else
-							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Sidedef references invalid sector " + sc + ". Sidedef has been removed.");
-							}
-						}
-						else
-						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef. Sidedef has been removed.");
-						}
+						General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " is zero-length. Linedef has been removed.");
 					}
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Linedef references one or more invalid vertices. Linedef has been removed.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references one or more invalid vertices. Linedef has been removed.");
 				}
 			}
 

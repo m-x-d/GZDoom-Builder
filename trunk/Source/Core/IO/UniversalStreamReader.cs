@@ -230,33 +230,41 @@ namespace CodeImp.DoomBuilder.IO
 				// Create new linedef
 				if(vertexlink.ContainsKey(v1) && vertexlink.ContainsKey(v2))
 				{
-					Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-					l.Update(stringflags, 0, tag, special, args);
-					l.UpdateCache();
-
-					// Custom fields
-					ReadCustomFields(lc, l, "linedef");
-
-					// Read sidedefs and connect them to the line
-					if(s1 > -1)
+					// Check if not zero-length
+					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
 					{
-						if(s1 < sidescolls.Count)
-							ReadSidedef(map, sidescolls[s1], l, true, sectorlink);
-						else
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef. Sidedef has been removed.");
+						Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
+						l.Update(stringflags, 0, tag, special, args);
+						l.UpdateCache();
+
+						// Custom fields
+						ReadCustomFields(lc, l, "linedef");
+
+						// Read sidedefs and connect them to the line
+						if(s1 > -1)
+						{
+							if(s1 < sidescolls.Count)
+								ReadSidedef(map, sidescolls[s1], l, true, sectorlink);
+							else
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid front sidedef " + s1 + ". Sidedef has been removed.");
+						}
+						
+						if(s2 > -1)
+						{
+							if(s2 < sidescolls.Count)
+								ReadSidedef(map, sidescolls[s2], l, false, sectorlink);
+							else
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid back sidedef " + s1 + ". Sidedef has been removed.");
+						}
 					}
-					
-					if(s2 > -1)
+					else
 					{
-						if(s2 < sidescolls.Count)
-							ReadSidedef(map, sidescolls[s2], l, false, sectorlink);
-						else
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef references invalid sidedef. Sidedef has been removed.");
+						General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " is zero-length. Linedef has been removed.");
 					}
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Linedef references one or more invalid vertices. Linedef has been removed.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references one or more invalid vertices. Linedef has been removed.");
 				}
 			}
 		}
