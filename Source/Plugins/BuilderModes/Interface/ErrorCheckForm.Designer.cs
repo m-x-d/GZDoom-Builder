@@ -50,13 +50,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.checks.Location = new System.Drawing.Point(10, 15);
 			this.checks.Margin = new System.Windows.Forms.Padding(1);
 			this.checks.Name = "checks";
-			this.checks.Size = new System.Drawing.Size(360, 108);
+			this.checks.Size = new System.Drawing.Size(360, 63);
 			this.checks.TabIndex = 0;
 			// 
 			// buttoncheck
 			// 
 			this.buttoncheck.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttoncheck.Location = new System.Drawing.Point(254, 134);
+			this.buttoncheck.Location = new System.Drawing.Point(254, 89);
 			this.buttoncheck.Margin = new System.Windows.Forms.Padding(1);
 			this.buttoncheck.Name = "buttoncheck";
 			this.buttoncheck.Size = new System.Drawing.Size(116, 25);
@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.results.Location = new System.Drawing.Point(10, 34);
 			this.results.Margin = new System.Windows.Forms.Padding(1);
 			this.results.Name = "results";
-			this.results.Size = new System.Drawing.Size(360, 172);
+			this.results.Size = new System.Drawing.Size(360, 175);
 			this.results.TabIndex = 0;
 			this.results.SelectedIndexChanged += new System.EventHandler(this.results_SelectedIndexChanged);
 			// 
@@ -88,15 +88,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultspanel.Controls.Add(this.fix1);
 			this.resultspanel.Controls.Add(this.progress);
 			this.resultspanel.Controls.Add(this.results);
-			this.resultspanel.Location = new System.Drawing.Point(0, 170);
+			this.resultspanel.Location = new System.Drawing.Point(0, 124);
 			this.resultspanel.Name = "resultspanel";
-			this.resultspanel.Size = new System.Drawing.Size(383, 326);
+			this.resultspanel.Size = new System.Drawing.Size(383, 329);
 			this.resultspanel.TabIndex = 2;
 			// 
 			// fix3
 			// 
 			this.fix3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix3.Location = new System.Drawing.Point(256, 289);
+			this.fix3.Location = new System.Drawing.Point(256, 292);
 			this.fix3.Name = "fix3";
 			this.fix3.Size = new System.Drawing.Size(114, 26);
 			this.fix3.TabIndex = 3;
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fix2
 			// 
 			this.fix2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix2.Location = new System.Drawing.Point(133, 289);
+			this.fix2.Location = new System.Drawing.Point(133, 292);
 			this.fix2.Name = "fix2";
 			this.fix2.Size = new System.Drawing.Size(114, 26);
 			this.fix2.TabIndex = 2;
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.resultinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.resultinfo.Enabled = false;
-			this.resultinfo.Location = new System.Drawing.Point(12, 212);
+			this.resultinfo.Location = new System.Drawing.Point(12, 215);
 			this.resultinfo.Name = "resultinfo";
 			this.resultinfo.Size = new System.Drawing.Size(358, 74);
 			this.resultinfo.TabIndex = 5;
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fix1
 			// 
 			this.fix1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.fix1.Location = new System.Drawing.Point(10, 289);
+			this.fix1.Location = new System.Drawing.Point(10, 292);
 			this.fix1.Name = "fix1";
 			this.fix1.Size = new System.Drawing.Size(114, 26);
 			this.fix1.TabIndex = 1;
@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.closebutton;
-			this.ClientSize = new System.Drawing.Size(380, 493);
+			this.ClientSize = new System.Drawing.Size(380, 453);
 			this.Controls.Add(this.closebutton);
 			this.Controls.Add(this.resultspanel);
 			this.Controls.Add(this.buttoncheck);
