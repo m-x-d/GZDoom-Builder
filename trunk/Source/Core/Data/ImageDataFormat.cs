@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.Data
 		public const int UNKNOWN = 0;			// No clue.
 		public const int DOOMPICTURE = 1;		// Could be Doom Picture format	(column list rendered data)
 		public const int DOOMFLAT = 2;			// Could be Doom Flat format	(raw 8-bit pixel data)
+		public const int DOOMCOLORMAP = 3;		// Could be Doom Colormap format (raw 8-bit pixel palette mapping)
 		
 		// File format signatures
 		private static readonly int[] PNG_SIGNATURE = new int[] { 137, 80, 78, 71, 13, 10, 26, 10 };
@@ -47,6 +48,7 @@ namespace CodeImp.DoomBuilder.Data
 			BinaryReader bindata = new BinaryReader(data);
 			DoomPictureReader picreader;
 			DoomFlatReader flatreader;
+			DoomColormapReader colormapreader;
 			
 			// First check the formats that provide the means to 'ensure' that
 			// it actually is that format. Then guess the Doom image format.
@@ -86,6 +88,14 @@ namespace CodeImp.DoomBuilder.Data
 				data.Seek(0, SeekOrigin.Begin);
 				flatreader = new DoomFlatReader(palette);
 				if(flatreader.Validate(data)) return flatreader;
+			}
+			// Could it be a doom colormap?
+			else if(guessformat == DOOMCOLORMAP)
+			{
+				// Check if data is valid for a doom colormap
+				data.Seek(0, SeekOrigin.Begin);
+				colormapreader = new DoomColormapReader(palette);
+				if(colormapreader.Validate(data)) return colormapreader;
 			}
 			
 			// Format not supported

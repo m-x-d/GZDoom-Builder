@@ -228,29 +228,41 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This creates assist colors
 		internal void CreateAssistColors()
 		{
-			Color4 o;
-			Color4 c = new Color4(1f, 0f, 0f, 0f);
-			
 			// Go for all colors
 			for(int i = 0; i < NUM_COLORS; i++)
 			{
-				// Get original color
-				o = colors[i].ToColorValue();
-
-				// Create brighter color
-				c.Red = Saturate(o.Red * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
-				c.Green = Saturate(o.Green * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
-				c.Blue = Saturate(o.Blue * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
-				brightcolors[i] = PixelColor.FromInt(c.ToArgb());
-
-				// Create darker color
-				c.Red = Saturate(o.Red * DARK_MULTIPLIER + DARK_ADDITION);
-				c.Green = Saturate(o.Green * DARK_MULTIPLIER + DARK_ADDITION);
-				c.Blue = Saturate(o.Blue * DARK_MULTIPLIER + DARK_ADDITION);
-				darkcolors[i] = PixelColor.FromInt(c.ToArgb());
+				// Create assist colors
+				brightcolors[i] = CreateBrightVariant(colors[i]);
+				darkcolors[i] = CreateDarkVariant(colors[i]);
 			}
 		}
 		
+		// This creates a brighter color
+		public PixelColor CreateBrightVariant(PixelColor pc)
+		{
+			Color4 o = pc.ToColorValue();
+			Color4 c = new Color4(1f, 0f, 0f, 0f);
+						
+			// Create brighter color
+			c.Red = Saturate(o.Red * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
+			c.Green = Saturate(o.Green * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
+			c.Blue = Saturate(o.Blue * BRIGHT_MULTIPLIER + BRIGHT_ADDITION);
+			return PixelColor.FromInt(c.ToArgb());
+		}
+
+		// This creates a darker color
+		public PixelColor CreateDarkVariant(PixelColor pc)
+		{
+			Color4 o = pc.ToColorValue();
+			Color4 c = new Color4(1f, 0f, 0f, 0f);
+
+			// Create darker color
+			c.Red = Saturate(o.Red * DARK_MULTIPLIER + DARK_ADDITION);
+			c.Green = Saturate(o.Green * DARK_MULTIPLIER + DARK_ADDITION);
+			c.Blue = Saturate(o.Blue * DARK_MULTIPLIER + DARK_ADDITION);
+			return PixelColor.FromInt(c.ToArgb());
+		}
+
 		// This saves colors to configuration
 		internal void SaveColors(Configuration cfg)
 		{

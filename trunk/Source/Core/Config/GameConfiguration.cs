@@ -83,6 +83,7 @@ namespace CodeImp.DoomBuilder.Config
 		private IDictionary flatranges;
 		private IDictionary patchranges;
 		private IDictionary spriteranges;
+		private IDictionary colormapranges;
 		
 		// Things
 		private List<string> defaultthingflags;
@@ -163,6 +164,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary FlatRanges { get { return flatranges; } }
 		public IDictionary PatchRanges { get { return patchranges; } }
 		public IDictionary SpriteRanges { get { return spriteranges; } }
+		public IDictionary ColormapRanges { get { return colormapranges; } }
 
 		// Things
 		public ICollection<string> DefaultThingFlags { get { return defaultthingflags; } }
@@ -276,6 +278,7 @@ namespace CodeImp.DoomBuilder.Config
 			flatranges = cfg.ReadSetting("flats", new Hashtable());
 			patchranges = cfg.ReadSetting("patches", new Hashtable());
 			spriteranges = cfg.ReadSetting("sprites", new Hashtable());
+			colormapranges = cfg.ReadSetting("colormaps", new Hashtable());
 			
 			// Map lumps
 			LoadMapLumps();

@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected const string FLATS_DIR = "flats";
 		protected const string HIRES_DIR = "hires";
 		protected const string SPRITES_DIR = "sprites";
+		protected const string COLORMAPS_DIR = "colormaps";
 		
 		#endregion
 
@@ -175,12 +176,12 @@ namespace CodeImp.DoomBuilder.Data
 			// Should we load the images in this directory as textures?
 			if(roottextures)
 			{
-				collection = LoadDirectoryImages("", false, false);
+				collection = LoadDirectoryImages("", ImageDataFormat.DOOMPICTURE, false);
 				AddImagesToList(images, collection);
 			}
 			
 			// Add images from texture directory
-			collection = LoadDirectoryImages(TEXTURES_DIR, false, true);
+			collection = LoadDirectoryImages(TEXTURES_DIR, ImageDataFormat.DOOMPICTURE, true);
 			AddImagesToList(images, collection);
 			
 			// Load TEXTURE1 lump file
@@ -279,12 +280,12 @@ namespace CodeImp.DoomBuilder.Data
 			// Should we load the images in this directory as flats?
 			if(rootflats)
 			{
-				collection = LoadDirectoryImages("", true, false);
+				collection = LoadDirectoryImages("", ImageDataFormat.DOOMFLAT, false);
 				AddImagesToList(images, collection);
 			}
 			
 			// Add images from flats directory
-			collection = LoadDirectoryImages(FLATS_DIR, true, true);
+			collection = LoadDirectoryImages(FLATS_DIR, ImageDataFormat.DOOMFLAT, true);
 			AddImagesToList(images, collection);
 
 			// Add images to the container-specific texture set
@@ -294,6 +295,38 @@ namespace CodeImp.DoomBuilder.Data
 			return new List<ImageData>(images.Values);
 		}
 		
+		#endregion
+
+		#region ================== Colormaps
+
+		// This loads the textures
+		public override ICollection<ImageData> LoadColormaps()
+		{
+			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
+			ICollection<ImageData> collection;
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Load from wad files
+			// Note the backward order, because the last wad's images have priority
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				collection = wads[i].LoadColormaps();
+				AddImagesToList(images, collection);
+			}
+
+			// Add images from flats directory
+			collection = LoadDirectoryImages(COLORMAPS_DIR, ImageDataFormat.DOOMCOLORMAP, true);
+			AddImagesToList(images, collection);
+
+			// Add images to the container-specific texture set
+			foreach(ImageData img in images.Values)
+				textureset.AddFlat(img);
+
+			return new List<ImageData>(images.Values);
+		}
+
 		#endregion
 
 		#region ================== Decorate
@@ -329,7 +362,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Methods
 		
 		// This loads the images in this directory
-		private ICollection<ImageData> LoadDirectoryImages(string path, bool flats, bool includesubdirs)
+		private ICollection<ImageData> LoadDirectoryImages(string path, int imagetype, bool includesubdirs)
 		{
 			List<ImageData> images = new List<ImageData>();
 			string[] files;
@@ -345,7 +378,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(name.Length > 0)
 				{
 					// Add image to list
-					images.Add(CreateImage(name, f, flats));
+					images.Add(CreateImage(name, f, imagetype));
 				}
 				else
 				{
@@ -371,7 +404,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This must create an image
-		protected abstract ImageData CreateImage(string name, string filename, bool flat);
+		protected abstract ImageData CreateImage(string name, string filename, int imagetype);
 
 		// This must return true if the specified file exists
 		protected abstract bool FileExists(string filename);

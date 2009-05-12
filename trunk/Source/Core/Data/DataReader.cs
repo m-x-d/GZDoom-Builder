@@ -102,6 +102,16 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
+		#region ================== Colormaps
+
+		// When implemented, this loads the colormaps
+		public virtual ICollection<ImageData> LoadColormaps() { return null; }
+
+		// When implemented, this returns the colormap lump
+		public virtual Stream GetColormapData(string pname) { return null; }
+
+		#endregion
+
 		#region ================== Textures
 
 		// When implemented, this should read the patch names

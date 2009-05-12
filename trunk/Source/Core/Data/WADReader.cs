@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.Data
 		private List<LumpRange> patchranges;
 		private List<LumpRange> spriteranges;
 		private List<LumpRange> textureranges;
+		private List<LumpRange> colormapranges;
 		
 		#endregion
 
@@ -84,12 +85,14 @@ namespace CodeImp.DoomBuilder.Data
 			spriteranges = new List<LumpRange>();
 			flatranges = new List<LumpRange>();
 			textureranges = new List<LumpRange>();
+			colormapranges = new List<LumpRange>();
 			
 			// Find ranges
 			FindRanges(patchranges, General.Map.Config.PatchRanges, "patches");
 			FindRanges(spriteranges, General.Map.Config.SpriteRanges, "sprites");
 			FindRanges(flatranges, General.Map.Config.FlatRanges, "flats");
 			FindRanges(textureranges, General.Map.Config.TextureRanges, "textures");
+			FindRanges(colormapranges, General.Map.Config.ColormapRanges, "colormaps");
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -191,6 +194,96 @@ namespace CodeImp.DoomBuilder.Data
 				// No palette
 				return null;
 			}
+		}
+
+		#endregion
+
+		#region ================== Colormaps
+
+		// This loads the textures
+		public override ICollection<ImageData> LoadColormaps()
+		{
+			List<ImageData> images = new List<ImageData>();
+			string rangestart, rangeend;
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Read ranges from configuration
+			foreach(DictionaryEntry r in General.Map.Config.ColormapRanges)
+			{
+				// Read start and end
+				rangestart = General.Map.Config.ReadSetting("colormaps." + r.Key + ".start", "");
+				rangeend = General.Map.Config.ReadSetting("colormaps." + r.Key + ".end", "");
+				if((rangestart.Length > 0) && (rangeend.Length > 0))
+				{
+					// Load texture range
+					LoadColormapsRange(rangestart, rangeend, ref images);
+				}
+			}
+
+			// Add images to the container-specific texture set
+			foreach(ImageData img in images)
+				textureset.AddFlat(img);
+
+			// Return result
+			return images;
+		}
+
+		// This loads a range of colormaps
+		private void LoadColormapsRange(string startlump, string endlump, ref List<ImageData> images)
+		{
+			int startindex, endindex;
+			float defaultscale;
+			ColormapImage image;
+
+			// Determine default scale
+			defaultscale = General.Map.Config.DefaultTextureScale;
+
+			// Continue until no more start can be found
+			startindex = file.FindLumpIndex(startlump);
+			while(startindex > -1)
+			{
+				// Find end index
+				endindex = file.FindLumpIndex(endlump, startindex + 1);
+				if(endindex > -1)
+				{
+					// Go for all lumps between start and end exclusive
+					for(int i = startindex + 1; i < endindex; i++)
+					{
+						// Lump not zero-length?
+						if(file.Lumps[i].Length > 0)
+						{
+							// Make the image object
+							image = new ColormapImage(file.Lumps[i].Name);
+
+							// Add image to collection
+							images.Add(image);
+						}
+					}
+				}
+
+				// Find the next start
+				startindex = file.FindLumpIndex(startlump, startindex + 1);
+			}
+		}
+
+		// This finds and returns a colormap stream
+		public override Stream GetColormapData(string pname)
+		{
+			Lump lump;
+
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find the lump in ranges
+			foreach(LumpRange range in colormapranges)
+			{
+				lump = file.FindLump(pname, range.start, range.end);
+				if(lump != null) return lump.Stream;
+			}
+
+			return null;
 		}
 
 		#endregion
@@ -460,7 +553,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			return null;
 		}
-		
+
 		#endregion
 		
 		#region ================== Flats
