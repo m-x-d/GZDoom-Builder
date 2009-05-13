@@ -1306,25 +1306,25 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a marking from selection
 		public void MarkSelectedVertices(bool selected, bool mark)
 		{
-			foreach(Vertex v in vertices) if(v.Selected == selected) v.Marked = mark;
+			foreach(Vertex v in sel_vertices) v.Marked = mark;
 		}
 
 		// This creates a marking from selection
 		public void MarkSelectedLinedefs(bool selected, bool mark)
 		{
-			foreach(Linedef l in linedefs) if(l.Selected == selected) l.Marked = mark;
+			foreach(Linedef l in sel_linedefs) l.Marked = mark;
 		}
 
 		// This creates a marking from selection
 		public void MarkSelectedSectors(bool selected, bool mark)
 		{
-			foreach(Sector s in sectors) if(s.Selected == selected) s.Marked = mark;
+			foreach(Sector s in sel_sectors) s.Marked = mark;
 		}
 
 		// This creates a marking from selection
 		public void MarkSelectedThings(bool selected, bool mark)
 		{
-			foreach(Thing t in things) if(t.Selected == selected) t.Marked = mark;
+			foreach(Thing t in sel_things) t.Marked = mark;
 		}
 
 		/// <summary>

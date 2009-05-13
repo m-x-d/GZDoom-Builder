@@ -715,6 +715,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					UpdateGeometry();
+					General.Map.Map.Update();
 				}
 				
 				// Set presentation
@@ -1272,6 +1273,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update
 			UpdateGeometry();
 			UpdateRectangleComponents();
+			General.Map.Map.Update();
 			General.Interface.RedrawDisplay();
 		}
 
@@ -1286,6 +1288,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update
 			UpdateGeometry();
 			UpdateRectangleComponents();
+			General.Map.Map.Update();
 			General.Interface.RedrawDisplay();
 		}
 
