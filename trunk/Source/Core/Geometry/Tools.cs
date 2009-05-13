@@ -28,6 +28,7 @@ using System.Drawing;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
+using System.Threading;
 
 #endregion
 
@@ -931,156 +932,206 @@ namespace CodeImp.DoomBuilder.Geometry
 				// We prefer a closed polygon, because then we can determine the interior properly
 				// Check if the two ends of the polygon are closed
 				bool drawingclosed = false;
+				bool splittingonly = false;
 				if(newlines.Count > 0)
 				{
-					// When not closed, we will try to find a path to close it
 					Linedef firstline = newlines[0];
 					Linedef lastline = newlines[newlines.Count - 1];
 					drawingclosed = (firstline.Start == lastline.End);
 					if(!drawingclosed)
 					{
-						// First and last vertex stitch with geometry?
-						if(points[0].stitch && points[points.Count - 1].stitch)
+						// When not closed, we will try to find a path to close it.
+						// But first we check if any of our new lines are inside existing sectors, because
+						// if they are then we are splitting sectors and cannot accurately find a closed path
+						// to close our polygon. In that case, we want to do sector splits only.
+						foreach(Linedef ld in newlines)
 						{
-							List<LinedefSide> startpoints = new List<LinedefSide>();
-							List<LinedefSide> endpoints = new List<LinedefSide>();
-							
-							// Find out where the start will stitch and create test points
-							Linedef l1 = MapSet.NearestLinedefRange(oldlines, firstline.Start.Position, MapSet.STITCH_DISTANCE);
-							if(l1 != null)
+							Vector2D ldcp = ld.GetCenterPoint();
+							Linedef nld = MapSet.NearestLinedef(oldlines, ldcp);
+							if(nld != null)
 							{
-								startpoints.Add(new LinedefSide(l1, true));
-								startpoints.Add(new LinedefSide(l1, false));
-							}
-							else
-							{
-								// Not stitched with a linedef, so check if it will stitch with a vertex
-								Vertex v = MapSet.NearestVertexSquareRange(nonmergeverts, firstline.Start.Position, MapSet.STITCH_DISTANCE);
-								if((v != null) && (v.Linedefs.Count > 0))
+								float ldside = nld.SideOfLine(ldcp);
+								if(ldside < 0.0f)
 								{
-									// Now we take the two linedefs with adjacent angles to the drawn line
-									List<Linedef> lines = new List<Linedef>(v.Linedefs);
-									lines.Sort(new LinedefAngleSorter(firstline, true, firstline.Start));
-									startpoints.Add(new LinedefSide(lines[0], true));
-									startpoints.Add(new LinedefSide(lines[0], false));
-									lines.Sort(new LinedefAngleSorter(firstline, false, firstline.Start));
-									startpoints.Add(new LinedefSide(lines[0], true));
-									startpoints.Add(new LinedefSide(lines[0], false));
+									if(nld.Front != null)
+									{
+										splittingonly = true;
+										break;
+									}
 								}
-							}
-
-							// Find out where the end will stitch and create test points
-							Linedef l2 = MapSet.NearestLinedefRange(oldlines, lastline.End.Position, MapSet.STITCH_DISTANCE);
-							if(l2 != null)
-							{
-								endpoints.Add(new LinedefSide(l2, true));
-								endpoints.Add(new LinedefSide(l2, false));
-							}
-							else
-							{
-								// Not stitched with a linedef, so check if it will stitch with a vertex
-								Vertex v = MapSet.NearestVertexSquareRange(nonmergeverts, lastline.End.Position, MapSet.STITCH_DISTANCE);
-								if((v != null) && (v.Linedefs.Count > 0))
+								else if(ldside > 0.0f)
 								{
-									// Now we take the two linedefs with adjacent angles to the drawn line
-									List<Linedef> lines = new List<Linedef>(v.Linedefs);
-									lines.Sort(new LinedefAngleSorter(firstline, true, lastline.End));
-									endpoints.Add(new LinedefSide(lines[0], true));
-									endpoints.Add(new LinedefSide(lines[0], false));
-									lines.Sort(new LinedefAngleSorter(firstline, false, lastline.End));
-									endpoints.Add(new LinedefSide(lines[0], true));
-									endpoints.Add(new LinedefSide(lines[0], false));
-								}
-							}
-
-							// Found any start and end points?
-							if((startpoints.Count > 0) && (endpoints.Count > 0))
-							{
-								List<LinedefSide> shortestpath = null;
-
-								// Same line?
-								if((l1 == l2) && (l1 != null))
-								{
-									// Then just connect the two
-									shortestpath = new List<LinedefSide>();
-									shortestpath.Add(new LinedefSide(l1, true));
+									if(nld.Back != null)
+									{
+										splittingonly = true;
+										break;
+									}
 								}
 								else
 								{
-									// Find the shortest, closest path between start and end points
-									foreach(LinedefSide startp in startpoints)
+									// We can't tell, so lets ignore this for now.
+								}
+							}
+						}
+
+						// Not splitting only?
+						if(!splittingonly)
+						{
+							// First and last vertex stitch with geometry?
+							if(points[0].stitch && points[points.Count - 1].stitch)
+							{
+								List<LinedefSide> startpoints = new List<LinedefSide>();
+								List<LinedefSide> endpoints = new List<LinedefSide>();
+
+								// Find out where the start will stitch and create test points
+								Linedef l1 = MapSet.NearestLinedefRange(oldlines, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+								if(l1 != null)
+								{
+									startpoints.Add(new LinedefSide(l1, true));
+									startpoints.Add(new LinedefSide(l1, false));
+								}
+								else
+								{
+									// Not stitched with a linedef, so check if it will stitch with a vertex
+									Vertex v = MapSet.NearestVertexSquareRange(nonmergeverts, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+									if((v != null) && (v.Linedefs.Count > 0))
 									{
-										foreach(LinedefSide endp in endpoints)
-										{
-											List<LinedefSide> p;
-											p = Tools.FindClosestPath(startp.Line, startp.Front, endp.Line, endp.Front, true);
-											if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
-											p = Tools.FindClosestPath(endp.Line, endp.Front, startp.Line, startp.Front, true);
-											if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
-										}
+										// Now we take the two linedefs with adjacent angles to the drawn line
+										List<Linedef> lines = new List<Linedef>(v.Linedefs);
+										lines.Sort(new LinedefAngleSorter(firstline, true, firstline.Start));
+										startpoints.Add(new LinedefSide(lines[0], true));
+										startpoints.Add(new LinedefSide(lines[0], false));
+										lines.Sort(new LinedefAngleSorter(firstline, false, firstline.Start));
+										startpoints.Add(new LinedefSide(lines[0], true));
+										startpoints.Add(new LinedefSide(lines[0], false));
 									}
 								}
 
-								// Found a path?
-								if(shortestpath != null)
+								// Find out where the end will stitch and create test points
+								Linedef l2 = MapSet.NearestLinedefRange(oldlines, lastline.End.Position, MapSet.STITCH_DISTANCE);
+								if(l2 != null)
 								{
-									// Check which direction the path goes in
-									bool pathforward = false;
-									foreach(LinedefSide startp in startpoints)
+									endpoints.Add(new LinedefSide(l2, true));
+									endpoints.Add(new LinedefSide(l2, false));
+								}
+								else
+								{
+									// Not stitched with a linedef, so check if it will stitch with a vertex
+									Vertex v = MapSet.NearestVertexSquareRange(nonmergeverts, lastline.End.Position, MapSet.STITCH_DISTANCE);
+									if((v != null) && (v.Linedefs.Count > 0))
 									{
-                                        if(shortestpath[0].Line == startp.Line)
+										// Now we take the two linedefs with adjacent angles to the drawn line
+										List<Linedef> lines = new List<Linedef>(v.Linedefs);
+										lines.Sort(new LinedefAngleSorter(firstline, true, lastline.End));
+										endpoints.Add(new LinedefSide(lines[0], true));
+										endpoints.Add(new LinedefSide(lines[0], false));
+										lines.Sort(new LinedefAngleSorter(firstline, false, lastline.End));
+										endpoints.Add(new LinedefSide(lines[0], true));
+										endpoints.Add(new LinedefSide(lines[0], false));
+									}
+								}
+
+								// Found any start and end points?
+								if((startpoints.Count > 0) && (endpoints.Count > 0))
+								{
+									List<LinedefSide> shortestpath = null;
+
+									// Same line?
+									if((l1 == l2) && (l1 != null))
+									{
+										// Then just connect the two
+										shortestpath = new List<LinedefSide>();
+										shortestpath.Add(new LinedefSide(l1, true));
+									}
+									else
+									{
+										// Find the shortest, closest path between start and end points
+										foreach(LinedefSide startp in startpoints)
 										{
-											pathforward = true;
-											break;
+											foreach(LinedefSide endp in endpoints)
+											{
+												List<LinedefSide> p;
+												p = Tools.FindClosestPath(startp.Line, startp.Front, endp.Line, endp.Front, true);
+												if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
+												p = Tools.FindClosestPath(endp.Line, endp.Front, startp.Line, startp.Front, true);
+												if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
+											}
 										}
 									}
 
-									// Begin at first vertex in path
-									if(pathforward)
-										v1 = firstline.Start;
-									else
-										v1 = lastline.End;
-									
-									// Go for all vertices in the path to make additional lines
-									for(int i = 1; i < shortestpath.Count; i++)
+									// Found a path?
+									if(shortestpath != null)
 									{
-										// Get the next position
-										Vector2D v2pos = shortestpath[i].Front ? shortestpath[i].Line.Start.Position : shortestpath[i].Line.End.Position;
+										// Check which direction the path goes in
+										bool pathforward = false;
+										foreach(LinedefSide startp in startpoints)
+										{
+											if(shortestpath[0].Line == startp.Line)
+											{
+												pathforward = true;
+												break;
+											}
+										}
 
-										// Make the new vertex
-										Vertex v2 = map.CreateVertex(v2pos);
-										v2.Marked = true;
-										mergeverts.Add(v2);
+										// TEST
+										/*
+										General.Map.Renderer2D.StartOverlay(true);
+										foreach(LinedefSide lsd in shortestpath)
+										{
+											General.Map.Renderer2D.RenderLine(lsd.Line.Start.Position, lsd.Line.End.Position, 2, new PixelColor(255, 0, 255, 0), true);
+										}
+										General.Map.Renderer2D.Finish();
+										General.Map.Renderer2D.Present();
+										Thread.Sleep(1000);
+										*/
+										
+										// Begin at first vertex in path
+										if(pathforward)
+											v1 = firstline.Start;
+										else
+											v1 = lastline.End;
 
-										// Make the line
-										Linedef ld = map.CreateLinedef(v1, v2);
-										ld.Marked = true;
-										ld.ApplySidedFlags();
-										ld.UpdateCache();
-										newlines.Add(ld);
+										// Go for all vertices in the path to make additional lines
+										for(int i = 1; i < shortestpath.Count; i++)
+										{
+											// Get the next position
+											Vector2D v2pos = shortestpath[i].Front ? shortestpath[i].Line.Start.Position : shortestpath[i].Line.End.Position;
 
-										// Next
-										v1 = v2;
+											// Make the new vertex
+											Vertex v2 = map.CreateVertex(v2pos);
+											v2.Marked = true;
+											mergeverts.Add(v2);
+
+											// Make the line
+											Linedef ld = map.CreateLinedef(v1, v2);
+											ld.Marked = true;
+											ld.ApplySidedFlags();
+											ld.UpdateCache();
+											newlines.Add(ld);
+
+											// Next
+											v1 = v2;
+										}
+
+										// Make the final line
+										Linedef lld;
+										if(pathforward)
+											lld = map.CreateLinedef(v1, lastline.End);
+										else
+											lld = map.CreateLinedef(v1, firstline.Start);
+
+										// Setup line
+										lld.Marked = true;
+										lld.ApplySidedFlags();
+										lld.UpdateCache();
+										newlines.Add(lld);
+
+										// Drawing is now closed
+										drawingclosed = true;
+
+										// Join merge vertices so that overlapping vertices in the draw become one.
+										MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
 									}
-
-									// Make the final line
-									Linedef lld;
-									if(pathforward)
-										lld = map.CreateLinedef(v1, lastline.End);
-									else
-										lld = map.CreateLinedef(v1, firstline.Start);
-									
-									// Setup line
-									lld.Marked = true;
-									lld.ApplySidedFlags();
-									lld.UpdateCache();
-									newlines.Add(lld);
-
-									// Drawing is now closed
-									drawingclosed = true;
-
-									// Join merge vertices so that overlapping vertices in the draw become one.
-									MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
 								}
 							}
 						}
@@ -1194,7 +1245,7 @@ namespace CodeImp.DoomBuilder.Geometry
 							sidescreated = true;
 
 							// When none of the linedef sides exist yet, this is a true new
-							// sector and should be marked for editing
+							// sector that will be created out of the void!
 							bool istruenewsector = true;
 							foreach(LinedefSide ls in sectorlines)
 							{
@@ -1205,26 +1256,31 @@ namespace CodeImp.DoomBuilder.Geometry
 									break;
 								}
 							}
-							
-							// Make the new sector
-							Sector newsector = Tools.MakeSector(sectorlines, oldlines);
-							if(istruenewsector) newsector.Marked = true;
-							
-							// Go for all sidedefs in this new sector
-							foreach(Sidedef sd in newsector.Sidedefs)
-							{
-								// Keep list of sides inside created sectors
-								insidesides.Add(sd);
 
-								// Side matches with a side of our new lines?
-								int lineindex = newlines.IndexOf(sd.Line);
-								if(lineindex > -1)
+							// But we don't want to create sectors out of the void when we
+							// decided that we only want to split sectors.
+							if(!istruenewsector || !splittingonly)
+							{
+								// Make the new sector
+								Sector newsector = Tools.MakeSector(sectorlines, oldlines);
+								if(istruenewsector) newsector.Marked = true;
+
+								// Go for all sidedefs in this new sector
+								foreach(Sidedef sd in newsector.Sidedefs)
 								{
-									// Mark this side as done
-									if(sd.IsFront)
-										frontsdone[lineindex] = true;
-									else
-										backsdone[lineindex] = true;
+									// Keep list of sides inside created sectors
+									insidesides.Add(sd);
+
+									// Side matches with a side of our new lines?
+									int lineindex = newlines.IndexOf(sd.Line);
+									if(lineindex > -1)
+									{
+										// Mark this side as done
+										if(sd.IsFront)
+											frontsdone[lineindex] = true;
+										else
+											backsdone[lineindex] = true;
+									}
 								}
 							}
 						}
