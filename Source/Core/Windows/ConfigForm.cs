@@ -41,7 +41,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private GameConfiguration gameconfig;
 		private ConfigurationInfo configinfo;
 		private List<DefinedTextureSet> copiedsets;
-		
+		private bool preventchanges = false;
+		private bool reloadresources = false;
+
+		// Properties
+		public bool ReloadResources { get { return reloadresources; } }
+
 		// Constructor
 		public ConfigForm()
 		{
@@ -105,6 +110,8 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Enable panels
 				tabs.Enabled = true;
+
+				preventchanges = true;
 				
 				// Get config info of selected item
 				configinfo = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
@@ -184,6 +191,9 @@ namespace CodeImp.DoomBuilder.Windows
 					EditModeInfo emi = (lvi.Tag as EditModeInfo);
 					lvi.Checked = (configinfo.EditModes.ContainsKey(emi.Type.FullName) && configinfo.EditModes[emi.Type.FullName]);
 				}
+
+				// Done
+				preventchanges = false;
 			}
 		}
 		
@@ -226,6 +236,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Apply to selected configuration
 			configinfo.Resources.Clear();
 			configinfo.Resources.AddRange(configdata.GetResources());
+			if(!preventchanges) reloadresources = true;
 		}
 
 		// Nodebuilder selection changed
@@ -404,6 +415,7 @@ namespace CodeImp.DoomBuilder.Windows
 				item.Tag = s;
 				item.ImageIndex = 0;
 				listtextures.Sort();
+				reloadresources = true;
 			}
 		}
 
@@ -419,6 +431,7 @@ namespace CodeImp.DoomBuilder.Windows
 				form.ShowDialog(this);
 				listtextures.SelectedItems[0].Text = s.Name;
 				listtextures.Sort();
+				reloadresources = true;
 			}
 		}
 		
@@ -432,6 +445,7 @@ namespace CodeImp.DoomBuilder.Windows
 				DefinedTextureSet s = (listtextures.SelectedItems[0].Tag as DefinedTextureSet);
 				configinfo.TextureSets.Remove(s);
 				listtextures.SelectedItems[0].Remove();
+				reloadresources = true;
 			}
 		}
 		
@@ -479,6 +493,7 @@ namespace CodeImp.DoomBuilder.Windows
 					configinfo.TextureSets.Add(s);
 				}
 				listtextures.Sort();
+				reloadresources = true;
 			}
 		}
 		
@@ -499,6 +514,7 @@ namespace CodeImp.DoomBuilder.Windows
 					configinfo.TextureSets.Add(s);
 				}
 				listtextures.Sort();
+				reloadresources = true;
 			}
 		}
 		
