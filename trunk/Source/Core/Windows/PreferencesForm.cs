@@ -42,6 +42,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool allowapplycontrol = false;
 		private bool disregardshift = false;
 
+		private bool reloadresources = false;
+		
+		#endregion
+
+		#region ================== Properties
+
+		public bool ReloadResources { get { return reloadresources; } }
+
 		#endregion
 
 		#region ================== Constructor
@@ -155,6 +163,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Let the plugins know
 			controller.RaiseAccept();
 			
+			// Check if we need to reload the resources
+			reloadresources |= (General.Settings.ImageBrightness != imagebrightness.Value);
+			reloadresources |= (General.Settings.PreviewImageSize != previewsize.Value);
+
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
 			General.Settings.SquareThings = squarethings.Checked;

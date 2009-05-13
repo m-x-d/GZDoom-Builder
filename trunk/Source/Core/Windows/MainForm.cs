@@ -1999,7 +1999,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(General.Map.ScriptEditor != null) General.Map.ScriptEditor.Editor.RefreshSettings();
 					General.Map.Graphics.SetupSettings();
 					General.Map.UpdateConfiguration();
-					General.Actions.InvokeAction("builder_reloadresources");
+					if(prefform.ReloadResources) General.Actions.InvokeAction("builder_reloadresources");
 				}
 				
 				// Redraw display
