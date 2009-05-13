@@ -276,10 +276,20 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			// Find the lump in ranges
-			foreach(LumpRange range in colormapranges)
+			// Strictly read patches only between C_START and C_END?
+			if(strictpatches)
 			{
-				lump = file.FindLump(pname, range.start, range.end);
+				// Find the lump in ranges
+				foreach(LumpRange range in colormapranges)
+				{
+					lump = file.FindLump(pname, range.start, range.end);
+					if(lump != null) return lump.Stream;
+				}
+			}
+			else
+			{
+				// Find the lump anywhere
+				lump = file.FindLump(pname);
 				if(lump != null) return lump.Stream;
 			}
 
