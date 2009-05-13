@@ -1965,7 +1965,7 @@ namespace CodeImp.DoomBuilder.Windows
 				General.Plugins.ProgramReconfigure();
 
 				// Reload resources if a map is open
-				if(General.Map != null) General.Actions.InvokeAction("builder_reloadresources");
+				if((General.Map != null) && cfgform.ReloadResources) General.Actions.InvokeAction("builder_reloadresources");
 
 				// Redraw display
 				RedrawDisplay();
