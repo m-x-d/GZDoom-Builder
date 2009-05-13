@@ -985,6 +985,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 								// Find out where the start will stitch and create test points
 								Linedef l1 = MapSet.NearestLinedefRange(oldlines, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+								Vertex vv1 = null;
 								if(l1 != null)
 								{
 									startpoints.Add(new LinedefSide(l1, true));
@@ -993,11 +994,11 @@ namespace CodeImp.DoomBuilder.Geometry
 								else
 								{
 									// Not stitched with a linedef, so check if it will stitch with a vertex
-									Vertex v = MapSet.NearestVertexSquareRange(nonmergeverts, firstline.Start.Position, MapSet.STITCH_DISTANCE);
-									if((v != null) && (v.Linedefs.Count > 0))
+									vv1 = MapSet.NearestVertexSquareRange(nonmergeverts, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+									if((vv1 != null) && (vv1.Linedefs.Count > 0))
 									{
 										// Now we take the two linedefs with adjacent angles to the drawn line
-										List<Linedef> lines = new List<Linedef>(v.Linedefs);
+										List<Linedef> lines = new List<Linedef>(vv1.Linedefs);
 										lines.Sort(new LinedefAngleSorter(firstline, true, firstline.Start));
 										startpoints.Add(new LinedefSide(lines[0], true));
 										startpoints.Add(new LinedefSide(lines[0], false));
@@ -1009,6 +1010,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 								// Find out where the end will stitch and create test points
 								Linedef l2 = MapSet.NearestLinedefRange(oldlines, lastline.End.Position, MapSet.STITCH_DISTANCE);
+								Vertex vv2 = null;
 								if(l2 != null)
 								{
 									endpoints.Add(new LinedefSide(l2, true));
@@ -1017,11 +1019,11 @@ namespace CodeImp.DoomBuilder.Geometry
 								else
 								{
 									// Not stitched with a linedef, so check if it will stitch with a vertex
-									Vertex v = MapSet.NearestVertexSquareRange(nonmergeverts, lastline.End.Position, MapSet.STITCH_DISTANCE);
-									if((v != null) && (v.Linedefs.Count > 0))
+									vv2 = MapSet.NearestVertexSquareRange(nonmergeverts, lastline.End.Position, MapSet.STITCH_DISTANCE);
+									if((vv2 != null) && (vv2.Linedefs.Count > 0))
 									{
 										// Now we take the two linedefs with adjacent angles to the drawn line
-										List<Linedef> lines = new List<Linedef>(v.Linedefs);
+										List<Linedef> lines = new List<Linedef>(vv2.Linedefs);
 										lines.Sort(new LinedefAngleSorter(firstline, true, lastline.End));
 										endpoints.Add(new LinedefSide(lines[0], true));
 										endpoints.Add(new LinedefSide(lines[0], false));
@@ -1036,12 +1038,26 @@ namespace CodeImp.DoomBuilder.Geometry
 								{
 									List<LinedefSide> shortestpath = null;
 
-									// Same line?
+									// Both stitched to the same line?
 									if((l1 == l2) && (l1 != null))
 									{
 										// Then just connect the two
 										shortestpath = new List<LinedefSide>();
 										shortestpath.Add(new LinedefSide(l1, true));
+									}
+									// One stitched to a line and the other to a vertex of that line?
+									else if((l1 != null) && (vv2 != null) && ((l1.Start == vv2) || (l1.End == vv2)))
+									{
+										// Then just connect the two
+										shortestpath = new List<LinedefSide>();
+										shortestpath.Add(new LinedefSide(l1, true));
+									}
+									// The other stitched to a line and the first to a vertex of that line?
+									else if((l2 != null) && (vv1 != null) && ((l2.Start == vv1) || (l2.End == vv1)))
+									{
+										// Then just connect the two
+										shortestpath = new List<LinedefSide>();
+										shortestpath.Add(new LinedefSide(l2, true));
 									}
 									else
 									{
