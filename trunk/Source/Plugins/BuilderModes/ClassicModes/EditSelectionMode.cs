@@ -715,6 +715,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					UpdateGeometry();
+					General.Map.Data.UpdateUsedTextures();
 					General.Map.Map.Update();
 				}
 				
