@@ -474,6 +474,19 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 
+		// This clears a target
+		public void ClearRendertarget(Color4 backcolor, Surface target, Surface depthbuffer)
+		{
+			// Set rendertarget
+			device.DepthStencilSurface = depthbuffer;
+			device.SetRenderTarget(0, target);
+
+			if(depthbuffer != null)
+				device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1f, 0);
+			else
+				device.Clear(ClearFlags.Target, backcolor, 1f, 0);
+		}
+
 		// This ends a drawing session
 		public void FinishRendering()
 		{
