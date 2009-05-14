@@ -74,6 +74,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int autoscrollspeed;
 		private bool showerrorswindow;
 		private bool animatevisualselection;
+		private int previousversion;
 
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -117,6 +118,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int AutoScrollSpeed { get { return autoscrollspeed; } internal set { autoscrollspeed = value; } }
 		public bool ShowErrorsWindow { get { return showerrorswindow; } internal set { showerrorswindow = value; } }
 		public bool AnimateVisualSelection { get { return animatevisualselection; } internal set { animatevisualselection = value; } }
+		internal int PreviousVersion { get { return previousversion; } }
 
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -176,6 +178,7 @@ namespace CodeImp.DoomBuilder.Config
 				autoscrollspeed = cfg.ReadSetting("autoscrollspeed", 0);
 				showerrorswindow = cfg.ReadSetting("showerrorswindow", true);
 				animatevisualselection = cfg.ReadSetting("animatevisualselection", true);
+				previousversion = cfg.ReadSetting("currentversion", 0);
 				
 				// Success
 				return true;
@@ -190,6 +193,8 @@ namespace CodeImp.DoomBuilder.Config
 		// This saves the program configuration
 		internal void Save(string filepathname)
 		{
+			Version v = General.ThisAssembly.GetName().Version;
+			
 			// Write the cache variables
 			cfg.WriteSetting("blackbrowsers", blackbrowsers);
 			cfg.WriteSetting("undolevels", undolevels);
@@ -217,6 +222,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("autoscrollspeed", autoscrollspeed);
 			cfg.WriteSetting("showerrorswindow", showerrorswindow);
 			cfg.WriteSetting("animatevisualselection", animatevisualselection);
+			cfg.WriteSetting("currentversion", v.Major * 1000000 + v.Revision);
 
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
@@ -269,7 +275,27 @@ namespace CodeImp.DoomBuilder.Config
 					return false;
 				}
 			}
-
+			
+			// Check if a version number is missing
+			previousversion = cfg.ReadSetting("currentversion", -1);
+			if(previousversion == -1)
+			{
+				// Remove old configuration and make a new copy
+				General.WriteLogLine("Program configuration is outdated, new configuration will be copied for local user");
+				File.Delete(cfgfilepathname);
+				File.Copy(defaultfilepathname, cfgfilepathname);
+				
+				// Load it
+				cfg = new Configuration(cfgfilepathname, true);
+				if(cfg.ErrorResult != 0)
+				{
+					// Error in configuration
+					General.WriteLogLine("Error in program configuration near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
+					General.ShowErrorMessage("Default program configuration is corrupted. Please re-install Doom Builder.", MessageBoxButtons.OK);
+					return false;
+				}
+			}
+			
 			// Success
 			return true;
 		}
