@@ -73,11 +73,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M "Debug" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -F 0 -M "Release" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release with revision lookup" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Debug with revision lookup" "$(ConfigurationName)"</PreBuildEvent>
-    <PostBuildEvent>"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Release with revision lookup" "$(ConfigurationName)"
-"$(SolutionDir)VersionFromSVN.exe" -R "$(ProjectDir)Properties\AssemblyInfo.cs" -M "Debug with revision lookup" "$(ConfigurationName)"</PostBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
