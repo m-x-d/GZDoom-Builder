@@ -427,9 +427,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			overlaysize.Height = sd.Height;
 			
 			// Clear rendertargets
-			StartPlotter(true); Finish();
-			StartThings(true); Finish();
-			StartOverlay(true); Finish();
+			// This may cause a crash when resetting because it recursively
+			// calls Reset in the Start functions and doesn't get to Finish
+			//StartPlotter(true); Finish();
+			//StartThings(true); Finish();
+			//StartOverlay(true); Finish();
 			
 			// Create font
 			font = new SlimDX.Direct3D9.Font(graphics.Device, FONT_WIDTH, FONT_HEIGHT, FontWeight.Bold, 1, false, CharacterSet.Ansi, Precision.Default, FontQuality.Antialiased, PitchAndFamily.Default, FONT_NAME);
