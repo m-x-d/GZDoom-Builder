@@ -1930,9 +1930,8 @@ namespace CodeImp.DoomBuilder.Map
 								{
 									if(oppositedirection)
 									{
-										l1.FlipVertices();
+										l1.FlipVertices();		// This also flips FrontInterior
 										l1.FlipSidedefs();
-										l1.FrontInterior = !l1.FrontInterior;
 									}
 								}
 								
@@ -1975,9 +1974,8 @@ namespace CodeImp.DoomBuilder.Map
 								{
 									if(oppositedirection)
 									{
-										l1.FlipVertices();
+										l1.FlipVertices();		// This also flips FrontInterior
 										l1.FlipSidedefs();
-										l1.FrontInterior = !l1.FrontInterior;
 									}
 								}
 
