@@ -305,8 +305,11 @@ namespace CodeImp.DoomBuilder.Data
 			// Process textures
 			foreach(KeyValuePair<long, ImageData> t in texturesonly)
 			{
-				textures.Add(t.Key, t.Value);
-				texturenames.Add(t.Value.Name);
+				if(!textures.ContainsKey(t.Key))
+				{
+					textures.Add(t.Key, t.Value);
+					texturenames.Add(t.Value.Name);
+				}
 			}
 
 			// Process flats
