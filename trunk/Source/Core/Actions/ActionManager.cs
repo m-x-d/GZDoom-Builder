@@ -206,14 +206,14 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// This binds all methods marked with this attribute
-		internal void BindMethods(Type type)
+		public void BindMethods(Type type)
 		{
 			// Bind static methods
 			BindMethods(null, type);
 		}
 
 		// This binds all methods marked with this attribute
-		internal void BindMethods(object obj)
+		public void BindMethods(object obj)
 		{
 			// Bind instance methods
 			BindMethods(obj, obj.GetType());
@@ -307,14 +307,14 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 
 		// This unbinds all methods marked with this attribute
-		internal void UnbindMethods(Type type)
+		public void UnbindMethods(Type type)
 		{
 			// Unbind static methods
 			UnbindMethods(null, type);
 		}
 
 		// This unbinds all methods marked with this attribute
-		internal void UnbindMethods(object obj)
+		public void UnbindMethods(object obj)
 		{
 			// Unbind instance methods
 			UnbindMethods(obj, obj.GetType());
