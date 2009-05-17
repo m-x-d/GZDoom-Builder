@@ -361,6 +361,9 @@ namespace CodeImp.DoomBuilder
 			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
 
+			// Remove unused sectors
+			map.RemoveUnusedSectors(true);
+			
 			// Update structures
 			options.ApplyGridSettings();
 			map.UpdateConfiguration();
