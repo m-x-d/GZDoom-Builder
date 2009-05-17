@@ -68,6 +68,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
+		public override object HighlightedObject { get { return highlighted; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer

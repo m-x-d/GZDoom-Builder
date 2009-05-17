@@ -84,6 +84,24 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 		
+		// Mouse status
+		public Vector2D MousePos { get { return mousepos; } }
+		public Vector2D MouseLastPos { get { return mouselastpos; } }
+		public Vector2D MouseMapPos { get { return mousemappos; } }
+		public Vector2D MouseDownPos { get { return mousedownpos; } }
+		public Vector2D MouseDownMapPos { get { return mousedownmappos; } }
+		public MouseButtons MouseButtons { get { return mousebuttons; } }
+		public bool IsMouseInside { get { return mouseinside; } }
+		public MouseButtons MouseDragging { get { return mousedragging; } }
+
+		// Selection
+		public bool IsSelecting { get { return selecting; } }
+		public Vector2D SelectionStart { get { return selectstart; } }
+		public RectangleF SelectionRect { get { return selectionrect; } }
+		
+		// Panning
+		public bool IsPanning { get { return panning; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer

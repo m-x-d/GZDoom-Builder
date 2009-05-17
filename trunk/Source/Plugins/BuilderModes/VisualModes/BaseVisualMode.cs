@@ -88,6 +88,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Properties
 
+		public override object HighlightedObject
+		{
+			get
+			{
+				// Geometry picked?
+				if(target.picked is VisualGeometry)
+				{
+					VisualGeometry pickedgeo = (target.picked as VisualGeometry);
+
+					if(pickedgeo.Sidedef != null)
+						return pickedgeo.Sidedef;
+					else if(pickedgeo.Sector != null)
+						return pickedgeo.Sector;
+					else
+						return null;
+				}
+				// Thing picked?
+				else if(target.picked is VisualThing)
+				{
+					VisualThing pickedthing = (target.picked as VisualThing);
+					return pickedthing.Thing;
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
+
 		public IRenderer3D Renderer { get { return renderer; } }
 		
 		public bool IsSingleSelection { get { return singleselection; } }

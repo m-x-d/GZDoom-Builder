@@ -68,6 +68,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
+		public override object HighlightedObject { get { return highlighted; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -853,16 +855,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MakeDoor()
 		{
 			// Highlighted item not selected?
-			if(!highlighted.Selected)
+			if((highlighted != null) && !highlighted.Selected)
 			{
-				if(highlighted != null)
-				{
-					// Make this the only selection
-					General.Map.Map.ClearSelectedSectors();
-					General.Map.Map.ClearSelectedLinedefs();
-					SelectSector(highlighted, true, false);
-					General.Interface.RedrawDisplay();
-				}
+				// Make this the only selection
+				General.Map.Map.ClearSelectedSectors();
+				General.Map.Map.ClearSelectedLinedefs();
+				SelectSector(highlighted, true, false);
+				General.Interface.RedrawDisplay();
 			}
 			
 			// Anything selected?
