@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Windows
 			Cursor.Current = Cursors.WaitCursor;
 			ListViewItem item;
 			bool foundselecttexture = false;
-			long longname = Lump.MakeLongName(selecttexture);
+			long longname = Lump.MakeLongName(selecttexture ?? "");
 			
 			// Initialize
 			InitializeComponent();
