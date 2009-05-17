@@ -1885,6 +1885,35 @@ namespace CodeImp.DoomBuilder.Map
 
 			return count;
 		}
+
+		// This removes unused sectors and returns the number of removed sectors
+		public int RemoveUnusedSectors(bool reportwarnings)
+		{
+			int count = 0;
+			LinkedListNode<Sector> n = sectors.First;
+
+			// Go for all sectors
+			int index = 0;
+			while(n != null)
+			{
+				LinkedListNode<Sector> nn = n.Next;
+
+				// Remove when unused
+				if(n.Value.Sidedefs.Count == 0)
+				{
+					if(reportwarnings)
+						General.ErrorLogger.Add(ErrorType.Warning, "Sector " + index + " was unused and has been removed.");
+					
+					n.Value.Dispose();
+					count++;
+				}
+
+				index++;
+				n = nn;
+			}
+
+			return count;
+		}
 		
 		// This joins overlapping lines together
 		// Returns the number of joins made
