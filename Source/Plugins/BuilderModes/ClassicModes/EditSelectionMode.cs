@@ -138,6 +138,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
+		public override object HighlightedObject { get { return highlighted; } }
+		
 		// Just keep the base mode button checked
 		public override string EditModeButtonName { get { return General.Editing.PreviousStableMode.Name; } }
 

@@ -67,6 +67,9 @@ namespace CodeImp.DoomBuilder.Editing
 		// for checking the appropriate button on the toolbar.
 		public virtual string EditModeButtonName { get { return GetType().Name; } }
 
+		// Override this to provide a highlighted object, if applicable
+		public virtual object HighlightedObject { get { return null; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
