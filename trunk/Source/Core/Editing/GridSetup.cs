@@ -260,8 +260,9 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This changes grid size
+		// Note: these were incorrectly swapped before, hence the wrong action name
 		[BeginAction("gridinc")]
-		internal void IncreaseGrid()
+		internal void DecreaseGrid()
 		{
 			// Not lower than 1
 			if(gridsize >= 2)
@@ -275,8 +276,9 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This changes grid size
+		// Note: these were incorrectly swapped before, hence the wrong action name
 		[BeginAction("griddec")]
-		internal void DecreaseGrid()
+		internal void IncreaseGrid()
 		{
 			// Not higher than 1024
 			if(gridsize <= 512)
