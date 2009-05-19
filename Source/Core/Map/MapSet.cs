@@ -35,11 +35,17 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.Map
 {
+	/// <summary>
+	/// Manages all geometry structures and things in a map. Also provides
+	/// methods to works with selections and marking elements for any purpose.
+	/// Note that most methods are of O(n) complexity.
+	/// </summary>
 	public sealed class MapSet
 	{
 		#region ================== Constants
 
-		// Stiching distance
+		/// <summary>Stiching distance. This is only to get around inaccuracies. Basically,
+		/// geometry only stitches when exactly on top of each other.</summary>
 		public const float STITCH_DISTANCE = 0.001f;
 		
 		// Virtual sector identification
@@ -84,21 +90,46 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
+		/// <summary>Returns a reference to the list of all vertices.</summary>
 		public ICollection<Vertex> Vertices { get { return vertices; } }
-		public ICollection<Linedef> Linedefs { get { return linedefs; } }
-		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
-		public ICollection<Sector> Sectors { get { return sectors; } }
-		public ICollection<Thing> Things { get { return things; } }
-		public bool IsDisposed { get { return isdisposed; } }
 
-		internal LinkedList<Vertex> SelectedVertices { get { return sel_vertices; } }
-		internal LinkedList<Linedef> SelectedLinedefs { get { return sel_linedefs; } }
-		internal LinkedList<Sector> SelectedSectors { get { return sel_sectors; } }
-		internal LinkedList<Thing> SelectedThings { get { return sel_things; } }
-		public SelectionType SelectionType { get { return sel_type; } set { sel_type = value; } }
+		/// <summary>Returns a reference to the list of all linedefs.</summary>
+		public ICollection<Linedef> Linedefs { get { return linedefs; } }
+
+		/// <summary>Returns a reference to the list of all sidedefs.</summary>
+		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
+
+		/// <summary>Returns a reference to the list of all sectors.</summary>
+		public ICollection<Sector> Sectors { get { return sectors; } }
+
+		/// <summary>Returns a reference to the list of all things.</summary>
+		public ICollection<Thing> Things { get { return things; } }
+
+		/// <summary>Indicates if the map is disposed.</summary>
+		public bool IsDisposed { get { return isdisposed; } }
 		
+		/// <summary>Returns a reference to the list of selected vertices.</summary>
+		internal LinkedList<Vertex> SelectedVertices { get { return sel_vertices; } }
+
+		/// <summary>Returns a reference to the list of selected linedefs.</summary>
+		internal LinkedList<Linedef> SelectedLinedefs { get { return sel_linedefs; } }
+
+		/// <summary>Returns a reference to the list of selected sectors.</summary>
+		internal LinkedList<Sector> SelectedSectors { get { return sel_sectors; } }
+
+		/// <summary>Returns a reference to the list of selected things.</summary>
+		internal LinkedList<Thing> SelectedThings { get { return sel_things; } }
+		
+		/// <summary>Returns the current type of selection.</summary>
+		public SelectionType SelectionType { get { return sel_type; } set { sel_type = value; } }
+
+		/// <summary>Long name to indicate "no texture". This is the long name for a single dash.</summary>
 		public static long EmptyLongName { get { return emptylongname; } }
+
+		/// <summary>Returns the name of the custom field that marks virtual sectors in pasted geometry.</summary>
 		public static string VirtualSectorField { get { return VIRTUAL_SECTOR_FIELD; } }
+
+		/// <summary>Returns the value of the custom field that marks virtual sectors in pasted geometry.</summary>
 		public static UniValue VirtualSectorValue { get { return virtualsectorvalue; } }
 		
 		internal Sidedef[] SidedefIndices { get { return sidedefindices; } }
@@ -208,8 +239,10 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Management
-
-		// This makes a deep copy and returns a new MapSet
+		
+		/// <summary>
+		/// This makes a deep copy and returns the new MapSet.
+		/// </summary>
 		public MapSet Clone()
 		{
 			Linedef nl;
@@ -384,7 +417,7 @@ namespace CodeImp.DoomBuilder.Map
 			return newset;
 		}
 		
-		// This creates a new vertex
+		/// <summary>This creates a new vertex and returns it.</summary>
 		public Vertex CreateVertex(Vector2D pos)
 		{
 			LinkedListNode<Vertex> listitem;
@@ -404,7 +437,7 @@ namespace CodeImp.DoomBuilder.Map
 			return v;
 		}
 
-		// This creates a new vertex
+		// This creates a new vertex from a stream
 		private Vertex CreateVertex(IReadWriteStream stream)
 		{
 			LinkedListNode<Vertex> listitem;
@@ -424,7 +457,7 @@ namespace CodeImp.DoomBuilder.Map
 			return v;
 		}
 
-		// This creates a new linedef
+		/// <summary>This creates a new linedef and returns it.</summary>
 		public Linedef CreateLinedef(Vertex start, Vertex end)
 		{
 			LinkedListNode<Linedef> listitem;
@@ -444,7 +477,7 @@ namespace CodeImp.DoomBuilder.Map
 			return l;
 		}
 
-		// This creates a new linedef
+		// This creates a new linedef from a stream
 		private Linedef CreateLinedef(Vertex start, Vertex end, IReadWriteStream stream)
 		{
 			LinkedListNode<Linedef> listitem;
@@ -464,7 +497,7 @@ namespace CodeImp.DoomBuilder.Map
 			return l;
 		}
 
-		// This creates a new sidedef
+		/// <summary>This creates a new sidedef and returns it.</summary>
 		public Sidedef CreateSidedef(Linedef l, bool front, Sector s)
 		{
 			LinkedListNode<Sidedef> listitem;
@@ -484,7 +517,7 @@ namespace CodeImp.DoomBuilder.Map
 			return sd;
 		}
 
-		// This creates a new sidedef
+		// This creates a new sidedef from a stream
 		private Sidedef CreateSidedef(Linedef l, bool front, Sector s, IReadWriteStream stream)
 		{
 			LinkedListNode<Sidedef> listitem;
@@ -504,7 +537,7 @@ namespace CodeImp.DoomBuilder.Map
 			return sd;
 		}
 
-		// This creates a new sector
+		/// <summary>This creates a new sector and returns it.</summary>
 		public Sector CreateSector()
 		{
 			int index;
@@ -525,9 +558,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Make the sector
 			return CreateSector(index);
 		}
-		
-		// This creates a new sector
-		public Sector CreateSector(int index)
+
+		// This creates a new sector with a specific fixed index
+		private Sector CreateSector(int index)
 		{
 			LinkedListNode<Sector> listitem;
 			Sector s;
@@ -546,7 +579,7 @@ namespace CodeImp.DoomBuilder.Map
 			return s;
 		}
 
-		// This creates a new sector
+		// This creates a new sector from a stream
 		private Sector CreateSector(IReadWriteStream stream)
 		{
 			LinkedListNode<Sector> listitem;
@@ -566,7 +599,7 @@ namespace CodeImp.DoomBuilder.Map
 			return s;
 		}
 
-		// This creates a new thing
+		/// <summary>This creates a new thing and returns it.</summary>
 		public Thing CreateThing()
 		{
 			LinkedListNode<Thing> listitem;
@@ -585,9 +618,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Return result
 			return t;
 		}
-
+		
 		// This adds a sector index hole
-		public void AddSectorIndexHole(int index)
+		internal void AddSectorIndexHole(int index)
 		{
 			indexholes.Add(index);
 		}
@@ -842,14 +875,18 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Updating
 
-		// This updates all structures if needed
+		/// <summary>
+		/// This updates the cache of all elements where needed. You must call this after making changes to the map.
+		/// </summary>
 		public void Update()
 		{
 			// Update all!
 			Update(true, true);
 		}
 
-		// This updates all structures if needed
+		/// <summary>
+		/// This updates the cache of all elements where needed. It is not recommended to use this version, please use Update() instead.
+		/// </summary>
 		public void Update(bool dolines, bool dosectors)
 		{
 			// Update all linedefs
@@ -858,9 +895,10 @@ namespace CodeImp.DoomBuilder.Map
 			// Update all sectors
 			if(dosectors) foreach(Sector s in sectors) s.UpdateCache();
 		}
-
-		// This updates all structures after a
-		// configuration or settings change
+		
+		/// <summary>
+		/// This updates the cache of all elements that is required after a configuration or settings change.
+		/// </summary>
 		public void UpdateConfiguration()
 		{
 			// Update all things
@@ -876,16 +914,16 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			return (value & bits) == bits;
 		}
-		
-		// This converts the selection to a different selection
-		// NOTE: This function uses the markings to convert the selection
+
+		/// <summary>This converts the current selection to a different type of selection as specified.
+		/// Note that this function uses the markings to convert the selection.</summary>
 		public void ConvertSelection(SelectionType target)
 		{
 			ConvertSelection(SelectionType.All, target);
 		}
-		
-		// This converts the selection to a different selection
-		// NOTE: This function uses the markings to convert the selection
+
+		/// <summary>This converts the current selection to a different type of selection as specified.
+		/// Note that this function uses the markings to convert the selection.</summary>
 		public void ConvertSelection(SelectionType source, SelectionType target)
 		{
 			ICollection<Linedef> lines;
@@ -983,8 +1021,8 @@ namespace CodeImp.DoomBuilder.Map
 			// New selection type
 			sel_type = target;
 		}
-		
-		// This clears all selected items
+
+		/// <summary>This clears all selected items</summary>
 		public void ClearAllSelected()
 		{
 			ClearSelectedVertices();
@@ -993,35 +1031,35 @@ namespace CodeImp.DoomBuilder.Map
 			ClearSelectedSectors();
 		}
 
-		// This clears selected vertices
+		/// <summary>This clears selected vertices.</summary>
 		public void ClearSelectedVertices()
 		{
 			sel_vertices.Clear();
 			foreach(Vertex v in vertices) v.Selected = false;
 		}
 
-		// This clears selected things
+		/// <summary>This clears selected things.</summary>
 		public void ClearSelectedThings()
 		{
 			sel_things.Clear();
 			foreach(Thing t in things) t.Selected = false;
 		}
 
-		// This clears selected linedefs
+		/// <summary>This clears selected linedefs.</summary>
 		public void ClearSelectedLinedefs()
 		{
 			sel_linedefs.Clear();
 			foreach(Linedef l in linedefs) l.Selected = false;
 		}
 
-		// This clears selected sectors
+		/// <summary>This clears selected sectors.</summary>
 		public void ClearSelectedSectors()
 		{
 			sel_sectors.Clear();
 			foreach(Sector s in sectors) s.Selected = false;
 		}
 
-		// Returns a collection of vertices that match a selected state
+		/// <summary>Returns a collection of vertices that match a selected state.</summary>
 		public ICollection<Vertex> GetSelectedVertices(bool selected)
 		{
 			if(selected)
@@ -1036,7 +1074,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
-		// Returns a collection of things that match a selected state
+		/// <summary>Returns a collection of things that match a selected state.</summary>
 		public ICollection<Thing> GetSelectedThings(bool selected)
 		{
 			if(selected)
@@ -1051,7 +1089,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
-		// Returns a collection of linedefs that match a selected state
+		/// <summary>Returns a collection of linedefs that match a selected state.</summary>
 		public ICollection<Linedef> GetSelectedLinedefs(bool selected)
 		{
 			if(selected)
@@ -1066,7 +1104,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
-		// Returns a collection of sidedefs that match a selected linedefs state
+		/// <summary>Returns a collection of sidedefs that match a selected linedefs state.</summary>
 		public ICollection<Sidedef> GetSidedefsFromSelectedLinedefs(bool selected)
 		{
 			if(selected)
@@ -1091,7 +1129,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
-		// Returns a collection of sectors that match a selected state
+		/// <summary>Returns a collection of sectors that match a selected state.</summary>
 		public ICollection<Sector> GetSelectedSectors(bool selected)
 		{
 			if(selected)
@@ -1106,7 +1144,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
-		// This selects geometry based on the marking
+		/// <summary>This selects or deselectes geometry based on marked elements.</summary>
 		public void SelectMarkedGeometry(bool mark, bool select)
 		{
 			SelectMarkedVertices(mark, select);
@@ -1115,55 +1153,55 @@ namespace CodeImp.DoomBuilder.Map
 			SelectMarkedThings(mark, select);
 		}
 
-		// This selects geometry based on the marking
+		/// <summary>This selects or deselectes geometry based on marked elements.</summary>
 		public void SelectMarkedVertices(bool mark, bool select)
 		{
 			foreach(Vertex v in vertices) if(v.Marked == mark) v.Selected = select;
 		}
 
-		// This selects geometry based on the marking
+		/// <summary>This selects or deselectes geometry based on marked elements.</summary>
 		public void SelectMarkedLinedefs(bool mark, bool select)
 		{
 			foreach(Linedef l in linedefs) if(l.Marked == mark) l.Selected = select;
 		}
 
-		// This selects geometry based on the marking
+		/// <summary>This selects or deselectes geometry based on marked elements.</summary>
 		public void SelectMarkedSectors(bool mark, bool select)
 		{
 			foreach(Sector s in sectors) if(s.Marked == mark) s.Selected = select;
 		}
 
-		// This selects geometry based on the marking
+		/// <summary>This selects or deselectes geometry based on marked elements.</summary>
 		public void SelectMarkedThings(bool mark, bool select)
 		{
 			foreach(Thing t in things) if(t.Marked == mark) t.Selected = select;
 		}
-		
-		// This selects geometry by group
+
+		/// <summary>This selects geometry by selection group index.</summary>
 		public void SelectVerticesByGroup(int groupmask)
 		{
 			foreach(SelectableElement e in vertices) e.SelectByGroup(groupmask);
 		}
 
-		// This selects geometry by group
+		/// <summary>This selects geometry by selection group index.</summary>
 		public void SelectLinedefsByGroup(int groupmask)
 		{
 			foreach(SelectableElement e in linedefs) e.SelectByGroup(groupmask);
 		}
 
-		// This selects geometry by group
+		/// <summary>This selects geometry by selection group index.</summary>
 		public void SelectSectorsByGroup(int groupmask)
 		{
 			foreach(SelectableElement e in sectors) e.SelectByGroup(groupmask);
 		}
 
-		// This selects geometry by group
+		/// <summary>This selects geometry by selection group index.</summary>
 		public void SelectThingsByGroup(int groupmask)
 		{
 			foreach(SelectableElement e in things) e.SelectByGroup(groupmask);
 		}
-		
-		// This adds the current selection to a group
+
+		/// <summary>This adds the current selection to the specified selection group.</summary>
 		public void AddSelectionToGroup(int groupmask)
 		{
 			foreach(SelectableElement e in vertices)
@@ -1183,7 +1221,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Marking
 
-		// This clears all marks
+		/// <summary>This clears all marks on all elements.</summary>
 		public void ClearAllMarks(bool mark)
 		{
 			ClearMarkedVertices(mark);
@@ -1193,37 +1231,37 @@ namespace CodeImp.DoomBuilder.Map
 			ClearMarkedSidedefs(mark);
 		}
 
-		// This clears marked vertices
+		/// <summary>This clears all marks on all vertices.</summary>
 		public void ClearMarkedVertices(bool mark)
 		{
 			foreach(Vertex v in vertices) v.Marked = mark;
 		}
 
-		// This clears marked things
+		/// <summary>This clears all marks on all things.</summary>
 		public void ClearMarkedThings(bool mark)
 		{
 			foreach(Thing t in things) t.Marked = mark;
 		}
 
-		// This clears marked linedefs
+		/// <summary>This clears all marks on all linedefs.</summary>
 		public void ClearMarkedLinedefs(bool mark)
 		{
 			foreach(Linedef l in linedefs) l.Marked = mark;
 		}
 
-		// This clears marked sidedefs
+		/// <summary>This clears all marks on all sidedefs.</summary>
 		public void ClearMarkedSidedefs(bool mark)
 		{
 			foreach(Sidedef s in sidedefs) s.Marked = mark;
 		}
 
-		// This clears marked sectors
+		/// <summary>This clears all marks on all sectors.</summary>
 		public void ClearMarkedSectors(bool mark)
 		{
 			foreach(Sector s in sectors) s.Marked = mark;
 		}
 
-		// This inverts all marks
+		/// <summary>This inverts all marks on all elements.</summary>
 		public void InvertAllMarks()
 		{
 			InvertMarkedVertices();
@@ -1233,37 +1271,37 @@ namespace CodeImp.DoomBuilder.Map
 			InvertMarkedSidedefs();
 		}
 
-		// This inverts marked vertices
+		/// <summary>This inverts all marks on all vertices.</summary>
 		public void InvertMarkedVertices()
 		{
 			foreach(Vertex v in vertices) v.Marked = !v.Marked;
 		}
 
-		// This inverts marked things
+		/// <summary>This inverts all marks on all things.</summary>
 		public void InvertMarkedThings()
 		{
 			foreach(Thing t in things) t.Marked = !t.Marked;
 		}
 
-		// This inverts marked linedefs
+		/// <summary>This inverts all marks on all linedefs.</summary>
 		public void InvertMarkedLinedefs()
 		{
 			foreach(Linedef l in linedefs) l.Marked = !l.Marked;
 		}
 
-		// This inverts marked sidedefs
+		/// <summary>This inverts all marks on all sidedefs.</summary>
 		public void InvertMarkedSidedefs()
 		{
 			foreach(Sidedef s in sidedefs) s.Marked = !s.Marked;
 		}
 
-		// This inverts marked sectors
+		/// <summary>This inverts all marks on all sectors.</summary>
 		public void InvertMarkedSectors()
 		{
 			foreach(Sector s in sectors) s.Marked = !s.Marked;
 		}
 
-		// Returns a collection of vertices that match a marked state
+		/// <summary>Returns a collection of vertices that match a marked state.</summary>
 		public List<Vertex> GetMarkedVertices(bool mark)
 		{
 			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
@@ -1271,7 +1309,7 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
-		// Returns a collection of things that match a marked state
+		/// <summary>Returns a collection of things that match a marked state.</summary>
 		public List<Thing> GetMarkedThings(bool mark)
 		{
 			List<Thing> list = new List<Thing>(things.Count >> 1);
@@ -1279,7 +1317,7 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
-		// Returns a collection of linedefs that match a marked state
+		/// <summary>Returns a collection of linedefs that match a marked state.</summary>
 		public List<Linedef> GetMarkedLinedefs(bool mark)
 		{
 			List<Linedef> list = new List<Linedef>(linedefs.Count >> 1);
@@ -1287,7 +1325,7 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
-		// Returns a collection of sidedefs that match a marked state
+		/// <summary>Returns a collection of sidedefs that match a marked state.</summary>
 		public List<Sidedef> GetMarkedSidedefs(bool mark)
 		{
 			List<Sidedef> list = new List<Sidedef>(sidedefs.Count >> 1);
@@ -1295,7 +1333,7 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
-		// Returns a collection of sectors that match a marked state
+		/// <summary>Returns a collection of sectors that match a marked state.</summary>
 		public List<Sector> GetMarkedSectors(bool mark)
 		{
 			List<Sector> list = new List<Sector>(sectors.Count >> 1);
@@ -1303,32 +1341,32 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
-		// This creates a marking from selection
+		/// <summary>This marks vertices based on selected vertices.</summary>
 		public void MarkSelectedVertices(bool selected, bool mark)
 		{
 			foreach(Vertex v in sel_vertices) v.Marked = mark;
 		}
 
-		// This creates a marking from selection
+		/// <summary>This marks linedefs based on selected linedefs.</summary>
 		public void MarkSelectedLinedefs(bool selected, bool mark)
 		{
 			foreach(Linedef l in sel_linedefs) l.Marked = mark;
 		}
 
-		// This creates a marking from selection
+		/// <summary>This marks sectors based on selected sectors.</summary>
 		public void MarkSelectedSectors(bool selected, bool mark)
 		{
 			foreach(Sector s in sel_sectors) s.Marked = mark;
 		}
 
-		// This creates a marking from selection
+		/// <summary>This marks things based on selected things.</summary>
 		public void MarkSelectedThings(bool selected, bool mark)
 		{
 			foreach(Thing t in sel_things) t.Marked = mark;
 		}
 
 		/// <summary>
-		/// This marks the front and back sidedefs on linedefs with the matching mark
+		/// This marks the front and back sidedefs on linedefs with the matching mark.
 		/// </summary>
 		public void MarkSidedefsFromLinedefs(bool matchmark, bool setmark)
 		{
@@ -1343,7 +1381,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// This marks the sidedefs that make up the sectors with the matching mark
+		/// This marks the sidedefs that make up the sectors with the matching mark.
 		/// </summary>
 		public void MarkSidedefsFromSectors(bool matchmark, bool setmark)
 		{
@@ -1354,7 +1392,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns a collection of vertices that match a marked state on the linedefs
+		/// Returns a collection of vertices that match a marked state on the linedefs.
 		/// </summary>
 		public ICollection<Vertex> GetVerticesFromLinesMarks(bool mark)
 		{
@@ -1374,7 +1412,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns a collection of vertices that match a marked state on the linedefs
+		/// Returns a collection of vertices that match a marked state on the linedefs.
 		/// The difference with GetVerticesFromLinesMarks is that in this method
 		/// ALL linedefs of a vertex must match the specified marked state.
 		/// </summary>
@@ -1398,7 +1436,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns a collection of vertices that match a marked state on the linedefs
+		/// Returns a collection of vertices that match a marked state on the linedefs.
 		/// </summary>
 		public ICollection<Vertex> GetVerticesFromSectorsMarks(bool mark)
 		{
@@ -1481,7 +1519,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Indexing
 		
 		/// <summary>
-		/// Returns the vertex at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// Returns the vertex at the specified index. Returns null when index is out of range.
 		/// </summary>
 		public Vertex GetVertexByIndex(int index)
 		{
@@ -1492,7 +1530,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the linedef at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// Returns the linedef at the specified index. Returns null when index is out of range.
 		/// </summary>
 		public Linedef GetLinedefByIndex(int index)
 		{
@@ -1503,7 +1541,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the sidedef at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// Returns the sidedef at the specified index. Returns null when index is out of range.
 		/// </summary>
 		public Sidedef GetSidedefByIndex(int index)
 		{
@@ -1514,7 +1552,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the sector at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// Returns the sector at the specified index. Returns null when index is out of range.
 		/// </summary>
 		public Sector GetSectorByIndex(int index)
 		{
@@ -1525,7 +1563,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the thing at the specified index. Returns null when index is out of range. This is a O(n) operation.
+		/// Returns the thing at the specified index. Returns null when index is out of range.
 		/// </summary>
 		public Thing GetThingByIndex(int index)
 		{
@@ -1536,7 +1574,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the index of the specified vertex. Returns -1 when the vertex is not in this map. This is a O(n) operation.
+		/// Returns the index of the specified vertex. Returns -1 when the vertex is not in this map.
 		/// </summary>
 		public int GetIndexForVertex(Vertex v)
 		{
@@ -1550,7 +1588,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the index of the specified linedef. Returns -1 when the linedef is not in this map. This is a O(n) operation.
+		/// Returns the index of the specified linedef. Returns -1 when the linedef is not in this map.
 		/// </summary>
 		public int GetIndexForLinedef(Linedef l)
 		{
@@ -1564,7 +1602,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the index of the specified sidedef. Returns -1 when the sidedef is not in this map. This is a O(n) operation.
+		/// Returns the index of the specified sidedef. Returns -1 when the sidedef is not in this map.
 		/// </summary>
 		public int GetIndexForSidedef(Sidedef sd)
 		{
@@ -1578,7 +1616,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the index of the specified sector. Returns -1 when the sector is not in this map. This is a O(n) operation.
+		/// Returns the index of the specified sector. Returns -1 when the sector is not in this map.
 		/// </summary>
 		public int GetIndexForSector(Sector s)
 		{
@@ -1592,7 +1630,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>
-		/// Returns the index of the specified thing. Returns -1 when the thing is not in this map. This is a O(n) operation.
+		/// Returns the index of the specified thing. Returns -1 when the thing is not in this map.
 		/// </summary>
 		public int GetIndexForThing(Thing t)
 		{
@@ -1609,13 +1647,13 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Areas
 
-		// This creates an initial, undefined area
+		/// <summary>This creates an initial, undefined area.</summary>
 		public static RectangleF CreateEmptyArea()
 		{
 			return new RectangleF(float.MaxValue / 2, float.MaxValue / 2, -float.MaxValue, -float.MaxValue);
 		}
-		
-		// This creates an area from vertices
+
+		/// <summary>This creates an area from vertices.</summary>
 		public static RectangleF CreateArea(ICollection<Vertex> verts)
 		{
 			float l = float.MaxValue;
@@ -1637,7 +1675,7 @@ namespace CodeImp.DoomBuilder.Map
 			return new RectangleF(l, t, r - l, b - t);
 		}
 
-		// This increases and existing area with the given vertices
+		/// <summary>This increases and existing area with the given vertices.</summary>
 		public static RectangleF IncreaseArea(RectangleF area, ICollection<Vertex> verts)
 		{
 			float l = area.Left;
@@ -1659,7 +1697,7 @@ namespace CodeImp.DoomBuilder.Map
 			return new RectangleF(l, t, r - l, b - t);
 		}
 
-		// This increases and existing area with the given vertices
+		/// <summary>This increases and existing area with the given things.</summary>
 		public static RectangleF IncreaseArea(RectangleF area, ICollection<Thing> things)
 		{
 			float l = area.Left;
@@ -1681,7 +1719,7 @@ namespace CodeImp.DoomBuilder.Map
 			return new RectangleF(l, t, r - l, b - t);
 		}
 
-		// This increases and existing area with the given vertices
+		/// <summary>This increases and existing area with the given vertices.</summary>
 		public static RectangleF IncreaseArea(RectangleF area, ICollection<Vector2D> verts)
 		{
 			float l = area.Left;
@@ -1703,7 +1741,7 @@ namespace CodeImp.DoomBuilder.Map
 			return new RectangleF(l, t, r - l, b - t);
 		}
 
-		// This increases and existing area with the given vertices
+		/// <summary>This increases and existing area with the given vertex.</summary>
 		public static RectangleF IncreaseArea(RectangleF area, Vector2D vert)
 		{
 			float l = area.Left;
@@ -1721,7 +1759,7 @@ namespace CodeImp.DoomBuilder.Map
 			return new RectangleF(l, t, r - l, b - t);
 		}
 
-		// This creates an area from linedefs
+		/// <summary>This creates an area from linedefs.</summary>
 		public static RectangleF CreateArea(ICollection<Linedef> lines)
 		{
 			float l = float.MaxValue;
@@ -1746,8 +1784,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Return a rect
 			return new RectangleF(l, t, r - l, b - t);
 		}
-		
-		// This filters lines by a square area
+
+		/// <summary>This filters lines by a rectangular area.</summary>
 		public static ICollection<Linedef> FilterByArea(ICollection<Linedef> lines, ref RectangleF area)
 		{
 			ICollection<Linedef> newlines = new List<Linedef>(lines.Count);
@@ -1778,7 +1816,7 @@ namespace CodeImp.DoomBuilder.Map
 			return bits;
 		}
 
-		// This filters vertices by a square area
+		/// <summary>This filters vertices by a rectangular area.</summary>
 		public static ICollection<Vertex> FilterByArea(ICollection<Vertex> verts, ref RectangleF area)
 		{
 			ICollection<Vertex> newverts = new List<Vertex>(verts.Count);
@@ -1861,8 +1899,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Geometry Tools
 
-		// This removes any virtual sectors in the map
-		// Returns the number of sectors removed
+		/// <summary>This removes any virtual sectors in the map and returns the number of sectors removed.</summary>
 		public int RemoveVirtualSectors()
 		{
 			int count = 0;
@@ -1886,7 +1923,7 @@ namespace CodeImp.DoomBuilder.Map
 			return count;
 		}
 
-		// This removes unused sectors and returns the number of removed sectors
+		/// <summary>This removes unused sectors and returns the number of removed sectors.</summary>
 		public int RemoveUnusedSectors(bool reportwarnings)
 		{
 			int count = 0;
@@ -1914,9 +1951,8 @@ namespace CodeImp.DoomBuilder.Map
 
 			return count;
 		}
-		
-		// This joins overlapping lines together
-		// Returns the number of joins made
+
+		/// <summary>This joins overlapping lines together and returns the number of joins made.</summary>
 		public static int JoinOverlappingLines(ICollection<Linedef> lines)
 		{
 			int joinsdone = 0;
@@ -2024,9 +2060,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Return result
 			return joinsdone;
 		}
-		
-		// This removes looped linedefs (linedefs which reference the same vertex for start and end)
-		// Returns the number of linedefs removed
+
+		/// <summary>This removes looped linedefs (linedefs which reference the same vertex for
+		/// start and end) and returns the number of linedefs removed.</summary>
 		public static int RemoveLoopedLinedefs(ICollection<Linedef> lines)
 		{
 			int linesremoved = 0;
@@ -2058,12 +2094,12 @@ namespace CodeImp.DoomBuilder.Map
 			return linesremoved;
 		}
 
-		// This joins nearby vertices from two collections. This does NOT join vertices
-		// within the same collection, only if they exist in both collections.
-		// The vertex from the second collection is moved to match the first vertex.
-		// When keepsecond is true, the vertex in the second collection is kept,
-		// otherwise the vertex in the first collection is kept.
-		// Returns the number of joins made
+		/// <summary>This joins nearby vertices from two collections. This does NOT join vertices
+		/// within the same collection, only if they exist in both collections.
+		/// The vertex from the second collection is moved to match the first vertex.
+		/// When keepsecond is true, the vertex in the second collection is kept,
+		/// otherwise the vertex in the first collection is kept.
+		/// Returns the number of joins made.</summary>
 		public static int JoinVertices(ICollection<Vertex> set1, ICollection<Vertex> set2, bool keepsecond, float joindist)
 		{
 			float joindist2 = joindist * joindist;
@@ -2126,8 +2162,7 @@ namespace CodeImp.DoomBuilder.Map
 			return joinsdone;
 		}
 
-		// This corrects lines that have a back sidedef but no front
-		// sidedef by flipping them. Returns the number of flips made.
+		/// <summary>This corrects lines that have a back sidedef but no front sidedef by flipping them. Returns the number of flips made.</summary>
 		public static int FlipBackwardLinedefs(ICollection<Linedef> lines)
 		{
 			int flipsdone = 0;
@@ -2149,9 +2184,8 @@ namespace CodeImp.DoomBuilder.Map
 			return flipsdone;
 		}
 
-		// This splits the given lines with the given vertices
-		// All affected lines will be added to changedlines
-		// Returns the number of splits made
+		/// <summary>This splits the given lines with the given vertices. All affected lines
+		/// will be added to changedlines. Returns the number of splits made</summary>
 		public static int SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines)
 		{
 			float splitdist2 = splitdist * splitdist;
@@ -2217,8 +2251,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Return result
 			return splitsdone;
 		}
-		
-		// This finds the side closest to the specified position
+
+		/// <summary>This finds the side closest to the specified position.</summary>
 		public static Sidedef NearestSidedef(ICollection<Sidedef> selection, Vector2D pos)
 		{
 			Sidedef closest = null;
@@ -2250,8 +2284,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Return result
 			return closest;
 		}
-		
-		// This finds the line closest to the specified position
+
+		/// <summary>This finds the line closest to the specified position.</summary>
 		public static Linedef NearestLinedef(ICollection<Linedef> selection, Vector2D pos)
 		{
 			Linedef closest = null;
@@ -2274,7 +2308,7 @@ namespace CodeImp.DoomBuilder.Map
 			return closest;
 		}
 
-		// This finds the line closest to the specified position
+		/// <summary>This finds the line closest to the specified position.</summary>
 		public static Linedef NearestLinedefRange(ICollection<Linedef> selection, Vector2D pos, float maxrange)
 		{
 			Linedef closest = null;
@@ -2299,7 +2333,7 @@ namespace CodeImp.DoomBuilder.Map
 			return closest;
 		}
 
-		// This finds the vertex closest to the specified position
+		/// <summary>This finds the vertex closest to the specified position.</summary>
 		public static Vertex NearestVertex(ICollection<Vertex> selection, Vector2D pos)
 		{
 			Vertex closest = null;
@@ -2323,7 +2357,7 @@ namespace CodeImp.DoomBuilder.Map
 			return closest;
 		}
 
-		// This finds the thing closest to the specified position
+		/// <summary>This finds the thing closest to the specified position.</summary>
 		public static Thing NearestThing(ICollection<Thing> selection, Vector2D pos)
 		{
 			Thing closest = null;
@@ -2347,7 +2381,7 @@ namespace CodeImp.DoomBuilder.Map
 			return closest;
 		}
 
-		// This finds the vertex closest to the specified position
+		/// <summary>This finds the vertex closest to the specified position.</summary>
 		public static Vertex NearestVertexSquareRange(ICollection<Vertex> selection, Vector2D pos, float maxrange)
 		{
 			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
@@ -2379,7 +2413,7 @@ namespace CodeImp.DoomBuilder.Map
 			return closest;
 		}
 
-		// This finds the thing closest to the specified position
+		/// <summary>This finds the thing closest to the specified position.</summary>
 		public static Thing NearestThingSquareRange(ICollection<Thing> selection, Vector2D pos, float maxrange)
 		{
 			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
@@ -2415,14 +2449,14 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Tools
 
-		// This snaps all vertices to the map format accuracy
+		/// <summary>This snaps all vertices to the map format accuracy. Call this to ensure the vertices are at valid coordinates.</summary>
 		public void SnapAllToAccuracy()
 		{
 			foreach(Vertex v in vertices) v.SnapToAccuracy();
 			foreach(Thing t in things) t.SnapToAccuracy();
 		}
-		
-		// This returns the next unused tag number
+
+		/// <summary>This returns the next unused tag number.</summary>
 		public int GetNewTag()
 		{
 			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
@@ -2444,9 +2478,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Lets ignore this problem for now, who needs 65-thousand tags?!
 			return 0;
 		}
-		
-		// This makes a list of lines related to marked vertices
-		// A line is unstable when one vertex is marked and the other isn't.
+
+		/// <summary>This makes a list of lines related to marked vertices.
+		/// A line is unstable when one vertex is marked and the other isn't.</summary>
 		public ICollection<Linedef> LinedefsFromMarkedVertices(bool includeunselected, bool includestable, bool includeunstable)
 		{
 			List<Linedef> list = new List<Linedef>((linedefs.Count / 2) + 1);
@@ -2468,8 +2502,8 @@ namespace CodeImp.DoomBuilder.Map
 			return list;
 		}
 
-		// This makes a list of unstable lines from the given vertices.
-		// A line is unstable when one vertex is selected and the other isn't.
+		/// <summary>This makes a list of unstable lines from the given vertices.
+		/// A line is unstable when one vertex is selected and the other isn't.</summary>
 		public static ICollection<Linedef> UnstableLinedefsFromVertices(ICollection<Vertex> verts)
 		{
 			Dictionary<Linedef, Linedef> lines = new Dictionary<Linedef, Linedef>();
@@ -2498,23 +2532,23 @@ namespace CodeImp.DoomBuilder.Map
 			// Return result
 			return new List<Linedef>(lines.Values);
 		}
-		
-		// This finds the line closest to the specified position
+
+		/// <summary>This finds the line closest to the specified position.</summary>
 		public Linedef NearestLinedef(Vector2D pos) { return MapSet.NearestLinedef(linedefs, pos); }
 
-		// This finds the line closest to the specified position
+		/// <summary>This finds the line closest to the specified position.</summary>
 		public Linedef NearestLinedefRange(Vector2D pos, float maxrange) { return MapSet.NearestLinedefRange(linedefs, pos, maxrange); }
 
-		// This finds the vertex closest to the specified position
+		/// <summary>This finds the vertex closest to the specified position.</summary>
 		public Vertex NearestVertex(Vector2D pos) { return MapSet.NearestVertex(vertices, pos); }
 
-		// This finds the vertex closest to the specified position
+		/// <summary>This finds the vertex closest to the specified position.</summary>
 		public Vertex NearestVertexSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestVertexSquareRange(vertices, pos, maxrange); }
 
-		// This finds the thing closest to the specified position
+		/// <summary>This finds the thing closest to the specified position.</summary>
 		public Thing NearestThingSquareRange(Vector2D pos, float maxrange) { return MapSet.NearestThingSquareRange(things, pos, maxrange); }
 
-		// This finds the closest unselected linedef that is not connected to the given vertex
+		/// <summary>This finds the closest unselected linedef that is not connected to the given vertex.</summary>
 		public Linedef NearestUnselectedUnreferencedLinedef(Vector2D pos, float maxrange, Vertex v, out float distance)
 		{
 			Linedef closest = null;
@@ -2654,8 +2688,8 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in linedefs) if(l.Marked) l.TranslateFromUDMF();
 			foreach(Thing t in things) if(t.Marked) t.TranslateFromUDMF();
 		}
-		
-		// This removes unused vertices
+
+		/// <summary>This removes unused vertices.</summary>
 		public void RemoveUnusedVertices()
 		{
 			LinkedListNode<Vertex> vn, vc;
