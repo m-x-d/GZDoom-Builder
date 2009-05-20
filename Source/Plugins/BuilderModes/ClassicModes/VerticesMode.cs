@@ -47,9 +47,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		public const float VERTEX_HIGHLIGHT_RANGE = 20f;
-		public const float LINEDEF_SPLIT_RANGE = 12f;
-
 		#endregion
 
 		#region ================== Variables
@@ -265,7 +262,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Find the nearest linedef within highlight range
-				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_SPLIT_RANGE / renderer.Scale);
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / renderer.Scale);
 				if(l != null)
 				{
 					// Create undo
@@ -365,7 +362,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.Button == MouseButtons.None)
 			{
 				// Find the nearest vertex within highlight range
-				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+				Vertex v = General.Map.Map.NearestVertexSquareRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
 
 				// Highlight if not the same
 				if(v != highlighted) Highlight(v);
@@ -501,7 +498,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Insert vertex");
 
 				// Snap to geometry?
-				l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_SPLIT_RANGE / rendererscale);
+				l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / rendererscale);
 				if(snaptonearest && (l != null))
 				{
 					// Snip to grid also?

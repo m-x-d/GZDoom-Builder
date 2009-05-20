@@ -275,7 +275,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Snap to nearest vertex?
 						if(snaptonearest && (highlighted != null))
 						{
-							float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
+							float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
 
 							// Try the nearest vertex
 							Vertex nv = MapSet.NearestVertexSquareRange(unselectedvertices, transformedpos, vrange);
@@ -288,7 +288,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							else
 							{
 								// Find the nearest unselected line within range
-								Linedef nl = MapSet.NearestLinedefRange(unselectedlines, transformedpos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+								Linedef nl = MapSet.NearestLinedefRange(unselectedlines, transformedpos, BuilderPlug.Me.StitchRange / renderer.Scale);
 								if(nl != null)
 								{
 									// Snap to grid?
@@ -349,7 +349,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Snap to nearest vertex?
 						if(snaptonearest)
 						{
-							float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
+							float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
 							
 							// Try the nearest vertex
 							Vertex nv = MapSet.NearestVertexSquareRange(unselectedvertices, snappedmappos, vrange);

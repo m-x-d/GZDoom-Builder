@@ -72,6 +72,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private SidedefProperties copiedsidedefprops;
 		private ThingProperties copiedthingprops;
 		private bool viewselectionnumbers;
+		private float stitchrange;
+		private float highlightrange;
+		private float highlightthingsrange;
+		private float splitlinedefsrange;
 		
 		#endregion
 
@@ -100,6 +104,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public SidedefProperties CopiedSidedefProps { get { return copiedsidedefprops; } set { copiedsidedefprops = value; } }
 		public ThingProperties CopiedThingProps { get { return copiedthingprops; } set { copiedthingprops = value; } }
 		public bool ViewSelectionNumbers { get { return viewselectionnumbers; } set { viewselectionnumbers = value; } }
+		public float StitchRange { get { return stitchrange; } }
+		public float HighlightRange { get { return highlightrange; } }
+		public float HighlightThingsRange { get { return highlightthingsrange; } }
+		public float SplitLinedefsRange { get { return splitlinedefsrange; } }
 		
 		#endregion
 
@@ -165,6 +173,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
 			additiveselect = General.Settings.ReadPluginSetting("additiveselect", false);
 			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
+			stitchrange = (float)General.Settings.ReadPluginSetting("stitchrange", 20);
+			highlightrange = (float)General.Settings.ReadPluginSetting("highlightrange", 20);
+			highlightthingsrange = (float)General.Settings.ReadPluginSetting("highlightthingsrange", 10);
+			splitlinedefsrange = (float)General.Settings.ReadPluginSetting("splitlinedefsrange", 10);
 		}
 
 		#endregion

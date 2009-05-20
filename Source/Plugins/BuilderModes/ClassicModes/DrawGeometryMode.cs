@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, IRenderer2D renderer, List<DrawnVertex> points)
 		{
 			DrawnVertex p = new DrawnVertex();
-			float vrange = VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale;
+			float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
 
 			// Snap to nearest?
 			if(snaptonearest)
@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Try the nearest linedef
-				Linedef nl = General.Map.Map.NearestLinedefRange(mousemappos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+				Linedef nl = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.StitchRange / renderer.Scale);
 				if(nl != null)
 				{
 					// Snap to grid?

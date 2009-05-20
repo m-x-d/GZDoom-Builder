@@ -60,6 +60,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			editnewthing.Checked = General.Settings.ReadPluginSetting("editnewthing", true);
 			editnewsector.Checked = General.Settings.ReadPluginSetting("editnewsector", false);
 			additiveselect.Checked = General.Settings.ReadPluginSetting("additiveselect", false);
+			stitchrange.Text = General.Settings.ReadPluginSetting("stitchrange", 20).ToString();
+			highlightrange.Text = General.Settings.ReadPluginSetting("highlightrange", 20).ToString();
+			highlightthingsrange.Text = General.Settings.ReadPluginSetting("highlightthingsrange", 10).ToString();
+			splitlinedefsrange.Text = General.Settings.ReadPluginSetting("splitlinedefsrange", 10).ToString();
 		}
 
 		#endregion
@@ -74,8 +78,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("editnewthing", editnewthing.Checked);
 			General.Settings.WritePluginSetting("editnewsector", editnewsector.Checked);
 			General.Settings.WritePluginSetting("additiveselect", additiveselect.Checked);
+			General.Settings.WritePluginSetting("stitchrange", stitchrange.GetResult(0));
+			General.Settings.WritePluginSetting("highlightrange", highlightrange.GetResult(0));
+			General.Settings.WritePluginSetting("highlightthingsrange", highlightthingsrange.GetResult(0));
+			General.Settings.WritePluginSetting("splitlinedefsrange", splitlinedefsrange.GetResult(0));
 		}
-
+		
 		// When Cancel is pressed on the preferences dialog
 		public void OnCancel(PreferencesController controller)
 		{
