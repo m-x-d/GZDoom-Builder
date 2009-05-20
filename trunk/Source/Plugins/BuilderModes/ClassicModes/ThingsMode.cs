@@ -49,8 +49,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		public const float THING_HIGHLIGHT_RANGE = 10f;
-		
 		#endregion
 
 		#region ================== Variables
@@ -397,7 +395,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.Button == MouseButtons.None)
 			{
 				// Find the nearest thing within highlight range
-				Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, THING_HIGHLIGHT_RANGE / renderer.Scale);
+				Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, BuilderPlug.Me.HighlightThingsRange / renderer.Scale);
 				
 				// Highlight if not the same
 				if(t != highlighted) Highlight(t);

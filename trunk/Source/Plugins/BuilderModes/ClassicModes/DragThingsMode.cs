@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(snapnearest)
 			{
 				// Find nearest unselected item within selection range
-				nearest = MapSet.NearestThingSquareRange(unselectedthings, mousemappos, ThingsMode.THING_HIGHLIGHT_RANGE / renderer.Scale);
+				nearest = MapSet.NearestThingSquareRange(unselectedthings, mousemappos, BuilderPlug.Me.StitchRange / renderer.Scale);
 				if(nearest != null)
 				{
 					// Move the dragged item

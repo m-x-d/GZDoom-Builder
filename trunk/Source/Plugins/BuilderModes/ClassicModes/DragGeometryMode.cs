@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(snapnearest)
 			{
 				// Find nearest unselected vertex within range
-				Vertex nv = MapSet.NearestVertexSquareRange(unselectedverts, anchorpos, VerticesMode.VERTEX_HIGHLIGHT_RANGE / renderer.Scale);
+				Vertex nv = MapSet.NearestVertexSquareRange(unselectedverts, anchorpos, BuilderPlug.Me.StitchRange / renderer.Scale);
 				if(nv != null)
 				{
 					// Move the dragged item
@@ -182,7 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					// Find the nearest unselected line within range
-					Linedef nl = MapSet.NearestLinedefRange(snaptolines, anchorpos, LinedefsMode.LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+					Linedef nl = MapSet.NearestLinedefRange(snaptolines, anchorpos, BuilderPlug.Me.StitchRange / renderer.Scale);
 					if(nl != null)
 					{
 						// Snap to grid?

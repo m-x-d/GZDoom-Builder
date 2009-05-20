@@ -49,8 +49,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		public const float LINEDEF_HIGHLIGHT_RANGE = 20f;
-
 		#endregion
 
 		#region ================== Variables
@@ -410,7 +408,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(e.Button == MouseButtons.None)
 			{
 				// Find the nearest linedef within highlight range
-				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, LINEDEF_HIGHLIGHT_RANGE / renderer.Scale);
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.HighlightRange / renderer.Scale);
 
 				// Highlight if not the same
 				if(l != highlighted) Highlight(l);
