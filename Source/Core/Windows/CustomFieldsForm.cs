@@ -35,6 +35,9 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Windows
 {
+	/// <summary>
+	/// Dialog window that allows you to view and/or change custom UDMF fields.
+	/// </summary>
 	public partial class CustomFieldsForm : DelayedForm
 	{
 		// Keep a list of elements

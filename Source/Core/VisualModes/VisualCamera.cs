@@ -12,6 +12,9 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
+	/// <summary>
+	/// This class provides the camera in Visual Mode
+	/// </summary>
 	public class VisualCamera
 	{
 		#region ================== Constants

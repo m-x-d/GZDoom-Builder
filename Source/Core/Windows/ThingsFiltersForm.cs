@@ -35,7 +35,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class ThingsFiltersForm : DelayedForm
+	internal partial class ThingsFiltersForm : DelayedForm
 	{
 		#region ================== Variables
 

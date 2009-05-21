@@ -38,6 +38,9 @@ using System.Globalization;
 
 namespace CodeImp.DoomBuilder.Controls
 {
+	/// <summary>
+	/// Control to view and/or change custom UDMF fields.
+	/// </summary>
 	public partial class FieldsEditorControl : UserControl
 	{
 		#region ================== Constants

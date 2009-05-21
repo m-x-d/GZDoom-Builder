@@ -32,6 +32,9 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Config
 {
+	/// <summary>
+	/// Option in generalized types.
+	/// </summary>
 	public class GeneralizedOption
 	{
 		#region ================== Constants

@@ -35,6 +35,9 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Windows
 {
+	/// <summary>
+	/// Dialog window that allows viewing and editing of Thing properties.
+	/// </summary>
 	public partial class ThingEditForm : DelayedForm
 	{
 		#region ================== Variables
