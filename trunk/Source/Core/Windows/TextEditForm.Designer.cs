@@ -1,5 +1,8 @@
 namespace CodeImp.DoomBuilder.Windows
 {
+	/// <summary>
+	/// Dialog window that allows entering a multiline text string.
+	/// </summary>
 	partial class TextEditForm
 	{
 		/// <summary>

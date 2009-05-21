@@ -33,6 +33,9 @@ using System.Drawing.Drawing2D;
 
 namespace CodeImp.DoomBuilder.Controls
 {
+	/// <summary>
+	/// Control which allows you to click on one of the buttons to select a rotation by 45 degrees.
+	/// </summary>
 	public partial class AngleControl : UserControl
 	{
 		#region ================== Constants

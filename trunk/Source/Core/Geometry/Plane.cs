@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		#region ================== Constructors
 		
-		// Constructor
+		/// <summary></summary>
 		public Plane(Vector3D normal, float offset)
 		{
 			#if DEBUG
@@ -69,8 +69,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			this.normal = normal;
 			this.offset = offset;
 		}
-		
-		// Constructor
+
+		/// <summary></summary>
 		public Plane(Vector3D normal, Vector3D position)
 		{
 			#if DEBUG
@@ -80,8 +80,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			this.normal = normal;
 			this.offset = -Vector3D.DotProduct(normal, position);
 		}
-		
-		// Constructor
+
+		/// <summary></summary>
 		public Plane(Vector3D p1, Vector3D p2, Vector3D p3)
 		{
 			this.normal = Vector3D.CrossProduct(p1 - p2, p3 - p2).GetNormal();
@@ -92,7 +92,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		
 		#region ================== Methods
 		
-		// This tests for intersection using a position and direction
+		/// <summary>
+		/// This tests for intersection using a position and direction
+		/// </summary>
 		public bool GetIntersection(Vector3D position, Vector3D direction, ref float u_ray)
 		{
 			float a = Vector3D.DotProduct(normal, direction);
@@ -108,22 +110,28 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 		}
 		
-		// This returns the smallest distance to the plane and the side on which the point lies.
-		// > 0 means the point lies on the front of the plane
-		// < 0 means the point lies behind the plane
+		/// <summary>
+		/// This returns the smallest distance to the plane and the side on which the point lies.
+		/// > 0 means the point lies on the front of the plane
+		/// < 0 means the point lies behind the plane
+		/// </summary>
 		public float Distance(Vector3D p)
 		{
 			return Vector3D.DotProduct(p, normal) + offset;
 		}
 		
-		// This returns a point on the plane closest to the given point
+		/// <summary>
+		/// This returns a point on the plane closest to the given point
+		/// </summary>
 		public Vector3D ClosestOnPlane(Vector3D p)
 		{
 			float d = Vector3D.DotProduct(p, normal) + offset;
 			return p - normal * d;
 		}
 		
-		// This inverts the plane
+		/// <summary>
+		/// This inverts the plane
+		/// </summary>
 		public Plane GetInverted()
 		{
 			return new Plane(-normal, -offset);

@@ -37,6 +37,9 @@ using System.Drawing.Drawing2D;
 
 namespace CodeImp.DoomBuilder.Controls
 {
+	/// <summary>
+	/// Abstract control that provides a list of images.
+	/// </summary>
 	public abstract partial class ImageSelectorControl : UserControl
 	{
 		#region ================== Variables

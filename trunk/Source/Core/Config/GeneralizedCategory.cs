@@ -7,6 +7,9 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Config
 {
+	/// <summary>
+	/// Category of generalized type options.
+	/// </summary>
 	public class GeneralizedCategory
 	{
 		#region ================== Constants

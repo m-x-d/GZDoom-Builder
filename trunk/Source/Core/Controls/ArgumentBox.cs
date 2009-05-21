@@ -32,6 +32,9 @@ using System.Globalization;
 
 namespace CodeImp.DoomBuilder.Controls
 {
+	/// <summary>
+	/// Control to accept a linedef action argument.
+	/// </summary>
 	public partial class ArgumentBox : UserControl
 	{
 		#region ================== Variables

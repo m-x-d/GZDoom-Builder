@@ -6,6 +6,9 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Config
 {
+	/// <summary>
+	/// Option value in generalized types.
+	/// </summary>
 	public class GeneralizedBit : INumberedTitle, IComparable<GeneralizedBit>
 	{
 		#region ================== Constants
