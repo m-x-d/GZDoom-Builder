@@ -244,12 +244,13 @@ namespace CodeImp.DoomBuilder.Controls
 			Stream lexersdata;
 			StreamReader lexersreader;
 			Configuration lexercfg = new Configuration();
-			List<string> autocompletelist = new List<string>();
+			SortedList<string, string> autocompletelist;
 			string[] resnames;
 			int imageindex;
 			
 			// Make collections
 			stylelookup = new Dictionary<int, ScriptStyleType>();
+			autocompletelist = new SortedList<string, string>(StringComparer.Ordinal);
 			
 			// Keep script configuration
 			if(scriptconfig != config) scriptconfig = config;
@@ -357,7 +358,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(keywordslist.Length > 0) keywordslist.Append(" ");
 					keywordslist.Append(k);
-					autocompletelist.Add(k + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
+					autocompletelist.Add(k.ToUpperInvariant(), k + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
 				}
 				string words = keywordslist.ToString();
 				scriptedit.KeyWords(keywordsindex, words.ToLowerInvariant());
@@ -373,16 +374,16 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(constantslist.Length > 0) constantslist.Append(" ");
 					constantslist.Append(c);
-					autocompletelist.Add(c + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
+					autocompletelist.Add(c.ToUpperInvariant(), c + "?" + imageindex.ToString(CultureInfo.InvariantCulture));
 				}
 				string words = constantslist.ToString();
 				scriptedit.KeyWords(constantsindex, words.ToLowerInvariant());
 			}
 			
 			// Sort the autocomplete list
-			autocompletelist.Sort(StringComparer.CurrentCultureIgnoreCase);
-			autocompletestring = string.Join(" ", autocompletelist.ToArray());
-
+			List<string> autocompleteplainlist = new List<string>(autocompletelist.Values);
+			autocompletestring = string.Join(" ", autocompleteplainlist.ToArray());
+			
 			// Show/hide the functions bar
 			functionbar.Visible = (scriptconfig.FunctionRegEx.Length > 0);
 
