@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 // set to be sky
                 if (sd.HighRequired() && sd.HighTexture[0] == '-')
                 {
-                    if (sd.Other != null && sd.Other.Sector.CeilTexture != "F_SKY1")
+                    if (sd.Other != null && sd.Other.Sector.CeilTexture != General.Map.Config.SkyFlatName)
                     {
                         SubmitResult(new ResultMissingTexture(sd, SidedefPart.Upper));
                     }
@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
                 // set to be sky
                 if (sd.LowRequired() && sd.LowTexture[0] == '-')
                 {
-                    if (sd.Other != null && sd.Other.Sector.FloorTexture != "F_SKY1")
+                    if (sd.Other != null && sd.Other.Sector.FloorTexture != General.Map.Config.SkyFlatName)
                     {
                         SubmitResult(new ResultMissingTexture(sd, SidedefPart.Lower));
                     }
