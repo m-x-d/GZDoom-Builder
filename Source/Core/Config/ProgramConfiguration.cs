@@ -425,16 +425,19 @@ namespace CodeImp.DoomBuilder.Config
 				}
 
 				// Pick the first FLOOR from the list.
-				foreach(string s in General.Map.Data.FlatNames)
+				if(!foundone)
 				{
-					if(s.StartsWith("FLOOR"))
+					foreach(string s in General.Map.Data.FlatNames)
 					{
-						foundone = true;
-						defaultfloortexture = s;
-						break;
+						if(s.StartsWith("FLOOR"))
+						{
+							foundone = true;
+							defaultfloortexture = s;
+							break;
+						}
 					}
 				}
-
+				
 				// Otherwise just pick the first
 				if(!foundone)
 				{
@@ -454,17 +457,20 @@ namespace CodeImp.DoomBuilder.Config
 					defaultceiltexture = General.GetByIndex(General.Map.Map.Sectors, 0).CeilTexture;
 				}
 
-				// Pick the first FLOOR from the list.
-				foreach(string s in General.Map.Data.FlatNames)
+				// Pick the first CEIL from the list.
+				if(!foundone)
 				{
-					if(s.StartsWith("FLOOR"))
+					foreach(string s in General.Map.Data.FlatNames)
 					{
-						foundone = true;
-						defaultceiltexture = s;
-						break;
+						if(s.StartsWith("CEIL"))
+						{
+							foundone = true;
+							defaultceiltexture = s;
+							break;
+						}
 					}
 				}
-
+				
 				// Otherwise just pick the first
 				if(!foundone)
 				{
