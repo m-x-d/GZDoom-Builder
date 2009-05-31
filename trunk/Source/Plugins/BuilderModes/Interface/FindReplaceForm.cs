@@ -169,8 +169,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Perform the search / replace and show the results
 			if(doreplace.Checked)
 			{
+				int ticket = General.Map.UndoRedo.CreateUndo("Replace " + searchtypes.SelectedItem);
+
 				resultslist.Items.AddRange(finder.Find(findinput.Text, withinselection.Checked, replaceinput.Text, false));
 				resultscount.Text = resultslist.Items.Count + " items found and replaced.";
+
+				// Withdraw the undo step if nothing was replaced
+				if (resultslist.Items.Count <= 0)
+				{
+					General.Map.UndoRedo.WithdrawUndo(ticket);
+				}
 			}
 			else
 			{
