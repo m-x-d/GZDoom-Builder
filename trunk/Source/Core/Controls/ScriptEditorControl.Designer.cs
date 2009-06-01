@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.CodePage = 0;
 			this.scriptedit.ControlCharSymbol = 0;
 			this.scriptedit.CurrentPos = 0;
-			this.scriptedit.CursorType = 0;
+			this.scriptedit.CursorType = -1;
 			this.scriptedit.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.scriptedit.DocPointer = 0;
 			this.scriptedit.EdgeColour = 0;

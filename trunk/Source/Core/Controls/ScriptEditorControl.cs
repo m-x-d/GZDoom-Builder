@@ -135,6 +135,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.Indent = 4;
 			scriptedit.ExtraAscent = 1;
 			scriptedit.ExtraDescent = 1;
+			scriptedit.CursorType = -1;
 
 			// Symbol margin
 			scriptedit.SetMarginTypeN(0, (int)ScriptMarginType.Symbol);
