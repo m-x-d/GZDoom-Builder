@@ -1392,6 +1392,9 @@ namespace CodeImp.DoomBuilder
 			// Can't have a selection in an old map set
 			map.ClearAllSelected();
 
+			// Reset surfaces
+			renderer2d.Surfaces.Reset();
+			
 			// Apply
 			map.Dispose();
 			map = newmap;

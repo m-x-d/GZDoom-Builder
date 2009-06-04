@@ -106,9 +106,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		private bool thingsfront;
 		private int vertexsize;
 		private RenderLayers renderlayer = RenderLayers.None;
-
+		
+		// Surfaces
+		private SurfaceManager surfaces;
+		
 		// Images
-		private ResourceImage whitetexture;
 		private ResourceImage[] thingtexture;
 		
 		// View settings (world coordinates)
@@ -139,6 +141,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public float Scale { get { return scale; } }
 		public int VertexSize { get { return vertexsize; } }
 		public ViewMode ViewMode { get { return viewmode; } }
+		public SurfaceManager Surfaces { get { return surfaces; } }
 
 		#endregion
 
@@ -157,11 +160,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				thingtexture[i].CreateTexture();
 			}
 
-			// Load white texture
-			whitetexture = new ResourceImage("White.png");
-			whitetexture.UseColorCorrection = false;
-			whitetexture.LoadImage();
-			whitetexture.CreateTexture();
+			// Create surface manager
+			surfaces = new SurfaceManager();
 
 			// Create rendertargets
 			CreateRendertargets();
@@ -179,7 +179,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Destroy rendertargets
 				DestroyRendertargets();
 				foreach(ResourceImage i in thingtexture) i.Dispose();
-				whitetexture.Dispose();
+				
+				// Dispose surface manager
+				surfaces.Dispose();
 				
 				// Done
 				base.Dispose();
@@ -1138,124 +1140,39 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Set transformations
 					UpdateTransformations();
 
-					// Render what must be rendered
+					// Set states
+					graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+					graphics.Device.SetRenderState(RenderState.ZEnable, false);
+					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+					graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+					graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+					graphics.Device.SetRenderState(RenderState.FogEnable, false);
+					SetWorldTransformation(true);
+					graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
+					
+					// Prepare for rendering
 					switch(viewmode)
 					{
-						case ViewMode.Brightness: RenderSectorBrightness(General.Map.Map.Sectors); break;
-						case ViewMode.FloorTextures: RenderSectorFloors(General.Map.Map.Sectors); break;
-						case ViewMode.CeilingTextures: RenderSectorCeilings(General.Map.Map.Sectors); break;
+						case ViewMode.Brightness:
+							surfaces.RenderSectorBrightness();
+							surfaces.RenderSectorSurfaces(graphics);
+							break;
+							
+						case ViewMode.FloorTextures:
+							surfaces.RenderSectorFloors();
+							surfaces.RenderSectorSurfaces(graphics);
+							break;
+							
+						case ViewMode.CeilingTextures:
+							surfaces.RenderSectorCeilings();
+							surfaces.RenderSectorSurfaces(graphics);
+							break;
 					}
 				}
 			}
 			
 			// Done
 			Finish();
-		}
-
-		// This renders all sector floors
-		private void RenderSectorFloors(ICollection<Sector> sectors)
-		{
-			// Set states
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-			graphics.Device.SetRenderState(RenderState.ZEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-			graphics.Device.SetRenderState(RenderState.FogEnable, false);
-			SetWorldTransformation(true);
-			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
-			
-			// Render all sectors
-			foreach(Sector s in sectors)
-				RenderSectorSurface(s, s.FlatFloorBuffer, s.LongFloorTexture);
-		}
-
-		// This renders all sector ceilings
-		private void RenderSectorCeilings(ICollection<Sector> sectors)
-		{
-			// Set states
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-			graphics.Device.SetRenderState(RenderState.ZEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-			graphics.Device.SetRenderState(RenderState.FogEnable, false);
-			SetWorldTransformation(true);
-			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
-
-			// Render all sectors
-			foreach(Sector s in sectors)
-				RenderSectorSurface(s, s.FlatCeilingBuffer, s.LongCeilTexture);
-		}
-
-		// This renders all sector brightness levels
-		private void RenderSectorBrightness(ICollection<Sector> sectors)
-		{
-			// Set states
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-			graphics.Device.SetRenderState(RenderState.ZEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-			graphics.Device.SetRenderState(RenderState.FogEnable, false);
-			SetWorldTransformation(true);
-			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
-
-			// Render all sectors
-			foreach(Sector s in sectors)
-				RenderSectorSurface(s, s.FlatFloorBuffer, 0);
-		}
-
-		// This renders the geometry and tecture of the sector
-		private void RenderSectorSurface(Sector s, VertexBuffer buffer, long longimagename)
-		{
-			Texture t = null;
-			
-			if((buffer != null) && (s.FlatVertices != null) && (s.FlatVertices.Length > 0))
-			{
-				if(longimagename == 0)
-				{
-					t = whitetexture.Texture;
-				}
-				else
-				{
-					ImageData img = General.Map.Data.GetFlatImage(longimagename);
-					if(img != null)
-					{
-						// Texture unknown?
-						if(img is UnknownImage)
-						{
-							t = General.Map.Data.UnknownTexture3D.Texture;
-						}
-						// Is the texture loaded?
-						else if(img.IsImageLoaded && !img.LoadFailed)
-						{
-							if(img.Texture == null) img.CreateTexture();
-							t = img.Texture;
-						}
-						else
-						{
-							t = whitetexture.Texture;
-						}
-					}
-					else
-					{
-						t = whitetexture.Texture;
-					}
-				}
-				
-				// Set renderstates for rendering
-				graphics.Shaders.Display2D.Texture1 = t;
-				graphics.Device.SetTexture(0, t);
-				graphics.Device.SetStreamSource(0, buffer, 0, FlatVertex.Stride);
-
-				// Draw
-				graphics.Shaders.Display2D.Begin();
-				graphics.Shaders.Display2D.BeginPass(1);
-				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, s.FlatVertices.Length / 3);
-				graphics.Shaders.Display2D.EndPass();
-				graphics.Shaders.Display2D.End();
-			}
 		}
 
 		#endregion
@@ -1279,7 +1196,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 				else
 				{
-					t = whitetexture.Texture;
+					t = General.Map.Data.WhiteTexture.Texture;
 				}
 
 				// Set renderstates for rendering
@@ -1385,8 +1302,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(false);
-			graphics.Device.SetTexture(0, whitetexture.Texture);
-			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
+			graphics.Device.SetTexture(0, General.Map.Data.WhiteTexture.Texture);
+			graphics.Shaders.Display2D.Texture1 = General.Map.Data.WhiteTexture.Texture;
 			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
 			
 			// Draw
@@ -1424,8 +1341,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(false);
-			graphics.Device.SetTexture(0, whitetexture.Texture);
-			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
+			graphics.Device.SetTexture(0, General.Map.Data.WhiteTexture.Texture);
+			graphics.Shaders.Display2D.Texture1 = General.Map.Data.WhiteTexture.Texture;
 			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
 
 			// Draw
@@ -1478,8 +1395,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(false);
-			graphics.Device.SetTexture(0, whitetexture.Texture);
-			graphics.Shaders.Display2D.Texture1 = whitetexture.Texture;
+			graphics.Device.SetTexture(0, General.Map.Data.WhiteTexture.Texture);
+			graphics.Shaders.Display2D.Texture1 = General.Map.Data.WhiteTexture.Texture;
 			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
 
 			// Draw
