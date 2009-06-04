@@ -81,6 +81,7 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData crosshairbusy;
 		private Dictionary<string, ImageData> internalsprites;
 		private ImageData thingbox;
+		private ImageData whitetexture;
 		
 		// Used images
 		private Dictionary<long, long> usedimages;
@@ -113,6 +114,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData Crosshair3D { get { return crosshair; } }
 		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
 		public ImageData ThingBox { get { return thingbox; } }
+		public ImageData WhiteTexture { get { return whitetexture; } }
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
 		internal ICollection<MatchingTextureSet> TextureSets { get { return texturesets; } }
@@ -157,8 +159,12 @@ namespace CodeImp.DoomBuilder.Data
 			crosshairbusy.LoadImage();
 			thingbox = new ResourceImage("ThingBox.png");
 			thingbox.LoadImage();
+			whitetexture = new ResourceImage("White.png");
+			whitetexture.UseColorCorrection = false;
+			whitetexture.LoadImage();
+			whitetexture.CreateTexture();
 		}
-
+		
 		// Disposer
 		internal void Dispose()
 		{
@@ -179,6 +185,8 @@ namespace CodeImp.DoomBuilder.Data
 				crosshairbusy = null;
 				thingbox.Dispose();
 				thingbox = null;
+				whitetexture.Dispose();
+				whitetexture = null;
 				
 				// Done
 				isdisposed = true;

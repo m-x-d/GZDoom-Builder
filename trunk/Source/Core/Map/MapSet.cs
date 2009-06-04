@@ -891,9 +891,18 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Update all linedefs
 			if(dolines) foreach(Linedef l in linedefs) l.UpdateCache();
-
+			
 			// Update all sectors
-			if(dosectors) foreach(Sector s in sectors) s.UpdateCache();
+			if(dosectors)
+			{
+				foreach(Sector s in sectors) s.Triangulate();
+				
+				General.Map.CRenderer2D.Surfaces.AllocateBuffers();
+				
+				foreach(Sector s in sectors) s.CreateSurfaces();
+				
+				General.Map.CRenderer2D.Surfaces.UnlockBuffers();
+			}
 		}
 		
 		/// <summary>

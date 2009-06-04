@@ -676,6 +676,9 @@
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="IO\DoomColormapReader.cs" />
     <Compile Include="Map\SelectionType.cs" />
+    <Compile Include="Rendering\SurfaceBufferSet.cs" />
+    <Compile Include="Rendering\SurfaceEntry.cs" />
+    <Compile Include="Rendering\SurfaceManager.cs" />
     <Compile Include="Windows\ErrorsForm.cs">
       <SubType>Form</SubType>
     </Compile>
