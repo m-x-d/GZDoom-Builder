@@ -49,7 +49,6 @@ namespace CodeImp.DoomBuilder.Map
 		private Sector sector = null;
 
 		// List items
-		private LinkedListNode<Thing> mainlistitem;
 		private LinkedListNode<Thing> selecteditem;
 		
 		// Properties
@@ -91,11 +90,11 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal Thing(MapSet map, LinkedListNode<Thing> listitem)
+		internal Thing(MapSet map, int listindex)
 		{
 			// Initialize
 			this.map = map;
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 			this.flags = new Dictionary<string, bool>();
 			this.args = new int[NUM_ARGS];
 			
@@ -113,13 +112,12 @@ namespace CodeImp.DoomBuilder.Map
 				isdisposed = true;
 
 				// Remove from main list
-				mainlistitem.List.Remove(mainlistitem);
+				map.RemoveThing(listindex);
 
 				// Remove from sector
 				//if(sector != null) sector.DetachThing(sectorlistitem);
 				
 				// Clean up
-				mainlistitem = null;
 				map = null;
 				sector = null;
 
@@ -186,14 +184,6 @@ namespace CodeImp.DoomBuilder.Map
 			base.CopyPropertiesTo(t);
 		}
 
-		/// <summary>
-		/// Returns the index of the specified thing. This is a O(n) operation.
-		/// </summary>
-		public int GetIndex()
-		{
-			return map.GetIndexForThing(this);
-		}
-		
 		// This determines which sector the thing is in and links it
 		public void DetermineSector()
 		{

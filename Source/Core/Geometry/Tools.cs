@@ -923,8 +923,10 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				// Join merge vertices so that overlapping vertices in the draw become one.
+				map.BeginAddRemove();
 				MapSet.JoinVertices(mergeverts, mergeverts, false, MapSet.STITCH_DISTANCE);
-
+				map.EndAddRemove();
+				
 				/***************************************************\
 					Find a way to close the drawing
 				\***************************************************/
@@ -1157,9 +1159,11 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Merge intersetion vertices with the new lines. This completes the
 				// self intersections for which splits were made above.
 				map.Update(true, false);
+				map.BeginAddRemove();
 				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null);
 				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
-
+				map.EndAddRemove();
+				
 				/***************************************************\
 					Determine drawing interior
 				\***************************************************/

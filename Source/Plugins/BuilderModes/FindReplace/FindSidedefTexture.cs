@@ -112,21 +112,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Replace and add to list
 					if(replacewith != null) sd.SetTextureHigh(replacewith);
-					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.GetIndex() + " (" + side + ", high)"));
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", high)"));
 				}
 				
 				if(sd.LongMiddleTexture == longfind)
 				{
 					// Replace and add to list
 					if(replacewith != null) sd.SetTextureMid(replacewith);
-					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.GetIndex() + " (" + side + ", middle)"));
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", middle)"));
 				}
 				
 				if(sd.LongLowTexture == longfind)
 				{
 					// Replace and add to list
 					if(replacewith != null) sd.SetTextureLow(replacewith);
-					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.GetIndex() + " (" + side + ", low)"));
+					objs.Add(new FindReplaceObject(sd, "Sidedef " + sd.Index + " (" + side + ", low)"));
 				}
 			}
 			

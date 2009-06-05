@@ -66,23 +66,29 @@ namespace CodeImp.DoomBuilder.Map
 		private Sidedef[] sidedefindices;
 		
 		// Map structures
-		private LinkedList<Vertex> vertices;
-		private LinkedList<Linedef> linedefs;
-		private LinkedList<Sidedef> sidedefs;
-		private LinkedList<Sector> sectors;
-		private LinkedList<Thing> things;
-
+		private int freezearrays;
+		private Vertex[] vertices;
+		private Linedef[] linedefs;
+		private Sidedef[] sidedefs;
+		private Sector[] sectors;
+		private Thing[] things;
+		private int numvertices;
+		private int numlinedefs;
+		private int numsidedefs;
+		private int numsectors;
+		private int numthings;
+		
 		// Selected elements
 		private LinkedList<Vertex> sel_vertices;
 		private LinkedList<Linedef> sel_linedefs;
 		private LinkedList<Sector> sel_sectors;
 		private LinkedList<Thing> sel_things;
 		private SelectionType sel_type;
-
+		
 		// Statics
 		private static long emptylongname;
 		private static UniValue virtualsectorvalue;
-
+		
 		// Disposing
 		private bool isdisposed = false;
 
@@ -91,19 +97,19 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		/// <summary>Returns a reference to the list of all vertices.</summary>
-		public ICollection<Vertex> Vertices { get { return vertices; } }
+		public ICollection<Vertex> Vertices { get { if(freezearrays == 0) return vertices; else return new MapElementCollection<Vertex>(ref vertices, numvertices); } }
 
 		/// <summary>Returns a reference to the list of all linedefs.</summary>
-		public ICollection<Linedef> Linedefs { get { return linedefs; } }
+		public ICollection<Linedef> Linedefs { get { if(freezearrays == 0) return linedefs; else return new MapElementCollection<Linedef>(ref linedefs, numlinedefs); } }
 
 		/// <summary>Returns a reference to the list of all sidedefs.</summary>
-		public ICollection<Sidedef> Sidedefs { get { return sidedefs; } }
+		public ICollection<Sidedef> Sidedefs { get { if(freezearrays == 0) return sidedefs; else return new MapElementCollection<Sidedef>(ref sidedefs, numsidedefs); } }
 
 		/// <summary>Returns a reference to the list of all sectors.</summary>
-		public ICollection<Sector> Sectors { get { return sectors; } }
+		public ICollection<Sector> Sectors { get { if(freezearrays == 0) return sectors; else return new MapElementCollection<Sector>(ref sectors, numsectors); } }
 
 		/// <summary>Returns a reference to the list of all things.</summary>
-		public ICollection<Thing> Things { get { return things; } }
+		public ICollection<Thing> Things { get { if(freezearrays == 0) return things; else return new MapElementCollection<Thing>(ref things, numthings); } }
 
 		/// <summary>Indicates if the map is disposed.</summary>
 		public bool IsDisposed { get { return isdisposed; } }
@@ -142,11 +148,11 @@ namespace CodeImp.DoomBuilder.Map
 		internal MapSet()
 		{
 			// Initialize
-			vertices = new LinkedList<Vertex>();
-			linedefs = new LinkedList<Linedef>();
-			sidedefs = new LinkedList<Sidedef>();
-			sectors = new LinkedList<Sector>();
-			things = new LinkedList<Thing>();
+			vertices = new Vertex[0];
+			linedefs = new Linedef[0];
+			sidedefs = new Sidedef[0];
+			sectors = new Sector[0];
+			things = new Thing[0];
 			sel_vertices = new LinkedList<Vertex>();
 			sel_linedefs = new LinkedList<Linedef>();
 			sel_sectors = new LinkedList<Sector>();
@@ -162,11 +168,11 @@ namespace CodeImp.DoomBuilder.Map
 		internal MapSet(MemoryStream stream)
 		{
 			// Initialize
-			vertices = new LinkedList<Vertex>();
-			linedefs = new LinkedList<Linedef>();
-			sidedefs = new LinkedList<Sidedef>();
-			sectors = new LinkedList<Sector>();
-			things = new LinkedList<Thing>();
+			vertices = new Vertex[0];
+			linedefs = new Linedef[0];
+			sidedefs = new Sidedef[0];
+			sectors = new Sector[0];
+			things = new Thing[0];
 			sel_vertices = new LinkedList<Vertex>();
 			sel_linedefs = new LinkedList<Linedef>();
 			sel_sectors = new LinkedList<Sector>();
@@ -191,26 +197,27 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
-
+				BeginAddRemove();
+				
 				// Dispose all things
-				list = new ArrayList(things);
-				foreach(Thing t in list) t.Dispose();
+				while((things.Length > 0) && (things[0] != null))
+					things[0].Dispose();
 
 				// Dispose all sectors
-				list = new ArrayList(sectors);
-				foreach(Sector s in list) s.Dispose();
+				while((sectors.Length > 0) && (sectors[0] != null))
+					sectors[0].Dispose();
 
 				// Dispose all sidedefs
-				list = new ArrayList(sidedefs);
-				foreach(Sidedef sd in list) sd.Dispose();
+				while((sidedefs.Length > 0) && (sidedefs[0] != null))
+					sidedefs[0].Dispose();
 
 				// Dispose all linedefs
-				list = new ArrayList(linedefs);
-				foreach(Linedef l in list) l.Dispose();
+				while((linedefs.Length > 0) && (linedefs[0] != null))
+					linedefs[0].Dispose();
 
 				// Dispose all vertices
-				list = new ArrayList(vertices);
-				foreach(Vertex v in list) v.Dispose();
+				while((vertices.Length > 0) && (vertices[0] != null))
+					vertices[0].Dispose();
 
 				// Clean up
 				vertices = null;
@@ -240,6 +247,61 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 		
+		// This begins large add/remove operations
+		public void BeginAddRemove()
+		{
+			freezearrays++;
+		}
+
+		// This allocates the arrays to a minimum size so that
+		// a lot of items can be created faster. This function will never
+		// allocate less than the current number of items.
+		public void SetCapacity(int nvertices, int nlinedefs, int nsidedefs, int nsectors, int nthings)
+		{
+			if(freezearrays == 0)
+				throw new Exception("You must call BeginAddRemove before setting the reserved capacity.");
+
+			if(numvertices < nvertices)
+				Array.Resize(ref vertices, nvertices);
+
+			if(numlinedefs < nlinedefs)
+				Array.Resize(ref linedefs, nlinedefs);
+
+			if(numsidedefs < nsidedefs)
+				Array.Resize(ref sidedefs, nsidedefs);
+
+			if(numsectors < nsectors)
+				Array.Resize(ref sectors, nsectors);
+
+			if(numthings < nthings)
+				Array.Resize(ref things, nthings);
+		}
+		
+		// This ends add/remove operations and crops the arrays
+		public void EndAddRemove()
+		{
+			if(freezearrays > 0)
+				freezearrays--;
+
+			if(freezearrays == 0)
+			{
+				if(numvertices < vertices.Length)
+					Array.Resize(ref vertices, numvertices);
+
+				if(numlinedefs < linedefs.Length)
+					Array.Resize(ref linedefs, numlinedefs);
+
+				if(numsidedefs < sidedefs.Length)
+					Array.Resize(ref sidedefs, numsidedefs);
+
+				if(numsectors < sectors.Length)
+					Array.Resize(ref sectors, numsectors);
+
+				if(numthings < things.Length)
+					Array.Resize(ref things, numthings);
+			}
+		}
+		
 		/// <summary>
 		/// This makes a deep copy and returns the new MapSet.
 		/// </summary>
@@ -250,7 +312,8 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Create the map set
 			MapSet newset = new MapSet();
-
+			newset.BeginAddRemove();
+			
 			// Go for all vertices
 			foreach(Vertex v in vertices)
 			{
@@ -290,7 +353,7 @@ namespace CodeImp.DoomBuilder.Map
 					l.Back.CopyPropertiesTo(nd);
 				}
 			}
-
+			
 			// Go for all things
 			foreach(Thing t in things)
 			{
@@ -298,12 +361,13 @@ namespace CodeImp.DoomBuilder.Map
 				Thing nt = newset.CreateThing();
 				t.CopyPropertiesTo(nt);
 			}
-
+			
 			// Remove clone references
 			foreach(Vertex v in vertices) v.Clone = null;
 			foreach(Sector s in sectors) s.Clone = null;
 			
 			// Return the new set
+			newset.EndAddRemove();
 			return newset;
 		}
 
@@ -314,6 +378,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Create the map set
 			MapSet newset = new MapSet();
+			newset.BeginAddRemove();
 
 			// Get marked geometry
 			ICollection<Vertex> mvertices = GetMarkedVertices(true);
@@ -414,25 +479,21 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sector s in sectors) s.Clone = null;
 
 			// Return the new set
+			newset.EndAddRemove();
 			return newset;
 		}
 		
 		/// <summary>This creates a new vertex and returns it.</summary>
 		public Vertex CreateVertex(Vector2D pos)
 		{
-			LinkedListNode<Vertex> listitem;
-			Vertex v;
-			
-			// Make a list item
-			listitem = new LinkedListNode<Vertex>(null);
-
 			// Make the vertex
-			v = new Vertex(this, listitem, pos);
-			listitem.Value = v;
-
+			Vertex v = new Vertex(this, numvertices, pos);
+			
 			// Add vertex to the list
-			vertices.AddLast(listitem);
-
+			ExpandArray(ref vertices, numvertices);
+			vertices[numvertices] = v;
+			numvertices++;
+			
 			// Return result
 			return v;
 		}
@@ -440,18 +501,13 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a new vertex from a stream
 		private Vertex CreateVertex(IReadWriteStream stream)
 		{
-			LinkedListNode<Vertex> listitem;
-			Vertex v;
-
-			// Make a list item
-			listitem = new LinkedListNode<Vertex>(null);
-
 			// Make the vertex
-			v = new Vertex(this, listitem, stream);
-			listitem.Value = v;
+			Vertex v = new Vertex(this, numvertices, stream);
 
 			// Add vertex to the list
-			vertices.AddLast(listitem);
+			ExpandArray(ref vertices, numvertices);
+			vertices[numvertices] = v;
+			numvertices++;
 
 			// Return result
 			return v;
@@ -460,18 +516,13 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new linedef and returns it.</summary>
 		public Linedef CreateLinedef(Vertex start, Vertex end)
 		{
-			LinkedListNode<Linedef> listitem;
-			Linedef l;
-
-			// Make a list item
-			listitem = new LinkedListNode<Linedef>(null);
-
 			// Make the linedef
-			l = new Linedef(this, listitem, start, end);
-			listitem.Value = l;
+			Linedef l = new Linedef(this, numlinedefs, start, end);
 
 			// Add linedef to the list
-			linedefs.AddLast(listitem);
+			ExpandArray(ref linedefs, numlinedefs);
+			linedefs[numlinedefs] = l;
+			numlinedefs++;
 
 			// Return result
 			return l;
@@ -480,18 +531,13 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a new linedef from a stream
 		private Linedef CreateLinedef(Vertex start, Vertex end, IReadWriteStream stream)
 		{
-			LinkedListNode<Linedef> listitem;
-			Linedef l;
-
-			// Make a list item
-			listitem = new LinkedListNode<Linedef>(null);
-
 			// Make the linedef
-			l = new Linedef(this, listitem, start, end, stream);
-			listitem.Value = l;
+			Linedef l = new Linedef(this, numlinedefs, start, end, stream);
 
 			// Add linedef to the list
-			linedefs.AddLast(listitem);
+			ExpandArray(ref linedefs, numlinedefs);
+			linedefs[numlinedefs] = l;
+			numlinedefs++;
 
 			// Return result
 			return l;
@@ -500,18 +546,13 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new sidedef and returns it.</summary>
 		public Sidedef CreateSidedef(Linedef l, bool front, Sector s)
 		{
-			LinkedListNode<Sidedef> listitem;
-			Sidedef sd;
-
-			// Make a list item
-			listitem = new LinkedListNode<Sidedef>(null);
-
 			// Make the sidedef
-			sd = new Sidedef(this, listitem, l, front, s);
-			listitem.Value = sd;
+			Sidedef sd = new Sidedef(this, numsidedefs, l, front, s);
 
 			// Add sidedef to the list
-			sidedefs.AddLast(listitem);
+			ExpandArray(ref sidedefs, numsidedefs);
+			sidedefs[numsidedefs] = sd;
+			numsidedefs++;
 
 			// Return result
 			return sd;
@@ -520,18 +561,13 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a new sidedef from a stream
 		private Sidedef CreateSidedef(Linedef l, bool front, Sector s, IReadWriteStream stream)
 		{
-			LinkedListNode<Sidedef> listitem;
-			Sidedef sd;
-
-			// Make a list item
-			listitem = new LinkedListNode<Sidedef>(null);
-
 			// Make the sidedef
-			sd = new Sidedef(this, listitem, l, front, s, stream);
-			listitem.Value = sd;
+			Sidedef sd = new Sidedef(this, numsidedefs, l, front, s, stream);
 
 			// Add sidedef to the list
-			sidedefs.AddLast(listitem);
+			ExpandArray(ref sidedefs, numsidedefs);
+			sidedefs[numsidedefs] = sd;
+			numsidedefs++;
 
 			// Return result
 			return sd;
@@ -562,18 +598,13 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a new sector with a specific fixed index
 		private Sector CreateSector(int index)
 		{
-			LinkedListNode<Sector> listitem;
-			Sector s;
-
-			// Make a list item
-			listitem = new LinkedListNode<Sector>(null);
-
 			// Make the sector
-			s = new Sector(this, listitem, index);
-			listitem.Value = s;
+			Sector s = new Sector(this, numsectors, index);
 
 			// Add sector to the list
-			sectors.AddLast(listitem);
+			ExpandArray(ref sectors, numsectors);
+			sectors[numsectors] = s;
+			numsectors++;
 
 			// Return result
 			return s;
@@ -582,18 +613,13 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a new sector from a stream
 		private Sector CreateSector(IReadWriteStream stream)
 		{
-			LinkedListNode<Sector> listitem;
-			Sector s;
-
-			// Make a list item
-			listitem = new LinkedListNode<Sector>(null);
-
 			// Make the sector
-			s = new Sector(this, listitem, stream);
-			listitem.Value = s;
+			Sector s = new Sector(this, numsectors, stream);
 
 			// Add sector to the list
-			sectors.AddLast(listitem);
+			ExpandArray(ref sectors, numsectors);
+			sectors[numsectors] = s;
+			numsectors++;
 
 			// Return result
 			return s;
@@ -602,18 +628,13 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new thing and returns it.</summary>
 		public Thing CreateThing()
 		{
-			LinkedListNode<Thing> listitem;
-			Thing t;
-
-			// Make a list item
-			listitem = new LinkedListNode<Thing>(null);
-
 			// Make the thing
-			t = new Thing(this, listitem);
-			listitem.Value = t;
+			Thing t = new Thing(this, numthings);
 
 			// Add thing to the list
-			things.AddLast(listitem);
+			ExpandArray(ref things, numthings);
+			things[numthings] = t;
+			numthings++;
 
 			// Return result
 			return t;
@@ -624,7 +645,64 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			indexholes.Add(index);
 		}
+		
+		private void RemoveItem<T>(ref T[] array, int index, ref int counter) where T: MapElement
+		{
+			if(index == (counter - 1))
+			{
+				array[index] = null;
+			}
+			else
+			{
+				array[index] = array[counter - 1];
+				array[index].Index = index;
+				array[counter - 1] = null;
+			}
+			
+			counter--;
 
+			if(freezearrays == 0)
+				Array.Resize(ref array, counter);
+		}
+		
+		internal void RemoveVertex(int index)
+		{
+			RemoveItem(ref vertices, index, ref numvertices);
+		}
+
+		internal void RemoveLinedef(int index)
+		{
+			RemoveItem(ref linedefs, index, ref numlinedefs);
+		}
+
+		internal void RemoveSidedef(int index)
+		{
+			RemoveItem(ref sidedefs, index, ref numsidedefs);
+		}
+
+		internal void RemoveSector(int index)
+		{
+			RemoveItem(ref sectors, index, ref numsectors);
+		}
+
+		internal void RemoveThing(int index)
+		{
+			RemoveItem(ref things, index, ref numthings);
+		}		
+		
+		// This increases the size of the array to add an item
+		private void ExpandArray<T>(ref T[] array, int numentries)
+		{
+			// Only resize when there are no more free entries
+			if(numentries == array.Length)
+			{
+				if(freezearrays == 0)
+					Array.Resize(ref array, numentries + 1);
+				else
+					Array.Resize(ref array, numentries + 10);
+			}
+		}
+		
 		#endregion
 
 		#region ================== Serialization
@@ -665,7 +743,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This serializes things
 		private void WriteThings(SerializerStream stream)
 		{
-			stream.wInt(things.Count);
+			stream.wInt(numthings);
 			
 			// Go for all things
 			foreach(Thing t in things)
@@ -677,7 +755,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This serializes vertices
 		private void WriteVertices(SerializerStream stream)
 		{
-			stream.wInt(vertices.Count);
+			stream.wInt(numvertices);
 
 			// Go for all vertices
 			int index = 0;
@@ -692,7 +770,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This serializes linedefs
 		private void WriteLinedefs(SerializerStream stream)
 		{
-			stream.wInt(linedefs.Count);
+			stream.wInt(numlinedefs);
 
 			// Go for all lines
 			int index = 0;
@@ -711,7 +789,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This serializes sidedefs
 		private void WriteSidedefs(SerializerStream stream)
 		{
-			stream.wInt(sidedefs.Count);
+			stream.wInt(numsidedefs);
 
 			// Go for all sidedefs
 			foreach(Sidedef sd in sidedefs)
@@ -729,7 +807,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This serializes sectors
 		private void WriteSectors(SerializerStream stream)
 		{
-			stream.wInt(sectors.Count);
+			stream.wInt(numsectors);
 
 			// Go for all sectors
 			int index = 0;
@@ -774,7 +852,7 @@ namespace CodeImp.DoomBuilder.Map
 			deserializer.End();
 
 			// Make table of sidedef indices
-			sidedefindices = new Sidedef[sidedefs.Count];
+			sidedefindices = new Sidedef[numsidedefs];
 			foreach(Sidedef sd in sidedefs)
 				sidedefindices[sd.SerializedIndex] = sd;
 				
@@ -1077,7 +1155,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			else
 			{
-				List<Vertex> list = new List<Vertex>(vertices.Count - sel_vertices.Count);
+				List<Vertex> list = new List<Vertex>(numvertices - sel_vertices.Count);
 				foreach(Vertex v in vertices) if(!v.Selected) list.Add(v);
 				return list;
 			}
@@ -1092,7 +1170,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			else
 			{
-				List<Thing> list = new List<Thing>(things.Count - sel_things.Count);
+				List<Thing> list = new List<Thing>(numthings - sel_things.Count);
 				foreach(Thing t in things) if(!t.Selected) list.Add(t);
 				return list;
 			}
@@ -1107,7 +1185,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			else
 			{
-				List<Linedef> list = new List<Linedef>(linedefs.Count - sel_linedefs.Count);
+				List<Linedef> list = new List<Linedef>(numlinedefs - sel_linedefs.Count);
 				foreach(Linedef l in linedefs) if(!l.Selected) list.Add(l);
 				return list;
 			}
@@ -1128,7 +1206,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			else
 			{
-				List<Sidedef> list = new List<Sidedef>(linedefs.Count - sel_linedefs.Count);
+				List<Sidedef> list = new List<Sidedef>(numlinedefs - sel_linedefs.Count);
 				foreach(Linedef ld in linedefs)
 				{
 					if(!ld.Selected && (ld.Front != null)) list.Add(ld.Front);
@@ -1147,7 +1225,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			else
 			{
-				List<Sector> list = new List<Sector>(sectors.Count - sel_sectors.Count);
+				List<Sector> list = new List<Sector>(numsectors - sel_sectors.Count);
 				foreach(Sector s in sectors) if(!s.Selected) list.Add(s);
 				return list;
 			}
@@ -1313,7 +1391,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>Returns a collection of vertices that match a marked state.</summary>
 		public List<Vertex> GetMarkedVertices(bool mark)
 		{
-			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
+			List<Vertex> list = new List<Vertex>(numvertices >> 1);
 			foreach(Vertex v in vertices) if(v.Marked == mark) list.Add(v);
 			return list;
 		}
@@ -1321,7 +1399,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>Returns a collection of things that match a marked state.</summary>
 		public List<Thing> GetMarkedThings(bool mark)
 		{
-			List<Thing> list = new List<Thing>(things.Count >> 1);
+			List<Thing> list = new List<Thing>(numthings >> 1);
 			foreach(Thing t in things) if(t.Marked == mark) list.Add(t);
 			return list;
 		}
@@ -1329,7 +1407,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>Returns a collection of linedefs that match a marked state.</summary>
 		public List<Linedef> GetMarkedLinedefs(bool mark)
 		{
-			List<Linedef> list = new List<Linedef>(linedefs.Count >> 1);
+			List<Linedef> list = new List<Linedef>(numlinedefs >> 1);
 			foreach(Linedef l in linedefs) if(l.Marked == mark) list.Add(l);
 			return list;
 		}
@@ -1337,7 +1415,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>Returns a collection of sidedefs that match a marked state.</summary>
 		public List<Sidedef> GetMarkedSidedefs(bool mark)
 		{
-			List<Sidedef> list = new List<Sidedef>(sidedefs.Count >> 1);
+			List<Sidedef> list = new List<Sidedef>(numsidedefs >> 1);
 			foreach(Sidedef s in sidedefs) if(s.Marked == mark) list.Add(s);
 			return list;
 		}
@@ -1345,7 +1423,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>Returns a collection of sectors that match a marked state.</summary>
 		public List<Sector> GetMarkedSectors(bool mark)
 		{
-			List<Sector> list = new List<Sector>(sectors.Count >> 1);
+			List<Sector> list = new List<Sector>(numsectors >> 1);
 			foreach(Sector s in sectors) if(s.Marked == mark) list.Add(s);
 			return list;
 		}
@@ -1405,7 +1483,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// </summary>
 		public ICollection<Vertex> GetVerticesFromLinesMarks(bool mark)
 		{
-			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
+			List<Vertex> list = new List<Vertex>(numvertices >> 1);
 			foreach(Vertex v in vertices)
 			{
 				foreach(Linedef l in v.Linedefs)
@@ -1427,7 +1505,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// </summary>
 		public ICollection<Vertex> GetVerticesFromAllLinesMarks(bool mark)
 		{
-			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
+			List<Vertex> list = new List<Vertex>(numvertices >> 1);
 			foreach(Vertex v in vertices)
 			{
 				bool qualified = true;
@@ -1449,7 +1527,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// </summary>
 		public ICollection<Vertex> GetVerticesFromSectorsMarks(bool mark)
 		{
-			List<Vertex> list = new List<Vertex>(vertices.Count >> 1);
+			List<Vertex> list = new List<Vertex>(numvertices >> 1);
 			foreach(Vertex v in vertices)
 			{
 				foreach(Linedef l in v.Linedefs)
@@ -1528,130 +1606,45 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Indexing
 		
 		/// <summary>
-		/// Returns the vertex at the specified index. Returns null when index is out of range.
+		/// Returns the vertex at the specified index. Returns null when index is out of range. This is an O(1) operation.
 		/// </summary>
 		public Vertex GetVertexByIndex(int index)
 		{
-			if(index < vertices.Count)
-				return General.GetByIndex<Vertex>(vertices, index);
-			else
-				return null;
+			return index < numvertices ? vertices[index] : null;
 		}
 
 		/// <summary>
-		/// Returns the linedef at the specified index. Returns null when index is out of range.
+		/// Returns the linedef at the specified index. Returns null when index is out of range. This is an O(1) operation.
 		/// </summary>
 		public Linedef GetLinedefByIndex(int index)
 		{
-			if(index < linedefs.Count)
-				return General.GetByIndex<Linedef>(linedefs, index);
-			else
-				return null;
+			return index < numlinedefs ? linedefs[index] : null;
 		}
 
 		/// <summary>
-		/// Returns the sidedef at the specified index. Returns null when index is out of range.
+		/// Returns the sidedef at the specified index. Returns null when index is out of range. This is an O(1) operation.
 		/// </summary>
 		public Sidedef GetSidedefByIndex(int index)
 		{
-			if(index < sidedefs.Count)
-				return General.GetByIndex<Sidedef>(sidedefs, index);
-			else
-				return null;
+			return index < numsidedefs ? sidedefs[index] : null;
 		}
 
 		/// <summary>
-		/// Returns the sector at the specified index. Returns null when index is out of range.
+		/// Returns the sector at the specified index. Returns null when index is out of range. This is an O(1) operation.
 		/// </summary>
 		public Sector GetSectorByIndex(int index)
 		{
-			if(index < sectors.Count)
-				return General.GetByIndex<Sector>(sectors, index);
-			else
-				return null;
+			return index < numsectors ? sectors[index] : null;
 		}
 
 		/// <summary>
-		/// Returns the thing at the specified index. Returns null when index is out of range.
+		/// Returns the thing at the specified index. Returns null when index is out of range. This is an O(1) operation.
 		/// </summary>
 		public Thing GetThingByIndex(int index)
 		{
-			if(index < things.Count)
-				return General.GetByIndex<Thing>(things, index);
-			else
-				return null;
+			return index < numthings ? things[index] : null;
 		}
 
-		/// <summary>
-		/// Returns the index of the specified vertex. Returns -1 when the vertex is not in this map.
-		/// </summary>
-		public int GetIndexForVertex(Vertex v)
-		{
-			int index = 0;
-			foreach(Vertex vn in vertices)
-			{
-				if(object.ReferenceEquals(vn, v)) return index;
-				index++;
-			}
-			return -1;
-		}
-
-		/// <summary>
-		/// Returns the index of the specified linedef. Returns -1 when the linedef is not in this map.
-		/// </summary>
-		public int GetIndexForLinedef(Linedef l)
-		{
-			int index = 0;
-			foreach(Linedef ln in linedefs)
-			{
-				if(object.ReferenceEquals(ln, l)) return index;
-				index++;
-			}
-			return -1;
-		}
-
-		/// <summary>
-		/// Returns the index of the specified sidedef. Returns -1 when the sidedef is not in this map.
-		/// </summary>
-		public int GetIndexForSidedef(Sidedef sd)
-		{
-			int index = 0;
-			foreach(Sidedef sn in sidedefs)
-			{
-				if(object.ReferenceEquals(sn, sd)) return index;
-				index++;
-			}
-			return -1;
-		}
-
-		/// <summary>
-		/// Returns the index of the specified sector. Returns -1 when the sector is not in this map.
-		/// </summary>
-		public int GetIndexForSector(Sector s)
-		{
-			int index = 0;
-			foreach(Sector sn in sectors)
-			{
-				if(object.ReferenceEquals(sn, s)) return index;
-				index++;
-			}
-			return -1;
-		}
-
-		/// <summary>
-		/// Returns the index of the specified thing. Returns -1 when the thing is not in this map.
-		/// </summary>
-		public int GetIndexForThing(Thing t)
-		{
-			int index = 0;
-			foreach(Thing tn in things)
-			{
-				if(object.ReferenceEquals(tn, t)) return index;
-				index++;
-			}
-			return -1;
-		}
-		
 		#endregion
 		
 		#region ================== Areas
@@ -1865,7 +1858,7 @@ namespace CodeImp.DoomBuilder.Map
 			RectangleF editarea;
 			int stitches = 0;
 			int stitchundo;
-			
+
 			// Find vertices
 			movingverts = General.Map.Map.GetMarkedVertices(true);
 			fixedverts = General.Map.Map.GetMarkedVertices(false);
@@ -1882,10 +1875,14 @@ namespace CodeImp.DoomBuilder.Map
 			editarea.Inflate(1.0f, 1.0f);
 			
 			// Join nearby vertices
+			BeginAddRemove();
 			stitches += MapSet.JoinVertices(fixedverts, movingverts, true, MapSet.STITCH_DISTANCE);
+			EndAddRemove();
 			
 			// Update cached values of lines because we need their length/angle
 			Update(true, false);
+
+			BeginAddRemove();
 			
 			// Split moving lines with unselected vertices
 			nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
@@ -1901,6 +1898,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Join overlapping lines
 			stitches += MapSet.JoinOverlappingLines(movinglines);
 			
+			EndAddRemove();
+			
 			return stitches;
 		}
 		
@@ -1912,23 +1911,23 @@ namespace CodeImp.DoomBuilder.Map
 		public int RemoveVirtualSectors()
 		{
 			int count = 0;
-			LinkedListNode<Sector> n = sectors.First;
+			int index = 0;
 			
 			// Go for all sectors
-			while(n != null)
+			while(index < numsectors)
 			{
-				LinkedListNode<Sector> nn = n.Next;
-				
 				// Remove when virtual
-				if(n.Value.Fields.ContainsKey(VIRTUAL_SECTOR_FIELD))
+				if(sectors[index].Fields.ContainsKey(VIRTUAL_SECTOR_FIELD))
 				{
-					n.Value.Dispose();
+					sectors[index].Dispose();
 					count++;
 				}
-				
-				n = nn;
+				else
+				{
+					index++;
+				}
 			}
-
+			
 			return count;
 		}
 
@@ -1936,28 +1935,24 @@ namespace CodeImp.DoomBuilder.Map
 		public int RemoveUnusedSectors(bool reportwarnings)
 		{
 			int count = 0;
-			LinkedListNode<Sector> n = sectors.First;
-
+			int index = numsectors - 1;
+			
 			// Go for all sectors
-			int index = 0;
-			while(n != null)
+			while(index >= 0)
 			{
-				LinkedListNode<Sector> nn = n.Next;
-
 				// Remove when unused
-				if(n.Value.Sidedefs.Count == 0)
+				if(sectors[index].Sidedefs.Count == 0)
 				{
 					if(reportwarnings)
 						General.ErrorLogger.Add(ErrorType.Warning, "Sector " + index + " was unused and has been removed.");
-					
-					n.Value.Dispose();
+
+					sectors[index].Dispose();
 					count++;
 				}
 
-				index++;
-				n = nn;
+				index--;
 			}
-
+			
 			return count;
 		}
 
@@ -2492,7 +2487,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// A line is unstable when one vertex is marked and the other isn't.</summary>
 		public ICollection<Linedef> LinedefsFromMarkedVertices(bool includeunselected, bool includestable, bool includeunstable)
 		{
-			List<Linedef> list = new List<Linedef>((linedefs.Count / 2) + 1);
+			List<Linedef> list = new List<Linedef>((numlinedefs / 2) + 1);
 			
 			// Go for all lines
 			foreach(Linedef l in linedefs)
@@ -2592,19 +2587,19 @@ namespace CodeImp.DoomBuilder.Map
 		// Note: Only use this for saving, because this messes up the expected data structure horribly.
 		internal void CompressSidedefs()
 		{
-			Dictionary<uint, List<Sidedef>> storedsides = new Dictionary<uint, List<Sidedef>>(sidedefs.Count);
-			int originalsidescount = sidedefs.Count;
+			Dictionary<uint, List<Sidedef>> storedsides = new Dictionary<uint, List<Sidedef>>(numsidedefs);
+			int originalsidescount = numsidedefs;
 			double starttime = General.Clock.GetCurrentTime();
 			
-			LinkedListNode<Sidedef> sn = sidedefs.First;
-			while(sn != null)
+			int sn = 0;
+			while(sn < numsidedefs)
 			{
 				Sidedef stored = null;
-				LinkedListNode<Sidedef> nextsn = sn.Next;
+				Sidedef snsd = sidedefs[sn];
 				
 				// Check if checksum is stored
 				bool samesidedef = false;
-				uint checksum = sn.Value.GetChecksum();
+				uint checksum = snsd.GetChecksum();
 				bool checksumstored = storedsides.ContainsKey(checksum);
 				if(checksumstored)
 				{
@@ -2612,7 +2607,7 @@ namespace CodeImp.DoomBuilder.Map
 					foreach(Sidedef os in othersides)
 					{
 						// They must be in the same sector
-						if(sn.Value.Sector == os.Sector)
+						if(snsd.Sector == os.Sector)
 						{
 							// Check if sidedefs are really the same
 							stored = os;
@@ -2620,7 +2615,7 @@ namespace CodeImp.DoomBuilder.Map
 							SerializerStream sidedata = new SerializerStream(sidemem);
 							MemoryStream othermem = new MemoryStream(1024);
 							SerializerStream otherdata = new SerializerStream(othermem);
-							sn.Value.ReadWrite(sidedata);
+							snsd.ReadWrite(sidedata);
 							os.ReadWrite(otherdata);
 							if(sidemem.Length == othermem.Length)
 							{
@@ -2646,41 +2641,41 @@ namespace CodeImp.DoomBuilder.Map
 				if(samesidedef)
 				{
 					// Replace with stored sidedef
-					bool isfront = sn.Value.IsFront;
-					sn.Value.Line.DetachSidedef(sn.Value);
+					bool isfront = snsd.IsFront;
+					snsd.Line.DetachSidedef(snsd);
 					if(isfront)
-						sn.Value.Line.AttachFront(stored);
+						snsd.Line.AttachFront(stored);
 					else
-						sn.Value.Line.AttachBack(stored);
+						snsd.Line.AttachBack(stored);
 					
 					// Remove the sidedef
-					sn.Value.ChangeSector(null);
-					sidedefs.Remove(sn);
+					snsd.ChangeSector(null);
+					RemoveSidedef(sn);
 				}
 				else
 				{
 					// Store this new one
 					if(checksumstored)
 					{
-						storedsides[checksum].Add(sn.Value);
+						storedsides[checksum].Add(snsd);
 					}
 					else
 					{
 						List<Sidedef> newlist = new List<Sidedef>(4);
-						newlist.Add(sn.Value);
+						newlist.Add(snsd);
 						storedsides.Add(checksum, newlist);
 					}
+					
+					// Next
+					sn++;
 				}
-				
-				// Next
-				sn = nextsn;
 			}
 
 			// Output info
 			double endtime = General.Clock.GetCurrentTime();
 			double deltatimesec = (endtime - starttime) / 1000.0d;
-			float ratio = 100.0f - (((float)sidedefs.Count / (float)originalsidescount) * 100.0f);
-			General.WriteLogLine("Sidedefs compressed: " + sidedefs.Count + " remaining out of " + originalsidescount + " (" + ratio.ToString("########0.00") + "%) in " + deltatimesec.ToString("########0.00") + " seconds");
+			float ratio = 100.0f - (((float)numsidedefs / (float)originalsidescount) * 100.0f);
+			General.WriteLogLine("Sidedefs compressed: " + numsidedefs + " remaining out of " + originalsidescount + " (" + ratio.ToString("########0.00") + "%) in " + deltatimesec.ToString("########0.00") + " seconds");
 		}
 
 		// This converts flags and activations to UDMF fields
@@ -2701,15 +2696,14 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This removes unused vertices.</summary>
 		public void RemoveUnusedVertices()
 		{
-			LinkedListNode<Vertex> vn, vc;
-			
 			// Go for all vertices
-			vn = vertices.First;
-			while(vn != null)
+			int index = numvertices - 1;
+			while(index >= 0)
 			{
-				vc = vn;
-				vn = vc.Next;
-				if(vc.Value.Linedefs.Count == 0) vertices.Remove(vc);
+				if((vertices[index] != null) && (vertices[index].Linedefs.Count == 0))
+					vertices[index].Dispose();
+				else
+					index--;
 			}
 		}
 		

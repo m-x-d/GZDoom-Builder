@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.viewobjects.Add(s);
 			foreach(Vertex vv in v) this.viewobjects.Add(vv);
 			this.description = "This sector is not a closed region and could cause problems with clipping and rendering in the game. The 'leaks' in the sector are indicated by the colored vertices.";
-			this.index = s.Map.GetIndexForSector(s);
+			this.index = s.Index;
 		}
 		
 		#endregion

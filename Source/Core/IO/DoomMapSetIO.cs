@@ -129,6 +129,7 @@ namespace CodeImp.DoomBuilder.IO
 			reader = new BinaryReader(mem);
 			
 			// Read items from the lump
+			map.SetCapacity(0, 0, 0, 0, num);
 			for(i = 0; i < num; i++)
 			{
 				// Read properties from stream
@@ -178,6 +179,7 @@ namespace CodeImp.DoomBuilder.IO
 			link = new Dictionary<int, Vertex>(num);
 
 			// Read items from the lump
+			map.SetCapacity(num, 0, 0, 0, 0);
 			for(i = 0; i < num; i++)
 			{
 				// Read properties from stream
@@ -222,6 +224,7 @@ namespace CodeImp.DoomBuilder.IO
 			link = new Dictionary<int, Sector>(num);
 
 			// Read items from the lump
+			map.SetCapacity(0, 0, 0, num, 0);
 			for(i = 0; i < num; i++)
 			{
 				// Read properties from stream
@@ -255,7 +258,7 @@ namespace CodeImp.DoomBuilder.IO
 			MemoryStream linedefsmem, sidedefsmem;
 			BinaryReader readline, readside;
 			Lump linedefslump, sidedefslump;
-			int num, i, offsetx, offsety, v1, v2;
+			int num, numsides, i, offsetx, offsety, v1, v2;
 			int s1, s2, flags, action, tag, sc;
 			Dictionary<string, bool> stringflags;
 			string thigh, tmid, tlow;
@@ -274,10 +277,12 @@ namespace CodeImp.DoomBuilder.IO
 			linedefsmem = new MemoryStream(linedefslump.Stream.ReadAllBytes());
 			sidedefsmem = new MemoryStream(sidedefslump.Stream.ReadAllBytes());
 			num = (int)linedefslump.Stream.Length / 14;
+			numsides = (int)sidedefslump.Stream.Length / 30;
 			readline = new BinaryReader(linedefsmem);
 			readside = new BinaryReader(sidedefsmem);
 
 			// Read items from the lump
+			map.SetCapacity(0, num, numsides, 0, 0);
 			for(i = 0; i < num; i++)
 			{
 				// Read properties from stream

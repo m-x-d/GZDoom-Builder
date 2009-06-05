@@ -344,6 +344,7 @@ namespace CodeImp.DoomBuilder
 			mapwad.Dispose();
 			
 			// Read the map from temp file
+			map.BeginAddRemove();
 			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
 			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 			General.WriteLogLine("Reading map data structures from file...");
@@ -354,6 +355,7 @@ namespace CodeImp.DoomBuilder
 				General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
 				return false;
 			}
+			map.EndAddRemove();
 			
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");

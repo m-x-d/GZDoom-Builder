@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Controls
 				peggedness = "None";
 			
 			// Linedef info
-			infopanel.Text = " Linedef " + l.Map.GetIndexForLinedef(l) + " ";
+			infopanel.Text = " Linedef " + l.Index + " ";
 			action.Text = act.ToString();
 			length.Text = l.Length.ToString("0.##");
 			angle.Text = l.AngleDeg.ToString() + "\u00B0";
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(l.Front != null)
 			{
 				// Show sidedef info
-				frontpanel.Text = " Front Sidedef " + l.Map.GetIndexForSidedef(l.Front) + " ";
+				frontpanel.Text = " Front Sidedef " + l.Index + " ";
 				frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
 				fronthighname.Text = l.Front.HighTexture;
 				frontmidname.Text = l.Front.MiddleTexture;
@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(l.Back != null)
 			{
 				// Show sidedef info
-				backpanel.Text = " Back Sidedef " + l.Map.GetIndexForSidedef(l.Back) + " ";
+				backpanel.Text = " Back Sidedef " + l.Index + " ";
 				backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
 				backhighname.Text = l.Back.HighTexture;
 				backmidname.Text = l.Back.MiddleTexture;

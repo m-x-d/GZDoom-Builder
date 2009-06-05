@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Add to list
 						ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
-						objs.Add(new FindReplaceObject(t, "Thing " + t.GetIndex() + " (" + ti.Title + ")"));
+						objs.Add(new FindReplaceObject(t, "Thing " + t.Index + " (" + ti.Title + ")"));
 					}
 				}
 			}
