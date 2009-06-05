@@ -41,7 +41,6 @@ namespace CodeImp.DoomBuilder.Map
 		private MapSet map;
 
 		// List items
-		private LinkedListNode<Sidedef> mainlistitem;
 		private LinkedListNode<Sidedef> sectorlistitem;
 
 		// Owner
@@ -88,11 +87,11 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal Sidedef(MapSet map, LinkedListNode<Sidedef> listitem, Linedef l, bool front, Sector s)
+		internal Sidedef(MapSet map, int listindex, Linedef l, bool front, Sector s)
 		{
 			// Initialize
 			this.map = map;
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 			this.linedef = l;
 			this.sector = s;
 			this.texnamehigh = "-";
@@ -113,11 +112,11 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Constructor
-		internal Sidedef(MapSet map, LinkedListNode<Sidedef> listitem, Linedef l, bool front, Sector s, IReadWriteStream stream)
+		internal Sidedef(MapSet map, int listindex, Linedef l, bool front, Sector s, IReadWriteStream stream)
 		{
 			// Initialize
 			this.map = map;
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 			this.linedef = l;
 			this.sector = s;
 
@@ -143,7 +142,7 @@ namespace CodeImp.DoomBuilder.Map
 				isdisposed = true;
 
 				// Remove from main list
-				mainlistitem.List.Remove(mainlistitem);
+				map.RemoveSidedef(listindex);
 
 				// Detach from linedef
 				linedef.DetachSidedef(this);
@@ -152,7 +151,6 @@ namespace CodeImp.DoomBuilder.Map
 				sector.DetachSidedef(sectorlistitem);
 				
 				// Clean up
-				mainlistitem = null;
 				sectorlistitem = null;
 				linedef = null;
 				map = null;
@@ -203,14 +201,6 @@ namespace CodeImp.DoomBuilder.Map
 			base.CopyPropertiesTo(s);
 		}
 
-		/// <summary>
-		/// Returns the index of this sidedef. This is a O(n) operation.
-		/// </summary>
-		public int GetIndex()
-		{
-			return map.GetIndexForSidedef(this);
-		}
-		
 		// This creates a checksum from the sidedef properties
 		// Used for faster sidedefs compression
 		public uint GetChecksum()

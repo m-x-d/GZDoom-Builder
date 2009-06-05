@@ -117,9 +117,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						
 						SectorEffectInfo info = General.Map.Config.GetSectorEffectInfo(s.Effect);
 						if(!info.IsNull)
-							objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (" + info.Title + ")"));
+							objs.Add(new FindReplaceObject(s, "Sector " + s.Index + " (" + info.Title + ")"));
 						else
-							objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex()));
+							objs.Add(new FindReplaceObject(s, "Sector " + s.Index));
 					}
 				}
 			}

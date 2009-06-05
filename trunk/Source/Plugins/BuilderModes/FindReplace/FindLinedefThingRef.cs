@@ -142,9 +142,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Add to list
 						if(!info.IsNull)
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.GetIndex() + " (" + info.Title + ")"));
+							objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (" + info.Title + ")"));
 						else
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.GetIndex()));
+							objs.Add(new FindReplaceObject(l, "Linedef " + l.Index));
 					}
 				}
 			}

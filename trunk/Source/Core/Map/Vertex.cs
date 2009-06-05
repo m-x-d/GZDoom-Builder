@@ -46,7 +46,6 @@ namespace CodeImp.DoomBuilder.Map
 		private MapSet map;
 		
 		// List items
-		private LinkedListNode<Vertex> mainlistitem;
 		private LinkedListNode<Vertex> selecteditem;
 
 		// Position
@@ -74,12 +73,12 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal Vertex(MapSet map, LinkedListNode<Vertex> listitem, Vector2D pos)
+		internal Vertex(MapSet map, int listindex, Vector2D pos)
 		{
 			// Initialize
 			this.map = map;
 			this.linedefs = new LinkedList<Linedef>();
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 			this.pos = pos;
 			
 			// We have no destructor
@@ -87,12 +86,12 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Constructor
-		internal Vertex(MapSet map, LinkedListNode<Vertex> listitem, IReadWriteStream stream)
+		internal Vertex(MapSet map, int listindex, IReadWriteStream stream)
 		{
 			// Initialize
 			this.map = map;
 			this.linedefs = new LinkedList<Linedef>();
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 
 			ReadWrite(stream);
 
@@ -110,7 +109,7 @@ namespace CodeImp.DoomBuilder.Map
 				isdisposed = true;
 				
 				// Remove from main list
-				mainlistitem.List.Remove(mainlistitem);
+				map.RemoveVertex(listindex);
 
 				// Dispose the lines that are attached to this vertex
 				// because a linedef cannot exist without 2 vertices.
@@ -118,7 +117,6 @@ namespace CodeImp.DoomBuilder.Map
 				
 				// Clean up
 				linedefs = null;
-				mainlistitem = null;
 				map = null;
 
 				// Dispose base
@@ -178,14 +176,6 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Methods
 
-		/// <summary>
-		/// Returns the index of this vertex. This is a O(n) operation.
-		/// </summary>
-		public int GetIndex()
-		{
-			return map.GetIndexForVertex(this);
-		}
-		
 		// This copies all properties to another thing
 		public void CopyPropertiesTo(Vertex v)
 		{

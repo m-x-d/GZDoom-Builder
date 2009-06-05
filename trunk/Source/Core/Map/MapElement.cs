@@ -38,7 +38,10 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Variables
-
+		
+		// List index
+		protected int listindex;
+		
 		// Univeral fields
 		private UniFields fields;
 		
@@ -51,7 +54,8 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 		
 		#region ================== Properties
-		
+
+		public int Index { get { return listindex; } internal set { listindex = value; } }
 		public UniFields Fields { get { return fields; } }
 		public bool Marked { get { return marked; } set { marked = value; } }
 		public bool IsDisposed { get { return isdisposed; } }

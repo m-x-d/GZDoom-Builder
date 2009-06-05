@@ -47,7 +47,6 @@ namespace CodeImp.DoomBuilder.Map
 		private MapSet map;
 
 		// List items
-		private LinkedListNode<Linedef> mainlistitem;
 		private LinkedListNode<Linedef> startvertexlistitem;
 		private LinkedListNode<Linedef> endvertexlistitem;
 		private LinkedListNode<Linedef> selecteditem;
@@ -109,11 +108,11 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal Linedef(MapSet map, LinkedListNode<Linedef> listitem, Vertex start, Vertex end)
+		internal Linedef(MapSet map, int listindex, Vertex start, Vertex end)
 		{
 			// Initialize
 			this.map = map;
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 			this.start = start;
 			this.end = end;
 			this.updateneeded = true;
@@ -129,11 +128,11 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// Constructor
-		internal Linedef(MapSet map, LinkedListNode<Linedef> listitem, Vertex start, Vertex end, IReadWriteStream stream)
+		internal Linedef(MapSet map, int listindex, Vertex start, Vertex end, IReadWriteStream stream)
 		{
 			// Initialize
 			this.map = map;
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 			this.start = start;
 			this.end = end;
 			this.updateneeded = true;
@@ -159,7 +158,7 @@ namespace CodeImp.DoomBuilder.Map
 				isdisposed = true;
 
 				// Remove from main list
-				mainlistitem.List.Remove(mainlistitem);
+				map.RemoveLinedef(listindex);
 
 				// Detach from vertices
 				start.DetachLinedef(startvertexlistitem);
@@ -172,7 +171,6 @@ namespace CodeImp.DoomBuilder.Map
 				if(back != null) back.Dispose();
 				
 				// Clean up
-				mainlistitem = null;
 				start = null;
 				end = null;
 				front = null;
@@ -222,14 +220,6 @@ namespace CodeImp.DoomBuilder.Map
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
 		}
 
-		/// <summary>
-		/// Returns the index of this linedef. This is a O(n) operation.
-		/// </summary>
-		public int GetIndex()
-		{
-			return map.GetIndexForLinedef(this);
-		}
-		
 		// This sets new start vertex
 		public void SetStartVertex(Vertex v)
 		{
@@ -941,7 +931,7 @@ namespace CodeImp.DoomBuilder.Map
 		// String representation
 		public override string ToString()
 		{
-			return "Linedef " + GetIndex();
+			return "Linedef " + listindex;
 		}
 		
 		#endregion

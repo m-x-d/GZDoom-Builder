@@ -111,14 +111,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Replace and add to list
 					if(replacewith != null) s.SetCeilTexture(replacewith);
-					objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (ceiling)"));
+					objs.Add(new FindReplaceObject(s, "Sector " + s.Index + " (ceiling)"));
 				}
 				
 				if(s.LongFloorTexture == longfind)
 				{
 					// Replace and add to list
 					if(replacewith != null) s.SetFloorTexture(replacewith);
-					objs.Add(new FindReplaceObject(s, "Sector " + s.GetIndex() + " (floor)"));
+					objs.Add(new FindReplaceObject(s, "Sector " + s.Index + " (floor)"));
 				}
 			}
 			

@@ -45,7 +45,6 @@ namespace CodeImp.DoomBuilder.Map
 		private MapSet map;
 
 		// List items
-		private LinkedListNode<Sector> mainlistitem;
 		private LinkedListNode<Sector> selecteditem;
 		
 		// Sidedefs
@@ -109,11 +108,11 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal Sector(MapSet map, LinkedListNode<Sector> listitem, int index)
+		internal Sector(MapSet map, int listindex, int index)
 		{
 			// Initialize
 			this.map = map;
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 			this.sidedefs = new LinkedList<Sidedef>();
 			this.fixedindex = index;
 			this.floortexname = "-";
@@ -121,19 +120,21 @@ namespace CodeImp.DoomBuilder.Map
 			this.longfloortexname = MapSet.EmptyLongName;
 			this.longceiltexname = MapSet.EmptyLongName;
 			this.triangulationneeded = true;
+			this.surfaceentry = new SurfaceEntry(-1, -1, -1);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// Constructor
-		internal Sector(MapSet map, LinkedListNode<Sector> listitem, IReadWriteStream stream)
+		internal Sector(MapSet map, int listindex, IReadWriteStream stream)
 		{
 			// Initialize
 			this.map = map;
-			this.mainlistitem = listitem;
+			this.listindex = listindex;
 			this.sidedefs = new LinkedList<Sidedef>();
 			this.triangulationneeded = true;
+			this.surfaceentry = new SurfaceEntry(-1, -1, -1);
 
 			ReadWrite(stream);
 
@@ -151,7 +152,7 @@ namespace CodeImp.DoomBuilder.Map
 				isdisposed = true;
 
 				// Remove from main list
-				mainlistitem.List.Remove(mainlistitem);
+				map.RemoveSector(listindex);
 
 				// Register the index as free
 				map.AddSectorIndexHole(fixedindex);
@@ -164,7 +165,6 @@ namespace CodeImp.DoomBuilder.Map
 				General.Map.CRenderer2D.Surfaces.FreeSurfaces(surfaceentry);
 				
 				// Clean up
-				mainlistitem = null;
 				sidedefs = null;
 				map = null;
 
@@ -250,14 +250,6 @@ namespace CodeImp.DoomBuilder.Map
 			base.CopyPropertiesTo(s);
 		}
 
-		/// <summary>
-		/// Returns the index of this sector. This is a O(n) operation.
-		/// </summary>
-		public int GetIndex()
-		{
-			return map.GetIndexForSector(this);
-		}
-		
 		// This attaches a sidedef and returns the listitem
 		public LinkedListNode<Sidedef> AttachSidedef(Sidedef sd)
 		{
@@ -506,7 +498,7 @@ namespace CodeImp.DoomBuilder.Map
 		// String representation
 		public override string ToString()
 		{
-			return "Sector " + GetIndex();
+			return "Sector " + listindex;
 		}
 		
 		#endregion

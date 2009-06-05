@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -676,6 +676,7 @@
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="IO\DoomColormapReader.cs" />
     <Compile Include="Map\SelectionType.cs" />
+    <Compile Include="Map\MapElementCollection.cs" />
     <Compile Include="Rendering\SurfaceBufferSet.cs" />
     <Compile Include="Rendering\SurfaceEntry.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />

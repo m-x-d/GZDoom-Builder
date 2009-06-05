@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public void ShowInfo(Vertex v)
 		{
 			// Vertex info
-			vertexinfo.Text = " Vertex " + v.Map.GetIndexForVertex(v) + " ";
+			vertexinfo.Text = " Vertex " + v.Index + " ";
 			position.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
 			
 			// Show the whole thing

@@ -150,6 +150,7 @@ namespace CodeImp.DoomBuilder.IO
 			List<UniversalCollection> collections = GetNamedCollections(textmap.Root, "thing");
 
 			// Go for all collections
+			map.SetCapacity(0, 0, 0, 0, collections.Count);
 			for(int i = 0; i < collections.Count; i++)
 			{
 				// Read fields
@@ -196,6 +197,7 @@ namespace CodeImp.DoomBuilder.IO
 			List<UniversalCollection> sidescolls = GetNamedCollections(textmap.Root, "sidedef");
 
 			// Go for all lines
+			map.SetCapacity(0, linescolls.Count, sidescolls.Count, 0, 0);
 			for(int i = 0; i < linescolls.Count; i++)
 			{
 				// Read fields
@@ -308,6 +310,7 @@ namespace CodeImp.DoomBuilder.IO
 			link = new Dictionary<int, Sector>(collections.Count);
 
 			// Go for all collections
+			map.SetCapacity(0, 0, 0, collections.Count, 0);
 			for(int i = 0; i < collections.Count; i++)
 			{
 				// Read fields
@@ -347,6 +350,7 @@ namespace CodeImp.DoomBuilder.IO
 			link = new Dictionary<int, Vertex>(collections.Count);
 
 			// Go for all collections
+			map.SetCapacity(collections.Count, 0, 0, 0, 0);
 			for(int i = 0; i < collections.Count; i++)
 			{
 				// Read fields
