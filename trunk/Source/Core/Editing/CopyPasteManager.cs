@@ -154,7 +154,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Read data stream
 			UniversalStreamReader reader = new UniversalStreamReader();
 			reader.StrictChecking = false;
+			General.Map.Map.BeginAddRemove();
 			reader.Read(General.Map.Map, memstream);
+			General.Map.Map.EndAddRemove();
 			
 			// The new geometry is not marked, so invert the marks to get it marked
 			General.Map.Map.InvertAllMarks();
@@ -240,7 +242,9 @@ namespace CodeImp.DoomBuilder.Editing
 						// Read data stream
 						UniversalStreamReader reader = new UniversalStreamReader();
 						reader.StrictChecking = false;
+						General.Map.Map.BeginAddRemove();
 						reader.Read(General.Map.Map, memstream);
+						General.Map.Map.EndAddRemove();
 						
 						// The new geometry is not marked, so invert the marks to get it marked
 						General.Map.Map.InvertAllMarks();
