@@ -167,8 +167,8 @@ namespace CodeImp.DoomBuilder.Map
 				endvertexlistitem = null;
 				
 				// Dispose sidedefs
-				if(front != null) front.Dispose();
-				if(back != null) back.Dispose();
+				if((front != null) && map.AutoRemove) front.Dispose();
+				if((back != null) && map.AutoRemove) back.Dispose();
 				
 				// Clean up
 				start = null;
@@ -227,7 +227,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(startvertexlistitem != null) start.DetachLinedef(startvertexlistitem);
 			startvertexlistitem = null;
 			start = v;
-			startvertexlistitem = start.AttachLinedef(this);
+			if(start != null) startvertexlistitem = start.AttachLinedef(this);
 			this.updateneeded = true;
 		}
 
@@ -238,8 +238,19 @@ namespace CodeImp.DoomBuilder.Map
 			if(endvertexlistitem != null) end.DetachLinedef(endvertexlistitem);
 			endvertexlistitem = null;
 			end = v;
-			endvertexlistitem = end.AttachLinedef(this);
+			if(end != null) endvertexlistitem = end.AttachLinedef(this);
 			this.updateneeded = true;
+		}
+
+		// This detaches a vertex
+		internal void DetachVertex(Vertex v)
+		{
+			if(v == start)
+				SetStartVertex(null);
+			else if(v == end)
+				SetEndVertex(null);
+			else 
+				throw new Exception("Specified Vertex is not attached to this Linedef.");
 		}
 		
 		// This copies all properties to another line

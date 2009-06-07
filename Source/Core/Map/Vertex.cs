@@ -111,9 +111,17 @@ namespace CodeImp.DoomBuilder.Map
 				// Remove from main list
 				map.RemoveVertex(listindex);
 
-				// Dispose the lines that are attached to this vertex
-				// because a linedef cannot exist without 2 vertices.
-				foreach(Linedef ld in linedefs) ld.Dispose();
+				if(map.AutoRemove)
+				{
+					// Dispose the lines that are attached to this vertex
+					// because a linedef cannot exist without 2 vertices.
+					foreach(Linedef ld in linedefs) ld.Dispose();
+				}
+				else
+				{
+					// Detach from linedefs
+					foreach(Linedef ld in linedefs) ld.DetachVertex(this);
+				}
 				
 				// Clean up
 				linedefs = null;
@@ -141,7 +149,7 @@ namespace CodeImp.DoomBuilder.Map
 				linedefs.Remove(l);
 
 				// No more linedefs left?
-				if(linedefs.Count == 0)
+				if((linedefs.Count == 0) && map.AutoRemove)
 				{
 					// This vertex is now useless, dispose it
 					this.Dispose();

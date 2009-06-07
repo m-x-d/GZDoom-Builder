@@ -66,7 +66,6 @@ namespace CodeImp.DoomBuilder.Map
 		private Sidedef[] sidedefindices;
 		
 		// Map structures
-		private int freezearrays;
 		private Vertex[] vertices;
 		private Linedef[] linedefs;
 		private Sidedef[] sidedefs;
@@ -77,6 +76,10 @@ namespace CodeImp.DoomBuilder.Map
 		private int numsidedefs;
 		private int numsectors;
 		private int numthings;
+		
+		// Behavior
+		private int freezearrays;
+		private bool autoremove;
 		
 		// Selected elements
 		private LinkedList<Vertex> sel_vertices;
@@ -139,7 +142,9 @@ namespace CodeImp.DoomBuilder.Map
 		public static UniValue VirtualSectorValue { get { return virtualsectorvalue; } }
 		
 		internal Sidedef[] SidedefIndices { get { return sidedefindices; } }
-		
+
+		internal bool AutoRemove { get { return autoremove; } set { autoremove = value; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -159,6 +164,7 @@ namespace CodeImp.DoomBuilder.Map
 			sel_things = new LinkedList<Thing>();
 			indexholes = new List<int>();
 			lastsectorindex = 0;
+			autoremove = true;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -179,6 +185,7 @@ namespace CodeImp.DoomBuilder.Map
 			sel_things = new LinkedList<Thing>();
 			indexholes = new List<int>();
 			lastsectorindex = 0;
+			autoremove = true;
 
 			// Deserialize
 			Deserialize(stream);
@@ -197,6 +204,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
+				autoremove = false;
 				BeginAddRemove();
 				
 				// Dispose all things
