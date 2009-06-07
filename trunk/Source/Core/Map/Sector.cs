@@ -159,7 +159,8 @@ namespace CodeImp.DoomBuilder.Map
 				
 				// Dispose the sidedefs that are attached to this sector
 				// because a sidedef cannot exist without reference to its sector.
-				foreach(Sidedef sd in sidedefs) sd.Dispose();
+				if(map.AutoRemove)
+					foreach(Sidedef sd in sidedefs) sd.Dispose();
 
 				// Free surface entry
 				General.Map.CRenderer2D.Surfaces.FreeSurfaces(surfaceentry);
@@ -270,7 +271,7 @@ namespace CodeImp.DoomBuilder.Map
 				sidedefs.Remove(l);
 
 				// No more sidedefs left?
-				if(sidedefs.Count == 0)
+				if((sidedefs.Count == 0) && map.AutoRemove)
 				{
 					// This sector is now useless, dispose it
 					this.Dispose();
