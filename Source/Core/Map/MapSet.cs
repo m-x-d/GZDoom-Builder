@@ -488,13 +488,16 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the vertex
 			Vertex v = new Vertex(this, numvertices, pos);
-			
-			// Add vertex to the list
-			ExpandArray(ref vertices, numvertices);
-			vertices[numvertices] = v;
-			numvertices++;
-			
-			// Return result
+			AddItem(v, ref vertices, numvertices, ref numvertices);
+			return v;
+		}
+
+		/// <summary>This creates a new vertex and returns it.</summary>
+		public Vertex CreateVertex(int index, Vector2D pos)
+		{
+			// Make the vertex
+			Vertex v = new Vertex(this, index, pos);
+			AddItem(v, ref vertices, index, ref numvertices);
 			return v;
 		}
 
@@ -503,13 +506,16 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the vertex
 			Vertex v = new Vertex(this, numvertices, stream);
+			AddItem(v, ref vertices, numvertices, ref numvertices);
+			return v;
+		}
 
-			// Add vertex to the list
-			ExpandArray(ref vertices, numvertices);
-			vertices[numvertices] = v;
-			numvertices++;
-
-			// Return result
+		// This creates a new vertex from a stream
+		private Vertex CreateVertex(int index, IReadWriteStream stream)
+		{
+			// Make the vertex
+			Vertex v = new Vertex(this, index, stream);
+			AddItem(v, ref vertices, index, ref numvertices);
 			return v;
 		}
 
@@ -518,13 +524,16 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the linedef
 			Linedef l = new Linedef(this, numlinedefs, start, end);
+			AddItem(l, ref linedefs, numlinedefs, ref numlinedefs);
+			return l;
+		}
 
-			// Add linedef to the list
-			ExpandArray(ref linedefs, numlinedefs);
-			linedefs[numlinedefs] = l;
-			numlinedefs++;
-
-			// Return result
+		/// <summary>This creates a new linedef and returns it.</summary>
+		public Linedef CreateLinedef(int index, Vertex start, Vertex end)
+		{
+			// Make the linedef
+			Linedef l = new Linedef(this, index, start, end);
+			AddItem(l, ref linedefs, index, ref numlinedefs);
 			return l;
 		}
 
@@ -533,13 +542,16 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the linedef
 			Linedef l = new Linedef(this, numlinedefs, start, end, stream);
+			AddItem(l, ref linedefs, numlinedefs, ref numlinedefs);
+			return l;
+		}
 
-			// Add linedef to the list
-			ExpandArray(ref linedefs, numlinedefs);
-			linedefs[numlinedefs] = l;
-			numlinedefs++;
-
-			// Return result
+		// This creates a new linedef from a stream
+		private Linedef CreateLinedef(int index, Vertex start, Vertex end, IReadWriteStream stream)
+		{
+			// Make the linedef
+			Linedef l = new Linedef(this, index, start, end, stream);
+			AddItem(l, ref linedefs, index, ref numlinedefs);
 			return l;
 		}
 
@@ -548,13 +560,16 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the sidedef
 			Sidedef sd = new Sidedef(this, numsidedefs, l, front, s);
+			AddItem(sd, ref sidedefs, numsidedefs, ref numsidedefs);
+			return sd;
+		}
 
-			// Add sidedef to the list
-			ExpandArray(ref sidedefs, numsidedefs);
-			sidedefs[numsidedefs] = sd;
-			numsidedefs++;
-
-			// Return result
+		/// <summary>This creates a new sidedef and returns it.</summary>
+		public Sidedef CreateSidedef(int index, Linedef l, bool front, Sector s)
+		{
+			// Make the sidedef
+			Sidedef sd = new Sidedef(this, index, l, front, s);
+			AddItem(sd, ref sidedefs, index, ref numsidedefs);
 			return sd;
 		}
 
@@ -563,50 +578,54 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the sidedef
 			Sidedef sd = new Sidedef(this, numsidedefs, l, front, s, stream);
+			AddItem(sd, ref sidedefs, numsidedefs, ref numsidedefs);
+			return sd;
+		}
 
-			// Add sidedef to the list
-			ExpandArray(ref sidedefs, numsidedefs);
-			sidedefs[numsidedefs] = sd;
-			numsidedefs++;
-
-			// Return result
+		// This creates a new sidedef from a stream
+		private Sidedef CreateSidedef(int index, Linedef l, bool front, Sector s, IReadWriteStream stream)
+		{
+			// Make the sidedef
+			Sidedef sd = new Sidedef(this, index, l, front, s, stream);
+			AddItem(sd, ref sidedefs, index, ref numsidedefs);
 			return sd;
 		}
 
 		/// <summary>This creates a new sector and returns it.</summary>
 		public Sector CreateSector()
 		{
-			int index;
+			// Make the sector
+			return CreateSector(numsectors);
+		}
+
+		/// <summary>This creates a new sector and returns it.</summary>
+		public Sector CreateSector(int index)
+		{
+			int fixedindex;
 			
 			// Do we have any index holes we can use?
 			if(indexholes.Count > 0)
 			{
 				// Take one of the index holes
-				index = indexholes[indexholes.Count - 1];
+				fixedindex = indexholes[indexholes.Count - 1];
 				indexholes.RemoveAt(indexholes.Count - 1);
 			}
 			else
 			{
 				// Make a new index
-				index = lastsectorindex++;
+				fixedindex = lastsectorindex++;
 			}
 			
 			// Make the sector
-			return CreateSector(index);
+			return CreateSectorEx(fixedindex, index);
 		}
 
 		// This creates a new sector with a specific fixed index
-		private Sector CreateSector(int index)
+		private Sector CreateSectorEx(int fixedindex, int index)
 		{
 			// Make the sector
-			Sector s = new Sector(this, numsectors, index);
-
-			// Add sector to the list
-			ExpandArray(ref sectors, numsectors);
-			sectors[numsectors] = s;
-			numsectors++;
-
-			// Return result
+			Sector s = new Sector(this, index, fixedindex);
+			AddItem(s, ref sectors, index, ref numsectors);
 			return s;
 		}
 
@@ -615,13 +634,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the sector
 			Sector s = new Sector(this, numsectors, stream);
-
-			// Add sector to the list
-			ExpandArray(ref sectors, numsectors);
-			sectors[numsectors] = s;
-			numsectors++;
-
-			// Return result
+			AddItem(s, ref sectors, numsectors, ref numsectors);
 			return s;
 		}
 
@@ -630,14 +643,41 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the thing
 			Thing t = new Thing(this, numthings);
-
-			// Add thing to the list
-			ExpandArray(ref things, numthings);
-			things[numthings] = t;
-			numthings++;
-
-			// Return result
+			AddItem(t, ref things, numthings, ref numthings);
 			return t;
+		}
+
+		/// <summary>This creates a new thing and returns it.</summary>
+		public Thing CreateThing(int index)
+		{
+			// Make the thing
+			Thing t = new Thing(this, index);
+			AddItem(t, ref things, index, ref numthings);
+			return t;
+		}
+
+		// This increases the size of the array to add an item
+		private void AddItem<T>(T item, ref T[] array, int index, ref int counter) where T: MapElement
+		{
+			// Only resize when there are no more free entries
+			if(counter == array.Length)
+			{
+				if(freezearrays == 0)
+					Array.Resize(ref array, counter + 1);
+				else
+					Array.Resize(ref array, counter + 10);
+			}
+			
+			// Move item at the given index if the new item is not added at the end
+			if(index != counter)
+			{
+				array[counter] = array[index];
+				array[counter].Index = counter;
+			}
+
+			// Add item
+			array[index] = item;
+			counter++;
 		}
 		
 		// This adds a sector index hole
@@ -689,19 +729,6 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			RemoveItem(ref things, index, ref numthings);
 		}		
-		
-		// This increases the size of the array to add an item
-		private void ExpandArray<T>(ref T[] array, int numentries)
-		{
-			// Only resize when there are no more free entries
-			if(numentries == array.Length)
-			{
-				if(freezearrays == 0)
-					Array.Resize(ref array, numentries + 1);
-				else
-					Array.Resize(ref array, numentries + 10);
-			}
-		}
 		
 		#endregion
 
