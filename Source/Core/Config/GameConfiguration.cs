@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool linetagindicatesectors;
 		private string decorategames;
         private string skyflatname;
+		private int maxtexturenamelength;
 		
 		// Skills
 		private List<SkillInfo> skills;
@@ -153,6 +154,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool LineTagIndicatesSectors { get { return linetagindicatesectors ; } }
 		public string DecorateGames { get { return decorategames; } }
         public string SkyFlatName { get { return skyflatname; } }
+		public int MaxTextureNamelength { get { return maxtexturenamelength; } }
 		
 		// Skills
 		public List<SkillInfo> Skills { get { return skills; } }
@@ -256,6 +258,7 @@ namespace CodeImp.DoomBuilder.Config
 			linetagindicatesectors = cfg.ReadSetting("linetagindicatesectors", false);
 			decorategames = cfg.ReadSetting("decorategames", "");
             skyflatname = cfg.ReadSetting("skyflatname", "F_SKY1");
+			maxtexturenamelength = cfg.ReadSetting("maxtexturenamelength", 8);
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 			
 			// Flags have special (invariant culture) conversion

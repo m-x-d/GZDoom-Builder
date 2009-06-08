@@ -92,18 +92,34 @@ namespace CodeImp.DoomBuilder.ZDoom
 						// Read texture structure
 						TextureStructure tx = new TextureStructure(this);
 						if(this.HasError) break;
-						
-						// Add the texture
-						textures.Add(tx);
+
+						// if a limit for the texture name length is set make sure that it's not exceeded
+						if ((General.Map.Config.MaxTextureNamelength > 0) && (tx.Name.Length > General.Map.Config.MaxTextureNamelength))
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "Texture name \"" + tx.Name + "\" too long. Texture names must have a length of " + General.Map.Config.MaxTextureNamelength.ToString() + " characters or less");
+						}
+						else
+						{
+							// Add the texture
+							textures.Add(tx);
+						}
 					}
 					else if(objdeclaration == "sprite")
 					{
 						// Read sprite structure
 						TextureStructure tx = new TextureStructure(this);
 						if(this.HasError) break;
-						
-						// Add the sprite
-						sprites.Add(tx);
+
+						// if a limit for the sprite name length is set make sure that it's not exceeded
+						if ((General.Map.Config.MaxTextureNamelength > 0) && (tx.Name.Length > General.Map.Config.MaxTextureNamelength))
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "Sprite name \"" + tx.Name + "\" too long. Sprite names must have a length of " +  General.Map.Config.MaxTextureNamelength.ToString() + " characters or less");
+						}
+						else
+						{
+							// Add the sprite
+							sprites.Add(tx);
+						}
 					}
 					else
 					{
