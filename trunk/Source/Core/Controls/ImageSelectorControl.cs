@@ -65,6 +65,9 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
+
+			// set the max length of texture names
+			name.MaxLength = General.Map.Config.MaxTextureNamelength;
 		}
 		
 		#endregion
