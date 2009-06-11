@@ -895,6 +895,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Vertex v = (vindex >= 0) ? General.Map.Map.GetVertexByIndex(vindex) : null;
 			l.SetStartVertex(v);
 			l.Marked = true;
+			if(v != null) v.Marked = true;
 		}
 
 		internal void RecRefLinedefEnd(Linedef l)
@@ -917,6 +918,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Vertex v = (vindex >= 0) ? General.Map.Map.GetVertexByIndex(vindex) : null;
 			l.SetEndVertex(v);
 			l.Marked = true;
+			if(v != null) v.Marked = true;
 		}
 
 		internal void RecRefLinedefFront(Linedef l)
@@ -939,7 +941,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Sidedef sd = (sindex >= 0) ? General.Map.Map.GetSidedefByIndex(sindex) : null;
 			l.AttachFront(sd);
 			l.Marked = true;
-			sd.Marked = true;
+			if(sd != null) sd.Marked = true;
 		}
 
 		internal void RecRefLinedefBack(Linedef l)
@@ -962,7 +964,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Sidedef sd = (sindex >= 0) ? General.Map.Map.GetSidedefByIndex(sindex) : null;
 			l.AttachBack(sd);
 			l.Marked = true;
-			sd.Marked = true;
+			if(sd != null) sd.Marked = true;
 		}
 
 		internal void RecAddSidedef(Sidedef s)
@@ -1051,7 +1053,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Sector sc = (sindex >= 0) ? General.Map.Map.GetSectorByIndex(sindex) : null;
 			sd.SetSector(sc);
 			sd.Marked = true;
-			sc.Marked = true;
+			if(sc != null) sc.Marked = true;
 		}
 
 		internal void RecAddSector(Sector s)
