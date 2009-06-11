@@ -101,6 +101,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		// Constructor
 		public Triangulation()
 		{
+			islandvertices = Array.AsReadOnly<int>(new int[0]);
+			vertices = Array.AsReadOnly<Vector2D>(new Vector2D[0]);
+			sidedefs = Array.AsReadOnly<Sidedef>(new Sidedef[0]);
 		}
 
 		// This performs the triangulation

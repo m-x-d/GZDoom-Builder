@@ -199,6 +199,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This applies the current fields to a UniFields object
 		public void Apply(UniFields tofields)
 		{
+			tofields.BeforeFieldsChange();
+			
 			// Go for all the fields
 			UniFields tempfields = new UniFields(tofields);
 			foreach(KeyValuePair<string, UniValue> f in tempfields)

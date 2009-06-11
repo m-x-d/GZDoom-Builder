@@ -375,6 +375,8 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads custom fields from a collection and adds them to a map element
 		private void ReadCustomFields(UniversalCollection collection, MapElement element, string elementname)
 		{
+			element.Fields.BeforeFieldsChange();
+			
 			// Go for all the elements in the collection
 			foreach(UniversalEntry e in collection)
 			{

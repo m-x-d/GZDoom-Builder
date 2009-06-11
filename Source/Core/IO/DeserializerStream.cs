@@ -42,12 +42,15 @@ namespace CodeImp.DoomBuilder.IO
 		private Stream stream;
 		private BinaryReader reader;
 		private string[] stringstable;
+		private int stringtablepos;
 
 		#endregion
 
 		#region ================== Properties
 
 		public bool IsWriting { get { return false; } }
+
+		public int EndPosition { get { return stringtablepos; } }
 
 		#endregion
 
@@ -69,8 +72,8 @@ namespace CodeImp.DoomBuilder.IO
 		public void Begin()
 		{
 			// First 4 bytes are reserved for the offset of the strings table
-			int offset = reader.ReadInt32();
-			stream.Seek(offset, SeekOrigin.Begin);
+			stringtablepos = reader.ReadInt32();
+			stream.Seek(stringtablepos, SeekOrigin.Begin);
 			
 			// Read the strings
 			List<string> strings = new List<string>();

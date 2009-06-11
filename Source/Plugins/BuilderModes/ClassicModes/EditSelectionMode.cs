@@ -613,7 +613,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add toolbar buttons
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
-
+			
+			// We don't want to record this for undoing while we move the geometry around.
+			// This will be set back to normal when we're done.
+			General.Map.UndoRedo.IgnorePropChanges = true;
+			
 			// Convert geometry selection
 			General.Map.Map.ClearAllMarks(false);
 			General.Map.Map.MarkSelectedVertices(true, true);
@@ -751,6 +755,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Paste operation?
 			if(pasting)
 			{
+				// Resume normal undo/redo recording
+				General.Map.UndoRedo.IgnorePropChanges = false;
+				
 				// Remove the geometry
 				int index = 0;
 				foreach(Vertex v in selectedvertices)
@@ -773,6 +780,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					t.Rotate(thingangle[index]);
 					t.Move(thingpos[index++]);
 				}
+				
+				// Resume normal undo/redo recording
+				General.Map.UndoRedo.IgnorePropChanges = false;
 			}
 			
 			General.Map.Map.Update(true, true);
@@ -810,7 +820,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Make undo
 					General.Map.UndoRedo.CreateUndo("Edit selection");
 				}
-				
+
+				// Resume normal undo/redo recording
+				General.Map.UndoRedo.IgnorePropChanges = false;
+
 				// Mark selected geometry
 				General.Map.Map.ClearAllMarks(false);
 				General.Map.Map.MarkAllSelectedGeometry(true, true, true, true, false);
@@ -863,7 +876,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									if(joinsidedef != null)
 									{
 										// Join!
-										s.ChangeSector(joinsidedef.Sector);
+										s.SetSector(joinsidedef.Sector);
 										s.Marked = false;
 										joined = true;
 

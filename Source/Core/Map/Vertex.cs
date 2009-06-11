@@ -81,20 +81,9 @@ namespace CodeImp.DoomBuilder.Map
 			this.listindex = listindex;
 			this.pos = pos;
 			
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Constructor
-		internal Vertex(MapSet map, int listindex, IReadWriteStream stream)
-		{
-			// Initialize
-			this.map = map;
-			this.linedefs = new LinkedList<Linedef>();
-			this.listindex = listindex;
-
-			ReadWrite(stream);
-
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecAddVertex(this);
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -107,6 +96,9 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
+
+				if(map == General.Map.Map)
+					General.Map.UndoRedo.RecRemVertex(this);
 				
 				// Remove from main list
 				map.RemoveVertex(listindex);
@@ -120,7 +112,7 @@ namespace CodeImp.DoomBuilder.Map
 				else
 				{
 					// Detach from linedefs
-					foreach(Linedef ld in linedefs) ld.DetachVertex(this);
+					foreach(Linedef ld in linedefs) ld.DetachVertexP(this);
 				}
 				
 				// Clean up
@@ -136,11 +128,21 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
+		// Call this before changing properties
+		protected override void BeforePropsChange()
+		{
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecPrpVertex(this);
+		}
+
 		// This attaches a linedef and returns the listitem
-		public LinkedListNode<Linedef> AttachLinedef(Linedef l) { return linedefs.AddLast(l); }
+		internal LinkedListNode<Linedef> AttachLinedefP(Linedef l)
+		{
+			return linedefs.AddLast(l);
+		}
 
 		// This detaches a linedef
-		public void DetachLinedef(LinkedListNode<Linedef> l)
+		internal void DetachLinedefP(LinkedListNode<Linedef> l)
 		{
 			// Not disposing?
 			if(!isdisposed)
@@ -160,9 +162,17 @@ namespace CodeImp.DoomBuilder.Map
 		// Serialize / deserialize
 		internal void ReadWrite(IReadWriteStream s)
 		{
+			if(!s.IsWriting) BeforePropsChange();
+			
 			base.ReadWrite(s);
 			
 			s.rwVector2D(ref pos);
+			
+			if(s.IsWriting)
+			{
+				// Let all lines know they need an update
+				foreach(Linedef l in linedefs) l.NeedUpdate();
+			}
 		}
 
 		// Selected
@@ -187,6 +197,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This copies all properties to another thing
 		public void CopyPropertiesTo(Vertex v)
 		{
+			v.BeforePropsChange();
+			
 			// Copy properties
 			v.pos = pos;
 			base.CopyPropertiesTo(v);
@@ -213,6 +225,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Do we actually move?
 			if(newpos != pos)
 			{
+				BeforePropsChange();
+				
 				// Change position
 				pos = newpos;
 

@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		#region ================== Variables
 
-		private MemoryStream mapdata;
+		private MemoryStream recstream;
 		private string filename;
 		private string description;
 		private int ticketid;			// For safe withdrawing
@@ -62,22 +62,22 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal UndoSnapshot(string description, MemoryStream mapdata, int ticketid)
+		internal UndoSnapshot(string description, MemoryStream recstream, int ticketid)
 		{
-			if(mapdata == null) General.Fail("Argument cannot be null!");
+			if(recstream == null) General.Fail("Argument cannot be null!");
 			this.ticketid = ticketid;
 			this.description = description;
-			this.mapdata = mapdata;
+			this.recstream = recstream;
 			this.filename = null;
 		}
 
 		// Constructor
-		internal UndoSnapshot(UndoSnapshot info, MemoryStream mapdata)
+		internal UndoSnapshot(UndoSnapshot info, MemoryStream recstream)
 		{
-			if(mapdata == null) General.Fail("Argument cannot be null!");
+			if(recstream == null) General.Fail("Argument cannot be null!");
 			this.ticketid = info.ticketid;
 			this.description = info.description;
-			this.mapdata = mapdata;
+			this.recstream = recstream;
 			this.filename = null;
 		}
 
@@ -87,8 +87,8 @@ namespace CodeImp.DoomBuilder.Editing
 			lock(this)
 			{
 				isdisposed = true;
-				if(mapdata != null) mapdata.Dispose();
-				mapdata = null;
+				if(recstream != null) recstream.Dispose();
+				recstream = null;
 				if(isondisk) File.Delete(filename);
 				isondisk = false;
 			}
@@ -99,15 +99,15 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Methods
 
 		// This returns the map data
-		internal MemoryStream GetMapData()
+		internal MemoryStream GetStream()
 		{
 			lock(this)
 			{
 				// Restore into memory if needed
 				if(isondisk) RestoreFromFile();
 				
-				// Return a copy of the buffer
-				return new MemoryStream(mapdata.ToArray());
+				// Return the buffer
+				return recstream;
 			}
 		}
 		
@@ -121,9 +121,9 @@ namespace CodeImp.DoomBuilder.Editing
 				isondisk = true;
 				
 				// Compress data
-				mapdata.Seek(0, SeekOrigin.Begin);
-				MemoryStream outstream = new MemoryStream((int)mapdata.Length);
-				BZip2.Compress(mapdata, outstream, 300000);
+				recstream.Seek(0, SeekOrigin.Begin);
+				MemoryStream outstream = new MemoryStream((int)recstream.Length);
+				BZip2.Compress(recstream, outstream, 300000);
 
 				// Make temporary file
 				filename = General.MakeTempFilename(General.Map.TempPath, "snapshot");
@@ -132,8 +132,8 @@ namespace CodeImp.DoomBuilder.Editing
 				File.WriteAllBytes(filename, outstream.ToArray());
 
 				// Remove data from memory
-				mapdata.Dispose();
-				mapdata = null;
+				recstream.Dispose();
+				recstream = null;
 				outstream.Dispose();
 			}
 		}
@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.Editing
 				MemoryStream outstream = new MemoryStream((int)instream.Length * 4);
 				instream.Seek(0, SeekOrigin.Begin);
 				BZip2.Decompress(instream, outstream);
-				mapdata = new MemoryStream(outstream.ToArray());
+				recstream = new MemoryStream(outstream.ToArray());
 				
 				// Clean up
 				instream.Dispose();

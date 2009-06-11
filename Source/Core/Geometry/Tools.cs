@@ -566,14 +566,14 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Create sidedef is needed and ensure it points to the new sector
 					if(ls.Line.Front == null) General.Map.Map.CreateSidedef(ls.Line, true, newsector);
-					if(ls.Line.Front.Sector != newsector) ls.Line.Front.ChangeSector(newsector);
+					if(ls.Line.Front.Sector != newsector) ls.Line.Front.SetSector(newsector);
 					ApplyDefaultsToSidedef(ls.Line.Front, sourceside);
 				}
 				else
 				{
 					// Create sidedef is needed and ensure it points to the new sector
 					if(ls.Line.Back == null) General.Map.Map.CreateSidedef(ls.Line, false, newsector);
-					if(ls.Line.Back.Sector != newsector) ls.Line.Back.ChangeSector(newsector);
+					if(ls.Line.Back.Sector != newsector) ls.Line.Back.SetSector(newsector);
 					ApplyDefaultsToSidedef(ls.Line.Back, sourceside);
 				}
 
@@ -622,7 +622,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					else
 					{
 						// Link to the new sector
-						ls.Line.Front.ChangeSector(original.Sector);
+						ls.Line.Front.SetSector(original.Sector);
 					}
 				}
 				else
@@ -641,7 +641,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					else
 					{
 						// Link to the new sector
-						ls.Line.Back.ChangeSector(original.Sector);
+						ls.Line.Back.SetSector(original.Sector);
 					}
 				}
 			}

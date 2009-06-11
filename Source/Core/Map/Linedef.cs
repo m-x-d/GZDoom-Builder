@@ -67,6 +67,8 @@ namespace CodeImp.DoomBuilder.Map
 		private float lengthinv;
 		private float angle;
 		private RectangleF rect;
+		private bool blocksoundflag;
+		private bool impassableflag;
 		
 		// Properties
 		private Dictionary<string, bool> flags;
@@ -89,10 +91,10 @@ namespace CodeImp.DoomBuilder.Map
 		public Sidedef Front { get { return front; } }
 		public Sidedef Back { get { return back; } }
 		public Line2D Line { get { return new Line2D(start.Position, end.Position); } }
-		public Dictionary<string, bool> Flags { get { return flags; } }
-		public int Action { get { return action; } set { action = value; } }
-		public int Activate { get { return activate; } set { activate = value; } }
-		public int Tag { get { return tag; } set { tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
+		internal Dictionary<string, bool> Flags { get { return flags; } }
+		public int Action { get { return action; } set { BeforePropsChange(); action = value; } }
+		public int Activate { get { return activate; } set { BeforePropsChange(); activate = value; } }
+		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
 		public float LengthInv { get { return lengthinv; } }
@@ -102,7 +104,9 @@ namespace CodeImp.DoomBuilder.Map
 		public int[] Args { get { return args; } }
 		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
 		internal bool FrontInterior { get { return frontinterior; } set { frontinterior = value; } }
-
+		internal bool ImpassableFlag { get { return impassableflag; } }
+		internal bool BlockSoundFlag { get { return blocksoundflag; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -113,41 +117,23 @@ namespace CodeImp.DoomBuilder.Map
 			// Initialize
 			this.map = map;
 			this.listindex = listindex;
-			this.start = start;
-			this.end = end;
 			this.updateneeded = true;
 			this.args = new int[NUM_ARGS];
 			this.flags = new Dictionary<string, bool>();
 			
 			// Attach to vertices
-			startvertexlistitem = start.AttachLinedef(this);
-			endvertexlistitem = end.AttachLinedef(this);
-			
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Constructor
-		internal Linedef(MapSet map, int listindex, Vertex start, Vertex end, IReadWriteStream stream)
-		{
-			// Initialize
-			this.map = map;
-			this.listindex = listindex;
 			this.start = start;
+			this.startvertexlistitem = start.AttachLinedefP(this);
 			this.end = end;
-			this.updateneeded = true;
-			this.args = new int[NUM_ARGS];
-
-			// Attach to vertices
-			startvertexlistitem = start.AttachLinedef(this);
-			endvertexlistitem = end.AttachLinedef(this);
-
-			ReadWrite(stream);
+			this.endvertexlistitem = end.AttachLinedefP(this);
+			
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecAddLinedef(this);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
-
+		
 		// Disposer
 		public override void Dispose()
 		{
@@ -157,18 +143,23 @@ namespace CodeImp.DoomBuilder.Map
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
 
+				// Dispose sidedefs
+				if((front != null) && map.AutoRemove) front.Dispose(); else AttachFrontP(null);
+				if((back != null) && map.AutoRemove) back.Dispose(); else AttachBackP(null);
+				
+				if(map == General.Map.Map)
+					General.Map.UndoRedo.RecRemLinedef(this);
+
 				// Remove from main list
 				map.RemoveLinedef(listindex);
-
-				// Detach from vertices
-				start.DetachLinedef(startvertexlistitem);
-				end.DetachLinedef(endvertexlistitem);
-				startvertexlistitem = null;
-				endvertexlistitem = null;
 				
-				// Dispose sidedefs
-				if((front != null) && map.AutoRemove) front.Dispose();
-				if((back != null) && map.AutoRemove) back.Dispose();
+				// Detach from vertices
+				if(startvertexlistitem != null) start.DetachLinedefP(startvertexlistitem);
+				startvertexlistitem = null;
+				start = null;
+				if(endvertexlistitem != null) end.DetachLinedefP(endvertexlistitem);
+				endvertexlistitem = null;
+				end = null;
 				
 				// Clean up
 				start = null;
@@ -185,10 +176,19 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Management
-
-		// Serialize / deserialize
+		
+		// Call this before changing properties
+		protected override void BeforePropsChange()
+		{
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecPrpLinedef(this);
+		}
+		
+		// Serialize / deserialize (passive: doesn't record)
 		internal void ReadWrite(IReadWriteStream s)
 		{
+			if(!s.IsWriting) BeforePropsChange();
+			
 			base.ReadWrite(s);
 			
 			if(s.IsWriting)
@@ -223,32 +223,46 @@ namespace CodeImp.DoomBuilder.Map
 		// This sets new start vertex
 		public void SetStartVertex(Vertex v)
 		{
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecRefLinedefStart(this);
+			
 			// Change start
-			if(startvertexlistitem != null) start.DetachLinedef(startvertexlistitem);
+			if(startvertexlistitem != null) start.DetachLinedefP(startvertexlistitem);
 			startvertexlistitem = null;
 			start = v;
-			if(start != null) startvertexlistitem = start.AttachLinedef(this);
+			if(start != null) startvertexlistitem = start.AttachLinedefP(this);
 			this.updateneeded = true;
 		}
 
 		// This sets new end vertex
 		public void SetEndVertex(Vertex v)
 		{
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecRefLinedefEnd(this);
+
 			// Change end
-			if(endvertexlistitem != null) end.DetachLinedef(endvertexlistitem);
+			if(endvertexlistitem != null) end.DetachLinedefP(endvertexlistitem);
 			endvertexlistitem = null;
 			end = v;
-			if(end != null) endvertexlistitem = end.AttachLinedef(this);
+			if(end != null) endvertexlistitem = end.AttachLinedefP(this);
 			this.updateneeded = true;
 		}
 
 		// This detaches a vertex
-		internal void DetachVertex(Vertex v)
+		internal void DetachVertexP(Vertex v)
 		{
 			if(v == start)
-				SetStartVertex(null);
+			{
+				if(startvertexlistitem != null) start.DetachLinedefP(startvertexlistitem);
+				startvertexlistitem = null;
+				start = null;
+			}
 			else if(v == end)
-				SetEndVertex(null);
+			{
+				if(endvertexlistitem != null) end.DetachLinedefP(endvertexlistitem);
+				endvertexlistitem = null;
+				end = null;
+			}
 			else 
 				throw new Exception("Specified Vertex is not attached to this Linedef.");
 		}
@@ -256,6 +270,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This copies all properties to another line
 		new public void CopyPropertiesTo(Linedef l)
 		{
+			l.BeforePropsChange();
+			
 			// Copy properties
 			l.action = action;
 			l.args = (int[])args.Clone();
@@ -263,42 +279,57 @@ namespace CodeImp.DoomBuilder.Map
 			l.tag = tag;
 			l.updateneeded = true;
 			l.activate = activate;
+			l.impassableflag = impassableflag;
+			l.blocksoundflag = blocksoundflag;
 			base.CopyPropertiesTo(l);
 		}
 		
 		// This attaches a sidedef on the front
-		public void AttachFront(Sidedef s)
+		internal void AttachFront(Sidedef s)
 		{
-			// No sidedef here yet?
-			if(front == null)
-			{
-				// Attach and recalculate
-				front = s;
-				updateneeded = true;
-			}
-			else throw new Exception("Linedef already has a front Sidedef.");
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecRefLinedefFront(this);
+			
+			// Attach and recalculate
+			AttachFrontP(s);
+		}
+		
+		// Passive version, does not record the change
+		internal void AttachFrontP(Sidedef s)
+		{
+			// Attach and recalculate
+			front = s;
+			if(front != null) front.SetLinedefP(this);
+			updateneeded = true;
 		}
 
 		// This attaches a sidedef on the back
-		public void AttachBack(Sidedef s)
+		internal void AttachBack(Sidedef s)
 		{
-			// No sidedef here yet?
-			if(back == null)
-			{
-				// Attach and recalculate
-				back = s;
-				updateneeded = true;
-			}
-			else throw new Exception("Linedef already has a back Sidedef.");
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecRefLinedefBack(this);
+
+			// Attach and recalculate
+			AttachBackP(s);
+		}
+		
+		// Passive version, does not record the change
+		internal void AttachBackP(Sidedef s)
+		{
+			// Attach and recalculate
+			back = s;
+			if(back != null) back.SetLinedefP(this);
+			updateneeded = true;
 		}
 
 		// This detaches a sidedef from the front
-		public void DetachSidedef(Sidedef s)
+		internal void DetachSidedefP(Sidedef s)
 		{
 			// Sidedef is on the front?
 			if(front == s)
 			{
 				// Remove sidedef reference
+				if(front != null) front.SetLinedefP(null);
 				front = null;
 				updateneeded = true;
 			}
@@ -306,10 +337,11 @@ namespace CodeImp.DoomBuilder.Map
 			else if(back == s)
 			{
 				// Remove sidedef reference
+				if(back != null) back.SetLinedefP(null);
 				back = null;
 				updateneeded = true;
 			}
-			else throw new Exception("Specified Sidedef is not attached to this Linedef.");
+			//else throw new Exception("Specified Sidedef is not attached to this Linedef.");
 		}
 		
 		// This updates the line when changes have been made
@@ -332,6 +364,10 @@ namespace CodeImp.DoomBuilder.Map
 				float r = Math.Max(start.Position.x, end.Position.x);
 				float b = Math.Max(start.Position.y, end.Position.y);
 				rect = new RectangleF(l, t, r - l, b - t);
+				
+				// Cached flags
+				blocksoundflag = IsFlagSet(General.Map.Config.SoundLinedefFlag);
+				impassableflag = IsFlagSet(General.Map.Config.ImpassableFlag);
 				
 				// Updated
 				updateneeded = false;
@@ -478,20 +514,45 @@ namespace CodeImp.DoomBuilder.Map
 			else
 				return false;
 		}
+
+		// This sets a flag
+		public void SetFlag(string flagname, bool value)
+		{
+			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value))
+			{
+				BeforePropsChange();
+				
+				flags[flagname] = value;
+
+				// Cached flags
+				if(flagname == General.Map.Config.SoundLinedefFlag) blocksoundflag = value;
+				if(flagname == General.Map.Config.ImpassableFlag) impassableflag = value;
+			}
+		}
+
+		// This returns a copy of the flags dictionary
+		public Dictionary<string, bool> GetFlags()
+		{
+			return new Dictionary<string, bool>(flags);
+		}
+		
+		// This clears all flags
+		public void ClearFlags()
+		{
+			flags.Clear();
+			blocksoundflag = false;
+			impassableflag = false;
+		}
 		
 		// This flips the linedef's vertex attachments
 		public void FlipVertices()
 		{
 			// Flip vertices
-			Vertex v = start;
-			start = end;
-			end = v;
-
-			// Flip tickets accordingly
-			LinkedListNode<Linedef> vn = startvertexlistitem;
-			startvertexlistitem = endvertexlistitem;
-			endvertexlistitem = vn;
-
+			Vertex oldstart = start;
+			Vertex oldend = end;
+			SetStartVertex(oldend);
+			SetEndVertex(oldstart);
+			
 			// For drawing, the interior now lies on the other side
 			frontinterior = !frontinterior;
 
@@ -504,9 +565,10 @@ namespace CodeImp.DoomBuilder.Map
 		public void FlipSidedefs()
 		{
 			// Flip sidedefs
-			Sidedef sd = front;
-			front = back;
-			back = sd;
+			Sidedef oldfront = front;
+			Sidedef oldback = back;
+			AttachFront(oldback);
+			AttachBack(oldfront);
 			
 			General.Map.IsChanged = true;
 		}
@@ -544,14 +606,14 @@ namespace CodeImp.DoomBuilder.Map
 			if((front != null) && (back != null))
 			{
 				// Apply or remove flags for doublesided line
-				flags[General.Map.Config.SingleSidedFlag] = false;
-				flags[General.Map.Config.DoubleSidedFlag] = true;
+				SetFlag(General.Map.Config.SingleSidedFlag, false);
+				SetFlag(General.Map.Config.DoubleSidedFlag, true);
 			}
 			else
 			{
 				// Apply or remove flags for singlesided line
-				flags[General.Map.Config.SingleSidedFlag] = true;
-				flags[General.Map.Config.DoubleSidedFlag] = false;
+				SetFlag(General.Map.Config.SingleSidedFlag, true);
+				SetFlag(General.Map.Config.DoubleSidedFlag, false);
 			}
 			
 			General.Map.IsChanged = true;
@@ -952,6 +1014,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates all properties
 		public void Update(Dictionary<string, bool> flags, int activate, int tag, int action, int[] args)
 		{
+			BeforePropsChange();
+			
 			// Apply changes
 			this.flags = new Dictionary<string, bool>(flags);
 			this.tag = tag;

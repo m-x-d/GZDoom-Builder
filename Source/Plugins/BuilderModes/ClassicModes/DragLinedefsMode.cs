@@ -136,6 +136,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			renderer.RedrawSurface();
 
+			UpdateRedraw();
+
+			if(viewchanged)
+			{
+				// Start rendering things
+				if(renderer.StartThings(true))
+				{
+					renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
+					renderer.Finish();
+				}
+			}
+
+			renderer.Present();
+		}
+
+		// This redraws only the required things
+		protected override void UpdateRedraw()
+		{
 			// Start rendering structure
 			if(renderer.StartPlotter(true))
 			{
@@ -148,19 +166,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// This is important to know, because this item is used
 				// for snapping to the grid and snapping to nearest items
 				renderer.PlotVertex(dragitem, ColorCollection.HIGHLIGHT);
-				
+
 				// Done
 				renderer.Finish();
-			}
-
-			if(viewchanged)
-			{
-				// Start rendering things
-				if(renderer.StartThings(true))
-				{
-					renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
-					renderer.Finish();
-				}
 			}
 
 			// Redraw overlay
@@ -172,8 +180,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				renderer.Finish();
 			}
-
-			renderer.Present();
 		}
 		
 		#endregion

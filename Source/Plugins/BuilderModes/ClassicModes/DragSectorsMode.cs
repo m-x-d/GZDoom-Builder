@@ -141,6 +141,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			renderer.RedrawSurface();
 
+			UpdateRedraw();
+			
+			// Redraw things when view changed
+			if(viewchanged)
+			{
+				if(renderer.StartThings(true))
+				{
+					renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
+					renderer.Finish();
+				}
+			}
+
+			renderer.Present();
+		}
+		
+		// This redraws only the required things
+		protected override void UpdateRedraw()
+		{
 			// Start rendering
 			if(renderer.StartPlotter(true))
 			{
@@ -159,16 +177,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 			}
 
-			// Redraw things when view changed
-			if(viewchanged)
-			{
-				if(renderer.StartThings(true))
-				{
-					renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
-					renderer.Finish();
-				}
-			}
-
 			// Redraw overlay
 			if(renderer.StartOverlay(true))
 			{
@@ -178,8 +186,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				renderer.Finish();
 			}
-
-			renderer.Present();
 		}
 		
 		#endregion

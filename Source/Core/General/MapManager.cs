@@ -348,13 +348,17 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
 			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 			General.WriteLogLine("Reading map data structures from file...");
-			try { map = io.Read(map, TEMP_MAP_HEADER); }
-			catch(Exception e)
-			{
-				General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
-				General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
-				return false;
-			}
+			#if DEBUG
+				map = io.Read(map, TEMP_MAP_HEADER);
+			#else
+				try { map = io.Read(map, TEMP_MAP_HEADER); }
+				catch(Exception e)
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
+					General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
+					return false;
+				}
+			#endif
 			map.EndAddRemove();
 			
 			// Load data manager
@@ -446,6 +450,8 @@ namespace CodeImp.DoomBuilder
 				{
 					if(t.Type == config.Start3DModeThingType)
 					{
+						// We're not using SetFlag here, this doesn't have to be undone.
+						// Please note that this is totally exceptional!
 						List<string> flagkeys = new List<string>(t.Flags.Keys);
 						foreach(string k in flagkeys) t.Flags[k] = false;
 					}

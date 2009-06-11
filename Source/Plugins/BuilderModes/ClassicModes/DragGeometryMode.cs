@@ -115,6 +115,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.dragstartmappos = dragstartmappos;
 			
 			Cursor.Current = Cursors.AppStarting;
+			
+			// We don't want to record this for undoing while we move the geometry around.
+			// This will be set back to normal when we're done.
+			General.Map.UndoRedo.IgnorePropChanges = true;
 
 			// Make list of selected vertices
 			selectedverts = General.Map.Map.GetMarkedVertices(true);
@@ -272,6 +276,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Move geometry back to original position
 			MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
+			
+			// Resume normal undo/redo recording
+			General.Map.UndoRedo.IgnorePropChanges = false;
 
 			// If only a single vertex was selected, deselect it now
 			if(selectedverts.Count == 1) General.Map.Map.ClearSelectedVertices();
@@ -307,6 +314,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Move geometry back to original position
 				MoveGeometryRelative(new Vector2D(0f, 0f), false, false);
+
+				// Resume normal undo/redo recording
+				General.Map.UndoRedo.IgnorePropChanges = false;
 
 				// Make undo for the dragging
 				General.Map.UndoRedo.CreateUndo("Drag geometry");
@@ -364,8 +374,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.Update(true, false);
 
 				// Redraw
-				General.Interface.RedrawDisplay();
+				UpdateRedraw();
+				renderer.Present();
+				//General.Interface.RedrawDisplay();
 			}
+		}
+
+		// This redraws only the required things
+		protected virtual void UpdateRedraw()
+		{
 		}
 
 		// When edit button is released

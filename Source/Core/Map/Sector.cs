@@ -86,15 +86,15 @@ namespace CodeImp.DoomBuilder.Map
 		/// An unique index that does not change when other sectors are removed.
 		/// </summary>
 		public int FixedIndex { get { return fixedindex; } }
-		public int FloorHeight { get { return floorheight; } set { floorheight = value; } }
-		public int CeilHeight { get { return ceilheight; } set { ceilheight = value; } }
+		public int FloorHeight { get { return floorheight; } set { BeforePropsChange(); floorheight = value; } }
+		public int CeilHeight { get { return ceilheight; } set { BeforePropsChange(); ceilheight = value; } }
 		public string FloorTexture { get { return floortexname; } }
 		public string CeilTexture { get { return ceiltexname; } }
 		public long LongFloorTexture { get { return longfloortexname; } }
 		public long LongCeilTexture { get { return longceiltexname; } }
-		public int Effect { get { return effect; } set { effect = value; } }
-		public int Tag { get { return tag; } set { tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
-		public int Brightness { get { return brightness; } set { brightness = value; updateneeded = true; } }
+		public int Effect { get { return effect; } set { BeforePropsChange(); effect = value; } }
+		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
+		public int Brightness { get { return brightness; } set { BeforePropsChange(); brightness = value; updateneeded = true; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public RectangleF BBox { get { return bbox; } }
 		internal Sector Clone { get { return clone; } set { clone = value; } }
@@ -122,21 +122,8 @@ namespace CodeImp.DoomBuilder.Map
 			this.triangulationneeded = true;
 			this.surfaceentry = new SurfaceEntry(-1, -1, -1);
 
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Constructor
-		internal Sector(MapSet map, int listindex, IReadWriteStream stream)
-		{
-			// Initialize
-			this.map = map;
-			this.listindex = listindex;
-			this.sidedefs = new LinkedList<Sidedef>();
-			this.triangulationneeded = true;
-			this.surfaceentry = new SurfaceEntry(-1, -1, -1);
-
-			ReadWrite(stream);
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecAddSector(this);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -150,10 +137,13 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
+				
+				if(map == General.Map.Map)
+					General.Map.UndoRedo.RecRemSector(this);
 
 				// Remove from main list
 				map.RemoveSector(listindex);
-
+				
 				// Register the index as free
 				map.AddSectorIndexHole(fixedindex);
 				
@@ -161,14 +151,16 @@ namespace CodeImp.DoomBuilder.Map
 				// because a sidedef cannot exist without reference to its sector.
 				if(map.AutoRemove)
 					foreach(Sidedef sd in sidedefs) sd.Dispose();
-
+				else
+					foreach(Sidedef sd in sidedefs) sd.SetSectorP(null);
+				
 				// Free surface entry
 				General.Map.CRenderer2D.Surfaces.FreeSurfaces(surfaceentry);
-				
+
 				// Clean up
 				sidedefs = null;
 				map = null;
-
+				
 				// Dispose base
 				base.Dispose();
 			}
@@ -178,49 +170,30 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Management
 
-		// Serialize / deserialize
+		// Call this before changing properties
+		protected override void BeforePropsChange()
+		{
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecPrpSector(this);
+		}
+
+		// Serialize / deserialize (passive: this doesn't record)
 		internal void ReadWrite(IReadWriteStream s)
 		{
-			base.ReadWrite(s);
+			if(!s.IsWriting) BeforePropsChange();
 			
+			base.ReadWrite(s);
+
 			s.rwInt(ref fixedindex);
 			s.rwInt(ref floorheight);
 			s.rwInt(ref ceilheight);
 			s.rwString(ref floortexname);
 			s.rwString(ref ceiltexname);
-			//s.rwLong(ref longfloortexname);
-			//s.rwLong(ref longceiltexname);
+			s.rwLong(ref longfloortexname);
+			s.rwLong(ref longceiltexname);
 			s.rwInt(ref effect);
 			s.rwInt(ref tag);
 			s.rwInt(ref brightness);
-
-			// Use a new triangulator when reading from stream
-			if(!s.IsWriting && (triangles == null)) triangles = new Triangulation();
-			triangles.ReadWrite(s);
-			
-			if(s.IsWriting)
-			{
-				s.wInt(labels.Count);
-				for(int i = 0; i < labels.Count; i++)
-				{
-					s.wVector2D(labels[i].position);
-					s.wFloat(labels[i].radius);
-				}
-			}
-			else
-			{
-				longfloortexname = Lump.MakeLongName(floortexname);
-				longceiltexname = Lump.MakeLongName(ceiltexname);
-				
-				int c; s.rInt(out c);
-				LabelPositionInfo[] labelsarray = new LabelPositionInfo[c];
-				for(int i = 0; i < c; i++)
-				{
-					s.rVector2D(out labelsarray[i].position);
-					s.rFloat(out labelsarray[i].radius);
-				}
-				labels = Array.AsReadOnly<LabelPositionInfo>(labelsarray);
-			}
 		}
 		
 		// After deserialization
@@ -237,6 +210,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This copies all properties to another sector
 		public void CopyPropertiesTo(Sector s)
 		{
+			s.BeforePropsChange();
+			
 			// Copy properties
 			s.ceilheight = ceilheight;
 			s.ceiltexname = ceiltexname;
@@ -252,7 +227,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This attaches a sidedef and returns the listitem
-		public LinkedListNode<Sidedef> AttachSidedef(Sidedef sd)
+		internal LinkedListNode<Sidedef> AttachSidedefP(Sidedef sd)
 		{
 			updateneeded = true;
 			triangulationneeded = true;
@@ -260,7 +235,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This detaches a sidedef
-		public void DetachSidedef(LinkedListNode<Sidedef> l)
+		internal void DetachSidedefP(LinkedListNode<Sidedef> l)
 		{
 			// Not disposing?
 			if(!isdisposed)
@@ -357,6 +332,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates the floor surface
 		public void UpdateFloorSurface()
 		{
+			if(flatvertices == null) return;
+			
 			// Create floor vertices
 			FlatVertex[] floorvertices = new FlatVertex[flatvertices.Length];
 			flatvertices.CopyTo(floorvertices, 0);
@@ -372,6 +349,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates the ceiling surface
 		public void UpdateCeilingSurface()
 		{
+			if(flatvertices == null) return;
+
 			// Create ceiling vertices
 			FlatVertex[] ceilvertices = new FlatVertex[flatvertices.Length];
 			flatvertices.CopyTo(ceilvertices, 0);
@@ -484,7 +463,7 @@ namespace CodeImp.DoomBuilder.Map
 				// Change secter reference on my sidedefs
 				// This automatically disposes this sector
 				while(sidedefs != null)
-					sidedefs.First.Value.ChangeSector(other);
+					sidedefs.First.Value.SetSector(other);
 			}
 			else
 			{
@@ -509,6 +488,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates all properties
 		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, int tag, int brightness)
 		{
+			BeforePropsChange();
+			
 			// Apply changes
 			this.floorheight = hfloor;
 			this.ceilheight = hceil;
@@ -523,6 +504,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This sets texture
 		public void SetFloorTexture(string name)
 		{
+			BeforePropsChange();
+			
 			floortexname = name;
 			longfloortexname = Lump.MakeLongName(name);
 			updateneeded = true;
@@ -532,6 +515,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This sets texture
 		public void SetCeilTexture(string name)
 		{
+			BeforePropsChange();
+			
 			ceiltexname = name;
 			longceiltexname = Lump.MakeLongName(name);
 			updateneeded = true;

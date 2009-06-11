@@ -912,8 +912,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								sd.SetTextureLow("-");
 
 								// Set upper/lower unpegged flags
-								sd.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
-								sd.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = true;
+								sd.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, false);
+								sd.Line.SetFlag(General.Map.Config.LowerUnpeggedFlag, true);
 							}
 							else
 							{
@@ -923,8 +923,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								if(doortex.Length > 0) sd.Other.SetTextureHigh(doortex);
 
 								// Set upper/lower unpegged flags
-								sd.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
-								sd.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = false;
+								sd.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, false);
+								sd.Line.SetFlag(General.Map.Config.LowerUnpeggedFlag, false);
 								
 								// Get door linedef type from config
 								sd.Line.Action = General.Map.Config.MakeDoorAction;

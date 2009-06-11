@@ -233,6 +233,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Render things
+			UpdateRedraw();
+
+			renderer.Present();
+		}
+
+		// This redraws only changed things
+		private void UpdateRedraw()
+		{
+			// Render things
 			if(renderer.StartThings(true))
 			{
 				// Render things
@@ -248,8 +257,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Done
 				renderer.Finish();
 			}
-
-			renderer.Present();
 		}
 		
 		// Cancelled
@@ -346,7 +353,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.Update();
 
 				// Redraw
-				General.Interface.RedrawDisplay();
+				UpdateRedraw();
+				renderer.Present();
+				//General.Interface.RedrawDisplay();
 			}
 		}
 
