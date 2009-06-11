@@ -68,13 +68,14 @@ namespace CodeImp.DoomBuilder.Map
 		internal MapElement()
 		{
 			// Initialize
-			fields = new UniFields();
+			fields = new UniFields(this);
 		}
 
 		// Disposer
 		public virtual void Dispose()
 		{
 			// Clean up
+			fields.Owner = null;
 			fields = null;
 			
 			// Done
@@ -101,7 +102,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			else
 			{
-				fields = new UniFields(c);
+				fields = new UniFields(this, c);
 				for(int i = 0; i < c; i++)
 				{
 					string t; s.rString(out t);
@@ -114,7 +115,16 @@ namespace CodeImp.DoomBuilder.Map
 		// This copies properties to any other element
 		public void CopyPropertiesTo(MapElement element)
 		{
-			element.fields = new UniFields(this.fields);
+			element.fields = new UniFields(this, this.fields);
+		}
+		
+		// This must implement the call to the undo system to record the change of properties
+		protected abstract void BeforePropsChange();
+		
+		// This is called before the custom fields change
+		internal void BeforeFieldsChange()
+		{
+			BeforePropsChange();
 		}
 		
 		#endregion

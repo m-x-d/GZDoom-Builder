@@ -48,13 +48,14 @@ namespace CodeImp.DoomBuilder.Config
 		private Configuration cfg;
 		
 		// Cached variables
-		private int undolevels;
+		//private int undolevels;
 		private bool blackbrowsers;
 		private int visualfov;
 		private float visualmousesensx;
 		private float visualmousesensy;
 		private int imagebrightness;
 		private float doublesidedalpha;
+		private byte doublesidedalphabyte;
 		private float backgroundalpha;
 		private bool qualitydisplay;
 		private bool squarethings;
@@ -92,11 +93,12 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		internal Configuration Config { get { return cfg; } }
-		public int UndoLevels { get { return undolevels; } internal set { undolevels = value; } }
+		//public int UndoLevels { get { return undolevels; } internal set { undolevels = value; } }
 		public bool BlackBrowsers { get { return blackbrowsers; } internal set { blackbrowsers = value; } }
 		public int VisualFOV { get { return visualfov; } internal set { visualfov = value; } }
 		public int ImageBrightness { get { return imagebrightness; } internal set { imagebrightness = value; } }
-		public float DoubleSidedAlpha { get { return doublesidedalpha; } internal set { doublesidedalpha = value; } }
+		public float DoubleSidedAlpha { get { return doublesidedalpha; } internal set { doublesidedalpha = value; doublesidedalphabyte = (byte)(doublesidedalpha * 255f); } }
+		public byte DoubleSidedAlphaByte { get { return doublesidedalphabyte; } }
 		public float BackgroundAlpha { get { return backgroundalpha; } internal set { backgroundalpha = value; } }
 		public float VisualMouseSensX { get { return visualmousesensx; } internal set { visualmousesensx = value; } }
 		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
@@ -153,12 +155,13 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				// Read the cache variables
 				blackbrowsers = cfg.ReadSetting("blackbrowsers", false);
-				undolevels = cfg.ReadSetting("undolevels", 20);
+				//undolevels = cfg.ReadSetting("undolevels", 20);
 				visualfov = cfg.ReadSetting("visualfov", 80);
 				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40f);
 				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40f);
 				imagebrightness = cfg.ReadSetting("imagebrightness", 3);
 				doublesidedalpha = cfg.ReadSetting("doublesidedalpha", 0.4f);
+				doublesidedalphabyte = (byte)(doublesidedalpha * 255f);
 				backgroundalpha = cfg.ReadSetting("backgroundalpha", 1.0f);
 				qualitydisplay = cfg.ReadSetting("qualitydisplay", true);
 				squarethings = cfg.ReadSetting("squarethings", false);
@@ -197,7 +200,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Write the cache variables
 			cfg.WriteSetting("blackbrowsers", blackbrowsers);
-			cfg.WriteSetting("undolevels", undolevels);
+			//cfg.WriteSetting("undolevels", undolevels);
 			cfg.WriteSetting("visualfov", visualfov);
 			cfg.WriteSetting("visualmousesensx", visualmousesensx);
 			cfg.WriteSetting("visualmousesensy", visualmousesensy);
@@ -363,7 +366,7 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			t.Type = defaultthingtype;
 			t.Rotate(defaultthingangle);
-			foreach(string f in defaultthingflags) t.Flags[f] = true;
+			foreach(string f in defaultthingflags) t.SetFlag(f, true);
 		}
 		
 		// This attempts to find the default drawing settings

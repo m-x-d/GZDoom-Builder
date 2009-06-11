@@ -362,8 +362,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					if(c.CheckState == CheckState.Checked) l.Flags[c.Tag.ToString()] = true;
-					else if(c.CheckState == CheckState.Unchecked) l.Flags[c.Tag.ToString()] = false;
+					if(c.CheckState == CheckState.Checked) l.SetFlag(c.Tag.ToString(), true);
+					else if(c.CheckState == CheckState.Unchecked) l.SetFlag(c.Tag.ToString(), false);
 				}
 				
 				// Apply chosen activation flag
@@ -374,8 +374,8 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(CheckBox c in udmfactivates.Checkboxes)
 				{
 					LinedefActivateInfo ai = (c.Tag as LinedefActivateInfo);
-					if(c.CheckState == CheckState.Checked) l.Flags[ai.Key] = true;
-					else if(c.CheckState == CheckState.Unchecked) l.Flags[ai.Key] = false;
+					if(c.CheckState == CheckState.Checked) l.SetFlag(ai.Key, true);
+					else if(c.CheckState == CheckState.Unchecked) l.SetFlag(ai.Key, false);
 				}
 				
 				// Action/tags
@@ -415,7 +415,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(l.Front == null) General.Map.Map.CreateSidedef(l, true, s);
 
 					// Change sector?
-					if(l.Front.Sector != s) l.Front.ChangeSector(s);
+					if(l.Front.Sector != s) l.Front.SetSector(s);
 
 					// Apply settings
 					l.Front.OffsetX = General.Clamp(frontoffsetx.GetResult(l.Front.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
@@ -442,7 +442,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(l.Back == null) General.Map.Map.CreateSidedef(l, false, s);
 
 					// Change sector?
-					if(l.Back.Sector != s) l.Back.ChangeSector(s);
+					if(l.Back.Sector != s) l.Back.SetSector(s);
 
 					// Apply settings
 					l.Back.OffsetX = General.Clamp(backoffsetx.GetResult(l.Back.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);

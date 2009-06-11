@@ -191,8 +191,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnUndoEnd()
 		{
 			base.OnUndoEnd();
-			ResourcesReloaded();
-			General.Map.Data.UpdateUsedTextures();
+			ResourcesReloadedPartial();
 			renderer.SetCrosshairBusy(false);
 		}
 
@@ -206,8 +205,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public override void OnRedoEnd()
 		{
 			base.OnRedoEnd();
-			ResourcesReloaded();
-			General.Map.Data.UpdateUsedTextures();
+			ResourcesReloadedPartial();
 			renderer.SetCrosshairBusy(false);
 		}
 
@@ -616,8 +614,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Processing
 		
 		/// <summary>
-		/// This disposes all resources and rebuilds the ones needed. 
-		/// This usually happens when geometry is changed by undo, redo, cut or paste actions.
+		/// This disposes all resources. Needed geometry will be rebuild automatically.
 		/// </summary>
 		protected virtual void ResourcesReloaded()
 		{
@@ -647,7 +644,92 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Visibility culling (this re-creates the needed resources)
 			DoCulling();
 		}
-		
+
+		/// <summary>
+		/// This disposes orphaned resources and resources on changed geometry.
+		/// This usually happens when geometry is changed by undo, redo, cut or paste actions
+		/// and uses the marks to check what needs to be reloaded.
+		/// </summary>
+		protected virtual void ResourcesReloadedPartial()
+		{
+			Dictionary<Sector, VisualSector> newsectors = new Dictionary<Sector,VisualSector>(allsectors.Count);
+			int counter = 0;
+			
+			// Neighbour sectors must be updated as well
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				if(s.Marked)
+				{
+					foreach(Sidedef sd in s.Sidedefs)
+						if(sd.Other != null) sd.Other.Marked = true;
+				}
+			}
+			
+			// Go for all sidedefs to mark sectors that need updating
+			foreach(Sidedef sd in General.Map.Map.Sidedefs)
+				if(sd.Marked) sd.Sector.Marked = true;
+			
+			// Go for all vertices to mark linedefs that need updating
+			foreach(Vertex v in General.Map.Map.Vertices)
+			{
+				if(v.Marked)
+				{
+					foreach(Linedef ld in v.Linedefs)
+						ld.Marked = true;
+				}
+			}
+			
+			// Go for all linedefs to mark sectors that need updating
+			foreach(Linedef ld in General.Map.Map.Linedefs)
+			{
+				if(ld.Marked)
+				{
+					if(ld.Front != null) ld.Front.Sector.Marked = true;
+					if(ld.Back != null) ld.Back.Sector.Marked = true;
+				}
+			}
+			
+			// Dispose if source was disposed or marked
+			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
+			{
+				if(vs.Key.IsDisposed || vs.Key.Marked)
+				{
+					vs.Value.Dispose();
+					counter++;
+				}
+				else
+					newsectors.Add(vs.Key, vs.Value);
+			}
+			
+			General.WriteLogLine("VisualSectors disposed: " + counter);
+
+			// Things depend on the sector they are in and because we can't
+			// easily determine which ones changed, we dispose all things
+			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
+				vt.Value.Dispose();
+			
+			// Apply new lists
+			allsectors = newsectors;
+			allthings = new Dictionary<Thing, VisualThing>(allthings.Count);
+			
+			// Clear visibility collections
+			visiblesectors.Clear();
+			visibleblocks.Clear();
+			visiblegeometry.Clear();
+			visiblethings.Clear();
+			
+			// Make new blockmap
+			if(blockmap != null)
+			{
+				blockmap.Dispose();
+				blockmap = new VisualBlockMap();
+				FillBlockMap();
+			}
+			
+			// Visibility culling (this re-creates the needed resources)
+			DoCulling();
+		}
+
 		/// <summary>
 		/// Implement this to create an instance of your VisualSector implementation.
 		/// </summary>

@@ -575,22 +575,20 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This returns the color for a linedef
 		public PixelColor DetermineLinedefColor(Linedef l)
 		{
-			// Impassable lines
-			if(l.IsFlagSet(General.Map.Config.ImpassableFlag))
+			if(l.Selected)
+				return General.Colors.Selection;
+			else if(l.ImpassableFlag)
 			{
-				// Determine color
-				if(l.Selected) return General.Colors.Selection;
-				else if(l.Action != 0) return General.Colors.Actions;
+				// Impassable lines
+				if(l.Action != 0) return General.Colors.Actions;
 				else return General.Colors.Linedefs;
 			}
 			else
 			{
-				// Determine color
-				byte a = (byte)(General.Settings.DoubleSidedAlpha * 255.0f);
-				if(l.Selected) return General.Colors.Selection;
-				else if(l.Action != 0) return General.Colors.Actions.WithAlpha(a);
-				else if(l.IsFlagSet(General.Map.Config.SoundLinedefFlag)) return General.Colors.Sounds.WithAlpha(a);
-				else return General.Colors.Linedefs.WithAlpha(a);
+				// Passable lines
+				if(l.Action != 0) return General.Colors.Actions.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+				else if(l.BlockSoundFlag) return General.Colors.Sounds.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+				else return General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
 			}
 		}
 

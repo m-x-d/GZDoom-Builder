@@ -204,7 +204,6 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
-				autoremove = false;
 				BeginAddRemove();
 				
 				// Dispose all things
@@ -435,6 +434,7 @@ namespace CodeImp.DoomBuilder.Map
 						{
 							virtualsector = newset.CreateSector();
 							l.Front.Sector.CopyPropertiesTo(virtualsector);
+							virtualsector.Fields.BeforeFieldsChange();
 							virtualsector.Fields[VIRTUAL_SECTOR_FIELD] = new UniValue(virtualsectorvalue);
 						}
 						
@@ -463,6 +463,7 @@ namespace CodeImp.DoomBuilder.Map
 						{
 							virtualsector = newset.CreateSector();
 							l.Back.Sector.CopyPropertiesTo(virtualsector);
+							virtualsector.Fields.BeforeFieldsChange();
 							virtualsector.Fields[VIRTUAL_SECTOR_FIELD] = new UniValue(virtualsectorvalue);
 						}
 
@@ -509,24 +510,6 @@ namespace CodeImp.DoomBuilder.Map
 			return v;
 		}
 
-		// This creates a new vertex from a stream
-		private Vertex CreateVertex(IReadWriteStream stream)
-		{
-			// Make the vertex
-			Vertex v = new Vertex(this, numvertices, stream);
-			AddItem(v, ref vertices, numvertices, ref numvertices);
-			return v;
-		}
-
-		// This creates a new vertex from a stream
-		private Vertex CreateVertex(int index, IReadWriteStream stream)
-		{
-			// Make the vertex
-			Vertex v = new Vertex(this, index, stream);
-			AddItem(v, ref vertices, index, ref numvertices);
-			return v;
-		}
-
 		/// <summary>This creates a new linedef and returns it.</summary>
 		public Linedef CreateLinedef(Vertex start, Vertex end)
 		{
@@ -545,24 +528,6 @@ namespace CodeImp.DoomBuilder.Map
 			return l;
 		}
 
-		// This creates a new linedef from a stream
-		private Linedef CreateLinedef(Vertex start, Vertex end, IReadWriteStream stream)
-		{
-			// Make the linedef
-			Linedef l = new Linedef(this, numlinedefs, start, end, stream);
-			AddItem(l, ref linedefs, numlinedefs, ref numlinedefs);
-			return l;
-		}
-
-		// This creates a new linedef from a stream
-		private Linedef CreateLinedef(int index, Vertex start, Vertex end, IReadWriteStream stream)
-		{
-			// Make the linedef
-			Linedef l = new Linedef(this, index, start, end, stream);
-			AddItem(l, ref linedefs, index, ref numlinedefs);
-			return l;
-		}
-
 		/// <summary>This creates a new sidedef and returns it.</summary>
 		public Sidedef CreateSidedef(Linedef l, bool front, Sector s)
 		{
@@ -577,24 +542,6 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Make the sidedef
 			Sidedef sd = new Sidedef(this, index, l, front, s);
-			AddItem(sd, ref sidedefs, index, ref numsidedefs);
-			return sd;
-		}
-
-		// This creates a new sidedef from a stream
-		private Sidedef CreateSidedef(Linedef l, bool front, Sector s, IReadWriteStream stream)
-		{
-			// Make the sidedef
-			Sidedef sd = new Sidedef(this, numsidedefs, l, front, s, stream);
-			AddItem(sd, ref sidedefs, numsidedefs, ref numsidedefs);
-			return sd;
-		}
-
-		// This creates a new sidedef from a stream
-		private Sidedef CreateSidedef(int index, Linedef l, bool front, Sector s, IReadWriteStream stream)
-		{
-			// Make the sidedef
-			Sidedef sd = new Sidedef(this, index, l, front, s, stream);
 			AddItem(sd, ref sidedefs, index, ref numsidedefs);
 			return sd;
 		}
@@ -634,15 +581,6 @@ namespace CodeImp.DoomBuilder.Map
 			// Make the sector
 			Sector s = new Sector(this, index, fixedindex);
 			AddItem(s, ref sectors, index, ref numsectors);
-			return s;
-		}
-
-		// This creates a new sector from a stream
-		private Sector CreateSector(IReadWriteStream stream)
-		{
-			// Make the sector
-			Sector s = new Sector(this, numsectors, stream);
-			AddItem(s, ref sectors, numsectors, ref numsectors);
 			return s;
 		}
 
@@ -919,7 +857,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Go for all vertices
 			for(int i = 0; i < c; i++)
 			{
-				array[i] = CreateVertex(stream);
+				array[i] = CreateVertex(new Vector2D());
+				array[i].ReadWrite(stream);
 			}
 
 			return array;
@@ -941,7 +880,8 @@ namespace CodeImp.DoomBuilder.Map
 
 				stream.rInt(out end);
 
-				array[i] = CreateLinedef(verticesarray[start], verticesarray[end], stream);
+				array[i] = CreateLinedef(verticesarray[start], verticesarray[end]);
+				array[i].ReadWrite(stream);
 			}
 
 			return array;
@@ -964,7 +904,8 @@ namespace CodeImp.DoomBuilder.Map
 
 				stream.rBool(out front);
 
-				CreateSidedef(linedefsarray[lineindex], front, sectorsarray[sectorindex], stream);
+				Sidedef sd = CreateSidedef(linedefsarray[lineindex], front, sectorsarray[sectorindex]);
+				sd.ReadWrite(stream);
 			}
 		}
 
@@ -978,7 +919,8 @@ namespace CodeImp.DoomBuilder.Map
 			// Go for all sectors
 			for(int i = 0; i < c; i++)
 			{
-				array[i] = CreateSector(stream);
+				array[i] = CreateSector();
+				array[i].ReadWrite(stream);
 			}
 
 			return array;
@@ -2677,14 +2619,14 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					// Replace with stored sidedef
 					bool isfront = snsd.IsFront;
-					snsd.Line.DetachSidedef(snsd);
+					snsd.Line.DetachSidedefP(snsd);
 					if(isfront)
 						snsd.Line.AttachFront(stored);
 					else
 						snsd.Line.AttachBack(stored);
 					
 					// Remove the sidedef
-					snsd.ChangeSector(null);
+					snsd.SetSector(null);
 					RemoveSidedef(sn);
 				}
 				else

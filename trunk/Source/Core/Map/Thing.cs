@@ -71,18 +71,18 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
-		public int Type { get { return type; } set { type = value; } }
+		public int Type { get { return type; } set { BeforePropsChange(); type = value; } }
 		public Vector3D Position { get { return pos; } }
 		public float Angle { get { return angle; } }
 		public int AngleDeg { get { return (int)Angle2D.RadToDeg(angle); } }
-		public Dictionary<string, bool> Flags { get { return flags; } }
-		public int Action { get { return action; } set { action = value; } }
+		internal Dictionary<string, bool> Flags { get { return flags; } }
+		public int Action { get { return action; } set { BeforePropsChange(); action = value; } }
 		public int[] Args { get { return args; } }
 		public float Size { get { return size; } }
 		public float IconOffset { get { return iconoffset; } }
 		public PixelColor Color { get { return color; } }
 		public bool FixedSize { get { return fixedsize; } }
-		public int Tag { get { return tag; } set { tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
+		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
 
 		#endregion
@@ -98,6 +98,9 @@ namespace CodeImp.DoomBuilder.Map
 			this.flags = new Dictionary<string, bool>();
 			this.args = new int[NUM_ARGS];
 			
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecAddThing(this);
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -110,6 +113,9 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
+
+				if(map == General.Map.Map)
+					General.Map.UndoRedo.RecRemThing(this);
 
 				// Remove from main list
 				map.RemoveThing(listindex);
@@ -129,10 +135,19 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Management
-
+		
+		// Call this before changing properties
+		protected override void BeforePropsChange()
+		{
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecPrpThing(this);
+		}
+		
 		// Serialize / deserialize
 		internal void ReadWrite(IReadWriteStream s)
 		{
+			if(!s.IsWriting) BeforePropsChange();
+			
 			base.ReadWrite(s);
 
 			if(s.IsWriting)
@@ -169,6 +184,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This copies all properties to another thing
 		public void CopyPropertiesTo(Thing t)
 		{
+			t.BeforePropsChange();
+			
 			// Copy properties
 			t.type = type;
 			t.angle = angle;
@@ -325,6 +342,8 @@ namespace CodeImp.DoomBuilder.Map
 		// NOTE: This does not update sector! (call DetermineSector)
 		public void Move(Vector3D newpos)
 		{
+			BeforePropsChange();
+			
 			// Change position
 			this.pos = newpos;
 			General.Map.IsChanged = true;
@@ -334,6 +353,8 @@ namespace CodeImp.DoomBuilder.Map
 		// NOTE: This does not update sector! (call DetermineSector)
 		public void Move(Vector2D newpos)
 		{
+			BeforePropsChange();
+			
 			// Change position
 			this.pos = new Vector3D(newpos.x, newpos.y, pos.z);
 			General.Map.IsChanged = true;
@@ -343,6 +364,8 @@ namespace CodeImp.DoomBuilder.Map
 		// NOTE: This does not update sector! (call DetermineSector)
 		public void Move(float x, float y, float zoffset)
 		{
+			BeforePropsChange();
+			
 			// Change position
 			this.pos = new Vector3D(x, y, zoffset);
 			General.Map.IsChanged = true;
@@ -351,6 +374,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This rotates the thing
 		public void Rotate(float newangle)
 		{
+			BeforePropsChange();
+			
 			// Change angle
 			this.angle = newangle;
 			General.Map.IsChanged = true;
@@ -403,7 +428,41 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Methods
+		
+		// This checks and returns a flag without creating it
+		public bool IsFlagSet(string flagname)
+		{
+			if(flags.ContainsKey(flagname))
+				return flags[flagname];
+			else
+				return false;
+		}
+		
+		// This sets a flag
+		public void SetFlag(string flagname, bool value)
+		{
+			if(!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value))
+			{
+				BeforePropsChange();
 
+				flags[flagname] = value;
+			}
+		}
+		
+		// This returns a copy of the flags dictionary
+		public Dictionary<string, bool> GetFlags()
+		{
+			return new Dictionary<string,bool>(flags);
+		}
+
+		// This clears all flags
+		public void ClearFlags()
+		{
+			BeforePropsChange();
+			
+			flags.Clear();
+		}
+		
 		// This snaps the vertex to the grid
 		public void SnapToGrid()
 		{

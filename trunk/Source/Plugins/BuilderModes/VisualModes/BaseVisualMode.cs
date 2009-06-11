@@ -512,6 +512,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PickTarget();
 		}
 		
+		// After resources were partially reloaded
+		protected override void ResourcesReloadedPartial()
+		{
+			base.ResourcesReloadedPartial();
+			PickTarget();
+		}
+		
 		// Mouse moves
 		public override void OnMouseMove(MouseEventArgs e)
 		{

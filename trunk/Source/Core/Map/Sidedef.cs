@@ -67,13 +67,13 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Properties
 
 		public MapSet Map { get { return map; } }
-		public bool IsFront { get { return (this == linedef.Front); } }
+		public bool IsFront { get { return (linedef != null) ? (this == linedef.Front) : false; } }
 		public Linedef Line { get { return linedef; } }
 		public Sidedef Other { get { if(this == linedef.Front) return linedef.Back; else return linedef.Front; } }
 		public Sector Sector { get { return sector; } }
 		public float Angle { get { if(IsFront) return linedef.Angle; else return Angle2D.Normalized(linedef.Angle + Angle2D.PI); } }
-		public int OffsetX { get { return offsetx; } set { offsetx = value; } }
-		public int OffsetY { get { return offsety; } set { offsety = value; } }
+		public int OffsetX { get { return offsetx; } set { BeforePropsChange(); offsetx = value; } }
+		public int OffsetY { get { return offsety; } set { BeforePropsChange(); offsety = value; } }
 		public string HighTexture { get { return texnamehigh; } }
 		public string MiddleTexture { get { return texnamemid; } }
 		public string LowTexture { get { return texnamelow; } }
@@ -92,8 +92,6 @@ namespace CodeImp.DoomBuilder.Map
 			// Initialize
 			this.map = map;
 			this.listindex = listindex;
-			this.linedef = l;
-			this.sector = s;
 			this.texnamehigh = "-";
 			this.texnamemid = "-";
 			this.texnamelow = "-";
@@ -101,33 +99,22 @@ namespace CodeImp.DoomBuilder.Map
 			this.longtexnamemid = MapSet.EmptyLongName;
 			this.longtexnamelow = MapSet.EmptyLongName;
 			
-			// Attach to the linedef
-			if(front) l.AttachFront(this); else l.AttachBack(this);
-			
-			// Attach to sector
-			sectorlistitem = s.AttachSidedef(this);
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
-
-		// Constructor
-		internal Sidedef(MapSet map, int listindex, Linedef l, bool front, Sector s, IReadWriteStream stream)
-		{
-			// Initialize
-			this.map = map;
-			this.listindex = listindex;
+			// Attach linedef
 			this.linedef = l;
-			this.sector = s;
-
-			// Attach to the linedef
-			if(front) l.AttachFront(this); else l.AttachBack(this);
-
-			// Attach to sector
-			sectorlistitem = s.AttachSidedef(this);
-
-			ReadWrite(stream);
-
+			if(l != null)
+			{
+				if(front)
+					l.AttachFrontP(this);
+				else
+					l.AttachBackP(this);
+			}
+			
+			// Attach sector
+			SetSectorP(s);
+			
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecAddSidedef(this);
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -141,15 +128,18 @@ namespace CodeImp.DoomBuilder.Map
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
 
+				if(map == General.Map.Map)
+					General.Map.UndoRedo.RecRemSidedef(this);
+
 				// Remove from main list
 				map.RemoveSidedef(listindex);
 
 				// Detach from linedef
-				linedef.DetachSidedef(this);
+				if(linedef != null) linedef.DetachSidedefP(this);
 				
 				// Detach from sector
-				sector.DetachSidedef(sectorlistitem);
-				
+				SetSectorP(null);
+
 				// Clean up
 				sectorlistitem = null;
 				linedef = null;
@@ -164,31 +154,36 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Management
-
-		// Serialize / deserialize
+		
+		// Call this before changing properties
+		protected override void BeforePropsChange()
+		{
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecPrpSidedef(this);
+		}
+		
+		// Serialize / deserialize (passive: this doesn't record)
 		internal void ReadWrite(IReadWriteStream s)
 		{
-			base.ReadWrite(s);
+			if(!s.IsWriting) BeforePropsChange();
 			
+			base.ReadWrite(s);
+
 			s.rwInt(ref offsetx);
 			s.rwInt(ref offsety);
 			s.rwString(ref texnamehigh);
 			s.rwString(ref texnamemid);
 			s.rwString(ref texnamelow);
-			//s.rwLong(ref longtexnamehigh);
-			//s.rwLong(ref longtexnamemid);
-			//s.rwLong(ref longtexnamelow);
-			if(!s.IsWriting)
-			{
-				longtexnamehigh = Lump.MakeLongName(texnamehigh);
-				longtexnamemid = Lump.MakeLongName(texnamemid);
-				longtexnamelow = Lump.MakeLongName(texnamelow);
-			}
+			s.rwLong(ref longtexnamehigh);
+			s.rwLong(ref longtexnamemid);
+			s.rwLong(ref longtexnamelow);
 		}
 		
 		// This copies all properties to another sidedef
 		public void CopyPropertiesTo(Sidedef s)
 		{
+			s.BeforePropsChange();
+			
 			// Copy properties
 			s.offsetx = offsetx;
 			s.offsety = offsety;
@@ -201,71 +196,49 @@ namespace CodeImp.DoomBuilder.Map
 			base.CopyPropertiesTo(s);
 		}
 
-		// This creates a checksum from the sidedef properties
-		// Used for faster sidedefs compression
-		public uint GetChecksum()
+		// This changes sector
+		public void SetSector(Sector newsector)
 		{
-			CRC crc = new CRC();
-			crc.Add(sector.FixedIndex);
-			crc.Add(offsetx);
-			crc.Add(offsety);
-			crc.Add(longtexnamehigh);
-			crc.Add(longtexnamelow);
-			crc.Add(longtexnamemid);
-			return (uint)(crc.Value & 0x00000000FFFFFFFF);
-		}
-		
-		// This copies textures to another sidedef
-		// And possibly also the offsets
-		public void AddTexturesTo(Sidedef s)
-		{
-			int copyoffsets = 0;
-
-			// s cannot be null
-			if(s == null) return;
+			if(map == General.Map.Map)
+				General.Map.UndoRedo.RecRefSidedefSector(this);
 			
-			// Upper texture set?
-			if((texnamehigh.Length > 0) && (texnamehigh[0] != '-'))
-			{
-				// Copy upper texture
-				s.texnamehigh = texnamehigh;
-				s.longtexnamehigh = longtexnamehigh;
+			// Change sector
+			SetSectorP(newsector);
+		}
 
-				// Counts as a half coice for copying offsets
-				copyoffsets += 1;
-			}
+		internal void SetSectorP(Sector newsector)
+		{
+			// Detach from sector
+			if(sector != null) sector.DetachSidedefP(sectorlistitem);
 
-			// Middle texture set?
-			if((texnamemid.Length > 0) && (texnamemid[0] != '-'))
-			{
-				// Copy middle texture
-				s.texnamemid = texnamemid;
-				s.longtexnamemid = longtexnamemid;
+			// Change sector
+			sector = newsector;
 
-				// Counts for copying offsets
-				copyoffsets += 2;
-			}
-
-			// Lower texture set?
-			if((texnamelow.Length > 0) && (texnamelow[0] != '-'))
-			{
-				// Copy middle texture
-				s.texnamelow = texnamelow;
-				s.longtexnamelow = longtexnamelow;
-
-				// Counts as a half coice for copying offsets
-				copyoffsets += 1;
-			}
-
-			// Copy offsets also?
-			if(copyoffsets >= 2)
-			{
-				// Copy offsets
-				s.offsetx = offsetx;
-				s.offsety = offsety;
-			}
+			// Attach to sector
+			if(sector != null)
+				sectorlistitem = sector.AttachSidedefP(this);
 
 			General.Map.IsChanged = true;
+		}
+
+		// This sets the linedef
+		public void SetLinedef(Linedef ld, bool front)
+		{
+			if(linedef != null) linedef.DetachSidedefP(this);
+			
+			if(ld != null)
+			{
+				if(front)
+					ld.AttachFront(this);
+				else
+					ld.AttachBack(this);
+			}
+		}
+
+		// This sets the linedef (passive: this doesn't tell the linedef and doesn't record)
+		internal void SetLinedefP(Linedef ld)
+		{
+			linedef = ld;
 		}
 		
 		#endregion
@@ -281,6 +254,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This removes textures that are not required
 		public void RemoveUnneededTextures(bool removemiddle, bool force)
 		{
+			BeforePropsChange();
+			
 			// The middle texture can be removed regardless of any sector tag or linedef action
 			if(!MiddleRequired() && removemiddle)
 			{
@@ -347,6 +322,75 @@ namespace CodeImp.DoomBuilder.Map
 				return false;
 			}
 		}
+
+		// This creates a checksum from the sidedef properties
+		// Used for faster sidedefs compression
+		public uint GetChecksum()
+		{
+			CRC crc = new CRC();
+			crc.Add(sector.FixedIndex);
+			crc.Add(offsetx);
+			crc.Add(offsety);
+			crc.Add(longtexnamehigh);
+			crc.Add(longtexnamelow);
+			crc.Add(longtexnamemid);
+			return (uint)(crc.Value & 0x00000000FFFFFFFF);
+		}
+
+		// This copies textures to another sidedef
+		// And possibly also the offsets
+		public void AddTexturesTo(Sidedef s)
+		{
+			int copyoffsets = 0;
+
+			// s cannot be null
+			if(s == null) return;
+
+			s.BeforePropsChange();
+
+			// Upper texture set?
+			if((texnamehigh.Length > 0) && (texnamehigh[0] != '-'))
+			{
+				// Copy upper texture
+				s.texnamehigh = texnamehigh;
+				s.longtexnamehigh = longtexnamehigh;
+
+				// Counts as a half coice for copying offsets
+				copyoffsets += 1;
+			}
+
+			// Middle texture set?
+			if((texnamemid.Length > 0) && (texnamemid[0] != '-'))
+			{
+				// Copy middle texture
+				s.texnamemid = texnamemid;
+				s.longtexnamemid = longtexnamemid;
+
+				// Counts for copying offsets
+				copyoffsets += 2;
+			}
+
+			// Lower texture set?
+			if((texnamelow.Length > 0) && (texnamelow[0] != '-'))
+			{
+				// Copy middle texture
+				s.texnamelow = texnamelow;
+				s.longtexnamelow = longtexnamelow;
+
+				// Counts as a half coice for copying offsets
+				copyoffsets += 1;
+			}
+
+			// Copy offsets also?
+			if(copyoffsets >= 2)
+			{
+				// Copy offsets
+				s.offsetx = offsetx;
+				s.offsety = offsety;
+			}
+
+			General.Map.IsChanged = true;
+		}
 		
 		#endregion
 
@@ -355,6 +399,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates all properties
 		public void Update(int offsetx, int offsety, string thigh, string tmid, string tlow)
 		{
+			BeforePropsChange();
+			
 			// Apply changes
 			this.offsetx = offsetx;
 			this.offsety = offsety;
@@ -366,6 +412,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This sets texture
 		public void SetTextureHigh(string name)
 		{
+			BeforePropsChange();
+			
 			texnamehigh = name;
 			longtexnamehigh = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
@@ -374,6 +422,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This sets texture
 		public void SetTextureMid(string name)
 		{
+			BeforePropsChange();
+			
 			texnamemid = name;
 			longtexnamemid = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
@@ -382,24 +432,10 @@ namespace CodeImp.DoomBuilder.Map
 		// This sets texture
 		public void SetTextureLow(string name)
 		{
+			BeforePropsChange();
+			
 			texnamelow = name;
 			longtexnamelow = Lump.MakeLongName(name);
-			General.Map.IsChanged = true;
-		}
-
-		// This changes sector
-		public void ChangeSector(Sector newsector)
-		{
-			// Detach from sector
-			sector.DetachSidedef(sectorlistitem);
-
-			// Change sector
-			sector = newsector;
-			
-			// Attach to sector
-			if(sector != null)
-				sectorlistitem = sector.AttachSidedef(this);
-
 			General.Map.IsChanged = true;
 		}
 		

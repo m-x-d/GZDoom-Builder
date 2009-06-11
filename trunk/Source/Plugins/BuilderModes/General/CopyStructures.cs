@@ -113,9 +113,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			type = t.Type;
 			angle = t.Angle;
-			flags = new Dictionary<string, bool>(t.Flags);
+			flags = t.GetFlags();
 			tag = t.Tag;
-			action = t.Action;
+			action = t.Action;       
 			args = (int[])(t.Args.Clone());
 		}
 		
@@ -123,9 +123,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			t.Type = type;
 			t.Rotate(angle);
-			t.Flags.Clear();
+			t.ClearFlags();
 			foreach(KeyValuePair<string, bool> f in flags)
-				t.Flags.Add(f.Key, f.Value);
+				t.SetFlag(f.Key, f.Value);
 			t.Tag = tag;
 			t.Action = action;
 			for(int i = 0; i < t.Args.Length; i++)

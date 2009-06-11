@@ -220,8 +220,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Toggle upper-unpegged
 		public virtual void OnToggleUpperUnpegged()
 		{
-			if(this.Sidedef.Line.Flags.ContainsKey(General.Map.Config.UpperUnpeggedFlag) &&
-			   this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag])
+			if(this.Sidedef.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag))
 			{
 				// Remove flag
 				mode.ApplyUpperUnpegged(false);
@@ -236,8 +235,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Toggle lower-unpegged
 		public virtual void OnToggleLowerUnpegged()
 		{
-			if(this.Sidedef.Line.Flags.ContainsKey(General.Map.Config.LowerUnpeggedFlag) &&
-			   this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag])
+			if(this.Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 			{
 				// Remove flag
 				mode.ApplyLowerUnpegged(false);
@@ -258,14 +256,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Remove flag
 				mode.CreateUndo("Remove upper-unpegged setting");
 				mode.SetActionResult("Removed upper-unpegged setting.");
-				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = false;
+				this.Sidedef.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, false);
 			}
 			else
 			{
 				// Add flag
 				mode.CreateUndo("Set upper-unpegged setting");
 				mode.SetActionResult("Set upper-unpegged setting.");
-				this.Sidedef.Line.Flags[General.Map.Config.UpperUnpeggedFlag] = true;
+				this.Sidedef.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, true);
 			}
 
 			// Update sidedef geometry
@@ -290,14 +288,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Remove flag
 				mode.CreateUndo("Remove lower-unpegged setting");
 				mode.SetActionResult("Removed lower-unpegged setting.");
-				this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = false;
+				this.Sidedef.Line.SetFlag(General.Map.Config.LowerUnpeggedFlag, false);
 			}
 			else
 			{
 				// Add flag
 				mode.CreateUndo("Set lower-unpegged setting");
 				mode.SetActionResult("Set lower-unpegged setting.");
-				this.Sidedef.Line.Flags[General.Map.Config.LowerUnpeggedFlag] = true;
+				this.Sidedef.Line.SetFlag(General.Map.Config.LowerUnpeggedFlag, true);
 			}
 
 			// Update sidedef geometry
