@@ -332,8 +332,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ImageData newtextureimage = General.Map.Data.GetTextureImage(newtexture);
 					if(newtextureimage != null)
 					{
+						if(mode.IsSingleSelection)
+						{
+							// Clear all marks, this will align everything it can
+							General.Map.Map.ClearMarkedSidedefs(false);
+						}
+						else
+						{
+							// Limit the alignment to selection only
+							General.Map.Map.ClearMarkedSidedefs(true);
+							List<Sidedef> sides = mode.GetSelectedSidedefs();
+							foreach(Sidedef sd in sides) sd.Marked = false;
+						}
+						
 						// Do the alignment
-						Tools.FloodfillTextures(this.Sidedef, oldtexturelong, newtextureimage, true);
+						Tools.FloodfillTextures(this.Sidedef, oldtexturelong, newtextureimage, false);
 
 						// Get the changed sidedefs
 						List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
@@ -365,8 +378,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make sure the texture is loaded (we need the texture size)
 			if(!base.Texture.IsImageLoaded) base.Texture.LoadImage();
 			
+			if(mode.IsSingleSelection)
+			{
+				// Clear all marks, this will align everything it can
+				General.Map.Map.ClearMarkedSidedefs(false);
+			}
+			else
+			{
+				// Limit the alignment to selection only
+				General.Map.Map.ClearMarkedSidedefs(true);
+				List<Sidedef> sides = mode.GetSelectedSidedefs();
+				foreach(Sidedef sd in sides) sd.Marked = false;
+			}
+			
 			// Do the alignment
-			Tools.AutoAlignTextures(this.Sidedef, base.Texture, alignx, aligny, true);
+			Tools.AutoAlignTextures(this.Sidedef, base.Texture, alignx, aligny, false);
 
 			// Get the changed sidedefs
 			List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);

@@ -154,8 +154,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						mode.Renderer.SetCrosshairBusy(true);
 						General.Interface.RedrawDisplay();
 
+						if(mode.IsSingleSelection)
+						{
+							// Clear all marks, this will align everything it can
+							General.Map.Map.ClearMarkedSectors(false);
+						}
+						else
+						{
+							// Limit the alignment to selection only
+							General.Map.Map.ClearMarkedSectors(true);
+							List<Sector> sectors = mode.GetSelectedSectors();
+							foreach(Sector s in sectors) s.Marked = false;
+						}
+						
 						// Do the fill
-						Tools.FloodfillFlats(this.Sector.Sector, fillceilings, oldtexturelong, newtextureimage, true);
+						Tools.FloodfillFlats(this.Sector.Sector, fillceilings, oldtexturelong, newtextureimage, false);
 
 						// Get the changed sectors
 						List<Sector> changes = General.Map.Map.GetMarkedSectors(true);
