@@ -146,6 +146,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Show sidedef info
 				frontpanel.Text = " Front Sidedef " + l.Index + " ";
+				frontsector.Text = " Sector " + l.Front.Sector.Index;
+				frontsector.Visible = true;
 				frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
 				fronthighname.Text = l.Front.HighTexture;
 				frontmidname.Text = l.Front.MiddleTexture;
@@ -161,6 +163,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Show no info
 				frontpanel.Text = " Front Sidedef ";
+				frontsector.Text = "";
+				frontsector.Visible = false;
 				frontoffsetlabel.Enabled = false;
 				frontoffset.Enabled = false;
 				frontpanel.Enabled = false;
@@ -178,6 +182,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Show sidedef info
 				backpanel.Text = " Back Sidedef " + l.Index + " ";
+				backsector.Text = " Sector " + l.Back.Sector.Index;
+				backsector.Visible = true;
 				backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
 				backhighname.Text = l.Back.HighTexture;
 				backmidname.Text = l.Back.MiddleTexture;
@@ -193,6 +199,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Show no info
 				backpanel.Text = " Back Sidedef ";
+				backsector.Text = "";
+				backsector.Visible = false;
 				backoffsetlabel.Enabled = false;
 				backoffset.Enabled = false;
 				backpanel.Enabled = false;
@@ -204,6 +212,10 @@ namespace CodeImp.DoomBuilder.Controls
 				backmidtex.BackgroundImage = null;
 				backlowtex.BackgroundImage = null;
 			}
+			
+			// Position labels
+			frontsector.Left = frontlowtex.Right - frontsector.Width;
+			backsector.Left = backlowtex.Right - backsector.Width;
 
 			// Show the whole thing
 			this.Show();

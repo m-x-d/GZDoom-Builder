@@ -67,6 +67,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backmidtex = new System.Windows.Forms.Panel();
 			this.backhighname = new System.Windows.Forms.Label();
 			this.backhightex = new System.Windows.Forms.Panel();
+			this.frontsector = new System.Windows.Forms.Label();
+			this.backsector = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -354,6 +356,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.frontpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.frontpanel.Controls.Add(this.frontsector);
 			this.frontpanel.Controls.Add(this.frontlowname);
 			this.frontpanel.Controls.Add(this.frontlowtex);
 			this.frontpanel.Controls.Add(this.frontmidname);
@@ -431,6 +434,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.backpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.backpanel.Controls.Add(this.backsector);
 			this.backpanel.Controls.Add(this.backlowname);
 			this.backpanel.Controls.Add(this.backlowtex);
 			this.backpanel.Controls.Add(this.backmidname);
@@ -504,6 +508,26 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backhightex.Size = new System.Drawing.Size(68, 60);
 			this.backhightex.TabIndex = 0;
 			// 
+			// frontsector
+			// 
+			this.frontsector.AutoSize = true;
+			this.frontsector.BackColor = System.Drawing.SystemColors.Control;
+			this.frontsector.Location = new System.Drawing.Point(169, 0);
+			this.frontsector.Name = "frontsector";
+			this.frontsector.Size = new System.Drawing.Size(60, 14);
+			this.frontsector.TabIndex = 6;
+			this.frontsector.Text = "Sector 666";
+			// 
+			// backsector
+			// 
+			this.backsector.AutoSize = true;
+			this.backsector.BackColor = System.Drawing.SystemColors.Control;
+			this.backsector.Location = new System.Drawing.Point(169, 0);
+			this.backsector.Name = "backsector";
+			this.backsector.Size = new System.Drawing.Size(60, 14);
+			this.backsector.TabIndex = 7;
+			this.backsector.Text = "Sector 666";
+			// 
 			// LinedefInfoPanel
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -519,7 +543,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.infopanel.ResumeLayout(false);
 			this.infopanel.PerformLayout();
 			this.frontpanel.ResumeLayout(false);
+			this.frontpanel.PerformLayout();
 			this.backpanel.ResumeLayout(false);
+			this.backpanel.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -561,6 +587,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.GroupBox infopanel;
 		private System.Windows.Forms.Label unpegged;
 		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label frontsector;
+		private System.Windows.Forms.Label backsector;
 
 	}
 }
