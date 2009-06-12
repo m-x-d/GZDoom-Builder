@@ -320,6 +320,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Create the map set
 			MapSet newset = new MapSet();
 			newset.BeginAddRemove();
+			newset.SetCapacity(numvertices, numlinedefs, numsidedefs, numsectors, numthings);
 			
 			// Go for all vertices
 			foreach(Vertex v in vertices)
@@ -392,6 +393,7 @@ namespace CodeImp.DoomBuilder.Map
 			ICollection<Linedef> mlinedefs = GetMarkedLinedefs(true);
 			ICollection<Sector> msectors = GetMarkedSectors(true);
 			ICollection<Thing> mthings = GetMarkedThings(true);
+			newset.SetCapacity(mvertices.Count, mlinedefs.Count, numsidedefs, msectors.Count, mthings.Count);
 			
 			// Go for all vertices
 			foreach(Vertex v in mvertices)
