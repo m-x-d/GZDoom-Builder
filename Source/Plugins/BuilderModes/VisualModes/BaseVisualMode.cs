@@ -643,6 +643,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return linedefs;
 		}
 
+		// This returns all selected sidedefs, no doubles
+		public List<Sidedef> GetSelectedSidedefs()
+		{
+			Dictionary<Sidedef, int> added = new Dictionary<Sidedef, int>();
+			List<Sidedef> sidedefs = new List<Sidedef>();
+			foreach(IVisualEventReceiver i in selectedobjects)
+			{
+				if(i is BaseVisualGeometrySidedef)
+				{
+					Sidedef sd = (i as BaseVisualGeometrySidedef).Sidedef;
+					if(!added.ContainsKey(sd))
+					{
+						sidedefs.Add(sd);
+						added.Add(sd, 0);
+					}
+				}
+			}
+			return sidedefs;
+		}
+
 		// This returns all selected things, no doubles
 		public List<Thing> GetSelectedThings()
 		{
