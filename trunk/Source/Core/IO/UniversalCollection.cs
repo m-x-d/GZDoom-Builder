@@ -30,6 +30,12 @@ namespace CodeImp.DoomBuilder.IO
 {
 	public sealed class UniversalCollection : List<UniversalEntry>
 	{
+		// Variables
+		private string comment;
+		
+		// Properties
+		public string Comment { get { return comment; } set { comment = value; } }
+
 		// Overload
 		public void Add(string key, object value)
 		{
