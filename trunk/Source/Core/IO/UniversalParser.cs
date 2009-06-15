@@ -672,17 +672,23 @@ namespace CodeImp.DoomBuilder.IO
 					// Check if the value if of collection type
 					if(de.Current.Value is UniversalCollection)
 					{
+						UniversalCollection c = (UniversalCollection)de.Current.Value;
+						
 						// Output recursive structure
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
 						db.Append(leveltabs); db.Append(de.Current.Key);
-						if(!string.IsNullOrEmpty(((UniversalCollection)de.Current.Value).Comment))
+						/*
+						 * Disabled writing comments to UDMF TEXTMAP, because ZDBSP can't handle this properly yet.
+						 * 
+						if(!string.IsNullOrEmpty(c.Comment))
 						{
 							if(whitespace) db.Append("\t");
-							db.Append("// " + ((UniversalCollection)de.Current.Value).Comment);
+							db.Append("// " + c.Comment);
 						}
+						*/
 						db.Append(newline);
 						db.Append(leveltabs); db.Append("{"); db.Append(newline);
-						db.Append(OutputStructure((UniversalCollection)de.Current.Value, level + 1, newline, whitespace));
+						db.Append(OutputStructure(c, level + 1, newline, whitespace));
 						db.Append(leveltabs); db.Append("}"); db.Append(newline);
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
 					}
