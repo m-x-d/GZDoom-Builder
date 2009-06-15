@@ -138,6 +138,13 @@ namespace CodeImp.DoomBuilder.Map
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
 				
+				// Dispose the sidedefs that are attached to this sector
+				// because a sidedef cannot exist without reference to its sector.
+				if(map.AutoRemove)
+					foreach(Sidedef sd in sidedefs) sd.Dispose();
+				else
+					foreach(Sidedef sd in sidedefs) sd.SetSectorP(null);
+				
 				if(map == General.Map.Map)
 					General.Map.UndoRedo.RecRemSector(this);
 
@@ -146,13 +153,6 @@ namespace CodeImp.DoomBuilder.Map
 				
 				// Register the index as free
 				map.AddSectorIndexHole(fixedindex);
-				
-				// Dispose the sidedefs that are attached to this sector
-				// because a sidedef cannot exist without reference to its sector.
-				if(map.AutoRemove)
-					foreach(Sidedef sd in sidedefs) sd.Dispose();
-				else
-					foreach(Sidedef sd in sidedefs) sd.SetSectorP(null);
 				
 				// Free surface entry
 				General.Map.CRenderer2D.Surfaces.FreeSurfaces(surfaceentry);
@@ -180,7 +180,11 @@ namespace CodeImp.DoomBuilder.Map
 		// Serialize / deserialize (passive: this doesn't record)
 		internal void ReadWrite(IReadWriteStream s)
 		{
-			if(!s.IsWriting) BeforePropsChange();
+			if(!s.IsWriting)
+			{
+				BeforePropsChange();
+				updateneeded = true;
+			}
 			
 			base.ReadWrite(s);
 
