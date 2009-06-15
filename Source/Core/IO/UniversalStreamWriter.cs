@@ -163,6 +163,7 @@ namespace CodeImp.DoomBuilder.IO
 				UniversalCollection coll = new UniversalCollection();
 				coll.Add("x", v.Position.x);
 				coll.Add("y", v.Position.y);
+				coll.Comment = v.Index.ToString();
 
 				// Add custom fields
 				AddCustomFields(v, "vertex", coll);
@@ -183,6 +184,7 @@ namespace CodeImp.DoomBuilder.IO
 				if(l.Tag != 0) coll.Add("id", l.Tag);
 				coll.Add("v1", vertexids[l.Start]);
 				coll.Add("v2", vertexids[l.End]);
+				coll.Comment = l.Index.ToString();
 				
 				// Sidedef references
 				if((l.Front != null) && sidedefids.ContainsKey(l.Front))
@@ -231,7 +233,8 @@ namespace CodeImp.DoomBuilder.IO
 				if(s.LongLowTexture != MapSet.EmptyLongName) coll.Add("texturebottom", s.LowTexture);
 				if(s.LongMiddleTexture != MapSet.EmptyLongName) coll.Add("texturemiddle", s.MiddleTexture);
 				coll.Add("sector", sectorids[s.Sector]);
-
+				coll.Comment = s.Index.ToString();
+				
 				// Add custom fields
 				AddCustomFields(s, "sidedef", coll);
 
@@ -255,6 +258,7 @@ namespace CodeImp.DoomBuilder.IO
 				coll.Add("lightlevel", s.Brightness);
 				if(s.Effect != 0) coll.Add("special", s.Effect);
 				if(s.Tag != 0) coll.Add("id", s.Tag);
+				coll.Comment = s.Index.ToString();
 
 				// Add custom fields
 				AddCustomFields(s, "sector", coll);
@@ -284,6 +288,7 @@ namespace CodeImp.DoomBuilder.IO
 				if(t.Args[2] != 0) coll.Add("arg2", t.Args[2]);
 				if(t.Args[3] != 0) coll.Add("arg3", t.Args[3]);
 				if(t.Args[4] != 0) coll.Add("arg4", t.Args[4]);
+				coll.Comment = t.Index.ToString();
 
 				// Flags
 				foreach(KeyValuePair<string, bool> flag in t.Flags)

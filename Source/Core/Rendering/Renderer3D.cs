@@ -516,6 +516,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This renders all thing cages
 		private void RenderThingCages()
 		{
+			int currentshaderpass = shaderpass;
+			int highshaderpass = shaderpass + 2;
+
 			// Set renderstates
 			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
@@ -529,13 +532,35 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.BeginPass(shaderpass);
 			foreach(VisualThing t in thingsbydistance)
 			{
+				// Determine the shader pass we want to use for this object
+				int wantedshaderpass = ((t == highlighted) || t.Selected) ? highshaderpass : shaderpass;
+
+				// Switch shader pass?
+				if(currentshaderpass != wantedshaderpass)
+				{
+					graphics.Shaders.World3D.EndPass();
+					graphics.Shaders.World3D.BeginPass(wantedshaderpass);
+					currentshaderpass = wantedshaderpass;
+				}
+
 				// Setup matrix
 				world = Matrix.Multiply(t.CageScales, t.Position);
 				ApplyMatrices3D();
 
 				// Setup color
-				graphics.Shaders.World3D.SetModulateColor(t.CageColor);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, t.CageColor);
+				if(currentshaderpass == highshaderpass)
+				{
+					Color4 highcolor = CalculateHighlightColor((t == highlighted), t.Selected);
+					graphics.Shaders.World3D.SetHighlightColor(highcolor.ToArgb());
+					highcolor.Alpha = 1.0f;
+					graphics.Shaders.World3D.SetModulateColor(highcolor.ToArgb());
+					graphics.Device.SetRenderState(RenderState.TextureFactor, highcolor.ToArgb());
+				}
+				else
+				{
+					graphics.Shaders.World3D.SetModulateColor(t.CageColor);
+					graphics.Device.SetRenderState(RenderState.TextureFactor, t.CageColor);
+				}
 
 				// Render!
 				graphics.Shaders.World3D.ApplySettings();

@@ -674,7 +674,13 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						// Output recursive structure
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
-						db.Append(leveltabs); db.Append(de.Current.Key); db.Append(newline);
+						db.Append(leveltabs); db.Append(de.Current.Key);
+						if(!string.IsNullOrEmpty(((UniversalCollection)de.Current.Value).Comment))
+						{
+							if(whitespace) db.Append("\t");
+							db.Append("// " + ((UniversalCollection)de.Current.Value).Comment);
+						}
+						db.Append(newline);
 						db.Append(leveltabs); db.Append("{"); db.Append(newline);
 						db.Append(OutputStructure((UniversalCollection)de.Current.Value, level + 1, newline, whitespace));
 						db.Append(leveltabs); db.Append("}"); db.Append(newline);

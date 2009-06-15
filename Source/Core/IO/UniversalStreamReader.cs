@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.IO
 			UniversalParser textmap = new UniversalParser();
 			textmap.StrictChecking = strictchecking;
 			
-			//try
+			try
 			{
 				// Read UDMF from stream
 				textmap.InputConfiguration(reader.ReadToEnd());
@@ -135,9 +135,9 @@ namespace CodeImp.DoomBuilder.IO
 					ReadThings(map, textmap);
 				}
 			}
-			//catch(Exception e)
+			catch(Exception e)
 			{
-				//General.ShowErrorMessage("Unexpected error reading UDMF map data. " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+				General.ShowErrorMessage("Unexpected error reading UDMF map data. " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 			}
 
 			return map;
@@ -156,27 +156,28 @@ namespace CodeImp.DoomBuilder.IO
 				// Read fields
 				UniversalCollection c = collections[i];
 				int[] args = new int[Linedef.NUM_ARGS];
-				float x = GetCollectionEntry<float>(c, "x", true, 0.0f);
-				float y = GetCollectionEntry<float>(c, "y", true, 0.0f);
-				float height = GetCollectionEntry<float>(c, "height", false, 0.0f);
-				int tag = GetCollectionEntry<int>(c, "id", false, 0);
-				int angledeg = GetCollectionEntry<int>(c, "angle", false, 0);
-				int type = GetCollectionEntry<int>(c, "type", true, 0);
-				int special = GetCollectionEntry<int>(c, "special", false, 0);
-				args[0] = GetCollectionEntry<int>(c, "arg0", false, 0);
-				args[1] = GetCollectionEntry<int>(c, "arg1", false, 0);
-				args[2] = GetCollectionEntry<int>(c, "arg2", false, 0);
-				args[3] = GetCollectionEntry<int>(c, "arg3", false, 0);
-				args[4] = GetCollectionEntry<int>(c, "arg4", false, 0);
+				string where = "thing " + i;
+				float x = GetCollectionEntry<float>(c, "x", true, 0.0f, where);
+				float y = GetCollectionEntry<float>(c, "y", true, 0.0f, where);
+				float height = GetCollectionEntry<float>(c, "height", false, 0.0f, where);
+				int tag = GetCollectionEntry<int>(c, "id", false, 0, where);
+				int angledeg = GetCollectionEntry<int>(c, "angle", false, 0, where);
+				int type = GetCollectionEntry<int>(c, "type", true, 0, where);
+				int special = GetCollectionEntry<int>(c, "special", false, 0, where);
+				args[0] = GetCollectionEntry<int>(c, "arg0", false, 0, where);
+				args[1] = GetCollectionEntry<int>(c, "arg1", false, 0, where);
+				args[2] = GetCollectionEntry<int>(c, "arg2", false, 0, where);
+				args[3] = GetCollectionEntry<int>(c, "arg3", false, 0, where);
+				args[4] = GetCollectionEntry<int>(c, "arg4", false, 0, where);
 
 				// Flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
-					stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false);
+					stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false, where);
 				foreach(FlagTranslation ft in General.Map.Config.ThingFlagsTranslation)
 				{
 					foreach(string field in ft.Fields)
-						stringflags[field] = GetCollectionEntry<bool>(c, field, false, false);
+						stringflags[field] = GetCollectionEntry<bool>(c, field, false, false, where);
 				}
 
 				// Create new item
@@ -203,31 +204,32 @@ namespace CodeImp.DoomBuilder.IO
 				// Read fields
 				UniversalCollection lc = linescolls[i];
 				int[] args = new int[Linedef.NUM_ARGS];
-				int tag = GetCollectionEntry<int>(lc, "id", false, 0);
-				int v1 = GetCollectionEntry<int>(lc, "v1", true, 0);
-				int v2 = GetCollectionEntry<int>(lc, "v2", true, 0);
-				int special = GetCollectionEntry<int>(lc, "special", false, 0);
-				args[0] = GetCollectionEntry<int>(lc, "arg0", false, 0);
-				args[1] = GetCollectionEntry<int>(lc, "arg1", false, 0);
-				args[2] = GetCollectionEntry<int>(lc, "arg2", false, 0);
-				args[3] = GetCollectionEntry<int>(lc, "arg3", false, 0);
-				args[4] = GetCollectionEntry<int>(lc, "arg4", false, 0);
-				int s1 = GetCollectionEntry<int>(lc, "sidefront", true, -1);
-				int s2 = GetCollectionEntry<int>(lc, "sideback", false, -1);
+				string where = "linedef " + i;
+				int tag = GetCollectionEntry<int>(lc, "id", false, 0, where);
+				int v1 = GetCollectionEntry<int>(lc, "v1", true, 0, where);
+				int v2 = GetCollectionEntry<int>(lc, "v2", true, 0, where);
+				int special = GetCollectionEntry<int>(lc, "special", false, 0, where);
+				args[0] = GetCollectionEntry<int>(lc, "arg0", false, 0, where);
+				args[1] = GetCollectionEntry<int>(lc, "arg1", false, 0, where);
+				args[2] = GetCollectionEntry<int>(lc, "arg2", false, 0, where);
+				args[3] = GetCollectionEntry<int>(lc, "arg3", false, 0, where);
+				args[4] = GetCollectionEntry<int>(lc, "arg4", false, 0, where);
+				int s1 = GetCollectionEntry<int>(lc, "sidefront", true, -1, where);
+				int s2 = GetCollectionEntry<int>(lc, "sideback", false, -1, where);
 
 				// Flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.LinedefFlags)
-					stringflags[flag.Key] = GetCollectionEntry<bool>(lc, flag.Key, false, false);
+					stringflags[flag.Key] = GetCollectionEntry<bool>(lc, flag.Key, false, false, where);
 				foreach(FlagTranslation ft in General.Map.Config.LinedefFlagsTranslation)
 				{
 					foreach(string field in ft.Fields)
-						stringflags[field] = GetCollectionEntry<bool>(lc, field, false, false);
+						stringflags[field] = GetCollectionEntry<bool>(lc, field, false, false, where);
 				}
 				
 				// Activations
 				foreach(LinedefActivateInfo activate in General.Map.Config.LinedefActivates)
-					stringflags[activate.Key] = GetCollectionEntry<bool>(lc, activate.Key, false, false);
+					stringflags[activate.Key] = GetCollectionEntry<bool>(lc, activate.Key, false, false, where);
 				
 				// Create new linedef
 				if(vertexlink.ContainsKey(v1) && vertexlink.ContainsKey(v2))
@@ -246,7 +248,7 @@ namespace CodeImp.DoomBuilder.IO
 						if(s1 > -1)
 						{
 							if(s1 < sidescolls.Count)
-								ReadSidedef(map, sidescolls[s1], l, true, sectorlink);
+								ReadSidedef(map, sidescolls[s1], l, true, sectorlink, s1);
 							else
 								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid front sidedef " + s1 + ". Sidedef has been removed.");
 						}
@@ -254,7 +256,7 @@ namespace CodeImp.DoomBuilder.IO
 						if(s2 > -1)
 						{
 							if(s2 < sidescolls.Count)
-								ReadSidedef(map, sidescolls[s2], l, false, sectorlink);
+								ReadSidedef(map, sidescolls[s2], l, false, sectorlink, s2);
 							else
 								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid back sidedef " + s1 + ". Sidedef has been removed.");
 						}
@@ -273,15 +275,16 @@ namespace CodeImp.DoomBuilder.IO
 
 		// This reads a single sidedef and connects it to the given linedef
 		private void ReadSidedef(MapSet map, UniversalCollection sc, Linedef ld,
-								 bool front, Dictionary<int, Sector> sectorlink)
+								 bool front, Dictionary<int, Sector> sectorlink, int index)
 		{
 			// Read fields
-			int offsetx = GetCollectionEntry<int>(sc, "offsetx", false, 0);
-			int offsety = GetCollectionEntry<int>(sc, "offsety", false, 0);
-			string thigh = GetCollectionEntry<string>(sc, "texturetop", false, "-");
-			string tlow = GetCollectionEntry<string>(sc, "texturebottom", false, "-");
-			string tmid = GetCollectionEntry<string>(sc, "texturemiddle", false, "-");
-			int sector = GetCollectionEntry<int>(sc, "sector", true, 0);
+			string where = "linedef " + ld.Index + (front ? " front sidedef " : " back sidedef ") + index;
+			int offsetx = GetCollectionEntry<int>(sc, "offsetx", false, 0, where);
+			int offsety = GetCollectionEntry<int>(sc, "offsety", false, 0, where);
+			string thigh = GetCollectionEntry<string>(sc, "texturetop", false, "-", where);
+			string tlow = GetCollectionEntry<string>(sc, "texturebottom", false, "-", where);
+			string tmid = GetCollectionEntry<string>(sc, "texturemiddle", false, "-", where);
+			int sector = GetCollectionEntry<int>(sc, "sector", true, 0, where);
 
 			// Create sidedef
 			if(sectorlink.ContainsKey(sector))
@@ -315,13 +318,14 @@ namespace CodeImp.DoomBuilder.IO
 			{
 				// Read fields
 				UniversalCollection c = collections[i];
-				int hfloor = GetCollectionEntry<int>(c, "heightfloor", false, 0);
-				int hceil = GetCollectionEntry<int>(c, "heightceiling", false, 0);
-				string tfloor = GetCollectionEntry<string>(c, "texturefloor", true, "-");
-				string tceil = GetCollectionEntry<string>(c, "textureceiling", true, "-");
-				int bright = GetCollectionEntry<int>(c, "lightlevel", false, 160);
-				int special = GetCollectionEntry<int>(c, "special", false, 0);
-				int tag = GetCollectionEntry<int>(c, "id", false, 0);
+				string where = "sector " + i;
+				int hfloor = GetCollectionEntry<int>(c, "heightfloor", false, 0, where);
+				int hceil = GetCollectionEntry<int>(c, "heightceiling", false, 0, where);
+				string tfloor = GetCollectionEntry<string>(c, "texturefloor", true, "-", where);
+				string tceil = GetCollectionEntry<string>(c, "textureceiling", true, "-", where);
+				int bright = GetCollectionEntry<int>(c, "lightlevel", false, 160, where);
+				int special = GetCollectionEntry<int>(c, "special", false, 0, where);
+				int tag = GetCollectionEntry<int>(c, "id", false, 0, where);
 
 				// Create new item
 				Sector s = map.CreateSector();
@@ -355,8 +359,9 @@ namespace CodeImp.DoomBuilder.IO
 			{
 				// Read fields
 				UniversalCollection c = collections[i];
-				float x = GetCollectionEntry<float>(c, "x", true, 0.0f);
-				float y = GetCollectionEntry<float>(c, "y", true, 0.0f);
+				string where = "vertex " + i;
+				float x = GetCollectionEntry<float>(c, "x", true, 0.0f, where);
+				float y = GetCollectionEntry<float>(c, "y", true, 0.0f, where);
 
 				// Create new item
 				Vertex v = map.CreateVertex(new Vector2D(x, y));
@@ -402,7 +407,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This validates and returns an entry
-		private T GetCollectionEntry<T>(UniversalCollection c, string entryname, bool required, T defaultvalue)
+		private T GetCollectionEntry<T>(UniversalCollection c, string entryname, bool required, T defaultvalue, string where)
 		{
 			T result = default(T);
 			bool found = false;
@@ -438,17 +443,12 @@ namespace CodeImp.DoomBuilder.IO
 			// Not found?
 			if(!found)
 			{
-				// Entry is required?
+				// Report error when entry is required!
 				if(required)
-				{
-					// Error, cannot find required entry!
-					throw new Exception("Error while reading UDMF map data: Missing required field '" + entryname + "'.");
-				}
-				else
-				{
-					// Make default entry
-					result = defaultvalue;
-				}
+					General.ErrorLogger.Add(ErrorType.Error, "Error while reading UDMF map data: Missing required field '" + entryname + "' at " + where + ".");
+
+				// Make default entry
+				result = defaultvalue;
 			}
 
 			// Return result
