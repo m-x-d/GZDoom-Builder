@@ -326,7 +326,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// This begins writing to the record stream
 		private bool BeginRecordData(StreamCodes code)
 		{
-			if(ss == null) return false;
+			if((ss == null) || isdisposed) return false;
 			isrecordingcommand = true;
 			prevstreamlength = stream.Length;
 			ss.wByte((byte)code);
