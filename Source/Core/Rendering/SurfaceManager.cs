@@ -101,8 +101,14 @@ namespace CodeImp.DoomBuilder.Rendering
 				foreach(KeyValuePair<int, SurfaceBufferSet> set in sets)
 				{
 					// Dispose vertex buffers
-					foreach(VertexBuffer vb in set.Value.buffers)
-						vb.Dispose();
+					for(int i = 0; i < set.Value.buffers.Count; i++)
+					{
+						if(set.Value.buffers[i] != null)
+						{
+							set.Value.buffers[i].Dispose();
+							set.Value.buffers[i] = null;
+						}
+					}
 				}
 				
 				sets = null;
@@ -119,11 +125,18 @@ namespace CodeImp.DoomBuilder.Rendering
 			resourcesunloaded = true;
 			foreach(KeyValuePair<int, SurfaceBufferSet> set in sets)
 			{
-				foreach(VertexBuffer vb in set.Value.buffers)
-					vb.Dispose();
-				
-				set.Value.buffers.Clear();
+				// Dispose vertex buffers
+				for(int i = 0; i < set.Value.buffers.Count; i++)
+				{
+					if(set.Value.buffers[i] != null)
+					{
+						set.Value.buffers[i].Dispose();
+						set.Value.buffers[i] = null;
+					}
+				}
 			}
+			
+			lockedbuffers.Clear();
 		}
 
 		// Called when all resource must be reloaded
@@ -157,7 +170,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					bstream.Dispose();
 					
 					// Add to list
-					set.Value.buffers.Add(b);
+					set.Value.buffers[i] = b;
 				}
 			}
 			
@@ -235,7 +248,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This ensures there is enough space for a given number of free entries (also adds new bufers if needed)
 		private void EnsureFreeBufferSpace(SurfaceBufferSet set, int freeentries)
 		{
-			DataStream bstream;
+			DataStream bstream = null;
+			VertexBuffer vb = null;
 			
 			// Check if we have to add entries
 			int addentries = freeentries - set.holes.Count;
@@ -260,12 +274,22 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Calculate the number of vertices that will be
 					int buffernumvertices = bufferentries * verticesperentry;
 
-					// Make the new buffer!
-					VertexBuffer b = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffernumvertices,
-													Usage.None, VertexFormat.None, Pool.Default);
+					if(!resourcesunloaded)
+					{
+						// Make the new buffer!
+						vb = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffernumvertices,
+														Usage.None, VertexFormat.None, Pool.Default);
 
-					// Add it. Also add available entries as holes, because they are not used yet.
-					set.buffers.Add(b);
+						// Add it.
+						set.buffers.Add(vb);
+					}
+					else
+					{
+						// We can't make a vertexbuffer right now
+						set.buffers.Add(null);
+					}
+					
+					// Also add available entries as holes, because they are not used yet.
 					set.buffersizes.Add(buffernumvertices);
 					for(int i = 0; i < bufferentries; i++)
 						set.holes.Add(new SurfaceEntry(set.numvertices, set.buffers.Count - 1, i * verticesperentry));
@@ -284,7 +308,9 @@ namespace CodeImp.DoomBuilder.Rendering
 						bstream.Dispose();
 						set.buffers[bufferindex].Tag = null;
 					}
-					set.buffers[bufferindex].Dispose();
+
+					if((set.buffers[bufferindex] != null) && !resourcesunloaded)
+						set.buffers[bufferindex].Dispose();
 
 					// Get the entries that are in this buffer only
 					List<SurfaceEntry> theseentries = new List<SurfaceEntry>();
@@ -300,18 +326,24 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Calculate the number of vertices that will be
 					int buffernumvertices = bufferentries * verticesperentry;
 
-					// Make the new buffer!
-					VertexBuffer b = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffernumvertices,
-													Usage.None, VertexFormat.None, Pool.Default);
-
+					if(!resourcesunloaded)
+					{
+						// Make the new buffer and lock it
+						vb = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffernumvertices,
+														Usage.None, VertexFormat.None, Pool.Default);
+						bstream = vb.Lock(0, FlatVertex.Stride * theseentries.Count * verticesperentry, LockFlags.Discard);
+					}
+					
 					// Start refilling the buffer with sector geometry
 					int vertexoffset = 0;
-					bstream = b.Lock(0, FlatVertex.Stride * theseentries.Count * verticesperentry, LockFlags.Discard);
 					foreach(SurfaceEntry e in theseentries)
 					{
-						// Fill buffer
-						bstream.WriteRange(e.floorvertices);
-						bstream.WriteRange(e.ceilvertices);
+						if(!resourcesunloaded)
+						{
+							// Fill buffer
+							bstream.WriteRange(e.floorvertices);
+							bstream.WriteRange(e.ceilvertices);
+						}
 
 						// Set the new location in the buffer
 						e.vertexoffset = vertexoffset;
@@ -320,12 +352,20 @@ namespace CodeImp.DoomBuilder.Rendering
 						vertexoffset += verticesperentry;
 					}
 
-					// Unlock buffer
-					b.Unlock();
-					bstream.Dispose();
+					if(!resourcesunloaded)
+					{
+						// Unlock buffer
+						vb.Unlock();
+						bstream.Dispose();
+						set.buffers[bufferindex] = vb;
+					}
+					else
+					{
+						// No vertex buffer at this time, sorry
+						set.buffers[bufferindex] = null;
+					}
 
 					// Set the new buffer and add available entries as holes, because they are not used yet.
-					set.buffers[bufferindex] = b;
 					set.buffersizes[bufferindex] = buffernumvertices;
 					set.holes.Clear();
 					for(int i = 0; i < bufferentries - theseentries.Count; i++)
@@ -348,7 +388,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(entry.floorvertices.Length != entry.ceilvertices.Length)
 				General.Fail("Floor vertices has different length from ceiling vertices!");
-			
+
 			int numvertices = entry.floorvertices.Length;
 			
 			// Free entry when number of vertices have changed
@@ -373,25 +413,28 @@ namespace CodeImp.DoomBuilder.Rendering
 					set.entries.Add(nentry);
 					entry = nentry;
 				}
-				
-				// Lock the buffer
-				DataStream bstream;
-				VertexBuffer vb = set.buffers[entry.bufferindex];
-				if(vb.Tag == null)
+
+				if(!resourcesunloaded)
 				{
-					bstream = vb.Lock(0, set.buffersizes[entry.bufferindex] * FlatVertex.Stride, LockFlags.None);
-					vb.Tag = bstream;
-					lockedbuffers.Add(vb);
+					// Lock the buffer
+					DataStream bstream;
+					VertexBuffer vb = set.buffers[entry.bufferindex];
+					if(vb.Tag == null)
+					{
+						bstream = vb.Lock(0, set.buffersizes[entry.bufferindex] * FlatVertex.Stride, LockFlags.None);
+						vb.Tag = bstream;
+						lockedbuffers.Add(vb);
+					}
+					else
+					{
+						bstream = (DataStream)vb.Tag;
+					}
+
+					// Write the vertices to buffer
+					bstream.Seek(entry.vertexoffset * FlatVertex.Stride, SeekOrigin.Begin);
+					bstream.WriteRange(entry.floorvertices);
+					bstream.WriteRange(entry.ceilvertices);
 				}
-				else
-				{
-					bstream = (DataStream)vb.Tag;
-				}
-				
-				// Write the vertices to buffer
-				bstream.Seek(entry.vertexoffset * FlatVertex.Stride, SeekOrigin.Begin);
-				bstream.WriteRange(entry.floorvertices);
-				bstream.WriteRange(entry.ceilvertices);
 			}
 			
 			return entry;
@@ -414,19 +457,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This unlocks the locked buffers
 		public void UnlockBuffers()
 		{
-			foreach(VertexBuffer vb in lockedbuffers)
+			if(!resourcesunloaded)
 			{
-				if(vb.Tag != null)
+				foreach(VertexBuffer vb in lockedbuffers)
 				{
-					DataStream bstream = (DataStream)vb.Tag;
-					vb.Unlock();
-					bstream.Dispose();
-					vb.Tag = null;
+					if(vb.Tag != null)
+					{
+						DataStream bstream = (DataStream)vb.Tag;
+						vb.Unlock();
+						bstream.Dispose();
+						vb.Tag = null;
+					}
 				}
+
+				// Clear list
+				lockedbuffers = new List<VertexBuffer>();
 			}
-			
-			// Clear list
-			lockedbuffers = new List<VertexBuffer>();
 		}
 		
 		// This gets or creates a set for a specific number of vertices

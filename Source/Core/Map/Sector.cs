@@ -342,6 +342,8 @@ namespace CodeImp.DoomBuilder.Map
 			General.Plugins.OnSectorFloorSurfaceUpdate(this, ref floorvertices);
 			surfaceentry.floorvertices = floorvertices;
 			surfaceentry.floortexture = longfloortexname;
+			if(surfaceentry.ceilvertices == null)
+				surfaceentry.ceilvertices = floorvertices;
 			
 			// Update entry
 			surfaceentry = General.Map.CRenderer2D.Surfaces.UpdateSurfaces(surfaceentry);
@@ -359,7 +361,9 @@ namespace CodeImp.DoomBuilder.Map
 			General.Plugins.OnSectorCeilingSurfaceUpdate(this, ref ceilvertices);
 			surfaceentry.ceilvertices = ceilvertices;
 			surfaceentry.ceiltexture = longceiltexname;
-
+			if(surfaceentry.floorvertices == null)
+				surfaceentry.floorvertices = ceilvertices;
+			
 			// Update entry
 			surfaceentry = General.Map.CRenderer2D.Surfaces.UpdateSurfaces(surfaceentry);
 			General.Map.CRenderer2D.Surfaces.UnlockBuffers();
