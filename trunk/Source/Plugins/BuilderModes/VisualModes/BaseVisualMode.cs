@@ -512,10 +512,91 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PickTarget();
 		}
 		
-		// After resources were partially reloaded
+		// This usually happens when geometry is changed by undo, redo, cut or paste actions
+		// and uses the marks to check what needs to be reloaded.
 		protected override void ResourcesReloadedPartial()
 		{
-			base.ResourcesReloadedPartial();
+			// Detect geometry changes. When linedefs and/or vertices are marked, this means
+			// that the shape of sectors has changed. In that case we must rebuild the sectors entirely.
+			bool geometrychanges = false;
+			bool sectorsmarked = false;
+			foreach(Linedef ld in General.Map.Map.Linedefs)
+				if(ld.Marked) geometrychanges = true;
+			foreach(Vertex v in General.Map.Map.Vertices)
+				if(v.Marked) geometrychanges = true;
+			
+			if(geometrychanges)
+			{
+				// Let the core do this (it will just dispose the sectors that were changed)
+				base.ResourcesReloadedPartial();
+			}
+			else
+			{
+				// Neighbour sectors must be updated as well
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					if(s.Marked)
+					{
+						sectorsmarked = true;
+						foreach(Sidedef sd in s.Sidedefs)
+							if(sd.Other != null) sd.Other.Marked = true;
+					}
+				}
+				
+				// Go for all sidedefs to update
+				foreach(Sidedef sd in General.Map.Map.Sidedefs)
+				{
+					if(sd.Marked)
+					{
+						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sd.Sector);
+						VisualSidedefParts parts = vs.GetSidedefParts(sd);
+						parts.SetupAllParts();
+					}
+				}
+				
+				// Go for all sectors to update
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					if(s.Marked)
+					{
+						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
+						vs.Floor.Setup();
+						vs.Ceiling.Setup();
+					}
+				}
+				
+				if(!sectorsmarked)
+				{
+					// No sectors or geometry changed. So we only have
+					// to update things when they have changed.
+					foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
+						if(vt.Key.Marked) vt.Value.Update();
+				}
+				else
+				{
+					// Things depend on the sector they are in and because we can't
+					// easily determine which ones changed, we dispose all things
+					foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
+						vt.Value.Dispose();
+				}
+				
+				// Apply new lists
+				allthings = new Dictionary<Thing, VisualThing>(allthings.Count);
+				
+				// Clear visibility collections
+				visiblesectors.Clear();
+				visibleblocks.Clear();
+				visiblegeometry.Clear();
+				visiblethings.Clear();
+				
+				// Make new blockmap
+				FillBlockMap();
+				
+				// Visibility culling (this re-creates the needed resources)
+				DoCulling();
+			}
+			
+			// Determine what we're aiming at now
 			PickTarget();
 		}
 		
