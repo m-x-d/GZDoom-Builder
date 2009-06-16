@@ -546,7 +546,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all sidedefs to update
 				foreach(Sidedef sd in General.Map.Map.Sidedefs)
 				{
-					if(sd.Marked)
+					if(sd.Marked && VisualSectorExists(sd.Sector))
 					{
 						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sd.Sector);
 						VisualSidedefParts parts = vs.GetSidedefParts(sd);
@@ -557,7 +557,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all sectors to update
 				foreach(Sector s in General.Map.Map.Sectors)
 				{
-					if(s.Marked)
+					if(s.Marked && VisualSectorExists(s))
 					{
 						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
 						vs.Floor.Setup();
