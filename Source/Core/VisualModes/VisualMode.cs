@@ -291,7 +291,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Visibility Culling
 		
 		// This preforms visibility culling
-		private void DoCulling()
+		protected void DoCulling()
 		{
 			Dictionary<Linedef, Linedef> visiblelines = new Dictionary<Linedef, Linedef>(200);
 			Vector2D campos2d = (Vector2D)General.Map.VisualCamera.Position;
@@ -634,12 +634,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			visiblethings.Clear();
 			
 			// Make new blockmap
-			if(blockmap != null)
-			{
-				blockmap.Dispose();
-				blockmap = new VisualBlockMap();
-				FillBlockMap();
-			}
+			FillBlockMap();
 
 			// Visibility culling (this re-creates the needed resources)
 			DoCulling();
@@ -701,8 +696,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 					newsectors.Add(vs.Key, vs.Value);
 			}
 			
-			General.WriteLogLine("VisualSectors disposed: " + counter);
-
 			// Things depend on the sector they are in and because we can't
 			// easily determine which ones changed, we dispose all things
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
@@ -719,17 +712,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			visiblethings.Clear();
 			
 			// Make new blockmap
-			if(blockmap != null)
-			{
-				blockmap.Dispose();
-				blockmap = new VisualBlockMap();
-				FillBlockMap();
-			}
+			FillBlockMap();
 			
 			// Visibility culling (this re-creates the needed resources)
 			DoCulling();
 		}
-
+		
 		/// <summary>
 		/// Implement this to create an instance of your VisualSector implementation.
 		/// </summary>
@@ -767,6 +755,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// </summary>
 		protected virtual void FillBlockMap()
 		{
+			if(blockmap != null) blockmap.Dispose();
+			blockmap = new VisualBlockMap();
+			
 			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
 			blockmap.AddThingsSet(General.Map.Map.Things);
 			blockmap.AddSectorsSet(General.Map.Map.Sectors);

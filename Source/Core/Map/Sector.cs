@@ -119,6 +119,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.ceiltexname = "-";
 			this.longfloortexname = MapSet.EmptyLongName;
 			this.longceiltexname = MapSet.EmptyLongName;
+			this.updateneeded = true;
 			this.triangulationneeded = true;
 			this.surfaceentry = new SurfaceEntry(-1, -1, -1);
 
@@ -204,11 +205,8 @@ namespace CodeImp.DoomBuilder.Map
 		internal void PostDeserialize(MapSet map)
 		{
 			triangles.PostDeserialize(map);
-			
-			// We need to rebuild the vertex buffer,
-			// but the triangulation was deserialized
 			updateneeded = true;
-			triangulationneeded = false;
+			triangulationneeded = true;
 		}
 		
 		// This copies all properties to another sector
