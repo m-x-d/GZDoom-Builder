@@ -63,6 +63,8 @@ namespace CodeImp.DoomBuilder.Editing
 			// Make lists
 			visiblethings = new List<Thing>(General.Map.Map.Things);
 			hiddenthings = new List<Thing>(0);
+			thingsvisiblestate = new Dictionary<Thing, bool>(General.Map.Map.Things.Count);
+			foreach(Thing t in visiblethings) thingsvisiblestate.Add(t, true);
 		}
 		
 		#endregion

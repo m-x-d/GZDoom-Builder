@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// List of things
 		protected List<Thing> visiblethings;
 		protected List<Thing> hiddenthings;
+		protected Dictionary<Thing, bool> thingsvisiblestate;
 		
 		// Disposing
 		protected bool isdisposed = false;
@@ -142,6 +143,7 @@ namespace CodeImp.DoomBuilder.Editing
 				// Clean up
 				visiblethings = null;
 				hiddenthings = null;
+				thingsvisiblestate = null;
 				
 				// Done
 				isdisposed = true;
@@ -151,6 +153,14 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 
 		#region ================== Methods
+
+		/// <summary>
+		/// This checks if a thing is visible. Throws an exception when the specified Thing does not exist in the map (filter not updated?).
+		/// </summary>
+		public bool IsThingVisible(Thing t)
+		{
+			return thingsvisiblestate[t];
+		}
 
 		// This writes the filter to configuration
 		internal void WriteSettings(Configuration cfg, string path)
@@ -182,14 +192,18 @@ namespace CodeImp.DoomBuilder.Editing
 			// Clear lists
 			visiblethings = null;
 			hiddenthings = null;
+			thingsvisiblestate = null;
 		}
 		
-		// This updates the list of things
+		/// <summary>
+		/// This updates the list of things.
+		/// </summary>
 		public virtual void Update()
 		{
 			// Make new list
 			visiblethings = new List<Thing>(General.Map.Map.Things.Count);
 			hiddenthings = new List<Thing>(General.Map.Map.Things.Count);
+			thingsvisiblestate = new Dictionary<Thing, bool>(General.Map.Map.Things.Count);
 			foreach(Thing t in General.Map.Map.Things)
 			{
 				bool qualifies;
@@ -243,8 +257,9 @@ namespace CodeImp.DoomBuilder.Editing
 					}
 				}
 				
-				// Put the thing in the correct list
+				// Put the thing in the lists
 				if(qualifies) visiblethings.Add(t); else hiddenthings.Add(t);
+				thingsvisiblestate.Add(t, qualifies);
 			}
 		}
 
