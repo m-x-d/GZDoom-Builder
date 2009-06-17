@@ -399,6 +399,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.ShowHelp("e_visual.html");
 		}
+
+		// When returning to another mode
+		public override void OnDisengage()
+		{
+			base.OnDisengage();
+			General.Map.Map.Update();
+		}
 		
 		// Processing
 		public override void OnProcess(double deltatime)
