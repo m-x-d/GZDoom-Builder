@@ -1420,13 +1420,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// panelinfo
 			// 
+			this.panelinfo.Controls.Add(this.vertexinfo);
 			this.panelinfo.Controls.Add(this.labelcollapsedinfo);
 			this.panelinfo.Controls.Add(this.buttontoggleinfo);
 			this.panelinfo.Controls.Add(this.modename);
-			this.panelinfo.Controls.Add(this.vertexinfo);
+			this.panelinfo.Controls.Add(this.linedefinfo);
 			this.panelinfo.Controls.Add(this.thinginfo);
 			this.panelinfo.Controls.Add(this.sectorinfo);
-			this.panelinfo.Controls.Add(this.linedefinfo);
 			this.panelinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panelinfo.Location = new System.Drawing.Point(0, 564);
 			this.panelinfo.Name = "panelinfo";
@@ -1481,7 +1481,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.vertexinfo.Name = "vertexinfo";
-			this.vertexinfo.Size = new System.Drawing.Size(180, 100);
+			this.vertexinfo.Size = new System.Drawing.Size(310, 100);
 			this.vertexinfo.TabIndex = 1;
 			this.vertexinfo.Visible = false;
 			// 
@@ -1492,7 +1492,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.thinginfo.Name = "thinginfo";
-			this.thinginfo.Size = new System.Drawing.Size(580, 100);
+			this.thinginfo.Size = new System.Drawing.Size(639, 100);
 			this.thinginfo.TabIndex = 3;
 			this.thinginfo.Visible = false;
 			// 
@@ -1503,7 +1503,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.sectorinfo.Name = "sectorinfo";
-			this.sectorinfo.Size = new System.Drawing.Size(447, 100);
+			this.sectorinfo.Size = new System.Drawing.Size(522, 100);
 			this.sectorinfo.TabIndex = 2;
 			this.sectorinfo.Visible = false;
 			// 
@@ -1514,7 +1514,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.linedefinfo.Name = "linedefinfo";
-			this.linedefinfo.Size = new System.Drawing.Size(1000, 100);
+			this.linedefinfo.Size = new System.Drawing.Size(1039, 100);
 			this.linedefinfo.TabIndex = 0;
 			this.linedefinfo.Visible = false;
 			// 
