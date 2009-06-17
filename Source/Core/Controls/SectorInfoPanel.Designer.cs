@@ -195,9 +195,9 @@ namespace CodeImp.DoomBuilder.Controls
 						| System.Windows.Forms.AnchorStyles.Left)));
 			this.ceilingpanel.Controls.Add(this.ceilingname);
 			this.ceilingpanel.Controls.Add(this.ceilingtex);
-			this.ceilingpanel.Location = new System.Drawing.Point(335, 0);
+			this.ceilingpanel.Location = new System.Drawing.Point(349, 0);
 			this.ceilingpanel.Name = "ceilingpanel";
-			this.ceilingpanel.Size = new System.Drawing.Size(93, 100);
+			this.ceilingpanel.Size = new System.Drawing.Size(107, 100);
 			this.ceilingpanel.TabIndex = 3;
 			this.ceilingpanel.TabStop = false;
 			this.ceilingpanel.Text = " Ceiling ";
@@ -206,9 +206,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.ceilingname.Location = new System.Drawing.Point(11, 80);
 			this.ceilingname.Name = "ceilingname";
-			this.ceilingname.Size = new System.Drawing.Size(72, 13);
+			this.ceilingname.Size = new System.Drawing.Size(84, 13);
 			this.ceilingname.TabIndex = 1;
-			this.ceilingname.Text = "BIGDOOR6";
+			this.ceilingname.Text = "BROWNHUG";
 			this.ceilingname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// ceilingtex
@@ -216,7 +216,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ceilingtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.ceilingtex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.ceilingtex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.ceilingtex.Location = new System.Drawing.Point(13, 19);
+			this.ceilingtex.Location = new System.Drawing.Point(19, 19);
 			this.ceilingtex.Name = "ceilingtex";
 			this.ceilingtex.Size = new System.Drawing.Size(68, 60);
 			this.ceilingtex.TabIndex = 0;
@@ -229,7 +229,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floorpanel.Controls.Add(this.floortex);
 			this.floorpanel.Location = new System.Drawing.Point(236, 0);
 			this.floorpanel.Name = "floorpanel";
-			this.floorpanel.Size = new System.Drawing.Size(93, 100);
+			this.floorpanel.Size = new System.Drawing.Size(107, 100);
 			this.floorpanel.TabIndex = 4;
 			this.floorpanel.TabStop = false;
 			this.floorpanel.Text = " Floor ";
@@ -238,9 +238,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.floorname.Location = new System.Drawing.Point(11, 80);
 			this.floorname.Name = "floorname";
-			this.floorname.Size = new System.Drawing.Size(72, 13);
+			this.floorname.Size = new System.Drawing.Size(84, 13);
 			this.floorname.TabIndex = 1;
-			this.floorname.Text = "BIGDOOR6";
+			this.floorname.Text = "BROWNHUG";
 			this.floorname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// floortex
@@ -248,7 +248,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.floortex.BackColor = System.Drawing.SystemColors.AppWorkspace;
 			this.floortex.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.floortex.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.floortex.Location = new System.Drawing.Point(13, 19);
+			this.floortex.Location = new System.Drawing.Point(19, 19);
 			this.floortex.Name = "floortex";
 			this.floortex.Size = new System.Drawing.Size(68, 60);
 			this.floortex.TabIndex = 0;
@@ -263,7 +263,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.MinimumSize = new System.Drawing.Size(100, 100);
 			this.Name = "SectorInfoPanel";
-			this.Size = new System.Drawing.Size(450, 100);
+			this.Size = new System.Drawing.Size(481, 100);
 			this.sectorinfo.ResumeLayout(false);
 			this.sectorinfo.PerformLayout();
 			this.ceilingpanel.ResumeLayout(false);

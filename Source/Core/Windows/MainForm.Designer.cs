@@ -499,7 +499,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemgridinc.Name = "itemgridinc";
 			this.itemgridinc.Size = new System.Drawing.Size(165, 22);
-			this.itemgridinc.Tag = "builder_gridinc";
+			this.itemgridinc.Tag = "builder_griddec";
 			this.itemgridinc.Text = "Increase Grid";
 			this.itemgridinc.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -507,7 +507,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemgriddec.Name = "itemgriddec";
 			this.itemgriddec.Size = new System.Drawing.Size(165, 22);
-			this.itemgriddec.Tag = "builder_griddec";
+			this.itemgriddec.Tag = "builder_gridinc";
 			this.itemgriddec.Text = "Decrease Grid";
 			this.itemgriddec.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
