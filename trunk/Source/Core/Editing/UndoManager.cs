@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constants
 
 		// Maximum undo/redo levels
-		private const int MAX_UNDO_LEVELS = 1000;
+		private const int MAX_UNDO_LEVELS = 2000;
 		
 		// Default stream capacity
 		private const int STREAM_CAPACITY = 1000;
@@ -315,11 +315,12 @@ namespace CodeImp.DoomBuilder.Editing
 		private void FinishRecording()
 		{
 			// End current recording
-			if(stream != null)
+			if((stream != null) && (ss != null))
 			{
 				propsrecorded = null;
 				ss.wInt(commandswritten);
 				ss.End();
+				ss = null;
 			}
 		}
 		
@@ -419,7 +420,27 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 		
 		#region ================== Public Methods
-
+		
+		// This makes a list of the undo levels in order they will be undone
+		public List<UndoSnapshot> GetUndoList()
+		{
+			List<UndoSnapshot> list = new List<UndoSnapshot>(undos.Count + 1);
+			if(!isundosnapshot && (snapshot != null))
+				list.Add(snapshot);
+			list.AddRange(undos);
+			return list;
+		}
+		
+		// This makes a list of the redo levels in order they will be undone
+		public List<UndoSnapshot> GetRedoList()
+		{
+			List<UndoSnapshot> list = new List<UndoSnapshot>(redos.Count + 1);
+			if(isundosnapshot && (snapshot != null))
+				list.Add(snapshot);
+			list.AddRange(redos);
+			return list;
+		}
+		
 		// This clears all redos
 		public void ClearAllRedos()
 		{
@@ -546,9 +567,16 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("undo")]
 		public void PerformUndo()
 		{
+			PerformUndo(1);
+		}
+		
+		// This performs one or more undo levels
+		public void PerformUndo(int levels)
+		{
 			UndoSnapshot u = null;
 			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
+			int levelsundone = 0;
 			
 			// Anything to undo?
 			if((undos.Count > 0) || ((snapshot != null) && !isundosnapshot))
@@ -563,63 +591,84 @@ namespace CodeImp.DoomBuilder.Editing
 						// This returns false when mode was not volatile
 						if(!General.CancelVolatileMode())
 						{
-							FinishRecording();
-							
-							if(isundosnapshot)
+							// Go for all levels to undo
+							for(int lvl = 0; lvl < levels; lvl++)
 							{
-								if(snapshot != null)
+								FinishRecording();
+								
+								if(isundosnapshot)
 								{
-									// This snapshot was made by a previous call to this
-									// function and should go on the redo list
-									lock(redos)
+									if(snapshot != null)
 									{
-										// The current top of the stack can now be written to disk
-										// because it is no longer the next immediate redo level
-										if(redos.Count > 0) redos[0].StoreOnDisk = true;
-										
-										// Put it on the stack
-										redos.Insert(0, snapshot);
-										LimitUndoRedoLevel(redos);
+										// This snapshot was made by a previous call to this
+										// function and should go on the redo list
+										lock(redos)
+										{
+											// The current top of the stack can now be written to disk
+											// because it is no longer the next immediate redo level
+											if(redos.Count > 0) redos[0].StoreOnDisk = true;
+											
+											// Put it on the stack
+											redos.Insert(0, snapshot);
+											LimitUndoRedoLevel(redos);
+										}
 									}
 								}
-							}
-							else
-							{
-								// The snapshot can be undone immediately and it will
-								// be recorded for the redo list
-								if(snapshot != null)
-									u = snapshot;
-							}
-							
-							// No immediate snapshot to undo? Then get the next one from the stack
-							if(u == null)
-							{
-								lock(undos)
+								else
 								{
-									// Get undo snapshot
-									u = undos[0];
-									undos.RemoveAt(0);
-									
-									// Make the current top of the stack load into memory
-									// because it just became the next immediate undo level
-									if(undos.Count > 0) undos[0].StoreOnDisk = false;
+									// The snapshot can be undone immediately and it will
+									// be recorded for the redo list
+									if(snapshot != null)
+										u = snapshot;
 								}
+								
+								// No immediate snapshot to undo? Then get the next one from the stack
+								if(u == null)
+								{
+									lock(undos)
+									{
+										if(undos.Count > 0)
+										{
+											// Get undo snapshot
+											u = undos[0];
+											undos.RemoveAt(0);
+											
+											// Make the current top of the stack load into memory
+											// because it just became the next immediate undo level
+											if(undos.Count > 0) undos[0].StoreOnDisk = false;
+										}
+										else
+										{
+											// Nothing more to undo
+											break;
+										}
+									}
+								}
+								
+								General.WriteLogLine("Performing undo \"" + u.Description + "\", Ticket ID " + u.TicketID + "...");
+								
+								if(levels == 1)
+									General.Interface.DisplayStatus(StatusType.Action, u.Description + " undone.");
+								
+								// Make a snapshot for redo
+								StartRecording(u.Description);
+								isundosnapshot = true;
+								
+								// Reset grouping
+								lastgroupplugin = null;
+
+								// Play back the stream in reverse
+								MemoryStream data = u.GetStream();
+								PlaybackStream(data);
+								data.Dispose();
+								
+								// Done with this snapshot
+								u = null;
+								levelsundone++;
 							}
 							
-							General.WriteLogLine("Performing undo \"" + u.Description + "\", Ticket ID " + u.TicketID + "...");
-							General.Interface.DisplayStatus(StatusType.Action, u.Description + " undone.");
-							
-							// Make a snapshot for redo
-							StartRecording(u.Description);
-							isundosnapshot = true;
-							
-							// Reset grouping
-							lastgroupplugin = null;
-
-							// Play back the stream in reverse
-							MemoryStream data = u.GetStream();
-							PlaybackStream(data);
-							data.Dispose();
+							if(levels > 1)
+								General.Interface.DisplayStatus(StatusType.Action, "Undone " + levelsundone + " changes.");
 							
 							// Remove selection
 							General.Map.Map.ClearAllSelected();
@@ -650,9 +699,15 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("redo")]
 		public void PerformRedo()
 		{
+			PerformRedo(1);
+		}
+		
+		public void PerformRedo(int levels)
+		{
 			UndoSnapshot r = null;
 			Cursor oldcursor = Cursor.Current;
 			Cursor.Current = Cursors.WaitCursor;
+			int levelsundone = 0;
 			
 			// Anything to redo?
 			if((redos.Count > 0) || ((snapshot != null) && isundosnapshot))
@@ -664,89 +719,108 @@ namespace CodeImp.DoomBuilder.Editing
 					if(General.Editing.Mode.OnRedoBegin())
 					{
 						// Cancel volatile mode, if any
-						General.CancelVolatileMode();
-
-						FinishRecording();
-						
-						if(isundosnapshot)
+						// This returns false when mode was not volatile
+						if(!General.CancelVolatileMode())
 						{
-							// This snapshot was started by PerformUndo, which means
-							// it can directly be used to redo to previous undo
-							if(snapshot != null)
-								r = snapshot;
-						}
-						else
-						{
-							if(snapshot != null)
+							// Go for all levels to undo
+							for(int lvl = 0; lvl < levels; lvl++)
 							{
-								// This snapshot was made by a previous call to this
-								// function and should go on the undo list
-								lock(undos)
-								{
-									// The current top of the stack can now be written to disk
-									// because it is no longer the next immediate undo level
-									if(undos.Count > 0) undos[0].StoreOnDisk = true;
-
-									// Put it on the stack
-									undos.Insert(0, snapshot);
-									LimitUndoRedoLevel(undos);
-								}
-							}
-						}
-						
-						// No immediate snapshot to redo? Then get the next one from the stack
-						if(r == null)
-						{
-							lock(redos)
-							{
-								// Get redo snapshot
-								r = redos[0];
-								redos.RemoveAt(0);
+								FinishRecording();
 								
-								// Make the current top of the stack load into memory
-								// because it just became the next immediate undo level
-								if(redos.Count > 0) redos[0].StoreOnDisk = false;
+								if(isundosnapshot)
+								{
+									// This snapshot was started by PerformUndo, which means
+									// it can directly be used to redo to previous undo
+									if(snapshot != null)
+										r = snapshot;
+								}
+								else
+								{
+									if(snapshot != null)
+									{
+										// This snapshot was made by a previous call to this
+										// function and should go on the undo list
+										lock(undos)
+										{
+											// The current top of the stack can now be written to disk
+											// because it is no longer the next immediate undo level
+											if(undos.Count > 0) undos[0].StoreOnDisk = true;
+
+											// Put it on the stack
+											undos.Insert(0, snapshot);
+											LimitUndoRedoLevel(undos);
+										}
+									}
+								}
+								
+								// No immediate snapshot to redo? Then get the next one from the stack
+								if(r == null)
+								{
+									lock(redos)
+									{
+										if(redos.Count > 0)
+										{
+											// Get redo snapshot
+											r = redos[0];
+											redos.RemoveAt(0);
+											
+											// Make the current top of the stack load into memory
+											// because it just became the next immediate undo level
+											if(redos.Count > 0) redos[0].StoreOnDisk = false;
+										}
+										else
+										{
+											// Nothing more to redo
+											break;
+										}
+									}
+								}
+
+								General.WriteLogLine("Performing redo \"" + r.Description + "\", Ticket ID " + r.TicketID + "...");
+								
+								if(levels == 1)
+									General.Interface.DisplayStatus(StatusType.Action, r.Description + " redone.");
+
+								StartRecording(r.Description);
+								isundosnapshot = false;
+								
+								// Reset grouping
+								lastgroupplugin = null;
+
+								// Play back the stream in reverse
+								MemoryStream data = r.GetStream();
+								PlaybackStream(data);
+								data.Dispose();
 							}
+							
+							if(levels > 1)
+								General.Interface.DisplayStatus(StatusType.Action, "Redone " + levelsundone + " changes.");
+							
+							// Remove selection
+							General.Map.Map.ClearAllSelected();
+
+							// Update map
+							General.Map.Map.Update();
+							foreach(Thing t in General.Map.Map.Things) if(t.Marked) t.UpdateConfiguration();
+							General.Map.ThingsFilter.Update();
+							General.Map.Data.UpdateUsedTextures();
+							General.MainWindow.RedrawDisplay();
+							
+							// Done
+							General.Editing.Mode.OnRedoEnd();
+							General.Plugins.OnRedoEnd();
+
+							// Update interface
+							dobackgroundwork = true;
+							General.MainWindow.UpdateInterface();
 						}
-
-						General.WriteLogLine("Performing redo \"" + r.Description + "\", Ticket ID " + r.TicketID + "...");
-						General.Interface.DisplayStatus(StatusType.Action, r.Description + " redone.");
-
-						StartRecording(r.Description);
-						isundosnapshot = false;
-						
-						// Reset grouping
-						lastgroupplugin = null;
-
-						// Play back the stream in reverse
-						MemoryStream data = r.GetStream();
-						PlaybackStream(data);
-						data.Dispose();
-						
-						// Remove selection
-						General.Map.Map.ClearAllSelected();
-
-						// Update map
-						General.Map.Map.Update();
-						foreach(Thing t in General.Map.Map.Things) if(t.Marked) t.UpdateConfiguration();
-						General.Map.ThingsFilter.Update();
-						General.Map.Data.UpdateUsedTextures();
-						General.MainWindow.RedrawDisplay();
-						
-						// Done
-						General.Editing.Mode.OnRedoEnd();
-						General.Plugins.OnRedoEnd();
-
-						// Update interface
-						dobackgroundwork = true;
-						General.MainWindow.UpdateInterface();
 					}
 				}
 			}
 			
 			Cursor.Current = oldcursor;
 		}
-
+		
 		#endregion
 		
 		#region ================== Record and Playback
