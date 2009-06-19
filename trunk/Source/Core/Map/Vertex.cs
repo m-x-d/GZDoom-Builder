@@ -97,12 +97,6 @@ namespace CodeImp.DoomBuilder.Map
 				// Already set isdisposed so that changes can be prohibited
 				isdisposed = true;
 
-				if(map == General.Map.Map)
-					General.Map.UndoRedo.RecRemVertex(this);
-				
-				// Remove from main list
-				map.RemoveVertex(listindex);
-
 				if(map.AutoRemove)
 				{
 					// Dispose the lines that are attached to this vertex
@@ -115,6 +109,12 @@ namespace CodeImp.DoomBuilder.Map
 					foreach(Linedef ld in linedefs) ld.DetachVertexP(this);
 				}
 				
+				if(map == General.Map.Map)
+					General.Map.UndoRedo.RecRemVertex(this);
+				
+				// Remove from main list
+				map.RemoveVertex(listindex);
+
 				// Clean up
 				linedefs = null;
 				map = null;
