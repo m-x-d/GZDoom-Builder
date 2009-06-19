@@ -349,7 +349,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private void LogRecordInfo(string info)
 		{
 			#if DEBUG
-				General.WriteLogLine(info);
+				//General.WriteLogLine(info);
 			#endif
 		}
 

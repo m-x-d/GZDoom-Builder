@@ -263,6 +263,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			int verticesperentry = set.numvertices * 2;
 			int maxentriesperbuffer = MAX_VERTICES_PER_BUFFER / verticesperentry;
 
+			// Make a new bufer when the last one is full
+			if((bufferindex > -1) && (set.buffersizes[bufferindex] >= (maxentriesperbuffer * verticesperentry)))
+				bufferindex = -1;
+			
 			while(addentries > 0)
 			{
 				// Create a new buffer?
