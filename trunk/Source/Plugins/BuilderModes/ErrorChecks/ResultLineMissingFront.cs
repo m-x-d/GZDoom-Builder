@@ -132,6 +132,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Fix by creating a sidedef
 		public override bool Button2Click()
 		{
+			General.Map.UndoRedo.CreateUndo("Create front sidedef");
 			Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedef.Sector);
 			copysidedef.CopyPropertiesTo(newside);
 			line.ApplySidedFlags();
