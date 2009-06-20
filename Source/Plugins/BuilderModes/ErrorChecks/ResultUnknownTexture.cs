@@ -101,6 +101,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Fix by removing texture
 		public override bool Button1Click()
 		{
+			General.Map.UndoRedo.CreateUndo("Remove unknown texture");
 			switch(part)
 			{
 				case SidedefPart.Upper: side.SetTextureHigh("-"); break;
@@ -115,6 +116,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Fix by setting default texture
 		public override bool Button2Click()
 		{
+			General.Map.UndoRedo.CreateUndo("Unknown texture correction");
 			General.Settings.FindDefaultDrawSettings();
 			switch(part)
 			{

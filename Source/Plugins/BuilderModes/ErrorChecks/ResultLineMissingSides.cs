@@ -161,6 +161,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(copysidedeffront != null)
 			{
 				// Front
+				General.Map.UndoRedo.CreateUndo("Create front sidedef");
 				Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedeffront.Sector);
 				copysidedeffront.CopyPropertiesTo(newside);
 			}
@@ -169,6 +170,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Back
 				// Because the line is single-sided, we make the sidedef on the front.
 				// We will then flip it to make sure to ends up in the right position.
+				General.Map.UndoRedo.CreateUndo("Create front sidedef");
 				Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedefback.Sector);
 				copysidedefback.CopyPropertiesTo(newside);
 				line.FlipVertices();
@@ -183,7 +185,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool Button2Click()
 		{
 			Sidedef newside;
-			
+			General.Map.UndoRedo.CreateUndo("Create sidedefs");
+
 			// Front
 			newside = General.Map.Map.CreateSidedef(line, true, copysidedeffront.Sector);
 			copysidedeffront.CopyPropertiesTo(newside);

@@ -102,7 +102,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
         // Fix by setting default texture
         public override bool Button1Click()
         {
-            General.Settings.FindDefaultDrawSettings();
+			General.Map.UndoRedo.CreateUndo("Missing texture correction");
+			General.Settings.FindDefaultDrawSettings();
             switch (part)
             {
                 case SidedefPart.Upper: side.SetTextureHigh(General.Settings.DefaultTexture); break;

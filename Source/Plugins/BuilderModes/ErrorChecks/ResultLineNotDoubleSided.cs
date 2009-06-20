@@ -122,6 +122,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Fix by flipping linedefs
 		public override bool Button1Click()
 		{
+			General.Map.UndoRedo.CreateUndo("Linedef flags change");
 			line.ApplySidedFlags();
 			General.Map.Map.Update();
 			return true;
@@ -130,6 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Fix by creating a sidedef
 		public override bool Button2Click()
 		{
+			General.Map.UndoRedo.CreateUndo("Create back sidedef");
 			Sidedef newside = General.Map.Map.CreateSidedef(line, false, copysidedef.Sector);
 			copysidedef.CopyPropertiesTo(newside);
 			line.ApplySidedFlags();
