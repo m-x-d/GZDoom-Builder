@@ -677,15 +677,11 @@ namespace CodeImp.DoomBuilder.IO
 						// Output recursive structure
 						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
 						db.Append(leveltabs); db.Append(de.Current.Key);
-						/*
-						 * Disabled writing comments to UDMF TEXTMAP, because ZDBSP can't handle this properly yet.
-						 * 
 						if(!string.IsNullOrEmpty(c.Comment))
 						{
 							if(whitespace) db.Append("\t");
 							db.Append("// " + c.Comment);
 						}
-						*/
 						db.Append(newline);
 						db.Append(leveltabs); db.Append("{"); db.Append(newline);
 						db.Append(OutputStructure(c, level + 1, newline, whitespace));
