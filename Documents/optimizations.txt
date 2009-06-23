@@ -1,2 +1,0 @@
-
-The floor/ceiling surfaces in classic modes can be optimized by sorting them by texture. This would require keeping two lists of sector references in the 2D renderer. One list sorted by sector floor texture, the other sorted by sector ceiling texture. These lists are then used in an optimized routine for surface rendering. The lists need to be updated every time MapSet.Update is called (and possibly in other events as well).
