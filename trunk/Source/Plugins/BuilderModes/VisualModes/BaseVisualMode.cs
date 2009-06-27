@@ -546,7 +546,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						sectorsmarked = true;
 						foreach(Sidedef sd in s.Sidedefs)
+						{
+							sd.Marked = true;
 							if(sd.Other != null) sd.Other.Marked = true;
+						}
 					}
 				}
 				
