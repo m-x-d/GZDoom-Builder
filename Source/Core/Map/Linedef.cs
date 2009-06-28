@@ -547,11 +547,17 @@ namespace CodeImp.DoomBuilder.Map
 		// This flips the linedef's vertex attachments
 		public void FlipVertices()
 		{
+			// make sure the start/end vertices are not automatically
+			// deleted if they do not belong to any other line
+			General.Map.Map.AutoRemove = false;
+
 			// Flip vertices
 			Vertex oldstart = start;
 			Vertex oldend = end;
 			SetStartVertex(oldend);
 			SetEndVertex(oldstart);
+
+			General.Map.Map.AutoRemove = true;
 			
 			// For drawing, the interior now lies on the other side
 			frontinterior = !frontinterior;
