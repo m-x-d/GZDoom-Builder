@@ -1585,8 +1585,8 @@ namespace CodeImp.DoomBuilder.Geometry
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
 					if(texture.IsImageLoaded)
 					{
-						j.sidedef.OffsetX %= texture.Width;
-						j.sidedef.OffsetY %= texture.Height;
+						if(alignx) j.sidedef.OffsetX %= texture.Width;
+						if(aligny) j.sidedef.OffsetY %= texture.Height;
 					}
 					
 					// Add sidedefs forward (connected to the right vertex)
@@ -1612,8 +1612,8 @@ namespace CodeImp.DoomBuilder.Geometry
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
 					if(texture.IsImageLoaded)
 					{
-						j.sidedef.OffsetX %= texture.Width;
-						j.sidedef.OffsetY %= texture.Height;
+						if(alignx) j.sidedef.OffsetX %= texture.Width;
+						if(aligny) j.sidedef.OffsetY %= texture.Height;
 					}
 
 					// Add sidedefs backward (connected to the left vertex)
