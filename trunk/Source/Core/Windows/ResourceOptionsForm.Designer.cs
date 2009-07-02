@@ -55,6 +55,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.wadfiledialog = new System.Windows.Forms.OpenFileDialog();
 			this.dirdialog = new System.Windows.Forms.FolderBrowserDialog();
 			this.pk3filedialog = new System.Windows.Forms.OpenFileDialog();
+			this.notfortesting = new System.Windows.Forms.CheckBox();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -312,7 +313,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(266, 273);
+			this.cancel.Location = new System.Drawing.Point(266, 306);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 2;
@@ -323,7 +324,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(148, 273);
+			this.apply.Location = new System.Drawing.Point(148, 306);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 1;
@@ -345,13 +346,25 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pk3filedialog.Filter = "Doom PK3 Files (*.pk3)|*.pk3";
 			this.pk3filedialog.Title = "Browse PK3 File";
 			// 
+			// notfortesting
+			// 
+			this.notfortesting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.notfortesting.AutoSize = true;
+			this.notfortesting.Location = new System.Drawing.Point(12, 262);
+			this.notfortesting.Name = "notfortesting";
+			this.notfortesting.Size = new System.Drawing.Size(249, 18);
+			this.notfortesting.TabIndex = 3;
+			this.notfortesting.Text = "Exclude this resource from testing parameters";
+			this.notfortesting.UseVisualStyleBackColor = true;
+			// 
 			// ResourceOptionsForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(386, 307);
+			this.ClientSize = new System.Drawing.Size(386, 340);
+			this.Controls.Add(this.notfortesting);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -374,6 +387,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pk3filetab.ResumeLayout(false);
 			this.pk3filetab.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -402,5 +416,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.CheckBox strictpatches;
 		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.CheckBox notfortesting;
 	}
 }

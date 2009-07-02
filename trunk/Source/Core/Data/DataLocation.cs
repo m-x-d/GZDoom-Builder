@@ -38,15 +38,17 @@ namespace CodeImp.DoomBuilder.Data
 		public string location;
 		public bool option1;
 		public bool option2;
+		public bool notfortesting;
 		
 		// Constructor
-		public DataLocation(int type, string location, bool option1, bool option2)
+		public DataLocation(int type, string location, bool option1, bool option2, bool notfortesting)
 		{
 			// Initialize
 			this.type = type;
 			this.location = location;
 			this.option1 = option1;
 			this.option2 = option2;
+			this.notfortesting = notfortesting;
 		}
 
 		// This displays the struct as string

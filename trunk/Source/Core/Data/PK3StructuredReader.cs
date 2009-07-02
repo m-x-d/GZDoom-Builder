@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(string w in wadfiles)
 			{
 				string tempfile = CreateTempFile(w);
-				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, tempfile, false, false);
+				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, tempfile, false, false, true);
 				wads.Add(new WADReader(wdl));
 			}
 		}

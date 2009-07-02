@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(rlinfo.Contains("location") && (rlinfo["location"] is string)) res.location = (string)rlinfo["location"];
 					if(rlinfo.Contains("option1") && (rlinfo["option1"] is int)) res.option1 = General.Int2Bool((int)rlinfo["option1"]);
 					if(rlinfo.Contains("option2") && (rlinfo["option2"] is int)) res.option2 = General.Int2Bool((int)rlinfo["option2"]);
+					if(rlinfo.Contains("notfortesting") && (rlinfo["notfortesting"] is int)) res.notfortesting = General.Int2Bool((int)rlinfo["notfortesting"]);
 
 					// Add resource
 					Add(res);
@@ -94,6 +95,7 @@ namespace CodeImp.DoomBuilder.Data
 				rlinfo.Add("location", this[i].location);
 				rlinfo.Add("option1", General.Bool2Int(this[i].option1));
 				rlinfo.Add("option2", General.Bool2Int(this[i].option2));
+				rlinfo.Add("notfortesting", General.Bool2Int(this[i].notfortesting));
 
 				// Add structure
 				resinfo.Add("resource" + i.ToString(CultureInfo.InvariantCulture), rlinfo);
