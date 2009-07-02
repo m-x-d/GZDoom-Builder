@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder
 		public Launcher(MapManager manager)
 		{
 			// Initialize
-			this.tempwad = General.MakeTempFilename(manager.TempPath, "wad");
+			CleanTempFile(manager);
 
 			// Bind actions
 			General.Actions.BindMethods(this);
@@ -74,6 +74,10 @@ namespace CodeImp.DoomBuilder
 			{
 				// Unbind actions
 				General.Actions.UnbindMethods(this);
+				
+				// Remove temporary file
+				try { File.Delete(tempwad); }
+				catch(Exception) { }
 				
 				// Done
 				isdisposed = true;
@@ -114,8 +118,9 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Make a list of all data locations, including map location
-			DataLocation maplocation = new DataLocation(DataLocation.RESOURCE_WAD, General.Map.FilePathName, false, false);
+			DataLocation maplocation = new DataLocation(DataLocation.RESOURCE_WAD, General.Map.FilePathName, false, false, false);
 			DataLocationList locations = new DataLocationList();
+			locations.AddRange(General.Map.ConfigSettings.Resources);
 			locations.AddRange(General.Map.Options.Resources);
 			locations.Add(maplocation);
 			
@@ -123,18 +128,22 @@ namespace CodeImp.DoomBuilder
 			foreach(DataLocation dl in locations)
 			{
 				// Location not the IWAD file?
-				if((dl.type == DataLocation.RESOURCE_WAD) && (dl.location != iwadloc.location))
+				if((dl.type != DataLocation.RESOURCE_WAD) || (dl.location != iwadloc.location))
 				{
-					// Add to string of files
-					if(shortpaths)
+					// Location not included?
+					if(!dl.notfortesting)
 					{
-						p_ap += General.GetShortFilePath(dl.location) + " ";
-						p_apq += "\"" + General.GetShortFilePath(dl.location) + "\" ";
-					}
-					else
-					{
-						p_ap += dl.location + " ";
-						p_apq += "\"" + dl.location + "\" ";
+						// Add to string of files
+						if(shortpaths)
+						{
+							p_ap += General.GetShortFilePath(dl.location) + " ";
+							p_apq += "\"" + General.GetShortFilePath(dl.location) + "\" ";
+						}
+						else
+						{
+							p_ap += dl.location + " ";
+							p_apq += "\"" + dl.location + "\" ";
+						}
 					}
 				}
 			}
@@ -256,7 +265,11 @@ namespace CodeImp.DoomBuilder
 				General.Map.ConfigSettings.TestParameters = General.Map.Config.TestParameters;
 				General.Map.ConfigSettings.TestShortPaths = General.Map.Config.TestShortPaths;
 			}
-
+			
+			// Remove temporary file
+			try { File.Delete(tempwad); }
+			catch(Exception) { }
+			
 			// Save map to temporary file
 			Cursor.Current = Cursors.WaitCursor;
 			tempwad = General.MakeTempFilename(General.Map.TempPath, "wad");
@@ -315,13 +328,24 @@ namespace CodeImp.DoomBuilder
 				}
 			}
 			
-			// Remove temporary file
-			try { File.Delete(tempwad); }
-			catch(Exception) { }
+			// Clean up temp file
+			CleanTempFile(General.Map);
 			
 			// Done
 			General.MainWindow.FocusDisplay();
 			Cursor.Current = oldcursor;
+		}
+		
+		// This deletes the previous temp file and creates a new, empty temp file
+		private void CleanTempFile(MapManager manager)
+		{
+			// Remove temporary file
+			try { File.Delete(tempwad); }
+			catch(Exception) { }
+			
+			// Make new empty temp file
+			tempwad = General.MakeTempFilename(manager.TempPath, "wad");
+			File.WriteAllText(tempwad, "");
 		}
 
 		#endregion

@@ -364,7 +364,7 @@ namespace CodeImp.DoomBuilder
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
 			data = new DataManager();
-			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false);
+			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false, false);
 			data.Load(configinfo.Resources, options.Resources, maplocation);
 
 			// Remove unused sectors
@@ -1468,7 +1468,7 @@ namespace CodeImp.DoomBuilder
 			data = new DataManager();
 			if(!string.IsNullOrEmpty(filepathname))
 			{
-				maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false);
+				maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false, false);
 				data.Load(configinfo.Resources, options.Resources, maplocation);
 			}
 			else

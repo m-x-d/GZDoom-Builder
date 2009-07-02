@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Map;
 using System.IO;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -70,11 +71,14 @@ namespace CodeImp.DoomBuilder.Windows
 					pk3location.Text = res.location;
 					break;
 			}
-
+			
 			// Select appropriate tab
 			tabs.SelectedIndex = res.type;
+			
+			// Checkbox
+			notfortesting.Checked = res.notfortesting;
 		}
-
+		
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
@@ -98,6 +102,7 @@ namespace CodeImp.DoomBuilder.Windows
 						res.location = wadlocation.Text;
 						res.option1 = strictpatches.Checked;
 						res.option2 = false;
+						res.notfortesting = notfortesting.Checked;
 
 						// Done
 						this.DialogResult = DialogResult.OK;
@@ -122,6 +127,7 @@ namespace CodeImp.DoomBuilder.Windows
 						res.location = dirlocation.Text;
 						res.option1 = dir_textures.Checked;
 						res.option2 = dir_flats.Checked;
+						res.notfortesting = notfortesting.Checked;
 
 						// Done
 						this.DialogResult = DialogResult.OK;
@@ -146,6 +152,7 @@ namespace CodeImp.DoomBuilder.Windows
 						res.location = pk3location.Text;
 						res.option1 = false;
 						res.option2 = false;
+						res.notfortesting = notfortesting.Checked;
 
 						// Done
 						this.DialogResult = DialogResult.OK;
@@ -154,7 +161,7 @@ namespace CodeImp.DoomBuilder.Windows
 					break;
 			}
 		}
-
+		
 		// Cancel clicked
 		private void cancel_Click(object sender, EventArgs e)
 		{
