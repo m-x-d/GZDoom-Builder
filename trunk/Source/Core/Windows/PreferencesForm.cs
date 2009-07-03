@@ -75,6 +75,8 @@ namespace CodeImp.DoomBuilder.Windows
 			invertyaxis.Checked = General.Settings.InvertYAxis;
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;
 			scriptontop.Checked = General.Settings.ScriptOnTop;
+			scripttabwidth.Text = General.Settings.ScriptTabWidth.ToString();
+			scriptautoindent.Checked = General.Settings.ScriptAutoIndent;
 			previewsize.Value = General.Settings.PreviewImageSize;
 			autoscrollspeed.Value = General.Settings.AutoScrollSpeed;
 			animatevisualselection.Checked = General.Settings.AnimateVisualSelection;
@@ -180,6 +182,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptFontBold = scriptfontbold.Checked;
 			General.Settings.ScriptFontName = scriptfontname.Text;
 			General.Settings.ScriptOnTop = scriptontop.Checked;
+			General.Settings.ScriptTabWidth = scripttabwidth.GetResult(General.Settings.ScriptTabWidth);
+			General.Settings.ScriptAutoIndent = scriptautoindent.Checked;
 			General.Settings.PreviewImageSize = previewsize.Value;
 			General.Settings.AutoScrollSpeed = autoscrollspeed.Value;
 			General.Settings.AnimateVisualSelection = animatevisualselection.Checked;

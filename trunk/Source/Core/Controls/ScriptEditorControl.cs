@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.IsViewEOL = false;
 			scriptedit.IsVScrollBar = true;
 			scriptedit.SetFoldFlags((int)ScriptFoldFlag.Box);
-			scriptedit.TabWidth = 4;					// This should be in the preferences dialog
+			scriptedit.TabWidth = 4;
 			scriptedit.Indent = 4;
 			scriptedit.ExtraAscent = 1;
 			scriptedit.ExtraDescent = 1;
@@ -295,10 +295,10 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.StyleBits = 7;
 			
 			// These don't work?
-			scriptedit.TabWidth = 4;
+			scriptedit.TabWidth = General.Settings.ScriptTabWidth;
 			scriptedit.IsUseTabs = false;
 			scriptedit.IsTabIndents = true;
-			scriptedit.Indent = 4;
+			scriptedit.Indent = General.Settings.ScriptTabWidth;
 			scriptedit.IsBackSpaceUnIndents = true;
 			
 			// This applies the default style to all styles
@@ -745,17 +745,21 @@ namespace CodeImp.DoomBuilder.Controls
 			// Enter pressed?
 			if((e.KeyCode == Keys.Enter) && (e.Modifiers == Keys.None))
 			{
-				// Get the current line index and heck if its not the first line
-				int curline = scriptedit.LineFromPosition(scriptedit.CurrentPos);
-				if(curline > 0)
+				// Do we want auto-indent?
+				if(General.Settings.ScriptAutoIndent)
 				{
-					// Apply identation of the previous line to this line
-					int ident = scriptedit.GetLineIndentation(curline - 1);
-					int tabs = ident ;// / scriptedit.Indent;
-					if(scriptedit.GetLineIndentation(curline) == 0)
+					// Get the current line index and check if its not the first line
+					int curline = scriptedit.LineFromPosition(scriptedit.CurrentPos);
+					if(curline > 0)
 					{
-						scriptedit.SetLineIndentation(curline, ident);
-						scriptedit.SetSel(scriptedit.SelectionStart + tabs, scriptedit.SelectionStart + tabs);
+						// Apply identation of the previous line to this line
+						int ident = scriptedit.GetLineIndentation(curline - 1);
+						int tabs = ident ;// / scriptedit.Indent;
+						if(scriptedit.GetLineIndentation(curline) == 0)
+						{
+							scriptedit.SetLineIndentation(curline, ident);
+							scriptedit.SetSel(scriptedit.SelectionStart + tabs, scriptedit.SelectionStart + tabs);
+						}
 					}
 				}
 			}

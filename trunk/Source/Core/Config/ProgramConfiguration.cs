@@ -71,6 +71,8 @@ namespace CodeImp.DoomBuilder.Config
 		private int scriptfontsize;
 		private bool scriptfontbold;
 		private bool scriptontop;
+		private bool scriptautoindent;
+		private int scripttabwidth;
 		private int previewimagesize;
 		private int autoscrollspeed;
 		private bool showerrorswindow;
@@ -120,6 +122,8 @@ namespace CodeImp.DoomBuilder.Config
 		public int AutoScrollSpeed { get { return autoscrollspeed; } internal set { autoscrollspeed = value; } }
 		public bool ShowErrorsWindow { get { return showerrorswindow; } internal set { showerrorswindow = value; } }
 		public bool AnimateVisualSelection { get { return animatevisualselection; } internal set { animatevisualselection = value; } }
+		public int ScriptTabWidth { get { return scripttabwidth; } internal set { scripttabwidth = value; } }
+		public bool ScriptAutoIndent { get { return scriptautoindent; } internal set { scriptautoindent = value; } }
 		internal int PreviousVersion { get { return previousversion; } }
 
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
@@ -176,7 +180,9 @@ namespace CodeImp.DoomBuilder.Config
 				scriptfontname = cfg.ReadSetting("scriptfontname", "Lucida Console");
 				scriptfontsize = cfg.ReadSetting("scriptfontsize", 10);
 				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
+				scriptautoindent = cfg.ReadSetting("scriptautoindent", true);
 				scriptontop = cfg.ReadSetting("scriptontop", true);
+				scripttabwidth = cfg.ReadSetting("scripttabwidth", 4);
 				previewimagesize = cfg.ReadSetting("previewimagesize", 1);
 				autoscrollspeed = cfg.ReadSetting("autoscrollspeed", 0);
 				showerrorswindow = cfg.ReadSetting("showerrorswindow", true);
@@ -221,6 +227,8 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("scriptfontsize", scriptfontsize);
 			cfg.WriteSetting("scriptfontbold", scriptfontbold);
 			cfg.WriteSetting("scriptontop", scriptontop);
+			cfg.WriteSetting("scripttabwidth", scripttabwidth);
+			cfg.WriteSetting("scriptautoindent", scriptautoindent);
 			cfg.WriteSetting("previewimagesize", previewimagesize);
 			cfg.WriteSetting("autoscrollspeed", autoscrollspeed);
 			cfg.WriteSetting("showerrorswindow", showerrorswindow);
