@@ -527,7 +527,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 									if(!sectors.ContainsKey(ld.Front.Sector))
 									{
 										sectors.Add(ld.Front.Sector, vs);
-										foreach(VisualGeometry g in vs.FixedGeometry) pickables.Add(g);
+										foreach(VisualGeometry g in vs.FixedGeometry)
+										{
+											// Must have content
+											if(g.Triangles > 0)
+												pickables.Add(g);
+										}
 									}
 									
 									// Add sidedef if on the front side
@@ -536,8 +541,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 										List<VisualGeometry> sidedefgeo = vs.GetSidedefGeometry(ld.Front);
 										foreach(VisualGeometry g in sidedefgeo)
 										{
-											g.SetPickResults(intersect, u);
-											pickables.Add(g);
+											// Must have content
+											if(g.Triangles > 0)
+											{
+												g.SetPickResults(intersect, u);
+												pickables.Add(g);
+											}
 										}
 									}
 								}
@@ -555,7 +564,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 									if(!sectors.ContainsKey(ld.Back.Sector))
 									{
 										sectors.Add(ld.Back.Sector, vs);
-										foreach(VisualGeometry g in vs.FixedGeometry) pickables.Add(g);
+										foreach(VisualGeometry g in vs.FixedGeometry)
+										{
+											// Must have content
+											if(g.Triangles > 0)
+												pickables.Add(g);
+										}
 									}
 
 									// Add sidedef if on the front side
@@ -564,8 +578,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 										List<VisualGeometry> sidedefgeo = vs.GetSidedefGeometry(ld.Back);
 										foreach(VisualGeometry g in sidedefgeo)
 										{
-											g.SetPickResults(intersect, u);
-											pickables.Add(g);
+											// Must have content
+											if(g.Triangles > 0)
+											{
+												g.SetPickResults(intersect, u);
+												pickables.Add(g);
+											}
 										}
 									}
 								}

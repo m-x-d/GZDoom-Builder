@@ -157,6 +157,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// No geometry for invisible wall
+				base.top = geotop;
+				base.bottom = geobottom;
+				WorldVertex[] verts = new WorldVertex[0];
+				base.SetVertices(verts);
 				return false;
 			}
 		}

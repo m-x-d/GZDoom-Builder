@@ -780,8 +780,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This collects a visual sector's geometry for rendering
 		public void AddSectorGeometry(VisualGeometry g)
 		{
-			// Must have a texture!
-			if(g.Texture != null)
+			// Must have a texture and vertices
+			if((g.Texture != null) && (g.Triangles > 0))
 			{
 				// Texture group not yet collected?
 				if(!geometry[g.RenderPassInt].ContainsKey(g.Texture))
