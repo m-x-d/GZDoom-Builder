@@ -68,6 +68,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
+			WorldVertex[] verts;
+			
 			byte brightness = (byte)General.Clamp(Sidedef.Sector.Brightness, 0, 255);
 			
 			// Calculate size of this wall part
@@ -148,7 +150,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						PixelColor pc = new PixelColor(255, brightness, brightness, brightness);
 
 						// Make vertices
-						WorldVertex[] verts = new WorldVertex[6];
+						verts = new WorldVertex[6];
 						verts[0] = new WorldVertex(v1.x, v1.y, texbottom, pc.ToInt(), t1.x, t2.y);
 						verts[1] = new WorldVertex(v1.x, v1.y, textop, pc.ToInt(), t1.x, t1.y);
 						verts[2] = new WorldVertex(v2.x, v2.y, textop, pc.ToInt(), t2.x, t1.y);
@@ -166,8 +168,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
-
+			
 			// No geometry for invisible wall
+			base.top = geotop;
+			base.bottom = geotop;	// bottom same as top so that it has a height of 0 (otherwise it will still be picked up by object picking)
+			verts = new WorldVertex[0];
+			base.SetVertices(verts);
 			return false;
 		}
 		

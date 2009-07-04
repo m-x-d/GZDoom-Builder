@@ -142,11 +142,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Create floor
 			if(floor == null) floor = new VisualFloor(mode, this);
-			if(floor.Setup()) base.AddGeometry(floor);
+			floor.Setup();
+			base.AddGeometry(floor);
 
 			// Create ceiling
 			if(ceiling == null) ceiling = new VisualCeiling(mode, this);
-			if(ceiling.Setup()) base.AddGeometry(ceiling);
+			ceiling.Setup();
+			base.AddGeometry(ceiling);
 
 			// Go for all sidedefs
 			Dictionary<Sidedef, VisualSidedefParts> oldsides = sides ?? new Dictionary<Sidedef, VisualSidedefParts>(1);
@@ -161,15 +163,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Create upper part
 					VisualUpper vu = parts.upper ?? new VisualUpper(mode, this, sd);
-					if(vu.Setup()) base.AddGeometry(vu);
+					vu.Setup();
+					base.AddGeometry(vu);
 					
 					// Create lower part
 					VisualLower vl = parts.lower ?? new VisualLower(mode, this, sd);
-					if(vl.Setup()) base.AddGeometry(vl);
+					vl.Setup();
+					base.AddGeometry(vl);
 					
 					// Create middle part
 					VisualMiddleDouble vm = parts.middledouble ?? new VisualMiddleDouble(mode, this, sd);
-					if(vm.Setup()) base.AddGeometry(vm);
+					vm.Setup();
+					base.AddGeometry(vm);
 
 					// Store
 					sides.Add(sd, new VisualSidedefParts(vu, vl, vm));
@@ -178,7 +183,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Create middle part
 					VisualMiddleSingle vm = parts.middlesingle ?? new VisualMiddleSingle(mode, this, sd);
-					if(vm.Setup()) base.AddGeometry(vm);
+					vm.Setup();
+					base.AddGeometry(vm);
 					
 					// Store
 					sides.Add(sd, new VisualSidedefParts(vm));
