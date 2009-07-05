@@ -1368,10 +1368,13 @@ namespace CodeImp.DoomBuilder
 
 			// Update settings
 			renderer3d.CreateProjection();
+
+			// Things filters
+			General.MainWindow.UpdateThingsFilters();
 		}
 		
 		// This changes thing filter
-		internal void ChangeThingFilter(ThingsFilter newfilter)
+		public void ChangeThingFilter(ThingsFilter newfilter)
 		{
 			// We have a special filter for null
 			if(newfilter == null) newfilter = new NullThingsFilter();
@@ -1384,7 +1387,10 @@ namespace CodeImp.DoomBuilder
 
 			// Activate filter
 			thingsfilter.Activate();
-			
+
+			// Update interface
+			General.MainWindow.ReflectThingsFilter();
+
 			// Redraw
 			General.MainWindow.RedrawDisplay();
 		}
@@ -1531,6 +1537,7 @@ namespace CodeImp.DoomBuilder
 				General.Plugins.MapReconfigure();
 				
 				// Update interface
+				General.MainWindow.UpdateThingsFilters();
 				General.MainWindow.UpdateInterface();
 				
 				// Reload resources
@@ -1552,6 +1559,7 @@ namespace CodeImp.DoomBuilder
 			ThingsFiltersForm f = new ThingsFiltersForm();
 			f.ShowDialog(General.MainWindow);
 			f.Dispose();
+			General.MainWindow.UpdateThingsFilters();
 		}
 		
 		// This returns true is the given type matches
