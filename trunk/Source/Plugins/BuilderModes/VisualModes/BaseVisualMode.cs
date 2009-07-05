@@ -588,10 +588,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// easily determine which ones changed, we dispose all things
 					foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
 						vt.Value.Dispose();
+					
+					// Apply new lists
+					allthings = new Dictionary<Thing, VisualThing>(allthings.Count);
 				}
-				
-				// Apply new lists
-				allthings = new Dictionary<Thing, VisualThing>(allthings.Count);
 				
 				// Clear visibility collections
 				visiblesectors.Clear();
@@ -600,7 +600,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				visiblethings.Clear();
 				
 				// Make new blockmap
-				FillBlockMap();
+				if(sectorsmarked)
+					FillBlockMap();
 				
 				// Visibility culling (this re-creates the needed resources)
 				DoCulling();
