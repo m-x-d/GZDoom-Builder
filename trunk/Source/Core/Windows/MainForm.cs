@@ -1254,8 +1254,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Only possible when a map is open
 			if((General.Map != null) && !updatingfilters)
 			{
+				updatingfilters = true;
+				
 				// Change filter
 				General.Map.ChangeThingFilter(thingfilters.SelectedItem as ThingsFilter);
+
+				updatingfilters = false;
 			}
 			
 			// Lose focus
@@ -1310,6 +1314,35 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Clear the list
 				thingfilters.Items.Clear();
+			}
+		}
+
+		// This selects the things filter based on the filter set on the map manager
+		internal void ReflectThingsFilter()
+		{
+			if(!updatingfilters)
+			{
+				updatingfilters = true;
+				
+				// Select current filter
+				bool selecteditemfound = false;
+				foreach(ThingsFilter f in thingfilters.Items)
+				{
+					if(f == General.Map.ThingsFilter)
+					{
+						thingfilters.SelectedItem = f;
+						selecteditemfound = true;
+					}
+				}
+
+				// Not in the list?
+				if(!selecteditemfound)
+				{
+					// Select nothing
+					thingfilters.SelectedIndex = -1;
+				}
+
+				updatingfilters = false;
 			}
 		}
 		
@@ -1859,7 +1892,6 @@ namespace CodeImp.DoomBuilder.Windows
 			thingfilters.Enabled = (General.Map != null);
 			buttonthingsfilter.Enabled = (General.Map != null);
 			buttonscripteditor.Enabled = (General.Map != null);
-			UpdateThingsFilters();
 		}
 
 		#endregion

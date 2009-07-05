@@ -65,8 +65,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		internal string Name { get { return name; } set { name = value; } }
-		internal string CategoryName { get { return categoryname; } set { categoryname = value; } }
+		public string Name { get { return name; } internal set { name = value; } }
+		public string CategoryName { get { return categoryname; } internal set { categoryname = value; } }
 		internal int ThingType { get { return thingtype; } set { thingtype = value; } }
 		internal ICollection<string> RequiredFields { get { return requiredfields; } }
 		internal ICollection<string> ForbiddenFields { get { return forbiddenfields; } }

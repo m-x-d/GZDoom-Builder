@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemcut = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemcopy = new System.Windows.Forms.ToolStripMenuItem();
 			this.itempaste = new System.Windows.Forms.ToolStripMenuItem();
+			this.pasteSpecialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsnaptogrid = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemautomerge = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
@@ -161,13 +162,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.xposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.yposlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.panelinfo = new System.Windows.Forms.Panel();
+			this.vertexinfo = new CodeImp.DoomBuilder.Controls.VertexInfoPanel();
 			this.labelcollapsedinfo = new System.Windows.Forms.Label();
 			this.buttontoggleinfo = new System.Windows.Forms.Button();
 			this.modename = new System.Windows.Forms.Label();
-			this.vertexinfo = new CodeImp.DoomBuilder.Controls.VertexInfoPanel();
+			this.linedefinfo = new CodeImp.DoomBuilder.Controls.LinedefInfoPanel();
 			this.thinginfo = new CodeImp.DoomBuilder.Controls.ThingInfoPanel();
 			this.sectorinfo = new CodeImp.DoomBuilder.Controls.SectorInfoPanel();
-			this.linedefinfo = new CodeImp.DoomBuilder.Controls.LinedefInfoPanel();
 			this.redrawtimer = new System.Windows.Forms.Timer(this.components);
 			this.display = new CodeImp.DoomBuilder.Controls.RenderTargetControl();
 			this.processor = new System.Windows.Forms.Timer(this.components);
@@ -403,6 +404,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemcut,
             this.itemcopy,
             this.itempaste,
+            this.pasteSpecialToolStripMenuItem,
             toolstripSeperator6,
             this.itemsnaptogrid,
             this.itemautomerge,
@@ -466,6 +468,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itempaste.Tag = "builder_pasteselection";
 			this.itempaste.Text = "Paste";
 			this.itempaste.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// pasteSpecialToolStripMenuItem
+			// 
+			this.pasteSpecialToolStripMenuItem.Image = global::CodeImp.DoomBuilder.Properties.Resources.PasteSpecial;
+			this.pasteSpecialToolStripMenuItem.Name = "pasteSpecialToolStripMenuItem";
+			this.pasteSpecialToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+			this.pasteSpecialToolStripMenuItem.Tag = "builder_pasteselectionspecial";
+			this.pasteSpecialToolStripMenuItem.Text = "Paste Special...";
+			this.pasteSpecialToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemsnaptogrid
 			// 
@@ -1433,6 +1444,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelinfo.Size = new System.Drawing.Size(1012, 106);
 			this.panelinfo.TabIndex = 4;
 			// 
+			// vertexinfo
+			// 
+			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.vertexinfo.Location = new System.Drawing.Point(3, 3);
+			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.vertexinfo.Name = "vertexinfo";
+			this.vertexinfo.Size = new System.Drawing.Size(310, 100);
+			this.vertexinfo.TabIndex = 1;
+			this.vertexinfo.Visible = false;
+			// 
 			// labelcollapsedinfo
 			// 
 			this.labelcollapsedinfo.AutoSize = true;
@@ -1474,16 +1496,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modename.UseMnemonic = false;
 			this.modename.Visible = false;
 			// 
-			// vertexinfo
+			// linedefinfo
 			// 
-			this.vertexinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.vertexinfo.Location = new System.Drawing.Point(3, 3);
-			this.vertexinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.vertexinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.vertexinfo.Name = "vertexinfo";
-			this.vertexinfo.Size = new System.Drawing.Size(310, 100);
-			this.vertexinfo.TabIndex = 1;
-			this.vertexinfo.Visible = false;
+			this.linedefinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
+			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
+			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
+			this.linedefinfo.Name = "linedefinfo";
+			this.linedefinfo.Size = new System.Drawing.Size(1039, 100);
+			this.linedefinfo.TabIndex = 0;
+			this.linedefinfo.Visible = false;
 			// 
 			// thinginfo
 			// 
@@ -1506,17 +1528,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.sectorinfo.Size = new System.Drawing.Size(522, 100);
 			this.sectorinfo.TabIndex = 2;
 			this.sectorinfo.Visible = false;
-			// 
-			// linedefinfo
-			// 
-			this.linedefinfo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
-			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
-			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
-			this.linedefinfo.Name = "linedefinfo";
-			this.linedefinfo.Size = new System.Drawing.Size(1039, 100);
-			this.linedefinfo.TabIndex = 0;
-			this.linedefinfo.Visible = false;
 			// 
 			// redrawtimer
 			// 
@@ -1728,5 +1739,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem13;
 		private System.Windows.Forms.ToolStripMenuItem itemhelpeditmode;
 		private System.Windows.Forms.ToolStripMenuItem itemtoggleinfo;
+		private System.Windows.Forms.ToolStripMenuItem pasteSpecialToolStripMenuItem;
 	}
 }

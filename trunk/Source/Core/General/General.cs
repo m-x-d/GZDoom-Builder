@@ -637,6 +637,7 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Loading main interface window...");
 				mainwindow = new MainForm();
 				mainwindow.UpdateInterface();
+				mainwindow.UpdateThingsFilters();
 
 				if(!delaymainwindow)
 				{
@@ -980,6 +981,7 @@ namespace CodeImp.DoomBuilder
 
 					// All done
 					mainwindow.RedrawDisplay();
+					mainwindow.UpdateThingsFilters();
 					mainwindow.UpdateInterface();
 					mainwindow.HideInfo();
 
@@ -1028,6 +1030,7 @@ namespace CodeImp.DoomBuilder
 				editing.UpdateCurrentEditModes();
 				mainwindow.RedrawDisplay();
 				mainwindow.HideInfo();
+				mainwindow.UpdateThingsFilters();
 				mainwindow.UpdateInterface();
 				mainwindow.DisplayReady();
 				General.WriteLogLine("Map unload done");
@@ -1128,6 +1131,7 @@ namespace CodeImp.DoomBuilder
 
 			// All done
 			mainwindow.RedrawDisplay();
+			mainwindow.UpdateThingsFilters();
 			mainwindow.UpdateInterface();
 			mainwindow.HideInfo();
 

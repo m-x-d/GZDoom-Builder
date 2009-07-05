@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Defaults
 		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
-		internal List<ThingsFilter> ThingsFilters { get { return thingfilters; } }
+		public List<ThingsFilter> ThingsFilters { get { return thingfilters; } }
 		
 		#endregion
 
