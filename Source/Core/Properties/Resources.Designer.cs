@@ -242,6 +242,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap PasteSpecial {
+            get {
+                object obj = ResourceManager.GetObject("PasteSpecial", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Prefab {
             get {
                 object obj = ResourceManager.GetObject("Prefab", resourceCulture);
