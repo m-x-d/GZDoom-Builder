@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool pasting = false;
 		
 		// Highlighted vertex
-		private Vertex highlighted;
+		private MapElement highlighted;
 		private Vector2D highlightedpos;
 
 		// Selection
@@ -172,28 +172,68 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Methods
-
-		// This highlights a new vertex
-		protected void Highlight(Vertex v)
+		
+		// This returns the position of the highlighted item
+		private Vector2D GetHighlightedPosition()
 		{
-			// Update display
-			if(renderer.StartPlotter(false))
+			if(highlighted is Vertex)
+				return (highlighted as Vertex).Position;
+			else if(highlighted is Thing)
+				return (highlighted as Thing).Position;
+			else
+				throw new Exception("Highlighted element type is not supported.");
+		}
+		
+		// This highlights a new vertex
+		protected void Highlight(MapElement h)
+		{
+			// Undraw previous highlight
+			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				// Undraw previous highlight
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.PlotVertex(highlighted, renderer.DetermineVertexColor(highlighted));
-
-				// Set new highlight
-				highlighted = v;
-
-				// Render highlighted item
-				if((highlighted != null) && !highlighted.IsDisposed)
-					renderer.PlotVertex(highlighted, ColorCollection.HIGHLIGHT);
-
-				// Done
-				renderer.Finish();
-				renderer.Present();
+				if(highlighted is Vertex)
+				{
+					if(renderer.StartPlotter(false))
+					{
+						renderer.PlotVertex((highlighted as Vertex), renderer.DetermineVertexColor((highlighted as Vertex)));
+						renderer.Finish();
+					}
+				}
+				else
+				{
+					if(renderer.StartThings(false))
+					{
+						renderer.RenderThing((highlighted as Thing), renderer.DetermineThingColor((highlighted as Thing)), 1.0f);
+						renderer.Finish();
+					}
+				}
 			}
+			
+			// Set new highlight
+			highlighted = h;
+
+			// Render highlighted item
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				if(highlighted is Vertex)
+				{
+					if(renderer.StartPlotter(false))
+					{
+						renderer.PlotVertex((highlighted as Vertex), ColorCollection.HIGHLIGHT);
+						renderer.Finish();
+					}
+				}
+				else
+				{
+					if(renderer.StartThings(false))
+					{
+						renderer.RenderThing((highlighted as Thing), General.Colors.Highlight, 1.0f);
+						renderer.Finish();
+					}
+				}
+			}
+
+			// Done
+			renderer.Present();
 		}
 		
 		// This updates the selection
@@ -211,9 +251,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						
 						// Find the nearest vertex within highlight range
 						Vertex v = MapSet.NearestVertex(selectedvertices, mousemappos);
-
-						// Highlight if not the same
-						if(v != highlighted) Highlight(v);
+						
+						// Find the nearest thing within range
+						Thing t = MapSet.NearestThing(selectedthings, mousemappos);
+						
+						// Highlight the one that is closer
+						if((v != null) && (t != null))
+						{
+							if(v.DistanceToSq(mousemappos) < t.DistanceToSq(mousemappos))
+							{
+								if(v != highlighted) Highlight(v);
+							}
+							else
+							{
+								if(t != highlighted) Highlight(t);
+							}
+						}
+						else if(v != null)
+						{
+							if(v != highlighted) Highlight(v);
+						}
+						else
+						{
+							if(t != highlighted) Highlight(t);
+						}
 						
 						General.Interface.SetCursor(Cursors.Hand);
 						break;
@@ -990,7 +1051,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				if(highlighted != null) renderer.PlotVertex(highlighted, ColorCollection.HIGHLIGHT);
+				if(highlighted is Vertex) renderer.PlotVertex((highlighted as Vertex), ColorCollection.HIGHLIGHT);
 				renderer.Finish();
 			}
 
@@ -999,6 +1060,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
+				if(highlighted is Thing) renderer.RenderThing((highlighted as Thing), General.Colors.Highlight, 1.0f);
 				renderer.Finish();
 			}
 
@@ -1078,8 +1140,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Drag main rectangle
 				case Grip.Main:
 					
-					// Find the original position of the highlighted vertex
-					if(highlighted != null)
+					// Find the original position of the highlighted element
+					if(highlighted is Vertex)
 					{
 						int index = 0;
 						foreach(Vertex v in selectedvertices)
@@ -1088,7 +1150,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							index++;
 						}
 					}
-
+					else if(highlighted is Thing)
+					{
+						int index = 0;
+						foreach(Thing t in selectedthings)
+						{
+							if(t == highlighted) highlightedpos = thingpos[index];
+							index++;
+						}
+					}
+					
 					dragoffset = mousemappos - offset;
 					mode = ModifyMode.Dragging;
 
