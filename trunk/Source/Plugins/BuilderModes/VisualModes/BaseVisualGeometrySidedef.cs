@@ -526,8 +526,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Add/remove selection
-				this.selected = !this.selected;
-				mode.SelectionChanged = true;
+				if(this.selected)
+				{
+					this.selected = false;
+					mode.RemoveSelectedObject(this);
+				}
+				else
+				{
+					this.selected = true;
+					mode.AddSelectedObject(this);
+				}
 			}
 		}
 		

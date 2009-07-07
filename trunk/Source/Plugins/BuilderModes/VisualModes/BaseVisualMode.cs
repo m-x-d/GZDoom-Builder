@@ -131,6 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Initialize
 			this.gravity = new Vector3D(0.0f, 0.0f, 0.0f);
+			this.selectedobjects = new List<IVisualEventReceiver>();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -153,6 +154,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Methods
 		
+		// This adds a selected object
+		internal void AddSelectedObject(IVisualEventReceiver obj)
+		{
+			selectedobjects.Add(obj);
+			selectionchanged = true;
+		}
+		
+		// This removes a selected object
+		internal void RemoveSelectedObject(IVisualEventReceiver obj)
+		{
+			selectedobjects.Remove(obj);
+			selectionchanged = true;
+		}
+		
 		// This is called before an action is performed
 		public void PreAction(int multiselectionundogroup)
 		{
@@ -162,12 +177,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// If the action is not performed on a selected object, clear the
 			// current selection and make a temporary selection for the target.
-			if((target.picked != null) && !target.picked.Selected)
+			if((target.picked != null) && !target.picked.Selected && (BuilderPlug.Me.VisualModeClearSelection || (selectedobjects.Count == 0)))
 			{
 				// Single object, no selection
 				singleselection = true;
 				ClearSelection();
 				target.picked.Selected = true;
+				selectedobjects.Add(target.picked as IVisualEventReceiver);
 				undocreated = false;
 			}
 			else
@@ -190,17 +206,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					undocreated = true;
 				}
 			}
-			
-			MakeSelectedObjectsList();
 		}
 
-		// Called before an action is performed. This does not make an undo level or change selection.
+		// Called before an action is performed. This does not make an undo level
 		private void PreActionNoChange()
 		{
 			actionresult = new VisualActionResult();
 			singleselection = false;
 			undocreated = false;
-			MakeSelectedObjectsList();
 		}
 		
 		// This is called after an action is performed
@@ -266,7 +279,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This makes a list of the selected object
-		private void MakeSelectedObjectsList()
+		private void RebuildSelectedObjectsList()
 		{
 			// Make list of selected objects
 			selectedobjects = new List<IVisualEventReceiver>();
@@ -615,16 +628,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnMouseMove(e);
+			GetTargetEventReceiver(true).OnMouseMove(e);
 		}
 		
 		// Undo performed
 		public override void OnUndoEnd()
 		{
 			base.OnUndoEnd();
-
+			RebuildSelectedObjectsList();
+			
 			// We can't group with this undo level anymore
 			lastundogroup = UndoGroup.None;
+		}
+		
+		// Redo performed
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+			RebuildSelectedObjectsList();
 		}
 		
 		#endregion
@@ -774,7 +795,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			return things;
 		}
-
+		
+		// This returns the IVisualEventReceiver on which the action must be performed
+		private IVisualEventReceiver GetTargetEventReceiver(bool targetonly)
+		{
+			if(target.picked != null)
+			{
+				if(singleselection || target.picked.Selected || targetonly)
+				{
+					return (IVisualEventReceiver)target.picked;
+				}
+				else if(selectedobjects.Count > 0)
+				{
+					return selectedobjects[0];
+				}
+				else
+				{
+					return (IVisualEventReceiver)target.picked;
+				}
+			}
+			else
+			{
+				return new NullVisualEventReceiver();
+			}
+		}
+		
 		#endregion
 
 		#region ================== Actions
@@ -811,7 +856,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreActionNoChange();
 			PickTargetUnlocked();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectBegin();
+			GetTargetEventReceiver(true).OnSelectBegin();
 			PostAction();
 		}
 
@@ -819,7 +864,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void EndSelect()
 		{
 			PreActionNoChange();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectEnd();
+			GetTargetEventReceiver(true).OnSelectEnd();
 			PostAction();
 		}
 
@@ -827,7 +872,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void BeginEdit()
 		{
 			PreAction(UndoGroup.None);
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditBegin();
+			GetTargetEventReceiver(false).OnEditBegin();
 			PostAction();
 		}
 
@@ -835,7 +880,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void EndEdit()
 		{
 			PreAction(UndoGroup.None);
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnEditEnd();
+			GetTargetEventReceiver(false).OnEditEnd();
 			PostAction();
 		}
 
@@ -964,7 +1009,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PreAction(UndoGroup.None);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnSelectTexture();
+			GetTargetEventReceiver(false).OnSelectTexture();
 			UpdateChangedObjects();
 			renderer.SetCrosshairBusy(false);
 			PostAction();
@@ -974,7 +1019,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TextureCopy()
 		{
 			PreActionNoChange();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyTexture();
+			GetTargetEventReceiver(false).OnCopyTexture();
 			PostAction();
 		}
 
@@ -992,7 +1037,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PreAction(UndoGroup.None);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(true, false);
+			GetTargetEventReceiver(false).OnTextureAlign(true, false);
 			UpdateChangedObjects();
 			renderer.SetCrosshairBusy(false);
 			PostAction();
@@ -1004,7 +1049,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PreAction(UndoGroup.None);
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureAlign(false, true);
+			GetTargetEventReceiver(false).OnTextureAlign(false, true);
 			UpdateChangedObjects();
 			renderer.SetCrosshairBusy(false);
 			PostAction();
@@ -1014,7 +1059,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ToggleUpperUnpegged()
 		{
 			PreAction(UndoGroup.None);
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleUpperUnpegged();
+			GetTargetEventReceiver(false).OnToggleUpperUnpegged();
 			PostAction();
 		}
 
@@ -1022,7 +1067,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ToggleLowerUnpegged()
 		{
 			PreAction(UndoGroup.None);
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnToggleLowerUnpegged();
+			GetTargetEventReceiver(false).OnToggleLowerUnpegged();
 			PostAction();
 		}
 
@@ -1054,7 +1099,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void FloodfillTextures()
 		{
 			PreAction(UndoGroup.None);
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnTextureFloodfill();
+			GetTargetEventReceiver(false).OnTextureFloodfill();
 			PostAction();
 		}
 
@@ -1062,7 +1107,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TextureCopyOffsets()
 		{
 			PreActionNoChange();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyTextureOffsets();
+			GetTargetEventReceiver(false).OnCopyTextureOffsets();
 			PostAction();
 		}
 
@@ -1078,7 +1123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void CopyProperties()
 		{
 			PreActionNoChange();
-			if(target.picked != null) (target.picked as IVisualEventReceiver).OnCopyProperties();
+			GetTargetEventReceiver(false).OnCopyProperties();
 			PostAction();
 		}
 

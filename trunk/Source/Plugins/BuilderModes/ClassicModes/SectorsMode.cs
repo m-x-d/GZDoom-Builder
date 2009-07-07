@@ -560,7 +560,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				editpressed = true;
 
 				// Highlighted item not selected?
-				if(!highlighted.Selected)
+				if(!highlighted.Selected && BuilderPlug.Me.AutoClearSelection)
 				{
 					// Make this the only selection
 					General.Map.Map.ClearSelectedSectors();
@@ -713,59 +713,63 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+			if(BuilderPlug.Me.AutoClearSelection ||
+			   ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f)))
 			{
-				// Go for all lines
-				foreach(Linedef l in General.Map.Map.Linedefs)
+				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 				{
-					l.Selected |= ((l.Start.Position.x >= selectionrect.Left) &&
-								   (l.Start.Position.y >= selectionrect.Top) &&
-								   (l.Start.Position.x <= selectionrect.Right) &&
-								   (l.Start.Position.y <= selectionrect.Bottom) &&
-								   (l.End.Position.x >= selectionrect.Left) &&
-								   (l.End.Position.y >= selectionrect.Top) &&
-								   (l.End.Position.x <= selectionrect.Right) &&
-								   (l.End.Position.y <= selectionrect.Bottom));
-				}
-			}
-			else
-			{
-				// Go for all lines
-				foreach(Linedef l in General.Map.Map.Linedefs)
-				{
-					l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
-								  (l.Start.Position.y >= selectionrect.Top) &&
-								  (l.Start.Position.x <= selectionrect.Right) &&
-								  (l.Start.Position.y <= selectionrect.Bottom) &&
-								  (l.End.Position.x >= selectionrect.Left) &&
-								  (l.End.Position.y >= selectionrect.Top) &&
-								  (l.End.Position.x <= selectionrect.Right) &&
-								  (l.End.Position.y <= selectionrect.Bottom));
-				}
-			}
-			
-			// Go for all sectors
-			foreach(Sector s in General.Map.Map.Sectors)
-			{
-				// Go for all sidedefs
-				bool allselected = true;
-				foreach(Sidedef sd in s.Sidedefs)
-				{
-					if(!sd.Line.Selected)
+					// Go for all lines
+					foreach(Linedef l in General.Map.Map.Linedefs)
 					{
-						allselected = false;
-						break;
+						l.Selected |= ((l.Start.Position.x >= selectionrect.Left) &&
+									   (l.Start.Position.y >= selectionrect.Top) &&
+									   (l.Start.Position.x <= selectionrect.Right) &&
+									   (l.Start.Position.y <= selectionrect.Bottom) &&
+									   (l.End.Position.x >= selectionrect.Left) &&
+									   (l.End.Position.y >= selectionrect.Top) &&
+									   (l.End.Position.x <= selectionrect.Right) &&
+									   (l.End.Position.y <= selectionrect.Bottom));
+					}
+				}
+				else
+				{
+					// Go for all lines
+					foreach(Linedef l in General.Map.Map.Linedefs)
+					{
+						l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
+									  (l.Start.Position.y >= selectionrect.Top) &&
+									  (l.Start.Position.x <= selectionrect.Right) &&
+									  (l.Start.Position.y <= selectionrect.Bottom) &&
+									  (l.End.Position.x >= selectionrect.Left) &&
+									  (l.End.Position.y >= selectionrect.Top) &&
+									  (l.End.Position.x <= selectionrect.Right) &&
+									  (l.End.Position.y <= selectionrect.Bottom));
 					}
 				}
 				
-				// Sector completely selected?
-				SelectSector(s, allselected, false);
+				// Go for all sectors
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					// Go for all sidedefs
+					bool allselected = true;
+					foreach(Sidedef sd in s.Sidedefs)
+					{
+						if(!sd.Line.Selected)
+						{
+							allselected = false;
+							break;
+						}
+					}
+					
+					// Sector completely selected?
+					SelectSector(s, allselected, false);
+				}
+				
+				// Make sure all linedefs reflect selected sectors
+				foreach(Sidedef sd in General.Map.Map.Sidedefs)
+					if(!sd.Sector.Selected && ((sd.Other == null) || !sd.Other.Sector.Selected))
+						sd.Line.Selected = false;
 			}
-			
-			// Make sure all linedefs reflect selected sectors
-			foreach(Sidedef sd in General.Map.Map.Sidedefs)
-				if(!sd.Sector.Selected && ((sd.Other == null) || !sd.Other.Sector.Selected))
-					sd.Line.Selected = false;
 			
 			base.OnEndMultiSelection();
 			if(renderer.StartOverlay(true)) renderer.Finish();

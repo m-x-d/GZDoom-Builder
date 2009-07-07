@@ -30,31 +30,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.taboptions = new System.Windows.Forms.TabPage();
-			this.label8 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.label7 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
-			this.additiveselect = new System.Windows.Forms.CheckBox();
-			this.editnewsector = new System.Windows.Forms.CheckBox();
-			this.editnewthing = new System.Windows.Forms.CheckBox();
-			this.heightbysidedef = new System.Windows.Forms.ComboBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.visualmodeclearselection = new System.Windows.Forms.CheckBox();
+			this.autoclearselection = new System.Windows.Forms.CheckBox();
+			this.editnewthing = new System.Windows.Forms.CheckBox();
+			this.editnewsector = new System.Windows.Forms.CheckBox();
+			this.additiveselect = new System.Windows.Forms.CheckBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.stitchrange = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.splitlinedefsrange = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
 			this.highlightrange = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.highlightthingsrange = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.heightbysidedef = new System.Windows.Forms.ComboBox();
 			this.tabs.SuspendLayout();
 			this.taboptions.SuspendLayout();
-			this.groupBox1.SuspendLayout();
-			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.groupBox2.SuspendLayout();
+			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabs
@@ -84,146 +86,69 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.taboptions.Text = "Editing";
 			this.taboptions.UseVisualStyleBackColor = true;
 			// 
-			// label8
+			// groupBox3
 			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(232, 130);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(35, 14);
-			this.label8.TabIndex = 15;
-			this.label8.Text = "pixels";
+			this.groupBox3.Controls.Add(this.visualmodeclearselection);
+			this.groupBox3.Controls.Add(this.autoclearselection);
+			this.groupBox3.Controls.Add(this.editnewthing);
+			this.groupBox3.Controls.Add(this.editnewsector);
+			this.groupBox3.Controls.Add(this.additiveselect);
+			this.groupBox3.Location = new System.Drawing.Point(308, 90);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(332, 171);
+			this.groupBox3.TabIndex = 18;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = " Options ";
 			// 
-			// label9
+			// visualmodeclearselection
 			// 
-			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(47, 130);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(103, 14);
-			this.label9.TabIndex = 13;
-			this.label9.Text = "Split linedefs within:";
-			this.label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.visualmodeclearselection.AutoSize = true;
+			this.visualmodeclearselection.Location = new System.Drawing.Point(23, 129);
+			this.visualmodeclearselection.Name = "visualmodeclearselection";
+			this.visualmodeclearselection.Size = new System.Drawing.Size(220, 18);
+			this.visualmodeclearselection.TabIndex = 5;
+			this.visualmodeclearselection.Text = "Automatic clear selection in Visual Mode";
+			this.visualmodeclearselection.UseVisualStyleBackColor = true;
 			// 
-			// label6
+			// autoclearselection
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(232, 66);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(35, 14);
-			this.label6.TabIndex = 12;
-			this.label6.Text = "pixels";
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(36, 66);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(114, 14);
-			this.label7.TabIndex = 10;
-			this.label7.Text = "Highlight things within:";
-			this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(232, 34);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(35, 14);
-			this.label4.TabIndex = 9;
-			this.label4.Text = "pixels";
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(20, 34);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(130, 14);
-			this.label5.TabIndex = 7;
-			this.label5.Text = "Highlight geometry within:";
-			this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(232, 98);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(35, 14);
-			this.label3.TabIndex = 6;
-			this.label3.Text = "pixels";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(33, 98);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(117, 14);
-			this.label2.TabIndex = 4;
-			this.label2.Text = "Stitch geometry within:";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// additiveselect
-			// 
-			this.additiveselect.AutoSize = true;
-			this.additiveselect.Location = new System.Drawing.Point(28, 89);
-			this.additiveselect.Name = "additiveselect";
-			this.additiveselect.Size = new System.Drawing.Size(211, 18);
-			this.additiveselect.TabIndex = 3;
-			this.additiveselect.Text = "Additive selecting without holding shift";
-			this.additiveselect.UseVisualStyleBackColor = true;
-			// 
-			// editnewsector
-			// 
-			this.editnewsector.AutoSize = true;
-			this.editnewsector.Location = new System.Drawing.Point(28, 61);
-			this.editnewsector.Name = "editnewsector";
-			this.editnewsector.Size = new System.Drawing.Size(271, 18);
-			this.editnewsector.TabIndex = 2;
-			this.editnewsector.Text = "Edit sector properties when drawing a new sector";
-			this.editnewsector.UseVisualStyleBackColor = true;
+			this.autoclearselection.AutoSize = true;
+			this.autoclearselection.Location = new System.Drawing.Point(23, 105);
+			this.autoclearselection.Name = "autoclearselection";
+			this.autoclearselection.Size = new System.Drawing.Size(231, 18);
+			this.autoclearselection.TabIndex = 4;
+			this.autoclearselection.Text = "Automatic clear selection in Classic Modes";
+			this.autoclearselection.UseVisualStyleBackColor = true;
 			// 
 			// editnewthing
 			// 
 			this.editnewthing.AutoSize = true;
-			this.editnewthing.Location = new System.Drawing.Point(28, 33);
+			this.editnewthing.Location = new System.Drawing.Point(23, 33);
 			this.editnewthing.Name = "editnewthing";
 			this.editnewthing.Size = new System.Drawing.Size(256, 18);
 			this.editnewthing.TabIndex = 1;
 			this.editnewthing.Text = "Edit thing properties when inserting a new thing";
 			this.editnewthing.UseVisualStyleBackColor = true;
 			// 
-			// heightbysidedef
+			// editnewsector
 			// 
-			this.heightbysidedef.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.heightbysidedef.FormattingEnabled = true;
-			this.heightbysidedef.Items.AddRange(new object[] {
-            "Do nothing",
-            "Change the ceiling height",
-            "Change the floor height",
-            "Change both floor and ceiling height"});
-			this.heightbysidedef.Location = new System.Drawing.Point(364, 32);
-			this.heightbysidedef.Name = "heightbysidedef";
-			this.heightbysidedef.Size = new System.Drawing.Size(199, 22);
-			this.heightbysidedef.TabIndex = 0;
+			this.editnewsector.AutoSize = true;
+			this.editnewsector.Location = new System.Drawing.Point(23, 57);
+			this.editnewsector.Name = "editnewsector";
+			this.editnewsector.Size = new System.Drawing.Size(271, 18);
+			this.editnewsector.TabIndex = 2;
+			this.editnewsector.Text = "Edit sector properties when drawing a new sector";
+			this.editnewsector.UseVisualStyleBackColor = true;
 			// 
-			// label1
+			// additiveselect
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(29, 35);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(315, 14);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "When sector height changes are used on a wall in Visual Mode:";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.label1);
-			this.groupBox1.Controls.Add(this.heightbysidedef);
-			this.groupBox1.Location = new System.Drawing.Point(6, 6);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(634, 78);
-			this.groupBox1.TabIndex = 16;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = " Behavior ";
+			this.additiveselect.AutoSize = true;
+			this.additiveselect.Location = new System.Drawing.Point(23, 81);
+			this.additiveselect.Name = "additiveselect";
+			this.additiveselect.Size = new System.Drawing.Size(211, 18);
+			this.additiveselect.TabIndex = 3;
+			this.additiveselect.Text = "Additive selecting without holding shift";
+			this.additiveselect.UseVisualStyleBackColor = true;
 			// 
 			// groupBox2
 			// 
@@ -246,18 +171,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Ranges ";
 			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.editnewthing);
-			this.groupBox3.Controls.Add(this.editnewsector);
-			this.groupBox3.Controls.Add(this.additiveselect);
-			this.groupBox3.Location = new System.Drawing.Point(308, 90);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(332, 171);
-			this.groupBox3.TabIndex = 18;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = " Options ";
-			// 
 			// stitchrange
 			// 
 			this.stitchrange.AllowDecimal = false;
@@ -270,6 +183,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.stitchrange.Size = new System.Drawing.Size(59, 20);
 			this.stitchrange.TabIndex = 5;
 			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(232, 130);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(35, 14);
+			this.label8.TabIndex = 15;
+			this.label8.Text = "pixels";
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(33, 98);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(117, 14);
+			this.label2.TabIndex = 4;
+			this.label2.Text = "Stitch geometry within:";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// splitlinedefsrange
 			// 
 			this.splitlinedefsrange.AllowDecimal = false;
@@ -281,6 +213,44 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitlinedefsrange.Name = "splitlinedefsrange";
 			this.splitlinedefsrange.Size = new System.Drawing.Size(59, 20);
 			this.splitlinedefsrange.TabIndex = 14;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(232, 98);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(35, 14);
+			this.label3.TabIndex = 6;
+			this.label3.Text = "pixels";
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(47, 130);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(103, 14);
+			this.label9.TabIndex = 13;
+			this.label9.Text = "Split linedefs within:";
+			this.label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(20, 34);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(130, 14);
+			this.label5.TabIndex = 7;
+			this.label5.Text = "Highlight geometry within:";
+			this.label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(232, 66);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(35, 14);
+			this.label6.TabIndex = 12;
+			this.label6.Text = "pixels";
 			// 
 			// highlightrange
 			// 
@@ -306,6 +276,60 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.highlightthingsrange.Size = new System.Drawing.Size(59, 20);
 			this.highlightthingsrange.TabIndex = 11;
 			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(232, 34);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(35, 14);
+			this.label4.TabIndex = 9;
+			this.label4.Text = "pixels";
+			// 
+			// label7
+			// 
+			this.label7.AutoSize = true;
+			this.label7.Location = new System.Drawing.Point(36, 66);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(114, 14);
+			this.label7.TabIndex = 10;
+			this.label7.Text = "Highlight things within:";
+			this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Controls.Add(this.heightbysidedef);
+			this.groupBox1.Location = new System.Drawing.Point(6, 6);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(634, 78);
+			this.groupBox1.TabIndex = 16;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = " Behavior ";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(29, 35);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(315, 14);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "When sector height changes are used on a wall in Visual Mode:";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// heightbysidedef
+			// 
+			this.heightbysidedef.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.heightbysidedef.FormattingEnabled = true;
+			this.heightbysidedef.Items.AddRange(new object[] {
+            "Do nothing",
+            "Change the ceiling height",
+            "Change the floor height",
+            "Change both floor and ceiling height"});
+			this.heightbysidedef.Location = new System.Drawing.Point(364, 32);
+			this.heightbysidedef.Name = "heightbysidedef";
+			this.heightbysidedef.Size = new System.Drawing.Size(199, 22);
+			this.heightbysidedef.TabIndex = 0;
+			// 
 			// PreferencesForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -320,12 +344,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Text = "PreferencesForm";
 			this.tabs.ResumeLayout(false);
 			this.taboptions.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -354,5 +378,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.CheckBox autoclearselection;
+		private System.Windows.Forms.CheckBox visualmodeclearselection;
 	}
 }

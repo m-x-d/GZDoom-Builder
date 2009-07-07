@@ -65,6 +65,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool editnewthing;
 		private bool editnewsector;
 		private bool additiveselect;
+		private bool autoclearselection;
+		private bool visualmodeclearselection;
 		private string copiedtexture;
 		private string copiedflat;
 		private Point copiedoffsets;
@@ -97,6 +99,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool EditNewThing { get { return editnewthing; } }
 		public bool EditNewSector { get { return editnewsector; } }
 		public bool AdditiveSelect { get { return additiveselect; } }
+		public bool AutoClearSelection { get { return autoclearselection; } }
+		public bool VisualModeClearSelection { get { return visualmodeclearselection; } }
 		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
 		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
 		public Point CopiedOffsets { get { return copiedoffsets; } set { copiedoffsets = value; } }
@@ -172,6 +176,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			editnewthing = General.Settings.ReadPluginSetting("editnewthing", true);
 			editnewsector = General.Settings.ReadPluginSetting("editnewsector", false);
 			additiveselect = General.Settings.ReadPluginSetting("additiveselect", false);
+			autoclearselection = General.Settings.ReadPluginSetting("autoclearselection", true);
+			visualmodeclearselection = General.Settings.ReadPluginSetting("visualmodeclearselection", false);
 			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
 			stitchrange = (float)General.Settings.ReadPluginSetting("stitchrange", 20);
 			highlightrange = (float)General.Settings.ReadPluginSetting("highlightrange", 20);
