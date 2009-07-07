@@ -101,6 +101,8 @@ namespace CodeImp.DoomBuilder.Editing
 		private bool ignorepropchanges;
 		private bool isrecordingcommand;
 		private MapElement propsrecorded;
+		private bool geometrychanged;
+		private bool populationchanged;
 		
 		// Background thread
 		private volatile bool dobackgroundwork;
@@ -146,6 +148,17 @@ namespace CodeImp.DoomBuilder.Editing
 		/// that are made while this is set to True will not be undoable. Use with great care!
 		/// </summary>
 		public bool IgnorePropChanges { get { return ignorepropchanges; } set { ignorepropchanges = value; } }
+		
+		/// <summary>
+		/// After undo or redo, this returns if the geometry changed. This includes add/remove operations
+		/// on sectors, linedefs, sidedefs and vertices, references changes and property changes on vertices.
+		/// </summary>
+		public bool GeometryChanged { get { return geometrychanged; } }
+
+		/// <summary>
+		/// After undo or redo, this returns if things were added/removed. This does not include thing property changes.
+		/// </summary>
+		public bool PopulationChanged { get { return populationchanged; } }
 		
 		#endregion
 
@@ -359,6 +372,9 @@ namespace CodeImp.DoomBuilder.Editing
 			General.Map.Map.AutoRemove = false;
 			
 			General.Map.Map.ClearAllMarks(false);
+			
+			geometrychanged = false;
+			populationchanged = false;
 			
 			pstream.Seek(0, SeekOrigin.Begin);
 			DeserializerStream ds = new DeserializerStream(pstream);
@@ -841,6 +857,7 @@ namespace CodeImp.DoomBuilder.Editing
 			LogRecordInfo("PLY: Removing vertex " + index);
 			Vertex v = General.Map.Map.GetVertexByIndex(index);
 			v.Dispose();
+			geometrychanged = true;
 		}
 
 		internal void RecRemVertex(Vertex v)
@@ -863,6 +880,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Vertex v = General.Map.Map.CreateVertex(index, pos);
 			v.ReadWrite(ds);
 			v.Marked = true;
+			geometrychanged = true;
 		}
 		
 		internal void RecPrpVertex(Vertex v)
@@ -883,6 +901,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Vertex v = General.Map.Map.GetVertexByIndex(index);
 			v.ReadWrite(ds);
 			v.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecAddLinedef(Linedef l)
@@ -901,6 +920,7 @@ namespace CodeImp.DoomBuilder.Editing
 			LogRecordInfo("PLY: Removing linedef " + index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
 			l.Dispose();
+			geometrychanged = true;
 		}
 
 		internal void RecRemLinedef(Linedef l)
@@ -927,6 +947,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Linedef l = General.Map.Map.CreateLinedef(index, vs, ve);
 			l.ReadWrite(ds);
 			l.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecPrpLinedef(Linedef l)
@@ -970,6 +991,7 @@ namespace CodeImp.DoomBuilder.Editing
 			l.SetStartVertex(v);
 			l.Marked = true;
 			if(v != null) v.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecRefLinedefEnd(Linedef l)
@@ -993,6 +1015,7 @@ namespace CodeImp.DoomBuilder.Editing
 			l.SetEndVertex(v);
 			l.Marked = true;
 			if(v != null) v.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecRefLinedefFront(Linedef l)
@@ -1016,6 +1039,7 @@ namespace CodeImp.DoomBuilder.Editing
 			l.AttachFront(sd);
 			l.Marked = true;
 			if(sd != null) sd.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecRefLinedefBack(Linedef l)
@@ -1039,6 +1063,7 @@ namespace CodeImp.DoomBuilder.Editing
 			l.AttachBack(sd);
 			l.Marked = true;
 			if(sd != null) sd.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecAddSidedef(Sidedef s)
@@ -1057,6 +1082,7 @@ namespace CodeImp.DoomBuilder.Editing
 			LogRecordInfo("PLY: Removing sidedef " + index);
 			Sidedef s = General.Map.Map.GetSidedefByIndex(index);
 			s.Dispose();
+			geometrychanged = true;
 		}
 
 		internal void RecRemSidedef(Sidedef s)
@@ -1085,6 +1111,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Sidedef sd = General.Map.Map.CreateSidedef(index, l, front, s);
 			sd.ReadWrite(ds);
 			sd.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecPrpSidedef(Sidedef s)
@@ -1128,6 +1155,7 @@ namespace CodeImp.DoomBuilder.Editing
 			sd.SetSector(sc);
 			sd.Marked = true;
 			if(sc != null) sc.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecAddSector(Sector s)
@@ -1146,6 +1174,7 @@ namespace CodeImp.DoomBuilder.Editing
 			LogRecordInfo("PLY: Removing sector " + index);
 			Sector s = General.Map.Map.GetSectorByIndex(index);
 			s.Dispose();
+			geometrychanged = true;
 		}
 
 		internal void RecRemSector(Sector s)
@@ -1166,6 +1195,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Sector s = General.Map.Map.CreateSector(index);
 			s.ReadWrite(ds);
 			s.Marked = true;
+			geometrychanged = true;
 		}
 
 		internal void RecPrpSector(Sector s)
@@ -1204,6 +1234,7 @@ namespace CodeImp.DoomBuilder.Editing
 			LogRecordInfo("PLY: Removing thing " + index);
 			Thing t = General.Map.Map.GetThingByIndex(index);
 			t.Dispose();
+			populationchanged = true;
 		}
 
 		internal void RecRemThing(Thing t)
@@ -1224,6 +1255,7 @@ namespace CodeImp.DoomBuilder.Editing
 			Thing t = General.Map.Map.CreateThing(index);
 			t.ReadWrite(ds);
 			t.Marked = true;
+			populationchanged = true;
 		}
 
 		internal void RecPrpThing(Thing t)
