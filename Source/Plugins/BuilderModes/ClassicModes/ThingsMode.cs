@@ -312,7 +312,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				editpressed = true;
 				
 				// Highlighted item not selected?
-				if(!highlighted.Selected)
+				if(!highlighted.Selected && BuilderPlug.Me.AutoClearSelection)
 				{
 					// Make this the only selection
 					General.Map.Map.ClearSelectedThings();
@@ -439,26 +439,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+			if(BuilderPlug.Me.AutoClearSelection ||
+			   ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f)))
 			{
-				// Go for all things
-				foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 				{
-					t.Selected |= ((t.Position.x >= selectionrect.Left) &&
-								   (t.Position.y >= selectionrect.Top) &&
-								   (t.Position.x <= selectionrect.Right) &&
-								   (t.Position.y <= selectionrect.Bottom));
+					// Go for all things
+					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+					{
+						t.Selected |= ((t.Position.x >= selectionrect.Left) &&
+									   (t.Position.y >= selectionrect.Top) &&
+									   (t.Position.x <= selectionrect.Right) &&
+									   (t.Position.y <= selectionrect.Bottom));
+					}
 				}
-			}
-			else
-			{
-				// Go for all things
-				foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+				else
 				{
-					t.Selected = ((t.Position.x >= selectionrect.Left) &&
-								  (t.Position.y >= selectionrect.Top) &&
-								  (t.Position.x <= selectionrect.Right) &&
-								  (t.Position.y <= selectionrect.Bottom));
+					// Go for all things
+					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+					{
+						t.Selected = ((t.Position.x >= selectionrect.Left) &&
+									  (t.Position.y >= selectionrect.Top) &&
+									  (t.Position.x <= selectionrect.Right) &&
+									  (t.Position.y <= selectionrect.Bottom));
+					}
 				}
 			}
 			

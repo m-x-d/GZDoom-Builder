@@ -337,7 +337,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				editpressed = true;
 
 				// Highlighted item not selected?
-				if(!highlighted.Selected)
+				if(!highlighted.Selected && BuilderPlug.Me.AutoClearSelection)
 				{
 					// Make this the only selection
 					General.Map.Map.ClearSelectedLinedefs();
@@ -452,34 +452,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+			if(BuilderPlug.Me.AutoClearSelection ||
+			   ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f)))
 			{
-				// Go for all lines
-				foreach(Linedef l in General.Map.Map.Linedefs)
+				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 				{
-					l.Selected |= ((l.Start.Position.x >= selectionrect.Left) &&
-								   (l.Start.Position.y >= selectionrect.Top) &&
-								   (l.Start.Position.x <= selectionrect.Right) &&
-								   (l.Start.Position.y <= selectionrect.Bottom) &&
-								   (l.End.Position.x >= selectionrect.Left) &&
-								   (l.End.Position.y >= selectionrect.Top) &&
-								   (l.End.Position.x <= selectionrect.Right) &&
-								   (l.End.Position.y <= selectionrect.Bottom));
+					// Go for all lines
+					foreach(Linedef l in General.Map.Map.Linedefs)
+					{
+						l.Selected |= ((l.Start.Position.x >= selectionrect.Left) &&
+									   (l.Start.Position.y >= selectionrect.Top) &&
+									   (l.Start.Position.x <= selectionrect.Right) &&
+									   (l.Start.Position.y <= selectionrect.Bottom) &&
+									   (l.End.Position.x >= selectionrect.Left) &&
+									   (l.End.Position.y >= selectionrect.Top) &&
+									   (l.End.Position.x <= selectionrect.Right) &&
+									   (l.End.Position.y <= selectionrect.Bottom));
+					}
 				}
-			}
-			else
-			{
-				// Go for all lines
-				foreach(Linedef l in General.Map.Map.Linedefs)
+				else
 				{
-					l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
-								  (l.Start.Position.y >= selectionrect.Top) &&
-								  (l.Start.Position.x <= selectionrect.Right) &&
-								  (l.Start.Position.y <= selectionrect.Bottom) &&
-								  (l.End.Position.x >= selectionrect.Left) &&
-								  (l.End.Position.y >= selectionrect.Top) &&
-								  (l.End.Position.x <= selectionrect.Right) &&
-								  (l.End.Position.y <= selectionrect.Bottom));
+					// Go for all lines
+					foreach(Linedef l in General.Map.Map.Linedefs)
+					{
+						l.Selected = ((l.Start.Position.x >= selectionrect.Left) &&
+									  (l.Start.Position.y >= selectionrect.Top) &&
+									  (l.Start.Position.x <= selectionrect.Right) &&
+									  (l.Start.Position.y <= selectionrect.Bottom) &&
+									  (l.End.Position.x >= selectionrect.Left) &&
+									  (l.End.Position.y >= selectionrect.Top) &&
+									  (l.End.Position.x <= selectionrect.Right) &&
+									  (l.End.Position.y <= selectionrect.Bottom));
+					}
 				}
 			}
 			

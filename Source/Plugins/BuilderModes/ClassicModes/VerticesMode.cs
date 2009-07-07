@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				editpressed = true;
 
 				// Highlighted item not selected?
-				if(!highlighted.Selected)
+				if(!highlighted.Selected && BuilderPlug.Me.AutoClearSelection)
 				{
 					// Make this the only selection
 					General.Map.Map.ClearSelectedVertices();
@@ -406,26 +406,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+			if(BuilderPlug.Me.AutoClearSelection ||
+			   ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f)))
 			{
-				// Go for all vertices
-				foreach(Vertex v in General.Map.Map.Vertices)
+				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 				{
-					v.Selected |= ((v.Position.x >= selectionrect.Left) &&
-								   (v.Position.y >= selectionrect.Top) &&
-								   (v.Position.x <= selectionrect.Right) &&
-								   (v.Position.y <= selectionrect.Bottom));
+					// Go for all vertices
+					foreach(Vertex v in General.Map.Map.Vertices)
+					{
+						v.Selected |= ((v.Position.x >= selectionrect.Left) &&
+									   (v.Position.y >= selectionrect.Top) &&
+									   (v.Position.x <= selectionrect.Right) &&
+									   (v.Position.y <= selectionrect.Bottom));
+					}
 				}
-			}
-			else
-			{
-				// Go for all vertices
-				foreach(Vertex v in General.Map.Map.Vertices)
+				else
 				{
-					v.Selected = ((v.Position.x >= selectionrect.Left) &&
-								  (v.Position.y >= selectionrect.Top) &&
-								  (v.Position.x <= selectionrect.Right) &&
-								  (v.Position.y <= selectionrect.Bottom));
+					// Go for all vertices
+					foreach(Vertex v in General.Map.Map.Vertices)
+					{
+						v.Selected = ((v.Position.x >= selectionrect.Left) &&
+									  (v.Position.y >= selectionrect.Top) &&
+									  (v.Position.x <= selectionrect.Right) &&
+									  (v.Position.y <= selectionrect.Bottom));
+					}
 				}
 			}
 			

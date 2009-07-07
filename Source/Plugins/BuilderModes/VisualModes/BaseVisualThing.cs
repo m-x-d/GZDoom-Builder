@@ -381,8 +381,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Select or deselect
 		public virtual void OnSelectEnd()
 		{
-			this.selected = !this.selected;
-			mode.SelectionChanged = true;
+			if(this.selected)
+			{
+				this.selected = false;
+				mode.RemoveSelectedObject(this);
+			}
+			else
+			{
+				this.selected = true;
+				mode.AddSelectedObject(this);
+			}
 		}
 		
 		// Copy properties

@@ -64,6 +64,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			highlightrange.Text = General.Settings.ReadPluginSetting("highlightrange", 20).ToString();
 			highlightthingsrange.Text = General.Settings.ReadPluginSetting("highlightthingsrange", 10).ToString();
 			splitlinedefsrange.Text = General.Settings.ReadPluginSetting("splitlinedefsrange", 10).ToString();
+			autoclearselection.Checked = BuilderPlug.Me.AutoClearSelection;
+			visualmodeclearselection.Checked = BuilderPlug.Me.VisualModeClearSelection;
 		}
 
 		#endregion
@@ -82,6 +84,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("highlightrange", highlightrange.GetResult(0));
 			General.Settings.WritePluginSetting("highlightthingsrange", highlightthingsrange.GetResult(0));
 			General.Settings.WritePluginSetting("splitlinedefsrange", splitlinedefsrange.GetResult(0));
+			General.Settings.WritePluginSetting("autoclearselection", autoclearselection.Checked);
+			General.Settings.WritePluginSetting("visualmodeclearselection", visualmodeclearselection.Checked);
 		}
 		
 		// When Cancel is pressed on the preferences dialog
