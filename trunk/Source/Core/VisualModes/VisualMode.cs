@@ -670,7 +670,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected virtual void ResourcesReloadedPartial()
 		{
 			Dictionary<Sector, VisualSector> newsectors = new Dictionary<Sector,VisualSector>(allsectors.Count);
-			int counter = 0;
 			
 			// Neighbour sectors must be updated as well
 			foreach(Sector s in General.Map.Map.Sectors)
@@ -710,10 +709,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
 				if(vs.Key.IsDisposed || vs.Key.Marked)
-				{
 					vs.Value.Dispose();
-					counter++;
-				}
 				else
 					newsectors.Add(vs.Key, vs.Value);
 			}

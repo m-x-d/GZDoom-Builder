@@ -537,16 +537,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// and uses the marks to check what needs to be reloaded.
 		protected override void ResourcesReloadedPartial()
 		{
-			// Detect geometry changes. When linedefs and/or vertices are marked, this means
-			// that the shape of sectors has changed. In that case we must rebuild the sectors entirely.
-			bool geometrychanges = false;
 			bool sectorsmarked = false;
-			foreach(Linedef ld in General.Map.Map.Linedefs)
-				if(ld.Marked) geometrychanges = true;
-			foreach(Vertex v in General.Map.Map.Vertices)
-				if(v.Marked) geometrychanges = true;
 			
-			if(geometrychanges)
+			if(General.Map.UndoRedo.GeometryChanged)
 			{
 				// Let the core do this (it will just dispose the sectors that were changed)
 				base.ResourcesReloadedPartial();
