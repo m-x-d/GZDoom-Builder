@@ -688,6 +688,12 @@
       <DependentUpon>ErrorsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\FindReplaceOptions.cs" />
+    <Compile Include="Windows\PasteOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\PasteOptionsForm.Designer.cs">
+      <DependentUpon>PasteOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ScriptFindReplaceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -835,6 +841,9 @@
     <EmbeddedResource Include="Windows\ErrorsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ErrorsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\PasteOptionsForm.resx">
+      <DependentUpon>PasteOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ScriptEditorForm.resx">
       <SubType>Designer</SubType>
