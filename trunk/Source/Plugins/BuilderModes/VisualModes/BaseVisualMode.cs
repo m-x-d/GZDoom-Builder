@@ -495,7 +495,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.SetFogMode(true);
 
 				// Set target for highlighting
-				renderer.SetHighlightedObject(target.picked);
+				if(BuilderPlug.Me.UseHighlight)
+					renderer.SetHighlightedObject(target.picked);
 				
 				// Begin with geometry
 				renderer.StartGeometry();
@@ -865,6 +866,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreActionNoChange();
 			GetTargetEventReceiver(true).OnSelectEnd();
+			Renderer.ShowSelection = true;
+			Renderer.ShowHighlight = true;
 			PostAction();
 		}
 
@@ -1086,7 +1089,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string onoff = renderer.FullBrightness ? "ON" : "OFF";
 			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + onoff + ".");
 		}
-
+		
+		[BeginAction("togglehighlight")]
+		public void ToggleHighlight()
+		{
+			BuilderPlug.Me.UseHighlight = !BuilderPlug.Me.UseHighlight;
+			string onoff = BuilderPlug.Me.UseHighlight ? "ON" : "OFF";
+			General.Interface.DisplayStatus(StatusType.Action, "Highlight is now " + onoff + ".");
+		}
+		
 		[BeginAction("resettexture")]
 		public void ResetTexture()
 		{

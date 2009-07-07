@@ -595,6 +595,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Start drag now
 						uvdragging = true;
+						mode.Renderer.ShowSelection = false;
+						mode.Renderer.ShowHighlight = false;
 						UpdateDragUV();
 					}
 				}
