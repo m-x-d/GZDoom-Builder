@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		ProjectedFrustum2D Frustum2D { get; }
 		bool DrawThingCages { get; set; }
 		bool FullBrightness { get; set; }
+		bool ShowSelection { get; set; }
+		bool ShowHighlight { get; set; }
 		
 		// General methods
 		void PositionAndLookAt(Vector3D pos, Vector3D lookat);

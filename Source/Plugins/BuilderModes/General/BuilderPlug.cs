@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float highlightrange;
 		private float highlightthingsrange;
 		private float splitlinedefsrange;
+		private bool usehighlight;
 		
 		#endregion
 
@@ -112,6 +113,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public float HighlightRange { get { return highlightrange; } }
 		public float HighlightThingsRange { get { return highlightthingsrange; } }
 		public float SplitLinedefsRange { get { return splitlinedefsrange; } }
+		public bool UseHighlight { get { return usehighlight; } set { usehighlight = value; } }
 		
 		#endregion
 
@@ -126,6 +128,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Settings
 			showvisualthings = 2;
 			usegravity = false;
+			usehighlight = true;
 			LoadSettings();
 			
 			// Load menus form and register it

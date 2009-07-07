@@ -83,6 +83,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float highlightglowinv;
 		private ColorImage highlightimage;
 		private ColorImage selectionimage;
+		private bool showselection;
+		private bool showhighlight;
 		
 		// Geometry to be rendered.
 		// Each Dictionary in the array is a render pass.
@@ -106,6 +108,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		public ProjectedFrustum2D Frustum2D { get { return frustum; } }
 		public bool DrawThingCages { get { return renderthingcages; } set { renderthingcages = value; } }
 		public bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } }
+		public bool ShowSelection { get { return showselection; } set { showselection = value; } }
+		public bool ShowHighlight { get { return showhighlight; } set { showhighlight = value; } }
 		
 		#endregion
 
@@ -120,6 +124,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			SetupThingCage();
 			SetupTextures();
 			renderthingcages = true;
+			showselection = true;
+			showhighlight = true;
 			
 			// Dummy frustum
 			frustum = new ProjectedFrustum2D(new Vector2D(), 0.0f, 0.0f, PROJ_NEAR_PLANE,
@@ -533,7 +539,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(VisualThing t in thingsbydistance)
 			{
 				// Determine the shader pass we want to use for this object
-				int wantedshaderpass = ((t == highlighted) || t.Selected) ? highshaderpass : shaderpass;
+				int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
 
 				// Switch shader pass?
 				if(currentshaderpass != wantedshaderpass)
@@ -550,7 +556,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Setup color
 				if(currentshaderpass == highshaderpass)
 				{
-					Color4 highcolor = CalculateHighlightColor((t == highlighted), t.Selected);
+					Color4 highcolor = CalculateHighlightColor((t == highlighted) && showhighlight, t.Selected && showselection);
 					graphics.Shaders.World3D.SetHighlightColor(highcolor.ToArgb());
 					highcolor.Alpha = 1.0f;
 					graphics.Shaders.World3D.SetModulateColor(highcolor.ToArgb());
@@ -634,7 +640,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(sector != null)
 					{
 						// Determine the shader pass we want to use for this object
-						int wantedshaderpass = ((g == highlighted) || g.Selected) ? highshaderpass : shaderpass;
+						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
 						
 						// Switch shader pass?
 						if(currentshaderpass != wantedshaderpass)
@@ -647,12 +653,12 @@ namespace CodeImp.DoomBuilder.Rendering
 						// Set the colors to use
 						if(!graphics.Shaders.Enabled)
 						{
-							graphics.Device.SetTexture(2, g.Selected ? selectionimage.Texture : null);
-							graphics.Device.SetTexture(3, (g == highlighted) ? highlightimage.Texture : null);
+							graphics.Device.SetTexture(2, (g.Selected && showselection) ? selectionimage.Texture : null);
+							graphics.Device.SetTexture(3, ((g == highlighted) && showhighlight) ? highlightimage.Texture : null);
 						}
 						else
 						{
-							graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((g == highlighted), g.Selected).ToArgb());
+							graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((g == highlighted) && showhighlight, (g.Selected && showselection)).ToArgb());
 							graphics.Shaders.World3D.ApplySettings();
 						}
 						
@@ -702,7 +708,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							if(t.GeometryBuffer != null)
 							{
 								// Determine the shader pass we want to use for this object
-								int wantedshaderpass = ((t == highlighted) || t.Selected) ? highshaderpass : shaderpass;
+								int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
 
 								// Switch shader pass?
 								if(currentshaderpass != wantedshaderpass)
@@ -715,12 +721,12 @@ namespace CodeImp.DoomBuilder.Rendering
 								// Set the colors to use
 								if(!graphics.Shaders.Enabled)
 								{
-									graphics.Device.SetTexture(2, t.Selected ? selectionimage.Texture : null);
-									graphics.Device.SetTexture(3, (t == highlighted) ? highlightimage.Texture : null);
+									graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
+									graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
 								}
 								else
 								{
-									graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted), t.Selected).ToArgb());
+									graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
 								}
 
 								// Create the matrix for positioning / rotation
