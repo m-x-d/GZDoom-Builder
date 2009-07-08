@@ -856,6 +856,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			LogRecordInfo("PLY: Removing vertex " + index);
 			Vertex v = General.Map.Map.GetVertexByIndex(index);
+			foreach(Linedef l in v.Linedefs) l.Marked = true;
 			v.Dispose();
 			geometrychanged = true;
 		}
@@ -919,6 +920,8 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			LogRecordInfo("PLY: Removing linedef " + index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
+			if(l.Front != null) l.Front.Marked = true;
+			if(l.Back != null) l.Back.Marked = true;
 			l.Dispose();
 			geometrychanged = true;
 		}
@@ -1081,6 +1084,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			LogRecordInfo("PLY: Removing sidedef " + index);
 			Sidedef s = General.Map.Map.GetSidedefByIndex(index);
+			if(s.Sector != null) s.Sector.Marked = true;
 			s.Dispose();
 			geometrychanged = true;
 		}
