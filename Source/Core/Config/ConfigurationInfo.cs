@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.Config
 		private List<ThingsFilter> thingsfilters;
 		private List<DefinedTextureSet> texturesets;
 		private Dictionary<string, bool> editmodes;
+		private string startmode;
 		
 		#endregion
 
@@ -79,6 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 		internal ICollection<ThingsFilter> ThingsFilters { get { return thingsfilters; } }
 		public List<DefinedTextureSet> TextureSets { get { return texturesets; } }
 		internal Dictionary<string, bool> EditModes { get { return editmodes; } }
+		public string StartMode { get { return startmode; } internal set { startmode = value; } }
 		
 		#endregion
 
@@ -104,6 +106,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.customparameters = General.Settings.ReadSetting("configurations." + settingskey + ".customparameters", false);
 			this.testskill = General.Settings.ReadSetting("configurations." + settingskey + ".testskill", 3);
 			this.resources = new DataLocationList(General.Settings.Config, "configurations." + settingskey + ".resources");
+			this.startmode = General.Settings.ReadSetting("configurations." + settingskey + ".startmode", "VerticesMode");
 			
 			// Make list of things filters
 			thingsfilters = new List<ThingsFilter>();
@@ -160,6 +163,7 @@ namespace CodeImp.DoomBuilder.Config
 			General.Settings.WriteSetting("configurations." + settingskey + ".testshortpaths", testshortpaths);
 			General.Settings.WriteSetting("configurations." + settingskey + ".customparameters", customparameters);
 			General.Settings.WriteSetting("configurations." + settingskey + ".testskill", testskill);
+			General.Settings.WriteSetting("configurations." + settingskey + ".startmode", startmode);
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
 			
 			// Write filters to configuration
@@ -213,6 +217,7 @@ namespace CodeImp.DoomBuilder.Config
 			ci.testshortpaths = this.testshortpaths;
 			ci.customparameters = this.customparameters;
 			ci.testskill = this.testskill;
+			ci.startmode = this.startmode;
 			ci.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in this.texturesets) ci.texturesets.Add(s.Copy());
 			ci.thingsfilters = new List<ThingsFilter>();
@@ -236,6 +241,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.testshortpaths = ci.testshortpaths;
 			this.customparameters = ci.customparameters;
 			this.testskill = ci.testskill;
+			this.startmode = ci.startmode;
 			this.texturesets = new List<DefinedTextureSet>();
 			foreach(DefinedTextureSet s in ci.texturesets) this.texturesets.Add(s.Copy());
 			this.thingsfilters = new List<ThingsFilter>();

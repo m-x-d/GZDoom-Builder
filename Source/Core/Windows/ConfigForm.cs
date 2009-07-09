@@ -191,6 +191,9 @@ namespace CodeImp.DoomBuilder.Windows
 					EditModeInfo emi = (lvi.Tag as EditModeInfo);
 					lvi.Checked = (configinfo.EditModes.ContainsKey(emi.Type.FullName) && configinfo.EditModes[emi.Type.FullName]);
 				}
+				
+				// Fill start modes
+				RefillStartModes();
 
 				// Done
 				preventchanges = false;
@@ -537,6 +540,10 @@ namespace CodeImp.DoomBuilder.Windows
 				// Remove
 				configinfo.EditModes[emi.Type.FullName] = false;
 			}
+			
+			preventchanges = true;
+			RefillStartModes();
+			preventchanges = false;
 		}
 
 		// Help requested
@@ -544,6 +551,46 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			General.ShowHelp("w_gameconfigurations.html");
 			hlpevent.Handled = true;
+		}
+		
+		// This refills the start mode cobobox
+		private void RefillStartModes()
+		{
+			// Refill the startmode combobox
+			startmode.Items.Clear();
+			foreach(ListViewItem item in listmodes.Items)
+			{
+				if(item.Checked)
+				{
+					EditModeInfo emi = (item.Tag as EditModeInfo);
+					if(emi.Attributes.SafeStartMode)
+					{
+						int newindex = startmode.Items.Add(emi);
+						if(emi.Type.Name == configinfo.StartMode) startmode.SelectedIndex = newindex;
+					}
+				}
+			}
+			
+			// Select the first in the combobox if none are selected
+			if((startmode.SelectedItem == null) && (startmode.Items.Count > 0))
+			{
+				startmode.SelectedIndex = 0;
+				EditModeInfo emi = (startmode.SelectedItem as EditModeInfo);
+				configinfo.StartMode = emi.Type.Name;
+			}
+		}
+		
+		// Start mode combobox changed
+		private void startmode_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(preventchanges || (configinfo == null)) return;
+			
+			// Apply start mode
+			if(startmode.SelectedItem != null)
+			{
+				EditModeInfo emi = (startmode.SelectedItem as EditModeInfo);
+				configinfo.StartMode = emi.Type.Name;
+			}
 		}
 	}
 }

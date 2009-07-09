@@ -280,7 +280,7 @@ namespace CodeImp.DoomBuilder
 
 			// Set defaults
 			this.visualcamera = new VisualCamera();
-			General.Editing.ChangeMode("VerticesMode");
+			General.Editing.ChangeMode(configinfo.StartMode);
 			ClassicMode cmode = (General.Editing.Mode as ClassicMode);
 			if(cmode != null) cmode.SetZoom(0.5f);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
@@ -382,7 +382,7 @@ namespace CodeImp.DoomBuilder
 
 			// Set defaults
 			this.visualcamera = new VisualCamera();
-			General.Editing.ChangeMode("VerticesMode");
+			General.Editing.ChangeMode(configinfo.StartMode);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
 

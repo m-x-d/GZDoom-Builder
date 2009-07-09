@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private string displayname = "<unnamed mode>";
 		private bool allowcopypaste = true;
 		private bool usebydefault = false;
+		private bool safestartmode = false;
 		
 		#endregion
 		
@@ -106,6 +107,12 @@ namespace CodeImp.DoomBuilder.Editing
 		/// in this mode. Default for this property is true.
 		/// </summary>
 		public bool AllowCopyPaste { get { return allowcopypaste; } set { allowcopypaste = value; } }
+
+		/// <summary>
+		/// Set this to true when it is safe to have the editor start in this mode when
+		/// opening a map. The user can then select this as starting mode in the configuration.
+		/// </summary>
+		public bool SafeStartMode { get { return safestartmode; } set { safestartmode = value; } }
 		
 		#endregion
 
