@@ -44,7 +44,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		      ButtonImage = "SectorsMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 200,	// Position of the button (lower is more to the left)
 			  ButtonGroup = "000_editing",
-			  UseByDefault = true)]
+			  UseByDefault = true,
+			  SafeStartMode = true)]
 
 	public class SectorsMode : BaseClassicMode
 	{

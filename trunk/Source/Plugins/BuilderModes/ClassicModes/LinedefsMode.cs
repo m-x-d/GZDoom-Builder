@@ -43,7 +43,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonImage = "LinesMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 100,	// Position of the button (lower is more to the left)
 			  ButtonGroup = "000_editing",
-			  UseByDefault = true)]
+			  UseByDefault = true,
+			  SafeStartMode = true)]
 
 	public class LinedefsMode : BaseClassicMode
 	{

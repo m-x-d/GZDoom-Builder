@@ -69,6 +69,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.removetextureset = new System.Windows.Forms.Button();
 			this.addtextureset = new System.Windows.Forms.Button();
 			this.tabmodes = new System.Windows.Forms.TabPage();
+			this.startmode = new System.Windows.Forms.ComboBox();
+			this.label11 = new System.Windows.Forms.Label();
 			this.listmodes = new System.Windows.Forms.ListView();
 			this.colmodename = new System.Windows.Forms.ColumnHeader();
 			this.colmodeplugin = new System.Windows.Forms.ColumnHeader();
@@ -564,6 +566,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabmodes
 			// 
+			this.tabmodes.Controls.Add(this.startmode);
+			this.tabmodes.Controls.Add(this.label11);
 			this.tabmodes.Controls.Add(this.listmodes);
 			this.tabmodes.Controls.Add(label10);
 			this.tabmodes.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -573,6 +577,25 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabmodes.TabIndex = 4;
 			this.tabmodes.Text = "Modes";
 			this.tabmodes.UseVisualStyleBackColor = true;
+			// 
+			// startmode
+			// 
+			this.startmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.startmode.FormattingEnabled = true;
+			this.startmode.Location = new System.Drawing.Point(239, 288);
+			this.startmode.Name = "startmode";
+			this.startmode.Size = new System.Drawing.Size(218, 22);
+			this.startmode.TabIndex = 27;
+			this.startmode.SelectedIndexChanged += new System.EventHandler(this.startmode_SelectedIndexChanged);
+			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(12, 291);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(199, 14);
+			this.label11.TabIndex = 26;
+			this.label11.Text = "When opening a map, start in this mode:";
 			// 
 			// listmodes
 			// 
@@ -589,7 +612,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listmodes.MultiSelect = false;
 			this.listmodes.Name = "listmodes";
 			this.listmodes.ShowGroups = false;
-			this.listmodes.Size = new System.Drawing.Size(442, 233);
+			this.listmodes.Size = new System.Drawing.Size(442, 202);
 			this.listmodes.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listmodes.TabIndex = 0;
 			this.listmodes.UseCompatibleStateImageBehavior = false;
@@ -669,6 +692,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtesting.PerformLayout();
 			this.tabtextures.ResumeLayout(false);
 			this.tabmodes.ResumeLayout(false);
+			this.tabmodes.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -710,5 +734,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ColumnHeader colmodename;
 		private System.Windows.Forms.ColumnHeader colmodeplugin;
 		private System.Windows.Forms.CheckBox shortpaths;
+		private System.Windows.Forms.ComboBox startmode;
+		private System.Windows.Forms.Label label11;
 	}
 }

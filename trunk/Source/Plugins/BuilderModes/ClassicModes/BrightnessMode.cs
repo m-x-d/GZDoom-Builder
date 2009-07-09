@@ -44,7 +44,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonOrder = int.MinValue + 201,
 			  ButtonGroup = "000_editing",
 			  AllowCopyPaste = false,
-			  UseByDefault = true)]
+			  UseByDefault = true,
+			  SafeStartMode = true)]
 	
 	public sealed class BrightnessMode : BaseClassicMode
 	{

@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// String representation
 		public override string ToString()
 		{
-			return type.Name;
+			return attribs.DisplayName;
 		}
 
 		// Compare by button order

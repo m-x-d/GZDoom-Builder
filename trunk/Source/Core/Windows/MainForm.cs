@@ -1991,15 +1991,14 @@ namespace CodeImp.DoomBuilder.Windows
 			if(pageindex > -1) cfgform.ShowTab(pageindex);
 			if(cfgform.ShowDialog(this) == DialogResult.OK)
 			{
-				// Update interface
+				// Update stuff
 				UpdateInterface();
-
-				// Let the plugins know
+				General.Editing.UpdateCurrentEditModes();
 				General.Plugins.ProgramReconfigure();
-
+				
 				// Reload resources if a map is open
 				if((General.Map != null) && cfgform.ReloadResources) General.Actions.InvokeAction("builder_reloadresources");
-
+				
 				// Redraw display
 				RedrawDisplay();
 			}
@@ -2016,15 +2015,11 @@ namespace CodeImp.DoomBuilder.Windows
 			PreferencesForm prefform = new PreferencesForm();
 			if(prefform.ShowDialog(this) == DialogResult.OK)
 			{
-				// Update shortcut keys in menus
+				// Update stuff
 				ApplyShortcutKeys();
-				
-				// Generate new color correction table
 				General.Colors.CreateCorrectionTable();
-				
-				// Let the plugins know
 				General.Plugins.ProgramReconfigure();
-
+				
 				// Map opened?
 				if(General.Map != null)
 				{

@@ -43,7 +43,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		      ButtonImage = "ThingsMode.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 300,	// Position of the button (lower is more to the left)
 			  ButtonGroup = "000_editing",
-			  UseByDefault = true)]
+			  UseByDefault = true,
+			  SafeStartMode = true)]
 
 	public class ThingsMode : BaseClassicMode
 	{

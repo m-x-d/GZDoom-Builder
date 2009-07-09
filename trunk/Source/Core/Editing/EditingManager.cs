@@ -186,7 +186,7 @@ namespace CodeImp.DoomBuilder.Editing
 			foreach(EditModeInfo emi in usedmodes)
 			{
 				// Mode matches class name?
-				if(emi.ToString() == editmodename) return emi;
+				if(emi.Type.Name == editmodename) return emi;
 			}
 			
 			// No such mode found
