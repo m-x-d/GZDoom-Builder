@@ -114,8 +114,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// sectorinfo
 			// 
-			this.sectorinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.sectorinfo.Controls.Add(this.brightness);
 			this.sectorinfo.Controls.Add(label13);
 			this.sectorinfo.Controls.Add(this.height);
@@ -191,8 +189,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ceilingpanel
 			// 
-			this.ceilingpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.ceilingpanel.Controls.Add(this.ceilingname);
 			this.ceilingpanel.Controls.Add(this.ceilingtex);
 			this.ceilingpanel.Location = new System.Drawing.Point(349, 0);
@@ -223,8 +219,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// floorpanel
 			// 
-			this.floorpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.floorpanel.Controls.Add(this.floorname);
 			this.floorpanel.Controls.Add(this.floortex);
 			this.floorpanel.Location = new System.Drawing.Point(236, 0);
@@ -255,7 +249,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// SectorInfoPanel
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.floorpanel);
 			this.Controls.Add(this.ceilingpanel);
 			this.Controls.Add(this.sectorinfo);

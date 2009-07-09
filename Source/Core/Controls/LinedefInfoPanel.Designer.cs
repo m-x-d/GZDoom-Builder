@@ -57,10 +57,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontsector = new System.Windows.Forms.Label();
 			this.frontlowname = new System.Windows.Forms.Label();
 			this.frontlowtex = new System.Windows.Forms.Panel();
-			this.frontmidname = new System.Windows.Forms.Label();
 			this.frontmidtex = new System.Windows.Forms.Panel();
 			this.fronthighname = new System.Windows.Forms.Label();
 			this.fronthightex = new System.Windows.Forms.Panel();
+			this.frontmidname = new System.Windows.Forms.Label();
 			this.backpanel = new System.Windows.Forms.GroupBox();
 			this.backsector = new System.Windows.Forms.Label();
 			this.backlowname = new System.Windows.Forms.Label();
@@ -116,8 +116,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// infopanel
 			// 
-			this.infopanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.infopanel.Controls.Add(this.unpegged);
 			this.infopanel.Controls.Add(this.label6);
 			this.infopanel.Controls.Add(this.arg5);
@@ -354,8 +352,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// frontpanel
 			// 
-			this.frontpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.frontpanel.Controls.Add(this.frontsector);
 			this.frontpanel.Controls.Add(this.frontlowname);
 			this.frontpanel.Controls.Add(this.frontlowtex);
@@ -401,17 +397,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.frontlowtex.Size = new System.Drawing.Size(68, 60);
 			this.frontlowtex.TabIndex = 4;
 			// 
-			// frontmidname
-			// 
-			this.frontmidname.BackColor = System.Drawing.SystemColors.Control;
-			this.frontmidname.Location = new System.Drawing.Point(88, 80);
-			this.frontmidname.Name = "frontmidname";
-			this.frontmidname.Size = new System.Drawing.Size(82, 13);
-			this.frontmidname.TabIndex = 3;
-			this.frontmidname.Text = "BROWNHUG";
-			this.frontmidname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.frontmidname.UseMnemonic = false;
-			// 
 			// frontmidtex
 			// 
 			this.frontmidtex.BackColor = System.Drawing.SystemColors.AppWorkspace;
@@ -443,10 +428,19 @@ namespace CodeImp.DoomBuilder.Controls
 			this.fronthightex.Size = new System.Drawing.Size(68, 60);
 			this.fronthightex.TabIndex = 0;
 			// 
+			// frontmidname
+			// 
+			this.frontmidname.BackColor = System.Drawing.SystemColors.Control;
+			this.frontmidname.Location = new System.Drawing.Point(88, 80);
+			this.frontmidname.Name = "frontmidname";
+			this.frontmidname.Size = new System.Drawing.Size(82, 13);
+			this.frontmidname.TabIndex = 3;
+			this.frontmidname.Text = "BROWNHUG";
+			this.frontmidname.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.frontmidname.UseMnemonic = false;
+			// 
 			// backpanel
 			// 
-			this.backpanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.backpanel.Controls.Add(this.backsector);
 			this.backpanel.Controls.Add(this.backlowname);
 			this.backpanel.Controls.Add(this.backlowtex);
@@ -536,7 +530,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// LinedefInfoPanel
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.backpanel);
 			this.Controls.Add(this.frontpanel);
 			this.Controls.Add(this.infopanel);

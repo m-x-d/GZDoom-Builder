@@ -136,8 +136,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// AngleControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.Controls.Add(this.button7);

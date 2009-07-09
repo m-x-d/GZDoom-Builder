@@ -29,69 +29,62 @@ namespace CodeImp.DoomBuilder.Controls
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.Label label4;
-			System.Windows.Forms.Label label3;
-			System.Windows.Forms.Label label2;
-			System.Windows.Forms.Label label1;
 			System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Monsters");
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ThingBrowserControl));
+			this.sizecaption = new System.Windows.Forms.Label();
+			this.blockingcaption = new System.Windows.Forms.Label();
+			this.positioncaption = new System.Windows.Forms.Label();
+			this.typecaption = new System.Windows.Forms.Label();
 			this.sizelabel = new System.Windows.Forms.Label();
 			this.blockinglabel = new System.Windows.Forms.Label();
 			this.positionlabel = new System.Windows.Forms.Label();
-			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.typelist = new System.Windows.Forms.TreeView();
 			this.thingimages = new System.Windows.Forms.ImageList(this.components);
-			label4 = new System.Windows.Forms.Label();
-			label3 = new System.Windows.Forms.Label();
-			label2 = new System.Windows.Forms.Label();
-			label1 = new System.Windows.Forms.Label();
+			this.infopanel = new System.Windows.Forms.Panel();
+			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.infopanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// label4
+			// sizecaption
 			// 
-			label4.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(169, 275);
-			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(30, 13);
-			label4.TabIndex = 16;
-			label4.Text = "Size:";
+			this.sizecaption.AutoSize = true;
+			this.sizecaption.Location = new System.Drawing.Point(166, 13);
+			this.sizecaption.Name = "sizecaption";
+			this.sizecaption.Size = new System.Drawing.Size(30, 13);
+			this.sizecaption.TabIndex = 16;
+			this.sizecaption.Text = "Size:";
 			// 
-			// label3
+			// blockingcaption
 			// 
-			label3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(148, 304);
-			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(51, 13);
-			label3.TabIndex = 14;
-			label3.Text = "Blocking:";
+			this.blockingcaption.AutoSize = true;
+			this.blockingcaption.Location = new System.Drawing.Point(145, 42);
+			this.blockingcaption.Name = "blockingcaption";
+			this.blockingcaption.Size = new System.Drawing.Size(51, 13);
+			this.blockingcaption.TabIndex = 14;
+			this.blockingcaption.Text = "Blocking:";
 			// 
-			// label2
+			// positioncaption
 			// 
-			label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(3, 304);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(47, 13);
-			label2.TabIndex = 12;
-			label2.Text = "Position:";
+			this.positioncaption.AutoSize = true;
+			this.positioncaption.Location = new System.Drawing.Point(-2, 42);
+			this.positioncaption.Name = "positioncaption";
+			this.positioncaption.Size = new System.Drawing.Size(47, 13);
+			this.positioncaption.TabIndex = 12;
+			this.positioncaption.Text = "Position:";
 			// 
-			// label1
+			// typecaption
 			// 
-			label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(3, 275);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(34, 13);
-			label1.TabIndex = 10;
-			label1.Text = "Type:";
+			this.typecaption.AutoSize = true;
+			this.typecaption.Location = new System.Drawing.Point(-2, 13);
+			this.typecaption.Name = "typecaption";
+			this.typecaption.Size = new System.Drawing.Size(34, 13);
+			this.typecaption.TabIndex = 10;
+			this.typecaption.Text = "Type:";
 			// 
 			// sizelabel
 			// 
-			this.sizelabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.sizelabel.AutoSize = true;
-			this.sizelabel.Location = new System.Drawing.Point(203, 275);
+			this.sizelabel.Location = new System.Drawing.Point(200, 13);
 			this.sizelabel.Name = "sizelabel";
 			this.sizelabel.Size = new System.Drawing.Size(42, 13);
 			this.sizelabel.TabIndex = 17;
@@ -99,9 +92,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// blockinglabel
 			// 
-			this.blockinglabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.blockinglabel.AutoSize = true;
-			this.blockinglabel.Location = new System.Drawing.Point(201, 304);
+			this.blockinglabel.Location = new System.Drawing.Point(198, 42);
 			this.blockinglabel.Name = "blockinglabel";
 			this.blockinglabel.Size = new System.Drawing.Size(63, 13);
 			this.blockinglabel.TabIndex = 15;
@@ -109,32 +101,15 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// positionlabel
 			// 
-			this.positionlabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.positionlabel.AutoSize = true;
-			this.positionlabel.Location = new System.Drawing.Point(53, 304);
+			this.positionlabel.Location = new System.Drawing.Point(48, 42);
 			this.positionlabel.Name = "positionlabel";
 			this.positionlabel.Size = new System.Drawing.Size(38, 13);
 			this.positionlabel.TabIndex = 13;
 			this.positionlabel.Text = "Ceiling";
 			// 
-			// typeid
-			// 
-			this.typeid.AllowDecimal = false;
-			this.typeid.AllowNegative = false;
-			this.typeid.AllowRelative = false;
-			this.typeid.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.typeid.Location = new System.Drawing.Point(46, 272);
-			this.typeid.Name = "typeid";
-			this.typeid.Size = new System.Drawing.Size(68, 20);
-			this.typeid.TabIndex = 1;
-			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
-			// 
 			// typelist
 			// 
-			this.typelist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.typelist.HideSelection = false;
 			this.typelist.ImageIndex = 0;
 			this.typelist.ImageList = this.thingimages;
@@ -176,23 +151,47 @@ namespace CodeImp.DoomBuilder.Controls
 			this.thingimages.Images.SetKeyName(18, "thing18.png");
 			this.thingimages.Images.SetKeyName(19, "thing19.png");
 			// 
+			// infopanel
+			// 
+			this.infopanel.Controls.Add(this.sizelabel);
+			this.infopanel.Controls.Add(this.typecaption);
+			this.infopanel.Controls.Add(this.sizecaption);
+			this.infopanel.Controls.Add(this.typeid);
+			this.infopanel.Controls.Add(this.blockinglabel);
+			this.infopanel.Controls.Add(this.positioncaption);
+			this.infopanel.Controls.Add(this.blockingcaption);
+			this.infopanel.Controls.Add(this.positionlabel);
+			this.infopanel.Location = new System.Drawing.Point(0, 261);
+			this.infopanel.Name = "infopanel";
+			this.infopanel.Size = new System.Drawing.Size(304, 59);
+			this.infopanel.TabIndex = 18;
+			// 
+			// typeid
+			// 
+			this.typeid.AllowDecimal = false;
+			this.typeid.AllowNegative = false;
+			this.typeid.AllowRelative = false;
+			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.typeid.Location = new System.Drawing.Point(41, 10);
+			this.typeid.Name = "typeid";
+			this.typeid.Size = new System.Drawing.Size(68, 20);
+			this.typeid.TabIndex = 1;
+			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
+			// 
 			// ThingBrowserControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.Controls.Add(this.sizelabel);
-			this.Controls.Add(label4);
-			this.Controls.Add(this.blockinglabel);
-			this.Controls.Add(label3);
-			this.Controls.Add(this.positionlabel);
-			this.Controls.Add(label2);
-			this.Controls.Add(this.typeid);
-			this.Controls.Add(label1);
 			this.Controls.Add(this.typelist);
+			this.Controls.Add(this.infopanel);
 			this.Name = "ThingBrowserControl";
 			this.Size = new System.Drawing.Size(304, 320);
+			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.ThingBrowserControl_Layout);
+			this.Resize += new System.EventHandler(this.ThingBrowserControl_Resize);
+			this.SizeChanged += new System.EventHandler(this.ThingBrowserControl_SizeChanged);
+			this.infopanel.ResumeLayout(false);
+			this.infopanel.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
@@ -204,5 +203,10 @@ namespace CodeImp.DoomBuilder.Controls
 		private NumericTextbox typeid;
 		private System.Windows.Forms.TreeView typelist;
 		private System.Windows.Forms.ImageList thingimages;
+		private System.Windows.Forms.Panel infopanel;
+		private System.Windows.Forms.Label sizecaption;
+		private System.Windows.Forms.Label blockingcaption;
+		private System.Windows.Forms.Label positioncaption;
+		private System.Windows.Forms.Label typecaption;
 	}
 }

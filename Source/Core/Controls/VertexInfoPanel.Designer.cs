@@ -35,6 +35,15 @@ namespace CodeImp.DoomBuilder.Controls
 			this.vertexinfo.SuspendLayout();
 			this.SuspendLayout();
 			// 
+			// label1
+			// 
+			label1.AutoSize = true;
+			label1.Location = new System.Drawing.Point(13, 34);
+			label1.Name = "label1";
+			label1.Size = new System.Drawing.Size(47, 14);
+			label1.TabIndex = 2;
+			label1.Text = "Position:";
+			// 
 			// vertexinfo
 			// 
 			this.vertexinfo.Controls.Add(this.position);
@@ -55,18 +64,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.position.TabIndex = 3;
 			this.position.Text = "0, 0";
 			// 
-			// label1
-			// 
-			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(13, 34);
-			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(47, 14);
-			label1.TabIndex = 2;
-			label1.Text = "Position:";
-			// 
 			// VertexInfoPanel
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.vertexinfo);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.MaximumSize = new System.Drawing.Size(10000, 100);

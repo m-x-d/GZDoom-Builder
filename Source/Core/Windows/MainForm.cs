@@ -50,8 +50,6 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		private const int MAX_RECENT_FILES = 8;
 		private const int MAX_RECENT_FILES_PIXELS = 250;
-		private const int EXPANDED_INFO_HEIGHT = 106;
-		private const int COLLAPSED_INFO_HEIGHT = 20;
 		
 		// Status bar
 		private const string STATUS_READY_TEXT = "Ready.";
@@ -164,7 +162,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool AutoMerge { get { return buttonautomerge.Checked; } }
 		public bool MouseExclusive { get { return mouseexclusive; } }
 		new public IntPtr Handle { get { return windowptr; } }
-		public bool IsInfoPanelExpanded { get { return (panelinfo.Height == EXPANDED_INFO_HEIGHT); } }
+		public bool IsInfoPanelExpanded { get { return (panelinfo.Height == heightpanel1.Height); } }
 		public bool IsActiveWindow { get { return windowactive; } }
 		public StatusInfo Status { get { return status; } }
 		
@@ -2048,7 +2046,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(IsInfoPanelExpanded)
 			{
-				panelinfo.Height = COLLAPSED_INFO_HEIGHT;
+				panelinfo.Height = buttontoggleinfo.Height + buttontoggleinfo.Top;
 				buttontoggleinfo.Text = "5";	// Arrow up
 				if(linedefinfo.Visible) linedefinfo.Hide();
 				if(vertexinfo.Visible) vertexinfo.Hide();
@@ -2060,7 +2058,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			else
 			{
-				panelinfo.Height = EXPANDED_INFO_HEIGHT;
+				panelinfo.Height = heightpanel1.Height;
 				buttontoggleinfo.Text = "6";	// Arrow down
 				labelcollapsedinfo.Visible = false;
 				itemtoggleinfo.Checked = true;

@@ -44,12 +44,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
-			this.hexenpanel = new System.Windows.Forms.Panel();
-			this.activation = new System.Windows.Forms.ComboBox();
-			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
-			this.browseaction = new System.Windows.Forms.Button();
-			this.udmfpanel = new System.Windows.Forms.Panel();
-			this.udmfactivates = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.argspanel = new System.Windows.Forms.Panel();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
@@ -61,6 +55,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg3label = new System.Windows.Forms.Label();
 			this.arg2label = new System.Windows.Forms.Label();
 			this.arg4label = new System.Windows.Forms.Label();
+			this.hexenpanel = new System.Windows.Forms.Panel();
+			this.activation = new System.Windows.Forms.ComboBox();
+			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
+			this.browseaction = new System.Windows.Forms.Button();
+			this.udmfpanel = new System.Windows.Forms.Panel();
+			this.udmfactivates = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tag = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.newtag = new System.Windows.Forms.Button();
 			this.settingsgroup = new System.Windows.Forms.GroupBox();
@@ -91,6 +91,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backoffsetx = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
+			this.heightpanel1 = new System.Windows.Forms.Panel();
+			this.heightpanel2 = new System.Windows.Forms.Panel();
 			label2 = new System.Windows.Forms.Label();
 			taglabel = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -105,9 +107,9 @@ namespace CodeImp.DoomBuilder.Windows
 			label12 = new System.Windows.Forms.Label();
 			activationlabel = new System.Windows.Forms.Label();
 			this.actiongroup.SuspendLayout();
+			this.argspanel.SuspendLayout();
 			this.hexenpanel.SuspendLayout();
 			this.udmfpanel.SuspendLayout();
-			this.argspanel.SuspendLayout();
 			this.settingsgroup.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabproperties.SuspendLayout();
@@ -265,84 +267,18 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actiongroup.Controls.Add(this.argspanel);
 			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(label2);
 			this.actiongroup.Controls.Add(this.action);
 			this.actiongroup.Controls.Add(this.browseaction);
 			this.actiongroup.Controls.Add(this.udmfpanel);
-			this.actiongroup.Controls.Add(this.argspanel);
 			this.actiongroup.Location = new System.Drawing.Point(8, 177);
 			this.actiongroup.Name = "actiongroup";
 			this.actiongroup.Size = new System.Drawing.Size(517, 281);
 			this.actiongroup.TabIndex = 1;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
-			// 
-			// hexenpanel
-			// 
-			this.hexenpanel.Controls.Add(this.activation);
-			this.hexenpanel.Controls.Add(activationlabel);
-			this.hexenpanel.Location = new System.Drawing.Point(6, 139);
-			this.hexenpanel.Name = "hexenpanel";
-			this.hexenpanel.Size = new System.Drawing.Size(505, 49);
-			this.hexenpanel.TabIndex = 3;
-			this.hexenpanel.Visible = false;
-			// 
-			// activation
-			// 
-			this.activation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.activation.FormattingEnabled = true;
-			this.activation.Location = new System.Drawing.Point(56, 13);
-			this.activation.Name = "activation";
-			this.activation.Size = new System.Drawing.Size(437, 22);
-			this.activation.TabIndex = 0;
-			// 
-			// action
-			// 
-			this.action.BackColor = System.Drawing.Color.Transparent;
-			this.action.Cursor = System.Windows.Forms.Cursors.Default;
-			this.action.Empty = false;
-			this.action.GeneralizedCategories = null;
-			this.action.Location = new System.Drawing.Point(62, 27);
-			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(401, 21);
-			this.action.TabIndex = 0;
-			this.action.Value = 402;
-			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
-			// 
-			// browseaction
-			// 
-			this.browseaction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
-			this.browseaction.Location = new System.Drawing.Point(469, 26);
-			this.browseaction.Name = "browseaction";
-			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browseaction.Size = new System.Drawing.Size(30, 23);
-			this.browseaction.TabIndex = 1;
-			this.browseaction.Text = " ";
-			this.browseaction.UseVisualStyleBackColor = true;
-			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
-			// 
-			// udmfpanel
-			// 
-			this.udmfpanel.Controls.Add(this.udmfactivates);
-			this.udmfpanel.Location = new System.Drawing.Point(6, 143);
-			this.udmfpanel.Name = "udmfpanel";
-			this.udmfpanel.Size = new System.Drawing.Size(505, 132);
-			this.udmfpanel.TabIndex = 4;
-			this.udmfpanel.Visible = false;
-			// 
-			// udmfactivates
-			// 
-			this.udmfactivates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.udmfactivates.AutoScroll = true;
-			this.udmfactivates.Columns = 2;
-			this.udmfactivates.Location = new System.Drawing.Point(56, 5);
-			this.udmfactivates.Name = "udmfactivates";
-			this.udmfactivates.Size = new System.Drawing.Size(437, 123);
-			this.udmfactivates.TabIndex = 0;
 			// 
 			// argspanel
 			// 
@@ -451,6 +387,72 @@ namespace CodeImp.DoomBuilder.Windows
 			this.arg4label.Text = "Argument 5:";
 			this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.arg4label.UseMnemonic = false;
+			// 
+			// hexenpanel
+			// 
+			this.hexenpanel.Controls.Add(this.activation);
+			this.hexenpanel.Controls.Add(activationlabel);
+			this.hexenpanel.Location = new System.Drawing.Point(6, 139);
+			this.hexenpanel.Name = "hexenpanel";
+			this.hexenpanel.Size = new System.Drawing.Size(505, 49);
+			this.hexenpanel.TabIndex = 3;
+			this.hexenpanel.Visible = false;
+			// 
+			// activation
+			// 
+			this.activation.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.activation.FormattingEnabled = true;
+			this.activation.Location = new System.Drawing.Point(56, 13);
+			this.activation.Name = "activation";
+			this.activation.Size = new System.Drawing.Size(437, 22);
+			this.activation.TabIndex = 0;
+			// 
+			// action
+			// 
+			this.action.BackColor = System.Drawing.Color.Transparent;
+			this.action.Cursor = System.Windows.Forms.Cursors.Default;
+			this.action.Empty = false;
+			this.action.GeneralizedCategories = null;
+			this.action.Location = new System.Drawing.Point(62, 27);
+			this.action.Name = "action";
+			this.action.Size = new System.Drawing.Size(401, 21);
+			this.action.TabIndex = 0;
+			this.action.Value = 402;
+			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
+			// 
+			// browseaction
+			// 
+			this.browseaction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
+			this.browseaction.Location = new System.Drawing.Point(469, 26);
+			this.browseaction.Name = "browseaction";
+			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
+			this.browseaction.Size = new System.Drawing.Size(30, 23);
+			this.browseaction.TabIndex = 1;
+			this.browseaction.Text = " ";
+			this.browseaction.UseVisualStyleBackColor = true;
+			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
+			// 
+			// udmfpanel
+			// 
+			this.udmfpanel.Controls.Add(this.udmfactivates);
+			this.udmfpanel.Location = new System.Drawing.Point(6, 143);
+			this.udmfpanel.Name = "udmfpanel";
+			this.udmfpanel.Size = new System.Drawing.Size(505, 132);
+			this.udmfpanel.TabIndex = 4;
+			this.udmfpanel.Visible = false;
+			// 
+			// udmfactivates
+			// 
+			this.udmfactivates.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.udmfactivates.AutoScroll = true;
+			this.udmfactivates.Columns = 2;
+			this.udmfactivates.Location = new System.Drawing.Point(56, 5);
+			this.udmfactivates.Name = "udmfactivates";
+			this.udmfactivates.Size = new System.Drawing.Size(437, 123);
+			this.udmfactivates.TabIndex = 0;
 			// 
 			// tag
 			// 
@@ -829,6 +831,24 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Size = new System.Drawing.Size(511, 516);
 			this.fieldslist.TabIndex = 0;
 			// 
+			// heightpanel1
+			// 
+			this.heightpanel1.BackColor = System.Drawing.Color.Navy;
+			this.heightpanel1.Location = new System.Drawing.Point(0, -19);
+			this.heightpanel1.Name = "heightpanel1";
+			this.heightpanel1.Size = new System.Drawing.Size(78, 510);
+			this.heightpanel1.TabIndex = 3;
+			this.heightpanel1.Visible = false;
+			// 
+			// heightpanel2
+			// 
+			this.heightpanel2.BackColor = System.Drawing.Color.Navy;
+			this.heightpanel2.Location = new System.Drawing.Point(473, -19);
+			this.heightpanel2.Name = "heightpanel2";
+			this.heightpanel2.Size = new System.Drawing.Size(88, 470);
+			this.heightpanel2.TabIndex = 4;
+			this.heightpanel2.Visible = false;
+			// 
 			// LinedefEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -839,6 +859,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.tabs);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
+			this.Controls.Add(this.heightpanel1);
+			this.Controls.Add(this.heightpanel2);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
@@ -852,10 +874,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.LinedefEditForm_HelpRequested);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
+			this.argspanel.ResumeLayout(false);
 			this.hexenpanel.ResumeLayout(false);
 			this.hexenpanel.PerformLayout();
 			this.udmfpanel.ResumeLayout(false);
-			this.argspanel.ResumeLayout(false);
 			this.settingsgroup.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
@@ -928,5 +950,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.SplitContainer splitter;
 		private System.Windows.Forms.Button customfrontbutton;
 		private System.Windows.Forms.Button custombackbutton;
+		private System.Windows.Forms.Panel heightpanel1;
+		private System.Windows.Forms.Panel heightpanel2;
 	}
 }

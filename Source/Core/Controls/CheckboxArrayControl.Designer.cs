@@ -32,14 +32,14 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// CheckboxArrayControl
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.AutoScroll = true;
 			this.DoubleBuffered = true;
 			this.Name = "CheckboxArrayControl";
 			this.Size = new System.Drawing.Size(361, 163);
-			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.CheckboxArrayControl_Layout);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.CheckboxArrayControl_Paint);
+			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.CheckboxArrayControl_Layout);
 			this.ResumeLayout(false);
 
 		}
