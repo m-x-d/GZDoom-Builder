@@ -11,6 +11,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -228,7 +229,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// Return false to abort the paste operation.
 		/// The result parameter is false when the operation was already aborted by another plugin.
 		/// </summary>
-		public virtual bool OnPasteBegin(bool result)
+		public virtual bool OnPasteBegin(PasteOptions options, bool result)
 		{
 			return true;
 		}
@@ -236,7 +237,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// <summary>
 		/// Called by the Doom Builder core when the user pastes geometry into the map. The new geometry is created and marked before this method is called.
 		/// </summary>
-		public virtual void OnPasteEnd()
+		public virtual void OnPasteEnd(PasteOptions options)
 		{
 		}
 

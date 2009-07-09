@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.scriptautoindent = new System.Windows.Forms.CheckBox();
 			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.label10 = new System.Windows.Forms.Label();
 			this.scriptontop = new System.Windows.Forms.CheckBox();
@@ -115,7 +116,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorcomments = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorplaintext = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.scriptautoindent = new System.Windows.Forms.CheckBox();
+			this.tabpasting = new System.Windows.Forms.TabPage();
+			this.label16 = new System.Windows.Forms.Label();
+			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -140,6 +143,7 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
 			this.colorsgroup3.SuspendLayout();
+			this.tabpasting.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label7
@@ -460,6 +464,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.tabinterface);
 			this.tabs.Controls.Add(this.tabkeys);
 			this.tabs.Controls.Add(this.tabcolors);
+			this.tabs.Controls.Add(this.tabpasting);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
 			this.tabs.Location = new System.Drawing.Point(11, 13);
@@ -502,6 +507,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.TabIndex = 1;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Script Editor ";
+			// 
+			// scriptautoindent
+			// 
+			this.scriptautoindent.AutoSize = true;
+			this.scriptautoindent.Location = new System.Drawing.Point(171, 195);
+			this.scriptautoindent.Name = "scriptautoindent";
+			this.scriptautoindent.Size = new System.Drawing.Size(82, 18);
+			this.scriptautoindent.TabIndex = 21;
+			this.scriptautoindent.Text = "Auto-indent";
+			this.scriptautoindent.UseVisualStyleBackColor = true;
 			// 
 			// scripttabwidth
 			// 
@@ -1160,15 +1175,37 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
 			this.colorplaintext.TabIndex = 2;
 			// 
-			// scriptautoindent
+			// tabpasting
 			// 
-			this.scriptautoindent.AutoSize = true;
-			this.scriptautoindent.Location = new System.Drawing.Point(171, 195);
-			this.scriptautoindent.Name = "scriptautoindent";
-			this.scriptautoindent.Size = new System.Drawing.Size(82, 18);
-			this.scriptautoindent.TabIndex = 21;
-			this.scriptautoindent.Text = "Auto-indent";
-			this.scriptautoindent.UseVisualStyleBackColor = true;
+			this.tabpasting.Controls.Add(this.label16);
+			this.tabpasting.Controls.Add(this.pasteoptions);
+			this.tabpasting.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabpasting.Location = new System.Drawing.Point(4, 23);
+			this.tabpasting.Name = "tabpasting";
+			this.tabpasting.Padding = new System.Windows.Forms.Padding(5);
+			this.tabpasting.Size = new System.Drawing.Size(653, 449);
+			this.tabpasting.TabIndex = 3;
+			this.tabpasting.Text = "Pasting ";
+			this.tabpasting.UseVisualStyleBackColor = true;
+			// 
+			// label16
+			// 
+			this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.label16.Location = new System.Drawing.Point(11, 15);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(634, 35);
+			this.label16.TabIndex = 1;
+			this.label16.Text = "These are the default options for pasting geometry. You can also choose these opt" +
+				"ions when you use the Paste Special function. These options also apply when inse" +
+				"rting prefabs.";
+			// 
+			// pasteoptions
+			// 
+			this.pasteoptions.Location = new System.Drawing.Point(8, 53);
+			this.pasteoptions.Name = "pasteoptions";
+			this.pasteoptions.Size = new System.Drawing.Size(637, 388);
+			this.pasteoptions.TabIndex = 0;
 			// 
 			// PreferencesForm
 			// 
@@ -1216,6 +1253,7 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			this.colorsgroup3.ResumeLayout(false);
+			this.tabpasting.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1304,5 +1342,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label10;
 		private CodeImp.DoomBuilder.Controls.NumericTextbox scripttabwidth;
 		private System.Windows.Forms.CheckBox scriptautoindent;
+		private System.Windows.Forms.TabPage tabpasting;
+		private CodeImp.DoomBuilder.Controls.PasteOptionsControl pasteoptions;
+		private System.Windows.Forms.Label label16;
 	}
 }

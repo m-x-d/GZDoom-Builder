@@ -27,6 +27,7 @@ using System.Reflection;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -191,17 +192,17 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 
-		public bool OnPasteBegin()
+		public bool OnPasteBegin(PasteOptions options)
 		{
 			bool result = true;
-			foreach(Plugin p in plugins) result &= p.Plug.OnPasteBegin(result);
+			foreach(Plugin p in plugins) result &= p.Plug.OnPasteBegin(options.Copy(), result);
 			return result;
 		}
 
 
-		public void OnPasteEnd()
+		public void OnPasteEnd(PasteOptions options)
 		{
-			foreach(Plugin p in plugins) p.Plug.OnPasteEnd();
+			foreach(Plugin p in plugins) p.Plug.OnPasteEnd(options.Copy());
 		}
 
 

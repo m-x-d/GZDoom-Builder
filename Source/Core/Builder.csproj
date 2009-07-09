@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -660,6 +660,13 @@
     <None Include="Resources\Close.png" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
+    <Compile Include="Config\PasteOptions.cs" />
+    <Compile Include="Controls\PasteOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PasteOptionsControl.Designer.cs">
+      <DependentUpon>PasteOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ThingBrowserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -722,6 +729,10 @@
     <Compile Include="ZDoom\DecorateParser.cs" />
     <Compile Include="ZDoom\StateStructure.cs" />
     <Compile Include="Editing\EditingManager.cs" />
+    <EmbeddedResource Include="Controls\PasteOptionsControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>PasteOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\ThingBrowserControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ThingBrowserControl.cs</DependentUpon>

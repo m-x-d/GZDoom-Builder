@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Types;
 using System.IO;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -53,6 +54,9 @@ namespace CodeImp.DoomBuilder.Map
 		// in our parser, so that it can only be used by Doom Builder and will never
 		// conflict with any other valid UDMF field.
 		internal const string VIRTUAL_SECTOR_FIELD = "!virtual_sector";
+		
+		// Handler for tag fields
+		public delegate void TagHandler<T>(MapElement element, bool actionargument, UniversalType type, ref int value, T obj);
 		
 		#endregion
 
@@ -98,7 +102,19 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Properties
+		
+		/// <summary>Returns the number of selected sectors.</summary>
+		public int SelectedSectorsCount { get { return sel_sectors.Count; } }
 
+		/// <summary>Returns the number of selected linedefs.</summary>
+		public int SelectedLinedefsCount { get { return sel_linedefs.Count; } }
+
+		/// <summary>Returns the number of selected vertices.</summary>
+		public int SelectedVerticessCount { get { return sel_vertices.Count; } }
+
+		/// <summary>Returns the number of selected things.</summary>
+		public int SelectedThingsCount { get { return sel_things.Count; } }
+		
 		/// <summary>Returns a reference to the list of all vertices.</summary>
 		public ICollection<Vertex> Vertices { get { if(freezearrays == 0) return vertices; else return new MapElementCollection<Vertex>(ref vertices, numvertices); } }
 
@@ -2443,25 +2459,162 @@ namespace CodeImp.DoomBuilder.Map
 		public int GetNewTag()
 		{
 			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
-			
-			// Check all sectors
-			foreach(Sector s in sectors) usedtags[s.Tag] = true;
-			
-			// Check all lines
-			foreach(Linedef l in linedefs) usedtags[l.Tag] = true;
-
-			// Check all things
-			foreach(Thing t in things) usedtags[t.Tag] = true;
+			ForAllTags(NewTagHandler, false, usedtags);
+			ForAllTags(NewTagHandler, true, usedtags);
 			
 			// Now find the first unused index
 			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
 				if(!usedtags.ContainsKey(i)) return i;
 			
-			// Problem: all tags used!
-			// Lets ignore this problem for now, who needs 65-thousand tags?!
+			// All tags used!
 			return 0;
 		}
 
+		/// <summary>This returns the next unused tag number within the marked geometry.</summary>
+		public int GetNewTag(bool marked)
+		{
+			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
+			ForAllTags(NewTagHandler, marked, usedtags);
+
+			// Now find the first unused index
+			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
+				if(!usedtags.ContainsKey(i)) return i;
+
+			// All tags used!
+			return 0;
+		}
+
+		/// <summary>This returns the next unused tag number.</summary>
+		public List<int> GetMultipleNewTags(int count)
+		{
+			List<int> newtags = new List<int>(count);
+			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
+			ForAllTags(NewTagHandler, false, usedtags);
+			ForAllTags(NewTagHandler, true, usedtags);
+			
+			// Find unused tags and add them
+			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
+			{
+				if(!usedtags.ContainsKey(i))
+				{
+					newtags.Add(i);
+					if(newtags.Count == count) break;
+				}
+			}
+			
+			return newtags;
+		}
+
+		/// <summary>This returns the next unused tag number within the marked geometry.</summary>
+		public List<int> GetMultipleNewTags(int count, bool marked)
+		{
+			List<int> newtags = new List<int>(count);
+			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
+			ForAllTags(NewTagHandler, marked, usedtags);
+
+			// Find unused tags and add them
+			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
+			{
+				if(!usedtags.ContainsKey(i))
+				{
+					newtags.Add(i);
+					if(newtags.Count == count) break;
+				}
+			}
+
+			return newtags;
+		}
+
+		// Handler for finding a new tag
+		private void NewTagHandler(MapElement element, bool actionargument, UniversalType type, ref int value, Dictionary<int, bool> usedtags)
+		{
+			usedtags[value] = true;
+		}
+
+		/// <summary>This calls a function for all tag fields in the marked or unmarked geometry. The obj parameter can be anything you wish to pass on to your TagHandler function.</summary>
+		public void ForAllTags<T>(TagHandler<T> handler, bool marked, T obj)
+		{
+			// Remove tags from sectors
+			foreach(Sector s in sectors)
+				if(s.Marked == marked)
+				{
+					int tag = s.Tag;
+					handler(s, false, UniversalType.SectorTag, ref tag, obj);
+					if(tag != s.Tag) s.Tag = tag;
+				}
+			
+			// Remove tags from things
+			if(General.Map.FormatInterface.HasThingTag)
+			{
+				foreach(Thing t in things)
+					if(t.Marked == marked)
+					{
+						int tag = t.Tag;
+						handler(t, false, UniversalType.ThingTag, ref tag, obj);
+						if(tag != t.Tag) t.Tag = tag;
+					}
+			}
+
+			// Remove tags from thing actions
+			if(General.Map.FormatInterface.HasThingAction &&
+			   General.Map.FormatInterface.HasActionArgs)
+			{
+				foreach(Thing t in things)
+				{
+					if(t.Marked == marked)
+					{
+						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(t.Action);
+						for(int i = 0; i < Thing.NUM_ARGS; i++)
+							if(info.Args[i].Used && CheckIsTagType(info.Args[i].Type))
+							{
+								int tag = t.Args[i];
+								handler(t, true, (UniversalType)(info.Args[i].Type), ref tag, obj);
+								if(tag != t.Args[i]) t.Args[i] = tag;
+							}
+					}
+				}
+			}
+
+			// Remove tags from linedefs
+			if(General.Map.FormatInterface.HasLinedefTag)
+			{
+				foreach(Linedef l in linedefs)
+					if(l.Marked == marked)
+					{
+						int tag = l.Tag;
+						handler(l, false, UniversalType.LinedefTag, ref tag, obj);
+						if(tag != l.Tag) l.Tag = tag;
+					}
+			}
+
+			// Remove tags from linedef actions
+			if(General.Map.FormatInterface.HasActionArgs)
+			{
+				foreach(Linedef l in linedefs)
+				{
+					if(l.Marked == marked)
+					{
+						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
+						for(int i = 0; i < Linedef.NUM_ARGS; i++)
+							if(info.Args[i].Used && CheckIsTagType(info.Args[i].Type))
+							{
+								int tag = l.Args[i];
+								handler(l, true, (UniversalType)(info.Args[i].Type), ref tag, obj);
+								if(tag != l.Args[i]) l.Args[i] = tag;
+							}
+					}
+				}
+			}
+		}
+		
+		// This checks if the given action argument type is a tag type
+		private bool CheckIsTagType(int argtype)
+		{
+			return (argtype == (int)UniversalType.LinedefTag) ||
+				   (argtype == (int)UniversalType.SectorTag) ||
+				   (argtype == (int)UniversalType.ThingTag);
+		}
+		
 		/// <summary>This makes a list of lines related to marked vertices.
 		/// A line is unstable when one vertex is marked and the other isn't.</summary>
 		public ICollection<Linedef> LinedefsFromMarkedVertices(bool includeunselected, bool includestable, bool includeunstable)

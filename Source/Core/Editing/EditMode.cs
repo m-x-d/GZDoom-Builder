@@ -31,6 +31,7 @@ using CodeImp.DoomBuilder.Rendering;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -179,10 +180,10 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void OnCopyEnd() { }
 		
 		// Called before pasting. Return false when paste should be cancelled.
-		public virtual bool OnPasteBegin() { return true; }
+		public virtual bool OnPasteBegin(PasteOptions options) { return true; }
 
 		// Called after new geometry has been pasted in. The new geometry is marked.
-		public virtual void OnPasteEnd() { }
+		public virtual void OnPasteEnd(PasteOptions options) { }
 		
 		// Called when undo/redo is used
 		// Return false to cancel undo action

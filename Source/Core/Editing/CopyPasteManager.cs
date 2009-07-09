@@ -31,6 +31,8 @@ using CodeImp.DoomBuilder.Rendering;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using ICSharpCode.SharpZipLib.BZip2;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Geometry;
 
 #endregion
 
@@ -135,7 +137,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This pastes a prefab. Returns false when paste was cancelled.
-		internal void PastePrefab(Stream filedata)
+		internal void PastePrefab(Stream filedata, PasteOptions options)
 		{
 			// Create undo
 			General.MainWindow.DisplayStatus(StatusType.Action, "Inserted prefab.");
@@ -163,13 +165,18 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Convert UDMF fields back to flags and activations, if needed
 			if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
+
+			// Modify tags and actions if preferred
+			if(options.ChangeTags == PasteOptions.TAGS_REMOVE) Tools.RemoveMarkedTags();
+			if(options.ChangeTags == PasteOptions.TAGS_RENUMBER) Tools.RenumberMarkedTags();
+			if(options.RemoveActions) Tools.RemoveMarkedActions();
 			
 			// Done
 			memstream.Dispose();
 			General.Map.Map.UpdateConfiguration();
 			General.Map.ThingsFilter.Update();
-			General.Editing.Mode.OnPasteEnd();
-			General.Plugins.OnPasteEnd();
+			General.Editing.Mode.OnPasteEnd(options);
+			General.Plugins.OnPasteEnd(options);
 		}
 		
 		// This performs the copy. Returns false when copy was cancelled.
@@ -214,7 +221,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This performs the paste. Returns false when paste was cancelled.
-		private bool DoPasteSelection()
+		private bool DoPasteSelection(PasteOptions options)
 		{
 			// Anything to paste?
 			if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
@@ -223,10 +230,10 @@ namespace CodeImp.DoomBuilder.Editing
 				General.DisengageVolatileMode();
 				
 				// Let the plugins know
-				if(General.Plugins.OnPasteBegin())
+				if(General.Plugins.OnPasteBegin(options))
 				{
 					// Ask the editing mode to prepare selection for pasting.
-					if(General.Editing.Mode.OnPasteBegin())
+					if(General.Editing.Mode.OnPasteBegin(options.Copy()))
 					{
 						// Create undo
 						General.MainWindow.DisplayStatus(StatusType.Action, "Pasted selected elements.");
@@ -251,13 +258,18 @@ namespace CodeImp.DoomBuilder.Editing
 
 						// Convert UDMF fields back to flags and activations, if needed
 						if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
+						
+						// Modify tags and actions if preferred
+						if(options.ChangeTags == PasteOptions.TAGS_REMOVE) Tools.RemoveMarkedTags();
+						if(options.ChangeTags == PasteOptions.TAGS_RENUMBER) Tools.RenumberMarkedTags();
+						if(options.RemoveActions) Tools.RemoveMarkedActions();
 
 						// Done
 						memstream.Dispose();
 						General.Map.Map.UpdateConfiguration();
 						General.Map.ThingsFilter.Update();
-						General.Editing.Mode.OnPasteEnd();
-						General.Plugins.OnPasteEnd();
+						General.Editing.Mode.OnPasteEnd(options.Copy());
+						General.Plugins.OnPasteEnd(options);
 						return true;
 					}
 				}
@@ -308,10 +320,20 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This pastes what is on the clipboard and marks the new geometry
+		[BeginAction("pasteselectionspecial")]
+		public void PasteSelectionSpecial()
+		{
+			PasteOptionsForm form = new PasteOptionsForm();
+			DialogResult result = form.ShowDialog(General.MainWindow);
+			if(result == DialogResult.OK) DoPasteSelection(form.Options);
+			form.Dispose();
+		}
+		
+		// This pastes what is on the clipboard and marks the new geometry
 		[BeginAction("pasteselection")]
 		public void PasteSelection()
 		{
-			DoPasteSelection();
+			DoPasteSelection(General.Settings.PasteOptions);
 		}
 
 		// This creates a new prefab from selection
@@ -366,14 +388,16 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("insertprefabfile")]
 		public void InsertPrefabFile()
 		{
+			PasteOptions options = General.Settings.PasteOptions.Copy();
+			
 			// Cancel volatile mode
 			General.DisengageVolatileMode();
 
 			// Let the plugins know
-			if(General.Plugins.OnPasteBegin())
+			if(General.Plugins.OnPasteBegin(options))
 			{
 				// Ask the editing mode to prepare selection for pasting.
-				if(General.Editing.Mode.OnPasteBegin())
+				if(General.Editing.Mode.OnPasteBegin(options))
 				{
 					Cursor oldcursor = Cursor.Current;
 
@@ -403,7 +427,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 						if(stream != null)
 						{
-							PastePrefab(stream);
+							PastePrefab(stream, options);
 							lastprefabfile = openfile.FileName;
 						}
 						General.MainWindow.UpdateInterface();
@@ -419,6 +443,8 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("insertpreviousprefab")]
 		public void InsertPreviousPrefab()
 		{
+			PasteOptions options = General.Settings.PasteOptions.Copy();
+
 			// Is there a previously inserted prefab?
 			if(IsPreviousPrefabAvailable)
 			{
@@ -429,10 +455,10 @@ namespace CodeImp.DoomBuilder.Editing
 					General.DisengageVolatileMode();
 
 					// Let the plugins know
-					if(General.Plugins.OnPasteBegin())
+					if(General.Plugins.OnPasteBegin(options))
 					{
 						// Ask the editing mode to prepare selection for pasting.
-						if(General.Editing.Mode.OnPasteBegin())
+						if(General.Editing.Mode.OnPasteBegin(options))
 						{
 							Cursor oldcursor = Cursor.Current;
 							FileStream stream = null;
@@ -450,7 +476,7 @@ namespace CodeImp.DoomBuilder.Editing
 								General.ShowErrorMessage("Error while reading prefab from file! See log file for error details.", MessageBoxButtons.OK);
 							}
 
-							if(stream != null) PastePrefab(stream);
+							if(stream != null) PastePrefab(stream, options);
 							stream.Dispose();
 							General.MainWindow.UpdateInterface();
 							Cursor.Current = oldcursor;

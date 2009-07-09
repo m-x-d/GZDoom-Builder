@@ -35,24 +35,51 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class PasteOptionsForm : DelayedForm
+	internal partial class PasteOptionsForm : DelayedForm
 	{
 		#region ================== Variables
-
+		
+		private PasteOptions options;
+		
 		#endregion
-
+		
+		#region ================== Properties
+		
+		public PasteOptions Options { get { return options; } }
+		
+		#endregion
+		
 		#region ================== Constructor
-
+		
 		// Constructor
 		public PasteOptionsForm()
 		{
 			InitializeComponent();
+			
+			// Get defaults
+			options = General.Settings.PasteOptions.Copy();
+			pasteoptions.Setup(options);
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Events
-
+		
+		// Paste clicked
+		private void paste_Click(object sender, EventArgs e)
+		{
+			options = pasteoptions.GetOptions();
+			this.DialogResult = DialogResult.OK;
+			this.Close();
+		}
+		
+		// Cancel clicked
+		private void cancel_Click(object sender, EventArgs e)
+		{
+			this.DialogResult = DialogResult.Cancel;
+			this.Close();
+		}
+		
 		#endregion
 	}
 }
