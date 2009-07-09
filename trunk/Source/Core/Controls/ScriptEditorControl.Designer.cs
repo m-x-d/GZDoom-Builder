@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.CodePage = 0;
 			this.scriptedit.ControlCharSymbol = 0;
 			this.scriptedit.CurrentPos = 0;
-			this.scriptedit.CursorType = -1;
+			this.scriptedit.CursorType = 0;
 			this.scriptedit.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.scriptedit.DocPointer = 0;
 			this.scriptedit.EdgeColour = 0;
@@ -73,8 +73,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.EndAtLastLine = 0;
 			this.scriptedit.EndOfLineMode = CodeImp.DoomBuilder.Controls.ScriptEndOfLine.CRLF;
 			this.scriptedit.EOLMode = 0;
+			this.scriptedit.ExtraAscent = 0;
+			this.scriptedit.ExtraDescent = 0;
 			this.scriptedit.HighlightGuide = 0;
 			this.scriptedit.Indent = 0;
+			this.scriptedit.IndentationGuides = 0;
 			this.scriptedit.IsAutoCGetAutoHide = false;
 			this.scriptedit.IsAutoCGetCancelAtStart = false;
 			this.scriptedit.IsAutoCGetChooseSingle = false;
@@ -85,7 +88,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.IsCaretLineVisible = false;
 			this.scriptedit.IsFocus = false;
 			this.scriptedit.IsHScrollBar = false;
-			this.scriptedit.IndentationGuides = 0;
 			this.scriptedit.IsMouseDownCaptures = false;
 			this.scriptedit.IsOvertype = false;
 			this.scriptedit.IsReadOnly = false;
@@ -145,7 +147,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ScriptEditorControl
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.scriptpanel);
 			this.Controls.Add(this.functionbar);
 			this.Name = "ScriptEditorControl";

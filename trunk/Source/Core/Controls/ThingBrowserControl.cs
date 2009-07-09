@@ -242,6 +242,30 @@ namespace CodeImp.DoomBuilder.Controls
 			// Raise event
 			if(OnTypeChanged != null) OnTypeChanged(thinginfo);
 		}
+
+		// Layout update!
+		private void ThingBrowserControl_Layout(object sender, LayoutEventArgs e)
+		{
+			ThingBrowserControl_SizeChanged(sender, EventArgs.Empty);
+		}
+
+		private void ThingBrowserControl_Resize(object sender, EventArgs e)
+		{
+			ThingBrowserControl_SizeChanged(sender, EventArgs.Empty);
+		}
+
+		private void ThingBrowserControl_SizeChanged(object sender, EventArgs e)
+		{
+			infopanel.Top = this.ClientSize.Height - infopanel.Height;
+			infopanel.Width = this.ClientSize.Width;
+			typelist.Width = this.ClientSize.Width;
+			typelist.Height = infopanel.Top;
+
+			blockingcaption.Left = infopanel.Width / 2;
+			blockinglabel.Left = blockingcaption.Right + blockingcaption.Margin.Right;
+			sizecaption.Left = blockingcaption.Right - sizecaption.Width;
+			sizelabel.Left = sizecaption.Right + sizecaption.Margin.Right;
+		}
 		
 		#endregion
 	}

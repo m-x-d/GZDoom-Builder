@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox3.Controls.Add(this.additiveselect);
 			this.groupBox3.Location = new System.Drawing.Point(308, 90);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(332, 171);
+			this.groupBox3.Size = new System.Drawing.Size(332, 200);
 			this.groupBox3.TabIndex = 18;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Options ";
@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// visualmodeclearselection
 			// 
 			this.visualmodeclearselection.AutoSize = true;
-			this.visualmodeclearselection.Location = new System.Drawing.Point(23, 129);
+			this.visualmodeclearselection.Location = new System.Drawing.Point(23, 161);
 			this.visualmodeclearselection.Name = "visualmodeclearselection";
 			this.visualmodeclearselection.Size = new System.Drawing.Size(220, 18);
 			this.visualmodeclearselection.TabIndex = 5;
@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// autoclearselection
 			// 
 			this.autoclearselection.AutoSize = true;
-			this.autoclearselection.Location = new System.Drawing.Point(23, 105);
+			this.autoclearselection.Location = new System.Drawing.Point(23, 129);
 			this.autoclearselection.Name = "autoclearselection";
 			this.autoclearselection.Size = new System.Drawing.Size(231, 18);
 			this.autoclearselection.TabIndex = 4;
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// editnewsector
 			// 
 			this.editnewsector.AutoSize = true;
-			this.editnewsector.Location = new System.Drawing.Point(23, 57);
+			this.editnewsector.Location = new System.Drawing.Point(23, 65);
 			this.editnewsector.Name = "editnewsector";
 			this.editnewsector.Size = new System.Drawing.Size(271, 18);
 			this.editnewsector.TabIndex = 2;
@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// additiveselect
 			// 
 			this.additiveselect.AutoSize = true;
-			this.additiveselect.Location = new System.Drawing.Point(23, 81);
+			this.additiveselect.Location = new System.Drawing.Point(23, 97);
 			this.additiveselect.Name = "additiveselect";
 			this.additiveselect.Size = new System.Drawing.Size(211, 18);
 			this.additiveselect.TabIndex = 3;
@@ -166,7 +166,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox2.Controls.Add(this.label7);
 			this.groupBox2.Location = new System.Drawing.Point(6, 90);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(292, 171);
+			this.groupBox2.Size = new System.Drawing.Size(292, 200);
 			this.groupBox2.TabIndex = 17;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Ranges ";
@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.stitchrange.AllowNegative = false;
 			this.stitchrange.AllowRelative = false;
 			this.stitchrange.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.stitchrange.Location = new System.Drawing.Point(167, 95);
+			this.stitchrange.Location = new System.Drawing.Point(167, 111);
 			this.stitchrange.MaxLength = 3;
 			this.stitchrange.Name = "stitchrange";
 			this.stitchrange.Size = new System.Drawing.Size(59, 20);
@@ -186,7 +186,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(232, 130);
+			this.label8.Location = new System.Drawing.Point(232, 154);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(35, 14);
 			this.label8.TabIndex = 15;
@@ -195,7 +195,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(33, 98);
+			this.label2.Location = new System.Drawing.Point(33, 114);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(117, 14);
 			this.label2.TabIndex = 4;
@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitlinedefsrange.AllowNegative = false;
 			this.splitlinedefsrange.AllowRelative = false;
 			this.splitlinedefsrange.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.splitlinedefsrange.Location = new System.Drawing.Point(167, 127);
+			this.splitlinedefsrange.Location = new System.Drawing.Point(167, 151);
 			this.splitlinedefsrange.MaxLength = 3;
 			this.splitlinedefsrange.Name = "splitlinedefsrange";
 			this.splitlinedefsrange.Size = new System.Drawing.Size(59, 20);
@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(232, 98);
+			this.label3.Location = new System.Drawing.Point(232, 114);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(35, 14);
 			this.label3.TabIndex = 6;
@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(47, 130);
+			this.label9.Location = new System.Drawing.Point(47, 154);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(103, 14);
 			this.label9.TabIndex = 13;
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label6
 			// 
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(232, 66);
+			this.label6.Location = new System.Drawing.Point(232, 74);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(35, 14);
 			this.label6.TabIndex = 12;
@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.highlightthingsrange.AllowNegative = false;
 			this.highlightthingsrange.AllowRelative = false;
 			this.highlightthingsrange.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.highlightthingsrange.Location = new System.Drawing.Point(167, 63);
+			this.highlightthingsrange.Location = new System.Drawing.Point(167, 71);
 			this.highlightthingsrange.MaxLength = 3;
 			this.highlightthingsrange.Name = "highlightthingsrange";
 			this.highlightthingsrange.Size = new System.Drawing.Size(59, 20);
@@ -288,7 +288,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(36, 66);
+			this.label7.Location = new System.Drawing.Point(36, 74);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(114, 14);
 			this.label7.TabIndex = 10;

@@ -41,8 +41,10 @@ namespace CodeImp.DoomBuilder.Controls
 	public class FlatSelectorControl : ImageSelectorControl
 	{
 		// Setup
-		public void Initialize()
+		public override void Initialize()
 		{
+			base.Initialize();
+			
 			// Fill autocomplete list
 			name.AutoCompleteCustomSource.AddRange(General.Map.Data.FlatNames.ToArray());
 		}

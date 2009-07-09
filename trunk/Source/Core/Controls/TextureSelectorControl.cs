@@ -47,8 +47,10 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool Required { get { return required; } set { required = value; } }
 
 		// Setup
-		public void Initialize()
+		public override void Initialize()
 		{
+			base.Initialize();
+			
 			// Fill autocomplete list
 			name.AutoCompleteCustomSource.AddRange(General.Map.Data.TextureNames.ToArray());
 			allowclear = true;

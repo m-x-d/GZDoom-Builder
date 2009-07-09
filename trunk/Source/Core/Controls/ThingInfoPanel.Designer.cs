@@ -108,8 +108,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// infopanel
 			// 
-			this.infopanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.infopanel.Controls.Add(this.arg5);
 			this.infopanel.Controls.Add(this.arglbl5);
 			this.infopanel.Controls.Add(this.arglbl4);
@@ -284,8 +282,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// spritepanel
 			// 
-			this.spritepanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.spritepanel.Controls.Add(this.spritename);
 			this.spritepanel.Controls.Add(this.spritetex);
 			this.spritepanel.Location = new System.Drawing.Point(479, 0);
@@ -316,7 +312,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ThingInfoPanel
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.spritepanel);
 			this.Controls.Add(this.infopanel);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

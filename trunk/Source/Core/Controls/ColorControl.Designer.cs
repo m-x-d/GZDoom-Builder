@@ -75,7 +75,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ColorControl
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.BackColor = System.Drawing.Color.Transparent;
 			this.Controls.Add(this.button);
 			this.Controls.Add(this.panel);

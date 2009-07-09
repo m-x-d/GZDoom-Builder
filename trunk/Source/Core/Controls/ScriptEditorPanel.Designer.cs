@@ -354,7 +354,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// ScriptEditorPanel
 			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.Controls.Add(this.splitter);
 			this.Controls.Add(this.toolbar);

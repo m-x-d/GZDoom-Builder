@@ -65,7 +65,11 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
-
+		}
+		
+		// Setup
+		public virtual void Initialize()
+		{
 			// set the max length of texture names
 			name.MaxLength = General.Map.Config.MaxTextureNamelength;
 		}
