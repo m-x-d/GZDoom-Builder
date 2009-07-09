@@ -88,6 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Modes
 		private bool modealreadyswitching = false;
 		private bool pasting = false;
+		private PasteOptions pasteoptions;
 		
 		// Highlighted vertex
 		private MapElement highlighted;
@@ -144,6 +145,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override string EditModeButtonName { get { return General.Editing.PreviousStableMode.Name; } }
 
 		public bool Pasting { get { return pasting; } set { pasting = value; } }
+		public PasteOptions PasteOptions { get { return pasteoptions; } set { pasteoptions = value.Copy(); } }
 		
 		#endregion
 
@@ -972,11 +974,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if((vsector != null) && (parent != null))
 					{
 						// Adjust the floor and ceiling heights of all new sectors
-						ICollection<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
-						foreach(Sector s in newsectors)
+						if(pasteoptions.AdjustHeights)
 						{
-							s.CeilHeight += parent.CeilHeight - vsector.CeilHeight;
-							s.FloorHeight += parent.FloorHeight - vsector.FloorHeight;
+							ICollection<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
+							foreach(Sector s in newsectors)
+							{
+								s.CeilHeight += parent.CeilHeight - vsector.CeilHeight;
+								s.FloorHeight += parent.FloorHeight - vsector.FloorHeight;
+							}
 						}
 					}
 					

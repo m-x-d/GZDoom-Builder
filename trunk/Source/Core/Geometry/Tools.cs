@@ -29,6 +29,8 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.Threading;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -1667,6 +1669,86 @@ namespace CodeImp.DoomBuilder.Geometry
 			return ((sd.LongHighTexture == texturelongname) && sd.HighRequired()) ||
 				   ((sd.LongLowTexture == texturelongname) && sd.LowRequired()) ||
 				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || ((sd.MiddleTexture.Length > 0) && (sd.MiddleTexture[0] != '-')))) ;
+		}
+		
+		#endregion
+		
+		#region ================== Tags and Actions
+		
+		/// <summary>
+		/// This removes all tags on the marked geometry.
+		/// </summary>
+		public static void RemoveMarkedTags()
+		{
+			General.Map.Map.ForAllTags<object>(RemoveTagHandler, true, null);
+		}
+		
+		// This removes tags
+		private static void RemoveTagHandler(MapElement element, bool actionargument, UniversalType type, ref int value, object obj)
+		{
+			value = 0;
+		}
+		
+		/// <summary>
+		/// This renumbers all tags on the marked geometry.
+		/// </summary>
+		public static void RenumberMarkedTags()
+		{
+			Dictionary<int, int> tagsmap = new Dictionary<int, int>();
+			
+			// Collect the tag numbers used in the marked geometry
+			General.Map.Map.ForAllTags(CollectTagNumbersHandler, true, tagsmap);
+			
+			// Get new tags that are unique within unmarked geometry
+			List<int> newtags = General.Map.Map.GetMultipleNewTags(tagsmap.Count, false);
+			
+			// Map the old tags with the new tags
+			int index = 0;
+			List<int> oldkeys = new List<int>(tagsmap.Keys);
+			foreach(int ot in oldkeys) tagsmap[ot] = newtags[index++];
+			
+			// Now renumber the old tags with the new ones
+			General.Map.Map.ForAllTags(RenumberTagsHandler, true, tagsmap);
+		}
+		
+		// This collects tags in a dictionary
+		private static void CollectTagNumbersHandler(MapElement element, bool actionargument, UniversalType type, ref int value, Dictionary<int, int> tagsmap)
+		{
+			if(value != 0)
+				tagsmap[value] = value;
+		}
+
+		// This remaps tags from a dictionary
+		private static void RenumberTagsHandler(MapElement element, bool actionargument, UniversalType type, ref int value, Dictionary<int, int> tagsmap)
+		{
+			if(value != 0)
+				value = tagsmap[value];
+		}
+		
+		/// <summary>
+		/// This removes all actions on the marked geometry.
+		/// </summary>
+		public static void RemoveMarkedActions()
+		{
+			// Remove actions from things
+			foreach(Thing t in General.Map.Map.Things)
+			{
+				if(t.Marked)
+				{
+					t.Action = 0;
+					for(int i = 0; i < Thing.NUM_ARGS; i++) t.Args[i] = 0;
+				}
+			}
+			
+			// Remove actions from linedefs
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				if(l.Marked)
+				{
+					l.Action = 0;
+					for(int i = 0; i < Linedef.NUM_ARGS; i++) l.Args[i] = 0;
+				}
+			}
 		}
 		
 		#endregion

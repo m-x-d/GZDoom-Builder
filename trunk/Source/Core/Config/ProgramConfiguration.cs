@@ -78,7 +78,8 @@ namespace CodeImp.DoomBuilder.Config
 		private bool showerrorswindow;
 		private bool animatevisualselection;
 		private int previousversion;
-
+		private PasteOptions pasteoptions;
+		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
 		private int defaultbrightness = 192;
@@ -125,7 +126,8 @@ namespace CodeImp.DoomBuilder.Config
 		public int ScriptTabWidth { get { return scripttabwidth; } internal set { scripttabwidth = value; } }
 		public bool ScriptAutoIndent { get { return scriptautoindent; } internal set { scriptautoindent = value; } }
 		internal int PreviousVersion { get { return previousversion; } }
-
+		internal PasteOptions PasteOptions { get { return pasteoptions; } set { pasteoptions = value; } }
+		
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
 		public string DefaultCeilingTexture { get { return defaultceiltexture; } set { defaultceiltexture = value; } }
@@ -145,6 +147,7 @@ namespace CodeImp.DoomBuilder.Config
 			// We have no destructor
 			GC.SuppressFinalize(this);
 			defaultthingflags = new List<string>();
+			pasteoptions = new PasteOptions();
 		}
 
 		#endregion
@@ -188,6 +191,7 @@ namespace CodeImp.DoomBuilder.Config
 				showerrorswindow = cfg.ReadSetting("showerrorswindow", true);
 				animatevisualselection = cfg.ReadSetting("animatevisualselection", true);
 				previousversion = cfg.ReadSetting("currentversion", 0);
+				pasteoptions.ReadConfiguration(cfg, "pasteoptions");
 				
 				// Success
 				return true;
@@ -234,7 +238,8 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("showerrorswindow", showerrorswindow);
 			cfg.WriteSetting("animatevisualselection", animatevisualselection);
 			cfg.WriteSetting("currentversion", v.Major * 1000000 + v.Revision);
-
+			pasteoptions.WriteConfiguration(cfg, "pasteoptions");
+			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");
 			cfg.SaveConfiguration(filepathname);

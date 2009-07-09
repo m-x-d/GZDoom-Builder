@@ -93,14 +93,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This is called when something was pasted.
-		public override void OnPasteEnd()
+		public override void OnPasteEnd(PasteOptions options)
 		{
 			General.Map.Map.ClearAllSelected();
 			General.Map.Map.SelectMarkedGeometry(true, true);
-
+			
 			// Switch to EditSelectionMode
 			EditSelectionMode editmode = new EditSelectionMode();
 			editmode.Pasting = true;
+			editmode.PasteOptions = options;
 			General.Editing.ChangeMode(editmode);
 		}
 

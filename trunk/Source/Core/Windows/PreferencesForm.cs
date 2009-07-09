@@ -142,6 +142,9 @@ namespace CodeImp.DoomBuilder.Windows
 			classicbilinear.Checked = General.Settings.ClassicBilinear;
 			visualbilinear.Checked = General.Settings.VisualBilinear;
 			qualitydisplay.Checked = General.Settings.QualityDisplay;
+			
+			// Paste options
+			pasteoptions.Setup(General.Settings.PasteOptions.Copy());
 
 			// Allow plugins to add tabs
 			this.SuspendLayout();
@@ -221,10 +224,13 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ClassicBilinear = classicbilinear.Checked;
 			General.Settings.VisualBilinear = visualbilinear.Checked;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
-
+			
+			// Paste options
+			General.Settings.PasteOptions = pasteoptions.GetOptions();
+			
 			// Let the plugins know we're closing
 			General.Plugins.OnClosePreferences(controller);
-
+			
 			// Close
 			this.DialogResult = DialogResult.OK;
 			this.Close();

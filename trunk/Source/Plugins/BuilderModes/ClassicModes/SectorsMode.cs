@@ -560,7 +560,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				editpressed = true;
 
 				// Highlighted item not selected?
-				if(!highlighted.Selected && BuilderPlug.Me.AutoClearSelection)
+				if(!highlighted.Selected && (BuilderPlug.Me.AutoClearSelection || (General.Map.Map.SelectedSectorsCount == 0)))
 				{
 					// Make this the only selection
 					General.Map.Map.ClearSelectedSectors();
