@@ -196,9 +196,11 @@ namespace CodeImp.DoomBuilder.IO
 			
 			// Number of lumps
 			numlumps = reader.ReadInt32();
+			if(numlumps < 0) throw new IOException("Invalid number of lumps in wad file.");
 
 			// Lumps table offset
 			lumpsoffset = reader.ReadInt32();
+			if(lumpsoffset < 0) throw new IOException("Invalid lumps offset in wad file.");
 
 			// Seek to the lumps table
 			file.Seek(lumpsoffset, SeekOrigin.Begin);

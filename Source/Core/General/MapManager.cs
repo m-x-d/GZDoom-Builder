@@ -252,7 +252,16 @@ namespace CodeImp.DoomBuilder
 			// Create temp wadfile
 			tempfile = General.MakeTempFilename(temppath);
 			General.WriteLogLine("Creating temporary file: " + tempfile);
-			tempwad = new WAD(tempfile);
+			#if DEBUG
+				tempwad = new WAD(tempfile);
+			#else
+				try { tempwad = new WAD(tempfile); }
+				catch(Exception e)
+				{
+					General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+					return false;
+				}
+			#endif
 			
 			// Read the map from temp file
 			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
@@ -329,17 +338,35 @@ namespace CodeImp.DoomBuilder
 			// Create temp wadfile
 			tempfile = General.MakeTempFilename(temppath);
 			General.WriteLogLine("Creating temporary file: " + tempfile);
-			tempwad = new WAD(tempfile);
+			#if DEBUG
+				tempwad = new WAD(tempfile);
+			#else
+				try { tempwad = new WAD(tempfile); }
+				catch(Exception e)
+				{
+					General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+					return false;
+				}
+			#endif
 			
 			// Now open the map file
 			General.WriteLogLine("Opening source file: " + filepathname);
-			mapwad = new WAD(filepathname, true);
-
+			#if DEBUG
+				mapwad = new WAD(filepathname, true);
+			#else
+				try { mapwad = new WAD(filepathname, true); }
+				catch(Exception e)
+				{
+					General.ShowErrorMessage("Error while opening source wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+					return false;
+				}
+			#endif
+			
 			// Copy the map lumps to the temp file
 			General.WriteLogLine("Copying map lumps to temporary file...");
 			CopyLumpsByType(mapwad, options.CurrentName, tempwad, TEMP_MAP_HEADER,
 							true, true, true, true);
-
+			
 			// Close the map file
 			mapwad.Dispose();
 			
@@ -678,8 +705,17 @@ namespace CodeImp.DoomBuilder
 
 				// Make the temporary WAD file
 				General.WriteLogLine("Creating temporary build file: " + tempfile1);
-				buildwad = new WAD(tempfile1);
-
+				#if DEBUG
+					buildwad = new WAD(tempfile1);
+				#else
+					try { buildwad = new WAD(tempfile1); }
+					catch(Exception e)
+					{
+						General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
+						return false;
+					}
+				#endif
+				
 				// Determine source file
 				if(filepathname.Length > 0)
 					sourcefile = filepathname;
@@ -715,10 +751,19 @@ namespace CodeImp.DoomBuilder
 				if(compiler.Run())
 				{
 					// Open the output file
-					buildwad = new WAD(tempfile2);
+					try { buildwad = new WAD(tempfile2); }
+					catch(Exception e)
+					{
+						General.WriteLogLine(e.GetType().Name + " while reading build wad file: " + e.Message);
+						buildwad = null;
+					}
 					
-					// Output lumps complete?
-					lumpscomplete = VerifyNodebuilderLumps(buildwad, BUILD_MAP_HEADER);
+					if(buildwad != null)
+					{
+						// Output lumps complete?
+						lumpscomplete = VerifyNodebuilderLumps(buildwad, BUILD_MAP_HEADER);
+					}
+					
 					if(lumpscomplete)
 					{
 						// Copy nodebuilder lumps to temp file
@@ -735,7 +780,7 @@ namespace CodeImp.DoomBuilder
 					}
 					
 					// Done with the build wad
-					buildwad.Dispose();
+					if(buildwad != null) buildwad.Dispose();
 				}
 				
 				// Clean up

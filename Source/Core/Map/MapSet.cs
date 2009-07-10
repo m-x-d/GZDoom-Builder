@@ -2488,17 +2488,20 @@ namespace CodeImp.DoomBuilder.Map
 		public List<int> GetMultipleNewTags(int count)
 		{
 			List<int> newtags = new List<int>(count);
-			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
-			ForAllTags(NewTagHandler, false, usedtags);
-			ForAllTags(NewTagHandler, true, usedtags);
-			
-			// Find unused tags and add them
-			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
+			if(count > 0)
 			{
-				if(!usedtags.ContainsKey(i))
+				Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
+				ForAllTags(NewTagHandler, false, usedtags);
+				ForAllTags(NewTagHandler, true, usedtags);
+				
+				// Find unused tags and add them
+				for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
 				{
-					newtags.Add(i);
-					if(newtags.Count == count) break;
+					if(!usedtags.ContainsKey(i))
+					{
+						newtags.Add(i);
+						if(newtags.Count == count) break;
+					}
 				}
 			}
 			
@@ -2509,19 +2512,22 @@ namespace CodeImp.DoomBuilder.Map
 		public List<int> GetMultipleNewTags(int count, bool marked)
 		{
 			List<int> newtags = new List<int>(count);
-			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
-			ForAllTags(NewTagHandler, marked, usedtags);
-
-			// Find unused tags and add them
-			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
+			if(count > 0)
 			{
-				if(!usedtags.ContainsKey(i))
+				Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
+				ForAllTags(NewTagHandler, marked, usedtags);
+
+				// Find unused tags and add them
+				for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
 				{
-					newtags.Add(i);
-					if(newtags.Count == count) break;
+					if(!usedtags.ContainsKey(i))
+					{
+						newtags.Add(i);
+						if(newtags.Count == count) break;
+					}
 				}
 			}
-
+			
 			return newtags;
 		}
 
