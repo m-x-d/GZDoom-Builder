@@ -115,12 +115,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label4
 			// 
+			label4.AutoSize = true;
 			label4.Location = new System.Drawing.Point(15, 190);
 			label4.Name = "label4";
-			label4.Size = new System.Drawing.Size(349, 34);
+			label4.Size = new System.Drawing.Size(312, 28);
 			label4.TabIndex = 17;
-			label4.Text = "Drag items to change order (lower items override higher items). Grayed items are " +
-				"loaded according to the game configuration.";
+			label4.Text = "Drag items to change order (lower items override higher items).\r\nGrayed items are" +
+				" loaded according to the game configuration.";
 			// 
 			// apply
 			// 
