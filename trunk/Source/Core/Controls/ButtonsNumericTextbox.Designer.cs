@@ -1,6 +1,6 @@
 namespace CodeImp.DoomBuilder.Controls
 {
-	partial class ClickableNumericTextbox
+	partial class ButtonsNumericTextbox
 	{
 		/// <summary> 
 		/// Required designer variable.
@@ -35,12 +35,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// buttons
 			// 
 			this.buttons.Location = new System.Drawing.Point(163, 0);
-			this.buttons.Maximum = 200;
-			this.buttons.Minimum = 1;
+			this.buttons.Minimum = -100;
 			this.buttons.Name = "buttons";
 			this.buttons.Size = new System.Drawing.Size(18, 24);
 			this.buttons.TabIndex = 1;
-			this.buttons.Value = 1;
 			this.buttons.ValueChanged += new System.EventHandler(this.buttons_ValueChanged);
 			// 
 			// textbox
@@ -54,7 +52,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.textbox.Size = new System.Drawing.Size(160, 20);
 			this.textbox.TabIndex = 0;
 			this.textbox.TextChanged += new System.EventHandler(this.textbox_TextChanged);
-			this.textbox.Leave += new System.EventHandler(this.textbox_Leave);
 			// 
 			// ClickableNumericTextbox
 			// 

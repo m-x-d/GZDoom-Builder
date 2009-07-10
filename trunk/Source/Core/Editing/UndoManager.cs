@@ -222,6 +222,14 @@ namespace CodeImp.DoomBuilder.Editing
 				// Dispose all redos
 				foreach(UndoSnapshot u in redos) u.Dispose();
 				redos.Clear();
+				
+				// If the current snapshot is meant for redo, trash it also
+				if(isundosnapshot && (snapshot != null))
+				{
+					FinishRecording();
+					isundosnapshot = false;
+					snapshot = null;
+				}
 			}
 		}
 
@@ -233,6 +241,14 @@ namespace CodeImp.DoomBuilder.Editing
 				// Dispose all undos
 				foreach(UndoSnapshot u in undos) u.Dispose();
 				undos.Clear();
+				
+				// If the current snapshot is meant for undo, trash it also
+				if(!isundosnapshot && (snapshot != null))
+				{
+					FinishRecording();
+					isundosnapshot = false;
+					snapshot = null;
+				}
 			}
 		}
 
@@ -549,34 +565,38 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This removes a previously made undo
-		public void WithdrawUndo(int ticket)
+		public void WithdrawUndo()
 		{
+			// Previously, withdrawing an undo level was possible, because each undo level contained
+			// an entire snapshot of the map. With the new progressive undo system, you cannot ignore
+			// any changes, so we have to actually perform the undo and trash the redo it creates.
+			PerformUndo(1);
+			ClearAllRedos();
+			
+			/*
 			// Anything to undo?
-			if(undos.Count > 0)
+			if((undos.Count > 0) || ((snapshot != null) && !isundosnapshot))
 			{
-				// Check if the ticket id matches
-				if(ticket == undos[0].TicketID)
+				if(snapshot != null)
 				{
-					General.WriteLogLine("Withdrawing undo snapshot \"" + undos[0].Description + "\", Ticket ID " + ticket + "...");
+					General.WriteLogLine("Withdrawing undo snapshot \"" + snapshot.Description + "\", Ticket ID " + snapshot.TicketID + "...");
 					
-					if(snapshot != null)
-					{
-						// Just trash this recording
-						// You must call CreateUndo first before making any more changes
-						FinishRecording();
-						isundosnapshot = false;
-						snapshot = null;
-					}
-					else
-					{
-						throw new Exception("No undo is recording that can be withdrawn");
-					}
-					
-					// Update
-					dobackgroundwork = true;
-					General.MainWindow.UpdateInterface();
+					// Just trash this recording
+					// You must call CreateUndo first before making any more changes
+					FinishRecording();
+					isundosnapshot = false;
+					snapshot = null;
 				}
+				else
+				{
+					throw new Exception("No undo is recording that can be withdrawn");
+				}
+				
+				// Update
+				dobackgroundwork = true;
+				General.MainWindow.UpdateInterface();
 			}
+			*/
 		}
 
 		// This performs an undo
@@ -605,7 +625,7 @@ namespace CodeImp.DoomBuilder.Editing
 					{
 						// Cancel volatile mode, if any
 						// This returns false when mode was not volatile
-						if(!General.CancelVolatileMode())
+						if(!General.Editing.CancelVolatileMode())
 						{
 							// Go for all levels to undo
 							for(int lvl = 0; lvl < levels; lvl++)
@@ -736,7 +756,7 @@ namespace CodeImp.DoomBuilder.Editing
 					{
 						// Cancel volatile mode, if any
 						// This returns false when mode was not volatile
-						if(!General.CancelVolatileMode())
+						if(!General.Editing.CancelVolatileMode())
 						{
 							// Go for all levels to undo
 							for(int lvl = 0; lvl < levels; lvl++)

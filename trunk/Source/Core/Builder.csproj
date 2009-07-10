@@ -231,11 +231,11 @@
     <Compile Include="Controls\CheckboxArrayControl.Designer.cs">
       <DependentUpon>CheckboxArrayControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ClickableNumericTextbox.cs">
+    <Compile Include="Controls\ButtonsNumericTextbox.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ClickableNumericTextbox.Designer.cs">
-      <DependentUpon>ClickableNumericTextbox.cs</DependentUpon>
+    <Compile Include="Controls\ButtonsNumericTextbox.Designer.cs">
+      <DependentUpon>ButtonsNumericTextbox.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ColorControl.cs">
       <SubType>UserControl</SubType>
@@ -833,9 +833,9 @@
       <SubType>Designer</SubType>
       <DependentUpon>ArgumentBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ClickableNumericTextbox.resx">
+    <EmbeddedResource Include="Controls\ButtonsNumericTextbox.resx">
       <SubType>Designer</SubType>
-      <DependentUpon>ClickableNumericTextbox.cs</DependentUpon>
+      <DependentUpon>ButtonsNumericTextbox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\AngleForm.resx">
       <SubType>Designer</SubType>

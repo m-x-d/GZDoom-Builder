@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Editing
 				if((General.Editing.Mode != null) && General.Editing.Mode.Attributes.Volatile && this.attribs.Volatile)
 				{
 					// First cancel previous volatile mode
-					General.CancelVolatileMode();
+					General.Editing.CancelVolatileMode();
 				}
 				
 				// When in VisualMode and switching to the same VisualMode, then we switch back to the previous classic mode

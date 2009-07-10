@@ -185,6 +185,13 @@ namespace CodeImp.DoomBuilder.Controls
 			base.OnValidating(e);
 		}
 		
+		// This checks if the number is relative
+		public bool CheckIsRelative()
+		{
+			// Prefixed with ++ or --?
+			return (this.Text.StartsWith("++") || this.Text.StartsWith("--"));
+		}
+		
 		// This determines the result value
 		public int GetResult(int original)
 		{

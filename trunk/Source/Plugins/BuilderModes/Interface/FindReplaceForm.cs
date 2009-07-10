@@ -176,9 +176,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Withdraw the undo step if nothing was replaced
 				if (resultslist.Items.Count <= 0)
-				{
-					General.Map.UndoRedo.WithdrawUndo(ticket);
-				}
+					General.Map.UndoRedo.WithdrawUndo();
 			}
 			else
 			{

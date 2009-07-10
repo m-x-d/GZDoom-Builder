@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private Type prevmode;
 		private Type prevstablemode;
 		private Type prevclassicmode;
+		private bool disengaging;
 
 		// Disposing
 		private bool isdisposed = false;
@@ -178,7 +179,43 @@ namespace CodeImp.DoomBuilder.Editing
 		#endregion
 		
 		#region ================== Methods
-
+		
+		// This cancels a volatile mode, as if the user presses cancel
+		public bool CancelVolatileMode()
+		{
+			// Volatile mode?
+			if((General.Map != null) & (mode != null) && mode.Attributes.Volatile && !disengaging)
+			{
+				// Cancel
+				disengaging = true;
+				mode.OnCancel();
+				return true;
+			}
+			else
+			{
+				// Mode is not volatile
+				return false;
+			}
+		}
+		
+		// This disengages a volatile mode, leaving the choice to cancel or accept to the editing mode
+		public bool DisengageVolatileMode()
+		{
+			// Volatile mode?
+			if((General.Map != null) && (mode != null) && mode.Attributes.Volatile && !disengaging)
+			{
+				// Change back to normal mode
+				disengaging = true;
+				ChangeMode(prevstablemode.Name);
+				return true;
+			}
+			else
+			{
+				// Mode is not volatile
+				return false;
+			}
+		}
+		
 		// This returns specific editing mode info by name
 		internal EditModeInfo GetEditModeInfo(string editmodename)
 		{
@@ -317,6 +354,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(General.Plugins.ModeChanges(oldmode, newmode))
 			{
 				// Disenagage old mode
+				disengaging = true;
 				if(oldmode != null) oldmode.OnDisengage();
 				
 				// Reset cursor
@@ -326,6 +364,7 @@ namespace CodeImp.DoomBuilder.Editing
 				General.WriteLogLine("Editing mode changes from " + TypeNameOrNull(oldmode) + " to " + TypeNameOrNull(nextmode));
 				General.WriteLogLine("Previous stable mode is " + TypeNameOrNull(prevstablemode) + ", previous classic mode is " + TypeNameOrNull(prevclassicmode));
 				mode = newmode;
+				disengaging = false;
 				
 				// Engage new mode
 				if(newmode != null) newmode.OnEngage();

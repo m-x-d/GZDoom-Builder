@@ -729,9 +729,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode = ModifyMode.None;
 			sectorbrightness = null;
 			
-			// Nothing changed? Then writhdraw the undo
+			// Nothing changed? Then withdraw the undo
 			if(editstartpos.Y == Cursor.Position.Y)
-				General.Map.UndoRedo.WithdrawUndo(undoticket);
+			{
+				if((General.Map.UndoRedo.NextUndo != null) &&
+				   (General.Map.UndoRedo.NextUndo.TicketID == undoticket))
+					General.Map.UndoRedo.WithdrawUndo();
+			}
 			
 			// Update
 			General.Map.Map.Update();
