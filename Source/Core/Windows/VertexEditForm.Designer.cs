@@ -32,13 +32,13 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label6;
 			this.groupposition = new System.Windows.Forms.GroupBox();
-			this.positiony = new CodeImp.DoomBuilder.Controls.NumericTextbox();
-			this.positionx = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.positionx = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.positiony = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			tabproperties = new System.Windows.Forms.TabPage();
 			label1 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
@@ -65,10 +65,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupposition.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupposition.Controls.Add(label1);
 			this.groupposition.Controls.Add(this.positiony);
-			this.groupposition.Controls.Add(label6);
 			this.groupposition.Controls.Add(this.positionx);
+			this.groupposition.Controls.Add(label1);
+			this.groupposition.Controls.Add(label6);
 			this.groupposition.Location = new System.Drawing.Point(7, 6);
 			this.groupposition.Name = "groupposition";
 			this.groupposition.Size = new System.Drawing.Size(415, 194);
@@ -79,22 +79,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(188, 39);
+			label1.Location = new System.Drawing.Point(212, 39);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(18, 14);
 			label1.TabIndex = 23;
 			label1.Text = "Y:";
-			// 
-			// positiony
-			// 
-			this.positiony.AllowDecimal = false;
-			this.positiony.AllowNegative = true;
-			this.positiony.AllowRelative = true;
-			this.positiony.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.positiony.Location = new System.Drawing.Point(211, 36);
-			this.positiony.Name = "positiony";
-			this.positiony.Size = new System.Drawing.Size(95, 20);
-			this.positiony.TabIndex = 1;
 			// 
 			// label6
 			// 
@@ -104,17 +93,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label6.Size = new System.Drawing.Size(17, 14);
 			label6.TabIndex = 21;
 			label6.Text = "X:";
-			// 
-			// positionx
-			// 
-			this.positionx.AllowDecimal = false;
-			this.positionx.AllowNegative = true;
-			this.positionx.AllowRelative = true;
-			this.positionx.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.positionx.Location = new System.Drawing.Point(68, 36);
-			this.positionx.Name = "positionx";
-			this.positionx.Size = new System.Drawing.Size(95, 20);
-			this.positionx.TabIndex = 0;
 			// 
 			// tabs
 			// 
@@ -180,6 +158,28 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// positionx
+			// 
+			this.positionx.AllowDecimal = false;
+			this.positionx.AllowNegative = true;
+			this.positionx.AllowRelative = true;
+			this.positionx.ButtonStep = 1;
+			this.positionx.Location = new System.Drawing.Point(68, 34);
+			this.positionx.Name = "positionx";
+			this.positionx.Size = new System.Drawing.Size(120, 24);
+			this.positionx.TabIndex = 24;
+			// 
+			// positiony
+			// 
+			this.positiony.AllowDecimal = false;
+			this.positiony.AllowNegative = true;
+			this.positiony.AllowRelative = true;
+			this.positiony.ButtonStep = 1;
+			this.positiony.Location = new System.Drawing.Point(236, 34);
+			this.positiony.Name = "positiony";
+			this.positiony.Size = new System.Drawing.Size(120, 24);
+			this.positiony.TabIndex = 25;
+			// 
 			// VertexEditForm
 			// 
 			this.AcceptButton = this.apply;
@@ -215,8 +215,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
 		private CodeImp.DoomBuilder.Controls.FieldsEditorControl fieldslist;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox positiony;
 		private System.Windows.Forms.GroupBox groupposition;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox positionx;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox positiony;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox positionx;
 	}
 }

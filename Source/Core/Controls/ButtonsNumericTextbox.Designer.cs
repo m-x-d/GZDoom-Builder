@@ -34,8 +34,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// buttons
 			// 
+			this.buttons.LargeChange = 10000;
 			this.buttons.Location = new System.Drawing.Point(163, 0);
-			this.buttons.Minimum = -100;
+			this.buttons.Maximum = 10000;
+			this.buttons.Minimum = -10000;
 			this.buttons.Name = "buttons";
 			this.buttons.Size = new System.Drawing.Size(18, 24);
 			this.buttons.TabIndex = 1;
@@ -53,13 +55,13 @@ namespace CodeImp.DoomBuilder.Controls
 			this.textbox.TabIndex = 0;
 			this.textbox.TextChanged += new System.EventHandler(this.textbox_TextChanged);
 			// 
-			// ClickableNumericTextbox
+			// ButtonsNumericTextbox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.buttons);
 			this.Controls.Add(this.textbox);
-			this.Name = "ClickableNumericTextbox";
+			this.Name = "ButtonsNumericTextbox";
 			this.Size = new System.Drawing.Size(289, 68);
 			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.ClickableNumericTextbox_Layout);
 			this.Resize += new System.EventHandler(this.ClickableNumericTextbox_Resize);

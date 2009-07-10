@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder.Windows
 			floortex.Initialize();
 			ceilingtex.Initialize();
 
+			// Set steps for brightness field
+			brightness.StepValues = General.Map.Config.BrightnessLevels;
+
 			// Custom fields?
 			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);

@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			this.combobox = new System.Windows.Forms.ComboBox();
 			this.button = new System.Windows.Forms.Button();
+			this.scrollbuttons = new System.Windows.Forms.VScrollBar();
 			this.SuspendLayout();
 			// 
 			// combobox
@@ -40,6 +41,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.combobox.Size = new System.Drawing.Size(149, 22);
 			this.combobox.TabIndex = 0;
 			this.combobox.Validating += new System.ComponentModel.CancelEventHandler(this.combobox_Validating);
+			this.combobox.TextChanged += new System.EventHandler(this.combobox_TextChanged);
 			// 
 			// button
 			// 
@@ -55,10 +57,23 @@ namespace CodeImp.DoomBuilder.Controls
 			this.button.Visible = false;
 			this.button.Click += new System.EventHandler(this.button_Click);
 			// 
+			// scrollbuttons
+			// 
+			this.scrollbuttons.LargeChange = 10000;
+			this.scrollbuttons.Location = new System.Drawing.Point(186, -1);
+			this.scrollbuttons.Maximum = 10000;
+			this.scrollbuttons.Minimum = -10000;
+			this.scrollbuttons.Name = "scrollbuttons";
+			this.scrollbuttons.Size = new System.Drawing.Size(18, 24);
+			this.scrollbuttons.TabIndex = 2;
+			this.scrollbuttons.Visible = false;
+			this.scrollbuttons.ValueChanged += new System.EventHandler(this.scrollbuttons_ValueChanged);
+			// 
 			// ArgumentBox
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.Controls.Add(this.scrollbuttons);
 			this.Controls.Add(this.button);
 			this.Controls.Add(this.combobox);
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -74,5 +89,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private System.Windows.Forms.ComboBox combobox;
 		private System.Windows.Forms.Button button;
+		private System.Windows.Forms.VScrollBar scrollbuttons;
 	}
 }

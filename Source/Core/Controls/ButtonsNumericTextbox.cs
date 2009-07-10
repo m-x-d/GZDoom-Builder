@@ -32,25 +32,32 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Controls
 {
+	[Designer(typeof(ButtonsNumericTextboxDesigner))]
 	public partial class ButtonsNumericTextbox : UserControl
 	{
 		#region ================== Events
 
-		public event EventHandler TextChanged;
+		public event EventHandler WhenTextChanged;
 
 		#endregion
 
 		#region ================== Variables
 		
 		private bool ignorebuttonchange = false;
+		private StepsList steps = null;
+		private int stepsize = 1;
 		
 		#endregion
 
 		#region ================== Properties
-		
+
+		public bool AllowDecimal { get { return textbox.AllowDecimal; } set { textbox.AllowDecimal = value; } }
 		public bool AllowNegative { get { return textbox.AllowNegative; } set { textbox.AllowNegative = value; } }
 		public bool AllowRelative { get { return textbox.AllowRelative; } set { textbox.AllowRelative = value; } }
+		public int ButtonStep { get { return stepsize; } set { stepsize = value; } }
 		public string Text { get { return textbox.Text; } set { textbox.Text = value; } }
+		internal NumericTextbox Textbox { get { return textbox; } }
+		public StepsList StepValues { get { return steps; } set { steps = value; } }
 		
 		#endregion
 		
@@ -61,6 +68,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			InitializeComponent();
 			buttons.Value = 0;
+			textbox.MouseWheel += textbox_MouseWheel;
 		}
 
 		#endregion
@@ -92,7 +100,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Text in textbox changes
 		private void textbox_TextChanged(object sender, EventArgs e)
 		{
-			if(TextChanged != null) TextChanged(sender, e);
+			if(WhenTextChanged != null) WhenTextChanged(sender, e);
 			buttons.Enabled = !textbox.CheckIsRelative();
 		}
 		
@@ -104,14 +112,40 @@ namespace CodeImp.DoomBuilder.Controls
 				ignorebuttonchange = true;
 				if(!textbox.CheckIsRelative())
 				{
-					int newvalue = textbox.GetResult(0) - buttons.Value;
-					textbox.Text = newvalue.ToString();
+					if(steps != null)
+					{
+						if(buttons.Value < 0)
+							textbox.Text = steps.GetNextHigher(textbox.GetResult(0)).ToString();
+						else if(buttons.Value > 0)
+							textbox.Text = steps.GetNextLower(textbox.GetResult(0)).ToString();
+					}
+					else if(textbox.AllowDecimal)
+					{
+						float newvalue = textbox.GetResultFloat(0.0f) - (float)(buttons.Value * stepsize);
+						if((newvalue < 0.0f) && !textbox.AllowNegative) newvalue = 0.0f;
+						textbox.Text = newvalue.ToString();
+					}
+					else
+					{
+						int newvalue = textbox.GetResult(0) - (buttons.Value * stepsize);
+						if((newvalue < 0) && !textbox.AllowNegative) newvalue = 0;
+						textbox.Text = newvalue.ToString();
+					}
 				}
 				buttons.Value = 0;
 				ignorebuttonchange = false;
 			}
 		}
 
+		// Mouse wheel used
+		private void textbox_MouseWheel(object sender, MouseEventArgs e)
+		{
+			if(e.Delta < 0)
+				buttons.Value += buttons.SmallChange;
+			else if(e.Delta > 0)
+				buttons.Value -= buttons.SmallChange;
+		}
+		
 		#endregion
 		
 		#region ================== Methods

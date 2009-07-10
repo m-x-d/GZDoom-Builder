@@ -40,7 +40,8 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		private TypeHandler typehandler;
-
+		private bool ignorebuttonchange = false;
+		
 		#endregion
 
 		#region ================== Properties
@@ -54,6 +55,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
+			scrollbuttons.Value = 0;
 		}
 
 		#endregion
@@ -65,10 +67,13 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(button.Visible)
 				combobox.Width = ClientRectangle.Width - button.Width - 2;
+			else if(scrollbuttons.Visible)
+				combobox.Width = ClientRectangle.Width - scrollbuttons.Width - 2;
 			else
 				combobox.Width = ClientRectangle.Width;
 
 			button.Left = ClientRectangle.Width - button.Width;
+			scrollbuttons.Left = ClientRectangle.Width - scrollbuttons.Width;
 			Height = button.Height;
 		}
 
@@ -89,8 +94,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(combobox.Text.Trim().Length > 0)
 			{
 				// Prefixed?
-				if(combobox.Text.Trim().StartsWith("++") ||
-				   combobox.Text.Trim().StartsWith("--"))
+				if(CheckIsRelative())
 				{
 					// Try parsing to number
 					if(!int.TryParse(str, NumberStyles.Integer, CultureInfo.CurrentCulture, out num))
@@ -121,6 +125,30 @@ namespace CodeImp.DoomBuilder.Controls
 			combobox.Focus();
 			combobox.SelectAll();
 		}
+
+		// Text changes
+		private void combobox_TextChanged(object sender, EventArgs e)
+		{
+			scrollbuttons.Enabled = !CheckIsRelative();
+		}
+		
+		// Scroll buttons clicked
+		private void scrollbuttons_ValueChanged(object sender, EventArgs e)
+		{
+			if(!ignorebuttonchange)
+			{
+				ignorebuttonchange = true;
+				if(!CheckIsRelative())
+				{
+					typehandler.SetValue(combobox.Text);
+					int newvalue = GetResult(0) - scrollbuttons.Value;
+					if(newvalue < 0) newvalue = 0;
+					combobox.Text = newvalue.ToString();
+				}
+				scrollbuttons.Value = 0;
+				ignorebuttonchange = false;
+			}
+		}
 		
 		#endregion
 		
@@ -146,6 +174,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Show the combobox
 				button.Visible = false;
+				scrollbuttons.Visible = false;
 				combobox.DropDownStyle = ComboBoxStyle.DropDown;
 				combobox.Items.AddRange(typehandler.GetEnumList().ToArray());
 			}
@@ -154,12 +183,14 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Show the button
 				button.Visible = true;
+				scrollbuttons.Visible = false;
 				combobox.DropDownStyle = ComboBoxStyle.Simple;
 			}
 			else
 			{
-				// Show just a textbox
+				// Show textbox with scroll buttons
 				button.Visible = false;
+				scrollbuttons.Visible = true;
 				combobox.DropDownStyle = ComboBoxStyle.Simple;
 			}
 			
@@ -185,6 +216,13 @@ namespace CodeImp.DoomBuilder.Controls
 			typehandler.SetValue("");
 			combobox.SelectedItem = null;
 			combobox.Text = "";
+		}
+
+		// This checks if the number is relative
+		public bool CheckIsRelative()
+		{
+			// Prefixed with ++ or --?
+			return (combobox.Text.Trim().StartsWith("++") || combobox.Text.Trim().StartsWith("--"));
 		}
 		
 		// This returns the selected value
