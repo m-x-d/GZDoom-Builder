@@ -91,7 +91,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return (General.Map.Map.GetMarkedVertices(true).Count > 0) ||
 				   (General.Map.Map.GetMarkedThings(true).Count > 0);
 		}
-
+		
+		// This is called when pasting begins
+		public override bool OnPasteBegin(PasteOptions options)
+		{
+			// These modes support pasting
+			return true;
+		}
+		
 		// This is called when something was pasted.
 		public override void OnPasteEnd(PasteOptions options)
 		{

@@ -179,8 +179,8 @@ namespace CodeImp.DoomBuilder.Editing
 		// Called when the marked geometry has been copied.
 		public virtual void OnCopyEnd() { }
 		
-		// Called before pasting. Return false when paste should be cancelled.
-		public virtual bool OnPasteBegin(PasteOptions options) { return true; }
+		// Called before pasting. Override this and return true to indicate that paste is allowed to contiue.
+		public virtual bool OnPasteBegin(PasteOptions options) { return false; }
 
 		// Called after new geometry has been pasted in. The new geometry is marked.
 		public virtual void OnPasteEnd(PasteOptions options) { }
