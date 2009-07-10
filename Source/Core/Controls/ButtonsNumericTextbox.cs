@@ -140,10 +140,20 @@ namespace CodeImp.DoomBuilder.Controls
 		// Mouse wheel used
 		private void textbox_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if(e.Delta < 0)
-				buttons.Value += buttons.SmallChange;
-			else if(e.Delta > 0)
-				buttons.Value -= buttons.SmallChange;
+			if(steps != null)
+			{
+				if(e.Delta > 0)
+					textbox.Text = steps.GetNextHigher(textbox.GetResult(0)).ToString();
+				else if(e.Delta < 0)
+					textbox.Text = steps.GetNextLower(textbox.GetResult(0)).ToString();
+			}
+			else
+			{
+				if(e.Delta < 0)
+					buttons.Value += 1;
+				else if(e.Delta > 0)
+					buttons.Value -= 1;
+			}
 		}
 		
 		#endregion
