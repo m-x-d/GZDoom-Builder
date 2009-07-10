@@ -37,16 +37,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.editnewsector = new System.Windows.Forms.CheckBox();
 			this.additiveselect = new System.Windows.Forms.CheckBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.stitchrange = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.splitlinedefsrange = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.stitchrange = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.highlightthingsrange = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.highlightrange = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
-			this.splitlinedefsrange = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
-			this.highlightrange = new CodeImp.DoomBuilder.Controls.NumericTextbox();
-			this.highlightthingsrange = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -152,16 +152,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.splitlinedefsrange);
 			this.groupBox2.Controls.Add(this.stitchrange);
+			this.groupBox2.Controls.Add(this.highlightthingsrange);
+			this.groupBox2.Controls.Add(this.highlightrange);
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.label2);
-			this.groupBox2.Controls.Add(this.splitlinedefsrange);
 			this.groupBox2.Controls.Add(this.label3);
 			this.groupBox2.Controls.Add(this.label9);
 			this.groupBox2.Controls.Add(this.label5);
 			this.groupBox2.Controls.Add(this.label6);
-			this.groupBox2.Controls.Add(this.highlightrange);
-			this.groupBox2.Controls.Add(this.highlightthingsrange);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label7);
 			this.groupBox2.Location = new System.Drawing.Point(6, 90);
@@ -171,17 +171,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Ranges ";
 			// 
+			// splitlinedefsrange
+			// 
+			this.splitlinedefsrange.AllowDecimal = false;
+			this.splitlinedefsrange.AllowNegative = false;
+			this.splitlinedefsrange.AllowRelative = false;
+			this.splitlinedefsrange.ButtonStep = 5;
+			this.splitlinedefsrange.Location = new System.Drawing.Point(167, 149);
+			this.splitlinedefsrange.Name = "splitlinedefsrange";
+			this.splitlinedefsrange.Size = new System.Drawing.Size(59, 24);
+			this.splitlinedefsrange.StepValues = null;
+			this.splitlinedefsrange.TabIndex = 19;
+			// 
 			// stitchrange
 			// 
 			this.stitchrange.AllowDecimal = false;
 			this.stitchrange.AllowNegative = false;
 			this.stitchrange.AllowRelative = false;
-			this.stitchrange.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.stitchrange.Location = new System.Drawing.Point(167, 111);
-			this.stitchrange.MaxLength = 3;
+			this.stitchrange.ButtonStep = 5;
+			this.stitchrange.Location = new System.Drawing.Point(167, 109);
 			this.stitchrange.Name = "stitchrange";
-			this.stitchrange.Size = new System.Drawing.Size(59, 20);
-			this.stitchrange.TabIndex = 5;
+			this.stitchrange.Size = new System.Drawing.Size(59, 24);
+			this.stitchrange.StepValues = null;
+			this.stitchrange.TabIndex = 18;
+			// 
+			// highlightthingsrange
+			// 
+			this.highlightthingsrange.AllowDecimal = false;
+			this.highlightthingsrange.AllowNegative = false;
+			this.highlightthingsrange.AllowRelative = false;
+			this.highlightthingsrange.ButtonStep = 5;
+			this.highlightthingsrange.Location = new System.Drawing.Point(167, 69);
+			this.highlightthingsrange.Name = "highlightthingsrange";
+			this.highlightthingsrange.Size = new System.Drawing.Size(59, 24);
+			this.highlightthingsrange.StepValues = null;
+			this.highlightthingsrange.TabIndex = 17;
+			// 
+			// highlightrange
+			// 
+			this.highlightrange.AllowDecimal = false;
+			this.highlightrange.AllowNegative = false;
+			this.highlightrange.AllowRelative = false;
+			this.highlightrange.ButtonStep = 5;
+			this.highlightrange.Location = new System.Drawing.Point(167, 29);
+			this.highlightrange.Name = "highlightrange";
+			this.highlightrange.Size = new System.Drawing.Size(59, 24);
+			this.highlightrange.StepValues = null;
+			this.highlightrange.TabIndex = 16;
 			// 
 			// label8
 			// 
@@ -201,18 +237,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label2.TabIndex = 4;
 			this.label2.Text = "Stitch geometry within:";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// splitlinedefsrange
-			// 
-			this.splitlinedefsrange.AllowDecimal = false;
-			this.splitlinedefsrange.AllowNegative = false;
-			this.splitlinedefsrange.AllowRelative = false;
-			this.splitlinedefsrange.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.splitlinedefsrange.Location = new System.Drawing.Point(167, 151);
-			this.splitlinedefsrange.MaxLength = 3;
-			this.splitlinedefsrange.Name = "splitlinedefsrange";
-			this.splitlinedefsrange.Size = new System.Drawing.Size(59, 20);
-			this.splitlinedefsrange.TabIndex = 14;
 			// 
 			// label3
 			// 
@@ -251,30 +275,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label6.Size = new System.Drawing.Size(35, 14);
 			this.label6.TabIndex = 12;
 			this.label6.Text = "pixels";
-			// 
-			// highlightrange
-			// 
-			this.highlightrange.AllowDecimal = false;
-			this.highlightrange.AllowNegative = false;
-			this.highlightrange.AllowRelative = false;
-			this.highlightrange.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.highlightrange.Location = new System.Drawing.Point(167, 31);
-			this.highlightrange.MaxLength = 3;
-			this.highlightrange.Name = "highlightrange";
-			this.highlightrange.Size = new System.Drawing.Size(59, 20);
-			this.highlightrange.TabIndex = 8;
-			// 
-			// highlightthingsrange
-			// 
-			this.highlightthingsrange.AllowDecimal = false;
-			this.highlightthingsrange.AllowNegative = false;
-			this.highlightthingsrange.AllowRelative = false;
-			this.highlightthingsrange.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.highlightthingsrange.Location = new System.Drawing.Point(167, 71);
-			this.highlightthingsrange.MaxLength = 3;
-			this.highlightthingsrange.Name = "highlightthingsrange";
-			this.highlightthingsrange.Size = new System.Drawing.Size(59, 20);
-			this.highlightthingsrange.TabIndex = 11;
 			// 
 			// label4
 			// 
@@ -365,20 +365,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.CheckBox additiveselect;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox stitchrange;
 		private System.Windows.Forms.Label label4;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox highlightrange;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Label label6;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox highlightthingsrange;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label8;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox splitlinedefsrange;
 		private System.Windows.Forms.Label label9;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.CheckBox autoclearselection;
 		private System.Windows.Forms.CheckBox visualmodeclearselection;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox splitlinedefsrange;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox stitchrange;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox highlightthingsrange;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox highlightrange;
 	}
 }

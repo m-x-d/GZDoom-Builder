@@ -34,9 +34,8 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label taglabel;
 			System.Windows.Forms.Label label7;
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
-			this.height = new CodeImp.DoomBuilder.Controls.NumericTextbox();
+			this.angle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.heightlabel = new System.Windows.Forms.Label();
-			this.angle = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.anglecontrol = new CodeImp.DoomBuilder.Controls.AngleControl();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
@@ -60,12 +59,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction = new System.Windows.Forms.Button();
 			this.doompanel = new System.Windows.Forms.Panel();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.tag = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.newtag = new System.Windows.Forms.Button();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
+			this.height = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.tag = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			label5 = new System.Windows.Forms.Label();
@@ -109,27 +109,26 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			groupBox2.Controls.Add(this.height);
+			groupBox2.Controls.Add(this.angle);
 			groupBox2.Controls.Add(this.heightlabel);
 			groupBox2.Controls.Add(label5);
-			groupBox2.Controls.Add(this.angle);
 			groupBox2.Controls.Add(this.anglecontrol);
 			groupBox2.Location = new System.Drawing.Point(397, 241);
 			groupBox2.Name = "groupBox2";
-			groupBox2.Size = new System.Drawing.Size(230, 105);
+			groupBox2.Size = new System.Drawing.Size(249, 105);
 			groupBox2.TabIndex = 2;
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Coordination ";
 			// 
-			// height
+			// angle
 			// 
-			this.height.AllowDecimal = false;
-			this.height.AllowNegative = true;
-			this.height.AllowRelative = true;
-			this.height.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.height.Location = new System.Drawing.Point(68, 63);
-			this.height.Name = "height";
-			this.height.Size = new System.Drawing.Size(50, 20);
-			this.height.TabIndex = 1;
+			this.angle.AllowNegative = true;
+			this.angle.AllowRelative = true;
+			this.angle.ButtonStep = 45;
+			this.angle.Location = new System.Drawing.Point(68, 26);
+			this.angle.Name = "angle";
+			this.angle.Size = new System.Drawing.Size(72, 24);
+			this.angle.TabIndex = 10;
 			// 
 			// heightlabel
 			// 
@@ -151,24 +150,12 @@ namespace CodeImp.DoomBuilder.Windows
 			label5.TabIndex = 8;
 			label5.Text = "Angle:";
 			// 
-			// angle
-			// 
-			this.angle.AllowDecimal = false;
-			this.angle.AllowNegative = true;
-			this.angle.AllowRelative = true;
-			this.angle.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.angle.Location = new System.Drawing.Point(68, 28);
-			this.angle.Name = "angle";
-			this.angle.Size = new System.Drawing.Size(50, 20);
-			this.angle.TabIndex = 0;
-			this.angle.TextChanged += new System.EventHandler(this.angle_TextChanged);
-			// 
 			// anglecontrol
 			// 
 			this.anglecontrol.BackColor = System.Drawing.SystemColors.Control;
 			this.anglecontrol.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.anglecontrol.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.anglecontrol.Location = new System.Drawing.Point(138, 13);
+			this.anglecontrol.Location = new System.Drawing.Point(156, 13);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(84, 84);
 			this.anglecontrol.TabIndex = 2;
@@ -206,7 +193,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(641, 379);
+			this.tabs.Size = new System.Drawing.Size(660, 379);
 			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
 			// 
@@ -220,7 +207,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabproperties.Location = new System.Drawing.Point(4, 23);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(3);
-			this.tabproperties.Size = new System.Drawing.Size(633, 352);
+			this.tabproperties.Size = new System.Drawing.Size(652, 352);
 			this.tabproperties.TabIndex = 0;
 			this.tabproperties.Text = "Properties";
 			this.tabproperties.UseVisualStyleBackColor = true;
@@ -244,7 +231,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.settingsgroup.Controls.Add(this.flags);
 			this.settingsgroup.Location = new System.Drawing.Point(284, 6);
 			this.settingsgroup.Name = "settingsgroup";
-			this.settingsgroup.Size = new System.Drawing.Size(343, 229);
+			this.settingsgroup.Size = new System.Drawing.Size(362, 229);
 			this.settingsgroup.TabIndex = 1;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Settings ";
@@ -258,7 +245,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags.Columns = 2;
 			this.flags.Location = new System.Drawing.Point(18, 26);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(319, 196);
+			this.flags.Size = new System.Drawing.Size(338, 196);
 			this.flags.TabIndex = 0;
 			// 
 			// tabeffects
@@ -269,7 +256,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabeffects.Location = new System.Drawing.Point(4, 23);
 			this.tabeffects.Name = "tabeffects";
 			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
-			this.tabeffects.Size = new System.Drawing.Size(633, 352);
+			this.tabeffects.Size = new System.Drawing.Size(652, 352);
 			this.tabeffects.TabIndex = 1;
 			this.tabeffects.Text = "Action";
 			this.tabeffects.UseVisualStyleBackColor = true;
@@ -286,7 +273,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.Controls.Add(this.doompanel);
 			this.actiongroup.Location = new System.Drawing.Point(6, 78);
 			this.actiongroup.Name = "actiongroup";
-			this.actiongroup.Size = new System.Drawing.Size(621, 268);
+			this.actiongroup.Size = new System.Drawing.Size(640, 268);
 			this.actiongroup.TabIndex = 22;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
@@ -308,7 +295,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel.Controls.Add(this.arg4label);
 			this.hexenpanel.Location = new System.Drawing.Point(6, 53);
 			this.hexenpanel.Name = "hexenpanel";
-			this.hexenpanel.Size = new System.Drawing.Size(609, 208);
+			this.hexenpanel.Size = new System.Drawing.Size(628, 208);
 			this.hexenpanel.TabIndex = 13;
 			// 
 			// arg2
@@ -434,7 +421,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.doompanel.Location = new System.Drawing.Point(6, 54);
 			this.doompanel.Name = "doompanel";
-			this.doompanel.Size = new System.Drawing.Size(609, 208);
+			this.doompanel.Size = new System.Drawing.Size(628, 208);
 			this.doompanel.TabIndex = 12;
 			// 
 			// groupBox3
@@ -444,25 +431,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.Controls.Add(this.newtag);
 			this.groupBox3.Location = new System.Drawing.Point(6, 6);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(621, 66);
+			this.groupBox3.Size = new System.Drawing.Size(640, 66);
 			this.groupBox3.TabIndex = 0;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Identification ";
 			// 
-			// tag
-			// 
-			this.tag.AllowDecimal = false;
-			this.tag.AllowNegative = false;
-			this.tag.AllowRelative = true;
-			this.tag.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.tag.Location = new System.Drawing.Point(62, 28);
-			this.tag.Name = "tag";
-			this.tag.Size = new System.Drawing.Size(68, 20);
-			this.tag.TabIndex = 0;
-			// 
 			// newtag
 			// 
-			this.newtag.Location = new System.Drawing.Point(136, 27);
+			this.newtag.Location = new System.Drawing.Point(154, 27);
 			this.newtag.Name = "newtag";
 			this.newtag.Size = new System.Drawing.Size(76, 23);
 			this.newtag.TabIndex = 1;
@@ -476,7 +452,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcustom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabcustom.Location = new System.Drawing.Point(4, 23);
 			this.tabcustom.Name = "tabcustom";
-			this.tabcustom.Size = new System.Drawing.Size(633, 352);
+			this.tabcustom.Size = new System.Drawing.Size(652, 352);
 			this.tabcustom.TabIndex = 2;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -491,14 +467,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Location = new System.Drawing.Point(8, 9);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
 			this.fieldslist.Name = "fieldslist";
-			this.fieldslist.Size = new System.Drawing.Size(617, 334);
+			this.fieldslist.Size = new System.Drawing.Size(636, 334);
 			this.fieldslist.TabIndex = 1;
 			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(539, 406);
+			this.cancel.Location = new System.Drawing.Point(558, 406);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 2;
@@ -509,7 +485,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(420, 406);
+			this.apply.Location = new System.Drawing.Point(439, 406);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 1;
@@ -517,13 +493,33 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
+			// height
+			// 
+			this.height.AllowNegative = true;
+			this.height.AllowRelative = true;
+			this.height.ButtonStep = 8;
+			this.height.Location = new System.Drawing.Point(68, 61);
+			this.height.Name = "height";
+			this.height.Size = new System.Drawing.Size(72, 24);
+			this.height.TabIndex = 11;
+			// 
+			// tag
+			// 
+			this.tag.AllowNegative = false;
+			this.tag.AllowRelative = true;
+			this.tag.ButtonStep = 1;
+			this.tag.Location = new System.Drawing.Point(62, 26);
+			this.tag.Name = "tag";
+			this.tag.Size = new System.Drawing.Size(80, 24);
+			this.tag.TabIndex = 7;
+			// 
 			// ThingEditForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(661, 441);
+			this.ClientSize = new System.Drawing.Size(680, 441);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -567,10 +563,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flags;
 		private System.Windows.Forms.Panel spritetex;
 		private CodeImp.DoomBuilder.Controls.AngleControl anglecontrol;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox height;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox angle;
 		private System.Windows.Forms.GroupBox groupBox3;
-		private CodeImp.DoomBuilder.Controls.NumericTextbox tag;
 		private System.Windows.Forms.Button newtag;
 		private System.Windows.Forms.GroupBox actiongroup;
 		private System.Windows.Forms.Panel hexenpanel;
@@ -590,5 +583,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ArgumentBox arg4;
 		private System.Windows.Forms.Label heightlabel;
 		private CodeImp.DoomBuilder.Controls.ThingBrowserControl thingtype;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox angle;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox height;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox tag;
 	}
 }

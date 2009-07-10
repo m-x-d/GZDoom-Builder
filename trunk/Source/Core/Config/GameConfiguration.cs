@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Config
 		private Dictionary<int, SectorEffectInfo> sectoreffects;
 		private List<SectorEffectInfo> sortedsectoreffects;
 		private List<GeneralizedOption> geneffectoptions;
-		private BrightnessList brightnesslevels;
+		private StepsList brightnesslevels;
 
 		// Universal fields
 		private List<UniversalFieldInfo> linedeffields;
@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.Config
 		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
 		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
 		public List<GeneralizedOption> GenEffectOptions { get { return geneffectoptions; } }
-		public BrightnessList BrightnessLevels { get { return brightnesslevels; } }
+		public StepsList BrightnessLevels { get { return brightnesslevels; } }
 
 		// Universal fields
 		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.thingflagstranslation = new List<FlagTranslation>();
 			this.linedefflagstranslation = new List<FlagTranslation>();
 			this.thingfilters = new List<ThingsFilter>();
-			this.brightnesslevels = new BrightnessList();
+			this.brightnesslevels = new StepsList();
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");

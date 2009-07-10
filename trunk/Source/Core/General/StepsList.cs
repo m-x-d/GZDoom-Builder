@@ -28,11 +28,11 @@ using System.Diagnostics;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Config
+namespace CodeImp.DoomBuilder
 {
-	public class BrightnessList : List<int>
+	public class StepsList : List<int>
 	{
-		// This returns a brightness level higher
+		// This returns a step higher
 		public int GetNextHigher(int level)
 		{
 			int low = 0;
@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Config
 			return base[high];
 		}
 		
-		// This returns a brightness level lower
+		// This returns a step lower
 		public int GetNextLower(int level)
 		{
 			int low = 0;
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Config
 			return base[low];
 		}
 
-		// This returns the nearest brightness level
+		// This returns the nearest step
 		public int GetNearest(int level)
 		{
 			int low = 0;

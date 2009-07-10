@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Show grid size
-			gridsize.Value = General.Map.Grid.GridSize;
+			gridsize.Text = General.Map.Grid.GridSize.ToString();
 			
 			// Background image?
 			if((General.Map.Grid.Background != null) &&
@@ -66,12 +66,12 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Show background offset
-			backoffsetx.Value = General.Map.Grid.BackgroundX;
-			backoffsety.Value = General.Map.Grid.BackgroundY;
+			backoffsetx.Text = General.Map.Grid.BackgroundX.ToString();
+			backoffsety.Text = General.Map.Grid.BackgroundY.ToString();
 			int scalex = (int)(General.Map.Grid.BackgroundScaleX * 100.0f);
 			int scaley = (int)(General.Map.Grid.BackgroundScaleY * 100.0f);
-			backscalex.Value = General.Clamp(scalex, (int)backscalex.Minimum, (int)backscalex.Maximum);
-			backscaley.Value = General.Clamp(scaley, (int)backscaley.Minimum, (int)backscaley.Maximum);
+			backscalex.Text = General.Clamp(scalex, 1, 10000).ToString();
+			backscaley.Text = General.Clamp(scaley, 1, 10000).ToString();
 		}
 
 		// Show Background changed
@@ -152,9 +152,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			// Apply
-			General.Map.Grid.SetGridSize((int)gridsize.Value);
-			General.Map.Grid.SetBackgroundView((int)backoffsetx.Value, (int)backoffsety.Value,
-							(float)backscalex.Value / 100.0f, (float)backscaley.Value / 100.0f);
+			General.Map.Grid.SetGridSize(gridsize.GetResult(General.Map.Grid.GridSize));
+			General.Map.Grid.SetBackgroundView(backoffsetx.GetResult(General.Map.Grid.BackgroundX),
+											   backoffsety.GetResult(General.Map.Grid.BackgroundY),
+											   backscalex.GetResult((int)(General.Map.Grid.BackgroundScaleX * 100.0f)) / 100.0f,
+											   backscaley.GetResult((int)(General.Map.Grid.BackgroundScaleY * 100.0f)) / 100.0f);
 			
 			// Background image?
 			if(showbackground.Checked)
