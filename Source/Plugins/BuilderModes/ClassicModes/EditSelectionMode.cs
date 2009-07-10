@@ -829,6 +829,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				index = 0;
 				foreach(Thing t in selectedthings)
 					t.Dispose();
+				
+				// Withdraw the undo
+				if(General.Map.UndoRedo.NextUndo != null)
+					General.Map.UndoRedo.WithdrawUndo();
 			}
 			else
 			{

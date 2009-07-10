@@ -227,7 +227,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
 			{
 				// Cancel volatile mode
-				General.DisengageVolatileMode();
+				General.Editing.DisengageVolatileMode();
 				
 				// Let the plugins know
 				if(General.Plugins.OnPasteBegin(options))
@@ -391,7 +391,7 @@ namespace CodeImp.DoomBuilder.Editing
 			PasteOptions options = General.Settings.PasteOptions.Copy();
 			
 			// Cancel volatile mode
-			General.DisengageVolatileMode();
+			General.Editing.DisengageVolatileMode();
 
 			// Let the plugins know
 			if(General.Plugins.OnPasteBegin(options))
@@ -452,7 +452,7 @@ namespace CodeImp.DoomBuilder.Editing
 				if(File.Exists(lastprefabfile))
 				{
 					// Cancel volatile mode
-					General.DisengageVolatileMode();
+					General.Editing.DisengageVolatileMode();
 
 					// Let the plugins know
 					if(General.Plugins.OnPasteBegin(options))

@@ -891,40 +891,6 @@ namespace CodeImp.DoomBuilder
 		#endregion
 		
 		#region ================== Management
-
-		// This cancels a volatile mode, as if the user presses cancel
-		public static bool CancelVolatileMode()
-		{
-			// Volatile mode?
-			if((map != null) & (editing.Mode != null) && editing.Mode.Attributes.Volatile)
-			{
-				// Cancel
-				editing.Mode.OnCancel();
-				return true;
-			}
-			else
-			{
-				// Mode is not volatile
-				return false;
-			}
-		}
-
-		// This disengages a volatile mode, leaving the choice to cancel or accept to the editing mode
-		public static bool DisengageVolatileMode()
-		{
-			// Volatile mode?
-			if((map != null) && (editing.Mode != null) && editing.Mode.Attributes.Volatile)
-			{
-				// Change back to normal mode
-				editing.ChangeMode(editing.PreviousStableMode.Name);
-				return true;
-			}
-			else
-			{
-				// Mode is not volatile
-				return false;
-			}
-		}
 		
 		// This creates a new map
 		[BeginAction("newmap")]
@@ -934,7 +900,7 @@ namespace CodeImp.DoomBuilder
 			MapOptionsForm optionswindow;
 			
 			// Cancel volatile mode, if any
-			General.DisengageVolatileMode();
+			General.Editing.DisengageVolatileMode();
 			
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -1005,7 +971,7 @@ namespace CodeImp.DoomBuilder
 		internal static bool CloseMap()
 		{
 			// Cancel volatile mode, if any
-			General.DisengageVolatileMode();
+			General.Editing.DisengageVolatileMode();
 
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -1050,7 +1016,7 @@ namespace CodeImp.DoomBuilder
 			OpenFileDialog openfile;
 
 			// Cancel volatile mode, if any
-			General.DisengageVolatileMode();
+			General.Editing.DisengageVolatileMode();
 
 			// Open map file dialog
 			openfile = new OpenFileDialog();
@@ -1078,7 +1044,7 @@ namespace CodeImp.DoomBuilder
 			OpenMapOptionsForm openmapwindow;
 
 			// Cancel volatile mode, if any
-			General.DisengageVolatileMode();
+			General.Editing.DisengageVolatileMode();
 			
 			// Ask the user to save changes (if any)
 			if(General.AskSaveMap())
@@ -1156,7 +1122,7 @@ namespace CodeImp.DoomBuilder
 			bool result = false;
 			
 			// Cancel volatile mode, if any
-			General.DisengageVolatileMode();
+			General.Editing.DisengageVolatileMode();
 			
 			// Check if a wad file is known
 			if(map.FilePathName == "")
@@ -1210,7 +1176,7 @@ namespace CodeImp.DoomBuilder
 			bool result = false;
 			
 			// Cancel volatile mode, if any
-			General.DisengageVolatileMode();
+			General.Editing.DisengageVolatileMode();
 
 			// Show save as dialog
 			savefile = new SaveFileDialog();
@@ -1267,7 +1233,7 @@ namespace CodeImp.DoomBuilder
 			bool result = false;
 
 			// Cancel volatile mode, if any
-			General.DisengageVolatileMode();
+			General.Editing.DisengageVolatileMode();
 
 			// Show save as dialog
 			savefile = new SaveFileDialog();

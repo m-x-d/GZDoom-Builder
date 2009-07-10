@@ -32,29 +32,35 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	public partial class ClickableNumericTextbox : UserControl
+	public partial class ButtonsNumericTextbox : UserControl
 	{
 		#region ================== Events
 
-		public event EventHandler ValueChanged;
+		public event EventHandler TextChanged;
 
 		#endregion
-		
-		#region ================== Properties
 
-		public int Minimum { get { return buttons.Minimum; } set { buttons.Minimum = value; } }
-		public int Maximum { get { return buttons.Maximum; } set { buttons.Maximum = value; } }
+		#region ================== Variables
+		
+		private bool ignorebuttonchange = false;
+		
+		#endregion
+
+		#region ================== Properties
+		
 		public bool AllowNegative { get { return textbox.AllowNegative; } set { textbox.AllowNegative = value; } }
-		public int Value { get { return buttons.Value; } set { buttons.Value = value; } }
+		public bool AllowRelative { get { return textbox.AllowRelative; } set { textbox.AllowRelative = value; } }
+		public string Text { get { return textbox.Text; } set { textbox.Text = value; } }
 		
 		#endregion
 		
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ClickableNumericTextbox()
+		public ButtonsNumericTextbox()
 		{
 			InitializeComponent();
+			buttons.Value = 0;
 		}
 
 		#endregion
@@ -82,31 +88,52 @@ namespace CodeImp.DoomBuilder.Controls
 			buttons.Left = textbox.Width + 2;
 			this.Height = buttons.Height;
 		}
-
-		#endregion
 		
-		#region ================== Control
-
 		// Text in textbox changes
 		private void textbox_TextChanged(object sender, EventArgs e)
 		{
-			int result = textbox.GetResult(buttons.Value);
-			if((result >= buttons.Minimum) && (result <= buttons.Maximum)) buttons.Value = result;
+			if(TextChanged != null) TextChanged(sender, e);
+			buttons.Enabled = !textbox.CheckIsRelative();
 		}
-
-		// Textbox loses focus
-		private void textbox_Leave(object sender, EventArgs e)
-		{
-			textbox.Text = buttons.Value.ToString();
-		}
-
+		
 		// Buttons changed
 		private void buttons_ValueChanged(object sender, EventArgs e)
 		{
-			textbox.Text = buttons.Value.ToString();
-			if(ValueChanged != null) ValueChanged(this, e);
+			if(!ignorebuttonchange)
+			{
+				ignorebuttonchange = true;
+				if(!textbox.CheckIsRelative())
+				{
+					int newvalue = textbox.GetResult(0) - buttons.Value;
+					textbox.Text = newvalue.ToString();
+				}
+				buttons.Value = 0;
+				ignorebuttonchange = false;
+			}
 		}
 
+		#endregion
+		
+		#region ================== Methods
+		
+		// This checks if the number is relative
+		public bool CheckIsRelative()
+		{
+			return textbox.CheckIsRelative();
+		}
+		
+		// This determines the result value
+		public int GetResult(int original)
+		{
+			return textbox.GetResult(original);
+		}
+		
+		// This determines the result value
+		public float GetResultFloat(float original)
+		{
+			return textbox.GetResultFloat(original);
+		}
+		
 		#endregion
 	}
 }
