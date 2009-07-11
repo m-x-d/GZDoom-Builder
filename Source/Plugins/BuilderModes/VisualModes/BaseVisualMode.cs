@@ -183,8 +183,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Single object, no selection
 				singleselection = true;
 				ClearSelection();
-				target.picked.Selected = true;
-				selectedobjects.Add(target.picked as IVisualEventReceiver);
 				undocreated = false;
 			}
 			else
@@ -655,7 +653,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ApplyTextureOffsetChange(int dx, int dy)
 		{
 			Dictionary<Sidedef, int> donesides = new Dictionary<Sidedef, int>(selectedobjects.Count);
-			foreach(IVisualEventReceiver i in selectedobjects)
+			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false);
+			foreach(IVisualEventReceiver i in objs)
 			{
 				if(i is BaseVisualGeometrySidedef)
 				{
@@ -671,7 +670,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply upper unpegged flag
 		public void ApplyUpperUnpegged(bool set)
 		{
-			foreach(IVisualEventReceiver i in selectedobjects)
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs)
 			{
 				i.ApplyUpperUnpegged(set);
 			}
@@ -680,7 +680,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply lower unpegged flag
 		public void ApplyLowerUnpegged(bool set)
 		{
-			foreach(IVisualEventReceiver i in selectedobjects)
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs)
 			{
 				i.ApplyLowerUnpegged(set);
 			}
@@ -689,26 +690,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply texture change
 		public void ApplySelectTexture(string texture, bool flat)
 		{
+			List<IVisualEventReceiver> objs;
+			
 			if(General.Map.Config.MixTexturesFlats)
 			{
 				// Apply on all compatible types
-				foreach(IVisualEventReceiver i in selectedobjects)
-				{
-					i.ApplyTexture(texture);
-				}
+				objs = GetSelectedObjects(true, true, false);
 			}
 			else
 			{
-				// We don't want to mix textures and flats, so apply only on the same type
-				foreach(IVisualEventReceiver i in selectedobjects)
-				{
-					if(((i is BaseVisualGeometrySector) && flat) ||
-					   ((i is BaseVisualGeometrySidedef) && !flat))
-					{
-						i.ApplyTexture(texture);
-					}
-				}
+				// We don't want to mix textures and flats, so apply only on the appropriate type
+				objs = GetSelectedObjects(flat, !flat, false);
 			}
+			
+			foreach(IVisualEventReceiver i in objs)
+			{
+				i.ApplyTexture(texture);
+			}
+		}
+
+		// This returns all selected objects
+		internal List<IVisualEventReceiver> GetSelectedObjects(bool includesectors, bool includesidedefs, bool includethings)
+		{
+			List<IVisualEventReceiver> objs = new List<IVisualEventReceiver>();
+			foreach(IVisualEventReceiver i in selectedobjects)
+			{
+				if((i is BaseVisualGeometrySector) && includesectors) objs.Add(i);
+				else if((i is BaseVisualGeometrySidedef) && includesidedefs) objs.Add(i);
+				else if((i is BaseVisualThing) && includethings) objs.Add(i);
+			}
+
+			// Add highlight?
+			if(selectedobjects.Count == 0)
+			{
+				IVisualEventReceiver i = (target.picked as IVisualEventReceiver);
+				if((i is BaseVisualGeometrySector) && includesectors) objs.Add(i);
+				else if((i is BaseVisualGeometrySidedef) && includesidedefs) objs.Add(i);
+				else if((i is BaseVisualThing) && includethings) objs.Add(i);
+			}
+
+			return objs;
 		}
 
 		// This returns all selected sectors, no doubles
@@ -728,6 +749,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
+
+			// Add highlight?
+			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySector))
+			{
+				Sector s = (target.picked as BaseVisualGeometrySector).Sector.Sector;
+				if(!added.ContainsKey(s))
+					sectors.Add(s);
+			}
+			
 			return sectors;
 		}
 
@@ -748,6 +778,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
+
+			// Add highlight?
+			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySidedef))
+			{
+				Linedef l = (target.picked as BaseVisualGeometrySidedef).Sidedef.Line;
+				if(!added.ContainsKey(l))
+					linedefs.Add(l);
+			}
+
 			return linedefs;
 		}
 
@@ -768,6 +807,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
+
+			// Add highlight?
+			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySidedef))
+			{
+				Sidedef sd = (target.picked as BaseVisualGeometrySidedef).Sidedef;
+				if(!added.ContainsKey(sd))
+					sidedefs.Add(sd);
+			}
+
 			return sidedefs;
 		}
 
@@ -788,6 +836,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
+
+			// Add highlight?
+			if((selectedobjects.Count == 0) && (target.picked is BaseVisualThing))
+			{
+				Thing t = (target.picked as BaseVisualThing).Thing;
+				if(!added.ContainsKey(t))
+					things.Add(t);
+			}
+
 			return things;
 		}
 		
@@ -858,7 +915,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[EndAction("visualselect", BaseAction = true)]
 		public void EndSelect()
 		{
-			PreActionNoChange();
+			//PreActionNoChange();
 			GetTargetEventReceiver(true).OnSelectEnd();
 			Renderer.ShowSelection = true;
 			Renderer.ShowHighlight = true;
@@ -876,7 +933,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[EndAction("visualedit", BaseAction = true)]
 		public void EndEdit()
 		{
-			PreAction(UndoGroup.None);
+			PreActionNoChange();
 			GetTargetEventReceiver(false).OnEditEnd();
 			PostAction();
 		}
@@ -885,7 +942,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseSector8()
 		{
 			PreAction(UndoGroup.SectorHeightChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(8);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetHeight(8);
 			PostAction();
 		}
 
@@ -893,7 +951,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerSector8()
 		{
 			PreAction(UndoGroup.SectorHeightChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(-8);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetHeight(-8);
 			PostAction();
 		}
 
@@ -901,7 +960,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseSector1()
 		{
 			PreAction(UndoGroup.SectorHeightChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(1);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetHeight(1);
 			PostAction();
 		}
 		
@@ -909,7 +969,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerSector1()
 		{
 			PreAction(UndoGroup.SectorHeightChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetHeight(-1);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetHeight(-1);
 			PostAction();
 		}
 
@@ -924,7 +985,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void RaiseBrightness8()
 		{
 			PreAction(UndoGroup.SectorBrightnessChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetBrightness(true);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetBrightness(true);
 			PostAction();
 		}
 
@@ -932,7 +994,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void LowerBrightness8()
 		{
 			PreAction(UndoGroup.SectorBrightnessChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTargetBrightness(false);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTargetBrightness(false);
 			PostAction();
 		}
 
@@ -940,7 +1003,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureLeft1()
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(-1, 0);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0);
 			PostAction();
 		}
 
@@ -948,7 +1012,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureRight1()
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(1, 0);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0);
 			PostAction();
 		}
 
@@ -956,7 +1021,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureUp1()
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, -1);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1);
 			PostAction();
 		}
 
@@ -964,7 +1030,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureDown1()
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, 1);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1);
 			PostAction();
 		}
 
@@ -972,7 +1039,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureLeft8()
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(-8, 0);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-8, 0);
 			PostAction();
 		}
 
@@ -980,7 +1048,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureRight8()
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(8, 0);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(8, 0);
 			PostAction();
 		}
 
@@ -988,7 +1057,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureUp8()
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, -8);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -8);
 			PostAction();
 		}
 
@@ -996,7 +1066,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MoveTextureDown8()
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnChangeTextureOffset(0, 8);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 8);
 			PostAction();
 		}
 
@@ -1024,7 +1095,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TexturePaste()
 		{
 			PreAction(UndoGroup.None);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteTexture();
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnPasteTexture();
 			PostAction();
 		}
 
@@ -1096,7 +1168,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ResetTexture()
 		{
 			PreAction(UndoGroup.None);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnResetTextureOffset();
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnResetTextureOffset();
 			PostAction();
 		}
 
@@ -1120,7 +1193,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TexturePasteOffsets()
 		{
 			PreAction(UndoGroup.None);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteTextureOffsets();
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnPasteTextureOffsets();
 			PostAction();
 		}
 
@@ -1136,7 +1210,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void PasteProperties()
 		{
 			PreAction(UndoGroup.None);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnPasteProperties();
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnPasteProperties();
 			PostAction();
 		}
 		
@@ -1144,7 +1219,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void Insert()
 		{
 			PreAction(UndoGroup.None);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnInsert();
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnInsert();
 			PostAction();
 		}
 
@@ -1152,7 +1228,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void Delete()
 		{
 			PreAction(UndoGroup.None);
-			foreach(IVisualEventReceiver i in selectedobjects) i.OnDelete();
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+			foreach(IVisualEventReceiver i in objs) i.OnDelete();
 			PostAction();
 		}
 		

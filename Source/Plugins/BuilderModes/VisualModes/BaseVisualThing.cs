@@ -269,7 +269,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float tnear = float.MinValue;
 			
 			// Ray-Box intersection code
-			// See http://www.masm32.com/board/index.php?PHPSESSID=eee672d82a12b8b8f1871268f652be82&topic=9941.0
+			// See http://www.masm32.com/board/index.php?topic=9941.0
 			
 			// Check X slab
 			if(delta.x == 0.0f)

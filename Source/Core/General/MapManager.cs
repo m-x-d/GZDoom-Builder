@@ -441,14 +441,14 @@ namespace CodeImp.DoomBuilder
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
 			
 			// Scripts changed?
-			bool scriptschanged = CheckScriptChanged();
+			bool localscriptschanged = CheckScriptChanged();
 			
 			// If the scripts window is open, save the scripts first
 			if(IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
 			
 			// Only recompile scripts when the scripts have changed
 			// (not when only the map changed)
-			if(scriptschanged)
+			if(localscriptschanged)
 			{
 				if(!CompileScriptLumps())
 				{
