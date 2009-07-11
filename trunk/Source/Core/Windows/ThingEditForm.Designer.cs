@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label taglabel;
 			System.Windows.Forms.Label label7;
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
+			this.height = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.angle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.heightlabel = new System.Windows.Forms.Label();
 			this.anglecontrol = new CodeImp.DoomBuilder.Controls.AngleControl();
@@ -59,13 +60,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browseaction = new System.Windows.Forms.Button();
 			this.doompanel = new System.Windows.Forms.Panel();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.tag = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.newtag = new System.Windows.Forms.Button();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.height = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.tag = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			groupBox2 = new System.Windows.Forms.GroupBox();
 			label5 = new System.Windows.Forms.Label();
@@ -120,15 +120,30 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Coordination ";
 			// 
+			// height
+			// 
+			this.height.AllowDecimal = false;
+			this.height.AllowNegative = true;
+			this.height.AllowRelative = true;
+			this.height.ButtonStep = 8;
+			this.height.Location = new System.Drawing.Point(68, 61);
+			this.height.Name = "height";
+			this.height.Size = new System.Drawing.Size(72, 24);
+			this.height.StepValues = null;
+			this.height.TabIndex = 11;
+			// 
 			// angle
 			// 
+			this.angle.AllowDecimal = false;
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
 			this.angle.ButtonStep = 45;
 			this.angle.Location = new System.Drawing.Point(68, 26);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(72, 24);
+			this.angle.StepValues = null;
 			this.angle.TabIndex = 10;
+			this.angle.WhenTextChanged += new System.EventHandler(this.angle_TextChanged);
 			// 
 			// heightlabel
 			// 
@@ -436,6 +451,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Identification ";
 			// 
+			// tag
+			// 
+			this.tag.AllowDecimal = false;
+			this.tag.AllowNegative = false;
+			this.tag.AllowRelative = true;
+			this.tag.ButtonStep = 1;
+			this.tag.Location = new System.Drawing.Point(62, 26);
+			this.tag.Name = "tag";
+			this.tag.Size = new System.Drawing.Size(80, 24);
+			this.tag.StepValues = null;
+			this.tag.TabIndex = 7;
+			// 
 			// newtag
 			// 
 			this.newtag.Location = new System.Drawing.Point(154, 27);
@@ -492,26 +519,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// height
-			// 
-			this.height.AllowNegative = true;
-			this.height.AllowRelative = true;
-			this.height.ButtonStep = 8;
-			this.height.Location = new System.Drawing.Point(68, 61);
-			this.height.Name = "height";
-			this.height.Size = new System.Drawing.Size(72, 24);
-			this.height.TabIndex = 11;
-			// 
-			// tag
-			// 
-			this.tag.AllowNegative = false;
-			this.tag.AllowRelative = true;
-			this.tag.ButtonStep = 1;
-			this.tag.Location = new System.Drawing.Point(62, 26);
-			this.tag.Name = "tag";
-			this.tag.Size = new System.Drawing.Size(80, 24);
-			this.tag.TabIndex = 7;
 			// 
 			// ThingEditForm
 			// 
