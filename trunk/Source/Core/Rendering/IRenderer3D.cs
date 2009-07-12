@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void FinishGeometry();
 
 		// Rendering methods
+		int CalculateBrightness(int level);
 		void SetHighlightedObject(IVisualPickable obj);
 		void AddSectorGeometry(VisualGeometry g);
 		void AddThingGeometry(VisualThing t);

@@ -53,7 +53,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		PixelColor DetermineLinedefColor(Linedef l);
 		PixelColor DetermineThingColor(Thing t);
 		int DetermineVertexColor(Vertex v);
-
+		int CalculateBrightness(int level);
+		
 		// Rendering management methods
 		bool StartPlotter(bool clear);
 		bool StartThings(bool clear);
