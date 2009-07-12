@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			splitlinedefsrange.Text = General.Settings.ReadPluginSetting("splitlinedefsrange", 10).ToString();
 			autoclearselection.Checked = BuilderPlug.Me.AutoClearSelection;
 			visualmodeclearselection.Checked = BuilderPlug.Me.VisualModeClearSelection;
+			autodragonpaste.Checked = BuilderPlug.Me.AutoDragOnPaste;
 		}
 
 		#endregion
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("splitlinedefsrange", splitlinedefsrange.GetResult(0));
 			General.Settings.WritePluginSetting("autoclearselection", autoclearselection.Checked);
 			General.Settings.WritePluginSetting("visualmodeclearselection", visualmodeclearselection.Checked);
+			General.Settings.WritePluginSetting("autodragonpaste", autodragonpaste.Checked);
 		}
 		
 		// When Cancel is pressed on the preferences dialog
