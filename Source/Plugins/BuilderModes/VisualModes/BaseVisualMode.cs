@@ -155,6 +155,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Methods
 		
+		// This calculates brightness level
+		internal static int CalculateBrightness(int level)
+		{
+			float flevel = level;
+			if(level < 192) flevel = (192.0f - (float)(192 - level) * 1.5f);	// simulate doom light levels
+			byte blevel = (byte)General.Clamp((int)flevel, 0, 255);
+			PixelColor c = new PixelColor(255, blevel, blevel, blevel);
+			return c.ToInt();
+		}
+		
 		// This adds a selected object
 		internal void AddSelectedObject(IVisualEventReceiver obj)
 		{
