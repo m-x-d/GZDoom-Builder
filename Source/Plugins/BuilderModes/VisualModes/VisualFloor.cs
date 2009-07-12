@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			WorldVertex[] verts;
 			Sector s = base.Sector.Sector;
-			int brightness = BaseVisualMode.CalculateBrightness(s.Brightness);
+			int brightness = mode.CalculateBrightness(s.Brightness);
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);

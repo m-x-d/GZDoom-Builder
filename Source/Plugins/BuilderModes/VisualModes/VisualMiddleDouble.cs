@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			WorldVertex[] verts;
 
-			int brightness = BaseVisualMode.CalculateBrightness(Sidedef.Sector.Brightness);
+			int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
 			
 			// Calculate size of this wall part
 			float geotop = (float)Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);

@@ -85,6 +85,20 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Methods
 
+		// This calculates the sector brightness level
+		public int CalculateBrightness(int level)
+		{
+			float flevel = level;
+
+			// Simulat doom light levels
+			if((level < 192) && General.Map.Config.DoomLightLevels)
+				flevel = (192.0f - (float)(192 - level) * 1.5f);
+			
+			byte blevel = (byte)General.Clamp((int)flevel, 0, 255);
+			PixelColor c = new PixelColor(255, blevel, blevel, blevel);
+			return c.ToInt();
+		}
+
 		// This is called when the graphics need to be reset
 		public virtual void Reset() { }
 

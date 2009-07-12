@@ -284,12 +284,8 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			if(updateneeded)
 			{
-				// Brightness color (alpha is opaque)
-				byte clampedbright = 0;
-				if((brightness >= 0) && (brightness <= 255)) clampedbright = (byte)brightness;
-				else if(brightness > 255) clampedbright = 255;
-				PixelColor brightcolor = new PixelColor(255, clampedbright, clampedbright, clampedbright);
-				int brightint = brightcolor.ToInt();
+				// Brightness color
+				int brightint = General.Map.Renderer2D.CalculateBrightness(brightness);
 				
 				// Make vertices
 				flatvertices = new FlatVertex[triangles.Vertices.Count];

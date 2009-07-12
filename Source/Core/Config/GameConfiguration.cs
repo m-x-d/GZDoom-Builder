@@ -72,6 +72,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string decorategames;
         private string skyflatname;
 		private int maxtexturenamelength;
+		private bool doomlightlevels;
 		
 		// Skills
 		private List<SkillInfo> skills;
@@ -155,6 +156,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string DecorateGames { get { return decorategames; } }
         public string SkyFlatName { get { return skyflatname; } }
 		public int MaxTextureNamelength { get { return maxtexturenamelength; } }
+		public bool DoomLightLevels { get { return doomlightlevels; } }
 		
 		// Skills
 		public List<SkillInfo> Skills { get { return skills; } }
@@ -259,6 +261,7 @@ namespace CodeImp.DoomBuilder.Config
 			decorategames = cfg.ReadSetting("decorategames", "");
             skyflatname = cfg.ReadSetting("skyflatname", "F_SKY1");
 			maxtexturenamelength = cfg.ReadSetting("maxtexturenamelength", 8);
+			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 			
 			// Flags have special (invariant culture) conversion
