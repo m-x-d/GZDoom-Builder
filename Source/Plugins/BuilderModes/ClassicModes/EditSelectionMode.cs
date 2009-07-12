@@ -673,6 +673,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 
+			bool autodrag = (pasting && mouseinside && BuilderPlug.Me.AutoDragOnPaste);
+			
 			// Add toolbar buttons
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
@@ -785,7 +787,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					UpdateGeometry();
 					General.Map.Data.UpdateUsedTextures();
-					General.Map.Map.Update();
+
+					if(!autodrag)
+						General.Map.Map.Update();
 				}
 				
 				// Set presentation
@@ -799,7 +803,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Update();
 				
 				// When pasting and mouse is in screen, drag selection immediately
-				if(pasting && mouseinside && BuilderPlug.Me.AutoDragOnPaste) OnSelectBegin();
+				if(autodrag) OnSelectBegin();
 			}
 			else
 			{
