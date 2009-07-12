@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
-			byte brightness = (byte)General.Clamp(Sidedef.Sector.Brightness, 0, 255);
+			int brightness = BaseVisualMode.CalculateBrightness(Sidedef.Sector.Brightness);
 
 			// Calculate size of this wall part
 			float geotop = (float)Sidedef.Sector.CeilHeight;
@@ -134,17 +134,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					v2 = Sidedef.Line.Start.Position;
 				}
 
-				// Use sector brightness for color shading
-				PixelColor pc = new PixelColor(255, brightness, brightness, brightness);
-
 				// Make vertices
 				WorldVertex[] verts = new WorldVertex[6];
-				verts[0] = new WorldVertex(v1.x, v1.y, geobottom, pc.ToInt(), t1.x, t2.y);
-				verts[1] = new WorldVertex(v1.x, v1.y, geotop, pc.ToInt(), t1.x, t1.y);
-				verts[2] = new WorldVertex(v2.x, v2.y, geotop, pc.ToInt(), t2.x, t1.y);
+				verts[0] = new WorldVertex(v1.x, v1.y, geobottom, brightness, t1.x, t2.y);
+				verts[1] = new WorldVertex(v1.x, v1.y, geotop, brightness, t1.x, t1.y);
+				verts[2] = new WorldVertex(v2.x, v2.y, geotop, brightness, t2.x, t1.y);
 				verts[3] = verts[0];
 				verts[4] = verts[2];
-				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, pc.ToInt(), t2.x, t2.y);
+				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, brightness, t2.x, t2.y);
 				
 				// Keep properties
 				base.top = geotop;

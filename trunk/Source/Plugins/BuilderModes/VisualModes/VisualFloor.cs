@@ -1,4 +1,4 @@
-
+	
 #region ================== Copyright (c) 2007 Pascal vd Heiden
 
 /*
@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			WorldVertex[] verts;
 			Sector s = base.Sector.Sector;
-			byte brightness = (byte)General.Clamp(s.Brightness, 0, 255);
+			int brightness = BaseVisualMode.CalculateBrightness(s.Brightness);
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
@@ -88,9 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < s.Triangles.Vertices.Count; i++)
 			{
 				// Use sector brightness for color shading
-				PixelColor pc = new PixelColor(255, brightness, brightness, brightness);
-				verts[i].c = pc.ToInt();
-				//verts[i].c = -1;
+				verts[i].c = brightness;
 
 				// Grid aligned texture coordinates
 				if(base.Texture.IsImageLoaded)
