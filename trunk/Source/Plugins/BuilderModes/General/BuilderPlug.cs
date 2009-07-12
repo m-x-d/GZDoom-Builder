@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float highlightthingsrange;
 		private float splitlinedefsrange;
 		private bool usehighlight;
+		private bool autodragonpaste;
 		
 		#endregion
 
@@ -114,6 +115,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public float HighlightThingsRange { get { return highlightthingsrange; } }
 		public float SplitLinedefsRange { get { return splitlinedefsrange; } }
 		public bool UseHighlight { get { return usehighlight; } set { usehighlight = value; } }
+		public bool AutoDragOnPaste { get { return autodragonpaste; } set { autodragonpaste = value; } }
 		
 		#endregion
 
@@ -186,6 +188,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			highlightrange = (float)General.Settings.ReadPluginSetting("highlightrange", 20);
 			highlightthingsrange = (float)General.Settings.ReadPluginSetting("highlightthingsrange", 10);
 			splitlinedefsrange = (float)General.Settings.ReadPluginSetting("splitlinedefsrange", 10);
+			autodragonpaste = General.Settings.ReadPluginSetting("autodragonpaste", false);
 		}
 
 		#endregion

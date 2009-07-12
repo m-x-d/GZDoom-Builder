@@ -799,7 +799,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Update();
 				
 				// When pasting and mouse is in screen, drag selection immediately
-				//if(pasting && mouseinside) OnSelect();
+				if(pasting && mouseinside && BuilderPlug.Me.AutoDragOnPaste) OnSelectBegin();
 			}
 			else
 			{
@@ -1138,7 +1138,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnSelectBegin()
 		{
 			base.OnSelectBegin();
-			
+
+			if(mode != ModifyMode.None) return;
+
 			// Used in many cases:
 			Vector2D center = offset + size * 0.5f;
 			Vector2D delta;
