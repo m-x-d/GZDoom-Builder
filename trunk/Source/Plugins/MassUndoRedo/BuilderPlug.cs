@@ -34,28 +34,29 @@ using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Actions;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.Statistics
+namespace CodeImp.DoomBuilder.MassUndoRedo
 {
 	public class BuilderPlug : Plug
 	{
 		#region ================== Variables
-
+		
 		private static BuilderPlug me;
 		
 		#endregion
-
+		
 		#region ================== Properties
-
+		
 		public static BuilderPlug Me { get { return me; } }
 		public override string Name { get { return "Mass Undo/Redo Plugin"; } }
-
+		
 		#endregion
-
+		
 		#region ================== Initialize / Dispose
-
+		
 		// This event is called when the plugin is initialized
 		public override void OnInitialize()
 		{
@@ -63,20 +64,37 @@ namespace CodeImp.DoomBuilder.Statistics
 
 			// Keep a static reference
 			me = this;
+			
+			// Bind action methods
+			General.Actions.BindMethods(this);
 		}
-
+		
 		// This is called when the plugin is terminated
 		public override void Dispose()
 		{
-			// Time to clean everything up
+			// Unbind action methods
+			General.Actions.UnbindMethods(this);
 			
 			base.Dispose();
 		}
-
+		
 		#endregion
 		
 		#region ================== Events
-
+		
+		#endregion
+		
+		#region ================== Actions
+		
+		[BeginAction("showundoredowindow")]
+		public void ShowUndoRedoWindow()
+		{
+			UndoRedoForm form = new UndoRedoForm();
+			form.Setup((Form)General.Interface);
+			form.ShowDialog(General.Interface);
+			form.Dispose();
+		}
+		
 		#endregion
 	}
 }
