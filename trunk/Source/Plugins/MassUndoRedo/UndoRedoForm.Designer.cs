@@ -59,11 +59,12 @@ namespace CodeImp.DoomBuilder.MassUndoRedo
 			// pinned
 			// 
 			this.pinned.Appearance = System.Windows.Forms.Appearance.Button;
+			this.pinned.Image = global::CodeImp.DoomBuilder.MassUndoRedo.Properties.Resources.Pushpin;
 			this.pinned.Location = new System.Drawing.Point(285, 14);
 			this.pinned.Name = "pinned";
 			this.pinned.Size = new System.Drawing.Size(30, 30);
 			this.pinned.TabIndex = 2;
-			this.pinned.Text = "P";
+			this.pinned.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
 			this.pinned.UseVisualStyleBackColor = true;
 			// 
 			// UndoRedoForm
