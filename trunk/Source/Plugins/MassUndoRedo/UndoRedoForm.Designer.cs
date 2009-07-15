@@ -50,6 +50,9 @@ namespace CodeImp.DoomBuilder.MassUndoRedo
 			this.list.TabIndex = 0;
 			this.list.UseCompatibleStateImageBehavior = false;
 			this.list.View = System.Windows.Forms.View.Details;
+			this.list.SelectedIndexChanged += new System.EventHandler(this.list_SelectedIndexChanged);
+			this.list.MouseUp += new System.Windows.Forms.MouseEventHandler(this.list_MouseUp);
+			this.list.KeyUp += new System.Windows.Forms.KeyEventHandler(this.list_KeyUp);
 			// 
 			// coldescription
 			// 
