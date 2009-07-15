@@ -676,6 +676,7 @@ namespace CodeImp.DoomBuilder.Editing
 										else
 										{
 											// Nothing more to undo
+											u = null;
 											break;
 										}
 									}
@@ -807,6 +808,7 @@ namespace CodeImp.DoomBuilder.Editing
 										else
 										{
 											// Nothing more to redo
+											r = null;
 											break;
 										}
 									}
@@ -827,6 +829,10 @@ namespace CodeImp.DoomBuilder.Editing
 								MemoryStream data = r.GetStream();
 								PlaybackStream(data);
 								data.Dispose();
+								
+								// Done with this snapshot
+								r = null;
+								levelsundone++;
 							}
 							
 							if(levels > 1)
