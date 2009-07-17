@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool animatevisualselection;
 		private int previousversion;
 		private PasteOptions pasteoptions;
+		private int dockersposition;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -127,6 +128,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ScriptAutoIndent { get { return scriptautoindent; } internal set { scriptautoindent = value; } }
 		internal int PreviousVersion { get { return previousversion; } }
 		internal PasteOptions PasteOptions { get { return pasteoptions; } set { pasteoptions = value; } }
+		internal int DockersPosition { get { return dockersposition; } set { dockersposition = value; } }
 		
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -191,6 +193,7 @@ namespace CodeImp.DoomBuilder.Config
 				showerrorswindow = cfg.ReadSetting("showerrorswindow", true);
 				animatevisualselection = cfg.ReadSetting("animatevisualselection", true);
 				previousversion = cfg.ReadSetting("currentversion", 0);
+				dockersposition = cfg.ReadSetting("dockersposition", 1);
 				pasteoptions.ReadConfiguration(cfg, "pasteoptions");
 				
 				// Success
@@ -238,6 +241,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("showerrorswindow", showerrorswindow);
 			cfg.WriteSetting("animatevisualselection", animatevisualselection);
 			cfg.WriteSetting("currentversion", v.Major * 1000000 + v.Revision);
+			cfg.WriteSetting("dockersposition", dockersposition);
 			pasteoptions.WriteConfiguration(cfg, "pasteoptions");
 			
 			// Save settings configuration
