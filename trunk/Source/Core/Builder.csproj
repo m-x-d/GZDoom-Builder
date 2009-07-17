@@ -663,6 +663,12 @@
     <Compile Include="Config\FlagTranslation.cs" />
     <Compile Include="Config\PasteOptions.cs" />
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
+    <Compile Include="Controls\DockersControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\DockersControl.Designer.cs">
+      <DependentUpon>DockersControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\PasteOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -731,6 +737,10 @@
     <Compile Include="ZDoom\DecorateParser.cs" />
     <Compile Include="ZDoom\StateStructure.cs" />
     <Compile Include="Editing\EditingManager.cs" />
+    <EmbeddedResource Include="Controls\DockersControl.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DockersControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\PasteOptionsControl.resx">
       <SubType>Designer</SubType>
       <DependentUpon>PasteOptionsControl.cs</DependentUpon>
