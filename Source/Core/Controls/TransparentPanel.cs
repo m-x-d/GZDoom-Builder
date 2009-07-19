@@ -21,49 +21,46 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
-using Microsoft.Win32;
-using System.Diagnostics;
-using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Rendering;
-using SlimDX.Direct3D9;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
-using CodeImp.DoomBuilder.Map;
 using System.Globalization;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	internal partial class DockersControl : UserControl
+	public class TransparentPanel : Panel
 	{
-		#region ================== Constants
-
-		#endregion
-
-		#region ================== Variables
-
-		#endregion
-
-		#region ================== Constructor
+		#region ================== Constructor / Disposer
 
 		// Constructor
-		public DockersControl()
+		public TransparentPanel()
 		{
-			InitializeComponent();
 		}
 
 		#endregion
 
 		#region ================== Methods
+		
+		// Override this property
+		protected override CreateParams CreateParams
+		{
+			get
+			{
+				CreateParams cp = base.CreateParams;
+				cp.ExStyle |= 0x20;
+				return cp;
+			}
+		}
 
-		#endregion
-
-		#region ================== Events
-
+		// Disable background drawing by overriding this
+		protected override void OnPaintBackground(PaintEventArgs e)
+		{
+		}
+		
 		#endregion
 	}
 }

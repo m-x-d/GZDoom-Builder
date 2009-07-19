@@ -175,6 +175,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.processor = new System.Windows.Forms.Timer(this.components);
 			this.statusflasher = new System.Windows.Forms.Timer(this.components);
 			this.statusresetter = new System.Windows.Forms.Timer(this.components);
+			this.dockersspace = new System.Windows.Forms.Panel();
+			this.dockerspanel = new CodeImp.DoomBuilder.Controls.DockersControl();
 			toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -1441,9 +1443,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.panelinfo.Controls.Add(this.thinginfo);
 			this.panelinfo.Controls.Add(this.sectorinfo);
 			this.panelinfo.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panelinfo.Location = new System.Drawing.Point(0, 564);
+			this.panelinfo.Location = new System.Drawing.Point(26, 564);
 			this.panelinfo.Name = "panelinfo";
-			this.panelinfo.Size = new System.Drawing.Size(1012, 106);
+			this.panelinfo.Size = new System.Drawing.Size(986, 106);
 			this.panelinfo.TabIndex = 4;
 			// 
 			// heightpanel1
@@ -1483,7 +1485,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontoggleinfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttontoggleinfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.buttontoggleinfo.Font = new System.Drawing.Font("Marlett", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-			this.buttontoggleinfo.Location = new System.Drawing.Point(988, 1);
+			this.buttontoggleinfo.Location = new System.Drawing.Point(962, 1);
 			this.buttontoggleinfo.Name = "buttontoggleinfo";
 			this.buttontoggleinfo.Size = new System.Drawing.Size(22, 19);
 			this.buttontoggleinfo.TabIndex = 5;
@@ -1552,10 +1554,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.display.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.display.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.display.CausesValidation = false;
-			this.display.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.display.Location = new System.Drawing.Point(0, 49);
+			this.display.Location = new System.Drawing.Point(373, 141);
 			this.display.Name = "display";
-			this.display.Size = new System.Drawing.Size(1012, 515);
+			this.display.Size = new System.Drawing.Size(542, 307);
 			this.display.TabIndex = 5;
 			this.display.MouseLeave += new System.EventHandler(this.display_MouseLeave);
 			this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
@@ -1580,13 +1581,32 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.statusresetter.Tick += new System.EventHandler(this.statusresetter_Tick);
 			// 
+			// dockersspace
+			// 
+			this.dockersspace.Dock = System.Windows.Forms.DockStyle.Left;
+			this.dockersspace.Location = new System.Drawing.Point(0, 49);
+			this.dockersspace.Name = "dockersspace";
+			this.dockersspace.Size = new System.Drawing.Size(26, 621);
+			this.dockersspace.TabIndex = 6;
+			// 
+			// dockerspanel
+			// 
+			this.dockerspanel.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.dockerspanel.Location = new System.Drawing.Point(62, 67);
+			this.dockerspanel.Name = "dockerspanel";
+			this.dockerspanel.Size = new System.Drawing.Size(236, 467);
+			this.dockerspanel.TabIndex = 7;
+			this.dockerspanel.Visible = false;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(1012, 693);
+			this.Controls.Add(this.dockerspanel);
 			this.Controls.Add(this.display);
 			this.Controls.Add(this.panelinfo);
+			this.Controls.Add(this.dockersspace);
 			this.Controls.Add(this.statusbar);
 			this.Controls.Add(this.toolbar);
 			this.Controls.Add(this.menumain);
@@ -1753,5 +1773,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemtoggleinfo;
 		private System.Windows.Forms.ToolStripMenuItem itempastespecial;
 		private System.Windows.Forms.Panel heightpanel1;
+		private System.Windows.Forms.Panel dockersspace;
+		private CodeImp.DoomBuilder.Controls.DockersControl dockerspanel;
 	}
 }
