@@ -636,6 +636,7 @@ namespace CodeImp.DoomBuilder
 				// Create main window
 				General.WriteLogLine("Loading main interface window...");
 				mainwindow = new MainForm();
+				mainwindow.SetupInterface();
 				mainwindow.UpdateInterface();
 				mainwindow.UpdateThingsFilters();
 
@@ -946,6 +947,7 @@ namespace CodeImp.DoomBuilder
 					plugins.OnMapNewEnd();
 
 					// All done
+					mainwindow.SetupInterface();
 					mainwindow.RedrawDisplay();
 					mainwindow.UpdateThingsFilters();
 					mainwindow.UpdateInterface();
@@ -994,6 +996,7 @@ namespace CodeImp.DoomBuilder
 				// Done
 				Cursor.Current = Cursors.Default;
 				editing.UpdateCurrentEditModes();
+				mainwindow.SetupInterface();
 				mainwindow.RedrawDisplay();
 				mainwindow.HideInfo();
 				mainwindow.UpdateThingsFilters();
@@ -1096,6 +1099,7 @@ namespace CodeImp.DoomBuilder
 			plugins.OnMapOpenEnd();
 
 			// All done
+			mainwindow.SetupInterface();
 			mainwindow.RedrawDisplay();
 			mainwindow.UpdateThingsFilters();
 			mainwindow.UpdateInterface();

@@ -48,8 +48,12 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		#region ================== Constants
 		
+		// Recent files
 		private const int MAX_RECENT_FILES = 8;
 		private const int MAX_RECENT_FILES_PIXELS = 250;
+
+		// Dockers
+		private const int DOCKER_TAB_WIDTH = 20;
 		
 		// Status bar
 		private const string STATUS_READY_TEXT = "Ready.";
@@ -177,6 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 			editmodeitems = new List<ToolStripItem>();
 			labelcollapsedinfo.Text = "";
+			display.Dock = DockStyle.Fill;
 			
 			// Fetch pointer
 			windowptr = base.Handle;
@@ -251,6 +256,27 @@ namespace CodeImp.DoomBuilder.Windows
 		public void MessageBeep(MessageBeepType type)
 		{
 			General.MessageBeep(type);
+		}
+
+		// This sets up the interface
+		internal void SetupInterface()
+		{
+			float scalex = this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width;
+			float scaley = this.CurrentAutoScaleDimensions.Height / this.AutoScaleDimensions.Height;
+			
+			// Remove docker tabs
+
+			// Setup docker space
+			switch(General.Settings.DockersPosition)
+			{
+				case 0: dockersspace.Dock = DockStyle.Left; break;
+				case 1: dockersspace.Dock = DockStyle.Right; break;
+			}
+
+			if(General.Settings.CollapseDockers)
+				dockersspace.Width = (int)((float)DOCKER_TAB_WIDTH * scalex);
+			else
+				dockersspace.Width = 300;
 		}
 		
 		// This updates all menus for the current status

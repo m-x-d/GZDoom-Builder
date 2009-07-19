@@ -1582,6 +1582,7 @@ namespace CodeImp.DoomBuilder
 				General.Plugins.MapReconfigure();
 				
 				// Update interface
+				General.MainWindow.SetupInterface();
 				General.MainWindow.UpdateThingsFilters();
 				General.MainWindow.UpdateInterface();
 				

@@ -681,6 +681,9 @@
     <Compile Include="Controls\ThingBrowserControl.Designer.cs">
       <DependentUpon>ThingBrowserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TransparentPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Data\ColorImage.cs" />
     <Compile Include="Data\ColormapImage.cs" />
     <Compile Include="Data\HighResImage.cs" />
@@ -738,7 +741,6 @@
     <Compile Include="ZDoom\StateStructure.cs" />
     <Compile Include="Editing\EditingManager.cs" />
     <EmbeddedResource Include="Controls\DockersControl.resx">
-      <SubType>Designer</SubType>
       <DependentUpon>DockersControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PasteOptionsControl.resx">
