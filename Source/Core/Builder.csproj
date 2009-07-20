@@ -663,6 +663,7 @@
     <Compile Include="Config\FlagTranslation.cs" />
     <Compile Include="Config\PasteOptions.cs" />
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
+    <Compile Include="Controls\Docker.cs" />
     <Compile Include="Controls\DockersControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

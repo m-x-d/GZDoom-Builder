@@ -181,7 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 			editmodeitems = new List<ToolStripItem>();
 			labelcollapsedinfo.Text = "";
-			display.Dock = DockStyle.Fill;
+			display.Dock = DockStyle.Fill;			
 			
 			// Fetch pointer
 			windowptr = base.Handle;
@@ -264,19 +264,40 @@ namespace CodeImp.DoomBuilder.Windows
 			float scalex = this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width;
 			float scaley = this.CurrentAutoScaleDimensions.Height / this.AutoScaleDimensions.Height;
 			
-			// Remove docker tabs
-
-			// Setup docker space
-			switch(General.Settings.DockersPosition)
-			{
-				case 0: dockersspace.Dock = DockStyle.Left; break;
-				case 1: dockersspace.Dock = DockStyle.Right; break;
-			}
-
+			General.LockWindowUpdate(this.Handle);
+			
+			// We can't place the docker easily when collapsed
+			dockerspanel.Expand();
+			
 			if(General.Settings.CollapseDockers)
 				dockersspace.Width = (int)((float)DOCKER_TAB_WIDTH * scalex);
 			else
-				dockersspace.Width = 300;
+				dockersspace.Width = General.Settings.DockersWidth;
+			
+			// Setup docker
+			if(General.Settings.DockersPosition == 0)
+			{
+				dockersspace.Dock = DockStyle.Left;
+				dockerspanel.Setup(false);
+				dockerspanel.Location = dockersspace.Location;
+				dockerspanel.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
+			}
+			else
+			{
+				dockersspace.Dock = DockStyle.Right;
+				dockerspanel.Setup(true);
+				dockerspanel.Location = new Point(dockersspace.Right - General.Settings.DockersWidth, dockersspace.Top);
+				dockerspanel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+			}
+			
+			dockerspanel.Width = General.Settings.DockersWidth;
+			dockerspanel.Height = dockersspace.Height;
+			dockerspanel.BringToFront();
+
+			General.LockWindowUpdate(IntPtr.Zero);
+			
+			if(General.Settings.CollapseDockers)
+				dockerspanel.Collapse();
 		}
 		
 		// This updates all menus for the current status
