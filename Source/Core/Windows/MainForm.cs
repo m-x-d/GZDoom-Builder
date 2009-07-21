@@ -151,6 +151,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// Processing
 		private int processingcount;
 		private double lastupdatetime;
+
+		// Updating
+		private int lockupdatecount;
 		
 		#endregion
 
@@ -264,40 +267,56 @@ namespace CodeImp.DoomBuilder.Windows
 			float scalex = this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width;
 			float scaley = this.CurrentAutoScaleDimensions.Height / this.AutoScaleDimensions.Height;
 			
-			General.LockWindowUpdate(this.Handle);
-			
-			// We can't place the docker easily when collapsed
-			dockerspanel.Expand();
-			
-			if(General.Settings.CollapseDockers)
-				dockersspace.Width = dockerspanel.GetCollapsedWidth();
-			else
-				dockersspace.Width = General.Settings.DockersWidth;
-			
 			// Setup docker
-			if(General.Settings.DockersPosition == 0)
+			if(General.Settings.DockersPosition != 2)
 			{
-				dockersspace.Dock = DockStyle.Left;
-				dockerspanel.Setup(false);
-				dockerspanel.Location = dockersspace.Location;
-				dockerspanel.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
+				LockUpdate();
+				dockerspanel.Visible = true;
+				dockersspace.Visible = true;
+
+				// We can't place the docker easily when collapsed
+				dockerspanel.Expand();
+
+				// Setup docker width
+				if(General.Settings.DockersWidth < dockerspanel.GetCollapsedWidth())
+					General.Settings.DockersWidth = dockerspanel.GetCollapsedWidth();
+
+				// Determine fixed space required
+				if(General.Settings.CollapseDockers)
+					dockersspace.Width = dockerspanel.GetCollapsedWidth();
+				else
+					dockersspace.Width = General.Settings.DockersWidth;
+
+				// Setup docker
+				if(General.Settings.DockersPosition == 0)
+				{
+					dockersspace.Dock = DockStyle.Left;
+					dockerspanel.Setup(false);
+					dockerspanel.Location = dockersspace.Location;
+					dockerspanel.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
+				}
+				else
+				{
+					dockersspace.Dock = DockStyle.Right;
+					dockerspanel.Setup(true);
+					dockerspanel.Location = new Point(dockersspace.Right - General.Settings.DockersWidth, dockersspace.Top);
+					dockerspanel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+				}
+
+				dockerspanel.Width = General.Settings.DockersWidth;
+				dockerspanel.Height = dockersspace.Height;
+				dockerspanel.BringToFront();
+
+				if(General.Settings.CollapseDockers)
+					dockerspanel.Collapse();
+				
+				UnlockUpdate();
 			}
 			else
 			{
-				dockersspace.Dock = DockStyle.Right;
-				dockerspanel.Setup(true);
-				dockerspanel.Location = new Point(dockersspace.Right - General.Settings.DockersWidth, dockersspace.Top);
-				dockerspanel.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
+				dockerspanel.Visible = false;
+				dockersspace.Visible = false;
 			}
-			
-			dockerspanel.Width = General.Settings.DockersWidth;
-			dockerspanel.Height = dockersspace.Height;
-			dockerspanel.BringToFront();
-
-			General.LockWindowUpdate(IntPtr.Zero);
-			
-			if(General.Settings.CollapseDockers)
-				dockerspanel.Collapse();
 		}
 		
 		// This updates all menus for the current status
@@ -350,6 +369,28 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 		
 		#region ================== Window
+		
+		// This locks the window for updating
+		internal void LockUpdate()
+		{
+			lockupdatecount++;
+			if(lockupdatecount == 1) General.LockWindowUpdate(this.Handle);
+		}
+
+		// This unlocks for updating
+		internal void UnlockUpdate()
+		{
+			lockupdatecount--;
+			if(lockupdatecount == 0) General.LockWindowUpdate(IntPtr.Zero);
+			if(lockupdatecount < 0) lockupdatecount = 0;
+		}
+
+		// This unlocks for updating
+		internal void ForceUnlockUpdate()
+		{
+			if(lockupdatecount > 0) General.LockWindowUpdate(IntPtr.Zero);
+			lockupdatecount = 0;
+		}
 		
 		// This sets the focus on the display for correct key input
 		public bool FocusDisplay()
@@ -2066,6 +2107,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(cfgform.ShowDialog(this) == DialogResult.OK)
 			{
 				// Update stuff
+				SetupInterface();
 				UpdateInterface();
 				General.Editing.UpdateCurrentEditModes();
 				General.Plugins.ProgramReconfigure();
@@ -2090,6 +2132,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(prefform.ShowDialog(this) == DialogResult.OK)
 			{
 				// Update stuff
+				SetupInterface();
 				ApplyShortcutKeys();
 				General.Colors.CreateCorrectionTable();
 				General.Plugins.ProgramReconfigure();

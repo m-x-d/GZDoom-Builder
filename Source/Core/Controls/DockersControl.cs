@@ -115,14 +115,17 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(iscollapsed) return;
 			
-			splitter.Visible = false;
+			splitter.Enabled = false;
+			splitter.BackColor = SystemColors.Control;
+			splitter.Width = (int)(2.0f * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
 			expandedtab = tabs.SelectedIndex;
 			expandedwidth = this.Width;
 			tabs.SelectedIndex = -1;
-			General.LockWindowUpdate(Parent.Handle);
+			General.MainWindow.LockUpdate();
 			if(rightalign) this.Left = this.Right - GetCollapsedWidth();
 			this.Width = GetCollapsedWidth();
-			General.LockWindowUpdate(IntPtr.Zero);
+			General.MainWindow.UnlockUpdate();
+			this.Invalidate(true);
 			
 			iscollapsed = true;
 			
@@ -133,14 +136,16 @@ namespace CodeImp.DoomBuilder.Controls
 		public void Expand()
 		{
 			if(!iscollapsed) return;
-			
-			splitter.Visible = true;
-			General.LockWindowUpdate(Parent.Handle);
+
+			splitter.Enabled = true;
+			splitter.BackColor = Color.Transparent;
+			splitter.Width = (int)(4.0f * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
+			General.MainWindow.LockUpdate();
 			if(rightalign) this.Left = this.Right - expandedwidth;
 			this.Width = expandedwidth;
-			General.LockWindowUpdate(IntPtr.Zero);
+			General.MainWindow.UnlockUpdate();
 			tabs.SelectedIndex = expandedtab;
-			tabs.Invalidate();
+			tabs.Invalidate(true);
 			
 			iscollapsed = false;
 			
@@ -150,9 +155,12 @@ namespace CodeImp.DoomBuilder.Controls
 		// This calculates the collapsed width
 		public int GetCollapsedWidth()
 		{
-			// Downside of this function is that we need a tab :\
-			Rectangle r = tabs.GetTabRect(0);
-			return r.Width + (int)(2.0f * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
+			Rectangle r;
+			if(tabs.TabPages.Count > 0)
+				r = tabs.GetTabRect(0);
+			else
+				r = new Rectangle(0, 0, 26, 26);
+			return r.Width + (int)(1.0f * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
 		}
 		
 		// This adds a docker
@@ -235,14 +243,15 @@ namespace CodeImp.DoomBuilder.Controls
 			if(e.Button == MouseButtons.Left)
 			{
 				splitstartoffset = e.X;
-				splitter.BackColor = SystemColors.ControlDark;
+				splitter.BackColor = SystemColors.Highlight;
 			}
 		}
 		
 		// Splitting ends
 		private void splitter_MouseUp(object sender, MouseEventArgs e)
 		{
-			splitter.BackColor = SystemColors.Control;
+			splitter.BackColor = Color.Transparent;
+			tabs.Invalidate(true);
 			this.Update();
 			General.MainWindow.RedrawDisplay();
 			General.MainWindow.Update();
@@ -253,21 +262,29 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(e.Button == MouseButtons.Left)
 			{
-				General.LockWindowUpdate(Parent.Handle);
+				General.MainWindow.LockUpdate();
 				
 				// Resize the control
 				int delta = e.X - splitstartoffset;
+				int collapsedwidth = GetCollapsedWidth();
 				if(rightalign)
 				{
 					this.Left += delta;
 					this.Width -= delta;
+					if(this.Width < collapsedwidth)
+					{
+						this.Left -= collapsedwidth - this.Width;
+						this.Width = collapsedwidth;
+					}
 				}
 				else
 				{
 					this.Width += delta;
+					if(this.Width < collapsedwidth)
+						this.Width = collapsedwidth;
 				}
-				
-				General.LockWindowUpdate(IntPtr.Zero);
+
+				General.MainWindow.UnlockUpdate();
 				this.Update();
 				General.MainWindow.RedrawDisplay();
 				General.MainWindow.Update();

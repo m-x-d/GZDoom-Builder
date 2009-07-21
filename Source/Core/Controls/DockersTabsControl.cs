@@ -245,9 +245,10 @@ namespace CodeImp.DoomBuilder.Controls
 				Rectangle prect = new Rectangle(e.Location, Size.Empty);
 				
 				// Check in which tab the mouse is
-				for(int i = 0; i < this.TabPages.Count; i++)
+				for(int i = this.TabPages.Count - 1; i >= 0; i--)
 				{
 					Rectangle tabrect = this.GetTabRect(i);
+					tabrect.Inflate(1, 1);
 					if(tabrect.IntersectsWith(prect))
 					{
 						foundindex = i;
