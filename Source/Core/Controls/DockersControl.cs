@@ -43,11 +43,20 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constants
 		
 		#endregion
+
+		#region ================== Delegates
+		
+		public event EventHandler MouseContainerEnter;
+		public event EventHandler MouseContainerLeave;
+		public event EventHandler Collapsed;
+		public event EventHandler Expanded;
+		
+		#endregion
 		
 		#region ================== Variables
-		
+
 		private bool rightalign;
-		private bool collapsed;
+		private bool iscollapsed;
 		
 		private int expandedwidth;		// width when expanded
 		private int expandedtab;		// selected tab index when expanded
@@ -56,7 +65,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Properties
 		
-		public bool IsCollpased { get { return collapsed; } }
+		public bool IsCollpased { get { return iscollapsed; } }
 		
 		#endregion
 		
@@ -81,11 +90,15 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				splitter.Dock = DockStyle.Left;
 				tabs.Alignment = TabAlignment.Right;
+				tabs.Location = new Point(0, 0);
+				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height);
 			}
 			else
 			{
 				splitter.Dock = DockStyle.Right;
 				tabs.Alignment = TabAlignment.Left;
+				tabs.Location = new Point(-2, 0);
+				tabs.Size = new Size(this.ClientRectangle.Width + 2, this.ClientRectangle.Height);
 			}
 			
 			tabs.SendToBack();
@@ -94,7 +107,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This collapses the docker
 		public void Collapse()
 		{
-			if(collapsed) return;
+			if(iscollapsed) return;
 			
 			splitter.Visible = false;
 			expandedtab = tabs.SelectedIndex;
@@ -105,13 +118,15 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Width = GetCollapsedWidth();
 			General.LockWindowUpdate(IntPtr.Zero);
 			
-			collapsed = true;
+			iscollapsed = true;
+			
+			if(Collapsed != null) Collapsed(this, EventArgs.Empty);
 		}
 		
 		// This expands the docker
 		public void Expand()
 		{
-			if(!collapsed) return;
+			if(!iscollapsed) return;
 			
 			splitter.Visible = true;
 			General.LockWindowUpdate(Parent.Handle);
@@ -121,7 +136,9 @@ namespace CodeImp.DoomBuilder.Controls
 			tabs.SelectedIndex = expandedtab;
 			tabs.Invalidate();
 			
-			collapsed = false;
+			iscollapsed = false;
+			
+			if(Expanded != null) Expanded(this, EventArgs.Empty);
 		}
 		
 		// This calculates the collapsed width
@@ -138,6 +155,7 @@ namespace CodeImp.DoomBuilder.Controls
 			TabPage page = new TabPage(d.Title);
 			page.Font = this.Font;
 			page.Tag = d;
+			page.UseVisualStyleBackColor = false;
 			page.Controls.Add(d.Panel);
 			tabs.TabPages.Add(page);
 		}
@@ -184,6 +202,39 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Events
 		
+		// This raises the MouseContainerEnter event
+		private void RaiseMouseContainerEnter(object sender, EventArgs e)
+		{
+			if(MouseContainerEnter != null)
+				MouseContainerEnter(sender, e);
+		}
+
+		// This raises the MouseContainerLeave event
+		private void RaiseMouseContainerLeave(object sender, EventArgs e)
+		{
+			if(MouseContainerLeave != null)
+				MouseContainerLeave(sender, e);
+		}
+		
+		// We don't want the focus
+		private void tabs_Enter(object sender, EventArgs e) { General.MainWindow.FocusDisplay(); }
+		private void tabs_MouseUp(object sender, MouseEventArgs e) { General.MainWindow.FocusDisplay(); }
+		
 		#endregion
+
+		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			General.MainWindow.FocusDisplay();
+		}
+
+		private void tabs_Selected(object sender, TabControlEventArgs e)
+		{
+			General.MainWindow.FocusDisplay();
+		}
+
+		protected override void OnEnter(EventArgs e)
+		{
+			General.MainWindow.FocusDisplay();
+		}
 	}
 }

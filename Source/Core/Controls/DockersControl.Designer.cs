@@ -44,48 +44,68 @@
 			this.splitter.Name = "splitter";
 			this.splitter.Size = new System.Drawing.Size(4, 541);
 			this.splitter.TabIndex = 1;
+			this.splitter.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
+			this.splitter.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
 			// 
 			// tabs
 			// 
-			this.tabs.Alignment = System.Windows.Forms.TabAlignment.Left;
+			this.tabs.Alignment = System.Windows.Forms.TabAlignment.Right;
+			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.tabPage1);
 			this.tabs.Controls.Add(this.tabPage2);
 			this.tabs.Controls.Add(this.tabPage3);
-			this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.ItemSize = new System.Drawing.Size(96, 28);
+			this.tabs.ItemSize = new System.Drawing.Size(100, 26);
 			this.tabs.Location = new System.Drawing.Point(0, 0);
+			this.tabs.Margin = new System.Windows.Forms.Padding(0);
 			this.tabs.Multiline = true;
 			this.tabs.Name = "tabs";
-			this.tabs.Padding = new System.Drawing.Point(12, 5);
+			this.tabs.Padding = new System.Drawing.Point(10, 5);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(308, 541);
-			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.tabs.TabIndex = 0;
+			this.tabs.TabStop = false;
+			this.tabs.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
+			this.tabs.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabs_Selected);
+			this.tabs.Enter += new System.EventHandler(this.tabs_Enter);
+			this.tabs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tabs_MouseUp);
+			this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
+			this.tabs.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Location = new System.Drawing.Point(32, 4);
+			this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage1.Location = new System.Drawing.Point(4, 4);
 			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Size = new System.Drawing.Size(272, 533);
+			this.tabPage1.Size = new System.Drawing.Size(274, 533);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Undo / Redo";
+			this.tabPage1.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
+			this.tabPage1.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
 			// 
 			// tabPage2
 			// 
-			this.tabPage2.Location = new System.Drawing.Point(31, 4);
+			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage2.Location = new System.Drawing.Point(4, 4);
 			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Size = new System.Drawing.Size(273, 533);
+			this.tabPage2.Size = new System.Drawing.Size(274, 533);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Clipboard";
+			this.tabPage2.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
+			this.tabPage2.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
 			// 
 			// tabPage3
 			// 
-			this.tabPage3.Location = new System.Drawing.Point(31, 4);
+			this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
+			this.tabPage3.Location = new System.Drawing.Point(4, 4);
 			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(273, 533);
+			this.tabPage3.Size = new System.Drawing.Size(274, 533);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "Prefabs";
+			this.tabPage3.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
+			this.tabPage3.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
 			// 
 			// DockersControl
 			// 
@@ -96,6 +116,8 @@
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Name = "DockersControl";
 			this.Size = new System.Drawing.Size(308, 541);
+			this.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
+			this.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
 			this.tabs.ResumeLayout(false);
 			this.ResumeLayout(false);
 
