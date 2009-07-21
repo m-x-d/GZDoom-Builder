@@ -48,7 +48,6 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		private bool rightalign;
 		private bool collapsed;
-		private bool autocollapse;
 		
 		private int expandedwidth;		// width when expanded
 		private int expandedtab;		// selected tab index when expanded
@@ -58,7 +57,6 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Properties
 		
 		public bool IsCollpased { get { return collapsed; } }
-		public bool AutoCollpase { get { return autocollapse; } set { autocollapse = value; } }
 		
 		#endregion
 		
@@ -185,7 +183,6 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Events
-		
 		
 		#endregion
 	}

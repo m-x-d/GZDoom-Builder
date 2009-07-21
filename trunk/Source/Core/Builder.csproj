@@ -670,6 +670,9 @@
     <Compile Include="Controls\DockersControl.Designer.cs">
       <DependentUpon>DockersControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DockersTabsControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\PasteOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

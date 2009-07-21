@@ -28,53 +28,13 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.tabs = new System.Windows.Forms.TabControl();
+			this.splitter = new CodeImp.DoomBuilder.Controls.TransparentPanel();
+			this.tabs = new CodeImp.DoomBuilder.Controls.DockersTabsControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.splitter = new CodeImp.DoomBuilder.Controls.TransparentPanel();
 			this.tabs.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// tabs
-			// 
-			this.tabs.Alignment = System.Windows.Forms.TabAlignment.Left;
-			this.tabs.Controls.Add(this.tabPage1);
-			this.tabs.Controls.Add(this.tabPage2);
-			this.tabs.Controls.Add(this.tabPage3);
-			this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.Location = new System.Drawing.Point(0, 0);
-			this.tabs.Multiline = true;
-			this.tabs.Name = "tabs";
-			this.tabs.Padding = new System.Drawing.Point(12, 5);
-			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(308, 541);
-			this.tabs.TabIndex = 0;
-			// 
-			// tabPage1
-			// 
-			this.tabPage1.Location = new System.Drawing.Point(27, 4);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Size = new System.Drawing.Size(277, 533);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Undo / Redo";
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.Location = new System.Drawing.Point(27, 4);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Size = new System.Drawing.Size(277, 533);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Clipboard";
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Location = new System.Drawing.Point(27, 4);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(277, 533);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Prefabs";
 			// 
 			// splitter
 			// 
@@ -84,6 +44,48 @@
 			this.splitter.Name = "splitter";
 			this.splitter.Size = new System.Drawing.Size(4, 541);
 			this.splitter.TabIndex = 1;
+			// 
+			// tabs
+			// 
+			this.tabs.Alignment = System.Windows.Forms.TabAlignment.Left;
+			this.tabs.Controls.Add(this.tabPage1);
+			this.tabs.Controls.Add(this.tabPage2);
+			this.tabs.Controls.Add(this.tabPage3);
+			this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabs.ItemSize = new System.Drawing.Size(96, 28);
+			this.tabs.Location = new System.Drawing.Point(0, 0);
+			this.tabs.Multiline = true;
+			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(12, 5);
+			this.tabs.SelectedIndex = 0;
+			this.tabs.Size = new System.Drawing.Size(308, 541);
+			this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+			this.tabs.TabIndex = 0;
+			// 
+			// tabPage1
+			// 
+			this.tabPage1.Location = new System.Drawing.Point(32, 4);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Size = new System.Drawing.Size(272, 533);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "Undo / Redo";
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Location = new System.Drawing.Point(31, 4);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Size = new System.Drawing.Size(273, 533);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "Clipboard";
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Location = new System.Drawing.Point(31, 4);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Size = new System.Drawing.Size(273, 533);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "Prefabs";
 			// 
 			// DockersControl
 			// 
@@ -101,7 +103,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.TabControl tabs;
+		private DockersTabsControl tabs;
 		private TransparentPanel splitter;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
