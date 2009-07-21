@@ -80,6 +80,8 @@ namespace CodeImp.DoomBuilder.Windows
 			previewsize.Value = General.Settings.PreviewImageSize;
 			autoscrollspeed.Value = General.Settings.AutoScrollSpeed;
 			animatevisualselection.Checked = General.Settings.AnimateVisualSelection;
+			dockersposition.SelectedIndex = General.Settings.DockersPosition;
+			collapsedockers.Checked = General.Settings.CollapseDockers;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -190,6 +192,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.PreviewImageSize = previewsize.Value;
 			General.Settings.AutoScrollSpeed = autoscrollspeed.Value;
 			General.Settings.AnimateVisualSelection = animatevisualselection.Checked;
+			General.Settings.DockersPosition = dockersposition.SelectedIndex;
+			General.Settings.CollapseDockers = collapsedockers.Checked;
 			
 			// Script font size
 			int fontsize = 8;

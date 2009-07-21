@@ -38,9 +38,10 @@
 			// 
 			// splitter
 			// 
+			this.splitter.BackColor = System.Drawing.SystemColors.Control;
 			this.splitter.Cursor = System.Windows.Forms.Cursors.SizeWE;
-			this.splitter.Dock = System.Windows.Forms.DockStyle.Right;
-			this.splitter.Location = new System.Drawing.Point(304, 0);
+			this.splitter.Dock = System.Windows.Forms.DockStyle.Left;
+			this.splitter.Location = new System.Drawing.Point(0, 0);
 			this.splitter.Name = "splitter";
 			this.splitter.Size = new System.Drawing.Size(4, 541);
 			this.splitter.TabIndex = 1;

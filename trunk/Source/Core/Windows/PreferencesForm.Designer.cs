@@ -58,7 +58,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.collapsedockers = new System.Windows.Forms.CheckBox();
+			this.dockersposition = new System.Windows.Forms.ComboBox();
+			this.label17 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.scriptautoindent = new System.Windows.Forms.CheckBox();
 			this.label10 = new System.Windows.Forms.Label();
 			this.scriptontop = new System.Windows.Forms.CheckBox();
@@ -119,7 +124,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabpasting = new System.Windows.Forms.TabPage();
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
-			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -131,6 +135,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabinterface.SuspendLayout();
+			this.groupBox4.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -481,6 +486,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabinterface
 			// 
+			this.tabinterface.Controls.Add(this.groupBox4);
 			this.tabinterface.Controls.Add(this.groupBox3);
 			this.tabinterface.Controls.Add(this.groupBox2);
 			this.tabinterface.Controls.Add(groupBox1);
@@ -492,6 +498,50 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.collapsedockers);
+			this.groupBox4.Controls.Add(this.dockersposition);
+			this.groupBox4.Controls.Add(this.label17);
+			this.groupBox4.Location = new System.Drawing.Point(316, 317);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(329, 124);
+			this.groupBox4.TabIndex = 3;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = " Side Panels ";
+			// 
+			// collapsedockers
+			// 
+			this.collapsedockers.AutoSize = true;
+			this.collapsedockers.Location = new System.Drawing.Point(204, 41);
+			this.collapsedockers.Name = "collapsedockers";
+			this.collapsedockers.Size = new System.Drawing.Size(72, 18);
+			this.collapsedockers.TabIndex = 2;
+			this.collapsedockers.Text = "Auto hide";
+			this.collapsedockers.UseVisualStyleBackColor = true;
+			// 
+			// dockersposition
+			// 
+			this.dockersposition.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.dockersposition.FormattingEnabled = true;
+			this.dockersposition.Items.AddRange(new object[] {
+            "Left",
+            "Right",
+            "None"});
+			this.dockersposition.Location = new System.Drawing.Point(95, 39);
+			this.dockersposition.Name = "dockersposition";
+			this.dockersposition.Size = new System.Drawing.Size(85, 22);
+			this.dockersposition.TabIndex = 1;
+			// 
+			// label17
+			// 
+			this.label17.AutoSize = true;
+			this.label17.Location = new System.Drawing.Point(33, 42);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(47, 14);
+			this.label17.TabIndex = 0;
+			this.label17.Text = "Position:";
 			// 
 			// groupBox3
 			// 
@@ -512,14 +562,26 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Script Editor ";
 			// 
+			// scripttabwidth
+			// 
+			this.scripttabwidth.AllowDecimal = false;
+			this.scripttabwidth.AllowNegative = false;
+			this.scripttabwidth.AllowRelative = false;
+			this.scripttabwidth.ButtonStep = 2;
+			this.scripttabwidth.Location = new System.Drawing.Point(76, 191);
+			this.scripttabwidth.Name = "scripttabwidth";
+			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
+			this.scripttabwidth.StepValues = null;
+			this.scripttabwidth.TabIndex = 22;
+			// 
 			// scriptautoindent
 			// 
 			this.scriptautoindent.AutoSize = true;
 			this.scriptautoindent.Location = new System.Drawing.Point(171, 195);
 			this.scriptautoindent.Name = "scriptautoindent";
-			this.scriptautoindent.Size = new System.Drawing.Size(82, 18);
+			this.scriptautoindent.Size = new System.Drawing.Size(81, 18);
 			this.scriptautoindent.TabIndex = 21;
-			this.scriptautoindent.Text = "Auto-indent";
+			this.scriptautoindent.Text = "Auto indent";
 			this.scriptautoindent.UseVisualStyleBackColor = true;
 			// 
 			// label10
@@ -647,7 +709,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Location = new System.Drawing.Point(316, 8);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(329, 433);
+			this.groupBox2.Size = new System.Drawing.Size(329, 303);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Visual Modes ";
@@ -655,7 +717,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// viewdistance
 			// 
 			this.viewdistance.LargeChange = 2;
-			this.viewdistance.Location = new System.Drawing.Point(108, 196);
+			this.viewdistance.Location = new System.Drawing.Point(108, 187);
 			this.viewdistance.Maximum = 15;
 			this.viewdistance.Minimum = 1;
 			this.viewdistance.Name = "viewdistance";
@@ -667,7 +729,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// movespeed
 			// 
-			this.movespeed.Location = new System.Drawing.Point(108, 141);
+			this.movespeed.Location = new System.Drawing.Point(108, 135);
 			this.movespeed.Maximum = 20;
 			this.movespeed.Minimum = 1;
 			this.movespeed.Name = "movespeed";
@@ -679,7 +741,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// mousespeed
 			// 
-			this.mousespeed.Location = new System.Drawing.Point(108, 84);
+			this.mousespeed.Location = new System.Drawing.Point(108, 81);
 			this.mousespeed.Maximum = 20;
 			this.mousespeed.Minimum = 1;
 			this.mousespeed.Name = "mousespeed";
@@ -705,7 +767,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// viewdistancelabel
 			// 
 			this.viewdistancelabel.AutoSize = true;
-			this.viewdistancelabel.Location = new System.Drawing.Point(264, 208);
+			this.viewdistancelabel.Location = new System.Drawing.Point(264, 199);
 			this.viewdistancelabel.Name = "viewdistancelabel";
 			this.viewdistancelabel.Size = new System.Drawing.Size(42, 14);
 			this.viewdistancelabel.TabIndex = 30;
@@ -714,7 +776,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label13
 			// 
 			this.label13.AutoSize = true;
-			this.label13.Location = new System.Drawing.Point(22, 208);
+			this.label13.Location = new System.Drawing.Point(22, 199);
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(80, 14);
 			this.label13.TabIndex = 28;
@@ -723,7 +785,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// invertyaxis
 			// 
 			this.invertyaxis.AutoSize = true;
-			this.invertyaxis.Location = new System.Drawing.Point(36, 260);
+			this.invertyaxis.Location = new System.Drawing.Point(36, 251);
 			this.invertyaxis.Name = "invertyaxis";
 			this.invertyaxis.Size = new System.Drawing.Size(122, 18);
 			this.invertyaxis.TabIndex = 4;
@@ -733,7 +795,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// movespeedlabel
 			// 
 			this.movespeedlabel.AutoSize = true;
-			this.movespeedlabel.Location = new System.Drawing.Point(264, 153);
+			this.movespeedlabel.Location = new System.Drawing.Point(264, 147);
 			this.movespeedlabel.Name = "movespeedlabel";
 			this.movespeedlabel.Size = new System.Drawing.Size(25, 14);
 			this.movespeedlabel.TabIndex = 25;
@@ -742,7 +804,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(33, 153);
+			this.label11.Location = new System.Drawing.Point(33, 147);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(69, 14);
 			this.label11.TabIndex = 23;
@@ -751,7 +813,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// mousespeedlabel
 			// 
 			this.mousespeedlabel.AutoSize = true;
-			this.mousespeedlabel.Location = new System.Drawing.Point(264, 96);
+			this.mousespeedlabel.Location = new System.Drawing.Point(264, 93);
 			this.mousespeedlabel.Name = "mousespeedlabel";
 			this.mousespeedlabel.Size = new System.Drawing.Size(25, 14);
 			this.mousespeedlabel.TabIndex = 22;
@@ -760,7 +822,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(27, 96);
+			this.label9.Location = new System.Drawing.Point(27, 93);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(75, 14);
 			this.label9.TabIndex = 20;
@@ -1215,18 +1277,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(637, 388);
 			this.pasteoptions.TabIndex = 0;
 			// 
-			// scripttabwidth
-			// 
-			this.scripttabwidth.AllowDecimal = false;
-			this.scripttabwidth.AllowNegative = false;
-			this.scripttabwidth.AllowRelative = false;
-			this.scripttabwidth.ButtonStep = 2;
-			this.scripttabwidth.Location = new System.Drawing.Point(76, 191);
-			this.scripttabwidth.Name = "scripttabwidth";
-			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
-			this.scripttabwidth.StepValues = null;
-			this.scripttabwidth.TabIndex = 22;
-			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -1256,6 +1306,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabinterface.ResumeLayout(false);
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.panel1.ResumeLayout(false);
@@ -1367,5 +1419,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.GroupBox appearancegroup1;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox scripttabwidth;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.ComboBox dockersposition;
+		private System.Windows.Forms.Label label17;
+		private System.Windows.Forms.CheckBox collapsedockers;
 	}
 }
