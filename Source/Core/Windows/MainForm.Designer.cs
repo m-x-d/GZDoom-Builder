@@ -1599,6 +1599,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerspanel.Size = new System.Drawing.Size(236, 467);
 			this.dockerspanel.TabIndex = 7;
 			this.dockerspanel.TabStop = false;
+			this.dockerspanel.UserResize += new System.EventHandler(this.dockerspanel_UserResize);
 			this.dockerspanel.Collapsed += new System.EventHandler(this.LoseFocus);
 			this.dockerspanel.MouseContainerEnter += new System.EventHandler(this.dockerspanel_MouseContainerEnter);
 			this.dockerspanel.MouseContainerLeave += new System.EventHandler(this.dockerspanel_MouseContainerLeave);

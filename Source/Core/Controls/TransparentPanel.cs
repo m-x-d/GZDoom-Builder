@@ -59,6 +59,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// Disable background drawing by overriding this
 		protected override void OnPaintBackground(PaintEventArgs e)
 		{
+			if(BackColor != Color.Transparent)
+				e.Graphics.Clear(BackColor);
 		}
 		
 		#endregion

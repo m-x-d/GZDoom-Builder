@@ -45,6 +45,9 @@
 			this.splitter.Size = new System.Drawing.Size(4, 541);
 			this.splitter.TabIndex = 1;
 			this.splitter.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
+			this.splitter.MouseMove += new System.Windows.Forms.MouseEventHandler(this.splitter_MouseMove);
+			this.splitter.MouseDown += new System.Windows.Forms.MouseEventHandler(this.splitter_MouseDown);
+			this.splitter.MouseUp += new System.Windows.Forms.MouseEventHandler(this.splitter_MouseUp);
 			this.splitter.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
 			// 
 			// tabs

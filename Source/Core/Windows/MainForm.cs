@@ -2524,6 +2524,15 @@ namespace CodeImp.DoomBuilder.Windows
 				dockerspanel.Collapse();
 		}
 		
+		// User resizes the docker
+		private void dockerspanel_UserResize(object sender, EventArgs e)
+		{
+			General.Settings.DockersWidth = dockerspanel.Width;
+			
+			if(!General.Settings.CollapseDockers)
+				dockersspace.Width = dockerspanel.Width;
+		}
+		
 		#endregion
 	}
 }
