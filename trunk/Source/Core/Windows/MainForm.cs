@@ -945,7 +945,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private void display_MouseDown(object sender, MouseEventArgs e)
 		{
 			int key = 0;
-
+			
+			LoseFocus(this, EventArgs.Empty);
+			
 			int mod = 0;
 			if(alt) mod |= (int)Keys.Alt;
 			if(shift) mod |= (int)Keys.Shift;
@@ -1168,9 +1170,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(alt) mod |= (int)Keys.Alt;
 			if(shift) mod |= (int)Keys.Shift;
 			if(ctrl) mod |= (int)Keys.Control;
-			
-			// Don't process any keys when they are meant for the things filter drop down box
-			if(!thingfilters.DroppedDown)
+
+			// Don't process any keys when they are meant for other input controls
+			if((ActiveControl == null) || (ActiveControl == display))
 			{
 				// Invoke any actions associated with this key
 				General.Actions.UpdateModifiers(mod);
@@ -1178,6 +1180,10 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Invoke on editing mode
 				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyDown(e);
+				
+				// Handled
+				e.Handled = true;
+				e.SuppressKeyPress = true;
 			}
 
 			// F1 pressed?
@@ -1215,8 +1221,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(shift) mod |= (int)Keys.Shift;
 			if(ctrl) mod |= (int)Keys.Control;
 			
-			// Don't process any keys when they are meant for the things filter drop down box
-			if(!thingfilters.DroppedDown)
+			// Don't process any keys when they are meant for other input controls
+			if((ActiveControl == null) || (ActiveControl == display))
 			{
 				// Invoke any actions associated with this key
 				General.Actions.UpdateModifiers(mod);
@@ -1224,9 +1230,31 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Invoke on editing mode
 				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyUp(e);
+				
+				// Handled
+				e.Handled = true;
+				e.SuppressKeyPress = true;
 			}
 		}
-
+		
+		// These prevent focus changes by way of TAB or Arrow keys
+		protected override bool IsInputChar(char charCode) { return false; }
+		protected override bool IsInputKey(Keys keyData) { return false; }
+		protected override bool ProcessKeyPreview(ref Message m) { return false; }
+		protected override bool ProcessDialogKey(Keys keyData) { return false; }
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData) { return false; }
+		
+		// This fixes some odd input behaviour
+		private void display_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			if((ActiveControl == null) || (ActiveControl == display))
+			{
+				LoseFocus(this, EventArgs.Empty);
+				KeyEventArgs ea = new KeyEventArgs(e.KeyData);
+				MainForm_KeyDown(sender, ea);
+			}
+		}
+		
 		#endregion
 
 		#region ================== Toolbar
@@ -1290,6 +1318,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void LoseFocus(object sender, EventArgs e)
 		{
 			// Lose focus!
+			try { display.Focus(); } catch(Exception) { }
 			this.ActiveControl = null;
 		}
 
@@ -2462,34 +2491,39 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Dockers
-
+		
 		// Mouse enters dockers window
-		private void dockerspanel_MouseEnter(object sender, EventArgs e)
+		private void dockerspanel_MouseContainerEnter(object sender, EventArgs e)
 		{
 			if(General.Settings.CollapseDockers)
 				dockerscollapser.Stop();
 			
 			dockerspanel.Expand();
 		}
-
+		
 		// Mouse leaves dockers window
-		private void dockerspanel_MouseLeave(object sender, EventArgs e)
+		private void dockerspanel_MouseContainerLeave(object sender, EventArgs e)
 		{
-			General.MessageBeep(MessageBeepType.Default);
 			if(General.Settings.CollapseDockers)
-				dockerscollapser.Start();
+			{
+				Point p = this.PointToClient(Cursor.Position);
+				Rectangle r = new Rectangle(dockerspanel.Location, dockerspanel.Size);
+				if(!r.IntersectsWith(new Rectangle(p, Size.Empty)))
+					dockerscollapser.Start();
+			}
 		}
-
+		
 		// Automatic collapsing
 		private void dockerscollapser_Tick(object sender, EventArgs e)
 		{
 			dockerscollapser.Stop();
-			Rectangle screenrect = this.RectangleToScreen(new Rectangle(dockerspanel.Location, dockerspanel.Size));
-			Rectangle mouserect = new Rectangle(Cursor.Position, Size.Empty);
-			if(!screenrect.IntersectsWith(mouserect))
+			
+			Point p = this.PointToClient(Cursor.Position);
+			Rectangle r = new Rectangle(dockerspanel.Location, dockerspanel.Size);
+			if(!r.IntersectsWith(new Rectangle(p, Size.Empty)))
 				dockerspanel.Collapse();
 		}
-
+		
 		#endregion
 	}
 }
