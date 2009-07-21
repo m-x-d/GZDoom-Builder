@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.Windows
 			dockerspanel.Expand();
 			
 			if(General.Settings.CollapseDockers)
-				dockersspace.Width = (int)((float)DOCKER_TAB_WIDTH * scalex);
+				dockersspace.Width = dockerspanel.GetCollapsedWidth();
 			else
 				dockersspace.Width = General.Settings.DockersWidth;
 			
@@ -2457,6 +2457,37 @@ namespace CodeImp.DoomBuilder.Windows
 			// Process signal
 			if((General.Map != null) && (General.Editing.Mode != null))
 				General.Editing.Mode.OnProcess(deltatime);
+		}
+
+		#endregion
+
+		#region ================== Dockers
+
+		// Mouse enters dockers window
+		private void dockerspanel_MouseEnter(object sender, EventArgs e)
+		{
+			if(General.Settings.CollapseDockers)
+				dockerscollapser.Stop();
+			
+			dockerspanel.Expand();
+		}
+
+		// Mouse leaves dockers window
+		private void dockerspanel_MouseLeave(object sender, EventArgs e)
+		{
+			General.MessageBeep(MessageBeepType.Default);
+			if(General.Settings.CollapseDockers)
+				dockerscollapser.Start();
+		}
+
+		// Automatic collapsing
+		private void dockerscollapser_Tick(object sender, EventArgs e)
+		{
+			dockerscollapser.Stop();
+			Rectangle screenrect = this.RectangleToScreen(new Rectangle(dockerspanel.Location, dockerspanel.Size));
+			Rectangle mouserect = new Rectangle(Cursor.Position, Size.Empty);
+			if(!screenrect.IntersectsWith(mouserect))
+				dockerspanel.Collapse();
 		}
 
 		#endregion
