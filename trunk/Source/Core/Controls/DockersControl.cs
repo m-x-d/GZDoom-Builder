@@ -50,16 +50,22 @@ namespace CodeImp.DoomBuilder.Controls
 		public event EventHandler MouseContainerLeave;
 		public event EventHandler Collapsed;
 		public event EventHandler Expanded;
+		public event EventHandler UserResize;
 		
 		#endregion
 		
 		#region ================== Variables
-
+		
+		// Behaviour
 		private bool rightalign;
 		private bool iscollapsed;
 		
+		// Collapsing
 		private int expandedwidth;		// width when expanded
 		private int expandedtab;		// selected tab index when expanded
+		
+		// Splitting
+		private int splitstartoffset;
 		
 		#endregion
 
@@ -219,22 +225,59 @@ namespace CodeImp.DoomBuilder.Controls
 		// We don't want the focus
 		private void tabs_Enter(object sender, EventArgs e) { General.MainWindow.FocusDisplay(); }
 		private void tabs_MouseUp(object sender, MouseEventArgs e) { General.MainWindow.FocusDisplay(); }
+		private void tabs_SelectedIndexChanged(object sender, EventArgs e) { General.MainWindow.FocusDisplay(); }
+		private void tabs_Selected(object sender, TabControlEventArgs e) { General.MainWindow.FocusDisplay(); }
+		protected override void OnEnter(EventArgs e) { General.MainWindow.FocusDisplay(); }
+		
+		// Splitting begins
+		private void splitter_MouseDown(object sender, MouseEventArgs e)
+		{
+			if(e.Button == MouseButtons.Left)
+			{
+				splitstartoffset = e.X;
+				splitter.BackColor = SystemColors.ControlDark;
+			}
+		}
+		
+		// Splitting ends
+		private void splitter_MouseUp(object sender, MouseEventArgs e)
+		{
+			splitter.BackColor = SystemColors.Control;
+			this.Update();
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.Update();
+		}
+		
+		// Splitting dragged
+		private void splitter_MouseMove(object sender, MouseEventArgs e)
+		{
+			if(e.Button == MouseButtons.Left)
+			{
+				General.LockWindowUpdate(Parent.Handle);
+				
+				// Resize the control
+				int delta = e.X - splitstartoffset;
+				if(rightalign)
+				{
+					this.Left += delta;
+					this.Width -= delta;
+				}
+				else
+				{
+					this.Width += delta;
+				}
+				
+				General.LockWindowUpdate(IntPtr.Zero);
+				this.Update();
+				General.MainWindow.RedrawDisplay();
+				General.MainWindow.Update();
+				
+				// Raise event
+				if(UserResize != null)
+					UserResize(this, EventArgs.Empty);
+			}
+		}
 		
 		#endregion
-
-		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			General.MainWindow.FocusDisplay();
-		}
-
-		private void tabs_Selected(object sender, TabControlEventArgs e)
-		{
-			General.MainWindow.FocusDisplay();
-		}
-
-		protected override void OnEnter(EventArgs e)
-		{
-			General.MainWindow.FocusDisplay();
-		}
 	}
 }

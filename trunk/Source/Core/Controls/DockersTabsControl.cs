@@ -227,7 +227,7 @@ namespace CodeImp.DoomBuilder.Controls
 					if(left < 0) left = 0;
 					p = new Point(left, 0);
 				}
-
+				
 				e.Graphics.DrawImage(tabsimage, p);
 			}
 			else
