@@ -170,6 +170,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// This adds a docker
 		public void Add(Docker d)
 		{
+			// Set up page
 			TabPage page = new TabPage(d.Title);
 			page.SuspendLayout();
 			page.Font = this.Font;
@@ -179,6 +180,18 @@ namespace CodeImp.DoomBuilder.Controls
 			d.Control.Dock = DockStyle.Fill;
 			tabs.TabPages.Add(page);
 			page.ResumeLayout(true);
+			
+			// Go for all controls to add events
+			Queue<Control> todo = new Queue<Control>();
+			todo.Enqueue(d.Control);
+			while(todo.Count > 0)
+			{
+				Control c = todo.Dequeue();
+				c.MouseEnter += RaiseMouseContainerEnter;
+				c.MouseLeave += RaiseMouseContainerLeave;
+				foreach(Control cc in c.Controls)
+					todo.Enqueue(cc);
+			}
 		}
 		
 		// This removes a docker
@@ -188,6 +201,19 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				if((page.Tag as Docker) == d)
 				{
+					// Go for all controls to remove events
+					Queue<Control> todo = new Queue<Control>();
+					todo.Enqueue(d.Control);
+					while(todo.Count > 0)
+					{
+						Control c = todo.Dequeue();
+						c.MouseEnter -= RaiseMouseContainerEnter;
+						c.MouseLeave -= RaiseMouseContainerLeave;
+						foreach(Control cc in c.Controls)
+							todo.Enqueue(cc);
+					}
+					
+					// Take down that page
 					if(page == tabs.SelectedTab) SelectPrevious();
 					page.Controls.Clear();
 					tabs.TabPages.Remove(page);
