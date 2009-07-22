@@ -2575,32 +2575,28 @@ namespace CodeImp.DoomBuilder.Windows
 		private void dockerspanel_MouseContainerEnter(object sender, EventArgs e)
 		{
 			if(General.Settings.CollapseDockers)
-				dockerscollapser.Stop();
+				dockerscollapser.Start();
 			
 			dockerspanel.Expand();
 		}
 		
-		// Mouse leaves dockers window
-		private void dockerspanel_MouseContainerLeave(object sender, EventArgs e)
+		// Automatic collapsing
+		private void dockerscollapser_Tick(object sender, EventArgs e)
 		{
 			if(General.Settings.CollapseDockers)
 			{
 				Point p = this.PointToClient(Cursor.Position);
 				Rectangle r = new Rectangle(dockerspanel.Location, dockerspanel.Size);
 				if(!r.IntersectsWith(new Rectangle(p, Size.Empty)))
-					dockerscollapser.Start();
+				{
+					dockerspanel.Collapse();
+					dockerscollapser.Stop();
+				}
 			}
-		}
-		
-		// Automatic collapsing
-		private void dockerscollapser_Tick(object sender, EventArgs e)
-		{
-			dockerscollapser.Stop();
-			
-			Point p = this.PointToClient(Cursor.Position);
-			Rectangle r = new Rectangle(dockerspanel.Location, dockerspanel.Size);
-			if(!r.IntersectsWith(new Rectangle(p, Size.Empty)))
-				dockerspanel.Collapse();
+			else
+			{
+				dockerscollapser.Stop();
+			}
 		}
 		
 		// User resizes the docker
