@@ -67,6 +67,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// Splitting
 		private int splitstartoffset;
 		
+		// Selection
+		private string currentselected;
+		private string previousselected;
+		
 		#endregion
 
 		#region ================== Properties
@@ -167,11 +171,14 @@ namespace CodeImp.DoomBuilder.Controls
 		public void Add(Docker d)
 		{
 			TabPage page = new TabPage(d.Title);
+			page.SuspendLayout();
 			page.Font = this.Font;
 			page.Tag = d;
 			page.UseVisualStyleBackColor = false;
-			page.Controls.Add(d.Panel);
+			page.Controls.Add(d.Control);
+			d.Control.Dock = DockStyle.Fill;
 			tabs.TabPages.Add(page);
+			page.ResumeLayout(true);
 		}
 		
 		// This removes a docker
@@ -181,6 +188,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				if((page.Tag as Docker) == d)
 				{
+					if(page == tabs.SelectedTab) SelectPrevious();
 					page.Controls.Clear();
 					tabs.TabPages.Remove(page);
 					return true;
@@ -188,6 +196,37 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			return false;
+		}
+		
+		// This selects a docker
+		public bool SelectDocker(Docker d)
+		{
+			foreach(TabPage page in tabs.TabPages)
+			{
+				if((page.Tag as Docker) == d)
+				{
+					page.Select();
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		// This selectes the previous docker
+		public void SelectPrevious()
+		{
+			if(!string.IsNullOrEmpty(previousselected))
+			{
+				foreach(TabPage page in tabs.TabPages)
+				{
+					if((page.Tag as Docker).FullName == previousselected)
+					{
+						page.Select();
+						break;
+					}
+				}
+			}
 		}
 		
 		// This sorts tabs by their full name
@@ -233,9 +272,26 @@ namespace CodeImp.DoomBuilder.Controls
 		// We don't want the focus
 		private void tabs_Enter(object sender, EventArgs e) { General.MainWindow.FocusDisplay(); }
 		private void tabs_MouseUp(object sender, MouseEventArgs e) { General.MainWindow.FocusDisplay(); }
-		private void tabs_SelectedIndexChanged(object sender, EventArgs e) { General.MainWindow.FocusDisplay(); }
 		private void tabs_Selected(object sender, TabControlEventArgs e) { General.MainWindow.FocusDisplay(); }
 		protected override void OnEnter(EventArgs e) { General.MainWindow.FocusDisplay(); }
+		
+		// Tab selected
+		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Keep track of previous selected tab
+			previousselected = currentselected;
+			if(tabs.SelectedTab != null)
+			{
+				Docker d = (tabs.SelectedTab.Tag as Docker);
+				currentselected = d.FullName;
+			}
+			else
+			{
+				currentselected = null;
+			}
+			
+			General.MainWindow.FocusDisplay();
+		}
 		
 		// Splitting begins
 		private void splitter_MouseDown(object sender, MouseEventArgs e)

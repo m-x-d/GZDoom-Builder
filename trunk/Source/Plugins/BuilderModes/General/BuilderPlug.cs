@@ -35,6 +35,7 @@ using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -47,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Variables
-
+		
 		// Static instance
 		private static BuilderPlug me;
 		
@@ -57,7 +58,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private FindReplaceForm findreplaceform;
 		private ErrorCheckForm errorcheckform;
 		private PreferencesForm preferencesform;
-
+		
+		// Dockers
+		private UndoRedoPanel undoredopanel;
+		private Docker undoredodocker;
+		
 		// Settings
 		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
 		private bool usegravity;
@@ -136,15 +141,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Load menus form and register it
 			menusform = new MenusForm();
 			menusform.Register();
-
+			
 			// Load curve linedefs form
 			curvelinedefsform = new CurveLinedefsForm();
-
+			
 			// Load find/replace form
 			findreplaceform = new FindReplaceForm();
-
+			
 			// Load error checking form
 			errorcheckform = new ErrorCheckForm();
+			
+			// Load Undo\Redo docker
+			undoredopanel = new UndoRedoPanel();
+			undoredodocker = new Docker("undoredo", "Undo / Redo", undoredopanel);
+			General.Interface.AddDocker(undoredodocker);
 		}
 		
 		// Disposer
@@ -154,6 +164,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!IsDisposed)
 			{
 				// Clean up
+				General.Interface.RemoveDocker(undoredodocker);
+				undoredopanel.Dispose();
 				menusform.Unregister();
 				menusform.Dispose();
 				menusform = null;
@@ -263,6 +275,57 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Unload preferences
 			preferencesform.Dispose();
 			preferencesform = null;
+		}
+		
+		// New map created
+		public override void OnMapNewEnd()
+		{
+			base.OnMapNewEnd();
+			undoredopanel.SetBeginDescription("New Map");
+			undoredopanel.UpdateList();
+		}
+		
+		// Map opened
+		public override void OnMapOpenEnd()
+		{
+			base.OnMapOpenEnd();
+			undoredopanel.SetBeginDescription("Opened Map");
+			undoredopanel.UpdateList();
+		}
+		
+		// Map closed
+		public override void OnMapCloseEnd()
+		{
+			base.OnMapCloseEnd();
+			undoredopanel.UpdateList();
+		}
+		
+		// Redo performed
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+			undoredopanel.UpdateList();
+		}
+		
+		// Undo performed
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+			undoredopanel.UpdateList();
+		}
+		
+		// Undo created
+		public override void OnUndoCreated()
+		{
+			base.OnUndoCreated();
+			undoredopanel.UpdateList();
+		}
+		
+		// Undo withdrawn
+		public override void OnUndoWithdrawn()
+		{
+			base.OnUndoWithdrawn();
+			undoredopanel.UpdateList();
 		}
 		
 		#endregion

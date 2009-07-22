@@ -234,6 +234,18 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 
+		public void OnUndoCreated()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnUndoCreated();
+		}
+
+
+		public void OnUndoWithdrawn()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnUndoWithdrawn();
+		}
+
+
 		public void OnMapOpenBegin()
 		{
 			foreach(Plugin p in plugins) p.Plug.OnMapOpenBegin();
@@ -256,7 +268,19 @@ namespace CodeImp.DoomBuilder.Plugins
 		{
 			foreach(Plugin p in plugins) p.Plug.OnMapNewEnd();
 		}
-		
+
+
+		public void OnMapCloseBegin()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapCloseBegin();
+		}
+
+
+		public void OnMapCloseEnd()
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapCloseEnd();
+		}
+
 
 		public void OnMapSetChangeBegin()
 		{
