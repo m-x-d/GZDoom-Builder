@@ -34,6 +34,7 @@ using CodeImp.DoomBuilder.Geometry;
 using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -131,8 +132,35 @@ namespace CodeImp.DoomBuilder.Windows
 		/// that you want to invoke.</param>
 		/// <param name="e">Unused.</param>
 		void InvokeTaggedAction(object sender, EventArgs e);
-
+		
+		/// <summary>
+		/// This adds a custom button to the toolbar.
+		/// </summary>
 		void AddButton(ToolStripItem button);
+		
+		/// <summary>
+		/// This removes a custom button from the toolbar.
+		/// </summary>
 		void RemoveButton(ToolStripItem button);
+		
+		/// <summary>
+		/// This adds a docker to the side panel.
+		/// </summary>
+		void AddDocker(Docker d);
+		
+		/// <summary>
+		/// This removes a docker from the side panel.
+		/// </summary>
+		bool RemoveDocker(Docker d);
+		
+		/// <summary>
+		/// Selects a docker in the side panel.
+		/// </summary>
+		bool SelectDocker(Docker d);
+		
+		/// <summary>
+		/// This selected the previously selected docker in the side panel.
+		/// </summary>
+		void SelectPreviousDocker();
 	}
 }

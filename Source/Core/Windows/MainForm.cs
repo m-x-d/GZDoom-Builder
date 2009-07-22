@@ -2535,6 +2535,42 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Dockers
 		
+		// This adds a docker
+		public void AddDocker(Docker d)
+		{
+			// Make sure the full name is set with the plugin name as prefix
+			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
+			d.MakeFullName(plugin.Name.ToLowerInvariant());
+			
+			dockerspanel.Add(d);
+		}
+		
+		// This removes a docker
+		public bool RemoveDocker(Docker d)
+		{
+			// Make sure the full name is set with the plugin name as prefix
+			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
+			d.MakeFullName(plugin.Name.ToLowerInvariant());
+			
+			return dockerspanel.Remove(d);
+		}
+		
+		// This selects a docker
+		public bool SelectDocker(Docker d)
+		{
+			// Make sure the full name is set with the plugin name as prefix
+			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
+			d.MakeFullName(plugin.Name.ToLowerInvariant());
+			
+			return dockerspanel.SelectDocker(d);
+		}
+		
+		// This selects the previous selected docker
+		public void SelectPreviousDocker()
+		{
+			dockerspanel.SelectPrevious();
+		}
+		
 		// Mouse enters dockers window
 		private void dockerspanel_MouseContainerEnter(object sender, EventArgs e)
 		{

@@ -145,13 +145,16 @@ namespace CodeImp.DoomBuilder
 			thingsfilter = new NullThingsFilter();
 			errors = new List<CompilerError>();
 		}
-
+		
 		// Disposer
 		internal bool Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
 			{
+				// Let the plugins know
+				General.Plugins.OnMapCloseBegin();
+				
 				// Stop processing
 				General.MainWindow.StopProcessing();
 				
@@ -201,6 +204,9 @@ namespace CodeImp.DoomBuilder
 					General.WriteLogLine(e.GetType().Name + ": " + e.Message);
 					General.WriteLogLine("Failed to remove temporary directory!");
 				}
+				
+				// Let the plugins know
+				General.Plugins.OnMapCloseEnd();
 				
 				// Done
 				isdisposed = true;

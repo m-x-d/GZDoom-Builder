@@ -553,8 +553,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 				// Update
 				dobackgroundwork = true;
+				General.Plugins.OnUndoCreated();
 				General.MainWindow.UpdateInterface();
-
+				
 				// Done
 				return ticketid;
 			}
@@ -597,6 +598,8 @@ namespace CodeImp.DoomBuilder.Editing
 				General.MainWindow.UpdateInterface();
 			}
 			*/
+			
+			General.Plugins.OnUndoWithdrawn();
 		}
 
 		// This performs an undo

@@ -915,14 +915,14 @@ namespace CodeImp.DoomBuilder
 					mainwindow.DisplayStatus(StatusType.Busy, "Creating new map...");
 					Cursor.Current = Cursors.WaitCursor;
 					
-					// Let the plugins know
-					plugins.OnMapNewBegin();
-					
 					// Clear the display
 					mainwindow.ClearDisplay();
 
 					// Trash the current map, if any
 					if(map != null) map.Dispose();
+					
+					// Let the plugins know
+					plugins.OnMapNewBegin();
 
 					// Set this to false so we can see if errors are added
 					General.ErrorLogger.IsErrorAdded = false;
@@ -1066,14 +1066,14 @@ namespace CodeImp.DoomBuilder
 			mainwindow.DisplayStatus(StatusType.Busy, "Opening map file...");
 			Cursor.Current = Cursors.WaitCursor;
 
-			// Let the plugins know
-			plugins.OnMapOpenBegin();
-
 			// Clear the display
 			mainwindow.ClearDisplay();
 
 			// Trash the current map, if any
 			if(map != null) map.Dispose();
+
+			// Let the plugins know
+			plugins.OnMapOpenBegin();
 
 			// Set this to false so we can see if errors are added
 			General.ErrorLogger.IsErrorAdded = false;

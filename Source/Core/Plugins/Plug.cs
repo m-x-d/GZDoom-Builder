@@ -155,6 +155,20 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 		/// <summary>
+		/// Occurs before the map is closed.
+		/// </summary>
+		public virtual void OnMapCloseBegin()
+		{
+		}
+
+		/// <summary>
+		/// Occurs after a the map is closed.
+		/// </summary>
+		public virtual void OnMapCloseEnd()
+		{
+		}
+
+		/// <summary>
 		/// Occurs before the MapSet is changed. This means that the active MapSet will be disposed and changed to a new one.
 		/// </summary>
 		public virtual void OnMapSetChangeBegin()
@@ -272,6 +286,20 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// Called by the Doom Builder core when the user has redone the action.
 		/// </summary>
 		public virtual void OnRedoEnd()
+		{
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when a new undo level has been created.
+		/// </summary>
+		public virtual void OnUndoCreated()
+		{
+		}
+
+		/// <summary>
+		/// Called by the Doom Builder core when an undo level has been withdrawn.
+		/// </summary>
+		public virtual void OnUndoWithdrawn()
 		{
 		}
 

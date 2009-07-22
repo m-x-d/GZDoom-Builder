@@ -30,10 +30,6 @@
 		{
 			this.splitter = new CodeImp.DoomBuilder.Controls.TransparentPanel();
 			this.tabs = new CodeImp.DoomBuilder.Controls.DockersTabsControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.tabs.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitter
@@ -57,9 +53,6 @@
 			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabs.Controls.Add(this.tabPage1);
-			this.tabs.Controls.Add(this.tabPage2);
-			this.tabs.Controls.Add(this.tabPage3);
 			this.tabs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(100, 26);
 			this.tabs.Location = new System.Drawing.Point(0, 0);
@@ -78,39 +71,6 @@
 			this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
 			this.tabs.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
 			// 
-			// tabPage1
-			// 
-			this.tabPage1.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage1.Location = new System.Drawing.Point(4, 4);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Size = new System.Drawing.Size(274, 533);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "Undo / Redo";
-			this.tabPage1.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
-			this.tabPage1.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage2.Location = new System.Drawing.Point(4, 4);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Size = new System.Drawing.Size(274, 533);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Clipboard";
-			this.tabPage2.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
-			this.tabPage2.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
-			this.tabPage3.Location = new System.Drawing.Point(4, 4);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(274, 533);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Prefabs";
-			this.tabPage3.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
-			this.tabPage3.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
-			// 
 			// DockersControl
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -122,7 +82,6 @@
 			this.Size = new System.Drawing.Size(308, 541);
 			this.MouseLeave += new System.EventHandler(this.RaiseMouseContainerLeave);
 			this.MouseEnter += new System.EventHandler(this.RaiseMouseContainerEnter);
-			this.tabs.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -131,8 +90,5 @@
 
 		private DockersTabsControl tabs;
 		private TransparentPanel splitter;
-		private System.Windows.Forms.TabPage tabPage1;
-		private System.Windows.Forms.TabPage tabPage2;
-		private System.Windows.Forms.TabPage tabPage3;
 	}
 }

@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private string shortname;
 		private string fullname;
 		private string title;
-		private Panel panel;
+		private Control control;
 		
 		#endregion
 		
@@ -53,18 +53,18 @@ namespace CodeImp.DoomBuilder.Controls
 		public string Name { get { return shortname; } }
 		internal string FullName { get { return fullname; } }
 		public string Title { get { return title; } }
-		public Panel Panel { get { return panel; } }
+		public Control Control { get { return control; } }
 		
 		#endregion
 		
 		#region ================== Constructor
 		
 		// Constructor
-		public Docker(string name, string title, Panel panel)
+		public Docker(string name, string title, Control control)
 		{
 			this.shortname = name;
 			this.title = title;
-			this.panel = panel;
+			this.control = control;
 		}
 		
 		#endregion
