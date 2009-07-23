@@ -210,6 +210,7 @@ namespace CodeImp.DoomBuilder.Controls
 			d.Control.Dock = DockStyle.Fill;
 			tabs.TabPages.Add(page);
 			page.ResumeLayout(true);
+			if(iscollapsed) tabs.SelectedIndex = -1;
 			
 			// Go for all controls to add events
 			Queue<Control> todo = new Queue<Control>();
