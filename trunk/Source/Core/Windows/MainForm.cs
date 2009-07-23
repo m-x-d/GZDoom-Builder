@@ -2585,12 +2585,15 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(General.Settings.CollapseDockers)
 			{
-				Point p = this.PointToClient(Cursor.Position);
-				Rectangle r = new Rectangle(dockerspanel.Location, dockerspanel.Size);
-				if(!r.IntersectsWith(new Rectangle(p, Size.Empty)))
+				if(!dockerspanel.IsFocused)
 				{
-					dockerspanel.Collapse();
-					dockerscollapser.Stop();
+					Point p = this.PointToClient(Cursor.Position);
+					Rectangle r = new Rectangle(dockerspanel.Location, dockerspanel.Size);
+					if(!r.IntersectsWith(new Rectangle(p, Size.Empty)))
+					{
+						dockerspanel.Collapse();
+						dockerscollapser.Stop();
+					}
 				}
 			}
 			else
