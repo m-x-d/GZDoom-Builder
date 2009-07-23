@@ -77,6 +77,19 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		public bool IsCollpased { get { return iscollapsed; } }
 		
+		// This returns true when the focus is here, but not in some special cases
+		public bool IsFocused
+		{
+			get
+			{
+				Control ac = FindActiveControl();
+				
+				// We have focus when we need the keyboard for input
+				// Otherwise we don't want the focus and the docker may collapse
+				return (ac is TextBox) || (ac is RichTextBox) || (ac is NumericUpDown);
+			}
+		}
+		
 		#endregion
 		
 		#region ================== Constructor
@@ -91,6 +104,23 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 		
 		#region ================== Methods
+		
+		// This returns the active child control
+		private Control FindActiveControl()
+		{
+			Control c = this.ActiveControl;
+			
+			while(c is IContainerControl)
+			{
+				IContainerControl cc = (c as IContainerControl);
+				if(cc.ActiveControl != null)
+					c = cc.ActiveControl;
+				else
+					break;
+			}
+			
+			return c;
+		}
 		
 		// This sets up the controls for left or right alignment
 		public void Setup(bool right)
@@ -299,7 +329,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private void tabs_Enter(object sender, EventArgs e) { General.MainWindow.FocusDisplay(); }
 		private void tabs_MouseUp(object sender, MouseEventArgs e) { General.MainWindow.FocusDisplay(); }
 		private void tabs_Selected(object sender, TabControlEventArgs e) { General.MainWindow.FocusDisplay(); }
-		protected override void OnEnter(EventArgs e) { General.MainWindow.FocusDisplay(); }
 		
 		// Tab selected
 		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
