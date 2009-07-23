@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.list = new System.Windows.Forms.ListView();
+			this.list = new CodeImp.DoomBuilder.Controls.OptimizedListView();
 			this.coldescription = new System.Windows.Forms.ColumnHeader();
 			this.SuspendLayout();
 			// 
@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
-		private System.Windows.Forms.ListView list;
+		private CodeImp.DoomBuilder.Controls.OptimizedListView list;
 		private System.Windows.Forms.ColumnHeader coldescription;
 	}
 }

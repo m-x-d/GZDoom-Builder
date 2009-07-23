@@ -204,8 +204,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates the list column size
 		private void UpdateColumnSizes()
 		{
-			// Adjust the column in the listbox accordingly
-			coldescription.Width = list.ClientRectangle.Width - 2;
+			// Check if a vertical scrollbar exists and adjust the column in the listbox accordingly
+			if((BuilderPlug.GetWindowLong(list.Handle, BuilderPlug.GWL_STYLE) & BuilderPlug.WS_VSCROLL) != 0)
+				coldescription.Width = list.ClientRectangle.Width - 2;
+			else
+				coldescription.Width = list.ClientRectangle.Width - SystemInformation.VerticalScrollBarWidth - 2;
 		}
 		
 		#endregion
@@ -265,6 +268,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					list.EndUpdate();
 				}
 			}
+
+			General.Interface.FocusDisplay();
 			
 			ignoreevents = false;
 		}
@@ -293,6 +298,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					list.SelectedIndices.Clear();
 				}
 			}
+
+			General.Interface.FocusDisplay();
 			
 			ignoreevents = false;
 		}
@@ -303,6 +310,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ignoreevents = true;
 			
 			list.SelectedIndices.Clear();
+			General.Interface.FocusDisplay();
 			
 			ignoreevents = false;
 		}
