@@ -144,6 +144,7 @@ namespace CodeImp.DoomBuilder.Controls
 					int newvalue = GetResult(0) - scrollbuttons.Value;
 					if(newvalue < 0) newvalue = 0;
 					combobox.Text = newvalue.ToString();
+					combobox_Validating(sender, new CancelEventArgs());
 				}
 				scrollbuttons.Value = 0;
 				ignorebuttonchange = false;
