@@ -137,6 +137,31 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This pastes a prefab. Returns false when paste was cancelled.
+		public void InsertPrefabStream(Stream stream, PasteOptions options)
+		{
+			// Cancel volatile mode
+			General.Editing.DisengageVolatileMode();
+
+			// Let the plugins know
+			if(General.Plugins.OnPasteBegin(options))
+			{
+				// Ask the editing mode to prepare selection for pasting.
+				if(General.Editing.Mode.OnPasteBegin(options))
+				{
+					Cursor oldcursor = Cursor.Current;
+					Cursor.Current = Cursors.WaitCursor;
+					
+					if(stream != null)
+						PastePrefab(stream, options);
+					
+					General.MainWindow.UpdateInterface();
+					
+					Cursor.Current = oldcursor;
+				}
+			}
+		}
+		
+		// This pastes a prefab. Returns false when paste was cancelled.
 		internal void PastePrefab(Stream filedata, PasteOptions options)
 		{
 			// Create undo
