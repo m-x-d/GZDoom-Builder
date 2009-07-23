@@ -718,6 +718,7 @@ namespace CodeImp.DoomBuilder.Editing
 							foreach(Thing t in General.Map.Map.Things) if(t.Marked) t.UpdateConfiguration();
 							General.Map.ThingsFilter.Update();
 							General.Map.Data.UpdateUsedTextures();
+							General.MainWindow.RefreshInfo();
 							General.MainWindow.RedrawDisplay();
 							
 							// Done
@@ -849,6 +850,7 @@ namespace CodeImp.DoomBuilder.Editing
 							foreach(Thing t in General.Map.Map.Things) if(t.Marked) t.UpdateConfiguration();
 							General.Map.ThingsFilter.Update();
 							General.Map.Data.UpdateUsedTextures();
+							General.MainWindow.RefreshInfo();
 							General.MainWindow.RedrawDisplay();
 							
 							// Done
