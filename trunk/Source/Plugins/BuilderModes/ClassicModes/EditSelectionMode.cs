@@ -1009,9 +1009,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cached values
 				General.Map.Data.UpdateUsedTextures();
 				General.Map.Map.Update();
-
-				// Clear selection
+				
+				// Make normal selection
 				General.Map.Map.ClearAllSelected();
+				foreach(Vertex v in selectedvertices) v.Selected = true;
+				foreach(Linedef l in selectedlines) { l.Start.Selected = true; l.End.Selected = true; }
+				foreach(Thing t in selectedthings) t.Selected = true;
+				General.Map.Map.SelectionType = SelectionType.Vertices | SelectionType.Things;
 				
 				// Done
 				selectedvertices = new List<Vertex>();
