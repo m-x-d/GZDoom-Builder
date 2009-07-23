@@ -78,7 +78,12 @@ namespace CodeImp.DoomBuilder.Windows
 		void ResumeExclusiveMouseInput();
 		void SetCursor(Cursor cursor);
 		void MessageBeep(MessageBeepType type);
-		
+
+		/// <summary>
+		/// This moves the focus to the editing display.
+		/// </summary>
+		bool FocusDisplay();
+
 		/// <summary>
 		/// This browses the lindef types
 		/// </summary>
