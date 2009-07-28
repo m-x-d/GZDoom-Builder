@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder
 				{
 					// Error in configuration
 					errorlogger.Add(ErrorType.Error, "Unable to load the game configuration file \"" + filename + "\". " +
-													 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
+													 "Error in file \"" + cfg.ErrorFile + "\" near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					return null;
 				}
 				// Check if this is a Doom Builder 2 config
@@ -345,7 +345,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Error in configuration
 						errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\". " +
-										                 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
+										                 "Error in file \"" + cfg.ErrorFile + "\" near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					}
 					else
 					{
@@ -407,7 +407,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Error in configuration
 						errorlogger.Add(ErrorType.Error, "Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\". " +
-														"Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
+														"Error in file \"" + cfg.ErrorFile + "\" near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					}
 					else
 					{
@@ -462,7 +462,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Error in configuration
 						errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\". " +
-														 "Error near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
+														 "Error in file \"" + cfg.ErrorFile + "\" near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
 					}
 					else
 					{
