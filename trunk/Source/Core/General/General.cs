@@ -254,7 +254,7 @@ namespace CodeImp.DoomBuilder
 				cfg = new Configuration(filepathname, true);
 
 				// Check for erors
-				if(cfg.ErrorResult != 0)
+				if(cfg.ErrorResult)
 				{
 					// Error in configuration
 					errorlogger.Add(ErrorType.Error, "Unable to load the game configuration file \"" + filename + "\". " +
@@ -271,43 +271,6 @@ namespace CodeImp.DoomBuilder
 				}
 				else
 				{
-					// The following code was used to convert the linedef types of DB1 type
-					// configurations into proper categorized structures for DB2.
-					// I keep this code here in the repository because if it failed, I might
-					// need this again to convert from scratch.
-					/*
-					GameConfiguration gcfg = new GameConfiguration(cfg);
-					Configuration newcfg = new Configuration();
-					newcfg.NewConfiguration(true);
-					bool doommap = (gcfg.FormatInterface == "DoomMapSetIO");
-
-					foreach(LinedefActionInfo a in gcfg.SortedLinedefActions)
-					{
-						string catkey = a.Category.ToLowerInvariant().Trim();
-						string cattitle = a.Category;
-						string linekey = a.Index.ToString(CultureInfo.InvariantCulture);
-						string linetitle = a.Name;
-						string lineprefix = a.Prefix;
-						if(catkey.Length == 0) { catkey = "misc"; cattitle = ""; }
-						if(cattitle.Length > 0) newcfg.WriteSetting("linedeftypes." + catkey + ".title", cattitle);
-						newcfg.WriteSetting("linedeftypes." + catkey + "." + linekey + ".title", linetitle);
-						if(doommap) newcfg.WriteSetting("linedeftypes." + catkey + "." + linekey + ".prefix", lineprefix);
-
-						if(!doommap)
-						{
-							for(int i = 0; i < 5; i++)
-							{
-								if(a.ArgUsed[i])
-								{
-									newcfg.WriteSetting("linedeftypes." + catkey + "." + linekey + ".arg" + i.ToString(CultureInfo.InvariantCulture) + ".title", a.ArgTitle[i]);
-									if(a.ArgTagType[i] != TagType.None) newcfg.WriteSetting("linedeftypes." + catkey + "." + linekey + ".arg" + i.ToString(CultureInfo.InvariantCulture) + ".tag", (int)a.ArgTagType[i]);
-								}
-							}
-						}
-					}
-					newcfg.SaveConfiguration(Path.Combine(configspath, "_" + filename));
-					*/
-					
 					// Return config
 					return cfg;
 				}
@@ -378,7 +341,7 @@ namespace CodeImp.DoomBuilder
 					cfg = new Configuration(filepath, true);
 
 					// Check for erors
-					if(cfg.ErrorResult != 0)
+					if(cfg.ErrorResult)
 					{
 						// Error in configuration
 						errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\". " +
@@ -440,7 +403,7 @@ namespace CodeImp.DoomBuilder
 					cfg = new Configuration(filepath, true);
 					
 					// Check for erors
-					if(cfg.ErrorResult != 0)
+					if(cfg.ErrorResult)
 					{
 						// Error in configuration
 						errorlogger.Add(ErrorType.Error, "Unable to load the script configuration file \"" + Path.GetFileName(filepath) + "\". " +
@@ -495,7 +458,7 @@ namespace CodeImp.DoomBuilder
 					cfg = new Configuration(filepath, true);
 
 					// Check for erors
-					if(cfg.ErrorResult != 0)
+					if(cfg.ErrorResult)
 					{
 						// Error in configuration
 						errorlogger.Add(ErrorType.Error, "Unable to load the compiler configuration file \"" + Path.GetFileName(filepath) + "\". " +
