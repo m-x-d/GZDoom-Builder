@@ -273,11 +273,11 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Load it
 			cfg = new Configuration(cfgfilepathname, true);
-			if(cfg.ErrorResult != 0)
+			if(cfg.ErrorResult)
 			{
 				// Error in configuration
 				// Ask user for a new copy
-				result = General.ShowErrorMessage("Error in program configuration near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription, MessageBoxButtons.YesNoCancel);
+				result = General.ShowErrorMessage("Error in program configuration near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription + "\n\nWould you like to overwrite your settings with a new configuration to restore the default settings?", MessageBoxButtons.YesNoCancel);
 				if(result == DialogResult.Yes)
 				{
 					// Remove old configuration and make a new copy
@@ -288,7 +288,7 @@ namespace CodeImp.DoomBuilder.Config
 
 					// Load it
 					cfg = new Configuration(cfgfilepathname, true);
-					if(cfg.ErrorResult != 0)
+					if(cfg.ErrorResult)
 					{
 						// Error in configuration
 						General.WriteLogLine("Error in program configuration near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
@@ -315,7 +315,7 @@ namespace CodeImp.DoomBuilder.Config
 				
 				// Load it
 				cfg = new Configuration(cfgfilepathname, true);
-				if(cfg.ErrorResult != 0)
+				if(cfg.ErrorResult)
 				{
 					// Error in configuration
 					General.WriteLogLine("Error in program configuration near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);

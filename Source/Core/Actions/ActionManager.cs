@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.Actions
 					// Load configuration from stream
 					cfg = new Configuration();
 					cfg.InputConfiguration(actionsreader.ReadToEnd());
-					if(cfg.ErrorResult != 0)
+					if(cfg.ErrorResult)
 					{
 						string errordesc = "Error in Actions configuration on line " + cfg.ErrorLine + ": " + cfg.ErrorDescription;
 						General.CancelAutoMapLoad();
