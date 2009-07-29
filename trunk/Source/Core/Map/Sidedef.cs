@@ -286,7 +286,9 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 		
-		// This checks if a texture is required
+		/// <summary>
+		/// This checks if a texture is required
+		/// </summary>
 		public bool HighRequired()
 		{
 			// Doublesided?
@@ -301,14 +303,18 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
-		// This checks if a texture is required
+		/// <summary>
+		/// This checks if a texture is required
+		/// </summary>
 		public bool MiddleRequired()
 		{
 			// Texture is required when the line is singlesided
 			return (Other == null);
 		}
 
-		// This checks if a texture is required
+		/// <summary>
+		/// This checks if a texture is required
+		/// </summary>
 		public bool LowRequired()
 		{
 			// Doublesided?
@@ -323,6 +329,66 @@ namespace CodeImp.DoomBuilder.Map
 			}
 		}
 
+		/// <summary>
+		/// This returns the height of the upper wall part. Returns 0 when no upper part exists.
+		/// </summary>
+		public int GetHighHeight()
+		{
+			Sidedef other = this.Other;
+			if(other != null)
+			{
+				int top = this.sector.CeilHeight;
+				int bottom = other.sector.CeilHeight;
+				int height = top - bottom;
+				return (height > 0) ? height : 0;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		/// <summary>
+		/// This returns the height of the middle wall part.
+		/// </summary>
+		public int GetMiddleHeight()
+		{
+			Sidedef other = this.Other;
+			if(other != null)
+			{
+				int top = Math.Min(this.Sector.CeilHeight, other.Sector.CeilHeight);
+				int bottom = Math.Max(this.Sector.FloorHeight, other.Sector.FloorHeight);
+				int height = top - bottom;
+				return (height > 0) ? height : 0;
+			}
+			else
+			{
+				int top = this.Sector.CeilHeight;
+				int bottom = this.Sector.FloorHeight;
+				int height = top - bottom;
+				return (height > 0) ? height : 0;
+			}
+		}
+
+		/// <summary>
+		/// This returns the height of the lower wall part. Returns 0 when no lower part exists.
+		/// </summary>
+		public int GetLowHeight()
+		{
+			Sidedef other = this.Other;
+			if(other != null)
+			{
+				int top = other.sector.FloorHeight;
+				int bottom = this.sector.FloorHeight;
+				int height = top - bottom;
+				return (height > 0) ? height : 0;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		
 		// This creates a checksum from the sidedef properties
 		// Used for faster sidedefs compression
 		public uint GetChecksum()
