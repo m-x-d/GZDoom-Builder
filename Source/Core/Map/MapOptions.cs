@@ -20,17 +20,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Plugins;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Map
 {
-	internal sealed class MapOptions
+	public sealed class MapOptions
 	{
 		#region ================== Constants
 
@@ -61,12 +63,12 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Properties
 
-		public string ConfigFile { get { return configfile; } set { configfile = value; } }
-		public DataLocationList Resources { get { return resources; } }
-		public bool StrictPatches { get { return strictpatches; } set { strictpatches = value; } }
-		public List<string> ScriptFiles { get { return scriptfiles; } set { scriptfiles = value; } }
-		public string PreviousName { get { return previousname; } set { previousname = value; } }
-		public string CurrentName
+		internal string ConfigFile { get { return configfile; } set { configfile = value; } }
+		internal DataLocationList Resources { get { return resources; } }
+		internal bool StrictPatches { get { return strictpatches; } set { strictpatches = value; } }
+		internal List<string> ScriptFiles { get { return scriptfiles; } set { scriptfiles = value; } }
+		internal string PreviousName { get { return previousname; } set { previousname = value; } }
+		internal string CurrentName
 		{
 			get { return currentname; }
 
@@ -80,6 +82,8 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 		}
+
+		public string LevelName { get { return currentname; } }
 		
 		#endregion
 
@@ -155,8 +159,41 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Methods
 
+		// This makes the path prefix for the given assembly
+		private string GetPluginPathPrefix(Assembly asm)
+		{
+			Plugin p = General.Plugins.FindPluginByAssembly(asm);
+			return "plugins." + p.Name.ToLowerInvariant() + ".";
+		}
+
+		// ReadPluginSetting
+		public string ReadPluginSetting(string setting, string defaultsetting) { return mapconfig.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+		public int ReadPluginSetting(string setting, int defaultsetting) { return mapconfig.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+		public float ReadPluginSetting(string setting, float defaultsetting) { return mapconfig.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+		public short ReadPluginSetting(string setting, short defaultsetting) { return mapconfig.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+		public long ReadPluginSetting(string setting, long defaultsetting) { return mapconfig.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+		public bool ReadPluginSetting(string setting, bool defaultsetting) { return mapconfig.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+		public byte ReadPluginSetting(string setting, byte defaultsetting) { return mapconfig.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+		public IDictionary ReadPluginSetting(string setting, IDictionary defaultsetting) { return mapconfig.ReadSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, defaultsetting); }
+
+		// ReadPluginSetting with specific plugin
+		public string ReadPluginSetting(string pluginname, string setting, string defaultsetting) { return mapconfig.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public int ReadPluginSetting(string pluginname, string setting, int defaultsetting) { return mapconfig.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public float ReadPluginSetting(string pluginname, string setting, float defaultsetting) { return mapconfig.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public short ReadPluginSetting(string pluginname, string setting, short defaultsetting) { return mapconfig.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public long ReadPluginSetting(string pluginname, string setting, long defaultsetting) { return mapconfig.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public bool ReadPluginSetting(string pluginname, string setting, bool defaultsetting) { return mapconfig.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public byte ReadPluginSetting(string pluginname, string setting, byte defaultsetting) { return mapconfig.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+		public IDictionary ReadPluginSetting(string pluginname, string setting, IDictionary defaultsetting) { return mapconfig.ReadSetting(pluginname.ToLowerInvariant() + "." + setting, defaultsetting); }
+
+		// WritePluginSetting
+		public bool WritePluginSetting(string setting, object settingvalue) { return mapconfig.WriteSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting, settingvalue); }
+
+		// DeletePluginSetting
+		public bool DeletePluginSetting(string setting) { return mapconfig.DeleteSetting(GetPluginPathPrefix(Assembly.GetCallingAssembly()) + setting); }
+		
 		// This stores the map options in a configuration
-		public void WriteConfiguration(string settingsfile)
+		internal void WriteConfiguration(string settingsfile)
 		{
 			Configuration wadcfg;
 			
@@ -190,7 +227,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This adds a resource location and returns the index where the item was added
-		public int AddResource(DataLocation res)
+		internal int AddResource(DataLocation res)
 		{
 			// Get a fully qualified path
 			res.location = Path.GetFullPath(res.location);
@@ -213,21 +250,21 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This clears all reasource
-		public void ClearResources()
+		internal void ClearResources()
 		{
 			// Clear list
 			resources.Clear();
 		}
 		
 		// This removes a resource by index
-		public void RemoveResource(int index)
+		internal void RemoveResource(int index)
 		{
 			// Remove the item
 			resources.RemoveAt(index);
 		}
 		
 		// This copies resources from a list
-		public void CopyResources(DataLocationList fromlist)
+		internal void CopyResources(DataLocationList fromlist)
 		{
 			// Clear this list
 			resources.Clear();
@@ -247,7 +284,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This returns the UDMF field type
-		public int GetUniversalFieldType(string elementname, string fieldname, int defaulttype)
+		internal int GetUniversalFieldType(string elementname, string fieldname, int defaulttype)
 		{
 			int type;
 			
@@ -263,7 +300,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This stores the UDMF field type
-		public void SetUniversalFieldType(string elementname, string fieldname, int type)
+		internal void SetUniversalFieldType(string elementname, string fieldname, int type)
 		{
 			// Check if the type of this field is not set in the game configuration
 			if(General.Map.Config.ReadSetting("universalfields." + elementname + "." + fieldname + ".type", -1) == -1)
@@ -274,7 +311,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This removes all UDMF field types
-		public void ForgetUniversalFieldTypes()
+		internal void ForgetUniversalFieldTypes()
 		{
 			mapconfig.DeleteSetting("fieldtypes");
 		}

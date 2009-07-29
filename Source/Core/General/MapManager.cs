@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
 		public string TempPath { get { return temppath; } }
-		internal MapOptions Options { get { return options; } }
+		public MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
 		public DataManager Data { get { return data; } }
 		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; } }
