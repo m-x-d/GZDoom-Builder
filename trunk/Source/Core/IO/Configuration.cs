@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 		
 		// This is called by all the ReadSetting overloads to perform the read
-		private bool CheckSetting(string setting, string pathseperator)
+		private bool CheckSetting(IDictionary dic, string setting, string pathseperator)
 		{
 			IDictionary cs = null;
 
@@ -303,7 +303,7 @@ namespace CodeImp.DoomBuilder.IO
 			string[] keys = setting.Split(pathseperator.ToCharArray());
 
 			// Get the root item
-			object item = root;
+			object item = dic;
 
 			// Go for each item
 			for(int i = 0; i < keys.Length; i++)
@@ -872,7 +872,15 @@ namespace CodeImp.DoomBuilder.IO
 				{
 					IDictionary def;
 					if(cs is ListDictionary) def = new ListDictionary(); else def = new Hashtable();
-					inc = (IDictionary)ReadAnySetting(inc, file, line, args[1].ToString(), def, DEFAULT_SEPERATOR);
+					if(CheckSetting(inc, args[1].ToString(), DEFAULT_SEPERATOR))
+					{
+						inc = (IDictionary)ReadAnySetting(inc, file, line, args[1].ToString(), def, DEFAULT_SEPERATOR);
+					}
+					else
+					{
+						RaiseError(file, line, "Include missing structure '" + args[1].ToString() + "' in file '" + includefile + "'");
+						return;
+					}
 				}
 				
 				// Recursively merge the structures with the current structure
@@ -1230,8 +1238,8 @@ namespace CodeImp.DoomBuilder.IO
 		}
 		
 		// This checks if a given setting exists (disregards type)
-		public bool SettingExists(string setting) { return CheckSetting(setting, DEFAULT_SEPERATOR); }
-		public bool SettingExists(string setting, string pathseperator) { return CheckSetting(setting, pathseperator); }
+		public bool SettingExists(string setting) { return CheckSetting(root, setting, DEFAULT_SEPERATOR); }
+		public bool SettingExists(string setting, string pathseperator) { return CheckSetting(root, setting, pathseperator); }
 		
 		// This can give a value of a key specified in a path form
 		// also, this does not error when the setting does not exist,
