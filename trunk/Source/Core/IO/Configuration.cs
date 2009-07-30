@@ -460,6 +460,7 @@ namespace CodeImp.DoomBuilder.IO
 					// Check if we can test existance
 					if(container != null)
 					{
+						/*
 						// Test if the key exists in this container
 						if(container.Contains(key) == true)
 						{
@@ -468,6 +469,7 @@ namespace CodeImp.DoomBuilder.IO
 							validateresult = false;
 						}
 						else
+						*/
 						{
 							// Key OK
 							validateresult = true;
@@ -984,7 +986,10 @@ namespace CodeImp.DoomBuilder.IO
 							IDictionary cs2;
 							if(cs is ListDictionary) cs2 = new ListDictionary(); else cs2 = new Hashtable();
 							InputStructure(cs2, ref file, ref data, ref pos, ref line);
-							cs.Add(key.Trim(), cs2);
+							if(cs.Contains(key.Trim()))
+								cs[key.Trim()] = Combine(cs, cs2, (cs is ListDictionary));
+							else
+								cs.Add(key.Trim(), cs2);
 							key = "";
 						}
 						break;
@@ -1008,7 +1013,7 @@ namespace CodeImp.DoomBuilder.IO
 							object val = ParseAssignment(ref file, ref data, ref pos, ref line);
 							if(!cpErrorResult)
 							{
-								cs.Add(key.Trim(), val);
+								cs[key.Trim()] = val;
 								key = "";
 							}
 						}
@@ -1022,7 +1027,7 @@ namespace CodeImp.DoomBuilder.IO
 							if(ValidateKey(cs, key.Trim(), file, line))
 							{
 								// Add the key with null as value
-								cs.Add(key.Trim(), null);
+								cs[key.Trim()] = null;
 								key = "";
 							}
 						}
