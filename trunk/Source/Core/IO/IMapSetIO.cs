@@ -50,6 +50,9 @@ namespace CodeImp.DoomBuilder.IO
 		bool HasMixedActivations { get; }
 		bool HasPresetActivations { get; }
 		bool HasBuiltInActivations { get; }
+		bool HasNumericLinedefFlags { get; }
+		bool HasNumericThingFlags { get; }
+		bool HasNumericLinedefActivations { get; }
 		int MaxTag { get; }
 		int MinTag { get; }
 		int MaxAction { get; }

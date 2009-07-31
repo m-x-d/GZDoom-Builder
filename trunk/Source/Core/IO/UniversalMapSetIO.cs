@@ -52,43 +52,46 @@ namespace CodeImp.DoomBuilder.IO
 		// Constructor
 		public UniversalMapSetIO(WAD wad, MapManager manager) : base(wad, manager)
 		{
-			// Make configuration
-			config = new Configuration();
-
-			// Find a resource named UDMF.cfg
-			string[] resnames = General.ThisAssembly.GetManifestResourceNames();
-			foreach(string rn in resnames)
+			if((manager != null) && (manager.Config != null))
 			{
-				// Found it?
-				if(rn.EndsWith(UDMF_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase))
+				// Make configuration
+				config = new Configuration();
+				
+				// Find a resource named UDMF.cfg
+				string[] resnames = General.ThisAssembly.GetManifestResourceNames();
+				foreach(string rn in resnames)
 				{
-					// Get a stream from the resource
-					Stream udmfcfg = General.ThisAssembly.GetManifestResourceStream(rn);
-					StreamReader udmfcfgreader = new StreamReader(udmfcfg, Encoding.ASCII);
-					
-					// Load configuration from stream
-					config.InputConfiguration(udmfcfgreader.ReadToEnd());
-
-					// Now we add the linedef flags, activations and thing flags
-					// to this list, so that these don't show up in the custom
-					// fields list either. We use true as dummy value (it has no meaning)
-
-					// Add linedef flags
-					foreach(KeyValuePair<string, string> flag in General.Map.Config.LinedefFlags)
-						config.WriteSetting("managedfields.linedef." + flag.Key, true);
-
-					// Add linedef activations
-					foreach(LinedefActivateInfo activate in General.Map.Config.LinedefActivates)
-						config.WriteSetting("managedfields.linedef." + activate.Key, true);
-
-					// Add thing flags
-					foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
-						config.WriteSetting("managedfields.thing." + flag.Key, true);
-					
-					// Done
-					udmfcfgreader.Dispose();
-					udmfcfg.Dispose();
-					break;
+					// Found it?
+					if(rn.EndsWith(UDMF_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase))
+					{
+						// Get a stream from the resource
+						Stream udmfcfg = General.ThisAssembly.GetManifestResourceStream(rn);
+						StreamReader udmfcfgreader = new StreamReader(udmfcfg, Encoding.ASCII);
+						
+						// Load configuration from stream
+						config.InputConfiguration(udmfcfgreader.ReadToEnd());
+						
+						// Now we add the linedef flags, activations and thing flags
+						// to this list, so that these don't show up in the custom
+						// fields list either. We use true as dummy value (it has no meaning)
+						
+						// Add linedef flags
+						foreach(KeyValuePair<string, string> flag in manager.Config.LinedefFlags)
+							config.WriteSetting("managedfields.linedef." + flag.Key, true);
+						
+						// Add linedef activations
+						foreach(LinedefActivateInfo activate in manager.Config.LinedefActivates)
+							config.WriteSetting("managedfields.linedef." + activate.Key, true);
+						
+						// Add thing flags
+						foreach(KeyValuePair<string, string> flag in manager.Config.ThingFlags)
+							config.WriteSetting("managedfields.thing." + flag.Key, true);
+						
+						// Done
+						udmfcfgreader.Dispose();
+						udmfcfg.Dispose();
+						break;
+					}
 				}
 			}
 		}
@@ -115,6 +118,9 @@ namespace CodeImp.DoomBuilder.IO
 		public override bool HasMixedActivations { get { return true; } }
 		public override bool HasPresetActivations { get { return false; } }
 		public override bool HasBuiltInActivations { get { return false; } }
+		public override bool HasNumericLinedefFlags { get { return false; } }
+		public override bool HasNumericThingFlags { get { return false; } }
+		public override bool HasNumericLinedefActivations { get { return false; } }
 		public override int MaxTag { get { return int.MaxValue; } }
 		public override int MinTag { get { return int.MinValue; } }
 		public override int MaxAction { get { return int.MaxValue; } }
