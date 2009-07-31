@@ -254,7 +254,7 @@ namespace CodeImp.DoomBuilder.IO
 				if(d2e.Value is IDictionary)
 				{
 					// Check if already in result
-					if(result.Contains(d2e.Key))
+					if(result.Contains(d2e.Key) && (result[d2e.Key] is IDictionary))
 					{
 						// Modify result
 						result[d2e.Key] = Combine((IDictionary)result[d2e.Key], (IDictionary)d2e.Value, sorted);
@@ -265,19 +265,19 @@ namespace CodeImp.DoomBuilder.IO
 						if(sorted)
 						{
 							// Sorted combine
-							result.Add(d2e.Key, Combine(new ListDictionary(), (IDictionary)d2e.Value, sorted));
+							result[d2e.Key] = Combine(new ListDictionary(), (IDictionary)d2e.Value, sorted);
 						}
 						else
 						{
 							// Unsorted combine
-							result.Add(d2e.Key, Combine(new Hashtable(), (IDictionary)d2e.Value, sorted));
+							result[d2e.Key] = Combine(new Hashtable(), (IDictionary)d2e.Value, sorted);
 						}
 					}
 				}
 				else
 				{
 					// Check if also in d1
-					if(d1.Contains(d2e.Key))
+					if(result.Contains(d2e.Key))
 					{
 						// Modify result
 						result[d2e.Key] = d2e.Value;
@@ -994,10 +994,10 @@ namespace CodeImp.DoomBuilder.IO
 							IDictionary cs2;
 							if(cs is ListDictionary) cs2 = new ListDictionary(); else cs2 = new Hashtable();
 							InputStructure(cs2, ref file, ref data, ref pos, ref line);
-							if(cs.Contains(key.Trim()))
-								cs[key.Trim()] = Combine(cs, cs2, (cs is ListDictionary));
+							if(cs.Contains(key.Trim()) && (cs[key.Trim()] is IDictionary))
+								cs[key.Trim()] = Combine((IDictionary)cs[key.Trim()], cs2, (cs is ListDictionary));
 							else
-								cs.Add(key.Trim(), cs2);
+								cs[key.Trim()] = cs2;
 							key = "";
 						}
 						break;
