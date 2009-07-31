@@ -66,6 +66,9 @@ namespace CodeImp.DoomBuilder.IO
 		public abstract bool HasMixedActivations { get; }
 		public abstract bool HasPresetActivations { get; }
 		public abstract bool HasBuiltInActivations { get; }
+		public abstract bool HasNumericLinedefFlags { get; }
+		public abstract bool HasNumericThingFlags { get; }
+		public abstract bool HasNumericLinedefActivations { get; }
 		public abstract int MaxTag { get; }
 		public abstract int MinTag { get; }
 		public abstract int MaxAction { get; }
@@ -95,6 +98,12 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Static Methods
 
+		// This returns and instance of the specified IO class
+		public static MapSetIO Create(string classname)
+		{
+			return Create(classname, null, null);
+		}
+		
 		// This returns and instance of the specified IO class
 		public static MapSetIO Create(string classname, WAD wadfile, MapManager manager)
 		{

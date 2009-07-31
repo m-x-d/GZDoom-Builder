@@ -64,6 +64,9 @@ namespace CodeImp.DoomBuilder.IO
 		public override bool HasMixedActivations { get { return false; } }
 		public override bool HasPresetActivations { get { return true; } }
 		public override bool HasBuiltInActivations { get { return false; } }
+		public override bool HasNumericLinedefFlags { get { return true; } }
+		public override bool HasNumericThingFlags { get { return true; } }
+		public override bool HasNumericLinedefActivations { get { return true; } }
 		public override int MaxTag { get { return ushort.MaxValue; } }
 		public override int MinTag { get { return ushort.MinValue; } }
 		public override int MaxAction { get { return byte.MaxValue; } }
@@ -308,13 +311,13 @@ namespace CodeImp.DoomBuilder.IO
 				args[4] = readline.ReadByte();
 				s1 = readline.ReadUInt16();
 				s2 = readline.ReadUInt16();
-
+				
 				// Make string flags
 				stringflags = new Dictionary<string, bool>();
-				foreach(KeyValuePair<string, string> f in manager.Config.LinedefFlags)
+				foreach(string f in manager.Config.SortedLinedefFlags)
 				{
 					int fnum;
-					if(int.TryParse(f.Key, out fnum)) stringflags[f.Key] = ((flags & fnum) == fnum);
+					if(int.TryParse(f, out fnum)) stringflags[f] = ((flags & fnum) == fnum);
 				}
 				
 				// Create new linedef

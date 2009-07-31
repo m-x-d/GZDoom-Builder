@@ -97,6 +97,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Linedefs
 		private Dictionary<string, string> linedefflags;
+		private List<string> sortedlinedefflags;
 		private Dictionary<int, LinedefActionInfo> linedefactions;
 		private List<LinedefActionInfo> sortedlinedefactions;
 		private List<LinedefActionCategory> actioncategories;
@@ -179,6 +180,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Linedefs
 		public IDictionary<string, string> LinedefFlags { get { return linedefflags; } }
+		public List<string> SortedLinedefFlags { get { return sortedlinedefflags; } }
 		public IDictionary<int, LinedefActionInfo> LinedefActions { get { return linedefactions; } }
 		public List<LinedefActionInfo> SortedLinedefActions { get { return sortedlinedefactions; } }
 		public List<LinedefActionCategory> ActionCategories { get { return actioncategories; } }
@@ -222,6 +224,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.thingcategories = new List<ThingCategory>();
 			this.things = new Dictionary<int, ThingTypeInfo>();
 			this.linedefflags = new Dictionary<string, string>();
+			this.sortedlinedefflags = new List<string>();
 			this.linedefactions = new Dictionary<int, LinedefActionInfo>();
 			this.actioncategories = new List<LinedefActionCategory>();
 			this.sortedlinedefactions = new List<LinedefActionInfo>();
@@ -429,20 +432,38 @@ namespace CodeImp.DoomBuilder.Config
 		private void LoadLinedefFlags()
 		{
 			IDictionary dic;
-			int bitflagscheck = 0;
-			int bitvalue;
 			
 			// Get linedef flags
 			dic = cfg.ReadSetting("linedefflags", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				linedefflags.Add(de.Key.ToString(), de.Value.ToString());
-
+			
 			// Get translations
 			dic = cfg.ReadSetting("linedefflagstranslation", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 				linedefflagstranslation.Add(new FlagTranslation(de));
-
-			// Sort the translation flags, because they must be compared highest first!
+			
+			// Sort flags?
+			MapSetIO io = MapSetIO.Create(formatinterface);
+			if(io.HasNumericLinedefFlags)
+			{
+				// Make list for integers that we can sort
+				List<int> sortlist = new List<int>(linedefflags.Count);
+				foreach(KeyValuePair<string, string> f in linedefflags)
+				{
+					int num;
+					if(int.TryParse(f.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out num)) sortlist.Add(num);
+				}
+				
+				// Sort
+				sortlist.Sort();
+				
+				// Make list of strings
+				foreach(int i in sortlist)
+					sortedlinedefflags.Add(i.ToString(CultureInfo.InvariantCulture));
+			}
+			
+			// Sort the flags, because they must be compared highest first!
 			linedefflagstranslation.Sort();
 		}
 
