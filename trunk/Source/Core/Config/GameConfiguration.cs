@@ -407,24 +407,27 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("thingtypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				// Make a category
-				thingcat = new ThingCategory(cfg, de.Key.ToString(), enums);
-
-				// Add all things in category to the big list
-				foreach(ThingTypeInfo t in thingcat.Things)
+				if(de.Value is IDictionary)
 				{
-					if(!things.ContainsKey(t.Index))
-					{
-						things.Add(t.Index, t);
-					}
-					else
-					{
-						General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as '" + things[t.Index].Title + "' and '" + t.Title + "') in game configuration '" + this.Name + "'");
-					}
-				}
+					// Make a category
+					thingcat = new ThingCategory(cfg, de.Key.ToString(), enums);
 
-				// Add category to list
-				thingcategories.Add(thingcat);
+					// Add all things in category to the big list
+					foreach(ThingTypeInfo t in thingcat.Things)
+					{
+						if(!things.ContainsKey(t.Index))
+						{
+							things.Add(t.Index, t);
+						}
+						else
+						{
+							General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as '" + things[t.Index].Title + "' and '" + t.Title + "') in game configuration '" + this.Name + "'");
+						}
+					}
+
+					// Add category to list
+					thingcategories.Add(thingcat);
+				}
 			}
 		}
 		
@@ -480,42 +483,46 @@ namespace CodeImp.DoomBuilder.Config
 			dic = cfg.ReadSetting("linedeftypes", new Hashtable());
 			foreach(DictionaryEntry cde in dic)
 			{
-				// Read category title
-				string cattitle = cfg.ReadSetting("linedeftypes." + cde.Key + ".title", "");
+				if(cde.Value is IDictionary)
+				{
+					// Read category title
+					string cattitle = cfg.ReadSetting("linedeftypes." + cde.Key + ".title", "");
 
-				// Make or get category
-				if(cats.ContainsKey(cde.Key.ToString()))
-					ac = cats[cde.Key.ToString()];
-				else
-				{
-					ac = new LinedefActionCategory(cde.Key.ToString(), cattitle);
-					cats.Add(cde.Key.ToString(), ac);
-				}
-				
-				// Go for all line types in category
-				IDictionary catdic = cfg.ReadSetting("linedeftypes." + cde.Key, new Hashtable());
-				foreach(DictionaryEntry de in catdic)
-				{
-					// Check if the item key is numeric
-					if(int.TryParse(de.Key.ToString(),
-						NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
-						CultureInfo.InvariantCulture, out actionnumber))
+					// Make or get category
+					if(cats.ContainsKey(cde.Key.ToString()))
+						ac = cats[cde.Key.ToString()];
+					else
 					{
-						// Check if the item value is a structure
-						if(de.Value is IDictionary)
-						{
-							// Make the line type
-							ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString(), enums);
+						ac = new LinedefActionCategory(cde.Key.ToString(), cattitle);
+						cats.Add(cde.Key.ToString(), ac);
+					}
 
-							// Add action to category and sorted list
-							sortedlinedefactions.Add(ai);
-							linedefactions.Add(actionnumber, ai);
-							ac.Add(ai);
-						}
-						else
+					// Go for all line types in category
+					IDictionary catdic = cfg.ReadSetting("linedeftypes." + cde.Key, new Hashtable());
+					foreach(DictionaryEntry de in catdic)
+					{
+						// Check if the item key is numeric
+						if(int.TryParse(de.Key.ToString(),
+							NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
+							CultureInfo.InvariantCulture, out actionnumber))
 						{
-							// Failure
-							General.ErrorLogger.Add(ErrorType.Warning, "Structure 'linedeftypes' contains invalid types in game configuration '" + this.Name + "'. All types must be expanded structures.");
+							// Check if the item value is a structure
+							if(de.Value is IDictionary)
+							{
+								// Make the line type
+								ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString(), enums);
+
+								// Add action to category and sorted list
+								sortedlinedefactions.Add(ai);
+								linedefactions.Add(actionnumber, ai);
+								ac.Add(ai);
+							}
+							else
+							{
+								// Failure
+								if(de.Value != null)
+									General.ErrorLogger.Add(ErrorType.Warning, "Structure 'linedeftypes' contains invalid types in game configuration '" + this.Name + "'. All types must be expanded structures.");
+							}
 						}
 					}
 				}
