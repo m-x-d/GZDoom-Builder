@@ -910,6 +910,7 @@ namespace CodeImp.DoomBuilder
 					plugins.OnMapNewEnd();
 
 					// All done
+					settings.FindDefaultDrawSettings();
 					mainwindow.SetupInterface();
 					mainwindow.RedrawDisplay();
 					mainwindow.UpdateThingsFilters();
@@ -1062,6 +1063,7 @@ namespace CodeImp.DoomBuilder
 			plugins.OnMapOpenEnd();
 
 			// All done
+			settings.FindDefaultDrawSettings();
 			mainwindow.SetupInterface();
 			mainwindow.RedrawDisplay();
 			mainwindow.UpdateThingsFilters();
