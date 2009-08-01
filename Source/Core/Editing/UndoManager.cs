@@ -387,11 +387,6 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			General.Map.Map.AutoRemove = false;
 			
-			General.Map.Map.ClearAllMarks(false);
-			
-			geometrychanged = false;
-			populationchanged = false;
-			
 			pstream.Seek(0, SeekOrigin.Begin);
 			DeserializerStream ds = new DeserializerStream(pstream);
 			ds.Begin();
@@ -630,6 +625,10 @@ namespace CodeImp.DoomBuilder.Editing
 						// This returns false when mode was not volatile
 						if(!General.Editing.CancelVolatileMode())
 						{
+							geometrychanged = false;
+							populationchanged = false;
+							General.Map.Map.ClearAllMarks(false);
+							
 							// Go for all levels to undo
 							for(int lvl = 0; lvl < levels; lvl++)
 							{
@@ -763,7 +762,11 @@ namespace CodeImp.DoomBuilder.Editing
 						// This returns false when mode was not volatile
 						if(!General.Editing.CancelVolatileMode())
 						{
-							// Go for all levels to undo
+							geometrychanged = false;
+							populationchanged = false;
+							General.Map.Map.ClearAllMarks(false);
+							
+							// Go for all levels to redo
 							for(int lvl = 0; lvl < levels; lvl++)
 							{
 								FinishRecording();
