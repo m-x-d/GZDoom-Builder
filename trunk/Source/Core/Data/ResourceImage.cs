@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -33,16 +34,26 @@ namespace CodeImp.DoomBuilder.Data
 {
 	public class ResourceImage : ImageData
 	{
+		#region ================== Variables
+
+		// Image source
+		private Assembly assembly;
+		private string resourcename;
+
+		#endregion
+
 		#region ================== Constructor / Disposer
 
 		// Constructor
 		public ResourceImage(string resourcename)
 		{
 			// Initialize
+			this.assembly = Assembly.GetCallingAssembly();
+			this.resourcename = resourcename;
 			SetName(resourcename);
 
 			// Temporarily load resource from memory
-			Stream bitmapdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + Name);
+			Stream bitmapdata = assembly.GetManifestResourceStream(resourcename);
 			Bitmap bmp = (Bitmap)Image.FromStream(bitmapdata);
 
 			// Get width and height from image
@@ -74,7 +85,7 @@ namespace CodeImp.DoomBuilder.Data
 				// because the resources this loads are in the assembly.
 				
 				// Get resource from memory
-				bitmapdata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources." + Name);
+				bitmapdata = assembly.GetManifestResourceStream(resourcename);
 				if(bitmap != null) bitmap.Dispose();
 				bitmap = (Bitmap)Image.FromStream(bitmapdata);
 				bitmapdata.Dispose();

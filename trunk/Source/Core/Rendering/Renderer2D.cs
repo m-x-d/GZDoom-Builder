@@ -154,7 +154,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingtexture = new ResourceImage[NUM_THING_TEXTURES];
 			for(int i = 0; i < NUM_THING_TEXTURES; i++)
 			{
-				thingtexture[i] = new ResourceImage("Thing2D_" + i.ToString(CultureInfo.InvariantCulture) + ".png");
+				thingtexture[i] = new ResourceImage("CodeImp.DoomBuilder.Resources.Thing2D_" + i.ToString(CultureInfo.InvariantCulture) + ".png");
 				thingtexture[i].UseColorCorrection = false;
 				thingtexture[i].LoadImage();
 				thingtexture[i].CreateTexture();
