@@ -319,7 +319,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Font
 			postfilter = Filter.Box;
 			font = new TextFont();
-			fonttexture = new ResourceImage("Font.png");
+			fonttexture = new ResourceImage("CodeImp.DoomBuilder.Resources.Font.png");
 			fonttexture.LoadImage();
 			fonttexture.MipMapLevels = 2;
 			fonttexture.CreateTexture();

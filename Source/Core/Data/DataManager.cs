@@ -147,19 +147,19 @@ namespace CodeImp.DoomBuilder.Data
 			GC.SuppressFinalize(this);
 
 			// Load special images
-			missingtexture3d = new ResourceImage("MissingTexture3D.png");
+			missingtexture3d = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingTexture3D.png");
 			missingtexture3d.LoadImage();
-			unknowntexture3d = new ResourceImage("UnknownTexture3D.png");
+			unknowntexture3d = new ResourceImage("CodeImp.DoomBuilder.Resources.UnknownTexture3D.png");
 			unknowntexture3d.LoadImage();
-			hourglass3d = new ResourceImage("Hourglass3D.png");
+			hourglass3d = new ResourceImage("CodeImp.DoomBuilder.Resources.Hourglass3D.png");
 			hourglass3d.LoadImage();
-			crosshair = new ResourceImage("Crosshair.png");
+			crosshair = new ResourceImage("CodeImp.DoomBuilder.Resources.Crosshair.png");
 			crosshair.LoadImage();
-			crosshairbusy = new ResourceImage("CrosshairBusy.png");
+			crosshairbusy = new ResourceImage("CodeImp.DoomBuilder.Resources.CrosshairBusy.png");
 			crosshairbusy.LoadImage();
-			thingbox = new ResourceImage("ThingBox.png");
+			thingbox = new ResourceImage("CodeImp.DoomBuilder.Resources.ThingBox.png");
 			thingbox.LoadImage();
-			whitetexture = new ResourceImage("White.png");
+			whitetexture = new ResourceImage("CodeImp.DoomBuilder.Resources.White.png");
 			whitetexture.UseColorCorrection = false;
 			whitetexture.LoadImage();
 			whitetexture.CreateTexture();
@@ -1091,14 +1091,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Add some internal resources
 			if(!internalsprites.ContainsKey("nothing"))
 			{
-				ImageData img = new ResourceImage("Nothing.png");
+				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.Nothing.png");
 				img.LoadImage();
 				internalsprites.Add("nothing", img);
 			}
 			
 			if(!internalsprites.ContainsKey("unknownthing"))
 			{
-				ImageData img = new ResourceImage("UnknownThing.png");
+				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.UnknownThing.png");
 				img.LoadImage();
 				internalsprites.Add("unknownthing", img);
 			}
