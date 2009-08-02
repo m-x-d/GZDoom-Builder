@@ -1351,6 +1351,42 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Display2D.End();
 		}
 
+		// This renders a filled rectangle with given color
+		public void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect, ImageData texture)
+		{
+			// Calculate positions
+			Vector2D lt = new Vector2D(rect.Left, rect.Top);
+			Vector2D rb = new Vector2D(rect.Right, rect.Bottom);
+			if(transformrect)
+			{
+				lt = lt.GetTransformed(translatex, translatey, scale, -scale);
+				rb = rb.GetTransformed(translatex, translatey, scale, -scale);
+			}
+
+			// Make quad
+			FlatQuad quad = new FlatQuad(PrimitiveType.TriangleStrip, lt.x, lt.y, rb.x, rb.y);
+			quad.SetColors(c.ToInt());
+
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			SetWorldTransformation(false);
+			graphics.Device.SetTexture(0, texture.Texture);
+			graphics.Shaders.Display2D.Texture1 = texture.Texture;
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
+
+			// Draw
+			graphics.Shaders.Display2D.Begin();
+			graphics.Shaders.Display2D.BeginPass(1);
+			quad.Render(graphics);
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
+		}
+
 		// This renders a line with given color
 		public void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords)
 		{
