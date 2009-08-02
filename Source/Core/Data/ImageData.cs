@@ -323,7 +323,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This creates the Direct3D texture
-		internal virtual void CreateTexture()
+		public virtual void CreateTexture()
 		{
 			MemoryStream memstream;
 			
@@ -348,7 +348,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This destroys the Direct3D texture
-		internal void ReleaseTexture()
+		public void ReleaseTexture()
 		{
 			lock(this)
 			{
