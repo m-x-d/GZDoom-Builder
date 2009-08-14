@@ -38,20 +38,18 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public class BlockMap
+	public class BlockMap<BE> where BE : BlockEntry, new()
 	{
 		#region ================== Constants
-		
-		public const int BLOCK_SIZE_SHIFT = 7;
-		public const int BLOCK_SIZE = 1 << BLOCK_SIZE_SHIFT;
-		public const float BLOCK_RADIUS = BLOCK_SIZE * Angle2D.SQRT2;
 		
 		#endregion
 		
 		#region ================== Variables
 		
 		// Blocks
-		protected BlockEntry[,] blockmap;
+		protected BE[,] blockmap;
+		protected int blocksizeshift;
+		protected int blocksize;
 		protected Size size;
 		protected RectangleF range;
 		protected Vector2D rangelefttop;
@@ -66,7 +64,7 @@ namespace CodeImp.DoomBuilder.Map
 		public bool IsDisposed { get { return isdisposed; } }
 		public Size Size { get { return size; } }
 		public RectangleF Range { get { return range; } }
-		public int BlockSize { get { return BLOCK_SIZE; } }
+		public int BlockSize { get { return blocksize; } }
 		
 		#endregion
 		
@@ -75,13 +73,28 @@ namespace CodeImp.DoomBuilder.Map
 		// Constructor
 		public BlockMap(RectangleF range)
 		{
+			Initialize(range, 128);
+		}
+
+		// Constructor
+		public BlockMap(RectangleF range, int blocksize)
+		{
+			Initialize(range, blocksize);
+		}
+
+		// This initializes the blockmap
+		private void Initialize(RectangleF range, int blocksize)
+		{
 			// Initialize
 			this.range = range;
+			this.blocksizeshift = General.BitsForInt(blocksize);
+			this.blocksize = 1 << blocksizeshift;
+			if((this.blocksize != blocksize) || (this.blocksize <= 1)) throw new ArgumentException("Block size must be a power of 2 greater than 1");
 			rangelefttop = new Vector2D(range.Left, range.Top);
-			Point lefttop = new Point((int)range.Left >> BLOCK_SIZE_SHIFT, (int)range.Top >> BLOCK_SIZE_SHIFT);
-			Point rightbottom = new Point((int)range.Right >> BLOCK_SIZE_SHIFT, (int)range.Bottom >> BLOCK_SIZE_SHIFT);
+			Point lefttop = new Point((int)range.Left >> blocksizeshift, (int)range.Top >> blocksizeshift);
+			Point rightbottom = new Point((int)range.Right >> blocksizeshift, (int)range.Bottom >> blocksizeshift);
 			size = new Size((rightbottom.X - lefttop.X) + 1, (rightbottom.Y - lefttop.Y) + 1);
-			blockmap = new BlockEntry[size.Width, size.Height];
+			blockmap = new BE[size.Width, size.Height];
 			Clear();
 		}
 		
@@ -106,15 +119,15 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns the block coordinates
 		protected Point GetBlockCoordinates(Vector2D v)
 		{
-			return new Point((int)(v.x - range.Left) >> BLOCK_SIZE_SHIFT,
-							 (int)(v.y - range.Top) >> BLOCK_SIZE_SHIFT);
+			return new Point((int)(v.x - range.Left) >> blocksizeshift,
+							 (int)(v.y - range.Top) >> blocksizeshift);
 		}
 
 		// This returns the block center in world coordinates
 		protected Vector2D GetBlockCenter(Point p)
 		{
-			return new Vector2D((float)((p.X << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)) + range.Left,
-								(float)((p.Y << BLOCK_SIZE_SHIFT) + (BLOCK_SIZE >> 1)) + range.Top);
+			return new Vector2D((float)((p.X << blocksizeshift) + (blocksize >> 1)) + range.Left,
+								(float)((p.Y << blocksizeshift) + (blocksize >> 1)) + range.Top);
 		}
 		
 		// This returns true when the given block is inside range
@@ -155,13 +168,22 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				for(int y = 0; y < size.Height; y++)
 				{
-					blockmap[x, y] = new BlockEntry();
+					blockmap[x, y] = new BE();
 				}
 			}
 		}
-		
+
+		// This returns a blocks at the given coordinates, if any
+		// Returns null when out of range
+		public virtual BE GetBlockAt(Vector2D pos)
+		{
+			// Calculate block coordinates
+			Point p = GetBlockCoordinates(pos);
+			return IsInRange(p) ? blockmap[p.X, p.Y] : null;
+		}
+
 		// This returns a range of blocks in a square
-		public virtual List<BlockEntry> GetSquareRange(RectangleF rect)
+		public virtual List<BE> GetSquareRange(RectangleF rect)
 		{
 			// Calculate block coordinates
 			Point lt = GetBlockCoordinates(new Vector2D(rect.Left, rect.Top));
@@ -173,7 +195,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Go through the range to make a list
 			int entriescount = ((rb.X - lt.X) + 1) * ((rb.Y - lt.Y) + 1);
-			List<BlockEntry> entries = new List<BlockEntry>(entriescount);
+			List<BE> entries = new List<BE>(entriescount);
 			for(int x = lt.X; x <= rb.X; x++)
 			{
 				for(int y = lt.Y; y <= rb.Y; y++)
@@ -187,7 +209,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This returns all blocks along the given line
-		public virtual List<BlockEntry> GetLineBlocks(Vector2D v1, Vector2D v2)
+		public virtual List<BE> GetLineBlocks(Vector2D v1, Vector2D v2)
 		{
 			float deltax, deltay;
 			float posx, posy;
@@ -195,8 +217,8 @@ namespace CodeImp.DoomBuilder.Map
 			int dirx, diry;
 			
 			// Estimate number of blocks we will go through and create list
-			int entriescount = (int)(Vector2D.ManhattanDistance(v1, v2) * 2.0f) / BLOCK_SIZE;
-			List<BlockEntry> entries = new List<BlockEntry>(entriescount);
+			int entriescount = (int)(Vector2D.ManhattanDistance(v1, v2) * 2.0f) / blocksize;
+			List<BE> entries = new List<BE>(entriescount);
 
 			// Find start and end block
 			pos = GetBlockCoordinates(v1);
@@ -251,10 +273,10 @@ namespace CodeImp.DoomBuilder.Map
 				if(pos != end)
 				{
 					// Calculate current block edges
-					float cl = pos.X * BLOCK_SIZE;
-					float cr = (pos.X + 1) * BLOCK_SIZE;
-					float ct = pos.Y * BLOCK_SIZE;
-					float cb = (pos.Y + 1) * BLOCK_SIZE;
+					float cl = pos.X * blocksize;
+					float cr = (pos.X + 1) * blocksize;
+					float ct = pos.Y * blocksize;
+					float cb = (pos.Y + 1) * blocksize;
 
 					// Line directions
 					dirx = Math.Sign(v2.x - v1.x);
@@ -264,25 +286,25 @@ namespace CodeImp.DoomBuilder.Map
 					if(dirx >= 0)
 					{
 						posx = (cr - v1.x) / (v2.x - v1.x);
-						deltax = BLOCK_SIZE / (v2.x - v1.x);
+						deltax = blocksize / (v2.x - v1.x);
 					}
 					else
 					{
 						// Calculate offset and delta movement over x
 						posx = (v1.x - cl) / (v1.x - v2.x);
-						deltax = BLOCK_SIZE / (v1.x - v2.x);
+						deltax = blocksize / (v1.x - v2.x);
 					}
 
 					// Calculate offset and delta movement over y
 					if(diry >= 0)
 					{
 						posy = (cb - v1.y) / (v2.y - v1.y);
-						deltay = BLOCK_SIZE / (v2.y - v1.y);
+						deltay = blocksize / (v2.y - v1.y);
 					}
 					else
 					{
 						posy = (v1.y - ct) / (v1.y - v2.y);
-						deltay = BLOCK_SIZE / (v1.y - v2.y);
+						deltay = blocksize / (v1.y - v2.y);
 					}
 
 					// Continue while not reached the end
@@ -419,10 +441,10 @@ namespace CodeImp.DoomBuilder.Map
 				if(pos != end)
 				{
 					// Calculate current block edges
-					float cl = pos.X * BLOCK_SIZE;
-					float cr = (pos.X + 1) * BLOCK_SIZE;
-					float ct = pos.Y * BLOCK_SIZE;
-					float cb = (pos.Y + 1) * BLOCK_SIZE;
+					float cl = pos.X * blocksize;
+					float cr = (pos.X + 1) * blocksize;
+					float ct = pos.Y * blocksize;
+					float cb = (pos.Y + 1) * blocksize;
 					
 					// Line directions
 					dirx = Math.Sign(v2.x - v1.x);
@@ -437,13 +459,13 @@ namespace CodeImp.DoomBuilder.Map
 					else if(dirx > 0)
 					{
 						posx = (cr - v1.x) / (v2.x - v1.x);
-						deltax = BLOCK_SIZE / (v2.x - v1.x);
+						deltax = blocksize / (v2.x - v1.x);
 					}
 					else
 					{
 						// Calculate offset and delta movement over x
 						posx = (v1.x - cl) / (v1.x - v2.x);
-						deltax = BLOCK_SIZE / (v1.x - v2.x);
+						deltax = blocksize / (v1.x - v2.x);
 					}
 					
 					// Calculate offset and delta movement over y
@@ -455,12 +477,12 @@ namespace CodeImp.DoomBuilder.Map
 					else if(diry > 0)
 					{
 						posy = (cb - v1.y) / (v2.y - v1.y);
-						deltay = BLOCK_SIZE / (v2.y - v1.y);
+						deltay = blocksize / (v2.y - v1.y);
 					}
 					else
 					{
 						posy = (v1.y - ct) / (v1.y - v2.y);
-						deltay = BLOCK_SIZE / (v1.y - v2.y);
+						deltay = blocksize / (v1.y - v2.y);
 					}
 					
 					// Continue while not reached the end

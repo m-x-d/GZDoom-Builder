@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This runs the check
 		public override void Run()
 		{
-			BlockMap blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
+			BlockMap<BlockEntry> blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
 			int progress = 0;
 			int stepprogress = 0;
 			

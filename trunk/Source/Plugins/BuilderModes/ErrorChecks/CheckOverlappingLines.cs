@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void Run()
 		{
 			Dictionary<Linedef, Linedef> donelines = new Dictionary<Linedef, Linedef>();
-			BlockMap blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
+			BlockMap<BlockEntry> blockmap = BuilderPlug.Me.ErrorCheckForm.BlockMap;
 			int progress = 0;
 			int stepprogress = 0;
 

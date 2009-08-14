@@ -58,14 +58,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private volatile bool running = false;
 		private Thread checksthread;
-		private BlockMap blockmap;
+		private BlockMap<BlockEntry> blockmap;
 		
 		#endregion
 
 		#region ================== Properties
 		
 		public ErrorResult SelectedResult { get { return results.SelectedItem as ErrorResult; } }
-		public BlockMap BlockMap { get { return blockmap; } }
+		public BlockMap<BlockEntry> BlockMap { get { return blockmap; } }
 		
 		#endregion
 		
@@ -194,7 +194,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make blockmap
 			RectangleF area = MapSet.CreateArea(General.Map.Map.Vertices);
 			area = MapSet.IncreaseArea(area, General.Map.Map.Things);
-			blockmap = new BlockMap(area);
+			blockmap = new BlockMap<BlockEntry>(area);
 			blockmap.AddLinedefsSet(General.Map.Map.Linedefs);
 			blockmap.AddSectorsSet(General.Map.Map.Sectors);
 			blockmap.AddThingsSet(General.Map.Map.Things);

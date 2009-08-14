@@ -38,7 +38,7 @@ using CodeImp.DoomBuilder.Editing;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class BlockEntry
+	public class BlockEntry
 	{
 		#region ================== Variables
 		
@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor
 		
 		// Constructor for empty block
-		internal BlockEntry()
+		public BlockEntry()
 		{
 			lines = new List<Linedef>(2);
 			things = new List<Thing>(2);
