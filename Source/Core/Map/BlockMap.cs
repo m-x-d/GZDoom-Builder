@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns true when the given block is inside range
 		public bool IsInRange(Vector2D p)
 		{
-			return (p.x >= range.Left) && (p.x < range.Right) && (p.y >= range.Top) && (p.x < range.Bottom);
+			return (p.x >= range.Left) && (p.x < range.Right) && (p.y >= range.Top) && (p.y < range.Bottom);
 		}
 		
 		// This crops a point into the range
