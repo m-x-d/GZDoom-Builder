@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns true when the given block is inside range
 		protected bool IsInRange(Point p)
 		{
-			return (p.X >= 0) && (p.X < size.Width) && (p.Y >= 0) && (p.X < size.Height);
+			return (p.X >= 0) && (p.X < size.Width) && (p.Y >= 0) && (p.Y < size.Height);
 		}
 		
 		// This returns true when the given block is inside range
@@ -361,7 +361,7 @@ namespace CodeImp.DoomBuilder.Map
 			float posx, posy;
 			Point pos, end;
 			int dirx, diry;
-			
+
 			// Get coordinates
 			v1 = line.Start.Position;
 			v2 = line.End.Position;
