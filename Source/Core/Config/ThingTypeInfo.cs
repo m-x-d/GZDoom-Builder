@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Initialize
 			this.index = actor.DoomEdNum;
 			this.category = cat;
-			this.title = "Unnamed";
+			this.title = "";
 			this.isknown = true;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
@@ -237,9 +237,9 @@ namespace CodeImp.DoomBuilder.Config
 		internal void ModifyByDecorateActor(ActorStructure actor)
 		{
 			// Set the title
-			if(actor.Tag != null)
-				title = actor.Tag;
-			else
+			if(actor.HasPropertyWithValue("tag"))
+				title = actor.GetPropertyAllValues("tag");
+			else if(string.IsNullOrEmpty(title))
 				title = actor.ClassName;
 			
 			// Set sprite
@@ -252,8 +252,8 @@ namespace CodeImp.DoomBuilder.Config
 				this.spritelongname = long.MaxValue;
 			
 			// Size
-			if(actor.RadiusFound) radius = actor.Radius;
-			if(actor.HeightFound) height = actor.Height;
+			if(actor.HasPropertyWithValue("radius")) radius = actor.GetPropertyValueInt("radius", 0);
+			if(actor.HasPropertyWithValue("height")) height = actor.GetPropertyValueInt("height", 0);
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;

@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Compilers;
 
 namespace CodeImp.DoomBuilder.ZDoom
 {
-	public sealed class StateStructure
+	internal sealed class StateStructure
 	{
 		#region ================== Constants
 		

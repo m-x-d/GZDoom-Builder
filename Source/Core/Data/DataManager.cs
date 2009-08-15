@@ -87,6 +87,7 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<long, long> usedimages;
 		
 		// Things combined with things created from Decorate
+		private DecorateParser decorate;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> thingtypes;
 		
@@ -117,6 +118,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData WhiteTexture { get { return whitetexture; } }
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
+		public DecorateParser Decorate { get { return decorate; } }
 		internal ICollection<MatchingTextureSet> TextureSets { get { return texturesets; } }
 		internal ICollection<ResourceTextureSet> ResourceTextureSets { get { return resourcetextures; } }
 		internal AllTextureSet AllTextureSet { get { return alltextures; } }
@@ -1193,16 +1195,15 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the things from Decorate
 		private int LoadDecorateThings()
 		{
-			DecorateParser parser;
 			int counter = 0;
+			
+			// Create new parser
+			decorate = new DecorateParser();
+			decorate.OnInclude = LoadDecorateFromLocation;
 			
 			// Only load these when the game configuration supports the use of decorate
 			if(!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
 			{
-				// Create the parser
-				parser = new DecorateParser();
-				parser.OnInclude = LoadDecorateFromLocation;
-				
 				// Go for all opened containers
 				foreach(DataReader dr in containers)
 				{
@@ -1214,14 +1215,14 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// Parse the data
 						decodata.Seek(0, SeekOrigin.Begin);
-						parser.Parse(decodata, "DECORATE");
+						decorate.Parse(decodata, "DECORATE");
 						
 						// Check for errors
-						if(parser.HasError)
+						if(decorate.HasError)
 						{
 							General.ErrorLogger.Add(ErrorType.Error, "Unable to parse DECORATE data from location " +
-								dr.Location.location + ". " + parser.ErrorDescription + " on line " + parser.ErrorLine +
-								" in '" + parser.ErrorSource + "'");
+								dr.Location.location + ". " + decorate.ErrorDescription + " on line " + decorate.ErrorLine +
+								" in '" + decorate.ErrorSource + "'");
 							break;
 						}
 					}
@@ -1229,15 +1230,16 @@ namespace CodeImp.DoomBuilder.Data
 				
 				currentreader = null;
 				
-				if(!parser.HasError)
+				if(!decorate.HasError)
 				{
 					// Go for all actors in the decorate to make things or update things
-					foreach(ActorStructure actor in parser.Actors)
+					foreach(ActorStructure actor in decorate.Actors)
 					{
 						// Check if we want to add this actor
 						if(actor.DoomEdNum > 0)
 						{
-							string catname = actor.Category.ToLowerInvariant();
+							string catname = actor.GetPropertyAllValues("$category").ToLowerInvariant();
+							if(string.IsNullOrEmpty(catname.Trim())) catname = "decorate";
 							
 							// Check if we can find this thing in our existing collection
 							if(thingtypes.ContainsKey(actor.DoomEdNum))
@@ -1265,7 +1267,9 @@ namespace CodeImp.DoomBuilder.Data
 								// Make the category if needed
 								if(cat == null)
 								{
-									cat = new ThingCategory(catname, actor.Category);
+									string catfullname = actor.GetPropertyAllValues("$category");
+									if(string.IsNullOrEmpty(catfullname.Trim())) catfullname = "Decorate";
+									cat = new ThingCategory(catname, catfullname);
 									thingcategories.Add(cat);
 								}
 								

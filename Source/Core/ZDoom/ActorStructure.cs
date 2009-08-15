@@ -45,24 +45,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private string classname;
 		private string inheritclass;
 		private string replaceclass;
-		private List<string> games;
 		private int doomednum = -1;
 		
 		// Flags
 		private Dictionary<string, bool> flags;
 		
 		// Properties
-		// We only parse the properties we know about
-		// because this format doesn't allow parsing in a generic way
-		// (properties can have zero, one or two values and there is
-		// nothing that tells you if it is a value or another property)
-		private int radius;
-		private int height;
-		private bool radiusfound;
-		private bool heightfound;
-		private string tag;
-		private string category;
-		private string sprite;
+		private Dictionary<string, List<string>> props;
 		
 		// States
 		private Dictionary<string, StateStructure> states;
@@ -72,17 +61,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Properties
 		
 		public Dictionary<string, bool> Flags { get { return flags; } }
+		public Dictionary<string, List<string>> Properties { get { return props; } }
 		public string ClassName { get { return classname; } }
 		public string InheritsClass { get { return inheritclass; } }
 		public string ReplacesClass { get { return replaceclass; } }
-		public List<string> Games { get { return games; } }
 		public int DoomEdNum { get { return doomednum; } }
-		public int Radius { get { return radius; } }
-		public int Height { get { return height; } }
-		public bool RadiusFound { get { return radiusfound; } }
-		public bool HeightFound { get { return heightfound; } }
-		public string Tag { get { return tag; } }
-		public string Category { get { return category; } }
 		
 		#endregion
 		
@@ -93,15 +76,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Initialize
 			flags = new Dictionary<string, bool>();
+			props = new Dictionary<string, List<string>>();
 			states = new Dictionary<string, StateStructure>();
+
+			// Always define a game property, but default to 0 values
+			props["game"] = new List<string>();
+			
 			inheritclass = "actor";
 			replaceclass = null;
-			category = "Decorate";
-			sprite = null;
-			games = new List<string>();
-			radius = 10;
-			height = 20;
-			tag = null;
 			
 			// First next token is the class name
 			parser.SkipWhitespace(true);
@@ -184,6 +166,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			{
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
+
 				if((token == "+") || (token == "-"))
 				{
 					// Next token is a flag (option) to set or remove
@@ -266,44 +249,42 @@ namespace CodeImp.DoomBuilder.ZDoom
 					// break out of this parse loop
 					break;
 				}
-				// Known property with a single value?
-				else if((token == "radius") || (token == "height") || (token == "tag"))
-				{
-					// Next token is the property value to set
-					parser.SkipWhitespace(true);
-					string value = parser.ReadToken();
-					if(!string.IsNullOrEmpty(value))
-					{
-						// Try parsing as integer value
-						int intvalue;
-						int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out intvalue);
-						
-						// Set the property
-						switch(token)
-						{
-							case "radius": radius = intvalue; radiusfound = true;  break;
-							case "height": height = intvalue; heightfound = true; break;
-							case "tag": tag = value; break;
-						}
-					}
-					else
-					{
-						// Can't find the property value!
-						parser.ReportError("Expected a value for property '" + token + "'");
-						return;
-					}
-				}
 				// Monster property?
 				else if(token == "monster")
 				{
 					// This sets certain flags we are interested in
+					flags["shootable"] = true;
+					flags["countkill"] = true;
 					flags["solid"] = true;
+					flags["canpushwalls"] = true;
+					flags["canusewalls"] = true;
+					flags["activatemcross"] = true;
+					flags["canpass"] = true;
+					flags["ismonster"] = true;
+				}
+				// Projectile property?
+				else if(token == "projectile")
+				{
+					// This sets certain flags we are interested in
+					flags["noblockmap"] = true;
+					flags["nogravity"] = true;
+					flags["dropoff"] = true;
+					flags["missile"] = true;
+					flags["activateimpact"] = true;
+					flags["activatepcross"] = true;
+					flags["noteleport"] = true;
+				}
+				// Clearflags property?
+				else if(token == "clearflags")
+				{
+					// Clear all flags
+					flags.Clear();
 				}
 				// Game property?
 				else if(token == "game")
 				{
 					// Include all tokens on the same line
-					games.Clear();
+					List<string> games = new List<string>();
 					while(parser.SkipWhitespace(false))
 					{
 						string v = parser.ReadToken();
@@ -313,22 +294,43 @@ namespace CodeImp.DoomBuilder.ZDoom
 							return;
 						}
 						if(v == "\n") break;
-						games.Add(v.ToLowerInvariant());
+						if(v != ",")
+							games.Add(v.ToLowerInvariant());
 					}
+					props[token] = games;
 				}
-				// Sprite property?
-				else if(token == "$sprite")
+				// Property
+				else
 				{
-					// The rest of the line is the sprite name
-					if(parser.SkipWhitespace(false))
-						sprite = parser.ReadLine();
-				}
-				// Category property?
-				else if(token == "$category")
-				{
-					// The rest of the line is the category name
-					if(parser.SkipWhitespace(false))
-						category = parser.ReadLine();
+					// Property begins with $? Then the whole line is a single value
+					if(token.StartsWith("$"))
+					{
+						// This is for editor-only properties such as $sprite and $category
+						List<string> values = new List<string>();
+						if(parser.SkipWhitespace(false))
+							values.Add(parser.ReadLine());
+						else
+							values.Add("");
+						props[token] = values;
+					}
+					else
+					{
+						// Next tokens up until the next newline are values
+						List<string> values = new List<string>();
+						while(parser.SkipWhitespace(false))
+						{
+							string v = parser.ReadToken();
+							if(v == null)
+							{
+								parser.ReportError("Unexpected end of structure");
+								return;
+							}
+							if(v == "\n") break;
+							if(v != ",")
+								values.Add(v);
+						}
+						props[token] = values;
+					}
 				}
 				
 				// Keep token
@@ -344,24 +346,98 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private void InheritFrom(ActorStructure baseactor)
 		{
 			this.flags = new Dictionary<string, bool>(baseactor.flags);
-			this.height = baseactor.height;
-			this.radius = baseactor.radius;
-			this.games = new List<string>(baseactor.games);
+			this.props = new Dictionary<string, List<string>>(baseactor.props.Count);
 			this.states = new Dictionary<string, StateStructure>(baseactor.states);
-			this.sprite = baseactor.sprite;
-			this.category = baseactor.category;
-			this.radiusfound = baseactor.radiusfound;
-			this.heightfound = baseactor.heightfound;
-			//this.tag = baseactor.tag;		// do we want to inherit this?
+			
+			// Copy props
+			foreach(KeyValuePair<string, List<string>> p in baseactor.props)
+				this.props.Add(p.Key, new List<string>(p.Value));
 		}
 
-		// This returns the status of a flag
+		/// <summary>
+		/// This checks if the actor has a specific property.
+		/// </summary>
+		public bool HasProperty(string propname)
+		{
+			return props.ContainsKey(propname);
+		}
+		
+		/// <summary>
+		/// This checks if the actor has a specific property with at least one value.
+		/// </summary>
+		public bool HasPropertyWithValue(string propname)
+		{
+			return (props.ContainsKey(propname) && (props[propname].Count > 0));
+		}
+		
+		/// <summary>
+		/// This returns values of a specific property as a complete string. Returns an empty string when the propery has no values.
+		/// </summary>
+		public string GetPropertyAllValues(string propname)
+		{
+			return HasPropertyWithValue(propname) ? string.Join(" ", props[propname].ToArray()) : "";
+		}
+
+		/// <summary>
+		/// This returns a specific value of a specific property as a string. Returns an empty string when the propery does not have the specified value.
+		/// </summary>
+		public string GetPropertyValueString(string propname, int valueindex)
+		{
+			if(HasProperty(propname) && (props[propname].Count > valueindex))
+				return props[propname][valueindex];
+			else
+				return "";
+		}
+		
+		/// <summary>
+		/// This returns a specific value of a specific property as an integer. Returns 0 when the propery does not have the specified value.
+		/// </summary>
+		public int GetPropertyValueInt(string propname, int valueindex)
+		{
+			if(HasProperty(propname) && (props[propname].Count > valueindex))
+			{
+				int intvalue;
+				if(int.TryParse(props[propname][valueindex], NumberStyles.Integer, CultureInfo.InvariantCulture, out intvalue))
+					return intvalue;
+				else
+					return 0;
+			}
+			else
+			{
+				return 0;
+			}
+		}
+
+		/// <summary>
+		/// This returns a specific value of a specific property as a float. Returns 0.0f when the propery does not have the specified value.
+		/// </summary>
+		public float GetPropertyValueFloat(string propname, int valueindex)
+		{
+			if(HasProperty(propname) && (props[propname].Count > valueindex))
+			{
+				float fvalue;
+				if(float.TryParse(props[propname][valueindex], NumberStyles.Float, CultureInfo.InvariantCulture, out fvalue))
+					return fvalue;
+				else
+					return 0.0f;
+			}
+			else
+			{
+				return 0.0f;
+			}
+		}
+
+		/// <summary>
+		/// This returns the status of a flag.
+		/// </summary>
 		public bool HasFlagValue(string flag)
 		{
 			return flags.ContainsKey(flag);
 		}
 		
-		// This returns the status of a flag
+		/// <summary>
+		/// This returns the status of a flag.
+		/// </summary>
 		public bool GetFlagValue(string flag, bool defaultvalue)
 		{
 			if(flags.ContainsKey(flag))
@@ -370,27 +446,31 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return defaultvalue;
 		}
 		
-		// This checks if this actor is meant for the current decorate game support
+		/// <summary>
+		/// This checks if this actor is meant for the current decorate game support
+		/// </summary>
 		public bool CheckActorSupported()
 		{
 			// Check if we want to include this actor
 			string includegames = General.Map.Config.DecorateGames.ToLowerInvariant();
-			bool includeactor = (games.Count == 0);
-			foreach(string g in games)
+			bool includeactor = (props["game"].Count == 0);
+			foreach(string g in props["game"])
 				includeactor |= includegames.Contains(g);
 			
 			return includeactor;
 		}
 		
-		// This finds the best suitable sprite to use
+		/// <summary>
+		/// This finds the best suitable sprite to use when presenting this actor to the user.
+		/// </summary>
 		public string FindSuitableSprite()
 		{
 			string result = "";
 			
 			// Sprite forced?
-			if(!string.IsNullOrEmpty(sprite))
+			if(props.ContainsKey("$sprite"))
 			{
-				return sprite;
+				return props["$sprite"][0];
 			}
 			else
 			{
@@ -409,7 +489,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					if(!string.IsNullOrEmpty(s.FirstSprite))
 						result = s.FirstSprite;
 				}
-
+				
 				// Try the inactive state
 				if(string.IsNullOrEmpty(result) && states.ContainsKey("inactive"))
 				{

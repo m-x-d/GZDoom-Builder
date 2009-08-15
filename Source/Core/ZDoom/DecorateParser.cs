@@ -57,7 +57,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		#region ================== Properties
 		
+		/// <summary>
+		/// All actors that are supported by the current game.
+		/// </summary>
 		public ICollection<ActorStructure> Actors { get { return actors.Values; } }
+
+		/// <summary>
+		/// All actors defined in the loaded DECORATE structures. This includes actors not supported in the current game.
+		/// </summary>
+		public ICollection<ActorStructure> AllActors { get { return archivedactors.Values; } }
 		
 		#endregion
 		
@@ -68,7 +76,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Syntax
 			whitespace = "\n \t\r";
-			specialtokens = ":{}+-\n;";
+			specialtokens = ":{}+-\n;,";
 			
 			// Initialize
 			actors = new Dictionary<string, ActorStructure>();
@@ -193,8 +201,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		#region ================== Methods
 		
-		// This returns an actor by name
-		// Returns null when actor cannot be found
+		/// <summary>
+		/// This returns a supported actor by name. Returns null when no supported actor with the specified name can be found. This operation is of O(1) complexity.
+		/// </summary>
 		public ActorStructure GetActorByName(string name)
 		{
 			name = name.ToLowerInvariant();
@@ -202,6 +211,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return actors[name];
 			else
 				return null;
+		}
+
+		/// <summary>
+		/// This returns a supported actor by DoomEdNum. Returns null when no supported actor with the specified name can be found. Please note that this operation is of O(n) complexity!
+		/// </summary>
+		public ActorStructure GetActorByDoomEdNum(int doomednum)
+		{
+			ICollection<ActorStructure> collection = actors.Values;
+			foreach(ActorStructure a in collection)
+			{
+				if(a.DoomEdNum == doomednum)
+					return a;
+			}
+			return null;
 		}
 
 		// This returns an actor by name
