@@ -91,19 +91,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 		
 		// This returns true if the given character is whitespace
-		internal bool IsWhitespace(char c)
+		protected internal bool IsWhitespace(char c)
 		{
 			return (whitespace.IndexOf(c) > -1);
 		}
 
 		// This returns true if the given character is a special token
-		internal bool IsSpecialToken(char c)
+		protected internal bool IsSpecialToken(char c)
 		{
 			return (specialtokens.IndexOf(c) > -1);
 		}
 
 		// This returns true if the given character is a special token
-		internal bool IsSpecialToken(string s)
+		protected internal bool IsSpecialToken(string s)
 		{
 			if(s.Length > 0)
 				return (specialtokens.IndexOf(s[0]) > -1);
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 		
 		// This removes beginning and ending quotes from a token
-		internal string StripTokenQuotes(string token)
+		protected internal string StripTokenQuotes(string token)
 		{
 			// Remove first character, if it is a quote
 			if(!string.IsNullOrEmpty(token) && (token[0] == '"'))
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// This skips whitespace on the stream, placing the read
 		// position right before the first non-whitespace character
 		// Returns false when the end of the stream is reached
-		internal bool SkipWhitespace(bool skipnewline)
+		protected internal bool SkipWhitespace(bool skipnewline)
 		{
 			int offset = skipnewline ? 0 : 1;
 			char c;
@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		// This reads a token (all sequential non-whitespace characters or a single character)
 		// Returns null when the end of the stream has been reached
-		internal string ReadToken()
+		protected internal string ReadToken()
 		{
 			string token = "";
 			bool quotedstring = false;
@@ -271,7 +271,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		// This reads the rest of the line
 		// Returns null when the end of the stream has been reached
-		internal string ReadLine()
+		protected internal string ReadLine()
 		{
 			string token = "";
 
@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 		
 		// This reports an error
-		internal void ReportError(string message)
+		protected internal void ReportError(string message)
 		{
 			long position = datastream.Position;
 			long readpos = 0;
