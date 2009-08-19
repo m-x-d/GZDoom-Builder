@@ -443,11 +443,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)
 			{
-				// No selection made? But we have a highlight!
-				if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+				// Not pasting anything?
+				EditSelectionMode editmode = (General.Editing.NewMode as EditSelectionMode);
+				if(!editmode.Pasting)
 				{
-					// Make the highlight the selection
-					SelectSector(highlighted, true, false);
+					// No selection made? But we have a highlight!
+					if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
+					{
+						// Make the highlight the selection
+						SelectSector(highlighted, true, false);
+					}
 				}
 			}
 			
