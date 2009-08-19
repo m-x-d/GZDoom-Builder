@@ -148,9 +148,14 @@ namespace CodeImp.DoomBuilder.Controls
 		// List double-clicked
 		private void typelist_DoubleClick(object sender, EventArgs e)
 		{
-			if((typelist.SelectedNode != null) && (typeid.Text.Length > 0))
+			if(typelist.SelectedNode != null)
 			{
-				if(OnTypeDoubleClicked != null) OnTypeDoubleClicked();
+				// Node is a child node?
+				TreeNode n = typelist.SelectedNode;
+				if((n.Nodes.Count == 0) && (n.Tag != null) && (n.Tag is ThingTypeInfo))
+				{
+					if((OnTypeDoubleClicked != null) && (typeid.Text.Length > 0)) OnTypeDoubleClicked();
+				}
 			}
 		}
 		

@@ -51,6 +51,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
+		public override Presentation RenderPresentation { get { return Presentation.Things; } }
+
 		#endregion
 
 		#region ================== Constructor / Destructor
