@@ -203,6 +203,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			editbutton.Enabled = (resultslist.SelectedIndex > -1);
 			deletebutton.Enabled = (resultslist.SelectedIndex > -1);
 			
+			// Set correct presentation mode
+			General.Map.Renderer2D.SetPresentation(finder.RenderPresentation);
+			
 			// Redraw the screen, this will show the selection
 			General.Interface.RedrawDisplay();
 		}

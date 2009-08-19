@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public FindReplaceAttribute Attributes { get { return attribs; } }
 		public bool AllowDelete { get { return false; } }
+		public virtual Presentation RenderPresentation { get { return Presentation.Standard; } }
 
 		#endregion
 
