@@ -440,8 +440,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
-			if(BuilderPlug.Me.AutoClearSelection ||
-			   ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f)))
+			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
+
+			if(BuilderPlug.Me.AutoClearSelection && !selectionvolume)
+				General.Map.Map.ClearSelectedThings();
+
+			if(selectionvolume)
 			{
 				if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 				{
