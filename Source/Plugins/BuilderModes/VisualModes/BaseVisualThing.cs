@@ -91,10 +91,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Must have a width and height!
 			if((info.Radius < 0.1f) || (info.Height < 0.1f)) return false;
 
+			// Find the sector in which the thing resides
+			Thing.DetermineSector(mode.BlockMap);
+
 			if(sprite != null)
 			{
-				// Find the sector in which the thing resides
-				Thing.DetermineSector(mode.BlockMap);
 				if(Thing.Sector != null)
 				{
 					// Use sector brightness for color shading
