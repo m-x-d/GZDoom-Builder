@@ -34,6 +34,7 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Config;
 using System.Drawing;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -89,6 +90,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool modealreadyswitching = false;
 		private bool pasting = false;
 		private PasteOptions pasteoptions;
+		
+		// Docker
+		private EditSelectionPanel panel;
+		private Docker docker;
 		
 		// Highlighted vertex
 		private MapElement highlighted;
@@ -175,6 +180,71 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Methods
 		
+		// The following functions set different properties and update
+		
+		public void SetAbsPosX(float posx)
+		{
+			offset.x = posx;
+			UpdateAllChanges();
+		}
+		
+		public void SetAbsPosY(float posy)
+		{
+			offset.y = posy;
+			UpdateAllChanges();
+		}
+		
+		public void SetRelPosX(float posx)
+		{
+			offset.x = posx + baseoffset.x;
+			UpdateAllChanges();
+		}
+		
+		public void SetRelPosY(float posy)
+		{
+			offset.y = posy + baseoffset.y;
+			UpdateAllChanges();
+		}
+		
+		public void SetAbsSizeX(float sizex)
+		{
+			size.x = sizex;
+			UpdateAllChanges();
+		}
+		
+		public void SetAbsSizeY(float sizey)
+		{
+			size.y = sizey;
+			UpdateAllChanges();
+		}
+		
+		public void SetRelSizeX(float sizex)
+		{
+			size.x = basesize.x * (sizex / 100.0f);
+			UpdateAllChanges();
+		}
+		
+		public void SetRelSizeY(float sizey)
+		{
+			size.y = basesize.y * (sizey / 100.0f);
+			UpdateAllChanges();
+		}
+
+		public void SetAbsRotation(float absrot)
+		{
+			rotation = absrot;
+			UpdateAllChanges();
+		}
+		
+		// This updates all after changes were made
+		private void UpdateAllChanges()
+		{
+			UpdateGeometry();
+			UpdateRectangleComponents();
+			General.Map.Map.Update();
+			General.Interface.RedrawDisplay();
+		}
+
 		// This returns the position of the highlighted item
 		private Vector2D GetHighlightedPosition()
 		{
@@ -548,6 +618,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			return (point.x >= rect.Left) && (point.x <= rect.Right) && (point.y >= rect.Top) && (point.y <= rect.Bottom);
 		}
+		
+		// This updates the values in the panel
+		private void UpdatePanel()
+		{
+			Vector2D relsize = (size / basesize) * 100.0f;
+			if(panel != null)
+				panel.ShowCurrentValues(offset, offset - baseoffset, size, relsize, rotation);
+		}
 
 		// This moves all things and vertices to match the current transformation
 		private void UpdateGeometry()
@@ -569,6 +647,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			bool shouldbeflipped = (size.x < 0.0f) ^ (size.y < 0.0f);
 			if(shouldbeflipped != linesflipped) FlipLinedefs();
 			
+			UpdatePanel();
 			General.Map.Map.Update(true, false);
 		}
 		
@@ -672,12 +751,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnEngage()
 		{
 			base.OnEngage();
-
+			
 			bool autodrag = (pasting && mouseinside && BuilderPlug.Me.AutoDragOnPaste);
 			
 			// Add toolbar buttons
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
+			
+			// Add docker
+			panel = new EditSelectionPanel(this);
+			docker = new Docker("editselection", "Edit Selection", panel);
+			General.Interface.AddDocker(docker);
+			General.Interface.SelectDocker(docker);
 			
 			// We don't want to record this for undoing while we move the geometry around.
 			// This will be set back to normal when we're done.
@@ -799,7 +884,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.SetPresentation(Presentation.Standard);
 				
 				// Update
+				panel.ShowOriginalValues(baseoffset, basesize);
 				UpdateRectangleComponents();
+				UpdatePanel();
 				Update();
 				
 				// When pasting and mouse is in screen, drag selection immediately
@@ -1039,6 +1126,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Remove toolbar buttons
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
+			
+			// Remove docker
+			General.Interface.RemoveDocker(docker);
+			panel.Dispose();
+			panel = null;
 			
 			// When not cancelled manually, we assume it is accepted
 			if(!cancelled)
