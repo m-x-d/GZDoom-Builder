@@ -224,6 +224,10 @@
     <None Include="Resources\FlipSelectionV.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\EditSelectionPanel.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>EditSelectionPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\UndoRedoPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>UndoRedoPanel.cs</DependentUpon>
@@ -254,6 +258,12 @@
     <Compile Include="FindReplace\FindThingType.cs" />
     <Compile Include="FindReplace\FindVertexNumber.cs" />
     <Compile Include="General\UndoGroup.cs" />
+    <Compile Include="Interface\EditSelectionPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\EditSelectionPanel.Designer.cs">
+      <DependentUpon>EditSelectionPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\UndoRedoPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
