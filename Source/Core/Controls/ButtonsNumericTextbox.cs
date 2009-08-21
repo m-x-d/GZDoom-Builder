@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Events
 
 		public event EventHandler WhenTextChanged;
+		public event EventHandler WhenButtonsClicked;
 
 		#endregion
 
@@ -132,7 +133,12 @@ namespace CodeImp.DoomBuilder.Controls
 						textbox.Text = newvalue.ToString();
 					}
 				}
+				
 				buttons.Value = 0;
+				
+				if(WhenButtonsClicked != null)
+					WhenButtonsClicked(this, EventArgs.Empty);
+				
 				ignorebuttonchange = false;
 			}
 		}

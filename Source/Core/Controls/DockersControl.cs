@@ -262,7 +262,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				if((page.Tag as Docker) == d)
 				{
-					page.Select();
+					tabs.SelectedTab = page;
 					return true;
 				}
 			}
@@ -279,7 +279,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if((page.Tag as Docker).FullName == previousselected)
 					{
-						page.Select();
+						tabs.SelectedTab = page;
 						break;
 					}
 				}

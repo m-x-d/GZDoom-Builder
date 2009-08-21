@@ -1211,7 +1211,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(alt) mod |= (int)Keys.Alt;
 			if(shift) mod |= (int)Keys.Shift;
 			if(ctrl) mod |= (int)Keys.Control;
-
+			
 			// Don't process any keys when they are meant for other input controls
 			if((ActiveControl == null) || (ActiveControl == display))
 			{
@@ -1226,7 +1226,7 @@ namespace CodeImp.DoomBuilder.Windows
 				e.Handled = true;
 				e.SuppressKeyPress = true;
 			}
-
+			
 			// F1 pressed?
 			if((e.KeyCode == Keys.F1) && (e.Modifiers == Keys.None))
 			{
@@ -2552,6 +2552,10 @@ namespace CodeImp.DoomBuilder.Windows
 			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
 			d.MakeFullName(plugin.Name.ToLowerInvariant());
 			
+			// We must release all keys because the focus may be stolen when
+			// this was the selected docker (the previous docker is automatically selected)
+			ReleaseAllKeys();
+			
 			return dockerspanel.Remove(d);
 		}
 		
@@ -2562,12 +2566,18 @@ namespace CodeImp.DoomBuilder.Windows
 			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
 			d.MakeFullName(plugin.Name.ToLowerInvariant());
 			
+			// We must release all keys because the focus will be stolen
+			ReleaseAllKeys();
+			
 			return dockerspanel.SelectDocker(d);
 		}
 		
 		// This selects the previous selected docker
 		public void SelectPreviousDocker()
 		{
+			// We must release all keys because the focus will be stolen
+			ReleaseAllKeys();
+			
 			dockerspanel.SelectPrevious();
 		}
 		
