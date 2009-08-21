@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Variables
-
+		
 		private Bitmap tabsimage;
 		private int highlighttab;
 		
@@ -286,15 +286,29 @@ namespace CodeImp.DoomBuilder.Controls
 		// Tabs don't process keys
 		protected override void OnKeyDown(KeyEventArgs ke)
 		{
-			ke.Handled = true;
+			if(this.Parent is DockersControl)
+			{
+				// Only absorb the key press when no focused on an input control, otherwise
+				// the input controls may not receive certain keys such as delete and arrow keys
+				DockersControl docker = (this.Parent as DockersControl);
+				if(!docker.IsFocused)
+					ke.Handled = true;
+			}
 		}
 		
 		// Tabs don't process keys
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
-			e.Handled = true;
+			if(this.Parent is DockersControl)
+			{
+				// Only absorb the key press when no focused on an input control, otherwise
+				// the input controls may not receive certain keys such as delete and arrow keys
+				DockersControl docker = (this.Parent as DockersControl);
+				if(!docker.IsFocused)
+					e.Handled = true;
+			}
 		}
-
+		
 		#endregion
 	}
 }
