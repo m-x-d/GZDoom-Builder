@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.Editing
 			General.MainWindow.RedrawDisplay();
 
 			// Determine new unprojected mouse coordinates
-			mousemappos = renderer2d.GetMapCoordinates(mousepos);
+			mousemappos = renderer2d.DisplayToMap(mousepos);
 			General.MainWindow.UpdateCoordinates(mousemappos);
 		}
 
@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.Editing
             General.MainWindow.RedrawDisplay();
 
             // Determine new unprojected mouse coordinates
-            mousemappos = renderer2d.GetMapCoordinates(mousepos);
+            mousemappos = renderer2d.DisplayToMap(mousepos);
             General.MainWindow.UpdateCoordinates(mousemappos);
         }
 
@@ -478,7 +478,7 @@ namespace CodeImp.DoomBuilder.Editing
 			mouseinside = true;
             mouselastpos = mousepos;
 			mousepos = new Vector2D(e.X, e.Y);
-			mousemappos = renderer2d.GetMapCoordinates(mousepos);
+			mousemappos = renderer2d.DisplayToMap(mousepos);
 			mousebuttons = e.Button;
 			
 			// Update labels in main window
@@ -692,7 +692,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(mouseinside && !float.IsNaN(mouselastpos.x) && !float.IsNaN(mouselastpos.y))
 			{
 				// Get the map coordinates of the last mouse posision (before it moved)
-				Vector2D lastmappos = renderer2d.GetMapCoordinates(mouselastpos);
+				Vector2D lastmappos = renderer2d.DisplayToMap(mouselastpos);
 				
 				// Do the scroll
 				ScrollBy(lastmappos.x - mousemappos.x, lastmappos.y - mousemappos.y);

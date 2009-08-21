@@ -546,12 +546,22 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 		
-		// This unprojects mouse coordinates into map coordinates
-		public Vector2D GetMapCoordinates(Vector2D mousepos)
+		/// <summary>
+		/// This unprojects display coordinates (screen space) to map coordinates
+		/// </summary>
+		public Vector2D DisplayToMap(Vector2D mousepos)
 		{
 			return mousepos.GetInvTransformed(-translatex, -translatey, scaleinv, -scaleinv);
 		}
-
+		
+		/// <summary>
+		/// This projects map coordinates to display coordinates (screen space)
+		/// </summary>
+		public Vector2D MapToDisplay(Vector2D mappos)
+		{
+			return mappos.GetTransformed(translatex, translatey, scale, -scale);
+		}
+		
 		#endregion
 
 		#region ================== Colors
@@ -759,8 +769,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				backimageverts = CreateScreenVerts(windowsize);
 
 				// Determine map coordinates for view window
-				ltpos = GetMapCoordinates(new Vector2D(0f, 0f));
-				rbpos = GetMapCoordinates(new Vector2D(windowsize.Width, windowsize.Height));
+				ltpos = DisplayToMap(new Vector2D(0f, 0f));
+				rbpos = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
 				
 				// Offset by given background offset
 				ltpos -= backoffset;
@@ -828,8 +838,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if((size * scale) > 6f)
 			{
 				// Determine map coordinates for view window
-				ltpos = GetMapCoordinates(new Vector2D(0, 0));
-				rbpos = GetMapCoordinates(new Vector2D(windowsize.Width, windowsize.Height));
+				ltpos = DisplayToMap(new Vector2D(0, 0));
+				rbpos = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
 
 				// Clip to nearest grid
 				ltpos = GridSetup.SnappedToGrid(ltpos, size, sizeinv);

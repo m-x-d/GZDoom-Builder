@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public bool AltState { get { return alt; } }
 		public MouseButtons MouseButtons { get { return mousebuttons; } }
 		public bool MouseInDisplay { get { return mouseinside; } }
-		internal RenderTargetControl Display { get { return display; } }
+		public RenderTargetControl Display { get { return display; } }
 		public bool SnapToGrid { get { return buttonsnaptogrid.Checked; } }
 		public bool AutoMerge { get { return buttonautomerge.Checked; } }
 		public bool MouseExclusive { get { return mouseexclusive; } }
