@@ -29,6 +29,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.orgposy = new System.Windows.Forms.Button();
+			this.orgposx = new System.Windows.Forms.Button();
+			this.label16 = new System.Windows.Forms.Label();
+			this.label19 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.relposy = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -38,6 +42,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.orgsizey = new System.Windows.Forms.Button();
+			this.orgsizex = new System.Windows.Forms.Button();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
@@ -52,15 +58,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label14 = new System.Windows.Forms.Label();
 			this.flipv = new System.Windows.Forms.Button();
 			this.fliph = new System.Windows.Forms.Button();
-			this.absrot = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label13 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
-			this.label16 = new System.Windows.Forms.Label();
-			this.label19 = new System.Windows.Forms.Label();
-			this.orgposx = new System.Windows.Forms.Button();
-			this.orgposy = new System.Windows.Forms.Button();
-			this.orgsizey = new System.Windows.Forms.Button();
-			this.orgsizex = new System.Windows.Forms.Button();
+			this.absrot = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -88,6 +88,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Position ";
+			// 
+			// orgposy
+			// 
+			this.orgposy.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.orgposy.Location = new System.Drawing.Point(109, 54);
+			this.orgposy.Name = "orgposy";
+			this.orgposy.Size = new System.Drawing.Size(79, 24);
+			this.orgposy.TabIndex = 29;
+			this.orgposy.Text = "-2000";
+			this.orgposy.UseVisualStyleBackColor = true;
+			this.orgposy.Click += new System.EventHandler(this.orgposy_Click);
+			// 
+			// orgposx
+			// 
+			this.orgposx.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.orgposx.Location = new System.Drawing.Point(21, 54);
+			this.orgposx.Name = "orgposx";
+			this.orgposx.Size = new System.Drawing.Size(79, 24);
+			this.orgposx.TabIndex = 28;
+			this.orgposx.Text = "-2000";
+			this.orgposx.UseVisualStyleBackColor = true;
+			this.orgposx.Click += new System.EventHandler(this.orgposx_Click);
+			// 
+			// label16
+			// 
+			this.label16.AutoSize = true;
+			this.label16.Location = new System.Drawing.Point(197, 59);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(21, 14);
+			this.label16.TabIndex = 26;
+			this.label16.Text = "mp";
+			// 
+			// label19
+			// 
+			this.label19.AutoSize = true;
+			this.label19.Location = new System.Drawing.Point(18, 37);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(46, 14);
+			this.label19.TabIndex = 23;
+			this.label19.Text = "Original:";
 			// 
 			// label6
 			// 
@@ -208,6 +248,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Size ";
 			// 
+			// orgsizey
+			// 
+			this.orgsizey.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.orgsizey.Location = new System.Drawing.Point(109, 51);
+			this.orgsizey.Name = "orgsizey";
+			this.orgsizey.Size = new System.Drawing.Size(79, 24);
+			this.orgsizey.TabIndex = 31;
+			this.orgsizey.Text = "-2000";
+			this.orgsizey.UseVisualStyleBackColor = true;
+			this.orgsizey.Click += new System.EventHandler(this.orgsizey_Click);
+			// 
+			// orgsizex
+			// 
+			this.orgsizex.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+			this.orgsizex.Location = new System.Drawing.Point(21, 51);
+			this.orgsizex.Name = "orgsizex";
+			this.orgsizex.Size = new System.Drawing.Size(79, 24);
+			this.orgsizex.TabIndex = 30;
+			this.orgsizex.Text = "-2000";
+			this.orgsizex.UseVisualStyleBackColor = true;
+			this.orgsizex.Click += new System.EventHandler(this.orgsizex_Click);
+			// 
 			// label12
 			// 
 			this.label12.AutoSize = true;
@@ -279,9 +341,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label4.AutoSize = true;
 			this.label4.Location = new System.Drawing.Point(18, 151);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(48, 14);
+			this.label4.Size = new System.Drawing.Size(37, 14);
 			this.label4.TabIndex = 13;
-			this.label4.Text = "Relative:";
+			this.label4.Text = "Scale:";
 			// 
 			// abssizey
 			// 
@@ -370,21 +432,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fliph.UseVisualStyleBackColor = true;
 			this.fliph.Click += new System.EventHandler(this.fliph_Click);
 			// 
-			// absrot
-			// 
-			this.absrot.AllowDecimal = true;
-			this.absrot.AllowNegative = true;
-			this.absrot.AllowRelative = true;
-			this.absrot.ButtonStep = 1;
-			this.absrot.Location = new System.Drawing.Point(87, 34);
-			this.absrot.Name = "absrot";
-			this.absrot.Size = new System.Drawing.Size(82, 24);
-			this.absrot.StepValues = null;
-			this.absrot.TabIndex = 24;
-			this.absrot.Validated += new System.EventHandler(this.absrot_Validated);
-			this.absrot.WhenButtonsClicked += new System.EventHandler(this.absrot_Validated);
-			this.absrot.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
 			// label13
 			// 
 			this.label13.AutoSize = true;
@@ -403,67 +450,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label11.TabIndex = 22;
 			this.label11.Text = "º";
 			// 
-			// label16
+			// absrot
 			// 
-			this.label16.AutoSize = true;
-			this.label16.Location = new System.Drawing.Point(197, 59);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(21, 14);
-			this.label16.TabIndex = 26;
-			this.label16.Text = "mp";
-			// 
-			// label19
-			// 
-			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(18, 37);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(46, 14);
-			this.label19.TabIndex = 23;
-			this.label19.Text = "Original:";
-			// 
-			// orgposx
-			// 
-			this.orgposx.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.orgposx.Location = new System.Drawing.Point(21, 54);
-			this.orgposx.Name = "orgposx";
-			this.orgposx.Size = new System.Drawing.Size(79, 24);
-			this.orgposx.TabIndex = 28;
-			this.orgposx.Text = "-2000";
-			this.orgposx.UseVisualStyleBackColor = true;
-			this.orgposx.Click += new System.EventHandler(this.orgposx_Click);
-			// 
-			// orgposy
-			// 
-			this.orgposy.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.orgposy.Location = new System.Drawing.Point(109, 54);
-			this.orgposy.Name = "orgposy";
-			this.orgposy.Size = new System.Drawing.Size(79, 24);
-			this.orgposy.TabIndex = 29;
-			this.orgposy.Text = "-2000";
-			this.orgposy.UseVisualStyleBackColor = true;
-			this.orgposy.Click += new System.EventHandler(this.orgposy_Click);
-			// 
-			// orgsizey
-			// 
-			this.orgsizey.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.orgsizey.Location = new System.Drawing.Point(109, 51);
-			this.orgsizey.Name = "orgsizey";
-			this.orgsizey.Size = new System.Drawing.Size(79, 24);
-			this.orgsizey.TabIndex = 31;
-			this.orgsizey.Text = "-2000";
-			this.orgsizey.UseVisualStyleBackColor = true;
-			this.orgsizey.Click += new System.EventHandler(this.orgsizey_Click);
-			// 
-			// orgsizex
-			// 
-			this.orgsizex.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-			this.orgsizex.Location = new System.Drawing.Point(21, 51);
-			this.orgsizex.Name = "orgsizex";
-			this.orgsizex.Size = new System.Drawing.Size(79, 24);
-			this.orgsizex.TabIndex = 30;
-			this.orgsizex.Text = "-2000";
-			this.orgsizex.UseVisualStyleBackColor = true;
-			this.orgsizex.Click += new System.EventHandler(this.orgsizex_Click);
+			this.absrot.AllowDecimal = true;
+			this.absrot.AllowNegative = true;
+			this.absrot.AllowRelative = true;
+			this.absrot.ButtonStep = 1;
+			this.absrot.Location = new System.Drawing.Point(87, 34);
+			this.absrot.Name = "absrot";
+			this.absrot.Size = new System.Drawing.Size(82, 24);
+			this.absrot.StepValues = null;
+			this.absrot.TabIndex = 24;
+			this.absrot.Validated += new System.EventHandler(this.absrot_Validated);
+			this.absrot.WhenButtonsClicked += new System.EventHandler(this.absrot_Validated);
+			this.absrot.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
 			// 
 			// EditSelectionPanel
 			// 
