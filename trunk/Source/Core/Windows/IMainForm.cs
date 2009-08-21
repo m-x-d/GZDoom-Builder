@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Windows
 		bool MouseExclusive { get; }
 		MouseButtons MouseButtons { get; }
 		bool IsActiveWindow { get; }
+		RenderTargetControl Display { get; }
 		
 		// Methods
 		void DisplayReady();

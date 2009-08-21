@@ -49,6 +49,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		int VertexSize { get; }
 		ViewMode ViewMode { get; }
 		
+		// View methods
+		Vector2D DisplayToMap(Vector2D mousepos);
+		Vector2D MapToDisplay(Vector2D mappos);
+		
 		// Color methods
 		PixelColor DetermineLinedefColor(Linedef l);
 		PixelColor DetermineThingColor(Thing t);
