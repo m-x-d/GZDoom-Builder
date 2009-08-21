@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(VisualStyleInformation.IsSupportedByOS && VisualStyleInformation.IsEnabledByUser)
 			{
 				// Style settings
+				this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 				this.SetStyle(ControlStyles.SupportsTransparentBackColor, false);
 				this.SetStyle(ControlStyles.UserPaint, true);
 				this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
