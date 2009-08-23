@@ -50,12 +50,6 @@ namespace CodeImp.DoomBuilder
 		internal const string BUILD_MAP_HEADER = "MAP01";
 		public const string CONFIG_MAP_HEADER = "~MAP";
 
-		// Save modes
-		public const int SAVE_NORMAL = 0;
-		public const int SAVE_AS = 1;
-		public const int SAVE_INTO = 2;
-		public const int SAVE_TEST = 3;
-		
 		#endregion
 
 		#region ================== Variables
@@ -433,7 +427,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Save
 
 		// Initializes for an existing map
-		internal bool SaveMap(string newfilepathname, int savemode)
+		internal bool SaveMap(string newfilepathname, SavePurpose purpose)
 		{
 			MapSet outputset;
 			string nodebuildername, settingsfile;
@@ -468,7 +462,7 @@ namespace CodeImp.DoomBuilder
 
 			// Show script window if there are any errors and we are going to test the map
 			// and always update the errors on the scripts window.
-			if((errors.Count > 0) && (scriptwindow == null) && (savemode == SAVE_TEST)) ShowScriptEditor();
+			if((errors.Count > 0) && (scriptwindow == null) && (purpose == SavePurpose.Testing)) ShowScriptEditor();
 			if(scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
 			
 			// Only write the map and rebuild nodes when the actual map has changed
@@ -518,7 +512,7 @@ namespace CodeImp.DoomBuilder
 				outputset.Dispose();
 				
 				// Get the corresponding nodebuilder
-				nodebuildername = savemode == SAVE_TEST ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
+				nodebuildername = (purpose == SavePurpose.Testing) ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
 
 				// Build the nodes
 				oldstatus = General.MainWindow.Status;
@@ -554,7 +548,7 @@ namespace CodeImp.DoomBuilder
 				
 				// Except when saving INTO another file,
 				// kill the target file if it is different from source file
-				if((savemode != SAVE_INTO) && (newfilepathname != filepathname))
+				if((purpose != SavePurpose.IntoFile) && (newfilepathname != filepathname))
 				{
 					// Kill target file
 					if(File.Exists(newfilepathname)) File.Delete(newfilepathname);
@@ -565,7 +559,7 @@ namespace CodeImp.DoomBuilder
 				}
 
 				// On Save AS we have to copy the previous file to the new file
-				if((savemode == SAVE_AS) && (filepathname != ""))
+				if((purpose == SavePurpose.AsNewFile) && (filepathname != ""))
 				{
 					// Copy if original file still exists
 					if(File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
@@ -645,7 +639,7 @@ namespace CodeImp.DoomBuilder
 			data.Resume();
 			
 			// Not saved for testing purpose?
-			if(savemode != SAVE_TEST)
+			if(purpose != SavePurpose.Testing)
 			{
 				// Saved in a different file?
 				if(newfilepathname != filepathname)

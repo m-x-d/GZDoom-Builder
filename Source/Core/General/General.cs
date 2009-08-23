@@ -1109,12 +1109,14 @@ namespace CodeImp.DoomBuilder
 				General.ErrorLogger.IsErrorAdded = false;
 				
 				// Save the map
-				if(map.SaveMap(map.FilePathName, MapManager.SAVE_NORMAL))
+				General.Plugins.OnMapSaveBegin(SavePurpose.Normal);
+				if(map.SaveMap(map.FilePathName, SavePurpose.Normal))
 				{
 					// Add recent file
 					mainwindow.AddRecentFile(map.FilePathName);
 					result = true;
 				}
+				General.Plugins.OnMapSaveEnd(SavePurpose.Normal);
 
 				// All done
 				mainwindow.UpdateInterface();
@@ -1165,12 +1167,14 @@ namespace CodeImp.DoomBuilder
 				General.ErrorLogger.IsErrorAdded = false;
 
 				// Save the map
-				if(map.SaveMap(savefile.FileName, MapManager.SAVE_AS))
+				General.Plugins.OnMapSaveBegin(SavePurpose.AsNewFile);
+				if(map.SaveMap(savefile.FileName, SavePurpose.AsNewFile))
 				{
 					// Add recent file
 					mainwindow.AddRecentFile(map.FilePathName);
 					result = true;
 				}
+				General.Plugins.OnMapSaveEnd(SavePurpose.AsNewFile);
 
 				// All done
 				mainwindow.UpdateInterface();
@@ -1222,12 +1226,14 @@ namespace CodeImp.DoomBuilder
 				General.ErrorLogger.IsErrorAdded = false;
 				
 				// Save the map
-				if(map.SaveMap(savefile.FileName, MapManager.SAVE_INTO))
+				General.Plugins.OnMapSaveBegin(SavePurpose.IntoFile);
+				if(map.SaveMap(savefile.FileName, SavePurpose.IntoFile))
 				{
 					// Add recent file
 					mainwindow.AddRecentFile(map.FilePathName);
 					result = true;
 				}
+				General.Plugins.OnMapSaveEnd(SavePurpose.IntoFile);
 
 				// All done
 				mainwindow.UpdateInterface();

@@ -282,6 +282,18 @@ namespace CodeImp.DoomBuilder.Plugins
 		}
 
 
+		public void OnMapSaveBegin(SavePurpose purpose)
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapSaveBegin(purpose);
+		}
+
+
+		public void OnMapSaveEnd(SavePurpose purpose)
+		{
+			foreach(Plugin p in plugins) p.Plug.OnMapSaveEnd(purpose);
+		}
+
+
 		public void OnMapSetChangeBegin()
 		{
 			foreach(Plugin p in plugins) p.Plug.OnMapSetChangeBegin();
