@@ -273,7 +273,8 @@ namespace CodeImp.DoomBuilder
 			// Save map to temporary file
 			Cursor.Current = Cursors.WaitCursor;
 			tempwad = General.MakeTempFilename(General.Map.TempPath, "wad");
-			if(General.Map.SaveMap(tempwad, MapManager.SAVE_TEST))
+			General.Plugins.OnMapSaveBegin(SavePurpose.Testing);
+			if(General.Map.SaveMap(tempwad, SavePurpose.Testing))
 			{
 				// No compiler errors?
 				if(General.Map.Errors.Count == 0)
@@ -332,6 +333,7 @@ namespace CodeImp.DoomBuilder
 			CleanTempFile(General.Map);
 			
 			// Done
+			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
 			General.MainWindow.FocusDisplay();
 			Cursor.Current = oldcursor;
 		}

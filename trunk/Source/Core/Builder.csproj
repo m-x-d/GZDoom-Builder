@@ -697,6 +697,7 @@
     <Compile Include="General\CRC.cs" />
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
+    <Compile Include="General\SavePurpose.cs" />
     <Compile Include="IO\DoomColormapReader.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
