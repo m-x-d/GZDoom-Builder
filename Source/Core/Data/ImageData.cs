@@ -51,8 +51,6 @@ namespace CodeImp.DoomBuilder.Data
 		protected int width;
 		protected int height;
 		protected Vector2D scale;
-		protected float scaledwidth;
-		protected float scaledheight;
 		protected bool usecolorcorrection;
 		
 		// Loading
