@@ -40,8 +40,6 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private string lumpname;
-		private float scalex;
-		private float scaley;
 
 		#endregion
 
@@ -51,10 +49,8 @@ namespace CodeImp.DoomBuilder.Data
 		public SimpleTextureImage(string name, string lumpname, float scalex, float scaley)
 		{
 			// Initialize
-			this.scalex = scalex;
-			this.scaley = scaley;
-			this.scaledwidth = (float)width * scalex;
-			this.scaledheight = (float)height * scaley;
+			this.scale.x = scalex;
+			this.scale.y = scaley;
 			this.lumpname = lumpname;
 			SetName(name);
 			
@@ -116,8 +112,6 @@ namespace CodeImp.DoomBuilder.Data
 						// Get width and height from image
 						width = bitmap.Size.Width;
 						height = bitmap.Size.Height;
-						scaledwidth = (float)width * scalex;
-						scaledheight = (float)height * scaley;
 					}
 
 					// Done

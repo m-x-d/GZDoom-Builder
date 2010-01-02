@@ -93,11 +93,11 @@ namespace CodeImp.DoomBuilder.Data
 
 					if(bitmap != null)
 					{
-						// Get width and height from image
+						// Get width and height from image and set the scale
 						width = bitmap.Size.Width;
 						height = bitmap.Size.Height;
-						scaledwidth = (float)width * General.Map.Config.DefaultFlatScale;
-						scaledheight = (float)height * General.Map.Config.DefaultFlatScale;
+						scale.x = General.Map.Config.DefaultFlatScale;
+						scale.y = General.Map.Config.DefaultFlatScale;
 					}
 					else
 					{

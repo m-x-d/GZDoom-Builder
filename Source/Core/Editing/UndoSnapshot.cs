@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Editing
 		private volatile bool storeondisk;
 		private volatile bool isondisk;
 		private bool isdisposed;
+		private Dictionary<string, MemoryStream> customdata;
 		
 		#endregion
 

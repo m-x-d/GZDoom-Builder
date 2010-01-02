@@ -36,8 +36,6 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private List<TexturePatch> patches;
-		private float scalex;
-		private float scaley;
 		
 		#endregion
 
@@ -49,10 +47,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			this.width = width;
 			this.height = height;
-			this.scalex = scalex;
-			this.scaley = scaley;
-			this.scaledwidth = (float)width * scalex;
-			this.scaledheight = (float)height * scaley;
+			this.scale.x = scalex;
+			this.scale.y = scaley;
 			this.patches = new List<TexturePatch>();
 			SetName(name);
 			

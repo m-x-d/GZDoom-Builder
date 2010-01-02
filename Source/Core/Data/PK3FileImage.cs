@@ -37,8 +37,6 @@ namespace CodeImp.DoomBuilder.Data
 		private PK3Reader datareader;
 		private string filepathname;
 		private int probableformat;
-		private float scalex;
-		private float scaley;
 		
 		#endregion
 
@@ -55,14 +53,14 @@ namespace CodeImp.DoomBuilder.Data
 			if(asflat)
 			{
 				probableformat = ImageDataFormat.DOOMFLAT;
-				scalex = General.Map.Config.DefaultFlatScale;
-				scaley = General.Map.Config.DefaultFlatScale;
+				this.scale.x = General.Map.Config.DefaultFlatScale;
+				this.scale.y = General.Map.Config.DefaultFlatScale;
 			}
 			else
 			{
 				probableformat = ImageDataFormat.DOOMPICTURE;
-				scalex = General.Map.Config.DefaultTextureScale;
-				scaley = General.Map.Config.DefaultTextureScale;
+				this.scale.x = General.Map.Config.DefaultTextureScale;
+				this.scale.y = General.Map.Config.DefaultTextureScale;
 			}
 			
 			// We have no destructor
@@ -110,8 +108,6 @@ namespace CodeImp.DoomBuilder.Data
 					// Get width and height from image
 					width = bitmap.Size.Width;
 					height = bitmap.Size.Height;
-					scaledwidth = (float)bitmap.Size.Width * scalex;
-					scaledheight = (float)bitmap.Size.Height * scaley;
 				}
 				
 				// Pass on to base

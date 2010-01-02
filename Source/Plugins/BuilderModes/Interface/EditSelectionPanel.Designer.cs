@@ -158,6 +158,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relposy.Size = new System.Drawing.Size(82, 24);
 			this.relposy.StepValues = null;
 			this.relposy.TabIndex = 11;
+			this.relposy.WhenEnterPressed += new System.EventHandler(this.relposy_Validated);
 			this.relposy.Validated += new System.EventHandler(this.relposy_Validated);
 			this.relposy.WhenButtonsClicked += new System.EventHandler(this.relposy_Validated);
 			this.relposy.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
@@ -173,6 +174,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relposx.Size = new System.Drawing.Size(82, 24);
 			this.relposx.StepValues = null;
 			this.relposx.TabIndex = 10;
+			this.relposx.WhenEnterPressed += new System.EventHandler(this.relposx_Validated);
 			this.relposx.Validated += new System.EventHandler(this.relposx_Validated);
 			this.relposx.WhenButtonsClicked += new System.EventHandler(this.relposx_Validated);
 			this.relposx.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
@@ -188,6 +190,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absposy.Size = new System.Drawing.Size(82, 24);
 			this.absposy.StepValues = null;
 			this.absposy.TabIndex = 9;
+			this.absposy.WhenEnterPressed += new System.EventHandler(this.absposy_Validated);
 			this.absposy.Validated += new System.EventHandler(this.absposy_Validated);
 			this.absposy.WhenButtonsClicked += new System.EventHandler(this.absposy_Validated);
 			this.absposy.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
@@ -203,6 +206,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absposx.Size = new System.Drawing.Size(82, 24);
 			this.absposx.StepValues = null;
 			this.absposx.TabIndex = 8;
+			this.absposx.WhenEnterPressed += new System.EventHandler(this.absposx_Validated);
 			this.absposx.Validated += new System.EventHandler(this.absposx_Validated);
 			this.absposx.WhenButtonsClicked += new System.EventHandler(this.absposx_Validated);
 			this.absposx.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
@@ -317,6 +321,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relsizey.Size = new System.Drawing.Size(82, 24);
 			this.relsizey.StepValues = null;
 			this.relsizey.TabIndex = 15;
+			this.relsizey.WhenEnterPressed += new System.EventHandler(this.relsizey_Validated);
 			this.relsizey.Validated += new System.EventHandler(this.relsizey_Validated);
 			this.relsizey.WhenButtonsClicked += new System.EventHandler(this.relsizey_Validated);
 			this.relsizey.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
@@ -332,6 +337,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relsizex.Size = new System.Drawing.Size(82, 24);
 			this.relsizex.StepValues = null;
 			this.relsizex.TabIndex = 14;
+			this.relsizex.WhenEnterPressed += new System.EventHandler(this.relsizex_Validated);
 			this.relsizex.Validated += new System.EventHandler(this.relsizex_Validated);
 			this.relsizex.WhenButtonsClicked += new System.EventHandler(this.relsizex_Validated);
 			this.relsizex.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
@@ -356,6 +362,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.abssizey.Size = new System.Drawing.Size(82, 24);
 			this.abssizey.StepValues = null;
 			this.abssizey.TabIndex = 12;
+			this.abssizey.WhenEnterPressed += new System.EventHandler(this.abssizey_Validated);
 			this.abssizey.Validated += new System.EventHandler(this.abssizey_Validated);
 			this.abssizey.WhenButtonsClicked += new System.EventHandler(this.abssizey_Validated);
 			this.abssizey.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
@@ -371,6 +378,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.abssizex.Size = new System.Drawing.Size(82, 24);
 			this.abssizex.StepValues = null;
 			this.abssizex.TabIndex = 11;
+			this.abssizex.WhenEnterPressed += new System.EventHandler(this.abssizex_Validated);
 			this.abssizex.Validated += new System.EventHandler(this.abssizex_Validated);
 			this.abssizex.WhenButtonsClicked += new System.EventHandler(this.abssizex_Validated);
 			this.abssizex.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
@@ -461,6 +469,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absrot.Size = new System.Drawing.Size(82, 24);
 			this.absrot.StepValues = null;
 			this.absrot.TabIndex = 24;
+			this.absrot.WhenEnterPressed += new System.EventHandler(this.absrot_Validated);
 			this.absrot.Validated += new System.EventHandler(this.absrot_Validated);
 			this.absrot.WhenButtonsClicked += new System.EventHandler(this.absrot_Validated);
 			this.absrot.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
