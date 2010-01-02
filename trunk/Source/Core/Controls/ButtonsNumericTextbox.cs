@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public event EventHandler WhenTextChanged;
 		public event EventHandler WhenButtonsClicked;
+		public event EventHandler WhenEnterPressed;
 
 		#endregion
 
@@ -160,6 +161,14 @@ namespace CodeImp.DoomBuilder.Controls
 				else if(e.Delta > 0)
 					buttons.Value -= 1;
 			}
+		}
+
+		// Key pressed in textbox
+		private void textbox_KeyDown(object sender, KeyEventArgs e)
+		{
+			// Enter key?
+			if((e.KeyData == Keys.Enter) && (WhenEnterPressed != null))
+				WhenEnterPressed(this, EventArgs.Empty);
 		}
 		
 		#endregion

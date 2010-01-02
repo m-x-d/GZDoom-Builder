@@ -70,6 +70,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Selection
 		private string currentselected;
 		private string previousselected;
+		private bool controlledselection;
 		
 		#endregion
 
@@ -148,7 +149,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public void Collapse()
 		{
 			if(iscollapsed) return;
-			
+
+			controlledselection = true;
 			splitter.Enabled = false;
 			splitter.BackColor = SystemColors.Control;
 			splitter.Width = (int)(2.0f * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
@@ -160,6 +162,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Width = GetCollapsedWidth();
 			General.MainWindow.UnlockUpdate();
 			this.Invalidate(true);
+			controlledselection = false;
 			
 			iscollapsed = true;
 			
@@ -171,6 +174,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(!iscollapsed) return;
 
+			controlledselection = true;
 			splitter.Enabled = true;
 			splitter.BackColor = Color.Transparent;
 			splitter.Width = (int)(4.0f * (this.CurrentAutoScaleDimensions.Width / this.AutoScaleDimensions.Width));
@@ -180,6 +184,7 @@ namespace CodeImp.DoomBuilder.Controls
 			General.MainWindow.UnlockUpdate();
 			tabs.SelectedIndex = expandedtab;
 			tabs.Invalidate(true);
+			controlledselection = false;
 			
 			iscollapsed = false;
 			
@@ -258,13 +263,23 @@ namespace CodeImp.DoomBuilder.Controls
 		// This selects a docker
 		public bool SelectDocker(Docker d)
 		{
+			int index = 0;
 			foreach(TabPage page in tabs.TabPages)
 			{
 				if((page.Tag as Docker) == d)
 				{
-					tabs.SelectedTab = page;
+					if(iscollapsed)
+					{
+						previousselected = currentselected;
+						expandedtab = index;
+					}
+					else
+						tabs.SelectedTab = page;
+					
 					return true;
 				}
+				
+				index++;
 			}
 			
 			return false;
@@ -275,13 +290,23 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(!string.IsNullOrEmpty(previousselected))
 			{
+				int index = 0;
 				foreach(TabPage page in tabs.TabPages)
 				{
 					if((page.Tag as Docker).FullName == previousselected)
 					{
-						tabs.SelectedTab = page;
+						if(iscollapsed)
+						{
+							previousselected = currentselected;
+							expandedtab = index;
+						}
+						else
+							tabs.SelectedTab = page;
+						
 						break;
 					}
+					
+					index++;
 				}
 			}
 		}
@@ -334,16 +359,19 @@ namespace CodeImp.DoomBuilder.Controls
 		// Tab selected
 		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// Keep track of previous selected tab
-			previousselected = currentselected;
-			if(tabs.SelectedTab != null)
+			if(!controlledselection)
 			{
-				Docker d = (tabs.SelectedTab.Tag as Docker);
-				currentselected = d.FullName;
-			}
-			else
-			{
-				currentselected = null;
+				// Keep track of previous selected tab
+				previousselected = currentselected;
+				if(tabs.SelectedTab != null)
+				{
+					Docker d = (tabs.SelectedTab.Tag as Docker);
+					currentselected = d.FullName;
+				}
+				else
+				{
+					currentselected = null;
+				}
 			}
 			
 			General.MainWindow.FocusDisplay();

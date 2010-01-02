@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.textbox.Size = new System.Drawing.Size(160, 20);
 			this.textbox.TabIndex = 0;
 			this.textbox.TextChanged += new System.EventHandler(this.textbox_TextChanged);
+			this.textbox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textbox_KeyDown);
 			// 
 			// ButtonsNumericTextbox
 			// 

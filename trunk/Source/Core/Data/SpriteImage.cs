@@ -111,14 +111,14 @@ namespace CodeImp.DoomBuilder.Data
 						// Get width and height from image
 						width = bitmap.Size.Width;
 						height = bitmap.Size.Height;
-						scaledwidth = (float)bitmap.Size.Width;
-						scaledheight = (float)bitmap.Size.Height;
+						scale.x = 1.0f;
+						scale.y = 1.0f;
 						
 						// Make offset corrections if the offset was not given
 						if((offsetx == int.MinValue) || (offsety == int.MinValue))
 						{
-							offsetx = (int)(scaledwidth * 0.5f);
-							offsety = (int)scaledheight;
+							offsetx = (int)((width * scale.x) * 0.5f);
+							offsety = (int)(height * scale.y);
 						}
 					}
 					else

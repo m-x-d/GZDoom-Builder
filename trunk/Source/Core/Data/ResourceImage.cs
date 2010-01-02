@@ -59,8 +59,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Get width and height from image
 			width = bmp.Size.Width;
 			height = bmp.Size.Height;
-			scaledwidth = (float)bmp.Size.Width;
-			scaledheight = (float)bmp.Size.Height;
+			scale.x = 1.0f;
+			scale.y = 1.0f;
 			
 			// Done
 			bmp.Dispose();

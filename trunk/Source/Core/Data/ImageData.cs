@@ -23,6 +23,7 @@ using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Text;
 using System.Drawing;
+using CodeImp.DoomBuilder.Geometry;
 using SlimDX.Direct3D9;
 using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Rendering;
@@ -49,6 +50,7 @@ namespace CodeImp.DoomBuilder.Data
 		private long longname;
 		protected int width;
 		protected int height;
+		protected Vector2D scale;
 		protected float scaledwidth;
 		protected float scaledheight;
 		protected bool usecolorcorrection;
@@ -93,8 +95,9 @@ namespace CodeImp.DoomBuilder.Data
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
 		internal int PreviewIndex { get { return previewindex; } set { previewindex = value; } }
-		public float ScaledWidth { get { return scaledwidth; } }
-		public float ScaledHeight { get { return scaledheight; } }
+		public float ScaledWidth { get { return width * scale.x; } }
+		public float ScaledHeight { get { return height * scale.y; } }
+		public Vector2D Scale { get { return scale; } }
 		
 		#endregion
 
@@ -208,23 +211,12 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the image
 		public void LoadImage()
 		{
-			// Keep original dimensions
-			int oldwidth = width;
-			int oldheight = height;
-			float oldscaledwidth = scaledwidth;
-			float oldscaledheight = scaledheight;
-			
 			// Do the loading
 			LocalLoadImage();
 
-			// Anything changed?
-			//if((oldwidth != width) || (oldheight != height) ||
-			//   (oldscaledwidth != scaledwidth) || (oldscaledheight != scaledheight))
-			{
-				// Notify the main thread about the change so that sectors can update their buffers
-				IntPtr strptr = Marshal.StringToCoTaskMemAuto(this.name);
-				General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.ImageDataLoaded, strptr.ToInt32(), 0);
-			}
+			// Notify the main thread about the change so that sectors can update their buffers
+			IntPtr strptr = Marshal.StringToCoTaskMemAuto(this.name);
+			General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.ImageDataLoaded, strptr.ToInt32(), 0);
 		}
 		
 		// This requests loading the image
@@ -302,17 +294,17 @@ namespace CodeImp.DoomBuilder.Data
 					height = bitmap.Size.Height;
 
 					// Do we still have to set a scale?
-					if((scaledwidth == 0.0f) && (scaledheight == 0.0f))
+					if((scale.x == 0.0f) && (scale.y == 0.0f))
 					{
 						if((General.Map != null) && (General.Map.Config != null))
 						{
-							scaledwidth = (float)bitmap.Size.Width * General.Map.Config.DefaultTextureScale;
-							scaledheight = (float)bitmap.Size.Height * General.Map.Config.DefaultTextureScale;
+							scale.x = General.Map.Config.DefaultTextureScale;
+							scale.y = General.Map.Config.DefaultTextureScale;
 						}
 						else
 						{
-							scaledwidth = (float)bitmap.Size.Width;
-							scaledheight = (float)bitmap.Size.Height;
+							scale.x = 1.0f;
+							scale.y = 1.0f;
 						}
 					}
 				}
