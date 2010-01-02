@@ -1380,9 +1380,6 @@ namespace CodeImp.DoomBuilder.Geometry
 						if((newlines[i].Front == null) && (newlines[i].Back == null)) newlines[i].Dispose();
 					}
 				}
-				
-				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy();
 
 				// Mark new geometry only
 				General.Map.Map.ClearMarkedLinedefs(false);
