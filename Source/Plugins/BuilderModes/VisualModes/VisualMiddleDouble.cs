@@ -111,7 +111,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						textop = geotop;
 
 					// Apply texture offset
-					textop += Sidedef.OffsetY;
+					if (General.Map.Config.ScaledTextureOffsets)
+					{
+						textop += Sidedef.OffsetY * base.Texture.Scale.y;
+					}
+					else
+					{
+						textop += Sidedef.OffsetY;
+					}
+
 					
 					// Calculate texture portion bottom
 					texbottom = textop - tsz.y;
@@ -126,7 +134,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Determine texture coordinatess
 						t1.y = cliptop;
 						t2.y = tsz.y - clipbottom;
-						t1.x = Sidedef.OffsetX;
+
+						if (General.Map.Config.ScaledTextureOffsets)
+						{
+							t1.x = Sidedef.OffsetX * base.Texture.Scale.x;
+						}
+						else
+						{
+							t1.x = Sidedef.OffsetX;
+						} 
+
 						t2.x = t1.x + Sidedef.Line.Length;
 						
 						// Transform pixel coordinates to texture coordinates

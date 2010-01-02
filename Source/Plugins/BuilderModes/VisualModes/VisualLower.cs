@@ -114,8 +114,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				t2.y = t1.y + geoheight;
 
 				// Apply texture offset
-				t1 += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
-				t2 += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+				if (General.Map.Config.ScaledTextureOffsets)
+				{
+					t1 += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
+					t2 += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
+				}
+				else
+				{
+					t1 += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+					t2 += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+				}
 
 				// Transform pixel coordinates to texture coordinates
 				t1 /= tsz;

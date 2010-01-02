@@ -166,6 +166,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D oldpos = dragitem.Position;
 			Vector2D anchorpos = dragitemposition + offset;
 			int i = 0;
+
+			// don't move if the offset contains invalid data
+			if (!offset.IsFinite()) return false;
 			
 			// Snap to nearest?
 			if(snapnearest)

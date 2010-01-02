@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(l.Front != null)
 			{
 				// Show sidedef info
-				frontpanel.Text = " Front Sidedef " + l.Index + " ";
+				frontpanel.Text = " Front Sidedef " + l.Front.Index + " ";
 				frontsector.Text = " Sector " + l.Front.Sector.Index;
 				frontsector.Visible = true;
 				frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
@@ -181,7 +181,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(l.Back != null)
 			{
 				// Show sidedef info
-				backpanel.Text = " Back Sidedef " + l.Index + " ";
+				backpanel.Text = " Back Sidedef " + l.Back.Index + " ";
 				backsector.Text = " Sector " + l.Back.Sector.Index;
 				backsector.Visible = true;
 				backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
