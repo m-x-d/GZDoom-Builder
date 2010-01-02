@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string enginename;
 		private float defaulttexturescale;
 		private float defaultflatscale;
+		private bool scaledtextureoffsets;
 		private string defaultsavecompiler;
 		private string defaulttestcompiler;
 		private string formatinterface;
@@ -136,6 +137,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string DefaultTestCompiler { get { return defaulttestcompiler; } }
 		public float DefaultTextureScale { get { return defaulttexturescale; } }
 		public float DefaultFlatScale { get { return defaultflatscale; } }
+		public bool ScaledTextureOffsets { get { return scaledtextureoffsets; } }
 		public string FormatInterface { get { return formatinterface; } }
 		public string SoundLinedefFlag { get { return soundlinedefflag; } }
 		public string SingleSidedFlag { get { return singlesidedflag; } }
@@ -250,6 +252,7 @@ namespace CodeImp.DoomBuilder.Config
 			defaulttestcompiler = cfg.ReadSetting("defaulttestcompiler", "");
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
 			defaultflatscale = cfg.ReadSetting("defaultflatscale", 1f);
+			scaledtextureoffsets = cfg.ReadSetting("scaledtextureoffsets", true);
 			formatinterface = cfg.ReadSetting("formatinterface", "");
 			mixtexturesflats = cfg.ReadSetting("mixtexturesflats", false);
 			generalizedactions = cfg.ReadSetting("generalizedlinedefs", false);
