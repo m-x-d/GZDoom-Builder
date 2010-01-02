@@ -410,6 +410,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Make the drawing
 				Tools.DrawLines(points);
+
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy();
 				
 				// Clear selection
 				General.Map.Map.ClearAllSelected();
