@@ -283,6 +283,13 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			return x + ", " + y + ", " + z;
 		}
+
+		// Checks if the Vector has valid values for x, y and z
+		public bool IsFinite()
+		{
+			return !float.IsNaN(x) && !float.IsNaN(y) && !float.IsNaN(z) && !float.IsInfinity(x) && !float.IsInfinity(y) && !float.IsInfinity(z);
+		}
+
 		
 		#endregion
 	}

@@ -344,6 +344,13 @@ namespace CodeImp.DoomBuilder.Geometry
             double ry = sin * x + cos * y;
             return new Vector2D((float)rx, (float)ry);
         }
+
+		// Checks if the Vector has valid values for x and y
+		public bool IsFinite()
+		{
+			return !float.IsNaN(x) && !float.IsNaN(y) && !float.IsInfinity(x) && !float.IsInfinity(y);
+		}
+
 		#endregion
 	}
 }
