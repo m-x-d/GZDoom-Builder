@@ -44,11 +44,11 @@ Source: Scintilla.dll; DestDir: {app}; Flags: ignoreversion
 Source: Trackbar.dll; DestDir: {app}; Flags: ignoreversion
 Source: GPL.txt; DestDir: {app}; Flags: ignoreversion
 Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion recursesubdirs
-Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion
-Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion
+Source: Configurations\*; DestDir: {app}\Configurations; Flags: ignoreversion recursesubdirs
+Source: Scripting\*; DestDir: {app}\Scripting; Flags: ignoreversion recursesubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: Plugins\BuilderModes.dll; DestDir: {app}\Plugins; Flags: ignoreversion
-Source: Sprites\*; DestDir: {app}\Sprites; Flags: ignoreversion
+Source: Sprites\*; DestDir: {app}\Sprites; Flags: ignoreversion recursesubdirs
 
 [Icons]
 Name: {group}\Doom Builder; Filename: {app}\Builder.exe
