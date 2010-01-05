@@ -161,6 +161,10 @@
 			<param name="Name" value="About Configurations">
 			<param name="Local" value="configurations.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Configuration Syntax">
+			<param name="Local" value="configstructure.html">
+			</OBJECT>
 	</UL>
 </UL>
 </BODY></HTML>
