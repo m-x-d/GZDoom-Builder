@@ -38,6 +38,20 @@ body
 	border-top-style: none;
 }
 
+pre
+{
+	background: #f4f4f4;
+	color: #515151;
+	width: 400px;
+	margin: 0px 0px 10px 20px;
+	font: 100% Courier New,Courier,sans-serif;
+	text-align: left;
+	padding: 5px 5px 5px 10px;
+	border-style: solid;
+	border-color: #E0E0E0;
+	border-width: 1px;
+}
+
 h1
 {
 	padding: 10px 10px 10px 10px;
