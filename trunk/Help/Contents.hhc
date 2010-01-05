@@ -165,6 +165,36 @@
 			<param name="Name" value="Configuration Syntax">
 			<param name="Local" value="configstructure.html">
 			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Compiler Configurations">
+			<param name="Local" value="compilerconfigs.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="About Compiler Configurations">
+				<param name="Local" value="compilerconfigs.html">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Game Configurations">
+			<param name="Local" value="gameconfigs.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="About Game Configurations">
+				<param name="Local" value="gameconfigs.html">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Scripting Configurations">
+			<param name="Local" value="scriptingconfigs.html">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="About Scripting Configurations">
+				<param name="Local" value="scriptingconfigs.html">
+				</OBJECT>
+		</UL>
 	</UL>
 </UL>
 </BODY></HTML>
