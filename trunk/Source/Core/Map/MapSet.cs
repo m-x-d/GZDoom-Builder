@@ -2728,6 +2728,8 @@ namespace CodeImp.DoomBuilder.Map
 			Dictionary<uint, List<Sidedef>> storedsides = new Dictionary<uint, List<Sidedef>>(numsidedefs);
 			int originalsidescount = numsidedefs;
 			double starttime = General.Clock.GetCurrentTime();
+
+			BeginAddRemove();
 			
 			int sn = 0;
 			while(sn < numsidedefs)
@@ -2809,6 +2811,8 @@ namespace CodeImp.DoomBuilder.Map
 					sn++;
 				}
 			}
+
+			EndAddRemove();
 
 			// Output info
 			double endtime = General.Clock.GetCurrentTime();
