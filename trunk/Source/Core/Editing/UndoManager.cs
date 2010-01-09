@@ -628,6 +628,7 @@ namespace CodeImp.DoomBuilder.Editing
 							geometrychanged = false;
 							populationchanged = false;
 							General.Map.Map.ClearAllMarks(false);
+							General.Map.Map.BeginAddRemove();
 							
 							// Go for all levels to undo
 							for(int lvl = 0; lvl < levels; lvl++)
@@ -706,6 +707,8 @@ namespace CodeImp.DoomBuilder.Editing
 								levelsundone++;
 							}
 							
+							General.Map.Map.EndAddRemove();
+							
 							if(levels > 1)
 								General.Interface.DisplayStatus(StatusType.Action, "Undone " + levelsundone + " changes.");
 							
@@ -765,6 +768,7 @@ namespace CodeImp.DoomBuilder.Editing
 							geometrychanged = false;
 							populationchanged = false;
 							General.Map.Map.ClearAllMarks(false);
+							General.Map.Map.BeginAddRemove();
 							
 							// Go for all levels to redo
 							for(int lvl = 0; lvl < levels; lvl++)
@@ -822,7 +826,7 @@ namespace CodeImp.DoomBuilder.Editing
 								}
 
 								General.WriteLogLine("Performing redo \"" + r.Description + "\", Ticket ID " + r.TicketID + "...");
-								
+
 								if(levels == 1)
 									General.Interface.DisplayStatus(StatusType.Action, r.Description + " redone.");
 
@@ -841,6 +845,8 @@ namespace CodeImp.DoomBuilder.Editing
 								r = null;
 								levelsundone++;
 							}
+							
+							General.Map.Map.EndAddRemove();
 							
 							if(levels > 1)
 								General.Interface.DisplayStatus(StatusType.Action, "Redone " + levelsundone + " changes.");
