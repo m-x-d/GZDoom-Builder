@@ -2734,7 +2734,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				Sidedef stored = null;
 				Sidedef snsd = sidedefs[sn];
-				
+
 				// Check if checksum is stored
 				bool samesidedef = false;
 				uint checksum = snsd.GetChecksum();
@@ -2745,7 +2745,7 @@ namespace CodeImp.DoomBuilder.Map
 					foreach(Sidedef os in othersides)
 					{
 						// They must be in the same sector
-						if(snsd.Sector == os.Sector)
+						if (snsd.Sector == os.Sector)
 						{
 							// Check if sidedefs are really the same
 							stored = os;
@@ -2755,22 +2755,22 @@ namespace CodeImp.DoomBuilder.Map
 							SerializerStream otherdata = new SerializerStream(othermem);
 							snsd.ReadWrite(sidedata);
 							os.ReadWrite(otherdata);
-							if(sidemem.Length == othermem.Length)
+							if (sidemem.Length == othermem.Length)
 							{
 								samesidedef = true;
 								sidemem.Seek(0, SeekOrigin.Begin);
 								othermem.Seek(0, SeekOrigin.Begin);
-								for(int i = 0; i < sidemem.Length; i++)
+								for (int i = 0; i < sidemem.Length; i++)
 								{
-									if(sidemem.ReadByte() != othermem.ReadByte())
+									if (sidemem.ReadByte() != othermem.ReadByte())
 									{
 										samesidedef = false;
 										break;
 									}
 								}
 							}
-							
-							if(samesidedef) break;
+
+							if (samesidedef) break;
 						}
 					}
 				}
@@ -2780,11 +2780,12 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					// Replace with stored sidedef
 					bool isfront = snsd.IsFront;
+					Linedef ld = snsd.Line;
 					snsd.Line.DetachSidedefP(snsd);
 					if(isfront)
-						snsd.Line.AttachFront(stored);
+						ld.AttachFront(stored);
 					else
-						snsd.Line.AttachBack(stored);
+						ld.AttachBack(stored);
 					
 					// Remove the sidedef
 					snsd.SetSector(null);
