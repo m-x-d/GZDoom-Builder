@@ -494,7 +494,7 @@ namespace CodeImp.DoomBuilder
 					General.MainWindow.DisplayStatus(oldstatus);
 					
 					// Check if it still doesnt fit
-					if(map.Sidedefs.Count > io.MaxSidedefs)
+					if(outputset.Sidedefs.Count > io.MaxSidedefs)
 					{
 						// Problem! Can't save the map like this!
 						General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
