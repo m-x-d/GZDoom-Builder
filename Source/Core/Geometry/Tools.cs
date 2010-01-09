@@ -56,10 +56,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			
 			public int offsetx;
 
-			// This is an absolute height in world space. Subtract the
-			// ceiling height to get the correct Y offset.
-			public int offsety;
-
 			// When this is true, the previous sidedef was on the left of
 			// this one and the texture X offset of this sidedef can be set
 			// directly. When this is false, the length of this sidedef
@@ -1551,6 +1547,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static void AutoAlignTextures(Sidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks)
 		{
 			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
+			float scalex = General.Map.Config.ScaledTextureOffsets ? texture.Scale.x : 1.0f;
+			float scaley = General.Map.Config.ScaledTextureOffsets ? texture.Scale.y : 1.0f;
 			
 			// Mark all sidedefs false (they will be marked true when the texture is aligned)
 			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
@@ -1559,7 +1557,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			SidedefAlignJob first = new SidedefAlignJob();
 			first.sidedef = start;
 			first.offsetx = start.OffsetX;
-			first.offsety = start.OffsetY + start.Sector.CeilHeight;
+
 			first.forward = true;
 			todo.Push(first);
 			
@@ -1572,39 +1570,45 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(j.forward)
 				{
 					Vertex v;
+					int forwardoffset;
+					int backwardoffset;
 					
 					// Apply alignment
-					if(alignx) j.sidedef.OffsetX = j.offsetx;
-					if(aligny) j.sidedef.OffsetY = j.offsety - j.sidedef.Sector.CeilHeight;
-					int forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length);
-					int backwardoffset = j.offsetx;
+					if (alignx) j.sidedef.OffsetX = j.offsetx;
+					if (aligny) j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + start.OffsetY;
+					forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex);
+					backwardoffset = j.offsetx;
+					
 					j.sidedef.Marked = true;
 					
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if(texture.IsImageLoaded)
+					if (texture.IsImageLoaded)
 					{
-						if(alignx) j.sidedef.OffsetX %= texture.Width;
-						if(aligny) j.sidedef.OffsetY %= texture.Height;
+						if (alignx) j.sidedef.OffsetX %= texture.Width;
+						if (aligny) j.sidedef.OffsetY %= texture.Height;
 					}
 					
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.offsety, texture.LongName);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.offsety, texture.LongName);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName);
 				}
 				else
 				{
 					Vertex v;
+					int forwardoffset;
+					int backwardoffset;
 
 					// Apply alignment
-					if(alignx) j.sidedef.OffsetX = j.offsetx - (int)Math.Round(j.sidedef.Line.Length);
-					if(aligny) j.sidedef.OffsetY = j.offsety - j.sidedef.Sector.CeilHeight;
-					int forwardoffset = j.offsetx;
-					int backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length);
+					if (alignx) j.sidedef.OffsetX = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
+					if (aligny) j.sidedef.OffsetY = (int)Math.Round((start.Sector.CeilHeight - j.sidedef.Sector.CeilHeight) / scaley) + start.OffsetY;
+					forwardoffset = j.offsetx;
+					backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex);
+					
 					j.sidedef.Marked = true;
 
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
@@ -1617,17 +1621,17 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.offsety, texture.LongName);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, texture.LongName);
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.offsety, texture.LongName);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, texture.LongName);
 				}
 			}
 		}
 
 		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
-		private static void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, int offsetx, int offsety, long texturelongname)
+		private static void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, int offsetx, long texturelongname)
 		{
 			foreach(Linedef ld in v.Linedefs)
 			{
@@ -1640,7 +1644,6 @@ namespace CodeImp.DoomBuilder.Geometry
 						SidedefAlignJob nj = new SidedefAlignJob();
 						nj.forward = forward;
 						nj.offsetx = offsetx;
-						nj.offsety = offsety;
 						nj.sidedef = side1;
 						stack.Push(nj);
 					}
@@ -1652,7 +1655,6 @@ namespace CodeImp.DoomBuilder.Geometry
 						SidedefAlignJob nj = new SidedefAlignJob();
 						nj.forward = forward;
 						nj.offsetx = offsetx;
-						nj.offsety = offsety;
 						nj.sidedef = side2;
 						stack.Push(nj);
 					}
