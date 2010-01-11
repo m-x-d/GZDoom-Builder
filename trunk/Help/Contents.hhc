@@ -184,6 +184,18 @@
 				<param name="Name" value="About Game Configurations">
 				<param name="Local" value="gameconfigs.html">
 				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Basic Settings">
+				<param name="Local" value="gc_basicsettings.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Map Format Settings">
+				<param name="Local" value="gc_formatsettings.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Resource Settings">
+				<param name="Local" value="gc_resourcesettings.html">
+				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Scripting Configurations">
