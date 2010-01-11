@@ -43,7 +43,7 @@ pre
 	background: #f4f4f4;
 	color: #515151;
 	width: 400px;
-	margin: 0px 0px 10px 20px;
+	margin: 10px 0px 10px 20px;
 	font: 100% Courier New,Courier,sans-serif;
 	text-align: left;
 	padding: 5px 5px 5px 10px;
@@ -140,3 +140,10 @@ a img
 	color: #8C8C8C;
 	text-align: center;
 }
+
+.fat
+{
+	color: #515151;
+	font-size: 1.1em;
+}
+
