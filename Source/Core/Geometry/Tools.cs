@@ -1695,7 +1695,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static void RenumberMarkedTags()
 		{
 			Dictionary<int, int> tagsmap = new Dictionary<int, int>();
-			SlimDX.Vector2.CatmullRom(
+			
 			// Collect the tag numbers used in the marked geometry
 			General.Map.Map.ForAllTags(CollectTagNumbersHandler, true, tagsmap);
 			
