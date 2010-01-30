@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
+using SlimDX;
 using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Map;
@@ -1694,7 +1695,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static void RenumberMarkedTags()
 		{
 			Dictionary<int, int> tagsmap = new Dictionary<int, int>();
-			
+			SlimDX.Vector2.CatmullRom(
 			// Collect the tag numbers used in the marked geometry
 			General.Map.Map.ForAllTags(CollectTagNumbersHandler, true, tagsmap);
 			
@@ -1750,6 +1751,28 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 		}
 		
+		#endregion
+		
+		#region ================== Misc Exported Functions
+
+		/// <summary>
+		/// This performs a Hermite spline interpolation and returns the result position.
+		/// Where u (0 - 1) is the wanted position on the curve between p1 (using tangent t1) and p2 (using tangent t2).
+		/// </summary>
+		public static Vector2D HermiteSpline(Vector2D p1, Vector2D t1, Vector2D p2, Vector2D t2, float u)
+		{
+			return D3DDevice.V2D(Vector2.Hermite(D3DDevice.V2(p1), D3DDevice.V2(t1), D3DDevice.V2(p2), D3DDevice.V2(t2), u));
+		}
+
+		/// <summary>
+		/// This performs a Hermite spline interpolation and returns the result position.
+		/// Where u (0 - 1) is the wanted position on the curve between p1 (using tangent t1) and p2 (using tangent t2).
+		/// </summary>
+		public static Vector3D HermiteSpline(Vector3D p1, Vector3D t1, Vector3D p2, Vector3D t2, float u)
+		{
+			return D3DDevice.V3D(Vector3.Hermite(D3DDevice.V3(p1), D3DDevice.V3(t1), D3DDevice.V3(p2), D3DDevice.V3(t2), u));
+		}
+
 		#endregion
 	}
 }
