@@ -573,6 +573,18 @@ namespace CodeImp.DoomBuilder.Rendering
 			return new Vector3D(v3.X, v3.Y, v3.Z);
 		}
 
+		// This makes a Vector2 from Vector2D
+		public static Vector2 V2(Vector2D v2d)
+		{
+			return new Vector2(v2d.x, v2d.y);
+		}
+
+		// This makes a Vector2D from Vector2
+		public static Vector2D V2D(Vector2 v2)
+		{
+			return new Vector2D(v2.X, v2.Y);
+		}
+
 		#endregion
 	}
 }
