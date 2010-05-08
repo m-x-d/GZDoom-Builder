@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected int width;
 		protected int height;
 		protected Vector2D scale;
+		protected bool worldpanning;
 		protected bool usecolorcorrection;
 		
 		// Loading
@@ -96,6 +97,7 @@ namespace CodeImp.DoomBuilder.Data
 		public float ScaledWidth { get { return width * scale.x; } }
 		public float ScaledHeight { get { return height * scale.y; } }
 		public Vector2D Scale { get { return scale; } }
+		public bool WorldPanning { get { return worldpanning; } }
 		
 		#endregion
 

@@ -42,13 +42,14 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public HighResImage(string name, int width, int height, float scalex, float scaley)
+		public HighResImage(string name, int width, int height, float scalex, float scaley, bool worldpanning)
 		{
 			// Initialize
 			this.width = width;
 			this.height = height;
 			this.scale.x = scalex;
 			this.scale.y = scaley;
+			this.worldpanning = worldpanning;
 			this.patches = new List<TexturePatch>();
 			SetName(name);
 			

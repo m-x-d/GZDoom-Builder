@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(yscale == 0.0f) scaley = defaultscale; else scaley = 1f / yscale;
 
 			// Make texture
-			HighResImage tex = new HighResImage(name, width, height, scalex, scaley);
+			HighResImage tex = new HighResImage(name, width, height, scalex, scaley, worldpanning);
 
 			// Add patches
 			foreach(PatchStructure p in patches)
