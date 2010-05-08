@@ -1548,8 +1548,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static void AutoAlignTextures(Sidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks)
 		{
 			Stack<SidedefAlignJob> todo = new Stack<SidedefAlignJob>(50);
-			float scalex = General.Map.Config.ScaledTextureOffsets ? texture.Scale.x : 1.0f;
-			float scaley = General.Map.Config.ScaledTextureOffsets ? texture.Scale.y : 1.0f;
+			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
+			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
 			
 			// Mark all sidedefs false (they will be marked true when the texture is aligned)
 			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);

@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						t1.y = cliptop;
 						t2.y = tsz.y - clipbottom;
 
-						if (General.Map.Config.ScaledTextureOffsets)
+						if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 						{
 							t1.x = Sidedef.OffsetX * base.Texture.Scale.x;
 						}

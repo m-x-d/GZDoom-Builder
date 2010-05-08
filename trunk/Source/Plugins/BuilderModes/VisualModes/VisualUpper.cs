@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				t2.y = t1.y + geoheight;
 
 				// Apply texture offset
-				if (General.Map.Config.ScaledTextureOffsets)
+				if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 				{
 					t1 += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
 					t2 += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
