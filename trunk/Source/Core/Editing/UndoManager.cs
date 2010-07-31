@@ -887,14 +887,14 @@ namespace CodeImp.DoomBuilder.Editing
 			ss.wInt(v.Index);
 			EndRecordData();
 
-			LogRecordInfo("REC: Adding vertex " + v.Index + " at " + v.Position);
+			//LogRecordInfo("REC: Adding vertex " + v.Index + " at " + v.Position);
 			propsrecorded = null;
 		}
 
 		internal void PlayAddVertex(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
-			LogRecordInfo("PLY: Removing vertex " + index);
+			//LogRecordInfo("PLY: Removing vertex " + index);
 			Vertex v = General.Map.Map.GetVertexByIndex(index);
 			foreach(Linedef l in v.Linedefs) l.Marked = true;
 			v.Dispose();
@@ -909,7 +909,7 @@ namespace CodeImp.DoomBuilder.Editing
 			v.ReadWrite(ss);
 			EndRecordData();
 
-			LogRecordInfo("REC: Removing vertex " + v.Index + " (at " + v.Position + ")");
+			//LogRecordInfo("REC: Removing vertex " + v.Index + " (at " + v.Position + ")");
 			propsrecorded = null;
 		}
 
@@ -917,7 +917,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			int index; ds.rInt(out index);
 			Vector2D pos; ds.rVector2D(out pos);
-			LogRecordInfo("PLY: Adding vertex " + index + " at " + pos);
+			//LogRecordInfo("PLY: Adding vertex " + index + " at " + pos);
 			Vertex v = General.Map.Map.CreateVertex(index, pos);
 			v.ReadWrite(ds);
 			v.Marked = true;
@@ -951,14 +951,14 @@ namespace CodeImp.DoomBuilder.Editing
 			ss.wInt(l.Index);
 			EndRecordData();
 
-			LogRecordInfo("REC: Adding linedef " + l.Index + " from " + ((l.Start != null) ? l.Start.Index : -1) + " to " + ((l.End != null) ? l.End.Index : -1));
+			//LogRecordInfo("REC: Adding linedef " + l.Index + " from " + ((l.Start != null) ? l.Start.Index : -1) + " to " + ((l.End != null) ? l.End.Index : -1));
 			propsrecorded = null;
 		}
 
 		internal void PlayAddLinedef(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
-			LogRecordInfo("PLY: Removing linedef " + index);
+			//LogRecordInfo("PLY: Removing linedef " + index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
 			if(l.Front != null) l.Front.Marked = true;
 			if(l.Back != null) l.Back.Marked = true;
@@ -975,7 +975,7 @@ namespace CodeImp.DoomBuilder.Editing
 			l.ReadWrite(ss);
 			EndRecordData();
 
-			LogRecordInfo("REC: Removing linedef " + l.Index + " (from " + ((l.Start != null) ? l.Start.Index : -1) + " to " + ((l.End != null) ? l.End.Index : -1) + ")");
+			//LogRecordInfo("REC: Removing linedef " + l.Index + " (from " + ((l.Start != null) ? l.Start.Index : -1) + " to " + ((l.End != null) ? l.End.Index : -1) + ")");
 			propsrecorded = null;
 		}
 
@@ -984,7 +984,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			int sindex; ds.rInt(out sindex);
 			int eindex; ds.rInt(out eindex);
-			LogRecordInfo("PLY: Adding linedef " + index + " from " + sindex + " to " + eindex);
+			//LogRecordInfo("PLY: Adding linedef " + index + " from " + sindex + " to " + eindex);
 			Vertex vs = General.Map.Map.GetVertexByIndex(sindex);
 			Vertex ve = General.Map.Map.GetVertexByIndex(eindex);
 			Linedef l = General.Map.Map.CreateLinedef(index, vs, ve);
@@ -1020,7 +1020,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(l.Start != null) ss.wInt(l.Start.Index); else ss.wInt(-1);
 			EndRecordData();
 
-			LogRecordInfo("REC: Setting linedef " + l.Index + " start vertex " + ((l.Start != null) ? l.Start.Index : -1));
+			//LogRecordInfo("REC: Setting linedef " + l.Index + " start vertex " + ((l.Start != null) ? l.Start.Index : -1));
 			propsrecorded = null;
 		}
 
@@ -1029,7 +1029,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
 			int vindex; ds.rInt(out vindex);
-			LogRecordInfo("PLY: Setting linedef " + index + " start vertex " + vindex);
+			//LogRecordInfo("PLY: Setting linedef " + index + " start vertex " + vindex);
 			Vertex v = (vindex >= 0) ? General.Map.Map.GetVertexByIndex(vindex) : null;
 			l.SetStartVertex(v);
 			l.Marked = true;
@@ -1044,7 +1044,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(l.End != null) ss.wInt(l.End.Index); else ss.wInt(-1);
 			EndRecordData();
 
-			LogRecordInfo("REC: Setting linedef " + l.Index + " end vertex " + ((l.End != null) ? l.End.Index : -1));
+			//LogRecordInfo("REC: Setting linedef " + l.Index + " end vertex " + ((l.End != null) ? l.End.Index : -1));
 			propsrecorded = null;
 		}
 
@@ -1053,7 +1053,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
 			int vindex; ds.rInt(out vindex);
-			LogRecordInfo("PLY: Setting linedef " + index + " end vertex " + vindex);
+			//LogRecordInfo("PLY: Setting linedef " + index + " end vertex " + vindex);
 			Vertex v = (vindex >= 0) ? General.Map.Map.GetVertexByIndex(vindex) : null;
 			l.SetEndVertex(v);
 			l.Marked = true;
@@ -1068,7 +1068,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(l.Front != null) ss.wInt(l.Front.Index); else ss.wInt(-1);
 			EndRecordData();
 
-			LogRecordInfo("REC: Setting linedef " + l.Index + " front sidedef " + ((l.Front != null) ? l.Front.Index : -1));
+			//LogRecordInfo("REC: Setting linedef " + l.Index + " front sidedef " + ((l.Front != null) ? l.Front.Index : -1));
 			propsrecorded = null;
 		}
 
@@ -1077,7 +1077,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
 			int sindex; ds.rInt(out sindex);
-			LogRecordInfo("PLY: Setting linedef " + index + " front sidedef " + sindex);
+			//LogRecordInfo("PLY: Setting linedef " + index + " front sidedef " + sindex);
 			Sidedef sd = (sindex >= 0) ? General.Map.Map.GetSidedefByIndex(sindex) : null;
 			l.AttachFront(sd);
 			l.Marked = true;
@@ -1092,7 +1092,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(l.Back != null) ss.wInt(l.Back.Index); else ss.wInt(-1);
 			EndRecordData();
 
-			LogRecordInfo("REC: Setting linedef " + l.Index + " back sidedef " + ((l.Back != null) ? l.Back.Index : -1));
+			//LogRecordInfo("REC: Setting linedef " + l.Index + " back sidedef " + ((l.Back != null) ? l.Back.Index : -1));
 			propsrecorded = null;
 		}
 
@@ -1101,7 +1101,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
 			int sindex; ds.rInt(out sindex);
-			LogRecordInfo("PLY: Setting linedef " + index + " back sidedef " + sindex);
+			//LogRecordInfo("PLY: Setting linedef " + index + " back sidedef " + sindex);
 			Sidedef sd = (sindex >= 0) ? General.Map.Map.GetSidedefByIndex(sindex) : null;
 			l.AttachBack(sd);
 			l.Marked = true;
@@ -1115,14 +1115,14 @@ namespace CodeImp.DoomBuilder.Editing
 			ss.wInt(s.Index);
 			EndRecordData();
 
-			LogRecordInfo("REC: Adding sidedef " + s.Index + " to linedef " + s.Line.Index + (s.IsFront ? " front" : " back") + " and sector " + s.Sector.Index);
+			//LogRecordInfo("REC: Adding sidedef " + s.Index + " to linedef " + s.Line.Index + (s.IsFront ? " front" : " back") + " and sector " + s.Sector.Index);
 			propsrecorded = null;
 		}
 
 		internal void PlayAddSidedef(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
-			LogRecordInfo("PLY: Removing sidedef " + index);
+			//LogRecordInfo("PLY: Removing sidedef " + index);
 			Sidedef s = General.Map.Map.GetSidedefByIndex(index);
 			if(s.Sector != null) s.Sector.Marked = true;
 			s.Dispose();
@@ -1139,7 +1139,7 @@ namespace CodeImp.DoomBuilder.Editing
 			s.ReadWrite(ss);
 			EndRecordData();
 
-			LogRecordInfo("REC: Removing sidedef " + s.Index + " (from linedef " + s.Line.Index + (s.IsFront ? " front" : " back") + " and sector " + s.Sector.Index + ")");
+			//LogRecordInfo("REC: Removing sidedef " + s.Index + " (from linedef " + s.Line.Index + (s.IsFront ? " front" : " back") + " and sector " + s.Sector.Index + ")");
 			propsrecorded = null;
 		}
 
@@ -1149,7 +1149,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int dindex; ds.rInt(out dindex);
 			bool front; ds.rBool(out front);
 			int sindex; ds.rInt(out sindex);
-			LogRecordInfo("PLY: Adding sidedef " + index + " to linedef " + dindex + (front ? " front" : " back") + " and sector " + sindex);
+			//LogRecordInfo("PLY: Adding sidedef " + index + " to linedef " + dindex + (front ? " front" : " back") + " and sector " + sindex);
 			Linedef l = General.Map.Map.GetLinedefByIndex(dindex);
 			Sector s = General.Map.Map.GetSectorByIndex(sindex);
 			Sidedef sd = General.Map.Map.CreateSidedef(index, l, front, s);
@@ -1185,7 +1185,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(s.Sector != null) ss.wInt(s.Sector.Index); else ss.wInt(-1);
 			EndRecordData();
 
-			LogRecordInfo("REC: Setting sidedef " + s.Index + " sector " + ((s.Sector != null) ? s.Sector.Index : -1));
+			//LogRecordInfo("REC: Setting sidedef " + s.Index + " sector " + ((s.Sector != null) ? s.Sector.Index : -1));
 			propsrecorded = null;
 		}
 
@@ -1194,7 +1194,7 @@ namespace CodeImp.DoomBuilder.Editing
 			int index; ds.rInt(out index);
 			Sidedef sd = General.Map.Map.GetSidedefByIndex(index);
 			int sindex; ds.rInt(out sindex);
-			LogRecordInfo("PLY: Setting sidedef " + index + " sector " + sindex);
+			//LogRecordInfo("PLY: Setting sidedef " + index + " sector " + sindex);
 			Sector sc = (sindex >= 0) ? General.Map.Map.GetSectorByIndex(sindex) : null;
 			sd.SetSector(sc);
 			sd.Marked = true;
@@ -1208,14 +1208,14 @@ namespace CodeImp.DoomBuilder.Editing
 			ss.wInt(s.Index);
 			EndRecordData();
 
-			LogRecordInfo("REC: Adding sector " + s.Index);
+			//LogRecordInfo("REC: Adding sector " + s.Index);
 			propsrecorded = null;
 		}
 
 		internal void PlayAddSector(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
-			LogRecordInfo("PLY: Removing sector " + index);
+			//LogRecordInfo("PLY: Removing sector " + index);
 			Sector s = General.Map.Map.GetSectorByIndex(index);
 			s.Dispose();
 			geometrychanged = true;
@@ -1228,14 +1228,14 @@ namespace CodeImp.DoomBuilder.Editing
 			s.ReadWrite(ss);
 			EndRecordData();
 
-			LogRecordInfo("REC: Removing sector " + s.Index);
+			//LogRecordInfo("REC: Removing sector " + s.Index);
 			propsrecorded = null;
 		}
 
 		internal void PlayRemSector(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
-			LogRecordInfo("PLY: Adding sector " + index);
+			//LogRecordInfo("PLY: Adding sector " + index);
 			Sector s = General.Map.Map.CreateSector(index);
 			s.ReadWrite(ds);
 			s.Marked = true;
@@ -1268,14 +1268,14 @@ namespace CodeImp.DoomBuilder.Editing
 			ss.wInt(t.Index);
 			EndRecordData();
 
-			LogRecordInfo("REC: Adding thing " + t.Index);
+			//LogRecordInfo("REC: Adding thing " + t.Index);
 			propsrecorded = null;
 		}
 
 		internal void PlayAddThing(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
-			LogRecordInfo("PLY: Removing thing " + index);
+			//LogRecordInfo("PLY: Removing thing " + index);
 			Thing t = General.Map.Map.GetThingByIndex(index);
 			t.Dispose();
 			populationchanged = true;
@@ -1288,14 +1288,14 @@ namespace CodeImp.DoomBuilder.Editing
 			t.ReadWrite(ss);
 			EndRecordData();
 
-			LogRecordInfo("REC: Removing thing " + t.Index);
+			//LogRecordInfo("REC: Removing thing " + t.Index);
 			propsrecorded = null;
 		}
 
 		internal void PlayRemThing(DeserializerStream ds)
 		{
 			int index; ds.rInt(out index);
-			LogRecordInfo("PLY: Adding thing " + index);
+			//LogRecordInfo("PLY: Adding thing " + index);
 			Thing t = General.Map.Map.CreateThing(index);
 			t.ReadWrite(ds);
 			t.Marked = true;
