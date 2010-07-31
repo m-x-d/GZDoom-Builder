@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool arrow;
 		private float radius;
 		private float height;
+		private float spritescale;
 		private bool hangs;
 		private int blocking;
 		private int errorcheck;
@@ -87,6 +88,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsKnown { get { return isknown; } }
 		public bool IsNull { get { return (index == 0); } }
 		public bool AbsoluteZ { get { return absolutez; } }
+		public float SpriteScale { get { return spritescale; } }
 		
 		#endregion
 
@@ -112,6 +114,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = false;
 			this.absolutez = false;
+			this.spritescale = 1.0f;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -127,6 +130,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = true;
+			this.spritescale = 1.0f;
 			
 			// Read properties
 			this.title = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".title", "<" + key + ">");
@@ -168,6 +172,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.title = title;
 			this.isknown = true;
+			this.spritescale = 1.0f;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			
@@ -204,6 +209,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.title = "";
 			this.isknown = true;
+			this.spritescale = 1.0f;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			
@@ -254,6 +260,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Size
 			if(actor.HasPropertyWithValue("radius")) radius = actor.GetPropertyValueInt("radius", 0);
 			if(actor.HasPropertyWithValue("height")) height = actor.GetPropertyValueInt("height", 0);
+
+			// Scale
+			if(actor.HasPropertyWithValue("scale")) spritescale = actor.GetPropertyValueFloat("scale", 0);
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;

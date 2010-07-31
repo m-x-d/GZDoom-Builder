@@ -122,6 +122,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offsety = (sprite as SpriteImage).OffsetY - height;
 					}
 
+					// Scale by thing type/actor scale
+					// We do this after the offset x/y determination above, because that is entirely in sprite pixels space
+					radius *= info.SpriteScale;
+					height *= info.SpriteScale;
+					offsetx *= info.SpriteScale;
+					offsety *= info.SpriteScale;
+
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
 					verts[0] = new WorldVertex(-radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor.ToInt(), 0.0f, 1.0f);
