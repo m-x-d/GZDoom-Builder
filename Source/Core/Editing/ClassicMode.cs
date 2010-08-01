@@ -184,16 +184,20 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("zoomin", BaseAction = true)]
 		public virtual void ZoomIn()
 		{
+			float z = 1.0f + General.Settings.ZoomFactor * 0.1f;
+
 			// Zoom
-			ZoomBy(1.3f);
+			ZoomBy(z);
 		}
 
 		// This zooms out
 		[BeginAction("zoomout", BaseAction = true)]
 		public virtual void ZoomOut()
 		{
+			float z = 1.0f + General.Settings.ZoomFactor * 0.1f;
+
 			// Zoom
-			ZoomBy(0.7f);
+			ZoomBy(1.0f / z);
 		}
 
 		// This scrolls anywhere

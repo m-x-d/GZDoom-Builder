@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.Windows
 			scriptautoindent.Checked = General.Settings.ScriptAutoIndent;
 			previewsize.Value = General.Settings.PreviewImageSize;
 			autoscrollspeed.Value = General.Settings.AutoScrollSpeed;
+			zoomfactor.Value = General.Settings.ZoomFactor;
 			animatevisualselection.Checked = General.Settings.AnimateVisualSelection;
 			dockersposition.SelectedIndex = General.Settings.DockersPosition;
 			collapsedockers.Checked = General.Settings.CollapseDockers;
@@ -191,6 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptAutoIndent = scriptautoindent.Checked;
 			General.Settings.PreviewImageSize = previewsize.Value;
 			General.Settings.AutoScrollSpeed = autoscrollspeed.Value;
+			General.Settings.ZoomFactor = zoomfactor.Value;
 			General.Settings.AnimateVisualSelection = animatevisualselection.Checked;
 			General.Settings.DockersPosition = dockersposition.SelectedIndex;
 			General.Settings.CollapseDockers = collapsedockers.Checked;
@@ -331,7 +333,12 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 				autoscrollspeedlabel.Text = autoscrollspeed.Value.ToString() + "x";
 		}
-		
+
+		private void zoomfactor_ValueChanged(object sender, EventArgs e)
+		{
+			zoomfactorlabel.Text = (zoomfactor.Value * 10).ToString() + "%";
+		}
+
 		// This updates the script font preview label
 		private void UpdateScriptFontPreview()
 		{
