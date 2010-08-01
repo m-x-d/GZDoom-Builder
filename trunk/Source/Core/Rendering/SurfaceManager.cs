@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					// Make the new buffer!
 					VertexBuffer b = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * set.Value.buffersizes[i],
-													Usage.Dynamic, VertexFormat.None, Pool.Default);
+													Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 
 					// Start refilling the buffer with sector geometry
 					int vertexoffset = 0;
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						// Make the new buffer!
 						vb = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffernumvertices,
-														Usage.Dynamic, VertexFormat.None, Pool.Default);
+												Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 
 						// Add it.
 						set.buffers.Add(vb);
@@ -334,7 +334,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						// Make the new buffer and lock it
 						vb = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffernumvertices,
-														Usage.Dynamic, VertexFormat.None, Pool.Default);
+												Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 						bstream = vb.Lock(0, FlatVertex.Stride * theseentries.Count * verticesperentry, LockFlags.Discard);
 					}
 					
@@ -425,6 +425,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					VertexBuffer vb = set.buffers[entry.bufferindex];
 					if(vb.Tag == null)
 					{
+						// Note: DirectX warns me that I am not using LockFlags.Discard or LockFlags.NoOverwrite here,
+						// but we don't care (we don't have much of a choice since we want to update our data)
 						bstream = vb.Lock(0, set.buffersizes[entry.bufferindex] * FlatVertex.Stride, LockFlags.None);
 						vb.Tag = bstream;
 						lockedbuffers.Add(vb);
