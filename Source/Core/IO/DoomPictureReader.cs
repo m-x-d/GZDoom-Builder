@@ -186,7 +186,7 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			BinaryReader reader = new BinaryReader(stream);
 			PixelColorBlock pixeldata = null;
-			int y, count, p;
+			int y, read_y, count, p;
 			int[] columns;
 			int dataoffset;
 			
@@ -230,9 +230,10 @@ namespace CodeImp.DoomBuilder.IO
 				
 				// Read first post start
 				y = reader.ReadByte();
-
+				read_y = y;
+				
 				// Continue while not end of column reached
-				while(y < 255)
+				while(read_y < 255)
 				{
 					// Read number of pixels in post
 					count = reader.ReadByte();
@@ -254,7 +255,8 @@ namespace CodeImp.DoomBuilder.IO
 					stream.Seek(1, SeekOrigin.Current);
 
 					// Read next post start
-					y = reader.ReadByte();
+					read_y = reader.ReadByte();
+					if(read_y < y) y += read_y; else y = read_y;
 				}
 			}
 
