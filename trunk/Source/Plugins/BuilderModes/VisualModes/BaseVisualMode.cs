@@ -602,7 +602,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// No sectors or geometry changed. So we only have
 					// to update things when they have changed.
 					foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
-						if(vt.Key.Marked) vt.Value.Update();
+						if(vt.Key.Marked) (vt.Value as BaseVisualThing).Rebuild();
 				}
 				else
 				{
@@ -622,7 +622,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				visiblethings.Clear();
 				
 				// Make new blockmap
-				if(sectorsmarked)
+				if(sectorsmarked || General.Map.UndoRedo.PopulationChanged)
 					FillBlockMap();
 				
 				// Visibility culling (this re-creates the needed resources)
