@@ -374,6 +374,8 @@ namespace CodeImp.DoomBuilder.Map
 				Triangulate();
 				
 				CreateSurfaces();
+
+				General.Map.CRenderer2D.Surfaces.UnlockBuffers();
 			}
 		}
 
