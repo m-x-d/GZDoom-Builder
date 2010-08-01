@@ -144,6 +144,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".error", cat.ErrorCheck);
 			this.fixedsize = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedsize", cat.FixedSize);
 			this.absolutez = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".absolutez", cat.AbsoluteZ);
+			this.spritescale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -187,7 +188,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
 			this.absolutez = cat.AbsoluteZ;
-
+			this.spritescale = cat.SpriteScale;
+			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
 			
@@ -224,7 +226,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
 			this.absolutez = cat.AbsoluteZ;
-
+			this.spritescale = cat.SpriteScale;
+			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
 			
