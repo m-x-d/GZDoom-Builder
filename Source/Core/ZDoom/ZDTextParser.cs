@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							// Skip entire line
 							char c4 = ' ';
 							while((c4 != '\n') && (datastream.Position < datastream.Length)) { c4 = (char)datareader.ReadByte(); }
-							c = ' ';
+							c = c4;
 						}
 						else
 						{

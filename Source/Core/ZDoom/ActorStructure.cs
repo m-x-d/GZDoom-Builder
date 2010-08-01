@@ -142,6 +142,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 						// break out of this parse loop
 						break;
 					}
+					else if(token == "-")
+					{
+						// This could be a negative doomednum (but our parser sees the - as separate token)
+						// So read whatever is after this token and ignore it (negative doomednum indicates no doomednum)
+						parser.ReadToken();
+					}
 					else
 					{
 						// Check if numeric
