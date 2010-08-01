@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int scripttabwidth;
 		private int previewimagesize;
 		private int autoscrollspeed;
+		private int zoomfactor;
 		private bool showerrorswindow;
 		private bool animatevisualselection;
 		private int previousversion;
@@ -124,6 +125,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ScriptOnTop { get { return scriptontop; } internal set { scriptontop = value; } }
 		public int PreviewImageSize { get { return previewimagesize; } internal set { previewimagesize = value; } }
 		public int AutoScrollSpeed { get { return autoscrollspeed; } internal set { autoscrollspeed = value; } }
+		public int ZoomFactor { get { return zoomfactor; } internal set { zoomfactor = value; } }
 		public bool ShowErrorsWindow { get { return showerrorswindow; } internal set { showerrorswindow = value; } }
 		public bool AnimateVisualSelection { get { return animatevisualselection; } internal set { animatevisualselection = value; } }
 		public int ScriptTabWidth { get { return scripttabwidth; } internal set { scripttabwidth = value; } }
@@ -194,6 +196,7 @@ namespace CodeImp.DoomBuilder.Config
 				scripttabwidth = cfg.ReadSetting("scripttabwidth", 4);
 				previewimagesize = cfg.ReadSetting("previewimagesize", 1);
 				autoscrollspeed = cfg.ReadSetting("autoscrollspeed", 0);
+				zoomfactor = cfg.ReadSetting("zoomfactor", 3);
 				showerrorswindow = cfg.ReadSetting("showerrorswindow", true);
 				animatevisualselection = cfg.ReadSetting("animatevisualselection", true);
 				previousversion = cfg.ReadSetting("currentversion", 0);
@@ -244,6 +247,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("scriptautoindent", scriptautoindent);
 			cfg.WriteSetting("previewimagesize", previewimagesize);
 			cfg.WriteSetting("autoscrollspeed", autoscrollspeed);
+			cfg.WriteSetting("zoomfactor", zoomfactor);
 			cfg.WriteSetting("showerrorswindow", showerrorswindow);
 			cfg.WriteSetting("animatevisualselection", animatevisualselection);
 			cfg.WriteSetting("currentversion", v.Major * 1000000 + v.Revision);
