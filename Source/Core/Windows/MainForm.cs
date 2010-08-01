@@ -2236,6 +2236,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show linedef info
 		public void ShowLinedefInfo(Linedef l)
 		{
+			if(l.IsDisposed)
+			{
+				HideInfo();
+				return;
+			}
+			
 			lastinfoobject = l;
 			modename.Visible = false;
 			if(vertexinfo.Visible) vertexinfo.Hide();
@@ -2260,6 +2266,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show vertex info
 		public void ShowVertexInfo(Vertex v)
 		{
+			if(v.IsDisposed)
+			{
+				HideInfo();
+				return;
+			}
+
 			lastinfoobject = v;
 			modename.Visible = false;
 			if(linedefinfo.Visible) linedefinfo.Hide();
@@ -2275,6 +2287,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show sector info
 		public void ShowSectorInfo(Sector s)
 		{
+			if(s.IsDisposed)
+			{
+				HideInfo();
+				return;
+			}
+
 			lastinfoobject = s;
 			modename.Visible = false;
 			if(linedefinfo.Visible) linedefinfo.Hide();
@@ -2296,6 +2314,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show thing info
 		public void ShowThingInfo(Thing t)
 		{
+			if(t.IsDisposed)
+			{
+				HideInfo();
+				return;
+			}
+
 			lastinfoobject = t;
 			modename.Visible = false;
 			if(linedefinfo.Visible) linedefinfo.Hide();
