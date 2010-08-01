@@ -1075,7 +1075,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Store vertices in buffer
 				if(thingsvertices != null)
 				{
-					stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, 12 * FlatVertex.Stride, LockFlags.NoOverwrite | LockFlags.NoSystemLock);
+					stream = thingsvertices.Lock(numthings * 12 * FlatVertex.Stride, 12 * FlatVertex.Stride, LockFlags.NoSystemLock);
 					stream.WriteRange<FlatVertex>(verts);
 					thingsvertices.Unlock();
 					stream.Dispose();
