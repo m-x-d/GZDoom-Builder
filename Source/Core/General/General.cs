@@ -1089,6 +1089,9 @@ namespace CodeImp.DoomBuilder
 		internal static bool SaveMap()
 		{
 			bool result = false;
+
+			if(map == null)
+				return false;
 			
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
@@ -1145,7 +1148,10 @@ namespace CodeImp.DoomBuilder
 		{
 			SaveFileDialog savefile;
 			bool result = false;
-			
+
+			if(map == null)
+				return false;
+
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
 
@@ -1204,6 +1210,9 @@ namespace CodeImp.DoomBuilder
 		{
 			SaveFileDialog savefile;
 			bool result = false;
+
+			if(map == null)
+				return false;
 
 			// Cancel volatile mode, if any
 			General.Editing.DisengageVolatileMode();
