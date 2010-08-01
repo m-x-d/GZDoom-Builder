@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Controls
 				
 				// We have focus when we need the keyboard for input
 				// Otherwise we don't want the focus and the docker may collapse
-				return (ac is TextBox) || (ac is RichTextBox) || (ac is NumericUpDown);
+				return (ac is TextBox) || (ac is RichTextBox) || (ac is NumericUpDown) || (ac is ComboBox);
 			}
 		}
 		
