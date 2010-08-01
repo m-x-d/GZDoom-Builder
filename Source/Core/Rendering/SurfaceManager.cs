@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					// Make the new buffer!
 					VertexBuffer b = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * set.Value.buffersizes[i],
-													Usage.None, VertexFormat.None, Pool.Default);
+													Usage.Dynamic, VertexFormat.None, Pool.Default);
 
 					// Start refilling the buffer with sector geometry
 					int vertexoffset = 0;
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						// Make the new buffer!
 						vb = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffernumvertices,
-														Usage.None, VertexFormat.None, Pool.Default);
+														Usage.Dynamic, VertexFormat.None, Pool.Default);
 
 						// Add it.
 						set.buffers.Add(vb);
@@ -334,7 +334,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						// Make the new buffer and lock it
 						vb = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * buffernumvertices,
-														Usage.None, VertexFormat.None, Pool.Default);
+														Usage.Dynamic, VertexFormat.None, Pool.Default);
 						bstream = vb.Lock(0, FlatVertex.Stride * theseentries.Count * verticesperentry, LockFlags.Discard);
 					}
 					
