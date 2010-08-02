@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.Map;
+using System.Drawing;
 
 #endregion
 
@@ -57,7 +58,6 @@ namespace CodeImp.DoomBuilder.Config
 		private bool arrow;
 		private float radius;
 		private float height;
-		private float spritescale;
 		private bool hangs;
 		private int blocking;
 		private int errorcheck;
@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.Config
 		private ArgumentInfo[] args;
 		private bool isknown;
 		private bool absolutez;
+		private SizeF spritescale;
 		
 		#endregion
 
@@ -88,7 +89,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsKnown { get { return isknown; } }
 		public bool IsNull { get { return (index == 0); } }
 		public bool AbsoluteZ { get { return absolutez; } }
-		public float SpriteScale { get { return spritescale; } }
+		public SizeF SpriteScale { get { return spritescale; } }
 		
 		#endregion
 
@@ -109,12 +110,12 @@ namespace CodeImp.DoomBuilder.Config
 			this.hangs = false;
 			this.blocking = 0;
 			this.errorcheck = 0;
+			this.spritescale = new SizeF(1.0f, 1.0f);
 			this.fixedsize = false;
 			this.spritelongname = long.MaxValue;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = false;
 			this.absolutez = false;
-			this.spritescale = 1.0f;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -130,7 +131,6 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = true;
-			this.spritescale = 1.0f;
 			
 			// Read properties
 			this.title = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".title", "<" + key + ">");
@@ -144,7 +144,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".error", cat.ErrorCheck);
 			this.fixedsize = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedsize", cat.FixedSize);
 			this.absolutez = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".absolutez", cat.AbsoluteZ);
-			this.spritescale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
+			float sscale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
+			this.spritescale = new SizeF(sscale, sscale);
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -173,7 +174,6 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.title = title;
 			this.isknown = true;
-			this.spritescale = 1.0f;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			
@@ -188,8 +188,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
 			this.absolutez = cat.AbsoluteZ;
-			this.spritescale = cat.SpriteScale;
-			
+			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
+
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
 			
@@ -211,7 +211,6 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.title = "";
 			this.isknown = true;
-			this.spritescale = 1.0f;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			
@@ -226,8 +225,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.errorcheck = cat.ErrorCheck;
 			this.fixedsize = cat.FixedSize;
 			this.absolutez = cat.AbsoluteZ;
-			this.spritescale = cat.SpriteScale;
-			
+			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
+
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
 			
@@ -260,15 +259,29 @@ namespace CodeImp.DoomBuilder.Config
 			else
 				this.spritelongname = long.MaxValue;
 			
+			// Set sprite scale
+			if(actor.HasPropertyWithValue("scale"))
+			{
+				float scale = actor.GetPropertyValueFloat("scale", 0);
+				this.spritescale = new SizeF(scale, scale);
+			}
+			else
+			{
+				if(actor.HasPropertyWithValue("xscale"))
+					this.spritescale.Width = actor.GetPropertyValueFloat("xscale", 0);
+				
+				if(actor.HasPropertyWithValue("yscale"))
+					this.spritescale.Height = actor.GetPropertyValueFloat("yscale", 0);
+			}
+			
 			// Size
 			if(actor.HasPropertyWithValue("radius")) radius = actor.GetPropertyValueInt("radius", 0);
 			if(actor.HasPropertyWithValue("height")) height = actor.GetPropertyValueInt("height", 0);
-
-			// Scale
-			if(actor.HasPropertyWithValue("scale")) spritescale = actor.GetPropertyValueFloat("scale", 0);
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
+			if(this.spritescale.Width <= 0.0f) this.spritescale.Width = 1.0f;
+			if(this.spritescale.Height <= 0.0f) this.spritescale.Height = 1.0f;
 			
 			// Options
 			hangs = actor.GetFlagValue("spawnceiling", hangs);
