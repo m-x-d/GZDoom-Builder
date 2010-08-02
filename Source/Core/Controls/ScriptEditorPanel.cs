@@ -218,12 +218,41 @@ namespace CodeImp.DoomBuilder.Controls
 			findoptions = options;
 			if(!string.IsNullOrEmpty(findoptions.FindText) && (options.ReplaceWith != null) && (ActiveTab != null))
 			{
+				int firstfindpos = -1;
+				int lastpos = -1;
+				bool firstreplace = true;
+				bool wrappedaround = false;
+				int selectionstart = Math.Min(ActiveTab.SelectionStart, ActiveTab.SelectionEnd);
+				
 				// Continue finding and replacing until nothing more found
 				while(ActiveTab.FindNext(findoptions))
 				{
+					int curpos = Math.Min(ActiveTab.SelectionStart, ActiveTab.SelectionEnd);
+					if(curpos <= lastpos)
+						wrappedaround = true;
+					
+					if(firstreplace)
+					{
+						// Remember where we started replacing
+						firstfindpos = curpos;
+					}
+					else if(wrappedaround)
+					{
+						// Make sure we don't go past our start point, or we could be in an endless loop
+						if(curpos >= firstfindpos)
+							break;
+					}
+					
 					Replace(findoptions);
 					replacements++;
+					firstreplace = false;
+
+					lastpos = curpos;
 				}
+
+				// Restore selection
+				ActiveTab.SelectionStart = selectionstart;
+				ActiveTab.SelectionEnd = selectionstart;
 				
 				// Show result
 				if(replacements == 0)
@@ -252,7 +281,21 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(findreplaceform == null)
 				findreplaceform = new ScriptFindReplaceForm();
-			findreplaceform.Show(this.ParentForm);
+
+			try
+			{
+				if(findreplaceform.Visible)
+					findreplaceform.Focus();
+				else
+					findreplaceform.Show(this.ParentForm);
+
+				if(ActiveTab.SelectionEnd != ActiveTab.SelectionStart)
+					findreplaceform.SetFindText(ActiveTab.GetSelectedText());
+			}
+			catch(Exception)
+			{
+				// If we can't pop up the find/replace form right now, thats just too bad.
+			}
 		}
 
 		// This refreshes all settings

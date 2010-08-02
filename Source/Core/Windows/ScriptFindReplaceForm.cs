@@ -73,6 +73,13 @@ namespace CodeImp.DoomBuilder.Windows
 			base.Close();
 		}
 
+		// This sets the text to find
+		public void SetFindText(string text)
+		{
+			findtext.Text = text;
+			findtext.SelectAll();
+		}
+
 		#endregion
 
 		#region ================== Events

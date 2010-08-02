@@ -188,6 +188,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			Encoding encoder = Encoding.GetEncoding(scriptedit.CodePage);
 			string text = encoder.GetString(GetText());
+			int selectionstart = scriptedit.SelectionStart;
 			
 			// Make new text
 			StringBuilder newtext = new StringBuilder(text.Length + replacement.Length);
@@ -195,10 +196,11 @@ namespace CodeImp.DoomBuilder.Controls
 			newtext.Append(replacement);
 			newtext.Append(text.Substring(scriptedit.SelectionEnd));
 			
-			// Adjust selection
-			scriptedit.SelectionEnd = scriptedit.SelectionStart + replacement.Length;
-			
 			SetText(encoder.GetBytes(newtext.ToString()));
+			
+			// Adjust selection
+			scriptedit.SelectionStart = selectionstart;
+			scriptedit.SelectionEnd = selectionstart + replacement.Length;
 		}
 		
 		// This moves the caret to a given line and ensures the line is visible
