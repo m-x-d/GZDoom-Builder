@@ -566,33 +566,8 @@ namespace CodeImp.DoomBuilder.Editing
 			// Previously, withdrawing an undo level was possible, because each undo level contained
 			// an entire snapshot of the map. With the new progressive undo system, you cannot ignore
 			// any changes, so we have to actually perform the undo and trash the redo it creates.
-			PerformUndo(1);
+			PerformUndo(1, false);
 			ClearAllRedos();
-			
-			/*
-			// Anything to undo?
-			if((undos.Count > 0) || ((snapshot != null) && !isundosnapshot))
-			{
-				if(snapshot != null)
-				{
-					General.WriteLogLine("Withdrawing undo snapshot \"" + snapshot.Description + "\", Ticket ID " + snapshot.TicketID + "...");
-					
-					// Just trash this recording
-					// You must call CreateUndo first before making any more changes
-					FinishRecording();
-					isundosnapshot = false;
-					snapshot = null;
-				}
-				else
-				{
-					throw new Exception("No undo is recording that can be withdrawn");
-				}
-				
-				// Update
-				dobackgroundwork = true;
-				General.MainWindow.UpdateInterface();
-			}
-			*/
 			
 			General.Plugins.OnUndoWithdrawn();
 		}
@@ -605,7 +580,8 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 		
 		// This performs one or more undo levels
-		public void PerformUndo(int levels)
+		public void PerformUndo(int levels) { PerformUndo(levels, true); }
+		private void PerformUndo(int levels, bool showmessage)
 		{
 			UndoSnapshot u = null;
 			Cursor oldcursor = Cursor.Current;
@@ -687,7 +663,7 @@ namespace CodeImp.DoomBuilder.Editing
 								
 								General.WriteLogLine("Performing undo \"" + u.Description + "\", Ticket ID " + u.TicketID + "...");
 								
-								if(levels == 1)
+								if((levels == 1) && showmessage)
 									General.Interface.DisplayStatus(StatusType.Action, u.Description + " undone.");
 								
 								// Make a snapshot for redo
@@ -709,7 +685,7 @@ namespace CodeImp.DoomBuilder.Editing
 							
 							General.Map.Map.EndAddRemove();
 							
-							if(levels > 1)
+							if((levels > 1) && showmessage)
 								General.Interface.DisplayStatus(StatusType.Action, "Undone " + levelsundone + " changes.");
 							
 							// Remove selection
