@@ -699,6 +699,9 @@ namespace CodeImp.DoomBuilder.Editing
 							General.MainWindow.RefreshInfo();
 							General.MainWindow.RedrawDisplay();
 							
+							// Map changed!
+							General.Map.IsChanged = true;
+							
 							// Done
 							General.Editing.Mode.OnUndoEnd();
 							General.Plugins.OnUndoEnd();
@@ -837,6 +840,9 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Map.Data.UpdateUsedTextures();
 							General.MainWindow.RefreshInfo();
 							General.MainWindow.RedrawDisplay();
+							
+							// Map changed!
+							General.Map.IsChanged = true;
 							
 							// Done
 							General.Editing.Mode.OnRedoEnd();
