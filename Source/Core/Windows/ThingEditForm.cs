@@ -185,12 +185,22 @@ namespace CodeImp.DoomBuilder.Windows
 		// Selected type changes
 		private void thingtype_OnTypeChanged(ThingTypeInfo value)
 		{
-			// Update preview image
 			thinginfo = value;
-			if(value != null)
-				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(value.Sprite).GetPreview());
+
+			// Update preview image
+			if(thinginfo.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) &&
+			   (thinginfo.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))
+			{
+				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetBitmap());
+			}
+			else if((thinginfo.Sprite.Length <= 8) && (thinginfo.Sprite.Length > 0))
+			{
+				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(thinginfo.Sprite).GetPreview());
+			}
 			else
-				General.DisplayZoomedImage(spritetex, null);
+			{
+				spritetex.BackgroundImage = null;
+			}
 			
 			// Update arguments
 			action_ValueChanges(this, EventArgs.Empty);
