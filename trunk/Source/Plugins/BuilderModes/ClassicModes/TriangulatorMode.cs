@@ -380,7 +380,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		// This shows a line
 		private void ShowLine(Vector2D v1, Vector2D v2, PixelColor c)
 		{
-			for(int a = 0; a < 6; a++)
+			for(int a = 0; a < 3; a++)
 			{
 				OnRedrawDisplay();
 				Thread.Sleep(20);
@@ -402,7 +402,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				}
 
 				// Wait a bit
-				Thread.Sleep(60);
+				Thread.Sleep(50);
 				Application.DoEvents();
 			}
 		}
@@ -416,7 +416,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Go for all vertices in the polygon
 			while(v != null)
 			{
-				for(int a = 0; a < 10; a++)
+				for(int a = 0; a < 5; a++)
 				{
 
 					// Start with a clear display
@@ -434,7 +434,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 						renderer.Present();
 					}
 					
-					Thread.Sleep(20);
+					Thread.Sleep(10);
 					
 					// Start with a clear display
 					if(renderer.StartPlotter(true))
@@ -452,7 +452,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					}
 
 					// Wait a bit
-					Thread.Sleep(60);
+					Thread.Sleep(40);
 					Application.DoEvents();
 				}
 				
@@ -506,7 +506,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		{
 			EarClipVertex prev, first;
 			
-			for(int a = 0; a < 5; a++)
+			for(int a = 0; a < 8; a++)
 			{
 				// Start with a clear display
 				if(renderer.StartPlotter(true))
@@ -543,7 +543,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.Finish();
 					renderer.Present();
 				}
-				Thread.Sleep(50);
+				Thread.Sleep(60);
 				Application.DoEvents();
 
 				// Start with a clear display
@@ -573,7 +573,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 					renderer.Finish();
 					renderer.Present();
 				}
-				Thread.Sleep(20);
+				Thread.Sleep(40);
 			}
 		}
 		

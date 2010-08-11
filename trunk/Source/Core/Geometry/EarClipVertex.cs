@@ -126,7 +126,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This adds to reflexes list
 		public void AddReflex(LinkedList<EarClipVertex> reflexes)
 		{
+			#if DEBUG
 			if(vertslink == null) throw new Exception();
+			#endif
 			if(reflexlink == null) reflexlink = reflexes.AddLast(this);
 		}
 
@@ -140,7 +142,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This adds to eartips list
 		internal void AddEarTip(LinkedList<EarClipVertex> eartips)
 		{
+			#if DEBUG
 			if(vertslink == null) throw new Exception();
+			#endif
 			if(eartiplink == null) eartiplink = eartips.AddLast(this);
 		}
 

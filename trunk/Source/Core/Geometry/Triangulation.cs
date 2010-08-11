@@ -613,7 +613,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		// This clips a polygon and returns the triangles
 		// The polygon may not have any holes or islands
-		/// See: http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
+		// See: http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf
 		private int DoEarClip(EarClipPolygon poly, List<Vector2D> verticeslist, List<Sidedef> sidedefslist)
 		{
 			LinkedList<EarClipVertex> verts = new LinkedList<EarClipVertex>();
@@ -720,7 +720,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				
 				// Test first neighbour
 				t1 = GetTriangle(v1);
-				if(IsReflex(t1))
+				bool t1a = true;	//TriangleHasArea(t1);
+				if(t1a && IsReflex(t1))
 				{
 					// List as reflex if not listed yet
 					if(!v1.IsReflex) v1.AddReflex(reflexes);
@@ -734,7 +735,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				
 				// Test second neighbour
 				t2 = GetTriangle(v2);
-				if(IsReflex(t2))
+				bool t2a = true;	//TriangleHasArea(t2);
+				if(t2a && IsReflex(t2))
 				{
 					// List as reflex if not listed yet
 					if(!v2.IsReflex) v2.AddReflex(reflexes);
@@ -747,8 +749,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 				
 				// Check if any neightbour have become a valid or invalid ear
-				if(!v1.IsReflex && CheckValidEar(t1, reflexes)) v1.AddEarTip(eartips); else v1.RemoveEarTip();
-				if(!v2.IsReflex && CheckValidEar(t2, reflexes)) v2.AddEarTip(eartips); else v2.RemoveEarTip();
+				if(!v1.IsReflex && (!t1a || CheckValidEar(t1, reflexes))) v1.AddEarTip(eartips); else v1.RemoveEarTip();
+				if(!v2.IsReflex && (!t2a || CheckValidEar(t2, reflexes))) v2.AddEarTip(eartips); else v2.RemoveEarTip();
 			}
 
 			#if DEBUG
@@ -810,8 +812,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				float lineside12 = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p.Value.Position);
 				float lineside20 = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p.Value.Position);
 
-				// If any of the lineside results are 0 then that means the point lies on that edge and we
-				// need to test if the lines adjacent to the point are in the triangle or not.
+				// If any of the lineside results are 0 then that means the point p lies on that edge and we
+				// need to test if the lines adjacent to the point p are in the triangle or not.
 				// If the lines are intersecting the triangle, we also consider the point inside.
 				if((lineside01 == 0.0f) || (lineside12 == 0.0f) || (lineside20 == 0.0f))
 				{
@@ -832,19 +834,31 @@ namespace CodeImp.DoomBuilder.Geometry
 				return false;
 			}
 		}
-
+		
 		// This checks if a line is inside a triangle (touching the triangle is allowed)
-		// NOTE: Does NOT check if p1 is inside the triangle, because we only use the
-		// method when point-in-triangle is already tested for p1
+		// NOTE: We already know p1 is on an edge of the triangle.
 		private bool LineInsideTriangle(EarClipVertex[] t, Vector2D p1, Vector2D p2)
 		{
+			float s01 = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p2);
+			float s12 = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p2);
+			float s20 = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p2);
+			
 			// Test if p2 is inside the triangle
-			if((Line2D.GetSideOfLine(t[0].Position, t[1].Position, p2) < 0.0f) &&
-			   (Line2D.GetSideOfLine(t[1].Position, t[2].Position, p2) < 0.0f) &&
-			   (Line2D.GetSideOfLine(t[2].Position, t[0].Position, p2) < 0.0f))
+			if((s01 < 0.0f) && (s12 < 0.0f) && (s20 < 0.0f))
 			{
 				// Line is inside triangle, because p2 is
 				return true;
+			}
+			// Test if p2 is on an edge of the triangle
+			else if((s01 == 0.0f) || (s12 == 0.0f) || (s20 == 0.0f))
+			{
+				// The line is inside the triangle if p2 is not on the same edge as p1,
+				// because only then the line has to go across the surface of the triangle.
+				bool sameedge = (p1 == p2);
+				sameedge |= (s01 == 0.0f) && (Line2D.GetSideOfLine(t[0].Position, t[1].Position, p1) == 0.0f);
+				sameedge |= (s12 == 0.0f) && (Line2D.GetSideOfLine(t[1].Position, t[2].Position, p1) == 0.0f);
+				sameedge |= (s20 == 0.0f) && (Line2D.GetSideOfLine(t[2].Position, t[0].Position, p1) == 0.0f);
+				return !sameedge;
 			}
 			else
 			{
@@ -854,14 +868,14 @@ namespace CodeImp.DoomBuilder.Geometry
 				Line2D t12 = new Line2D(t[1].Position, t[2].Position);
 				Line2D t20 = new Line2D(t[2].Position, t[0].Position);
 				float pu, pt;
-
+				
 				// Test intersections
 				t01.GetIntersection(p, out pu, out pt);
-				if(!float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt > 0.0f) && (pt < 1.0f)) return true;
+				if(!float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
 				t12.GetIntersection(p, out pu, out pt);
-				if(!float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt > 0.0f) && (pt < 1.0f)) return true;
+				if(!float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
 				t20.GetIntersection(p, out pu, out pt);
-				return !float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt > 0.0f) && (pt < 1.0f);
+				return !float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt >= 0.0f) && (pt <= 1.0f);
 			}
 		}
 		
