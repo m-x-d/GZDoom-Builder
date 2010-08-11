@@ -416,7 +416,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			// Go for all vertices in the polygon
 			while(v != null)
 			{
-				for(int a = 0; a < 5; a++)
+				for(int a = 0; a < 1; a++)
 				{
 
 					// Start with a clear display

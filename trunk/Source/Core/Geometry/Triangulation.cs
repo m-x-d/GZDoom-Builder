@@ -811,17 +811,31 @@ namespace CodeImp.DoomBuilder.Geometry
 				float lineside01 = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p.Value.Position);
 				float lineside12 = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p.Value.Position);
 				float lineside20 = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p.Value.Position);
+				float u_on_line = 0.5f;
 
+				// If point p is on the line of an edge, find out where on the edge segment p is.
+				if(lineside01 == 0.0f)
+					u_on_line = Line2D.GetNearestOnLine(t[0].Position, t[1].Position, p.Value.Position);
+				else if(lineside12 == 0.0f)
+					u_on_line = Line2D.GetNearestOnLine(t[1].Position, t[2].Position, p.Value.Position);
+				else if(lineside20 == 0.0f)
+					u_on_line = Line2D.GetNearestOnLine(t[2].Position, t[0].Position, p.Value.Position);
+				
 				// If any of the lineside results are 0 then that means the point p lies on that edge and we
 				// need to test if the lines adjacent to the point p are in the triangle or not.
 				// If the lines are intersecting the triangle, we also consider the point inside.
 				if((lineside01 == 0.0f) || (lineside12 == 0.0f) || (lineside20 == 0.0f))
 				{
+					// When the point p is outside the edge segment, then it is not inside the triangle
+					if((u_on_line < 0.0f) || (u_on_line > 1.0f))
+						return false;
+
+					// Point p is on an edge segment. We'll have to decide by it's lines if we call it inside or outside the triangle.
 					LinkedListNode<EarClipVertex> p1 = p.Previous ?? p.List.Last;
 					LinkedListNode<EarClipVertex> p2 = p.Next ?? p.List.First;
-
 					if(LineInsideTriangle(t, p.Value.Position, p1.Value.Position)) return true;
 					if(LineInsideTriangle(t, p.Value.Position, p2.Value.Position)) return true;
+					
 					return false;
 				}
 				else
@@ -836,12 +850,14 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		// This checks if a line is inside a triangle (touching the triangle is allowed)
-		// NOTE: We already know p1 is on an edge of the triangle.
+		// NOTE: We already know p1 is on an edge segment of the triangle
 		private bool LineInsideTriangle(EarClipVertex[] t, Vector2D p1, Vector2D p2)
 		{
 			float s01 = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p2);
 			float s12 = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p2);
 			float s20 = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p2);
+			float p2_on_edge = 2.0f;		// somewhere outside the 0 .. 1 range
+			float p1_on_same_edge = 2.0f;
 			
 			// Test if p2 is inside the triangle
 			if((s01 < 0.0f) && (s12 < 0.0f) && (s20 < 0.0f))
@@ -849,34 +865,50 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Line is inside triangle, because p2 is
 				return true;
 			}
-			// Test if p2 is on an edge of the triangle
-			else if((s01 == 0.0f) || (s12 == 0.0f) || (s20 == 0.0f))
+			// Test if p2 is on an edge of the triangle and if it is we would
+			// like to know where on the edge segment p2 is
+			else if(s01 == 0.0f)
 			{
-				// The line is inside the triangle if p2 is not on the same edge as p1,
-				// because only then the line has to go across the surface of the triangle.
-				bool sameedge = (p1 == p2);
-				sameedge |= (s01 == 0.0f) && (Line2D.GetSideOfLine(t[0].Position, t[1].Position, p1) == 0.0f);
-				sameedge |= (s12 == 0.0f) && (Line2D.GetSideOfLine(t[1].Position, t[2].Position, p1) == 0.0f);
-				sameedge |= (s20 == 0.0f) && (Line2D.GetSideOfLine(t[2].Position, t[0].Position, p1) == 0.0f);
-				return !sameedge;
+				p2_on_edge = Line2D.GetNearestOnLine(t[0].Position, t[1].Position, p2);
+				p1_on_same_edge = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p1);
 			}
-			else
+			else if(s12 == 0.0f)
 			{
-				// Test for line intersections
-				Line2D p = new Line2D(p1, p2);
-				Line2D t01 = new Line2D(t[0].Position, t[1].Position);
-				Line2D t12 = new Line2D(t[1].Position, t[2].Position);
-				Line2D t20 = new Line2D(t[2].Position, t[0].Position);
-				float pu, pt;
-				
-				// Test intersections
-				t01.GetIntersection(p, out pu, out pt);
-				if(!float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
-				t12.GetIntersection(p, out pu, out pt);
-				if(!float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
-				t20.GetIntersection(p, out pu, out pt);
-				return !float.IsNaN(pu) && (pu > 0.0f) && (pu < 1.0f) && (pt >= 0.0f) && (pt <= 1.0f);
+				p2_on_edge = Line2D.GetNearestOnLine(t[1].Position, t[2].Position, p2);
+				p1_on_same_edge = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p1);
 			}
+			else if(s20 == 0.0f)
+			{
+				p2_on_edge = Line2D.GetNearestOnLine(t[2].Position, t[0].Position, p2);
+				p1_on_same_edge = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p1);
+			}
+
+			// Is p2 actually on the edge segment?
+			if((p2_on_edge >= 0.0f) && (p2_on_edge <= 1.0f))
+			{
+				// If p1 is on the same edge (or the unlimited line of that edge)
+				// then the line is not inside this triangle.
+				if(p1_on_same_edge == 0.0f)
+					return false;
+			}
+			
+			// Do a complete line-triangle intersection test
+			// We already know p1 is not inside the triangle (possibly on an edge)
+			Line2D p = new Line2D(p1, p2);
+			Line2D t01 = new Line2D(t[0].Position, t[1].Position);
+			Line2D t12 = new Line2D(t[1].Position, t[2].Position);
+			Line2D t20 = new Line2D(t[2].Position, t[0].Position);
+			float pu, pt;
+			
+			// Test intersections
+			t01.GetIntersection(p, out pu, out pt);
+			if(!float.IsNaN(pu) && (pu >= 0.0f) && (pu <= 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
+			t12.GetIntersection(p, out pu, out pt);
+			if(!float.IsNaN(pu) && (pu >= 0.0f) && (pu <= 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
+			t20.GetIntersection(p, out pu, out pt);
+			if(!float.IsNaN(pu) && (pu >= 0.0f) && (pu <= 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
+			
+			return false;
 		}
 		
 		// This checks if the triangle has an area greater than 0
