@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Data
 		private volatile ImageLoadState imagestate;
 		private volatile int previewindex;
 		protected volatile bool loadfailed;
+		private volatile bool allowunload;
 		
 		// References
 		private volatile bool usedinmap;
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder.Data
 		public bool IsImageLoaded { get { return (imagestate == ImageLoadState.Ready); } }
 		public bool LoadFailed { get { return loadfailed; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public bool AllowUnload { get { return allowunload; } set { allowunload = value; } }
 		public ImageLoadState ImageState { get { return imagestate; } internal set { imagestate = value; } }
 		public ImageLoadState PreviewState { get { return previewstate; } internal set { previewstate = value; } }
 		public bool IsReferenced { get { return (references > 0) || usedinmap; } }
@@ -108,6 +110,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Defaults
 			usecolorcorrection = true;
+			allowunload = true;
 		}
 
 		// Destructor

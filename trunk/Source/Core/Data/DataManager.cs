@@ -566,7 +566,7 @@ namespace CodeImp.DoomBuilder.Data
 						}
 						
 						// Unload this image?
-						if(!image.IsReferenced && (image.ImageState != ImageLoadState.None))
+						if(!image.IsReferenced && image.AllowUnload && (image.ImageState != ImageLoadState.None))
 						{
 							// Still unreferenced?
 							image.UnloadImage();
@@ -639,7 +639,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Unload this image?
-			if((img.ImageState == ImageLoadState.Ready) && !img.IsReferenced)
+			if((img.ImageState == ImageLoadState.Ready) && !img.IsReferenced && img.AllowUnload)
 			{
 				// Add for unloading
 				img.ImageState = ImageLoadState.Unloading;
@@ -1087,6 +1087,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				ImageData img = new FileImage(Path.GetFileNameWithoutExtension(spritefile).ToLowerInvariant(), spritefile, false);
 				img.LoadImage();
+				img.AllowUnload = false;
 				internalsprites.Add(img.Name, img);
 			}
 			
@@ -1095,6 +1096,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.Nothing.png");
 				img.LoadImage();
+				img.AllowUnload = false;
 				internalsprites.Add("nothing", img);
 			}
 			
@@ -1102,6 +1104,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.UnknownThing.png");
 				img.LoadImage();
+				img.AllowUnload = false;
 				internalsprites.Add("unknownthing", img);
 			}
 		}
