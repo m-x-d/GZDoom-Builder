@@ -52,6 +52,13 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// Default is the library filename without extension.
 		/// </summary>
 		public virtual string Name { get { return plugin.Name; } }
+
+		/// <summary>
+		/// Override this to return the minimum revision of the Doom Builder 2 core that is
+		/// required to use this plugin. You can find the revision number in the About dialog,
+		/// it is the right most part of the version number.
+		/// </summary>
+		public virtual int MinimumRevision { get { return 0; } }
 		
 		#endregion
 
