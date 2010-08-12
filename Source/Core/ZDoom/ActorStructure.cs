@@ -503,7 +503,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 					if(!string.IsNullOrEmpty(s.FirstSprite))
 						result = s.FirstSprite;
 				}
-				
+
+				// Try the spawn state
+				if(string.IsNullOrEmpty(result) && states.ContainsKey("spawn"))
+				{
+					StateStructure s = states["spawn"];
+					if(!string.IsNullOrEmpty(s.FirstSprite))
+						result = s.FirstSprite;
+				}
+
 				// Still no sprite found? then just pick the first we can find
 				if(string.IsNullOrEmpty(result))
 				{
