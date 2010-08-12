@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		// When implemented, this loads the textures
 		public virtual ICollection<ImageData> LoadTextures(PatchNames pnames) { return null; }
-
+		
 		#endregion
 
 		#region ================== Flats

@@ -42,16 +42,16 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Variables
 
 		// Matching textures and flats
-		private List<ImageData> textures;
-		private List<ImageData> flats;
+		private Dictionary<long, ImageData> textures;
+		private Dictionary<long, ImageData> flats;
 		private int locationtype;
 
 		#endregion
 
 		#region ================== Properties
 		
-		public ICollection<ImageData> Textures { get { return textures; } }
-		public ICollection<ImageData> Flats { get { return flats; } }
+		public ICollection<ImageData> Textures { get { return textures.Values; } }
+		public ICollection<ImageData> Flats { get { return flats.Values; } }
 		public int LocationType { get { return locationtype; } }
 		
 		#endregion
@@ -63,24 +63,47 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			this.name = name;
 			this.locationtype = locationtype;
-			this.textures = new List<ImageData>();
-			this.flats = new List<ImageData>();
+			this.textures = new Dictionary<long, ImageData>();
+			this.flats = new Dictionary<long, ImageData>();
 		}
 		
 		#endregion
 
 		#region ================== Methods
 		
+		// Add a texture
 		internal void AddTexture(ImageData image)
 		{
-			textures.Add(image);
+			textures.Add(image.LongName, image);
 		}
 
+		// Add a flat
 		internal void AddFlat(ImageData image)
 		{
-			flats.Add(image);
+			flats.Add(image.LongName, image);
 		}
 
+		// Mix the textures and flats
+		internal void MixTexturesAndFlats()
+		{
+			// Make a copy of the flats only
+			Dictionary<long, ImageData> flatsonly = new Dictionary<long, ImageData>(flats);
+			
+			// Add textures to flats
+			foreach(KeyValuePair<long, ImageData> t in textures)
+			{
+				if(!flats.ContainsKey(t.Key))
+					flats.Add(t.Key, t.Value);
+			}
+			
+			// Add flats to textures
+			foreach(KeyValuePair<long, ImageData> f in flatsonly)
+			{
+				if(!textures.ContainsKey(f.Key))
+					textures.Add(f.Key, f.Value);
+			}
+		}
+		
 		#endregion
 	}
 }

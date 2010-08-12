@@ -351,6 +351,10 @@ namespace CodeImp.DoomBuilder.Data
 						texturenames.Add(f.Value.Name);
 					}
 				}
+
+				// Do the same on the data readers
+				foreach(DataReader dr in containers)
+					dr.TextureSet.MixTexturesAndFlats();
 			}
 			
 			// Sort names
