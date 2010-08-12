@@ -1217,14 +1217,14 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Invoke any actions associated with this key
 				General.Actions.UpdateModifiers(mod);
-				General.Actions.KeyPressed((int)e.KeyData);
+				e.Handled = General.Actions.KeyPressed((int)e.KeyData);
 				
 				// Invoke on editing mode
 				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyDown(e);
-				
+
 				// Handled
-				e.Handled = true;
-				e.SuppressKeyPress = true;
+				if(e.Handled)
+					e.SuppressKeyPress = true;
 			}
 			
 			// F1 pressed?
@@ -1267,14 +1267,14 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Invoke any actions associated with this key
 				General.Actions.UpdateModifiers(mod);
-				General.Actions.KeyReleased((int)e.KeyData);
+				e.Handled = General.Actions.KeyReleased((int)e.KeyData);
 				
 				// Invoke on editing mode
 				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyUp(e);
 				
 				// Handled
-				e.Handled = true;
-				e.SuppressKeyPress = true;
+				if(e.Handled)
+					e.SuppressKeyPress = true;
 			}
 		}
 		
@@ -1788,7 +1788,8 @@ namespace CodeImp.DoomBuilder.Windows
 				if(filename != "")
 				{
 					// Set up item
-					recentitems[i].Text = GetDisplayFilename(filename);
+					int number = i + 1;
+					recentitems[i].Text = "&" + number.ToString() + "  " + GetDisplayFilename(filename);
 					recentitems[i].Tag = filename;
 					recentitems[i].Visible = true;
 					anyitems = true;
@@ -1840,13 +1841,14 @@ namespace CodeImp.DoomBuilder.Windows
 			for(int i = movedownto - 1; i >= 0; i--)
 			{
 				// Move recent file down the list
-				recentitems[i + 1].Text = recentitems[i].Text;
+				int number = i + 2;
+				recentitems[i + 1].Text = "&" + number.ToString() + "  " + GetDisplayFilename(recentitems[i].Tag.ToString());
 				recentitems[i + 1].Tag = recentitems[i].Tag.ToString();
 				recentitems[i + 1].Visible = (recentitems[i + 1].Text != "");
 			}
 
 			// Add new file at the top
-			recentitems[0].Text = GetDisplayFilename(filename);
+			recentitems[0].Text = "&1 - " + GetDisplayFilename(filename);
 			recentitems[0].Tag = filename;
 			recentitems[0].Visible = true;
 

@@ -507,7 +507,8 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 		
 		// This notifies a key has been pressed
-		internal void KeyPressed(int key)
+		// Returns true when the key press has been absorbed
+		internal bool KeyPressed(int key)
 		{
 			int strippedkey = key & ~((int)Keys.Alt | (int)Keys.Shift | (int)Keys.Control);
 			if((strippedkey == (int)Keys.ShiftKey) || (strippedkey == (int)Keys.ControlKey)) key = strippedkey;
@@ -518,14 +519,18 @@ namespace CodeImp.DoomBuilder.Actions
 			
 			// Add action to active list
 			Action[] acts = GetActionsByKey(key);
+			bool absorbed = acts.Length > 0;
 			foreach(Action a in acts) if(!activeactions.Contains(a)) activeactions.Add(a);
 
 			// Invoke actions
-			BeginActionByKey(key, repeat);
+			absorbed |= BeginActionByKey(key, repeat);
+
+			return absorbed;
 		}
 
 		// This notifies a key has been released
-		internal void KeyReleased(int key)
+		// Returns true when the key release has been absorbed
+		internal bool KeyReleased(int key)
 		{
 			int strippedkey = key & ~((int)Keys.Alt | (int)Keys.Shift | (int)Keys.Control);
 			List<Action> keepactions = new List<Action>();
@@ -534,7 +539,7 @@ namespace CodeImp.DoomBuilder.Actions
 			if(pressedkeys.Contains(strippedkey)) pressedkeys.Remove(strippedkey);
 
 			// End actions that no longer match
-			EndActiveActions();
+			return EndActiveActions();
 		}
 
 		// This releases all pressed keys
@@ -558,8 +563,11 @@ namespace CodeImp.DoomBuilder.Actions
 		}
 		
 		// This will call the associated actions for a keypress
-		internal void BeginActionByKey(int key, bool repeated)
+		// Returns true when the key invokes any action
+		internal bool BeginActionByKey(int key, bool repeated)
 		{
+			bool invoked = false;
+			
 			// Get all actions for which a begin is bound
 			List<Action> boundactions = new List<Action>(actions.Count);
 			foreach(KeyValuePair<string, Action> a in actions)
@@ -571,6 +579,8 @@ namespace CodeImp.DoomBuilder.Actions
 				// This action is associated with this key?
 				if(a.KeyMatches(key))
 				{
+					invoked = true;
+					
 					// Allowed to repeat?
 					if(a.Repeat || !repeated)
 					{
@@ -583,12 +593,16 @@ namespace CodeImp.DoomBuilder.Actions
 					}
 				}
 			}
+
+			return invoked;
 		}
 
 		// This will end active actions for which the pressed keys do not match
-		private void EndActiveActions()
+		// Returns true when actions have been ended
+		private bool EndActiveActions()
 		{
 			bool listchanged;
+			bool actionsended = false;
 			
 			do
 			{
@@ -611,6 +625,7 @@ namespace CodeImp.DoomBuilder.Actions
 					// End the action if no longer matches any of the keys
 					if(!stillactive)
 					{
+						actionsended = true;
 						activeactions.RemoveAt(i);
 						listchanged = true;
 						a.End();
@@ -619,6 +634,8 @@ namespace CodeImp.DoomBuilder.Actions
 				}
 			}
 			while(listchanged);
+
+			return actionsended;
 		}
 		
 		// This returns all action names for a given key
