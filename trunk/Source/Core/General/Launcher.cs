@@ -333,7 +333,9 @@ namespace CodeImp.DoomBuilder
 			CleanTempFile(General.Map);
 			
 			// Done
+			General.Map.Graphics.Reset();
 			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
+			General.MainWindow.RedrawDisplay();
 			General.MainWindow.FocusDisplay();
 			Cursor.Current = oldcursor;
 		}
