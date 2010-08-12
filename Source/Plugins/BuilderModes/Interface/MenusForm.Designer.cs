@@ -45,8 +45,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
-			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
+			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonfloorgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonceilinggradient = new System.Windows.Forms.ToolStripButton();
@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.splitlinedefsitem});
 			this.linedefsmenu.Name = "linedefsmenu";
 			this.linedefsmenu.Size = new System.Drawing.Size(59, 20);
-			this.linedefsmenu.Text = "Linedefs";
+			this.linedefsmenu.Text = "&Linedefs";
 			this.linedefsmenu.Visible = false;
 			// 
 			// selectsinglesideditem
@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.selectsinglesideditem.Name = "selectsinglesideditem";
 			this.selectsinglesideditem.Size = new System.Drawing.Size(202, 22);
 			this.selectsinglesideditem.Tag = "selectsinglesided";
-			this.selectsinglesideditem.Text = "Select Single-sided only";
+			this.selectsinglesideditem.Text = "Select &Single-sided only";
 			this.selectsinglesideditem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// selectdoublesideditem
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.selectdoublesideditem.Name = "selectdoublesideditem";
 			this.selectdoublesideditem.Size = new System.Drawing.Size(202, 22);
 			this.selectdoublesideditem.Tag = "selectdoublesided";
-			this.selectdoublesideditem.Text = "Select Double-sided only";
+			this.selectdoublesideditem.Text = "Select &Double-sided only";
 			this.selectdoublesideditem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripMenuItem4
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fliplinedefsitem.Name = "fliplinedefsitem";
 			this.fliplinedefsitem.Size = new System.Drawing.Size(202, 22);
 			this.fliplinedefsitem.Tag = "fliplinedefs";
-			this.fliplinedefsitem.Text = "Flip Linedefs";
+			this.fliplinedefsitem.Text = "&Flip Linedefs";
 			this.fliplinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// flipsidedefsitem
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.flipsidedefsitem.Name = "flipsidedefsitem";
 			this.flipsidedefsitem.Size = new System.Drawing.Size(202, 22);
 			this.flipsidedefsitem.Tag = "flipsidedefs";
-			this.flipsidedefsitem.Text = "Flip Sidedefs";
+			this.flipsidedefsitem.Text = "F&lip Sidedefs";
 			this.flipsidedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripMenuItem1
@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.curvelinedefsitem.Name = "curvelinedefsitem";
 			this.curvelinedefsitem.Size = new System.Drawing.Size(202, 22);
 			this.curvelinedefsitem.Tag = "curvelinesmode";
-			this.curvelinedefsitem.Text = "Curve Linedefs...";
+			this.curvelinedefsitem.Text = "&Curve Linedefs...";
 			this.curvelinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripMenuItem3
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitlinedefsitem.Name = "splitlinedefsitem";
 			this.splitlinedefsitem.Size = new System.Drawing.Size(202, 22);
 			this.splitlinedefsitem.Tag = "splitlinedefs";
-			this.splitlinedefsitem.Text = "Split Linedefs";
+			this.splitlinedefsitem.Text = "S&plit Linedefs";
 			this.splitlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// sectorsmenu
@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.toolStripMenuItem2});
 			this.sectorsmenu.Name = "sectorsmenu";
 			this.sectorsmenu.Size = new System.Drawing.Size(55, 20);
-			this.sectorsmenu.Text = "Sectors";
+			this.sectorsmenu.Text = "&Sectors";
 			this.sectorsmenu.Visible = false;
 			// 
 			// joinsectorsitem
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.joinsectorsitem.Name = "joinsectorsitem";
 			this.joinsectorsitem.Size = new System.Drawing.Size(154, 22);
 			this.joinsectorsitem.Tag = "joinsectors";
-			this.joinsectorsitem.Text = "Join Sectors";
+			this.joinsectorsitem.Text = "&Join Sectors";
 			this.joinsectorsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// mergesectorsitem
@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mergesectorsitem.Name = "mergesectorsitem";
 			this.mergesectorsitem.Size = new System.Drawing.Size(154, 22);
 			this.mergesectorsitem.Tag = "mergesectors";
-			this.mergesectorsitem.Text = "Merge Sectors";
+			this.mergesectorsitem.Text = "&Merge Sectors";
 			this.mergesectorsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripMenuItem2
@@ -205,12 +205,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.manualstrip.TabIndex = 2;
 			this.manualstrip.Text = "toolStrip1";
 			// 
-			// separatorsectors1
-			// 
-			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.separatorsectors1.Name = "separatorsectors1";
-			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
-			// 
 			// buttonselectionnumbers
 			// 
 			this.buttonselectionnumbers.CheckOnClick = true;
@@ -221,6 +215,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonselectionnumbers.Size = new System.Drawing.Size(23, 22);
 			this.buttonselectionnumbers.Text = "View Selection Numbering";
 			this.buttonselectionnumbers.Click += new System.EventHandler(this.buttonselectionnumbers_Click);
+			// 
+			// separatorsectors1
+			// 
+			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors1.Name = "separatorsectors1";
+			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonbrightnessgradient
 			// 
