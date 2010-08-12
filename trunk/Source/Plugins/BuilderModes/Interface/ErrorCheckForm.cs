@@ -41,9 +41,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		// Constants
-		private const int RESULTS_WINDOW_HEIGHT = 500;
-
 		#endregion
 
 		#region ================== Delegates
@@ -96,6 +93,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This shows the window
 		public void Show(Form owner)
 		{
+			// Move controls according to the height of the checkers box
+			checks.PerformLayout();
+			buttoncheck.Top = checks.Bottom + 14;
+			resultspanel.Top = buttoncheck.Bottom + 14;
+			
 			// First time showing?
 			//if((this.Location.X == 0) && (this.Location.Y == 0))
 			{

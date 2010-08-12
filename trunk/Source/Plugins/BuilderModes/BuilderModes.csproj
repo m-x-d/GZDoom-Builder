@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -236,9 +236,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
+    <Compile Include="ErrorChecks\CheckUnknownFlats.cs" />
     <Compile Include="ErrorChecks\CheckUnknownTextures.cs" />
     <Compile Include="ErrorChecks\ResultNoErrors.cs" />
     <Compile Include="ErrorChecks\ResultTextureMissing.cs" />
+    <Compile Include="ErrorChecks\ResultUnknownFlat.cs" />
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
     <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
     <Compile Include="FindReplace\FindThingSectorRef.cs" />
