@@ -1165,36 +1165,47 @@ namespace CodeImp.DoomBuilder
 			savefile.ValidateNames = true;
 			if(savefile.ShowDialog(mainwindow) == DialogResult.OK)
 			{
-				// Display status
-				mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
-				Cursor.Current = Cursors.WaitCursor;
-
-				// Set this to false so we can see if errors are added
-				General.ErrorLogger.IsErrorAdded = false;
-
-				// Save the map
-				General.Plugins.OnMapSaveBegin(SavePurpose.AsNewFile);
-				if(map.SaveMap(savefile.FileName, SavePurpose.AsNewFile))
+				// Check if we're saving to the same file as the original.
+				// Because some muppets use Save As even when saving to the same file.
+				string currentfilename = Path.GetFullPath(map.FilePathName).ToLowerInvariant();
+				string savefilename = Path.GetFullPath(savefile.FileName).ToLowerInvariant();
+				if(currentfilename == savefilename)
 				{
-					// Add recent file
-					mainwindow.AddRecentFile(map.FilePathName);
-					result = true;
-				}
-				General.Plugins.OnMapSaveEnd(SavePurpose.AsNewFile);
-
-				// All done
-				mainwindow.UpdateInterface();
-
-				if(errorlogger.IsErrorAdded)
-				{
-					// Show any errors if preferred
-					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
-					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+					SaveMap();
 				}
 				else
-					mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
-
-				Cursor.Current = Cursors.Default;
+				{
+					// Display status
+					mainwindow.DisplayStatus(StatusType.Busy, "Saving map file...");
+					Cursor.Current = Cursors.WaitCursor;
+					
+					// Set this to false so we can see if errors are added
+					General.ErrorLogger.IsErrorAdded = false;
+					
+					// Save the map
+					General.Plugins.OnMapSaveBegin(SavePurpose.AsNewFile);
+					if(map.SaveMap(savefile.FileName, SavePurpose.AsNewFile))
+					{
+						// Add recent file
+						mainwindow.AddRecentFile(map.FilePathName);
+						result = true;
+					}
+					General.Plugins.OnMapSaveEnd(SavePurpose.AsNewFile);
+					
+					// All done
+					mainwindow.UpdateInterface();
+					
+					if(errorlogger.IsErrorAdded)
+					{
+						// Show any errors if preferred
+						mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
+						if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+					}
+					else
+						mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
+					
+					Cursor.Current = Cursors.Default;
+				}
 			}
 			
 			savefile.Dispose();
