@@ -96,6 +96,15 @@ namespace CodeImp.DoomBuilder.Plugins
 				// Make plug instance
 				plug = CreateObject<Plug>(t);
 				plug.Plugin = this;
+
+				// Verify minimum revision number
+				int thisrevision = General.ThisAssembly.GetName().Version.Revision;
+				if((thisrevision != 0) && (plug.MinimumRevision > thisrevision))
+				{
+					// Can't load this plugin because it is meant for a newer version
+					General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin \"" + shortfilename + "\", the Plugin is made for Doom Builder 2 core revision " + plug.MinimumRevision + " and you are running revision " + thisrevision + ".");
+					throw new InvalidProgramException();
+				}
 			}
 			else
 			{
