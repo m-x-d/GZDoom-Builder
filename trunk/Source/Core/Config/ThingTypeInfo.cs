@@ -245,10 +245,16 @@ namespace CodeImp.DoomBuilder.Config
 		internal void ModifyByDecorateActor(ActorStructure actor)
 		{
 			// Set the title
-			if(actor.HasPropertyWithValue("tag"))
+			if(actor.HasPropertyWithValue("$title"))
+				title = actor.GetPropertyAllValues("$title");
+			else if(actor.HasPropertyWithValue("tag"))
 				title = actor.GetPropertyAllValues("tag");
 			else if(string.IsNullOrEmpty(title))
 				title = actor.ClassName;
+				
+			// Remove doublequotes from title
+			if((title.Length > 2) && title.StartsWith("\"") && title.EndsWith("\""))
+				title = title.Substring(1, title.Length - 2);
 			
 			// Set sprite
 			string suitablesprite = actor.FindSuitableSprite();

@@ -358,6 +358,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Copy props
 			foreach(KeyValuePair<string, List<string>> p in baseactor.props)
 				this.props.Add(p.Key, new List<string>(p.Value));
+			
+			// Reset the game property, because it is never inherited
+			props["game"] = new List<string>();
 		}
 
 		/// <summary>
