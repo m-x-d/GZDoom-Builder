@@ -517,8 +517,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			float endx = pr.Value.Position.x + 10.0f;
 			Line2D starttoright = new Line2D(start.Value.Position, new Vector2D(endx, start.Value.Position.y));
 			
-			// Calculate a small bonus (half mappixel)
-			bonus = starttoright.GetNearestOnLine(new Vector2D(start.Value.Position.x + 0.5f, start.Value.Position.y));
+			// Calculate a small bonus (0.1 mappixel)
+			bonus = starttoright.GetNearestOnLine(new Vector2D(start.Value.Position.x + 0.1f, start.Value.Position.y));
 			
 			// Go for all lines in the outer polygon
 			v1 = p.Last;
@@ -553,16 +553,48 @@ namespace CodeImp.DoomBuilder.Geometry
 							// Rule out vertices before the scan line
 							if(u < 0.0f) u = float.MaxValue;
 							if(ul < 0.0f) ul = float.MaxValue;
+
+							float insert_u = Math.Min(u, ul);
 							
-							// v2 must be closer, because we must cut in so that it stays a clockwise polygon
-							// We give a small bonus to ensure this choice is preferred over the other lines
-							// that end in the same location
-							if((ul < u) && ((ul - bonus) < foundu))
+							// Check in which direction the line goes.
+							if(v1.Value.Position.x > v2.Value.Position.x)
 							{
-								insertbefore = v2.Next ?? v2.List.First;
-								foundu = (ul - bonus);
+								// The line goes from right to left (towards our start point)
+								// so we must always insert our cut after this line.
+								
+								// If the next line goes up, we consider this a better candidate than
+								// a horizontal line that goes from left to right (the other cut line)
+								// so we give it a small bonus.
+								LinkedListNode<EarClipVertex> v3 = v2.Next ?? v2.List.First;
+								if(v3.Value.Position.y < v2.Value.Position.y)
+									insert_u -= bonus;
+
+								// Remember this when it is a closer match
+								if(insert_u <= foundu)
+								{
+									insertbefore = v2.Next ?? v2.List.First;
+									foundu = insert_u;
+								}
 							}
-							
+							else
+							{
+								// The line goes from left to right (away from our start point)
+								// so we must always insert our cut before this line.
+								
+								// If the previous line goes down, we consider this a better candidate than
+								// a horizontal line that goes from right to left (the other cut line)
+								// so we give it a small bonus.
+								LinkedListNode<EarClipVertex> v3 = v1.Previous ?? v1.List.Last;
+								if(v3.Value.Position.y > v1.Value.Position.y)
+									insert_u -= bonus;
+
+								// Remember this when it is a closer match
+								if(insert_u <= foundu)
+								{
+									insertbefore = v2;
+									foundu = insert_u;
+								}
+							}
 						}
 					}
 					// Found a closer match?
