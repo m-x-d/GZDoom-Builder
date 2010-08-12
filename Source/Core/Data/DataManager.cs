@@ -1162,8 +1162,8 @@ namespace CodeImp.DoomBuilder.Data
 					// Load Decorate info cumulatively (the last Decorate is added to the previous)
 					// I'm not sure if this is the right thing to do though.
 					currentreader = dr;
-					Stream decodata = dr.GetDecorateData("DECORATE");
-					if(decodata != null)
+					List<Stream> decostreams = dr.GetDecorateData("DECORATE");
+					foreach(Stream decodata in decostreams)
 					{
 						// Parse the data
 						decodata.Seek(0, SeekOrigin.Begin);
@@ -1246,8 +1246,8 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadDecorateFromLocation(DecorateParser parser, string location)
 		{
 			//General.WriteLogLine("Including DECORATE resource '" + location + "'...");
-			Stream decodata = currentreader.GetDecorateData(location);
-			if(decodata != null)
+			List<Stream> decostreams = currentreader.GetDecorateData(location);
+			foreach(Stream decodata in decostreams)
 			{
 				// Parse this data
 				parser.Parse(decodata, location);

@@ -699,16 +699,25 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Things
 
 		// This finds and returns a sprite stream
-		public override Stream GetDecorateData(string pname)
+		public override List<Stream> GetDecorateData(string pname)
 		{
-			Lump lump;
-
+			List<Stream> streams = new List<Stream>();
+			int lumpindex;
+			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
-
-			// Find the lump
-			lump = file.FindLump(pname);
-			if(lump != null) return lump.Stream; else return null;
+			
+			// Find all lumps named 'DECORATE'
+			lumpindex = file.FindLumpIndex(pname);
+			while(lumpindex > -1)
+			{
+				streams.Add(file.Lumps[lumpindex].Stream);
+				
+				// Find next
+				lumpindex = file.FindLumpIndex(pname, lumpindex + 1);
+			}
+			
+			return streams;
 		}
 
 		#endregion

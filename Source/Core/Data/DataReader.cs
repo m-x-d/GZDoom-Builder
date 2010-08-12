@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Decorate
 
 		// When implemented, this returns the decorate lump
-		public virtual Stream GetDecorateData(string pname) { return null; }
+		public virtual List<Stream> GetDecorateData(string pname) { return new List<Stream>(); }
 
 		#endregion
 	}
