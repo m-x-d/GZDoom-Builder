@@ -54,7 +54,10 @@ namespace CodeImp.DoomBuilder.IO
 			for(int i = 0; i < files.Length; i++)
 			{
 				entries[i] = new DirectoryFileEntry(files[i], path);
-				hashedentries.Add(entries[i].filepathname.ToLowerInvariant(), entries[i]);
+				string hashkey = entries[i].filepathname.ToLowerInvariant();
+				if(hashedentries.ContainsKey(hashkey))
+					throw new IOException("Multiple files with the same filename in the same directory are not allowed. See: \"" + entries[i].filepathname + "\"");
+				hashedentries.Add(hashkey, entries[i]);
 			}
 		}
 
@@ -67,7 +70,10 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(DirectoryFileEntry e in sourceentries)
 			{
 				entries[index] = e;
-				hashedentries.Add(e.filepathname.ToLowerInvariant(), e);
+				string hashkey = e.filepathname.ToLowerInvariant();
+				if(hashedentries.ContainsKey(hashkey))
+					throw new IOException("Multiple files with the same filename in the same directory are not allowed. See: \"" + e.filepathname + "\"");
+				hashedentries.Add(hashkey, e);
 				index++;
 			}
 		}
