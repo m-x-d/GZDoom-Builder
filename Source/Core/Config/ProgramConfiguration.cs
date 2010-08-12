@@ -418,9 +418,12 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					if(!sd.MiddleTexture.StartsWith("-"))
 					{
-						foundone = true;
 						defaulttexture = sd.MiddleTexture;
-						break;
+						if(General.Map.Data.GetTextureExists(defaulttexture))
+						{
+							foundone = true;
+							break;
+						}
 					}
 				}
 				
@@ -455,10 +458,18 @@ namespace CodeImp.DoomBuilder.Config
 				foundone = false;
 				if(General.Map.Map.Sectors.Count > 0)
 				{
-					foundone = true;
-					defaultfloortexture = General.GetByIndex(General.Map.Map.Sectors, 0).FloorTexture;
+					// Find one that is known
+					foreach(Sector s in General.Map.Map.Sectors)
+					{
+						defaultfloortexture = s.FloorTexture;
+						if(General.Map.Data.GetFlatExists(defaultfloortexture))
+						{
+							foundone = true;
+							break;
+						}
+					}
 				}
-
+				
 				// Pick the first FLOOR from the list.
 				if(!foundone)
 				{
@@ -480,7 +491,7 @@ namespace CodeImp.DoomBuilder.Config
 						defaultfloortexture = General.Map.Data.FlatNames[0];
 				}
 			}
-
+			
 			// Default ceiling missing?
 			if((defaultceiltexture == null) || (defaultceiltexture.Length == 0))
 			{
@@ -488,10 +499,18 @@ namespace CodeImp.DoomBuilder.Config
 				foundone = false;
 				if(General.Map.Map.Sectors.Count > 0)
 				{
-					foundone = true;
-					defaultceiltexture = General.GetByIndex(General.Map.Map.Sectors, 0).CeilTexture;
+					// Find one that is known
+					foreach(Sector s in General.Map.Map.Sectors)
+					{
+						defaultceiltexture = s.CeilTexture;
+						if(General.Map.Data.GetFlatExists(defaultceiltexture))
+						{
+							foundone = true;
+							break;
+						}
+					}
 				}
-
+				
 				// Pick the first CEIL from the list.
 				if(!foundone)
 				{

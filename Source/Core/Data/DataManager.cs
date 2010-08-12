@@ -832,7 +832,20 @@ namespace CodeImp.DoomBuilder.Data
 			// No such patch found
 			return null;
 		}
-
+		
+		// This checks if a given texture is known
+		public bool GetTextureExists(string name)
+		{
+			long longname = Lump.MakeLongName(name);
+			return textures.ContainsKey(longname);
+		}
+		
+		// This checks if a given texture is known
+		public bool GetTextureExists(long longname)
+		{
+			return textures.ContainsKey(longname);
+		}
+		
 		// This returns an image by string
 		public ImageData GetTextureImage(string name)
 		{
@@ -840,7 +853,7 @@ namespace CodeImp.DoomBuilder.Data
 			long longname = Lump.MakeLongName(name);
 			return GetTextureImage(longname);
 		}
-
+		
 		// This returns an image by long
 		public ImageData GetTextureImage(long longname)
 		{
@@ -856,45 +869,6 @@ namespace CodeImp.DoomBuilder.Data
 				return new UnknownImage(Properties.Resources.UnknownImage);
 			}
 		}
-		
-
-		// BAD! These block while loading the image. That is not
-		// what our background loading system is for!
-		/*
-		// This returns a bitmap by string
-		public Bitmap GetTextureBitmap(string name)
-		{
-			ImageData img = GetTextureImage(name);
-			img.LoadImage();
-			return img.Bitmap;
-		}
-
-		// This returns a bitmap by string
-		public Bitmap GetTextureBitmap(long longname)
-		{
-			ImageData img = GetTextureImage(longname);
-			img.LoadImage();
-			return img.Bitmap;
-		}
-
-		// This returns a texture by string
-		public Texture GetTextureTexture(string name)
-		{
-			ImageData img = GetTextureImage(name);
-			img.LoadImage();
-			img.CreateTexture();
-			return img.Texture;
-		}
-
-		// This returns a texture by string
-		public Texture GetTextureTexture(long longname)
-		{
-			ImageData img = GetTextureImage(longname);
-			img.LoadImage();
-			img.CreateTexture();
-			return img.Texture;
-		}
-		*/
 		
 		#endregion
 
@@ -947,6 +921,19 @@ namespace CodeImp.DoomBuilder.Data
 			// No such patch found
 			return null;
 		}
+
+		// This checks if a flat is known
+		public bool GetFlatExists(string name)
+		{
+			long longname = Lump.MakeLongName(name);
+			return flats.ContainsKey(longname);
+		}
+
+		// This checks if a flat is known
+		public bool GetFlatExists(long longname)
+		{
+			return flats.ContainsKey(longname);
+		}
 		
 		// This returns an image by string
 		public ImageData GetFlatImage(string name)
@@ -971,44 +958,6 @@ namespace CodeImp.DoomBuilder.Data
 				return new UnknownImage(Properties.Resources.UnknownImage);
 			}
 		}
-
-		// BAD! These block while loading the image. That is not
-		// what our background loading system is for!
-		/*
-		// This returns a bitmap by string
-		public Bitmap GetFlatBitmap(string name)
-		{
-			ImageData img = GetFlatImage(name);
-			img.LoadImage();
-			return img.Bitmap;
-		}
-
-		// This returns a bitmap by string
-		public Bitmap GetFlatBitmap(long longname)
-		{
-			ImageData img = GetFlatImage(longname);
-			img.LoadImage();
-			return img.Bitmap;
-		}
-
-		// This returns a texture by string
-		public Texture GetFlatTexture(string name)
-		{
-			ImageData img = GetFlatImage(name);
-			img.LoadImage();
-			img.CreateTexture();
-			return img.Texture;
-		}
-
-		// This returns a texture by string
-		public Texture GetFlatTexture(long longname)
-		{
-			ImageData img = GetFlatImage(longname);
-			img.LoadImage();
-			img.CreateTexture();
-			return img.Texture;
-		}
-		*/
 		
 		#endregion
 

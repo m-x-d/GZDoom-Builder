@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.checks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.checks.AutoScroll = true;
+			this.checks.AutoSize = true;
 			this.checks.Columns = 2;
 			this.checks.Location = new System.Drawing.Point(10, 15);
 			this.checks.Margin = new System.Windows.Forms.Padding(1);
@@ -187,6 +188,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ErrorCheckForm_HelpRequested);
 			this.resultspanel.ResumeLayout(false);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
