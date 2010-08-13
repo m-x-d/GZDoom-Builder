@@ -1167,7 +1167,7 @@ namespace CodeImp.DoomBuilder
 			{
 				// Check if we're saving to the same file as the original.
 				// Because some muppets use Save As even when saving to the same file.
-				string currentfilename = Path.GetFullPath(map.FilePathName).ToLowerInvariant();
+				string currentfilename = (map.FilePathName.Length > 0) ? Path.GetFullPath(map.FilePathName).ToLowerInvariant() : "";
 				string savefilename = Path.GetFullPath(savefile.FileName).ToLowerInvariant();
 				if(currentfilename == savefilename)
 				{
