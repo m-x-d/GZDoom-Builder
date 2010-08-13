@@ -468,6 +468,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Highlight nothing
 			Highlight(false);
 		}
+		
+		// Something is undone
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+
+			editside = null;
+			nearestside = null;
+			alllines.Clear();
+			allsides.Clear();
+		}
+
+		// Something is redone
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+
+			editside = null;
+			nearestside = null;
+			alllines.Clear();
+			allsides.Clear();
+		}
 
 		// Processing
 		public override void OnProcess(double deltatime)
