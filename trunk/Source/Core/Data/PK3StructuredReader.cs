@@ -202,20 +202,20 @@ namespace CodeImp.DoomBuilder.Data
 				WADReader.LoadTextureSet("TEXTURE2", filedata, ref imgset, pnames);
 				filedata.Dispose();
 			}
-
+			
 			// Add images from TEXTURE1 and TEXTURE2 lump files
 			AddImagesToList(images, imgset);
-
+			
 			// Load TEXTURES lump file
 			imgset.Clear();
-			string texturesfile = FindFirstFile("TEXTURES", false);
-			if((texturesfile != null) && FileExists(texturesfile))
+			string[] alltexturefiles = GetAllFilesWithTitle("", "TEXTURES", false);
+			foreach(string texturesfile in alltexturefiles)
 			{
 				MemoryStream filedata = LoadFile(texturesfile);
 				WADReader.LoadHighresTextures(filedata, texturesfile, ref imgset, images, null);
 				filedata.Dispose();
 			}
-
+			
 			// Add images from TEXTURES lump file
 			AddImagesToList(images, imgset);
 			
@@ -342,8 +342,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Find in root directory
 			string filename = Path.GetFileName(pname);
 			string pathname = Path.GetDirectoryName(pname);
-			string foundfile = (filename.IndexOf('.') > -1) ? FindFirstFileWithExt(pathname, filename, false) : FindFirstFile(pathname, filename, false);
-			if((foundfile != null) && FileExists(foundfile))
+			string[] allfilenames = GetAllFilesWithTitle(pathname, filename, false);
+			foreach(string foundfile in allfilenames)
 			{
 				streams.Add(LoadFile(foundfile));
 			}
@@ -406,9 +406,12 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This must return true if the specified file exists
 		protected abstract bool FileExists(string filename);
-		
+
 		// This must return all files in a given directory
 		protected abstract string[] GetAllFiles(string path, bool subfolders);
+
+		// This must return all files in a given directory that have the given file title
+		protected abstract string[] GetAllFilesWithTitle(string path, string title, bool subfolders);
 
 		// This must return all files in a given directory that match the given extension
 		protected abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);

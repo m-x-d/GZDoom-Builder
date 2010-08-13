@@ -305,6 +305,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			List<ImageData> images = new List<ImageData>();
 			string rangestart, rangeend;
+			int lumpindex;
 			Lump lump;
 
 			// Error when suspended
@@ -322,16 +323,19 @@ namespace CodeImp.DoomBuilder.Data
 				// Load texture range
 				LoadTexturesRange(range.start, range.end, ref images, pnames);
 			}
-
+			
 			// Load TEXTURES lump file
-			lump = file.FindLump("TEXTURES");
-			if(lump != null)
+			lumpindex = file.FindLumpIndex("TEXTURES");
+			while(lumpindex > -1)
 			{
-				MemoryStream filedata = new MemoryStream(lump.Stream.ReadAllBytes());
+				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
 				WADReader.LoadHighresTextures(filedata, "TEXTURES", ref images, null, null);
 				filedata.Dispose();
+				
+				// Find next
+				lumpindex = file.FindLumpIndex("TEXTURES", lumpindex + 1);
 			}
-
+			
 			// Add images to the container-specific texture set
 			foreach(ImageData img in images)
 				textureset.AddTexture(img);

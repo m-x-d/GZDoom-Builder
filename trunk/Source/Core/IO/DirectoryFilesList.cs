@@ -138,6 +138,35 @@ namespace CodeImp.DoomBuilder.IO
 			}
 		}
 
+		// This returns a list of all files that are in the given path and subdirectories and have the given title
+		public List<string> GetAllFilesWithTitle(string path, string title)
+		{
+			path = CorrectPath(path).ToLowerInvariant();
+			title = title.ToLowerInvariant();
+			List<string> files = new List<string>(entries.Length);
+			for(int i = 0; i < entries.Length; i++)
+				if(entries[i].path.StartsWith(path) && (entries[i].filetitle == title))
+					files.Add(entries[i].filepathname);
+			return files;
+		}
+
+		// This returns a list of all files that are in the given path (optionally in subdirectories) and have the given title
+		public List<string> GetAllFilesWithTitle(string path, string title, bool subdirectories)
+		{
+			if(subdirectories)
+				return GetAllFilesWithTitle(path, title);
+			else
+			{
+				path = CorrectPath(path).ToLowerInvariant();
+				title = title.ToLowerInvariant();
+				List<string> files = new List<string>(entries.Length);
+				for(int i = 0; i < entries.Length; i++)
+					if((entries[i].path == path) && (entries[i].filetitle == title))
+						files.Add(entries[i].filepathname);
+				return files;
+			}
+		}
+
 		// This returns a list of all files that are in the given path and subdirectories and have the given extension
 		public List<string> GetAllFiles(string path, string extension)
 		{
