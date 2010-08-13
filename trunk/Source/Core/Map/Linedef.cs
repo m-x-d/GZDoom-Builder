@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
-		public const float SIDE_POINT_DISTANCE = 0.001f;
+		public const float SIDE_POINT_DISTANCE = 0.01f;
 		public const int NUM_ARGS = 5;
 		
 		#endregion
