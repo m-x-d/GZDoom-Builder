@@ -381,22 +381,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				l.Tag = General.Clamp(tag.GetResult(l.Tag), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
 				if(!action.Empty) l.Action = action.Value;
-				if(l.Action != 0)
-				{
-					l.Args[0] = arg0.GetResult(l.Args[0]);
-					l.Args[1] = arg1.GetResult(l.Args[1]);
-					l.Args[2] = arg2.GetResult(l.Args[2]);
-					l.Args[3] = arg3.GetResult(l.Args[3]);
-					l.Args[4] = arg4.GetResult(l.Args[4]);
-				}
-				else
-				{
-					l.Args[0] = 0;
-					l.Args[1] = 0;
-					l.Args[2] = 0;
-					l.Args[3] = 0;
-					l.Args[4] = 0;
-				}
+				l.Args[0] = arg0.GetResult(l.Args[0]);
+				l.Args[1] = arg1.GetResult(l.Args[1]);
+				l.Args[2] = arg2.GetResult(l.Args[2]);
+				l.Args[3] = arg3.GetResult(l.Args[3]);
+				l.Args[4] = arg4.GetResult(l.Args[4]);
 				
 				// Remove front side?
 				if((l.Front != null) && (frontside.CheckState == CheckState.Unchecked))
