@@ -854,7 +854,7 @@ namespace CodeImp.DoomBuilder.Map
 			else
 			{
 				// Compare front sectors
-				if(l1fs == l2fs)
+				if((l1fs != null) && (l1fs == l2fs))
 				{
 					// Copy textures
 					if(other.front != null) other.front.AddTexturesTo(this.back);
@@ -864,7 +864,7 @@ namespace CodeImp.DoomBuilder.Map
 					JoinChangeSidedefs(other, true, back);
 				}
 				// Compare back sectors
-				else if(l1bs == l2bs)
+				else if((l1bs != null) && (l1bs == l2bs))
 				{
 					// Copy textures
 					if(other.back != null) other.back.AddTexturesTo(this.front);
@@ -874,7 +874,7 @@ namespace CodeImp.DoomBuilder.Map
 					JoinChangeSidedefs(other, false, front);
 				}
 				// Compare front and back
-				else if(l1fs == l2bs)
+				else if((l1fs != null) && (l1fs == l2bs))
 				{
 					// Copy textures
 					if(other.front != null) other.front.AddTexturesTo(this.front);
@@ -884,7 +884,7 @@ namespace CodeImp.DoomBuilder.Map
 					JoinChangeSidedefs(other, true, front);
 				}
 				// Compare back and front
-				else if(l1bs == l2fs)
+				else if((l1bs != null) && (l1bs == l2fs))
 				{
 					// Copy textures
 					if(other.back != null) other.back.AddTexturesTo(this.back);
@@ -919,7 +919,7 @@ namespace CodeImp.DoomBuilder.Map
 						}
 					}
 					// This line single sided?
-					if(this.back == null)
+					else if(this.back == null)
 					{
 						// Other line with its back to this?
 						if(other.start == this.end)
@@ -985,23 +985,27 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This changes sidedefs (used for joining lines)
-		private void JoinChangeSidedefs(Linedef other, bool front, Sidedef newside)
+		// target:		The linedef on which to remove or create a new sidedef
+		// front:		Side on which to remove or create the sidedef (true for front side)
+		// newside:		The side from which to copy the properties to the new sidedef.
+		//				If this is null, no sidedef will be created (only removed)
+		private void JoinChangeSidedefs(Linedef target, bool front, Sidedef newside)
 		{
 			Sidedef sd;
 			
 			// Change sidedefs
 			if(front)
 			{
-				if(other.front != null) other.front.Dispose();
+				if(target.front != null) target.front.Dispose();
 			}
 			else
 			{
-				if(other.back != null) other.back.Dispose();
+				if(target.back != null) target.back.Dispose();
 			}
 			
 			if(newside != null)
 			{
-				sd = map.CreateSidedef(other, front, newside.Sector);
+				sd = map.CreateSidedef(target, front, newside.Sector);
 				newside.CopyPropertiesTo(sd);
 				sd.Marked = newside.Marked;
 			}
