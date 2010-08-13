@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Actions
 				
 			if(disregardshift)
 			{
-				keymask = (int)Keys.Shift | (int)Keys.Control;
+				keymask = (int)Keys.Shift; // | (int)Keys.Control;
 				keymask = ~keymask;
 			}
 			else
