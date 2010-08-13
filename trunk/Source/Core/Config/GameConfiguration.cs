@@ -73,6 +73,10 @@ namespace CodeImp.DoomBuilder.Config
 		private string decorategames;
         private string skyflatname;
 		private int maxtexturenamelength;
+		private int leftboundary;
+		private int rightboundary;
+		private int topboundary;
+		private int bottomboundary;
 		private bool doomlightlevels;
 		
 		// Skills
@@ -159,6 +163,10 @@ namespace CodeImp.DoomBuilder.Config
 		public string DecorateGames { get { return decorategames; } }
         public string SkyFlatName { get { return skyflatname; } }
 		public int MaxTextureNamelength { get { return maxtexturenamelength; } }
+		public int LeftBoundary { get { return leftboundary; } }
+		public int RightBoundary { get { return rightboundary; } }
+		public int TopBoundary { get { return topboundary; } }
+		public int BottomBoundary { get { return bottomboundary; } }
 		public bool DoomLightLevels { get { return doomlightlevels; } }
 		
 		// Skills
@@ -267,6 +275,10 @@ namespace CodeImp.DoomBuilder.Config
 			decorategames = cfg.ReadSetting("decorategames", "");
             skyflatname = cfg.ReadSetting("skyflatname", "F_SKY1");
 			maxtexturenamelength = cfg.ReadSetting("maxtexturenamelength", 8);
+			leftboundary = cfg.ReadSetting("leftboundary", -32768);
+			rightboundary = cfg.ReadSetting("rightboundary", 32767);
+			topboundary = cfg.ReadSetting("topboundary", 32767);
+			bottomboundary = cfg.ReadSetting("bottomboundary", -32768);
 			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 			

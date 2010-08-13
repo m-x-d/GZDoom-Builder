@@ -957,6 +957,56 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Anything to do?
 			if((selectedthings.Count > 0) || (selectedvertices.Count > 0))
 			{
+				Vector2D tl = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary);
+				Vector2D br = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.RightBoundary);
+
+				foreach (Vertex v in selectedvertices)
+				{
+					if (v.Position.x < tl.x) tl.x = (int)v.Position.x;
+					if (v.Position.x > br.x) br.x = (int)v.Position.x;
+					if (v.Position.y > tl.y) tl.y = (int)v.Position.y;
+					if (v.Position.y < br.y) br.y = (int)v.Position.y;
+				}
+
+				foreach (Thing t in selectedthings)
+				{
+					if (t.Position.x < tl.x) tl.x = (int)t.Position.x;
+					if (t.Position.x > br.x) br.x = (int)t.Position.x;
+					if (t.Position.y > tl.y) tl.y = (int)t.Position.y;
+					if (t.Position.y < br.y) br.y = (int)t.Position.y;
+				}
+
+				// Check if the selection is outside the map boundaries
+				if (tl.x < General.Map.Config.LeftBoundary || br.x > General.Map.Config.RightBoundary ||
+					tl.y > General.Map.Config.TopBoundary || br.y < General.Map.Config.BottomBoundary)
+				{
+					General.Interface.DisplayStatus(StatusType.Warning, "Error: selection out of map boundaries.");
+
+					// If we're in the process of switching to another mode, reset to selection
+					// to its old position
+					if (modealreadyswitching == true)
+					{
+						// Reset geometry in original position
+						int index = 0;
+						foreach (Vertex v in selectedvertices)
+							v.Move(vertexpos[index++]);
+
+						index = 0;
+						foreach (Thing t in selectedthings)
+						{
+							t.Rotate(thingangle[index]);
+							t.Move(thingpos[index++]);
+						}
+
+						// Resume normal undo/redo recording
+						General.Map.UndoRedo.IgnorePropChanges = false;
+
+						General.Map.Map.Update(true, true);
+					}
+
+					return;
+				}
+
 				Cursor.Current = Cursors.AppStarting;
 
 				if(!pasting)

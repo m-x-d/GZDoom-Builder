@@ -157,29 +157,33 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This draws a dotted grid line horizontally
-		public void DrawGridLineH(int y, ref PixelColor c)
+		public void DrawGridLineH(int y, int x1, int x2, ref PixelColor c)
 		{
 			int numpixels = visiblewidth >> 1;
 			int offset = y & 0x01;
 			int ywidth = y * width;
+			x1 = General.Clamp(x1 >> 1, 0, numpixels - 1);
+			x2 = General.Clamp(x2 >> 1, 0, numpixels - 1);
 			
-			if((y >= 0) && (y < height))
+			if ((y >= 0) && (y < height))
 			{
 				// Draw all pixels on this line
-				for(int i = 0; i < numpixels; i++) pixels[ywidth + ((i << 1) | offset)] = c;
+				for (int i = x1; i < x2; i++) pixels[ywidth + ((i << 1) | offset)] = c;
 			}
 		}
 
 		// This draws a dotted grid line vertically
-		public void DrawGridLineV(int x, ref PixelColor c)
+		public void DrawGridLineV(int x, int y1, int y2, ref PixelColor c)
 		{
 			int numpixels = visibleheight >> 1;
 			int offset = x & 0x01;
+			y1 = General.Clamp(y1 >> 1, 0, numpixels - 1);
+			y2 = General.Clamp(y2 >> 1, 0, numpixels - 1);
 			
 			if((x >= 0) && (x < width))
 			{
 				// Draw all pixels on this line
-				for(int i = 0; i < numpixels; i++) pixels[((i << 1) | offset) * width + x] = c;
+				for (int i = y1; i < y2; i++) pixels[((i << 1) | offset) * width + x] = c;
 			}
 		}
 
