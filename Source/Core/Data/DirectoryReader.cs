@@ -278,7 +278,13 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			return files.GetAllFiles(path, subfolders).ToArray();
 		}
-
+		
+		// This returns all files in a given directory that have the given file title
+		protected override string[] GetAllFilesWithTitle(string path, string title, bool subfolders)
+		{
+			return files.GetAllFilesWithTitle(path, title, subfolders).ToArray();
+		}
+		
 		// This returns all files in a given directory that match the given extension
 		protected override string[] GetFilesWithExt(string path, string extension, bool subfolders)
 		{
