@@ -208,6 +208,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, IRenderer2D renderer, List<DrawnVertex> points)
 		{
 			DrawnVertex p = new DrawnVertex();
+			Vector2D vm = mousemappos;
 			float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
 
 			// Snap to nearest?
@@ -289,11 +290,55 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
+			// if the mouse cursor is outside the map bondaries check if the line between the last set point and the
+			// mouse cursor intersect any of the boundary lines. If it does, set the position to this intersection
+			if (points.Count > 0 &&
+				(mousemappos.x < General.Map.Config.LeftBoundary || mousemappos.x > General.Map.Config.RightBoundary ||
+				mousemappos.y > General.Map.Config.TopBoundary || mousemappos.y < General.Map.Config.BottomBoundary))
+			{
+				Line2D dline = new Line2D(mousemappos, points[points.Count - 1].pos);
+				bool foundintersection = false;
+				float u = 0.0f;
+				List<Line2D> blines = new List<Line2D>();
+
+				// lines for left, top, right and bottom bondaries
+				blines.Add(new Line2D(General.Map.Config.LeftBoundary, General.Map.Config.BottomBoundary, General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary));
+				blines.Add(new Line2D(General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary, General.Map.Config.RightBoundary, General.Map.Config.TopBoundary));
+				blines.Add(new Line2D(General.Map.Config.RightBoundary, General.Map.Config.TopBoundary, General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary));
+				blines.Add(new Line2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary, General.Map.Config.LeftBoundary, General.Map.Config.BottomBoundary));
+
+				// check for intersections with boundaries
+				for (int i = 0; i < blines.Count; i++)
+				{
+					if (!foundintersection)
+					{
+						// only check for intersection if the last set point is not on the
+						// line we are checking against
+						if (blines[i].GetSideOfLine(points[points.Count - 1].pos) != 0.0f)
+						{
+							foundintersection = blines[i].GetIntersection(dline, out u);
+						}
+					}
+				}
+
+				// if there was no intersection set the position to the last set point
+				if (!foundintersection)
+					vm = points[points.Count - 1].pos;
+				else
+					vm = dline.GetCoordinatesAt(u);
+
+			}
+
+
 			// Snap to grid?
 			if(snaptogrid)
 			{
 				// Aligned to grid
-				p.pos = General.Map.Grid.SnappedToGrid(mousemappos);
+				p.pos = General.Map.Grid.SnappedToGrid(vm);
+
+				// special handling 
+				if (p.pos.x > General.Map.Config.RightBoundary) p.pos.x = General.Map.Config.RightBoundary;
+				if (p.pos.y < General.Map.Config.BottomBoundary) p.pos.y = General.Map.Config.BottomBoundary;
 				p.stitch = snaptonearest;
 				p.stitchline = snaptonearest;
 				return p;
@@ -301,7 +346,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Normal position
-				p.pos = mousemappos;
+				p.pos = vm;
 				p.stitch = snaptonearest;
 				p.stitchline = snaptonearest;
 				return p;
@@ -315,14 +360,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This draws a point at a specific location
-		public void DrawPointAt(DrawnVertex p)
+		public bool DrawPointAt(DrawnVertex p)
 		{
-			DrawPointAt(p.pos, p.stitch, p.stitchline);
+			return DrawPointAt(p.pos, p.stitch, p.stitchline);
 		}
 		
 		// This draws a point at a specific location
-		public void DrawPointAt(Vector2D pos, bool stitch, bool stitchline)
+		public bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline)
 		{
+			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
+				return false;
+
 			DrawnVertex newpoint = new DrawnVertex();
 			newpoint.pos = pos;
 			newpoint.stitch = stitch;
@@ -345,6 +394,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					FinishDraw();
 				}
 			}
+
+			return true;
 		}
 		
 		#endregion
@@ -498,7 +549,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Interface.MouseInDisplay)
 			{
 				DrawnVertex newpoint = GetCurrentPosition();
-				DrawPointAt(newpoint);
+
+				if(!DrawPointAt(newpoint)) General.Interface.DisplayStatus(StatusType.Warning, "Failed to draw point: outside of map boundaries.");
 			}
 		}
 		

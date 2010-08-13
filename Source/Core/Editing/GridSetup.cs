@@ -236,8 +236,16 @@ namespace CodeImp.DoomBuilder.Editing
 		// This snaps to the nearest grid coordinate
 		public static Vector2D SnappedToGrid(Vector2D v, float gridsize, float gridsizeinv)
 		{
-			return new Vector2D((float)Math.Round(v.x * gridsizeinv) * gridsize,
-								(float)Math.Round(v.y * gridsizeinv) * gridsize);
+			Vector2D sv = new Vector2D((float)Math.Round(v.x * gridsizeinv) * gridsize,
+			                    (float)Math.Round(v.y * gridsizeinv) * gridsize);
+
+			if (sv.x < General.Map.Config.LeftBoundary) sv.x = General.Map.Config.LeftBoundary;
+			else if (sv.x > General.Map.Config.RightBoundary) sv.x = General.Map.Config.RightBoundary;
+
+			if (sv.y > General.Map.Config.TopBoundary) sv.y = General.Map.Config.TopBoundary;
+			else if (sv.y < General.Map.Config.BottomBoundary) sv.y = General.Map.Config.BottomBoundary;
+
+			return sv;
 		}
 
 		#endregion

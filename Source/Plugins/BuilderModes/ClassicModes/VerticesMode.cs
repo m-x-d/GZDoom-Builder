@@ -322,8 +322,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Start drawing mode
 					DrawGeometryMode drawmode = new DrawGeometryMode();
 					DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, new List<DrawnVertex>());
-					drawmode.DrawPointAt(v);
-					General.Editing.ChangeMode(drawmode);
+
+					if (drawmode.DrawPointAt(v))
+						General.Editing.ChangeMode(drawmode);
+					else
+						General.Interface.DisplayStatus(StatusType.Warning, "Failed to draw point: outside of map boundaries.");
 				}
 			}
 			

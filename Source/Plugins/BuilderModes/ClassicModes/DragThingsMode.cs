@@ -157,11 +157,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Vector2D oldpos = dragitem.Position;
 			Thing nearest;
-			int i = 0;
+			Vector2D tl, br;
 
 			// don't move if the offset contains invalid data
 			if (!offset.IsFinite())	return false;
-			
+
+			// Find the outmost things
+			tl = br = oldpositions[0];
+			for (int i = 0; i < oldpositions.Count; i++)
+			{
+				if (oldpositions[i].x < tl.x) tl.x = (int)oldpositions[i].x;
+				if (oldpositions[i].x > br.x) br.x = (int)oldpositions[i].x;
+				if (oldpositions[i].y > tl.y) tl.y = (int)oldpositions[i].y;
+				if (oldpositions[i].y < br.y) br.y = (int)oldpositions[i].y;
+			}
+
 			// Snap to nearest?
 			if(snapnearest)
 			{
@@ -193,9 +203,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				offset += (Vector2D)dragitem.Position - (dragitemposition + offset);
 			}
 
+			// Make sure the offset is inside the map boundaries
+			if (offset.x + tl.x < General.Map.Config.LeftBoundary) offset.x = General.Map.Config.LeftBoundary - tl.x;
+			if (offset.x + br.x > General.Map.Config.RightBoundary) offset.x = General.Map.Config.RightBoundary - br.x;
+			if (offset.y + tl.y > General.Map.Config.TopBoundary) offset.y = General.Map.Config.TopBoundary - tl.y;
+			if (offset.y + br.y < General.Map.Config.BottomBoundary) offset.y = General.Map.Config.BottomBoundary - br.y;
+
 			// Drag item moved?
 			if(!snapgrid || ((Vector2D)dragitem.Position != oldpos))
 			{
+				int i = 0;
+
 				// Move selected geometry
 				foreach(Thing t in selectedthings)
 				{

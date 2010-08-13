@@ -347,10 +347,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Insert a new item and select it for dragging
 					General.Map.UndoRedo.CreateUndo("Insert thing");
 					Thing t = InsertThing(mousemappos);
-					General.Map.Map.ClearSelectedThings();
-					t.Selected = true;
-					Highlight(t);
-					General.Interface.RedrawDisplay();
+
+					if (t == null)
+					{
+						General.Map.UndoRedo.WithdrawUndo();
+					}
+					else
+					{
+						General.Map.Map.ClearSelectedThings();
+						t.Selected = true;
+						Highlight(t);
+						General.Interface.RedrawDisplay();
+					}
 				}
 			}
 
@@ -537,6 +545,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Insert new thing
 				General.Map.UndoRedo.CreateUndo("Insert thing");
 				Thing t = InsertThing(mousemappos);
+
+				if (t == null)
+				{
+					General.Map.UndoRedo.WithdrawUndo();
+					return;
+				}
 				
 				// Edit the thing?
 				if(BuilderPlug.Me.EditNewThing)
@@ -562,6 +576,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This creates a new thing
 		private Thing InsertThing(Vector2D pos)
 		{
+			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
+				return null;
+			}
+
 			// Create things at mouse position
 			Thing t = General.Map.Map.CreateThing();
 			General.Settings.ApplyDefaultThingSettings(t);
