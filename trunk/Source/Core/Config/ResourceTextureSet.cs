@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Matching textures and flats
 		private Dictionary<long, ImageData> textures;
 		private Dictionary<long, ImageData> flats;
-		private int locationtype;
+		private DataLocation location;
 
 		#endregion
 
@@ -52,17 +52,17 @@ namespace CodeImp.DoomBuilder.Config
 		
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
 		public ICollection<ImageData> Flats { get { return flats.Values; } }
-		public int LocationType { get { return locationtype; } }
+		public DataLocation Location { get { return location; } }
 		
 		#endregion
 
 		#region ================== Constructor / Destructor
 
 		// New texture set constructor
-		public ResourceTextureSet(string name, int locationtype)
+		public ResourceTextureSet(string name, DataLocation location)
 		{
 			this.name = name;
-			this.locationtype = locationtype;
+			this.location = location;
 			this.textures = new Dictionary<long, ImageData>();
 			this.flats = new Dictionary<long, ImageData>();
 		}
@@ -74,13 +74,29 @@ namespace CodeImp.DoomBuilder.Config
 		// Add a texture
 		internal void AddTexture(ImageData image)
 		{
-			textures.Add(image.LongName, image);
+			if(textures.ContainsKey(image.LongName))
+				General.ErrorLogger.Add(ErrorType.Warning, "Texture \"" + image.Name + "\" is double defined in resource \"" + this.Location.location + "\".");
+			textures[image.LongName] = image;
 		}
 
 		// Add a flat
 		internal void AddFlat(ImageData image)
 		{
-			flats.Add(image.LongName, image);
+			if(flats.ContainsKey(image.LongName))
+				General.ErrorLogger.Add(ErrorType.Warning, "Flat \"" + image.Name + "\" is double defined in resource \"" + this.Location.location + "\".");
+			flats[image.LongName] = image;
+		}
+
+		// Check if this set has a texture
+		internal bool TextureExists(ImageData image)
+		{
+			return textures.ContainsKey(image.LongName);
+		}
+
+		// Check if this set has a flat
+		internal bool FlatExists(ImageData image)
+		{
+			return flats.ContainsKey(image.LongName);
 		}
 
 		// Mix the textures and flats

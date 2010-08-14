@@ -73,6 +73,8 @@ namespace CodeImp.DoomBuilder.IO
 		public abstract int MinTag { get; }
 		public abstract int MaxAction { get; }
 		public abstract int MinAction { get; }
+		public abstract int MaxArgument { get; }
+		public abstract int MinArgument { get; }
 		public abstract int MaxEffect { get; }
 		public abstract int MinEffect { get; }
 		public abstract int MaxBrightness { get; }

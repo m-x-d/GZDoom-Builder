@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Keep information
 			location = dl;
-			textureset = new ResourceTextureSet(GetTitle(), dl.type);
+			textureset = new ResourceTextureSet(GetTitle(), dl);
 		}
 
 		// Disposer

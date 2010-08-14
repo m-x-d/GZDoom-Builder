@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				item = texturesets.Items.Add(ts.Name);
 				item.Tag = ts;
-				item.ImageIndex = 2 + ts.LocationType;
+				item.ImageIndex = 2 + ts.Location.type;
 				item.UseItemStyleForSubItems = false;
 				item.SubItems.Add(ts.Textures.Count.ToString(), item.ForeColor,
 						item.BackColor, new Font(item.Font, FontStyle.Regular));
