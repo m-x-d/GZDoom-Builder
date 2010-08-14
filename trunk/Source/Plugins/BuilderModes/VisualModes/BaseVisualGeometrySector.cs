@@ -258,22 +258,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit button released
 		public virtual void OnEditEnd()
 		{
-			// Not using any modifier buttons
-			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
+			if(General.Interface.IsActiveWindow)
 			{
-				if(General.Interface.IsActiveWindow)
+				List<Sector> sectors = mode.GetSelectedSectors();
+				DialogResult result = General.Interface.ShowEditSectors(sectors);
+				if(result == DialogResult.OK)
 				{
-					List<Sector> sectors = mode.GetSelectedSectors();
-					DialogResult result = General.Interface.ShowEditSectors(sectors);
-					if(result == DialogResult.OK)
+					// Rebuild sector
+					foreach(Sector s in sectors)
 					{
-						// Rebuild sector
-						foreach(Sector s in sectors)
-						{
-							VisualSector vs = mode.GetVisualSector(s);
-							if(vs != null)
-								(vs as BaseVisualSector).UpdateSectorGeometry(true);
-						}
+						VisualSector vs = mode.GetVisualSector(s);
+						if(vs != null)
+							(vs as BaseVisualSector).UpdateSectorGeometry(true);
 					}
 				}
 			}

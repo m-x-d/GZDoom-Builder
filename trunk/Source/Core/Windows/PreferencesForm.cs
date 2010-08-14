@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private PreferencesController controller;
 		private bool allowapplycontrol = false;
 		private bool disregardshift = false;
+		private bool disregardcontrol = false;
 
 		private bool reloadresources = false;
 		
@@ -466,7 +467,7 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift, "Shift+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift, "Shift+ScrollDown"));
 			}
-			if(a.AllowMouse && !a.DisregardShift)
+			if(a.AllowMouse && !a.DisregardControl)
 			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Control, "Ctrl+LButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Control, "Ctrl+MButton"));
@@ -474,12 +475,12 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Control, "Ctrl+XButton1"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Control, "Ctrl+XButton2"));
 			}
-			if(a.AllowScroll && !a.DisregardShift)
+			if(a.AllowScroll && !a.DisregardControl)
 			{
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Control, "Ctrl+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Control, "Ctrl+ScrollDown"));
 			}
-			if(a.AllowMouse && !a.DisregardShift)
+			if(a.AllowMouse && !a.DisregardShift && !a.DisregardControl)
 			{
 				actioncontrol.Items.Add(new KeyControl(Keys.LButton | Keys.Shift | Keys.Control, "Ctrl+Shift+LButton"));
 				actioncontrol.Items.Add(new KeyControl(Keys.MButton | Keys.Shift | Keys.Control, "Ctrl+Shift+MButton"));
@@ -487,7 +488,7 @@ namespace CodeImp.DoomBuilder.Windows
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton1 | Keys.Shift | Keys.Control, "Ctrl+Shift+XButton1"));
 				actioncontrol.Items.Add(new KeyControl(Keys.XButton2 | Keys.Shift | Keys.Control, "Ctrl+Shift+XButton2"));
 			}
-			if(a.AllowScroll && !a.DisregardShift)
+			if(a.AllowScroll && !a.DisregardShift && !a.DisregardControl)
 			{
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollUp | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollUp"));
 				actioncontrol.Items.Add(new KeyControl((int)SpecialKeys.MScrollDown | (int)Keys.Shift | (int)Keys.Control, "Ctrl+Shift+ScrollDown"));
@@ -499,6 +500,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			Actions.Action action;
 			KeyControl keycontrol;
+			string disregardkeys = "";
 			int key;
 
 			// Anything selected?
@@ -511,6 +513,7 @@ namespace CodeImp.DoomBuilder.Windows
 				action = General.Actions[listactions.SelectedItems[0].Name];
 				key = (int)listactions.SelectedItems[0].SubItems[1].Tag;
 				disregardshift = action.DisregardShift;
+				disregardcontrol = action.DisregardControl;
 				
 				// Enable panel
 				actioncontrolpanel.Enabled = true;
@@ -518,7 +521,16 @@ namespace CodeImp.DoomBuilder.Windows
 				actiondescription.Text = action.Description;
 				actioncontrol.SelectedIndex = -1;
 				actionkey.Text = "";
-				disregardshiftlabel.Visible = disregardshift;
+				
+				if(disregardshift && disregardcontrol)
+					disregardkeys = "Shift and Control";
+				else if(disregardshift)
+					disregardkeys = "Shift";
+				else if(disregardcontrol)
+					disregardkeys = "Control";
+
+				disregardshiftlabel.Text = disregardshiftlabel.Tag.ToString().Replace("%s", disregardkeys);
+				disregardshiftlabel.Visible = disregardshift | disregardcontrol;
 				
 				// Fill special controls list
 				FillControlsList(action);
@@ -590,7 +602,8 @@ namespace CodeImp.DoomBuilder.Windows
 				allowapplycontrol = false;
 				
 				// Remove modifier keys from the key if needed
-				if(disregardshift) key &= ~(int)Keys.Modifiers;
+				if(disregardshift) key &= ~(int)Keys.Shift;
+				if(disregardcontrol) key &= ~(int)Keys.Control;
 				
 				// Deselect anything from the combobox
 				actioncontrol.SelectedIndex = -1;
