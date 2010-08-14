@@ -962,6 +962,13 @@ namespace CodeImp.DoomBuilder.Data
 				return new UnknownImage(Properties.Resources.UnknownImage);
 			}
 		}
+
+		// This returns an image by long and doesn't check if it exists
+		public ImageData GetFlatImageKnown(long longname)
+		{
+			// Return flat
+			return flats[longname];
+		}
 		
 		#endregion
 

@@ -51,6 +51,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		public int numvertices;
 		public int bufferindex;
 		
+		// Bounding box for fast culling
+		public RectangleF bbox;
+		
 		// Offset in the buffer (in number of vertices)
 		public int vertexoffset;
 		
@@ -78,6 +81,25 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.numvertices = oldentry.numvertices;
 			this.bufferindex = oldentry.bufferindex;
 			this.vertexoffset = oldentry.vertexoffset;
+		}
+
+		// This calculates the bounding box from the vertices
+		public void UpdateBBox()
+		{
+			float left = float.MaxValue;
+			float right = float.MinValue;
+			float top = float.MaxValue;
+			float bottom = float.MinValue;
+			
+			for(int i = 0; i < floorvertices.Length; i++)
+			{
+				if(floorvertices[i].x < left) left = floorvertices[i].x;
+				if(floorvertices[i].x > right) right = floorvertices[i].x;
+				if(floorvertices[i].y < top) top = floorvertices[i].y;
+				if(floorvertices[i].y > bottom) bottom = floorvertices[i].y;
+			}
+
+			bbox = new RectangleF(left, top, right - left, bottom - top);
 		}
 	}
 }

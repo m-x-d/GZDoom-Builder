@@ -126,6 +126,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private int lastgridsize;
 		private float lastgridx;
 		private float lastgridy;
+		private RectangleF viewport;
+		private RectangleF yviewport;
 
 		// Presentation
 		private Presentation present;
@@ -529,6 +531,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
 			graphics.Device.SetTransform(TransformState.View, Matrix.Multiply(translate, scaling));
 			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
+			Vector2D lt = DisplayToMap(new Vector2D(0.0f, 0.0f));
+			Vector2D rb = DisplayToMap(new Vector2D((float)windowsize.Width, (float)windowsize.Height));
+			viewport = new RectangleF(lt.x, lt.y, rb.x - lt.x, rb.y - lt.y);
+			yviewport = new RectangleF(lt.x, rb.y, rb.x - lt.x, lt.y - rb.y);
 		}
 
 		// This sets the world matrix for transformation
@@ -1193,17 +1199,17 @@ namespace CodeImp.DoomBuilder.Rendering
 					switch(viewmode)
 					{
 						case ViewMode.Brightness:
-							surfaces.RenderSectorBrightness();
+							surfaces.RenderSectorBrightness(yviewport);
 							surfaces.RenderSectorSurfaces(graphics);
 							break;
 							
 						case ViewMode.FloorTextures:
-							surfaces.RenderSectorFloors();
+							surfaces.RenderSectorFloors(yviewport);
 							surfaces.RenderSectorSurfaces(graphics);
 							break;
 							
 						case ViewMode.CeilingTextures:
-							surfaces.RenderSectorCeilings();
+							surfaces.RenderSectorCeilings(yviewport);
 							surfaces.RenderSectorSurfaces(graphics);
 							break;
 					}

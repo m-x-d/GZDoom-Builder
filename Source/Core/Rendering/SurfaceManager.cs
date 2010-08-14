@@ -403,6 +403,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(numvertices > 0)
 			{
 				SurfaceBufferSet set = GetSet(numvertices);
+
+				// Update bounding box
+				entry.UpdateBBox();
 				
 				// Check if we need a new entry
 				if(entry.numvertices == -1)
@@ -414,6 +417,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					nentry.floorvertices = entry.floorvertices;
 					nentry.floortexture = entry.floortexture;
 					nentry.ceiltexture = entry.ceiltexture;
+					nentry.bbox = entry.bbox;
 					set.entries.Add(nentry);
 					entry = nentry;
 				}
@@ -510,7 +514,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Rendering
 		
 		// This renders all sector floors
-		internal void RenderSectorFloors()
+		internal void RenderSectorFloors(RectangleF viewport)
 		{
 			surfaces = new Dictionary<ImageData, List<SurfaceEntry>>();
 			surfacevertexoffsetmul = 0;
@@ -520,12 +524,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(KeyValuePair<int, SurfaceBufferSet> set in sets)
 			{
 				foreach(SurfaceEntry entry in set.Value.entries)
-					AddSurfaceEntryForRendering(entry, entry.floortexture);
+				{
+					if(entry.bbox.IntersectsWith(viewport))
+						AddSurfaceEntryForRendering(entry, entry.floortexture);
+				}
 			}
 		}
 		
 		// This renders all sector ceilings
-		internal void RenderSectorCeilings()
+		internal void RenderSectorCeilings(RectangleF viewport)
 		{
 			surfaces = new Dictionary<ImageData, List<SurfaceEntry>>();
 			surfacevertexoffsetmul = 1;
@@ -535,12 +542,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(KeyValuePair<int, SurfaceBufferSet> set in sets)
 			{
 				foreach(SurfaceEntry entry in set.Value.entries)
-					AddSurfaceEntryForRendering(entry, entry.ceiltexture);
+				{
+					if(entry.bbox.IntersectsWith(viewport))
+						AddSurfaceEntryForRendering(entry, entry.ceiltexture);
+				}
 			}
 		}
 
 		// This renders all sector brightness levels
-		internal void RenderSectorBrightness()
+		internal void RenderSectorBrightness(RectangleF viewport)
 		{
 			surfaces = new Dictionary<ImageData, List<SurfaceEntry>>();
 			surfacevertexoffsetmul = 0;
@@ -550,7 +560,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(KeyValuePair<int, SurfaceBufferSet> set in sets)
 			{
 				foreach(SurfaceEntry entry in set.Value.entries)
-					AddSurfaceEntryForRendering(entry, 0);
+				{
+					if(entry.bbox.IntersectsWith(viewport))
+						AddSurfaceEntryForRendering(entry, 0);
+				}
 			}
 		}
 
@@ -565,16 +578,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			else
 			{
-				img = General.Map.Data.GetFlatImage(longimagename);
-				if(img != null)
+				if(General.Map.Data.GetFlatExists(longimagename))
 				{
-					// Texture unknown?
-					if(img is UnknownImage)
-					{
-						img = General.Map.Data.UnknownTexture3D;
-					}
+					img = General.Map.Data.GetFlatImageKnown(longimagename);
+					
 					// Is the texture loaded?
-					else if(img.IsImageLoaded && !img.LoadFailed)
+					if(img.IsImageLoaded && !img.LoadFailed)
 					{
 						if(img.Texture == null) img.CreateTexture();
 					}
@@ -585,7 +594,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 				else
 				{
-					img = General.Map.Data.WhiteTexture;
+					img = General.Map.Data.UnknownTexture3D;
 				}
 			}
 			
@@ -598,6 +607,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This renders the sorted sector surfaces
 		internal void RenderSectorSurfaces(D3DDevice graphics)
 		{
+			int counter = 0;
 			if(!resourcesunloaded)
 			{
 				graphics.Shaders.Display2D.Begin();
@@ -622,6 +632,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 
 						// Draw
+						counter++;
 						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, entry.vertexoffset + (entry.numvertices * surfacevertexoffsetmul), entry.numvertices / 3);
 					}
 					
@@ -629,6 +640,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 				graphics.Shaders.Display2D.End();
 			}
+			Console.WriteLine("Calls: " + counter);
 		}
 		
 		#endregion
