@@ -406,6 +406,9 @@ namespace CodeImp.DoomBuilder.Data
 			TextureImage image = null;
 			bool strifedata;
 
+			if(texturedata.Length == 0)
+				return;
+
 			// Determine default scale
 			defaultscale = General.Map.Config.DefaultTextureScale;
 			
