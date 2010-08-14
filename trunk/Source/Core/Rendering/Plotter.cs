@@ -55,6 +55,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
+		public int VisibleWidth { get { return visiblewidth; } }
+		public int VisibleHeight { get { return visibleheight; } }
+		public int Width { get { return width; } }
+		public int Height { get { return height; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -230,137 +235,111 @@ namespace CodeImp.DoomBuilder.Rendering
 			   ((y1 < 0) && (y2 < 0)) ||
 			   ((y1 > visibleheight) && (y2 > visibleheight))) return;
 
+			// Distance of the line
+			int dx = x2 - x1;
+			int dy = y2 - y1;
+
+			// Positive (absolute) distance
+			int dxabs = Math.Abs(dx);
+			int dyabs = Math.Abs(dy);
+
+			// Half distance
+			int x = dyabs >> 1;
+			int y = dxabs >> 1;
+
+			// Direction
+			int sdx = Math.Sign(dx);
+			int sdy = Math.Sign(dy);
+
+			// Start position
+			int px = x1;
+			int py = y1;
+
 			// When the line is completely inside screen,
 			// then do an unchecked draw, because all of its pixels are
 			// guaranteed to be within the memory range
 			if((x1 >= 0) && (x2 >= 0) && (x1 < visiblewidth) && (x2 < visiblewidth) &&
 			   (y1 >= 0) && (y2 >= 0) && (y1 < visibleheight) && (y2 < visibleheight))
 			{
-				// Do an unchecked draw
-				DrawLineSolidUnchecked(x1, y1, x2, y2, ref c);
-				return;
-			}
-			
-			// Distance of the line
-			int dx = x2 - x1;
-			int dy = y2 - y1;
+				// Draw first pixel
+				pixels[py * width + px] = c;
 
-			// Positive (absolute) distance
-			int dxabs = Math.Abs(dx);
-			int dyabs = Math.Abs(dy);
-
-			// Half distance
-			int x = dyabs >> 1;
-			int y = dxabs >> 1;
-
-			// Direction
-			int sdx = Math.Sign(dx);
-			int sdy = Math.Sign(dy);
-
-			// Start position
-			int px = x1;
-			int py = y1;
-
-			// Draw first pixel
-			DrawPixelSolid(px, py, ref c);
-
-			// Check if the line is more horizontal than vertical
-			if(dxabs >= dyabs)
-			{
-				for(i = 0; i < dxabs; i++)
+				// Check if the line is more horizontal than vertical
+				if(dxabs >= dyabs)
 				{
-					y += dyabs;
-					if(y >= dxabs)
+					for(i = 0; i < dxabs; i++)
 					{
-						y -= dxabs;
-						py += sdy;
-					}
-					px += sdx;
+						y += dyabs;
+						if(y >= dxabs)
+						{
+							y -= dxabs;
+							py += sdy;
+						}
+						px += sdx;
 
-					// Draw pixel
-					DrawPixelSolid(px, py, ref c);
+						// Draw pixel
+						pixels[py * width + px] = c;
+					}
+				}
+				// Else the line is more vertical than horizontal
+				else
+				{
+					for(i = 0; i < dyabs; i++)
+					{
+						x += dxabs;
+						if(x >= dyabs)
+						{
+							x -= dyabs;
+							px += sdx;
+						}
+						py += sdy;
+
+						// Draw pixel
+						pixels[py * width + px] = c;
+					}
 				}
 			}
-			// Else the line is more vertical than horizontal
 			else
 			{
-				for(i = 0; i < dyabs; i++)
+				// Draw first pixel
+				if((px >= 0) && (px < visiblewidth) && (py >= 0) && (py < visibleheight))
+					pixels[py * width + px] = c;
+				
+				// Check if the line is more horizontal than vertical
+				if(dxabs >= dyabs)
 				{
-					x += dxabs;
-					if(x >= dyabs)
+					for(i = 0; i < dxabs; i++)
 					{
-						x -= dyabs;
+						y += dyabs;
+						if(y >= dxabs)
+						{
+							y -= dxabs;
+							py += sdy;
+						}
 						px += sdx;
+						
+						// Draw pixel
+						if((px >= 0) && (px < visiblewidth) && (py >= 0) && (py < visibleheight))
+							pixels[py * width + px] = c;
 					}
-					py += sdy;
-
-					// Draw pixel
-					DrawPixelSolid(px, py, ref c);
 				}
-			}
-		}
-
-		// This draws a line normally
-		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-		private void DrawLineSolidUnchecked(int x1, int y1, int x2, int y2, ref PixelColor c)
-		{
-			int i;
-
-			// Distance of the line
-			int dx = x2 - x1;
-			int dy = y2 - y1;
-
-			// Positive (absolute) distance
-			int dxabs = Math.Abs(dx);
-			int dyabs = Math.Abs(dy);
-
-			// Half distance
-			int x = dyabs >> 1;
-			int y = dxabs >> 1;
-
-			// Direction
-			int sdx = Math.Sign(dx);
-			int sdy = Math.Sign(dy);
-
-			// Start position
-			int px = x1;
-			int py = y1;
-
-			// Draw first pixel
-			pixels[py * width + px] = c;
-
-			// Check if the line is more horizontal than vertical
-			if(dxabs >= dyabs)
-			{
-				for(i = 0; i < dxabs; i++)
+				// Else the line is more vertical than horizontal
+				else
 				{
-					y += dyabs;
-					if(y >= dxabs)
+					for(i = 0; i < dyabs; i++)
 					{
-						y -= dxabs;
+						x += dxabs;
+						if(x >= dyabs)
+						{
+							x -= dyabs;
+							px += sdx;
+						}
 						py += sdy;
+						
+						// Draw pixel
+						if((px >= 0) && (px < visiblewidth) && (py >= 0) && (py < visibleheight))
+							pixels[py * width + px] = c;
 					}
-					px += sdx;
-
-					// Draw pixel
-					pixels[py * width + px] = c;
-				}
-			}
-			// Else the line is more vertical than horizontal
-			else
-			{
-				for(i = 0; i < dyabs; i++)
-				{
-					x += dxabs;
-					if(x >= dyabs)
-					{
-						x -= dyabs;
-						px += sdx;
-					}
-					py += sdy;
-
-					// Draw pixel
-					pixels[py * width + px] = c;
 				}
 			}
 		}
