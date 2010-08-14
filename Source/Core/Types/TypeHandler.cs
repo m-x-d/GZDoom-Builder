@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Types
 		protected int index;
 		protected string typename;
 		protected bool customusable;
+		protected bool forargument;
 		protected ArgumentInfo arginfo;
 		protected TypeHandlerAttribute attribute;
 		
@@ -57,6 +58,7 @@ namespace CodeImp.DoomBuilder.Types
 		public int Index { get { return index; } }
 		public string TypeName { get { return typename; } }
 		public bool IsCustomUsable { get { return customusable; } }
+		public bool IsForArgument { get { return forargument; } }
 		public TypeHandlerAttribute Attribute { get { return attribute; } }
 
 		public virtual bool IsBrowseable { get { return false; } }
@@ -76,6 +78,7 @@ namespace CodeImp.DoomBuilder.Types
 		public virtual void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo)
 		{
 			// Setup
+			this.forargument = true;
 			this.arginfo = arginfo;
 			if(attr != null)
 			{
@@ -99,6 +102,7 @@ namespace CodeImp.DoomBuilder.Types
 		public virtual void SetupField(TypeHandlerAttribute attr, UniversalFieldInfo fieldinfo)
 		{
 			// Setup
+			this.forargument = false;
 			this.arginfo = arginfo;
 			if(attr != null)
 			{

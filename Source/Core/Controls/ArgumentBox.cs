@@ -242,6 +242,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This returns the selected value
 		public int GetResult(int original)
 		{
+			int result = 0;
+			
 			// Strip prefixes
 			string str = combobox.Text.Trim().ToLowerInvariant();
 			str = str.TrimStart('+', '-');
@@ -255,26 +257,28 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Add number to original
 					if(!int.TryParse(str, out num)) num = 0;
-					return original + num;
+					result = original + num;
 				}
 				// Prefixed with --?
 				else if(combobox.Text.Trim().StartsWith("--"))
 				{
 					// Subtract number from original
 					if(!int.TryParse(str, out num)) num = 0;
-					return original - num;
+					result = original - num;
 				}
 				else
 				{
 					// Return the value
-					return typehandler.GetIntValue();
+					result = typehandler.GetIntValue();
 				}
 			}
 			else
 			{
 				// Just return the original
-				return original;
+				result = original;
 			}
+
+			return General.Clamp(result, General.Map.FormatInterface.MinArgument, General.Map.FormatInterface.MaxArgument);
 		}
 		
 		#endregion

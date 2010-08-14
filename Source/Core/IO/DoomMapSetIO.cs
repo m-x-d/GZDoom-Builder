@@ -71,6 +71,8 @@ namespace CodeImp.DoomBuilder.IO
 		public override int MinTag { get { return ushort.MinValue; } }
 		public override int MaxAction { get { return ushort.MaxValue; } }
 		public override int MinAction { get { return ushort.MinValue; } }
+		public override int MaxArgument { get { return 0; } }
+		public override int MinArgument { get { return 0; } }
 		public override int MaxEffect { get { return ushort.MaxValue; } }
 		public override int MinEffect { get { return ushort.MinValue; } }
 		public override int MaxBrightness { get { return short.MaxValue; } }
