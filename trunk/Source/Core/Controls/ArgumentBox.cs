@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Initialize
 			InitializeComponent();
 			scrollbuttons.Value = 0;
+			combobox.MouseWheel += combobox_MouseWheel;
 		}
 
 		#endregion
@@ -130,6 +131,18 @@ namespace CodeImp.DoomBuilder.Controls
 		private void combobox_TextChanged(object sender, EventArgs e)
 		{
 			scrollbuttons.Enabled = !CheckIsRelative();
+		}
+
+		// Mouse wheel used
+		private void combobox_MouseWheel(object sender, MouseEventArgs e)
+		{
+			if(scrollbuttons.Visible)
+			{
+				if(e.Delta < 0)
+					scrollbuttons.Value += 1;
+				else if(e.Delta > 0)
+					scrollbuttons.Value -= 1;
+			}
 		}
 		
 		// Scroll buttons clicked
