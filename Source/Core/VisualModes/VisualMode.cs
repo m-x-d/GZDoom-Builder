@@ -69,7 +69,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private bool keyright;
         private bool keyup;
         private bool keydown;
-		private bool doublespeed;
 
 		// Map
 		protected VisualBlockMap blockmap;
@@ -299,18 +298,6 @@ namespace CodeImp.DoomBuilder.VisualModes
         {
             keydown = false;
         }
-
-		[BeginAction("movedoublespeed", BaseAction = true)]
-		public virtual void BeginDoubleSpeed()
-		{
-			doublespeed = true;
-		}
-
-		[EndAction("movedoublespeed", BaseAction = true)]
-		public virtual void EndDoubleSpeed()
-		{
-			doublespeed = false;
-		}
 		
 		#endregion
 
@@ -824,7 +811,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             Vector3D upvec = new Vector3D(0.0f, 0.0f, 1.0f);
 
 			// Move the camera
-			if(doublespeed) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
+			if(General.Interface.ShiftState) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
 			if(keyforward) camdeltapos += camvec * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
 			if(keybackward) camdeltapos -= camvec * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);
 			if(keyleft) camdeltapos -= camvecstrafe * cammovemul * (float)((double)General.Settings.MoveSpeed * multiplier * deltatime);

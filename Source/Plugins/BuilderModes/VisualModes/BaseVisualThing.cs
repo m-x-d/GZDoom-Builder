@@ -425,21 +425,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit button released
 		public virtual void OnEditEnd()
 		{
-			// Not using any modifier buttons
-			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
+			if(General.Interface.IsActiveWindow)
 			{
-				if(General.Interface.IsActiveWindow)
+				List<Thing> things = mode.GetSelectedThings();
+				DialogResult result = General.Interface.ShowEditThings(things);
+				if(result == DialogResult.OK)
 				{
-					List<Thing> things = mode.GetSelectedThings();
-					DialogResult result = General.Interface.ShowEditThings(things);
-					if(result == DialogResult.OK)
+					foreach(Thing t in things)
 					{
-						foreach(Thing t in things)
-						{
-							VisualThing vt = mode.GetVisualThing(t);
-							if(vt != null)
-								(vt as BaseVisualThing).Changed = true;
-						}
+						VisualThing vt = mode.GetVisualThing(t);
+						if(vt != null)
+							(vt as BaseVisualThing).Changed = true;
 					}
 				}
 			}

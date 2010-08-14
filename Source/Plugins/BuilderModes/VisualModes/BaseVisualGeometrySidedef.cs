@@ -542,30 +542,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit button released
 		public virtual void OnEditEnd()
 		{
-			// Not using any modifier buttons
-			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
+			if(General.Interface.IsActiveWindow)
 			{
-				if(General.Interface.IsActiveWindow)
+				List<Linedef> linedefs = mode.GetSelectedLinedefs();
+				DialogResult result = General.Interface.ShowEditLinedefs(linedefs);
+				if(result == DialogResult.OK)
 				{
-					List<Linedef> linedefs = mode.GetSelectedLinedefs();
-					DialogResult result = General.Interface.ShowEditLinedefs(linedefs);
-					if(result == DialogResult.OK)
+					foreach(Linedef l in linedefs)
 					{
-						foreach(Linedef l in linedefs)
+						if(l.Front != null)
 						{
-							if(l.Front != null)
-							{
-								VisualSector vs = mode.GetVisualSector(l.Front.Sector);
-								if(vs != null)
-									(vs as BaseVisualSector).Changed = true;
-							}
-							
-							if(l.Back != null)
-							{
-								VisualSector vs = mode.GetVisualSector(l.Back.Sector);
-								if(vs != null)
-									(vs as BaseVisualSector).Changed = true;
-							}
+							VisualSector vs = mode.GetVisualSector(l.Front.Sector);
+							if(vs != null)
+								(vs as BaseVisualSector).Changed = true;
+						}
+						
+						if(l.Back != null)
+						{
+							VisualSector vs = mode.GetVisualSector(l.Back.Sector);
+							if(vs != null)
+								(vs as BaseVisualSector).Changed = true;
 						}
 					}
 				}
