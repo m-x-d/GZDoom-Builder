@@ -23,6 +23,7 @@ using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Windows;
 using SlimDX;
 using SlimDX.Direct3D9;
 using System.Drawing;
@@ -453,12 +454,18 @@ namespace CodeImp.DoomBuilder.Geometry
 		// If nearbylines is not null, then this method will find the default
 		// properties from the nearest line in this collection when the
 		// default properties can't be found in the alllines collection.
+		// Return null when no new sector could be made.
 		public static Sector MakeSector(List<LinedefSide> alllines, List<Linedef> nearbylines)
 		{
-			Sector newsector = General.Map.Map.CreateSector();
 			Sector sourcesector = null;
 			SidedefSettings sourceside = new SidedefSettings();
 			bool foundsidedefaults = false;
+
+			if(General.Map.Map.Sectors.Count >= General.Map.FormatInterface.MaxSectors)
+				return null;
+
+			Sector newsector = General.Map.Map.CreateSector();
+			if(newsector == null) return null;
 			
 			// Check if any of the sides already has a sidedef
 			// Then we use information from that sidedef to make the others
@@ -565,6 +572,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Create sidedef is needed and ensure it points to the new sector
 					if(ls.Line.Front == null) General.Map.Map.CreateSidedef(ls.Line, true, newsector);
+					if(ls.Line.Front == null) return null;
 					if(ls.Line.Front.Sector != newsector) ls.Line.Front.SetSector(newsector);
 					ApplyDefaultsToSidedef(ls.Line.Front, sourceside);
 				}
@@ -572,6 +580,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Create sidedef is needed and ensure it points to the new sector
 					if(ls.Line.Back == null) General.Map.Map.CreateSidedef(ls.Line, false, newsector);
+					if(ls.Line.Back == null) return null;
 					if(ls.Line.Back.Sector != newsector) ls.Line.Back.SetSector(newsector);
 					ApplyDefaultsToSidedef(ls.Line.Back, sourceside);
 				}
@@ -591,7 +600,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 
-		// This joins a sector with the given lines and sides
+		// This joins a sector with the given lines and sides. Returns null when operation could not be completed.
 		public static Sector JoinSector(List<LinedefSide> alllines, Sidedef original)
 		{
 			SidedefSettings sourceside = new SidedefSettings();
@@ -610,7 +619,8 @@ namespace CodeImp.DoomBuilder.Geometry
 					// Create sidedef if needed
 					if(ls.Line.Front == null)
 					{
-						General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
+						Sidedef sd = General.Map.Map.CreateSidedef(ls.Line, true, original.Sector);
+						if(sd == null) return null;
 						ApplyDefaultsToSidedef(ls.Line.Front, sourceside);
 						ls.Line.ApplySidedFlags();
 						
@@ -629,7 +639,8 @@ namespace CodeImp.DoomBuilder.Geometry
 					// Create sidedef if needed
 					if(ls.Line.Back == null)
 					{
-						General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
+						Sidedef sd = General.Map.Map.CreateSidedef(ls.Line, false, original.Sector);
+						if(sd == null) return null;
 						ApplyDefaultsToSidedef(ls.Line.Back, sourceside);
 						ls.Line.ApplySidedFlags();
 
@@ -821,8 +832,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// <summary>
 		/// This draws lines with the given points. Note that this tool removes any existing geometry
 		/// marks and marks the new lines and vertices when done. Also marks the sectors that were added.
+		/// Returns false when the drawing failed.
 		/// </summary>
-		public static void DrawLines(IList<DrawnVertex> points)
+		public static bool DrawLines(IList<DrawnVertex> points)
 		{
 			List<Vertex> newverts = new List<Vertex>();
 			List<Vertex> intersectverts = new List<Vertex>();
@@ -845,6 +857,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 				// Make first vertex
 				Vertex v1 = map.CreateVertex(points[0].pos);
+				if(v1 == null) return false;
 				v1.Marked = true;
 
 				// Keep references
@@ -856,6 +869,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Create vertex for point
 					Vertex v2 = map.CreateVertex(points[i].pos);
+					if(v2 == null) return false;
 					v2.Marked = true;
 
 					// Keep references
@@ -864,6 +878,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					// Create line between point and previous
 					Linedef ld = map.CreateLinedef(v1, v2);
+					if(ld == null) return false;
 					ld.Marked = true;
 					ld.ApplySidedFlags();
 					ld.UpdateCache();
@@ -902,16 +917,18 @@ namespace CodeImp.DoomBuilder.Geometry
 
 							// Make the vertex
 							Vertex splitvertex = map.CreateVertex(splitpoint);
+							if(splitvertex == null) return false;
 							splitvertex.Marked = true;
 							newverts.Add(splitvertex);
 							mergeverts.Add(splitvertex);			// <-- add to merge?
 							intersectverts.Add(splitvertex);
-
+							
 							// The Split method ties the end of the original line to the given
 							// vertex and starts a new line at the given vertex, so continue
 							// splitting with the new line, because the intersections are sorted
 							// from low to high (beginning at the original line start)
 							splitline = splitline.Split(splitvertex);
+							if(splitline == null) return false;
 							splitline.ApplySidedFlags();
 							newlines.Add(splitline);
 						}
@@ -1116,11 +1133,13 @@ namespace CodeImp.DoomBuilder.Geometry
 
 											// Make the new vertex
 											Vertex v2 = map.CreateVertex(v2pos);
+											if(v2 == null) return false;
 											v2.Marked = true;
 											mergeverts.Add(v2);
 
 											// Make the line
 											Linedef ld = map.CreateLinedef(v1, v2);
+											if(ld == null) return false;
 											ld.Marked = true;
 											ld.ApplySidedFlags();
 											ld.UpdateCache();
@@ -1137,6 +1156,8 @@ namespace CodeImp.DoomBuilder.Geometry
 										else
 											lld = map.CreateLinedef(v1, firstline.Start);
 
+										if(lld == null) return false;
+										
 										// Setup line
 										lld.Marked = true;
 										lld.ApplySidedFlags();
@@ -1282,6 +1303,8 @@ namespace CodeImp.DoomBuilder.Geometry
 							{
 								// Make the new sector
 								Sector newsector = Tools.MakeSector(sectorlines, oldlines);
+								if(newsector == null) return false;
+
 								if(istruenewsector) newsector.Marked = true;
 
 								// Go for all sidedefs in this new sector
@@ -1354,7 +1377,8 @@ namespace CodeImp.DoomBuilder.Geometry
 								}
 								
 								// Have our new lines join the existing sector
-								Tools.JoinSector(newsectorlines, joinsidedef);
+								if(Tools.JoinSector(newsectorlines, joinsidedef) == null)
+									return false;
 							}
 						}
 					}
@@ -1384,6 +1408,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				foreach(Vertex v in newverts) v.Marked = true;
 				foreach(Linedef l in newlines) l.Marked = true;
 			}
+
+			return true;
 		}
 		
 		#endregion

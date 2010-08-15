@@ -196,10 +196,13 @@ namespace CodeImp.DoomBuilder.IO
 
 				// Create new item
 				Thing t = map.CreateThing();
-				t.Update(type, x, y, height, Angle2D.DoomToReal(angledeg), stringflags, tag, special, args);
+				if(t != null)
+				{
+					t.Update(type, x, y, height, Angle2D.DoomToReal(angledeg), stringflags, tag, special, args);
 
-				// Custom fields
-				ReadCustomFields(c, t, "thing");
+					// Custom fields
+					ReadCustomFields(c, t, "thing");
+				}
 			}
 		}
 
@@ -252,27 +255,30 @@ namespace CodeImp.DoomBuilder.IO
 					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
 					{
 						Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-						l.Update(stringflags, 0, tag, special, args);
-						l.UpdateCache();
-
-						// Custom fields
-						ReadCustomFields(lc, l, "linedef");
-
-						// Read sidedefs and connect them to the line
-						if(s1 > -1)
+						if(l != null)
 						{
-							if(s1 < sidescolls.Count)
-								ReadSidedef(map, sidescolls[s1], l, true, sectorlink, s1);
-							else
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid front sidedef " + s1 + ". Sidedef has been removed.");
-						}
-						
-						if(s2 > -1)
-						{
-							if(s2 < sidescolls.Count)
-								ReadSidedef(map, sidescolls[s2], l, false, sectorlink, s2);
-							else
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid back sidedef " + s1 + ". Sidedef has been removed.");
+							l.Update(stringflags, 0, tag, special, args);
+							l.UpdateCache();
+
+							// Custom fields
+							ReadCustomFields(lc, l, "linedef");
+
+							// Read sidedefs and connect them to the line
+							if(s1 > -1)
+							{
+								if(s1 < sidescolls.Count)
+									ReadSidedef(map, sidescolls[s1], l, true, sectorlink, s1);
+								else
+									General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid front sidedef " + s1 + ". Sidedef has been removed.");
+							}
+
+							if(s2 > -1)
+							{
+								if(s2 < sidescolls.Count)
+									ReadSidedef(map, sidescolls[s2], l, false, sectorlink, s2);
+								else
+									General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references invalid back sidedef " + s1 + ". Sidedef has been removed.");
+							}
 						}
 					}
 					else
@@ -304,10 +310,13 @@ namespace CodeImp.DoomBuilder.IO
 			if(sectorlink.ContainsKey(sector))
 			{
 				Sidedef s = map.CreateSidedef(ld, front, sectorlink[sector]);
-				s.Update(offsetx, offsety, thigh, tmid, tlow);
+				if(s != null)
+				{
+					s.Update(offsetx, offsety, thigh, tmid, tlow);
 
-				// Custom fields
-				ReadCustomFields(sc, s, "sidedef");
+					// Custom fields
+					ReadCustomFields(sc, s, "sidedef");
+				}
 			}
 			else
 			{
@@ -343,13 +352,16 @@ namespace CodeImp.DoomBuilder.IO
 
 				// Create new item
 				Sector s = map.CreateSector();
-				s.Update(hfloor, hceil, tfloor, tceil, special, tag, bright);
+				if(s != null)
+				{
+					s.Update(hfloor, hceil, tfloor, tceil, special, tag, bright);
 
-				// Custom fields
-				ReadCustomFields(c, s, "sector");
+					// Custom fields
+					ReadCustomFields(c, s, "sector");
 
-				// Add it to the lookup table
-				link.Add(i, s);
+					// Add it to the lookup table
+					link.Add(i, s);
+				}
 			}
 
 			// Return lookup table
@@ -379,12 +391,14 @@ namespace CodeImp.DoomBuilder.IO
 
 				// Create new item
 				Vertex v = map.CreateVertex(new Vector2D(x, y));
+				if(v != null)
+				{
+					// Custom fields
+					ReadCustomFields(c, v, "vertex");
 
-				// Custom fields
-				ReadCustomFields(c, v, "vertex");
-
-				// Add it to the lookup table
-				link.Add(i, v);
+					// Add it to the lookup table
+					link.Add(i, v);
+				}
 			}
 
 			// Return lookup table

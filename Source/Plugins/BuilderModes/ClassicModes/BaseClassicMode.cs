@@ -174,21 +174,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make a new one
 				Thing t = General.Map.Map.CreateThing();
-				t.Type = General.Map.Config.Start3DModeThingType;
-				t.Move(mousemappos);
-				t.UpdateConfiguration();
-				General.Map.ThingsFilter.Update();
-				thingfound = t;
+				if(t != null)
+				{
+					t.Type = General.Map.Config.Start3DModeThingType;
+					t.Move(mousemappos);
+					t.UpdateConfiguration();
+					General.Map.ThingsFilter.Update();
+					thingfound = t;
+				}
 			}
 
-			// Make sure that the found thing is between ceiling and floor
-			thingfound.DetermineSector();
-			if(thingfound.Position.z < 0.0f) thingfound.Move(thingfound.Position.x, thingfound.Position.y, 0.0f);
-			if(thingfound.Sector != null)
+			if(thingfound != null)
 			{
-				if((thingfound.Position.z + 50.0f) > (thingfound.Sector.CeilHeight - thingfound.Sector.FloorHeight))
-					thingfound.Move(thingfound.Position.x, thingfound.Position.y,
-						thingfound.Sector.CeilHeight - thingfound.Sector.FloorHeight - 50.0f);
+				// Make sure that the found thing is between ceiling and floor
+				thingfound.DetermineSector();
+				if(thingfound.Position.z < 0.0f) thingfound.Move(thingfound.Position.x, thingfound.Position.y, 0.0f);
+				if(thingfound.Sector != null)
+				{
+					if((thingfound.Position.z + 50.0f) > (thingfound.Sector.CeilHeight - thingfound.Sector.FloorHeight))
+						thingfound.Move(thingfound.Position.x, thingfound.Position.y,
+							thingfound.Sector.CeilHeight - thingfound.Sector.FloorHeight - 50.0f);
+				}
 			}
 			
 			// Update Visual Mode camera

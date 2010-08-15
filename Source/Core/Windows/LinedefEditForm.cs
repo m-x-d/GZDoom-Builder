@@ -397,21 +397,29 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					// Make sure we have a valid sector (make a new one if needed)
 					if(l.Front != null) index = l.Front.Sector.Index; else index = -1;
-					s = General.Map.Map.GetSectorByIndex(frontsector.GetResult(index));
-					if(s == null) s = General.Map.Map.CreateSector();
-					
-					// Create new sidedef?
-					if(l.Front == null) General.Map.Map.CreateSidedef(l, true, s);
+					index = frontsector.GetResult(index);
+					if((index > -1) && (index < General.Map.Map.Sectors.Count))
+					{
+						s = General.Map.Map.GetSectorByIndex(index);
+						if(s == null) s = General.Map.Map.CreateSector();
+						if(s != null)
+						{
+							// Create new sidedef?
+							if(l.Front == null) General.Map.Map.CreateSidedef(l, true, s);
+							if(l.Front != null)
+							{
+								// Change sector?
+								if(l.Front.Sector != s) l.Front.SetSector(s);
 
-					// Change sector?
-					if(l.Front.Sector != s) l.Front.SetSector(s);
-
-					// Apply settings
-					l.Front.OffsetX = General.Clamp(frontoffsetx.GetResult(l.Front.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
-					l.Front.OffsetY = General.Clamp(frontoffsety.GetResult(l.Front.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
-					l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
-					l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
-					l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
+								// Apply settings
+								l.Front.OffsetX = General.Clamp(frontoffsetx.GetResult(l.Front.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+								l.Front.OffsetY = General.Clamp(frontoffsety.GetResult(l.Front.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+								l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
+								l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
+								l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
+							}
+						}
+					}
 				}
 
 				// Remove back side?
@@ -424,21 +432,29 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					// Make sure we have a valid sector (make a new one if needed)
 					if(l.Back != null) index = l.Back.Sector.Index; else index = -1;
-					s = General.Map.Map.GetSectorByIndex(backsector.GetResult(index));
-					if(s == null) s = General.Map.Map.CreateSector();
+					index = backsector.GetResult(index);
+					if((index > -1) && (index < General.Map.Map.Sectors.Count))
+					{
+						s = General.Map.Map.GetSectorByIndex(index);
+						if(s == null) s = General.Map.Map.CreateSector();
+						if(s != null)
+						{
+							// Create new sidedef?
+							if(l.Back == null) General.Map.Map.CreateSidedef(l, false, s);
+							if(l.Back != null)
+							{
+								// Change sector?
+								if(l.Back.Sector != s) l.Back.SetSector(s);
 
-					// Create new sidedef?
-					if(l.Back == null) General.Map.Map.CreateSidedef(l, false, s);
-
-					// Change sector?
-					if(l.Back.Sector != s) l.Back.SetSector(s);
-
-					// Apply settings
-					l.Back.OffsetX = General.Clamp(backoffsetx.GetResult(l.Back.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
-					l.Back.OffsetY = General.Clamp(backoffsety.GetResult(l.Back.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
-					l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
-					l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
-					l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
+								// Apply settings
+								l.Back.OffsetX = General.Clamp(backoffsetx.GetResult(l.Back.OffsetX), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+								l.Back.OffsetY = General.Clamp(backoffsety.GetResult(l.Back.OffsetY), General.Map.FormatInterface.MinTextureOffset, General.Map.FormatInterface.MaxTextureOffset);
+								l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
+								l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
+								l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
+							}
+						}
+					}
 				}
 
 				// Custom fields

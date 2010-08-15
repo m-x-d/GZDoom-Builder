@@ -242,23 +242,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Make the sector
 			Sector s = Tools.MakeSector(allsides, oldlines);
-			
-			// Now we go for all the lines along the sector to
-			// see if they only have a back side. In that case we want
-			// to flip the linedef to that it only has a front side.
-			foreach(Sidedef sd in s.Sidedefs)
+			if(s != null)
 			{
-				if((sd.Line.Front == null) && (sd.Line.Back != null))
+				// Now we go for all the lines along the sector to
+				// see if they only have a back side. In that case we want
+				// to flip the linedef to that it only has a front side.
+				foreach(Sidedef sd in s.Sidedefs)
 				{
-					// Flip linedef
-					sd.Line.FlipVertices();
-					sd.Line.FlipSidedefs();
+					if((sd.Line.Front == null) && (sd.Line.Back != null))
+					{
+						// Flip linedef
+						sd.Line.FlipVertices();
+						sd.Line.FlipSidedefs();
+					}
 				}
+
+				General.Map.Data.UpdateUsedTextures();
+				General.Interface.SetCursor(Cursors.Default);
+				return s;
 			}
-			
-			General.Map.Data.UpdateUsedTextures();
-			General.Interface.SetCursor(Cursors.Default);
-			return s;
+			else
+			{
+				General.Map.UndoRedo.WithdrawUndo();
+				return null;
+			}
 		}
 		
 		#endregion
@@ -376,17 +383,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Make the sector
 					Sector s = MakeSector();
+					if(s != null)
+					{
+						// Quickly flash this sector to indicate it was created
+						General.Map.IsChanged = true;
+						General.Map.Map.Update();
+						General.Interface.RedrawDisplay();
+						flashpolygon = new FlatVertex[s.FlatVertices.Length];
+						s.FlatVertices.CopyTo(flashpolygon, 0);
+						flashintensity = 1.0f;
+						flashstarttime = (double)General.Clock.GetCurrentTime();
+						General.Interface.EnableProcessing();
+					}
 					
-					// Quickly flash this sector to indicate it was created
-					General.Map.IsChanged = true;
-					General.Map.Map.Update();
-					General.Interface.RedrawDisplay();
-					flashpolygon = new FlatVertex[s.FlatVertices.Length];
-					s.FlatVertices.CopyTo(flashpolygon, 0);
-					flashintensity = 1.0f;
-					flashstarttime = (double)General.Clock.GetCurrentTime();
-					General.Interface.EnableProcessing();
-
 					// Redraw overlay
 					DrawGeometry();
 					DrawOverlay();
@@ -418,28 +427,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Make the sector
 					Sector s = MakeSector();
-					General.Map.Map.Update();
-					
-					// Edit the sector
-					List<Sector> secs = new List<Sector>(); secs.Add(s);
-					if(General.Interface.ShowEditSectors(secs) == DialogResult.OK)
+					if(s != null)
 					{
-						// Quickly flash this sector to indicate it was created
-						General.Map.IsChanged = true;
 						General.Map.Map.Update();
-						flashpolygon = new FlatVertex[s.FlatVertices.Length];
-						s.FlatVertices.CopyTo(flashpolygon, 0);
-						flashintensity = 1.0f;
-						flashstarttime = (double)General.Clock.GetCurrentTime();
-						General.Interface.EnableProcessing();
-					}
-					else
-					{
-						// Undo
-						General.Map.UndoRedo.PerformUndo();
-						General.Map.UndoRedo.ClearAllRedos();
-					}
 
+						// Edit the sector
+						List<Sector> secs = new List<Sector>(); secs.Add(s);
+						if(General.Interface.ShowEditSectors(secs) == DialogResult.OK)
+						{
+							// Quickly flash this sector to indicate it was created
+							General.Map.IsChanged = true;
+							General.Map.Map.Update();
+							flashpolygon = new FlatVertex[s.FlatVertices.Length];
+							s.FlatVertices.CopyTo(flashpolygon, 0);
+							flashintensity = 1.0f;
+							flashstarttime = (double)General.Clock.GetCurrentTime();
+							General.Interface.EnableProcessing();
+						}
+						else
+						{
+							// Undo
+							General.Map.UndoRedo.WithdrawUndo();
+						}
+					}
+					
 					// Redraw overlay
 					DrawGeometry();
 					DrawOverlay();

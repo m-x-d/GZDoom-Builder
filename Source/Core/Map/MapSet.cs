@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Windows;
 using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
@@ -513,6 +514,12 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new vertex and returns it.</summary>
 		public Vertex CreateVertex(Vector2D pos)
 		{
+			if(numvertices == General.Map.FormatInterface.MaxVertices)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of vertices reached.");
+				return null;
+			}
+			
 			// Make the vertex
 			Vertex v = new Vertex(this, numvertices, pos);
 			AddItem(v, ref vertices, numvertices, ref numvertices);
@@ -522,6 +529,12 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new vertex and returns it.</summary>
 		public Vertex CreateVertex(int index, Vector2D pos)
 		{
+			if(numvertices == General.Map.FormatInterface.MaxVertices)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of vertices reached.");
+				return null;
+			}
+
 			// Make the vertex
 			Vertex v = new Vertex(this, index, pos);
 			AddItem(v, ref vertices, index, ref numvertices);
@@ -531,6 +544,12 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new linedef and returns it.</summary>
 		public Linedef CreateLinedef(Vertex start, Vertex end)
 		{
+			if(numlinedefs == General.Map.FormatInterface.MaxLinedefs)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of linedefs reached.");
+				return null;
+			}
+
 			// Make the linedef
 			Linedef l = new Linedef(this, numlinedefs, start, end);
 			AddItem(l, ref linedefs, numlinedefs, ref numlinedefs);
@@ -540,6 +559,12 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new linedef and returns it.</summary>
 		public Linedef CreateLinedef(int index, Vertex start, Vertex end)
 		{
+			if(numlinedefs == General.Map.FormatInterface.MaxLinedefs)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of linedefs reached.");
+				return null;
+			}
+
 			// Make the linedef
 			Linedef l = new Linedef(this, index, start, end);
 			AddItem(l, ref linedefs, index, ref numlinedefs);
@@ -549,6 +574,12 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new sidedef and returns it.</summary>
 		public Sidedef CreateSidedef(Linedef l, bool front, Sector s)
 		{
+			if(numsidedefs == int.MaxValue)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of sidedefs reached.");
+				return null;
+			}
+			
 			// Make the sidedef
 			Sidedef sd = new Sidedef(this, numsidedefs, l, front, s);
 			AddItem(sd, ref sidedefs, numsidedefs, ref numsidedefs);
@@ -558,6 +589,12 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new sidedef and returns it.</summary>
 		public Sidedef CreateSidedef(int index, Linedef l, bool front, Sector s)
 		{
+			if(numsidedefs == int.MaxValue)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of sidedefs reached.");
+				return null;
+			}
+
 			// Make the sidedef
 			Sidedef sd = new Sidedef(this, index, l, front, s);
 			AddItem(sd, ref sidedefs, index, ref numsidedefs);
@@ -575,7 +612,13 @@ namespace CodeImp.DoomBuilder.Map
 		public Sector CreateSector(int index)
 		{
 			int fixedindex;
-			
+
+			if(numsectors == General.Map.FormatInterface.MaxSectors)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of sectors reached.");
+				return null;
+			}
+
 			// Do we have any index holes we can use?
 			if(indexholes.Count > 0)
 			{
@@ -596,6 +639,12 @@ namespace CodeImp.DoomBuilder.Map
 		// This creates a new sector with a specific fixed index
 		private Sector CreateSectorEx(int fixedindex, int index)
 		{
+			if(numsectors == General.Map.FormatInterface.MaxSectors)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of sectors reached.");
+				return null;
+			}
+
 			// Make the sector
 			Sector s = new Sector(this, index, fixedindex);
 			AddItem(s, ref sectors, index, ref numsectors);
@@ -605,6 +654,12 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new thing and returns it.</summary>
 		public Thing CreateThing()
 		{
+			if(numthings == General.Map.FormatInterface.MaxThings)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of things reached.");
+				return null;
+			}
+
 			// Make the thing
 			Thing t = new Thing(this, numthings);
 			AddItem(t, ref things, numthings, ref numthings);
@@ -614,6 +669,12 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This creates a new thing and returns it.</summary>
 		public Thing CreateThing(int index)
 		{
+			if(numthings == General.Map.FormatInterface.MaxThings)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to complete operation: maximum number of things reached.");
+				return null;
+			}
+
 			// Make the thing
 			Thing t = new Thing(this, index);
 			AddItem(t, ref things, index, ref numthings);
@@ -1841,9 +1902,9 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Stitching
 
 		/// <summary>
-		/// Stitches marked geometry with non-marked geometry. Returns the number of stitches made.
+		/// Stitches marked geometry with non-marked geometry. Returns false when the operation failed.
 		/// </summary>
-		public int StitchGeometry()
+		public bool StitchGeometry()
 		{
 			ICollection<Linedef> movinglines;
 			ICollection<Linedef> fixedlines;
@@ -1851,7 +1912,6 @@ namespace CodeImp.DoomBuilder.Map
 			ICollection<Vertex> movingverts;
 			ICollection<Vertex> fixedverts;
 			RectangleF editarea;
-			int stitches = 0;
 			int stitchundo;
 
 			// Find vertices
@@ -1871,7 +1931,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Join nearby vertices
 			BeginAddRemove();
-			stitches += MapSet.JoinVertices(fixedverts, movingverts, true, MapSet.STITCH_DISTANCE);
+			MapSet.JoinVertices(fixedverts, movingverts, true, MapSet.STITCH_DISTANCE);
 			EndAddRemove();
 			
 			// Update cached values of lines because we need their length/angle
@@ -1881,21 +1941,24 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Split moving lines with unselected vertices
 			nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
-			stitches += MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, MapSet.STITCH_DISTANCE, movinglines);
+			if(!MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, MapSet.STITCH_DISTANCE, movinglines))
+				return false;
 			
 			// Split non-moving lines with selected vertices
 			fixedlines = MapSet.FilterByArea(fixedlines, ref editarea);
-			stitches += MapSet.SplitLinesByVertices(fixedlines, movingverts, MapSet.STITCH_DISTANCE, movinglines);
+			if(!MapSet.SplitLinesByVertices(fixedlines, movingverts, MapSet.STITCH_DISTANCE, movinglines))
+				return false;
 			
 			// Remove looped linedefs
-			stitches += MapSet.RemoveLoopedLinedefs(movinglines);
+			MapSet.RemoveLoopedLinedefs(movinglines);
 			
 			// Join overlapping lines
-			stitches += MapSet.JoinOverlappingLines(movinglines);
+			if(!MapSet.JoinOverlappingLines(movinglines))
+				return false;
 			
 			EndAddRemove();
 			
-			return stitches;
+			return true;
 		}
 		
 		#endregion
@@ -1951,10 +2014,9 @@ namespace CodeImp.DoomBuilder.Map
 			return count;
 		}
 
-		/// <summary>This joins overlapping lines together and returns the number of joins made.</summary>
-		public static int JoinOverlappingLines(ICollection<Linedef> lines)
+		/// <summary>This joins overlapping lines together. Returns false when the operation failed.</summary>
+		public static bool JoinOverlappingLines(ICollection<Linedef> lines)
 		{
-			int joinsdone = 0;
 			bool joined;
 			
 			do
@@ -1980,7 +2042,7 @@ namespace CodeImp.DoomBuilder.Map
 								
 								// Merge these two linedefs
 								while(lines.Remove(l2)) ;
-								l2.Join(l1);
+								if(!l2.Join(l1)) return false;
 								
 								// If l2 was marked as new geometry, we have to make sure
 								// that l1's FrontInterior is correct for the drawing procedure
@@ -1999,7 +2061,6 @@ namespace CodeImp.DoomBuilder.Map
 									}
 								}
 								
-								joinsdone++;
 								joined = true;
 								break;
 							}
@@ -2024,7 +2085,7 @@ namespace CodeImp.DoomBuilder.Map
 								
 								// Merge these two linedefs
 								while(lines.Remove(l2)) ;
-								l2.Join(l1);
+								if(!l2.Join(l1)) return false;
 
 								// If l2 was marked as new geometry, we have to make sure
 								// that l1's FrontInterior is correct for the drawing procedure
@@ -2043,7 +2104,6 @@ namespace CodeImp.DoomBuilder.Map
 									}
 								}
 
-								joinsdone++;
 								joined = true;
 								break;
 							}
@@ -2057,7 +2117,7 @@ namespace CodeImp.DoomBuilder.Map
 			while(joined);
 
 			// Return result
-			return joinsdone;
+			return true;
 		}
 
 		/// <summary>This removes looped linedefs (linedefs which reference the same vertex for
@@ -2184,11 +2244,10 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>This splits the given lines with the given vertices. All affected lines
-		/// will be added to changedlines. Returns the number of splits made</summary>
-		public static int SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines)
+		/// will be added to changedlines. Returns false when the operation failed.</summary>
+		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines)
 		{
 			float splitdist2 = splitdist * splitdist;
-			int splitsdone = 0;
 			bool splitted;
 
 			do
@@ -2215,6 +2274,7 @@ namespace CodeImp.DoomBuilder.Map
 							{
 								// Split line l with vertex v
 								Linedef nl = l.Split(v);
+								if(nl == null) return false;
 
 								// Add the new line to the list
 								lines.Add(nl);
@@ -2232,7 +2292,6 @@ namespace CodeImp.DoomBuilder.Map
 								}
 
 								// Count the split
-								splitsdone++;
 								splitted = true;
 								break;
 							}
@@ -2246,9 +2305,8 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 			while(splitted);
-
-			// Return result
-			return splitsdone;
+			
+			return true;
 		}
 
 		/// <summary>This finds the side closest to the specified position.</summary>

@@ -289,12 +289,22 @@ namespace CodeImp.DoomBuilder.Editing
 						if(options.ChangeTags == PasteOptions.TAGS_RENUMBER) Tools.RenumberMarkedTags();
 						if(options.RemoveActions) Tools.RemoveMarkedActions();
 
-						// Done
+						// Clean up
 						memstream.Dispose();
-						General.Map.Map.UpdateConfiguration();
-						General.Map.ThingsFilter.Update();
-						General.Editing.Mode.OnPasteEnd(options.Copy());
-						General.Plugins.OnPasteEnd(options);
+
+						// Check if anything was pasted
+						int totalpasted = General.Map.Map.GetMarkedThings(true).Count;
+						totalpasted += General.Map.Map.GetMarkedVertices(true).Count;
+						totalpasted += General.Map.Map.GetMarkedLinedefs(true).Count;
+						totalpasted += General.Map.Map.GetMarkedSidedefs(true).Count;
+						totalpasted += General.Map.Map.GetMarkedSectors(true).Count;
+						if(totalpasted > 0)
+						{
+							General.Map.Map.UpdateConfiguration();
+							General.Map.ThingsFilter.Update();
+							General.Editing.Mode.OnPasteEnd(options.Copy());
+							General.Plugins.OnPasteEnd(options);
+						}
 						return true;
 					}
 				}

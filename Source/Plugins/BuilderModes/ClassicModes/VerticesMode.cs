@@ -309,16 +309,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Make the vertex
 					Vertex v = General.Map.Map.CreateVertex(insertpos);
-
+					if(v == null)
+					{
+						General.Map.UndoRedo.WithdrawUndo();
+						return;
+					}
+					
 					// Snap to map format accuracy
 					v.SnapToAccuracy();
 
 					// Split the line with this vertex
-					l.Split(v);
+					Linedef sld = l.Split(v);
+					if(sld == null)
+					{
+						General.Map.UndoRedo.WithdrawUndo();
+						return;
+					}
 					
 					// Update
 					General.Map.Map.Update();
-					
+
 					// Highlight it
 					Highlight(v);
 
@@ -616,9 +626,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Just insert here, don't snap to anything
 					insertpos = mousemappos;
 				}
-				
+
 				// Make the vertex
 				Vertex v = General.Map.Map.CreateVertex(insertpos);
+				if(v == null)
+				{
+					General.Map.UndoRedo.WithdrawUndo();
+					return;
+				}
 
 				// Snap to map format accuracy
 				v.SnapToAccuracy();
@@ -636,7 +651,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Update
 				General.Map.Map.Update();
-				
+
 				// Redraw screen
 				General.Interface.RedrawDisplay();
 			}

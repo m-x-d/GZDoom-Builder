@@ -774,7 +774,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		// This splits this line by vertex v
-		// Returns the new line resulting from the split
+		// Returns the new line resulting from the split, or null when it failed
 		public Linedef Split(Vertex v)
 		{
 			Linedef nl;
@@ -782,6 +782,7 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Copy linedef and change vertices
 			nl = map.CreateLinedef(v, end);
+			if(nl == null) return null;
 			CopyPropertiesTo(nl);
 			SetEndVertex(v);
 			nl.Selected = this.Selected;
@@ -791,6 +792,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(front != null)
 			{
 				nsd = map.CreateSidedef(nl, true, front.Sector);
+				if(nsd == null) return null;
 				front.CopyPropertiesTo(nsd);
 				nsd.Marked = front.Marked;
 
@@ -802,6 +804,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(back != null)
 			{
 				nsd = map.CreateSidedef(nl, false, back.Sector);
+				if(nsd == null) return null;
 				back.CopyPropertiesTo(nsd);
 				nsd.Marked = back.Marked;
 				
@@ -816,7 +819,8 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// This joins the line with another line
 		// This line will be disposed
-		public void Join(Linedef other)
+		// Returns false when the operation could not be completed
+		public bool Join(Linedef other)
 		{
 			Sector l1fs, l1bs, l2fs, l2bs;
 			bool l1was2s, l2was2s;
@@ -844,13 +848,13 @@ namespace CodeImp.DoomBuilder.Map
 				// Copy my sidedefs to the other
 				if(this.Start == other.Start)
 				{
-					JoinChangeSidedefs(other, true, front);
-					JoinChangeSidedefs(other, false, back);
+					if(!JoinChangeSidedefs(other, true, front)) return false;
+					if(!JoinChangeSidedefs(other, false, back)) return false;
 				}
 				else
 				{
-					JoinChangeSidedefs(other, false, front);
-					JoinChangeSidedefs(other, true, back);
+					if(!JoinChangeSidedefs(other, false, front)) return false;
+					if(!JoinChangeSidedefs(other, true, back)) return false;
 				}
 
 				// Copy my properties to the other
@@ -866,7 +870,7 @@ namespace CodeImp.DoomBuilder.Map
 					if(this.front != null) this.front.AddTexturesTo(other.back);
 
 					// Change sidedefs
-					JoinChangeSidedefs(other, true, back);
+					if(!JoinChangeSidedefs(other, true, back)) return false;
 				}
 				// Compare back sectors
 				else if((l1bs != null) && (l1bs == l2bs))
@@ -876,7 +880,7 @@ namespace CodeImp.DoomBuilder.Map
 					if(this.back != null) this.back.AddTexturesTo(other.front);
 
 					// Change sidedefs
-					JoinChangeSidedefs(other, false, front);
+					if(!JoinChangeSidedefs(other, false, front)) return false;
 				}
 				// Compare front and back
 				else if((l1fs != null) && (l1fs == l2bs))
@@ -886,7 +890,7 @@ namespace CodeImp.DoomBuilder.Map
 					if(this.back != null) this.back.AddTexturesTo(other.back);
 
 					// Change sidedefs
-					JoinChangeSidedefs(other, true, front);
+					if(!JoinChangeSidedefs(other, true, front)) return false;
 				}
 				// Compare back and front
 				else if((l1bs != null) && (l1bs == l2fs))
@@ -896,7 +900,7 @@ namespace CodeImp.DoomBuilder.Map
 					if(this.front != null) this.front.AddTexturesTo(other.front);
 
 					// Change sidedefs
-					JoinChangeSidedefs(other, false, back);
+					if(!JoinChangeSidedefs(other, false, back)) return false;
 				}
 				else
 				{
@@ -911,7 +915,7 @@ namespace CodeImp.DoomBuilder.Map
 							if(this.back != null) this.back.AddTexturesTo(other.front);
 
 							// Change sidedefs
-							JoinChangeSidedefs(other, false, front);
+							if(!JoinChangeSidedefs(other, false, front)) return false;
 						}
 						else
 						{
@@ -920,7 +924,7 @@ namespace CodeImp.DoomBuilder.Map
 							if(this.front != null) this.front.AddTexturesTo(other.front);
 
 							// Change sidedefs
-							JoinChangeSidedefs(other, false, back);
+							if(!JoinChangeSidedefs(other, false, back)) return false;
 						}
 					}
 					// This line single sided?
@@ -934,7 +938,7 @@ namespace CodeImp.DoomBuilder.Map
 							if(this.back != null) this.back.AddTexturesTo(other.front);
 
 							// Change sidedefs
-							JoinChangeSidedefs(other, false, front);
+							if(!JoinChangeSidedefs(other, false, front)) return false;
 						}
 						else
 						{
@@ -943,7 +947,7 @@ namespace CodeImp.DoomBuilder.Map
 							if(this.back != null) this.back.AddTexturesTo(other.back);
 
 							// Change sidedefs
-							JoinChangeSidedefs(other, true, front);
+							if(!JoinChangeSidedefs(other, true, front)) return false;
 						}
 					}
 					else
@@ -956,7 +960,7 @@ namespace CodeImp.DoomBuilder.Map
 							if(this.back != null) this.back.AddTexturesTo(other.front);
 
 							// Change sidedefs
-							JoinChangeSidedefs(other, false, front);
+							if(!JoinChangeSidedefs(other, false, front)) return false;
 						}
 						else
 						{
@@ -965,7 +969,7 @@ namespace CodeImp.DoomBuilder.Map
 							if(this.front != null) this.front.AddTexturesTo(other.front);
 
 							// Change sidedefs
-							JoinChangeSidedefs(other, false, back);
+							if(!JoinChangeSidedefs(other, false, back)) return false;
 						}
 					}
 				}
@@ -987,6 +991,7 @@ namespace CodeImp.DoomBuilder.Map
 			// I got killed by the other.
 			this.Dispose();
 			General.Map.IsChanged = true;
+			return true;
 		}
 		
 		// This changes sidedefs (used for joining lines)
@@ -994,7 +999,8 @@ namespace CodeImp.DoomBuilder.Map
 		// front:		Side on which to remove or create the sidedef (true for front side)
 		// newside:		The side from which to copy the properties to the new sidedef.
 		//				If this is null, no sidedef will be created (only removed)
-		private void JoinChangeSidedefs(Linedef target, bool front, Sidedef newside)
+		// Returns false when the operation could not be completed.
+		private bool JoinChangeSidedefs(Linedef target, bool front, Sidedef newside)
 		{
 			Sidedef sd;
 			
@@ -1011,9 +1017,12 @@ namespace CodeImp.DoomBuilder.Map
 			if(newside != null)
 			{
 				sd = map.CreateSidedef(target, front, newside.Sector);
+				if(sd == null) return false;
 				newside.CopyPropertiesTo(sd);
 				sd.Marked = newside.Marked;
 			}
+
+			return true;
 		}
 
 		// String representation
