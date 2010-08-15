@@ -60,11 +60,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private const string STATUS_LOADING_TEXT = "Loading resources...";
 		private const int WARNING_FLASH_COUNT = 10;
 		private const int WARNING_FLASH_INTERVAL = 100;
-		private const int WARNING_RESET_DELAY = 4000;
-		private const int INFO_RESET_DELAY = 4000;
+		private const int WARNING_RESET_DELAY = 5000;
+		private const int INFO_RESET_DELAY = 5000;
 		private const int ACTION_FLASH_COUNT = 3;
 		private const int ACTION_FLASH_INTERVAL = 50;
-		private const int ACTION_RESET_DELAY = 4000;
+		private const int ACTION_RESET_DELAY = 5000;
 		
 		private readonly Image[,] STATUS_IMAGES = new Image[2, 4]
 		{
