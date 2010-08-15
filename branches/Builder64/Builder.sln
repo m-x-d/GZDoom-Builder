@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Builder", "Source\Core\Builder.csproj", "{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuilderModes", "Source\Plugins\BuilderModes\BuilderModes.csproj", "{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics", "Source\Plugins\Statistics\Statistics.csproj", "{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CopyPasteSectorProperties", "Source\Plugins\CopyPasteSectorProps\CopyPasteSectorProperties.csproj", "{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImageDrawingExample", "Source\Plugins\ImageDrawingExample\ImageDrawingExample.csproj", "{CBD14608-D467-458A-97B3-CA767CA85203}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}.Debug|x86.ActiveCfg = Debug|x86
+		{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}.Debug|x86.Build.0 = Debug|x86
+		{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}.Release|x86.ActiveCfg = Release|x86
+		{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}.Release|x86.Build.0 = Release|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|x86.ActiveCfg = Debug|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Debug|x86.Build.0 = Debug|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|x86.ActiveCfg = Release|x86
+		{B42D5AA0-F9A6-4234-9C4B-A05B11A64851}.Release|x86.Build.0 = Release|x86
+		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Debug|x86.ActiveCfg = Debug|x86
+		{FBC0A503-9152-4BE2-9B5C-128FFD0B0D3F}.Release|x86.ActiveCfg = Release|x86
+		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Debug|x86.ActiveCfg = Debug|x86
+		{A5F93B70-18D9-4F3C-9B72-BC8B5B13998E}.Release|x86.ActiveCfg = Release|x86
+		{CBD14608-D467-458A-97B3-CA767CA85203}.Debug|x86.ActiveCfg = Debug|x86
+		{CBD14608-D467-458A-97B3-CA767CA85203}.Release|x86.ActiveCfg = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
