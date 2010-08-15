@@ -408,6 +408,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 
 			// Add toolbar buttons
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
@@ -431,6 +434,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
@@ -854,6 +860,64 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Actions
+
+		// This copies the properties
+		[BeginAction("classiccopyproperties")]
+		public void CopyProperties()
+		{
+			// Determine source sectors
+			ICollection<Sector> sel = null;
+			if(General.Map.Map.SelectedSectorsCount > 0)
+				sel = General.Map.Map.GetSelectedSectors(true);
+			else if(highlighted != null)
+			{
+				sel = new List<Sector>();
+				sel.Add(highlighted);
+			}
+			
+			if(sel != null)
+			{
+				// Copy properties from first source sectors
+				BuilderPlug.Me.CopiedSectorProps = new SectorProperties(General.GetByIndex(sel, 0));
+				General.Interface.DisplayStatus(StatusType.Action, "Copied sector properties.");
+			}
+		}
+
+		// This pastes the properties
+		[BeginAction("classicpasteproperties")]
+		public void PasteProperties()
+		{
+			if(BuilderPlug.Me.CopiedSectorProps != null)
+			{
+				// Determine target sectors
+				ICollection<Sector> sel = null;
+				if(General.Map.Map.SelectedSectorsCount > 0)
+					sel = General.Map.Map.GetSelectedSectors(true);
+				else if(highlighted != null)
+				{
+					sel = new List<Sector>();
+					sel.Add(highlighted);
+				}
+				
+				if(sel != null)
+				{
+					// Apply properties to selection
+					General.Map.UndoRedo.CreateUndo("Paste sector properties");
+					foreach(Sector s in sel)
+					{
+						BuilderPlug.Me.CopiedSectorProps.Apply(s);
+						s.UpdateCeilingSurface();
+						s.UpdateFloorSurface();
+					}
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted sector properties.");
+					
+					// Update and redraw
+					General.Map.IsChanged = true;
+					General.Interface.RefreshInfo();
+					General.Interface.RedrawDisplay();
+				}
+			}
+		}
 
 		// This creates a new vertex at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]

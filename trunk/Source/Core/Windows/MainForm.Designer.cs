@@ -114,7 +114,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonnewmap = new System.Windows.Forms.ToolStripButton();
 			this.buttonopenmap = new System.Windows.Forms.ToolStripButton();
 			this.buttonsavemap = new System.Windows.Forms.ToolStripButton();
-			this.buttonmapoptions = new System.Windows.Forms.ToolStripButton();
 			this.buttonscripteditor = new System.Windows.Forms.ToolStripButton();
 			this.buttonundo = new System.Windows.Forms.ToolStripButton();
 			this.buttonredo = new System.Windows.Forms.ToolStripButton();
@@ -876,7 +875,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonopenmap,
             this.buttonsavemap,
             toolStripSeparator3,
-            this.buttonmapoptions,
             this.buttonscripteditor,
             toolStripSeparator10,
             this.buttonundo,
@@ -940,17 +938,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonsavemap.Tag = "builder_savemap";
 			this.buttonsavemap.Text = "Save Map";
 			this.buttonsavemap.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// buttonmapoptions
-			// 
-			this.buttonmapoptions.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonmapoptions.Image = global::CodeImp.DoomBuilder.Properties.Resources.Properties;
-			this.buttonmapoptions.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonmapoptions.Name = "buttonmapoptions";
-			this.buttonmapoptions.Size = new System.Drawing.Size(23, 22);
-			this.buttonmapoptions.Tag = "builder_mapoptions";
-			this.buttonmapoptions.Text = "Map Options";
-			this.buttonmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonscripteditor
 			// 
@@ -1689,7 +1676,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem menuedit;
 		private System.Windows.Forms.ToolStripMenuItem itemmapoptions;
-		private System.Windows.Forms.ToolStripButton buttonmapoptions;
 		private System.Windows.Forms.ToolStripMenuItem itemreloadresources;
 		private CodeImp.DoomBuilder.Controls.LinedefInfoPanel linedefinfo;
 		private CodeImp.DoomBuilder.Controls.VertexInfoPanel vertexinfo;

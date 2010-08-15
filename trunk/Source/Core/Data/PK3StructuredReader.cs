@@ -335,6 +335,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override List<Stream> GetDecorateData(string pname)
 		{
 			List<Stream> streams = new List<Stream>();
+			string[] allfilenames;
 			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -342,7 +343,15 @@ namespace CodeImp.DoomBuilder.Data
 			// Find in root directory
 			string filename = Path.GetFileName(pname);
 			string pathname = Path.GetDirectoryName(pname);
-			string[] allfilenames = GetAllFilesWithTitle(pathname, filename, false);
+			
+			if(filename.IndexOf('.') > -1)
+			{
+				allfilenames = new string[1];
+				allfilenames[0] = Path.Combine(pathname, filename);
+			}
+			else
+				allfilenames = GetAllFilesWithTitle(pathname, filename, false);
+
 			foreach(string foundfile in allfilenames)
 			{
 				streams.Add(LoadFile(foundfile));

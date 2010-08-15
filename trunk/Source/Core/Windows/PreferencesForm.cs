@@ -84,6 +84,15 @@ namespace CodeImp.DoomBuilder.Windows
 			animatevisualselection.Checked = General.Settings.AnimateVisualSelection;
 			dockersposition.SelectedIndex = General.Settings.DockersPosition;
 			collapsedockers.Checked = General.Settings.CollapseDockers;
+			toolbar_file.Checked = General.Settings.ToolbarFile;
+			toolbar_script.Checked = General.Settings.ToolbarScript;
+			toolbar_undo.Checked = General.Settings.ToolbarUndo;
+			toolbar_copy.Checked = General.Settings.ToolbarCopy;
+			toolbar_prefabs.Checked = General.Settings.ToolbarPrefabs;
+			toolbar_filter.Checked = General.Settings.ToolbarFilter;
+			toolbar_viewmodes.Checked = General.Settings.ToolbarViewModes;
+			toolbar_geometry.Checked = General.Settings.ToolbarGeometry;
+			toolbar_testing.Checked = General.Settings.ToolbarTesting;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -197,6 +206,15 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.AnimateVisualSelection = animatevisualselection.Checked;
 			General.Settings.DockersPosition = dockersposition.SelectedIndex;
 			General.Settings.CollapseDockers = collapsedockers.Checked;
+			General.Settings.ToolbarFile = toolbar_file.Checked;
+			General.Settings.ToolbarScript = toolbar_script.Checked;
+			General.Settings.ToolbarUndo = toolbar_undo.Checked;
+			General.Settings.ToolbarCopy = toolbar_copy.Checked;
+			General.Settings.ToolbarPrefabs = toolbar_prefabs.Checked;
+			General.Settings.ToolbarFilter = toolbar_filter.Checked;
+			General.Settings.ToolbarViewModes = toolbar_viewmodes.Checked;
+			General.Settings.ToolbarGeometry = toolbar_geometry.Checked;
+			General.Settings.ToolbarTesting = toolbar_testing.Checked;
 			
 			// Script font size
 			int fontsize = 8;

@@ -31,10 +31,12 @@ namespace CodeImp.DoomBuilder.Map
 		{
 		}
 
-		// Copy constructor
+		// Copy constructor (makes a deep copy)
 		///<summary></summary>
-		public UniFields(UniFields copyfrom) : base(copyfrom)
+		public UniFields(UniFields copyfrom) : base(copyfrom.Count)
 		{
+			foreach(KeyValuePair<string, UniValue> v in copyfrom)
+				this.Add(v.Key, new UniValue(v.Value));
 		}
 		
 		// New constructor

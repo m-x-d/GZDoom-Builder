@@ -45,14 +45,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.globalstrip = new System.Windows.Forms.ToolStrip();
 			this.manualstrip = new System.Windows.Forms.ToolStrip();
-			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
 			this.separatorsectors1 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonselectionnumbers = new System.Windows.Forms.ToolStripButton();
 			this.buttonbrightnessgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonfloorgradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonceilinggradient = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionh = new System.Windows.Forms.ToolStripButton();
 			this.buttonflipselectionv = new System.Windows.Forms.ToolStripButton();
 			this.buttoncurvelinedefs = new System.Windows.Forms.ToolStripButton();
+			this.buttoncopyproperties = new System.Windows.Forms.ToolStripButton();
+			this.buttonpasteproperties = new System.Windows.Forms.ToolStripButton();
+			this.seperatorcopypaste = new System.Windows.Forms.ToolStripSeparator();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.SuspendLayout();
@@ -191,6 +194,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// manualstrip
 			// 
 			this.manualstrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.buttoncopyproperties,
+            this.buttonpasteproperties,
+            this.seperatorcopypaste,
             this.buttonselectionnumbers,
             this.separatorsectors1,
             this.buttonbrightnessgradient,
@@ -205,6 +211,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.manualstrip.TabIndex = 2;
 			this.manualstrip.Text = "toolStrip1";
 			// 
+			// separatorsectors1
+			// 
+			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorsectors1.Name = "separatorsectors1";
+			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
+			// 
 			// buttonselectionnumbers
 			// 
 			this.buttonselectionnumbers.CheckOnClick = true;
@@ -215,12 +227,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonselectionnumbers.Size = new System.Drawing.Size(23, 22);
 			this.buttonselectionnumbers.Text = "View Selection Numbering";
 			this.buttonselectionnumbers.Click += new System.EventHandler(this.buttonselectionnumbers_Click);
-			// 
-			// separatorsectors1
-			// 
-			this.separatorsectors1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.separatorsectors1.Name = "separatorsectors1";
-			this.separatorsectors1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonbrightnessgradient
 			// 
@@ -289,6 +295,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttoncurvelinedefs.Text = "Curve Linedefs";
 			this.buttoncurvelinedefs.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// buttoncopyproperties
+			// 
+			this.buttoncopyproperties.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttoncopyproperties.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.CopyProperties;
+			this.buttoncopyproperties.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttoncopyproperties.Name = "buttoncopyproperties";
+			this.buttoncopyproperties.Size = new System.Drawing.Size(23, 22);
+			this.buttoncopyproperties.Tag = "classiccopyproperties";
+			this.buttoncopyproperties.Text = "Copy Properties";
+			this.buttoncopyproperties.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonpasteproperties
+			// 
+			this.buttonpasteproperties.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonpasteproperties.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.PasteProperties;
+			this.buttonpasteproperties.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonpasteproperties.Name = "buttonpasteproperties";
+			this.buttonpasteproperties.Size = new System.Drawing.Size(23, 22);
+			this.buttonpasteproperties.Tag = "classicpasteproperties";
+			this.buttonpasteproperties.Text = "Paste Properties";
+			this.buttonpasteproperties.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// seperatorcopypaste
+			// 
+			this.seperatorcopypaste.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorcopypaste.Name = "seperatorcopypaste";
+			this.seperatorcopypaste.Size = new System.Drawing.Size(6, 25);
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -342,5 +376,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripButton buttonfloorgradient;
 		private System.Windows.Forms.ToolStripButton buttonceilinggradient;
 		private System.Windows.Forms.ToolStripButton buttoncurvelinedefs;
+		private System.Windows.Forms.ToolStripButton buttoncopyproperties;
+		private System.Windows.Forms.ToolStripButton buttonpasteproperties;
+		private System.Windows.Forms.ToolStripSeparator seperatorcopypaste;
 	}
 }
