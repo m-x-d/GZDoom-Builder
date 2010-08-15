@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override int MaxVertices { get { return ushort.MaxValue; } }
 		public override int MaxLinedefs { get { return ushort.MaxValue; } }
 		public override int MaxSectors { get { return ushort.MaxValue; } }
-		public override int MaxThings { get { return ushort.MaxValue; } }
+		public override int MaxThings { get { return int.MaxValue; } }
 		public override int MinTextureOffset { get { return short.MinValue; } }
 		public override int MaxTextureOffset { get { return short.MaxValue; } }
 		public override int VertexDecimals { get { return 0; } }
