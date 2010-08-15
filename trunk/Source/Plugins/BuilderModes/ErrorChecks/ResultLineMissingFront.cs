@@ -134,6 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.Map.UndoRedo.CreateUndo("Create front sidedef");
 			Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedef.Sector);
+			if(newside == null) return false;
 			copysidedef.CopyPropertiesTo(newside);
 			line.ApplySidedFlags();
 			General.Map.Map.Update();

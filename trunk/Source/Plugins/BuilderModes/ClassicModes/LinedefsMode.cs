@@ -743,12 +743,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Split in middle of line
 						splitvertex = General.Map.Map.CreateVertex(ld.GetCenterPoint());
 					}
+
+					if(splitvertex == null)
+					{
+						General.Map.UndoRedo.WithdrawUndo();
+						break;
+					}
 					
 					// Snap to map format accuracy
 					splitvertex.SnapToAccuracy();
-					
+
 					// Split the line
-					ld.Split(splitvertex);
+					Linedef sld = ld.Split(splitvertex);
+					if(sld == null)
+					{
+						General.Map.UndoRedo.WithdrawUndo();
+						break;
+					}
 				}
 
 				// Update cache values

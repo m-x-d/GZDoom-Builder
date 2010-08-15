@@ -571,7 +571,7 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			General.Plugins.OnUndoWithdrawn();
 		}
-
+		
 		// This performs an undo
 		[BeginAction("undo")]
 		public void PerformUndo()

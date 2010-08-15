@@ -649,27 +649,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return null;
 			}
 
-			// Create things at mouse position
+			// Create thing
 			Thing t = General.Map.Map.CreateThing();
-			General.Settings.ApplyDefaultThingSettings(t);
-			t.Move(pos);
-			t.UpdateConfiguration();
-
-			// Update things filter so that it includes this thing
-			General.Map.ThingsFilter.Update();
-
-			// Snap to grid enabled?
-			if(General.Interface.SnapToGrid)
+			if(t != null)
 			{
-				// Snap to grid
-				t.SnapToGrid();
-			}
-			else
-			{
-				// Snap to map format accuracy
-				t.SnapToAccuracy();
-			}
+				General.Settings.ApplyDefaultThingSettings(t);
+				
+				t.Move(pos);
+				
+				t.UpdateConfiguration();
 
+				// Update things filter so that it includes this thing
+				General.Map.ThingsFilter.Update();
+
+				// Snap to grid enabled?
+				if(General.Interface.SnapToGrid)
+				{
+					// Snap to grid
+					t.SnapToGrid();
+				}
+				else
+				{
+					// Snap to map format accuracy
+					t.SnapToAccuracy();
+				}
+			}
+			
 			return t;
 		}
 

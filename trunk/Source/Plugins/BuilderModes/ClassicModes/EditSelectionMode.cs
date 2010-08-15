@@ -894,7 +894,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				General.Interface.DisplayStatus(StatusType.Warning, "Please make a selection first!");
+				General.Interface.MessageBeep(MessageBeepType.Default);
 				
 				// Cancel now
 				General.Editing.CancelMode();

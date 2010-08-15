@@ -163,6 +163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Front
 				General.Map.UndoRedo.CreateUndo("Create front sidedef");
 				Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedeffront.Sector);
+				if(newside == null) return false;
 				copysidedeffront.CopyPropertiesTo(newside);
 			}
 			else if(copysidedefback != null)
@@ -172,6 +173,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// We will then flip it to make sure to ends up in the right position.
 				General.Map.UndoRedo.CreateUndo("Create front sidedef");
 				Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedefback.Sector);
+				if(newside == null) return false;
 				copysidedefback.CopyPropertiesTo(newside);
 				line.FlipVertices();
 			}
@@ -189,10 +191,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Front
 			newside = General.Map.Map.CreateSidedef(line, true, copysidedeffront.Sector);
+			if(newside == null) return false;
 			copysidedeffront.CopyPropertiesTo(newside);
 			
 			// Back
 			newside = General.Map.Map.CreateSidedef(line, false, copysidedefback.Sector);
+			if(newside == null) return false;
 			copysidedefback.CopyPropertiesTo(newside);
 			
 			line.ApplySidedFlags();

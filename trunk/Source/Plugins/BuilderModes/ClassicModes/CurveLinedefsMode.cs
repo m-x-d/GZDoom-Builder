@@ -211,9 +211,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						// Make vertex
 						Vertex v = General.Map.Map.CreateVertex(points[i]);
-
+						if(v == null)
+						{
+							General.Map.UndoRedo.WithdrawUndo();
+							return;
+						}
+						
 						// Split the line and move on with this line
 						splitline = splitline.Split(v);
+						if(splitline == null)
+						{
+							General.Map.UndoRedo.WithdrawUndo();
+							return;
+						}
 					}
 				}
 			}

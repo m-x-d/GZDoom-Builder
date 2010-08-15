@@ -501,6 +501,34 @@ namespace CodeImp.DoomBuilder
 						return false;
 					}
 				}
+
+				// Check things
+				if(map.Things.Count > io.MaxThings)
+				{
+					General.ShowErrorMessage("Unable to save the map: There are too many things!", MessageBoxButtons.OK);
+					return false;
+				}
+
+				// Check sectors
+				if(map.Sectors.Count > io.MaxSectors)
+				{
+					General.ShowErrorMessage("Unable to save the map: There are too many sectors!", MessageBoxButtons.OK);
+					return false;
+				}
+
+				// Check linedefs
+				if(map.Linedefs.Count > io.MaxLinedefs)
+				{
+					General.ShowErrorMessage("Unable to save the map: There are too many linedefs!", MessageBoxButtons.OK);
+					return false;
+				}
+
+				// Check vertices
+				if(map.Vertices.Count > io.MaxVertices)
+				{
+					General.ShowErrorMessage("Unable to save the map: There are too many vertices!", MessageBoxButtons.OK);
+					return false;
+				}
 				
 				// TODO: Check for more limitations
 				
