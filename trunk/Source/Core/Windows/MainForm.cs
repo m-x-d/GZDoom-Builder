@@ -1869,11 +1869,11 @@ namespace CodeImp.DoomBuilder.Windows
 				int number = i + 2;
 				recentitems[i + 1].Text = "&" + number.ToString() + "  " + GetDisplayFilename(recentitems[i].Tag.ToString());
 				recentitems[i + 1].Tag = recentitems[i].Tag.ToString();
-				recentitems[i + 1].Visible = (recentitems[i + 1].Text != "");
+				recentitems[i + 1].Visible = (recentitems[i].Tag.ToString() != "");
 			}
 
 			// Add new file at the top
-			recentitems[0].Text = "&1 - " + GetDisplayFilename(filename);
+			recentitems[0].Text = "&1  " + GetDisplayFilename(filename);
 			recentitems[0].Tag = filename;
 			recentitems[0].Visible = true;
 
