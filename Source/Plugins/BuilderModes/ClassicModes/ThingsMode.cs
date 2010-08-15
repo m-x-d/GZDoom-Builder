@@ -97,6 +97,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Things);
 
+			// Add toolbar buttons
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 			General.Map.Map.SelectionType = SelectionType.Things;
@@ -107,6 +111,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnDisengage();
 
+			// Remove toolbar buttons
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)
 			{
@@ -523,6 +531,64 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Actions
+
+		// This copies the properties
+		[BeginAction("classiccopyproperties")]
+		public void CopyProperties()
+		{
+			// Determine source things
+			ICollection<Thing> sel = null;
+			if(General.Map.Map.SelectedThingsCount > 0)
+				sel = General.Map.Map.GetSelectedThings(true);
+			else if(highlighted != null)
+			{
+				sel = new List<Thing>();
+				sel.Add(highlighted);
+			}
+			
+			if(sel != null)
+			{
+				// Copy properties from first source thing
+				BuilderPlug.Me.CopiedThingProps = new ThingProperties(General.GetByIndex(sel, 0));
+				General.Interface.DisplayStatus(StatusType.Action, "Copied thing properties.");
+			}
+		}
+
+		// This pastes the properties
+		[BeginAction("classicpasteproperties")]
+		public void PasteProperties()
+		{
+			if(BuilderPlug.Me.CopiedThingProps != null)
+			{
+				// Determine target things
+				ICollection<Thing> sel = null;
+				if(General.Map.Map.SelectedThingsCount > 0)
+					sel = General.Map.Map.GetSelectedThings(true);
+				else if(highlighted != null)
+				{
+					sel = new List<Thing>();
+					sel.Add(highlighted);
+				}
+				
+				if(sel != null)
+				{
+					// Apply properties to selection
+					General.Map.UndoRedo.CreateUndo("Paste thing properties");
+					foreach(Thing t in sel)
+					{
+						BuilderPlug.Me.CopiedThingProps.Apply(t);
+						t.UpdateConfiguration();
+					}
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted thing properties.");
+					
+					// Update and redraw
+					General.Map.IsChanged = true;
+					General.Map.ThingsFilter.Update();
+					General.Interface.RefreshInfo();
+					General.Interface.RedrawDisplay();
+				}
+			}
+		}
 
 		// This clears the selection
 		[BeginAction("clearselection", BaseAction = true)]

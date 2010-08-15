@@ -485,6 +485,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			windowactive = true;
 
+			UpdateInterface();
 			ResumeExclusiveMouseInput();
 			ReleaseAllKeys();
 			FocusDisplay();
@@ -1533,8 +1534,32 @@ namespace CodeImp.DoomBuilder.Windows
 		// This enables or disables all editing mode items and toolbar buttons
 		private void UpdateToolbar()
 		{
+			// Show/hide items based on preferences
+			buttonnewmap.Visible = General.Settings.ToolbarFile;
+			buttonopenmap.Visible = General.Settings.ToolbarFile;
+			buttonsavemap.Visible = General.Settings.ToolbarFile;
+			buttonscripteditor.Visible = General.Settings.ToolbarScript;
+			buttonundo.Visible = General.Settings.ToolbarUndo;
+			buttonredo.Visible = General.Settings.ToolbarUndo;
+			buttoncut.Visible = General.Settings.ToolbarCopy;
+			buttoncopy.Visible = General.Settings.ToolbarCopy;
+			buttonpaste.Visible = General.Settings.ToolbarCopy;
+			buttoninsertprefabfile.Visible = General.Settings.ToolbarPrefabs;
+			buttoninsertpreviousprefab.Visible = General.Settings.ToolbarPrefabs;
+			buttonthingsfilter.Visible = General.Settings.ToolbarFilter;
+			thingfilters.Visible = General.Settings.ToolbarFilter;
+			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes;
+			buttonviewceilings.Visible = General.Settings.ToolbarViewModes;
+			buttonviewfloors.Visible = General.Settings.ToolbarViewModes;
+			buttonviewnormal.Visible = General.Settings.ToolbarViewModes;
+			buttonsnaptogrid.Visible = General.Settings.ToolbarGeometry;
+			buttonautomerge.Visible = General.Settings.ToolbarGeometry;
+			buttontest.Visible = General.Settings.ToolbarTesting;
+
 			// Enable/disable all edit mode items
 			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
+
+			UpdateSeparators();
 		}
 
 		// This checks one of the edit mode items (and unchecks all others)
@@ -1940,7 +1965,6 @@ namespace CodeImp.DoomBuilder.Windows
 				itemredo.Text = "Redo";
 			
 			// Toolbar icons
-			buttonmapoptions.Enabled = (General.Map != null);
 			buttonundo.Enabled = itemundo.Enabled;
 			buttonredo.Enabled = itemredo.Enabled;
 			buttonundo.ToolTipText = itemundo.Text;
@@ -2135,6 +2159,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Update stuff
 				SetupInterface();
+				UpdateInterface();
 				ApplyShortcutKeys();
 				General.Colors.CreateCorrectionTable();
 				General.Plugins.ProgramReconfigure();

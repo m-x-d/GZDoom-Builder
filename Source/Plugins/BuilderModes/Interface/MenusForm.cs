@@ -60,6 +60,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripButton FlipSelectionV { get { return buttonflipselectionv; } }
 		public ToolStripButton FlipSelectionH { get { return buttonflipselectionh; } }
 		public ToolStripButton CurveLinedefs { get { return buttoncurvelinedefs; } }
+		public ToolStripButton CopyProperties { get { return buttoncopyproperties; } }
+		public ToolStripButton PasteProperties { get { return buttonpasteproperties; } }
+		public ToolStripSeparator SeparatorCopyPaste { get { return seperatorcopypaste; } }
 
 		#endregion
 

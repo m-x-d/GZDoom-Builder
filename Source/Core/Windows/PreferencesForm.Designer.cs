@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label1;
+			this.scriptontop = new System.Windows.Forms.CheckBox();
 			this.zoomfactor = new Dotnetrix.Controls.TrackBar();
 			this.zoomfactorlabel = new System.Windows.Forms.Label();
 			this.label19 = new System.Windows.Forms.Label();
@@ -47,36 +48,38 @@ namespace CodeImp.DoomBuilder.Windows
 			this.defaultviewmode = new System.Windows.Forms.ComboBox();
 			this.keyusedlabel = new System.Windows.Forms.Label();
 			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
+			this.label2 = new System.Windows.Forms.Label();
 			this.colorgrid64 = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.colorgrid = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.doublesidedalphalabel = new System.Windows.Forms.Label();
 			this.colorindication = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorsoundlinedefs = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorspeciallinedefs = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.qualitydisplay = new System.Windows.Forms.CheckBox();
 			this.colorbackcolor = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorselection = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorvertices = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.doublesidedalpha = new Dotnetrix.Controls.TrackBar();
 			this.colorhighlight = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorlinedefs = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
+			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.toolbar_testing = new System.Windows.Forms.CheckBox();
+			this.toolbar_geometry = new System.Windows.Forms.CheckBox();
+			this.toolbar_viewmodes = new System.Windows.Forms.CheckBox();
+			this.toolbar_filter = new System.Windows.Forms.CheckBox();
+			this.toolbar_prefabs = new System.Windows.Forms.CheckBox();
+			this.toolbar_copy = new System.Windows.Forms.CheckBox();
+			this.toolbar_undo = new System.Windows.Forms.CheckBox();
+			this.toolbar_script = new System.Windows.Forms.CheckBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.collapsedockers = new System.Windows.Forms.CheckBox();
 			this.dockersposition = new System.Windows.Forms.ComboBox();
 			this.label17 = new System.Windows.Forms.Label();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.scriptautoindent = new System.Windows.Forms.CheckBox();
-			this.label10 = new System.Windows.Forms.Label();
-			this.scriptontop = new System.Windows.Forms.CheckBox();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.scriptfontlabel = new System.Windows.Forms.Label();
-			this.scriptfontsize = new System.Windows.Forms.ComboBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.scriptfontbold = new System.Windows.Forms.CheckBox();
-			this.scriptfontname = new System.Windows.Forms.ComboBox();
-			this.label3 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.viewdistance = new Dotnetrix.Controls.TrackBar();
 			this.movespeed = new Dotnetrix.Controls.TrackBar();
@@ -105,18 +108,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiondescription = new System.Windows.Forms.Label();
 			this.tabcolors = new System.Windows.Forms.TabPage();
 			this.appearancegroup1 = new System.Windows.Forms.GroupBox();
-			this.label2 = new System.Windows.Forms.Label();
 			this.animatevisualselection = new System.Windows.Forms.CheckBox();
 			this.blackbrowsers = new System.Windows.Forms.CheckBox();
-			this.squarethings = new System.Windows.Forms.CheckBox();
-			this.doublesidedalphalabel = new System.Windows.Forms.Label();
 			this.visualbilinear = new System.Windows.Forms.CheckBox();
 			this.classicbilinear = new System.Windows.Forms.CheckBox();
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
-			this.qualitydisplay = new System.Windows.Forms.CheckBox();
-			this.doublesidedalpha = new Dotnetrix.Controls.TrackBar();
 			this.imagebrightness = new Dotnetrix.Controls.TrackBar();
 			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
+			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.scriptautoindent = new System.Windows.Forms.CheckBox();
+			this.label10 = new System.Windows.Forms.Label();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.scriptfontlabel = new System.Windows.Forms.Label();
+			this.scriptfontsize = new System.Windows.Forms.ComboBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.scriptfontbold = new System.Windows.Forms.CheckBox();
+			this.scriptfontname = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
 			this.colorconstants = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorliterals = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorscriptbackground = new CodeImp.DoomBuilder.Controls.ColorControl();
@@ -127,6 +135,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabpasting = new System.Windows.Forms.TabPage();
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
+			this.toolbar_file = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -137,11 +146,11 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.previewsize)).BeginInit();
 			this.colorsgroup1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
 			this.tabs.SuspendLayout();
 			this.tabinterface.SuspendLayout();
+			this.groupBox5.SuspendLayout();
 			this.groupBox4.SuspendLayout();
-			this.groupBox3.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.viewdistance)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.movespeed)).BeginInit();
@@ -151,9 +160,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.SuspendLayout();
 			this.tabcolors.SuspendLayout();
 			this.appearancegroup1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
 			this.colorsgroup3.SuspendLayout();
+			this.panel1.SuspendLayout();
 			this.tabpasting.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -186,6 +195,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
+			groupBox1.Controls.Add(this.scriptontop);
 			groupBox1.Controls.Add(this.zoomfactor);
 			groupBox1.Controls.Add(this.zoomfactorlabel);
 			groupBox1.Controls.Add(this.label19);
@@ -199,10 +209,20 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.Controls.Add(this.defaultviewmode);
 			groupBox1.Location = new System.Drawing.Point(8, 8);
 			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(298, 249);
+			groupBox1.Size = new System.Drawing.Size(331, 286);
 			groupBox1.TabIndex = 0;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
+			// 
+			// scriptontop
+			// 
+			this.scriptontop.AutoSize = true;
+			this.scriptontop.Location = new System.Drawing.Point(32, 248);
+			this.scriptontop.Name = "scriptontop";
+			this.scriptontop.Size = new System.Drawing.Size(237, 18);
+			this.scriptontop.TabIndex = 40;
+			this.scriptontop.Text = "Script Editor always on top of main window";
+			this.scriptontop.UseVisualStyleBackColor = true;
 			// 
 			// zoomfactor
 			// 
@@ -210,7 +230,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zoomfactor.Location = new System.Drawing.Point(127, 187);
 			this.zoomfactor.Minimum = 1;
 			this.zoomfactor.Name = "zoomfactor";
-			this.zoomfactor.Size = new System.Drawing.Size(92, 42);
+			this.zoomfactor.Size = new System.Drawing.Size(116, 42);
 			this.zoomfactor.TabIndex = 37;
 			this.zoomfactor.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.zoomfactor.Value = 3;
@@ -219,7 +239,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// zoomfactorlabel
 			// 
 			this.zoomfactorlabel.AutoSize = true;
-			this.zoomfactorlabel.Location = new System.Drawing.Point(225, 199);
+			this.zoomfactorlabel.Location = new System.Drawing.Point(249, 199);
 			this.zoomfactorlabel.Name = "zoomfactorlabel";
 			this.zoomfactorlabel.Size = new System.Drawing.Size(29, 14);
 			this.zoomfactorlabel.TabIndex = 39;
@@ -240,7 +260,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.autoscrollspeed.Location = new System.Drawing.Point(127, 135);
 			this.autoscrollspeed.Maximum = 5;
 			this.autoscrollspeed.Name = "autoscrollspeed";
-			this.autoscrollspeed.Size = new System.Drawing.Size(92, 42);
+			this.autoscrollspeed.Size = new System.Drawing.Size(116, 42);
 			this.autoscrollspeed.TabIndex = 2;
 			this.autoscrollspeed.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.autoscrollspeed.ValueChanged += new System.EventHandler(this.autoscrollspeed_ValueChanged);
@@ -248,7 +268,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// autoscrollspeedlabel
 			// 
 			this.autoscrollspeedlabel.AutoSize = true;
-			this.autoscrollspeedlabel.Location = new System.Drawing.Point(225, 147);
+			this.autoscrollspeedlabel.Location = new System.Drawing.Point(249, 147);
 			this.autoscrollspeedlabel.Name = "autoscrollspeedlabel";
 			this.autoscrollspeedlabel.Size = new System.Drawing.Size(23, 14);
 			this.autoscrollspeedlabel.TabIndex = 36;
@@ -269,7 +289,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.previewsize.Location = new System.Drawing.Point(127, 81);
 			this.previewsize.Maximum = 5;
 			this.previewsize.Name = "previewsize";
-			this.previewsize.Size = new System.Drawing.Size(92, 42);
+			this.previewsize.Size = new System.Drawing.Size(116, 42);
 			this.previewsize.TabIndex = 1;
 			this.previewsize.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.previewsize.Value = 5;
@@ -278,7 +298,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// previewsizelabel
 			// 
 			this.previewsizelabel.AutoSize = true;
-			this.previewsizelabel.Location = new System.Drawing.Point(225, 93);
+			this.previewsizelabel.Location = new System.Drawing.Point(249, 93);
 			this.previewsizelabel.Name = "previewsizelabel";
 			this.previewsizelabel.Size = new System.Drawing.Size(55, 14);
 			this.previewsizelabel.TabIndex = 33;
@@ -319,7 +339,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(22, 94);
+			label1.Location = new System.Drawing.Point(22, 40);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(148, 14);
 			label1.TabIndex = 20;
@@ -340,58 +360,92 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorsgroup1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.colorsgroup1.Controls.Add(this.label2);
 			this.colorsgroup1.Controls.Add(this.colorgrid64);
+			this.colorsgroup1.Controls.Add(this.squarethings);
 			this.colorsgroup1.Controls.Add(this.colorgrid);
+			this.colorsgroup1.Controls.Add(this.doublesidedalphalabel);
 			this.colorsgroup1.Controls.Add(this.colorindication);
 			this.colorsgroup1.Controls.Add(this.colorsoundlinedefs);
 			this.colorsgroup1.Controls.Add(this.colorspeciallinedefs);
+			this.colorsgroup1.Controls.Add(this.qualitydisplay);
 			this.colorsgroup1.Controls.Add(this.colorbackcolor);
 			this.colorsgroup1.Controls.Add(this.colorselection);
 			this.colorsgroup1.Controls.Add(this.colorvertices);
+			this.colorsgroup1.Controls.Add(this.doublesidedalpha);
 			this.colorsgroup1.Controls.Add(this.colorhighlight);
 			this.colorsgroup1.Controls.Add(this.colorlinedefs);
 			this.colorsgroup1.Location = new System.Drawing.Point(8, 8);
 			this.colorsgroup1.Name = "colorsgroup1";
-			this.colorsgroup1.Size = new System.Drawing.Size(185, 489);
+			this.colorsgroup1.Size = new System.Drawing.Size(203, 472);
 			this.colorsgroup1.TabIndex = 0;
 			this.colorsgroup1.TabStop = false;
 			this.colorsgroup1.Text = " Display ";
 			this.colorsgroup1.Visible = false;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(18, 315);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(147, 14);
+			this.label2.TabIndex = 14;
+			this.label2.Text = "Passable lines transparency:";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// colorgrid64
 			// 
 			this.colorgrid64.BackColor = System.Drawing.Color.Transparent;
 			this.colorgrid64.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorgrid64.Label = "64 Block grid:";
-			this.colorgrid64.Location = new System.Drawing.Point(15, 414);
+			this.colorgrid64.Location = new System.Drawing.Point(15, 270);
 			this.colorgrid64.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorgrid64.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorgrid64.Name = "colorgrid64";
-			this.colorgrid64.Size = new System.Drawing.Size(150, 23);
+			this.colorgrid64.Size = new System.Drawing.Size(168, 23);
 			this.colorgrid64.TabIndex = 9;
+			// 
+			// squarethings
+			// 
+			this.squarethings.AutoSize = true;
+			this.squarethings.Location = new System.Drawing.Point(21, 427);
+			this.squarethings.Name = "squarethings";
+			this.squarethings.Size = new System.Drawing.Size(93, 18);
+			this.squarethings.TabIndex = 8;
+			this.squarethings.Text = "Square things";
+			this.squarethings.UseVisualStyleBackColor = true;
 			// 
 			// colorgrid
 			// 
 			this.colorgrid.BackColor = System.Drawing.Color.Transparent;
 			this.colorgrid.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorgrid.Label = "Custom grid:";
-			this.colorgrid.Location = new System.Drawing.Point(15, 371);
+			this.colorgrid.Location = new System.Drawing.Point(15, 243);
 			this.colorgrid.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorgrid.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorgrid.Name = "colorgrid";
-			this.colorgrid.Size = new System.Drawing.Size(150, 23);
+			this.colorgrid.Size = new System.Drawing.Size(168, 23);
 			this.colorgrid.TabIndex = 8;
+			// 
+			// doublesidedalphalabel
+			// 
+			this.doublesidedalphalabel.AutoSize = true;
+			this.doublesidedalphalabel.Location = new System.Drawing.Point(148, 347);
+			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
+			this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
+			this.doublesidedalphalabel.TabIndex = 16;
+			this.doublesidedalphalabel.Text = "0%";
 			// 
 			// colorindication
 			// 
 			this.colorindication.BackColor = System.Drawing.Color.Transparent;
 			this.colorindication.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorindication.Label = "Indications:";
-			this.colorindication.Location = new System.Drawing.Point(15, 328);
+			this.colorindication.Location = new System.Drawing.Point(15, 216);
 			this.colorindication.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorindication.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorindication.Name = "colorindication";
-			this.colorindication.Size = new System.Drawing.Size(150, 23);
+			this.colorindication.Size = new System.Drawing.Size(168, 23);
 			this.colorindication.TabIndex = 7;
 			// 
 			// colorsoundlinedefs
@@ -399,11 +453,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsoundlinedefs.BackColor = System.Drawing.Color.Transparent;
 			this.colorsoundlinedefs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorsoundlinedefs.Label = "Sound lines:";
-			this.colorsoundlinedefs.Location = new System.Drawing.Point(15, 199);
+			this.colorsoundlinedefs.Location = new System.Drawing.Point(15, 135);
 			this.colorsoundlinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorsoundlinedefs.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorsoundlinedefs.Name = "colorsoundlinedefs";
-			this.colorsoundlinedefs.Size = new System.Drawing.Size(150, 23);
+			this.colorsoundlinedefs.Size = new System.Drawing.Size(168, 23);
 			this.colorsoundlinedefs.TabIndex = 4;
 			// 
 			// colorspeciallinedefs
@@ -411,12 +465,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorspeciallinedefs.BackColor = System.Drawing.Color.Transparent;
 			this.colorspeciallinedefs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorspeciallinedefs.Label = "Action lines:";
-			this.colorspeciallinedefs.Location = new System.Drawing.Point(15, 156);
+			this.colorspeciallinedefs.Location = new System.Drawing.Point(15, 108);
 			this.colorspeciallinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorspeciallinedefs.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorspeciallinedefs.Name = "colorspeciallinedefs";
-			this.colorspeciallinedefs.Size = new System.Drawing.Size(150, 23);
+			this.colorspeciallinedefs.Size = new System.Drawing.Size(168, 23);
 			this.colorspeciallinedefs.TabIndex = 3;
+			// 
+			// qualitydisplay
+			// 
+			this.qualitydisplay.AutoSize = true;
+			this.qualitydisplay.Location = new System.Drawing.Point(21, 395);
+			this.qualitydisplay.Name = "qualitydisplay";
+			this.qualitydisplay.Size = new System.Drawing.Size(130, 18);
+			this.qualitydisplay.TabIndex = 7;
+			this.qualitydisplay.Text = "High quality rendering";
+			this.qualitydisplay.UseVisualStyleBackColor = true;
 			// 
 			// colorbackcolor
 			// 
@@ -427,7 +491,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorbackcolor.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorbackcolor.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorbackcolor.Name = "colorbackcolor";
-			this.colorbackcolor.Size = new System.Drawing.Size(150, 23);
+			this.colorbackcolor.Size = new System.Drawing.Size(168, 23);
 			this.colorbackcolor.TabIndex = 0;
 			// 
 			// colorselection
@@ -435,11 +499,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorselection.BackColor = System.Drawing.Color.Transparent;
 			this.colorselection.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorselection.Label = "Selection:";
-			this.colorselection.Location = new System.Drawing.Point(15, 285);
+			this.colorselection.Location = new System.Drawing.Point(15, 189);
 			this.colorselection.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorselection.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorselection.Name = "colorselection";
-			this.colorselection.Size = new System.Drawing.Size(150, 23);
+			this.colorselection.Size = new System.Drawing.Size(168, 23);
 			this.colorselection.TabIndex = 6;
 			// 
 			// colorvertices
@@ -447,23 +511,33 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorvertices.BackColor = System.Drawing.Color.Transparent;
 			this.colorvertices.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorvertices.Label = "Vertices:";
-			this.colorvertices.Location = new System.Drawing.Point(15, 70);
+			this.colorvertices.Location = new System.Drawing.Point(15, 54);
 			this.colorvertices.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorvertices.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorvertices.Name = "colorvertices";
-			this.colorvertices.Size = new System.Drawing.Size(150, 23);
+			this.colorvertices.Size = new System.Drawing.Size(168, 23);
 			this.colorvertices.TabIndex = 1;
+			// 
+			// doublesidedalpha
+			// 
+			this.doublesidedalpha.LargeChange = 3;
+			this.doublesidedalpha.Location = new System.Drawing.Point(11, 334);
+			this.doublesidedalpha.Name = "doublesidedalpha";
+			this.doublesidedalpha.Size = new System.Drawing.Size(130, 42);
+			this.doublesidedalpha.TabIndex = 2;
+			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.Both;
+			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
 			// 
 			// colorhighlight
 			// 
 			this.colorhighlight.BackColor = System.Drawing.Color.Transparent;
 			this.colorhighlight.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorhighlight.Label = "Highlight:";
-			this.colorhighlight.Location = new System.Drawing.Point(15, 242);
+			this.colorhighlight.Location = new System.Drawing.Point(15, 162);
 			this.colorhighlight.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorhighlight.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorhighlight.Name = "colorhighlight";
-			this.colorhighlight.Size = new System.Drawing.Size(150, 23);
+			this.colorhighlight.Size = new System.Drawing.Size(168, 23);
 			this.colorhighlight.TabIndex = 5;
 			// 
 			// colorlinedefs
@@ -471,18 +545,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinedefs.BackColor = System.Drawing.Color.Transparent;
 			this.colorlinedefs.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorlinedefs.Label = "Common lines:";
-			this.colorlinedefs.Location = new System.Drawing.Point(15, 113);
+			this.colorlinedefs.Location = new System.Drawing.Point(15, 81);
 			this.colorlinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorlinedefs.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorlinedefs.Name = "colorlinedefs";
-			this.colorlinedefs.Size = new System.Drawing.Size(150, 23);
+			this.colorlinedefs.Size = new System.Drawing.Size(168, 23);
 			this.colorlinedefs.TabIndex = 2;
 			// 
 			// cancel
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(560, 554);
+			this.cancel.Location = new System.Drawing.Point(589, 537);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 2;
@@ -494,7 +568,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.apply.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.apply.Location = new System.Drawing.Point(442, 554);
+			this.apply.Location = new System.Drawing.Point(471, 537);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 1;
@@ -517,33 +591,131 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(661, 532);
+			this.tabs.Size = new System.Drawing.Size(690, 515);
 			this.tabs.TabIndex = 0;
 			this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
 			// 
 			// tabinterface
 			// 
+			this.tabinterface.Controls.Add(this.groupBox5);
 			this.tabinterface.Controls.Add(this.groupBox4);
-			this.tabinterface.Controls.Add(this.groupBox3);
 			this.tabinterface.Controls.Add(this.groupBox2);
 			this.tabinterface.Controls.Add(groupBox1);
 			this.tabinterface.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabinterface.Location = new System.Drawing.Point(4, 23);
 			this.tabinterface.Name = "tabinterface";
 			this.tabinterface.Padding = new System.Windows.Forms.Padding(5);
-			this.tabinterface.Size = new System.Drawing.Size(653, 505);
+			this.tabinterface.Size = new System.Drawing.Size(682, 488);
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
+			// 
+			// groupBox5
+			// 
+			this.groupBox5.Controls.Add(this.toolbar_file);
+			this.groupBox5.Controls.Add(this.toolbar_testing);
+			this.groupBox5.Controls.Add(this.toolbar_geometry);
+			this.groupBox5.Controls.Add(this.toolbar_viewmodes);
+			this.groupBox5.Controls.Add(this.toolbar_filter);
+			this.groupBox5.Controls.Add(this.toolbar_prefabs);
+			this.groupBox5.Controls.Add(this.toolbar_copy);
+			this.groupBox5.Controls.Add(this.toolbar_undo);
+			this.groupBox5.Controls.Add(this.toolbar_script);
+			this.groupBox5.Location = new System.Drawing.Point(8, 300);
+			this.groupBox5.Name = "groupBox5";
+			this.groupBox5.Size = new System.Drawing.Size(331, 180);
+			this.groupBox5.TabIndex = 4;
+			this.groupBox5.TabStop = false;
+			this.groupBox5.Text = " Toolbar Buttons ";
+			// 
+			// toolbar_testing
+			// 
+			this.toolbar_testing.AutoSize = true;
+			this.toolbar_testing.Location = new System.Drawing.Point(188, 114);
+			this.toolbar_testing.Name = "toolbar_testing";
+			this.toolbar_testing.Size = new System.Drawing.Size(61, 18);
+			this.toolbar_testing.TabIndex = 48;
+			this.toolbar_testing.Text = "Testing";
+			this.toolbar_testing.UseVisualStyleBackColor = true;
+			// 
+			// toolbar_geometry
+			// 
+			this.toolbar_geometry.AutoSize = true;
+			this.toolbar_geometry.Location = new System.Drawing.Point(188, 88);
+			this.toolbar_geometry.Name = "toolbar_geometry";
+			this.toolbar_geometry.Size = new System.Drawing.Size(90, 18);
+			this.toolbar_geometry.TabIndex = 47;
+			this.toolbar_geometry.Text = "Snap / Merge";
+			this.toolbar_geometry.UseVisualStyleBackColor = true;
+			// 
+			// toolbar_viewmodes
+			// 
+			this.toolbar_viewmodes.AutoSize = true;
+			this.toolbar_viewmodes.Location = new System.Drawing.Point(188, 62);
+			this.toolbar_viewmodes.Name = "toolbar_viewmodes";
+			this.toolbar_viewmodes.Size = new System.Drawing.Size(87, 18);
+			this.toolbar_viewmodes.TabIndex = 46;
+			this.toolbar_viewmodes.Text = "View Modes";
+			this.toolbar_viewmodes.UseVisualStyleBackColor = true;
+			// 
+			// toolbar_filter
+			// 
+			this.toolbar_filter.AutoSize = true;
+			this.toolbar_filter.Location = new System.Drawing.Point(188, 36);
+			this.toolbar_filter.Name = "toolbar_filter";
+			this.toolbar_filter.Size = new System.Drawing.Size(84, 18);
+			this.toolbar_filter.TabIndex = 45;
+			this.toolbar_filter.Text = "Things Filter";
+			this.toolbar_filter.UseVisualStyleBackColor = true;
+			// 
+			// toolbar_prefabs
+			// 
+			this.toolbar_prefabs.AutoSize = true;
+			this.toolbar_prefabs.Location = new System.Drawing.Point(32, 140);
+			this.toolbar_prefabs.Name = "toolbar_prefabs";
+			this.toolbar_prefabs.Size = new System.Drawing.Size(64, 18);
+			this.toolbar_prefabs.TabIndex = 44;
+			this.toolbar_prefabs.Text = "Prefabs";
+			this.toolbar_prefabs.UseVisualStyleBackColor = true;
+			// 
+			// toolbar_copy
+			// 
+			this.toolbar_copy.AutoSize = true;
+			this.toolbar_copy.Location = new System.Drawing.Point(32, 114);
+			this.toolbar_copy.Name = "toolbar_copy";
+			this.toolbar_copy.Size = new System.Drawing.Size(112, 18);
+			this.toolbar_copy.TabIndex = 43;
+			this.toolbar_copy.Text = "Cut / Copy / Paste";
+			this.toolbar_copy.UseVisualStyleBackColor = true;
+			// 
+			// toolbar_undo
+			// 
+			this.toolbar_undo.AutoSize = true;
+			this.toolbar_undo.Location = new System.Drawing.Point(32, 88);
+			this.toolbar_undo.Name = "toolbar_undo";
+			this.toolbar_undo.Size = new System.Drawing.Size(85, 18);
+			this.toolbar_undo.TabIndex = 42;
+			this.toolbar_undo.Text = "Undo / Redo";
+			this.toolbar_undo.UseVisualStyleBackColor = true;
+			// 
+			// toolbar_script
+			// 
+			this.toolbar_script.AutoSize = true;
+			this.toolbar_script.Location = new System.Drawing.Point(32, 62);
+			this.toolbar_script.Name = "toolbar_script";
+			this.toolbar_script.Size = new System.Drawing.Size(84, 18);
+			this.toolbar_script.TabIndex = 41;
+			this.toolbar_script.Text = "Script Editor";
+			this.toolbar_script.UseVisualStyleBackColor = true;
 			// 
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.collapsedockers);
 			this.groupBox4.Controls.Add(this.dockersposition);
 			this.groupBox4.Controls.Add(this.label17);
-			this.groupBox4.Location = new System.Drawing.Point(316, 373);
+			this.groupBox4.Location = new System.Drawing.Point(345, 300);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(329, 124);
+			this.groupBox4.Size = new System.Drawing.Size(329, 180);
 			this.groupBox4.TabIndex = 3;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Side Panels ";
@@ -551,7 +723,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// collapsedockers
 			// 
 			this.collapsedockers.AutoSize = true;
-			this.collapsedockers.Location = new System.Drawing.Point(204, 41);
+			this.collapsedockers.Location = new System.Drawing.Point(204, 39);
 			this.collapsedockers.Name = "collapsedockers";
 			this.collapsedockers.Size = new System.Drawing.Size(72, 18);
 			this.collapsedockers.TabIndex = 2;
@@ -566,7 +738,7 @@ namespace CodeImp.DoomBuilder.Windows
             "Left",
             "Right",
             "None"});
-			this.dockersposition.Location = new System.Drawing.Point(95, 39);
+			this.dockersposition.Location = new System.Drawing.Point(95, 37);
 			this.dockersposition.Name = "dockersposition";
 			this.dockersposition.Size = new System.Drawing.Size(85, 22);
 			this.dockersposition.TabIndex = 1;
@@ -574,160 +746,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label17
 			// 
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(33, 42);
+			this.label17.Location = new System.Drawing.Point(33, 40);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(47, 14);
 			this.label17.TabIndex = 0;
 			this.label17.Text = "Position:";
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.scripttabwidth);
-			this.groupBox3.Controls.Add(this.scriptautoindent);
-			this.groupBox3.Controls.Add(this.label10);
-			this.groupBox3.Controls.Add(this.scriptontop);
-			this.groupBox3.Controls.Add(this.panel1);
-			this.groupBox3.Controls.Add(this.scriptfontsize);
-			this.groupBox3.Controls.Add(this.label8);
-			this.groupBox3.Controls.Add(this.scriptfontbold);
-			this.groupBox3.Controls.Add(this.scriptfontname);
-			this.groupBox3.Controls.Add(this.label3);
-			this.groupBox3.Location = new System.Drawing.Point(8, 263);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(298, 234);
-			this.groupBox3.TabIndex = 1;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = " Script Editor ";
-			// 
-			// scripttabwidth
-			// 
-			this.scripttabwidth.AllowDecimal = false;
-			this.scripttabwidth.AllowNegative = false;
-			this.scripttabwidth.AllowRelative = false;
-			this.scripttabwidth.ButtonStep = 2;
-			this.scripttabwidth.Location = new System.Drawing.Point(76, 191);
-			this.scripttabwidth.Name = "scripttabwidth";
-			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
-			this.scripttabwidth.StepValues = null;
-			this.scripttabwidth.TabIndex = 22;
-			// 
-			// scriptautoindent
-			// 
-			this.scriptautoindent.AutoSize = true;
-			this.scriptautoindent.Location = new System.Drawing.Point(171, 195);
-			this.scriptautoindent.Name = "scriptautoindent";
-			this.scriptautoindent.Size = new System.Drawing.Size(81, 18);
-			this.scriptautoindent.TabIndex = 21;
-			this.scriptautoindent.Text = "Auto indent";
-			this.scriptautoindent.UseVisualStyleBackColor = true;
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(16, 196);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(58, 14);
-			this.label10.TabIndex = 19;
-			this.label10.Text = "Tab width:";
-			// 
-			// scriptontop
-			// 
-			this.scriptontop.AutoSize = true;
-			this.scriptontop.Location = new System.Drawing.Point(53, 159);
-			this.scriptontop.Name = "scriptontop";
-			this.scriptontop.Size = new System.Drawing.Size(178, 18);
-			this.scriptontop.TabIndex = 3;
-			this.scriptontop.Text = "Always on top of main window";
-			this.scriptontop.UseVisualStyleBackColor = true;
-			// 
-			// panel1
-			// 
-			this.panel1.BackColor = System.Drawing.SystemColors.Window;
-			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.panel1.Controls.Add(this.scriptfontlabel);
-			this.panel1.Location = new System.Drawing.Point(53, 110);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(226, 38);
-			this.panel1.TabIndex = 18;
-			// 
-			// scriptfontlabel
-			// 
-			this.scriptfontlabel.BackColor = System.Drawing.SystemColors.Window;
-			this.scriptfontlabel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scriptfontlabel.Location = new System.Drawing.Point(0, 0);
-			this.scriptfontlabel.Name = "scriptfontlabel";
-			this.scriptfontlabel.Size = new System.Drawing.Size(222, 34);
-			this.scriptfontlabel.TabIndex = 0;
-			this.scriptfontlabel.Text = "Font";
-			this.scriptfontlabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// scriptfontsize
-			// 
-			this.scriptfontsize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.scriptfontsize.FormattingEnabled = true;
-			this.scriptfontsize.Items.AddRange(new object[] {
-            "7",
-            "8",
-            "9",
-            "10",
-            "11",
-            "12",
-            "14",
-            "16",
-            "18",
-            "20",
-            "22",
-            "24",
-            "26",
-            "28",
-            "36",
-            "48",
-            "72"});
-			this.scriptfontsize.Location = new System.Drawing.Point(53, 71);
-			this.scriptfontsize.Name = "scriptfontsize";
-			this.scriptfontsize.Size = new System.Drawing.Size(94, 22);
-			this.scriptfontsize.TabIndex = 1;
-			this.scriptfontsize.SelectedIndexChanged += new System.EventHandler(this.scriptfontsize_SelectedIndexChanged);
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(16, 74);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(31, 14);
-			this.label8.TabIndex = 16;
-			this.label8.Text = "Size:";
-			// 
-			// scriptfontbold
-			// 
-			this.scriptfontbold.AutoSize = true;
-			this.scriptfontbold.Location = new System.Drawing.Point(171, 73);
-			this.scriptfontbold.Name = "scriptfontbold";
-			this.scriptfontbold.Size = new System.Drawing.Size(47, 18);
-			this.scriptfontbold.TabIndex = 2;
-			this.scriptfontbold.Text = "Bold";
-			this.scriptfontbold.UseVisualStyleBackColor = true;
-			this.scriptfontbold.CheckedChanged += new System.EventHandler(this.scriptfontbold_CheckedChanged);
-			// 
-			// scriptfontname
-			// 
-			this.scriptfontname.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.scriptfontname.FormattingEnabled = true;
-			this.scriptfontname.Location = new System.Drawing.Point(53, 36);
-			this.scriptfontname.Name = "scriptfontname";
-			this.scriptfontname.Size = new System.Drawing.Size(226, 22);
-			this.scriptfontname.Sorted = true;
-			this.scriptfontname.TabIndex = 0;
-			this.scriptfontname.SelectedIndexChanged += new System.EventHandler(this.scriptfontname_SelectedIndexChanged);
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(16, 39);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(31, 14);
-			this.label3.TabIndex = 0;
-			this.label3.Text = "Font:";
 			// 
 			// groupBox2
 			// 
@@ -744,9 +767,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Controls.Add(this.label9);
 			this.groupBox2.Controls.Add(this.fieldofviewlabel);
 			this.groupBox2.Controls.Add(this.label4);
-			this.groupBox2.Location = new System.Drawing.Point(316, 8);
+			this.groupBox2.Location = new System.Drawing.Point(345, 8);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(329, 359);
+			this.groupBox2.Size = new System.Drawing.Size(329, 286);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Visual Modes ";
@@ -822,7 +845,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// invertyaxis
 			// 
 			this.invertyaxis.AutoSize = true;
-			this.invertyaxis.Location = new System.Drawing.Point(36, 251);
+			this.invertyaxis.Location = new System.Drawing.Point(36, 248);
 			this.invertyaxis.Name = "invertyaxis";
 			this.invertyaxis.Size = new System.Drawing.Size(122, 18);
 			this.invertyaxis.TabIndex = 4;
@@ -891,7 +914,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabkeys.Location = new System.Drawing.Point(4, 23);
 			this.tabkeys.Name = "tabkeys";
 			this.tabkeys.Padding = new System.Windows.Forms.Padding(3);
-			this.tabkeys.Size = new System.Drawing.Size(653, 505);
+			this.tabkeys.Size = new System.Drawing.Size(682, 488);
 			this.tabkeys.TabIndex = 1;
 			this.tabkeys.Text = "Controls";
 			this.tabkeys.UseVisualStyleBackColor = true;
@@ -911,7 +934,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listactions.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
 			this.listactions.MultiSelect = false;
 			this.listactions.Name = "listactions";
-			this.listactions.Size = new System.Drawing.Size(337, 479);
+			this.listactions.Size = new System.Drawing.Size(352, 462);
 			this.listactions.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listactions.TabIndex = 0;
 			this.listactions.TabStop = false;
@@ -947,10 +970,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.Controls.Add(this.actiondescription);
 			this.actioncontrolpanel.Controls.Add(label5);
 			this.actioncontrolpanel.Enabled = false;
-			this.actioncontrolpanel.Location = new System.Drawing.Point(362, 12);
+			this.actioncontrolpanel.Location = new System.Drawing.Point(377, 12);
 			this.actioncontrolpanel.Margin = new System.Windows.Forms.Padding(6);
 			this.actioncontrolpanel.Name = "actioncontrolpanel";
-			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 479);
+			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 462);
 			this.actioncontrolpanel.TabIndex = 9;
 			this.actioncontrolpanel.TabStop = false;
 			this.actioncontrolpanel.Text = " Action control ";
@@ -1044,7 +1067,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcolors.Location = new System.Drawing.Point(4, 23);
 			this.tabcolors.Name = "tabcolors";
 			this.tabcolors.Padding = new System.Windows.Forms.Padding(5);
-			this.tabcolors.Size = new System.Drawing.Size(653, 505);
+			this.tabcolors.Size = new System.Drawing.Size(682, 488);
 			this.tabcolors.TabIndex = 2;
 			this.tabcolors.Text = "Appearance";
 			this.tabcolors.UseVisualStyleBackColor = true;
@@ -1054,39 +1077,24 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.appearancegroup1.Controls.Add(this.label2);
 			this.appearancegroup1.Controls.Add(this.animatevisualselection);
 			this.appearancegroup1.Controls.Add(this.blackbrowsers);
-			this.appearancegroup1.Controls.Add(this.squarethings);
-			this.appearancegroup1.Controls.Add(this.doublesidedalphalabel);
 			this.appearancegroup1.Controls.Add(this.visualbilinear);
 			this.appearancegroup1.Controls.Add(label1);
 			this.appearancegroup1.Controls.Add(this.classicbilinear);
 			this.appearancegroup1.Controls.Add(this.imagebrightnesslabel);
-			this.appearancegroup1.Controls.Add(this.qualitydisplay);
-			this.appearancegroup1.Controls.Add(this.doublesidedalpha);
 			this.appearancegroup1.Controls.Add(this.imagebrightness);
-			this.appearancegroup1.Location = new System.Drawing.Point(199, 220);
+			this.appearancegroup1.Location = new System.Drawing.Point(217, 251);
 			this.appearancegroup1.Name = "appearancegroup1";
-			this.appearancegroup1.Size = new System.Drawing.Size(446, 277);
+			this.appearancegroup1.Size = new System.Drawing.Size(457, 229);
 			this.appearancegroup1.TabIndex = 24;
 			this.appearancegroup1.TabStop = false;
 			this.appearancegroup1.Text = " Additional Options ";
 			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(23, 40);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(147, 14);
-			this.label2.TabIndex = 14;
-			this.label2.Text = "Passable lines transparency:";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
 			// animatevisualselection
 			// 
 			this.animatevisualselection.AutoSize = true;
-			this.animatevisualselection.Location = new System.Drawing.Point(245, 208);
+			this.animatevisualselection.Location = new System.Drawing.Point(244, 123);
 			this.animatevisualselection.Name = "animatevisualselection";
 			this.animatevisualselection.Size = new System.Drawing.Size(188, 18);
 			this.animatevisualselection.TabIndex = 23;
@@ -1096,36 +1104,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// blackbrowsers
 			// 
 			this.blackbrowsers.AutoSize = true;
-			this.blackbrowsers.Location = new System.Drawing.Point(26, 148);
+			this.blackbrowsers.Location = new System.Drawing.Point(244, 93);
 			this.blackbrowsers.Name = "blackbrowsers";
 			this.blackbrowsers.Size = new System.Drawing.Size(199, 18);
 			this.blackbrowsers.TabIndex = 4;
 			this.blackbrowsers.Text = "Black background in image browser";
 			this.blackbrowsers.UseVisualStyleBackColor = true;
 			// 
-			// squarethings
-			// 
-			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(245, 178);
-			this.squarethings.Name = "squarethings";
-			this.squarethings.Size = new System.Drawing.Size(93, 18);
-			this.squarethings.TabIndex = 8;
-			this.squarethings.Text = "Square things";
-			this.squarethings.UseVisualStyleBackColor = true;
-			// 
-			// doublesidedalphalabel
-			// 
-			this.doublesidedalphalabel.AutoSize = true;
-			this.doublesidedalphalabel.Location = new System.Drawing.Point(337, 40);
-			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
-			this.doublesidedalphalabel.Size = new System.Drawing.Size(23, 14);
-			this.doublesidedalphalabel.TabIndex = 16;
-			this.doublesidedalphalabel.Text = "0%";
-			// 
 			// visualbilinear
 			// 
 			this.visualbilinear.AutoSize = true;
-			this.visualbilinear.Location = new System.Drawing.Point(26, 208);
+			this.visualbilinear.Location = new System.Drawing.Point(25, 123);
 			this.visualbilinear.Name = "visualbilinear";
 			this.visualbilinear.Size = new System.Drawing.Size(176, 18);
 			this.visualbilinear.TabIndex = 6;
@@ -1135,7 +1124,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// classicbilinear
 			// 
 			this.classicbilinear.AutoSize = true;
-			this.classicbilinear.Location = new System.Drawing.Point(26, 178);
+			this.classicbilinear.Location = new System.Drawing.Point(25, 93);
 			this.classicbilinear.Name = "classicbilinear";
 			this.classicbilinear.Size = new System.Drawing.Size(182, 18);
 			this.classicbilinear.TabIndex = 5;
@@ -1145,36 +1134,16 @@ namespace CodeImp.DoomBuilder.Windows
 			// imagebrightnesslabel
 			// 
 			this.imagebrightnesslabel.AutoSize = true;
-			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 94);
+			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 40);
 			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
 			this.imagebrightnesslabel.Size = new System.Drawing.Size(31, 14);
 			this.imagebrightnesslabel.TabIndex = 22;
 			this.imagebrightnesslabel.Text = "+ 0 y";
 			// 
-			// qualitydisplay
-			// 
-			this.qualitydisplay.AutoSize = true;
-			this.qualitydisplay.Location = new System.Drawing.Point(245, 148);
-			this.qualitydisplay.Name = "qualitydisplay";
-			this.qualitydisplay.Size = new System.Drawing.Size(167, 18);
-			this.qualitydisplay.TabIndex = 7;
-			this.qualitydisplay.Text = "High quality display rendering";
-			this.qualitydisplay.UseVisualStyleBackColor = true;
-			// 
-			// doublesidedalpha
-			// 
-			this.doublesidedalpha.LargeChange = 3;
-			this.doublesidedalpha.Location = new System.Drawing.Point(176, 28);
-			this.doublesidedalpha.Name = "doublesidedalpha";
-			this.doublesidedalpha.Size = new System.Drawing.Size(154, 42);
-			this.doublesidedalpha.TabIndex = 2;
-			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.Both;
-			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
-			// 
 			// imagebrightness
 			// 
 			this.imagebrightness.LargeChange = 3;
-			this.imagebrightness.Location = new System.Drawing.Point(176, 81);
+			this.imagebrightness.Location = new System.Drawing.Point(176, 27);
 			this.imagebrightness.Name = "imagebrightness";
 			this.imagebrightness.Size = new System.Drawing.Size(154, 42);
 			this.imagebrightness.TabIndex = 3;
@@ -1185,6 +1154,15 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorsgroup3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.colorsgroup3.Controls.Add(this.scripttabwidth);
+			this.colorsgroup3.Controls.Add(this.scriptautoindent);
+			this.colorsgroup3.Controls.Add(this.label10);
+			this.colorsgroup3.Controls.Add(this.panel1);
+			this.colorsgroup3.Controls.Add(this.scriptfontsize);
+			this.colorsgroup3.Controls.Add(this.label8);
+			this.colorsgroup3.Controls.Add(this.scriptfontbold);
+			this.colorsgroup3.Controls.Add(this.scriptfontname);
+			this.colorsgroup3.Controls.Add(this.label3);
 			this.colorsgroup3.Controls.Add(this.colorconstants);
 			this.colorsgroup3.Controls.Add(this.colorliterals);
 			this.colorsgroup3.Controls.Add(this.colorscriptbackground);
@@ -1192,20 +1170,137 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup3.Controls.Add(this.colorlinenumbers);
 			this.colorsgroup3.Controls.Add(this.colorcomments);
 			this.colorsgroup3.Controls.Add(this.colorplaintext);
-			this.colorsgroup3.Location = new System.Drawing.Point(199, 8);
+			this.colorsgroup3.Location = new System.Drawing.Point(217, 8);
 			this.colorsgroup3.Name = "colorsgroup3";
-			this.colorsgroup3.Size = new System.Drawing.Size(446, 206);
+			this.colorsgroup3.Size = new System.Drawing.Size(457, 237);
 			this.colorsgroup3.TabIndex = 1;
 			this.colorsgroup3.TabStop = false;
 			this.colorsgroup3.Text = " Script editor ";
 			this.colorsgroup3.Visible = false;
+			// 
+			// scripttabwidth
+			// 
+			this.scripttabwidth.AllowDecimal = false;
+			this.scripttabwidth.AllowNegative = false;
+			this.scripttabwidth.AllowRelative = false;
+			this.scripttabwidth.ButtonStep = 2;
+			this.scripttabwidth.Location = new System.Drawing.Point(259, 165);
+			this.scripttabwidth.Name = "scripttabwidth";
+			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
+			this.scripttabwidth.StepValues = null;
+			this.scripttabwidth.TabIndex = 32;
+			// 
+			// scriptautoindent
+			// 
+			this.scriptautoindent.AutoSize = true;
+			this.scriptautoindent.Location = new System.Drawing.Point(354, 169);
+			this.scriptautoindent.Name = "scriptautoindent";
+			this.scriptautoindent.Size = new System.Drawing.Size(81, 18);
+			this.scriptautoindent.TabIndex = 31;
+			this.scriptautoindent.Text = "Auto indent";
+			this.scriptautoindent.UseVisualStyleBackColor = true;
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(199, 170);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(58, 14);
+			this.label10.TabIndex = 30;
+			this.label10.Text = "Tab width:";
+			// 
+			// panel1
+			// 
+			this.panel1.BackColor = System.Drawing.SystemColors.Window;
+			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.scriptfontlabel);
+			this.panel1.Location = new System.Drawing.Point(236, 109);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(199, 38);
+			this.panel1.TabIndex = 29;
+			// 
+			// scriptfontlabel
+			// 
+			this.scriptfontlabel.BackColor = System.Drawing.SystemColors.Window;
+			this.scriptfontlabel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.scriptfontlabel.Location = new System.Drawing.Point(0, 0);
+			this.scriptfontlabel.Name = "scriptfontlabel";
+			this.scriptfontlabel.Size = new System.Drawing.Size(195, 34);
+			this.scriptfontlabel.TabIndex = 0;
+			this.scriptfontlabel.Text = "Font";
+			this.scriptfontlabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// scriptfontsize
+			// 
+			this.scriptfontsize.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.scriptfontsize.FormattingEnabled = true;
+			this.scriptfontsize.Items.AddRange(new object[] {
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "14",
+            "16",
+            "18",
+            "20",
+            "22",
+            "24",
+            "26",
+            "28",
+            "36",
+            "48",
+            "72"});
+			this.scriptfontsize.Location = new System.Drawing.Point(236, 67);
+			this.scriptfontsize.Name = "scriptfontsize";
+			this.scriptfontsize.Size = new System.Drawing.Size(94, 22);
+			this.scriptfontsize.TabIndex = 25;
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(199, 70);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(31, 14);
+			this.label8.TabIndex = 28;
+			this.label8.Text = "Size:";
+			// 
+			// scriptfontbold
+			// 
+			this.scriptfontbold.AutoSize = true;
+			this.scriptfontbold.Location = new System.Drawing.Point(354, 69);
+			this.scriptfontbold.Name = "scriptfontbold";
+			this.scriptfontbold.Size = new System.Drawing.Size(47, 18);
+			this.scriptfontbold.TabIndex = 26;
+			this.scriptfontbold.Text = "Bold";
+			this.scriptfontbold.UseVisualStyleBackColor = true;
+			// 
+			// scriptfontname
+			// 
+			this.scriptfontname.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.scriptfontname.FormattingEnabled = true;
+			this.scriptfontname.Location = new System.Drawing.Point(236, 27);
+			this.scriptfontname.Name = "scriptfontname";
+			this.scriptfontname.Size = new System.Drawing.Size(199, 22);
+			this.scriptfontname.Sorted = true;
+			this.scriptfontname.TabIndex = 23;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(199, 30);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(31, 14);
+			this.label3.TabIndex = 24;
+			this.label3.Text = "Font:";
 			// 
 			// colorconstants
 			// 
 			this.colorconstants.BackColor = System.Drawing.Color.Transparent;
 			this.colorconstants.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorconstants.Label = "Constants:";
-			this.colorconstants.Location = new System.Drawing.Point(213, 113);
+			this.colorconstants.Location = new System.Drawing.Point(15, 189);
 			this.colorconstants.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorconstants.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorconstants.Name = "colorconstants";
@@ -1217,7 +1312,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorliterals.BackColor = System.Drawing.Color.Transparent;
 			this.colorliterals.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorliterals.Label = "Literals:";
-			this.colorliterals.Location = new System.Drawing.Point(213, 70);
+			this.colorliterals.Location = new System.Drawing.Point(15, 162);
 			this.colorliterals.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorliterals.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorliterals.Name = "colorliterals";
@@ -1241,7 +1336,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorkeywords.BackColor = System.Drawing.Color.Transparent;
 			this.colorkeywords.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorkeywords.Label = "Keywords:";
-			this.colorkeywords.Location = new System.Drawing.Point(213, 27);
+			this.colorkeywords.Location = new System.Drawing.Point(15, 135);
 			this.colorkeywords.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorkeywords.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorkeywords.Name = "colorkeywords";
@@ -1253,7 +1348,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers.BackColor = System.Drawing.Color.Transparent;
 			this.colorlinenumbers.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorlinenumbers.Label = "Line numbers:";
-			this.colorlinenumbers.Location = new System.Drawing.Point(15, 70);
+			this.colorlinenumbers.Location = new System.Drawing.Point(15, 54);
 			this.colorlinenumbers.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorlinenumbers.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorlinenumbers.Name = "colorlinenumbers";
@@ -1265,7 +1360,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorcomments.BackColor = System.Drawing.Color.Transparent;
 			this.colorcomments.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorcomments.Label = "Comments:";
-			this.colorcomments.Location = new System.Drawing.Point(15, 156);
+			this.colorcomments.Location = new System.Drawing.Point(15, 108);
 			this.colorcomments.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorcomments.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorcomments.Name = "colorcomments";
@@ -1277,7 +1372,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.BackColor = System.Drawing.Color.Transparent;
 			this.colorplaintext.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.colorplaintext.Label = "Plain text:";
-			this.colorplaintext.Location = new System.Drawing.Point(15, 113);
+			this.colorplaintext.Location = new System.Drawing.Point(15, 81);
 			this.colorplaintext.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorplaintext.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorplaintext.Name = "colorplaintext";
@@ -1292,7 +1387,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabpasting.Location = new System.Drawing.Point(4, 23);
 			this.tabpasting.Name = "tabpasting";
 			this.tabpasting.Padding = new System.Windows.Forms.Padding(5);
-			this.tabpasting.Size = new System.Drawing.Size(653, 505);
+			this.tabpasting.Size = new System.Drawing.Size(682, 488);
 			this.tabpasting.TabIndex = 3;
 			this.tabpasting.Text = "Pasting ";
 			this.tabpasting.UseVisualStyleBackColor = true;
@@ -1303,7 +1398,7 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.label16.Location = new System.Drawing.Point(11, 15);
 			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(634, 35);
+			this.label16.Size = new System.Drawing.Size(649, 35);
 			this.label16.TabIndex = 1;
 			this.label16.Text = "These are the default options for pasting geometry. You can also choose these opt" +
 				"ions when you use the Paste Special function. These options also apply when inse" +
@@ -1311,10 +1406,23 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// pasteoptions
 			// 
+			this.pasteoptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.pasteoptions.Location = new System.Drawing.Point(8, 53);
 			this.pasteoptions.Name = "pasteoptions";
-			this.pasteoptions.Size = new System.Drawing.Size(637, 388);
+			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
+			// 
+			// toolbar_file
+			// 
+			this.toolbar_file.AutoSize = true;
+			this.toolbar_file.Location = new System.Drawing.Point(32, 36);
+			this.toolbar_file.Name = "toolbar_file";
+			this.toolbar_file.Size = new System.Drawing.Size(118, 18);
+			this.toolbar_file.TabIndex = 49;
+			this.toolbar_file.Text = "New / Open / Save";
+			this.toolbar_file.UseVisualStyleBackColor = true;
 			// 
 			// PreferencesForm
 			// 
@@ -1322,7 +1430,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.apply;
-			this.ClientSize = new System.Drawing.Size(682, 590);
+			this.ClientSize = new System.Drawing.Size(711, 573);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -1344,13 +1452,14 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.previewsize)).EndInit();
 			this.colorsgroup1.ResumeLayout(false);
+			this.colorsgroup1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			this.tabs.ResumeLayout(false);
 			this.tabinterface.ResumeLayout(false);
+			this.groupBox5.ResumeLayout(false);
+			this.groupBox5.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
-			this.panel1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.viewdistance)).EndInit();
@@ -1363,9 +1472,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcolors.ResumeLayout(false);
 			this.appearancegroup1.ResumeLayout(false);
 			this.appearancegroup1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
 			this.colorsgroup3.ResumeLayout(false);
+			this.colorsgroup3.PerformLayout();
+			this.panel1.ResumeLayout(false);
 			this.tabpasting.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -1423,14 +1533,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox invertyaxis;
 		private System.Windows.Forms.ComboBox defaultviewmode;
 		private System.Windows.Forms.Label label14;
-		private System.Windows.Forms.GroupBox groupBox3;
-		private System.Windows.Forms.CheckBox scriptfontbold;
-		private System.Windows.Forms.ComboBox scriptfontname;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.ComboBox scriptfontsize;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Label scriptfontlabel;
 		private Dotnetrix.Controls.TrackBar fieldofview;
 		private Dotnetrix.Controls.TrackBar movespeed;
 		private Dotnetrix.Controls.TrackBar mousespeed;
@@ -1440,7 +1542,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label disregardshiftlabel;
 		private System.Windows.Forms.ListBox keyusedlist;
 		private System.Windows.Forms.Label keyusedlabel;
-		private System.Windows.Forms.CheckBox scriptontop;
 		private System.Windows.Forms.CheckBox qualitydisplay;
 		private System.Windows.Forms.CheckBox visualbilinear;
 		private System.Windows.Forms.CheckBox classicbilinear;
@@ -1452,13 +1553,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label autoscrollspeedlabel;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.CheckBox animatevisualselection;
-		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.CheckBox scriptautoindent;
 		private System.Windows.Forms.TabPage tabpasting;
 		private CodeImp.DoomBuilder.Controls.PasteOptionsControl pasteoptions;
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.GroupBox appearancegroup1;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox scripttabwidth;
 		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.ComboBox dockersposition;
 		private System.Windows.Forms.Label label17;
@@ -1466,5 +1564,26 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dotnetrix.Controls.TrackBar zoomfactor;
 		private System.Windows.Forms.Label zoomfactorlabel;
 		private System.Windows.Forms.Label label19;
+		private System.Windows.Forms.GroupBox groupBox5;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox scripttabwidth;
+		private System.Windows.Forms.CheckBox scriptautoindent;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Label scriptfontlabel;
+		private System.Windows.Forms.ComboBox scriptfontsize;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.CheckBox scriptfontbold;
+		private System.Windows.Forms.ComboBox scriptfontname;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.CheckBox scriptontop;
+		private System.Windows.Forms.CheckBox toolbar_script;
+		private System.Windows.Forms.CheckBox toolbar_copy;
+		private System.Windows.Forms.CheckBox toolbar_undo;
+		private System.Windows.Forms.CheckBox toolbar_viewmodes;
+		private System.Windows.Forms.CheckBox toolbar_filter;
+		private System.Windows.Forms.CheckBox toolbar_prefabs;
+		private System.Windows.Forms.CheckBox toolbar_geometry;
+		private System.Windows.Forms.CheckBox toolbar_testing;
+		private System.Windows.Forms.CheckBox toolbar_file;
 	}
 }

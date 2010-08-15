@@ -92,6 +92,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Standard);
 
+			// Add toolbar buttons
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			
 			// Convert geometry selection to vertices only
 			General.Map.Map.ConvertSelection(SelectionType.Vertices);
 		}
@@ -101,6 +105,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnDisengage();
 
+			// Remove toolbar buttons
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)
 			{
@@ -485,6 +493,62 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Actions
+
+		// This copies the properties
+		[BeginAction("classiccopyproperties")]
+		public void CopyProperties()
+		{
+			// Determine source vertices
+			ICollection<Vertex> sel = null;
+			if(General.Map.Map.SelectedVerticessCount > 0)
+				sel = General.Map.Map.GetSelectedVertices(true);
+			else if(highlighted != null)
+			{
+				sel = new List<Vertex>();
+				sel.Add(highlighted);
+			}
+
+			if(sel != null)
+			{
+				// Copy properties from first source vertex
+				BuilderPlug.Me.CopiedVertexProps = new VertexProperties(General.GetByIndex(sel, 0));
+				General.Interface.DisplayStatus(StatusType.Action, "Copied vertex properties.");
+			}
+		}
+
+		// This pastes the properties
+		[BeginAction("classicpasteproperties")]
+		public void PasteProperties()
+		{
+			if(BuilderPlug.Me.CopiedVertexProps != null)
+			{
+				// Determine target vertices
+				ICollection<Vertex> sel = null;
+				if(General.Map.Map.SelectedVerticessCount > 0)
+					sel = General.Map.Map.GetSelectedVertices(true);
+				else if(highlighted != null)
+				{
+					sel = new List<Vertex>();
+					sel.Add(highlighted);
+				}
+
+				if(sel != null)
+				{
+					// Apply properties to selection
+					General.Map.UndoRedo.CreateUndo("Paste vertex properties");
+					foreach(Vertex v in sel)
+					{
+						BuilderPlug.Me.CopiedVertexProps.Apply(v);
+					}
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted vertex properties.");
+
+					// Update and redraw
+					General.Map.IsChanged = true;
+					General.Interface.RefreshInfo();
+					General.Interface.RedrawDisplay();
+				}
+			}
+		}
 
 		// This clears the selection
 		[BeginAction("clearselection", BaseAction = true)]

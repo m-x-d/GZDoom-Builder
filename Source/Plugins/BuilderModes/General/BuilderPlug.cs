@@ -87,8 +87,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private string copiedtexture;
 		private string copiedflat;
 		private Point copiedoffsets;
+		private VertexProperties copiedvertexprops;
 		private SectorProperties copiedsectorprops;
 		private SidedefProperties copiedsidedefprops;
+		private LinedefProperties copiedlinedefprops;
 		private ThingProperties copiedthingprops;
 		private bool viewselectionnumbers;
 		private float stitchrange;
@@ -128,8 +130,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
 		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
 		public Point CopiedOffsets { get { return copiedoffsets; } set { copiedoffsets = value; } }
+		public VertexProperties CopiedVertexProps { get { return copiedvertexprops; } set { copiedvertexprops = value; } }
 		public SectorProperties CopiedSectorProps { get { return copiedsectorprops; } set { copiedsectorprops = value; } }
 		public SidedefProperties CopiedSidedefProps { get { return copiedsidedefprops; } set { copiedsidedefprops = value; } }
+		public LinedefProperties CopiedLinedefProps { get { return copiedlinedefprops; } set { copiedlinedefprops = value; } }
 		public ThingProperties CopiedThingProps { get { return copiedthingprops; } set { copiedthingprops = value; } }
 		public bool ViewSelectionNumbers { get { return viewselectionnumbers; } set { viewselectionnumbers = value; } }
 		public float StitchRange { get { return stitchrange; } }

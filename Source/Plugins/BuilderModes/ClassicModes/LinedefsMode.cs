@@ -206,6 +206,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 			
 			// Add toolbar buttons
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
 			
 			// Convert geometry selection to linedefs selection
@@ -218,6 +221,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
 
 			// Going to EditSelectionMode?
@@ -539,6 +545,63 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Actions
+
+		// This copies the properties
+		[BeginAction("classiccopyproperties")]
+		public void CopyProperties()
+		{
+			// Determine source linedefs
+			ICollection<Linedef> sel = null;
+			if(General.Map.Map.SelectedLinedefsCount > 0)
+				sel = General.Map.Map.GetSelectedLinedefs(true);
+			else if(highlighted != null)
+			{
+				sel = new List<Linedef>();
+				sel.Add(highlighted);
+			}
+			
+			if(sel != null)
+			{
+				// Copy properties from first source linedef
+				BuilderPlug.Me.CopiedLinedefProps = new LinedefProperties(General.GetByIndex(sel, 0));
+				General.Interface.DisplayStatus(StatusType.Action, "Copied linedef properties.");
+			}
+		}
+
+		// This pastes the properties
+		[BeginAction("classicpasteproperties")]
+		public void PasteProperties()
+		{
+			if(BuilderPlug.Me.CopiedLinedefProps != null)
+			{
+				// Determine target linedefs
+				ICollection<Linedef> sel = null;
+				if(General.Map.Map.SelectedLinedefsCount > 0)
+					sel = General.Map.Map.GetSelectedLinedefs(true);
+				else if(highlighted != null)
+				{
+					sel = new List<Linedef>();
+					sel.Add(highlighted);
+				}
+				
+				if(sel != null)
+				{
+					// Apply properties to selection
+					General.Map.UndoRedo.CreateUndo("Paste linedef properties");
+					foreach(Linedef l in sel)
+					{
+						BuilderPlug.Me.CopiedLinedefProps.Apply(l);
+						l.UpdateCache();
+					}
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted linedef properties.");
+					
+					// Update and redraw
+					General.Map.IsChanged = true;
+					General.Interface.RefreshInfo();
+					General.Interface.RedrawDisplay();
+				}
+			}
+		}
 
 		// This keeps only the single-sided lines selected
 		[BeginAction("selectsinglesided")]

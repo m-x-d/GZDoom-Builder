@@ -83,6 +83,15 @@ namespace CodeImp.DoomBuilder.Config
 		private int dockersposition;
 		private bool collapsedockers;
 		private int dockerswidth;
+		private bool toolbarscript;
+		private bool toolbarundo;
+		private bool toolbarcopy;
+		private bool toolbarprefabs;
+		private bool toolbarfilter;
+		private bool toolbarviewmodes;
+		private bool toolbargeometry;
+		private bool toolbartesting;
+		private bool toolbarfile;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -135,6 +144,15 @@ namespace CodeImp.DoomBuilder.Config
 		public int DockersPosition { get { return dockersposition; } internal set { dockersposition = value; } }
 		public bool CollapseDockers { get { return collapsedockers; } internal set { collapsedockers = value; } }
 		public int DockersWidth { get { return dockerswidth; } internal set { dockerswidth = value; } }
+		public bool ToolbarScript { get { return toolbarscript; } internal set { toolbarscript = value; } }
+		public bool ToolbarUndo { get { return toolbarundo; } internal set { toolbarundo = value; } }
+		public bool ToolbarCopy { get { return toolbarcopy; } internal set { toolbarcopy = value; } }
+		public bool ToolbarPrefabs { get { return toolbarprefabs; } internal set { toolbarprefabs = value; } }
+		public bool ToolbarFilter { get { return toolbarfilter; } internal set { toolbarfilter = value; } }
+		public bool ToolbarViewModes { get { return toolbarviewmodes; } internal set { toolbarviewmodes = value; } }
+		public bool ToolbarGeometry { get { return toolbargeometry; } internal set { toolbargeometry = value; } }
+		public bool ToolbarTesting { get { return toolbartesting; } internal set { toolbartesting = value; } }
+		public bool ToolbarFile { get { return toolbarfile; } internal set { toolbarfile = value; } }
 		
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -204,6 +222,15 @@ namespace CodeImp.DoomBuilder.Config
 				collapsedockers = cfg.ReadSetting("collapsedockers", true);
 				dockerswidth = cfg.ReadSetting("dockerswidth", 300);
 				pasteoptions.ReadConfiguration(cfg, "pasteoptions");
+				toolbarscript = cfg.ReadSetting("toolbarscript", true);
+				toolbarundo = cfg.ReadSetting("toolbarundo", false);
+				toolbarcopy = cfg.ReadSetting("toolbarcopy", false);
+				toolbarprefabs = cfg.ReadSetting("toolbarprefabs", true);
+				toolbarfilter = cfg.ReadSetting("toolbarfilter", true);
+				toolbarviewmodes = cfg.ReadSetting("toolbarviewmodes", false);
+				toolbargeometry = cfg.ReadSetting("toolbargeometry", true);
+				toolbartesting = cfg.ReadSetting("toolbartesting", true);
+				toolbarfile = cfg.ReadSetting("toolbarfile", true);
 				
 				// Success
 				return true;
@@ -255,6 +282,15 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("collapsedockers", collapsedockers);
 			cfg.WriteSetting("dockerswidth", dockerswidth);
 			pasteoptions.WriteConfiguration(cfg, "pasteoptions");
+			cfg.WriteSetting("toolbarscript", toolbarscript);
+			cfg.WriteSetting("toolbarundo", toolbarundo);
+			cfg.WriteSetting("toolbarcopy", toolbarcopy);
+			cfg.WriteSetting("toolbarprefabs", toolbarprefabs);
+			cfg.WriteSetting("toolbarfilter", toolbarfilter);
+			cfg.WriteSetting("toolbarviewmodes", toolbarviewmodes);
+			cfg.WriteSetting("toolbargeometry", toolbargeometry);
+			cfg.WriteSetting("toolbartesting", toolbartesting);
+			cfg.WriteSetting("toolbarfile", toolbarfile);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

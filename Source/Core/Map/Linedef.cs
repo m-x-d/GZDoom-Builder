@@ -187,7 +187,11 @@ namespace CodeImp.DoomBuilder.Map
 		// Serialize / deserialize (passive: doesn't record)
 		internal void ReadWrite(IReadWriteStream s)
 		{
-			if(!s.IsWriting) BeforePropsChange();
+			if(!s.IsWriting)
+			{
+				BeforePropsChange();
+				updateneeded = true;
+			}
 			
 			base.ReadWrite(s);
 			
@@ -539,6 +543,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This clears all flags
 		public void ClearFlags()
 		{
+			BeforePropsChange();
 			flags.Clear();
 			blocksoundflag = false;
 			impassableflag = false;
