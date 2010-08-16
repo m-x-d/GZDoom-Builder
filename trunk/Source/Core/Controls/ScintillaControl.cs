@@ -2450,13 +2450,13 @@ namespace CodeImp.DoomBuilder.Controls
 							break;
 
 						case (uint)ScintillaEvents.UserlistSelection:
-							if(UserListSelection != null)
-								UserListSelection(this, scn.listType, System.Runtime.InteropServices.Marshal.PtrToStringAuto(scn.text));
+							//if(UserListSelection != null)
+							//	UserListSelection(this, scn.listType, System.Runtime.InteropServices.Marshal.PtrToStringAuto(scn.text));
 							break;
 
 						case (uint)ScintillaEvents.UriDropped:
-							if(URIDropped != null)
-								URIDropped(this, System.Runtime.InteropServices.Marshal.PtrToStringAuto(scn.text));
+							//if(URIDropped != null)
+							//	URIDropped(this, System.Runtime.InteropServices.Marshal.PtrToStringAuto(scn.text));
 							break;
 
 						case (uint)ScintillaEvents.DwellStart:
@@ -2525,8 +2525,20 @@ namespace CodeImp.DoomBuilder.Controls
 								if(BeforeDelete != null)
 									BeforeDelete(this, scn.position, scn.length);
 
-							if(Modified != null)
-								Modified(this, scn.position, scn.modificationType, System.Runtime.InteropServices.Marshal.PtrToStringAuto(scn.text), scn.length, scn.linesAdded, scn.line, scn.foldLevelNow, scn.foldLevelPrev);
+								if(Modified != null)
+								{
+									string textstr = null;
+									try
+									{
+										textstr = System.Runtime.InteropServices.Marshal.PtrToStringAuto(scn.text);
+									}
+									catch(IndexOutOfRangeException e)
+									{
+										// I don't know why this is happening, but I don't need the text here anyways
+									}
+									
+									Modified(this, scn.position, scn.modificationType, textstr, scn.length, scn.linesAdded, scn.line, scn.foldLevelNow, scn.foldLevelPrev);
+								}
 							break;
 
 					}
