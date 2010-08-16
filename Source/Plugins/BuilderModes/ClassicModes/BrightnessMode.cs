@@ -68,9 +68,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Highlighted item
 		private Sector highlighted;
 		
-		// Interface
-		private bool editpressed;
-		
 		// Labels
 		private Dictionary<Sector, TextLabel[]> labels;
 		
@@ -159,7 +156,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Sector s in orderedselection)
 					{
 						// We use the overlay to dim the brightness of the sectors
-						PixelColor brightnesscolor = new PixelColor((byte)(255 - s.Brightness), 0, 0, 0);
+						PixelColor c = PixelColor.FromInt(General.Map.Renderer2D.CalculateBrightness(s.Brightness));
+						PixelColor brightnesscolor = new PixelColor((byte)(255 - c.r), 0, 0, 0);
 						int brightnessint = brightnesscolor.ToInt();
 
 						// Render the geometry
