@@ -1000,6 +1000,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			int thingtextureindex = 0;
 			PixelColor tc;
+			DataStream stream;
 			
 			// Anything to render?
 			if(things.Count > 0)
@@ -1029,10 +1030,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Begin drawing
 				graphics.Shaders.Things2D.Begin();
 				graphics.Shaders.Things2D.BeginPass(0);
-				
-				// Lock buffer
+
+				// Determine next lock size
 				int locksize = (things.Count > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : things.Count;
-				DataStream stream = thingsvertices.Lock(0, locksize * 12 * FlatVertex.Stride, LockFlags.Discard);
 				FlatVertex[] verts = new FlatVertex[THING_BUFFER_SIZE * 12];
 				
 				// Go for all things
@@ -1050,38 +1050,30 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Buffer filled?
 					if(buffercount == locksize)
 					{
-						// Unlock buffer
-						stream.WriteRange<FlatVertex>(verts, 0, buffercount * 12);
+						// Write to buffer
+						stream = thingsvertices.Lock(0, locksize * 12 * FlatVertex.Stride, LockFlags.Discard);
+						stream.WriteRange(verts, 0, buffercount * 12);
 						thingsvertices.Unlock();
 						stream.Dispose();
-						stream = null;
 						
 						// Draw!
 						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, buffercount * 4);
 						buffercount = 0;
 						
-						// Do we need to continue drawing?
-						if(totalcount < things.Count)
-						{
-							// Lock buffer
-							locksize = ((things.Count - totalcount) > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : (things.Count - totalcount);
-							stream = thingsvertices.Lock(0, locksize * 12 * FlatVertex.Stride, LockFlags.Discard);
-						}
+						// Determine next lock size
+						locksize = ((things.Count - totalcount) > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : (things.Count - totalcount);
 					}
 				}
+
+				// Write to buffer
+				stream = thingsvertices.Lock(0, locksize * 12 * FlatVertex.Stride, LockFlags.Discard);
+				if(buffercount > 0) stream.WriteRange(verts, 0, buffercount * 12);
+				thingsvertices.Unlock();
+				stream.Dispose();
 				
 				// Draw what's still remaining
 				if(buffercount > 0)
-				{
-					// Unlock buffer
-					stream.WriteRange<FlatVertex>(verts, 0, buffercount * 12);
-					thingsvertices.Unlock();
-					stream.Dispose();
-					stream = null;
-					
-					// Draw!
 					graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, buffercount * 4);
-				}
 				
 				// Done
 				graphics.Shaders.Things2D.EndPass();
