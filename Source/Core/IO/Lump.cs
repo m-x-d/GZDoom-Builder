@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.IO
 			byte[] fixedname = new byte[bytes];
 
 			// Write the name in bytes
-			encoding.GetBytes(uppername, 0, name.Length, fixedname, 0);
+			encoding.GetBytes(uppername, 0, uppername.Length, fixedname, 0);
 
 			// Return result
 			return fixedname;
