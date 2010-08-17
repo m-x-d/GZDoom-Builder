@@ -47,6 +47,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private string replaceclass;
 		private int doomednum = -1;
 		
+		// Inheriting
+		private ActorStructure baseclass;
+		private bool skipsuper;
+		
 		// Flags
 		private Dictionary<string, bool> flags;
 		
@@ -65,6 +69,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public string ClassName { get { return classname; } }
 		public string InheritsClass { get { return inheritclass; } }
 		public string ReplacesClass { get { return replaceclass; } }
+		public ActorStructure BaseClass { get { return baseclass; } }
 		public int DoomEdNum { get { return doomednum; } }
 		
 		#endregion
@@ -78,12 +83,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 			flags = new Dictionary<string, bool>();
 			props = new Dictionary<string, List<string>>();
 			states = new Dictionary<string, StateStructure>();
-
+			
 			// Always define a game property, but default to 0 values
 			props["game"] = new List<string>();
 			
 			inheritclass = "actor";
 			replaceclass = null;
+			baseclass = null;
+			skipsuper = false;
 			
 			// First next token is the class name
 			parser.SkipWhitespace(true);
@@ -114,10 +121,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						else
 						{
 							// Find the actor to inherit from
-							ActorStructure other = parser.GetArchivedActorByName(inheritclass);
-							if(other != null)
-								InheritFrom(other);
-							else
+							baseclass = parser.GetArchivedActorByName(inheritclass);
+							if(baseclass == null)
 								General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + "'");
 						}
 					}
@@ -200,6 +205,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if((t == ";") || (t == null)) break;
 					}
 				}
+				else if(token == "skip_super")
+				{
+					skipsuper = true;
+				}
 				else if(token == "states")
 				{
 					// Now parse actor states until we reach the end of the states structure
@@ -226,7 +235,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 								if(!string.IsNullOrEmpty(previoustoken))
 								{
 									// Parse actor state
-									StateStructure st = new StateStructure(parser, previoustoken);
+									StateStructure st = new StateStructure(this, parser, previoustoken);
 									if(parser.HasError) return;
 									states[previoustoken.ToLowerInvariant()] = st;
 								}
@@ -348,27 +357,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		#region ================== Methods
 		
-		// This is called to inherit properties from another actor
-		private void InheritFrom(ActorStructure baseactor)
-		{
-			this.flags = new Dictionary<string, bool>(baseactor.flags);
-			this.props = new Dictionary<string, List<string>>(baseactor.props.Count);
-			this.states = new Dictionary<string, StateStructure>(baseactor.states);
-			
-			// Copy props
-			foreach(KeyValuePair<string, List<string>> p in baseactor.props)
-				this.props.Add(p.Key, new List<string>(p.Value));
-			
-			// Reset the game property, because it is never inherited
-			props["game"] = new List<string>();
-		}
-
 		/// <summary>
 		/// This checks if the actor has a specific property.
 		/// </summary>
 		public bool HasProperty(string propname)
 		{
-			return props.ContainsKey(propname);
+			if(props.ContainsKey(propname))
+				return true;
+			else if(!skipsuper && (baseclass != null))
+				return baseclass.HasProperty(propname);
+			else
+				return false;
 		}
 		
 		/// <summary>
@@ -376,7 +375,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public bool HasPropertyWithValue(string propname)
 		{
-			return (props.ContainsKey(propname) && (props[propname].Count > 0));
+			if(props.ContainsKey(propname) && (props[propname].Count > 0))
+				return true;
+			else if(!skipsuper && (baseclass != null))
+				return baseclass.HasPropertyWithValue(propname);
+			else
+				return false;
 		}
 		
 		/// <summary>
@@ -384,16 +388,23 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public string GetPropertyAllValues(string propname)
 		{
-			return HasPropertyWithValue(propname) ? string.Join(" ", props[propname].ToArray()) : "";
+			if(props.ContainsKey(propname) && (props[propname].Count > 0))
+				return string.Join(" ", props[propname].ToArray());
+			else if(!skipsuper && (baseclass != null))
+				return baseclass.GetPropertyAllValues(propname);
+			else
+				return "";
 		}
-
+		
 		/// <summary>
 		/// This returns a specific value of a specific property as a string. Returns an empty string when the propery does not have the specified value.
 		/// </summary>
 		public string GetPropertyValueString(string propname, int valueindex)
 		{
-			if(HasProperty(propname) && (props[propname].Count > valueindex))
+			if(props.ContainsKey(propname) && (props[propname].Count > valueindex))
 				return props[propname][valueindex];
+			else if(!skipsuper && (baseclass != null))
+				return baseclass.GetPropertyValueString(propname, valueindex);
 			else
 				return "";
 		}
@@ -403,45 +414,40 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public int GetPropertyValueInt(string propname, int valueindex)
 		{
-			if(HasProperty(propname) && (props[propname].Count > valueindex))
-			{
-				int intvalue;
-				if(int.TryParse(props[propname][valueindex], NumberStyles.Integer, CultureInfo.InvariantCulture, out intvalue))
-					return intvalue;
-				else
-					return 0;
-			}
+			string str = GetPropertyValueString(propname, valueindex);
+			
+			int intvalue;
+			if(int.TryParse(str, NumberStyles.Integer, CultureInfo.InvariantCulture, out intvalue))
+				return intvalue;
 			else
-			{
 				return 0;
-			}
 		}
-
+		
 		/// <summary>
 		/// This returns a specific value of a specific property as a float. Returns 0.0f when the propery does not have the specified value.
 		/// </summary>
 		public float GetPropertyValueFloat(string propname, int valueindex)
 		{
-			if(HasProperty(propname) && (props[propname].Count > valueindex))
-			{
-				float fvalue;
-				if(float.TryParse(props[propname][valueindex], NumberStyles.Float, CultureInfo.InvariantCulture, out fvalue))
-					return fvalue;
-				else
-					return 0.0f;
-			}
+			string str = GetPropertyValueString(propname, valueindex);
+			
+			float fvalue;
+			if(float.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out fvalue))
+				return fvalue;
 			else
-			{
 				return 0.0f;
-			}
 		}
-
+		
 		/// <summary>
 		/// This returns the status of a flag.
 		/// </summary>
 		public bool HasFlagValue(string flag)
 		{
-			return flags.ContainsKey(flag);
+			if(flags.ContainsKey(flag))
+				return true;
+			else if(!skipsuper && (baseclass != null))
+				return baseclass.HasFlagValue(flag);
+			else
+				return false;
 		}
 		
 		/// <summary>
@@ -451,8 +457,53 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			if(flags.ContainsKey(flag))
 				return flags[flag];
+			else if(!skipsuper && (baseclass != null))
+				return baseclass.GetFlagValue(flag, defaultvalue);
 			else
 				return defaultvalue;
+		}
+		
+		/// <summary>
+		/// This checks if a state has been defined.
+		/// </summary>
+		public bool HasState(string statename)
+		{
+			if(states.ContainsKey(statename))
+				return true;
+			else if(!skipsuper && (baseclass != null))
+				return baseclass.HasState(statename);
+			else
+				return false;
+		}
+		
+		/// <summary>
+		/// This returns a specific state, or null when the state can't be found.
+		/// </summary>
+		internal StateStructure GetState(string statename)
+		{
+			if(states.ContainsKey(statename))
+				return states[statename];
+			else if(!skipsuper && (baseclass != null))
+				return baseclass.GetState(statename);
+			else
+				return null;
+		}
+		
+		/// <summary>
+		/// This creates a list of all states, also those inherited from the base class.
+		/// </summary>
+		internal Dictionary<string, StateStructure> GetAllStates()
+		{
+			Dictionary<string, StateStructure> list = new Dictionary<string, StateStructure>(states);
+			
+			if(!skipsuper && (baseclass != null))
+			{
+				Dictionary<string, StateStructure> baselist = baseclass.GetAllStates();
+				foreach(KeyValuePair<string, StateStructure> s in baselist)
+					if(!list.ContainsKey(s.Key)) list.Add(s.Key, s.Value);
+			}
+			
+			return list;
 		}
 		
 		/// <summary>
@@ -477,48 +528,49 @@ namespace CodeImp.DoomBuilder.ZDoom
 			string result = "";
 			
 			// Sprite forced?
-			if(props.ContainsKey("$sprite"))
+			if(HasPropertyWithValue("$sprite"))
 			{
-				return props["$sprite"][0];
+				return GetPropertyValueString("$sprite", 0);
 			}
 			else
 			{
 				// Try the idle state
-				if(states.ContainsKey("idle"))
+				if(HasState("idle"))
 				{
-					StateStructure s = states["idle"];
+					StateStructure s = GetState("idle");
 					if(!string.IsNullOrEmpty(s.FirstSprite))
 						result = s.FirstSprite;
 				}
 				
 				// Try the see state
-				if(string.IsNullOrEmpty(result) && states.ContainsKey("see"))
+				if(string.IsNullOrEmpty(result) && HasState("see"))
 				{
-					StateStructure s = states["see"];
+					StateStructure s = GetState("see");
 					if(!string.IsNullOrEmpty(s.FirstSprite))
 						result = s.FirstSprite;
 				}
 				
 				// Try the inactive state
-				if(string.IsNullOrEmpty(result) && states.ContainsKey("inactive"))
+				if(string.IsNullOrEmpty(result) && HasState("inactive"))
 				{
-					StateStructure s = states["inactive"];
+					StateStructure s = GetState("inactive");
 					if(!string.IsNullOrEmpty(s.FirstSprite))
 						result = s.FirstSprite;
 				}
-
+				
 				// Try the spawn state
-				if(string.IsNullOrEmpty(result) && states.ContainsKey("spawn"))
+				if(string.IsNullOrEmpty(result) && HasState("spawn"))
 				{
-					StateStructure s = states["spawn"];
+					StateStructure s = GetState("spawn");
 					if(!string.IsNullOrEmpty(s.FirstSprite))
 						result = s.FirstSprite;
 				}
-
+				
 				// Still no sprite found? then just pick the first we can find
 				if(string.IsNullOrEmpty(result))
 				{
-					foreach(StateStructure s in states.Values)
+					Dictionary<string, StateStructure> list = GetAllStates();
+					foreach(StateStructure s in list.Values)
 					{
 						if(!string.IsNullOrEmpty(s.FirstSprite))
 						{
