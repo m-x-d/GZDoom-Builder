@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This converts doom angle to real angle
 		public static float DoomToReal(int doomangle)
 		{
-			return Normalized(DegToRad((float)(doomangle + 90)));
+			return (float)Math.Round(Normalized(DegToRad((float)(doomangle + 90))), 4);
 		}
 
 		// This converts real angle to doom angle
