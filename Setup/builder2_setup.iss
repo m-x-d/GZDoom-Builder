@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=Doom Builder 2
-AppVerName=Doom Builder 2.0
+AppVerName=Doom Builder 2.1
 AppPublisher=CodeImp
 AppPublisherURL=http://www.codeimp.com/
 AppSupportURL=http://www.doombuilder.com/
