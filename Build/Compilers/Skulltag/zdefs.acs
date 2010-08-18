@@ -1,3 +1,4 @@
+
 //**************************************************************************
 //**
 //** zdefs.acs
@@ -224,10 +225,15 @@
 // Actor properties you can get/set -----------------------------------------
 
 #define APROP_Health		0
-#define APROP_Speed		1
+#define APROP_Speed			1
 #define APROP_Damage		2
-#define APROP_Alpha		3
+#define APROP_Alpha			3
 #define APROP_RenderStyle	4
+#define APROP_SeeSound		5	// Sounds can only be set, not gotten
+#define APROP_AttackSound	6
+#define APROP_PainSound		7
+#define APROP_DeathSound	8
+#define APROP_ActiveSound	9
 #define APROP_Ambush		10
 #define APROP_Invulnerable	11
 #define APROP_JumpZ			12
@@ -236,11 +242,13 @@
 #define APROP_Gravity		15
 #define APROP_Friendly		16
 #define APROP_SpawnHealth	17
-#define APROP_SeeSound		5	// Sounds can only be set, not gotten
-#define APROP_AttackSound	6
-#define APROP_PainSound		7
-#define APROP_DeathSound	8
-#define APROP_ActiveSound	9
+#define APROP_Dropped		18
+#define APROP_Notarget		19
+#define APROP_Species		20
+#define APROP_Nametag		21
+#define APROP_Score			22
+#define APROP_Notrigger		23
+#define APROP_DamageFactor	24
 
 // Render Styles ------------------------------------------------------------
 
@@ -586,7 +594,7 @@
 #define T_SMALLMETALKEY			86
 #define T_AXEKEY				87
 #define T_FIREKEY				88
-#define T_EMERALDKEY				89
+#define T_EMERALDKEY			89
 #define T_MACEKEY				90
 #define T_SILVERKEY				91
 #define T_RUSTYKEY				92
@@ -619,6 +627,86 @@
 #define ACTOR_DEAD				64
 #define ACTOR_MISSILE			128
 #define ACTOR_GENERIC			256
+
+
+// Physical volumes for SoundSequenceOnSector
+
+#define SECSEQ_FLOOR			1
+#define SECSEQ_CEILING			2
+#define SECSEQ_FULLHEIGHT		3
+#define SECSEQ_INTERIOR			4
+
+// ==========================================================================
+// Skulltag Definitions
+// ==========================================================================
+
+// Skulltag Teams -----------------------------------------------------------
+#define TEAM_BLUE				0
+#define TEAM_RED				1
+#define NO_TEAM					2
+
+// Skulltag Invasion --------------------------------------------------------
+#define IS_WAITINGFORPLAYERS	0
+#define IS_FIRSTCOUNTDOWN		1
+#define IS_INPROGRESS			2
+#define IS_BOSSFIGHT			3
+#define IS_WAVECOMPLETE			4
+#define IS_COUNTDOWN			5
+
+
+#define T_GRENADE				216
+#define T_BFG10KSHOT			217
+#define T_DARKIMPFIREBALL		218
+#define T_CACOLANTERNSHOT		219
+#define T_ABADDONSHOT			221
+
+// Skulltag Monsters --------------------------------------------------------
+#define T_DARKIMP				155
+#define T_BLOODDEMON			156
+#define T_SSGGUY				157
+#define T_HECTEBUS				158
+#define T_CACOLANTERN			159
+#define T_BELPHEGOR				215
+#define T_ABADDON				220
+
+// Skulltag Weapons ---------------------------------------------------------
+#define T_PISTOL				162
+#define T_GRENADELAUNCHER		163
+#define T_RAILGUN				164
+#define T_BFG10000				165
+#define T_MINIGUN				214
+
+// Skulltag Armor/Health Items ----------------------------------------------
+#define T_MAXHEALTHBONUS		166
+#define T_MASARMORBONUS			167
+#define T_REDARMOR				168
+
+// Skulltag Powerups --------------------------------------------------------
+#define T_TURBOSPHERE			169
+#define T_ANTIGRAVBELT			170
+#define T_TIMEFREEZER			171
+#define T_INFRAGOGGLES			172
+#define T_INFRATRACKER			173
+#define T_TRANSLUCENCY			174
+#define T_DOOMSPHERE			175
+#define T_RANDOMPOWERUP			176
+
+// Skulltag Flags -----------------------------------------------------------
+#define T_BLUEFLAG				177
+#define T_REDFLAG				178
+#define T_WHITEFLAG				179
+
+// Skulltag Runes -----------------------------------------------------------
+#define T_STRENGTH				180
+#define T_RAGE					181
+#define T_DRAIN					182
+#define T_SPREAD				183
+#define T_RESISTANCE			184
+#define T_REGENERATION			185
+#define T_PROSPERITY			186
+#define T_REFLECTION			187
+#define T_HIGHJUMP				188
+#define T_HASTE					189
 
 
 // Events when you have input grabbed
@@ -699,112 +787,15 @@
 #define SECF_SILENT 1
 #define SECF_NOFALLINGDAMAGE 2
 
-// ==========================================================================
-// Skulltag Definitions
-// ==========================================================================
+#define BLOCKF_CREATURES 1
+#define BLOCKF_MONSTERS 2
+#define BLOCKF_PLAYERS 4
+#define BLOCKF_FLOATERS 8
+#define BLOCKF_PROJECTILES 16
+#define BLOCKF_EVERYTHING 32
+#define BLOCKF_RAILING 64
+#define BLOCKF_USE 128
 
-#define BLOCK_PLAYER		4
-
-// Skulltag Teams -----------------------------------------------------------
-#define	TEAM_BLUE		0
-#define	TEAM_RED		1
-#define NO_TEAM			2
-
-// Skulltag Invasion --------------------------------------------------------
-#define	IS_WAITINGFORPLAYERS	0
-#define	IS_FIRSTCOUNTDOWN	1
-#define	IS_INPROGRESS		2
-#define IS_BOSSFIGHT		3
-#define	IS_WAVECOMPLETE		4
-#define	IS_COUNTDOWN		5
-
-
-#define T_GRENADE               216
-#define T_BFG10KSHOT            217
-#define T_DARKIMPFIREBALL       218
-#define T_CACOLANTERNSHOT       219
-#define	T_ABADDONSHOT		221
-
-// Skulltag Monsters --------------------------------------------------------
-#define	T_DARKIMP		155
-#define	T_BLOODDEMON		156
-#define	T_SSGGUY		157
-#define	T_HECTEBUS		158
-#define	T_CACOLANTERN		159
-#define	T_BELPHEGOR		215
-#define	T_ABADDON		220
-
-// Skulltag Weapons ---------------------------------------------------------
-#define	T_PISTOL		162
-#define	T_GRENADELAUNCHER	163
-#define	T_RAILGUN		164
-#define	T_BFG10000		165
-#define	T_MINIGUN		214
-
-// Skulltag Armor/Health Items ----------------------------------------------
-#define	T_MAXHEALTHBONUS	166
-#define	T_MASARMORBONUS		167
-#define	T_REDARMOR		168
-
-// Skulltag Powerups --------------------------------------------------------
-#define	T_TURBOSPHERE		169
-#define	T_ANTIGRAVBELT		170
-#define	T_TIMEFREEZER		171
-#define	T_INFRAGOGGLES		172
-#define	T_INFRATRACKER		173
-#define	T_TRANSLUCENCY		174
-#define	T_DOOMSPHERE		175
-#define	T_RANDOMPOWERUP		176
-
-// Skulltag Flags -----------------------------------------------------------
-#define	T_BLUEFLAG		177
-#define	T_REDFLAG		178
-#define	T_WHITEFLAG		179
-
-// Skulltag Runes -----------------------------------------------------------
-#define	T_STRENGTH		180
-#define	T_RAGE			181
-#define	T_DRAIN			182
-#define	T_SPREAD		183
-#define	T_RESISTANCE		184
-#define	T_REGENERATION		185
-#define	T_PROSPERITY		186
-#define	T_REFLECTION		187
-#define	T_HIGHJUMP		188
-#define	T_HASTE			189
-
-// Skulltag Dead Things -----------------------------------------------------
-#define	T_DEADCYBERDEMON	190
-
-// Skulltag Misc ------------------------------------------------------------
-#define	T_BOBBINGSKULLINFLAMES	191
-
-// Skulltag Impaling Things -------------------------------------------------
-#define	T_IMPALINGSPIKE		192
-#define	T_IMPALINGSPIKECGUN	193
-#define	T_IMPALINGSPIKEZOMB	194
-
-// Skulltag Statues ---------------------------------------------------------
-#define	T_IMPSTATUE		195
-#define	T_DEMONSTATUE		196
-#define	T_ARCHSTATUE		197
-#define	T_BARONSTATUE		198
-#define	T_CYBERDEMONSTATUE	199
-#define	T_MASSMOUTHSTATUE	200
-
-// More Skulltag Misc -------------------------------------------------------
-#define	T_GREYSTALAGMITE	201
-#define	T_SHORTGREYPILLAR	202
-#define	T_TALLGREYPILLAR	203
-#define	T_GREYPILLARHEART	204
-#define	T_TALLGOTHICPILLAR	205
-#define	T_REVENANTHAND		206
-#define	T_IMPHEAD		207
-#define	T_HISSY			208
-
-// Skulltag Score Pillars ---------------------------------------------------
-#define	T_HELLPILLAR		209
-#define	T_GOTHICPILLAR		210
-#define	T_STARBASEPILLAR	211
-#define	T_MILITARYPILLAR	212
-#define	T_LABORTORYPILLAR	213
+#define FOGP_DENSITY 0
+#define FOGP_OUTSIDEDENSITY 1
+#define FOGP_SKYFOG 2
