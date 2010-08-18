@@ -29,6 +29,7 @@ using System.IO;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Rendering; // villsa
 
 #endregion
 
@@ -38,6 +39,9 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		// Variables
 		private ICollection<Sector> sectors;
+        private PixelColor color;
+        private const float LIGHTINCVALUE = 0.235f;
+        private const float LIGHTDECVALUE = -0.1825f;
 
 		// Constructor
 		public SectorEditForm()
@@ -45,8 +49,25 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize
 			InitializeComponent();
 
+            color = new PixelColor(255, 255, 255, 255);
+
 			// Fill effects list
 			effect.AddInfo(General.Map.Config.SortedSectorEffects.ToArray());
+
+            // villsa
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                // Fill flags list
+                foreach (KeyValuePair<string, string> lf in General.Map.Config.SectorFlags)
+                    flags.Add(lf.Value, lf.Key);
+
+                brightness.Hide();
+                label9.Hide();
+                groupeffect.Height = 64;
+                groupaction.Top = groupeffect.Bottom + groupeffect.Margin.Bottom + groupaction.Margin.Top;
+                settingsgroup.Top = groupaction.Bottom + groupaction.Margin.Bottom + settingsgroup.Margin.Top;
+                this.Height = settingsgroup.Bottom + settingsgroup.Margin.Bottom + 120;
+            }
 			
 			// Fill universal fields list
 			fieldslist.ListFixedFields(General.Map.Config.SectorFields);
@@ -61,6 +82,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Custom fields?
 			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);
+
+            // villsa
+            if (!General.Map.FormatInterface.InDoom64Mode)
+                tabs.TabPages.Remove(tabLights);
 			
 			// Initialize custom fields editor
 			fieldslist.Setup("sector");
@@ -81,6 +106,19 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Get first sector
 			sc = General.GetByIndex(sectors, 0);
+
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                // villsa - Flags
+                foreach (CheckBox c in flags.Checkboxes)
+                    if (sc.Flags.ContainsKey(c.Tag.ToString())) c.Checked = sc.Flags[c.Tag.ToString()];
+
+                ceilingcolor.Color = sc.CeilColor.color;
+                topcolor.Color = sc.TopColor.color;
+                thingcolor.Color = sc.ThingColor.color;
+                lowercolor.Color = sc.LowerColor.color;
+                floorcolor.Color = sc.FloorColor.color;
+            }
 
 			// Effects
 			effect.Value = sc.Effect;
@@ -204,6 +242,35 @@ namespace CodeImp.DoomBuilder.Windows
 			// Go for all sectors
 			foreach(Sector s in sectors)
 			{
+                // villsa - Apply all flags
+                if (General.Map.FormatInterface.InDoom64Mode)
+                {
+                    Lights light = new Lights();
+
+                    // flags
+                    foreach (CheckBox c in flags.Checkboxes)
+                    {
+                        if (c.CheckState == CheckState.Checked) s.SetFlag(c.Tag.ToString(), true);
+                        else if (c.CheckState == CheckState.Unchecked) s.SetFlag(c.Tag.ToString(), false);
+                    }
+
+                    // color lights
+                    light.color = ceilingcolor.Color;
+                    s.CeilColor = light;
+
+                    light.color = topcolor.Color;
+                    s.TopColor = light;
+
+                    light.color = thingcolor.Color;
+                    s.ThingColor = light;
+
+                    light.color = lowercolor.Color;
+                    s.LowerColor = light;
+
+                    light.color = floorcolor.Color;
+                    s.FloorColor = light;
+                }
+
 				// Effects
 				if(!effect.Empty) s.Effect = effect.Value;
 				s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
@@ -268,5 +335,125 @@ namespace CodeImp.DoomBuilder.Windows
 			General.ShowHelp("w_sectoredit.html");
 			hlpevent.Handled = true;
 		}
+
+        private void button6_Click_1(object sender, EventArgs e)
+        {
+            color = ceilingcolor.Color;
+        }
+
+        private void button9_Click_1(object sender, EventArgs e)
+        {
+            color = topcolor.Color;
+        }
+
+        private void button11_Click_1(object sender, EventArgs e)
+        {
+            color = thingcolor.Color;
+        }
+
+        private void button13_Click_1(object sender, EventArgs e)
+        {
+            color = lowercolor.Color;
+        }
+
+        private void button15_Click_1(object sender, EventArgs e)
+        {
+            color = floorcolor.Color;
+        }
+
+        private void button7_Click_1(object sender, EventArgs e)
+        {
+            ceilingcolor.Color = color;
+        }
+
+        private void button8_Click_1(object sender, EventArgs e)
+        {
+            topcolor.Color = color;
+        }
+
+        private void button10_Click_1(object sender, EventArgs e)
+        {
+            thingcolor.Color = color;
+        }
+
+        private void button12_Click_1(object sender, EventArgs e)
+        {
+            lowercolor.Color = color;
+        }
+
+        private void button14_Click_1(object sender, EventArgs e)
+        {
+            floorcolor.Color = color;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(ceilingcolor.Color.r, ceilingcolor.Color.g, ceilingcolor.Color.b, 0);
+            light.SetIntensity(LIGHTINCVALUE);
+            ceilingcolor.Color = light.color;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(topcolor.Color.r, topcolor.Color.g, topcolor.Color.b, 0);
+            light.SetIntensity(LIGHTINCVALUE);
+            topcolor.Color = light.color;
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(thingcolor.Color.r, thingcolor.Color.g, thingcolor.Color.b, 0);
+            light.SetIntensity(LIGHTINCVALUE);
+            thingcolor.Color = light.color;
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(lowercolor.Color.r, lowercolor.Color.g, lowercolor.Color.b, 0);
+            light.SetIntensity(LIGHTINCVALUE);
+            lowercolor.Color = light.color;
+        }
+
+        private void button20_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(floorcolor.Color.r, floorcolor.Color.g, floorcolor.Color.b, 0);
+            light.SetIntensity(LIGHTINCVALUE);
+            floorcolor.Color = light.color;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(ceilingcolor.Color.r, ceilingcolor.Color.g, ceilingcolor.Color.b, 0);
+            light.SetIntensity(LIGHTDECVALUE);
+            ceilingcolor.Color = light.color;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(topcolor.Color.r, topcolor.Color.g, topcolor.Color.b, 0);
+            light.SetIntensity(LIGHTDECVALUE);
+            topcolor.Color = light.color;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(thingcolor.Color.r, thingcolor.Color.g, thingcolor.Color.b, 0);
+            light.SetIntensity(LIGHTDECVALUE);
+            thingcolor.Color = light.color;
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(lowercolor.Color.r, lowercolor.Color.g, lowercolor.Color.b, 0);
+            light.SetIntensity(LIGHTDECVALUE);
+            lowercolor.Color = light.color;
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+            Lights light = new Lights(floorcolor.Color.r, floorcolor.Color.g, floorcolor.Color.b, 0);
+            light.SetIntensity(LIGHTDECVALUE);
+            floorcolor.Color = light.color;
+        }
 	}
 }

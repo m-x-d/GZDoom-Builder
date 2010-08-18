@@ -35,7 +35,7 @@ using CodeImp.DoomBuilder.Controls;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	internal partial class ActionBrowserForm : DelayedForm
+    internal partial class ActionBrowserForm : DelayedForm
 	{
 		// Constants
 		private const int MAX_OPTIONS = 8;
@@ -158,7 +158,10 @@ namespace CodeImp.DoomBuilder.Windows
 		public static int BrowseAction(IWin32Window owner, int action)
 		{
 			ActionBrowserForm f = new ActionBrowserForm(action);
-			if(f.ShowDialog(owner) == DialogResult.OK) action = f.SelectedAction;
+            if (f.ShowDialog(owner) == DialogResult.OK)
+                action = f.SelectedAction;
+            else
+                action = 0; // villsa
 			f.Dispose();
 			return action;
 		}
@@ -270,5 +273,16 @@ namespace CodeImp.DoomBuilder.Windows
 				if(apply.Enabled) apply_Click(this, EventArgs.Empty);
 			}
 		}
+
+        private void ActionBrowserForm_Load(object sender, EventArgs e) // villsa
+        {
+            if (General.Map.FormatInterface.InDoom64Mode)
+                this.prefixespanel.Hide();
+        }
+
+        private void checkBox6_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
 	}
 }

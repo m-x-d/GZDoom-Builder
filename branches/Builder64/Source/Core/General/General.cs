@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder
 		internal const int SIF_ALL = SIF_RANGE + SIF_PAGE + SIF_POS + SIF_TRACKPOS;
 		
 		// Files and Folders
-		private const string SETTINGS_FILE = "Builder.cfg";
+		private const string SETTINGS_FILE = "Builder64.cfg";
 		private const string SETTINGS_DIR = "Doom Builder";
 		private const string LOG_FILE = "Builder.log";
 		private const string GAME_CONFIGS_DIR = "Configurations";

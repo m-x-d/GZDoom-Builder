@@ -82,6 +82,10 @@ namespace CodeImp.DoomBuilder
 		private ScriptEditorForm scriptwindow;
 		private List<CompilerError> errors;
 		private VisualCamera visualcamera;
+
+        // villsa
+        private List<uint> hashkeys;
+        private List<string> hashkeynames;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -89,6 +93,10 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		#region ================== Properties
+
+        // villsa
+        public List<uint> TextureHashKey { get { return hashkeys; } }
+        public List<string> TextureHashName { get { return hashkeynames; } }
 
 		public string FilePathName { get { return filepathname; } }
 		public string FileTitle { get { return filetitle; } }
@@ -138,6 +146,10 @@ namespace CodeImp.DoomBuilder
 			launcher = new Launcher(this);
 			thingsfilter = new NullThingsFilter();
 			errors = new List<CompilerError>();
+
+            // villsa
+            hashkeys = new List<uint>();
+            hashkeynames = new List<string>();
 		}
 		
 		// Disposer
@@ -187,6 +199,10 @@ namespace CodeImp.DoomBuilder
 				renderer2d = null;
 				renderer3d = null;
 				graphics = null;
+
+                // villsa
+                hashkeys = null;
+                hashkeynames = null;
 				
 				// We may spend some time to clean things up here
 				GC.Collect();
@@ -369,7 +385,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Close the map file
 			mapwad.Dispose();
-			
+
 			// Read the map from temp file
 			map.BeginAddRemove();
 			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
@@ -387,12 +403,14 @@ namespace CodeImp.DoomBuilder
 				}
 			#endif
 			map.EndAddRemove();
-			
-			// Load data manager
-			General.WriteLogLine("Loading data resources...");
-			data = new DataManager();
-			maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false, false);
-			data.Load(configinfo.Resources, options.Resources, maplocation);
+
+            // Load data manager
+            // villsa - load resources before loading map
+            // texture hash table needs to be initialized first
+            General.WriteLogLine("Loading data resources...");
+            data = new DataManager();
+            maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false, false);
+            data.Load(configinfo.Resources, options.Resources, maplocation);
 
 			// Remove unused sectors
 			map.RemoveUnusedSectors(true);
@@ -1190,26 +1208,38 @@ namespace CodeImp.DoomBuilder
 			if(scriptwindow == null)
 			{
 				// Load the window
-				scriptwindow = new ScriptEditorForm();
+
+                // DON'T USE
+                /*if (General.Map.FormatInterface.InDoom64Mode)   // villsa
+                {
+                    MapInfoForm mapinfowindow = new MapInfoForm();
+                    DialogResult result = mapinfowindow.ShowDialog(MainForm.ActiveForm);
+                    mapinfowindow.Dispose();
+                }
+                else*/
+                    scriptwindow = new ScriptEditorForm();
 			}
-			
-			// Window not yet visible?
-			if(!scriptwindow.Visible)
-			{
-				// Show the window
-				if(General.Settings.ScriptOnTop)
-				{
-					if(scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
-					scriptwindow.Show(General.MainWindow);
-				}
-				else
-				{
-					if(scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
-					scriptwindow.Show();
-				}
-			}
-			scriptwindow.Activate();
-			scriptwindow.Focus();
+
+            //if (!General.Map.FormatInterface.InDoom64Mode)  // villsa
+            //{
+                // Window not yet visible?
+                if (!scriptwindow.Visible)
+                {
+                    // Show the window
+                    if (General.Settings.ScriptOnTop)
+                    {
+                        if (scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
+                        scriptwindow.Show(General.MainWindow);
+                    }
+                    else
+                    {
+                        if (scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
+                        scriptwindow.Show();
+                    }
+                }
+                scriptwindow.Activate();
+                scriptwindow.Focus();
+            //}
 			Cursor.Current = Cursors.Default;
 		}
 		

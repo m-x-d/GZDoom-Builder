@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
 using System.Drawing;
 using System.IO;
+using CodeImp.DoomBuilder.Map; // villsa
 
 #endregion
 
@@ -129,6 +130,16 @@ namespace CodeImp.DoomBuilder.IO
 			writer.Write(v.z);
 		}
 
+        //villsa
+        public void rwLight(ref Lights v)
+        {
+            writer.Write(v.color.r);
+            writer.Write(v.color.g);
+            writer.Write(v.color.b);
+            writer.Write(v.color.a);
+            writer.Write(v.tag);
+        }
+
 		// Write-only
 		public void wInt(int v) { writer.Write(v); }
 
@@ -171,6 +182,16 @@ namespace CodeImp.DoomBuilder.IO
 			writer.Write(v.z);
 		}
 
+        //villsa
+        public void wLight(Lights v)
+        {
+            writer.Write(v.color.r);
+            writer.Write(v.color.g);
+            writer.Write(v.color.b);
+            writer.Write(v.color.a);
+            writer.Write(v.tag);
+        }
+
 		// Read-only is not supported
 		public void rInt(out int v) { v = 0; General.Fail("Read-only is not supported on serialization stream. Consider passing the element by reference for bidirectional support."); }
 
@@ -203,6 +224,13 @@ namespace CodeImp.DoomBuilder.IO
 			v = new Vector3D();
 			General.Fail("Read-only is not supported on serialization stream. Consider passing the element by reference for bidirectional support.");
 		}
+
+        //villsa
+        public void rLight(out Lights v)
+        {
+            v = new Lights();
+            General.Fail("Read-only is not supported on serialization stream. Consider passing the element by reference for bidirectional support.");
+        }
 		
 		#endregion
 	}

@@ -70,6 +70,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int brightness;
 		private int tag;
 		private UniFields fields;
+        private Lights ceilColor;   // villsa
+        private Lights floorColor;   // villsa
+        private Lights thingColor;   // villsa
+        private Lights upperColor;   // villsa
+        private Lights lowerColor;   // villsa
 		
 		public SectorProperties(Sector s)
 		{
@@ -81,6 +86,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			effect = s.Effect;
 			tag = s.Tag;
 			fields = new UniFields(s.Fields);
+            ceilColor = s.CeilColor;    // villsa
+            floorColor = s.FloorColor;    // villsa
+            thingColor = s.ThingColor;    // villsa
+            upperColor = s.TopColor;    // villsa
+            lowerColor = s.LowerColor;    // villsa
 		}
 		
 		public void Apply(Sector s)
@@ -91,11 +101,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			s.SetCeilTexture(ceilingtexture);
 			s.Brightness = brightness;
 			s.Tag = tag;
-			s.Effect = effect;
+            s.CeilColor = ceilColor;    // villsa
+            s.FloorColor = floorColor;    // villsa
+            s.ThingColor = thingColor;    // villsa
+            s.TopColor = upperColor;    // villsa
+            s.LowerColor = lowerColor;    // villsa
 			s.Fields.BeforeFieldsChange();
 			s.Fields.Clear();
 			foreach(KeyValuePair<string, UniValue> v in fields)
 				s.Fields.Add(v.Key, new UniValue(v.Value));
+
 		}
 	}
 

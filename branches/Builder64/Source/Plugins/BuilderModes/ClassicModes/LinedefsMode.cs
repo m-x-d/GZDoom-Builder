@@ -101,10 +101,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Use the line tag to highlight sectors (Doom style)
 			if(General.Map.Config.LineTagIndicatesSectors)
 			{
-				if(l != null)
-					association[0].Set(l.Tag, UniversalType.SectorTag);
-				else
-					association[0].Set(0, 0);
+                if (l != null)
+                {
+                    association[0].Set(l.Tag, UniversalType.SectorTag);
+                    if(General.Map.FormatInterface.InDoom64Mode)    // villsa
+                        association[1].Set(l.Tag, UniversalType.ThingTag);
+                }
+                else
+                    association[0].Set(0, 0);
 			}
 			else
 			{

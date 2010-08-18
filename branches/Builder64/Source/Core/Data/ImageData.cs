@@ -32,6 +32,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Config;   // villsa
 
 #endregion
 
@@ -53,6 +54,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected Vector2D scale;
 		protected bool worldpanning;
 		protected bool usecolorcorrection;
+        private int palindex;   // villsa
 		
 		// Loading
 		private volatile ImageLoadState previewstate;
@@ -100,6 +102,7 @@ namespace CodeImp.DoomBuilder.Data
 		public float ScaledHeight { get { return height * scale.y; } }
 		public Vector2D Scale { get { return scale; } }
 		public bool WorldPanning { get { return worldpanning; } }
+        public int PalIndex { get { return palindex; } set { palindex = value; } } // villsa
 		
 		#endregion
 
@@ -111,6 +114,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Defaults
 			usecolorcorrection = true;
 			allowunload = true;
+            palindex = 0;   // villsa
 		}
 
 		// Destructor
@@ -235,6 +239,35 @@ namespace CodeImp.DoomBuilder.Data
 					// Bitmap has incorrect format?
 					if(bitmap.PixelFormat != PixelFormat.Format32bppArgb)
 					{
+                        // villsa
+                        if (General.Map.FormatInterface.InDoom64Mode)
+                        {
+                            ColorPalette ncp = bitmap.Palette;
+
+                            foreach (TextureIndexInfo tp in General.Map.Config.ThingPalettes)
+                            {
+                                // sprite contains alternate palette?
+                                if (General.Map.Data.ThingPalette.ContainsKey(tp.Title)
+                                    && tp.Index == palindex)
+                                {
+                                    Playpal pal = General.Map.Data.ThingPalette[tp.Title];
+                                    for (int i = 0; i < 255; i++)
+                                    {
+                                        // copy alternate palette over
+                                        ncp.Entries[i] = pal[i].ToColor();
+                                    }
+                                }
+                            }
+
+                            // first palette indexes of 0, 0, 0 RGB should always be transclucent
+                            if (ncp.Entries[0].R == 0 && ncp.Entries[0].G == 0
+                                && ncp.Entries[0].B == 0)
+                            {
+                                ncp.Entries[0] = Color.FromArgb(0, 0, 0, 0);
+                                bitmap.Palette = ncp;
+                            }
+                        }
+
 						//General.ErrorLogger.Add(ErrorType.Warning, "Image '" + name + "' does not have A8R8G8B8 pixel format. Conversion was needed.");
 						Bitmap oldbitmap = bitmap;
 						try

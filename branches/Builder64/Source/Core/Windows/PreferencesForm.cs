@@ -70,6 +70,7 @@ namespace CodeImp.DoomBuilder.Windows
 			doublesidedalpha.Value = (int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f);
 			defaultviewmode.SelectedIndex = General.Settings.DefaultViewMode;
 			fieldofview.Value = General.Settings.VisualFOV / 10;
+            lightintensity.Value = General.Settings.LightIntensity; // villsa
 			mousespeed.Value = General.Settings.MouseSpeed / 100;
 			movespeed.Value = General.Settings.MoveSpeed / 100;
 			viewdistance.Value = General.Clamp((int)(General.Settings.ViewDistance / 200.0f), viewdistance.Minimum, viewdistance.Maximum);
@@ -138,6 +139,10 @@ namespace CodeImp.DoomBuilder.Windows
 			colorvertices.Color = General.Colors.Vertices;
 			colorlinedefs.Color = General.Colors.Linedefs;
 			colorspeciallinedefs.Color = General.Colors.Actions;
+            coloinvisiblelinedef.Color = General.Colors.Invisible;  // villsa
+            colorMblock.Color = General.Colors.MBlock;  // villsa
+            colorSecret.Color = General.Colors.Secret;  // villsa
+            colorTagonly.Color = General.Colors.Tagonly;  // villsa
 			colorsoundlinedefs.Color = General.Colors.Sounds;
 			colorhighlight.Color = General.Colors.Highlight;
 			colorselection.Color = General.Colors.Selection;
@@ -191,6 +196,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.DoubleSidedAlpha = 1.0f - (float)(doublesidedalpha.Value * 0.1f);
 			General.Settings.DefaultViewMode = defaultviewmode.SelectedIndex;
 			General.Settings.VisualFOV = fieldofview.Value * 10;
+            General.Settings.LightIntensity = lightintensity.Value; // villsa
 			General.Settings.MouseSpeed = mousespeed.Value * 100;
 			General.Settings.MoveSpeed = movespeed.Value * 100;
 			General.Settings.ViewDistance = (float)viewdistance.Value * 200.0f;
@@ -232,6 +238,10 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Colors.Linedefs = colorlinedefs.Color;
 			General.Colors.Actions = colorspeciallinedefs.Color;
 			General.Colors.Sounds = colorsoundlinedefs.Color;
+            General.Colors.Invisible = coloinvisiblelinedef.Color;  // villsa
+            General.Colors.MBlock = colorMblock.Color;  // villsa
+            General.Colors.Secret = colorSecret.Color;  // villsa
+            General.Colors.Tagonly = colorTagonly.Color;  // villsa
 			General.Colors.Highlight = colorhighlight.Color;
 			General.Colors.Selection = colorselection.Color;
 			General.Colors.Indication = colorindication.Color;
@@ -311,6 +321,12 @@ namespace CodeImp.DoomBuilder.Windows
 			int value = fieldofview.Value * 10;
 			fieldofviewlabel.Text = value.ToString() + (char)176;
 		}
+
+        private void lightintensity_ValueChanged(object sender, EventArgs e)
+        {
+            float value = (float)lightintensity.Value / 10.0f;
+            lightintensitylabel.Text = value.ToString();
+        }
 
 		private void mousespeed_ValueChanged(object sender, EventArgs e)
 		{

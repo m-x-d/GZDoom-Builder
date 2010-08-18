@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{818B3D10-F791-4C3F-9AF5-BB2D0079B63C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -42,6 +42,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <DocumentationFile>..\..\Build\Builder.xml</DocumentationFile>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -280,9 +281,6 @@
     <Compile Include="Windows\FlatBrowserForm.Designer.cs">
       <DependentUpon>FlatBrowserForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DelayedForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Controls\FlatSelectorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -504,9 +502,11 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
     <Reference Include="Trackbar, Version=1.0.2486.37933, Culture=neutral, PublicKeyToken=503bf28f63ad27b4" />
   </ItemGroup>
   <ItemGroup>
@@ -593,10 +593,6 @@
       <DependentUpon>FlatBrowserForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\DelayedForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>DelayedForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Windows\GridSetupForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>GridSetupForm.cs</DependentUpon>
@@ -660,6 +656,7 @@
     <None Include="Resources\Cut.png" />
     <None Include="Resources\Close.png" />
     <Compile Include="Config\AllTexturesSet.cs" />
+    <Compile Include="Config\TextureIndexInfo.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
     <Compile Include="Config\PasteOptions.cs" />
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
@@ -698,12 +695,19 @@
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="General\SavePurpose.cs" />
+    <Compile Include="IO\Doom64MapSetIO.cs" />
     <Compile Include="IO\DoomColormapReader.cs" />
+    <Compile Include="Map\Lights.cs" />
+    <Compile Include="Map\Macro.cs" />
+    <Compile Include="Map\MacroData.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
     <Compile Include="Rendering\SurfaceBufferSet.cs" />
     <Compile Include="Rendering\SurfaceEntry.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />
+    <Compile Include="Windows\DelayedForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\ErrorsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -747,6 +751,7 @@
     <Compile Include="Editing\EditingManager.cs" />
     <EmbeddedResource Include="Controls\DockersControl.resx">
       <DependentUpon>DockersControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\PasteOptionsControl.resx">
       <SubType>Designer</SubType>
@@ -762,6 +767,9 @@
     <None Include="Resources\Builder16.png" />
     <None Include="Resources\CLogo.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\ViewColorFloor.png" />
+    <None Include="Resources\ViewColorCeiling.png" />
+    <None Include="Resources\ViewColorThing.png" />
     <None Include="Resources\PasteSpecial.png" />
     <None Include="Resources\ScriptHelp.png" />
     <None Include="Resources\ErrorLarge.png" />
@@ -868,12 +876,17 @@
       <SubType>Designer</SubType>
       <DependentUpon>CustomFieldsForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Windows\DelayedForm.resx">
+      <DependentUpon>DelayedForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\ErrorsForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ErrorsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\PasteOptionsForm.resx">
       <DependentUpon>PasteOptionsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ScriptEditorForm.resx">
       <SubType>Designer</SubType>

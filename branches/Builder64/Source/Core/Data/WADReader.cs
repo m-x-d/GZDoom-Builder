@@ -24,6 +24,7 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.Rendering;
@@ -196,6 +197,28 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 
+        // villsa
+        public override Playpal LoadThingPalette(string palname)
+        {
+            Lump lump;
+
+            // Error when suspended
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            // Look for a lump named PLAYPAL
+            lump = file.FindLump(palname);
+            if (lump != null)
+            {
+                // Read the PLAYPAL from stream
+                return new Playpal(lump.Stream);
+            }
+            else
+            {
+                // No palette
+                return null;
+            }
+        }
+
 		#endregion
 
 		#region ================== Colormaps
@@ -300,6 +323,21 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Textures
 
+        // villsa
+        private uint HashTextureName(string name)
+        {
+            uint hash = 1315423911;
+            int j = 0;
+
+            for (uint i = 0; i < name.Length && name[j] != '\0'; j++, i++)
+            {
+                string c = (name[j].ToString()).ToUpper();
+                hash ^= ((hash << 5) + c[0] + (hash >> 2));
+            }
+
+            return hash % 65536;
+        }
+
 		// This loads the textures
 		public override ICollection<ImageData> LoadTextures(PatchNames pnames)
 		{
@@ -316,7 +354,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(lump != null) LoadTextureSet("TEXTURE1", lump.Stream, ref images, pnames);
 			lump = file.FindLump("TEXTURE2");
 			if(lump != null) LoadTextureSet("TEXTURE2", lump.Stream, ref images, pnames);
-			
+
 			// Read ranges from configuration
 			foreach(LumpRange range in textureranges)
 			{
@@ -324,6 +362,75 @@ namespace CodeImp.DoomBuilder.Data
 				LoadTexturesRange(range.start, range.end, ref images, pnames);
 			}
 			
+            foreach (Sector s in General.Map.Map.Sectors)
+            {
+                for (int j = 0; j < General.Map.TextureHashKey.Count; j++)
+                {
+                    if (s.HashFloor == General.Map.TextureHashKey[j])
+                    {
+                        s.SetFloorTexture(General.Map.TextureHashName[j]);
+                        break;
+                    }
+                }
+
+                for (int j = 0; j < General.Map.TextureHashKey.Count; j++)
+                {
+                    if (s.HashCeiling == General.Map.TextureHashKey[j])
+                    {
+                        s.SetCeilTexture(General.Map.TextureHashName[j]);
+                        break;
+                    }
+                }
+            }
+
+            foreach (Sidedef sd in General.Map.Map.Sidedefs)
+            {
+                for (int j = 0; j < General.Map.TextureHashKey.Count; j++)
+                {
+                    if (sd.HashTexHigh == General.Map.TextureHashKey[j])
+                    {
+                        if (j == 0)
+                        {
+                            sd.SetTextureHigh("-");
+                            break;
+                        }
+
+                        sd.SetTextureHigh(General.Map.TextureHashName[j]);
+                        break;
+                    }
+                }
+
+                for (int j = 0; j < General.Map.TextureHashKey.Count; j++)
+                {
+                    if (sd.HashTexMid == General.Map.TextureHashKey[j])
+                    {
+                        if (j == 0)
+                        {
+                            sd.SetTextureMid("-");
+                            break;
+                        }
+
+                        sd.SetTextureMid(General.Map.TextureHashName[j]);
+                        break;
+                    }
+                }
+
+                for (int j = 0; j < General.Map.TextureHashKey.Count; j++)
+                {
+                    if (sd.HashTexLow == General.Map.TextureHashKey[j])
+                    {
+                        if (j == 0)
+                        {
+                            sd.SetTextureLow("-");
+                            break;
+                        }
+
+                        sd.SetTextureLow(General.Map.TextureHashName[j]);
+                        break;
+                    }
+                }
+            }
+
 			// Load TEXTURES lump file
 			lumpindex = file.FindLumpIndex("TEXTURES");
 			while(lumpindex > -1)
@@ -356,11 +463,18 @@ namespace CodeImp.DoomBuilder.Data
 				// Lump not zero length?
 				if(file.Lumps[i].Length > 0)
 				{
+                    uint hash;
+
 					// Make the image
 					SimpleTextureImage image = new SimpleTextureImage(file.Lumps[i].Name, file.Lumps[i].Name, defaultscale, defaultscale);
 					
 					// Add image to collection
 					images.Add(image);
+
+                    // villsa
+                    hash = HashTextureName(file.Lumps[i].Name);
+                    General.Map.TextureHashKey.Add(hash);
+                    General.Map.TextureHashName.Add(file.Lumps[i].Name);
 				}
 				else
 				{

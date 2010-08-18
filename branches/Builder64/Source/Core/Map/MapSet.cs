@@ -69,6 +69,9 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Sidedef indexing for (de)serialization
 		private Sidedef[] sidedefindices;
+
+        // Map info
+        //private MapInfo mapinfo;    // villsa
 		
 		// Map structures
 		private Vertex[] vertices;
@@ -76,11 +79,13 @@ namespace CodeImp.DoomBuilder.Map
 		private Sidedef[] sidedefs;
 		private Sector[] sectors;
 		private Thing[] things;
+        private Macro[] macros; // villsa
 		private int numvertices;
 		private int numlinedefs;
 		private int numsidedefs;
 		private int numsectors;
 		private int numthings;
+        private int nummacros;  // villsa
 		
 		// Behavior
 		private int freezearrays;
@@ -103,7 +108,9 @@ namespace CodeImp.DoomBuilder.Map
 		#endregion
 
 		#region ================== Properties
-		
+
+        //public MapInfo MapInfo { get { return mapinfo; } }  // villsa
+
 		/// <summary>Returns the number of selected sectors.</summary>
 		public int SelectedSectorsCount { get { return sel_sectors.Count; } }
 
@@ -145,6 +152,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		/// <summary>Returns a reference to the list of selected things.</summary>
 		internal LinkedList<Thing> SelectedThings { get { return sel_things; } }
+
+        internal Macro[] Macros { get { return macros; } }  // villsa
 		
 		/// <summary>Returns the current type of selection.</summary>
 		public SelectionType SelectionType { get { return sel_type; } set { sel_type = value; } }
@@ -162,6 +171,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		internal bool AutoRemove { get { return autoremove; } set { autoremove = value; } }
 
+        public int NumMacros { get { return nummacros; } set { nummacros = value; } }   // villsa
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -170,11 +181,13 @@ namespace CodeImp.DoomBuilder.Map
 		internal MapSet()
 		{
 			// Initialize
+            //mapinfo = new MapInfo();    // villsa
 			vertices = new Vertex[0];
 			linedefs = new Linedef[0];
 			sidedefs = new Sidedef[0];
 			sectors = new Sector[0];
 			things = new Thing[0];
+            macros = new Macro[256];
 			sel_vertices = new LinkedList<Vertex>();
 			sel_linedefs = new LinkedList<Linedef>();
 			sel_sectors = new LinkedList<Sector>();
@@ -191,11 +204,13 @@ namespace CodeImp.DoomBuilder.Map
 		internal MapSet(MemoryStream stream)
 		{
 			// Initialize
+            //mapinfo = new MapInfo();    // villsa
 			vertices = new Vertex[0];
 			linedefs = new Linedef[0];
 			sidedefs = new Sidedef[0];
 			sectors = new Sector[0];
 			things = new Thing[0];
+            macros = new Macro[256];
 			sel_vertices = new LinkedList<Vertex>();
 			sel_linedefs = new LinkedList<Linedef>();
 			sel_sectors = new LinkedList<Sector>();
@@ -213,9 +228,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Disposer
 		internal void Dispose()
-		{
-			ArrayList list;
-			
+		{	
 			// Not already disposed?
 			if(!isdisposed)
 			{
@@ -244,11 +257,13 @@ namespace CodeImp.DoomBuilder.Map
 					vertices[0].Dispose();
 
 				// Clean up
+                //mapinfo = null; // villsa
 				vertices = null;
 				linedefs = null;
 				sidedefs = null;
 				sectors = null;
 				things = null;
+                macros = null;
 				sel_vertices = null;
 				sel_linedefs = null;
 				sel_sectors = null;

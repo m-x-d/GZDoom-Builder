@@ -32,6 +32,7 @@ using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.IO;   // villsa
 
 #endregion
 
@@ -62,6 +63,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Options
 		private bool fullbrightness;
+
+        private bool showlightonly; // villsa
 		
 		// Window size
 		private Size windowsize;
@@ -110,6 +113,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } }
 		public bool ShowSelection { get { return showselection; } set { showselection = value; } }
 		public bool ShowHighlight { get { return showhighlight; } set { showhighlight = value; } }
+        public bool ShowLightOnly { get { return showlightonly; } set { showlightonly = value; } }  // villsa
 		
 		#endregion
 
@@ -609,8 +613,16 @@ namespace CodeImp.DoomBuilder.Rendering
 					curtexture.CreateTexture();
 
 				// Apply texture
-				if(!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, curtexture.Texture);
-				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
+                if (showlightonly)  // villsa
+                {
+                    if (!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, General.Map.Data.WhiteTexture.Texture);
+                    graphics.Shaders.World3D.Texture1 = General.Map.Data.WhiteTexture.Texture;
+                }
+                else
+                {
+                    if (!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, curtexture.Texture);
+                    graphics.Shaders.World3D.Texture1 = curtexture.Texture;
+                }
 				
 				// Go for all geometry that uses this texture
 				VisualSector sector = null;
@@ -649,6 +661,23 @@ namespace CodeImp.DoomBuilder.Rendering
 							graphics.Shaders.World3D.BeginPass(wantedshaderpass);
 							currentshaderpass = wantedshaderpass;
 						}
+
+                        // villsa - mirror UVs if special flags are set
+                        if (General.Map.FormatInterface.InDoom64Mode)
+                        {
+                            if (g.Sidedef != null)
+                            {
+                                if (g.Sidedef.Line.IsFlagSet("1073741824"))
+                                    graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Mirror);
+                                else
+                                    graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
+
+                                if (g.Sidedef.Line.IsFlagSet("2147483648"))
+                                    graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Mirror);
+                                else
+                                    graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+                            }
+                        }
 						
 						// Set the colors to use
 						if(!graphics.Shaders.Enabled)
@@ -664,6 +693,13 @@ namespace CodeImp.DoomBuilder.Rendering
 						
 						// Render!
 						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+
+                        // villsa - reset samplers to default wrappings
+                        if (General.Map.FormatInterface.InDoom64Mode)
+                        {
+                            graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
+                            graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+                        }
 					}
 				}
 			}

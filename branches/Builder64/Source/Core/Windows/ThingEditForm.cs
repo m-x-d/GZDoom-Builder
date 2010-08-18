@@ -81,6 +81,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// Tag/Effects?
 			if(!General.Map.FormatInterface.HasThingAction && !General.Map.FormatInterface.HasThingTag)
 				tabs.TabPages.Remove(tabeffects);
+
+            // villsa - hide thing action if specified false
+            if (!General.Map.FormatInterface.HasThingAction)
+                actiongroup.Hide();
+
+            // villsa - hide thing tag if specified false
+            if (!General.Map.FormatInterface.HasThingTag)
+                groupBox3.Hide();
 			
 			// Thing height?
 			height.Visible = General.Map.FormatInterface.HasThingHeight;

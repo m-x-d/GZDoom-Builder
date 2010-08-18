@@ -91,6 +91,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 		}
 
+        // villsa
+        public void OnCopyLight()
+        {
+        }
+
+        // villsa
+        public void OnPasteLight()
+        {
+        }
+
 		public void OnCopyTextureOffsets()
 		{
 		}

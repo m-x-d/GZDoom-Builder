@@ -65,7 +65,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
-			int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
+			//int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
+            int c1;
+            int c2;
+
+            if (!Sidedef.Line.IsFlagSet("8388608"))
+            {
+                c1 = Sidedef.Sector.ThingColor.GetColor();
+                c2 = Sidedef.Sector.ThingColor.GetColor();
+            }
+            else
+            {
+                c1 = Sidedef.Sector.TopColor.UnpegLowerLight(Sidedef);
+                c2 = Sidedef.Sector.LowerColor.GetLowerColor(Sidedef);
+            }
 
 			// Calculate size of this wall part
 			float geotop = (float)Sidedef.Other.Sector.FloorHeight;
@@ -110,6 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// When lower unpegged is set, the lower texture is bound to the bottom
 					t1.y = (float)Sidedef.Sector.CeilHeight - geotop;
 				}
+
 				t2.x = t1.x + Sidedef.Line.Length;
 				t2.y = t1.y + geoheight;
 
@@ -144,12 +158,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Make vertices
 				WorldVertex[] verts = new WorldVertex[6];
-				verts[0] = new WorldVertex(v1.x, v1.y, geobottom, brightness, t1.x, t2.y);
-				verts[1] = new WorldVertex(v1.x, v1.y, geotop, brightness, t1.x, t1.y);
-				verts[2] = new WorldVertex(v2.x, v2.y, geotop, brightness, t2.x, t1.y);
+				verts[0] = new WorldVertex(v1.x, v1.y, geobottom, c2, t1.x, t2.y);
+				verts[1] = new WorldVertex(v1.x, v1.y, geotop, c1, t1.x, t1.y);
+				verts[2] = new WorldVertex(v2.x, v2.y, geotop, c1, t2.x, t1.y);
 				verts[3] = verts[0];
 				verts[4] = verts[2];
-				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, brightness, t2.x, t2.y);
+				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, c2, t2.x, t2.y);
 				
 				// Keep properties
 				base.top = geotop;

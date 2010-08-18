@@ -69,6 +69,10 @@ namespace CodeImp.DoomBuilder.Map
 		private RectangleF rect;
 		private bool blocksoundflag;
 		private bool impassableflag;
+        private bool invisibleflag; //villsa
+        private bool secretflag;    // villsa
+        private bool monsterblockflag;  // villsa
+        private bool tagonlyflag;   // villsa
 		
 		// Properties
 		private Dictionary<string, bool> flags;
@@ -106,6 +110,10 @@ namespace CodeImp.DoomBuilder.Map
 		internal bool FrontInterior { get { return frontinterior; } set { frontinterior = value; } }
 		internal bool ImpassableFlag { get { return impassableflag; } }
 		internal bool BlockSoundFlag { get { return blocksoundflag; } }
+        internal bool InvisibleFlag { get { return invisibleflag; } }   // villsa
+        internal bool MonsterBlockFlag { get { return monsterblockflag; } }   // villsa
+        internal bool SecretFlag { get { return secretflag; } }   // villsa
+        internal bool TagonlyFlag { get { return tagonlyflag; } set { tagonlyflag = value; } }   // villsa
 		
 		#endregion
 
@@ -285,6 +293,10 @@ namespace CodeImp.DoomBuilder.Map
 			l.activate = activate;
 			l.impassableflag = impassableflag;
 			l.blocksoundflag = blocksoundflag;
+            l.invisibleflag = invisibleflag;    // villsa
+            l.secretflag = secretflag;
+            l.monsterblockflag = monsterblockflag;
+            l.tagonlyflag = tagonlyflag;
 			base.CopyPropertiesTo(l);
 		}
 		
@@ -351,6 +363,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This updates the line when changes have been made
 		public void UpdateCache()
 		{
+            this.TagonlyFlag = ((this.Tag != 0) && ((this.Action & 511) == 0));
+
 			// Update if needed
 			if(updateneeded)
 			{
@@ -372,6 +386,9 @@ namespace CodeImp.DoomBuilder.Map
 				// Cached flags
 				blocksoundflag = IsFlagSet(General.Map.Config.SoundLinedefFlag);
 				impassableflag = IsFlagSet(General.Map.Config.ImpassableFlag);
+                invisibleflag = IsFlagSet(General.Map.Config.InvisibleFlag);   // villsa
+                monsterblockflag = IsFlagSet(General.Map.Config.MonsterblockFlag);
+                secretflag = IsFlagSet(General.Map.Config.SecretFlag);
 				
 				// Updated
 				updateneeded = false;
@@ -531,6 +548,9 @@ namespace CodeImp.DoomBuilder.Map
 				// Cached flags
 				if(flagname == General.Map.Config.SoundLinedefFlag) blocksoundflag = value;
 				if(flagname == General.Map.Config.ImpassableFlag) impassableflag = value;
+                if (flagname == General.Map.Config.InvisibleFlag) invisibleflag = value;   // villsa
+                if (flagname == General.Map.Config.MonsterblockFlag) monsterblockflag = value;   // villsa
+                if (flagname == General.Map.Config.SecretFlag) secretflag = value;   // villsa
 			}
 		}
 
@@ -547,6 +567,9 @@ namespace CodeImp.DoomBuilder.Map
 			flags.Clear();
 			blocksoundflag = false;
 			impassableflag = false;
+            invisibleflag = false;  // villsa
+            monsterblockflag = false;
+            secretflag = false;
 		}
 		
 		// This flips the linedef's vertex attachments

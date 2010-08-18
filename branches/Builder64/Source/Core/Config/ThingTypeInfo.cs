@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool isknown;
 		private bool absolutez;
 		private SizeF spritescale;
+        private int palindex;   // villsa
 		
 		#endregion
 
@@ -90,6 +91,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsNull { get { return (index == 0); } }
 		public bool AbsoluteZ { get { return absolutez; } }
 		public SizeF SpriteScale { get { return spritescale; } }
+        public int PalIndex { get { return palindex; } }    // villsa
 		
 		#endregion
 
@@ -116,6 +118,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = false;
 			this.absolutez = false;
+            this.palindex = 0;  // villsa
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -145,7 +148,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".fixedsize", cat.FixedSize);
 			this.absolutez = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".absolutez", cat.AbsoluteZ);
 			float sscale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
-			this.spritescale = new SizeF(sscale, sscale);
+            this.palindex = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".palindex", cat.PalIndex);  // villsa
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -189,6 +192,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = cat.FixedSize;
 			this.absolutez = cat.AbsoluteZ;
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
+            this.palindex = cat.PalIndex;   // villsa
 
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
@@ -226,6 +230,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = cat.FixedSize;
 			this.absolutez = cat.AbsoluteZ;
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
+            this.palindex = cat.PalIndex;   // villsa
 
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;

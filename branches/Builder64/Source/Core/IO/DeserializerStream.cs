@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Rendering;
 using SlimDX.Direct3D9;
 using System.Drawing;
 using System.IO;
+using CodeImp.DoomBuilder.Map;  // villsa
 
 #endregion
 
@@ -127,6 +128,16 @@ namespace CodeImp.DoomBuilder.IO
 			v.z = reader.ReadSingle();
 		}
 
+        //villsa
+        public void rwLight(ref Lights v)
+        {
+            v.color.r = reader.ReadByte();
+            v.color.g = reader.ReadByte();
+            v.color.b = reader.ReadByte();
+            v.color.a = reader.ReadByte();
+            v.tag = reader.ReadUInt16();
+        }
+
 		// Write-only is not supported
 		public void wInt(int v) { General.Fail("Write-only is not supported on deserialization stream. Consider passing the element by reference for bidirectional support."); }
 
@@ -157,6 +168,12 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			General.Fail("Write-only is not supported on deserialization stream. Consider passing the element by reference for bidirectional support.");
 		}
+
+        // villsa
+        public void wLight(Lights v)
+        {
+            General.Fail("Write-only is not supported on deserialization stream. Consider passing the element by reference for bidirectional support.");
+        }
 
 		// Read-only
 		public void rInt(out int v) { v = reader.ReadInt32(); }
@@ -197,6 +214,17 @@ namespace CodeImp.DoomBuilder.IO
 			v.y = reader.ReadSingle();
 			v.z = reader.ReadSingle();
 		}
+
+        //villsa
+        public void rLight(out Lights v)
+        {
+            v = new Lights();
+            v.color.r = reader.ReadByte();
+            v.color.g = reader.ReadByte();
+            v.color.b = reader.ReadByte();
+            v.color.a = reader.ReadByte();
+            v.tag = reader.ReadUInt16();
+        }
 		
 		#endregion
 	}

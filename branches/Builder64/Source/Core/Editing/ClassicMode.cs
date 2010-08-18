@@ -735,18 +735,85 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void ViewModeBrightness()
 		{
 			SetViewMode(ViewMode.Brightness);
+
+            // villsa
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                foreach (Sector s in General.Map.Map.Sectors)
+                    s.UpdateNeeded = true;
+
+                General.Map.Map.Update();
+                General.MainWindow.RedrawDisplay();
+            }
 		}
+
+        // villsa
+        [BeginAction("viewmodefloorcolor", BaseAction = true)]
+        protected virtual void ViewModeFloorColor()
+        {
+            SetViewMode(ViewMode.FloorColor);
+
+            foreach (Sector s in General.Map.Map.Sectors)
+                s.UpdateNeeded = true;
+
+            General.Map.Map.Update();
+            General.MainWindow.RedrawDisplay();
+        }
+
+        // villsa
+        [BeginAction("viewmodeceilingcolor", BaseAction = true)]
+        protected virtual void ViewModeCeilingColor()
+        {
+            SetViewMode(ViewMode.CeilingColor);
+
+            foreach (Sector s in General.Map.Map.Sectors)
+                s.UpdateNeeded = true;
+
+            General.Map.Map.Update();
+            General.MainWindow.RedrawDisplay();
+        }
+
+        // villsa
+        [BeginAction("viewmodethingcolor", BaseAction = true)]
+        protected virtual void ViewModeThingColor()
+        {
+            SetViewMode(ViewMode.ThingColor);
+
+            foreach (Sector s in General.Map.Map.Sectors)
+                s.UpdateNeeded = true;
+
+            General.Map.Map.Update();
+            General.MainWindow.RedrawDisplay();
+        }
 
 		[BeginAction("viewmodefloors", BaseAction = true)]
 		protected virtual void ViewModeFloors()
 		{
 			SetViewMode(ViewMode.FloorTextures);
+
+            // villsa
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                foreach (Sector s in General.Map.Map.Sectors)
+                    s.UpdateNeeded = true;
+
+                General.Map.Map.Update();
+            }
 		}
 
 		[BeginAction("viewmodeceilings", BaseAction = true)]
 		protected virtual void ViewModeCeilings()
 		{
 			SetViewMode(ViewMode.CeilingTextures);
+
+            // villsa
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                foreach (Sector s in General.Map.Map.Sectors)
+                    s.UpdateNeeded = true;
+
+                General.Map.Map.Update();
+            }
 		}
 
 		#endregion

@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Gravity
 		private const float GRAVITY = -0.06f;
+		private const float CAMERA_FLOOR_OFFSET = 41f;		// same as in doom
+        private const float CAMERA_FLOOR_OFFSET64 = 56f;		// same as in doom64
+		private const float CAMERA_CEILING_OFFSET = 10f;
 		
 		#endregion
 		
@@ -449,8 +452,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply gravity?
 			if(BuilderPlug.Me.UseGravity && (General.Map.VisualCamera.Sector != null))
 			{
+                // villsa - adjust offset if in d64 mode
+                float offset;
+
+                if (General.Map.FormatInterface.InDoom64Mode == true)
+                    offset = CAMERA_FLOOR_OFFSET64;
+                else
+                    offset = CAMERA_FLOOR_OFFSET;
+
 				// Camera below floor level?
-				if(General.Map.VisualCamera.Position.z <= (General.Map.VisualCamera.Sector.FloorHeight + cameraflooroffset + 0.1f))
+                if (General.Map.VisualCamera.Position.z <= (General.Map.VisualCamera.Sector.FloorHeight + offset + 0.1f))
 				{
 					// Stay above floor
 					gravity = new Vector3D(0.0f, 0.0f, 0.0f);
@@ -1116,6 +1127,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PostAction();
 		}
 
+        // [villsa start]
+        [BeginAction("lightcopy")]
+        public void LightCopy()
+        {
+            PreActionNoChange();
+            GetTargetEventReceiver(false).OnCopyLight();
+            PostAction();
+        }
+
+        [BeginAction("lightpaste")]
+        public void LightPaste()
+        {
+            PreAction(UndoGroup.None);
+            List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true);
+            foreach (IVisualEventReceiver i in objs) i.OnPasteLight();
+            PostAction();
+        }
+        // [villsa end]
+
 		[BeginAction("visualautoalignx")]
 		public void TextureAutoAlignX()
 		{
@@ -1171,6 +1201,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string onoff = renderer.FullBrightness ? "ON" : "OFF";
 			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + onoff + ".");
 		}
+
+        [BeginAction("togglelightonly")]
+        public void ToggleLightOnly()
+        {
+            renderer.ShowLightOnly = !renderer.ShowLightOnly;
+            string onoff = renderer.ShowLightOnly ? "ON" : "OFF";
+            General.Interface.DisplayStatus(StatusType.Action, "Lighting only is now " + onoff + ".");
+        }
 		
 		[BeginAction("togglehighlight")]
 		public void ToggleHighlight()

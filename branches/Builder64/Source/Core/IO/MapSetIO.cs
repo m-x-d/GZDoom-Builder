@@ -83,6 +83,7 @@ namespace CodeImp.DoomBuilder.IO
 		public abstract int MinThingType { get; }
 		public abstract double MaxCoordinate { get; }
 		public abstract double MinCoordinate { get; }
+        public abstract bool InDoom64Mode { get; }  // villsa
 		
 		#endregion
 

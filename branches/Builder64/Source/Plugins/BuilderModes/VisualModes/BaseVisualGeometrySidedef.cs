@@ -460,6 +460,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedFlat = GetTextureName();
 			mode.SetActionResult("Copied texture " + GetTextureName() + ".");
 		}
+
+        // villsa
+        public virtual void OnCopyLight()
+        {
+            Lights[] l = new Lights[5];
+            l[0] = Sidedef.Sector.CeilColor;
+            l[1] = Sidedef.Sector.FloorColor;
+            l[2] = Sidedef.Sector.ThingColor;
+            l[3] = Sidedef.Sector.TopColor;
+            l[4] = Sidedef.Sector.LowerColor;
+
+            BuilderPlug.Me.CopiedLights = l;
+            mode.SetActionResult("Copied sector lights.");
+        }
+
+        // villsa
+        public virtual void OnPasteLight()
+        {
+            if (BuilderPlug.Me.CopiedLights != null)
+            {
+                Lights[] l = new Lights[5];
+                List<Sidedef> sidedefs = mode.GetSelectedSidedefs();
+
+                mode.CreateUndo("Paste light properties");
+                mode.SetActionResult("Pasted light properties.");
+
+                l = BuilderPlug.Me.CopiedLights;
+                foreach (Sidedef s in sidedefs)
+                {
+                    //s.Sector.CeilColor = l[0];
+                    //s.Sector.FloorColor = l[1];
+                    //s.Sector.ThingColor = l[2];
+                    s.Sector.TopColor = l[3];
+                    s.Sector.LowerColor = l[4];
+                }
+
+                Sector.UpdateSectorGeometry(true);
+                mode.ShowTargetInfo();
+            }
+        }
 		
 		// Copy texture offsets
 		public virtual void OnCopyTextureOffsets()

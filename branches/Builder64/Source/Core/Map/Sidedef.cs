@@ -59,6 +59,11 @@ namespace CodeImp.DoomBuilder.Map
 		private long longtexnamemid;
 		private long longtexnamelow;
 
+        // villsa
+        private uint hashtexhigh;
+        private uint hashtexmid;
+        private uint hashtexlow;
+
 		// Clone
 		private int serializedindex;
 		
@@ -81,6 +86,11 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongMiddleTexture { get { return longtexnamemid; } }
 		public long LongLowTexture { get { return longtexnamelow; } }
 		internal int SerializedIndex { get { return serializedindex; } set { serializedindex = value; } }
+
+        // villsa
+        public uint HashTexHigh { get { return hashtexhigh; } set { hashtexhigh = value; } }
+        public uint HashTexMid { get { return hashtexmid; } set { hashtexmid = value; } }
+        public uint HashTexLow { get { return hashtexlow; } set { hashtexlow = value; } }
 		
 		#endregion
 

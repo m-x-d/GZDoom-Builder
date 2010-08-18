@@ -99,6 +99,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float splitlinedefsrange;
 		private bool usehighlight;
 		private bool autodragonpaste;
+
+        // villsa
+        private Lights[] sectorlights;
 		
 		#endregion
 
@@ -142,6 +145,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public float SplitLinedefsRange { get { return splitlinedefsrange; } }
 		public bool UseHighlight { get { return usehighlight; } set { usehighlight = value; } }
 		public bool AutoDragOnPaste { get { return autodragonpaste; } set { autodragonpaste = value; } }
+        //villsa
+        public Lights[] CopiedLights { get { return sectorlights; } set { sectorlights = value; } }
 		
 		#endregion
 
@@ -171,6 +176,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Load error checking form
 			errorcheckform = new ErrorCheckForm();
+
+            // villsa
+            sectorlights = new Lights[5];
 			
 			// Load Undo\Redo docker
 			undoredopanel = new UndoRedoPanel();

@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the thing geometry. Returns false when nothing was created.
 		public virtual bool Setup()
 		{
-			PixelColor sectorcolor = new PixelColor(255, 255, 255, 255);
+			int sectorcolor = 0;
 			
 			// Must have a width and height!
 			if((info.Radius < 0.1f) || (info.Height < 0.1f)) return false;
@@ -99,8 +99,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(Thing.Sector != null)
 				{
 					// Use sector brightness for color shading
-					byte brightness = (byte)General.Clamp(Thing.Sector.Brightness, 0, 255);
-					sectorcolor = new PixelColor(255, brightness, brightness, brightness);
+					//byte brightness = (byte)General.Clamp(Thing.Sector.Brightness, 0, 255);
+					//sectorcolor = new PixelColor(255, brightness, brightness, brightness);
+                    sectorcolor = Thing.Sector.ThingColor.GetColor();
 				}
 				
 				// Check if the texture is loaded
@@ -122,21 +123,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offsety = (sprite as SpriteImage).OffsetY - height;
 					}
 
-					// Scale by thing type/actor scale
-					// We do this after the offset x/y determination above, because that is entirely in sprite pixels space
-					radius *= info.SpriteScale.Width;
-					height *= info.SpriteScale.Height;
-					offsetx *= info.SpriteScale.Width;
-					offsety *= info.SpriteScale.Height;
-
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor.ToInt(), 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor.ToInt(), 1.0f, 0.0f);
+                    verts[0] = new WorldVertex(-radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor, 0.0f, 1.0f);
+					verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor, 0.0f, 0.0f);
+					verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor, 1.0f, 0.0f);
 					verts[3] = verts[0];
 					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor.ToInt(), 1.0f, 1.0f);
+					verts[5] = new WorldVertex(+radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor, 1.0f, 1.0f);
 					SetVertices(verts);
 				}
 				else
@@ -149,12 +143,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor.ToInt(), 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor.ToInt(), 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor.ToInt(), 1.0f, 0.0f);
+					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor, 0.0f, 1.0f);
+					verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor, 0.0f, 0.0f);
+					verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor, 1.0f, 0.0f);
 					verts[3] = verts[0];
 					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor.ToInt(), 1.0f, 1.0f);
+					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor, 1.0f, 1.0f);
 					SetVertices(verts);
 				}
 			}
@@ -369,6 +363,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnSelectTexture() { }
 		public virtual void OnCopyTexture() { }
 		public virtual void OnPasteTexture() { }
+        public virtual void OnCopyLight() { }   // villsa
+        public virtual void OnPasteLight() { }  // villsa
 		public virtual void OnCopyTextureOffsets() { }
 		public virtual void OnPasteTextureOffsets() { }
 		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
@@ -425,17 +421,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit button released
 		public virtual void OnEditEnd()
 		{
-			if(General.Interface.IsActiveWindow)
+			// Not using any modifier buttons
+			if(!General.Interface.ShiftState && !General.Interface.CtrlState && !General.Interface.AltState)
 			{
-				List<Thing> things = mode.GetSelectedThings();
-				DialogResult result = General.Interface.ShowEditThings(things);
-				if(result == DialogResult.OK)
+				if(General.Interface.IsActiveWindow)
 				{
-					foreach(Thing t in things)
+					List<Thing> things = mode.GetSelectedThings();
+					DialogResult result = General.Interface.ShowEditThings(things);
+					if(result == DialogResult.OK)
 					{
-						VisualThing vt = mode.GetVisualThing(t);
-						if(vt != null)
-							(vt as BaseVisualThing).Changed = true;
+						foreach(Thing t in things)
+						{
+							VisualThing vt = mode.GetVisualThing(t);
+							if(vt != null)
+								(vt as BaseVisualThing).Changed = true;
+						}
 					}
 				}
 			}

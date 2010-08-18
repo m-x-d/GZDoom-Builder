@@ -70,7 +70,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			WorldVertex[] verts;
 
-			int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
+			//int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
+            int c1;
+            int c2;
+
+            if (!Sidedef.Line.IsFlagSet("8388608"))
+            {
+                c1 = Sidedef.Sector.ThingColor.GetColor();
+                c2 = Sidedef.Sector.ThingColor.GetColor();
+            }
+            else
+            {
+                c1 = Sidedef.Sector.TopColor.GetColor();
+                c2 = Sidedef.Sector.LowerColor.GetColor();
+            }
 			
 			// Calculate size of this wall part
 			float geotop = (float)Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);
@@ -80,107 +93,116 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Texture given?
 				if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
-				{
-					Vector2D t1 = new Vector2D();
-					Vector2D t2 = new Vector2D();
-					float textop, texbottom;
-					float cliptop = 0.0f;
-					float clipbottom = 0.0f;
-					
-					// Load texture
-					base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
-					if(base.Texture == null)
-					{
-						base.Texture = General.Map.Data.MissingTexture3D;
-						setuponloadedtexture = Sidedef.LongMiddleTexture;
-					}
-					else
-					{
-						if(!base.Texture.IsImageLoaded)
-							setuponloadedtexture = Sidedef.LongMiddleTexture;
-					}
+                {
+                    Vector2D t1 = new Vector2D();
+                    Vector2D t2 = new Vector2D();
+                    float textop, texbottom;
+                    float cliptop = 0.0f;
+                    float clipbottom = 0.0f;
 
-					// Get texture scaled size
-					Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
+                    // Load texture
+                    base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
+                    if (base.Texture == null)
+                    {
+                        base.Texture = General.Map.Data.MissingTexture3D;
+                        setuponloadedtexture = Sidedef.LongMiddleTexture;
+                    }
+                    else
+                    {
+                        if (!base.Texture.IsImageLoaded)
+                            setuponloadedtexture = Sidedef.LongMiddleTexture;
+                    }
 
-					// Because the middle texture on a double sided line does not repeat vertically,
-					// we first determine the visible portion of the texture
-					if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
-						textop = geobottom + tsz.y;
-					else
-						textop = geotop;
+                    // Get texture scaled size
+                    Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
 
-					// Apply texture offset
-					if (General.Map.Config.ScaledTextureOffsets)
-					{
-						textop += Sidedef.OffsetY * base.Texture.Scale.y;
-					}
-					else
-					{
-						textop += Sidedef.OffsetY;
-					}
+                    // villsa
+                    if (General.Map.FormatInterface.InDoom64Mode)
+                    {
+                        textop = geotop;
+                    }
+                    else
+                    {
+                        // Because the middle texture on a double sided line does not repeat vertically,
+                        // we first determine the visible portion of the texture
+                        if (Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
+                            textop = geobottom + tsz.y;
+                        else
+                            textop = geotop;
 
-					
-					// Calculate texture portion bottom
-					texbottom = textop - tsz.y;
+                        // Apply texture offset
+                        textop += Sidedef.OffsetY;
+                    }
 
-					// Clip texture portion by geometry
-					if(geotop < textop) { cliptop = textop - geotop; textop = geotop; }
-					if(geobottom > texbottom) { clipbottom = geobottom - texbottom; texbottom = geobottom; }
-					
-					// Check if anything is still visible
-					if((textop - texbottom) > 0.001f)
-					{
-						// Determine texture coordinatess
-						t1.y = cliptop;
-						t2.y = tsz.y - clipbottom;
+                    // villsa
+                    if (General.Map.FormatInterface.InDoom64Mode)
+                    {
+                        texbottom = geobottom;
+                    }
+                    else
+                    {
+                        // Calculate texture portion bottom
+                        texbottom = textop - tsz.y;
+                    }
 
-						if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
-						{
-							t1.x = Sidedef.OffsetX * base.Texture.Scale.x;
-						}
-						else
-						{
-							t1.x = Sidedef.OffsetX;
-						} 
+                    // Clip texture portion by geometry
+                    if (geotop < textop) { cliptop = textop - geotop; textop = geotop; }
+                    if (geobottom > texbottom) { clipbottom = geobottom - texbottom; texbottom = geobottom; }
 
-						t2.x = t1.x + Sidedef.Line.Length;
-						
-						// Transform pixel coordinates to texture coordinates
-						t1 /= tsz;
-						t2 /= tsz;
+                    // Check if anything is still visible
+                    if ((textop - texbottom) > 0.001f)
+                    {
+                        // Determine texture coordinatess
 
-						// Get world coordinates for geometry
-						Vector2D v1, v2;
-						if(Sidedef.IsFront)
-						{
-							v1 = Sidedef.Line.Start.Position;
-							v2 = Sidedef.Line.End.Position;
-						}
-						else
-						{
-							v1 = Sidedef.Line.End.Position;
-							v2 = Sidedef.Line.Start.Position;
-						}
+                        // villsa
+                        if (General.Map.FormatInterface.InDoom64Mode)
+                        {
+                            t1.y = geobottom + Sidedef.OffsetY - geotop;
+                            t2.y = geotop + Sidedef.OffsetY - geotop;
+                        }
+                        else
+                        {
+                            t1.y = cliptop;
+                            t2.y = tsz.y - clipbottom;
+                        }
+                        t1.x = Sidedef.OffsetX;
+                        t2.x = t1.x + Sidedef.Line.Length;
 
-						// Make vertices
-						verts = new WorldVertex[6];
-						verts[0] = new WorldVertex(v1.x, v1.y, texbottom, brightness, t1.x, t2.y);
-						verts[1] = new WorldVertex(v1.x, v1.y, textop, brightness, t1.x, t1.y);
-						verts[2] = new WorldVertex(v2.x, v2.y, textop, brightness, t2.x, t1.y);
-						verts[3] = verts[0];
-						verts[4] = verts[2];
-						verts[5] = new WorldVertex(v2.x, v2.y, texbottom, brightness, t2.x, t2.y);
-						
-						// Keep properties
-						base.top = textop;
-						base.bottom = texbottom;
-						
-						// Apply vertices
-						base.SetVertices(verts);
-						return true;
-					}
-				}
+                        // Transform pixel coordinates to texture coordinates
+                        t1 /= tsz;
+                        t2 /= tsz;
+
+                        // Get world coordinates for geometry
+                        Vector2D v1, v2;
+                        if (Sidedef.IsFront)
+                        {
+                            v1 = Sidedef.Line.Start.Position;
+                            v2 = Sidedef.Line.End.Position;
+                        }
+                        else
+                        {
+                            v1 = Sidedef.Line.End.Position;
+                            v2 = Sidedef.Line.Start.Position;
+                        }
+
+                        // Make vertices
+                        verts = new WorldVertex[6];
+                        verts[0] = new WorldVertex(v1.x, v1.y, texbottom, c2, t1.x, t2.y);
+                        verts[1] = new WorldVertex(v1.x, v1.y, textop, c1, t1.x, t1.y);
+                        verts[2] = new WorldVertex(v2.x, v2.y, textop, c1, t2.x, t1.y);
+                        verts[3] = verts[0];
+                        verts[4] = verts[2];
+                        verts[5] = new WorldVertex(v2.x, v2.y, texbottom, c2, t2.x, t2.y);
+
+                        // Keep properties
+                        base.top = textop;
+                        base.bottom = texbottom;
+
+                        // Apply vertices
+                        base.SetVertices(verts);
+                        return true;
+                    }
+                }
 			}
 			
 			// No geometry for invisible wall

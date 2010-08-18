@@ -179,6 +179,22 @@ namespace CodeImp.DoomBuilder.Rendering
 			c.b = (byte)((ab * bb) * 255.0f);
 			return c;
 		}
+
+        public static PixelColor Modulate(PixelColor a, float multiplier)
+        {
+            float aa = (float)a.a * BYTE_TO_FLOAT;
+            float ar = (float)a.r * BYTE_TO_FLOAT;
+            float ag = (float)a.g * BYTE_TO_FLOAT;
+            float ab = (float)a.b * BYTE_TO_FLOAT;
+            float x = 255.0f * BYTE_TO_FLOAT;
+
+            PixelColor c = new PixelColor();
+            c.a = (byte)(((aa * x) * 255.0f) * multiplier);
+            c.r = (byte)(((ar * x) * 255.0f) * multiplier);
+            c.g = (byte)(((ag * x) * 255.0f) * multiplier);
+            c.b = (byte)(((ab * x) * 255.0f) * multiplier);
+            return c;
+        }
 		
 		#endregion
 	}

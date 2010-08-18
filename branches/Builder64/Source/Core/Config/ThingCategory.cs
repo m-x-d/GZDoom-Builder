@@ -60,7 +60,8 @@ namespace CodeImp.DoomBuilder.Config
 		private bool fixedsize;
 		private bool absolutez;
 		private float spritescale;
-		
+		private int palindex;   // villsa
+
 		// Disposing
 		private bool isdisposed = false;
 		
@@ -83,6 +84,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool AbsoluteZ { get { return absolutez; } }
 		public float SpriteScale { get { return spritescale; } }
+		public int PalIndex { get { return palindex; } }    // villsa
 		public List<ThingTypeInfo> Things { get { return things; } }
 
 		#endregion
@@ -110,6 +112,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = false;
 			this.absolutez = false;
 			this.spritescale = 1.0f;
+			this.palindex = 0;  // villsa
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -139,6 +142,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", false);
 			this.absolutez = cfg.ReadSetting("thingtypes." + name + ".absolutez", false);
 			this.spritescale = cfg.ReadSetting("thingtypes." + name + ".spritescale", 1.0f);
+			this.palindex = cfg.ReadSetting("thingtypes." + name + ".palindex", 0);
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;

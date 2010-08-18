@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const int THING_SHINY = 1;
 		private const int THING_SQUARE = 2;
 		private const int NUM_THING_TEXTURES = 4;
-		internal const int NUM_VIEW_MODES = 4;
+		internal const int NUM_VIEW_MODES = 4;  // villsa
 		
 		#endregion
 
@@ -593,6 +593,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(l.Selected)
 				return General.Colors.Selection;
+            else if (l.TagonlyFlag)
+                return General.Colors.Tagonly.WithAlpha(General.Settings.DoubleSidedAlphaByte); // villsa
 			else if(l.ImpassableFlag)
 			{
 				// Impassable lines
@@ -602,9 +604,13 @@ namespace CodeImp.DoomBuilder.Rendering
 			else
 			{
 				// Passable lines
-				if(l.Action != 0) return General.Colors.Actions.WithAlpha(General.Settings.DoubleSidedAlphaByte);
-				else if(l.BlockSoundFlag) return General.Colors.Sounds.WithAlpha(General.Settings.DoubleSidedAlphaByte);
-				else return General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+                if (l.Action != 0) return General.Colors.Actions.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+                else if (l.TagonlyFlag) return General.Colors.Tagonly.WithAlpha(General.Settings.DoubleSidedAlphaByte); // villsa
+                else if (l.BlockSoundFlag) return General.Colors.Sounds.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+                else if (l.MonsterBlockFlag) return General.Colors.MBlock.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+                else if (l.SecretFlag) return General.Colors.Secret.WithAlpha(General.Settings.DoubleSidedAlphaByte);
+                else if (l.InvisibleFlag) return General.Colors.Invisible.WithAlpha(General.Settings.DoubleSidedAlphaByte); // villsa
+                else return General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
 			}
 		}
 
@@ -1200,6 +1206,11 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						case ViewMode.Brightness:
 							surfaces.RenderSectorBrightness(yviewport);
+                            break;
+                        case ViewMode.FloorColor:   // villsa
+                        case ViewMode.CeilingColor:   // villsa
+                        case ViewMode.ThingColor:   // villsa
+                            surfaces.RenderSectorBrightness(yviewport);
 							surfaces.RenderSectorSurfaces(graphics);
 							break;
 							

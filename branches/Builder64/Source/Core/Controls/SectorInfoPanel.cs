@@ -44,8 +44,16 @@ namespace CodeImp.DoomBuilder.Controls
 		public void ShowInfo(Sector s)
 		{
 			string effectinfo = "";
-			
 			int sheight = s.CeilHeight - s.FloorHeight;
+
+            // villsa
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                brightness.Hide();
+                brightLabel.Hide();
+            }
+            else
+                lightInfo.Hide();
 
 			// Lookup effect description in config
 			if(General.Map.Config.SectorEffects.ContainsKey(s.Effect))
@@ -67,6 +75,13 @@ namespace CodeImp.DoomBuilder.Controls
 			ceilingname.Text = s.CeilTexture;
 			General.DisplayZoomedImage(floortex, General.Map.Data.GetFlatImage(s.FloorTexture).GetPreview());
 			General.DisplayZoomedImage(ceilingtex, General.Map.Data.GetFlatImage(s.CeilTexture).GetPreview());
+
+            //villsa
+            ceilingcolor.BackColor = s.CeilColor.color.ToColor();
+            floorcolor.BackColor = s.FloorColor.color.ToColor();
+            thingcolor.BackColor = s.ThingColor.color.ToColor();
+            uppercolor.BackColor = s.TopColor.color.ToColor();
+            lowercolor.BackColor = s.LowerColor.color.ToColor();
 
 			// Show the whole thing
 			this.Show();

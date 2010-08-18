@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override int VertexDecimals { get { return 0; } }
 		public override string DecimalsFormat { get { return "0"; } }
 		public override bool HasLinedefTag { get { return true; } }
-		public override bool HasThingTag { get { return false; } }
+		public override bool HasThingTag { get { return true; } }
 		public override bool HasThingAction { get { return false; } }
 		public override bool HasCustomFields { get { return false; } }
 		public override bool HasThingHeight { get { return false; } }
@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override bool HasNumericLinedefActivations { get { return true; } }
 		public override int MaxTag { get { return ushort.MaxValue; } }
 		public override int MinTag { get { return ushort.MinValue; } }
-		public override int MaxAction { get { return ushort.MaxValue; } }
+        public override int MaxAction { get { return ushort.MaxValue; } }
 		public override int MinAction { get { return ushort.MinValue; } }
 		public override int MaxArgument { get { return 0; } }
 		public override int MinArgument { get { return 0; } }
@@ -81,6 +81,8 @@ namespace CodeImp.DoomBuilder.IO
 		public override int MinThingType { get { return ushort.MinValue; } }
 		public override double MaxCoordinate { get { return (double)short.MaxValue; } }
 		public override double MinCoordinate { get { return (double)short.MinValue; } }
+        public override bool InDoom64Mode { get { return false; } } // villsa
+
 		
 		#endregion
 
@@ -264,7 +266,8 @@ namespace CodeImp.DoomBuilder.IO
 			BinaryReader readline, readside;
 			Lump linedefslump, sidedefslump;
 			int num, numsides, i, offsetx, offsety, v1, v2;
-			int s1, s2, flags, action, tag, sc;
+			int s1, s2, action, tag, sc;
+            uint flags;
 			Dictionary<string, bool> stringflags;
 			string thigh, tmid, tlow;
 			Linedef l;
@@ -293,7 +296,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Read properties from stream
 				v1 = readline.ReadUInt16();
 				v2 = readline.ReadUInt16();
-				flags = readline.ReadUInt16();
+				flags = readline.ReadUInt32();
 				action = readline.ReadUInt16();
 				tag = readline.ReadUInt16();
 				s1 = readline.ReadUInt16();
@@ -303,8 +306,8 @@ namespace CodeImp.DoomBuilder.IO
 				stringflags = new Dictionary<string, bool>();
 				foreach(string f in manager.Config.SortedLinedefFlags)
 				{
-					int fnum;
-					if(int.TryParse(f, out fnum)) stringflags[f] = ((flags & fnum) == fnum);
+					uint fnum;
+					if(uint.TryParse(f, out fnum)) stringflags[f] = ((flags & fnum) == fnum);
 				}
 
 				// Create new linedef

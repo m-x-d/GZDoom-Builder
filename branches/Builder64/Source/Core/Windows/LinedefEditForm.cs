@@ -18,17 +18,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.IO;
-using System.IO;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
+
 
 #endregion
 
@@ -84,6 +79,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// Custom fields?
 			if(!General.Map.FormatInterface.HasCustomFields)
 				tabs.TabPages.Remove(tabcustom);
+
+            // villsa
+            if (!General.Map.FormatInterface.InDoom64Mode)
+                tabs.TabPages.Remove(tabmacros);
+
 			customfrontbutton.Visible = General.Map.FormatInterface.HasCustomFields;
 			custombackbutton.Visible = General.Map.FormatInterface.HasCustomFields;
 			
@@ -93,13 +93,13 @@ namespace CodeImp.DoomBuilder.Windows
 				actiongroup.Height = hexenpanel.Bottom + action.Top + (actiongroup.Width - actiongroup.ClientRectangle.Width);
 				this.Height = heightpanel1.Height;
 			}
-			else if(!General.Map.FormatInterface.HasMixedActivations &&
-				    !General.Map.FormatInterface.HasActionArgs &&
-				    !General.Map.FormatInterface.HasPresetActivations)
-			{
-				actiongroup.Height = action.Bottom + action.Top + (actiongroup.Width - actiongroup.ClientRectangle.Width);
-				this.Height = heightpanel2.Height;
-			}
+            else if (!General.Map.FormatInterface.HasMixedActivations &&
+                    !General.Map.FormatInterface.HasActionArgs &&
+                    !General.Map.FormatInterface.HasPresetActivations)
+            {
+                actiongroup.Height = action.Bottom + action.Top + (actiongroup.Width - actiongroup.ClientRectangle.Width);
+                this.Height = heightpanel2.Height;
+            }
 			
 			// Tag?
 			if(General.Map.FormatInterface.HasLinedefTag)
@@ -111,6 +111,14 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				idgroup.Visible = false;
 			}
+
+            // villsa
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                this.activationtype.Show();
+                activationtype.Top = idgroup.Bottom + idgroup.Margin.Bottom + activationtype.Margin.Top;
+                this.Height = heightpanel3.Height;
+            }
 		}
 		
 		// This sets up the form to edit the given lines
@@ -210,13 +218,44 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 
 				// Activations
-				if(activation.Items.Count > 0)
-				{
-					sai = (activation.Items[0] as LinedefActivateInfo);
-					foreach(LinedefActivateInfo ai in activation.Items)
-						if((l.Activate & ai.Index) == ai.Index) sai = ai;
-					if(sai != activation.SelectedItem) activation.SelectedIndex = -1;
-				}
+
+                // villsa
+                if (General.Map.FormatInterface.InDoom64Mode)
+                {
+                    if (l.Activate > 0)
+                    {
+                        if ((l.Activate & 512) == 512)
+                            activationtypered.Checked = true;
+
+                        if ((l.Activate & 1024) == 1024)
+                            activationtypeblue.Checked = true;
+
+                        if ((l.Activate & 2048) == 2048)
+                            activationtypeyellow.Checked = true;
+
+                        if ((l.Activate & 4096) == 4096)
+                            activationtypecross.Checked = true;
+
+                        if ((l.Activate & 8192) == 8192)
+                            activationtypeshoot.Checked = true;
+
+                        if ((l.Activate & 16384) == 16384)
+                            activationtypeuse.Checked = true;
+
+                        if ((l.Activate & 32768) == 32768)
+                            activationtyperepeat.Checked = true;
+                    }
+                }
+                else
+                {
+                    if (activation.Items.Count > 0)
+                    {
+                        sai = (activation.Items[0] as LinedefActivateInfo);
+                        foreach (LinedefActivateInfo ai in activation.Items)
+                            if ((l.Activate & ai.Index) == ai.Index) sai = ai;
+                        if (sai != activation.SelectedItem) activation.SelectedIndex = -1;
+                    }
+                }
 
 				// UDMF Activations
 				foreach(CheckBox c in udmfactivates.Checkboxes)
@@ -327,6 +366,7 @@ namespace CodeImp.DoomBuilder.Windows
 			string undodesc = "linedef";
 			Sector s;
 			int index;
+            int activationflag; // villsa
 			
 			// Verify the tag
 			if(General.Map.FormatInterface.HasLinedefTag && ((tag.GetResult(0) < General.Map.FormatInterface.MinTag) || (tag.GetResult(0) > General.Map.FormatInterface.MaxTag)))
@@ -369,6 +409,28 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply chosen activation flag
 				if(activation.SelectedIndex > -1)
 					l.Activate = (activation.SelectedItem as LinedefActivateInfo).Index;
+
+                // villsa
+                if (General.Map.FormatInterface.InDoom64Mode)
+                {
+                    activationflag = 0;
+                    if (activationtypeuse.Checked)
+                        activationflag = activationflag | 16384;
+                    if (activationtypeshoot.Checked)
+                        activationflag = activationflag | 8192;
+                    if (activationtypecross.Checked)
+                        activationflag = activationflag | 4096;
+                    if (activationtyperepeat.Checked)
+                        activationflag = activationflag | 32768;
+                    if (activationtypered.Checked)
+                        activationflag = activationflag | 512;
+                    if (activationtypeblue.Checked)
+                        activationflag = activationflag | 1024;
+                    if (activationtypeyellow.Checked)
+                        activationflag = activationflag | 2048;
+
+                    l.Activate = activationflag;
+                }
 				
 				// UDMF activations
 				foreach(CheckBox c in udmfactivates.Checkboxes)
@@ -461,6 +523,20 @@ namespace CodeImp.DoomBuilder.Windows
 				fieldslist.Apply(l.Fields);
 			}
 
+            // villsa
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                if(action.Value >= 256)
+                {
+                    int id = action.Value - 256;
+
+                    if (General.Map.Map.Macros[id] != null)
+                        General.Map.Map.Macros[id] = new Macro(0);
+
+                    General.Map.Map.Macros[id].SetDataFromTreeNode(mtree);
+                }
+            }
+
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 			
@@ -549,5 +625,118 @@ namespace CodeImp.DoomBuilder.Windows
 			General.ShowHelp("w_linedefedit.html");
 			hlpevent.Handled = true;
 		}
+
+        private void mtagbutton_Click(object sender, EventArgs e)
+        {
+            mtag.Text = General.Map.Map.GetNewTag().ToString();
+        }
+
+        private void mapplytag_Click(object sender, EventArgs e)
+        {
+            if (mtree.SelectedNode == null)
+                return;
+
+            if (mtree.SelectedNode.Parent == null)
+                return;
+
+            TreeNode node;
+            MacroData data;
+
+            node = mtree.SelectedNode;
+            data = (MacroData)node.Tag;
+
+            data.tag = mtag.GetResult(0);
+
+            node.Text = data.SetName();
+            node.Tag = data;
+
+            mtag.Text = "";
+        }
+
+        private void mbatch_Click(object sender, EventArgs e)
+        {
+            mtree.Nodes.Add("Batch");
+            mtree.Focus();
+        }
+
+        private void maction_Click(object sender, EventArgs e)
+        {
+            TreeNode node;
+            MacroData data;
+
+            if (mtree.SelectedNode == null)
+                return;
+
+            if (mtree.SelectedNode.Parent != null)
+                return;
+
+            node = mtree.SelectedNode.Nodes.Add("Action");
+            mtree.ExpandAll();
+            mtree.Focus();
+
+            data = new MacroData();
+            data.batch = 0;
+            data.type = ActionBrowserForm.BrowseAction(this, action.Value);
+            data.tag = 0;
+
+            node.Text = data.SetName();
+            node.Tag = data;
+        }
+
+        private void tabs_Selected(Object sender, TabControlEventArgs e)
+        {
+            if (!General.Map.FormatInterface.InDoom64Mode)
+                return;
+
+            if (e.TabPage.Text != "Macros")  // eek! hack
+                return;
+
+            // fill in macros
+            mtree.Nodes.Clear();
+
+            if (action.Value >= 256)
+            {
+                int id = action.Value - 256;
+
+                if (General.Map.Map.Macros[id] == null)
+                    General.Map.Map.Macros[id] = new Macro(0);
+
+                General.Map.Map.Macros[id].SetNodeFromData(id, mtree);
+
+                mbatch.Enabled = true;
+                maction.Enabled = true;
+                mdelete.Enabled = true;
+                mtagbutton.Enabled = true;
+                mapplytag.Enabled = true;
+                mtag.Enabled = true;
+            }
+            else
+            {
+                mbatch.Enabled = false;
+                maction.Enabled = false;
+                mdelete.Enabled = false;
+                mtagbutton.Enabled = false;
+                mapplytag.Enabled = false;
+                mtag.Enabled = false;
+            }
+        }
+
+        private void mdelete_Click(object sender, EventArgs e)
+        {
+            TreeNode n = mtree.SelectedNode;
+
+            if (n == null)
+                return;
+
+            if (n.Parent != null)
+            {
+                if (n.Parent.Nodes.Count <= 1)
+                    n.Parent.Remove();
+                else
+                    n.Remove();
+            }
+            else
+                n.Remove();
+        }
 	}
 }

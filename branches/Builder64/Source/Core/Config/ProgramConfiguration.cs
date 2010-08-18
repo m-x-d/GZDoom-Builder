@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Config
 		//private int undolevels;
 		private bool blackbrowsers;
 		private int visualfov;
+        private int lightintensity; // villsa
 		private float visualmousesensx;
 		private float visualmousesensy;
 		private int imagebrightness;
@@ -112,6 +113,7 @@ namespace CodeImp.DoomBuilder.Config
 		//public int UndoLevels { get { return undolevels; } internal set { undolevels = value; } }
 		public bool BlackBrowsers { get { return blackbrowsers; } internal set { blackbrowsers = value; } }
 		public int VisualFOV { get { return visualfov; } internal set { visualfov = value; } }
+        public int LightIntensity { get { return lightintensity; } internal set { lightintensity = value; } }   // villsa
 		public int ImageBrightness { get { return imagebrightness; } internal set { imagebrightness = value; } }
 		public float DoubleSidedAlpha { get { return doublesidedalpha; } internal set { doublesidedalpha = value; doublesidedalphabyte = (byte)(doublesidedalpha * 255f); } }
 		public byte DoubleSidedAlphaByte { get { return doublesidedalphabyte; } }
@@ -190,6 +192,7 @@ namespace CodeImp.DoomBuilder.Config
 				blackbrowsers = cfg.ReadSetting("blackbrowsers", false);
 				//undolevels = cfg.ReadSetting("undolevels", 20);
 				visualfov = cfg.ReadSetting("visualfov", 80);
+                lightintensity = cfg.ReadSetting("lightintensity", 0);  // villsa
 				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40f);
 				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40f);
 				imagebrightness = cfg.ReadSetting("imagebrightness", 3);
@@ -251,6 +254,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("blackbrowsers", blackbrowsers);
 			//cfg.WriteSetting("undolevels", undolevels);
 			cfg.WriteSetting("visualfov", visualfov);
+            cfg.WriteSetting("lightintensity", lightintensity); // villsa
 			cfg.WriteSetting("visualmousesensx", visualmousesensx);
 			cfg.WriteSetting("visualmousesensy", visualmousesensy);
 			cfg.WriteSetting("imagebrightness", imagebrightness);

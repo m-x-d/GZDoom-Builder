@@ -252,6 +252,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public virtual void OnPasteTexture() { }
 
+        // villsa
+        public virtual void OnCopyLight()
+        {
+            Lights[] l = new Lights[5];
+            l[0] = Sector.Sector.CeilColor;
+            l[1] = Sector.Sector.FloorColor;
+            l[2] = Sector.Sector.ThingColor;
+            l[3] = Sector.Sector.TopColor;
+            l[4] = Sector.Sector.LowerColor;
+
+            BuilderPlug.Me.CopiedLights = l;
+            mode.SetActionResult("Copied sector lights.");
+        }
+
+        // villsa
+        public virtual void OnPasteLight()
+        {
+            if (BuilderPlug.Me.CopiedLights != null)
+            {
+                Lights[] l = new Lights[5];
+                List<Sector> sectors = mode.GetSelectedSectors();
+
+                mode.CreateUndo("Paste light properties");
+                mode.SetActionResult("Pasted light properties.");
+
+                l = BuilderPlug.Me.CopiedLights;
+                foreach (Sector s in sectors)
+                {
+                    s.CeilColor = l[0];
+                    s.FloorColor = l[1];
+                    s.ThingColor = l[2];
+                    //s.TopColor = l[3];
+                    //s.LowerColor = l[4];
+                }
+
+                Sector.UpdateSectorGeometry(true);
+                mode.ShowTargetInfo();
+            }
+        }
+
 		// Return texture name
 		public virtual string GetTextureName() { return ""; }
 		

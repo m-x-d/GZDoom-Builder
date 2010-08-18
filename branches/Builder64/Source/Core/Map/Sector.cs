@@ -61,6 +61,14 @@ namespace CodeImp.DoomBuilder.Map
 		private int effect;
 		private int tag;
 		private int brightness;
+        private Dictionary<string, bool> flags; // villsa
+        private Lights ceilColor;   // villsa
+        private Lights flrColor;    // villsa
+        private Lights thingColor;  // villsa
+        private Lights topColor;    // villsa
+        private Lights lwrColor;    // villsa
+        private uint hashfloortexname;  // villsa
+        private uint hashceilingtexname;    // villsa
 
 		// Cloning
 		private Sector clone;
@@ -90,6 +98,11 @@ namespace CodeImp.DoomBuilder.Map
 		public int CeilHeight { get { return ceilheight; } set { BeforePropsChange(); ceilheight = value; } }
 		public string FloorTexture { get { return floortexname; } }
 		public string CeilTexture { get { return ceiltexname; } }
+
+        // villsa
+        public uint HashFloor { get { return hashfloortexname; } set { hashfloortexname = value; } }
+        public uint HashCeiling { get { return hashceilingtexname; } set { hashceilingtexname = value; } }
+
 		public long LongFloorTexture { get { return longfloortexname; } }
 		public long LongCeilTexture { get { return longceiltexname; } }
 		public int Effect { get { return effect; } set { BeforePropsChange(); effect = value; } }
@@ -102,6 +115,12 @@ namespace CodeImp.DoomBuilder.Map
 		public Triangulation Triangles { get { return triangles; } }
 		public FlatVertex[] FlatVertices { get { return flatvertices; } }
 		public ReadOnlyCollection<LabelPositionInfo> Labels { get { return labels; } }
+        internal Dictionary<string, bool> Flags { get { return flags; } } // villsa
+        public Lights CeilColor { get { return ceilColor; } set { BeforePropsChange(); ceilColor = value; } } // villsa
+        public Lights FloorColor { get { return flrColor; } set { BeforePropsChange(); flrColor = value; } } // villsa
+        public Lights ThingColor { get { return thingColor; } set { BeforePropsChange(); thingColor = value; } } // villsa
+        public Lights TopColor { get { return topColor; } set { BeforePropsChange(); topColor = value; } } // villsa
+        public Lights LowerColor { get { return lwrColor; } set { BeforePropsChange(); lwrColor = value; } } // villsa
 		
 		#endregion
 
@@ -122,6 +141,12 @@ namespace CodeImp.DoomBuilder.Map
 			this.updateneeded = true;
 			this.triangulationneeded = true;
 			this.surfaceentry = new SurfaceEntry(-1, -1, -1);
+            this.flags = new Dictionary<string, bool>(); // villsa
+            this.ceilColor = new Lights(0, 0, 0, 0); // villsa
+            this.flrColor = new Lights(0, 0, 0, 0); // villsa
+            this.thingColor = new Lights(0, 0, 0, 0); // villsa
+            this.topColor = new Lights(0, 0, 0, 0); // villsa
+            this.lwrColor = new Lights(0, 0, 0, 0); // villsa
 
 			if(map == General.Map.Map)
 				General.Map.UndoRedo.RecAddSector(this);
@@ -189,6 +214,30 @@ namespace CodeImp.DoomBuilder.Map
 			
 			base.ReadWrite(s);
 
+            // villsa
+            if (s.IsWriting)
+            {
+                s.wInt(flags.Count);
+
+                foreach (KeyValuePair<string, bool> f in flags)
+                {
+                    s.wString(f.Key);
+                    s.wBool(f.Value);
+                }
+            }
+            else
+            {
+                int c; s.rInt(out c);
+
+                flags = new Dictionary<string, bool>(c);
+                for (int i = 0; i < c; i++)
+                {
+                    string t; s.rString(out t);
+                    bool b; s.rBool(out b);
+                    flags.Add(t, b);
+                }
+            }
+
 			s.rwInt(ref fixedindex);
 			s.rwInt(ref floorheight);
 			s.rwInt(ref ceilheight);
@@ -199,6 +248,15 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwInt(ref effect);
 			s.rwInt(ref tag);
 			s.rwInt(ref brightness);
+            // villsa
+            if (General.Map.FormatInterface.InDoom64Mode)
+            {
+                s.rwLight(ref ceilColor);
+                s.rwLight(ref flrColor);
+                s.rwLight(ref thingColor);
+                s.rwLight(ref topColor);
+                s.rwLight(ref lwrColor);
+            }
 		}
 		
 		// After deserialization
@@ -223,8 +281,14 @@ namespace CodeImp.DoomBuilder.Map
 			s.longfloortexname = longfloortexname;
 			s.effect = effect;
 			s.tag = tag;
+            s.flags = new Dictionary<string, bool>(flags);  // villsa
 			s.brightness = brightness;
 			s.updateneeded = true;
+            s.ceilColor = ceilColor;    // villsa
+            s.flrColor = flrColor;    // villsa
+            s.thingColor = thingColor;    // villsa
+            s.topColor = topColor;    // villsa
+            s.lwrColor = lwrColor;    // villsa
 			base.CopyPropertiesTo(s);
 		}
 
@@ -286,6 +350,22 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Brightness color
 				int brightint = General.Map.Renderer2D.CalculateBrightness(brightness);
+
+                // villsa
+                switch (General.Map.Renderer2D.ViewMode)
+                {
+                    case ViewMode.FloorColor:
+                        brightint = this.flrColor.color.ToInt();
+                        break;
+                    case ViewMode.CeilingColor:
+                        brightint = this.ceilColor.color.ToInt();
+                        break;
+                    case ViewMode.ThingColor:
+                        brightint = this.thingColor.color.ToInt();
+                        break;
+                    default:
+                        break;
+                }
 				
 				// Make vertices
 				flatvertices = new FlatVertex[triangles.Vertices.Count];
@@ -504,6 +584,84 @@ namespace CodeImp.DoomBuilder.Map
 			this.brightness = brightness;
 			updateneeded = true;
 		}
+
+        // villsa - new overload method
+        private Lights GetLight(int cindex, Lights[] light)
+        {
+            Lights color;
+
+            if (cindex >= 256)
+            {
+                cindex -= 256;
+                color = light[cindex];
+            }
+            else
+            {
+                byte c = (byte)cindex;
+
+                color = new Lights(c, c, c, 0);
+            }
+
+            color.color.a = 255;
+
+            return color;
+        }
+
+        public void Update(Dictionary<string, bool> flags, int hfloor, int hceil,
+            string tfloor, string tceil, int effect, int tag, Lights[] light, int[] cindex)
+        {
+            BeforePropsChange();
+
+            // Apply changes
+            this.flags = new Dictionary<string, bool>(flags);
+            this.floorheight = hfloor;
+            this.ceilheight = hceil;
+            SetFloorTexture(tfloor);
+            SetCeilTexture(tceil);
+            this.effect = effect;
+            this.tag = tag;
+            this.ceilColor = GetLight(cindex[1], light);
+            this.flrColor = GetLight(cindex[0], light);
+            this.thingColor = GetLight(cindex[2], light);
+            this.topColor = GetLight(cindex[3], light);
+            this.lwrColor = GetLight(cindex[4], light);
+            this.brightness = 255;
+            updateneeded = true;
+        }
+
+        // [villsa start]
+        // This checks and returns a flag without creating it
+        public bool IsFlagSet(string flagname)
+        {
+            if (flags.ContainsKey(flagname))
+                return flags[flagname];
+            else
+                return false;
+        }
+
+        // This sets a flag
+        public void SetFlag(string flagname, bool value)
+        {
+            if (!flags.ContainsKey(flagname) || (IsFlagSet(flagname) != value))
+            {
+                BeforePropsChange();
+                flags[flagname] = value;
+            }
+        }
+
+        // This returns a copy of the flags dictionary
+        public Dictionary<string, bool> GetFlags()
+        {
+            return new Dictionary<string, bool>(flags);
+        }
+
+        // This clears all flags
+        public void ClearFlags()
+        {
+            flags.Clear();
+        }
+
+        // [villsa end]
 
 		// This sets texture
 		public void SetFloorTexture(string name)

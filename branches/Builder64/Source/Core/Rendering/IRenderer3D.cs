@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		bool FullBrightness { get; set; }
 		bool ShowSelection { get; set; }
 		bool ShowHighlight { get; set; }
+        bool ShowLightOnly { get; set; }    // villsa
 		
 		// General methods
 		void PositionAndLookAt(Vector3D pos, Vector3D lookat);

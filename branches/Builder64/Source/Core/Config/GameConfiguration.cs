@@ -57,6 +57,10 @@ namespace CodeImp.DoomBuilder.Config
 		private string singlesidedflag;
 		private string doublesidedflag;
 		private string impassableflag;
+        private string invisibleflag;   // villsa
+        private string monsterblockflag;    // villsa
+        private string secretflag;  // villsa
+        private string tagonlyflag; // villsa
 		private string upperunpeggedflag;
 		private string lowerunpeggedflag;
 		private bool mixtexturesflats;
@@ -81,6 +85,12 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Skills
 		private List<SkillInfo> skills;
+
+        // [villsa] Texture Index
+        private List<TextureIndexInfo> d64textureindex;
+
+        // villsa - palettes
+        private List<TextureIndexInfo> thingpalettes;
 
 		// Map lumps
 		private IDictionary maplumpnames;	// This is old, we should use maplumps instead
@@ -111,6 +121,9 @@ namespace CodeImp.DoomBuilder.Config
 		private List<FlagTranslation> linedefflagstranslation;
 		
 		// Sectors
+        private Dictionary<string, string> sectorflags; // villsa
+        private List<string> sortedsectorflags; // villsa
+        private List<FlagTranslation> sectorflagstranslation; // villsa
 		private Dictionary<int, SectorEffectInfo> sectoreffects;
 		private List<SectorEffectInfo> sortedsectoreffects;
 		private List<GeneralizedOption> geneffectoptions;
@@ -147,6 +160,10 @@ namespace CodeImp.DoomBuilder.Config
 		public string SingleSidedFlag { get { return singlesidedflag; } }
 		public string DoubleSidedFlag { get { return doublesidedflag; } }
 		public string ImpassableFlag { get { return impassableflag; } }
+        public string InvisibleFlag { get { return invisibleflag; } }   // villsa
+        public string MonsterblockFlag { get { return monsterblockflag; } }   // villsa
+        public string SecretFlag { get { return secretflag; } }   // villsa
+        public string TagonlyFlag { get { return tagonlyflag; } }   // villsa
 		public string UpperUnpeggedFlag { get { return upperunpeggedflag; } }
 		public string LowerUnpeggedFlag { get { return lowerunpeggedflag; } }
 		public bool MixTexturesFlats { get { return mixtexturesflats; } }
@@ -171,6 +188,12 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Skills
 		public List<SkillInfo> Skills { get { return skills; } }
+
+        // [Villsa] Texture Index
+        public List<TextureIndexInfo> D64TextureIndex { get { return d64textureindex; } }
+
+        // villsa thing palettes
+        public List<TextureIndexInfo> ThingPalettes { get { return thingpalettes; } }
 		
 		// Map lumps
 		public IDictionary MapLumpNames { get { return maplumpnames; } }
@@ -199,6 +222,9 @@ namespace CodeImp.DoomBuilder.Config
 		public List<FlagTranslation> LinedefFlagsTranslation { get { return linedefflagstranslation; } }
 
 		// Sectors
+        public IDictionary<string, string> SectorFlags { get { return sectorflags; } } // villsa
+        public List<string> SortedSectorFlags { get { return sortedsectorflags; } } // villsa
+        public List<FlagTranslation> SectorFlagsTranslation { get { return sectorflagstranslation; } } // villsa
 		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
 		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
 		public List<GeneralizedOption> GenEffectOptions { get { return geneffectoptions; } }
@@ -245,6 +271,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.geneffectoptions = new List<GeneralizedOption>();
 			this.enums = new Dictionary<string, EnumList>();
 			this.skills = new List<SkillInfo>();
+            this.d64textureindex = new List<TextureIndexInfo>();    // villsa
+            this.thingpalettes = new List<TextureIndexInfo>();  // villsa
 			this.texturesets = new List<DefinedTextureSet>();
 			this.makedoorargs = new int[Linedef.NUM_ARGS];
 			this.maplumps = new Dictionary<string, MapLumpInfo>();
@@ -252,6 +280,9 @@ namespace CodeImp.DoomBuilder.Config
 			this.linedefflagstranslation = new List<FlagTranslation>();
 			this.thingfilters = new List<ThingsFilter>();
 			this.brightnesslevels = new StepsList();
+            this.sectorflags = new Dictionary<string, string>(); // villsa
+            this.sortedsectorflags = new List<string>(); // villsa
+            this.sectorflagstranslation = new List<FlagTranslation>(); // villsa
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -284,6 +315,15 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Flags have special (invariant culture) conversion
 			// because they are allowed to be written as integers in the configs
+            obj = cfg.ReadSettingObject("invisibleflag", 0);    // villsa
+            if (obj is int) invisibleflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else invisibleflag = obj.ToString(); // villsa
+            obj = cfg.ReadSettingObject("blockmonsterflag", 0);    // villsa
+            if (obj is int) monsterblockflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else monsterblockflag = obj.ToString(); // villsa
+            obj = cfg.ReadSettingObject("secretflag", 0);    // villsa
+            if (obj is int) secretflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else secretflag = obj.ToString(); // villsa
+            obj = cfg.ReadSettingObject("invisibleflag", 0);    // villsa
+            if (obj is int) invisibleflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else invisibleflag = obj.ToString(); // villsa
+
 			obj = cfg.ReadSettingObject("soundlinedefflag", 0);
 			if(obj is int) soundlinedefflag = ((int)obj).ToString(CultureInfo.InvariantCulture); else soundlinedefflag = obj.ToString();
 			obj = cfg.ReadSettingObject("singlesidedflag", 0);
@@ -313,6 +353,12 @@ namespace CodeImp.DoomBuilder.Config
 			// Skills
 			LoadSkills();
 
+            // [Villsa] TextureIndex
+            LoadTextureIndex();
+
+            // villsa - ThingPalette
+            LoadThingPalettes();
+
 			// Enums
 			LoadEnums();
 			
@@ -328,6 +374,7 @@ namespace CodeImp.DoomBuilder.Config
 			LoadLinedefGeneralizedActions();
 
 			// Sectors
+            LoadSectorFlags();  // villsa
 			LoadBrightnessLevels();
 			LoadSectorEffects();
 			LoadSectorGeneralizedEffects();
@@ -466,18 +513,19 @@ namespace CodeImp.DoomBuilder.Config
 			if(io.HasNumericLinedefFlags)
 			{
 				// Make list for integers that we can sort
-				List<int> sortlist = new List<int>(linedefflags.Count);
+                // villsa - change from int to uint for larger flag values (doom64)
+				List<uint> sortlist = new List<uint>(linedefflags.Count);
 				foreach(KeyValuePair<string, string> f in linedefflags)
 				{
-					int num;
-					if(int.TryParse(f.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out num)) sortlist.Add(num);
+					uint num;
+					if(uint.TryParse(f.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out num)) sortlist.Add(num);
 				}
 				
 				// Sort
 				sortlist.Sort();
 				
 				// Make list of strings
-				foreach(int i in sortlist)
+				foreach(uint i in sortlist)
 					sortedlinedefflags.Add(i.ToString(CultureInfo.InvariantCulture));
 			}
 			
@@ -593,6 +641,43 @@ namespace CodeImp.DoomBuilder.Config
 				}
 			}
 		}
+
+        // villsa - sector flags
+        private void LoadSectorFlags()
+        {
+            IDictionary dic;
+
+            // Get sector flags
+            dic = cfg.ReadSetting("sectorflags", new Hashtable());
+            foreach (DictionaryEntry de in dic)
+                sectorflags.Add(de.Key.ToString(), de.Value.ToString());
+
+            // Get translations
+            dic = cfg.ReadSetting("sectorflagstranslation", new Hashtable());
+            foreach (DictionaryEntry de in dic)
+                sectorflagstranslation.Add(new FlagTranslation(de));
+
+            // Sort flags?
+            MapSetIO io = MapSetIO.Create(formatinterface);
+
+            // Make list for integers that we can sort
+            List<int> sortlist = new List<int>(sectorflags.Count);
+            foreach (KeyValuePair<string, string> f in sectorflags)
+            {
+                int num;
+                if (int.TryParse(f.Key, NumberStyles.Integer, CultureInfo.InvariantCulture, out num)) sortlist.Add(num);
+            }
+
+            // Sort
+            sortlist.Sort();
+
+            // Make list of strings
+            foreach (int i in sortlist)
+                sortedsectorflags.Add(i.ToString(CultureInfo.InvariantCulture));
+
+            // Sort the flags, because they must be compared highest first!
+            sectorflagstranslation.Sort();
+        }
 
 		// Sector effects
 		private void LoadSectorEffects()
@@ -736,6 +821,46 @@ namespace CodeImp.DoomBuilder.Config
 				}
 			}
 		}
+
+        // [Villsa] TextureIndex
+        private void LoadTextureIndex()
+        {
+            IDictionary dic;
+
+            dic = cfg.ReadSetting("textureindex", new Hashtable());
+            foreach (DictionaryEntry de in dic)
+            {
+                int num = 0;
+                if (int.TryParse(de.Key.ToString(), out num))
+                {
+                    d64textureindex.Add(new TextureIndexInfo(num, de.Value.ToString()));
+                }
+                else
+                {
+                    General.ErrorLogger.Add(ErrorType.Warning, "Structure 'textureindex' contains invalid texture numbers in game configuration '" + this.Name + "'");
+                }
+            }
+        }
+
+        // villsa - Load Thing Palette info
+        private void LoadThingPalettes()
+        {
+            IDictionary dic;
+
+            dic = cfg.ReadSetting("thingpalettes", new Hashtable());
+            foreach (DictionaryEntry de in dic)
+            {
+                int num = 0;
+                if (int.TryParse(de.Key.ToString(), out num))
+                {
+                    thingpalettes.Add(new TextureIndexInfo(num, de.Value.ToString()));
+                }
+                else
+                {
+                    General.ErrorLogger.Add(ErrorType.Warning, "Structure 'thingpalettes' contains invalid numbers in game configuration '" + this.Name + "'");
+                }
+            }
+        }
 		
 		// Texture Sets
 		private void LoadTextureSets()
@@ -851,7 +976,14 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			else
 			{
-				return new LinedefActionInfo(action, "Unknown", false, false);
+                // villsa
+                if (General.Map.FormatInterface.InDoom64Mode &&
+                    (action >= 256 && action <= 511))
+                {
+                    return new LinedefActionInfo(action, "Macro", false, false);
+                }
+                
+                return new LinedefActionInfo(action, "Unknown", false, false);
 			}
 		}
 

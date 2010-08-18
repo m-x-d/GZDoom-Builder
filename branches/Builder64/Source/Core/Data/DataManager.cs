@@ -53,6 +53,9 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Palette
 		private Playpal palette;
+
+        // villsa - thing palettes
+        private Dictionary<string, Playpal> thingpalettes;
 		
 		// Textures, Flats and Sprites
 		private Dictionary<long, ImageData> textures;
@@ -103,6 +106,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		public Playpal Palette { get { return palette; } }
+        public IDictionary<string, Playpal> ThingPalette { get { return thingpalettes; } } // villsa
 		public PreviewManager Previews { get { return previews; } }
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
 		public ICollection<ImageData> Flats { get { return flats.Values; } }
@@ -226,6 +230,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Create collections
 			containers = new List<DataReader>();
 			textures = new Dictionary<long, ImageData>();
+            thingpalettes = new Dictionary<string, Playpal>();
 			flats = new Dictionary<long, ImageData>();
 			sprites = new Dictionary<long, ImageData>();
 			texturenames = new List<string>();
@@ -304,6 +309,11 @@ namespace CodeImp.DoomBuilder.Data
 			thingcount = LoadDecorateThings();
 			spritecount = LoadSprites();
 			LoadInternalSprites();
+
+            foreach (TextureIndexInfo tp in General.Map.Config.ThingPalettes)
+            {
+                LoadThingPalette(tp.Title);
+            }
 			
 			// Process colormaps (we just put them in as textures)
 			foreach(KeyValuePair<long, ImageData> t in colormapsonly)
@@ -421,6 +431,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Trash collections
 			containers = null;
 			textures = null;
+            thingpalettes = null;   // villsa
 			flats = null;
 			sprites = null;
 			texturenames = null;
@@ -700,6 +711,23 @@ namespace CodeImp.DoomBuilder.Data
 				palette = new Playpal();
 			}
 		}
+
+        // villsa
+        private void LoadThingPalette(string name)
+        {
+            Playpal pal;
+            // Go for all opened containers
+            for (int i = containers.Count - 1; i >= 0; i--)
+            {
+                // Load palette
+                pal = containers[i].LoadThingPalette(name);
+                if (pal != null)
+                {
+                    thingpalettes.Add(name, pal);
+                    return;
+                }
+            }
+        }
 
 		#endregion
 
@@ -995,6 +1023,10 @@ namespace CodeImp.DoomBuilder.Data
 						
 						// Add to preview manager
 						previews.AddImage(image);
+
+                        // villsa
+                        if (ti.PalIndex > 0)
+                            image.PalIndex = ti.PalIndex;
 					}
 				}
 			}

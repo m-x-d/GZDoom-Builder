@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float DARK_ADDITION = -0.2f;
 
 		// Palette size
-		private const int NUM_COLORS = 40;
+		private const int NUM_COLORS = 44;  // villsa - changed to 44
 		public const int NUM_THING_COLORS = 20;
 		public const int THING_COLORS_OFFSET = 20;
 
@@ -89,6 +89,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		public const int THINGCOLOR17 = 37;
 		public const int THINGCOLOR18 = 38;
 		public const int THINGCOLOR19 = 39;
+        public const int INVISIBLE = 40; //villsa
+        public const int MBLOCK = 41; //villsa
+        public const int SECRET = 42; //villsa
+        public const int TAGONLY = 43; //villsa
 		
 		#endregion
 
@@ -120,6 +124,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Indication { get { return colors[INDICATION]; } internal set { colors[INDICATION] = value; } }
 		public PixelColor Grid { get { return colors[GRID]; } internal set { colors[GRID] = value; } }
 		public PixelColor Grid64 { get { return colors[GRID64]; } internal set { colors[GRID64] = value; } }
+        public PixelColor Invisible { get { return colors[INVISIBLE]; } internal set { colors[INVISIBLE] = value; } }   // villsa
+        public PixelColor MBlock { get { return colors[MBLOCK]; } internal set { colors[MBLOCK] = value; } }   // villsa
+        public PixelColor Secret { get { return colors[SECRET]; } internal set { colors[SECRET] = value; } }   // villsa
+        public PixelColor Tagonly { get { return colors[TAGONLY]; } internal set { colors[TAGONLY] = value; } }   // villsa
 		
 		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } internal set { colors[CROSSHAIR3D] = value; } }
 		public PixelColor Highlight3D { get { return colors[HIGHLIGHT3D]; } internal set { colors[HIGHLIGHT3D] = value; } }

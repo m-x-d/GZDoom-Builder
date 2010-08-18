@@ -124,10 +124,17 @@ namespace CodeImp.DoomBuilder.Controls
 						displayname = "";
 					else if(intnumber == 0)
 						displayname = "None";
-					else if((generalizedcategories != null) && GameConfiguration.IsGeneralized(intnumber, generalizedcategories))
-						displayname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(intnumber) + ")";
-					else
-						displayname = "Unknown";
+                    else if ((generalizedcategories != null) && GameConfiguration.IsGeneralized(intnumber, generalizedcategories))
+                        displayname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(intnumber) + ")";
+                    else
+                    {
+                        // villsa
+                        if (General.Map.FormatInterface.InDoom64Mode &&
+                            (intnumber >= 256 && intnumber <= 511))
+                            displayname = "Macro";
+                        else
+                            displayname = "Unknown";
+                    }
 				}
 				// In the display part of the combobox?
 				else if((e.State & DrawItemState.ComboBoxEdit) != 0)

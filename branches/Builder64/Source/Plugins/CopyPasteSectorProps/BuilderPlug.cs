@@ -69,6 +69,11 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
         private int brightness;
         private int effect;
         private int tag;
+        private Lights ceilColor;   // villsa
+        private Lights floorColor;   // villsa
+        private Lights thingColor;   // villsa
+        private Lights upperColor;   // villsa
+        private Lights lowerColor;   // villsa
 		private UniFields fields;
 		
         // This is set to true to know that we copied sector properties.
@@ -134,6 +139,11 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
             brightness = s.Brightness;
             effect = s.Effect;
             tag = s.Tag;
+            ceilColor = s.CeilColor;    // villsa
+            floorColor = s.FloorColor;    // villsa
+            thingColor = s.ThingColor;    // villsa
+            upperColor = s.TopColor;    // villsa
+            lowerColor = s.LowerColor;    // villsa
 
             // Remember that we copied the properties
             didCopyProps = true;
@@ -209,6 +219,11 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
                 s.Brightness = brightness;
                 s.Effect = effect;
                 s.Tag = tag;
+                s.CeilColor = ceilColor;    // villsa
+                s.FloorColor = floorColor;    // villsa
+                s.ThingColor = thingColor;    // villsa
+                s.TopColor = upperColor;    // villsa
+                s.LowerColor = lowerColor;    // villsa
             }
 
             // Redraw to make the changes visible

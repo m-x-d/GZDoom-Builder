@@ -43,6 +43,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		Normal = 0,
 		Brightness = 1,
 		FloorTextures = 2,
-		CeilingTextures = 3
+		CeilingTextures = 3,
+        FloorColor = 4, // villsa
+        CeilingColor = 5, // villsa
+        ThingColor = 6, // villsa
 	}
 }
