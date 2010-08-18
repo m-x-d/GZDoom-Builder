@@ -43,15 +43,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		#region ================== Variables
 
-		private List<TextureStructure> textures;
-		private List<TextureStructure> sprites;
+		private Dictionary<string, TextureStructure> textures;
+		private Dictionary<string, TextureStructure> flats;
+		private Dictionary<string, TextureStructure> sprites;
 
 		#endregion
 		
 		#region ================== Properties
 
-		public ICollection<TextureStructure> Textures { get { return textures; } }
-		public ICollection<TextureStructure> Sprites { get { return sprites; } }
+		public ICollection<TextureStructure> Textures { get { return textures.Values; } }
+		public ICollection<TextureStructure> Flats { get { return flats.Values; } }
+		public ICollection<TextureStructure> Sprites { get { return sprites.Values; } }
 		
 		#endregion
 		
@@ -65,8 +67,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 			specialtokens = ",{}\n";
 
 			// Initialize
-			textures = new List<TextureStructure>();
-			sprites = new List<TextureStructure>();
+			textures = new Dictionary<string, TextureStructure>();
+			flats = new Dictionary<string, TextureStructure>();
+			sprites = new Dictionary<string, TextureStructure>();
 		}
 		
 		#endregion
@@ -90,7 +93,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					if(objdeclaration == "texture")
 					{
 						// Read texture structure
-						TextureStructure tx = new TextureStructure(this);
+						TextureStructure tx = new TextureStructure(this, "texture");
 						if(this.HasError) break;
 
 						// if a limit for the texture name length is set make sure that it's not exceeded
@@ -101,13 +104,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 						else
 						{
 							// Add the texture
-							textures.Add(tx);
+							textures[tx.Name] = tx;
+							flats[tx.Name] = tx;
 						}
 					}
 					else if(objdeclaration == "sprite")
 					{
 						// Read sprite structure
-						TextureStructure tx = new TextureStructure(this);
+						TextureStructure tx = new TextureStructure(this, "sprite");
 						if(this.HasError) break;
 
 						// if a limit for the sprite name length is set make sure that it's not exceeded
@@ -118,7 +122,43 @@ namespace CodeImp.DoomBuilder.ZDoom
 						else
 						{
 							// Add the sprite
-							sprites.Add(tx);
+							sprites[tx.Name] = tx;
+						}
+					}
+					else if(objdeclaration == "walltexture")
+					{
+						// Read walltexture structure
+						TextureStructure tx = new TextureStructure(this, "walltexture");
+						if(this.HasError) break;
+
+						// if a limit for the walltexture name length is set make sure that it's not exceeded
+						if((General.Map.Config.MaxTextureNamelength > 0) && (tx.Name.Length > General.Map.Config.MaxTextureNamelength))
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "WallTexture name \"" + tx.Name + "\" too long. WallTexture names must have a length of " + General.Map.Config.MaxTextureNamelength.ToString() + " characters or less");
+						}
+						else
+						{
+							// Add the walltexture
+							if(!textures.ContainsKey(tx.Name) || (textures[tx.Name].TypeName != "texture"))
+								textures[tx.Name] = tx;
+						}
+					}
+					else if(objdeclaration == "flat")
+					{
+						// Read flat structure
+						TextureStructure tx = new TextureStructure(this, "flat");
+						if(this.HasError) break;
+
+						// if a limit for the flat name length is set make sure that it's not exceeded
+						if((General.Map.Config.MaxTextureNamelength > 0) && (tx.Name.Length > General.Map.Config.MaxTextureNamelength))
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "Flat name \"" + tx.Name + "\" too long. Flat names must have a length of " + General.Map.Config.MaxTextureNamelength.ToString() + " characters or less");
+						}
+						else
+						{
+							// Add the flat
+							if(!flats.ContainsKey(tx.Name) || (flats[tx.Name].TypeName != "texture"))
+								flats[tx.Name] = tx;
 						}
 					}
 					else
