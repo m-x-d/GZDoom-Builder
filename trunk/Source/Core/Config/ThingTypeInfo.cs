@@ -301,6 +301,12 @@ namespace CodeImp.DoomBuilder.Config
 			return string.Compare(this.title, other.title, true);
 		}
 		
+		// String representation
+		public override string ToString()
+		{
+			return this.title + " (" + index + ")";
+		}
+		
 		#endregion
 	}
 }
