@@ -60,6 +60,7 @@ Name: {commondesktop}\Doom Builder; Filename: {app}\Builder.exe; Tasks: desktopi
 
 [UninstallDelete]
 Name: {localappdata}\Doom Builder; Type: filesandordirs
+Name: {app}; Type: filesandordirs
 [InstallDelete]
 Name: {app}\Builder.pdb; Type: files
 [Registry]

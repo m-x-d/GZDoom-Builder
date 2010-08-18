@@ -15,7 +15,9 @@ ECHO.
 PAUSE
 ECHO.
 
-CALL "%programfiles%\Microsoft Visual Studio 9.0\Common7\Tools\vsvars32.bat"
+SET APPDIRECTORY=D:\Applications
+
+CALL "%APPDIRECTORY%\Microsoft Visual Studio 9.0\Common7\Tools\vsvars32.bat"
 
 MKDIR "Release"
 
@@ -34,7 +36,7 @@ ECHO.
 ECHO Compiling HTML Help file...
 ECHO.
 IF EXIST "Build\Refmanual.chm" DEL /F /Q "Build\Refmanual.chm" > NUL
-"%programfiles%\HTML Help Workshop\hhc" Help\Refmanual.hhp
+"%APPDIRECTORY%\HTML Help Workshop\hhc" Help\Refmanual.hhp
 IF %ERRORLEVEL% NEQ 1 GOTO ERRORFAIL
 IF NOT EXIST "Build\Refmanual.chm" GOTO FILEFAIL
 
@@ -69,7 +71,7 @@ ECHO.
 ECHO Building Setup Installer...
 ECHO.
 IF EXIST "Release\*.exe" DEL /F /Q "Release\*.exe" > NUL
-"%programfiles%\Inno Setup 5\iscc.exe" "Setup\builder2_setup.iss"
+"%APPDIRECTORY%\Inno Setup 5\iscc.exe" "Setup\builder2_setup.iss"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Release\builder2_setup.exe" GOTO FILEFAIL
 
