@@ -28,6 +28,8 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.IO;
+using System.Collections.Specialized;
 
 #endregion
 
@@ -99,14 +101,83 @@ namespace CodeImp.DoomBuilder.Plugins
 		// This loads all plugins
 		public void LoadAllPlugins()
 		{
-			string[] filenames;
+			List<string> filenames;
 			Type[] editclasses;
 			EditModeAttribute[] emattrs;
 			EditModeInfo editmodeinfo;
+			Configuration cfg;
+			IDictionary loadorderfiles = new ListDictionary();
 			Plugin p;
-
+			
+			try
+			{
+				// Load the load order cfg
+				cfg = new Configuration(Path.Combine(General.PluginsPath, "Loadorder.cfg"), true);
+				
+				// Check for erors
+				if(cfg.ErrorResult)
+				{
+					// Error in configuration
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to read the load order configuration file \"Loadorder.cfg\". " +
+											"Error in file \"" + cfg.ErrorFile + "\" near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription);
+				}
+				else
+				{
+					loadorderfiles = cfg.ReadSetting("loadorder", new ListDictionary());
+				}
+			}
+			catch(Exception e)
+			{
+				// Unable to load configuration
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to read the load order configuration file \"Loadorder.cfg\". " + e.GetType().Name + ": " + e.Message);
+				General.WriteLogLine(e.StackTrace);
+			}
+			
 			// Find all .dll files
-			filenames = Directory.GetFiles(General.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly);
+			filenames = new List<string>(Directory.GetFiles(General.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly));
+			
+			// Load the ones in order as specified by the load order cfg
+			foreach(DictionaryEntry de in loadorderfiles)
+			{
+				string loadfilename = de.Key.ToString();
+				
+				// Find the file in the list
+				int filenameindex = -1;
+				for(int i = 0; i < filenames.Count; i++)
+					if(string.Compare(Path.GetFileName(filenames[i]), loadfilename, true) == 0)
+						filenameindex = i;
+				
+				if(filenameindex > -1)
+				{
+					// Load plugin from this file
+					try
+					{
+						p = new Plugin(filenames[filenameindex]);
+					}
+					catch(InvalidProgramException)
+					{
+						p = null;
+					}
+					
+					// Continue if no errors
+					if((p != null) && (!p.IsDisposed))
+					{
+						// Add to plugins
+						this.plugins.Add(p);
+						
+						// Load actions
+						General.Actions.LoadActions(p.Assembly);
+						
+						// Plugin is now initialized
+						p.Plug.OnInitialize();
+					}
+					
+					// Remove the plugin from list
+					filenames.RemoveAt(filenameindex);
+				}
+			}
+			
+			// Now load the remaining files
 			foreach(string fn in filenames)
 			{
 				// Load plugin from this file
@@ -118,13 +189,13 @@ namespace CodeImp.DoomBuilder.Plugins
 				{
 					p = null;
 				}
-
+				
 				// Continue if no errors
 				if((p != null) && (!p.IsDisposed))
 				{
 					// Add to plugins
 					this.plugins.Add(p);
-
+					
 					// Load actions
 					General.Actions.LoadActions(p.Assembly);
 					
