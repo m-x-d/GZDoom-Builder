@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Variables
 
 		// Declaration
+		private string typename;
 		private string name;
 		private int width;
 		private int height;
@@ -59,6 +60,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#region ================== Properties
 
+		public string TypeName { get { return typename; } }
 		public string Name { get { return name; } }
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
@@ -74,11 +76,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal TextureStructure(TexturesParser parser)
+		internal TextureStructure(TexturesParser parser, string typename)
 		{
 			string tokenstr;
 			
 			// Initialize
+			this.typename = typename;
 			patches = new List<PatchStructure>(4);
 			xscale = 0.0f;
 			yscale = 0.0f;
