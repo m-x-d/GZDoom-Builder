@@ -139,6 +139,9 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 		
 		#region ================== Sprites
+
+		// When implemented, this loads the sprites
+		public virtual ICollection<ImageData> LoadSprites() { return null; }
 		
 		// When implemented, this returns the sprite lump
 		public virtual Stream GetSpriteData(string pname) { return null; }

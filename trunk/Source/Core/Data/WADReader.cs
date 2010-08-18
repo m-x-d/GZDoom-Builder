@@ -702,6 +702,56 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Sprite
 
+		// This loads the textures
+		public override ICollection<ImageData> LoadSprites()
+		{
+			List<ImageData> images = new List<ImageData>();
+			string rangestart, rangeend;
+			int lumpindex;
+			
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+			
+			// Load TEXTURES lump file
+			lumpindex = file.FindLumpIndex("TEXTURES");
+			while(lumpindex > -1)
+			{
+				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
+				WADReader.LoadHighresSprites(filedata, "TEXTURES", ref images, null, null);
+				filedata.Dispose();
+				
+				// Find next
+				lumpindex = file.FindLumpIndex("TEXTURES", lumpindex + 1);
+			}
+			
+			// Return result
+			return images;
+		}
+
+		// This loads the sprites definitions from a TEXTURES lump
+		public static void LoadHighresSprites(Stream stream, string filename, ref List<ImageData> images, Dictionary<long, ImageData> textures, Dictionary<long, ImageData> flats)
+		{
+			// Parse the data
+			TexturesParser parser = new TexturesParser();
+			parser.Parse(stream, filename);
+			
+			// Make the textures
+			foreach(TextureStructure t in parser.Sprites)
+			{
+				if(t.Name.Length > 0)
+				{
+					// Add the sprite
+					ImageData img = t.MakeImage(textures, flats);
+					images.Add(img);
+				}
+				else
+				{
+					// Can't load image without name
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed sprite from \"" + filename + "\". Please consider giving names to your resources.");
+				}
+			}
+		}
+		
 		// This finds and returns a sprite stream
 		public override Stream GetSpriteData(string pname)
 		{
