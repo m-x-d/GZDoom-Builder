@@ -83,6 +83,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 			archivedactors = new Dictionary<string, ActorStructure>();
 		}
 		
+		// Disposer
+		public void Dispose()
+		{
+			foreach(KeyValuePair<string, ActorStructure> a in archivedactors)
+				a.Value.Dispose();
+			
+			actors = null;
+			archivedactors = null;
+		}
+		
 		#endregion
 
 		#region ================== Parsing
