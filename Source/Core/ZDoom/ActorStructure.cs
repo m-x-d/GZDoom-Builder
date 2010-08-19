@@ -353,6 +353,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 		}
 		
+		// Disposer
+		public void Dispose()
+		{
+			baseclass = null;
+			flags = null;
+			props = null;
+			states = null;
+		}
+		
 		#endregion
 		
 		#region ================== Methods
@@ -538,32 +547,36 @@ namespace CodeImp.DoomBuilder.ZDoom
 				if(HasState("idle"))
 				{
 					StateStructure s = GetState("idle");
-					if(!string.IsNullOrEmpty(s.FirstSprite))
-						result = s.FirstSprite;
+					string spritename = s.GetSprite(0);
+					if(!string.IsNullOrEmpty(spritename))
+						result = spritename;
 				}
 				
 				// Try the see state
 				if(string.IsNullOrEmpty(result) && HasState("see"))
 				{
 					StateStructure s = GetState("see");
-					if(!string.IsNullOrEmpty(s.FirstSprite))
-						result = s.FirstSprite;
+					string spritename = s.GetSprite(0);
+					if(!string.IsNullOrEmpty(spritename))
+						result = spritename;
 				}
 				
 				// Try the inactive state
 				if(string.IsNullOrEmpty(result) && HasState("inactive"))
 				{
 					StateStructure s = GetState("inactive");
-					if(!string.IsNullOrEmpty(s.FirstSprite))
-						result = s.FirstSprite;
+					string spritename = s.GetSprite(0);
+					if(!string.IsNullOrEmpty(spritename))
+						result = spritename;
 				}
 				
 				// Try the spawn state
 				if(string.IsNullOrEmpty(result) && HasState("spawn"))
 				{
 					StateStructure s = GetState("spawn");
-					if(!string.IsNullOrEmpty(s.FirstSprite))
-						result = s.FirstSprite;
+					string spritename = s.GetSprite(0);
+					if(!string.IsNullOrEmpty(spritename))
+						result = spritename;
 				}
 				
 				// Still no sprite found? then just pick the first we can find
@@ -572,9 +585,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 					Dictionary<string, StateStructure> list = GetAllStates();
 					foreach(StateStructure s in list.Values)
 					{
-						if(!string.IsNullOrEmpty(s.FirstSprite))
+						string spritename = s.GetSprite(0);
+						if(!string.IsNullOrEmpty(spritename))
 						{
-							result = s.FirstSprite;
+							result = spritename;
 							break;
 						}
 					}

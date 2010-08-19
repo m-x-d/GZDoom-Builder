@@ -409,6 +409,9 @@ namespace CodeImp.DoomBuilder.Data
 			previews.Dispose();
 			previews = null;
 			
+			// Dispose decorate
+			decorate.Dispose();
+			
 			// Dispose resources
 			foreach(KeyValuePair<long, ImageData> i in textures) i.Value.Dispose();
 			foreach(KeyValuePair<long, ImageData> i in flats) i.Value.Dispose();
@@ -420,6 +423,7 @@ namespace CodeImp.DoomBuilder.Data
 			containers.Clear();
 			
 			// Trash collections
+			decorate = null;
 			containers = null;
 			textures = null;
 			flats = null;
