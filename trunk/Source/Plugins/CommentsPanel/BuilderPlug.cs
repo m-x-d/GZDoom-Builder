@@ -58,14 +58,14 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		// be instantiated by the core, so we keep a static reference. (this technique
 		// should be familiar to object-oriented programmers)
 		private static BuilderPlug me;
-
+		
 		// Docker
 		private CommentsDocker dockerpanel;
 		private Docker commentsdocker;
-
+		
 		// Static property to access the BuilderPlug
 		public static BuilderPlug Me { get { return me; } }
-
+		
 		// This event is called when the plugin is initialized
 		public override void OnInitialize()
 		{
@@ -74,13 +74,13 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			// Keep a static reference
             me = this;
 		}
-
+		
 		// This is called when the plugin is terminated
 		public override void Dispose()
 		{
 			base.Dispose();
         }
-
+		
 		// This is called after a map has been successfully opened
 		public override void OnMapOpenEnd()
 		{
@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 				commentsdocker = new Docker("commentsdockerpanel", "Comments", dockerpanel);
 				General.Interface.AddDocker(commentsdocker);
 				dockerpanel.Setup();
+				dockerpanel.UpdateListSoon();
 			}
 		}
 
@@ -112,21 +113,30 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		public override void OnPasteEnd(PasteOptions options)
 		{
 			if(dockerpanel != null)
-				dockerpanel.UpdateList();
+				dockerpanel.UpdateListSoon();
 		}
 
 		// Undo performed
 		public override void OnUndoEnd()
 		{
 			if(dockerpanel != null)
-				dockerpanel.UpdateList();
+				dockerpanel.UpdateListSoon();
 		}
 
 		// Redo performed
 		public override void OnRedoEnd()
 		{
 			if(dockerpanel != null)
-				dockerpanel.UpdateList();
+				dockerpanel.UpdateListSoon();
+		}
+		
+		// Mode changes
+		public override bool OnModeChange(EditMode oldmode, EditMode newmode)
+		{
+			if(dockerpanel != null)
+				dockerpanel.UpdateListSoon();
+				
+			return base.OnModeChange(oldmode, newmode);
 		}
     }
 }

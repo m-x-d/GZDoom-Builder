@@ -1,4 +1,4 @@
-﻿
+
 #region ================== Copyright (c) 2010 Pascal vd Heiden
 
 /*
@@ -43,36 +43,16 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.CommentsPanel
 {
-	public class CommentInfo
+	public enum CommentObjectType : int
 	{
-		private string comment;
-		private List<MapElement> elements;
-		private DataGridViewRow row;
+		Unknown = -1,
 		
-		// Properties
-		public string Comment { get { return comment; } }
-		public List<MapElement> Elements { get { return elements; } }
-		public DataGridViewRow Row { get { return row; } set { row = value; } }
+		Vertex = 0,
+		Linedef = 1,
+		Sector = 2,
+		Thing = 3,
 		
-		// Constructor
-		public CommentInfo(string comment, MapElement e)
-		{
-			this.comment = comment;
-			this.elements = new List<MapElement>();
-			this.AddElement(e);
-			this.row = null;
-		}
-		
-		// This adds an element
-		public void AddElement(MapElement e)
-		{
-			this.elements.Add(e);
-		}
-		
-		// This replaces the elements with those from another
-		public void ReplaceElements(CommentInfo other)
-		{
-			this.elements = other.elements;
-		}
+		// last
+		NumTypes = 4,
 	}
 }
