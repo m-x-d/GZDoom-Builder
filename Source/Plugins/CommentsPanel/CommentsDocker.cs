@@ -308,27 +308,34 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		private void SelectComment(CommentInfo c, bool clear)
 		{
 			string editmode = "";
-			bool selectinggeometry;
-
-			if(c.Elements[0] is Thing)
-				selectinggeometry = false;
-			else
-				selectinggeometry = true;
 
 			// Leave any volatile mode
 			General.Editing.CancelVolatileMode();
 
 			if(clear)
+			{
 				General.Map.Map.ClearAllSelected();
 
-			if(selectinggeometry)
-			{
-				// Sectors mode is a bitch because it deals with selections somewhat aggressively
-				// so we have to switch to linedefs to make this work right
-				if((General.Editing.Mode.GetType().Name == "VerticesMode") ||
-				   (General.Editing.Mode.GetType().Name == "SectorsMode") ||
-				   (General.Editing.Mode.GetType().Name == "MakeSectorMode"))
+				if(c.Elements[0] is Thing)
+					General.Editing.ChangeMode("ThingsMode");
+				else if(c.Elements[0] is Vertex)
+					General.Editing.ChangeMode("VerticesMode");
+				else if((c.Elements[0] is Linedef) || (c.Elements[0] is Sidedef))
 					General.Editing.ChangeMode("LinedefsMode");
+				else if(c.Elements[0] is Sector)
+					General.Editing.ChangeMode("SectorsMode");
+			}
+			else
+			{
+				if(!(c.Elements[0] is Thing))
+				{
+					// Sectors mode is a bitch because it deals with selections somewhat aggressively
+					// so we have to switch to linedefs to make this work right
+					if((General.Editing.Mode.GetType().Name == "VerticesMode") ||
+					   (General.Editing.Mode.GetType().Name == "SectorsMode") ||
+					   (General.Editing.Mode.GetType().Name == "MakeSectorMode"))
+						General.Editing.ChangeMode("LinedefsMode");
+				}
 			}
 			
 			// Select the map elements
