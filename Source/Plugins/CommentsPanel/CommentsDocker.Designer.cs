@@ -7,19 +7,6 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if(disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
-
 		#region Component Designer generated code
 
 		/// <summary> 
@@ -28,13 +15,14 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.optionsgroup = new System.Windows.Forms.GroupBox();
 			this.filtermode = new System.Windows.Forms.CheckBox();
 			this.grid = new System.Windows.Forms.DataGridView();
 			this.iconcolumn = new System.Windows.Forms.DataGridViewImageColumn();
 			this.textcolumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.groupcomments = new System.Windows.Forms.CheckBox();
+			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.optionsgroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
 			this.SuspendLayout();
@@ -43,7 +31,6 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			// 
 			this.optionsgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.optionsgroup.Controls.Add(this.groupcomments);
 			this.optionsgroup.Controls.Add(this.filtermode);
 			this.optionsgroup.Location = new System.Drawing.Point(3, 551);
 			this.optionsgroup.Name = "optionsgroup";
@@ -116,20 +103,15 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			this.textcolumn.Name = "textcolumn";
 			this.textcolumn.ReadOnly = true;
 			// 
-			// groupcomments
+			// updatetimer
 			// 
-			this.groupcomments.AutoSize = true;
-			this.groupcomments.Location = new System.Drawing.Point(15, 61);
-			this.groupcomments.Name = "groupcomments";
-			this.groupcomments.Size = new System.Drawing.Size(176, 17);
-			this.groupcomments.TabIndex = 1;
-			this.groupcomments.Text = "Group same comments together";
-			this.groupcomments.UseVisualStyleBackColor = true;
+			this.updatetimer.Interval = 2000;
+			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
 			// 
 			// CommentsDocker
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.grid);
 			this.Controls.Add(this.optionsgroup);
 			this.Name = "CommentsDocker";
@@ -148,6 +130,6 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		private System.Windows.Forms.DataGridView grid;
 		private System.Windows.Forms.DataGridViewImageColumn iconcolumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn textcolumn;
-		private System.Windows.Forms.CheckBox groupcomments;
+		private System.Windows.Forms.Timer updatetimer;
 	}
 }

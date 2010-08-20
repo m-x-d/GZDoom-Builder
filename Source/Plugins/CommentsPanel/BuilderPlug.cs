@@ -25,6 +25,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -40,7 +41,7 @@ using CodeImp.DoomBuilder.Data;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.CopyPasteSectorProps
+namespace CodeImp.DoomBuilder.CommentsPanel
 {
 	//
 	// MANDATORY: The plug!
@@ -57,6 +58,10 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
 		// be instantiated by the core, so we keep a static reference. (this technique
 		// should be familiar to object-oriented programmers)
 		private static BuilderPlug me;
+
+		// Docker
+		private CommentsDocker dockerpanel;
+		private Docker commentsdocker;
 
 		// Static property to access the BuilderPlug
 		public static BuilderPlug Me { get { return me; } }
@@ -75,5 +80,53 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
 		{
 			base.Dispose();
         }
+
+		// This is called after a map has been successfully opened
+		public override void OnMapOpenEnd()
+		{
+			// If we just opened a UDMF format map, we want to create the Comments panel!
+			//if(General.Map.Config.FormatInterface == "UniversalMapSetIO")
+			{
+				dockerpanel = new CommentsDocker();
+				commentsdocker = new Docker("commentsdockerpanel", "Comments", dockerpanel);
+				General.Interface.AddDocker(commentsdocker);
+				dockerpanel.Setup();
+			}
+		}
+
+		// This is called after a map has been closed
+		public override void OnMapCloseEnd()
+		{
+			// If we have a Comments panel, remove it
+			if(dockerpanel != null)
+			{
+				dockerpanel.Terminate();
+				General.Interface.RemoveDocker(commentsdocker);
+				commentsdocker = null;
+				dockerpanel.Dispose();
+				dockerpanel = null;
+			}
+		}
+
+		// Geometry pasted
+		public override void OnPasteEnd(PasteOptions options)
+		{
+			if(dockerpanel != null)
+				dockerpanel.UpdateList();
+		}
+
+		// Undo performed
+		public override void OnUndoEnd()
+		{
+			if(dockerpanel != null)
+				dockerpanel.UpdateList();
+		}
+
+		// Redo performed
+		public override void OnRedoEnd()
+		{
+			if(dockerpanel != null)
+				dockerpanel.UpdateList();
+		}
     }
 }
