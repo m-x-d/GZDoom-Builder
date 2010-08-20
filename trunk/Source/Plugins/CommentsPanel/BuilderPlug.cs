@@ -80,12 +80,18 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		{
 			base.Dispose();
         }
+
+		// When a map is created
+		public override void OnMapNewEnd()
+		{
+			OnMapOpenEnd();
+		}
 		
 		// This is called after a map has been successfully opened
 		public override void OnMapOpenEnd()
 		{
 			// If we just opened a UDMF format map, we want to create the Comments panel!
-			//if(General.Map.Config.FormatInterface == "UniversalMapSetIO")
+			if(General.Map.Config.FormatInterface == "UniversalMapSetIO")
 			{
 				dockerpanel = new CommentsDocker();
 				commentsdocker = new Docker("commentsdockerpanel", "Comments", dockerpanel);

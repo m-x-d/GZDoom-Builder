@@ -33,6 +33,7 @@ using System.Globalization;
 using System.Threading;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -46,6 +47,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		Dictionary<string, CommentInfo> l_comments = new Dictionary<string, CommentInfo>();
 		Dictionary<string, CommentInfo> s_comments = new Dictionary<string, CommentInfo>();
 		Dictionary<string, CommentInfo> t_comments = new Dictionary<string, CommentInfo>();
+		bool preventupdate = false;
 		
 		#endregion
 		
@@ -86,7 +88,9 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 				this.ParentForm.Activated += ParentForm_Activated;
 			}
 
+			grid.CurrentCell = null;
 			updatetimer.Start();
+			enabledtimer.Start();
 		}
 
 		// Before detached from the docker
@@ -98,11 +102,13 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			}
 
 			updatetimer.Stop();
+			enabledtimer.Stop();
 		}
 		
 		// This sends the focus back to the display and removes grid selection
 		private void LoseFocus()
 		{
+			preventupdate = false;
 			grid.CurrentCell = null;
 			grid.ClearSelection();
 			General.Interface.FocusDisplay();
@@ -164,42 +170,52 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		// This finds all comments and updates the list
 		public void UpdateList()
 		{
-			// Update vertices
-			Dictionary<string, CommentInfo> newcomments = new Dictionary<string, CommentInfo>();
-			if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "VerticesMode"))
+			//bool firstitem = (grid.Rows.Count == 0);
+
+			if(!preventupdate)
 			{
-				foreach(Vertex v in General.Map.Map.Vertices) AddComments(v, newcomments);
+				// Update vertices
+				Dictionary<string, CommentInfo> newcomments = new Dictionary<string, CommentInfo>();
+				if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "VerticesMode"))
+				{
+					foreach(Vertex v in General.Map.Map.Vertices) AddComments(v, newcomments);
+				}
+				UpdateGroupList(newcomments, v_comments, Properties.Resources.VerticesMode);
+
+				// Update linedefs/sidedefs
+				newcomments.Clear();
+				if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "LinedefsMode"))
+				{
+					foreach(Linedef l in General.Map.Map.Linedefs) AddComments(l, newcomments);
+					foreach(Sidedef sd in General.Map.Map.Sidedefs) AddComments(sd, newcomments);
+				}
+				UpdateGroupList(newcomments, l_comments, Properties.Resources.LinesMode);
+
+				// Update sectors
+				newcomments.Clear();
+				if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "SectorsMode"))
+				{
+					foreach(Sector s in General.Map.Map.Sectors) AddComments(s, newcomments);
+				}
+				UpdateGroupList(newcomments, s_comments, Properties.Resources.SectorsMode);
+
+				// Update things
+				newcomments.Clear();
+				if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "ThingsMode"))
+				{
+					foreach(Thing t in General.Map.Map.Things) AddComments(t, newcomments);
+				}
+				UpdateGroupList(newcomments, t_comments, Properties.Resources.ThingsMode);
+
+				// Sort grid
+				grid.Sort(grid.Columns[1], ListSortDirection.Ascending);
+
+				// Update
+				grid.Update();
+
+				grid.CurrentCell = null;
+				grid.ClearSelection();
 			}
-			UpdateGroupList(newcomments, v_comments, Properties.Resources.VerticesMode);
-			
-			// Update linedefs/sidedefs
-			newcomments.Clear();
-			if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "LinedefsMode"))
-			{
-				foreach(Linedef l in General.Map.Map.Linedefs) AddComments(l, newcomments);
-				foreach(Sidedef sd in General.Map.Map.Sidedefs) AddComments(sd, newcomments);
-			}
-			UpdateGroupList(newcomments, l_comments, Properties.Resources.LinesMode);
-			
-			// Update sectors
-			newcomments.Clear();
-			if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "SectorsMode"))
-			{
-				foreach(Sector s in General.Map.Map.Sectors) AddComments(s, newcomments);
-			}
-			UpdateGroupList(newcomments, s_comments, Properties.Resources.SectorsMode);
-			
-			// Update things
-			newcomments.Clear();
-			if(!filtermode.Checked || (General.Editing.Mode.GetType().Name == "ThingsMode"))
-			{
-				foreach(Thing t in General.Map.Map.Things) AddComments(t, newcomments);
-			}
-			UpdateGroupList(newcomments, t_comments, Properties.Resources.ThingsMode);
-			
-			grid.Sort(grid.Columns[1], ListSortDirection.Ascending);
-			
-			grid.Update();
 		}
 		
 		// This adds comments from a MapElement
@@ -292,22 +308,28 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		private void SelectComment(CommentInfo c, bool clear)
 		{
 			string editmode = "";
-			
-			// Unfortunately we must switch to the mode of the objects
-			// we're selecting to make it work right (mainly for sectors)
-			if(c.Elements[0] is Vertex)
-				editmode = "VerticesMode";
-			else if((c.Elements[0] is Linedef) || (c.Elements[0] is Sidedef))
-				editmode = "LinedefsMode";
-			else if(c.Elements[0] is Sector)
-				editmode = "SectorsMode";
-			else if(c.Elements[0] is Thing)
-				editmode = "ThingsMode";
-			
+			bool selectinggeometry;
+
+			if(c.Elements[0] is Thing)
+				selectinggeometry = false;
+			else
+				selectinggeometry = true;
+
+			// Leave any volatile mode
+			General.Editing.CancelVolatileMode();
+
 			if(clear)
 				General.Map.Map.ClearAllSelected();
-			
-			General.Editing.ChangeMode(editmode);
+
+			if(selectinggeometry)
+			{
+				// Sectors mode is a bitch because it deals with selections somewhat aggressively
+				// so we have to switch to linedefs to make this work right
+				if((General.Editing.Mode.GetType().Name == "VerticesMode") ||
+				   (General.Editing.Mode.GetType().Name == "SectorsMode") ||
+				   (General.Editing.Mode.GetType().Name == "MakeSectorMode"))
+					General.Editing.ChangeMode("LinedefsMode");
+			}
 			
 			// Select the map elements
 			foreach(MapElement obj in c.Elements)
@@ -323,8 +345,8 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 					}
 				}
 			}
-			
-			General.Editing.ChangeMode(editmode);
+
+			General.Interface.RedrawDisplay();
 		}
 		
 		// This removes the comments from elements in a comment
@@ -361,7 +383,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			
 			return null;
 		}
-		
+
 		#endregion
 		
 		#region ================== Events
@@ -385,6 +407,8 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		// Mouse pressed
 		private void grid_MouseDown(object sender, MouseEventArgs e)
 		{
+			preventupdate = true;
+			
 			if(e.Button == MouseButtons.Right)
 			{
 				DataGridView.HitTestInfo h = grid.HitTest(e.X, e.Y);
@@ -496,9 +520,11 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 					foreach(MapElement m in c.Elements) things.Add((Thing)m);
 					General.Interface.ShowEditThings(things);
 				}
-				
+
+				General.Map.Map.Update();
 				UpdateList();
 				LoseFocus();
+				General.Interface.RedrawDisplay();
 			}
 		}
 		
@@ -519,6 +545,87 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		private void clickselects_CheckedChanged(object sender, EventArgs e)
 		{
 			LoseFocus();
+		}
+
+		// This sets the comment on the current selection
+		private void addcomment_Click(object sender, EventArgs e)
+		{
+			List<MapElement> elements = new List<MapElement>();
+
+			if(General.Editing.Mode.GetType().Name == "VerticesMode")
+			{
+				ICollection<Vertex> vs = General.Map.Map.GetSelectedVertices(true);
+				foreach(Vertex v in vs) elements.Add(v);
+			}
+
+			if(General.Editing.Mode.GetType().Name == "LinedefsMode")
+			{
+				ICollection<Linedef> ls = General.Map.Map.GetSelectedLinedefs(true);
+				foreach(Linedef l in ls) elements.Add(l);
+			}
+
+			if(General.Editing.Mode.GetType().Name == "SectorsMode")
+			{
+				ICollection<Sector> ss = General.Map.Map.GetSelectedSectors(true);
+				foreach(Sector s in ss) elements.Add(s);
+			}
+
+			if(General.Editing.Mode.GetType().Name == "ThingsMode")
+			{
+				ICollection<Thing> ts = General.Map.Map.GetSelectedThings(true);
+				foreach(Thing t in ts) elements.Add(t);
+			}
+
+			if(elements.Count > 0)
+			{
+				// Create undo
+				if(elements.Count == 1)
+					General.Map.UndoRedo.CreateUndo("Add comment");
+				else
+					General.Map.UndoRedo.CreateUndo("Add " + elements.Count + " comments");
+
+				// Set comment on elements
+				foreach(MapElement el in elements)
+				{
+					el.Fields.BeforeFieldsChange();
+					el.Fields["comment"] = new UniValue((int)UniversalType.String, addcommenttext.Text);
+				}
+			}
+			
+			addcommenttext.Text = "";
+			UpdateList();
+			LoseFocus();
+			General.Interface.RedrawDisplay();
+		}
+
+		// Text typed in add comment box
+		private void addcommenttext_KeyDown(object sender, KeyEventArgs e)
+		{
+			if((e.KeyCode == Keys.Enter) && (e.Modifiers == Keys.None) && addcomment.Enabled)
+			{
+				addcomment.PerformClick();
+				e.Handled = true;
+				e.SuppressKeyPress = true;
+			}
+		}
+
+		// Check if the add comment box should be enabled
+		private void enabledtimer_Tick(object sender, EventArgs e)
+		{
+			if(General.Editing.Mode.GetType().Name == "VerticesMode")
+				addcommentgroup.Enabled = (General.Map.Map.SelectedVerticessCount > 0);
+			else if(General.Editing.Mode.GetType().Name == "LinedefsMode")
+				addcommentgroup.Enabled = (General.Map.Map.SelectedLinedefsCount > 0);
+			else if(General.Editing.Mode.GetType().Name == "SectorsMode")
+				addcommentgroup.Enabled = (General.Map.Map.SelectedSectorsCount > 0);
+			else if(General.Editing.Mode.GetType().Name == "ThingsMode")
+				addcommentgroup.Enabled = (General.Map.Map.SelectedThingsCount > 0);
+		}
+
+		// Focus lost
+		private void grid_Leave(object sender, EventArgs e)
+		{
+			preventupdate = false;
 		}
 		
 		#endregion
