@@ -159,11 +159,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// This finds the first valid sprite and returns it
 		public string GetSprite(int index)
 		{
-			// If we have sprite of our own, return the first one
+			// If we have sprite of our own, see if we can return this index
 			if(index < sprites.Count)
 			{
 				return sprites[index];
 			}
+			// Otherwise, continue searching where goto tells us to go
 			else if(gotostate != null)
 			{
 				// Find the class
@@ -176,6 +177,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 						return s.GetSprite(gotostate.SpriteOffset);
 					}
 				}
+			}
+			// If there is no goto keyword used, just give us one of our sprites if we can
+			else if(sprites.Count > 0)
+			{
+				// The following behavior should really depend on the flow control keyword (loop or stop) but who cares.
+				return sprites[0];
 			}
 			
 			return "";
