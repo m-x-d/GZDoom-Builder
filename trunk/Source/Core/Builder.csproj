@@ -719,6 +719,7 @@
     <Compile Include="Windows\PasteOptionsForm.Designer.cs">
       <DependentUpon>PasteOptionsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\PluginToolbarButton.cs" />
     <Compile Include="Windows\ScriptFindReplaceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -733,6 +734,7 @@
     <Compile Include="Windows\ThingBrowserForm.Designer.cs">
       <DependentUpon>ThingBrowserForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ToolbarSection.cs" />
     <Compile Include="Windows\VertexEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
