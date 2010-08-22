@@ -33,18 +33,18 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-			System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-			System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
-			System.Windows.Forms.ToolStripSeparator toolstripSeperator1;
 			System.Windows.Forms.ToolStripSeparator toolstripSeperator6;
-			System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
-			System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 			System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
 			System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-			this.buttoneditmodesseperator = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatorfile = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatorscript = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatorprefabs = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatorundo = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatorcopypaste = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatormodes = new System.Windows.Forms.ToolStripSeparator();
 			this.poscommalabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.menumain = new System.Windows.Forms.MenuStrip();
 			this.menufile = new System.Windows.Forms.ToolStripMenuItem();
@@ -128,12 +128,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonviewbrightness = new System.Windows.Forms.ToolStripButton();
 			this.buttonviewfloors = new System.Windows.Forms.ToolStripButton();
 			this.buttonviewceilings = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatorviews = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
 			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatorgeometry = new System.Windows.Forms.ToolStripSeparator();
 			this.buttontest = new System.Windows.Forms.ToolStripSplitButton();
-			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
+			this.seperatortesting = new System.Windows.Forms.ToolStripSeparator();
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.configlabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -181,14 +181,9 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-			toolstripSeperator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolstripSeperator6 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-			toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.menumain.SuspendLayout();
@@ -221,17 +216,17 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripSeparator9.Name = "toolStripSeparator9";
 			toolStripSeparator9.Size = new System.Drawing.Size(6, 23);
 			// 
-			// toolStripSeparator3
+			// seperatorfile
 			// 
-			toolStripSeparator3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			toolStripSeparator3.Name = "toolStripSeparator3";
-			toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+			this.seperatorfile.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorfile.Name = "seperatorfile";
+			this.seperatorfile.Size = new System.Drawing.Size(6, 25);
 			// 
-			// toolStripSeparator10
+			// seperatorscript
 			// 
-			toolStripSeparator10.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			toolStripSeparator10.Name = "toolStripSeparator10";
-			toolStripSeparator10.Size = new System.Drawing.Size(6, 25);
+			this.seperatorscript.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorscript.Name = "seperatorscript";
+			this.seperatorscript.Size = new System.Drawing.Size(6, 25);
 			// 
 			// toolStripSeparator11
 			// 
@@ -239,11 +234,11 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripSeparator11.Name = "toolStripSeparator11";
 			toolStripSeparator11.Size = new System.Drawing.Size(162, 6);
 			// 
-			// toolstripSeperator1
+			// seperatorprefabs
 			// 
-			toolstripSeperator1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			toolstripSeperator1.Name = "toolstripSeperator1";
-			toolstripSeperator1.Size = new System.Drawing.Size(6, 25);
+			this.seperatorprefabs.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorprefabs.Name = "seperatorprefabs";
+			this.seperatorprefabs.Size = new System.Drawing.Size(6, 25);
 			// 
 			// toolstripSeperator6
 			// 
@@ -251,11 +246,11 @@ namespace CodeImp.DoomBuilder.Windows
 			toolstripSeperator6.Name = "toolstripSeperator6";
 			toolstripSeperator6.Size = new System.Drawing.Size(162, 6);
 			// 
-			// toolStripSeparator7
+			// seperatorundo
 			// 
-			toolStripSeparator7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			toolStripSeparator7.Name = "toolStripSeparator7";
-			toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+			this.seperatorundo.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorundo.Name = "seperatorundo";
+			this.seperatorundo.Size = new System.Drawing.Size(6, 25);
 			// 
 			// toolStripSeparator12
 			// 
@@ -263,11 +258,11 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripSeparator12.Name = "toolStripSeparator12";
 			toolStripSeparator12.Size = new System.Drawing.Size(6, 23);
 			// 
-			// toolStripSeparator4
+			// seperatorcopypaste
 			// 
-			toolStripSeparator4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			toolStripSeparator4.Name = "toolStripSeparator4";
-			toolStripSeparator4.Size = new System.Drawing.Size(6, 25);
+			this.seperatorcopypaste.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorcopypaste.Name = "seperatorcopypaste";
+			this.seperatorcopypaste.Size = new System.Drawing.Size(6, 25);
 			// 
 			// toolStripMenuItem4
 			// 
@@ -279,12 +274,12 @@ namespace CodeImp.DoomBuilder.Windows
 			toolStripSeparator2.Name = "toolStripSeparator2";
 			toolStripSeparator2.Size = new System.Drawing.Size(164, 6);
 			// 
-			// buttoneditmodesseperator
+			// seperatormodes
 			// 
-			this.buttoneditmodesseperator.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.buttoneditmodesseperator.Name = "buttoneditmodesseperator";
-			this.buttoneditmodesseperator.Size = new System.Drawing.Size(6, 25);
-			this.buttoneditmodesseperator.Visible = false;
+			this.seperatormodes.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatormodes.Name = "seperatormodes";
+			this.seperatormodes.Size = new System.Drawing.Size(6, 25);
+			this.seperatormodes.Visible = false;
 			// 
 			// poscommalabel
 			// 
@@ -874,32 +869,32 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonnewmap,
             this.buttonopenmap,
             this.buttonsavemap,
-            toolStripSeparator3,
+            this.seperatorfile,
             this.buttonscripteditor,
-            toolStripSeparator10,
+            this.seperatorscript,
             this.buttonundo,
             this.buttonredo,
-            toolStripSeparator7,
+            this.seperatorundo,
             this.buttoncut,
             this.buttoncopy,
             this.buttonpaste,
-            toolStripSeparator4,
+            this.seperatorcopypaste,
             this.buttoninsertprefabfile,
             this.buttoninsertpreviousprefab,
-            toolstripSeperator1,
-            this.buttoneditmodesseperator,
+            this.seperatorprefabs,
+            this.seperatormodes,
             this.buttonthingsfilter,
             this.thingfilters,
             this.buttonviewnormal,
             this.buttonviewbrightness,
             this.buttonviewfloors,
             this.buttonviewceilings,
-            this.toolStripSeparator8,
+            this.seperatorviews,
             this.buttonsnaptogrid,
             this.buttonautomerge,
-            this.toolStripSeparator5,
+            this.seperatorgeometry,
             this.buttontest,
-            this.toolStripSeparator6});
+            this.seperatortesting});
 			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
 			this.toolbar.Size = new System.Drawing.Size(1012, 25);
@@ -1104,11 +1099,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonviewceilings.Text = "View Ceiling Textures";
 			this.buttonviewceilings.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// toolStripSeparator8
+			// seperatorviews
 			// 
-			this.toolStripSeparator8.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(6, 25);
+			this.seperatorviews.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorviews.Name = "seperatorviews";
+			this.seperatorviews.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonsnaptogrid
 			// 
@@ -1136,11 +1131,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonautomerge.Text = "Merge Geometry";
 			this.buttonautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// toolStripSeparator5
+			// seperatorgeometry
 			// 
-			this.toolStripSeparator5.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(6, 25);
+			this.seperatorgeometry.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatorgeometry.Name = "seperatorgeometry";
+			this.seperatorgeometry.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttontest
 			// 
@@ -1154,11 +1149,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontest.Text = "Test Map";
 			this.buttontest.ButtonClick += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// toolStripSeparator6
+			// seperatortesting
 			// 
-			this.toolStripSeparator6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
-			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
+			this.seperatortesting.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.seperatortesting.Name = "seperatortesting";
+			this.seperatortesting.Size = new System.Drawing.Size(6, 25);
 			// 
 			// statusbar
 			// 
@@ -1683,7 +1678,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ThingInfoPanel thinginfo;
 		private System.Windows.Forms.ToolStripButton buttonthingsfilter;
 		private System.Windows.Forms.ToolStripComboBox thingfilters;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+		private System.Windows.Forms.ToolStripSeparator seperatorviews;
 		private System.Windows.Forms.ToolStripStatusLabel gridlabel;
 		private System.Windows.Forms.ToolStripDropDownButton buttongrid;
 		private System.Windows.Forms.ToolStripMenuItem itemgrid1024;
@@ -1705,11 +1700,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemsnaptogrid;
 		private System.Windows.Forms.ToolStripButton buttonautomerge;
 		private System.Windows.Forms.ToolStripMenuItem itemautomerge;
-		private System.Windows.Forms.ToolStripSeparator buttoneditmodesseperator;
+		private System.Windows.Forms.ToolStripSeparator seperatormodes;
 		private System.Windows.Forms.Timer processor;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripSeparator seperatorgeometry;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem5;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripSeparator seperatortesting;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
 		private System.Windows.Forms.ToolStripMenuItem itemgridinc;
 		private System.Windows.Forms.ToolStripMenuItem itemgriddec;
@@ -1772,5 +1767,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Panel dockersspace;
 		private CodeImp.DoomBuilder.Controls.DockersControl dockerspanel;
 		private System.Windows.Forms.Timer dockerscollapser;
+		private System.Windows.Forms.ToolStripSeparator seperatorfile;
+		private System.Windows.Forms.ToolStripSeparator seperatorscript;
+		private System.Windows.Forms.ToolStripSeparator seperatorprefabs;
+		private System.Windows.Forms.ToolStripSeparator seperatorundo;
+		private System.Windows.Forms.ToolStripSeparator seperatorcopypaste;
 	}
 }

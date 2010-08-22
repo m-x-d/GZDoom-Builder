@@ -143,7 +143,12 @@ namespace CodeImp.DoomBuilder.Windows
 		/// This adds a custom button to the toolbar.
 		/// </summary>
 		void AddButton(ToolStripItem button);
-		
+
+		/// <summary>
+		/// This adds a custom button to a specific section in the toolbar. Note that the visibility of the button will be controlled by the user's preferences of that section!
+		/// </summary>
+		void AddButton(ToolStripItem button, ToolbarSection section);
+
 		/// <summary>
 		/// This removes a custom button from the toolbar.
 		/// </summary>
