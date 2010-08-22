@@ -300,6 +300,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void OnEditMouseInput(Vector2D delta) { foreach(Plugin p in plugins) p.Plug.OnEditMouseInput(delta); }
 		public void OnEditRedrawDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayBegin(); }
 		public void OnEditRedrawDisplayEnd() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayEnd(); }
+		public void OnPresentDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnPresentDisplayBegin(); }
 		
 		#endregion
 	}

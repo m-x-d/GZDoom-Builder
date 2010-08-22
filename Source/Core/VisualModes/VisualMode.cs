@@ -86,6 +86,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public bool ProcessGeometry { get { return processgeometry; } set { processgeometry = value; } }
 		public bool ProcessThings { get { return processthings; } set { processthings = value; } }
 		public VisualBlockMap BlockMap { get { return blockmap; } }
+
+		// Rendering
+		public IRenderer3D Renderer { get { return renderer; } }
 		
 		#endregion
 
