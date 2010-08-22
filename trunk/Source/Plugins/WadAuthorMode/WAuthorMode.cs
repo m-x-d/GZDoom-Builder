@@ -36,14 +36,15 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Editing
 {
-	#if DEBUG
-	
 	[EditMode(DisplayName = "WadAuthor Mode",
-			  SwitchAction = "wauthormode",
+			  SwitchAction = "wadauthormode",
 			  ButtonImage = "WAuthor.png",
-			  ButtonOrder = int.MinValue + 4)]
+			  ButtonOrder = int.MinValue + 400,
+			  ButtonGroup = "000_editing",
+			  UseByDefault = true,
+			  SafeStartMode = true)]
 	
-	public class WAuthorMode : ClassicMode
+	public class WadAuthorMode : ClassicMode
 	{
 		#region ================== Constants
 
@@ -70,15 +71,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public WAuthorMode()
+		public WadAuthorMode()
 		{
 			// Initialize
 			tools = new WAuthorTools();
 
-			// Enable this and you'll have a floating window
-			//tools.Show(General.Interface);
-			//General.Interface.Focus();
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -107,13 +104,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			base.OnCancel();
 
 			// Return to this mode
-			General.Editing.ChangeMode(new WAuthorMode());
+			General.Editing.ChangeMode(new WadAuthorMode());
 		}
 
 		// Mode engages
 		public override void OnEngage()
 		{
 			base.OnEngage();
+
+			renderer.SetPresentation(Presentation.Things);
+			
+			// Convert geometry selection to linedefs selection
+			General.Map.Map.ConvertSelection(SelectionType.Sectors, SelectionType.Linedefs);
 		}
 
 		// Mode disengages
@@ -129,8 +131,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 		}
 
 		// This redraws the display
-		public unsafe override void OnRedrawDisplay()
+		public override void OnRedrawDisplay()
 		{
+			renderer.RedrawSurface();
+			
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
 			{
@@ -352,8 +356,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 				}
 			}
 		}
-
-		// Maybe i'll finish this later, or not even include this mode at all, not sure yet.
 		
 		// Mouse leaves
 		public override void OnMouseLeave(EventArgs e)
@@ -364,29 +366,21 @@ namespace CodeImp.DoomBuilder.BuilderModes.Editing
 			Highlight(null);
 		}
 
-		// Mouse button pressed
-		public override void OnMouseDown(MouseEventArgs e)
-		{
-			base.OnMouseDown(e);
-		}
-
-		// Mouse released
-		public override void OnMouseUp(MouseEventArgs e)
-		{
-			base.OnMouseUp(e);
-
-			// This shows a popup menu
-			tools.LinedefPopup.Show(Cursor.Position);
-		}
-		
 		// Mouse wants to drag
 		protected override void OnDragStart(MouseEventArgs e)
 		{
 			base.OnDragStart(e);
 		}
+
+		// Edit action ends
+		protected override void OnEditEnd()
+		{
+			base.OnEditEnd();
+			
+			// This shows a popup menu
+			tools.LinedefPopup.Show(Cursor.Position);
+		}
 		
 		#endregion
 	}
-
-	#endif
 }
