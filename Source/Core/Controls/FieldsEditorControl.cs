@@ -592,6 +592,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Browse
 					(row as FieldsEditorRow).Browse(this.ParentForm);
+					fieldslist.Focus();
 				}
 			}
 		}
@@ -711,24 +712,11 @@ namespace CodeImp.DoomBuilder.Controls
 
 						// Show button
 						enumscombo.Visible = false;
+						browsebutton.Image = frow.TypeHandler.BrowseImage;
 						browsebutton.Location = new Point(cellrect.Right - browsebutton.Width, cellrect.Top);
 						browsebutton.Height = cellrect.Height;
+						Console.WriteLine(cellrect.Height.ToString());
 						browsebutton.Visible = true;
-
-						/*
-						// Determine image/text
-						if((frow.Type == UniversalFieldType.SectorEffect) ||
-						   (frow.Type == UniversalFieldType.LinedefAction))
-						{
-							browsebutton.Image = CodeImp.DoomBuilder.Properties.Resources.treeview;
-							browsebutton.Text = "";
-						}
-						else
-						{
-							browsebutton.Image = null;
-							browsebutton.Text = "...";
-						}
-						*/
 					}
 					else
 					{

@@ -704,6 +704,8 @@
     <Compile Include="Rendering\SurfaceBufferSet.cs" />
     <Compile Include="Rendering\SurfaceEntry.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />
+    <Compile Include="Types\ThingClassHandler.cs" />
+    <Compile Include="Types\ThingTypeHandler.cs" />
     <Compile Include="Windows\ErrorsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -762,7 +764,11 @@
     <Compile Include="General\StepsList.cs" />
     <None Include="Resources\Builder16.png" />
     <None Include="Resources\CLogo.png" />
+    <None Include="Resources\Angle.png" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\Text.png" />
+    <None Include="Resources\List_Images.png" />
+    <None Include="Resources\List.png" />
     <None Include="Resources\PasteSpecial.png" />
     <None Include="Resources\ScriptHelp.png" />
     <None Include="Resources\ErrorLarge.png" />

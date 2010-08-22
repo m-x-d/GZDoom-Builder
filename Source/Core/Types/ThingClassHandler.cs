@@ -1,4 +1,4 @@
-
+﻿
 #region ================== Copyright (c) 2007 Pascal vd Heiden
 
 /*
@@ -22,19 +22,20 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
-using CodeImp.DoomBuilder.Windows;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(UniversalType.String, "Text", true)]
-	internal class StringHandler : TypeHandler
+	[TypeHandler(UniversalType.ThingClass, "Thing Class", true)]
+	internal class ThingClassHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -50,7 +51,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override bool IsBrowseable { get { return true; } }
 
-		public override Image BrowseImage { get { return Properties.Resources.Text; } }
+		public override Image BrowseImage { get { return Properties.Resources.List; } }
 		
 		#endregion
 
@@ -58,7 +59,31 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void Browse(IWin32Window parent)
 		{
-			value = TextEditForm.ShowDialog(parent, value);
+			int tid = 0;
+			
+			// Find the thing with this class name
+			foreach(ThingTypeInfo t in General.Map.Data.ThingTypes)
+			{
+				if((t.Actor != null) && (string.Compare(t.Actor.ClassName, value, true) == 0))
+				{
+					tid = t.Index;
+					break;
+				}
+			}
+			
+			//tid = ThingBrowserForm.BrowseThing(parent, tid);
+			ThingBrowserForm f = new ThingBrowserForm(tid);
+			if(f.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+			{
+				// Find the class name for this thing
+				ThingTypeInfo t = General.Map.Data.GetThingInfo(f.SelectedType);
+				if(t.Actor != null)
+					this.value = t.Actor.ClassName;
+				else
+					this.value = "";
+			}
+			
+			f.Dispose();
 		}
 
 		public override void SetValue(object value)
@@ -72,13 +97,6 @@ namespace CodeImp.DoomBuilder.Types
 		public override object GetValue()
 		{
 			return this.value;
-		}
-
-		public override int GetIntValue()
-		{
-			int result;
-			if(int.TryParse(this.value, out result)) return result;
-				else return 0;
 		}
 
 		public override string GetStringValue()

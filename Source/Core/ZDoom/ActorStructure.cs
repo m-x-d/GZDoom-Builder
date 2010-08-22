@@ -488,7 +488,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// <summary>
 		/// This returns a specific state, or null when the state can't be found.
 		/// </summary>
-		internal StateStructure GetState(string statename)
+		public StateStructure GetState(string statename)
 		{
 			if(states.ContainsKey(statename))
 				return states[statename];
@@ -501,7 +501,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// <summary>
 		/// This creates a list of all states, also those inherited from the base class.
 		/// </summary>
-		internal Dictionary<string, StateStructure> GetAllStates()
+		public Dictionary<string, StateStructure> GetAllStates()
 		{
 			Dictionary<string, StateStructure> list = new Dictionary<string, StateStructure>(states);
 			

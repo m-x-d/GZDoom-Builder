@@ -891,7 +891,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if((General.Map != null) && (General.Editing.Mode != null))
 			{
+				General.Plugins.OnEditRedrawDisplayBegin();
 				General.Editing.Mode.OnRedrawDisplay();
+				General.Plugins.OnEditRedrawDisplayEnd();
 			}
 			else
 			{
@@ -974,13 +976,21 @@ namespace CodeImp.DoomBuilder.Windows
 		// Mouse click
 		private void display_MouseClick(object sender, MouseEventArgs e)
 		{
-			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseClick(e);
+			if((General.Map != null) && (General.Editing.Mode != null))
+			{
+				General.Plugins.OnEditMouseClick(e);
+				General.Editing.Mode.OnMouseClick(e);
+			}
 		}
 
 		// Mouse doubleclick
 		private void display_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseDoubleClick(e);
+			if((General.Map != null) && (General.Editing.Mode != null))
+			{
+				General.Plugins.OnEditMouseDoubleClick(e);
+				General.Editing.Mode.OnMouseDoubleClick(e);
+			}
 		}
 
 		// Mouse down
@@ -1012,27 +1022,43 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions.KeyPressed(key | mod);
 			
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseDown(e);
+			if((General.Map != null) && (General.Editing.Mode != null))
+			{
+				General.Plugins.OnEditMouseDown(e);
+				General.Editing.Mode.OnMouseDown(e);
+			}
 		}
 
 		// Mouse enters
 		private void display_MouseEnter(object sender, EventArgs e)
 		{
 			mouseinside = true;
-			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseEnter(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null))
+			{
+				General.Plugins.OnEditMouseEnter(e);
+				General.Editing.Mode.OnMouseEnter(e);
+			}
 		}
 
 		// Mouse leaves
 		private void display_MouseLeave(object sender, EventArgs e)
 		{
 			mouseinside = false;
-			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseLeave(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null))
+			{
+				General.Plugins.OnEditMouseLeave(e);
+				General.Editing.Mode.OnMouseLeave(e);
+			}
 		}
 
 		// Mouse moves
 		private void display_MouseMove(object sender, MouseEventArgs e)
 		{
-			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseMove(e);
+			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null))
+			{
+				General.Plugins.OnEditMouseMove(e);
+				General.Editing.Mode.OnMouseMove(e);
+			}
 		}
 
 		// Mouse up
@@ -1062,7 +1088,11 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions.KeyReleased(key | mod);
 
 			// Invoke on editing mode
-			if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnMouseUp(e);
+			if((General.Map != null) && (General.Editing.Mode != null))
+			{
+				General.Plugins.OnEditMouseUp(e);
+				General.Editing.Mode.OnMouseUp(e);
+			}
 		}
 		
 		#endregion
@@ -1221,7 +1251,11 @@ namespace CodeImp.DoomBuilder.Windows
 				e.Handled = General.Actions.KeyPressed((int)e.KeyData);
 				
 				// Invoke on editing mode
-				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyDown(e);
+				if((General.Map != null) && (General.Editing.Mode != null))
+				{
+					General.Plugins.OnEditKeyDown(e);
+					General.Editing.Mode.OnKeyDown(e);
+				}
 
 				// Handled
 				if(e.Handled)
@@ -1271,7 +1305,11 @@ namespace CodeImp.DoomBuilder.Windows
 				e.Handled = General.Actions.KeyReleased((int)e.KeyData);
 				
 				// Invoke on editing mode
-				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyUp(e);
+				if((General.Map != null) && (General.Editing.Mode != null))
+				{
+					General.Plugins.OnEditKeyUp(e);
+					General.Editing.Mode.OnKeyUp(e);
+				}
 				
 				// Handled
 				if(e.Handled)
@@ -2574,7 +2612,10 @@ namespace CodeImp.DoomBuilder.Windows
 				// Process mouse input
 				deltamouse = mouseinput.Process();
 				if((General.Map != null) && (General.Editing.Mode != null))
+				{
+					General.Plugins.OnEditMouseInput(deltamouse);
 					General.Editing.Mode.OnMouseInput(deltamouse);
+				}
 			}
 			
 			// Process signal

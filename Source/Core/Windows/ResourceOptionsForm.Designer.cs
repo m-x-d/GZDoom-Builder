@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browsewad.Location = new System.Drawing.Point(315, 36);
 			this.browsewad.Name = "browsewad";
 			this.browsewad.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browsewad.Size = new System.Drawing.Size(30, 23);
+			this.browsewad.Size = new System.Drawing.Size(28, 23);
 			this.browsewad.TabIndex = 1;
 			this.browsewad.Text = " ";
 			this.browsewad.UseVisualStyleBackColor = true;
@@ -235,7 +235,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browsedir.Location = new System.Drawing.Point(315, 36);
 			this.browsedir.Name = "browsedir";
 			this.browsedir.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browsedir.Size = new System.Drawing.Size(30, 23);
+			this.browsedir.Size = new System.Drawing.Size(28, 23);
 			this.browsedir.TabIndex = 1;
 			this.browsedir.UseVisualStyleBackColor = true;
 			this.browsedir.Click += new System.EventHandler(this.browsedir_Click);
@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browsepk3.Location = new System.Drawing.Point(315, 36);
 			this.browsepk3.Name = "browsepk3";
 			this.browsepk3.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browsepk3.Size = new System.Drawing.Size(30, 23);
+			this.browsepk3.Size = new System.Drawing.Size(28, 23);
 			this.browsepk3.TabIndex = 1;
 			this.browsepk3.UseVisualStyleBackColor = true;
 			this.browsepk3.Click += new System.EventHandler(this.browsepk3_Click);

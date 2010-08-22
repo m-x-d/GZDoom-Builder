@@ -1,4 +1,4 @@
-
+﻿
 #region ================== Copyright (c) 2007 Pascal vd Heiden
 
 /*
@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
 using System.Diagnostics;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Windows;
 using System.Windows.Forms;
 
@@ -33,8 +34,8 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	[TypeHandler(UniversalType.String, "Text", true)]
-	internal class StringHandler : TypeHandler
+	[TypeHandler(UniversalType.ThingType, "Thing Type", true)]
+	internal class ThingTypeHandler : TypeHandler
 	{
 		#region ================== Constants
 
@@ -42,7 +43,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private string value = "";
+		private int value;
 
 		#endregion
 
@@ -50,23 +51,48 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override bool IsBrowseable { get { return true; } }
 
-		public override Image BrowseImage { get { return Properties.Resources.Text; } }
-		
+		public override Image BrowseImage { get { return Properties.Resources.List; } }
+
+		#endregion
+
+		#region ================== Constructor
+
 		#endregion
 
 		#region ================== Methods
 
 		public override void Browse(IWin32Window parent)
 		{
-			value = TextEditForm.ShowDialog(parent, value);
+			this.value = ThingBrowserForm.BrowseThing(parent, this.value);
 		}
 
 		public override void SetValue(object value)
 		{
-			if(value != null)
-				this.value = value.ToString();
+			int result;
+
+			// Null?
+			if(value == null)
+			{
+				this.value = 0;
+			}
+			// Compatible type?
+			else if((value is int) || (value is float) || (value is bool))
+			{
+				// Set directly
+				this.value = Convert.ToInt32(value);
+			}
 			else
-				this.value = "";
+			{
+				// Try parsing as string
+				if(int.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.CurrentCulture, out result))
+				{
+					this.value = result;
+				}
+				else
+				{
+					this.value = 0;
+				}
+			}
 		}
 
 		public override object GetValue()
@@ -76,14 +102,12 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override int GetIntValue()
 		{
-			int result;
-			if(int.TryParse(this.value, out result)) return result;
-				else return 0;
+			return this.value;
 		}
 
 		public override string GetStringValue()
 		{
-			return this.value;
+			return this.value.ToString();
 		}
 
 		#endregion

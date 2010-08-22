@@ -1186,7 +1186,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!cancelled)
 			{
 				modealreadyswitching = true;
-				this.OnAccept();
+				//this.OnAccept();	// BAD! Any other plugins won't know this mode was accepted
+				General.Editing.AcceptMode();
 			}
 
 			// Update

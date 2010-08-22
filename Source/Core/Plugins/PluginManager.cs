@@ -22,8 +22,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Editing;
 using System.Reflection;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
@@ -221,33 +223,13 @@ namespace CodeImp.DoomBuilder.Plugins
 		#endregion
 
 		#region ================== Events
-
-
-		public void ReloadResources()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnReloadResources();
-		}
-
-
+		
 		public bool ModeChanges(EditMode oldmode, EditMode newmode)
 		{
 			bool result = true;
 			foreach(Plugin p in plugins) result &= p.Plug.OnModeChange(oldmode, newmode);
 			return result;
 		}
-
-
-		public void ProgramReconfigure()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnProgramReconfigure();
-		}
-
-
-		public void MapReconfigure()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapReconfigure();
-		}
-
 
 		public bool OnCopyBegin()
 		{
@@ -256,26 +238,12 @@ namespace CodeImp.DoomBuilder.Plugins
 			return result;
 		}
 
-
-		public void OnCopyEnd()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnCopyEnd();
-		}
-
-
 		public bool OnPasteBegin(PasteOptions options)
 		{
 			bool result = true;
 			foreach(Plugin p in plugins) result &= p.Plug.OnPasteBegin(options.Copy(), result);
 			return result;
 		}
-
-
-		public void OnPasteEnd(PasteOptions options)
-		{
-			foreach(Plugin p in plugins) p.Plug.OnPasteEnd(options.Copy());
-		}
-
 
 		public bool OnUndoBegin()
 		{
@@ -284,13 +252,6 @@ namespace CodeImp.DoomBuilder.Plugins
 			return result;
 		}
 
-
-		public void OnUndoEnd()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnUndoEnd();
-		}
-
-
 		public bool OnRedoBegin()
 		{
 			bool result = true;
@@ -298,107 +259,47 @@ namespace CodeImp.DoomBuilder.Plugins
 			return result;
 		}
 
-
-		public void OnRedoEnd()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnRedoEnd();
-		}
-
-
-		public void OnUndoCreated()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnUndoCreated();
-		}
-
-
-		public void OnUndoWithdrawn()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnUndoWithdrawn();
-		}
-
-
-		public void OnMapOpenBegin()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapOpenBegin();
-		}
-
-
-		public void OnMapOpenEnd()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapOpenEnd();
-		}
-
-
-		public void OnMapNewBegin()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapNewBegin();
-		}
-
-
-		public void OnMapNewEnd()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapNewEnd();
-		}
-
-
-		public void OnMapCloseBegin()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapCloseBegin();
-		}
-
-
-		public void OnMapCloseEnd()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapCloseEnd();
-		}
-
-
-		public void OnMapSaveBegin(SavePurpose purpose)
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapSaveBegin(purpose);
-		}
-
-
-		public void OnMapSaveEnd(SavePurpose purpose)
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapSaveEnd(purpose);
-		}
-
-
-		public void OnMapSetChangeBegin()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapSetChangeBegin();
-		}
-
-
-		public void OnMapSetChangeEnd()
-		{
-			foreach(Plugin p in plugins) p.Plug.OnMapSetChangeEnd();
-		}
-
-
-		public void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
-		{
-			foreach(Plugin p in plugins) p.Plug.OnSectorCeilingSurfaceUpdate(s, ref vertices);
-		}
-
-
-		public void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
-		{
-			foreach(Plugin p in plugins) p.Plug.OnSectorFloorSurfaceUpdate(s, ref vertices);
-		}
-
-		
-		public void OnShowPreferences(PreferencesController controller)
-		{
-			foreach(Plugin p in plugins) p.Plug.OnShowPreferences(controller);
-		}
-
-
-		public void OnClosePreferences(PreferencesController controller)
-		{
-			foreach(Plugin p in plugins) p.Plug.OnClosePreferences(controller);
-		}
+		public void ReloadResources() { foreach(Plugin p in plugins) p.Plug.OnReloadResources(); }
+		public void ProgramReconfigure() { foreach(Plugin p in plugins) p.Plug.OnProgramReconfigure(); }
+		public void MapReconfigure() { foreach(Plugin p in plugins) p.Plug.OnMapReconfigure(); }
+		public void OnCopyEnd() { foreach(Plugin p in plugins) p.Plug.OnCopyEnd(); }
+		public void OnPasteEnd(PasteOptions options) { foreach(Plugin p in plugins) p.Plug.OnPasteEnd(options.Copy()); }
+		public void OnUndoEnd() { foreach(Plugin p in plugins) p.Plug.OnUndoEnd(); }
+		public void OnRedoEnd() { foreach(Plugin p in plugins) p.Plug.OnRedoEnd(); }
+		public void OnUndoCreated() { foreach(Plugin p in plugins) p.Plug.OnUndoCreated(); }
+		public void OnUndoWithdrawn() { foreach(Plugin p in plugins) p.Plug.OnUndoWithdrawn(); }
+		public void OnMapOpenBegin() { foreach(Plugin p in plugins) p.Plug.OnMapOpenBegin(); }
+		public void OnMapOpenEnd() { foreach(Plugin p in plugins) p.Plug.OnMapOpenEnd(); }
+		public void OnMapNewBegin() { foreach(Plugin p in plugins) p.Plug.OnMapNewBegin(); }
+		public void OnMapNewEnd() { foreach(Plugin p in plugins) p.Plug.OnMapNewEnd(); }
+		public void OnMapCloseBegin() { foreach(Plugin p in plugins) p.Plug.OnMapCloseBegin(); }
+		public void OnMapCloseEnd() { foreach(Plugin p in plugins) p.Plug.OnMapCloseEnd(); }
+		public void OnMapSaveBegin(SavePurpose purpose) { foreach(Plugin p in plugins) p.Plug.OnMapSaveBegin(purpose); }
+		public void OnMapSaveEnd(SavePurpose purpose) { foreach(Plugin p in plugins) p.Plug.OnMapSaveEnd(purpose); }
+		public void OnMapSetChangeBegin() { foreach(Plugin p in plugins) p.Plug.OnMapSetChangeBegin(); }
+		public void OnMapSetChangeEnd() { foreach(Plugin p in plugins) p.Plug.OnMapSetChangeEnd(); }
+		public void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices) { foreach(Plugin p in plugins) p.Plug.OnSectorCeilingSurfaceUpdate(s, ref vertices); }
+		public void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices) { foreach(Plugin p in plugins) p.Plug.OnSectorFloorSurfaceUpdate(s, ref vertices); }
+		public void OnShowPreferences(PreferencesController controller) { foreach(Plugin p in plugins) p.Plug.OnShowPreferences(controller); }
+		public void OnClosePreferences(PreferencesController controller) { foreach(Plugin p in plugins) p.Plug.OnClosePreferences(controller); }
+		public void OnActionBegin(CodeImp.DoomBuilder.Actions.Action action) { foreach(Plugin p in plugins) p.Plug.OnActionBegin(action); }
+		public void OnActionEnd(CodeImp.DoomBuilder.Actions.Action action) { foreach(Plugin p in plugins) p.Plug.OnActionEnd(action); }
+		public void OnEditEngage(EditMode oldmode, EditMode newmode) { foreach(Plugin p in plugins) p.Plug.OnEditEngage(oldmode, newmode); }
+		public void OnEditDisengage(EditMode oldmode, EditMode newmode) { foreach(Plugin p in plugins) p.Plug.OnEditDisengage(oldmode, newmode); }
+		public void OnEditCancel() { foreach(Plugin p in plugins) p.Plug.OnEditCancel(); }
+		public void OnEditAccept() { foreach(Plugin p in plugins) p.Plug.OnEditAccept(); }
+		public void OnEditMouseClick(MouseEventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditMouseClick(e); }
+		public void OnEditMouseDoubleClick(MouseEventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditMouseDoubleClick(e); }
+		public void OnEditMouseDown(MouseEventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditMouseDown(e); }
+		public void OnEditMouseEnter(EventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditMouseEnter(e); }
+		public void OnEditMouseLeave(EventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditMouseLeave(e); }
+		public void OnEditMouseMove(MouseEventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditMouseMove(e); }
+		public void OnEditMouseUp(MouseEventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditMouseUp(e); }
+		public void OnEditKeyDown(KeyEventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditKeyDown(e); }
+		public void OnEditKeyUp(KeyEventArgs e) { foreach(Plugin p in plugins) p.Plug.OnEditKeyUp(e); }
+		public void OnEditMouseInput(Vector2D delta) { foreach(Plugin p in plugins) p.Plug.OnEditMouseInput(delta); }
+		public void OnEditRedrawDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayBegin(); }
+		public void OnEditRedrawDisplayEnd() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayEnd(); }
 		
 		#endregion
 	}

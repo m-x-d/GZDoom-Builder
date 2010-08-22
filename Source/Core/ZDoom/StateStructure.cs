@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.Compilers;
 
 namespace CodeImp.DoomBuilder.ZDoom
 {
-	internal sealed class StateStructure
+	public sealed class StateStructure
 	{
 		#region ================== Constants
 		
@@ -50,7 +50,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#endregion
 
 		#region ================== Properties
-		
+
+		public int SpritesCount { get { return sprites.Count; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
