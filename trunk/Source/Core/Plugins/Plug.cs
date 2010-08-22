@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Map;
@@ -121,101 +123,73 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// This iscalled when the ceiling surface buffer is updated for a sector. The plugin can
 		/// modify the vertices to change how the surface is presented to the user.
 		/// </summary>
-		public virtual void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
-		{
-		}
+		public virtual void OnSectorCeilingSurfaceUpdate(Sector s, ref FlatVertex[] vertices) { }
 
 		/// <summary>
 		/// This iscalled when the floor surface buffer is updated for a sector. The plugin can
 		/// modify the vertices to change how the surface is presented to the user.
 		/// </summary>
-		public virtual void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
-		{
-		}
+		public virtual void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices) { }
 
 		/// <summary>
 		/// Occurs before a map is opened.
 		/// </summary>
-		public virtual void OnMapOpenBegin()
-		{
-		}
+		public virtual void OnMapOpenBegin() { }
 
 		/// <summary>
 		/// Occurs after a map is opened.
 		/// </summary>
-		public virtual void OnMapOpenEnd()
-		{
-		}
+		public virtual void OnMapOpenEnd() { }
 
 		/// <summary>
 		/// Occurs before a new map is created.
 		/// </summary>
-		public virtual void OnMapNewBegin()
-		{
-		}
+		public virtual void OnMapNewBegin() { }
 
 		/// <summary>
 		/// Occurs after a new map is created.
 		/// </summary>
-		public virtual void OnMapNewEnd()
-		{
-		}
+		public virtual void OnMapNewEnd() { }
 
 		/// <summary>
 		/// Occurs before the map is closed.
 		/// </summary>
-		public virtual void OnMapCloseBegin()
-		{
-		}
+		public virtual void OnMapCloseBegin() { }
 
 		/// <summary>
 		/// Occurs after a the map is closed.
 		/// </summary>
-		public virtual void OnMapCloseEnd()
-		{
-		}
+		public virtual void OnMapCloseEnd() { }
 
 		/// <summary>
 		/// Occurs before a map is saved.
 		/// </summary>
-		public virtual void OnMapSaveBegin(SavePurpose purpose)
-		{
-		}
+		public virtual void OnMapSaveBegin(SavePurpose purpose) { }
 
 		/// <summary>
 		/// Occurs after a map is saved.
 		/// </summary>
-		public virtual void OnMapSaveEnd(SavePurpose purpose)
-		{
-		}
+		public virtual void OnMapSaveEnd(SavePurpose purpose) { }
 
 		/// <summary>
 		/// Occurs before the MapSet is changed. This means that the active MapSet will be disposed and changed to a new one.
 		/// </summary>
-		public virtual void OnMapSetChangeBegin()
-		{
-		}
+		public virtual void OnMapSetChangeBegin() { }
 
 		/// <summary>
 		/// Occurs after the MapSet is changed.
 		/// </summary>
-		public virtual void OnMapSetChangeEnd()
-		{
-		}
+		public virtual void OnMapSetChangeEnd() { }
 
 		/// <summary>
 		/// This is called after the constructor to allow a plugin to initialize.
 		/// </summary>
-		public virtual void OnInitialize()
-		{
-		}
+		public virtual void OnInitialize() { }
 
 		/// <summary>
 		/// This is called when the user chose to reload the resources.
 		/// </summary>
-		public virtual void OnReloadResources()
-		{
-		}
+		public virtual void OnReloadResources() { }
 
 		/// <summary>
 		/// This is called by the Doom Builder core when the editing mode changes.
@@ -223,121 +197,132 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// </summary>
 		/// <param name="oldmode">The previous editing mode</param>
 		/// <param name="newmode">The new editing mode</param>
-		public virtual bool OnModeChange(EditMode oldmode, EditMode newmode)
-		{
-			return true;
-		}
+		public virtual bool OnModeChange(EditMode oldmode, EditMode newmode) { return true; }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user changes the program configuration (F5).
 		/// </summary>
-		public virtual void OnProgramReconfigure()
-		{
-		}
+		public virtual void OnProgramReconfigure() { }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user changes the map settings (F2).
 		/// </summary>
-		public virtual void OnMapReconfigure()
-		{
-		}
+		public virtual void OnMapReconfigure() { }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user wants to copy selected geometry.
 		/// Return false to abort the copy operation.
 		/// The result parameter is false when the operation was already aborted by another plugin.
 		/// </summary>
-		public virtual bool OnCopyBegin(bool result)
-		{
-			return true;
-		}
+		public virtual bool OnCopyBegin(bool result) { return true; }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user has copied geometry.
 		/// </summary>
-		public virtual void OnCopyEnd()
-		{
-		}
+		public virtual void OnCopyEnd() { }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user wants to paste geometry into the map.
 		/// Return false to abort the paste operation.
 		/// The result parameter is false when the operation was already aborted by another plugin.
 		/// </summary>
-		public virtual bool OnPasteBegin(PasteOptions options, bool result)
-		{
-			return true;
-		}
+		public virtual bool OnPasteBegin(PasteOptions options, bool result) { return true; }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user pastes geometry into the map. The new geometry is created and marked before this method is called.
 		/// </summary>
-		public virtual void OnPasteEnd(PasteOptions options)
-		{
-		}
+		public virtual void OnPasteEnd(PasteOptions options) { }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user wants to undo the previous action.
 		/// Return false to abort the operation.
 		/// The result parameter is false when the operation was already aborted by another plugin.
 		/// </summary>
-		public virtual bool OnUndoBegin(bool result)
-		{
-			return true;
-		}
+		public virtual bool OnUndoBegin(bool result) { return true; }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user has undone the previous action.
 		/// </summary>
-		public virtual void OnUndoEnd()
-		{
-		}
+		public virtual void OnUndoEnd() { }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user wants to redo the previously undone action.
 		/// Return false to abort the operation.
 		/// The result parameter is false when the operation was already aborted by another plugin.
 		/// </summary>
-		public virtual bool OnRedoBegin(bool result)
-		{
-			return true;
-		}
+		public virtual bool OnRedoBegin(bool result) { return true; }
 
 		/// <summary>
 		/// Called by the Doom Builder core when the user has redone the action.
 		/// </summary>
-		public virtual void OnRedoEnd()
-		{
-		}
+		public virtual void OnRedoEnd() { }
 
 		/// <summary>
 		/// Called by the Doom Builder core when a new undo level has been created.
 		/// </summary>
-		public virtual void OnUndoCreated()
-		{
-		}
+		public virtual void OnUndoCreated() { }
 
 		/// <summary>
 		/// Called by the Doom Builder core when an undo level has been withdrawn.
 		/// </summary>
-		public virtual void OnUndoWithdrawn()
-		{
-		}
+		public virtual void OnUndoWithdrawn() { }
 
 		/// <summary>
 		/// Called when the user opens the Preferences dialog.
 		/// </summary>
-		public virtual void OnShowPreferences(PreferencesController controller)
-		{
-		}
+		public virtual void OnShowPreferences(PreferencesController controller) { }
 
 		/// <summary>
 		/// Called when the user closes the Preferences dialog by either accepting the changes or cancelling.
 		/// </summary>
-		public virtual void OnClosePreferences(PreferencesController controller)
-		{
-		}
+		public virtual void OnClosePreferences(PreferencesController controller) { }
 
+		/// <summary>
+		/// Called when an Action begins.
+		/// </summary>
+		public virtual void OnActionBegin(CodeImp.DoomBuilder.Actions.Action action) { }
+
+		/// <summary>
+		/// Called when an Action ends.
+		/// </summary>
+		public virtual void OnActionEnd(CodeImp.DoomBuilder.Actions.Action action) { }
+
+		/// <summary>
+		/// Called when an Editing Mode engages
+		/// </summary>
+		public virtual void OnEditEngage(EditMode oldmode, EditMode newmode) { }
+
+		/// <summary>
+		/// Called when an Editing Mode disengages
+		/// </summary>
+		public virtual void OnEditDisengage(EditMode oldmode, EditMode newmode) { }
+
+		/// <summary>
+		/// Called when an Editing Mode is cancelled
+		/// </summary>
+		public virtual void OnEditCancel() { }
+
+		/// <summary>
+		/// Called when an Editing Mode is accepted
+		/// </summary>
+		public virtual void OnEditAccept() { }
+
+		// Interface events
+		public virtual void OnEditMouseClick(MouseEventArgs e) { }
+		public virtual void OnEditMouseDoubleClick(MouseEventArgs e) { }
+		public virtual void OnEditMouseDown(MouseEventArgs e) { }
+		public virtual void OnEditMouseEnter(EventArgs e) { }
+		public virtual void OnEditMouseLeave(EventArgs e) { }
+		public virtual void OnEditMouseMove(MouseEventArgs e) { }
+		public virtual void OnEditMouseUp(MouseEventArgs e) { }
+		public virtual void OnEditKeyDown(KeyEventArgs e) { }
+		public virtual void OnEditKeyUp(KeyEventArgs e) { }
+		public virtual void OnEditMouseInput(Vector2D delta) { }
+
+		// Rendering events
+		public virtual void OnEditRedrawDisplayBegin() { }
+		public virtual void OnEditRedrawDisplayEnd() { }
+		
 		#endregion
 	}
 }

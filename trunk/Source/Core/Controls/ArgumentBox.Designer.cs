@@ -47,11 +47,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.button.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.button.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
-			this.button.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.button.Location = new System.Drawing.Point(153, 0);
 			this.button.Name = "button";
 			this.button.Padding = new System.Windows.Forms.Padding(0, 0, 1, 2);
-			this.button.Size = new System.Drawing.Size(30, 24);
+			this.button.Size = new System.Drawing.Size(28, 24);
 			this.button.TabIndex = 1;
 			this.button.UseVisualStyleBackColor = true;
 			this.button.Visible = false;

@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int index;
 		private string title;
 		private string sprite;
+		private ActorStructure actor;
 		private long spritelongname;
 		private int color;
 		private bool arrow;
@@ -75,6 +76,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int Index { get { return index; } }
 		public string Title { get { return title; } }
 		public string Sprite { get { return sprite; } }
+		public ActorStructure Actor { get { return actor; } }
 		public long SpriteLongName { get { return spritelongname; } }
 		public int Color { get { return color; } }
 		public bool Arrow { get { return arrow; } }
@@ -101,6 +103,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Initialize
 			this.index = index;
 			this.category = null;
+			this.actor = null;
 			this.title = "<" + index.ToString(CultureInfo.InvariantCulture) + ">";
 			this.sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 			this.color = 0;
@@ -131,6 +134,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = true;
+			this.actor = null;
 			
 			// Read properties
 			this.title = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".title", "<" + key + ">");
@@ -173,6 +177,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = index;
 			this.category = cat;
 			this.title = title;
+			this.actor = null;
 			this.isknown = true;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
@@ -210,6 +215,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.index = actor.DoomEdNum;
 			this.category = cat;
 			this.title = "";
+			this.actor = actor;
 			this.isknown = true;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
@@ -244,6 +250,9 @@ namespace CodeImp.DoomBuilder.Config
 		// This updates the properties from a decorate actor
 		internal void ModifyByDecorateActor(ActorStructure actor)
 		{
+			// Keep reference to actor
+			this.actor = actor;
+			
 			// Set the title
 			if(actor.HasPropertyWithValue("$title"))
 				title = actor.GetPropertyAllValues("$title");

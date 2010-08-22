@@ -197,6 +197,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Show the button
 				button.Visible = true;
+				button.Image = typehandler.BrowseImage;
 				scrollbuttons.Visible = false;
 				combobox.DropDownStyle = ComboBoxStyle.Simple;
 			}

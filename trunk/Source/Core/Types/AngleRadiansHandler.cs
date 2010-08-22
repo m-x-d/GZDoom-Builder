@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
@@ -51,6 +52,8 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override bool IsBrowseable { get { return true; } }
 
+		public override Image BrowseImage { get { return Properties.Resources.Angle; } }
+		
 		#endregion
 
 		#region ================== Constructor

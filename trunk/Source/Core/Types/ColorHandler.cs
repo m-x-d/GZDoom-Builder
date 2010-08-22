@@ -51,6 +51,8 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override bool IsBrowseable { get { return true; } }
 
+		public override Image BrowseImage { get { return Properties.Resources.ColorPick; } }
+		
 		#endregion
 
 		#region ================== Constructor

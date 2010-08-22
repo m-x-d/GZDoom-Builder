@@ -243,7 +243,9 @@ namespace CodeImp.DoomBuilder.Actions
 		internal void Begin()
 		{
 			List<ActionDelegate> delegateslist;
-			
+
+			General.Plugins.OnActionBegin(this);
+
 			// Method bound?
 			if(begindelegates.Count > 0)
 			{
@@ -277,6 +279,8 @@ namespace CodeImp.DoomBuilder.Actions
 				General.Actions.ResetExclusiveRequest();
 				General.Actions.Current = null;
 			}
+			
+			General.Plugins.OnActionEnd(this);
 		}
 
 		// This checks if the action qualifies for a key combination

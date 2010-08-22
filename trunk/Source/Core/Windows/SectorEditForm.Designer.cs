@@ -113,12 +113,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tag
 			// 
+			this.tag.AllowDecimal = false;
 			this.tag.AllowNegative = false;
 			this.tag.AllowRelative = true;
 			this.tag.ButtonStep = 1;
 			this.tag.Location = new System.Drawing.Point(89, 26);
 			this.tag.Name = "tag";
 			this.tag.Size = new System.Drawing.Size(73, 24);
+			this.tag.StepValues = null;
 			this.tag.TabIndex = 25;
 			// 
 			// taglabel
@@ -158,22 +160,24 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// brightness
 			// 
+			this.brightness.AllowDecimal = false;
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
 			this.brightness.Location = new System.Drawing.Point(89, 61);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(73, 24);
+			this.brightness.StepValues = null;
 			this.brightness.TabIndex = 24;
 			// 
 			// browseeffect
 			// 
 			this.browseeffect.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browseeffect.Image = global::CodeImp.DoomBuilder.Properties.Resources.treeview;
+			this.browseeffect.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
 			this.browseeffect.Location = new System.Drawing.Point(385, 27);
 			this.browseeffect.Name = "browseeffect";
 			this.browseeffect.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browseeffect.Size = new System.Drawing.Size(30, 23);
+			this.browseeffect.Size = new System.Drawing.Size(28, 23);
 			this.browseeffect.TabIndex = 1;
 			this.browseeffect.Text = " ";
 			this.browseeffect.UseVisualStyleBackColor = true;
@@ -232,23 +236,27 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// floorheight
 			// 
+			this.floorheight.AllowDecimal = false;
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
 			this.floorheight.ButtonStep = 8;
 			this.floorheight.Location = new System.Drawing.Point(112, 69);
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(88, 24);
+			this.floorheight.StepValues = null;
 			this.floorheight.TabIndex = 23;
 			this.floorheight.WhenTextChanged += new System.EventHandler(this.floorheight_TextChanged);
 			// 
 			// ceilingheight
 			// 
+			this.ceilingheight.AllowDecimal = false;
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
 			this.ceilingheight.ButtonStep = 8;
 			this.ceilingheight.Location = new System.Drawing.Point(112, 35);
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
+			this.ceilingheight.StepValues = null;
 			this.ceilingheight.TabIndex = 22;
 			this.ceilingheight.WhenTextChanged += new System.EventHandler(this.ceilingheight_TextChanged);
 			// 

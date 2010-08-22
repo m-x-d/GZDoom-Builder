@@ -188,6 +188,7 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Cancel
 				disengaging = true;
+				General.Plugins.OnEditCancel();
 				mode.OnCancel();
 				return true;
 			}
@@ -355,7 +356,11 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				// Disenagage old mode
 				disengaging = true;
-				if(oldmode != null) oldmode.OnDisengage();
+				if(oldmode != null)
+				{
+					General.Plugins.OnEditDisengage(oldmode, newmode);
+					oldmode.OnDisengage();
+				}
 				
 				// Reset cursor
 				General.Interface.SetCursor(Cursors.Default);
@@ -367,7 +372,11 @@ namespace CodeImp.DoomBuilder.Editing
 				disengaging = false;
 				
 				// Engage new mode
-				if(newmode != null) newmode.OnEngage();
+				if(newmode != null)
+				{
+					newmode.OnEngage();
+					General.Plugins.OnEditEngage(oldmode, newmode);
+				}
 				
 				// Bind new switch actions
 				UnbindSwitchActions();
@@ -426,7 +435,10 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Let the mode know
 			if(mode != null)
+			{
+				General.Plugins.OnEditCancel();
 				mode.OnCancel();
+			}
 		}
 		
 		/// <summary>
@@ -437,7 +449,10 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			// Let the mode know
 			if(mode != null)
+			{
+				General.Plugins.OnEditAccept();
 				mode.OnAccept();
+			}
 		}
 		
 		#endregion

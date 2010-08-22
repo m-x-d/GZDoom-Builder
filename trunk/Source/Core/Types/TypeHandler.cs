@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Text;
 using CodeImp.DoomBuilder.IO;
@@ -64,6 +65,8 @@ namespace CodeImp.DoomBuilder.Types
 		public virtual bool IsBrowseable { get { return false; } }
 		public virtual bool IsEnumerable { get { return false; } }
 		public virtual bool IsLimitedToEnums { get { return false; } }
+		
+		public virtual Image BrowseImage { get { return null; } }
 
 		#endregion
 
