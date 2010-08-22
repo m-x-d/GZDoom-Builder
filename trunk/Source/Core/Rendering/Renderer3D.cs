@@ -767,6 +767,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This finishes rendering
 		public void Finish()
 		{
+			General.Plugins.OnPresentDisplayBegin();
+
 			// Done
 			graphics.FinishRendering();
 			graphics.Present();

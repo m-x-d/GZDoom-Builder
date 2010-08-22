@@ -102,6 +102,9 @@ namespace CodeImp.DoomBuilder.Editing
 		// Panning
 		public bool IsPanning { get { return panning; } }
 
+		// Rendering
+		public IRenderer2D Renderer { get { return renderer; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
