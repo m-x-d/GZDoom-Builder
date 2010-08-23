@@ -81,12 +81,6 @@ skills
 		<b class="fat">makedoorarg#</b> (0 .. 4) (integer)<br />
 		Arguments for the linedef action number to put on the lines when making a door.<br />
 		<br />
-		<b class="fat">generalizedlinedefs</b>(boolean)<br />
-		Set to <b>true</b> to support generalized linedef actions. This makes the gen_linedeftypes structure mandatory. Default value is <b>false</b>.<br />
-		<br />
-		<b class="fat">generalizedsectors</b> (boolean)<br />
-		Set to <b>true</b> to support generalized sector effects. This makes the gen_sectortypes structure mandatory. Default value is <b>false</b>.<br />
-		<br />
 		<b class="fat">doomlightlevels</b> (boolean)<br />
 		Set this to <b>false</b> to use linear lighting in Doom Builder. Normally Doom Builder uses a simulation of Doom's light levels. Default value is <b>true</b>.<br />
 		<br />
@@ -98,32 +92,6 @@ skills
 		<br />
 		<b class="fat">maxtexturenamelength</b> (integer)<br />
 		Maximum length of texture names in characters. This is used by Doom Builder to limit the input fields in the user interface and to check the validity of texture names in resources. This does NOT determine the actual limitation on the texture names in the map file format. Default value is 8.<br />
-		<br />
-		<b class="fat">defaultthingflags</b> (structure)<br />
-		This defines what the default flags should be first the first new thing when inserted. In map formats that use numeric thing flags, the settings in this structure should be the numeric flags to set. In map formats that use named flags, the settings must be the names of the flags to set. The value of the settings is optional and is ignored by Doom Builder.<br />
-		<br />
-		Example for numeric flags:
-<pre>
-defaultthingflags
-{
-	1;
-	2;
-	4;
-	32;
-}
-</pre>
-		<br />
-		Example for named flags:
-<pre>
-defaultthingflags
-{
-	skill1;
-	skill2;
-	skill3;
-	single;
-	coop;
-}
-</pre>
 		<br />
 		
 		

@@ -48,17 +48,23 @@ namespace CodeImp.DoomBuilder.ZDoomUSDF
 
 		// Static instance
 		private static BuilderPlug me;
-
+		
 		// Tools form
 		private ToolsForm toolsform;
-
+		
+		// Main form
+		private MainForm mainform;
+		
 		#endregion
 		
 		#region ================== Properties
 
 		// Static property to access the BuilderPlug
 		public static BuilderPlug Me { get { return me; } }
-
+		
+		// Is the editor opened?
+		public bool EditorOpen { get { return (mainform != null) && !mainform.IsDisposed; } }
+		
 		#endregion
 		
 		#region ================== Methods
@@ -73,7 +79,7 @@ namespace CodeImp.DoomBuilder.ZDoomUSDF
 				if(lump.Key.Trim().ToUpperInvariant() == "DIALOGUE")
 					editlump = true;
 			}
-
+			
 			if(editlump)
 			{
 				// Load tools (this adds our button to the toolbar)
@@ -81,18 +87,21 @@ namespace CodeImp.DoomBuilder.ZDoomUSDF
 					toolsform = new ToolsForm();
 			}
 		}
-
+		
 		// This unloads everything
 		private void Unload()
 		{
+			if(mainform != null)
+				mainform.Dispose();
+			
 			if(toolsform != null)
 				toolsform.Dispose();
 			
 			toolsform = null;
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Events
 
 		// This event is called when the plugin is initialized
@@ -127,7 +136,15 @@ namespace CodeImp.DoomBuilder.ZDoomUSDF
 			base.OnMapOpenEnd();
 			Load();
 		}
-
+		
+		// Map is being saved
+		public override void OnMapSaveBegin(SavePurpose purpose)
+		{
+			base.OnMapSaveBegin(purpose);
+			if(this.EditorOpen)
+				mainform.SaveData();
+		}
+		
 		// Map closed
 		public override void OnMapCloseEnd()
 		{
@@ -146,15 +163,25 @@ namespace CodeImp.DoomBuilder.ZDoomUSDF
 		#endregion
 		
 		#region ================== Actions
-
-		[BeginAction("openconversationeditor")]
+		
+		[BeginAction("opendialogeditor")]
 		public void OpenConversationEditor()
 		{
-			
-			MessageBox.Show("Not implemented yet.");
-			
+			if(!this.EditorOpen)
+			{
+				mainform = new MainForm();
+				
+				if(General.Settings.ScriptOnTop)
+					mainform.Show(General.Interface);
+				else
+					mainform.Show();
+			}
+			else
+			{
+				mainform.Activate();
+			}
 		}
-
+		
 		#endregion
 	}
 }
