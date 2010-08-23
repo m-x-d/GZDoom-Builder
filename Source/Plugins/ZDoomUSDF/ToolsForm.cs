@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.ZDoomUSDF
 			InitializeComponent();
 
 			General.Interface.AddButton(dialogbutton, ToolbarSection.Script);
+			General.Interface.AddMenu(dialogitem, MenuSection.ViewScriptEdit);
 		}
 
 		// Disposer
@@ -43,9 +44,10 @@ namespace CodeImp.DoomBuilder.ZDoomUSDF
 			if(disposing && (components != null))
 			{
 				components.Dispose();
-				
-				General.Interface.RemoveButton(dialogbutton);
 			}
+			
+			General.Interface.RemoveButton(dialogbutton);
+			General.Interface.RemoveMenu(dialogitem);
 			
 			base.Dispose(disposing);
 		}
@@ -63,7 +65,7 @@ namespace CodeImp.DoomBuilder.ZDoomUSDF
 		#endregion
 
 		#region ================== Events
-		
+
 		#endregion
 	}
 }

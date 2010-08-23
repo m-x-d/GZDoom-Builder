@@ -196,6 +196,18 @@
 				<param name="Name" value="Resource Settings">
 				<param name="Local" value="gc_resourcesettings.html">
 				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Sectors Settings">
+				<param name="Local" value="gc_sectorsettings.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Linedefs Settings">
+				<param name="Local" value="gc_linedefsettings.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Things Settings">
+				<param name="Local" value="gc_thingsettings.html">
+				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="Scripting Configurations">
