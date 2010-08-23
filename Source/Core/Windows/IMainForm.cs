@@ -126,6 +126,17 @@ namespace CodeImp.DoomBuilder.Windows
 		void AddMenu(ToolStripMenuItem menu);
 		
 		/// <summary>
+		/// This adds a menu or menu item to the Doom Builder menu strip in a specific location.
+		/// <para>
+		/// NOTE: When the Tag property of menu items is set with a string, this changes the
+		/// tag to a fully qualified action name by prefixing it with the assembly name.
+		/// </para>
+		/// </summary>
+		/// <param name="menu">The menu to add to Doom Builder.</param>
+		/// <param name="section">The location where to insert the menu or item.</param>
+		void AddMenu(ToolStripMenuItem menu, MenuSection section);
+		
+		/// <summary>
 		/// This removes a menu from the Doom Builder menu strip.
 		/// </summary>
 		/// <param name="menu">The menu to remove.</param>

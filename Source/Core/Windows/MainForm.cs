@@ -1764,25 +1764,58 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Menus
 
 		// This adds a menu to the menus bar
-		public void AddMenu(ToolStripMenuItem menu)
+		public void AddMenu(ToolStripMenuItem menu) { AddMenu(menu, MenuSection.Top, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly())); }
+		public void AddMenu(ToolStripMenuItem menu, MenuSection section) { AddMenu(menu, section, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly())); }
+		private void AddMenu(ToolStripMenuItem menu, MenuSection section, Plugin plugin)
 		{
-			// Find the plugin that called this method
-			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
-
 			// Fix tags to full action names
-			RenameTagsToFullActions(menu.DropDownItems, plugin);
+			ToolStripItemCollection items = new ToolStripItemCollection(this.menumain, new ToolStripItem[0]);
+			items.Add(menu);
+			RenameTagsToFullActions(items, plugin);
 			
-			// Insert the menu before the Tools menu
-			menumain.Items.Insert(menumain.Items.IndexOf(menutools), menu);
-			ApplyShortcutKeys(menu.DropDownItems);
+			// Insert the menu in the right location
+			switch(section)
+			{
+				case MenuSection.FileNewOpenClose: menufile.DropDownItems.Insert(menufile.DropDownItems.IndexOf(seperatorfileopen), menu); break;
+				case MenuSection.FileSave: menufile.DropDownItems.Insert(menufile.DropDownItems.IndexOf(seperatorfilesave), menu); break;
+				case MenuSection.FileRecent: menufile.DropDownItems.Insert(menufile.DropDownItems.IndexOf(seperatorfilerecent), menu); break;
+				case MenuSection.FileExit: menufile.DropDownItems.Insert(menufile.DropDownItems.IndexOf(itemexit), menu); break;
+				case MenuSection.EditUndoRedo: menuedit.DropDownItems.Insert(menuedit.DropDownItems.IndexOf(seperatoreditundo), menu); break;
+				case MenuSection.EditCopyPaste: menuedit.DropDownItems.Insert(menuedit.DropDownItems.IndexOf(seperatoreditcopypaste), menu); break;
+				case MenuSection.EditGeometry: menuedit.DropDownItems.Insert(menuedit.DropDownItems.IndexOf(seperatoreditgeometry), menu); break;
+				case MenuSection.EditGrid: menuedit.DropDownItems.Insert(menuedit.DropDownItems.IndexOf(seperatoreditgrid), menu); break;
+				case MenuSection.EditMapOptions: menuedit.DropDownItems.Add(menu); break;
+				case MenuSection.ViewThings: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewthings), menu); break;
+				case MenuSection.ViewViews: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewviews), menu); break;
+				case MenuSection.ViewZoom: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewzoom), menu); break;
+				case MenuSection.ViewScriptEdit: menuview.DropDownItems.Add(menu); break;
+				case MenuSection.PrefabsInsert: menuprefabs.DropDownItems.Insert(menuprefabs.DropDownItems.IndexOf(seperatorprefabsinsert), menu); break;
+				case MenuSection.PrefabsCreate: menuprefabs.DropDownItems.Add(menu); break;
+				case MenuSection.ToolsResources: menutools.DropDownItems.Insert(menutools.DropDownItems.IndexOf(seperatortoolsresources), menu); break;
+				case MenuSection.ToolsConfiguration: menutools.DropDownItems.Insert(menutools.DropDownItems.IndexOf(seperatortoolsconfig), menu); break;
+				case MenuSection.ToolsTesting: menutools.DropDownItems.Add(menu); break;
+				case MenuSection.HelpManual: menuhelp.DropDownItems.Insert(menuhelp.DropDownItems.IndexOf(seperatorhelpmanual), menu); break;
+				case MenuSection.HelpAbout: menuhelp.DropDownItems.Add(menu); break;
+				case MenuSection.Top: menumain.Items.Insert(menumain.Items.IndexOf(menutools), menu); break;
+			}
+			
+			ApplyShortcutKeys(items);
 		}
 		
 		// Removes a menu
 		public void RemoveMenu(ToolStripMenuItem menu)
 		{
+			// We actually have no idea in which menu this item is,
+			// so try removing from all menus and the top strip
+			menufile.DropDownItems.Remove(menu);
+			menuedit.DropDownItems.Remove(menu);
+			menuview.DropDownItems.Remove(menu);
+			menuprefabs.DropDownItems.Remove(menu);
+			menutools.DropDownItems.Remove(menu);
+			menuhelp.DropDownItems.Remove(menu);
 			menumain.Items.Remove(menu);
 		}
-
+		
 		// Public method to apply shortcut keys
 		internal void ApplyShortcutKeys()
 		{
