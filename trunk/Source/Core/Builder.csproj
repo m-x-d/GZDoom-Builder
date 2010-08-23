@@ -713,6 +713,7 @@
       <DependentUpon>ErrorsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\FindReplaceOptions.cs" />
+    <Compile Include="Windows\MenuSection.cs" />
     <Compile Include="Windows\PasteOptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
