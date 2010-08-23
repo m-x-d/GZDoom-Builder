@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommentsPanel", "Source\Plu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WadAuthorMode", "Source\Plugins\WadAuthorMode\WadAuthorMode.csproj", "{B675B60F-FFB4-4170-BEA8-A8849E197B93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZDoomUSDF", "Source\Plugins\ZDoomUSDF\ZDoomUSDF.csproj", "{CC9BAD62-C57B-45A0-BC5D-172A2957ADC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "USDF", "Source\Plugins\USDF\USDF.csproj", "{CC9BAD62-C57B-45A0-BC5D-172A2957ADC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
