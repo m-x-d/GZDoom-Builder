@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.Map
 		private Triangulation triangles;
 		private FlatVertex[] flatvertices;
 		private ReadOnlyCollection<LabelPositionInfo> labels;
-		private SurfaceEntry surfaceentry;
+		private SurfaceEntryCollection surfaceentries;
 		
 		#endregion
 
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.longceiltexname = MapSet.EmptyLongName;
 			this.updateneeded = true;
 			this.triangulationneeded = true;
-			this.surfaceentry = new SurfaceEntry(-1, -1, -1);
+			this.surfaceentries = new SurfaceEntryCollection();
 
 			if(map == General.Map.Map)
 				General.Map.UndoRedo.RecAddSector(this);
@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.Map
 				map.AddSectorIndexHole(fixedindex);
 				
 				// Free surface entry
-				General.Map.CRenderer2D.Surfaces.FreeSurfaces(surfaceentry);
+				General.Map.CRenderer2D.Surfaces.FreeSurfaces(surfaceentries);
 
 				// Clean up
 				sidedefs = null;
@@ -273,8 +273,8 @@ namespace CodeImp.DoomBuilder.Map
 					labels = Array.AsReadOnly<LabelPositionInfo>(Tools.FindLabelPositions(this).ToArray());
 					
 					// Number of vertices changed?
-					if((surfaceentry != null) && (triangles.Vertices.Count != surfaceentry.numvertices))
-						General.Map.CRenderer2D.Surfaces.FreeSurfaces(surfaceentry);
+					if(triangles.Vertices.Count != surfaceentries.totalvertices)
+						General.Map.CRenderer2D.Surfaces.FreeSurfaces(surfaceentries);
 				}
 			}
 		}
@@ -302,25 +302,17 @@ namespace CodeImp.DoomBuilder.Map
 				// Create bounding box
 				bbox = CreateBBox();
 				
-				// Make a dummy entry if we don't have one yet
-				if(surfaceentry == null) surfaceentry = new SurfaceEntry(-1, -1, -1);
-				
-				// Create floor vertices
-				FlatVertex[] floorvertices = new FlatVertex[flatvertices.Length];
-				flatvertices.CopyTo(floorvertices, 0);
-				General.Plugins.OnSectorFloorSurfaceUpdate(this, ref floorvertices);
-				surfaceentry.floorvertices = floorvertices;
-				surfaceentry.floortexture = longfloortexname;
-				
-				// Create ceiling vertices
-				FlatVertex[] ceilvertices = new FlatVertex[flatvertices.Length];
-				flatvertices.CopyTo(ceilvertices, 0);
-				General.Plugins.OnSectorCeilingSurfaceUpdate(this, ref ceilvertices);
-				surfaceentry.ceilvertices = ceilvertices;
-				surfaceentry.ceiltexture = longceiltexname;
+				// Make update info (this lets the plugin fill in texture coordinates and such)
+				SurfaceUpdate updateinfo = new SurfaceUpdate(flatvertices.Length, true, true);
+				flatvertices.CopyTo(updateinfo.floorvertices, 0);
+				General.Plugins.OnSectorFloorSurfaceUpdate(this, ref updateinfo.floorvertices);
+				flatvertices.CopyTo(updateinfo.ceilvertices, 0);
+				General.Plugins.OnSectorCeilingSurfaceUpdate(this, ref updateinfo.ceilvertices);
+				updateinfo.floortexture = longfloortexname;
+				updateinfo.ceiltexture = longceiltexname;
 
-				// Update entry
-				surfaceentry = General.Map.CRenderer2D.Surfaces.UpdateSurfaces(surfaceentry);
+				// Update surfaces
+				General.Map.CRenderer2D.Surfaces.UpdateSurfaces(surfaceentries, updateinfo);
 
 				// Updated
 				updateneeded = false;
@@ -333,16 +325,13 @@ namespace CodeImp.DoomBuilder.Map
 			if(flatvertices == null) return;
 			
 			// Create floor vertices
-			FlatVertex[] floorvertices = new FlatVertex[flatvertices.Length];
-			flatvertices.CopyTo(floorvertices, 0);
-			General.Plugins.OnSectorFloorSurfaceUpdate(this, ref floorvertices);
-			surfaceentry.floorvertices = floorvertices;
-			surfaceentry.floortexture = longfloortexname;
-			if(surfaceentry.ceilvertices == null)
-				surfaceentry.ceilvertices = floorvertices;
+			SurfaceUpdate updateinfo = new SurfaceUpdate(flatvertices.Length, true, false);
+			flatvertices.CopyTo(updateinfo.floorvertices, 0);
+			General.Plugins.OnSectorFloorSurfaceUpdate(this, ref updateinfo.floorvertices);
+			updateinfo.floortexture = longfloortexname;
 			
 			// Update entry
-			surfaceentry = General.Map.CRenderer2D.Surfaces.UpdateSurfaces(surfaceentry);
+			General.Map.CRenderer2D.Surfaces.UpdateSurfaces(surfaceentries, updateinfo);
 			General.Map.CRenderer2D.Surfaces.UnlockBuffers();
 		}
 
@@ -352,16 +341,13 @@ namespace CodeImp.DoomBuilder.Map
 			if(flatvertices == null) return;
 
 			// Create ceiling vertices
-			FlatVertex[] ceilvertices = new FlatVertex[flatvertices.Length];
-			flatvertices.CopyTo(ceilvertices, 0);
-			General.Plugins.OnSectorCeilingSurfaceUpdate(this, ref ceilvertices);
-			surfaceentry.ceilvertices = ceilvertices;
-			surfaceentry.ceiltexture = longceiltexname;
-			if(surfaceentry.floorvertices == null)
-				surfaceentry.floorvertices = ceilvertices;
+			SurfaceUpdate updateinfo = new SurfaceUpdate(flatvertices.Length, false, true);
+			flatvertices.CopyTo(updateinfo.ceilvertices, 0);
+			General.Plugins.OnSectorCeilingSurfaceUpdate(this, ref updateinfo.ceilvertices);
+			updateinfo.ceiltexture = longceiltexname;
 			
 			// Update entry
-			surfaceentry = General.Map.CRenderer2D.Surfaces.UpdateSurfaces(surfaceentry);
+			General.Map.CRenderer2D.Surfaces.UpdateSurfaces(surfaceentries, updateinfo);
 			General.Map.CRenderer2D.Surfaces.UnlockBuffers();
 		}
 		
