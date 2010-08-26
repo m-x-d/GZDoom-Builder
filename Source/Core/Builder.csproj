@@ -703,7 +703,9 @@
     <Compile Include="Map\MapElementCollection.cs" />
     <Compile Include="Rendering\SurfaceBufferSet.cs" />
     <Compile Include="Rendering\SurfaceEntry.cs" />
+    <Compile Include="Rendering\SurfaceEntryCollection.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />
+    <Compile Include="Rendering\SurfaceUpdate.cs" />
     <Compile Include="Types\ThingClassHandler.cs" />
     <Compile Include="Types\ThingTypeHandler.cs" />
     <Compile Include="Windows\ErrorsForm.cs">

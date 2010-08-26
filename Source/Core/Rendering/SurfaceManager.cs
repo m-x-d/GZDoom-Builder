@@ -48,6 +48,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		// is a scary big number for a vertexbuffer.
 		private const int MAX_VERTICES_PER_BUFFER = 30000;
 		
+		// When a sector exceeds this number of vertices, it should split up it's triangles
+		// This number must be a multiple of 3.
+		public const int MAX_VERTICES_PER_SECTOR = 6000;
+		
 		#endregion
 		
 		#region ================== Variables
@@ -220,10 +224,19 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				if(s.Triangles != null)
 				{
-					// We count the number of sectors that have specific number of vertices
-					if(!sectorverts.ContainsKey(s.Triangles.Vertices.Count))
-						sectorverts.Add(s.Triangles.Vertices.Count, 0);
-					sectorverts[s.Triangles.Vertices.Count]++;
+					int numvertices = s.Triangles.Vertices.Count;
+					while(numvertices > 0)
+					{
+						// Determine for how many vertices in this entry
+						int vertsinentry = (numvertices > MAX_VERTICES_PER_SECTOR) ? MAX_VERTICES_PER_SECTOR : numvertices;
+						
+						// We count the number of sectors that have specific number of vertices
+						if(!sectorverts.ContainsKey(vertsinentry))
+							sectorverts.Add(vertsinentry, 0);
+						sectorverts[vertsinentry]++;
+
+						numvertices -= vertsinentry;
+					}
 				}
 			}
 			
@@ -385,53 +398,95 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 		
 		// This adds or updates sector geometry into a buffer.
-		// Always specify the entry when a previous entry was already given for that sector!
-		// Sector must set the floorvertices and ceilvertices members on the entry.
-		// Returns the new surface entry for the stored geometry, floorvertices and ceilvertices will be preserved.
-		public SurfaceEntry UpdateSurfaces(SurfaceEntry entry)
+		// Modiies the list of SurfaceEntries with the new surface entry for the stored geometry.
+		public void UpdateSurfaces(SurfaceEntryCollection entries, SurfaceUpdate update)
 		{
-			if(entry.floorvertices.Length != entry.ceilvertices.Length)
-				General.Fail("Floor vertices has different length from ceiling vertices!");
-
-			int numvertices = entry.floorvertices.Length;
-			
-			// Free entry when number of vertices have changed
-			if((entry.numvertices != numvertices) && (entry.numvertices != -1))
-				FreeSurfaces(entry);
-			
-			// Check if we can render this at all
-			if(numvertices > 0)
+			// Free entries when number of vertices has changed
+			if((entries.Count > 0) && (entries.totalvertices != update.numvertices))
 			{
-				SurfaceBufferSet set = GetSet(numvertices);
+				FreeSurfaces(entries);
+				entries.Clear();
+			}
+			
+			if((entries.Count == 0) && (update.numvertices > 0))
+			{
+				#if DEBUG
+				if((update.floorvertices == null) || (update.ceilvertices == null))
+					General.Fail("We need both floor and ceiling vertices when the number of vertices changes!");
+				#endif
+				
+				// If we have no entries yet, we have to make them now
+				int vertsremaining = update.numvertices;
+				while(vertsremaining > 0)
+				{
+					// Determine for how many vertices in this entry
+					int vertsinentry = (vertsremaining > MAX_VERTICES_PER_SECTOR) ? MAX_VERTICES_PER_SECTOR : vertsremaining;
+
+					// Lookup the set that holds entries for this number of vertices
+					SurfaceBufferSet set = GetSet(vertsinentry);
+
+					// Make sure we can get a new entry in this set
+					EnsureFreeBufferSpace(set, 1);
+
+					// Get a new entry in this set
+					SurfaceEntry e = set.holes[set.holes.Count - 1];
+					set.holes.RemoveAt(set.holes.Count - 1);
+					set.entries.Add(e);
+					
+					// Fill the entry data
+					e.floorvertices = new FlatVertex[vertsinentry];
+					e.ceilvertices = new FlatVertex[vertsinentry];
+					Array.Copy(update.floorvertices, update.numvertices - vertsremaining, e.floorvertices, 0, vertsinentry);
+					Array.Copy(update.ceilvertices, update.numvertices - vertsremaining, e.ceilvertices, 0, vertsinentry);
+					e.floortexture = update.floortexture;
+					e.ceiltexture = update.ceiltexture;
+					
+					entries.Add(e);
+					vertsremaining -= vertsinentry;
+				}
+			}
+			else
+			{
+				// We re-use the same entries, just copy over the updated data
+				int vertsremaining = update.numvertices;
+				foreach(SurfaceEntry e in entries)
+				{
+					if(update.floorvertices != null)
+					{
+						Array.Copy(update.floorvertices, update.numvertices - vertsremaining, e.floorvertices, 0, e.numvertices);
+						e.floortexture = update.floortexture;
+					}
+
+					if(update.ceilvertices != null)
+					{
+						Array.Copy(update.ceilvertices, update.numvertices - vertsremaining, e.ceilvertices, 0, e.numvertices);
+						e.ceiltexture = update.ceiltexture;
+					}
+
+					vertsremaining -= e.numvertices;
+				}
+			}
+
+			entries.totalvertices = update.numvertices;
+			
+			// Time to update or create the buffers
+			foreach(SurfaceEntry e in entries)
+			{
+				SurfaceBufferSet set = GetSet(e.numvertices);
 
 				// Update bounding box
-				entry.UpdateBBox();
+				e.UpdateBBox();
 				
-				// Check if we need a new entry
-				if(entry.numvertices == -1)
-				{
-					EnsureFreeBufferSpace(set, 1);
-					SurfaceEntry nentry = set.holes[set.holes.Count - 1];
-					set.holes.RemoveAt(set.holes.Count - 1);
-					nentry.ceilvertices = entry.ceilvertices;
-					nentry.floorvertices = entry.floorvertices;
-					nentry.floortexture = entry.floortexture;
-					nentry.ceiltexture = entry.ceiltexture;
-					nentry.bbox = entry.bbox;
-					set.entries.Add(nentry);
-					entry = nentry;
-				}
-
 				if(!resourcesunloaded)
 				{
 					// Lock the buffer
 					DataStream bstream;
-					VertexBuffer vb = set.buffers[entry.bufferindex];
+					VertexBuffer vb = set.buffers[e.bufferindex];
 					if(vb.Tag == null)
 					{
 						// Note: DirectX warns me that I am not using LockFlags.Discard or LockFlags.NoOverwrite here,
-						// but we don't care (we don't have much of a choice since we want to update our data)
-						bstream = vb.Lock(0, set.buffersizes[entry.bufferindex] * FlatVertex.Stride, LockFlags.None);
+						// but we don't have much of a choice since we want to update our data and not destroy other data
+						bstream = vb.Lock(0, set.buffersizes[e.bufferindex] * FlatVertex.Stride, LockFlags.None);
 						vb.Tag = bstream;
 						lockedbuffers.Add(vb);
 					}
@@ -441,27 +496,28 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					// Write the vertices to buffer
-					bstream.Seek(entry.vertexoffset * FlatVertex.Stride, SeekOrigin.Begin);
-					bstream.WriteRange(entry.floorvertices);
-					bstream.WriteRange(entry.ceilvertices);
+					bstream.Seek(e.vertexoffset * FlatVertex.Stride, SeekOrigin.Begin);
+					bstream.WriteRange(e.floorvertices);
+					bstream.WriteRange(e.ceilvertices);
 				}
 			}
-			
-			return entry;
 		}
 
 		// This frees the given surface entry
-		public void FreeSurfaces(SurfaceEntry entry)
+		public void FreeSurfaces(SurfaceEntryCollection entries)
 		{
-			if((entry.numvertices > 0) && (entry.bufferindex > -1))
+			foreach(SurfaceEntry e in entries)
 			{
-				SurfaceBufferSet set = sets[entry.numvertices];
-				set.entries.Remove(entry);
-				SurfaceEntry newentry = new SurfaceEntry(entry);
-				set.holes.Add(newentry);
+				if((e.numvertices > 0) && (e.bufferindex > -1))
+				{
+					SurfaceBufferSet set = sets[e.numvertices];
+					set.entries.Remove(e);
+					SurfaceEntry newentry = new SurfaceEntry(e);
+					set.holes.Add(newentry);
+				}
+				e.numvertices = -1;
+				e.bufferindex = -1;
 			}
-			entry.numvertices = -1;
-			entry.bufferindex = -1;
 		}
 		
 		// This unlocks the locked buffers
