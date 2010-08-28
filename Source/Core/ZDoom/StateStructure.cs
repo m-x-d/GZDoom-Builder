@@ -161,27 +161,37 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// This finds the first valid sprite and returns it
 		public string GetSprite(int index)
 		{
+			List<StateStructure> callstack = new List<StateStructure>();
+			return GetSprite(index, callstack);
+		}
+		
+		// This version of GetSprite uses a callstack to check if it isn't going into an endless loop
+		private string GetSprite(int index, List<StateStructure> prevstates)
+		{
 			// If we have sprite of our own, see if we can return this index
 			if(index < sprites.Count)
 			{
 				return sprites[index];
 			}
+			
 			// Otherwise, continue searching where goto tells us to go
-			else if(gotostate != null)
+			if(gotostate != null)
 			{
 				// Find the class
 				ActorStructure a = parser.GetArchivedActorByName(gotostate.ClassName);
 				if(a != null)
 				{
 					StateStructure s = a.GetState(gotostate.StateName);
-					if(s != null)
+					if((s != null) && !prevstates.Contains(s))
 					{
-						return s.GetSprite(gotostate.SpriteOffset);
+						prevstates.Add(this);
+						return s.GetSprite(gotostate.SpriteOffset, prevstates);
 					}
 				}
 			}
+			
 			// If there is no goto keyword used, just give us one of our sprites if we can
-			else if(sprites.Count > 0)
+			if(sprites.Count > 0)
 			{
 				// The following behavior should really depend on the flow control keyword (loop or stop) but who cares.
 				return sprites[0];
