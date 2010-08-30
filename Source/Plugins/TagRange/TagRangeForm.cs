@@ -123,6 +123,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			outoftagswarning.Visible = outoftags;
 			doubletagwarning.Visible = tagsused && !outoftags;
 			skipdoubletags.Visible = tagsused && !outoftags;
+			skipdoubletags.BringToFront();
 			
 			tags = CreateRange(starttag, skipdoubletags.Checked, out tagsused, out outoftags);
 			
