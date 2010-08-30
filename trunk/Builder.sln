@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WadAuthorMode", "Source\Plu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "USDF", "Source\Plugins\USDF\USDF.csproj", "{CC9BAD62-C57B-45A0-BC5D-172A2957ADC7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagRange", "Source\Plugins\TagRange\TagRange.csproj", "{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,16 @@ Global
 		{CC9BAD62-C57B-45A0-BC5D-172A2957ADC7}.Release|Mixed Platforms.Build.0 = Release|x86
 		{CC9BAD62-C57B-45A0-BC5D-172A2957ADC7}.Release|x86.ActiveCfg = Release|x86
 		{CC9BAD62-C57B-45A0-BC5D-172A2957ADC7}.Release|x86.Build.0 = Release|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Debug|x86.ActiveCfg = Debug|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Debug|x86.Build.0 = Debug|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Release|Any CPU.ActiveCfg = Release|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Release|Mixed Platforms.Build.0 = Release|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Release|x86.ActiveCfg = Release|x86
+		{F49EFF6D-51CB-4E49-8223-AAE653C5B62F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
