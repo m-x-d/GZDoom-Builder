@@ -89,9 +89,9 @@ namespace CodeImp.DoomBuilder.TagRange
 			base.OnEditEngage(oldmode, newmode);
 			toolsform.UpdateButton();
 		}
-		
-		[BeginAction("rangetagselectedsectors")]
-		private void RangeTagSelectedSectors()
+
+		[BeginAction("rangetagselection")]
+		private void RangeTagSelection()
 		{
 			TagRangeForm f = new TagRangeForm();
 			f.Setup();
