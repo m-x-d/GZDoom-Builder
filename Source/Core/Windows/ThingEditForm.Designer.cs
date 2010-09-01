@@ -420,10 +420,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.browseaction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseaction.Location = new System.Drawing.Point(530, 26);
+			this.browseaction.Location = new System.Drawing.Point(530, 25);
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browseaction.Size = new System.Drawing.Size(28, 23);
+			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
 			this.browseaction.Text = " ";
 			this.browseaction.UseVisualStyleBackColor = true;
@@ -489,6 +489,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.fieldslist.AutoInsertUserPrefix = true;
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.fieldslist.Location = new System.Drawing.Point(8, 9);

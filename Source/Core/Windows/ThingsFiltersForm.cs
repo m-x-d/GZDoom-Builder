@@ -52,11 +52,25 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Initialize
 			InitializeComponent();
-
+			
+			// Fill types list
+			List<ThingTypeInfo> thingtypes = new List<ThingTypeInfo>(General.Map.Data.ThingTypes);
+			INumberedTitle[] typeitems = new INumberedTitle[thingtypes.Count];
+			for(int i = 0; i < thingtypes.Count; i++) typeitems[i] = thingtypes[i];
+			filtertype.AddInfo(typeitems);
+			
 			// Fill the categories combobox
 			filtercategory.Items.Add("(any category)");
 			filtercategory.Items.AddRange(General.Map.Data.ThingCategories.ToArray());
-
+			
+			// Fill actions list
+			filteraction.GeneralizedCategories = General.Map.Config.GenActionCategories;
+			filteraction.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
+			
+			// Initialize custom fields editor
+			fieldslist.ListNoFixedFields();
+			fieldslist.Setup("thing");
+			
 			// Fill checkboxes list
 			foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
 			{
@@ -70,19 +84,30 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Make a copy (we don't want to modify the filters until OK is clicked)
 				ThingsFilter nf = new ThingsFilter(f);
-
+				
 				// Make item in list
 				ListViewItem item = new ListViewItem(nf.Name);
 				item.Tag = nf;
 				listfilters.Items.Add(item);
-
+				
 				// Select item if this is the current filter
 				if(General.Map.ThingsFilter == f) item.Selected = true;
 			}
-
+			
 			// Sort the list
 			listfilters.Sort();
-
+			
+			// Map format specific fields
+			filterzheight.Visible = General.Map.FormatInterface.HasThingHeight;
+			labelzheight.Visible = General.Map.FormatInterface.HasThingHeight;
+			argumentspanel.Visible = General.Map.FormatInterface.HasActionArgs;
+			labeltag.Visible = General.Map.FormatInterface.HasThingTag;
+			filtertag.Visible = General.Map.FormatInterface.HasThingTag;
+			if(!General.Map.FormatInterface.HasCustomFields)
+				tabs.TabPages.Remove(tabcustom);
+			if(!General.Map.FormatInterface.HasThingAction && !General.Map.FormatInterface.HasThingTag)
+				tabs.TabPages.Remove(tabaction);
+			
 			// Done
 			settingup = false;
 		}
@@ -156,11 +181,11 @@ namespace CodeImp.DoomBuilder.Windows
 				settingup = true;
 				deletefilter.Enabled = true;
 				filtergroup.Enabled = true;
-
+				
 				// Show name
 				filtername.Text = f.Name;
 				
-				// Show category
+				// Properties
 				foreach(object c in filtercategory.Items)
 				{
 					ThingCategory tc = (c as ThingCategory);
@@ -168,7 +193,39 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				if(filtercategory.SelectedIndex == -1) filtercategory.SelectedIndex = 0;
 				
-				// Show fields
+				if(f.ThingType > -1)
+					filtertype.Value = f.ThingType;
+				else
+					filtertype.Empty = true;
+				
+				if(f.ThingAngle > -1)
+					filterangle.Text = f.ThingAngle.ToString();
+				else
+					filterangle.Text = "";
+					
+				if(f.ThingZHeight > int.MinValue)
+					filterzheight.Text = f.ThingZHeight.ToString();
+				else
+					filterzheight.Text = "";
+				
+				// Action
+				if(f.ThingAction > -1)
+					filteraction.Value = f.ThingAction;
+				else
+					filteraction.Empty = true;
+				
+				if(f.ThingArgs[0] > -1) arg0.SetValue(f.ThingArgs[0]); else arg0.ClearValue();
+				if(f.ThingArgs[1] > -1) arg1.SetValue(f.ThingArgs[1]); else arg1.ClearValue();
+				if(f.ThingArgs[2] > -1) arg2.SetValue(f.ThingArgs[2]); else arg2.ClearValue();
+				if(f.ThingArgs[3] > -1) arg3.SetValue(f.ThingArgs[3]); else arg3.ClearValue();
+				if(f.ThingArgs[4] > -1) arg4.SetValue(f.ThingArgs[4]); else arg4.ClearValue();
+				
+				if(f.ThingTag > -1)
+					filtertag.Text = f.ThingTag.ToString();
+				else
+					filtertag.Text = "";
+				
+				// Flags
 				foreach(CheckBox b in filterfields.Checkboxes)
 				{
 					// Field name forbidden?
@@ -186,7 +243,12 @@ namespace CodeImp.DoomBuilder.Windows
 						b.CheckState = CheckState.Indeterminate;
 					}
 				}
-
+				
+				// Custom fields
+				fieldslist.ClearFields();
+				fieldslist.Setup("thing");
+				fieldslist.SetValues(f.ThingCustomFields, true);
+				
 				// Done
 				settingup = false;
 			}
@@ -288,6 +350,140 @@ namespace CodeImp.DoomBuilder.Windows
 						f.RequiredFields.Remove(box.Tag.ToString());
 					}
 				}
+			}
+		}
+		
+		private void filtertype_ValueChanges(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(listfilters.SelectedItems.Count > 0)
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				if(filtertype.Empty)
+					f.ThingType = -1;
+				else
+					f.ThingType = filtertype.GetValue();
+			}
+		}
+		
+		private void browsetype_Click(object sender, EventArgs e)
+		{
+			filtertype.Value = ThingBrowserForm.BrowseThing(this, filtertype.Value);
+		}
+		
+		private void filterangle_WhenTextChanged(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(listfilters.SelectedItems.Count > 0)
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				f.ThingAngle = filterangle.GetResult(-1);
+			}
+		}
+		
+		private void browseangle_Click(object sender, EventArgs e)
+		{
+			AngleForm af = new AngleForm();
+			af.Setup(filterangle.GetResult(-1));
+			if(af.ShowDialog() == DialogResult.OK)
+				filterangle.Text = af.Value.ToString();
+		}
+		
+		private void filterzheight_WhenTextChanged(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(listfilters.SelectedItems.Count > 0)
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				f.ThingZHeight = filterzheight.GetResult(int.MinValue);
+			}
+		}
+
+		private void filteraction_ValueChanges(object sender, EventArgs e)
+		{
+			int showaction = 0;
+			ArgumentInfo[] arginfo;
+
+			// Anything selected?
+			if(listfilters.SelectedItems.Count > 0)
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				if(filteraction.Empty)
+					f.ThingAction = -1;
+				else
+					f.ThingAction = filteraction.GetValue();
+			}
+			
+			// Only when line type is known, otherwise use the thing arguments
+			if(General.Map.Config.LinedefActions.ContainsKey(filteraction.Value)) showaction = filteraction.Value;
+			arginfo = General.Map.Config.LinedefActions[showaction].Args;
+			
+			// Change the argument descriptions
+			arg0label.Text = arginfo[0].Title + ":";
+			arg1label.Text = arginfo[1].Title + ":";
+			arg2label.Text = arginfo[2].Title + ":";
+			arg3label.Text = arginfo[3].Title + ":";
+			arg4label.Text = arginfo[4].Title + ":";
+			arg0label.Enabled = arginfo[0].Used;
+			arg1label.Enabled = arginfo[1].Used;
+			arg2label.Enabled = arginfo[2].Used;
+			arg3label.Enabled = arginfo[3].Used;
+			arg4label.Enabled = arginfo[4].Used;
+			if(arg0label.Enabled) arg0.ForeColor = SystemColors.WindowText; else arg0.ForeColor = SystemColors.GrayText;
+			if(arg1label.Enabled) arg1.ForeColor = SystemColors.WindowText; else arg1.ForeColor = SystemColors.GrayText;
+			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
+			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
+			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
+			arg0.Setup(arginfo[0]);
+			arg1.Setup(arginfo[1]);
+			arg2.Setup(arginfo[2]);
+			arg3.Setup(arginfo[3]);
+			arg4.Setup(arginfo[4]);
+		}
+		
+		private void browseaction_Click(object sender, EventArgs e)
+		{
+			filteraction.Value = ActionBrowserForm.BrowseAction(this, filteraction.Value);
+		}
+		
+		private void filtertag_WhenTextChanged(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(listfilters.SelectedItems.Count > 0)
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				f.ThingTag = filtertag.GetResult(-1);
+			}
+		}
+
+		private void arg_Validated(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(listfilters.SelectedItems.Count > 0)
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				
+				int index;
+				int.TryParse((sender as Control).Tag.ToString(), out index);
+				ArgumentBox filterarg = (sender as ArgumentBox);
+				f.ThingArgs[index] = filterarg.GetResult(-1);
+			}
+		}
+		
+		private void fieldslist_Validated(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(listfilters.SelectedItems.Count > 0)
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				fieldslist.Apply(f.ThingCustomFields);
 			}
 		}
 		

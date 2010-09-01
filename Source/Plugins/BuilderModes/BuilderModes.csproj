@@ -243,6 +243,7 @@
     <Compile Include="ErrorChecks\ResultTextureMissing.cs" />
     <Compile Include="ErrorChecks\ResultUnknownFlat.cs" />
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
+    <Compile Include="FindReplace\FindThingAngle.cs" />
     <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
     <Compile Include="FindReplace\FindThingSectorRef.cs" />
     <Compile Include="FindReplace\FindThingTag.cs" />
@@ -293,6 +294,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\PasteProperties.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Angle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ColorPick.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\List.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\List_Images.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Text.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
