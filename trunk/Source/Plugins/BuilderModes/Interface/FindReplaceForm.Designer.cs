@@ -101,10 +101,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.browsefind.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsefind.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.treeview;
-			this.browsefind.Location = new System.Drawing.Point(212, 47);
+			this.browsefind.Location = new System.Drawing.Point(212, 46);
 			this.browsefind.Name = "browsefind";
 			this.browsefind.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browsefind.Size = new System.Drawing.Size(27, 23);
+			this.browsefind.Size = new System.Drawing.Size(28, 25);
 			this.browsefind.TabIndex = 2;
 			this.browsefind.UseVisualStyleBackColor = true;
 			this.browsefind.Click += new System.EventHandler(this.browsefind_Click);
@@ -123,10 +123,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.browsereplace.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.browsereplace.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.treeview;
-			this.browsereplace.Location = new System.Drawing.Point(203, 24);
+			this.browsereplace.Location = new System.Drawing.Point(203, 23);
 			this.browsereplace.Name = "browsereplace";
 			this.browsereplace.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browsereplace.Size = new System.Drawing.Size(27, 23);
+			this.browsereplace.Size = new System.Drawing.Size(28, 25);
 			this.browsereplace.TabIndex = 1;
 			this.browsereplace.UseVisualStyleBackColor = true;
 			this.browsereplace.Click += new System.EventHandler(this.browsereplace_Click);

@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel = new System.Windows.Forms.Panel();
 			this.activation = new System.Windows.Forms.ComboBox();
 			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
+			this.browseaction = new System.Windows.Forms.Button();
 			this.udmfpanel = new System.Windows.Forms.Panel();
 			this.udmfactivates = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.newtag = new System.Windows.Forms.Button();
@@ -92,7 +93,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.heightpanel1 = new System.Windows.Forms.Panel();
 			this.heightpanel2 = new System.Windows.Forms.Panel();
-			this.browseaction = new System.Windows.Forms.Button();
 			label2 = new System.Windows.Forms.Label();
 			taglabel = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -419,6 +419,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.TabIndex = 0;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
+			// 
+			// browseaction
+			// 
+			this.browseaction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
+			this.browseaction.Location = new System.Drawing.Point(469, 25);
+			this.browseaction.Name = "browseaction";
+			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
+			this.browseaction.Size = new System.Drawing.Size(28, 25);
+			this.browseaction.TabIndex = 1;
+			this.browseaction.Text = " ";
+			this.browseaction.UseVisualStyleBackColor = true;
+			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
 			// udmfpanel
 			// 
@@ -811,6 +824,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.fieldslist.AutoInsertUserPrefix = true;
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.fieldslist.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.fieldslist.Location = new System.Drawing.Point(11, 11);
@@ -836,19 +850,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.heightpanel2.Size = new System.Drawing.Size(88, 470);
 			this.heightpanel2.TabIndex = 4;
 			this.heightpanel2.Visible = false;
-			// 
-			// browseaction
-			// 
-			this.browseaction.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseaction.Location = new System.Drawing.Point(469, 26);
-			this.browseaction.Name = "browseaction";
-			this.browseaction.Padding = new System.Windows.Forms.Padding(0, 0, 1, 3);
-			this.browseaction.Size = new System.Drawing.Size(28, 23);
-			this.browseaction.TabIndex = 1;
-			this.browseaction.Text = " ";
-			this.browseaction.UseVisualStyleBackColor = true;
-			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
 			// LinedefEditForm
 			// 

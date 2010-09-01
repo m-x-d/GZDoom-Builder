@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Controls
 	public partial class ArgumentBox : UserControl
 	{
 		#region ================== Variables
-
+		
 		private TypeHandler typehandler;
 		private bool ignorebuttonchange = false;
 		

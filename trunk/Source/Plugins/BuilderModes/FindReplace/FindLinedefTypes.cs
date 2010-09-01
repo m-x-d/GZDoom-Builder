@@ -50,6 +50,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
+		public override Image BrowseImage { get { return Properties.Resources.List; } }
+		
 		#endregion
 
 		#region ================== Constructor / Destructor
