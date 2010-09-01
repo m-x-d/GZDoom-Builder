@@ -50,6 +50,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Static instance
 		private static BuilderPlug me;
 
+		// Settings
+		private int showvisualthings;			// 0 = none, 1 = sprite only, 2 = sprite caged
+		private int changeheightbysidedef;		// 0 = nothing, 1 = change ceiling, 2 = change floor
+		private bool visualmodeclearselection;
+		private bool usegravity;
+		private bool usehighlight;
+		
+		// Copy/paste
+		private string copiedtexture;
+		private string copiedflat;
+		private Point copiedoffsets;
+		private VertexProperties copiedvertexprops;
+		private SectorProperties copiedsectorprops;
+		private SidedefProperties copiedsidedefprops;
+		private LinedefProperties copiedlinedefprops;
+		private ThingProperties copiedthingprops;
+		
 		#endregion
 
 		#region ================== Properties
@@ -57,6 +74,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Static property to access the BuilderPlug
 		public static BuilderPlug Me { get { return me; } }
 
+		// Settings
+		public int ShowVisualThings { get { return showvisualthings; } set { showvisualthings = value; } }
+		public int ChangeHeightBySidedef { get { return changeheightbysidedef; } }
+		public bool VisualModeClearSelection { get { return visualmodeclearselection; } }
+		public bool UseGravity { get { return usegravity; } set { usegravity = value; } }
+		public bool UseHighlight { get { return usehighlight; } set { usehighlight = value; } }
+		
+		// Copy/paste
+		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
+		public string CopiedFlat { get { return copiedflat; } set { copiedflat = value; } }
+		public Point CopiedOffsets { get { return copiedoffsets; } set { copiedoffsets = value; } }
+		public VertexProperties CopiedVertexProps { get { return copiedvertexprops; } set { copiedvertexprops = value; } }
+		public SectorProperties CopiedSectorProps { get { return copiedsectorprops; } set { copiedsectorprops = value; } }
+		public SidedefProperties CopiedSidedefProps { get { return copiedsidedefprops; } set { copiedsidedefprops = value; } }
+		public LinedefProperties CopiedLinedefProps { get { return copiedlinedefprops; } set { copiedlinedefprops = value; } }
+		public ThingProperties CopiedThingProps { get { return copiedthingprops; } set { copiedthingprops = value; } }
+		
 		#endregion
 
 		#region ================== Initialize / Dispose
@@ -68,6 +102,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 			// Keep a static reference
             me = this;
+
+			LoadSettings();
 		}
 		
 		// This is called when the plugin is terminated
@@ -78,8 +114,32 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		#endregion
 
-		#region ================== Classic Mode Surfaces
+		#region ================== Methods
+
+		// This loads the plugin settings
+		private void LoadSettings()
+		{
+			changeheightbysidedef = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
+			visualmodeclearselection = General.Settings.ReadPluginSetting("visualmodeclearselection", false);
+		}
+
+		#endregion
+
+		#region ================== Events
+
+		// When the Preferences dialog is closed
+		public override void OnClosePreferences(PreferencesController controller)
+		{
+			base.OnClosePreferences(controller);
+
+			// Apply settings that could have been changed
+			LoadSettings();
+		}
 		
+		#endregion
+		
+		#region ================== Classic Mode Surfaces
+
 		// This is called when the vertices are created for the classic mode surfaces
 		public override void OnSectorFloorSurfaceUpdate(Sector s, ref FlatVertex[] vertices)
 		{
