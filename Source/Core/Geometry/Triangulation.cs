@@ -509,6 +509,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			LinkedListNode<EarClipVertex> v1, v2;
 			LinkedListNode<EarClipVertex> insertbefore = null;
 			float u, ul, bonus, foundu = float.MaxValue;
+			Vector2D foundpos = new Vector2D();
 			EarClipVertex split;
 			
 			// Create a line from start that goes beyond the right most vertex of p
@@ -553,8 +554,9 @@ namespace CodeImp.DoomBuilder.Geometry
 							// Rule out vertices before the scan line
 							if(u < 0.0f) u = float.MaxValue;
 							if(ul < 0.0f) ul = float.MaxValue;
-
+							
 							float insert_u = Math.Min(u, ul);
+							Vector2D inserpos = starttoright.GetCoordinatesAt(insert_u);
 							
 							// Check in which direction the line goes.
 							if(v1.Value.Position.x > v2.Value.Position.x)
@@ -568,12 +570,13 @@ namespace CodeImp.DoomBuilder.Geometry
 								LinkedListNode<EarClipVertex> v3 = v2.Next ?? v2.List.First;
 								if(v3.Value.Position.y < v2.Value.Position.y)
 									insert_u -= bonus;
-
+								
 								// Remember this when it is a closer match
 								if(insert_u <= foundu)
 								{
 									insertbefore = v2.Next ?? v2.List.First;
 									foundu = insert_u;
+									foundpos = inserpos;
 								}
 							}
 							else
@@ -587,12 +590,13 @@ namespace CodeImp.DoomBuilder.Geometry
 								LinkedListNode<EarClipVertex> v3 = v1.Previous ?? v1.List.Last;
 								if(v3.Value.Position.y > v1.Value.Position.y)
 									insert_u -= bonus;
-
+								
 								// Remember this when it is a closer match
 								if(insert_u <= foundu)
 								{
 									insertbefore = v2;
 									foundu = insert_u;
+									foundpos = inserpos;
 								}
 							}
 						}
@@ -603,6 +607,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Found a closer intersection
 						insertbefore = v2;
 						foundu = u;
+						foundpos = starttoright.GetCoordinatesAt(u);
 					}
 				}
 				
@@ -617,7 +622,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				Sidedef sd = (insertbefore.Previous == null) ? insertbefore.List.Last.Value.Sidedef : insertbefore.Previous.Value.Sidedef;
 				
 				// Find the position where we have to split the outer polygon
-				split = new EarClipVertex(starttoright.GetCoordinatesAt(foundu), null);
+				split = new EarClipVertex(foundpos, null);
 				
 				// Insert manual split vertices
 				p.AddBefore(insertbefore, new EarClipVertex(split, sd));
