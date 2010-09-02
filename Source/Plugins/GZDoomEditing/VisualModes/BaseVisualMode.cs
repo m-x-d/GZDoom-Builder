@@ -68,6 +68,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private VisualPickResult target;
 		private double lastpicktime;
 		private bool locktarget;
+
+		// This keeps extra sector info
+		private Dictionary<Sector, SectorData> sectordata;
 		
 		// This is true when a selection was made because the action is performed
 		// on an object that was not selected. In this case the previous selection
@@ -132,6 +135,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Initialize
 			this.gravity = new Vector3D(0.0f, 0.0f, 0.0f);
 			this.selectedobjects = new List<IVisualEventReceiver>();
+			this.sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -153,6 +157,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#endregion
 		
 		#region ================== Methods
+
+		// This requests a sector's extra data
+		internal SectorData GetSectorData(Sector s)
+		{
+			if(sectordata.ContainsKey(s))
+			{
+				return sectordata[s];
+			}
+			else
+			{
+				// TODO: Build the sector data now?
+				return new SectorData(this, s);
+			}
+		}
 		
 		// This calculates brightness level
 		internal int CalculateBrightness(int level)
@@ -544,6 +562,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected override void ResourcesReloaded()
 		{
 			base.ResourcesReloaded();
+			sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
 			PickTarget();
 		}
 		
