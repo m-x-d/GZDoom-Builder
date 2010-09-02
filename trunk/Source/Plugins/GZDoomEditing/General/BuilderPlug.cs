@@ -103,6 +103,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Keep a static reference
             me = this;
 
+			// Settings
+			showvisualthings = 2;
+			usegravity = false;
+			usehighlight = true;
 			LoadSettings();
 		}
 		
