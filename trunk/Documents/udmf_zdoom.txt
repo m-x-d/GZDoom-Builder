@@ -1,5 +1,5 @@
 ===============================================================================
-Universal Doom Map Format ZDoom extensions v1.5 - 22.02.2009
+Universal Doom Map Format ZDoom extensions v1.10 - 25.04.2010
 
 
     Copyright (c) 2008 Christoph Oelckers.
@@ -38,7 +38,8 @@ between the TEXTMAP and ENDMAP lumps:
 
     BEHAVIOR = contains compiled ACS code
     DIALOGUE = contains compiled Strife conversation scripts.
-    ZNODES = Nodes (must be stored as compressed GL nodes)
+    ZNODES = Nodes (must be stored as extended GL nodes. Compression is allowed
+	                but deprecated for portability reasons.)
     BLOCKMAP = blockmap. It is recommended not to include this lump in UDMF maps.
     REJECT = reject table. Recommended use is for special effects only.
     
@@ -88,6 +89,7 @@ Note: All <bool> fields default to false unless mentioned otherwise.
       alpha = <float>;          // Translucency of this line, default is 1.0
       renderstyle = <string>;   // Render style, can be "translucent" or "add",
                                 // default is "translucent".
+      playeruseback = <bool>;   // New SPAC flag, true = player can use from back side.
       anycross = <bool>;        // New SPAC flag, true = any non-projectile 
                                 // crossing will trigger this line
       monsteractivate = <bool>; // Monsters can trigger this line.
@@ -103,11 +105,18 @@ Note: All <bool> fields default to false unless mentioned otherwise.
       midtex3d = <bool>;        // Actors can walk on mid texture.
       checkswitchrange = <bool>;// Switches can only be activated when vertically reachable.
       blockprojectiles = <bool>;// Line blocks all projectiles
+      blockuse = <bool>;		// Line blocks all use actions
                     
    }
    
    sidedef
    {
+      scalex_top = <float>;    // X scale for upper texture, Default = 1.0.
+      scaley_top = <float>;    // y scale for upper texture, Default = 1.0.
+      scalex_mid = <float>;    // X scale for mid texture, Default = 1.0.
+      scaley_mid = <float>;    // y scale for mid texture, Default = 1.0.
+      scalex_bottom = <float>; // X scale for lower texture, Default = 1.0.
+      scaley_bottom = <float>; // y scale for lower texture, Default = 1.0.
       offsetx_top = <float>;    // X offset for upper texture, Default = 0.0.
       offsety_top = <float>;    // y offset for upper texture, Default = 0.0.
       offsetx_mid = <float>;    // X offset for mid texture, Default = 0.0.
@@ -121,6 +130,9 @@ Note: All <bool> fields default to false unless mentioned otherwise.
                                 // relative to the owning sector's light level.
       nofakecontrast = <bool>;	// Disables use of fake contrast on this sidedef.
       smoothlighting = <bool>;	// Use smooth fake contrast.
+      clipmidtex = <bool>;      // Side's mid textures are clipped to floor and ceiling.
+      wrapmidtex = <bool>;      // Side's mid textures are wrapped.
+	  nodecals = <bool>;		// Disables decals on the sidedef.
    }
    
    sector
@@ -149,6 +161,9 @@ Note: All <bool> fields default to false unless mentioned otherwise.
       nofallingdamage = <bool>;		  // Falling damage is disabled in this sector
       dropactors = <bool>;            // Actors drop with instantly moving floors (*)
 	  norespawn = <bool>;             // Players can not respawn in this sector
+	  soundsequence = <string>;       // The sound sequence to play when this sector moves. Placing a
+	                                  // sound sequence thing in the sector will override this property.
+	  hidden = <bool>;                // if true this sector will not be drawn on the textured automap.
       
       * Note about dropactors
 
@@ -166,6 +181,8 @@ Note: All <bool> fields default to false unless mentioned otherwise.
       class# = <bool>			// Unlike the base spec, # can range from 1-8.
                                 // 8 is the maximum amount of classes the class
                                 // menu can display.
+	  conversation = <int>		// Assigns a conversation dialogue to this thing.
+								// Parameter is the conversation ID, 0 meaning none.
    }
 								
   
@@ -182,6 +199,7 @@ Note: All <bool> fields default to false unless mentioned otherwise.
    208: TranslucentLine, arg0 (arg0 must be preserved)
      1: Polyobj_StartLine, arg3
      5: Polyobj_ExplicitLine, arg4
+   181: Plane_Align, arg2
    215: Teleport_Line, arg0
    222: Scroll_Texture_Model, arg0 (arg0 must be preserved)
    
@@ -190,7 +208,7 @@ Note: All <bool> fields default to false unless mentioned otherwise.
    This affects the following specials:
    
    121: Line_SetIdentification, arg1
-   208: TranslucentLine, arg2
+   208: TranslucentLine, arg3
    
    These args are to be converted as follows to flags, bit by bit:
    
@@ -233,6 +251,31 @@ this uses array syntax. No functional changes
 
 1.5 22.02.2009
 Added blockprojectiles to lines and firstsideonly to conversion notes
+
+1.6 28.04.2009
+Added blockuse line flag.
+
+1.7 07.06.2009
+Added sidedef scaling properties and side specific clipmidtex and wrapmidtex.
+
+1.8 16.07.2009
+Added NoDecals sidedef option
+Fixed conversion specifications for TranslucentLine special.
+
+1.9 17.04.2010
+Changed node specifications to deprecate compression of node lump.
+
+1.10 25.04.2010
+Added 'playeruseback' line trigger flag.
+
+1.11 07.08.2010
+Added 'soundsequnce' sector property.
+
+1.12 22.08.2010
+Added 'conversation' thing property.
+
+1.13 29.08.2010
+Added 'hidden' sector property.
 
 ===============================================================================
 EOF
