@@ -419,7 +419,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			// Make fresh sector data when it doesn't exist yet
 			if(!sectordata.ContainsKey(s))
-				sectordata[s] = new SectorData(s);
+				sectordata[s] = new SectorData(this, s);
 			
 			return sectordata[s];
 		}
