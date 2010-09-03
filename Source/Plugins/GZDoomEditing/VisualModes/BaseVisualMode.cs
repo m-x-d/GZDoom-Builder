@@ -135,7 +135,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Initialize
 			this.gravity = new Vector3D(0.0f, 0.0f, 0.0f);
 			this.selectedobjects = new List<IVisualEventReceiver>();
-			this.sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -158,20 +157,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		#region ================== Methods
 
-		// This requests a sector's extra data
-		internal SectorData GetSectorData(Sector s)
-		{
-			if(sectordata.ContainsKey(s))
-			{
-				return sectordata[s];
-			}
-			else
-			{
-				// TODO: Build the sector data now?
-				return new SectorData(this, s);
-			}
-		}
-		
 		// This calculates brightness level
 		internal int CalculateBrightness(int level)
 		{
@@ -426,9 +411,56 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 		
 		#endregion
+
+		#region ================== Extended Methods
+
+		// This requests a sector's extra data
+		internal SectorData GetSectorData(Sector s)
+		{
+			// Make fresh sector data when it doesn't exist yet
+			if(!sectordata.ContainsKey(s))
+				sectordata[s] = new SectorData(s);
+			
+			return sectordata[s];
+		}
 		
+		// This rebuilds the sector data
+		internal void RebuildSectorData()
+		{
+			sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
+
+			// Find interesting linedefs (such as line slopes)
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				// Plane Align (see http://zdoom.org/wiki/Plane_Align)
+				if(l.Action == 181)
+				{
+					// Slope front
+					if(((l.Args[0] == 1) || (l.Args[1] == 1)) && (l.Front != null))
+					{
+						SectorData sd = GetSectorData(l.Front.Sector);
+						sd.AddLinedef(l);
+					}
+					
+					// Slope back
+					if(((l.Args[0] == 2) || (l.Args[1] == 2)) && (l.Back != null))
+					{
+						SectorData sd = GetSectorData(l.Back.Sector);
+						sd.AddLinedef(l);
+					}
+				}
+			}
+
+			// Find interesting things (such as vertex and sector slopes)
+			foreach(Thing t in General.Map.Map.Things)
+			{
+			}
+		}
+		
+		#endregion
+
 		#region ================== Events
-		
+
 		// Help!
 		public override void OnHelp()
 		{
@@ -443,6 +475,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Read settings
 			cameraflooroffset = General.Map.Config.ReadSetting("cameraflooroffset", cameraflooroffset);
 			cameraceilingoffset = General.Map.Config.ReadSetting("cameraceilingoffset", cameraceilingoffset);
+
+			RebuildSectorData();
 		}
 
 		// When returning to another mode
@@ -562,7 +596,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected override void ResourcesReloaded()
 		{
 			base.ResourcesReloaded();
-			sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
+			RebuildSectorData();
 			PickTarget();
 		}
 		
