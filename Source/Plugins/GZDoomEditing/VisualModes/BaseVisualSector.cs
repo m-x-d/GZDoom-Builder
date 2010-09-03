@@ -45,7 +45,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Variables
 		
 		protected BaseVisualMode mode;
-
+		
+		protected SectorData data;
 		protected VisualFloor floor;
 		protected VisualCeiling ceiling;
 		protected Dictionary<Sidedef, VisualSidedefParts> sides;
@@ -56,7 +57,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#endregion
 
 		#region ================== Properties
-
+		
+		public SectorData Data { get { return data; } }
 		public VisualFloor Floor { get { return floor; } }
 		public VisualCeiling Ceiling { get { return ceiling; } }
 		public bool Changed { get { return changed; } set { changed |= value; } }
@@ -140,16 +142,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Forget old geometry
 			base.ClearGeometry();
 			
+			// Get sector data
+			data = mode.GetSectorData(this.Sector);
+			if(!data.Built) data.BuildLevels();
+			
 			// Create floor
 			if(floor == null) floor = new VisualFloor(mode, this);
 			floor.Setup();
 			base.AddGeometry(floor);
-
+			
 			// Create ceiling
 			if(ceiling == null) ceiling = new VisualCeiling(mode, this);
 			ceiling.Setup();
 			base.AddGeometry(ceiling);
-
+			
 			// Go for all sidedefs
 			Dictionary<Sidedef, VisualSidedefParts> oldsides = sides ?? new Dictionary<Sidedef, VisualSidedefParts>(1);
 			sides = new Dictionary<Sidedef, VisualSidedefParts>(base.Sector.Sidedefs.Count);
