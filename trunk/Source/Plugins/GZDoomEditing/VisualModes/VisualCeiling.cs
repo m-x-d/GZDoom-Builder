@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
@@ -68,7 +69,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			WorldVertex[] verts;
 			WorldVertex v;
-			Sector s = base.Sector.Sector;
+			Sector s = level.sector;
 			float xpan, ypan, xscale, yscale, rotate;
 			int color, light;
 			bool absolute;
@@ -118,19 +119,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			color = finalcolor.WithAlpha(255).ToInt();
 
 			// Make vertices
-			verts = new WorldVertex[s.Triangles.Vertices.Count];
-			for(int i = 0; i < s.Triangles.Vertices.Count; i++)
+			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
+			verts = new WorldVertex[triverts.Count];
+			for(int i = 0; i < triverts.Count; i++)
 			{
 				// Color shading
 				verts[i].c = color;
 
 				// Vertex coordinates
-				verts[i].x = s.Triangles.Vertices[i].x;
-				verts[i].y = s.Triangles.Vertices[i].y;
-				verts[i].z = Sector.Data.Ceiling.plane.GetZ(s.Triangles.Vertices[i]); //(float)s.CeilHeight;
+				verts[i].x = triverts[i].x;
+				verts[i].y = triverts[i].y;
+				verts[i].z = level.plane.GetZ(triverts[i]); //(float)s.CeilHeight;
 
 				// Texture coordinates
-				Vector2D pos = s.Triangles.Vertices[i];
+				Vector2D pos = triverts[i];
 				pos = pos.GetRotated(rotate);
 				pos.y = -pos.y;
 				pos = (pos + offset) * scale * texscale;

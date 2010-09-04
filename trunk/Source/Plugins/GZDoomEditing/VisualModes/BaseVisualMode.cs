@@ -425,14 +425,26 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 		
 		// This rebuilds the sector data
+		// This requires that the blockmap is up-to-date!
 		internal void RebuildSectorData()
 		{
+			Dictionary<int, List<Sector>> sectortags = new Dictionary<int, List<Sector>>();
 			sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
+			
+			// Find all sector who's tag is not 0 and hash them so that we can find them quicly
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				if(s.Tag != 0)
+				{
+					if(!sectortags.ContainsKey(s.Tag)) sectortags[s.Tag] = new List<Sector>();
+					sectortags[s.Tag].Add(s);
+				}
+			}
 
 			// Find interesting linedefs (such as line slopes)
 			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
-				// Plane Align (see http://zdoom.org/wiki/Plane_Align)
+				// ========== Plane Align (see http://zdoom.org/wiki/Plane_Align) ==========
 				if(l.Action == 181)
 				{
 					// Slope front
@@ -449,11 +461,34 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						sd.AddLinedef(l);
 					}
 				}
+				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
+				else if(l.Action == 160)
+				{
+					if(sectortags.ContainsKey(l.Args[0]))
+					{
+						List<Sector> sectors = sectortags[l.Args[0]];
+						foreach(Sector s in sectors)
+						{
+							SectorData sd = GetSectorData(s);
+							sd.AddLinedef(l);
+						}
+					}
+				}
 			}
 
 			// Find interesting things (such as vertex and sector slopes)
 			foreach(Thing t in General.Map.Map.Things)
 			{
+				// ========== Copy floor slope ==========
+				if(t.Type == 9510)
+				{
+					t.DetermineSector(blockmap);
+					if(t.Sector != null)
+					{
+						SectorData sd = GetSectorData(t.Sector);
+						sd.AddThing(t);
+					}
+				}
 			}
 		}
 		

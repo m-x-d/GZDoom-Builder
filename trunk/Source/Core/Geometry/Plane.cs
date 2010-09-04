@@ -128,8 +128,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// </summary>
 		public Vector3D ClosestOnPlane(Vector3D p)
 		{
-			float d = Vector3D.DotProduct(p, normal) + offset;
-			return p - normal * d;
+			float w = Vector3D.DotProduct(p, normal) + offset;
+			return p - normal * w;
 		}
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// </summary>
 		public float GetZ(Vector2D pos)
 		{
-			return (d + a * pos.x + b * pos.y) / c;
+			return (offset + normal.x * pos.x + normal.y * pos.y) / normal.z;
 		}
 
 		/// <summary>
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// </summary>
 		public float GetZ(float x, float y)
 		{
-			return (d + a * x + b * y) / c;
+			return (offset + normal.x * x + normal.y * y) / normal.z;
 		}
 
 		/// <summary>
