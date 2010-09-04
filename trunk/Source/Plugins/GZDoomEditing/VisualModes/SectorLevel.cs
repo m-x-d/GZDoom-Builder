@@ -16,7 +16,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 	internal class SectorLevel : IComparable<SectorLevel>
 	{
 		// Center of sector to use for plane comparison
-		public Vector3D center;
+		public Vector2D center;
 		
 		// Type of level
 		public SectorLevelType type;
@@ -35,13 +35,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public SectorLevel(Sector s, SectorLevelType type)
 		{
 			this.type = type;
-			this.center = new Vector3D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2, (s.FloorHeight + s.CeilHeight) / 2);
+			this.center = new Vector2D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2);
 		}
 		
 		// Comparer
 		public int CompareTo(SectorLevel other)
 		{
-			float delta = this.plane.ClosestOnPlane(center).z - other.plane.ClosestOnPlane(center).z;
+			float delta = this.plane.GetZ(center) - other.plane.GetZ(center);
 			
 			if(delta > 0.0f)
 				return 1;

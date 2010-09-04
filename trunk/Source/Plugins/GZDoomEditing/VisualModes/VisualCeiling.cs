@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualCeiling(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
+		public VisualCeiling(BaseVisualMode mode, VisualSector vs, SectorLevel level) : base(mode, vs, level)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Vertex coordinates
 				verts[i].x = s.Triangles.Vertices[i].x;
 				verts[i].y = s.Triangles.Vertices[i].y;
-				verts[i].z = (float)s.CeilHeight;
+				verts[i].z = Sector.Data.Ceiling.plane.GetZ(s.Triangles.Vertices[i]); //(float)s.CeilHeight;
 
 				// Texture coordinates
 				Vector2D pos = s.Triangles.Vertices[i];

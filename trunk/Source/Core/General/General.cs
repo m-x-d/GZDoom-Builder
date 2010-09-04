@@ -766,7 +766,7 @@ namespace CodeImp.DoomBuilder
 						else
 						{
 							// Note in the log that we cannot find this file
-							General.ErrorLogger.Add(ErrorType.Warning, "Cannot find the specified file \"" + curarg + "\"");
+							General.WriteLogLine("Cannot find the specified file \"" + curarg + "\"");
 						}
 					}
 				}

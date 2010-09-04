@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualFloor(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
+		public VisualFloor(BaseVisualMode mode, VisualSector vs, SectorLevel level) : base(mode, vs, level)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Vertex coordinates
 				verts[i].x = s.Triangles.Vertices[i].x;
 				verts[i].y = s.Triangles.Vertices[i].y;
-				verts[i].z = (float)s.FloorHeight;
+				verts[i].z = Sector.Data.Floor.plane.GetZ(s.Triangles.Vertices[i]); //(float)s.FloorHeight;
 
 				// Texture coordinates
 				Vector2D pos = s.Triangles.Vertices[i];
@@ -169,8 +169,24 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
+			/*
+			if(level.plane.GetIntersection(from, to, ref pickrayu))
+			{
+				if(pickrayu > 0.0f)
+				{
+					pickintersect = from + (to - from) * pickrayu;
+
+					// Intersection point within bbox?
+					RectangleF bbox = Sector.Sector.BBox;
+					return ((pickintersect.x >= bbox.Left) && (pickintersect.x <= bbox.Right) &&
+							(pickintersect.y >= bbox.Top) && (pickintersect.y <= bbox.Bottom));
+				}
+			}
+
+			return false;
+			*/
 			float planez = (float)Sector.Sector.FloorHeight;
-			
+
 			// Check if line crosses the z height
 			if((from.z > planez) && (to.z < planez))
 			{
