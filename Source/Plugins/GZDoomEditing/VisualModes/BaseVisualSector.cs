@@ -146,15 +146,27 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			data = mode.GetSectorData(this.Sector);
 			if(!data.Built) data.BuildLevels(mode);
 			
-			// Create floor
-			if(floor == null) floor = new VisualFloor(mode, this, data.Floor);
-			floor.Setup();
-			base.AddGeometry(floor);
-			
-			// Create ceiling
-			if(ceiling == null) ceiling = new VisualCeiling(mode, this, data.Ceiling);
-			ceiling.Setup();
-			base.AddGeometry(ceiling);
+			// Create levels
+			foreach(SectorLevel lvl in data.Levels)
+			{
+				if(lvl.type == SectorLevelType.Floor)
+				{
+					// Create a floor
+					VisualFloor g = new VisualFloor(mode, this, lvl);
+					g.Setup();
+					base.AddGeometry(g);
+				}
+				else if(lvl.type == SectorLevelType.Ceiling)
+				{
+					// Create a ceiling
+					VisualCeiling g = new VisualCeiling(mode, this, lvl);
+					g.Setup();
+					base.AddGeometry(g);
+				}
+			}
+
+			// NOTE: Because we no longer use the Floor and Ceiling members, these are now null.
+			// They need to be replaced with a different system that works for all levels in the sector.
 			
 			// Go for all sidedefs
 			Dictionary<Sidedef, VisualSidedefParts> oldsides = sides ?? new Dictionary<Sidedef, VisualSidedefParts>(1);

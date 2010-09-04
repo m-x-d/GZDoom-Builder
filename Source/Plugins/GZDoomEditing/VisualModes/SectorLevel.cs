@@ -21,6 +21,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Type of level
 		public SectorLevelType type;
 		
+		// Original sector
+		public Sector sector;
+		
 		// Plane in the sector
 		public Plane plane;
 		
@@ -34,6 +37,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Constructor
 		public SectorLevel(Sector s, SectorLevelType type)
 		{
+			this.sector = s;
 			this.type = type;
 			this.center = new Vector2D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2);
 		}

@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 			foreach(Linedef l in linedefs)
 			{
-				// Plane Align (see http://zdoom.org/wiki/Plane_Align)
+				// ========== Plane Align (see http://zdoom.org/wiki/Plane_Align) ==========
 				if(l.Action == 181)
 				{
 					// Find the vertex furthest from the line
@@ -181,11 +181,24 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 							ceiling.plane = new Plane(v2, v1, v3, false);
 					}
 				}
+				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
+				else if(l.Action == 160)
+				{
+					if(l.Front != null)
+					{
+						SectorData sd = mode.GetSectorData(l.Front.Sector);
+						if(!sd.Built) sd.BuildLevels(mode);
+
+						// Add floor and ceiling of control sector
+						levels.Add(sd.Floor);
+						levels.Add(sd.Ceiling);
+					}
+				}
 			}
 			
 			foreach(Thing t in things)
 			{
-				// Copy floor slope
+				// ========== Copy floor slope ==========
 				if(t.Type == 9510)
 				{
 					// Find tagged sector
