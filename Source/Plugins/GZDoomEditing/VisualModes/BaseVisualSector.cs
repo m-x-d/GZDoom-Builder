@@ -144,15 +144,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			// Get sector data
 			data = mode.GetSectorData(this.Sector);
-			if(!data.Built) data.BuildLevels();
+			if(!data.Built) data.BuildLevels(mode);
 			
 			// Create floor
-			if(floor == null) floor = new VisualFloor(mode, this);
+			if(floor == null) floor = new VisualFloor(mode, this, data.Floor);
 			floor.Setup();
 			base.AddGeometry(floor);
 			
 			// Create ceiling
-			if(ceiling == null) ceiling = new VisualCeiling(mode, this);
+			if(ceiling == null) ceiling = new VisualCeiling(mode, this, data.Ceiling);
 			ceiling.Setup();
 			base.AddGeometry(ceiling);
 			

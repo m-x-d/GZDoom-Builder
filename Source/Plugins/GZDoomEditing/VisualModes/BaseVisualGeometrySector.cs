@@ -52,6 +52,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// in a multiselection. The Changed property on the BaseVisualSector is
 		// used to indicate a rebuild is needed.
 		protected bool changed;
+
+		protected SectorLevel level;
 		
 		#endregion
 
@@ -65,8 +67,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public BaseVisualGeometrySector(BaseVisualMode mode, VisualSector vs) : base(vs)
+		public BaseVisualGeometrySector(BaseVisualMode mode, VisualSector vs, SectorLevel level) : base(vs)
 		{
+			this.level = level;
 			this.mode = mode;
 		}
 
