@@ -171,41 +171,27 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
-			/*
-			if(level.plane.GetIntersection(from, to, ref pickrayu))
+			// In theory this code should work, but I probably have my math wrong somewhere in here, because it doesn't work right.
+			
+			// Check if our ray starts at the correct side of the plane
+			if(level.plane.Distance(from) > 0.0f)
 			{
-				if(pickrayu > 0.0f)
+				// Calculate the intersection
+				if(level.plane.GetIntersection(from, to, ref pickrayu))
 				{
-					pickintersect = from + (to - from) * pickrayu;
-
-					// Intersection point within bbox?
-					RectangleF bbox = Sector.Sector.BBox;
-					return ((pickintersect.x >= bbox.Left) && (pickintersect.x <= bbox.Right) &&
-							(pickintersect.y >= bbox.Top) && (pickintersect.y <= bbox.Bottom));
+					if(pickrayu > 0.0f)
+					{
+						pickintersect = from + (to - from) * pickrayu;
+						
+						// Intersection point within bbox?
+						RectangleF bbox = Sector.Sector.BBox;
+						return ((pickintersect.x >= bbox.Left) && (pickintersect.x <= bbox.Right) &&
+								(pickintersect.y >= bbox.Top) && (pickintersect.y <= bbox.Bottom));
+					}
 				}
 			}
-
+			
 			return false;
-			*/
-			float planez = (float)Sector.Sector.FloorHeight;
-
-			// Check if line crosses the z height
-			if((from.z > planez) && (to.z < planez))
-			{
-				// Calculate intersection point using the z height
-				pickrayu = (planez - from.z) / (to.z - from.z);
-				pickintersect = from + (to - from) * pickrayu;
-				
-				// Intersection point within bbox?
-				RectangleF bbox = Sector.Sector.BBox;
-				return ((pickintersect.x >= bbox.Left) && (pickintersect.x <= bbox.Right) &&
-				        (pickintersect.y >= bbox.Top) && (pickintersect.y <= bbox.Bottom));
-			}
-			else
-			{
-				// Not even crossing the z height (or not in the right direction)
-				return false;
-			}
 		}
 		
 		// This performs an accurate test for object picking

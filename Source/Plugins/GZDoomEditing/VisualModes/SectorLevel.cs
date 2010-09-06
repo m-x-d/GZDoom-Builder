@@ -28,9 +28,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public Plane plane;
 		
 		// Color of the plane (includes brightness)
+		// When this is 0, it takes the color from the sector above
 		public int color;
 		
 		// Color and brightness below the plane
+		// When this is 0, it takes the color from the sector above
 		public int brightnessbelow;
 		public PixelColor colorbelow;
 		
@@ -40,6 +42,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			this.sector = s;
 			this.type = type;
 			this.center = new Vector2D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2);
+		}
+		
+		// Copy constructor
+		public SectorLevel(SectorLevel source)
+		{
+			this.center = source.center;
+			this.type = source.type;
+			this.sector = source.sector;
+			this.plane = source.plane;
+			this.color = source.color;
+			this.brightnessbelow = source.brightnessbelow;
+			this.colorbelow = source.colorbelow;
 		}
 		
 		// Comparer

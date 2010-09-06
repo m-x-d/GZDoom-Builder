@@ -535,14 +535,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Apply gravity?
 			if(BuilderPlug.Me.UseGravity && (General.Map.VisualCamera.Sector != null))
 			{
+				SectorData sd = GetSectorData(General.Map.VisualCamera.Sector);
+				if(!sd.Built) sd.BuildLevels(this);
+
+				SectorLevel floorlevel = sd.GetLevelBelow(General.Map.VisualCamera.Position + new Vector3D(0.0f, 0.0f, 0.0001f));
+				SectorLevel ceillevel = sd.GetLevelAbove(General.Map.VisualCamera.Position - new Vector3D(0.0f, 0.0f, 0.0001f));
+				if(floorlevel == null) floorlevel = sd.Floor;
+				if(ceillevel == null) ceillevel = sd.Ceiling;
+				
 				// Camera below floor level?
-				if(General.Map.VisualCamera.Position.z <= (General.Map.VisualCamera.Sector.FloorHeight + cameraflooroffset + 0.1f))
+				float floorheight = floorlevel.plane.GetZ(General.Map.VisualCamera.Position);
+				if(General.Map.VisualCamera.Position.z < (floorheight + cameraflooroffset + 0.0001f))
 				{
 					// Stay above floor
 					gravity = new Vector3D(0.0f, 0.0f, 0.0f);
 					General.Map.VisualCamera.Position = new Vector3D(General.Map.VisualCamera.Position.x,
 																	 General.Map.VisualCamera.Position.y,
-																	 General.Map.VisualCamera.Sector.FloorHeight + cameraflooroffset);
+																	 floorheight + cameraflooroffset);
 				}
 				else
 				{
@@ -550,14 +559,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					gravity += new Vector3D(0.0f, 0.0f, (float)(GRAVITY * deltatime));
 					General.Map.VisualCamera.Position += gravity;
 				}
-				
+
 				// Camera above ceiling level?
-				if(General.Map.VisualCamera.Position.z >= (General.Map.VisualCamera.Sector.CeilHeight - cameraceilingoffset - 0.1f))
+				float ceilheight = ceillevel.plane.GetZ(General.Map.VisualCamera.Position);
+				if(General.Map.VisualCamera.Position.z > (ceilheight - cameraceilingoffset))
 				{
 					// Stay below ceiling
 					General.Map.VisualCamera.Position = new Vector3D(General.Map.VisualCamera.Position.x,
 																	 General.Map.VisualCamera.Position.y,
-																	 General.Map.VisualCamera.Sector.CeilHeight - cameraceilingoffset);
+																	 ceilheight - cameraceilingoffset);
 				}
 			}
 			else
