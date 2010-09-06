@@ -90,9 +90,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			PixelColor floorcolor = PixelColor.Modulate(lightcolor, floorbrightness);
 			PixelColor ceilingcolor = PixelColor.Modulate(lightcolor, ceilingbrightness);
 			floor.color = floorcolor.WithAlpha(255).ToInt();
+			floor.brightnessbelow = sector.Brightness;
+			floor.colorbelow = lightcolor.WithAlpha(255);
 			ceiling.color = ceilingcolor.WithAlpha(255).ToInt();
 			ceiling.brightnessbelow = sector.Brightness;
-			ceiling.colorbelow = lightcolor;
+			ceiling.colorbelow = lightcolor.WithAlpha(255);
 			
 			// Add ceiling and floor
 			levels.Add(floor);
@@ -108,7 +110,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		// This adds a thing that of interest to this sector, because it modifies the sector
 		public void AddThing(Thing t) { things.Add(t); }
-		
+
 		// This creates additional levels from things and linedefs
 		public void BuildLevels(BaseVisualMode mode)
 		{
@@ -189,9 +191,19 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						SectorData sd = mode.GetSectorData(l.Front.Sector);
 						if(!sd.Built) sd.BuildLevels(mode);
 
-						// Add floor and ceiling of control sector
-						levels.Add(sd.Floor);
-						levels.Add(sd.Ceiling);
+						SectorLevel f = new SectorLevel(sd.Floor);
+						SectorLevel c = new SectorLevel(sd.Ceiling);
+
+						// Do not adjust light?
+						if((l.Args[2] & 1) != 0)
+						{
+							f.color = 0;
+							f.brightnessbelow = -1;
+							f.colorbelow = PixelColor.FromInt(0);
+						}
+						
+						levels.Add(f);
+						levels.Add(c);
 					}
 				}
 			}
@@ -224,10 +236,53 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Sort the levels
 			levels.Sort();
 			
+			// Now that we know the levels in this sector (and in the right order) we
+			// can determine the lighting in between and on the levels.
+
+
 			// Done
 			built = true;
 			isbuilding = false;
 		}
+
+		// This returns the level above the given point
+		public SectorLevel GetLevelAbove(Vector3D pos)
+		{
+			SectorLevel found = null;
+			float dist = float.MaxValue;
+			
+			foreach(SectorLevel l in levels)
+			{
+				float d = l.plane.GetZ(pos) - pos.z;
+				if((d > 0.0f) && (d < dist))
+				{
+					dist = d;
+					found = l;
+				}
+			}
+			
+			return found;
+		}
+
+		// This returns the level below the given point
+		public SectorLevel GetLevelBelow(Vector3D pos)
+		{
+			SectorLevel found = null;
+			float dist = float.MaxValue;
+
+			foreach(SectorLevel l in levels)
+			{
+				float d = pos.z - l.plane.GetZ(pos);
+				if((d > 0.0f) && (d < dist))
+				{
+					dist = d;
+					found = l;
+				}
+			}
+
+			return found;
+		}
+
 		
 		#endregion
 	}
