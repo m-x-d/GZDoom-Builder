@@ -193,13 +193,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 						SectorLevel f = new SectorLevel(sd.Floor);
 						SectorLevel c = new SectorLevel(sd.Ceiling);
-
+						
+						// A 3D floor's color is always that of the sector it is placed in
+						f.color = 0;
+						
 						// Do not adjust light?
 						if((l.Args[2] & 1) != 0)
 						{
-							f.color = 0;
 							f.brightnessbelow = -1;
 							f.colorbelow = PixelColor.FromInt(0);
+							c.color = 0;
+							c.brightnessbelow = -1;
+							c.colorbelow = PixelColor.FromInt(0);
 						}
 						
 						levels.Add(f);
@@ -238,8 +243,27 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.
-
-
+			// Start from the absolute ceiling and go down to 'cast' the lighting
+			for(int i = levels.Count - 2; i >= 0; i--)
+			{
+				SectorLevel l = levels[i];
+				SectorLevel pl = levels[i + 1];
+				
+				// Set color when no color is specified, or when a 3D floor is placed above the absolute floor
+				if((l.color == 0) || ((l == floor) && (levels.Count > 2)))
+				{
+					PixelColor floorbrightness = PixelColor.FromInt(mode.CalculateBrightness(pl.brightnessbelow));
+					PixelColor floorcolor = PixelColor.Modulate(pl.colorbelow, floorbrightness);
+					l.color = floorcolor.WithAlpha(255).ToInt();
+				}
+				
+				if(l.colorbelow.a == 0)
+					l.colorbelow = pl.colorbelow;
+				
+				if(l.brightnessbelow == -1)
+					l.brightnessbelow = pl.brightnessbelow;
+			}
+			
 			// Done
 			built = true;
 			isbuilding = false;

@@ -71,8 +71,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			WorldVertex v;
 			Sector s = level.sector;
 			float xpan, ypan, xscale, yscale, rotate;
-			int color, light;
-			bool absolute;
 			Vector2D texscale;
 
 			try
@@ -83,9 +81,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				xscale = s.Fields.ContainsKey("xscaleceiling") ? (float)s.Fields["xscaleceiling"].Value : 1.0f;
 				yscale = s.Fields.ContainsKey("yscaleceiling") ? (float)s.Fields["yscaleceiling"].Value : 1.0f;
 				rotate = s.Fields.ContainsKey("rotationceiling") ? (float)s.Fields["rotationceiling"].Value : 0.0f;
-				color = s.Fields.ContainsKey("lightcolor") ? (int)s.Fields["lightcolor"].Value : -1;
-				light = s.Fields.ContainsKey("lightceiling") ? (int)s.Fields["lightceiling"].Value : 0;
-				absolute = s.Fields.ContainsKey("lightceilingabsolute") ? (bool)s.Fields["lightceilingabsolute"].Value : false;
 			}
 			catch(Exception) { return false; }
 			
@@ -112,11 +107,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			rotate = Angle2D.DegToRad(rotate);
 			Vector2D scale = new Vector2D(xscale, yscale);
 			Vector2D offset = new Vector2D(xpan, ypan);
-			if(!absolute) light = s.Brightness + light;
-			PixelColor lightcolor = PixelColor.FromInt(color);
-			PixelColor brightness = PixelColor.FromInt(mode.CalculateBrightness(light));
-			PixelColor finalcolor = PixelColor.Modulate(lightcolor, brightness);
-			color = finalcolor.WithAlpha(255).ToInt();
 
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
@@ -124,7 +114,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			for(int i = 0; i < triverts.Count; i++)
 			{
 				// Color shading
-				verts[i].c = color;
+				verts[i].c = level.color;
 
 				// Vertex coordinates
 				verts[i].x = triverts[i].x;
