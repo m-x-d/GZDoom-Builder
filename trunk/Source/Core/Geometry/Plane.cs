@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			this.normal = Vector3D.CrossProduct(p1 - p2, p3 - p2).GetNormal();
 			this.offset = -Vector3D.DotProduct(normal, p2);
-
+			
 			if((up && (this.normal.z < 0.0f)) || (!up && (this.normal.z > 0.0f)))
 				this.normal.z = -this.normal.z;
 		}
@@ -103,8 +103,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			float w = Vector3D.DotProduct(normal, from - to);
 			if(w != 0.0f)
 			{
-				float v = Vector3D.DotProduct(normal, from);
-				u_ray = (v + offset) / w;
+				float v = (normal.x * from.x) - (normal.y * from.y) - (normal.z * from.z);
+				u_ray = (offset + v) / -w;
 				return true;
 			}
 			else

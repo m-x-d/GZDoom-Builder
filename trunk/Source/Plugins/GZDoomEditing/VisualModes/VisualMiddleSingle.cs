@@ -44,30 +44,30 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constants
 
 		#endregion
-
+		
 		#region ================== Variables
 
 		#endregion
-
+		
 		#region ================== Properties
 
 		#endregion
-
+		
 		#region ================== Constructor / Setup
-
+		
 		// Constructor
 		public VisualMiddleSingle(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
-
+		
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
 			SectorData sd = mode.GetSectorData(Sidedef.Sector);
 			int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
-
+			
 			// Texture given?
 			if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
 			{
@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				base.Texture = General.Map.Data.MissingTexture3D;
 				setuponloadedtexture = 0;
 			}
-
+			
 			// Get texture scaled size
 			Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
 			
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
 			tp.trb.y = tp.tlt.y + (Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
-
+			
 			// Apply texture offset
 			if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 			{
@@ -118,11 +118,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				tp.tlt += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
 				tp.trb += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
 			}
-
+			
 			// Transform pixel coordinates to texture coordinates
 			tp.tlt /= tsz;
 			tp.trb /= tsz;
-
+			
 			// Left top and right bottom of the geometry that
 			if(Sidedef.IsFront)
 			{
@@ -134,11 +134,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				tp.vlt = new Vector3D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y, Sidedef.Sector.CeilHeight);
 				tp.vrb = new Vector3D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y, Sidedef.Sector.FloorHeight);
 			}
-
+			
 			// Make the right-top coordinates
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
 			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
-
+			
+			//
+			// - Geometry is horizontally split and ranges from one layer down to the next layer.
+			//   This is repeated for all layers.
+			//
+			// - When the two layers intersect over Z, the geometry should not span the entire
+			//   width, but only up to the split position. The back side will handle the other
+			//   side of the split, if needed.
+			//
+			
 			// Go for all levels to build geometry
 			List<WorldVertex> verts = new List<WorldVertex>();
 			for(int i = 0; i < (sd.Levels.Count - 1); i++)
@@ -150,25 +159,65 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lt.brightnessbelow));
 					PixelColor wallcolor = PixelColor.Modulate(lt.colorbelow, wallbrightness);
 					int c = wallcolor.WithAlpha(255).ToInt();
-
-					Vector3D vlb = new Vector3D(tp.vlt.x, tp.vlt.y, lb.plane.GetZ(tp.vlt));
-					Vector3D vlt = new Vector3D(tp.vlt.x, tp.vlt.y, lt.plane.GetZ(tp.vlt));
-					Vector3D vrb = new Vector3D(tp.vrb.x, tp.vrb.y, lb.plane.GetZ(tp.vrb));
-					Vector3D vrt = new Vector3D(tp.vrt.x, tp.vrt.y, lt.plane.GetZ(tp.vrt));
-					Vector2D tlb = tp.GetTextureCoordsAt(vlb);
-					Vector2D tlt = tp.GetTextureCoordsAt(vlt);
-					Vector2D trb = tp.GetTextureCoordsAt(vrb);
-					Vector2D trt = tp.GetTextureCoordsAt(vrt);
-
-					verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-					verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
-					verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-					verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-					verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-					verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
+					
+					// Get corner heights on the two planes
+					float lbl = lb.plane.GetZ(tp.vlt);
+					float lbr = lb.plane.GetZ(tp.vrt);
+					float ltl = lt.plane.GetZ(tp.vlt);
+					float ltr = lt.plane.GetZ(tp.vrt);
+					
+					// Make coordinates for the corners
+					Vector3D vlb = new Vector3D(tp.vlt.x, tp.vlt.y, lbl);
+					Vector3D vlt = new Vector3D(tp.vlt.x, tp.vlt.y, ltl);
+					Vector3D vrb = new Vector3D(tp.vrb.x, tp.vrb.y, lbr);
+					Vector3D vrt = new Vector3D(tp.vrt.x, tp.vrt.y, ltr);
+					
+					/*
+					// Compare corner heights to see if we should split
+					if((lbl < ltl) && (lbr >= ltr))
+					{
+						// Split vertically with geometry on the left
+						float u_ray = 1.0f;
+						lb.plane.GetIntersection(vlt, vrt, ref u_ray);
+						Vector3D vs = vlt + (vrt - vlt) * u_ray;
+						Vector2D tlb = tp.GetTextureCoordsAt(vlb);
+						Vector2D tlt = tp.GetTextureCoordsAt(vlt);
+						Vector2D ts = tp.GetTextureCoordsAt(vs);
+						verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
+						verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
+						verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
+					}
+					else if((lbl >= ltl) && (lbr < ltr))
+					{
+						// Split vertically with geometry on the right
+						float u_ray = 0.0f;
+						lb.plane.GetIntersection(vlt, vrt, ref u_ray);
+						Vector3D vs = vlt + (vrt - vlt) * u_ray;
+						Vector2D trb = tp.GetTextureCoordsAt(vrb);
+						Vector2D trt = tp.GetTextureCoordsAt(vrt);
+						Vector2D ts = tp.GetTextureCoordsAt(vs);
+						verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
+						verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
+						verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
+					}
+					else if((lbl < ltl) && (lbr < ltr))
+					*/
+					{
+						// Span entire width
+						Vector2D tlb = tp.GetTextureCoordsAt(vlb);
+						Vector2D tlt = tp.GetTextureCoordsAt(vlt);
+						Vector2D trb = tp.GetTextureCoordsAt(vrb);
+						Vector2D trt = tp.GetTextureCoordsAt(vrt);
+						verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
+						verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
+						verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
+						verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
+						verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
+						verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
+					}
 				}
 			}
-
+			
 			if(verts.Count > 0)
 			{
 				base.SetVertices(verts);
@@ -179,9 +228,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				return false;
 			}
 		}
-
+		
 		#endregion
-
+		
 		#region ================== Methods
 
 		// Return texture name
