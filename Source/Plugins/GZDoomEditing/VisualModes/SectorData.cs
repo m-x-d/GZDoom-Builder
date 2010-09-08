@@ -68,8 +68,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Create floor and ceiling planes
 			floor = new SectorLevel(s, SectorLevelType.Floor);
 			ceiling = new SectorLevel(s, SectorLevelType.Ceiling);
-			floor.plane = new Plane(new Vector3D(0, 0, 1), sector.FloorHeight);
-			ceiling.plane = new Plane(new Vector3D(0, 0, 1), sector.CeilHeight);
+			floor.plane = new Plane(new Vector3D(0, 0, 1), -sector.FloorHeight);
+			ceiling.plane = new Plane(new Vector3D(0, 0, -1), sector.CeilHeight);
 			
 			// Determine colors
 			try
@@ -136,12 +136,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 							founddist = d;
 						}
 					}
+
+					if(sector.Index == 17)
+					{
+						int g = 5;
+					}
 					
 					// Align floor with back of line
 					if((l.Args[0] == 1) && (l.Front.Sector == sector) && (l.Back != null))
 					{
-						Vector3D v1 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.FloorHeight);
-						Vector3D v2 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.FloorHeight);
+						Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.FloorHeight);
+						Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.FloorHeight);
 						Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, sector.FloorHeight);
 						if(l.SideOfLine(v3) < 0.0f)
 							floor.plane = new Plane(v1, v2, v3, true);
@@ -151,8 +156,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					// Align floor with front of line
 					else if((l.Args[0] == 2) && (l.Back.Sector == sector) && (l.Front != null))
 					{
-						Vector3D v1 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.FloorHeight);
-						Vector3D v2 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.FloorHeight);
+						Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.FloorHeight);
+						Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.FloorHeight);
 						Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, sector.FloorHeight);
 						if(l.SideOfLine(v3) < 0.0f)
 							floor.plane = new Plane(v1, v2, v3, true);
@@ -163,8 +168,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					// Align ceiling with back of line
 					if((l.Args[1] == 1) && (l.Front.Sector == sector) && (l.Back != null))
 					{
-						Vector3D v1 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.CeilHeight);
-						Vector3D v2 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.CeilHeight);
+						Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.CeilHeight);
+						Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.CeilHeight);
 						Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, sector.CeilHeight);
 						if(l.SideOfLine(v3) > 0.0f)
 							ceiling.plane = new Plane(v1, v2, v3, false);
@@ -174,8 +179,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					// Align ceiling with front of line
 					else if((l.Args[1] == 2) && (l.Back.Sector == sector) && (l.Front != null))
 					{
-						Vector3D v1 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.CeilHeight);
-						Vector3D v2 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.CeilHeight);
+						Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.CeilHeight);
+						Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.CeilHeight);
 						Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, sector.CeilHeight);
 						if(l.SideOfLine(v3) > 0.0f)
 							ceiling.plane = new Plane(v1, v2, v3, false);
