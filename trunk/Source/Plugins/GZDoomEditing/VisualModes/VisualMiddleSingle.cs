@@ -66,7 +66,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override bool Setup()
 		{
 			SectorData sd = mode.GetSectorData(Sidedef.Sector);
-			int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
 			
 			// Texture given?
 			if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
@@ -102,10 +101,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 			{
 				// When lower unpegged is set, the middle texture is bound to the bottom
-				tp.tlt.y = tsz.y - (Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
+				tp.tlt.y = tsz.y - (float)(Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
 			}
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
-			tp.trb.y = tp.tlt.y + (Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
+			tp.trb.y = tp.tlt.y + (float)(Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
 			
 			// Apply texture offset
 			if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
