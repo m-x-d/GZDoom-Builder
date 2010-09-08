@@ -119,6 +119,12 @@ namespace CodeImp.DoomBuilder.Geometry
 			return new Vector3D(a.x / s, a.y / s, a.z / s);
 		}
 
+		// This scales a vector
+		public static Vector3D operator /(Vector3D a, Vector3D b)
+		{
+			return new Vector3D(a.x / b.x, a.y / b.y, a.z / b.z);
+		}
+
 		// This compares a vector
 		public static bool operator ==(Vector3D a, Vector3D b)
 		{
