@@ -172,7 +172,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					Vector3D vrb = new Vector3D(tp.vrb.x, tp.vrb.y, lbr);
 					Vector3D vrt = new Vector3D(tp.vrt.x, tp.vrt.y, ltr);
 					
-					/*
 					// Compare corner heights to see if we should split
 					if((lbl < ltl) && (lbr >= ltr))
 					{
@@ -201,7 +200,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
 					}
 					else if((lbl < ltl) && (lbr < ltr))
-					*/
 					{
 						// Span entire width
 						Vector2D tlb = tp.GetTextureCoordsAt(vlb);

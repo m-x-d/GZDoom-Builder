@@ -161,8 +161,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
-			// In theory this code should work, but I probably have my math wrong somewhere in here, because it doesn't work right.
-			
 			// Check if our ray starts at the correct side of the plane
 			if(level.plane.Distance(from) > 0.0f)
 			{
