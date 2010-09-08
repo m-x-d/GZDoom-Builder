@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			u_ray = pickrayu;
 			return true;
 		}
-		
+
 		#endregion
 
 		#region ================== Events

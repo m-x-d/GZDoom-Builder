@@ -288,6 +288,28 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			return found;
 		}
 
+		// This returns the level above the given point
+		public SectorLevel GetCeilingAbove(Vector3D pos)
+		{
+			SectorLevel found = null;
+			float dist = float.MaxValue;
+
+			foreach(SectorLevel l in levels)
+			{
+				if(l.type == SectorLevelType.Ceiling)
+				{
+					float d = l.plane.GetZ(pos) - pos.z;
+					if((d > 0.0f) && (d < dist))
+					{
+						dist = d;
+						found = l;
+					}
+				}
+			}
+
+			return found;
+		}
+
 		// This returns the level below the given point
 		public SectorLevel GetLevelBelow(Vector3D pos)
 		{
@@ -301,6 +323,28 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				{
 					dist = d;
 					found = l;
+				}
+			}
+
+			return found;
+		}
+
+		// This returns the floor below the given point
+		public SectorLevel GetFloorBelow(Vector3D pos)
+		{
+			SectorLevel found = null;
+			float dist = float.MaxValue;
+
+			foreach(SectorLevel l in levels)
+			{
+				if(l.type == SectorLevelType.Floor)
+				{
+					float d = pos.z - l.plane.GetZ(pos);
+					if((d > 0.0f) && (d < dist))
+					{
+						dist = d;
+						found = l;
+					}
 				}
 			}
 

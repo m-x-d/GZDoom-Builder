@@ -58,6 +58,7 @@
     <Compile Include="VisualModes\SectorData.cs" />
     <Compile Include="VisualModes\SectorLevel.cs" />
     <Compile Include="VisualModes\SectorLevelType.cs" />
+    <Compile Include="VisualModes\TexturePlane.cs" />
     <Compile Include="VisualModes\VisualActionResult.cs" />
     <Compile Include="VisualModes\VisualCeiling.cs" />
     <Compile Include="VisualModes\VisualFloor.cs" />
