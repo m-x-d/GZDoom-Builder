@@ -224,13 +224,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						SectorData sd = mode.GetSectorData(l.Front.Sector);
 						if(!sd.Built) sd.BuildLevels(mode);
 
-						SectorLevel f = new SectorLevel(sd.Floor);
+						//SectorLevel f = new SectorLevel(sd.Floor);
 						SectorLevel c = new SectorLevel(sd.Ceiling);
 						c.type = SectorLevelType.Light;
-						f.type = SectorLevelType.Light;
-						f.color = 0;
-						f.brightnessbelow = 0;
-						f.colorbelow = PixelColor.FromInt(0);
+						//f.type = SectorLevelType.Light;
+						//f.color = 0;
+						//f.brightnessbelow = 0;
+						//f.colorbelow = PixelColor.FromInt(0);
 						//levels.Add(f);
 						levels.Add(c);
 					}
