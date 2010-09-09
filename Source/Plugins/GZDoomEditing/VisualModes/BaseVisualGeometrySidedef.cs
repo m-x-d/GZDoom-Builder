@@ -108,7 +108,49 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			u_ray = pickrayu;
 			return true;
 		}
-
+		
+		// This slices a polygon with a plane and keeps only a certain part of the polygon
+		protected void SlicePoly(List<Vector3D> poly, Plane p, bool keepfront)
+		{
+			const float NEAR_ZERO = 0.01f;
+			
+			// TODO: We can optimize this by making a list of vertices in the first iteration which
+			// indicates which vertices are on the back side. Then we don't need to calculate p.Distance(v)
+			// again in the second iteration.
+			
+			// First split lines that cross the plane so that we have vertices on the plane where the lines cross
+			for(int i = 0; i < poly.Count; i++)
+			{
+				Vector3D v1 = poly[i];
+				Vector3D v2 = (i == (poly.Count - 1)) ? poly[0] : poly[i+1];
+				
+				// Determine side of plane
+				float side0 = p.Distance(v1);
+				float side1 = p.Distance(v2);
+				
+				// Vertices on different side of plane?
+				if((side0 < -NEAR_ZERO) && (side1 > NEAR_ZERO) ||
+				   (side0 > NEAR_ZERO) && (side1 < -NEAR_ZERO))
+				{
+					// Split line with plane and insert the vertex
+					float u = 0.0f;
+					p.GetIntersection(v1, v2, ref u);
+					Vector3D v3 = v1 + (v2 - v1) * u;
+					poly.Insert(++i, v3);
+				}
+			}
+			
+			// Now we discard all vertices on the back side of the plane
+			int k = poly.Count - 1;
+			while(k >= 0)
+			{
+				float side = p.Distance(poly[k]);
+				if(((side < -NEAR_ZERO) && keepfront) || ((side > NEAR_ZERO) && !keepfront))
+					poly.RemoveAt(k);
+				k--;
+			}
+		}
+		
 		#endregion
 
 		#region ================== Events

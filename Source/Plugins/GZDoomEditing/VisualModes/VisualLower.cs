@@ -61,10 +61,25 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
-
+		
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
+			Vector2D vl, vr;
+			
+			// Left and right vertices for this sidedef
+			if(Sidedef.IsFront)
+			{
+				vl = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
+				vr = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
+			}
+			else
+			{
+				vl = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
+				vr = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
+			}
+			
+			// Load sector data
 			SectorData sd = Sector.Data;
 			SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
 			if(!osd.Built) osd.BuildLevels(mode);
@@ -91,7 +106,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				base.Texture = General.Map.Data.MissingTexture3D;
 				setuponloadedtexture = 0;
 			}
-
+			
 			// Get texture scaled size
 			Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
 			
@@ -99,15 +114,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// We can then use this plane to find any texture coordinate we need.
 			// The logic here is the same as in the original VisualMiddleSingle (except that
 			// the values are stored in a TexturePlane)
+			// NOTE: I use a small bias for the floor height, because if the difference in
+			// height is 0 then the TexturePlane doesn't work!
 			TexturePlane tp = new TexturePlane();
+			float floorbias = (Sidedef.Other.Sector.FloorHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
 			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 			{
 				// When lower unpegged is set, the lower texture is bound to the bottom
 				tp.tlt.y = (float)Sidedef.Sector.CeilHeight - (float)Sidedef.Other.Sector.FloorHeight;
 			}
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
-			tp.trb.y = tp.tlt.y + (float)(Sidedef.Other.Sector.FloorHeight - Sidedef.Sector.FloorHeight);
-
+			tp.trb.y = tp.tlt.y + ((float)Sidedef.Other.Sector.FloorHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
+			
 			// Apply texture offset
 			if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 			{
@@ -119,64 +137,48 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				tp.tlt += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
 				tp.trb += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
 			}
-
+			
 			// Transform pixel coordinates to texture coordinates
 			tp.tlt /= tsz;
 			tp.trb /= tsz;
-
+			
 			// Left top and right bottom of the geometry that
-			if(Sidedef.IsFront)
-			{
-				tp.vlt = new Vector3D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y, Sidedef.Other.Sector.FloorHeight);
-				tp.vrb = new Vector3D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y, Sidedef.Sector.FloorHeight);
-			}
-			else
-			{
-				tp.vlt = new Vector3D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y, Sidedef.Other.Sector.FloorHeight);
-				tp.vrb = new Vector3D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y, Sidedef.Sector.FloorHeight);
-			}
+			tp.vlt = new Vector3D(vl.x, vl.y, (float)Sidedef.Other.Sector.FloorHeight);
+			tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Sector.FloorHeight + floorbias);
 			
 			// Make the right-top coordinates
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
 			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
 			
-			// Heights of the floor on the other side
-			float ol = osd.Floor.plane.GetZ(tp.vlt);
-			float or = osd.Floor.plane.GetZ(tp.vrt);
-			Vector3D vol = new Vector3D(tp.vlt.x, tp.vlt.y, ol);
-			Vector3D vor = new Vector3D(tp.vrt.x, tp.vrt.y, or);
-			
-			if(Sidedef.Index == 215)
-			{
-				int g = 5;
-			}
-			
 			// Go for all levels to build geometry
 			List<WorldVertex> verts = new List<WorldVertex>();
-			for(int i = 0; i < (sd.Levels.Count - 1); i++)
+			for(int i = 1; i < sd.Levels.Count; i++)
 			{
-				SectorLevel lb = sd.Levels[i];
-				SectorLevel lt = sd.Levels[i + 1];
+				SectorLevel l = sd.Levels[i];
 				
-				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lt.brightnessbelow));
-				PixelColor wallcolor = PixelColor.Modulate(lt.colorbelow, wallbrightness);
+				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
+				PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
 				int c = wallcolor.WithAlpha(255).ToInt();
 				
-				// Create initial polygon between the two planes
+				// Create initial polygon, which is just a quad between floor and ceiling
 				List<Vector3D> poly = new List<Vector3D>();
-				poly.Add(new Vector3D(tp.vlt.x, tp.vlt.y, lb.plane.GetZ(tp.vlt)));
-				poly.Add(new Vector3D(tp.vlt.x, tp.vlt.y, lt.plane.GetZ(tp.vlt)));
-				poly.Add(new Vector3D(tp.vrt.x, tp.vrt.y, lt.plane.GetZ(tp.vrt)));
-				poly.Add(new Vector3D(tp.vrb.x, tp.vrb.y, lb.plane.GetZ(tp.vrt)));
+				poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
+				poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
+				poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
+				poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
 				
 				// Slice off the part above the other plane
 				SlicePoly(poly, osd.Floor.plane, false);
+				SlicePoly(poly, osd.Ceiling.plane, true);
 				
-				// Now we go for all planes to splice this polygon
+				// Now we go for all light planes to splice this polygon
 				for(int k = 0; k < sd.Levels.Count; k++)
 				{
-					if((k != i) && (k != (i + 1)))
-						SlicePoly(poly, sd.Levels[k].plane, (k > i) || (sd.Levels[k].type == SectorLevelType.Floor));
+					SectorLevel ol = sd.Levels[k];
+					if((ol != sd.Floor) && (ol != sd.Ceiling) && (ol.type != SectorLevelType.Floor))
+					{
+						SlicePoly(poly, ol.plane, (k >= i));
+					}
 				}
 				
 				// Find texture coordinates for each vertex in the polygon
@@ -184,7 +186,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				foreach(Vector3D v in poly)
 					texc.Add(tp.GetTextureCoordsAt(v));
 				
-				// Now we create triangles from the polygon
+				// Now we create triangles from the polygon.
+				// The polygon is convex and clockwise, so this is a piece of cake.
 				if(poly.Count >= 3)
 				{
 					for(int k = 1; k < (poly.Count - 1); k++)
@@ -204,48 +207,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			else
 			{
 				return false;
-			}
-		}
-		
-		// This slices a polygon with a plane and keeps only a certain part of the polygon
-		private void SlicePoly(List<Vector3D> poly, Plane p, bool keepfront)
-		{
-			const float NEAR_ZERO = 0.0001f;
-			
-			// TODO: We can optimize this by making a list of vertices in the first iteration which
-			// indicates which vertices are on the back side. Then we don't need to calculate p.Distance(v)
-			// again in the second iteration.
-			
-			// First split lines that cross the plane so that we have vertices on the plane where the lines cross
-			for(int i = 0; i < poly.Count; i++)
-			{
-				Vector3D v1 = poly[i];
-				Vector3D v2 = (i == (poly.Count - 1)) ? poly[0] : poly[i+1];
-				
-				// Determine side of plane
-				float side0 = p.Distance(v1);
-				float side1 = p.Distance(v2);
-				
-				// Vertices on different side of plane?
-				if((side0 < -NEAR_ZERO) && (side1 > NEAR_ZERO) ||
-				   (side0 > NEAR_ZERO) && (side1 < -NEAR_ZERO))
-				{
-					// Split line with plane and insert the vertex
-					float u = 0.0f;
-					p.GetIntersection(v1, v2, ref u);
-					Vector3D v3 = v1 + (v2 - v1) * u;
-					poly.Insert(++i, v3);
-				}
-			}
-			
-			// Now we discard all vertices on the back side of the plane
-			int k = poly.Count - 1;
-			while(k >= 0)
-			{
-				float side = p.Distance(poly[k]);
-				if(((side < -NEAR_ZERO) && keepfront) || ((side > NEAR_ZERO) && !keepfront))
-					poly.RemoveAt(k);
-				k--;
 			}
 		}
 		

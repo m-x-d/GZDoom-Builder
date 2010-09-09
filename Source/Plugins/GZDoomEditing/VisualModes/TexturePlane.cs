@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			Vector3D v31 = vrb - vlt;
 			Vector3D v21 = vrt - vlt;
 			Vector3D vp1 = p - vlt;
-
+			
 			// Compute dot products
 			float d00 = Vector3D.DotProduct(v31, v31);
 			float d01 = Vector3D.DotProduct(v31, v21);
