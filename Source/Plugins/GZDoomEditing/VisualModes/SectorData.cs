@@ -216,6 +216,25 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						levels.Add(c);
 					}
 				}
+				// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
+				else if(l.Action == 50)
+				{
+					if(l.Front != null)
+					{
+						SectorData sd = mode.GetSectorData(l.Front.Sector);
+						if(!sd.Built) sd.BuildLevels(mode);
+
+						SectorLevel f = new SectorLevel(sd.Floor);
+						SectorLevel c = new SectorLevel(sd.Ceiling);
+						c.type = SectorLevelType.Light;
+						f.type = SectorLevelType.Light;
+						f.color = 0;
+						f.brightnessbelow = 0;
+						f.colorbelow = PixelColor.FromInt(0);
+						//levels.Add(f);
+						levels.Add(c);
+					}
+				}
 			}
 			
 			foreach(Thing t in things)
@@ -239,6 +258,39 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						SectorData tsd = mode.GetSectorData(ts);
 						if(!tsd.Built) tsd.BuildLevels(mode);
 						floor.plane = tsd.floor.plane;
+					}
+				}
+				// ========== Line floor slope ==========
+				else if(t.Type == 9500)
+				{
+					// Find the tagged line
+					Linedef ld = null;
+					foreach(Linedef l in General.Map.Map.Linedefs)
+					{
+						if(l.Tag == t.Args[0])
+						{
+							ld = l;
+							break;
+						}
+					}
+
+					if(ld != null)
+					{
+						// Slope the floor from the linedef to thing
+						t.DetermineSector(mode.BlockMap);
+						Vector3D v3 = new Vector3D(t.Position.x, t.Position.y, t.Position.z + t.Sector.FloorHeight);
+						if(ld.SideOfLine(t.Position) < 0.0f)
+						{
+							Vector3D v1 = new Vector3D(ld.Start.Position.x, ld.Start.Position.y, ld.Front.Sector.FloorHeight);
+							Vector3D v2 = new Vector3D(ld.End.Position.x, ld.End.Position.y, ld.Front.Sector.FloorHeight);
+							floor.plane = new Plane(v1, v2, v3, true);
+						}
+						else
+						{
+							Vector3D v1 = new Vector3D(ld.Start.Position.x, ld.Start.Position.y, ld.Back.Sector.FloorHeight);
+							Vector3D v2 = new Vector3D(ld.End.Position.x, ld.End.Position.y, ld.Back.Sector.FloorHeight);
+							floor.plane = new Plane(v2, v1, v3, true);
+						}
 					}
 				}
 			}
