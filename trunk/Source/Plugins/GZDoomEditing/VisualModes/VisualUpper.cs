@@ -66,107 +66,146 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
-			int brightness = mode.CalculateBrightness(Sidedef.Sector.Brightness);
-
-			// Calculate size of this wall part
-			float geotop = (float)Sidedef.Sector.CeilHeight;
-			float geobottom = (float)Sidedef.Other.Sector.CeilHeight;
-			float geoheight = geotop - geobottom;
-			if(geoheight > 0.001f)
+			Vector2D vl, vr;
+			
+			// Left and right vertices for this sidedef
+			if(Sidedef.IsFront)
 			{
-				Vector2D t1 = new Vector2D();
-				Vector2D t2 = new Vector2D();
-
-				// Texture given?
-				if((Sidedef.HighTexture.Length > 0) && (Sidedef.HighTexture[0] != '-'))
+				vl = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
+				vr = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
+			}
+			else
+			{
+				vl = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
+				vr = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
+			}
+			
+			// Load sector data
+			SectorData sd = Sector.Data;
+			SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
+			if(!osd.Built) osd.BuildLevels(mode);
+			
+			// Texture given?
+			if((Sidedef.HighTexture.Length > 0) && (Sidedef.HighTexture[0] != '-'))
+			{
+				// Load texture
+				base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongHighTexture);
+				if(base.Texture == null)
 				{
-					// Load texture
-					base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongHighTexture);
-					if(base.Texture == null)
-					{
-						base.Texture = General.Map.Data.MissingTexture3D;
-						setuponloadedtexture = Sidedef.LongHighTexture;
-					}
-					else
-					{
-						if(!base.Texture.IsImageLoaded)
-							setuponloadedtexture = Sidedef.LongHighTexture;
-					}
-				}
-				else
-				{
-					// Use missing texture
 					base.Texture = General.Map.Data.MissingTexture3D;
-					setuponloadedtexture = 0;
-				}
-
-				// Get texture scaled size
-				Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
-
-				// Determine texture coordinates
-				// See http://doom.wikia.com/wiki/Texture_alignment
-				// We just use pixels for coordinates for now
-				if(!Sidedef.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag))
-				{
-					// When upper unpegged is NOT set, the upper texture is bound to the bottom
-					t1.y = tsz.y - geoheight;
-				}
-				t2.x = t1.x + Sidedef.Line.Length;
-				t2.y = t1.y + geoheight;
-
-				// Apply texture offset
-				if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
-				{
-					t1 += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
-					t2 += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
+					setuponloadedtexture = Sidedef.LongHighTexture;
 				}
 				else
 				{
-					t1 += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
-					t2 += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+					if(!base.Texture.IsImageLoaded)
+						setuponloadedtexture = Sidedef.LongHighTexture;
 				}
+			}
+			else
+			{
+				// Use missing texture
+				base.Texture = General.Map.Data.MissingTexture3D;
+				setuponloadedtexture = 0;
+			}
 
-				// Transform pixel coordinates to texture coordinates
-				t1 /= tsz;
-				t2 /= tsz;
-
-				// Get world coordinates for geometry
-				Vector2D v1, v2;
-				if(Sidedef.IsFront)
-				{
-					v1 = Sidedef.Line.Start.Position;
-					v2 = Sidedef.Line.End.Position;
-				}
-				else
-				{
-					v1 = Sidedef.Line.End.Position;
-					v2 = Sidedef.Line.Start.Position;
-				}
-
-				// Make vertices
-				WorldVertex[] verts = new WorldVertex[6];
-				verts[0] = new WorldVertex(v1.x, v1.y, geobottom, brightness, t1.x, t2.y);
-				verts[1] = new WorldVertex(v1.x, v1.y, geotop, brightness, t1.x, t1.y);
-				verts[2] = new WorldVertex(v2.x, v2.y, geotop, brightness, t2.x, t1.y);
-				verts[3] = verts[0];
-				verts[4] = verts[2];
-				verts[5] = new WorldVertex(v2.x, v2.y, geobottom, brightness, t2.x, t2.y);
+			// Get texture scaled size
+			Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
+			
+			// Determine texture coordinates plane as they would be in normal circumstances.
+			// We can then use this plane to find any texture coordinate we need.
+			// The logic here is the same as in the original VisualMiddleSingle (except that
+			// the values are stored in a TexturePlane)
+			// NOTE: I use a small bias for the floor height, because if the difference in
+			// height is 0 then the TexturePlane doesn't work!
+			TexturePlane tp = new TexturePlane();
+			float ceilbias = (Sidedef.Other.Sector.CeilHeight == Sidedef.Sector.CeilHeight) ? 1.0f : 0.0f;
+			if(!Sidedef.Line.IsFlagSet(General.Map.Config.UpperUnpeggedFlag))
+			{
+				// When lower unpegged is set, the lower texture is bound to the bottom
+				tp.tlt.y = tsz.y - ((float)Sidedef.Sector.CeilHeight - (float)Sidedef.Other.Sector.CeilHeight);
+			}
+			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
+			tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Other.Sector.CeilHeight + ceilbias));
+			
+			// Apply texture offset
+			if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
+			{
+				tp.tlt += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
+				tp.trb += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
+			}
+			else
+			{
+				tp.tlt += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+				tp.trb += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+			}
+			
+			// Transform pixel coordinates to texture coordinates
+			tp.tlt /= tsz;
+			tp.trb /= tsz;
+			
+			// Left top and right bottom of the geometry that
+			tp.vlt = new Vector3D(vl.x, vl.y, (float)Sidedef.Sector.CeilHeight);
+			tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Other.Sector.CeilHeight + ceilbias);
+			
+			// Make the right-top coordinates
+			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
+			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
+			
+			// Go for all levels to build geometry
+			List<WorldVertex> verts = new List<WorldVertex>();
+			for(int i = 1; i < sd.Levels.Count; i++)
+			{
+				SectorLevel l = sd.Levels[i];
 				
-				// Keep properties
-				base.top = geotop;
-				base.bottom = geobottom;
+				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
+				PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
+				int c = wallcolor.WithAlpha(255).ToInt();
 				
-				// Apply vertices
+				// Create initial polygon, which is just a quad between floor and ceiling
+				List<Vector3D> poly = new List<Vector3D>();
+				poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
+				poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
+				poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
+				poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
+				
+				// Slice off the part below the other plane
+				SlicePoly(poly, osd.Ceiling.plane, false);
+				
+				// Now we go for all light planes to splice this polygon
+				for(int k = 0; k < sd.Levels.Count; k++)
+				{
+					SectorLevel ol = sd.Levels[k];
+					if((ol != sd.Floor) && (ol != sd.Ceiling) && (ol.type != SectorLevelType.Floor))
+					{
+						SlicePoly(poly, ol.plane, (k >= i));
+					}
+				}
+				
+				// Find texture coordinates for each vertex in the polygon
+				List<Vector2D> texc = new List<Vector2D>(poly.Count);
+				foreach(Vector3D v in poly)
+					texc.Add(tp.GetTextureCoordsAt(v));
+				
+				// Now we create triangles from the polygon.
+				// The polygon is convex and clockwise, so this is a piece of cake.
+				if(poly.Count >= 3)
+				{
+					for(int k = 1; k < (poly.Count - 1); k++)
+					{
+						verts.Add(new WorldVertex(poly[0], c, texc[0]));
+						verts.Add(new WorldVertex(poly[k], c, texc[k]));
+						verts.Add(new WorldVertex(poly[k + 1], c, texc[k + 1]));
+					}
+				}
+			}
+			
+			if(verts.Count > 0)
+			{
 				base.SetVertices(verts);
 				return true;
 			}
 			else
 			{
-				// No geometry for invisible wall
-				base.top = geotop;
-				base.bottom = geobottom;
-				WorldVertex[] verts = new WorldVertex[0];
-				base.SetVertices(verts);
 				return false;
 			}
 		}

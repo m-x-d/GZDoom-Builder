@@ -118,6 +118,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(isbuilding) return;
 			isbuilding = true;
 
+			levels.Clear();
+			
 			foreach(Linedef l in linedefs)
 			{
 				// ========== Plane Align (see http://zdoom.org/wiki/Plane_Align) ==========
@@ -199,11 +201,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						SectorLevel f = new SectorLevel(sd.Floor);
 						SectorLevel c = new SectorLevel(sd.Ceiling);
 						
+						// For non-vavoom types, we must switch the level types
+						if((l.Args[1] & 0x03) != 0)
+						{
+							f.type = SectorLevelType.Ceiling;
+							c.type = SectorLevelType.Floor;
+						}
+
 						// A 3D floor's color is always that of the sector it is placed in
 						f.color = 0;
 						
-						// Do not adjust light?
-						if((l.Args[2] & 1) != 0)
+						// Do not adjust light? (works only for non-vavoom types)
+						if(((l.Args[2] & 1) != 0) && ((l.Args[1] & 0x03) != 0))
 						{
 							f.brightnessbelow = -1;
 							f.colorbelow = PixelColor.FromInt(0);
@@ -297,6 +306,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			// Sort the levels
 			levels.Sort();
+
+			// Floor is always first, ceiling always last
+			levels.Add(ceiling);
+			levels.Insert(0, floor);
 			
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.

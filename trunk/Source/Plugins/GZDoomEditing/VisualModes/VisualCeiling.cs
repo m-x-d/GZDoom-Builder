@@ -174,9 +174,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
-			/*
-			if(level.plane.Distance(from) < 0.0f)
+			// Check if our ray starts at the correct side of the plane
+			if(level.plane.Distance(from) > 0.0f)
 			{
+				// Calculate the intersection
 				if(level.plane.GetIntersection(from, to, ref pickrayu))
 				{
 					if(pickrayu > 0.0f)
@@ -190,7 +191,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					}
 				}
 			}
-			*/
 
 			return false;
 		}

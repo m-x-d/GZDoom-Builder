@@ -65,6 +65,21 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
+			Vector2D vl, vr;
+			
+			// Left and right vertices for this sidedef
+			if(Sidedef.IsFront)
+			{
+				vl = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
+				vr = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
+			}
+			else
+			{
+				vl = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
+				vr = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
+			}
+
+			// Load sector data
 			SectorData sd = mode.GetSectorData(Sidedef.Sector);
 			
 			// Texture given?
@@ -97,14 +112,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// We can then use this plane to find any texture coordinate we need.
 			// The logic here is the same as in the original VisualMiddleSingle (except that
 			// the values are stored in a TexturePlane)
+			// NOTE: I use a small bias for the floor height, because if the difference in
+			// height is 0 then the TexturePlane doesn't work!
 			TexturePlane tp = new TexturePlane();
+			float floorbias = (Sidedef.Sector.CeilHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
 			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 			{
 				// When lower unpegged is set, the middle texture is bound to the bottom
 				tp.tlt.y = tsz.y - (float)(Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
 			}
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
-			tp.trb.y = tp.tlt.y + (float)(Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
+			tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
 			
 			// Apply texture offset
 			if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
@@ -123,94 +141,54 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trb /= tsz;
 			
 			// Left top and right bottom of the geometry that
-			if(Sidedef.IsFront)
-			{
-				tp.vlt = new Vector3D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y, Sidedef.Sector.CeilHeight);
-				tp.vrb = new Vector3D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y, Sidedef.Sector.FloorHeight);
-			}
-			else
-			{
-				tp.vlt = new Vector3D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y, Sidedef.Sector.CeilHeight);
-				tp.vrb = new Vector3D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y, Sidedef.Sector.FloorHeight);
-			}
+			tp.vlt = new Vector3D(vl.x, vl.y, (float)Sidedef.Sector.CeilHeight);
+			tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Sector.FloorHeight + floorbias);
 			
 			// Make the right-top coordinates
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
 			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
 			
-			//
-			// - Geometry is horizontally split and ranges from one layer down to the next layer.
-			//   This is repeated for all layers.
-			//
-			// - When the two layers intersect over Z, the geometry should not span the entire
-			//   width, but only up to the split position. The back side will handle the other
-			//   side of the split, if needed.
-			//
-			
 			// Go for all levels to build geometry
 			List<WorldVertex> verts = new List<WorldVertex>();
-			for(int i = 0; i < (sd.Levels.Count - 1); i++)
+			for(int i = 1; i < sd.Levels.Count; i++)
 			{
-				SectorLevel lb = sd.Levels[i];
-				SectorLevel lt = sd.Levels[i + 1];
-				if(lt.type != SectorLevelType.Floor)
+				SectorLevel l = sd.Levels[i];
+				
+				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
+				PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
+				int c = wallcolor.WithAlpha(255).ToInt();
+				
+				// Create initial polygon, which is just a quad between floor and ceiling
+				List<Vector3D> poly = new List<Vector3D>();
+				poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
+				poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
+				poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
+				poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
+				
+				// Now we go for all light planes to splice this polygon
+				for(int k = 0; k < sd.Levels.Count; k++)
 				{
-					PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lt.brightnessbelow));
-					PixelColor wallcolor = PixelColor.Modulate(lt.colorbelow, wallbrightness);
-					int c = wallcolor.WithAlpha(255).ToInt();
-					
-					// Get corner heights on the two planes
-					float lbl = lb.plane.GetZ(tp.vlt);
-					float lbr = lb.plane.GetZ(tp.vrt);
-					float ltl = lt.plane.GetZ(tp.vlt);
-					float ltr = lt.plane.GetZ(tp.vrt);
-					
-					// Make coordinates for the corners
-					Vector3D vlb = new Vector3D(tp.vlt.x, tp.vlt.y, lbl);
-					Vector3D vlt = new Vector3D(tp.vlt.x, tp.vlt.y, ltl);
-					Vector3D vrb = new Vector3D(tp.vrb.x, tp.vrb.y, lbr);
-					Vector3D vrt = new Vector3D(tp.vrt.x, tp.vrt.y, ltr);
-					
-					// Compare corner heights to see if we should split
-					if((lbl < ltl) && (lbr >= ltr))
+					SectorLevel ol = sd.Levels[k];
+					if((ol != sd.Floor) && (ol != sd.Ceiling) && (ol.type != SectorLevelType.Floor))
 					{
-						// Split vertically with geometry on the left
-						float u_ray = 1.0f;
-						lb.plane.GetIntersection(vlt, vrt, ref u_ray);
-						Vector3D vs = vlt + (vrt - vlt) * u_ray;
-						Vector2D tlb = tp.GetTextureCoordsAt(vlb);
-						Vector2D tlt = tp.GetTextureCoordsAt(vlt);
-						Vector2D ts = tp.GetTextureCoordsAt(vs);
-						verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-						verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
-						verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
+						SlicePoly(poly, ol.plane, (k >= i));
 					}
-					else if((lbl >= ltl) && (lbr < ltr))
+				}
+				
+				// Find texture coordinates for each vertex in the polygon
+				List<Vector2D> texc = new List<Vector2D>(poly.Count);
+				foreach(Vector3D v in poly)
+					texc.Add(tp.GetTextureCoordsAt(v));
+				
+				// Now we create triangles from the polygon.
+				// The polygon is convex and clockwise, so this is a piece of cake.
+				if(poly.Count >= 3)
+				{
+					for(int k = 1; k < (poly.Count - 1); k++)
 					{
-						// Split vertically with geometry on the right
-						float u_ray = 0.0f;
-						lb.plane.GetIntersection(vlt, vrt, ref u_ray);
-						Vector3D vs = vlt + (vrt - vlt) * u_ray;
-						Vector2D trb = tp.GetTextureCoordsAt(vrb);
-						Vector2D trt = tp.GetTextureCoordsAt(vrt);
-						Vector2D ts = tp.GetTextureCoordsAt(vs);
-						verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
-						verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-						verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
-					}
-					else if((lbl < ltl) && (lbr < ltr))
-					{
-						// Span entire width
-						Vector2D tlb = tp.GetTextureCoordsAt(vlb);
-						Vector2D tlt = tp.GetTextureCoordsAt(vlt);
-						Vector2D trb = tp.GetTextureCoordsAt(vrb);
-						Vector2D trt = tp.GetTextureCoordsAt(vrt);
-						verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-						verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
-						verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-						verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-						verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-						verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
+						verts.Add(new WorldVertex(poly[0], c, texc[0]));
+						verts.Add(new WorldVertex(poly[k], c, texc[k]));
+						verts.Add(new WorldVertex(poly[k + 1], c, texc[k + 1]));
 					}
 				}
 			}
