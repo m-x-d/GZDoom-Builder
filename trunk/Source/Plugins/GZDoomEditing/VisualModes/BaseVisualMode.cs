@@ -462,7 +462,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					}
 				}
 				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
-				else if(l.Action == 160)
+				// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
+				else if((l.Action == 160) || (l.Action == 50))
 				{
 					if(sectortags.ContainsKey(l.Args[0]))
 					{
@@ -480,7 +481,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			foreach(Thing t in General.Map.Map.Things)
 			{
 				// ========== Copy floor slope ==========
-				if(t.Type == 9510)
+				// ========== Line floor slope ==========
+				if((t.Type == 9510) || (t.Type == 9500))
 				{
 					t.DetermineSector(blockmap);
 					if(t.Sector != null)

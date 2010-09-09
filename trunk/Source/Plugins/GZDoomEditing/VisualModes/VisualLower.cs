@@ -153,6 +153,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Heights of the floor on the other side
 			float ol = osd.Floor.plane.GetZ(tp.vlt);
 			float or = osd.Floor.plane.GetZ(tp.vrt);
+			Vector3D vol = new Vector3D(tp.vlt.x, tp.vlt.y, ol);
+			Vector3D vor = new Vector3D(tp.vrt.x, tp.vrt.y, or);
 			
 			// Go for all levels to build geometry
 			List<WorldVertex> verts = new List<WorldVertex>();
@@ -173,55 +175,39 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 				// When both corners are above the heights of the floor on
 				// the other side, then we can stop building.
-				if((lbl > ol) && (lbr > or))
+				if(((lbl - ol) > 0.001f) && ((lbr - or) > 0.001f))
 					break;
-				
+
 				// Make coordinates for the corners
 				Vector3D vlb = new Vector3D(tp.vlt.x, tp.vlt.y, lbl);
 				Vector3D vlt = new Vector3D(tp.vlt.x, tp.vlt.y, ltl);
 				Vector3D vrb = new Vector3D(tp.vrb.x, tp.vrb.y, lbr);
 				Vector3D vrt = new Vector3D(tp.vrt.x, tp.vrt.y, ltr);
 				
-				// Compare corner heights to see if we should split
-				if((lbl < ltl) && (lbr >= ltr))
+				// Check if the plane on the other side crosses our top plane
+				// Then we must create two vertical parts
+				float int_u = -1.0f;
+				if(lt.plane.GetIntersection(vol, vor, ref int_u) && (int_u > 0.0f) && (int_u < 1.0f))
 				{
-					// Split vertically with geometry on the left
-					float u_ray = 1.0f;
-					lb.plane.GetIntersection(vlt, vrt, ref u_ray);
-					Vector3D vs = vlt + (vrt - vlt) * u_ray;
-					Vector2D tlb = tp.GetTextureCoordsAt(vlb);
-					Vector2D tlt = tp.GetTextureCoordsAt(vlt);
-					Vector2D ts = tp.GetTextureCoordsAt(vs);
-					verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-					verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
-					verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
+					// Determine top and bottom vertices in the middle (at the split)
+					Vector3D vmt = vlt + (vrt - vlt) * int_u;
+					Vector3D vmb = vlb + (vrb - vlb) * int_u;
+
+					// Clip vertices to the heights of the plane on the other side
+					if(vlt.z > ol) vlt.z = ol;
+					if(vrt.z > or) vrt.z = or;
+
+					CreateVerticalPart(verts, tp, lb, lt, vmb, vmt, vrb, vrt, c);
+					CreateVerticalPart(verts, tp, lb, lt, vlb, vlt, vmb, vmt, c);
 				}
-				else if((lbl >= ltl) && (lbr < ltr))
+				else
 				{
-					// Split vertically with geometry on the right
-					float u_ray = 0.0f;
-					lb.plane.GetIntersection(vlt, vrt, ref u_ray);
-					Vector3D vs = vlt + (vrt - vlt) * u_ray;
-					Vector2D trb = tp.GetTextureCoordsAt(vrb);
-					Vector2D trt = tp.GetTextureCoordsAt(vrt);
-					Vector2D ts = tp.GetTextureCoordsAt(vs);
-					verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
-					verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-					verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
-				}
-				else if((lbl < ltl) && (lbr < ltr))
-				{
-					// Span entire width
-					Vector2D tlb = tp.GetTextureCoordsAt(vlb);
-					Vector2D tlt = tp.GetTextureCoordsAt(vlt);
-					Vector2D trb = tp.GetTextureCoordsAt(vrb);
-					Vector2D trt = tp.GetTextureCoordsAt(vrt);
-					verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-					verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
-					verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-					verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-					verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-					verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
+					// Clip vertices to the heights of the plane on the other side
+					if(vlt.z > ol) vlt.z = ol;
+					if(vrt.z > or) vrt.z = or;
+					
+					// Create single vertical part
+					CreateVerticalPart(verts, tp, lb, lt, vlb, vlt, vrb, vrt, c);
 				}
 			}
 			
@@ -233,6 +219,53 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			else
 			{
 				return false;
+			}
+		}
+
+		// This creates the geometry for a vertical part of the wall
+		private void CreateVerticalPart(List<WorldVertex> verts, TexturePlane tp, SectorLevel lb, SectorLevel lt,
+		                                Vector3D vlb, Vector3D vlt, Vector3D vrb, Vector3D vrt, int c)
+		{
+			// Compare corner heights to see if we should split
+			if((vlb.z < vlt.z) && (vrb.z >= vrt.z))
+			{
+				// Split vertically with geometry on the left
+				float u_ray = 1.0f;
+				lb.plane.GetIntersection(vlt, vrt, ref u_ray);
+				Vector3D vs = vlt + (vrt - vlt) * u_ray;
+				Vector2D tlb = tp.GetTextureCoordsAt(vlb);
+				Vector2D tlt = tp.GetTextureCoordsAt(vlt);
+				Vector2D ts = tp.GetTextureCoordsAt(vs);
+				verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
+				verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
+				verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
+			}
+			else if((vlb.z >= vlt.z) && (vrb.z < vrt.z))
+			{
+				// Split vertically with geometry on the right
+				float u_ray = 0.0f;
+				lb.plane.GetIntersection(vlt, vrt, ref u_ray);
+				Vector3D vs = vlt + (vrt - vlt) * u_ray;
+				Vector2D trb = tp.GetTextureCoordsAt(vrb);
+				Vector2D trt = tp.GetTextureCoordsAt(vrt);
+				Vector2D ts = tp.GetTextureCoordsAt(vs);
+				verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
+				verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
+				verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
+			}
+			else if((vlb.z < vlt.z) && (vrb.z < vrt.z))
+			{
+				// Span entire width
+				Vector2D tlb = tp.GetTextureCoordsAt(vlb);
+				Vector2D tlt = tp.GetTextureCoordsAt(vlt);
+				Vector2D trb = tp.GetTextureCoordsAt(vrb);
+				Vector2D trt = tp.GetTextureCoordsAt(vrt);
+				verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
+				verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
+				verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
+				verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
+				verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
+				verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
 			}
 		}
 		
