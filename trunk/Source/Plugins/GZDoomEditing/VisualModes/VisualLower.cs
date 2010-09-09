@@ -65,9 +65,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup()
 		{
-			SectorData sd = mode.GetSectorData(Sidedef.Sector);
+			SectorData sd = Sector.Data;
 			SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
-
+			if(!osd.Built) osd.BuildLevels(mode);
+			
 			// Texture given?
 			if((Sidedef.LowTexture.Length > 0) && (Sidedef.LowTexture[0] != '-'))
 			{
@@ -134,27 +135,21 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				tp.vlt = new Vector3D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y, Sidedef.Other.Sector.FloorHeight);
 				tp.vrb = new Vector3D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y, Sidedef.Sector.FloorHeight);
 			}
-
+			
 			// Make the right-top coordinates
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
 			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
 			
-			//
-			// - Geometry is horizontally split and ranges from one layer down to the next layer.
-			//   This is repeated for all layers.
-			//
-			// - We create geometry from the floor up to the floor of the other sector.
-			//
-			// - When the two layers intersect over Z, the geometry should not span the entire
-			//   width, but only up to the split position. The back side will handle the other
-			//   side of the split, if needed.
-			//
-
 			// Heights of the floor on the other side
 			float ol = osd.Floor.plane.GetZ(tp.vlt);
 			float or = osd.Floor.plane.GetZ(tp.vrt);
 			Vector3D vol = new Vector3D(tp.vlt.x, tp.vlt.y, ol);
 			Vector3D vor = new Vector3D(tp.vrt.x, tp.vrt.y, or);
+			
+			if(Sidedef.Index == 215)
+			{
+				int g = 5;
+			}
 			
 			// Go for all levels to build geometry
 			List<WorldVertex> verts = new List<WorldVertex>();
@@ -162,52 +157,42 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			{
 				SectorLevel lb = sd.Levels[i];
 				SectorLevel lt = sd.Levels[i + 1];
-
+				
 				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lt.brightnessbelow));
 				PixelColor wallcolor = PixelColor.Modulate(lt.colorbelow, wallbrightness);
 				int c = wallcolor.WithAlpha(255).ToInt();
 				
-				// Get corner heights on the two planes
-				float lbl = lb.plane.GetZ(tp.vlt);
-				float lbr = lb.plane.GetZ(tp.vrt);
-				float ltl = lt.plane.GetZ(tp.vlt);
-				float ltr = lt.plane.GetZ(tp.vrt);
-
-				// When both corners are above the heights of the floor on
-				// the other side, then we can stop building.
-				if(((lbl - ol) > 0.001f) && ((lbr - or) > 0.001f))
-					break;
-
-				// Make coordinates for the corners
-				Vector3D vlb = new Vector3D(tp.vlt.x, tp.vlt.y, lbl);
-				Vector3D vlt = new Vector3D(tp.vlt.x, tp.vlt.y, ltl);
-				Vector3D vrb = new Vector3D(tp.vrb.x, tp.vrb.y, lbr);
-				Vector3D vrt = new Vector3D(tp.vrt.x, tp.vrt.y, ltr);
+				// Create initial polygon between the two planes
+				List<Vector3D> poly = new List<Vector3D>();
+				poly.Add(new Vector3D(tp.vlt.x, tp.vlt.y, lb.plane.GetZ(tp.vlt)));
+				poly.Add(new Vector3D(tp.vlt.x, tp.vlt.y, lt.plane.GetZ(tp.vlt)));
+				poly.Add(new Vector3D(tp.vrt.x, tp.vrt.y, lt.plane.GetZ(tp.vrt)));
+				poly.Add(new Vector3D(tp.vrb.x, tp.vrb.y, lb.plane.GetZ(tp.vrt)));
 				
-				// Check if the plane on the other side crosses our top plane
-				// Then we must create two vertical parts
-				float int_u = -1.0f;
-				if(lt.plane.GetIntersection(vol, vor, ref int_u) && (int_u > 0.0f) && (int_u < 1.0f))
+				// Slice off the part above the other plane
+				SlicePoly(poly, osd.Floor.plane, false);
+				
+				// Now we go for all planes to splice this polygon
+				for(int k = 0; k < sd.Levels.Count; k++)
 				{
-					// Determine top and bottom vertices in the middle (at the split)
-					Vector3D vmt = vlt + (vrt - vlt) * int_u;
-					Vector3D vmb = vlb + (vrb - vlb) * int_u;
-
-					// Clip vertices to the heights of the plane on the other side
-					if(vlt.z > ol) vlt.z = ol;
-					if(vrt.z > or) vrt.z = or;
-
-					CreateVerticalPart(verts, tp, lb, lt, vmb, vmt, vrb, vrt, c);
-					CreateVerticalPart(verts, tp, lb, lt, vlb, vlt, vmb, vmt, c);
+					if((k != i) && (k != (i + 1)))
+						SlicePoly(poly, sd.Levels[k].plane, (k > i) || (sd.Levels[k].type == SectorLevelType.Floor));
 				}
-				else
+				
+				// Find texture coordinates for each vertex in the polygon
+				List<Vector2D> texc = new List<Vector2D>(poly.Count);
+				foreach(Vector3D v in poly)
+					texc.Add(tp.GetTextureCoordsAt(v));
+				
+				// Now we create triangles from the polygon
+				if(poly.Count >= 3)
 				{
-					// Clip vertices to the heights of the plane on the other side
-					if(vlt.z > ol) vlt.z = ol;
-					if(vrt.z > or) vrt.z = or;
-					
-					// Create single vertical part
-					CreateVerticalPart(verts, tp, lb, lt, vlb, vlt, vrb, vrt, c);
+					for(int k = 1; k < (poly.Count - 1); k++)
+					{
+						verts.Add(new WorldVertex(poly[0], c, texc[0]));
+						verts.Add(new WorldVertex(poly[k], c, texc[k]));
+						verts.Add(new WorldVertex(poly[k + 1], c, texc[k + 1]));
+					}
 				}
 			}
 			
@@ -221,51 +206,46 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				return false;
 			}
 		}
-
-		// This creates the geometry for a vertical part of the wall
-		private void CreateVerticalPart(List<WorldVertex> verts, TexturePlane tp, SectorLevel lb, SectorLevel lt,
-		                                Vector3D vlb, Vector3D vlt, Vector3D vrb, Vector3D vrt, int c)
+		
+		// This slices a polygon with a plane and keeps only a certain part of the polygon
+		private void SlicePoly(List<Vector3D> poly, Plane p, bool keepfront)
 		{
-			// Compare corner heights to see if we should split
-			if((vlb.z < vlt.z) && (vrb.z >= vrt.z))
+			const float NEAR_ZERO = 0.0001f;
+			
+			// TODO: We can optimize this by making a list of vertices in the first iteration which
+			// indicates which vertices are on the back side. Then we don't need to calculate p.Distance(v)
+			// again in the second iteration.
+			
+			// First split lines that cross the plane so that we have vertices on the plane where the lines cross
+			for(int i = 0; i < poly.Count; i++)
 			{
-				// Split vertically with geometry on the left
-				float u_ray = 1.0f;
-				lb.plane.GetIntersection(vlt, vrt, ref u_ray);
-				Vector3D vs = vlt + (vrt - vlt) * u_ray;
-				Vector2D tlb = tp.GetTextureCoordsAt(vlb);
-				Vector2D tlt = tp.GetTextureCoordsAt(vlt);
-				Vector2D ts = tp.GetTextureCoordsAt(vs);
-				verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-				verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
-				verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
+				Vector3D v1 = poly[i];
+				Vector3D v2 = (i == (poly.Count - 1)) ? poly[0] : poly[i+1];
+				
+				// Determine side of plane
+				float side0 = p.Distance(v1);
+				float side1 = p.Distance(v2);
+				
+				// Vertices on different side of plane?
+				if((side0 < -NEAR_ZERO) && (side1 > NEAR_ZERO) ||
+				   (side0 > NEAR_ZERO) && (side1 < -NEAR_ZERO))
+				{
+					// Split line with plane and insert the vertex
+					float u = 0.0f;
+					p.GetIntersection(v1, v2, ref u);
+					Vector3D v3 = v1 + (v2 - v1) * u;
+					poly.Insert(++i, v3);
+				}
 			}
-			else if((vlb.z >= vlt.z) && (vrb.z < vrt.z))
+			
+			// Now we discard all vertices on the back side of the plane
+			int k = poly.Count - 1;
+			while(k >= 0)
 			{
-				// Split vertically with geometry on the right
-				float u_ray = 0.0f;
-				lb.plane.GetIntersection(vlt, vrt, ref u_ray);
-				Vector3D vs = vlt + (vrt - vlt) * u_ray;
-				Vector2D trb = tp.GetTextureCoordsAt(vrb);
-				Vector2D trt = tp.GetTextureCoordsAt(vrt);
-				Vector2D ts = tp.GetTextureCoordsAt(vs);
-				verts.Add(new WorldVertex(vs.x, vs.y, vs.z, c, ts.x, ts.y));
-				verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-				verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
-			}
-			else if((vlb.z < vlt.z) && (vrb.z < vrt.z))
-			{
-				// Span entire width
-				Vector2D tlb = tp.GetTextureCoordsAt(vlb);
-				Vector2D tlt = tp.GetTextureCoordsAt(vlt);
-				Vector2D trb = tp.GetTextureCoordsAt(vrb);
-				Vector2D trt = tp.GetTextureCoordsAt(vrt);
-				verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-				verts.Add(new WorldVertex(vlt.x, vlt.y, vlt.z, c, tlt.x, tlt.y));
-				verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-				verts.Add(new WorldVertex(vlb.x, vlb.y, vlb.z, c, tlb.x, tlb.y));
-				verts.Add(new WorldVertex(vrt.x, vrt.y, vrt.z, c, trt.x, trt.y));
-				verts.Add(new WorldVertex(vrb.x, vrb.y, vrb.z, c, trb.x, trb.y));
+				float side = p.Distance(poly[k]);
+				if(((side < -NEAR_ZERO) && keepfront) || ((side > NEAR_ZERO) && !keepfront))
+					poly.RemoveAt(k);
+				k--;
 			}
 		}
 		
