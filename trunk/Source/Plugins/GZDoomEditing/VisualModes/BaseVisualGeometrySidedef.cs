@@ -108,9 +108,81 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			u_ray = pickrayu;
 			return true;
 		}
+
+		// This splits a polygon with a plane and returns the other part as a new polygon
+		// The polygon is expected to be convex and clockwise
+		protected WallPolygon SplitPoly(ref WallPolygon poly, Plane p, bool keepfront)
+		{
+			const float NEAR_ZERO = 0.01f;
+			WallPolygon front = new WallPolygon(poly.Count);
+			WallPolygon back = new WallPolygon(poly.Count);
+			
+			// Go for all vertices to see which side they have to be on
+			Vector3D v1 = poly[poly.Count - 1];
+			float side1 = p.Distance(v1);
+			for(int i = 0; i < poly.Count; i++)
+			{
+				// Fetch vertex and determine side
+				Vector3D v2 = poly[i];
+				float side2 = p.Distance(v2);
+
+				// Front?
+				if(side2 > NEAR_ZERO)
+				{
+					if(side1 < -NEAR_ZERO)
+					{
+						// Split line with plane and insert the vertex
+						float u = 0.0f;
+						p.GetIntersection(v1, v2, ref u);
+						Vector3D v3 = v1 + (v2 - v1) * u;
+						front.Add(v3);
+						back.Add(v3);
+					}
+					
+					front.Add(v2);
+				}
+				// Back?
+				else if(side2 < -NEAR_ZERO)
+				{
+					if(side1 > NEAR_ZERO)
+					{
+						// Split line with plane and insert the vertex
+						float u = 0.0f;
+						p.GetIntersection(v1, v2, ref u);
+						Vector3D v3 = v1 + (v2 - v1) * u;
+						front.Add(v3);
+						back.Add(v3);
+					}
+
+					back.Add(v2);
+				}
+				else
+				{
+					// On the plane, add to both polygons
+					front.Add(v2);
+					back.Add(v2);
+				}
+
+				// Next
+				v1 = v2;
+				side1 = side2;
+			}
+
+			if(keepfront)
+			{
+				poly = front;
+				return back;
+			}
+			else
+			{
+				poly = back;
+				return front;
+			}
+		}
 		
-		// This slices a polygon with a plane and keeps only a certain part of the polygon
-		protected void SlicePoly(List<Vector3D> poly, Plane p, bool keepfront)
+		
+		// This crops a polygon with a plane and keeps only a certain part of the polygon
+		protected void CropPoly(WallPolygon poly, Plane p, bool keepfront)
 		{
 			const float NEAR_ZERO = 0.01f;
 			

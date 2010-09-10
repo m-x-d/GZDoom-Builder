@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override bool Setup()
 		{
 			Vector2D vl, vr;
+			List<WallPolygon> polygons = new List<WallPolygon>(2);
 			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
@@ -148,47 +149,76 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
 			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
 			
+			// Create initial polygon, which is just a quad between floor and ceiling
+			WallPolygon poly = new WallPolygon();
+			poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
+			poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
+			poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
+			poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
+
+			// Determine initial color
+			PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(sd.Ceiling.brightnessbelow));
+			PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
+			poly.color = wallcolor.WithAlpha(255).ToInt();
+			
+			polygons.Add(poly);
+			
 			// Go for all levels to build geometry
-			List<WorldVertex> verts = new List<WorldVertex>();
-			for(int i = 1; i < sd.Levels.Count; i++)
+			for(int i = 0; i < sd.Levels.Count; i++)
 			{
 				SectorLevel l = sd.Levels[i];
-				
-				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
-				PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
-				int c = wallcolor.WithAlpha(255).ToInt();
-				
-				// Create initial polygon, which is just a quad between floor and ceiling
-				List<Vector3D> poly = new List<Vector3D>();
-				poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
-				poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
-				poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
-				poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
-				
-				// Now we go for all light planes to splice this polygon
-				for(int k = 0; k < sd.Levels.Count; k++)
+				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor))
 				{
-					SectorLevel ol = sd.Levels[k];
-					if((ol != sd.Floor) && (ol != sd.Ceiling) && (ol.type != SectorLevelType.Floor))
+					// Go for all polygons
+					int num = polygons.Count;
+					for(int pi = 0; pi < num; pi++)
 					{
-						SlicePoly(poly, ol.plane, (k >= i));
+						// Split by plane
+						WallPolygon p = polygons[pi];
+						WallPolygon np = SplitPoly(ref p, l.plane, false);
+						if(np.Count > 0)
+						{
+							// Determine color
+							wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
+							wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
+							np.color = wallcolor.WithAlpha(255).ToInt();
+
+							if(p.Count == 0)
+							{
+								polygons[pi] = np;
+							}
+							else
+							{
+								polygons[pi] = p;
+								polygons.Add(np);
+							}
+						}
+						else
+						{
+							polygons[pi] = p;
+						}
 					}
 				}
-				
+			}
+			
+			// Go for all polygons to make geometry
+			List<WorldVertex> verts = new List<WorldVertex>();
+			foreach(WallPolygon p in polygons)
+			{
 				// Find texture coordinates for each vertex in the polygon
-				List<Vector2D> texc = new List<Vector2D>(poly.Count);
-				foreach(Vector3D v in poly)
+				List<Vector2D> texc = new List<Vector2D>(p.Count);
+				foreach(Vector3D v in p)
 					texc.Add(tp.GetTextureCoordsAt(v));
 				
 				// Now we create triangles from the polygon.
 				// The polygon is convex and clockwise, so this is a piece of cake.
-				if(poly.Count >= 3)
+				if(p.Count >= 3)
 				{
-					for(int k = 1; k < (poly.Count - 1); k++)
+					for(int k = 1; k < (p.Count - 1); k++)
 					{
-						verts.Add(new WorldVertex(poly[0], c, texc[0]));
-						verts.Add(new WorldVertex(poly[k], c, texc[k]));
-						verts.Add(new WorldVertex(poly[k + 1], c, texc[k + 1]));
+						verts.Add(new WorldVertex(p[0], p.color, texc[0]));
+						verts.Add(new WorldVertex(p[k], p.color, texc[k]));
+						verts.Add(new WorldVertex(p[k + 1], p.color, texc[k + 1]));
 					}
 				}
 			}
