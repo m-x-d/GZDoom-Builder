@@ -27,7 +27,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private bool isbuilding;
 		
 		// Levels sorted by height
-		private List<SectorLevel> levels;
+		private List<SectorLevel> lightlevels;
+		
+		// 3D floors
+		private List<Sector3DFloor> extrafloors;
 		
 		// Original floor and ceiling levels
 		private SectorLevel floor;
@@ -44,7 +47,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		public Sector Sector { get { return sector; } }
 		public bool Built { get { return built; } }
-		public List<SectorLevel> Levels { get { return levels; } }
+		public List<SectorLevel> LightLevels { get { return lightlevels; } }
+		public List<Sector3DFloor> ExtraFloors { get { return extrafloors; } }
 		public SectorLevel Floor { get { return floor; } }
 		public SectorLevel Ceiling { get { return ceiling; } }
 		
@@ -61,7 +65,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Initialize
 			this.sector = s;
 			this.built = false;
-			this.levels = new List<SectorLevel>(2);
+			this.lightlevels = new List<SectorLevel>(2);
+			this.extrafloors = new List<Sector3DFloor>(1);
 			this.linedefs = new List<Linedef>(1);
 			this.things = new List<Thing>(1);
 			
@@ -97,8 +102,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			ceiling.colorbelow = lightcolor.WithAlpha(255);
 			
 			// Add ceiling and floor
-			levels.Add(floor);
-			levels.Add(ceiling);
+			lightlevels.Add(floor);
+			lightlevels.Add(ceiling);
 		}
 		
 		#endregion
@@ -118,7 +123,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(isbuilding) return;
 			isbuilding = true;
 
-			levels.Clear();
+			lightlevels.Clear();
 			
 			foreach(Linedef l in linedefs)
 			{
@@ -192,32 +197,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					{
 						SectorData sd = mode.GetSectorData(l.Front.Sector);
 						if(!sd.Built) sd.BuildLevels(mode);
-
-						SectorLevel f = new SectorLevel(sd.Floor);
-						SectorLevel c = new SectorLevel(sd.Ceiling);
 						
-						// For non-vavoom types, we must switch the level types
-						if((l.Args[1] & 0x03) != 0)
-						{
-							f.type = SectorLevelType.Ceiling;
-							c.type = SectorLevelType.Floor;
-						}
-
-						// A 3D floor's color is always that of the sector it is placed in
-						f.color = 0;
+						// Create 3D floor
+						Sector3DFloor ef = new Sector3DFloor(sd, l);
+						extrafloors.Add(ef);
 						
-						// Do not adjust light? (works only for non-vavoom types)
-						if(((l.Args[2] & 1) != 0) && ((l.Args[1] & 0x03) != 0))
-						{
-							f.brightnessbelow = -1;
-							f.colorbelow = PixelColor.FromInt(0);
-							c.color = 0;
-							c.brightnessbelow = -1;
-							c.colorbelow = PixelColor.FromInt(0);
-						}
-						
-						levels.Add(f);
-						levels.Add(c);
+						// Add levels so that they can participate in lighting
+						lightlevels.Add(ef.floor);
+						lightlevels.Add(ef.ceiling);
 					}
 				}
 				// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
@@ -236,7 +223,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						//f.brightnessbelow = 0;
 						//f.colorbelow = PixelColor.FromInt(0);
 						//levels.Add(f);
-						levels.Add(c);
+						lightlevels.Add(c);
 					}
 				}
 			}
@@ -300,22 +287,22 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 			
 			// Sort the levels
-			levels.Sort();
+			lightlevels.Sort();
 			
 			// Floor is always first, ceiling always last
-			levels.Add(ceiling);
-			levels.Insert(0, floor);
+			lightlevels.Add(ceiling);
+			lightlevels.Insert(0, floor);
 			
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.
 			// Start from the absolute ceiling and go down to 'cast' the lighting
-			for(int i = levels.Count - 2; i >= 0; i--)
+			for(int i = lightlevels.Count - 2; i >= 0; i--)
 			{
-				SectorLevel l = levels[i];
-				SectorLevel pl = levels[i + 1];
+				SectorLevel l = lightlevels[i];
+				SectorLevel pl = lightlevels[i + 1];
 				
 				// Set color when no color is specified, or when a 3D floor is placed above the absolute floor
-				if((l.color == 0) || ((l == floor) && (levels.Count > 2)))
+				if((l.color == 0) || ((l == floor) && (lightlevels.Count > 2)))
 				{
 					PixelColor floorbrightness = PixelColor.FromInt(mode.CalculateBrightness(pl.brightnessbelow));
 					PixelColor floorcolor = PixelColor.Modulate(pl.colorbelow, floorbrightness);
@@ -340,7 +327,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			SectorLevel found = null;
 			float dist = float.MaxValue;
 			
-			foreach(SectorLevel l in levels)
+			foreach(SectorLevel l in lightlevels)
 			{
 				float d = l.plane.GetZ(pos) - pos.z;
 				if((d > 0.0f) && (d < dist))
@@ -359,7 +346,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			SectorLevel found = null;
 			float dist = float.MaxValue;
 
-			foreach(SectorLevel l in levels)
+			foreach(SectorLevel l in lightlevels)
 			{
 				if(l.type == SectorLevelType.Ceiling)
 				{
@@ -381,7 +368,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			SectorLevel found = null;
 			float dist = float.MaxValue;
 
-			foreach(SectorLevel l in levels)
+			foreach(SectorLevel l in lightlevels)
 			{
 				float d = pos.z - l.plane.GetZ(pos);
 				if((d > 0.0f) && (d < dist))
@@ -400,7 +387,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			SectorLevel found = null;
 			float dist = float.MaxValue;
 
-			foreach(SectorLevel l in levels)
+			foreach(SectorLevel l in lightlevels)
 			{
 				if(l.type == SectorLevelType.Floor)
 				{

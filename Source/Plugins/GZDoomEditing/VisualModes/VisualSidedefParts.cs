@@ -43,16 +43,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public VisualLower lower;
 		public VisualMiddleDouble middledouble;
 		public VisualMiddleSingle middlesingle;
-
+		public Dictionary<Sector3DFloor, VisualMiddle3D> middle3d;
+		
 		// Constructor
-		public VisualSidedefParts(VisualUpper u, VisualLower l, VisualMiddleDouble m)
+		public VisualSidedefParts(VisualUpper u, VisualLower l, VisualMiddleDouble m, Dictionary<Sector3DFloor, VisualMiddle3D> e)
 		{
 			this.upper = u;
 			this.lower = l;
 			this.middledouble = m;
 			this.middlesingle = null;
+			this.middle3d = e;
 		}
-
+		
 		// Constructor
 		public VisualSidedefParts(VisualMiddleSingle m)
 		{
@@ -60,8 +62,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			this.lower = null;
 			this.middledouble = null;
 			this.middlesingle = m;
+			this.middle3d = null;
 		}
-
+		
 		// This calls Setup() on all parts
 		public void SetupAllParts()
 		{
@@ -69,6 +72,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(middledouble != null) middledouble.Setup();
 			if(middlesingle != null) middlesingle.Setup();
 			if(upper != null) upper.Setup();
+			if(middle3d != null)
+			{
+				foreach(VisualMiddle3D m in middle3d.Values)
+					m.Setup();
+			}
 		}
 	}
 }

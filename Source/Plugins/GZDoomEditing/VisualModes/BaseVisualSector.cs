@@ -146,27 +146,29 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			data = mode.GetSectorData(this.Sector);
 			if(!data.Built) data.BuildLevels(mode);
 			
-			// Create levels
-			foreach(SectorLevel lvl in data.Levels)
+			// Create floor
+			floor = floor ?? new VisualFloor(mode, this, data.Floor);
+			floor.Setup();
+			base.AddGeometry(floor);
+			
+			// Create ceiling
+			ceiling = ceiling ?? new VisualCeiling(mode, this, data.Ceiling);
+			ceiling.Setup();
+			base.AddGeometry(ceiling);
+			
+			// Create 3D floors
+			foreach(Sector3DFloor ef in data.ExtraFloors)
 			{
-				if(lvl.type == SectorLevelType.Floor)
-				{
-					// Create a floor
-					VisualFloor g = new VisualFloor(mode, this, lvl);
-					g.Setup();
-					base.AddGeometry(g);
-				}
-				else if(lvl.type == SectorLevelType.Ceiling)
-				{
-					// Create a ceiling
-					VisualCeiling g = new VisualCeiling(mode, this, lvl);
-					g.Setup();
-					base.AddGeometry(g);
-				}
+				// Create a floor
+				VisualFloor vf = new VisualFloor(mode, this, ef.floor);
+				vf.Setup();
+				base.AddGeometry(vf);
+				
+				// Create a ceiling
+				VisualCeiling vc = new VisualCeiling(mode, this, ef.ceiling);
+				vc.Setup();
+				base.AddGeometry(vc);
 			}
-
-			// NOTE: Because we no longer use the Floor and Ceiling members, these are now null.
-			// They need to be replaced with a different system that works for all levels in the sector.
 			
 			// Go for all sidedefs
 			Dictionary<Sidedef, VisualSidedefParts> oldsides = sides ?? new Dictionary<Sidedef, VisualSidedefParts>(1);
@@ -193,9 +195,22 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					VisualMiddleDouble vm = parts.middledouble ?? new VisualMiddleDouble(mode, this, sd);
 					vm.Setup();
 					base.AddGeometry(vm);
-
+					
+					// Create 3D wall parts
+					SectorData osd = mode.GetSectorData(sd.Other.Sector);
+					if(!osd.Built) osd.BuildLevels(mode);
+					Dictionary<Sector3DFloor, VisualMiddle3D> oldfloors = parts.middle3d ?? new Dictionary<Sector3DFloor, VisualMiddle3D>(2);
+					Dictionary<Sector3DFloor, VisualMiddle3D> newfloors = new Dictionary<Sector3DFloor, VisualMiddle3D>(2);
+					foreach(Sector3DFloor ef in osd.ExtraFloors)
+					{
+						VisualMiddle3D vm3 = oldfloors.ContainsKey(ef) ? oldfloors[ef] : new VisualMiddle3D(mode, this, sd, ef);
+						vm3.Setup();
+						base.AddGeometry(vm3);
+						newfloors.Add(ef, vm3);
+					}
+					
 					// Store
-					sides.Add(sd, new VisualSidedefParts(vu, vl, vm));
+					sides.Add(sd, new VisualSidedefParts(vu, vl, vm, newfloors));
 				}
 				else
 				{

@@ -121,9 +121,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			polygons.Add(poly);
 			
 			// Go for all levels to build geometry
-			for(int i = sd.Levels.Count - 1; i >= 0; i--)
+			for(int i = sd.LightLevels.Count - 1; i >= 0; i--)
 			{
-				SectorLevel l = sd.Levels[i];
+				SectorLevel l = sd.LightLevels[i];
 				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor))
 				{
 					// Go for all polygons

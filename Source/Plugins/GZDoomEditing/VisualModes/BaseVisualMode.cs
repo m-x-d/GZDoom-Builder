@@ -542,7 +542,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 				// Camera below floor level?
 				Vector3D feetposition = General.Map.VisualCamera.Position - new Vector3D(0, 0, cameraflooroffset - 7.0f);
-				SectorLevel floorlevel = sd.GetFloorBelow(feetposition) ?? sd.Levels[0];
+				SectorLevel floorlevel = sd.GetFloorBelow(feetposition) ?? sd.LightLevels[0];
 				float floorheight = floorlevel.plane.GetZ(General.Map.VisualCamera.Position);
 				if(General.Map.VisualCamera.Position.z < (floorheight + cameraflooroffset + 0.01f))
 				{
@@ -559,7 +559,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					if(gravity.z > 3.0f) gravity.z = 3.0f;
 
 					// Test if we don't go through a floor
-					SectorLevel newfloorlevel = sd.GetFloorBelow(feetposition + gravity) ?? sd.Levels[0];
+					SectorLevel newfloorlevel = sd.GetFloorBelow(feetposition + gravity) ?? sd.LightLevels[0];
 					if(newfloorlevel != floorlevel)
 					{
 						// Stay above floor
@@ -577,7 +577,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 				// Camera above ceiling?
 				feetposition = General.Map.VisualCamera.Position - new Vector3D(0, 0, cameraflooroffset - 7.0f);
-				SectorLevel ceillevel = sd.GetCeilingAbove(feetposition) ?? sd.Levels[sd.Levels.Count - 1];
+				SectorLevel ceillevel = sd.GetCeilingAbove(feetposition) ?? sd.LightLevels[sd.LightLevels.Count - 1];
 				float ceilheight = ceillevel.plane.GetZ(General.Map.VisualCamera.Position);
 				if(General.Map.VisualCamera.Position.z > (ceilheight - cameraceilingoffset - 0.01f))
 				{
