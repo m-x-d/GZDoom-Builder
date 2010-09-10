@@ -186,6 +186,24 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				List<WorldVertex> verts = CreatePolygonVertices(poly, tp);
 				if(verts.Count > 0)
 				{
+					if(extrafloor.floor.alpha < 255)
+					{
+						// Apply alpha to vertices
+						for(int i = 0; i < verts.Count; i++)
+						{
+							WorldVertex v = verts[i];
+							PixelColor c = PixelColor.FromInt(v.c);
+							v.c = c.WithAlpha((byte)General.Clamp(extrafloor.floor.alpha, 0, 255)).ToInt();
+							verts[i] = v;
+						}
+						
+						this.RenderPass = RenderPass.Alpha;
+					}
+					else
+					{
+						this.RenderPass = RenderPass.Solid;
+					}
+					
 					base.SetVertices(verts);
 					return true;
 				}
@@ -201,15 +219,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Return texture name
 		public override string GetTextureName()
 		{
-			return this.Sidedef.MiddleTexture;
+			return extrafloor.linedef.Front.MiddleTexture;
 		}
 
 		// This changes the texture
 		protected override void SetTexture(string texturename)
 		{
-			this.Sidedef.SetTextureMid(texturename);
+			extrafloor.linedef.Front.SetTextureMid(texturename);
 			General.Map.Data.UpdateUsedTextures();
-			this.Setup();
+			this.Sector.Rebuild();
 		}
 		
 		#endregion

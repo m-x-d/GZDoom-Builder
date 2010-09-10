@@ -114,8 +114,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			for(int i = 0; i < triverts.Count; i++)
 			{
 				// Color shading
-				verts[i].c = level.color;
-
+				PixelColor c = PixelColor.FromInt(level.color);
+				verts[i].c = c.WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
+				
 				// Vertex coordinates
 				verts[i].x = triverts[i].x;
 				verts[i].y = triverts[i].y;
@@ -129,7 +130,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				verts[i].u = pos.x;
 				verts[i].v = pos.y;
 			}
-
+			
 			// The sector triangulation created clockwise triangles that
 			// are right up for the floor. For the ceiling we must flip
 			// the triangles upside down.
@@ -141,6 +142,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				verts[i] = verts[i + 1];
 				verts[i + 1] = v;
 			}
+			
+			// Determine render pass
+			if(level.alpha < 255)
+				this.RenderPass = RenderPass.Alpha;
+			else
+				this.RenderPass = RenderPass.Solid;
 			
 			// Apply vertices
 			base.SetVertices(verts);

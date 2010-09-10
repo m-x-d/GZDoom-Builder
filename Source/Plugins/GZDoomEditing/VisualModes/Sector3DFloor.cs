@@ -26,9 +26,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public Sector3DFloor(SectorData controlsector, Linedef sourcelinedef)
 		{
 			linedef = sourcelinedef;
+			int argtype = (sourcelinedef.Args[1] & 0x03);
 			
 			// For non-vavoom types, we must switch the level types
-			if((sourcelinedef.Args[1] & 0x03) != 0)
+			if(argtype != 0)
 			{
 				floor = new SectorLevel(controlsector.Ceiling);
 				ceiling = new SectorLevel(controlsector.Floor);
@@ -36,6 +37,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				floor.plane = floor.plane.GetInverted();
 				ceiling.type = SectorLevelType.Ceiling;
 				ceiling.plane = ceiling.plane.GetInverted();
+				floor.alpha = sourcelinedef.Args[3];
+				ceiling.alpha = sourcelinedef.Args[3];
 			}
 			else
 			{
@@ -47,7 +50,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			floor.color = 0;
 			
 			// Do not adjust light? (works only for non-vavoom types)
-			if(((sourcelinedef.Args[2] & 1) != 0) && ((sourcelinedef.Args[1] & 0x03) != 0))
+			if(((sourcelinedef.Args[2] & 1) != 0) && (argtype != 0))
 			{
 				floor.brightnessbelow = -1;
 				floor.colorbelow = PixelColor.FromInt(0);

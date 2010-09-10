@@ -27,6 +27,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Plane in the sector
 		public Plane plane;
 		
+		// Alpha transparency
+		public int alpha;
+		
 		// Color of the plane (includes brightness)
 		// When this is 0, it takes the color from the sector above
 		public int color;
@@ -42,6 +45,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			this.sector = s;
 			this.type = type;
 			this.center = new Vector2D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2);
+			this.alpha = 255;
 		}
 		
 		// Copy constructor
@@ -54,6 +58,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			this.color = source.color;
 			this.brightnessbelow = source.brightnessbelow;
 			this.colorbelow = source.colorbelow;
+			this.alpha = 255;
 		}
 		
 		// Comparer
