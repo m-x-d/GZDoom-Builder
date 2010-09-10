@@ -172,10 +172,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						verts[4] = verts[2];
 						verts[5] = new WorldVertex(v2.x, v2.y, texbottom, brightness, t2.x, t2.y);
 						
-						// Keep properties
-						base.top = textop;
-						base.bottom = texbottom;
-						
 						// Apply vertices
 						base.SetVertices(verts);
 						return true;
@@ -184,8 +180,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 			
 			// No geometry for invisible wall
-			base.top = geotop;
-			base.bottom = geotop;	// bottom same as top so that it has a height of 0 (otherwise it will still be picked up by object picking)
 			verts = new WorldVertex[0];
 			base.SetVertices(verts);
 			return false;

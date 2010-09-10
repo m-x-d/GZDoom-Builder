@@ -150,59 +150,39 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
 			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
 			
-			// Go for all levels to build geometry
-			List<WorldVertex> verts = new List<WorldVertex>();
-			for(int i = 1; i < sd.Levels.Count; i++)
-			{
-				SectorLevel l = sd.Levels[i];
-				
-				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
-				PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
-				int c = wallcolor.WithAlpha(255).ToInt();
-				
-				// Create initial polygon, which is just a quad between floor and ceiling
-				WallPolygon poly = new WallPolygon();
-				poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
-				poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
-				poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
-				poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
-				
-				// Slice off the part above the other plane
-				CropPoly(poly, osd.Floor.plane, false);
-				CropPoly(poly, osd.Ceiling.plane, true);
-				
-				// Now we go for all light planes to splice this polygon
-				for(int k = 0; k < sd.Levels.Count; k++)
-				{
-					SectorLevel ol = sd.Levels[k];
-					if((ol != sd.Floor) && (ol != sd.Ceiling) && (ol.type != SectorLevelType.Floor))
-					{
-						CropPoly(poly, ol.plane, (k >= i));
-					}
-				}
-				
-				// Find texture coordinates for each vertex in the polygon
-				List<Vector2D> texc = new List<Vector2D>(poly.Count);
-				foreach(Vector3D v in poly)
-					texc.Add(tp.GetTextureCoordsAt(v));
-				
-				// Now we create triangles from the polygon.
-				// The polygon is convex and clockwise, so this is a piece of cake.
-				if(poly.Count >= 3)
-				{
-					for(int k = 1; k < (poly.Count - 1); k++)
-					{
-						verts.Add(new WorldVertex(poly[0], c, texc[0]));
-						verts.Add(new WorldVertex(poly[k], c, texc[k]));
-						verts.Add(new WorldVertex(poly[k + 1], c, texc[k + 1]));
-					}
-				}
-			}
+			// Create initial polygon, which is just a quad between floor and ceiling
+			WallPolygon poly = new WallPolygon();
+			poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
+			poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
+			poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
+			poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
 			
-			if(verts.Count > 0)
+			// Determine initial color
+			PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(sd.Ceiling.brightnessbelow));
+			PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
+			poly.color = wallcolor.WithAlpha(255).ToInt();
+			
+			// Cut off the part above the other floor
+			CropPoly(ref poly, osd.Floor.plane, false);
+			CropPoly(ref poly, osd.Ceiling.plane, true);
+			
+			if(poly.Count > 2)
 			{
-				base.SetVertices(verts);
-				return true;
+				// Keep top and bottom planes for intersection testing
+				top = osd.Floor.plane;
+				bottom = sd.Floor.plane;
+				
+				// Process the polygon and create vertices
+				List<WorldVertex> verts = CreatePolygonVertices(poly, tp);
+				if(verts.Count > 0)
+				{
+					base.SetVertices(verts);
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}
 			else
 			{
