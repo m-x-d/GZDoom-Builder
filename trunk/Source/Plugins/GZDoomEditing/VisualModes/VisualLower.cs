@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trb.y = tp.tlt.y + ((float)Sidedef.Other.Sector.FloorHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
 			
 			// Apply texture offset
-			if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
+			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 			{
 				tp.tlt += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
 				tp.trb += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
@@ -179,15 +179,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					base.SetVertices(verts);
 					return true;
 				}
-				else
-				{
-					return false;
-				}
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 		
 		#endregion

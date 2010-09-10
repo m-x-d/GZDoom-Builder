@@ -179,15 +179,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					base.SetVertices(verts);
 					return true;
 				}
-				else
-				{
-					return false;
-				}
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 		
 		#endregion

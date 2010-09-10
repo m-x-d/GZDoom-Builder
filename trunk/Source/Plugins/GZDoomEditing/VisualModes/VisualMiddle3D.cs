@@ -39,14 +39,16 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.GZDoomEditing
 {
-	internal sealed class VisualMiddleSingle : BaseVisualGeometrySidedef
+	internal sealed class VisualMiddle3D : BaseVisualGeometrySidedef
 	{
 		#region ================== Constants
 
 		#endregion
 		
 		#region ================== Variables
-
+		
+		private Sector3DFloor extrafloor;
+		
 		#endregion
 		
 		#region ================== Properties
@@ -56,8 +58,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constructor / Setup
 		
 		// Constructor
-		public VisualMiddleSingle(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
+		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s, Sector3DFloor extrafloor) : base(mode, vs, s)
 		{
+			this.extrafloor = extrafloor;
+			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -66,6 +70,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override bool Setup()
 		{
 			Vector2D vl, vr;
+			Sidedef sourceside = extrafloor.linedef.Front;
 			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
@@ -78,24 +83,24 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				vl = new Vector2D(Sidedef.Line.End.Position.x, Sidedef.Line.End.Position.y);
 				vr = new Vector2D(Sidedef.Line.Start.Position.x, Sidedef.Line.Start.Position.y);
 			}
-
+			
 			// Load sector data
 			SectorData sd = mode.GetSectorData(Sidedef.Sector);
 			
 			// Texture given?
-			if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
+			if((sourceside.MiddleTexture.Length > 0) && (sourceside.MiddleTexture[0] != '-'))
 			{
 				// Load texture
-				base.Texture = General.Map.Data.GetTextureImage(Sidedef.LongMiddleTexture);
+				base.Texture = General.Map.Data.GetTextureImage(sourceside.LongMiddleTexture);
 				if(base.Texture == null)
 				{
 					base.Texture = General.Map.Data.MissingTexture3D;
-					setuponloadedtexture = Sidedef.LongMiddleTexture;
+					setuponloadedtexture = sourceside.LongMiddleTexture;
 				}
 				else
 				{
 					if(!base.Texture.IsImageLoaded)
-						setuponloadedtexture = Sidedef.LongMiddleTexture;
+						setuponloadedtexture = sourceside.LongMiddleTexture;
 				}
 			}
 			else
@@ -115,17 +120,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// NOTE: I use a small bias for the floor height, because if the difference in
 			// height is 0 then the TexturePlane doesn't work!
 			TexturePlane tp = new TexturePlane();
-			float floorbias = (Sidedef.Sector.CeilHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
+			float floorbias = (Sidedef.Other.Sector.FloorHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
 			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 			{
-				// When lower unpegged is set, the middle texture is bound to the bottom
-				tp.tlt.y = tsz.y - (float)(Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
+				// When lower unpegged is set, the lower texture is bound to the bottom
+				tp.tlt.y = (float)Sidedef.Sector.CeilHeight - (float)sourceside.Sector.FloorHeight;
 			}
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
-			tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
+			tp.trb.y = tp.tlt.y + ((float)sourceside.Sector.FloorHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
 			
 			// Apply texture offset
-			if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
+			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 			{
 				tp.tlt += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
 				tp.trb += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
@@ -141,7 +146,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trb /= tsz;
 			
 			// Left top and right bottom of the geometry that
-			tp.vlt = new Vector3D(vl.x, vl.y, (float)Sidedef.Sector.CeilHeight);
+			tp.vlt = new Vector3D(vl.x, vl.y, (float)sourceside.Sector.FloorHeight);
 			tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Sector.FloorHeight + floorbias);
 			
 			// Make the right-top coordinates
@@ -158,8 +163,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(((cl - fl) > 0.01f) || ((cr - fr) > 0.01f))
 			{
 				// Keep top and bottom planes for intersection testing
-				top = sd.Ceiling.plane;
-				bottom = sd.Floor.plane;
+				top = extrafloor.floor.plane;
+				bottom = extrafloor.ceiling.plane;
 				
 				// Create initial polygon, which is just a quad between floor and ceiling
 				WallPolygon poly = new WallPolygon();
@@ -172,6 +177,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(sd.Ceiling.brightnessbelow));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
+
+				// Cut off the part above the 3D floor and below the 3D ceiling
+				CropPoly(ref poly, extrafloor.floor.plane, false);
+				CropPoly(ref poly, extrafloor.ceiling.plane, false);
 				
 				// Process the polygon and create vertices
 				List<WorldVertex> verts = CreatePolygonVertices(poly, tp);
