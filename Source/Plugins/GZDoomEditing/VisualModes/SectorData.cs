@@ -139,11 +139,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						}
 					}
 
-					if(sector.Index == 17)
-					{
-						int g = 5;
-					}
-					
 					// Align floor with back of line
 					if((l.Args[0] == 1) && (l.Front.Sector == sector) && (l.Back != null))
 					{
@@ -306,7 +301,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			// Sort the levels
 			levels.Sort();
-
+			
 			// Floor is always first, ceiling always last
 			levels.Add(ceiling);
 			levels.Insert(0, floor);

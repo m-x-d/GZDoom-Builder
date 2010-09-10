@@ -66,7 +66,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override bool Setup()
 		{
 			Vector2D vl, vr;
-			List<WallPolygon> polygons = new List<WallPolygon>(2);
 			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
@@ -149,84 +148,42 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
 			tp.vrt = new Vector3D(tp.vrb.x, tp.vrb.y, tp.vlt.z);
 			
-			// Create initial polygon, which is just a quad between floor and ceiling
-			WallPolygon poly = new WallPolygon();
-			poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
-			poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
-			poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
-			poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
-
-			// Determine initial color
-			PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(sd.Ceiling.brightnessbelow));
-			PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
-			poly.color = wallcolor.WithAlpha(255).ToInt();
+			// Get ceiling and floor heights
+			float fl = sd.Floor.plane.GetZ(vl);
+			float fr = sd.Floor.plane.GetZ(vr);
+			float cl = sd.Ceiling.plane.GetZ(vl);
+			float cr = sd.Ceiling.plane.GetZ(vr);
 			
-			polygons.Add(poly);
-			
-			// Go for all levels to build geometry
-			for(int i = 0; i < sd.Levels.Count; i++)
+			// Anything to see?
+			if(((cl - fl) > 0.01f) || ((cr - fr) > 0.01f))
 			{
-				SectorLevel l = sd.Levels[i];
-				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor))
-				{
-					// Go for all polygons
-					int num = polygons.Count;
-					for(int pi = 0; pi < num; pi++)
-					{
-						// Split by plane
-						WallPolygon p = polygons[pi];
-						WallPolygon np = SplitPoly(ref p, l.plane, false);
-						if(np.Count > 0)
-						{
-							// Determine color
-							wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
-							wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
-							np.color = wallcolor.WithAlpha(255).ToInt();
-
-							if(p.Count == 0)
-							{
-								polygons[pi] = np;
-							}
-							else
-							{
-								polygons[pi] = p;
-								polygons.Add(np);
-							}
-						}
-						else
-						{
-							polygons[pi] = p;
-						}
-					}
-				}
-			}
-			
-			// Go for all polygons to make geometry
-			List<WorldVertex> verts = new List<WorldVertex>();
-			foreach(WallPolygon p in polygons)
-			{
-				// Find texture coordinates for each vertex in the polygon
-				List<Vector2D> texc = new List<Vector2D>(p.Count);
-				foreach(Vector3D v in p)
-					texc.Add(tp.GetTextureCoordsAt(v));
+				// Keep top and bottom planes for intersection testing
+				top = sd.Ceiling.plane;
+				bottom = sd.Floor.plane;
 				
-				// Now we create triangles from the polygon.
-				// The polygon is convex and clockwise, so this is a piece of cake.
-				if(p.Count >= 3)
+				// Create initial polygon, which is just a quad between floor and ceiling
+				WallPolygon poly = new WallPolygon();
+				poly.Add(new Vector3D(vl.x, vl.y, fl));
+				poly.Add(new Vector3D(vl.x, vl.y, cl));
+				poly.Add(new Vector3D(vr.x, vr.y, cr));
+				poly.Add(new Vector3D(vr.x, vr.y, fr));
+				
+				// Determine initial color
+				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(sd.Ceiling.brightnessbelow));
+				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
+				poly.color = wallcolor.WithAlpha(255).ToInt();
+				
+				// Process the polygon and create vertices
+				List<WorldVertex> verts = CreatePolygonVertices(poly, tp);
+				if(verts.Count > 0)
 				{
-					for(int k = 1; k < (p.Count - 1); k++)
-					{
-						verts.Add(new WorldVertex(p[0], p.color, texc[0]));
-						verts.Add(new WorldVertex(p[k], p.color, texc[k]));
-						verts.Add(new WorldVertex(p[k + 1], p.color, texc[k + 1]));
-					}
+					base.SetVertices(verts);
+					return true;
 				}
-			}
-			
-			if(verts.Count > 0)
-			{
-				base.SetVertices(verts);
-				return true;
+				else
+				{
+					return false;
+				}
 			}
 			else
 			{

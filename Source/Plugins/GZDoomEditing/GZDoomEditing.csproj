@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{760A9BC7-CB73-4C36-858B-994C14996FCD}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -55,7 +55,7 @@
     <Compile Include="VisualModes\BaseVisualThing.cs" />
     <Compile Include="VisualModes\IVisualEventReceiver.cs" />
     <Compile Include="VisualModes\NullVisualEventReceiver.cs" />
-    <Compile Include="VisualModes\Polygon.cs" />
+    <Compile Include="VisualModes\WallPolygon.cs" />
     <Compile Include="VisualModes\SectorData.cs" />
     <Compile Include="VisualModes\SectorLevel.cs" />
     <Compile Include="VisualModes\SectorLevelType.cs" />

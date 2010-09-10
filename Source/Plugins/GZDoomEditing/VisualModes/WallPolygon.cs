@@ -32,5 +32,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public WallPolygon(IEnumerable<Vector3D> collection) : base(collection)
 		{
 		}
+		
+		// This copies all the wall properties
+		public void CopyProperties(WallPolygon target)
+		{
+			target.color = this.color;
+		}
 	}
 }

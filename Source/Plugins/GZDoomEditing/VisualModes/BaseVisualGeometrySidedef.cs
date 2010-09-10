@@ -50,8 +50,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		protected BaseVisualMode mode;
 
-		protected float top;
-		protected float bottom;
+		protected Plane top;
+		protected Plane bottom;
 		protected long setuponloadedtexture;
 		
 		// UV dragging
@@ -97,9 +97,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
 			// Check if intersection point is between top and bottom
-			return (pickintersect.z >= bottom) && (pickintersect.z <= top);
+			return (pickintersect.z >= bottom.GetZ(pickintersect)) && (pickintersect.z <= top.GetZ(pickintersect));
 		}
-
+		
+		
 		// This performs an accurate test for object picking
 		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
 		{
@@ -108,7 +109,80 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			u_ray = pickrayu;
 			return true;
 		}
-
+		
+		
+		// This creates vertices from a wall polygon and applies lighting
+		protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp)
+		{
+			List<WallPolygon> polygons = new List<WallPolygon>(2);
+			List<WorldVertex> verts = new List<WorldVertex>();
+			SectorData sd = Sector.Data;
+			
+			polygons.Add(poly);
+			
+			// Go for all levels to build geometry
+			for(int i = sd.Levels.Count - 1; i >= 0; i--)
+			{
+				SectorLevel l = sd.Levels[i];
+				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor))
+				{
+					// Go for all polygons
+					int num = polygons.Count;
+					for(int pi = 0; pi < num; pi++)
+					{
+						// Split by plane
+						WallPolygon p = polygons[pi];
+						WallPolygon np = SplitPoly(ref p, l.plane, false);
+						if(np.Count > 0)
+						{
+							// Determine color
+							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
+							PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
+							np.color = wallcolor.WithAlpha(255).ToInt();
+							
+							if(p.Count == 0)
+							{
+								polygons[pi] = np;
+							}
+							else
+							{
+								polygons[pi] = p;
+								polygons.Add(np);
+							}
+						}
+						else
+						{
+							polygons[pi] = p;
+						}
+					}
+				}
+			}
+			
+			// Go for all polygons to make geometry
+			foreach(WallPolygon p in polygons)
+			{
+				// Find texture coordinates for each vertex in the polygon
+				List<Vector2D> texc = new List<Vector2D>(p.Count);
+				foreach(Vector3D v in p)
+					texc.Add(tp.GetTextureCoordsAt(v));
+				
+				// Now we create triangles from the polygon.
+				// The polygon is convex and clockwise, so this is a piece of cake.
+				if(p.Count >= 3)
+				{
+					for(int k = 1; k < (p.Count - 1); k++)
+					{
+						verts.Add(new WorldVertex(p[0], p.color, texc[0]));
+						verts.Add(new WorldVertex(p[k], p.color, texc[k]));
+						verts.Add(new WorldVertex(p[k + 1], p.color, texc[k + 1]));
+					}
+				}
+			}
+			
+			return verts;
+		}
+		
+		
 		// This splits a polygon with a plane and returns the other part as a new polygon
 		// The polygon is expected to be convex and clockwise
 		protected WallPolygon SplitPoly(ref WallPolygon poly, Plane p, bool keepfront)
@@ -116,58 +190,63 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			const float NEAR_ZERO = 0.01f;
 			WallPolygon front = new WallPolygon(poly.Count);
 			WallPolygon back = new WallPolygon(poly.Count);
+			poly.CopyProperties(front);
+			poly.CopyProperties(back);
 			
-			// Go for all vertices to see which side they have to be on
-			Vector3D v1 = poly[poly.Count - 1];
-			float side1 = p.Distance(v1);
-			for(int i = 0; i < poly.Count; i++)
+			if(poly.Count > 0)
 			{
-				// Fetch vertex and determine side
-				Vector3D v2 = poly[i];
-				float side2 = p.Distance(v2);
-
-				// Front?
-				if(side2 > NEAR_ZERO)
+				// Go for all vertices to see which side they have to be on
+				Vector3D v1 = poly[poly.Count - 1];
+				float side1 = p.Distance(v1);
+				for(int i = 0; i < poly.Count; i++)
 				{
-					if(side1 < -NEAR_ZERO)
+					// Fetch vertex and determine side
+					Vector3D v2 = poly[i];
+					float side2 = p.Distance(v2);
+					
+					// Front?
+					if(side2 > NEAR_ZERO)
 					{
-						// Split line with plane and insert the vertex
-						float u = 0.0f;
-						p.GetIntersection(v1, v2, ref u);
-						Vector3D v3 = v1 + (v2 - v1) * u;
-						front.Add(v3);
-						back.Add(v3);
+						if(side1 < -NEAR_ZERO)
+						{
+							// Split line with plane and insert the vertex
+							float u = 0.0f;
+							p.GetIntersection(v1, v2, ref u);
+							Vector3D v3 = v1 + (v2 - v1) * u;
+							front.Add(v3);
+							back.Add(v3);
+						}
+						
+						front.Add(v2);
+					}
+					// Back?
+					else if(side2 < -NEAR_ZERO)
+					{
+						if(side1 > NEAR_ZERO)
+						{
+							// Split line with plane and insert the vertex
+							float u = 0.0f;
+							p.GetIntersection(v1, v2, ref u);
+							Vector3D v3 = v1 + (v2 - v1) * u;
+							front.Add(v3);
+							back.Add(v3);
+						}
+						
+						back.Add(v2);
+					}
+					else
+					{
+						// On the plane, add to both polygons
+						front.Add(v2);
+						back.Add(v2);
 					}
 					
-					front.Add(v2);
+					// Next
+					v1 = v2;
+					side1 = side2;
 				}
-				// Back?
-				else if(side2 < -NEAR_ZERO)
-				{
-					if(side1 > NEAR_ZERO)
-					{
-						// Split line with plane and insert the vertex
-						float u = 0.0f;
-						p.GetIntersection(v1, v2, ref u);
-						Vector3D v3 = v1 + (v2 - v1) * u;
-						front.Add(v3);
-						back.Add(v3);
-					}
-
-					back.Add(v2);
-				}
-				else
-				{
-					// On the plane, add to both polygons
-					front.Add(v2);
-					back.Add(v2);
-				}
-
-				// Next
-				v1 = v2;
-				side1 = side2;
 			}
-
+			
 			if(keepfront)
 			{
 				poly = front;
@@ -182,45 +261,63 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		
 		// This crops a polygon with a plane and keeps only a certain part of the polygon
-		protected void CropPoly(WallPolygon poly, Plane p, bool keepfront)
+		protected void CropPoly(ref WallPolygon poly, Plane p, bool keepfront)
 		{
 			const float NEAR_ZERO = 0.01f;
+			float sideswitch = keepfront ? 1 : -1;
+			WallPolygon newp = new WallPolygon(poly.Count);
+			poly.CopyProperties(newp);
 			
-			// TODO: We can optimize this by making a list of vertices in the first iteration which
-			// indicates which vertices are on the back side. Then we don't need to calculate p.Distance(v)
-			// again in the second iteration.
-			
-			// First split lines that cross the plane so that we have vertices on the plane where the lines cross
-			for(int i = 0; i < poly.Count; i++)
+			if(poly.Count > 0)
 			{
-				Vector3D v1 = poly[i];
-				Vector3D v2 = (i == (poly.Count - 1)) ? poly[0] : poly[i+1];
-				
-				// Determine side of plane
-				float side0 = p.Distance(v1);
-				float side1 = p.Distance(v2);
-				
-				// Vertices on different side of plane?
-				if((side0 < -NEAR_ZERO) && (side1 > NEAR_ZERO) ||
-				   (side0 > NEAR_ZERO) && (side1 < -NEAR_ZERO))
+				// First split lines that cross the plane so that we have vertices on the plane where the lines cross
+				Vector3D v1 = poly[poly.Count - 1];
+				float side1 = p.Distance(v1) * sideswitch;
+				for(int i = 0; i < poly.Count; i++)
 				{
-					// Split line with plane and insert the vertex
-					float u = 0.0f;
-					p.GetIntersection(v1, v2, ref u);
-					Vector3D v3 = v1 + (v2 - v1) * u;
-					poly.Insert(++i, v3);
+					// Fetch vertex and determine side
+					Vector3D v2 = poly[i];
+					float side2 = p.Distance(v2) * sideswitch;
+					
+					// Front?
+					if(side2 > NEAR_ZERO)
+					{
+						if(side1 < -NEAR_ZERO)
+						{
+							// Split line with plane and insert the vertex
+							float u = 0.0f;
+							p.GetIntersection(v1, v2, ref u);
+							Vector3D v3 = v1 + (v2 - v1) * u;
+							newp.Add(v3);
+						}
+						
+						newp.Add(v2);
+					}
+					// Back?
+					else if(side2 < -NEAR_ZERO)
+					{
+						if(side1 > NEAR_ZERO)
+						{
+							// Split line with plane and insert the vertex
+							float u = 0.0f;
+							p.GetIntersection(v1, v2, ref u);
+							Vector3D v3 = v1 + (v2 - v1) * u;
+							newp.Add(v3);
+						}
+					}
+					else
+					{
+						// On the plane
+						newp.Add(v2);
+					}
+					
+					// Next
+					v1 = v2;
+					side1 = side2;
 				}
 			}
 			
-			// Now we discard all vertices on the back side of the plane
-			int k = poly.Count - 1;
-			while(k >= 0)
-			{
-				float side = p.Distance(poly[k]);
-				if(((side < -NEAR_ZERO) && keepfront) || ((side > NEAR_ZERO) && !keepfront))
-					poly.RemoveAt(k);
-				k--;
-			}
+			poly = newp;
 		}
 		
 		#endregion
