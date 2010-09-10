@@ -55,6 +55,7 @@
     <Compile Include="VisualModes\BaseVisualThing.cs" />
     <Compile Include="VisualModes\IVisualEventReceiver.cs" />
     <Compile Include="VisualModes\NullVisualEventReceiver.cs" />
+    <Compile Include="VisualModes\Polygon.cs" />
     <Compile Include="VisualModes\SectorData.cs" />
     <Compile Include="VisualModes\SectorLevel.cs" />
     <Compile Include="VisualModes\SectorLevelType.cs" />

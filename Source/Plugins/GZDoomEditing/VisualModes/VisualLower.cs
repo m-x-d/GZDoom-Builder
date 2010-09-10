@@ -161,15 +161,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				int c = wallcolor.WithAlpha(255).ToInt();
 				
 				// Create initial polygon, which is just a quad between floor and ceiling
-				List<Vector3D> poly = new List<Vector3D>();
+				WallPolygon poly = new WallPolygon();
 				poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
 				poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
 				poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
 				poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
 				
 				// Slice off the part above the other plane
-				SlicePoly(poly, osd.Floor.plane, false);
-				SlicePoly(poly, osd.Ceiling.plane, true);
+				CropPoly(poly, osd.Floor.plane, false);
+				CropPoly(poly, osd.Ceiling.plane, true);
 				
 				// Now we go for all light planes to splice this polygon
 				for(int k = 0; k < sd.Levels.Count; k++)
@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					SectorLevel ol = sd.Levels[k];
 					if((ol != sd.Floor) && (ol != sd.Ceiling) && (ol.type != SectorLevelType.Floor))
 					{
-						SlicePoly(poly, ol.plane, (k >= i));
+						CropPoly(poly, ol.plane, (k >= i));
 					}
 				}
 				
