@@ -46,8 +46,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#endregion
 		
 		#region ================== Variables
-		
-		private Sector3DFloor extrafloor;
+
+		private Effect3DFloor extrafloor;
 		
 		#endregion
 		
@@ -58,7 +58,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constructor / Setup
 		
 		// Constructor
-		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s, Sector3DFloor extrafloor) : base(mode, vs, s)
+		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s, Effect3DFloor extrafloor)
+			: base(mode, vs, s)
 		{
 			this.extrafloor = extrafloor;
 			
@@ -70,7 +71,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override bool Setup()
 		{
 			Vector2D vl, vr;
-			Sidedef sourceside = extrafloor.linedef.Front;
+			Sidedef sourceside = extrafloor.Linedef.Front;
 			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
@@ -163,8 +164,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(((cl - fl) > 0.01f) || ((cr - fr) > 0.01f))
 			{
 				// Keep top and bottom planes for intersection testing
-				top = extrafloor.floor.plane;
-				bottom = extrafloor.ceiling.plane;
+				top = extrafloor.Floor.plane;
+				bottom = extrafloor.Ceiling.plane;
 				
 				// Create initial polygon, which is just a quad between floor and ceiling
 				WallPolygon poly = new WallPolygon();
@@ -179,22 +180,26 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				poly.color = wallcolor.WithAlpha(255).ToInt();
 
 				// Cut off the part above the 3D floor and below the 3D ceiling
-				CropPoly(ref poly, extrafloor.floor.plane, false);
-				CropPoly(ref poly, extrafloor.ceiling.plane, false);
+				CropPoly(ref poly, extrafloor.Floor.plane, false);
+				CropPoly(ref poly, extrafloor.Ceiling.plane, false);
 				
 				// Process the polygon and create vertices
 				List<WorldVertex> verts = CreatePolygonVertices(poly, tp);
 				if(verts.Count > 0)
 				{
-					if(extrafloor.floor.alpha < 255)
+					if(extrafloor.Alpha < 255)
 					{
 						// Apply alpha to vertices
-						for(int i = 0; i < verts.Count; i++)
+						byte alpha = (byte)General.Clamp(extrafloor.Alpha, 0, 255);
+						if(alpha < 255)
 						{
-							WorldVertex v = verts[i];
-							PixelColor c = PixelColor.FromInt(v.c);
-							v.c = c.WithAlpha((byte)General.Clamp(extrafloor.floor.alpha, 0, 255)).ToInt();
-							verts[i] = v;
+							for(int i = 0; i < verts.Count; i++)
+							{
+								WorldVertex v = verts[i];
+								PixelColor c = PixelColor.FromInt(v.c);
+								v.c = c.WithAlpha(alpha).ToInt();
+								verts[i] = v;
+							}
 						}
 						
 						this.RenderPass = RenderPass.Alpha;
@@ -219,13 +224,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Return texture name
 		public override string GetTextureName()
 		{
-			return extrafloor.linedef.Front.MiddleTexture;
+			return extrafloor.Linedef.Front.MiddleTexture;
 		}
 
 		// This changes the texture
 		protected override void SetTexture(string texturename)
 		{
-			extrafloor.linedef.Front.SetTextureMid(texturename);
+			extrafloor.Linedef.Front.SetTextureMid(texturename);
 			General.Map.Data.UpdateUsedTextures();
 			this.Sector.Rebuild();
 		}

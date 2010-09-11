@@ -17,40 +17,46 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 	{
 		#region ================== Variables
 		
+		// VisualMode
+		private BaseVisualMode mode;
+		
 		// Sector for which this data is
 		private Sector sector;
 		
-		// Levels have been built?
-		private bool built;
+		// Levels have been updated?
+		private bool updated;
 		
-		// This is to prevent recursion when sectors need each other to build
-		private bool isbuilding;
+		// This prevents recursion
+		private bool isupdating;
 		
-		// Levels sorted by height
+		// All planes in the sector that cast or are affected by light
 		private List<SectorLevel> lightlevels;
 		
-		// 3D floors
-		private List<Sector3DFloor> extrafloors;
+		// Effects
+		private List<SectorEffect> alleffects;
+		private List<Effect3DFloor> extrafloors;
+		
+		// Sectors that must be updated when this sector is changed
+		// The boolean value is the 'includeneighbours' of the UpdateSectorGeometry function which
+		// indicates if the sidedefs of neighbouring sectors should also be rebuilt.
+		private Dictionary<Sector, bool> updatesectors;
 		
 		// Original floor and ceiling levels
 		private SectorLevel floor;
 		private SectorLevel ceiling;
-		
-		// Linedefs and Things of interest when building the levels
-		// See RebuildSectorData() in BaseVisualMode.cs for the logic which selects interesting elements
-		private List<Linedef> linedefs;
-		private List<Thing> things;
 		
 		#endregion
 		
 		#region ================== Properties
 		
 		public Sector Sector { get { return sector; } }
-		public bool Built { get { return built; } }
+		public bool Updated { get { return updated; } }
 		public List<SectorLevel> LightLevels { get { return lightlevels; } }
-		public List<Sector3DFloor> ExtraFloors { get { return extrafloors; } }
+		public List<Effect3DFloor> ExtraFloors { get { return extrafloors; } }
 		public SectorLevel Floor { get { return floor; } }
 		public SectorLevel Ceiling { get { return ceiling; } }
+		public BaseVisualMode Mode { get { return mode; } }
+		public Dictionary<Sector, bool> UpdateAlso { get { return updatesectors; } }
 		
 		#endregion
 		
@@ -59,20 +65,105 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Constructor
 		public SectorData(BaseVisualMode mode, Sector s)
 		{
-			int color = -1, flight = s.Brightness, clight = s.Brightness;
-			bool fabs = true, cabs = true;
-			
 			// Initialize
+			this.mode = mode;
 			this.sector = s;
-			this.built = false;
+			this.updated = false;
 			this.lightlevels = new List<SectorLevel>(2);
-			this.extrafloors = new List<Sector3DFloor>(1);
-			this.linedefs = new List<Linedef>(1);
-			this.things = new List<Thing>(1);
+			this.extrafloors = new List<Effect3DFloor>(1);
+			this.alleffects = new List<SectorEffect>(1);
+			this.updatesectors = new Dictionary<Sector, bool>(2);
+			this.floor = new SectorLevel(sector, SectorLevelType.Floor);
+			this.ceiling = new SectorLevel(sector, SectorLevelType.Ceiling);
+
+			BasicSetup();
 			
-			// Create floor and ceiling planes
-			floor = new SectorLevel(s, SectorLevelType.Floor);
-			ceiling = new SectorLevel(s, SectorLevelType.Ceiling);
+			// Add ceiling and floor
+			lightlevels.Add(floor);
+			lightlevels.Add(ceiling);
+		}
+		
+		#endregion
+		
+		#region ================== Public Methods
+		
+		// 3D Floor effect
+		public void AddEffect3DFloor(Linedef sourcelinedef)
+		{
+			Effect3DFloor e = new Effect3DFloor(this, sourcelinedef);
+			extrafloors.Add(e);
+			alleffects.Add(e);
+		}
+		
+		// Brightness level effect
+		public void AddEffectBrightnessLevel(Linedef sourcelinedef)
+		{
+			EffectBrightnessLevel e = new EffectBrightnessLevel(this, sourcelinedef);
+			alleffects.Add(e);
+		}
+
+		// Line slope effect
+		public void AddEffectLineSlope(Linedef sourcelinedef)
+		{
+			EffectLineSlope e = new EffectLineSlope(this, sourcelinedef);
+			alleffects.Add(e);
+		}
+
+		// Copy slope effect
+		public void AddEffectCopySlope(Thing sourcething)
+		{
+			EffectCopySlope e = new EffectCopySlope(this, sourcething);
+			alleffects.Add(e);
+		}
+
+		// Thing line slope effect
+		public void AddEffectThingLineSlope(Thing sourcething)
+		{
+			EffectThingLineSlope e = new EffectThingLineSlope(this, sourcething);
+			alleffects.Add(e);
+		}
+		
+		// This adds a sector for updating
+		public void AddUpdateSector(Sector s, bool includeneighbours)
+		{
+			updatesectors[s] = includeneighbours;
+		}
+		
+		// This adds a sector level
+		public void AddSectorLevel(SectorLevel level)
+		{
+			// Note: Inserting before the end so that the ceiling stays
+			// at the end and the floor at the beginning
+			lightlevels.Insert(lightlevels.Count - 1, level);
+		}
+		
+		// This resets this sector data and all sectors that require updating after me
+		public void Reset()
+		{
+			if(isupdating)
+				return;
+
+			isupdating = true;
+
+			// This is set to false so that this sector is rebuilt the next time it is needed!
+			updated = false;
+
+			foreach(KeyValuePair<Sector, bool> s in updatesectors)
+			{
+				SectorData sd = mode.GetSectorData(s.Key);
+				sd.Reset();
+			}
+
+			isupdating = false;
+		}
+
+		// This sets up the basic floor and ceiling, as they would be in normal Doom circumstances
+		private void BasicSetup()
+		{
+			int color = -1, flight = sector.Brightness, clight = sector.Brightness;
+			bool fabs = true, cabs = true;
+
+			// Normal (flat) floor and ceiling planes
 			floor.plane = new Plane(new Vector3D(0, 0, 1), -sector.FloorHeight);
 			ceiling.plane = new Plane(new Vector3D(0, 0, -1), sector.CeilHeight);
 			
@@ -100,198 +191,25 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			ceiling.color = ceilingcolor.WithAlpha(255).ToInt();
 			ceiling.brightnessbelow = sector.Brightness;
 			ceiling.colorbelow = lightcolor.WithAlpha(255);
-			
-			// Add ceiling and floor
-			lightlevels.Add(floor);
-			lightlevels.Add(ceiling);
 		}
-		
-		#endregion
-		
-		#region ================== Public Methods
-		
-		// This adds a linedef that of interest to this sector, because it modifies the sector
-		public void AddLinedef(Linedef l) { linedefs.Add(l); }
-		
-		// This adds a thing that of interest to this sector, because it modifies the sector
-		public void AddThing(Thing t) { things.Add(t); }
 
-		// This creates additional levels from things and linedefs
-		public void BuildLevels(BaseVisualMode mode)
+		// When no geometry has been changed and no effects have been added or removed,
+		// you can call this again to update existing effects. The effects will update
+		// the existing SectorLevels to match with any changes.
+		public void Update()
 		{
-			// Begin
-			if(isbuilding) return;
-			isbuilding = true;
-
-			lightlevels.Clear();
+			if(isupdating || updated) return;
+			isupdating = true;
 			
-			foreach(Linedef l in linedefs)
-			{
-				// ========== Plane Align (see http://zdoom.org/wiki/Plane_Align) ==========
-				if(l.Action == 181)
-				{
-					// Find the vertex furthest from the line
-					Vertex foundv = null;
-					float founddist = -1.0f;
-					foreach(Sidedef sd in sector.Sidedefs)
-					{
-						Vertex v = sd.IsFront ? sd.Line.Start : sd.Line.End;
-						float d = l.DistanceToSq(v.Position, false);
-						if(d > founddist)
-						{
-							foundv = v;
-							founddist = d;
-						}
-					}
+			// Set floor/ceiling to their original setup
+			BasicSetup();
 
-					// Align floor with back of line
-					if((l.Args[0] == 1) && (l.Front.Sector == sector) && (l.Back != null))
-					{
-						Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.FloorHeight);
-						Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.FloorHeight);
-						Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, sector.FloorHeight);
-						if(l.SideOfLine(v3) < 0.0f)
-							floor.plane = new Plane(v1, v2, v3, true);
-						else
-							floor.plane = new Plane(v2, v1, v3, true);
-					}
-					// Align floor with front of line
-					else if((l.Args[0] == 2) && (l.Back.Sector == sector) && (l.Front != null))
-					{
-						Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.FloorHeight);
-						Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.FloorHeight);
-						Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, sector.FloorHeight);
-						if(l.SideOfLine(v3) < 0.0f)
-							floor.plane = new Plane(v1, v2, v3, true);
-						else
-							floor.plane = new Plane(v2, v1, v3, true);
-					}
-					
-					// Align ceiling with back of line
-					if((l.Args[1] == 1) && (l.Front.Sector == sector) && (l.Back != null))
-					{
-						Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.CeilHeight);
-						Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.CeilHeight);
-						Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, sector.CeilHeight);
-						if(l.SideOfLine(v3) > 0.0f)
-							ceiling.plane = new Plane(v1, v2, v3, false);
-						else
-							ceiling.plane = new Plane(v2, v1, v3, false);
-					}
-					// Align ceiling with front of line
-					else if((l.Args[1] == 2) && (l.Back.Sector == sector) && (l.Front != null))
-					{
-						Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.CeilHeight);
-						Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.CeilHeight);
-						Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, sector.CeilHeight);
-						if(l.SideOfLine(v3) > 0.0f)
-							ceiling.plane = new Plane(v1, v2, v3, false);
-						else
-							ceiling.plane = new Plane(v2, v1, v3, false);
-					}
-				}
-				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
-				else if(l.Action == 160)
-				{
-					if(l.Front != null)
-					{
-						SectorData sd = mode.GetSectorData(l.Front.Sector);
-						if(!sd.Built) sd.BuildLevels(mode);
-						
-						// Create 3D floor
-						Sector3DFloor ef = new Sector3DFloor(sd, l);
-						extrafloors.Add(ef);
-						
-						// Add levels so that they can participate in lighting
-						lightlevels.Add(ef.floor);
-						lightlevels.Add(ef.ceiling);
-					}
-				}
-				// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
-				else if(l.Action == 50)
-				{
-					if(l.Front != null)
-					{
-						SectorData sd = mode.GetSectorData(l.Front.Sector);
-						if(!sd.Built) sd.BuildLevels(mode);
-
-						//SectorLevel f = new SectorLevel(sd.Floor);
-						SectorLevel c = new SectorLevel(sd.Ceiling);
-						c.type = SectorLevelType.Light;
-						//f.type = SectorLevelType.Light;
-						//f.color = 0;
-						//f.brightnessbelow = 0;
-						//f.colorbelow = PixelColor.FromInt(0);
-						//levels.Add(f);
-						lightlevels.Add(c);
-					}
-				}
-			}
+			// Update all effects
+			foreach(SectorEffect e in alleffects)
+				e.Update();
 			
-			foreach(Thing t in things)
-			{
-				// ========== Copy floor slope ==========
-				if(t.Type == 9510)
-				{
-					// Find tagged sector
-					Sector ts = null;
-					foreach(Sector s in General.Map.Map.Sectors)
-					{
-						if(s.Tag == t.Args[0])
-						{
-							ts = s;
-							break;
-						}
-					}
-					
-					if(ts != null)
-					{
-						SectorData tsd = mode.GetSectorData(ts);
-						if(!tsd.Built) tsd.BuildLevels(mode);
-						floor.plane = tsd.floor.plane;
-					}
-				}
-				// ========== Line floor slope ==========
-				else if(t.Type == 9500)
-				{
-					// Find the tagged line
-					Linedef ld = null;
-					foreach(Linedef l in General.Map.Map.Linedefs)
-					{
-						if(l.Tag == t.Args[0])
-						{
-							ld = l;
-							break;
-						}
-					}
-
-					if(ld != null)
-					{
-						// Slope the floor from the linedef to thing
-						t.DetermineSector(mode.BlockMap);
-						Vector3D v3 = new Vector3D(t.Position.x, t.Position.y, t.Position.z + t.Sector.FloorHeight);
-						if(ld.SideOfLine(t.Position) < 0.0f)
-						{
-							Vector3D v1 = new Vector3D(ld.Start.Position.x, ld.Start.Position.y, ld.Front.Sector.FloorHeight);
-							Vector3D v2 = new Vector3D(ld.End.Position.x, ld.End.Position.y, ld.Front.Sector.FloorHeight);
-							floor.plane = new Plane(v1, v2, v3, true);
-						}
-						else
-						{
-							Vector3D v1 = new Vector3D(ld.Start.Position.x, ld.Start.Position.y, ld.Back.Sector.FloorHeight);
-							Vector3D v2 = new Vector3D(ld.End.Position.x, ld.End.Position.y, ld.Back.Sector.FloorHeight);
-							floor.plane = new Plane(v2, v1, v3, true);
-						}
-					}
-				}
-			}
-			
-			// Sort the levels
-			lightlevels.Sort();
-			
-			// Floor is always first, ceiling always last
-			lightlevels.Add(ceiling);
-			lightlevels.Insert(0, floor);
+			// Sort the levels (but not the first and the last)
+			lightlevels.Sort(1, lightlevels.Count - 2, null);
 			
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.
@@ -316,9 +234,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					l.brightnessbelow = pl.brightnessbelow;
 			}
 			
-			// Done
-			built = true;
-			isbuilding = false;
+			isupdating = false;
 		}
 
 		// This returns the level above the given point

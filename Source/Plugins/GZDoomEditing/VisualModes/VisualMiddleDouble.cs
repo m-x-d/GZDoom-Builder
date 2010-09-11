@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Load sector data
 				SectorData sd = mode.GetSectorData(Sidedef.Sector);
 				SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
-				if(!osd.Built) osd.BuildLevels(mode);
+				if(!osd.Updated) osd.Update();
 				
 				// Texture given?
 				if((Sidedef.MiddleTexture.Length > 0) && (Sidedef.MiddleTexture[0] != '-'))
@@ -187,6 +187,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					if(Sidedef.Fields["wrapmidtex"].Value is bool)
 						repeatmidtex = (bool)Sidedef.Fields["wrapmidtex"].Value;
 				}
+				else
+					repeatmidtex = Sidedef.Line.IsFlagSet("wrapmidtex");
 				
 				if(!repeatmidtex)
 				{
@@ -218,11 +220,24 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					// Keep top and bottom planes for intersection testing
 					top = osd.Ceiling.plane;
 					bottom = osd.Floor.plane;
-					
+
 					// Process the polygon and create vertices
 					List<WorldVertex> verts = CreatePolygonVertices(poly, tp);
 					if(verts.Count > 0)
 					{
+						// Apply alpha to vertices
+						byte alpha = SetLinedefRenderstyle(true);
+						if(alpha < 255)
+						{
+							for(int i = 0; i < verts.Count; i++)
+							{
+								WorldVertex v = verts[i];
+								PixelColor c = PixelColor.FromInt(v.c);
+								v.c = c.WithAlpha(alpha).ToInt();
+								verts[i] = v;
+							}
+						}
+						
 						base.SetVertices(verts);
 						return true;
 					}
