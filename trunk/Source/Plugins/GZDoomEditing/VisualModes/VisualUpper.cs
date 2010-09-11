@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Load sector data
 			SectorData sd = Sector.Data;
 			SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
-			if(!osd.Built) osd.BuildLevels(mode);
+			if(!osd.Updated) osd.Update();
 			
 			// Texture given?
 			if((Sidedef.HighTexture.Length > 0) && (Sidedef.HighTexture[0] != '-'))

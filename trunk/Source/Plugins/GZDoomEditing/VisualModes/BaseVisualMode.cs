@@ -451,19 +451,32 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					if(((l.Args[0] == 1) || (l.Args[1] == 1)) && (l.Front != null))
 					{
 						SectorData sd = GetSectorData(l.Front.Sector);
-						sd.AddLinedef(l);
+						sd.AddEffectLineSlope(l);
 					}
 					
 					// Slope back
 					if(((l.Args[0] == 2) || (l.Args[1] == 2)) && (l.Back != null))
 					{
 						SectorData sd = GetSectorData(l.Back.Sector);
-						sd.AddLinedef(l);
+						sd.AddEffectLineSlope(l);
 					}
 				}
 				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
+				else if(l.Action == 160)
+				{
+					int sectortag = l.Args[0] + (l.Args[4] << 8);
+					if(sectortags.ContainsKey(sectortag))
+					{
+						List<Sector> sectors = sectortags[sectortag];
+						foreach(Sector s in sectors)
+						{
+							SectorData sd = GetSectorData(s);
+							sd.AddEffect3DFloor(l);
+						}
+					}
+				}
 				// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
-				else if((l.Action == 160) || (l.Action == 50))
+				else if(l.Action == 50)
 				{
 					if(sectortags.ContainsKey(l.Args[0]))
 					{
@@ -471,7 +484,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						foreach(Sector s in sectors)
 						{
 							SectorData sd = GetSectorData(s);
-							sd.AddLinedef(l);
+							sd.AddEffectBrightnessLevel(l);
 						}
 					}
 				}
@@ -480,15 +493,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Find interesting things (such as vertex and sector slopes)
 			foreach(Thing t in General.Map.Map.Things)
 			{
-				// ========== Copy floor slope ==========
-				// ========== Line floor slope ==========
+				// ========== Copy slope ==========
 				if((t.Type == 9510) || (t.Type == 9500))
 				{
 					t.DetermineSector(blockmap);
 					if(t.Sector != null)
 					{
 						SectorData sd = GetSectorData(t.Sector);
-						sd.AddThing(t);
+						sd.AddEffectCopySlope(t);
 					}
 				}
 			}
@@ -538,7 +550,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(BuilderPlug.Me.UseGravity && (General.Map.VisualCamera.Sector != null))
 			{
 				SectorData sd = GetSectorData(General.Map.VisualCamera.Sector);
-				if(!sd.Built) sd.BuildLevels(this);
+				if(!sd.Updated) sd.Update();
 
 				// Camera below floor level?
 				Vector3D feetposition = General.Map.VisualCamera.Position - new Vector3D(0, 0, cameraflooroffset - 7.0f);

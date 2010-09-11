@@ -93,6 +93,54 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		#region ================== Methods
 
+		// This sets the renderstyle from linedef information and returns the alpha value or the vertices
+		protected byte SetLinedefRenderstyle(bool solidasmask)
+		{
+			byte alpha = 255;
+
+			// From TranslucentLine action
+			if(Sidedef.Line.Action == 208)
+			{
+				alpha = (byte)General.Clamp(Sidedef.Line.Args[1], 0, 255);
+				
+				if(Sidedef.Line.Args[2] == 1)
+					this.RenderPass = RenderPass.Additive;
+				else if(alpha < 255)
+					this.RenderPass = RenderPass.Alpha;
+				else if(solidasmask)
+					this.RenderPass = RenderPass.Mask;
+				else
+					this.RenderPass = RenderPass.Solid;
+			}
+			// From UDMF field
+			else if(Sidedef.Line.Fields.ContainsKey("renderstyle") ||
+				    Sidedef.Line.Fields.ContainsKey("alpha"))
+			{
+				string field = "translucent";
+
+				if(Sidedef.Line.Fields.ContainsKey("renderstyle"))
+					field = Sidedef.Line.Fields["renderstyle"].Value.ToString();
+				
+				if(Sidedef.Line.Fields.ContainsKey("alpha"))
+				{
+					float a;
+					if(float.TryParse(Sidedef.Line.Fields["alpha"].Value.ToString(), out a))
+						alpha = (byte)(a * 255.0f);
+				}
+				
+				if(field == "add")
+					this.RenderPass = RenderPass.Additive;
+				else if(alpha < 255)
+					this.RenderPass = RenderPass.Alpha;
+				else if(solidasmask)
+					this.RenderPass = RenderPass.Mask;
+				else
+					this.RenderPass = RenderPass.Solid;
+			}
+			
+			return alpha;
+		}
+
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
