@@ -26,6 +26,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public EffectBrightnessLevel(SectorData data, Linedef sourcelinedef) : base(data)
 		{
 			linedef = sourcelinedef;
+
+			// New effect added: This sector needs an update!
+			if(data.Mode.VisualSectorExists(data.Sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
+				vs.UpdateSectorGeometry(false);
+			}
 		}
 		
 		// This makes sure we are updated with the source linedef information
