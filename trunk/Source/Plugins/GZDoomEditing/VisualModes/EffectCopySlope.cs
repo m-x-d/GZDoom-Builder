@@ -24,6 +24,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public EffectCopySlope(SectorData data, Thing sourcething) : base(data)
 		{
 			thing = sourcething;
+			
+			// New effect added: This sector needs an update!
+			if(data.Mode.VisualSectorExists(data.Sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
+				vs.UpdateSectorGeometry(true);
+			}
 		}
 		
 		// This makes sure we are updated with the source linedef information

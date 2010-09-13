@@ -24,13 +24,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public EffectThingLineSlope(SectorData data, Thing sourcething) : base(data)
 		{
 			thing = sourcething;
+			
+			// New effect added: This sector needs an update!
+			if(data.Mode.VisualSectorExists(data.Sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
+				vs.UpdateSectorGeometry(true);
+			}
 		}
 		
 		// This makes sure we are updated with the source linedef information
 		public override void Update()
 		{
 			Thing t = thing;
-			
+
 			// Find the tagged line
 			Linedef ld = null;
 			foreach(Linedef l in General.Map.Map.Linedefs)

@@ -36,6 +36,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public Effect3DFloor(SectorData data, Linedef sourcelinedef) : base(data)
 		{
 			linedef = sourcelinedef;
+			
+			// New effect added: This sector needs an update!
+			if(data.Mode.VisualSectorExists(data.Sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
+				vs.UpdateSectorGeometry(true);
+			}
 		}
 
 		// This makes sure we are updated with the source linedef information
@@ -44,6 +51,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			SectorData sd = data.Mode.GetSectorData(linedef.Front.Sector);
 			if(!sd.Updated) sd.Update();
 			sd.AddUpdateSector(data.Sector, true);
+
+			// Check if this effect still exists
+			int sectortag = linedef.Args[0] + (linedef.Args[4] << 8);
+			if(linedef.IsDisposed || (linedef.Action != 160) || (sectortag != data.Sector.Tag))
+			{
+				// When the effect is no longer exists, we must remove it and update sectors
+
+			}
 
 			if(floor == null)
 			{
