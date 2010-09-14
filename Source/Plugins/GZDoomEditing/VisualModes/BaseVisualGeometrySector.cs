@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		new public BaseVisualSector Sector { get { return (BaseVisualSector)base.Sector; } }
 		public bool Changed { get { return changed; } set { changed = value; } }
+		public SectorLevel Level { get { return level; } }
 
 		#endregion
 
@@ -298,7 +299,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			ChangeHeight(amount);
 
 			// Rebuild sector
-			Sector.UpdateSectorGeometry(true);
+			if(mode.VisualSectorExists(level.sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				vs.UpdateSectorGeometry(true);
+			}
 		}
 		
 		// Sector brightness change
