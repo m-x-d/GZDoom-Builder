@@ -43,10 +43,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public VisualLower lower;
 		public VisualMiddleDouble middledouble;
 		public VisualMiddleSingle middlesingle;
-		public Dictionary<Effect3DFloor, VisualMiddle3D> middle3d;
+		public List<VisualMiddle3D> middle3d;
 		
 		// Constructor
-		public VisualSidedefParts(VisualUpper u, VisualLower l, VisualMiddleDouble m, Dictionary<Effect3DFloor, VisualMiddle3D> e)
+		public VisualSidedefParts(VisualUpper u, VisualLower l, VisualMiddleDouble m, List<VisualMiddle3D> e)
 		{
 			this.upper = u;
 			this.lower = l;
@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(upper != null) upper.Setup();
 			if(middle3d != null)
 			{
-				foreach(VisualMiddle3D m in middle3d.Values)
+				foreach(VisualMiddle3D m in middle3d)
 					m.Setup();
 			}
 		}

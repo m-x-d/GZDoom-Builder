@@ -46,11 +46,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		protected BaseVisualMode mode;
 		
-		protected SectorData data;
 		protected VisualFloor floor;
 		protected VisualCeiling ceiling;
-		protected Dictionary<Effect3DFloor, VisualFloor> extrafloors;
-		protected Dictionary<Effect3DFloor, VisualCeiling> extraceilings;
+		protected List<VisualFloor> extrafloors;
+		protected List<VisualCeiling> extraceilings;
 		protected Dictionary<Sidedef, VisualSidedefParts> sides;
 		
 		// If this is set to true, the sector will be rebuilt after the action is performed.
@@ -60,7 +59,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		#region ================== Properties
 		
-		public SectorData Data { get { return data; } }
 		public VisualFloor Floor { get { return floor; } }
 		public VisualCeiling Ceiling { get { return ceiling; } }
 		public bool Changed { get { return changed; } set { changed |= value; } }
@@ -73,6 +71,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public BaseVisualSector(BaseVisualMode mode, Sector s) : base(s)
 		{
 			this.mode = mode;
+			this.extrafloors = new List<VisualFloor>(2);
+			this.extraceilings = new List<VisualCeiling>(2);
 			
 			// Initialize
 			Rebuild();
@@ -103,14 +103,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		#region ================== Methods
 		
+		// This retreives the sector data for this sector
+		public SectorData GetSectorData()
+		{
+			return mode.GetSectorData(this.Sector);
+		}
+		
 		// This updates this virtual the sector and neightbours if needed
 		public void UpdateSectorGeometry(bool includeneighbours)
 		{
 			// Rebuild sector
 			this.Changed = true;
-			
-			data.Reset();
 
+			// Not sure what from this part we need, so commented out for now
+			SectorData data = GetSectorData();
+			data.Reset();
+			
+			/*
 			// Update sectors that rely on this sector
 			foreach(KeyValuePair<Sector, bool> s in data.UpdateAlso)
 			{
@@ -120,7 +129,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					vs.UpdateSectorGeometry(s.Value);
 				}
 			}
-
+			*/
+			
 			// Go for all things in this sector
 			foreach(Thing t in General.Map.Map.Things)
 			{
@@ -159,37 +169,37 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			base.ClearGeometry();
 			
 			// Get sector data
-			data = mode.GetSectorData(this.Sector);
+			SectorData data = GetSectorData();
 			if(!data.Updated) data.Update();
 			
 			// Create floor
-			floor = floor ?? new VisualFloor(mode, this, data.Floor);
-			if(floor.Setup())
+			floor = floor ?? new VisualFloor(mode, this);
+			if(floor.Setup(data.Floor))
 				base.AddGeometry(floor);
 			
 			// Create ceiling
-			ceiling = ceiling ?? new VisualCeiling(mode, this, data.Ceiling);
-			if(ceiling.Setup())
+			ceiling = ceiling ?? new VisualCeiling(mode, this);
+			if(ceiling.Setup(data.Ceiling))
 				base.AddGeometry(ceiling);
 			
 			// Create 3D floors
-			Dictionary<Effect3DFloor, VisualFloor> oldextrafloors = extrafloors ?? new Dictionary<Effect3DFloor, VisualFloor>(1);
-			extrafloors = new Dictionary<Effect3DFloor, VisualFloor>(data.ExtraFloors.Count);
-			Dictionary<Effect3DFloor, VisualCeiling> oldextraceilings = extraceilings ?? new Dictionary<Effect3DFloor, VisualCeiling>(1);
-			extraceilings = new Dictionary<Effect3DFloor, VisualCeiling>(data.ExtraFloors.Count);
-			foreach(Effect3DFloor ef in data.ExtraFloors)
+			for(int i = 0; i < data.ExtraFloors.Count; i++)
 			{
-				// Create a floor
-				VisualFloor vf = oldextrafloors.ContainsKey(ef) ? oldextrafloors[ef] : new VisualFloor(mode, this, ef.Floor);
-				if(vf.Setup())
-					base.AddGeometry(vf);
-				extrafloors.Add(ef, vf);
+				Effect3DFloor ef = data.ExtraFloors[i];
 				
+				// Create a floor
+				VisualFloor vf = (i < extrafloors.Count) ? extrafloors[i] : new VisualFloor(mode, this);
+				if(vf.Setup(ef.Floor))
+					base.AddGeometry(vf);
+				if(i >= extrafloors.Count)
+					extrafloors.Add(vf);
+
 				// Create a ceiling
-				VisualCeiling vc = oldextraceilings.ContainsKey(ef) ? oldextraceilings[ef] : new VisualCeiling(mode, this, ef.Ceiling);
-				if(vc.Setup())
+				VisualCeiling vc = (i < extraceilings.Count) ? extraceilings[i] : new VisualCeiling(mode, this);
+				if(vc.Setup(ef.Ceiling))
 					base.AddGeometry(vc);
-				extraceilings.Add(ef, vc);
+				if(i >= extraceilings.Count)
+					extraceilings.Add(vc);
 			}
 			
 			// Go for all sidedefs
@@ -221,18 +231,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					// Create 3D wall parts
 					SectorData osd = mode.GetSectorData(sd.Other.Sector);
 					if(!osd.Updated) osd.Update();
-					Dictionary<Effect3DFloor, VisualMiddle3D> oldfloors = parts.middle3d ?? new Dictionary<Effect3DFloor, VisualMiddle3D>(2);
-					Dictionary<Effect3DFloor, VisualMiddle3D> newfloors = new Dictionary<Effect3DFloor, VisualMiddle3D>(2);
-					foreach(Effect3DFloor ef in osd.ExtraFloors)
+					List<VisualMiddle3D> middles = parts.middle3d ?? new List<VisualMiddle3D>(2);
+					for(int i = 0; i < osd.ExtraFloors.Count; i++)
 					{
-						VisualMiddle3D vm3 = oldfloors.ContainsKey(ef) ? oldfloors[ef] : new VisualMiddle3D(mode, this, sd, ef);
-						if(vm3.Setup())
+						Effect3DFloor ef = osd.ExtraFloors[i];
+
+						VisualMiddle3D vm3 = (i < middles.Count) ? middles[i] : new VisualMiddle3D(mode, this, sd);
+						if(vm3.Setup(ef))
 							base.AddGeometry(vm3);
-						newfloors.Add(ef, vm3);
+						if(i >= middles.Count)
+							middles.Add(vm3);
 					}
 					
 					// Store
-					sides.Add(sd, new VisualSidedefParts(vu, vl, vm, newfloors));
+					sides.Add(sd, new VisualSidedefParts(vu, vl, vm, middles));
 				}
 				else
 				{

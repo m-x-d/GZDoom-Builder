@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
@@ -441,6 +442,52 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				}
 			}
 
+			// Find sectors with 3 vertices, because they can be sloped
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				if(s.Sidedefs.Count == 3)
+				{
+					List<Thing> slopeceilingthings = new List<Thing>(3);
+					List<Thing> slopefloorthings = new List<Thing>(3);
+					foreach(Sidedef sd in s.Sidedefs)
+					{
+						Vertex v;
+						if(sd.IsFront)
+							v = sd.Line.End;
+						else
+							v = sd.Line.Start;
+
+						// Check if a thing is at this vertex
+						VisualBlockEntry b = blockmap.GetBlock(blockmap.GetBlockCoordinates(v.Position));
+						foreach(Thing t in b.Things)
+						{
+							if((Vector2D)t.Position == v.Position)
+							{
+								if(t.Type == 1504)
+									slopefloorthings.Add(t);
+								else if(t.Type == 1505)
+									slopeceilingthings.Add(t);
+								break;
+							}
+						}
+					}
+
+					// Slope any floor vertices?
+					if(slopefloorthings.Count > 0)
+					{
+						SectorData sd = GetSectorData(s);
+						sd.AddEffectThingVertexSlope(slopefloorthings, true);
+					}
+
+					// Slope any ceiling vertices?
+					if(slopeceilingthings.Count > 0)
+					{
+						SectorData sd = GetSectorData(s);
+						sd.AddEffectThingVertexSlope(slopeceilingthings, false);
+					}
+				}
+			}
+			
 			// Find interesting linedefs (such as line slopes)
 			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
@@ -490,7 +537,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				}
 			}
 
-			// Find interesting things (such as vertex and sector slopes)
+			// Find interesting things (such as sector slopes)
 			foreach(Thing t in General.Map.Map.Things)
 			{
 				// ========== Copy slope ==========

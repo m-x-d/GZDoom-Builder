@@ -58,20 +58,22 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constructor / Setup
 
 		// Constructor
-		public VisualFloor(BaseVisualMode mode, VisualSector vs, SectorLevel level) : base(mode, vs, level)
+		public VisualFloor(BaseVisualMode mode, VisualSector vs) : base(mode, vs)
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public override bool Setup()
+		public override bool Setup(SectorLevel level)
 		{
 			WorldVertex[] verts;
 			Sector s = level.sector;
 			float xpan, ypan, xscale, yscale, rotate;
 			Vector2D texscale;
-			
+
+			base.Setup(level);
+
 			try
 			{
 				// Fetch ZDoom fields

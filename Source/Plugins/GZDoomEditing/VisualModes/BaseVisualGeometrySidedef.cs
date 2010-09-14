@@ -160,11 +160,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		
 		// This creates vertices from a wall polygon and applies lighting
-		protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp)
+		protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp, SectorData sd)
 		{
 			List<WallPolygon> polygons = new List<WallPolygon>(2);
 			List<WorldVertex> verts = new List<WorldVertex>();
-			SectorData sd = Sector.Data;
 			
 			polygons.Add(poly);
 			
@@ -823,6 +822,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 								(vs as BaseVisualSector).Changed = true;
 						}
 					}
+
+					mode.RebuildSectorData();
 				}
 			}
 		}

@@ -67,9 +67,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public BaseVisualGeometrySector(BaseVisualMode mode, VisualSector vs, SectorLevel level) : base(vs)
+		protected BaseVisualGeometrySector(BaseVisualMode mode, VisualSector vs) : base(vs)
 		{
-			this.level = level;
 			this.mode = mode;
 		}
 
@@ -85,7 +84,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Events
 
 		// Unused
-		public abstract bool Setup();
 		public virtual void OnSelectBegin(){ }
 		public virtual void OnEditBegin() { }
 		public virtual void OnMouseMove(MouseEventArgs e) { }
@@ -101,6 +99,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected virtual void SetTexture(string texturename) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
+
+		// Setup this plane
+		public bool Setup() { return this.Setup(this.level); }
+		public virtual bool Setup(SectorLevel level)
+		{
+			this.level = level;
+			return false;
+		}
 
 		// Select or deselect
 		public virtual void OnSelectEnd()
@@ -207,7 +213,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Copy properties
 		public virtual void OnCopyProperties()
 		{
-			BuilderPlug.Me.CopiedSectorProps = new SectorProperties(Sector.Sector);
+			BuilderPlug.Me.CopiedSectorProps = new SectorProperties(level.sector);
 			mode.SetActionResult("Copied sector properties.");
 		}
 		
@@ -218,8 +224,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			{
 				mode.CreateUndo("Paste sector properties");
 				mode.SetActionResult("Pasted sector properties.");
-				BuilderPlug.Me.CopiedSectorProps.Apply(Sector.Sector);
-				Sector.UpdateSectorGeometry(true);
+				BuilderPlug.Me.CopiedSectorProps.Apply(level.sector);
+				if(mode.VisualSectorExists(level.sector))
+				{
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+					vs.UpdateSectorGeometry(true);
+				}
 				mode.ShowTargetInfo();
 			}
 		}
@@ -270,9 +280,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					// Rebuild sector
 					foreach(Sector s in sectors)
 					{
-						VisualSector vs = mode.GetVisualSector(s);
-						if(vs != null)
-							(vs as BaseVisualSector).UpdateSectorGeometry(true);
+						if(mode.VisualSectorExists(s))
+						{
+							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
+							vs.UpdateSectorGeometry(true);
+						}
 					}
 				}
 			}
