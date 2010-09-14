@@ -762,11 +762,16 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Go for all sectors to update
 				foreach(Sector s in General.Map.Map.Sectors)
 				{
-					if(s.Marked && VisualSectorExists(s))
+					if(s.Marked)
 					{
-						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
-						vs.Floor.Setup();
-						vs.Ceiling.Setup();
+						SectorData sd = GetSectorData(s);
+						sd.Reset();
+
+						if(VisualSectorExists(s))
+						{
+							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
+							vs.UpdateSectorGeometry(false);
+						}
 					}
 				}
 				
@@ -797,6 +802,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Make new blockmap
 				if(sectorsmarked || General.Map.UndoRedo.PopulationChanged)
 					FillBlockMap();
+
+				UpdateChangedObjects();
 				
 				// Visibility culling (this re-creates the needed resources)
 				DoCulling();
@@ -930,7 +937,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			{
 				if(i is BaseVisualGeometrySector)
 				{
-					Sector s = (i as BaseVisualGeometrySector).Sector.Sector;
+					Sector s = (i as BaseVisualGeometrySector).Level.sector;
 					if(!added.ContainsKey(s))
 					{
 						sectors.Add(s);
@@ -942,7 +949,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Add highlight?
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySector))
 			{
-				Sector s = (target.picked as BaseVisualGeometrySector).Sector.Sector;
+				Sector s = (target.picked as BaseVisualGeometrySector).Level.sector;
 				if(!added.ContainsKey(s))
 					sectors.Add(s);
 			}

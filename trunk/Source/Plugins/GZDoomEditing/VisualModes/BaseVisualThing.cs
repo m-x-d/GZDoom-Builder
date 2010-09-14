@@ -98,9 +98,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			{
 				if(Thing.Sector != null)
 				{
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					SectorLevel level = sd.GetLevelAbove(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + Thing.Sector.FloorHeight));
+					
 					// Use sector brightness for color shading
-					byte brightness = (byte)General.Clamp(Thing.Sector.Brightness, 0, 255);
-					sectorcolor = new PixelColor(255, brightness, brightness, brightness);
+					PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
+					PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
+					sectorcolor = areacolor.WithAlpha(255);
 				}
 				
 				// Check if the texture is loaded
@@ -169,27 +173,39 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			else if(info.Hangs)
 			{
 				// Hang from ceiling
-				if(Thing.Sector != null) pos.z = Thing.Sector.CeilHeight - info.Height;
+				if(Thing.Sector != null)
+				{
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+				}
+				
 				if(Thing.Position.z > 0) pos.z -= Thing.Position.z;
 				
 				// Check if below floor
 				if((Thing.Sector != null) && (pos.z < Thing.Sector.FloorHeight))
 				{
 					// Put thing on the floor
-					pos.z = Thing.Sector.FloorHeight;
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					pos.z = sd.Floor.plane.GetZ(Thing.Position);
 				}
 			}
 			else
 			{
 				// Stand on floor
-				if(Thing.Sector != null) pos.z = Thing.Sector.FloorHeight;
+				if(Thing.Sector != null)
+				{
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					pos.z = sd.Floor.plane.GetZ(Thing.Position);
+				}
+				
 				if(Thing.Position.z > 0) pos.z += Thing.Position.z;
 				
 				// Check if above ceiling
 				if((Thing.Sector != null) && ((pos.z + info.Height) > Thing.Sector.CeilHeight))
 				{
 					// Put thing against ceiling
-					pos.z = Thing.Sector.CeilHeight - info.Height;
+					SectorData sd = mode.GetSectorData(Thing.Sector);
+					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
 				}
 			}
 			

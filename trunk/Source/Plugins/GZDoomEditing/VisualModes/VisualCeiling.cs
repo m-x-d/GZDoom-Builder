@@ -175,9 +175,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{
-			mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, this.Sector.Sector.FixedIndex);
-			this.Sector.Sector.CeilHeight += amount;
-			mode.SetActionResult("Changed ceiling height to " + Sector.Sector.CeilHeight + ".");
+			if(level.sector == Sector.Sector)
+			{
+				mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, level.sector.FixedIndex);
+				level.sector.CeilHeight += amount;
+				mode.SetActionResult("Changed ceiling height to " + level.sector.CeilHeight + ".");
+			}
+			else
+			{
+				mode.CreateUndo("Change floor height", UndoGroup.FloorHeightChange, level.sector.FixedIndex);
+				level.sector.FloorHeight += amount;
+				mode.SetActionResult("Changed floor height to " + level.sector.FloorHeight + ".");
+			}
 		}
 		
 		// This performs a fast test in object picking
@@ -218,15 +227,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Return texture name
 		public override string GetTextureName()
 		{
-			return this.Sector.Sector.CeilTexture;
+			return level.sector.CeilTexture;
 		}
 
 		// This changes the texture
 		protected override void SetTexture(string texturename)
 		{
-			this.Sector.Sector.SetCeilTexture(texturename);
+			level.sector.SetCeilTexture(texturename);
 			General.Map.Data.UpdateUsedTextures();
-			this.Setup();
+			if(level.sector == this.Sector.Sector)
+			{
+				this.Setup();
+			}
+			else if(mode.VisualSectorExists(level.sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				vs.UpdateSectorGeometry(false);
+			}
 		}
 		
 		#endregion
