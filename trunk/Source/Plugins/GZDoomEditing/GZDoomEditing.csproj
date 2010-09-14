@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
+    <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{760A9BC7-CB73-4C36-858B-994C14996FCD}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -93,6 +93,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Actions.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GZDoomEditing.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
