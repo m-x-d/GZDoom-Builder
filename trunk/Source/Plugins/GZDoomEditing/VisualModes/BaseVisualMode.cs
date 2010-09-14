@@ -600,7 +600,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				if(!sd.Updated) sd.Update();
 
 				// Camera below floor level?
-				Vector3D feetposition = General.Map.VisualCamera.Position - new Vector3D(0, 0, cameraflooroffset - 7.0f);
+				Vector3D feetposition = General.Map.VisualCamera.Position;
 				SectorLevel floorlevel = sd.GetFloorBelow(feetposition) ?? sd.LightLevels[0];
 				float floorheight = floorlevel.plane.GetZ(General.Map.VisualCamera.Position);
 				if(General.Map.VisualCamera.Position.z < (floorheight + cameraflooroffset + 0.01f))

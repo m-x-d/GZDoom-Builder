@@ -100,11 +100,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
 					SectorLevel level = sd.GetLevelAbove(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + Thing.Sector.FloorHeight));
-					
-					// Use sector brightness for color shading
-					PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
-					PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
-					sectorcolor = areacolor.WithAlpha(255);
+					if(level != null)
+					{
+						// Use sector brightness for color shading
+						PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
+						PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
+						sectorcolor = areacolor.WithAlpha(255);
+					}
 				}
 				
 				// Check if the texture is loaded
