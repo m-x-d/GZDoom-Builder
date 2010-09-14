@@ -58,20 +58,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Constructor / Setup
 		
 		// Constructor
-		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s, Effect3DFloor extrafloor)
-			: base(mode, vs, s)
+		public VisualMiddle3D(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s)
 		{
-			this.extrafloor = extrafloor;
-			
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
 		
 		// This builds the geometry. Returns false when no geometry created.
-		public override bool Setup()
+		public override bool Setup() { return this.Setup(this.extrafloor); }
+		public bool Setup(Effect3DFloor extrafloor)
 		{
 			Vector2D vl, vr;
 			Sidedef sourceside = extrafloor.Linedef.Front;
+
+			this.extrafloor = extrafloor;
 			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
@@ -184,7 +184,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				CropPoly(ref poly, extrafloor.Ceiling.plane, false);
 				
 				// Process the polygon and create vertices
-				List<WorldVertex> verts = CreatePolygonVertices(poly, tp);
+				List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd);
 				if(verts.Count > 0)
 				{
 					if(extrafloor.Alpha < 255)

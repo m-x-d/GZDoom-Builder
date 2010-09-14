@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					bottom = osd.Floor.plane;
 
 					// Process the polygon and create vertices
-					List<WorldVertex> verts = CreatePolygonVertices(poly, tp);
+					List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd);
 					if(verts.Count > 0)
 					{
 						// Apply alpha to vertices

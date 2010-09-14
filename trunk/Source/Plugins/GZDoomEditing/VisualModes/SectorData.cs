@@ -122,6 +122,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			EffectThingLineSlope e = new EffectThingLineSlope(this, sourcething);
 			alleffects.Add(e);
 		}
+
+		// Thing vertex slope effect
+		public void AddEffectThingVertexSlope(List<Thing> sourcethings, bool slopefloor)
+		{
+			EffectThingVertexSlope e = new EffectThingVertexSlope(this, sourcethings, slopefloor);
+			alleffects.Add(e);
+		}
 		
 		// This adds a sector for updating
 		public void AddUpdateSector(Sector s, bool includeneighbours)
@@ -148,6 +155,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// This is set to false so that this sector is rebuilt the next time it is needed!
 			updated = false;
 
+			// The visual sector associated is now outdated
+			if(mode.VisualSectorExists(sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
+				vs.UpdateSectorGeometry(false);
+			}
+			
+			// Also reset the sectors that depend on this sector
 			foreach(KeyValuePair<Sector, bool> s in updatesectors)
 			{
 				SectorData sd = mode.GetSectorData(s.Key);
@@ -232,6 +247,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				
 				if(l.brightnessbelow == -1)
 					l.brightnessbelow = pl.brightnessbelow;
+			}
+
+			// The visual sector associated is now outdated
+			if(mode.VisualSectorExists(sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
+				vs.UpdateSectorGeometry(false);
 			}
 			
 			isupdating = false;
