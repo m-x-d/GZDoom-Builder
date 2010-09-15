@@ -823,7 +823,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						}
 					}
 
-					mode.RebuildSectorData();
+					mode.RebuildElementData();
 				}
 			}
 		}
