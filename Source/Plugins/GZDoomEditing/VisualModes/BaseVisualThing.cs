@@ -476,7 +476,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				Thing.Move(Thing.Position + new Vector3D(0.0f, 0.0f, (float)amount));
 
 				mode.SetActionResult("Changed thing height to " + Thing.Position.z + ".");
-
+				
+				// Update what must be updated
+				ThingData td = mode.GetThingData(this.Thing);
+				foreach(KeyValuePair<Sector, bool> s in td.UpdateAlso)
+				{
+					if(mode.VisualSectorExists(s.Key))
+					{
+						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
+						vs.UpdateSectorGeometry(s.Value);
+					}
+				}
+				
 				this.Changed = true;
 			}
 		}

@@ -249,13 +249,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					l.brightnessbelow = pl.brightnessbelow;
 			}
 
-			// The visual sector associated is now outdated
-			if(mode.VisualSectorExists(sector))
-			{
-				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
-				vs.UpdateSectorGeometry(false);
-			}
-			
 			isupdating = false;
 		}
 

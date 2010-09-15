@@ -70,8 +70,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private double lastpicktime;
 		private bool locktarget;
 
-		// This keeps extra sector info
+		// This keeps extra element info
 		private Dictionary<Sector, SectorData> sectordata;
+		private Dictionary<Thing , ThingData> thingdata;
 		
 		// This is true when a selection was made because the action is performed
 		// on an object that was not selected. In this case the previous selection
@@ -234,6 +235,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
 				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
+				foreach(VisualFloor vf in bvs.ExtraFloors) vf.Changed = false;
+				foreach(VisualCeiling vc in bvs.ExtraCeilings) vc.Changed = false;
 				bvs.Floor.Changed = false;
 				bvs.Ceiling.Changed = false;
 			}
@@ -425,12 +428,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			return sectordata[s];
 		}
 		
+		// This requests a things's extra data
+		internal ThingData GetThingData(Thing t)
+		{
+			// Make fresh sector data when it doesn't exist yet
+			if(!thingdata.ContainsKey(t))
+				thingdata[t] = new ThingData(this, t);
+			
+			return thingdata[t];
+		}
+		
 		// This rebuilds the sector data
 		// This requires that the blockmap is up-to-date!
-		internal void RebuildSectorData()
+		internal void RebuildElementData()
 		{
 			Dictionary<int, List<Sector>> sectortags = new Dictionary<int, List<Sector>>();
 			sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
+			thingdata = new Dictionary<Thing,ThingData>(General.Map.Map.Things.Count);
 			
 			// Find all sector who's tag is not 0 and hash them so that we can find them quicly
 			foreach(Sector s in General.Map.Map.Sectors)
@@ -582,7 +596,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			cameraflooroffset = General.Map.Config.ReadSetting("cameraflooroffset", cameraflooroffset);
 			cameraceilingoffset = General.Map.Config.ReadSetting("cameraceilingoffset", cameraceilingoffset);
 
-			RebuildSectorData();
+			RebuildElementData();
 		}
 
 		// When returning to another mode
@@ -727,7 +741,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected override void ResourcesReloaded()
 		{
 			base.ResourcesReloaded();
-			RebuildSectorData();
+			RebuildElementData();
 			PickTarget();
 		}
 		
@@ -776,7 +790,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					{
 						SectorData sd = GetSectorData(s);
 						sd.Reset();
-
+						
+						// NOTE: We may need to call UpdateSectorGeometry for associated sectors (sd.UpdateAlso) as well!
+						
 						if(VisualSectorExists(s))
 						{
 							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
@@ -1092,6 +1108,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				BaseVisualSector bvs = (BaseVisualSector)vs.Value;
 				if(bvs.Floor != null) bvs.Floor.Selected = false;
 				if(bvs.Ceiling != null) bvs.Ceiling.Selected = false;
+				foreach(VisualFloor vf in bvs.ExtraFloors) vf.Selected = false;
+				foreach(VisualCeiling vc in bvs.ExtraCeilings) vc.Selected = false;
 				foreach(Sidedef sd in vs.Key.Sidedefs)
 				{
 					List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);

@@ -52,12 +52,16 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					verts[index] = new Vector3D(v.Position.x, v.Position.y, data.Floor.plane.GetZ(v.Position));
 				else
 					verts[index] = new Vector3D(v.Position.x, v.Position.y, data.Ceiling.plane.GetZ(v.Position));
-
+				
 				// Find the thing at this position
 				foreach(Thing t in things)
 				{
 					if((Vector2D)t.Position == v.Position)
+					{
+						ThingData td = data.Mode.GetThingData(t);
+						td.AddUpdateSector(data.Sector, false);
 						verts[index] = t.Position;
+					}
 				}
 				
 				index++;

@@ -54,6 +54,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		// If this is set to true, the sector will be rebuilt after the action is performed.
 		protected bool changed;
+		
+		// Prevent recursion
+		protected bool isupdating;
 
 		#endregion
 
@@ -61,6 +64,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		public VisualFloor Floor { get { return floor; } }
 		public VisualCeiling Ceiling { get { return ceiling; } }
+		public List<VisualFloor> ExtraFloors { get { return extrafloors; } }
+		public List<VisualCeiling> ExtraCeilings { get { return extraceilings; } }
 		public bool Changed { get { return changed; } set { changed |= value; } }
 		
 		#endregion
@@ -112,14 +117,16 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This updates this virtual the sector and neightbours if needed
 		public void UpdateSectorGeometry(bool includeneighbours)
 		{
-			// Rebuild sector
-			this.Changed = true;
-
+			if(isupdating)
+				return;
+				
+			isupdating = true;
+			changed = true;
+			
 			// Not sure what from this part we need, so commented out for now
 			SectorData data = GetSectorData();
 			data.Reset();
 			
-			/*
 			// Update sectors that rely on this sector
 			foreach(KeyValuePair<Sector, bool> s in data.UpdateAlso)
 			{
@@ -129,7 +136,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					vs.UpdateSectorGeometry(s.Value);
 				}
 			}
-			*/
 			
 			// Go for all things in this sector
 			foreach(Thing t in General.Map.Map.Things)
@@ -160,6 +166,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					}
 				}
 			}
+			
+			isupdating = false;
 		}
 		
 		// This (re)builds the visual sector, calculating all geometry from scratch
@@ -231,7 +239,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					// Create 3D wall parts
 					SectorData osd = mode.GetSectorData(sd.Other.Sector);
 					if(!osd.Updated) osd.Update();
-					List<VisualMiddle3D> middles = parts.middle3d ?? new List<VisualMiddle3D>(2);
+					List<VisualMiddle3D> middles = parts.middle3d ?? new List<VisualMiddle3D>(osd.ExtraFloors.Count);
 					for(int i = 0; i < osd.ExtraFloors.Count; i++)
 					{
 						Effect3DFloor ef = osd.ExtraFloors[i];
