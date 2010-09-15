@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public static BuilderPlug Me { get { return me; } }
 		
 		// This is the lowest Doom Builder core revision that is required for this plugin to work
-		public override int MinimumRevision { get { return 1382; } }
+		public override int MinimumRevision { get { return 1394; } }
 		
 		// Settings
 		public int ShowVisualThings { get { return showvisualthings; } set { showvisualthings = value; } }
