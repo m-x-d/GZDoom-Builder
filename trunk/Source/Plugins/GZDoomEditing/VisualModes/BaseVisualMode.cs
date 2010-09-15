@@ -791,8 +791,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						SectorData sd = GetSectorData(s);
 						sd.Reset();
 						
-						// NOTE: We may need to call UpdateSectorGeometry for associated sectors (sd.UpdateAlso) as well!
+						// UpdateSectorGeometry for associated sectors (sd.UpdateAlso) as well!
+						foreach(KeyValuePair<Sector, bool> us in sd.UpdateAlso)
+						{
+							if(VisualSectorExists(us.Key))
+							{
+								BaseVisualSector vs = (BaseVisualSector)GetVisualSector(us.Key);
+								vs.UpdateSectorGeometry(us.Value);
+							}
+						}
 						
+						// And update for this sector ofcourse
 						if(VisualSectorExists(s))
 						{
 							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
@@ -828,7 +837,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Make new blockmap
 				if(sectorsmarked || General.Map.UndoRedo.PopulationChanged)
 					FillBlockMap();
-
+				
+				RebuildElementData();
 				UpdateChangedObjects();
 				
 				// Visibility culling (this re-creates the needed resources)
