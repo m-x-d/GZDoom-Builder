@@ -346,7 +346,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Check if a version number is missing
 			previousversion = cfg.ReadSetting("currentversion", -1);
-			if(previousversion == -1)
+			if(!General.NoSettings && (previousversion == -1))
 			{
 				// Remove old configuration and make a new copy
 				General.WriteLogLine("Program configuration is outdated, new configuration will be copied for local user");
