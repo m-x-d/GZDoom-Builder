@@ -541,13 +541,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			foreach(Thing t in General.Map.Map.Things)
 			{
 				// ========== Copy slope ==========
-				if((t.Type == 9510) || (t.Type == 9500))
+				if((t.Type == 9510) || (t.Type == 9511))
 				{
 					t.DetermineSector(blockmap);
 					if(t.Sector != null)
 					{
 						SectorData sd = GetSectorData(t.Sector);
 						sd.AddEffectCopySlope(t);
+					}
+				}
+				// ========== Thing line slope ==========
+				else if((t.Type == 9500) || (t.Type == 9501))
+				{
+					t.DetermineSector(blockmap);
+					if(t.Sector != null)
+					{
+						SectorData sd = GetSectorData(t.Sector);
+						sd.AddEffectThingLineSlope(t);
 					}
 				}
 			}
