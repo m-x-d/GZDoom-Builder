@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		
 		// This creates vertices from a wall polygon and applies lighting
-		protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp, SectorData sd)
+		protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp, SectorData sd, int lightvalue, bool lightabsolute)
 		{
 			List<WallPolygon> polygons = new List<WallPolygon>(2);
 			List<WorldVertex> verts = new List<WorldVertex>();
@@ -183,7 +183,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						if(np.Count > 0)
 						{
 							// Determine color
-							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(l.brightnessbelow));
+							int lightlevel = lightabsolute ? lightvalue : l.brightnessbelow + lightvalue;
+							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
 							PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
 							np.color = wallcolor.WithAlpha(255).ToInt();
 							

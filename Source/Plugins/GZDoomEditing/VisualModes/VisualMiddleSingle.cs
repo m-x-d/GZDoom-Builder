@@ -67,6 +67,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			Vector2D vl, vr;
 			
+			int lightvalue = Sidedef.Fields.GetValue("light", 0);
+			bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+
+			Vector2D tscale = new Vector2D(Sidedef.Fields.GetValue("scalex_mid", 1.0f),
+										   Sidedef.Fields.GetValue("scaley_mid", 1.0f));
+			Vector2D toffset = new Vector2D(Sidedef.Fields.GetValue("offsetx_mid", 0.0f),
+											Sidedef.Fields.GetValue("offsety_mid", 0.0f));
+			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
 			{
@@ -107,6 +115,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			// Get texture scaled size
 			Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
+			tsz = tsz * tscale;
+			
+			// Get texture offsets
+			Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+			tof = tof + toffset;
+			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
+				tof = tof * base.Texture.Scale;
 			
 			// Determine texture coordinates plane as they would be in normal circumstances.
 			// We can then use this plane to find any texture coordinate we need.
@@ -125,16 +140,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
 			
 			// Apply texture offset
-			if (General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
-			{
-				tp.tlt += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
-				tp.trb += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
-			}
-			else
-			{
-				tp.tlt += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
-				tp.trb += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
-			}
+			tp.tlt += tof;
+			tp.trb += tof;
 			
 			// Transform pixel coordinates to texture coordinates
 			tp.tlt /= tsz;
@@ -169,12 +176,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				poly.Add(new Vector3D(vr.x, vr.y, fr));
 				
 				// Determine initial color
-				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(sd.Ceiling.brightnessbelow));
+				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
+				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
 				
 				// Process the polygon and create vertices
-				List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd);
+				List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd, lightvalue, lightabsolute);
 				if(verts.Count > 0)
 				{
 					base.SetVertices(verts);

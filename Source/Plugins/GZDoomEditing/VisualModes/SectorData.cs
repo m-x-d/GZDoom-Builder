@@ -175,24 +175,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This sets up the basic floor and ceiling, as they would be in normal Doom circumstances
 		private void BasicSetup()
 		{
-			int color = -1, flight = sector.Brightness, clight = sector.Brightness;
-			bool fabs = true, cabs = true;
-
 			// Normal (flat) floor and ceiling planes
 			floor.plane = new Plane(new Vector3D(0, 0, 1), -sector.FloorHeight);
 			ceiling.plane = new Plane(new Vector3D(0, 0, -1), sector.CeilHeight);
 			
-			// Determine colors
-			try
-			{
-				// Fetch ZDoom fields
-				color = sector.Fields.ContainsKey("lightcolor") ? (int)sector.Fields["lightcolor"].Value : -1;
-				flight = sector.Fields.ContainsKey("lightfloor") ? (int)sector.Fields["lightfloor"].Value : 0;
-				fabs = sector.Fields.ContainsKey("lightfloorabsolute") ? (bool)sector.Fields["lightfloorabsolute"].Value : false;
-				clight = sector.Fields.ContainsKey("lightceiling") ? (int)sector.Fields["lightceiling"].Value : 0;
-				cabs = sector.Fields.ContainsKey("lightceilingabsolute") ? (bool)sector.Fields["lightceilingabsolute"].Value : false;
-			}
-			catch(Exception) { }
+			// Fetch ZDoom fields
+			int color = sector.Fields.GetValue("lightcolor", -1);
+			int flight = sector.Fields.GetValue("lightfloor", 0);
+			bool fabs = sector.Fields.GetValue("lightfloorabsolute", false);
+			int clight = sector.Fields.GetValue("lightceiling", 0);
+			bool cabs = sector.Fields.GetValue("lightceilingabsolute", false);
+
+			// Determine colors & light levels
 			PixelColor lightcolor = PixelColor.FromInt(color);
 			if(!fabs) flight = sector.Brightness + flight;
 			if(!cabs) clight = sector.Brightness + clight;
