@@ -25,13 +25,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		// Alpha transparency
 		private int alpha;
+		
+		// Vavoom type?
+		private bool vavoomtype;
 
 		// Properties
 		public int Alpha { get { return alpha; } }
 		public SectorLevel Floor { get { return floor; } }
 		public SectorLevel Ceiling { get { return ceiling; } }
 		public Linedef Linedef { get { return linedef; } }
-
+		public bool VavoomType { get { return vavoomtype; } }
+		
 		// Constructor
 		public Effect3DFloor(SectorData data, Linedef sourcelinedef) : base(data)
 		{
@@ -76,6 +80,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			int argtype = (linedef.Args[1] & 0x03);
 			if(argtype != 0)
 			{
+				vavoomtype = false;
 				alpha = linedef.Args[3];
 				sd.Ceiling.CopyProperties(floor);
 				sd.Floor.CopyProperties(ceiling);
@@ -86,6 +91,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 			else
 			{
+				vavoomtype = true;
 				sd.Ceiling.CopyProperties(ceiling);
 				sd.Floor.CopyProperties(floor);
 				alpha = 255;
@@ -99,7 +105,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			ceiling.alpha = alpha;
 			
 			// Do not adjust light? (works only for non-vavoom types)
-			if(((linedef.Args[2] & 1) != 0) && (argtype != 0))
+			if(((linedef.Args[2] & 1) != 0) && !vavoomtype)
 			{
 				floor.brightnessbelow = -1;
 				floor.colorbelow = PixelColor.FromInt(0);
