@@ -114,6 +114,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Get texture scaled size
 			Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
 			
+			// For Vavoom type 3D floors the ceiling is lower than floor and they are reversed.
+			// We choose here.
+			float sourcetopheight = extrafloor.VavoomType ? sourceside.Sector.FloorHeight : sourceside.Sector.CeilHeight;
+			float sourcebottomheight = extrafloor.VavoomType ? sourceside.Sector.CeilHeight : sourceside.Sector.FloorHeight;
+			
 			// Determine texture coordinates plane as they would be in normal circumstances.
 			// We can then use this plane to find any texture coordinate we need.
 			// The logic here is the same as in the original VisualMiddleSingle (except that
@@ -121,25 +126,25 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// NOTE: I use a small bias for the floor height, because if the difference in
 			// height is 0 then the TexturePlane doesn't work!
 			TexturePlane tp = new TexturePlane();
-			float floorbias = (Sidedef.Other.Sector.FloorHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
-			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
-			{
-				// When lower unpegged is set, the lower texture is bound to the bottom
-				tp.tlt.y = (float)Sidedef.Sector.CeilHeight - (float)sourceside.Sector.FloorHeight;
-			}
+			float floorbias = (sourcetopheight == sourcebottomheight) ? 1.0f : 0.0f;
+
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
-			tp.trb.y = tp.tlt.y + ((float)sourceside.Sector.FloorHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
+			tp.trb.y = tp.tlt.y + (sourcetopheight - sourcebottomheight) + floorbias;
 			
 			// Apply texture offset
 			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 			{
 				tp.tlt += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
 				tp.trb += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
+				tp.tlt += new Vector2D(sourceside.OffsetX * base.Texture.Scale.x, sourceside.OffsetY * base.Texture.Scale.y);
+				tp.trb += new Vector2D(sourceside.OffsetX * base.Texture.Scale.x, sourceside.OffsetY * base.Texture.Scale.y);
 			}
 			else
 			{
 				tp.tlt += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
 				tp.trb += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+				tp.tlt += new Vector2D(sourceside.OffsetX, sourceside.OffsetY);
+				tp.trb += new Vector2D(sourceside.OffsetX, sourceside.OffsetY);
 			}
 			
 			// Transform pixel coordinates to texture coordinates
@@ -147,8 +152,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trb /= tsz;
 			
 			// Left top and right bottom of the geometry that
-			tp.vlt = new Vector3D(vl.x, vl.y, (float)sourceside.Sector.FloorHeight);
-			tp.vrb = new Vector3D(vr.x, vr.y, (float)Sidedef.Sector.FloorHeight + floorbias);
+			tp.vlt = new Vector3D(vl.x, vl.y, sourcetopheight);
+			tp.vrb = new Vector3D(vr.x, vr.y, sourcebottomheight + floorbias);
 			
 			// Make the right-top coordinates
 			tp.trt = new Vector2D(tp.trb.x, tp.tlt.y);
