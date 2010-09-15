@@ -810,19 +810,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					{
 						if(l.Front != null)
 						{
-							VisualSector vs = mode.GetVisualSector(l.Front.Sector);
-							if(vs != null)
-								(vs as BaseVisualSector).Changed = true;
+							if(mode.VisualSectorExists(l.Front.Sector))
+							{
+								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Front.Sector);
+								vs.UpdateSectorGeometry(false);
+							}
 						}
 						
 						if(l.Back != null)
 						{
-							VisualSector vs = mode.GetVisualSector(l.Back.Sector);
-							if(vs != null)
-								(vs as BaseVisualSector).Changed = true;
+							if(mode.VisualSectorExists(l.Back.Sector))
+							{
+								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Back.Sector);
+								vs.UpdateSectorGeometry(false);
+							}
 						}
 					}
-
+					
 					mode.RebuildElementData();
 				}
 			}

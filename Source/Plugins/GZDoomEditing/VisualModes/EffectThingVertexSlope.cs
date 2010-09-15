@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					if((Vector2D)t.Position == v.Position)
 					{
 						ThingData td = data.Mode.GetThingData(t);
-						td.AddUpdateSector(data.Sector, false);
+						td.AddUpdateSector(data.Sector, true);
 						verts[index] = t.Position;
 					}
 				}
