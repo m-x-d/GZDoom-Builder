@@ -8,7 +8,7 @@ Author:                 Pascal vd Heiden
 
 Plugin version:         0.0
 
-Core version needed:    2.1.0.1382
+Core version needed:    2.1.0.1394
 
 
 
