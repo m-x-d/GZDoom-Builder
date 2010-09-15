@@ -70,8 +70,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			Vector2D vl, vr;
 			Sidedef sourceside = extrafloor.Linedef.Front;
-
 			this.extrafloor = extrafloor;
+
+			int lightvalue = Sidedef.Fields.GetValue("light", 0);
+			bool lightabsolute = Sidedef.Fields.GetValue("lightabsolute", false);
+
+			Vector2D tscale = new Vector2D(sourceside.Fields.GetValue("scalex_mid", 1.0f),
+										   sourceside.Fields.GetValue("scaley_mid", 1.0f));
+			Vector2D toffset1 = new Vector2D(Sidedef.Fields.GetValue("offsetx_mid", 0.0f),
+											 Sidedef.Fields.GetValue("offsety_mid", 0.0f));
+			Vector2D toffset2 = new Vector2D(sourceside.Fields.GetValue("offsetx_mid", 0.0f),
+											 sourceside.Fields.GetValue("offsety_mid", 0.0f));
 			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
@@ -113,6 +122,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			// Get texture scaled size
 			Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
+			tsz = tsz * tscale;
+			
+			// Get texture offsets
+			Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
+			tof = tof + toffset1 + toffset2;
+			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
+				tof = tof * base.Texture.Scale;
 			
 			// For Vavoom type 3D floors the ceiling is lower than floor and they are reversed.
 			// We choose here.
@@ -132,20 +148,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			tp.trb.y = tp.tlt.y + (sourcetopheight - sourcebottomheight) + floorbias;
 			
 			// Apply texture offset
-			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
-			{
-				tp.tlt += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
-				tp.trb += new Vector2D(Sidedef.OffsetX * base.Texture.Scale.x, Sidedef.OffsetY * base.Texture.Scale.y);
-				tp.tlt += new Vector2D(sourceside.OffsetX * base.Texture.Scale.x, sourceside.OffsetY * base.Texture.Scale.y);
-				tp.trb += new Vector2D(sourceside.OffsetX * base.Texture.Scale.x, sourceside.OffsetY * base.Texture.Scale.y);
-			}
-			else
-			{
-				tp.tlt += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
-				tp.trb += new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
-				tp.tlt += new Vector2D(sourceside.OffsetX, sourceside.OffsetY);
-				tp.trb += new Vector2D(sourceside.OffsetX, sourceside.OffsetY);
-			}
+			tp.tlt += tof;
+			tp.trb += tof;
 			
 			// Transform pixel coordinates to texture coordinates
 			tp.tlt /= tsz;
@@ -180,7 +184,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				poly.Add(new Vector3D(vr.x, vr.y, fr));
 				
 				// Determine initial color
-				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(sd.Ceiling.brightnessbelow));
+				int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
+				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
 
@@ -189,7 +194,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				CropPoly(ref poly, extrafloor.Ceiling.plane, false);
 				
 				// Process the polygon and create vertices
-				List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd);
+				List<WorldVertex> verts = CreatePolygonVertices(poly, tp, sd, lightvalue, lightabsolute);
 				if(verts.Count > 0)
 				{
 					if(extrafloor.Alpha < 255)

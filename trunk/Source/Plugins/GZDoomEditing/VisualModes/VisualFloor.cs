@@ -69,21 +69,16 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			WorldVertex[] verts;
 			Sector s = level.sector;
-			float xpan, ypan, xscale, yscale, rotate;
 			Vector2D texscale;
 
 			base.Setup(level);
 
-			try
-			{
-				// Fetch ZDoom fields
-				xpan = s.Fields.ContainsKey("xpanningfloor") ? (float)s.Fields["xpanningfloor"].Value : 0.0f;
-				ypan = s.Fields.ContainsKey("ypanningfloor") ? (float)s.Fields["ypanningfloor"].Value : 0.0f;
-				xscale = s.Fields.ContainsKey("xscalefloor") ? (float)s.Fields["xscalefloor"].Value : 1.0f;
-				yscale = s.Fields.ContainsKey("yscalefloor") ? (float)s.Fields["yscalefloor"].Value : 1.0f;
-				rotate = s.Fields.ContainsKey("rotationfloor") ? (float)s.Fields["rotationfloor"].Value : 0.0f;
-			}
-			catch(Exception) { return false; }
+			// Fetch ZDoom fields
+			float rotate = Angle2D.DegToRad(s.Fields.GetValue("rotationfloor", 0.0f));
+			Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningfloor", 0.0f),
+										   s.Fields.GetValue("ypanningfloor", 0.0f));
+			Vector2D scale = new Vector2D(s.Fields.GetValue("xscalefloor", 1.0f),
+										  s.Fields.GetValue("yscalefloor", 1.0f));
 			
 			// Load floor texture
 			base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
@@ -104,11 +99,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			else
 				texscale = new Vector2D(1.0f / 64.0f, 1.0f / 64.0f);
 
-			// Prepare for math!
-			rotate = Angle2D.DegToRad(rotate);
-			Vector2D scale = new Vector2D(xscale, yscale);
-			Vector2D offset = new Vector2D(xpan, ypan);
-			
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
 			verts = new WorldVertex[triverts.Count];
