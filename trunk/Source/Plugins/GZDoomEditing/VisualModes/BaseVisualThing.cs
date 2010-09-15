@@ -178,10 +178,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				if(Thing.Sector != null)
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
-					pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+					if(Thing.Position.z > 0)
+						pos.z = sd.Ceiling.plane.GetZ(Thing.Position) - info.Height;
+					else
+						pos.z = Thing.Sector.CeilHeight;
 				}
 				
-				if(Thing.Position.z > 0) pos.z -= Thing.Position.z;
+				pos.z -= Thing.Position.z;
 				
 				// Check if below floor
 				if((Thing.Sector != null) && (pos.z < Thing.Sector.FloorHeight))
@@ -197,10 +200,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				if(Thing.Sector != null)
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
-					pos.z = sd.Floor.plane.GetZ(Thing.Position);
+					if(Thing.Position.z == 0)
+						pos.z = sd.Floor.plane.GetZ(Thing.Position);
+					else
+						pos.z = Thing.Sector.FloorHeight;
 				}
 				
-				if(Thing.Position.z > 0) pos.z += Thing.Position.z;
+				pos.z += Thing.Position.z;
 				
 				// Check if above ceiling
 				if((Thing.Sector != null) && ((pos.z + info.Height) > Thing.Sector.CeilHeight))
