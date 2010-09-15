@@ -66,5 +66,22 @@ namespace CodeImp.DoomBuilder.Map
 			if(owner != null)
 				owner.BeforeFieldsChange();
 		}
+		
+		/// <summary>This returns the value of a field by name, or returns the specified value when no such field exists or the field value fails to convert to the same datatype.</summary>
+		public T GetValue<T>(string fieldname, T defaultvalue)
+		{
+			if(!this.ContainsKey(fieldname))
+				return defaultvalue;
+
+			try
+			{
+				T val = (T)this[fieldname].Value;
+				return val;
+			}
+			catch(InvalidCastException)
+			{
+				return defaultvalue;
+			}
+		}
 	}
 }
