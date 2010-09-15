@@ -182,6 +182,7 @@ namespace CodeImp.DoomBuilder
 		private static string autoloadmap = null;
 		private static string autoloadconfig = null;
 		private static bool delaymainwindow;
+		private static bool nosettings;
 
 		#endregion
 
@@ -213,6 +214,7 @@ namespace CodeImp.DoomBuilder
 		public static string AutoLoadMap { get { return autoloadmap; } }
 		public static string AutoLoadConfig { get { return autoloadconfig; } }
 		public static bool DelayMainWindow { get { return delaymainwindow; } }
+		public static bool NoSettings { get { return nosettings; } }
 		public static EditingManager Editing { get { return editing; } }
 		public static ErrorLogger ErrorLogger { get { return errorlogger; } }
 		
@@ -581,8 +583,9 @@ namespace CodeImp.DoomBuilder
 			// Load configuration
 			General.WriteLogLine("Loading program configuration...");
 			settings = new ProgramConfiguration();
-			if(settings.Load(Path.Combine(settingspath, SETTINGS_FILE),
-							 Path.Combine(apppath, SETTINGS_FILE)))
+			string defaultsettingsfile = Path.Combine(apppath, SETTINGS_FILE);
+			string usersettingsfile = nosettings ? defaultsettingsfile : Path.Combine(settingspath, SETTINGS_FILE);
+			if(settings.Load(usersettingsfile, defaultsettingsfile))
 			{
 				// Create error logger
 				errorlogger = new ErrorLogger();
@@ -738,6 +741,12 @@ namespace CodeImp.DoomBuilder
 					// Delay showing the main window
 					delaymainwindow = true;
 				}
+				// No settings?
+				else if(string.Compare(curarg, "-NOSETTINGS", true) == 0)
+				{
+					// Don't load or save program settings
+					nosettings = true;
+				}
 				// Map name info?
 				else if(string.Compare(curarg, "-MAP", true) == 0)
 				{
@@ -746,7 +755,7 @@ namespace CodeImp.DoomBuilder
 				}
 				// Config name info?
 				else if((string.Compare(curarg, "-CFG", true) == 0) ||
-					    (string.Compare(curarg, "-CONFIG", true) == 0))
+						(string.Compare(curarg, "-CONFIG", true) == 0))
 				{
 					// Store next arg as config filename information
 					autoloadconfig = argslist.Dequeue();
@@ -824,8 +833,11 @@ namespace CodeImp.DoomBuilder
 				foreach(ConfigurationInfo ci in configs) ci.SaveSettings();
 				
 				// Save settings configuration
-				General.WriteLogLine("Saving program configuration...");
-				settings.Save(Path.Combine(settingspath, SETTINGS_FILE));
+				if(!General.NoSettings)
+				{
+					General.WriteLogLine("Saving program configuration...");
+					settings.Save(Path.Combine(settingspath, SETTINGS_FILE));
+				}
 				
 				// Clean up
 				if(map != null) map.Dispose(); map = null;

@@ -3,7 +3,7 @@ Doom Builder 2 command-line arguments
 
 Usage:
 
-   builder.exe [wadfile] [-map mapname] [-cfg configname] [-delaywindow]
+   builder.exe [wadfile] [-map mapname] [-cfg configname] [-delaywindow] [-nopreferences]
 
 ==========================================================================================
 
@@ -30,6 +30,11 @@ command line parameters is completed, and the program is not terminating yet. Th
 usefull for plugins that can be used to perform batch processes where the showing of the
 main interface window is not desired. If a plugin completes it's actions on map load and
 terminates the application immediately, the main window will not be shown at all.
+
+- nosettings
+When this parameter is specified, Doom Builder will not load your preferences or game
+configuration settings and will use the default settings instead. You will not lose your
+original settings, but when this parameter is specified your settings will not be saved.
 
 ==========================================================================================
 
