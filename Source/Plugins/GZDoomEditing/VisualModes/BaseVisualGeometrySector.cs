@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected bool changed;
 
 		protected SectorLevel level;
+		protected Effect3DFloor extrafloor;
 		
 		#endregion
 
@@ -62,6 +63,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		new public BaseVisualSector Sector { get { return (BaseVisualSector)base.Sector; } }
 		public bool Changed { get { return changed; } set { changed = value; } }
 		public SectorLevel Level { get { return level; } }
+		public Effect3DFloor ExtraFloor { get { return extrafloor; } }
 
 		#endregion
 
@@ -102,10 +104,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public virtual void ApplyLowerUnpegged(bool set) { }
 
 		// Setup this plane
-		public bool Setup() { return this.Setup(this.level); }
-		public virtual bool Setup(SectorLevel level)
+		public bool Setup() { return this.Setup(this.level, this.extrafloor); }
+		public virtual bool Setup(SectorLevel level, Effect3DFloor extrafloor)
 		{
 			this.level = level;
+			this.extrafloor = extrafloor;
 			return false;
 		}
 
