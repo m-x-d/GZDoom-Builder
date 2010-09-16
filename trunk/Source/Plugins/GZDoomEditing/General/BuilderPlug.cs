@@ -153,26 +153,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			ImageData img = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 			if((img != null) && img.IsImageLoaded)
 			{
-				float xpan, ypan, xscale, yscale, rotate;
-				int color, light;
-				bool absolute;
-				
-				try
-				{
-					// Fetch ZDoom fields
-					xpan = s.Fields.ContainsKey("xpanningfloor") ? (float)s.Fields["xpanningfloor"].Value : 0.0f;
-					ypan = s.Fields.ContainsKey("ypanningfloor") ? (float)s.Fields["ypanningfloor"].Value : 0.0f;
-					xscale = s.Fields.ContainsKey("xscalefloor") ? (float)s.Fields["xscalefloor"].Value : 1.0f;
-					yscale = s.Fields.ContainsKey("yscalefloor") ? (float)s.Fields["yscalefloor"].Value : 1.0f;
-					rotate = s.Fields.ContainsKey("rotationfloor") ? (float)s.Fields["rotationfloor"].Value : 0.0f;
-					color = s.Fields.ContainsKey("lightcolor") ? (int)s.Fields["lightcolor"].Value : -1;
-					light = s.Fields.ContainsKey("lightfloor") ? (int)s.Fields["lightfloor"].Value : 0;
-					absolute = s.Fields.ContainsKey("lightfloorabsolute") ? (bool)s.Fields["lightfloorabsolute"].Value : false;
-				}
-				catch(Exception) { return; }
+				// Fetch ZDoom fields
+				Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningfloor", 0.0f),
+				                               s.Fields.GetValue("ypanningfloor", 0.0f));
+				Vector2D scale = new Vector2D(s.Fields.GetValue("xscalefloor", 1.0f),
+				                              s.Fields.GetValue("yscalefloor", 1.0f));
+				float rotate = s.Fields.GetValue("rotationfloor", 0.0f);
+				int color = s.Fields.GetValue("lightcolor", -1);
+				int light = s.Fields.GetValue("lightfloor", 0);
+				bool absolute = s.Fields.GetValue("lightfloorabsolute", false);
 				
 				// Setup the vertices with the given settings
-				SetupSurfaceVertices(vertices, s, img, xpan, ypan, xscale, yscale, rotate, color, light, absolute);
+				SetupSurfaceVertices(vertices, s, img, offset, scale, rotate, color, light, absolute);
 			}
 		}
 
@@ -182,38 +174,28 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			ImageData img = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 			if((img != null) && img.IsImageLoaded)
 			{
-				float xpan, ypan, xscale, yscale, rotate;
-				int color, light;
-				bool absolute;
+				// Fetch ZDoom fields
+				Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningceiling", 0.0f),
+											   s.Fields.GetValue("ypanningceiling", 0.0f));
+				Vector2D scale = new Vector2D(s.Fields.GetValue("xscaleceiling", 1.0f),
+											  s.Fields.GetValue("yscaleceiling", 1.0f));
+				float rotate = s.Fields.GetValue("rotationceiling", 0.0f);
+				int color = s.Fields.GetValue("lightcolor", -1);
+				int light = s.Fields.GetValue("lightceiling", 0);
+				bool absolute = s.Fields.GetValue("lightceilingabsolute", false);
 				
-				try
-				{
-					// Fetch ZDoom fields
-					xpan = s.Fields.ContainsKey("xpanningceiling") ? (float)s.Fields["xpanningceiling"].Value : 0.0f;
-					ypan = s.Fields.ContainsKey("ypanningceiling") ? (float)s.Fields["ypanningceiling"].Value : 0.0f;
-					xscale = s.Fields.ContainsKey("xscaleceiling") ? (float)s.Fields["xscaleceiling"].Value : 1.0f;
-					yscale = s.Fields.ContainsKey("yscaleceiling") ? (float)s.Fields["yscaleceiling"].Value : 1.0f;
-					rotate = s.Fields.ContainsKey("rotationceiling") ? (float)s.Fields["rotationceiling"].Value : 0.0f;
-					color = s.Fields.ContainsKey("lightcolor") ? (int)s.Fields["lightcolor"].Value : -1;
-					light = s.Fields.ContainsKey("lightceiling") ? (int)s.Fields["lightceiling"].Value : 0;
-					absolute = s.Fields.ContainsKey("lightceilingabsolute") ? (bool)s.Fields["lightceilingabsolute"].Value : false;
-				}
-				catch(Exception) { return; }
-
 				// Setup the vertices with the given settings
-				SetupSurfaceVertices(vertices, s, img, xpan, ypan, xscale, yscale, rotate, color, light, absolute);
+				SetupSurfaceVertices(vertices, s, img, offset, scale, rotate, color, light, absolute);
 			}
 		}
 
 		// This applies the given values on the vertices
-		private void SetupSurfaceVertices(FlatVertex[] vertices, Sector s, ImageData img, float xpan, float ypan,
-			                              float xscale, float yscale, float rotate, int color, int light, bool absolute)
+		private void SetupSurfaceVertices(FlatVertex[] vertices, Sector s, ImageData img, Vector2D offset,
+										  Vector2D scale, float rotate, int color, int light, bool absolute)
 		{
 			// Prepare for math!
 			rotate = Angle2D.DegToRad(rotate);
-			Vector2D scale = new Vector2D(xscale, yscale);
 			Vector2D texscale = new Vector2D(1.0f / img.ScaledWidth, 1.0f / img.ScaledHeight);
-			Vector2D offset = new Vector2D(xpan, ypan);
 			if(!absolute) light = s.Brightness + light;
 			PixelColor lightcolor = PixelColor.FromInt(color);
 			PixelColor brightness = PixelColor.FromInt(General.Map.Renderer2D.CalculateBrightness(light));
