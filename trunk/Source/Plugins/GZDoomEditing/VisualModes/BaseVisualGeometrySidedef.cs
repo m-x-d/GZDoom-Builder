@@ -152,10 +152,16 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This creates vertices from a wall polygon and applies lighting
 		protected List<WorldVertex> CreatePolygonVertices(WallPolygon poly, TexturePlane tp, SectorData sd, int lightvalue, bool lightabsolute)
 		{
-			List<WallPolygon> polygons = new List<WallPolygon>(2);
+			List<WallPolygon> polylist = new List<WallPolygon>(1);
+			polylist.Add(poly);
+			return CreatePolygonVertices(polylist, tp, sd, lightvalue, lightabsolute);
+		}
+
+		// This creates vertices from a wall polygon and applies lighting
+		protected List<WorldVertex> CreatePolygonVertices(List<WallPolygon> poly, TexturePlane tp, SectorData sd, int lightvalue, bool lightabsolute)
+		{
+			List<WallPolygon> polygons = new List<WallPolygon>(poly);
 			List<WorldVertex> verts = new List<WorldVertex>();
-			
-			polygons.Add(poly);
 			
 			// Go for all levels to build geometry
 			for(int i = sd.LightLevels.Count - 1; i >= 0; i--)

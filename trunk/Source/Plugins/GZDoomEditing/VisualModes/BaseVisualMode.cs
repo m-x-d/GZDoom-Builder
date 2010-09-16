@@ -533,7 +533,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					}
 				}
 				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
-				else if(l.Action == 160)
+				else if((l.Action == 160) && (l.Front != null))
 				{
 					int sectortag = l.Args[0] + (l.Args[4] << 8);
 					if(sectortags.ContainsKey(sectortag))
@@ -547,7 +547,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					}
 				}
 				// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
-				else if(l.Action == 50)
+				else if((l.Action == 50) && (l.Front != null))
 				{
 					if(sectortags.ContainsKey(l.Args[0]))
 					{
