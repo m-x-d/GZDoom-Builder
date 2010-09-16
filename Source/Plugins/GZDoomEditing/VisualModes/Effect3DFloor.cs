@@ -85,20 +85,29 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				sd.Ceiling.CopyProperties(floor);
 				sd.Floor.CopyProperties(ceiling);
 				floor.type = SectorLevelType.Floor;
-				floor.plane = floor.plane.GetInverted();
+				floor.plane = sd.Ceiling.plane.GetInverted();
 				ceiling.type = SectorLevelType.Ceiling;
-				ceiling.plane = ceiling.plane.GetInverted();
+				ceiling.plane = sd.Floor.plane.GetInverted();
+
+				// A 3D floor's color is always that of the sector it is placed in
+				floor.color = 0;
 			}
 			else
 			{
 				vavoomtype = true;
-				sd.Ceiling.CopyProperties(ceiling);
-				sd.Floor.CopyProperties(floor);
+				/*
+				sd.Ceiling.CopyProperties(floor);
+				sd.Floor.CopyProperties(ceiling);
+				 */
+				floor.type = SectorLevelType.Ceiling;
+				floor.plane = sd.Ceiling.plane;
+				ceiling.type = SectorLevelType.Floor;
+				ceiling.plane = sd.Floor.plane;
 				alpha = 255;
+				
+				// A 3D floor's color is always that of the sector it is placed in
+				ceiling.color = 0;
 			}
-			
-			// A 3D floor's color is always that of the sector it is placed in
-			floor.color = 0;
 
 			// Apply alpha
 			floor.alpha = alpha;

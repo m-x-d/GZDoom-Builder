@@ -203,9 +203,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					
 					// Determine top portion height
 					if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
-						textop = geobottom + tsz.y;
+						textop = geobottom + tof.y + tsz.y;
 					else
-						textop = geotop;
+						textop = geotop + tof.y;
 					
 					// Calculate bottom portion height
 					texbottom = textop - tsz.y;

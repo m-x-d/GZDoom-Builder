@@ -81,6 +81,20 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
+
+
+		// This swaps triangles so that the plane faces the other way
+		protected void SwapTriangleVertices(WorldVertex[] verts)
+		{
+			// Swap some vertices to flip all triangles
+			for(int i = 0; i < verts.Length; i += 3)
+			{
+				// Swap
+				WorldVertex v = verts[i];
+				verts[i] = verts[i + 1];
+				verts[i + 1] = v;
+			}
+		}
 		
 		#endregion
 
