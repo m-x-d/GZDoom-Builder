@@ -197,14 +197,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				
 				// Create a floor
 				VisualFloor vf = (i < extrafloors.Count) ? extrafloors[i] : new VisualFloor(mode, this);
-				if(vf.Setup(ef.Floor, ef))
+				if(vf.Setup(ef.Ceiling, ef))
 					base.AddGeometry(vf);
 				if(i >= extrafloors.Count)
 					extrafloors.Add(vf);
 
 				// Create a ceiling
 				VisualCeiling vc = (i < extraceilings.Count) ? extraceilings[i] : new VisualCeiling(mode, this);
-				if(vc.Setup(ef.Ceiling, ef))
+				if(vc.Setup(ef.Floor, ef))
 					base.AddGeometry(vc);
 				if(i >= extraceilings.Count)
 					extraceilings.Add(vc);

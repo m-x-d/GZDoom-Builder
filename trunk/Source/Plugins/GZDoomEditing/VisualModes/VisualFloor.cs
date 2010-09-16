@@ -121,6 +121,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				verts[i].u = pos.x;
 				verts[i].v = pos.y;
 			}
+
+			// The sector triangulation created clockwise triangles that
+			// are right up for the floor. For the ceiling we must flip
+			// the triangles upside down.
+			if((extrafloor != null) && !extrafloor.VavoomType)
+				SwapTriangleVertices(verts);
 			
 			// Determine render pass
 			if(level.alpha < 255)
@@ -152,18 +158,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{
-			if((extrafloor == null) || extrafloor.VavoomType)
-			{
-				mode.CreateUndo("Change floor height", UndoGroup.FloorHeightChange, level.sector.FixedIndex);
-				level.sector.FloorHeight += amount;
-				mode.SetActionResult("Changed floor height to " + level.sector.FloorHeight + ".");
-			}
-			else
-			{
-				mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, level.sector.FixedIndex);
-				level.sector.CeilHeight += amount;
-				mode.SetActionResult("Changed ceiling height to " + level.sector.CeilHeight + ".");
-			}
+			mode.CreateUndo("Change floor height", UndoGroup.FloorHeightChange, level.sector.FixedIndex);
+			level.sector.FloorHeight += amount;
+			mode.SetActionResult("Changed floor height to " + level.sector.FloorHeight + ".");
 		}
 
 		// This performs a fast test in object picking
