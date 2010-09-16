@@ -189,12 +189,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				CropPoly(ref poly, osd.Floor.plane, true);
 				
 				// Determine if we should repeat the middle texture
-				repeatmidtex = false;
 				if(Sidedef.Fields.ContainsKey("wrapmidtex"))
-				{
-					if(Sidedef.Fields["wrapmidtex"].Value is bool)
-						repeatmidtex = (bool)Sidedef.Fields["wrapmidtex"].Value;
-				}
+					repeatmidtex = Sidedef.Fields.GetValue("wrapmidtex", false);
 				else
 					repeatmidtex = Sidedef.Line.IsFlagSet("wrapmidtex");
 				

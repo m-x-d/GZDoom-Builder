@@ -112,21 +112,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				else
 					this.RenderPass = RenderPass.Solid;
 			}
-			// From UDMF field
-			else if(Sidedef.Line.Fields.ContainsKey("renderstyle") ||
-				    Sidedef.Line.Fields.ContainsKey("alpha"))
+			else
 			{
-				string field = "translucent";
-
-				if(Sidedef.Line.Fields.ContainsKey("renderstyle"))
-					field = Sidedef.Line.Fields["renderstyle"].Value.ToString();
-				
-				if(Sidedef.Line.Fields.ContainsKey("alpha"))
-				{
-					float a;
-					if(float.TryParse(Sidedef.Line.Fields["alpha"].Value.ToString(), out a))
-						alpha = (byte)(a * 255.0f);
-				}
+				// From UDMF field
+				string field = Sidedef.Line.Fields.GetValue("renderstyle", "translucent");
+				alpha = (byte)(Sidedef.Line.Fields.GetValue("alpha", 1.0f) * 255.0f);
 				
 				if(field == "add")
 					this.RenderPass = RenderPass.Additive;

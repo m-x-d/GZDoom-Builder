@@ -459,6 +459,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Find sectors with 3 vertices, because they can be sloped
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
+				// ========== Thing vertex slope ==========
 				if(s.Sidedefs.Count == 3)
 				{
 					List<Thing> slopeceilingthings = new List<Thing>(3);
