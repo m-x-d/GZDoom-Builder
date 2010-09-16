@@ -377,13 +377,23 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				if(target.picked is VisualGeometry)
 				{
 					VisualGeometry pickedgeo = (target.picked as VisualGeometry);
-
-					if(pickedgeo.Sidedef != null)
-						General.Interface.ShowLinedefInfo(pickedgeo.Sidedef.Line);
-					else if(pickedgeo.Sidedef == null)
-						General.Interface.ShowSectorInfo(pickedgeo.Sector.Sector);
+					
+					// Sidedef?
+					if(pickedgeo is BaseVisualGeometrySidedef)
+					{
+						BaseVisualGeometrySidedef pickedsidedef = (pickedgeo as BaseVisualGeometrySidedef);
+						General.Interface.ShowLinedefInfo(pickedsidedef.Sidedef.Line);
+					}
+					// Sector?
+					else if(pickedgeo is BaseVisualGeometrySector)
+					{
+						BaseVisualGeometrySector pickedsector = (pickedgeo as BaseVisualGeometrySector);
+						General.Interface.ShowSectorInfo(pickedsector.Level.sector);
+					}
 					else
+					{
 						General.Interface.HideInfo();
+					}
 				}
 				// Thing picked?
 				if(target.picked is VisualThing)
