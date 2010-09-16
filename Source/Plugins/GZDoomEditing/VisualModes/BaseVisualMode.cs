@@ -481,7 +481,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 									slopefloorthings.Add(t);
 								else if(t.Type == 1505)
 									slopeceilingthings.Add(t);
-								break;
 							}
 						}
 					}
