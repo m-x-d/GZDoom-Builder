@@ -612,6 +612,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			return p;
 		}
+
+		// This applies the current rotation and resize to a point
+		private Vector2D TransformedPointNoScale(Vector2D p)
+		{
+			// Rotate
+			Vector2D center = baseoffset + size * 0.5f;
+			Vector2D po = p - center;
+			p = po.GetRotated(rotation);
+			p += center;
+
+			// Translate
+			p += offset - baseoffset;
+
+			return p;
+		}
+		
+		// This applies the current rotation and resize to a point
+		private Vector2D TransformedPointNoRotate(Vector2D p)
+		{
+			// Resize
+			p = (p - baseoffset) * (size / basesize) + baseoffset;
+			
+			// Translate
+			p += offset - baseoffset;
+			
+			return p;
+		}
+
+		// This applies the current rotation and resize to a point
+		private Vector2D TransformedPointNoRotateNoScale(Vector2D p)
+		{
+			// Translate
+			p += offset - baseoffset;
+
+			return p;
+		}
 		
 		// This checks if a point is in a rect
 		private bool PointInRectF(RectangleF rect, Vector2D point)
@@ -630,17 +666,66 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This moves all things and vertices to match the current transformation
 		private void UpdateGeometry()
 		{
-			int index = 0;
-			foreach(Vertex v in selectedvertices)
-			{
-				v.Move(TransformedPoint(vertexpos[index++]));
-			}
 			
-			index = 0;
-			foreach(Thing t in selectedthings)
+			// We use optimized versions of the TransformedPoint depending on what needs to be done.
+			// This is mainly done because 0.0 rotation and 1.0 scale may still give slight inaccuracies.
+			bool norotate = Math.Abs(rotation) < 0.0001f;
+			bool noscale = Math.Abs(size.x - basesize.x) + Math.Abs(size.y - basesize.y) < 0.0001f;
+			if(norotate && noscale)
 			{
-				t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
-				t.Move(TransformedPoint(thingpos[index++]));
+				int index = 0;
+				foreach(Vertex v in selectedvertices)
+				{
+					v.Move(TransformedPointNoRotateNoScale(vertexpos[index++]));
+				}
+				index = 0;
+				foreach(Thing t in selectedthings)
+				{
+					t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
+					t.Move(TransformedPointNoRotateNoScale(thingpos[index++]));
+				}
+			}
+			else if(norotate)
+			{
+				int index = 0;
+				foreach(Vertex v in selectedvertices)
+				{
+					v.Move(TransformedPointNoRotate(vertexpos[index++]));
+				}
+				index = 0;
+				foreach(Thing t in selectedthings)
+				{
+					t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
+					t.Move(TransformedPointNoRotate(thingpos[index++]));
+				}
+			}
+			else if(noscale)
+			{
+				int index = 0;
+				foreach(Vertex v in selectedvertices)
+				{
+					v.Move(TransformedPointNoScale(vertexpos[index++]));
+				}
+				index = 0;
+				foreach(Thing t in selectedthings)
+				{
+					t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
+					t.Move(TransformedPointNoScale(thingpos[index++]));
+				}
+			}
+			else
+			{
+				int index = 0;
+				foreach(Vertex v in selectedvertices)
+				{
+					v.Move(TransformedPoint(vertexpos[index++]));
+				}
+				index = 0;
+				foreach(Thing t in selectedthings)
+				{
+					t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
+					t.Move(TransformedPoint(thingpos[index++]));
+				}
 			}
 
 			// This checks if the lines should be flipped

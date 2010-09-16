@@ -901,7 +901,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				Sector.Sector.UpdateCache();
 				
 				// Rebuild sector
-				Sector.Changed = true;
+				Sector.UpdateSectorGeometry(false);
 
 				// Go for all things in this sector
 				foreach(Thing t in General.Map.Map.Things)

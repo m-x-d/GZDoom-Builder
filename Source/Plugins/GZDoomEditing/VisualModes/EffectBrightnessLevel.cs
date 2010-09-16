@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			SectorData sd = data.Mode.GetSectorData(linedef.Front.Sector);
 			if(!sd.Updated) sd.Update();
-			data.AddUpdateSector(linedef.Front.Sector, false);
+			sd.AddUpdateSector(data.Sector, false);
 
 			if(level == null)
 			{
