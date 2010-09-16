@@ -65,15 +65,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 
 		// This builds the geometry. Returns false when no geometry created.
-		public override bool Setup(SectorLevel level)
+		public override bool Setup(SectorLevel level, Effect3DFloor extrafloor)
 		{
 			WorldVertex[] verts;
 			WorldVertex v;
 			Sector s = level.sector;
 			Vector2D texscale;
-
-			base.Setup(level);
-
+			
+			base.Setup(level, extrafloor);
+			
 			// Fetch ZDoom fields
 			float rotate = Angle2D.DegToRad(s.Fields.GetValue("rotationceiling", 0.0f));
 			Vector2D offset = new Vector2D(s.Fields.GetValue("xpanningceiling", 0.0f),
@@ -165,7 +165,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{
-			if(level.sector == Sector.Sector)
+			if((extrafloor == null) || extrafloor.VavoomType)
 			{
 				mode.CreateUndo("Change ceiling height", UndoGroup.CeilingHeightChange, level.sector.FixedIndex);
 				level.sector.CeilHeight += amount;
