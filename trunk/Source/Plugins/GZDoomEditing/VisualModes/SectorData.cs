@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			this.updatesectors = new Dictionary<Sector, bool>(2);
 			this.floor = new SectorLevel(sector, SectorLevelType.Floor);
 			this.ceiling = new SectorLevel(sector, SectorLevelType.Ceiling);
-
+			
 			BasicSetup();
 			
 			// Add ceiling and floor
@@ -227,7 +227,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				e.Update();
 			
 			// Sort the levels (but not the first and the last)
-			lightlevels.Sort(1, lightlevels.Count - 2, null);
+			SectorLevelComparer comparer = new SectorLevelComparer(sector);
+			lightlevels.Sort(1, lightlevels.Count - 2, comparer);
 			
 			// Now that we know the levels in this sector (and in the right order) we
 			// can determine the lighting in between and on the levels.

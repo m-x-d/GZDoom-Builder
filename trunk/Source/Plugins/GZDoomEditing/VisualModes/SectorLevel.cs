@@ -13,11 +13,8 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.GZDoomEditing
 {
-	internal class SectorLevel : IComparable<SectorLevel>
+	internal class SectorLevel
 	{
-		// Center of sector to use for plane comparison
-		public Vector2D center;
-
 		// Type of level
 		public SectorLevelType type;
 
@@ -45,7 +42,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			this.type = type;
 			this.sector = s;
 			this.alpha = 255;
-			this.center = new Vector2D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2);
 		}
 		
 		// Copy constructor
@@ -58,26 +54,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public void CopyProperties(SectorLevel target)
 		{
 			target.sector = this.sector;
-			target.center = this.center;
 			target.type = this.type;
 			target.plane = this.plane;
 			target.alpha = this.alpha;
 			target.color = this.color;
 			target.brightnessbelow = this.brightnessbelow;
 			target.colorbelow = this.colorbelow;
-		}
-		
-		// Comparer
-		public int CompareTo(SectorLevel other)
-		{
-			float delta = this.plane.GetZ(center) - other.plane.GetZ(center);
-			
-			if(delta > 0.0f)
-				return 1;
-			else if(delta < 0.0f)
-				return -1;
-			else
-				return 0;
 		}
 	}
 }
