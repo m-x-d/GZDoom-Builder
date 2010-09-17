@@ -45,12 +45,19 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private SectorLevel floor;
 		private SectorLevel ceiling;
 		
+		// This helps keeping track of changes
+		// otherwise we update ceiling/floor too much
+		private bool floorchanged;
+		private bool ceilingchanged;
+
 		#endregion
 		
 		#region ================== Properties
 		
 		public Sector Sector { get { return sector; } }
 		public bool Updated { get { return updated; } }
+		public bool FloorChanged { get { return floorchanged; } set { floorchanged |= value; } }
+		public bool CeilingChanged { get { return ceilingchanged; } set { ceilingchanged |= value; } }
 		public List<SectorLevel> LightLevels { get { return lightlevels; } }
 		public List<Effect3DFloor> ExtraFloors { get { return extrafloors; } }
 		public SectorLevel Floor { get { return floor; } }
@@ -69,6 +76,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			this.mode = mode;
 			this.sector = s;
 			this.updated = false;
+			this.floorchanged = false;
+			this.ceilingchanged = false;
 			this.lightlevels = new List<SectorLevel>(2);
 			this.extrafloors = new List<Effect3DFloor>(1);
 			this.alleffects = new List<SectorEffect>(1);
@@ -243,6 +252,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					l.brightnessbelow = pl.brightnessbelow;
 			}
 
+			floorchanged = false;
+			ceilingchanged = false;
+			updated = true;
 			isupdating = false;
 		}
 

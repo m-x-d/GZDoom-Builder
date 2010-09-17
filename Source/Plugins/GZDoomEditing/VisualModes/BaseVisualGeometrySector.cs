@@ -312,7 +312,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public virtual void OnChangeTargetHeight(int amount)
 		{
 			changed = true;
-			
+
 			ChangeHeight(amount);
 
 			// Rebuild sector
