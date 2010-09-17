@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			// Get texture scaled size
 			Vector2D tsz = new Vector2D(base.Texture.ScaledWidth, base.Texture.ScaledHeight);
-			tsz = tsz * tscale;
+			tsz = tsz / tscale;
 			
 			// Get texture offsets
 			Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
