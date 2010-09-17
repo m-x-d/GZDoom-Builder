@@ -27,14 +27,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Comparer
 		public int Compare(SectorLevel x, SectorLevel y)
 		{
-			float delta = x.plane.GetZ(center) - y.plane.GetZ(center);
-
-			if(delta > 0.0f)
-				return 1;
-			else if(delta < 0.0f)
-				return -1;
-			else
-				return 0;
+			return Math.Sign(x.plane.GetZ(center) - y.plane.GetZ(center));
 		}
 	}
 }
