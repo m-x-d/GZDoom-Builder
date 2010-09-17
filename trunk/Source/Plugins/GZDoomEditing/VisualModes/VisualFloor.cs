@@ -129,10 +129,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				SwapTriangleVertices(verts);
 			
 			// Determine render pass
-			if(level.alpha < 255)
-				this.RenderPass = RenderPass.Alpha;
+			if(extrafloor != null)
+			{
+				if(level.alpha < 255)
+					this.RenderPass = RenderPass.Alpha;
+				else
+					this.RenderPass = RenderPass.Mask;
+			}
 			else
+			{
 				this.RenderPass = RenderPass.Solid;
+			}
 			
 			// Apply vertices
 			base.SetVertices(verts);
