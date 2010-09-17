@@ -70,6 +70,7 @@ float4 ps_main(PixelData pd) : COLOR
 float4 ps_fullbright(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
+	tcolor.a *= pd.color.a;
 	
 	// Blend texture color and modulation color
     return tcolor * modulatecolor;
