@@ -255,7 +255,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					}
 					else
 					{
-						this.RenderPass = RenderPass.Solid;
+						this.RenderPass = RenderPass.Mask;
 					}
 					
 					base.SetVertices(verts);
