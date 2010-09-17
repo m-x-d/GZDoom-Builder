@@ -155,6 +155,19 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 		}
 
+		// Call to change the height
+		public override void OnChangeTargetHeight(int amount)
+		{
+			// Only do this when not done yet in this call
+			// Because we may be able to select the same 3D floor multiple times through multiple sectors
+			SectorData sd = mode.GetSectorData(level.sector);
+			if(!sd.FloorChanged)
+			{
+				sd.FloorChanged = true;
+				base.OnChangeTargetHeight(amount);
+			}
+		}
+
 		// This changes the height
 		protected override void ChangeHeight(int amount)
 		{

@@ -637,7 +637,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				Vector3D feetposition = General.Map.VisualCamera.Position;
 				SectorLevel floorlevel = sd.GetFloorBelow(feetposition) ?? sd.LightLevels[0];
 				float floorheight = floorlevel.plane.GetZ(General.Map.VisualCamera.Position);
-				if(General.Map.VisualCamera.Position.z < (floorheight + cameraflooroffset + 0.01f))
+				if(General.Map.VisualCamera.Position.z < (floorheight + cameraflooroffset + 0.1f))
 				{
 					// Stay above floor
 					gravity = new Vector3D(0.0f, 0.0f, 0.0f);
@@ -652,8 +652,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					if(gravity.z > 3.0f) gravity.z = 3.0f;
 
 					// Test if we don't go through a floor
-					SectorLevel newfloorlevel = sd.GetFloorBelow(feetposition + gravity) ?? sd.LightLevels[0];
-					if(newfloorlevel != floorlevel)
+					if((General.Map.VisualCamera.Position.z + gravity.z) < (floorheight + cameraflooroffset + 0.1f))
 					{
 						// Stay above floor
 						gravity = new Vector3D(0.0f, 0.0f, 0.0f);
