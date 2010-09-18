@@ -143,10 +143,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// height is 0 then the TexturePlane doesn't work!
 				TexturePlane tp = new TexturePlane();
 				float floorbias = (Sidedef.Sector.CeilHeight == Sidedef.Sector.FloorHeight) ? 1.0f : 0.0f;
+				float geotop = (float)Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);
+				float geobottom = (float)Math.Max(Sidedef.Sector.FloorHeight, Sidedef.Other.Sector.FloorHeight);
 				if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 				{
 					// When lower unpegged is set, the middle texture is bound to the bottom
-					tp.tlt.y = tsz.y - (float)(Sidedef.Sector.CeilHeight - Sidedef.Sector.FloorHeight);
+					tp.tlt.y = tsz.y - (float)(geotop - geobottom);
 				}
 				tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
 				tp.trb.y = tp.tlt.y + ((float)Sidedef.Sector.CeilHeight - ((float)Sidedef.Sector.FloorHeight + floorbias));
@@ -197,8 +199,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				if(!repeatmidtex)
 				{
 					// First determine the visible portion of the texture
-					float geotop = (float)Math.Min(Sidedef.Sector.CeilHeight, Sidedef.Other.Sector.CeilHeight);
-					float geobottom = (float)Math.Max(Sidedef.Sector.FloorHeight, Sidedef.Other.Sector.FloorHeight);
 					float textop, texbottom;
 					
 					// Determine top portion height
