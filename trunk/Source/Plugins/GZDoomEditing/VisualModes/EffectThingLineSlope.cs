@@ -58,7 +58,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					t.DetermineSector(data.Mode.BlockMap);
 					if(t.Sector != null)
 					{
-						td.AddUpdateSector(t.Sector, false);
 						Vector3D v3 = new Vector3D(t.Position.x, t.Position.y, t.Position.z + t.Sector.FloorHeight);
 						if(ld.SideOfLine(t.Position) < 0.0f)
 						{
@@ -67,6 +66,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 							SectorData sd = data.Mode.GetSectorData(ld.Front.Sector);
 							sd.AddUpdateSector(data.Sector, true);
 							if(!sd.Updated) sd.Update();
+							td.AddUpdateSector(ld.Front.Sector, true);
 							sd.Floor.plane = new Plane(v1, v2, v3, true);
 						}
 						else
@@ -76,6 +76,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 							SectorData sd = data.Mode.GetSectorData(ld.Back.Sector);
 							sd.AddUpdateSector(data.Sector, true);
 							if(!sd.Updated) sd.Update();
+							td.AddUpdateSector(ld.Back.Sector, true);
 							sd.Floor.plane = new Plane(v2, v1, v3, true);
 						}
 					}
@@ -86,14 +87,15 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					t.DetermineSector(data.Mode.BlockMap);
 					if(t.Sector != null)
 					{
-						td.AddUpdateSector(t.Sector, false);
-						Vector3D v3 = new Vector3D(t.Position.x, t.Position.y, t.Position.z + t.Sector.FloorHeight);
+						td.AddUpdateSector(t.Sector, true);
+						Vector3D v3 = new Vector3D(t.Position.x, t.Position.y, t.Position.z + t.Sector.CeilHeight);
 						if(ld.SideOfLine(t.Position) < 0.0f)
 						{
 							Vector3D v1 = new Vector3D(ld.Start.Position.x, ld.Start.Position.y, ld.Front.Sector.CeilHeight);
 							Vector3D v2 = new Vector3D(ld.End.Position.x, ld.End.Position.y, ld.Front.Sector.CeilHeight);
 							SectorData sd = data.Mode.GetSectorData(ld.Front.Sector);
 							sd.AddUpdateSector(data.Sector, true);
+							td.AddUpdateSector(ld.Front.Sector, true);
 							if(!sd.Updated) sd.Update();
 							sd.Ceiling.plane = new Plane(v1, v2, v3, false);
 						}
@@ -103,6 +105,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 							Vector3D v2 = new Vector3D(ld.End.Position.x, ld.End.Position.y, ld.Back.Sector.CeilHeight);
 							SectorData sd = data.Mode.GetSectorData(ld.Back.Sector);
 							sd.AddUpdateSector(data.Sector, true);
+							td.AddUpdateSector(ld.Back.Sector, true);
 							if(!sd.Updated) sd.Update();
 							sd.Ceiling.plane = new Plane(v2, v1, v3, false);
 						}
