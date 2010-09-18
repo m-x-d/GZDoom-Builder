@@ -167,7 +167,19 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			
 			// Determine position
 			Vector3D pos = Thing.Position;
-			if(info.AbsoluteZ)
+			if(Thing.Type == 9501)
+			{
+				// This is a special thing that needs special positioning
+				SectorData sd = mode.GetSectorData(Thing.Sector);
+				pos.z = sd.Ceiling.sector.CeilHeight + Thing.Position.z;
+			}
+			else if(Thing.Type == 9500)
+			{
+				// This is a special thing that needs special positioning
+				SectorData sd = mode.GetSectorData(Thing.Sector);
+				pos.z = sd.Floor.sector.FloorHeight + Thing.Position.z;
+			}
+			else if(info.AbsoluteZ)
 			{
 				// Absolute Z position
 				pos.z = Thing.Position.z;
@@ -183,9 +195,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					else
 						pos.z = Thing.Sector.CeilHeight;
 				}
-				
+
 				pos.z -= Thing.Position.z;
-				
+
 				// Check if below floor
 				if((Thing.Sector != null) && (pos.z < Thing.Sector.FloorHeight))
 				{
@@ -205,9 +217,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					else
 						pos.z = Thing.Sector.FloorHeight;
 				}
-				
+
 				pos.z += Thing.Position.z;
-				
+
 				// Check if above ceiling
 				if((Thing.Sector != null) && ((pos.z + info.Height) > Thing.Sector.CeilHeight))
 				{
