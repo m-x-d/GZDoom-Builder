@@ -45,6 +45,9 @@ namespace CodeImp.DoomBuilder.Data
 		public PK3Reader(DataLocation dl) : base(dl)
 		{
 			General.WriteLogLine("Opening PK3 resource '" + location.location + "'");
+
+			if(!File.Exists(location.location))
+				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
 			
 			// Open the zip file
 			ZipInputStream zipstream = OpenPK3File();
