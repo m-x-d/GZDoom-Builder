@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private ICollection<Thing> things;
 		private List<TreeNode> nodes;
 		private ThingTypeInfo thinginfo;
+		private bool preventchanges = false;
 		
 		#endregion
 
@@ -94,6 +95,8 @@ namespace CodeImp.DoomBuilder.Windows
 		public void Setup(ICollection<Thing> things)
 		{
 			Thing ft;
+
+			preventchanges = true;
 
 			// Keep this list
 			this.things = things;
@@ -170,6 +173,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Custom fields
 				fieldslist.SetValues(t.Fields, false);
 			}
+
+			preventchanges = false;
 		}
 		
 		#endregion
@@ -244,6 +249,16 @@ namespace CodeImp.DoomBuilder.Windows
 			arg2.Setup(arginfo[2]);
 			arg3.Setup(arginfo[3]);
 			arg4.Setup(arginfo[4]);
+
+			// Zero all arguments when linedef action 0 (normal) is chosen
+			if(!preventchanges && (showaction == 0))
+			{
+				arg0.SetValue(0);
+				arg1.SetValue(0);
+				arg2.SetValue(0);
+				arg3.SetValue(0);
+				arg4.SetValue(0);
+			}
 		}
 
 		// Browse Action clicked
