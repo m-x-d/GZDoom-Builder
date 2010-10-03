@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private EffectHandle worldviewproj;
 		private EffectHandle minfiltersettings;
 		private EffectHandle magfiltersettings;
+		private EffectHandle mipfiltersettings;
+		private EffectHandle maxanisotropysetting;
 		private EffectHandle modulatecolor;
 		private EffectHandle highlightcolor;
 		
@@ -72,8 +74,10 @@ namespace CodeImp.DoomBuilder.Rendering
 				texture1 = effect.GetParameter(null, "texture1");
 				minfiltersettings = effect.GetParameter(null, "minfiltersettings");
 				magfiltersettings = effect.GetParameter(null, "magfiltersettings");
+				mipfiltersettings = effect.GetParameter(null, "mipfiltersettings");
 				modulatecolor = effect.GetParameter(null, "modulatecolor");
 				highlightcolor = effect.GetParameter(null, "highlightcolor");
+				maxanisotropysetting = effect.GetParameter(null, "maxanisotropysetting");
 			}
 
 			// Initialize world vertex declaration
@@ -101,8 +105,10 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(worldviewproj != null) worldviewproj.Dispose();
 				if(minfiltersettings != null) minfiltersettings.Dispose();
 				if(magfiltersettings != null) magfiltersettings.Dispose();
+				if(mipfiltersettings != null) mipfiltersettings.Dispose();
 				if(modulatecolor != null) modulatecolor.Dispose();
 				if(highlightcolor != null) highlightcolor.Dispose();
+				if(maxanisotropysetting != null) maxanisotropysetting.Dispose();
 
 				// Done
 				base.Dispose();
@@ -114,19 +120,33 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Methods
 
 		// This sets the constant settings
-		public void SetConstants(bool bilinear, bool useanisotropic)
+		public void SetConstants(bool bilinear, bool useanisotropic, float maxanisotropy)
 		{
 			if(manager.Enabled)
 			{
 				if(bilinear)
 				{
-					effect.SetValue(magfiltersettings, (int)TextureFilter.Linear);
-					if(useanisotropic) effect.SetValue<int>(minfiltersettings, (int)TextureFilter.Anisotropic);
+					if(useanisotropic)
+					{
+						effect.SetValue(magfiltersettings, (int)TextureFilter.Linear);
+						effect.SetValue(minfiltersettings, (int)TextureFilter.Anisotropic);
+						effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
+						effect.SetValue(maxanisotropysetting, maxanisotropy);
+					}
+					else
+					{
+						effect.SetValue(magfiltersettings, (int)TextureFilter.Linear);
+						effect.SetValue(minfiltersettings, (int)TextureFilter.Linear);
+						effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
+						effect.SetValue(maxanisotropysetting, 1.0f);
+					}
 				}
 				else
 				{
 					effect.SetValue(magfiltersettings, (int)TextureFilter.Point);
 					effect.SetValue(minfiltersettings, (int)TextureFilter.Point);
+					effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
+					effect.SetValue(maxanisotropysetting, 1.0f);
 				}
 			}
 		}
@@ -168,7 +188,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
 					device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
-					device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Point);
+					device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Linear);
 					device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
 				}
 

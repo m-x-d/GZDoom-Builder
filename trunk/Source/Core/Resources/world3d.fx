@@ -32,6 +32,8 @@ texture texture1;
 // Filter settings
 dword minfiltersettings;
 dword magfiltersettings;
+dword mipfiltersettings;
+float maxanisotropysetting;
 
 // Texture sampler settings
 sampler2D texturesamp = sampler_state
@@ -39,8 +41,9 @@ sampler2D texturesamp = sampler_state
     Texture = <texture1>;
     MagFilter = magfiltersettings;
     MinFilter = minfiltersettings;
-    MipFilter = magfiltersettings;
+    MipFilter = mipfiltersettings;
 	MipMapLodBias = 0.0f;
+	MaxAnisotropy = maxanisotropysetting;
 };
 
 // Vertex shader
