@@ -247,6 +247,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						List<Vector2D> coords = nl.GetGridIntersections();
 
 						// Find nearest grid intersection
+						bool found = false;
 						float found_distance = float.MaxValue;
 						Vector2D found_coord = new Vector2D();
 						foreach(Vector2D v in coords)
@@ -256,14 +257,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								found_distance = delta.GetLengthSq();
 								found_coord = v;
+								found = true;
 							}
 						}
 
-						// Align to the closest grid intersection
-						p.pos = found_coord;
-						p.stitch = true;
-						p.stitchline = true;
-						return p;
+						if(found)
+						{
+							// Align to the closest grid intersection
+							p.pos = found_coord;
+							p.stitch = true;
+							p.stitchline = true;
+							return p;
+						}
 					}
 					else
 					{
