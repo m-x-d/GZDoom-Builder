@@ -229,7 +229,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.Material = material;
 			
 			// Shader settings
-			shaders.World3D.SetConstants(General.Settings.VisualBilinear, true);
+			shaders.World3D.SetConstants(General.Settings.VisualBilinear, true, General.Settings.FilterAnisotropy);
 			
 			// Texture filters
 			postfilter = Filter.Point;
@@ -317,7 +317,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			shaders = new ShaderManager(this);
 			
 			// Font
-			postfilter = Filter.Box;
+			postfilter = Filter.Box;		// Only for the font. This will be reset in SetupSettings (see below)
 			font = new TextFont();
 			fonttexture = new ResourceImage("CodeImp.DoomBuilder.Resources.Font.png");
 			fonttexture.LoadImage();
