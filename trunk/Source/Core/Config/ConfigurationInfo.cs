@@ -167,6 +167,7 @@ namespace CodeImp.DoomBuilder.Config
 			resources.WriteToConfig(General.Settings.Config, "configurations." + settingskey + ".resources");
 			
 			// Write filters to configuration
+			General.Settings.DeleteSetting("configurations." + settingskey + ".thingsfilters");
 			for(int i = 0; i < thingsfilters.Count; i++)
 			{
 				thingsfilters[i].WriteSettings(General.Settings.Config,
