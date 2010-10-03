@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		// Variables
 		private ICollection<Linedef> lines;
+		private bool preventchanges = false;
 		
 		// Constructor
 		public LinedefEditForm()
@@ -118,6 +119,8 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			LinedefActivateInfo sai;
 			Linedef fl;
+
+			preventchanges = true;
 			
 			// Keep this list
 			this.lines = lines;
@@ -297,6 +300,8 @@ namespace CodeImp.DoomBuilder.Windows
 			fronthigh.Refresh();
 			frontmid.Refresh();
 			frontlow.Refresh();
+
+			preventchanges = false;
 		}
 		
 		// Front side (un)checked
@@ -513,6 +518,16 @@ namespace CodeImp.DoomBuilder.Windows
 			arg2.Setup(General.Map.Config.LinedefActions[showaction].Args[2]);
 			arg3.Setup(General.Map.Config.LinedefActions[showaction].Args[3]);
 			arg4.Setup(General.Map.Config.LinedefActions[showaction].Args[4]);
+
+			// Zero all arguments when linedef action 0 (normal) is chosen
+			if(!preventchanges && (showaction == 0))
+			{
+				arg0.SetValue(0);
+				arg1.SetValue(0);
+				arg2.SetValue(0);
+				arg3.SetValue(0);
+				arg4.SetValue(0);
+			}
 		}
 
 		// Browse Action clicked
