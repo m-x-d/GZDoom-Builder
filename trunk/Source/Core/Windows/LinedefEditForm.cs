@@ -527,9 +527,15 @@ namespace CodeImp.DoomBuilder.Windows
 			// Make collection of front sides
 			List<MapElement> sides = new List<MapElement>(lines.Count);
 			foreach(Linedef l in lines) if(l.Front != null) sides.Add(l.Front);
+
+			// Make undo
+			string undodesc = "sidedef";
+			if(sides.Count > 1) undodesc = sides.Count + " sidedefs";
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
 			
 			// Edit these
-			CustomFieldsForm.ShowDialog(this, "Front side custom fields", "sidedef", sides, General.Map.Config.SidedefFields);
+			if(!CustomFieldsForm.ShowDialog(this, "Front side custom fields", "sidedef", sides, General.Map.Config.SidedefFields))
+				General.Map.UndoRedo.WithdrawUndo();
 		}
 
 		// Custom fields on back sides
@@ -539,8 +545,14 @@ namespace CodeImp.DoomBuilder.Windows
 			List<MapElement> sides = new List<MapElement>(lines.Count);
 			foreach(Linedef l in lines) if(l.Back != null) sides.Add(l.Back);
 
+			// Make undo
+			string undodesc = "sidedef";
+			if(sides.Count > 1) undodesc = sides.Count + " sidedefs";
+			General.Map.UndoRedo.CreateUndo("Edit " + undodesc);
+			
 			// Edit these
-			CustomFieldsForm.ShowDialog(this, "Back side custom fields", "sidedef", sides, General.Map.Config.SidedefFields);
+			if(!CustomFieldsForm.ShowDialog(this, "Back side custom fields", "sidedef", sides, General.Map.Config.SidedefFields))
+				General.Map.UndoRedo.WithdrawUndo();
 		}
 
 		// Help!
