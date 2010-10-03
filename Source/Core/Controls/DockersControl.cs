@@ -409,19 +409,25 @@ namespace CodeImp.DoomBuilder.Controls
 				int collapsedwidth = GetCollapsedWidth();
 				if(rightalign)
 				{
-					this.Left += delta;
-					this.Width -= delta;
-					if(this.Width < collapsedwidth)
+					if((this.Width > collapsedwidth) || (delta < 0))
 					{
-						this.Left -= collapsedwidth - this.Width;
-						this.Width = collapsedwidth;
+						this.Left += delta;
+						this.Width -= delta;
+						if(this.Width < collapsedwidth)
+						{
+							this.Left -= collapsedwidth - this.Width;
+							this.Width = collapsedwidth;
+						}
 					}
 				}
 				else
 				{
-					this.Width += delta;
-					if(this.Width < collapsedwidth)
-						this.Width = collapsedwidth;
+					if((this.Width > collapsedwidth) || (delta > 0))
+					{
+						this.Width += delta;
+						if(this.Width < collapsedwidth)
+							this.Width = collapsedwidth;
+					}
 				}
 
 				General.MainWindow.UnlockUpdate();

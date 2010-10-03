@@ -2801,9 +2801,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private void dockerspanel_UserResize(object sender, EventArgs e)
 		{
 			General.Settings.DockersWidth = dockerspanel.Width;
-			
+
 			if(!General.Settings.CollapseDockers)
+			{
 				dockersspace.Width = dockerspanel.Width;
+				dockerspanel.Left = dockersspace.Left;
+			}
 		}
 		
 		#endregion
