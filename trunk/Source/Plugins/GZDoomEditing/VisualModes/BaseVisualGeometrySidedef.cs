@@ -372,6 +372,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public virtual void OnEditBegin() { }
 		protected virtual void SetTexture(string texturename) { }
 		public abstract bool Setup();
+		protected abstract void SetTextureOffsetX(int x);
+		protected abstract void SetTextureOffsetY(int y);
+		protected abstract void MoveTextureOffset(Point xy);
+		protected abstract Point GetTextureOffset();
 		
 		// Insert middle texture
 		public virtual void OnInsert()
@@ -464,9 +468,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			mode.SetActionResult("Texture offsets reset.");
 
 			// Apply offsets
-			Sidedef.OffsetX = 0;
-			Sidedef.OffsetY = 0;
-
+			SetTextureOffsetX(0);
+			SetTextureOffsetY(0);
+			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
 			parts.SetupAllParts();
@@ -699,9 +703,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public virtual void OnPasteTextureOffsets()
 		{
 			mode.CreateUndo("Paste texture offsets");
-			Sidedef.OffsetX = BuilderPlug.Me.CopiedOffsets.X;
-			Sidedef.OffsetY = BuilderPlug.Me.CopiedOffsets.Y;
-			mode.SetActionResult("Pasted texture offsets " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+			SetTextureOffsetX(BuilderPlug.Me.CopiedOffsets.X);
+			SetTextureOffsetY(BuilderPlug.Me.CopiedOffsets.Y);
+			mode.SetActionResult("Pasted texture offsets " + BuilderPlug.Me.CopiedOffsets.X + ", " + BuilderPlug.Me.CopiedOffsets.Y + ".");
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
@@ -719,8 +723,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Copy texture offsets
 		public virtual void OnCopyTextureOffsets()
 		{
-			BuilderPlug.Me.CopiedOffsets = new Point(Sidedef.OffsetX, Sidedef.OffsetY);
-			mode.SetActionResult("Copied texture offsets " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+			BuilderPlug.Me.CopiedOffsets = GetTextureOffset();
+			mode.SetActionResult("Copied texture offsets " + BuilderPlug.Me.CopiedOffsets.X + ", " + BuilderPlug.Me.CopiedOffsets.Y + ".");
 		}
 
 		// Copy properties
@@ -761,10 +765,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			dragstartanglexy = General.Map.VisualCamera.AngleXY;
 			dragstartanglez = General.Map.VisualCamera.AngleZ;
 			dragorigin = pickintersect;
-			startoffsetx = Sidedef.OffsetX;
-			startoffsety = Sidedef.OffsetY;
-			prevoffsetx = Sidedef.OffsetX;
-			prevoffsety = Sidedef.OffsetY;
+			startoffsetx = GetTextureOffset().X;
+			startoffsety = GetTextureOffset().Y;
+			prevoffsetx = GetTextureOffset().X;
+			prevoffsety = GetTextureOffset().Y;
 		}
 		
 		// Select button released
@@ -932,10 +936,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				undoticket = mode.CreateUndo("Change texture offsets");
 			
 			// Apply offsets
-			Sidedef.OffsetX -= horizontal;
-			Sidedef.OffsetY -= vertical;
+			MoveTextureOffset(new Point(-horizontal, -vertical));
 
-			mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+			mode.SetActionResult("Changed texture offsets by " + -horizontal + ", " + -vertical + ".");
 			
 			// Update sidedef geometry
 			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);

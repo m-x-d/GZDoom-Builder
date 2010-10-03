@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
@@ -282,6 +283,34 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			extrafloor.Linedef.Front.SetTextureMid(texturename);
 			General.Map.Data.UpdateUsedTextures();
 			this.Sector.Rebuild();
+		}
+
+		protected override void SetTextureOffsetX(int x)
+		{
+			Sidedef.Fields.BeforeFieldsChange();
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, (float)x);
+		}
+
+		protected override void SetTextureOffsetY(int y)
+		{
+			Sidedef.Fields.BeforeFieldsChange();
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)y);
+		}
+
+		protected override void MoveTextureOffset(Point xy)
+		{
+			Sidedef.Fields.BeforeFieldsChange();
+			float oldx = Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
+			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
+		}
+
+		protected override Point GetTextureOffset()
+		{
+			float oldx = Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
+			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
+			return new Point((int)oldx, (int)oldy);
 		}
 		
 		#endregion
