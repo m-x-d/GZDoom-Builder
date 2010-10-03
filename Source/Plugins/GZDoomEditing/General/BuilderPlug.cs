@@ -126,8 +126,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This loads the plugin settings
 		private void LoadSettings()
 		{
-			changeheightbysidedef = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
-			visualmodeclearselection = General.Settings.ReadPluginSetting("visualmodeclearselection", false);
+			changeheightbysidedef = General.Settings.ReadPluginSetting("BuilderModes", "changeheightbysidedef", 0);
+			visualmodeclearselection = General.Settings.ReadPluginSetting("BuilderModes", "visualmodeclearselection", false);
 		}
 
 		#endregion
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override void OnClosePreferences(PreferencesController controller)
 		{
 			base.OnClosePreferences(controller);
-
+			
 			// Apply settings that could have been changed
 			LoadSettings();
 		}
