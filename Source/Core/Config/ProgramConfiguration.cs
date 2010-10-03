@@ -419,6 +419,10 @@ namespace CodeImp.DoomBuilder.Config
 		internal bool WriteSetting(string setting, object settingvalue) { return cfg.WriteSetting(setting, settingvalue); }
 		internal bool WriteSetting(string setting, object settingvalue, string pathseperator) { return cfg.WriteSetting(setting, settingvalue, pathseperator); }
 
+		// DeleteSetting
+		internal bool DeleteSetting(string setting) { return cfg.DeleteSetting(setting); }
+		internal bool DeleteSetting(string setting, string pathseperator) { return cfg.DeleteSetting(setting, pathseperator); }
+
 		#endregion
 
 		#region ================== Default Settings
