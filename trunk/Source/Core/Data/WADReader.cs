@@ -77,6 +77,9 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			General.WriteLogLine("Opening WAD resource '" + location.location + "'");
 
+			if(!File.Exists(location.location))
+				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
+			
 			// Initialize
 			file = new WAD(location.location, true);
 			is_iwad = (file.Type == WAD.TYPE_IWAD);
