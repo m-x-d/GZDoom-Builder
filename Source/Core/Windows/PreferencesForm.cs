@@ -289,8 +289,23 @@ namespace CodeImp.DoomBuilder.Windows
 		private void tabs_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// Enable/disable stuff with tabs
-			if(tabs.SelectedTab != tabkeys) this.AcceptButton = apply; else this.AcceptButton = null;
-			if(tabs.SelectedTab != tabkeys) this.CancelButton = cancel; else this.CancelButton = null;
+			if(tabs.SelectedTab != tabkeys)
+			{
+				this.AcceptButton = apply;
+				this.CancelButton = cancel;
+				apply.TabStop = true;
+				cancel.TabStop = true;
+				tabs.TabStop = true;
+			}
+			else
+			{
+				this.AcceptButton = null;
+				this.CancelButton = null;
+				apply.TabStop = false;
+				cancel.TabStop = false;
+				tabs.TabStop = false;
+			}
+			
 			colorsgroup1.Visible = (tabs.SelectedTab == tabcolors);
 			//colorsgroup2.Visible = (tabs.SelectedTab == tabcolors);
 			colorsgroup3.Visible = (tabs.SelectedTab == tabcolors);
