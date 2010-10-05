@@ -958,21 +958,24 @@ namespace CodeImp.DoomBuilder.Rendering
 				verts[offset].v = 1f - 1f / 128f;
 				offset++;
 
+				float sinarrowsize = (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
+				float cosarrowsize = (float)Math.Cos(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
+				
 				// Setup rotated rect for arrow
-				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
-				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.25f) * arrowsize;
+				verts[offset].x = screenpos.x + sinarrowsize;
+				verts[offset].y = screenpos.y + cosarrowsize;
 				verts[offset].c = -1;
 				verts[offset].u = 0.50f + t.IconOffset;
 				verts[offset].v = 0f;
 				offset++;
-				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
-				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
+				verts[offset].x = screenpos.x - cosarrowsize;
+				verts[offset].y = screenpos.y + sinarrowsize;
 				verts[offset].c = -1;
 				verts[offset].u = 0.75f + t.IconOffset;
 				verts[offset].v = 0f;
 				offset++;
-				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
-				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle - Angle2D.PI * 0.75f) * arrowsize;
+				verts[offset].x = screenpos.x + cosarrowsize;
+				verts[offset].y = screenpos.y - sinarrowsize;
 				verts[offset].c = -1;
 				verts[offset].u = 0.50f + t.IconOffset;
 				verts[offset].v = 1f;
@@ -981,12 +984,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				offset++;
 				verts[offset] = verts[offset - 2];
 				offset++;
-				verts[offset].x = screenpos.x + (float)Math.Sin(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
-				verts[offset].y = screenpos.y + (float)Math.Cos(t.Angle + Angle2D.PI * 0.75f) * arrowsize;
+				verts[offset].x = screenpos.x - sinarrowsize;
+				verts[offset].y = screenpos.y - cosarrowsize;
 				verts[offset].c = -1;
 				verts[offset].u = 0.75f + t.IconOffset;
 				verts[offset].v = 1f;
-
+				
 				// Done
 				return true;
 			}

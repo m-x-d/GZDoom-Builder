@@ -81,6 +81,8 @@ namespace CodeImp.DoomBuilder.IO
 		public override int MinThingType { get { return ushort.MinValue; } }
 		public override double MaxCoordinate { get { return (double)short.MaxValue; } }
 		public override double MinCoordinate { get { return (double)short.MinValue; } }
+		public override int MaxThingAngle { get { return short.MaxValue; } }
+		public override int MinThingAngle { get { return short.MinValue; } }
 		
 		#endregion
 
@@ -120,10 +122,9 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			MemoryStream mem;
 			BinaryReader reader;
-			int num, i, tag, z, action, x, y, type, flags;
+			int num, i, tag, z, action, x, y, type, flags, angle;
 			int[] args = new int[Thing.NUM_ARGS];
 			Dictionary<string, bool> stringflags;
-			float angle;
 			Thing t;
 			
 			// Get the lump from wad file
@@ -144,7 +145,7 @@ namespace CodeImp.DoomBuilder.IO
 				x = reader.ReadInt16();
 				y = reader.ReadInt16();
 				z = reader.ReadInt16();
-				angle = Angle2D.DoomToReal(reader.ReadInt16());
+				angle = reader.ReadInt16();
 				type = reader.ReadUInt16();
 				flags = reader.ReadUInt16();
 				action = reader.ReadByte();
@@ -465,7 +466,7 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write((Int16)t.Position.x);
 				writer.Write((Int16)t.Position.y);
 				writer.Write((Int16)t.Position.z);
-				writer.Write((Int16)Angle2D.RealToDoom(t.Angle));
+				writer.Write((Int16)t.AngleDoom);
 				writer.Write((UInt16)t.Type);
 				writer.Write((UInt16)flags);
 				writer.Write((Byte)t.Action);

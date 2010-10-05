@@ -54,7 +54,8 @@ namespace CodeImp.DoomBuilder.Map
 		// Properties
 		private int type;
 		private Vector3D pos;
-		private float angle;
+		private int angledoom;		// Angle as entered / stored in file
+		private float anglerad;		// Angle in radians
 		private Dictionary<string, bool> flags;
 		private int tag;
 		private int action;
@@ -73,8 +74,8 @@ namespace CodeImp.DoomBuilder.Map
 		public MapSet Map { get { return map; } }
 		public int Type { get { return type; } set { BeforePropsChange(); type = value; } }
 		public Vector3D Position { get { return pos; } }
-		public float Angle { get { return angle; } }
-		public int AngleDeg { get { return (int)Angle2D.RadToDeg(angle); } }
+		public float Angle { get { return anglerad; } }
+		public int AngleDoom { get { return angledoom; } }
 		internal Dictionary<string, bool> Flags { get { return flags; } }
 		public int Action { get { return action; } set { BeforePropsChange(); action = value; } }
 		public int[] Args { get { return args; } }
@@ -172,13 +173,16 @@ namespace CodeImp.DoomBuilder.Map
 					flags.Add(t, b);
 				}
 			}
-
+			
 			s.rwInt(ref type);
 			s.rwVector3D(ref pos);
-			s.rwFloat(ref angle);
+			s.rwInt(ref angledoom);
 			s.rwInt(ref tag);
 			s.rwInt(ref action);
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
+			
+			if(!s.IsWriting)
+				anglerad = Angle2D.DoomToReal(angledoom);
 		}
 
 		// This copies all properties to another thing
@@ -188,7 +192,8 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Copy properties
 			t.type = type;
-			t.angle = angle;
+			t.anglerad = anglerad;
+			t.angledoom = angledoom;
 			t.pos = pos;
 			t.flags = new Dictionary<string,bool>(flags);
 			t.tag = tag;
@@ -383,7 +388,21 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 			
 			// Change angle
-			this.angle = newangle;
+			this.anglerad = newangle;
+			this.angledoom = Angle2D.RealToDoom(newangle);
+			
+			if(type != General.Map.Config.Start3DModeThingType)
+				General.Map.IsChanged = true;
+		}
+		
+		// This rotates the thing
+		public void Rotate(int newangle)
+		{
+			BeforePropsChange();
+			
+			// Change angle
+			this.anglerad = Angle2D.DoomToReal(newangle);
+			this.angledoom = newangle;
 			
 			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
@@ -391,12 +410,13 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// This updates all properties
 		// NOTE: This does not update sector! (call DetermineSector)
-		public void Update(int type, float x, float y, float zoffset, float angle,
+		public void Update(int type, float x, float y, float zoffset, int angle,
 						   Dictionary<string, bool> flags, int tag, int action, int[] args)
 		{
 			// Apply changes
 			this.type = type;
-			this.angle = angle;
+			this.anglerad = Angle2D.DoomToReal(angle);
+			this.angledoom = angle;
 			this.flags = new Dictionary<string, bool>(flags);
 			this.tag = tag;
 			this.action = action;
@@ -412,7 +432,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Lookup settings
 			ti = General.Map.Data.GetThingInfo(type);
-
+			
 			// Apply size
 			size = ti.Radius;
 			fixedsize = ti.FixedSize;
