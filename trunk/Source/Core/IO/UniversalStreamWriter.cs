@@ -280,7 +280,7 @@ namespace CodeImp.DoomBuilder.IO
 				coll.Add("x", t.Position.x);
 				coll.Add("y", t.Position.y);
 				if(t.Position.z != 0.0f) coll.Add("height", (float)t.Position.z);
-				coll.Add("angle", Angle2D.RealToDoom(t.Angle));
+				coll.Add("angle", t.AngleDoom);
 				coll.Add("type", t.Type);
 				if(t.Action != 0) coll.Add("special", t.Action);
 				if(t.Args[0] != 0) coll.Add("arg0", t.Args[0]);

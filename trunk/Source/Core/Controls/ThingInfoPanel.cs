@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.Controls
 			action.Text = actioninfo;
 			position.Text = t.Position.x.ToString() + ", " + t.Position.y.ToString() + ", " + zinfo;
 			tag.Text = t.Tag.ToString();
-			angle.Text = Angle2D.RealToDoom(t.Angle).ToString() + "\u00B0";
+			angle.Text = t.AngleDoom.ToString() + "\u00B0";
 			
 			// Sprite
 			if(ti.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) && (ti.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))

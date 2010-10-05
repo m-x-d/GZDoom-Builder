@@ -67,5 +67,7 @@ namespace CodeImp.DoomBuilder.IO
 		int MinThingType { get; }
 		double MaxCoordinate { get; }
 		double MinCoordinate { get; }
+		int MaxThingAngle { get; }
+		int MinThingAngle { get; }
 	}
 }
