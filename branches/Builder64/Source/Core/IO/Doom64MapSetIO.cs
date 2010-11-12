@@ -101,9 +101,14 @@ namespace CodeImp.DoomBuilder.IO
             Lights l;
 
             l = slight;
-            if(l.tag != 0)
+            if(s.Tag != 0)
                 l.tag = (UInt16)s.Tag;
             slight = l;
+
+            if (slight.color.r == slight.color.g &&
+                slight.color.r == slight.color.b &&
+                slight.tag == 0)
+                return;
 
             if (!light.Contains(slight))
                 light.Add(slight);
