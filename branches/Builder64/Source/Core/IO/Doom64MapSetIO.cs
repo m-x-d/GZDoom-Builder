@@ -1198,7 +1198,10 @@ namespace CodeImp.DoomBuilder.IO
             }
 
             // set number of macros
-            count = (i - 256) + 1;
+            if (i <= 0)
+                count = 1;
+            else
+                count = (i - 256) + 1;
 
             // count macro actions per batch
             for (i = 0; i < count; i++)
