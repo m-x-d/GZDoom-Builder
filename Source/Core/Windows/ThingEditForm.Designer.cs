@@ -486,6 +486,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// fieldslist
 			// 
+			this.fieldslist.AllowInsert = true;
 			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
@@ -495,8 +496,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Location = new System.Drawing.Point(8, 9);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
 			this.fieldslist.Name = "fieldslist";
+			this.fieldslist.PropertyColumnVisible = true;
+			this.fieldslist.PropertyColumnWidth = 150;
 			this.fieldslist.Size = new System.Drawing.Size(636, 334);
 			this.fieldslist.TabIndex = 1;
+			this.fieldslist.TypeColumnVisible = true;
+			this.fieldslist.TypeColumnWidth = 100;
+			this.fieldslist.ValueColumnVisible = true;
 			// 
 			// cancel
 			// 
