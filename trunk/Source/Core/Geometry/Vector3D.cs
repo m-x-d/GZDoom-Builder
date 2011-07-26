@@ -77,10 +77,34 @@ namespace CodeImp.DoomBuilder.Geometry
 			return new Vector3D(a.x + b.x, a.y + b.y, a.z + b.z);
 		}
 
+		// This adds to all dimensions
+		public static Vector3D operator +(Vector3D a, float b)
+		{
+			return new Vector3D(a.x + b, a.y + b, a.z + b);
+		}
+
+		// This adds to all dimensions
+		public static Vector3D operator +(float b, Vector3D a)
+		{
+			return new Vector3D(a.x + b, a.y + b, a.z + b);
+		}
+
 		// This subtracts two vectors
 		public static Vector3D operator -(Vector3D a, Vector3D b)
 		{
 			return new Vector3D(a.x - b.x, a.y - b.y, a.z - b.z);
+		}
+
+		// This subtracts from all dimensions
+		public static Vector3D operator -(Vector3D a, float b)
+		{
+			return new Vector3D(a.x - b, a.y - b, a.z - b);
+		}
+
+		// This subtracts from all dimensions
+		public static Vector3D operator -(float a, Vector3D b)
+		{
+			return new Vector3D(a - b.x, a - b.y, a - b.z);
 		}
 
 		// This reverses a vector

@@ -53,6 +53,17 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		#region ================== Variables
 
+		public delegate void SingleFieldNameEvent(string fieldname);
+		public delegate void DualFieldNameEvent(string oldname, string newname);
+
+		// Events
+		public event SingleFieldNameEvent OnFieldInserted;
+		public event DualFieldNameEvent OnFieldNameChanged;
+		public event SingleFieldNameEvent OnFieldValueChanged;
+		public event SingleFieldNameEvent OnFieldTypeChanged;
+		public event SingleFieldNameEvent OnFieldDeleted;
+		public event SingleFieldNameEvent OnFieldUndefined;
+
 		// Variables
 		private string elementname;
 		private string lasteditfieldname;
@@ -61,8 +72,14 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Properties
-		
+
+		public bool AllowInsert { get { return fieldslist.AllowUserToAddRows; } set { fieldslist.AllowUserToAddRows = value; SetupNewRowStyle(); } }
 		public bool AutoInsertUserPrefix { get { return autoinsertuserprefix; } set { autoinsertuserprefix = value; } }
+		public int PropertyColumnWidth { get { return fieldname.Width; } set { fieldname.Width = value; UpdateValueColumn(); UpdateBrowseButton(); } }
+		public int TypeColumnWidth { get { return fieldtype.Width; } set { fieldtype.Width = value; UpdateValueColumn(); UpdateBrowseButton(); } }
+		public bool PropertyColumnVisible { get { return fieldname.Visible; } set { fieldname.Visible = value; UpdateValueColumn(); UpdateBrowseButton(); } }
+		public bool TypeColumnVisible { get { return fieldtype.Visible; } set { fieldtype.Visible = value; UpdateValueColumn(); UpdateBrowseButton(); } }
+		public bool ValueColumnVisible { get { return fieldvalue.Visible; } set { fieldvalue.Visible = value; UpdateValueColumn(); UpdateBrowseButton(); } }
 		
 		#endregion
 
@@ -310,7 +327,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Rearrange controls
 			fieldslist.Size = this.ClientSize;
-			fieldvalue.Width = fieldslist.ClientRectangle.Width - fieldname.Width - fieldtype.Width - SystemInformation.VerticalScrollBarWidth - 10;
+			UpdateValueColumn();
 			UpdateBrowseButton();
 		}
 
@@ -379,6 +396,14 @@ namespace CodeImp.DoomBuilder.Controls
 				// Just undefine the field
 				row.Undefine();
 				e.Cancel = true;
+
+				if(OnFieldUndefined != null)
+					OnFieldUndefined(row.Name);
+			}
+			else
+			{
+				if(OnFieldDeleted != null)
+					OnFieldDeleted(row.Name);
 			}
 		}
 
@@ -501,6 +526,9 @@ namespace CodeImp.DoomBuilder.Controls
 								frow = new FieldsEditorRow(fieldslist, validname, type, null);
 								frow.Visible = false;
 								fieldslist.Rows.Insert(e.RowIndex + 1, frow);
+								
+								if(OnFieldInserted != null)
+									OnFieldInserted(validname);
 							}
 						}
 					}
@@ -542,6 +570,12 @@ namespace CodeImp.DoomBuilder.Controls
 								// Rename row and change type
 								row.Cells[0].Value = validname;
 								if(type != -1) frow.ChangeType(type);
+
+								if(OnFieldNameChanged != null)
+									OnFieldNameChanged(lasteditfieldname, validname);
+
+								if(OnFieldTypeChanged != null)
+									OnFieldTypeChanged(validname);
 							}
 							else
 							{
@@ -561,6 +595,12 @@ namespace CodeImp.DoomBuilder.Controls
 						row.Cells[0].Value = lasteditfieldname;
 					}
 				}
+			}
+			// Changing field type?
+			if((e.ColumnIndex == 1) && (frow != null))
+			{
+				if(OnFieldTypeChanged != null)
+					OnFieldTypeChanged(frow.Name);
 			}
 			// Changing field value?
 			if((e.ColumnIndex == 2) && (frow != null))
@@ -668,9 +708,16 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Defined?
 			if((value != null) && (!frow.IsFixed || !frow.Info.Default.Equals(value)))
+			{
 				frow.Define(value);
+			}
 			else if(frow.IsFixed)
+			{
 				frow.Undefine();
+			}
+			
+			if(OnFieldValueChanged != null)
+				OnFieldValueChanged(frow.Name);
 		}
 		
 		// This applies the contents of the enums combobox and hides (if opened)
@@ -701,20 +748,31 @@ namespace CodeImp.DoomBuilder.Controls
 		// This sets up the new row
 		private void SetupNewRowStyle()
 		{
-			// Show text for new row
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].Value = ADD_FIELD_TEXT;
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].Style.ForeColor = SystemColors.GrayText;
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].ReadOnly = false;
+			if(fieldslist.AllowUserToAddRows)
+			{
+				// Show text for new row
+				fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].Value = ADD_FIELD_TEXT;
+				fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].Style.ForeColor = SystemColors.GrayText;
+				fieldslist.Rows[fieldslist.NewRowIndex].Cells[0].ReadOnly = false;
 
-			// Make sure user can only enter property name in a new row
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[1].ReadOnly = true;
-			fieldslist.Rows[fieldslist.NewRowIndex].Cells[2].ReadOnly = true;
+				// Make sure user can only enter property name in a new row
+				fieldslist.Rows[fieldslist.NewRowIndex].Cells[1].ReadOnly = true;
+				fieldslist.Rows[fieldslist.NewRowIndex].Cells[2].ReadOnly = true;
+			}
 		}
 
 		// This hides the browse button
 		private void HideBrowseButton()
 		{
 			browsebutton.Visible = false;
+		}
+
+		// This updates the Value column width
+		private void UpdateValueColumn()
+		{
+			int fieldnamewidth = fieldname.Visible ? fieldname.Width : 0;
+			int fieldtypewidth = fieldtype.Visible ? fieldtype.Width : 0;
+			fieldvalue.Width = fieldslist.ClientRectangle.Width - fieldnamewidth - fieldtypewidth - SystemInformation.VerticalScrollBarWidth - 10;
 		}
 
 		// This updates the button
