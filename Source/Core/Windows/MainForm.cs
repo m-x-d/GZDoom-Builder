@@ -433,6 +433,12 @@ namespace CodeImp.DoomBuilder.Windows
 					// Set map name and other options
 					options = new MapOptions(mapsettings, General.AutoLoadMap);
 
+					// Set resource data locations
+					options.CopyResources(General.AutoLoadResources);
+
+					// Set strict patches
+					options.StrictPatches = General.AutoLoadStrictPatches;
+					
 					// Set configuration file (constructor already does this, but we want this info from the cmd args if possible)
 					options.ConfigFile = General.AutoLoadConfig;
 					if(options.ConfigFile == null) options.ConfigFile = mapsettings.ReadSetting("gameconfig", "");
@@ -448,7 +454,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(showdialog)
 				{
 					// Show open dialog
-					General.OpenMapFile(General.AutoLoadFile);
+					General.OpenMapFile(General.AutoLoadFile, options);
 				}
 				else
 				{
@@ -2056,7 +2062,7 @@ namespace CodeImp.DoomBuilder.Windows
 			ToolStripItem item = (sender as ToolStripItem);
 
 			// Open this file
-			General.OpenMapFile(item.Tag.ToString());
+			General.OpenMapFile(item.Tag.ToString(), null);
 		}
 		
 		#endregion

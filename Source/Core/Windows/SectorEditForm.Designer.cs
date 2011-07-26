@@ -414,8 +414,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
 			this.fieldslist.ValueColumnVisible = true;
-			this.fieldslist.OnFieldUndefined += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldUndefined);
-			this.fieldslist.OnFieldDeleted += new CodeImp.DoomBuilder.Controls.FieldsEditorControl.SingleFieldNameEvent(this.fieldslist_OnFieldDeleted);
 			// 
 			// flatSelectorControl2
 			// 
