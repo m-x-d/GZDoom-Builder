@@ -28,7 +28,7 @@ using System.Collections.Specialized;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal sealed class DataLocationList : List<DataLocation>
+	public sealed class DataLocationList : List<DataLocation>
 	{
 		#region ================== Constructors
 
@@ -36,9 +36,14 @@ namespace CodeImp.DoomBuilder.Data
 		public DataLocationList()
 		{
 		}
-		
+
+		// This makes a copy of a list
+		public DataLocationList(IEnumerable<DataLocation> list) : base(list)
+		{
+		}
+
 		// This creates a list from a configuration structure
-		public DataLocationList(Configuration cfg, string path)
+		internal DataLocationList(Configuration cfg, string path)
 		{
 			IDictionary resinfo, rlinfo;
 			DataLocation res;
@@ -81,7 +86,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This writes the list to configuration
-		public void WriteToConfig(Configuration cfg, string path)
+		internal void WriteToConfig(Configuration cfg, string path)
 		{
 			IDictionary resinfo, rlinfo;
 			

@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -181,6 +182,8 @@ namespace CodeImp.DoomBuilder
 		private static string autoloadfile = null;
 		private static string autoloadmap = null;
 		private static string autoloadconfig = null;
+		private static bool autoloadstrictpatches = false;
+		private static DataLocationList autoloadresources = null;
 		private static bool delaymainwindow;
 		private static bool nosettings;
 
@@ -213,6 +216,8 @@ namespace CodeImp.DoomBuilder
 		public static string AutoLoadFile { get { return autoloadfile; } }
 		public static string AutoLoadMap { get { return autoloadmap; } }
 		public static string AutoLoadConfig { get { return autoloadconfig; } }
+		public static bool AutoLoadStrictPatches { get { return autoloadstrictpatches; } }
+		public static DataLocationList AutoLoadResources { get { return new DataLocationList(autoloadresources); } }
 		public static bool DelayMainWindow { get { return delaymainwindow; } }
 		public static bool NoSettings { get { return nosettings; } }
 		public static EditingManager Editing { get { return editing; } }
@@ -723,6 +728,8 @@ namespace CodeImp.DoomBuilder
 		// This parses the command line arguments
 		private static void ParseCommandLineArgs(string[] args)
 		{
+			autoloadresources = new DataLocationList();
+			
 			// Keep a copy
 			cmdargs = args;
 			
@@ -759,6 +766,85 @@ namespace CodeImp.DoomBuilder
 				{
 					// Store next arg as config filename information
 					autoloadconfig = argslist.Dequeue();
+				}
+				// Strict patches rules?
+				else if(string.Compare(curarg, "-STRICTPATCHES", true) == 0)
+				{
+					autoloadstrictpatches = true;
+				}
+				// Resource?
+				else if(string.Compare(curarg, "-RESOURCE", true) == 0)
+				{
+					DataLocation dl = new DataLocation();
+
+					// Parse resource type
+					string resourcetype = argslist.Dequeue();
+					if(string.Compare(resourcetype, "WAD", true) == 0)
+						dl.type = DataLocation.RESOURCE_WAD;
+					else if(string.Compare(resourcetype, "DIR", true) == 0)
+						dl.type = DataLocation.RESOURCE_DIRECTORY;
+					else if(string.Compare(resourcetype, "PK3", true) == 0)
+						dl.type = DataLocation.RESOURCE_PK3;
+					else
+					{
+						General.WriteLogLine("Unexpected resource type \"" + resourcetype + "\" in program parameters. Expected \"wad\", \"dir\" or \"pk3\".");
+						break;
+					}
+
+					// We continue parsing args until an existing filename is found
+					// all other arguments must be one of the optional keywords.
+					while(string.IsNullOrEmpty(dl.location))
+					{
+						curarg = argslist.Dequeue();
+
+						if((string.Compare(curarg, "ROOTTEXTURES", true) == 0) &&
+						   (dl.type == DataLocation.RESOURCE_DIRECTORY))
+						{
+							// Load images in the root directory of the resource as textures
+							dl.option1 = true;
+						}
+						else if((string.Compare(curarg, "ROOTFLATS", true) == 0) &&
+								(dl.type == DataLocation.RESOURCE_DIRECTORY))
+						{
+							// Load images in the root directory of the resource as flats
+							dl.option2 = true;
+						}
+						else if((string.Compare(curarg, "STRICTPATCHES", true) == 0) &&
+								(dl.type == DataLocation.RESOURCE_WAD))
+						{
+							// Use strict rules for patches
+							dl.option1 = true;
+						}
+						else if(string.Compare(curarg, "NOTEST", true) == 0)
+						{
+							// Exclude this resource from testing parameters
+							dl.notfortesting = true;
+						}
+						else
+						{
+							// This must be an existing file, or it is an invalid argument
+							if(dl.type == DataLocation.RESOURCE_DIRECTORY)
+							{
+								if(Directory.Exists(curarg))
+									dl.location = curarg;
+							}
+							else
+							{
+								if(File.Exists(curarg))
+									dl.location = curarg;
+							}
+							
+							if(string.IsNullOrEmpty(dl.location))
+							{
+								General.WriteLogLine("Unexpected argument \"" + curarg + "\" in program parameters. Expected a valid resource option or a resource filename.");
+								break;
+							}
+						}
+					}
+
+					// Add resource to list
+					if(!string.IsNullOrEmpty(dl.location))
+						autoloadresources.Add(dl);
 				}
 				// Every other arg
 				else
@@ -1011,14 +1097,14 @@ namespace CodeImp.DoomBuilder
 				mainwindow.Update();
 
 				// Open map file
-				OpenMapFile(openfile.FileName);
+				OpenMapFile(openfile.FileName, null);
 			}
 
 			openfile.Dispose();
 		}
 		
 		// This opens the specified file
-		internal static void OpenMapFile(string filename)
+		internal static void OpenMapFile(string filename, MapOptions options)
 		{
 			OpenMapOptionsForm openmapwindow;
 
@@ -1029,7 +1115,11 @@ namespace CodeImp.DoomBuilder
 			if(General.AskSaveMap())
 			{
 				// Open map options dialog
-				openmapwindow = new OpenMapOptionsForm(filename);
+				if(options != null)
+					openmapwindow = new OpenMapOptionsForm(filename, options);
+				else
+					openmapwindow = new OpenMapOptionsForm(filename);
+
 				if(openmapwindow.ShowDialog(mainwindow) == DialogResult.OK)
 					OpenMapFileWithOptions(filename, openmapwindow.Options);
 			}

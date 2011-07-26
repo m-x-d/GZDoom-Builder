@@ -4,6 +4,8 @@ Doom Builder 2 command-line arguments
 Usage:
 
    builder.exe [wadfile] [-map mapname] [-cfg configname] [-delaywindow] [-nopreferences]
+               [-strictpatches] [-resource wad|dir|pk3 [roottextures] [rootflats]
+               [strictpatches] [notest] resourcename]
 
 ==========================================================================================
 
@@ -36,6 +38,38 @@ When this parameter is specified, Doom Builder will not load your preferences or
 configuration settings and will use the default settings instead. You will not lose your
 original settings, but when this parameter is specified your settings will not be saved.
 
+- strictpatches
+Specify this parameter to enforce strictly loading texture patches from between P_START
+and P_END marker lumps only. This can solve lump name conflicts, but old WAD files do not
+always adhere to this rule.
+
+- resource
+When -wadfile is specified, the -resource option can be used to add additional resources
+that must be loaded along with the wad file. Note that these are added to the resources
+which are automatically loaded due to the selection of a game configuration. You can
+repeat this option for any number of resources you wish to add. As always, the last
+specified resource will override any data in earlier specified resource. This parameter
+has the following arguments:
+
+   wad|dir|pk3       Either 'wad', 'dir' or 'pk3' must be specified to indicate how this
+                     resource must be loaded. This is the same as selecting the tabs in
+                     the resource options dialog in Doom Builder. This is required.
+
+   roottextures      This specifies that any images in the root directory of the resource
+                     must be loaded as textures. This is optional and can only be
+                     specified for directory resources.
+
+   rootflats         This specifies that any images in the root directory of the resource
+                     must be loaded as flats. This is optional and can only be
+                     specified for directory resources.
+
+   strictpatches     Set this for wad resources to load patches with strict rules to
+                     solve lump name conflicts. Same as -strictpatches described above.
+                     This is optional and can only be specified for wad resources.
+   
+   notest            Indicates that this resource will not be included in the parameters
+                     for the game engine when testing the map. This is optional.
+
 ==========================================================================================
 
 Examples:
@@ -45,8 +79,14 @@ map-options dialog:
 
    builder.exe "C:\Games\Doom\My Maps\Ubermegawad.wad"
 
-This loads the file "Ubermegawad.wad" after Doom Builder is initialized and shows the
-map MAP23 with the game configuration for Doom 2:
+Same as the example above, but now without showing the map-options dialog and instead
+immediately loads map MAP23 with the game configuration for Doom 2:
 
    builder.exe "C:\Games\Doom\My Maps\Ubermegawad.wad" -map MAP23 -cfg "Doom2.cfg"
+
+Same as the example above, but with added wad file resource and PK3 file resource:
+
+   builder.exe "C:\Games\Doom\My Maps\Ubermegawad.wad" -map MAP23 -cfg "Doom2.cfg"
+               -resource wad strictpatches "C:\Games\Doom\gothtextures.wad"
+               -resource pk3 "C:\Games\Doom\hardmonsters.pk3"
 

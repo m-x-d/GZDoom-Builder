@@ -55,7 +55,18 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 			this.Text = "Open Map from " + Path.GetFileName(filepathname);
 			this.filepathname = filepathname;
-			this.options = new MapOptions();
+			this.options = null;
+		}
+
+		// Constructor
+		public OpenMapOptionsForm(string filepathname, MapOptions options)
+		{
+			// Initialize
+			InitializeComponent();
+			this.Text = "Open Map from " + Path.GetFileName(filepathname);
+			this.filepathname = filepathname;
+			this.options = options;
+			datalocations.EditResourceLocationList(options.Resources);
 		}
 
 		// This loads the settings and attempt to find a suitable config
@@ -102,10 +113,16 @@ namespace CodeImp.DoomBuilder.Windows
 				mapsettings = new Configuration(true);
 			
 			// Check strict patches box
-			strictpatches.Checked = mapsettings.ReadSetting("strictpatches", false);
+			if(options != null)
+				strictpatches.Checked = options.StrictPatches;
+			else
+				strictpatches.Checked = mapsettings.ReadSetting("strictpatches", false);
 			
 			// Check what game configuration is preferred
-			gameconfig = mapsettings.ReadSetting("gameconfig", "");
+			if(options != null)
+				gameconfig = options.ConfigFile;
+			else
+				gameconfig = mapsettings.ReadSetting("gameconfig", "");
 
 			// Go for all configurations
 			for(int i = 0; i < General.Configs.Count; i++)
