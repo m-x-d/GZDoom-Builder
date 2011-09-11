@@ -474,7 +474,7 @@ namespace CodeImp.DoomBuilder.Config
 					// I love the STARTAN texture as default for some reason.
 					foreach(string s in General.Map.Data.TextureNames)
 					{
-						if(s.StartsWith("STARTAN"))
+                        if (s.StartsWith("SPACEAP"))    // villsa 9/11/11 (builder64)
 						{
 							foundone = true;
 							defaulttexture = s;
@@ -515,7 +515,7 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					foreach(string s in General.Map.Data.FlatNames)
 					{
-						if(s.StartsWith("FLOOR"))
+                        if (s.StartsWith("SFLATA"))  // villsa 9/11/11 (builder64)
 						{
 							foundone = true;
 							defaultfloortexture = s;
@@ -556,7 +556,7 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					foreach(string s in General.Map.Data.FlatNames)
 					{
-						if(s.StartsWith("CEIL"))
+                        if (s.StartsWith("SFLATA"))  // villsa 9/11/11 (builder64)
 						{
 							foundone = true;
 							defaultceiltexture = s;

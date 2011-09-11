@@ -881,6 +881,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					if(ld == null) return false;
 					ld.Marked = true;
 					ld.ApplySidedFlags();
+                    ld.SetFlag("8388608", true);    // villsa 9/11/11 (builder64)
 					ld.UpdateCache();
 					newlines.Add(ld);
 

@@ -142,11 +142,11 @@ namespace CodeImp.DoomBuilder.Map
 			this.triangulationneeded = true;
 			this.surfaceentry = new SurfaceEntry(-1, -1, -1);
             this.flags = new Dictionary<string, bool>(); // villsa
-            this.ceilColor = new Lights(0, 0, 0, 0); // villsa
-            this.flrColor = new Lights(0, 0, 0, 0); // villsa
-            this.thingColor = new Lights(0, 0, 0, 0); // villsa
-            this.topColor = new Lights(0, 0, 0, 0); // villsa
-            this.lwrColor = new Lights(0, 0, 0, 0); // villsa
+            this.ceilColor = new Lights(128, 128, 128, 0); // villsa
+            this.flrColor = new Lights(128, 128, 128, 0); // villsa
+            this.thingColor = new Lights(128, 128, 128, 0); // villsa
+            this.topColor = new Lights(128, 128, 128, 0); // villsa
+            this.lwrColor = new Lights(128, 128, 128, 0); // villsa
 
 			if(map == General.Map.Map)
 				General.Map.UndoRedo.RecAddSector(this);
