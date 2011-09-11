@@ -147,21 +147,26 @@ namespace CodeImp.DoomBuilder.Controls
 			angle.Text = Angle2D.RealToDoom(t.Angle).ToString() + "\u00B0";
 			
 			// Sprite
-			if(ti.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) && (ti.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))
-			{
-				spritename.Text = "";
-				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetBitmap());
-			}
-			else if((ti.Sprite.Length <= 8) && (ti.Sprite.Length > 0))
-			{
-				spritename.Text = ti.Sprite;
-				General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview());
-			}
-			else
-			{
-				spritename.Text = "";
-				spritetex.BackgroundImage = null;
-			}
+            if (ti.Title == "Camera") // villsa
+            {
+                General.DisplayZoomedImage(spritetex, General.Map.Data.ThingCamera.GetBitmap());
+                spritename.Text = "";
+            }
+            else if (ti.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) && (ti.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))
+            {
+                spritename.Text = "";
+                General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetBitmap());
+            }
+            else if ((ti.Sprite.Length <= 8) && (ti.Sprite.Length > 0))
+            {
+                spritename.Text = ti.Sprite;
+                General.DisplayZoomedImage(spritetex, General.Map.Data.GetSpriteImage(ti.Sprite).GetPreview());
+            }
+            else
+            {
+                spritename.Text = "";
+                spritetex.BackgroundImage = null;
+            }
 			
 			// Arguments
 			if(act != null)

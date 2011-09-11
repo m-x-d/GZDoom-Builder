@@ -767,6 +767,7 @@
     <None Include="Resources\Builder16.png" />
     <None Include="Resources\CLogo.png" />
     <Content Include="Resources\DB2.ico" />
+    <EmbeddedResource Include="Resources\ThingCamera.png" />
     <None Include="Resources\ViewColorFloor.png" />
     <None Include="Resources\ViewColorCeiling.png" />
     <None Include="Resources\ViewColorThing.png" />

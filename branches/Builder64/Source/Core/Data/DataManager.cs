@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder.Data
 		private PreviewManager previews;
 		
 		// Special images
+        private ImageData thingcamera;  // villsa 9/11/11
 		private ImageData missingtexture3d;
 		private ImageData unknowntexture3d;
 		private ImageData hourglass3d;
@@ -113,6 +114,7 @@ namespace CodeImp.DoomBuilder.Data
 		public List<string> TextureNames { get { return texturenames; } }
 		public List<string> FlatNames { get { return flatnames; } }
 		public bool IsDisposed { get { return isdisposed; } }
+        public ImageData ThingCamera { get { return thingcamera; } }    // villsa 9/11/11
 		public ImageData MissingTexture3D { get { return missingtexture3d; } }
 		public ImageData UnknownTexture3D { get { return unknowntexture3d; } }
 		public ImageData Hourglass3D { get { return hourglass3d; } }
@@ -159,6 +161,8 @@ namespace CodeImp.DoomBuilder.Data
 			unknowntexture3d.LoadImage();
 			hourglass3d = new ResourceImage("CodeImp.DoomBuilder.Resources.Hourglass3D.png");
 			hourglass3d.LoadImage();
+            thingcamera = new ResourceImage("CodeImp.DoomBuilder.Resources.ThingCamera.png");   // villsa 9/11/11
+            thingcamera.LoadImage();    // villsa 9/11/11
 			crosshair = new ResourceImage("CodeImp.DoomBuilder.Resources.Crosshair.png");
 			crosshair.LoadImage();
 			crosshairbusy = new ResourceImage("CodeImp.DoomBuilder.Resources.CrosshairBusy.png");
@@ -179,6 +183,8 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Clean up
 				Unload();
+                thingcamera.Dispose();  // villsa 9/11/11
+                thingcamera = null; // villsa 9/11/11
 				missingtexture3d.Dispose();
 				missingtexture3d = null;
 				unknowntexture3d.Dispose();

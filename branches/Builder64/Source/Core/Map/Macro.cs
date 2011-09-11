@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Map
                 if (batch != m.batch)
                 {
                     batch = m.batch;
-                    n = tree.Nodes.Add("Batch");
+                    n = tree.Nodes.Add("Batch " + m.batch);
                 }
 
                 TreeNode nn = n.Nodes.Add("Action");

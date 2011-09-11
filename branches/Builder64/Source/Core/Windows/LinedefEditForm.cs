@@ -655,8 +655,16 @@ namespace CodeImp.DoomBuilder.Windows
 
         private void mbatch_Click(object sender, EventArgs e)
         {
+            int batchid = 10;
+
             mtree.Nodes.Add("Batch");
             mtree.Focus();
+
+            foreach (TreeNode n in mtree.Nodes)
+            {
+                n.Text = "Batch " + batchid;
+                batchid += 10;
+            }
         }
 
         private void maction_Click(object sender, EventArgs e)
@@ -724,6 +732,8 @@ namespace CodeImp.DoomBuilder.Windows
         private void mdelete_Click(object sender, EventArgs e)
         {
             TreeNode n = mtree.SelectedNode;
+            bool parentremoved = false;
+            int batchid = 10;
 
             if (n == null)
                 return;
@@ -731,12 +741,27 @@ namespace CodeImp.DoomBuilder.Windows
             if (n.Parent != null)
             {
                 if (n.Parent.Nodes.Count <= 1)
+                {
                     n.Parent.Remove();
+                    parentremoved = true;
+                }
                 else
                     n.Remove();
             }
             else
+            {
                 n.Remove();
+                parentremoved = true;
+            }
+
+            if (parentremoved == true)
+            {
+                foreach (TreeNode nn in mtree.Nodes)
+                {
+                    nn.Text = "Batch " + batchid;
+                    batchid += 10;
+                }
+            }
         }
 	}
 }

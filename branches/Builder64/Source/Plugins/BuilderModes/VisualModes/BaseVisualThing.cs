@@ -101,56 +101,83 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Use sector brightness for color shading
 					//byte brightness = (byte)General.Clamp(Thing.Sector.Brightness, 0, 255);
 					//sectorcolor = new PixelColor(255, brightness, brightness, brightness);
-                    sectorcolor = Thing.Sector.ThingColor.GetColor();
+
+                    // villsa 9/11/11 (builder64) cameras are rendered full bright
+                    if (Thing.Type == 0)
+                        sectorcolor = -1;
+                    else
+                        sectorcolor = Thing.Sector.ThingColor.GetColor();
 				}
-				
-				// Check if the texture is loaded
-				sprite.LoadImage();
-				isloaded = sprite.IsImageLoaded;
-				if(isloaded)
-				{
-					float offsetx = 0.0f;
-					float offsety = 0.0f;
-					
-					base.Texture = sprite;
 
-					// Determine sprite size and offset
-					float radius = sprite.ScaledWidth * 0.5f;
-					float height = sprite.ScaledHeight;
-					if(sprite is SpriteImage)
-					{
-						offsetx = (sprite as SpriteImage).OffsetX - radius;
-						offsety = (sprite as SpriteImage).OffsetY - height;
-					}
+                // villsa 9/11/11 (builder64) render camera icon
+                if (Thing.Type == 0)
+                {
+                    base.Texture = General.Map.Data.ThingCamera;
 
-					// Make vertices
-					WorldVertex[] verts = new WorldVertex[6];
-                    verts[0] = new WorldVertex(-radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor, 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor, 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor, 1.0f, 0.0f);
-					verts[3] = verts[0];
-					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor, 1.0f, 1.0f);
-					SetVertices(verts);
-				}
-				else
-				{
-					base.Texture = General.Map.Data.Hourglass3D;
+                    // Determine sprite size
+                    float radius = Math.Min(info.Radius, info.Height / 2f);
+                    float height = Math.Min(info.Radius * 2f, info.Height);
 
-					// Determine sprite size
-					float radius = Math.Min(info.Radius, info.Height / 2f);
-					float height = Math.Min(info.Radius * 2f, info.Height);
+                    // Make vertices
+                    WorldVertex[] verts = new WorldVertex[6];
+                    verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor, 0.0f, 1.0f);
+                    verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor, 0.0f, 0.0f);
+                    verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor, 1.0f, 0.0f);
+                    verts[3] = verts[0];
+                    verts[4] = verts[2];
+                    verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor, 1.0f, 1.0f);
+                    SetVertices(verts);
+                }
+                else
+                {
+                    // Check if the texture is loaded
+                    sprite.LoadImage();
+                    isloaded = sprite.IsImageLoaded;
+                    if (isloaded)
+                    {
+                        float offsetx = 0.0f;
+                        float offsety = 0.0f;
 
-					// Make vertices
-					WorldVertex[] verts = new WorldVertex[6];
-					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor, 0.0f, 1.0f);
-					verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor, 0.0f, 0.0f);
-					verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor, 1.0f, 0.0f);
-					verts[3] = verts[0];
-					verts[4] = verts[2];
-					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor, 1.0f, 1.0f);
-					SetVertices(verts);
-				}
+                        base.Texture = sprite;
+
+                        // Determine sprite size and offset
+                        float radius = sprite.ScaledWidth * 0.5f;
+                        float height = sprite.ScaledHeight;
+                        if (sprite is SpriteImage)
+                        {
+                            offsetx = (sprite as SpriteImage).OffsetX - radius;
+                            offsety = (sprite as SpriteImage).OffsetY - height;
+                        }
+
+                        // Make vertices
+                        WorldVertex[] verts = new WorldVertex[6];
+                        verts[0] = new WorldVertex(-radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor, 0.0f, 1.0f);
+                        verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor, 0.0f, 0.0f);
+                        verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor, 1.0f, 0.0f);
+                        verts[3] = verts[0];
+                        verts[4] = verts[2];
+                        verts[5] = new WorldVertex(+radius + offsetx, 0.0f, 0.0f + offsety, sectorcolor, 1.0f, 1.0f);
+                        SetVertices(verts);
+                    }
+                    else
+                    {
+                        base.Texture = General.Map.Data.Hourglass3D;
+
+                        // Determine sprite size
+                        float radius = Math.Min(info.Radius, info.Height / 2f);
+                        float height = Math.Min(info.Radius * 2f, info.Height);
+
+                        // Make vertices
+                        WorldVertex[] verts = new WorldVertex[6];
+                        verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor, 0.0f, 1.0f);
+                        verts[1] = new WorldVertex(-radius, 0.0f, height, sectorcolor, 0.0f, 0.0f);
+                        verts[2] = new WorldVertex(+radius, 0.0f, height, sectorcolor, 1.0f, 0.0f);
+                        verts[3] = verts[0];
+                        verts[4] = verts[2];
+                        verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor, 1.0f, 1.0f);
+                        SetVertices(verts);
+                    }
+                }
 			}
 			
 			// Determine position

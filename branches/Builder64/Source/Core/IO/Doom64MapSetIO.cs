@@ -708,6 +708,9 @@ namespace CodeImp.DoomBuilder.IO
             Lump lump = wad.FindLump("MACROS", firstindex);
             if (lump == null) throw new Exception("Could not find required lump MACROS!");
 
+            if (lump.Length <= 4)
+                return;
+
             // Prepare to read the items
             mem = new MemoryStream(lump.Stream.ReadAllBytes());
             reader = new BinaryReader(mem);
