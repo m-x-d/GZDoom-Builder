@@ -202,6 +202,10 @@ namespace CodeImp.DoomBuilder.Windows
                 {
                     General.DisplayZoomedImage(spritetex, General.Map.Data.ThingCamera.GetBitmap());
                 }
+                else if (thinginfo.Title == "Trigger") // villsa 9/11/11
+                {
+                    General.DisplayZoomedImage(spritetex, General.Map.Data.ThingTrigger.GetBitmap());
+                }
                 else if (thinginfo.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) &&
                    (thinginfo.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))
                 {

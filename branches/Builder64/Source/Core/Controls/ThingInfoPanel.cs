@@ -152,6 +152,11 @@ namespace CodeImp.DoomBuilder.Controls
                 General.DisplayZoomedImage(spritetex, General.Map.Data.ThingCamera.GetBitmap());
                 spritename.Text = "";
             }
+            else if (ti.Title == "Trigger") // villsa 9/11/11
+            {
+                General.DisplayZoomedImage(spritetex, General.Map.Data.ThingTrigger.GetBitmap());
+                spritename.Text = "";
+            }
             else if (ti.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX) && (ti.Sprite.Length > DataManager.INTERNAL_PREFIX.Length))
             {
                 spritename.Text = "";

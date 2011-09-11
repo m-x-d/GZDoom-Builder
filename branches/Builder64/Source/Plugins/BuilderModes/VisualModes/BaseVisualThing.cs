@@ -102,17 +102,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//byte brightness = (byte)General.Clamp(Thing.Sector.Brightness, 0, 255);
 					//sectorcolor = new PixelColor(255, brightness, brightness, brightness);
 
-                    // villsa 9/11/11 (builder64) cameras are rendered full bright
-                    if (Thing.Type == 0)
+                    // villsa 9/11/11 (builder64) cameras/triggers are rendered full bright
+                    if (Thing.Type == 0 || Thing.Type == 89)
                         sectorcolor = -1;
                     else
                         sectorcolor = Thing.Sector.ThingColor.GetColor();
 				}
 
-                // villsa 9/11/11 (builder64) render camera icon
-                if (Thing.Type == 0)
+                // villsa 9/11/11 (builder64) render camera/trigger icon
+                if (Thing.Type == 0 || Thing.Type == 89)
                 {
-                    base.Texture = General.Map.Data.ThingCamera;
+                    if (Thing.Type == 89)
+                    {
+                        base.Texture = General.Map.Data.ThingTrigger;
+                    }
+                    else
+                    {
+                        base.Texture = General.Map.Data.ThingCamera;
+                    }
 
                     // Determine sprite size
                     float radius = Math.Min(info.Radius, info.Height / 2f);
