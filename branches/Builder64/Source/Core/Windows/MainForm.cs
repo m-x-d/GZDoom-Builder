@@ -60,11 +60,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private const string STATUS_LOADING_TEXT = "Loading resources...";
 		private const int WARNING_FLASH_COUNT = 10;
 		private const int WARNING_FLASH_INTERVAL = 100;
-		private const int WARNING_RESET_DELAY = 5000;
-		private const int INFO_RESET_DELAY = 5000;
+		private const int WARNING_RESET_DELAY = 4000;
+		private const int INFO_RESET_DELAY = 4000;
 		private const int ACTION_FLASH_COUNT = 3;
 		private const int ACTION_FLASH_INTERVAL = 50;
-		private const int ACTION_RESET_DELAY = 5000;
+		private const int ACTION_RESET_DELAY = 4000;
 		
 		private readonly Image[,] STATUS_IMAGES = new Image[2, 4]
 		{
@@ -195,11 +195,17 @@ namespace CodeImp.DoomBuilder.Windows
 			viewmodesbuttons[(int)ViewMode.Brightness] = buttonviewbrightness;
 			viewmodesbuttons[(int)ViewMode.FloorTextures] = buttonviewfloors;
 			viewmodesbuttons[(int)ViewMode.CeilingTextures] = buttonviewceilings;
+            viewmodesbuttons[(int)ViewMode.FloorColor] = buttonviewfloorcolor; // villsa
+            viewmodesbuttons[(int)ViewMode.CeilingColor] = buttonviewceilingcolor; // villsa
+            viewmodesbuttons[(int)ViewMode.ThingColor] = buttonviewthingcolor; // villsa
 			viewmodesitems = new ToolStripMenuItem[Renderer2D.NUM_VIEW_MODES];
 			viewmodesitems[(int)ViewMode.Normal] = itemviewnormal;
 			viewmodesitems[(int)ViewMode.Brightness] = itemviewbrightness;
 			viewmodesitems[(int)ViewMode.FloorTextures] = itemviewfloors;
 			viewmodesitems[(int)ViewMode.CeilingTextures] = itemviewceilings;
+            viewmodesitems[(int)ViewMode.FloorColor] = itemviewfloorcolor; // villsa
+            viewmodesitems[(int)ViewMode.CeilingColor] = itemviewceilingcolor; // villsa
+            viewmodesitems[(int)ViewMode.ThingColor] = itemviewthingcolor; // villsa
 			
 			// Visual Studio IDE doesn't let me set these in the designer :(
 			buttonzoom.Font = menufile.Font;
@@ -485,7 +491,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			windowactive = true;
 
-			UpdateInterface();
 			ResumeExclusiveMouseInput();
 			ReleaseAllKeys();
 			FocusDisplay();
@@ -1218,14 +1223,14 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Invoke any actions associated with this key
 				General.Actions.UpdateModifiers(mod);
-				e.Handled = General.Actions.KeyPressed((int)e.KeyData);
+				General.Actions.KeyPressed((int)e.KeyData);
 				
 				// Invoke on editing mode
 				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyDown(e);
-
+				
 				// Handled
-				if(e.Handled)
-					e.SuppressKeyPress = true;
+				e.Handled = true;
+				e.SuppressKeyPress = true;
 			}
 			
 			// F1 pressed?
@@ -1268,14 +1273,14 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Invoke any actions associated with this key
 				General.Actions.UpdateModifiers(mod);
-				e.Handled = General.Actions.KeyReleased((int)e.KeyData);
+				General.Actions.KeyReleased((int)e.KeyData);
 				
 				// Invoke on editing mode
 				if((General.Map != null) && (General.Editing.Mode != null)) General.Editing.Mode.OnKeyUp(e);
 				
 				// Handled
-				if(e.Handled)
-					e.SuppressKeyPress = true;
+				e.Handled = true;
+				e.SuppressKeyPress = true;
 			}
 		}
 		
@@ -1534,32 +1539,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This enables or disables all editing mode items and toolbar buttons
 		private void UpdateToolbar()
 		{
-			// Show/hide items based on preferences
-			buttonnewmap.Visible = General.Settings.ToolbarFile;
-			buttonopenmap.Visible = General.Settings.ToolbarFile;
-			buttonsavemap.Visible = General.Settings.ToolbarFile;
-			buttonscripteditor.Visible = General.Settings.ToolbarScript;
-			buttonundo.Visible = General.Settings.ToolbarUndo;
-			buttonredo.Visible = General.Settings.ToolbarUndo;
-			buttoncut.Visible = General.Settings.ToolbarCopy;
-			buttoncopy.Visible = General.Settings.ToolbarCopy;
-			buttonpaste.Visible = General.Settings.ToolbarCopy;
-			buttoninsertprefabfile.Visible = General.Settings.ToolbarPrefabs;
-			buttoninsertpreviousprefab.Visible = General.Settings.ToolbarPrefabs;
-			buttonthingsfilter.Visible = General.Settings.ToolbarFilter;
-			thingfilters.Visible = General.Settings.ToolbarFilter;
-			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes;
-			buttonviewceilings.Visible = General.Settings.ToolbarViewModes;
-			buttonviewfloors.Visible = General.Settings.ToolbarViewModes;
-			buttonviewnormal.Visible = General.Settings.ToolbarViewModes;
-			buttonsnaptogrid.Visible = General.Settings.ToolbarGeometry;
-			buttonautomerge.Visible = General.Settings.ToolbarGeometry;
-			buttontest.Visible = General.Settings.ToolbarTesting;
-
 			// Enable/disable all edit mode items
 			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
-
-			UpdateSeparators();
 		}
 
 		// This checks one of the edit mode items (and unchecks all others)
@@ -1813,8 +1794,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(filename != "")
 				{
 					// Set up item
-					int number = i + 1;
-					recentitems[i].Text = "&" + number.ToString() + "  " + GetDisplayFilename(filename);
+					recentitems[i].Text = GetDisplayFilename(filename);
 					recentitems[i].Tag = filename;
 					recentitems[i].Visible = true;
 					anyitems = true;
@@ -1866,14 +1846,13 @@ namespace CodeImp.DoomBuilder.Windows
 			for(int i = movedownto - 1; i >= 0; i--)
 			{
 				// Move recent file down the list
-				int number = i + 2;
-				recentitems[i + 1].Text = "&" + number.ToString() + "  " + GetDisplayFilename(recentitems[i].Tag.ToString());
+				recentitems[i + 1].Text = recentitems[i].Text;
 				recentitems[i + 1].Tag = recentitems[i].Tag.ToString();
-				recentitems[i + 1].Visible = (recentitems[i].Tag.ToString() != "");
+				recentitems[i + 1].Visible = (recentitems[i + 1].Text != "");
 			}
 
 			// Add new file at the top
-			recentitems[0].Text = "&1  " + GetDisplayFilename(filename);
+			recentitems[0].Text = GetDisplayFilename(filename);
 			recentitems[0].Tag = filename;
 			recentitems[0].Visible = true;
 
@@ -1965,6 +1944,7 @@ namespace CodeImp.DoomBuilder.Windows
 				itemredo.Text = "Redo";
 			
 			// Toolbar icons
+			buttonmapoptions.Enabled = (General.Map != null);
 			buttonundo.Enabled = itemundo.Enabled;
 			buttonredo.Enabled = itemredo.Enabled;
 			buttonundo.ToolTipText = itemundo.Text;
@@ -2159,7 +2139,6 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Update stuff
 				SetupInterface();
-				UpdateInterface();
 				ApplyShortcutKeys();
 				General.Colors.CreateCorrectionTable();
 				General.Plugins.ProgramReconfigure();
@@ -2263,12 +2242,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show linedef info
 		public void ShowLinedefInfo(Linedef l)
 		{
-			if(l.IsDisposed)
-			{
-				HideInfo();
-				return;
-			}
-			
 			lastinfoobject = l;
 			modename.Visible = false;
 			if(vertexinfo.Visible) vertexinfo.Hide();
@@ -2282,10 +2255,17 @@ namespace CodeImp.DoomBuilder.Windows
 				LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
 				labelcollapsedinfo.Text = act.ToString();
 			}
-			else if(l.Action == 0)
-				labelcollapsedinfo.Text = l.Action.ToString() + " - None";
-			else
-				labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
+            else if (l.Action == 0)
+                labelcollapsedinfo.Text = l.Action.ToString() + " - None";
+            else
+            {
+                // villsa
+                if (General.Map.FormatInterface.InDoom64Mode &&
+                    (l.Action >= 256 && l.Action <= 511))
+                    labelcollapsedinfo.Text = l.Action.ToString() + " - Macro";
+                else
+                    labelcollapsedinfo.Text = l.Action.ToString() + " - Unknown";
+            }
 			
 			labelcollapsedinfo.Refresh();
 		}
@@ -2293,12 +2273,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show vertex info
 		public void ShowVertexInfo(Vertex v)
 		{
-			if(v.IsDisposed)
-			{
-				HideInfo();
-				return;
-			}
-
 			lastinfoobject = v;
 			modename.Visible = false;
 			if(linedefinfo.Visible) linedefinfo.Hide();
@@ -2314,12 +2288,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show sector info
 		public void ShowSectorInfo(Sector s)
 		{
-			if(s.IsDisposed)
-			{
-				HideInfo();
-				return;
-			}
-
 			lastinfoobject = s;
 			modename.Visible = false;
 			if(linedefinfo.Visible) linedefinfo.Hide();
@@ -2341,12 +2309,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show thing info
 		public void ShowThingInfo(Thing t)
 		{
-			if(t.IsDisposed)
-			{
-				HideInfo();
-				return;
-			}
-
 			lastinfoobject = t;
 			modename.Visible = false;
 			if(linedefinfo.Visible) linedefinfo.Hide();

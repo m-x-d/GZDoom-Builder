@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const int THING_SHINY = 1;
 		private const int THING_SQUARE = 2;
 		private const int NUM_THING_TEXTURES = 4;
-		internal const int NUM_VIEW_MODES = 4;  // villsa
+		internal const int NUM_VIEW_MODES = 7;  // villsa
 		
 		#endregion
 
