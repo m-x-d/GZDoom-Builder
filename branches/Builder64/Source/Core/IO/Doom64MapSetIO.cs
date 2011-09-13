@@ -454,6 +454,7 @@ namespace CodeImp.DoomBuilder.IO
 			int num, numsides, i, offsetx, offsety, v1, v2;
 			int s1, s2, action, sc, tag;
             uint flags;
+            int switchmask;
 			Dictionary<string, bool> stringflags;
 			uint thigh, tmid, tlow;
 			Linedef l;
@@ -490,6 +491,17 @@ namespace CodeImp.DoomBuilder.IO
                 tag = readline.ReadInt16();
 				s1 = readline.ReadUInt16();
 				s2 = readline.ReadUInt16();
+
+                switchmask = 0;
+
+                if ((flags & 0x2000) == 0x2000)
+                    switchmask |= 0x2000;
+
+                if ((flags & 0x4000) == 0x4000)
+                    switchmask |= 0x4000;
+
+                if ((flags & 0x8000) == 0x8000)
+                    switchmask |= 0x8000;
 				
 				// Make string flags
 				stringflags = new Dictionary<string, bool>();
@@ -506,7 +518,7 @@ namespace CodeImp.DoomBuilder.IO
 					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
 					{
 						l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-                        l.Update(stringflags, action, tag, action & 511, new int[5]);
+                        l.Update(stringflags, action, tag, action & 511, switchmask, new int[5]);
 						l.UpdateCache();
 
 						// Line has a front side?
@@ -916,7 +928,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Write properties to stream
 				writer.Write((UInt16)vertexids[l.Start]);
 				writer.Write((UInt16)vertexids[l.End]);
-				writer.Write((UInt32)flags);
+				writer.Write((UInt32)(flags | l.SwitchMask));
 				writer.Write((UInt16)(l.Action | l.Activate));
                 writer.Write((UInt16)l.Tag);
 

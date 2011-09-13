@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.Map
 		private Dictionary<string, bool> flags;
 		private int action;
 		private int activate;
+        private int switchmask; // villsa 9/12/11
 		private int tag;
 		private int[] args;
 		private bool frontinterior;		// for drawing only
@@ -98,6 +99,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal Dictionary<string, bool> Flags { get { return flags; } }
 		public int Action { get { return action; } set { BeforePropsChange(); action = value; } }
 		public int Activate { get { return activate; } set { BeforePropsChange(); activate = value; } }
+        public int SwitchMask { get { return switchmask; } set { BeforePropsChange(); switchmask = value; } }
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
@@ -1059,7 +1061,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 		
 		// This updates all properties
-		public void Update(Dictionary<string, bool> flags, int activate, int tag, int action, int[] args)
+		public void Update(Dictionary<string, bool> flags, int activate, int tag, int action, int mask, int[] args)
 		{
 			BeforePropsChange();
 			
@@ -1068,6 +1070,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.tag = tag;
 			this.activate = activate;
 			this.action = action;
+            this.switchmask = mask; // villsa 9/12/11
 			this.args = new int[NUM_ARGS];
 			args.CopyTo(this.args, 0);
 			this.updateneeded = true;

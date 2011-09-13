@@ -156,6 +156,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Dictionary<string, bool> flags;
 		private int action;
 		private int activate;
+        private int switchmask; // villsa 9/12/11
 		private int tag;
 		private int[] args;
 		private UniFields fields;
@@ -174,6 +175,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			flags = l.GetFlags();
 			action = l.Action;
+            switchmask = l.SwitchMask;  // villsa 9/12/11
 			activate = l.Activate;
 			tag = l.Tag;
 			args = (int[])(l.Args.Clone());
@@ -189,6 +191,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				l.SetFlag(f.Key, f.Value);
 			l.Action = action;
 			l.Activate = activate;
+            l.SwitchMask = switchmask;  // villsa 9/12/11
 			l.Tag = tag;
 			for(int i = 0; i < l.Args.Length; i++)
 				l.Args[i] = args[i];

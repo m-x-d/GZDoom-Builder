@@ -257,7 +257,7 @@ namespace CodeImp.DoomBuilder.IO
 						Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
 						if(l != null)
 						{
-							l.Update(stringflags, 0, tag, special, args);
+							l.Update(stringflags, 0, tag, special, 0, args);
 							l.UpdateCache();
 
 							// Custom fields

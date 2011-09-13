@@ -117,9 +117,104 @@ namespace CodeImp.DoomBuilder.Windows
             {
                 this.activationtype.Show();
                 activationtype.Top = idgroup.Bottom + idgroup.Margin.Bottom + activationtype.Margin.Top;
+                switchsetupbox.Top = activationtype.Bottom + activationtype.Margin.Bottom + switchsetupbox.Margin.Top;
                 this.Height = heightpanel3.Height;
             }
 		}
+
+        // villsa 9/12/11
+        private void SwitchTextureMask(Linedef l)
+        {
+            int switchflags = 0;
+            int mask = 0;
+
+            if ((l.SwitchMask & 0x2000) == 0x2000)
+                switchflags |= 0x2000;
+
+            if ((l.SwitchMask & 0x4000) == 0x4000)
+                switchflags |= 0x4000;
+
+            if ((l.SwitchMask & 0x8000) == 0x8000)
+                switchflags |= 0x8000;
+
+            if (l.IsFlagSet("65536"))
+                switchflags |= 65536;
+
+            mask = (switchflags & 0x6000);
+
+            if (mask == 0)
+                return;
+
+            if (mask == 0x2000)
+            {
+                chkSwitchTextureUpper.Checked = true;
+
+                if((switchflags & 0x8000) == 0x8000)
+                    chkSwitchDisplayMiddle.Checked = true;
+                else
+                    chkSwitchDisplayLower.Checked = true;
+            }
+            else if (mask == 0x4000)
+            {
+                chkSwitchTextureLower.Checked = true;
+
+                if ((switchflags & 0x10000) == 0x10000)
+                    chkSwitchDisplayMiddle.Checked = true;
+                else if ((switchflags & 0x8000) == 0x8000)
+                    chkSwitchDisplayUpper.Checked = true;
+            }
+            else if(mask == 0x6000)
+            {
+                chkSwitchTextureMiddle.Checked = true;
+
+                if ((switchflags & 0x8000) == 0x8000)
+                    chkSwitchDisplayUpper.Checked = true;
+                else
+                    chkSwitchDisplayLower.Checked = true;
+            }
+        }
+
+        // villsa 9/12/11
+        private void SetSwitchMask(Linedef l)
+        {
+            int switchflags = 0;
+
+            if (chkSwitchTextureLower.Checked == true)
+            {
+                if (chkSwitchDisplayMiddle.Checked == true)
+                {
+                    switchflags = 0x4000;
+                }
+                else if (chkSwitchDisplayUpper.Checked == true)
+                {
+                    switchflags = (0x4000 | 0x8000);
+                }
+            }
+            else if (chkSwitchTextureMiddle.Checked == true)
+            {
+                if (chkSwitchDisplayLower.Checked == true)
+                {
+                    switchflags = (0x2000 | 0x4000);
+                }
+                else if (chkSwitchDisplayUpper.Checked == true)
+                {
+                    switchflags = (0x2000 | 0x4000 | 0x8000);
+                }
+            }
+            else if (chkSwitchTextureUpper.Checked == true)
+            {
+                if (chkSwitchDisplayMiddle.Checked == true)
+                {
+                    switchflags = (0x2000 | 0x8000);
+                }
+                else if (chkSwitchDisplayLower.Checked == true)
+                {
+                    switchflags = 0x2000;
+                }
+            }
+
+            l.SwitchMask = switchflags;
+        }
 		
 		// This sets up the form to edit the given lines
 		public void Setup(ICollection<Linedef> lines)
@@ -245,6 +340,8 @@ namespace CodeImp.DoomBuilder.Windows
                         if ((l.Activate & 32768) == 32768)
                             activationtyperepeat.Checked = true;
                     }
+
+                    SwitchTextureMask(l);
                 }
                 else
                 {
@@ -431,6 +528,8 @@ namespace CodeImp.DoomBuilder.Windows
 
                     l.Activate = activationflag;
                 }
+
+                SetSwitchMask(l);
 				
 				// UDMF activations
 				foreach(CheckBox c in udmfactivates.Checkboxes)
@@ -761,6 +860,60 @@ namespace CodeImp.DoomBuilder.Windows
                     nn.Text = "Batch " + batchid;
                     batchid += 10;
                 }
+            }
+        }
+
+        private void chkSwitchDisplayUpper_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (this.chkSwitchDisplayUpper.Checked)
+            {
+                this.chkSwitchDisplayLower.Checked = false;
+                this.chkSwitchDisplayMiddle.Checked = false;
+            }
+        }
+
+        private void chkSwitchDisplayMiddle_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (this.chkSwitchDisplayMiddle.Checked)
+            {
+                this.chkSwitchDisplayLower.Checked = false;
+                this.chkSwitchDisplayUpper.Checked = false;
+            }
+        }
+
+        private void chkSwitchDisplayLower_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (this.chkSwitchDisplayLower.Checked)
+            {
+                this.chkSwitchDisplayUpper.Checked = false;
+                this.chkSwitchDisplayMiddle.Checked = false;
+            }
+        }
+
+        private void chkSwitchTextureUpper_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (this.chkSwitchTextureUpper.Checked)
+            {
+                this.chkSwitchTextureLower.Checked = false;
+                this.chkSwitchTextureMiddle.Checked = false;
+            }
+        }
+
+        private void chkSwitchTextureMiddle_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (this.chkSwitchTextureMiddle.Checked)
+            {
+                this.chkSwitchTextureLower.Checked = false;
+                this.chkSwitchTextureUpper.Checked = false;
+            }
+        }
+
+        private void chkSwitchTextureLower_CheckedChanged_1(object sender, EventArgs e)
+        {
+            if (this.chkSwitchTextureLower.Checked)
+            {
+                this.chkSwitchTextureUpper.Checked = false;
+                this.chkSwitchTextureMiddle.Checked = false;
             }
         }
 	}

@@ -317,7 +317,7 @@ namespace CodeImp.DoomBuilder.IO
 					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
 					{
 						l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-						l.Update(stringflags, 0, tag, action, new int[Linedef.NUM_ARGS]);
+						l.Update(stringflags, 0, tag, action, 0, new int[Linedef.NUM_ARGS]);
 						l.UpdateCache();
 
 						// Line has a front side?
