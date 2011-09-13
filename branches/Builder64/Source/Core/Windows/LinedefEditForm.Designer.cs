@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancel.Location = new System.Drawing.Point(455, 775);
+            this.cancel.Location = new System.Drawing.Point(455, 831);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(112, 25);
             this.cancel.TabIndex = 2;
@@ -411,7 +411,7 @@ namespace CodeImp.DoomBuilder.Windows
             // apply
             // 
             this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.apply.Location = new System.Drawing.Point(336, 775);
+            this.apply.Location = new System.Drawing.Point(336, 831);
             this.apply.Name = "apply";
             this.apply.Size = new System.Drawing.Size(112, 25);
             this.apply.TabIndex = 1;
@@ -429,7 +429,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.actiongroup.Controls.Add(this.action);
             this.actiongroup.Controls.Add(this.browseaction);
             this.actiongroup.Controls.Add(this.udmfpanel);
-            this.actiongroup.Location = new System.Drawing.Point(8, 177);
+            this.actiongroup.Location = new System.Drawing.Point(8, 234);
             this.actiongroup.Name = "actiongroup";
             this.actiongroup.Size = new System.Drawing.Size(533, 281);
             this.actiongroup.TabIndex = 1;
@@ -627,7 +627,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.settingsgroup.Controls.Add(this.flags);
             this.settingsgroup.Location = new System.Drawing.Point(8, 8);
             this.settingsgroup.Name = "settingsgroup";
-            this.settingsgroup.Size = new System.Drawing.Size(533, 163);
+            this.settingsgroup.Size = new System.Drawing.Size(533, 220);
             this.settingsgroup.TabIndex = 0;
             this.settingsgroup.TabStop = false;
             this.settingsgroup.Text = " Settings ";
@@ -641,7 +641,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.flags.Columns = 3;
             this.flags.Location = new System.Drawing.Point(18, 26);
             this.flags.Name = "flags";
-            this.flags.Size = new System.Drawing.Size(509, 125);
+            this.flags.Size = new System.Drawing.Size(509, 182);
             this.flags.TabIndex = 0;
             // 
             // checkBox1
@@ -667,7 +667,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabs.Margin = new System.Windows.Forms.Padding(1);
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(557, 748);
+            this.tabs.Size = new System.Drawing.Size(557, 804);
             this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabs.TabIndex = 0;
             this.tabs.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabs_Selected);
@@ -683,7 +683,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabproperties.Location = new System.Drawing.Point(4, 23);
             this.tabproperties.Name = "tabproperties";
             this.tabproperties.Padding = new System.Windows.Forms.Padding(5);
-            this.tabproperties.Size = new System.Drawing.Size(549, 721);
+            this.tabproperties.Size = new System.Drawing.Size(549, 777);
             this.tabproperties.TabIndex = 0;
             this.tabproperties.Text = "Properties";
             this.tabproperties.UseVisualStyleBackColor = true;
@@ -698,7 +698,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.switchsetupbox.Controls.Add(this.chkSwitchDisplayUpper);
             this.switchsetupbox.Controls.Add(switchtexturelbl);
             this.switchsetupbox.Controls.Add(displayswitchlbl);
-            this.switchsetupbox.Location = new System.Drawing.Point(8, 614);
+            this.switchsetupbox.Location = new System.Drawing.Point(8, 671);
             this.switchsetupbox.Name = "switchsetupbox";
             this.switchsetupbox.Size = new System.Drawing.Size(533, 94);
             this.switchsetupbox.TabIndex = 32;
@@ -780,7 +780,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.activationtype.Controls.Add(this.activationtypeshoot);
             this.activationtype.Controls.Add(this.activationtypecross);
             this.activationtype.Controls.Add(this.activationtypeuse);
-            this.activationtype.Location = new System.Drawing.Point(8, 536);
+            this.activationtype.Location = new System.Drawing.Point(8, 593);
             this.activationtype.Name = "activationtype";
             this.activationtype.Size = new System.Drawing.Size(533, 72);
             this.activationtype.TabIndex = 31;
@@ -865,7 +865,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.idgroup.Controls.Add(this.tag);
             this.idgroup.Controls.Add(taglabel);
             this.idgroup.Controls.Add(this.newtag);
-            this.idgroup.Location = new System.Drawing.Point(8, 464);
+            this.idgroup.Location = new System.Drawing.Point(8, 521);
             this.idgroup.Name = "idgroup";
             this.idgroup.Size = new System.Drawing.Size(533, 66);
             this.idgroup.TabIndex = 2;
@@ -891,7 +891,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabsidedefs.Location = new System.Drawing.Point(4, 23);
             this.tabsidedefs.Name = "tabsidedefs";
             this.tabsidedefs.Padding = new System.Windows.Forms.Padding(5);
-            this.tabsidedefs.Size = new System.Drawing.Size(549, 721);
+            this.tabsidedefs.Size = new System.Drawing.Size(549, 777);
             this.tabsidedefs.TabIndex = 1;
             this.tabsidedefs.Text = "Sidedefs";
             this.tabsidedefs.UseVisualStyleBackColor = true;
@@ -913,8 +913,8 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             this.splitter.Panel2.Controls.Add(this.backside);
             this.splitter.Panel2.Controls.Add(this.backgroup);
-            this.splitter.Size = new System.Drawing.Size(539, 711);
-            this.splitter.SplitterDistance = 342;
+            this.splitter.Size = new System.Drawing.Size(539, 767);
+            this.splitter.SplitterDistance = 368;
             this.splitter.TabIndex = 3;
             // 
             // frontside
@@ -948,7 +948,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.frontgroup.Enabled = false;
             this.frontgroup.Location = new System.Drawing.Point(3, 3);
             this.frontgroup.Name = "frontgroup";
-            this.frontgroup.Size = new System.Drawing.Size(533, 336);
+            this.frontgroup.Size = new System.Drawing.Size(533, 362);
             this.frontgroup.TabIndex = 1;
             this.frontgroup.TabStop = false;
             this.frontgroup.Text = "     ";
@@ -1058,7 +1058,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.backgroup.Enabled = false;
             this.backgroup.Location = new System.Drawing.Point(3, 3);
             this.backgroup.Name = "backgroup";
-            this.backgroup.Size = new System.Drawing.Size(535, 359);
+            this.backgroup.Size = new System.Drawing.Size(535, 389);
             this.backgroup.TabIndex = 1;
             this.backgroup.TabStop = false;
             this.backgroup.Text = "     ";
@@ -1144,7 +1144,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabcustom.Location = new System.Drawing.Point(4, 23);
             this.tabcustom.Name = "tabcustom";
             this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-            this.tabcustom.Size = new System.Drawing.Size(549, 721);
+            this.tabcustom.Size = new System.Drawing.Size(549, 777);
             this.tabcustom.TabIndex = 2;
             this.tabcustom.Text = "Custom";
             this.tabcustom.UseVisualStyleBackColor = true;
@@ -1168,7 +1168,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabmacros.Controls.Add(groupBox1);
             this.tabmacros.Location = new System.Drawing.Point(4, 23);
             this.tabmacros.Name = "tabmacros";
-            this.tabmacros.Size = new System.Drawing.Size(549, 721);
+            this.tabmacros.Size = new System.Drawing.Size(549, 777);
             this.tabmacros.TabIndex = 3;
             this.tabmacros.Text = "Macros";
             this.tabmacros.UseVisualStyleBackColor = true;
@@ -1196,7 +1196,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.heightpanel3.BackColor = System.Drawing.Color.Navy;
             this.heightpanel3.Location = new System.Drawing.Point(128, -19);
             this.heightpanel3.Name = "heightpanel3";
-            this.heightpanel3.Size = new System.Drawing.Size(78, 625);
+            this.heightpanel3.Size = new System.Drawing.Size(78, 682);
             this.heightpanel3.TabIndex = 5;
             this.heightpanel3.Visible = false;
             // 
@@ -1206,7 +1206,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.cancel;
-            this.ClientSize = new System.Drawing.Size(577, 810);
+            this.ClientSize = new System.Drawing.Size(577, 866);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.cancel);
             this.Controls.Add(this.apply);
