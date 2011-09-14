@@ -678,6 +678,86 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return t;
 		}
 
+        // villsa 9/13/11 (builder64)
+        [BeginAction("thingrotateleft", BaseAction = true)]
+        public void ThingRotateLeft()
+        {
+            // Make list of selected things
+			List<Thing> selected = new List<Thing>(General.Map.Map.GetSelectedThings(true));
+			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+			
+			// Anything to do?
+            if (selected.Count > 0)
+            {
+                // Make undo
+                if (selected.Count > 1)
+                {
+                    General.Map.UndoRedo.CreateUndo("Rotate " + selected.Count + " things");
+                    General.Interface.DisplayStatus(StatusType.Action, "Rotated " + selected.Count + " things.");
+                }
+                else
+                {
+                    General.Map.UndoRedo.CreateUndo("Rotate thing");
+                    General.Interface.DisplayStatus(StatusType.Action, "Rotated a thing.");
+                }
+
+                foreach (Thing t in selected)
+                {
+                    int angle;
+
+                    angle = Angle2D.RealToDoom(t.Angle);
+                    angle += 45;
+
+                    t.Rotate(Angle2D.DoomToReal(angle));
+                }
+
+                General.Map.IsChanged = true;
+                General.Map.ThingsFilter.Update();
+                General.Interface.RefreshInfo();
+                General.Interface.RedrawDisplay();
+            }
+        }
+
+        // villsa 9/13/11 (builder64)
+        [BeginAction("thingrotateright", BaseAction = true)]
+        public void ThingRotateRight()
+        {
+            // Make list of selected things
+            List<Thing> selected = new List<Thing>(General.Map.Map.GetSelectedThings(true));
+            if ((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+
+            // Anything to do?
+            if (selected.Count > 0)
+            {
+                // Make undo
+                if (selected.Count > 1)
+                {
+                    General.Map.UndoRedo.CreateUndo("Rotate " + selected.Count + " things");
+                    General.Interface.DisplayStatus(StatusType.Action, "Rotated " + selected.Count + " things.");
+                }
+                else
+                {
+                    General.Map.UndoRedo.CreateUndo("Rotate thing");
+                    General.Interface.DisplayStatus(StatusType.Action, "Rotated a thing.");
+                }
+
+                foreach (Thing t in selected)
+                {
+                    int angle;
+
+                    angle = Angle2D.RealToDoom(t.Angle);
+                    angle -= 45;
+
+                    t.Rotate(Angle2D.DoomToReal(angle));
+                }
+
+                General.Map.IsChanged = true;
+                General.Map.ThingsFilter.Update();
+                General.Interface.RefreshInfo();
+                General.Interface.RedrawDisplay();
+            }
+        }
+
 		[BeginAction("deleteitem", BaseAction = true)]
 		public void DeleteItem()
 		{
