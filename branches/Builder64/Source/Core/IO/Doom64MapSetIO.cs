@@ -338,7 +338,7 @@ namespace CodeImp.DoomBuilder.IO
             BinaryReader lightreader;
 			int num, i, hfloor, hceil, special, tag, flags;
             int lightnum;
-            int[] colors = new int[5];
+            int[] colors = new int[Sector.NUM_COLORS];
 			uint tfloor, tceil;
             Lights[] lightColors;
             Dictionary<string, bool> stringflags;
@@ -408,29 +408,7 @@ namespace CodeImp.DoomBuilder.IO
                 s.HashFloor = tfloor;
                 s.HashCeiling = tceil;
 
-                /*for (int j = 0; j < General.Map.TextureHashKey.Count; j++)
-                {
-                    if (tfloor == General.Map.TextureHashKey[j])
-                    {
-                        fname = General.Map.TextureHashName[j];
-                        s.HashFloor = General.Map.TextureHashKey[j];
-                        break;
-                    }
-                }
-
-                for (int j = 0; j < General.Map.TextureHashKey.Count; j++)
-                {
-                    if (tceil == General.Map.TextureHashKey[j])
-                    {
-                        cname = General.Map.TextureHashName[j];
-                        s.HashCeiling = General.Map.TextureHashKey[j];
-                        break;
-                    }
-                }*/
-
                 s.Update(stringflags, hfloor, hceil, fname, cname, special, tag, lightColors, colors);
-                //s.Update(stringflags, hfloor, hceil, General.Map.Config.D64TextureIndex[tfloor].Title,
-                //    General.Map.Config.D64TextureIndex[tceil].Title, special, tag, lightColors, colors);
 
 				// Add it to the lookup table
 				link.Add(i, s);
@@ -518,7 +496,7 @@ namespace CodeImp.DoomBuilder.IO
 					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
 					{
 						l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-                        l.Update(stringflags, action, tag, action & 511, switchmask, new int[5]);
+                        l.Update(stringflags, action, tag, action & 511, switchmask, new int[Linedef.NUM_ARGS]);
 						l.UpdateCache();
 
 						// Line has a front side?

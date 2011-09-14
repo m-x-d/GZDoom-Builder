@@ -226,6 +226,8 @@ namespace CodeImp.DoomBuilder.IO
 				int v1 = GetCollectionEntry<int>(lc, "v1", true, 0, where);
 				int v2 = GetCollectionEntry<int>(lc, "v2", true, 0, where);
 				int special = GetCollectionEntry<int>(lc, "special", false, 0, where);
+                int acti = GetCollectionEntry<int>(lc, "activate", false, 0, where);    // villsa 9/13/11
+                int switchmask = GetCollectionEntry<int>(lc, "switchmask", false, 0, where);    // villsa 9/13/11
 				args[0] = GetCollectionEntry<int>(lc, "arg0", false, 0, where);
 				args[1] = GetCollectionEntry<int>(lc, "arg1", false, 0, where);
 				args[2] = GetCollectionEntry<int>(lc, "arg2", false, 0, where);
@@ -238,6 +240,7 @@ namespace CodeImp.DoomBuilder.IO
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.LinedefFlags)
 					stringflags[flag.Key] = GetCollectionEntry<bool>(lc, flag.Key, false, false, where);
+
 				foreach(FlagTranslation ft in General.Map.Config.LinedefFlagsTranslation)
 				{
 					foreach(string field in ft.Fields)
@@ -257,7 +260,7 @@ namespace CodeImp.DoomBuilder.IO
 						Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
 						if(l != null)
 						{
-							l.Update(stringflags, 0, tag, special, 0, args);
+                            l.Update(stringflags, acti, tag, special, switchmask, args);
 							l.UpdateCache();
 
 							// Custom fields
@@ -342,6 +345,7 @@ namespace CodeImp.DoomBuilder.IO
 				// Read fields
 				UniversalCollection c = collections[i];
 				string where = "sector " + i;
+                int[] colors = new int[Sector.NUM_COLORS];
 				int hfloor = GetCollectionEntry<int>(c, "heightfloor", false, 0, where);
 				int hceil = GetCollectionEntry<int>(c, "heightceiling", false, 0, where);
 				string tfloor = GetCollectionEntry<string>(c, "texturefloor", true, "-", where);
@@ -350,11 +354,23 @@ namespace CodeImp.DoomBuilder.IO
 				int special = GetCollectionEntry<int>(c, "special", false, 0, where);
 				int tag = GetCollectionEntry<int>(c, "id", false, 0, where);
 
+                // villsa 9/14/11 (builder64)
+                colors[0] = GetCollectionEntry<int>(c, "color1", false, 0, where);
+                colors[1] = GetCollectionEntry<int>(c, "color2", false, 0, where);
+                colors[2] = GetCollectionEntry<int>(c, "color3", false, 0, where);
+                colors[3] = GetCollectionEntry<int>(c, "color4", false, 0, where);
+                colors[4] = GetCollectionEntry<int>(c, "color5", false, 0, where);
+
+                // villsa 9/13/11 - Flags
+                Dictionary<string, bool> stringflags = new Dictionary<string, bool>();
+                foreach (KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
+                    stringflags[flag.Key] = GetCollectionEntry<bool>(c, flag.Key, false, false, where);
+
 				// Create new item
 				Sector s = map.CreateSector();
 				if(s != null)
 				{
-					s.Update(hfloor, hceil, tfloor, tceil, special, tag, bright);
+                    s.Update(stringflags, hfloor, hceil, tfloor, tceil, special, tag, colors);
 
 					// Custom fields
 					ReadCustomFields(c, s, "sector");

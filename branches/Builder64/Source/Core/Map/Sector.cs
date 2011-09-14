@@ -37,6 +37,8 @@ namespace CodeImp.DoomBuilder.Map
 	{
 		#region ================== Constants
 
+        public const int NUM_COLORS = 5;    // villsa 9/14/11 (builder64)
+
 		#endregion
 
 		#region ================== Variables
@@ -607,6 +609,15 @@ namespace CodeImp.DoomBuilder.Map
             return color;
         }
 
+        private Lights GetLight(int color)
+        {
+            PixelColor c;
+
+            c = PixelColor.FromInt(color);
+            return new Lights(c.r, c.g, c.b, 0);
+        }
+
+        // villsa TODO - too many fucking overloads for this. Need to simplify the way lighting is handled...
         public void Update(Dictionary<string, bool> flags, int hfloor, int hceil,
             string tfloor, string tceil, int effect, int tag, Lights[] light, int[] cindex)
         {
@@ -626,6 +637,28 @@ namespace CodeImp.DoomBuilder.Map
             this.topColor = GetLight(cindex[3], light);
             this.lwrColor = GetLight(cindex[4], light);
             this.brightness = 255;
+            updateneeded = true;
+        }
+
+        public void Update(Dictionary<string, bool> flags, int hfloor, int hceil,
+            string tfloor, string tceil, int effect, int tag, int[] colors)
+        {
+            BeforePropsChange();
+
+            // Apply changes
+            this.flags = new Dictionary<string, bool>(flags);
+            this.floorheight = hfloor;
+            this.ceilheight = hceil;
+            SetFloorTexture(tfloor);
+            SetCeilTexture(tceil);
+            this.effect = effect;
+            this.tag = tag;
+            this.brightness = 255;
+            this.flrColor = GetLight(colors[0]);
+            this.ceilColor = GetLight(colors[1]);
+            this.thingColor = GetLight(colors[2]);
+            this.topColor = GetLight(colors[3]);
+            this.lwrColor = GetLight(colors[4]);
             updateneeded = true;
         }
 

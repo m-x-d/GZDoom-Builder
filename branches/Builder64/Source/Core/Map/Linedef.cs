@@ -296,6 +296,7 @@ namespace CodeImp.DoomBuilder.Map
 			l.impassableflag = impassableflag;
 			l.blocksoundflag = blocksoundflag;
             l.invisibleflag = invisibleflag;    // villsa
+            l.switchmask = switchmask;
             l.secretflag = secretflag;
             l.monsterblockflag = monsterblockflag;
             l.tagonlyflag = tagonlyflag;
@@ -416,6 +417,8 @@ namespace CodeImp.DoomBuilder.Map
 			int flagbit = 0;
 			foreach(KeyValuePair<string, bool> f in flags)
 				if(int.TryParse(f.Key, out flagbit) && f.Value) bits |= flagbit;
+
+            bits |= switchmask;
 			
 			// Now make the new flags
 			flags.Clear();

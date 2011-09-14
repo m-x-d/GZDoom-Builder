@@ -199,6 +199,8 @@ namespace CodeImp.DoomBuilder.IO
 				
 				// Special
 				if(l.Action != 0) coll.Add("special", l.Action);
+                if (l.Activate != 0) coll.Add("activate", l.Activate);  // villsa 9/13/11
+                if (l.SwitchMask != 0) coll.Add("switchmask", l.SwitchMask);    // villsa 9/13/11
 				if(l.Args[0] != 0) coll.Add("arg0", l.Args[0]);
 				if(l.Args[1] != 0) coll.Add("arg1", l.Args[1]);
 				if(l.Args[2] != 0) coll.Add("arg2", l.Args[2]);
@@ -258,6 +260,18 @@ namespace CodeImp.DoomBuilder.IO
 				coll.Add("lightlevel", s.Brightness);
 				if(s.Effect != 0) coll.Add("special", s.Effect);
 				if(s.Tag != 0) coll.Add("id", s.Tag);
+
+                // villsa 9/14/11 (builder64)
+                coll.Add("color1", s.FloorColor.color.ToInt());
+                coll.Add("color2", s.CeilColor.color.ToInt());
+                coll.Add("color3", s.ThingColor.color.ToInt());
+                coll.Add("color4", s.TopColor.color.ToInt());
+                coll.Add("color5", s.LowerColor.color.ToInt());
+
+                // villsa 9/13/11 - Flags
+                foreach (KeyValuePair<string, bool> flag in s.Flags)
+                    if (flag.Value) coll.Add(flag.Key, flag.Value);
+
 				coll.Comment = s.Index.ToString();
 
 				// Add custom fields
