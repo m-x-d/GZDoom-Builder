@@ -79,6 +79,7 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
         // This is set to true to know that we copied sector properties.
 		// If this is false, the variables above are uninitialized.
         bool didCopyProps = false;
+        bool didCopyColors = false;
 
 		// This event is called when the plugin is initialized
 		public override void OnInitialize()
@@ -150,6 +151,38 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
 
             // Let the user know that copying worked
             General.Interface.DisplayStatus(StatusType.Action, "Copied sector properties.");
+        }
+
+        [BeginAction("copysectorcolors")]
+        public void CopySectorColors()
+        {
+            // Only make this action possible if a map is actually opened and the we are in sectors mode
+            if (General.Editing.Mode == null || General.Editing.Mode.Attributes.SwitchAction != "sectorsmode")
+            {
+                return;
+            }
+
+            // Make sure a sector is highlighted
+            if (!(General.Editing.Mode.HighlightedObject is Sector))
+            {
+                // Show a warning in the status bar
+                General.Interface.DisplayStatus(StatusType.Warning, "Please highlight a sector to copy the colors from");
+                return;
+            }
+
+            // Copy the properties from the sector
+            Sector s = (Sector)General.Editing.Mode.HighlightedObject;
+            ceilColor = s.CeilColor;    // villsa
+            floorColor = s.FloorColor;    // villsa
+            thingColor = s.ThingColor;    // villsa
+            upperColor = s.TopColor;    // villsa
+            lowerColor = s.LowerColor;    // villsa
+
+            // Remember that we copied the colors
+            didCopyColors = true;
+
+            // Let the user know that copying worked
+            General.Interface.DisplayStatus(StatusType.Action, "Copied sector colors.");
         }
 
 		// This is the method that will be called when the "pastesectorprops" action is used by the user.
@@ -232,6 +265,75 @@ namespace CodeImp.DoomBuilder.CopyPasteSectorProps
 
             // Let the user know to how many sectors the properties were copied
             General.Interface.DisplayStatus(StatusType.Action, "Pasted sector properties to " + pasteCount.ToString() + " sector(s).");
+        }
+
+        [BeginAction("pastesectorcolors")]
+        public void PasteSectorColors()
+        {
+            // Collection used to store the sectors we want to paste to
+            List<Sector> sectors = new List<Sector>();
+
+            // Just for fun we want to let the user know to how many sectors he/she/it pasted
+            int pasteCount = 0;
+
+            // Only make this action possible if a map is actually opened and we are in sectors mode
+            if (General.Editing.Mode == null || General.Editing.Mode.Attributes.SwitchAction != "sectorsmode")
+            {
+                return;
+            }
+
+            // Make sure there's at least one selected or highlighted sector we can paste the properties to
+            if (General.Map.Map.GetSelectedSectors(true).Count == 0 && !(General.Editing.Mode.HighlightedObject is Sector))
+            {
+                // Show a warning in the status bar
+                General.Interface.DisplayStatus(StatusType.Warning, "Please select or highlight at least 1 sector to paste the colors to.");
+                return;
+            }
+
+            // Check if there's actually a copied sector to get the properties from
+            if (didCopyColors == false)
+            {
+                // Show a warning in the status bar
+                General.Interface.DisplayStatus(StatusType.Warning, "Can't paste colors. You need to copy the colors first.");
+                return;
+            }
+
+            // If there are selected sectors only paste to them
+            if (General.Map.Map.GetSelectedSectors(true).Count != 0)
+            {
+                ICollection<Sector> selectedsectors = General.Map.Map.GetSelectedSectors(true);
+                foreach (Sector s in selectedsectors)
+                {
+                    sectors.Add(s);
+                    pasteCount++;
+                }
+            }
+            // No selected sectors. paste to the highlighted one
+            else
+            {
+                sectors.Add((Sector)General.Editing.Mode.HighlightedObject);
+                pasteCount++;
+            }
+
+            // Make the action undo-able
+            General.Map.UndoRedo.CreateUndo("Paste sector colors");
+
+            // Set the properties of all selected sectors
+            foreach (Sector s in sectors)
+            {
+                s.CeilColor = ceilColor;    // villsa
+                s.FloorColor = floorColor;    // villsa
+                s.ThingColor = thingColor;    // villsa
+                s.TopColor = upperColor;    // villsa
+                s.LowerColor = lowerColor;    // villsa
+            }
+
+            // Redraw to make the changes visible
+            General.Map.Map.Update();
+            General.Interface.RedrawDisplay();
+
+            // Let the user know to how many sectors the properties were copied
+            General.Interface.DisplayStatus(StatusType.Action, "Pasted sector colors to " + pasteCount.ToString() + " sector(s).");
         }
 
         #endregion
