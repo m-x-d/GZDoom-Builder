@@ -1175,11 +1175,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+        private Lights InterpolateLight(Lights start, Lights end, int delta)
+        {
+            int r, g, b;
+
+            r = start.color.r + (delta * (end.color.r - start.color.r)) / 256;
+            g = start.color.g + (delta * (end.color.g - start.color.g)) / 256;
+            b = start.color.b + (delta * (end.color.b - start.color.b)) / 256;
+
+            return new Lights((byte)r, (byte)g, (byte)b, 0);
+        }
+
 		// Make gradient brightness
+        // villsa 9/14/11 (builder64) - new sector color gradients
 		[BeginAction("gradientbrightness")]
 		public void MakeGradientBrightness()
 		{
-			General.Interface.DisplayStatus(StatusType.Action, "Created gradient brightness over selected sectors.");
+			General.Interface.DisplayStatus(StatusType.Action, "Created gradient colors over selected sectors.");
 			General.Map.UndoRedo.CreateUndo("Gradient brightness");
 
 			// Need at least 3 selected sectors
@@ -1187,19 +1199,70 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 			if(orderedselection.Count > 2)
 			{
-				float startbrightness = (float)General.GetByIndex(orderedselection, 0).Brightness;
-				float endbrightness = (float)General.GetByIndex(orderedselection, orderedselection.Count - 1).Brightness;
-				float delta = endbrightness - startbrightness;
+                Lights startlight;
+                Lights endlight;
+                int delta = (255 / orderedselection.Count);
+                int index;
+
+                // FLOOR
+                startlight = (Lights)General.GetByIndex(orderedselection, 0).FloorColor;
+                endlight = (Lights)General.GetByIndex(orderedselection, orderedselection.Count - 1).FloorColor;
+                index = 0;
 
 				// Go for all sectors in between first and last
-				int index = 0;
 				foreach(Sector s in orderedselection)
 				{
-					float u = (float)index / (float)(orderedselection.Count - 1);
-					float b = startbrightness + delta * u;
-					s.Brightness = (int)b;
-					index++;
+                    s.FloorColor = InterpolateLight(startlight, endlight, index);
+					index += delta;
 				}
+
+                // CEILING
+                startlight = (Lights)General.GetByIndex(orderedselection, 0).CeilColor;
+                endlight = (Lights)General.GetByIndex(orderedselection, orderedselection.Count - 1).CeilColor;
+                index = 0;
+
+                // Go for all sectors in between first and last
+                foreach (Sector s in orderedselection)
+                {
+                    s.CeilColor = InterpolateLight(startlight, endlight, index);
+                    index += delta;
+                }
+
+                // THING
+                startlight = (Lights)General.GetByIndex(orderedselection, 0).ThingColor;
+                endlight = (Lights)General.GetByIndex(orderedselection, orderedselection.Count - 1).ThingColor;
+                index = 0;
+
+                // Go for all sectors in between first and last
+                foreach (Sector s in orderedselection)
+                {
+                    s.ThingColor = InterpolateLight(startlight, endlight, index);
+                    index += delta;
+                }
+
+                // TOP
+                startlight = (Lights)General.GetByIndex(orderedselection, 0).TopColor;
+                endlight = (Lights)General.GetByIndex(orderedselection, orderedselection.Count - 1).TopColor;
+                index = 0;
+
+                // Go for all sectors in between first and last
+                foreach (Sector s in orderedselection)
+                {
+                    s.TopColor = InterpolateLight(startlight, endlight, index);
+                    index += delta;
+                }
+
+                // BOTTOM
+                startlight = (Lights)General.GetByIndex(orderedselection, 0).LowerColor;
+                endlight = (Lights)General.GetByIndex(orderedselection, orderedselection.Count - 1).LowerColor;
+                index = 0;
+
+                // Go for all sectors in between first and last
+                foreach (Sector s in orderedselection)
+                {
+                    s.LowerColor = InterpolateLight(startlight, endlight, index);
+                    index += delta;
+                }
 			}
 
 			// Update
