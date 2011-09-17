@@ -258,14 +258,6 @@ namespace CodeImp.DoomBuilder.Data
                                     }
                                 }
                             }
-
-                            // first palette indexes of 0, 0, 0 RGB should always be transclucent
-                            if (ncp.Entries[0].R == 0 && ncp.Entries[0].G == 0
-                                && ncp.Entries[0].B == 0)
-                            {
-                                ncp.Entries[0] = Color.FromArgb(0, 0, 0, 0);
-                                bitmap.Palette = ncp;
-                            }
                         }
 
 						//General.ErrorLogger.Add(ErrorType.Warning, "Image '" + name + "' does not have A8R8G8B8 pixel format. Conversion was needed.");
