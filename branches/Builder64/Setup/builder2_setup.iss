@@ -2,18 +2,18 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 [Setup]
-AppName=Doom Builder 2
+AppName=Doom Builder 64
 AppVerName=Doom Builder 2.0
 AppPublisher=CodeImp
 AppPublisherURL=http://www.codeimp.com/
 AppSupportURL=http://www.doombuilder.com/
 AppUpdatesURL=http://www.doombuilder.com/
-DefaultDirName={pf}\Doom Builder 2
+DefaultDirName={pf}\Doom Builder 64
 DefaultGroupName=Doom Builder
 AllowNoIcons=true
 InfoBeforeFile=..\Setup\disclaimer.txt
 OutputDir=..\Release
-OutputBaseFilename=builder2_setup
+OutputBaseFilename=builder64_setup
 Compression=lzma/ultra64
 SolidCompression=true
 SourceDir=..\Build
@@ -37,7 +37,7 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Source: Setup\dotnetfx35setup.exe; DestDir: {tmp}; Flags: dontcopy
 Source: Setup\slimdx.msi; DestDir: {tmp}; Flags: dontcopy
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
-Source: Builder.cfg; DestDir: {app}; Flags: ignoreversion
+Source: Builder64.cfg; DestDir: {app}; Flags: ignoreversion
 Source: Refmanual.chm; DestDir: {app}; Flags: ignoreversion
 Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion
 Source: Scintilla.dll; DestDir: {app}; Flags: ignoreversion
