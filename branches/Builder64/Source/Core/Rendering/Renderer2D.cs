@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const int THING_SHINY = 1;
 		private const int THING_SQUARE = 2;
 		private const int NUM_THING_TEXTURES = 4;
-		internal const int NUM_VIEW_MODES = 7;  // villsa
+		internal const int NUM_VIEW_MODES = 6;  // villsa
 		
 		#endregion
 
@@ -1204,9 +1204,9 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Prepare for rendering
 					switch(viewmode)
 					{
-						case ViewMode.Brightness:
-							surfaces.RenderSectorBrightness(yviewport);
-                            break;
+						//case ViewMode.Brightness:
+							//surfaces.RenderSectorBrightness(yviewport);
+                            //break;
                         case ViewMode.FloorColor:   // villsa
                         case ViewMode.CeilingColor:   // villsa
                         case ViewMode.ThingColor:   // villsa

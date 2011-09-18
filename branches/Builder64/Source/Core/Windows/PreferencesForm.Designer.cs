@@ -336,7 +336,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.defaultviewmode.FormattingEnabled = true;
             this.defaultviewmode.Items.AddRange(new object[] {
             "Wireframe",
-            "Brightness Levels",
+            //"Brightness Levels",
             "Floor Textures",
             "Ceiling Textures"});
             this.defaultviewmode.Location = new System.Drawing.Point(135, 38);

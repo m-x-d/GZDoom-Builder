@@ -75,6 +75,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Thing cage
 		private VertexBuffer thingcage;
 		private bool renderthingcages;
+
+        // villsa 9/15/11 (builder64) thing arrows
+        private VertexBuffer thingarrow;
 		
 		// Crosshair
 		private FlatVertex[] crosshairverts;
@@ -126,6 +129,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			CreateProjection();
 			CreateMatrices2D();
 			SetupThingCage();
+            SetupThingArrow();  // villsa
 			SetupTextures();
 			renderthingcages = true;
 			showselection = true;
@@ -147,9 +151,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Clean up
 				if(thingcage != null) thingcage.Dispose();
+                if (thingarrow != null) thingarrow.Dispose();   // villsa 9/15/11
 				if(selectionimage != null) selectionimage.Dispose();
 				if(highlightimage != null) highlightimage.Dispose();
 				thingcage = null;
+                thingarrow = null;  // villsa 9/15/11
 				selectionimage = null;
 				highlightimage = null;
 				
@@ -168,9 +174,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			crosshairverts = null;
 			if(thingcage != null) thingcage.Dispose();
+            if (thingarrow != null) thingarrow.Dispose();   // villsa 9/15/11
 			if(selectionimage != null) selectionimage.Dispose();
 			if(highlightimage != null) highlightimage.Dispose();
 			thingcage = null;
+            thingarrow = null;  // villsa 9/15/11
 			selectionimage = null;
 			highlightimage = null;
 		}
@@ -181,6 +189,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			CreateMatrices2D();
 			SetupThingCage();
+            SetupThingArrow();  // villsa
 			SetupTextures();
 		}
 
@@ -235,6 +244,28 @@ namespace CodeImp.DoomBuilder.Rendering
 				selectionimage.CreateTexture();
 			}
 		}
+
+        // villsa 9/15/11
+        private void SetupThingArrow()
+        {
+            const int totalvertices = 6;
+            WorldVertex[] tv = new WorldVertex[totalvertices];
+
+            tv[0] = new WorldVertex(0.0f, 0.0f, 0.5f);
+            tv[1] = new WorldVertex(0.0f, 1.35f, 0.5f);
+            tv[2] = new WorldVertex(0.0f, 1.35f, 0.5f);
+            tv[3] = new WorldVertex(0.175f, 1.1f, 0.5f);
+            tv[4] = new WorldVertex(0.0f, 1.35f, 0.5f);
+            tv[5] = new WorldVertex(-0.175f, 1.1f, 0.5f);
+
+            // Create vertexbuffer
+            thingarrow = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * totalvertices,
+                                         Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+            DataStream bufferstream = thingarrow.Lock(0, WorldVertex.Stride * totalvertices, LockFlags.Discard);
+            bufferstream.WriteRange<WorldVertex>(tv);
+            thingarrow.Unlock();
+            bufferstream.Dispose();
+        }
 		
 		// This sets up the thing cage
 		private void SetupThingCage()
@@ -508,6 +539,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// THINGS
 			if(renderthingcages) RenderThingCages();
+            RenderThingArrows();    // villsa
 			
 			// ADDITIVE PASS
 			world = Matrix.Identity;
@@ -522,6 +554,68 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.End();
 			geometry = null;
 		}
+
+        // villsa 9/15/11
+        private void RenderThingArrows()
+        {
+            int currentshaderpass = shaderpass;
+            int highshaderpass = shaderpass + 2;
+
+            // Set renderstates
+            graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+            graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+            graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+            graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+            graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+            graphics.Device.SetStreamSource(0, thingarrow, 0, WorldVertex.Stride);
+            graphics.Device.SetTexture(0, General.Map.Data.WhiteTexture.Texture);
+            graphics.Shaders.World3D.Texture1 = General.Map.Data.WhiteTexture.Texture;
+
+            graphics.Shaders.World3D.BeginPass(shaderpass);
+            foreach (VisualThing t in thingsbydistance)
+            {
+                // Determine the shader pass we want to use for this object
+                int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
+
+                // Switch shader pass?
+                if (currentshaderpass != wantedshaderpass)
+                {
+                    graphics.Shaders.World3D.EndPass();
+                    graphics.Shaders.World3D.BeginPass(wantedshaderpass);
+                    currentshaderpass = wantedshaderpass;
+                }
+
+                // Setup matrix
+                world = Matrix.Multiply(t.CageScales, t.Position);
+                Matrix rot = Matrix.RotationYawPitchRoll(0.0f, 0.0f, t.Thing.Angle + Angle2D.PI);
+                world = Matrix.Multiply(rot, world);
+                ApplyMatrices3D();
+
+                // Setup color
+                if (currentshaderpass == highshaderpass)
+                {
+                    Color4 highcolor = CalculateHighlightColor((t == highlighted) && showhighlight, t.Selected && showselection);
+                    graphics.Shaders.World3D.SetHighlightColor(highcolor.ToArgb());
+                    highcolor.Alpha = 1.0f;
+                    graphics.Shaders.World3D.SetModulateColor(highcolor.ToArgb());
+                    graphics.Device.SetRenderState(RenderState.TextureFactor, highcolor.ToArgb());
+                }
+                else
+                {
+                    graphics.Shaders.World3D.SetModulateColor(t.CageColor);
+                    graphics.Device.SetRenderState(RenderState.TextureFactor, t.CageColor);
+                }
+
+                // Render!
+                graphics.Shaders.World3D.ApplySettings();
+                graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 3);
+            }
+
+            // Done
+            graphics.Shaders.World3D.EndPass();
+            graphics.Shaders.World3D.SetModulateColor(-1);
+            graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+        }
 
 		// This renders all thing cages
 		private void RenderThingCages()

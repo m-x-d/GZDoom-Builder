@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemthingsfilter = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
             this.itemviewnormal = new System.Windows.Forms.ToolStripMenuItem();
-            this.itemviewbrightness = new System.Windows.Forms.ToolStripMenuItem();
+            //this.itemviewbrightness = new System.Windows.Forms.ToolStripMenuItem();
             this.itemviewfloors = new System.Windows.Forms.ToolStripMenuItem();
             this.itemviewceilings = new System.Windows.Forms.ToolStripMenuItem();
             this.itemviewfloorcolor = new System.Windows.Forms.ToolStripMenuItem();
@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonthingsfilter = new System.Windows.Forms.ToolStripButton();
             this.thingfilters = new System.Windows.Forms.ToolStripComboBox();
             this.buttonviewnormal = new System.Windows.Forms.ToolStripButton();
-            this.buttonviewbrightness = new System.Windows.Forms.ToolStripButton();
+            //this.buttonviewbrightness = new System.Windows.Forms.ToolStripButton();
             this.buttonviewfloors = new System.Windows.Forms.ToolStripButton();
             this.buttonviewceilings = new System.Windows.Forms.ToolStripButton();
             this.buttonviewfloorcolor = new System.Windows.Forms.ToolStripButton();
@@ -577,7 +577,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemthingsfilter,
             this.toolStripMenuItem9,
             this.itemviewnormal,
-            this.itemviewbrightness,
+            //this.itemviewbrightness,
             this.itemviewfloors,
             this.itemviewceilings,
             this.itemviewfloorcolor,
@@ -619,12 +619,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // itemviewbrightness
             // 
-            this.itemviewbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.ViewBrightness;
+            /*this.itemviewbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.ViewBrightness;
             this.itemviewbrightness.Name = "itemviewbrightness";
             this.itemviewbrightness.Size = new System.Drawing.Size(210, 22);
             this.itemviewbrightness.Tag = "builder_viewmodebrightness";
             this.itemviewbrightness.Text = "Brightness Levels";
-            this.itemviewbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);
+            this.itemviewbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);*/
             // 
             // itemviewfloors
             // 
@@ -950,7 +950,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonthingsfilter,
             this.thingfilters,
             this.buttonviewnormal,
-            this.buttonviewbrightness,
+            //this.buttonviewbrightness,
             this.buttonviewfloors,
             this.buttonviewceilings,
             this.buttonviewfloorcolor,
@@ -1143,7 +1143,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // buttonviewbrightness
             // 
-            this.buttonviewbrightness.CheckOnClick = true;
+            /*this.buttonviewbrightness.CheckOnClick = true;
             this.buttonviewbrightness.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.buttonviewbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.ViewBrightness;
             this.buttonviewbrightness.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -1151,7 +1151,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonviewbrightness.Size = new System.Drawing.Size(23, 22);
             this.buttonviewbrightness.Tag = "builder_viewmodebrightness";
             this.buttonviewbrightness.Text = "View Brightness Levels";
-            this.buttonviewbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);
+            this.buttonviewbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);*/
             // 
             // buttonviewfloors
             // 
@@ -1816,7 +1816,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripStatusLabel configlabel;
 		private System.Windows.Forms.ToolStripMenuItem menumode;
 		private System.Windows.Forms.ToolStripButton buttonviewnormal;
-		private System.Windows.Forms.ToolStripButton buttonviewbrightness;
+		//private System.Windows.Forms.ToolStripButton buttonviewbrightness;
 		private System.Windows.Forms.ToolStripButton buttonviewfloors;
 		private System.Windows.Forms.ToolStripButton buttonviewceilings;
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;

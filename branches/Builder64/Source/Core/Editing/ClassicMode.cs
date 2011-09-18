@@ -734,7 +734,7 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("viewmodebrightness", BaseAction = true)]
 		protected virtual void ViewModeBrightness()
 		{
-			SetViewMode(ViewMode.Brightness);
+			/*SetViewMode(ViewMode.Brightness);
 
             // villsa
             if (General.Map.FormatInterface.InDoom64Mode)
@@ -744,7 +744,7 @@ namespace CodeImp.DoomBuilder.Editing
 
                 General.Map.Map.Update();
                 General.MainWindow.RedrawDisplay();
-            }
+            }*/
 		}
 
         // villsa

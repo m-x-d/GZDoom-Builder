@@ -192,7 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Make array for view modes
 			viewmodesbuttons = new ToolStripButton[Renderer2D.NUM_VIEW_MODES];
 			viewmodesbuttons[(int)ViewMode.Normal] = buttonviewnormal;
-			viewmodesbuttons[(int)ViewMode.Brightness] = buttonviewbrightness;
+			//viewmodesbuttons[(int)ViewMode.Brightness] = buttonviewbrightness;
 			viewmodesbuttons[(int)ViewMode.FloorTextures] = buttonviewfloors;
 			viewmodesbuttons[(int)ViewMode.CeilingTextures] = buttonviewceilings;
             viewmodesbuttons[(int)ViewMode.FloorColor] = buttonviewfloorcolor; // villsa
@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.Windows
             viewmodesbuttons[(int)ViewMode.ThingColor] = buttonviewthingcolor; // villsa
 			viewmodesitems = new ToolStripMenuItem[Renderer2D.NUM_VIEW_MODES];
 			viewmodesitems[(int)ViewMode.Normal] = itemviewnormal;
-			viewmodesitems[(int)ViewMode.Brightness] = itemviewbrightness;
+			//viewmodesitems[(int)ViewMode.Brightness] = itemviewbrightness;
 			viewmodesitems[(int)ViewMode.FloorTextures] = itemviewfloors;
 			viewmodesitems[(int)ViewMode.CeilingTextures] = itemviewceilings;
             viewmodesitems[(int)ViewMode.FloorColor] = itemviewfloorcolor; // villsa
