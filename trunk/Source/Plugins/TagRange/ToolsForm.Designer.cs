@@ -29,9 +29,9 @@ namespace CodeImp.DoomBuilder.TagRange
 		private void InitializeComponent()
 		{
 			this.toolstrip = new System.Windows.Forms.ToolStrip();
+			this.seperator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.tagrangebutton = new System.Windows.Forms.ToolStripButton();
 			this.seperator2 = new System.Windows.Forms.ToolStripSeparator();
-			this.seperator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolstrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -47,6 +47,12 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.toolstrip.TabIndex = 0;
 			this.toolstrip.Text = "toolStrip1";
 			// 
+			// seperator1
+			// 
+			this.seperator1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.seperator1.Name = "seperator1";
+			this.seperator1.Size = new System.Drawing.Size(6, 25);
+			// 
 			// tagrangebutton
 			// 
 			this.tagrangebutton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -54,7 +60,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.tagrangebutton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.tagrangebutton.Name = "tagrangebutton";
 			this.tagrangebutton.Size = new System.Drawing.Size(23, 22);
-			this.tagrangebutton.Tag = "rangetagselectedsectors";
+			this.tagrangebutton.Tag = "rangetagselection";
 			this.tagrangebutton.Text = "Tag Range";
 			this.tagrangebutton.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
@@ -63,12 +69,6 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.seperator2.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
 			this.seperator2.Name = "seperator2";
 			this.seperator2.Size = new System.Drawing.Size(6, 25);
-			// 
-			// seperator1
-			// 
-			this.seperator1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-			this.seperator1.Name = "seperator1";
-			this.seperator1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// ToolsForm
 			// 
