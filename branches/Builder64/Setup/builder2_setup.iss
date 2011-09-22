@@ -51,18 +51,18 @@ Source: Plugins\BuilderModes.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Sprites\*; DestDir: {app}\Sprites; Flags: ignoreversion recursesubdirs
 
 [Icons]
-Name: {group}\Doom Builder; Filename: {app}\Builder.exe
-Name: {group}\{cm:UninstallProgram,Doom Builder}; Filename: {uninstallexe}
-Name: {commondesktop}\Doom Builder; Filename: {app}\Builder.exe; Tasks: desktopicon
+Name: {group}\Doom Builder 64; Filename: {app}\Builder.exe
+Name: {group}\{cm:UninstallProgram,Doom Builder 64}; Filename: {uninstallexe}
+Name: {commondesktop}\Doom Builder 64; Filename: {app}\Builder.exe; Tasks: desktopicon
 
 [Run]
 
 [UninstallDelete]
-Name: {localappdata}\Doom Builder; Type: filesandordirs
+Name: {localappdata}\Doom Builder 64; Type: filesandordirs
 [InstallDelete]
 Name: {app}\Builder.pdb; Type: files
 [Registry]
-Root: HKLM; Subkey: SOFTWARE\CodeImp\Doom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\CodeImp\Doom Builder 64\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
 [Messages]
 ReadyLabel2a=Continue to begin with the installation, or click Back if you want to review or change any settings.
 [Code]
