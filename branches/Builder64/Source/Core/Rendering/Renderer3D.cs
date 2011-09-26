@@ -761,15 +761,19 @@ namespace CodeImp.DoomBuilder.Rendering
                         {
                             if (g.Sidedef != null)
                             {
-                                if (g.Sidedef.Line.IsFlagSet("1073741824"))
-                                    graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Mirror);
-                                else
-                                    graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
+                                // villsa - fixed 9/25/11
+                                if (g.Sidedef.Line != null)
+                                {
+                                    if (g.Sidedef.Line.IsFlagSet("1073741824"))
+                                        graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Mirror);
+                                    else
+                                        graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
 
-                                if (g.Sidedef.Line.IsFlagSet("2147483648"))
-                                    graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Mirror);
-                                else
-                                    graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+                                    if (g.Sidedef.Line.IsFlagSet("2147483648"))
+                                        graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Mirror);
+                                    else
+                                        graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+                                }
                             }
                         }
 						
