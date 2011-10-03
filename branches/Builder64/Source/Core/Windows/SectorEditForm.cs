@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Variables
 		private ICollection<Sector> sectors;
         private PixelColor color;
+        private PixelColor[] initialcolor;
         private const float LIGHTINCVALUE = 0.235f;
         private const float LIGHTDECVALUE = -0.1825f;
 
@@ -50,6 +51,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
             color = new PixelColor(255, 255, 255, 255);
+            initialcolor = new PixelColor[Sector.NUM_COLORS];
 
 			// Fill effects list
 			effect.AddInfo(General.Map.Config.SortedSectorEffects.ToArray());
@@ -113,11 +115,11 @@ namespace CodeImp.DoomBuilder.Windows
                 foreach (CheckBox c in flags.Checkboxes)
                     if (sc.Flags.ContainsKey(c.Tag.ToString())) c.Checked = sc.Flags[c.Tag.ToString()];
 
-                ceilingcolor.Color = sc.CeilColor.color;
-                topcolor.Color = sc.TopColor.color;
-                thingcolor.Color = sc.ThingColor.color;
-                lowercolor.Color = sc.LowerColor.color;
-                floorcolor.Color = sc.FloorColor.color;
+                ceilingcolor.Color = initialcolor[0] = sc.CeilColor.color;
+                topcolor.Color = initialcolor[1] = sc.TopColor.color;
+                thingcolor.Color = initialcolor[2] = sc.ThingColor.color;
+                lowercolor.Color = initialcolor[3] = sc.LowerColor.color;
+                floorcolor.Color = initialcolor[4] = sc.FloorColor.color;
             }
 
 			// Effects
@@ -254,21 +256,39 @@ namespace CodeImp.DoomBuilder.Windows
                         else if (c.CheckState == CheckState.Unchecked) s.SetFlag(c.Tag.ToString(), false);
                     }
 
+                    //
                     // color lights
-                    light.color = ceilingcolor.Color;
-                    s.CeilColor = light;
+                    //
 
-                    light.color = topcolor.Color;
-                    s.TopColor = light;
+                    if (initialcolor[0].ToColor() != ceilingcolor.Color.ToColor())
+                    {
+                        light.color = ceilingcolor.Color;
+                        s.CeilColor = light;
+                    }
 
-                    light.color = thingcolor.Color;
-                    s.ThingColor = light;
+                    if (initialcolor[1].ToColor() != topcolor.Color.ToColor())
+                    {
+                        light.color = topcolor.Color;
+                        s.TopColor = light;
+                    }
 
-                    light.color = lowercolor.Color;
-                    s.LowerColor = light;
+                    if (initialcolor[2].ToColor() != thingcolor.Color.ToColor())
+                    {
+                        light.color = thingcolor.Color;
+                        s.ThingColor = light;
+                    }
 
-                    light.color = floorcolor.Color;
-                    s.FloorColor = light;
+                    if (initialcolor[3].ToColor() != lowercolor.Color.ToColor())
+                    {
+                        light.color = lowercolor.Color;
+                        s.LowerColor = light;
+                    }
+
+                    if (initialcolor[4].ToColor() != floorcolor.Color.ToColor())
+                    {
+                        light.color = floorcolor.Color;
+                        s.FloorColor = light;
+                    }
                 }
 
 				// Effects
