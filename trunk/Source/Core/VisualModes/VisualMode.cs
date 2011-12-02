@@ -164,11 +164,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Dispose
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
-				vs.Value.Dispose();
+				if(vs.Value != null) vs.Value.Dispose();
 
 			// Dispose
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
-				vt.Value.Dispose();	
+				if(vt.Value != null) vt.Value.Dispose();	
 			
 			// Apply camera position to thing
 			General.Map.VisualCamera.ApplyToThing();
@@ -368,7 +368,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 							{
 								// Create new visual thing
 								vt = CreateVisualThing(t);
-								if(vt != null) allthings.Add(t, vt);
+								allthings.Add(t, vt);
 							}
 
 							if(vt != null)
@@ -658,10 +658,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			// Dispose
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
-				vs.Value.Dispose();
+				if(vs.Value != null) vs.Value.Dispose();
 				
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
-				vt.Value.Dispose();
+				if(vt.Value != null) vt.Value.Dispose();
 				
 			// Clear collections
 			allsectors.Clear();
@@ -724,16 +724,19 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Dispose if source was disposed or marked
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
-				if(vs.Key.IsDisposed || vs.Key.Marked)
-					vs.Value.Dispose();
-				else
-					newsectors.Add(vs.Key, vs.Value);
+				if(vs.Value != null)
+				{
+					if(vs.Key.IsDisposed || vs.Key.Marked)
+						vs.Value.Dispose();
+					else
+						newsectors.Add(vs.Key, vs.Value);
+				}
 			}
 			
 			// Things depend on the sector they are in and because we can't
 			// easily determine which ones changed, we dispose all things
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
-				vt.Value.Dispose();
+				if(vt.Value != null) vt.Value.Dispose();
 			
 			// Apply new lists
 			allsectors = newsectors;
@@ -775,12 +778,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// Returns True when a VisualSector has been created for the specified Sector.
 		/// </summary>
-		public bool VisualSectorExists(Sector s) { return allsectors.ContainsKey(s); }
+		public bool VisualSectorExists(Sector s) { return allsectors.ContainsKey(s) && (allsectors[s] != null); }
 
 		/// <summary>
 		/// Returns True when a VisualThing has been created for the specified Thing.
 		/// </summary>
-		public bool VisualThingExists(Thing t) { return allthings.ContainsKey(t); }
+		public bool VisualThingExists(Thing t) { return allthings.ContainsKey(t) && (allthings[t] != null); }
 
 		/// <summary>
 		/// This is called when the blockmap needs to be refilled, because it was invalidated.

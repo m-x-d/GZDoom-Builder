@@ -290,23 +290,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			selectedobjects = new List<IVisualEventReceiver>();
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
-				BaseVisualSector bvs = (BaseVisualSector)vs.Value;
-				if((bvs.Floor != null) && bvs.Floor.Selected) selectedobjects.Add(bvs.Floor);
-				if((bvs.Ceiling != null) && bvs.Ceiling.Selected) selectedobjects.Add(bvs.Ceiling);
-				foreach(Sidedef sd in vs.Key.Sidedefs)
+				if(vs.Value != null)
 				{
-					List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);
-					foreach(VisualGeometry sdg in sidedefgeos)
+					BaseVisualSector bvs = (BaseVisualSector)vs.Value;
+					if((bvs.Floor != null) && bvs.Floor.Selected) selectedobjects.Add(bvs.Floor);
+					if((bvs.Ceiling != null) && bvs.Ceiling.Selected) selectedobjects.Add(bvs.Ceiling);
+					foreach(Sidedef sd in vs.Key.Sidedefs)
 					{
-						if(sdg.Selected) selectedobjects.Add((sdg as IVisualEventReceiver));
+						List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);
+						foreach(VisualGeometry sdg in sidedefgeos)
+						{
+							if(sdg.Selected) selectedobjects.Add((sdg as IVisualEventReceiver));
+						}
 					}
 				}
 			}
 
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
 			{
-				BaseVisualThing bvt = (BaseVisualThing)vt.Value;
-				if(bvt.Selected) selectedobjects.Add(bvt);
+				if(vt.Value != null)
+				{
+					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
+					if(bvt.Selected) selectedobjects.Add(bvt);
+				}
 			}
 		}
 
@@ -397,14 +403,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
-				BaseVisualSector bvs = (BaseVisualSector)vs.Value;
-				if(bvs.Changed) bvs.Rebuild();
+				if(vs.Value != null)
+				{
+					BaseVisualSector bvs = (BaseVisualSector)vs.Value;
+					if(bvs.Changed) bvs.Rebuild();
+				}
 			}
 
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
 			{
-				BaseVisualThing bvt = (BaseVisualThing)vt.Value;
-				if(bvt.Changed) bvt.Rebuild();
+				if(vt.Value != null)
+				{
+					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
+					if(bvt.Changed) bvt.Rebuild();
+				}
 			}
 		}
 		
@@ -602,14 +614,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// No sectors or geometry changed. So we only have
 					// to update things when they have changed.
 					foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
-						if(vt.Key.Marked) (vt.Value as BaseVisualThing).Rebuild();
+						if((vt.Value != null) && vt.Key.Marked) (vt.Value as BaseVisualThing).Rebuild();
 				}
 				else
 				{
 					// Things depend on the sector they are in and because we can't
 					// easily determine which ones changed, we dispose all things
 					foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
-						vt.Value.Dispose();
+						if(vt.Value != null) vt.Value.Dispose();
 					
 					// Apply new lists
 					allthings = new Dictionary<Thing, VisualThing>(allthings.Count);
@@ -899,23 +911,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
-				BaseVisualSector bvs = (BaseVisualSector)vs.Value;
-				if(bvs.Floor != null) bvs.Floor.Selected = false;
-				if(bvs.Ceiling != null) bvs.Ceiling.Selected = false;
-				foreach(Sidedef sd in vs.Key.Sidedefs)
+				if(vs.Value != null)
 				{
-					List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);
-					foreach(VisualGeometry sdg in sidedefgeos)
+					BaseVisualSector bvs = (BaseVisualSector)vs.Value;
+					if(bvs.Floor != null) bvs.Floor.Selected = false;
+					if(bvs.Ceiling != null) bvs.Ceiling.Selected = false;
+					foreach(Sidedef sd in vs.Key.Sidedefs)
 					{
-						sdg.Selected = false;
+						List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);
+						foreach(VisualGeometry sdg in sidedefgeos)
+						{
+							sdg.Selected = false;
+						}
 					}
 				}
 			}
 
 			foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
 			{
-				BaseVisualThing bvt = (BaseVisualThing)vt.Value;
-				bvt.Selected = false;
+				if(vt.Value != null)
+				{
+					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
+					bvt.Selected = false;
+				}
 			}
 		}
 
