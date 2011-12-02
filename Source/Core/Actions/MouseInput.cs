@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Actions
 
 		// Mouse input
 		private DirectInput dinput;
-		private Device<MouseState> mouse;
+		private Mouse mouse;
 		
 		// Disposing
 		private bool isdisposed = false;
@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Actions
 			dinput = new DirectInput();
 			
 			// Start mouse input
-			mouse = new Device<MouseState>(dinput, SystemGuid.Mouse);
+			mouse = new Mouse(dinput);
 			if(mouse == null) throw new Exception("No mouse device found.");
 			
 			// Set mouse input settings
