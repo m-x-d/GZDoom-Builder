@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabinterface = new System.Windows.Forms.TabPage();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.toolbar_file = new System.Windows.Forms.CheckBox();
 			this.toolbar_testing = new System.Windows.Forms.CheckBox();
 			this.toolbar_geometry = new System.Windows.Forms.CheckBox();
 			this.toolbar_viewmodes = new System.Windows.Forms.CheckBox();
@@ -135,7 +136,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabpasting = new System.Windows.Forms.TabPage();
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
-			this.toolbar_file = new System.Windows.Forms.CheckBox();
+			this.showtexturesizes = new System.Windows.Forms.CheckBox();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -195,6 +196,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
+			groupBox1.Controls.Add(this.showtexturesizes);
 			groupBox1.Controls.Add(this.scriptontop);
 			groupBox1.Controls.Add(this.zoomfactor);
 			groupBox1.Controls.Add(this.zoomfactorlabel);
@@ -209,7 +211,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.Controls.Add(this.defaultviewmode);
 			groupBox1.Location = new System.Drawing.Point(8, 8);
 			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(331, 286);
+			groupBox1.Size = new System.Drawing.Size(331, 313);
 			groupBox1.TabIndex = 0;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
@@ -556,7 +558,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(589, 537);
+			this.cancel.Location = new System.Drawing.Point(589, 558);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 2;
@@ -568,7 +570,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.apply.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.apply.Location = new System.Drawing.Point(471, 537);
+			this.apply.Location = new System.Drawing.Point(471, 558);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 1;
@@ -591,7 +593,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(690, 515);
+			this.tabs.Size = new System.Drawing.Size(690, 536);
 			this.tabs.TabIndex = 0;
 			this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
 			// 
@@ -605,7 +607,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabinterface.Location = new System.Drawing.Point(4, 23);
 			this.tabinterface.Name = "tabinterface";
 			this.tabinterface.Padding = new System.Windows.Forms.Padding(5);
-			this.tabinterface.Size = new System.Drawing.Size(682, 488);
+			this.tabinterface.Size = new System.Drawing.Size(682, 509);
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
@@ -621,17 +623,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox5.Controls.Add(this.toolbar_copy);
 			this.groupBox5.Controls.Add(this.toolbar_undo);
 			this.groupBox5.Controls.Add(this.toolbar_script);
-			this.groupBox5.Location = new System.Drawing.Point(8, 300);
+			this.groupBox5.Location = new System.Drawing.Point(8, 327);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(331, 180);
+			this.groupBox5.Size = new System.Drawing.Size(331, 173);
 			this.groupBox5.TabIndex = 4;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = " Toolbar Buttons ";
 			// 
+			// toolbar_file
+			// 
+			this.toolbar_file.AutoSize = true;
+			this.toolbar_file.Location = new System.Drawing.Point(32, 33);
+			this.toolbar_file.Name = "toolbar_file";
+			this.toolbar_file.Size = new System.Drawing.Size(118, 18);
+			this.toolbar_file.TabIndex = 49;
+			this.toolbar_file.Text = "New / Open / Save";
+			this.toolbar_file.UseVisualStyleBackColor = true;
+			// 
 			// toolbar_testing
 			// 
 			this.toolbar_testing.AutoSize = true;
-			this.toolbar_testing.Location = new System.Drawing.Point(188, 114);
+			this.toolbar_testing.Location = new System.Drawing.Point(188, 111);
 			this.toolbar_testing.Name = "toolbar_testing";
 			this.toolbar_testing.Size = new System.Drawing.Size(61, 18);
 			this.toolbar_testing.TabIndex = 48;
@@ -641,7 +653,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_geometry
 			// 
 			this.toolbar_geometry.AutoSize = true;
-			this.toolbar_geometry.Location = new System.Drawing.Point(188, 88);
+			this.toolbar_geometry.Location = new System.Drawing.Point(188, 85);
 			this.toolbar_geometry.Name = "toolbar_geometry";
 			this.toolbar_geometry.Size = new System.Drawing.Size(90, 18);
 			this.toolbar_geometry.TabIndex = 47;
@@ -651,7 +663,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_viewmodes
 			// 
 			this.toolbar_viewmodes.AutoSize = true;
-			this.toolbar_viewmodes.Location = new System.Drawing.Point(188, 62);
+			this.toolbar_viewmodes.Location = new System.Drawing.Point(188, 59);
 			this.toolbar_viewmodes.Name = "toolbar_viewmodes";
 			this.toolbar_viewmodes.Size = new System.Drawing.Size(87, 18);
 			this.toolbar_viewmodes.TabIndex = 46;
@@ -661,7 +673,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_filter
 			// 
 			this.toolbar_filter.AutoSize = true;
-			this.toolbar_filter.Location = new System.Drawing.Point(188, 36);
+			this.toolbar_filter.Location = new System.Drawing.Point(188, 33);
 			this.toolbar_filter.Name = "toolbar_filter";
 			this.toolbar_filter.Size = new System.Drawing.Size(84, 18);
 			this.toolbar_filter.TabIndex = 45;
@@ -671,7 +683,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_prefabs
 			// 
 			this.toolbar_prefabs.AutoSize = true;
-			this.toolbar_prefabs.Location = new System.Drawing.Point(32, 140);
+			this.toolbar_prefabs.Location = new System.Drawing.Point(32, 137);
 			this.toolbar_prefabs.Name = "toolbar_prefabs";
 			this.toolbar_prefabs.Size = new System.Drawing.Size(64, 18);
 			this.toolbar_prefabs.TabIndex = 44;
@@ -681,7 +693,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_copy
 			// 
 			this.toolbar_copy.AutoSize = true;
-			this.toolbar_copy.Location = new System.Drawing.Point(32, 114);
+			this.toolbar_copy.Location = new System.Drawing.Point(32, 111);
 			this.toolbar_copy.Name = "toolbar_copy";
 			this.toolbar_copy.Size = new System.Drawing.Size(112, 18);
 			this.toolbar_copy.TabIndex = 43;
@@ -691,7 +703,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_undo
 			// 
 			this.toolbar_undo.AutoSize = true;
-			this.toolbar_undo.Location = new System.Drawing.Point(32, 88);
+			this.toolbar_undo.Location = new System.Drawing.Point(32, 85);
 			this.toolbar_undo.Name = "toolbar_undo";
 			this.toolbar_undo.Size = new System.Drawing.Size(85, 18);
 			this.toolbar_undo.TabIndex = 42;
@@ -701,7 +713,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolbar_script
 			// 
 			this.toolbar_script.AutoSize = true;
-			this.toolbar_script.Location = new System.Drawing.Point(32, 62);
+			this.toolbar_script.Location = new System.Drawing.Point(32, 59);
 			this.toolbar_script.Name = "toolbar_script";
 			this.toolbar_script.Size = new System.Drawing.Size(84, 18);
 			this.toolbar_script.TabIndex = 41;
@@ -713,9 +725,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox4.Controls.Add(this.collapsedockers);
 			this.groupBox4.Controls.Add(this.dockersposition);
 			this.groupBox4.Controls.Add(this.label17);
-			this.groupBox4.Location = new System.Drawing.Point(345, 300);
+			this.groupBox4.Location = new System.Drawing.Point(345, 327);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(329, 180);
+			this.groupBox4.Size = new System.Drawing.Size(329, 173);
 			this.groupBox4.TabIndex = 3;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Side Panels ";
@@ -723,7 +735,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// collapsedockers
 			// 
 			this.collapsedockers.AutoSize = true;
-			this.collapsedockers.Location = new System.Drawing.Point(204, 39);
+			this.collapsedockers.Location = new System.Drawing.Point(204, 36);
 			this.collapsedockers.Name = "collapsedockers";
 			this.collapsedockers.Size = new System.Drawing.Size(72, 18);
 			this.collapsedockers.TabIndex = 2;
@@ -738,7 +750,7 @@ namespace CodeImp.DoomBuilder.Windows
             "Left",
             "Right",
             "None"});
-			this.dockersposition.Location = new System.Drawing.Point(95, 37);
+			this.dockersposition.Location = new System.Drawing.Point(95, 34);
 			this.dockersposition.Name = "dockersposition";
 			this.dockersposition.Size = new System.Drawing.Size(85, 22);
 			this.dockersposition.TabIndex = 1;
@@ -746,7 +758,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label17
 			// 
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(33, 40);
+			this.label17.Location = new System.Drawing.Point(33, 37);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(47, 14);
 			this.label17.TabIndex = 0;
@@ -769,7 +781,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Location = new System.Drawing.Point(345, 8);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(329, 286);
+			this.groupBox2.Size = new System.Drawing.Size(329, 313);
 			this.groupBox2.TabIndex = 2;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Visual Modes ";
@@ -1414,15 +1426,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions.Size = new System.Drawing.Size(666, 427);
 			this.pasteoptions.TabIndex = 0;
 			// 
-			// toolbar_file
+			// showtexturesizes
 			// 
-			this.toolbar_file.AutoSize = true;
-			this.toolbar_file.Location = new System.Drawing.Point(32, 36);
-			this.toolbar_file.Name = "toolbar_file";
-			this.toolbar_file.Size = new System.Drawing.Size(118, 18);
-			this.toolbar_file.TabIndex = 49;
-			this.toolbar_file.Text = "New / Open / Save";
-			this.toolbar_file.UseVisualStyleBackColor = true;
+			this.showtexturesizes.AutoSize = true;
+			this.showtexturesizes.Location = new System.Drawing.Point(32, 276);
+			this.showtexturesizes.Name = "showtexturesizes";
+			this.showtexturesizes.Size = new System.Drawing.Size(222, 18);
+			this.showtexturesizes.TabIndex = 41;
+			this.showtexturesizes.Text = "Show texture and flat sizes in browsers";
+			this.showtexturesizes.UseVisualStyleBackColor = true;
 			// 
 			// PreferencesForm
 			// 
@@ -1430,7 +1442,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.apply;
-			this.ClientSize = new System.Drawing.Size(711, 573);
+			this.ClientSize = new System.Drawing.Size(711, 594);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -1585,5 +1597,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox toolbar_geometry;
 		private System.Windows.Forms.CheckBox toolbar_testing;
 		private System.Windows.Forms.CheckBox toolbar_file;
+		private System.Windows.Forms.CheckBox showtexturesizes;
 	}
 }
