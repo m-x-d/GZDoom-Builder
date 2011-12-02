@@ -76,9 +76,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public BaseVisualThing(BaseVisualMode mode, Thing t) : base(t)
 		{
 			this.mode = mode;
-			
-			Rebuild();
-			
+
+			// Find thing information
+			info = General.Map.Data.GetThingInfo(Thing.Type);
+
+			// Find sprite texture
+			if(info.Sprite.Length > 0)
+			{
+				sprite = General.Map.Data.GetSpriteImage(info.Sprite);
+				if(sprite != null) sprite.AddReference();
+			}
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
