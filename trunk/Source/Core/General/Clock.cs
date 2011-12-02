@@ -35,10 +35,10 @@ namespace CodeImp.DoomBuilder
 		//#if !LINUX
 		
 		[DllImport("kernel32.dll")]
-		private static extern short QueryPerformanceCounter(ref long x);
+		private static extern short QueryPerformanceCounter(out long x);
 		
 		[DllImport("kernel32.dll")]
-		private static extern short QueryPerformanceFrequency(ref long x);
+		private static extern short QueryPerformanceFrequency(out long x);
 		
 		//#endif
 
@@ -46,19 +46,11 @@ namespace CodeImp.DoomBuilder
 		
 		#region ================== Constants
 
-		// Set to true enable QPC if possible
-		private const bool USE_QPC = true;
-		
-		// Frequency indicating QPC unavailable
-		private const long FREQ_NO_QPC = -1;
-		
 		#endregion
 
 		#region ================== Variables
 
 		// Settings
-		private long timefrequency = FREQ_NO_QPC;
-		private double timescale;
 		private double currenttime;
 		
 		// Disposing
@@ -69,7 +61,6 @@ namespace CodeImp.DoomBuilder
 		#region ================== Properties
 
 		// Settings
-		public bool IsUsingQPC { get { return (timefrequency != FREQ_NO_QPC); } }
 		public double CurrentTime { get { return currenttime; } }
 
 		// Disposing
@@ -82,24 +73,6 @@ namespace CodeImp.DoomBuilder
 		// Constructor
 		public Clock()
 		{
-			// Only windows has QPC
-			//#if !LINUX
-			if(Environment.OSVersion.Platform != PlatformID.Unix)
-			{
-				// Get the high resolution clock frequency
-				if((QueryPerformanceFrequency(ref timefrequency) == 0) || !USE_QPC)
-				{
-					// No high resolution clock available
-					timefrequency = FREQ_NO_QPC;
-				}
-				else
-				{
-					// Calculate the time scale
-					timescale = (1d / (double)timefrequency) * 1000d;
-				}
-			}
-			//#endif
-
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -126,22 +99,26 @@ namespace CodeImp.DoomBuilder
 		{
 			// Only windows has QPC
 			//#if !LINUX
-			
-			long timecount = 0;
 
-			// High resolution clock available?
-			if(timefrequency != FREQ_NO_QPC)
+			long timefrequency;
+
+			// Get the high resolution clock frequency
+			if(QueryPerformanceFrequency(out timefrequency) == 0)
 			{
-				// Get the high resolution count
-				QueryPerformanceCounter(ref timecount);
-				
-				// Calculate high resolution time in milliseconds
-				currenttime = (double)timecount * timescale;
+				// No high resolution clock available
+				currenttime = (double)Environment.TickCount;
 			}
 			else
 			{
-				// Use standard clock
-				currenttime = (double)Environment.TickCount;
+				long timecount;
+
+				// Get the high resolution count
+				QueryPerformanceCounter(out timecount);
+
+				// Calculate high resolution time in milliseconds
+				// TODO: It seems there is a loss of precision here when the
+				// result of this math is assigned to currenttime, WHY?!
+				currenttime = (double)timecount / (double)timefrequency * (double)1000.0;
 			}
 			
 			/*
