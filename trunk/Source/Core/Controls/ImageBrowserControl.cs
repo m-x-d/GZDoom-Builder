@@ -101,9 +101,14 @@ namespace CodeImp.DoomBuilder.Controls
 				list.ForeColor = Color.White;
 			}
 
-			// Size of preview images
+			// Set the size of preview images
 			if(General.Map != null)
-				list.TileSize = new Size(General.Map.Data.Previews.MaxImageWidth + 26, General.Map.Data.Previews.MaxImageHeight + 26);
+			{
+				int itemwidth = General.Map.Data.Previews.MaxImageWidth + 26;
+				int itemheight = General.Map.Data.Previews.MaxImageHeight + 26;
+				if(General.Settings.ShowTextureSizes) itemheight += 12;
+				list.TileSize = new Size(itemwidth, itemheight);
+			}
 		}
 
 		// This cleans everything up

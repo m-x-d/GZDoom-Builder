@@ -41,8 +41,9 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		#region ================== Variables
 
-		// Display image
+		// Display image and text
 		public ImageData icon;
+		public string displaytext;
 		
 		// Group
 		private ListViewGroup listgroup;
@@ -66,6 +67,10 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			this.Text = text;
+			if(General.Settings.ShowTextureSizes)
+				this.displaytext = text + "\n" + icon.ScaledWidth + " x " + icon.ScaledHeight;
+			else
+				this.displaytext = text;
 			this.icon = icon;
 			this.Tag = tag;
 		}
@@ -96,7 +101,7 @@ namespace CodeImp.DoomBuilder.Controls
 			g.PixelOffsetMode = PixelOffsetMode.None;
 
 			// Determine coordinates
-			SizeF textsize = g.MeasureString(this.Text, this.ListView.Font, bounds.Width * 2);
+			SizeF textsize = g.MeasureString(displaytext, this.ListView.Font, bounds.Width * 2);
 			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - General.Map.Data.Previews.MaxImageWidth) >> 1),
 				bounds.Top + ((bounds.Height - General.Map.Data.Previews.MaxImageHeight - (int)textsize.Height) >> 1),
 				General.Map.Data.Previews.MaxImageWidth, General.Map.Data.Previews.MaxImageHeight);
@@ -121,7 +126,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Draw!
 			g.FillRectangle(backcolor, bounds);
 			icon.DrawPreview(g, imagerect.Location);
-			g.DrawString(this.Text, this.ListView.Font, forecolor, textpos);
+			g.DrawString(displaytext, this.ListView.Font, forecolor, textpos);
 		}
 
 		// This brightens or darkens a color

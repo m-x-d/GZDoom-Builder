@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder.Windows
 			toolbar_viewmodes.Checked = General.Settings.ToolbarViewModes;
 			toolbar_geometry.Checked = General.Settings.ToolbarGeometry;
 			toolbar_testing.Checked = General.Settings.ToolbarTesting;
+			showtexturesizes.Checked = General.Settings.ShowTextureSizes;
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -215,6 +216,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ToolbarViewModes = toolbar_viewmodes.Checked;
 			General.Settings.ToolbarGeometry = toolbar_geometry.Checked;
 			General.Settings.ToolbarTesting = toolbar_testing.Checked;
+			General.Settings.ShowTextureSizes = showtexturesizes.Checked;
 			
 			// Script font size
 			int fontsize = 8;
