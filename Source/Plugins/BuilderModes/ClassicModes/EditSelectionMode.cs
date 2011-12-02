@@ -664,16 +664,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This moves all things and vertices to match the current transformation
-		private void UpdateGeometry()
+		private unsafe void UpdateGeometry()
 		{
-			
+			float[] newthingangle = thingangle.ToArray();
+			int index;
+
+			// Flip things horizontally
+			if(size.x < 0.0f)
+			{
+				for(index = 0; index < newthingangle.Length; index++)
+				{
+					// Check quadrant
+					if((newthingangle[index] >= 0f) && (newthingangle[index] < Angle2D.PIHALF))
+						newthingangle[index] = newthingangle[index] - (newthingangle[index] * 2);
+					else if((newthingangle[index] >= Angle2D.PIHALF) && (newthingangle[index] <= Angle2D.PI))
+						newthingangle[index] = newthingangle[index] + (Angle2D.PI - newthingangle[index]) * 2;
+					else if((newthingangle[index] >= Angle2D.PI) && (newthingangle[index] <= Angle2D.PI + Angle2D.PIHALF))
+						newthingangle[index] = newthingangle[index] - (newthingangle[index] - Angle2D.PI) * 2;
+					else
+						newthingangle[index] = newthingangle[index] + (Angle2D.PI2 - newthingangle[index]) * 2;
+				}
+			}
+
+			// Flip things vertically
+			if(size.y < 0.0f)
+			{
+				for(index = 0; index < newthingangle.Length; index++)
+				{
+					// Check quadrant
+					if((newthingangle[index] >= 0f) && (newthingangle[index] < Angle2D.PIHALF))
+						newthingangle[index] = newthingangle[index] + (Angle2D.PI - newthingangle[index] * 2);
+					else if((newthingangle[index] >= Angle2D.PIHALF) && (newthingangle[index] <= Angle2D.PI))
+						newthingangle[index] = newthingangle[index] - (newthingangle[index] - Angle2D.PIHALF) * 2;
+					else if((newthingangle[index] >= Angle2D.PI) && (newthingangle[index] <= Angle2D.PI + Angle2D.PIHALF))
+						newthingangle[index] = newthingangle[index] + (Angle2D.PI - (newthingangle[index] - Angle2D.PI) * 2);
+					else
+						newthingangle[index] = newthingangle[index] - (newthingangle[index] - (Angle2D.PI + Angle2D.PIHALF)) * 2;
+				}
+			}
+
 			// We use optimized versions of the TransformedPoint depending on what needs to be done.
 			// This is mainly done because 0.0 rotation and 1.0 scale may still give slight inaccuracies.
 			bool norotate = Math.Abs(rotation) < 0.0001f;
 			bool noscale = Math.Abs(size.x - basesize.x) + Math.Abs(size.y - basesize.y) < 0.0001f;
 			if(norotate && noscale)
 			{
-				int index = 0;
+				index = 0;
 				foreach(Vertex v in selectedvertices)
 				{
 					v.Move(TransformedPointNoRotateNoScale(vertexpos[index++]));
@@ -681,13 +717,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				index = 0;
 				foreach(Thing t in selectedthings)
 				{
-					t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
 					t.Move(TransformedPointNoRotateNoScale(thingpos[index++]));
 				}
 			}
 			else if(norotate)
 			{
-				int index = 0;
+				index = 0;
 				foreach(Vertex v in selectedvertices)
 				{
 					v.Move(TransformedPointNoRotate(vertexpos[index++]));
@@ -695,13 +730,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				index = 0;
 				foreach(Thing t in selectedthings)
 				{
-					t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
 					t.Move(TransformedPointNoRotate(thingpos[index++]));
 				}
 			}
 			else if(noscale)
 			{
-				int index = 0;
+				index = 0;
 				foreach(Vertex v in selectedvertices)
 				{
 					v.Move(TransformedPointNoScale(vertexpos[index++]));
@@ -709,13 +743,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				index = 0;
 				foreach(Thing t in selectedthings)
 				{
-					t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
+					newthingangle[index] = Angle2D.Normalized(newthingangle[index] + rotation);
 					t.Move(TransformedPointNoScale(thingpos[index++]));
 				}
 			}
 			else
 			{
-				int index = 0;
+				index = 0;
 				foreach(Vertex v in selectedvertices)
 				{
 					v.Move(TransformedPoint(vertexpos[index++]));
@@ -723,7 +757,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				index = 0;
 				foreach(Thing t in selectedthings)
 				{
-					t.Rotate(Angle2D.Normalized(thingangle[index] + rotation));
+					newthingangle[index] = Angle2D.Normalized(newthingangle[index] + rotation);
 					t.Move(TransformedPoint(thingpos[index++]));
 				}
 			}
@@ -731,6 +765,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// This checks if the lines should be flipped
 			bool shouldbeflipped = (size.x < 0.0f) ^ (size.y < 0.0f);
 			if(shouldbeflipped != linesflipped) FlipLinedefs();
+
+			// Apply new thing rotations
+			index = 0;
+			foreach(Thing t in selectedthings)
+			{
+				t.Rotate(Angle2D.Normalized(newthingangle[index++]));
+			}
 			
 			UpdatePanel();
 			General.Map.Map.Update(true, false);
