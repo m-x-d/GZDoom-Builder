@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.Statistics
 			  ButtonOrder = 300,
 			  ButtonGroup = "002_tools",
 			  UseByDefault = true,
+			  AllowCopyPaste = false,
 			  Volatile = true)]
 	
 	public class StatisticsMode : ClassicMode
