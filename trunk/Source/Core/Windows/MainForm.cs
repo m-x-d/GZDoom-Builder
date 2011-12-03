@@ -256,6 +256,9 @@ namespace CodeImp.DoomBuilder.Windows
 				viewmodesitems[i].Enabled = (General.Editing.Mode is ClassicMode);
 				viewmodesbuttons[i].Enabled = (General.Editing.Mode is ClassicMode);
 			}
+
+			UpdateEditMenu();
+			UpdatePrefabsMenu();
 		}
 
 		// This makes a beep sound
@@ -2224,13 +2227,13 @@ namespace CodeImp.DoomBuilder.Windows
 		private void UpdatePrefabsMenu()
 		{
 			// Enable/disable items
-			itemcreateprefab.Enabled = (General.Map != null);
-			iteminsertprefabfile.Enabled = (General.Map != null);
-			iteminsertpreviousprefab.Enabled = (General.Map != null) && General.Map.CopyPaste.IsPreviousPrefabAvailable;
+			itemcreateprefab.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
+			iteminsertprefabfile.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
+			iteminsertpreviousprefab.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Map.CopyPaste.IsPreviousPrefabAvailable && General.Editing.Mode.Attributes.AllowCopyPaste;
 			
 			// Toolbar icons
-			buttoninsertprefabfile.Enabled = (General.Map != null);
-			buttoninsertpreviousprefab.Enabled = (General.Map != null) && General.Map.CopyPaste.IsPreviousPrefabAvailable;
+			buttoninsertprefabfile.Enabled = iteminsertprefabfile.Enabled;
+			buttoninsertpreviousprefab.Enabled = iteminsertpreviousprefab.Enabled;
 		}
 		
 		#endregion

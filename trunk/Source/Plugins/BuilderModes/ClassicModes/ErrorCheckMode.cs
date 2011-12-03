@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonImage = "MapAnalysisMode.png",
 			  ButtonOrder = 200,
 			  ButtonGroup = "002_tools",
+			  AllowCopyPaste = false,
 			  Volatile = true,
 			  UseByDefault = true)]
 

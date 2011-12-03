@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	// [EditMode]
 
 	[EditMode(DisplayName = "Linedefs",
+			  AllowCopyPaste = false,
 			  Volatile = true)]
 	
 	public sealed class DragLinedefsMode : DragGeometryMode

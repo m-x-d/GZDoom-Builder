@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Drawing Mode",
 			  SwitchAction = "drawlinesmode",
+			  AllowCopyPaste = false,
 			  Volatile = true,
 			  UseByDefault = true,
 			  Optional = false)]

@@ -43,7 +43,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonImage = "BrightnessMode.png",
 			  ButtonOrder = int.MinValue + 201,
 			  ButtonGroup = "000_editing",
-			  AllowCopyPaste = false,
 			  UseByDefault = true,
 			  SafeStartMode = true)]
 	

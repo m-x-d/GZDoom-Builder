@@ -207,38 +207,47 @@ namespace CodeImp.DoomBuilder.Editing
 		// This performs the copy. Returns false when copy was cancelled.
 		private bool DoCopySelection(string desc)
 		{
-			// Let the plugins know
-			if(General.Plugins.OnCopyBegin())
+			// Check if possible to copy/paste
+			if(General.Editing.Mode.Attributes.AllowCopyPaste)
 			{
-				// Ask the editing mode to prepare selection for copying.
-				// The edit mode should mark all vertices, lines and sectors
-				// that need to be copied.
-				if(General.Editing.Mode.OnCopyBegin())
+				// Let the plugins know
+				if(General.Plugins.OnCopyBegin())
 				{
-					General.MainWindow.DisplayStatus(StatusType.Action, desc);
-					
-					// Copy the marked geometry
-					// This links sidedefs that are not linked to a marked sector to a virtual sector
-					MapSet copyset = General.Map.Map.CloneMarked();
-					
-					// Convert flags and activations to UDMF fields, if needed
-					if(!(General.Map.FormatInterface is UniversalMapSetIO)) copyset.TranslateToUDMF();
-					
-					// Write data to stream
-					MemoryStream memstream = new MemoryStream();
-					UniversalStreamWriter writer = new UniversalStreamWriter();
-					writer.RememberCustomTypes = false;
-					writer.Write(copyset, memstream, null);
+					// Ask the editing mode to prepare selection for copying.
+					// The edit mode should mark all vertices, lines and sectors
+					// that need to be copied.
+					if(General.Editing.Mode.OnCopyBegin())
+					{
+						General.MainWindow.DisplayStatus(StatusType.Action, desc);
 
-					// Set on clipboard
-					Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
+						// Copy the marked geometry
+						// This links sidedefs that are not linked to a marked sector to a virtual sector
+						MapSet copyset = General.Map.Map.CloneMarked();
 
-					// Done
-					memstream.Dispose();
-					General.Editing.Mode.OnCopyEnd();
-					General.Plugins.OnCopyEnd();
-					return true;
+						// Convert flags and activations to UDMF fields, if needed
+						if(!(General.Map.FormatInterface is UniversalMapSetIO)) copyset.TranslateToUDMF();
+
+						// Write data to stream
+						MemoryStream memstream = new MemoryStream();
+						UniversalStreamWriter writer = new UniversalStreamWriter();
+						writer.RememberCustomTypes = false;
+						writer.Write(copyset, memstream, null);
+
+						// Set on clipboard
+						Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
+
+						// Done
+						memstream.Dispose();
+						General.Editing.Mode.OnCopyEnd();
+						General.Plugins.OnCopyEnd();
+						return true;
+					}
 				}
+			}
+			else
+			{
+				// Copy not allowed
+				General.MessageBeep(MessageBeepType.Warning);
 			}
 			
 			// Aborted
@@ -248,73 +257,83 @@ namespace CodeImp.DoomBuilder.Editing
 		// This performs the paste. Returns false when paste was cancelled.
 		private bool DoPasteSelection(PasteOptions options)
 		{
-			// Anything to paste?
-			if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
+			// Check if possible to copy/paste
+			if(General.Editing.Mode.Attributes.AllowCopyPaste)
 			{
-				// Cancel volatile mode
-				General.Editing.DisengageVolatileMode();
-				
-				// Let the plugins know
-				if(General.Plugins.OnPasteBegin(options))
+				// Anything to paste?
+				if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
 				{
-					// Ask the editing mode to prepare selection for pasting.
-					if(General.Editing.Mode.OnPasteBegin(options.Copy()))
+					// Cancel volatile mode
+					General.Editing.DisengageVolatileMode();
+					
+					// Let the plugins know
+					if(General.Plugins.OnPasteBegin(options))
 					{
-						// Create undo
-						General.MainWindow.DisplayStatus(StatusType.Action, "Pasted selected elements.");
-						General.Map.UndoRedo.CreateUndo("Paste");
-						
-						// Read from clipboard
-						Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
-						memstream.Seek(0, SeekOrigin.Begin);
-
-						// Mark all current geometry
-						General.Map.Map.ClearAllMarks(true);
-
-						// Read data stream
-						UniversalStreamReader reader = new UniversalStreamReader();
-						reader.StrictChecking = false;
-						General.Map.Map.BeginAddRemove();
-						reader.Read(General.Map.Map, memstream);
-						General.Map.Map.EndAddRemove();
-						
-						// The new geometry is not marked, so invert the marks to get it marked
-						General.Map.Map.InvertAllMarks();
-
-						// Convert UDMF fields back to flags and activations, if needed
-						if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
-						
-						// Modify tags and actions if preferred
-						if(options.ChangeTags == PasteOptions.TAGS_REMOVE) Tools.RemoveMarkedTags();
-						if(options.ChangeTags == PasteOptions.TAGS_RENUMBER) Tools.RenumberMarkedTags();
-						if(options.RemoveActions) Tools.RemoveMarkedActions();
-
-						// Clean up
-						memstream.Dispose();
-
-						// Check if anything was pasted
-						int totalpasted = General.Map.Map.GetMarkedThings(true).Count;
-						totalpasted += General.Map.Map.GetMarkedVertices(true).Count;
-						totalpasted += General.Map.Map.GetMarkedLinedefs(true).Count;
-						totalpasted += General.Map.Map.GetMarkedSidedefs(true).Count;
-						totalpasted += General.Map.Map.GetMarkedSectors(true).Count;
-						if(totalpasted > 0)
+						// Ask the editing mode to prepare selection for pasting.
+						if(General.Editing.Mode.OnPasteBegin(options.Copy()))
 						{
-							General.Map.Map.UpdateConfiguration();
-							General.Map.ThingsFilter.Update();
-							General.Editing.Mode.OnPasteEnd(options.Copy());
-							General.Plugins.OnPasteEnd(options);
+							// Create undo
+							General.MainWindow.DisplayStatus(StatusType.Action, "Pasted selected elements.");
+							General.Map.UndoRedo.CreateUndo("Paste");
+							
+							// Read from clipboard
+							Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
+							memstream.Seek(0, SeekOrigin.Begin);
+
+							// Mark all current geometry
+							General.Map.Map.ClearAllMarks(true);
+
+							// Read data stream
+							UniversalStreamReader reader = new UniversalStreamReader();
+							reader.StrictChecking = false;
+							General.Map.Map.BeginAddRemove();
+							reader.Read(General.Map.Map, memstream);
+							General.Map.Map.EndAddRemove();
+							
+							// The new geometry is not marked, so invert the marks to get it marked
+							General.Map.Map.InvertAllMarks();
+
+							// Convert UDMF fields back to flags and activations, if needed
+							if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
+							
+							// Modify tags and actions if preferred
+							if(options.ChangeTags == PasteOptions.TAGS_REMOVE) Tools.RemoveMarkedTags();
+							if(options.ChangeTags == PasteOptions.TAGS_RENUMBER) Tools.RenumberMarkedTags();
+							if(options.RemoveActions) Tools.RemoveMarkedActions();
+
+							// Clean up
+							memstream.Dispose();
+
+							// Check if anything was pasted
+							int totalpasted = General.Map.Map.GetMarkedThings(true).Count;
+							totalpasted += General.Map.Map.GetMarkedVertices(true).Count;
+							totalpasted += General.Map.Map.GetMarkedLinedefs(true).Count;
+							totalpasted += General.Map.Map.GetMarkedSidedefs(true).Count;
+							totalpasted += General.Map.Map.GetMarkedSectors(true).Count;
+							if(totalpasted > 0)
+							{
+								General.Map.Map.UpdateConfiguration();
+								General.Map.ThingsFilter.Update();
+								General.Editing.Mode.OnPasteEnd(options.Copy());
+								General.Plugins.OnPasteEnd(options);
+							}
+							return true;
 						}
-						return true;
 					}
+					
+					// Aborted
+					return false;
 				}
-				
-				// Aborted
-				return false;
+				else
+				{
+					// Nothing usefull on the clipboard
+					General.MessageBeep(MessageBeepType.Warning);
+					return false;
+				}
 			}
 			else
 			{
-				// Nothing usefull on the clipboard
+				// Paste not allowed
 				General.MessageBeep(MessageBeepType.Warning);
 				return false;
 			}
@@ -358,10 +377,19 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("pasteselectionspecial")]
 		public void PasteSelectionSpecial()
 		{
-			PasteOptionsForm form = new PasteOptionsForm();
-			DialogResult result = form.ShowDialog(General.MainWindow);
-			if(result == DialogResult.OK) DoPasteSelection(form.Options);
-			form.Dispose();
+			// Check if possible to copy/paste
+			if(General.Editing.Mode.Attributes.AllowCopyPaste)
+			{
+				PasteOptionsForm form = new PasteOptionsForm();
+				DialogResult result = form.ShowDialog(General.MainWindow);
+				if(result == DialogResult.OK) DoPasteSelection(form.Options);
+				form.Dispose();
+			}
+			else
+			{
+				// Paste not allowed
+				General.MessageBeep(MessageBeepType.Warning);
+			}
 		}
 		
 		// This pastes what is on the clipboard and marks the new geometry
@@ -375,133 +403,94 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("createprefab")]
 		public void CreatePrefab()
 		{
-			Cursor oldcursor = Cursor.Current;
-			Cursor.Current = Cursors.WaitCursor;
-			
-			MemoryStream data = MakePrefab();
-			if(data != null)
+			// Check if possible to copy/paste
+			if(General.Editing.Mode.Attributes.AllowCopyPaste)
 			{
-				Cursor.Current = oldcursor;
+				Cursor oldcursor = Cursor.Current;
+				Cursor.Current = Cursors.WaitCursor;
 				
-				SaveFileDialog savefile = new SaveFileDialog();
-				savefile.Filter = "Doom Builder Prefabs (*.dbprefab)|*.dbprefab";
-				savefile.Title = "Save Prefab As";
-				savefile.AddExtension = true;
-				savefile.CheckPathExists = true;
-				savefile.OverwritePrompt = true;
-				savefile.ValidateNames = true;
-				if(savefile.ShowDialog(General.MainWindow) == DialogResult.OK)
+				MemoryStream data = MakePrefab();
+				if(data != null)
 				{
-					try
+					Cursor.Current = oldcursor;
+					
+					SaveFileDialog savefile = new SaveFileDialog();
+					savefile.Filter = "Doom Builder Prefabs (*.dbprefab)|*.dbprefab";
+					savefile.Title = "Save Prefab As";
+					savefile.AddExtension = true;
+					savefile.CheckPathExists = true;
+					savefile.OverwritePrompt = true;
+					savefile.ValidateNames = true;
+					if(savefile.ShowDialog(General.MainWindow) == DialogResult.OK)
 					{
-						Cursor.Current = Cursors.WaitCursor;
-						if(File.Exists(savefile.FileName)) File.Delete(savefile.FileName);
-						File.WriteAllBytes(savefile.FileName, data.ToArray());
+						try
+						{
+							Cursor.Current = Cursors.WaitCursor;
+							if(File.Exists(savefile.FileName)) File.Delete(savefile.FileName);
+							File.WriteAllBytes(savefile.FileName, data.ToArray());
+						}
+						catch(Exception e)
+						{
+							Cursor.Current = oldcursor;
+							General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while writing prefab to file: " + e.Message);
+							General.WriteLogLine(e.StackTrace);
+							General.ShowErrorMessage("Error while writing prefab to file! See log file for error details.", MessageBoxButtons.OK);
+						}
 					}
-					catch(Exception e)
-					{
-						Cursor.Current = oldcursor;
-						General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while writing prefab to file: " + e.Message);
-						General.WriteLogLine(e.StackTrace);
-						General.ShowErrorMessage("Error while writing prefab to file! See log file for error details.", MessageBoxButtons.OK);
-					}
+					data.Dispose();
 				}
-				data.Dispose();
+				else
+				{
+					// Can't make a prefab right now
+					General.MessageBeep(MessageBeepType.Warning);
+				}
+				
+				// Done
+				General.MainWindow.UpdateInterface();
+				Cursor.Current = oldcursor;
 			}
 			else
 			{
-				// Can't make a prefab right now
+				// Create prefab not allowed
 				General.MessageBeep(MessageBeepType.Warning);
 			}
-			
-			// Done
-			General.MainWindow.UpdateInterface();
-			Cursor.Current = oldcursor;
 		}
 		
 		// This pastes a prefab from file
 		[BeginAction("insertprefabfile")]
 		public void InsertPrefabFile()
 		{
-			PasteOptions options = General.Settings.PasteOptions.Copy();
-			
-			// Cancel volatile mode
-			General.Editing.DisengageVolatileMode();
-
-			// Let the plugins know
-			if(General.Plugins.OnPasteBegin(options))
+			// Check if possible to copy/paste
+			if(General.Editing.Mode.Attributes.AllowCopyPaste)
 			{
-				// Ask the editing mode to prepare selection for pasting.
-				if(General.Editing.Mode.OnPasteBegin(options))
+				PasteOptions options = General.Settings.PasteOptions.Copy();
+
+				// Cancel volatile mode
+				General.Editing.DisengageVolatileMode();
+
+				// Let the plugins know
+				if(General.Plugins.OnPasteBegin(options))
 				{
-					Cursor oldcursor = Cursor.Current;
-
-					OpenFileDialog openfile = new OpenFileDialog();
-					openfile.Filter = "Doom Builder Prefabs (*.dbprefab)|*.dbprefab";
-					openfile.Title = "Open Prefab";
-					openfile.AddExtension = false;
-					openfile.CheckFileExists = true;
-					openfile.Multiselect = false;
-					openfile.ValidateNames = true;
-					if(openfile.ShowDialog(General.MainWindow) == DialogResult.OK)
+					// Ask the editing mode to prepare selection for pasting.
+					if(General.Editing.Mode.OnPasteBegin(options))
 					{
-						FileStream stream = null;
-						
-						try
-						{
-							Cursor.Current = Cursors.WaitCursor;
-							stream = File.OpenRead(openfile.FileName);
-						}
-						catch(Exception e)
-						{
-							Cursor.Current = oldcursor;
-							General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while reading prefab from file: " + e.Message);
-							General.WriteLogLine(e.StackTrace);
-							General.ShowErrorMessage("Error while reading prefab from file! See log file for error details.", MessageBoxButtons.OK);
-						}
+						Cursor oldcursor = Cursor.Current;
 
-						if(stream != null)
+						OpenFileDialog openfile = new OpenFileDialog();
+						openfile.Filter = "Doom Builder Prefabs (*.dbprefab)|*.dbprefab";
+						openfile.Title = "Open Prefab";
+						openfile.AddExtension = false;
+						openfile.CheckFileExists = true;
+						openfile.Multiselect = false;
+						openfile.ValidateNames = true;
+						if(openfile.ShowDialog(General.MainWindow) == DialogResult.OK)
 						{
-							PastePrefab(stream, options);
-							lastprefabfile = openfile.FileName;
-						}
-						General.MainWindow.UpdateInterface();
-						stream.Dispose();
-					}
-					
-					Cursor.Current = oldcursor;
-				}
-			}
-		}
-		
-		// This pastes the previously inserted prefab
-		[BeginAction("insertpreviousprefab")]
-		public void InsertPreviousPrefab()
-		{
-			PasteOptions options = General.Settings.PasteOptions.Copy();
-
-			// Is there a previously inserted prefab?
-			if(IsPreviousPrefabAvailable)
-			{
-				// Does the file still exist?
-				if(File.Exists(lastprefabfile))
-				{
-					// Cancel volatile mode
-					General.Editing.DisengageVolatileMode();
-
-					// Let the plugins know
-					if(General.Plugins.OnPasteBegin(options))
-					{
-						// Ask the editing mode to prepare selection for pasting.
-						if(General.Editing.Mode.OnPasteBegin(options))
-						{
-							Cursor oldcursor = Cursor.Current;
 							FileStream stream = null;
 
 							try
 							{
 								Cursor.Current = Cursors.WaitCursor;
-								stream = File.OpenRead(lastprefabfile);
+								stream = File.OpenRead(openfile.FileName);
 							}
 							catch(Exception e)
 							{
@@ -511,22 +500,88 @@ namespace CodeImp.DoomBuilder.Editing
 								General.ShowErrorMessage("Error while reading prefab from file! See log file for error details.", MessageBoxButtons.OK);
 							}
 
-							if(stream != null) PastePrefab(stream, options);
-							stream.Dispose();
+							if(stream != null)
+							{
+								PastePrefab(stream, options);
+								lastprefabfile = openfile.FileName;
+							}
 							General.MainWindow.UpdateInterface();
-							Cursor.Current = oldcursor;
+							stream.Dispose();
 						}
+
+						Cursor.Current = oldcursor;
+					}
+				}
+			}
+			else
+			{
+				// Insert not allowed
+				General.MessageBeep(MessageBeepType.Warning);
+			}
+		}
+		
+		// This pastes the previously inserted prefab
+		[BeginAction("insertpreviousprefab")]
+		public void InsertPreviousPrefab()
+		{
+			// Check if possible to copy/paste
+			if(General.Editing.Mode.Attributes.AllowCopyPaste)
+			{
+				PasteOptions options = General.Settings.PasteOptions.Copy();
+
+				// Is there a previously inserted prefab?
+				if(IsPreviousPrefabAvailable)
+				{
+					// Does the file still exist?
+					if(File.Exists(lastprefabfile))
+					{
+						// Cancel volatile mode
+						General.Editing.DisengageVolatileMode();
+
+						// Let the plugins know
+						if(General.Plugins.OnPasteBegin(options))
+						{
+							// Ask the editing mode to prepare selection for pasting.
+							if(General.Editing.Mode.OnPasteBegin(options))
+							{
+								Cursor oldcursor = Cursor.Current;
+								FileStream stream = null;
+
+								try
+								{
+									Cursor.Current = Cursors.WaitCursor;
+									stream = File.OpenRead(lastprefabfile);
+								}
+								catch(Exception e)
+								{
+									Cursor.Current = oldcursor;
+									General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while reading prefab from file: " + e.Message);
+									General.WriteLogLine(e.StackTrace);
+									General.ShowErrorMessage("Error while reading prefab from file! See log file for error details.", MessageBoxButtons.OK);
+								}
+
+								if(stream != null) PastePrefab(stream, options);
+								stream.Dispose();
+								General.MainWindow.UpdateInterface();
+								Cursor.Current = oldcursor;
+							}
+						}
+					}
+					else
+					{
+						General.MessageBeep(MessageBeepType.Warning);
+						lastprefabfile = null;
+						General.MainWindow.UpdateInterface();
 					}
 				}
 				else
 				{
 					General.MessageBeep(MessageBeepType.Warning);
-					lastprefabfile = null;
-					General.MainWindow.UpdateInterface();
 				}
 			}
 			else
 			{
+				// Insert not allowed
 				General.MessageBeep(MessageBeepType.Warning);
 			}
 		}

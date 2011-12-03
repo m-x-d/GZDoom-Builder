@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	// [EditMode]
 
 	[EditMode(DisplayName = "Things",
+			  AllowCopyPaste = false,
 			  Volatile = true)]
 
 	public sealed class DragThingsMode : BaseClassicMode
