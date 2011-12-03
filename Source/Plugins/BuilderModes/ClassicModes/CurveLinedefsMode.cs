@@ -37,6 +37,7 @@ using CodeImp.DoomBuilder.Editing;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Curve Linedefs",
+			  AllowCopyPaste = false,
 			  Volatile = true)]
 	public sealed class CurveLinedefsMode : BaseClassicMode
 	{

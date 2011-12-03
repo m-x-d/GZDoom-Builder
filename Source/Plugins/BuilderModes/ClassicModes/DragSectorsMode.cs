@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	// [EditMode]
 
 	[EditMode(DisplayName = "Sectors",
+			  AllowCopyPaste = false,
 			  Volatile = true)]
 
 	public sealed class DragSectorsMode : DragGeometryMode

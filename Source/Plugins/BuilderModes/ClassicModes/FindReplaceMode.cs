@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			  ButtonImage = "FindMode.png",
 			  ButtonOrder = 100,
 			  ButtonGroup = "002_tools",
+			  AllowCopyPaste = false,
 			  Volatile = true,
 			  UseByDefault = true)]
 

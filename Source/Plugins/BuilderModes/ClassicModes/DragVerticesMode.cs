@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	// [EditMode]
 
 	[EditMode(DisplayName = "Vertices",
+			  AllowCopyPaste = false,
 			  Volatile = true)]
 
 	public sealed class DragVerticesMode : DragGeometryMode
