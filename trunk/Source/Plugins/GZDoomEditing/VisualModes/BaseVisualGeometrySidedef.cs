@@ -649,9 +649,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				List<Sidedef> sides = mode.GetSelectedSidedefs();
 				foreach(Sidedef sd in sides) sd.Marked = false;
 			}
+
+			SidedefPart part;
+			if(this is VisualLower)
+				part = SidedefPart.Lower;
+			else if(this is VisualUpper)
+				part = SidedefPart.Upper;
+			else
+				part = SidedefPart.Middle;
 			
 			// Do the alignment
-			Tools.AutoAlignTextures(this.Sidedef, base.Texture, alignx, aligny, false);
+			BuilderPlug.AutoAlignTextures(this.Sidedef, part, base.Texture, alignx, aligny, false);
 
 			// Get the changed sidedefs
 			List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
