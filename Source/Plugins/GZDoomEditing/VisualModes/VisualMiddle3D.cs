@@ -128,6 +128,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Get texture offsets
 			Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
 			tof = tof + toffset1 + toffset2;
+			tof = tof / tscale;
 			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 				tof = tof * base.Texture.Scale;
 			
