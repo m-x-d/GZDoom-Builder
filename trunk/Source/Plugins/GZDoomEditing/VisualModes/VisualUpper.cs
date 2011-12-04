@@ -124,6 +124,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Get texture offsets
 			Vector2D tof = new Vector2D(Sidedef.OffsetX, Sidedef.OffsetY);
 			tof = tof + toffset;
+			tof = tof / tscale;
 			if(General.Map.Config.ScaledTextureOffsets && !base.Texture.WorldPanning)
 				tof = tof * base.Texture.Scale;
 			
@@ -228,8 +229,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			Sidedef.Fields.BeforeFieldsChange();
 			float oldx = Sidedef.Fields.GetValue("offsetx_top", 0.0f);
 			float oldy = Sidedef.Fields.GetValue("offsety_top", 0.0f);
-			Sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
-			Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
+			float scalex = Sidedef.Fields.GetValue("scalex_top", 1.0f);
+			float scaley = Sidedef.Fields.GetValue("scaley_top", 1.0f);
+			Sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, oldx + (float)xy.X * scalex);
+			Sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y * scaley);
 		}
 
 		protected override Point GetTextureOffset()
