@@ -41,7 +41,10 @@ using CodeImp.DoomBuilder.Controls;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	[EditMode(DisplayName = "Edit Selection Mode",
-			  SwitchAction = "editselectionmode",	// Action name used to switch to this mode
+			  SwitchAction = "editselectionmode",
+			  ButtonImage = "Selection3.png",
+			  ButtonOrder = 50,
+			  ButtonGroup = "002_tools",
 			  Volatile = true,
 			  UseByDefault = true,
 			  Optional = false)]
@@ -146,9 +149,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public override object HighlightedObject { get { return highlighted; } }
 		
-		// Just keep the base mode button checked
-		public override string EditModeButtonName { get { return General.Editing.PreviousStableMode.Name; } }
-
 		public bool Pasting { get { return pasting; } set { pasting = value; } }
 		public PasteOptions PasteOptions { get { return pasteoptions; } set { pasteoptions = value.Copy(); } }
 		
@@ -1021,6 +1021,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				General.Interface.MessageBeep(MessageBeepType.Default);
+				General.Interface.DisplayStatus(StatusType.Info, "A selection is required for this action.");
 				
 				// Cancel now
 				General.Editing.CancelMode();
