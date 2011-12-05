@@ -920,6 +920,24 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 		}
 
+		// Apply flat offsets
+		public void ApplyFlatOffsetChange(int dx, int dy)
+		{
+			Dictionary<Sector, int> donesectors = new Dictionary<Sector, int>(selectedobjects.Count);
+			List<IVisualEventReceiver> objs = GetSelectedObjects(true, false, false);
+			foreach(IVisualEventReceiver i in objs)
+			{
+				if(i is BaseVisualGeometrySector)
+				{
+					if(!donesectors.ContainsKey((i as BaseVisualGeometrySector).Sector.Sector))
+					{
+						i.OnChangeTextureOffset(dx, dy);
+						donesectors.Add((i as BaseVisualGeometrySector).Sector.Sector, 0);
+					}
+				}
+			}
+		}
+
 		// Apply upper unpegged flag
 		public void ApplyUpperUnpegged(bool set)
 		{

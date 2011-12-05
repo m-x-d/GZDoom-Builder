@@ -34,6 +34,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
 
@@ -149,6 +150,25 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#endregion
 		
 		#region ================== Methods
+
+		// Return texture coordinates
+		protected override Point GetTextureOffset()
+		{
+			Point p = new Point();
+			p.X = (int)Sector.Sector.Fields.GetValue("xpanningfloor", 0.0f);
+			p.Y = (int)Sector.Sector.Fields.GetValue("ypanningfloor", 0.0f);
+			return p;
+		}
+
+		// Move texture coordinates
+		protected override void MoveTextureOffset(Point xy)
+		{
+			Sector.Sector.Fields.BeforeFieldsChange();
+			float oldx = Sector.Sector.Fields.GetValue("xpanningfloor", 0.0f);
+			float oldy = Sector.Sector.Fields.GetValue("ypanningfloor", 0.0f);
+			Sector.Sector.Fields["xpanningfloor"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
+			Sector.Sector.Fields["ypanningfloor"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
+		}
 		
 		// Paste texture
 		public override void OnPasteTexture()
