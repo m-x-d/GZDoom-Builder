@@ -19,6 +19,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
@@ -41,6 +42,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 	{
 		#region ================== Constants
 
+		private const float DRAG_ANGLE_TOLERANCE = 0.06f;
+
 		#endregion
 
 		#region ================== Variables
@@ -55,6 +58,22 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		protected SectorLevel level;
 		protected Effect3DFloor extrafloor;
+		
+		// Undo/redo
+		private int undoticket;
+		
+		// UV dragging
+		private float dragstartanglexy;
+		private float dragstartanglez;
+		private Vector3D dragorigin;
+		private Vector3D deltaxy;
+		private Vector3D deltaz;
+		private int startoffsetx;
+		private int startoffsety;
+		protected bool uvdragging;
+		private int prevoffsetx;		// We have to provide delta offsets, but I don't
+		private int prevoffsety;		// want to calculate with delta offsets to prevent
+										// inaccuracy in the dragging.
 		
 		#endregion
 
@@ -82,7 +101,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
 
-
 		// This swaps triangles so that the plane faces the other way
 		protected void SwapTriangleVertices(WorldVertex[] verts)
 		{
@@ -95,16 +113,37 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				verts[i + 1] = v;
 			}
 		}
+
+		// This is called to update UV dragging
+		protected virtual void UpdateDragUV()
+		{
+			float u_ray = 1.0f;
+
+			// Calculate intersection position
+			this.Level.plane.GetIntersection(General.Map.VisualCamera.Position, General.Map.VisualCamera.Target, ref u_ray);
+			Vector3D intersect = General.Map.VisualCamera.Position + (General.Map.VisualCamera.Target - General.Map.VisualCamera.Position) * u_ray;
+
+			// Calculate offsets
+			Vector3D dragdelta = intersect - dragorigin;
+			float offsetx = dragdelta.x;
+			float offsety = dragdelta.y;
+
+			// Apply offsets
+			int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
+			int newoffsety = startoffsety + (int)Math.Round(offsety);
+			mode.ApplyFlatOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
+			prevoffsetx = newoffsetx;
+			prevoffsety = newoffsety;
+
+			mode.ShowTargetInfo();
+		}
 		
 		#endregion
 
 		#region ================== Events
 
 		// Unused
-		public virtual void OnSelectBegin(){ }
 		public virtual void OnEditBegin() { }
-		public virtual void OnMouseMove(MouseEventArgs e) { }
-		public virtual void OnChangeTextureOffset(int horizontal, int vertical) { }
 		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
 		public virtual void OnToggleUpperUnpegged() { }
 		public virtual void OnToggleLowerUnpegged() { }
@@ -116,6 +155,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected virtual void SetTexture(string texturename) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
+		protected abstract void MoveTextureOffset(Point xy);
+		protected abstract Point GetTextureOffset();
 
 		// Setup this plane
 		public bool Setup() { return this.Setup(this.level, this.extrafloor); }
@@ -126,18 +167,73 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			return false;
 		}
 
+		// Begin select
+		public virtual void OnSelectBegin()
+		{
+			mode.LockTarget();
+			dragstartanglexy = General.Map.VisualCamera.AngleXY;
+			dragstartanglez = General.Map.VisualCamera.AngleZ;
+			dragorigin = pickintersect;
+			startoffsetx = GetTextureOffset().X;
+			startoffsety = GetTextureOffset().Y;
+			prevoffsetx = GetTextureOffset().X;
+			prevoffsety = GetTextureOffset().Y;
+		}
+		
 		// Select or deselect
 		public virtual void OnSelectEnd()
 		{
-			if(this.selected)
+			mode.UnlockTarget();
+			
+			// Was dragging?
+			if(uvdragging)
 			{
-				this.selected = false;
-				mode.RemoveSelectedObject(this);
+				// Dragging stops now
+				uvdragging = false;
 			}
 			else
 			{
-				this.selected = true;
-				mode.AddSelectedObject(this);
+				if(this.selected)
+				{
+					this.selected = false;
+					mode.RemoveSelectedObject(this);
+				}
+				else
+				{
+					this.selected = true;
+					mode.AddSelectedObject(this);
+				}
+			}
+		}
+
+		// Moving the mouse
+		public virtual void OnMouseMove(MouseEventArgs e)
+		{
+			// Dragging UV?
+			if(uvdragging)
+			{
+				UpdateDragUV();
+			}
+			else
+			{
+				// Select button pressed?
+				if(General.Actions.CheckActionActive(General.ThisAssembly, "visualselect"))
+				{
+					// Check if tolerance is exceeded to start UV dragging
+					float deltaxy = General.Map.VisualCamera.AngleXY - dragstartanglexy;
+					float deltaz = General.Map.VisualCamera.AngleZ - dragstartanglez;
+					if((Math.Abs(deltaxy) + Math.Abs(deltaz)) > DRAG_ANGLE_TOLERANCE)
+					{
+						mode.PreAction(UndoGroup.TextureOffsetChange);
+						mode.CreateUndo("Change texture offsets");
+
+						// Start drag now
+						uvdragging = true;
+						mode.Renderer.ShowSelection = false;
+						mode.Renderer.ShowHighlight = false;
+						UpdateDragUV();
+					}
+				}
 			}
 		}
 		
@@ -339,6 +435,22 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 			// Rebuild sector
 			Sector.UpdateSectorGeometry(false);
+		}
+
+		// Texture offset change
+		public virtual void OnChangeTextureOffset(int horizontal, int vertical)
+		{
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change texture offsets");
+
+			// Apply offsets
+			MoveTextureOffset(new Point(-horizontal, -vertical));
+
+			mode.SetActionResult("Changed texture offsets by " + -horizontal + ", " + -vertical + ".");
+
+			// Update sector geometry
+			Sector.UpdateSectorGeometry(false);
+			Sector.Rebuild();
 		}
 		
 		#endregion
