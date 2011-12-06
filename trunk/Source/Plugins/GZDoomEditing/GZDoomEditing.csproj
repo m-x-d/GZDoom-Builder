@@ -41,6 +41,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassicModes\BaseClassicMode.cs" />
+    <Compile Include="ClassicModes\FlatAlignMode.cs" />
     <Compile Include="General\BuilderPlug.cs" />
     <Compile Include="General\CopyStructures.cs" />
     <Compile Include="General\UndoGroup.cs" />
