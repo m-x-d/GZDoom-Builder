@@ -42,7 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassicModes\BaseClassicMode.cs" />
+    <Compile Include="ClassicModes\CeilingAlignMode.cs" />
     <Compile Include="ClassicModes\FlatAlignMode.cs" />
+    <Compile Include="ClassicModes\FloorAlignMode.cs" />
     <Compile Include="General\BuilderPlug.cs" />
     <Compile Include="General\CopyStructures.cs" />
     <Compile Include="General\UndoGroup.cs" />
@@ -105,6 +107,10 @@
     <None Include="GZDoomEditing.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\CeilingAlign.png" />
+    <EmbeddedResource Include="Resources\FloorAlign.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

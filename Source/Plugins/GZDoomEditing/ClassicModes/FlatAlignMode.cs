@@ -24,6 +24,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -37,14 +38,7 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.GZDoomEditing
 {
-	[EditMode(DisplayName = "Flat Align Mode",
-			  SwitchAction = "flatalignmode",
-			  ButtonImage = "VisualModeZ.png",
-			  ButtonOrder = int.MinValue + 210,
-			  ButtonGroup = "000_editing",
-			  Volatile = true)]
-
-	public class FlatAlignMode : BaseClassicMode
+	public abstract class FlatAlignMode : BaseClassicMode
 	{
 		#region ================== Constants
 
@@ -53,19 +47,55 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		#region ================== Variables
 
 		private ICollection<Sector> selection;
+		protected Sector editsector;
+		private ImageData texture;
+		private Vector2D texturegraboffset;
+		private float rotation;
+		private Vector2D scale;
+		private Vector2D offset;
+		
+		#endregion
+
+		#region ================== Properties
+
+		public abstract string XScaleName { get; }
+		public abstract string YScaleName { get; }
+		public abstract string XOffsetName { get; }
+		public abstract string YOffsetName { get; }
+		public abstract string RotationName { get; }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public FlatAlignMode()
+		protected FlatAlignMode()
 		{
 		}
 
 		#endregion
 
 		#region ================== Methods
+
+		protected abstract ImageData GetTexture(Sector editsector);
+
+		// Transforms p from Texture space into World space
+		protected Vector2D TexToWorld(Vector2D p)
+		{
+			p /= scale;
+			p -= offset;
+			p = p.GetRotated(-rotation);
+			return p;
+		}
+
+		// Transforms p from World space into Texture space
+		protected Vector2D WorldToTex(Vector2D p)
+		{
+			p = p.GetRotated(rotation);
+			p += offset;
+			p *= scale;
+			return p;
+		}
 
 		#endregion
 
@@ -114,10 +144,44 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				General.Interface.MessageBeep(MessageBeepType.Default);
 				General.Interface.DisplayStatus(StatusType.Info, "A selected sector is required for this action.");
 				General.Editing.CancelMode();
+				return;
 			}
+			editsector = General.GetByIndex(selection, 0);
 
-			// Find the nearest texture corner
+			// Get the texture
+			texture = GetTexture(editsector);
+			if((texture == null) || (texture == General.Map.Data.WhiteTexture) ||
+			   (texture.Width <= 0) || (texture.Height <= 0) || !texture.IsImageLoaded)
+			{
+				General.Interface.MessageBeep(MessageBeepType.Default);
+				General.Interface.DisplayStatus(StatusType.Info, "The selected sector must have a loaded texture to align.");
+				General.Editing.CancelMode();
+				return;
+			}
+			
+			// Cache the transformation values
+			rotation = Angle2D.DegToRad(editsector.Fields.GetValue(RotationName, 0.0f));
+			scale.x = editsector.Fields.GetValue(XScaleName, 1.0f);
+			scale.y = editsector.Fields.GetValue(YScaleName, 1.0f);
+			offset.x = editsector.Fields.GetValue(XOffsetName, 0.0f);
+			offset.y = -editsector.Fields.GetValue(YOffsetName, 0.0f);
+			
+			// We want the texture corner nearest to the center of the sector
+			Vector2D fp;
+			fp.x = (editsector.BBox.Left + editsector.BBox.Right) / 2;
+			fp.y = (editsector.BBox.Top + editsector.BBox.Bottom) / 2;
 
+			// Transform the point into texture space
+			fp = WorldToTex(fp);
+			
+			// Snap to the nearest left-top corner
+			fp.x = (float)Math.Round(fp.x / texture.ScaledWidth) * texture.ScaledWidth;
+			fp.y = (float)Math.Round(fp.y / texture.ScaledHeight) * texture.ScaledHeight;
+			texturegraboffset = fp;
+
+			// Transorm the point into world space
+			// fp = fp.GetRotated(rotation);
+			// fp = (fp / scale) + offset;
 		}
 
 		// Mode disengages
@@ -153,6 +217,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Render overlay
 			if(renderer.StartOverlay(true))
 			{
+				Vector2D rightpoint = texturegraboffset + new Vector2D(texture.ScaledWidth, 0f);
+
+				Vector2D p1world = TexToWorld(texturegraboffset);
+				Vector2D p2world = TexToWorld(rightpoint);
+
+				renderer.RenderLine(p1world, p2world, 1f, General.Colors.Highlight, true);
+
 				renderer.Finish();
 			}
 
