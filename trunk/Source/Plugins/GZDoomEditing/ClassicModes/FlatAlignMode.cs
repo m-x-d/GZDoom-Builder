@@ -41,7 +41,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			  SwitchAction = "flatalignmode",
 			  ButtonImage = "VisualModeZ.png",
 			  ButtonOrder = int.MinValue + 210,
-			  ButtonGroup = "000_editing")]
+			  ButtonGroup = "000_editing",
+			  Volatile = true)]
 
 	public class FlatAlignMode : BaseClassicMode
 	{
@@ -51,9 +52,16 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		#region ================== Variables
 
+		private ICollection<Sector> selection;
+
 		#endregion
 
 		#region ================== Constructor / Disposer
+
+		// Constructor
+		public FlatAlignMode()
+		{
+		}
 
 		#endregion
 
@@ -67,8 +75,49 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override void OnEngage()
 		{
 			base.OnEngage();
+
+			// Presentation
 			renderer.SetPresentation(Presentation.Standard);
-			General.Map.Map.SelectionType = SelectionType.All;
+
+			// Selection
+			General.Map.Map.ConvertSelection(SelectionType.Sectors);
+			General.Map.Map.SelectionType = SelectionType.Sectors;
+			if(General.Map.Map.SelectedSectorsCount == 0)
+			{
+				// Find the nearest linedef within highlight range
+				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
+				if(l != null)
+				{
+					Sector selectsector = null;
+					
+					// Check on which side of the linedef the mouse is and which sector there is
+					float side = l.SideOfLine(mousemappos);
+					if((side > 0) && (l.Back != null))
+						selectsector = l.Back.Sector;
+					else if((side <= 0) && (l.Front != null))
+						selectsector = l.Front.Sector;
+
+					// Select the sector!
+					if(selectsector != null)
+					{
+						selectsector.Selected = true;
+						foreach(Sidedef sd in selectsector.Sidedefs)
+							sd.Line.Selected = true;
+					}
+				}
+			}
+			
+			// Get sector selection
+			selection = General.Map.Map.GetSelectedSectors(true);
+			if(selection.Count == 0)
+			{
+				General.Interface.MessageBeep(MessageBeepType.Default);
+				General.Interface.DisplayStatus(StatusType.Info, "A selected sector is required for this action.");
+				General.Editing.CancelMode();
+			}
+
+			// Find the nearest texture corner
+
 		}
 
 		// Mode disengages
