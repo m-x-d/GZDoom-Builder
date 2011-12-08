@@ -42,17 +42,53 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 	{
 		#region ================== Constants
 
+		private enum ModifyMode : int
+		{
+			None,
+			Dragging,
+			Resizing,
+			Rotating
+		}
+
+		private enum Grip : int
+		{
+			None,
+			Main,
+			SizeS,
+			SizeE,
+			RotateRT,
+			RotateLB
+		}
+
+		protected struct SectorInfo
+		{
+			public float rotation;
+			public Vector2D scale;
+			public Vector2D offset;
+		}
+
+		private const float GRIP_SIZE = 9.0f;
+		
 		#endregion
 
 		#region ================== Variables
 
 		private ICollection<Sector> selection;
 		protected Sector editsector;
+		protected IList<SectorInfo> sectorinfo;
 		private ImageData texture;
 		private Vector2D texturegraboffset;
+
+		// Modification
 		private float rotation;
 		private Vector2D scale;
 		private Vector2D offset;
+
+		// Rectangle components
+		private Vector2D[] corners = new Vector2D[4]; // lefttop, righttop, rightbottom, leftbottom
+		private Vector2D[] extends = new Vector2D[2]; // right, bottom
+		private RectangleF[] resizegrips = new RectangleF[2];	// right, bottom
+		private RectangleF[] rotategrips = new RectangleF[2];   // righttop, leftbottom
 		
 		#endregion
 
@@ -79,24 +115,66 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		protected abstract ImageData GetTexture(Sector editsector);
 
-		// Transforms p from Texture space into World space
-		protected Vector2D TexToWorld(Vector2D p)
+		// This checks if a point is in a rect
+		private bool PointInRectF(RectangleF rect, Vector2D point)
 		{
-			p /= scale;
-			p -= offset;
-			p = p.GetRotated(-rotation);
+			return (point.x >= rect.Left) && (point.x <= rect.Right) && (point.y >= rect.Top) && (point.y <= rect.Bottom);
+		}
+
+		// Transforms p from Texture space into World space
+		protected Vector2D TexToWorld(Vector2D p, SectorInfo s)
+		{
+			p /= scale + s.scale;
+			p -= offset + s.offset;
+			p = p.GetRotated(-(rotation + s.rotation));
 			return p;
 		}
 
 		// Transforms p from World space into Texture space
-		protected Vector2D WorldToTex(Vector2D p)
+		protected Vector2D WorldToTex(Vector2D p, SectorInfo s)
 		{
-			p = p.GetRotated(rotation);
-			p += offset;
-			p *= scale;
+			p = p.GetRotated(rotation + s.rotation);
+			p += offset + s.offset;
+			p *= scale + s.scale;
 			return p;
 		}
 
+		// This updates the selection rectangle components
+		private void UpdateRectangleComponents()
+		{
+			float gripsize = GRIP_SIZE / renderer.Scale;
+
+			// Corners in world space
+			corners[0] = TexToWorld(texturegraboffset + new Vector2D(0f, 0f), sectorinfo[0]);
+			corners[1] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth, 0f), sectorinfo[0]);
+			corners[2] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth, texture.ScaledHeight), sectorinfo[0]);
+			corners[3] = TexToWorld(texturegraboffset + new Vector2D(0f, texture.ScaledHeight), sectorinfo[0]);
+
+			// Extended points for rotation corners
+			extends[0] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth + 20f / renderer.Scale * (scale.x + sectorinfo[0].scale.x), 0f), sectorinfo[0]);
+			extends[1] = TexToWorld(texturegraboffset + new Vector2D(0f, texture.ScaledHeight + 20f / renderer.Scale * (scale.y + sectorinfo[0].scale.y)), sectorinfo[0]);
+
+			// Middle points between corners
+			Vector2D middle12 = corners[1] + (corners[2] - corners[1]) * 0.5f;
+			Vector2D middle23 = corners[2] + (corners[3] - corners[2]) * 0.5f;
+			
+			// Resize grips
+			resizegrips[0] = new RectangleF(middle12.x - gripsize * 0.5f,
+											middle12.y - gripsize * 0.5f,
+											gripsize, gripsize);
+			resizegrips[1] = new RectangleF(middle23.x - gripsize * 0.5f,
+											middle23.y - gripsize * 0.5f,
+											gripsize, gripsize);
+
+			// Rotate grips
+			rotategrips[0] = new RectangleF(extends[0].x - gripsize * 0.5f,
+											extends[0].y - gripsize * 0.5f,
+											gripsize, gripsize);
+			rotategrips[1] = new RectangleF(extends[1].x - gripsize * 0.5f,
+											extends[1].y - gripsize * 0.5f,
+											gripsize, gripsize);
+		}
+		
 		#endregion
 
 		#region ================== Events
@@ -160,28 +238,32 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 			
 			// Cache the transformation values
-			rotation = Angle2D.DegToRad(editsector.Fields.GetValue(RotationName, 0.0f));
-			scale.x = editsector.Fields.GetValue(XScaleName, 1.0f);
-			scale.y = editsector.Fields.GetValue(YScaleName, 1.0f);
-			offset.x = editsector.Fields.GetValue(XOffsetName, 0.0f);
-			offset.y = -editsector.Fields.GetValue(YOffsetName, 0.0f);
-			
+			sectorinfo = new List<SectorInfo>(selection.Count);
+			foreach(Sector s in selection)
+			{
+				SectorInfo si;
+				si.rotation = Angle2D.DegToRad(editsector.Fields.GetValue(RotationName, 0.0f));
+				si.scale.x = editsector.Fields.GetValue(XScaleName, 1.0f);
+				si.scale.y = editsector.Fields.GetValue(YScaleName, 1.0f);
+				si.offset.x = editsector.Fields.GetValue(XOffsetName, 0.0f);
+				si.offset.y = -editsector.Fields.GetValue(YOffsetName, 0.0f);
+				sectorinfo.Add(si);
+			}
+
 			// We want the texture corner nearest to the center of the sector
 			Vector2D fp;
 			fp.x = (editsector.BBox.Left + editsector.BBox.Right) / 2;
 			fp.y = (editsector.BBox.Top + editsector.BBox.Bottom) / 2;
 
 			// Transform the point into texture space
-			fp = WorldToTex(fp);
+			fp = WorldToTex(fp, sectorinfo[0]);
 			
 			// Snap to the nearest left-top corner
 			fp.x = (float)Math.Round(fp.x / texture.ScaledWidth) * texture.ScaledWidth;
 			fp.y = (float)Math.Round(fp.y / texture.ScaledHeight) * texture.ScaledHeight;
 			texturegraboffset = fp;
 
-			// Transorm the point into world space
-			// fp = fp.GetRotated(rotation);
-			// fp = (fp / scale) + offset;
+			UpdateRectangleComponents();
 		}
 
 		// Mode disengages
@@ -196,6 +278,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This redraws the display
 		public override void OnRedrawDisplay()
 		{
+			UpdateRectangleComponents();
+
 			renderer.RedrawSurface();
 
 			// Render lines
@@ -217,13 +301,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Render overlay
 			if(renderer.StartOverlay(true))
 			{
-				Vector2D rightpoint = texturegraboffset + new Vector2D(texture.ScaledWidth, 0f);
-
-				Vector2D p1world = TexToWorld(texturegraboffset);
-				Vector2D p2world = TexToWorld(rightpoint);
-
-				renderer.RenderLine(p1world, p2world, 1f, General.Colors.Highlight, true);
-
+				renderer.RenderLine(corners[0], extends[0], 1f, General.Colors.Highlight, true);
+				renderer.RenderLine(corners[0], extends[1], 1f, General.Colors.Highlight, true);
+				renderer.RenderLine(corners[1], corners[2], 0.5f, General.Colors.Highlight, true);
+				renderer.RenderLine(corners[2], corners[3], 0.5f, General.Colors.Highlight, true);
+				renderer.RenderRectangleFilled(rotategrips[0], General.Colors.Background, true);
+				renderer.RenderRectangleFilled(rotategrips[1], General.Colors.Background, true);
+				renderer.RenderRectangle(rotategrips[0], 2f, General.Colors.Indication, true);
+				renderer.RenderRectangle(rotategrips[1], 2f, General.Colors.Indication, true);
+				renderer.RenderRectangleFilled(resizegrips[0], General.Colors.Background, true);
+				renderer.RenderRectangleFilled(resizegrips[1], General.Colors.Background, true);
+				renderer.RenderRectangle(resizegrips[0], 2f, General.Colors.Highlight, true);
+				renderer.RenderRectangle(resizegrips[1], 2f, General.Colors.Highlight, true);
 				renderer.Finish();
 			}
 
