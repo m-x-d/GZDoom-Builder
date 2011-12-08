@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
@@ -54,8 +55,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			None,
 			Main,
-			SizeS,
-			SizeE,
+			SizeV,
+			SizeH,
 			RotateRT,
 			RotateLB
 		}
@@ -68,6 +69,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 
 		private const float GRIP_SIZE = 9.0f;
+		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNESW };
 		
 		#endregion
 
@@ -78,7 +80,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected IList<SectorInfo> sectorinfo;
 		private ImageData texture;
 		private Vector2D texturegraboffset;
-
+		private ModifyMode mode;
+		
 		// Modification
 		private float rotation;
 		private Vector2D scale;
@@ -89,6 +92,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private Vector2D[] extends = new Vector2D[2]; // right, bottom
 		private RectangleF[] resizegrips = new RectangleF[2];	// right, bottom
 		private RectangleF[] rotategrips = new RectangleF[2];   // righttop, leftbottom
+		
+		// Aligning
+		private RectangleF alignrect;
+		private Vector2D dragalignoffset;
 		
 		#endregion
 
@@ -139,6 +146,110 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			return p;
 		}
 
+		// This updates all sectors
+		private void UpdateSectors()
+		{
+			int index = 0;
+			foreach(Sector s in selection)
+			{
+				SectorInfo si = sectorinfo[index];
+				s.Fields.BeforeFieldsChange();
+				s.Fields[RotationName] = new UniValue(UniversalType.AngleDegreesFloat, Angle2D.RadToDeg(si.rotation + rotation));
+				s.Fields[XScaleName] = new UniValue(UniversalType.Float, si.scale.x + scale.x);
+				s.Fields[YScaleName] = new UniValue(UniversalType.Float, si.scale.y + scale.y);
+				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, si.offset.x + offset.x);
+				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(si.offset.y + offset.y));
+				index++;
+				s.UpdateNeeded = true;
+			}
+		}
+		
+		// This updates the selection
+		private void Update()
+		{
+			// Not in any modifying mode?
+			if(mode == ModifyMode.None)
+			{
+				Vector2D prevdragoffset = dragalignoffset;
+				dragalignoffset = new Vector2D(-2f, -2f);
+				
+				// Check what grip the mouse is over
+				// and change cursor accordingly
+				Grip mousegrip = CheckMouseGrip();
+				switch(mousegrip)
+				{
+					case Grip.Main:
+						int closestcorner = -1;
+						float cornerdist = float.MinValue;
+						for(int i = 0; i < 4; i++)
+						{
+							Vector2D delta = corners[i] - mousemappos;
+							float d = delta.GetLengthSq();
+							if(d < cornerdist)
+							{
+								closestcorner = i;
+								cornerdist = d;
+							}
+						}
+						switch(closestcorner)
+						{
+							// TODO:
+							case 0: dragalignoffset = new Vector2D(0f, 0f); break;
+							case 1: dragalignoffset = new Vector2D(0f, 0f); break;
+							case 2: dragalignoffset = new Vector2D(0f, 0f); break;
+							case 3: dragalignoffset = new Vector2D(0f, 0f); break;
+						}
+						General.Interface.SetCursor(Cursors.Hand);
+						break;
+
+					case Grip.RotateLB:
+					case Grip.RotateRT:
+						General.Interface.SetCursor(Cursors.Cross);
+						break;
+
+					case Grip.SizeH:
+					case Grip.SizeV:
+						// Pick the best matching cursor depending on rotation and side
+						float resizeangle = rotation;
+						if(mousegrip == Grip.SizeH) resizeangle += Angle2D.PIHALF;
+						resizeangle = Angle2D.Normalized(resizeangle);
+						if(resizeangle > Angle2D.PI) resizeangle -= Angle2D.PI;
+						resizeangle = Math.Abs(resizeangle + Angle2D.PI / 8.000001f);
+						int cursorindex = (int)Math.Floor((resizeangle / Angle2D.PI) * 4.0f) % 4;
+						General.Interface.SetCursor(RESIZE_CURSORS[cursorindex]);
+						break;
+
+					default:
+						General.Interface.SetCursor(Cursors.Default);
+						break;
+				}
+
+				if(prevdragoffset != dragalignoffset)
+					General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Change to crosshair cursor so we can clearly see around the mouse cursor
+				General.Interface.SetCursor(Cursors.Cross);
+				
+				// Check what modifying mode we are in
+				switch(mode)
+				{
+					case ModifyMode.Dragging:
+
+						break;
+
+					case ModifyMode.Resizing:
+
+						break;
+
+					case ModifyMode.Rotating:
+
+						break;
+				}
+			}
+		}
+		
 		// This updates the selection rectangle components
 		private void UpdateRectangleComponents()
 		{
@@ -147,12 +258,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Corners in world space
 			corners[0] = TexToWorld(texturegraboffset + new Vector2D(0f, 0f), sectorinfo[0]);
 			corners[1] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth, 0f), sectorinfo[0]);
-			corners[2] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth, texture.ScaledHeight), sectorinfo[0]);
-			corners[3] = TexToWorld(texturegraboffset + new Vector2D(0f, texture.ScaledHeight), sectorinfo[0]);
+			corners[2] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth, -texture.ScaledHeight), sectorinfo[0]);
+			corners[3] = TexToWorld(texturegraboffset + new Vector2D(0f, -texture.ScaledHeight), sectorinfo[0]);
 
 			// Extended points for rotation corners
 			extends[0] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth + 20f / renderer.Scale * (scale.x + sectorinfo[0].scale.x), 0f), sectorinfo[0]);
-			extends[1] = TexToWorld(texturegraboffset + new Vector2D(0f, texture.ScaledHeight + 20f / renderer.Scale * (scale.y + sectorinfo[0].scale.y)), sectorinfo[0]);
+			extends[1] = TexToWorld(texturegraboffset + new Vector2D(0f, -texture.ScaledHeight + -20f / renderer.Scale * (scale.y + sectorinfo[0].scale.y)), sectorinfo[0]);
 
 			// Middle points between corners
 			Vector2D middle12 = corners[1] + (corners[2] - corners[1]) * 0.5f;
@@ -173,6 +284,28 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			rotategrips[1] = new RectangleF(extends[1].x - gripsize * 0.5f,
 											extends[1].y - gripsize * 0.5f,
 											gripsize, gripsize);
+			
+			Vector2D worldalignoffset = TexToWorld(texturegraboffset + dragalignoffset, sectorinfo[0]);
+			alignrect = new RectangleF(worldalignoffset.x - gripsize * 0.25f,
+									   worldalignoffset.y - gripsize * 0.25f,
+									   gripsize * 0.5f, gripsize * 0.5f);
+		}
+
+		// This checks and returns the grip the mouse pointer is in
+		private Grip CheckMouseGrip()
+		{
+			if(PointInRectF(resizegrips[0], mousemappos))
+				return Grip.SizeH;
+			else if(PointInRectF(resizegrips[1], mousemappos))
+				return Grip.SizeV;
+			else if(PointInRectF(rotategrips[0], mousemappos))
+				return Grip.RotateRT;
+			else if(PointInRectF(rotategrips[1], mousemappos))
+				return Grip.RotateLB;
+			else if(Tools.PointInPolygon(corners, mousemappos))
+				return Grip.Main;
+			else
+				return Grip.None;
 		}
 		
 		#endregion
@@ -272,8 +405,38 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			base.OnDisengage();
 
 			// Hide highlight info
+			General.Interface.SetCursor(Cursors.Default);
 			General.Interface.HideInfo();
 		}
+
+		// Cancel mode
+		public override void OnCancel()
+		{
+			base.OnCancel();
+
+			General.Map.Map.Update(true, true);
+
+			// Return to previous stable mode
+			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+		}
+
+		// Mouse moves
+		public override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			Update();
+		}
+
+		// Mouse leaves the display
+		public override void OnMouseLeave(EventArgs e)
+		{
+			base.OnMouseLeave(e);
+
+			// Reset cursor
+			General.Interface.SetCursor(Cursors.Default);
+		}
+
 
 		// This redraws the display
 		public override void OnRedrawDisplay()
@@ -313,10 +476,25 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				renderer.RenderRectangleFilled(resizegrips[1], General.Colors.Background, true);
 				renderer.RenderRectangle(resizegrips[0], 2f, General.Colors.Highlight, true);
 				renderer.RenderRectangle(resizegrips[1], 2f, General.Colors.Highlight, true);
+				renderer.RenderRectangleFilled(alignrect, General.Colors.Selection, true);
 				renderer.Finish();
 			}
 
 			renderer.Present();
+		}
+
+		#endregion
+
+		#region ================== Actions
+
+		// This clears the selection
+		[BeginAction("clearselection", BaseAction = true)]
+		public void ClearSelection()
+		{
+			// Accept changes
+			General.Editing.AcceptMode();
+			General.Map.Map.ClearAllSelected();
+			General.Interface.RedrawDisplay();
 		}
 
 		#endregion
