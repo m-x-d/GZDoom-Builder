@@ -173,9 +173,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				s.Fields[YScaleName] = new UniValue(UniversalType.Float, si.scale.y + scale.y);
 				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, si.offset.x + offset.x);
 				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(si.offset.y + offset.y));
-				index++;
 				s.UpdateNeeded = true;
 				s.UpdateCache();
+				index++;
 			}
 		}
 		
@@ -251,8 +251,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				switch(mode)
 				{
 					case ModifyMode.Dragging:
-						offset = new Vector2D();
-						offset = WorldToTex(mousemappos) - WorldToTex(dragoffset);
+						Vector2D newoffset = -(mousemappos - dragoffset);
+						offset = newoffset.GetRotated(rotation + sectorinfo[0].rotation);
 						break;
 
 					case ModifyMode.Resizing:
@@ -394,19 +394,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			foreach(Sector s in selection)
 			{
 				SectorInfo si;
-				si.rotation = Angle2D.DegToRad(editsector.Fields.GetValue(RotationName, 0.0f));
-				si.scale.x = editsector.Fields.GetValue(XScaleName, 1.0f);
-				si.scale.y = editsector.Fields.GetValue(YScaleName, 1.0f);
-				si.offset.x = editsector.Fields.GetValue(XOffsetName, 0.0f);
-				si.offset.y = -editsector.Fields.GetValue(YOffsetName, 0.0f);
+				si.rotation = Angle2D.DegToRad(s.Fields.GetValue(RotationName, 0.0f));
+				si.scale.x = s.Fields.GetValue(XScaleName, 1.0f);
+				si.scale.y = s.Fields.GetValue(YScaleName, 1.0f);
+				si.offset.x = s.Fields.GetValue(XOffsetName, 0.0f);
+				si.offset.y = -s.Fields.GetValue(YOffsetName, 0.0f);
 				sectorinfo.Add(si);
 			}
-
-			// We use the transformation of the first selected sector to work with
-			rotation = sectorinfo[0].rotation;
-			scale = sectorinfo[0].scale;
-			offset = sectorinfo[0].offset;
-			sectorinfo[0] = new SectorInfo();
 
 			// We want the texture corner nearest to the center of the sector
 			Vector2D fp;
@@ -492,8 +486,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			{
 				// Drag main rectangle
 				case Grip.Main:
-
-					dragoffset = mousemappos - TexToWorld(offset);
+					dragoffset = mousemappos + offset.GetRotated(-(rotation + sectorinfo[0].rotation));
 					mode = ModifyMode.Dragging;
 
 					EnableAutoPanning();
