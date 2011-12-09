@@ -79,8 +79,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected Sector editsector;
 		protected IList<SectorInfo> sectorinfo;
 		private ImageData texture;
-		private Vector2D texturegraboffset;
+		private Vector2D selectionoffset;
 		private ModifyMode mode;
+		private bool autopanning;
 		
 		// Modification
 		private float rotation;
@@ -96,6 +97,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Aligning
 		private RectangleF alignrect;
 		private Vector2D dragalignoffset;
+		private Vector2D dragoffset;
 		
 		#endregion
 
@@ -129,6 +131,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 
 		// Transforms p from Texture space into World space
+		protected Vector2D TexToWorld(Vector2D p)
+		{
+			return TexToWorld(p, sectorinfo[0]);
+		}
+		
+		// Transforms p from Texture space into World space
 		protected Vector2D TexToWorld(Vector2D p, SectorInfo s)
 		{
 			p /= scale + s.scale;
@@ -137,6 +145,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			return p;
 		}
 
+		// Transforms p from World space into Texture space
+		protected Vector2D WorldToTex(Vector2D p)
+		{
+			return WorldToTex(p, sectorinfo[0]);
+		}
+		
 		// Transforms p from World space into Texture space
 		protected Vector2D WorldToTex(Vector2D p, SectorInfo s)
 		{
@@ -161,6 +175,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(si.offset.y + offset.y));
 				index++;
 				s.UpdateNeeded = true;
+				s.UpdateCache();
 			}
 		}
 		
@@ -236,7 +251,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				switch(mode)
 				{
 					case ModifyMode.Dragging:
-
+						offset = new Vector2D();
+						offset = WorldToTex(mousemappos) - WorldToTex(dragoffset);
 						break;
 
 					case ModifyMode.Resizing:
@@ -247,6 +263,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 						break;
 				}
+				
+				UpdateSectors();
+				General.Interface.RedrawDisplay();
 			}
 		}
 		
@@ -256,14 +275,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			float gripsize = GRIP_SIZE / renderer.Scale;
 
 			// Corners in world space
-			corners[0] = TexToWorld(texturegraboffset + new Vector2D(0f, 0f), sectorinfo[0]);
-			corners[1] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth, 0f), sectorinfo[0]);
-			corners[2] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth, -texture.ScaledHeight), sectorinfo[0]);
-			corners[3] = TexToWorld(texturegraboffset + new Vector2D(0f, -texture.ScaledHeight), sectorinfo[0]);
+			corners[0] = TexToWorld(selectionoffset + new Vector2D(0f, 0f));
+			corners[1] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth, 0f));
+			corners[2] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth, -texture.ScaledHeight));
+			corners[3] = TexToWorld(selectionoffset + new Vector2D(0f, -texture.ScaledHeight));
 
 			// Extended points for rotation corners
-			extends[0] = TexToWorld(texturegraboffset + new Vector2D(texture.ScaledWidth + 20f / renderer.Scale * (scale.x + sectorinfo[0].scale.x), 0f), sectorinfo[0]);
-			extends[1] = TexToWorld(texturegraboffset + new Vector2D(0f, -texture.ScaledHeight + -20f / renderer.Scale * (scale.y + sectorinfo[0].scale.y)), sectorinfo[0]);
+			extends[0] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth + 20f / renderer.Scale * (scale.x + sectorinfo[0].scale.x), 0f));
+			extends[1] = TexToWorld(selectionoffset + new Vector2D(0f, -texture.ScaledHeight + -20f / renderer.Scale * (scale.y + sectorinfo[0].scale.y)));
 
 			// Middle points between corners
 			Vector2D middle12 = corners[1] + (corners[2] - corners[1]) * 0.5f;
@@ -285,7 +304,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 											extends[1].y - gripsize * 0.5f,
 											gripsize, gripsize);
 			
-			Vector2D worldalignoffset = TexToWorld(texturegraboffset + dragalignoffset, sectorinfo[0]);
+			Vector2D worldalignoffset = TexToWorld(selectionoffset + dragalignoffset);
 			alignrect = new RectangleF(worldalignoffset.x - gripsize * 0.25f,
 									   worldalignoffset.y - gripsize * 0.25f,
 									   gripsize * 0.5f, gripsize * 0.5f);
@@ -383,18 +402,24 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				sectorinfo.Add(si);
 			}
 
+			// We use the transformation of the first selected sector to work with
+			rotation = sectorinfo[0].rotation;
+			scale = sectorinfo[0].scale;
+			offset = sectorinfo[0].offset;
+			sectorinfo[0] = new SectorInfo();
+
 			// We want the texture corner nearest to the center of the sector
 			Vector2D fp;
 			fp.x = (editsector.BBox.Left + editsector.BBox.Right) / 2;
 			fp.y = (editsector.BBox.Top + editsector.BBox.Bottom) / 2;
 
 			// Transform the point into texture space
-			fp = WorldToTex(fp, sectorinfo[0]);
+			fp = WorldToTex(fp);
 			
 			// Snap to the nearest left-top corner
 			fp.x = (float)Math.Round(fp.x / texture.ScaledWidth) * texture.ScaledWidth;
 			fp.y = (float)Math.Round(fp.y / texture.ScaledHeight) * texture.ScaledHeight;
-			texturegraboffset = fp;
+			selectionoffset = fp;
 
 			UpdateRectangleComponents();
 		}
@@ -437,6 +462,70 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			General.Interface.SetCursor(Cursors.Default);
 		}
 
+
+		// When edit button is pressed
+		protected override void OnEditBegin()
+		{
+			base.OnEditBegin();
+			OnSelectBegin();
+		}
+
+		// When edit button is released
+		protected override void OnEditEnd()
+		{
+			base.OnEditEnd();
+			OnSelectEnd();
+		}
+
+		// When select button is pressed
+		protected override void OnSelectBegin()
+		{
+			base.OnSelectBegin();
+
+			if(mode != ModifyMode.None) return;
+
+			// Used in many cases
+			Vector2D delta;
+
+			// Check what grip the mouse is over
+			switch(CheckMouseGrip())
+			{
+				// Drag main rectangle
+				case Grip.Main:
+
+					dragoffset = mousemappos - TexToWorld(offset);
+					mode = ModifyMode.Dragging;
+
+					EnableAutoPanning();
+					autopanning = true;
+					break;
+
+				// Outside the selection?
+				default:
+					// Accept and be done with it
+					General.Editing.AcceptMode();
+					break;
+			}
+		}
+
+		// When selected button is released
+		protected override void OnSelectEnd()
+		{
+			base.OnSelectEnd();
+
+			if(autopanning)
+			{
+				DisableAutoPanning();
+				autopanning = false;
+			}
+
+			// No modifying mode
+			mode = ModifyMode.None;
+
+			// Redraw
+			General.Map.Map.Update();
+			General.Interface.RedrawDisplay();
+		}
 
 		// This redraws the display
 		public override void OnRedrawDisplay()
