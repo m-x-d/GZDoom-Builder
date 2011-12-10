@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// rotation (not my idea) so we will transform this when applying
 		// changes to sectors.
 		private float rotation;
-		private Vector2D scale;
+		private Vector2D scale = new Vector2D(1.0f, 1.0f);
 		private Vector2D offset;
 
 		// Rectangle components
@@ -99,8 +99,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		
 		// Aligning
 		private RectangleF alignrect;
-		private Vector2D dragalignoffset;
+		private Vector2D alignoffset;
+		private bool showalignoffset;
 		private Vector2D dragoffset;
+		private Vector2D resizevector;
+		private Vector2D resizefilter;
+		private Line2D resizeaxis;
 		
 		#endregion
 
@@ -142,7 +146,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Transforms p from Texture space into World space
 		protected Vector2D TexToWorld(Vector2D p, SectorInfo s)
 		{
-			p /= scale + s.scale;
+			p /= scale * s.scale;
 			p -= s.offset;
 			p = p.GetRotated(-(rotation + s.rotation));
 			p -= offset;
@@ -161,7 +165,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			p += offset;
 			p = p.GetRotated(rotation + s.rotation);
 			p += s.offset;
-			p *= scale + s.scale;
+			p *= scale * s.scale;
 			return p;
 		}
 
@@ -175,8 +179,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				s.Fields.BeforeFieldsChange();
 				Vector2D toffset = offset.GetRotated((rotation + si.rotation));
 				s.Fields[RotationName] = new UniValue(UniversalType.AngleDegreesFloat, Angle2D.RadToDeg(si.rotation + rotation));
-				s.Fields[XScaleName] = new UniValue(UniversalType.Float, si.scale.x + scale.x);
-				s.Fields[YScaleName] = new UniValue(UniversalType.Float, si.scale.y + scale.y);
+				s.Fields[XScaleName] = new UniValue(UniversalType.Float, si.scale.x * scale.x);
+				s.Fields[YScaleName] = new UniValue(UniversalType.Float, si.scale.y * scale.y);
 				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, si.offset.x + toffset.x);
 				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(si.offset.y + toffset.y));
 				s.UpdateNeeded = true;
@@ -191,8 +195,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Not in any modifying mode?
 			if(mode == ModifyMode.None)
 			{
-				Vector2D prevdragoffset = dragalignoffset;
-				dragalignoffset = new Vector2D(-2f, -2f);
+				Vector2D prevdragoffset = alignoffset;
+				alignoffset = new Vector2D(float.MinValue, float.MinValue);
+				showalignoffset = false;
 				
 				// Check what grip the mouse is over
 				// and change cursor accordingly
@@ -206,7 +211,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						{
 							Vector2D delta = corners[i] - mousemappos;
 							float d = delta.GetLengthSq();
-							if(d < cornerdist)
+							if(d > cornerdist)
 							{
 								closestcorner = i;
 								cornerdist = d;
@@ -215,11 +220,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						switch(closestcorner)
 						{
 							// TODO:
-							case 0: dragalignoffset = new Vector2D(0f, 0f); break;
-							case 1: dragalignoffset = new Vector2D(0f, 0f); break;
-							case 2: dragalignoffset = new Vector2D(0f, 0f); break;
-							case 3: dragalignoffset = new Vector2D(0f, 0f); break;
+							case 0: alignoffset = new Vector2D(0f, 0f); break;
+							case 1: alignoffset = new Vector2D(0f, 0f); break;
+							case 2: alignoffset = new Vector2D(0f, 0f); break;
+							case 3: alignoffset = new Vector2D(0f, 0f); break;
 						}
+						showalignoffset = true;
 						General.Interface.SetCursor(Cursors.Hand);
 						break;
 
@@ -245,7 +251,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						break;
 				}
 
-				if(prevdragoffset != dragalignoffset)
+				if(prevdragoffset != alignoffset)
 					General.Interface.RedrawDisplay();
 			}
 			else
@@ -261,7 +267,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						break;
 
 					case ModifyMode.Resizing:
-
+						float newscale = 1f / resizeaxis.GetNearestOnLine(mousemappos);
+						scale = (newscale * resizefilter) + scale * (1.0f - resizefilter);
 						break;
 
 					case ModifyMode.Rotating:
@@ -286,8 +293,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			corners[3] = TexToWorld(selectionoffset + new Vector2D(0f, -texture.ScaledHeight));
 
 			// Extended points for rotation corners
-			extends[0] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth + 20f / renderer.Scale * (scale.x + sectorinfo[0].scale.x), 0f));
-			extends[1] = TexToWorld(selectionoffset + new Vector2D(0f, -texture.ScaledHeight + -20f / renderer.Scale * (scale.y + sectorinfo[0].scale.y)));
+			extends[0] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth + (20f * Math.Sign(scale.x * sectorinfo[0].scale.x)) / renderer.Scale * (scale.x * sectorinfo[0].scale.x), 0f));
+			extends[1] = TexToWorld(selectionoffset + new Vector2D(0f, -texture.ScaledHeight + (-20f * Math.Sign(scale.y * sectorinfo[0].scale.y))  / renderer.Scale * (scale.y * sectorinfo[0].scale.y)));
 
 			// Middle points between corners
 			Vector2D middle12 = corners[1] + (corners[2] - corners[1]) * 0.5f;
@@ -308,11 +315,14 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			rotategrips[1] = new RectangleF(extends[1].x - gripsize * 0.5f,
 											extends[1].y - gripsize * 0.5f,
 											gripsize, gripsize);
-			
-			Vector2D worldalignoffset = TexToWorld(selectionoffset + dragalignoffset);
-			alignrect = new RectangleF(worldalignoffset.x - gripsize * 0.25f,
-									   worldalignoffset.y - gripsize * 0.25f,
-									   gripsize * 0.5f, gripsize * 0.5f);
+
+			if(showalignoffset)
+			{
+				Vector2D worldalignoffset = TexToWorld(selectionoffset + alignoffset);
+				alignrect = new RectangleF(worldalignoffset.x - gripsize * 0.25f,
+										   worldalignoffset.y - gripsize * 0.25f,
+										   gripsize * 0.5f, gripsize * 0.5f);
+			}
 		}
 
 		// This checks and returns the grip the mouse pointer is in
@@ -419,6 +429,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			fp.x = (float)Math.Round(fp.x / texture.ScaledWidth) * texture.ScaledWidth;
 			fp.y = (float)Math.Round(fp.y / texture.ScaledHeight) * texture.ScaledHeight;
 			selectionoffset = fp;
+			selectionoffset = new Vector2D();
 
 			UpdateRectangleComponents();
 		}
@@ -493,9 +504,37 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				case Grip.Main:
 					dragoffset = -mousemappos - offset;
 					mode = ModifyMode.Dragging;
-
 					EnableAutoPanning();
 					autopanning = true;
+					break;
+
+				// Scale
+				case Grip.SizeH:
+					
+					// The resize vector is a unit vector in the direction of the resize.
+					// We multiply this with the sign of the current size, because the
+					// corners may be reversed when the selection is flipped.
+					resizevector = corners[1] - corners[0];
+					resizevector = resizevector.GetNormal() * Math.Sign(scale.x);
+
+					// Make the resize axis. This is a line with the length and direction
+					// of basesize used to calculate the resize percentage.
+					resizeaxis = new Line2D(corners[0], corners[0] + resizevector * texture.ScaledWidth / Math.Abs(sectorinfo[0].scale.x));
+
+					// Original axis filter
+					resizefilter = new Vector2D(1.0f, 0.0f);
+					
+					mode = ModifyMode.Resizing;
+					break;
+
+				// Scale
+				case Grip.SizeV:
+					// See description above
+					resizevector = corners[2] - corners[1];
+					resizevector = resizevector.GetNormal() * Math.Sign(scale.y);
+					resizeaxis = new Line2D(corners[1], corners[1] + resizevector * texture.ScaledHeight / Math.Abs(sectorinfo[0].scale.y));
+					resizefilter = new Vector2D(0.0f, 1.0f);
+					mode = ModifyMode.Resizing;
 					break;
 
 				// Outside the selection?
@@ -563,7 +602,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				renderer.RenderRectangleFilled(resizegrips[1], General.Colors.Background, true);
 				renderer.RenderRectangle(resizegrips[0], 2f, General.Colors.Highlight, true);
 				renderer.RenderRectangle(resizegrips[1], 2f, General.Colors.Highlight, true);
-				renderer.RenderRectangleFilled(alignrect, General.Colors.Selection, true);
+				if(showalignoffset)
+					renderer.RenderRectangleFilled(alignrect, General.Colors.Selection, true);
 				renderer.Finish();
 			}
 
