@@ -84,6 +84,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private bool autopanning;
 		
 		// Modification
+		// NOTE: This offset is in world space. ZDoom's offset is done before
+		// rotation (not my idea) so we will transform this when applying
+		// changes to sectors.
 		private float rotation;
 		private Vector2D scale;
 		private Vector2D offset;
@@ -140,8 +143,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected Vector2D TexToWorld(Vector2D p, SectorInfo s)
 		{
 			p /= scale + s.scale;
-			p -= offset + s.offset;
+			p -= s.offset;
 			p = p.GetRotated(-(rotation + s.rotation));
+			p -= offset;
 			return p;
 		}
 
@@ -154,8 +158,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// Transforms p from World space into Texture space
 		protected Vector2D WorldToTex(Vector2D p, SectorInfo s)
 		{
+			p += offset;
 			p = p.GetRotated(rotation + s.rotation);
-			p += offset + s.offset;
+			p += s.offset;
 			p *= scale + s.scale;
 			return p;
 		}
@@ -168,11 +173,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			{
 				SectorInfo si = sectorinfo[index];
 				s.Fields.BeforeFieldsChange();
+				Vector2D toffset = offset.GetRotated((rotation + si.rotation));
 				s.Fields[RotationName] = new UniValue(UniversalType.AngleDegreesFloat, Angle2D.RadToDeg(si.rotation + rotation));
 				s.Fields[XScaleName] = new UniValue(UniversalType.Float, si.scale.x + scale.x);
 				s.Fields[YScaleName] = new UniValue(UniversalType.Float, si.scale.y + scale.y);
-				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, si.offset.x + offset.x);
-				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(si.offset.y + offset.y));
+				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, si.offset.x + toffset.x);
+				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(si.offset.y + toffset.y));
 				s.UpdateNeeded = true;
 				s.UpdateCache();
 				index++;
@@ -251,8 +257,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				switch(mode)
 				{
 					case ModifyMode.Dragging:
-						Vector2D newoffset = -(mousemappos - dragoffset);
-						offset = newoffset.GetRotated(rotation + sectorinfo[0].rotation);
+						offset = -mousemappos - dragoffset;
 						break;
 
 					case ModifyMode.Resizing:
@@ -486,7 +491,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			{
 				// Drag main rectangle
 				case Grip.Main:
-					dragoffset = mousemappos + offset.GetRotated(-(rotation + sectorinfo[0].rotation));
+					dragoffset = -mousemappos - offset;
 					mode = ModifyMode.Dragging;
 
 					EnableAutoPanning();
