@@ -105,6 +105,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private Vector2D resizevector;
 		private Vector2D resizefilter;
 		private Line2D resizeaxis;
+		private float rotationoffset;
+		private Vector2D rotationcenter;
 		
 		#endregion
 
@@ -147,7 +149,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		protected Vector2D TexToWorld(Vector2D p, SectorInfo s)
 		{
 			p /= scale * s.scale;
-			p -= s.offset;
+			Vector2D soffset = s.offset.GetRotated(rotation);
+			p -= soffset;
 			p = p.GetRotated(-(rotation + s.rotation));
 			p -= offset;
 			return p;
@@ -178,11 +181,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				SectorInfo si = sectorinfo[index];
 				s.Fields.BeforeFieldsChange();
 				Vector2D toffset = offset.GetRotated((rotation + si.rotation));
+				Vector2D soffset = si.offset.GetRotated(rotation);
 				s.Fields[RotationName] = new UniValue(UniversalType.AngleDegreesFloat, Angle2D.RadToDeg(si.rotation + rotation));
 				s.Fields[XScaleName] = new UniValue(UniversalType.Float, si.scale.x * scale.x);
 				s.Fields[YScaleName] = new UniValue(UniversalType.Float, si.scale.y * scale.y);
-				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, si.offset.x + toffset.x);
-				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(si.offset.y + toffset.y));
+				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, soffset.x + toffset.x);
+				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(soffset.y + toffset.y));
 				s.UpdateNeeded = true;
 				s.UpdateCache();
 				index++;
@@ -272,7 +276,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						break;
 
 					case ModifyMode.Rotating:
-
+						Vector2D delta = mousemappos - rotationcenter;
+						rotation = -delta.GetAngle() + rotationoffset - sectorinfo[0].rotation;
 						break;
 				}
 				
@@ -426,12 +431,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			fp = WorldToTex(fp);
 			
 			// Snap to the nearest left-top corner
-			fp.x = (float)Math.Round(fp.x / texture.ScaledWidth) * texture.ScaledWidth;
-			fp.y = (float)Math.Round(fp.y / texture.ScaledHeight) * texture.ScaledHeight;
-			selectionoffset = fp;
-			selectionoffset = new Vector2D();
+			fp.x = (float)Math.Floor(fp.x / texture.ScaledWidth) * texture.ScaledWidth;
+			fp.y = (float)Math.Ceiling(fp.y / texture.ScaledHeight) * texture.ScaledHeight;
+
+			// Now move the offset so that the 0,0 point is at this location
+			// We want to work with the 0,0 location because it makes things easier.
+			SectorInfo si0 = sectorinfo[0];
+			si0.offset -= fp / si0.scale;
+			sectorinfo[0] = si0;
 
 			UpdateRectangleComponents();
+			UpdateSectors();
 		}
 
 		// Mode disengages
@@ -537,6 +547,24 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 					mode = ModifyMode.Resizing;
 					break;
 
+				// Rotate
+				case Grip.RotateRT:
+					rotationoffset = Angle2D.PIHALF;
+					if(Math.Sign(scale.x * sectorinfo[0].scale.x) < 0)
+						rotationoffset += Angle2D.PI;
+					rotationcenter = corners[0];
+					mode = ModifyMode.Rotating;
+					break;
+
+				// Rotate
+				case Grip.RotateLB:
+					rotationoffset = 0f;
+					if(Math.Sign(scale.y * sectorinfo[0].scale.y) < 0)
+						rotationoffset += Angle2D.PI;
+					rotationcenter = corners[0];
+					mode = ModifyMode.Rotating;
+					break;
+					
 				// Outside the selection?
 				default:
 					// Accept and be done with it
