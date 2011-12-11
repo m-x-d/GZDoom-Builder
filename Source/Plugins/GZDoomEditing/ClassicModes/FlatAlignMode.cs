@@ -70,6 +70,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		private const float GRIP_SIZE = 9.0f;
 		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNESW };
+		private const byte RECTANGLE_ALPHA = 60;
 		
 		#endregion
 
@@ -93,6 +94,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 		// Rectangle components
 		private Vector2D[] corners = new Vector2D[4]; // lefttop, righttop, rightbottom, leftbottom
+		private FlatVertex[] cornerverts = new FlatVertex[6];
 		private Vector2D[] extends = new Vector2D[2]; // right, bottom
 		private RectangleF[] resizegrips = new RectangleF[2];	// right, bottom
 		private RectangleF[] rotategrips = new RectangleF[2];   // righttop, leftbottom
@@ -107,6 +109,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private Line2D resizeaxis;
 		private float rotationoffset;
 		private Vector2D rotationcenter;
+
+		// Options
+		private bool snaptogrid;		// SHIFT to toggle
+		private bool snaptonearest;		// CTRL to enable
 		
 		#endregion
 
@@ -210,12 +216,12 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				{
 					case Grip.Main:
 						int closestcorner = -1;
-						float cornerdist = float.MinValue;
+						float cornerdist = float.MaxValue;
 						for(int i = 0; i < 4; i++)
 						{
 							Vector2D delta = corners[i] - mousemappos;
 							float d = delta.GetLengthSq();
-							if(d > cornerdist)
+							if(d < cornerdist)
 							{
 								closestcorner = i;
 								cornerdist = d;
@@ -225,9 +231,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 						{
 							// TODO:
 							case 0: alignoffset = new Vector2D(0f, 0f); break;
-							case 1: alignoffset = new Vector2D(0f, 0f); break;
-							case 2: alignoffset = new Vector2D(0f, 0f); break;
-							case 3: alignoffset = new Vector2D(0f, 0f); break;
+							case 1: alignoffset = new Vector2D(texture.ScaledWidth, 0f); break;
+							case 2: alignoffset = new Vector2D(texture.ScaledWidth, -texture.ScaledHeight); break;
+							case 3: alignoffset = new Vector2D(0f, -texture.ScaledHeight); break;
 						}
 						showalignoffset = true;
 						General.Interface.SetCursor(Cursors.Hand);
@@ -235,13 +241,17 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 
 					case Grip.RotateLB:
 					case Grip.RotateRT:
+						alignoffset = new Vector2D(0f, 0f);
+						showalignoffset = true;
 						General.Interface.SetCursor(Cursors.Cross);
 						break;
 
 					case Grip.SizeH:
 					case Grip.SizeV:
+						alignoffset = new Vector2D(0f, 0f);
+						showalignoffset = true;
 						// Pick the best matching cursor depending on rotation and side
-						float resizeangle = rotation;
+						float resizeangle = -(rotation + sectorinfo[0].rotation);
 						if(mousegrip == Grip.SizeH) resizeangle += Angle2D.PIHALF;
 						resizeangle = Angle2D.Normalized(resizeangle);
 						if(resizeangle > Angle2D.PI) resizeangle -= Angle2D.PI;
@@ -260,6 +270,13 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 			else
 			{
+				Vector2D snappedmappos = mousemappos;
+				bool dosnaptogrid = snaptogrid;
+
+				// Options
+				snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+				snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
+
 				// Change to crosshair cursor so we can clearly see around the mouse cursor
 				General.Interface.SetCursor(Cursors.Cross);
 				
@@ -290,12 +307,34 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private void UpdateRectangleComponents()
 		{
 			float gripsize = GRIP_SIZE / renderer.Scale;
+			PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
 
 			// Corners in world space
 			corners[0] = TexToWorld(selectionoffset + new Vector2D(0f, 0f));
 			corners[1] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth, 0f));
 			corners[2] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth, -texture.ScaledHeight));
 			corners[3] = TexToWorld(selectionoffset + new Vector2D(0f, -texture.ScaledHeight));
+
+			// Vertices
+			cornerverts = new FlatVertex[6];
+			for(int i = 0; i < 6; i++)
+			{
+				cornerverts[i] = new FlatVertex();
+				cornerverts[i].z = 1.0f;
+				cornerverts[i].c = rectcolor.ToInt();
+			}
+			cornerverts[0].x = corners[0].x;
+			cornerverts[0].y = corners[0].y;
+			cornerverts[1].x = corners[1].x;
+			cornerverts[1].y = corners[1].y;
+			cornerverts[2].x = corners[2].x;
+			cornerverts[2].y = corners[2].y;
+			cornerverts[3].x = corners[0].x;
+			cornerverts[3].y = corners[0].y;
+			cornerverts[4].x = corners[2].x;
+			cornerverts[4].y = corners[2].y;
+			cornerverts[5].x = corners[3].x;
+			cornerverts[5].y = corners[3].y;
 
 			// Extended points for rotation corners
 			extends[0] = TexToWorld(selectionoffset + new Vector2D(texture.ScaledWidth + (20f * Math.Sign(scale.x * sectorinfo[0].scale.x)) / renderer.Scale * (scale.x * sectorinfo[0].scale.x), 0f));
@@ -324,9 +363,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(showalignoffset)
 			{
 				Vector2D worldalignoffset = TexToWorld(selectionoffset + alignoffset);
-				alignrect = new RectangleF(worldalignoffset.x - gripsize * 0.25f,
-										   worldalignoffset.y - gripsize * 0.25f,
-										   gripsize * 0.5f, gripsize * 0.5f);
+				alignrect = new RectangleF(worldalignoffset.x - gripsize * 0.5f,
+										   worldalignoffset.y - gripsize * 0.5f,
+										   gripsize, gripsize);
 			}
 		}
 
@@ -618,10 +657,21 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			// Render overlay
 			if(renderer.StartOverlay(true))
 			{
+				// Rectangle
+				PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
+				renderer.RenderGeometry(cornerverts, null, true);
+				renderer.RenderLine(corners[0], corners[1], 4, rectcolor, true);
+				renderer.RenderLine(corners[1], corners[2], 4, rectcolor, true);
+				renderer.RenderLine(corners[2], corners[3], 4, rectcolor, true);
+				renderer.RenderLine(corners[3], corners[0], 4, rectcolor, true);
+
+				// Lines
 				renderer.RenderLine(corners[0], extends[0], 1f, General.Colors.Highlight, true);
 				renderer.RenderLine(corners[0], extends[1], 1f, General.Colors.Highlight, true);
 				renderer.RenderLine(corners[1], corners[2], 0.5f, General.Colors.Highlight, true);
 				renderer.RenderLine(corners[2], corners[3], 0.5f, General.Colors.Highlight, true);
+
+				// Handles
 				renderer.RenderRectangleFilled(rotategrips[0], General.Colors.Background, true);
 				renderer.RenderRectangleFilled(rotategrips[1], General.Colors.Background, true);
 				renderer.RenderRectangle(rotategrips[0], 2f, General.Colors.Indication, true);
@@ -630,8 +680,11 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				renderer.RenderRectangleFilled(resizegrips[1], General.Colors.Background, true);
 				renderer.RenderRectangle(resizegrips[0], 2f, General.Colors.Highlight, true);
 				renderer.RenderRectangle(resizegrips[1], 2f, General.Colors.Highlight, true);
+
+				// Rotate/align point
 				if(showalignoffset)
 					renderer.RenderRectangleFilled(alignrect, General.Colors.Selection, true);
+				
 				renderer.Finish();
 			}
 
