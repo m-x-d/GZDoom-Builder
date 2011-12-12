@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private const float GRIP_SIZE = 9.0f;
 		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNESW };
 		private const byte RECTANGLE_ALPHA = 60;
+		private const byte EXTENSION_LINE_ALPHA = 150;
 		
 		#endregion
 
@@ -98,6 +99,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private Vector2D[] extends = new Vector2D[2]; // right, bottom
 		private RectangleF[] resizegrips = new RectangleF[2];	// right, bottom
 		private RectangleF[] rotategrips = new RectangleF[2];   // righttop, leftbottom
+		private Line2D extensionline;
 		
 		// Aligning
 		private RectangleF alignrect;
@@ -272,7 +274,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			{
 				Vector2D snappedmappos = mousemappos;
 				bool dosnaptogrid = snaptogrid;
-
+				
 				// Options
 				snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 				snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
@@ -284,17 +286,173 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				switch(mode)
 				{
 					case ModifyMode.Dragging:
+						
 						offset = -mousemappos - dragoffset;
+						Vector2D transformedpos = TexToWorld(alignoffset);
+
+						// Snap to nearest vertex?
+						if(snaptonearest)
+						{
+							float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
+
+							// Try the nearest vertex
+							Vertex nv = MapSet.NearestVertexSquareRange(General.Map.Map.Vertices, transformedpos, vrange);
+							if(nv != null)
+							{
+								// Change offset to snap to target
+								offset -= nv.Position - transformedpos;
+								dosnaptogrid = false;
+							}
+							else
+							{
+								// Find the nearest line within range
+								Linedef nl = MapSet.NearestLinedefRange(General.Map.Map.Linedefs, transformedpos, vrange);
+								if(nl != null)
+								{
+									// Snap to grid?
+									if(dosnaptogrid)
+									{
+										// Get grid intersection coordinates
+										List<Vector2D> coords = nl.GetGridIntersections();
+
+										// Find nearest grid intersection
+										float found_distance = float.MaxValue;
+										Vector2D found_pos = new Vector2D(float.NaN, float.NaN);
+										foreach(Vector2D v in coords)
+										{
+											Vector2D dist = transformedpos - v;
+											if(dist.GetLengthSq() < found_distance)
+											{
+												// Found a better match
+												found_distance = dist.GetLengthSq();
+												found_pos = v;
+
+												// Do not snap to grid anymore
+												dosnaptogrid = false;
+											}
+										}
+
+										// Found something?
+										if(!float.IsNaN(found_pos.x))
+										{
+											// Change offset to snap to target
+											offset -= found_pos - transformedpos;
+										}
+									}
+									else
+									{
+										// Change offset to snap onto the line
+										offset -= nl.NearestOnLine(transformedpos) - transformedpos;
+									}
+								}
+							}
+						}
+
+						// Snap to grid?
+						if(dosnaptogrid)
+						{
+							// Change offset to align to grid
+							offset -= General.Map.Grid.SnappedToGrid(transformedpos) - transformedpos;
+						}
+						
 						break;
 
 					case ModifyMode.Resizing:
-						float newscale = 1f / resizeaxis.GetNearestOnLine(mousemappos);
+						
+						// Snap to nearest vertex?
+						if(snaptonearest)
+						{
+							float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
+
+							// Try the nearest vertex
+							Vertex nv = MapSet.NearestVertexSquareRange(General.Map.Map.Vertices, snappedmappos, vrange);
+							if(nv != null)
+							{
+								snappedmappos = nv.Position;
+								dosnaptogrid = false;
+							}
+						}
+
+						// Snap to grid?
+						if(dosnaptogrid)
+						{
+							// Aligned to grid
+							snappedmappos = General.Map.Grid.SnappedToGrid(snappedmappos);
+						}
+
+						float newscale = 1f / resizeaxis.GetNearestOnLine(snappedmappos);
+						if(float.IsInfinity(newscale) || float.IsNaN(newscale)) newscale = 99999f;
 						scale = (newscale * resizefilter) + scale * (1.0f - resizefilter);
+						if(float.IsInfinity(scale.x) || float.IsNaN(scale.x)) scale.x = 99999f;
+						if(float.IsInfinity(scale.y) || float.IsNaN(scale.y)) scale.y = 99999f;
+
+						// Show the extension line so that the user knows what it is aligning to
+						UpdateRectangleComponents();
+						Line2D edgeline;
+						if(resizefilter.x > resizefilter.y)
+							edgeline = new Line2D(corners[1], corners[2]);
+						else
+							edgeline = new Line2D(corners[3], corners[2]);
+						float nearestonedge = edgeline.GetNearestOnLine(snappedmappos);
+						if(nearestonedge > 0.5f)
+							extensionline = new Line2D(edgeline.v1, snappedmappos);
+						else
+							extensionline = new Line2D(edgeline.v2, snappedmappos);
+
 						break;
 
 					case ModifyMode.Rotating:
-						Vector2D delta = mousemappos - rotationcenter;
-						rotation = -delta.GetAngle() + rotationoffset - sectorinfo[0].rotation;
+
+						// Snap to nearest vertex?
+						extensionline = new Line2D();
+						if(snaptonearest)
+						{
+							float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
+
+							// Try the nearest vertex
+							Vertex nv = MapSet.NearestVertexSquareRange(General.Map.Map.Vertices, snappedmappos, vrange);
+							if(nv != null)
+							{
+								snappedmappos = nv.Position;
+								dosnaptogrid = false;
+
+								// Show the extension line so that the user knows what it is aligning to
+								extensionline = new Line2D(corners[0], snappedmappos);
+							}
+						}
+
+						Vector2D delta = snappedmappos - rotationcenter;
+						float deltaangle = -delta.GetAngle();
+						
+						// Snap to grid?
+						if(dosnaptogrid)
+						{
+							// We make 8 vectors that the rotation can snap to
+							float founddistance = float.MaxValue;
+							float foundrotation = rotation;
+							for(int i = 0; i < 8; i++)
+							{
+								// Make the vectors
+								float angle = (float)i * Angle2D.PI * 0.25f;
+								Vector2D gridvec = Vector2D.FromAngle(angle);
+								Vector3D rotvec = Vector2D.FromAngle(deltaangle + rotationoffset - sectorinfo[0].rotation);
+
+								// Check distance
+								float dist = 2.0f - Vector2D.DotProduct(gridvec, rotvec);
+								if(dist < founddistance)
+								{
+									foundrotation = angle;
+									founddistance = dist;
+								}
+							}
+
+							// Keep rotation
+							rotation = foundrotation;
+						}
+						else
+						{
+							rotation = deltaangle + rotationoffset - sectorinfo[0].rotation;
+						}
 						break;
 				}
 				
@@ -617,6 +775,9 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			base.OnSelectEnd();
 
+			// Remove extension line
+			extensionline = new Line2D();
+
 			if(autopanning)
 			{
 				DisableAutoPanning();
@@ -660,6 +821,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				// Rectangle
 				PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
 				renderer.RenderGeometry(cornerverts, null, true);
+				if(extensionline.GetLengthSq() > 0.0f)
+					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(EXTENSION_LINE_ALPHA), true);
 				renderer.RenderLine(corners[0], corners[1], 4, rectcolor, true);
 				renderer.RenderLine(corners[1], corners[2], 4, rectcolor, true);
 				renderer.RenderLine(corners[2], corners[3], 4, rectcolor, true);
