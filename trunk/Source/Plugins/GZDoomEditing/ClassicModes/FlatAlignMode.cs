@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private Vector2D selectionoffset;
 		private ModifyMode mode;
 		private bool autopanning;
+		private bool modealreadyswitching;
 		
 		// Modification
 		// NOTE: This offset is in world space. ZDoom's offset is done before
@@ -195,6 +196,25 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 				s.Fields[YScaleName] = new UniValue(UniversalType.Float, si.scale.y * scale.y);
 				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, soffset.x + toffset.x);
 				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -(soffset.y + toffset.y));
+				s.UpdateNeeded = true;
+				s.UpdateCache();
+				index++;
+			}
+		}
+
+		// This restores all sectors to original values
+		private void RestoreSectors()
+		{
+			int index = 0;
+			foreach(Sector s in selection)
+			{
+				SectorInfo si = sectorinfo[index];
+				s.Fields.BeforeFieldsChange();
+				s.Fields[RotationName] = new UniValue(UniversalType.AngleDegreesFloat, Angle2D.RadToDeg(si.rotation));
+				s.Fields[XScaleName] = new UniValue(UniversalType.Float, si.scale.x);
+				s.Fields[YScaleName] = new UniValue(UniversalType.Float, si.scale.y);
+				s.Fields[XOffsetName] = new UniValue(UniversalType.Float, si.offset.x);
+				s.Fields[YOffsetName] = new UniValue(UniversalType.Float, -si.offset.y);
 				s.UpdateNeeded = true;
 				s.UpdateCache();
 				index++;
@@ -435,7 +455,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 								// Make the vectors
 								float angle = (float)i * Angle2D.PI * 0.25f;
 								Vector2D gridvec = Vector2D.FromAngle(angle);
-								Vector3D rotvec = Vector2D.FromAngle(deltaangle + rotationoffset - sectorinfo[0].rotation);
+								Vector3D rotvec = Vector2D.FromAngle(deltaangle + rotationoffset);
 
 								// Check distance
 								float dist = 2.0f - Vector2D.DotProduct(gridvec, rotvec);
@@ -447,7 +467,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 							}
 
 							// Keep rotation
-							rotation = foundrotation;
+							rotation = foundrotation - sectorinfo[0].rotation;
 						}
 						else
 						{
@@ -553,6 +573,10 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			base.OnEngage();
 
+			// We don't want to record this for undoing while we move the geometry around.
+			// This will be set back to normal when we're done.
+			General.Map.UndoRedo.IgnorePropChanges = true;
+
 			// Presentation
 			renderer.SetPresentation(Presentation.Standard);
 
@@ -646,17 +670,63 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			base.OnDisengage();
 
+			// When not cancelled manually, we assume it is accepted
+			if(!cancelled)
+			{
+				modealreadyswitching = true;
+				General.Editing.AcceptMode();
+			}
+			
 			// Hide highlight info
 			General.Interface.SetCursor(Cursors.Default);
 			General.Interface.HideInfo();
+			General.Interface.RedrawDisplay();
+		}
+
+		// When accepted
+		public override void OnAccept()
+		{
+			base.OnAccept();
+
+			// Restore original values
+			RestoreSectors();
+			General.Map.Map.Update();
+
+			// Make undo
+			General.Map.UndoRedo.CreateUndo("Flat Alignment");
+
+			// Resume normal undo/redo recording
+			General.Map.UndoRedo.IgnorePropChanges = false;
+
+			// Apply changes
+			UpdateSectors();
+			General.Map.Map.Update();
+
+			// Clear selection
+			if(selection.Count == 1)
+				General.Map.Map.ClearAllSelected();
+
+			// Done
+			General.Map.IsChanged = true;
+
+			if(!modealreadyswitching)
+			{
+				// Return to previous stable mode
+				General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+			}
 		}
 
 		// Cancel mode
 		public override void OnCancel()
 		{
 			base.OnCancel();
+			
+			// Restore original values
+			RestoreSectors();
+			General.Map.Map.Update();
 
-			General.Map.Map.Update(true, true);
+			// Resume normal undo/redo recording
+			General.Map.UndoRedo.IgnorePropChanges = false;
 
 			// Return to previous stable mode
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
