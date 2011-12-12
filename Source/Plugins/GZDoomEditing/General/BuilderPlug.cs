@@ -73,6 +73,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		private bool visualmodeclearselection;
 		private bool usegravity;
 		private bool usehighlight;
+		private float stitchrange;
 		
 		// Copy/paste
 		private string copiedtexture;
@@ -100,6 +101,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public bool VisualModeClearSelection { get { return visualmodeclearselection; } }
 		public bool UseGravity { get { return usegravity; } set { usegravity = value; } }
 		public bool UseHighlight { get { return usehighlight; } set { usehighlight = value; } }
+		public float StitchRange { get { return stitchrange; } }
 		
 		// Copy/paste
 		public string CopiedTexture { get { return copiedtexture; } set { copiedtexture = value; } }
@@ -145,6 +147,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			changeheightbysidedef = General.Settings.ReadPluginSetting("BuilderModes", "changeheightbysidedef", 0);
 			visualmodeclearselection = General.Settings.ReadPluginSetting("BuilderModes", "visualmodeclearselection", false);
+			stitchrange = (float)General.Settings.ReadPluginSetting("BuilderModes", "stitchrange", 20);
 		}
 
 		#endregion
