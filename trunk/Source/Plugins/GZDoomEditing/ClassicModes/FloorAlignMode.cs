@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override string XOffsetName { get { return "xpanningfloor"; } }
 		public override string YOffsetName { get { return "ypanningfloor"; } }
 		public override string RotationName { get { return "rotationfloor"; } }
+		public override string UndoDescription { get { return "Floor Alignment"; } }
 
 		#endregion
 

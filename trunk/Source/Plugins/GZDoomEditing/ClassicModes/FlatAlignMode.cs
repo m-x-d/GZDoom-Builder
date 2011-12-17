@@ -126,6 +126,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public abstract string XOffsetName { get; }
 		public abstract string YOffsetName { get; }
 		public abstract string RotationName { get; }
+		public abstract string UndoDescription { get; }
 
 		#endregion
 
@@ -613,7 +614,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			if(selection.Count == 0)
 			{
 				General.Interface.MessageBeep(MessageBeepType.Default);
-				General.Interface.DisplayStatus(StatusType.Info, "A selected sector is required for this action.");
+				General.Interface.DisplayStatus(StatusType.Action, "A selected sector is required for this action.");
 				General.Editing.CancelMode();
 				return;
 			}
@@ -625,7 +626,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			   (texture.Width <= 0) || (texture.Height <= 0) || !texture.IsImageLoaded)
 			{
 				General.Interface.MessageBeep(MessageBeepType.Default);
-				General.Interface.DisplayStatus(StatusType.Info, "The selected sector must have a loaded texture to align.");
+				General.Interface.DisplayStatus(StatusType.Action, "The selected sector must have a loaded texture to align.");
 				General.Editing.CancelMode();
 				return;
 			}
@@ -688,29 +689,33 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		{
 			base.OnAccept();
 
-			// Restore original values
-			RestoreSectors();
-			General.Map.Map.Update();
-
-			// Make undo
-			General.Map.UndoRedo.CreateUndo("Flat Alignment");
-
-			// Resume normal undo/redo recording
-			General.Map.UndoRedo.IgnorePropChanges = false;
-
-			// Apply changes
-			UpdateSectors();
-			General.Map.Map.Update();
-
-			// Clear selection
-			if(selection.Count == 1)
-				General.Map.Map.ClearAllSelected();
-
-			// Done
-			General.Map.IsChanged = true;
-
 			if(!modealreadyswitching)
 			{
+				modealreadyswitching = true;
+				
+				// Restore original values
+				RestoreSectors();
+				General.Map.Map.Update();
+
+				// Make undo
+				General.Map.UndoRedo.CreateUndo(UndoDescription);
+
+				// Resume normal undo/redo recording
+				General.Map.UndoRedo.IgnorePropChanges = false;
+
+				// Apply changes
+				UpdateSectors();
+				General.Map.Map.Update();
+
+				// Clear selection
+				if(selection.Count == 1)
+					General.Map.Map.ClearAllSelected();
+
+				// Done
+				General.Map.IsChanged = true;
+				selection = null;
+				sectorinfo = null;
+				
 				// Return to previous stable mode
 				General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
 			}
@@ -720,6 +725,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override void OnCancel()
 		{
 			base.OnCancel();
+			modealreadyswitching = true;
 			
 			// Restore original values
 			RestoreSectors();
@@ -865,7 +871,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This redraws the display
 		public override void OnRedrawDisplay()
 		{
-			UpdateRectangleComponents();
+			if(sectorinfo != null)
+				UpdateRectangleComponents();
 
 			renderer.RedrawSurface();
 
@@ -886,41 +893,44 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			}
 
 			// Render overlay
-			if(renderer.StartOverlay(true))
+			if(sectorinfo != null)
 			{
-				// Rectangle
-				PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
-				renderer.RenderGeometry(cornerverts, null, true);
-				if(extensionline.GetLengthSq() > 0.0f)
-					renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(EXTENSION_LINE_ALPHA), true);
-				renderer.RenderLine(corners[0], corners[1], 4, rectcolor, true);
-				renderer.RenderLine(corners[1], corners[2], 4, rectcolor, true);
-				renderer.RenderLine(corners[2], corners[3], 4, rectcolor, true);
-				renderer.RenderLine(corners[3], corners[0], 4, rectcolor, true);
+				if(renderer.StartOverlay(true))
+				{
+					// Rectangle
+					PixelColor rectcolor = General.Colors.Highlight.WithAlpha(RECTANGLE_ALPHA);
+					renderer.RenderGeometry(cornerverts, null, true);
+					if(extensionline.GetLengthSq() > 0.0f)
+						renderer.RenderLine(extensionline.v1, extensionline.v2, 1, General.Colors.Indication.WithAlpha(EXTENSION_LINE_ALPHA), true);
+					renderer.RenderLine(corners[0], corners[1], 4, rectcolor, true);
+					renderer.RenderLine(corners[1], corners[2], 4, rectcolor, true);
+					renderer.RenderLine(corners[2], corners[3], 4, rectcolor, true);
+					renderer.RenderLine(corners[3], corners[0], 4, rectcolor, true);
 
-				// Lines
-				renderer.RenderLine(corners[0], extends[0], 1f, General.Colors.Highlight, true);
-				renderer.RenderLine(corners[0], extends[1], 1f, General.Colors.Highlight, true);
-				renderer.RenderLine(corners[1], corners[2], 0.5f, General.Colors.Highlight, true);
-				renderer.RenderLine(corners[2], corners[3], 0.5f, General.Colors.Highlight, true);
+					// Lines
+					renderer.RenderLine(corners[0], extends[0], 1f, General.Colors.Highlight, true);
+					renderer.RenderLine(corners[0], extends[1], 1f, General.Colors.Highlight, true);
+					renderer.RenderLine(corners[1], corners[2], 0.5f, General.Colors.Highlight, true);
+					renderer.RenderLine(corners[2], corners[3], 0.5f, General.Colors.Highlight, true);
 
-				// Handles
-				renderer.RenderRectangleFilled(rotategrips[0], General.Colors.Background, true);
-				renderer.RenderRectangleFilled(rotategrips[1], General.Colors.Background, true);
-				renderer.RenderRectangle(rotategrips[0], 2f, General.Colors.Indication, true);
-				renderer.RenderRectangle(rotategrips[1], 2f, General.Colors.Indication, true);
-				renderer.RenderRectangleFilled(resizegrips[0], General.Colors.Background, true);
-				renderer.RenderRectangleFilled(resizegrips[1], General.Colors.Background, true);
-				renderer.RenderRectangle(resizegrips[0], 2f, General.Colors.Highlight, true);
-				renderer.RenderRectangle(resizegrips[1], 2f, General.Colors.Highlight, true);
+					// Handles
+					renderer.RenderRectangleFilled(rotategrips[0], General.Colors.Background, true);
+					renderer.RenderRectangleFilled(rotategrips[1], General.Colors.Background, true);
+					renderer.RenderRectangle(rotategrips[0], 2f, General.Colors.Indication, true);
+					renderer.RenderRectangle(rotategrips[1], 2f, General.Colors.Indication, true);
+					renderer.RenderRectangleFilled(resizegrips[0], General.Colors.Background, true);
+					renderer.RenderRectangleFilled(resizegrips[1], General.Colors.Background, true);
+					renderer.RenderRectangle(resizegrips[0], 2f, General.Colors.Highlight, true);
+					renderer.RenderRectangle(resizegrips[1], 2f, General.Colors.Highlight, true);
 
-				// Rotate/align point
-				if(showalignoffset)
-					renderer.RenderRectangleFilled(alignrect, General.Colors.Selection, true);
-				
-				renderer.Finish();
+					// Rotate/align point
+					if(showalignoffset)
+						renderer.RenderRectangleFilled(alignrect, General.Colors.Selection, true);
+
+					renderer.Finish();
+				}
 			}
-
+			
 			renderer.Present();
 		}
 

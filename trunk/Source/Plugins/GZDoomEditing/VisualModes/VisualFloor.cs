@@ -168,6 +168,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			float oldy = Sector.Sector.Fields.GetValue("ypanningfloor", 0.0f);
 			Sector.Sector.Fields["xpanningfloor"] = new UniValue(UniversalType.Float, oldx + (float)xy.X);
 			Sector.Sector.Fields["ypanningfloor"] = new UniValue(UniversalType.Float, oldy + (float)xy.Y);
+			Sector.Sector.UpdateNeeded = true;
 		}
 		
 		// Paste texture
