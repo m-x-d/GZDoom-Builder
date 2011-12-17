@@ -64,7 +64,8 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		public override string XOffsetName { get { return "xpanningceiling"; } }
 		public override string YOffsetName { get { return "ypanningceiling"; } }
 		public override string RotationName { get { return "rotationceiling"; } }
-	
+		public override string UndoDescription { get { return "Ceiling Alignment"; } }
+		
 		#endregion
 
 		#region ================== Constructor / Disposer
