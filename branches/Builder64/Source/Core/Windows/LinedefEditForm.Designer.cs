@@ -174,7 +174,7 @@ namespace CodeImp.DoomBuilder.Windows
             taglabel.AutoSize = true;
             taglabel.Location = new System.Drawing.Point(28, 31);
             taglabel.Name = "taglabel";
-            taglabel.Size = new System.Drawing.Size(28, 14);
+            taglabel.Size = new System.Drawing.Size(27, 14);
             taglabel.TabIndex = 6;
             taglabel.Text = "Tag:";
             // 
@@ -210,7 +210,7 @@ namespace CodeImp.DoomBuilder.Windows
             label6.AutoSize = true;
             label6.Location = new System.Drawing.Point(16, 79);
             label6.Name = "label6";
-            label6.Size = new System.Drawing.Size(81, 14);
+            label6.Size = new System.Drawing.Size(80, 14);
             label6.TabIndex = 7;
             label6.Text = "Texture Offset:";
             // 
@@ -219,7 +219,7 @@ namespace CodeImp.DoomBuilder.Windows
             label7.AutoSize = true;
             label7.Location = new System.Drawing.Point(16, 79);
             label7.Name = "label7";
-            label7.Size = new System.Drawing.Size(81, 14);
+            label7.Size = new System.Drawing.Size(80, 14);
             label7.TabIndex = 7;
             label7.Text = "Texture Offset:";
             // 
@@ -383,7 +383,7 @@ namespace CodeImp.DoomBuilder.Windows
             switchtexturelbl.AutoSize = true;
             switchtexturelbl.Location = new System.Drawing.Point(12, 56);
             switchtexturelbl.Name = "switchtexturelbl";
-            switchtexturelbl.Size = new System.Drawing.Size(84, 14);
+            switchtexturelbl.Size = new System.Drawing.Size(83, 14);
             switchtexturelbl.TabIndex = 20;
             switchtexturelbl.Text = "Switch Texture:";
             // 
@@ -685,6 +685,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabproperties.Padding = new System.Windows.Forms.Padding(5);
             this.tabproperties.Size = new System.Drawing.Size(549, 777);
             this.tabproperties.TabIndex = 0;
+            this.tabproperties.Tag = "0";
             this.tabproperties.Text = "Properties";
             this.tabproperties.UseVisualStyleBackColor = true;
             // 
@@ -803,7 +804,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.activationtypeyellow.AutoSize = true;
             this.activationtypeyellow.Location = new System.Drawing.Point(119, 43);
             this.activationtypeyellow.Name = "activationtypeyellow";
-            this.activationtypeyellow.Size = new System.Drawing.Size(82, 18);
+            this.activationtypeyellow.Size = new System.Drawing.Size(81, 18);
             this.activationtypeyellow.TabIndex = 6;
             this.activationtypeyellow.Text = "Yellow Key";
             this.activationtypeyellow.UseVisualStyleBackColor = true;
@@ -893,6 +894,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabsidedefs.Padding = new System.Windows.Forms.Padding(5);
             this.tabsidedefs.Size = new System.Drawing.Size(549, 777);
             this.tabsidedefs.TabIndex = 1;
+            this.tabsidedefs.Tag = "1";
             this.tabsidedefs.Text = "Sidedefs";
             this.tabsidedefs.UseVisualStyleBackColor = true;
             // 
@@ -1146,6 +1148,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
             this.tabcustom.Size = new System.Drawing.Size(549, 777);
             this.tabcustom.TabIndex = 2;
+            this.tabcustom.Tag = "2";
             this.tabcustom.Text = "Custom";
             this.tabcustom.UseVisualStyleBackColor = true;
             // 
@@ -1170,6 +1173,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabmacros.Name = "tabmacros";
             this.tabmacros.Size = new System.Drawing.Size(549, 777);
             this.tabmacros.TabIndex = 3;
+            this.tabmacros.Tag = "3";
             this.tabmacros.Text = "Macros";
             this.tabmacros.UseVisualStyleBackColor = true;
             // 

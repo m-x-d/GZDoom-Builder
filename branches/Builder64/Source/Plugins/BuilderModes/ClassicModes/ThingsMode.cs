@@ -626,7 +626,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					List<Thing> things = new List<Thing>(1);
 					things.Add(t);
-					General.Interface.ShowEditThings(things);
+
+                    // villsa (builder64) - don't bring up edit menu. Useful for quickly inserting things
+					//General.Interface.ShowEditThings(things);
 				}
 
 				General.Interface.DisplayStatus(StatusType.Action, "Inserted a new thing.");

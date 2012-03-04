@@ -55,8 +55,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Gravity
 		private const float GRAVITY = -0.06f;
-		private const float CAMERA_FLOOR_OFFSET = 41f;		// same as in doom
-        private const float CAMERA_FLOOR_OFFSET64 = 56f;		// same as in doom64
+		private const float CAMERA_FLOOR_OFFSET = 56f;		// same as in doom64
 		private const float CAMERA_CEILING_OFFSET = 10f;
 		
 		#endregion
@@ -65,7 +64,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Gravity
 		private Vector3D gravity;
-		private float cameraflooroffset = 41f;		// same as in doom
+		private float cameraflooroffset = 56f;		// same as in doom64
 		private float cameraceilingoffset = 10f;
 		
 		// Object picking
@@ -452,16 +451,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply gravity?
 			if(BuilderPlug.Me.UseGravity && (General.Map.VisualCamera.Sector != null))
 			{
-                // villsa - adjust offset if in d64 mode
-                float offset;
-
-                if (General.Map.FormatInterface.InDoom64Mode == true)
-                    offset = CAMERA_FLOOR_OFFSET64;
-                else
-                    offset = CAMERA_FLOOR_OFFSET;
-
 				// Camera below floor level?
-                if (General.Map.VisualCamera.Position.z <= (General.Map.VisualCamera.Sector.FloorHeight + offset + 0.1f))
+                if (General.Map.VisualCamera.Position.z <= (General.Map.VisualCamera.Sector.FloorHeight + CAMERA_FLOOR_OFFSET + 0.1f))
 				{
 					// Stay above floor
 					gravity = new Vector3D(0.0f, 0.0f, 0.0f);

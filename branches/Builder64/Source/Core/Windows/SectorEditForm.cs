@@ -145,6 +145,19 @@ namespace CodeImp.DoomBuilder.Windows
 			// Go for all sectors
 			foreach(Sector s in sectors)
 			{
+                // Flags
+                foreach (CheckBox c in flags.Checkboxes)
+                {
+                    if (s.Flags.ContainsKey(c.Tag.ToString()))
+                    {
+                        if (s.Flags[c.Tag.ToString()] != c.Checked)
+                        {
+                            c.ThreeState = true;
+                            c.CheckState = CheckState.Indeterminate;
+                        }
+                    }
+                }
+
 				// Effects
 				if(s.Effect != effect.Value) effect.Empty = true;
 				if(s.Brightness.ToString() != brightness.Text) brightness.Text = "";

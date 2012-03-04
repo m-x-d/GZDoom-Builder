@@ -179,6 +179,11 @@ namespace CodeImp.DoomBuilder.Windows
         {
             int switchflags = 0;
 
+            // just check for one of the checkboxes.. no need to
+            // check for all of them..
+            if (chkSwitchTextureLower.Enabled == false)
+                return;
+
             if (chkSwitchTextureLower.Checked == true)
             {
                 if (chkSwitchDisplayMiddle.Checked == true)
@@ -215,6 +220,29 @@ namespace CodeImp.DoomBuilder.Windows
 
             l.SwitchMask = switchflags;
         }
+
+        private void PreSetActivationFlag(CheckBox c, int flag, int mask)
+        {
+            if ((flag & mask) == mask)
+                c.Checked = true;
+        }
+
+        private void CheckActivationState(CheckBox c, int flag, int mask)
+        {
+            if (((flag & mask) != mask) && c.Checked == true)
+            {
+                c.CheckState = CheckState.Indeterminate;
+                c.ThreeState = true;
+            }
+        }
+
+        private void SetActivationFlag(Linedef l, CheckBox c, int mask)
+        {
+            if (c.CheckState == CheckState.Checked)
+                l.Activate |= mask;
+            else if (c.CheckState == CheckState.Unchecked)
+                l.Activate &= ~mask;
+        }
 		
 		// This sets up the form to edit the given lines
 		public void Setup(ICollection<Linedef> lines)
@@ -229,6 +257,27 @@ namespace CodeImp.DoomBuilder.Windows
 			////////////////////////////////////////////////////////////////////////
 			// Set all options to the first linedef properties
 			////////////////////////////////////////////////////////////////////////
+
+            // 20120219 villsa - Disable checkboxes if multiple lines are selected...
+            // I am lazy, go away...
+            if (lines.Count > 1)
+            {
+                chkSwitchTextureLower.Enabled = false;
+                chkSwitchTextureMiddle.Enabled = false;
+                chkSwitchTextureUpper.Enabled = false;
+                chkSwitchDisplayLower.Enabled = false;
+                chkSwitchDisplayMiddle.Enabled = false;
+                chkSwitchDisplayUpper.Enabled = false;
+            }
+            else
+            {
+                chkSwitchTextureLower.Enabled = true;
+                chkSwitchTextureMiddle.Enabled = true;
+                chkSwitchTextureUpper.Enabled = true;
+                chkSwitchDisplayLower.Enabled = true;
+                chkSwitchDisplayMiddle.Enabled = true;
+                chkSwitchDisplayUpper.Enabled = true;
+            }
 
 			// Get first line
 			fl = General.GetByIndex(lines, 0);
@@ -319,26 +368,14 @@ namespace CodeImp.DoomBuilder.Windows
                 {
                     if (l.Activate > 0)
                     {
-                        if ((l.Activate & 512) == 512)
-                            activationtypered.Checked = true;
-
-                        if ((l.Activate & 1024) == 1024)
-                            activationtypeblue.Checked = true;
-
-                        if ((l.Activate & 2048) == 2048)
-                            activationtypeyellow.Checked = true;
-
-                        if ((l.Activate & 4096) == 4096)
-                            activationtypecross.Checked = true;
-
-                        if ((l.Activate & 8192) == 8192)
-                            activationtypeshoot.Checked = true;
-
-                        if ((l.Activate & 16384) == 16384)
-                            activationtypeuse.Checked = true;
-
-                        if ((l.Activate & 32768) == 32768)
-                            activationtyperepeat.Checked = true;
+                        // 20120219 villsa
+                        PreSetActivationFlag(activationtypered, l.Activate, 512);
+                        PreSetActivationFlag(activationtypeblue, l.Activate, 1024);
+                        PreSetActivationFlag(activationtypeyellow, l.Activate, 2048);
+                        PreSetActivationFlag(activationtypecross, l.Activate, 4096);
+                        PreSetActivationFlag(activationtypeshoot, l.Activate, 8192);
+                        PreSetActivationFlag(activationtypeuse, l.Activate, 16384);
+                        PreSetActivationFlag(activationtyperepeat, l.Activate, 32768);
                     }
 
                     SwitchTextureMask(l);
@@ -425,6 +462,18 @@ namespace CodeImp.DoomBuilder.Windows
 				// Custom fields
 				fieldslist.SetValues(l.Fields, false);
 			}
+
+            foreach (Linedef l in lines)
+            {
+                // 20120219 villsa
+                CheckActivationState(activationtypered, l.Activate, 512);
+                CheckActivationState(activationtypeblue, l.Activate, 1024);
+                CheckActivationState(activationtypeyellow, l.Activate, 2048);
+                CheckActivationState(activationtypecross, l.Activate, 4096);
+                CheckActivationState(activationtypeshoot, l.Activate, 8192);
+                CheckActivationState(activationtypeuse, l.Activate, 16384);
+                CheckActivationState(activationtyperepeat, l.Activate, 32768);
+            }
 			
 			// Refresh controls so that they show their image
 			backhigh.Refresh();
@@ -507,27 +556,14 @@ namespace CodeImp.DoomBuilder.Windows
 				if(activation.SelectedIndex > -1)
 					l.Activate = (activation.SelectedItem as LinedefActivateInfo).Index;
 
-                // villsa
-                if (General.Map.FormatInterface.InDoom64Mode)
-                {
-                    activationflag = 0;
-                    if (activationtypeuse.Checked)
-                        activationflag = activationflag | 16384;
-                    if (activationtypeshoot.Checked)
-                        activationflag = activationflag | 8192;
-                    if (activationtypecross.Checked)
-                        activationflag = activationflag | 4096;
-                    if (activationtyperepeat.Checked)
-                        activationflag = activationflag | 32768;
-                    if (activationtypered.Checked)
-                        activationflag = activationflag | 512;
-                    if (activationtypeblue.Checked)
-                        activationflag = activationflag | 1024;
-                    if (activationtypeyellow.Checked)
-                        activationflag = activationflag | 2048;
-
-                    l.Activate = activationflag;
-                }
+                // 20120219 villsa
+                SetActivationFlag(l, activationtypered, 512);
+                SetActivationFlag(l, activationtypeblue, 1024);
+                SetActivationFlag(l, activationtypeyellow, 2048);
+                SetActivationFlag(l, activationtypecross, 4096);
+                SetActivationFlag(l, activationtypeshoot, 8192);
+                SetActivationFlag(l, activationtypeuse, 16384);
+                SetActivationFlag(l, activationtyperepeat, 32768);
 
                 SetSwitchMask(l);
 				
@@ -625,12 +661,10 @@ namespace CodeImp.DoomBuilder.Windows
             // villsa
             if (General.Map.FormatInterface.InDoom64Mode)
             {
-                if(action.Value >= 256)
+                // 20120219 villsa - very ugly hack but it'll do for now...
+                if (action.Value >= 256 && tabs.SelectedTab.Text == "Macros")
                 {
                     int id = action.Value - 256;
-
-                    if (General.Map.Map.Macros[id] != null)
-                        General.Map.Map.Macros[id] = new Macro(0);
 
                     General.Map.Map.Macros[id].SetDataFromTreeNode(mtree);
                 }
@@ -796,7 +830,17 @@ namespace CodeImp.DoomBuilder.Windows
                 return;
 
             if (e.TabPage.Text != "Macros")  // eek! hack
+            {
+                if (action.Value >= 256)
+                {
+                    int id = action.Value - 256;
+
+                    if (General.Map.Map.Macros[id] != null)
+                        General.Map.Map.Macros[id].SetDataFromTreeNode(mtree);
+                }
+
                 return;
+            }
 
             // fill in macros
             mtree.Nodes.Clear();
