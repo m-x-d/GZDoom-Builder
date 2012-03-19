@@ -31,6 +31,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.taboptions = new System.Windows.Forms.TabPage();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.autodragonpaste = new System.Windows.Forms.CheckBox();
 			this.visualmodeclearselection = new System.Windows.Forms.CheckBox();
 			this.autoclearselection = new System.Windows.Forms.CheckBox();
 			this.editnewthing = new System.Windows.Forms.CheckBox();
@@ -52,7 +53,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.heightbysidedef = new System.Windows.Forms.ComboBox();
-			this.autodragonpaste = new System.Windows.Forms.CheckBox();
+			this.label10 = new System.Windows.Forms.Label();
+			this.splitbehavior = new System.Windows.Forms.ComboBox();
 			this.tabs.SuspendLayout();
 			this.taboptions.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -95,12 +97,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox3.Controls.Add(this.editnewthing);
 			this.groupBox3.Controls.Add(this.editnewsector);
 			this.groupBox3.Controls.Add(this.additiveselect);
-			this.groupBox3.Location = new System.Drawing.Point(308, 90);
+			this.groupBox3.Location = new System.Drawing.Point(308, 129);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(332, 200);
 			this.groupBox3.TabIndex = 18;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Options ";
+			// 
+			// autodragonpaste
+			// 
+			this.autodragonpaste.AutoSize = true;
+			this.autodragonpaste.Location = new System.Drawing.Point(23, 163);
+			this.autodragonpaste.Name = "autodragonpaste";
+			this.autodragonpaste.Size = new System.Drawing.Size(205, 18);
+			this.autodragonpaste.TabIndex = 6;
+			this.autodragonpaste.Text = "Drag selection automatically on paste";
+			this.autodragonpaste.UseVisualStyleBackColor = true;
 			// 
 			// visualmodeclearselection
 			// 
@@ -166,7 +178,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.label4);
 			this.groupBox2.Controls.Add(this.label7);
-			this.groupBox2.Location = new System.Drawing.Point(6, 90);
+			this.groupBox2.Location = new System.Drawing.Point(6, 129);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(292, 200);
 			this.groupBox2.TabIndex = 17;
@@ -299,11 +311,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.splitbehavior);
+			this.groupBox1.Controls.Add(this.label10);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.heightbysidedef);
 			this.groupBox1.Location = new System.Drawing.Point(6, 6);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(634, 78);
+			this.groupBox1.Size = new System.Drawing.Size(634, 117);
 			this.groupBox1.TabIndex = 16;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Behavior ";
@@ -329,18 +343,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
             "Change both floor and ceiling height"});
 			this.heightbysidedef.Location = new System.Drawing.Point(364, 32);
 			this.heightbysidedef.Name = "heightbysidedef";
-			this.heightbysidedef.Size = new System.Drawing.Size(199, 22);
+			this.heightbysidedef.Size = new System.Drawing.Size(217, 22);
 			this.heightbysidedef.TabIndex = 0;
 			// 
-			// autodragonpaste
+			// label10
 			// 
-			this.autodragonpaste.AutoSize = true;
-			this.autodragonpaste.Location = new System.Drawing.Point(23, 163);
-			this.autodragonpaste.Name = "autodragonpaste";
-			this.autodragonpaste.Size = new System.Drawing.Size(205, 18);
-			this.autodragonpaste.TabIndex = 6;
-			this.autodragonpaste.Text = "Drag selection automatically on paste";
-			this.autodragonpaste.UseVisualStyleBackColor = true;
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(178, 71);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(166, 14);
+			this.label10.TabIndex = 1;
+			this.label10.Text = "When splitting a linedef manually:";
+			this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// splitbehavior
+			// 
+			this.splitbehavior.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.splitbehavior.FormattingEnabled = true;
+			this.splitbehavior.Items.AddRange(new object[] {
+            "Interpolate texture coordinates",
+            "Duplicate texture coordinates",
+            "Reset X coordinate, duplicate Y coordinate"});
+			this.splitbehavior.Location = new System.Drawing.Point(364, 68);
+			this.splitbehavior.Name = "splitbehavior";
+			this.splitbehavior.Size = new System.Drawing.Size(217, 22);
+			this.splitbehavior.TabIndex = 2;
 			// 
 			// PreferencesForm
 			// 
@@ -393,5 +420,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox highlightthingsrange;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox highlightrange;
 		private System.Windows.Forms.CheckBox autodragonpaste;
+		private System.Windows.Forms.ComboBox splitbehavior;
+		private System.Windows.Forms.Label label10;
 	}
 }

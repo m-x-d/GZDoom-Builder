@@ -325,6 +325,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.UndoRedo.WithdrawUndo();
 						return;
 					}
+					BuilderPlug.Me.AdjustSplitCoordinates(l, sld);
 					
 					// Update
 					General.Map.Map.Update();
@@ -642,7 +643,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(snaptonearest && (l != null))
 				{
 					General.Interface.DisplayStatus(StatusType.Action, "Split a linedef.");
-					l.Split(v);
+					Linedef sld = l.Split(v);
+					if(sld == null)
+					{
+						General.Map.UndoRedo.WithdrawUndo();
+						return;
+					}
+					BuilderPlug.Me.AdjustSplitCoordinates(l, sld);
 				}
 				else
 				{

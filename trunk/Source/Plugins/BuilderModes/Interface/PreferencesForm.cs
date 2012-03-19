@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Apply current settings to interface
 			heightbysidedef.SelectedIndex = General.Settings.ReadPluginSetting("changeheightbysidedef", 0);
+			splitbehavior.SelectedIndex = General.Settings.ReadPluginSetting("splitlinebehavior", 0);
 			editnewthing.Checked = General.Settings.ReadPluginSetting("editnewthing", true);
 			editnewsector.Checked = General.Settings.ReadPluginSetting("editnewsector", false);
 			additiveselect.Checked = General.Settings.ReadPluginSetting("additiveselect", false);
@@ -78,6 +79,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Write preferred settings
 			General.Settings.WritePluginSetting("changeheightbysidedef", heightbysidedef.SelectedIndex);
+			General.Settings.WritePluginSetting("splitlinebehavior", splitbehavior.SelectedIndex);
 			General.Settings.WritePluginSetting("editnewthing", editnewthing.Checked);
 			General.Settings.WritePluginSetting("editnewsector", editnewsector.Checked);
 			General.Settings.WritePluginSetting("additiveselect", additiveselect.Checked);
