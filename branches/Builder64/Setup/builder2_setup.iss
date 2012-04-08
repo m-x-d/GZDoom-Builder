@@ -41,6 +41,7 @@ Source: Builder64.cfg; DestDir: {app}; Flags: ignoreversion
 Source: Refmanual.chm; DestDir: {app}; Flags: ignoreversion
 Source: Sharpzip.dll; DestDir: {app}; Flags: ignoreversion
 Source: Scintilla.dll; DestDir: {app}; Flags: ignoreversion
+Source: SlimDX.dll; DestDir: {app}; Flags: ignoreversion
 Source: Trackbar.dll; DestDir: {app}; Flags: ignoreversion
 Source: GPL.txt; DestDir: {app}; Flags: ignoreversion
 Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion recursesubdirs
