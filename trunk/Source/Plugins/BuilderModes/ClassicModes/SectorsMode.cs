@@ -953,8 +953,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(orderedselection.Count > 0)
 			{
 				string doortex = "";
+				string tracktex = General.Map.Config.MakeDoorTrack;
 				string floortex = null;
 				string ceiltex = null;
+				bool resetoffsets = true;
 				
 				// Find ceiling and floor textures
 				foreach(Sector s in orderedselection)
@@ -965,11 +967,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Show the dialog
 				MakeDoorForm form = new MakeDoorForm();
-				if(form.Show(General.Interface, doortex, ceiltex, floortex) == DialogResult.OK)
+				if(form.Show(General.Interface, doortex, tracktex, ceiltex, floortex, resetoffsets) == DialogResult.OK)
 				{
 					doortex = form.DoorTexture;
+					tracktex = form.TrackTexture;
 					ceiltex = form.CeilingTexture;
 					floortex = form.FloorTexture;
+					resetoffsets = form.ResetOffsets;
 					
 					// Create undo
 					General.Map.UndoRedo.CreateUndo("Make door (" + doortex + ")");
@@ -992,7 +996,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								// Make this a doortrak
 								sd.SetTextureHigh("-");
-								sd.SetTextureMid(General.Map.Config.MakeDoorTrack);
+								sd.SetTextureMid(tracktex);
 								sd.SetTextureLow("-");
 
 								// Set upper/lower unpegged flags
@@ -1012,6 +1016,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								
 								// Get door linedef type from config
 								sd.Line.Action = General.Map.Config.MakeDoorAction;
+
+								// Set activation type
+								sd.Line.Activate = General.Map.Config.MakeDoorActivate;
+
+								// Set the flags
+								foreach(var flagpair in General.Map.Config.MakeDoorFlags)
+									sd.Line.SetFlag(flagpair.Key, flagpair.Value);
 
 								// Set the linedef args
 								for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -1035,6 +1046,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								{
 									sd.Line.FlipVertices();
 									sd.Line.FlipSidedefs();
+								}
+							}
+
+							// Reset the texture offsets if required
+							if (resetoffsets)
+							{
+								sd.OffsetX = 0;
+								sd.OffsetY = 0;
+
+								if (sd.Other != null)
+								{
+									sd.Other.OffsetX = 0;
+									sd.Other.OffsetY = 0;
 								}
 							}
 						}

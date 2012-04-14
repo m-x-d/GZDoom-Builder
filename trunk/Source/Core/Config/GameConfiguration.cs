@@ -68,7 +68,9 @@ namespace CodeImp.DoomBuilder.Config
 		private bool testshortpaths;
 		private string makedoortrack;
 		private int makedooraction;
+		private int makedooractivate;
 		private int[] makedoorargs;
+		private Dictionary<string, bool> makedoorflags;
 		private bool linetagindicatesectors;
 		private string decorategames;
         private string skyflatname;
@@ -158,6 +160,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool TestShortPaths { get { return testshortpaths; } }
 		public string MakeDoorTrack { get { return makedoortrack; } }
 		public int MakeDoorAction { get { return makedooraction; } }
+		public int MakeDoorActivate { get { return makedooractivate; } }
+		public Dictionary<string, bool> MakeDoorFlags { get { return makedoorflags; } }
 		public int[] MakeDoorArgs { get { return makedoorargs; } }
 		public bool LineTagIndicatesSectors { get { return linetagindicatesectors ; } }
 		public string DecorateGames { get { return decorategames; } }
@@ -252,6 +256,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.linedefflagstranslation = new List<FlagTranslation>();
 			this.thingfilters = new List<ThingsFilter>();
 			this.brightnesslevels = new StepsList();
+			this.makedoorflags = new Dictionary<string, bool>();
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -271,6 +276,7 @@ namespace CodeImp.DoomBuilder.Config
 			testshortpaths = cfg.ReadSetting("testshortpaths", false);
 			makedoortrack = cfg.ReadSetting("makedoortrack", "-");
 			makedooraction = cfg.ReadSetting("makedooraction", 0);
+			makedooractivate = cfg.ReadSetting("makedooractivate", 0);
 			linetagindicatesectors = cfg.ReadSetting("linetagindicatesectors", false);
 			decorategames = cfg.ReadSetting("decorategames", "");
             skyflatname = cfg.ReadSetting("skyflatname", "F_SKY1");
@@ -281,7 +287,7 @@ namespace CodeImp.DoomBuilder.Config
 			bottomboundary = cfg.ReadSetting("bottomboundary", -32768);
 			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
-			
+
 			// Flags have special (invariant culture) conversion
 			// because they are allowed to be written as integers in the configs
 			obj = cfg.ReadSettingObject("soundlinedefflag", 0);
@@ -342,6 +348,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Defaults
 			LoadTextureSets();
 			LoadThingFilters();
+
+			// Make door flags
+			LoadMakeDoorFlags();
 		}
 
 		// Destructor
@@ -762,6 +771,26 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				ThingsFilter f = new ThingsFilter(cfg, "thingsfilters." + de.Key.ToString());
 				thingfilters.Add(f);
+			}
+		}
+
+		// Make door flags
+		private void LoadMakeDoorFlags()
+		{
+			IDictionary dic;
+
+			dic = cfg.ReadSetting("makedoorflags", new Hashtable());
+			foreach (DictionaryEntry de in dic)
+			{
+				// Using minus will unset the flag
+				if (de.Key.ToString()[0] == '-')
+				{
+					makedoorflags[de.Key.ToString().TrimStart('-')] = false;
+				}
+				else
+				{
+					makedoorflags[de.Key.ToString()] = true;
+				}
 			}
 		}
 		
