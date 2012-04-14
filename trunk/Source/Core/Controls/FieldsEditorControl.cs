@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder.Controls
 			FieldsEditorRow frow = null;
 			
 			// Anything selected
-			if(fieldslist.SelectedRows.Count > 0)
+			if(fieldslist.SelectedRows.Count > 0 && e.RowIndex > -1)
 			{
 				// Get the row
 				DataGridViewRow row = fieldslist.Rows[e.RowIndex];
