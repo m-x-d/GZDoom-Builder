@@ -155,8 +155,32 @@ namespace CodeImp.DoomBuilder.VisualModes
 			vertices = new WorldVertex[verts.Count];
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
+            CalculateNormals();
 			if(sector != null) sector.NeedsUpdateGeo = true;
 		}
+
+        //mxd. Taken from OpenGl wiki 
+        protected void CalculateNormals() {
+            int startIndex;
+            Vector3 U, V;
+            for (int i = 0; i < triangles; i++) {
+                startIndex = i * 3;
+                WorldVertex p1 = vertices[startIndex];
+                WorldVertex p2 = vertices[startIndex + 1];
+                WorldVertex p3 = vertices[startIndex + 2];
+
+                U = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+                V = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
+
+                p1.nx = p2.nx = p3.nx = -(U.Y * V.Z - U.Z * V.Y);
+                p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
+                p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
+
+                vertices[startIndex] = p1;
+                vertices[startIndex + 1] = p2;
+                vertices[startIndex + 2] = p3;
+            }
+        }
 		
 		// This compares for sorting by sector
 		public int CompareTo(VisualGeometry other)

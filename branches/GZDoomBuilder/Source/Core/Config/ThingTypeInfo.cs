@@ -68,6 +68,9 @@ namespace CodeImp.DoomBuilder.Config
 		private bool isknown;
 		private bool absolutez;
 		private SizeF spritescale;
+
+        //mxd
+        private string classname;
 		
 		#endregion
 
@@ -92,6 +95,14 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsNull { get { return (index == 0); } }
 		public bool AbsoluteZ { get { return absolutez; } }
 		public SizeF SpriteScale { get { return spritescale; } }
+
+        //mxd. need this to add model overrides for things defined in configs.  
+        public string ClassName {
+            get {
+                if (actor != null)
+                    return actor.ClassName;
+                return classname;
+        } }
 		
 		#endregion
 
@@ -135,7 +146,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = true;
 			this.actor = null;
-			
+		
 			// Read properties
 			this.title = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".title", "<" + key + ">");
 			this.sprite = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".sprite", cat.Sprite);
@@ -150,6 +161,12 @@ namespace CodeImp.DoomBuilder.Config
 			this.absolutez = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".absolutez", cat.AbsoluteZ);
 			float sscale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
 			this.spritescale = new SizeF(sscale, sscale);
+
+            //mxd
+            string s_class = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty);
+            if (s_class != String.Empty) //I actually want to keep null value there if no such property exists...
+                this.classname = s_class.ToLower();
+            
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)

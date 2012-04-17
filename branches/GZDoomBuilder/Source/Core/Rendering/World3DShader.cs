@@ -49,6 +49,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		private EffectHandle maxanisotropysetting;
 		private EffectHandle modulatecolor;
 		private EffectHandle highlightcolor;
+
+        //mxd
+        private EffectHandle vertexColorHadle;
+        //lights
+        private EffectHandle lightPositionAndRadiusHandle;
+        private EffectHandle lightColorHandle;
+        private EffectHandle worldHandle;
+
 		
 		#endregion
 
@@ -56,6 +64,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		public Matrix WorldViewProj { set { if(manager.Enabled) effect.SetValue<Matrix>(worldviewproj, value); } }
 		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); } }
+
+        //mxd
+        public Color4 VertexColor { set { if (manager.Enabled) effect.SetValue<Color4>(vertexColorHadle, value); } }
+        public Color4 LightColor { set { if (manager.Enabled) effect.SetValue<Color4>(lightColorHandle, value); } }
+        public Vector4 LightPositionAndRadius { set { if (manager.Enabled) effect.SetValue(lightPositionAndRadiusHandle, value); } }
+        public Matrix World { set { if (manager.Enabled) effect.SetValue<Matrix>(worldHandle, value); } }
 
 		#endregion
 
@@ -78,6 +92,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				modulatecolor = effect.GetParameter(null, "modulatecolor");
 				highlightcolor = effect.GetParameter(null, "highlightcolor");
 				maxanisotropysetting = effect.GetParameter(null, "maxanisotropysetting");
+
+                //mxd
+                vertexColorHadle = effect.GetParameter(null, "vertexColor");
+                //lights
+                lightPositionAndRadiusHandle = effect.GetParameter(null, "lightPosAndRadius");
+                lightColorHandle = effect.GetParameter(null, "lightColor");
+                worldHandle = effect.GetParameter(null, "world");
 			}
 
 			// Initialize world vertex declaration
@@ -86,7 +107,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
 				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
-				VertexElement.VertexDeclarationEnd
+				//mxd
+                new VertexElement(0, 24, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
+                VertexElement.VertexDeclarationEnd
 			};
 			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, elements);
 
@@ -109,6 +132,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(modulatecolor != null) modulatecolor.Dispose();
 				if(highlightcolor != null) highlightcolor.Dispose();
 				if(maxanisotropysetting != null) maxanisotropysetting.Dispose();
+
+                //mxd
+                if (vertexColorHadle != null) vertexColorHadle.Dispose();
+                if (lightColorHandle != null) lightColorHandle.Dispose();
+                if (lightPositionAndRadiusHandle != null) lightPositionAndRadiusHandle.Dispose();
+                if (worldHandle != null) worldHandle.Dispose();
 
 				// Done
 				base.Dispose();
@@ -198,7 +227,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
 				
 				// First texture stage
-				if((index == 0) || (index == 2))
+                //mxd
+				//if((index == 0) || (index == 2))
+                if ((index == 0) || (index == 2) || (index == 4) || (index == 6) || index > 7)
 				{
 					// Normal
 					device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
@@ -234,7 +265,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				device.SetTextureStageState(1, TextureStage.AlphaArg2, TextureArgument.TFactor);
 
 				// Highlight?
-				if(index > 1)
+                //mxd
+				//if(index > 1)
+                if ((index > 1 && index < 4) || (index > 5 && index < 8))
 				{
 					// Third texture stage
 					device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.AddSigned);

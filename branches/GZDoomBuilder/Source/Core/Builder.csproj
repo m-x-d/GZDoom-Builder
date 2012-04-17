@@ -11,7 +11,7 @@
     <RootNamespace>CodeImp.DoomBuilder</RootNamespace>
     <AssemblyName>Builder</AssemblyName>
     <StartupObject>CodeImp.DoomBuilder.General</StartupObject>
-    <ApplicationIcon>Resources\DB2.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\GZDB2.ico</ApplicationIcon>
     <Win32Resource>
     </Win32Resource>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
@@ -42,6 +42,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <DocumentationFile>..\..\Build\Builder.xml</DocumentationFile>
+    <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -498,6 +499,7 @@
     <Reference Include="Sharpzip, Version=0.85.2.329, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Build\Sharpzip.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SlimDX, Version=2.0.12.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=x86" />
     <Reference Include="System" />
@@ -507,7 +509,9 @@
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="Trackbar, Version=1.0.2486.37933, Culture=neutral, PublicKeyToken=503bf28f63ad27b4" />
+    <Reference Include="Trackbar, Version=1.0.2486.37933, Culture=neutral, PublicKeyToken=503bf28f63ad27b4">
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Windows\AboutForm.resx">
@@ -698,6 +702,21 @@
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="General\SavePurpose.cs" />
+    <Compile Include="GZBuilder\Data\GZDoomLight.cs" />
+    <Compile Include="GZBuilder\Data\ModelDefEntry.cs" />
+    <Compile Include="GZBuilder\Data\ThingBoundingBox.cs" />
+    <Compile Include="GZBuilder\GZGeneral.cs" />
+    <Compile Include="GZBuilder\IO\ModelDefParser.cs" />
+    <Compile Include="GZBuilder\md3\GZModel.cs" />
+    <Compile Include="GZBuilder\md3\MD3FormatException.cs" />
+    <Compile Include="GZBuilder\md3\ModelReader.cs" />
+    <Compile Include="GZBuilder\md3\Vertex.cs" />
+    <Compile Include="GZBuilder\Windows\DebugForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Windows\DebugForm.designer.cs">
+      <DependentUpon>DebugForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="IO\DoomColormapReader.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
@@ -764,13 +783,22 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThingBrowserControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Windows\DebugForm.resx">
+      <DependentUpon>DebugForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />
     <Compile Include="General\StepsList.cs" />
     <None Include="Resources\Builder16.png" />
     <None Include="Resources\CLogo.png" />
     <None Include="Resources\Angle.png" />
+    <Content Include="GZDB2.ico" />
     <Content Include="Resources\DB2.ico" />
+    <None Include="Resources\GZDB2.ico" />
+    <Content Include="Resources\Light.png" />
+    <Content Include="Resources\Light_animate.png" />
+    <Content Include="Resources\Model.png" />
+    <Content Include="Resources\Model_selected.png" />
     <None Include="Resources\Text.png" />
     <None Include="Resources\List_Images.png" />
     <None Include="Resources\List.png" />
