@@ -93,7 +93,11 @@ namespace CodeImp.DoomBuilder.Windows
 			toolbar_viewmodes.Checked = General.Settings.ToolbarViewModes;
 			toolbar_geometry.Checked = General.Settings.ToolbarGeometry;
 			toolbar_testing.Checked = General.Settings.ToolbarTesting;
+            //mxd
+            toolbar_gzdoom.Checked = General.Settings.GZToolbarGZDoom;
 			showtexturesizes.Checked = General.Settings.ShowTextureSizes;
+            tbDynLightCount.Value = General.Settings.GZMaxDynamicLights;
+            labelDynLightCount.Text = General.Settings.GZMaxDynamicLights.ToString();
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -145,6 +149,10 @@ namespace CodeImp.DoomBuilder.Windows
 			colorindication.Color = General.Colors.Indication;
 			colorgrid.Color = General.Colors.Grid;
 			colorgrid64.Color = General.Colors.Grid64;
+
+            //mxd
+            colorMD3.Color = General.Colors.ModelWireframe;
+
 			colorscriptbackground.Color = General.Colors.ScriptBackground;
 			colorlinenumbers.Color = General.Colors.LineNumbers;
 			colorplaintext.Color = General.Colors.PlainText;
@@ -246,11 +254,17 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Colors.Keywords = colorkeywords.Color;
 			General.Colors.Literals = colorliterals.Color;
 			General.Colors.Constants = colorconstants.Color;
+            //mxd
+            General.Colors.ModelWireframe = colorMD3.Color;
+
 			General.Colors.CreateAssistColors();
 			General.Settings.BlackBrowsers = blackbrowsers.Checked;
 			General.Settings.ClassicBilinear = classicbilinear.Checked;
 			General.Settings.VisualBilinear = visualbilinear.Checked;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
+
+            //mxd
+            General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
 			
 			// Paste options
 			General.Settings.PasteOptions = pasteoptions.GetOptions();
@@ -737,6 +751,11 @@ namespace CodeImp.DoomBuilder.Windows
 			int percent = doublesidedalpha.Value * 10;
 			doublesidedalphalabel.Text = percent.ToString() + "%";
 		}
+
+        //mxd
+        private void tbDynLightCount_ValueChanged(object sender, EventArgs e) {
+            labelDynLightCount.Text = tbDynLightCount.Value.ToString();
+        }
 
 		#endregion
 

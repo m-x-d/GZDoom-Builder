@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	public struct WorldVertex
 	{
 		// Vertex format
-		public static readonly int Stride = 6 * 4;
+        public static readonly int Stride = 9 * 4; //mxd: was 6 * 4
 
 		// Members
 		public float x;
@@ -49,6 +49,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		public int c;
 		public float u;
 		public float v;
+
+        //mxd
+        public float nx;
+        public float ny;
+        public float nz;
 
 		// Constructor
 		public WorldVertex(float x, float y, float z, int c, float u, float v)
@@ -59,6 +64,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = c;
 			this.u = u;
 			this.v = v;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -70,6 +80,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = c;
 			this.u = t.x;
 			this.v = t.y;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -81,6 +96,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = c;
 			this.u = u;
 			this.v = v;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -92,6 +112,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = c;
 			this.u = t.x;
 			this.v = t.y;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -103,6 +128,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = -1;
 			this.u = u;
 			this.v = v;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -114,6 +144,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = -1;
 			this.u = t.x;
 			this.v = t.y;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -125,6 +160,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = -1;
 			this.u = u;
 			this.v = v;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -136,6 +176,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = -1;
 			this.u = t.x;
 			this.v = t.y;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -147,6 +192,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = c;
 			this.u = 0.0f;
 			this.v = 0.0f;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -158,6 +208,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = c;
 			this.u = 0.0f;
 			this.v = 0.0f;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -169,6 +224,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = -1;
 			this.u = 0.0f;
 			this.v = 0.0f;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 
 		// Constructor
@@ -180,6 +240,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.c = -1;
 			this.u = 0.0f;
 			this.v = 0.0f;
+
+            //mxd
+            this.nx = 0.0f;
+            this.ny = 0.0f;
+            this.nz = 0.0f;
 		}
 	}
 }

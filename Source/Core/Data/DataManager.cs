@@ -63,6 +63,9 @@ namespace CodeImp.DoomBuilder.Data
 		private List<MatchingTextureSet> texturesets;
 		private List<ResourceTextureSet> resourcetextures;
 		private AllTextureSet alltextures;
+
+        //mxd Folders
+        private List<string> folders;
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -80,7 +83,8 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData crosshair;
 		private ImageData crosshairbusy;
 		private Dictionary<string, ImageData> internalsprites;
-		private ImageData thingbox;
+		//mxd
+        //private ImageData thingbox;
 		private ImageData whitetexture;
 		
 		// Used images
@@ -102,6 +106,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Properties
 
+        //mxd
+        public List<string> Folders { get { return folders; } }
+
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
 		public ICollection<ImageData> Textures { get { return textures.Values; } }
@@ -114,7 +121,8 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData Hourglass3D { get { return hourglass3d; } }
 		public ImageData Crosshair3D { get { return crosshair; } }
 		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
-		public ImageData ThingBox { get { return thingbox; } }
+        //mxd
+		//public ImageData ThingBox { get { return thingbox; } }
 		public ImageData WhiteTexture { get { return whitetexture; } }
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
@@ -159,8 +167,9 @@ namespace CodeImp.DoomBuilder.Data
 			crosshair.LoadImage();
 			crosshairbusy = new ResourceImage("CodeImp.DoomBuilder.Resources.CrosshairBusy.png");
 			crosshairbusy.LoadImage();
-			thingbox = new ResourceImage("CodeImp.DoomBuilder.Resources.ThingBox.png");
-			thingbox.LoadImage();
+			//mxd
+            //thingbox = new ResourceImage("CodeImp.DoomBuilder.Resources.ThingBox.png");
+			//thingbox.LoadImage();
 			whitetexture = new ResourceImage("CodeImp.DoomBuilder.Resources.White.png");
 			whitetexture.UseColorCorrection = false;
 			whitetexture.LoadImage();
@@ -185,8 +194,9 @@ namespace CodeImp.DoomBuilder.Data
 				crosshair = null;
 				crosshairbusy.Dispose();
 				crosshairbusy = null;
-				thingbox.Dispose();
-				thingbox = null;
+				//mxd
+                //thingbox.Dispose();
+				//thingbox = null;
 				whitetexture.Dispose();
 				whitetexture = null;
 				
@@ -237,6 +247,9 @@ namespace CodeImp.DoomBuilder.Data
 			internalsprites = new Dictionary<string, ImageData>();
 			thingcategories = General.Map.Config.GetThingCategories();
 			thingtypes = General.Map.Config.GetThingTypes();
+
+            //mxd
+            folders = new List<string>();
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -272,6 +285,10 @@ namespace CodeImp.DoomBuilder.Data
 						// Directory container
 						case DataLocation.RESOURCE_DIRECTORY:
 							c = new DirectoryReader(dl);
+
+                            //mxd
+                            folders.Add(dl.location);
+
 							break;
 
 						// PK3 file container

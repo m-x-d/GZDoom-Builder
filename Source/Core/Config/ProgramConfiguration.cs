@@ -94,6 +94,15 @@ namespace CodeImp.DoomBuilder.Config
 		private bool toolbarfile;
 		private float filteranisotropy;
 		private bool showtexturesizes;
+
+        //mxd
+        private bool gzDrawModels;
+        private bool gzDrawSelectedModelsOnly;
+        private bool gzDrawLights;
+        private bool gzAnimateLights;
+        private bool gzDrawFog;
+        private bool gzToolbarGZDoom;
+        private int gzMaxDynamicLights;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -157,6 +166,15 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ToolbarFile { get { return toolbarfile; } internal set { toolbarfile = value; } }
 		public float FilterAnisotropy { get { return filteranisotropy; } internal set { filteranisotropy = value; } }
 		public bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } }
+
+        //mxd 
+        public bool GZDrawModels { get { return gzDrawModels; } internal set { gzDrawModels = value; } }
+        public bool GZDrawSelectedModelsOnly { get { return gzDrawSelectedModelsOnly; } internal set { gzDrawSelectedModelsOnly = value; } }
+        public bool GZDrawLights { get { return gzDrawLights; } internal set { gzDrawLights = value; } }
+        public bool GZAnimateLights { get { return gzAnimateLights; } internal set { gzAnimateLights = value; } }
+        public bool GZDrawFog { get { return gzDrawFog; } internal set { gzDrawFog = value; } }
+        public bool GZToolbarGZDoom { get { return gzToolbarGZDoom; } internal set { gzToolbarGZDoom = value; } }
+        public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
 		
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -237,6 +255,15 @@ namespace CodeImp.DoomBuilder.Config
 				toolbarfile = cfg.ReadSetting("toolbarfile", true);
 				filteranisotropy = cfg.ReadSetting("filteranisotropy", 8.0f);
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
+
+                //mxd 
+                gzDrawModels = cfg.ReadSetting("gzdrawmodels", true);
+                gzDrawSelectedModelsOnly = cfg.ReadSetting("gzdrawselectedmodelsonly", false);
+                gzDrawLights = cfg.ReadSetting("gzdrawlights", true);
+                gzAnimateLights = cfg.ReadSetting("gzanimatelights", false);
+                gzDrawFog = cfg.ReadSetting("gzdrawfog", false);
+                gzToolbarGZDoom = cfg.ReadSetting("gztoolbargzdoom", true);
+                gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
 				
 				// Success
 				return true;
@@ -299,6 +326,14 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("toolbarfile", toolbarfile);
 			cfg.WriteSetting("filteranisotropy", filteranisotropy);
 			cfg.WriteSetting("showtexturesizes", showtexturesizes);
+
+            //mxd
+            cfg.WriteSetting("gzdrawmodels", gzDrawModels);
+            cfg.WriteSetting("gzdrawselectedmodelsonly", gzDrawSelectedModelsOnly);
+            cfg.WriteSetting("gzdrawlights", gzDrawLights);
+            cfg.WriteSetting("gzanimatelights", gzAnimateLights);
+            cfg.WriteSetting("gzdrawfog", gzDrawFog);
+            cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

@@ -35,6 +35,10 @@ using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 
+//mxd
+using CodeImp.DoomBuilder.GZBuilder.Data;
+using ColladaDotNet.Pipeline.MD3;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.Rendering
@@ -102,7 +106,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private VertexBuffer thingsvertices;
 		
 		// Render settings
-		private bool thingsfront;
+		//private bool thingsfront;
 		private int vertexsize;
 		private RenderLayers renderlayer = RenderLayers.None;
 		
@@ -130,6 +134,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Presentation
 		private Presentation present;
+
+        //mxd
+        private Dictionary<Vector2D, Thing> thingsWithModel;
 		
 		#endregion
 
@@ -576,8 +583,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor DetermineThingColor(Thing t)
 		{
 			// Determine color
-			if(t.Selected) return General.Colors.Selection;
-			else return t.Color;
+            if (t.Selected) {
+                return General.Colors.Selection;
+            //mxd. if thing is light, set it's color to light color:
+            }else if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type) != -1){
+                if (t.Type == 1502) //vavoom light
+                    return new PixelColor(255, 255, 255, 255);
+                if (t.Type == 1503) //vavoom colored light
+                    return new PixelColor(255, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
+                return new PixelColor(255, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
+            }
+            return t.Color;
 		}
 
 		// This returns the color for a vertex
@@ -925,7 +941,16 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(((screenpos.x + circlesize) > 0.0f) && ((screenpos.x - circlesize) < (float)windowsize.Width) &&
 				((screenpos.y + circlesize) > 0.0f) && ((screenpos.y - circlesize) < (float)windowsize.Height))
 			{
-				// Get integral color
+                //mxd. Collect things with models for rendering
+                if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected)) {
+                    Dictionary<int, ModelDefEntry> mde = GZBuilder.GZGeneral.ModelDefEntries;
+                    if (mde != null && mde.ContainsKey(t.Type)) {
+                        thingsWithModel[screenpos] = t;
+                    }
+                }
+                
+                
+                // Get integral color
 				color = c.ToInt();
 
 				// Setup fixed rect for circle
@@ -1039,13 +1064,15 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Determine next lock size
 				int locksize = (things.Count > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : things.Count;
 				FlatVertex[] verts = new FlatVertex[THING_BUFFER_SIZE * 12];
-				
+
+                thingsWithModel = new Dictionary<Vector2D, Thing>();
+
 				// Go for all things
 				int buffercount = 0;
 				int totalcount = 0;
 				foreach(Thing t in things)
 				{
-					// Create vertices
+                    // Create vertices
 					tc = fixedcolor ? c : DetermineThingColor(t);
 					if(CreateThingVerts(t, ref verts, buffercount * 12, tc))
 						buffercount++;
@@ -1079,10 +1106,30 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Draw what's still remaining
 				if(buffercount > 0)
 					graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, buffercount * 4);
-				
-				// Done
-				graphics.Shaders.Things2D.EndPass();
-				graphics.Shaders.Things2D.End();
+
+                // Done
+                graphics.Shaders.Things2D.EndPass();
+
+                //mxd. Render models
+                if (thingsWithModel.Count > 0) {
+                    // Set renderstates for rendering
+                    //graphics.Device.SetRenderState(RenderState.ZEnable, false);
+                    graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+                    graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+
+                    graphics.Shaders.Things2D.BeginPass(1);
+                    foreach(KeyValuePair<Vector2D, Thing> group in thingsWithModel){
+                        ModelDefEntry mde = GZBuilder.GZGeneral.ModelDefEntries[group.Value.Type];
+
+                        if (mde.Model != null)
+                            RenderModel(mde.Model, group.Key, group.Value.Angle, group.Value.Selected);
+                        else
+                            group.Value.IsModel = GZBuilder.GZGeneral.LoadModelForThing(group.Value);
+                    }
+                    graphics.Shaders.Things2D.EndPass();
+                }
+
+                graphics.Shaders.Things2D.End();
 			}
 		}
 		
@@ -1099,6 +1146,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			RenderThingsBatch(things, alpha, false, new PixelColor());
 		}
+
+        //mxd 
+        public void RenderModel(GZModel model, Vector2D modelPos, float modelAngle, bool selected) {
+            //wire color
+            graphics.Shaders.Things2D.FillColor = selected ? General.Colors.Selection.ToColorValue() : General.Colors.ModelWireframe.ToColorValue();
+
+            for (int i = 0; i < model.NUM_MESHES; i++) {
+                graphics.Shaders.Things2D.SetTransformSettings(modelPos, modelAngle, scale);
+                graphics.Shaders.Things2D.ApplySettings();
+
+                // Draw
+                graphics.Device.SetStreamSource(0, model.Meshes[i].VertexBuffer, 0, ModelVertex.SizeBytes);
+                graphics.Device.Indices = model.Indeces2D[i];
+                graphics.Device.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, model.Meshes[i].VertexCount, 0, model.NumIndeces2D[i]);
+            }
+        }
 		
 		#endregion
 

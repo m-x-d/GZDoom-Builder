@@ -45,11 +45,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		private EffectHandle rendersettings;
 		private EffectHandle transformsettings;
 
+        //mxd
+        private EffectHandle fillColorHandle;
+
 		#endregion
 
 		#region ================== Properties
 
 		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); } }
+        //mxd
+        public Color4 FillColor { set { if (manager.Enabled) effect.SetValue<Color4>(fillColorHandle, value); } }
 
 		#endregion
 
@@ -67,6 +72,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				texture1 = effect.GetParameter(null, "texture1");
 				rendersettings = effect.GetParameter(null, "rendersettings");
 				transformsettings = effect.GetParameter(null, "transformsettings");
+                //mxd
+                fillColorHandle = effect.GetParameter(null, "fillColor");
 			}
 
 			// Initialize world vertex declaration
@@ -93,6 +100,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(texture1 != null) texture1.Dispose();
 				if(rendersettings != null) rendersettings.Dispose();
 				if(transformsettings != null) transformsettings.Dispose();
+                //mxd
+                if (fillColorHandle != null) fillColorHandle.Dispose();
 
 				// Done
 				base.Dispose();
@@ -115,6 +124,20 @@ namespace CodeImp.DoomBuilder.Rendering
 				effect.SetValue(transformsettings, Matrix.Multiply(world, view));
 			}
 		}
+
+        //mxd. Used to render models
+        public void SetTransformSettings(Vector2D position, float rotation, float scale) {
+            if (manager.Enabled) {
+                Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
+
+                Matrix m_position = Matrix.Translation(position.x, position.y, 0.0f);
+                Matrix m_scale = Matrix.Scaling(scale, -scale, 0.0f);
+                Matrix m_rotation = Matrix.RotationZ(rotation);
+
+                Matrix world = m_rotation * m_scale * m_position;
+                effect.SetValue(transformsettings, Matrix.Multiply(world, view));
+            }
+        }
 		
 		// This sets up the render pipeline
 		public override void BeginPass(int index)

@@ -1644,6 +1644,14 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonautomerge.Visible = General.Settings.ToolbarGeometry;
 			buttontest.Visible = General.Settings.ToolbarTesting;
 
+            //mxd
+            buttontogglemodels.Visible = General.Settings.GZToolbarGZDoom;
+            buttonselectedmodelsonly.Visible = General.Settings.GZToolbarGZDoom;
+            buttontoggledynlight.Visible = General.Settings.GZToolbarGZDoom;
+            buttontoggleanimatedlight.Visible = General.Settings.GZToolbarGZDoom;
+            separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom;
+
+
 			// Enable/disable all edit mode items
 			foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
 
@@ -1767,6 +1775,32 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Actions.InvokeAction(modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly));
 			this.Update();
 		}
+
+        //mxd
+        public void UpdateGZDoomPannel() {
+            if (General.Settings.GZToolbarGZDoom) {
+                buttontogglemodels.Checked = General.Settings.GZDrawModels;
+                buttonselectedmodelsonly.Checked = General.Settings.GZDrawSelectedModelsOnly;
+                buttontoggledynlight.Checked = General.Settings.GZDrawLights;
+                buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
+            }
+        }
+
+        private void buttontoggledynlight_Click(object sender, EventArgs e) {
+            GZBuilder.GZGeneral.ToggleLights();
+        }
+
+        private void buttontoggleanimatedlight_Click(object sender, EventArgs e) {
+            GZBuilder.GZGeneral.ToggleLightsAnimation();
+        }
+
+        private void buttontogglemodels_Click(object sender, EventArgs e) {
+            GZBuilder.GZGeneral.ToggleModels();
+        }
+
+        private void buttonselectedmodelsonly_Click(object sender, EventArgs e) {
+            GZBuilder.GZGeneral.ToggleDrawSelectedModelsOnly();
+        }
 
 		#endregion
 
@@ -2819,5 +2853,6 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		#endregion
+
 	}
 }

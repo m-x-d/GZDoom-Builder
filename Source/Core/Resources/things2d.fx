@@ -21,6 +21,9 @@ struct PixelData
 // w = transparency
 float4 rendersettings;
 
+//mxd. solid fill color. used in model wireframe rendering
+float4 fillColor;
+
 // Transform settings
 float4x4 transformsettings;
 
@@ -70,6 +73,11 @@ float4 ps_circle(PixelData pd) : COLOR
 	return c;
 }
 
+//mxd: pretty darn simple pixel shader for wireframe rendering :)
+float4 ps_fill(PixelData pd) : COLOR {
+    return fillColor;
+}
+
 // Technique for shader model 2.0
 technique SM20
 {
@@ -77,5 +85,11 @@ technique SM20
 	{
 	    VertexShader = compile vs_2_0 vs_transform();
 	    PixelShader = compile ps_2_0 ps_circle();
+	}
+	//mxd
+	pass p1
+	{
+	    VertexShader = compile vs_2_0 vs_transform();
+	    PixelShader = compile ps_2_0 ps_fill();
 	}
 }

@@ -19,7 +19,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -28,7 +27,6 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Geometry;
 using System.Runtime.InteropServices;
 using CodeImp.DoomBuilder.Actions;
 using System.Diagnostics;
@@ -39,7 +37,6 @@ using SlimDX.Direct3D9;
 using System.Drawing;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Types;
-using System.Collections.ObjectModel;
 using System.Threading;
 using CodeImp.DoomBuilder.Editing;
 
@@ -115,9 +112,9 @@ namespace CodeImp.DoomBuilder
 		internal const int SIF_ALL = SIF_RANGE + SIF_PAGE + SIF_POS + SIF_TRACKPOS;
 		
 		// Files and Folders
-		private const string SETTINGS_FILE = "Builder.cfg";
+		private const string SETTINGS_FILE = "GZBuilder.cfg";
 		private const string SETTINGS_DIR = "Doom Builder";
-		private const string LOG_FILE = "Builder.log";
+		private const string LOG_FILE = "GZBuilder.log";
 		private const string GAME_CONFIGS_DIR = "Configurations";
 		private const string COMPILERS_DIR = "Compilers";
 		private const string PLUGINS_DIR = "Plugins";
@@ -548,7 +545,7 @@ namespace CodeImp.DoomBuilder
 			Thread.CurrentThread.Name = "Main Application";
 
 			// Application is running
-			appmutex = new Mutex(false, "doombuilder2");
+            appmutex = new Mutex(false, "gzdoombuilder"); //"doombuilder2"
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();
@@ -574,7 +571,9 @@ namespace CodeImp.DoomBuilder
 			
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
-			General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
+            //mxd
+            General.WriteLogLine("GZDoomBuilder " + CodeImp.DoomBuilder.GZBuilder.GZGeneral.Version + " startup");
+			//General.WriteLogLine("Doom Builder " + thisversion.Major + "." + thisversion.Minor + " startup");
 			General.WriteLogLine("Application path:        " + apppath);
 			General.WriteLogLine("Temporary path:          " + temppath);
 			General.WriteLogLine("Local settings path:     " + settingspath);
@@ -667,6 +666,9 @@ namespace CodeImp.DoomBuilder
 				// Create types manager
 				General.WriteLogLine("Creating types manager...");
 				types = new TypesManager();
+
+                //mxd. init gzdoombuilder
+                GZBuilder.GZGeneral.Init();
 				
 				// Do auto map loading when window is delayed
 				if(delaymainwindow)

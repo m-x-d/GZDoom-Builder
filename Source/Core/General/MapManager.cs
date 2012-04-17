@@ -37,11 +37,14 @@ using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.VisualModes;
 
+//mxd
+using CodeImp.DoomBuilder.GZBuilder;
+
 #endregion
 
 namespace CodeImp.DoomBuilder
 {
-	public sealed class MapManager
+  public sealed class MapManager
 	{
 		#region ================== Constants
 
@@ -121,7 +124,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal MapManager()
+    internal MapManager()
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -294,6 +297,9 @@ namespace CodeImp.DoomBuilder
 			if(cmode != null) cmode.SetZoom(0.5f);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
+
+            //mxd
+            GZBuilder.GZGeneral.OnMapOpenEnd();
 			
 			// Success
 			this.changed = false;
@@ -415,7 +421,10 @@ namespace CodeImp.DoomBuilder
 
 			// Center map in screen
 			if(General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
-			
+
+            //mxd
+            GZBuilder.GZGeneral.OnMapOpenEnd();
+
 			// Success
 			this.changed = false;
 			General.WriteLogLine("Map loading done");
@@ -1576,6 +1585,9 @@ namespace CodeImp.DoomBuilder
 			// Reset status
 			General.MainWindow.DisplayStatus(oldstatus);
 			Cursor.Current = oldcursor;
+
+            //mxd
+            GZBuilder.GZGeneral.OnReloadResources();
 		}
 
 		// Game Configuration action

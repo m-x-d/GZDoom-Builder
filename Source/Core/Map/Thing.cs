@@ -85,8 +85,10 @@ namespace CodeImp.DoomBuilder.Map
 		public bool FixedSize { get { return fixedsize; } }
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
+        //mxd
+        public bool IsModel;
 
-		#endregion
+        #endregion
 
 		#region ================== Constructor / Disposer
 
@@ -203,6 +205,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.color = color;
 			t.iconoffset = iconoffset;
 			t.fixedsize = fixedsize;
+
 			base.CopyPropertiesTo(t);
 		}
 
