@@ -49,7 +49,7 @@
             this.ClientSize = new System.Drawing.Size(284, 450);
             this.Controls.Add(this.textBox1);
             this.Name = "DebugForm";
-            this.Text = "DebugForm";
+            this.Text = "Console";
             this.ResumeLayout(false);
             this.PerformLayout();
 

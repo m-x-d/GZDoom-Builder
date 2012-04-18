@@ -78,6 +78,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		// Sector buffer info
 		private int vertexoffset;
+
+        //mxd
+        //private Vector3D normal;
 		
 		#endregion
 
@@ -89,6 +92,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal int Triangles { get { return triangles; } }
 		internal int RenderPassInt { get { return renderpass; } }
 		internal Color4 ModColor4 { get { return modcolor4; } }
+
+        //mxd
+        //internal Vector3D Normal { get { return normal; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
@@ -155,12 +161,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 			vertices = new WorldVertex[verts.Count];
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
-            CalculateNormals();
+            //mxd
+            CalculateNormalsAndShading();
 			if(sector != null) sector.NeedsUpdateGeo = true;
 		}
 
         //mxd. Taken from OpenGl wiki 
-        protected void CalculateNormals() {
+        protected void CalculateNormalsAndShading() {
             int startIndex;
             Vector3 U, V;
             for (int i = 0; i < triangles; i++) {
@@ -176,10 +183,25 @@ namespace CodeImp.DoomBuilder.VisualModes
                 p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
                 p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
 
+                //doom-style walls shading
+                //not very apropriate place to put this, but most convinient :)
+                if (sidedef != null) {
+                    byte valMod = (byte)(Math.Abs((float)Math.Sin(sidedef.Angle)) * 0.07f * 255);
+                    PixelColor modColor = new PixelColor(255, valMod, valMod, valMod);
+                    PixelColor pc = PixelColor.FromInt(p1.c);
+
+                    if (pc.r < modColor.r) modColor.r = pc.r;
+                    if (pc.g < modColor.g) modColor.g = pc.g;
+                    if (pc.b < modColor.b) modColor.b = pc.b;
+
+                    p1.c = p2.c = p3.c -= modColor.ToColorRef();
+                }
+
                 vertices[startIndex] = p1;
                 vertices[startIndex + 1] = p2;
                 vertices[startIndex + 2] = p3;
             }
+           // normal = new Vector3D(vertices[0].nx, vertices[0].ny, vertices[0].nz).GetNormal();
         }
 		
 		// This compares for sorting by sector

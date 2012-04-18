@@ -358,15 +358,16 @@ namespace CodeImp.DoomBuilder.VisualModes
                 if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) {
                     n = 0;
                     lightRenderStyle = (int)GZDoomLightRenderStyle.NORMAL;
-                    lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[0] / 255, (float)thing.Args[1] / 255, (float)thing.Args[2] / 255);
+                    //lightColor.Alpha used in shader to perform some cations based on light type
+                    lightColor = new Color4(1.0f, (float)thing.Args[0] / 255, (float)thing.Args[1] / 255, (float)thing.Args[2] / 255);
                 } else if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) {
                     n = 10;
                     lightRenderStyle = (int)GZDoomLightRenderStyle.ADDITIVE;
-                    lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[0] / 255, (float)thing.Args[1] / 255, (float)thing.Args[2] / 255);
+                    lightColor = new Color4(0.0f, (float)thing.Args[0] / 255, (float)thing.Args[1] / 255, (float)thing.Args[2] / 255);
                 } else {
                     n = 20;
                     lightRenderStyle = (int)GZDoomLightRenderStyle.NEGATIVE;
-                    lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[2] / 255, (float)thing.Args[1] / 255, (float)thing.Args[0] / 255);
+                    lightColor = new Color4(1.0f, (float)thing.Args[0] / 255, (float)thing.Args[1] / 255, (float)thing.Args[2] / 255);
                 }
                 lightType = thing.Type - 9800 - n;
 

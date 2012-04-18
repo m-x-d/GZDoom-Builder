@@ -1157,7 +1157,7 @@ namespace CodeImp.DoomBuilder.Rendering
                 graphics.Shaders.Things2D.ApplySettings();
 
                 // Draw
-                graphics.Device.SetStreamSource(0, model.Meshes[i].VertexBuffer, 0, ModelVertex.SizeBytes);
+                graphics.Device.SetStreamSource(0, model.Meshes[i].VertexBuffer, 0, WorldVertex.Stride);
                 graphics.Device.Indices = model.Indeces2D[i];
                 graphics.Device.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, model.Meshes[i].VertexCount, 0, model.NumIndeces2D[i]);
             }

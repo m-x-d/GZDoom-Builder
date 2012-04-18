@@ -153,14 +153,33 @@ float4 ps_constant_color(PixelData pd) : COLOR {
 //mxd. dynamic light pixel shader pass, dood!
 float4 ps_lightpass(LitPixelData pd) : COLOR {
       //is face facing away from light source?
-      if(dot(pd.normal, (lightPosAndRadius.xyz - pd.pos_w)) < 0) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
-          return float4(0.0f, 0.0f, 0.0f, 0.0f);
-          //return lightColorMod;
+      if(dot(pd.normal, (lightPosAndRadius.xyz - pd.pos_w)) <= 0) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
+          clip(-1);
+          
+      //is pixel in light range?
+      float dist = distance(pd.pos_w, lightPosAndRadius.xyz);
+      if(dist > lightPosAndRadius.w)
+          clip(-1);
+      
+      //is pixel tranparent?
+      float4 tcolor = tex2D(texturesamp, pd.uv);
+      if(tcolor.a == 0.0f)
+          clip(-1);
 
-      //if not - calculate color at current pixel
-      float4 lightColorMod = float4(0.0f, 0.0f, 0.0f, lightColor.a);
-      lightColorMod.rgb = lightColor.rgb * max(lightPosAndRadius.w - distance(pd.pos_w, lightPosAndRadius.xyz), 0.0f) / lightPosAndRadius.w;
-      return lightColorMod;
+      //if it is - calculate color at current pixel
+      float4 lightColorMod = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+      lightColorMod.rgb = lightColor.rgb * max(lightPosAndRadius.w - dist, 0.0f) / lightPosAndRadius.w;
+      if(lightColorMod.r > 0.0f || lightColorMod.g > 0.0f || lightColorMod.b > 0.0f){
+          if(lightColor.a == 1.0f){ //Normal or negative light
+              lightColorMod.rgb *= 0.9f;
+              return tcolor * lightColorMod;
+          }
+          lightColorMod.rgb *= 0.25f;
+          return lightColorMod; //Additive light
+      }
+      clip(-1);
+      return lightColorMod; //should never get here
 }
 
 // Technique for shader model 2.0
