@@ -12,6 +12,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
     public partial class DebugForm : Form
     {
         public TextBox TextPannel;
+        public string Title { set{ Text = value; }}
         
         public DebugForm() {
             InitializeComponent();

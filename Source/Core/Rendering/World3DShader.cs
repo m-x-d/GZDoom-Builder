@@ -56,6 +56,8 @@ namespace CodeImp.DoomBuilder.Rendering
         private EffectHandle lightPositionAndRadiusHandle;
         private EffectHandle lightColorHandle;
         private EffectHandle worldHandle;
+        //used in ModelReader
+        private VertexElement[] vertexElements;
 
 		
 		#endregion
@@ -70,6 +72,7 @@ namespace CodeImp.DoomBuilder.Rendering
         public Color4 LightColor { set { if (manager.Enabled) effect.SetValue<Color4>(lightColorHandle, value); } }
         public Vector4 LightPositionAndRadius { set { if (manager.Enabled) effect.SetValue(lightPositionAndRadiusHandle, value); } }
         public Matrix World { set { if (manager.Enabled) effect.SetValue<Matrix>(worldHandle, value); } }
+        public VertexElement[] VertexElements { get { return vertexElements; } }
 
 		#endregion
 
@@ -102,7 +105,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Initialize world vertex declaration
-			VertexElement[] elements = new VertexElement[]
+            vertexElements = new VertexElement[]
 			{
 				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
@@ -111,7 +114,7 @@ namespace CodeImp.DoomBuilder.Rendering
                 new VertexElement(0, 24, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
                 VertexElement.VertexDeclarationEnd
 			};
-			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, elements);
+            vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, vertexElements);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);

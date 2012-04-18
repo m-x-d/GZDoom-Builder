@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static int[] GZ_LIGHT_TYPES { get { return gz_lightTypes; } } 
 
         //version
-        public const string Version = "1.01";
+        public const string Version = "1.02";
 
         //debug form
 #if DEBUG
@@ -140,6 +140,12 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static void ClearTrace() {
 #if DEBUG
             form.TextPannel.Text = "";
+#endif
+        }
+
+        public static void TraceInHeader(string message) {
+#if DEBUG
+            form.Text = message;
 #endif
         }
 

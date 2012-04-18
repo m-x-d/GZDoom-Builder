@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections.Generic;
 
 using CodeImp.DoomBuilder;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
 using SlimDX;
@@ -37,10 +38,8 @@ namespace ColladaDotNet.Pipeline.MD3 {
                     string ext = modelPaths[i].Substring(modelPaths[i].Length - 4);
                     bool loaded = false;
                     if (ext == ".md3") {
-                        //loaded = ReadMD3Model(mde, model, mde.Path + "\\" + modelPaths[i], D3DDevice);
                         loaded = ReadMD3Model(ref bbs, mde, model, mde.Path + "\\" + modelPaths[i], D3DDevice);
                     } else if (ext == ".md2") {
-                        //loaded = ReadMD2Model(mde, model, mde.Path + "\\" + modelPaths[i], D3DDevice);
                         loaded = ReadMD2Model(ref bbs, mde, model, mde.Path + "\\" + modelPaths[i], D3DDevice);
                     }
 
@@ -88,7 +87,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                     s.Position = ofsSurfaces + start;
 
                 List<short> polyIndecesList = new List<short>();
-                List<ModelVertex> vertList = new List<ModelVertex>();
+                List<WorldVertex> vertList = new List<WorldVertex>();
 
                 for (int c = 0; c < numSurfaces; ++c)
                     ReadSurface(ref bbs, br, polyIndecesList, vertList, mde);
@@ -97,7 +96,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 short[] indeces2d_arr = CreateLineListIndeces(polyIndecesList);
 
                 //mesh
-                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, ModelVertex.Format);
+                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, General.Map.Graphics.Shaders.World3D.VertexElements);
 
                 DataStream stream = mesh.VertexBuffer.Lock(0, 0, LockFlags.None);
                 stream.WriteRange(vertList.ToArray());
@@ -107,6 +106,9 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 stream.WriteRange(polyIndecesList.ToArray());
                 mesh.IndexBuffer.Unlock();
 
+                mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
+                model.Meshes.Add(mesh);
+
                 //2d data
                 IndexBuffer indeces2d = new IndexBuffer(D3DDevice, 2 * indeces2d_arr.Length, Usage.WriteOnly, Pool.Managed, true);
                 stream = indeces2d.Lock(0, 0, LockFlags.None);
@@ -115,13 +117,11 @@ namespace ColladaDotNet.Pipeline.MD3 {
 
                 model.Indeces2D.Add(indeces2d);
                 model.NumIndeces2D.Add((short)polyIndecesList.Count);
-
-                model.Meshes.Add(mesh);
             }
             return true;
         }
 
-        private static void ReadSurface(ref BoundingBoxSizes bbs, BinaryReader br, List<short> polyIndecesList, List<ModelVertex> vertList, ModelDefEntry mde) {
+        private static void ReadSurface(ref BoundingBoxSizes bbs, BinaryReader br, List<short> polyIndecesList, List<WorldVertex> vertList, ModelDefEntry mde) {
             var start = br.BaseStream.Position;
 
             if (ReadString(br, 4) != "IDP3") {
@@ -151,10 +151,10 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 br.BaseStream.Position = start + ofsST;
 
             for (int i = 0; i < numVerts; i++) {
-                ModelVertex v = new ModelVertex();
-                v.Color = 0xffffff;
-                v.Tu = br.ReadSingle();
-                v.Tv = br.ReadSingle();
+                WorldVertex v = new WorldVertex();
+                v.c = 0xffffff;
+                v.u = br.ReadSingle();
+                v.v = br.ReadSingle();
 
                 vertList.Add(v);
             }
@@ -164,14 +164,13 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 br.BaseStream.Position = start + ofsNormal;
 
             for (int i = 0; i < numVerts; i++) {
-                ModelVertex v = vertList[i];
-                short[] coords = new short[] { br.ReadInt16(), br.ReadInt16(), br.ReadInt16() };
+                WorldVertex v = vertList[i];
+                //short[] coords = new short[] { br.ReadInt16(), br.ReadInt16(), br.ReadInt16() };
 
-                v.Position = new Vector3((float)coords[1] / 64, -(float)coords[0] / 64, (float)coords[2] / 64);
-                v.Position.X *= mde.Scale.Y;
-                v.Position.Y *= mde.Scale.X;
-                v.Position.Z *= mde.Scale.Z;
-                v.Position.Z += mde.zOffset;
+                //v.Position = new Vector3((float)coords[1] / 64, -(float)coords[0] / 64, (float)coords[2] / 64);
+                v.y = -(float)br.ReadInt16() / 64 * mde.Scale.X;
+                v.x = (float)br.ReadInt16() / 64 * mde.Scale.Y;
+                v.z = (float)br.ReadInt16() / 64 * mde.Scale.Z + mde.zOffset;
 
                 //bounding box
                 UpdateBoundingBoxSizes(ref bbs, v);
@@ -179,11 +178,10 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 var lat = br.ReadByte() * (2 * Math.PI) / 255.0;
                 var lng = br.ReadByte() * (2 * Math.PI) / 255.0;
 
-                float nx = (float)(Math.Cos(lng) * Math.Sin(lat));
-                float ny = (float)(Math.Sin(lng) * Math.Sin(lat));
-                float nz = (float)(Math.Cos(lat));
+                v.nx = (float)(Math.Sin(lng) * Math.Sin(lat));
+                v.ny = -(float)(Math.Cos(lng) * Math.Sin(lat));
+                v.nz = (float)(Math.Cos(lat));
 
-                v.Normal = new Vector3(ny, -nx, nz);
                 vertList[i] = v;
             }
 
@@ -228,7 +226,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 List<short> polyIndecesList = new List<short>();
                 List<short> uvIndecesList = new List<short>();
                 List<Vector2> uvCoordsList = new List<Vector2>();
-                List<ModelVertex> vertList = new List<ModelVertex>();
+                List<WorldVertex> vertList = new List<WorldVertex>();
 
                 //polygons
                 if (s.Position != ofs_tris + start)
@@ -265,34 +263,26 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 //verts
                 for (int i = 0; i < num_verts; i++) {
                     //pos
-                    ModelVertex v = new ModelVertex();
-                    Vector3 vPos = new Vector3(br.ReadByte(), br.ReadByte(), br.ReadByte());
+                    WorldVertex v = new WorldVertex();
 
-                    vPos.X = scale.X * vPos.X + translate.X;
-                    vPos.Y = scale.Y * vPos.Y + translate.Y;
-                    vPos.Z = scale.Z * vPos.Z + translate.Z;
-
-                    v.Position.X = vPos.X * mde.Scale.X;
-                    v.Position.Y = vPos.Y * mde.Scale.Y;
-                    v.Position.Z = vPos.Z * mde.Scale.Z;
-                    v.Position.Z += mde.zOffset;
+                    v.x = ((float)br.ReadByte() * scale.X + translate.X) * mde.Scale.X;
+                    v.y = ((float)br.ReadByte() * scale.Y + translate.Y) * mde.Scale.Y;
+                    v.z = ((float)br.ReadByte() * scale.Z + translate.Z) * mde.Scale.Z + mde.zOffset;
 
                     vertList.Add(v);
-                    //set data for rendering in 2D mode
-                    //model.verts2D.Add(new CodeImp.DoomBuilder.Geometry.Vector2D(v.Position.X, -v.Position.Y));
 
-                    s.Position += 1; //br.ReadByte(); //vertex normal
+                    s.Position += 1; //vertex normal
                 }
 
                 for (int i = 0; i < polyIndecesList.Count; i++) {
-                    ModelVertex v = vertList[polyIndecesList[i]];
+                    WorldVertex v = vertList[polyIndecesList[i]];
                     
                     //bounding box
                     UpdateBoundingBoxSizes(ref bbs, v);
 
                     //uv
-                    v.Tu = uvCoordsList[uvIndecesList[i]].X;
-                    v.Tv = uvCoordsList[uvIndecesList[i]].Y;
+                    v.u = uvCoordsList[uvIndecesList[i]].X;
+                    v.v = uvCoordsList[uvIndecesList[i]].Y;
 
                     vertList[polyIndecesList[i]] = v;
                 }
@@ -301,7 +291,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 short[] indeces2d_arr = CreateLineListIndeces(polyIndecesList);
 
                 //mesh
-                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, ModelVertex.Format);
+                Mesh mesh = new Mesh(D3DDevice, polyIndecesList.Count / 3, vertList.Count, MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, General.Map.Graphics.Shaders.World3D.VertexElements);
 
                 DataStream stream = mesh.VertexBuffer.Lock(0, 0, LockFlags.None);
                 stream.WriteRange(vertList.ToArray());
@@ -311,6 +301,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 stream.WriteRange(polyIndecesList.ToArray());
                 mesh.IndexBuffer.Unlock();
 
+                mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
                 model.Meshes.Add(mesh);
 
                 //2d data
@@ -363,21 +354,21 @@ namespace ColladaDotNet.Pipeline.MD3 {
             return new Vector3[] { v0, v1, v2, v3, v4, v5, v6, v7, v8 };
         }
 
-        private static void UpdateBoundingBoxSizes(ref BoundingBoxSizes bbs, ModelVertex v) {
-            if (v.Position.X < bbs.MinX)
-                bbs.MinX = (short)v.Position.X;
-            else if (v.Position.X > bbs.MaxX)
-                bbs.MaxX = (short)v.Position.X;
+        private static void UpdateBoundingBoxSizes(ref BoundingBoxSizes bbs, WorldVertex v) {
+            if (v.x < bbs.MinX)
+                bbs.MinX = (short)v.x;
+            else if (v.x > bbs.MaxX)
+                bbs.MaxX = (short)v.x;
 
-            if (v.Position.Z < bbs.MinZ)
-                bbs.MinZ = (short)v.Position.Z;
-            else if (v.Position.Z > bbs.MaxZ)
-                bbs.MaxZ = (short)v.Position.Z;
+            if (v.z < bbs.MinZ)
+                bbs.MinZ = (short)v.z;
+            else if (v.z > bbs.MaxZ)
+                bbs.MaxZ = (short)v.z;
 
-            if (v.Position.Y < bbs.MinY)
-                bbs.MinY = (short)v.Position.Y;
-            else if (v.Position.Y > bbs.MaxY)
-                bbs.MaxY = (short)v.Position.Y;
+            if (v.y < bbs.MinY)
+                bbs.MinY = (short)v.y;
+            else if (v.y > bbs.MaxY)
+                bbs.MaxY = (short)v.y;
         }
 
         private static string ReadString(BinaryReader br, int len) {
