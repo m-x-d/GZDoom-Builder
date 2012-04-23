@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool VisualBilinear { get { return visualbilinear; } internal set { visualbilinear = value; } }
 		public int MouseSpeed { get { return mousespeed; } internal set { mousespeed = value; } }
 		public int MoveSpeed { get { return movespeed; } internal set { movespeed = value; } }
-		public float ViewDistance { get { return viewdistance; } internal set { viewdistance = value; } }
+        public float ViewDistance { get { return viewdistance; } internal set { viewdistance = value; } }
 		public bool InvertYAxis { get { return invertyaxis; } internal set { invertyaxis = value; } }
 		public string ScriptFontName { get { return scriptfontname; } internal set { scriptfontname = value; } }
 		public int ScriptFontSize { get { return scriptfontsize; } internal set { scriptfontsize = value; } }
