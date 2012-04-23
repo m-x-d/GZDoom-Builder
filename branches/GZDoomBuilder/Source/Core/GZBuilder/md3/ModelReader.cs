@@ -63,7 +63,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
             if (model.NUM_MESHES <= 0)
                 return null;
 
-            model.BoundingBox = CalculateBoundingBox(bbs);
+            model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
 
             return model;
         }
@@ -173,7 +173,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 v.z = (float)br.ReadInt16() / 64 * mde.Scale.Z + mde.zOffset;
 
                 //bounding box
-                UpdateBoundingBoxSizes(ref bbs, v);
+                BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, v);
 
                 var lat = br.ReadByte() * (2 * Math.PI) / 255.0;
                 var lng = br.ReadByte() * (2 * Math.PI) / 255.0;
@@ -278,7 +278,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                     WorldVertex v = vertList[polyIndecesList[i]];
                     
                     //bounding box
-                    UpdateBoundingBoxSizes(ref bbs, v);
+                    BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, v);
 
                     //uv
                     v.u = uvCoordsList[uvIndecesList[i]].X;
@@ -337,7 +337,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
         }
 
         //this creates array of vectors resembling bounding box
-        private static Vector3[] CalculateBoundingBox(BoundingBoxSizes bbs) {
+        /*private static Vector3[] CalculateBoundingBox(BoundingBoxSizes bbs) {
             //center
             Vector3 v0 = new Vector3(bbs.MinX + (bbs.MaxX - bbs.MinX) / 2, bbs.MinY + (bbs.MaxY - bbs.MinY) / 2, bbs.MinZ + (bbs.MaxZ - bbs.MinZ) / 2);
 
@@ -369,7 +369,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 bbs.MinY = (short)v.y;
             else if (v.y > bbs.MaxY)
                 bbs.MaxY = (short)v.y;
-        }
+        }*/
 
         private static string ReadString(BinaryReader br, int len) {
             var NAME = string.Empty;
@@ -388,14 +388,4 @@ namespace ColladaDotNet.Pipeline.MD3 {
             return NAME;
         }
     }
-}
-
-struct BoundingBoxSizes
-{
-    public short MinX;
-    public short MaxX;
-    public short MinY;
-    public short MaxY;
-    public short MinZ;
-    public short MaxZ;
 }

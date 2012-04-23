@@ -266,9 +266,9 @@ namespace CodeImp.DoomBuilder.VisualModes
             if (thing.IsModel) {
                 updateBoundingBoxForModel();
             } else if (lightType != -1 && lightRadius > thing.Size) {
-                updateBoundingBox(lightRadius, lightRadius);
+                UpdateBoundingBox(lightRadius, lightRadius * 2);
             } else {
-                updateBoundingBox((int)thing.Size, thingHeight);
+                UpdateBoundingBox((int)thing.Size, thingHeight);
             }
 		}
 
@@ -332,12 +332,12 @@ namespace CodeImp.DoomBuilder.VisualModes
                 int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
                 if (light_id != -1) {
                     updateLight(light_id);
-                    updateBoundingBox(lightRadius, lightRadius);
+                    UpdateBoundingBox(lightRadius, lightRadius * 2);
                 } else {
                     if (thing.IsModel) {
                         updateBoundingBoxForModel();
                     } else {
-                        updateBoundingBox((int)thing.Size, thingHeight);
+                        UpdateBoundingBox((int)thing.Size, thingHeight);
                     }
                     lightType = -1;
                     lightRadius = -1;
@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder.VisualModes
                 if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) {
                     n = 0;
                     lightRenderStyle = (int)GZDoomLightRenderStyle.NORMAL;
-                    //lightColor.Alpha used in shader to perform some cations based on light type
+                    //lightColor.Alpha used in shader to perform some calculations based on light type
                     lightColor = new Color4(1.0f, (float)thing.Args[0] / 255, (float)thing.Args[1] / 255, (float)thing.Args[2] / 255);
                 } else if (light_id < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) {
                     n = 10;
@@ -377,6 +377,12 @@ namespace CodeImp.DoomBuilder.VisualModes
                     lightRadiusMin = thing.Args[3] * 2; //works... that.. way in GZDoom
                     if (lightType > 0)
                         lightRadiusMax = thing.Args[4] * 2;
+
+                    if (lightRadiusMin > lightRadiusMax) { //swap them
+                        int lrm = lightRadiusMin;
+                        lightRadiusMin = lightRadiusMax;
+                        lightRadiusMax = lrm;
+                    }
                 }
             } else { //it's one of vavoom lights
                 lightRenderStyle = (int)GZDoomLightRenderStyle.NORMAL;
@@ -412,7 +418,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             //pulse
             if (lightType == (int)GZDoomLightType.PULSE) {
                 lightDelta = (float)Math.Sin(time / (100.0f * thing.Angle * 2.3f)); //just playing by the eye here...
-                lightRadius = Math.Abs((int)(lightRadiusMin + diff + diff * lightDelta));
+                lightRadius = Math.Abs((int)(lightRadiusMin + diff/2 + diff/2 * lightDelta));
 
             //flicker
             } else if (lightType == (int)GZDoomLightType.FLICKER) {
@@ -433,24 +439,23 @@ namespace CodeImp.DoomBuilder.VisualModes
                     lightRadius = lightRadiusMin + new Random().Next(0, diff);
                 lightDelta = delta;
             }
-
-            //return lightRadius;
         }
 
         //mxd. update bounding box
-        private void updateBoundingBox(int width, int height) {
+        public void UpdateBoundingBox(int width, int height) {
             boundingBox = new Vector3[9];
             boundingBox[0] = Center;
+            int h2 = height / 2;
 
-            boundingBox[1] = new Vector3(position_v3.X - width, position_v3.Y - width, position_v3.Z);
-            boundingBox[2] = new Vector3(position_v3.X + width, position_v3.Y - width, position_v3.Z);
-            boundingBox[3] = new Vector3(position_v3.X - width, position_v3.Y + width, position_v3.Z);
-            boundingBox[4] = new Vector3(position_v3.X + width, position_v3.Y + width, position_v3.Z);
+            boundingBox[1] = new Vector3(position_v3.X - width, position_v3.Y - width, Center.Z - h2);
+            boundingBox[2] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z - h2);
+            boundingBox[3] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z - h2);
+            boundingBox[4] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z - h2);
 
-            boundingBox[5] = new Vector3(position_v3.X - width, position_v3.Y - width, position_v3.Z + height);
-            boundingBox[6] = new Vector3(position_v3.X + width, position_v3.Y - width, position_v3.Z + height);
-            boundingBox[7] = new Vector3(position_v3.X - width, position_v3.Y + width, position_v3.Z + height);
-            boundingBox[8] = new Vector3(position_v3.X + width, position_v3.Y + width, position_v3.Z + height);
+            boundingBox[5] = new Vector3(position_v3.X - width, position_v3.Y - width, Center.Z + h2);
+            boundingBox[6] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z + h2);
+            boundingBox[7] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z + h2);
+            boundingBox[8] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z + h2);
         }
 
         //mxd. update bounding box from model bounding box

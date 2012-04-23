@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static int[] GZ_LIGHT_TYPES { get { return gz_lightTypes; } } 
 
         //version
-        public const string Version = "1.02";
+        public const string Version = "1.03";
 
         //debug form
 #if DEBUG

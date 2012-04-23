@@ -83,7 +83,9 @@ namespace CodeImp.DoomBuilder.Rendering
         private Dictionary<Texture, List<VisualGeometry>> litGeometry;
         private Dictionary<ModelDefEntry, List<VisualThing>> thingsWithModel;
         //dbg
-        int geoSkipped = 0;
+        //int geoSkipped = 0;
+        //int totalGeo = 0;
+        //int totalThings = 0;
 		
 		// Crosshair
 		private FlatVertex[] crosshairverts;
@@ -498,6 +500,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingsbydistance = new BinaryHeap<VisualThing>();
             //mxd 
             thingsWithModel = new Dictionary<ModelDefEntry, List<VisualThing>>();
+            litGeometry = new Dictionary<Texture, List<VisualGeometry>>();
 
 			for(int i = 0; i < RENDER_PASSES; i++)
 			{
@@ -512,6 +515,8 @@ namespace CodeImp.DoomBuilder.Rendering
                 //dbg
                 //GZBuilder.GZGeneral.ClearTrace();
                 //geoSkipped = 0;
+                //totalGeo = 0;
+                //totalThings = 0;
             }
 		}
 
@@ -530,9 +535,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			graphics.Shaders.World3D.Begin();
-
-            //mxd
-            litGeometry = new Dictionary<Texture, List<VisualGeometry>>();
 
 			// SOLID PASS
 			world = Matrix.Identity;
@@ -579,7 +581,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			geometry = null;
 
             //dbg
-            //GZBuilder.GZGeneral.TraceLine("Skipped "+geoSkipped+" geometries");
+            //GZBuilder.GZGeneral.TraceLine("Affected by lights: "+totalGeo+"; skipped: "+geoSkipped+"; total things:"+totalThings);
             //GZBuilder.GZGeneral.TraceInHeader("FPS:" + calculateFrameRate());
 		}
 
@@ -885,9 +887,6 @@ namespace CodeImp.DoomBuilder.Rendering
             int i, count;
             Vector4 lpr;
 
-            //dbg
-            //int gcount = 0;
-
             graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.One);
             graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.BlendFactor);
 
@@ -898,9 +897,6 @@ namespace CodeImp.DoomBuilder.Rendering
                     i = 0;
                     count = 0;
 
-                    //dbg
-                    //gcount++;
-
                     graphics.Device.SetStreamSource(0, g.Sector.GeometryBuffer, 0, WorldVertex.Stride);
 
                     //normal lights
@@ -909,13 +905,18 @@ namespace CodeImp.DoomBuilder.Rendering
                         graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
                         for (i = 0; i < count; i++) {
-                            lpr = lights[i].LightPositionAndRadius;
-                            if (lpr.W == 0)
-                                continue;
-                            graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-                            graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
-                            graphics.Shaders.World3D.ApplySettings();
-                            graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                            if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
+                                //dbg
+                                //totalGeo++;
+
+                                lpr = lights[i].LightPositionAndRadius;
+                                if (lpr.W == 0)
+                                    continue;
+                                graphics.Shaders.World3D.LightColor = lights[i].LightColor;
+                                graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                graphics.Shaders.World3D.ApplySettings();
+                                graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                            }
                         }
                     }
 
@@ -925,13 +926,18 @@ namespace CodeImp.DoomBuilder.Rendering
                         graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
                         for (i = lightOffsets[0]; i < count; i++) {
-                            lpr = lights[i].LightPositionAndRadius;
-                            if (lpr.W == 0)
-                                continue;
-                            graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-                            graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
-                            graphics.Shaders.World3D.ApplySettings();
-                            graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                            if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
+                                //dbg
+                                //totalGeo++;
+
+                                lpr = lights[i].LightPositionAndRadius;
+                                if (lpr.W == 0)
+                                    continue;
+                                graphics.Shaders.World3D.LightColor = lights[i].LightColor;
+                                graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                graphics.Shaders.World3D.ApplySettings();
+                                graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                           }
                         }
                     }
 
@@ -941,14 +947,19 @@ namespace CodeImp.DoomBuilder.Rendering
                         graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.ReverseSubtract);
 
                         for (i = lightOffsets[0] + lightOffsets[1]; i < count; i++) {
-                            lpr = lights[i].LightPositionAndRadius;
-                            if (lpr.W == 0)
-                                continue;
-                            Color4 lc = lights[i].LightColor;
-                            graphics.Shaders.World3D.LightColor = new Color4(1.0f, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
-                            graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
-                            graphics.Shaders.World3D.ApplySettings();
-                            graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                            if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
+                                //dbg
+                                //totalGeo++;
+
+                                lpr = lights[i].LightPositionAndRadius;
+                                if (lpr.W == 0)
+                                    continue;
+                                Color4 lc = lights[i].LightColor;
+                                graphics.Shaders.World3D.LightColor = new Color4(1.0f, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
+                                graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
+                                graphics.Shaders.World3D.ApplySettings();
+                                graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                            }
                         }
                     }
                 }
@@ -956,8 +967,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
             graphics.Shaders.World3D.EndPass();
             graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
-
-            //graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, alphaBlendEnabled); //disable AlphaBlending which is turned on in shader
 
             //dbg
             //GZBuilder.GZGeneral.TraceLine("Lit " + gcount + " geometries; Lights: [" + lightOffsets[0] + ";" + lightOffsets[1] + ";" + lightOffsets[2] + "]" + Environment.NewLine + "Models count: " + thingsWithModel.Count);
@@ -987,8 +996,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
                     // Determine the shader pass we want to use for this object
                     int wantedshaderpass = ((((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass);
-                    //dbg
-                    //GZBuilder.GZGeneral.Trace("Rendering mesh with "+wantedshaderpass+" pass."+Environment.NewLine);
 
                     // Switch shader pass?
                     if (currentshaderpass != wantedshaderpass) {
@@ -1075,8 +1082,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			highlighted = obj;
 		}
-
-        
 		
 		// This collects a visual sector's geometry for rendering
 		public void AddSectorGeometry(VisualGeometry g)
@@ -1084,14 +1089,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Must have a texture and vertices
 			if((g.Texture != null) && (g.Triangles > 0))
 			{
-				//mxd
-                /*double angle = Math.Acos(Vector3D.DotProduct(g.Normal, Vector3D.FromAngleXYZ(General.Map.VisualCamera.AngleXY, General.Map.VisualCamera.AngleZ).GetNormal()));
-                //GZBuilder.GZGeneral.TraceLine("angle=" + angle);
-                if (angle < 0.78f) { //if angle between geometry normal and camera normal is greater than 135 deg.
-                    geoSkipped++;
-                    return;
-                }*/
-                
                 // Texture group not yet collected?
 				if(!geometry[g.RenderPassInt].ContainsKey(g.Texture))
 				{
@@ -1110,14 +1107,13 @@ namespace CodeImp.DoomBuilder.Rendering
             //mxd. gater lights
             if (General.Settings.GZDrawLights && !fullbrightness && t.LightType != -1) {
                 t.UpdateLightRadius();
-                //dbg
-                //GZBuilder.GZGeneral.TraceLine("LightRadius = "+t.LightRadius);
+
                 if (t.LightRadius > 0) {
                     t.CalculateCameraDistance3D(D3DDevice.V3(cameraposition));
                     //t.CameraDistance3D is actually squared distance, hence (t.LightRadius * t.LightRadius)
                     if (t.CameraDistance3D < (t.LightRadius * t.LightRadius) || isThingOnScreen(t.BoundingBox)) { //always render light if camera is within it's radius 
-                        //dbg
-                        //GZBuilder.GZGeneral.Trace("Light is on screen.");
+                        if (t.LightType == (int)GZDoomLightType.FLICKER || t.LightType == (int)GZDoomLightType.PULSE || t.LightType == (int)GZDoomLightType.RANDOM)
+                            t.UpdateBoundingBox(t.LightRadius, t.LightRadius * 2);
                         thingsWithLight.Add(t);
                     }
                 }
@@ -1125,13 +1121,8 @@ namespace CodeImp.DoomBuilder.Rendering
             } else if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel) {
                 ModelDefEntry mde = GZBuilder.GZGeneral.ModelDefEntries[t.Thing.Type];
 
-                if (!isThingOnScreen(t.BoundingBox)) {
-                    //dbg
-                    //GZBuilder.GZGeneral.Trace("Model is not on screen");
+                if (!isThingOnScreen(t.BoundingBox))
                     return;
-                }
-                //dbg
-                //GZBuilder.GZGeneral.Trace("Model is on screen");
 
                 if (!thingsWithModel.ContainsKey(mde)) 
                     thingsWithModel.Add(mde, new List<VisualThing>());
@@ -1164,17 +1155,53 @@ namespace CodeImp.DoomBuilder.Rendering
             Vector3D camNormal = Vector3D.FromAngleXYZ(General.Map.VisualCamera.AngleXY, General.Map.VisualCamera.AngleZ);
             Vector3D thingNormal = D3DDevice.V3D(bbox[0]) - cameraposition; //bbox[0] is always thing center
 
-            if (Vector3D.DotProduct(camNormal, thingNormal) < 0)
-                return false; 
+            if (Vector3D.DotProduct(camNormal, thingNormal) < 0) { //behind camera plane
+                //GZBuilder.GZGeneral.TraceLine("Skipped geo. Vector3D.DotProduct(camNormal, thingNormal) < 0");
+                return false;
+            }
 
             int len = bbox.Length;
             Vector3 screenPos;
+            int behingCount = 0;
+            int leftCount = 0;
+            int rightCount = 0;
+            int topCount = 0;
+            int bottomCount = 0;
+
             for (int i = 0; i < len; i++) {
                 //check visibility
                 screenPos = Vector3.Project(bbox[i], 0, 0, 1, 1, PROJ_NEAR_PLANE, General.Settings.ViewDistance, worldviewproj);
+
                 if (screenPos.X > 0 && screenPos.X < 1 && screenPos.Y > 0 && screenPos.Y < 1)
                     return true;
+
+                if (screenPos.Z < 0)
+                    behingCount++;
+
+                if (screenPos.X < 0)
+                    leftCount++;
+                else if (screenPos.X > 1)
+                    rightCount++;
+                if (screenPos.Y < 0)
+                    topCount++;
+                else if (screenPos.Y > 1)
+                    bottomCount++;
             }
+
+            if (behingCount == len || leftCount == len || rightCount == len || topCount == len || bottomCount == len)
+                return false; //Not on screen
+            return true;
+        }
+
+        //mxd
+        private static bool checkBBoxIntersection(Vector3[] bbox1, Vector3[] bbox2) {
+            Vector3 dist = bbox1[0] - bbox2[0];
+
+            Vector3 halfSize1 = bbox1[0] - bbox1[1];
+            Vector3 halfSize2 = bbox2[0] - bbox2[1];
+
+            if (halfSize1.X + halfSize2.X >= Math.Abs(dist.X) && halfSize1.Y + halfSize2.Y >= Math.Abs(dist.Y) && halfSize1.Z + halfSize2.Z >= Math.Abs(dist.Z))
+                return true;
             return false;
         }
 
@@ -1229,9 +1256,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
         //dbg
-        private int lastTick, lastFrameRate, frameRate;
+        //private int lastTick, lastFrameRate, frameRate;
 
-        private int calculateFrameRate() {
+        /*private int calculateFrameRate() {
             if (System.Environment.TickCount - lastTick >= 1000) {
                 lastFrameRate = frameRate;
                 frameRate = 0;
@@ -1239,7 +1266,7 @@ namespace CodeImp.DoomBuilder.Rendering
             }
             frameRate++;
             return lastFrameRate;
-        }
+        }*/
 		
 		#endregion
 	}

@@ -36,6 +36,9 @@ using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
 
+//mxd
+using CodeImp.DoomBuilder.GZBuilder.Data;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.VisualModes
@@ -80,6 +83,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private int vertexoffset;
 
         //mxd
+        private Vector3[] boundingBox;
         //private Vector3D normal;
 		
 		#endregion
@@ -94,6 +98,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal Color4 ModColor4 { get { return modcolor4; } }
 
         //mxd
+        internal Vector3[] BoundingBox { get { return boundingBox; } }
         //internal Vector3D Normal { get { return normal; } }
 
 		/// <summary>
@@ -161,8 +166,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 			vertices = new WorldVertex[verts.Count];
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
+            
             //mxd
             CalculateNormalsAndShading();
+
 			if(sector != null) sector.NeedsUpdateGeo = true;
 		}
 
@@ -170,6 +177,9 @@ namespace CodeImp.DoomBuilder.VisualModes
         protected void CalculateNormalsAndShading() {
             int startIndex;
             Vector3 U, V;
+
+            BoundingBoxSizes bbs = new BoundingBoxSizes(vertices[0]);
+
             for (int i = 0; i < triangles; i++) {
                 startIndex = i * 3;
                 WorldVertex p1 = vertices[startIndex];
@@ -200,8 +210,13 @@ namespace CodeImp.DoomBuilder.VisualModes
                 vertices[startIndex] = p1;
                 vertices[startIndex + 1] = p2;
                 vertices[startIndex + 2] = p3;
+
+                BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p1);
+                BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p2);
+                BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p3);
             }
-           // normal = new Vector3D(vertices[0].nx, vertices[0].ny, vertices[0].nz).GetNormal();
+            if (triangles > 0)
+                boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);    
         }
 		
 		// This compares for sorting by sector
