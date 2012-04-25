@@ -113,7 +113,6 @@ namespace CodeImp.DoomBuilder.VisualModes
         //mxd
         internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
         public int CameraDistance3D { get { return cameraDistance3D; } }
-        //public int HalfHeight { get { return thingHalfHeight; } }
         public Vector3 Center { get { return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingHeight / 2); } }
         public Vector3 PositionV3 { get { return position_v3; } }
         public Vector3[] BoundingBox { get { return boundingBox; } }
@@ -374,7 +373,10 @@ namespace CodeImp.DoomBuilder.VisualModes
                 lightType = thing.Type - 9800 - n;
 
                 if (lightType == (int)GZDoomLightType.SECTOR) {
-                    lightRadiusMin = (float)(thing.Args[3] * 4) * General.Settings.GZDynamicLightRadius;
+                    int scaler = 1;
+                    if (thing.Sector != null)
+                        scaler = thing.Sector.Brightness / 4;
+                    lightRadiusMin = (float)(thing.Args[3] * scaler) * General.Settings.GZDynamicLightRadius;
                 } else {
                     lightRadiusMin = (float)(thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
                     if (lightType > 0) {
