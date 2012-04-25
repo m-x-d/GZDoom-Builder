@@ -153,9 +153,9 @@ float4 ps_constant_color(PixelData pd) : COLOR {
 //mxd. dynamic light pixel shader pass, dood!
 float4 ps_lightpass(LitPixelData pd) : COLOR {
       //is face facing away from light source?
-      if(dot(pd.normal, (lightPosAndRadius.xyz - pd.pos_w)) <= 0) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
+      if(dot(pd.normal, (lightPosAndRadius.xyz - pd.pos_w)) < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
           clip(-1);
-          
+
       //is pixel in light range?
       float dist = distance(pd.pos_w, lightPosAndRadius.xyz);
       if(dist > lightPosAndRadius.w)
@@ -171,11 +171,9 @@ float4 ps_lightpass(LitPixelData pd) : COLOR {
 
       lightColorMod.rgb = lightColor.rgb * max(lightPosAndRadius.w - dist, 0.0f) / lightPosAndRadius.w;
       if(lightColorMod.r > 0.0f || lightColorMod.g > 0.0f || lightColorMod.b > 0.0f){
-          if(lightColor.a == 1.0f){ //Normal or negative light
-              lightColorMod.rgb *= 0.9f;
+          lightColorMod.rgb *= lightColor.a;
+          if(lightColor.a > 0.4f) //Normal, vavoom or negative light
               return tcolor * lightColorMod;
-          }
-          lightColorMod.rgb *= 0.25f;
           return lightColorMod; //Additive light
       }
       clip(-1);
@@ -226,7 +224,7 @@ technique SM20 {
 	    VertexShader = compile vs_2_0 vs_customvertexcolor();
 	    PixelShader = compile ps_2_0 ps_main_highlight();
     }
-    
+
     // Full brightness mode with highlight
     pass p7 {
 	    VertexShader = compile vs_2_0 vs_customvertexcolor();

@@ -598,8 +598,8 @@ namespace CodeImp.DoomBuilder.Rendering
             thingsWithLight.Sort(sortThingsByLightRenderStyle);
             lightOffsets = new int[3];
             foreach (VisualThing t in thingsWithLight) {
-                //add light to apropriate array. can't clear lights now, since it's Count is used to check if dynamic light rendering pass is needed and I don't want to add special variable for that...
-                if (t.LightRenderStyle == (int)GZDoomLightRenderStyle.NORMAL)
+                //add light to apropriate array.
+                if (t.LightRenderStyle == (int)GZDoomLightRenderStyle.NORMAL || t.LightRenderStyle == (int)GZDoomLightRenderStyle.VAVOOM)
                     lightOffsets[0]++;
                 else if (t.LightRenderStyle == (int)GZDoomLightRenderStyle.ADDITIVE)
                     lightOffsets[1]++;
@@ -906,9 +906,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = 0; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                //dbg
-                                //totalGeo++;
-
                                 lpr = lights[i].LightPositionAndRadius;
                                 if (lpr.W == 0)
                                     continue;
@@ -927,9 +924,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = lightOffsets[0]; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                //dbg
-                                //totalGeo++;
-
                                 lpr = lights[i].LightPositionAndRadius;
                                 if (lpr.W == 0)
                                     continue;
@@ -948,14 +942,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
                         for (i = lightOffsets[0] + lightOffsets[1]; i < count; i++) {
                             if (checkBBoxIntersection(g.BoundingBox, lights[i].BoundingBox)) {
-                                //dbg
-                                //totalGeo++;
-
                                 lpr = lights[i].LightPositionAndRadius;
                                 if (lpr.W == 0)
                                     continue;
                                 Color4 lc = lights[i].LightColor;
-                                graphics.Shaders.World3D.LightColor = new Color4(1.0f, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
+                                graphics.Shaders.World3D.LightColor = new Color4(lc.Alpha, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
                                 graphics.Shaders.World3D.LightPositionAndRadius = lights[i].LightPositionAndRadius;
                                 graphics.Shaders.World3D.ApplySettings();
                                 graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
@@ -1036,8 +1027,8 @@ namespace CodeImp.DoomBuilder.Rendering
         //so use visualThing.PositionV3 instead
         private Color4 getLitColor(Vector3 thingPosition) {
             Color4 litColor = new Color4();
-            float distSquared, scaler;
-            int radius, radiusSquared, sign;
+            float radius, radiusSquared, distSquared, scaler;
+            int sign;
 
             for (int i = 0; i < thingsWithLight.Count; i++ ) {
                 distSquared = Vector3.DistanceSquared(thingsWithLight[i].Center, thingPosition);
@@ -1045,7 +1036,7 @@ namespace CodeImp.DoomBuilder.Rendering
                 radiusSquared = radius * radius;
                 if (distSquared < radiusSquared) {
                     sign = thingsWithLight[i].LightRenderStyle == (int)GZDoomLightRenderStyle.NEGATIVE ? -1 : 1;
-                    scaler = 1 - distSquared / radiusSquared;
+                    scaler = 1 - distSquared / radiusSquared * thingsWithLight[i].LightColor.Alpha;
                     litColor.Red += thingsWithLight[i].LightColor.Red * scaler * sign;
                     litColor.Green += thingsWithLight[i].LightColor.Green * scaler * sign;
                     litColor.Blue += thingsWithLight[i].LightColor.Blue * scaler * sign;
@@ -1209,39 +1200,39 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void RenderCrosshair()
 		{
 			// Set renderstates
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-			graphics.Device.SetRenderState(RenderState.ZEnable, false);
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
-			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-			graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
-			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
-			ApplyMatrices2D();
+            graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+            graphics.Device.SetRenderState(RenderState.ZEnable, false);
+            graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+            graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+            graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+            graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+            graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+            graphics.Device.SetTransform(TransformState.World, Matrix.Identity);
+            graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
+            ApplyMatrices2D();
 			
-			// Texture
-			if(crosshairbusy)
-			{
-				if(General.Map.Data.CrosshairBusy3D.Texture == null) General.Map.Data.CrosshairBusy3D.CreateTexture();
-				graphics.Device.SetTexture(0, General.Map.Data.CrosshairBusy3D.Texture);
-				graphics.Shaders.Display2D.Texture1 = General.Map.Data.CrosshairBusy3D.Texture;
-			}
-			else
-			{
-				if(General.Map.Data.Crosshair3D.Texture == null) General.Map.Data.Crosshair3D.CreateTexture();
-				graphics.Device.SetTexture(0, General.Map.Data.Crosshair3D.Texture);
-				graphics.Shaders.Display2D.Texture1 = General.Map.Data.Crosshair3D.Texture;
-			}
+            // Texture
+            if(crosshairbusy)
+            {
+                if(General.Map.Data.CrosshairBusy3D.Texture == null) General.Map.Data.CrosshairBusy3D.CreateTexture();
+                graphics.Device.SetTexture(0, General.Map.Data.CrosshairBusy3D.Texture);
+                graphics.Shaders.Display2D.Texture1 = General.Map.Data.CrosshairBusy3D.Texture;
+            }
+            else
+            {
+                if(General.Map.Data.Crosshair3D.Texture == null) General.Map.Data.Crosshair3D.CreateTexture();
+                graphics.Device.SetTexture(0, General.Map.Data.Crosshair3D.Texture);
+                graphics.Shaders.Display2D.Texture1 = General.Map.Data.Crosshair3D.Texture;
+            }
 			
-			// Draw
-			graphics.Shaders.Display2D.Begin();
-			graphics.Shaders.Display2D.SetSettings(1.0f, 1.0f, 0.0f, 1.0f, true);
-			graphics.Shaders.Display2D.BeginPass(1);
-			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, crosshairverts);
-			graphics.Shaders.Display2D.EndPass();
-			graphics.Shaders.Display2D.End();
-		}
+            // Draw
+            graphics.Shaders.Display2D.Begin();
+            graphics.Shaders.Display2D.SetSettings(1.0f, 1.0f, 0.0f, 1.0f, true);
+            graphics.Shaders.Display2D.BeginPass(1);
+            graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, crosshairverts);
+            graphics.Shaders.Display2D.EndPass();
+            graphics.Shaders.Display2D.End();
+        }
 
 		// This switches fog on and off
 		public void SetFogMode(bool usefog)

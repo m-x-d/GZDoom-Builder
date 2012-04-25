@@ -103,6 +103,8 @@ namespace CodeImp.DoomBuilder.Config
         private bool gzDrawFog;
         private bool gzToolbarGZDoom;
         private int gzMaxDynamicLights;
+        private float gzDynamicLightRadius;
+        private float gzDynamicLightIntensity;
 		
 		// These are not stored in the configuration, only used at runtime
 		private string defaulttexture;
@@ -175,6 +177,8 @@ namespace CodeImp.DoomBuilder.Config
         public bool GZDrawFog { get { return gzDrawFog; } internal set { gzDrawFog = value; } }
         public bool GZToolbarGZDoom { get { return gzToolbarGZDoom; } internal set { gzToolbarGZDoom = value; } }
         public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
+        public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }
+        public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
 		
 		public string DefaultTexture { get { return defaulttexture; } set { defaulttexture = value; } }
 		public string DefaultFloorTexture { get { return defaultfloortexture; } set { defaultfloortexture = value; } }
@@ -264,6 +268,8 @@ namespace CodeImp.DoomBuilder.Config
                 gzDrawFog = cfg.ReadSetting("gzdrawfog", false);
                 gzToolbarGZDoom = cfg.ReadSetting("gztoolbargzdoom", true);
                 gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
+                gzDynamicLightRadius = cfg.ReadSetting("gzdynamiclightradius", 1.0f);
+                gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
 				
 				// Success
 				return true;
@@ -334,6 +340,8 @@ namespace CodeImp.DoomBuilder.Config
             cfg.WriteSetting("gzanimatelights", gzAnimateLights);
             cfg.WriteSetting("gzdrawfog", gzDrawFog);
             cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
+            cfg.WriteSetting("gzdynamiclightradius", gzDynamicLightRadius);
+            cfg.WriteSetting("gzdynamiclightintensity", gzDynamicLightIntensity);
 			
 			// Save settings configuration
 			General.WriteLogLine("Saving program configuration...");

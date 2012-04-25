@@ -35,6 +35,8 @@ namespace CodeImp.DoomBuilder.Windows
             System.Windows.Forms.GroupBox groupBox1;
             System.Windows.Forms.Label label1;
             System.Windows.Forms.Label label18;
+            System.Windows.Forms.Label label20;
+            System.Windows.Forms.Label label21;
             this.showtexturesizes = new System.Windows.Forms.CheckBox();
             this.scriptontop = new System.Windows.Forms.CheckBox();
             this.zoomfactor = new Dotnetrix.Controls.TrackBar();
@@ -113,6 +115,8 @@ namespace CodeImp.DoomBuilder.Windows
             this.actiondescription = new System.Windows.Forms.Label();
             this.tabcolors = new System.Windows.Forms.TabPage();
             this.appearancegroup1 = new System.Windows.Forms.GroupBox();
+            this.labelDynLightSize = new System.Windows.Forms.Label();
+            this.tbDynLightSize = new Dotnetrix.Controls.TrackBar();
             this.labelDynLightCount = new System.Windows.Forms.Label();
             this.tbDynLightCount = new Dotnetrix.Controls.TrackBar();
             this.animatevisualselection = new System.Windows.Forms.CheckBox();
@@ -142,12 +146,16 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabpasting = new System.Windows.Forms.TabPage();
             this.label16 = new System.Windows.Forms.Label();
             this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
+            this.labelDynLightIntensity = new System.Windows.Forms.Label();
+            this.tbDynLightIntensity = new Dotnetrix.Controls.TrackBar();
             label7 = new System.Windows.Forms.Label();
             label6 = new System.Windows.Forms.Label();
             label5 = new System.Windows.Forms.Label();
             groupBox1 = new System.Windows.Forms.GroupBox();
             label1 = new System.Windows.Forms.Label();
             label18 = new System.Windows.Forms.Label();
+            label20 = new System.Windows.Forms.Label();
+            label21 = new System.Windows.Forms.Label();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.zoomfactor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).BeginInit();
@@ -167,11 +175,13 @@ namespace CodeImp.DoomBuilder.Windows
             this.actioncontrolpanel.SuspendLayout();
             this.tabcolors.SuspendLayout();
             this.appearancegroup1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
             this.colorsgroup3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabpasting.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).BeginInit();
             this.SuspendLayout();
             // 
             // label7
@@ -358,7 +368,7 @@ namespace CodeImp.DoomBuilder.Windows
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(22, 40);
+            label1.Location = new System.Drawing.Point(28, 30);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(147, 14);
             label1.TabIndex = 20;
@@ -368,12 +378,22 @@ namespace CodeImp.DoomBuilder.Windows
             // label18
             // 
             label18.AutoSize = true;
-            label18.Location = new System.Drawing.Point(22, 91);
+            label18.Location = new System.Drawing.Point(22, 78);
             label18.Name = "label18";
             label18.Size = new System.Drawing.Size(151, 14);
             label18.TabIndex = 25;
             label18.Text = "Max. dynamic lights to render:";
             label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Location = new System.Drawing.Point(76, 126);
+            label20.Name = "label20";
+            label20.Size = new System.Drawing.Size(96, 14);
+            label20.TabIndex = 28;
+            label20.Text = "Dynamic light size:";
+            label20.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // keyusedlabel
             // 
@@ -407,7 +427,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.colorsgroup1.Controls.Add(this.colorlinedefs);
             this.colorsgroup1.Location = new System.Drawing.Point(8, 8);
             this.colorsgroup1.Name = "colorsgroup1";
-            this.colorsgroup1.Size = new System.Drawing.Size(203, 472);
+            this.colorsgroup1.Size = new System.Drawing.Size(203, 493);
             this.colorsgroup1.TabIndex = 0;
             this.colorsgroup1.TabStop = false;
             this.colorsgroup1.Text = " Display ";
@@ -1140,6 +1160,12 @@ namespace CodeImp.DoomBuilder.Windows
             this.appearancegroup1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.appearancegroup1.Controls.Add(label21);
+            this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
+            this.appearancegroup1.Controls.Add(this.tbDynLightIntensity);
+            this.appearancegroup1.Controls.Add(label20);
+            this.appearancegroup1.Controls.Add(this.labelDynLightSize);
+            this.appearancegroup1.Controls.Add(this.tbDynLightSize);
             this.appearancegroup1.Controls.Add(label18);
             this.appearancegroup1.Controls.Add(this.labelDynLightCount);
             this.appearancegroup1.Controls.Add(this.tbDynLightCount);
@@ -1150,17 +1176,39 @@ namespace CodeImp.DoomBuilder.Windows
             this.appearancegroup1.Controls.Add(this.classicbilinear);
             this.appearancegroup1.Controls.Add(this.imagebrightnesslabel);
             this.appearancegroup1.Controls.Add(this.imagebrightness);
-            this.appearancegroup1.Location = new System.Drawing.Point(217, 251);
+            this.appearancegroup1.Location = new System.Drawing.Point(217, 236);
             this.appearancegroup1.Name = "appearancegroup1";
-            this.appearancegroup1.Size = new System.Drawing.Size(457, 229);
+            this.appearancegroup1.Size = new System.Drawing.Size(457, 265);
             this.appearancegroup1.TabIndex = 24;
             this.appearancegroup1.TabStop = false;
             this.appearancegroup1.Text = " Additional Options ";
             // 
+            // labelDynLightSize
+            // 
+            this.labelDynLightSize.AutoSize = true;
+            this.labelDynLightSize.Location = new System.Drawing.Point(337, 126);
+            this.labelDynLightSize.Name = "labelDynLightSize";
+            this.labelDynLightSize.Size = new System.Drawing.Size(22, 14);
+            this.labelDynLightSize.TabIndex = 29;
+            this.labelDynLightSize.Text = "1.0";
+            // 
+            // tbDynLightSize
+            // 
+            this.tbDynLightSize.LargeChange = 1;
+            this.tbDynLightSize.Location = new System.Drawing.Point(176, 113);
+            this.tbDynLightSize.Maximum = 20;
+            this.tbDynLightSize.Minimum = 1;
+            this.tbDynLightSize.Name = "tbDynLightSize";
+            this.tbDynLightSize.Size = new System.Drawing.Size(154, 45);
+            this.tbDynLightSize.TabIndex = 27;
+            this.tbDynLightSize.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbDynLightSize.Value = 10;
+            this.tbDynLightSize.ValueChanged += new System.EventHandler(this.tbDynLightSize_ValueChanged);
+            // 
             // labelDynLightCount
             // 
             this.labelDynLightCount.AutoSize = true;
-            this.labelDynLightCount.Location = new System.Drawing.Point(337, 91);
+            this.labelDynLightCount.Location = new System.Drawing.Point(337, 78);
             this.labelDynLightCount.Name = "labelDynLightCount";
             this.labelDynLightCount.Size = new System.Drawing.Size(19, 14);
             this.labelDynLightCount.TabIndex = 26;
@@ -1169,7 +1217,7 @@ namespace CodeImp.DoomBuilder.Windows
             // tbDynLightCount
             // 
             this.tbDynLightCount.LargeChange = 3;
-            this.tbDynLightCount.Location = new System.Drawing.Point(176, 78);
+            this.tbDynLightCount.Location = new System.Drawing.Point(176, 65);
             this.tbDynLightCount.Maximum = 32;
             this.tbDynLightCount.Minimum = 1;
             this.tbDynLightCount.Name = "tbDynLightCount";
@@ -1183,7 +1231,7 @@ namespace CodeImp.DoomBuilder.Windows
             // animatevisualselection
             // 
             this.animatevisualselection.AutoSize = true;
-            this.animatevisualselection.Location = new System.Drawing.Point(244, 165);
+            this.animatevisualselection.Location = new System.Drawing.Point(244, 236);
             this.animatevisualselection.Name = "animatevisualselection";
             this.animatevisualselection.Size = new System.Drawing.Size(188, 18);
             this.animatevisualselection.TabIndex = 23;
@@ -1193,7 +1241,7 @@ namespace CodeImp.DoomBuilder.Windows
             // blackbrowsers
             // 
             this.blackbrowsers.AutoSize = true;
-            this.blackbrowsers.Location = new System.Drawing.Point(244, 135);
+            this.blackbrowsers.Location = new System.Drawing.Point(244, 212);
             this.blackbrowsers.Name = "blackbrowsers";
             this.blackbrowsers.Size = new System.Drawing.Size(199, 18);
             this.blackbrowsers.TabIndex = 4;
@@ -1203,7 +1251,7 @@ namespace CodeImp.DoomBuilder.Windows
             // visualbilinear
             // 
             this.visualbilinear.AutoSize = true;
-            this.visualbilinear.Location = new System.Drawing.Point(25, 165);
+            this.visualbilinear.Location = new System.Drawing.Point(25, 236);
             this.visualbilinear.Name = "visualbilinear";
             this.visualbilinear.Size = new System.Drawing.Size(176, 18);
             this.visualbilinear.TabIndex = 6;
@@ -1213,7 +1261,7 @@ namespace CodeImp.DoomBuilder.Windows
             // classicbilinear
             // 
             this.classicbilinear.AutoSize = true;
-            this.classicbilinear.Location = new System.Drawing.Point(25, 135);
+            this.classicbilinear.Location = new System.Drawing.Point(25, 212);
             this.classicbilinear.Name = "classicbilinear";
             this.classicbilinear.Size = new System.Drawing.Size(182, 18);
             this.classicbilinear.TabIndex = 5;
@@ -1223,7 +1271,7 @@ namespace CodeImp.DoomBuilder.Windows
             // imagebrightnesslabel
             // 
             this.imagebrightnesslabel.AutoSize = true;
-            this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 40);
+            this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 30);
             this.imagebrightnesslabel.Name = "imagebrightnesslabel";
             this.imagebrightnesslabel.Size = new System.Drawing.Size(31, 14);
             this.imagebrightnesslabel.TabIndex = 22;
@@ -1232,7 +1280,7 @@ namespace CodeImp.DoomBuilder.Windows
             // imagebrightness
             // 
             this.imagebrightness.LargeChange = 3;
-            this.imagebrightness.Location = new System.Drawing.Point(176, 27);
+            this.imagebrightness.Location = new System.Drawing.Point(176, 17);
             this.imagebrightness.Name = "imagebrightness";
             this.imagebrightness.Size = new System.Drawing.Size(154, 45);
             this.imagebrightness.TabIndex = 3;
@@ -1261,7 +1309,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.colorsgroup3.Controls.Add(this.colorplaintext);
             this.colorsgroup3.Location = new System.Drawing.Point(217, 8);
             this.colorsgroup3.Name = "colorsgroup3";
-            this.colorsgroup3.Size = new System.Drawing.Size(457, 237);
+            this.colorsgroup3.Size = new System.Drawing.Size(457, 222);
             this.colorsgroup3.TabIndex = 1;
             this.colorsgroup3.TabStop = false;
             this.colorsgroup3.Text = " Script editor ";
@@ -1503,6 +1551,37 @@ namespace CodeImp.DoomBuilder.Windows
             this.pasteoptions.Size = new System.Drawing.Size(666, 427);
             this.pasteoptions.TabIndex = 0;
             // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Location = new System.Drawing.Point(55, 174);
+            label21.Name = "label21";
+            label21.Size = new System.Drawing.Size(116, 14);
+            label21.TabIndex = 31;
+            label21.Text = "Dynamic light intensity:";
+            label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // labelDynLightIntensity
+            // 
+            this.labelDynLightIntensity.AutoSize = true;
+            this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 174);
+            this.labelDynLightIntensity.Name = "labelDynLightIntensity";
+            this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 14);
+            this.labelDynLightIntensity.TabIndex = 32;
+            this.labelDynLightIntensity.Text = "1.0";
+            // 
+            // tbDynLightIntensity
+            // 
+            this.tbDynLightIntensity.LargeChange = 1;
+            this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 161);
+            this.tbDynLightIntensity.Minimum = 1;
+            this.tbDynLightIntensity.Name = "tbDynLightIntensity";
+            this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
+            this.tbDynLightIntensity.TabIndex = 30;
+            this.tbDynLightIntensity.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbDynLightIntensity.Value = 10;
+            this.tbDynLightIntensity.ValueChanged += new System.EventHandler(this.tbDynLightIntensity_ValueChanged);
+            // 
             // PreferencesForm
             // 
             this.AcceptButton = this.apply;
@@ -1551,12 +1630,14 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabcolors.ResumeLayout(false);
             this.appearancegroup1.ResumeLayout(false);
             this.appearancegroup1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
             this.colorsgroup3.ResumeLayout(false);
             this.colorsgroup3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.tabpasting.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -1670,5 +1751,9 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.CheckBox toolbar_gzdoom;
         private System.Windows.Forms.Label labelDynLightCount;
         private Dotnetrix.Controls.TrackBar tbDynLightCount;
+        private System.Windows.Forms.Label labelDynLightSize;
+        private Dotnetrix.Controls.TrackBar tbDynLightSize;
+        private System.Windows.Forms.Label labelDynLightIntensity;
+        private Dotnetrix.Controls.TrackBar tbDynLightIntensity;
 	}
 }
