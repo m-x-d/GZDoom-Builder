@@ -98,6 +98,10 @@ namespace CodeImp.DoomBuilder.Windows
 			showtexturesizes.Checked = General.Settings.ShowTextureSizes;
             tbDynLightCount.Value = General.Settings.GZMaxDynamicLights;
             labelDynLightCount.Text = General.Settings.GZMaxDynamicLights.ToString();
+            tbDynLightSize.Value = (int)(General.Settings.GZDynamicLightRadius * 10);
+            labelDynLightSize.Text = General.Settings.GZDynamicLightRadius.ToString();
+            tbDynLightIntensity.Value = (int)(General.Settings.GZDynamicLightIntensity * 10);
+            labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
 			
 			// Fill fonts list
 			scriptfontname.BeginUpdate();
@@ -265,6 +269,8 @@ namespace CodeImp.DoomBuilder.Windows
 
             //mxd
             General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
+            General.Settings.GZDynamicLightRadius = ((float)tbDynLightSize.Value / 10.0f);
+            General.Settings.GZDynamicLightIntensity = ((float)tbDynLightIntensity.Value / 10.0f);
 			
 			// Paste options
 			General.Settings.PasteOptions = pasteoptions.GetOptions();
@@ -755,6 +761,16 @@ namespace CodeImp.DoomBuilder.Windows
         //mxd
         private void tbDynLightCount_ValueChanged(object sender, EventArgs e) {
             labelDynLightCount.Text = tbDynLightCount.Value.ToString();
+        }
+
+        //mxd
+        private void tbDynLightSize_ValueChanged(object sender, EventArgs e) {
+            labelDynLightSize.Text = ((float)tbDynLightSize.Value / 10).ToString();
+        }
+
+        //mxd
+        private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) {
+            labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
         }
 
 		#endregion
