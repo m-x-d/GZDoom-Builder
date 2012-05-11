@@ -240,7 +240,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This forces to rebuild the whole thing
 		public void Rebuild()
 		{
-			// Setup visual thing
+            // Find thing information //mxd. I think it should be here
+            info = General.Map.Data.GetThingInfo(Thing.Type);
+
+            // Find sprite texture //mxd. and this 
+            if (info.Sprite.Length > 0) {
+                sprite = General.Map.Data.GetSpriteImage(info.Sprite);
+                if (sprite != null) sprite.AddReference();
+            }
+            
+            // Setup visual thing
 			Setup();
 		}
 		

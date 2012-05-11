@@ -1778,28 +1778,24 @@ namespace CodeImp.DoomBuilder.Windows
 
         //mxd
         public void UpdateGZDoomPannel() {
-            if (General.Settings.GZToolbarGZDoom) {
-                buttontogglemodels.Checked = General.Settings.GZDrawModels;
-                buttonselectedmodelsonly.Checked = General.Settings.GZDrawSelectedModelsOnly;
-                buttontoggledynlight.Checked = General.Settings.GZDrawLights;
-                buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
+            if (General.Map != null) {
+                buttontogglemodels.Enabled = true;
+                buttonselectedmodelsonly.Enabled = true;
+                buttontoggledynlight.Enabled = true;
+                buttontoggleanimatedlight.Enabled = true;
+
+                if (General.Settings.GZToolbarGZDoom) {
+                    buttontogglemodels.Checked = General.Settings.GZDrawModels;
+                    buttonselectedmodelsonly.Checked = General.Settings.GZDrawSelectedModelsOnly;
+                    buttontoggledynlight.Checked = General.Settings.GZDrawLights;
+                    buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
+                }
+            } else {
+                buttontogglemodels.Enabled = false;
+                buttonselectedmodelsonly.Enabled = false;
+                buttontoggledynlight.Enabled = false;
+                buttontoggleanimatedlight.Enabled = false;
             }
-        }
-
-        private void buttontoggledynlight_Click(object sender, EventArgs e) {
-            GZBuilder.GZGeneral.ToggleLights();
-        }
-
-        private void buttontoggleanimatedlight_Click(object sender, EventArgs e) {
-            GZBuilder.GZGeneral.ToggleLightsAnimation();
-        }
-
-        private void buttontogglemodels_Click(object sender, EventArgs e) {
-            GZBuilder.GZGeneral.ToggleModels();
-        }
-
-        private void buttonselectedmodelsonly_Click(object sender, EventArgs e) {
-            GZBuilder.GZGeneral.ToggleDrawSelectedModelsOnly();
         }
 
 		#endregion
@@ -2762,6 +2758,11 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Dockers
+        //mxd. used to add a docker from DoomBuilder's core code. 
+        internal void addDocker(Docker d) {
+            d.MakeFullName("gzdoombuilder");
+            dockerspanel.Add(d);
+        }
 		
 		// This adds a docker
 		public void AddDocker(Docker d)
@@ -2786,6 +2787,13 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			return dockerspanel.Remove(d);
 		}
+
+        //mxd
+        internal bool selectDocker(Docker d) {
+            d.MakeFullName("gzdoombuilder");
+            ReleaseAllKeys();
+            return dockerspanel.SelectDocker(d);
+        }
 		
 		// This selects a docker
 		public bool SelectDocker(Docker d)

@@ -206,7 +206,7 @@ namespace CodeImp.DoomBuilder
 		internal static Dictionary<string, ScriptConfiguration> ScriptConfigs { get { return scriptconfigs; } }
 		public static MapManager Map { get { return map; } }
 		public static ActionManager Actions { get { return actions; } }
-		internal static PluginManager Plugins { get { return plugins; } }
+        internal static PluginManager Plugins { get { return plugins; } }
 		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
 		internal static TypesManager Types { get { return types; } }
@@ -219,7 +219,7 @@ namespace CodeImp.DoomBuilder
 		public static bool NoSettings { get { return nosettings; } }
 		public static EditingManager Editing { get { return editing; } }
 		public static ErrorLogger ErrorLogger { get { return errorlogger; } }
-		
+
 		#endregion
 
 		#region ================== Configurations
@@ -1436,7 +1436,12 @@ namespace CodeImp.DoomBuilder
 		public static void Fail(string message)
 		{
 			General.WriteLogLine("FAIL: " + message);
+//mxd. Lets notify the user about our Epic Failure before crashing...
+#if DEBUG
 			Debug.Fail(message);
+#else
+            ShowErrorMessage(message, MessageBoxButtons.OK);
+#endif
 			Terminate(false);
 		}
 		
@@ -1527,6 +1532,14 @@ namespace CodeImp.DoomBuilder
 		{
 			return Math.Min(Math.Max(min, value), max);
 		}
+
+        //mxd. This clamps angle between 0 and 359
+        public static int ClampAngle(int angle) {
+            if (angle > -1 && angle < 360) return angle;
+            int n = angle / 360;
+            if (angle > 0) return angle - n * 360;
+            return 360 - Math.Abs(angle) + Math.Abs(n) * 360;
+        }
 		
 		// This returns an element from a collection by index
 		public static T GetByIndex<T>(ICollection<T> collection, int index)

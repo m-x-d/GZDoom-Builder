@@ -705,6 +705,12 @@
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="General\SavePurpose.cs" />
+    <Compile Include="GZBuilder\Controls\ConsoleDocker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\ConsoleDocker.Designer.cs">
+      <DependentUpon>ConsoleDocker.cs</DependentUpon>
+    </Compile>
     <Compile Include="GZBuilder\Data\BoundingBox.cs" />
     <Compile Include="GZBuilder\Data\GZDoomLight.cs" />
     <Compile Include="GZBuilder\Data\ModelDefEntry.cs" />
@@ -713,12 +719,6 @@
     <Compile Include="GZBuilder\IO\ModelDefParser.cs" />
     <Compile Include="GZBuilder\md3\GZModel.cs" />
     <Compile Include="GZBuilder\md3\ModelReader.cs" />
-    <Compile Include="GZBuilder\Windows\DebugForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="GZBuilder\Windows\DebugForm.designer.cs">
-      <DependentUpon>DebugForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="IO\DoomColormapReader.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
@@ -785,8 +785,8 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThingBrowserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Windows\DebugForm.resx">
-      <DependentUpon>DebugForm.cs</DependentUpon>
+    <EmbeddedResource Include="GZBuilder\Controls\ConsoleDocker.resx">
+      <DependentUpon>ConsoleDocker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Crosshair.png" />
     <EmbeddedResource Include="Resources\CrosshairBusy.png" />

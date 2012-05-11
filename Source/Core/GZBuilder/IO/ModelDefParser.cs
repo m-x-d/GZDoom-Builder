@@ -16,17 +16,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.IO
                     Parse(modelDefEntriesByName, path, fileName);
             }
 
-            //dbg
             #if DEBUG
                 General.ErrorLogger.Add(ErrorType.Warning, "ModelDefParser: parsed " + modelDefEntriesByName.Count + " definitions;");
             #else
                 General.WriteLogLine("ModelDefParser: parsed " + modelDefEntriesByName.Count + " definitions;");
             #endif
-
         }
 
         public static void Parse(Dictionary<string, ModelDefEntry> modelDefEntriesByName, string path, string fileName) {
-            //dbg
             #if DEBUG
                 General.ErrorLogger.Add(ErrorType.Warning, "ModelDefParser: Parsing '" + fileName + "'");
             #else

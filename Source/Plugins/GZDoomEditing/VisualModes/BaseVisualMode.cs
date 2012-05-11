@@ -415,7 +415,7 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		}
 		
 		// This updates the VisualSectors and VisualThings that have their Changed property set
-		private void UpdateChangedObjects()
+        private void UpdateChangedObjects()
 		{
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{

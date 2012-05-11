@@ -211,12 +211,18 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 			ceiling.colorbelow = lightcolor.WithAlpha(255);
 		}
 
+        //mxd
+        public void Update(bool forced) {
+            updated = !forced;
+            Update();
+        }
+
 		// When no geometry has been changed and no effects have been added or removed,
 		// you can call this again to update existing effects. The effects will update
 		// the existing SectorLevels to match with any changes.
 		public void Update()
 		{
-			if(isupdating || updated) return;
+            if(isupdating || updated) return;
 			isupdating = true;
 			
 			// Set floor/ceiling to their original setup

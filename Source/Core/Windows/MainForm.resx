@@ -126,6 +126,12 @@
   <metadata name="toolStripSeparator12.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </metadata>
+  <metadata name="toolStripMenuItem4.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
+  <metadata name="toolStripSeparator2.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </metadata>
   <metadata name="menumain.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
@@ -151,22 +157,16 @@
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAClSURBVDhPY2CgJnjdLnGRFIxiN0wjMQ7CUAsSAGmE0fgM
-        wVD7rkP6KykYZjjcMpBmDEEcTsCqllgD5igq/gepBdEo3iXFgOfNkr9ABuQXljeR7AWQRrwGgBQgY1gw
+        wVD7rkP6KykYZjjcMpBmDEEcTsCqllgD5igq/gepBdEo3iXFgKf1kr9ABuQXljeR7AWQRrwGgBQgY1gw
         IIvhNADmLGw0yCCQk/G6AJ8BIM0gQwgasLzG/wW6QTCNMG/AvACLCbA3QbEAClGYTeg0zAsgcZABMLUw
-        dWADSMHE5BWS1AAAQvokPWS9KEkAAAAASUVORK5CYII=
+        dWADSMHE5BWS1AAACnwkE01c7eYAAAAASUVORK5CYII=
 </value>
   </data>
-  <metadata name="statusbar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>218, 17</value>
-  </metadata>
   <metadata name="statusbar.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
-  <metadata name="toolStripMenuItem4.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="toolStripSeparator2.GenerateMember" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
+  <metadata name="statusbar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>218, 17</value>
   </metadata>
   <metadata name="panelinfo.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

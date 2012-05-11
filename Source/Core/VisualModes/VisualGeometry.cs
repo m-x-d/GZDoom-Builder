@@ -99,7 +99,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         //mxd
         internal Vector3[] BoundingBox { get { return boundingBox; } }
-        //internal Vector3D Normal { get { return normal; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
@@ -175,48 +174,51 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         //mxd. Taken from OpenGl wiki 
         protected void CalculateNormalsAndShading() {
-            int startIndex;
-            Vector3 U, V;
+            if (vertices.Length > 0) {
+                int startIndex;
+                Vector3 U, V;
 
-            BoundingBoxSizes bbs = new BoundingBoxSizes(vertices[0]);
+                BoundingBoxSizes bbs = new BoundingBoxSizes(vertices[0]);
 
-            for (int i = 0; i < triangles; i++) {
-                startIndex = i * 3;
-                WorldVertex p1 = vertices[startIndex];
-                WorldVertex p2 = vertices[startIndex + 1];
-                WorldVertex p3 = vertices[startIndex + 2];
+                for (int i = 0; i < triangles; i++) {
+                    startIndex = i * 3;
+                    WorldVertex p1 = vertices[startIndex];
+                    WorldVertex p2 = vertices[startIndex + 1];
+                    WorldVertex p3 = vertices[startIndex + 2];
 
-                U = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
-                V = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
+                    U = new Vector3(p2.x - p1.x, p2.y - p1.y, p2.z - p1.z);
+                    V = new Vector3(p3.x - p1.x, p3.y - p1.y, p3.z - p1.z);
 
-                p1.nx = p2.nx = p3.nx = -(U.Y * V.Z - U.Z * V.Y);
-                p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
-                p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
+                    p1.nx = p2.nx = p3.nx = -(U.Y * V.Z - U.Z * V.Y);
+                    p1.ny = p2.ny = p3.ny = -(U.Z * V.X - U.X * V.Z);
+                    p1.nz = p2.nz = p3.nz = -(U.X * V.Y - U.Y * V.X);
 
-                //doom-style walls shading
-                //not very apropriate place to put this, but most convinient :)
-                if (sidedef != null) {
-                    byte valMod = (byte)(Math.Abs((float)Math.Sin(sidedef.Angle)) * 0.07f * 255);
-                    PixelColor modColor = new PixelColor(255, valMod, valMod, valMod);
-                    PixelColor pc = PixelColor.FromInt(p1.c);
+                    //doom-style walls shading
+                    //not very apropriate place to put this, but most convinient :)
+                    if (sidedef != null) {
+                        float valMod = 1.0f - Math.Abs((float)Math.Sin(sidedef.Angle)) * 0.07f; //0.07
+                        PixelColor pc = PixelColor.FromInt(p1.c);
 
-                    if (pc.r < modColor.r) modColor.r = pc.r;
-                    if (pc.g < modColor.g) modColor.g = pc.g;
-                    if (pc.b < modColor.b) modColor.b = pc.b;
+                        pc.r = (byte)((float)pc.r * valMod);
+                        pc.g = (byte)((float)pc.g * valMod);
+                        pc.b = (byte)((float)pc.b * valMod);
 
-                    p1.c = p2.c = p3.c -= modColor.ToColorRef();
+                        int colorRef = pc.ToColorRef();
+                        p1.c = colorRef;
+                        p2.c = colorRef;
+                        p3.c = colorRef;
+                    }
+                    vertices[startIndex] = p1;
+                    vertices[startIndex + 1] = p2;
+                    vertices[startIndex + 2] = p3;
+
+                    BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p1);
+                    BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p2);
+                    BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p3);
                 }
 
-                vertices[startIndex] = p1;
-                vertices[startIndex + 1] = p2;
-                vertices[startIndex + 2] = p3;
-
-                BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p1);
-                BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p2);
-                BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, p3);
+                boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);
             }
-            if (triangles > 0)
-                boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);    
         }
 		
 		// This compares for sorting by sector
