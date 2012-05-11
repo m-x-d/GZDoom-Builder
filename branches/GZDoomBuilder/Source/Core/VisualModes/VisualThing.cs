@@ -88,8 +88,8 @@ namespace CodeImp.DoomBuilder.VisualModes
         private int lightRenderStyle;
         private Color4 lightColor;
         private float lightRadius; //current radius. used in light animation
-        private float lightRadiusMin;
-        private float lightRadiusMax;
+        private float lightPrimaryRadius;
+        private float lightSecondaryRadius;
         private Vector3 position_v3;
         private float lightDelta; //used in light animation
         private Vector3[] boundingBox;
@@ -172,8 +172,8 @@ namespace CodeImp.DoomBuilder.VisualModes
             //mxd
             lightType = -1;
             lightRenderStyle = -1;
-            lightRadiusMin = -1;
-            lightRadiusMax = -1;
+            lightPrimaryRadius = -1;
+            lightSecondaryRadius = -1;
             lightColor = new Color4();
             boundingBox = new Vector3[9];
 			
@@ -340,8 +340,8 @@ namespace CodeImp.DoomBuilder.VisualModes
                     }
                     lightType = -1;
                     lightRadius = -1;
-                    lightRadiusMin = -1;
-                    lightRadiusMax = -1;
+                    lightPrimaryRadius = -1;
+                    lightSecondaryRadius = -1;
                     lightRenderStyle = -1;
                 }
 
@@ -349,6 +349,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 				updategeo = false;
 			}
 		}
+
+        //used in ColorPicker to update light 
+        public void UpdateLight() {
+            int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
+            if (light_id != -1) {
+                updateLight(light_id);
+
+                //if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) != -1)
+                UpdateBoundingBox(lightRadius, lightRadius * 2);
+            }
+        }
 
         //mxd update light info
         private void updateLight(int light_id) {
@@ -376,18 +387,11 @@ namespace CodeImp.DoomBuilder.VisualModes
                     int scaler = 1;
                     if (thing.Sector != null)
                         scaler = thing.Sector.Brightness / 4;
-                    lightRadiusMin = (float)(thing.Args[3] * scaler) * General.Settings.GZDynamicLightRadius;
+                    lightPrimaryRadius = (float)(thing.Args[3] * scaler) * General.Settings.GZDynamicLightRadius;
                 } else {
-                    lightRadiusMin = (float)(thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
-                    if (lightType > 0) {
-                        lightRadiusMax = (float)(thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
-
-                        if (lightRadiusMin > lightRadiusMax) { //swap them
-                            float lrm = lightRadiusMin;
-                            lightRadiusMin = lightRadiusMax;
-                            lightRadiusMax = lrm;
-                        }
-                    }
+                    lightPrimaryRadius = (float)(thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
+                    if (lightType > 0)
+                        lightSecondaryRadius = (float)(thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
                 }
             } else { //it's one of vavoom lights
                 lightRenderStyle = (int)GZDoomLightRenderStyle.VAVOOM;
@@ -396,7 +400,7 @@ namespace CodeImp.DoomBuilder.VisualModes
                     lightColor = new Color4((float)lightRenderStyle / 100.0f, (float)thing.Args[1] / scaled_intensity, (float)thing.Args[2] / scaled_intensity, (float)thing.Args[3] / scaled_intensity);
                 else
                     lightColor = new Color4((float)lightRenderStyle / 100.0f, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity);
-                lightRadiusMin = (float)(thing.Args[0] * 8) * General.Settings.GZDynamicLightRadius;
+                lightPrimaryRadius = (float)(thing.Args[0] * 8) * General.Settings.GZDynamicLightRadius;
             }
             UpdateLightRadius();
         }
@@ -408,39 +412,45 @@ namespace CodeImp.DoomBuilder.VisualModes
                 return;
             }
 
-            if (!General.Settings.GZAnimateLights || lightType == (int)GZDoomLightType.NORMAL
-                                                  || lightType == (int)GZDoomLightType.SECTOR
-                                                  || lightType == (int)GZDoomLightType.VAVOOM
-                                                  || lightType == (int)GZDoomLightType.VAVOOM_COLORED) {
-                lightRadius = lightRadiusMin;
+            if (!General.Settings.GZAnimateLights || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) {
+                lightRadius = lightPrimaryRadius;
                 return;
             }
 
             double time = General.Clock.GetCurrentTime();
-            float diff = lightRadiusMax - lightRadiusMin;
+            
+            float rMin, rMax;
+            if (lightPrimaryRadius > lightSecondaryRadius) {
+                rMax = lightPrimaryRadius;
+                rMin = lightSecondaryRadius;
+            } else {
+                rMin = lightPrimaryRadius;
+                rMax = lightSecondaryRadius;
+            }
+
+            float diff = rMax - rMin;
 
             //pulse
             if (lightType == (int)GZDoomLightType.PULSE) {
-                lightDelta = (float)Math.Sin(time / (100.0f * thing.Angle * 2.3f)); //just playing by the eye here...
-                lightRadius = Math.Abs((int)(lightRadiusMin + diff/2 + diff/2 * lightDelta));
-
+                lightDelta = ((float)Math.Sin(time / (thing.AngleDoom * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
+                lightRadius = rMin + diff * lightDelta;
             //flicker
             } else if (lightType == (int)GZDoomLightType.FLICKER) {
-                float delta = (float)Math.Sin(time / (100.0f * thing.Angle * 0.02f)); //just playing by the eye here...
+                //float delta = (float)Math.Sin(time / thing.AngleDoom);
+                float delta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
                 if (Math.Sign(delta) != Math.Sign(lightDelta)) {
                     lightDelta = delta;
-                    int angle = (int)(thing.Angle * 180 / Math.PI);
-                    if (new Random().Next(0, 360) > angle) {
-                        lightRadius = lightRadiusMax;
-                    } else {
-                        lightRadius = lightRadiusMin;
-                    }
+                    if (new Random().Next(0, 359) < thing.AngleDoom) 
+                        lightRadius = rMax;
+                    else
+                        lightRadius = rMin;
                 }
             //random
             } else if (lightType == (int)GZDoomLightType.RANDOM) {
-                float delta = (float)Math.Sin(time / (100.0f * thing.Angle * 4.6f)); //just playing by the eye here...
+                //float delta = (float)Math.Sin(time / (thing.AngleDoom));
+                float delta = (float)Math.Sin(time / (thing.AngleDoom * 9.0f)); //just playing by the eye here...
                 if (Math.Sign(delta) != Math.Sign(lightDelta))
-                    lightRadius = lightRadiusMin + (float)(new Random().Next(0, (int)(diff * 10))) / 10.0f;
+                    lightRadius = rMin + (float)(new Random().Next(0, (int)(diff * 10))) / 10.0f;
                 lightDelta = delta;
             }
         }

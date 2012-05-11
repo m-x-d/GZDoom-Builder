@@ -70,6 +70,10 @@ namespace CodeImp.DoomBuilder.VisualModes
         private bool keyup;
         private bool keydown;
 
+        //mxd
+        private bool visibleThingsUpdated;
+        private List<VisualThing> selectedThings;
+
 		// Map
 		protected VisualBlockMap blockmap;
 		protected Dictionary<Thing, VisualThing> allthings;
@@ -78,6 +82,21 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected List<VisualThing> visiblethings;
 		protected Dictionary<Sector, VisualSector> visiblesectors;
 		protected List<VisualGeometry> visiblegeometry;
+
+        //mxd
+        public List<VisualThing> SelectedVisualThings { 
+            get {
+                if (visibleThingsUpdated) {
+                    visibleThingsUpdated = false;
+                    selectedThings = new List<VisualThing>();
+                    foreach (VisualThing t in visiblethings) {
+                        if (t.Selected)
+                            selectedThings.Add(t);
+                    }
+                }
+                return selectedThings;
+            } 
+        }
 		
 		#endregion
 
@@ -317,6 +336,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 			visiblesectors = new Dictionary<Sector, VisualSector>(visiblesectors.Count);
 			visiblegeometry = new List<VisualGeometry>(visiblegeometry.Capacity);
 			visiblethings = new List<VisualThing>(visiblethings.Capacity);
+
+            //mxd
+            visibleThingsUpdated = true;
 
 			// Get the blocks within view range
 			visibleblocks = blockmap.GetFrustumRange(renderer.Frustum2D);

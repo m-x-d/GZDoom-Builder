@@ -1,6 +1,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Drawing;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -36,6 +37,18 @@ namespace CodeImp.DoomBuilder.Plugins
 		
 		// Disposing
 		private bool isdisposed = false;
+
+        //mxd. It's nice to have these avaliable to plugins...
+        protected static Point DisplayLocationAbs {
+            get {
+                if (General.MainWindow == null || General.MainWindow.Display == null)
+                    return new Point();
+                return new Point(General.MainWindow.Location.X + General.MainWindow.ClientRectangle.X + General.MainWindow.Display.Location.X, General.MainWindow.Location.Y + General.MainWindow.ClientRectangle.Y + General.MainWindow.Display.Location.Y);
+            }
+        }
+
+        //mxd. It's nice to have these avaliable to plugins...
+        protected static Size DisplaySize { get { return (General.MainWindow == null || General.MainWindow.Display == null) ? new Size() : General.MainWindow.Display.Size; } }
 
 		#endregion
 		
@@ -114,6 +127,15 @@ namespace CodeImp.DoomBuilder.Plugins
 		{
 			return plugin.GetResourceStream(resourcename);
 		}
+
+        //mxd. It's nice to have these avaliable to plugins...
+        public static bool DisplayStatus(StatusType type, string message) {
+            if (General.MainWindow != null) {
+                General.MainWindow.DisplayStatus(type, message);
+                return true;
+            }
+            return false;
+        }
 
 		#endregion
 

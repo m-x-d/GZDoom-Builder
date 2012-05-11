@@ -1065,6 +1065,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				int locksize = (things.Count > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : things.Count;
 				FlatVertex[] verts = new FlatVertex[THING_BUFFER_SIZE * 12];
 
+                //mxd
                 thingsWithModel = new Dictionary<Vector2D, Thing>();
 
 				// Go for all things
@@ -1113,7 +1114,6 @@ namespace CodeImp.DoomBuilder.Rendering
                 //mxd. Render models
                 if (thingsWithModel.Count > 0) {
                     // Set renderstates for rendering
-                    //graphics.Device.SetRenderState(RenderState.ZEnable, false);
                     graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
                     graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 

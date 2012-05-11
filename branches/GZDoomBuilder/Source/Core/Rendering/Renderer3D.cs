@@ -742,9 +742,11 @@ namespace CodeImp.DoomBuilder.Rendering
 						
                         //mxd. Seems that translucent lines aren't affected by dynamic lights in GZDoom
                         if (g.RenderPass != RenderPass.Alpha && General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
-                            if (!litGeometry.ContainsKey(curtexture.Texture))
-                                litGeometry[curtexture.Texture] = new List<VisualGeometry>();
-                            litGeometry[curtexture.Texture].Add(g);
+                            if (curtexture.Texture != null) {
+                                if (!litGeometry.ContainsKey(curtexture.Texture))
+                                    litGeometry[curtexture.Texture] = new List<VisualGeometry>();
+                                litGeometry[curtexture.Texture].Add(g);
+                            }
                         }
 
 						// Switch shader pass?
@@ -1103,7 +1105,7 @@ namespace CodeImp.DoomBuilder.Rendering
                     t.CalculateCameraDistance3D(D3DDevice.V3(cameraposition));
                     //t.CameraDistance3D is actually squared distance, hence (t.LightRadius * t.LightRadius)
                     if (t.CameraDistance3D < (t.LightRadius * t.LightRadius) || isThingOnScreen(t.BoundingBox)) { //always render light if camera is within it's radius 
-                        if (t.LightType == (int)GZDoomLightType.FLICKER || t.LightType == (int)GZDoomLightType.PULSE || t.LightType == (int)GZDoomLightType.RANDOM)
+                        if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
                             t.UpdateBoundingBox(t.LightRadius, t.LightRadius * 2);
                         thingsWithLight.Add(t);
                     }

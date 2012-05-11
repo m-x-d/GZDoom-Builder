@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.Actions;
@@ -11,7 +12,7 @@ using CodeImp.DoomBuilder.Config;
 
 using CodeImp.DoomBuilder.GZBuilder.IO;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Windows;
+using CodeImp.DoomBuilder.GZBuilder.Controls;
 
 using ColladaDotNet.Pipeline.MD3;
 
@@ -24,17 +25,20 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static Dictionary<int, ModelDefEntry> ModelDefEntries { get { return modelDefEntries; } }
 
         //gzdoom light types
-        private static int[] gz_lights = { /* normal lights */ 9800, 9801, 9802, 9803, 9804, /* additive lights */ 9810, 9811, 9812, 9813, 9814, /* negative lights */ 9820, 9821, 9822, 9823, 9824, /* vavoom lights */ 1502, 1503};
-        public static int[] GZ_LIGHTS { get { return gz_lights; } }
-        private static int[] gz_lightTypes = { 5, 10, 15 };
-        public static int[] GZ_LIGHT_TYPES { get { return gz_lightTypes; } } 
+        private static int[] gzLights = { /* normal lights */ 9800, 9801, 9802, 9803, 9804, /* additive lights */ 9810, 9811, 9812, 9813, 9814, /* negative lights */ 9820, 9821, 9822, 9823, 9824, /* vavoom lights */ 1502, 1503};
+        public static int[] GZ_LIGHTS { get { return gzLights; } }
+        private static int[] gzLightTypes = { 5, 10, 15 }; //this is actually offsets in gz_lights
+        public static int[] GZ_LIGHT_TYPES { get { return gzLightTypes; } }
+        private static int[] gzAnimatedLightTypes = { (int)GZDoomLightType.FLICKER, (int)GZDoomLightType.RANDOM, (int)GZDoomLightType.PULSE };
+        public static int[] GZ_ANIMATED_LIGHT_TYPES {  get { return gzAnimatedLightTypes; } }
+
 
         //version
-        public const string Version = "1.04";
+        public const float Version = 1.05f;
 
-        //debug form
+        //debug console
 #if DEBUG
-        private static DebugForm form;
+        private static Docker console;
 #endif
 
 
@@ -43,26 +47,33 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.Actions.BindMethods(typeof(GZGeneral));
             General.MainWindow.UpdateGZDoomPannel();
 
-            //create debug form
+            //create console
 #if DEBUG
-            form = new DebugForm();
-            form.Show();
-            form.Location = new Point(General.MainWindow.Location.X + General.MainWindow.Width, General.MainWindow.Location.Y);
-            form.Height = General.MainWindow.Height;
+            ConsoleDocker cd = new ConsoleDocker();
+            console = new Docker("consoledockerpannel", "Console", cd);
+            ((MainForm)General.Interface).addDocker(console);
+            ((MainForm)General.Interface).selectDocker(console);
 #endif
         }
 
         public static void OnMapOpenEnd() {
             loadModelDefs();
             loadModels();
+            General.MainWindow.UpdateGZDoomPannel();
         }
 
         public static void OnReloadResources() {
             loadModelDefs();
             loadModels();
+
+#if DEBUG
+            ((ConsoleDocker)console.Control).Clear();
+#endif
         }
 
-        //!!!!!!!!!!! General.Map.FormatInterface.HasCustomFields  == UMDF!!!!!!!!
+        //General.Map.Config.FormatInterface == "UniversalMapSetIO"  == UMDF
+        //General.Interface.RedrawDisplay();
+        //General.Editing.Mode is ClassicMode
 
         public static bool LoadModelForThing(Thing t) {
             if (modelDefEntries.ContainsKey(t.Type)) {
@@ -129,23 +140,23 @@ namespace CodeImp.DoomBuilder.GZBuilder
 //debug
         public static void Trace(string message) {
 #if DEBUG
-            form.TextPannel.AppendText(message);
+            ((ConsoleDocker)console.Control).Trace(message);
 #endif
         }
-        public static void TraceLine(string message) {
+        public static void Trace(string message, bool addLineBreak) {
 #if DEBUG
-            form.TextPannel.AppendText(message + Environment.NewLine);
+            ((ConsoleDocker)console.Control).Trace(message, addLineBreak);
 #endif
         }
         public static void ClearTrace() {
 #if DEBUG
-            form.TextPannel.Text = "";
+            ((ConsoleDocker)console.Control).Clear();
 #endif
         }
 
         public static void TraceInHeader(string message) {
 #if DEBUG
-            form.Text = message;
+            ((ConsoleDocker)console.Control).TraceInHeader(message);
 #endif
         }
 
@@ -211,16 +222,9 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.MainWindow.RedrawDisplay();
         }
 
-        [BeginAction("gztogglelightpannel")]
-        public static void ToggleLightPannel() {
-            General.ShowWarningMessage("Not implemented yet...", MessageBoxButtons.OK);
-        }
-
         [BeginAction("gztogglefogpannel")]
         public static void ToggleFogPannel() {
             General.ShowWarningMessage("Not implemented yet...", MessageBoxButtons.OK);
         }
-
-
     }
 }

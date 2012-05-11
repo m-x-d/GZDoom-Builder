@@ -119,7 +119,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// To ColorRef (alpha-less)
 		public int ToColorRef()
 		{
-			return ((int)r + ((int)b << 16) + ((int)g << 8));
+			//mxd
+            //return ((int)r + ((int)b << 16) + ((int)g << 8));
+            return (((int)r << 16) + ((int)g << 8) + (int)b);
 		}
 		
 		// To ColorValue

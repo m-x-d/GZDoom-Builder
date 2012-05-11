@@ -129,6 +129,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Make new geometry
 			//Update();
 		}
+
+        //mxd
+        public virtual void UpdateSectorData() { }
 		
 		// This updates the visual sector
 		public void Update()
