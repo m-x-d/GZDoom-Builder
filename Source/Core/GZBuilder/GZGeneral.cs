@@ -110,8 +110,10 @@ namespace CodeImp.DoomBuilder.GZBuilder
 
             //and for actors defined in DECORATE
             ICollection<ActorStructure> ac = General.Map.Data.Decorate.Actors;
-            foreach (ActorStructure actor in General.Map.Data.Decorate.Actors)
-                Actors.Add(actor.ClassName.ToLower(), actor.DoomEdNum);
+            foreach (ActorStructure actor in ac) {
+                if (actor.DoomEdNum != -1) //we don't need actors without DoomEdNum
+                    Actors.Add(actor.ClassName.ToLower(), actor.DoomEdNum);
+            }
 
             Dictionary<string, ModelDefEntry> modelDefEntriesByName = new Dictionary<string, ModelDefEntry>();
 
