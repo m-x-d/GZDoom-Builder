@@ -739,9 +739,9 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						// Determine the shader pass we want to use for this object
 						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
-						
-                        //mxd. Seems that translucent lines aren't affected by dynamic lights in GZDoom
-                        if (g.RenderPass != RenderPass.Alpha && General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
+
+                        //mxd. Seems that lines rendered with RenderPass.Alpha or RenderPass.Additive aren't affected by dynamic lights in GZDoom
+                        if (g.RenderPass != RenderPass.Alpha && g.RenderPass != RenderPass.Additive && General.Settings.GZDrawLights && !fullbrightness && thingsWithLight.Count > 0) {
                             if (curtexture.Texture != null) {
                                 if (!litGeometry.ContainsKey(curtexture.Texture))
                                     litGeometry[curtexture.Texture] = new List<VisualGeometry>();
