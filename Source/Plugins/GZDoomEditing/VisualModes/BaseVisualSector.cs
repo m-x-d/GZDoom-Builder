@@ -117,9 +117,6 @@ namespace CodeImp.DoomBuilder.GZDoomEditing
 		// This updates this virtual the sector and neightbours if needed
 		public void UpdateSectorGeometry(bool includeneighbours)
 		{
-			//mxd dbg
-            GZBuilder.GZGeneral.Trace("UpdateSectorGeometry isupdating=" + isupdating);
-            
             if(isupdating)
 				return;
 				

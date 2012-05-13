@@ -203,10 +203,10 @@ namespace CodeImp.DoomBuilder.VisualModes
                         pc.g = (byte)((float)pc.g * valMod);
                         pc.b = (byte)((float)pc.b * valMod);
 
-                        int colorRef = pc.ToColorRef();
-                        p1.c = colorRef;
-                        p2.c = colorRef;
-                        p3.c = colorRef;
+                        int c = pc.ToInt();
+                        p1.c = c;
+                        p2.c = c;
+                        p3.c = c;
                     }
                     vertices[startIndex] = p1;
                     vertices[startIndex + 1] = p2;
