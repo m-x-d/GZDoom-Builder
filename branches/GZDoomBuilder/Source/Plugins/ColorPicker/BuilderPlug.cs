@@ -46,16 +46,6 @@ namespace CodeImp.DoomBuilder.ColorPicker
         public override void OnMapOpenEnd() {
             if (toolsform == null)
                 toolsform = new ToolsForm();
-
-            //dbg
-            /*CodeImp.DoomBuilder.Rendering.PixelColor c = new CodeImp.DoomBuilder.Rendering.PixelColor(255, 255, 64, 3);
-            int ic = c.ToColorRef();
-
-            CodeImp.DoomBuilder.Rendering.PixelColor c2 = CodeImp.DoomBuilder.Rendering.PixelColor.FromInt(ic);
-
-            GZBuilder.GZGeneral.Trace("c: "+c.r+","+c.g+","+c.b);
-            GZBuilder.GZGeneral.Trace("ic: " + ic);
-            GZBuilder.GZGeneral.Trace("c2: " + c2.r + "," + c2.g + "," + c2.b);*/
         }
 
         public override void OnMapNewEnd() {
