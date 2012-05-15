@@ -54,15 +54,20 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 
             //set colors
             curSectorColor = selection[0].Fields.GetValue<int>("lightcolor", -1);
-            if (curSectorColor == -1) { //add lightcolor field
+            if (curSectorColor == -1)
                 curSectorColor = defaultSectorColor;
-                selection[0].Fields.Add("lightcolor", new UniValue(UniversalType.Color, curSectorColor));
-            }
             
             curFadeColor = selection[0].Fields.GetValue<int>("fadecolor", -1);
-            if (curFadeColor == -1) { //add fadecolor field
+            if (curFadeColor == -1)
                 curFadeColor = defaultFadeColor;
-                selection[0].Fields.Add("fadecolor", new UniValue(UniversalType.Color, curFadeColor));
+
+            //check that all sectors in selection have "lightcolor" and "fadecolor" fields
+            for (int i = 0; i < selection.Count; i++) {
+                if (!selection[i].Fields.ContainsKey("lightcolor"))
+                    selection[i].Fields.Add("lightcolor", new UniValue(UniversalType.Color, curSectorColor));
+                
+                if (!selection[i].Fields.ContainsKey("fadecolor"))
+                    selection[i].Fields.Add("fadecolor", new UniValue(UniversalType.Color, curFadeColor));
             }
 
             initialSectorColor = curSectorColor;
@@ -70,10 +75,10 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 
             InitializeComponent();
 
+            colorPickerControl1.Initialize(Color.FromArgb(currentColorTag == "lightcolor" ? curSectorColor : curFadeColor));
             colorPickerControl1.ColorChanged += new EventHandler<ColorChangedEventArgs>(colorPickerControl1_ColorChanged);
             colorPickerControl1.OnOkPressed += new EventHandler(colorPickerControl1_OnOkPressed);
             colorPickerControl1.OnCancelPressed += new EventHandler(colorPickerControl1_OnCancelPressed);
-            colorPickerControl1.Initialize(Color.FromArgb(currentColorTag == "lightcolor" ? curSectorColor : curFadeColor));
 
             if (currentColorTag == "lightcolor")
                 rbSectorColor.Checked = true;

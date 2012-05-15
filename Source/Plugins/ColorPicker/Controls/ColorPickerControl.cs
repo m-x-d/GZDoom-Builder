@@ -42,7 +42,10 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 
         public void Initialize(Color startColor){
             this.startColor = startColor;
+
+            isInUpdate = true;
             InitializeComponent();
+            isInUpdate = false;
         }
 
         private void nudValueChanged(object sender, System.EventArgs e) {
