@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows {
             //check things
             if (editingModeName == "BaseVisualMode") {
                 visualSelection = new List<VisualThing>();
-                List<VisualThing> selectedVisualThings = ((VisualMode)General.Editing.Mode).SelectedVisualThings;
+                List<VisualThing> selectedVisualThings = ((VisualMode)General.Editing.Mode).GetSelectedVisualThings(false);
 
                 foreach (VisualThing t in selectedVisualThings) {
                     if (Array.IndexOf(GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1) {

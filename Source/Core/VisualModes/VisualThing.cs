@@ -480,7 +480,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             for (int i = 0; i < len; i++) {
                 Vector3 v = mde.Model.BoundingBox[i];
                 boundingBox[i] = new Vector3(v.X + position_v3.X, v.Y + position_v3.Y, v.Z + position_v3.Z);
-            }
+            }    
         }
 		
 		/// <summary>

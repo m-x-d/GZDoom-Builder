@@ -1649,6 +1649,8 @@ namespace CodeImp.DoomBuilder.Windows
             buttonselectedmodelsonly.Visible = General.Settings.GZToolbarGZDoom;
             buttontoggledynlight.Visible = General.Settings.GZToolbarGZDoom;
             buttontoggleanimatedlight.Visible = General.Settings.GZToolbarGZDoom;
+            buttontogglefx.Visible = General.Settings.GZToolbarGZDoom;
+            buttontogglefog.Visible = General.Settings.GZToolbarGZDoom;
             separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom;
 
 
@@ -1783,18 +1785,23 @@ namespace CodeImp.DoomBuilder.Windows
                 buttonselectedmodelsonly.Enabled = true;
                 buttontoggledynlight.Enabled = true;
                 buttontoggleanimatedlight.Enabled = true;
+                buttontogglefog.Enabled = true;
+                buttontogglefx.Enabled = true;
 
                 if (General.Settings.GZToolbarGZDoom) {
                     buttontogglemodels.Checked = General.Settings.GZDrawModels;
                     buttonselectedmodelsonly.Checked = General.Settings.GZDrawSelectedModelsOnly;
                     buttontoggledynlight.Checked = General.Settings.GZDrawLights;
                     buttontoggleanimatedlight.Checked = General.Settings.GZAnimateLights;
+                    buttontogglefog.Checked = General.Settings.GZDrawFog;
                 }
             } else {
                 buttontogglemodels.Enabled = false;
                 buttonselectedmodelsonly.Enabled = false;
                 buttontoggledynlight.Enabled = false;
                 buttontoggleanimatedlight.Enabled = false;
+                buttontogglefog.Enabled = false;
+                buttontogglefx.Enabled = false;
             }
         }
 

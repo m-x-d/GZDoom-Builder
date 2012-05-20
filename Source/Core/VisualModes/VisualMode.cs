@@ -71,8 +71,8 @@ namespace CodeImp.DoomBuilder.VisualModes
         private bool keydown;
 
         //mxd
-        private bool visibleThingsUpdated;
-        private List<VisualThing> selectedThings;
+        private List<VisualThing> selectedVisualThings;
+        private List<VisualSector> selectedVisualSectors;
 
 		// Map
 		protected VisualBlockMap blockmap;
@@ -82,21 +82,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected List<VisualThing> visiblethings;
 		protected Dictionary<Sector, VisualSector> visiblesectors;
 		protected List<VisualGeometry> visiblegeometry;
-
-        //mxd
-        public List<VisualThing> SelectedVisualThings { 
-            get {
-                if (visibleThingsUpdated) {
-                    visibleThingsUpdated = false;
-                    selectedThings = new List<VisualThing>();
-                    foreach (VisualThing t in visiblethings) {
-                        if (t.Selected)
-                            selectedThings.Add(t);
-                    }
-                }
-                return selectedThings;
-            } 
-        }
 		
 		#endregion
 
@@ -148,6 +133,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 				allsectors = null;
 				allthings = null;
 				blockmap = null;
+
+                //mxd
+                selectedVisualSectors = null;
+                selectedVisualThings = null;
 				
 				// Done
 				base.Dispose();
@@ -338,7 +327,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			visiblethings = new List<VisualThing>(visiblethings.Capacity);
 
             //mxd
-            visibleThingsUpdated = true;
+            //visibleThingsUpdated = true;
+            //visibleGeometryUpdated = true;
 
 			// Get the blocks within view range
 			visibleblocks = blockmap.GetFrustumRange(renderer.Frustum2D);
@@ -796,6 +786,65 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// This returns the VisualThing for the given Thing.
 		/// </summary>
 		public VisualThing GetVisualThing(Thing t) { return allthings[t]; }
+
+        //mxd
+        public List<VisualThing> GetSelectedVisualThings(bool refreshSelection) {
+            if (refreshSelection || selectedVisualThings == null) {
+                selectedVisualThings = new List<VisualThing>();
+                foreach (KeyValuePair<Thing, VisualThing> group in allthings) {
+                    if (group.Value.Selected)
+                        selectedVisualThings.Add(group.Value);
+                }
+            }
+
+            //if nothing is selected - try to get thing from hilighted object
+            if (selectedVisualThings.Count == 0) {
+                Vector3D start = General.Map.VisualCamera.Position;
+                Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
+                delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
+                VisualPickResult target = PickObject(start, start + delta);
+
+                //not appropriate way to do this, but...
+                if (target.picked != null && target.picked.GetType().Name.IndexOf("Thing") != -1)
+                    return new List<VisualThing>() { (VisualThing)target.picked };
+            }
+
+            return selectedVisualThings;
+        }
+
+        /// <summary>
+        /// mxd. This returns list of selected sectors based on surfaces selected in visual mode
+        /// </summary>
+        public List<VisualSector> GetSelectedVisualSectors(bool refreshSelection) {
+            if (refreshSelection || selectedVisualSectors == null) {
+                selectedVisualSectors = new List<VisualSector>();
+                foreach (KeyValuePair<Sector, VisualSector> group in allsectors) {
+                    foreach (VisualGeometry vg in group.Value.AllGeometry) {
+                        if (vg.Selected) {
+                            selectedVisualSectors.Add(group.Value);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            //if nothing is selected - try to get sector from hilighted object
+            if (selectedVisualSectors.Count == 0) {
+                Vector3D start = General.Map.VisualCamera.Position;
+                Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
+                delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
+                VisualPickResult target = PickObject(start, start + delta);
+
+                //not appropriate way to do this, but...
+                if (target.picked != null && target.picked.GetType().Name.IndexOf("Thing") == -1) {
+                    VisualGeometry vg = (VisualGeometry)target.picked;
+                    if(vg.Sector != null)
+                        return new List<VisualSector>() { vg.Sector };
+                }
+            }
+
+            return selectedVisualSectors;
+        }
 
 		/// <summary>
 		/// Returns True when a VisualSector has been created for the specified Sector.

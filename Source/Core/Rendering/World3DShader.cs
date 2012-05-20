@@ -56,6 +56,8 @@ namespace CodeImp.DoomBuilder.Rendering
         private EffectHandle lightPositionAndRadiusHandle;
         private EffectHandle lightColorHandle;
         private EffectHandle worldHandle;
+        //fog
+        private EffectHandle camPosHandle;
         //used in ModelReader
         private VertexElement[] vertexElements;
 
@@ -69,8 +71,14 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd
         public Color4 VertexColor { set { if (manager.Enabled) effect.SetValue<Color4>(vertexColorHadle, value); } }
+        
+        //lights
         public Color4 LightColor { set { if (manager.Enabled) effect.SetValue<Color4>(lightColorHandle, value); } }
         public Vector4 LightPositionAndRadius { set { if (manager.Enabled) effect.SetValue(lightPositionAndRadiusHandle, value); } }
+        
+        //fog
+        public Vector4 CameraPosition { set { if (manager.Enabled) effect.SetValue(camPosHandle, value); } }
+
         public Matrix World { set { if (manager.Enabled) effect.SetValue<Matrix>(worldHandle, value); } }
         public VertexElement[] VertexElements { get { return vertexElements; } }
 
@@ -101,6 +109,9 @@ namespace CodeImp.DoomBuilder.Rendering
                 //lights
                 lightPositionAndRadiusHandle = effect.GetParameter(null, "lightPosAndRadius");
                 lightColorHandle = effect.GetParameter(null, "lightColor");
+                //fog
+                camPosHandle = effect.GetParameter(null, "cameraPos");
+
                 worldHandle = effect.GetParameter(null, "world");
 			}
 
@@ -140,7 +151,9 @@ namespace CodeImp.DoomBuilder.Rendering
                 if (vertexColorHadle != null) vertexColorHadle.Dispose();
                 if (lightColorHandle != null) lightColorHandle.Dispose();
                 if (lightPositionAndRadiusHandle != null) lightPositionAndRadiusHandle.Dispose();
+                if (camPosHandle != null) camPosHandle.Dispose();
                 if (worldHandle != null) worldHandle.Dispose();
+
 
 				// Done
 				base.Dispose();
@@ -232,7 +245,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// First texture stage
                 //mxd
 				//if((index == 0) || (index == 2))
-                if ((index == 0) || (index == 2) || (index == 4) || (index == 6) || index > 7)
+                if ((index == 0) || (index == 2) || (index == 4) || (index == 6) || (index == 8) || (index == 10) || (index == 12) || (index == 14) || index > 15)
 				{
 					// Normal
 					device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
@@ -269,8 +282,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// Highlight?
                 //mxd
-				//if(index > 1)
-                if ((index > 1 && index < 4) || (index > 5 && index < 8))
+				//if(index > 1) 2 3 6 10 14
+                //if ((index > 1 && index < 4) || (index > 5 && index < 8) || (index > 9 && index < 12) || (index > 13 && index < 16))
+                if (index == 2 || index == 3 || index == 6 || index == 10 || index == 14)
 				{
 					// Third texture stage
 					device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.AddSigned);

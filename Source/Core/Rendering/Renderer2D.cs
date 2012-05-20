@@ -1122,7 +1122,7 @@ namespace CodeImp.DoomBuilder.Rendering
                         ModelDefEntry mde = GZBuilder.GZGeneral.ModelDefEntries[group.Value.Type];
 
                         if (mde.Model != null)
-                            RenderModel(mde.Model, group.Key, group.Value.Angle, group.Value.Selected);
+                            RenderModel(mde.Model, group.Key, group.Value.Angle + mde.Model.Angle, group.Value.Selected);
                         else
                             group.Value.IsModel = GZBuilder.GZGeneral.LoadModelForThing(group.Value);
                     }

@@ -21,6 +21,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
         public ColorPickerType Type { get { return ColorPickerType.CP_SECTOR; } }
 
         private List<Sector> selection;
+        private List<VisualSector> visualSelection;
         
         private int curSectorColor;
         private int curFadeColor;
@@ -34,7 +35,27 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 
         public bool Setup(string editingModeName) {
             mode = editingModeName;
-            selection = (List<Sector>)(General.Map.Map.GetSelectedSectors(true));
+
+            if (mode == "SectorsMode") {
+                selection = (List<Sector>)(General.Map.Map.GetSelectedSectors(true));
+            } else { //should be Visual mode
+                selection = new List<Sector>();
+                VisualMode vm = (VisualMode)General.Editing.Mode;
+                visualSelection = vm.GetSelectedVisualSectors(false);
+                
+                if (visualSelection.Count > 0) {
+                    foreach (VisualSector vs in visualSelection)
+                        selection.Add(vs.Sector);
+                } else { //should be some sectors selected in 2d-mode...
+                    visualSelection = new List<VisualSector>();
+                    selection = (List<Sector>)(General.Map.Map.GetSelectedSectors(true));
+
+                    foreach (Sector s in selection) {
+                        if (vm.VisualSectorExists(s))
+                            visualSelection.Add(vm.GetVisualSector(s));
+                    }
+                }
+            }
 
             //create undo
             string rest = selection.Count + " sector" + (selection.Count > 1 ? "s" : "");
@@ -124,14 +145,8 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
             if (mode == "SectorsMode") {
                 General.Interface.RedrawDisplay();
             } else { //should be visual mode
-                VisualMode vm = (VisualMode)General.Editing.Mode;
-                
-                foreach (Sector s in selection) {
-                    if (vm.VisualSectorExists(s)) {
-                        VisualSector vs = vm.GetVisualSector(s);
-                        vs.UpdateSectorData();
-                    }
-                }
+                foreach (VisualSector vs in visualSelection)
+                    vs.UpdateSectorData();
             }
         }
 
