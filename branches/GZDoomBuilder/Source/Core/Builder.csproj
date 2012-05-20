@@ -796,6 +796,8 @@
     <None Include="Resources\Angle.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
+    <None Include="Resources\fog.png" />
+    <None Include="Resources\fx.png" />
     <Content Include="Resources\Light.png" />
     <Content Include="Resources\Light_animate.png" />
     <Content Include="Resources\Model.png" />

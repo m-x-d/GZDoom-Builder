@@ -132,10 +132,12 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
             this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
             this.separatorgzmodes = new System.Windows.Forms.ToolStripSeparator();
+            this.buttontogglefx = new System.Windows.Forms.ToolStripButton();
             this.buttontoggledynlight = new System.Windows.Forms.ToolStripButton();
             this.buttontoggleanimatedlight = new System.Windows.Forms.ToolStripButton();
             this.buttontogglemodels = new System.Windows.Forms.ToolStripButton();
             this.buttonselectedmodelsonly = new System.Windows.Forms.ToolStripButton();
+            this.buttontogglefog = new System.Windows.Forms.ToolStripButton();
             this.seperatorgeometry = new System.Windows.Forms.ToolStripSeparator();
             this.buttontest = new System.Windows.Forms.ToolStripSplitButton();
             this.seperatortesting = new System.Windows.Forms.ToolStripSeparator();
@@ -894,10 +896,12 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonsnaptogrid,
             this.buttonautomerge,
             this.separatorgzmodes,
+            this.buttontogglefx,
             this.buttontoggledynlight,
             this.buttontoggleanimatedlight,
             this.buttontogglemodels,
             this.buttonselectedmodelsonly,
+            this.buttontogglefog,
             this.seperatorgeometry,
             this.buttontest,
             this.seperatortesting});
@@ -1142,11 +1146,21 @@ namespace CodeImp.DoomBuilder.Windows
             this.separatorgzmodes.Name = "separatorgzmodes";
             this.separatorgzmodes.Size = new System.Drawing.Size(6, 25);
             // 
+            // buttontogglefx
+            // 
+            this.buttontogglefx.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.buttontogglefx.Enabled = false;
+            this.buttontogglefx.Image = global::CodeImp.DoomBuilder.Properties.Resources.fx;
+            this.buttontogglefx.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.buttontogglefx.Name = "buttontogglefx";
+            this.buttontogglefx.Size = new System.Drawing.Size(23, 22);
+            this.buttontogglefx.Tag = "builder_gztogglefx";
+            this.buttontogglefx.Text = "Toggle GZDoom Effects";
+            this.buttontogglefx.Click += new System.EventHandler(this.InvokeTaggedAction);
+            // 
             // buttontoggledynlight
             // 
-            this.buttontoggledynlight.Checked = true;
             this.buttontoggledynlight.CheckOnClick = true;
-            this.buttontoggledynlight.CheckState = System.Windows.Forms.CheckState.Checked;
             this.buttontoggledynlight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.buttontoggledynlight.Enabled = false;
             this.buttontoggledynlight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Light;
@@ -1172,9 +1186,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // buttontogglemodels
             // 
-            this.buttontogglemodels.Checked = true;
             this.buttontogglemodels.CheckOnClick = true;
-            this.buttontogglemodels.CheckState = System.Windows.Forms.CheckState.Checked;
             this.buttontogglemodels.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.buttontogglemodels.Enabled = false;
             this.buttontogglemodels.Image = ((System.Drawing.Image)(resources.GetObject("buttontogglemodels.Image")));
@@ -1197,6 +1209,19 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonselectedmodelsonly.Tag = "builder_gzdrawselectedmodelsonly";
             this.buttonselectedmodelsonly.Text = "Render models for selected things only";
             this.buttonselectedmodelsonly.Click += new System.EventHandler(this.InvokeTaggedAction);
+            // 
+            // buttontogglefog
+            // 
+            this.buttontogglefog.CheckOnClick = true;
+            this.buttontogglefog.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.buttontogglefog.Enabled = false;
+            this.buttontogglefog.Image = global::CodeImp.DoomBuilder.Properties.Resources.fog;
+            this.buttontogglefog.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.buttontogglefog.Name = "buttontogglefog";
+            this.buttontogglefog.Size = new System.Drawing.Size(23, 22);
+            this.buttontogglefog.Tag = "builder_gztogglefog";
+            this.buttontogglefog.Text = "Toggle Fog Rendering";
+            this.buttontogglefog.Click += new System.EventHandler(this.InvokeTaggedAction);
             // 
             // seperatorgeometry
             // 
@@ -1848,5 +1873,7 @@ namespace CodeImp.DoomBuilder.Windows
         private System.Windows.Forms.ToolStripButton buttontogglemodels;
         private System.Windows.Forms.ToolStripButton buttonselectedmodelsonly;
         private System.Windows.Forms.ToolStripButton buttontoggleanimatedlight;
+        private System.Windows.Forms.ToolStripButton buttontogglefx;
+        private System.Windows.Forms.ToolStripButton buttontogglefog;
 	}
 }

@@ -130,9 +130,23 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap fog {
+            get {
+                object obj = ResourceManager.GetObject("fog", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Folder {
             get {
                 object obj = ResourceManager.GetObject("Folder", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap fx {
+            get {
+                object obj = ResourceManager.GetObject("fx", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

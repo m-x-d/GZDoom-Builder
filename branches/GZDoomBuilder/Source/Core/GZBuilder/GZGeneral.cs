@@ -32,9 +32,10 @@ namespace CodeImp.DoomBuilder.GZBuilder
         private static int[] gzAnimatedLightTypes = { (int)GZDoomLightType.FLICKER, (int)GZDoomLightType.RANDOM, (int)GZDoomLightType.PULSE };
         public static int[] GZ_ANIMATED_LIGHT_TYPES {  get { return gzAnimatedLightTypes; } }
 
+        public static bool UDMF;
 
         //version
-        public const float Version = 1.05f;
+        public const float Version = 1.06f;
 
         //debug console
 #if DEBUG
@@ -59,6 +60,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static void OnMapOpenEnd() {
             loadModelDefs();
             loadModels();
+            UDMF = (General.Map.Config.FormatInterface == "UniversalMapSetIO");
             General.MainWindow.UpdateGZDoomPannel();
         }
 
@@ -71,13 +73,11 @@ namespace CodeImp.DoomBuilder.GZBuilder
 #endif
         }
 
-        //General.Map.Config.FormatInterface == "UniversalMapSetIO"  == UMDF
-        //General.Interface.RedrawDisplay();
-        //General.Editing.Mode is ClassicMode
-
         public static bool LoadModelForThing(Thing t) {
             if (modelDefEntries.ContainsKey(t.Type)) {
-                General.ErrorLogger.Add(ErrorType.Warning, "GZBuilder: got model override for thing id " + t.Type);
+                string msg = "GZBuilder: got model override for Thing №" + t.Type;
+                General.ErrorLogger.Add(ErrorType.Warning, msg);
+                General.WriteLogLine(msg);
 
                 if (modelDefEntries[t.Type].Model == null) {
                     //load model and texture
@@ -85,11 +85,18 @@ namespace CodeImp.DoomBuilder.GZBuilder
                     mde.Model = ModelReader.Parse(mde, General.Map.Graphics.Device);
 
                     if (mde.Model != null) {
-                        General.Map.IsChanged = true; //update display
-                        General.ErrorLogger.Add(ErrorType.Warning, "GZBuilder: loaded model for thing id " + t.Type);
+                        //General.Map.IsChanged = true; 
+                        //General.MainWindow.RedrawDisplay(); //update display
+                        msg = "GZBuilder: loaded model for Thing №" + t.Type;
+                        General.ErrorLogger.Add(ErrorType.Warning, msg);
+                        General.WriteLogLine(msg);
                         return true;
                     } else {
-                        General.ErrorLogger.Add(ErrorType.Warning, "GZBuilder: failed to load model(s) for thing id " + t.Type + ". Node removed.");
+                        modelDefEntries.Remove(t.Type);
+                        msg = "GZBuilder: failed to load model(s) for Thing №" + t.Type + ". ModelDef node removed.";
+                        General.ErrorLogger.Add(ErrorType.Warning, msg);
+                        General.WriteLogLine(msg);
+                        return false;
                     }
                 }
                 return true;
@@ -99,6 +106,8 @@ namespace CodeImp.DoomBuilder.GZBuilder
 
 //functions
         private static void loadModelDefs() {
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
+
             Dictionary<string, int> Actors = new Dictionary<string,int>();
             Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
 
@@ -111,8 +120,9 @@ namespace CodeImp.DoomBuilder.GZBuilder
             //and for actors defined in DECORATE
             ICollection<ActorStructure> ac = General.Map.Data.Decorate.Actors;
             foreach (ActorStructure actor in ac) {
-                if (actor.DoomEdNum != -1) //we don't need actors without DoomEdNum
-                    Actors.Add(actor.ClassName.ToLower(), actor.DoomEdNum);
+                string className = actor.ClassName.ToLower();
+                if (actor.DoomEdNum != -1 && !Actors.ContainsKey(className)) //we don't need actors without DoomEdNum
+                    Actors.Add(className, actor.DoomEdNum);
             }
 
             Dictionary<string, ModelDefEntry> modelDefEntriesByName = new Dictionary<string, ModelDefEntry>();
@@ -126,17 +136,24 @@ namespace CodeImp.DoomBuilder.GZBuilder
                 if (Actors.ContainsKey(e.Value.Name)) {
                     modelDefEntries[Actors[e.Value.Name]] = modelDefEntriesByName[e.Value.Name];
                 } else {
-                    General.ErrorLogger.Add(ErrorType.Warning, "GZBuilder: ModelDefEntry wasn't found in Decorate: '" + e.Value.Name + "'");
+                    string msg = "GZBuilder: ModelDefEntry wasn't found in Decorate: '" + e.Value.Name + "'";
+                    General.ErrorLogger.Add(ErrorType.Warning, msg);
+                    General.WriteLogLine(msg);
                 }
             }
         }
 
         //load models for things which are already in the map
         private static void loadModels() {
-            General.ErrorLogger.Add(ErrorType.Warning, "GZBuilder: loading models...");
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Loading models...");
+            string msg = "GZBuilder: loading models...";
+            General.ErrorLogger.Add(ErrorType.Warning, msg);
+            General.WriteLogLine(msg);
             
             foreach(Thing t in General.Map.Map.Things)
                 LoadModelForThing(t);
+
+            General.MainWindow.RedrawDisplay();
         }
 
 //debug
@@ -165,68 +182,60 @@ namespace CodeImp.DoomBuilder.GZBuilder
 //actions
         [BeginAction("gztogglemodels")]
         private static void toggleModels() {
-            ToggleModels();
-            General.MainWindow.UpdateGZDoomPannel();
-        }
-
-        public static void ToggleModels() {
             General.Settings.GZDrawModels = !General.Settings.GZDrawModels;
             General.MainWindow.DisplayStatus(StatusType.Action, "MD3 models rendering is " + (General.Settings.GZDrawModels ? "ENABLED" : "DISABLED"));
             General.MainWindow.RedrawDisplay();
+            General.MainWindow.UpdateGZDoomPannel();
         }
 
         [BeginAction("gztogglelights")]
         private static void toggleLights() {
-            ToggleLights();
-            General.MainWindow.UpdateGZDoomPannel();
-        }
-
-        public static void ToggleLights() {
             General.Settings.GZDrawLights = !General.Settings.GZDrawLights;
             General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering is " + (General.Settings.GZDrawLights ? "ENABLED" : "DISABLED"));
             General.MainWindow.RedrawDisplay();
+            General.MainWindow.UpdateGZDoomPannel();
         }
 
         [BeginAction("gztogglelightsanimation")]
         private static void toggleLightsAnimation() {
-            ToggleLightsAnimation();
-            General.MainWindow.UpdateGZDoomPannel();
-        }
-        public static void ToggleLightsAnimation() {
             General.Settings.GZAnimateLights = !General.Settings.GZAnimateLights;
             General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights animation is " + (General.Settings.GZAnimateLights ? "ENABLED" : "DISABLED"));
             General.MainWindow.RedrawDisplay();
+            General.MainWindow.UpdateGZDoomPannel();
         }
 
         [BeginAction("gztogglefog")]
         private static void toggleFog() {
-            ToggleFog();
+            General.Settings.GZDrawFog = !General.Settings.GZDrawFog;
+            General.MainWindow.DisplayStatus(StatusType.Action, "Fog rendering is " + (General.Settings.GZDrawFog ? "ENABLED" : "DISABLED"));
+            General.MainWindow.RedrawDisplay();
             General.MainWindow.UpdateGZDoomPannel();
         }
-
-        public static void ToggleFog() {
-            General.Settings.GZDrawFog = !General.Settings.GZDrawFog;
-            General.MainWindow.DisplayStatus(StatusType.Action, "Colored fog rendering is " + (General.Settings.GZDrawFog ? "ENABLED" : "DISABLED"));
-            General.MainWindow.RedrawDisplay();
-            General.ShowWarningMessage("Not implemented yet...", MessageBoxButtons.OK);
-        }
-
 
         [BeginAction("gzdrawselectedmodelsonly")]
         private static void toggleDrawSelectedModelsOnly() {
-            ToggleDrawSelectedModelsOnly();
-            General.MainWindow.UpdateGZDoomPannel();
-        }
-
-        public static void ToggleDrawSelectedModelsOnly() {
             General.Settings.GZDrawSelectedModelsOnly = !General.Settings.GZDrawSelectedModelsOnly;
             General.MainWindow.DisplayStatus(StatusType.Action, "Rendering " + (General.Settings.GZDrawSelectedModelsOnly ? "only selected" : "all") + " models.");
             General.MainWindow.RedrawDisplay();
+            General.MainWindow.UpdateGZDoomPannel();
         }
 
-        [BeginAction("gztogglefogpannel")]
-        public static void ToggleFogPannel() {
-            General.ShowWarningMessage("Not implemented yet...", MessageBoxButtons.OK);
+        [BeginAction("gztogglefx")]
+        private static void toggleFx() {
+            int on = 0;
+            on += General.Settings.GZDrawFog ? 1 : -1;
+            on += General.Settings.GZDrawLights ? 1 : -1;
+            on += General.Settings.GZDrawModels ? 1 : -1;
+
+            bool enable = (on < 0);
+
+            General.Settings.GZDrawFog = enable;
+            General.Settings.GZDrawLights = enable;
+            General.Settings.GZDrawModels = enable;
+            General.MainWindow.DisplayStatus(StatusType.Action, "Advanced effects are " + (enable ? "ENABLED" : "DISABLED") );
+
+            General.MainWindow.RedrawDisplay();
+            General.MainWindow.UpdateGZDoomPannel();
         }
     }
 }
