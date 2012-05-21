@@ -417,10 +417,32 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		#endregion
-		
-		#region ================== Methods
-		
-		// This loads the images in this directory
+
+        #region ================== Modeldef
+        
+        //mxd
+        public override Dictionary<string, Stream> GetModeldefData() {
+            Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+            // Error when suspended
+            if (issuspended) throw new Exception("Data reader is suspended");
+
+            //modedef should be in root folder
+            string[] allFiles = GetAllFiles("", false);
+
+            foreach (string s in allFiles) {
+                if (s.ToLowerInvariant().IndexOf("modeldef") != -1) {
+                    streams.Add(s, LoadFile(s));
+                }
+            }
+
+            return streams;
+        }
+
+        #endregion
+
+        #region ================== Methods
+
+        // This loads the images in this directory
 		private ICollection<ImageData> LoadDirectoryImages(string path, int imagetype, bool includesubdirs)
 		{
 			List<ImageData> images = new List<ImageData>();
@@ -466,7 +488,8 @@ namespace CodeImp.DoomBuilder.Data
 		protected abstract ImageData CreateImage(string name, string filename, int imagetype);
 
 		// This must return true if the specified file exists
-		protected abstract bool FileExists(string filename);
+        //mxd
+		public abstract bool FileExists(string filename);
 
 		// This must return all files in a given directory
 		protected abstract string[] GetAllFiles(string path, bool subfolders);
@@ -488,7 +511,8 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// This must load an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
-		protected abstract MemoryStream LoadFile(string filename);
+        //mxd
+		public abstract MemoryStream LoadFile(string filename);
 
 		// This must create a temp file for the speciied file and return the absolute path to the temp file
 		// NOTE: Callers are responsible for removing the temp file when done!

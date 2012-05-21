@@ -93,9 +93,6 @@ namespace CodeImp.DoomBuilder.VisualModes
         private Vector3 position_v3;
         private float lightDelta; //used in light animation
         private Vector3[] boundingBox;
-
-        //mxd. model
-        private bool checkedIfModel;
 		
 		#endregion
 		
@@ -202,7 +199,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 		
 		#region ================== Methods
-		
+	
 		// This sets the distance from the camera
 		internal void CalculateCameraDistance(Vector2D campos)
 		{
@@ -222,7 +219,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(geobuffer != null) geobuffer.Dispose();
 			geobuffer = null;
 			updategeo = true;
-            checkedIfModel = false;
+            //checkedIfModel = false;
 		}
 		
 		// This is called resets when the device is reset
@@ -295,19 +292,15 @@ namespace CodeImp.DoomBuilder.VisualModes
             // Do we need to update the geometry buffer?
             if (updategeo)
 			{
-                //mxd
-                if (!checkedIfModel) {
-                    //check if thing is model
-                    if (GZBuilder.GZGeneral.ModelDefEntries.ContainsKey(thing.Type)) {
-                        ModelDefEntry mde = GZBuilder.GZGeneral.ModelDefEntries[thing.Type];
-                        if (mde.Model == null)
-                            thing.IsModel = GZBuilder.GZGeneral.LoadModelForThing(thing);
-                        else
-                            thing.IsModel = true;
-                    }
-                    if (thing.IsModel)
-                        updateBoundingBoxForModel();
-                    checkedIfModel = true;
+                //mxd. check if thing is model
+                if (General.Map.Data.ModeldefEntries.ContainsKey(thing.Type)) {
+                    ModeldefEntry mde = General.Map.Data.ModeldefEntries[thing.Type];
+                    if (mde.Model == null)
+                        thing.IsModel = General.Map.Data.LoadModelForThing(thing);
+                    else
+                        thing.IsModel = true;
+                } else {
+                    thing.IsModel = false;
                 }
 
                 // Trash geometry buffer
@@ -474,7 +467,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
         //mxd. update bounding box from model bounding box
         private void updateBoundingBoxForModel() {
-            ModelDefEntry mde = GZBuilder.GZGeneral.ModelDefEntries[thing.Type];
+            ModeldefEntry mde = General.Map.Data.ModeldefEntries[thing.Type];
             int len = mde.Model.BoundingBox.Length;
             boundingBox = new Vector3[len];
             for (int i = 0; i < len; i++) {

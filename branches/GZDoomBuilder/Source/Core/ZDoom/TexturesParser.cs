@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public TexturesParser()
 		{
 			// Syntax
-			whitespace = "\n \t\r";
+            whitespace = "\n \t\r\u00A0"; //mxd. non-breaking space is also space :)
 			specialtokens = ",{}\n";
 
 			// Initialize

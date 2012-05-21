@@ -4,7 +4,7 @@ using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Geometry;
 
 
-namespace ColladaDotNet.Pipeline.MD3
+namespace CodeImp.DoomBuilder.GZBuilder.MD3
 {
     public class GZModel {
         public List<Mesh> Meshes;

@@ -5,83 +5,90 @@ using System.Text;
 using System.Collections.Generic;
 
 using CodeImp.DoomBuilder;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.IO;
+using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 using SlimDX;
 using SlimDX.Direct3D9;
 
 //mxd. Original version taken from here: http://colladadotnet.codeplex.com/SourceControl/changeset/view/40680
-namespace ColladaDotNet.Pipeline.MD3 {
-    public class ModelReader {
-        public static GZModel Parse(ModelDefEntry mde, Device D3DDevice) {
-            string[] modelPaths = new string[mde.ModelNames.Count];
-            string[] texturePaths = new string[mde.TextureNames.Count];
+namespace CodeImp.DoomBuilder.GZBuilder.MD3
+{
+    internal class ModelReader
+    {
+        public static void Parse(ref ModeldefEntry mde, PK3StructuredReader reader, Device D3DDevice) {
+            string[] modelNames = new string[mde.ModelNames.Count];
+            string[] textureNames = new string[mde.TextureNames.Count];
 
-            mde.ModelNames.CopyTo(modelPaths);
-            mde.TextureNames.CopyTo(texturePaths);
+            mde.ModelNames.CopyTo(modelNames);
+            mde.TextureNames.CopyTo(textureNames);
 
-            if (modelPaths.Length != texturePaths.Length || texturePaths.Length == 0 || modelPaths.Length == 0) {
-                General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: wrong parse params! (modelPaths=" + modelPaths.ToString() + "; texturePaths=" + texturePaths.ToString() + ")");
-                return null;
-            }
+            //should never happen
+            /*if (modelNames.Length != textureNames.Length || textureNames.Length == 0 || modelNames.Length == 0) {
+                General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: wrong parse params! (modelPaths=" + modelNames.ToString() + "; texturePaths=" + textureNames.ToString() + ")");
+                return;
+            }*/
 
-            GZModel model = new GZModel();
-            model.NUM_MESHES = (byte)modelPaths.Length;
+            mde.Model = new GZModel();
+            mde.Model.NUM_MESHES = (byte)modelNames.Length;
 
             BoundingBoxSizes bbs = new BoundingBoxSizes();
 
-            for (int i = 0; i < modelPaths.Length; i++) {
-                string modelPath = mde.Path + "\\" + modelPaths[i];
-                if (File.Exists(modelPath)) {
+            for (int i = 0; i < modelNames.Length; i++) {
+                string modelPath = Path.Combine(mde.Path, modelNames[i]);
+
+                if (reader.FileExists(modelPath)) {
+                    MemoryStream stream = reader.LoadFile(modelPath);
                     General.WriteLogLine("MD3Reader: loading '" + modelPath + "'");
+
                     //mesh
-                    string ext = modelPaths[i].Substring(modelPaths[i].Length - 4);
-                    bool loaded = false;
-                    if (ext == ".md3") {
-                        loaded = ReadMD3Model(ref bbs, mde, model, modelPath, D3DDevice);
-                    } else if (ext == ".md2") {
-                        loaded = ReadMD2Model(ref bbs, mde, model, modelPath, D3DDevice);
-                    }
+                    string ext = modelNames[i].Substring(modelNames[i].Length - 4);
+                    string error = "";
+                    if (ext == ".md3")
+                        error = ReadMD3Model(ref bbs, ref mde, stream, D3DDevice);
+                    else if (ext == ".md2")
+                        error = ReadMD2Model(ref bbs, ref mde, stream, D3DDevice);
 
                     //texture
-                    if (loaded) {
-                        string texturePath = mde.Path + "\\" + texturePaths[i];
-                        if (texturePaths[i] != ModelDefParser.INVALID_TEXTURE && File.Exists(texturePath)) {
-                            model.Textures.Add(Texture.FromFile(D3DDevice, texturePath));
+                    if (string.IsNullOrEmpty(error)) {
+                        string texturePath = Path.Combine(mde.Path, textureNames[i]);
+                        
+                        if (textureNames[i] != ModeldefParser.INVALID_TEXTURE && reader.FileExists(texturePath)) {
+                            mde.Model.Textures.Add(Texture.FromStream(D3DDevice, reader.LoadFile(texturePath)));
                         } else {
-                            model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
-                            if (texturePaths[i] != ModelDefParser.INVALID_TEXTURE)
-                                General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: unable to load texture '" + texturePath + "' - no such file");
+                            mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
+                            if (textureNames[i] != ModeldefParser.INVALID_TEXTURE)
+                                GZBuilder.GZGeneral.LogAndTraceWarning("MD3Reader: unable to load texture '" + texturePath + "' - no such file");
                         }
                     } else {
-                        model.NUM_MESHES--;
+                        GZBuilder.GZGeneral.LogAndTraceWarning("MD3Reader: error while loading " + modelPath + ": " + error);
+                        mde.Model.NUM_MESHES--;
                     }
+                    stream.Dispose();
+
                 } else {
-                    General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: unable to load model '" + mde.Path + "\\" + modelPaths[i] + "' - no such file");
-                    model.NUM_MESHES--;
+                    GZBuilder.GZGeneral.LogAndTraceWarning("MD3Reader: unable to load model '" + modelPath + "' - no such file");
+                    mde.Model.NUM_MESHES--;
                 }
             }
 
-            if (model.NUM_MESHES <= 0)
-                return null;
+            if (mde.Model.NUM_MESHES <= 0) {
+                mde.Model = null;
+                return;
+            }
 
-            model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
-
-            return model;
+            mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
         }
 
-        private static bool ReadMD3Model(ref BoundingBoxSizes bbs, ModelDefEntry mde, GZModel model, string modelPath, Device D3DDevice) {
-            FileStream s = new FileStream(modelPath, FileMode.Open);
+        private static string ReadMD3Model(ref BoundingBoxSizes bbs, ref ModeldefEntry mde, MemoryStream s, Device D3DDevice) {
             long start = s.Position;
 
             using (var br = new BinaryReader(s, Encoding.ASCII)) {
                 string magic = ReadString(br, 4);
-                if (magic != "IDP3") {
-                    General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: Error while loading '" + modelPath + "': Magic should be 'IDP3', not '" + magic + "'");
-                    return false;
-                }
+                if (magic != "IDP3")
+                    return "magic should be 'IDP3', not '" + magic + "'";
 
                 s.Position += 80;
                 int numSurfaces = br.ReadInt32();
@@ -94,8 +101,12 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 List<short> polyIndecesList = new List<short>();
                 List<WorldVertex> vertList = new List<WorldVertex>();
 
-                for (int c = 0; c < numSurfaces; ++c)
-                    ReadSurface(ref bbs, br, polyIndecesList, vertList, mde);
+                string error = "";
+                for (int c = 0; c < numSurfaces; ++c) {
+                    error = ReadSurface(ref bbs, br, polyIndecesList, vertList, mde);
+                    if (!string.IsNullOrEmpty(error))
+                        return error;
+                }
 
                 //indeces for rendering current mesh in 2d
                 short[] indeces2d_arr = CreateLineListIndeces(polyIndecesList);
@@ -112,7 +123,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 mesh.IndexBuffer.Unlock();
 
                 mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
-                model.Meshes.Add(mesh);
+                mde.Model.Meshes.Add(mesh);
 
                 //2d data
                 IndexBuffer indeces2d = new IndexBuffer(D3DDevice, 2 * indeces2d_arr.Length, Usage.WriteOnly, Pool.Managed, true);
@@ -120,19 +131,17 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 stream.WriteRange(indeces2d_arr);
                 indeces2d.Unlock();
 
-                model.Indeces2D.Add(indeces2d);
-                model.NumIndeces2D.Add((short)polyIndecesList.Count);
+                mde.Model.Indeces2D.Add(indeces2d);
+                mde.Model.NumIndeces2D.Add((short)polyIndecesList.Count);
             }
-            return true;
+            return "";
         }
 
-        private static void ReadSurface(ref BoundingBoxSizes bbs, BinaryReader br, List<short> polyIndecesList, List<WorldVertex> vertList, ModelDefEntry mde) {
+        private static string ReadSurface(ref BoundingBoxSizes bbs, BinaryReader br, List<short> polyIndecesList, List<WorldVertex> vertList, ModeldefEntry mde) {
             var start = br.BaseStream.Position;
             string magic = ReadString(br, 4);
-            if (magic != "IDP3") {
-                General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: Error while reading surface: Magic should be 'IDP3', not '" + magic + "'");
-                return;
-            }
+            if (magic != "IDP3")
+                return "error while reading surface: Magic should be 'IDP3', not '" + magic + "'";
 
             br.BaseStream.Position += 76;
             int numVerts = br.ReadInt32(); //Number of Vertex objects defined in this Surface, up to MD3_MAX_VERTS. Current value of MD3_MAX_VERTS is 4096.
@@ -170,9 +179,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
 
             for (int i = 0; i < numVerts; i++) {
                 WorldVertex v = vertList[i];
-                //short[] coords = new short[] { br.ReadInt16(), br.ReadInt16(), br.ReadInt16() };
 
-                //v.Position = new Vector3((float)coords[1] / 64, -(float)coords[0] / 64, (float)coords[2] / 64);
                 v.y = -(float)br.ReadInt16() / 64 * mde.Scale.X;
                 v.x = (float)br.ReadInt16() / 64 * mde.Scale.Y;
                 v.z = (float)br.ReadInt16() / 64 * mde.Scale.Z + mde.zOffset;
@@ -192,23 +199,20 @@ namespace ColladaDotNet.Pipeline.MD3 {
 
             if (start + ofsEnd != br.BaseStream.Position)
                 br.BaseStream.Position = start + ofsEnd;
+            return "";
         }
 
-        private static bool ReadMD2Model(ref BoundingBoxSizes bbs, ModelDefEntry mde, GZModel model, string modelPath, Device D3DDevice) {
-            FileStream s = new FileStream(modelPath, FileMode.Open);
+        private static string ReadMD2Model(ref BoundingBoxSizes bbs, ref ModeldefEntry mde, MemoryStream s, Device D3DDevice) {
             long start = s.Position;
 
             using (var br = new BinaryReader(s, Encoding.ASCII)) {
                 string magic = ReadString(br, 4);
-                if (magic != "IDP2") { //magic number: "IDP2"
-                    General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: Error while loading '" + modelPath + "': Magic should be 'IDP2', not '" + magic + "'");
-                    return false;
-                }
+                if (magic != "IDP2")  //magic number: "IDP2"
+                    return "magic should be 'IDP2', not '" + magic + "'";
+
                 int modelVersion = br.ReadInt32();
-                if (modelVersion != 8) { //MD2 version. Must be equal to 8
-                    General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: Error while loading '" + modelPath + "': MD2 version must be 8 but is " + modelVersion);
-                    return false;
-                }
+                if (modelVersion != 8)  //MD2 version. Must be equal to 8
+                    return "MD2 version must be 8 but is " + modelVersion;
 
                 int texWidth = br.ReadInt32();
                 int texHeight = br.ReadInt32();
@@ -219,10 +223,8 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 int num_tris = br.ReadInt32(); //Number of triangles
                 s.Position += 4; //Number of OpenGL commands
 
-                if (br.ReadInt32() == 0) { //Total number of frames
-                    General.ErrorLogger.Add(ErrorType.Warning, "MD3Reader: Error while loading '" + modelPath + "': Model has 0 frames");
-                    return false;
-                }
+                if (br.ReadInt32() == 0)  //Total number of frames
+                    return "model has 0 frames";
 
                 s.Position += 4; //Offset to skin names (each skin name is an unsigned char[64] and are null terminated)
                 int ofs_uv = br.ReadInt32();//Offset to s-t texture coordinates
@@ -284,7 +286,6 @@ namespace ColladaDotNet.Pipeline.MD3 {
                     WorldVertex v = vertList[polyIndecesList[i]];
                     
                     //bounding box
-                    //BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, v);
                     BoundingBoxTools.UpdateBoundingBoxSizes(ref bbs, new WorldVertex(v.y, v.x, v.z));
 
                     //uv
@@ -309,7 +310,7 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 mesh.IndexBuffer.Unlock();
 
                 mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
-                model.Meshes.Add(mesh);
+                mde.Model.Meshes.Add(mesh);
 
                 //2d data
                 IndexBuffer indeces2d = new IndexBuffer(D3DDevice, 2 * indeces2d_arr.Length, Usage.WriteOnly, Pool.Managed, true);
@@ -317,12 +318,11 @@ namespace ColladaDotNet.Pipeline.MD3 {
                 stream.WriteRange(indeces2d_arr);
                 indeces2d.Unlock();
 
-                model.Indeces2D.Add(indeces2d);
-                model.NumIndeces2D.Add((short)polyIndecesList.Count);
-                model.Angle = -90.0f * (float)Math.PI / 180.0f;
-
-                return true;
+                mde.Model.Indeces2D.Add(indeces2d);
+                mde.Model.NumIndeces2D.Add((short)polyIndecesList.Count);
+                mde.Model.Angle = -90.0f * (float)Math.PI / 180.0f;
             }
+            return "";
         }
 
         //this creates list of vertex indeces for rendering using LineList method
@@ -343,41 +343,6 @@ namespace ColladaDotNet.Pipeline.MD3 {
             }
             return indeces2d_arr;
         }
-
-        //this creates array of vectors resembling bounding box
-        /*private static Vector3[] CalculateBoundingBox(BoundingBoxSizes bbs) {
-            //center
-            Vector3 v0 = new Vector3(bbs.MinX + (bbs.MaxX - bbs.MinX) / 2, bbs.MinY + (bbs.MaxY - bbs.MinY) / 2, bbs.MinZ + (bbs.MaxZ - bbs.MinZ) / 2);
-
-            //corners
-            Vector3 v1 = new Vector3(bbs.MinX, bbs.MinY, bbs.MinZ);
-            Vector3 v2 = new Vector3(bbs.MaxX, bbs.MinY, bbs.MinZ);
-            Vector3 v3 = new Vector3(bbs.MinX, bbs.MaxY, bbs.MinZ);
-            Vector3 v4 = new Vector3(bbs.MaxX, bbs.MaxY, bbs.MinZ);
-            Vector3 v5 = new Vector3(bbs.MinX, bbs.MinY, bbs.MaxZ);
-            Vector3 v6 = new Vector3(bbs.MaxX, bbs.MinY, bbs.MaxZ);
-            Vector3 v7 = new Vector3(bbs.MinX, bbs.MaxY, bbs.MaxZ);
-            Vector3 v8 = new Vector3(bbs.MaxX, bbs.MaxY, bbs.MaxZ);
-
-            return new Vector3[] { v0, v1, v2, v3, v4, v5, v6, v7, v8 };
-        }
-
-        private static void UpdateBoundingBoxSizes(ref BoundingBoxSizes bbs, WorldVertex v) {
-            if (v.x < bbs.MinX)
-                bbs.MinX = (short)v.x;
-            else if (v.x > bbs.MaxX)
-                bbs.MaxX = (short)v.x;
-
-            if (v.z < bbs.MinZ)
-                bbs.MinZ = (short)v.z;
-            else if (v.z > bbs.MaxZ)
-                bbs.MaxZ = (short)v.z;
-
-            if (v.y < bbs.MinY)
-                bbs.MinY = (short)v.y;
-            else if (v.y > bbs.MaxY)
-                bbs.MaxY = (short)v.y;
-        }*/
 
         private static string ReadString(BinaryReader br, int len) {
             var NAME = string.Empty;
