@@ -713,10 +713,11 @@
     </Compile>
     <Compile Include="GZBuilder\Data\BoundingBox.cs" />
     <Compile Include="GZBuilder\Data\GZDoomLight.cs" />
-    <Compile Include="GZBuilder\Data\ModelDefEntry.cs" />
+    <Compile Include="GZBuilder\Data\ModeldefEntry.cs" />
     <Compile Include="GZBuilder\Data\ThingBoundingBox.cs" />
+    <Compile Include="GZBuilder\GZDoom\ModeldefParser.cs" />
+    <Compile Include="GZBuilder\GZDoom\ModeldefStructure.cs" />
     <Compile Include="GZBuilder\GZGeneral.cs" />
-    <Compile Include="GZBuilder\IO\ModelDefParser.cs" />
     <Compile Include="GZBuilder\md3\GZModel.cs" />
     <Compile Include="GZBuilder\md3\ModelReader.cs" />
     <Compile Include="IO\DoomColormapReader.cs" />

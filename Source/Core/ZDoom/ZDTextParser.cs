@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Variables
 		
 		// Parsing
-		protected string whitespace = "\n \t\r";
+        protected string whitespace = "\n \t\r\u00A0"; //mxd. non-breaking space is also space :)
 		protected string specialtokens = ":{}+-\n;";
 		
 		// Input data stream
@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// This reports an error
 		protected internal void ReportError(string message)
 		{
-			long position = datastream.Position;
+			/*long position = datastream.Position;
 			long readpos = 0;
 			int linenumber = 1;
 			
@@ -313,13 +313,35 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 			
 			// Return to original position
-			datastream.Seek(position, SeekOrigin.Begin);
+			datastream.Seek(position, SeekOrigin.Begin);*/
 			
 			// Set error information
 			errordesc = message;
-			errorline = linenumber;
+            errorline = GetCurrentLineNumber();
 			errorsource = sourcename;
 		}
+
+        //mxd 
+        protected internal int GetCurrentLineNumber() {
+            long position = datastream.Position;
+            long readpos = 0;
+            int linenumber = 1;
+
+            // Find the line on which we found this error
+            datastream.Seek(0, SeekOrigin.Begin);
+            StreamReader textreader = new StreamReader(datastream, Encoding.ASCII);
+            while (readpos < position) {
+                string line = textreader.ReadLine();
+                if (line == null) break;
+                readpos += line.Length + 2;
+                linenumber++;
+            }
+
+            // Return to original position
+            datastream.Seek(position, SeekOrigin.Begin);
+
+            return linenumber;
+        }
 		
 		#endregion
 	}

@@ -33,6 +33,10 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.ZDoom;
 
+using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.GZDoom;
+using CodeImp.DoomBuilder.GZBuilder.MD3;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.Data
@@ -65,7 +69,10 @@ namespace CodeImp.DoomBuilder.Data
 		private AllTextureSet alltextures;
 
         //mxd Folders
-        private List<string> folders;
+        //private List<string> folders;
+
+        //mxd modeldefs
+        private Dictionary<int, ModeldefEntry> modeldefEntries;
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -107,7 +114,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
         //mxd
-        public List<string> Folders { get { return folders; } }
+        //public List<string> Folders { get { return folders; } }
+        public Dictionary<int, ModeldefEntry> ModeldefEntries { get { return modeldefEntries; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -247,9 +255,6 @@ namespace CodeImp.DoomBuilder.Data
 			internalsprites = new Dictionary<string, ImageData>();
 			thingcategories = General.Map.Config.GetThingCategories();
 			thingtypes = General.Map.Config.GetThingTypes();
-
-            //mxd
-            folders = new List<string>();
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -285,10 +290,6 @@ namespace CodeImp.DoomBuilder.Data
 						// Directory container
 						case DataLocation.RESOURCE_DIRECTORY:
 							c = new DirectoryReader(dl);
-
-                            //mxd
-                            folders.Add(dl.location);
-
 							break;
 
 						// PK3 file container
@@ -322,6 +323,9 @@ namespace CodeImp.DoomBuilder.Data
 			thingcount = LoadDecorateThings();
 			spritecount = LoadThingSprites();
 			LoadInternalSprites();
+
+            //mxd
+            loadModeldefs();
 			
 			// Process colormaps (we just put them in as textures)
 			foreach(KeyValuePair<long, ImageData> t in colormapsonly)
@@ -434,6 +438,13 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<long, ImageData> i in flats) i.Value.Dispose();
 			foreach(KeyValuePair<long, ImageData> i in sprites) i.Value.Dispose();
 			palette = null;
+
+            //mxd
+            if (modeldefEntries != null) {
+                foreach (KeyValuePair<int, ModeldefEntry> group in modeldefEntries) {
+                    group.Value.Dispose();
+                }
+            }
 			
 			// Dispose containers
 			foreach(DataReader c in containers) c.Dispose();
@@ -1342,10 +1353,110 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		#endregion
-		
-		#region ================== Tools
 
-		// This finds the first IWAD resource
+        #region ================== Modeldef and models
+
+        public void LoadModels() {
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Loading models...");
+
+            foreach (Thing t in General.Map.Map.Things)
+                LoadModelForThing(t);
+
+            General.MainWindow.RedrawDisplay();
+        }
+
+        public bool LoadModelForThing(Thing t) {
+            if (modeldefEntries.ContainsKey(t.Type)) {
+                if (modeldefEntries[t.Type].Model == null) {
+                    //load model and texture
+                    ModeldefEntry mde = modeldefEntries[t.Type];
+
+                    foreach (DataReader dr in containers) {
+                        currentreader = dr;
+                        if (currentreader.Location.location == mde.Location) {
+                            ModelReader.Parse(ref mde, (PK3StructuredReader)currentreader, General.Map.Graphics.Device);
+                            break;
+                        }
+                    }
+                    currentreader = null;
+
+                    if (mde.Model != null) {
+                        GZBuilder.GZGeneral.LogAndTraceWarning("Loaded model for Thing ¹" + t.Type);
+                        return true;
+                    } else {
+                        modeldefEntries.Remove(t.Type);
+                        GZBuilder.GZGeneral.LogAndTraceWarning("Failed to load model(s) for Thing ¹" + t.Type + ", model(s) location is "+mde.Location+ "\\" + mde.Path +". MODELDEF node removed.");
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        //mxd. This parses modeldefs
+        private void loadModeldefs() {
+            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
+
+            Dictionary<string, int> Actors = new Dictionary<string, int>();
+            Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
+
+            //read our new shiny ClassNames for default game things
+            foreach (KeyValuePair<int, ThingTypeInfo> ti in things) {
+                if (ti.Value.ClassName != null)
+                    Actors.Add(ti.Value.ClassName, ti.Key);
+            }
+
+            //and for actors defined in DECORATE
+            ICollection<ActorStructure> ac = decorate.Actors; //General.Map.Data.Decorate.Actors;
+            foreach (ActorStructure actor in ac) {
+                string className = actor.ClassName.ToLower();
+                if (actor.DoomEdNum != -1 && !Actors.ContainsKey(className)) //we don't need actors without DoomEdNum
+                    Actors.Add(className, actor.DoomEdNum);
+            }
+
+            Dictionary<string, ModeldefEntry> modelDefEntriesByName = new Dictionary<string, ModeldefEntry>();
+            ModeldefParser mdeParser = new ModeldefParser();
+
+            foreach (DataReader dr in containers) {
+                currentreader = dr;
+
+                Dictionary<string, Stream> streams = dr.GetModeldefData();
+                foreach (KeyValuePair<string, Stream> group in streams) {
+                    //dbg
+                    GZBuilder.GZGeneral.Trace("Adding mdes from " + currentreader.Location.location);
+
+                    // Parse the data
+                    group.Value.Seek(0, SeekOrigin.Begin);
+                    mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key);
+                    Dictionary<string, ModeldefEntry> mdes = mdeParser.ModelDefEntries;
+
+                    if (mdes != null) {
+                        foreach (KeyValuePair<string, ModeldefEntry> g in mdes) {
+                            g.Value.Location = currentreader.Location.location;
+                            modelDefEntriesByName.Add(g.Key, g.Value);
+                        }
+                    }
+                }
+            }
+
+            currentreader = null;
+            modeldefEntries = new Dictionary<int, ModeldefEntry>();
+
+            foreach (KeyValuePair<string, ModeldefEntry> e in modelDefEntriesByName) {
+                if (Actors.ContainsKey(e.Key)) {
+                    modeldefEntries[Actors[e.Key]] = modelDefEntriesByName[e.Key];
+                } else {
+                    GZBuilder.GZGeneral.LogAndTraceWarning("Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
+                }
+            }
+        }
+
+        #endregion
+
+        #region ================== Tools
+
+        // This finds the first IWAD resource
 		// Returns false when not found
 		internal bool FindFirstIWAD(out DataLocation result)
 		{

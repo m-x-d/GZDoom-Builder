@@ -792,7 +792,7 @@ namespace CodeImp.DoomBuilder.VisualModes
             if (refreshSelection || selectedVisualThings == null) {
                 selectedVisualThings = new List<VisualThing>();
                 foreach (KeyValuePair<Thing, VisualThing> group in allthings) {
-                    if (group.Value.Selected)
+                    if (group.Value != null && group.Value.Selected)
                         selectedVisualThings.Add(group.Value);
                 }
             }

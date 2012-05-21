@@ -286,6 +286,9 @@ namespace CodeImp.DoomBuilder
 			map.UpdateConfiguration();
 			map.Update();
 			thingsfilter.Update();
+
+            //mxd. load models
+            data.LoadModels();
 			
 			// Bind any methods
 			General.Actions.BindMethods(this);
@@ -409,6 +412,9 @@ namespace CodeImp.DoomBuilder
 			map.SnapAllToAccuracy();
 			map.Update();
 			thingsfilter.Update();
+
+            //mxd. load models
+            data.LoadModels();
 			
 			// Bind any methods
 			General.Actions.BindMethods(this);

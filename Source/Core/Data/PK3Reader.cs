@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns true if the specified file exists
-		protected override bool FileExists(string filename)
+		public override bool FileExists(string filename)
 		{
 			return files.FileExists(filename);
 		}
@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This loads an entire file in memory and returns the stream
 		// NOTE: Callers are responsible for disposing the stream!
-		protected override MemoryStream LoadFile(string filename)
+		public override MemoryStream LoadFile(string filename)
 		{
 			MemoryStream filedata = null;
 			byte[] copybuffer = new byte[4096];
@@ -359,7 +359,10 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			else
 			{
-				return filedata;
+				//mxd. rewind before use
+                filedata.Position = 0;
+
+                return filedata;
 			}
 		}
 

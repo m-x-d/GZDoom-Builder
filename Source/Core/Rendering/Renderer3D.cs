@@ -34,7 +34,7 @@ using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Map;
 
 //mxd
-using ColladaDotNet.Pipeline.MD3;
+using CodeImp.DoomBuilder.GZBuilder.MD3;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
 #endregion
@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Rendering
         private List<VisualThing> thingsWithLight;
         private int[] lightOffsets;
         private Dictionary<Texture, List<VisualGeometry>> litGeometry;
-        private Dictionary<ModelDefEntry, List<VisualThing>> thingsWithModel;
+        private Dictionary<ModeldefEntry, List<VisualThing>> thingsWithModel;
         //dbg
         //int geoSkipped = 0;
         //int totalGeo = 0;
@@ -499,7 +499,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			things = new Dictionary<ImageData, List<VisualThing>>[RENDER_PASSES];
 			thingsbydistance = new BinaryHeap<VisualThing>();
             //mxd 
-            thingsWithModel = new Dictionary<ModelDefEntry, List<VisualThing>>();
+            thingsWithModel = new Dictionary<ModeldefEntry, List<VisualThing>>();
             litGeometry = new Dictionary<Texture, List<VisualGeometry>>();
 
 			for(int i = 0; i < RENDER_PASSES; i++)
@@ -1003,15 +1003,14 @@ namespace CodeImp.DoomBuilder.Rendering
 
         //mxd. render models
         private void RenderModels() {
-            int shaderpass = 4;
-            if (fullbrightness) shaderpass++;
+            int shaderpass = fullbrightness ? 1 : 4;
             int currentshaderpass = shaderpass;
             int highshaderpass = shaderpass + 2;
 
             // Begin rendering with this shader
             graphics.Shaders.World3D.BeginPass(currentshaderpass);
 
-            foreach (KeyValuePair<ModelDefEntry, List<VisualThing>> group in thingsWithModel) {
+            foreach (KeyValuePair<ModeldefEntry, List<VisualThing>> group in thingsWithModel) {
                 foreach (VisualThing t in group.Value) {
                     Color4 vertexColor = new Color4(t.VertexColor);
                     vertexColor.Alpha = 1.0f;
@@ -1177,7 +1176,7 @@ namespace CodeImp.DoomBuilder.Rendering
                 }
             //mxd. gather models
             } else if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected) && t.Thing.IsModel) {
-                ModelDefEntry mde = GZBuilder.GZGeneral.ModelDefEntries[t.Thing.Type];
+                ModeldefEntry mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
 
                 if (!isThingOnScreen(t.BoundingBox))
                     return;

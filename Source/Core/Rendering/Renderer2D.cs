@@ -37,7 +37,7 @@ using CodeImp.DoomBuilder.Editing;
 
 //mxd
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using ColladaDotNet.Pipeline.MD3;
+using CodeImp.DoomBuilder.GZBuilder.MD3;
 
 #endregion
 
@@ -943,7 +943,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
                 //mxd. Collect things with models for rendering
                 if (General.Settings.GZDrawModels && (!General.Settings.GZDrawSelectedModelsOnly || t.Selected)) {
-                    Dictionary<int, ModelDefEntry> mde = GZBuilder.GZGeneral.ModelDefEntries;
+                    Dictionary<int, ModeldefEntry> mde = General.Map.Data.ModeldefEntries;
                     if (mde != null && mde.ContainsKey(t.Type)) {
                         thingsWithModel[screenpos] = t;
                     }
@@ -1119,12 +1119,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
                     graphics.Shaders.Things2D.BeginPass(1);
                     foreach(KeyValuePair<Vector2D, Thing> group in thingsWithModel){
-                        ModelDefEntry mde = GZBuilder.GZGeneral.ModelDefEntries[group.Value.Type];
+                        ModeldefEntry mde = General.Map.Data.ModeldefEntries[group.Value.Type];
 
                         if (mde.Model != null)
                             RenderModel(mde.Model, group.Key, group.Value.Angle + mde.Model.Angle, group.Value.Selected);
                         else
-                            group.Value.IsModel = GZBuilder.GZGeneral.LoadModelForThing(group.Value);
+                            group.Value.IsModel = General.Map.Data.LoadModelForThing(group.Value);
                     }
                     graphics.Shaders.Things2D.EndPass();
                 }

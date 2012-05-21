@@ -816,7 +816,6 @@ namespace CodeImp.DoomBuilder.Data
 			
 			return streams;
 		}
-
 		#endregion
 	}
 }

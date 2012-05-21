@@ -10,20 +10,14 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
 
-using CodeImp.DoomBuilder.GZBuilder.IO;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.Controls;
-
-using ColladaDotNet.Pipeline.MD3;
 
 namespace CodeImp.DoomBuilder.GZBuilder
 {
     //mxd. should get rid of this class one day...
     public class GZGeneral
     {
-        private static Dictionary<int, ModelDefEntry> modelDefEntries; //doomEdNum, entry
-        public static Dictionary<int, ModelDefEntry> ModelDefEntries { get { return modelDefEntries; } }
-
         //gzdoom light types
         private static int[] gzLights = { /* normal lights */ 9800, 9801, 9802, 9803, 9804, /* additive lights */ 9810, 9811, 9812, 9813, 9814, /* negative lights */ 9820, 9821, 9822, 9823, 9824, /* vavoom lights */ 1502, 1503};
         public static int[] GZ_LIGHTS { get { return gzLights; } }
@@ -33,6 +27,8 @@ namespace CodeImp.DoomBuilder.GZBuilder
         public static int[] GZ_ANIMATED_LIGHT_TYPES {  get { return gzAnimatedLightTypes; } }
 
         public static bool UDMF;
+
+        //public static float[] FogTable; // light to fog conversion table for black fog
 
         //version
         public const float Version = 1.06f;
@@ -48,6 +44,26 @@ namespace CodeImp.DoomBuilder.GZBuilder
             General.Actions.BindMethods(typeof(GZGeneral));
             General.MainWindow.UpdateGZDoomPannel();
 
+            //create fog table
+            /*FogTable = new float[256];
+            byte gl_distfog = 255;
+
+            for (int i = 0; i < 256; i++) {
+                if (i < 164) {
+                    FogTable[i] = (gl_distfog >> 1) + (gl_distfog) * (164 - i) / 164;
+                } else if (i < 230) {
+                    FogTable[i] = (gl_distfog >> 1) - (gl_distfog >> 1) * (i - 164) / (230 - 164);
+                } else FogTable[i] = 0;
+
+                //if (i < 128) {
+                    //distfogtable[1][i] = 6.f + (gl_distfog >> 1) + (gl_distfog) * (128 - i) / 48;
+                //} else if (i < 216) {
+                    //distfogtable[1][i] = (216.f - i) / ((216.f - 128.f)) * gl_distfog / 10;
+                //} else distfogtable[1][i] = 0;
+            }*/
+
+            //float[] ft = FogTable;
+
             //create console
 #if DEBUG
             ConsoleDocker cd = new ConsoleDocker();
@@ -58,105 +74,25 @@ namespace CodeImp.DoomBuilder.GZBuilder
         }
 
         public static void OnMapOpenEnd() {
-            loadModelDefs();
-            loadModels();
             UDMF = (General.Map.Config.FormatInterface == "UniversalMapSetIO");
             General.MainWindow.UpdateGZDoomPannel();
         }
 
         public static void OnReloadResources() {
-            loadModelDefs();
-            loadModels();
-
 #if DEBUG
             ((ConsoleDocker)console.Control).Clear();
 #endif
         }
 
-        public static bool LoadModelForThing(Thing t) {
-            if (modelDefEntries.ContainsKey(t.Type)) {
-                string msg = "GZBuilder: got model override for Thing №" + t.Type;
-                General.ErrorLogger.Add(ErrorType.Warning, msg);
-                General.WriteLogLine(msg);
-
-                if (modelDefEntries[t.Type].Model == null) {
-                    //load model and texture
-                    ModelDefEntry mde = modelDefEntries[t.Type];
-                    mde.Model = ModelReader.Parse(mde, General.Map.Graphics.Device);
-
-                    if (mde.Model != null) {
-                        //General.Map.IsChanged = true; 
-                        //General.MainWindow.RedrawDisplay(); //update display
-                        msg = "GZBuilder: loaded model for Thing №" + t.Type;
-                        General.ErrorLogger.Add(ErrorType.Warning, msg);
-                        General.WriteLogLine(msg);
-                        return true;
-                    } else {
-                        modelDefEntries.Remove(t.Type);
-                        msg = "GZBuilder: failed to load model(s) for Thing №" + t.Type + ". ModelDef node removed.";
-                        General.ErrorLogger.Add(ErrorType.Warning, msg);
-                        General.WriteLogLine(msg);
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-
-//functions
-        private static void loadModelDefs() {
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
-
-            Dictionary<string, int> Actors = new Dictionary<string,int>();
-            Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
-
-            //read our new shiny ClassNames for default game things
-            foreach (KeyValuePair<int, ThingTypeInfo> ti in things) {
-                if (ti.Value.ClassName != null)
-                    Actors.Add(ti.Value.ClassName, ti.Key);
-            }
-
-            //and for actors defined in DECORATE
-            ICollection<ActorStructure> ac = General.Map.Data.Decorate.Actors;
-            foreach (ActorStructure actor in ac) {
-                string className = actor.ClassName.ToLower();
-                if (actor.DoomEdNum != -1 && !Actors.ContainsKey(className)) //we don't need actors without DoomEdNum
-                    Actors.Add(className, actor.DoomEdNum);
-            }
-
-            Dictionary<string, ModelDefEntry> modelDefEntriesByName = new Dictionary<string, ModelDefEntry>();
-
-            foreach (string folder in General.Map.Data.Folders)
-                ModelDefParser.ParseFolder(modelDefEntriesByName, folder);
-
-            modelDefEntries = new Dictionary<int, ModelDefEntry>();
-
-            foreach (KeyValuePair<string, ModelDefEntry> e in modelDefEntriesByName) {
-                if (Actors.ContainsKey(e.Value.Name)) {
-                    modelDefEntries[Actors[e.Value.Name]] = modelDefEntriesByName[e.Value.Name];
-                } else {
-                    string msg = "GZBuilder: ModelDefEntry wasn't found in Decorate: '" + e.Value.Name + "'";
-                    General.ErrorLogger.Add(ErrorType.Warning, msg);
-                    General.WriteLogLine(msg);
-                }
-            }
-        }
-
-        //load models for things which are already in the map
-        private static void loadModels() {
-            General.MainWindow.DisplayStatus(StatusType.Busy, "Loading models...");
-            string msg = "GZBuilder: loading models...";
-            General.ErrorLogger.Add(ErrorType.Warning, msg);
-            General.WriteLogLine(msg);
-            
-            foreach(Thing t in General.Map.Map.Things)
-                LoadModelForThing(t);
-
-            General.MainWindow.RedrawDisplay();
-        }
-
 //debug
+        public static void LogAndTraceWarning(string message) {
+            General.ErrorLogger.Add(ErrorType.Warning, message);
+            General.WriteLogLine(message);
+#if DEBUG
+            Trace(message);
+#endif
+        }
+
         public static void Trace(string message) {
 #if DEBUG
             ((ConsoleDocker)console.Control).Trace(message);

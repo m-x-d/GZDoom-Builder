@@ -34,6 +34,8 @@ using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 
+using CodeImp.DoomBuilder.GZBuilder.Data;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
@@ -200,6 +202,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					pos.z = Thing.Sector.CeilHeight - info.Height;
 				}
 			}
+
+            //mxd. check model state
+            if (General.Map.Data.ModeldefEntries.ContainsKey(Thing.Type)) {
+                ModeldefEntry mde = General.Map.Data.ModeldefEntries[Thing.Type];
+                if (mde.Model == null) {
+                    Thing.IsModel = General.Map.Data.LoadModelForThing(Thing);
+                } else {
+                    Thing.IsModel = true;
+                }
+            } else {
+                Thing.IsModel = false;
+            }
 			
 			// Apply settings
 			SetPosition(pos);
