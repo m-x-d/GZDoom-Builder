@@ -1394,7 +1394,7 @@ namespace CodeImp.DoomBuilder.Data
             return false;
         }
 
-        //mxd. This parses modeldefs
+        //mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed
         private void loadModeldefs() {
             General.MainWindow.DisplayStatus(StatusType.Busy, "Parsing model definitions...");
 
@@ -1423,16 +1423,10 @@ namespace CodeImp.DoomBuilder.Data
 
                 Dictionary<string, Stream> streams = dr.GetModeldefData();
                 foreach (KeyValuePair<string, Stream> group in streams) {
-                    //dbg
-                    GZBuilder.GZGeneral.Trace("Adding mdes from " + currentreader.Location.location);
-
                     // Parse the data
                     group.Value.Seek(0, SeekOrigin.Begin);
-                    mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key);
-                    Dictionary<string, ModeldefEntry> mdes = mdeParser.ModelDefEntries;
-
-                    if (mdes != null) {
-                        foreach (KeyValuePair<string, ModeldefEntry> g in mdes) {
+                    if (mdeParser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) {
+                        foreach (KeyValuePair<string, ModeldefEntry> g in mdeParser.ModelDefEntries) {
                             g.Value.Location = currentreader.Location.location;
                             modelDefEntriesByName.Add(g.Key, g.Value);
                         }
@@ -1444,11 +1438,10 @@ namespace CodeImp.DoomBuilder.Data
             modeldefEntries = new Dictionary<int, ModeldefEntry>();
 
             foreach (KeyValuePair<string, ModeldefEntry> e in modelDefEntriesByName) {
-                if (Actors.ContainsKey(e.Key)) {
+                if (Actors.ContainsKey(e.Key))
                     modeldefEntries[Actors[e.Key]] = modelDefEntriesByName[e.Key];
-                } else {
+                else
                     GZBuilder.GZGeneral.LogAndTraceWarning("Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
-                }
             }
         }
 

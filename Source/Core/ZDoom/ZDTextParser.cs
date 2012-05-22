@@ -297,24 +297,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// This reports an error
 		protected internal void ReportError(string message)
 		{
-			/*long position = datastream.Position;
-			long readpos = 0;
-			int linenumber = 1;
-			
-			// Find the line on which we found this error
-			datastream.Seek(0, SeekOrigin.Begin);
-			StreamReader textreader = new StreamReader(datastream, Encoding.ASCII);
-			while(readpos < position)
-			{
-				string line = textreader.ReadLine();
-				if(line == null) break;
-				readpos += line.Length + 2;
-				linenumber++;
-			}
-			
-			// Return to original position
-			datastream.Seek(position, SeekOrigin.Begin);*/
-			
 			// Set error information
 			errordesc = message;
             errorline = GetCurrentLineNumber();

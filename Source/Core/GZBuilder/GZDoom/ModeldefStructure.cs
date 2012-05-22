@@ -27,21 +27,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                 if (!string.IsNullOrEmpty(token)) {
                     token = token.ToLowerInvariant();
-
-                    char a = token[0];
-                    char c = " "[0];
-                    bool b1 = Char.IsWhiteSpace(a);
-                    bool b2 = Char.IsWhiteSpace(c);
-                    bool f;
-                    
 //path
                     if (token == "path") {
                         parser.SkipWhitespace(true);
                         path = parser.StripTokenQuotes(parser.ReadToken()).Replace("/", "\\");
 
                         if (string.IsNullOrEmpty(path)) {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected path to model, but got '" + token + "' in " + parser.Source + " at line "+parser.GetCurrentLineNumber());
-                            //GZBuilder.GZGeneral.LogAndTraceWarning("Expected path to model, but got '" + token + "'");
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line "+parser.GetCurrentLineNumber()+": expected path to model, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -54,7 +46,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.ReadToken();
                         if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out modelIndex)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected model index, but got '" + token + "' in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model index, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -62,7 +54,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         //model path
                         token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
                         if (string.IsNullOrEmpty(token)) {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected model name, but got '" + token + "' in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model name, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         } else {
@@ -76,7 +68,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             }
 
                             if (modelNames[modelIndex] != null) {
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Error: already got model for index " + modelIndex + " in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": already got model for index " + modelIndex);
                                 gotErrors = true;
                                 break;
                             } else {
@@ -92,7 +84,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         token = parser.ReadToken();
                         if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out skinIndex)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected skin index, but got '" + token + "' in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin index, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -100,7 +92,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                         //skin path
                         token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
                         if (string.IsNullOrEmpty(token)) {
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected skin name, but got '" + token + "' in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin name, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         } else {
@@ -111,7 +103,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                                 token = ModeldefParser.INVALID_TEXTURE;
 
                             if (textureNames[skinIndex] != null) {
-                                GZBuilder.GZGeneral.LogAndTraceWarning("Already got model for index " + skinIndex + " in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                                GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": already got model for index " + skinIndex);
                                 gotErrors = true;
                                 break;
                             } else {
@@ -132,7 +124,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                         if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale.X)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected scale X value, but got '" + token + "' in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale X value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -150,7 +142,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                         if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale.Y)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected scale Y value, but got '" + token + "' in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale Y value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -169,7 +161,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                         if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale.Z)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected scale Z value, but got '" + token + "' in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected scale Z value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }
@@ -188,7 +180,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
                         if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out zOffset)) {
                             // Not numeric!
-                            GZBuilder.GZGeneral.LogAndTraceWarning("Expected ZOffset value, but got '" + token + "' in " + parser.Source + " at line " + parser.GetCurrentLineNumber());
+                            GZBuilder.GZGeneral.LogAndTraceWarning("Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected ZOffset value, but got '" + token + "'");
                             gotErrors = true;
                             break;
                         }

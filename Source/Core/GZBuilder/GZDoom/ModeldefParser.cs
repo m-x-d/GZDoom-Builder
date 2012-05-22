@@ -25,6 +25,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
             // Continue until at the end of the stream
             while (SkipWhitespace(true)) {
                 string token = ReadToken();
+
                 if (token != null) {
                     token = token.ToLowerInvariant();
 
@@ -48,12 +49,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
                             ModeldefStructure mds = new ModeldefStructure();
                             ModeldefEntry mde = mds.Parse(this);
                             if (mde != null) {
-                                GZBuilder.GZGeneral.Trace("Got mds for class " + className);
                                 mde.ClassName = className;
                                 modelDefEntries.Add(className, mde); 
                             }
-                        } else {
-                            continue; //no class name found. continue to next structure
                         }
 
                     } else {
