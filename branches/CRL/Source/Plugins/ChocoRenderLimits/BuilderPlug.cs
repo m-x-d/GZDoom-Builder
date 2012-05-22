@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		// Objects
 		private static BuilderPlug me;
 		private MenusForm menusform;
-		private ProcessManager manager;
+		private TestManager manager;
 		
 		// Settings
 		private string exepath;
@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		public static BuilderPlug Me { get { return me; } }
 		public override string Name { get { return "ChocoRenderLimits"; } }
 		public string ExecutablePath { get { return exepath; } set { exepath = value; } }
-		public ProcessManager ProcessManager { get { return manager; } }
+		public TestManager ProcessManager { get { return manager; } }
 		
 		#endregion
 
@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		{
 			base.OnInitialize();
 
-			manager = new ProcessManager();
+			manager = new TestManager();
 			
 			// Load menu items and toolbar buttons
 			menusform = new MenusForm();
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 				// Generate a filename
 				filename = "";
 				for(i = 0; i < 8; i++) filename += chars[rnd.Next(chars.Length)];
-				filename = Path.Combine(General.TempPath, filename + "." + extension);
+				filename = Path.Combine(General.TempPath, filename + extension);
 			}
 			// Continue while file is not unique
 			while(File.Exists(filename) || Directory.Exists(filename));

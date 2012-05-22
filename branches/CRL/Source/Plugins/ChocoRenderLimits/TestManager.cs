@@ -11,27 +11,34 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 {
-	public class ProcessManager
+	public class TestManager
 	{
 		#region ================== Constants
+
+		public static readonly int[] GRANULARITIES = new int[] { 2, 4, 8, 16, 32, 64, 128 };
 
 		#endregion
 
 		#region ================== Variables
 
-		// All running tests
+		// All tests
 		private List<Test> tests = new List<Test>();
 
+		// Point maps
+		private Dictionary<Point, PointData>[] points = new Dictionary<Point, PointData>[GRANULARITIES.Length];
+		
 		#endregion
 
 		#region ================== Properties
+
+		public List<Test> Tests { get { return tests; } }
 
 		#endregion
 
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public ProcessManager()
+		public TestManager()
 		{
 			// Initialize
 

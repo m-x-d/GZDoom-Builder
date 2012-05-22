@@ -28,27 +28,29 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProcessesForm));
 			this.list = new System.Windows.Forms.ListView();
-			this.colarea = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colgranularity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colprocesses = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.colprogress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colarea = new System.Windows.Forms.ColumnHeader();
+			this.colgranularity = new System.Windows.Forms.ColumnHeader();
+			this.colthreads = new System.Windows.Forms.ColumnHeader();
+			this.colstatus = new System.Windows.Forms.ColumnHeader();
 			this.newbutton = new System.Windows.Forms.Button();
 			this.importbutton = new System.Windows.Forms.Button();
 			this.removebutton = new System.Windows.Forms.Button();
 			this.closebutton = new System.Windows.Forms.Button();
+			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.SuspendLayout();
 			// 
 			// list
 			// 
-			this.list.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.list.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colarea,
             this.colgranularity,
-            this.colprocesses,
-            this.colprogress});
+            this.colthreads,
+            this.colstatus});
 			this.list.FullRowSelect = true;
 			this.list.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
 			this.list.Location = new System.Drawing.Point(12, 12);
@@ -68,15 +70,15 @@
 			this.colgranularity.Text = "Granularity";
 			this.colgranularity.Width = 80;
 			// 
-			// colprocesses
+			// colthreads
 			// 
-			this.colprocesses.Text = "Processes";
-			this.colprocesses.Width = 80;
+			this.colthreads.Text = "Threads";
+			this.colthreads.Width = 80;
 			// 
-			// colprogress
+			// colstatus
 			// 
-			this.colprogress.Text = "Progress";
-			this.colprogress.Width = 80;
+			this.colstatus.Text = "Status";
+			this.colstatus.Width = 107;
 			// 
 			// newbutton
 			// 
@@ -117,6 +119,12 @@
 			this.closebutton.UseVisualStyleBackColor = true;
 			this.closebutton.Click += new System.EventHandler(this.closebutton_Click);
 			// 
+			// updatetimer
+			// 
+			this.updatetimer.Enabled = true;
+			this.updatetimer.Interval = 319;
+			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
+			// 
 			// ProcessesForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -146,11 +154,12 @@
 		private System.Windows.Forms.ListView list;
 		private System.Windows.Forms.ColumnHeader colarea;
 		private System.Windows.Forms.ColumnHeader colgranularity;
-		private System.Windows.Forms.ColumnHeader colprocesses;
-		private System.Windows.Forms.ColumnHeader colprogress;
+		private System.Windows.Forms.ColumnHeader colthreads;
+		private System.Windows.Forms.ColumnHeader colstatus;
 		private System.Windows.Forms.Button newbutton;
 		private System.Windows.Forms.Button importbutton;
 		private System.Windows.Forms.Button removebutton;
 		private System.Windows.Forms.Button closebutton;
+		private System.Windows.Forms.Timer updatetimer;
 	}
 }

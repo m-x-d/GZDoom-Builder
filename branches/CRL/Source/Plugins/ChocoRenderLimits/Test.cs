@@ -24,9 +24,10 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		private Rectangle area;
 		private TestState state = TestState.NotStarted;
 		private int progress;
-		private string tempwadfile;
-		private List<string> datfiles = new List<string>();
-		private List<Process> processes = new List<Process>();
+		private string tempfile;
+		private Process[] processes;
+		private StreamReader[] logreaders;
+		private float[] percents;
 		
 		// Properties
 		public int ID { get { return id; } }
@@ -54,16 +55,38 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 			this.area = area;
 		}
 
+		// This makes a description for an area
+		public static string GetAreaDescription(Rectangle area)
+		{
+			if(area.IsEmpty)
+				return "Full map";
+			else
+				return "(" + area.Left + ", " + area.Top + ")   \x0336   (" + area.Right + ", " + area.Bottom + ")";
+		}
+
+		// This makes a status description
+		public string GetStatusDescription()
+		{
+			switch(state)
+			{
+				case TestState.NotStarted: return "Not started";
+				case TestState.Running: return progress.ToString() + "%";
+				case TestState.Complete: return "Complete";
+				default: throw new NotImplementedException();
+			}
+		}
+
 		// This starts the test
 		public void Start()
 		{
 			if(this.state == TestState.Running)
 				throw new Exception("Test is already running!");
 
-			datfiles.Clear();
+			// Make the temp filename. We use this as prefix for all files in each process.
+			tempfile = BuilderPlug.MakeTempFilename("");
 			
 			// Write the map
-			tempwadfile = BuilderPlug.MakeTempFilename("wad");
+			string tempwadfile = tempfile + ".wad";
 			General.Map.ExportToFile(tempwadfile);
 
 			// Find the resource file locations
@@ -110,12 +133,16 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 				if(first) p_l1 = num.ToString(); else p_l2 = num.ToString();
 			}
 			
+			// Start the processes!
+			processes = new Process[threads];
+			logreaders = new StreamReader[threads];
+			percents = new float[threads];
 			for(int i = 0; i < threads; i++)
 			{
 				// Create output filename
-				string tempdatfile = BuilderPlug.MakeTempFilename("dat");
-				datfiles.Add(tempdatfile);
-				Console.WriteLine("Temp dat file: " + tempdatfile);
+				string tempdatfile = tempfile + i.ToString(CultureInfo.InvariantCulture) + ".dat";
+				string tempppmfile = tempfile + i.ToString(CultureInfo.InvariantCulture) + ".ppm";
+				string templogfile = tempfile + i.ToString(CultureInfo.InvariantCulture) + ".log";
 				
 				// Setup launch parameters
 				ProcessStartInfo startinfo = new ProcessStartInfo();
@@ -131,7 +158,8 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 				}
 				startinfo.Arguments += " -warp " + p_l1 + " " + p_l2;
 				startinfo.Arguments += " -brutedatfile \"" + tempdatfile + "\"";
-				startinfo.Arguments += " -bruteppmfile \"" + tempdatfile + ".ppm\"";
+				startinfo.Arguments += " -bruteppmfile \"" + tempppmfile + "\"";
+				startinfo.Arguments += " -brutelogfile \"" + templogfile + "\"";
 				startinfo.Arguments += " -brutegran " + granularity;
 				startinfo.Arguments += " -brutestep " + threads;
 				startinfo.Arguments += " -brutestepoffset " + i;
@@ -145,24 +173,12 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 				startinfo.RedirectStandardError = true;
 				
 				// Start process!
-				Process p = new Process();
-				p.StartInfo = startinfo;
-				processes.Add(p);
-				p.OutputDataReceived += p_OutputDataReceived;
-				p.ErrorDataReceived += p_OutputDataReceived;
-				p.EnableRaisingEvents = true;
-				p.Start();
-				p.BeginOutputReadLine();
+				processes[i] = new Process();
+				processes[i].StartInfo = startinfo;
+				processes[i].Start();
 			}
 
 			this.state = TestState.Running;
-		}
-
-		// A process outputs data
-		private void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
-		{
-			int index = processes.IndexOf(sender as Process);
-			Console.WriteLine(index + ": " + e.Data);
 		}
 
 		// Update test status
@@ -170,14 +186,23 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		{
 			if(this.state == TestState.Running)
 			{
-				float percents = 0f;
+				float totalpercents = 0f;
 				bool alldone = true;
 				for(int i = 0; i < threads; i++)
 				{
 					Process p = processes[i];
 					if(p.HasExited)
 					{
-						percents += 100f;
+						// This process has exited
+						percents[i] = 100f;
+						
+						// Close the log reader
+						if(logreaders[i] != null)
+						{
+							logreaders[i].Close();
+							logreaders[i].Dispose();
+							logreaders[i] = null;
+						}
 					}
 					else
 					{
@@ -185,9 +210,55 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 						
 						// Set affinity
 						long af = (long)p.ProcessorAffinity;
-						af = (i >= Environment.ProcessorCount) || (threads == 1) ? 255 : (long)Math.Pow(2, i);
+						if(threads == 1)
+							af = 15;
+						else
+							af = (long)Math.Pow(2, i % Environment.ProcessorCount);
 						p.ProcessorAffinity = (IntPtr)af;
+
+						// If we didn't find the log file yet, try finding it now
+						if(logreaders[i] == null)
+						{
+							string templogfile = tempfile + i.ToString(CultureInfo.InvariantCulture) + ".log";
+							if(File.Exists(templogfile))
+							{
+								FileStream fs = File.Open(templogfile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+								logreaders[i] = new StreamReader(fs);
+							}
+						}
+
+						if(logreaders[i] != null)
+						{
+							// Parse lines from the log file
+							string line = logreaders[i].ReadLine();
+							while(!string.IsNullOrEmpty(line))
+							{
+								// Each line should look like this:
+								// CRL: Sector 50 of 88
+
+								line = line.Trim();
+								line = line.Replace("CRL: Sector ", "");
+								line = line.Replace(" of ", ",");
+
+								// Now the line looks like this: 50,88
+
+								string[] parts = line.Split(',');
+
+								if(parts.Length == 2)
+								{
+									int sector, max;
+									int.TryParse(parts[0], out sector);
+									int.TryParse(parts[1], out max);
+									percents[i] = ((float)sector / (float)max) * 100f;
+								}
+
+								// Next line
+								line = logreaders[i].ReadLine();
+							}
+						}
 					}
+
+					totalpercents += percents[i];
 				}
 
 				if(alldone)
@@ -195,13 +266,14 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 					// Clean up
 					for(int i = 0; i < threads; i++)
 						processes[i].Dispose();
-					processes.Clear();
+					processes = null;
+					logreaders = null;
 					progress = 100;
 					this.state = TestState.Complete;
 				}
 				else
 				{
-					progress = (int)(percents / (float)threads);
+					progress = (int)(totalpercents / (float)threads);
 				}
 			}
 		}

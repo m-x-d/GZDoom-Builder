@@ -16,7 +16,6 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 	internal partial class TestSetupForm : Form
 	{
 		private Test settings;
-		private int[] granularities = new int[] { 2, 4, 8, 16, 32, 64, 128 };
 
 		// Constructor
 		public TestSetupForm()
@@ -28,20 +27,19 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		public void Setup(Test settings)
 		{
 			this.settings = settings;
-			if(settings.Area.IsEmpty)
-				arealabel.Text = "Full map";
-			else
-				arealabel.Text = "(" + settings.Area.Left + ", " + settings.Area.Top + ")   \x0336   (" + settings.Area.Right + ", " + settings.Area.Bottom + ")";
-			if(Array.IndexOf(granularities, settings.Granularity) > -1)
-				granularity.Value = Array.IndexOf(granularities, settings.Granularity);
+			arealabel.Text = Test.GetAreaDescription(settings.Area);
+			if(Array.IndexOf(TestManager.GRANULARITIES, settings.Granularity) > -1)
+				granularity.Value = Array.IndexOf(TestManager.GRANULARITIES, settings.Granularity);
 			if((settings.Threads >= processes.Minimum) && (settings.Threads <= processes.Maximum))
 				processes.Value = settings.Threads;
+			granularity_ValueChanged(this, EventArgs.Empty);
+			processes_ValueChanged(this, EventArgs.Empty);
 		}
 
 		// Apply settings
 		private void startbutton_Click(object sender, EventArgs e)
 		{
-			settings.Granularity = granularities[granularity.Value];
+			settings.Granularity = TestManager.GRANULARITIES[granularity.Value];
 			settings.Threads = processes.Value;
 			
 			DialogResult = DialogResult.OK;
@@ -50,7 +48,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		
 		private void granularity_ValueChanged(object sender, EventArgs e)
 		{
-			granularitylabel.Text = granularities[granularity.Value].ToString() + " mp";
+			granularitylabel.Text = TestManager.GRANULARITIES[granularity.Value].ToString() + " mp";
 		}
 
 		private void processes_ValueChanged(object sender, EventArgs e)
