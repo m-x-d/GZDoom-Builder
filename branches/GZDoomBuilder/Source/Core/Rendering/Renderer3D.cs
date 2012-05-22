@@ -544,13 +544,16 @@ namespace CodeImp.DoomBuilder.Rendering
 			ApplyMatrices3D();
 			RenderSinglePass((int)RenderPass.Solid);
 
-            //mxd. Render models
+            //mxd. Render models, without culling. The way it's done in GZDoom... Fixes Rendering of things like grass and models with negative Scale
+            graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+            graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
             RenderModels();
+            graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
 
 			// MASK PASS
             world = Matrix.Identity;
             ApplyMatrices3D();
-            graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+            //graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
             RenderSinglePass((int)RenderPass.Mask);
 
             // ALPHA PASS

@@ -159,10 +159,6 @@ namespace CodeImp.DoomBuilder.Data
         //mxd. When implemented, this returns the modeldef lump
         public virtual Dictionary<string, Stream> GetModeldefData() { return new Dictionary<string, Stream>(); }
 
-        //mxd
-        //public Stream GetModel(string path) { return null; }
-        //protected abstract MemoryStream LoadFile(string filename);
-
 		#endregion
 	}
 }
