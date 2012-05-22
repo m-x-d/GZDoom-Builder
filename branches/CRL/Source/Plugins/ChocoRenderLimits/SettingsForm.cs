@@ -7,12 +7,13 @@ using System.Globalization;
 using System.Text;
 using System.ComponentModel;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 {
-	public partial class SettingsForm : Form
+	public partial class SettingsForm : DelayedForm
 	{
 		#region ================== Constants
 
@@ -46,7 +47,12 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 
 		private void apply_Click(object sender, EventArgs e)
 		{
-			BuilderPlug.Me.ExecutablePath = exepath.Text;
+			// Write settings
+			General.Settings.WritePluginSetting("executablepath", exepath.Text);
+			
+			// Read them so that they are applied
+			BuilderPlug.Me.ReadSettings();
+
 			DialogResult = DialogResult.OK;
 			this.Close();
 		}

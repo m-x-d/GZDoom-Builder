@@ -10,7 +10,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 {
-	internal enum TestState
+	public enum TestState
 	{
 		NotStarted,
 		Running,

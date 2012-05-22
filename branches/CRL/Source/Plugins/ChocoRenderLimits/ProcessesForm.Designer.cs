@@ -30,10 +30,10 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProcessesForm));
 			this.list = new System.Windows.Forms.ListView();
-			this.colarea = new System.Windows.Forms.ColumnHeader();
-			this.colgranularity = new System.Windows.Forms.ColumnHeader();
-			this.colprocesses = new System.Windows.Forms.ColumnHeader();
-			this.colprogress = new System.Windows.Forms.ColumnHeader();
+			this.colarea = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colgranularity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colprocesses = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colprogress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.newbutton = new System.Windows.Forms.Button();
 			this.importbutton = new System.Windows.Forms.Button();
 			this.removebutton = new System.Windows.Forms.Button();
@@ -42,8 +42,8 @@
 			// 
 			// list
 			// 
-			this.list.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.list.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colarea,
             this.colgranularity,
@@ -86,6 +86,7 @@
 			this.newbutton.TabIndex = 1;
 			this.newbutton.Text = "New Test...";
 			this.newbutton.UseVisualStyleBackColor = true;
+			this.newbutton.Click += new System.EventHandler(this.newbutton_Click);
 			// 
 			// importbutton
 			// 
@@ -127,6 +128,7 @@
 			this.Controls.Add(this.importbutton);
 			this.Controls.Add(this.newbutton);
 			this.Controls.Add(this.list);
+			this.DoubleBuffered = true;
 			this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

@@ -1328,9 +1328,11 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#region ================== Tools
 
-		// This finds the first IWAD resource
-		// Returns false when not found
-		internal bool FindFirstIWAD(out DataLocation result)
+		/// <summary>
+		/// This finds the first IWAD resource.
+		/// Returns false when not found.
+		/// </summary>
+		public bool FindFirstIWAD(out DataLocation result)
 		{
 			// Go for all data containers
 			foreach(DataReader dr in containers)

@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		// Objects
 		private static BuilderPlug me;
 		private MenusForm menusform;
+		private ProcessManager manager;
 		
 		// Settings
 		private string exepath;
@@ -59,7 +60,8 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		public static BuilderPlug Me { get { return me; } }
 		public override string Name { get { return "ChocoRenderLimits"; } }
 		public string ExecutablePath { get { return exepath; } set { exepath = value; } }
-
+		public ProcessManager ProcessManager { get { return manager; } }
+		
 		#endregion
 
 		#region ================== Initialize / Dispose
@@ -69,6 +71,8 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		{
 			base.OnInitialize();
 
+			manager = new ProcessManager();
+			
 			// Load menu items and toolbar buttons
 			menusform = new MenusForm();
 			menusform.Register();
@@ -76,7 +80,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 			General.Actions.BindMethods(this);
 
 			// Read settings
-			exepath = General.Settings.ReadPluginSetting("executablepath", "");
+			ReadSettings();
 
 			// Keep a static reference
 			me = this;
@@ -85,15 +89,19 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		// This is called when the plugin is terminated
 		public override void Dispose()
 		{
-			// Write settings
-			General.Settings.WritePluginSetting("executablepath", exepath);
-			
 			// Clean up
+			manager.Dispose();
 			General.Actions.UnbindMethods(this);
 			menusform.Unregister();
 			menusform.Dispose();
 			menusform = null;
 			base.Dispose();
+		}
+
+		// This reads settings from the plugin configuration
+		public void ReadSettings()
+		{
+			exepath = General.Settings.ReadPluginSetting("executablepath", "");
 		}
 
 		#endregion

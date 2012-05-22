@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 			// Add the menu items to the core
 			foreach(ToolStripItem m in menuitems)
 				General.Interface.AddMenu(m as ToolStripMenuItem, MenuSection.ToolsTesting);
-
+			
 			// Add the buttons to the core
 			//foreach(ToolStripItem b in buttons)
 			//	General.Interface.AddButton(b);
@@ -88,6 +88,11 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 			SettingsForm settings = new SettingsForm();
 			settings.ShowDialog(General.Interface);
 			settings.Dispose();
+		}
+
+		private void updatetimer_Tick(object sender, EventArgs e)
+		{
+			BuilderPlug.Me.ProcessManager.Update();
 		}
 
 		#endregion

@@ -28,10 +28,12 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.menustrip = new System.Windows.Forms.MenuStrip();
 			this.toolsmenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.settingsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.processesitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.settingsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.menustrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -51,25 +53,31 @@
             this.processesitem,
             this.settingsitem});
 			this.toolsmenu.Name = "toolsmenu";
-			this.toolsmenu.Size = new System.Drawing.Size(44, 20);
+			this.toolsmenu.Size = new System.Drawing.Size(48, 20);
 			this.toolsmenu.Text = "Tools";
-			// 
-			// settingsitem
-			// 
-			this.settingsitem.Name = "settingsitem";
-			this.settingsitem.Size = new System.Drawing.Size(239, 22);
-			this.settingsitem.Tag = "crl_settings";
-			this.settingsitem.Text = "ChocoRenderLimits Settings...";
-			this.settingsitem.Click += new System.EventHandler(this.settingsitem_Click);
 			// 
 			// processesitem
 			// 
 			this.processesitem.Image = global::CodeImp.DoomBuilder.Plugins.ChocoRenderLimits.Properties.Resources.CRL;
 			this.processesitem.Name = "processesitem";
-			this.processesitem.Size = new System.Drawing.Size(239, 22);
+			this.processesitem.Size = new System.Drawing.Size(241, 22);
 			this.processesitem.Tag = "crl_processes";
 			this.processesitem.Text = "ChocoRenderLimits Processes...";
 			this.processesitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// settingsitem
+			// 
+			this.settingsitem.Name = "settingsitem";
+			this.settingsitem.Size = new System.Drawing.Size(241, 22);
+			this.settingsitem.Tag = "crl_settings";
+			this.settingsitem.Text = "ChocoRenderLimits Settings...";
+			this.settingsitem.Click += new System.EventHandler(this.settingsitem_Click);
+			// 
+			// updatetimer
+			// 
+			this.updatetimer.Enabled = true;
+			this.updatetimer.Interval = 409;
+			this.updatetimer.Tick += new System.EventHandler(this.updatetimer_Tick);
 			// 
 			// MenusForm
 			// 
@@ -99,5 +107,6 @@
 		private System.Windows.Forms.ToolStripMenuItem toolsmenu;
 		private System.Windows.Forms.ToolStripMenuItem processesitem;
 		private System.Windows.Forms.ToolStripMenuItem settingsitem;
+		private System.Windows.Forms.Timer updatetimer;
 	}
 }

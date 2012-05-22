@@ -11,7 +11,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 {
-	internal class ProcessManager
+	public class ProcessManager
 	{
 		#region ================== Constants
 
@@ -37,6 +37,11 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 
 		}
 
+		// Dispose
+		public void Dispose()
+		{
+		}
+
 		#endregion
 
 		#region ================== Private Methods
@@ -46,13 +51,25 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		#region ================== Public Methods
 
 		// Create a new test
-		public Test StartNewTest(int threads, int granularity, Rectangle area)
+		public Test CreateNewTest(Rectangle area)
 		{
-			Test t = new Test(threads, granularity, area);
+			Test t = new Test(area);
 			tests.Add(t);
 			return t;
 		}
 
+		// Remove a test
+		public void RemoveTest(Test t)
+		{
+			tests.Remove(t);
+		}
+
+		// Update tests
+		public void Update()
+		{
+			foreach(Test t in tests)
+				t.Update();
+		}
 
 		#endregion
 	}
