@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 
 #endregion
@@ -55,6 +56,12 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 			this.area = area;
 		}
 
+		// Disposer
+		public void Dispose()
+		{
+			CleanUp();
+		}
+
 		// This makes a description for an area
 		public static string GetAreaDescription(Rectangle area)
 		{
@@ -73,6 +80,49 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 				case TestState.Running: return progress.ToString() + "%";
 				case TestState.Complete: return "Complete";
 				default: throw new NotImplementedException();
+			}
+		}
+
+		// Stop processes and clean up
+		private void CleanUp()
+		{
+			if(processes != null)
+			{
+				for(int i = 0; i < threads; i++)
+				{
+					try
+					{
+						if(!processes[i].HasExited)
+							processes[i].Kill();
+
+						if(logreaders[i] != null)
+						{
+							logreaders[i].Close();
+							logreaders[i].Dispose();
+							logreaders[i] = null;
+						}
+
+						string tempdatfile = tempfile + i.ToString(CultureInfo.InvariantCulture) + ".dat";
+						string tempppmfile = tempfile + i.ToString(CultureInfo.InvariantCulture) + ".ppm";
+						string templogfile = tempfile + i.ToString(CultureInfo.InvariantCulture) + ".log";
+						if(File.Exists(tempdatfile)) File.Delete(tempdatfile);
+						if(File.Exists(tempppmfile)) File.Delete(tempppmfile);
+						if(File.Exists(templogfile)) File.Delete(templogfile);
+					}
+					catch(Exception)
+					{
+					}
+				}
+
+				try
+				{
+					string tempwadfile = tempfile + ".wad";
+					if(File.Exists(tempwadfile)) File.Delete(tempwadfile);
+				}
+				catch(Exception)
+				{
+				}
+
 			}
 		}
 
@@ -203,6 +253,8 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 							logreaders[i].Dispose();
 							logreaders[i] = null;
 						}
+
+						ImportData(i);
 					}
 					else
 					{
@@ -276,6 +328,92 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 					progress = (int)(totalpercents / (float)threads);
 				}
 			}
+		}
+
+		// Import the data from one thread
+		private void ImportData(int thread)
+		{
+			Cursor.Current = Cursors.WaitCursor;
+			
+			string tempdatfile = tempfile + thread.ToString(CultureInfo.InvariantCulture) + ".dat";
+			if(File.Exists(tempdatfile))
+			{
+				// Open the DAT file
+				FileStream fs = File.Open(tempdatfile, FileMode.Open, FileAccess.Read, FileShare.Read);
+				BinaryReader datreader = new BinaryReader(fs);
+
+				// Read header
+				uint width = datreader.ReadUInt32();
+				uint height = datreader.ReadUInt32();
+				float x = (float)datreader.ReadInt32() / 65536.0f;
+				float y = (float)datreader.ReadInt32() / 65536.0f;
+				float gran = (float)datreader.ReadInt32() / 65536.0f;
+
+				// We ignore the above read values and calculate the area ourself from the points
+				Rectangle pointsarea = Rectangle.Empty;
+
+				// Read point data
+				List<KeyValuePair<Point, PointData>> points = new List<KeyValuePair<Point, PointData>>();
+				while(fs.Position < fs.Length - 1)
+				{
+					Point p = new Point();
+					p.X = datreader.ReadInt16();
+					p.Y = datreader.ReadInt16();
+					bool isvalid = datreader.ReadByte() != 0;
+					if(isvalid)
+					{
+						PointData pd = new PointData();
+						pd.visplanes = datreader.ReadUInt32();
+						pd.drawsegs = datreader.ReadUInt32();
+						pd.openings = datreader.ReadUInt32();
+						pd.sprites = datreader.ReadUInt32();
+						points.Add(new KeyValuePair<Point, PointData>(p, pd));
+
+						if(pointsarea.IsEmpty)
+						{
+							// First point
+							pointsarea = new Rectangle(p.X, p.Y, 1, 1);
+						}
+						else
+						{
+							// Enlarge the area to contain this point
+							if(p.X < pointsarea.X) pointsarea.X = p.X;
+							if(p.Y < pointsarea.Y) pointsarea.Y = p.Y;
+							if(p.X > pointsarea.Right) pointsarea.Width = p.X - pointsarea.X + 1;
+							if(p.Y > pointsarea.Bottom) pointsarea.Height = p.Y - pointsarea.Y + 1;
+						}
+					}
+				}
+
+				// Close the file
+				datreader.Close();
+				fs.Close();
+				fs.Dispose();
+
+				// Our area could differ from area in other threads and we don't want to
+				// resize our point grid more than once, so we enlarge our area alightly
+				// to ensure it will contain everything in this test.
+				if(!area.IsEmpty) pointsarea = Rectangle.Union(pointsarea, area);
+				pointsarea.Inflate(granularity, granularity);
+
+				// Apply to point grid
+				BuilderPlug.Me.TestManager.ImportTestData(pointsarea, points);
+			}
+			else
+			{
+				// Test failed!
+				CleanUp();
+				state = TestState.Failed;
+			}
+			
+			Cursor.Current = Cursors.Default;
+		}
+
+		// Cancel the test
+		public void Abort()
+		{
+			CleanUp();
+			state = TestState.NotStarted;
 		}
 	}
 }

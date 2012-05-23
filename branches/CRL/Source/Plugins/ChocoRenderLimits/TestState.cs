@@ -14,6 +14,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 	{
 		NotStarted,
 		Running,
-		Complete
+		Complete,
+		Failed
 	}
 }

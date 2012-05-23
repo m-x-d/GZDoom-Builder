@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		// This updates the list of tests
 		private void UpdateTestsList()
 		{
-			List<Test> tests = BuilderPlug.Me.ProcessManager.Tests;
+			List<Test> tests = BuilderPlug.Me.TestManager.Tests;
 			
 			list.BeginUpdate();
 			
@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		// Create a new test
 		private void newbutton_Click(object sender, EventArgs e)
 		{
-			Test t = BuilderPlug.Me.ProcessManager.CreateNewTest(Rectangle.Empty);
+			Test t = BuilderPlug.Me.TestManager.CreateNewTest(Rectangle.Empty);
 			TestSetupForm form = new TestSetupForm();
 			form.Setup(t);
 			if(form.ShowDialog(this) == DialogResult.OK)
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 			else
 			{
 				// Remove the test
-				BuilderPlug.Me.ProcessManager.RemoveTest(t);
+				BuilderPlug.Me.TestManager.RemoveTest(t);
 			}
 		}
 

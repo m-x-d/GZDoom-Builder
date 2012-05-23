@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		public static BuilderPlug Me { get { return me; } }
 		public override string Name { get { return "ChocoRenderLimits"; } }
 		public string ExecutablePath { get { return exepath; } set { exepath = value; } }
-		public TestManager ProcessManager { get { return manager; } }
+		public TestManager TestManager { get { return manager; } }
 		
 		#endregion
 

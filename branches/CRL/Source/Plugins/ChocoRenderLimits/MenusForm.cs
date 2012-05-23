@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 
 		private void updatetimer_Tick(object sender, EventArgs e)
 		{
-			BuilderPlug.Me.ProcessManager.Update();
+			BuilderPlug.Me.TestManager.Update();
 		}
 
 		#endregion
