@@ -15,8 +15,11 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 	{
 		#region ================== Constants
 
-		public static readonly int[] GRANULARITIES = new int[] { 2, 4, 8, 16, 32, 64, 128 };
+		public static readonly int[] GRANULARITIES = new int[] { 1, 2, 4, 8, 16, 32, 64, 128 };
 
+		public static int POINTMAP_GRAN = 4;
+		public static int POINTMAP_SHIFT = 2;
+		
 		#endregion
 
 		#region ================== Variables
@@ -26,7 +29,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 
 		// Points map
 		private Rectangle area;
-		private PointData[][] points;
+		private PointData[][] pointmap;
 		
 		#endregion
 
@@ -59,7 +62,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		// This resets the points map
 		private void ClearPointsMap()
 		{
-			points = new PointData[0][];
+			pointmap = new PointData[0][];
 			area = new Rectangle(0, 0, 0, 0);
 		}
 
@@ -69,12 +72,12 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 			if(!area.Contains(fitarea))
 			{
 				Rectangle newarea = Rectangle.Union(area, fitarea);
-				int deltapointsx = (area.X >> 2) - (newarea.X >> 2);
-				int deltapointsy = (area.Y >> 2) - (newarea.Y >> 2);
-				PointData[][] oldpoints = points;
-				points = new PointData[newarea.Height >> 2][];
-				for(int i = 0; i < (newarea.Height >> 2); i++) points[i] = new PointData[newarea.Width >> 2];
-				for(int y = 0; y < (area.Height >> 2); y++) Array.Copy(oldpoints[y], 0, points[y + deltapointsy], deltapointsx, area.Width >> 2);
+				int deltapointsx = (area.X >> POINTMAP_SHIFT) - (newarea.X >> POINTMAP_SHIFT);
+				int deltapointsy = (area.Y >> POINTMAP_SHIFT) - (newarea.Y >> POINTMAP_SHIFT);
+				PointData[][] oldpoints = pointmap;
+				pointmap = new PointData[newarea.Height >> POINTMAP_SHIFT][];
+				for(int i = 0; i < (newarea.Height >> POINTMAP_SHIFT); i++) pointmap[i] = new PointData[newarea.Width >> POINTMAP_SHIFT];
+				for(int y = 0; y < (area.Height >> POINTMAP_SHIFT); y++) Array.Copy(oldpoints[y], 0, pointmap[y + deltapointsy], deltapointsx, area.Width >> POINTMAP_SHIFT);
 				area = newarea;
 			}
 		}
@@ -106,15 +109,23 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 		}
 
 		// Submit test data
-		public void ImportTestData(Rectangle pointsarea, List<KeyValuePair<Point, PointData>> addpoints)
+		public void ImportTestData(Rectangle pointsarea, List<KeyValuePair<Point, PointData>> addpoints, int granularity)
 		{
+			if(granularity < POINTMAP_GRAN) throw new Exception("The fixed points map is for granularities " + POINTMAP_GRAN + " and higher only.");
+			
 			ResizePointsMap(pointsarea);
 
-			for(int i = 0; i < addpoints.Count; i++)
+			// Resample and apply the points to the granularity of the pointsmap
+			int pointsize = granularity / POINTMAP_GRAN;
+			int pointsizeadd = pointsize / 2;
+			int pointsizesub = pointsize - pointsizeadd;
+			foreach(KeyValuePair<Point, PointData> t in addpoints)
 			{
-				int arrayx = (addpoints[i].Key.X - area.X) >> 2;
-				int arrayy = (addpoints[i].Key.Y - area.Y) >> 2;
-				points[arrayy][arrayx] = addpoints[i].Value;
+				int arrayx = (t.Key.X - area.X) >> POINTMAP_SHIFT;
+				int arrayy = (t.Key.Y - area.Y) >> POINTMAP_SHIFT;
+				for(int x = arrayx - pointsizesub; x <= arrayx + pointsizeadd; x++)
+					for(int y = arrayy - pointsizesub; y <= arrayy + pointsizeadd; y++)
+						pointmap[y][x] = t.Value;
 			}
 		}
 

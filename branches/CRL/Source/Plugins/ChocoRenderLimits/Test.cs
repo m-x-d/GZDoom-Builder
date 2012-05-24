@@ -397,7 +397,7 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 				pointsarea.Inflate(granularity, granularity);
 
 				// Apply to point grid
-				BuilderPlug.Me.TestManager.ImportTestData(pointsarea, points);
+				BuilderPlug.Me.TestManager.ImportTestData(pointsarea, points, granularity);
 			}
 			else
 			{
