@@ -1067,6 +1067,9 @@ namespace CodeImp.DoomBuilder.Rendering
                         graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, getFogEnd(sector, sectorHasFogColor));
                     }
 
+                    //dbg
+                    //GZBuilder.GZGeneral.TraceInHeader("Using shader #"+wantedshaderpass);
+
                     for (int i = 0; i < group.Key.Model.NUM_MESHES; i++) {
                         if (!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, group.Key.Model.Textures[i]);
                         graphics.Shaders.World3D.Texture1 = group.Key.Model.Textures[i];

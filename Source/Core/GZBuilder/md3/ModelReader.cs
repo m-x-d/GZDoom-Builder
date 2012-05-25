@@ -138,7 +138,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
         }
 
         private static string ReadSurface(ref BoundingBoxSizes bbs, BinaryReader br, List<short> polyIndecesList, List<WorldVertex> vertList, ModeldefEntry mde) {
-            var start = br.BaseStream.Position;
+            int vertexOffset = vertList.Count;
+            long start = br.BaseStream.Position;
             string magic = ReadString(br, 4);
             if (magic != "IDP3")
                 return "error while reading surface: Magic should be 'IDP3', not '" + magic + "'";
@@ -157,7 +158,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                 br.BaseStream.Position = start + ofsTriangles;
 
             for (int i = 0; i < numTriangles * 3; i++)
-                polyIndecesList.Add( (short)br.ReadInt32() );
+                polyIndecesList.Add( (short)(vertexOffset + br.ReadInt32()) );
 
 
             //Vertices
@@ -166,7 +167,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
             for (int i = 0; i < numVerts; i++) {
                 WorldVertex v = new WorldVertex();
-                v.c = 0xffffff;
+                v.c = -1; //white
                 v.u = br.ReadSingle();
                 v.v = br.ReadSingle();
 
@@ -177,7 +178,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
             if (start + ofsNormal != br.BaseStream.Position)
                 br.BaseStream.Position = start + ofsNormal;
 
-            for (int i = 0; i < numVerts; i++) {
+            for (int i = vertexOffset; i < vertexOffset + numVerts; i++) {
                 WorldVertex v = vertList[i];
 
                 v.y = -(float)br.ReadInt16() / 64 * mde.Scale.X;
@@ -291,6 +292,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
                     //uv
                     v.u = uvCoordsList[uvIndecesList[i]].X;
                     v.v = uvCoordsList[uvIndecesList[i]].Y;
+                    //color
+                    v.c = -1; //white
 
                     vertList[polyIndecesList[i]] = v;
                 }
