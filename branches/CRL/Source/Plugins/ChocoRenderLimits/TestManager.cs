@@ -37,6 +37,9 @@ namespace CodeImp.DoomBuilder.Plugins.ChocoRenderLimits
 
 		public List<Test> Tests { get { return tests; } }
 
+		public PointData[][] PointMap { get { return pointmap; } }
+		public Rectangle Area { get { return area; } }
+
 		#endregion
 
 		#region ================== Constructor / Destructor
