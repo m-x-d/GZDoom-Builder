@@ -25,35 +25,35 @@
 // return error message when something fails
 // (this will be a static buffer, so is not guaranteed to remain valid
 //  after any other API call)
-const char *VPO_GetError(void);
+const char* APIENTRY VPO_GetError(void);
 
 // try to load a wad file
 // returns 0 on success, negative value on error
-int VPO_LoadWAD(const char *wad_filename);
+int APIENTRY VPO_LoadWAD(const char *wad_filename);
 
 // free all data associated with the wad file
 // can be safely called without any loaded wad file
-void VPO_FreeWAD(void);
+void APIENTRY VPO_FreeWAD(void);
 
 // retrieve the map names in the wad, one at a time
 // index starts at 0
 // returns NULL when index is past the end of the list
 // NOTE: return pointer may be a static buffer, not guaranteed to
 //       remain valid once this function is called again
-const char * VPO_GetMapName(unsigned int index);
+const char* APIENTRY VPO_GetMapName(unsigned int index);
 
 // try to open a map from the current wad file
 // returns 0 on success, negative value on error
-int VPO_OpenMap(const char *map_name);
+int APIENTRY VPO_OpenMap(const char *map_name);
 
 // free all data associated with a map
 // can be safely called without any opened map
-void VPO_CloseMap(void);
+void APIENTRY VPO_CloseMap(void);
 
 // retrieve the linedefs in the current map, one at a time
 // index starts at 0
 // returns number of sides (0 to 2), or -1 for invalid index
-int VPO_GetLinedef(unsigned int index, int *x1, int *y1, int *x2, int *y2);
+int APIENTRY VPO_GetLinedef(unsigned int index, int *x1, int *y1, int *x2, int *y2);
 
 // test a spot and angle, returning the number of visplanes
 // dz is the height above the floor (or offset from ceiling if < 0)
@@ -74,7 +74,7 @@ int VPO_GetLinedef(unsigned int index, int *x1, int *y1, int *x2, int *y2);
 #define RESULT_IN_VOID   -2
 #define RESULT_OVERFLOW  -3
 
-int VPO_TestSpot(int x, int y, int dz, int angle,
+int APIENTRY VPO_TestSpot(int x, int y, int dz, int angle,
                  int *num_visplanes,
                  int *num_drawsegs,
                  int *num_openings,

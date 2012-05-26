@@ -45,7 +45,7 @@ static void SetError(const char *msg, ...)
 }
 
 
-const char *VPO_GetError(void)
+const char* APIENTRY VPO_GetError(void)
 {
 	return error_buffer;
 }
@@ -53,7 +53,7 @@ const char *VPO_GetError(void)
 
 //------------------------------------------------------------------------
 
-int VPO_LoadWAD(const char *wad_filename)
+int APIENTRY VPO_LoadWAD(const char *wad_filename)
 {
 	ClearError();
 
@@ -72,7 +72,7 @@ int VPO_LoadWAD(const char *wad_filename)
 }
 
 
-int VPO_OpenMap(const char *map_name)
+int APIENTRY VPO_OpenMap(const char *map_name)
 {
 	// check a wad is loaded
 	if (vpo::numlumps <= 0)
@@ -98,7 +98,7 @@ int VPO_OpenMap(const char *map_name)
 }
 
 
-void VPO_FreeWAD(void)
+void APIENTRY VPO_FreeWAD(void)
 {
 	VPO_CloseMap();
 
@@ -106,7 +106,7 @@ void VPO_FreeWAD(void)
 }
 
 
-void VPO_CloseMap(void)
+void APIENTRY VPO_CloseMap(void)
 {
 	ClearError();
 
@@ -118,7 +118,7 @@ void VPO_CloseMap(void)
 }
 
 
-const char * VPO_GetMapName(unsigned int index)
+const char* APIENTRY VPO_GetMapName(unsigned int index)
 {
 	static char buffer[16];
 
@@ -144,7 +144,7 @@ const char * VPO_GetMapName(unsigned int index)
 }
 
 
-int VPO_GetLinedef(unsigned int index, int *x1, int *y1, int *x2, int *y2)
+int APIENTRY VPO_GetLinedef(unsigned int index, int *x1, int *y1, int *x2, int *y2)
 {
 	if (index >= (unsigned int)vpo::numlines)
 		return -1;
@@ -163,7 +163,7 @@ int VPO_GetLinedef(unsigned int index, int *x1, int *y1, int *x2, int *y2)
 
 //------------------------------------------------------------------------
 
-int VPO_TestSpot(int x, int y, int dz, int angle,
+int APIENTRY VPO_TestSpot(int x, int y, int dz, int angle,
                  int *num_visplanes, int *num_drawsegs,
                  int *num_openings,  int *num_solidsegs)
 {
