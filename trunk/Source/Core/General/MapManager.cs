@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder
 		internal Renderer2D CRenderer2D { get { return renderer2d; } }
 		internal Renderer3D CRenderer3D { get { return renderer3d; } }
 		public GameConfiguration Config { get { return config; } }
-		internal ConfigurationInfo ConfigSettings { get { return configinfo; } }
+		public ConfigurationInfo ConfigSettings { get { return configinfo; } }
 		public GridSetup Grid { get { return grid; } }
 		public UndoManager UndoRedo { get { return undoredo; } }
 		internal CopyPasteManager CopyPaste { get { return copypaste; } }
@@ -425,6 +425,14 @@ namespace CodeImp.DoomBuilder
 		#endregion
 
 		#region ================== Save
+
+		/// <summary>
+		/// This exports the structures from memory into a WAD file with the current map format.
+		/// </summary>
+		public bool ExportToFile(string filepathname)
+		{
+			return SaveMap(filepathname, SavePurpose.Testing);
+		}
 
 		// Initializes for an existing map
 		internal bool SaveMap(string newfilepathname, SavePurpose purpose)
